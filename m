@@ -2,65 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CB96E01CB
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 00:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E216E021F
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 00:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjDLW0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 18:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
+        id S229527AbjDLWuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 18:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDLW0m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 18:26:42 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28C7212C
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 15:26:41 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id si1so2476311ejb.10
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 15:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681338400;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Cnjj80dvd92KOMXWb4U/rYM+psan76b/o+EWDfJ8yA=;
-        b=IX0tywbQj9cLuJEP6LbwfWrnmrbAcOgK9VoIImdvBy+/9m02H60Z6i7ZCLLX6gJ47p
-         NlXeyyT+ggizkemhtGD1patFZIcyOVPcauPROtRGZxTjLqNh/JhivMlwY0WpgXxvYnvt
-         lP66MX+3fT+bOicR058AviDi1+czZiExiPGfnDe07oh1lgWOQ/gVFea80kYNxijB21Lr
-         pAeDkbOT5z2Sc4HtBK5wzy75uP1stoW/UpnWVFJ7yxUAVy66o+2PdUsNZcbBQHQ/rN8h
-         d1kRGkeqaF8FYXm6rJYuGW3ohffN+EeyCfk3qeSPnULWyB/iDtp/2QaTDNf89ftwLlhz
-         yLrw==
+        with ESMTP id S229526AbjDLWuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 18:50:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3966A4D
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 15:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681339759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2wfPThJ6uD5L19aBEF9JBG7PLb1538J2zAREBtpus8g=;
+        b=Z08gyQZ4zhKKUaazBLhTSd2k5ffgB+3Ih9u2By8aJmrpDTWU3ePwvu3KTvvJAUqil4KKLc
+        oYw2VqMt5UbkYThk+2sCAcP6Ws5zUCHNdVgqfMR1hU57O5Stoffvw34RbgPShkvPWjvafa
+        Ux3hQRaA5XCmuN3pvhBcyfrL0FjI40w=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-651-sYRIjKkdOpqgtLutzDTU7Q-1; Wed, 12 Apr 2023 18:49:18 -0400
+X-MC-Unique: sYRIjKkdOpqgtLutzDTU7Q-1
+Received: by mail-ed1-f69.google.com with SMTP id i19-20020a508713000000b004bc2358ac04so7360434edb.21
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 15:49:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681338400;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681339757;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Cnjj80dvd92KOMXWb4U/rYM+psan76b/o+EWDfJ8yA=;
-        b=FY4IxpW1U3E3bjlx0+kqXhq9UaZmpHrgg+kCE14LIWeL+cwHl0HgT10qroHFcnAFl/
-         h2RqK+qQr0O1ecZmE9Ozhd3EF2OTu0rg6JC2m3fH5sdYLYrUEfC9vWQqa1JsDaeYNT3V
-         x8K1wE/rYPv5lhRFe8GhfvDseLus/xomH7v60wMk+1PyWa2OagwLNN+i6Y7NR1uw8Qyd
-         QGXBe6GnxYv4w9i0vgO3Ei9HDqw9SK5xj0wBWrvFdhiEAyy4EzBQyDvt8d1dJ0jPuzX4
-         FW8ZGI27whzZ351/25Pbi5hwRTB0EiJQ4T1mxbFHLvhPRWcHw7ZVtRWbIj4V4NLZURHW
-         qa6A==
-X-Gm-Message-State: AAQBX9fJ1FRMPhurCOmNIp2Uu3EWWle9gaUcIYWtXYOxuM9BBPr3n+8/
-        Wz62MuFO27UE4hsfyqI/bPrmJAwEelVP/0qGnoH+pxYEvGY=
-X-Google-Smtp-Source: AKy350YjdzHTTP4/ah0RZ4g/7YR09CVLTtwzgcRkVoJZx1Tj+SpTr0saigFCvrezOocRQ2tTN5DEJEbr1vMcvZo5GdM=
-X-Received: by 2002:a17:906:8403:b0:931:fb3c:f88d with SMTP id
- n3-20020a170906840300b00931fb3cf88dmr236991ejx.5.1681338400113; Wed, 12 Apr
- 2023 15:26:40 -0700 (PDT)
+        bh=2wfPThJ6uD5L19aBEF9JBG7PLb1538J2zAREBtpus8g=;
+        b=HhO8jE0pqAFsYrxiPAjYiT1hnG5mInxiZ/HPZJnvGnjBEezRugbfhUEMePH9IO4nwR
+         lEcAlnHDTUEEQPDdWQzwOASN4VvAu/F3oC5m2K6BsENITDEV04/Vm5727HBHVi/ezag2
+         emSnzmVXhnxy8NVxDm0Qvd7/uJ8iAJDV/FvhlWQTTzUn4XKfFdFGKzqH4RZ76MC/+DBO
+         YLJz968YIDwNRKL7/Fkxivri1yrKHXFAHz4A+on9p6HYHTz7njgJoOtL7KvQElEZ1JXa
+         iROevoxIZkMO0B/gHeyj2CNx2wc5QeGPGUFXEtO2yzi8wiFLJEbc3wmGlq0pfAsubogC
+         nwHQ==
+X-Gm-Message-State: AAQBX9e9CiBv/Xindz28afOVrx4UtJGr4IGP4s1a6uFlsGjgVGzSBAqB
+        5QSCCWV+l/sm65LqtytZQNQy7PLQEXI829oxluunGgZX8i9vt0HxA0aMndG2hIiZvZ0S921IgD9
+        48Mp8vo97yST/
+X-Received: by 2002:a17:906:e07:b0:93d:e6c8:ed5e with SMTP id l7-20020a1709060e0700b0093de6c8ed5emr4232656eji.20.1681339756777;
+        Wed, 12 Apr 2023 15:49:16 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YHZC+OPPN1Ok/V44r6BzHazE/PVcSQNdhDZYC0v2k36DLDasA1DxoEYQ2wZPQkSLcb/RSq4A==
+X-Received: by 2002:a17:906:e07:b0:93d:e6c8:ed5e with SMTP id l7-20020a1709060e0700b0093de6c8ed5emr4232632eji.20.1681339756397;
+        Wed, 12 Apr 2023 15:49:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w18-20020a1709064a1200b0094e92b50076sm15810eju.133.2023.04.12.15.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 15:49:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4631BAA7980; Thu, 13 Apr 2023 00:49:15 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Kal Cutter Conley <kal.conley@dectris.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+In-Reply-To: <CAJ8uoz0arggpZdf9KPe5+pJbq_nVJUmvVryPHuwAsqswGs1LZw@mail.gmail.com>
+References: <20230406130205.49996-1-kal.conley@dectris.com>
+ <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
+ <ZDBEng1KEEG5lOA6@boxer>
+ <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+ <875ya12phx.fsf@toke.dk>
+ <CAJ8uoz0arggpZdf9KPe5+pJbq_nVJUmvVryPHuwAsqswGs1LZw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 13 Apr 2023 00:49:15 +0200
+Message-ID: <87ttxk1ztg.fsf@toke.dk>
 MIME-Version: 1.0
-References: <1d286b16-4d57-d667-e62c-00d6cb0d956d@google.com>
- <CAEf4BzY8QnPqv7Sn0RYkf4exfQ_dEHtHejLkHJyx2swq4LAs4w@mail.gmail.com> <b4cb3423-b18d-8fad-7355-d8aa66ccfe4c@google.com>
-In-Reply-To: <b4cb3423-b18d-8fad-7355-d8aa66ccfe4c@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 Apr 2023 15:26:28 -0700
-Message-ID: <CAEf4Bzbu-nH8F9eRLsoN89_=s3mLvs1gjLcNRr3_ctfb5MNaMg@mail.gmail.com>
-Subject: Re: inline ASM helpers for proving bounds checks
-To:     Barret Rhoden <brho@google.com>
-Cc:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,58 +99,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 10, 2023 at 10:46=E2=80=AFAM Barret Rhoden <brho@google.com> wr=
-ote:
->
-> On 3/28/23 17:32, Andrii Nakryiko wrote:
-> > This one looks pretty useful and common (especially to work around
-> > Clang's smartness). I have related set of helpers waiting it's time,
-> > see [0]. I'd say we should think about some good naming of them,
-> > document them properly (including various gotchas), and include them
-> > (initially) in bpf_misc.h and start using them in selftests.
->
-> sounds good to me.
->
-> any preference for a name?  bpf_index_array()?
-> - no need to say "bounded".
-> - want to begin with bpf_.
-> - sticking with your clamp style, "index" would be the verb.  (instead
-> of e.g. bpf_array_index, which sounds like it has something to do with a
-> BPF array".
->
-> i'm up for anything though.  =3D)
+Magnus Karlsson <magnus.karlsson@gmail.com> writes:
 
-bpf_index_array()/bpf_access_array() might be ok. But perhaps a bit
-more natural in the code will be bpf_array_elem(), as it's actually an
-accessor/expression, not really a stand-alone statement:
-
-struct my_elem *elem =3D bpf_array_elem(arr, n);
-if (!elem)
-    return 0;
-elem->field =3D <blah>;
-
-WDYT?
-
-Let's also maybe improve usability by inferring array size? I've seen
-somewhere in kernel code a macro that validates that passed in arr is
-actually an array (and not a pointer), it would be useful to use
-similar approach here to make sure we determine size correctly. See
-what ARRAY_SIZE() in the kernel does.
-
+> On Wed, 12 Apr 2023 at 15:40, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>>
+>> Kal Cutter Conley <kal.conley@dectris.com> writes:
+>>
+>> >> > > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. Th=
+is
+>> >> > > enables sending/receiving jumbo ethernet frames up to the theoret=
+ical
+>> >> > > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is requ=
+ired
+>> >> > > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, =
+only
+>> >> > > SKB mode is usable pending future driver work.
+>> >> >
+>> >> > Hmm, interesting. So how does this interact with XDP multibuf?
+>> >>
+>> >> To me it currently does not interact with mbuf in any way as it is en=
+abled
+>> >> only for skb mode which linearizes the skb from what i see.
+>> >>
+>> >> I'd like to hear more about Kal's use case - Kal do you use AF_XDP in=
+ SKB
+>> >> mode on your side?
+>> >
+>> > Our use-case is to receive jumbo Ethernet frames up to 9000 bytes with
+>> > AF_XDP in zero-copy mode. This patchset is a step in this direction.
+>> > At the very least, it lets you test out the feature in SKB mode
+>> > pending future driver support. Currently, XDP multi-buffer does not
+>> > support AF_XDP at all. It could support it in theory, but I think it
+>> > would need some UAPI design work and a bit of implementation work.
+>> >
+>> > Also, I think that the approach taken in this patchset has some
+>> > advantages over XDP multi-buffer:
+>> >     (1) It should be possible to achieve higher performance
+>> >         (a) because the packet data is kept together
+>> >         (b) because you need to acquire and validate less descriptors
+>> > and touch the queue pointers less often.
+>> >     (2) It is a nicer user-space API.
+>> >         (a) Since the packet data is all available in one linear
+>> > buffer. This may even be a requirement to avoid an extra copy if the
+>> > data must be handed off contiguously to other code.
+>> >
+>> > The disadvantage of this patchset is requiring the user to allocate
+>> > HugeTLB pages which is an extra complication.
+>> >
+>> > I am not sure if this patchset would need to interact with XDP
+>> > multi-buffer at all directly. Does anyone have anything to add here?
+>>
+>> Well, I'm mostly concerned with having two different operation and
+>> configuration modes for the same thing. We'll probably need to support
+>> multibuf for AF_XDP anyway for the non-ZC path, which means we'll need
+>> to create a UAPI for that in any case. And having two APIs is just going
+>> to be more complexity to handle at both the documentation and
+>> maintenance level.
 >
-> > yeah, I'm hesitant about this one. It is very similar to
-> > bpf_clam_xxx() macros I referenced above, probably we should use those
-> > instead.
->
-> totally agree.  i can switch my stuff to use the clamp, which covers all
-> of the use cases/signedness.  btw, good to know the "s<" is
-> signed-less-than.  i imagine i'd have had trouble with that.  =3D)
+> One does not replace the other. We need them both, unfortunately.
+> Multi-buff is great for e.g., stitching together different headers
+> with the same data. Point to different buffers for the header in each
+> packet but the same piece of data in all of them. This will never be
+> solved with Kal's approach. We just need multi-buffer support for
+> this. BTW, we are close to posting multi-buff support for AF_XDP. Just
+> hang in there a little while longer while the last glitches are fixed.
+> We have to stage it in two patch sets as it will be too long
+> otherwise. First one will only contain improvements to the xsk
+> selftests framework so that multi-buffer tests can be supported. The
+> second one will be the core code and the actual multi-buffer tests.
 
-you are welcome :)
+Alright, sounds good!
 
+> As for what Kal's patches are good for, please see below.
 >
-> thanks,
+>> It *might* be worth it to do this if the performance benefit is really
+>> compelling, but, well, you'd need to implement both and compare directly
+>> to know that for sure :)
 >
-> barret
->
->
+> The performance benefit is compelling. As I wrote in a mail to a post
+> by Kal, there are users out there that state that this feature (for
+> zero-copy mode nota bene) is a must for them to be able to use AF_XDP
+> instead of DPDK style user-mode drivers. They have really tough
+> latency requirements.
+
+Hmm, okay, looking forward to seeing the benchmark results, then! :)
+
+-Toke
+
