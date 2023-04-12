@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8286DF5EF
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 14:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EADB6DF72A
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 15:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbjDLMpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 08:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
+        id S229498AbjDLN2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 09:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjDLMpD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AC57EFF
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681303398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2cip69uvEtYr/5frxYNZac25fuawKyNR+cs4ZJgFBxs=;
-        b=iSQoRfMG7hF80Wr/Wt2xFDq4bJ+JKkmg19hwSLshjrI676S9Clc7Nnqa4qNsk5D6y9cuZS
-        aNb0hHAgeUHS8ZmVouqOWhtvoI1/tJu0NyvhyNZWLT+z53VWuwf4A96Yfd7NWQezhycq/H
-        jwxc4Yipxo3Eziqcv87GzyvMXzyh8wQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-503-i-jHLEqEMHGnt4iqOT0Nhw-1; Wed, 12 Apr 2023 08:43:15 -0400
-X-MC-Unique: i-jHLEqEMHGnt4iqOT0Nhw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB313800B23;
-        Wed, 12 Apr 2023 12:43:13 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6422A40C6E71;
-        Wed, 12 Apr 2023 12:43:13 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id AB4EC307372E8;
-        Wed, 12 Apr 2023 14:43:12 +0200 (CEST)
-Subject: [PATCH bpf V8 7/7] selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for
- new arg
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
-        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
-        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
-        leon@kernel.org, linux-rdma@vger.kernel.org
-Date:   Wed, 12 Apr 2023 14:43:12 +0200
-Message-ID: <168130339265.150247.18079994022961741945.stgit@firesoul>
-In-Reply-To: <168130333143.150247.11159481574477358816.stgit@firesoul>
-References: <168130333143.150247.11159481574477358816.stgit@firesoul>
-User-Agent: StGit/1.4
+        with ESMTP id S230176AbjDLN2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 09:28:48 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7143E6A40
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 06:28:24 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id n9-20020a05600c4f8900b003f05f617f3cso12907066wmq.2
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 06:28:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1681306045; x=1683898045;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7mmRBjnE+5jMO2xvU6ASHfM67DD3ZZge+9wZq6e0F68=;
+        b=ZpSfYTFYiufEke2gGFSquiKowLG1jeR2Lx0WUBDFqv9YOUbUz6hGaCx7bprM//mq4/
+         dTnsxsQqr8Yajl01HzbBNg2tsLVQrERcY1zk6HXL9qfbkTj/txf/jTq2esNYJmpghsHq
+         JZPVf9CZx2LLXtpX0A57DPYCpA1SAnaDGhls8nSbWpmTAdL3yt7Tl6ym6Z1b7k4xsrjb
+         v8st7yKaZmk6DmyyKvA5XFt4N07IgTIH54D3I2AbSNTa/adINTCjqggfsb9GZrWQdOR7
+         Qo7el1a3wydXqJk7StMhDiR33tVrxn+vx8hZaZta/OaSscM1WaPt88MbOReFs7Z8zZ9q
+         wzKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681306045; x=1683898045;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7mmRBjnE+5jMO2xvU6ASHfM67DD3ZZge+9wZq6e0F68=;
+        b=cpmVsmZoaI/np4OQ7o8atc6cr0fUtA88UsSgcejgS9GA8LhLeMkoFLUFNcXMTF/WH1
+         b5To1Xc/MZ8628IFL+GbX7+iWiVmviqy/Hm5Plwrr73GLckXf4QpPJdkZ8ye8VXwnJ29
+         37Wc3qqhExGu6qOSG/wMG+1RVzaN+Jka8FmY6Cn0rk02wiMGdOjL6bXfLiy1l0PFa/fu
+         iS0sg4hVcYcHrLUDdkv9NdpE1Dg++HlLzbL+pGFEOApBCZcW6dHa1EFRtbxB9t2VxcTP
+         my7ZgBbRViervyTWKAyuWrnuXsFgHfiA2Xsg5uW1HQ6iDbTMuSjyO0nEH/8LNwywOF6O
+         iiEg==
+X-Gm-Message-State: AAQBX9cZuDWHDOW0F1QBI96O2IEsvbBJivts/yFRzKspnfu9Z51b/bDx
+        TZaZJ+bDICqQImQsNWQW0vnFRnjgK8HCaX34hF/YqA==
+X-Google-Smtp-Source: AKy350a1IiABTRdfDQ/hd7uv3NzzsZ+kTyGueBt65A3/9CmK/QfUOuRVk87B1m4dKTILCUUHHwf9Hw==
+X-Received: by 2002:a05:600c:2941:b0:3ed:2eb5:c2e8 with SMTP id n1-20020a05600c294100b003ed2eb5c2e8mr11928494wmd.10.1681306045408;
+        Wed, 12 Apr 2023 06:27:25 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:53b:acfc:bce0:dc7d? ([2a02:8011:e80c:0:53b:acfc:bce0:dc7d])
+        by smtp.gmail.com with ESMTPSA id v10-20020a05600c470a00b003ef36ef3833sm2540483wmo.8.2023.04.12.06.27.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Apr 2023 06:27:24 -0700 (PDT)
+Message-ID: <3f952aed-0926-eb26-6472-2d0443c1a0ff@isovalent.com>
+Date:   Wed, 12 Apr 2023 14:27:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH] bpftool: fix broken compile on s390 for linux-next
+ repository
+Content-Language: en-GB
+To:     Thomas Richter <tmricht@linux.ibm.com>, hca@linux.ibm.com,
+        bpf@vger.kernel.org, linux-next@vger.kernel.org
+References: <20230412123636.2358949-1-tmricht@linux.ibm.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230412123636.2358949-1-tmricht@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,142 +74,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update BPF selftests to use the new RSS type argument for kfunc
-bpf_xdp_metadata_rx_hash.
+2023-04-12 14:36 UTC+0200 ~ Thomas Richter <tmricht@linux.ibm.com>
+> Commit 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> breaks the build of the perf tool on s390 in the linux-next repository.
+> Here is the make output:
+> 
+> make -C tools/perf
+> ....
+> btf_dumper.c: In function 'dotlabel_puts':
+> DEBUG: btf_dumper.c:838:25: error: '__fallthrough' undeclared \
+> 		(first use in this function); did you mean 'fallthrough'?
+> DEBUG:   838 |                         __fallthrough;
+> DEBUG:       |                         ^~~~~~~~~~~~~
+> DEBUG:       |                         fallthrough
+> DEBUG: btf_dumper.c:838:25: note: each undeclared identifier is reported \
+> 		only once for each function it appears in
+> DEBUG: btf_dumper.c:837:25: warning: this statement may fall through \
+>                 [-Wimplicit-fallthrough=]
+> DEBUG:   837 |                         putchar('\\');
+> DEBUG:       |                         ^~~~~~~~~~~~~
+> DEBUG: btf_dumper.c:839:17: note: here
+> DEBUG:   839 |                 default:
+> DEBUG:       |                 ^~~~~~~
+> DEBUG: make[3]: *** [Makefile:247: /builddir/build/BUILD/kernel-6.2.fc37/\
+> 		        linux-6.2/tools/perf/util/bpf_skel/ \
+> 		        .tmp/bootstrap/btf_dumper.o] Error 1
+> 
+> The compile fails because symbol __fallthrough unknown, but symbol
+> fallthrough is known and works fine.
+> 
+> Fix this and replace __fallthrough by fallthrough.
+> 
+> With this change, the compile works.
+> 
+> Output after:
+> 
+>  # make -C tools/perf
+>  ....
+>  CC      util/bpf-filter.o
+>  CC      util/bpf-filter-flex.o
+>  LD      util/perf-in.o
+>  LD      perf-in.o
+>  LINK    perf
+>  make: Leaving directory '/root/mirror-linux-next/tools/perf'
+>  #
+> 
+> Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> ---
+>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> index 6c5e0e82da22..1b7f69714604 100644
+> --- a/tools/bpf/bpftool/btf_dumper.c
+> +++ b/tools/bpf/bpftool/btf_dumper.c
+> @@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
+>  		case '|':
+>  		case ' ':
+>  			putchar('\\');
+> -			__fallthrough;
+> +			fallthrough;
+>  		default:
+>  			putchar(*s);
+>  		}
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Acked-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/xdp_metadata.c        |    2 ++
- .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   11 +++++------
- tools/testing/selftests/bpf/progs/xdp_metadata.c   |    6 +++---
- tools/testing/selftests/bpf/progs/xdp_metadata2.c  |    7 ++++---
- tools/testing/selftests/bpf/xdp_hw_metadata.c      |    6 +++++-
- tools/testing/selftests/bpf/xdp_metadata.h         |    4 ++++
- 6 files changed, 23 insertions(+), 13 deletions(-)
+Also reported by Sven Schnelle, and discussed at
+https://lore.kernel.org/all/yt9dttxlwal7.fsf@linux.ibm.com/.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index aa4beae99f4f..8c5e98da9ae9 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -273,6 +273,8 @@ static int verify_xsk_metadata(struct xsk *xsk)
- 	if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
- 		return -1;
- 
-+	ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
-+
- 	xsk_ring_cons__release(&xsk->rx, 1);
- 	refill_rx(xsk, comp_addr);
- 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index a07ef7534013..829b7c3354ba 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -31,8 +31,8 @@ volatile __u64 pkts_redir = 0;
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -96,10 +96,9 @@ int rx(struct xdp_md *ctx)
- 	else
- 		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
- 
--	if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
--		bpf_printk("populated rx_hash with %u", meta->rx_hash);
--	else
--		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
-+	ret = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
-+	if (ret < 0)
-+		meta->rx_hash_err = ret; /* Used by AF_XDP as no hash signal */
- 
- 	pkts_redir++;
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index 77678b034389..d151d406a123 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -21,8 +21,8 @@ struct {
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -56,7 +56,7 @@ int rx(struct xdp_md *ctx)
- 	if (timestamp == 0)
- 		meta->rx_timestamp = 1;
- 
--	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
-+	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
- 
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata2.c b/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-index cf69d05451c3..85f88d9d7a78 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata2.c
-@@ -5,17 +5,18 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
--extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
--				    __u32 *hash) __ksym;
-+extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-+				    enum xdp_rss_hash_type *rss_type) __ksym;
- 
- int called;
- 
- SEC("freplace/rx")
- int freplace_rx(struct xdp_md *ctx)
- {
-+	enum xdp_rss_hash_type type = 0;
- 	u32 hash = 0;
- 	/* Call _any_ metadata function to make sure we don't crash. */
--	bpf_xdp_metadata_rx_hash(ctx, &hash);
-+	bpf_xdp_metadata_rx_hash(ctx, &hash, &type);
- 	called++;
- 	return XDP_PASS;
- }
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 3b942ef7297b..987cf0db5ebc 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -141,7 +141,11 @@ static void verify_xdp_metadata(void *data)
- 	meta = data - sizeof(*meta);
- 
- 	printf("rx_timestamp: %llu\n", meta->rx_timestamp);
--	printf("rx_hash: %u\n", meta->rx_hash);
-+	if (meta->rx_hash_err < 0)
-+		printf("No rx_hash err=%d\n", meta->rx_hash_err);
-+	else
-+		printf("rx_hash: 0x%X with RSS type:0x%X\n",
-+		       meta->rx_hash, meta->rx_hash_type);
- }
- 
- static void verify_skb_metadata(int fd)
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index f6780fbb0a21..0c4624dc6f2f 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -12,4 +12,8 @@
- struct xdp_meta {
- 	__u64 rx_timestamp;
- 	__u32 rx_hash;
-+	union {
-+		__u32 rx_hash_type;
-+		__s32 rx_hash_err;
-+	};
- };
+This is for linux-next, it cannot go through bpf-next given that commit
+f7a858bffcdd ("tools: Rename __fallthrough to fallthrough") is not in
+there yet.
 
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
+Thanks!
+Quentin
