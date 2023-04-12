@@ -2,77 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D35266DF7CC
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 15:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506E76DF881
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 16:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjDLN4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 09:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S230294AbjDLOa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 10:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjDLN4I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 09:56:08 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94197D9E;
-        Wed, 12 Apr 2023 06:55:50 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-54c17fa9ae8so319591937b3.5;
-        Wed, 12 Apr 2023 06:55:50 -0700 (PDT)
+        with ESMTP id S230306AbjDLOaz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 10:30:55 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22A37AB0;
+        Wed, 12 Apr 2023 07:30:53 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id cg4so3099615qtb.11;
+        Wed, 12 Apr 2023 07:30:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681307750; x=1683899750;
+        d=gmail.com; s=20221208; t=1681309853; x=1683901853;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=933rqrJ5JW6xLLolSy8p/l987jO0ZQnx8xOK/Rz6sro=;
-        b=nx7U8oZhzlF0AOp6y1Eods+RekUaFqPLuIZmfj/VtfuMR1usD9ckyk8fsIKTQctlRR
-         yizqSV0S6KBUSdxEIf6Km8flho3enwQTh83nUMtN2Co52+Rsw3kiBqZxabqKqJSXU6oz
-         riLKjD89F4/n8x5wIdmJBGzYbkIUnNCOXRKVVebc4HaCW6wvc+U4v4T24AAIXaVZCFHG
-         9MYCIyPIgVYnzHEM4WuQ1kGgEjnZTQf3kyh9IQS25FfjhPyW2ThvSCmFpl/ROZMpUzb/
-         5Vp+nfljNeilxTxvEY4hNfelFFpMmxFEKSDR0u7Jq/AOY0RGvDe3Gn9yVDdDWbwPyst8
-         0/Vg==
+        bh=u8ERyuF5lUh/9oOBnakaR53ts/dJmfYVpaB52vPFC/k=;
+        b=IdnzgpwrfIBo4Mhuys3oEz+066VkpG/E4Yi2Oo5vsQ2Crcfovsz7Yppi4iZJI3uBXU
+         TMJznNaxMZ7EMU73pVi1Yhw2kW2mGhr2JvHR4sbGML0w4hmkWh69vEKr1ArqZy/oF04v
+         BE5jnDc84OFoNft+jdklFVod/bj+UoKH0w64HQvUjYM6N3yUBmoAJSrJ3CAZ8TNLh0uN
+         1SK66dCv3QfXo+C7KZNQzKjH+c3ZBiuMtwHVkZdM5VWX2VcnUzDOu9CVIuHDhXMpAQMv
+         3cl+5NtsMwyK0vV5AIUnB01MgsXgF20NHHLfVqIWSKRK9TbYxnpYdHxXhWcCkXmYrBZF
+         XhJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681307750; x=1683899750;
+        d=1e100.net; s=20210112; t=1681309853; x=1683901853;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=933rqrJ5JW6xLLolSy8p/l987jO0ZQnx8xOK/Rz6sro=;
-        b=nThmfCEMVlppficouA5LGUmqa/O0PisdqfdaF8Au02yhDK+4DNOwNxc7XDLaDFi43I
-         MdG4r/RUG8UVzJ6cto0CGKaLL61mBtEY+EN1c1CrjoineZQVUcbR8DQJlSmh/YIudE4t
-         26t8pVGXza6UD8DiL56w9ZShM0cY7xMrVu/KhhRhsm+iVVOU3lgNQlDJ5r2wgeu3+DW4
-         idBTJ1b1JphwNaMFXo223gsApFnKwhU6oDZnjJw/AM3CfmUwo+bYvy0VIU3dNQx/6jHK
-         qhVu0A0r1rKoqmamahtDvoyCPCsb6+PvDtczcpL0dDeAdwZ/QDYwPB0RAUa7lK/KgaSb
-         OvXg==
-X-Gm-Message-State: AAQBX9eka45ZVuGSIFFzMwLLylWrLjBbGoXjJyc0OO1Uv0o7nDFWr0+7
-        KnSfra2FnPMhCaeh3x2lS3DuQl+qNsauRvxb3r8g1Y4jUHJMeJLs
-X-Google-Smtp-Source: AKy350bAa0ZsGfxqwG6PFWeyb/56jhdj0mZnmhX4MEHqX0MJdVmwadEJGZF9WZDwBUFma1xppMcjKNdhQaRPMq0BVt8=
-X-Received: by 2002:a81:ac5c:0:b0:54f:b2a3:8441 with SMTP id
- z28-20020a81ac5c000000b0054fb2a38441mr518540ywj.10.1681307749851; Wed, 12 Apr
- 2023 06:55:49 -0700 (PDT)
+        bh=u8ERyuF5lUh/9oOBnakaR53ts/dJmfYVpaB52vPFC/k=;
+        b=geFwN6rj47XxvSNiZO3pFLXDjy6k8syegVjlx8in4pn4tT8Yl5efrK60HN/nmON8FS
+         UE3GkjkzDN1vfNZ+lGS2j6dwqXkd7Gr1LwNwPMIO7us9BHjQ7oSW9sgMHjY9hJgPBstl
+         /O/RtO+0IBZXT45sF4UeAWHllHvg+SFJx6hCyv1YUVjvA2/qfV0MDPduw3K9fJQGYkLs
+         wIkEEO9hllv6LcadBTFDmnpzUIrJJh8rchdHgzI4ue/zc+yrexLIZzmuIY+d5z80l+/D
+         LmZFw6jEV/q/xWMh/xQU2rBWsTcJhUensjQmO8gFIvOINXxRXXPpW9yu+7aEgzXjAQju
+         xLuQ==
+X-Gm-Message-State: AAQBX9e1r+IrSxHQ3NiaifRaN2LBF8/1Jr1ntsyhiDLYYgMPZ7FKUxfP
+        0JCSEwWiDF05X4Pl1nk+nWm2tWelgTH9OHOQ4zWnfBlL6tg=
+X-Google-Smtp-Source: AKy350a/v2QgdmWhkLlpTmPcQPYPrqrwogMMXl88Rr192vwDmBw5D8JWSgU+r5YbrUXA11lieObN7hM4TOG5Cageuc8=
+X-Received: by 2002:ac8:7f02:0:b0:3d8:2cb6:d21d with SMTP id
+ f2-20020ac87f02000000b003d82cb6d21dmr2187800qtk.6.1681309852832; Wed, 12 Apr
+ 2023 07:30:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
- <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk>
-In-Reply-To: <875ya12phx.fsf@toke.dk>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 12 Apr 2023 15:55:38 +0200
-Message-ID: <CAJ8uoz0arggpZdf9KPe5+pJbq_nVJUmvVryPHuwAsqswGs1LZw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Kal Cutter Conley <kal.conley@dectris.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230321020103.13494-1-laoar.shao@gmail.com> <20230321101711.625d0ccb@gandalf.local.home>
+ <CALOAHbAfQxAMQTwDHnMOLHDfz=Mo0gFwu9i3bS0emttUTodA4g@mail.gmail.com>
+ <20230323083914.31f76c2b@gandalf.local.home> <CALOAHbDtM7KuiRn1n9EBYrSGqJmOYcY6voVRfF+QGN510W_OtQ@mail.gmail.com>
+ <20230323230105.57c40232@rorschach.local.home> <CALOAHbCZSY2XJpzJ+AxSrRLbMqyoJjcaXeof-xMLN8y+uB7PJg@mail.gmail.com>
+ <20230409075515.2504db78@rorschach.local.home> <CALOAHbBALsJrkO-tPKoEtrdm42fLnRoYs-46tz0J7yDwrxC0Tg@mail.gmail.com>
+ <20230409225414.2b66610f4145ade7b09339bb@kernel.org> <CALOAHbBQFSm=rXvzJJnOqrK04f9j1opbgRoYKwSUAd5g64r-jA@mail.gmail.com>
+ <20230409220239.0fcf6738@rorschach.local.home> <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
+ <20230410063046.391dd2bd@rorschach.local.home> <CALOAHbCXgksmdYRRxrjVrW1-AWiTr1u24yJAdh2+0ou15vvKiA@mail.gmail.com>
+ <20230410101224.7e3b238c@gandalf.local.home> <20230410103152.29c84333@gandalf.local.home>
+In-Reply-To: <20230410103152.29c84333@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 12 Apr 2023 22:30:16 +0800
+Message-ID: <CALOAHbAYAYkj9ZrTvRCRZXJ4UBWHY5DyiTWfvUFgw+78VVkHEQ@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        alexei.starovoitov@gmail.com, linux-trace-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,86 +80,173 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 Apr 2023 at 15:40, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
+On Mon, Apr 10, 2023 at 10:31=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
 >
-> Kal Cutter Conley <kal.conley@dectris.com> writes:
+> On Mon, 10 Apr 2023 10:12:24 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> >> > > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. Thi=
-s
-> >> > > enables sending/receiving jumbo ethernet frames up to the theoreti=
-cal
-> >> > > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is requi=
-red
-> >> > > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, o=
-nly
-> >> > > SKB mode is usable pending future driver work.
-> >> >
-> >> > Hmm, interesting. So how does this interact with XDP multibuf?
-> >>
-> >> To me it currently does not interact with mbuf in any way as it is ena=
-bled
-> >> only for skb mode which linearizes the skb from what i see.
-> >>
-> >> I'd like to hear more about Kal's use case - Kal do you use AF_XDP in =
-SKB
-> >> mode on your side?
+> > The disabling of preemption was just done because every place that used=
+ it
+> > happened to also disable preemption. So it was just a clean up, not a
+> > requirement. Although the documentation said it did disable preemption =
+:-/
 > >
-> > Our use-case is to receive jumbo Ethernet frames up to 9000 bytes with
-> > AF_XDP in zero-copy mode. This patchset is a step in this direction.
-> > At the very least, it lets you test out the feature in SKB mode
-> > pending future driver support. Currently, XDP multi-buffer does not
-> > support AF_XDP at all. It could support it in theory, but I think it
-> > would need some UAPI design work and a bit of implementation work.
+> >  See ce5e48036c9e7 ("ftrace: disable preemption when recursion locked")
 > >
-> > Also, I think that the approach taken in this patchset has some
-> > advantages over XDP multi-buffer:
-> >     (1) It should be possible to achieve higher performance
-> >         (a) because the packet data is kept together
-> >         (b) because you need to acquire and validate less descriptors
-> > and touch the queue pointers less often.
-> >     (2) It is a nicer user-space API.
-> >         (a) Since the packet data is all available in one linear
-> > buffer. This may even be a requirement to avoid an extra copy if the
-> > data must be handed off contiguously to other code.
-> >
-> > The disadvantage of this patchset is requiring the user to allocate
-> > HugeTLB pages which is an extra complication.
-> >
-> > I am not sure if this patchset would need to interact with XDP
-> > multi-buffer at all directly. Does anyone have anything to add here?
+> > I think I can add a ftrace_test_recursion_try_aquire() and release() th=
+at
+> > is does the same thing without preemption. That way, we don't need to
+> > revert that patch, and use that instead.
 >
-> Well, I'm mostly concerned with having two different operation and
-> configuration modes for the same thing. We'll probably need to support
-> multibuf for AF_XDP anyway for the non-ZC path, which means we'll need
-> to create a UAPI for that in any case. And having two APIs is just going
-> to be more complexity to handle at both the documentation and
-> maintenance level.
-
-One does not replace the other. We need them both, unfortunately.
-Multi-buff is great for e.g., stitching together different headers
-with the same data. Point to different buffers for the header in each
-packet but the same piece of data in all of them. This will never be
-solved with Kal's approach. We just need multi-buffer support for
-this. BTW, we are close to posting multi-buff support for AF_XDP. Just
-hang in there a little while longer while the last glitches are fixed.
-We have to stage it in two patch sets as it will be too long
-otherwise. First one will only contain improvements to the xsk
-selftests framework so that multi-buffer tests can be supported. The
-second one will be the core code and the actual multi-buffer tests. As
-for what Kal's patches are good for, please see below.
-
-> It *might* be worth it to do this if the performance benefit is really
-> compelling, but, well, you'd need to implement both and compare directly
-> to know that for sure :)
-
-The performance benefit is compelling. As I wrote in a mail to a post
-by Kal, there are users out there that state that this feature (for
-zero-copy mode nota bene) is a must for them to be able to use AF_XDP
-instead of DPDK style user-mode drivers. They have really tough
-latency requirements.
-
-
-
-> -Toke
+> This patch adds a:
 >
+>    test_recursion_try_acquire() and test_recursion_release()
+>
+> I called it "acquire" and "release" so that "lock" can imply preemption b=
+eing
+> disabled, and this only protects against recursion (and I removed "ftrace=
+"
+> in the name, as it is meant for non-ftrace uses, which I may give it a
+> different set of recursion bits).
+>
+> Note, the reason to pass in ip, and parent_ip (_THIS_IP_ and _RET_IP_) is
+> for debugging purposes. They *should* be optimized out, as everything is
+> __always_inline or macros, and those are only used if
+> CONFIG_FTRACE_RECORD_RECURSION is enabled.
+>
+> -- Steve
+>
+
+Thanks for the explanation.
+
+>
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recurs=
+ion.h
+> index d48cd92d2364..80de2ee7b4c3 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -150,9 +150,6 @@ extern void ftrace_record_recursion(unsigned long ip,=
+ unsigned long parent_ip);
+>  # define trace_warn_on_no_rcu(ip)      false
+>  #endif
+>
+> -/*
+> - * Preemption is promised to be disabled when return bit >=3D 0.
+> - */
+>  static __always_inline int trace_test_and_set_recursion(unsigned long ip=
+, unsigned long pip,
+>                                                         int start)
+>  {
+> @@ -182,18 +179,11 @@ static __always_inline int trace_test_and_set_recur=
+sion(unsigned long ip, unsign
+>         val |=3D 1 << bit;
+>         current->trace_recursion =3D val;
+>         barrier();
+> -
+> -       preempt_disable_notrace();
+> -
+>         return bit;
+>  }
+>
+> -/*
+> - * Preemption will be enabled (if it was previously enabled).
+> - */
+>  static __always_inline void trace_clear_recursion(int bit)
+>  {
+> -       preempt_enable_notrace();
+>         barrier();
+>         trace_recursion_clear(bit);
+>  }
+> @@ -205,12 +195,18 @@ static __always_inline void trace_clear_recursion(i=
+nt bit)
+>   * tracing recursed in the same context (normal vs interrupt),
+>   *
+>   * Returns: -1 if a recursion happened.
+> - *           >=3D 0 if no recursion.
+> + *           >=3D 0 if no recursion and preemption will be disabled.
+>   */
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long i=
+p,
+>                                                          unsigned long pa=
+rent_ip)
+>  {
+> -       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
+TART);
+> +       int bit;
+> +
+> +       bit =3D trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_=
+START);
+> +       if (unlikely(bit < 0))
+> +               return -1;
+> +       preempt_disable_notrace();
+> +       return bit;
+>  }
+>
+>  /**
+> @@ -220,6 +216,33 @@ static __always_inline int ftrace_test_recursion_try=
+lock(unsigned long ip,
+>   * This is used at the end of a ftrace callback.
+>   */
+>  static __always_inline void ftrace_test_recursion_unlock(int bit)
+> +{
+> +       preempt_enable_notrace();
+> +       trace_clear_recursion(bit);
+> +}
+> +
+> +/**
+> + * test_recursion_try_acquire - tests for recursion in same context
+> + *
+> + * This will detect recursion of a function.
+> + *
+> + * Returns: -1 if a recursion happened.
+> + *           >=3D 0 if no recursion
+> + */
+> +static __always_inline int test_recursion_try_acquire(unsigned long ip,
+> +                                                     unsigned long paren=
+t_ip)
+> +{
+> +       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
+TART);
+> +}
+> +
+> +/**
+> + * test_recursion_release - called after a success of test_recursion_try=
+_acquire()
+> + * @bit: The return of a successful test_recursion_try_acquire()
+> + *
+> + * This releases the recursion lock taken by a non-negative return call
+> + * by test_recursion_try_acquire().
+> + */
+> +static __always_inline void test_recursion_release(int bit)
+>  {
+>         trace_clear_recursion(bit);
+>  }
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 0feea145bb29..ff8172ba48b0 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -7644,6 +7644,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
+ong parent_ip,
+>         if (bit < 0)
+>                 return;
+>
+> +       preempt_disable();
+>         do_for_each_ftrace_op(op, ftrace_ops_list) {
+>                 /* Stub functions don't need to be called nor tested */
+>                 if (op->flags & FTRACE_OPS_FL_STUB)
+> @@ -7665,6 +7666,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
+ong parent_ip,
+>                 }
+>         } while_for_each_ftrace_op(op);
+>  out:
+> +       preempt_enable();
+>         trace_clear_recursion(bit);
+>  }
+>
+
+Great!
+
+--=20
+Regards
+Yafang
