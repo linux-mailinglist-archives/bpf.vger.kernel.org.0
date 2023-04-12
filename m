@@ -2,240 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FB76DFFD7
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 22:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651B86E0030
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 22:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjDLU3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 16:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        id S230064AbjDLUwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 16:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjDLU3w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 16:29:52 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7DD72BE
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 13:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681331385; bh=2/Rleu8Lgu7q0ljiF/HtbOjKUdbZsdOnZo+57VAAZvM=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=ZNQe0acWsnezWAr9imAaYciSRhEGmpeG1bneEIx+25R7FTEUE04Urvs3s0T3Ws0mAhAzF2YOZM10zL87RJGe/BMhmpQjp4xkpiNYctVpJLoztHCo2UgefsRxv1JNMkWyKKQjVFx8xhGAKdwUKl4XZruZrXqkHCGSUTqQoTY5b9DAsaIAZo9V3vXa9EH5k5fcg3vxc4uuS36sunTxJDFOCmWWzQvbbXg97/KdmqWNcjfMeD2xFFMbHAI7WX2WMh0B4x1hRT5Nomx0Jmk0rd/H+UIDvXM8WEHw6LF/O2h8jo9Xo8dUhWuucog/Fen7PpBqP+ricJsmESMSAp3/YGtP2w==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681331385; bh=pEkyF/PatcQqQRZrHQ9GwTvSug0vj03Fb50IJLp0Cw3=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=C5/O7f7f7raRw9BlUAaOkn+5NjHtpbTT95hCLTcSwCdbecrQnCsM1b9tBGIFruNxxm2pBCkAM9zprtH7RZ3FGkVeRRZpn613CWWjPZ1VTV4ImlXn6zsAGFOxnx91nd0g8mV6E9jrx3n7O4i+JBJdoO8Fc1bYF7qVRd3RgGg49iNsP60SycW7q5sE1l6cBfHjnF1a00t6cqaEkgSw3g5o8bzIyCtcLML537nyL6ZfIroH0fY36URfzxM+smoNrTL2in5PgHhfHhg/Mbg7Kw16Xe9y2tjQ06b8hW+p7Nk+/3rbbKaZSMMMBeH0cLT85poen4bNc6dr3xi6cW6aKIJF6g==
-X-YMail-OSG: eoJgcs0VM1nIcuNV.uaSNAP7obN8iAUnHSqwWwH3zMj1hZiI_c1c.pZXh6GiF3M
- oVOQOc57.W8uqNrVidygXtWUv4A1Ubm1XQ42OA535bO_RZqWL8gLUZeDmn3j7mLB3m9H7jj5Qmo1
- zVXCCMTP8H89OhyWjqud90b2ieWws9OXCy9no21MJEu3FYzzUlUn_RMJb_KuQIGA3TVrETGdrGe8
- nOWkmmPaFqP48rTY5j.sUX2qDCVbohJaA_Md8yx6h8NKELM_EFKV62sThYIbOISuYFWEq8KNrQAG
- V536IbvccJZ2W3emWfHLyKYs1LV3ZiFs3U1FmHHEZSIZ6_8t9z3ihsWUBV_8wofCRAd3PcXp_io8
- DYqYGAEVDlfXkCMVyRc2QWcGXDJHrQv98bGhmmAFu8Jm.lVRrOf8CIQXf4GDBe6LnNI1AtPaIc1m
- X4VDrQgq8ya5.dUYrOQuOLVXcQB3h.Hbx64KZUfFYJJS1xNTwX_E5mduWZMzOAcDCc2YSZ5uoATo
- 0mXkf6nRCJcCn3nkZ0.s4uP2mUJwovwXU3l1R1Uy8j6yJ4uc5o4cJwz5BG0IdQQx5XtvlAu98A2P
- mCBwkNctA_bdHnS6EhKIkk_OCCCfeaEwpMKTmR2J.uiiYwyAB0xbCRd72jsic4YKfObYC_RpX7PO
- 8cmWuGQ0vpyMRYJAqO.zHQiw2TxuXQdGh9Q8JUtscL8zB8Djw7Y0HuhUK58fmhS9ppH2FlZ1XC25
- IQf_n3_U_4O27F5p6lzv.GeehOvS4MjsxkVNhUEIAs5CebDOWPh_Wvm2Ze1GB1VEDXIvAMc7nTju
- Gqjbipt5iI_DBXteYW2lTFtUimBKWDS9qCdTddMD8gx6F419By.1JOATFjRK0aGqiF3hNDaxbJEe
- 9Yzt1l9ayaWFaqvuQiVD.oEKtxXoaJHKHaaMgkgNnk9Ee3DrUAY26RrgH2tPpkwuu6n5Kbic_Jml
- cw0nJ95hE1p._bN7yWUEVzXblbWeQZ5hkMZVC1CsD716XzPpT0ApfKoKLcV_6y4hlbYAQKj3nlZN
- WZviERcgi8Q7D6B0fBeuKSh8xOB4Q90M0e6U0uKZoemXE1pmSMkFeGe0Sq2M4781_3ojasXUOF2X
- FCs8kgghuGgG1FRXBoF2RnpwVPgV5IlKZgsXPOdjlOt27Y2cE1mUW2y5cpMHysCWmNJHbIIW3Ds1
- cxPp8VzTBHwMvrBiAr5y22B6enpbT93mzYYXzQb.FdrXVdu46RZ1Qfo_6Ij7Q.T6peb3.mhVRkHI
- GdcWv5WdZzJM_wboyYPbxRIL2i9o3c8WAeXVspdG8_TQKZB84s4Ucu0STHvO2WhA2WBLm.z6jVTh
- jZzVSAHM.LSZ597V4LQVHMvjAZD9QAGkj_PAK4vysDOTF5O1xJpifNO7ZbQEenMQ7D8pxQdDplkN
- q3BQGbHjdYq87XUp3FLxTwXK2JclEXVI8IezG7r0cGFxvY48U8RNejkOcQjpmgcX1bx9cueNfbMn
- tT.MdMPddrJE4_MN50on0Bl_LIvMWpiJARI4YgYV6Bnlc558zHzd5JsgO6RAuJkR4QKFGk_qlS3I
- zvVCNtwM0YS28gzrkcbQ_xbSwWjYUr47g9W_4sMvStMFkMBWgXT0vuvmSeECC6M743.asIC5txqG
- ZUzmuYA5cQI1_vffpfRMM5K2I8SGcNfgmE.DTZsy3D8YCk7ogorC3vxlhiAx1R0RYH6_QnblE.Sw
- MiI4mm5i9I5QLH1CQ5X_Hkx8QcEeQqdLHD89oplZrSr2w2pnQ0119QqfZcki8txpNNEFifb8Am6p
- RletxWOTUHp0C8wrU9HcelPFnfmVD4YxSs8Z1aHI.3Uk1ZUNB7uN3q6dGM_8LoPqBvPwe.sApmKH
- RaRZaJTsDrFdU0BMTCGRKV7YP08ODbMqBWbY4LEc1pdv4wpD1gy1HbALBYQzpH_cwXTqgYklyOtG
- YopeNZyCE6G2ZqZ8EhugqVetgWjGEARZIEKSvjyaxfJLTbR_GTkgssvenxkEoFz6SkdQvrtPZzy2
- PUL8LMIHiw.UwXiBWE1OypE4OytM4e9gFzaT1QfTMIcK6xgz28mXi1elUvOEMV_xIgsgX1c38Nuh
- V0PBUY80jP0vlzN3ktUpHtUrXptrsxooC0wPSxxqqzQ03D1OLsaK3ffStqfye0BDdETZLKyQlQXw
- cxAPwlLnEhtQOnzdGlzEuFfrTZtU5OG5nT7smF_RhbJK7rkd_802gRzs.HyVdRDXGL0S.uj5WYaY
- EceGeDDnhY4sQi_sDj_C1hZ8T6lAjdfDgorbezExMcOqSc_j9RQsn2aA6JNcTEzUvM7CXLIjHDly
- RKyWVqrYVq2qzC2Ay
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 9a43225b-4c57-443c-8941-a6d373658187
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Wed, 12 Apr 2023 20:29:45 +0000
-Received: by hermes--production-bf1-5f9df5c5c4-bqwvr (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID b1668afe2a93b144acd4394e0275b411;
-          Wed, 12 Apr 2023 20:29:41 +0000 (UTC)
-Message-ID: <72b46d0f-75c7-ac18-4984-2bf1d6dad352@schaufler-ca.com>
-Date:   Wed, 12 Apr 2023 13:29:38 -0700
-MIME-Version: 1.0
+        with ESMTP id S229908AbjDLUwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 16:52:40 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196326589;
+        Wed, 12 Apr 2023 13:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681332757; x=1712868757;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BPTqUyLwlBt4/gBnTNnCmnyw+KOyNQUS/PNNnUFbJj8=;
+  b=bRAIs0fa2WiGai5yJt4BCh+SO5e/TTaNTDoP4iPdjxsNfNEPXDTAZNjK
+   ddTkVusnZ/6YPlnzCjlCkS1LpliVrBu3AVAN29BcrdM47iqvwRhYD6WaD
+   aIVR0erYx/AYQrXkJA4Ba7FPskqWJ94JzqonOYi64SbQltx2Adges1u42
+   fLVEVKGiTUfkmV0tR3fzCQgZKuwQFk4T0OdaHSk/xAjuKluEzEpUylbLk
+   fYDNBkmsPE+Czz/FD6WY60t7l9QwrV7t9tX6oVeqj2VZAZsrS6RVMAXud
+   HowlhbYcgK1z/j4FTMBcAqEjX8sxswT/JlkdNum2MNXEtvIzxHLZnDabL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="430307050"
+X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
+   d="scan'208";a="430307050"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 13:52:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10678"; a="863459432"
+X-IronPort-AV: E=Sophos;i="5.98,339,1673942400"; 
+   d="scan'208";a="863459432"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP; 12 Apr 2023 13:52:02 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 12 Apr 2023 13:52:02 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Wed, 12 Apr 2023 13:52:02 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Wed, 12 Apr 2023 13:52:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OluD5k9lgrDf6hqcS+FoG48SpFawFi2pifnlAu10ysrT/ev4kgbUM6G07AjTICbQqPJ4GbcCrNJT9y2xZrVZy59MQyETKgcndWHAh3+yN9gu6L9bIigJVGwzFEOlorK3jwei3qcoBOaDH/NQYjdjDiALXICbEwoMeM+ys/02BB3AU7pzmh93nZSDKgRDtKdrTJtioL55L1LJWTz+C+ZsHBJ4bh52kt3yIEqigp2KkWoNTwHzQbZyH9+4jk6PO8PfJEsUri/b3Ux0izTgyhCxkJAYr+mkHUeeEAqrUWkO6dba2S1Ib+Z+/UUL2XUhcKSU3AhDaWKUnYNiAWRt4rc5qQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zjt5d4BC17kqWAurylH2tBreICd1k5lgE0Pi/VYEG98=;
+ b=d1gdc0IwMfVhAx0JBnXIBSxZhyeFkXsKS1WmAEja+OGosTi9XUKm+rIsyqccENqqRWC4OEMhILMRWxmTiK09/cbP6/uueyhtYQfPQOqn0u9AsOnIR5bCegZ5j9ei1cRxTpbunNl39N2pF55iIRaZGszxH8g7H506/5RYNeI25rvjcQi/Tn4phhDeS6PMbXycyp0L8sOjj8rhuQWGE4iJuB9OvZkbalqS7jDqok3XAV7aQ0Ib2/X9gt0usmf+VnC82ijcTtcp5WF0itzEmuJg7d8uEME/4BbYwl0tjxBVaZxS7jjFkHw16oO+svtCjhPq3o4veBmJdLr/ujiaGpwpNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by DM4PR11MB8203.namprd11.prod.outlook.com (2603:10b6:8:187::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.38; Wed, 12 Apr
+ 2023 20:52:00 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6222:859a:41a7:e55b]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6222:859a:41a7:e55b%2]) with mapi id 15.20.6298.030; Wed, 12 Apr 2023
+ 20:52:00 +0000
+Message-ID: <3b324fba-d4cb-0290-f67f-6562fd7e86ad@intel.com>
+Date:   Wed, 12 Apr 2023 13:52:05 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.1
-Subject: Re: [PATCH] Smack modifications for: security: Allow all LSMs to
- provide xattrs for inode_init_security hook
+Subject: Re: [PATCH net-next v3 1/4] net: stmmac: restructure Rx hardware
+ timestamping function
 Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
-        nicolas.bouchinet@clip-os.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
- <20230411172337.340518-1-roberto.sassu@huaweicloud.com>
- <2dc6486f-ce9b-f171-14fe-48a90386e1b7@schaufler-ca.com>
- <8e7705972a0f306922d8bc4893cf940e319abb19.camel@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <8e7705972a0f306922d8bc4893cf940e319abb19.camel@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Song Yoong Siang <yoong.siang.song@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "Alexander Duyck" <alexanderduyck@fb.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+CC:     <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <xdp-hints@xdp-project.net>
+References: <20230412094235.589089-1-yoong.siang.song@intel.com>
+ <20230412094235.589089-2-yoong.siang.song@intel.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20230412094235.589089-2-yoong.siang.song@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21365 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SJ0PR03CA0097.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::12) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|DM4PR11MB8203:EE_
+X-MS-Office365-Filtering-Correlation-Id: e49ceaf6-6a2f-4777-a21f-08db3b97c30f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AMYCoSvP7MFoxr1/KjeK9MVGN8r0ebNhoaqPIIaDZotMjx/OTj98GgJs1BSZLitKWa8oaiG1sFwIe/b7X6n5Z7+vXnRv1rQBQNNbWHr4DUdVVT9jrUBmMtMyellwXtPfhqx6l+DEKZnaNY9WfvGRV290nW+hkAu5g+7B5Z84XccVgyV1z96wUHgkVf7+hYvChlvzo1Irxlh9QFrk9hMVwzpZlFqje47zLZ5rzOTPf7QzGq6j9o79cDRjDk5vr0ehLiBwy7je2Bhbfve5mXq/p5lI60MnJUXCCGbpsEHIlePsiH7T9Be4mmwWCZgGjFEmCpMF49qcEqM/BFsERkICUW1Hjj9bS6/igyxquRpkVbijUPJxjfXRX5jjkvY7Tw0qJJJBC5tBNO8gG6vERuStKDZIXjggwCI2ZpJ148jEerto/VSgTeJ9vtCI8ysG90+z5b4NfuodedAZg8Jvkd6aS3mgq86KMAjz0N1qkWMKrD1gBPqXq8mlD6yg6bGD2tTwHrsZ0UIatgD0bBri0x7GggXhY5Lwao4939vMe2pbl4NKK1kxtIWmJEZlHR4vISSwdwUsxKvEtqtvkmplx3WiU8QgVyAekvhy1U48FJuWijeynA/AyIH5zQe41yD4PVtIJ/fFTL5Ue8mZq5vz19PwijUeTv5DeeayB1Z3TlbIfUw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(136003)(366004)(346002)(396003)(451199021)(31686004)(478600001)(36756003)(31696002)(82960400001)(921005)(38100700002)(86362001)(2616005)(4744005)(2906002)(316002)(26005)(5660300002)(6512007)(6506007)(110136005)(53546011)(186003)(6636002)(66556008)(6486002)(66476007)(7416002)(41300700001)(8676002)(8936002)(4326008)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b25OR0p2TDVIajdLWFRQVWpMWWNLUFBLSkNmVjQ2RWhicmVBbW52Z1VSZUp1?=
+ =?utf-8?B?aC9QVElRRFdldTJiS2ptb0ZUVmVvNlNId3RzUHltZWJiOEYybkRVOW9OcTdV?=
+ =?utf-8?B?VXY2dFVsNkl2TGYyczNMakJvQllxcThVSmhyb2Y0ZFp6Skt4UnV5cVRyWG1q?=
+ =?utf-8?B?V0s2YXJxc081ZVFWaTNXeVFmM0EyTWJLNHFwa3lObXMzNXpuZktYak1FU29S?=
+ =?utf-8?B?N1BaN0xXelpmN2RRaDN5VGQwVk81Y3hXc2IwSHFDQ2JtN0g3QnRoUGE0RXdv?=
+ =?utf-8?B?TExQU0pscWNSV05hZE9lTTRtZFJsRkoxVjFZL2N3bCs2NGR1aWt6MVN1cjE4?=
+ =?utf-8?B?L1JVVWszb2poMVdHZzdlcDJ3Y3FFc00rZnYvT3BMWENBVE9lRm9qL1BXZEJ3?=
+ =?utf-8?B?alR4TEsxWVJxd1A5WGFXOW44bUk4MmxqL2N3aExvSkUyakFoVnorKzBRR3E5?=
+ =?utf-8?B?MzAyOS9idTdEMEdVZVNIMWtlT2g4aHpMYmFuc0szQW5ZMUhtdjcyUG9zNCtv?=
+ =?utf-8?B?cC9ieXhBVTJGaE8rUC92KysyMnV5MUgrWGNaVFk2UXhHSmtENitpVHZaMk9R?=
+ =?utf-8?B?elZuMk0wcVN2N21xOXk1VmNzWnhLbk5WTXFkY3dmUURFR0pWOEphZkZzZVpo?=
+ =?utf-8?B?ZzZEREdpYlpKZUZ4enNsVmd2ODkzZlpmeDVyd1RDSnJXRG93bmxzbm1MVkFX?=
+ =?utf-8?B?d3BKZHB2NzJQdDl5dlRtUExrclVYSDJGeWEzZUEyZ0xveldoWTlpS0RwcXlE?=
+ =?utf-8?B?RXltcG4rK1pwdmNGV05uTVRPbTFkcGZ4OUpRblVnZXJHSWZMeU95MzVJS0FY?=
+ =?utf-8?B?MHpGQU1xcUpPRExZODlnUzJ6Y3FpUG0xSkthSktMTk1sbWZ5Q21NU25CT0N2?=
+ =?utf-8?B?TDFqVXUyU0E5c1N0M1J0TE44STVkN2xsK2RZVThhRVJpZmQ4VmFEQXIyTEk4?=
+ =?utf-8?B?aEVYdllzb0VrUXkxN3BxeDAwWnNpTFVLdFkwUGVQcUQxQkNQZ1AxLzhrUTFx?=
+ =?utf-8?B?U21LMitMM1JTYW1TRWNiQXdqek1SNDJkNTIvNTFVWHBMNFNLN3FBRmI2dzlJ?=
+ =?utf-8?B?bStlMTd1OStlRzE1TWR6cU1UL0tLdDZCYVVKeGFDWUc2UmpSRmRIV0NqYmlT?=
+ =?utf-8?B?T21tbW81V3JtK2g0NmtzeCtlZWtIK2twQjJ3MU9zUWxRbHFsT3g4bWJxM29Z?=
+ =?utf-8?B?K1RLUWIrR2c0REVGSCtvaTUxSzBkRWEySm55YzQzWld3c1Y0RnM2RnJUMmtM?=
+ =?utf-8?B?MU9aL3Z4eittTjVVcDRQelAwci9Nc0hlQ21CeXYyM3BXK0NSS0RIWlJnOFFt?=
+ =?utf-8?B?V0I0OTZQY3lLbGNoWjliWkJ2UnQvSHJpbHpMdkxiQTREUlpLKzg1UGJ3RlFk?=
+ =?utf-8?B?VlhRZHJxUnhkaFRWV2gxbmM1MXlSTkg1NHoxekxSQW9GQ0tiQ3FnNVBnZVdu?=
+ =?utf-8?B?a3JJcW5FRVp3UFhsTkdLcVlNQUFXZ3Y4Q29POTUzcXBwazZSMlpid2F6a3k1?=
+ =?utf-8?B?ZzhENE92UWVwQUh6WVFpaTNPdXVFNlo3QnZVT04zM0V4ektxRk53THBtMW9Z?=
+ =?utf-8?B?SFZselFOMzF5ZkFwbzZzL2dwVXBYZlRkTVFqMDRPR3dTOXh3bEtoK0p2ZVJK?=
+ =?utf-8?B?M2NGSU1Wdlg4bFpvMkdjOC9zdXRaMnY3YVExRDdKeGhpbDg3Smx4T2E3ejVu?=
+ =?utf-8?B?cGNwMVladkliMWVySWFCTU84NUVmbHlaS3BrSDhXVG1tN3NDVll6bDc5S2ZH?=
+ =?utf-8?B?Z2VnTVFvcFBTaVRZbmc4UmNFTXcvWUFTcXhWZDY5eXRvakdlQVpONEQ2WVVp?=
+ =?utf-8?B?TW1sTTdVRVQyZ2drcEJEdFk2U0ZHbUZzUnJsRmNhY0h5S0VSdjdLeTZLUVdK?=
+ =?utf-8?B?OGR3Nnp6amFibFQ0dGQzS1hwVFB5VnV1YTU5K2U4eGs0WmhJTUU0SnNhSEhu?=
+ =?utf-8?B?alRhS01FUlNvdGpkRVFZWEs5TXB1aVhSVUgwWmtyelYyNTZSTm9TSEpiOVJ4?=
+ =?utf-8?B?emxWNW02UWFQQjF2aGRsVHNkRmRsOWd6L3lQd3FTeldOd0pobTZBUTdQY0Yz?=
+ =?utf-8?B?d1lKeTRiYXNYS2J6OW5EZlRqRTdiSGZyMVZmK2plMXRZR1VzZGVFdGdzQVJD?=
+ =?utf-8?B?VTA0R0RLMUc0bUE5ajhuTUc4aHlkTFJwNFRueWdxTk52RHN3Y004VGc3Wm9u?=
+ =?utf-8?B?U1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e49ceaf6-6a2f-4777-a21f-08db3b97c30f
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 20:52:00.4325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qtbIs1cifPsOh20w3YB/p+8BQjARy0/NRjQqZM7QfF85HODF+G6mUgRA7JMrmbPS6V33ruD3YQ8RqDq1F+Wfty3L9xuYS4DLTN4psntfaV8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8203
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/12/2023 12:22 AM, Roberto Sassu wrote:
-> On Tue, 2023-04-11 at 10:54 -0700, Casey Schaufler wrote:
->> On 4/11/2023 10:23 AM, Roberto Sassu wrote:
->>> From: Roberto Sassu <roberto.sassu@huawei.com>
->>>
->>> Very very quick modification. Not tested.
->>>
->>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->>> ---
->>>  security/smack/smack.h     |  2 +-
->>>  security/smack/smack_lsm.c | 42 ++++++++++++++++++++------------------
->>>  2 files changed, 23 insertions(+), 21 deletions(-)
->>>
->>> diff --git a/security/smack/smack.h b/security/smack/smack.h
->>> index e2239be7bd6..f00c8498c60 100644
->>> --- a/security/smack/smack.h
->>> +++ b/security/smack/smack.h
->>> @@ -127,7 +127,7 @@ struct task_smack {
->>>  
->>>  #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
->>>  #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
->>> -#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
->>> +#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted (unused) */
->> See below ...
->>
->>>  #define	SMK_INODE_IMPURE	0x08	/* involved in an impure transaction */
->>>  
->>>  /*
->>> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
->>> index 8392983334b..b43820bdbd0 100644
->>> --- a/security/smack/smack_lsm.c
->>> +++ b/security/smack/smack_lsm.c
->>> @@ -54,12 +54,12 @@
->>>  
->>>  /*
->>>   * Smack uses multiple xattrs.
->>> - * SMACK64 - for access control, SMACK64EXEC - label for the program,
->>> - * SMACK64MMAP - controls library loading,
->>> + * SMACK64 - for access control,
->>>   * SMACK64TRANSMUTE - label initialization,
->>> - * Not saved on files - SMACK64IPIN and SMACK64IPOUT
->>> + * Not saved on files - SMACK64IPIN and SMACK64IPOUT,
->>> + * Must be set explicitly - SMACK64EXEC and SMACK64MMAP
->>>   */
->>> -#define SMACK_INODE_INIT_XATTRS 4
->>> +#define SMACK_INODE_INIT_XATTRS 2
->>>  
->>>  #ifdef SMACK_IPV6_PORT_LABELING
->>>  static DEFINE_MUTEX(smack_ipv6_lock);
->>> @@ -957,11 +957,11 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>>  				     const struct qstr *qstr,
->>>  				     struct xattr *xattrs, int *xattr_count)
->>>  {
->>> -	struct inode_smack *issp = smack_inode(inode);
->>>  	struct smack_known *skp = smk_of_current();
->>>  	struct smack_known *isp = smk_of_inode(inode);
->>>  	struct smack_known *dsp = smk_of_inode(dir);
->>>  	struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
->>> +	struct xattr *xattr2;
->> I'm going to channel Paul and suggest this be xattr_transmute instead of xattr2.
->> It also looks like it could move to be declared in the if clause.
->>
->>>  	int may;
->>>  
->>>  	if (xattr) {
->>> @@ -979,7 +979,17 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>>  		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
->>>  		    smk_inode_transmutable(dir)) {
->>>  			isp = dsp;
->>> -			issp->smk_flags |= SMK_INODE_CHANGED;
->> I think you need to keep this. More below.
->>
->>> +			xattr2 = lsm_get_xattr_slot(xattrs, xattr_count);
->>> +			if (xattr2) {
->>> +				xattr2->value = kmemdup(TRANS_TRUE,
->>> +							TRANS_TRUE_SIZE,
->>> +							GFP_NOFS);
->>> +				if (xattr2->value == NULL)
->>> +					return -ENOMEM;
->>> +
->>> +				xattr2->value_len = TRANS_TRUE_SIZE;
->>> +				xattr2->name = XATTR_NAME_SMACKTRANSMUTE;
->>> +			}
->>>  		}
->>>  
->>>  		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
->>> @@ -3512,20 +3522,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
->>>  			 * If there is a transmute attribute on the
->>>  			 * directory mark the inode.
->>>  			 */
->>> -			if (isp->smk_flags & SMK_INODE_CHANGED) {
->>> -				isp->smk_flags &= ~SMK_INODE_CHANGED;
->>> -				rc = __vfs_setxattr(&nop_mnt_idmap, dp, inode,
->>> -					XATTR_NAME_SMACKTRANSMUTE,
->>> -					TRANS_TRUE, TRANS_TRUE_SIZE,
->>> -					0);
->>> -			} else {
->>> -				rc = __vfs_getxattr(dp, inode,
->>> -					XATTR_NAME_SMACKTRANSMUTE, trattr,
->>> -					TRANS_TRUE_SIZE);
->>> -				if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
->>> -						       TRANS_TRUE_SIZE) != 0)
->>> -					rc = -EINVAL;
->>> -			}
->>> +			rc = __vfs_getxattr(dp, inode,
->>> +					    XATTR_NAME_SMACKTRANSMUTE, trattr,
->>> +					    TRANS_TRUE_SIZE);
->>> +			if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
->>> +					       TRANS_TRUE_SIZE) != 0)
->>> +				rc = -EINVAL;
->> Where is the SMACK64_TRANSMUTE attribute going to get set on the file?
->> It's not going to get set in smack_init_inode_security(). The inode will
-> Isn't that the purpose of the inode_init_security hook?
 
-No. It initializes the in-memory inode. 
 
-> After all LSMs provide one or multiple xattrs, xattrs are going to be
-> written to the disk with the initxattr() callback of filesystems.
->
-> There is a small mistake above (XATTR_SMACK_TRANSMUTE instead
-> of XATTR_NAME_SMACKTRANSMUTE, as we are providing just the suffix).
->
-> After fixing that, Smack tests succeed:
+On 4/12/2023 2:42 AM, Song Yoong Siang wrote:
+> From: Ong Boon Leong <boon.leong.ong@intel.com>
+> 
+> Rearrange the function of getting Rx hardware timestamp for skb so
+> that it can be reused for XDP later.
+> 
+> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
 
-It's over a decade since I seriously looked at this code path,
-but I'm pretty sure the __vfs_setxattr() call is necessary to get
-the attribute written out. With your change the in-memory inode will
-get the attribute, but if you reboot it won't be on the directory.
-
->
-> 95 Passed, 0 Failed, 100% Success rate
->
-> There was a test failing in dir-transmute.sh, before I fixed the xattr
-> name.
->
-> Thanks
->
-> Roberto
->
->> know it's transmuting, but it won't get to disk without the __vfs_setxattr()
->> here in smack_d_instantiate(). Now, it's been a long time since that code
->> was written, so I could be wrong, but I'm pretty sure about that.
->>
->> I think that you should be fine with the changes in smack_init_inode_security(),
->> and leaving smack_d_instantiate() untouched. 
->>
->>>  			if (rc >= 0)
->>>  				transflag = SMK_INODE_TRANSMUTE;
->>>  		}
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
