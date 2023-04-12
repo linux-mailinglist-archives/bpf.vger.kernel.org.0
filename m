@@ -2,108 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501096DF109
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 11:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FBA6DF14A
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 11:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjDLJup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 05:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        id S229840AbjDLJ7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 05:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjDLJun (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 05:50:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7DB727DA1;
-        Wed, 12 Apr 2023 02:50:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C28EC14;
-        Wed, 12 Apr 2023 02:51:11 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.21.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 818193F587;
-        Wed, 12 Apr 2023 02:50:24 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 10:50:21 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, jolsa@kernel.org,
-        xukuohai@huaweicloud.com, lihuafei1@huawei.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 0/5] Add ftrace direct call for arm64
-Message-ID: <ZDZ+3dNnIdEpmWiP@FVFF77S0Q05N>
-References: <20230405180250.2046566-1-revest@chromium.org>
- <ZDWDPUY2tZiMbk8V@FVFF77S0Q05N>
- <20230411124749.7aeea715@gandalf.local.home>
- <20230411170807.GA23143@willie-the-truck>
- <20230411134456.728551f8@gandalf.local.home>
- <20230411175423.GD23143@willie-the-truck>
+        with ESMTP id S229773AbjDLJ73 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 05:59:29 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8909C30CB
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 02:59:27 -0700 (PDT)
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D49F13F205
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1681293565;
+        bh=lPAnInjEPmYSXmdYizwbO/BNtnsYb9zk0SNDJiS3bTc=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=KVZ4rVncHngaMgp9erc+RVM5khvF1Wk6s5/lx5l/8HggGEZAWToGw4bIrED7+J58t
+         AlGIhVHazS6v+wqq2N9SNmDK3ZfOyXwB8/itRGuOD+QFBZV+CU140DzNbD9Ra3eDBX
+         GRN6HGJKWDdFmMWKqPdH8v+I6NLuqy9tqvmHbi6f1iufjlJlHbu35PvNHzaJ0Z0gN9
+         y2bw9/MsYipCYFmGxFROpNxPh1wW5W7NIs2H8QbMJSHbbWAvtyGI1P9z4pS+ZfI+s6
+         2pZRG+ueXqhVOFAxUYIQJ11GofKS9Q8CmXsYOiQnQnhcbWpJ0ZCxN5sUUYtMK650Fj
+         XiBmf3/9RnGZQ==
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-180baff12ccso13547479fac.3
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 02:59:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681293565; x=1683885565;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lPAnInjEPmYSXmdYizwbO/BNtnsYb9zk0SNDJiS3bTc=;
+        b=mcJmd0sFWYv1McA02vPVFeqspSfhezxnfzvC2xqzMVD1+QUAtVziVzulbm1dsoYFMD
+         Og8R3kxTk+fb2F6/fzArFDvTcV5CvQ75lsrUR//b0e4Z21kzeIkxj8PgVN2nbzHIQ+bT
+         qpk7ZdbYLilqoJ8E1n8kRMUuMSl7IhfCaVzRH32KD7QB4HjTsD2lF4APcC1FauXAr7kK
+         4DSkQG5JiaipNK9y/d70oqIvkD5wKM3XoFiGptBLgz9bxO+eiGUp/mBjgFozdHsTEklz
+         CeMSSpxSFdQKEiduA6/H8A1KUBjafLiTeMQRGemEBzPa14vqx824GKJsqGsEx1W8ZpEJ
+         +4jA==
+X-Gm-Message-State: AAQBX9dRZCQqab8KMV+6wM+oee//KYoafK9pqbbCVqW3T3/nefXNHCnK
+        /r30ajcvHP8mlRTqq04FXWfyXrKKMcBfH3Utt+zqz4c2QoaQ9x1lQ+wDBKZQxJ8sDkTK0b28EQm
+        EfoB2b+AQjw0yYrQugDewjaWi1yZIig==
+X-Received: by 2002:a05:6870:610d:b0:183:be43:c9b6 with SMTP id s13-20020a056870610d00b00183be43c9b6mr1118726oae.4.1681293564787;
+        Wed, 12 Apr 2023 02:59:24 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Yke3E7dyjDyozy6CKNMRJ1yHALwyJpgUMrQxdhYZcZxJvUNLn3rj3fZX932Jte9GiiI4COFQ==
+X-Received: by 2002:a05:6870:610d:b0:183:be43:c9b6 with SMTP id s13-20020a056870610d00b00183be43c9b6mr1118714oae.4.1681293564521;
+        Wed, 12 Apr 2023 02:59:24 -0700 (PDT)
+Received: from localhost.localdomain (uk.sesame.canonical.com. [185.125.190.60])
+        by smtp.gmail.com with ESMTPSA id zr21-20020a056871ae1500b001765b2f6c53sm6045880oab.9.2023.04.12.02.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 02:59:23 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Paolo Pisati <paolo.pisati@canonical.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: ignore pointer types check with clang
+Date:   Wed, 12 Apr 2023 11:59:12 +0200
+Message-Id: <20230412095912.188453-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230411175423.GD23143@willie-the-truck>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 06:54:24PM +0100, Will Deacon wrote:
-> On Tue, Apr 11, 2023 at 01:44:56PM -0400, Steven Rostedt wrote:
-> > On Tue, 11 Apr 2023 18:08:08 +0100
-> > Will Deacon <will@kernel.org> wrote:
-> > 
-> > > On Tue, Apr 11, 2023 at 12:47:49PM -0400, Steven Rostedt wrote:
-> > > > On Tue, 11 Apr 2023 16:56:45 +0100
-> > > > Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >   
-> > > > > IIUC Steve was hoping to take the FUNCTION_GRAPH_RETVAL series through the
-> > > > > trace tree, and if that's still the plan, maybe both should go that way?  
-> > > > 
-> > > > The conflict is minor, and I think I prefer to still have the ARM64 bits go
-> > > > through the arm64 tree, as it will get better testing, and I don't like to
-> > > > merge branches ;-)
-> > > > 
-> > > > I've added Linus to the Cc so he knows that there will be conflicts, but as
-> > > > long as we mention it in our pull request, with a branch that includes the
-> > > > solution, it should be fine going through two different trees.  
-> > > 
-> > > If it's just the simple asm-offsets conflict that Mark mentioned, then that
-> > > sounds fine to me. However, patches 3-5 don't seem to have anything to do
-> > 
-> > I guess 3 and 5 are not, but patch 4 adds arm64 code to the samples (as
-> > it requires arch specific asm to handle the direct trampolines).
-> 
-> Sorry, yes, I was thinking of arch/arm64/ and then failed spectacularly
-> at communicating :)
-> 
-> > > with arm64 at all and I'd prefer those to go via other trees (esp. as patch
-> > > 3 is an independent -stable candidate and the last one is a bpf selftest
-> > > change which conflicts in -next).
-> > > 
-> > > So I'll queue the first two in arm64 on a branch (or-next/ftrace) based
-> > > on trace-direct-v6.3-rc3.
-> > 
-> > Are 3-5 dependent on those changes? If not, I can pull them into my tree.
-> 
-> Good question. Florent?
+Building bpf selftests with clang can trigger errors like the following:
 
-Patch 3 (the fix to the ftrace test) does not depend upon patches 1 and 2. It
-probably would've been better to queue that as a preparatory fix before the
-other changes.
+  CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
+progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assigning to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-pointer-types]
+        s = &nlk->sk;
+          ^ ~~~~~~~~
+1 error generated.
 
-Patch 4 (adding arm64 support to the samples) depends on patch 3. The arm64
-parts depends upon patch 1 to be selectable, and without patch 1 the samples
-will behave the same as before. It could be queued independently of patch 1,
-but won't have any effect until merged with patch 1.
+This is due to the fact that bpftool emits duplicate data types with
+different names in vmlinux.h (i.e., `struct sock` in this case) and
+these types, despite having a different name, represent in fact the same
+object.
 
-Patch 5 (the bpf selftest list changes) depends on patch 1 alone.
+Add -Wno-incompatible-pointer-types to CLANG_CLAGS to prevent these
+errors.
 
-Perhaps we could queue 1 and 2 via the arm64 tree, 3 and 4 via the ftrace tree,
-and follow up with patch 5 via the bpf tree after -rc1?
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+---
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Mark.
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index b677dcd0b77a..0d9ef819a065 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -356,7 +356,8 @@ BPF_CFLAGS = -g -Werror -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 		\
+ 	     -I$(abspath $(OUTPUT)/../usr/include)
+ 
+ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+-	       -Wno-compare-distinct-pointer-types
++	       -Wno-compare-distinct-pointer-types \
++	       -Wno-incompatible-pointer-types
+ 
+ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
+ $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
+-- 
+2.39.2
+
