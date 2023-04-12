@@ -2,69 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299DB6DF789
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 15:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35266DF7CC
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 15:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjDLNnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 09:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S229848AbjDLN4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 09:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjDLNnp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 09:43:45 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC2C1705;
-        Wed, 12 Apr 2023 06:43:43 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-54f21cdfadbso168802597b3.7;
-        Wed, 12 Apr 2023 06:43:43 -0700 (PDT)
+        with ESMTP id S230285AbjDLN4I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 09:56:08 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94197D9E;
+        Wed, 12 Apr 2023 06:55:50 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-54c17fa9ae8so319591937b3.5;
+        Wed, 12 Apr 2023 06:55:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681307022; x=1683899022;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TzxfLnJ6ym9jFbneOVl4Zhho/DPSUKhosX5v7vCwnaA=;
-        b=TdpjEqrR0NpixLlPAW0RsgYNPCQMUBGt2mX1/C3BRxpSWMHd2SLCmUN/mGSEy3DCZa
-         y/qDaIKj4+isxzF3AmPBwHMx9hyI8866gyUkyRyYFoPBlMXeVga7kJBLzvKyx2dc8olh
-         3iWLECLQnJkdi88kVEKljYXMdWs60do9PtZNdgxgWIABslsbn0C06VtIYqzENxtwchFv
-         6yH44t+4l5QvzbahpjdKHL7ht/zYIYgrEFv60xd5uodAYBh/DOjjIlhgicNydf4YsOKe
-         RjhwpHcrpj7bRBfGdpy0C4irvHP2U6ROBPT7sF9DTnaw6s9IcJjeDLr7uWxF8oBsibSA
-         mk1g==
+        d=gmail.com; s=20221208; t=1681307750; x=1683899750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=933rqrJ5JW6xLLolSy8p/l987jO0ZQnx8xOK/Rz6sro=;
+        b=nx7U8oZhzlF0AOp6y1Eods+RekUaFqPLuIZmfj/VtfuMR1usD9ckyk8fsIKTQctlRR
+         yizqSV0S6KBUSdxEIf6Km8flho3enwQTh83nUMtN2Co52+Rsw3kiBqZxabqKqJSXU6oz
+         riLKjD89F4/n8x5wIdmJBGzYbkIUnNCOXRKVVebc4HaCW6wvc+U4v4T24AAIXaVZCFHG
+         9MYCIyPIgVYnzHEM4WuQ1kGgEjnZTQf3kyh9IQS25FfjhPyW2ThvSCmFpl/ROZMpUzb/
+         5Vp+nfljNeilxTxvEY4hNfelFFpMmxFEKSDR0u7Jq/AOY0RGvDe3Gn9yVDdDWbwPyst8
+         0/Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681307022; x=1683899022;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TzxfLnJ6ym9jFbneOVl4Zhho/DPSUKhosX5v7vCwnaA=;
-        b=S6j0E9YCTzMVxH+oRdw4dJsc817hWNm4npgpqWV735B4D2qKaPaqCICtLbolas20aS
-         Mm6JCQwoa+KzRy5sQbopw33INSy94uLx0z6KsJ0JVWa4pWXuNBKndB2IkcHBUjC4Z9H7
-         vE/YP3xXWu5mQd+gkaUOaf0sqGgamK1R+de6+bmlUxg1tqbvWA4o3xNEUoy/5gRkcYjo
-         LsgM1AgkBoSd3e1TXu3D6fmkwI5sn/5VcaI7nxLd3I2aS/gorT8mROAjMwhJ4KctwxGA
-         5a0mrR/eOs/jsFBwD1bEbGc1vXhYkB2y9FbgJRYpOFP0HNCnlMXAH1/khfM8UMp94D6Y
-         JaYA==
-X-Gm-Message-State: AAQBX9fjJz4P6n/McCduj8lABsAATI6KUCiKlhrLwZdjkza9+OMeGg2H
-        e8eHDUKyI2+xE5cyzXCV58SjuNqZMifhAVEUkTU=
-X-Google-Smtp-Source: AKy350azWW7f0ZmfXpl9pAAyl+Im1D2Z4dViMNgFyz3rq82QFwX5mtlvNv0rh92pQZJc9jf+49iY2n7IDBPViyCBfo8=
-X-Received: by 2002:a81:a948:0:b0:543:bbdb:8c2b with SMTP id
- g69-20020a81a948000000b00543bbdb8c2bmr10753315ywh.10.1681307022595; Wed, 12
- Apr 2023 06:43:42 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1681307750; x=1683899750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=933rqrJ5JW6xLLolSy8p/l987jO0ZQnx8xOK/Rz6sro=;
+        b=nThmfCEMVlppficouA5LGUmqa/O0PisdqfdaF8Au02yhDK+4DNOwNxc7XDLaDFi43I
+         MdG4r/RUG8UVzJ6cto0CGKaLL61mBtEY+EN1c1CrjoineZQVUcbR8DQJlSmh/YIudE4t
+         26t8pVGXza6UD8DiL56w9ZShM0cY7xMrVu/KhhRhsm+iVVOU3lgNQlDJ5r2wgeu3+DW4
+         idBTJ1b1JphwNaMFXo223gsApFnKwhU6oDZnjJw/AM3CfmUwo+bYvy0VIU3dNQx/6jHK
+         qhVu0A0r1rKoqmamahtDvoyCPCsb6+PvDtczcpL0dDeAdwZ/QDYwPB0RAUa7lK/KgaSb
+         OvXg==
+X-Gm-Message-State: AAQBX9eka45ZVuGSIFFzMwLLylWrLjBbGoXjJyc0OO1Uv0o7nDFWr0+7
+        KnSfra2FnPMhCaeh3x2lS3DuQl+qNsauRvxb3r8g1Y4jUHJMeJLs
+X-Google-Smtp-Source: AKy350bAa0ZsGfxqwG6PFWeyb/56jhdj0mZnmhX4MEHqX0MJdVmwadEJGZF9WZDwBUFma1xppMcjKNdhQaRPMq0BVt8=
+X-Received: by 2002:a81:ac5c:0:b0:54f:b2a3:8441 with SMTP id
+ z28-20020a81ac5c000000b0054fb2a38441mr518540ywj.10.1681307749851; Wed, 12 Apr
+ 2023 06:55:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230410120629.642955-1-kal.conley@dectris.com>
-In-Reply-To: <20230410120629.642955-1-kal.conley@dectris.com>
+References: <20230406130205.49996-1-kal.conley@dectris.com>
+ <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
+ <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+ <875ya12phx.fsf@toke.dk>
+In-Reply-To: <875ya12phx.fsf@toke.dk>
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 12 Apr 2023 15:43:31 +0200
-Message-ID: <CAJ8uoz1CmRNMdTu3on7VL2Jrvo9z3WvdmFE_hSEiZDLiO-xtFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/4] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     Kal Conley <kal.conley@dectris.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+Date:   Wed, 12 Apr 2023 15:55:38 +0200
+Message-ID: <CAJ8uoz0arggpZdf9KPe5+pJbq_nVJUmvVryPHuwAsqswGs1LZw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Kal Cutter Conley <kal.conley@dectris.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,78 +85,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 10 Apr 2023 at 14:08, Kal Conley <kal.conley@dectris.com> wrote:
+On Wed, 12 Apr 2023 at 15:40, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
 >
-> The main purpose of this patchset is to add AF_XDP support for UMEM
-> chunk sizes > PAGE_SIZE. This is enabled for UMEMs backed by HugeTLB
-> pages.
+> Kal Cutter Conley <kal.conley@dectris.com> writes:
 >
-> Note, v5 fixes a major bug in previous versions of this patchset.
-> In particular, dma_map_page_attrs used to be called once for each
-> order-0 page in a hugepage with the assumption that returned I/O
-> addresses are contiguous within a hugepage. This assumption is incorrect
-> when an IOMMU is enabled. To fix this, v5 does DMA page accounting
-> accounting at hugepage granularity.
+> >> > > Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. Thi=
+s
+> >> > > enables sending/receiving jumbo ethernet frames up to the theoreti=
+cal
+> >> > > maxiumum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is requi=
+red
+> >> > > to consist of HugeTLB VMAs (and be hugepage aligned). Initially, o=
+nly
+> >> > > SKB mode is usable pending future driver work.
+> >> >
+> >> > Hmm, interesting. So how does this interact with XDP multibuf?
+> >>
+> >> To me it currently does not interact with mbuf in any way as it is ena=
+bled
+> >> only for skb mode which linearizes the skb from what i see.
+> >>
+> >> I'd like to hear more about Kal's use case - Kal do you use AF_XDP in =
+SKB
+> >> mode on your side?
+> >
+> > Our use-case is to receive jumbo Ethernet frames up to 9000 bytes with
+> > AF_XDP in zero-copy mode. This patchset is a step in this direction.
+> > At the very least, it lets you test out the feature in SKB mode
+> > pending future driver support. Currently, XDP multi-buffer does not
+> > support AF_XDP at all. It could support it in theory, but I think it
+> > would need some UAPI design work and a bit of implementation work.
+> >
+> > Also, I think that the approach taken in this patchset has some
+> > advantages over XDP multi-buffer:
+> >     (1) It should be possible to achieve higher performance
+> >         (a) because the packet data is kept together
+> >         (b) because you need to acquire and validate less descriptors
+> > and touch the queue pointers less often.
+> >     (2) It is a nicer user-space API.
+> >         (a) Since the packet data is all available in one linear
+> > buffer. This may even be a requirement to avoid an extra copy if the
+> > data must be handed off contiguously to other code.
+> >
+> > The disadvantage of this patchset is requiring the user to allocate
+> > HugeTLB pages which is an extra complication.
+> >
+> > I am not sure if this patchset would need to interact with XDP
+> > multi-buffer at all directly. Does anyone have anything to add here?
+>
+> Well, I'm mostly concerned with having two different operation and
+> configuration modes for the same thing. We'll probably need to support
+> multibuf for AF_XDP anyway for the non-ZC path, which means we'll need
+> to create a UAPI for that in any case. And having two APIs is just going
+> to be more complexity to handle at both the documentation and
+> maintenance level.
 
-Thank you so much Kal for implementing this feature. After you have
-fixed the three small things I had for patch #2, you have my ack for
-the whole set below. Please add it.
+One does not replace the other. We need them both, unfortunately.
+Multi-buff is great for e.g., stitching together different headers
+with the same data. Point to different buffers for the header in each
+packet but the same piece of data in all of them. This will never be
+solved with Kal's approach. We just need multi-buffer support for
+this. BTW, we are close to posting multi-buff support for AF_XDP. Just
+hang in there a little while longer while the last glitches are fixed.
+We have to stage it in two patch sets as it will be too long
+otherwise. First one will only contain improvements to the xsk
+selftests framework so that multi-buffer tests can be supported. The
+second one will be the core code and the actual multi-buffer tests. As
+for what Kal's patches are good for, please see below.
 
-For the whole set:
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> It *might* be worth it to do this if the performance benefit is really
+> compelling, but, well, you'd need to implement both and compare directly
+> to know that for sure :)
 
-It would be great if you have the time and desire to also take this to
-zero-copy mode. I have had multiple AF_XDP users mailing me privately
-that such a feature would be very useful for them. For some of them it
-was even a requirement to be able to get down to the latencies they
-were aiming for.
+The performance benefit is compelling. As I wrote in a mail to a post
+by Kal, there are users out there that state that this feature (for
+zero-copy mode nota bene) is a must for them to be able to use AF_XDP
+instead of DPDK style user-mode drivers. They have really tough
+latency requirements.
 
-> Changes since v4:
->   * Use hugepages in DMA map (fixes zero-copy mode with IOMMU).
->   * Use pool->dma_pages to check for DMA. This change is needed to avoid
->     performance regressions).
->   * Update commit message and benchmark table.
->
-> Changes since v3:
->   * Fix checkpatch.pl whitespace error.
->
-> Changes since v2:
->   * Related fixes/improvements included with v2 have been removed. These
->     changes have all been resubmitted as standalone patchsets.
->   * Minimize uses of #ifdef CONFIG_HUGETLB_PAGE.
->   * Improve AF_XDP documentation.
->   * Update benchmark table in commit message.
->
-> Changes since v1:
->   * Add many fixes/improvements to the XSK selftests.
->   * Add check for unaligned descriptors that overrun UMEM.
->   * Fix compile errors when CONFIG_HUGETLB_PAGE is not set.
->   * Fix incorrect use of _Static_assert.
->   * Update AF_XDP documentation.
->   * Rename unaligned 9K frame size test.
->   * Make xp_check_dma_contiguity less conservative.
->   * Add more information to benchmark table.
->
-> Thanks to Magnus Karlsson for all his support!
->
-> Happy Easter!
->
-> Kal Conley (4):
->   xsk: Use pool->dma_pages to check for DMA
->   xsk: Support UMEM chunk_size > PAGE_SIZE
->   selftests: xsk: Use hugepages when umem->frame_size > PAGE_SIZE
->   selftests: xsk: Add tests for 8K and 9K frame sizes
->
->  Documentation/networking/af_xdp.rst      | 36 ++++++++++------
->  include/net/xdp_sock.h                   |  2 +
->  include/net/xdp_sock_drv.h               | 12 ++++++
->  include/net/xsk_buff_pool.h              | 12 +++---
->  net/xdp/xdp_umem.c                       | 55 +++++++++++++++++++-----
->  net/xdp/xsk_buff_pool.c                  | 43 ++++++++++--------
->  tools/testing/selftests/bpf/xskxceiver.c | 27 +++++++++++-
->  tools/testing/selftests/bpf/xskxceiver.h |  2 +
->  8 files changed, 142 insertions(+), 47 deletions(-)
->
-> --
-> 2.39.2
+
+
+> -Toke
 >
