@@ -2,67 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13316DFD2C
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 20:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550DD6DFD37
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 20:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjDLSB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 14:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
+        id S229708AbjDLSGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 14:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjDLSBV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 14:01:21 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4272B6E95
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:01:18 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o2-20020a17090a0a0200b00246da660bd2so4653433pjo.0
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:01:18 -0700 (PDT)
+        with ESMTP id S229492AbjDLSGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 14:06:36 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E953CE77
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:06:34 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-54c0c86a436so353935087b3.6
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1681322478; x=1683914478;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0jtJZ0Cr/j5wJPShgJjoWc8vomxLbua/Kr28TIzH0vY=;
-        b=MbeYxqFy75/BFGkk+wYaSuWMJ3hJSok+ISwKN0Z1ww+RGm2O/xcK0W/DfLA1x+rnYx
-         CNO94TRSyAFP9e/nTgGvTeKjyms5KcctT+CTD7jv98XRod1YAyRzHonlvY4+gVSeVYfg
-         S62u1nHgzFF9tuF9HKLtbbWzGmibbB9Lvf9DQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681322478; x=1683914478;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1681322794; x=1683914794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0jtJZ0Cr/j5wJPShgJjoWc8vomxLbua/Kr28TIzH0vY=;
-        b=aCWaocqDCD3MRsPDCBEeJT7BR+OJMpCKM9kswfy8IYce9vBtwMS/9imjTF90ou+0gx
-         WZRyuWKCi22VJI8AFmKxKzZzIpnxnumFIwPpwubsL3LOJNgiyq4dMj5zELQILY+QCUIO
-         JAl+kDMEbISE9HEV7aPaXGTHasQu7z7ELKctdRYogRSAM50NZy1vjPxKVBGjGq/i/H5n
-         XvhQ/TqaW79tFgINVUQJ5W+4KB3aT4iX1cRSYFap0EsNavAx7aISnhqNVnP2PEi1EQmB
-         lbTgdPzEpLtiSerDmOEviH77K0fEWScnd76hr3DkuYK4uQVxytNWZ9Y2Af+xmKXP1W26
-         rOlQ==
-X-Gm-Message-State: AAQBX9dORVRgcofBJm3qpH52hez6Vpcefcg5QkpQymk5KBfe+Ft+m6c+
-        knfpmlOtZF1o4yHYKEcVegRdBZov8AmW4ibdIa0=
-X-Google-Smtp-Source: AKy350bsX5Eh0bfcX6a9ejRaIJb8WEHDOer/Jwh6RXonUnh6M/muoeaiHvJ61VZy8c6T3fRYSR4u7w==
-X-Received: by 2002:a17:902:d482:b0:1a6:4c2b:9e7f with SMTP id c2-20020a170902d48200b001a64c2b9e7fmr5212982plg.1.1681322477639;
-        Wed, 12 Apr 2023 11:01:17 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170902b70d00b001a1d553de0fsm11905029pls.271.2023.04.12.11.01.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 11:01:17 -0700 (PDT)
-Message-ID: <6436f1ed.170a0220.6cc4d.79f3@mx.google.com>
-X-Google-Original-Message-ID: <202304121054.@keescook>
-Date:   Wed, 12 Apr 2023 11:01:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kpsingh@kernel.org, paul@paul-moore.com,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/8] bpf: centralize permissions checks for all
- BPF map types
-References: <20230412043300.360803-1-andrii@kernel.org>
- <20230412043300.360803-4-andrii@kernel.org>
+        bh=zOpur0z+ZUUUDWNeIp4MQxAonJUSL+1bv5gFocfKWCI=;
+        b=PxWnHbD6Ws3W1Gz8QcTv7ijtBMErQWuPurVBvwdlR5YTLZt4Dto7gJJxu/QUEnKriw
+         1EnSZWBdOpDL84FhNN0xUmkqwZ2dFJ+qj3Vn5Eo4BZKHkBowACbYxK2pUBjc485b3hrw
+         7YC/CDhINtaaFrGNNh9Xrer/a/55WhJyhbv0OrB7DbF310MO6Hgf6oVycO1gAWptPJ+E
+         UZijXb7vV/SsFY5bzTRiaag2TmqrhaujlGAC22kaCcDvOZe2kp/FABUVcXxDarh9CFCw
+         Ci8l//6nR9RCYDbcubv9Xjh7dQw0M/Scz95Yf24mOIflPBZq4OKDFcUnWCZKy9+hckKY
+         KX9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681322794; x=1683914794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zOpur0z+ZUUUDWNeIp4MQxAonJUSL+1bv5gFocfKWCI=;
+        b=aPadG8ntnEYOJ3sDVouQ6bmTw+Yti20diIycVWRe3yVrnG3DZdyVC9u1wDoHt4fk9z
+         RUrmXoWsNCRIQNrxSB/cjGLksksI+2V6ZNU6AluE/4zhpgbjEBzHc2b0m5vDoEAk6AMF
+         u/7+4C7IH+NetlOXbaT6v3rOf9OZalaVHItceQtFDCrPtSVz4brlfUK6senhfsv6LZH4
+         +OgZqvRZRcUTYRMsW4TJSLa7jEQs0hN1NOOpmqrfNbXWWKMUwJFh+NYd/dtaZOfRHONs
+         h0WCifJK14wHavg16ab8joOqxtmFHoKr7nVgI2xBMDvNbtEQ1aqVPFPw+bzdzrEtb78P
+         LCUg==
+X-Gm-Message-State: AAQBX9cxihpDaHTCAcfKVd1SiZtEu5TLoz0u2pu+EHpCurvJz9dn8nea
+        iXmaG8CkQUe9/JQq3LxIXiDAtVSNrZMWiPt3uZqo
+X-Google-Smtp-Source: AKy350Ybwq+KRN5bFKlKsx/pmdDpoZPyi/qw9onZN+iQFEKvChuLI1f8Exzmju5lj8P+PDvCDwvwr+EWf6eCQju/dJU=
+X-Received: by 2002:a81:a789:0:b0:54f:aa4b:100c with SMTP id
+ e131-20020a81a789000000b0054faa4b100cmr1178701ywh.8.1681322794078; Wed, 12
+ Apr 2023 11:06:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230412043300.360803-4-andrii@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <20230412043300.360803-1-andrii@kernel.org> <CAHC9VhQHmdZYnR=+rX-3FcRh127mhJt=jAnototfTiuSoOTptg@mail.gmail.com>
+ <6436eea2.170a0220.97ead.52a8@mx.google.com>
+In-Reply-To: <6436eea2.170a0220.97ead.52a8@mx.google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 12 Apr 2023 14:06:23 -0400
+Message-ID: <CAHC9VhR6ebsxtjSG8-fm7e=HU+srmziVuO6MU+pMpeSBv4vN+A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,195 +70,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 09:32:55PM -0700, Andrii Nakryiko wrote:
-> This allows to do more centralized decisions later on, and generally
-> makes it very explicit which maps are privileged and which are not.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> [...]
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 00c253b84bf5..c69db80fc947 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -422,12 +422,6 @@ static int htab_map_alloc_check(union bpf_attr *attr)
->  	BUILD_BUG_ON(offsetof(struct htab_elem, fnode.next) !=
->  		     offsetof(struct htab_elem, hash_node.pprev));
->  
-> -	if (lru && !bpf_capable())
-> -		/* LRU implementation is much complicated than other
-> -		 * maps.  Hence, limit to CAP_BPF.
-> -		 */
-> -		return -EPERM;
-> -
+On Wed, Apr 12, 2023 at 1:47=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+> On Wed, Apr 12, 2023 at 12:49:06PM -0400, Paul Moore wrote:
+> > On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andrii@kernel=
+.org> wrote:
+> > >
+> > > Add new LSM hooks, bpf_map_create_security and bpf_btf_load_security,=
+ which
+> > > are meant to allow highly-granular LSM-based control over the usage o=
+f BPF
+> > > subsytem. Specifically, to control the creation of BPF maps and BTF d=
+ata
+> > > objects, which are fundamental building blocks of any modern BPF appl=
+ication.
+> > >
+> > > These new hooks are able to override default kernel-side CAP_BPF-base=
+d (and
+> > > sometimes CAP_NET_ADMIN-based) permission checks. It is now possible =
+to
+> > > implement LSM policies that could granularly enforce more restriction=
+s on
+> > > a per-BPF map basis (beyond checking coarse CAP_BPF/CAP_NET_ADMIN
+> > > capabilities), but also, importantly, allow to *bypass kernel-side
+> > > enforcement* of CAP_BPF/CAP_NET_ADMIN checks for trusted applications=
+ and use
+> > > cases.
+> >
+> > One of the hallmarks of the LSM has always been that it is
+> > non-authoritative: it cannot unilaterally grant access, it can only
+> > restrict what would have been otherwise permitted on a traditional
+> > Linux system.  Put another way, a LSM should not undermine the Linux
+> > discretionary access controls, e.g. capabilities.
+> >
+> > If there is a problem with the eBPF capability-based access controls,
+> > that problem needs to be addressed in how the core eBPF code
+> > implements its capability checks, not by modifying the LSM mechanism
+> > to bypass these checks.
+>
+> I think semantics matter here. I wouldn't view this as _bypassing_
+> capability enforcement: it's just more fine-grained access control.
+>
+> For example, in many places we have things like:
+>
+>         if (!some_check(...) && !capable(...))
+>                 return -EPERM;
+>
+> I would expect this is a similar logic. An operation can succeed if the
+> access control requirement is met. The mismatch we have through-out the
+> kernel is that capability checks aren't strictly done by LSM hooks. And
+> this series conceptually, I think, doesn't violate that -- it's changing
+> the logic of the capability checks, not the LSM (i.e. there no LSM hooks
+> yet here).
 
-The LRU part of this check gets lost, doesn't it? More specifically,
-doesn't this make the security check for htab_map_alloc_check() more
-strict than before? (If that's okay, please mention the logical change
-in the commit log.)
+Patch 04/08 creates a new LSM hook, security_bpf_map_create(), which
+when it returns a positive value "bypasses kernel checks".  The patch
+isn't based on either Linus' tree or the LSM tree, I'm guessing it is
+based on a eBPF tree, so I can't say with 100% certainty that it is
+bypassing a capability check, but the description claims that to be
+the case.
 
-> [...]
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a090737f98ea..cbea4999e92f 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1101,17 +1101,6 @@ static int map_create(union bpf_attr *attr)
->  	int f_flags;
->  	int err;
->  
-> -	/* Intent here is for unprivileged_bpf_disabled to block key object
-> -	 * creation commands for unprivileged users; other actions depend
-> -	 * of fd availability and access to bpffs, so are dependent on
-> -	 * object creation success.  Capabilities are later verified for
-> -	 * operations such as load and map create, so even with unprivileged
-> -	 * BPF disabled, capability checks are still carried out for these
-> -	 * and other operations.
-> -	 */
-> -	if (!bpf_capable() && sysctl_unprivileged_bpf_disabled)
-> -		return -EPERM;
-> -
+Regardless of how you want to spin this, I'm not supportive of a LSM
+hook which allows a LSM to bypass a capability check.  A LSM hook can
+be used to provide additional access control restrictions beyond a
+capability check, but a LSM hook should never be allowed to overrule
+an access denial due to a capability check.
 
-Given that this was already performing a centralized capability check,
-why were the individual functions doing checks before too?
+> The reason CAP_BPF was created was because there was nothing else that
+> would be fine-grained enough at the time.
 
-(I'm wondering if the individual functions remain the better place to do
-this checking?)
+The LSM layer predates CAP_BPF, and one could make a very solid
+argument that one of the reasons LSMs exist is to provide
+supplementary controls due to capability-based access controls being a
+poor fit for many modern use cases.
 
->  	err = CHECK_ATTR(BPF_MAP_CREATE);
->  	if (err)
->  		return -EINVAL;
-> @@ -1155,6 +1144,65 @@ static int map_create(union bpf_attr *attr)
->  		ops = &bpf_map_offload_ops;
->  	if (!ops->map_mem_usage)
->  		return -EINVAL;
-> +
-> +	/* Intent here is for unprivileged_bpf_disabled to block key object
-> +	 * creation commands for unprivileged users; other actions depend
-> +	 * of fd availability and access to bpffs, so are dependent on
-> +	 * object creation success.  Capabilities are later verified for
-> +	 * operations such as load and map create, so even with unprivileged
-> +	 * BPF disabled, capability checks are still carried out for these
-> +	 * and other operations.
-> +	 */
-> +	if (!bpf_capable() && sysctl_unprivileged_bpf_disabled)
-> +		return -EPERM;
-> +
-> +	/* check privileged map type permissions */
-> +	switch (map_type) {
-> +	case BPF_MAP_TYPE_SK_STORAGE:
-> +	case BPF_MAP_TYPE_INODE_STORAGE:
-> +	case BPF_MAP_TYPE_TASK_STORAGE:
-> +	case BPF_MAP_TYPE_CGRP_STORAGE:
-> +	case BPF_MAP_TYPE_BLOOM_FILTER:
-> +	case BPF_MAP_TYPE_LPM_TRIE:
-> +	case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
-> +	case BPF_MAP_TYPE_STACK_TRACE:
-> +	case BPF_MAP_TYPE_QUEUE:
-> +	case BPF_MAP_TYPE_STACK:
-> +	case BPF_MAP_TYPE_LRU_HASH:
-> +	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-> +	case BPF_MAP_TYPE_STRUCT_OPS:
-> +	case BPF_MAP_TYPE_CPUMAP:
-> +		if (!bpf_capable())
-> +			return -EPERM;
-> +		break;
-> +	case BPF_MAP_TYPE_SOCKMAP:
-> +	case BPF_MAP_TYPE_SOCKHASH:
-> +	case BPF_MAP_TYPE_DEVMAP:
-> +	case BPF_MAP_TYPE_DEVMAP_HASH:
-> +	case BPF_MAP_TYPE_XSKMAP:
-> +		if (!capable(CAP_NET_ADMIN))
-> +			return -EPERM;
-> +		break;
-> +	case BPF_MAP_TYPE_ARRAY:
-> +	case BPF_MAP_TYPE_PERCPU_ARRAY:
-> +	case BPF_MAP_TYPE_PROG_ARRAY:
-> +	case BPF_MAP_TYPE_PERF_EVENT_ARRAY:
-> +	case BPF_MAP_TYPE_CGROUP_ARRAY:
-> +	case BPF_MAP_TYPE_ARRAY_OF_MAPS:
-> +	case BPF_MAP_TYPE_HASH:
-> +	case BPF_MAP_TYPE_PERCPU_HASH:
-> +	case BPF_MAP_TYPE_HASH_OF_MAPS:
-> +	case BPF_MAP_TYPE_RINGBUF:
-> +	case BPF_MAP_TYPE_USER_RINGBUF:
-> +	case BPF_MAP_TYPE_CGROUP_STORAGE:
-> +	case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
-> +		/* unprivileged */
-> +		break;
-> +	default:
-> +		WARN(1, "unsupported map type %d", map_type);
-> +		return -EPERM;
-
-Thank you for making sure this fails safe! :)
-
-> +	}
-> +
->  	map = ops->map_alloc(attr);
->  	if (IS_ERR(map))
->  		return PTR_ERR(map);
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 7c189c2e2fbf..4b67bb5e7f9c 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -32,8 +32,6 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
->  {
->  	struct bpf_stab *stab;
->  
-> -	if (!capable(CAP_NET_ADMIN))
-> -		return ERR_PTR(-EPERM);
->  	if (attr->max_entries == 0 ||
->  	    attr->key_size    != 4 ||
->  	    (attr->value_size != sizeof(u32) &&
-> @@ -1085,8 +1083,6 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
->  	struct bpf_shtab *htab;
->  	int i, err;
->  
-> -	if (!capable(CAP_NET_ADMIN))
-> -		return ERR_PTR(-EPERM);
->  	if (attr->max_entries == 0 ||
->  	    attr->key_size    == 0 ||
->  	    (attr->value_size != sizeof(u32) &&
-> diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-> index 2c1427074a3b..e1c526f97ce3 100644
-> --- a/net/xdp/xskmap.c
-> +++ b/net/xdp/xskmap.c
-> @@ -5,7 +5,6 @@
->  
->  #include <linux/bpf.h>
->  #include <linux/filter.h>
-> -#include <linux/capability.h>
->  #include <net/xdp_sock.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> @@ -68,9 +67,6 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
->  	int numa_node;
->  	u64 size;
->  
-> -	if (!capable(CAP_NET_ADMIN))
-> -		return ERR_PTR(-EPERM);
-> -
->  	if (attr->max_entries == 0 || attr->key_size != 4 ||
->  	    attr->value_size != 4 ||
->  	    attr->map_flags & ~(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY))
-> diff --git a/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-> index 8383a99f610f..0adf8d9475cb 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-> @@ -171,7 +171,11 @@ static void test_unpriv_bpf_disabled_negative(struct test_unpriv_bpf_disabled *s
->  				prog_insns, prog_insn_cnt, &load_opts),
->  		  -EPERM, "prog_load_fails");
->  
-> -	for (i = BPF_MAP_TYPE_HASH; i <= BPF_MAP_TYPE_BLOOM_FILTER; i++)
-> +	/* some map types require particular correct parameters which could be
-> +	 * sanity-checked before enforcing -EPERM, so only validate that
-> +	 * the simple ARRAY and HASH maps are failing with -EPERM
-> +	 */
-> +	for (i = BPF_MAP_TYPE_HASH; i <= BPF_MAP_TYPE_ARRAY; i++)
->  		ASSERT_EQ(bpf_map_create(i, NULL, sizeof(int), sizeof(int), 1, NULL),
->  			  -EPERM, "map_create_fails");
->  
-> -- 
-> 2.34.1
-> 
-
--- 
-Kees Cook
+--
+paul-moore.com
