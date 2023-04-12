@@ -2,77 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AD86DFE27
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 20:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5606DFE53
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 21:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjDLS5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 14:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
+        id S229659AbjDLTFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 15:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjDLS5c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 14:57:32 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F10C72AA
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:57:05 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id bv65so6302316pgb.8
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 11:57:05 -0700 (PDT)
+        with ESMTP id S229593AbjDLTFO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 15:05:14 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4D17EF4;
+        Wed, 12 Apr 2023 12:04:47 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ga37so31775586ejc.0;
+        Wed, 12 Apr 2023 12:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681325821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sHYXkYaef6xMNFmaZnkKzH+IKK7bhNbi9t2F6EAC6M8=;
-        b=TuoQ6JVKp2k/cFPXNyeuO/F/TOiztKMjN9sXg8H64JYl6kg3bdh2aWRaJL6RRsNcKW
-         DJOzoEtWM9RiDETkmdPHNEJQUN+f4QvXeR28ACr0ns+ASVmBQTaFxSYOJguvjPSXOf/L
-         1A4RSQ6Q16cm87R23Tqns/d9AfqB7Tb41aTuaFulG/wxXXKGEK8DcriRQVZne1xIxoIa
-         wrOUXDRrrYKApE4p6AVzkwq942bKDane/X3ICADPACDDMki5/AEJkV0+9eHSOdLC/1ni
-         j8Y+H2FjR7EyDfl1hNal8++dP0IIQNIgQHybab0EHhxH23u5mcmzQakJzPmfMb5rsN4f
-         FtUw==
+        d=gmail.com; s=20221208; t=1681326278; x=1683918278;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GdWT1yIsNgL1eH2gkAxj2WxUd3oDPoUVsi6y2aWeInU=;
+        b=V+L1HItt+DJdcISnhvZu6Aro028t6e5wOS318MSKl39rYgx5dxfWbPzAwkMzpOwHZX
+         ZpqmyR+u7Orbq8yW+YuydeYqnBVpqsF1i5wn62TalO84JMgdda4wEho5koYUsklS8Yx5
+         mJo6bWRE9PAQ2SgVRs+PoLEjpsXc52/8igX2BvAltLKRqx8hoOuUZdLdVj8gUVqfCvpw
+         P/ALvU7gf0BP4ioI106e5CYH6h71cNlAo2J74EScYPuRTwsyHLQexS4rmlqbfs9VDyLC
+         jaHd85kMR9ZZEmEiFPdcEKGvwlc+mdHbLAlooBtiBqfHogmFhIwx6Gvx4Y9XrRZ3EWB/
+         lA2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681325821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sHYXkYaef6xMNFmaZnkKzH+IKK7bhNbi9t2F6EAC6M8=;
-        b=evl2bDYjKbGHsj3Adr1WE6Nz0KQsEWBHR2G76FpZnjE2blgv7tfGK6kIkiBbmlfTtd
-         TPUGKwARw0UsrjrPRwHPacAkEUiltYXyLHwresdbFCLc2z4UUwDV0aGkDwIfS+pZNSg3
-         M5/hR2qoh1tz8dayr7xEiJmPVJAs5Yo7TqQJOpsgcxvBPu9PQq+1rRN4bT8i3JJVoo+s
-         MDe33JMKqnn91aEYY3W36lkNBTbTaWc0YOcPcFmMcN7yiBXlIyfOgogiHzyxOivmLTa4
-         IMA4Xyu1iHXE1Yj0smCjvbTk8Sho/p6hh2Vo0aYX8G4C5rvH+SrgxiYkuhXo84t3MEy+
-         GECw==
-X-Gm-Message-State: AAQBX9eTT+1938Bruh4tHRd2Z2Ip7UpVwQbQhkbSvkA1xiHRpZsn6L/Y
-        CbgEMc9zIL0leRgw4UYW8UQucLdbGMTCLYsjEmwvdg==
-X-Google-Smtp-Source: AKy350asSOWvzYYWk3xZPCNn85M1GUh5aXVd/UqL2CaLUxUIrW5LUiHM1WCh8gu/XhXgKmAXccrklI07joG66CYJ6E4=
-X-Received: by 2002:a65:4681:0:b0:513:6b94:8907 with SMTP id
- h1-20020a654681000000b005136b948907mr880151pgr.1.1681325820765; Wed, 12 Apr
- 2023 11:57:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681326278; x=1683918278;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GdWT1yIsNgL1eH2gkAxj2WxUd3oDPoUVsi6y2aWeInU=;
+        b=Y69SHiGhpTD9C3Yz0TQmtz/zvIirKiXQZSflAfS3NWHHOg/92NTpfHyWCrbyWQhs/s
+         GC8v0UEt32d6p78Lk+cBplFC7MdH9ale1bKA2yifJRqWNG14rYtMkNBQGfOdpT0tSrG0
+         1JE48aqfjoD03B3PnhJDrlG30WdcVtmrX+saECXFE3OqVywpQb0/J0BC88b22yhoj6Hh
+         YRamXnC/o3gSj+WjjNtXIXxrexuSqXz5AusAx62ditraus6OexQIFacYMYmICfyvcyjl
+         CSH1t+D2Dvth9B7Cgv8lBbEpnAY13XQ2QabD6Z/escvuc/Ska9xVG9yrBWulkLz9t1nV
+         SUpA==
+X-Gm-Message-State: AAQBX9cOFqUtJvcyaOm+R/8ILR6O3xGVzMUlulhi7JZqE2kA7SZ5mNPM
+        yKGT7OuCwvz6E7j9sBkMZ58=
+X-Google-Smtp-Source: AKy350afwFML+ThFkw9PgmWYTJ6p7J5K9ezPoqtwyWxtpTR7PdWWubEPC/UdO+KsY+bBdSOWuEl2Sg==
+X-Received: by 2002:a17:906:3954:b0:8b1:77bf:3bdd with SMTP id g20-20020a170906395400b008b177bf3bddmr3172352eje.36.1681326278010;
+        Wed, 12 Apr 2023 12:04:38 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id tf8-20020a1709078d8800b0094e4e3344f6sm1242497ejc.164.2023.04.12.12.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 12:04:37 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 12 Apr 2023 21:04:30 +0200
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        alexei.starovoitov@gmail.com, linux-trace-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] tracing: Refuse fprobe if RCU is not watching
+Message-ID: <ZDcAvr0JuNE445FZ@krava>
+References: <20230409225414.2b66610f4145ade7b09339bb@kernel.org>
+ <CALOAHbBQFSm=rXvzJJnOqrK04f9j1opbgRoYKwSUAd5g64r-jA@mail.gmail.com>
+ <20230409220239.0fcf6738@rorschach.local.home>
+ <CALOAHbC5UvoU2EUM+YzNSaJyNNq_OOXYZYcqXu6nUfB0AyX0bA@mail.gmail.com>
+ <20230410063046.391dd2bd@rorschach.local.home>
+ <CALOAHbCXgksmdYRRxrjVrW1-AWiTr1u24yJAdh2+0ou15vvKiA@mail.gmail.com>
+ <20230410101224.7e3b238c@gandalf.local.home>
+ <CALOAHbBQgPqhBhOVukWG9FNL23m3EOFm1QN6+pi5SN8cP2ztBw@mail.gmail.com>
+ <ZDSBD6UvUdA73TSv@krava>
+ <CALOAHbACzCwu-VeMczEJw8A4WFgkL-uQDS1NkcVR2pqEMZyAQQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <168132448251.317773.2526885806604122764.stgit@firesoul> <168132451707.317773.15960209122204110352.stgit@firesoul>
-In-Reply-To: <168132451707.317773.15960209122204110352.stgit@firesoul>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 12 Apr 2023 11:56:49 -0700
-Message-ID: <CAKH8qBu0B1tQBKtGp0-n8eet+4rQRTPE3rrCr5Ve0CG6uYR7Kg@mail.gmail.com>
-Subject: Re: [PATCH bpf V9 1/6] selftests/bpf: xdp_hw_metadata remove
- bpf_printk and add counters
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
-        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbACzCwu-VeMczEJw8A4WFgkL-uQDS1NkcVR2pqEMZyAQQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,133 +87,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 11:35=E2=80=AFAM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> The tool xdp_hw_metadata can be used by driver developers
-> implementing XDP-hints metadata kfuncs.
->
-> Remove all bpf_printk calls, as the tool already transfers all the
-> XDP-hints related information via metadata area to AF_XDP
-> userspace process.
->
-> Add counters for providing remaining information about failure and
-> skipped packet events.
->
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+On Wed, Apr 12, 2023 at 10:37:07PM +0800, Yafang Shao wrote:
+> On Tue, Apr 11, 2023 at 5:35 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Mon, Apr 10, 2023 at 10:20:31PM +0800, Yafang Shao wrote:
+> > > On Mon, Apr 10, 2023 at 10:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > >
+> > > > On Mon, 10 Apr 2023 21:56:16 +0800
+> > > > Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >
+> > > > > Thanks for your explanation again.
+> > > > > BPF trampoline is a little special. It includes three parts, as follows,
+> > > > >
+> > > > >     ret = __bpf_prog_enter();
+> > > > >     if (ret)
+> > > > >         prog->bpf_func();
+> > > > >      __bpf_prog_exit();
+> > > > >
+> > > > > migrate_disable() is called in __bpf_prog_enter() and migrate_enable()
+> > > > > in __bpf_prog_exit():
+> > > > >
+> > > > >     ret = __bpf_prog_enter();
+> > > > >                 migrate_disable();
+> > > > >     if (ret)
+> > > > >         prog->bpf_func();
+> > > > >      __bpf_prog_exit();
+> > > > >           migrate_enable();
+> > > > >
+> > > > > That said, if we haven't executed migrate_disable() in
+> > > > > __bpf_prog_enter(), we shouldn't execute migrate_enable() in
+> > > > > __bpf_prog_exit().
+> > > > > Can ftrace_test_recursion_trylock() be applied to this pattern ?
+> > > >
+> > > > Yes, it can! And in this you would need to not call migrate_enable()
+> > > > because if the trace_recursion_trylock() failed, it would prevent
+> > > > migrate_disable() from being called (and should not let the bpf_func() from
+> > > > being called either. And then the migrate_enable in __bpf_prog_exit() would
+> > > > need to know not to call migrate_enable() which checking the return value
+> > > > of ftrace_test_recursion_trylock() would give the same value as what the
+> > > > one before migrate_disable() had.
+> > > >
+> > >
+> > > That needs some changes in invoke_bpf_prog() in files
+> > > arch/${ARCH}/net/bpf_jit_comp.c.
+> > > But I will have a try. We can then remove the bpf_prog->active, that
+> > > will be a good cleanup as well.
+> >
+> > I was wondering if it's worth the effort to do that just to be able to attach
+> > bpf prog to preempt_count_add/sub and was going to suggest to add them to
+> > btf_id_deny as Steven pointed out earlier as possible solution
+> >
+> > but if that might turn out as alternative to prog->active, that'd be great
+> >
+> 
+> I think we can do it in two steps,
+> 1. Fix this crash by adding preempt_count_{sub,add} into btf_id deny list.
+>    The stable kernel may need this fix, so we'd better make it
+> simpler, then it can be backported easily.
+> 
+> 2. Replace prog->active with the new
+> test_recursion_try_{acquire,release} introduced by Steven
+>    That's an improvement. We can do it in a separate patchset.
+> 
+> WDYT?
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+sounds good
 
-nit: maybe those ++ should be __sync_add_and_fetch instead? Then you
-should be able to drop volatile..
+> 
+> BTW, maybe we need to add a new fentry test case to attach all
+> available FUNCs parsed from /sys/kernel/btf/vmlinux.
 
-> ---
->  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   36 ++++++++++++--=
-------
->  tools/testing/selftests/bpf/xdp_hw_metadata.c      |    4 ++
->  2 files changed, 24 insertions(+), 16 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/=
-testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 4c55b4d79d3d..8a042343cb0c 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -12,6 +12,10 @@ struct {
->         __type(value, __u32);
->  } xsk SEC(".maps");
->
-> +volatile __u64 pkts_skip =3D 0;
-> +volatile __u64 pkts_fail =3D 0;
-> +volatile __u64 pkts_redir =3D 0;
-> +
->  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
->                                          __u64 *timestamp) __ksym;
->  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
-> @@ -26,7 +30,7 @@ int rx(struct xdp_md *ctx)
->         struct udphdr *udp =3D NULL;
->         struct iphdr *iph =3D NULL;
->         struct xdp_meta *meta;
-> -       int ret;
-> +       int err;
->
->         data =3D (void *)(long)ctx->data;
->         data_end =3D (void *)(long)ctx->data_end;
-> @@ -46,17 +50,20 @@ int rx(struct xdp_md *ctx)
->                         udp =3D NULL;
->         }
->
-> -       if (!udp)
-> +       if (!udp) {
-> +               pkts_skip++;
->                 return XDP_PASS;
-> +       }
->
-> -       if (udp->dest !=3D bpf_htons(9091))
-> +       /* Forwarding UDP:9091 to AF_XDP */
-> +       if (udp->dest !=3D bpf_htons(9091)) {
-> +               pkts_skip++;
->                 return XDP_PASS;
-> +       }
->
-> -       bpf_printk("forwarding UDP:9091 to AF_XDP");
-> -
-> -       ret =3D bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
-> -       if (ret !=3D 0) {
-> -               bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
-> +       err =3D bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
-> +       if (err) {
-> +               pkts_fail++;
->                 return XDP_PASS;
->         }
->
-> @@ -65,20 +72,19 @@ int rx(struct xdp_md *ctx)
->         meta =3D data_meta;
->
->         if (meta + 1 > data) {
-> -               bpf_printk("bpf_xdp_adjust_meta doesn't appear to work");
-> +               pkts_fail++;
->                 return XDP_PASS;
->         }
->
-> -       if (!bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp))
-> -               bpf_printk("populated rx_timestamp with %llu", meta->rx_t=
-imestamp);
-> -       else
-> +       err =3D bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp);
-> +       if (err)
->                 meta->rx_timestamp =3D 0; /* Used by AF_XDP as not avail =
-signal */
->
-> -       if (!bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash))
-> -               bpf_printk("populated rx_hash with %u", meta->rx_hash);
-> -       else
-> +       err =3D bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash);
-> +       if (err)
->                 meta->rx_hash =3D 0; /* Used by AF_XDP as not avail signa=
-l */
->
-> +       pkts_redir++;
->         return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->  }
->
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testin=
-g/selftests/bpf/xdp_hw_metadata.c
-> index 1c8acb68b977..3b942ef7297b 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -212,7 +212,9 @@ static int verify_metadata(struct xsk *rx_xsk, int rx=
-q, int server_fd)
->         while (true) {
->                 errno =3D 0;
->                 ret =3D poll(fds, rxq + 1, 1000);
-> -               printf("poll: %d (%d)\n", ret, errno);
-> +               printf("poll: %d (%d) skip=3D%llu fail=3D%llu redir=3D%ll=
-u\n",
-> +                      ret, errno, bpf_obj->bss->pkts_skip,
-> +                      bpf_obj->bss->pkts_fail, bpf_obj->bss->pkts_redir)=
-;
->                 if (ret < 0)
->                         break;
->                 if (ret =3D=3D 0)
->
->
+that might be tricky because we don't have multi trampoline attach
+support at the moment, so it will take forever
+
+jirka
