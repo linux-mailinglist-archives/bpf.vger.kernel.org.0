@@ -2,115 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECA56DEDE3
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 10:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C2D6DF0B4
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbjDLIgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 04:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S230321AbjDLJnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 05:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbjDLIgV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 04:36:21 -0400
-Received: from out199-3.us.a.mail.aliyun.com (out199-3.us.a.mail.aliyun.com [47.90.199.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E696EAF;
-        Wed, 12 Apr 2023 01:34:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VfvlHTJ_1681288402;
-Received: from 30.221.150.135(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VfvlHTJ_1681288402)
-          by smtp.aliyun-inc.com;
-          Wed, 12 Apr 2023 16:33:23 +0800
-Message-ID: <acb77026-c8eb-39e8-b3a8-23c348cbd60c@linux.alibaba.com>
-Date:   Wed, 12 Apr 2023 16:33:21 +0800
+        with ESMTP id S230099AbjDLJnT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 05:43:19 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A115AD;
+        Wed, 12 Apr 2023 02:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681292593; x=1712828593;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jPs+CdsG5on+mgZJH/qHDWHeHVfbVe0iJzdrJeUiuEo=;
+  b=Q4srKryqt9x8Xfi43IgKVj58SLGvVdp8XBfym17yN9WabCarhhpPrdp+
+   fEIhePpLhG60Y9n8m5qWZJ3SWR3+vBQ80+krs8E0/oRqKh3Jz4arINf1g
+   t/GjACnaNcRdJtmbPm2AjDyokB6ZgQqWlyfJw7D0619jQimEDg0GF+yNC
+   sXl+9znUyEjCmumsNNrFTvmu6y8gJYF7lDemyMUkF/UrtSRXPitmp529u
+   wPBLSb7LfGAFPs8d2ShqwrBJP9vBrN+B0osPUJI6Yfet6Qbz+aBkIx2YY
+   0Fdf+KkpjBSNYKO3Ajlsf6SBLx30xRuMhkVUXB2mzv6FhUe1+14qW5L+Y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="346526307"
+X-IronPort-AV: E=Sophos;i="5.98,338,1673942400"; 
+   d="scan'208";a="346526307"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2023 02:43:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="682430883"
+X-IronPort-AV: E=Sophos;i="5.98,338,1673942400"; 
+   d="scan'208";a="682430883"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orsmga007.jf.intel.com with ESMTP; 12 Apr 2023 02:43:06 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net-next v3 0/4] XDP Rx HWTS metadata for stmmac driver
+Date:   Wed, 12 Apr 2023 17:42:31 +0800
+Message-Id: <20230412094235.589089-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [RFC PATCH bpf-next 0/5] net/smc: Introduce BPF injection
- capability
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1680795034-86384-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1680795034-86384-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi everyone,
+Implemented XDP receive hardware timestamp metadata for stmmac driver.
 
-It's seems the RFC patch been hanging for some time.  I would like to 
-politely inquire if there are any suggestions or criticisms.
-Compared to previous patches, this patch has several main features:
+This patchset is tested with tools/testing/selftests/bpf/xdp_hw_metadata.
+Below are the test steps and results.
 
-1. Allow registration of multiple negotiators, each SMC negotiator has a 
-name and can be indexed that name
-2. no read/write lock anymore
-3. support bpf update
+Command on DUT:
+	sudo ./xdp_hw_metadata <interface name>
 
-If you have any suggestions or criticisms, please let me know.
+Command on Link Partner:
+	echo -n xdp | nc -u -q1 <destination IPv4 addr> 9091
+	echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
 
-Thanks
-D. Wythe
+Result for port 9091:
+	0x55fdb5f006d0: rx_desc[3]->addr=1000000003bd000 addr=3bd100 comp_addr=3bd000
+	rx_timestamp: 1677762474360150047
+	rx_hash: 0
+	0x55fdb5f006d0: complete idx=515 addr=3bd000
 
-On 4/6/23 11:30 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> This patches attempt to introduce BPF injection capability for SMC,
-> and add selftest to ensure code stability.
->
-> As we all know that the SMC protocol is not suitable for all scenarios,
-> especially for short-lived. However, for most applications, they cannot
-> guarantee that there are no such scenarios at all. Therefore, apps
-> may need some specific strategies to decide shall we need to use SMC
-> or not, for example, apps can limit the scope of the SMC to a specific
-> IP address or port.
->
-> Based on the consideration of transparent replacement, we hope that apps
-> can remain transparent even if they need to formulate some specific
-> strategies for SMC using. That is, do not need to recompile their code.
->
-> On the other hand, we need to ensure the scalability of strategies
-> implementation. Although it is simple to use socket options or sysctl,
-> it will bring more complexity to subsequent expansion.
->
-> Fortunately, BPF can solve these concerns very well, users can write
-> thire own strategies in eBPF to choose whether to use SMC or not.
-> And it's quite easy for them to modify their strategies in the future.
->
-> This patches implement injection capability for SMC via struct_ops.
-> In that way, we can add new injection scenarios in the future.
->
-> D. Wythe (5):
->    net/smc: move smc_sock related structure definition
->    net/smc: net/smc: allow smc to negotiate protocols on policies
->    net/smc: allow set or get smc negotiator by sockopt
->    bpf: add smc negotiator support in BPF struct_ops
->    bpf/selftests: add selftest for SMC bpf capability
->
->   include/net/smc.h                                | 268 +++++++++++++++++
->   include/uapi/linux/smc.h                         |   1 +
->   kernel/bpf/bpf_struct_ops_types.h                |   4 +
->   net/Makefile                                     |   1 +
->   net/smc/Kconfig                                  |  13 +
->   net/smc/af_smc.c                                 | 203 ++++++++++---
->   net/smc/bpf_smc.c                                | 359 +++++++++++++++++++++++
->   net/smc/smc.h                                    | 224 --------------
->   tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
->   tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
->   10 files changed, 1186 insertions(+), 259 deletions(-)
->   create mode 100644 net/smc/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
->
+Result for port 9092:
+	found skb hwtstamp = 1677762476.320146161
+
+Changes since v2:
+ * To reduce packet processing cost, get the Rx HWTS only when xmo_rx_timestamp() is called
+
+Changes since v1:
+ * Add static to stmmac_xdp_metadata_ops declaration
+
+---
+
+Ong Boon Leong (1):
+  net: stmmac: restructure Rx hardware timestamping function
+
+Song Yoong Siang (3):
+  net: stmmac: introduce wrapper for struct xdp_buff
+  net: stmmac: add Rx HWTS metadata to XDP receive pkt
+  net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  7 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 87 +++++++++++++++----
+ 2 files changed, 76 insertions(+), 18 deletions(-)
+
+-- 
+2.34.1
 
