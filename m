@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8166E012A
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 23:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A816E0132
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 23:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjDLVtN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 17:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
+        id S229622AbjDLVuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 17:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjDLVtL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 17:49:11 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15CA527A
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 14:49:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id sg7so43841887ejc.9
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 14:49:06 -0700 (PDT)
+        with ESMTP id S229451AbjDLVut (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 17:50:49 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFE949C2
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 14:50:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-504a37baf98so2692373a12.1
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 14:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681336145;
+        d=gmail.com; s=20221208; t=1681336246;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I0iKN8/eQ0VcRaW9W6mhEf3g3P8klO6SdAKZiSsUESQ=;
-        b=IIre1LH0IyDVcA5ZYavPVyw7tC1Voj10+dvl2B2SDxb/zNcj86XAt+Jq3xiSVoHwnv
-         JlkUO+/YL9RHH5dzbgFohj+ZgNtMSStcPtZGAuMuk1lWth1kIHM6+i9yT7qFS1+0U9BI
-         phInxpwr9eLDIIUIvs87W0EloBxXMSrDOSTKZDVomcW3LeKPcNFZVAWWx+E3nJDcapQw
-         WrQKCELa+2modqUnZSHbQWWNKZ4KMe/nraVJ4SlX8xV/WDYmBpHqFO41B7OdbyPZCgMw
-         G2lJzvfAL8i+CdukjLr4B8oTFR7aCyYcWN38NdrQXKCj6LGpozNj/7ryQL/fOgFCCb2Y
-         2IVw==
+        bh=un9Tl24FG3lfMXPTE2ViwC3udrxUq3w3TDaXaRkIBg4=;
+        b=Iq2/2FlMQgaxQL3IpAEh8zuJ55pd0nzYLVNyCZjPgqPaxoOH2Rd7ipMRyuvIvjvhXP
+         kjK3wUkfUN8qtpMra4prf2egp02H4YCfXLNOVBuNAqyMdcHuAXm9vizvMXqJ4zVPIFm+
+         53Oozaj7fcTZ4hsT1vnvj/Ry0FKeslja7upHmzoX8W94L16C5CSx14KToO1J86+qhz7p
+         LiwCbZm1j47BDXT3nd/Kxp/9STMBL5hjv8eztnGDHMWwD5mbUqYFafzAh+TOe9BgyVkH
+         dk3hphDi97BTVcs/18e/4DQzYDipXx6h0XBhXVDAC5J/RnwHJ71D0HdLlDQ3DG9biVZS
+         HfBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681336145;
+        d=1e100.net; s=20221208; t=1681336246;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I0iKN8/eQ0VcRaW9W6mhEf3g3P8klO6SdAKZiSsUESQ=;
-        b=gHj2iixzsxWsfHnKkOlebhW+TcTvtmBJqfRmvRiqsblP3+woMZpcoBTTwCnkt+210K
-         VsXSZkLDFRWQHUoO7MO6fVydnC86egrmR0ciYoFTyhZ5XgzzcVG0am7+e+cGZVM2naaf
-         u1lweufSTCWgGR+MWu1NeOZsXEFPCitkjfj5ySR+DMGmpNdjoLHJPtocqW33rt5l+8kh
-         Emjo+mMC+gVnzyevKIuQ+pZlWMHh/WnSBjgSB2FskjldtYSuDMD+kYp4itfJlHP7DiUh
-         CTX959IGVcs9SgjRYtEKPJaatnrdr1kFXQ8fsJVJOCCXesxonZEkJfXsfh1Ic4jSRaWS
-         raPQ==
-X-Gm-Message-State: AAQBX9ex4I0vlE7KVHAl3pd4VFjzKgREreOtBmeym4DH+nYMvuOYKbXB
-        Fp0+XBksVS8phHG+l7kaCMHnCJ8K9eNVDxEP3aoB90v0
-X-Google-Smtp-Source: AKy350YPD9sYgCS5+9hKEIXs2pjmCej4x/6zTNRKuUOQVwCu22yVkOk/MxkPsffqXXuXLyYtM9cMksBvCrzwQG8Lq+M=
-X-Received: by 2002:a17:906:fd88:b0:94e:5f2a:23fe with SMTP id
- xa8-20020a170906fd8800b0094e5f2a23femr2056158ejb.5.1681336145276; Wed, 12 Apr
- 2023 14:49:05 -0700 (PDT)
+        bh=un9Tl24FG3lfMXPTE2ViwC3udrxUq3w3TDaXaRkIBg4=;
+        b=Zf7dtC90URxB+VUwiMxWRRVqUaPBat1xalk16lFzuPP3K+/IgDYyIBE2tGn+GedexB
+         i7i+7n9dGYPX90xwZGrthbw7QLNE+DSx7YsfZBU7tAw04kevFebqtNkwOAdkeNmuxkvN
+         Du4YW/w473pk0k6bDPDfE066ws+LOz45qbL+rQDPzP9wG4n6d0mmTHio0xdU2IunksHE
+         0CpUrE7yR84yG/bP6flFCOIqiePyuOrHa/AheQJZjMgKBS4BmKekH4Np/jlPU/LhC8Sg
+         MjPPSLqd29AQY7dH5CPTJq5Fe0UPlHrpn3UyVOLhrv0ydhzvwQYBpZT/dOgiLIyiC6zV
+         xdMg==
+X-Gm-Message-State: AAQBX9ewDytmVqDY7O8S7Ps7+jeFvXHUobDbOEDTU5w3GW/4XgejPSMW
+        biXMF/L6ULRXKFgIRs3EIbDWZhujrd4+5M+rKsPbSjbCOp4=
+X-Google-Smtp-Source: AKy350aKQwVNROybEXjriwNTuEK8WyEbxWELeQRMDCQCHGHUDXG/UTXVN076HpN3+t2JAJeVNECUmR4g5QphcTJocSk=
+X-Received: by 2002:a50:aa9c:0:b0:4fc:f0b8:7da0 with SMTP id
+ q28-20020a50aa9c000000b004fcf0b87da0mr103591edc.1.1681336246237; Wed, 12 Apr
+ 2023 14:50:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230409033431.3992432-1-joannelkoong@gmail.com>
-In-Reply-To: <20230409033431.3992432-1-joannelkoong@gmail.com>
+References: <20230409033431.3992432-1-joannelkoong@gmail.com> <20230409033431.3992432-3-joannelkoong@gmail.com>
+In-Reply-To: <20230409033431.3992432-3-joannelkoong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 Apr 2023 14:48:53 -0700
-Message-ID: <CAEf4BzY35Smeft0Z8mDAv+ynp1-cNnU9F6uWtk2NoCQua2LKiA@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 0/5] Dynptr convenience helpers
+Date:   Wed, 12 Apr 2023 14:50:34 -0700
+Message-ID: <CAEf4BzahPnJ08-eqh2S_jZ+wca4-DCq5JjFKQOAfgb+oYRqdkg@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
 To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
         daniel@iogearbox.net
@@ -71,50 +71,103 @@ X-Mailing-List: bpf@vger.kernel.org
 On Sat, Apr 8, 2023 at 8:34=E2=80=AFPM Joanne Koong <joannelkoong@gmail.com=
 > wrote:
 >
-> This patchset is the 3rd in the dynptr series. The 1st (dynptr
-> fundamentals) can be found here [0] and the second (skb + xdp dynptrs)
-> can be found here [1].
+> bpf_dynptr_is_null returns true if the dynptr is null / invalid
+> (determined by whether ptr->data is NULL), else false if
+> the dynptr is a valid dynptr.
 >
-> This patchset adds the following convenience helpers for interacting
-> with dynptrs:
+> bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
+> else false if the dynptr is read-writable.
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  kernel/bpf/helpers.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 51b4c4b5dbed..e4e84e92a4c6 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1423,7 +1423,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_pr=
+oto =3D {
+>  #define DYNPTR_SIZE_MASK       0xFFFFFF
+>  #define DYNPTR_RDONLY_BIT      BIT(31)
+>
+> -static bool bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
+> +static bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
+>  {
+>         return ptr->size & DYNPTR_RDONLY_BIT;
+>  }
+> @@ -1570,7 +1570,7 @@ BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynpt=
+r_kern *, dst, u32, offset, v
+>         enum bpf_dynptr_type type;
+>         int err;
+>
+> -       if (!dst->data || bpf_dynptr_is_rdonly(dst))
+> +       if (!dst->data || __bpf_dynptr_is_rdonly(dst))
+>                 return -EINVAL;
+>
+>         err =3D bpf_dynptr_check_off_len(dst, offset, len);
+> @@ -1626,7 +1626,7 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr=
+_kern *, ptr, u32, offset, u3
+>         if (err)
+>                 return 0;
+>
+> -       if (bpf_dynptr_is_rdonly(ptr))
+> +       if (__bpf_dynptr_is_rdonly(ptr))
+>                 return 0;
+>
+>         type =3D bpf_dynptr_get_type(ptr);
+> @@ -2254,7 +2254,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf=
+_dynptr_kern *ptr, u32 offset
+>  __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *pt=
+r, u32 offset,
+>                                         void *buffer, u32 buffer__szk)
+>  {
+> -       if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
+> +       if (!ptr->data || __bpf_dynptr_is_rdonly(ptr))
 
-"convenience helpers" doesn't do these APIs justice. They are
-necessary APIs to make dynptrs a generic interface for working with
-memory ranges. So it's dynptr cloning and adjustment helpers, but not
-just a convenience APIs.
+seems like all the uses of __bpf_dynptr_is_rdonly check !ptr->data
+explicitly, so maybe move that ptr->data check inside and simplify all
+the callers?
 
+Regardless, looks good:
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>                 return NULL;
 >
-> int bpf_dynptr_trim(struct bpf_dynptr *ptr, __u32 len) __ksym;
-> int bpf_dynptr_advance(struct bpf_dynptr *ptr, __u32 len) __ksym;
-> int bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym;
-> int bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym;
-> __u32 bpf_dynptr_get_size(const struct bpf_dynptr *ptr) __ksym;
-> __u32 bpf_dynptr_get_offset(const struct bpf_dynptr *ptr) __ksym;
-> int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clo=
-ne__init) __ksym;
+>         /* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
+> @@ -2322,6 +2322,19 @@ __bpf_kfunc int bpf_dynptr_trim(struct bpf_dynptr_=
+kern *ptr, u32 len)
+>         return bpf_dynptr_adjust(ptr, 0, len);
+>  }
 >
-> [0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gma=
-il.com/
-> [1] https://lore.kernel.org/bpf/20230301154953.641654-1-joannelkoong@gmai=
-l.com/
+> +__bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
+> +{
+> +       return !ptr->data;
+> +}
+> +
+> +__bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+> +{
+> +       if (!ptr->data)
+> +               return false;
+> +
+> +       return __bpf_dynptr_is_rdonly(ptr);
+> +}
+> +
+>  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+>  {
+>         return obj;
+> @@ -2396,6 +2409,8 @@ BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT =
+| KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_dynptr_trim)
+>  BTF_ID_FLAGS(func, bpf_dynptr_advance)
+> +BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> +BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+>  BTF_SET8_END(common_btf_ids)
 >
-> Joanne Koong (5):
->   bpf: Add bpf_dynptr_trim and bpf_dynptr_advance
->   bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
->   bpf: Add bpf_dynptr_get_size and bpf_dynptr_get_offset
->   bpf: Add bpf_dynptr_clone
->   selftests/bpf: add tests for dynptr convenience helpers
->
->  include/linux/bpf.h                           |   2 +-
->  kernel/bpf/helpers.c                          | 108 +++++-
->  kernel/bpf/verifier.c                         | 125 ++++++-
->  kernel/trace/bpf_trace.c                      |   4 +-
->  tools/testing/selftests/bpf/bpf_kfuncs.h      |   8 +
->  .../testing/selftests/bpf/prog_tests/dynptr.c |   6 +
->  .../testing/selftests/bpf/progs/dynptr_fail.c | 313 +++++++++++++++++
->  .../selftests/bpf/progs/dynptr_success.c      | 320 ++++++++++++++++++
->  8 files changed, 864 insertions(+), 22 deletions(-)
->
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
 > --
 > 2.34.1
 >
