@@ -2,152 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73A56DF4A6
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 14:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3866F6DF50A
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 14:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbjDLMFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 08:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S231251AbjDLMX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 08:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjDLMFX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:05:23 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5198D61B5
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:05:04 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id he13so11376142wmb.2
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:05:04 -0700 (PDT)
+        with ESMTP id S229604AbjDLMX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 08:23:57 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822B772AB;
+        Wed, 12 Apr 2023 05:23:46 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id c2so790408ybo.9;
+        Wed, 12 Apr 2023 05:23:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681301103; x=1683893103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qu+3Eavq+im76sF/3GBedLORPT2lKdASUzHwpmJBhSU=;
-        b=dt1kX3HOp6B1tEBcX+BVh6cwDf7BNAawDd2Dy2wcM+4fprs3flFeRbNUpLrO5RaRj1
-         R1CvMl89KY7smBw7DNZ+MoP00As9xRtowid+CDJnojXBiCyDesF7VDaA91WrwM53RnOm
-         83TY26MUOdP/lftnkst06wsFA8HGfU5lkPQf3Qu2pciyI3lzlSHqY0UXE90sd3FPnwMz
-         RMfh/FEMrAnDhMKCGP1Ea93rNYSMJbW0qi/ePWobQ27YyyHpcXJVBDa9TuCLQtiafrXC
-         osv/A6f9sMpdu0Y1x9Ta1H9imF6Mxt2bLZbXtHq7BbyVtACMrbD2g20hRC3qYBbe2J7p
-         fmCA==
+        d=gmail.com; s=20221208; t=1681302225; x=1683894225;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LUWRNNE/JZ+baYmjcl+NKkyo+ch4BXrt9V/cFSfdS9E=;
+        b=e0roAdorSyZN8o45fnTNqHMlgok99sbVKgKWJBZYlxRxKoxRZ3/kteLoTHcQNkwdrc
+         L88YfpsHnhkxrpvXkWURXN/JnM1QDt9E+Soo9qy6uNfwaZevtf95xZ65xOh0LsmXV7o9
+         eQHcQarWEzYc1bzgbtB8zeHSlpmMEgxAKlYFizNJ0wc5DHY3kNyP7uV42coWsrClDeSN
+         2VVXp6ltyACbJTretkzPOefjhg/59ys6FBts4E+n4giyZYzU+s5hxvguSWhCBW7IdOHd
+         keU4ASVDfU4GyM0hO2+vkGYGdCaU49XGUxOgSlEgiL/cixRNx1lnTn0C7W4EKDeTkQX7
+         NweA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681301103; x=1683893103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qu+3Eavq+im76sF/3GBedLORPT2lKdASUzHwpmJBhSU=;
-        b=H53f95z+Ef2O64okNoAQl4QEXLd4kRJxtUqLSpCbpflXhxGZh47JYtIqVDa7Zkznm/
-         sBS1a3aBwO/Fx/S+kN6JnEAdYMMxgSFWeZ5e85897CX9viVi9HmvSx/nAQ/qVNAS4Xj9
-         dCOYxbL4TaytBTiProFF6VAQr8rJsUqPwWmGcIP0OHsVKF/0BaCJW3PyDj/jH2btICjI
-         QOO+oBatYmRCzTJOLJ0Gdwl+Zr6Fsi6V5LkvA6RNGkLh7La9wKDBphv5Mkw7TPekrFhm
-         l16HUDuEfCqMgCcL8+HgfO6gPEinbbpQhED2MZngyyUa48b1J5kAOOpmTXJg3JGQezAt
-         IDRg==
-X-Gm-Message-State: AAQBX9dGBtqPya77hG7KpOAkCpIJf/YMNXD4WehDvGw1LZe7Vt8aRh82
-        y0vFmrZOEr0Q8o8jJ9N8ZI75nQ==
-X-Google-Smtp-Source: AKy350as6xSaC5VjVVblauda90x/WFKQsM48F5Aud2q7moLRrRn/Z02mIrohUZrKFeO6k299RQGGdA==
-X-Received: by 2002:a7b:cd9a:0:b0:3ed:30cb:5569 with SMTP id y26-20020a7bcd9a000000b003ed30cb5569mr8852774wmj.20.1681301102759;
-        Wed, 12 Apr 2023 05:05:02 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:53b:acfc:bce0:dc7d? ([2a02:8011:e80c:0:53b:acfc:bce0:dc7d])
-        by smtp.gmail.com with ESMTPSA id n8-20020a05600c294800b003ee10fb56ebsm2194307wmd.9.2023.04.12.05.05.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 05:05:02 -0700 (PDT)
-Message-ID: <15cd553a-a6c1-19c7-bab1-0212a856056f@isovalent.com>
-Date:   Wed, 12 Apr 2023 13:05:01 +0100
+        d=1e100.net; s=20210112; t=1681302225; x=1683894225;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LUWRNNE/JZ+baYmjcl+NKkyo+ch4BXrt9V/cFSfdS9E=;
+        b=QJelOKWqyAlinAqFlSeROPzfySfye93P1lKJavyggb53HaGBQO9F9ZcIvifBzSkc5T
+         9z+lAaOIZnal1V0sCT42OsSahCv3zU3lEfkfkpW5R+BDtZM+2ngJqSKUmv6NG/GgsXRX
+         oRzzUDko6TB0Esr625AHYZY7l8Mv2YDjt1SK5XYzbR2JD54wTrTlOJ9UdbA2wo6XMUFF
+         MLqFy4LDv446jCDgHbYmmSrjoyYUZXCvYSoGWoGM4GSjoh5gbsPQVd4Dh3oj6K3TMqD6
+         80yB/B113Yx7N4S8U5Iv3EgVlueGAszh6w0FDSzZWTPXLdcAWmpDb7n3hnOIzKKWvV5L
+         vAVA==
+X-Gm-Message-State: AAQBX9e00V77xMwJByQ1wCcFQwEdfDLTX/gb9QcfUrM/qNl0ziwtouvR
+        ZbJX1tmKBV/AHPzwKAkRbis0luV2/otEs5pV2q4=
+X-Google-Smtp-Source: AKy350aW016MALydyt2LULMdwEE2qV9c2+4XVUlAcq1uW0K+sBQ2z1MZI4K5fCy6upaLfUFVbwD7YXbpZEMFUVffRkU=
+X-Received: by 2002:a25:744e:0:b0:b8b:f61e:65ff with SMTP id
+ p75-20020a25744e000000b00b8bf61e65ffmr3908986ybc.5.1681302225713; Wed, 12 Apr
+ 2023 05:23:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH bpf-next v3 3/7] bpftool: Support inline annotations when
- dumping the CFG of a program
-Content-Language: en-GB
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20230410121841.643254-1-kal.conley@dectris.com>
+In-Reply-To: <20230410121841.643254-1-kal.conley@dectris.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 12 Apr 2023 14:23:34 +0200
+Message-ID: <CAJ8uoz11tOSUK0+45K=L9q-yj3gyMCDJVPsOjawE+Wjbe2FSTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: Simplify xp_aligned_validate_desc implementation
+To:     Kal Conley <kal.conley@dectris.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>,
-        linux-s390@vger.kernel.org
-References: <20230405132120.59886-1-quentin@isovalent.com>
- <20230405132120.59886-4-quentin@isovalent.com>
- <yt9d8rexy6uj.fsf@linux.ibm.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <yt9d8rexy6uj.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2023-04-12 08:04 UTC+0200 ~ Sven Schnelle <svens@linux.ibm.com>
-> Quentin Monnet <quentin@isovalent.com> writes:
-> 
->> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
->> index e7f6ec3a8f35..583aa843df92 100644
->> --- a/tools/bpf/bpftool/btf_dumper.c
->> +++ b/tools/bpf/bpftool/btf_dumper.c
->> @@ -821,3 +821,37 @@ void btf_dump_linfo_json(const struct btf *btf,
->>  					BPF_LINE_INFO_LINE_COL(linfo->line_col));
->>  	}
->>  }
->> +
->> +static void dotlabel_puts(const char *s)
->> +{
->> +	for (; *s; ++s) {
->> +		switch (*s) {
->> +		case '\\':
->> +		case '"':
->> +		case '{':
->> +		case '}':
->> +		case '<':
->> +		case '>':
->> +		case '|':
->> +		case ' ':
->> +			putchar('\\');
->> +			__fallthrough;
-> 
-> Is __fallthrough correct? I see the following compile error on s390 in
-> linux-next (20230412):
-> 
->   CC      btf_dumper.o
-> btf_dumper.c: In function ‘dotlabel_puts’:
-> btf_dumper.c:838:25: error: ‘__fallthrough’ undeclared (first use in this function); did you mean ‘fallthrough’?
->   838 |                         __fallthrough;
->       |                         ^~~~~~~~~~~~~
-> 
-> removing the two underscores fixes this.
+On Mon, 10 Apr 2023 at 14:24, Kal Conley <kal.conley@dectris.com> wrote:
+>
+> Perform the chunk boundary check like the page boundary check in
+> xp_desc_crosses_non_contig_pg(). This simplifies the implementation and
+> reduces the number of branches.
 
-I thought so? Perf seems to use the double underscores as well. Just
-"fallthrough" does not seem to be the right fix anyway, it gives me an
-error similar to yours on x86_64 with "fallthrough" undeclared.
+Thanks for this simplification Kal. Just to check, does your change
+pass the xsk selftests, especially the INV_DESC test? If so, then you
+have my ack below.
 
-The definition should be pulled from tools/include/linux/compiler.h (and
-.../compiler-gcc.h). I thought this file would be at least included from
-bpftool's main.h, in turn included in btf_dumper.c. Looking at the chain
-of inclusions, on my system I get the following path:
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-    $ CFLAGS=-H make btf_dumper.o
-    [...]
-    . /root/dev/linux/tools/include/linux/bitops.h
-    [...]
-    .. /root/dev/linux/tools/include/linux/bits.h
-    [...]
-    ... /root/dev/linux/tools/include/linux/build_bug.h
-    .... /root/dev/linux/tools/include/linux/compiler.h
-    ..... /root/dev/linux/tools/include/linux/compiler_types.h
-    ...... /root/dev/linux/tools/include/linux/compiler-gcc.h
-    [...]
-
-What do you get on your side?
-
-If you add "#include <linux/compiler.h>" to btf_dumper.c directly, does
-it fix the issue?
-
-Quentin
+> Signed-off-by: Kal Conley <kal.conley@dectris.com>
+> ---
+>  net/xdp/xsk_queue.h | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index dea4f378327d..6d40a77fccbe 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -133,16 +133,12 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
+>  static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+>                                             struct xdp_desc *desc)
+>  {
+> -       u64 chunk, chunk_end;
+> +       u64 offset = desc->addr & (pool->chunk_size - 1);
+>
+> -       chunk = xp_aligned_extract_addr(pool, desc->addr);
+> -       if (likely(desc->len)) {
+> -               chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len - 1);
+> -               if (chunk != chunk_end)
+> -                       return false;
+> -       }
+> +       if (offset + desc->len > pool->chunk_size)
+> +               return false;
+>
+> -       if (chunk >= pool->addrs_cnt)
+> +       if (desc->addr >= pool->addrs_cnt)
+>                 return false;
+>
+>         if (desc->options)
+> --
+> 2.39.2
+>
