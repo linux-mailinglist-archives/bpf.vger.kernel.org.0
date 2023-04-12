@@ -2,218 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12636DEC45
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 09:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8814F6DEC7E
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 09:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjDLHLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 03:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
+        id S229754AbjDLHXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 03:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjDLHLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 03:11:09 -0400
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2153.outbound.protection.outlook.com [40.92.63.153])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60B52708;
-        Wed, 12 Apr 2023 00:11:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k8o7398FxOiNjM9CdXIgoPMTXxMZDMNyoxaukg/0Qevy+UayTQQpxbnEd4yv/L0DosVVNTFPqAo5sw4I3hTjgOo90HZx7paGbWuhfflO+LGrzdWynOaAA4rB4DNXSn0KwvzvOF4vhJjKewBh1Z/0k9QnM0e8oWO9j7J+y58tIFhpvl3eK9+IlolDJIoiK3IubFbtTKVMk/2CPY0elXaGC1rpZOAAnE2+G0/UcdQ1wInnbX0ewHPs2TcDk6NO82xp5R6P4+MRDvA8IBh0LXJkbauSF3l0BYPVTKdjbYVidddD6zBNapWuL0yUXH3J4Gx2O9xRbBInj874KLZZ2gtW5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VliPxvHJYl3OqGPzruBwHTL3OqCfGqGw2Ondvjo3kKc=;
- b=GSdrXLZS6o9kmYAYa7ZwvrRmjN3xaCr22lj+PIVrhBSdwGm6B4QSmqtk/8kT9J4A7Oli6/sB8MPaW/4qqz3GdPqfaTnd4wSj67zbWtvLxk2kaL0RtnxEeOxMwaaAgx4JaUbgPG7EmHqwWNPFBTofQNL+1hDhVf0mnokrbvAMU5bZ73dtyRbjMk3tVdDFRU37qKPodE6aHTjciL85Rh7iOH+rvF7PY9ry0XDn3ER86ifv5cInIq9NJY4cRqZC22osEwoXbnttZiynT932eACrU7dtc4M6/UnQDpvN90JKgcoNQ3/LwC2MlarzslgxJee/iXb6m3M29oUV0WfLEnMLgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VliPxvHJYl3OqGPzruBwHTL3OqCfGqGw2Ondvjo3kKc=;
- b=LL4ww/nSEEQ83UO79+4+AeJA4I4q5uNaQBubvmQp4WTYbS+4kLnml9KBaOeYL0rmY8J3oXeOiLnN6tqJ3Shdh7UH2EX+kZAhiVxwpDLuutKudIMVVdOo0YQMfM5ECfFCxGTbW0EuZ9O5WGew8RLgDbpB+Ll8F61Byzor0Qvivb7KdwXAO0NS43+bMptRzpKXYZ3uVUOUp31dTljweqlwj+lokJmVbJrTXfj5vMjKGBoCSNmAjRlCb4FdQ+tYrHLPPnVZuouzG4ShVNqRGs6AoHvNOLCv0PrfPuDCaXTiR62RDKxkqUneVdFSsBT0/fCAfhRWwh1+i6uzK6XU2gQT+A==
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
- MEAP282MB0472.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:6b::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6298.28; Wed, 12 Apr 2023 07:10:59 +0000
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::c096:a7b5:2bf5:2645]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::c096:a7b5:2bf5:2645%6]) with mapi id 15.20.6298.029; Wed, 12 Apr 2023
- 07:10:59 +0000
-From:   Tianyi Liu <i.pear@outlook.com>
-To:     jpoimboe@kernel.org
-Cc:     acme@kernel.org, alan.maguire@oracle.com, alexandref75@gmail.com,
-        bpf@vger.kernel.org, dxu@dxuuu.xyz, i.pear@outlook.com,
-        jforbes@redhat.com, linux-kernel@vger.kernel.org,
-        olsajiri@gmail.com, peterz@infradead.org, ptalbert@redhat.com,
-        yhs@fb.com
-Subject: Re: [PATCH] vmlinux.lds.h: Force-align ELF notes section to four bytes
-Date:   Wed, 12 Apr 2023 15:10:14 +0800
-Message-ID: <SY4P282MB10847ED9277ECA2E7B8A52779D9B9@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230411170058.7677oximl7oq4hkv@treble>
-References: <20230411170058.7677oximl7oq4hkv@treble>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [rj92RrdQ6WmFMTI2lHC8NSV2W0pZwROgdEDe89ISvQEIedHfZDg94g==]
-X-ClientProxiedBy: SG2PR02CA0042.apcprd02.prod.outlook.com
- (2603:1096:3:18::30) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:ac::13)
-X-Microsoft-Original-Message-ID: <20230412071014.367405-1-i.pear@outlook.com>
+        with ESMTP id S229507AbjDLHXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 03:23:20 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBEAFA;
+        Wed, 12 Apr 2023 00:23:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4PxDTV0DqHz9v7Vm;
+        Wed, 12 Apr 2023 15:13:50 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwA35z1CXDZkH5EWAg--.802S2;
+        Wed, 12 Apr 2023 08:22:52 +0100 (CET)
+Message-ID: <8e7705972a0f306922d8bc4893cf940e319abb19.camel@huaweicloud.com>
+Subject: Re: [PATCH] Smack modifications for: security: Allow all LSMs to
+ provide xattrs for inode_init_security hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 12 Apr 2023 09:22:38 +0200
+In-Reply-To: <2dc6486f-ce9b-f171-14fe-48a90386e1b7@schaufler-ca.com>
+References: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
+         <20230411172337.340518-1-roberto.sassu@huaweicloud.com>
+         <2dc6486f-ce9b-f171-14fe-48a90386e1b7@schaufler-ca.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|MEAP282MB0472:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9c8781dd-0f38-4eae-beef-08db3b25114a
-X-MS-Exchange-SLBlob-MailProps: TdjdgrWvJeTLPQ2QVZQqgzGSlPzYkFhk5wHcPopXyNbgui4DhGlsTL9Xpe3elDviamxLQ6/veqkYtuB1WRAoGXRchbFM2bRoin6hSRFmMg+jMTPFjDAbpPTCWFPztArWa5a7mVWd9PBWpDq/e33+6bGqg2uxycvju8KcasKRfTyEt0Y5z5CL0sXjLmSVlNlvKLpJrZ39V01TOlaajaL0le9f/9yqEpohVCzwBJEvrrGwU1tpFk2mbHDY1WDuX6C45ePRiaHqo4H4LeSi//U7GddorXuU/NV1ElET2N2aIlo2gm8HJNTqva6ZxkZKtJaakT2tqtDxcUdc1Qo/ySwvaoggNXyVfK7XKyF8eSEY1mdp30+BdGg37COyCYstjZD3OFWwUc6JpakEaw82Khgy5drwzuZnWTo9+28Qe6nCrkO28en+kWJtn5ZiNeCzeoKNsEzGAa5GONhz65l2Df0jMN0eP+QUpH/offtgBL6lzODVBgh+OwA/ujx9YmcFSY2rVR5LCTW/oLtsDLDDordFWGg74Vwrs04xoQNpYcYbEk3jyikBAD1QbgsfelWq/NlZXA3TG12xydIXRyBcZcwuo7tJcY1H8pFsw3gxkS6PDHDgrJWCtAwE+WTm/+GnvRjxeWaaLI1Czrpy5C/odW7/2JUN/1d9a7EGvRen+38H/hVbd52pHa4egDfvdBg8Nxzr/hpEMzlIber8kTttpVNws/GNO1qNQvgF8sE7eJmdgOU77ITdGileU+u4tIXUOpA9hxUnbCc67MIbBLCF1TZ7ID126vXMPcPgEKdZDaGLSu2/EzyBVt+5GZlFuvCLUPnDSBFz8jflphA=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ji72+kwgy3Sn316m6HfY8BCapUNU5GU2DE6JI9mFr2zJ2RLRxKlGi5ESYwbDwYhMJKH5y35RTGU9xAewuqKrQ9TbIk2EF0Z4bd3ODTZKzR4SvHwjk/DYhizMzHd4kpvMJbD4C5vtbyBSES9y1iR4DAloH9j/0i7oCIVxmDWrA5QXN7YSLQP4fsqv4gV0U7ZK2GLpL24eUZP6d/XzlFKsG793c0fmmkv0yPBp+0ENHapE1Mle19xJ+cbKGECFd+xeh2okq+x8kZquROOpViKPMOZqvxRYp5vYTb4LUJ6/ZZO0+cKXw4tXr98I1zg/c7HzEyp7yLLpF0bifADVwARkdFPz0lsj6VHU00nYKlEvW8jWmlj3EDPOh1zZm6tjCFTYqfka/pKbxYK1VecBtasIH0INRjYTTjWgyrO5vja864F56WIhB5PsrYabQJy+VuS3DCTh/7CkxWYJb5O0egb6L0BxgBsR+v4f4TfG2xCJwohcXqqXJqGJe+DAVRvdmn9KpnyHUWvfNOJPqMyPIlpMbRwtsoyjgNeQ/5WKazIFAlRlrGgn2m6mshoDwzDrorZ24D/sNWVBzizkNvOdKHO/jeqC8hQNkN4y0UsievnZjdMRyupKd2tbyddGF+buzuvpQg1vtackBm8JLdqtmXU1Q/BhWtwKCHSGhYlJrC8JoDU=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BENIMwTA1DnZmTPZoLPZuorGGFnJs21I4U9CXZk7WAujylCfYBXtZvMhdu1o?=
- =?us-ascii?Q?/p2rfeGMXED8CE9N/FtckqL+W+mL5SZr1RFWN5xu86f7YNI8jP5CObttP7dL?=
- =?us-ascii?Q?KSjv4VcJjp4zNZc+647kxdRVMj9n+JH+5zcnQbxgHB/AdiMfd9ELyLpdkaTK?=
- =?us-ascii?Q?MW1sqijmMJqG4vLcdolm/nONQNkhQN/OmE1/YQbOL4zDIuQqUX9/e21+cimP?=
- =?us-ascii?Q?qWwnCjO5Dd9KvEXuB7MNUyQBnv7wqTS3zN0NuIB+qD6EP2+LlKbYHJkdr8eL?=
- =?us-ascii?Q?pH1qFWIN6pY5EWcKcyOgE9eNJM6nKa+mhqfK0lJIoBqUkuBdOXpypgDobHrs?=
- =?us-ascii?Q?5RH948A5wbrUB6HdQ0zh4laBxGu/rg/oHLHJF6OxEqpYrtU8t6VNcTBjSN30?=
- =?us-ascii?Q?1ofHIfyhqvlFchQPs7z6j96yFPQ1qxTh6ISyZaQWzNpMzBQtMUEMHTC6lKPq?=
- =?us-ascii?Q?GB+FfTvHNeggAYzS8Musp2ps+SNi+T04SbYXizGKYCLmEF5O0CFDHSfgDzcc?=
- =?us-ascii?Q?T+gwFsYaOiHCNiWLprAwvv6Oyv4GGbY3C9fMCeH9S97c39gdJe+riL5K418h?=
- =?us-ascii?Q?+rR7rrgmaS18Hsco8bdTAHiBpUYV+G5oCMbErxlTFuhBejCbKPvcVOmFj1Ze?=
- =?us-ascii?Q?KaUaQ62lTh4XMxHioDFFi+g2Fqy+lQQ9t2LCiyBlRDjftPFGjoj+IRMm+OEq?=
- =?us-ascii?Q?Aym4R4rtIsloxDIOy4THHvAwb9DetYjaZkmNBhsW5Vxou2OZB3itGL++Uqh+?=
- =?us-ascii?Q?0ZMGNFeDNFXrWfpmKmHKn+Up01kd/27m/qCEZk+qZhUVOkNlJ5AXtHwf0L1K?=
- =?us-ascii?Q?SBSurQR6CutNDzd10JYIoxttl9HQXTq+Bm4ssvxyiTg3fAWKD4PMvvuMSSSM?=
- =?us-ascii?Q?GO0u4YGJ6gcLRarCdTmstcHLrf1CvxZUlKglKjo3YL+3xx2824e9eFAWetsv?=
- =?us-ascii?Q?NnUHD6Kfqk9iaH/NIyeF1cowUgamKeI7bDhldCng1KBT4+86gz7o4pILv9Gl?=
- =?us-ascii?Q?b7UsTMewTwuPUUKh+HCXr78zON40geLEJ2IHjlC+j0Fh50Eu7z6e8vaq+lX9?=
- =?us-ascii?Q?uhEL0g+/T5788y/8xM2JgsCuWTpEYDHt7+2pHLhaYWM6UVqURxI6qK+tfnAn?=
- =?us-ascii?Q?FSJu5B45nJTRQi8ihJEaXcG6jad2PgPKhqLXB1Y1VgkHfLGJZuTSQvEOebNM?=
- =?us-ascii?Q?d95S64f0iTFCz9OJHbGoIiGcowGb9aGCrfBaMCkzUciAgXr+D7j24RsgT0qg?=
- =?us-ascii?Q?jCikhu8kaXjHYPuzSeII?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c8781dd-0f38-4eae-beef-08db3b25114a
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 07:10:59.5761
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MEAP282MB0472
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwA35z1CXDZkH5EWAg--.802S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw48uFyfZF1fJrWkuF4kWFg_yoW7Xry3pF
+        WUK3W3KF4FyF9rGryFya1UW34a9a1fGr4UGwn3Xrsav3ZrJr1xKrykXr1YkFy7XrykZr1F
+        vr4jqr9xWFn0y37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAFBF1jj4fg6gABs+
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 17:00 , Josh Poimboeuf wrote:
-> On Tue, Feb 14, 2023 at 02:33:02PM +0800, Tianyi Liu wrote:
-> > > LLVM_OBJCOPY=objcopy pahole -J --btf_gen_floats -j
-> > > --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
-> > > .tmp_vmlinux.btf
-> > > btf_encoder__encode: btf__dedup failed!
-> > > Failed to encode BTF
-> > >
-> > > Thanks,
-> > >
-> >
-> > I encountered the same problem when building a new kernel and I found some
-> > reasons for the error.
-> >
-> > In short, enabling CONFIG_X86_KERNEL_IBT will change the order of records in
-> > .notes section. In addition, due to historical problems, the alignment of
-> > records in the .notes section is not unified, which leads to the inability of
-> > gelf_getnote() to read the records after the wrong one.
+On Tue, 2023-04-11 at 10:54 -0700, Casey Schaufler wrote:
+> On 4/11/2023 10:23 AM, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > Very very quick modification. Not tested.
+> > 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  security/smack/smack.h     |  2 +-
+> >  security/smack/smack_lsm.c | 42 ++++++++++++++++++++------------------
+> >  2 files changed, 23 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/security/smack/smack.h b/security/smack/smack.h
+> > index e2239be7bd6..f00c8498c60 100644
+> > --- a/security/smack/smack.h
+> > +++ b/security/smack/smack.h
+> > @@ -127,7 +127,7 @@ struct task_smack {
+> >  
+> >  #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
+> >  #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
+> > -#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
+> > +#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted (unused) */
 > 
-> Alexandre, Tianyi, are you still seeing this issue with the latest
-> dwarves?  If so can you confirm the below patch fixes it?
+> See below ...
 > 
+> >  #define	SMK_INODE_IMPURE	0x08	/* involved in an impure transaction */
+> >  
+> >  /*
+> > diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> > index 8392983334b..b43820bdbd0 100644
+> > --- a/security/smack/smack_lsm.c
+> > +++ b/security/smack/smack_lsm.c
+> > @@ -54,12 +54,12 @@
+> >  
+> >  /*
+> >   * Smack uses multiple xattrs.
+> > - * SMACK64 - for access control, SMACK64EXEC - label for the program,
+> > - * SMACK64MMAP - controls library loading,
+> > + * SMACK64 - for access control,
+> >   * SMACK64TRANSMUTE - label initialization,
+> > - * Not saved on files - SMACK64IPIN and SMACK64IPOUT
+> > + * Not saved on files - SMACK64IPIN and SMACK64IPOUT,
+> > + * Must be set explicitly - SMACK64EXEC and SMACK64MMAP
+> >   */
+> > -#define SMACK_INODE_INIT_XATTRS 4
+> > +#define SMACK_INODE_INIT_XATTRS 2
+> >  
+> >  #ifdef SMACK_IPV6_PORT_LABELING
+> >  static DEFINE_MUTEX(smack_ipv6_lock);
+> > @@ -957,11 +957,11 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
+> >  				     const struct qstr *qstr,
+> >  				     struct xattr *xattrs, int *xattr_count)
+> >  {
+> > -	struct inode_smack *issp = smack_inode(inode);
+> >  	struct smack_known *skp = smk_of_current();
+> >  	struct smack_known *isp = smk_of_inode(inode);
+> >  	struct smack_known *dsp = smk_of_inode(dir);
+> >  	struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
+> > +	struct xattr *xattr2;
+> 
+> I'm going to channel Paul and suggest this be xattr_transmute instead of xattr2.
+> It also looks like it could move to be declared in the if clause.
+> 
+> >  	int may;
+> >  
+> >  	if (xattr) {
+> > @@ -979,7 +979,17 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
+> >  		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
+> >  		    smk_inode_transmutable(dir)) {
+> >  			isp = dsp;
+> > -			issp->smk_flags |= SMK_INODE_CHANGED;
+> 
+> I think you need to keep this. More below.
+> 
+> > +			xattr2 = lsm_get_xattr_slot(xattrs, xattr_count);
+> > +			if (xattr2) {
+> > +				xattr2->value = kmemdup(TRANS_TRUE,
+> > +							TRANS_TRUE_SIZE,
+> > +							GFP_NOFS);
+> > +				if (xattr2->value == NULL)
+> > +					return -ENOMEM;
+> > +
+> > +				xattr2->value_len = TRANS_TRUE_SIZE;
+> > +				xattr2->name = XATTR_NAME_SMACKTRANSMUTE;
+> > +			}
+> >  		}
+> >  
+> >  		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
+> > @@ -3512,20 +3522,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
+> >  			 * If there is a transmute attribute on the
+> >  			 * directory mark the inode.
+> >  			 */
+> > -			if (isp->smk_flags & SMK_INODE_CHANGED) {
+> > -				isp->smk_flags &= ~SMK_INODE_CHANGED;
+> > -				rc = __vfs_setxattr(&nop_mnt_idmap, dp, inode,
+> > -					XATTR_NAME_SMACKTRANSMUTE,
+> > -					TRANS_TRUE, TRANS_TRUE_SIZE,
+> > -					0);
+> > -			} else {
+> > -				rc = __vfs_getxattr(dp, inode,
+> > -					XATTR_NAME_SMACKTRANSMUTE, trattr,
+> > -					TRANS_TRUE_SIZE);
+> > -				if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
+> > -						       TRANS_TRUE_SIZE) != 0)
+> > -					rc = -EINVAL;
+> > -			}
+> > +			rc = __vfs_getxattr(dp, inode,
+> > +					    XATTR_NAME_SMACKTRANSMUTE, trattr,
+> > +					    TRANS_TRUE_SIZE);
+> > +			if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
+> > +					       TRANS_TRUE_SIZE) != 0)
+> > +				rc = -EINVAL;
+> 
+> Where is the SMACK64_TRANSMUTE attribute going to get set on the file?
+> It's not going to get set in smack_init_inode_security(). The inode will
 
-Josh, first of all, thank you very much for your help. However, this patch
-doesn't work in my environment. I am using gcc 12.2.1 20230201.
-After compiling, when I use readelf -S to view ELF sections,
-the align of .notes section is still 8:
+Isn't that the purpose of the inode_init_security hook?
 
-$ readelf -S .tmp_vmlinux.btf
-[20] .notes            NOTE             ffffffff8250b570  0170b570
-     0000000000000084  0000000000000000   A       0     0     8
+After all LSMs provide one or multiple xattrs, xattrs are going to be
+written to the disk with the initxattr() callback of filesystems.
 
-> Apparently the latest dwarves release fixes it on Fedora Rawhide [1],
-> does anybody know if there a specific dwarves and/or libbpf change for
-> this?
-> 
+There is a small mistake above (XATTR_SMACK_TRANSMUTE instead
+of XATTR_NAME_SMACKTRANSMUTE, as we are providing just the suffix).
 
-It has been fixed in dwarves[1], but it may just be a coincidence.
+After fixing that, Smack tests succeed:
 
-> [1] https://gitlab.com/cki-project/kernel-ark/-/merge_requests/2346#note_1348057786
-> 
-> ---8<---
-> 
-> From: Josh Poimboeuf <jpoimboe@kernel.org>
-> Subject: [PATCH] vmlinux.lds.h: Force-align ELF notes section to four bytes
-> 
-> When tooling reads ELF notes, it assumes each note entry is aligned to
-> the value listed in the .note section header's sh_addralign field.
-> 
-> The kernel-created ELF notes in the .note.Linux and .note.Xen sections
-> are aligned to 4 bytes.  This causes the toolchain to set those
-> sections' sh_addralign values to 4.
-> 
-> On the other hand, the GCC-created .note.gnu.property section has an
-> sh_addralign value of 8 for some reason, despite being based on struct
-> Elf32_Nhdr which only needs 4-byte alignment.
-> 
-> When the mismatched input sections get linked together into the vmlinux
-> .notes output section, the higher alignment "wins", resulting in an
-> sh_addralign of 8, which confuses tooling.  For example:
-> 
->   $ readelf -n .tmp_vmlinux.btf
->   ...
->   readelf: .tmp_vmlinux.btf: Warning: note with invalid namesz and/or descsz found at offset 0x170
->   readelf: .tmp_vmlinux.btf: Warning:  type: 0x4, namesize: 0x006e6558, descsize: 0x00008801, alignment: 8
-> 
-> In this case readelf thinks there's alignment padding where there is
-> none, so it starts reading an ELF note in the middle.
-> 
-> With newer toolchains (e.g., latest Fedora Rawhide), a similar mismatch
-> triggers a build failure when combined with CONFIG_X86_KERNEL_IBT:
-> 
->   btf_encoder__encode: btf__dedup failed!
->   Failed to encode BTF
->   libbpf: failed to find '.BTF' ELF section in vmlinux
->   FAILED: load BTF from vmlinux: No data available
->   make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
-> 
-> Fix it by forcing the .notes section input and output alignments to 4 to
-> match the kernel's note entry alignments.
-> 
-> Note this doesn't break the 8-byte-aligned .note.gnu.property entries
-> because their internal data representations fill the entire 8-byte
-> alignment boundary, so there's no padding between entries to be
-> misinterpreted.  And there's only a single entry in that section anyway.
-> 
-> Reported-by: Daniel Xu <dxu@dxuuu.xyz>
-> Debugged-by: Tianyi Liu <i.pear@outlook.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> ---
->  include/asm-generic/vmlinux.lds.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index d1f57e4868ed..1c7c87c9ae71 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -894,7 +894,7 @@
->   */
->  #define NOTES                                                           \
->          /DISCARD/ : { *(.note.GNU-stack) }                              \
-> -       .notes : AT(ADDR(.notes) - LOAD_OFFSET) {                       \
-> +       .notes ALIGN(4) : AT(ADDR(.notes) - LOAD_OFFSET) SUBALIGN(4) {  \
->                  BOUNDED_SECTION_BY(.note.*, _notes)                     \
->          } NOTES_HEADERS                                                 \
->          NOTES_HEADERS_RESTORE
-> --
-> 2.39.2
+95 Passed, 0 Failed, 100% Success rate
 
-[1] https://github.com/acmel/dwarves/commit/a9498899109d3be14f17abbc322a8f55a1067bee
+There was a test failing in dir-transmute.sh, before I fixed the xattr
+name.
+
+Thanks
+
+Roberto
+
+> know it's transmuting, but it won't get to disk without the __vfs_setxattr()
+> here in smack_d_instantiate(). Now, it's been a long time since that code
+> was written, so I could be wrong, but I'm pretty sure about that.
+> 
+> I think that you should be fine with the changes in smack_init_inode_security(),
+> and leaving smack_d_instantiate() untouched. 
+> 
+> >  			if (rc >= 0)
+> >  				transflag = SMK_INODE_TRANSMUTE;
+> >  		}
+
