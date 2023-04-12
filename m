@@ -2,86 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 567F76DF246
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 12:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4A66DF30E
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 13:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbjDLKzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 06:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        id S229757AbjDLLUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 07:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjDLKzg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 06:55:36 -0400
+        with ESMTP id S229593AbjDLLUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 07:20:21 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AA46A6E
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 03:54:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A0DE58
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 04:19:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681296889;
+        s=mimecast20190719; t=1681298218;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9alFis21lp3H1PeQGiwFBeiCWEcrStDft1SvCWrv9fk=;
-        b=FQT6jJGu3OYTx1455515yVvDwRtzkD0nmiVHVDt3/PA9u4tf9gSjMbeFKHXmDhBdNpx+R8
-        dAaBXRd80u7yj8mx0ar/l/Gnsi0STW1FaULk4Oexu7TvXuRcuQQuIHqG+Jizwsry0vViZj
-        KSyqPsth4mgQTwblZByG2pYgqAlJu2o=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ehvr1d/jbxZ+YWSEUG0+v0Njo7GXylIVh8YAQAeYlBM=;
+        b=ZyH+vfuEBKNDVTkfcNXC1RtWrcRUVC8vyeguvIK5MWOkHSljBRugVND90FlNkYzAvh5RP7
+        KuqVGFV5HK/xefIkcyaCzcyGwl7D6Sy2mJYxcoCRFS+MBQde/HQckbHNWN8UHkNFsg8C6R
+        OwKkuhovVIK1cg8+7NJ85oaMlh7RiUQ=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-531-ev8dimJEPlmTLWoEONNWaw-1; Wed, 12 Apr 2023 06:54:48 -0400
-X-MC-Unique: ev8dimJEPlmTLWoEONNWaw-1
-Received: by mail-ed1-f70.google.com with SMTP id q27-20020a50aa9b000000b00505034ae370so976809edc.3
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 03:54:48 -0700 (PDT)
+ us-mta-125-FtvGlb3_P9qz39_ff0Gkjg-1; Wed, 12 Apr 2023 07:16:56 -0400
+X-MC-Unique: FtvGlb3_P9qz39_ff0Gkjg-1
+Received: by mail-ed1-f69.google.com with SMTP id z34-20020a509e25000000b00504ed11e0c5so1179854ede.1
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 04:16:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681296887; x=1683888887;
+        d=1e100.net; s=20210112; t=1681298215; x=1683890215;
         h=content-transfer-encoding:in-reply-to:references:to
          :content-language:subject:cc:user-agent:mime-version:date:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9alFis21lp3H1PeQGiwFBeiCWEcrStDft1SvCWrv9fk=;
-        b=W1XdH/m9Bq7Tr1IgfWsQM17Lr/zCYeJpJWgbekKrr0d7wZad+LTo2YGWqWdLwErXQB
-         eYdCYiYdeAxY9PWV447pnDhx1jhdu/ZJBryvNpHtwew8N8JY7z4A4I1KLAUCLrIYWbzV
-         DuM4D+s/ksWZY3KvueV0/CCK9wAka1mXVdhPcep4+9ZGNVmCRdlUzBc7kS2s7g1MZLh0
-         p214PVvwxOB8cQhmvDr5EOmYbhpij5iktF+JJjO4o73u2rUQTlWAnaiDJYe9cVb2+Asq
-         ZklpjxHcEk3FjV5ZpX/5i8vm6PDKPB5btvYVcmuBICYHDmSkZsldKZdE8zeVd1S3yvJE
-         Uukw==
-X-Gm-Message-State: AAQBX9fKIjjT0h1k12o3Ii6kjeuoyhQHTdtR/ZRzEOV1R53iZwwmo1J0
-        Gfupnmf8QPy4uqXfgNTeBZEHEGA/uIrKer49/cH8fkYSIAQwiCGKRtkLDOwHMOHOwyI3KuLaH0H
-        U0nEXw0WP5IAYri99lSEr
-X-Received: by 2002:a17:906:6d16:b0:948:c047:467d with SMTP id m22-20020a1709066d1600b00948c047467dmr5713199ejr.23.1681296887176;
-        Wed, 12 Apr 2023 03:54:47 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bMaqa5uHrrM7B5IePYN1OMBi6DPhLMgrCl1TykvEZOYX14RUF+y2TD0HStIwcvwi/F7K0XRg==
-X-Received: by 2002:a17:906:6d16:b0:948:c047:467d with SMTP id m22-20020a1709066d1600b00948c047467dmr5713173ejr.23.1681296886799;
-        Wed, 12 Apr 2023 03:54:46 -0700 (PDT)
+        bh=ehvr1d/jbxZ+YWSEUG0+v0Njo7GXylIVh8YAQAeYlBM=;
+        b=amsFR2e9ikyr162Q6EiaBps/UgYTDXZ0Gn0BOWMdbpQQUkHFBT5zVSKJLnE2f5fEfU
+         HgX+6qHrYZikZbultYUnOEmndds515ZlJe87HI4v5FZnZJ+qBFevdz68YuBUjWiWlRmX
+         VGifn1W5G/cP9IK4hJuTfz+PK/RkgsbCRBlg8AelhZVoeGm7sNzto1sCamMxgLaWhtUW
+         dFrVj4Dr02xJg316p7TnijSXaHDEC34RGEbUSX8GDVkPi5yIVJOtcKzLPZcq2c1O5rDq
+         iD4lpZPbQzIB41gmb7if5br5t+gN1pdz9o2jz/qHHmLqcdKGTT/x8qsctAMTGIedtqgM
+         wSVQ==
+X-Gm-Message-State: AAQBX9fGaFKU88i1vIaI8Pcbr0jfqBOE9QMkcCci7mDB1+h5Hxk06xua
+        7PGQYJ+Izo6fpbHEKisCnU2HzSgrcaSpMwRuI9b4bV1P9eecUIcPbuyFpA48dbQr6HUgxN6tdZw
+        pFcr1iSGKEF8i
+X-Received: by 2002:a17:906:fae0:b0:931:624b:680c with SMTP id lu32-20020a170906fae000b00931624b680cmr5523429ejb.29.1681298215784;
+        Wed, 12 Apr 2023 04:16:55 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aU/WJ/sIwojTfk8adw2TCi9w7hbQ5lTxFZjvt+7P+pwVRe6sbMuWkO8uddJ/I5SF7pwr+ocA==
+X-Received: by 2002:a17:906:fae0:b0:931:624b:680c with SMTP id lu32-20020a170906fae000b00931624b680cmr5523398ejb.29.1681298215440;
+        Wed, 12 Apr 2023 04:16:55 -0700 (PDT)
 Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id g19-20020a1709065d1300b00928e0ea53e5sm7083290ejt.84.2023.04.12.03.54.45
+        by smtp.gmail.com with ESMTPSA id hz16-20020a1709072cf000b0094e09ceafc9sm1978330ejc.44.2023.04.12.04.16.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 03:54:46 -0700 (PDT)
+        Wed, 12 Apr 2023 04:16:54 -0700 (PDT)
 From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
 X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <402a3c73-d26d-3619-d69a-c90eb3f0e9ee@redhat.com>
-Date:   Wed, 12 Apr 2023 12:54:45 +0200
+Message-ID: <474201b2-d98c-f3ab-aed9-b008bb188d0b@redhat.com>
+Date:   Wed, 12 Apr 2023 13:16:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
 Cc:     brouer@redhat.com, bpf@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
-        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH bpf V7 1/7] selftests/bpf: xdp_hw_metadata default disable
- bpf_printk
+        Stanislav Fomichev <sdf@google.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
+        <toke@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH bpf V7 3/7] xdp: rss hash types representation
 Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
+To:     Simon Horman <simon.horman@corigine.com>
 References: <168098183268.96582.7852359418481981062.stgit@firesoul>
- <168098188134.96582.7870014252568928901.stgit@firesoul>
- <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
-In-Reply-To: <CAKH8qBu2ieR+puSkF30-df3YikOvDZErxc2qjjVXPPAvCecihA@mail.gmail.com>
+ <168098189148.96582.2939096178283411428.stgit@firesoul>
+ <ZDQlYqwmyG4Y73Vb@corigine.com>
+In-Reply-To: <ZDQlYqwmyG4Y73Vb@corigine.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -95,59 +95,67 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 12/04/2023 00.42, Stanislav Fomichev wrote:
-> On Sat, Apr 8, 2023 at 12:24 PM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
+
+On 10/04/2023 17.04, Simon Horman wrote:
+> On Sat, Apr 08, 2023 at 09:24:51PM +0200, Jesper Dangaard Brouer wrote:
+>> The RSS hash type specifies what portion of packet data NIC hardware used
+>> when calculating RSS hash value. The RSS types are focused on Internet
+>> traffic protocols at OSI layers L3 and L4. L2 (e.g. ARP) often get hash
+>> value zero and no RSS type. For L3 focused on IPv4 vs. IPv6, and L4
+>> primarily TCP vs UDP, but some hardware supports SCTP.
 >>
->> The tool xdp_hw_metadata can be used by driver developers
->> implementing XDP-hints kfuncs.  The tool transfers the
->> XDP-hints via metadata information to an AF_XDP userspace
->> process. When everything works the bpf_printk calls are
->> unncesssary.  Thus, disable bpf_printk by default, but
->> make it easy to reenable for driver developers to use
->> when debugging their driver implementation.
+>> Hardware RSS types are differently encoded for each hardware NIC. Most
+>> hardware represent RSS hash type as a number. Determining L3 vs L4 often
+>> requires a mapping table as there often isn't a pattern or sorting
+>> according to ISO layer.
 >>
->> This also converts bpf_printk "forwarding UDP:9091 to AF_XDP"
->> into a code comment.  The bpf_printk's that are important
->> to the driver developers is when bpf_xdp_adjust_meta fails.
->> The likely mistake from driver developers is expected to
->> be that they didn't implement XDP metadata adjust support.
+>> The patch introduce a XDP RSS hash type (enum xdp_rss_hash_type) that
+>> contain combinations to be used by drivers, which gets build up with bits
+>> from enum xdp_rss_type_bits. Both enum xdp_rss_type_bits and
+>> xdp_rss_hash_type get exposed to BPF via BTF, and it is up to the
+>> BPF-programmer to match using these defines.
 >>
+>> This proposal change the kfunc API bpf_xdp_metadata_rx_hash() adding
+>> a pointer value argument for provide the RSS hash type.
+>>
+>> Change function signature for all xmo_rx_hash calls in drivers to make it
+>> compile. The RSS type implementations for each driver comes as separate
+>> patches.
+>>
+>> Fixes: 3d76a4d3d4e5 ("bpf: XDP metadata RX kfuncs")
 >> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> Acked-by: Stanislav Fomichev <sdf@google.com>
 >> ---
->>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   16 ++++++++++++++--
->>   1 file changed, 14 insertions(+), 2 deletions(-)
+>>   drivers/net/ethernet/mellanox/mlx4/en_rx.c       |    3 +
+>>   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |    3 +
+>>   drivers/net/veth.c                               |    3 +
+>>   include/linux/netdevice.h                        |    3 +
+>>   include/net/xdp.h                                |   45 ++++++++++++++++++++++
+>>   net/core/xdp.c                                   |   10 ++++-
+>>   6 files changed, 62 insertions(+), 5 deletions(-)
 >>
->> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->> index 4c55b4d79d3d..980eb60d8e5b 100644
->> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
->> @@ -5,6 +5,19 @@
->>   #include <bpf/bpf_helpers.h>
->>   #include <bpf/bpf_endian.h>
->>
->> +/* Per default below bpf_printk() calls are disabled.  Can be
->> + * reenabled manually for convenience by XDP-hints driver developer,
->> + * when troublshooting the drivers kfuncs implementation details.
->> + *
->> + * Remember BPF-prog bpf_printk info output can be access via:
->> + *  /sys/kernel/debug/tracing/trace_pipe
->> + */
->> +//#define DEBUG        1
->> +#ifndef DEBUG
->> +#undef  bpf_printk
->> +#define bpf_printk(fmt, ...) ({})
->> +#endif
+>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> index 4b5e459b6d49..73d10aa4c503 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> @@ -681,7 +681,8 @@ int mlx4_en_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
+>>   	return 0;
+>>   }
+>>   
+>> -int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash)
+>> +int mlx4_en_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
+>> +			enum xdp_rss_hash_type *rss_type)
+>>   {
+>>   	struct mlx4_en_xdp_buff *_ctx = (void *)ctx;
+>>   
 > 
-> Are you planning to eventually do somethike similar to what I've
-> mentioned in [0]? If not, should I try to send a patch?
-
-See next patch:
-  - [PATCH bpf V7 2/7] selftests/bpf: Add counters to xdp_hw_metadata
-
-where I add these counters :-)
-
+> Hi Jesper,
 > 
-> 0: https://lore.kernel.org/netdev/CAKH8qBupRYEg+SPMTMb4h532GESG7P1QdaFJ-+zrbARVN9xrdA@mail.gmail.com/
+> I think you also need to update the declaration of mlx4_en_xdp_rx_hash()
+> in mlx4_en.h.
 > 
+
+Thanks a lot for spotting this. fixed in V8.
+--Jesper
 
