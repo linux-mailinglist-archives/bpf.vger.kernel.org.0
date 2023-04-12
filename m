@@ -2,83 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6A16DF552
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 14:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F8C6DF5E1
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 14:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjDLMeN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 08:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S231648AbjDLMom (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 08:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjDLMeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 08:34:12 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A6F2680
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:34:11 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id ud9so28210185ejc.7
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:34:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1681302850; x=1683894850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=r2cn52JN3eRMerScMtCLlq4G/DaFFVVSR4HFPD0rXaU=;
-        b=V2tdHLT8z0rzP1cIETJ1rUDrJ+pVt8os5+RVxclF2NIA9QFHWIVsDJVIcl7e5aSMmV
-         7rc93+5f8U9MHcxd+3QFFi/A20o/2Ktmv063Xw/X3f005opiPA/44UGQT9eucY/3Xpr0
-         Y0f7EWuVtSIDH1gqkJWKBOre8PKGyeg1GnJ2c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681302850; x=1683894850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r2cn52JN3eRMerScMtCLlq4G/DaFFVVSR4HFPD0rXaU=;
-        b=e7/TS7nlxGIbGjNUB0Xb2zwmMOf9Qrf+5xU9VmdtWVPXh8zQqPikuc8vd8brNq1IUS
-         bml3XnNgh/DWJvKbjTD3S+EzQwxbfP0BkBYtNAvX+1k/Xa9RyjHV78x6OkmP5m7xj94i
-         mFgXk1wDKxknAhpTD5WNNQFqi3zgRug7nXY1FAGWlDXtSbIkaGIFZ47km2ictpWqj/wU
-         QOaP0iPMtUiKo0fRWYsn9zQRBj8CJg/augxOtGqYXuaQXRsEsB2+jJIQjHEoztFpmu1q
-         vknf5si31Su6uqNUJ2PzgEmBMHIkQMAh0uYTnEkqnsH4CiS5JxunohW9SmXC3gfJw94X
-         izIw==
-X-Gm-Message-State: AAQBX9e/cqugTUouD3gUJNLZ5sm1DAs+G/CxT//W1FPpaNgiophtBoA2
-        WbZzsTP26ZKQhDsVMtonEI2WCsb6Zbg1GNBilq+qIA==
-X-Google-Smtp-Source: AKy350aPE23MhQg8qWazNdMKTEkcF1JPMzvLnz5WOiZUlgpc8Ua3OiDxBIJMV1kWwPXkUpnZFLhl3Z/MKekHvmIgyHU=
-X-Received: by 2002:a17:906:ed1:b0:8f1:4c6a:e72 with SMTP id
- u17-20020a1709060ed100b008f14c6a0e72mr6150913eji.0.1681302849823; Wed, 12 Apr
- 2023 05:34:09 -0700 (PDT)
+        with ESMTP id S230241AbjDLMod (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 08:44:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1916C903F
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 05:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681303370;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MSTd3POftj4h2e704fIbWzCftjTruaveQ7UYCHjIbM4=;
+        b=Eg5rjo7XNxsUvEhbHjdm/N2zmk09efl9a12DO4DHamnM0LoydL9H3y/NI+ImTIWjFMoO+o
+        BEPrnQs7dI9npJ05jQFtcYb5JLSUBSREn3+XL5w2bXeSEt7m25E2FnyqUSrG4lmCN3DM58
+        W40SrJesypcUAx0mGvrl4mvbsR/ybMU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-246-Yfzo9jGINE6dMV-7IA32FQ-1; Wed, 12 Apr 2023 08:42:40 -0400
+X-MC-Unique: Yfzo9jGINE6dMV-7IA32FQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0D5B5811E7C;
+        Wed, 12 Apr 2023 12:42:39 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48B011121320;
+        Wed, 12 Apr 2023 12:42:38 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 1EA04307372E8;
+        Wed, 12 Apr 2023 14:42:37 +0200 (CEST)
+Subject: [PATCH bpf V8 0/7] XDP-hints: API change for RX-hash kfunc
+ bpf_xdp_metadata_rx_hash
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        anthony.l.nguyen@intel.com, yoong.siang.song@intel.com,
+        boon.leong.ong@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net, tariqt@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org
+Date:   Wed, 12 Apr 2023 14:42:37 +0200
+Message-ID: <168130333143.150247.11159481574477358816.stgit@firesoul>
+User-Agent: StGit/1.4
 MIME-Version: 1.0
-References: <20230411130025.19704-1-kal.conley@dectris.com> <CAJ8uoz3W8uHQANJ2hxVydCbz7-d=kO9KKn_iBLX3wsWy-OGUvQ@mail.gmail.com>
-In-Reply-To: <CAJ8uoz3W8uHQANJ2hxVydCbz7-d=kO9KKn_iBLX3wsWy-OGUvQ@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Wed, 12 Apr 2023 14:38:54 +0200
-Message-ID: <CAHApi-nXHzwmGmQUkbH=6aP1Dob=s2SSB91zjGScHNcRjMy8kA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] xsk: Elide base_addr comparison in xp_unaligned_validate_desc
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Thanks Kal! Just checking again that you ran the xsk selftests on your
-> change and that it passed? If so, here is my ack.
->
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
->
+Current API for bpf_xdp_metadata_rx_hash() returns the raw RSS hash value,
+but doesn't provide information on the RSS hash type (part of 6.3-rc).
 
-yep, I ran the tests and they PASSED.
+This patchset proposal is to change the function call signature via adding
+a pointer value argument for providing the RSS hash type.
+
+Patchset also disables all bpf_printk's from xdp_hw_metadata program
+that we expect driver developers to use. Instead counters are introduced
+for relaying e.g. skip and fail info to end-user, this can be further
+debugged by re-enabling bpf_printk (when driver devel troubleshoot).
+
+---
+
+Jesper Dangaard Brouer (7):
+      selftests/bpf: xdp_hw_metadata default disable bpf_printk
+      selftests/bpf: Add counters to xdp_hw_metadata
+      xdp: rss hash types representation
+      mlx5: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      veth: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      mlx4: bpf_xdp_metadata_rx_hash add xdp rss hash type
+      selftests/bpf: Adjust bpf_xdp_metadata_rx_hash for new arg
+
+
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    | 22 ++++++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 63 ++++++++++++++++++-
+ drivers/net/veth.c                            | 10 ++-
+ include/linux/mlx5/device.h                   | 14 ++++-
+ include/linux/netdevice.h                     |  3 +-
+ include/net/xdp.h                             | 47 ++++++++++++++
+ net/core/xdp.c                                | 10 ++-
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  2 +
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 42 ++++++++++---
+ .../selftests/bpf/progs/xdp_metadata.c        |  6 +-
+ .../selftests/bpf/progs/xdp_metadata2.c       |  7 ++-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 10 ++-
+ tools/testing/selftests/bpf/xdp_metadata.h    |  4 ++
+ 14 files changed, 213 insertions(+), 30 deletions(-)
+
+--
+
