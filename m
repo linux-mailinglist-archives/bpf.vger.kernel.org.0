@@ -2,177 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8952A6DFE59
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 21:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29BF6DFEC4
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 21:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjDLTHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 15:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
+        id S229670AbjDLTgS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 15:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjDLTHF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 15:07:05 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA14E69
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 12:07:01 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id q5so15751309ybk.7
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 12:07:01 -0700 (PDT)
+        with ESMTP id S229651AbjDLTgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 15:36:17 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427D7213A
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 12:36:16 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id p17so1361680pla.3
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 12:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1681326421; x=1683918421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RWjKbekkP8a3hscvaXgC6k5dNgXGIcnoNZ//JMZZDGU=;
-        b=YHM441zyCJlrGXKzDbUc4uJEnWbsWfGR6vFBvOgR02umvX7GVThuLg1bjpPlnykQzT
-         a9W5ZskXQyy6OnfAZlHc90yfdY5HIYXuVy8UhmNfrfeEzFdqxTHy1ejIXBSC+jjasjWy
-         SzdtXJJSU3ZBVi/KEa/Th6qByEjxiyp5hZKNqHZ2kS+gOg5ehq2+DmzVnIuUD9R1GeQs
-         +JynuL26w/9C4PUMDuQ8/LjUTtW36dSRufg43epwyQvXclUPgWzgqE2zfaw0uBBOl6j5
-         vbEK0VZ1+aUYrW/+ZzacXBAJboogxyQLqlPCbMNXm+P0xL4dzty5pU2KZLbUXn5qkNa/
-         ++iA==
+        d=gmail.com; s=20221208; t=1681328176; x=1683920176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ykwc6fjvsy5ZhAj3Z3A2NkdXok1QLsB8+rSZo7jr/q4=;
+        b=L5e3qkJkVJuJErkA4RZslRimyAF1hXDjvx4E5lPNvTSWpPhNkxZN9gnhcsC8G2IPnL
+         B93EjdfU28q7ynRS43c+EbQJF6+TYgbrk2oZBeM6+w/exhlIWdxmBHX2FUhwSjcJUHgI
+         JEVCACFWs1+U40xL9A3W/aHgZaGqZsaQBcNeJD/rt8yjE6nzsjWV2SBSBSuTYNSVOTpP
+         t8Ml/1CF2cIvqnrIe4JtYQH3NOz6Sur5cmO2I3BVWilajflOdLY8CT/LCu6VgYMCkwx6
+         TyvpbleNuaY7bOFlaXIJsQHllv4M7lA0APkNKcJaWFc/qkWqjLEVXL4lV0QW7MKRe3eb
+         eenA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681326421; x=1683918421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RWjKbekkP8a3hscvaXgC6k5dNgXGIcnoNZ//JMZZDGU=;
-        b=OPXGFyTN0yde9P8CbKiIaMT4zns4UsY5pwi40669mrvNCjXUZbdRF/2Y+N6i0NhUZO
-         s+UVdhFtK9G6167eGDOMAU5IqXo8HN9O4twye8yoZgy7THFU1pchHroQtpM0LixYNIR6
-         lFX3qG3r+gYHPe209eNpVH8KS/yuaeNVmo7IIg3TO7fOM90EpDRFf1jYBpiorpd5RzIA
-         iPbb9PbMD7do8357y6Pu2LV7n0b9fGEAsIUVP+IO3Ux3AZ06Xr14yxzsqWgQ4UZjdp3C
-         sTIA4S9jjdW26Z7pgf1sZdAcCq/6Oy3GPxz3zmOPVs3iv20I2aTh2RSXetuqR2Zhfzyx
-         dXSg==
-X-Gm-Message-State: AAQBX9f6dXnvracMvaVoF6BYhmIcRTbxc4O+e+jJqe6HPir2mdkVU/Bs
-        Af4I9WLVB0SjnM7+RNG0/57O+rVsjZ4QM5OoXk/W
-X-Google-Smtp-Source: AKy350ZahLXSXPqw0eLIKIzoET2RDmTKo8zjzMH0pk0vnFMwayVviX/LK4xaW5wuV7kSUNlyoPm+G/H0E2TyoO+kaRM=
-X-Received: by 2002:a25:d702:0:b0:b68:7a4a:5258 with SMTP id
- o2-20020a25d702000000b00b687a4a5258mr2441859ybg.3.1681326420746; Wed, 12 Apr
- 2023 12:07:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681328176; x=1683920176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ykwc6fjvsy5ZhAj3Z3A2NkdXok1QLsB8+rSZo7jr/q4=;
+        b=CsJzccEBgwJIbm9dAQZjJeeAdOJmduvOvXC40yXWuJ5EnrCpRFKTZMcbl6WHoV/gqr
+         n/sJRvLM78IyqZvOE07OT8VCU7kTHLAwuCwu5shYGqRBlK2LXmp+Oy18njtDt/HrTf7s
+         X1xpxfYfiwPMw+ekQ6u2fi4fQmAyxGwJJ9tX6Y0ETBfnUvgjywlErfm3FhLG4HpUkABL
+         Kt3Rz+yYzt4scvIsjHWkiXUHv3KoH7fsURppRjgtHW7L4wZPeiLZyTn3dIeJWnoR7gHz
+         4HlbEPov19V3fkACDgd2XfpZZFjmRaMRm3bH3GWWl1Ji0KrbLq67AKUovAQG/YyX3jBt
+         QjSA==
+X-Gm-Message-State: AAQBX9cBUqZTKCgS4dVUPwq4IL2G9V/bf/87NUrYIwtMzK94lvlxLuue
+        MzS+rArMrRNsm7zek21MvKfEGYnnWvc=
+X-Google-Smtp-Source: AKy350Yq8KFGBozim0Otqq076+iE2h3aIWvQuZjz+y96oogXQPsoyF9SNhsWqzUUrI+3hsW5qsDb9Q==
+X-Received: by 2002:a05:6a20:3a9a:b0:e3:8710:6846 with SMTP id d26-20020a056a203a9a00b000e387106846mr7146770pzh.10.1681328175495;
+        Wed, 12 Apr 2023 12:36:15 -0700 (PDT)
+Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:5010])
+        by smtp.gmail.com with ESMTPSA id s5-20020aa78d45000000b00625037cf695sm8593104pfe.86.2023.04.12.12.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 12:36:15 -0700 (PDT)
+Date:   Wed, 12 Apr 2023 12:36:12 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        David Vernet <void@manifault.com>
+Subject: Re: [PATCH RFC bpf-next v1 3/9] bpf: Implement bpf_throw kfunc
+Message-ID: <20230412193612.neaz7i7whrk3i5f2@macbook-pro-6.dhcp.thefacebook.com>
+References: <20230405004239.1375399-1-memxor@gmail.com>
+ <20230405004239.1375399-4-memxor@gmail.com>
+ <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <xmehxhdk4ba2j75ltdygzi2b56aftcei36dndptg3v6gdumrh2@zadr5xdn5g3m>
+ <20230407021136.dmq42wum3wzhq4bu@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <bykk75ofgzxtmcpbvebju3mdp2jumt27mhfrvk4ysbkfotu2dv@3vd7vm352kp7>
 MIME-Version: 1.0
-References: <20230412043300.360803-1-andrii@kernel.org> <CAHC9VhQHmdZYnR=+rX-3FcRh127mhJt=jAnototfTiuSoOTptg@mail.gmail.com>
- <6436eea2.170a0220.97ead.52a8@mx.google.com> <CAHC9VhR6ebsxtjSG8-fm7e=HU+srmziVuO6MU+pMpeSBv4vN+A@mail.gmail.com>
- <6436f837.a70a0220.ada87.d446@mx.google.com>
-In-Reply-To: <6436f837.a70a0220.ada87.d446@mx.google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 12 Apr 2023 15:06:50 -0400
-Message-ID: <CAHC9VhTF0JX3_zZ1ZRnoOw0ToYj6AsvK6OCiKqQgPvHepH9W3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bykk75ofgzxtmcpbvebju3mdp2jumt27mhfrvk4ysbkfotu2dv@3vd7vm352kp7>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 2:28=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
-> On Wed, Apr 12, 2023 at 02:06:23PM -0400, Paul Moore wrote:
-> > On Wed, Apr 12, 2023 at 1:47=E2=80=AFPM Kees Cook <keescook@chromium.or=
-g> wrote:
-> > > On Wed, Apr 12, 2023 at 12:49:06PM -0400, Paul Moore wrote:
-> > > > On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andrii@ke=
-rnel.org> wrote:
+On Fri, Apr 07, 2023 at 04:46:55AM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Fri, Apr 07, 2023 at 04:11:36AM CEST, Alexei Starovoitov wrote:
+> > On Fri, Apr 07, 2023 at 01:54:03AM +0200, Kumar Kartikeya Dwivedi wrote:
+> > > On Thu, Apr 06, 2023 at 04:16:22AM CEST, Alexei Starovoitov wrote:
+> > > > On Wed, Apr 05, 2023 at 02:42:33AM +0200, Kumar Kartikeya Dwivedi wrote:
 > > > > >
-> > > > > Add new LSM hooks, bpf_map_create_security and bpf_btf_load_secur=
-ity, which
-> > > > > are meant to allow highly-granular LSM-based control over the usa=
-ge of BPF
-> > > > > subsytem. Specifically, to control the creation of BPF maps and B=
-TF data
-> > > > > objects, which are fundamental building blocks of any modern BPF =
-application.
-> > > > >
-> > > > > These new hooks are able to override default kernel-side CAP_BPF-=
-based (and
-> > > > > sometimes CAP_NET_ADMIN-based) permission checks. It is now possi=
-ble to
-> > > > > implement LSM policies that could granularly enforce more restric=
-tions on
-> > > > > a per-BPF map basis (beyond checking coarse CAP_BPF/CAP_NET_ADMIN
-> > > > > capabilities), but also, importantly, allow to *bypass kernel-sid=
-e
-> > > > > enforcement* of CAP_BPF/CAP_NET_ADMIN checks for trusted applicat=
-ions and use
-> > > > > cases.
+> > > > > - The exception state is represented using four booleans in the
+> > > > >   task_struct of current task. Each boolean corresponds to the exception
+> > > > >   state for each kernel context. This allows BPF programs to be
+> > > > >   interrupted and still not clobber the other's exception state.
 > > > >
-> > > > One of the hallmarks of the LSM has always been that it is
-> > > > non-authoritative: it cannot unilaterally grant access, it can only
-> > > > restrict what would have been otherwise permitted on a traditional
-> > > > Linux system.  Put another way, a LSM should not undermine the Linu=
-x
-> > > > discretionary access controls, e.g. capabilities.
+> > > > that doesn't work for sleepable bpf progs and in RT for regular progs too.
 > > > >
-> > > > If there is a problem with the eBPF capability-based access control=
-s,
-> > > > that problem needs to be addressed in how the core eBPF code
-> > > > implements its capability checks, not by modifying the LSM mechanis=
-m
-> > > > to bypass these checks.
 > > >
-> > > I think semantics matter here. I wouldn't view this as _bypassing_
-> > > capability enforcement: it's just more fine-grained access control.
+> > > Can you elaborate? If a sleepable program blocks, that means the task is
+> > > scheduled out, so the next program will use the other task's task_struct.
+> > > Same for preemption for normal progs (under RT or not).
+> >
+> > I was worried about the case of the same task but different code paths
+> > in the kernel with tracing prog stepping on preempted lsm.s prog.
+> > I think you point that in this case they gotta be in different interrupt_context_level.
+> > I need to think it through a bit more.
+> >
+> 
+> If there is nesting, the programs always clear their exception state on exit, so
+> the prog that calls into the kernel which then calls into the tracing prog etc.
+> won't see its exception state on return. The only path where attaching programs
+> would screw things up is when we see a thrown exception and start unwinding
+> (where clearing would be a problem since its done frame-by-frame). For that, I
+> already prevent _throwing_ fexit programs from attaching to subprogs in this
+> series (normal ones are still ok and supported, because fentry/fexit is
+> important for stats etc.). There might be some other corner cases I missed but
+> ensuring this property alone in general should make things work correctly.
+> 
+> > > > How about using a scratch space in prog->aux->exception[] instead of current task?
+> > > >
 > > >
-> > > For example, in many places we have things like:
-> > >
-> > >         if (!some_check(...) && !capable(...))
-> > >                 return -EPERM;
-> > >
-> > > I would expect this is a similar logic. An operation can succeed if t=
-he
-> > > access control requirement is met. The mismatch we have through-out t=
-he
-> > > kernel is that capability checks aren't strictly done by LSM hooks. A=
-nd
-> > > this series conceptually, I think, doesn't violate that -- it's chang=
-ing
-> > > the logic of the capability checks, not the LSM (i.e. there no LSM ho=
-oks
-> > > yet here).
+> > > I actually had this thought. It's even better because we can hardcode the
+> > > address of the exception state right in the program (since prog->aux remains
+> > > stable during bpf_patch_insn_data).
 > >
-> > Patch 04/08 creates a new LSM hook, security_bpf_map_create(), which
-> > when it returns a positive value "bypasses kernel checks".  The patch
-> > isn't based on either Linus' tree or the LSM tree, I'm guessing it is
-> > based on a eBPF tree, so I can't say with 100% certainty that it is
-> > bypassing a capability check, but the description claims that to be
-> > the case.
+> > exactly.
 > >
-> > Regardless of how you want to spin this, I'm not supportive of a LSM
-> > hook which allows a LSM to bypass a capability check.  A LSM hook can
-> > be used to provide additional access control restrictions beyond a
-> > capability check, but a LSM hook should never be allowed to overrule
-> > an access denial due to a capability check.
+> > > However, concurrent program invocations on
+> > > multiple CPUs doesn't work well with this. It's like, one program sets the state
+> > > while the other tries to check it.
 > >
-> > > The reason CAP_BPF was created was because there was nothing else tha=
-t
-> > > would be fine-grained enough at the time.
+> > Right. If it asserts on one cpu all other cpus will unwind as well,
+> > since we're saying bpf_assert is for exceptions when user cannot convince
+> > the verifier that the program is correct.
+> > So it doesn't matter that it aborted everywhere. It's probably a good thing too.
 > >
-> > The LSM layer predates CAP_BPF, and one could make a very solid
-> > argument that one of the reasons LSMs exist is to provide
-> > supplementary controls due to capability-based access controls being a
-> > poor fit for many modern use cases.
->
-> I generally agree with what you say, but we DO have this code pattern:
->
->          if (!some_check(...) && !capable(...))
->                  return -EPERM;
+> 
+> We can discuss the semantics (this makes bpf_assert more stronger and basically
+> poisons the program globally in some sense), but implementation wise it's going
+> to be a lot more tricky to reason about correctness.
+> 
+> Right now, the verifier follows paths and knows what resources are held when we
+> throw from a nested call chain (to complain on leaks). Callers doing the check
+> for exception state at runtime expect only certain throwing points to trigger
+> the check and rely on that for leak freedom.
+> 
+> With a global prog->aux->exception, things will be ok for the CPU on which the
+> exception was thrown, but some other CPU will see the check returning true in a
+> caller even if the callee subprog for it did not throw and was possibly
+> transferring its acquired references to the caller after completing execution,
+> which now causes leaks (because subprogs are allowed to acquire and return to
+> their caller).
+> 
+> The way to handle this would be that we assume every callee which throws may
+> also notionally throw right when returning (due to some other CPU's throw which
+> we may see). Then every exit from throwing callees may be processed as throwing
+> if we see the global state as set.
+> 
+> However, this completely prevents subprogs from transferring some acquired
+> resource to their caller (which I think is too restrictive). If I'm acquiring
+> memory from static subprog and returning to my caller, I can't any longer since
+> I notionally throw when exiting and holding resources when doing bpf_throw is
+> disallowed, so transfer is out of the question.
 
-I think we need to make this more concrete; we don't have a pattern in
-the upstream kernel where 'some_check(...)' is a LSM hook, right?
-Simply because there is another kernel access control mechanism which
-allows a capability check to be skipped doesn't mean I want to allow a
-LSM hook to be used to skip a capability check.
+I was under impression that subprogs cannot acquire refs and transfer them
+to caller.
+Looks like your commit 9d9d00ac29d0 ("bpf: Fix reference state management for synchronous callbacks")
+allowed too much.
+I don't think it's a good idea to support coding patterns like:
+void my_alloc_foo(struct foo **ptr)
+{
+  struct foo *p = bpf_obj_new(typeof(*p));
+  *ptr = p;
+}
 
-> It looks to me like this series can be refactored to do the same. I
-> wouldn't consider that to be a "bypass", but I would agree the current
-> series looks too much like "bypass", and makes reasoning about the
-> effect of the LSM hooks too "special". :)
+It's a correct C, of course, but do we really want to support such code?
+I don't think the verifier can fully support it anyway.
+That commit of yours allowed some of it in theory, but above example probably won't work,
+since 'transfer' isn't understood by the verifier.
 
---=20
-paul-moore.com
+Regardless whether we tighten the verifier now or later such subprogs shouldn't be throwing.
+So I don't see an issue doing global prog->aux->exception.
