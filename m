@@ -2,138 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849A56DFBE2
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 18:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2D26DFBFA
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 18:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbjDLQyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 12:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S230081AbjDLQ4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 12:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjDLQyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 12:54:18 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0400010FE
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:53:44 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id e127so12471032ybf.8
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:53:43 -0700 (PDT)
+        with ESMTP id S230044AbjDLQ4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 12:56:35 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE9C9ECE
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:56:07 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-246772b2e9cso511344a91.1
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:56:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1681318378; x=1683910378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JsLay53A6dLh3VLROEyKdp+6fRylKB2VxR2PtcHB4tw=;
-        b=dsTP4wuyYXHH12dCwFgEpRzILS8/aFCMEVRe+89u8AFff5eCeCbkYVlh+TBT4e9CSN
-         y402rfrg0dG2LzEQS+KDUUhwExeKVkE9EbHjF14s8MYYNsM/UxKp0elixR0U9xzrttX3
-         WHL/Se4EsUYMRzJL8xJtmZ/DCxdq16oVMMTG7JY0WO7hTLycIAm4LWRfuuV8OaJzRQTg
-         xp6qTTKqf1JxtlDTlBSYZJ6S8EJp3nOY0bPvJgNrwpme7mBEdrTBF56V06u/kKUOF2hx
-         1VwQR7+6IbqVD5FulG0o5DDhJ9Ea0GZZiOpO2tXa8qzYqcrisSKhYBe3AYui7DQ17LmH
-         sUEA==
+        d=google.com; s=20221208; t=1681318563;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=r5aQP8BO2zo9XrojS0bD6j1oYwbTGaaKe2CEIkMg+Cc=;
+        b=oVLoNRJYCUybQHOCGDc1/+VV+Wd3aSZ7iKoewHhOxr1x7l07u7jhjgNxGtvZ+BZiGP
+         c0df6kLIh/auurIKDofimLBIjub63gz2i2tflYknIZNj2NnK506IT3EyqDEs7OBDGJOw
+         Du1gx6ak04OGqUV5ei38bvHmLTob16K6WNbOzXVmiZCC6zqQc5aP40cItoZfBTFJxJiR
+         Oj7oWnxeVM3mdxoWqLd4ZHyFIzGKvXmkUTBFIJzsVjT/MUQkrsa9QNrCYmRFOXRLWd9b
+         TEA6YsK/kVrHl8IF0FY22x7gwd2A6zHfKONJF6sMgQaCSt1EUuPHDQUfPHyBBvBBj1Nf
+         kzrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681318378; x=1683910378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JsLay53A6dLh3VLROEyKdp+6fRylKB2VxR2PtcHB4tw=;
-        b=kYikgotb/guvjkmJ3PwsdLrZq9EVOaG27wF7dLJX+AzJqhprdNLdjkYui3HX2SUqif
-         sQuJQF5ymWUqOldrV3Zc0425BDnv8m+bEGxWzN4Nv3uZu0fQUMmJm6thNgMNjCveOVEd
-         dvo0KpyvZMAcU8rNi3+0CSbpCvmU5QPYJOU0xVgs3ADII9QWHNxnXgk5tElNty4g/ohR
-         PG8hARtrMu3HRXKVoE6UUwr3uvMS3dxj2bLUKzfjVrlutQ/IMzR3zL6hs5MbGWUNg+kh
-         F6bnqYt9oWpzRNg5QIa0hNLExYlSMAuod7xLrjMHCjB7lkUJN/LBnDe/ODego08lJJDh
-         U+Mw==
-X-Gm-Message-State: AAQBX9cdW2rPq49nrzsMI/7s0no8GGV4OwB53BIzJjzVp1I8kGAC2Div
-        PooHUYf9SdEx7uJWp3sCMjb+fq69GA0plPae1WEM
-X-Google-Smtp-Source: AKy350YNGyjYtzGLnfpZaBqIYkE7zH3rANm1YyfmbwecN3fXiL1lkT1XT7dX/0+aQWqU5cdi4JsPGnfJnJMMwIC2zfU=
-X-Received: by 2002:a25:d702:0:b0:b68:7a4a:5258 with SMTP id
- o2-20020a25d702000000b00b687a4a5258mr2135628ybg.3.1681318378235; Wed, 12 Apr
- 2023 09:52:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230412043300.360803-1-andrii@kernel.org> <20230412043300.360803-8-andrii@kernel.org>
-In-Reply-To: <20230412043300.360803-8-andrii@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 12 Apr 2023 12:52:47 -0400
-Message-ID: <CAHC9VhSNeAATRtKj4Gptxgv4wW-L7_5=RisY3yw5JMDtUH=43A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] bpf, lsm: implement bpf_btf_load_security
- LSM hook
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kpsingh@kernel.org, keescook@chromium.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1681318563;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r5aQP8BO2zo9XrojS0bD6j1oYwbTGaaKe2CEIkMg+Cc=;
+        b=axqXj/cBBGiGUKeZcLHkL2PPaqoSSHpAw3OtC7qNRG+6WwiLWU9alhYfWjFsfmsb89
+         zgUSn0V4nEeT5c0WteMUkxbfrpaOHewduH1pZBP67g4jxsOweTYZrPM2SRD+CMKGyWiS
+         2VcUYDQV8Ak6ooIkmSN3sC8qXVwaKaNc5DU1pNELc/rZ+aB85o/GL/gaUCXPHAqgTq99
+         IyaVPCqq+1bNeB3r/ZelKSMq9iuFX325dspmGgk2lgBZCWjpYJBdT/es/JPonTVsSkph
+         iB3HTh05TlMXgeStzN/g1tRBpCVNm4gLXUdcKIru1tO1CvFI03A9vrPL7AxD35bMP7PV
+         OF0w==
+X-Gm-Message-State: AAQBX9efXPbD8mqhae9KOE0k7x57TaqTTc3qXQQcYHY9xF4tOtNBwbbC
+        BN+yJr9Q1aaJUm5xeY4B8EuaPPE=
+X-Google-Smtp-Source: AKy350a13a5HToDhjS1k1UbKJ/IVQbgV0gzzJs4B82pMPsxUQcRF3Po0gAx3EgHJsgANJfb6CfMCn/I=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:2d15:b0:62d:afc6:c152 with SMTP id
+ fa21-20020a056a002d1500b0062dafc6c152mr569870pfb.5.1681318563183; Wed, 12 Apr
+ 2023 09:56:03 -0700 (PDT)
+Date:   Wed, 12 Apr 2023 09:56:01 -0700
+In-Reply-To: <168130336725.150247.12193228778654006957.stgit@firesoul>
+Mime-Version: 1.0
+References: <168130333143.150247.11159481574477358816.stgit@firesoul> <168130336725.150247.12193228778654006957.stgit@firesoul>
+Message-ID: <ZDbiofWhQhFEfIsr@google.com>
+Subject: Re: [PATCH bpf V8 2/7] selftests/bpf: Add counters to xdp_hw_metadata
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org,
+        "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
+        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
+        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
+        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
+        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
+        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
+        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org=
-> wrote:
->
-> Add new LSM hook, bpf_btf_load_security, that allows custom LSM security
-> policies controlling BTF data loading permissions (BPF_BTF_LOAD command
-> of bpf() syscall) granularly and precisely.
->
-> This complements bpf_map_create_security LSM hook added earlier and
-> follow the same semantics: 0 means perform standard kernel capabilities-b=
-ased
-> checks, negative error rejects BTF object load, while positive one skips
-> CAP_BPF check and allows BTF data object creation.
->
-> With this hook, together with bpf_map_create_security, we now can also al=
-low
-> trusted unprivileged process to create BPF maps that require BTF, which
-> we take advantaged in the next patch to improve the coverage of added
-> BPF selftest.
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On 04/12, Jesper Dangaard Brouer wrote:
+> Add counters for skipped, failed and redirected packets.
+> The xdp_hw_metadata program only redirects UDP port 9091.
+> This helps users to quickly identify then packets are
+> skipped and identify failures of bpf_xdp_adjust_meta.
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  include/linux/lsm_hook_defs.h |  1 +
->  include/linux/lsm_hooks.h     | 13 +++++++++++++
->  include/linux/security.h      |  6 ++++++
->  kernel/bpf/bpf_lsm.c          |  1 +
->  kernel/bpf/syscall.c          | 10 ++++++++++
->  security/security.c           |  4 ++++
->  6 files changed, 35 insertions(+)
-
-...
-
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 42d8473237ab..bbf70bddc770 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4449,12 +4449,22 @@ static int bpf_obj_get_info_by_fd(const union bpf=
-_attr *attr,
->
->  static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr, __u3=
-2 uattr_size)
->  {
-> +       int err;
+>  .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |   15 +++++++++++++--
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c      |    4 +++-
+>  2 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> index b0104763405a..a07ef7534013 100644
+> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> @@ -25,6 +25,10 @@ struct {
+>  	__type(value, __u32);
+>  } xsk SEC(".maps");
+>  
+> +volatile __u64 pkts_skip = 0;
+> +volatile __u64 pkts_fail = 0;
+> +volatile __u64 pkts_redir = 0;
 > +
->         if (CHECK_ATTR(BPF_BTF_LOAD))
->                 return -EINVAL;
->
-> +       /* security checks */
-> +       err =3D security_bpf_btf_load(attr);
-> +       if (err < 0)
-> +               return err;
-> +       if (err > 0)
-> +               goto skip_priv_checks;
-> +
->         if (!bpf_capable())
->                 return -EPERM;
->
-> +skip_priv_checks:
->         return btf_new_fd(attr, uattr, uattr_size);
+>  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+>  					 __u64 *timestamp) __ksym;
+>  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx,
+> @@ -59,16 +63,21 @@ int rx(struct xdp_md *ctx)
+>  			udp = NULL;
+>  	}
+>  
+> -	if (!udp)
+> +	if (!udp) {
+> +		pkts_skip++;
+>  		return XDP_PASS;
+> +	}
+>  
+>  	/* Forwarding UDP:9091 to AF_XDP */
+> -	if (udp->dest != bpf_htons(9091))
+> +	if (udp->dest != bpf_htons(9091)) {
+> +		pkts_skip++;
+>  		return XDP_PASS;
+> +	}
+>  
+>  	ret = bpf_xdp_adjust_meta(ctx, -(int)sizeof(struct xdp_meta));
+>  	if (ret != 0) {
+
+[..]
+
+>  		bpf_printk("bpf_xdp_adjust_meta returned %d", ret);
+
+Maybe let's remove these completely? Merge patch 1 and 2, remove printk,
+add counters. We can add more counters in the future if the existing
+ones are not enough.. WDYT?
+
+> +		pkts_fail++;
+>  		return XDP_PASS;
+>  	}
+>  
+> @@ -78,6 +87,7 @@ int rx(struct xdp_md *ctx)
+>  
+>  	if (meta + 1 > data) {
+>  		bpf_printk("bpf_xdp_adjust_meta doesn't appear to work");
+> +		pkts_fail++;
+>  		return XDP_PASS;
+>  	}
+>  
+> @@ -91,6 +101,7 @@ int rx(struct xdp_md *ctx)
+>  	else
+>  		meta->rx_hash = 0; /* Used by AF_XDP as not avail signal */
+>  
+> +	pkts_redir++;
+>  	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
 >  }
-
-Beyond the objection I brought up in the patchset cover letter, I
-believe the work of the security_bpf_btf_load() hook presented here
-could be done by the existing security_bpf() LSM hook.  If you believe
-that not to be the case, please let me know.
-
---=20
-paul-moore.com
+>  
+> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> index 1c8acb68b977..3b942ef7297b 100644
+> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> @@ -212,7 +212,9 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd)
+>  	while (true) {
+>  		errno = 0;
+>  		ret = poll(fds, rxq + 1, 1000);
+> -		printf("poll: %d (%d)\n", ret, errno);
+> +		printf("poll: %d (%d) skip=%llu fail=%llu redir=%llu\n",
+> +		       ret, errno, bpf_obj->bss->pkts_skip,
+> +		       bpf_obj->bss->pkts_fail, bpf_obj->bss->pkts_redir);
+>  		if (ret < 0)
+>  			break;
+>  		if (ret == 0)
+> 
+> 
