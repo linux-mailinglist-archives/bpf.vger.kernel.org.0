@@ -2,161 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B436DFB3B
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 18:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A704D6DFB61
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 18:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjDLQWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 12:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
+        id S229484AbjDLQaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 12:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbjDLQVt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 12:21:49 -0400
-Received: from mail-lj1-x263.google.com (mail-lj1-x263.google.com [IPv6:2a00:1450:4864:20::263])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3FC7ED7
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:21:35 -0700 (PDT)
-Received: by mail-lj1-x263.google.com with SMTP id a3so6972153ljr.11
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 09:21:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1681316493; x=1683908493;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xsy5P1BFSd01HwRZSprmpkjXfSG/kvuR7yEFBLxIChw=;
-        b=kiKTqQdjnb9Q3KCXeG88cm0N+JW61wRqiSgx2+fgx9iG+BD8yZKIQR54wwTLQRf0d7
-         3ll7YHX+7okVMZWDh0Ubllk7Aq/0axfCzSxJKy3PHfJQp07MNdKzF+KA/oxbCjwdcUbG
-         Bmvl/uTo1R2SCuJsoPTel7CbFLAsQ8KUwkOEU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681316493; x=1683908493;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xsy5P1BFSd01HwRZSprmpkjXfSG/kvuR7yEFBLxIChw=;
-        b=ptnQ9SNzkqnL3JXJZukgBgO++Z+S9ws/1SbDMB4jTRMmzieSz/obA6DQSAicNYE98r
-         oKc8EZrkUL8uKKV2pyTHLQeY18DkRlu2eWC8zdaZ4hjaOvd3pRMi9jbJuiT/497QqTPi
-         AwWH+yqfi/cQ6Rk4MD9ER5z1DhJ02M5A+fm5dppMhb4kFVrdKcfVwkN4PsH109bbIeYq
-         GdMQAx4X+cpqX1EpqRUXZmCsAzXpzLqa3K7yEWJXvBM9IQGH7FNWj5/+t2M5SlTp3J0N
-         xqhqCGGpYV8r2quJN+xAGBpry6MEjZNVsukUtnkj/2bPTuB/5lnDVsE2PQ+ysljjeKbq
-         7cdQ==
-X-Gm-Message-State: AAQBX9dP4XDZGUvoN4oomMuWugyL7IA/VjKkg0uVycVkgdpgBW5oYGxv
-        zeD6Ek7PWm/GxuJ6iXJqjXl/9QZYt62iw1cBexUe8OJvEF/m
-X-Google-Smtp-Source: AKy350aEVWhrzNmJ+fgfBL5/m13X6W0SCZpEkb+Sk3T5iUyme2M85gnGSDWv06uZL745HN8sz+s3nWlgEdCp
-X-Received: by 2002:a2e:b2ce:0:b0:2a7:80ee:fa78 with SMTP id 14-20020a2eb2ce000000b002a780eefa78mr3156000ljz.51.1681316493244;
-        Wed, 12 Apr 2023 09:21:33 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id t19-20020a2e8e73000000b002a77614d960sm2108109ljk.62.2023.04.12.09.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 09:21:33 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 4/4] selftests: xsk: Add tests for 8K and 9K frame sizes
-Date:   Wed, 12 Apr 2023 18:21:14 +0200
-Message-Id: <20230412162114.19389-5-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230412162114.19389-1-kal.conley@dectris.com>
-References: <20230412162114.19389-1-kal.conley@dectris.com>
+        with ESMTP id S229482AbjDLQaV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 12:30:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5278D4228;
+        Wed, 12 Apr 2023 09:30:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC1B762D59;
+        Wed, 12 Apr 2023 16:30:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3871C433EF;
+        Wed, 12 Apr 2023 16:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681317019;
+        bh=xr8xMxEDBkUnuwk9S5+wT+dGX4efZJI50h6/870XpHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hRbRHWLluhYDIaIvsIQXLloQQ/siu96TaNjy0ww5ksO0UlO9ktx1aSBDZFPu6iYtN
+         dTvn5JH7nOVAYdF1HM+xlDaAigE69U8FxWtateOyDJWDAM8uMFqoTmRGQL8oYHBequ
+         t2/UzX001+VmzJcVg8enNLaEFrhPmQn2fZNFCmcPSp1AS0IWAdu6LgqX1Yt8mG7hBt
+         kM5Q+JvrI6HfpWan8u33h/DhGBPAjf+4xPzD+OdO5K71FW0lCN0Jdz5GF4pbJmMyWu
+         xZB+QXmFOioMeDdg3Gq0o5uYHXvBa/wUdXC2yVdUK6muNx/YjZBBgGQu+lDePTOZ6J
+         AODuyRJAYJAYw==
+Date:   Wed, 12 Apr 2023 09:30:16 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Tianyi Liu <i.pear@outlook.com>
+Cc:     acme@kernel.org, alan.maguire@oracle.com, alexandref75@gmail.com,
+        bpf@vger.kernel.org, dxu@dxuuu.xyz, jforbes@redhat.com,
+        linux-kernel@vger.kernel.org, olsajiri@gmail.com,
+        peterz@infradead.org, ptalbert@redhat.com, yhs@fb.com
+Subject: Re: [PATCH] vmlinux.lds.h: Force-align ELF notes section to four
+ bytes
+Message-ID: <20230412163016.5p7wve3meeahdecp@treble>
+References: <20230411170058.7677oximl7oq4hkv@treble>
+ <SY4P282MB10847ED9277ECA2E7B8A52779D9B9@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SY4P282MB10847ED9277ECA2E7B8A52779D9B9@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests:
-- RUN_TO_COMPLETION_8K_FRAME_SIZE: frame_size=8192 (aligned)
-- UNALIGNED_9K_FRAME_SIZE: frame_size=9000 (unaligned)
+On Wed, Apr 12, 2023 at 03:10:14PM +0800, Tianyi Liu wrote:
+> On Tue, Apr 11, 2023 at 17:00 , Josh Poimboeuf wrote:
+> > On Tue, Feb 14, 2023 at 02:33:02PM +0800, Tianyi Liu wrote:
+> > > > LLVM_OBJCOPY=objcopy pahole -J --btf_gen_floats -j
+> > > > --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
+> > > > .tmp_vmlinux.btf
+> > > > btf_encoder__encode: btf__dedup failed!
+> > > > Failed to encode BTF
+> > > >
+> > > > Thanks,
+> > > >
+> > >
+> > > I encountered the same problem when building a new kernel and I found some
+> > > reasons for the error.
+> > >
+> > > In short, enabling CONFIG_X86_KERNEL_IBT will change the order of records in
+> > > .notes section. In addition, due to historical problems, the alignment of
+> > > records in the .notes section is not unified, which leads to the inability of
+> > > gelf_getnote() to read the records after the wrong one.
+> > 
+> > Alexandre, Tianyi, are you still seeing this issue with the latest
+> > dwarves?  If so can you confirm the below patch fixes it?
+> > 
+> 
+> Josh, first of all, thank you very much for your help. However, this patch
+> doesn't work in my environment. I am using gcc 12.2.1 20230201.
+> After compiling, when I use readelf -S to view ELF sections,
+> the align of .notes section is still 8:
+> 
+> $ readelf -S .tmp_vmlinux.btf
+> [20] .notes            NOTE             ffffffff8250b570  0170b570
+>      0000000000000084  0000000000000000   A       0     0     8
 
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 27 insertions(+)
+Hm, weird.
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 7eccf57a0ccc..86797de7fc50 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -1841,6 +1841,17 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_8K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 8192;
-+		test->ifobj_rx->umem->frame_size = 8192;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_RX_POLL:
- 		test->ifobj_rx->use_poll = true;
- 		test_spec_set_name(test, "POLL_RX");
-@@ -1904,6 +1915,20 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		if (!testapp_unaligned(test))
- 			return;
- 		break;
-+	case TEST_TYPE_UNALIGNED_9K_FRAME:
-+		if (!hugepages_present(test->ifobj_tx)) {
-+			ksft_test_result_skip("No 2M huge pages present.\n");
-+			return;
-+		}
-+		test_spec_set_name(test, "UNALIGNED_9K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 9000;
-+		test->ifobj_rx->umem->frame_size = 9000;
-+		test->ifobj_tx->umem->unaligned_mode = true;
-+		test->ifobj_rx->umem->unaligned_mode = true;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, PKT_SIZE);
-+		test->ifobj_rx->pkt_stream->use_addr_for_fill = true;
-+		testapp_validate_traffic(test);
-+		break;
- 	case TEST_TYPE_HEADROOM:
- 		testapp_headroom(test);
- 		break;
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 919327807a4e..7f52f737f5e9 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -69,12 +69,14 @@ enum test_mode {
- enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
- 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
-+	TEST_TYPE_RUN_TO_COMPLETION_8K_FRAME,
- 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
- 	TEST_TYPE_RX_POLL,
- 	TEST_TYPE_TX_POLL,
- 	TEST_TYPE_POLL_RXQ_TMOUT,
- 	TEST_TYPE_POLL_TXQ_TMOUT,
- 	TEST_TYPE_UNALIGNED,
-+	TEST_TYPE_UNALIGNED_9K_FRAME,
- 	TEST_TYPE_ALIGNED_INV_DESC,
- 	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
- 	TEST_TYPE_UNALIGNED_INV_DESC,
+> > Apparently the latest dwarves release fixes it on Fedora Rawhide [1],
+> > does anybody know if there a specific dwarves and/or libbpf change for
+> > this?
+> > 
+> 
+> It has been fixed in dwarves[1], but it may just be a coincidence.
+
+So just to confirm, the btf__dedup error is gone for you with the latest
+dwarves?
+
 -- 
-2.39.2
-
+Josh
