@@ -2,150 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF7F6DFC15
-	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 19:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327B96DFC36
+	for <lists+bpf@lfdr.de>; Wed, 12 Apr 2023 19:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjDLRAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 13:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S230283AbjDLREe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 13:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjDLRAj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 13:00:39 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD554A24C
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 10:00:10 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id o9-20020a170902d4c900b001a2bef29d53so15931104plg.7
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 10:00:10 -0700 (PDT)
+        with ESMTP id S229913AbjDLREY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 13:04:24 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323D67EE3
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 10:03:55 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-94a34d38291so227252766b.3
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 10:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681318805;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpKB7SqPD1WEJcm5mP/ZS9AV7kRHrr2cruyzGPdJnmY=;
-        b=0dJ9X7z1jh25oYOHdd+ljdJXvOW0dD6zhgL9qARYaY8+1ZTVplJLk+y5Aqe0axj3f7
-         rVda5IIvH/u9Mqx1YM4d0qjJrdRXlxwNLJlT3miGS7NcBeAWuFzmKipOZKiFXsHiIL6T
-         CaKVTz/SjKtNGnp7avxMqpahnjuoTUT2P5T8gW/+RyXl9cT27GQpQ51fkvGdzeQQl5cD
-         +fQ5My91JFTUE3tWCvY92nPuUsiGOO+mEOjRSnKlR/K+ZOhQwo6p0Yt8Zeb3AIof9tx9
-         0Pt0VWQRjjZjTU1US/MsJ9d5y5H4C3VMfArkbKJhdzLnma7r7K7IN7gX3VGgvRhe2V/N
-         q8OQ==
+        d=gmail.com; s=20221208; t=1681319027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5LHiWvQPuJdDb9wJongl+n/VNV9AJ4eHylW4Q6WC3M4=;
+        b=CMbdJ1MM3kaNCiCIev0R7XAwBcWknrocOW2yQ6tPZ4a4tTKg35sVqrhCC6DQQ7a3zX
+         GQiOXU47tNqSJmlWAigAHac/AbBinb5GOPxVF//UE287s7u08qsXXzF808xlbrf0ma6d
+         rbTCrgAJqcaOhnxaIgeYIo6e3N7CJioPSrZcRmHNScfcwdReK6LD1Ob6OwQHkYYUiX+b
+         2Qf1J08cER16WpnNLOhkeyy/LOZGIexlMVC58nZKfbzEVY4uBJ6boR8erdKZGhxTUodk
+         Q0FUCfknW5I7uluDn+e2KaGHGvJZ58RqFh3Bb/My7k+tQauQYZXLRS1dxtohmWl6InQv
+         PmMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681318805;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpKB7SqPD1WEJcm5mP/ZS9AV7kRHrr2cruyzGPdJnmY=;
-        b=Ywx0q0HIsT95O9xoh+H04rQJkINaWoDXLPlEIFe5DylivlAW3MHRLwml8CgHcFf8W0
-         bkqToxCH5O/QKUPMQH1eTuUuTYQ5le+4M99sCrngJXqw5X1M8Imn8Yg8Kqjc+Cgj07ry
-         HL1z/MSmHCRdU0NpEUKDcyTEkA8/BsLp7lqVBfk74/davL/LKA4OimsxFFvvaMVSnXxd
-         pbIXhak2/6gT1ZVNHhaZ4oSnXueHGzhdDU/k3Gz/wG++vZ6ANKnymSl73KLTzjno7qUb
-         +MwdXF5llx51Dsr5TZXjfMkhA+G73J8Fi6lIy5XUHDmwKwIcx29S7HuXErOz4yXutrel
-         JXrA==
-X-Gm-Message-State: AAQBX9c+TSMjJI4bG9rhVJa8RyfdZhs0WCG7O3N+p5lh/0ZNELzpu93w
-        5AryHvUYeauaT7eeZ/zvaLNeFIQ=
-X-Google-Smtp-Source: AKy350bqCRuf2+nw6G4Xo/+RMWx8JZZGxbP78hg7vN5q2J6hphsLxNUKDMeaTSlnL3vx8TUht7eSaik=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:60c2:0:b0:51a:52b1:1b70 with SMTP id
- r2-20020a6560c2000000b0051a52b11b70mr775383pgv.10.1681318805239; Wed, 12 Apr
- 2023 10:00:05 -0700 (PDT)
-Date:   Wed, 12 Apr 2023 10:00:03 -0700
-In-Reply-To: <20230412094235.589089-4-yoong.siang.song@intel.com>
-Mime-Version: 1.0
-References: <20230412094235.589089-1-yoong.siang.song@intel.com> <20230412094235.589089-4-yoong.siang.song@intel.com>
-Message-ID: <ZDbjkwGS5L9wdS5h@google.com>
-Subject: Re: [PATCH net-next v3 3/4] net: stmmac: add Rx HWTS metadata to XDP
- receive pkt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Song Yoong Siang <yoong.siang.song@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1681319027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5LHiWvQPuJdDb9wJongl+n/VNV9AJ4eHylW4Q6WC3M4=;
+        b=d0Y1vCXRSfivngNG3zbCjoZ7Yro0tdyNVYG3aZn85L9bmly+RyHL3dscosbE1cUkSD
+         0f4xkAxvvn84MlADKmoMxLT3e9OgiU6EpDciQ38goUDWfvm4ujoggNhGfbT9YrwNBXPI
+         TxNjEkYPr7UgA9lkts5p1jTnaFXgBxn2Th7rGOSuDVZ1HUYR0Bj4AG7zakp70mauHlCK
+         xRQXYPAtoeQlyXatHkR421CNoor0j8pmQg9EUK+2KQf8HUdQWMAkg+jYr044/TMIQZ9T
+         GMVCHALEu50qvNIPgUAojUfamJtKwaWgbD/AKbmpx17YaXhkvktQXNYVNici/MdOJKND
+         kAug==
+X-Gm-Message-State: AAQBX9fQZHYEV8Xil8cOKEaw5bg26LU5lkZTpuinYU3cvd4i0+CZQByJ
+        /5gS6deUmr3PtuIT+PJo58RBnzTtHLJKVf6m2W8=
+X-Google-Smtp-Source: AKy350a4wtIKg9k0AXR1vSB/97TdfhyboiPm/qCcFzLMHxc9Bc1FD0am5L6k/BuHCqP007sN+bzIEFrKwM/ZyWkmguE=
+X-Received: by 2002:a50:9f87:0:b0:505:47d:29b5 with SMTP id
+ c7-20020a509f87000000b00505047d29b5mr1472340edf.1.1681319027511; Wed, 12 Apr
+ 2023 10:03:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230406234205.323208-1-andrii@kernel.org> <CAN+4W8hhrJznohpbkx0wOt8J+S5HeBTaWhfy+=VgqGi3OjnKqg@mail.gmail.com>
+In-Reply-To: <CAN+4W8hhrJznohpbkx0wOt8J+S5HeBTaWhfy+=VgqGi3OjnKqg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 12 Apr 2023 10:03:35 -0700
+Message-ID: <CAEf4Bzbe4Lzbb91__CH3p-RSp6O22tVO0YpYeSn-fB8K3W72KA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 00/19] BPF verifier rotating log
+To:     Lorenz Bauer <lmb@isovalent.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        timo@incline.eu, robin.goegge@isovalent.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/12, Song Yoong Siang wrote:
-> Add receive hardware timestamp metadata support via kfunc to XDP receive
-> packets.
-> 
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 +++
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 26 ++++++++++++++++++-
->  2 files changed, 28 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index ac8ccf851708..826ac0ec88c6 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -94,6 +94,9 @@ struct stmmac_rx_buffer {
->  
->  struct stmmac_xdp_buff {
->  	struct xdp_buff xdp;
-> +	struct stmmac_priv *priv;
-> +	struct dma_desc *p;
-> +	struct dma_desc *np;
->  };
->  
->  struct stmmac_rx_queue {
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index f7bbdf04d20c..ed660927b628 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -5315,10 +5315,15 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->  
->  			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
->  			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
-> -					 buf->page_offset, buf1_len, false);
-> +					 buf->page_offset, buf1_len, true);
->  
->  			pre_len = ctx.xdp.data_end - ctx.xdp.data_hard_start -
->  				  buf->page_offset;
-> +
-> +			ctx.priv = priv;
-> +			ctx.p = p;
-> +			ctx.np = np;
-> +
->  			skb = stmmac_xdp_run_prog(priv, &ctx.xdp);
->  			/* Due xdp_adjust_tail: DMA sync for_device
->  			 * cover max len CPU touch
-> @@ -7071,6 +7076,23 @@ void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable)
->  	}
->  }
->  
-> +static int stmmac_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
-> +{
-> +	const struct stmmac_xdp_buff *ctx = (void *)_ctx;
-> +
-> +	*timestamp = 0;
-> +	stmmac_get_rx_hwtstamp(ctx->priv, ctx->p, ctx->np, timestamp);
-> +
+On Wed, Apr 12, 2023 at 8:31=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> wr=
+ote:
+>
+> On Fri, Apr 7, 2023 at 12:42=E2=80=AFAM Andrii Nakryiko <andrii@kernel.or=
+g> wrote:
+> >
+> > This patch set changes BPF verifier log behavior to behave as a rotatin=
+g log,
+> > by default. If user-supplied log buffer is big enough to contain entire
+> > verifier log output, there is no effective difference. But where previo=
+usly
+> > user supplied too small log buffer and would get -ENOSPC error result a=
+nd the
+> > beginning part of the verifier log, now there will be no error and user=
+ will
+> > get ending part of verifier log filling up user-supplied log buffer.  W=
+hich
+> > is, in absolute majority of cases, is exactly what's useful, relevant, =
+and
+> > what users want and need, as the ending of the verifier log is containi=
+ng
+> > details of verifier failure and relevant state that got us to that fail=
+ure. So
+> > this rotating mode is made default, but for some niche advanced debuggi=
+ng
+> > scenarios it's possible to request old behavior by specifying additiona=
+l
+> > BPF_LOG_FIXED (8) flag.
+>
+> I just ran selftest/bpf/test_verifier_log on top of bpf-next which now
+> fails with:
+>
+> Test log_level 0...
+> Test log_size < 128...
+> ERROR: Program load returned: ret:-1/errno:28, expected ret:-1/errno:22
+>
+> Seems like these tests are now superseded by test_progs?
 
-[..]
 
-> +	if (*timestamp)
-
-Nit: does it make sense to change stmmac_get_rx_hwtstamp to return bool
-to indicate success/failure? Then you can do:
-
-if (!stmmac_get_rx_hwtstamp())
-	reutrn -ENODATA;
+I didn't even know we have a separate test_verifier_log binary. It
+seems like newly added tests in test_prog indeed cover all the same
+use cases. I'll send a patch to remove test_verifier_log.c. Thanks for
+spotting this!
