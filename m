@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0900F6E04E2
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8B96E04ED
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjDMCxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 22:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
+        id S230031AbjDMCyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 22:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjDMCxG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 22:53:06 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF0C19A7
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:52:59 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id u4so9342707qvj.10
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:52:59 -0700 (PDT)
+        with ESMTP id S229989AbjDMCy2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 22:54:28 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA1172BB;
+        Wed, 12 Apr 2023 19:54:08 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id m21so3983502qtg.0;
+        Wed, 12 Apr 2023 19:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681354379; x=1683946379;
+        d=gmail.com; s=20221208; t=1681354447; x=1683946447;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HiB7A8AuZoCmy0cdJV+Hevxq7uUYdvaYfcw9wn9xlFM=;
-        b=BXH0+7BnaARuyjWjfuCcv3jty2ea/oxZ3ZN3XRl0h0kOw0oXOHbRD6b4zdw84o6uXP
-         XKabY5N7EDVxkHql/OIzzvHtdeBIiuc6pbcAqQpYYJG9tqXHXHu0+8y37D8WOi9EupyC
-         12bS5TNKYQJGTTAJPF5zcOeLnNlzlwf61l9EI5NC1ZvQPP9jtiRmZl9puBfkfizzRB4y
-         c7tj2Jw3uA8C1OnukwvIOOUdOrD0xAOyYAKxQ8IVCrC1zpAzZWZFTHXeCnRHg8KtanxS
-         usUb0NCxCqr83ONtDfcjkSCqbuC6F+Db+hNGngIVN4UmGNvlzQJla60t7FL48FFeQHpA
-         wDHQ==
+        bh=g2t5C+Nqj4QS3C0XZLg8gc9PHSRT4VaS9b09a++MWfk=;
+        b=H5gJphsHAwIoG8F8IPocWHucXUa0g+vKZlyeNJfcuM+wEr4heqtpncoeeAB33F7gfx
+         lZxuGAZW35YekqqYReHof63AKHDroMAJZ8QsY8utmhXD6xcvCEwnikYHzR+RXvResyWT
+         0HOk5vTOb0IMSTzR9KMOyRtsdVYtgKkAdpOrlkDg7ma4MQi5pgn9HnKCxWznt3uFEIoC
+         bXBPQXNJ2HM5153hERc5B4DQDrTBoVb11VhnmXv6qoOJ1vZhsbjs5BdtM/qoedXn17vL
+         B8YOmgB6qWZ/fhsJhMN/F99aMam6f7+EjnaixmqO/+YLTLOnXw/7YwWvsDuAejdM4oKR
+         ic0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681354379; x=1683946379;
+        d=1e100.net; s=20221208; t=1681354447; x=1683946447;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HiB7A8AuZoCmy0cdJV+Hevxq7uUYdvaYfcw9wn9xlFM=;
-        b=c63cazKwMmIT57XECO5EP2AfBmre7sIB+fSzs3ArW1ZHgwC9gF1lfWAPuF0dePaDAp
-         PsGLQxbiaN/fsJb0jqkJ3bE+3D/mpOykDTBXDG4JSBiz5oRAgXPVtfs5iTePObS4chwl
-         Cv888IzAqpYY6n9K9I/N7Zs6IzQOErbVsjhi5Vk8eeo8ymxgQ2j7OxkXJfhQwz7iymBE
-         6XhNAmUPiBGKn9oEhHhpR/FmVvrSo8qlq97jUorlEqweOV+TnrgES1npU9S7S2+y7pfe
-         xNVl13uVxltN4u6LxbuDIMy6KFVAtIXgyt4jPxjRMVlPvCS+fd2xFamtOhKXNTfRdMF1
-         zBUA==
-X-Gm-Message-State: AAQBX9dXJoZ11Uw6pnqFt3TSCklDLZvc4Ib0dzmPeJZ8RLFzaWMecArT
-        9xfVLi2881E5/niSKii2/hU=
-X-Google-Smtp-Source: AKy350YGXE7zq9YVgZuHAm5KmdXRmLdPaxyeHnMm8UWbgqnp9R7aNBZoSPsVk8kIYxJFSadAtq7fZg==
-X-Received: by 2002:a05:6214:2683:b0:5a9:ed32:1765 with SMTP id gm3-20020a056214268300b005a9ed321765mr1269139qvb.23.1681354378904;
-        Wed, 12 Apr 2023 19:52:58 -0700 (PDT)
+        bh=g2t5C+Nqj4QS3C0XZLg8gc9PHSRT4VaS9b09a++MWfk=;
+        b=YJF2/0JG8Y0X2d7WoTI1nDNr/4zossoda6edx0sGgjvF5gN3oX52kXsqgTR3saC6OU
+         VNcwcpmFYi1FtakpWLXS/Igs/gPrP8M6LOdAUcFVHvgunDd6XHEUcD3/tgrmIycch+Up
+         7e/SOX5zAZzC/HLGnI0CXCmFammWE3hSR2dE+1bVyn4dmT1S84vvJ7321Z7wXWbGyw3y
+         Wj8gyK+rbxlBKVG3SLCQA4EWVJkBUPXR4EDwOA+gaoXEifiUGkkZw70Dp/pudDAabGAF
+         31ebuiEWRI9HnGwC52PgXG90EeXM75T/ZAMl5M6rcOd/MWF/pNJfnNjWjb1+2CYdVw+E
+         wHnQ==
+X-Gm-Message-State: AAQBX9fKkqfbfHaGj1oWpz2imvxobWgOuANRWsxn7EFnmitI7ZiUrJvr
+        ENupFYgqbWRl/ehiZM46bFE=
+X-Google-Smtp-Source: AKy350Y7fjHmntc5+39FLCvIUjdSvhmE5e5Nve36uzWoEdKWr2JZpM0/lPusvIymRwunVDmDUsn59A==
+X-Received: by 2002:ac8:5d89:0:b0:3e8:38fc:e8cf with SMTP id d9-20020ac85d89000000b003e838fce8cfmr1071357qtx.22.1681354447124;
+        Wed, 12 Apr 2023 19:54:07 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:c:fe2:5400:4ff:fe65:32a4])
-        by smtp.gmail.com with ESMTPSA id pp26-20020a056214139a00b005dd8b934571sm121424qvb.9.2023.04.12.19.52.58
+        by smtp.gmail.com with ESMTPSA id m9-20020ac807c9000000b003b9a73cd120sm188728qth.17.2023.04.12.19.54.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 19:52:58 -0700 (PDT)
+        Wed, 12 Apr 2023 19:54:06 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org
-Cc:     bpf@vger.kernel.org, Yafang <laoar.shao@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: [PATCH bpf-next] bpf: Add preempt_count_{sub,add} into btf id deny list
-Date:   Thu, 13 Apr 2023 02:52:48 +0000
-Message-Id: <20230413025248.79764-1-laoar.shao@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Subject: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
+Date:   Thu, 13 Apr 2023 02:53:50 +0000
+Message-Id: <20230413025350.79809-1-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,65 +72,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yafang <laoar.shao@gmail.com>
+In our container environment, we are using EDT-bpf to limit the egress
+bandwidth. EDT-bpf can be used to limit egress only, but can't be used
+to limit ingress. Some of our users also want to limit the ingress
+bandwidth. But after applying EDT-bpf, which is based on clsact qdisc,
+it is impossible to limit the ingress bandwidth currently, due to some
+reasons,
+1). We can't add ingress qdisc
+The ingress qdisc can't coexist with clsact qdisc as clsact has both
+ingress and egress handler. So our traditional method to limit ingress
+bandwidth can't work any more.
+2). We can't redirect ingress packet to ifb with bpf
+By trying to analyze if it is possible to redirect the ingress packet to
+ifb with a bpf program, we find that the ifb device is not supported by
+bpf redirect yet.
 
-The recursion check in __bpf_prog_enter* and __bpf_prog_exit*
-leave preempt_count_{sub,add} unprotected. When attaching trampoline to
-them we get panic as follows,
+This patch tries to resolve it by supporting redirecting to ifb with bpf
+program.
 
-[  867.843050] BUG: TASK stack guard page was hit at 0000000009d325cf (stack is 0000000046a46a15..00000000537e7b28)
-[  867.843064] stack guard page: 0000 [#1] PREEMPT SMP NOPTI
-[  867.843067] CPU: 8 PID: 11009 Comm: trace Kdump: loaded Not tainted 6.2.0+ #4
-[  867.843100] Call Trace:
-[  867.843101]  <TASK>
-[  867.843104]  asm_exc_int3+0x3a/0x40
-[  867.843108] RIP: 0010:preempt_count_sub+0x1/0xa0
-[  867.843135]  __bpf_prog_enter_recur+0x17/0x90
-[  867.843148]  bpf_trampoline_6442468108_0+0x2e/0x1000
-[  867.843154]  ? preempt_count_sub+0x1/0xa0
-[  867.843157]  preempt_count_sub+0x5/0xa0
-[  867.843159]  ? migrate_enable+0xac/0xf0
-[  867.843164]  __bpf_prog_exit_recur+0x2d/0x40
-[  867.843168]  bpf_trampoline_6442468108_0+0x55/0x1000
-...
-[  867.843788]  preempt_count_sub+0x5/0xa0
-[  867.843793]  ? migrate_enable+0xac/0xf0
-[  867.843829]  __bpf_prog_exit_recur+0x2d/0x40
-[  867.843837] BUG: IRQ stack guard page was hit at 0000000099bd8228 (stack is 00000000b23e2bc4..000000006d95af35)
-[  867.843841] BUG: IRQ stack guard page was hit at 000000005ae07924 (stack is 00000000ffd69623..0000000014eb594c)
-[  867.843843] BUG: IRQ stack guard page was hit at 00000000028320f0 (stack is 00000000034b6438..0000000078d1bcec)
-[  867.843842]  bpf_trampoline_6442468108_0+0x55/0x1000
-...
+Ingress bandwidth limit is useful in some scenarios, for example, for the
+TCP-based service, there may be lots of clients connecting it, so it is
+not wise to limit the clients' egress. After limiting the server-side's
+ingress, it will lower the send rate of the client by lowering the TCP
+cwnd if the ingress bandwidth limit is reached. If we don't limit it,
+the clients will continue sending requests at a high rate.
 
-That is because in __bpf_prog_exit_recur, the preempt_count_{sub,add} are
-called after prog->active is decreased.
-
-Fixing this by adding these two functions into btf ids deny list.
-
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Yafang <laoar.shao@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/core/dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3660b57..8159bd7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -18651,6 +18651,10 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
- #if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
- BTF_ID(func, rcu_read_unlock_strict)
- #endif
-+#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
-+BTF_ID(func, preempt_count_add)
-+BTF_ID(func, preempt_count_sub)
-+#endif
- BTF_SET_END(btf_id_deny)
- 
- static bool can_be_sleepable(struct bpf_prog *prog)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c785319..da6b196 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3956,6 +3956,7 @@ int dev_loopback_xmit(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 		return NULL;
+ 	case TC_ACT_REDIRECT:
+ 		/* No need to push/pop skb's mac_header here on egress! */
++		skb_set_redirected(skb, skb->tc_at_ingress);
+ 		skb_do_redirect(skb);
+ 		*ret = NET_XMIT_SUCCESS;
+ 		return NULL;
+@@ -5138,6 +5139,7 @@ static __latent_entropy void net_tx_action(struct softirq_action *h)
+ 		 * redirecting to another netdev
+ 		 */
+ 		__skb_push(skb, skb->mac_len);
++		skb_set_redirected(skb, skb->tc_at_ingress);
+ 		if (skb_do_redirect(skb) == -EAGAIN) {
+ 			__skb_pull(skb, skb->mac_len);
+ 			*another = true;
 -- 
 1.8.3.1
 
