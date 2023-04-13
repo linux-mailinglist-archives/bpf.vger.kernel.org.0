@@ -2,95 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 128C46E0DFF
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 15:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7B86E0DE0
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 15:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjDMNGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 09:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        id S229904AbjDMNAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 09:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjDMNGg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 09:06:36 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A64EA253
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 06:06:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id ud9so37058981ejc.7
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 06:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1681391187; x=1683983187;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbA132ZTxFMmd4gH7ayJTiUjuR7bW8K5R/39kGlGoyo=;
-        b=rpd0J7+KyBTs/v1P6ImEUVYk9NzcZqW1JbwpSJniT0VY92fjxDAEJmVFJ0MYkqsz4m
-         v4LiETVmaOHLPW3BQdlLGcXZliO/HNFA5c/72DDeDJIXoe1Wtk0q4dnlGeC8GOZahpBv
-         VrLNjBQmj3CaSJYK4uVL7/pDww6VyBCqINNlE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681391187; x=1683983187;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pbA132ZTxFMmd4gH7ayJTiUjuR7bW8K5R/39kGlGoyo=;
-        b=XJ9/cXCMFOu3do8iqgYUfEl6dQOmlKmnL+n1pb7/mPWtFkUH8EW6K0chMV1K+p0jZb
-         2JWvMs+TVM7dXtNNxqqJzXJcLD7gJMqd7wLSJZ3A16ykfELoVyWqw5gwW8z/xWY2XpEm
-         R1y0dC22pQhMqVFq+Sjg2ZGbLFIex4g4i9ptQtTEQTcjmU9ej0tXgo1z5Sx88uywIrXh
-         1spUTUktqkshWkrdK2p3pOMFxuaQzAMab4TuJbeVcxs/kytWCX4RrMl5Qjjr2/noWq1s
-         fU8AVE4EPcjeOjtL/y0L7dsxXMQC2kY0xB4b9r+SKipZWzm5Q7BpUQwDuOY2Gu5821cz
-         A4gQ==
-X-Gm-Message-State: AAQBX9cABB2uDbvCEv+/3XVC5Wt8YmCAFqkaDBRIEERXSeM7KlpbsSFq
-        iaLmcmyT2jPJtI/PRQi+UDGP3Q==
-X-Google-Smtp-Source: AKy350bO3OaeaNPjrERyKBdVQIOQXoe+axGQ4BhweLBG9WYBfWNyp4PyjG9dnbIqj00J9jxL5iUvgw==
-X-Received: by 2002:a17:907:238d:b0:94e:83d3:1b51 with SMTP id vf13-20020a170907238d00b0094e83d31b51mr1702389ejb.23.1681391186878;
-        Thu, 13 Apr 2023 06:06:26 -0700 (PDT)
-Received: from cloudflare.com (79.191.181.173.ipv4.supernova.orange.pl. [79.191.181.173])
-        by smtp.gmail.com with ESMTPSA id vf18-20020a170907239200b0094be906a155sm958911ejb.130.2023.04.13.06.06.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Apr 2023 06:06:26 -0700 (PDT)
-References: <20230407171654.107311-1-john.fastabend@gmail.com>
- <20230407171654.107311-7-john.fastabend@gmail.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, will@isovalent.com
-Subject: Re: [PATCH bpf v6 06/12] bpf: sockmap, wake up polling after data copy
-Date:   Thu, 13 Apr 2023 15:00:02 +0200
-In-reply-to: <20230407171654.107311-7-john.fastabend@gmail.com>
-Message-ID: <87cz48gcdq.fsf@cloudflare.com>
+        with ESMTP id S229708AbjDMNAU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 09:00:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8885E4C2D;
+        Thu, 13 Apr 2023 06:00:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C54B63E1E;
+        Thu, 13 Apr 2023 13:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6E7DFC4339B;
+        Thu, 13 Apr 2023 13:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681390818;
+        bh=zRXU0ckp3oOYqxg3ICueDA/QkpSJMCJXnQu1Pq2cq3k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Y6XCgTW47AjXFnC2g+HY33qv4dsGkEZsXWJfPYI8SAqNYxR2/dUq1UND8c9vALZwo
+         2Mo98suZ80eZJCUB0l/RwFEVuiuBvMUKUS12uaIZkzD4voo+taTchqA81wV7kbvtbe
+         xzR0HvP9wmPZOGmeW3v0sgQmQWJrozBSPs0oVgpEYNRFCDoaQGr49NjlSv/9zvCB3Z
+         aGJgP6oa/J4ydQ6OKrYvvA+8xzCwp2k6+mw0KZoSmr/rDYKMzlb3tBLw8h6nfPBSLE
+         08wO7aDJa4eaCDYGjR5DF8vYtdqfDd5us+4ylRoDZ9XaJu+ZC6VKzd4WA+SMyT4PWX
+         4LPNIa80W9k4g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 52BA3E4508F;
+        Thu, 13 Apr 2023 13:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] xsk: Simplify xp_aligned_validate_desc
+ implementation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168139081832.26604.18081207026429797036.git-patchwork-notify@kernel.org>
+Date:   Thu, 13 Apr 2023 13:00:18 +0000
+References: <20230410121841.643254-1-kal.conley@dectris.com>
+In-Reply-To: <20230410121841.643254-1-kal.conley@dectris.com>
+To:     Kal Cutter Conley <kal.conley@dectris.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 07, 2023 at 10:16 AM -07, John Fastabend wrote:
-> When TCP stack has data ready to read sk_data_ready() is called. Sockmap
-> overwrites this with its own handler to call into BPF verdict program.
-> But, the original TCP socket had sock_def_readable that would additionally
-> wake up any user space waiters with sk_wake_async().
->
-> Sockmap saved the callback when the socket was created so call the saved
-> data ready callback and then we can wake up any epoll() logic waiting
-> on the read.
->
-> Note we call on 'copied >= 0' to account for returning 0 when a FIN is
-> received because we need to wake up user for this as well so they
-> can do the recvmsg() -> 0 and detect the shutdown.
->
-> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Mon, 10 Apr 2023 14:18:41 +0200 you wrote:
+> Perform the chunk boundary check like the page boundary check in
+> xp_desc_crosses_non_contig_pg(). This simplifies the implementation and
+> reduces the number of branches.
+> 
+> Signed-off-by: Kal Conley <kal.conley@dectris.com>
 > ---
+>  net/xdp/xsk_queue.h | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 
-One observation. On the happy path, we will be hitting the recently
-introduced sk_data_ready tracepoint [1] twice. However, we have the
-caller IP there, so we can differentiate.
+Here is the summary with links:
+  - [bpf-next] xsk: Simplify xp_aligned_validate_desc implementation
+    https://git.kernel.org/bpf/bpf-next/c/0c5f48599bed
 
-[1] 40e0b0908142 ("net/sock: Introduce trace_sk_data_ready()")
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+
