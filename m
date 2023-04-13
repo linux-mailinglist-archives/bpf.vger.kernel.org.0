@@ -2,128 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A046E1131
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 17:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D976E11ED
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 18:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjDMPdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 11:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        id S230003AbjDMQNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 12:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjDMPdn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 11:33:43 -0400
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23999210A
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 08:33:41 -0700 (PDT)
-Received: by mail-il1-f205.google.com with SMTP id c13-20020a056e020bcd00b00325da077351so9279226ilu.11
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 08:33:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681400020; x=1683992020;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CH/wnFKEHw/ZuUNinYZbwxexwZCPvWpvfmRYHTUngNI=;
-        b=XcCRplOeB5ogEAjPA/Z+SV1rHadIehI9jOU3/Hd5RkHsggs9X3ucJ5UM0SX+qXNZkq
-         lawHekdLIV80tN6Zv3aR6/miPiXJ5jInDgMDHSuS8D9CNlY47OJxf7yk0YawxWvQJRHu
-         n/L4jV8ZPrmF6dOa6/LSe4rn6Zlh4oFZdtqs8qJ/foT/wMZwa8tSD+QYRJJQmEmuiyBB
-         JAw0t+uYazDHK+Tm/MoQMBhG7BJ9jnbWreCUZxPfMkDYZzH2gOFvMDgaTiychYnMZVED
-         mE2sMJ9uuNVJhERBNx3A5YGDzR0NJvgq2KJe4PFPC1+Q0E/lC3zC0SrYhG8OJFxH1R3P
-         QMjw==
-X-Gm-Message-State: AAQBX9et0qaWBEpIVjLHDIEQCkRh6BD3P3kOGSEQdsB0VETiGXWpGk/J
-        CJbFUSxep4aP9d2THF1RW8aaFlCCtrIJf6ML6Io8t9OTRVc2
-X-Google-Smtp-Source: AKy350a3x3f7fQO9a3dq+ppYo28D+FGUOcXxPn1gj+dUywbekZ0BiR2BfdVO3s1CGK1hpLHwcx9y6soegnGf2R8EFT4KerjA14Lx
+        with ESMTP id S230088AbjDMQNQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 12:13:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A77CF;
+        Thu, 13 Apr 2023 09:13:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BFD5863E84;
+        Thu, 13 Apr 2023 16:13:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E4FC433D2;
+        Thu, 13 Apr 2023 16:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681402391;
+        bh=WFL8bYhH3x0BIzgVY6RGVd6JNmx2NXv89vVV8SM0+cc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ThGUbHOH8fqQ+2zNkNTFew5Daiu/16iKwtGhCiJa3mdSq9GK1jjfl3i26AEGxN1xl
+         stauklDJV00CGpkYFObty05OakcsWF7SeYW2d2C+zslEYIw8HlIP2cf8LaAs6hO+rx
+         LHyAK76qlfW640Tqg1JgQMhIeYu8J2Py8/AaCxz6k01NN0tQj7U2lmpCJyC0wOfLuD
+         7reyfktCTyVCS3uIAmJGhPV+cyKqywoldTdf8YDPPMCbjM8/aXlckX8GeH9AGj1CeN
+         +BrRwsDu9pnCDjuvk33IaQnhuSsXwYHnxEzn8aOxuyf5FzLPlo2WneMvM0ZDrDMymT
+         FbcU4tgE6RN/w==
+From:   broonie@kernel.org
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Christian Ehrig <cehrig@cloudflare.com>,
+        Gavin Li <gavinl@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with the net-next tree
+Date:   Thu, 13 Apr 2023 17:12:35 +0100
+Message-Id: <20230413161235.4093777-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:850e:0:b0:40b:d54d:e5d6 with SMTP id
- g14-20020a02850e000000b0040bd54de5d6mr849776jai.5.1681400020453; Thu, 13 Apr
- 2023 08:33:40 -0700 (PDT)
-Date:   Thu, 13 Apr 2023 08:33:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1db9605f939720e@google.com>
-Subject: [syzbot] [bpf?] [net?] WARNING in sock_map_del_link
-From:   syzbot <syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi all,
 
-syzbot found the following issue on:
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-HEAD commit:    d319f344561d mm: Fix copy_from_user_nofault().
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15930c9dc80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78c9d875f0a80d33
-dashboard link: https://syzkaller.appspot.com/bug?extid=49f6cef45247ff249498
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+  include/net/ip_tunnels.h
 
-Unfortunately, I don't have any reproducer for this issue yet.
+between commit:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/229f3623b7df/disk-d319f344.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6da0db75c9aa/vmlinux-d319f344.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/01f022fb9a13/bzImage-d319f344.xz
+  bc9d003dc48c3 ("ip_tunnel: Preserve pointer const in ip_tunnel_info_opts")
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com
+from the net-next tree and commit:
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 7921 at kernel/softirq.c:376 __local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
-Modules linked in:
-CPU: 1 PID: 7921 Comm: syz-executor.4 Not tainted 6.2.0-syzkaller-13249-gd319f344561d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-RIP: 0010:__local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
-Code: 45 bf 01 00 00 00 e8 b1 44 0a 00 e8 9c 41 3d 00 fb 65 8b 05 2c 61 b5 7e 85 c0 74 58 5b 5d c3 65 8b 05 12 2f b4 7e 85 c0 75 a2 <0f> 0b eb 9e e8 e9 41 3d 00 eb 9f 48 89 ef e8 ff 30 18 00 eb a8 0f
-RSP: 0018:ffffc90007bffbe8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000201 RCX: 1ffffffff1cf0736
-RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffff882bf40a
-RBP: ffffffff882bf40a R08: 0000000000000000 R09: ffff88801cc6327b
-R10: ffffed100398c64f R11: 1ffffffff21917f0 R12: ffff88801cc63268
-R13: ffff88801cc63268 R14: ffff8880188ef500 R15: 0000000000000000
-FS:  00007f378f724700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbbc57831b8 CR3: 00000000210ad000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- spin_unlock_bh include/linux/spinlock.h:395 [inline]
- sock_map_del_link+0x2ea/0x510 net/core/sock_map.c:165
- sock_map_unref+0xb0/0x1d0 net/core/sock_map.c:184
- sock_hash_delete_elem+0x1ec/0x2a0 net/core/sock_map.c:945
- map_delete_elem kernel/bpf/syscall.c:1536 [inline]
- __sys_bpf+0x2edc/0x53e0 kernel/bpf/syscall.c:5053
- __do_sys_bpf kernel/bpf/syscall.c:5166 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5164 [inline]
- __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5164
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f378ea8c169
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f378f724168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f378ebabf80 RCX: 00007f378ea8c169
-RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007f378eae7ca1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe9737aebf R14: 00007f378f724300 R15: 0000000000022000
- </TASK>
+  ac931d4cdec3d ("ipip,ip_tunnel,sit: Add FOU support for externally controlled ipip devices")
 
+from the bpf-next tree.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --cc include/net/ip_tunnels.h
+index 255b32a90850a,7912f53caae0b..0000000000000
+--- a/include/net/ip_tunnels.h
++++ b/include/net/ip_tunnels.h
+@@@ -66,15 -73,9 +73,16 @@@ struct ip_tunnel_encap 
+  #define IP_TUNNEL_OPTS_MAX					\
+  	GENMASK((sizeof_field(struct ip_tunnel_info,		\
+  			      options_len) * BITS_PER_BYTE) - 1, 0)
+ +
+ +#define ip_tunnel_info_opts(info)				\
+ +	_Generic(info,						\
+ +		 const struct ip_tunnel_info * : ((const void *)((info) + 1)),\
+ +		 struct ip_tunnel_info * : ((void *)((info) + 1))\
+ +	)
+ +
+  struct ip_tunnel_info {
+  	struct ip_tunnel_key	key;
++ 	struct ip_tunnel_encap	encap;
+  #ifdef CONFIG_DST_CACHE
+  	struct dst_cache	dst_cache;
+  #endif
