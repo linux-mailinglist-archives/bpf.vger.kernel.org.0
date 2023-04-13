@@ -2,149 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB836E1462
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 20:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250F36E14BA
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 20:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjDMSnR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 14:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        id S229575AbjDMS72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 14:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjDMSnM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 14:43:12 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF46B8698;
-        Thu, 13 Apr 2023 11:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=LtpX/2uYYhcqwsIzp51HwOUZ9fsD18rPx6IZajzQMVQ=; b=aOqaWV7fKse3+ve/I7Hvi19ln6
-        38EaB5cWSXAPX4410XQeKrwTf9awU5I1aaaURaBJwg24mZ4jczEwO4PZK2UqWh0r/cErQ7YjrGyj7
-        RdUpf7YITkztOVdCpMKR0VuqMeyfuY7FeX9XMMR+k0AsY3dp7RQP91H0tLBDT+UjI1e3mBaCLKzCC
-        QHv5wlTyuM1YrvM1DIhOuBXYfnH80aYRQksgUPp/Goa9YF7KYkFDnqLa6gpXFanakPm6UcYMyED7I
-        NmB6lvXhPSeJemW4CiZV/ItDhhNx6R4YTqCAi/CqAV2dLerKtBWyccJgo9s1B0oOAMs1EA1VJ/4Rk
-        LTOTi74Q==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pn1u9-000CN8-Fo; Thu, 13 Apr 2023 20:42:45 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pn1u9-000VfT-0T; Thu, 13 Apr 2023 20:42:45 +0200
-Subject: Re: [syzbot] [bpf?] [net?] WARNING in sock_map_del_link
-To:     syzbot <syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, jakub@cloudflare.com,
-        john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        Xin Liu <liuxin350@huawei.com>,
-        Hsin-Wei Hung <hsinweih@uci.edu>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <000000000000f1db9605f939720e@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <67f98e03-79ae-a290-b97a-2f6e11ab1251@iogearbox.net>
-Date:   Thu, 13 Apr 2023 20:42:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229530AbjDMS71 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 14:59:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB3F3C39;
+        Thu, 13 Apr 2023 11:59:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBEF8640DE;
+        Thu, 13 Apr 2023 18:59:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C08C433D2;
+        Thu, 13 Apr 2023 18:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681412365;
+        bh=29782vFwFT9re9koO2kNccEZccDNBvEZVvzoDaoERp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZZ/D1WglLjVEvl3tf77pFFqMOZzlQbd30vXlNueZZhcO4pt8Xk4qejCdwqnye2/XQ
+         SGrfo1lHut8LTi82sr6f0ltbQnqLSK45dyWflzXPOk+H7swwpTVzB2vWoUzcbAzn+j
+         Vff2A+YZf1iVk5RIoZoCL0QyQt6jCqUfbdBadDKlJ1Ww2ftIWTq8VlB0eba7TjQ6pP
+         m3yJ2QoDucW7NS6vPSWcp1hmGHQE/FNI5tZj8wYskypMoFbGjDuMrjVw+Vetqsx7/m
+         d12Mq9RhSehNtCRcmI7WFj3oOF/C41DbUfmoLiIW9SrJ5kMqpbLBuZBTGcci0GAATB
+         j0B0Zsstxpuug==
+Date:   Thu, 13 Apr 2023 11:59:22 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Tianyi Liu <i.pear@outlook.com>
+Cc:     joanbrugueram@gmail.com, acme@kernel.org, alan.maguire@oracle.com,
+        alexandref75@gmail.com, bpf@vger.kernel.org, dxu@dxuuu.xyz,
+        jforbes@redhat.com, linux-kernel@vger.kernel.org,
+        olsajiri@gmail.com, peterz@infradead.org, ptalbert@redhat.com,
+        yhs@fb.com
+Subject: [PATCH] vmlinux.lds.h: Discard .note.gnu.property section
+Message-ID: <20230413185922.ufmollqlnlghwyvy@treble>
+References: <20230413022149.94781-1-joanbrugueram@gmail.com>
+ <SY4P282MB10847E614FE5952EB4D46F049D989@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <000000000000f1db9605f939720e@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26874/Thu Apr 13 09:30:39 2023)
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SY4P282MB10847E614FE5952EB4D46F049D989@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/13/23 5:33 PM, syzbot wrote:
-> Hello,
+On Thu, Apr 13, 2023 at 05:23:08PM +0800, Tianyi Liu wrote:
+> > Test 1: Update dwarves (=pahole package on Arch Linux) from the current version
+> >         (1:1.24+r29+g02d67c5-1) to the staging version (1:1.25-1).
+> > Result: The build works correctly.
+> > 
+> >         However, the notes section is still not parsed correctly, as confirmed
+> >         by `readelf -n` or adding a printf near the code on `cus__merging_cu`
+> >         (on `dwarf_loader.c`) pointed to by Tianyi.
+> > 
+> >         A bisect shows the commit that fixes the build is
+> >         a9498899109d3be14f17abbc322a8f55a1067bee
+> >         "dwarf_loader: Fix for BTF id drift caused by adding unspecified types"
+> >         I don't know why though.
 > 
-> syzbot found the following issue on:
+> Pahole reads .notes to look for LINUX_ELFNOTE_BUILD_LTO. When LTO is
+> enabled, pahole needs to call cus__merge_and_process_cu to merge compile
+> units, at which point there should only be one unspecified type (used to
+> represent some compilation information) in the global context.
 > 
-> HEAD commit:    d319f344561d mm: Fix copy_from_user_nofault().
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15930c9dc80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=78c9d875f0a80d33
-> dashboard link: https://syzkaller.appspot.com/bug?extid=49f6cef45247ff249498
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/229f3623b7df/disk-d319f344.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6da0db75c9aa/vmlinux-d319f344.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/01f022fb9a13/bzImage-d319f344.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com
+> However, when the kernel is compiled without LTO, if pahole calls
+> cus__merge_and_process_cu due to alignment issues with notes, multiple
+> unspecified types may appear after merging the cus, and older versions of
+> pahole only support up to one. This is why pahole 1.24 crashes, while
+> newer versions support multiple. However, the latest version of pahole
+> still does not solve the problem of incorrect LTO recognition, so
+> compiling the kernel may be slower than normal.
 
-Xin, fyi, given we're currently prepping bpf-next pr we unfortunately had to revert commit
-ed17aa92dc56 ("bpf, sockmap: fix deadlocks in the sockhash and sockmap") which is causing
-this new syzkaller splat. There's another one in the syzkaller queue we've been made
-aware of which bisected to earlier mentioned commit.
+Thanks for the explanation.  So pahole is still mis-reading the LTO
+note, it just doesn't crash now.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=8c5c2a4898e3d6bad86e29d471e023c8a19ba799
+> If the only objective is to fix the bug of incorrect LTO recognition,
+> perhaps this naive patch[1] could be sufficient.
+> 
+> [1]: https://lore.kernel.org/bpf/SY4P282MB1084A0E31D4228DF89FC42639DA29@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM/
 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 7921 at kernel/softirq.c:376 __local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
-> Modules linked in:
-> CPU: 1 PID: 7921 Comm: syz-executor.4 Not tainted 6.2.0-syzkaller-13249-gd319f344561d #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-> RIP: 0010:__local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
-> Code: 45 bf 01 00 00 00 e8 b1 44 0a 00 e8 9c 41 3d 00 fb 65 8b 05 2c 61 b5 7e 85 c0 74 58 5b 5d c3 65 8b 05 12 2f b4 7e 85 c0 75 a2 <0f> 0b eb 9e e8 e9 41 3d 00 eb 9f 48 89 ef e8 ff 30 18 00 eb a8 0f
-> RSP: 0018:ffffc90007bffbe8 EFLAGS: 00010046
-> RAX: 0000000000000000 RBX: 0000000000000201 RCX: 1ffffffff1cf0736
-> RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffff882bf40a
-> RBP: ffffffff882bf40a R08: 0000000000000000 R09: ffff88801cc6327b
-> R10: ffffed100398c64f R11: 1ffffffff21917f0 R12: ffff88801cc63268
-> R13: ffff88801cc63268 R14: ffff8880188ef500 R15: 0000000000000000
-> FS:  00007f378f724700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fbbc57831b8 CR3: 00000000210ad000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   spin_unlock_bh include/linux/spinlock.h:395 [inline]
->   sock_map_del_link+0x2ea/0x510 net/core/sock_map.c:165
->   sock_map_unref+0xb0/0x1d0 net/core/sock_map.c:184
->   sock_hash_delete_elem+0x1ec/0x2a0 net/core/sock_map.c:945
->   map_delete_elem kernel/bpf/syscall.c:1536 [inline]
->   __sys_bpf+0x2edc/0x53e0 kernel/bpf/syscall.c:5053
->   __do_sys_bpf kernel/bpf/syscall.c:5166 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5164 [inline]
->   __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5164
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f378ea8c169
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f378f724168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007f378ebabf80 RCX: 00007f378ea8c169
-> RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000003
-> RBP: 00007f378eae7ca1 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffe9737aebf R14: 00007f378f724300 R15: 0000000000022000
->   </TASK>
+I think we still need to fix the underlying issue (corrupt .notes
+section).
+
+> > Test 2: Applying Josh's patch to force-align the ELF notes section to 4 bytes
+> >         (clarification: using the base pahole version again here)
+> > Result: The build works correctly.
+> >         I can read the notes correctly using `readelf -n` as well,
+> >         and they are aligned to 4 bytes instead of 8.
 > 
+> I'm still currently unable to reproduce this fix, but it may just be an
+> issue with my environment.
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > Test 3: Similar to Josh's patch, but instead of force-aligning the sections,
+> >         I added `.note.gnu.property` to the `/DISCARD/` list in the line above.
+> > Result: The build works correctly.
+> >         I can read the notes correctly using `readelf -n` as well
+> >         (of course, the GNU notes which made the alignment be 8 bytes are gone;
+> >          I don't know if this has any negative effect).
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+> I think discarding .note.gnu.property will not have side effects. For some
+> reason, this note does not exist in my final vmlinux. I also did not find
+> any usage of this property in the later steps of compiling the kernel.
+
+It looks like CONFIG_DEBUG_INFO_BTF is already (inadvertently) stripping
+it from vmlinux due to how GNU properties are merged by the linker (see
+"How GNU properties are merged" in the ld man page).
+
+The btf data is extracted from vmlinux.o with "objcopy
+--only-section=.BTF" into .btf.vmlinux.bin.o.  That file doesn't have
+.note.gnu.property, so when it gets modified and linked back into the
+main object, the linker strips it.
+
+GNU properties are important for user space but they don't seem to have
+a purpose for vmlinux.  So yeah, let's just discard .note.gnu.property.
+
+---8<---
+
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: [PATCH] vmlinux.lds.h: Discard .note.gnu.property section
+
+When tooling reads ELF notes, it assumes each note entry is aligned to
+the value listed in the .note section header's sh_addralign field.
+
+The kernel-created ELF notes in the .note.Linux and .note.Xen sections
+are aligned to 4 bytes.  This causes the toolchain to set those
+sections' sh_addralign values to 4.
+
+On the other hand, the GCC-created .note.gnu.property section has an
+sh_addralign value of 8 for some reason, despite being based on struct
+Elf32_Nhdr which only needs 4-byte alignment.
+
+When the mismatched input sections get linked together into the vmlinux
+.notes output section, the higher alignment "wins", resulting in an
+sh_addralign of 8, which confuses tooling.  For example:
+
+  $ readelf -n .tmp_vmlinux.btf
+  ...
+  readelf: .tmp_vmlinux.btf: Warning: note with invalid namesz and/or descsz found at offset 0x170
+  readelf: .tmp_vmlinux.btf: Warning:  type: 0x4, namesize: 0x006e6558, descsize: 0x00008801, alignment: 8
+
+In this case readelf thinks there's alignment padding where there is
+none, so it starts reading an ELF note in the middle.
+
+With newer toolchains (e.g., latest Fedora Rawhide), a similar mismatch
+triggers a build failure when combined with CONFIG_X86_KERNEL_IBT:
+
+  btf_encoder__encode: btf__dedup failed!
+  Failed to encode BTF
+  libbpf: failed to find '.BTF' ELF section in vmlinux
+  FAILED: load BTF from vmlinux: No data available
+  make[1]: *** [scripts/Makefile.vmlinux:35: vmlinux] Error 255
+
+This latter error was caused by pahole crashing when it encountered the
+corrupt .notes section.  This crash has been fixed in dwarves version
+1.25.  As Tianyi Liu describes:
+
+  "Pahole reads .notes to look for LINUX_ELFNOTE_BUILD_LTO. When LTO is
+   enabled, pahole needs to call cus__merge_and_process_cu to merge
+   compile units, at which point there should only be one unspecified
+   type (used to represent some compilation information) in the global
+   context.
+
+   However, when the kernel is compiled without LTO, if pahole calls
+   cus__merge_and_process_cu due to alignment issues with notes,
+   multiple unspecified types may appear after merging the cus, and
+   older versions of pahole only support up to one. This is why pahole
+   1.24 crashes, while newer versions support multiple. However, the
+   latest version of pahole still does not solve the problem of
+   incorrect LTO recognition, so compiling the kernel may be slower
+   than normal."
+
+Even with the newer pahole, the note section misaligment issue still
+exists and pahole is misinterpreting the LTO note.  Fix it by discarding
+the .note.gnu.property section.  While GNU properties are important for
+user space (and VDSO), they don't seem to have any use for vmlinux.
+
+(In fact, they're already getting (inadvertently) stripped from vmlinux
+when CONFIG_DEBUG_INFO_BTF is enabled.  The BTF data is extracted from
+vmlinux.o with "objcopy --only-section=.BTF" into .btf.vmlinux.bin.o.
+That file doesn't have .note.gnu.property, so when it gets modified and
+linked back into the main object, the linker automatically strips it
+(see "How GNU properties are merged" in the ld man page).)
+
+Reported-by: Daniel Xu <dxu@dxuuu.xyz>
+Link: https://lkml.kernel.org/lkml/57830c30-cd77-40cf-9cd1-3bb608aa602e@app.fastmail.com
+Debugged-by: Tianyi Liu <i.pear@outlook.com>
+Suggested-by: Joan Bruguera Micó <joanbrugueram@gmail.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ include/asm-generic/vmlinux.lds.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index d1f57e4868ed..1770b7d87a80 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -894,6 +894,7 @@
+  */
+ #define NOTES								\
+ 	/DISCARD/ : { *(.note.GNU-stack) }				\
++	/DISCARD/ : { *(.note.gnu.property) }				\
+ 	.notes : AT(ADDR(.notes) - LOAD_OFFSET) {			\
+ 		BOUNDED_SECTION_BY(.note.*, _notes)			\
+ 	} NOTES_HEADERS							\
+-- 
+2.39.2
 
