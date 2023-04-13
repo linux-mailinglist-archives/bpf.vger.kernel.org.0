@@ -2,155 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0D26E04D7
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0900F6E04E2
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjDMCss (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 22:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S229935AbjDMCxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 22:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjDMCsg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 22:48:36 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F8C93DE
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:48:03 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-54fbee98814so8628667b3.8
-        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:48:03 -0700 (PDT)
+        with ESMTP id S229925AbjDMCxG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 22:53:06 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF0C19A7
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:52:59 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id u4so9342707qvj.10
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:52:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1681354035; x=1683946035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c2RoII8+06QRj1KrNImDflKewnRU3eOkdDv7RUkwTvQ=;
-        b=dqhaWIwwUCYUTW0bG7Sm46OOkOXwVETEwrukiNwgo+mHqSXYiApiNs5bzD2G1YoADr
-         iNRFlITDebdiykKozoZVmNNZSQoL/we34yPq9D3bsnJBH9g63wFoSHgoxb3XNaJb64Xs
-         A94x69GRUtTTwojtoimUsRxYWdvtf+CZ+qw0MT678Aw1VFyLPYnZVDuoTnXZRfTci+dP
-         NXrbZPvdLtsT/mac/7X3e8iZWQPnHlwGipuDnZaActyxyvJxoaE9awn41JnkCXgOk6pU
-         kyBlYLOd2TWRUwxp+1xT9tZMsYSa9Y0oZtaBbsmQem1PrhtiZWSDw76moyww4yfBFEAf
-         yDLA==
+        d=gmail.com; s=20221208; t=1681354379; x=1683946379;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HiB7A8AuZoCmy0cdJV+Hevxq7uUYdvaYfcw9wn9xlFM=;
+        b=BXH0+7BnaARuyjWjfuCcv3jty2ea/oxZ3ZN3XRl0h0kOw0oXOHbRD6b4zdw84o6uXP
+         XKabY5N7EDVxkHql/OIzzvHtdeBIiuc6pbcAqQpYYJG9tqXHXHu0+8y37D8WOi9EupyC
+         12bS5TNKYQJGTTAJPF5zcOeLnNlzlwf61l9EI5NC1ZvQPP9jtiRmZl9puBfkfizzRB4y
+         c7tj2Jw3uA8C1OnukwvIOOUdOrD0xAOyYAKxQ8IVCrC1zpAzZWZFTHXeCnRHg8KtanxS
+         usUb0NCxCqr83ONtDfcjkSCqbuC6F+Db+hNGngIVN4UmGNvlzQJla60t7FL48FFeQHpA
+         wDHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681354035; x=1683946035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c2RoII8+06QRj1KrNImDflKewnRU3eOkdDv7RUkwTvQ=;
-        b=Bk53CQ11kwYWa4lVVFadc89zXG7j66Vkzi3IwZPG4+0QZr4JESMt3Jgu59DMDiRLIm
-         4xC5Vbo/UMQ1LjqR5HV9RsobmJmXB7KsXwYNZv+r3pkHvfG2YQPIv7hhzEAlnhUR8+lN
-         0ztJHRlgWvmD6jtGLEO5VMF6HqiAtSK7WRky9liwhLSGR7WmO/t4Xsy+LPpkUdg5d5uF
-         oG2vHj2I290XSkgptKgearR8lWmmnOxxtKzv7t8dk9n7ASzzj46XTHy2AIzwXtsLnjh9
-         A0qIwvdXVXv2Ji+KaDmUAlAn+EqNNxaFgo61KKGOh+yWxhM1qDkNtq2lFC/zKlSmtVgd
-         vi8Q==
-X-Gm-Message-State: AAQBX9e7m69rQrc1drK8JX+4ACPIjJarfQe+hs5EyFMikQ8YIkoOLozn
-        S61SmARHIEqjR/LAre0zjO4sMS0VCgFMsi209EyX
-X-Google-Smtp-Source: AKy350Zr6ctXd3kklOuBkt9MDMvadnuhnfNJfHy3bifm8/DimJcWFMzD9EyxNPobnEGaDHge8+xR7YjLOBzWqW8CtU8=
-X-Received: by 2002:a81:ac49:0:b0:54f:8824:8836 with SMTP id
- z9-20020a81ac49000000b0054f88248836mr422009ywj.8.1681354034889; Wed, 12 Apr
- 2023 19:47:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681354379; x=1683946379;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HiB7A8AuZoCmy0cdJV+Hevxq7uUYdvaYfcw9wn9xlFM=;
+        b=c63cazKwMmIT57XECO5EP2AfBmre7sIB+fSzs3ArW1ZHgwC9gF1lfWAPuF0dePaDAp
+         PsGLQxbiaN/fsJb0jqkJ3bE+3D/mpOykDTBXDG4JSBiz5oRAgXPVtfs5iTePObS4chwl
+         Cv888IzAqpYY6n9K9I/N7Zs6IzQOErbVsjhi5Vk8eeo8ymxgQ2j7OxkXJfhQwz7iymBE
+         6XhNAmUPiBGKn9oEhHhpR/FmVvrSo8qlq97jUorlEqweOV+TnrgES1npU9S7S2+y7pfe
+         xNVl13uVxltN4u6LxbuDIMy6KFVAtIXgyt4jPxjRMVlPvCS+fd2xFamtOhKXNTfRdMF1
+         zBUA==
+X-Gm-Message-State: AAQBX9dXJoZ11Uw6pnqFt3TSCklDLZvc4Ib0dzmPeJZ8RLFzaWMecArT
+        9xfVLi2881E5/niSKii2/hU=
+X-Google-Smtp-Source: AKy350YGXE7zq9YVgZuHAm5KmdXRmLdPaxyeHnMm8UWbgqnp9R7aNBZoSPsVk8kIYxJFSadAtq7fZg==
+X-Received: by 2002:a05:6214:2683:b0:5a9:ed32:1765 with SMTP id gm3-20020a056214268300b005a9ed321765mr1269139qvb.23.1681354378904;
+        Wed, 12 Apr 2023 19:52:58 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:c:fe2:5400:4ff:fe65:32a4])
+        by smtp.gmail.com with ESMTPSA id pp26-20020a056214139a00b005dd8b934571sm121424qvb.9.2023.04.12.19.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Apr 2023 19:52:58 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org
+Cc:     bpf@vger.kernel.org, Yafang <laoar.shao@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>
+Subject: [PATCH bpf-next] bpf: Add preempt_count_{sub,add} into btf id deny list
+Date:   Thu, 13 Apr 2023 02:52:48 +0000
+Message-Id: <20230413025248.79764-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230412043300.360803-1-andrii@kernel.org> <20230412043300.360803-8-andrii@kernel.org>
- <CAHC9VhSNeAATRtKj4Gptxgv4wW-L7_5=RisY3yw5JMDtUH=43A@mail.gmail.com> <CAEf4BzbYK2379c1fbYAwHFBW8UznoozbUA8NhB_uGGtu-3CheA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbYK2379c1fbYAwHFBW8UznoozbUA8NhB_uGGtu-3CheA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 12 Apr 2023 22:47:03 -0400
-Message-ID: <CAHC9VhQ=eHb06g+VOzhfsTPpkoarqk4=LNZQNvh9kMUXjdhJgA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] bpf, lsm: implement bpf_btf_load_security
- LSM hook
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
-        keescook@chromium.org, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 9:43=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Wed, Apr 12, 2023 at 9:53=E2=80=AFAM Paul Moore <paul@paul-moore.com> =
-wrote:
-> > On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andrii@kernel=
-.org> wrote:
-> > >
-> > > Add new LSM hook, bpf_btf_load_security, that allows custom LSM secur=
-ity
-> > > policies controlling BTF data loading permissions (BPF_BTF_LOAD comma=
-nd
-> > > of bpf() syscall) granularly and precisely.
-> > >
-> > > This complements bpf_map_create_security LSM hook added earlier and
-> > > follow the same semantics: 0 means perform standard kernel capabiliti=
-es-based
-> > > checks, negative error rejects BTF object load, while positive one sk=
-ips
-> > > CAP_BPF check and allows BTF data object creation.
-> > >
-> > > With this hook, together with bpf_map_create_security, we now can als=
-o allow
-> > > trusted unprivileged process to create BPF maps that require BTF, whi=
-ch
-> > > we take advantaged in the next patch to improve the coverage of added
-> > > BPF selftest.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/lsm_hook_defs.h |  1 +
-> > >  include/linux/lsm_hooks.h     | 13 +++++++++++++
-> > >  include/linux/security.h      |  6 ++++++
-> > >  kernel/bpf/bpf_lsm.c          |  1 +
-> > >  kernel/bpf/syscall.c          | 10 ++++++++++
-> > >  security/security.c           |  4 ++++
-> > >  6 files changed, 35 insertions(+)
-> >
-> > ...
-> >
-> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > index 42d8473237ab..bbf70bddc770 100644
-> > > --- a/kernel/bpf/syscall.c
-> > > +++ b/kernel/bpf/syscall.c
-> > > @@ -4449,12 +4449,22 @@ static int bpf_obj_get_info_by_fd(const union=
- bpf_attr *attr,
-> > >
-> > >  static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr, =
-__u32 uattr_size)
-> > >  {
-> > > +       int err;
-> > > +
-> > >         if (CHECK_ATTR(BPF_BTF_LOAD))
-> > >                 return -EINVAL;
-> > >
-> > > +       /* security checks */
-> > > +       err =3D security_bpf_btf_load(attr);
-> > > +       if (err < 0)
-> > > +               return err;
-> > > +       if (err > 0)
-> > > +               goto skip_priv_checks;
-> > > +
-> > >         if (!bpf_capable())
-> > >                 return -EPERM;
-> > >
-> > > +skip_priv_checks:
-> > >         return btf_new_fd(attr, uattr, uattr_size);
-> > >  }
-> >
-> > Beyond the objection I brought up in the patchset cover letter, I
-> > believe the work of the security_bpf_btf_load() hook presented here
-> > could be done by the existing security_bpf() LSM hook.  If you believe
-> > that not to be the case, please let me know.
->
-> security_bpf() could prevent BTF object loading only, but
-> security_bpf_btf_load() can *also* allow *trusted* (according to LSM
-> policy) unprivileged process to proceed. So it doesn't seem like they
-> are interchangeable.
+From: Yafang <laoar.shao@gmail.com>
 
-As discussed in the cover letter thread, I'm opposed to using a LSM
-hook to skip/bypass/circumvent/etc. existing capability checks.
+The recursion check in __bpf_prog_enter* and __bpf_prog_exit*
+leave preempt_count_{sub,add} unprotected. When attaching trampoline to
+them we get panic as follows,
 
---=20
-paul-moore.com
+[  867.843050] BUG: TASK stack guard page was hit at 0000000009d325cf (stack is 0000000046a46a15..00000000537e7b28)
+[  867.843064] stack guard page: 0000 [#1] PREEMPT SMP NOPTI
+[  867.843067] CPU: 8 PID: 11009 Comm: trace Kdump: loaded Not tainted 6.2.0+ #4
+[  867.843100] Call Trace:
+[  867.843101]  <TASK>
+[  867.843104]  asm_exc_int3+0x3a/0x40
+[  867.843108] RIP: 0010:preempt_count_sub+0x1/0xa0
+[  867.843135]  __bpf_prog_enter_recur+0x17/0x90
+[  867.843148]  bpf_trampoline_6442468108_0+0x2e/0x1000
+[  867.843154]  ? preempt_count_sub+0x1/0xa0
+[  867.843157]  preempt_count_sub+0x5/0xa0
+[  867.843159]  ? migrate_enable+0xac/0xf0
+[  867.843164]  __bpf_prog_exit_recur+0x2d/0x40
+[  867.843168]  bpf_trampoline_6442468108_0+0x55/0x1000
+...
+[  867.843788]  preempt_count_sub+0x5/0xa0
+[  867.843793]  ? migrate_enable+0xac/0xf0
+[  867.843829]  __bpf_prog_exit_recur+0x2d/0x40
+[  867.843837] BUG: IRQ stack guard page was hit at 0000000099bd8228 (stack is 00000000b23e2bc4..000000006d95af35)
+[  867.843841] BUG: IRQ stack guard page was hit at 000000005ae07924 (stack is 00000000ffd69623..0000000014eb594c)
+[  867.843843] BUG: IRQ stack guard page was hit at 00000000028320f0 (stack is 00000000034b6438..0000000078d1bcec)
+[  867.843842]  bpf_trampoline_6442468108_0+0x55/0x1000
+...
+
+That is because in __bpf_prog_exit_recur, the preempt_count_{sub,add} are
+called after prog->active is decreased.
+
+Fixing this by adding these two functions into btf ids deny list.
+
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Yafang <laoar.shao@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3660b57..8159bd7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18651,6 +18651,10 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ #if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
+ BTF_ID(func, rcu_read_unlock_strict)
+ #endif
++#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
++BTF_ID(func, preempt_count_add)
++BTF_ID(func, preempt_count_sub)
++#endif
+ BTF_SET_END(btf_id_deny)
+ 
+ static bool can_be_sleepable(struct bpf_prog *prog)
+-- 
+1.8.3.1
+
