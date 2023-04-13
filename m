@@ -2,72 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6596E10BA
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 17:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A046E1131
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbjDMPNP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 11:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
+        id S230246AbjDMPdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 11:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjDMPNO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 11:13:14 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E01184;
-        Thu, 13 Apr 2023 08:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681398785; x=1712934785;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=f6ND7RnB4gbPxv8sBeifXq2wwq96IRhvnSOplOcfMXw=;
-  b=lL4BSuEGRYub3csp0mOy1sWkpkJDByqRWM8DhoVvP6huCeD3a4pBHd0m
-   114HjJTR8p23zHuoQV/zjCkPB0hP4j35euLlKuFt644czfL05qzoNc/mt
-   Ffc/TMnN2NpZ0WDspGO1fAiW2w1n8xmsjQ0LlxwFZcei2ptu0G98+2MqC
-   qW1cvebfxhe0NexzC+CorSooGfVGwuYBY/caMzJBZlCZb+W6dCTZbujwV
-   q0FiPAP3vGKv5aoD8joew1ZXMwko2kfrGxsKTYWvADF+wihO0n/HjjdiD
-   +TfvZhxzTZfdSiLijfDJ8jSNZpJjw3uZUl9amlVHcPsEKUKsCygr8BhPQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="344203265"
-X-IronPort-AV: E=Sophos;i="5.99,194,1677571200"; 
-   d="scan'208";a="344203265"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2023 08:13:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="666808531"
-X-IronPort-AV: E=Sophos;i="5.99,194,1677571200"; 
-   d="scan'208";a="666808531"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2023 08:12:57 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Andre Guedes <andre.guedes@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xdp-hints@xdp-project.net, stable@vger.kernel.org,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net 1/1] igc: read before write to SRRCTL register
-Date:   Thu, 13 Apr 2023 23:12:22 +0800
-Message-Id: <20230413151222.1864307-1-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S231199AbjDMPdn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 11:33:43 -0400
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23999210A
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 08:33:41 -0700 (PDT)
+Received: by mail-il1-f205.google.com with SMTP id c13-20020a056e020bcd00b00325da077351so9279226ilu.11
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 08:33:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681400020; x=1683992020;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CH/wnFKEHw/ZuUNinYZbwxexwZCPvWpvfmRYHTUngNI=;
+        b=XcCRplOeB5ogEAjPA/Z+SV1rHadIehI9jOU3/Hd5RkHsggs9X3ucJ5UM0SX+qXNZkq
+         lawHekdLIV80tN6Zv3aR6/miPiXJ5jInDgMDHSuS8D9CNlY47OJxf7yk0YawxWvQJRHu
+         n/L4jV8ZPrmF6dOa6/LSe4rn6Zlh4oFZdtqs8qJ/foT/wMZwa8tSD+QYRJJQmEmuiyBB
+         JAw0t+uYazDHK+Tm/MoQMBhG7BJ9jnbWreCUZxPfMkDYZzH2gOFvMDgaTiychYnMZVED
+         mE2sMJ9uuNVJhERBNx3A5YGDzR0NJvgq2KJe4PFPC1+Q0E/lC3zC0SrYhG8OJFxH1R3P
+         QMjw==
+X-Gm-Message-State: AAQBX9et0qaWBEpIVjLHDIEQCkRh6BD3P3kOGSEQdsB0VETiGXWpGk/J
+        CJbFUSxep4aP9d2THF1RW8aaFlCCtrIJf6ML6Io8t9OTRVc2
+X-Google-Smtp-Source: AKy350a3x3f7fQO9a3dq+ppYo28D+FGUOcXxPn1gj+dUywbekZ0BiR2BfdVO3s1CGK1hpLHwcx9y6soegnGf2R8EFT4KerjA14Lx
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
+X-Received: by 2002:a02:850e:0:b0:40b:d54d:e5d6 with SMTP id
+ g14-20020a02850e000000b0040bd54de5d6mr849776jai.5.1681400020453; Thu, 13 Apr
+ 2023 08:33:40 -0700 (PDT)
+Date:   Thu, 13 Apr 2023 08:33:40 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f1db9605f939720e@google.com>
+Subject: [syzbot] [bpf?] [net?] WARNING in sock_map_del_link
+From:   syzbot <syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,71 +56,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-igc_configure_rx_ring() function will be called as part of XDP program
-setup. If Rx hardware timestamp is enabled prio to XDP program setup,
-this timestamp enablement will be overwritten when buffer size is
-written into SRRCTL register.
+Hello,
 
-Thus, this commit read the register value before write to SRRCTL
-register. This commit is tested by using xdp_hw_metadata bpf selftest
-tool. The tool enables Rx hardware timestamp and then attach XDP program
-to igc driver. It will display hardware timestamp of UDP packet with
-port number 9092. Below are detail of test steps and results.
+syzbot found the following issue on:
 
-Command on DUT:
-  sudo ./xdp_hw_metadata <interface name>
+HEAD commit:    d319f344561d mm: Fix copy_from_user_nofault().
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15930c9dc80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78c9d875f0a80d33
+dashboard link: https://syzkaller.appspot.com/bug?extid=49f6cef45247ff249498
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Command on Link Partner:
-  echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Result before this patch:
-  skb hwtstamp is not found!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/229f3623b7df/disk-d319f344.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6da0db75c9aa/vmlinux-d319f344.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/01f022fb9a13/bzImage-d319f344.xz
 
-Result after this patch:
-  found skb hwtstamp = 1677762212.590696226
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com
 
-Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
-Cc: <stable@vger.kernel.org> # 5.14+
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 7921 at kernel/softirq.c:376 __local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
+Modules linked in:
+CPU: 1 PID: 7921 Comm: syz-executor.4 Not tainted 6.2.0-syzkaller-13249-gd319f344561d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+RIP: 0010:__local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
+Code: 45 bf 01 00 00 00 e8 b1 44 0a 00 e8 9c 41 3d 00 fb 65 8b 05 2c 61 b5 7e 85 c0 74 58 5b 5d c3 65 8b 05 12 2f b4 7e 85 c0 75 a2 <0f> 0b eb 9e e8 e9 41 3d 00 eb 9f 48 89 ef e8 ff 30 18 00 eb a8 0f
+RSP: 0018:ffffc90007bffbe8 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000201 RCX: 1ffffffff1cf0736
+RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffff882bf40a
+RBP: ffffffff882bf40a R08: 0000000000000000 R09: ffff88801cc6327b
+R10: ffffed100398c64f R11: 1ffffffff21917f0 R12: ffff88801cc63268
+R13: ffff88801cc63268 R14: ffff8880188ef500 R15: 0000000000000000
+FS:  00007f378f724700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbbc57831b8 CR3: 00000000210ad000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ spin_unlock_bh include/linux/spinlock.h:395 [inline]
+ sock_map_del_link+0x2ea/0x510 net/core/sock_map.c:165
+ sock_map_unref+0xb0/0x1d0 net/core/sock_map.c:184
+ sock_hash_delete_elem+0x1ec/0x2a0 net/core/sock_map.c:945
+ map_delete_elem kernel/bpf/syscall.c:1536 [inline]
+ __sys_bpf+0x2edc/0x53e0 kernel/bpf/syscall.c:5053
+ __do_sys_bpf kernel/bpf/syscall.c:5166 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5164 [inline]
+ __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5164
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f378ea8c169
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f378f724168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f378ebabf80 RCX: 00007f378ea8c169
+RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000003
+RBP: 00007f378eae7ca1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffe9737aebf R14: 00007f378f724300 R15: 0000000000022000
+ </TASK>
+
+
 ---
- drivers/net/ethernet/intel/igc/igc_base.h | 7 +++++--
- drivers/net/ethernet/intel/igc/igc_main.c | 5 ++++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_base.h b/drivers/net/ethernet/intel/igc/igc_base.h
-index 7a992befca24..b95007d51d13 100644
---- a/drivers/net/ethernet/intel/igc/igc_base.h
-+++ b/drivers/net/ethernet/intel/igc/igc_base.h
-@@ -87,8 +87,11 @@ union igc_adv_rx_desc {
- #define IGC_RXDCTL_SWFLUSH		0x04000000 /* Receive Software Flush */
- 
- /* SRRCTL bit definitions */
--#define IGC_SRRCTL_BSIZEPKT_SHIFT		10 /* Shift _right_ */
--#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT		2  /* Shift _left_ */
-+#define IGC_SRRCTL_BSIZEPKT_MASK	GENMASK(6, 0)
-+#define IGC_SRRCTL_BSIZEPKT_SHIFT	10 /* Shift _right_ */
-+#define IGC_SRRCTL_BSIZEHDRSIZE_MASK	GENMASK(13, 8)
-+#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT	2  /* Shift _left_ */
-+#define IGC_SRRCTL_DESCTYPE_MASK	GENMASK(27, 25)
- #define IGC_SRRCTL_DESCTYPE_ADV_ONEBUF	0x02000000
- 
- #endif /* _IGC_BASE_H */
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 25fc6c65209b..de7b21c2ccd6 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -641,7 +641,10 @@ static void igc_configure_rx_ring(struct igc_adapter *adapter,
- 	else
- 		buf_size = IGC_RXBUFFER_2048;
- 
--	srrctl = IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
-+	srrctl = rd32(IGC_SRRCTL(reg_idx));
-+	srrctl &= ~(IGC_SRRCTL_BSIZEPKT_MASK | IGC_SRRCTL_BSIZEHDRSIZE_MASK |
-+		  IGC_SRRCTL_DESCTYPE_MASK);
-+	srrctl |= IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
- 	srrctl |= buf_size >> IGC_SRRCTL_BSIZEPKT_SHIFT;
- 	srrctl |= IGC_SRRCTL_DESCTYPE_ADV_ONEBUF;
- 
--- 
-2.34.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
