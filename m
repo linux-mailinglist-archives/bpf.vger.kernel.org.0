@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 039C56E12F4
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 18:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E716E130F
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 19:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjDMQ7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 12:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S229990AbjDMRCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 13:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjDMQ7f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 12:59:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DDD59F9;
-        Thu, 13 Apr 2023 09:59:34 -0700 (PDT)
+        with ESMTP id S229622AbjDMRCW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 13:02:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEE1AF33;
+        Thu, 13 Apr 2023 10:02:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 69BC864035;
-        Thu, 13 Apr 2023 16:59:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F3DC433D2;
-        Thu, 13 Apr 2023 16:59:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 02A3E64054;
+        Thu, 13 Apr 2023 17:02:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464F6C433D2;
+        Thu, 13 Apr 2023 17:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681405173;
-        bh=bSkSu7wJY6E12OzsXzraNJfB/SMGar8eC+xZrs3OlPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KqbhC+LEKt2Ua+orMMdfXcL18ruziKNhKLS3lM8nbujW159cmI7wEgKp2Ca04iFDX
-         1ZVKuI616uAVTOPTl1lgZxNvbuZ8l9x07alJP4D/tPdb9glEFip1eV/MzNiLNHBVJa
-         IkFJeukK81mc4BdKwm0BvE550kHSFAcpbUgGHJlJNsdN6LdbbTxxIdq6yp3FAE4Ws3
-         Mb04+184eVcJU3PWtr+nqlDhBvVmwoKLSDLAn1HHAcelheRJGjzraSCO+xFbXDMVzz
-         FLQKbMn6KToVDBDUDEkiXkGJUl3MxZMiqTuJmY8U3AHkUlpHmpbc2jvODu8lsiFkG3
-         MkKqkkoRSSYag==
-Date:   Thu, 13 Apr 2023 19:59:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
+        s=k20201202; t=1681405321;
+        bh=h3WMjK4zl6JofyMg5vsqpodV2pRvhxWvgIjrDOjPmzI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CyveBJUAuDYUQqq8O9sYdhz5DO3ddDFO57gXRAwDFmUCu/iojQb0HOpxO2KsYLvgb
+         ttY5s/8G1bt1AYx+DLZyvXluZdyhONVlHTvGL3lEysljNyGV09O3vhqY0oPJgP7Fd1
+         F1rERwcl+cn4TO1P4ThYS7If1UfwsdX+ZItN7V508YGmAjtJE/8ZIXppXb+QaLBOCc
+         Do/xh9/zasqJbu6WBaFaUdYcqs54HM4N3MEDPnm9u/SEx7zAmfdI4hPxwmLZ+7H/Nx
+         Rmj1kQZUj6stsl3c3vhal4inRxWNHUuhPPCZXLOxLmcpQBJ0zuoUaQE1xOe3aHgLPS
+         NNPAs/GJo8e9A==
+Date:   Thu, 13 Apr 2023 10:01:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
         "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
@@ -58,19 +58,20 @@ Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH V3,net-next, 2/4] net: mana: Refactor RX buffer
  allocation code to prepare for various MTU
-Message-ID: <20230413165929.GU17993@unreal>
+Message-ID: <20230413100159.078bdf18@kernel.org>
+In-Reply-To: <20230413165929.GU17993@unreal>
 References: <1681334163-31084-1-git-send-email-haiyangz@microsoft.com>
- <1681334163-31084-3-git-send-email-haiyangz@microsoft.com>
- <20230413130428.GO17993@unreal>
- <PH7PR21MB3116194E8F7D56EB434B56A6CA989@PH7PR21MB3116.namprd21.prod.outlook.com>
- <20230413163059.GS17993@unreal>
- <20230413094003.3fa4cd8c@kernel.org>
+        <1681334163-31084-3-git-send-email-haiyangz@microsoft.com>
+        <20230413130428.GO17993@unreal>
+        <PH7PR21MB3116194E8F7D56EB434B56A6CA989@PH7PR21MB3116.namprd21.prod.outlook.com>
+        <20230413163059.GS17993@unreal>
+        <20230413094003.3fa4cd8c@kernel.org>
+        <20230413165929.GU17993@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230413094003.3fa4cd8c@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,15 +79,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 09:40:03AM -0700, Jakub Kicinski wrote:
-> On Thu, 13 Apr 2023 19:30:59 +0300 Leon Romanovsky wrote:
-> > > So the page pool is optimized for the XDP, and that sentence is applicable to drivers
-> > > that have set up page pool for XDP optimization.  
-> > 
-> > "but it can fallback on the regular page allocator APIs."
+On Thu, 13 Apr 2023 19:59:29 +0300 Leon Romanovsky wrote:
+>> Maybe we should update the doc.  
 > 
-> The XDP thing is historic AFAIU, page_pool has been expanded to cover
-> all uses cases, and is "just better" (tm) than using page allocator
-> directly. Maybe we should update the doc.
+> The last sentence is always true :)
 
-The last sentence is always true :)
+Yeah, I felt bad when writing it :)
