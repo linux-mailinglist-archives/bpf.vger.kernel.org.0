@@ -2,92 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF2A6E1429
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 20:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F426E1471
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 20:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjDMS3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 14:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
+        id S230220AbjDMSng (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 14:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjDMS3A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 14:29:00 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59D32D53;
-        Thu, 13 Apr 2023 11:28:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1681410534;
-        bh=jGwzJw7lP3rN+v/QJE3PZ7uZA3cqTAeu5GAX2Ol/eZo=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=pPwCr6Zwizp1/IBcIS46B4wxR53W8xzNoCq9q78eSRfTQaFP3DnEAVdNoOR7AUYAm
-         YA0591+re/X63z4hNO8YGCxb3KYegETQV6NepwrfwXT06e2cmix3W0jsMN02/olC5d
-         VD2oIVxEVNv1jqExdSBPtR/0FKKXEJuagOM1bzZ0=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D1BB312868DC;
-        Thu, 13 Apr 2023 14:28:54 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id AgN11Pc04sy7; Thu, 13 Apr 2023 14:28:54 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1681410534;
-        bh=jGwzJw7lP3rN+v/QJE3PZ7uZA3cqTAeu5GAX2Ol/eZo=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=pPwCr6Zwizp1/IBcIS46B4wxR53W8xzNoCq9q78eSRfTQaFP3DnEAVdNoOR7AUYAm
-         YA0591+re/X63z4hNO8YGCxb3KYegETQV6NepwrfwXT06e2cmix3W0jsMN02/olC5d
-         VD2oIVxEVNv1jqExdSBPtR/0FKKXEJuagOM1bzZ0=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AFF31128666D;
-        Thu, 13 Apr 2023 14:28:53 -0400 (EDT)
-Message-ID: <726533b0e5f511678e4f40a768974fa818e9677f.camel@HansenPartnership.com>
-Subject: Re: [LSF/MM/BPF] Running BOF
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org
-Date:   Thu, 13 Apr 2023 14:28:52 -0400
-In-Reply-To: <ZALROVnC+GDXsBne@casper.infradead.org>
-References: <ZALROVnC+GDXsBne@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        with ESMTP id S229871AbjDMSn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 14:43:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6170086AA
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 11:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681411341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jFCzXhj5hVtVaLfINs11NiVB1lGjSKJOD4vnQMSSjnY=;
+        b=AX2iIZQXSOPAR+x0qrZFWut/mxIyWKFG3OFwozxG1MBT71D29wEDt9X8L5RfoUs3zU/W0Z
+        71YB2edpUONnyay4jskZ9WcsyT+ac1wprlCmVwvQZw/xQ7aC0yS/LqmHenq1zZR4l/K24V
+        2lvEoLqDpxF/jPuQJZgWebgzJrahTtk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-wgfTIhqSMqGzUzuqowz5XQ-1; Thu, 13 Apr 2023 14:42:20 -0400
+X-MC-Unique: wgfTIhqSMqGzUzuqowz5XQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-50491d65131so2043550a12.3
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 11:42:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681411338; x=1684003338;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jFCzXhj5hVtVaLfINs11NiVB1lGjSKJOD4vnQMSSjnY=;
+        b=jI1bO6ewhflch/HNZIdL4ZYnLG2QAvyHRJv2vtFgaoiWtoV2Vk7q+6lzIgYVuJAKlr
+         jGJeY0Xaa77z94amkxULoc9yqSWlf4MPI7NNxSLylxAQzhGqipkG4FE3Bqhi2/odA/fS
+         YLXRqxfDg6yrqiqEC+NwdJ5dK3ORlMVwk5KzgDGhYzSiaQPT14k8wP/YkyXl87gw1zbz
+         Sv97zesnOpEE+ib4mvdl3hmUA45lgPfu7kiznCitlGwzNR2Ah/Xxf0mPl/hae5hslHnp
+         jV1D+0agKYiHaMeHeE0rCu/4/vEDXhqvhbAZCSM3UDdOF+3XC5m6fF5E5FlIElaZM0Jn
+         GMEQ==
+X-Gm-Message-State: AAQBX9cdCJQHYQA2BJsul35UaFIfXkPy/9UVy129RmT1rCT/liPInMcj
+        VZwsbGC4eUW1Xfdg4aod7FhL1A0zQpFalisCZMZXx4PNMk3vKsn/hABp10d1TXtOFoZoccqqtMz
+        UuoUMg3TmXq5i
+X-Received: by 2002:aa7:ce06:0:b0:501:d917:d52 with SMTP id d6-20020aa7ce06000000b00501d9170d52mr3760447edv.8.1681411338589;
+        Thu, 13 Apr 2023 11:42:18 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YYifWUgndL9IzmM9sB+EmC6luF5yXBi1Z7Pu0T2Ye4b4wgDVquW2ymvsXbk5mm7Z5uz0Se4A==
+X-Received: by 2002:aa7:ce06:0:b0:501:d917:d52 with SMTP id d6-20020aa7ce06000000b00501d9170d52mr3760426edv.8.1681411338239;
+        Thu, 13 Apr 2023 11:42:18 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id d12-20020a50fe8c000000b00504c33675cesm1178071edt.35.2023.04.13.11.42.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Apr 2023 11:42:17 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <07a88087-bee8-e549-c069-63d52268aef1@redhat.com>
+Date:   Thu, 13 Apr 2023 20:42:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net 1/1] igc: read before write to SRRCTL register
+Content-Language: en-US
+To:     Song Yoong Siang <yoong.siang.song@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Andre Guedes <andre.guedes@intel.com>,
+        Stanislav Fomichev <sdf@google.com>
+References: <20230413151222.1864307-1-yoong.siang.song@intel.com>
+In-Reply-To: <20230413151222.1864307-1-yoong.siang.song@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2023-03-04 at 05:03 +0000, Matthew Wilcox wrote:
-> Sunday May 7th is the Vancouver Marathon, and both Josef and I are
-> registered.  As such, neither of us may be feeling much like joining
-> or leading a run.  If anyone else is interested in participating,
-> https://bmovanmarathon.ca/ offers 8km and 21.1km races as well.  If
-> you just want a spot of morning exercise, I can suggest routes, but
-> will probably not join you.
 
-For those of you who fancy something more scenic and less damaging to
-the knees, Mike and I were planning a hike around the chain lakes trail
-by Mt Baker:
 
-https://www.fs.usda.gov/recarea/mbs/recarea/?recid=80181
+On 13/04/2023 17.12, Song Yoong Siang wrote:
+> igc_configure_rx_ring() function will be called as part of XDP program
+> setup. If Rx hardware timestamp is enabled prio to XDP program setup,
+> this timestamp enablement will be overwritten when buffer size is
+> written into SRRCTL register.
+> 
 
-As long as there's been no recent snowfall, both the trail and the
-Bagley Lakes trailhead should be accessible.  The Rangers have been
-known to keep Chain Lakes closed until June, so we might have to go
-along one of the other trails instead.
+Ah, I believe I have hit this bug with my igc patches.
+Thanks for fixing.
 
-Mike and I are planning to drive up early on Sunday from Seattle, but
-it is possible to drive from Vancouver as well if you have a car
-(There's a US$5/car charge at the car park).
+> Thus, this commit read the register value before write to SRRCTL
+> register. This commit is tested by using xdp_hw_metadata bpf selftest
+> tool. The tool enables Rx hardware timestamp and then attach XDP program
+> to igc driver. It will display hardware timestamp of UDP packet with
+> port number 9092. Below are detail of test steps and results.
+>
+> Command on DUT:
+>    sudo ./xdp_hw_metadata <interface name>
+>
 
-Regards,
+Why port 9092 ?
+The ./xdp_hw_metadata prog will redirect port 9091
 
-James
+
+> Command on Link Partner:
+>    echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
+> 
+
+Again port 9092 ?
+
+> Result before this patch:
+>    skb hwtstamp is not found!
+> 
+> Result after this patch:
+>    found skb hwtstamp = 1677762212.590696226
+
+I usually use this cmd to see if number is sane:
+
+$ date -d @1677762212
+2023-03-02T14:03:32 CET
+
+
+> 
+> Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
+> Cc: <stable@vger.kernel.org> # 5.14+
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
+>   drivers/net/ethernet/intel/igc/igc_base.h | 7 +++++--
+>   drivers/net/ethernet/intel/igc/igc_main.c | 5 ++++-
+>   2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/igc/igc_base.h b/drivers/net/ethernet/intel/igc/igc_base.h
+> index 7a992befca24..b95007d51d13 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_base.h
+> +++ b/drivers/net/ethernet/intel/igc/igc_base.h
+> @@ -87,8 +87,11 @@ union igc_adv_rx_desc {
+>   #define IGC_RXDCTL_SWFLUSH		0x04000000 /* Receive Software Flush */
+>   
+>   /* SRRCTL bit definitions */
+> -#define IGC_SRRCTL_BSIZEPKT_SHIFT		10 /* Shift _right_ */
+> -#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT		2  /* Shift _left_ */
+> +#define IGC_SRRCTL_BSIZEPKT_MASK	GENMASK(6, 0)
+> +#define IGC_SRRCTL_BSIZEPKT_SHIFT	10 /* Shift _right_ */
+> +#define IGC_SRRCTL_BSIZEHDRSIZE_MASK	GENMASK(13, 8)
+> +#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT	2  /* Shift _left_ */
+> +#define IGC_SRRCTL_DESCTYPE_MASK	GENMASK(27, 25)
+>   #define IGC_SRRCTL_DESCTYPE_ADV_ONEBUF	0x02000000
+>   
+>   #endif /* _IGC_BASE_H */
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 25fc6c65209b..de7b21c2ccd6 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -641,7 +641,10 @@ static void igc_configure_rx_ring(struct igc_adapter *adapter,
+>   	else
+>   		buf_size = IGC_RXBUFFER_2048;
+>   
+> -	srrctl = IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
+> +	srrctl = rd32(IGC_SRRCTL(reg_idx));
+> +	srrctl &= ~(IGC_SRRCTL_BSIZEPKT_MASK | IGC_SRRCTL_BSIZEHDRSIZE_MASK |
+> +		  IGC_SRRCTL_DESCTYPE_MASK);
+> +	srrctl |= IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
+>   	srrctl |= buf_size >> IGC_SRRCTL_BSIZEPKT_SHIFT;
+>   	srrctl |= IGC_SRRCTL_DESCTYPE_ADV_ONEBUF;
+>   
 
