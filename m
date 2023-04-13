@@ -2,142 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE516E0C13
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 13:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81BC6E0D3B
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 14:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjDMLJa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 07:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        id S229708AbjDMMKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 08:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjDMLJa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 07:09:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D3D5BB8
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 04:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681384128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ons+PEhg040VlXg4ZxDtxYCBN3ktVKjiFeoBkktxpTo=;
-        b=PLvsX63EtfHdh6Uo0rQIaDMwV2Gd70q/9/nu7PKmHRRIZCPa4Ngyz+CRNw65jQJ1vvlciE
-        0A7WBuIY7tAckkexyixR7i+nL7fmM3w+miCDjNi+CP3OFKwsMjyxKJAtkJkx61nemEmYEc
-        wg+RXZ1lwTMEaN7u1YZLNO69a1fEnIM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-CVuJyWYYMZS3lVzk3jlRZw-1; Thu, 13 Apr 2023 07:08:47 -0400
-X-MC-Unique: CVuJyWYYMZS3lVzk3jlRZw-1
-Received: by mail-ed1-f72.google.com with SMTP id a5-20020a509e85000000b0050504899d78so2568684edf.16
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 04:08:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681384126; x=1683976126;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ons+PEhg040VlXg4ZxDtxYCBN3ktVKjiFeoBkktxpTo=;
-        b=jK+0Xhkhlz1iWOMiIKWrZrWeqUaKrDUaFZin4yNBSTIJlVhbNuB3Ryb/lidhLZz8Jd
-         Umw1QmOoHs544J+s7F0y2BaKHmAr2/ckEE5etbb7jVucrPY/R0mDgcTJJNu6UHjVHGGO
-         ZgODgGYIzaLGLBjRhzgwtF7xUmjCGT3PuPCZmffuynteP6JAxnbQ7dG2L89GZPWhMh7c
-         FF5nVYyOOVmPsI09IYvw5AJGQ3nsCPk9kPYAcVOKym8WeZw3b9IeSc25LzCIwHcXGGWO
-         u7+Mv65LBPTWUa+aaWKzD7c7+q1L5GhEgbHEp8RcesdWCVguZbWy+ck0azq7CYbSxeQc
-         n6zg==
-X-Gm-Message-State: AAQBX9dLmCWBjgB9RLDRavji+wY945XxNCCzRylxFAEGzzPWpgKMs62x
-        WJTDHjI0+YjaUsaDNg3E1V89qP6WTroLusvG4IDXyaqDowUIRRoGfhVie1zx1c/o813mUSV71Ae
-        6B6xo6ayU/LaQ
-X-Received: by 2002:a17:906:3888:b0:94a:8a82:9cab with SMTP id q8-20020a170906388800b0094a8a829cabmr2301564ejd.42.1681384126123;
-        Thu, 13 Apr 2023 04:08:46 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YRUH859V0juwSOoolH8r33NhgxjjZn9BxXeqS19QTUiJdr16jkspnL6tc/NvqKxhfjEPQfuw==
-X-Received: by 2002:a17:906:3888:b0:94a:8a82:9cab with SMTP id q8-20020a170906388800b0094a8a829cabmr2301525ejd.42.1681384125710;
-        Thu, 13 Apr 2023 04:08:45 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id m5-20020a1709062ac500b0094a84462e5fsm827249eje.37.2023.04.13.04.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Apr 2023 04:08:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 95816AA7AF0; Thu, 13 Apr 2023 13:08:44 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kal Cutter Conley <kal.conley@dectris.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-In-Reply-To: <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
- <ZDBEng1KEEG5lOA6@boxer>
- <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk>
- <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 13 Apr 2023 13:08:44 +0200
-Message-ID: <87ile011kz.fsf@toke.dk>
+        with ESMTP id S229522AbjDMMKC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 08:10:02 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A672149EA;
+        Thu, 13 Apr 2023 05:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=YOBMAKejPX+OUgvMPZLufLnvOCS92uPlIFdCR6OWoLw=; b=T5X6Rx8kaWNvIVsbXet+mazslG
+        cUMmKQKwhxpKYmTzVNKZ05lPc6r1bz9rjFGRT4mI5IO4+2Nt8sYcRNrcj5LRTuDqsqm8Q+CqLfJNC
+        YAAkgWLyfRWxTtdwYgmJIsep4lObGr/gm5S28YcLNqgVLQUS/4BBDGkhsK/DNQMgOqGADYZN4F/hJ
+        gHMJImST2BJPnkTZqc6mOPDKhwBtnIcyMSDqD1qaG90/DSOAK6bhzHgf7oTEOB8+9IcPECOTlgKL0
+        FsAmjSyAboq9AthHCt7/yVv/mGA5rsDet7sKip0kYUF0zeVEk6AsAFqchSuAVxHkpSfNjgy+sA94g
+        dp1EFu4g==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pmvQN-000Cib-Uw; Thu, 13 Apr 2023 13:47:36 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pmvQN-0003GH-AA; Thu, 13 Apr 2023 13:47:35 +0200
+Subject: Re: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
+To:     Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>, martin.lau@linux.dev,
+        toke@redhat.com
+References: <20230413025350.79809-1-laoar.shao@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <968ea56a-301a-45c5-3946-497401eb95b5@iogearbox.net>
+Date:   Thu, 13 Apr 2023 13:47:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230413025350.79809-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26874/Thu Apr 13 09:30:39 2023)
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kal Cutter Conley <kal.conley@dectris.com> writes:
+On 4/13/23 4:53 AM, Yafang Shao wrote:
+> In our container environment, we are using EDT-bpf to limit the egress
+> bandwidth. EDT-bpf can be used to limit egress only, but can't be used
+> to limit ingress. Some of our users also want to limit the ingress
+> bandwidth. But after applying EDT-bpf, which is based on clsact qdisc,
+> it is impossible to limit the ingress bandwidth currently, due to some
+> reasons,
+> 1). We can't add ingress qdisc
+> The ingress qdisc can't coexist with clsact qdisc as clsact has both
+> ingress and egress handler. So our traditional method to limit ingress
+> bandwidth can't work any more.
 
->>
->> Well, I'm mostly concerned with having two different operation and
->> configuration modes for the same thing. We'll probably need to support
->> multibuf for AF_XDP anyway for the non-ZC path, which means we'll need
->> to create a UAPI for that in any case. And having two APIs is just going
->> to be more complexity to handle at both the documentation and
->> maintenance level.
->
-> I don't know if I would call this another "API". This patchset doesn't
-> change the semantics of anything. It only lifts the chunk size
-> restriction when hugepages are used. Furthermore, the changes here are
-> quite small and easy to understand. The four sentences added to the
-> documentation shouldn't be too concerning either. :-)
+I'm not following, the latter is a super set of the former, why do you
+need it to co-exist?
 
-Well, you mentioned yourself that:
+> 2). We can't redirect ingress packet to ifb with bpf
+> By trying to analyze if it is possible to redirect the ingress packet to
+> ifb with a bpf program, we find that the ifb device is not supported by
+> bpf redirect yet.
 
-> The disadvantage of this patchset is requiring the user to allocate
-> HugeTLB pages which is an extra complication.
+You actually can: Just let BPF program return TC_ACT_UNSPEC for this
+case and then add a matchall with higher prio (so it runs after bpf)
+that contains an action with mirred egress redirect that pushes to ifb
+dev - there is no change needed.
 
-In addition, presumably when using this mode, the other XDP actions
-(XDP_PASS, XDP_REDIRECT to other targets) would stop working unless we
-add special handling for that in the kernel? We'll definitely need to
-handle that somehow...
+> This patch tries to resolve it by supporting redirecting to ifb with bpf
+> program.
+> 
+> Ingress bandwidth limit is useful in some scenarios, for example, for the
+> TCP-based service, there may be lots of clients connecting it, so it is
+> not wise to limit the clients' egress. After limiting the server-side's
+> ingress, it will lower the send rate of the client by lowering the TCP
+> cwnd if the ingress bandwidth limit is reached. If we don't limit it,
+> the clients will continue sending requests at a high rate.
 
-> In 30 years when everyone finally migrates to page sizes >= 64K the
-> maintenance burden will drop to zero. Knock wood. :-)
+Adding artificial queueing for the inbound traffic, aren't you worried
+about DoS'ing your node? If you need to tell the sender to slow down,
+have you looked at hbm (https://lpc.events/event/4/contributions/486/,
+samples/bpf/hbm_out_kern.c) which uses ECN CE marking to tell the TCP
+sender to slow down? (Fwiw, for UDP https://github.com/cloudflare/rakelimit
+would be an option.)
 
-Haha, right, but let's make sure we have something that is consistent in
-the intervening decades, shall we? ;)
-
->> It *might* be worth it to do this if the performance benefit is really
->> compelling, but, well, you'd need to implement both and compare directly
->> to know that for sure :)
->
-> What about use-cases that require incoming packet data to be
-> contiguous? Without larger chunk sizes, the user is forced to allocate
-> extra space per packet and copy the data. This defeats the purpose of
-> ZC.
-
-What use cases would that be, exactly? Presumably this is also a
-performance issue? Which goes back to me asking for benchmarks :)
-
--Toke
-
+Thanks,
+Daniel
