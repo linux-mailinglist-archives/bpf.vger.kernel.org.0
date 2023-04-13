@@ -2,210 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8828D6E1323
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 19:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747A56E133A
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 19:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjDMRGF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 13:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S230129AbjDMRKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 13:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjDMRGE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 13:06:04 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEDC59EB
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 10:06:03 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id ud9so38932973ejc.7
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 10:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681405561; x=1683997561;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S5ueXmIZkDkQUDZhRZRSTzJ+gsx/ixfp/eu+AXzndMU=;
-        b=SM0n9+O5ariCdFLz5rYQDCo2AlPvB60PffoRwRj7yuBPtKrjmH3XDUJ5wBk9bsLFsS
-         Q6f3BvxQaJ17ep4YeuoOYK3nLh3WvMo2ex/+XYHcKmuLzZVDKV3x3nPeazGKdeurtCTb
-         i65QMZzFrYSy8JQy6WcEwZylpWw1wsFXMM2v+34AThZp2M2LLTJo/DW/+lx1Ebj8gIL7
-         i0GWJ8LotHFPCeDu6ClymlcTYFCKM17GMIbvDFG4ZcuWWQBYsXkDWeXAUnL8se3L3o2l
-         TAR3jUk74rqAABx1l5UJYDntfUMbe2H/DuF/03QWEDIsS7a8XftaP74WDQnZqp+h2iin
-         OKew==
+        with ESMTP id S230085AbjDMRKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 13:10:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E9159F4
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 10:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681405789;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O5dv4XAyW10/07F5EnvMKRPv3TLobZcUlN4bcbi+kaA=;
+        b=fIKGaOGaC1XkGwTcSQHcS3m60Bv41dD9LtF4cbZHk6+e+p1jXwFqsI7PHV/ekDQeJ+2ssG
+        ripKB7xBdfYc2zTVoZ4Ui5esMIhJ5qBqQnYob5XZc7wm+j/L6+M6tTrV8o7I69JMncpxvd
+        +NtF1Y800XKQO3mYm2fybC+9OlwOdeA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-lRwz3H-LPCCmZeFYklv7NQ-1; Thu, 13 Apr 2023 13:09:48 -0400
+X-MC-Unique: lRwz3H-LPCCmZeFYklv7NQ-1
+Received: by mail-ed1-f70.google.com with SMTP id a26-20020a509b5a000000b004acbe232c03so8446172edj.9
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 10:09:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681405561; x=1683997561;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S5ueXmIZkDkQUDZhRZRSTzJ+gsx/ixfp/eu+AXzndMU=;
-        b=LoBjQPxXAj5Mr9IWMUxgOscdFrXdT+4dWsj3qwbi9EWYJJnGJHFWWHDjB2NSajqhWt
-         z20wDcV+GV9vk61bCyBuOqtcswBVnQ1O8+DJk1K588LTLXVyhC8CB8JKkwEQ+/eDRovg
-         gs3QTuLKbaJ/yCpk+wZjKPPcdJz/Nve8UFVQeTr8KqvXuQczxhJVNvKgU+06lJRMTemx
-         kZJdRi2yN+ntABx7ClRIrdr7klzeSQq/nu598QEiZFRbh1N8Kiwxi/RKl0b2ilNBD72q
-         znQSr+VyWpurunixeYrLk7g3LTIvDgcHgEpW/ZUNzKlJkptE53hvkwbQk8KCLXRmKRMz
-         Rb/w==
-X-Gm-Message-State: AAQBX9dsaNyLnZS4+u6uUK6fpWMMQZjCGdyAmKIuXPtsAyFw8wqjKc1H
-        /AhuyxtDrSgJlTxTWu5z/iIgVqz8XeHj+w==
-X-Google-Smtp-Source: AKy350Zskr9iM5glFIzvpo6LT9lO117847vpYGctszyfmJN235HvrPVyYkIEUhCNrvTnUmkBe1fneQ==
-X-Received: by 2002:a17:907:9873:b0:94e:887f:a083 with SMTP id ko19-20020a170907987300b0094e887fa083mr3393126ejc.57.1681405561283;
-        Thu, 13 Apr 2023 10:06:01 -0700 (PDT)
-Received: from localhost ([2a02:1210:74a0:3200:2fc:d4f0:c121:5e8b])
-        by smtp.gmail.com with ESMTPSA id v3-20020a170906338300b0093120a11a5dsm1233862eja.92.2023.04.13.10.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Apr 2023 10:06:00 -0700 (PDT)
-Date:   Thu, 13 Apr 2023 19:05:59 +0200
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        David Vernet <void@manifault.com>
-Subject: Re: [PATCH RFC bpf-next v1 3/9] bpf: Implement bpf_throw kfunc
-Message-ID: <6fqtzhptgwzv35orfpgbisoclsr6uxrombphrsneqk5n4zjamg@jjuncmnoalmu>
-References: <20230405004239.1375399-1-memxor@gmail.com>
- <20230405004239.1375399-4-memxor@gmail.com>
- <20230406021622.xbgzrmfjxli6dkpt@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <xmehxhdk4ba2j75ltdygzi2b56aftcei36dndptg3v6gdumrh2@zadr5xdn5g3m>
- <20230407021136.dmq42wum3wzhq4bu@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <bykk75ofgzxtmcpbvebju3mdp2jumt27mhfrvk4ysbkfotu2dv@3vd7vm352kp7>
- <20230412193612.neaz7i7whrk3i5f2@macbook-pro-6.dhcp.thefacebook.com>
+        d=1e100.net; s=20221208; t=1681405787; x=1683997787;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5dv4XAyW10/07F5EnvMKRPv3TLobZcUlN4bcbi+kaA=;
+        b=Djw+Rvc3jRvCx6bl2wzcUbY1cQt0vTlWd+FKmrop8bWwcuDY/6SIF/Za1O4LKndQDo
+         CR1fozo7mKqo1sg1bqex2xWS5eAe95nWwUi3VcAhEbhWUwFW6OSoRCh9H3u2FnYYGchX
+         E82AX8yEGdAk5xmlG6rXccAAa2O5P1Vj5jDocUcYvhX83GeFGXBXEcPV2M5t/A4nrtAg
+         7zhYiUnBNtRyIG1ey4WK5uyqWZHD36CkHX3M5cHQr6AtT5G+0hR4PG6CsDFwDJNCKWxi
+         vasd5+dpjVzXmlcRlCFK22xnwj48vubdtKmSHpB7agFdW7GeJMH0tvLhWObSkzsH9QVK
+         wisQ==
+X-Gm-Message-State: AAQBX9dvDPPkp20pE0RiIorF/hE6b+YeHVS4Vl9IgOHJ1+eF6bKnrwQs
+        RLJZecvxuKzRSwQBytTh3OsMnb8LjMSu4cdLzqQGZMUXkobaWhE8B9Tz66dm35tSmqkvCjwYQNx
+        aYaboLXP6ewrF
+X-Received: by 2002:a17:906:2a56:b0:94c:6762:e20d with SMTP id k22-20020a1709062a5600b0094c6762e20dmr2839486eje.12.1681405787184;
+        Thu, 13 Apr 2023 10:09:47 -0700 (PDT)
+X-Google-Smtp-Source: AKy350auwQSXJLuDYzIzYzD6jbuy2PcON1aKDR6Ey77ueObIYZvvDUCwgZNOif1QefTp6UAXXc042g==
+X-Received: by 2002:a17:906:2a56:b0:94c:6762:e20d with SMTP id k22-20020a1709062a5600b0094c6762e20dmr2839449eje.12.1681405786887;
+        Thu, 13 Apr 2023 10:09:46 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id p8-20020a17090664c800b0094b360a281dsm1221750ejn.123.2023.04.13.10.09.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Apr 2023 10:09:46 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <203ab7d9-3695-f734-92b5-503118444108@redhat.com>
+Date:   Thu, 13 Apr 2023 19:09:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230412193612.neaz7i7whrk3i5f2@macbook-pro-6.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net
+Subject: Re: [PATCH net-next v4 1/3] net: stmmac: introduce wrapper for struct
+ xdp_buff
+Content-Language: en-US
+To:     Song Yoong Siang <yoong.siang.song@intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+References: <20230413032541.885238-1-yoong.siang.song@intel.com>
+ <20230413032541.885238-2-yoong.siang.song@intel.com>
+In-Reply-To: <20230413032541.885238-2-yoong.siang.song@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 09:36:12PM CEST, Alexei Starovoitov wrote:
-> On Fri, Apr 07, 2023 at 04:46:55AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, Apr 07, 2023 at 04:11:36AM CEST, Alexei Starovoitov wrote:
-> > > On Fri, Apr 07, 2023 at 01:54:03AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > > On Thu, Apr 06, 2023 at 04:16:22AM CEST, Alexei Starovoitov wrote:
-> > > > > On Wed, Apr 05, 2023 at 02:42:33AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > > > >
-> > > > > > - The exception state is represented using four booleans in the
-> > > > > >   task_struct of current task. Each boolean corresponds to the exception
-> > > > > >   state for each kernel context. This allows BPF programs to be
-> > > > > >   interrupted and still not clobber the other's exception state.
-> > > > >
-> > > > > that doesn't work for sleepable bpf progs and in RT for regular progs too.
-> > > > >
-> > > >
-> > > > Can you elaborate? If a sleepable program blocks, that means the task is
-> > > > scheduled out, so the next program will use the other task's task_struct.
-> > > > Same for preemption for normal progs (under RT or not).
-> > >
-> > > I was worried about the case of the same task but different code paths
-> > > in the kernel with tracing prog stepping on preempted lsm.s prog.
-> > > I think you point that in this case they gotta be in different interrupt_context_level.
-> > > I need to think it through a bit more.
-> > >
-> >
-> > If there is nesting, the programs always clear their exception state on exit, so
-> > the prog that calls into the kernel which then calls into the tracing prog etc.
-> > won't see its exception state on return. The only path where attaching programs
-> > would screw things up is when we see a thrown exception and start unwinding
-> > (where clearing would be a problem since its done frame-by-frame). For that, I
-> > already prevent _throwing_ fexit programs from attaching to subprogs in this
-> > series (normal ones are still ok and supported, because fentry/fexit is
-> > important for stats etc.). There might be some other corner cases I missed but
-> > ensuring this property alone in general should make things work correctly.
-> >
-> > > > > How about using a scratch space in prog->aux->exception[] instead of current task?
-> > > > >
-> > > >
-> > > > I actually had this thought. It's even better because we can hardcode the
-> > > > address of the exception state right in the program (since prog->aux remains
-> > > > stable during bpf_patch_insn_data).
-> > >
-> > > exactly.
-> > >
-> > > > However, concurrent program invocations on
-> > > > multiple CPUs doesn't work well with this. It's like, one program sets the state
-> > > > while the other tries to check it.
-> > >
-> > > Right. If it asserts on one cpu all other cpus will unwind as well,
-> > > since we're saying bpf_assert is for exceptions when user cannot convince
-> > > the verifier that the program is correct.
-> > > So it doesn't matter that it aborted everywhere. It's probably a good thing too.
-> > >
-> >
-> > We can discuss the semantics (this makes bpf_assert more stronger and basically
-> > poisons the program globally in some sense), but implementation wise it's going
-> > to be a lot more tricky to reason about correctness.
-> >
-> > Right now, the verifier follows paths and knows what resources are held when we
-> > throw from a nested call chain (to complain on leaks). Callers doing the check
-> > for exception state at runtime expect only certain throwing points to trigger
-> > the check and rely on that for leak freedom.
-> >
-> > With a global prog->aux->exception, things will be ok for the CPU on which the
-> > exception was thrown, but some other CPU will see the check returning true in a
-> > caller even if the callee subprog for it did not throw and was possibly
-> > transferring its acquired references to the caller after completing execution,
-> > which now causes leaks (because subprogs are allowed to acquire and return to
-> > their caller).
-> >
-> > The way to handle this would be that we assume every callee which throws may
-> > also notionally throw right when returning (due to some other CPU's throw which
-> > we may see). Then every exit from throwing callees may be processed as throwing
-> > if we see the global state as set.
-> >
-> > However, this completely prevents subprogs from transferring some acquired
-> > resource to their caller (which I think is too restrictive). If I'm acquiring
-> > memory from static subprog and returning to my caller, I can't any longer since
-> > I notionally throw when exiting and holding resources when doing bpf_throw is
-> > disallowed, so transfer is out of the question.
->
-> I was under impression that subprogs cannot acquire refs and transfer them
-> to caller.
-> Looks like your commit 9d9d00ac29d0 ("bpf: Fix reference state management for synchronous callbacks")
-> allowed too much.
 
-I think you misunderstood the change in that commit. It was about restricting
-callback functions from acquiring references and not releasing them before their
-BPF_EXIT (since our handling is not completely correct for more than one
-iteration). The verifier has always allowed acquiring references and
-transferring them to the caller for subprog calls.
+On 13/04/2023 05.25, Song Yoong Siang wrote:
+> Introduce struct stmmac_xdp_buff as a preparation to support XDP Rx
+> metadata via kfuncs.
+> 
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
+>   drivers/net/ethernet/stmicro/stmmac/stmmac.h   |  4 ++++
+>   .../net/ethernet/stmicro/stmmac/stmmac_main.c  | 18 +++++++++---------
+>   2 files changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> index 3d15e1e92e18..ac8ccf851708 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> @@ -92,6 +92,10 @@ struct stmmac_rx_buffer {
+>   	dma_addr_t sec_addr;
+>   };
+>   
+> +struct stmmac_xdp_buff {
+> +	struct xdp_buff xdp;
+> +};
+> +
+>   struct stmmac_rx_queue {
+>   	u32 rx_count_frames;
+>   	u32 queue_index;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index d7fcab057032..6ffce52ca837 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -5188,9 +5188,9 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>   	int status = 0, coe = priv->hw->rx_csum;
+>   	unsigned int next_entry = rx_q->cur_rx;
+>   	enum dma_data_direction dma_dir;
+> +	struct stmmac_xdp_buff ctx = {};
 
-> I don't think it's a good idea to support coding patterns like:
-> void my_alloc_foo(struct foo **ptr)
-> {
->   struct foo *p = bpf_obj_new(typeof(*p));
->   *ptr = p;
-> }
->
-> It's a correct C, of course, but do we really want to support such code?
-> I don't think the verifier can fully support it anyway.
-> That commit of yours allowed some of it in theory, but above example probably won't work,
-> since 'transfer' isn't understood by the verifier.
+This code trick {} will zero out the struct.
 
-I have no strong opinions about restricting (I think the code for handling
-transfers is sane and correct, we just transfer the modified reference state,
-and it's a natural valid form of writing programs), especially since static
-subprogs do not have the limitations as global subprogs, and you really don't
-want to inline everything all the time.
-But I think we may end up breaking existing code/programs if we do. Whether that
-fallout will be small or not, I have no data yet to predict.
+Is this done purpose and really needed?
 
->
-> Regardless whether we tighten the verifier now or later such subprogs shouldn't be throwing.
-> So I don't see an issue doing global prog->aux->exception.
+On x86_64 this unfortunately generates an asm instruction: rep stos
 
-That's certainly an option, but I still think we need to be a bit careful. The
-reason is that during analysis, we need to determine that whenever a subprog
-call exits, are we in a state where we can safely unwind? It might end up
-restricting a large set of use cases, but I can only say with certainty after I
-try it out.
+A repeated store string operation, for zeroing out memory, which is
+slow. (Because[1] it supports be suspended by an exception or interrupt,
+which requires it to store/restore CPU flags).
 
-Right now, I heavily rely on the assumption that the checks only become true
-when something throws (to also minimize rewrites, but that's a minor reason).
-The core reason is being able to argue about correctness. With global exception
-state, they can become true anytime, so we need to be a lot more conservative
-even if we e.g. didn't see a subprog as throwing from all callsites.
+[1] https://www.felixcloutier.com/x86/rep:repe:repz:repne:repnz#tbl-4-22
 
-call subprog(A) // will be rewritten, as using R1=A can throw
-call subprog(B) // not rewritten, as using R1=B does not throw
+
+>   	unsigned int desc_size;
+>   	struct sk_buff *skb = NULL;
+> -	struct xdp_buff xdp;
+>   	int xdp_status = 0;
+>   	int buf_sz;
+>   
+> @@ -5311,17 +5311,17 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>   			dma_sync_single_for_cpu(priv->device, buf->addr,
+>   						buf1_len, dma_dir);
+>   
+> -			xdp_init_buff(&xdp, buf_sz, &rx_q->xdp_rxq);
+> -			xdp_prepare_buff(&xdp, page_address(buf->page),
+> +			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
+> +			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
+>   					 buf->page_offset, buf1_len, false);
+>   
+> -			pre_len = xdp.data_end - xdp.data_hard_start -
+> +			pre_len = ctx.xdp.data_end - ctx.xdp.data_hard_start -
+>   				  buf->page_offset;
+> -			skb = stmmac_xdp_run_prog(priv, &xdp);
+> +			skb = stmmac_xdp_run_prog(priv, &ctx.xdp);
+>   			/* Due xdp_adjust_tail: DMA sync for_device
+>   			 * cover max len CPU touch
+>   			 */
+> -			sync_len = xdp.data_end - xdp.data_hard_start -
+> +			sync_len = ctx.xdp.data_end - ctx.xdp.data_hard_start -
+>   				   buf->page_offset;
+>   			sync_len = max(sync_len, pre_len);
+>   
+> @@ -5331,7 +5331,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>   
+>   				if (xdp_res & STMMAC_XDP_CONSUMED) {
+>   					page_pool_put_page(rx_q->page_pool,
+> -							   virt_to_head_page(xdp.data),
+> +							   virt_to_head_page(ctx.xdp.data),
+>   							   sync_len, true);
+>   					buf->page = NULL;
+>   					priv->dev->stats.rx_dropped++;
+> @@ -5359,7 +5359,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>   
+>   		if (!skb) {
+>   			/* XDP program may expand or reduce tail */
+> -			buf1_len = xdp.data_end - xdp.data;
+> +			buf1_len = ctx.xdp.data_end - ctx.xdp.data;
+>   
+>   			skb = napi_alloc_skb(&ch->rx_napi, buf1_len);
+>   			if (!skb) {
+> @@ -5369,7 +5369,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+>   			}
+>   
+>   			/* XDP program may adjust header */
+> -			skb_copy_to_linear_data(skb, xdp.data, buf1_len);
+> +			skb_copy_to_linear_data(skb, ctx.xdp.data, buf1_len);
+>   			skb_put(skb, buf1_len);
+>   
+>   			/* Data payload copied into SKB, page ready for recycle */
+
