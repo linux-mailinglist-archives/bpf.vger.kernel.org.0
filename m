@@ -2,91 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36DE6E0774
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 09:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4976E08E9
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 10:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjDMHQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 03:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
+        id S229878AbjDMI2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 04:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjDMHQP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 03:16:15 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427882112;
-        Thu, 13 Apr 2023 00:16:14 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vg-LcGG_1681370170;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vg-LcGG_1681370170)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Apr 2023 15:16:11 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
+        with ESMTP id S229548AbjDMI2j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 04:28:39 -0400
+X-Greylist: delayed 146627 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Apr 2023 01:28:38 PDT
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4172697;
+        Thu, 13 Apr 2023 01:28:38 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id B447C10006C; Thu, 13 Apr 2023 09:28:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1681374516; bh=/bsXNdu/Px3r4xTemFbWe8G4OVPi4dsB2MIJrch1uwg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gFCcgMfz6a7VwtaL0Vy/FlNJOG9emcw5CvB+GLcPe1qgDQbAtoq1ubec9JakUsa7f
+         KyL/lNbHYgMEAsbftRJEwousF4acaYL4j+ulcNwg4V9Mhd83xnODBSIo3VWnFxgX7d
+         QEPJRqCnlqtC6cUBguppMWXSAfBv8VTZ47GL6Us29eKK3sxkkBa/2PLP7NH/snM9u/
+         Wm97DtvhSzx0r+cM6pxHTtAD5y3QEsKwz3Bgvma519IzU03P5nQI3z2FUb0YDyAuS9
+         TGuPwiphfPZkO9Q2pu+wpYgx0sDpiM/4lZ3enELPj6ay1ySevfjnfHjrbtd81ghepi
+         WzeUt7/18rRrw==
+Date:   Thu, 13 Apr 2023 09:28:36 +0100
+From:   Sean Young <sean@mess.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: make me a reviewer of VIRTIO CORE AND NET DRIVERS
-Date:   Thu, 13 Apr 2023 15:16:10 +0800
-Message-Id: <20230413071610.43659-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] bpf: lirc program type should not require SYS_CAP_ADMIN
+Message-ID: <ZDe9ND/M4I9ll1xV@gofer.mess.org>
+References: <ZDWAcN6wfeXzipHz@gofer.mess.org>
+ <CAADnVQJ-zzzTxDj8_7WKW-o3BDsU=DNAnvSEZGNHswbhGA8xhA@mail.gmail.com>
 MIME-Version: 1.0
-X-Git-Hash: eb09d48d9ef9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQJ-zzzTxDj8_7WKW-o3BDsU=DNAnvSEZGNHswbhGA8xhA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-First of all, I personally love open source, linux and virtio. I have
-also participated in community work such as virtio for a long time.
+On Wed, Apr 12, 2023 at 04:14:05PM -0700, Alexei Starovoitov wrote:
+> On Tue, Apr 11, 2023 at 8:45 AM Sean Young <sean@mess.org> wrote:
+> >
+> > Make it possible to load lirc program type with just CAP_BPF.
+> 
+> Is it safe?
+> If the user can load with just CAP_BPF the FD to the prog and target_fd
+> will allow attach as well.
 
-I think I am familiar enough with virtio/virtio-net and is adequate as a
-reviewer.
+Exactly, that's the $1m question of course. 
 
-Every time there is some patch/bug, I wish I can get pinged
-and I will feedback on that.
+I think it's safe from a lirc perspective because you need to be able to
+open the /dev/lirc0 device in the first place; if you can open it, you
+alter all sorts of lirc receiving options already. Changing the IR protocol
+decoder is no different in that perspective.
 
-For me personally, being a reviewer is an honor and a responsibility,
-and it also makes it easier for me to participate in virtio-related
-work. And I will spend more time reviewing virtio patch. Better advance
-virtio development
+The other side of course, is it save to load a bpf lirc program as a normal
+user. I don't see any issue with this; I guess this depends on whether the
+subset of functions in lirc_mode2_func_proto() is safe. I am hoping that
+the expert opinion everyone here can help answer that question.
 
-I had some contributions to virtio/virtio-net and some support for it.
+Thanks,
 
-* per-queue reset
-* virtio-net xdp
-* some bug fix
-* ......
+Sean
 
-I make a humble request to grant the reviewer role for the virtio core
-and net drivers.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cacd6074fb89..700b00a9e225 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22064,6 +22064,7 @@ F:	include/uapi/linux/virtio_console.h
- VIRTIO CORE AND NET DRIVERS
- M:	"Michael S. Tsirkin" <mst@redhat.com>
- M:	Jason Wang <jasowang@redhat.com>
-+R:	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
- L:	virtualization@lists.linux-foundation.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-bus-vdpa
--- 
-2.32.0.3.g01195cf9f
-
+> 
+> 
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > ---
+> >  kernel/bpf/syscall.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index adc83cb82f37..19d9265270b3 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -2439,7 +2439,6 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+> >         case BPF_PROG_TYPE_LWT_SEG6LOCAL:
+> >         case BPF_PROG_TYPE_SK_SKB:
+> >         case BPF_PROG_TYPE_SK_MSG:
+> > -       case BPF_PROG_TYPE_LIRC_MODE2:
+> >         case BPF_PROG_TYPE_FLOW_DISSECTOR:
+> >         case BPF_PROG_TYPE_CGROUP_DEVICE:
+> >         case BPF_PROG_TYPE_CGROUP_SOCK:
+> > --
+> > 2.39.2
+> >
