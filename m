@@ -2,76 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB7E6E0BD9
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 12:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB1B6E0BF8
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjDMKvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 06:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
+        id S229793AbjDMLBI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 07:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjDMKvr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 06:51:47 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3341BC1
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 03:51:37 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-50672fbf83eso1532340a12.0
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 03:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1681383096; x=1683975096;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RxeMOwbpGENb+weUS3Q3c1MqA2boB5pRuOKSrr+VKMA=;
-        b=olAgFLXV5pQj078BxZmSCdSLqKQ8QJvL1YxmQNcD4ubNdFmVEZtp0Tj+74ZMtWMOcI
-         DE+D3UQfYz/CR4E02hxL+0SMwxIGuIjRO1xaMbbjRWm4tXfmZNgoQWlWlrPAoPHccj6O
-         VWdvaFir8HjPgBX+IRWFrxCNRDsXY7R42iz1Y=
+        with ESMTP id S229599AbjDMLBH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 07:01:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF454680
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 04:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681383624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Z68wGMpS8W7hPnlbC+dU5dwHaC3Z1pkCBKswknjRVg=;
+        b=Ig1qsxL1a/LdNQpdEOeMriT4lP6QOMZJn4QqoO38QsDoeIqp4Y7iQxYsXpwuxWWLNZfh9l
+        UxS3x44ehti0P26HsJG5/iAhvm8vDgbHg+YTifmePZnqbilFBYPw8/HaSaNjqznZxL5QdB
+        ApTPSCkWPucjKDO9WlDktQrx9O0EBK0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-j-CWlD-4MLez6T7Lp2QLMA-1; Thu, 13 Apr 2023 07:00:23 -0400
+X-MC-Unique: j-CWlD-4MLez6T7Lp2QLMA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5050340f541so723513a12.2
+        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 04:00:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681383096; x=1683975096;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RxeMOwbpGENb+weUS3Q3c1MqA2boB5pRuOKSrr+VKMA=;
-        b=GS10ago7KDZBhk67L1HzFq21WGYacQK43k89HdORjXHJN6iBYztfu+kxyGJjvyv9zP
-         npnj8QUXjJB7i4wpWX60rjvgmBRf1iIi4zEYhYY1LoHGZi4sG6vkE+RZAVL9L6uaXGV5
-         gXva80C3l021slu8uodBvLrSOh3SZ3gwdxnnucKl27uh0TUN1wXYo2qQ9SCF31/USMhK
-         Op/ZqW0a0P3VBfWw/nSWBOcUPkSbH351DQLRP0uiQNcONXYI8Td4LjiArZQUfsXVEy9J
-         bivSJTdLld3AqIbmgtoC/vYdLgiTENfiPtf1+6eXOni8Rcxaa1C/PEQCQTKcyEhFAD2u
-         0q/A==
-X-Gm-Message-State: AAQBX9cHQaJtLrOp0IZIzvX5gOt9/yGSsLDKbCPg/GV3PVWuQfrAYahx
-        oVHbSk88qM3n+wS8OdmfcXHRsBXK0+T/voLsuo19ow==
-X-Google-Smtp-Source: AKy350aJVHJsIM/7Cw5RRVLHjyYZYMjj/wfkGRiEzVOfWIvLI+ptJr0GOC68cQM7cPhDCwcJUYGEhLI0zZpYDF8aKKM=
-X-Received: by 2002:a50:bb25:0:b0:502:7551:86c7 with SMTP id
- y34-20020a50bb25000000b00502755186c7mr738815ede.4.1681383096281; Thu, 13 Apr
- 2023 03:51:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
- <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk>
-In-Reply-To: <875ya12phx.fsf@toke.dk>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Thu, 13 Apr 2023 12:56:20 +0200
-Message-ID: <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        d=1e100.net; s=20221208; t=1681383622; x=1683975622;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Z68wGMpS8W7hPnlbC+dU5dwHaC3Z1pkCBKswknjRVg=;
+        b=TbCJvt+ak//On4I4QsXXAUZ5iEqPuhwoMdIp4drlUsBwuYshNC/PDP4nR6VlAWViPC
+         vvbBMDJwnhkhONJme1SgDLAkYon6cwlCpM35WC1s42HzsTwsARxs2yvSw31GRpk/L4Ti
+         6/NxrYwYKmpxVhmRlAdXfye74LJW5LgA+2Bu9gMXsk4G3LU0dKkxmUznt/Z2xpxaPuR7
+         lSlWYk8ZFbjOoKEpuriigG+pC+Kenq/6PFUoA4hp9r4n8pQgyw7aUWTu8230w9XoLM1A
+         LAi5pp5DfWkXSHOv6B7E7FbYgR6w/lONmd+uFafeliWgpLM2Z1P07xNl9YuDd6Yl2iQz
+         5tgA==
+X-Gm-Message-State: AAQBX9fA9nVgs1frIegPkH8AdMBfjxlrUSsFVdGfsdQkPUw59yfequ7K
+        RtA5cJCwxj/hU6W7ahxwhtPM6H8m7ICWJqeKXmYgNvTiIUXRgnICrqgbaEqOznx5eDkaX9kx7JS
+        ReqxDKpSDkcEc
+X-Received: by 2002:aa7:d8d2:0:b0:504:c269:1497 with SMTP id k18-20020aa7d8d2000000b00504c2691497mr1969052eds.27.1681383621774;
+        Thu, 13 Apr 2023 04:00:21 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Zh8AmDI+sXIcl/ZT1w52Ql3HlLlVH+9qOtObPvcWJvo12TMaYNWasAuhznl13hj0H4CxlnTg==
+X-Received: by 2002:aa7:d8d2:0:b0:504:c269:1497 with SMTP id k18-20020aa7d8d2000000b00504c2691497mr1969023eds.27.1681383621306;
+        Thu, 13 Apr 2023 04:00:21 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id o6-20020a056402038600b004af720b855fsm674050edv.82.2023.04.13.04.00.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Apr 2023 04:00:20 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 30676AA7AEE; Thu, 13 Apr 2023 13:00:20 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
+In-Reply-To: <ZDfKBPXDQxH8HeX9@syu-laptop>
+References: <ZDfKBPXDQxH8HeX9@syu-laptop>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 13 Apr 2023 13:00:20 +0200
+Message-ID: <87leiw11yz.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,29 +87,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> Well, I'm mostly concerned with having two different operation and
-> configuration modes for the same thing. We'll probably need to support
-> multibuf for AF_XDP anyway for the non-ZC path, which means we'll need
-> to create a UAPI for that in any case. And having two APIs is just going
-> to be more complexity to handle at both the documentation and
-> maintenance level.
+Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
 
-I don't know if I would call this another "API". This patchset doesn't
-change the semantics of anything. It only lifts the chunk size
-restriction when hugepages are used. Furthermore, the changes here are
-quite small and easy to understand. The four sentences added to the
-documentation shouldn't be too concerning either. :-)
+> A side note: if we want all userspace visible libbpf to have a coherent
+> version, perf needs to use the shared libbpf library as well (either
+> autodetected or forced with LIBBPF_DYNAMIC=1 like Fedora[4]). But having to
+> backport patches to kernel source to keep up with userspace package (libbpf)
+> changes could be a pain.
 
-In 30 years when everyone finally migrates to page sizes >= 64K the
-maintenance burden will drop to zero. Knock wood. :-)
+So basically, this here is the reason we're building libbpf from the
+kernel tree for the RHEL package: If we use the github version we'd need
+to juggle two different versions of libbpf, one for the in-kernel-tree
+users (perf as you mention, but also the BPF selftests), and one for the
+userspace packages. Also, having libbpf in the kernel tree means we can
+just backport patches to it along with the BPF-related kernel patches
+(we do quite extensive BPF backports for each RHEL version). Finally,
+building from the kernel tree means we can use the existing
+kernel-related procedures for any out of order hotfixes (since AFAIK
+none of the github repositories have any concept of stable branches that
+receive fixes).
 
->
-> It *might* be worth it to do this if the performance benefit is really
-> compelling, but, well, you'd need to implement both and compare directly
-> to know that for sure :)
+YMMV of course, but figured I'd share our reasoning. To be clear,
+building from the kernel tree is not without its own pain points (mostly
+related to how the build scripts are structured for our kernel builds).
+We've discussed moving to the github version of libbpf multiple times,
+but every time we've concluded that it would be more, not less, painful
+than having the kernel tree be the single source of truth.
 
-What about use-cases that require incoming packet data to be
-contiguous? Without larger chunk sizes, the user is forced to allocate
-extra space per packet and copy the data. This defeats the purpose of
-ZC.
+-Toke
+
