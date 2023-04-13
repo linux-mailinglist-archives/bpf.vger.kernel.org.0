@@ -2,69 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8B96E04ED
-	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB466E04F4
+	for <lists+bpf@lfdr.de>; Thu, 13 Apr 2023 04:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjDMCyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Apr 2023 22:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S229451AbjDMC5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Apr 2023 22:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjDMCy2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Apr 2023 22:54:28 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA1172BB;
-        Wed, 12 Apr 2023 19:54:08 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id m21so3983502qtg.0;
-        Wed, 12 Apr 2023 19:54:08 -0700 (PDT)
+        with ESMTP id S229605AbjDMC5D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Apr 2023 22:57:03 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9C310EC
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:56:58 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id v7so12481527ybi.0
+        for <bpf@vger.kernel.org>; Wed, 12 Apr 2023 19:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681354447; x=1683946447;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2t5C+Nqj4QS3C0XZLg8gc9PHSRT4VaS9b09a++MWfk=;
-        b=H5gJphsHAwIoG8F8IPocWHucXUa0g+vKZlyeNJfcuM+wEr4heqtpncoeeAB33F7gfx
-         lZxuGAZW35YekqqYReHof63AKHDroMAJZ8QsY8utmhXD6xcvCEwnikYHzR+RXvResyWT
-         0HOk5vTOb0IMSTzR9KMOyRtsdVYtgKkAdpOrlkDg7ma4MQi5pgn9HnKCxWznt3uFEIoC
-         bXBPQXNJ2HM5153hERc5B4DQDrTBoVb11VhnmXv6qoOJ1vZhsbjs5BdtM/qoedXn17vL
-         B8YOmgB6qWZ/fhsJhMN/F99aMam6f7+EjnaixmqO/+YLTLOnXw/7YwWvsDuAejdM4oKR
-         ic0Q==
+        d=paul-moore.com; s=google; t=1681354617; x=1683946617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UY08ZCA7g/9tHh3dbd0OItUztJmkMAu+XKTk8WVIyaw=;
+        b=OhhE4z210G3lwDapVWViLJDw6gysseeIpltX2OJYqnrp0yFSMIkZgy8cTr3+zlbDN0
+         DDmLazDHvqT2ykNSij9wEb0SquPqx+HYnG6OWoYMCvPeAIsZ2GWCEdhbg8G69dmGrQKI
+         nHCELzZAORoNIJxt6qJdDdlotqhyDMuW6vVlpiYvFqktv+XtouAnUNkSGD7YjmPz7i29
+         eCayemTDQbx/t9YnDu7XCUAOAts67meITY1vbUDeKOyxgN7BsOQ/p7Ife4u5HoipTsyF
+         im8XhVE2vudYi/MXWELzIi//t0qS9JzhJeVblI0LTRBvblgO7hZmnteCfzq0KI8dJAB5
+         vv1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681354447; x=1683946447;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g2t5C+Nqj4QS3C0XZLg8gc9PHSRT4VaS9b09a++MWfk=;
-        b=YJF2/0JG8Y0X2d7WoTI1nDNr/4zossoda6edx0sGgjvF5gN3oX52kXsqgTR3saC6OU
-         VNcwcpmFYi1FtakpWLXS/Igs/gPrP8M6LOdAUcFVHvgunDd6XHEUcD3/tgrmIycch+Up
-         7e/SOX5zAZzC/HLGnI0CXCmFammWE3hSR2dE+1bVyn4dmT1S84vvJ7321Z7wXWbGyw3y
-         Wj8gyK+rbxlBKVG3SLCQA4EWVJkBUPXR4EDwOA+gaoXEifiUGkkZw70Dp/pudDAabGAF
-         31ebuiEWRI9HnGwC52PgXG90EeXM75T/ZAMl5M6rcOd/MWF/pNJfnNjWjb1+2CYdVw+E
-         wHnQ==
-X-Gm-Message-State: AAQBX9fKkqfbfHaGj1oWpz2imvxobWgOuANRWsxn7EFnmitI7ZiUrJvr
-        ENupFYgqbWRl/ehiZM46bFE=
-X-Google-Smtp-Source: AKy350Y7fjHmntc5+39FLCvIUjdSvhmE5e5Nve36uzWoEdKWr2JZpM0/lPusvIymRwunVDmDUsn59A==
-X-Received: by 2002:ac8:5d89:0:b0:3e8:38fc:e8cf with SMTP id d9-20020ac85d89000000b003e838fce8cfmr1071357qtx.22.1681354447124;
-        Wed, 12 Apr 2023 19:54:07 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:c:fe2:5400:4ff:fe65:32a4])
-        by smtp.gmail.com with ESMTPSA id m9-20020ac807c9000000b003b9a73cd120sm188728qth.17.2023.04.12.19.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Apr 2023 19:54:06 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Subject: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
-Date:   Thu, 13 Apr 2023 02:53:50 +0000
-Message-Id: <20230413025350.79809-1-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.1
+        d=1e100.net; s=20221208; t=1681354617; x=1683946617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UY08ZCA7g/9tHh3dbd0OItUztJmkMAu+XKTk8WVIyaw=;
+        b=dDiRShu26h0ygnpmSImmiW6Ckyk+KqXRqxii6TcqMEqAwKDansL/aDWnMqez7qFV+O
+         hU0VXRkBosJyVuuf7oUwuP5RIH0pU35JYWZcdx3HqmQkzUetkxLLrtBMmfeCQvWvCpD4
+         lKq9hy9SkK0Zkj2Wp8k6v5Zabtaooew09UqiEpJFFEZxyadVqJkgURSARv7kRASshmSV
+         wlJwCgpdCG0K0katCaCAzFWLDKFK/aDb66wb7F3jKq15azRN5k2EKHd1BDLLjBlmNkL/
+         w4N3gfKUYRaeRNdENnXGYSCxnI61AO9CDEWjPS8IRgATra6Sl+fyDk5gK6aEMFlzS6QO
+         Lg2g==
+X-Gm-Message-State: AAQBX9fk0KEpUeiLsqcnJwV1wzN0V+ywr48HT8j5EcdTPgCcP1J8ypuJ
+        KPC9RfodwvYV2P1O/CBcn6jRcTTIOByNsGDi4ThG
+X-Google-Smtp-Source: AKy350Z7OUIqIaNUffyuGb6Z12ilXUtWsSbo31dC1HYFRZEIJSSeSPWg6BbGcTRWaNugmltONTIApF6XBcMcwdCz6bE=
+X-Received: by 2002:a25:d7d3:0:b0:b68:7a4a:5258 with SMTP id
+ o202-20020a25d7d3000000b00b687a4a5258mr515514ybg.3.1681354617518; Wed, 12 Apr
+ 2023 19:56:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230412043300.360803-1-andrii@kernel.org> <CAHC9VhQHmdZYnR=+rX-3FcRh127mhJt=jAnototfTiuSoOTptg@mail.gmail.com>
+ <6436eea2.170a0220.97ead.52a8@mx.google.com> <CAHC9VhR6ebsxtjSG8-fm7e=HU+srmziVuO6MU+pMpeSBv4vN+A@mail.gmail.com>
+ <6436f837.a70a0220.ada87.d446@mx.google.com> <CAHC9VhTF0JX3_zZ1ZRnoOw0ToYj6AsvK6OCiKqQgPvHepH9W3Q@mail.gmail.com>
+ <CAEf4BzY9GPr9c2fTUS6ijHURtdNDL4xM6+JAEggEqLuz9sk4Dg@mail.gmail.com>
+In-Reply-To: <CAEf4BzY9GPr9c2fTUS6ijHURtdNDL4xM6+JAEggEqLuz9sk4Dg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 12 Apr 2023 22:56:46 -0400
+Message-ID: <CAHC9VhT8RXG6zEwUdQZH4HE_HkF6B8XebWnUDc-k6AeH2NVe0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,58 +73,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In our container environment, we are using EDT-bpf to limit the egress
-bandwidth. EDT-bpf can be used to limit egress only, but can't be used
-to limit ingress. Some of our users also want to limit the ingress
-bandwidth. But after applying EDT-bpf, which is based on clsact qdisc,
-it is impossible to limit the ingress bandwidth currently, due to some
-reasons,
-1). We can't add ingress qdisc
-The ingress qdisc can't coexist with clsact qdisc as clsact has both
-ingress and egress handler. So our traditional method to limit ingress
-bandwidth can't work any more.
-2). We can't redirect ingress packet to ifb with bpf
-By trying to analyze if it is possible to redirect the ingress packet to
-ifb with a bpf program, we find that the ifb device is not supported by
-bpf redirect yet.
+On Wed, Apr 12, 2023 at 9:43=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Wed, Apr 12, 2023 at 12:07=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
+ wrote:
+> > On Wed, Apr 12, 2023 at 2:28=E2=80=AFPM Kees Cook <keescook@chromium.or=
+g> wrote:
+> > > On Wed, Apr 12, 2023 at 02:06:23PM -0400, Paul Moore wrote:
+> > > > On Wed, Apr 12, 2023 at 1:47=E2=80=AFPM Kees Cook <keescook@chromiu=
+m.org> wrote:
+> > > > > On Wed, Apr 12, 2023 at 12:49:06PM -0400, Paul Moore wrote:
+> > > > > > On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andri=
+i@kernel.org> wrote:
 
-This patch tries to resolve it by supporting redirecting to ifb with bpf
-program.
+...
 
-Ingress bandwidth limit is useful in some scenarios, for example, for the
-TCP-based service, there may be lots of clients connecting it, so it is
-not wise to limit the clients' egress. After limiting the server-side's
-ingress, it will lower the send rate of the client by lowering the TCP
-cwnd if the ingress bandwidth limit is reached. If we don't limit it,
-the clients will continue sending requests at a high rate.
+> > > > > For example, in many places we have things like:
+> > > > >
+> > > > >         if (!some_check(...) && !capable(...))
+> > > > >                 return -EPERM;
+> > > > >
+> > > > > I would expect this is a similar logic. An operation can succeed =
+if the
+> > > > > access control requirement is met. The mismatch we have through-o=
+ut the
+> > > > > kernel is that capability checks aren't strictly done by LSM hook=
+s. And
+> > > > > this series conceptually, I think, doesn't violate that -- it's c=
+hanging
+> > > > > the logic of the capability checks, not the LSM (i.e. there no LS=
+M hooks
+> > > > > yet here).
+> > > >
+> > > > Patch 04/08 creates a new LSM hook, security_bpf_map_create(), whic=
+h
+> > > > when it returns a positive value "bypasses kernel checks".  The pat=
+ch
+> > > > isn't based on either Linus' tree or the LSM tree, I'm guessing it =
+is
+> > > > based on a eBPF tree, so I can't say with 100% certainty that it is
+> > > > bypassing a capability check, but the description claims that to be
+> > > > the case.
+> > > >
+> > > > Regardless of how you want to spin this, I'm not supportive of a LS=
+M
+> > > > hook which allows a LSM to bypass a capability check.  A LSM hook c=
+an
+> > > > be used to provide additional access control restrictions beyond a
+> > > > capability check, but a LSM hook should never be allowed to overrul=
+e
+> > > > an access denial due to a capability check.
+> > > >
+> > > > > The reason CAP_BPF was created was because there was nothing else=
+ that
+> > > > > would be fine-grained enough at the time.
+> > > >
+> > > > The LSM layer predates CAP_BPF, and one could make a very solid
+> > > > argument that one of the reasons LSMs exist is to provide
+> > > > supplementary controls due to capability-based access controls bein=
+g a
+> > > > poor fit for many modern use cases.
+> > >
+> > > I generally agree with what you say, but we DO have this code pattern=
+:
+> > >
+> > >          if (!some_check(...) && !capable(...))
+> > >                  return -EPERM;
+> >
+> > I think we need to make this more concrete; we don't have a pattern in
+> > the upstream kernel where 'some_check(...)' is a LSM hook, right?
+> > Simply because there is another kernel access control mechanism which
+> > allows a capability check to be skipped doesn't mean I want to allow a
+> > LSM hook to be used to skip a capability check.
+>
+> This work is an attempt to tighten the security of production systems
+> by allowing to drop too coarse-grained and permissive capabilities
+> (like CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, which inevitable allow more
+> than production use cases are meant to be able to do) and then grant
+> specific BPF operations on specific BPF programs/maps based on custom
+> LSM security policy, which validates application trustworthiness using
+> custom production-specific logic.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
----
- net/core/dev.c | 2 ++
- 1 file changed, 2 insertions(+)
+There are ways to leverage the LSMs to apply finer grained access
+control on top of the relatively coarse capabilities that do not
+require circumventing those capability controls.  One grants the
+capabilities, just as one would do today, and then leverages the
+security functionality of a LSM to further restrict specific users,
+applications, etc. with a level of granularity beyond that offered by
+the capability controls.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index c785319..da6b196 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3956,6 +3956,7 @@ int dev_loopback_xmit(struct net *net, struct sock *sk, struct sk_buff *skb)
- 		return NULL;
- 	case TC_ACT_REDIRECT:
- 		/* No need to push/pop skb's mac_header here on egress! */
-+		skb_set_redirected(skb, skb->tc_at_ingress);
- 		skb_do_redirect(skb);
- 		*ret = NET_XMIT_SUCCESS;
- 		return NULL;
-@@ -5138,6 +5139,7 @@ static __latent_entropy void net_tx_action(struct softirq_action *h)
- 		 * redirecting to another netdev
- 		 */
- 		__skb_push(skb, skb->mac_len);
-+		skb_set_redirected(skb, skb->tc_at_ingress);
- 		if (skb_do_redirect(skb) == -EAGAIN) {
- 			__skb_pull(skb, skb->mac_len);
- 			*another = true;
--- 
-1.8.3.1
-
+--=20
+paul-moore.com
