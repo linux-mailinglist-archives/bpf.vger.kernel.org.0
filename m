@@ -2,155 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FA66E1A00
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 04:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBE76E1A84
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 04:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjDNCJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Apr 2023 22:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S229650AbjDNCpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Apr 2023 22:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjDNCJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Apr 2023 22:09:58 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965132D4A;
-        Thu, 13 Apr 2023 19:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681438197; x=1712974197;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=V6yxTKpwndzirxcebJgSFtOtxmxSXQn9YpBYMRBfZ4M=;
-  b=IwmEk92YKmlopoiubdxsDjVO5YVj8uqSre6G7rLEt9+f9p7e2Sf5w3FE
-   8JigK0pHLHdTMWgoTTrnFqoG1BrZrPhSEIeCL4meE+Y+m71/a0Bb8aiZj
-   oeEUQ5MbDTkQazeGt7kKnx4ZVGFWJwmcL39tOw87jkOqLfcSHboDhCVVg
-   WfS7L+OpJ0q/E0hgxTfLj3y6mY9fZAwPn5WTCBIIH3LKb7eIdaOb/0u5f
-   o0fcVRuD6KdC91ro0gULGfX1uOS/VRkpTNE8QWq2MGdXZT6XPpwFP9Jgo
-   94ssCv5U6njevTYfLDapt2tzEzO7xkNNbdAIQNQL55Swd8tk+OvvOge0+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="333124446"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="333124446"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2023 19:09:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="779019528"
-X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
-   d="scan'208";a="779019528"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Apr 2023 19:09:51 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Andre Guedes <andre.guedes@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jacob Keller <jacob.e.keller@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        xdp-hints@xdp-project.net, stable@vger.kernel.org,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net v2 1/1] igc: read before write to SRRCTL register
-Date:   Fri, 14 Apr 2023 10:09:15 +0800
-Message-Id: <20230414020915.1869456-1-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229615AbjDNCpM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Apr 2023 22:45:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7774C01;
+        Thu, 13 Apr 2023 19:44:45 -0700 (PDT)
+Received: from dggpeml500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PyLJs14ZwzSrrx;
+        Fri, 14 Apr 2023 10:40:13 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 14 Apr
+ 2023 10:44:11 +0800
+From:   Xin Liu <liuxin350@huawei.com>
+To:     <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <hsinweih@uci.edu>,
+        <jakub@cloudflare.com>, <john.fastabend@gmail.com>,
+        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liuxin350@huawei.com>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>,
+        <syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <yanan@huawei.com>,
+        <wuchangye@huawei.com>, <xiesongyang@huawei.com>,
+        <kongweibin2@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: Re: [syzbot] [bpf?] [net?] WARNING in sock_map_del_link
+Date:   Fri, 14 Apr 2023 10:44:01 +0800
+Message-ID: <20230414024401.121885-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <67f98e03-79ae-a290-b97a-2f6e11ab1251@iogearbox.net>
+References: <67f98e03-79ae-a290-b97a-2f6e11ab1251@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-igc_configure_rx_ring() function will be called as part of XDP program
-setup. If Rx hardware timestamp is enabled prio to XDP program setup,
-this timestamp enablement will be overwritten when buffer size is
-written into SRRCTL register.
+On 4/14/23 2:42 AM, Daniel Borkmann wrote:
+> On 4/13/23 5:33 PM, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    d319f344561d mm: Fix copy_from_user_nofault().
+> > git tree:       bpf-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15930c9dc80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=78c9d875f0a80d33
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=49f6cef45247ff249498
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/229f3623b7df/disk-d319f344.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/6da0db75c9aa/vmlinux-d319f344.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/01f022fb9a13/bzImage-d319f344.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com
+> 
+> Xin, fyi, given we're currently prepping bpf-next pr we unfortunately had to revert commit
+> ed17aa92dc56 ("bpf, sockmap: fix deadlocks in the sockhash and sockmap") which is causing
+> this new syzkaller splat. There's another one in the syzkaller queue we've been made
+> aware of which bisected to earlier mentioned commit.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=8c5c2a4898e3d6bad86e29d471e023c8a19ba799
+> 
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 7921 at kernel/softirq.c:376 __local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
+> > Modules linked in:
+> > CPU: 1 PID: 7921 Comm: syz-executor.4 Not tainted 6.2.0-syzkaller-13249-gd319f344561d #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+> > RIP: 0010:__local_bh_enable_ip+0xbe/0x130 kernel/softirq.c:376
+> > Code: 45 bf 01 00 00 00 e8 b1 44 0a 00 e8 9c 41 3d 00 fb 65 8b 05 2c 61 b5 7e 85 c0 74 58 5b 5d c3 65 8b 05 12 2f b4 7e 85 c0 75 a2 <0f> 0b eb 9e e8 e9 41 3d 00 eb 9f 48 89 ef e8 ff 30 18 00 eb a8 0f
+> > RSP: 0018:ffffc90007bffbe8 EFLAGS: 00010046
+> > RAX: 0000000000000000 RBX: 0000000000000201 RCX: 1ffffffff1cf0736
+> > RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffff882bf40a
+> > RBP: ffffffff882bf40a R08: 0000000000000000 R09: ffff88801cc6327b
+> > R10: ffffed100398c64f R11: 1ffffffff21917f0 R12: ffff88801cc63268
+> > R13: ffff88801cc63268 R14: ffff8880188ef500 R15: 0000000000000000
+> > FS:  00007f378f724700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007fbbc57831b8 CR3: 00000000210ad000 CR4: 00000000003506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   <TASK>
+> >   spin_unlock_bh include/linux/spinlock.h:395 [inline]
+> >   sock_map_del_link+0x2ea/0x510 net/core/sock_map.c:165
+> >   sock_map_unref+0xb0/0x1d0 net/core/sock_map.c:184
+> >   sock_hash_delete_elem+0x1ec/0x2a0 net/core/sock_map.c:945
+> >   map_delete_elem kernel/bpf/syscall.c:1536 [inline]
+> >   __sys_bpf+0x2edc/0x53e0 kernel/bpf/syscall.c:5053
+> >   __do_sys_bpf kernel/bpf/syscall.c:5166 [inline]
+> >   __se_sys_bpf kernel/bpf/syscall.c:5164 [inline]
+> >   __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5164
+> >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+> >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7f378ea8c169
+> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f378f724168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 00007f378ebabf80 RCX: 00007f378ea8c169
+> > RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000003
+> > RBP: 00007f378eae7ca1 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> > R13: 00007ffe9737aebf R14: 00007f378f724300 R15: 0000000000022000
+> >   </TASK>
+> > 
+> > 
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > 
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > 
 
-Thus, this commit read the register value before write to SRRCTL
-register. This commit is tested by using xdp_hw_metadata bpf selftest
-tool. The tool enables Rx hardware timestamp and then attach XDP program
-to igc driver. It will display hardware timestamp of UDP packet with
-port number 9092. Below are detail of test steps and results.
-
-Command on DUT:
-  sudo ./xdp_hw_metadata <interface name>
-
-Command on Link Partner:
-  echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
-
-Result before this patch:
-  skb hwtstamp is not found!
-
-Result after this patch:
-  found skb hwtstamp = 1677800973.642836757
-
-Optionally, read PHC to confirm the values obtained are almost the same:
-Command:
-  sudo ./testptp -d /dev/ptp0 -g
-Result:
-  clock time: 1677800973.913598978 or Fri Mar  3 07:49:33 2023
-
-Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
-Cc: <stable@vger.kernel.org> # 5.14+
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
----
-v2 changelog:
- - Fix indention
----
- drivers/net/ethernet/intel/igc/igc_base.h | 7 +++++--
- drivers/net/ethernet/intel/igc/igc_main.c | 5 ++++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_base.h b/drivers/net/ethernet/intel/igc/igc_base.h
-index 7a992befca24..b95007d51d13 100644
---- a/drivers/net/ethernet/intel/igc/igc_base.h
-+++ b/drivers/net/ethernet/intel/igc/igc_base.h
-@@ -87,8 +87,11 @@ union igc_adv_rx_desc {
- #define IGC_RXDCTL_SWFLUSH		0x04000000 /* Receive Software Flush */
- 
- /* SRRCTL bit definitions */
--#define IGC_SRRCTL_BSIZEPKT_SHIFT		10 /* Shift _right_ */
--#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT		2  /* Shift _left_ */
-+#define IGC_SRRCTL_BSIZEPKT_MASK	GENMASK(6, 0)
-+#define IGC_SRRCTL_BSIZEPKT_SHIFT	10 /* Shift _right_ */
-+#define IGC_SRRCTL_BSIZEHDRSIZE_MASK	GENMASK(13, 8)
-+#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT	2  /* Shift _left_ */
-+#define IGC_SRRCTL_DESCTYPE_MASK	GENMASK(27, 25)
- #define IGC_SRRCTL_DESCTYPE_ADV_ONEBUF	0x02000000
- 
- #endif /* _IGC_BASE_H */
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 25fc6c65209b..88fac08d8a14 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -641,7 +641,10 @@ static void igc_configure_rx_ring(struct igc_adapter *adapter,
- 	else
- 		buf_size = IGC_RXBUFFER_2048;
- 
--	srrctl = IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
-+	srrctl = rd32(IGC_SRRCTL(reg_idx));
-+	srrctl &= ~(IGC_SRRCTL_BSIZEPKT_MASK | IGC_SRRCTL_BSIZEHDRSIZE_MASK |
-+		    IGC_SRRCTL_DESCTYPE_MASK);
-+	srrctl |= IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
- 	srrctl |= buf_size >> IGC_SRRCTL_BSIZEPKT_SHIFT;
- 	srrctl |= IGC_SRRCTL_DESCTYPE_ADV_ONEBUF;
- 
--- 
-2.34.1
-
+I did miss some bh lock processing when deleting links, and I'll be
+combing the use of sockhash locks recently.
+Thanks.
