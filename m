@@ -2,101 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9186E1B4D
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 06:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4066E1B61
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 07:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjDNE4o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 00:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
+        id S229632AbjDNFAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 01:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjDNE4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 00:56:30 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB826A70;
-        Thu, 13 Apr 2023 21:56:13 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id xi5so42685036ejb.13;
-        Thu, 13 Apr 2023 21:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681448172; x=1684040172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOahN4QlawcFehI7bLkgrg/iclvzg8ErEBM3r/6qSpk=;
-        b=CrORqfpgEv8CcZlXgF/ZZDgOnffuc+L7LYhC7/5nNBokxAsYwWGd2SiMnIDh06t/yn
-         G0ISeD9fIQso5ekz4J1JfFRORTNa6aEcTAl2cgvewdhKtfiONANh7mAFaNXOFwi8mZCM
-         Mjz4Rz/lbBn3jW1jecVUvMmuvet8mZChBaqe8tfA8p9geD0b2y61pVpH5dXgoVggy3q7
-         ecqW2ZO20JUowb8SaK5Et45JXOFKvaHBy760qPV7syOJzTiYT4T6SWFy6XRiThAV0vmD
-         XyUy2cc1Z/uaKnivvTjK6cl5plFMrhqrGsoJXhZjOjIewP5xIjppd50z0w2IlgCIqiv0
-         8N6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681448172; x=1684040172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VOahN4QlawcFehI7bLkgrg/iclvzg8ErEBM3r/6qSpk=;
-        b=k6S6OCjOJVCWHM0RBVGjvvH5syelOZmPQ9DlyY3ONgOyKeoZ1eRrfJzCb7TSabTNyM
-         ALNTTu/4ryTgOxEXxDzz4xhg16CH9iTxZpPqhGYPNYyKogoscTS50Kd3EcAx9Rynke31
-         ANYIfsNG9mtwkwsSMHZpyt7tiP3NDJ5t6V+Ke86tBUM2ykCEEZ6J83XUEqhfHFWQ+UVv
-         fq9E4fM0LK6+BJj5AwY1Quuyc11+dHv0Nr6XpA93nHOlMz7Xy/mv/5lQ7dg+BOrAB7s0
-         ZrQriojRjSLImZcOhPH4lULTViTqgNtgwB07wmwhj8pLII8DGUrDAn0H9dSmO/ejp6Wy
-         E1zQ==
-X-Gm-Message-State: AAQBX9dSpH8TQ0oN5GDC0jOQ/azL2EjFZUE8xtr9rEgESVcjKEFC/KnZ
-        gkUrJuBQsv+1MBbmHsvocpQHxJdoUMpSdZs12m8=
-X-Google-Smtp-Source: AKy350YveSCh9e1itePQiC1fiBDMPTPosSx9uzFJv5U8GqasjFL8eDOOPHlNN4hQfkj2UU2eQ6eYskxDGzTh/tVAEsU=
-X-Received: by 2002:a17:907:968c:b0:94a:87d6:d39a with SMTP id
- hd12-20020a170907968c00b0094a87d6d39amr2519987ejc.3.1681448171913; Thu, 13
- Apr 2023 21:56:11 -0700 (PDT)
+        with ESMTP id S229597AbjDNFAV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 01:00:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7124A2;
+        Thu, 13 Apr 2023 22:00:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55520643D0;
+        Fri, 14 Apr 2023 05:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BD97C433EF;
+        Fri, 14 Apr 2023 05:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681448418;
+        bh=Nuj4Q/n+u+sbinQ2UL896QpTHkLhLwc1MiTdNnxNY78=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=d9M58d/HcVeQFN+gwfMVesploSFc5+l8pWtlltiXfi71J5FNhY5WmIaJvPGdyTgQ4
+         MAuwAymXreWoZI6Lqw6BR7BTpuxft810fi+K4hgm4eyo0GHxt8LlUoalvzRjnRPRI7
+         n/HbfJGoZAnu/Rg5QwU6Bdz3Y+WbQiW8+mBt2q/PMm359/dhkknx99dL/dmeLHYblC
+         NtI35Pbov4SiJMqvMc8AJ3eynaGaNx4h0CGfeZtDCz1WyP4l28gl6SujsFj0N4Dr1g
+         8rmd1xHlYsHhIhHnBgCi4Wanp3eUglBGxn5w0W0XF9LMMRe12NZUXmZSCuNVBKIHsv
+         c9XqtdaItajuQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51F14E21EDE;
+        Fri, 14 Apr 2023 05:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230412095912.188453-1-andrea.righi@canonical.com>
-In-Reply-To: <20230412095912.188453-1-andrea.righi@canonical.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 13 Apr 2023 21:56:00 -0700
-Message-ID: <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: ignore pointer types check with clang
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Paolo Pisati <paolo.pisati@canonical.com>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] samples/bpf: sampleip: Replace PAGE_OFFSET with
+ _text address
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168144841833.15631.13621906411844041748.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 Apr 2023 05:00:18 +0000
+References: <tencent_A0E82E0BEE925285F8156D540731DF805F05@qq.com>
+In-Reply-To: <tencent_A0E82E0BEE925285F8156D540731DF805F05@qq.com>
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     ast@kernel.org, rongtao@cestc.cn, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 2:59=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
-l.com> wrote:
->
-> Building bpf selftests with clang can trigger errors like the following:
->
->   CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
-> progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assignin=
-g to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-poin=
-ter-types]
->         s =3D &nlk->sk;
->           ^ ~~~~~~~~
-> 1 error generated.
+Hello:
 
-I cannot reproduce this and BPF CI doesn't complain about it either.
-What kind of clang do you use?
-Some special version and build flags?
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 12 Apr 2023 16:16:24 +0800 you wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> Macro PAGE_OFFSET(0xffff880000000000) in sampleip_user.c is inaccurate,
+> for example, in aarch64 architecture, this value depends on the
+> CONFIG_ARM64_VA_BITS compilation configuration, this value defaults to 48,
+> the corresponding PAGE_OFFSET is 0xffff800000000000, if we use the value
+> defined in sampleip_user.c, then all KSYMs obtained by sampleip are (user)
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] samples/bpf: sampleip: Replace PAGE_OFFSET with _text address
+    https://git.kernel.org/bpf/bpf-next/c/4a1e885c6d14
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
