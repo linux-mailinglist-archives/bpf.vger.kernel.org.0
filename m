@@ -2,68 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E62B66E1F4E
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 11:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4B16E1F65
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 11:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbjDNJdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 05:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        id S229954AbjDNJgc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 05:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjDNJdI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 05:33:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F274EFB;
-        Fri, 14 Apr 2023 02:33:07 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 462C31FD93;
-        Fri, 14 Apr 2023 09:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1681464786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anqanL63WzuuA9OTxdiLBvl46hTjKTc57YdQQgadd/o=;
-        b=wI2sOsws/cqozSHTbYsvf8p7/178t/09nwrSCD3YknFaOZsJlSrl56FMu5dI+8lrj2vBgD
-        ArUkAR2Papy1w+DijTuDEb07vK3XtSyymKpCiQydUTjGNC0FMwNUR4zM5s2oL+iYL7V4Zv
-        PIVNAOCRy8elJRda0qdrWWNzzQf0A54=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1681464786;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anqanL63WzuuA9OTxdiLBvl46hTjKTc57YdQQgadd/o=;
-        b=UVoCOv8xtrWLrmFnzvFTAMyKVOxL9TIH1CKL0P9VLX5vXSeacUQsignMRTVoQFU6C1eW2U
-        DQy6SmKonVkPPXCw==
-Received: from kunlun.suse.cz (unknown [10.100.128.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A6DE52C143;
-        Fri, 14 Apr 2023 09:33:05 +0000 (UTC)
-Date:   Fri, 14 Apr 2023 11:33:04 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        with ESMTP id S229747AbjDNJgb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 05:36:31 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989CC5B82;
+        Fri, 14 Apr 2023 02:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=LW6cOST+IVw4mFa0Tl2bUIYuEJ4a7bS+eYImfnyQXA8=; b=iBM8Wuei8FIzDoAK0k2csyvDVV
+        k/8Usw0+JklwaEy68DxdSB0NdgpqvwrmWSGTpHPQTYNA4ZLpyv0WgZRwG7v2VWEGvJqi/UOYDc2B+
+        7+oyw04nMzkiFgwYea9P/S4hxj9CreMinAZecQ1uEypzeCaUa8SAAdAho9ekqjcOlV6wcOsomVYj1
+        g3jJZZGS0rYGjNfjKvngt4o5JkjO56eKe4+fTbEipfxtazh8RCjrlh1SnuWjcccSn7dg7acn73Opv
+        2OOaphx00GoI+fEI+zjVOBvqryjWascKCi8cEtxX3jlhzdc9q294Idd5QouV39V19XAN0XbFKseY8
+        XbVRu/0Q==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pnFph-000Ahm-Hr; Fri, 14 Apr 2023 11:35:07 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pnFph-000URX-1E; Fri, 14 Apr 2023 11:35:05 +0200
+Subject: Re: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
-Message-ID: <20230414093304.GE63923@kunlun.suse.cz>
-References: <ZDfKBPXDQxH8HeX9@syu-laptop>
- <ZDfQYHJyJOrR5pcB@syu-laptop>
- <CACdoK4JemtGV9m=kuddE4eZQgfTNj1OqhwfhLpDcsspTvfZx7A@mail.gmail.com>
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>, martin.lau@linux.dev
+References: <20230413025350.79809-1-laoar.shao@gmail.com>
+ <968ea56a-301a-45c5-3946-497401eb95b5@iogearbox.net> <874jpj2682.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ee52c2e4-4199-da40-8e86-57ef4085c968@iogearbox.net>
+Date:   Fri, 14 Apr 2023 11:34:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACdoK4JemtGV9m=kuddE4eZQgfTNj1OqhwfhLpDcsspTvfZx7A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <874jpj2682.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26875/Fri Apr 14 09:23:27 2023)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,65 +67,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Fri, Apr 14, 2023 at 02:12:40AM +0100, Quentin Monnet wrote:
-> On Thu, 13 Apr 2023 at 10:50, Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> >
-> > On Thu, Apr 13, 2023 at 05:23:16PM +0800, Shung-Hsi Yu wrote:
-> > > Hi,
-> > >
-> > > I'm considering switch to bpftool's mirror on GitHub for packaging (instead
-> > > of using the source found in kernel), but realize that it should goes
-> > > hand-in-hand with how libbpf is packaged, which eventually leads these
-> > > questions:
-> > >
-> > >   What is the suggested approach for packaging bpftool and libbpf?
-> > >   Which source is preferred, GitHub or kernel?
-
-...
-
-> > But I wonder whether packaging one of the motives to create the mirrors
-> > initially? Can't seem to find anything in this regard.
-> >
-> >
-> > 1: https://github.com/acmel/dwarves/tree/master/lib
-> > 2: https://lore.kernel.org/bpf/CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com/
+On 4/13/23 4:43 PM, Toke Høiland-Jørgensen wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
 > 
-> It seems like you haven't come across this one?:
-> https://lore.kernel.org/bpf/267a35a6-a045-c025-c2d9-78afbf6fc325@isovalent.com/t/
+>>> 2). We can't redirect ingress packet to ifb with bpf
+>>> By trying to analyze if it is possible to redirect the ingress packet to
+>>> ifb with a bpf program, we find that the ifb device is not supported by
+>>> bpf redirect yet.
+>>
+>> You actually can: Just let BPF program return TC_ACT_UNSPEC for this
+>> case and then add a matchall with higher prio (so it runs after bpf)
+>> that contains an action with mirred egress redirect that pushes to ifb
+>> dev - there is no change needed.
 > 
-> Yes, easing packaging was one of the motivations for the mirror. As
-> mentioned in my other answer, I've not taken the time to reach out to
-> package maintainers yet, so this hasn't really materialised at this
-> point.
+> I wasn't aware that BPF couldn't redirect directly to an IFB; any reason
+> why we shouldn't merge this patch in any case?
+> 
+>>> This patch tries to resolve it by supporting redirecting to ifb with bpf
+>>> program.
+>>>
+>>> Ingress bandwidth limit is useful in some scenarios, for example, for the
+>>> TCP-based service, there may be lots of clients connecting it, so it is
+>>> not wise to limit the clients' egress. After limiting the server-side's
+>>> ingress, it will lower the send rate of the client by lowering the TCP
+>>> cwnd if the ingress bandwidth limit is reached. If we don't limit it,
+>>> the clients will continue sending requests at a high rate.
+>>
+>> Adding artificial queueing for the inbound traffic, aren't you worried
+>> about DoS'ing your node?
+> 
+> Just as an aside, the ingress filter -> ifb -> qdisc on the ifb
+> interface does work surprisingly well, and we've been using that over in
+> OpenWrt land for years[0]. It does have some overhead associated with it,
+> but I wouldn't expect it to be a source of self-DoS in itself (assuming
+> well-behaved TCP traffic).
 
-For me as a package maintainer submodules are a major pain. They always
-need special handling, break down, get out of sync between different
-projects using them, etc.
+Out of curiosity, wrt OpenWrt case, can you elaborate on the use case to why
+choosing to do this on ingress via ifb rather than on the egress side? I
+presume in this case it's regular router, so pkts would be forwarded anyway,
+and in your case traversing qdisc layer / queuing twice (ingress phys dev ->
+ifb, egress phys dev), right? What is the rationale that would justify such
+setup aka why it cannot be solved differently?
 
-Somehow in the past it was possible to build and install development
-versions of libraries during development of tools using them, and
-release both when a feature was finished.
+Thanks,
+Daniel
 
-Arguably using submodules for development may work for some people. For
-most it would cause having the wrong submodule code when switching
-branches, stray submodule changes in patches, etc.
-
-Using submodules as a general method of distributing dependencies is
-hell.
-
-The usual methods of downloading and releasing the source code don't
-work, the submodules have to be specifically bundled.
-
-If the dependency in question has a bug each tool author has to be
-coaxed to update to a fixed version and re-release, or each tool patched
-separately.
-
-Over time API bitrots and is given up, each tool requiring specific and
-different release or git SHA of the dependency. We can see that
-happening a lot in ecosystems where vendoring is the norm.
-
-Thanks
-
-Michal
+> -Toke
+> 
+> [0] https://openwrt.org/docs/guide-user/network/traffic-shaping/sqm
