@@ -2,115 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E74D96E2351
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 14:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622F76E23EB
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 14:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjDNMch (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 08:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
+        id S229836AbjDNM66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 08:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjDNMcg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 08:32:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853B21BFD
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 05:32:33 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-185-VqRPGaRUPQWesYHLYOoMpg-1; Fri, 14 Apr 2023 13:32:30 +0100
-X-MC-Unique: VqRPGaRUPQWesYHLYOoMpg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 14 Apr
- 2023 13:32:27 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 14 Apr 2023 13:32:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Song, Yoong Siang'" <yoong.siang.song@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        "Andre Guedes" <andre.guedes@intel.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>
-CC:     "Brouer, Jesper" <brouer@redhat.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH net v2 1/1] igc: read before write to SRRCTL register
-Thread-Topic: [PATCH net v2 1/1] igc: read before write to SRRCTL register
-Thread-Index: AQHZbnY42u7Gz9ET40eYzbfYWKvVVq8qkCGAgAAQJMCAABqMIA==
-Date:   Fri, 14 Apr 2023 12:32:27 +0000
-Message-ID: <4dc9ea6c77ff49138a49d7f73f7301fd@AcuMS.aculab.com>
-References: <20230414020915.1869456-1-yoong.siang.song@intel.com>
- <8214fb10-8caa-4418-8435-85b6ac27b69e@redhat.com>
- <PH0PR11MB5830D3F9144B61A6959A4A0FD8999@PH0PR11MB5830.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5830D3F9144B61A6959A4A0FD8999@PH0PR11MB5830.namprd11.prod.outlook.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S230254AbjDNM64 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 08:58:56 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AE393FF
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 05:58:32 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id m14so1239448ybk.4
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 05:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681477111; x=1684069111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V+od0TCRa121YMCV7OrqJd/UDXySRjMpxgz52trWe98=;
+        b=cAHfx8L7TxD9vC59NwxfUdJ2e+a4Rvzde5r3Wh174OmM3PEInpeuuU0h29TUBpfvkO
+         MXEvvO3lw2wbkHyogLAr8OliFtVjNWYnSANO/9C26NeerewiRaap265G5nIUHiUxFGrP
+         5gTFwwMUGcH0DMYBRviti5CVrIVRMRom6BCsxOwMZQ2eI3dKSJdQX02rjd08ksWsksFz
+         T7qkHRaBqxSVC0prFxB4ISuUh91zu2C4W92DT0O+MUiMvfVHiG9bILgIsltDBcscnVKQ
+         J9ayeCJy8OuIwhb2rlNgljwbtPZIqqNR5oE90bvPmL2RmoT1u0fIUdW6qAswuuJnz2uy
+         J07g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681477111; x=1684069111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+od0TCRa121YMCV7OrqJd/UDXySRjMpxgz52trWe98=;
+        b=VPkMU5OQEMHGSJVHv9goSx92bSC7/BgF/vV/ZTcRAXoV3wRdVbUqblJCRh5mMYXFMK
+         OqH66mG+xUhU+MOKprWtxBgGECCnPRxzI7ziPfQDb2Cttn/GkcEE9oDeL2ly76ZPGkd/
+         ABT6r9B0kxIVqcjZApA30C1t2KPeMl+Y9pOtQmYRSz1RsxDP0bXyAQAcgKVP/MLp24Q/
+         1hQI1JumUDlChMS2u31FjsMg3pR58LGOVmx67mgCHZCXWR/2hcDHQ+N/hl1xWI1o9zci
+         Af1RU5N9lwKFxTFqiNgcFEcAiu6ObnhaZnqryey92aCuXS1vdJ10vBZyY4df636ydmsZ
+         ICgw==
+X-Gm-Message-State: AAQBX9cXmyfuPu5sLS1BjNyjRd4LiNqKc1AlbJi2/4UWzXxvUk7SyQyn
+        FC6bx1+KDr9lvrbUOpgqs9soLGQkUcpIkVYR5w==
+X-Google-Smtp-Source: AKy350YGGIRqVCI3b+gcARZBnh6Xmku4lo6pKdzyuA62VpWFmUWH1G9gpDQyMpc0tTmdQmVY/kUIrrnX78cTOO3U7qo=
+X-Received: by 2002:a25:d1ca:0:b0:b8f:517a:13b8 with SMTP id
+ i193-20020a25d1ca000000b00b8f517a13b8mr3743744ybg.7.1681477110902; Fri, 14
+ Apr 2023 05:58:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <CAADnVQL53uhY7qwALpFWznTANbN0dnU=Pp-gZXUYT98tUBDtDQ@mail.gmail.com>
+In-Reply-To: <CAADnVQL53uhY7qwALpFWznTANbN0dnU=Pp-gZXUYT98tUBDtDQ@mail.gmail.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Fri, 14 Apr 2023 15:57:55 +0300
+Message-ID: <CAHn8xck_k3UCGHoEF=rwxL-bZ3u63+m_6aWSXVejjK6EKwH0Xw@mail.gmail.com>
+Subject: Re: xdp_bonding/xdp_bonding_redirect_multi is failing
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Manu Bretelle <chantra@meta.com>, bpf <bpf@vger.kernel.org>,
+        lorenzo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogU29uZywgWW9vbmcgU2lhbmcNCj4gU2VudDogMTQgQXByaWwgMjAyMyAxMjoxNg0KLi4u
-DQo+ID5JIGhhdmUgY2hlY2tlZCBGb3h2aWxsZSBtYW51YWwgZm9yIFNSUkNUTCAoU3BsaXQgYW5k
-IFJlcGxpY2F0aW9uIFJlY2VpdmUNCj4gPkNvbnRyb2wpIHJlZ2lzdGVyIGFuZCBiZWxvdyBHRU5N
-QVNLcyBsb29rcyBjb3JyZWN0Lg0KPiA+DQo+ID4+IC0jZGVmaW5lIElHQ19TUlJDVExfQlNJWkVQ
-S1RfU0hJRlQJCTEwIC8qIFNoaWZ0IF9yaWdodF8gKi8NCj4gPj4gLSNkZWZpbmUgSUdDX1NSUkNU
-TF9CU0laRUhEUlNJWkVfU0hJRlQJCTIgIC8qIFNoaWZ0IF9sZWZ0XyAqLw0KPiA+PiArI2RlZmlu
-ZSBJR0NfU1JSQ1RMX0JTSVpFUEtUX01BU0sJR0VOTUFTSyg2LCAwKQ0KPiA+PiArI2RlZmluZSBJ
-R0NfU1JSQ1RMX0JTSVpFUEtUX1NISUZUCTEwIC8qIFNoaWZ0IF9yaWdodF8gKi8NCj4gPg0KPiA+
-U2hpZnQgZHVlIHRvIDEgS0IgcmVzb2x1dGlvbiBvZiBCU0laRVBLVCAobWFudWFsIGZpZWxkIEJT
-SVpFUEFDS0VUKQ0KPiANCj4gWWEsIDFLID0gQklUKDEwKSwgc28gbmVlZCB0byBzaGlmdCByaWdo
-dCAxMCBiaXRzLg0KDQpJIGJldCB0aGUgY29kZSB3b3VsZCBiZSBlYXNpZXIgdG8gcmVhZCBpZiBp
-dCBkaWQgJ3ZhbHVlIC8gMTAyNHUnLg0KVGhlIG9iamVjdCBjb2RlIHdpbGwgYmUgKG11Y2gpIHRo
-ZSBzYW1lLg0KDQo+ID4+ICsjZGVmaW5lIElHQ19TUlJDVExfQlNJWkVIRFJTSVpFX01BU0sJR0VO
-TUFTSygxMywgOCkNCj4gPj4gKyNkZWZpbmUgSUdDX1NSUkNUTF9CU0laRUhEUlNJWkVfU0hJRlQJ
-MiAgLyogU2hpZnQgX2xlZnRfICovDQo+ID4NCj4gPlRoaXMgc2hpZnQgaXMgc3VzcGljaW91cywg
-YnV0IGFzIHlvdSBpbmhlcml0ZWQgaXQgSSBndWVzcyBpdCB3b3Jrcy4NCj4gPkkgZGlkIHRoZSBt
-YXRoLCBhbmQgaXQgaGFwcGVucyB0byB3b3JrLCBrbm93aW5nIChmcm9tIG1hbnVhbCkgdmFsdWUg
-aXMgaW4gNjQgYnl0ZXMNCj4gPnJlc29sdXRpb24uDQo+IA0KPiBJdCBpcyBpbiA2NCA9IEJJVCg2
-KSByZXNvbHV0aW9uLCBzbyBuZWVkIHRvIHNoaWZ0IHJpZ2h0IDYgYml0cy4NCj4gQnV0IGl0IHN0
-YXJ0IG9uIDh0aCBiaXQsIHNvIG5lZWQgdG8gc2hpZnQgbGVmdCA4IGJpdHMuDQo+IFRodXMsIHRv
-dGFsID0gc2hpZnQgbGVmdCAyIGJpdHMuDQo+IA0KPiBJIGRpbnQgcHV0IHRoZSBleHBsYW5hdGlv
-biBpbnRvIHRoZSBoZWFkZXIgZmlsZSBiZWNhdXNlIGl0IGlzIHRvbyBsZW5ndGh5DQo+IGFuZCB1
-c2VyIGNhbiBrbm93IGZyb20gZGF0YWJvb2suDQo+IA0KPiBIb3cgZG8geW91IGZlZWwgb24gdGhl
-IG5lY2Vzc2FyeSBvZiBleHBsYWluaW5nIHRoZSBzaGlmdGluZyBsb2dpYz8NCg0KTm90IGV2ZXJ5
-b25lIHRyeWluZyB0byBncm9rIHRoZSBjb2RlIHdpbGwgaGF2ZSB0aGUgbWFudWFsLg0KRXZlbiB3
-cml0aW5nICg4IC0gNikgd2lsbCBoZWxwLg0KT3IgKEkgdGhpbmspIGlmIHRoZSB2YWx1ZSBpcyBp
-biBiaXRzIDEzLTggaW4gdW5pdHMgb2YgNjQgdGhlbiBqdXN0Og0KCSgodmFsdWUgPj4gOCkgJiAw
-eDFmKSAqIDY0DQpnY2Mgd2lsbCBkbyBhIHNpbmdsZSBzaGlmdCByaWdodCBhbmQgYSBtYXNrIDlh
-dCBzb21lIHBvaW50KS4NCllvdSBtaWdodCB3YW50IHNvbWUgZGVmaW5lcywgYnV0IGlmIHRoZXkg
-YXJlbid0IHVzZWQgbXVjaA0KanVzdCBjb21tZW50cyB0aGF0IHJlZmVyIHRvIHRoZSBuYW1lcyBp
-biB0aGUgbWFudWFsL2RhdGFzaGVldA0KY2FuIGJlIGVub3VnaC4NCg0KCURhdmlkDQoNCi0NClJl
-Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
-b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
-Cg==
+Hi Alexei,
 
+On Fri, Apr 14, 2023 at 3:26=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> is failing with:
+> test_xdp_bonding_redirect_multi:FAIL:expected packets on veth1_2
+> unexpected expected packets on veth1_2: actual 1 < expected 100
+
+I bisected this down to:
+fccca038f3 veth: take into account device reconfiguration for xdp_features =
+flag.
+
+This seems to break XDP redirection from a veth device to another veth devi=
+ce.
+Since bonding just delegates the XDP loading to the slave devices the
+failure should
+also be reproducible with just a pair of veth devices:
+
+ pkt -> veth1_1  <|> veth1_2 (xdp_redirect_map_multi_prog redirects)
+                  |              /
+     <- veth2_1  <|> veth2_2   <-
+
+It seems like this is the same failure as with the xdp_do_redirect test:
+https://lore.kernel.org/bpf/ea5cda51-e8f0-2bcd-abfa-b6bf4b11d354@linux.dev/
+
+Lorenzo: if you fix the xdp_do_redirect test, could you also check
+that xdp_bonding passes?
+
+Cheers,
+Jussi
