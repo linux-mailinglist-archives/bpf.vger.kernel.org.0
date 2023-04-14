@@ -2,118 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A516E1C40
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 08:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336906E1CF9
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 09:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjDNGPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 02:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S229471AbjDNHL2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 03:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjDNGPP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 02:15:15 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1453255B4
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 23:15:14 -0700 (PDT)
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8A9613F445
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 06:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1681452909;
-        bh=4x1ielA7OU/wWOjnJ79+3XpTDh/ue6rRtFlaiIdzFqA=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=JDwuh2/Lfz1Jwh+sCxY4uiruBUrTtDijWoPVS4AW/NC5YCPwJiojL8eqriGtg4Mxm
-         Uq/BKTre6AbPF9dDCPktc0hevj7kQ6Mhw5OHi4MHAaqZPxJfzw+pWw7EVoOX7wS2vJ
-         kw8TMF85TTzG7fu7Ffx6T14HwmjUijh6ib9/DnBP2jdg1JTVHR558+etFN6u7YL88O
-         aUxTEVf09T10s3FnJ/7OQR8O38l5dOLCKYZ4wjeyRUALqQFZWWs3eFPXBTR9oDjyHz
-         rH2ongiXhLFmJz+cXESXkDz7LlJp/HlyeaunLiVL8WvQzsamoGyzhvzvQG2zXJdEF5
-         ClQV+vpBYhcVg==
-Received: by mail-wm1-f71.google.com with SMTP id z20-20020a05600c0a1400b003edcff41678so2583364wmp.0
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 23:15:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681452905; x=1684044905;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4x1ielA7OU/wWOjnJ79+3XpTDh/ue6rRtFlaiIdzFqA=;
-        b=NAE+dqQ82gaNxKdOonO+TX2nq096nE0RiQ8khwt8p2WkCikiv0PL+fUFfx2uZviKev
-         PbD1mw5DbG8WVB/UIHLzCKbCcscLosQ1097WQ5leOtHuGJACsz/0pg5EZVyzHM+LmwgA
-         EDa9sQ/G8gOE3JkflN3o9BpKET+B3HST/0tXzF1daK+QwffaBLpA6dfuTrN5iZN4LA7P
-         9g68vrjc/csfh66m45lclpIovPDzwciumhET2lNdg1SKP9Ry2g8iT5nzNOxQjQM5macP
-         Th8B7Bumu5FLe6gwEV4P29hA1a5Q/Ei1iCi9lJFsoTsgOOSN7t7jLErJFZjLlvgPdOSv
-         Y/cg==
-X-Gm-Message-State: AAQBX9dRmr7mtEGb2DlcTe/a+JpZEG61WB/W4VROApiqL3H1kaYWJnaj
-        TBY8/1vSShKlFDDrRjaxozKsxi+g+KYxUuPXeY/oFxqpCu4cqEB0PiaBYDQ0paIaTjuWcKaTpjA
-        Y03oWIlloNJXykji7rAe5I+5o3SqF2Q==
-X-Received: by 2002:a5d:4949:0:b0:2ef:b977:ee3a with SMTP id r9-20020a5d4949000000b002efb977ee3amr3214592wrs.34.1681452904876;
-        Thu, 13 Apr 2023 23:15:04 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZMWU0obXURDtM8C4VH2fQ+FRH6qv3QJQSMmxiEYCANgKRxwrF1qmRXzaL3awQ3sa15QW1Pzg==
-X-Received: by 2002:a5d:4949:0:b0:2ef:b977:ee3a with SMTP id r9-20020a5d4949000000b002efb977ee3amr3214570wrs.34.1681452904560;
-        Thu, 13 Apr 2023 23:15:04 -0700 (PDT)
-Received: from localhost (uk.sesame.canonical.com. [185.125.190.60])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d4911000000b002e55cc69169sm2794289wrq.38.2023.04.13.23.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Apr 2023 23:15:04 -0700 (PDT)
-Date:   Fri, 14 Apr 2023 08:15:03 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229469AbjDNHL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 03:11:28 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D7BE4B;
+        Fri, 14 Apr 2023 00:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681456286; x=1712992286;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TYSbSR6Fs9QW0UHSn/kSupaAR7Jqpb04MF8TYGHB5ec=;
+  b=FhHR0u7K9i3X6JC0+iUhUWQk+d115wzNV2ApDv2YJc5GRYQIl8L6GVt4
+   +p2/Fk3KEl19I41SHRFCF6P3ktwe74HyamU8BUo3tN2taCo3jYZw0pQBa
+   aoRHckoRa6d0iKUn3Q0vuPKKuZziPHd6wKGQkHWlvKURq98gfVziUy2Q3
+   Fe7bH5/ZwtzsvWBGJquPPAgdHI5HNE+mE7LhOLwljEbxPjEdIt92l4eL4
+   +xCr3mVIFJkHTalId3DpqVy0TfjKTSOiYX4gY5x3grBrROI0peGjBehku
+   DNtM0UCj2ij+/mozTJKMjmExAsvEn5NPDEsyPiAMUiI41v3hXURt+gH6p
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="347117148"
+X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
+   d="scan'208";a="347117148"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 00:11:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="833437354"
+X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
+   d="scan'208";a="833437354"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2023 00:11:21 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pnDaa-000ZJr-13;
+        Fri, 14 Apr 2023 07:11:20 +0000
+Date:   Fri, 14 Apr 2023 15:10:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "songrui.771" <songrui.771@bytedance.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Paolo Pisati <paolo.pisati@canonical.com>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: ignore pointer types check with clang
-Message-ID: <ZDjvZ7mx7+IsSCCO@righiandr-XPS-13-7390>
-References: <20230412095912.188453-1-andrea.righi@canonical.com>
- <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "songrui.771" <songrui.771@bytedance.com>
+Subject: Re: [PATCH] libbpf: correct the macro KERNEL_VERSION for old kernel
+Message-ID: <202304141549.j09aWR6q-lkp@intel.com>
+References: <20230414045204.9748-1-songrui.771@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
+In-Reply-To: <20230414045204.9748-1-songrui.771@bytedance.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 13, 2023 at 09:56:00PM -0700, Alexei Starovoitov wrote:
-> On Wed, Apr 12, 2023 at 2:59 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> >
-> > Building bpf selftests with clang can trigger errors like the following:
-> >
-> >   CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
-> > progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assigning to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-pointer-types]
-> >         s = &nlk->sk;
-> >           ^ ~~~~~~~~
-> > 1 error generated.
-> 
-> I cannot reproduce this and BPF CI doesn't complain about it either.
-> What kind of clang do you use?
-> Some special version and build flags?
+Hi songrui.771,
 
-I'm using Ubuntu clang version 15.0.7 (Ubuntu 23.04), no special build
-flag (unless Ubuntu enables some different default flags, but it
-shouldn't be the case... I'll double check).
+kernel test robot noticed the following build warnings:
 
--Andrea
+[auto build test WARNING on bpf-next/master]
+[also build test WARNING on bpf/master linus/master v6.3-rc6 next-20230413]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/songrui-771/libbpf-correct-the-macro-KERNEL_VERSION-for-old-kernel/20230414-125238
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230414045204.9748-1-songrui.771%40bytedance.com
+patch subject: [PATCH] libbpf: correct the macro KERNEL_VERSION for old kernel
+reproduce:
+        make versioncheck
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304141549.j09aWR6q-lkp@intel.com/
+
+versioncheck warnings: (new ones prefixed by >>)
+   INFO PATH=/opt/cross/clang/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+   /usr/bin/timeout -k 100 3h /usr/bin/make W=1 --keep-going HOSTCC=gcc-11 CC=gcc-11 -j32 ARCH=x86_64 versioncheck
+   find ./* \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o \
+   	-name '*.[hcS]' -type f -print | sort \
+   	| xargs perl -w ./scripts/checkversion.pl
+   ./drivers/accessibility/speakup/genmap.c: 13 linux/version.h not needed.
+   ./drivers/accessibility/speakup/makemapdata.c: 13 linux/version.h not needed.
+   ./drivers/soc/tegra/cbb/tegra-cbb.c: 19 linux/version.h not needed.
+   ./drivers/soc/tegra/cbb/tegra194-cbb.c: 26 linux/version.h not needed.
+   ./drivers/soc/tegra/cbb/tegra234-cbb.c: 27 linux/version.h not needed.
+   ./drivers/staging/media/atomisp/include/linux/atomisp.h: 23 linux/version.h not needed.
+   ./samples/trace_events/trace_custom_sched.c: 11 linux/version.h not needed.
+   ./sound/soc/codecs/cs42l42.c: 14 linux/version.h not needed.
+   ./tools/lib/bpf/bpf_helpers.h: 294: need linux/version.h
+>> ./tools/lib/bpf/libbpf_probes.c: 450: need linux/version.h
+   ./tools/perf/tests/bpf-script-example.c: 60: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-kbuild.c: 21: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-prologue.c: 49: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-relocation.c: 51: need linux/version.h
+   ./tools/testing/selftests/bpf/progs/dev_cgroup.c: 9 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/netcnt_prog.c: 3 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_map_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_send_signal_kern.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_spin_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_tcp_estats.c: 37 linux/version.h not needed.
+   ./tools/testing/selftests/wireguard/qemu/init.c: 27 linux/version.h not needed.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
