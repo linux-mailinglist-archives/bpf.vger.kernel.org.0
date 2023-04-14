@@ -2,82 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF086E1D60
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 09:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB386E1EA1
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 10:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjDNHjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 03:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S230020AbjDNIor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 04:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjDNHjc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 03:39:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A10C4C06
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 00:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681457923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lMIqjynha0lnhe23OoFWtNYm7T0bO0fGReoRZ9IdJV8=;
-        b=glpkoFDPTQ3WbxNM6Rer3iskzi+SaflDFJXGiY8+/vurw81cypJntZblXnxKD2DQ4qkECW
-        y9zlijC/ZTQwT64eDFWtUFFEAi39BOIYRTYzLQQsxY1YgRheyeQSESFTClsxFDYOxkejNh
-        RysZbeuHKj02is0zlFtTikd6ztPS+9Y=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-278-CoRCvzTBMfWjdKarsiwRVw-1; Fri, 14 Apr 2023 03:38:42 -0400
-X-MC-Unique: CoRCvzTBMfWjdKarsiwRVw-1
-Received: by mail-wm1-f71.google.com with SMTP id p7-20020a05600c1d8700b003f0ba296ff6so383736wms.5
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 00:38:42 -0700 (PDT)
+        with ESMTP id S229547AbjDNIoq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 04:44:46 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC1E8A42
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 01:44:01 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id p17so6535080pla.3
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 01:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1681461841; x=1684053841;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qT9vFhlt3TMl+TX1oNW68//w+Ro4Y14kvCsjAYOLicY=;
+        b=B+7R6eL8tEV45YJ8qURuZTcAFO6pap6SIvfvp/eq19D2BSSl4UWWRWAGMzKreTMOKL
+         C5MAKEjqrJsDDYYXBrG/AslOPZxoYfdi+3Ke59+g1cG9clX0NBtPMl6IOndYjFnOauBm
+         wJ6gF88Izt/SehBLL6GSh16ToC5PSfM57jRMh5QDGbBj7EKH6AGdOtPLxNpIReyhDGza
+         tHAyQOjDmWRsKsttD2F91A9WYE5B1cupkZ78fQZSZZcI2kCV8pDAePEuEvuwQGZzfi2w
+         p4qR7lRS1cBcGcNHoQU7QSXW0Wn89ji6usyLXPF5+aQWQnqa4tpIh4qsipeph9mu8LRb
+         YJ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681457921; x=1684049921;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lMIqjynha0lnhe23OoFWtNYm7T0bO0fGReoRZ9IdJV8=;
-        b=jRAUhoYjAC18FfcEHOLuNgg+SF6areRNqEGtmlJt107tnyFoFeq7sbrfmsV2i4Gptw
-         x1eGwmafXFMAAc7+fUuiakU5hhbmxBXPG+BkSeTlD25g6/YAP/4LUEtecEOaAFAcWUfB
-         SXa/jxOxvjJ1IltpdniRVagW9rv+4h+XkbDg1jx1OEjukZRfAzZiDSGeIQheL2+NdwSg
-         noSr1BSgzZ43q1b2Gq5rg0hrIuy1xRHraeTJ/mvcrlbfINZ+/KjUkInzvWE9j0JJCNLx
-         xAsXTdZF4dVq2NtU58QSd2RbClUMxsmJRMVXue2C+zXY/SuWa0H3ahmwjiClifKV54df
-         t87w==
-X-Gm-Message-State: AAQBX9dWlZu3GLXYSctUPs35vELzJkUduhu+Isq/g8/QD9rJvXbiV+D0
-        Gl4Qp65UO2KAWI+osG2CibXG4ND1T5k8EzLOHwuFyjgRX5zJ7EEwBr4yeFlbUC+IUZM65LkYPL4
-        YHoI45dUs+sOm
-X-Received: by 2002:a5d:688b:0:b0:2ef:ba74:663 with SMTP id h11-20020a5d688b000000b002efba740663mr3600342wru.27.1681457921244;
-        Fri, 14 Apr 2023 00:38:41 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bKnQLs9BRa6pmx717Y3ZbnYozswFnfUPMxvV8w2vmX/ki/yiZdrxC+QHPU+hLN+NERHNjBdQ==
-X-Received: by 2002:a5d:688b:0:b0:2ef:ba74:663 with SMTP id h11-20020a5d688b000000b002efba740663mr3600321wru.27.1681457920950;
-        Fri, 14 Apr 2023 00:38:40 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:742d:fd00:c847:221d:9254:f7ce])
-        by smtp.gmail.com with ESMTPSA id h4-20020a1ccc04000000b003f071466229sm3600005wmb.17.2023.04.14.00.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 00:38:40 -0700 (PDT)
-Date:   Fri, 14 Apr 2023 03:38:37 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        d=1e100.net; s=20221208; t=1681461841; x=1684053841;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qT9vFhlt3TMl+TX1oNW68//w+Ro4Y14kvCsjAYOLicY=;
+        b=EF7zBkhZ/oxsBXnv+X7JUx2UMOJWYvGdmCfM0o9AMYiE20sh3jh/kLCuJAgY0i0Y0h
+         R5Y2QwvaaPAh+f1Rs2+OrDnioSH0p0fftB1tAFJJZ6oJXE6RkQ/2ttN4MaujOpdTLVZJ
+         YFdUVrgtQg3Jw4o4vd9jECPFmyRHGXgsPDGb+XQ4opSdwT44w2Fu3FTGD555+PNB0Pp7
+         rStzToBUuWj2Az+n5+B272m4YUFCL89afcgzHawSqMlbgqWnz+/oEXH4AOv3q3tKqXWh
+         oIpvnGO/8pkg7Am397vH5BGGRAhZr69dvrskGJs6RhpWgxe6zWFvNpNsJ79dFlXPzqh4
+         W7fQ==
+X-Gm-Message-State: AAQBX9e/rTBXihVb7A/N6IfdC4tpbdiHtZZ1ufGiZxiYkuejj2qJ7lR/
+        aMks6/PE+R3JoJZG8uflT/DY
+X-Google-Smtp-Source: AKy350bNAERFGkwBQHVVfdBaSsU9015qtbuqO1lXiDwoaRbQgHDumFlCZ+QTDrguD/Bxj4bhO23dGw==
+X-Received: by 2002:a17:90a:cb98:b0:247:20e2:2060 with SMTP id a24-20020a17090acb9800b0024720e22060mr4843673pju.15.1681461840821;
+        Fri, 14 Apr 2023 01:44:00 -0700 (PDT)
+Received: from HX3YDL60GM.bytedance.net ([139.177.225.233])
+        by smtp.gmail.com with ESMTPSA id x6-20020a17090a530600b0024749e7321bsm120722pjh.6.2023.04.14.01.43.58
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 14 Apr 2023 01:44:00 -0700 (PDT)
+From:   "songrui.771" <songrui.771@bytedance.com>
+To:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net v1] virtio_net: bugfix overflow inside
- xdp_linearize_page()
-Message-ID: <20230414033826-mutt-send-email-mst@kernel.org>
-References: <20230414060835.74975-1-xuanzhuo@linux.alibaba.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "songrui.771" <songrui.771@bytedance.com>
+Subject: [PATCH v2] libbpf: correct the macro KERNEL_VERSION for old kernel
+Date:   Fri, 14 Apr 2023 16:43:53 +0800
+Message-Id: <20230414084353.36545-1-songrui.771@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230414060835.74975-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,56 +70,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 14, 2023 at 02:08:35PM +0800, Xuan Zhuo wrote:
-> Here we copy the data from the original buf to the new page. But we
-> not check that it may be overflow.
-> 
-> As long as the size received(including vnethdr) is greater than 3840
-> (PAGE_SIZE -VIRTIO_XDP_HEADROOM). Then the memcpy will overflow.
-> 
-> And this is completely possible, as long as the MTU is large, such
-> as 4096. In our test environment, this will cause crash. Since crash is
-> caused by the written memory, it is meaningless, so I do not include it.
-> 
-> Fixes: 72979a6c3590 ("virtio_net: xdp, add slowpath case for non contiguous buffers")
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+The introduced header file linux/version.h in libbpf_probes.c may have a wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some old kernel (Debian9,10). Below is a version info example from Debian 10.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+release: 4.19.0-22-amd64
+version: #1 SMP Debian 4.19.260-1 (2022-09-29)
 
-> ---
-> v1:  add Fixes tag
-> 
->  drivers/net/virtio_net.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 2396c28c0122..ea1bd4bb326d 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -814,8 +814,13 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
->  				       int page_off,
->  				       unsigned int *len)
->  {
-> -	struct page *page = alloc_page(GFP_ATOMIC);
-> +	int tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +	struct page *page;
-> +
-> +	if (page_off + *len + tailroom > PAGE_SIZE)
-> +		return NULL;
-> 
-> +	page = alloc_page(GFP_ATOMIC);
->  	if (!page)
->  		return NULL;
-> 
-> @@ -823,7 +828,6 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
->  	page_off += *len;
-> 
->  	while (--*num_buf) {
-> -		int tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
->  		unsigned int buflen;
->  		void *buf;
->  		int off;
-> --
-> 2.32.0.3.g01195cf9f
+The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)), which a, b, and c stand for major, minor and patch version. So in example here, the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260) which is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_VERSION_CODE in linux/version.h is defined to 267263.
+
+I noticed that the macro KERNEL_VERSION in linux/version.h of some new kernel is defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_VERSION_CODE.
+
+The mismatched LINUX_VERSION_CODE which will cause failing to load kprobe BPF programs in the version check of BPF syscall.
+
+The return value of get_kernel_version in libbpf_probes.c should be matched to LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
+
+Signed-off-by: songrui.771 <songrui.771@bytedance.com>
+---
+Changes since v1:
+- reintroduce header file linux/version.h
+- define a new macro LIBBPF_KERNEL_VERSION to get kernel version rather than KERNEL_VERSION
+---
+ tools/lib/bpf/libbpf_probes.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 4f3bc968ff8e..5b22a880c7e7 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -18,6 +18,10 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++#ifndef LIBBPF_KERNEL_VERSION
++#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
++#endif
++
+ /* On Ubuntu LINUX_VERSION_CODE doesn't correspond to info.release,
+  * but Ubuntu provides /proc/version_signature file, as described at
+  * https://ubuntu.com/kernel, with an example contents below, which we
+@@ -47,7 +51,7 @@ static __u32 get_ubuntu_kernel_version(void)
+ 	if (ret != 3)
+ 		return 0;
+ 
+-	return KERNEL_VERSION(major, minor, patch);
++	return LIBBPF_KERNEL_VERSION(major, minor, patch);
+ }
+ 
+ /* On Debian LINUX_VERSION_CODE doesn't correspond to info.release.
+@@ -74,7 +78,7 @@ static __u32 get_debian_kernel_version(struct utsname *info)
+ 	if (sscanf(p, "Debian %u.%u.%u", &major, &minor, &patch) != 3)
+ 		return 0;
+ 
+-	return KERNEL_VERSION(major, minor, patch);
++	return LIBBPF_KERNEL_VERSION(major, minor, patch);
+ }
+ 
+ __u32 get_kernel_version(void)
+@@ -97,7 +101,7 @@ __u32 get_kernel_version(void)
+ 	if (sscanf(info.release, "%u.%u.%u", &major, &minor, &patch) != 3)
+ 		return 0;
+ 
+-	return KERNEL_VERSION(major, minor, patch);
++	return LIBBPF_KERNEL_VERSION(major, minor, patch);
+ }
+ 
+ static int probe_prog_load(enum bpf_prog_type prog_type,
+-- 
+2.39.2 (Apple Git-143)
 
