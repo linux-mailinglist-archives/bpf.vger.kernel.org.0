@@ -2,119 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1C16E1B91
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 07:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C81D6E1BA6
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 07:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjDNFR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 01:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        id S229457AbjDNF1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 01:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjDNFR4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 01:17:56 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AF0B4
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 22:17:56 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id m14so267107ybk.4
-        for <bpf@vger.kernel.org>; Thu, 13 Apr 2023 22:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681449475; x=1684041475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pFaDsUCTOilRuri/l8EHwJ0PZ3zqOn2It+nizalWSqg=;
-        b=U3GX+piPgdnDRiSs1t9vAEqUBKD8qvLvzfREKVN+eMlPX+XI1I/de+vzD3/KmpiF2E
-         QtdSH/pw/smebFOckeFk6Dlh0eOnELwsmjN5Es5/QZyoH7ha+yLa5pJ+1vjuJcjfa9L1
-         zxjoEU0LLu/pTiw8ShO9ymV0H5dOYxdc8Pvfp9nebvDJGw/bikqTkyHA4/z5oS8/w/ss
-         6j3wMeHWM/D7kpFqz1cUdrkxrbQ2a5NH8zyWLPi6Swa2FnvQwFa0undfuQBqhZv41ZuN
-         M2yM9U5GO8AAa9LU7NApYk8G9cl079cxyQp1c9NeKufGhrJdiMjWsW/ZgzAIcorgVg11
-         JbyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681449475; x=1684041475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pFaDsUCTOilRuri/l8EHwJ0PZ3zqOn2It+nizalWSqg=;
-        b=QKofAiVEd0TsNArKWmW6fknFFfxzSOOMKB5R7BK41CbRBtKj5023gZenKQt7rfgsZb
-         EP2tnuHNrzkGrWFUY50TLPDgusYprVcfOcM2SsyY2wLdknBXsLiJYwQMDxa8fZ83pJGJ
-         QE07Xe6SuSMWktvpVZew18dBWwKxcBDUGV2b/oRn/RqHsW6prBm7omcxt7x5CdHo4mHP
-         QbIs+njFZtNzLSpeufyKQeZJCvc/frRqlQwZZaI9QtCrvZ7war+MLfm6EYN2H54fgGXW
-         +bITADoTU/NeuSSAARk0fcG8zdendJLYag3n/4p7NYljJO1+yYZTJ8jgpJowFJMr7sQJ
-         OJOg==
-X-Gm-Message-State: AAQBX9eYX20dHe9/Be+m1cTEohTRX7jY4wRGNYsPcM/XfctlFBjlftWR
-        1R5+dnSbb3JbgM1scc8FGIzrUmrWDUhnMagXAKQ=
-X-Google-Smtp-Source: AKy350ZwgbOan8ubr+NYA59pABbD5ZKm6guGizc4wTs+KO//ptS7RbCvfi/nY88PteFJWa0lUXG2r1HsDLcqSOdh+oY=
-X-Received: by 2002:a25:dad2:0:b0:b8f:4696:8fa1 with SMTP id
- n201-20020a25dad2000000b00b8f46968fa1mr3077536ybf.10.1681449475230; Thu, 13
- Apr 2023 22:17:55 -0700 (PDT)
+        with ESMTP id S229450AbjDNF1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 01:27:37 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C9D1BE8;
+        Thu, 13 Apr 2023 22:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681450055; x=1712986055;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5n/0mu42zjwQFiX1Bk2YBnMsraHX2+ZdlcxSeNpwlQA=;
+  b=GDQODF+IB4c7PWaOy+wICacgxDdbDCvHTt6rIp6ykLNf421zZ8bamOvF
+   CGk3iM5Co5+PYe82SMHF5HAwzKEbLOehSoYeuHdIirTA221DyO2wGB1AI
+   0DXF30Ddg5agvCjTim2KKL5Ep+a4gFCJkJsv4b31owHxvZBV1T82uy6ah
+   8c2TXYGASSUpd0jNDIdoyqe5qJI0wNqcVkm9L7Q0mLcDH2msTv3rtrI1h
+   +zUYp++fMKbAKcLxhKj9TYsvUIMLffisLzhkTOsYPlBAMFd/BD+v/FU6K
+   fPmXkgJztjgCSAp07hDTlcanh2GtgdCnY40w7YWnZ5pgc0k97+Y7OFtJn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="333152648"
+X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
+   d="scan'208";a="333152648"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2023 22:27:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="692234132"
+X-IronPort-AV: E=Sophos;i="5.99,195,1677571200"; 
+   d="scan'208";a="692234132"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Apr 2023 22:27:28 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net-next v5 0/3] XDP Rx HWTS metadata for stmmac driver
+Date:   Fri, 14 Apr 2023 13:26:48 +0800
+Message-Id: <20230414052651.1871424-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230409033431.3992432-1-joannelkoong@gmail.com>
- <20230409033431.3992432-4-joannelkoong@gmail.com> <CAEf4BzbHcBLi9ru2rgL59HNGCjYP+zksbjvzmkirYevWu8jM-A@mail.gmail.com>
-In-Reply-To: <CAEf4BzbHcBLi9ru2rgL59HNGCjYP+zksbjvzmkirYevWu8jM-A@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 13 Apr 2023 22:17:44 -0700
-Message-ID: <CAJnrk1YLUpmXwrS__Rn1WcwiHgpfwEC5H-cUja3wnOKJQYm03w@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 3/5] bpf: Add bpf_dynptr_get_size and bpf_dynptr_get_offset
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 2:52=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Apr 8, 2023 at 8:34=E2=80=AFPM Joanne Koong <joannelkoong@gmail.c=
-om> wrote:
-> >
-> > bpf_dynptr_get_size returns the number of useable bytes in a dynptr and
-> > bpf_dynptr_get_offset returns the current offset into the dynptr.
-> >
-> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > ---
-> >  include/linux/bpf.h      |  2 +-
-> >  kernel/bpf/helpers.c     | 24 +++++++++++++++++++++---
-> >  kernel/trace/bpf_trace.c |  4 ++--
-> >  3 files changed, 24 insertions(+), 6 deletions(-)
-> >
->
-> [...]
->
-> > +__bpf_kfunc __u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *pt=
-r)
-> > +{
-> > +       if (!ptr->data)
-> > +               return -EINVAL;
-> > +
-> > +       return __bpf_dynptr_get_size(ptr);
-> > +}
-> > +
-> > +__bpf_kfunc __u32 bpf_dynptr_get_offset(const struct bpf_dynptr_kern *=
-ptr)
->
-> I think get_offset is actually not essential and it's hard to think
-> about the case where this is going to be really necessary. Let's keep
-> only get_size for now?
->
+Implemented XDP receive hardware timestamp metadata for stmmac driver.
 
-Sounds good, I will remove this from v2 (i'll try to send v2 out next
-week). Thanks for reviewing this patchset!
+This patchset is tested with tools/testing/selftests/bpf/xdp_hw_metadata.
+Below are the test steps and results.
 
->
-> > +{
-> > +       if (!ptr->data)
-> > +               return -EINVAL;
-> > +
-> > +       return ptr->offset;
-> > +}
-> > +
->
-> [...]
+Command on DUT:
+	sudo ./xdp_hw_metadata <interface name>
+
+Command on Link Partner:
+	echo -n xdp | nc -u -q1 <destination IPv4 addr> 9091
+	echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
+
+Result for port 9091:
+	0x55fdb5f006d0: rx_desc[3]->addr=1000000003bd000 addr=3bd100 comp_addr=3bd000
+	rx_timestamp: 1677762474360150047
+	rx_hash: 0
+	0x55fdb5f006d0: complete idx=515 addr=3bd000
+
+Result for port 9092:
+	found skb hwtstamp = 1677762476.320146161
+
+changelog:
+v4 -> v5: remove zeroing operation on ctx variable
+
+v3 -> v4: directly retrieve Rx HWTS in stmmac_xdp_rx_timestamp(), instead
+	  of reuse stmmac_get_rx_hwtstamp()
+
+v2 -> v3: To reduce packet processing cost, get the Rx HWTS only when
+	  xmo_rx_timestamp() is called
+
+v1 -> v2: Add static to stmmac_xdp_metadata_ops declaration
+
+---
+
+Song Yoong Siang (3):
+  net: stmmac: introduce wrapper for struct xdp_buff
+  net: stmmac: add Rx HWTS metadata to XDP receive pkt
+  net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  7 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 80 ++++++++++++++++---
+ 2 files changed, 77 insertions(+), 10 deletions(-)
+
+-- 
+2.34.1
+
