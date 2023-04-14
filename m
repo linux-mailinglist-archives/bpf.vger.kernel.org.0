@@ -2,108 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB5B6E1FF3
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 11:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987C86E207D
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 12:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjDNJzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 05:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
+        id S229917AbjDNKOK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 06:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjDNJzA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 05:55:00 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94A43C33;
-        Fri, 14 Apr 2023 02:54:59 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 984731FD95;
-        Fri, 14 Apr 2023 09:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1681466098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JneUppOda+5TGdxaMKXFrkRT/M0RbNosDbdjrmg3y6k=;
-        b=eoAS1KDc4SAzQxjPHa49axCInW8IYd7O23TIPd4pc4RtFzpXMnPNvJuuh4r8HAN2in8lnb
-        sM/fnESaVmSw9iLUm3YlEHd37s6sPk1uDXk/YScAO02FhmppXPGQyPOLtKAT5DYjazK5y8
-        s0q1QxXYzigtfGSPzu1yV8/MxXm+c3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1681466098;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JneUppOda+5TGdxaMKXFrkRT/M0RbNosDbdjrmg3y6k=;
-        b=T/MqJAD2yZlYNLf1ybBOCRHZrfmQwdHuODNnW6DOSFgHnLD9yHU8HdY3Fjes0PO1zVgAXB
-        A1BgrUiyUa2zRbAQ==
-Received: from kunlun.suse.cz (unknown [10.100.128.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4EF8B2C143;
-        Fri, 14 Apr 2023 09:54:58 +0000 (UTC)
-Date:   Fri, 14 Apr 2023 11:54:57 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf 02/11] bpftool: define a local bpf_perf_link to
- fix accessing its fields
-Message-ID: <20230414095457.GG63923@kunlun.suse.cz>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <20220421003152.339542-3-alobakin@pm.me>
+        with ESMTP id S230029AbjDNKOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 06:14:08 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB3A8A53
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 03:13:25 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-50489d1af35so4841723a12.3
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 03:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681467203; x=1684059203;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LNCYWc3+395/cdIb4O8onIiz31xrMP58ieof9MiWNmE=;
+        b=UIntHyPrs1hGBGzHwHDpDgYYHxlISlqH4fTM/0bOWHnS2XasI7EViBoeYkkpx/1fkd
+         r16diKh1mEuC5uG5pvQ3gPyaLEoLTIV5y6n0FQ+eIkKc6hWv9RWAH8lRZ6PcCXXw5eR8
+         y6qWm58Z4TQNfSQo4uS6tgzEiB444IqUrFFX4gfVLs2G+9jcIFf4maMk9TUi40bwC0Rs
+         IyYY7o6AFQApXoQMFwmFpYhTDtYGzM+jrJR6evyeDdYD8mNgf35uPVzi3XHLwK8PDmNv
+         tyuWuqbfWeliTLR1ojujECXGZcr9wk+AlP4RNOjjVuS67i9QPXJ7Bw2fqpztGALCFLBc
+         1DHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681467203; x=1684059203;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LNCYWc3+395/cdIb4O8onIiz31xrMP58ieof9MiWNmE=;
+        b=PseOvStSbzrWvWQwFaV3KDuGPNgDbNLE77/DI5jhQ6Go84jAxbyhXaIchr/E+huw9C
+         FftR5HVOZhksrabDH22Xt99r5F41KQdasnMR95LBmNLKAJXg9riTsxUx/Wr0QCjeW/pE
+         1j2Kf0i3T9pBE4W1+OK+pIXnbXwjmy+p3am94BsO80ct+8eamP64UZk5eCQ8NotOC2fw
+         CF/SrNj8lQ/JrK2dIw9O7W99LVR+7nb5pNAPQW9tWXeDcEwHs4J7tGUdY8X4MX0kV7dv
+         3Ha7AeQD0+SwmSPoCd6kjTUTB5XGzvCzJ3u1BKtzXzw57d9D2pruj7QAiMJ6Rq0kBD3T
+         EH+g==
+X-Gm-Message-State: AAQBX9fPR3tXe4BNJ3ZkMDxKLIipwm7SScfbaJc50c1ExeLkuVVFsZhQ
+        bTXQbkPa/UKneutXfMrbAOELGThakQvw0ketozI=
+X-Google-Smtp-Source: AKy350bbh+lgWcf5AiV7kOq5Vuj90rJiVnhBTsRk+avGiWzfJMJJrvDkTTXJrmzONchm2d+B39netfdLkfZr0y+pVZg=
+X-Received: by 2002:a50:baac:0:b0:504:a610:7a3a with SMTP id
+ x41-20020a50baac000000b00504a6107a3amr2800159ede.5.1681467202531; Fri, 14 Apr
+ 2023 03:13:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220421003152.339542-3-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:7208:396:b0:67:334d:71b1 with HTTP; Fri, 14 Apr 2023
+ 03:13:20 -0700 (PDT)
+Reply-To: roland80@email.com
+From:   "Mr.Roland Philip" <michaeltobogin043@gmail.com>
+Date:   Fri, 14 Apr 2023 10:13:20 +0000
+Message-ID: <CAGCJN-zgtDPdYEfGheuVEaRzgVFF1Ej5g8yH3XyQugMcCC2wCw@mail.gmail.com>
+Subject: Read the message
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.7 required=5.0 tests=ADVANCE_FEE_3_NEW,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY,
+        URG_BIZ autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:531 listed in]
+        [list.dnswl.org]
+        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [roland80[at]email.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [michaeltobogin043[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [michaeltobogin043[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  3.0 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  1.6 ADVANCE_FEE_3_NEW Appears to be advance fee fraud (Nigerian
+        *      419)
+        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Thu, Apr 21, 2022 at 12:38:58AM +0000, Alexander Lobakin wrote:
-> When building bpftool with !CONFIG_PERF_EVENTS:
-> 
-> skeleton/pid_iter.bpf.c:47:14: error: incomplete definition of type 'struct bpf_perf_link'
->         perf_link = container_of(link, struct bpf_perf_link, link);
->                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:74:22: note: expanded from macro 'container_of'
->                 ((type *)(__mptr - offsetof(type, member)));    \
->                                    ^~~~~~~~~~~~~~~~~~~~~~
-> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:68:60: note: expanded from macro 'offsetof'
->  #define offsetof(TYPE, MEMBER)  ((unsigned long)&((TYPE *)0)->MEMBER)
->                                                   ~~~~~~~~~~~^
-> skeleton/pid_iter.bpf.c:44:9: note: forward declaration of 'struct bpf_perf_link'
->         struct bpf_perf_link *perf_link;
->                ^
-> 
-> &bpf_perf_link is being defined and used only under the ifdef.
-> Define struct bpf_perf_link___local with the `preserve_access_index`
-> attribute inside the pid_iter BPF prog to allow compiling on any
-> configs. CO-RE will substitute it with the real struct bpf_perf_link
-> accesses later on.
-> container_of() is not CO-REd, but it is a noop for
-> bpf_perf_link <-> bpf_link and the local copy is a full mirror of
-> the original structure.
-> 
-> Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
-
-This does not solve the problem completely. Kernels that don't have
-CONFIG_PERF_EVENTS in the first place are also missing the enum value
-BPF_LINK_TYPE_PERF_EVENT which is used as the condition for handling the
-cookie.
-
-Thanks
-
-Michal
+My name is Mr. Roland Philip, can we work and share this project
+together. If you are
+interested I wrote you an email this week regarding to one of your
+family member who died
+here in our country and left some huge amount of money in one of our
+bank here so kindly
+acknowledge for my advice more details,please urgent reply to this email address
