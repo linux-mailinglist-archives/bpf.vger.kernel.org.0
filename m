@@ -2,97 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EB46E284E
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EC46E2859
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjDNQ2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 12:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S229754AbjDNQb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 12:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjDNQ2f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 12:28:35 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB73AF36
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:28:31 -0700 (PDT)
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2E46A3F469
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 16:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1681489707;
-        bh=wpNANq/ilARy9t0/XyiBw7GR8Agt/QoZqRUEJ1Ibgks=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=tnz4E6YMpVSniUVt0R9McYBT94ELiDlQIO0ILVmFpTp/zwbFZtoN4aWepf5SKhHrP
-         rCDERBD6dY0jEoVyRfI1gRnagFTn1ayrCtqRgUrqolaKUwybWOf4feKhH3sbeQkDac
-         8ebQ2PU3tb13nt2Ty7aT/7St1XnFlP7D2Psl03osItrOyx5GY32Z8Aa9JCFDgZbtTV
-         OOSUYCtzaFMfvVF82Bm7nZW1/6HwjnIfBjR+e6qMngF2ReOtEwbFZeMKoP7l6d+5am
-         KXFDGh+X0/sgdpbPB21AVkUdDMqq+iyCmBmPS3awFMGlE5Pu2e8bjMUehX/yFYBuHw
-         EBoc+7MUrRjwg==
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5067227e973so1015344a12.0
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:28:27 -0700 (PDT)
+        with ESMTP id S229464AbjDNQb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 12:31:57 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7B1B460
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:31:25 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-94a35b0d130so436161466b.3
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1681489881; x=1684081881;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5b/9r03boRV4UanYn1RNmzB2JpdCWtq18uHUNH61CVs=;
+        b=pIQNUABRqfz5G9IJM9lizr0vPl0WgB7n4aWZwZUe/kF73YAamGDV377CeXdl3tawD9
+         kq34tFZFPldbRMdqDikQFALSsSWfziPQZwMO6nLRKUytsmCwRnBk7q4JsWELm6ADvBrs
+         wZwK5QNA4bcVQ9oZFNH1ueUmNoKf/StC9Cqds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681489705; x=1684081705;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wpNANq/ilARy9t0/XyiBw7GR8Agt/QoZqRUEJ1Ibgks=;
-        b=eVs/QZBW/uvB7H7dOhPQgKnPJhQa+eUFkcDrGyAsx9NIEdZzxmTRmy0o9nSkxEsl7g
-         VeLlqVR8owb3FtSLucw3QPkffVtj2s5haHsVSGFyHcy982uajaLw3mK7W3GCCPQqGWpN
-         Zx0jy22ZO8+xPwpWRgpTm26ZBd5nTe1NKVG+6y3ppb25+czarLFFKbwWH8JN3bH/Ti/8
-         pAbIPSlje3HFR5QAB0ESd4viP8x/edOJAqKfy0hDp3Xzulr99BBCc9XQuvC1Rj3PxStl
-         lY5Ke1AJQkjIz+Bs1HT94iFKYd0BYYQEUORO0PfRj/Zp9z719MqmjBFF+Z9mKMI8FGS3
-         8ixA==
-X-Gm-Message-State: AAQBX9cMGL7t9Xuc5GkmRDl6ZXlFFQrK/XJeHl+J28s6UExmEuR94pG2
-        kyN1xMekHx9M0jDbspgFaiHbew5I21EqyehsIUxHKsQbWbehQ93slrQ55xiHDyNW2JcoQ+arX/v
-        +Lz9vXP21Hl1/PIP/hX7qzLCSOgCAgA==
-X-Received: by 2002:aa7:c954:0:b0:505:513f:3d2d with SMTP id h20-20020aa7c954000000b00505513f3d2dmr7043315edt.40.1681489705619;
-        Fri, 14 Apr 2023 09:28:25 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YbGpRAixvk9knTsT5HdyKaFpVZaQIhjKQceN8mlrIOVuzQAKt2/2mI4XtLorXKKGVk3XV8Jg==
-X-Received: by 2002:aa7:c954:0:b0:505:513f:3d2d with SMTP id h20-20020aa7c954000000b00505513f3d2dmr7043286edt.40.1681489705339;
-        Fri, 14 Apr 2023 09:28:25 -0700 (PDT)
-Received: from localhost (uk.sesame.canonical.com. [185.125.190.60])
-        by smtp.gmail.com with ESMTPSA id q10-20020a056402032a00b004bd1fe2cc02sm2281873edw.16.2023.04.14.09.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 09:28:25 -0700 (PDT)
-Date:   Fri, 14 Apr 2023 18:28:24 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        d=1e100.net; s=20221208; t=1681489881; x=1684081881;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5b/9r03boRV4UanYn1RNmzB2JpdCWtq18uHUNH61CVs=;
+        b=Lj0dro1p8EdqftZjq8LGeSa5BBzAXk27RtnGD/OGYeTy9RfVujQmIXDIYbrF7tQTfE
+         DWQy8wOzCaVMpJRJ6I9AY63v3rhRoOAKtgjpvkS1bLMhrNZcPU3/etdY7jeTzUkzTLt/
+         KXYCS55IrYuv8ZqEQrWONQMMiIjy9zAkJhn18V4pQjaxBxJbJCrg5JIiSJbH4IIsJ+p7
+         B3ir1xgEyL3/FXSAWxfmfmMg0GHBiQ+DgAbRCO6TA3eLr6KyAwdKyKiPEIkbaQfI/SDu
+         IqoTD2/w1fJ+G/YsSyH8kU77KLgXitkjOAXVmqVBeO+uJsvdz+oem8t1259K2vHGQCgu
+         Q47Q==
+X-Gm-Message-State: AAQBX9cZWdxUSoo1nFGvAHwWvgF8kXBRh7hvP29W1nLP5NfOreeJL5eC
+        4mHgI4JeZwxt12R7Q97KtKWs/buw1mzEd8e6NdqNZg==
+X-Google-Smtp-Source: AKy350bUZ57++7VK4dP3v5BNCxqMSaz7hr9w88c5ysZKzOGWRszBmAlziDfG3+QYYunvZFtN+5iKSE1BeEKmHbt6GFA=
+X-Received: by 2002:a50:8d43:0:b0:4fc:fc86:5f76 with SMTP id
+ t3-20020a508d43000000b004fcfc865f76mr3343019edt.6.1681489880762; Fri, 14 Apr
+ 2023 09:31:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230406130205.49996-1-kal.conley@dectris.com>
+ <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
+ <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+ <875ya12phx.fsf@toke.dk> <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
+ <87ile011kz.fsf@toke.dk>
+In-Reply-To: <87ile011kz.fsf@toke.dk>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Fri, 14 Apr 2023 18:36:04 +0200
+Message-ID: <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Paolo Pisati <paolo.pisati@canonical.com>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: ignore pointer types check with clang
-Message-ID: <ZDl/KFLy7wOBa2tj@righiandr-XPS-13-7390>
-References: <20230412095912.188453-1-andrea.righi@canonical.com>
- <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
- <ZDjvZ7mx7+IsSCCO@righiandr-XPS-13-7390>
- <q5rj72tmwlpzx6qgkromem5t7q6xmen52aavfr65olnuv52f3z@wzs4p3xz3635>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <q5rj72tmwlpzx6qgkromem5t7q6xmen52aavfr65olnuv52f3z@wzs4p3xz3635>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,33 +80,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 14, 2023 at 06:15:38PM +0200, Ilya Leoshkevich wrote:
-> On Fri, Apr 14, 2023 at 08:15:03AM +0200, Andrea Righi wrote:
-> > On Thu, Apr 13, 2023 at 09:56:00PM -0700, Alexei Starovoitov wrote:
-> > > On Wed, Apr 12, 2023 at 2:59 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> > > >
-> > > > Building bpf selftests with clang can trigger errors like the following:
-> > > >
-> > > >   CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
-> > > > progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assigning to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-pointer-types]
-> > > >         s = &nlk->sk;
-> > > >           ^ ~~~~~~~~
-> > > > 1 error generated.
-> > > 
-> > > I cannot reproduce this and BPF CI doesn't complain about it either.
-> > > What kind of clang do you use?
-> > > Some special version and build flags?
-> > 
-> > I'm using Ubuntu clang version 15.0.7 (Ubuntu 23.04), no special build
-> > flag (unless Ubuntu enables some different default flags, but it
-> > shouldn't be the case... I'll double check).
-> > 
-> > -Andrea
-> 
-> Hi,
-> 
-> FWIW, I see similar errors when I don't use recent pahole.
+> In addition, presumably when using this mode, the other XDP actions
+> (XDP_PASS, XDP_REDIRECT to other targets) would stop working unless we
+> add special handling for that in the kernel? We'll definitely need to
+> handle that somehow...
 
-I'm using pahole v1.24.
-
--Andrea
+I am not familiar with all the details here. Do you know a reason why
+these cases would stop working / why special handling would be needed?
+For example, if I have a UMEM that uses hugepages and XDP_PASS is
+returned, then the data is just copied into an SKB right? SKBs can
+also be created directly from hugepages AFAIK. So I don't understand
+what the issue would be. Can someone explain this concern?
