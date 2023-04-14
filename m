@@ -2,168 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E6B6E2758
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 17:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9BB6E276A
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 17:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbjDNPtp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 11:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
+        id S230303AbjDNPvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 11:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjDNPtl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 11:49:41 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8923DB763
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 08:49:19 -0700 (PDT)
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33EEsWGG031581;
-        Fri, 14 Apr 2023 15:48:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=DVq8KK5lx6f3BIFBQXrTqg1S0np9HZyURc9GV4GgRog=;
- b=GwVeWDPyhHvq4auL6wF6C+i1Laf+3bzxONxfMuOxWO/7jSnh++ZtSehraium3u7JgN+6
- yK3fkOluMmmdePyhyBjDN2iAjw0ktPAcHxKpnbF4XFqTx7as8axwAZPSgUj7fXAC83vJ
- HAl2Ul/uD5U3tR1kMfqSNKwu5i/1UU4C2KwBYKO27z7EFnuGRG/tNKty/gXKEPGa1NMl
- uhHJoPfIjRGntJevsHF1/4n/mn9FohBn7MiDSiwk3TnS0v/M2sp52DDKShoCzPt3xI5P
- GtFjsfxiXCrMw7c8I3cxOHQP7Jn+xaJC77FmErOxDXkvXAmzg9V8nEf7rBQlgLBYtZ8y Jw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3py90m2agr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 15:48:02 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33E0bfPQ031496;
-        Fri, 14 Apr 2023 15:48:00 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3pu0m1bsyf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 15:48:00 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33EFlu3M16974388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Apr 2023 15:47:57 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0C4E20043;
-        Fri, 14 Apr 2023 15:47:56 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44FA620040;
-        Fri, 14 Apr 2023 15:47:56 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.89.218])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 14 Apr 2023 15:47:56 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229476AbjDNPvS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 11:51:18 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AD4BBAE;
+        Fri, 14 Apr 2023 08:50:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681487460; x=1713023460;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+es8XQvduTZictHBoRTR0IW2Z+9WnoX89NAdi6iQf5A=;
+  b=HrBFY09MW+/yD0kBpnD8uMkI9LXksloOqf2KWV/+zb445ug5WPxYMaip
+   F79az3r8d3S+k7PW6MA0Emm8T0M/ZgQC/jGyDPJrm37ew/mvC01EotAI4
+   29GD1UBTCJ4N9Tv9zO8D/ZNzILmYViTgJYulir7GNCS17DXfQMGReODTR
+   thQJL1jrB1JJFEvYzWdKSewolw4vCTuKqdGc5EkG4PqHU0vfY4WORmAbK
+   4fsxZcqs9aE7JbrjevQzGvbduk62Ex6ngT2xeknNzp6Cqf19ZT8KKbOBr
+   ZPmOWW+z4hhTq12CQXEhnC342G9PmUKmaxfqHhpMp/EMy8zS63SczIeoe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10680"; a="407369166"
+X-IronPort-AV: E=Sophos;i="5.99,197,1677571200"; 
+   d="scan'208";a="407369166"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 08:49:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10680"; a="833581607"
+X-IronPort-AV: E=Sophos;i="5.99,197,1677571200"; 
+   d="scan'208";a="833581607"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2023 08:49:35 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH bpf] s390/bpf: Fix bpf_arch_text_poke() with new_addr == NULL
-Date:   Fri, 14 Apr 2023 17:47:55 +0200
-Message-Id: <20230414154755.184502-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Andre Guedes <andre.guedes@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net, stable@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net v3 1/1] igc: read before write to SRRCTL register
+Date:   Fri, 14 Apr 2023 23:49:02 +0800
+Message-Id: <20230414154902.2950535-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: hlVDnS4kCD8r5zGsANDOW2QX9WJG1pwA
-X-Proofpoint-GUID: hlVDnS4kCD8r5zGsANDOW2QX9WJG1pwA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-14_08,2023-04-14_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 mlxscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304140137
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thomas Richter reported a crash in linux-next with a backtrace similar
-to the following one:
+igc_configure_rx_ring() function will be called as part of XDP program
+setup. If Rx hardware timestamp is enabled prio to XDP program setup,
+this timestamp enablement will be overwritten when buffer size is
+written into SRRCTL register.
 
-	 [<0000000000000000>] 0x0
-	([<000000000031a182>] bpf_trace_run4+0xc2/0x218)
-	 [<00000000001d59f4>] __bpf_trace_sched_switch+0x1c/0x28
-	 [<0000000000c44a3a>] __schedule+0x43a/0x890
-	 [<0000000000c44ef8>] schedule+0x68/0x110
-	 [<0000000000c4e5ca>] do_nanosleep+0xa2/0x168
-	 [<000000000026e7fe>] hrtimer_nanosleep+0xf6/0x1c0
-	 [<000000000026eb6e>] __s390x_sys_nanosleep+0xb6/0xf0
-	 [<0000000000c3b81c>] __do_syscall+0x1e4/0x208
-	 [<0000000000c50510>] system_call+0x70/0x98
-	Last Breaking-Event-Address:
-	 [<000003ff7fda1814>] bpf_prog_65e887c70a835bbf_on_switch+0x1a4/0x1f0
+Thus, this commit read the register value before write to SRRCTL
+register. This commit is tested by using xdp_hw_metadata bpf selftest
+tool. The tool enables Rx hardware timestamp and then attach XDP program
+to igc driver. It will display hardware timestamp of UDP packet with
+port number 9092. Below are detail of test steps and results.
 
-The problem is that bpf_arch_text_poke() with new_addr == NULL is
-susceptible to the following race condition:
+Command on DUT:
+  sudo ./xdp_hw_metadata <interface name>
 
-	T1                 T2
-        -----------------  -------------------
-	plt.target = NULL
-	                   entry: brcl 0xf,plt
-	entry.mask = 0
-	                   lgrl %r1,plt.target
-	                   br %r1
+Command on Link Partner:
+  echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
 
-Fix by setting PLT target to the instruction following `brcl 0xf,plt`
-instead of 0. This way T2 will simply resume the execution of the eBPF
-program, which is the desired effect of passing new_addr == NULL.
+Result before this patch:
+  skb hwtstamp is not found!
 
-Fixes: f1d5df84cd8c ("s390/bpf: Implement bpf_arch_text_poke()")
-Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Result after this patch:
+  found skb hwtstamp = 1677800973.642836757
+
+Optionally, read PHC to confirm the values obtained are almost the same:
+Command:
+  sudo ./testptp -d /dev/ptp0 -g
+Result:
+  clock time: 1677800973.913598978 or Fri Mar  3 07:49:33 2023
+
+Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
+Cc: <stable@vger.kernel.org> # 5.14+
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Jesper Dangaard Brouer <brouer@redhat.com>
 ---
- arch/s390/net/bpf_jit_comp.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+v2 -> v3: Refactor SRRCTL definitions to more human readable definitions
+v1 -> v2: Fix indention
+---
+ drivers/net/ethernet/intel/igc/igc_base.h | 11 ++++++++---
+ drivers/net/ethernet/intel/igc/igc_main.c |  7 +++++--
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 7102e4b674a0..f95d7e401b96 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -539,7 +539,7 @@ static void bpf_jit_plt(void *plt, void *ret, void *target)
- {
- 	memcpy(plt, bpf_plt, BPF_PLT_SIZE);
- 	*(void **)((char *)plt + (bpf_plt_ret - bpf_plt)) = ret;
--	*(void **)((char *)plt + (bpf_plt_target - bpf_plt)) = target;
-+	*(void **)((char *)plt + (bpf_plt_target - bpf_plt)) = target ?: ret;
- }
+diff --git a/drivers/net/ethernet/intel/igc/igc_base.h b/drivers/net/ethernet/intel/igc/igc_base.h
+index 7a992befca24..9f3827eda157 100644
+--- a/drivers/net/ethernet/intel/igc/igc_base.h
++++ b/drivers/net/ethernet/intel/igc/igc_base.h
+@@ -87,8 +87,13 @@ union igc_adv_rx_desc {
+ #define IGC_RXDCTL_SWFLUSH		0x04000000 /* Receive Software Flush */
  
- /*
-@@ -2015,7 +2015,9 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 	} __packed insn;
- 	char expected_plt[BPF_PLT_SIZE];
- 	char current_plt[BPF_PLT_SIZE];
-+	char new_plt[BPF_PLT_SIZE];
- 	char *plt;
-+	char *ret;
- 	int err;
+ /* SRRCTL bit definitions */
+-#define IGC_SRRCTL_BSIZEPKT_SHIFT		10 /* Shift _right_ */
+-#define IGC_SRRCTL_BSIZEHDRSIZE_SHIFT		2  /* Shift _left_ */
+-#define IGC_SRRCTL_DESCTYPE_ADV_ONEBUF	0x02000000
++#define IGC_SRRCTL_BSIZEPKT_MASK	GENMASK(6, 0)
++#define IGC_SRRCTL_BSIZEPKT(x)		FIELD_PREP(IGC_SRRCTL_BSIZEPKT_MASK, \
++					(x) / 1024) /* in 1 KB resolution */
++#define IGC_SRRCTL_BSIZEHDR_MASK	GENMASK(13, 8)
++#define IGC_SRRCTL_BSIZEHDR(x)		FIELD_PREP(IGC_SRRCTL_BSIZEHDR_MASK, \
++					(x) / 64) /* in 64 bytes resolution */
++#define IGC_SRRCTL_DESCTYPE_MASK	GENMASK(27, 25)
++#define IGC_SRRCTL_DESCTYPE_ADV_ONEBUF	FIELD_PREP(IGC_SRRCTL_DESCTYPE_MASK, 1)
  
- 	/* Verify the branch to be patched. */
-@@ -2037,12 +2039,15 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		err = copy_from_kernel_nofault(current_plt, plt, BPF_PLT_SIZE);
- 		if (err < 0)
- 			return err;
--		bpf_jit_plt(expected_plt, (char *)ip + 6, old_addr);
-+		ret = (char *)ip + 6;
-+		bpf_jit_plt(expected_plt, ret, old_addr);
- 		if (memcmp(current_plt, expected_plt, BPF_PLT_SIZE))
- 			return -EINVAL;
- 		/* Adjust the call address. */
-+		bpf_jit_plt(new_plt, ret, new_addr);
- 		s390_kernel_write(plt + (bpf_plt_target - bpf_plt),
--				  &new_addr, sizeof(void *));
-+				  new_plt + (bpf_plt_target - bpf_plt),
-+				  sizeof(void *));
- 	}
+ #endif /* _IGC_BASE_H */
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 25fc6c65209b..a2d823e64609 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -641,8 +641,11 @@ static void igc_configure_rx_ring(struct igc_adapter *adapter,
+ 	else
+ 		buf_size = IGC_RXBUFFER_2048;
  
- 	/* Adjust the mask of the branch. */
+-	srrctl = IGC_RX_HDR_LEN << IGC_SRRCTL_BSIZEHDRSIZE_SHIFT;
+-	srrctl |= buf_size >> IGC_SRRCTL_BSIZEPKT_SHIFT;
++	srrctl = rd32(IGC_SRRCTL(reg_idx));
++	srrctl &= ~(IGC_SRRCTL_BSIZEPKT_MASK | IGC_SRRCTL_BSIZEHDR_MASK |
++		    IGC_SRRCTL_DESCTYPE_MASK);
++	srrctl |= IGC_SRRCTL_BSIZEHDR(IGC_RX_HDR_LEN);
++	srrctl |= IGC_SRRCTL_BSIZEPKT(buf_size);
+ 	srrctl |= IGC_SRRCTL_DESCTYPE_ADV_ONEBUF;
+ 
+ 	wr32(IGC_SRRCTL(reg_idx), srrctl);
 -- 
-2.39.2
+2.34.1
 
