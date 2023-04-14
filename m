@@ -2,138 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB386E1EA1
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 10:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23E96E1EBB
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 10:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjDNIor (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 04:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
+        id S229790AbjDNIsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 04:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjDNIoq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 04:44:46 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC1E8A42
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 01:44:01 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p17so6535080pla.3
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 01:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1681461841; x=1684053841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qT9vFhlt3TMl+TX1oNW68//w+Ro4Y14kvCsjAYOLicY=;
-        b=B+7R6eL8tEV45YJ8qURuZTcAFO6pap6SIvfvp/eq19D2BSSl4UWWRWAGMzKreTMOKL
-         C5MAKEjqrJsDDYYXBrG/AslOPZxoYfdi+3Ke59+g1cG9clX0NBtPMl6IOndYjFnOauBm
-         wJ6gF88Izt/SehBLL6GSh16ToC5PSfM57jRMh5QDGbBj7EKH6AGdOtPLxNpIReyhDGza
-         tHAyQOjDmWRsKsttD2F91A9WYE5B1cupkZ78fQZSZZcI2kCV8pDAePEuEvuwQGZzfi2w
-         p4qR7lRS1cBcGcNHoQU7QSXW0Wn89ji6usyLXPF5+aQWQnqa4tpIh4qsipeph9mu8LRb
-         YJ9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681461841; x=1684053841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qT9vFhlt3TMl+TX1oNW68//w+Ro4Y14kvCsjAYOLicY=;
-        b=EF7zBkhZ/oxsBXnv+X7JUx2UMOJWYvGdmCfM0o9AMYiE20sh3jh/kLCuJAgY0i0Y0h
-         R5Y2QwvaaPAh+f1Rs2+OrDnioSH0p0fftB1tAFJJZ6oJXE6RkQ/2ttN4MaujOpdTLVZJ
-         YFdUVrgtQg3Jw4o4vd9jECPFmyRHGXgsPDGb+XQ4opSdwT44w2Fu3FTGD555+PNB0Pp7
-         rStzToBUuWj2Az+n5+B272m4YUFCL89afcgzHawSqMlbgqWnz+/oEXH4AOv3q3tKqXWh
-         oIpvnGO/8pkg7Am397vH5BGGRAhZr69dvrskGJs6RhpWgxe6zWFvNpNsJ79dFlXPzqh4
-         W7fQ==
-X-Gm-Message-State: AAQBX9e/rTBXihVb7A/N6IfdC4tpbdiHtZZ1ufGiZxiYkuejj2qJ7lR/
-        aMks6/PE+R3JoJZG8uflT/DY
-X-Google-Smtp-Source: AKy350bNAERFGkwBQHVVfdBaSsU9015qtbuqO1lXiDwoaRbQgHDumFlCZ+QTDrguD/Bxj4bhO23dGw==
-X-Received: by 2002:a17:90a:cb98:b0:247:20e2:2060 with SMTP id a24-20020a17090acb9800b0024720e22060mr4843673pju.15.1681461840821;
-        Fri, 14 Apr 2023 01:44:00 -0700 (PDT)
-Received: from HX3YDL60GM.bytedance.net ([139.177.225.233])
-        by smtp.gmail.com with ESMTPSA id x6-20020a17090a530600b0024749e7321bsm120722pjh.6.2023.04.14.01.43.58
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 14 Apr 2023 01:44:00 -0700 (PDT)
-From:   "songrui.771" <songrui.771@bytedance.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "songrui.771" <songrui.771@bytedance.com>
-Subject: [PATCH v2] libbpf: correct the macro KERNEL_VERSION for old kernel
-Date:   Fri, 14 Apr 2023 16:43:53 +0800
-Message-Id: <20230414084353.36545-1-songrui.771@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+        with ESMTP id S229703AbjDNIsF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 04:48:05 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8201B9ED6;
+        Fri, 14 Apr 2023 01:47:40 -0700 (PDT)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33E8We6E014985;
+        Fri, 14 Apr 2023 08:47:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=cTmVOZmf4q1FLOzKJa5jCCziw6lo6FHkbgKjpBf6SqM=;
+ b=fp9WVVMH/8PhblQXfF+YkIQEq8V4nhVRzxBMoIOCt3Odf4Xggk8A4Jvc2KxsnG7i9in6
+ 0ucDGFGgFdMU32eqZ2V7ozxFusIFbYvo6E8qZbv4ajmCkkZWotCkPIjFwoQX1+xwHOYB
+ +cxHkeiZ16c33co1sgkEP9B/5O/gMQaqPAE/WoNKmo+eYwyEpwo/S1+1ILOG62fbwIie
+ PtSrgHqM68B+1J36R/N0N/W9PHzABnLdtTrVNnMzsoF2+PzQxmfSURD4Tc4VowZDcK0m
+ Bh2Bsm/sYnqLn0qRJeoxBfhrxaTqFa1xre7GTWMWhykwr0u5VRXxpmUcIWLyhdFnZ3z6 RQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxvgbdrb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Apr 2023 08:47:10 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33E8WoIl017192;
+        Fri, 14 Apr 2023 08:47:09 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pxvgbdran-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Apr 2023 08:47:09 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33E30HcO007090;
+        Fri, 14 Apr 2023 08:47:07 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3pu0fvtyw7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Apr 2023 08:47:06 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33E8l4eu28639754
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Apr 2023 08:47:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99AA12004B;
+        Fri, 14 Apr 2023 08:47:04 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 05B0E20043;
+        Fri, 14 Apr 2023 08:47:04 +0000 (GMT)
+Received: from osiris (unknown [9.171.19.226])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri, 14 Apr 2023 08:47:03 +0000 (GMT)
+Date:   Fri, 14 Apr 2023 10:47:02 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>, bpf@vger.kernel.org,
+        linux-next@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH] bpftool: fix broken compile on s390 for linux-next
+ repository
+Message-ID: <ZDkTBjBSWTHhvB3B@osiris>
+References: <20230412123636.2358949-1-tmricht@linux.ibm.com>
+ <3f952aed-0926-eb26-6472-2d0443c1a0ff@isovalent.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f952aed-0926-eb26-6472-2d0443c1a0ff@isovalent.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VFnqzdOEzOg3QQ0d1sDcDRqsGtwlEBAK
+X-Proofpoint-ORIG-GUID: 6MaaBKYs6rhzlKJ-FP8xQYQ38si0M7Qy
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-14_03,2023-04-13_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 adultscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304140068
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The introduced header file linux/version.h in libbpf_probes.c may have a wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some old kernel (Debian9,10). Below is a version info example from Debian 10.
+Full quote below for reference.
 
-release: 4.19.0-22-amd64
-version: #1 SMP Debian 4.19.260-1 (2022-09-29)
+Mark or Stephen could you please add the patch below to linux-next?
 
-The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)), which a, b, and c stand for major, minor and patch version. So in example here, the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260) which is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_VERSION_CODE in linux/version.h is defined to 267263.
+This solves a merge conflict between perf tree commit f7a858bffcdd ("tools:
+Rename __fallthrough to fallthrough") and bpf-next tree commit 9fd496848b1c
+("bpftool: Support inline annotations when dumping the CFG of a program").
 
-I noticed that the macro KERNEL_VERSION in linux/version.h of some new kernel is defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_VERSION_CODE.
+FWIW, the perf tree commit also seems to have missed an additional
+occurence of __fallthrough in samples/bpf/hbm.c.
 
-The mismatched LINUX_VERSION_CODE which will cause failing to load kprobe BPF programs in the version check of BPF syscall.
+Thanks!
 
-The return value of get_kernel_version in libbpf_probes.c should be matched to LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
-
-Signed-off-by: songrui.771 <songrui.771@bytedance.com>
----
-Changes since v1:
-- reintroduce header file linux/version.h
-- define a new macro LIBBPF_KERNEL_VERSION to get kernel version rather than KERNEL_VERSION
----
- tools/lib/bpf/libbpf_probes.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index 4f3bc968ff8e..5b22a880c7e7 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -18,6 +18,10 @@
- #include "libbpf.h"
- #include "libbpf_internal.h"
- 
-+#ifndef LIBBPF_KERNEL_VERSION
-+#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
-+#endif
-+
- /* On Ubuntu LINUX_VERSION_CODE doesn't correspond to info.release,
-  * but Ubuntu provides /proc/version_signature file, as described at
-  * https://ubuntu.com/kernel, with an example contents below, which we
-@@ -47,7 +51,7 @@ static __u32 get_ubuntu_kernel_version(void)
- 	if (ret != 3)
- 		return 0;
- 
--	return KERNEL_VERSION(major, minor, patch);
-+	return LIBBPF_KERNEL_VERSION(major, minor, patch);
- }
- 
- /* On Debian LINUX_VERSION_CODE doesn't correspond to info.release.
-@@ -74,7 +78,7 @@ static __u32 get_debian_kernel_version(struct utsname *info)
- 	if (sscanf(p, "Debian %u.%u.%u", &major, &minor, &patch) != 3)
- 		return 0;
- 
--	return KERNEL_VERSION(major, minor, patch);
-+	return LIBBPF_KERNEL_VERSION(major, minor, patch);
- }
- 
- __u32 get_kernel_version(void)
-@@ -97,7 +101,7 @@ __u32 get_kernel_version(void)
- 	if (sscanf(info.release, "%u.%u.%u", &major, &minor, &patch) != 3)
- 		return 0;
- 
--	return KERNEL_VERSION(major, minor, patch);
-+	return LIBBPF_KERNEL_VERSION(major, minor, patch);
- }
- 
- static int probe_prog_load(enum bpf_prog_type prog_type,
--- 
-2.39.2 (Apple Git-143)
-
+On Wed, Apr 12, 2023 at 02:27:23PM +0100, Quentin Monnet wrote:
+> 2023-04-12 14:36 UTC+0200 ~ Thomas Richter <tmricht@linux.ibm.com>
+> > Commit 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> > breaks the build of the perf tool on s390 in the linux-next repository.
+> > Here is the make output:
+> > 
+> > make -C tools/perf
+> > ....
+> > btf_dumper.c: In function 'dotlabel_puts':
+> > DEBUG: btf_dumper.c:838:25: error: '__fallthrough' undeclared \
+> > 		(first use in this function); did you mean 'fallthrough'?
+> > DEBUG:   838 |                         __fallthrough;
+> > DEBUG:       |                         ^~~~~~~~~~~~~
+> > DEBUG:       |                         fallthrough
+> > DEBUG: btf_dumper.c:838:25: note: each undeclared identifier is reported \
+> > 		only once for each function it appears in
+> > DEBUG: btf_dumper.c:837:25: warning: this statement may fall through \
+> >                 [-Wimplicit-fallthrough=]
+> > DEBUG:   837 |                         putchar('\\');
+> > DEBUG:       |                         ^~~~~~~~~~~~~
+> > DEBUG: btf_dumper.c:839:17: note: here
+> > DEBUG:   839 |                 default:
+> > DEBUG:       |                 ^~~~~~~
+> > DEBUG: make[3]: *** [Makefile:247: /builddir/build/BUILD/kernel-6.2.fc37/\
+> > 		        linux-6.2/tools/perf/util/bpf_skel/ \
+> > 		        .tmp/bootstrap/btf_dumper.o] Error 1
+> > 
+> > The compile fails because symbol __fallthrough unknown, but symbol
+> > fallthrough is known and works fine.
+> > 
+> > Fix this and replace __fallthrough by fallthrough.
+> > 
+> > With this change, the compile works.
+> > 
+> > Output after:
+> > 
+> >  # make -C tools/perf
+> >  ....
+> >  CC      util/bpf-filter.o
+> >  CC      util/bpf-filter-flex.o
+> >  LD      util/perf-in.o
+> >  LD      perf-in.o
+> >  LINK    perf
+> >  make: Leaving directory '/root/mirror-linux-next/tools/perf'
+> >  #
+> > 
+> > Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> > ---
+> >  tools/bpf/bpftool/btf_dumper.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> > index 6c5e0e82da22..1b7f69714604 100644
+> > --- a/tools/bpf/bpftool/btf_dumper.c
+> > +++ b/tools/bpf/bpftool/btf_dumper.c
+> > @@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
+> >  		case '|':
+> >  		case ' ':
+> >  			putchar('\\');
+> > -			__fallthrough;
+> > +			fallthrough;
+> >  		default:
+> >  			putchar(*s);
+> >  		}
+> 
+> Also reported by Sven Schnelle, and discussed at
+> https://lore.kernel.org/all/yt9dttxlwal7.fsf@linux.ibm.com/.
+> 
+> This is for linux-next, it cannot go through bpf-next given that commit
+> f7a858bffcdd ("tools: Rename __fallthrough to fallthrough") is not in
+> there yet.
+> 
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> 
+> Thanks!
+> Quentin
