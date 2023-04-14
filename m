@@ -2,100 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD3E6E287E
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05E86E28BC
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjDNQkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 12:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        id S230224AbjDNQxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 12:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjDNQkD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 12:40:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B3B9EFA
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681490327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RQ7sgqQDmbwnKclLYwzzFoBdsimrT7SdVshCZK2WEYc=;
-        b=G3jyZuEzs2ZiwqKq3WFQN0pST2NOMx/kGv+9oe/lvO581NMHFht/50LoNubcu6jsga3a8c
-        8ku2LcONO8nq/DNBB8M/oV0oCqobcTfccTXIPn+CkFzssUkMjQCPuJ/3lpHyAA3YRUJyNP
-        gZathanqwEl3Cv3FATViu2um9u1fRdY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-OmpESnwqOCCklQ_mAHcygQ-1; Fri, 14 Apr 2023 12:38:46 -0400
-X-MC-Unique: OmpESnwqOCCklQ_mAHcygQ-1
-Received: by mail-ed1-f71.google.com with SMTP id d2-20020a50f682000000b0050503f2097aso4797426edn.14
-        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:38:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681490325; x=1684082325;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQ7sgqQDmbwnKclLYwzzFoBdsimrT7SdVshCZK2WEYc=;
-        b=fe0uaMH9cwl+WvU7awjhv0YkME/2I9owyW0RPWtjwSuHzWmn/DSeYete1CMDwuQTLE
-         S/k1aZKNhDLXNNBb167lGPRTQvsEm4klbkHKN8B+LXKzA8W9oYFxEr41mln5V3hzymgo
-         LA94R+afGutQiT6KEwXZcZIJQVwqy/WPZwMiVKEsy29UN/fUBx2w/HLw5YhUBUBJSDfa
-         IH1y3qkGF76n+P+5shE/IMvvmoFKkc2pRTE/IO66uS6NQsrZblkL0bn5ePLy+SEf3trJ
-         7i2WnIctUEPWNxWRoy7HdSD73pOrWFfc0T8IT7un0UYmzc0FTexDjsS18m4vczsLsF6C
-         UXsQ==
-X-Gm-Message-State: AAQBX9ddX9rITeQX8wDgLWa+cy84UCih2WtKM0l103Pa5kMSA7cUurTL
-        W7geidgH8LbDQePxEpAmSAUxMrTHA4SZGllcSTQVkscn1qAxMkWX5BIDg/AH/Fo+hM9nDtmkjQw
-        e+tV9sEdozf0q
-X-Received: by 2002:a17:906:4d1:b0:94e:8aeb:f8f3 with SMTP id g17-20020a17090604d100b0094e8aebf8f3mr7484933eja.57.1681490324938;
-        Fri, 14 Apr 2023 09:38:44 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ayugk3Xrac/spJG74Sa/J9mNGI+/Fz+UylpmqnwMJbWMwuvI3GN4RYzod8i4kv0xVxOUhMqQ==
-X-Received: by 2002:a17:906:4d1:b0:94e:8aeb:f8f3 with SMTP id g17-20020a17090604d100b0094e8aebf8f3mr7484919eja.57.1681490324603;
-        Fri, 14 Apr 2023 09:38:44 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id pg16-20020a170907205000b0094a85f6074bsm2649346ejb.33.2023.04.14.09.38.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Apr 2023 09:38:44 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <d74d570c-3001-4c92-7516-eb20ecb479d7@redhat.com>
-Date:   Fri, 14 Apr 2023 18:38:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net
-Subject: Re: [PATCH net-next v5 2/3] net: stmmac: add Rx HWTS metadata to XDP
- receive pkt
-Content-Language: en-US
-To:     Song Yoong Siang <yoong.siang.song@intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        with ESMTP id S229468AbjDNQxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 12:53:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D398B2D4A;
+        Fri, 14 Apr 2023 09:53:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BDCE6395A;
+        Fri, 14 Apr 2023 16:53:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0D56C433D2;
+        Fri, 14 Apr 2023 16:53:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681491187;
+        bh=TwhF5J27HzRurokF8R/n+hFAGJwlT8+7oNFFxg5tODM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOJr7x5nwhbRSI3og+L20yzje9CAcJD1KKuizRZL/ab/CKrQXZsNHZRxWErAqJ0ck
+         UrKiMXsqk9KWumBxlTEMIQhVvK9fmu6GPFLuu9TwBXQ1FV8K9soRzIYcfiQwLj5mqi
+         Pq90f3u4U605dWTKKvlc6k8UECCLqcm9US3hGWXA/bYu9ynPt0VYSe27p940vO0zfG
+         wPx+D1/BvPlrZEwbcFrbs1pFHpzOgPtEzE+tlWAHRK62NbVYYbVvL7Nc7F4q8KXcgh
+         NWHHjlnfAvwJdxvLWk0reRXTWrb+0rLnnliQByHhHVhCyl8VDZ82khX6JDZyrBXG2F
+         NsyV//+qslIBA==
+Date:   Fri, 14 Apr 2023 17:53:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>
-References: <20230414052651.1871424-1-yoong.siang.song@intel.com>
- <20230414052651.1871424-3-yoong.siang.song@intel.com>
-In-Reply-To: <20230414052651.1871424-3-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thomas Richter <tmricht@linux.ibm.com>, bpf@vger.kernel.org,
+        linux-next@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH] bpftool: fix broken compile on s390 for linux-next
+ repository
+Message-ID: <9d3489e4-764c-4a42-9064-869fc5d6e0dc@sirena.org.uk>
+References: <20230412123636.2358949-1-tmricht@linux.ibm.com>
+ <3f952aed-0926-eb26-6472-2d0443c1a0ff@isovalent.com>
+ <ZDkTBjBSWTHhvB3B@osiris>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EgWDVP5GzPpbgn1F"
+Content-Disposition: inline
+In-Reply-To: <ZDkTBjBSWTHhvB3B@osiris>
+X-Cookie: One Bell System - it works.
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -103,105 +63,32 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 14/04/2023 07.26, Song Yoong Siang wrote:
-> Add receive hardware timestamp metadata support via kfunc to XDP receive
-> packets.
-> 
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
->   .../net/ethernet/stmicro/stmmac/stmmac_main.c | 40 ++++++++++++++++++-
->   2 files changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> index ac8ccf851708..826ac0ec88c6 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> @@ -94,6 +94,9 @@ struct stmmac_rx_buffer {
->   
->   struct stmmac_xdp_buff {
->   	struct xdp_buff xdp;
-> +	struct stmmac_priv *priv;
-> +	struct dma_desc *p;
-> +	struct dma_desc *np;
+--EgWDVP5GzPpbgn1F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, I don't like the naming of the descriptors as "p" and "np".
-If you insist on this naming, at least we need comments describing that 
-this is.
+On Fri, Apr 14, 2023 at 10:47:02AM +0200, Heiko Carstens wrote:
+> Full quote below for reference.
+>=20
+> Mark or Stephen could you please add the patch below to linux-next?
 
-Does "desc" and "ndesc" make sense?  (where "n" means "next")
+Could someone please send me whatever patch is being referenced here?
+This looks like a quoted backtrace of some discussion.
 
->   };
->   
->   struct stmmac_rx_queue {
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 10b9f8912bb2..74f78e5537a3 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -5313,10 +5313,15 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->   
->   			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
->   			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
-> -					 buf->page_offset, buf1_len, false);
-> +					 buf->page_offset, buf1_len, true);
->   
->   			pre_len = ctx.xdp.data_end - ctx.xdp.data_hard_start -
->   				  buf->page_offset;
-> +
-> +			ctx.priv = priv;
-> +			ctx.p = p;
-> +			ctx.np = np;
-> +
->   			skb = stmmac_xdp_run_prog(priv, &ctx.xdp);
->   			/* Due xdp_adjust_tail: DMA sync for_device
->   			 * cover max len CPU touch
-> @@ -7060,6 +7065,37 @@ void stmmac_fpe_handshake(struct stmmac_priv *priv, bool enable)
->   	}
->   }
->   
-> +static int stmmac_xdp_rx_timestamp(const struct xdp_md *_ctx, u64 *timestamp)
-> +{
-> +	const struct stmmac_xdp_buff *ctx = (void *)_ctx;
-> +	struct stmmac_priv *priv = ctx->priv;
-> +	struct dma_desc *desc = ctx->p;
-> +	struct dma_desc *np = ctx->np;
-> +	struct dma_desc *p = ctx->p;
-> +	u64 ns = 0;
-> +
-> +	if (!priv->hwts_rx_en)
-> +		return -ENODATA;
-> +
-> +	/* For GMAC4, the valid timestamp is from CTX next desc. */
-> +	if (priv->plat->has_gmac4 || priv->plat->has_xgmac)
-> +		desc = np;
-> +
-> +	/* Check if timestamp is available */
-> +	if (stmmac_get_rx_timestamp_status(priv, p, np, priv->adv_ts)) {
-> +		stmmac_get_timestamp(priv, desc, priv->adv_ts, &ns);
-> +		ns -= priv->plat->cdc_error_adj;
-> +		*timestamp = ns_to_ktime(ns);
-> +		return 0;
-> +	}
-> +
-> +	return -ENODATA;
-> +}
-> +
-> +static const struct xdp_metadata_ops stmmac_xdp_metadata_ops = {
-> +	.xmo_rx_timestamp		= stmmac_xdp_rx_timestamp,
-> +};
-> +
->   /**
->    * stmmac_dvr_probe
->    * @device: device pointer
-> @@ -7167,6 +7203,8 @@ int stmmac_dvr_probe(struct device *device,
->   
->   	ndev->netdev_ops = &stmmac_netdev_ops;
->   
-> +	ndev->xdp_metadata_ops = &stmmac_xdp_metadata_ops;
-> +
->   	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
->   			    NETIF_F_RXCSUM;
->   	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+--EgWDVP5GzPpbgn1F
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQ5hO0ACgkQJNaLcl1U
+h9AxOAf/XqtzERiB321Kxo7A9vwc1nRjKbj+A7jCrBYCBwY1CvKnDtrg2rcr96sS
+IVoWDnN3H6XwXwl+9SQFv4AZStVUFT+ueLxlARpEr19NjKCJkYuceTwqfJeITOLO
+MvdvX2IyiU2Wn2vqpbPN9zuvFl5rNHLpBTUe0jk/W30w+cWdX7T9qe4L5Jv9lg+c
+hvqnO5FcBWyjCUmH34aLucF9ZKIfAauI2Avt03FOnBCfMFoao0mI8kSNWbiOjWGW
+jsNeNeELjyQ61oOkAtvGjZh2EyTV7ts7GMpJMLaUDtbEaN0LFTzTgiMSmRZcyh0D
+SBgpfPZOUU1U/AmtUcsTPZyHmrHIgw==
+=3DtP
+-----END PGP SIGNATURE-----
+
+--EgWDVP5GzPpbgn1F--
