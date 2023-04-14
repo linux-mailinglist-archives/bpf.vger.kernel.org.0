@@ -2,138 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6026E282B
-	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B1B6E2844
+	for <lists+bpf@lfdr.de>; Fri, 14 Apr 2023 18:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjDNQQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Apr 2023 12:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
+        id S229932AbjDNQ0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Apr 2023 12:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjDNQQQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Apr 2023 12:16:16 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104D3903A;
-        Fri, 14 Apr 2023 09:16:14 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33EFDGa9000385;
-        Fri, 14 Apr 2023 16:15:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=RpAjtv77c3dRhMWtwrys0GqqNyVgx8vpDE89fectelk=;
- b=HJHZQclP6Z3x2k4AE6TMpOc3p3WyV+QmZvnv1rR68o4I5xxlT2cZ/+CdHTW5SCrxwzu5
- o4f5Va/KhvAAsirsIKFqt41Av6XUl5gx4DEyIDL4Sbj62BEkfsPysdR3LbYYiS7tPN3g
- Ez20moBGhPVQiKVWtLqkdmP4HKhuQnQ7PANuszxmKnF4HzNJT2H8Kt24PPc4p3Cw5DWY
- t5qw4LsHgdOgxDRsxtkfOx6gqrSzDK4JQ0s7sctTfDNipxz7RNzDusr80xh4ZsNJJk1w
- ys2R9uVz4uKzkzLHYhPjhzZSCQ1g+IJne6H4kFc6FkOVXRFdFKuopyd3Tmi/rhEKEZGw Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3py999tfkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 16:15:47 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33EFEWAB009783;
-        Fri, 14 Apr 2023 16:15:46 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3py999tfj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 16:15:46 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33E3dPhX018750;
-        Fri, 14 Apr 2023 16:15:43 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3pu0m1btbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Apr 2023 16:15:43 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33EGFfnU30998922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Apr 2023 16:15:41 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D94820043;
-        Fri, 14 Apr 2023 16:15:41 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3949E20040;
-        Fri, 14 Apr 2023 16:15:40 +0000 (GMT)
-Received: from heavy (unknown [9.171.89.218])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 14 Apr 2023 16:15:40 +0000 (GMT)
-Date:   Fri, 14 Apr 2023 18:15:38 +0200
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrea Righi <andrea.righi@canonical.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Paolo Pisati <paolo.pisati@canonical.com>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: ignore pointer types check with clang
-Message-ID: <q5rj72tmwlpzx6qgkromem5t7q6xmen52aavfr65olnuv52f3z@wzs4p3xz3635>
-References: <20230412095912.188453-1-andrea.righi@canonical.com>
- <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
- <ZDjvZ7mx7+IsSCCO@righiandr-XPS-13-7390>
+        with ESMTP id S229908AbjDNQ0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Apr 2023 12:26:11 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2893580
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:26:10 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id bi22-20020a05600c3d9600b003f0ad935166so2748443wmb.4
+        for <bpf@vger.kernel.org>; Fri, 14 Apr 2023 09:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1681489569; x=1684081569;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/QVqsv1za6e/zUOVKQjprn3HsPAV78HFDgrrmzoZ9Dc=;
+        b=b27QUfzW9ra/5AcL1P5rBfo4qxN0/GWFGbqsnR360Ol3PO2RPDv9wVeF6JWQkOt4qu
+         hzKA4vsvNdmsbJRJd4NxBYn6mSPwCmoCEu/rUt8KKXvkW4DKqNy+MRbF02MlGFqG4L79
+         /oFQ6vAx+HBAqoVYruIEFJ2wPTvX6M826vqPEzRc0FHrQ7fYlXFkTXoBdRmlhnnsUIVY
+         V+3fHEL9nHdwYqygAVRv5nBOx5Bu4ggGrjJDf2CVP0KmLhhIJL5tlXyoCEaVKJwOBq05
+         wlDjf1ujelRZmmk7sdFkUNG6+Dqk0QPbe+KjSfKWIXDU/8eyn4w/ycpDKQCcjHLK5znT
+         Mawg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681489569; x=1684081569;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/QVqsv1za6e/zUOVKQjprn3HsPAV78HFDgrrmzoZ9Dc=;
+        b=IGl4ulh9rVeug5n8ulMJoWRnSr08X3C/44PlzqRRqALkbV2/TLSgKcj4I3OMLpJGxX
+         d7mVHJJLd2MAWNasGNMtWras96259uf4uftXTmjZ/a2Gyjr9yTHrLeJthxA8C3/QpR/W
+         i9Zzo4e61/i2iSFikT9ZjZNvUbBjfn1LVP31ShyC2+OMqjgaShoIp4RMoqC1dnj27nBQ
+         sonJwimir2Zz6G09xjkLXMx9J5CiimQCgS6ThY1UhdD79/A8J3axNYQU8cSGj9TSjdDC
+         prUtJkCj/tegwpIiTb6563w/WBd5Wym+/BYov/l3c+y+Bg7ob48/tUmy6BhdSS2ISTj9
+         qx+A==
+X-Gm-Message-State: AAQBX9fIJjkHvnhOZ+8VO84mZ2NaDLXlX/2DZB0ywR46Nh8BMPCU2htJ
+        1YJjS80TEoY3h0UfSmev7Fuf5A==
+X-Google-Smtp-Source: AKy350YxXdZgZk/cK4PxdX2uBWEPg6+suyNNMrpWNoX5GHykqZnQ/n20jTwpBzW/MGM1rePCQnTSng==
+X-Received: by 2002:a7b:c7c7:0:b0:3f0:7db5:607e with SMTP id z7-20020a7bc7c7000000b003f07db5607emr4714057wmk.37.1681489568683;
+        Fri, 14 Apr 2023 09:26:08 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:d040:969c:6e8e:e95d? ([2a02:8011:e80c:0:d040:969c:6e8e:e95d])
+        by smtp.gmail.com with ESMTPSA id l10-20020a7bc34a000000b003eeb1d6a470sm4628669wmj.13.2023.04.14.09.26.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Apr 2023 09:26:08 -0700 (PDT)
+Message-ID: <c8168a87-7c98-caf9-5bf3-5779120b3121@isovalent.com>
+Date:   Fri, 14 Apr 2023 17:26:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZDjvZ7mx7+IsSCCO@righiandr-XPS-13-7390>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UqRBtxknN6WEuZnVDVXRbt06hx3mQ1k9
-X-Proofpoint-GUID: CeKvyijkGrCWLD_t0crn5f_K5gZ88OdP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-14_08,2023-04-14_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=999 malwarescore=0 adultscore=0 clxscore=1011 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304140141
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: LLVM not detected in bpfutil due to LLVM 16 requiring c++17
+Content-Language: en-GB
+To:     Nathan Chancellor <nathan@kernel.org>,
+        No Name <xbjfk.github@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        llvm@lists.linux.dev, bpf@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <CALS7K9V1j6ufrQ=6nGjyHQCWb7-YiqNdctBWk8og1gW_q4C4dA@mail.gmail.com>
+ <20230414154333.GA1931632@dev-arch.thelio-3990X>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230414154333.GA1931632@dev-arch.thelio-3990X>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 14, 2023 at 08:15:03AM +0200, Andrea Righi wrote:
-> On Thu, Apr 13, 2023 at 09:56:00PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Apr 12, 2023 at 2:59 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> > >
-> > > Building bpf selftests with clang can trigger errors like the following:
-> > >
-> > >   CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
-> > > progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assigning to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-pointer-types]
-> > >         s = &nlk->sk;
-> > >           ^ ~~~~~~~~
-> > > 1 error generated.
-> > 
-> > I cannot reproduce this and BPF CI doesn't complain about it either.
-> > What kind of clang do you use?
-> > Some special version and build flags?
+Hi Nathan, Reagan, thanks for the report and CC,
+
+2023-04-14 08:43 UTC-0700 ~ Nathan Chancellor <nathan@kernel.org>
+> Hi Reagan,
 > 
-> I'm using Ubuntu clang version 15.0.7 (Ubuntu 23.04), no special build
-> flag (unless Ubuntu enables some different default flags, but it
-> shouldn't be the case... I'll double check).
+> On Fri, Apr 14, 2023 at 10:36:35PM +1200, No Name wrote:
+>> This is my first time reporting a bug, so apologies if I get something wrong.
 > 
-> -Andrea
+> Thanks for the report! "See something, say something", even if it is not
+> quite right out of the gate, we can get down to the bottom of it.
+> 
+>> In tools/build/feature/Makefile, line 342, the c++ std is set to
+>> gnu++14, whereas LLVM 16 now requires c++17 to include the headers.
+>> This results in the llvm feature being falsely disabled for bpfutil.
+> 
+> I cannot find any reference to bpfutil either in tree or when doing a
+> web search, did you mean bpftool? I am going to assume yes, so I have
+> gone ahead and added Quentin (the maintainer of bpftool in MAINTAINERS)
+> and bpf@vger.kernel.org to the thread.
+> 
+>> Perhaps the --cxxflags, --ldflags and --libs options of llvm-config
+>> should instead?
+> 
+> The tools system is pretty much Greek to me, so I am hoping someone else
+> will have a better idea of what is going on and how to fix it.
+> 
+> For the record, I think I see the issue you are talking about on Fedora,
+> which has clang-16, whereas I do not see the same issue on Arch Linux,
+> which still has clang-15.
+> 
+>   $ clang --version | head -1
+>   clang version 15.0.7
+> 
+>   $ make -C tools/bpf/bpftool -j(nproc) -s
+> 
+>   Auto-detecting system features:
+>   ...                         clang-bpf-co-re: [ on  ]
+>   ...                                    llvm: [ on  ]
+>   ...                                  libcap: [ on  ]
+>   ...                                  libbfd: [ on  ]
+> 
+> compared to
+> 
+>   $ clang --version | head -1
+>   clang version 16.0.0 (Fedora 16.0.0-1.fc39)
+> 
+>   $ make -C tools/bpf/bpftool -j(nproc) -s
+> 
+>   Auto-detecting system features:
+>   ...                         clang-bpf-co-re: [ on  ]
+>   ...                                    llvm: [ OFF ]
+>   ...                                  libcap: [ on  ]
+>   ...                                  libbfd: [ on  ]
+> 
+> This is the output of tools/build/feature/test-llvm.make.output on my
+> machine, which seems to confirm that the headers expect to be compiled
+> with '-std=c++17', but that is just a superficial observation at this
+> point.
+> 
 
-Hi,
++Cc Arnaldo, as I believe perf uses the 'llvm' feature as well.
 
-FWIW, I see similar errors when I don't use recent pahole.
+I noticed the same on my machine some time ago, but haven't investigated
+yet. The error I get in test-llvm.make.output seems to be exactly the same.
 
-Best regards,
-Ilya
+I confirm I can fix detection by using '-std=c++17' instead. It looks
+like the version was bumped earlier in commit d0d0f0c12461 ("tools: Bump
+minimum LLVM C++ std to GNU++14").
+
+Reagan's suggestion to use '$(shell $(LLVM_CONFIG) --cxxflags)' instead
+of specifying the standard manually works as well on my setup, and looks
+cleaner to me. But I'm not sure of the impact this change would have,
+and if it might break other setups.
+
+As far as I could find, perf and bpftool are the only users for this
+feature?
+
+Quentin
+
