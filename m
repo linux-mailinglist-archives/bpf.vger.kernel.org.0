@@ -2,279 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F636E31C8
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 16:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C260B6E31CF
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 16:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjDOOU2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 10:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        id S229815AbjDOOZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 10:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjDOOU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 10:20:27 -0400
-Received: from mx03lb.world4you.com (mx03lb.world4you.com [81.19.149.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02375BB3;
-        Sat, 15 Apr 2023 07:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7o987JN2RXQLJSOJmDRhI+mEldNIqnOlpQbJWGmldZ4=; b=K5/ceCCEdmcH83QDs3+jDY7Z9U
-        48eqjTkTIq/VCrVdS0fy4PiNjHb3YCMjFSTMDsM2Ui8gFjfnBi1yJ59YpnW+gV9XoyEkJgvxuhr8O
-        756UUmGhpxNpGIbaWiujhjWxpSnMpwBpkKPUELWBtLJmUt0OuJ57Ic9fhgo0BlNO/208=;
-Received: from [88.117.57.231] (helo=[10.0.0.160])
-        by mx03lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1pngkd-0004v7-GZ; Sat, 15 Apr 2023 16:19:39 +0200
-Message-ID: <5b668562-bb9d-2156-3ff8-0e2c800aa370@engleder-embedded.com>
-Date:   Sat, 15 Apr 2023 16:19:39 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH net-next 4/5] tsnep: Add XDP socket zero-copy RX support
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        bjorn@kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-References: <20230402193838.54474-1-gerhard@engleder-embedded.com>
- <20230402193838.54474-5-gerhard@engleder-embedded.com>
- <ZCsKkygVjB3J+XrO@boxer> <ZCsMNKCK0xQECDJh@boxer>
- <72bb23b0-50cc-7333-56e7-a887223ac6e1@engleder-embedded.com>
- <ZDAddB+bF7W2OhY1@boxer>
+        with ESMTP id S229468AbjDOOZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 10:25:33 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021018.outbound.protection.outlook.com [52.101.57.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4446249EA;
+        Sat, 15 Apr 2023 07:25:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ehxGJRya95KyoF9kxYMJjyGL3yOuPIb2Pl7zGHcnI59zhszI+WuAYkK5zz+CezE6wAkgWJE5m08UxWm2egylXKWovJXEMzrnR4uHpbqdUw1Ddm/rcV4LYTo3FqPNjpfJ+Uv7uqR8INMCT1LUaLj+HouDlL19fmNmitQDb21va99/tenO95OopDkAA0zty3NFflk4Xbwvn48qGqZfQwaVrJr10Reu1GYuH4t3zphR4ZEzYmzmC7devfVGLhItZSiTEsm1amSkIAeDOAOvRZDHFuSQmiUIbUFvxLpFXq0JOjpMHF0OcjqyVeL+kemgLG3EnfhmYZmwiSNkiJuhZvOzGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U+T6EjHz9bFJeys8VpYPn0Yc5OCPeWQTs/ZIjC5Y3CY=;
+ b=es2yQI5jYd2BaviuWtKC4EtG5Fk7z4wAppDnUpU4zFm3bHuEDL7AERy0wDNowmSpRBZsFKbkvXi0ymKGPU9F7V8bImuJ/O/zmd9OFGrO7wNAvsS/kngp/CW9P2De7bzs/w2x01mzQfFOyaTOJyhUG84erLGE28tGCt48upm4W04rlByecIDqj6VV3TFanZpZRxvCnw+ZVIMORcH/q9tAjq0A9YiVfzu0Q/kp7lev5Ch7M7o4luaE6pRRQ7NDVzfsN+tSi1ltQHjY2EEnQRbDC2Qxza9hZ1LDkWrlOTnNkxk4rYeCy0+4eVqmdd2NixeAH9dHr3Tjh2LEw6IZ3ClQUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U+T6EjHz9bFJeys8VpYPn0Yc5OCPeWQTs/ZIjC5Y3CY=;
+ b=RjgUWjjwqgkU3voWvsRmy5Lv85nhhRQajXAC03Rrq3ILILppFYLDkXCmM/UHTaeTUXlZ43J8ed6GjZvb9fTZa5hI0Aouq2wxLArO51fk34vcCOwUSzKEw5T2xaGyvl/ASUvQtsLftR/JBT02hliL32ClhuaMw8146C1h5Ibe120=
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
+ by BL0PR2101MB1348.namprd21.prod.outlook.com (2603:10b6:208:92::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.1; Sat, 15 Apr
+ 2023 14:25:29 +0000
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::5d8d:b97a:1064:cc65]) by PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::5d8d:b97a:1064:cc65%6]) with mapi id 15.20.6340.001; Sat, 15 Apr 2023
+ 14:25:29 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V3,net-next, 3/4] net: mana: Enable RX path to handle
+ various MTU sizes
+Thread-Topic: [PATCH V3,net-next, 3/4] net: mana: Enable RX path to handle
+ various MTU sizes
+Thread-Index: AQHZbYQwnFQeBoPFWkmXBOV6OTjsn68roqYAgADK5IA=
+Date:   Sat, 15 Apr 2023 14:25:29 +0000
+Message-ID: <PH7PR21MB3116023068CFA8D600FA5B18CA9E9@PH7PR21MB3116.namprd21.prod.outlook.com>
+References: <1681334163-31084-1-git-send-email-haiyangz@microsoft.com>
+        <1681334163-31084-4-git-send-email-haiyangz@microsoft.com>
+ <20230414190608.3c21f44f@kernel.org>
+In-Reply-To: <20230414190608.3c21f44f@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-In-Reply-To: <ZDAddB+bF7W2OhY1@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8e8173a7-fe88-4944-8b5b-dd08e47c614a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-04-15T14:12:17Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BL0PR2101MB1348:EE_
+x-ms-office365-filtering-correlation-id: e748ac2a-f250-4049-a4c2-08db3dbd4359
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TGG0m9oO0UtU1yoGxSKvHlVhS66Tfetz9j7UnskFIe3rRHMAW3eqBJWsnmcbLAaknr9ITwp7js0BpuU6dBVF1M0+6wIXngh+RiBVWb83+g4OBmbocmXawIiyJT37WeX1jpiRMPKOvU3GmXv8nO8WaL4edamW9QSCYqixvBI5rBIqnJQTH95ZLIAxPtGmW4cc/nW+5k1P2tKQZPR/wDCeF+JP+P3+9mR415610rAqWjLgJoR/s3xnS1+TPTWv+hD5JDDPDY+MbWB0X8i5rTdTLz/VTkSydvlXMiUYB9GDUWmdy5kvXIDX4XsTeLR3+GGX0PUZ+OujODRNgVaC0DRautKpVjBaZ4PfeWm773vwDUWGN0DQyT2PmDa3FlXtfWEC3oF9G113PqlRkT2b5x3EmRSpbDbWQEFeZ5iNoe9+jkOMO0Hoe8IzTulZH2DSg7GIYLr1lJgLKPnnPTjdyaeecanKZhORb38jkCm2WbBBlKFQiXCMYQF+yIebZgK75os9C/1RUN/CvcPZr+bLM9aA3tfpz7wWOv8UPJNvG9yAqsPU26GKDw9tC/NowvyIIDuyvEbsGpVHM898ZgUt5yIQOEyzpPqx2Wf9O+Q6oEhSL46Eb1LAEwB1fAJiidrKumtY9kCaaCg+MFIJfNl5pQRFzuloMrpmOWbHfEL7qA2IiuQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(451199021)(478600001)(10290500003)(71200400001)(38100700002)(8936002)(8676002)(316002)(786003)(41300700001)(82960400001)(82950400001)(6916009)(4326008)(64756008)(55016003)(66476007)(66446008)(76116006)(66946007)(66556008)(122000001)(54906003)(8990500004)(186003)(2906002)(38070700005)(53546011)(6506007)(26005)(9686003)(86362001)(83380400001)(33656002)(5660300002)(52536014)(7696005)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?K4PkFqscrBbRda2uB2ftd4NfLBkXBabFd3fc7LeiEKFSVY+PHX31d2ZTNCmj?=
+ =?us-ascii?Q?UGZZaYNuqQ96B25KhRQHGKM1bdn5Yo/I8j9fLHZ1O2FsmauPmMvYwEVQoXdi?=
+ =?us-ascii?Q?FC4UX4/oWPzxFNj5lvdpAJZpwrqykT6cp6rLtoI17aNsLywMp1RUDAiesiZf?=
+ =?us-ascii?Q?GjQ+VtoBTPqzdv9RsOb/+ZB23TFehvmNMc4kvzDRPx+BMJ74IZfAN5HTUb8a?=
+ =?us-ascii?Q?4bL0zb5yC0uHf+Oa8WQxCuZBtYPIMwt8DAvK4S+LmbGq0rzgDeJEom/wLx2P?=
+ =?us-ascii?Q?wQII/llSo30uGLtQGDa6rqjQ1FlSO4OsWPBGwhqapnM1GZG5l5NmM/xEpEa1?=
+ =?us-ascii?Q?I8ji2QiKMGA4/ldP3fXzJt90tGC17Art+5A+aHeE0mfzJvLnY/JMHs2EDa7P?=
+ =?us-ascii?Q?UKdORBAlr4Ob5oaT6qIgHaMwU1JsxRFlc5v0OGlS2T4+U5RJb1dGqbfCH4ye?=
+ =?us-ascii?Q?NuiQbR5LkcTzXf66d3JVFHjzDuea6AalhOkl4p7OIlJ+5TvZuFQmGTa7XUEu?=
+ =?us-ascii?Q?LAgwlct3jrNx6BhYmhhrUJ05lEKs6LiAySNNMVyHW6GdKQFAnVpmVcxIZpuM?=
+ =?us-ascii?Q?PXgcYXeY/tUsRKesoVe34idxuxd3ocvKumAEw1b0ewVuRq9dwXAoalNB2+1M?=
+ =?us-ascii?Q?wjFqQgUePl3fqKmo+xcjNtb6nlCNOm/PA1jEQ1vWbKwwI8jNMyj8MXBZUn0W?=
+ =?us-ascii?Q?EoKspB8SJYQldGuo8SQ5oneLohGdbZ0jG1kXDnUplKYsLrAgZGfdFD+ILgbU?=
+ =?us-ascii?Q?bySIhAcaiGONhzy0XSDi2IbVUsyFN7gdmyZdFqw9eShO46XXuvVMzOXhHC8G?=
+ =?us-ascii?Q?EOw7TVUyhAm0XJaYtq00XbPk+B0ykz4l7c1mbCFvllYDNwBw33AnUzlpZCs+?=
+ =?us-ascii?Q?PJ5zXHBpdGS88uMJBNjA+Jq+sQSZC2stQ/NMvUiE9RuuE5oT7ymbxSkblWda?=
+ =?us-ascii?Q?IHobLIum7wjLJOIf/3o/jkB81Occc6OAx9tvqJ77TTwwuJeoVoevDrogf9kx?=
+ =?us-ascii?Q?nxrZd7g/O8Bo43KjARlCQ5TA6YiBXRVr53QctdYVEaLAiwgkdGzsxAFaMbyZ?=
+ =?us-ascii?Q?cfZvOY3YRbBbda6jcfa7RreBBA23GQIA+qxPPMXt4Y61kbGBeT8lBgsci1AL?=
+ =?us-ascii?Q?GqVH/Z5zk8D6Ht3h1CAlx3bfQshVj4VlQ02v/MUY8Exo9ySr7K6+tFOXLxCn?=
+ =?us-ascii?Q?nQ318ZGjnkdJg0Iijgiahqyw0leYflbdRLE/svNt/UhHt8wjFNKHc3YjRw/3?=
+ =?us-ascii?Q?CHWVnsAOiCnL/fiVWUpc+R50SAWyvJXKwdGr5rmZWMt3mt+DIw0scgBRNRGf?=
+ =?us-ascii?Q?FF8Ee23aeCWTQKCK+/RyxCY21i7VcKAEprxGM0J6/W/VR7InCHzj56bUfRqg?=
+ =?us-ascii?Q?MJ/ZT5/oOfXxMHhmZKz/ib9X/Mh2zOrbdz9yD7s7/bDhAHg1GddlQEuub/5m?=
+ =?us-ascii?Q?KKL9VdsJ6uGXleIuE5w4qSzJTZFtCo9lFEa+IZEuhO9VU1PktwZU/SFjNlTL?=
+ =?us-ascii?Q?ZPLpk8kr9HxJ1VBrBtWRPFBQ1+t6qPipq+Cw0u1qTdncmtbufJ/FE+C/Anbm?=
+ =?us-ascii?Q?+fYo/F0NwTleAUNByUKd55TJIHMA9Sp5Ei9FDQBN?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e748ac2a-f250-4049-a4c2-08db3dbd4359
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2023 14:25:29.0820
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eZwYYATDuLav0VM25ujFsw1jbtDVOjumPPHj+lI16v6Y0zAyvB6ISAdtZEkXnC26Z3PkRgn1xSvPIPKsuVYlQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1348
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07.04.23 15:41, Maciej Fijalkowski wrote:
-> On Wed, Apr 05, 2023 at 09:13:58PM +0200, Gerhard Engleder wrote:
->> On 03.04.23 19:26, Maciej Fijalkowski wrote:
->>> On Mon, Apr 03, 2023 at 07:19:15PM +0200, Maciej Fijalkowski wrote:
->>>> On Sun, Apr 02, 2023 at 09:38:37PM +0200, Gerhard Engleder wrote:
->>>>
->>>> Hey Gerhard,
->>>>
->>>>> Add support for XSK zero-copy to RX path. The setup of the XSK pool can
->>>>> be done at runtime. If the netdev is running, then the queue must be
->>>>> disabled and enabled during reconfiguration. This can be done easily
->>>>> with functions introduced in previous commits.
->>>>>
->>>>> A more important property is that, if the netdev is running, then the
->>>>> setup of the XSK pool shall not stop the netdev in case of errors. A
->>>>> broken netdev after a failed XSK pool setup is bad behavior. Therefore,
->>>>> the allocation and setup of resources during XSK pool setup is done only
->>>>> before any queue is disabled. Additionally, freeing and later allocation
->>>>> of resources is eliminated in some cases. Page pool entries are kept for
->>>>> later use. Two memory models are registered in parallel. As a result,
->>>>> the XSK pool setup cannot fail during queue reconfiguration.
->>>>>
->>>>> In contrast to other drivers, XSK pool setup and XDP BPF program setup
->>>>> are separate actions. XSK pool setup can be done without any XDP BPF
->>>>> program. The XDP BPF program can be added, removed or changed without
->>>>> any reconfiguration of the XSK pool.
->>>>
->>>> I won't argue about your design, but I'd be glad if you would present any
->>>> perf numbers (ZC vs copy mode) just to give us some overview how your
->>>> implementation works out. Also, please consider using batching APIs and
->>>> see if this gives you any boost (my assumption is that it would).
->>>>
->>>>>
->>>>> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
->>>>> ---
->>>>>    drivers/net/ethernet/engleder/tsnep.h      |   7 +
->>>>>    drivers/net/ethernet/engleder/tsnep_main.c | 432 ++++++++++++++++++++-
->>>>>    drivers/net/ethernet/engleder/tsnep_xdp.c  |  67 ++++
->>>>>    3 files changed, 488 insertions(+), 18 deletions(-)
->>>
->>> (...)
->>>
->>>>> +
->>>>>    static bool tsnep_xdp_run_prog(struct tsnep_rx *rx, struct bpf_prog *prog,
->>>>>    			       struct xdp_buff *xdp, int *status,
->>>>> -			       struct netdev_queue *tx_nq, struct tsnep_tx *tx)
->>>>> +			       struct netdev_queue *tx_nq, struct tsnep_tx *tx,
->>>>> +			       bool zc)
->>>>>    {
->>>>>    	unsigned int length;
->>>>> -	unsigned int sync;
->>>>>    	u32 act;
->>>>>    	length = xdp->data_end - xdp->data_hard_start - XDP_PACKET_HEADROOM;
->>>>>    	act = bpf_prog_run_xdp(prog, xdp);
->>>>> -
->>>>> -	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
->>>>> -	sync = xdp->data_end - xdp->data_hard_start - XDP_PACKET_HEADROOM;
->>>>> -	sync = max(sync, length);
->>>>> -
->>>>>    	switch (act) {
->>>>>    	case XDP_PASS:
->>>>>    		return false;
->>>>> @@ -1027,8 +1149,21 @@ static bool tsnep_xdp_run_prog(struct tsnep_rx *rx, struct bpf_prog *prog,
->>>>>    		trace_xdp_exception(rx->adapter->netdev, prog, act);
->>>>>    		fallthrough;
->>>>>    	case XDP_DROP:
->>>>> -		page_pool_put_page(rx->page_pool, virt_to_head_page(xdp->data),
->>>>> -				   sync, true);
->>>>> +		if (zc) {
->>>>> +			xsk_buff_free(xdp);
->>>>> +		} else {
->>>>> +			unsigned int sync;
->>>>> +
->>>>> +			/* Due xdp_adjust_tail: DMA sync for_device cover max
->>>>> +			 * len CPU touch
->>>>> +			 */
->>>>> +			sync = xdp->data_end - xdp->data_hard_start -
->>>>> +			       XDP_PACKET_HEADROOM;
->>>>> +			sync = max(sync, length);
->>>>> +			page_pool_put_page(rx->page_pool,
->>>>> +					   virt_to_head_page(xdp->data), sync,
->>>>> +					   true);
->>>>> +		}
->>>>>    		return true;
->>>>>    	}
->>>>>    }
->>>>> @@ -1181,7 +1316,8 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->>>>>    					 length, false);
->>>>>    			consume = tsnep_xdp_run_prog(rx, prog, &xdp,
->>>>> -						     &xdp_status, tx_nq, tx);
->>>>> +						     &xdp_status, tx_nq, tx,
->>>>> +						     false);
->>>>>    			if (consume) {
->>>>>    				rx->packets++;
->>>>>    				rx->bytes += length;
->>>>> @@ -1205,6 +1341,125 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->>>>>    	return done;
->>>>>    }
->>>>> +static int tsnep_rx_poll_zc(struct tsnep_rx *rx, struct napi_struct *napi,
->>>>> +			    int budget)
->>>>> +{
->>>>> +	struct tsnep_rx_entry *entry;
->>>>> +	struct netdev_queue *tx_nq;
->>>>> +	struct bpf_prog *prog;
->>>>> +	struct tsnep_tx *tx;
->>>>> +	int desc_available;
->>>>> +	int xdp_status = 0;
->>>>> +	struct page *page;
->>>>> +	int done = 0;
->>>>> +	int length;
->>>>> +
->>>>> +	desc_available = tsnep_rx_desc_available(rx);
->>>>> +	prog = READ_ONCE(rx->adapter->xdp_prog);
->>>>> +	if (prog) {
->>>>> +		tx_nq = netdev_get_tx_queue(rx->adapter->netdev,
->>>>> +					    rx->tx_queue_index);
->>>>> +		tx = &rx->adapter->tx[rx->tx_queue_index];
->>>>> +	}
->>>>> +
->>>>> +	while (likely(done < budget) && (rx->read != rx->write)) {
->>>>> +		entry = &rx->entry[rx->read];
->>>>> +		if ((__le32_to_cpu(entry->desc_wb->properties) &
->>>>> +		     TSNEP_DESC_OWNER_COUNTER_MASK) !=
->>>>> +		    (entry->properties & TSNEP_DESC_OWNER_COUNTER_MASK))
->>>>> +			break;
->>>>> +		done++;
->>>>> +
->>>>> +		if (desc_available >= TSNEP_RING_RX_REFILL) {
->>>>> +			bool reuse = desc_available >= TSNEP_RING_RX_REUSE;
->>>>> +
->>>>> +			desc_available -= tsnep_rx_refill_zc(rx, desc_available,
->>>>> +							     reuse);
->>>>> +			if (!entry->xdp) {
->>>>> +				/* buffer has been reused for refill to prevent
->>>>> +				 * empty RX ring, thus buffer cannot be used for
->>>>> +				 * RX processing
->>>>> +				 */
->>>>> +				rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
->>>>> +				desc_available++;
->>>>> +
->>>>> +				rx->dropped++;
->>>>> +
->>>>> +				continue;
->>>>> +			}
->>>>> +		}
->>>>> +
->>>>> +		/* descriptor properties shall be read first, because valid data
->>>>> +		 * is signaled there
->>>>> +		 */
->>>>> +		dma_rmb();
->>>>> +
->>>>> +		prefetch(entry->xdp->data);
->>>>> +		length = __le32_to_cpu(entry->desc_wb->properties) &
->>>>> +			 TSNEP_DESC_LENGTH_MASK;
->>>>> +		entry->xdp->data_end = entry->xdp->data + length;
->>>>> +		xsk_buff_dma_sync_for_cpu(entry->xdp, rx->xsk_pool);
->>>>> +
->>>>> +		/* RX metadata with timestamps is in front of actual data,
->>>>> +		 * subtract metadata size to get length of actual data and
->>>>> +		 * consider metadata size as offset of actual data during RX
->>>>> +		 * processing
->>>>> +		 */
->>>>> +		length -= TSNEP_RX_INLINE_METADATA_SIZE;
->>>>> +
->>>>> +		rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
->>>>> +		desc_available++;
->>>>> +
->>>>> +		if (prog) {
->>>>> +			bool consume;
->>>>> +
->>>>> +			entry->xdp->data += TSNEP_RX_INLINE_METADATA_SIZE;
->>>>> +			entry->xdp->data_meta += TSNEP_RX_INLINE_METADATA_SIZE;
->>>>> +
->>>>> +			consume = tsnep_xdp_run_prog(rx, prog, entry->xdp,
->>>>> +						     &xdp_status, tx_nq, tx,
->>>>> +						     true);
->>>>
->>>> reason for separate xdp run prog routine for ZC was usually "likely-fying"
->>>> XDP_REDIRECT action as this is the main action for AF_XDP which was giving
->>>> us perf improvement. Please try this out on your side to see if this
->>>> yields any positive value.
->>>
->>> One more thing - you have to handle XDP_TX action in a ZC specific way.
->>> Your current code will break if you enable xsk_pool and return XDP_TX from
->>> XDP prog.
->>
->> I took again a look to igc, but I didn't found any specifics for XDP_TX
->> ZC. Only some buffer flipping, which I assume is needed for shared
->> pages.
->> For ice I see a call to xdp_convert_buff_to_frame() in ZC path, which
->> has some XSK logic within. Is this the ZC specific way? igc calls
->> xdp_convert_buff_to_frame() in both cases, so I'm not sure. But I will
->> try the XDP_TX action. I did test only with xdpsock.
-> 
-> I think I will back off a bit with a statement that your XDP_TX is clearly
-> broken, here's why.
-> 
-> igc when converting xdp_buff to xdp_frame and xdp_buff's memory being
-> backed by xsk_buff_pool will grab the new page from kernel, copy the
-> contents of xdp_buff to it, recycle xdp_buff back to xsk_buff_pool and
-> return new page back to driver (i have just described what
-> xdp_convert_zc_to_xdp_frame() is doing). Thing is that it is expensive and
-> hurts perf and we stepped away from this on ice, this is a matter of
-> storing the xdp_buff onto adequate Tx buffer struct that you can access
-> while cleaning Tx descriptors so that you'll be able to xsk_buff_free()
-> it.
-> 
-> So saying 'your current code will break' might have been too much from my
-> side. Just make sure that your XDP_TX action on ZC works. In order to do
-> that, i was loading xdpsock with XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD flag
-> on a queue receiving frames and then running xdp_rxq_info with XDP_TX
-> action.
 
-I took a look to the new ice code. It makes sense to prevent that
-copying. I took a note for future work. For now XDP_REDIRECT is
-the optimisation path.
 
-Tested as suggested. XDP_TX works.
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Friday, April 14, 2023 10:06 PM
+> To: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
+> <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
+> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
+> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
+> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
+> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
+> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>;
+> hawk@kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH V3,net-next, 3/4] net: mana: Enable RX path to handle
+> various MTU sizes
+>=20
+> On Wed, 12 Apr 2023 14:16:02 -0700 Haiyang Zhang wrote:
+> > +	} else if (rxq->alloc_size > PAGE_SIZE) {
+> > +		if (is_napi)
+> > +			va =3D napi_alloc_frag(rxq->alloc_size);
+>=20
+> Allocating frag larger than a page is not safe.
+
+ I saw other drivers doing this - use napi_alloc_frag for size bigger than =
+a page.
+And it returns compound page. Why it's not safe? Should we use other alloca=
+tor
+when need compound pages?
+
+> Frag allocator falls back to allocating single pages, doesn't it?
+
+Actually I checked it. Compound page is still returned for size smaller tha=
+n PAGE_SIZE,
+so I used single page allocation for that.
+
+Thanks,
+- Haiyang
+
