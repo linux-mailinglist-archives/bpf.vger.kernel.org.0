@@ -2,75 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0D76E2F5C
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 08:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA66E2FBA
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 10:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjDOGqW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 02:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S229732AbjDOIbY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 04:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjDOGqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 02:46:17 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F045B8E;
-        Fri, 14 Apr 2023 23:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681541161; x=1713077161;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rr53Ducgp0LeWa/C3dMJZpRzn/yRbmXHBfZUhtLC8nk=;
-  b=L4diEDkCeLJCTIj9Cxqgjey0stOIAVZ/TdP9zYq8u0QIQKMzpxBIw5Lt
-   A2yvPRFGX3aHL/hnUK13jcN2ez7TNW1WuzdZe+4oL78v2qHX+mfkYfQpQ
-   3IcTMmGx79TIyQYbU0s0jwWn9najuWmkPGlQ6kIUxfhAQO2R4a3jUZVzt
-   bbbAn5toxUFqNwhfS2xdZzUhafAb9ht0cJSZC2qV4StRRen3MpJNbIcF+
-   qRfQzRsDDVOrL+oaGH8QC24lBSp5EvlX7e6RPLyEtj3yYtXkkltB04ljr
-   E02MP0RS27GbkQiXdXjC6OJ8/fafyLXSDfXz1GJ32Xc9KvhaIZYTw4uQx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10680"; a="343379312"
-X-IronPort-AV: E=Sophos;i="5.99,199,1677571200"; 
-   d="scan'208";a="343379312"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2023 23:46:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10680"; a="754727565"
-X-IronPort-AV: E=Sophos;i="5.99,199,1677571200"; 
-   d="scan'208";a="754727565"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Apr 2023 23:45:55 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        with ESMTP id S229540AbjDOIbX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 04:31:23 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63331FE7
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 01:31:19 -0700 (PDT)
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4324C3F202
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 08:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1681547475;
+        bh=Wx0/JegDs5ydht80NXH/UwxmxbYUu5hxKxJx5a7E6kw=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=t4hdIyeWrLjtWVsp1rPtxqeOz3lw5SSM2tDExtC3WAp9UPmNaJF54i5v+fC1zwH4L
+         0f0OmFu+A/qSZa9xTCW2Xn+iCEUnCnMBK1oDA1SmLe9Il/6x/2vJSmOYJD1l5z6Ik2
+         ksaSi55sG22TQXAZiEIoqXpy5lYffsivw6lkYip5Uw/jFotvZNpx75sQ/H81f+eDi+
+         80PEeqX+dhJhFDQgVzn5eAQUlslwj69300ym8kKpdax2G7q2AYRsdtqCDULuFkknFs
+         5YPGA5HdCO/59+h9ayVRU6FghH+PEQPl7Ox3KjWTofcqRRcViSiVAbeGJII3mvM+d5
+         aI0REM7ht9LJA==
+Received: by mail-ej1-f72.google.com with SMTP id f2-20020a170906084200b0094e971d803bso2836697ejd.7
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 01:31:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681547474; x=1684139474;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wx0/JegDs5ydht80NXH/UwxmxbYUu5hxKxJx5a7E6kw=;
+        b=kAbp5sSBBwxoPRgwWRzbEtQcs2tuRP7oNXOmxnga5PcOl9ZdZfGam0XR6UfvoqdAR+
+         Atw8UemhX7acErMe1A78FrxPWaTRmu7olddGrnd/zv6A4qP321+f/Ja0PO6dmyPdpklP
+         ypztkqzsLQRYzNYY5I3mdD9HFIL1TBLY54KvFMRZWEO8O4mbEQiOQalMlBciSnKbsoQ3
+         fVvHAIJ0g5uKx3ZuGdEcs5DKMuv2OYoVbSVqomnoJPS24SHQcRL+Om8v4vYOXDGEkk7m
+         tum2wOdVN3SvaYa+tmJh3aIgn+Ys++5tAj0UAl+QBReiNAwWKVuV05CLp6kzvVsfx2YK
+         tuUg==
+X-Gm-Message-State: AAQBX9dB29zk1wO5AgrDFE5Qy0cOB7BY20anOO0HT36frpqEcXqAMuW0
+        KTW/+ylpbVMYj13y4D7wefULeO1KnpVKn7a8a6r11A7KE+tjgz4sA3QTItJtvJk/zhiEEkK7TT1
+        EAmMQ+F96cam4MzhpLdRyfjFpmb6jGw==
+X-Received: by 2002:a17:907:2d1f:b0:94f:322d:909d with SMTP id gs31-20020a1709072d1f00b0094f322d909dmr9554ejc.63.1681547474682;
+        Sat, 15 Apr 2023 01:31:14 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bD5nX03JewNoORuQdFHtYzSIEKXUwgdDNHDz4qbxSX6RiDgl4Lw29zLgKKwShLulQpqTQmQQ==
+X-Received: by 2002:a17:907:2d1f:b0:94f:322d:909d with SMTP id gs31-20020a1709072d1f00b0094f322d909dmr9518ejc.63.1681547474284;
+        Sat, 15 Apr 2023 01:31:14 -0700 (PDT)
+Received: from localhost (host-87-18-123-182.retail.telecomitalia.it. [87.18.123.182])
+        by smtp.gmail.com with ESMTPSA id a10-20020a1709064a4a00b0094a4e970508sm3491554ejv.57.2023.04.15.01.31.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Apr 2023 01:31:13 -0700 (PDT)
+Date:   Sat, 15 Apr 2023 10:31:13 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, xdp-hints@xdp-project.net,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net-next v6 3/3] net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
-Date:   Sat, 15 Apr 2023 14:45:03 +0800
-Message-Id: <20230415064503.3225835-4-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230415064503.3225835-1-yoong.siang.song@intel.com>
-References: <20230415064503.3225835-1-yoong.siang.song@intel.com>
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Paolo Pisati <paolo.pisati@canonical.com>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/bpf: ignore pointer types check with clang
+Message-ID: <ZDpg0YmXpZFlvmpM@righiandr-XPS-13-7390>
+References: <20230412095912.188453-1-andrea.righi@canonical.com>
+ <CAADnVQJ00Npkp=+XYaTybzaPnrcfK0nKrePAktVNBt2-YqWdEg@mail.gmail.com>
+ <ZDjvZ7mx7+IsSCCO@righiandr-XPS-13-7390>
+ <q5rj72tmwlpzx6qgkromem5t7q6xmen52aavfr65olnuv52f3z@wzs4p3xz3635>
+ <ZDl/KFLy7wOBa2tj@righiandr-XPS-13-7390>
+ <CAADnVQJFxoYqBisj4w_Mm35mf3gR6YTK0QvNjQfVSjfcQK33yw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJFxoYqBisj4w_Mm35mf3gR6YTK0QvNjQfVSjfcQK33yw@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,68 +102,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add receive hardware timestamp metadata support via kfunc to XDP Zero Copy
-receive packets.
+On Fri, Apr 14, 2023 at 06:15:41PM -0700, Alexei Starovoitov wrote:
+> On Fri, Apr 14, 2023 at 9:28 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+> >
+> > On Fri, Apr 14, 2023 at 06:15:38PM +0200, Ilya Leoshkevich wrote:
+> > > On Fri, Apr 14, 2023 at 08:15:03AM +0200, Andrea Righi wrote:
+> > > > On Thu, Apr 13, 2023 at 09:56:00PM -0700, Alexei Starovoitov wrote:
+> > > > > On Wed, Apr 12, 2023 at 2:59 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+> > > > > >
+> > > > > > Building bpf selftests with clang can trigger errors like the following:
+> > > > > >
+> > > > > >   CLNG-BPF [test_maps] bpf_iter_netlink.bpf.o
+> > > > > > progs/bpf_iter_netlink.c:32:4: error: incompatible pointer types assigning to 'struct sock *' from 'struct sock___17 *' [-Werror,-Wincompatible-pointer-types]
+> > > > > >         s = &nlk->sk;
+> > > > > >           ^ ~~~~~~~~
+> > > > > > 1 error generated.
+> > > > >
+> > > > > I cannot reproduce this and BPF CI doesn't complain about it either.
+> > > > > What kind of clang do you use?
+> > > > > Some special version and build flags?
+> > > >
+> > > > I'm using Ubuntu clang version 15.0.7 (Ubuntu 23.04), no special build
+> > > > flag (unless Ubuntu enables some different default flags, but it
+> > > > shouldn't be the case... I'll double check).
+> > > >
+> > > > -Andrea
+> > >
+> > > Hi,
+> > >
+> > > FWIW, I see similar errors when I don't use recent pahole.
+> >
+> > I'm using pahole v1.24.
+> 
+> I believe Ilya is correct.
+> 
+> struct sock___17 is likely coming from vmlinux.h
+> Which means that there were errors due vmlinux build which
+> caused multiple structs to be present in BTF
+> and therefore bpftool generated such broken vmlinux.h
+> 
+> The BTF section in such vmlinux is likely much larger than normal.
+> Let's get to the bottom of it instead of masking build error.
+> 
+> Please try pahole 1.25.
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Yay! Success. Everything is working fine with pahole 1.25. Please ignore
+my patch, the fix is to simply upgrade pahole.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 2bfcc5347d6a..c0e90fda572a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1614,6 +1614,12 @@ static int stmmac_alloc_rx_buffers_zc(struct stmmac_priv *priv,
- 	struct stmmac_rx_queue *rx_q = &dma_conf->rx_queue[queue];
- 	int i;
- 
-+	/* struct stmmac_xdp_buff is using cb field (maximum size of 24 bytes)
-+	 * in struct xdp_buff_xsk to stash driver specific information. Thus,
-+	 * use this macro to make sure no size violations.
-+	 */
-+	XSK_CHECK_PRIV_TYPE(struct stmmac_xdp_buff);
-+
- 	for (i = 0; i < dma_conf->dma_rx_size; i++) {
- 		struct stmmac_rx_buffer *buf;
- 		dma_addr_t dma_addr;
-@@ -4998,6 +5004,16 @@ static bool stmmac_rx_refill_zc(struct stmmac_priv *priv, u32 queue, u32 budget)
- 	return ret;
- }
- 
-+static struct stmmac_xdp_buff *xsk_buff_to_stmmac_ctx(struct xdp_buff *xdp)
-+{
-+	/* In XDP zero copy data path, xdp field in struct xdp_buff_xsk is used
-+	 * to represent incoming packet, whereas cb field in the same structure
-+	 * is used to store driver specific info. Thus, struct stmmac_xdp_buff
-+	 * is laid on top of xdp and cb fields of struct xdp_buff_xsk.
-+	 */
-+	return (struct stmmac_xdp_buff *)xdp;
-+}
-+
- static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- {
- 	struct stmmac_rx_queue *rx_q = &priv->dma_conf.rx_queue[queue];
-@@ -5027,6 +5043,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 	}
- 	while (count < limit) {
- 		struct stmmac_rx_buffer *buf;
-+		struct stmmac_xdp_buff *ctx;
- 		unsigned int buf1_len = 0;
- 		struct dma_desc *np, *p;
- 		int entry;
-@@ -5112,6 +5129,11 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 			goto read_again;
- 		}
- 
-+		ctx = xsk_buff_to_stmmac_ctx(buf->xdp);
-+		ctx->priv = priv;
-+		ctx->desc = p;
-+		ctx->ndesc = np;
-+
- 		/* XDP ZC Frame only support primary buffers for now */
- 		buf1_len = stmmac_rx_buf1_len(priv, p, status, len);
- 		len += buf1_len;
--- 
-2.34.1
-
+Thanks!
+-Andrea
