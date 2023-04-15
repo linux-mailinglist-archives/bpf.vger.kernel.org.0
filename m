@@ -2,201 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7A76E319E
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 15:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE4F6E31AA
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 16:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjDONjW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 09:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S229530AbjDOOBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 10:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjDONjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 09:39:21 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340553A9C;
-        Sat, 15 Apr 2023 06:39:20 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id l17so481709qvq.10;
-        Sat, 15 Apr 2023 06:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681565959; x=1684157959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BXtrf0VPaIG4HOcZDvx75sg1pGi/WlAdPaCmHPn9u3M=;
-        b=K9OM5RIVh46zeS5Uv01xbtezDZV5i9Ac0OS5rZk/9dNDphOyIYAX813S2yAz6NjPMC
-         93fnB+5M0HfQoaVOq8jhT6mf1WcQ8MaTNUhZNvyvNzABcVQEzIOeCBUX7PxeJJX/qX7D
-         4kCmemFlzfa3QlZXCXDPEno+OgrEyQ/n2LjutPhrWJ74SUMyutiw56hVdg4KEwdDPdTl
-         lcKLCwbnolPPn0vQ9De7fX8QJloF7OXHvFaWanFw1wnwYpc8Z6pjIVDHV4h04zc0+eA0
-         v/fm/hU04vCrm4+SeZN6cp/Xnc2/Xzsw6ISUbpza1I4SsdKCzmnWeqDHVEZf2QhP7zvG
-         BVTg==
+        with ESMTP id S229481AbjDOOBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 10:01:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E434481
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 07:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681567254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nW69+UD3T6sxmMEa/058zAi5RjVrmjAZ+4ynj8Sv9MQ=;
+        b=i34me3P/ihHol+QQsyfzUtSt96iBQ3Dn8+s0jlJJ5mnRWBu5aaNuSlgxZRs3F0Lv0QoL5N
+        FHfKAQM+vJiK9iGlc96l0uaOK9AhmQcqqFdKLYZjbwrbkwu/zzwPBRnYUJoZJDLKB/72oh
+        d+g54G9tnw5yRyB6yVBi0juhef6lbIA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-220-ChScZpxuNXGdKtz1kh9wKg-1; Sat, 15 Apr 2023 10:00:53 -0400
+X-MC-Unique: ChScZpxuNXGdKtz1kh9wKg-1
+Received: by mail-ed1-f70.google.com with SMTP id z34-20020a509e25000000b00504ed11e0c5so6161398ede.1
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 07:00:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681565959; x=1684157959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681567252; x=1684159252;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BXtrf0VPaIG4HOcZDvx75sg1pGi/WlAdPaCmHPn9u3M=;
-        b=lZYcuLGGvfsKn98OhOX4l87HL05QQfZXVssnVq6A1mA7CfP6h13F0UtaSpI16139hI
-         kAn4+MnamgoZ25upTLVFE/+OSmC6oUoKd9Wsdiu1u1j+e0EIh7bD9ExQuP4BI/O9hoYJ
-         ay5DtsDnJy/VGuiR03iVjwwAvvWOcZdyDEE2kyZ/jgGirOBNj6AI5PxuQIHbxiWrV5cY
-         ErXHCeBiY2zZziMCUTnMAfbjA+g09N7AXIIqn1JVriLHTF4zYv7HWz+0atVKeOpyYmHz
-         qI38lR+pEIrW/F50zMxkQ0FNmoesA23PnOjxjJSJvckNMARdUSEFJvDxtChOGgfXVKv+
-         kDcg==
-X-Gm-Message-State: AAQBX9fsaLMj3IAcbjcqWfZaEIWQzZFudFVEjGuoJZgEIauiAITl0tlg
-        gelUhwh4mxP6S26Hf4BzBZX+bjadqnmzhyP1qog=
-X-Google-Smtp-Source: AKy350aNxS7bZdoY8oELBKAr5Z8bZEjBnnPmrE1yflfSlrGFHXK/FheiqIGAPHG5syZ1IbcBPdOUyM1Y19b00xLbxf4=
-X-Received: by 2002:a05:6214:29c5:b0:5ef:5e1b:a369 with SMTP id
- gh5-20020a05621429c500b005ef5e1ba369mr6692937qvb.13.1681565959314; Sat, 15
- Apr 2023 06:39:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230413025350.79809-1-laoar.shao@gmail.com> <968ea56a-301a-45c5-3946-497401eb95b5@iogearbox.net>
- <874jpj2682.fsf@toke.dk> <ee52c2e4-4199-da40-8e86-57ef4085c968@iogearbox.net>
- <875y9yzbuy.fsf@toke.dk> <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
-In-Reply-To: <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 15 Apr 2023 21:38:42 +0800
-Message-ID: <CALOAHbCvJ5Vqyqx5Ujs1hx_1MH7vBuGH-h3oPqsEm3-oYAu1gQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        bh=nW69+UD3T6sxmMEa/058zAi5RjVrmjAZ+4ynj8Sv9MQ=;
+        b=FbBt+5/fQW3ZClJo3rcOLksqAl2+qjFmFpYIaTiw2hLA2Z+PC41AmGS17KLDdO5JvC
+         THnh4EjjD9aULL3uF+i4y12vcI0myOtlpEFmVxsKAn+lpWN5e+ZCMgX2aZV3hns/Y3du
+         W7eVl0iWPOvzrPL9byfUz3QXM4dUs/bbGVBEF8qdX3Av5YE2rtu1tEJTgeekAaXa0k4K
+         nHtk3xt2gg+9lR6We9jT8MQM7ZgntKV/pRBoilaKhBBCw2ZlkKT7FFLFxXERltwDFVqW
+         u32zyUaiZSzS9uMuzsK1WyP3RvAPADXSjvv3Bl3BfhTI7d0gj7CkjD2kGjSV9GVKepW3
+         fPRA==
+X-Gm-Message-State: AAQBX9eJqbt/KEvrKrabMug7s4rqu2ukpMVbWY2PJsKZV5nhymVIUuqD
+        SZk+xAjOG7sOgKETax37u1ZplBjkuQiXcFvOxKoe+2+lJoGDY/L/4efnxFPwL2zFfPgudopoJ8U
+        3YbXObri97LTd
+X-Received: by 2002:a17:906:c809:b0:87b:6bbb:11ac with SMTP id cx9-20020a170906c80900b0087b6bbb11acmr2004771ejb.60.1681567252307;
+        Sat, 15 Apr 2023 07:00:52 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZONno3o52Dh2RoBRJsQ/8EgyrNbjPGFlxrdmhGs0NzRWMFuOpFIugINotJKwcY0giTDxLYbA==
+X-Received: by 2002:a17:906:c809:b0:87b:6bbb:11ac with SMTP id cx9-20020a170906c80900b0087b6bbb11acmr2004736ejb.60.1681567251939;
+        Sat, 15 Apr 2023 07:00:51 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id gv35-20020a1709072be300b0094f07545d43sm1308273ejc.188.2023.04.15.07.00.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Apr 2023 07:00:51 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EE36BAA7F7C; Sat, 15 Apr 2023 16:00:50 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Yafang Shao <laoar.shao@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Tonghao Zhang <xiangxia.m.yue@gmail.com>, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
+In-Reply-To: <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
+References: <20230413025350.79809-1-laoar.shao@gmail.com>
+ <968ea56a-301a-45c5-3946-497401eb95b5@iogearbox.net>
+ <874jpj2682.fsf@toke.dk>
+ <ee52c2e4-4199-da40-8e86-57ef4085c968@iogearbox.net>
+ <875y9yzbuy.fsf@toke.dk>
+ <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 15 Apr 2023 16:00:50 +0200
+Message-ID: <87o7npxn1p.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 6:57=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
+Daniel Borkmann <daniel@iogearbox.net> writes:
+
 > On 4/14/23 6:07 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > Daniel Borkmann <daniel@iogearbox.net> writes:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
 > [...]
-> > https://git.openwrt.org/?p=3Dproject/qosify.git;a=3Dblob;f=3DREADME
+>> https://git.openwrt.org/?p=3Dproject/qosify.git;a=3Dblob;f=3DREADME
 >
-> Thanks for the explanation, that sounds reasonable and this should ideall=
-y
+> Thanks for the explanation, that sounds reasonable and this should ideally
 > be part of the commit msg! Yafang, Toke, how about we craft it the follow=
 ing
 > way then to support this case:
->
 
-LGTM. With the issue reported by kernel test robot [1] fixed,
+SGTM! With the kbot complaint fixed:
 
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-[1]. https://lore.kernel.org/bpf/202304150811.bzx9niRq-lkp@intel.com/
-
->  From f6c83e5e55c5eb9da8acd19369c688acf53951db Mon Sep 17 00:00:00 2001
-> Message-Id: <f6c83e5e55c5eb9da8acd19369c688acf53951db.1681512637.git.dani=
-el@iogearbox.net>
-> From: Daniel Borkmann <daniel@iogearbox.net>
-> Date: Sat, 15 Apr 2023 00:30:27 +0200
-> Subject: [PATCH bpf-next] bpf: Set skb redirect and from_ingress info in =
-__bpf_tx_skb
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=3DUTF-8
-> Content-Transfer-Encoding: 8bit
->
-> There are some use-cases where it is desirable to use bpf_redirect()
-> in combination with ifb device, which currently is not supported, for
-> example, around filtering inbound traffic with BPF to then push it to
-> ifb which holds the qdisc for shaping in contrast to doing that on the
-> egress device.
->
-> Toke mentions the following case related to OpenWrt:
->
->    Because there's not always a single egress on the other side. These ar=
-e
->    mainly home routers, which tend to have one or more WiFi devices bridg=
-ed
->    to one or more ethernet ports on the LAN side, and a single upstream W=
-AN
->    port. And the objective is to control the total amount of traffic goin=
-g
->    over the WAN link (in both directions), to deal with bufferbloat in th=
-e
->    ISP network (which is sadly still all too prevalent).
->
->    In this setup, the traffic can be split arbitrarily between the links
->    on the LAN side, and the only "single bottleneck" is the WAN link. So =
-we
->    install both egress and ingress shapers on this, configured to somethi=
-ng
->    like 95-98% of the true link bandwidth, thus moving the queues into th=
-e
->    qdisc layer in the router. It's usually necessary to set the ingress
->    bandwidth shaper a bit lower than the egress due to being "downstream"
->    of the bottleneck link, but it does work surprisingly well.
->
->    We usually use something like a matchall filter to put all ingress
->    traffic on the ifb, so doing the redirect from BPF has not been an
->    immediate requirement thus far. However, it does seem a bit odd that t=
-his
->    is not possible, and we do have a BPF-based filter that layers on top =
-of
->    this kind of setup, which currently uses u32 as the ingress filter and
->    so it could presumably be improved to use BPF instead if that was
->    available.
->
-> Reported-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Reported-by: Yafang Shao <laoar.shao@gmail.com>
-> Reported-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Link: https://git.openwrt.org/?p=3Dproject/qosify.git;a=3Dblob;f=3DREADME
-> Link: https://lore.kernel.org/bpf/875y9yzbuy.fsf@toke.dk
-> ---
->   include/linux/skbuff.h | 9 +++++++++
->   net/core/filter.c      | 1 +
->   2 files changed, 10 insertions(+)
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index ff7ad331fb82..2bbf9245640a 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -5049,6 +5049,15 @@ static inline void skb_reset_redirect(struct sk_bu=
-ff *skb)
->         skb->redirected =3D 0;
->   }
->
-> +static inline void skb_set_redirected_noclear(struct sk_buff *skb,
-> +                                             bool from_ingress)
-> +{
-> +       skb->redirected =3D 1;
-> +#ifdef CONFIG_NET_REDIRECT
-> +       skb->from_ingress =3D from_ingress;
-> +#endif
-> +}
-> +
->   static inline bool skb_csum_is_sctp(struct sk_buff *skb)
->   {
->         return skb->csum_not_inet;
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 1d6f165923bf..27ba616aaa1a 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2111,6 +2111,7 @@ static inline int __bpf_tx_skb(struct net_device *d=
-ev, struct sk_buff *skb)
->         }
->
->         skb->dev =3D dev;
-> +       skb_set_redirected_noclear(skb, skb->tc_at_ingress);
->         skb_clear_tstamp(skb);
->
->         dev_xmit_recursion_inc();
-> --
-> 2.21.0
-
-
-
---=20
-Regards
-Yafang
