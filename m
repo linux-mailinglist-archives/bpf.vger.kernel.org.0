@@ -2,140 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58ED86E3094
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 12:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D516E3104
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 13:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbjDOKcq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 06:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
+        id S229794AbjDOLG0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 07:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjDOKcn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 06:32:43 -0400
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F185583;
-        Sat, 15 Apr 2023 03:32:42 -0700 (PDT)
-Received: by mail-qt1-f180.google.com with SMTP id a23so16908865qtj.8;
-        Sat, 15 Apr 2023 03:32:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681554761; x=1684146761;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bsE9U0MMwp7wZrIbIbCM0Lvuc4kI+kVHJ8gjGciCgfw=;
-        b=WgWD0mXMRbzHmvxltHOK9pGEDT0epNt1+sOywJQfwypk9XSn/E+av0Fb1BMPbBLCyq
-         5D5M7MTTZzTiJ9n4Ow+6rGStQvjGV/Z7msCi2PJTQQbYYny/WlJd36zn2aWAKh99pk5F
-         K6+29tXKUk5aZu0MkQLi0GvquiHJW3UcxKMNK+lob/bpYMQY6xlcD85WRFufLl/JLM2S
-         E/imqB3AjT43NFltZVTmyGoXsJtLNGB9b+Eaqn46FwiyMAOVP70ERmphdVGZHq8aApC/
-         FsoyNiphXUogBhOv+kqbgBJqChcD/qxPB9Pd50GUcvaRqXwh1IEd18f6k5LYv/kd5u6m
-         IIXg==
-X-Gm-Message-State: AAQBX9fvi2139KJOoVp4UA6b4uAlqyn6WJ8G4pWbp7uJlxsypw3tZFdw
-        376Dv0vBoW+055CGJPkXErsDtwUQvijUQ1+uhAE=
-X-Google-Smtp-Source: AKy350aQG49NMz/3L6zMLlF1OewBXa5TMpMehsFIP0Z8mRB0xr6cUpXBsN7jToGFl1BKPoRi+OZTyw==
-X-Received: by 2002:ac8:5a0a:0:b0:3e8:b9a0:babf with SMTP id n10-20020ac85a0a000000b003e8b9a0babfmr13293626qta.12.1681554760689;
-        Sat, 15 Apr 2023 03:32:40 -0700 (PDT)
-Received: from localhost ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05620a288d00b0073b8745fd39sm1827669qkp.110.2023.04.15.03.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Apr 2023 03:32:40 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, memxor@gmail.com
-Subject: [PATCH bpf-next 3/3] bpf,docs: Remove KF_KPTR_GET from documentation
-Date:   Sat, 15 Apr 2023 05:32:31 -0500
-Message-Id: <20230415103231.236063-4-void@manifault.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230415103231.236063-1-void@manifault.com>
-References: <20230415103231.236063-1-void@manifault.com>
+        with ESMTP id S229657AbjDOLGZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 07:06:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5105113;
+        Sat, 15 Apr 2023 04:06:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F8AB60ABD;
+        Sat, 15 Apr 2023 11:06:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD83C433EF;
+        Sat, 15 Apr 2023 11:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681556782;
+        bh=OfRXHDEAMGckWvo+w3e14CTIL3xcNUSya6MXvwA2H9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ema41yFq1zd8qy/HvRvuNzL+OJXs0LGuwPI097rMNeMDnNp+ue2nCs9ufdMqPJF9T
+         zfHTCB5AZ0nBvERk+cvypQiJbaei8IRPmm6NeA6sSmE8mUxoM9tnNKpyq700D5Amv0
+         jZDMM/EffSBP+CG2FliQIm7dPsR0Rz4HpyapvSHhNUBvnGydOCD1yI0/7aSc/JfzRT
+         +3iRxe22FkIhnVlfPT/cgPkHajTjTD5yKW/u/irkAJaIc+648cMX5cUvXlP3IkaVdV
+         2fAS5LBfA4L2OuhEtqqN5ZxZv8dvk2aLwqY+ZIMuwAr64WSqgNEo3dA6woK+ueLhK1
+         out0NG5d9kdUA==
+Date:   Sat, 15 Apr 2023 13:06:18 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, joamaki@gmail.com
+Subject: Re: [PATCH bpf] selftests/bpf: fix xdp_redirect xdp-features for
+ xdp_bonding selftest
+Message-ID: <ZDqFKnW/3ML7GAOz@lore-desk>
+References: <73f0028461c4f3fa577e24d8d797ddd76f1d17c6.1681507058.git.lorenzo@kernel.org>
+ <dc994c7b-c8fe-df8e-7203-0d6dae8dee9f@iogearbox.net>
+ <ZDnPXYvfu46i0YpE@lore-desk>
+ <dc040740-6823-c524-2580-e9604e04dcb0@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HzxYgRApOA8p9t1J"
+Content-Disposition: inline
+In-Reply-To: <dc040740-6823-c524-2580-e9604e04dcb0@iogearbox.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A prior patch removed KF_KPTR_GET from the kernel. Now that it's no
-longer accessible to kfunc authors, this patch removes it from the BPF
-kfunc documentation.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- Documentation/bpf/kfuncs.rst | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+--HzxYgRApOA8p9t1J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-index 3b42cfe12437..ea2516374d92 100644
---- a/Documentation/bpf/kfuncs.rst
-+++ b/Documentation/bpf/kfuncs.rst
-@@ -184,16 +184,7 @@ in. All copies of the pointer being released are invalidated as a result of
- invoking kfunc with this flag. KF_RELEASE kfuncs automatically receive the
- protection afforded by the KF_TRUSTED_ARGS flag described below.
- 
--2.4.4 KF_KPTR_GET flag
------------------------
--
--The KF_KPTR_GET flag is used to indicate that the kfunc takes the first argument
--as a pointer to kptr, safely increments the refcount of the object it points to,
--and returns a reference to the user. The rest of the arguments may be normal
--arguments of a kfunc. The KF_KPTR_GET flag should be used in conjunction with
--KF_ACQUIRE and KF_RET_NULL flags.
--
--2.4.5 KF_TRUSTED_ARGS flag
-+2.4.4 KF_TRUSTED_ARGS flag
- --------------------------
- 
- The KF_TRUSTED_ARGS flag is used for kfuncs taking pointer arguments. It
-@@ -205,7 +196,7 @@ exception described below).
- There are two types of pointers to kernel objects which are considered "valid":
- 
- 1. Pointers which are passed as tracepoint or struct_ops callback arguments.
--2. Pointers which were returned from a KF_ACQUIRE or KF_KPTR_GET kfunc.
-+2. Pointers which were returned from a KF_ACQUIRE kfunc.
- 
- Pointers to non-BTF objects (e.g. scalar pointers) may also be passed to
- KF_TRUSTED_ARGS kfuncs, and may have a non-zero offset.
-@@ -232,13 +223,13 @@ In other words, you must:
- 2. Specify the type and name of the trusted nested field. This field must match
-    the field in the original type definition exactly.
- 
--2.4.6 KF_SLEEPABLE flag
-+2.4.5 KF_SLEEPABLE flag
- -----------------------
- 
- The KF_SLEEPABLE flag is used for kfuncs that may sleep. Such kfuncs can only
- be called by sleepable BPF programs (BPF_F_SLEEPABLE).
- 
--2.4.7 KF_DESTRUCTIVE flag
-+2.4.6 KF_DESTRUCTIVE flag
- --------------------------
- 
- The KF_DESTRUCTIVE flag is used to indicate functions calling which is
-@@ -247,7 +238,7 @@ rebooting or panicking. Due to this additional restrictions apply to these
- calls. At the moment they only require CAP_SYS_BOOT capability, but more can be
- added later.
- 
--2.4.8 KF_RCU flag
-+2.4.7 KF_RCU flag
- -----------------
- 
- The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs marked with
-@@ -260,7 +251,7 @@ also be KF_RET_NULL.
- 
- .. _KF_deprecated_flag:
- 
--2.4.9 KF_DEPRECATED flag
-+2.4.8 KF_DEPRECATED flag
- ------------------------
- 
- The KF_DEPRECATED flag is used for kfuncs which are scheduled to be
--- 
-2.40.0
+> On 4/15/23 12:10 AM, Lorenzo Bianconi wrote:
+> > > On 4/14/23 11:21 PM, Lorenzo Bianconi wrote:
+> > > > NETDEV_XDP_ACT_NDO_XMIT is not enabled by default for veth driver b=
+ut it
+> > > > depends on the device configuration. Fix XDP_REDIRECT xdp-features =
+in
+> > > > xdp_bonding selftest loading a dummy XDP program on veth2_2 device.
+> > > >=20
+> > > > Fixes: fccca038f300 ("veth: take into account device reconfiguratio=
+n for xdp_features flag")
+> > >=20
+> > > Hm, does that mean we're changing^breaking existing user behavior iff=
+ after
+> > > fccca038f300 you can only make it work by loading dummy prog?
+> >=20
+> > nope, even before in order to enable ndo_xdp_xmit for veth you should l=
+oad a dummy
+> > program on the device peer or enable gro on the device peer:
+> >=20
+> > https://github.com/torvalds/linux/blob/master/drivers/net/veth.c#L477
+> >=20
+> > we are just reflecting this behaviour in the xdp_features flag.
+>=20
+> Ok, I'm confused then why it passed before?
 
+ack, you are right. I guess the issue is in veth driver code. In order to
+enable NETDEV_XDP_ACT_NDO_XMIT for device "veth0", we need to check the peer
+veth1 configuration since the check in veth_xdp_xmit() is on the peer rx qu=
+eue.
+Something like:
+
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index e1b38fbf1dd9..4b3c6647edc6 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1262,11 +1262,12 @@ static void veth_set_xdp_features(struct net_device=
+ *dev)
+=20
+ 	peer =3D rtnl_dereference(priv->peer);
+ 	if (peer && peer->real_num_tx_queues <=3D dev->real_num_rx_queues) {
++		struct veth_priv *priv_peer =3D netdev_priv(peer);
+ 		xdp_features_t val =3D NETDEV_XDP_ACT_BASIC |
+ 				     NETDEV_XDP_ACT_REDIRECT |
+ 				     NETDEV_XDP_ACT_RX_SG;
+=20
+-		if (priv->_xdp_prog || veth_gro_requested(dev))
++		if (priv_peer->_xdp_prog || veth_gro_requested(peer))
+ 			val |=3D NETDEV_XDP_ACT_NDO_XMIT |
+ 			       NETDEV_XDP_ACT_NDO_XMIT_SG;
+ 		xdp_set_features_flag(dev, val);
+@@ -1504,19 +1505,23 @@ static int veth_set_features(struct net_device *dev,
+ {
+ 	netdev_features_t changed =3D features ^ dev->features;
+ 	struct veth_priv *priv =3D netdev_priv(dev);
++	struct net_device *peer;
+ 	int err;
+=20
+ 	if (!(changed & NETIF_F_GRO) || !(dev->flags & IFF_UP) || priv->_xdp_prog)
+ 		return 0;
+=20
++	peer =3D rtnl_dereference(priv->peer);
+ 	if (features & NETIF_F_GRO) {
+ 		err =3D veth_napi_enable(dev);
+ 		if (err)
+ 			return err;
+=20
+-		xdp_features_set_redirect_target(dev, true);
++		if (peer)
++			xdp_features_set_redirect_target(peer, true);
+ 	} else {
+-		xdp_features_clear_redirect_target(dev);
++		if (peer)
++			xdp_features_clear_redirect_target(peer);
+ 		veth_napi_del(dev);
+ 	}
+ 	return 0;
+@@ -1598,13 +1603,13 @@ static int veth_xdp_set(struct net_device *dev, str=
+uct bpf_prog *prog,
+ 			peer->max_mtu =3D max_mtu;
+ 		}
+=20
+-		xdp_features_set_redirect_target(dev, true);
++		xdp_features_set_redirect_target(peer, true);
+ 	}
+=20
+ 	if (old_prog) {
+ 		if (!prog) {
+-			if (!veth_gro_requested(dev))
+-				xdp_features_clear_redirect_target(dev);
++			if (peer && !veth_gro_requested(dev))
++				xdp_features_clear_redirect_target(peer);
+=20
+ 			if (dev->flags & IFF_UP)
+ 				veth_disable_xdp(dev);
+
+What do you think?
+
+Regards,
+Lorenzo
+
+>=20
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > ---
+> > > >    tools/testing/selftests/bpf/prog_tests/xdp_bonding.c | 11 ++++++=
++++++
+> > > >    1 file changed, 11 insertions(+)
+> > > >=20
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c b=
+/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+> > > > index 5e3a26b15ec6..dcbe30c81291 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
+> > > > @@ -168,6 +168,17 @@ static int bonding_setup(struct skeletons *ske=
+letons, int mode, int xmit_policy,
+> > > >    		if (xdp_attach(skeletons, skeletons->xdp_dummy->progs.xdp_dumm=
+y_prog, "veth1_2"))
+> > > >    			return -1;
+> > > > +
+> > > > +		if (!ASSERT_OK(setns_by_name("ns_dst"), "set netns to ns_dst"))
+> > > > +			return -1;
+> > > > +
+> > > > +		/* Load a dummy XDP program on veth2_2 in order to enable
+> > > > +		 * NETDEV_XDP_ACT_NDO_XMIT feature
+> > > > +		 */
+> > > > +		if (xdp_attach(skeletons, skeletons->xdp_dummy->progs.xdp_dummy_=
+prog, "veth2_2"))
+> > > > +			return -1;
+> > > > +
+> > > > +		restore_root_netns();
+> > > >    	}
+> > > >    	SYS("ip -netns ns_dst link set veth2_1 master bond2");
+
+--HzxYgRApOA8p9t1J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZDqFKgAKCRA6cBh0uS2t
+rF7IAP9BgVrJUxfDB+2VyU6UWIaLBlsAMr5jtcb9fVBrJDm5mQD/UUWAAQhwgn+a
+OyuTzb8iaLgu1KBl73UVeYMcXm8LmAs=
+=cFGU
+-----END PGP SIGNATURE-----
+
+--HzxYgRApOA8p9t1J--
