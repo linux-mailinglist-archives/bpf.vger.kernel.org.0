@@ -2,96 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380786E3145
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 14:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12826E319A
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 15:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjDOMKB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 08:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
+        id S229557AbjDONei (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 09:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjDOMJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 08:09:56 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251C25243;
-        Sat, 15 Apr 2023 05:09:37 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3f09a3c8bbbso1985085e9.0;
-        Sat, 15 Apr 2023 05:09:36 -0700 (PDT)
+        with ESMTP id S229491AbjDONei (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 09:34:38 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F00358A;
+        Sat, 15 Apr 2023 06:34:35 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id me15so741655qvb.4;
+        Sat, 15 Apr 2023 06:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681560575; x=1684152575;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1681565675; x=1684157675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K8x3ikmaTJACOYzpIpbcvsaXlC6/cI+6Eg2IWvlQkq0=;
-        b=s6CnqnzBZ6THc6cnIXQ9tFiKd6HkuMO7PzqDl5qYoVBPz6TLY1hkf210w8sOnAzrei
-         v9NRZuqzkZm3ujvdTD4Q/xqsKFPfppKZJkMHKOw1AXAo0XZJ/iNVur/2UqE3Jlv29kyX
-         WOn43QOaq8pv1V3qHMqN6IwqHfyZW68QFzHs6Q02KpmsgBu7UGSYRrSzvpVoPUtTl+Mh
-         FXMcaHBNr48f9KhhS0WYsUzECx59vCwrezWsHbg5B0XWjTD0sne3p5XHAreuf1/PzvZU
-         3+QyOXL//9FA9+lL8VD4Lx7D8n+ic1FTN1z4dE6iaHk0DOWVvQ9otbUTysRkeHkeJynd
-         4YHg==
+        bh=yxfuwdn7nRD4Yp671f8K1ixGlG5tRaS+xD+c6bJ5pXY=;
+        b=GSbRrfMwHBwxiNF1h2dA6tjH9K98xdB60twpRaZpXLBWejq92o13g7F8Wunh9bBEBD
+         DP2n7791Tn7lqmSG8ZV9IYml2vY9eGv18On/U/h4nsDaOXtS9QGYDxFbYzy0josH7d99
+         PLxwuZNp5BtZVdBGQ0c+07Ep5b0Ofgh7eZBBZ+j7FiJL06B4TAedtOUCqBPue/OShMbi
+         UTqWMXKfSfUeJaT37sCNe9by3uwHWN8DpE6D99BbAQfqafiMPMZiC548AbJQk4OzMYoW
+         mhRG0UZNws2kije0rtDnzPZGVgNQ+u4NV/aMqnoBYpwxqfmtZDfq3uDZY0TtZROdxp0L
+         JI4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681560575; x=1684152575;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681565675; x=1684157675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K8x3ikmaTJACOYzpIpbcvsaXlC6/cI+6Eg2IWvlQkq0=;
-        b=HTDfjj++AwsLL5WAtuB31ot1KMCIeo4fq3CsmppmIUxX5aq5sxVQwSKswrg7IWFSAo
-         mLAs+juZi2GV7BzbE8DF++daRC3EaSvNAFWAC8ifWeQl0Em7xlxac+TR2vWXdJqA8g4b
-         LlHKi+qkz8bWhTe6vPiesENMSS4XPrmPvh7xzGB6j0io/9FCzSvcGqgEcNMAEzK90aEW
-         jgp2D79936OkzGs8X7XVZwVlKskkIIDkCbvBQlSQuz3mJDX/7HqXrZAAHlAmgLtbP/ED
-         7ZIZIG8cSxiToW5/Uj76imEcBBCsEDOYs06pado0u4RNc+fjNZnZgAx3EThEA0Dg6FfC
-         DlVw==
-X-Gm-Message-State: AAQBX9feUpSUZXvsGfhYPOCtwn7JNebkpx3wOJ3675H5UbiJnMs4qbiY
-        OccfnP+Oby646pqGJlv4ftg6hpzTiwvqrA==
-X-Google-Smtp-Source: AKy350YomYNfdZqxeUoplG58e3G8aFqN6nmBy7aau2fgnqPuY2DvZIwHvG83m+klTmm1CrIhE9BoRQ==
-X-Received: by 2002:a5d:6a42:0:b0:2f2:3a72:1cfa with SMTP id t2-20020a5d6a42000000b002f23a721cfamr1388788wrw.15.1681560575329;
-        Sat, 15 Apr 2023 05:09:35 -0700 (PDT)
-Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id t5-20020adfeb85000000b002e71156b0fcsm5651091wrn.6.2023.04.15.05.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Apr 2023 05:09:34 -0700 (PDT)
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org,
-        bpf@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH v3 6/7] mm/gup: remove vmas parameter from pin_user_pages()
-Date:   Sat, 15 Apr 2023 13:09:32 +0100
-Message-Id: <fa5487e54dfae725c84dfd7297b06567340165bd.1681558407.git.lstoakes@gmail.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1681558407.git.lstoakes@gmail.com>
-References: <cover.1681558407.git.lstoakes@gmail.com>
+        bh=yxfuwdn7nRD4Yp671f8K1ixGlG5tRaS+xD+c6bJ5pXY=;
+        b=VaNp3ViYBZEQZb0ML6j9HggPewJTM4EJKYa9kZDAsFfOLaoYjzt5lwGNnevSkwcY4E
+         uz5YozoQFjl1KyzPLQ+GX8oGPcWyheppYnWsOnJI+QTgkFiIo3+SiO+VGnIv6BLm9s4P
+         zzbPssEXZFyI3KXuia+qLFSFwy+aeglpROfhQrxPm5rS0GkuX63KW+7b1uq24TYh8zwC
+         DTTxt4npCKXfG3v4dCSrFdESeUqxFmMrDhvvbDxX1kbMWI/GjTw8zg1jWOu7XC4uboWv
+         1dERRZlaGbmf2q+cY9tzNVibsSDAvOcPuq2KUk4E7fUnhXdwgLV6ZTK9v57/004QW4gr
+         XVMA==
+X-Gm-Message-State: AAQBX9ciZEhSqAUwYs4UJEvbeGISggggW79fvvuMwulV+V6XqkT0z6ej
+        pfws6SUwcwidoW7P0ALt1DTeJDmi+54hol5hv84SCF8P23XCLw==
+X-Google-Smtp-Source: AKy350ZThu66oYsDDcWiXIAgsIqDDmJh4n4pCV9kasNK2gLK3RpfezhpbHFLF7S55IORJWTmqEqNfhO4/sywnhjeyyY=
+X-Received: by 2002:a05:6214:e6f:b0:5ef:4455:fd24 with SMTP id
+ jz15-20020a0562140e6f00b005ef4455fd24mr8167017qvb.1.1681565674807; Sat, 15
+ Apr 2023 06:34:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230414221702.554c44fe@rorschach.local.home>
+In-Reply-To: <20230414221702.554c44fe@rorschach.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sat, 15 Apr 2023 21:33:58 +0800
+Message-ID: <CALOAHbDUkvyu0hWXfcveJBW_dxDkqUTVBmwXt5Y-ERBv9GksbQ@mail.gmail.com>
+Subject: Re: [PATCH] tracing: Add generic test_recursion_try_acquire()
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -102,226 +71,227 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After the introduction of FOLL_SAME_FILE we no longer require vmas for any
-invocation of pin_user_pages(), so eliminate this parameter from the
-function and all callers.
+On Sat, Apr 15, 2023 at 10:17=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+>
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>
+> The ftrace_test_recursion_trylock() also disables preemption. This is not
+> required, but was a clean up as every place that called it also disabled
+> preemption, and making the two tightly coupled appeared to make the code
+> simpler.
+>
+> But the recursion protection can be used for other purposes that do not
+> require disabling preemption. As the recursion bits are attached to the
+> task_struct, it follows the task, so there's no need for preemption being
+> disabled.
+>
+> Add test_recursion_try_acquire/release() functions to be used generically=
+,
+> and separate it from being associated with ftrace. It also removes the
+> "lock" name, as there is no lock happening. Keeping the "lock" for the
+> ftrace version is better, as it at least differentiates that preemption i=
+s
+> being disabled (hence, "locking the CPU").
+>
+> Link: https://lore.kernel.org/linux-trace-kernel/20230321020103.13494-1-l=
+aoar.shao@gmail.com/
+>
+> Cc: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-This clears the way to removing the vmas parameter from GUP altogether.
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- arch/powerpc/mm/book3s64/iommu_api.c       | 2 +-
- drivers/infiniband/hw/qib/qib_user_pages.c | 2 +-
- drivers/infiniband/hw/usnic/usnic_uiom.c   | 2 +-
- drivers/infiniband/sw/siw/siw_mem.c        | 2 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c  | 2 +-
- drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
- drivers/vhost/vdpa.c                       | 2 +-
- include/linux/mm.h                         | 3 +--
- io_uring/rsrc.c                            | 2 +-
- mm/gup.c                                   | 9 +++------
- mm/gup_test.c                              | 9 ++++-----
- net/xdp/xdp_umem.c                         | 2 +-
- 12 files changed, 17 insertions(+), 22 deletions(-)
++Alexei, bpf
 
-diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
-index 81d7185e2ae8..d19fb1f3007d 100644
---- a/arch/powerpc/mm/book3s64/iommu_api.c
-+++ b/arch/powerpc/mm/book3s64/iommu_api.c
-@@ -105,7 +105,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
- 
- 		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
- 				FOLL_WRITE | FOLL_LONGTERM,
--				mem->hpages + entry, NULL);
-+				mem->hpages + entry);
- 		if (ret == n) {
- 			pinned += n;
- 			continue;
-diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
-index f693bc753b6b..1bb7507325bc 100644
---- a/drivers/infiniband/hw/qib/qib_user_pages.c
-+++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-@@ -111,7 +111,7 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
- 		ret = pin_user_pages(start_page + got * PAGE_SIZE,
- 				     num_pages - got,
- 				     FOLL_LONGTERM | FOLL_WRITE,
--				     p + got, NULL);
-+				     p + got);
- 		if (ret < 0) {
- 			mmap_read_unlock(current->mm);
- 			goto bail_release;
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-index 2a5cac2658ec..84e0f41e7dfa 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -140,7 +140,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 		ret = pin_user_pages(cur_base,
- 				     min_t(unsigned long, npages,
- 				     PAGE_SIZE / sizeof(struct page *)),
--				     gup_flags, page_list, NULL);
-+				     gup_flags, page_list);
- 
- 		if (ret < 0)
- 			goto out;
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index f51ab2ccf151..e6e25f15567d 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -422,7 +422,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
- 		umem->page_chunk[i].plist = plist;
- 		while (nents) {
- 			rv = pin_user_pages(first_page_va, nents, foll_flags,
--					    plist, NULL);
-+					    plist);
- 			if (rv < 0)
- 				goto out_sem_up;
- 
-diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-index 53001532e8e3..405b89ea1054 100644
---- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-+++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-@@ -180,7 +180,7 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 		data, size, dma->nr_pages);
- 
- 	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
--			     dma->pages, NULL);
-+			     dma->pages);
- 
- 	if (err != dma->nr_pages) {
- 		dma->nr_pages = (err >= 0) ? err : 0;
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index 0c3b48616a9f..1f80254604f0 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -995,7 +995,7 @@ static int vduse_dev_reg_umem(struct vduse_dev *dev,
- 		goto out;
- 
- 	pinned = pin_user_pages(uaddr, npages, FOLL_LONGTERM | FOLL_WRITE,
--				page_list, NULL);
-+				page_list);
- 	if (pinned != npages) {
- 		ret = pinned < 0 ? pinned : -ENOMEM;
- 		goto out;
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 7be9d9d8f01c..4317128c1c62 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -952,7 +952,7 @@ static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
- 	while (npages) {
- 		sz2pin = min_t(unsigned long, npages, list_size);
- 		pinned = pin_user_pages(cur_base, sz2pin,
--					gup_flags, page_list, NULL);
-+					gup_flags, page_list);
- 		if (sz2pin != pinned) {
- 			if (pinned < 0) {
- 				ret = pinned;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1bfe73a2b6d3..363e3d0d46f4 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2382,8 +2382,7 @@ long pin_user_pages_remote(struct mm_struct *mm,
- long get_user_pages(unsigned long start, unsigned long nr_pages,
- 		    unsigned int gup_flags, struct page **pages);
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
--		    unsigned int gup_flags, struct page **pages,
--		    struct vm_area_struct **vmas);
-+		    unsigned int gup_flags, struct page **pages);
- long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
- 		    struct page **pages, unsigned int gup_flags);
- long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
-index 56de4d7bfc2b..bd45681de660 100644
---- a/io_uring/rsrc.c
-+++ b/io_uring/rsrc.c
-@@ -1156,7 +1156,7 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
- 	mmap_read_lock(current->mm);
- 	pret = pin_user_pages(ubuf, nr_pages,
- 			      FOLL_WRITE | FOLL_LONGTERM | FOLL_SAME_FILE,
--			      pages, NULL);
-+			      pages);
- 	if (pret == nr_pages) {
- 		/*
- 		 * lookup the first VMA, we require that all VMAs in range
-diff --git a/mm/gup.c b/mm/gup.c
-index 3954ce499a4a..714970ef3b30 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -3132,8 +3132,6 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  * @gup_flags:	flags modifying lookup behaviour
-  * @pages:	array that receives pointers to the pages pinned.
-  *		Should be at least nr_pages long.
-- * @vmas:	array of pointers to vmas corresponding to each page.
-- *		Or NULL if the caller does not require them.
-  *
-  * Nearly the same as get_user_pages(), except that FOLL_TOUCH is not set, and
-  * FOLL_PIN is set.
-@@ -3142,15 +3140,14 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  * see Documentation/core-api/pin_user_pages.rst for details.
-  */
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
--		    unsigned int gup_flags, struct page **pages,
--		    struct vm_area_struct **vmas)
-+		    unsigned int gup_flags, struct page **pages)
- {
- 	int locked = 1;
- 
--	if (!is_valid_gup_args(pages, vmas, NULL, &gup_flags, FOLL_PIN))
-+	if (!is_valid_gup_args(pages, NULL, NULL, &gup_flags, FOLL_PIN))
- 		return 0;
- 	return __gup_longterm_locked(current->mm, start, nr_pages,
--				     pages, vmas, &locked, gup_flags);
-+				     pages, NULL, &locked, gup_flags);
- }
- EXPORT_SYMBOL(pin_user_pages);
- 
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index 9ba8ea23f84e..1668ce0e0783 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -146,18 +146,17 @@ static int __gup_test_ioctl(unsigned int cmd,
- 						 pages + i);
- 			break;
- 		case PIN_BASIC_TEST:
--			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i,
--					    NULL);
-+			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i);
- 			break;
- 		case PIN_LONGTERM_BENCHMARK:
- 			nr = pin_user_pages(addr, nr,
- 					    gup->gup_flags | FOLL_LONGTERM,
--					    pages + i, NULL);
-+					    pages + i);
- 			break;
- 		case DUMP_USER_PAGES_TEST:
- 			if (gup->test_flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN)
- 				nr = pin_user_pages(addr, nr, gup->gup_flags,
--						    pages + i, NULL);
-+						    pages + i);
- 			else
- 				nr = get_user_pages(addr, nr, gup->gup_flags,
- 						    pages + i);
-@@ -270,7 +269,7 @@ static inline int pin_longterm_test_start(unsigned long arg)
- 							gup_flags, pages);
- 		else
- 			cur_pages = pin_user_pages(addr, remaining_pages,
--						   gup_flags, pages, NULL);
-+						   gup_flags, pages);
- 		if (cur_pages < 0) {
- 			pin_longterm_test_stop();
- 			ret = cur_pages;
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 02207e852d79..06cead2b8e34 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -103,7 +103,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
- 
- 	mmap_read_lock(current->mm);
- 	npgs = pin_user_pages(address, umem->npgs,
--			      gup_flags | FOLL_LONGTERM, &umem->pgs[0], NULL);
-+			      gup_flags | FOLL_LONGTERM, &umem->pgs[0]);
- 	mmap_read_unlock(current->mm);
- 
- 	if (npgs != umem->npgs) {
--- 
-2.40.0
+Thanks Steven.
+I almost finished replacing prog->active with
+test_recursion_try_{acquire,release}[1], and yet I need to do more
+tests.
 
+In my verification, I find that something abnormal happens. When I ran
+bpf self tests after the replacement, I found the fentry recursion
+test failed[2]. The test result as follows,
+
+main:PASS:skel_open_and_load 0 nsec
+main:PASS:skel_attach 0 nsec
+main:PASS:pass1 =3D=3D 0 0 nsec
+main:PASS:pass1 =3D=3D 1 0 nsec
+main:PASS:pass1 =3D=3D 2 0 nsec
+main:PASS:pass2 =3D=3D 0 0 nsec
+main:FAIL:pass2 =3D=3D 1 unexpected pass2 =3D=3D 1: actual 2 !=3D expected =
+1 [0]
+main:FAIL:pass2 =3D=3D 2 unexpected pass2 =3D=3D 2: actual 4 !=3D expected =
+2
+main:PASS:get_prog_info 0 nsec
+main:PASS:recursion_misses 0 nsec
+
+The reason is that the bpf_map_delete_elem() in this fentry SEC()[2]
+will hit the first if-condition[3] but fail to hit the second
+if-condition[4], so it won't be considered as recursion at the first
+time. So the value 'pass2' will be 2[0]. Illustrated as follows,
+
+SEC("fentry/htab_map_delete_elem")
+    pass2++;   <<<< Turn out to be 1 after this operation.
+    bpf_map_delete_elem(&hash2, &key);
+         SEC("fentry/htab_map_delete_elem")    <<<< not recursion
+            pass2++; <<<< Turn out to be 2 after this operation.
+            bpf_map_delete_elem(&hash2, &key);
+                SEC("fentry/htab_map_delete_elem")    <<<< RECURSION!!
+
+That said, if a function can call itself, the first call won't be
+considered as recursion. Is that expected ?
+
+One thing I can be sure of is that prog->active can't handle the
+interrupted case[5].  If the interrupt happens, it will be considered
+as a recursion.
+But it seems that bpf_map_delete_elem() in this fentry SEC() is still
+in the process context.
+
+[1]. https://lore.kernel.org/bpf/CALOAHbACzCwu-VeMczEJw8A4WFgkL-uQDS1NkcVR2=
+pqEMZyAQQ@mail.gmail.com/
+[2].  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree=
+/tools/testing/selftests/bpf/progs/recursion.c#n38
+[3]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
+include/linux/trace_recursion.h#n166
+[4]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
+include/linux/trace_recursion.h#n176
+[5]. https://lore.kernel.org/bpf/20230409220239.0fcf6738@rorschach.local.ho=
+me/
+
+> ---
+>  include/linux/trace_recursion.h | 47 ++++++++++++++++++++++++---------
+>  kernel/trace/ftrace.c           |  2 ++
+>  2 files changed, 37 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recurs=
+ion.h
+> index d48cd92d2364..80de2ee7b4c3 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -150,9 +150,6 @@ extern void ftrace_record_recursion(unsigned long ip,=
+ unsigned long parent_ip);
+>  # define trace_warn_on_no_rcu(ip)      false
+>  #endif
+>
+> -/*
+> - * Preemption is promised to be disabled when return bit >=3D 0.
+> - */
+>  static __always_inline int trace_test_and_set_recursion(unsigned long ip=
+, unsigned long pip,
+>                                                         int start)
+>  {
+> @@ -182,18 +179,11 @@ static __always_inline int trace_test_and_set_recur=
+sion(unsigned long ip, unsign
+>         val |=3D 1 << bit;
+>         current->trace_recursion =3D val;
+>         barrier();
+> -
+> -       preempt_disable_notrace();
+> -
+>         return bit;
+>  }
+>
+> -/*
+> - * Preemption will be enabled (if it was previously enabled).
+> - */
+>  static __always_inline void trace_clear_recursion(int bit)
+>  {
+> -       preempt_enable_notrace();
+>         barrier();
+>         trace_recursion_clear(bit);
+>  }
+> @@ -205,12 +195,18 @@ static __always_inline void trace_clear_recursion(i=
+nt bit)
+>   * tracing recursed in the same context (normal vs interrupt),
+>   *
+>   * Returns: -1 if a recursion happened.
+> - *           >=3D 0 if no recursion.
+> + *           >=3D 0 if no recursion and preemption will be disabled.
+>   */
+>  static __always_inline int ftrace_test_recursion_trylock(unsigned long i=
+p,
+>                                                          unsigned long pa=
+rent_ip)
+>  {
+> -       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
+TART);
+> +       int bit;
+> +
+> +       bit =3D trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_=
+START);
+> +       if (unlikely(bit < 0))
+> +               return bit;
+> +       preempt_disable_notrace();
+> +       return bit;
+>  }
+>
+>  /**
+> @@ -220,6 +216,33 @@ static __always_inline int ftrace_test_recursion_try=
+lock(unsigned long ip,
+>   * This is used at the end of a ftrace callback.
+>   */
+>  static __always_inline void ftrace_test_recursion_unlock(int bit)
+> +{
+> +       preempt_enable_notrace();
+> +       trace_clear_recursion(bit);
+> +}
+> +
+> +/**
+> + * test_recursion_try_acquire - tests for recursion in same context
+> + *
+> + * This will detect recursion of a function.
+> + *
+> + * Returns: -1 if a recursion happened.
+> + *           >=3D 0 if no recursion
+> + */
+> +static __always_inline int test_recursion_try_acquire(unsigned long ip,
+> +                                                     unsigned long paren=
+t_ip)
+> +{
+> +       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
+TART);
+> +}
+> +
+> +/**
+> + * test_recursion_release - called after a success of test_recursion_try=
+_acquire()
+> + * @bit: The return of a successful test_recursion_try_acquire()
+> + *
+> + * This releases the recursion lock taken by a non-negative return call
+> + * by test_recursion_try_acquire().
+> + */
+> +static __always_inline void test_recursion_release(int bit)
+>  {
+>         trace_clear_recursion(bit);
+>  }
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index db8532a4d5c8..1b117ab057ed 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -7299,6 +7299,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
+ong parent_ip,
+>         if (bit < 0)
+>                 return;
+>
+> +       preempt_disable();
+>         do_for_each_ftrace_op(op, ftrace_ops_list) {
+>                 /* Stub functions don't need to be called nor tested */
+>                 if (op->flags & FTRACE_OPS_FL_STUB)
+> @@ -7320,6 +7321,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
+ong parent_ip,
+>                 }
+>         } while_for_each_ftrace_op(op);
+>  out:
+> +       preempt_enable();
+>         trace_clear_recursion(bit);
+>  }
+>
+> --
+> 2.39.2
+>
+
+
+--=20
+Regards
+Yafang
