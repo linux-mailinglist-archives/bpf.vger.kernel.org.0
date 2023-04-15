@@ -2,68 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F12826E319A
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 15:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7A76E319E
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 15:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbjDONei (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 09:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        id S229491AbjDONjW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 09:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjDONei (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 09:34:38 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F00358A;
-        Sat, 15 Apr 2023 06:34:35 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id me15so741655qvb.4;
-        Sat, 15 Apr 2023 06:34:35 -0700 (PDT)
+        with ESMTP id S229772AbjDONjV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 09:39:21 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340553A9C;
+        Sat, 15 Apr 2023 06:39:20 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id l17so481709qvq.10;
+        Sat, 15 Apr 2023 06:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681565675; x=1684157675;
+        d=gmail.com; s=20221208; t=1681565959; x=1684157959;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yxfuwdn7nRD4Yp671f8K1ixGlG5tRaS+xD+c6bJ5pXY=;
-        b=GSbRrfMwHBwxiNF1h2dA6tjH9K98xdB60twpRaZpXLBWejq92o13g7F8Wunh9bBEBD
-         DP2n7791Tn7lqmSG8ZV9IYml2vY9eGv18On/U/h4nsDaOXtS9QGYDxFbYzy0josH7d99
-         PLxwuZNp5BtZVdBGQ0c+07Ep5b0Ofgh7eZBBZ+j7FiJL06B4TAedtOUCqBPue/OShMbi
-         UTqWMXKfSfUeJaT37sCNe9by3uwHWN8DpE6D99BbAQfqafiMPMZiC548AbJQk4OzMYoW
-         mhRG0UZNws2kije0rtDnzPZGVgNQ+u4NV/aMqnoBYpwxqfmtZDfq3uDZY0TtZROdxp0L
-         JI4A==
+        bh=BXtrf0VPaIG4HOcZDvx75sg1pGi/WlAdPaCmHPn9u3M=;
+        b=K9OM5RIVh46zeS5Uv01xbtezDZV5i9Ac0OS5rZk/9dNDphOyIYAX813S2yAz6NjPMC
+         93fnB+5M0HfQoaVOq8jhT6mf1WcQ8MaTNUhZNvyvNzABcVQEzIOeCBUX7PxeJJX/qX7D
+         4kCmemFlzfa3QlZXCXDPEno+OgrEyQ/n2LjutPhrWJ74SUMyutiw56hVdg4KEwdDPdTl
+         lcKLCwbnolPPn0vQ9De7fX8QJloF7OXHvFaWanFw1wnwYpc8Z6pjIVDHV4h04zc0+eA0
+         v/fm/hU04vCrm4+SeZN6cp/Xnc2/Xzsw6ISUbpza1I4SsdKCzmnWeqDHVEZf2QhP7zvG
+         BVTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681565675; x=1684157675;
+        d=1e100.net; s=20221208; t=1681565959; x=1684157959;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yxfuwdn7nRD4Yp671f8K1ixGlG5tRaS+xD+c6bJ5pXY=;
-        b=VaNp3ViYBZEQZb0ML6j9HggPewJTM4EJKYa9kZDAsFfOLaoYjzt5lwGNnevSkwcY4E
-         uz5YozoQFjl1KyzPLQ+GX8oGPcWyheppYnWsOnJI+QTgkFiIo3+SiO+VGnIv6BLm9s4P
-         zzbPssEXZFyI3KXuia+qLFSFwy+aeglpROfhQrxPm5rS0GkuX63KW+7b1uq24TYh8zwC
-         DTTxt4npCKXfG3v4dCSrFdESeUqxFmMrDhvvbDxX1kbMWI/GjTw8zg1jWOu7XC4uboWv
-         1dERRZlaGbmf2q+cY9tzNVibsSDAvOcPuq2KUk4E7fUnhXdwgLV6ZTK9v57/004QW4gr
-         XVMA==
-X-Gm-Message-State: AAQBX9ciZEhSqAUwYs4UJEvbeGISggggW79fvvuMwulV+V6XqkT0z6ej
-        pfws6SUwcwidoW7P0ALt1DTeJDmi+54hol5hv84SCF8P23XCLw==
-X-Google-Smtp-Source: AKy350ZThu66oYsDDcWiXIAgsIqDDmJh4n4pCV9kasNK2gLK3RpfezhpbHFLF7S55IORJWTmqEqNfhO4/sywnhjeyyY=
-X-Received: by 2002:a05:6214:e6f:b0:5ef:4455:fd24 with SMTP id
- jz15-20020a0562140e6f00b005ef4455fd24mr8167017qvb.1.1681565674807; Sat, 15
- Apr 2023 06:34:34 -0700 (PDT)
+        bh=BXtrf0VPaIG4HOcZDvx75sg1pGi/WlAdPaCmHPn9u3M=;
+        b=lZYcuLGGvfsKn98OhOX4l87HL05QQfZXVssnVq6A1mA7CfP6h13F0UtaSpI16139hI
+         kAn4+MnamgoZ25upTLVFE/+OSmC6oUoKd9Wsdiu1u1j+e0EIh7bD9ExQuP4BI/O9hoYJ
+         ay5DtsDnJy/VGuiR03iVjwwAvvWOcZdyDEE2kyZ/jgGirOBNj6AI5PxuQIHbxiWrV5cY
+         ErXHCeBiY2zZziMCUTnMAfbjA+g09N7AXIIqn1JVriLHTF4zYv7HWz+0atVKeOpyYmHz
+         qI38lR+pEIrW/F50zMxkQ0FNmoesA23PnOjxjJSJvckNMARdUSEFJvDxtChOGgfXVKv+
+         kDcg==
+X-Gm-Message-State: AAQBX9fsaLMj3IAcbjcqWfZaEIWQzZFudFVEjGuoJZgEIauiAITl0tlg
+        gelUhwh4mxP6S26Hf4BzBZX+bjadqnmzhyP1qog=
+X-Google-Smtp-Source: AKy350aNxS7bZdoY8oELBKAr5Z8bZEjBnnPmrE1yflfSlrGFHXK/FheiqIGAPHG5syZ1IbcBPdOUyM1Y19b00xLbxf4=
+X-Received: by 2002:a05:6214:29c5:b0:5ef:5e1b:a369 with SMTP id
+ gh5-20020a05621429c500b005ef5e1ba369mr6692937qvb.13.1681565959314; Sat, 15
+ Apr 2023 06:39:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230414221702.554c44fe@rorschach.local.home>
-In-Reply-To: <20230414221702.554c44fe@rorschach.local.home>
+References: <20230413025350.79809-1-laoar.shao@gmail.com> <968ea56a-301a-45c5-3946-497401eb95b5@iogearbox.net>
+ <874jpj2682.fsf@toke.dk> <ee52c2e4-4199-da40-8e86-57ef4085c968@iogearbox.net>
+ <875y9yzbuy.fsf@toke.dk> <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
+In-Reply-To: <c68bf723-3406-d177-49b4-6d5b485048de@iogearbox.net>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 15 Apr 2023 21:33:58 +0800
-Message-ID: <CALOAHbDUkvyu0hWXfcveJBW_dxDkqUTVBmwXt5Y-ERBv9GksbQ@mail.gmail.com>
-Subject: Re: [PATCH] tracing: Add generic test_recursion_try_acquire()
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf <bpf@vger.kernel.org>
+Date:   Sat, 15 Apr 2023 21:38:42 +0800
+Message-ID: <CALOAHbCvJ5Vqyqx5Ujs1hx_1MH7vBuGH-h3oPqsEm3-oYAu1gQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] bpf, net: Support redirecting to ifb with bpf
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>, martin.lau@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,225 +74,127 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 10:17=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
+On Sat, Apr 15, 2023 at 6:57=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> On 4/14/23 6:07 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Daniel Borkmann <daniel@iogearbox.net> writes:
+> [...]
+> > https://git.openwrt.org/?p=3Dproject/qosify.git;a=3Dblob;f=3DREADME
 >
-> The ftrace_test_recursion_trylock() also disables preemption. This is not
-> required, but was a clean up as every place that called it also disabled
-> preemption, and making the two tightly coupled appeared to make the code
-> simpler.
+> Thanks for the explanation, that sounds reasonable and this should ideall=
+y
+> be part of the commit msg! Yafang, Toke, how about we craft it the follow=
+ing
+> way then to support this case:
 >
-> But the recursion protection can be used for other purposes that do not
-> require disabling preemption. As the recursion bits are attached to the
-> task_struct, it follows the task, so there's no need for preemption being
-> disabled.
->
-> Add test_recursion_try_acquire/release() functions to be used generically=
-,
-> and separate it from being associated with ftrace. It also removes the
-> "lock" name, as there is no lock happening. Keeping the "lock" for the
-> ftrace version is better, as it at least differentiates that preemption i=
-s
-> being disabled (hence, "locking the CPU").
->
-> Link: https://lore.kernel.org/linux-trace-kernel/20230321020103.13494-1-l=
-aoar.shao@gmail.com/
->
-> Cc: Yafang Shao <laoar.shao@gmail.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+LGTM. With the issue reported by kernel test robot [1] fixed,
 
 Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-+Alexei, bpf
+[1]. https://lore.kernel.org/bpf/202304150811.bzx9niRq-lkp@intel.com/
 
-Thanks Steven.
-I almost finished replacing prog->active with
-test_recursion_try_{acquire,release}[1], and yet I need to do more
-tests.
-
-In my verification, I find that something abnormal happens. When I ran
-bpf self tests after the replacement, I found the fentry recursion
-test failed[2]. The test result as follows,
-
-main:PASS:skel_open_and_load 0 nsec
-main:PASS:skel_attach 0 nsec
-main:PASS:pass1 =3D=3D 0 0 nsec
-main:PASS:pass1 =3D=3D 1 0 nsec
-main:PASS:pass1 =3D=3D 2 0 nsec
-main:PASS:pass2 =3D=3D 0 0 nsec
-main:FAIL:pass2 =3D=3D 1 unexpected pass2 =3D=3D 1: actual 2 !=3D expected =
-1 [0]
-main:FAIL:pass2 =3D=3D 2 unexpected pass2 =3D=3D 2: actual 4 !=3D expected =
-2
-main:PASS:get_prog_info 0 nsec
-main:PASS:recursion_misses 0 nsec
-
-The reason is that the bpf_map_delete_elem() in this fentry SEC()[2]
-will hit the first if-condition[3] but fail to hit the second
-if-condition[4], so it won't be considered as recursion at the first
-time. So the value 'pass2' will be 2[0]. Illustrated as follows,
-
-SEC("fentry/htab_map_delete_elem")
-    pass2++;   <<<< Turn out to be 1 after this operation.
-    bpf_map_delete_elem(&hash2, &key);
-         SEC("fentry/htab_map_delete_elem")    <<<< not recursion
-            pass2++; <<<< Turn out to be 2 after this operation.
-            bpf_map_delete_elem(&hash2, &key);
-                SEC("fentry/htab_map_delete_elem")    <<<< RECURSION!!
-
-That said, if a function can call itself, the first call won't be
-considered as recursion. Is that expected ?
-
-One thing I can be sure of is that prog->active can't handle the
-interrupted case[5].  If the interrupt happens, it will be considered
-as a recursion.
-But it seems that bpf_map_delete_elem() in this fentry SEC() is still
-in the process context.
-
-[1]. https://lore.kernel.org/bpf/CALOAHbACzCwu-VeMczEJw8A4WFgkL-uQDS1NkcVR2=
-pqEMZyAQQ@mail.gmail.com/
-[2].  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree=
-/tools/testing/selftests/bpf/progs/recursion.c#n38
-[3]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
-include/linux/trace_recursion.h#n166
-[4]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
-include/linux/trace_recursion.h#n176
-[5]. https://lore.kernel.org/bpf/20230409220239.0fcf6738@rorschach.local.ho=
-me/
-
+>  From f6c83e5e55c5eb9da8acd19369c688acf53951db Mon Sep 17 00:00:00 2001
+> Message-Id: <f6c83e5e55c5eb9da8acd19369c688acf53951db.1681512637.git.dani=
+el@iogearbox.net>
+> From: Daniel Borkmann <daniel@iogearbox.net>
+> Date: Sat, 15 Apr 2023 00:30:27 +0200
+> Subject: [PATCH bpf-next] bpf: Set skb redirect and from_ingress info in =
+__bpf_tx_skb
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=3DUTF-8
+> Content-Transfer-Encoding: 8bit
+>
+> There are some use-cases where it is desirable to use bpf_redirect()
+> in combination with ifb device, which currently is not supported, for
+> example, around filtering inbound traffic with BPF to then push it to
+> ifb which holds the qdisc for shaping in contrast to doing that on the
+> egress device.
+>
+> Toke mentions the following case related to OpenWrt:
+>
+>    Because there's not always a single egress on the other side. These ar=
+e
+>    mainly home routers, which tend to have one or more WiFi devices bridg=
+ed
+>    to one or more ethernet ports on the LAN side, and a single upstream W=
+AN
+>    port. And the objective is to control the total amount of traffic goin=
+g
+>    over the WAN link (in both directions), to deal with bufferbloat in th=
+e
+>    ISP network (which is sadly still all too prevalent).
+>
+>    In this setup, the traffic can be split arbitrarily between the links
+>    on the LAN side, and the only "single bottleneck" is the WAN link. So =
+we
+>    install both egress and ingress shapers on this, configured to somethi=
+ng
+>    like 95-98% of the true link bandwidth, thus moving the queues into th=
+e
+>    qdisc layer in the router. It's usually necessary to set the ingress
+>    bandwidth shaper a bit lower than the egress due to being "downstream"
+>    of the bottleneck link, but it does work surprisingly well.
+>
+>    We usually use something like a matchall filter to put all ingress
+>    traffic on the ifb, so doing the redirect from BPF has not been an
+>    immediate requirement thus far. However, it does seem a bit odd that t=
+his
+>    is not possible, and we do have a BPF-based filter that layers on top =
+of
+>    this kind of setup, which currently uses u32 as the ingress filter and
+>    so it could presumably be improved to use BPF instead if that was
+>    available.
+>
+> Reported-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Reported-by: Yafang Shao <laoar.shao@gmail.com>
+> Reported-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Link: https://git.openwrt.org/?p=3Dproject/qosify.git;a=3Dblob;f=3DREADME
+> Link: https://lore.kernel.org/bpf/875y9yzbuy.fsf@toke.dk
 > ---
->  include/linux/trace_recursion.h | 47 ++++++++++++++++++++++++---------
->  kernel/trace/ftrace.c           |  2 ++
->  2 files changed, 37 insertions(+), 12 deletions(-)
+>   include/linux/skbuff.h | 9 +++++++++
+>   net/core/filter.c      | 1 +
+>   2 files changed, 10 insertions(+)
 >
-> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recurs=
-ion.h
-> index d48cd92d2364..80de2ee7b4c3 100644
-> --- a/include/linux/trace_recursion.h
-> +++ b/include/linux/trace_recursion.h
-> @@ -150,9 +150,6 @@ extern void ftrace_record_recursion(unsigned long ip,=
- unsigned long parent_ip);
->  # define trace_warn_on_no_rcu(ip)      false
->  #endif
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index ff7ad331fb82..2bbf9245640a 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -5049,6 +5049,15 @@ static inline void skb_reset_redirect(struct sk_bu=
+ff *skb)
+>         skb->redirected =3D 0;
+>   }
 >
-> -/*
-> - * Preemption is promised to be disabled when return bit >=3D 0.
-> - */
->  static __always_inline int trace_test_and_set_recursion(unsigned long ip=
-, unsigned long pip,
->                                                         int start)
->  {
-> @@ -182,18 +179,11 @@ static __always_inline int trace_test_and_set_recur=
-sion(unsigned long ip, unsign
->         val |=3D 1 << bit;
->         current->trace_recursion =3D val;
->         barrier();
-> -
-> -       preempt_disable_notrace();
-> -
->         return bit;
->  }
->
-> -/*
-> - * Preemption will be enabled (if it was previously enabled).
-> - */
->  static __always_inline void trace_clear_recursion(int bit)
->  {
-> -       preempt_enable_notrace();
->         barrier();
->         trace_recursion_clear(bit);
->  }
-> @@ -205,12 +195,18 @@ static __always_inline void trace_clear_recursion(i=
-nt bit)
->   * tracing recursed in the same context (normal vs interrupt),
->   *
->   * Returns: -1 if a recursion happened.
-> - *           >=3D 0 if no recursion.
-> + *           >=3D 0 if no recursion and preemption will be disabled.
->   */
->  static __always_inline int ftrace_test_recursion_trylock(unsigned long i=
-p,
->                                                          unsigned long pa=
-rent_ip)
->  {
-> -       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
-TART);
-> +       int bit;
-> +
-> +       bit =3D trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_=
-START);
-> +       if (unlikely(bit < 0))
-> +               return bit;
-> +       preempt_disable_notrace();
-> +       return bit;
->  }
->
->  /**
-> @@ -220,6 +216,33 @@ static __always_inline int ftrace_test_recursion_try=
-lock(unsigned long ip,
->   * This is used at the end of a ftrace callback.
->   */
->  static __always_inline void ftrace_test_recursion_unlock(int bit)
+> +static inline void skb_set_redirected_noclear(struct sk_buff *skb,
+> +                                             bool from_ingress)
 > +{
-> +       preempt_enable_notrace();
-> +       trace_clear_recursion(bit);
+> +       skb->redirected =3D 1;
+> +#ifdef CONFIG_NET_REDIRECT
+> +       skb->from_ingress =3D from_ingress;
+> +#endif
 > +}
 > +
-> +/**
-> + * test_recursion_try_acquire - tests for recursion in same context
-> + *
-> + * This will detect recursion of a function.
-> + *
-> + * Returns: -1 if a recursion happened.
-> + *           >=3D 0 if no recursion
-> + */
-> +static __always_inline int test_recursion_try_acquire(unsigned long ip,
-> +                                                     unsigned long paren=
-t_ip)
-> +{
-> +       return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_S=
-TART);
-> +}
-> +
-> +/**
-> + * test_recursion_release - called after a success of test_recursion_try=
-_acquire()
-> + * @bit: The return of a successful test_recursion_try_acquire()
-> + *
-> + * This releases the recursion lock taken by a non-negative return call
-> + * by test_recursion_try_acquire().
-> + */
-> +static __always_inline void test_recursion_release(int bit)
->  {
->         trace_clear_recursion(bit);
->  }
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index db8532a4d5c8..1b117ab057ed 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7299,6 +7299,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
-ong parent_ip,
->         if (bit < 0)
->                 return;
+>   static inline bool skb_csum_is_sctp(struct sk_buff *skb)
+>   {
+>         return skb->csum_not_inet;
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 1d6f165923bf..27ba616aaa1a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2111,6 +2111,7 @@ static inline int __bpf_tx_skb(struct net_device *d=
+ev, struct sk_buff *skb)
+>         }
 >
-> +       preempt_disable();
->         do_for_each_ftrace_op(op, ftrace_ops_list) {
->                 /* Stub functions don't need to be called nor tested */
->                 if (op->flags & FTRACE_OPS_FL_STUB)
-> @@ -7320,6 +7321,7 @@ __ftrace_ops_list_func(unsigned long ip, unsigned l=
-ong parent_ip,
->                 }
->         } while_for_each_ftrace_op(op);
->  out:
-> +       preempt_enable();
->         trace_clear_recursion(bit);
->  }
+>         skb->dev =3D dev;
+> +       skb_set_redirected_noclear(skb, skb->tc_at_ingress);
+>         skb_clear_tstamp(skb);
 >
+>         dev_xmit_recursion_inc();
 > --
-> 2.39.2
->
+> 2.21.0
+
 
 
 --=20
