@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 233386E337C
-	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 22:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94F16E337A
+	for <lists+bpf@lfdr.de>; Sat, 15 Apr 2023 22:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjDOUSj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 16:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S229911AbjDOUSh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 16:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjDOUSi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 16:18:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F24630C2
+        with ESMTP id S229865AbjDOUSh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 16:18:37 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164B3AB3
         for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 13:18:34 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33FJ5TvB002528
-        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 13:18:34 -0700
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 33FEbgPP008362
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 13:18:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=D1up/x0pO/Hw861YnY+qb+88A0eZclW9pbhyHSrSTJQ=;
- b=BDoBHcVdszaCFx6ZH31+NACqZCqiXYXpTkxYtGDCWomHNB+O5ZW6hCu9SVDERxqbbaXZ
- n1bnRx0u0Sbg2Pwpago+IlNiHNhsK0YZ8V1hCQIRtvgZ7qjvkQfHXkTT5ZcYgb/gnhY9
- flLoad+u+XcVIkBCSGp0PkhcEfD4BKQDSAc= 
+ bh=nxhuC13p1jXXH88iev/e3EftRHu0mJWyEGTxoOGBDSI=;
+ b=mI/RARGwESss6yNRRU1ztDusuHXzTSkzxFd3g1SM1SWPfAzeBeAm5jIBuorTtwVgWFOh
+ yyiUxYeqk3sWFJJdjQCdImMdqKxhsqZynyTOQPyuSIYqJWU9wN11VxjnGKYnz2zCbYLL
+ 7UOLMSZyibrb2DYzKKccRHQ/B4czBQwy3Tk= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3pyqyna01y-2
+        by m0089730.ppops.net (PPS) with ESMTPS id 3pyqeaa479-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 13:18:33 -0700
 Received: from twshared8612.02.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2507.17; Sat, 15 Apr 2023 13:18:31 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 4280C1C270273; Sat, 15 Apr 2023 13:18:18 -0700 (PDT)
+        id C4A701C270275; Sat, 15 Apr 2023 13:18:18 -0700 (PDT)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -42,9 +42,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 5/9] bpf: Migrate bpf_rbtree_add and bpf_list_push_{front,back} to possibly fail
-Date:   Sat, 15 Apr 2023 13:18:07 -0700
-Message-ID: <20230415201811.343116-6-davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next 6/9] selftests/bpf: Modify linked_list tests to work with macro-ified inserts
+Date:   Sat, 15 Apr 2023 13:18:08 -0700
+Message-ID: <20230415201811.343116-7-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230415201811.343116-1-davemarchevsky@fb.com>
 References: <20230415201811.343116-1-davemarchevsky@fb.com>
@@ -52,8 +52,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: pjRSFopi90vm7m6o5Rvz4WtpRa1R0jUn
-X-Proofpoint-GUID: pjRSFopi90vm7m6o5Rvz4WtpRa1R0jUn
+X-Proofpoint-ORIG-GUID: vXW4JCHsroRFDdGTMe3SWS0IaPpa1Hn7
+X-Proofpoint-GUID: vXW4JCHsroRFDdGTMe3SWS0IaPpa1Hn7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-15_10,2023-04-14_01,2023-02-09_01
@@ -67,721 +67,490 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Consider this code snippet:
+The linked_list tests use macros and function pointers to reduce code
+duplication. Earlier in the series, bpf_list_push_{front,back} were
+modified to be macros, expanding to invoke actual kfuncs
+bpf_list_push_{front,back}_impl. Due to this change, a code snippet
+like:
 
-  struct node {
-    long key;
-    bpf_list_node l;
-    bpf_rb_node r;
-    bpf_refcount ref;
-  }
+  void (*p)(void *, void *) =3D (void *)&bpf_list_##op;
+  p(hexpr, nexpr);
 
-  int some_bpf_prog(void *ctx)
-  {
-    struct node *n =3D bpf_obj_new(/*...*/), *m;
+meant to do bpf_list_push_{front,back}(hexpr, nexpr), will no longer
+work as it's no longer valid to do &bpf_list_push_{front,back} since
+they're no longer functions.
 
-    bpf_spin_lock(&glock);
+This patch fixes issues of this type, along with two other minor changes
+- one improvement and one fix - both related to the node argument to
+list_push_{front,back}.
 
-    bpf_rbtree_add(&some_tree, &n->r, /* ... */);
-    m =3D bpf_refcount_acquire(n);
-    bpf_rbtree_add(&other_tree, &m->r, /* ... */);
+  * The fix: migration of list_push tests away from (void *, void *)
+    func ptr uncovered that some tests were incorrectly passing pointer
+    to node, not pointer to struct bpf_list_node within the node. This
+    patch fixes such issues (CHECK(..., f) -> CHECK(..., &f->node))
 
-    bpf_spin_unlock(&glock);
-
-    /* ... */
-  }
-
-After bpf_refcount_acquire, n and m point to the same underlying memory,
-and that node's bpf_rb_node field is being used by the some_tree insert,
-so overwriting it as a result of the second insert is an error. In order
-to properly support refcounted nodes, the rbtree and list insert
-functions must be allowed to fail. This patch adds such support.
-
-The kfuncs bpf_rbtree_add, bpf_list_push_{front,back} are modified to
-return an int indicating success/failure, with 0 -> success, nonzero ->
-failure.
-
-bpf_obj_drop on failure
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Currently the only reason an insert can fail is the example above: the
-bpf_{list,rb}_node is already in use. When such a failure occurs, the
-insert kfuncs will bpf_obj_drop the input node. This allows the insert
-operations to logically fail without changing their verifier owning ref
-behavior, namely the unconditional release_reference of the input
-owning ref.
-
-With insert that always succeeds, ownership of the node is always passed
-to the collection, since the node always ends up in the collection.
-
-With a possibly-failed insert w/ bpf_obj_drop, ownership of the node
-is always passed either to the collection (success), or to bpf_obj_drop
-(failure). Regardless, it's correct to continue unconditionally
-releasing the input owning ref, as something is always taking ownership
-from the calling program on insert.
-
-Keeping owning ref behavior unchanged results in a nice default UX for
-insert functions that can fail. If the program's reaction to a failed
-insert is "fine, just get rid of this owning ref for me and let me go
-on with my business", then there's no reason to check for failure since
-that's default behavior. e.g.:
-
-  long important_failures =3D 0;
-
-  int some_bpf_prog(void *ctx)
-  {
-    struct node *n, *m, *o; /* all bpf_obj_new'd */
-
-    bpf_spin_lock(&glock);
-    bpf_rbtree_add(&some_tree, &n->node, /* ... */);
-    bpf_rbtree_add(&some_tree, &m->node, /* ... */);
-    if (bpf_rbtree_add(&some_tree, &o->node, /* ... */)) {
-      important_failures++;
-    }
-    bpf_spin_unlock(&glock);
-  }
-
-If we instead chose to pass ownership back to the program on failed
-insert - by returning NULL on success or an owning ref on failure -
-programs would always have to do something with the returned ref on
-failure. The most likely action is probably "I'll just get rid of this
-owning ref and go about my business", which ideally would look like:
-
-  if (n =3D bpf_rbtree_add(&some_tree, &n->node, /* ... */))
-    bpf_obj_drop(n);
-
-But bpf_obj_drop isn't allowed in a critical section and inserts must
-occur within one, so in reality error handling would become a
-hard-to-parse mess.
-
-For refcounted nodes, we can replicate the "pass ownership back to
-program on failure" logic with this patch's semantics, albeit in an ugly
-way:
-
-  struct node *n =3D bpf_obj_new(/* ... */), *m;
-
-  bpf_spin_lock(&glock);
-
-  m =3D bpf_refcount_acquire(n);
-  if (bpf_rbtree_add(&some_tree, &n->node, /* ... */)) {
-    /* Do something with m */
-  }
-
-  bpf_spin_unlock(&glock);
-  bpf_obj_drop(m);
-
-bpf_refcount_acquire is used to simulate "return owning ref on failure".
-This should be an uncommon occurrence, though.
-
-Addition of two verifier-fixup'd args to collection inserts
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-The actual bpf_obj_drop kfunc is
-bpf_obj_drop_impl(void *, struct btf_struct_meta *), with bpf_obj_drop
-macro populating the second arg with 0 and the verifier later filling in
-the arg during insn fixup.
-
-Because bpf_rbtree_add and bpf_list_push_{front,back} now might do
-bpf_obj_drop, these kfuncs need a btf_struct_meta parameter that can be
-passed to bpf_obj_drop_impl.
-
-Similarly, because the 'node' param to those insert functions is the
-bpf_{list,rb}_node within the node type, and bpf_obj_drop expects a
-pointer to the beginning of the node, the insert functions need to be
-able to find the beginning of the node struct. A second
-verifier-populated param is necessary: the offset of {list,rb}_node withi=
-n the
-node type.
-
-These two new params allow the insert kfuncs to correctly call
-__bpf_obj_drop_impl:
-
-  beginning_of_node =3D bpf_rb_node_ptr - offset
-  if (already_inserted)
-    __bpf_obj_drop_impl(beginning_of_node, btf_struct_meta->record);
-
-Similarly to other kfuncs with "hidden" verifier-populated params, the
-insert functions are renamed with _impl prefix and a macro is provided
-for common usage. For example, bpf_rbtree_add kfunc is now
-bpf_rbtree_add_impl and bpf_rbtree_add is now a macro which sets
-"hidden" args to 0.
-
-Due to the two new args BPF progs will need to be recompiled to work
-with the new _impl kfuncs.
-
-This patch also rewrites the "hidden argument" explanation to more
-directly say why the BPF program writer doesn't need to populate the
-arguments with anything meaningful.
-
-How does this new logic affect non-owning references?
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-
-Currently, non-owning refs are valid until the end of the critical
-section in which they're created. We can make this guarantee because, if
-a non-owning ref exists, the referent was added to some collection. The
-collection will drop() its nodes when it goes away, but it can't go away
-while our program is accessing it, so that's not a problem. If the
-referent is removed from the collection in the same CS that it was added
-in, it can't be bpf_obj_drop'd until after CS end. Those are the only
-two ways to free the referent's memory and neither can happen until
-after the non-owning ref's lifetime ends.
-
-On first glance, having these collection insert functions potentially
-bpf_obj_drop their input seems like it breaks the "can't be
-bpf_obj_drop'd until after CS end" line of reasoning. But we care about
-the memory not being _freed_ until end of CS end, and a previous patch
-in the series modified bpf_obj_drop such that it doesn't free refcounted
-nodes until refcount =3D=3D 0. So the statement can be more accurately
-rewritten as "can't be free'd until after CS end".
-
-We can prove that this rewritten statement holds for any non-owning
-reference produced by collection insert functions:
-
-* If the input to the insert function is _not_ refcounted
-  * We have an owning reference to the input, and can conclude it isn't
-    in any collection
-    * Inserting a node in a collection turns owning refs into
-      non-owning, and since our input type isn't refcounted, there's no
-      way to obtain additional owning refs to the same underlying
-      memory
-  * Because our node isn't in any collection, the insert operation
-    cannot fail, so bpf_obj_drop will not execute
-  * If bpf_obj_drop is guaranteed not to execute, there's no risk of
-    memory being free'd
-
-* Otherwise, the input to the insert function is refcounted
-  * If the insert operation fails due to the node's list_head or rb_root
-    already being in some collection, there was some previous successful
-    insert which passed refcount to the collection
-  * We have an owning reference to the input, it must have been
-    acquired via bpf_refcount_acquire, which bumped the refcount
-  * refcount must be >=3D 2 since there's a valid owning reference and th=
-e
-    node is already in a collection
-  * Insert triggering bpf_obj_drop will decr refcount to >=3D 1, never
-    resulting in a free
-
-So although we may do bpf_obj_drop during the critical section, this
-will never result in memory being free'd, and no changes to non-owning
-ref logic are needed in this patch.
+  * The improvement: In linked_list tests, the struct foo type has two
+    list_node fields: node and node2, at byte offsets 0 and 40 within
+    the struct, respectively. Currently node is used in ~all tests
+    involving struct foo and lists. The verifier needs to do some work
+    to account for the offset of bpf_list_node within the node type, so
+    using node2 instead of node exercises that logic more in the tests.
+    This patch migrates linked_list tests to use node2 instead of node.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- include/linux/bpf_verifier.h                  |  7 +-
- kernel/bpf/helpers.c                          | 65 ++++++++++++----
- kernel/bpf/verifier.c                         | 78 +++++++++++++------
- .../testing/selftests/bpf/bpf_experimental.h  | 49 +++++++++---
- 4 files changed, 148 insertions(+), 51 deletions(-)
+ .../selftests/bpf/prog_tests/linked_list.c    |  6 +-
+ .../testing/selftests/bpf/progs/linked_list.c | 34 +++----
+ .../testing/selftests/bpf/progs/linked_list.h |  4 +-
+ .../selftests/bpf/progs/linked_list_fail.c    | 96 ++++++++++---------
+ 4 files changed, 73 insertions(+), 67 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index f03852b89d28..3dd29a53b711 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -464,7 +464,12 @@ struct bpf_insn_aux_data {
- 		 */
- 		struct bpf_loop_inline_state loop_inline_state;
- 	};
--	u64 obj_new_size; /* remember the size of type passed to bpf_obj_new to=
- rewrite R1 */
-+	union {
-+		/* remember the size of type passed to bpf_obj_new to rewrite R1 */
-+		u64 obj_new_size;
-+		/* remember the offset of node field within type to rewrite */
-+		u64 insert_off;
-+	};
- 	struct btf_struct_meta *kptr_struct_meta;
- 	u64 map_key_state; /* constant (32 bit) key tracking for maps */
- 	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 57ff8a60222c..5067f8d46872 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1931,7 +1931,8 @@ __bpf_kfunc void *bpf_refcount_acquire_impl(void *p=
-__refcounted_kptr, void *meta
- 	return (void *)p__refcounted_kptr;
+diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools=
+/testing/selftests/bpf/prog_tests/linked_list.c
+index 0ed8132ce1c3..872e4bd500fd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
++++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
+@@ -84,11 +84,11 @@ static struct {
+ 	{ "double_push_back", "arg#1 expected pointer to allocated object" },
+ 	{ "no_node_value_type", "bpf_list_node not found at offset=3D0" },
+ 	{ "incorrect_value_type",
+-	  "operation on bpf_list_head expects arg#1 bpf_list_node at offset=3D0=
+ in struct foo, "
++	  "operation on bpf_list_head expects arg#1 bpf_list_node at offset=3D4=
+0 in struct foo, "
+ 	  "but arg is at offset=3D0 in struct bar" },
+ 	{ "incorrect_node_var_off", "variable ptr_ access var_off=3D(0x0; 0xfff=
+fffff) disallowed" },
+-	{ "incorrect_node_off1", "bpf_list_node not found at offset=3D1" },
+-	{ "incorrect_node_off2", "arg#1 offset=3D40, but expected bpf_list_node=
+ at offset=3D0 in struct foo" },
++	{ "incorrect_node_off1", "bpf_list_node not found at offset=3D41" },
++	{ "incorrect_node_off2", "arg#1 offset=3D0, but expected bpf_list_node =
+at offset=3D40 in struct foo" },
+ 	{ "no_head_type", "bpf_list_head not found at offset=3D0" },
+ 	{ "incorrect_head_var_off1", "R1 doesn't have constant offset" },
+ 	{ "incorrect_head_var_off2", "variable ptr_ access var_off=3D(0x0; 0xff=
+ffffff) disallowed" },
+diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/test=
+ing/selftests/bpf/progs/linked_list.c
+index 53ded51a3abb..57440a554304 100644
+--- a/tools/testing/selftests/bpf/progs/linked_list.c
++++ b/tools/testing/selftests/bpf/progs/linked_list.c
+@@ -25,7 +25,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+ 	n =3D bpf_list_pop_front(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		bpf_obj_drop(f);
+ 		return 3;
+ 	}
+@@ -34,7 +34,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+ 	n =3D bpf_list_pop_back(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		bpf_obj_drop(f);
+ 		return 4;
+ 	}
+@@ -42,7 +42,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+=20
+ 	bpf_spin_lock(lock);
+ 	f->data =3D 42;
+-	bpf_list_push_front(head, &f->node);
++	bpf_list_push_front(head, &f->node2);
+ 	bpf_spin_unlock(lock);
+ 	if (leave_in_map)
+ 		return 0;
+@@ -51,7 +51,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+ 	bpf_spin_unlock(lock);
+ 	if (!n)
+ 		return 5;
+-	f =3D container_of(n, struct foo, node);
++	f =3D container_of(n, struct foo, node2);
+ 	if (f->data !=3D 42) {
+ 		bpf_obj_drop(f);
+ 		return 6;
+@@ -59,14 +59,14 @@ int list_push_pop(struct bpf_spin_lock *lock, struct =
+bpf_list_head *head, bool l
+=20
+ 	bpf_spin_lock(lock);
+ 	f->data =3D 13;
+-	bpf_list_push_front(head, &f->node);
++	bpf_list_push_front(head, &f->node2);
+ 	bpf_spin_unlock(lock);
+ 	bpf_spin_lock(lock);
+ 	n =3D bpf_list_pop_front(head);
+ 	bpf_spin_unlock(lock);
+ 	if (!n)
+ 		return 7;
+-	f =3D container_of(n, struct foo, node);
++	f =3D container_of(n, struct foo, node2);
+ 	if (f->data !=3D 13) {
+ 		bpf_obj_drop(f);
+ 		return 8;
+@@ -77,7 +77,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+ 	n =3D bpf_list_pop_front(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		return 9;
+ 	}
+=20
+@@ -85,7 +85,7 @@ int list_push_pop(struct bpf_spin_lock *lock, struct bp=
+f_list_head *head, bool l
+ 	n =3D bpf_list_pop_back(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		return 10;
+ 	}
+ 	return 0;
+@@ -119,8 +119,8 @@ int list_push_pop_multiple(struct bpf_spin_lock *lock=
+, struct bpf_list_head *hea
+ 		f[i + 1]->data =3D i + 1;
+=20
+ 		bpf_spin_lock(lock);
+-		bpf_list_push_front(head, &f[i]->node);
+-		bpf_list_push_front(head, &f[i + 1]->node);
++		bpf_list_push_front(head, &f[i]->node2);
++		bpf_list_push_front(head, &f[i + 1]->node2);
+ 		bpf_spin_unlock(lock);
+ 	}
+=20
+@@ -130,13 +130,13 @@ int list_push_pop_multiple(struct bpf_spin_lock *lo=
+ck, struct bpf_list_head *hea
+ 		bpf_spin_unlock(lock);
+ 		if (!n)
+ 			return 3;
+-		pf =3D container_of(n, struct foo, node);
++		pf =3D container_of(n, struct foo, node2);
+ 		if (pf->data !=3D (ARRAY_SIZE(f) - i - 1)) {
+ 			bpf_obj_drop(pf);
+ 			return 4;
+ 		}
+ 		bpf_spin_lock(lock);
+-		bpf_list_push_back(head, &pf->node);
++		bpf_list_push_back(head, &pf->node2);
+ 		bpf_spin_unlock(lock);
+ 	}
+=20
+@@ -149,7 +149,7 @@ int list_push_pop_multiple(struct bpf_spin_lock *lock=
+, struct bpf_list_head *hea
+ 		bpf_spin_unlock(lock);
+ 		if (!n)
+ 			return 5;
+-		pf =3D container_of(n, struct foo, node);
++		pf =3D container_of(n, struct foo, node2);
+ 		if (pf->data !=3D i) {
+ 			bpf_obj_drop(pf);
+ 			return 6;
+@@ -160,7 +160,7 @@ int list_push_pop_multiple(struct bpf_spin_lock *lock=
+, struct bpf_list_head *hea
+ 	n =3D bpf_list_pop_back(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		return 7;
+ 	}
+=20
+@@ -168,7 +168,7 @@ int list_push_pop_multiple(struct bpf_spin_lock *lock=
+, struct bpf_list_head *hea
+ 	n =3D bpf_list_pop_front(head);
+ 	bpf_spin_unlock(lock);
+ 	if (n) {
+-		bpf_obj_drop(container_of(n, struct foo, node));
++		bpf_obj_drop(container_of(n, struct foo, node2));
+ 		return 8;
+ 	}
+ 	return 0;
+@@ -199,7 +199,7 @@ int list_in_list(struct bpf_spin_lock *lock, struct b=
+pf_list_head *head, bool le
+=20
+ 	bpf_spin_lock(lock);
+ 	f->data =3D 42;
+-	bpf_list_push_front(head, &f->node);
++	bpf_list_push_front(head, &f->node2);
+ 	bpf_spin_unlock(lock);
+=20
+ 	if (leave_in_map)
+@@ -210,7 +210,7 @@ int list_in_list(struct bpf_spin_lock *lock, struct b=
+pf_list_head *head, bool le
+ 	bpf_spin_unlock(lock);
+ 	if (!n)
+ 		return 4;
+-	f =3D container_of(n, struct foo, node);
++	f =3D container_of(n, struct foo, node2);
+ 	if (f->data !=3D 42) {
+ 		bpf_obj_drop(f);
+ 		return 5;
+diff --git a/tools/testing/selftests/bpf/progs/linked_list.h b/tools/test=
+ing/selftests/bpf/progs/linked_list.h
+index 3fb2412552fc..c0f3609a7ffa 100644
+--- a/tools/testing/selftests/bpf/progs/linked_list.h
++++ b/tools/testing/selftests/bpf/progs/linked_list.h
+@@ -22,7 +22,7 @@ struct foo {
+ struct map_value {
+ 	struct bpf_spin_lock lock;
+ 	int data;
+-	struct bpf_list_head head __contains(foo, node);
++	struct bpf_list_head head __contains(foo, node2);
+ };
+=20
+ struct array_map {
+@@ -50,7 +50,7 @@ struct {
+ #define private(name) SEC(".bss." #name) __hidden __attribute__((aligned=
+(8)))
+=20
+ private(A) struct bpf_spin_lock glock;
+-private(A) struct bpf_list_head ghead __contains(foo, node);
++private(A) struct bpf_list_head ghead __contains(foo, node2);
+ private(B) struct bpf_spin_lock glock2;
+=20
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools=
+/testing/selftests/bpf/progs/linked_list_fail.c
+index 41978b46f58e..f4c63daba229 100644
+--- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
++++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
+@@ -73,22 +73,21 @@ CHECK(inner_map, pop_back, &iv->head);
+ 	int test##_missing_lock_##op(void *ctx)				\
+ 	{								\
+ 		INIT;							\
+-		void (*p)(void *, void *) =3D (void *)&bpf_list_##op;	\
+-		p(hexpr, nexpr);					\
++		bpf_list_##op(hexpr, nexpr);				\
+ 		return 0;						\
+ 	}
+=20
+-CHECK(kptr, push_front, &f->head, b);
+-CHECK(kptr, push_back, &f->head, b);
++CHECK(kptr, push_front, &f->head, &b->node);
++CHECK(kptr, push_back, &f->head, &b->node);
+=20
+-CHECK(global, push_front, &ghead, f);
+-CHECK(global, push_back, &ghead, f);
++CHECK(global, push_front, &ghead, &f->node2);
++CHECK(global, push_back, &ghead, &f->node2);
+=20
+-CHECK(map, push_front, &v->head, f);
+-CHECK(map, push_back, &v->head, f);
++CHECK(map, push_front, &v->head, &f->node2);
++CHECK(map, push_back, &v->head, &f->node2);
+=20
+-CHECK(inner_map, push_front, &iv->head, f);
+-CHECK(inner_map, push_back, &iv->head, f);
++CHECK(inner_map, push_front, &iv->head, &f->node2);
++CHECK(inner_map, push_back, &iv->head, &f->node2);
+=20
+ #undef CHECK
+=20
+@@ -135,32 +134,31 @@ CHECK_OP(pop_back);
+ 	int test##_incorrect_lock_##op(void *ctx)			\
+ 	{								\
+ 		INIT;							\
+-		void (*p)(void *, void*) =3D (void *)&bpf_list_##op;	\
+ 		bpf_spin_lock(lexpr);					\
+-		p(hexpr, nexpr);					\
++		bpf_list_##op(hexpr, nexpr);				\
+ 		return 0;						\
+ 	}
+=20
+ #define CHECK_OP(op)							\
+-	CHECK(kptr_kptr, op, &f1->lock, &f2->head, b);			\
+-	CHECK(kptr_global, op, &f1->lock, &ghead, f);			\
+-	CHECK(kptr_map, op, &f1->lock, &v->head, f);			\
+-	CHECK(kptr_inner_map, op, &f1->lock, &iv->head, f);		\
++	CHECK(kptr_kptr, op, &f1->lock, &f2->head, &b->node);		\
++	CHECK(kptr_global, op, &f1->lock, &ghead, &f->node2);		\
++	CHECK(kptr_map, op, &f1->lock, &v->head, &f->node2);		\
++	CHECK(kptr_inner_map, op, &f1->lock, &iv->head, &f->node2);	\
+ 									\
+-	CHECK(global_global, op, &glock2, &ghead, f);			\
+-	CHECK(global_kptr, op, &glock, &f1->head, b);			\
+-	CHECK(global_map, op, &glock, &v->head, f);			\
+-	CHECK(global_inner_map, op, &glock, &iv->head, f);		\
++	CHECK(global_global, op, &glock2, &ghead, &f->node2);		\
++	CHECK(global_kptr, op, &glock, &f1->head, &b->node);		\
++	CHECK(global_map, op, &glock, &v->head, &f->node2);		\
++	CHECK(global_inner_map, op, &glock, &iv->head, &f->node2);	\
+ 									\
+-	CHECK(map_map, op, &v->lock, &v2->head, f);			\
+-	CHECK(map_kptr, op, &v->lock, &f2->head, b);			\
+-	CHECK(map_global, op, &v->lock, &ghead, f);			\
+-	CHECK(map_inner_map, op, &v->lock, &iv->head, f);		\
++	CHECK(map_map, op, &v->lock, &v2->head, &f->node2);		\
++	CHECK(map_kptr, op, &v->lock, &f2->head, &b->node);		\
++	CHECK(map_global, op, &v->lock, &ghead, &f->node2);		\
++	CHECK(map_inner_map, op, &v->lock, &iv->head, &f->node2);	\
+ 									\
+-	CHECK(inner_map_inner_map, op, &iv->lock, &iv2->head, f);	\
+-	CHECK(inner_map_kptr, op, &iv->lock, &f2->head, b);		\
+-	CHECK(inner_map_global, op, &iv->lock, &ghead, f);		\
+-	CHECK(inner_map_map, op, &iv->lock, &v->head, f);
++	CHECK(inner_map_inner_map, op, &iv->lock, &iv2->head, &f->node2);\
++	CHECK(inner_map_kptr, op, &iv->lock, &f2->head, &b->node);	\
++	CHECK(inner_map_global, op, &iv->lock, &ghead, &f->node2);	\
++	CHECK(inner_map_map, op, &iv->lock, &v->head, &f->node2);
+=20
+ CHECK_OP(push_front);
+ CHECK_OP(push_back);
+@@ -340,7 +338,7 @@ int direct_read_node(void *ctx)
+ 	f =3D bpf_obj_new(typeof(*f));
+ 	if (!f)
+ 		return 0;
+-	return *(int *)&f->node;
++	return *(int *)&f->node2;
  }
 =20
--static void __bpf_list_add(struct bpf_list_node *node, struct bpf_list_h=
-ead *head, bool tail)
-+static int __bpf_list_add(struct bpf_list_node *node, struct bpf_list_he=
-ad *head,
-+			  bool tail, struct btf_record *rec, u64 off)
- {
- 	struct list_head *n =3D (void *)node, *h =3D (void *)head;
+ SEC("?tc")
+@@ -351,12 +349,12 @@ int direct_write_node(void *ctx)
+ 	f =3D bpf_obj_new(typeof(*f));
+ 	if (!f)
+ 		return 0;
+-	*(int *)&f->node =3D 0;
++	*(int *)&f->node2 =3D 0;
+ 	return 0;
+ }
 =20
-@@ -1939,17 +1940,35 @@ static void __bpf_list_add(struct bpf_list_node *=
-node, struct bpf_list_head *hea
- 		INIT_LIST_HEAD(h);
- 	if (unlikely(!n->next))
- 		INIT_LIST_HEAD(n);
-+	if (!list_empty(n)) {
-+		/* Only called from BPF prog, no need to migrate_disable */
-+		__bpf_obj_drop_impl(n - off, rec);
-+		return -EINVAL;
+ static __always_inline
+-int use_after_unlock(void (*op)(void *head, void *node))
++int use_after_unlock(bool push_front)
+ {
+ 	struct foo *f;
+=20
+@@ -365,7 +363,10 @@ int use_after_unlock(void (*op)(void *head, void *no=
+de))
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+ 	f->data =3D 42;
+-	op(&ghead, &f->node);
++	if (push_front)
++		bpf_list_push_front(&ghead, &f->node2);
++	else
++		bpf_list_push_back(&ghead, &f->node2);
+ 	bpf_spin_unlock(&glock);
+=20
+ 	return f->data;
+@@ -374,17 +375,17 @@ int use_after_unlock(void (*op)(void *head, void *n=
+ode))
+ SEC("?tc")
+ int use_after_unlock_push_front(void *ctx)
+ {
+-	return use_after_unlock((void *)bpf_list_push_front);
++	return use_after_unlock(true);
+ }
+=20
+ SEC("?tc")
+ int use_after_unlock_push_back(void *ctx)
+ {
+-	return use_after_unlock((void *)bpf_list_push_back);
++	return use_after_unlock(false);
+ }
+=20
+ static __always_inline
+-int list_double_add(void (*op)(void *head, void *node))
++int list_double_add(bool push_front)
+ {
+ 	struct foo *f;
+=20
+@@ -392,8 +393,13 @@ int list_double_add(void (*op)(void *head, void *nod=
+e))
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	op(&ghead, &f->node);
+-	op(&ghead, &f->node);
++	if (push_front) {
++		bpf_list_push_front(&ghead, &f->node2);
++		bpf_list_push_front(&ghead, &f->node2);
++	} else {
++		bpf_list_push_back(&ghead, &f->node2);
++		bpf_list_push_back(&ghead, &f->node2);
 +	}
-+
- 	tail ? list_add_tail(n, h) : list_add(n, h);
-+
-+	return 0;
+ 	bpf_spin_unlock(&glock);
+=20
+ 	return 0;
+@@ -402,13 +408,13 @@ int list_double_add(void (*op)(void *head, void *no=
+de))
+ SEC("?tc")
+ int double_push_front(void *ctx)
+ {
+-	return list_double_add((void *)bpf_list_push_front);
++	return list_double_add(true);
  }
 =20
--__bpf_kfunc void bpf_list_push_front(struct bpf_list_head *head, struct =
-bpf_list_node *node)
-+__bpf_kfunc int bpf_list_push_front_impl(struct bpf_list_head *head,
-+					 struct bpf_list_node *node,
-+					 void *meta__ign, u64 off)
+ SEC("?tc")
+ int double_push_back(void *ctx)
  {
--	return __bpf_list_add(node, head, false);
-+	struct btf_struct_meta *meta =3D meta__ign;
-+
-+	return __bpf_list_add(node, head, false,
-+			      meta ? meta->record : NULL, off);
+-	return list_double_add((void *)bpf_list_push_back);
++	return list_double_add(false);
  }
 =20
--__bpf_kfunc void bpf_list_push_back(struct bpf_list_head *head, struct b=
-pf_list_node *node)
-+__bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-+					struct bpf_list_node *node,
-+					void *meta__ign, u64 off)
- {
--	return __bpf_list_add(node, head, true);
-+	struct btf_struct_meta *meta =3D meta__ign;
-+
-+	return __bpf_list_add(node, head, true,
-+			      meta ? meta->record : NULL, off);
- }
+ SEC("?tc")
+@@ -450,7 +456,7 @@ int incorrect_node_var_off(struct __sk_buff *ctx)
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front(&ghead, (void *)&f->node + ctx->protocol);
++	bpf_list_push_front(&ghead, (void *)&f->node2 + ctx->protocol);
+ 	bpf_spin_unlock(&glock);
 =20
- static struct bpf_list_node *__bpf_list_del(struct bpf_list_head *head, =
-bool tail)
-@@ -1989,14 +2008,23 @@ __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove=
-(struct bpf_rb_root *root,
- /* Need to copy rbtree_add_cached's logic here because our 'less' is a B=
-PF
-  * program
-  */
--static void __bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_nod=
-e *node,
--			     void *less)
-+static int __bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node=
- *node,
-+			    void *less, struct btf_record *rec, u64 off)
- {
- 	struct rb_node **link =3D &((struct rb_root_cached *)root)->rb_root.rb_=
-node;
-+	struct rb_node *parent =3D NULL, *n =3D (struct rb_node *)node;
- 	bpf_callback_t cb =3D (bpf_callback_t)less;
--	struct rb_node *parent =3D NULL;
- 	bool leftmost =3D true;
+ 	return 0;
+@@ -465,7 +471,7 @@ int incorrect_node_off1(void *ctx)
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front(&ghead, (void *)&f->node + 1);
++	bpf_list_push_front(&ghead, (void *)&f->node2 + 1);
+ 	bpf_spin_unlock(&glock);
 =20
-+	if (!n->__rb_parent_color)
-+		RB_CLEAR_NODE(n);
-+
-+	if (!RB_EMPTY_NODE(n)) {
-+		/* Only called from BPF prog, no need to migrate_disable */
-+		__bpf_obj_drop_impl(n - off, rec);
-+		return -EINVAL;
-+	}
-+
- 	while (*link) {
- 		parent =3D *link;
- 		if (cb((uintptr_t)node, (uintptr_t)parent, 0, 0, 0)) {
-@@ -2007,15 +2035,18 @@ static void __bpf_rbtree_add(struct bpf_rb_root *=
-root, struct bpf_rb_node *node,
- 		}
- 	}
+ 	return 0;
+@@ -480,7 +486,7 @@ int incorrect_node_off2(void *ctx)
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front(&ghead, &f->node2);
++	bpf_list_push_front(&ghead, &f->node);
+ 	bpf_spin_unlock(&glock);
 =20
--	rb_link_node((struct rb_node *)node, parent, link);
--	rb_insert_color_cached((struct rb_node *)node,
--			       (struct rb_root_cached *)root, leftmost);
-+	rb_link_node(n, parent, link);
-+	rb_insert_color_cached(n, (struct rb_root_cached *)root, leftmost);
-+	return 0;
- }
+ 	return 0;
+@@ -510,7 +516,7 @@ int incorrect_head_var_off1(struct __sk_buff *ctx)
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front((void *)&ghead + ctx->protocol, &f->node);
++	bpf_list_push_front((void *)&ghead + ctx->protocol, &f->node2);
+ 	bpf_spin_unlock(&glock);
 =20
--__bpf_kfunc void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_=
-node *node,
--				bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b))
-+__bpf_kfunc int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf=
-_rb_node *node,
-+				    bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b),
-+				    void *meta__ign, u64 off)
- {
--	__bpf_rbtree_add(root, node, (void *)less);
-+	struct btf_struct_meta *meta =3D meta__ign;
-+
-+	return __bpf_rbtree_add(root, node, (void *)less, meta ? meta->record :=
- NULL, off);
- }
+ 	return 0;
+@@ -525,7 +531,7 @@ int incorrect_head_var_off2(struct __sk_buff *ctx)
+ 	if (!f)
+ 		return 0;
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front((void *)&f->head + ctx->protocol, &f->node);
++	bpf_list_push_front((void *)&f->head + ctx->protocol, &f->node2);
+ 	bpf_spin_unlock(&glock);
 =20
- __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *roo=
-t)
-@@ -2291,14 +2322,14 @@ BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
- BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_refcount_acquire_impl, KF_ACQUIRE)
--BTF_ID_FLAGS(func, bpf_list_push_front)
--BTF_ID_FLAGS(func, bpf_list_push_back)
-+BTF_ID_FLAGS(func, bpf_list_push_front_impl)
-+BTF_ID_FLAGS(func, bpf_list_push_back_impl)
- BTF_ID_FLAGS(func, bpf_list_pop_front, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_list_pop_back, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_rbtree_remove, KF_ACQUIRE)
--BTF_ID_FLAGS(func, bpf_rbtree_add)
-+BTF_ID_FLAGS(func, bpf_rbtree_add_impl)
- BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
+ 	return 0;
+@@ -563,7 +569,7 @@ int incorrect_head_off2(void *ctx)
+ 		return 0;
 =20
- #ifdef CONFIG_CGROUPS
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 29e106f7ccaa..736cb7cec0bd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8500,10 +8500,10 @@ static int set_rbtree_add_callback_state(struct b=
-pf_verifier_env *env,
- 					 struct bpf_func_state *callee,
- 					 int insn_idx)
- {
--	/* void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *no=
-de,
-+	/* void bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_nod=
-e *node,
- 	 *                     bool (less)(struct bpf_rb_node *a, const struct =
-bpf_rb_node *b));
- 	 *
--	 * 'struct bpf_rb_node *node' arg to bpf_rbtree_add is the same PTR_TO_=
-BTF_ID w/ offset
-+	 * 'struct bpf_rb_node *node' arg to bpf_rbtree_add_impl is the same PT=
-R_TO_BTF_ID w/ offset
- 	 * that 'less' callback args will be receiving. However, 'node' arg was=
- release_reference'd
- 	 * by this point, so look at 'root'
- 	 */
-@@ -9571,8 +9571,8 @@ enum special_kfunc_type {
- 	KF_bpf_obj_new_impl,
- 	KF_bpf_obj_drop_impl,
- 	KF_bpf_refcount_acquire_impl,
--	KF_bpf_list_push_front,
--	KF_bpf_list_push_back,
-+	KF_bpf_list_push_front_impl,
-+	KF_bpf_list_push_back_impl,
- 	KF_bpf_list_pop_front,
- 	KF_bpf_list_pop_back,
- 	KF_bpf_cast_to_kern_ctx,
-@@ -9580,7 +9580,7 @@ enum special_kfunc_type {
- 	KF_bpf_rcu_read_lock,
- 	KF_bpf_rcu_read_unlock,
- 	KF_bpf_rbtree_remove,
--	KF_bpf_rbtree_add,
-+	KF_bpf_rbtree_add_impl,
- 	KF_bpf_rbtree_first,
- 	KF_bpf_dynptr_from_skb,
- 	KF_bpf_dynptr_from_xdp,
-@@ -9592,14 +9592,14 @@ BTF_SET_START(special_kfunc_set)
- BTF_ID(func, bpf_obj_new_impl)
- BTF_ID(func, bpf_obj_drop_impl)
- BTF_ID(func, bpf_refcount_acquire_impl)
--BTF_ID(func, bpf_list_push_front)
--BTF_ID(func, bpf_list_push_back)
-+BTF_ID(func, bpf_list_push_front_impl)
-+BTF_ID(func, bpf_list_push_back_impl)
- BTF_ID(func, bpf_list_pop_front)
- BTF_ID(func, bpf_list_pop_back)
- BTF_ID(func, bpf_cast_to_kern_ctx)
- BTF_ID(func, bpf_rdonly_cast)
- BTF_ID(func, bpf_rbtree_remove)
--BTF_ID(func, bpf_rbtree_add)
-+BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-@@ -9611,8 +9611,8 @@ BTF_ID_LIST(special_kfunc_list)
- BTF_ID(func, bpf_obj_new_impl)
- BTF_ID(func, bpf_obj_drop_impl)
- BTF_ID(func, bpf_refcount_acquire_impl)
--BTF_ID(func, bpf_list_push_front)
--BTF_ID(func, bpf_list_push_back)
-+BTF_ID(func, bpf_list_push_front_impl)
-+BTF_ID(func, bpf_list_push_back_impl)
- BTF_ID(func, bpf_list_pop_front)
- BTF_ID(func, bpf_list_pop_back)
- BTF_ID(func, bpf_cast_to_kern_ctx)
-@@ -9620,7 +9620,7 @@ BTF_ID(func, bpf_rdonly_cast)
- BTF_ID(func, bpf_rcu_read_lock)
- BTF_ID(func, bpf_rcu_read_unlock)
- BTF_ID(func, bpf_rbtree_remove)
--BTF_ID(func, bpf_rbtree_add)
-+BTF_ID(func, bpf_rbtree_add_impl)
- BTF_ID(func, bpf_rbtree_first)
- BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
-@@ -9954,15 +9954,15 @@ static int check_reg_allocation_locked(struct bpf=
-_verifier_env *env, struct bpf_
+ 	bpf_spin_lock(&glock);
+-	bpf_list_push_front((void *)&ghead + 1, &f->node);
++	bpf_list_push_front((void *)&ghead + 1, &f->node2);
+ 	bpf_spin_unlock(&glock);
 =20
- static bool is_bpf_list_api_kfunc(u32 btf_id)
- {
--	return btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_front] ||
--	       btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_back] ||
-+	return btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_front_impl] ||
-+	       btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_back_impl] ||
- 	       btf_id =3D=3D special_kfunc_list[KF_bpf_list_pop_front] ||
- 	       btf_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back];
- }
-=20
- static bool is_bpf_rbtree_api_kfunc(u32 btf_id)
- {
--	return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add] ||
-+	return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl] ||
- 	       btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_remove] ||
- 	       btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_first];
- }
-@@ -9975,7 +9975,7 @@ static bool is_bpf_graph_api_kfunc(u32 btf_id)
-=20
- static bool is_callback_calling_kfunc(u32 btf_id)
- {
--	return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add];
-+	return btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl];
- }
-=20
- static bool is_rbtree_lock_required_kfunc(u32 btf_id)
-@@ -10016,12 +10016,12 @@ static bool check_kfunc_is_graph_node_api(struc=
-t bpf_verifier_env *env,
-=20
- 	switch (node_field_type) {
- 	case BPF_LIST_NODE:
--		ret =3D (kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_front=
-] ||
--		       kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_back]);
-+		ret =3D (kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_front=
-_impl] ||
-+		       kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_list_push_back_im=
-pl]);
- 		break;
- 	case BPF_RB_NODE:
- 		ret =3D (kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_remove] =
-||
--		       kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add]);
-+		       kfunc_btf_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl])=
-;
- 		break;
- 	default:
- 		verbose(env, "verifier internal error: unexpected graph node argument =
-type %s\n",
-@@ -10702,10 +10702,11 @@ static int check_kfunc_call(struct bpf_verifier=
-_env *env, struct bpf_insn *insn,
- 		}
- 	}
-=20
--	if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_push_front] ||
--	    meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_push_back] ||
--	    meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add]) {
-+	if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_push_front_impl]=
- ||
-+	    meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_push_back_impl] =
-||
-+	    meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl]) {
- 		release_ref_obj_id =3D regs[BPF_REG_2].ref_obj_id;
-+		insn_aux->insert_off =3D regs[BPF_REG_2].off;
- 		err =3D ref_convert_owning_non_owning(env, release_ref_obj_id);
- 		if (err) {
- 			verbose(env, "kfunc %s#%d conversion of owning ref to non-owning fail=
-ed\n",
-@@ -10721,7 +10722,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
- 		}
- 	}
-=20
--	if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add]) {
-+	if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl]) {
- 		err =3D __check_func_call(env, insn, insn_idx_p, meta.subprogno,
- 					set_rbtree_add_callback_state);
- 		if (err) {
-@@ -14764,7 +14765,7 @@ static bool regs_exact(const struct bpf_reg_state=
- *rold,
- 		       const struct bpf_reg_state *rcur,
- 		       struct bpf_id_pair *idmap)
- {
--	return memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)) =3D=3D 0 =
-&&=20
-+	return memcmp(rold, rcur, offsetof(struct bpf_reg_state, id)) =3D=3D 0 =
-&&
- 	       check_ids(rold->id, rcur->id, idmap) &&
- 	       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap);
- }
-@@ -17407,6 +17408,23 @@ static void specialize_kfunc(struct bpf_verifier=
-_env *env,
- 	}
- }
-=20
-+static void __fixup_collection_insert_kfunc(struct bpf_insn_aux_data *in=
-sn_aux,
-+					    u16 struct_meta_reg,
-+					    u16 node_offset_reg,
-+					    struct bpf_insn *insn,
-+					    struct bpf_insn *insn_buf,
-+					    int *cnt)
-+{
-+	struct btf_struct_meta *kptr_struct_meta =3D insn_aux->kptr_struct_meta=
-;
-+	struct bpf_insn addr[2] =3D { BPF_LD_IMM64(struct_meta_reg, (long)kptr_=
-struct_meta) };
-+
-+	insn_buf[0] =3D addr[0];
-+	insn_buf[1] =3D addr[1];
-+	insn_buf[2] =3D BPF_MOV64_IMM(node_offset_reg, insn_aux->insert_off);
-+	insn_buf[3] =3D *insn;
-+	*cnt =3D 4;
-+}
-+
- static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_ins=
-n *insn,
- 			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
- {
-@@ -17453,6 +17471,20 @@ static int fixup_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
- 		insn_buf[1] =3D addr[1];
- 		insn_buf[2] =3D *insn;
- 		*cnt =3D 3;
-+	} else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_list_push_bac=
-k_impl] ||
-+		   desc->func_id =3D=3D special_kfunc_list[KF_bpf_list_push_front_impl=
-] ||
-+		   desc->func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl]) {
-+		int struct_meta_reg =3D BPF_REG_3;
-+		int node_offset_reg =3D BPF_REG_4;
-+
-+		/* rbtree_add has extra 'less' arg, so args-to-fixup are in diff regs =
-*/
-+		if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_rbtree_add_impl]) {
-+			struct_meta_reg =3D BPF_REG_4;
-+			node_offset_reg =3D BPF_REG_5;
-+		}
-+
-+		__fixup_collection_insert_kfunc(&env->insn_aux_data[insn_idx], struct_=
-meta_reg,
-+						node_offset_reg, insn, insn_buf, cnt);
- 	} else if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_=
-ctx] ||
- 		   desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_cast]) {
- 		insn_buf[0] =3D BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-index 619afcab2ab0..209811b1993a 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -14,7 +14,8 @@
-  *	type ID of a struct in program BTF.
-  *
-  *	The 'local_type_id' parameter must be a known constant.
-- *	The 'meta' parameter is a hidden argument that is ignored.
-+ *	The 'meta' parameter is rewritten by the verifier, no need for BPF
-+ *	program to set it.
-  * Returns
-  *	A pointer to an object of the type corresponding to the passed in
-  *	'local_type_id', or NULL on failure.
-@@ -28,7 +29,8 @@ extern void *bpf_obj_new_impl(__u64 local_type_id, void=
- *meta) __ksym;
-  *	Free an allocated object. All fields of the object that require
-  *	destruction will be destructed before the storage is freed.
-  *
-- *	The 'meta' parameter is a hidden argument that is ignored.
-+ *	The 'meta' parameter is rewritten by the verifier, no need for BPF
-+ *	program to set it.
-  * Returns
-  *	Void.
-  */
-@@ -41,7 +43,8 @@ extern void bpf_obj_drop_impl(void *kptr, void *meta) _=
-_ksym;
-  *	Increment the refcount on a refcounted local kptr, turning the
-  *	non-owning reference input into an owning reference in the process.
-  *
-- *	The 'meta' parameter is a hidden argument that is ignored.
-+ *	The 'meta' parameter is rewritten by the verifier, no need for BPF
-+ *	program to set it.
-  * Returns
-  *	An owning reference to the object pointed to by 'kptr'
-  */
-@@ -52,17 +55,35 @@ extern void *bpf_refcount_acquire_impl(void *kptr, vo=
-id *meta) __ksym;
-=20
- /* Description
-  *	Add a new entry to the beginning of the BPF linked list.
-+ *
-+ *	The 'meta' and 'off' parameters are rewritten by the verifier, no nee=
-d
-+ *	for BPF programs to set them
-  * Returns
-- *	Void.
-+ *	0 if the node was successfully added
-+ *	-EINVAL if the node wasn't added because it's already in a list
-  */
--extern void bpf_list_push_front(struct bpf_list_head *head, struct bpf_l=
-ist_node *node) __ksym;
-+extern int bpf_list_push_front_impl(struct bpf_list_head *head,
-+				    struct bpf_list_node *node,
-+				    void *meta, __u64 off) __ksym;
-+
-+/* Convenience macro to wrap over bpf_list_push_front_impl */
-+#define bpf_list_push_front(head, node) bpf_list_push_front_impl(head, n=
-ode, NULL, 0)
-=20
- /* Description
-  *	Add a new entry to the end of the BPF linked list.
-+ *
-+ *	The 'meta' and 'off' parameters are rewritten by the verifier, no nee=
-d
-+ *	for BPF programs to set them
-  * Returns
-- *	Void.
-+ *	0 if the node was successfully added
-+ *	-EINVAL if the node wasn't added because it's already in a list
-  */
--extern void bpf_list_push_back(struct bpf_list_head *head, struct bpf_li=
-st_node *node) __ksym;
-+extern int bpf_list_push_back_impl(struct bpf_list_head *head,
-+				   struct bpf_list_node *node,
-+				   void *meta, __u64 off) __ksym;
-+
-+/* Convenience macro to wrap over bpf_list_push_back_impl */
-+#define bpf_list_push_back(head, node) bpf_list_push_back_impl(head, nod=
-e, NULL, 0)
-=20
- /* Description
-  *	Remove the entry at the beginning of the BPF linked list.
-@@ -88,11 +109,19 @@ extern struct bpf_rb_node *bpf_rbtree_remove(struct =
-bpf_rb_root *root,
-=20
- /* Description
-  *	Add 'node' to rbtree with root 'root' using comparator 'less'
-+ *
-+ *	The 'meta' and 'off' parameters are rewritten by the verifier, no nee=
-d
-+ *	for BPF programs to set them
-  * Returns
-- *	Nothing
-+ *	0 if the node was successfully added
-+ *	-EINVAL if the node wasn't added because it's already in a tree
-  */
--extern void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node =
-*node,
--			   bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b)) _=
-_ksym;
-+extern int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_n=
-ode *node,
-+			       bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b=
-),
-+			       void *meta, __u64 off) __ksym;
-+
-+/* Convenience macro to wrap over bpf_rbtree_add_impl */
-+#define bpf_rbtree_add(head, node, less) bpf_rbtree_add_impl(head, node,=
- less, NULL, 0)
-=20
- /* Description
-  *	Return the first (leftmost) node in input tree
+ 	return 0;
 --=20
 2.34.1
 
