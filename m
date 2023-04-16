@@ -2,206 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9FC6E3B23
-	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 20:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0436B6E3B54
+	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 20:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjDPSYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Apr 2023 14:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S229593AbjDPSwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Apr 2023 14:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjDPSYJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Apr 2023 14:24:09 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855522106
-        for <bpf@vger.kernel.org>; Sun, 16 Apr 2023 11:24:08 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-94f0dd117dcso83674466b.3
-        for <bpf@vger.kernel.org>; Sun, 16 Apr 2023 11:24:08 -0700 (PDT)
+        with ESMTP id S229484AbjDPSwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Apr 2023 14:52:17 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8771810CB;
+        Sun, 16 Apr 2023 11:52:15 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f167d0c91bso9848175e9.2;
+        Sun, 16 Apr 2023 11:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681669447; x=1684261447;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1681671134; x=1684263134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ooJXs3NI0Q3JSdyOCPzw9FUEEUJZAiCUArD8Yez6874=;
-        b=DRgWGP4YggRUuDcbfyFEWEA9/czJe42s6jRFMjm56yWc74Y3iHd7ze5Dx3KCmJxgOI
-         LIV+csWP8A4/H8WokbCEcvue/CAbSrah7Buf6X9/6/CiJgiyqiXrjk2/yhk5Ovj+vSJ3
-         pCrlSRyLiSM4DfoC9Ar1TaAusht2kikMgYN+wNhgaEdfdjh02A2r6MPG3AdKyxHIXSnD
-         lzrWSE25Zju6gZERiiE0mzP+9ztefEbDEw5QOeqpiqaBK43kpgLDhUkG3YU/qdyCozg9
-         mGf9CdG8Ih8scqh3WZA0eSM1YFp5v0Uh7wfCXPEvQbsDqV+T8HWNZiHfEcglovLNX2Bk
-         0U0g==
+        bh=w6Ku0+NTC8bNTjbCgiexuYfINosTStnT3+TeJKf99Zo=;
+        b=Cp048Icg72JbeFDMoVykKwpDz/bTi153C+AfD7d5gNJ8CW9QC24hK6bGnS7eS8ZmxK
+         /t8C12OZT7bBHsSYOlvspz2gubETrpyl+GaCUD6bl4ZEXI3eh5ZOSJ/rj8g9ZxXlNTCK
+         02G8PlQL9d1p7h01NbayN7jPurDbecZLbu/vakzt9p5uF91KDRtL8L7Hmx6vl+GYXLuG
+         fBZN5Xib8V6N2nYZ5+Z5roXsCU5hNQAJ827SykuWIYMw7cNE7FhL3NrihRtHYyYBXE1J
+         qoP85ZdnZGtQ3IwJKH+nj+0G0xGF2y/TeHd6oWOjOyUkIkgnKTUqaS9QXnB3m5b1Y6Yg
+         e9Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681669447; x=1684261447;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681671134; x=1684263134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ooJXs3NI0Q3JSdyOCPzw9FUEEUJZAiCUArD8Yez6874=;
-        b=WKxcPrA7C7oqgHS/NHf3QNsqcfT4FKBvqCsBmOqpzorYvr9abyyrSZdpRqwr5lUUNY
-         9mTH7x60xZr1ZeEyjnF6BBIcc5nr7JCrrLYW3gxKU3jiXHuKnyOMugc+idadUy2qt7nB
-         zljWCDI8g1HuZiIxxPEFD1loNmcXef+FeGB1GCwEBpYv0YofW3GYqHJPb1/kkK+2lFi/
-         CWq7F9/WVazIL9hObcAWMZcsun3T8lQARwLhdXLuErpqKQXllXckbFeVUF4IcgCtPZ1C
-         KLtmTIiAor2uXaYa0YLu546Y1bFQO9kEh0gPWmE1TCb65Wig7cRuHHV5McQ+5VcUCkUE
-         IX5Q==
-X-Gm-Message-State: AAQBX9eqfm/zFaod71quvWfYqBD0njlzfF2kxwW7xRXKDO8Qc3aG9qTS
-        US+qXrWe8WFfPm4GSqtMGTM/+TY9phqCGEJaL4k=
-X-Google-Smtp-Source: AKy350aDaB3qz75k3Gu+pbVsGmBeOtF9Lb1HuAr1nd4JjeFLP2e8rdQkUrec7WbV42RiO2hWsTrLCY4TJy/2DYCuxfQ=
-X-Received: by 2002:a50:9eca:0:b0:506:34d8:c710 with SMTP id
- a68-20020a509eca000000b0050634d8c710mr6023313edf.3.1681669446782; Sun, 16 Apr
- 2023 11:24:06 -0700 (PDT)
+        bh=w6Ku0+NTC8bNTjbCgiexuYfINosTStnT3+TeJKf99Zo=;
+        b=llggdFbf2YpUonfYv2SLSfe8JR+x3TjTdj1fF9QdGBJwgt629bPCV/sj1V5DMpaF5r
+         Yet21LtjHOzqMRKwUjVVHIjUaLsZZo/hKMcnjr1ZJeK67ualQz4FbENR2ztj5DgU7GRn
+         qe/V59jIXVk8IeBYq9OLFikBoHz4bCK51gM5gtFoQMxn/bpXSsJFH2yHm9w1uEHdwHta
+         HwlvKMOJaDyLQRFlrhB9zlueX7JRWi0fc/vjfcBNuwS2dM+lhiNVf7MKTs73AB7iGXBx
+         1TDi7ItpW79lZY19HykXk06TWNUX/3sfGpTaY1FfgILqmvff0Yst9V6FzXa664uFZbTQ
+         07FA==
+X-Gm-Message-State: AAQBX9eV6OmBv59fpUf4mRjy6rBuQwTyTAjqKd8ufsWOa4jfD8vM8Vyv
+        Xt+PmQhuBBVRUyZ9zQkIxbI=
+X-Google-Smtp-Source: AKy350YkCc4ZGEuIKujbX6AaGd6LZRdZ6QK0UwncHLVlScZ655mI6QUblZznWeZ0EJCtBaOACnLtIg==
+X-Received: by 2002:adf:ee8a:0:b0:2f9:cee4:b7d with SMTP id b10-20020adfee8a000000b002f9cee40b7dmr1672567wro.70.1681671133706;
+        Sun, 16 Apr 2023 11:52:13 -0700 (PDT)
+Received: from solpc.. (67.pool90-171-92.dynamic.orange.es. [90.171.92.67])
+        by smtp.gmail.com with ESMTPSA id m13-20020adffe4d000000b002efb139ce72sm8641882wrs.36.2023.04.16.11.52.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Apr 2023 11:52:13 -0700 (PDT)
+From:   =?UTF-8?q?Joan=20Bruguera=20Mic=C3=B3?= <joanbrugueram@gmail.com>
+To:     jpoimboe@kernel.org, i.pear@outlook.com
+Cc:     acme@kernel.org, alan.maguire@oracle.com, alexandref75@gmail.com,
+        bpf@vger.kernel.org, dxu@dxuuu.xyz, jforbes@redhat.com,
+        linux-kernel@vger.kernel.org, olsajiri@gmail.com,
+        peterz@infradead.org, ptalbert@redhat.com, yhs@fb.com
+Subject: Re: [PATCH] vmlinux.lds.h: Force-align ELF notes section to four bytes
+Date:   Sun, 16 Apr 2023 18:52:04 +0000
+Message-Id: <20230416185204.2592590-1-joanbrugueram@gmail.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <SY4P282MB108438B241E26EB9DC76A4469D989@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+References: <SY4P282MB108438B241E26EB9DC76A4469D989@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-References: <303b5895-319d-2bb7-9909-10fec3323df2@antgroup.com>
-In-Reply-To: <303b5895-319d-2bb7-9909-10fec3323df2@antgroup.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 16 Apr 2023 11:23:55 -0700
-Message-ID: <CAADnVQ+3y0mbORnvCYNLdSGZ7hV5Qxskc3L-mTg0SmVpfwHFYQ@mail.gmail.com>
-Subject: Re: [RFC] A new bpf map type for fuzzy matching key
-To:     =?UTF-8?B?5rKI5a6J55CqKOWHm+eOpSk=?= <amy.saq@antgroup.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        =?UTF-8?B?6LCI6Ym06ZSL?= <henry.tjf@antgroup.com>,
-        =?UTF-8?B?5ZGo5by6KOS4reiIqik=?= <shuze.zq@antgroup.com>,
-        =?UTF-8?B?5pyx6L6JKOiMtuawtCk=?= <teawater@antgroup.com>,
-        =?UTF-8?B?5byg57uq5bOwKOS6keS8ryk=?= <yunbo.zxf@antgroup.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 9:32=E2=80=AFPM =E6=B2=88=E5=AE=89=E7=90=AA(=E5=87=
-=9B=E7=8E=A5) <amy.saq@antgroup.com> wrote:
->
->
-> Hi everyone,
->
-> For supporting fuzzy matching in bpf map as described in the original
-> question [0], we come up with a proposal that would like to have some
-> advice or comments from bpf thread. Thanks a lot for all the feedback :)
->
-> We plan to implement a new bpf map type, naming BPF_FM_MAP, standing for
-> fuzzy matching map.
-> The basic idea is implementing a trie-tree using map of map runtime
-> structure.
->
-> The number of tree levels equals to the number of fields in the key
-> struct. Assuming that the key struct has M fields, the first (M-1) level
-> of tree nodes will be hash maps with key as the value of (M-1)-th field
-> and entry as the fd of next level map. The last level, regarded as leaf
-> nodes, will be hash maps with key as the value of M-th field and entry
-> as user-defined entry for this BPF_FM_MAP.
->
-> To support fuzzy matching, we add a special value -1 as (M-1)-th field
-> key if (M-1)-th field is set as general match.
->
-> When looking up a target key in BPF_FM_MAP, it will lookup the first
-> level hashmap, matching the entry with the same value on this field and
-> with -1 if exists. Then it will lookup the next-level hashmap, whose fd
-> is the value it get from the previous level hashmap. It will go through
-> all the levels of tree and get a set of leaf nodes it matches. Finally,
-> it will sort the set of matched leaf nodes based on their priority,
-> which is defined in BPF_FM_MAP entry struct, and return the
-> corresponding return value also defined in BPF_FM_MAP entry struct.
->
->
-> Given a user-defined key struct and entry struct as following:
->
-> struct fm_key {
->      int a;
->      int b;
->      int c;
-> }
->
-> struct fm_entry {
->      int priority;
->      int value;
-> }
->
-> and declare a BPF_FM_MAP DEMO_MAP to store incoming key-value pair:
->
-> struct {
->      __uint(type, BPF_FM_MAP);
->      __type(key, struct fm_key);
->      __type(value, struct fm_entry);
->      __uint(pinning, LIBBPF_PIN_BY_NAME);
->      __uint(max_entries, 1024);
->      __uint(map_flags, BPF_F_NO_PREALLOC);
-> } DEMO_MAP SEC(".maps");
->
-> Now, we add the following three key-value pairs into DEMO_MAP:
->
-> |a    |b    |c    |priority    |value    |
-> |-    |-    |1    |1           |1        |
-> |-    |2    |1    |2           |2        |
-> |3    |2    |1    |3           |3        |
->
-> The tree will be constructed as following:
->
-> field a             field b               field c
->
->                                            fd =3D 3
->                                       ---->| key | (prioriy, value) |
->                                      |     |  1  |       (1, 1) |
->                                      |
->                      fd =3D 1          |
->                   -->| key | val |   |
->                  |   | -1  |  3  |----     fd =3D 4
->                  |   |  2  |  4  |-------->| key | (prioriy, value) |
->   fd =3D 0         |                         |  1  |       (2, 2) |
-> | key | val |   |
-> | -1  |  1  |----
-> |  3  |  2  |----
->                  |   fd =3D 2
->                   -->| key | val |         fd =3D 5
->                      |  2  |  5  |-------->| key | (prioriy, value) |
->                                            |  1  |       (3, 3) |
->
->
-> After updating the tree, we have three target tuples to lookup in DEMO_MA=
-P.
->
-> struct fm_key t1 =3D {
->      .a =3D 6,
->      .b =3D 4,
->      .c =3D 1
-> };
->
-> struct fm_key t2 =3D {
->      .a =3D 5,
->      .b =3D 2,
->      .c =3D 1
-> };
->
-> struct fm_key t3 =3D {
->      .a =3D 3,
->      .b =3D 2,
->      .c =3D 1
-> };
->
-> // map lookup order: 0 -> 1 -> 3
-> // matched leaf nodes: (1, 1)
-> // picked return value: 1
-> map_lookup_elem(&DEMO_MAP, &t1) =3D=3D 1
->
-> // map loopup order: 0 -> 1 -> (3, 4)
-> // matched leaf nodes: (1, 1), (2, 2)
-> // picked return value: 2
-> map_lookup_elem(&DEMO_MAP, &t2) =3D=3D 2
->
-> // map lookup order: 0 -> (1, 2) -> (3, 4, 5)
-> // matched leaf nodes: (1, 1), (2, 2), (3, 3)
-> // picked return value: 3
-> map_loopup_elem(&DEMO_MAP, &t3) =3D=3D 3
->
->
-> Thanks a lot for reviewing this proposal and we really appreciate any
-> feedback here.
+On Thu, Apr 13, 2023 at 12:54:19PM +0800, Tianyi Liu wrote:
+> On Wed, Apr 12, 2023 at 16:30PM UTC, Josh Poimboeuf wrote:
+> > On Wed, Apr 12, 2023 at 03:10:14PM +0800, Tianyi Liu wrote:
+> > > On Tue, Apr 11, 2023 at 17:00 , Josh Poimboeuf wrote:
+> > > > On Tue, Feb 14, 2023 at 02:33:02PM +0800, Tianyi Liu wrote:
+> > > > > > LLVM_OBJCOPY=objcopy pahole -J --btf_gen_floats -j
+> > > > > > --skip_encoding_btf_inconsistent_proto --btf_gen_optimized
+> > > > > > .tmp_vmlinux.btf
+> > > > > > btf_encoder__encode: btf__dedup failed!
+> > > > > > Failed to encode BTF
+> > > > > >
+> > > > > > Thanks,
+> > > > > >
+> > > > >
+> > > > > I encountered the same problem when building a new kernel and I found some
+> > > > > reasons for the error.
+> > > > >
+> > > > > In short, enabling CONFIG_X86_KERNEL_IBT will change the order of records in
+> > > > > .notes section. In addition, due to historical problems, the alignment of
+> > > > > records in the .notes section is not unified, which leads to the inability of
+> > > > > gelf_getnote() to read the records after the wrong one.
+> > > >
+> > > > Alexandre, Tianyi, are you still seeing this issue with the latest
+> > > > dwarves?  If so can you confirm the below patch fixes it?
+> > > >
+> > >
+> > > Josh, first of all, thank you very much for your help. However, this patch
+> > > doesn't work in my environment. I am using gcc 12.2.1 20230201.
+> > > After compiling, when I use readelf -S to view ELF sections,
+> > > the align of .notes section is still 8:
+> > >
+> > > $ readelf -S .tmp_vmlinux.btf
+> > > [20] .notes            NOTE             ffffffff8250b570  0170b570
+> > >      0000000000000084  0000000000000000   A       0     0     8
+> > 
+> > Hm, weird.
+> 
+> I have consulted some materials and found that using ALIGN() in linker
+> scripts can only "increase" alignment, not decrease it.
+> 
+> Perhaps could you try modifying your patch to use ALIGN(2) and SUBALIGN(2)
+> and see if the .notes section in the output file is aligned to 2?
+> In my tests, this had no effect.
+> 
+> [1] https://sourceware.org/binutils/docs/ld/Forced-Output-Alignment.html
 
-This sounds like several hash maps chained together with a custom logic.
-If so it's not clear why a new map type is necessary.
-Just let bpf prog lookup multiple hash maps.
+Not sure about the ld documentation (it may just be ambiguous wording)
+but while doing some tests, I have found that Josh's ALIGN/SUBALIGN(4)
+patch only works for certain kernel configs and fails for others.
+This likely explains why Josh's patch worked for me but not for Tianyi.
+
+I haven't investigated why or when it works though, but here's a config
+where Josh's ALIGN(4) patch works and or where it doesn't (for me):
+https://zealcharm.com/20230416-btf-dedup-bug-sample-configs/align-4-working
+https://zealcharm.com/20230416-btf-dedup-bug-sample-configs/align-4-not-working
+
+OTOH the new patch to discard .note.gnu.property works in both cases.
