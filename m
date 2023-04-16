@@ -2,163 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB8E6E35EA
-	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 09:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253096E363A
+	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 10:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbjDPHzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Apr 2023 03:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        id S229662AbjDPItj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Apr 2023 04:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjDPHzn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Apr 2023 03:55:43 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8F626B1;
-        Sun, 16 Apr 2023 00:55:42 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id s13so2651965uaq.4;
-        Sun, 16 Apr 2023 00:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681631741; x=1684223741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+6yHpJ4jaMGEPIy6bk8FlRfObSil1/mr8YSnxaCB3mM=;
-        b=P3M7PUM51WK4DwJkB83IJpbLq/H+tQCdn9chTw7zPNS5Q6Msgva5FU0NL6+zBoV5KJ
-         EvhEozUl4m44IeWKHAYEzJOdUwg5MqRadD1d7XgwrO0kY1cu7nMQ0U7ISI8nOHAb97z9
-         ju47CIkwQZjfb/6WuXUelEjGb6Bo1nOsnGwpl1buJUBKB/ksfFyH0lZ0qFCv7OI2iyts
-         YSAgG3Ne2Zgx4Q46i3dA32flqbihZ9+1+p+zjVxPe7Uywf1hE6E+B0HRhfCLov3nvyIz
-         GN7GRW45R2ZpHOylLNvR/cbjskjSYtBgorh4LRiBG3hZeyO/sPDt8qgus9HL6nrFOBqv
-         ByZQ==
+        with ESMTP id S229472AbjDPIti (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Apr 2023 04:49:38 -0400
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005F1A4;
+        Sun, 16 Apr 2023 01:49:36 -0700 (PDT)
+Received: by mail-qt1-f173.google.com with SMTP id fv6so9809225qtb.9;
+        Sun, 16 Apr 2023 01:49:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681631741; x=1684223741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+6yHpJ4jaMGEPIy6bk8FlRfObSil1/mr8YSnxaCB3mM=;
-        b=DvxdXrxIbqukOth6R6sgBAFBy9jk9mp3m6tT7pKz6m+BMzDnfIzR4E/MBvWIAIPWMJ
-         1txxDTwybb81SWbYfHPaEe5nyXF9oY1pM9pJKGdVe/b9kXpMoHgf4FstXUtUm66Wh/lm
-         09EerF5uMlN5Giq7pPoEU2UYMgt+JJ2EBuMhuAEBROzC8jqqHfLpxGp7fCrUrVh+ee4B
-         5vxzRALz/aelH+UvG/zjdjelu4VHkKmL96aQbIrhDClxbs2Ak/0VKR3tjSP3WDyy9cuB
-         jCKqTXU8C1snUEHdtqtkIzAOugVcCaKnf16mxXF4/LZ6LW1AaKXfzTjNzeiCUoN45xAw
-         zFzw==
-X-Gm-Message-State: AAQBX9dGXYo/WNharEZRPlSgnV9BufMgL2sGagaSDSVy7sqbwFAqTRsU
-        i8tmaaN0ncgeFdqfq0DpSxtiPdSpE8QhkQeoz8vJHYqE
-X-Google-Smtp-Source: AKy350YKj/uu52MaD3EXNZlHE9J9kE6KXs5FQ9HwemuDpykTYszRQS4zw8EP7InFFWfjG0A4PDbqbazvepRRDSmB9+c=
-X-Received: by 2002:ab0:100c:0:b0:68e:33d7:7e6b with SMTP id
- f12-20020ab0100c000000b0068e33d77e6bmr6356362uab.1.1681631741395; Sun, 16 Apr
- 2023 00:55:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681634975; x=1684226975;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OieRNukWwsYw62a7aZIFi+++4WhfdthIYWAFYZdjWws=;
+        b=gLgbNw6EU6op2JNLGgxSI3fisPZF13tutfy+1MoBbGmyqZ9SJQ4uJn97A9rbma8sVj
+         5rHNUuzRXXPiQQZ6Ewf2GZuPmcMbcdYRvin0ajmfsM5oe02sm10Kf9ElHgy9GS6CVM2D
+         5cVdigZK5E+rTVS6z8djG9xXYwy7cmkMVR4VztT8ddWpr9wA5LM/pe4J8cZpM/FH+Ew4
+         rp5xrZLl3y/0N5h8OhvlntIbZdlcyNx+hVqjCzjM27A4h5OUf9AIvcL09ubwWwknOSPS
+         rrDx6PNrNj6UWHaQHkOaw+9ou9AtiNjrELwd0npHWplIHAOS3EgLcvzhW2IPScMWanHD
+         Olag==
+X-Gm-Message-State: AAQBX9fXER1MMzm97n/13O8N97EcQ8ZrVagIuU3CUFPjwb0EFcbuiQiN
+        2usgkyB8S7oCDIYltov7z17sDcEMG8MRgj7mdzRZjg==
+X-Google-Smtp-Source: AKy350aTAqeLz9AsopebQ9CcVOWD43dpd/4tGRfXHvotDTd82rgQYqT1lFRSDqq2KLNcsNyeNSdu+g==
+X-Received: by 2002:ac8:5808:0:b0:3e4:9f9a:54b2 with SMTP id g8-20020ac85808000000b003e49f9a54b2mr16912091qtg.65.1681634975457;
+        Sun, 16 Apr 2023 01:49:35 -0700 (PDT)
+Received: from localhost ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05622a00cf00b003ecf475286csm922244qtw.39.2023.04.16.01.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Apr 2023 01:49:34 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, memxor@gmail.com
+Subject: [PATCH bpf-next v2 0/3] Remove KF_KPTR_GET kfunc flag
+Date:   Sun, 16 Apr 2023 03:49:25 -0500
+Message-Id: <20230416084928.326135-1-void@manifault.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-References: <0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com>
-In-Reply-To: <0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 16 Apr 2023 10:55:30 +0300
-Message-ID: <CAOQ4uxggt_je51t0MWSfRS0o7UFSYj7GDHSJd026kMfF9TvLiA@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] bpf iterator for file-system
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     lsf-pc@lists.linux-foundation.org, Nhat Pham <nphamcs@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-fsdevel@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 28, 2023 at 5:47=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> From time to time, new syscalls have been proposed to gain more observabi=
-lity
-> for file-system:
->
-> (1) getvalues() [0]. It uses a hierarchical namespace API to gather and r=
-eturn
-> multiple values in single syscall.
-> (2) cachestat() [1].  It returns the cache status (e.g., number of dirty =
-pages)
-> of a given file in a scalable way.
->
-> All these proposals requires adding a new syscall. Here I would like to p=
-ropose
-> another solution for file system observability: bpf iterator for file sys=
-tem
-> object. The initial idea came when I was trying to implement a filefrag-l=
-ike
-> page cache tool with support for multi-order folio, so that we can know t=
-he
-> number of multi-order folios and the orders of those folios in page cache=
-. After
-> developing a demo for it, I realized that we could use it to provide more
-> observability for file system objects. e.g., dumping the per-cpu iostat f=
-or a
-> super block [2],  iterating all inodes in a super-block to dump info for
-> specific inodes (e.g., unlinked but pinned inode), or displaying the flag=
-s of a
-> specific mount.
->
-> The BPF iterator was introduced in v5.8 [3] to support flexible content d=
-umping
-> for kernel objects. It works by creating bpf iterator file [4], which is =
-a
-> seq-like read-only file, and the content of the bpf iterator file is dete=
-rmined
-> by a previously loaded bpf program, so userspace can read the bpf iterato=
-r file
-> to get the information it needs. However there are some unresolved issues=
-:
-> (1) The privilege.
-> Loading the bpf program requires CAP_ADMIN or CAP_BPF. This means that th=
-e
-> observability will be available to the privileged process. Maybe we can l=
-oad the
-> bpf program through a privileged process and make the bpf iterator file b=
-eing
-> readable for normal users.
-> (2) Prevent pinning the super-block
-> In the current naive implementation, the bpf iterator simply pins the
-> super-block of the passed fd and prevents the super-block from being dest=
-royed.
-> Perhaps fs-pin is a better choice, so the bpf iterator can be deactivated=
- after
-> the filesystem is umounted.
->
-> I hope to send out an RFC soon before LSF/MM/BPF for further discussion.
+We've managed to improve the UX for kptrs significantly over the last 9
+months. All of the existing use cases which previously had KF_KPTR_GET
+kfuncs (struct bpf_cpumask *, struct task_struct *, and struct cgroup *)
+have all been updated to be synchronized using RCU. In other words,
+their KF_KPTR_GET kfuncs have been removed in favor of KF_RCU |
+KF_ACQUIRE kfuncs, with the pointers themselves also being readable from
+maps in an RCU read region thanks to the types being RCU safe.
 
-Hi Hou,
+While KF_KPTR_GET was a logical starting point for kptrs, it's become
+clear that they're not the correct abstraction. KF_KPTR_GET is a flag
+that essentially does nothing other than enforcing that the argument to
+a function is a pointer to a referenced kptr map value. At first glance,
+that's a useful thing to guarantee to a kfunc. It gives kfuncs the
+ability to try and acquire a reference on that kptr without requiring
+the BPF prog to do something like this:
 
-IIUC, there is not much value in making this a cross track session.
-Seems like an FS track session that has not much to do with BPF
-development.
+struct kptr_type *in_map, *new = NULL;
 
-Am I understanding correctly or are there any cross subsystem
-interactions that need to be discussed?
+in_map = bpf_kptr_xchg(&map->value, NULL);
+if (in_map) {
+	new = bpf_kptr_type_acquire(in_map);
+	in_map = bpf_kptr_xchg(&map->value, in_map);
+	if (in_map)
+		bpf_kptr_type_release(in_map);
+}
 
-Perhaps we can join you as co-speaker for Miklos' traditional
-"fsinfo" session?
+That's clearly a pretty ugly (and racy) UX, and if using KF_KPTR_GET is
+the only alternative, it's better than nothing. However, the problem
+with any KF_KPTR_GET kfunc lies in the fact that it always requires some
+kind of synchronization in order to safely do an opportunistic acquire
+of the kptr in the map. This is because a BPF program running on another
+CPU could do a bpf_kptr_xchg() on that map value, and free the kptr
+after it's been read by the KF_KPTR_GET kfunc. For example, the
+now-removed bpf_task_kptr_get() kfunc did the following:
 
-Thanks,
-Amir.
+struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
+{
+	    struct task_struct *p;
 
->
-> [0]:
-> https://lore.kernel.org/linux-fsdevel/YnEeuw6fd1A8usjj@miu.piliscsaba.red=
-hat.com/
-> [1]: https://lore.kernel.org/linux-mm/20230219073318.366189-1-nphamcs@gma=
-il.com/
-> [2]:
-> https://lore.kernel.org/linux-fsdevel/CAJfpegsCKEx41KA1S2QJ9gX9BEBG4_d8ig=
-A0DT66GFH2ZanspA@mail.gmail.com/
-> [3]: https://lore.kernel.org/bpf/20200509175859.2474608-1-yhs@fb.com/
-> [4]: https://docs.kernel.org/bpf/bpf_iterators.html
->
-> _______________________________________________
-> Lsf-pc mailing list
-> Lsf-pc@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/lsf-pc
+	rcu_read_lock();
+	p = READ_ONCE(*pp);
+	/* If p is non-NULL, it could still be freed by another CPU,
+ 	 * so we have to do an opportunistic refcount_inc_not_zero()
+	 * and return NULL if the task will be freed after the
+	 * current RCU read region.
+	 */
+	|f (p && !refcount_inc_not_zero(&p->rcu_users))
+		p = NULL;
+	rcu_read_unlock();
+    
+	return p;
+}
+    
+In other words, the kfunc uses RCU to ensure that the task remains valid
+after it's been peeked from the map. However, this is completely
+redundant with just defining a KF_RCU kfunc that itself does a
+refcount_inc_not_zero(), which is exactly what bpf_task_acquire() now
+does.
+
+So, the question of whether KF_KPTR_GET is useful is actually, "Are
+there any synchronization mechanisms / safety flags that are required by
+certain kptrs, but which are not provided by the verifier to kfuncs?"
+The answer to that question today is "No", because every kptr we
+currently care about is RCU protected.
+
+Even if the answer ever became "yes", the proper way to support that
+referenced kptr type would be to add support for whatever
+synchronization mechanism it requires in the verifier, rather than
+giving kfuncs a flag that says, "Here's a pointer to a referenced kptr
+in a map, do whatever you need to do."
+
+With all that said -- so as to allow us to consolidate the kfunc API,
+and simplify the verifier, this patchset removes the KF_KPTR_GET kfunc
+flag.
+
+---
+
+This is v2 of this patchset
+
+v1: https://lore.kernel.org/all/20230415103231.236063-1-void@manifault.com/
+
+Changelog:
+----------
+
+v1 -> v2:
+- Fix KF_RU -> KF_RCU typo in commit summary for patch 2/3, and in cover
+  letter (Alexei)
+- In order to reduce churn, don't shift all KF_* flags down by 1. We'll
+  just fill the now-empty slot the next time we add a flag (Alexei)
+
+
+David Vernet (3):
+  bpf: Remove bpf_kfunc_call_test_kptr_get() test kfunc
+  bpf: Remove KF_KPTR_GET kfunc flag
+  bpf,docs: Remove KF_KPTR_GET from documentation
+
+ Documentation/bpf/kfuncs.rst                  | 21 ++---
+ include/linux/btf.h                           |  1 -
+ kernel/bpf/verifier.c                         | 65 ----------------
+ net/bpf/test_run.c                            | 12 ---
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 40 ++--------
+ .../selftests/bpf/progs/map_kptr_fail.c       | 78 -------------------
+ .../testing/selftests/bpf/verifier/map_kptr.c | 27 -------
+ 7 files changed, 11 insertions(+), 233 deletions(-)
+
+-- 
+2.40.0
