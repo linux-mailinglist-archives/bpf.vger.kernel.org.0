@@ -2,121 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041696E3464
-	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 01:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C826F6E34A0
+	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 02:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjDOXIi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 19:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        id S229922AbjDPAuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Apr 2023 20:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjDOXIh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 19:08:37 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E018FE72;
-        Sat, 15 Apr 2023 16:08:35 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id hg14-20020a17090b300e00b002471efa7a8fso8881135pjb.0;
-        Sat, 15 Apr 2023 16:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681600115; x=1684192115;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=39PuCCuj94A8wvhWfmSofwyxOxK860d75vvdbLmz9qg=;
-        b=OfPBqLHVtCm5t5i/foGq0MOygDKM3IS0SgqmIwL5GIUnhEKDJv51r3z8C07p9VRnjv
-         pOdSBv429zfx64+O2pXiw+kCxH/PIWBO1Num3gbjHu/+REV6n6IWsU7nHdvRdKCUuKo0
-         ND/Gm7KSNjk5mfpvLFJZZGcsxZyUGZlib5HC0EMvHHEYcLuzn4vB3R6QKtAQ41yAYMBc
-         /pEOL+zMFVY+s2YcMi4+UOF2hb56L33wWpwKxNSQUqen40ersrfbm34rfwef7/Z6Ra/q
-         Zo44aJYKCJgV51lHK1xZZ3dX99iSrVt5xFjg3Y7+fYMXWD/qT/cMjqsG7Bzliki2HqYg
-         96+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681600115; x=1684192115;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=39PuCCuj94A8wvhWfmSofwyxOxK860d75vvdbLmz9qg=;
-        b=NLspA2oaauts4+2nTXdcwPDSsrHUU2oHcBfG4znjP3FvAbuZOTvMNsE2U3pBu2Pv2v
-         PvwYwkOyX1unMtIat1R7crM1sdY1+GEt0tx0Iv2nG/RtI2nG/vsluV4o3Da9Mctz7TWd
-         AYDxdW4NjG8eR5pfnOPqJlIyY7/XzwvN+RvOy85IWuTTHAF50vkF86YkIvwulJkXtP8T
-         AmGdBHWn9hPEoUj3k+Wfcpj0hSwl97A/g2JINb1K8SKI7KH8hDZPVCf8OWq0tUXZvs1k
-         5U3GhiJtUiLMW6W0tDCO9G4QAWUUlGF3MbhaHvqYe4Yp8m9thpxEs1LuCgvISt/8IdSG
-         /W8Q==
-X-Gm-Message-State: AAQBX9d0WhYsAayTzp+fqzhoEDCc7xlqJwXZDoG099UbTFThY0xFloAB
-        P8SEyR2HrgvBBMzgTLV2lBg=
-X-Google-Smtp-Source: AKy350apd+Ln282XmoJOQXWb/TXH3/+xy90UhScPT5BE9gR9Zz7xNmca84oyVR6rAEXPRAJm+4jvsQ==
-X-Received: by 2002:a05:6a21:6d94:b0:ef:2389:66ca with SMTP id wl20-20020a056a216d9400b000ef238966camr2233402pzb.7.1681600115116;
-        Sat, 15 Apr 2023 16:08:35 -0700 (PDT)
-Received: from macbook-pro-6.dhcp.thefacebook.com ([2620:10d:c090:400::5:eeb9])
-        by smtp.gmail.com with ESMTPSA id m9-20020a654c89000000b00502ecb91940sm4717761pgt.55.2023.04.15.16.08.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Apr 2023 16:08:34 -0700 (PDT)
-Date:   Sat, 15 Apr 2023 16:08:31 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        memxor@gmail.com
-Subject: Re: [PATCH bpf-next 2/3] bpf: Remove KF_KPTR_GET kfunc flag
-Message-ID: <20230415230831.pkpk5qtgjynap62c@macbook-pro-6.dhcp.thefacebook.com>
-References: <20230415103231.236063-1-void@manifault.com>
- <20230415103231.236063-3-void@manifault.com>
+        with ESMTP id S229588AbjDPAuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Apr 2023 20:50:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B078835A3
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 17:50:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E2AB618DB
+        for <bpf@vger.kernel.org>; Sun, 16 Apr 2023 00:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 94A6CC4339B;
+        Sun, 16 Apr 2023 00:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681606219;
+        bh=IyA2yVujfgvuALCdyEcZNch1EtRrSaaoRJd1zmeiQGY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WDilotui9I/CQcTFZAmxpLc1pG7xD2v9j+ZmnUOmjsxl+5JC8bFWVAbgvw8adquTA
+         YPFHB4NtndjkV1N6KwNBWn9nge1pdBHvwV3/sqdIafq9slqbj6/P3pwyOg39fR+IYc
+         raDMoe5/p+/afqzRkT99/HKDTtmgs3+NJ622DPMiJYhNZg+6dT/HzI1pdMsMqCJ8qs
+         BbCumM0yq2UmVFsNzDJ9OW+LTp50z4Il2011EqQaCvkdozIuHtCerAvGeAUMZJ30kO
+         NUawPAiRdRIAE2sE6rYImg9GXVRgF5RoOD92enrrC2a7ZiRvjtKVQ8p0DGo1ArlcWz
+         9Y4QSTunOTBIg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7B746E21EDE;
+        Sun, 16 Apr 2023 00:50:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230415103231.236063-3-void@manifault.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next 0/9] Shared ownership for local kptrs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168160621950.14536.17272966925999064717.git-patchwork-notify@kernel.org>
+Date:   Sun, 16 Apr 2023 00:50:19 +0000
+References: <20230415201811.343116-1-davemarchevsky@fb.com>
+In-Reply-To: <20230415201811.343116-1-davemarchevsky@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, kernel-team@fb.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 05:32:30AM -0500, David Vernet wrote:
-> We've managed to improve the UX for kptrs significantly over the last 9
-> months. All of the existing use cases which previously had KF_KPTR_GET
-> kfuncs (struct bpf_cpumask *, struct task_struct *, and struct cgroup *)
-> have all been updated to be synchronized using RCU. In other words,
-> their KF_KPTR_GET kfuncs have been removed in favor of KF_RU |
+Hello:
 
-typo: KF_RCU.
-same typo is in cover letter.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 495250162422..7721c90ead5b 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -18,7 +18,6 @@
->  #define KF_ACQUIRE	(1 << 0) /* kfunc is an acquire function */
->  #define KF_RELEASE	(1 << 1) /* kfunc is a release function */
->  #define KF_RET_NULL	(1 << 2) /* kfunc returns a pointer that may be NULL */
-> -#define KF_KPTR_GET	(1 << 3) /* kfunc returns reference to a kptr */
->  /* Trusted arguments are those which are guaranteed to be valid when passed to
->   * the kfunc. It is used to enforce that pointers obtained from either acquire
->   * kfuncs, or from the main kernel on a tracepoint or struct_ops callback
-> @@ -67,14 +66,14 @@
->   *	return 0;
->   * }
->   */
-> -#define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
-> -#define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
-> -#define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
-> -#define KF_RCU          (1 << 7) /* kfunc takes either rcu or trusted pointer arguments */
-> +#define KF_TRUSTED_ARGS (1 << 3) /* kfunc only takes trusted pointer arguments */
-> +#define KF_SLEEPABLE    (1 << 4) /* kfunc may sleep */
-> +#define KF_DESTRUCTIVE  (1 << 5) /* kfunc performs destructive actions */
-> +#define KF_RCU          (1 << 6) /* kfunc takes either rcu or trusted pointer arguments */
->  /* only one of KF_ITER_{NEW,NEXT,DESTROY} could be specified per kfunc */
-> -#define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
-> -#define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
-> -#define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
-> +#define KF_ITER_NEW     (1 << 7) /* kfunc implements BPF iter constructor */
-> +#define KF_ITER_NEXT    (1 << 8) /* kfunc implements BPF iter next method */
-> +#define KF_ITER_DESTROY (1 << 9) /* kfunc implements BPF iter destructor */
+On Sat, 15 Apr 2023 13:18:02 -0700 you wrote:
+> This series adds support for refcounted local kptrs to the verifier. A local
+> kptr is 'refcounted' if its type contains a struct bpf_refcount field:
+> 
+>   struct refcounted_node {
+>     long data;
+>     struct bpf_list_node ll;
+>     struct bpf_refcount ref;
+>   };
+> 
+> [...]
 
-Great cleanup! but let's not renumber flags to reduce the churn.
-Just delete #define KF_KPTR_GET  (1 << 3)
-I bet soon enough we will add another KF_ flag in that place.
+Here is the summary with links:
+  - [v2,bpf-next,1/9] bpf: Remove btf_field_offs, use btf_record's fields instead
+    https://git.kernel.org/bpf/bpf-next/c/cd2a8079014a
+  - [v2,bpf-next,2/9] bpf: Introduce opaque bpf_refcount struct and add btf_record plumbing
+    https://git.kernel.org/bpf/bpf-next/c/d54730b50bae
+  - [v2,bpf-next,3/9] bpf: Support refcounted local kptrs in existing semantics
+    https://git.kernel.org/bpf/bpf-next/c/1512217c47f0
+  - [v2,bpf-next,4/9] bpf: Add bpf_refcount_acquire kfunc
+    https://git.kernel.org/bpf/bpf-next/c/7c50b1cb76ac
+  - [v2,bpf-next,5/9] bpf: Migrate bpf_rbtree_add and bpf_list_push_{front,back} to possibly fail
+    https://git.kernel.org/bpf/bpf-next/c/d2dcc67df910
+  - [v2,bpf-next,6/9] selftests/bpf: Modify linked_list tests to work with macro-ified inserts
+    https://git.kernel.org/bpf/bpf-next/c/de67ba3968fa
+  - [v2,bpf-next,7/9] bpf: Migrate bpf_rbtree_remove to possibly fail
+    https://git.kernel.org/bpf/bpf-next/c/404ad75a36fb
+  - [v2,bpf-next,8/9] bpf: Centralize btf_field-specific initialization logic
+    https://git.kernel.org/bpf/bpf-next/c/3e81740a9062
+  - [v2,bpf-next,9/9] selftests/bpf: Add refcounted_kptr tests
+    https://git.kernel.org/bpf/bpf-next/c/6147f15131e2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
