@@ -2,113 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AF66E34C2
-	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 04:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D100A6E34F2
+	for <lists+bpf@lfdr.de>; Sun, 16 Apr 2023 06:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjDPCn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Apr 2023 22:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
+        id S229930AbjDPE0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Apr 2023 00:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDPCn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Apr 2023 22:43:28 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0199630CF;
-        Sat, 15 Apr 2023 19:43:26 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id me15so1916161qvb.4;
-        Sat, 15 Apr 2023 19:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681613006; x=1684205006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=emh2Okv2wtPboESKlb9uAvYp8mFKsbIQggX9WGkmmVA=;
-        b=FBqaM60tznk3PqkeiIJOe8qPlXA7CzcxGp3cR4bLX9cI+aucjWVbEdFh5fhQ2kj1KV
-         K0LZtbb63OrxwZkpij9AKw2or4UitoTw0K6WRfonLuMUgMuBXkKKsDNW1WV9k5dJOBkd
-         wH9Wwf99onwF9EivFsFjGcbEWphRkg0TpC4Md2Us4ntmaSM9na1YxrK1kNTSBVo/3UJi
-         2v5YFVCKgTFWunuk6NxaPQqTK63CByOWgBl33uP4MjjLjiYpEIvO45rpUWyYPSQu8UcD
-         kNmgPRp2V2ef8Qctg0nSjqkInQQtjaQFT5sQ7oupK3pfRnPsddhmqITSHW+5MGD1fsCI
-         OnEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681613006; x=1684205006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=emh2Okv2wtPboESKlb9uAvYp8mFKsbIQggX9WGkmmVA=;
-        b=Wg5EJj+1YVq8YjybSCp4UTbts3et5IDzah6kKmIzXNb9T2DmiiOpCU49Syx8aMmCxX
-         UI9PN70UDXAeB8ko7Q1XeGrHy5OB5GFzFJll7jmVD+if9oetYICzu+Y8e7m2OEkvu0P4
-         ILAog1o9AkdNGADQWUSkBGs5xvCvBlnF6PBJJCDgrpKtUVCRC29SInAGK99DuMDltUba
-         qqQoKhm3qSg/xkMsRWK2ZnKZBmkEocsTn6h6WKuobxryDY7vt7CViHiRWzkyDTKpt6cs
-         eDzmTItwhlgU6Z8Na6EJ/YW6WRX3MmCu6IMTq01FX+AsTwFLUQYf0L3823eS/jXyvDVX
-         fDHA==
-X-Gm-Message-State: AAQBX9ePetH1e62JtLFugIXTZTmnphP68eBmC7JJg7Gcnxf6sdD3/okz
-        v7g+cIazpF1zATDRzcwS3nXr5E3F1DyTUg2daSCcwIUDdAo=
-X-Google-Smtp-Source: AKy350Z6KtN6UyhQVcp+nh44u6AxqibNwzsunsv2Mhtz3En9ISlSb5f9GUug0kDFh9BlG5pihoQaprHmGWVTZkzFrJQ=
-X-Received: by 2002:a05:6214:c69:b0:5ef:52f0:7b1e with SMTP id
- t9-20020a0562140c6900b005ef52f07b1emr12671857qvj.31.1681613006151; Sat, 15
- Apr 2023 19:43:26 -0700 (PDT)
+        with ESMTP id S229894AbjDPE0t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Apr 2023 00:26:49 -0400
+Received: from out0-205.mail.aliyun.com (out0-205.mail.aliyun.com [140.205.0.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890AE271C
+        for <bpf@vger.kernel.org>; Sat, 15 Apr 2023 21:26:45 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047206;MF=amy.saq@antgroup.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---.SHIYFT9_1681619201;
+Received: from 30.13.169.194(mailfrom:amy.saq@antgroup.com fp:SMTPD_---.SHIYFT9_1681619201)
+          by smtp.aliyun-inc.com;
+          Sun, 16 Apr 2023 12:26:42 +0800
+Message-ID: <303b5895-319d-2bb7-9909-10fec3323df2@antgroup.com>
+Date:   Sun, 16 Apr 2023 12:26:40 +0800
 MIME-Version: 1.0
-References: <20230414221702.554c44fe@rorschach.local.home> <CALOAHbDUkvyu0hWXfcveJBW_dxDkqUTVBmwXt5Y-ERBv9GksbQ@mail.gmail.com>
- <CALOAHbB9VvOAuA5kG3YpS-XMqX9AFGxbuOQWerJTQYgsqU182A@mail.gmail.com> <20230415114635.15d9eda8@rorschach.local.home>
-In-Reply-To: <20230415114635.15d9eda8@rorschach.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 16 Apr 2023 10:42:48 +0800
-Message-ID: <CALOAHbCFWCzV6PQXkB7YyyPuLOZv27yABDADgbwi1F76pOzwVg@mail.gmail.com>
-Subject: Re: [PATCH] tracing: Add generic test_recursion_try_acquire()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.1
+To:     bpf@vger.kernel.org
+Cc:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>,
+        "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
+        "=?UTF-8?B?5ZGo5by6KOS4reiIqik=?=" <shuze.zq@antgroup.com>,
+        "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
+        "=?UTF-8?B?5byg57uq5bOwKOS6keS8ryk=?=" <yunbo.zxf@antgroup.com>
+From:   "=?UTF-8?B?5rKI5a6J55CqKOWHm+eOpSk=?=" <amy.saq@antgroup.com>
+Subject: [RFC] A new bpf map type for fuzzy matching key
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 11:46=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
->
-> On Sat, 15 Apr 2023 22:33:17 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> >
-> > I don't have a clear idea why TRACE_CTX_TRANSITION must be needed, but
-> > it seems we have to do below code for the fentry test case,
->
-> The issue is that there's still cases that we can trace when
-> preempt_count hasn't been updated to the new context. That is,
-> preempt_count is used to determine if we are in softirq, hardirq or NMI
-> context. But there's some places that have:
->
->  normal context:
->  func_a() --> traced
->    --> interrupt
->     func_b() --> traced
->     preempt_count_add(HARDIRQ_OFFSET)
->
-> Now we drop the second trace because it is flagged as a recursion when
-> in reality it is in a new context, but the preempt_count has not been
-> updated yet.
->
-> We are currently fixing these locations, but it's not there yet. And
-> since there's tools that relies on not dropping these locations, the
-> transition bit needs to be there until this situation is dealt with.
->
 
-Got it. Thanks for your explanation.
+Hi everyone,
 
-> Can you change the tests to allow a single recursion?
->
+For supporting fuzzy matching in bpf map as described in the original 
+question [0], we come up with a proposal that would like to have some 
+advice or comments from bpf thread. Thanks a lot for all the feedback :)
 
-I think one single recursion should be acceptable. I will change it.
+We plan to implement a new bpf map type, naming BPF_FM_MAP, standing for 
+fuzzy matching map.
+The basic idea is implementing a trie-tree using map of map runtime 
+structure.
 
---=20
-Regards
-Yafang
+The number of tree levels equals to the number of fields in the key 
+struct. Assuming that the key struct has M fields, the first (M-1) level 
+of tree nodes will be hash maps with key as the value of (M-1)-th field 
+and entry as the fd of next level map. The last level, regarded as leaf 
+nodes, will be hash maps with key as the value of M-th field and entry 
+as user-defined entry for this BPF_FM_MAP.
+
+To support fuzzy matching, we add a special value -1 as (M-1)-th field 
+key if (M-1)-th field is set as general match.
+
+When looking up a target key in BPF_FM_MAP, it will lookup the first 
+level hashmap, matching the entry with the same value on this field and 
+with -1 if exists. Then it will lookup the next-level hashmap, whose fd 
+is the value it get from the previous level hashmap. It will go through 
+all the levels of tree and get a set of leaf nodes it matches. Finally, 
+it will sort the set of matched leaf nodes based on their priority, 
+which is defined in BPF_FM_MAP entry struct, and return the 
+corresponding return value also defined in BPF_FM_MAP entry struct.
+
+
+Given a user-defined key struct and entry struct as following:
+
+struct fm_key {
+     int a;
+     int b;
+     int c;
+}
+
+struct fm_entry {
+     int priority;
+     int value;
+}
+
+and declare a BPF_FM_MAP DEMO_MAP to store incoming key-value pair:
+
+struct {
+     __uint(type, BPF_FM_MAP);
+     __type(key, struct fm_key);
+     __type(value, struct fm_entry);
+     __uint(pinning, LIBBPF_PIN_BY_NAME);
+     __uint(max_entries, 1024);
+     __uint(map_flags, BPF_F_NO_PREALLOC);
+} DEMO_MAP SEC(".maps");
+
+Now, we add the following three key-value pairs into DEMO_MAP:
+
+|a    |b    |c    |priority    |value    |
+|-    |-    |1    |1           |1        |
+|-    |2    |1    |2           |2        |
+|3    |2    |1    |3           |3        |
+
+The tree will be constructed as following:
+
+field a             field b               field c
+
+                                           fd = 3
+                                      ---->| key | (prioriy, value) |
+                                     |     |  1  |       (1, 1) |
+                                     |
+                     fd = 1          |
+                  -->| key | val |   |
+                 |   | -1  |  3  |----     fd = 4
+                 |   |  2  |  4  |-------->| key | (prioriy, value) |
+  fd = 0         |                         |  1  |       (2, 2) |
+| key | val |   |
+| -1  |  1  |----
+|  3  |  2  |----
+                 |   fd = 2
+                  -->| key | val |         fd = 5
+                     |  2  |  5  |-------->| key | (prioriy, value) |
+                                           |  1  |       (3, 3) |
+
+
+After updating the tree, we have three target tuples to lookup in DEMO_MAP.
+
+struct fm_key t1 = {
+     .a = 6,
+     .b = 4,
+     .c = 1
+};
+
+struct fm_key t2 = {
+     .a = 5,
+     .b = 2,
+     .c = 1
+};
+
+struct fm_key t3 = {
+     .a = 3,
+     .b = 2,
+     .c = 1
+};
+
+// map lookup order: 0 -> 1 -> 3
+// matched leaf nodes: (1, 1)
+// picked return value: 1
+map_lookup_elem(&DEMO_MAP, &t1) == 1
+
+// map loopup order: 0 -> 1 -> (3, 4)
+// matched leaf nodes: (1, 1), (2, 2)
+// picked return value: 2
+map_lookup_elem(&DEMO_MAP, &t2) == 2
+
+// map lookup order: 0 -> (1, 2) -> (3, 4, 5)
+// matched leaf nodes: (1, 1), (2, 2), (3, 3)
+// picked return value: 3
+map_loopup_elem(&DEMO_MAP, &t3) == 3
+
+
+Thanks a lot for reviewing this proposal and we really appreciate any 
+feedback here.
+
+[0]: 
+https://lore.kernel.org/bpf/2172a7a7-323b-9798-f990-00df69b136d0@antgroup.com/T/#u
+
+Sincerely,
+Amy
+
