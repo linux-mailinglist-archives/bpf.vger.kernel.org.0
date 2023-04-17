@@ -2,67 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91D16E552A
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 01:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583756E552E
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 01:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjDQXaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 19:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S229585AbjDQXbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 19:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjDQXaN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 19:30:13 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F9440EF;
-        Mon, 17 Apr 2023 16:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681774212; x=1713310212;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=swT1uGbXge4kIXl8CAV6H/8po8YOO0CCTNzcDaHfgmM=;
-  b=f3JilczWBEN/8sbSnU/qmb7x0TlENH5gF0vHRTtBb76ZBGhEOpYiENwI
-   umCVuOaH13M+n6K+HzY+Vv70FCCHkHz+TVibZyyMzlpDX/1cC7qcMIx+s
-   PIGCmeuhqoLXMbd7bbNS3QLjlAlcTvq1uuO24d8yQgB8/EmPVaWQCy9OI
-   4tm6Ol8BPKnWGH9Eq8BENvM5jKccR3yIYQqVukTTsUoiMqzqPORBpvJDo
-   Su3zBYs6i9bkvDtQ+Df/UyK9lQ2W0vumPyEiSSuLX0zOv2WpX3zZY/DNk
-   M01A3VyrXEGjtlAO9jnhnPgmhmmzs9KiHxE1UPMrElJsavm9bkZV3fq+r
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="410247937"
-X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="410247937"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 16:30:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="814985904"
-X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="814985904"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 17 Apr 2023 16:30:07 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1poYIQ-000cjz-2f;
-        Mon, 17 Apr 2023 23:30:06 +0000
-Date:   Tue, 18 Apr 2023 07:29:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention
- mechanism
-Message-ID: <202304180736.cWjpwhs6-lkp@intel.com>
-References: <20230417154737.12740-6-laoar.shao@gmail.com>
+        with ESMTP id S229461AbjDQXbb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 19:31:31 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDCF4206;
+        Mon, 17 Apr 2023 16:31:29 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id fw30so15763690ejc.5;
+        Mon, 17 Apr 2023 16:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681774288; x=1684366288;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvVgtGAf+sC/033TXxwP700jSBTYe0RXnN/7Il9wzhI=;
+        b=D/mLL26D3GN/zDaGQ50vj7jKCq+d68RsPrePm0PReEUnjWlBuGEoNWQxJ6Vi9YUoUS
+         WE9rIsBRjibiddQ/73sU9SbBdOus/Th8kGI+WlVqwknbAbx39mIwGBJvv+vjK8hCaoo7
+         R9+OWqoDJWdbkOpmjhlImMZGD6uXSsVoEA29bsBQOkTXMVmMGE6u3EgRcps3B8FBgrri
+         PSxSj8m8AiHoxnPRy59QWu5olYPfjyxF7nIS2HslDCQoQWGwWe1MQ5wGQsY98i/Oq9NT
+         CH+u2N+52rCLh/bwW1xvC3Rq+4TJ94xjkOukTsuJLS+EfSyMm7tyj17H0g7PftdRmoqN
+         Wozg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681774288; x=1684366288;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvVgtGAf+sC/033TXxwP700jSBTYe0RXnN/7Il9wzhI=;
+        b=axhVerwDRRG+ZZvyP67IJi4UKp/800gUe3SgN4OcrTGcN7UURDc3Z2+uZwWWL9Oxfs
+         dfAnKK6jUb/qGYZffB3m7GMdZfxKIQAVuxwiv5rnswSa3F8xie3S7cENYLvKoOssmuRn
+         sHPR4EDlSGP6y9a5sUN1WAIGWPpXUUn1G6pWZQ2NeZMMS98KTEAGIYixF1rE+VDAOWd2
+         WqgijIOWuVvrmCe9Uib3bHOkq/Q0L3PID96dcSbKKq6QjNm8c/ftoPj/BfVDIylleG5c
+         7gvw27gbEgJscg33DjqKaJLvZbUkHxAL3YGMXRW7b559DpcXqNWEnSONXVLBa2S35+Xx
+         Ri4w==
+X-Gm-Message-State: AAQBX9dstYNWWPwsKYcWV/tEQGeFxsqUrMxGKs0t5ABeOONinIdxX6Yr
+        a3LvlFr2LT+tg5DIaRqme3LGyGvEFAo1STdvQOs=
+X-Google-Smtp-Source: AKy350bGjsos3pGwcZwfrxScD2c0/z/R+MiNw81YsXxj8lE+T3gES0AM367/QMbTNMizsq91AmRjUaIDv7blQky8Ito=
+X-Received: by 2002:a17:906:b817:b0:94a:7c21:6ade with SMTP id
+ dv23-20020a170906b81700b0094a7c216ademr3590097ejb.5.1681774287637; Mon, 17
+ Apr 2023 16:31:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230417154737.12740-6-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20230412043300.360803-1-andrii@kernel.org> <CAHC9VhQHmdZYnR=+rX-3FcRh127mhJt=jAnototfTiuSoOTptg@mail.gmail.com>
+ <6436eea2.170a0220.97ead.52a8@mx.google.com> <CAHC9VhR6ebsxtjSG8-fm7e=HU+srmziVuO6MU+pMpeSBv4vN+A@mail.gmail.com>
+ <6436f837.a70a0220.ada87.d446@mx.google.com> <CAHC9VhTF0JX3_zZ1ZRnoOw0ToYj6AsvK6OCiKqQgPvHepH9W3Q@mail.gmail.com>
+ <CAEf4BzY9GPr9c2fTUS6ijHURtdNDL4xM6+JAEggEqLuz9sk4Dg@mail.gmail.com> <afd17142-9243-8b72-d16a-41165e8deda1@schaufler-ca.com>
+In-Reply-To: <afd17142-9243-8b72-d16a-41165e8deda1@schaufler-ca.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 17 Apr 2023 16:31:14 -0700
+Message-ID: <CAEf4BzaaFruReHByj_ngz+BiQmKQGeK+1DsAzg1YmVnZxfADug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,125 +74,179 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yafang,
+On Thu, Apr 13, 2023 at 9:27=E2=80=AFAM Casey Schaufler <casey@schaufler-ca=
+.com> wrote:
+>
+> On 4/12/2023 6:43 PM, Andrii Nakryiko wrote:
+> > On Wed, Apr 12, 2023 at 12:07=E2=80=AFPM Paul Moore <paul@paul-moore.co=
+m> wrote:
+> >> On Wed, Apr 12, 2023 at 2:28=E2=80=AFPM Kees Cook <keescook@chromium.o=
+rg> wrote:
+> >>> On Wed, Apr 12, 2023 at 02:06:23PM -0400, Paul Moore wrote:
+> >>>> On Wed, Apr 12, 2023 at 1:47=E2=80=AFPM Kees Cook <keescook@chromium=
+.org> wrote:
+> >>>>> On Wed, Apr 12, 2023 at 12:49:06PM -0400, Paul Moore wrote:
+> >>>>>> On Wed, Apr 12, 2023 at 12:33=E2=80=AFAM Andrii Nakryiko <andrii@k=
+ernel.org> wrote:
+> >>>>>>> Add new LSM hooks, bpf_map_create_security and bpf_btf_load_secur=
+ity, which
+> >>>>>>> are meant to allow highly-granular LSM-based control over the usa=
+ge of BPF
+> >>>>>>> subsytem. Specifically, to control the creation of BPF maps and B=
+TF data
+> >>>>>>> objects, which are fundamental building blocks of any modern BPF =
+application.
+> >>>>>>>
+> >>>>>>> These new hooks are able to override default kernel-side CAP_BPF-=
+based (and
+> >>>>>>> sometimes CAP_NET_ADMIN-based) permission checks. It is now possi=
+ble to
+> >>>>>>> implement LSM policies that could granularly enforce more restric=
+tions on
+> >>>>>>> a per-BPF map basis (beyond checking coarse CAP_BPF/CAP_NET_ADMIN
+> >>>>>>> capabilities), but also, importantly, allow to *bypass kernel-sid=
+e
+> >>>>>>> enforcement* of CAP_BPF/CAP_NET_ADMIN checks for trusted applicat=
+ions and use
+> >>>>>>> cases.
+> >>>>>> One of the hallmarks of the LSM has always been that it is
+> >>>>>> non-authoritative: it cannot unilaterally grant access, it can onl=
+y
+> >>>>>> restrict what would have been otherwise permitted on a traditional
+> >>>>>> Linux system.  Put another way, a LSM should not undermine the Lin=
+ux
+> >>>>>> discretionary access controls, e.g. capabilities.
+> >>>>>>
+> >>>>>> If there is a problem with the eBPF capability-based access contro=
+ls,
+> >>>>>> that problem needs to be addressed in how the core eBPF code
+> >>>>>> implements its capability checks, not by modifying the LSM mechani=
+sm
+> >>>>>> to bypass these checks.
+> >>>>> I think semantics matter here. I wouldn't view this as _bypassing_
+> >>>>> capability enforcement: it's just more fine-grained access control.
+> > Exactly. One of the motivations for this work was the need to move
+> > some production use cases that are only needing extra privileges so
+> > that they can use BPF into a more restrictive environment. Granting
+> > CAP_BPF+CAP_PERFMON+CAP_NET_ADMIN to all such use cases that need them
+> > for BPF usage is too coarse grained. These caps would allow those
+> > applications way more than just BPF usage. So the idea here is more
+> > finer-grained control of BPF-specific operations, granting *effective*
+> > CAP_BPF+CAP_PERFMON+CAP_NET_ADMIN caps dynamically based on custom
+> > production logic that would validate the use case.
+>
+> That's an authoritative model which is in direct conflict with the
+> design and implementation of both capabilities and LSM.
+>
+> >
+> > This *is* an attempt to achieve a more secure production approach.
+> >
+> >>>>> For example, in many places we have things like:
+> >>>>>
+> >>>>>         if (!some_check(...) && !capable(...))
+> >>>>>                 return -EPERM;
+> >>>>>
+> >>>>> I would expect this is a similar logic. An operation can succeed if=
+ the
+> >>>>> access control requirement is met. The mismatch we have through-out=
+ the
+> >>>>> kernel is that capability checks aren't strictly done by LSM hooks.=
+ And
+> >>>>> this series conceptually, I think, doesn't violate that -- it's cha=
+nging
+> >>>>> the logic of the capability checks, not the LSM (i.e. there no LSM =
+hooks
+> >>>>> yet here).
+> >>>> Patch 04/08 creates a new LSM hook, security_bpf_map_create(), which
+> >>>> when it returns a positive value "bypasses kernel checks".  The patc=
+h
+> >>>> isn't based on either Linus' tree or the LSM tree, I'm guessing it i=
+s
+> >>>> based on a eBPF tree, so I can't say with 100% certainty that it is
+> >>>> bypassing a capability check, but the description claims that to be
+> >>>> the case.
+> >>>>
+> >>>> Regardless of how you want to spin this, I'm not supportive of a LSM
+> >>>> hook which allows a LSM to bypass a capability check.  A LSM hook ca=
+n
+> >>>> be used to provide additional access control restrictions beyond a
+> >>>> capability check, but a LSM hook should never be allowed to overrule
+> >>>> an access denial due to a capability check.
+> >>>>
+> >>>>> The reason CAP_BPF was created was because there was nothing else t=
+hat
+> >>>>> would be fine-grained enough at the time.
+> >>>> The LSM layer predates CAP_BPF, and one could make a very solid
+> >>>> argument that one of the reasons LSMs exist is to provide
+> >>>> supplementary controls due to capability-based access controls being=
+ a
+> >>>> poor fit for many modern use cases.
+> >>> I generally agree with what you say, but we DO have this code pattern=
+:
+> >>>
+> >>>          if (!some_check(...) && !capable(...))
+> >>>                  return -EPERM;
+> >> I think we need to make this more concrete; we don't have a pattern in
+> >> the upstream kernel where 'some_check(...)' is a LSM hook, right?
+> >> Simply because there is another kernel access control mechanism which
+> >> allows a capability check to be skipped doesn't mean I want to allow a
+> >> LSM hook to be used to skip a capability check.
+> > This work is an attempt to tighten the security of production systems
+> > by allowing to drop too coarse-grained and permissive capabilities
+> > (like CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, which inevitable allow more
+> > than production use cases are meant to be able to do)
+>
+> The BPF developers are in complete control of what CAP_BPF controls.
+> You can easily address the granularity issue by adding addition restricti=
+ons
+> on processes that have CAP_BPF. That is the intended use of LSM.
+> The whole point of having multiple capabilities is so that you can
+> grant just those that are required by the system security policy, and
+> do so safely. That leads to differences of opinion regarding the definiti=
+on
+> of the system security policy. BPF chose to set itself up as an element
+> of security policy (you need CAP_BPF) rather than define elements such th=
+at
+> existing capabilities (CAP_FOWNER, CAP_KILL, CAP_MAC_OVERRIDE, ...) would
+> control.
 
-kernel test robot noticed the following build errors:
+Please see my reply to Paul, where I explain CAP_BPF's system-wide
+nature and problem with user namespaces. I don't think the problem is
+in the granularity of CAP_BPF, it's more of a "non-namespaceable"
+nature of the BPF subsystem in general.
 
-[auto build test ERROR on bpf-next/master]
+>
+> >  and then grant
+> > specific BPF operations on specific BPF programs/maps based on custom
+> > LSM security policy,
+>
+> This is backwards. The correct implementation is to require CAP_BPF and
+> further restrict BPF operations based on a custom LSM security policy.
+> That's how LSM is designed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/bpf-Add-__rcu_read_-lock-unlock-into-btf-id-deny-list/20230417-235009
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230417154737.12740-6-laoar.shao%40gmail.com
-patch subject: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention mechanism
-config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20230418/202304180736.cWjpwhs6-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ac84d2623c0469a703245030f2b23612ab4505dd
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Yafang-Shao/bpf-Add-__rcu_read_-lock-unlock-into-btf-id-deny-list/20230417-235009
-        git checkout ac84d2623c0469a703245030f2b23612ab4505dd
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=loongarch olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=loongarch SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304180736.cWjpwhs6-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/bpf/trampoline.c: In function '__bpf_prog_enter_recur':
->> kernel/bpf/trampoline.c:848:15: error: implicit declaration of function 'test_recursion_try_acquire' [-Werror=implicit-function-declaration]
-     848 |         bit = test_recursion_try_acquire(_THIS_IP_, _RET_IP_);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/trampoline.c: In function '__bpf_prog_exit_recur':
->> kernel/bpf/trampoline.c:896:9: error: implicit declaration of function 'test_recursion_release'; did you mean 'dev_recursion_level'? [-Werror=implicit-function-declaration]
-     896 |         test_recursion_release(run_ctx->recursion_bit);
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-         |         dev_recursion_level
-   cc1: some warnings being treated as errors
+Please see my reply to Paul, we can't grant real CAP_BPF for
+applications in user namespace (unless there is some trick that I
+don't know, so please do point it out). Let's converge the discussion
+in that email thread branch to not discuss the same topic multiple
+times.
 
 
-vim +/test_recursion_try_acquire +848 kernel/bpf/trampoline.c
-
-   828	
-   829	/* The logic is similar to bpf_prog_run(), but with an explicit
-   830	 * rcu_read_lock() and migrate_disable() which are required
-   831	 * for the trampoline. The macro is split into
-   832	 * call __bpf_prog_enter
-   833	 * call prog->bpf_func
-   834	 * call __bpf_prog_exit
-   835	 *
-   836	 * __bpf_prog_enter returns:
-   837	 * 0 - skip execution of the bpf prog
-   838	 * 1 - execute bpf prog
-   839	 * [2..MAX_U64] - execute bpf prog and record execution time.
-   840	 *     This is start time.
-   841	 */
-   842	static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struct bpf_tramp_run_ctx *run_ctx)
-   843		__acquires(RCU)
-   844	{
-   845		int bit;
-   846	
-   847		rcu_read_lock();
- > 848		bit = test_recursion_try_acquire(_THIS_IP_, _RET_IP_);
-   849		run_ctx->recursion_bit = bit;
-   850		if (bit < 0) {
-   851			preempt_disable_notrace();
-   852			bpf_prog_inc_misses_counter(prog);
-   853			preempt_enable_notrace();
-   854			return 0;
-   855		}
-   856	
-   857		migrate_disable();
-   858	
-   859		run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
-   860		return bpf_prog_start_time();
-   861	}
-   862	
-   863	static void notrace update_prog_stats(struct bpf_prog *prog,
-   864					      u64 start)
-   865	{
-   866		struct bpf_prog_stats *stats;
-   867	
-   868		if (static_branch_unlikely(&bpf_stats_enabled_key) &&
-   869		    /* static_key could be enabled in __bpf_prog_enter*
-   870		     * and disabled in __bpf_prog_exit*.
-   871		     * And vice versa.
-   872		     * Hence check that 'start' is valid.
-   873		     */
-   874		    start > NO_START_TIME) {
-   875			unsigned long flags;
-   876	
-   877			stats = this_cpu_ptr(prog->stats);
-   878			flags = u64_stats_update_begin_irqsave(&stats->syncp);
-   879			u64_stats_inc(&stats->cnt);
-   880			u64_stats_add(&stats->nsecs, sched_clock() - start);
-   881			u64_stats_update_end_irqrestore(&stats->syncp, flags);
-   882		}
-   883	}
-   884	
-   885	static void notrace __bpf_prog_exit_recur(struct bpf_prog *prog, u64 start,
-   886						  struct bpf_tramp_run_ctx *run_ctx)
-   887		__releases(RCU)
-   888	{
-   889		if (run_ctx->recursion_bit < 0)
-   890			goto out;
-   891	
-   892		bpf_reset_run_ctx(run_ctx->saved_run_ctx);
-   893	
-   894		update_prog_stats(prog, start);
-   895		migrate_enable();
- > 896		test_recursion_release(run_ctx->recursion_bit);
-   897	
-   898	out:
-   899		rcu_read_unlock();
-   900	}
-   901	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+>
+> >  which validates application trustworthiness using
+> > custom production-specific logic.
+> >
+> > Isn't this goal in line with LSMs mission to enhance system security?
+>
+> We're not arguing the goal, we're discussing the implementation.
+>
+> >>> It looks to me like this series can be refactored to do the same. I
+> >>> wouldn't consider that to be a "bypass", but I would agree the curren=
+t
+> >>> series looks too much like "bypass", and makes reasoning about the
+> >>> effect of the LSM hooks too "special". :)
+> > Sorry, I didn't realize that the current code layout is making things
+> > more confusing. I'll address feedback to make the intent a bit
+> > clearer.
+> >
+> >> --
+> >> paul-moore.com
