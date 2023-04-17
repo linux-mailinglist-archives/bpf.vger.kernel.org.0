@@ -2,105 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171196E47ED
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AEF6E4809
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjDQMhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 08:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        id S229929AbjDQMl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 08:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjDQMhd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 08:37:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6A24EF1;
-        Mon, 17 Apr 2023 05:37:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 486DF6239D;
-        Mon, 17 Apr 2023 12:37:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C32BC433EF;
-        Mon, 17 Apr 2023 12:36:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1681735019;
-        bh=cZkrlscYdiJDQiCpwVk8ynp/4B7C4EvBAfc7DKgA0E8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h3tSKHnfksiRkXoMZjtfe8Imke7Z7dlwVy+SWzzASYKGD5F6e9mTFxwVgY+ZKmDmL
-         6ChSFb+qfLHqYVxW8bWEUwAMSV5pH8Q76WknaDRhOkEYRzvL1orsgApnhb0yS1gEdy
-         SQlJVzloYyl0Q0+RhXPTqXcajPfJtEuavktz4S/s=
-Date:   Mon, 17 Apr 2023 14:36:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "songrui.771" <songrui.771@bytedance.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S231235AbjDQMlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 08:41:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7F740C8
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681735216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8R/DyfPuxRJq8lFo64wBLNVpfrgX/DMbIH8EiFz9DI=;
+        b=KMGsqX9C3C4HUW/gl2Fq4iAo2G4l49JJ9WT7jHHKPG7E8HRQDjjWLcrUEjB6L5nzjN9YPH
+        XkxGfDeCLG7dq/1iLPA4c89nkybkC4uoS5m0aXHh6d3zkSTtV8klR5zWd/iODG4UZlpNBF
+        i0BgFqnPHTvja/XOsPaL2aoi4n0EU6s=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-537-32kMjgjQNDKsRmYlM6Pozw-1; Mon, 17 Apr 2023 08:40:07 -0400
+X-MC-Unique: 32kMjgjQNDKsRmYlM6Pozw-1
+Received: by mail-ej1-f69.google.com with SMTP id tq24-20020a170907c51800b0093138c6f2f8so8743370ejc.22
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:40:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681735206; x=1684327206;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d8R/DyfPuxRJq8lFo64wBLNVpfrgX/DMbIH8EiFz9DI=;
+        b=heykqJIJWxbf3EwzqumdU64PiwoMKgSCcyrkid37sBPPND3anLi/V/Oxff4sdlLg8v
+         lSXdVaSaK4VDofFT33yMDAiXa2Z5KX5LkhoIVuelsuwuQDJljrut/yE3Wrpwgqa9+uLw
+         GSdXP1g/R5fe8TSr6zWLG0VzHRMyAi0eGsXrqRzfZZy2NP094atRtaAxllJ6VPxNCsg9
+         bpt83usPQ8hL3opcfPAMFC3hpzmuc41dNwbXtbxdZCA0tUI4ReVNkV90YDYJ7u8mU+Fn
+         wJtU3OxwQfd+oDEyUz2hPepL8Ic/TcEWR04WT2RxGrEEUVXE4QGYj+ylBjhqMMHpaccC
+         CQMg==
+X-Gm-Message-State: AAQBX9dc9N72S3nd4OeC0Bues9YQZG4U4byIpgqxBdK6WfaKRohx+tMC
+        xvR2ArIjIzbeoF6glgt6/CnE8YLnsnyEz+v8fWHiWcmnp70lEnRRHNPCFSjFtQ7wg4dQRB/Tc3j
+        FlPeI5gleQ0KB
+X-Received: by 2002:a17:906:ae56:b0:932:1af9:7386 with SMTP id lf22-20020a170906ae5600b009321af97386mr7169620ejb.27.1681735206437;
+        Mon, 17 Apr 2023 05:40:06 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aW/kxO/780wfJlvoA8/SxGVLczSeSpBXtQ9jUSEU7Eij2vduEeVE6+vnyBY1Qt/CkYdfKc2w==
+X-Received: by 2002:a17:906:ae56:b0:932:1af9:7386 with SMTP id lf22-20020a170906ae5600b009321af97386mr7169594ejb.27.1681735206008;
+        Mon, 17 Apr 2023 05:40:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 14-20020a17090601ce00b0094a671c2298sm1119966ejj.62.2023.04.17.05.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Apr 2023 05:40:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B7E40AA8452; Mon, 17 Apr 2023 14:40:04 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Kal Cutter Conley <kal.conley@dectris.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libbpf: correct the macro KERNEL_VERSION for old kernel
-Message-ID: <ZD09abW0YyHU3Snt@kroah.com>
-References: <20230417084449.99848-1-songrui.771@bytedance.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+In-Reply-To: <CAJ8uoz3Rts2Xfhqq+0cm3GES=dMb2hTqPzGm515oG_nmt=-Nbg@mail.gmail.com>
+References: <20230406130205.49996-1-kal.conley@dectris.com>
+ <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
+ <ZDBEng1KEEG5lOA6@boxer>
+ <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+ <875ya12phx.fsf@toke.dk>
+ <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
+ <87ile011kz.fsf@toke.dk>
+ <CAHApi-m4gu8SX_1rBtUwrw+1-Q3ERFEX-HPMcwcCK1OceirwuA@mail.gmail.com>
+ <87o7nrzeww.fsf@toke.dk>
+ <CAJ8uoz3Rts2Xfhqq+0cm3GES=dMb2hTqPzGm515oG_nmt=-Nbg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 17 Apr 2023 14:40:04 +0200
+Message-ID: <87o7nmwul7.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230417084449.99848-1-songrui.771@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 17, 2023 at 04:44:49PM +0800, songrui.771 wrote:
-> The introduced header file linux/version.h in libbpf_probes.c may have a
-> wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some old
-> kernel (Debian9, 10). Below is a version info example from Debian 10.
-> 
-> release: 4.19.0-22-amd64
-> version: #1 SMP Debian 4.19.260-1 (2022-09-29)
-> 
-> The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)),
-> which a, b, and c stand for major, minor and patch version. So in example here,
-> the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260) which
-> is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_VERSION_CODE
-> in linux/version.h is defined to 267263.
-> 
-> I noticed that the macro KERNEL_VERSION in linux/version.h of some new kernel is
-> defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And
-> KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_VERSION_CODE.
-> 
-> The mismatched LINUX_VERSION_CODE which will cause failing to load kprobe BPF
-> programs in the version check of BPF syscall.
-> 
-> The return value of get_kernel_version in libbpf_probes.c should be matched to
-> LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
-> 
-> Signed-off-by: songrui.771 <songrui.771@bytedance.com>
+Magnus Karlsson <magnus.karlsson@gmail.com> writes:
 
-This needs to be your name, not your email alias (do you use ".771" as a
-name to sign things with?)
+> On Thu, 13 Apr 2023 at 22:52, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>>
+>> Kal Cutter Conley <kal.conley@dectris.com> writes:
+>>
+>> >> Well, you mentioned yourself that:
+>> >>
+>> >> > The disadvantage of this patchset is requiring the user to allocate
+>> >> > HugeTLB pages which is an extra complication.
+>> >
+>> > It's a small extra complication *for the user*. However, users that
+>> > need this feature are willing to allocate hugepages. We are one such
+>> > user. For us, having to deal with packets split into disjoint buffers
+>> > (from the XDP multi-buffer paradigm) is a significantly more annoying
+>> > complication than allocating hugepages (particularly on the RX side).
+>>
+>> "More annoying" is not a great argument, though. You're basically saying
+>> "please complicate your code so I don't have to complicate mine". And
+>> since kernel API is essentially frozen forever, adding more of them
+>> carries a pretty high cost, which is why kernel developers tend not to
+>> be easily swayed by convenience arguments (if all you want is a more
+>> convenient API, just build one on top of the kernel primitives and wrap
+>> it into a library).
+>>
+>> So you'll need to come up with either (1) a use case that you *can't*
+>> solve without this new API (with specifics as to why that is the case),
+>> or (2) a compelling performance benchmark showing the complexity is
+>> worth it. Magnus indicated he would be able to produce the latter, in
+>> which case I'm happy to be persuaded by the numbers.
+>
+> We will measure it and get back to you. Would be good with some
+> numbers.
 
-> ---
->  tools/lib/bpf/libbpf_probes.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index 4f3bc968ff8e..5b22a880c7e7 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -18,6 +18,10 @@
->  #include "libbpf.h"
->  #include "libbpf_internal.h"
->  
-> +#ifndef LIBBPF_KERNEL_VERSION
-> +#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
-> +#endif
+Sounds good, thanks! :)
 
-What is wrong with using the KERNEL_VERSION() macro, it should be fixed
-to work properly here, right?  Did we not get this resolved in the
-main portion of the kernel already?
+-Toke
 
-thanks,
-
-greg k-h
