@@ -2,127 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D4C6E4D54
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 17:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC0F6E4D8C
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 17:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjDQPdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 11:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59818 "EHLO
+        id S229951AbjDQPr5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 11:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbjDQPdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 11:33:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4558C164;
-        Mon, 17 Apr 2023 08:32:38 -0700 (PDT)
-From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1681745520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZNqAznZucUwar6l9V+SpEqFf4WGQ4TaEWsz5LdTwLO0=;
-        b=h4MK9rQxCNldmspQ2ekSbav6OCDIBvW/lBNViHTg8Eew50AGem+33buONoPvC5dgnRyNij
-        kYFzHh2AjcCXT0UfeqyGUpQmiE2P+iyVUK6aqV7ATLBr/5XwJoyJ7BgsXOd6ZQTr9M5+Tg
-        InWl/G01MrXTXAN0bANkhXc9bchlAWRZI4pHLxPX+dxJuY7bxfgZ8MJFSaL3iQY8zqtDms
-        mg08ta0IdmXbR2GZu6zyujObgpf+0y8uU7Rk0xeDdegiPQ2xID2T3/hVZBrRg2WVWZEb2f
-        MSjlqc8bYzKxWS3wEN+YM9cJvhQnUK5G94/Bf3dszKvEP25KO9iBNailTkfepA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1681745520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZNqAznZucUwar6l9V+SpEqFf4WGQ4TaEWsz5LdTwLO0=;
-        b=3Rb4+K6SMPMktyFO3+RfZXH19dm4B/+tIp7Nz5cDQuXxblNrtx7bNM12NK/g7FFPDeLHs+
-        gC3+0zdB34IrhqCg==
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8r?= =?utf-8?Q?gensen?= 
-        <toke@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, yoong.siang.song@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net
-Subject: Re: [PATCH bpf-next V1 5/5] selftests/bpf: xdp_hw_metadata track
- more timestamps
-In-Reply-To: <168174344813.593471.4026230439937368990.stgit@firesoul>
-References: <168174338054.593471.8312147519616671551.stgit@firesoul>
- <168174344813.593471.4026230439937368990.stgit@firesoul>
-Date:   Mon, 17 Apr 2023 17:31:58 +0200
-Message-ID: <87leiqsexd.fsf@kurt>
+        with ESMTP id S229485AbjDQPr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 11:47:56 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF76FB0;
+        Mon, 17 Apr 2023 08:47:54 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d8so912519plg.2;
+        Mon, 17 Apr 2023 08:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681746474; x=1684338474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OULnICdYHOAOBZgGzZH4pNXiLKXoIP2AAPrDpC3Es1Q=;
+        b=MbsretE2GcIGceLNQIgzbDZAtx/EMTEEcrC47j5Zpe1K6RWuaROAD+mun174uT12Ow
+         dgWqdJbCNho1H/WNFwkmE8aPCtA5S2dre0w4+EwqSiZ4cN47v8GF4AodXyA3cvEf2r2+
+         SPM7z8uwQIkgwKYChhXS29JJkS2vhM2ImOUaTi/R95MPc8RY8S/uOxtKZS6CY4eNTXe2
+         Cb28LgfA758G0nzkWMlf5OvRavEtZ3tn4/5umeJ1RsndKAZVnYbuSY2ikXvkCLkZTRZX
+         QMx713+nhSFxVCHLt/m2Gieef/nKeph2w6t23hdopxh28dy+90sXdnnnZDkqJaDvY0fi
+         +ulg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681746474; x=1684338474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OULnICdYHOAOBZgGzZH4pNXiLKXoIP2AAPrDpC3Es1Q=;
+        b=PUz7zhezHYOHTQDyYZwcW+/nV4WRgIymQXtNoSf6PGIcib3F+pFmo9I7T0RF3zqOQa
+         Habks/q86JeD/qMUBjEoEChIygA/qVB9hcJiAGSLG7LqIGUc3k9lxc1G1jjgqfMlQ++k
+         j6mzoGtarqWpB3wwfrfG6lNptDQNocxpson71NKvem9qkYWLotpeaqenGDRCbFaIGScu
+         EOa4YLjFZNUaSW4nWTxHP0lk3H+Q2eoeGW6UMTCJNwXiVrH0zWng89co+oWXdQTGyJ51
+         Hrwnb5/Kd6rles2l3GDK/4H+qQ3Rxaygy5/Uxd0017uYUbVbE93aUGB6prZYCH+c9NgD
+         EwRQ==
+X-Gm-Message-State: AAQBX9fjh9/rtAXOJ09cslM7omIsOPsWwY+kzQ9Zdjjj50FPvHqwXxSD
+        ecZ/+IVKiQbV5nrZ8XtQdBU=
+X-Google-Smtp-Source: AKy350bokXXTKLgGTQTsy58AVJVbkvNw4Hl9PBMwfbi34k5ByMLkxkAgE8hrNv9/27xSdpWpqLIbuw==
+X-Received: by 2002:a17:902:fa0d:b0:1a5:2b7b:57e8 with SMTP id la13-20020a170902fa0d00b001a52b7b57e8mr11845625plb.26.1681746474104;
+        Mon, 17 Apr 2023 08:47:54 -0700 (PDT)
+Received: from vultr.guest ([2401:c080:3800:263c:5400:4ff:fe66:d27f])
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001a6b308fcaesm4437513plb.153.2023.04.17.08.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Apr 2023 08:47:53 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org
+Cc:     bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 0/6] bpf: Tracing recursion prevention mechanism improvement 
+Date:   Mon, 17 Apr 2023 15:47:31 +0000
+Message-Id: <20230417154737.12740-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+Currently we use prog->active to prevent tracing recursion, but it has
+some downsides,
 
-On Mon Apr 17 2023, Jesper Dangaard Brouer wrote:
-> To correlate the hardware RX timestamp with something, add tracking of
-> two software timestamps both clock source CLOCK_TAI (see description in
-> man clock_gettime(2)).
->
-> XDP metadata is extended with xdp_timestamp for capturing when XDP
-> received the packet. Populated with BPF helper bpf_ktime_get_tai_ns(). I
-> could not find a BPF helper for getting CLOCK_REALTIME, which would have
-> been preferred. In userspace when AF_XDP sees the packet another
-> software timestamp is recorded via clock_gettime() also clock source
-> CLOCK_TAI.
->
-> Example output shortly after loading igc driver:
->
->   poll: 1 (0) skip=1 fail=0 redir=2
->   xsk_ring_cons__peek: 1
->   0x12557a8: rx_desc[1]->addr=100000000009000 addr=9100 comp_addr=9000
->   rx_hash: 0x82A96531 with RSS type:0x1
->   rx_timestamp:  1681740540304898909 (sec:1681740540.3049)
->   XDP RX-time:   1681740577304958316 (sec:1681740577.3050) delta sec:37.0001 (37000059.407 usec)
->   AF_XDP time:   1681740577305051315 (sec:1681740577.3051) delta sec:0.0001 (92.999 usec)
->   0x12557a8: complete idx=9 addr=9000
->
-> The first observation is that the 37 sec difference between RX HW vs XDP
-> timestamps, which indicate hardware is likely clock source
-> CLOCK_REALTIME, because (as of this writing) CLOCK_TAI is initialised
-> with a 37 sec offset.
+- It can't identify different contexts
+  That said, if a process context is interrupted by a irq context and
+  the irq context runs the same code path, it will be considered as
+  recursion. For example,
+    normal:
+      this_cpu_inc_return(*(prog->active)) == 1 <- OK
 
-Maybe I'm missing something here, but in order to compare the hardware
-with software timestamps (e.g., by using bpf_ktime_get_tai_ns()) the
-time sources have to be synchronized by using something like
-phc2sys. That should make them comparable within reasonable range
-(nanoseconds).
+      irq:
+        this_cpu_inc_return(*(prog->active)) == 1 <- FAIL!
+        [ Considered as recusion ]
 
-Thanks,
-Kurt
+- It has to maintain a percpu area
+  A percpu area will be allocated for each prog when the prog is loaded
+  and be freed when the prog is destroyed.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Let's replace it with the generic tracing recursion prevention mechanism,
+which can work fine with anything. In the above example, the irq context
+won't be considered as recursion again,
+  normal:
+    test_recursion_try_acquire() <- OK
 
------BEGIN PGP SIGNATURE-----
+    softirq:
+      test_recursion_try_acquire() <- OK
 
-iQJSBAEBCgA8FiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmQ9Zm4eHGt1cnQua2Fu
-emVuYmFjaEBsaW51dHJvbml4LmRlAAoJEMGT0fKqRnOCYtUP/3c5DAmd2vNkZ6A9
-Sy1VrS9EFf5Re6h3DXMxCBsNi1AC/lYiNfkF2YRIY45UPntexdrl8J1ehisiIrWs
-OPi2cIyZObXXrm5SCXDk/o//G3cwv0CwqCC5Wnhk1120d9kpAlXwiYpHZnzZRFGE
-2XKkAcNOaKqjwlC8eKxI8dTIfZEWl2w1nazOzNSQCGnQV9sll1TetJaempzYyXkp
-luI2fmsuLFt9z02xW33jS2W2fRQoIfBbb6PIuGPiAnjGMNiUNeyh6hg7wzDz4uHA
-RnM87yFtBbTlIwzAgpSMXXnmdyLL5uJUmqiiS9RvxZhWYklc2015OsynMBO7namn
-MtT1bPjrFxVrIRBYTQ+YaTuUwRN/sLkye92IG6AttUjcJElvL3xW20kWMs+nqgGP
-yBB2Y/DLsNzWVDIXY7406U1/6bZEZjHaCFawnXbrYUurAXr2zG27x13aFQWxHD69
-wyH3esfAZP8/0yBucSlpbgBiOOwz7ys2M/I9NaAQAKVitL11bDSqHBSuBAp3T1im
-UBZXIws7gqvQ1L3DMj1QnBi1QyheCcjvyS2bXgn00t27aRo5uy8Gdv750bW4RqES
-hMxSATWP2Ee+ePTYVMHOCsUStTkX0qyT7iaPARC7HbpId1dmTVulzrdz5eUGJDJU
-yNNSk0lrFfo1uXx7AScZAHpkl3zZ
-=YsLm
------END PGP SIGNATURE-----
---=-=-=--
+      irq:
+        test_recursion_try_acquire() <- OK
+
+Note that, currently one single recursion in process context is allowed
+due to the TRACE_CTX_TRANSITION workaround, which can be fixed in the
+future. That said, below behavior is expected currently,
+  normal:
+    test_recursion_try_acquire() <- OK
+    [ recursion happens ]        <- one single recursion is allowed
+    test_recursion_try_acquire() <- OK
+    [ recursion happens ]
+    test_recursion_try_acquire() <- RECURSION!
+
+To adapt to this behavior, the bpf recursion selftest is changed.
+
+Steven Rostedt (Google) (1):
+  tracing: Add generic test_recursion_try_acquire()
+
+Yafang Shao (5):
+  bpf: Add __rcu_read_{lock,unlock} into btf id deny list
+  tracing: Add the comment for allowing one single recursion in process
+    context
+  selftests/bpf: Allow one single recursion in fentry recursion test
+  bpf: Improve tracing recursion prevention mechanism
+  bpf: Remove some denied functions from the btf id deny list
+
+ include/linux/bpf.h                                |  2 +-
+ include/linux/trace_recursion.h                    | 49 ++++++++++++++++------
+ kernel/bpf/core.c                                  | 10 -----
+ kernel/bpf/trampoline.c                            | 44 ++++++++++++++-----
+ kernel/bpf/verifier.c                              | 10 ++---
+ kernel/trace/bpf_trace.c                           | 12 +++---
+ kernel/trace/ftrace.c                              |  2 +
+ tools/testing/selftests/bpf/prog_tests/recursion.c |  7 +++-
+ tools/testing/selftests/bpf/test_progs.h           | 19 +++++++++
+ 9 files changed, 107 insertions(+), 48 deletions(-)
+
+-- 
+1.8.3.1
+
