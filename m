@@ -2,73 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617FA6E47C4
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171196E47ED
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjDQMad (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 08:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
+        id S230000AbjDQMhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 08:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjDQMaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 08:30:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3BC5FF1
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:30:16 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ec81245ae1so1423721e87.0
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681734614; x=1684326614;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=75hX5LgqItGx5RLX1YQ5Q6RKXg/GRTXjzOrDItgmVU8=;
-        b=bT94vu0Q6QRHgkHMEux4pflaaEqrFFc9jX1D805hEY084GlZmJv+1LygxuvQew1edM
-         hctSDM0hY+ODTMcO7zHmtX8MLfqUUeP5ImlX+GX6vSDzXx2oH5mueGc2ohwmreBqIgDI
-         5aBsWScygu9ggPb8ghX65lq+WFo54ITKOCDAQn5scP9waolP2+7UiCySk6p7FBWvJdOW
-         +z9f3UsEORF2MNFIg4B7w0dVKtjBSwguQWZHQCRalTPBX4QZUSt6y09W8QfxqdaHDFPH
-         i5QAfqKyUX1gTkREQBbNGvOqdmf4h1oXoeeCUgF7QJ8G2tNiG8DbvOcpPn+cMU3vRdaN
-         iGKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681734614; x=1684326614;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=75hX5LgqItGx5RLX1YQ5Q6RKXg/GRTXjzOrDItgmVU8=;
-        b=geKelNI/KlQTHCRX6qSbelzqUeGEwNymLQNAvXWaPyhPGm0JPua3QSDrXuWveLLn60
-         zjyA3q3uCJcRnygK5B2cP9bIoGslSlQBPMzi6amca8EGjyUkGEP4lHOs6aGwJsqN/hEe
-         bYse4vJ4TziuzhTTIdKV6/1odJELbbx0vy7grOVzda6FO9Ad18fA7QgHzaBUIaeykPBV
-         zyNEd6aNb98F3aVJ/PZj/x8LGEXwF27UT1hKM08Clan4w/uOCp3hW6Tgn1jraRwxQxZN
-         aiPuVk50gOVsFAwTszg5gSPn0DfJlbJ9vE9Vls3CdGpTLF6Kxco/cz4BWfm8OxHQ2qRZ
-         NS8Q==
-X-Gm-Message-State: AAQBX9cJbGR0md1zqTOBhHfnZ5Nre/kASWKlguo3ukCznBzkrm4PKal3
-        0+ZukHmw52gTM8mtPqO++oOhww==
-X-Google-Smtp-Source: AKy350alT7HiO9MfMmbe+E0WP+k1zFnMqspxl3ZlYTgElWMD/Xir4oBFbijc65PEYJil5tk+XpmFfw==
-X-Received: by 2002:ac2:5a50:0:b0:4b3:d6e1:26bb with SMTP id r16-20020ac25a50000000b004b3d6e126bbmr1783540lfn.29.1681734613986;
-        Mon, 17 Apr 2023 05:30:13 -0700 (PDT)
-Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
-        by smtp.gmail.com with ESMTPSA id d6-20020ac244c6000000b004eca2b8b6bdsm2027412lfm.4.2023.04.17.05.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 05:30:13 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     stable@vger.kernel.org
-Cc:     acme@redhat.com, andres@anarazel.de, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
+        with ESMTP id S230343AbjDQMhd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 08:37:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6A24EF1;
+        Mon, 17 Apr 2023 05:37:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 486DF6239D;
+        Mon, 17 Apr 2023 12:37:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C32BC433EF;
+        Mon, 17 Apr 2023 12:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1681735019;
+        bh=cZkrlscYdiJDQiCpwVk8ynp/4B7C4EvBAfc7DKgA0E8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h3tSKHnfksiRkXoMZjtfe8Imke7Z7dlwVy+SWzzASYKGD5F6e9mTFxwVgY+ZKmDmL
+         6ChSFb+qfLHqYVxW8bWEUwAMSV5pH8Q76WknaDRhOkEYRzvL1orsgApnhb0yS1gEdy
+         SQlJVzloYyl0Q0+RhXPTqXcajPfJtEuavktz4S/s=
+Date:   Mon, 17 Apr 2023 14:36:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "songrui.771" <songrui.771@bytedance.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Ben Hutchings <benh@debian.org>, Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [backport PATCH 2/2] tools build: Add feature test for init_disassemble_info API changes
-Date:   Mon, 17 Apr 2023 14:29:43 +0200
-Message-Id: <20230417122943.2155502-3-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230417122943.2155502-1-anders.roxell@linaro.org>
-References: <20230417122943.2155502-1-anders.roxell@linaro.org>
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libbpf: correct the macro KERNEL_VERSION for old kernel
+Message-ID: <ZD09abW0YyHU3Snt@kroah.com>
+References: <20230417084449.99848-1-songrui.771@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230417084449.99848-1-songrui.771@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,106 +52,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andres Freund <andres@anarazel.de>
+On Mon, Apr 17, 2023 at 04:44:49PM +0800, songrui.771 wrote:
+> The introduced header file linux/version.h in libbpf_probes.c may have a
+> wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some old
+> kernel (Debian9, 10). Below is a version info example from Debian 10.
+> 
+> release: 4.19.0-22-amd64
+> version: #1 SMP Debian 4.19.260-1 (2022-09-29)
+> 
+> The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)),
+> which a, b, and c stand for major, minor and patch version. So in example here,
+> the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260) which
+> is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_VERSION_CODE
+> in linux/version.h is defined to 267263.
+> 
+> I noticed that the macro KERNEL_VERSION in linux/version.h of some new kernel is
+> defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And
+> KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_VERSION_CODE.
+> 
+> The mismatched LINUX_VERSION_CODE which will cause failing to load kprobe BPF
+> programs in the version check of BPF syscall.
+> 
+> The return value of get_kernel_version in libbpf_probes.c should be matched to
+> LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
+> 
+> Signed-off-by: songrui.771 <songrui.771@bytedance.com>
 
-binutils changed the signature of init_disassemble_info(), which now causes
-compilation failures for tools/{perf,bpf}, e.g. on debian unstable.
+This needs to be your name, not your email alias (do you use ".771" as a
+name to sign things with?)
 
-Relevant binutils commit:
+> ---
+>  tools/lib/bpf/libbpf_probes.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index 4f3bc968ff8e..5b22a880c7e7 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -18,6 +18,10 @@
+>  #include "libbpf.h"
+>  #include "libbpf_internal.h"
+>  
+> +#ifndef LIBBPF_KERNEL_VERSION
+> +#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
+> +#endif
 
-  https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+What is wrong with using the KERNEL_VERSION() macro, it should be fixed
+to work properly here, right?  Did we not get this resolved in the
+main portion of the kernel already?
 
-This commit adds a feature test to detect the new signature.  Subsequent
-commits will use it to fix the build failures.
+thanks,
 
-Signed-off-by: Andres Freund <andres@anarazel.de>
-Acked-by: Quentin Monnet <quentin@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Ben Hutchings <benh@debian.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: bpf@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
-Link: https://lore.kernel.org/r/20220801013834.156015-2-andres@anarazel.de
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- tools/build/Makefile.feature                        |  1 +
- tools/build/feature/Makefile                        |  4 ++++
- tools/build/feature/test-all.c                      |  4 ++++
- tools/build/feature/test-disassembler-init-styled.c | 13 +++++++++++++
- 4 files changed, 22 insertions(+)
- create mode 100644 tools/build/feature/test-disassembler-init-styled.c
-
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index e1d2c255669e..a789ccbad93a 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -69,6 +69,7 @@ FEATURE_TESTS_BASIC :=                  \
-         libaio				\
-         libzstd				\
-         disassembler-four-args		\
-+        disassembler-init-styled	\
-         file-handle
- 
- # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 221250973d07..33ab9823ad0d 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -17,6 +17,7 @@ FILES=                                          \
-          test-libbfd.bin                        \
-          test-libbfd-buildid.bin		\
-          test-disassembler-four-args.bin        \
-+         test-disassembler-init-styled.bin	\
-          test-reallocarray.bin			\
-          test-libbfd-liberty.bin                \
-          test-libbfd-liberty-z.bin              \
-@@ -235,6 +236,9 @@ $(OUTPUT)test-libbfd-buildid.bin:
- $(OUTPUT)test-disassembler-four-args.bin:
- 	$(BUILD) -DPACKAGE='"perf"' -lbfd -lopcodes
- 
-+$(OUTPUT)test-disassembler-init-styled.bin:
-+	$(BUILD) -DPACKAGE='"perf"' -lbfd -lopcodes
-+
- $(OUTPUT)test-reallocarray.bin:
- 	$(BUILD)
- 
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 09517ff2fad5..0cfbdc83ffbc 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -170,6 +170,10 @@
- # include "test-disassembler-four-args.c"
- #undef main
- 
-+#define main main_test_disassembler_init_styled
-+# include "test-disassembler-init-styled.c"
-+#undef main
-+
- #define main main_test_libzstd
- # include "test-libzstd.c"
- #undef main
-diff --git a/tools/build/feature/test-disassembler-init-styled.c b/tools/build/feature/test-disassembler-init-styled.c
-new file mode 100644
-index 000000000000..f1ce0ec3bee9
---- /dev/null
-+++ b/tools/build/feature/test-disassembler-init-styled.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <dis-asm.h>
-+
-+int main(void)
-+{
-+	struct disassemble_info info;
-+
-+	init_disassemble_info(&info, stdout,
-+			      NULL, NULL);
-+
-+	return 0;
-+}
--- 
-2.39.2
-
+greg k-h
