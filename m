@@ -2,265 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8056E4694
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 13:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334366E4707
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjDQLhU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 07:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57760 "EHLO
+        id S230221AbjDQMBZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 08:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjDQLhT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 07:37:19 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2100.outbound.protection.outlook.com [40.107.93.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404C493C1;
-        Mon, 17 Apr 2023 04:36:28 -0700 (PDT)
+        with ESMTP id S230092AbjDQMBW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 08:01:22 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2092.outbound.protection.outlook.com [40.107.220.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4299165AF;
+        Mon, 17 Apr 2023 05:00:32 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hm3F88jytIOekDhLUqkfKOnmOBOsreNZ1X9yhIl2IwQNiboBwnW3pCVKl/GPI07pgVCh3biy/E2OyUqDwmFvYQPQzk+altmlUPbjla6YKrA55Bo6+IYvYZRo6IKkX4Z4jm2H8uFrCEzRNQ3qAa0fYiXqN0hOHN0h6eEk5r0S8Kbq0LADUm+JI3qKgo9EfEPsIXWeRhB2HDBrQ4FpZU5Nzfx81dLF2XuLBCcQsiy8+q5gBD9YSfvgLlX26uXhyw7jBqF6Ld0gUjrhSXECtstI+tWUqjar3YWPZVpe0gXLUS87mHc9KoOaxx9FAaapTbrSmnKBk4qpnPfGHVnhPE2LyA==
+ b=ai+3WL86HI3dKHB04VmmhgzcRC7JtpsbVmo3BJtVQgcDAfJjEEYUHr8R81Ig8vMBbGyBW/LxLv6wCgA0Q55i2ex3wJTTF7WyQnj5yqbhiDVFhtAnmvDk8Y7eikNTzcyYnclfMW6MsjFlo2sucLAvGZzrjObwbWQSjvmYVGSxNj3sWvKDM0UL/E2a2VDXhkbK7C+2Cp3RjVW89ky8G8ovoh4NlVDRBjbNpNeC68vZ2KkHj6x4/q6JWLfte2qtt1Cao4ySbjIX7dh8VeTG7XQfFB0sdF9ZBFCNQ147G5TbcdxQfezACjQ7wEmpXpMimsdY5IYaP6W9CkzjackqrjW6Ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FlAROnkAYihJtb8qk3AteRDhqWNaWPyaxxryUDANZhI=;
- b=DE9jh16KYq9kRVbUO8smJRcRREPcOeYwaF7sMrT79ywBw1MxPIfmHGjIHmQhC4IJx9oJSiq0S5Iv3VfmoxO0edg0xCEuKasg3OdizxDEXEWAShTOu/ogAwiGJaPkuI+pxlVoIKvnhyJBpJhqnpVyC2nT2O1Ljmb3Sb3nNpxZuCM9+XgZeJgpoDfieKwCP3xllRH8UK3qDs/JR/xc07Rc+Rqz3CU0czluToi9w+i6tT70LIz8msmT6nzN62elzaLt6Z+8KrGaAfYMIkO/YTI/htGcnTpZrfG7+IRc3bi3FegRF4cdXZrIWr5d9w/eb+edKrSyLeJ1mE/f+0v7ykrMCQ==
+ bh=1sCt0j7nh5WAnvCqxD31/2x7EkyjxxxCU/JHi8l8Bvg=;
+ b=HKocIO9I4GnK+63SFc4Gbzcnp4eh1wN+H8X5xkP4EjsEEIsc00OQ7WFBPBU8luT6RNfoQNoByfAOlXU7O3xhauaXEe/tMCLxfB4bRzLNX7i1NlwzPL3BTsM1ArkOqV4Am8NmDkCLq5L5B6PvnXwEA9VS4JwliYO01i8rthkNQQlikYsXLmjDeJ3XQygZ99K1rX8Yfa4ibgbRw9ATTeF1/eLUSN4S/rlnSy5rQPmFAgSkIS7y2UsCP1ciW5YqKaQJuARonVRgiYPTaGh7sV0v57ajtZ+hBvhB/RfMPnk2Htcq1biLrbRHifVMRyDo4r81/61xvbVdV8AvwBvv4boBRA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FlAROnkAYihJtb8qk3AteRDhqWNaWPyaxxryUDANZhI=;
- b=P01AlInQwYJHP20LhebJiH49r7llfhRBuagjivL1LUF6NjMi1lwavw1hZZgsBmJ3jeyW74f0UlsseFnIVTg36zqz9mhMIhBgWTZhTSJq4NGZKQlJxCJ64zxxsY9/dc9VkfyURJWgQh9gqh0yxc+p/ZtpSlAFKhsTy9q8tzR0Exc=
+ bh=1sCt0j7nh5WAnvCqxD31/2x7EkyjxxxCU/JHi8l8Bvg=;
+ b=HYImFkB4VWAgLDxYQZ+4ZtEgsUgikdBh1Fc9nizN1s8zHp5A1CtdQTqHocNTyJIAidOGJbnPVtIvctjMo+VD62HKUm8VcPv2ODGC2Gc/DC1H3wYREIKixpK8ZmMVnCKcDtynFdSZBGOyYlLC/LFL+kf2iMpelrvgCwDp/N/xDnsz0emI+/rep/W2aEw1mryCEYY8e7Wwe9q/7kbqvZXBwORRSPAx/QIixQ/UyGpxKvARuzEPrN7oGwLE6Hp4C9tEaUDwIiANqjsTu5vjWuapgCbUGKWERt2wXGRV3K1TaH45PaaHj0BzC6aSQzhVdsJjRkAAufeHyPVAR8KX68Hjwg==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by DM6PR13MB4431.namprd13.prod.outlook.com (2603:10b6:5:1bb::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Mon, 17 Apr
- 2023 11:35:23 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::89d1:63f2:2ed4:9169]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::89d1:63f2:2ed4:9169%5]) with mapi id 15.20.6298.045; Mon, 17 Apr 2023
- 11:35:23 +0000
-Date:   Mon, 17 Apr 2023 13:35:14 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        alexandr.lobakin@intel.com, larysa.zaremba@intel.com,
-        xdp-hints@xdp-project.net, anthony.l.nguyen@intel.com,
-        yoong.siang.song@intel.com, boon.leong.ong@intel.com,
-        intel-wired-lan@lists.osuosl.org, pabeni@redhat.com,
-        jesse.brandeburg@intel.com, kuba@kernel.org, edumazet@google.com,
-        john.fastabend@gmail.com, hawk@kernel.org, davem@davemloft.net,
-        tariqt@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH bpf V7 4/7] mlx5: bpf_xdp_metadata_rx_hash add xdp rss
- hash type
-Message-ID: <ZD0u8i+SIr6IAQ7C@corigine.com>
-References: <168098183268.96582.7852359418481981062.stgit@firesoul>
- <168098189656.96582.16141211495116669329.stgit@firesoul>
- <ZDQnFmZdESpF1BEz@corigine.com>
- <8cd2d200-09ec-57c2-0619-963dfe5efd58@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8cd2d200-09ec-57c2-0619-963dfe5efd58@redhat.com>
-X-ClientProxiedBy: AM0PR01CA0123.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:168::28) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+ header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
+Received: from DM6PR01MB4107.prod.exchangelabs.com (2603:10b6:5:22::24) by
+ CH0PR01MB7154.prod.exchangelabs.com (2603:10b6:610:eb::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6319.19; Mon, 17 Apr 2023 11:59:40 +0000
+Received: from DM6PR01MB4107.prod.exchangelabs.com
+ ([fe80::f33a:edf4:c24:d88e]) by DM6PR01MB4107.prod.exchangelabs.com
+ ([fe80::f33a:edf4:c24:d88e%7]) with mapi id 15.20.6319.019; Mon, 17 Apr 2023
+ 11:59:40 +0000
+Message-ID: <181d6b4e-4a7a-c458-0292-c35317a0fafe@cornelisnetworks.com>
+Date:   Mon, 17 Apr 2023 07:59:34 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [PATCH v3 6/7] mm/gup: remove vmas parameter from
+ pin_user_pages()
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <cover.1681558407.git.lstoakes@gmail.com>
+ <fa5487e54dfae725c84dfd7297b06567340165bd.1681558407.git.lstoakes@gmail.com>
+Content-Language: en-US
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+In-Reply-To: <fa5487e54dfae725c84dfd7297b06567340165bd.1681558407.git.lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR17CA0017.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::30) To DM6PR01MB4107.prod.exchangelabs.com
+ (2603:10b6:5:22::24)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|DM6PR13MB4431:EE_
-X-MS-Office365-Filtering-Correlation-Id: 486d9871-041d-42fe-435e-08db3f37d509
+X-MS-TrafficTypeDiagnostic: DM6PR01MB4107:EE_|CH0PR01MB7154:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd3b6097-8821-4c13-a357-08db3f3b3910
+X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y43xGCDqODxe8wWoUbXwToAejC9gA+Tekz0H9hHElVzioW1UGBLiCtmQdUVPjTZWg+qun8k65bHD+o6TYoogWbO7NC/J+5Nx5aXvEYO/r1jgB1woFe1PXNq0Ke9bDl81OIgW0FSW1jjSLpz4vHrgbW/bxNDuXX9xIy3j4RnWyldbaANzx3BcWUn8ZbQnLfyvOfBdvkZUH48VBmLesTj2he8H0ejI576QIINEfF/Ytiewpls9ZjqUmABMnkaexZZP74qGGCoZSESM2zhdETvA84RXKfl5klLmN4WowyC1GaQXnnMxxzaZHB8OX3RUN6X+GB2v3C6gHkhAj1yvHh85kTmlDD6QTlMRdoZlD/yh+uJwPQ25AiH/AWDIGHdEZ+lhFjgVitVdL8vcX8zXGjHu1DVBb/gof31JLvOW9Li0Z+totGQf5hrhA5PTSdzNvDkApEf/Xge+kV6NvAQqjkAlW34uIfhiyvf9MIOUX6F8q5OsAV3HeVPbAYFye3cDGTCkquNJOTO/0OPQWgoaazrmcKeS/8Tg1i/W5LUItQqIT+s57Wjqggtux+E2opaL8cXpTyopd79wk3nXmCbFTRkeCef1gXybiDLYBBlGuyU79ig=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39830400003)(396003)(136003)(346002)(376002)(366004)(451199021)(7416002)(5660300002)(44832011)(2616005)(86362001)(83380400001)(966005)(66574015)(186003)(6506007)(6512007)(38100700002)(8676002)(8936002)(54906003)(478600001)(6666004)(6486002)(316002)(41300700001)(36756003)(66476007)(66556008)(4326008)(6916009)(66946007)(2906002)(67856001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 1DhMeSSpVv1b8F4hkxlMYIh7EydeM4Eig9BgKt4GccTtVkQTgISy6T7j3T1VyO/eTf3Uof+flnx9mpH1oim63IEEOey6tNlM7f1vkM1+GSyutPP+KEfkZocK4qMXrV6gM5jATPiI2QOirjQ/5cYNeuzD5juo2GGykYB3k0p6RJ1Lh4bttD759S9Y9LZ8mW9GhOgGw/I3L4Dow0rX97X3yM4EyeIWffO2/nmOaB8zAp90Kujp5q8zaF2eK3cfkNU4XSfTlmY+6Xqx4HNbVVY59WbPDyAe3xbS2YrGfWN5QIsjvs0p7Jn65LqWYIkhfqREPr4c5pBctxRHZ+zStDjx562ehDJ/yZ5TGxN4JKnveTFKZHBfwfuhnmIMZrapqA5biKPSzDxXtEc+lytCy0+3Hk7qq9alA05vOUBUQi0/jIpGsoXBpGFFj+wO0MjuPfM31wJnHKlt/qQ6fqq6zthA9FmYCiR1Z+32ngxVeF5n4gRRx+JVOWmkQBP8eQJb4Aoy2HCORqPuQ7CtO2v+K5IC6DRGMlE5U6/GfbTlBAnMV8xeW6Srnhxik53X5cgLoDjapeufETT3NiDMe7669RKG4nPre3tUDHkgrYNS2WDP8+jwXc80FgwrxrlPOe2d3r+EJvjBVENcX+DQ9xZaie1u3g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4107.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(39830400003)(366004)(136003)(451199021)(110136005)(54906003)(4326008)(316002)(66946007)(66556008)(66476007)(52116002)(8936002)(6486002)(478600001)(6666004)(5660300002)(41300700001)(8676002)(2906002)(7416002)(7406005)(44832011)(86362001)(31696002)(36756003)(38350700002)(38100700002)(2616005)(26005)(186003)(53546011)(6512007)(6506007)(83380400001)(31686004)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDV3aU1kU0Zsb1NkdlVxaUFiM2tlaFBRWVJJR3owT3ZUV0lld3NmY1ZLRVRY?=
- =?utf-8?B?RUpvelhMWkMxaldHTmNJa0pxcnZMMjVGc2xRL3ZFNVZVWjB3QkJmdExkMTBY?=
- =?utf-8?B?RUE1V2lKeVZuNStxbm9IS3Z6ejF5YWNjdWhkWk1vMmlFOTN5M1R0MmViYXZu?=
- =?utf-8?B?YkxmZUw5ckpDSm1SaHlYU0Q4ZThhbGFCa0EydE5SaDkybUtoWk94YWZCeXlk?=
- =?utf-8?B?TDNGT2hJeEhadWF1aTdJck4xb1RHNFhUY29DL21melBPUjhaVFcvTXFtQm9E?=
- =?utf-8?B?VDM4VDhKSmJVMFVPVVRoT0hFb2pONDlhcU80NHRtZFBzYzE0bkdzMnJoeUpN?=
- =?utf-8?B?aDAxU2kzOHI0dy9PYUFCTUpDOFhUbUl5NHRwMUJPN1o3SWZzcHFLcG9LOXNZ?=
- =?utf-8?B?Um5OSlpkNWIxZFNURDJFRk9pQUZabUQySTBhcVkwUTMzbW9uQTBNb0FTdEZE?=
- =?utf-8?B?Rk5SQUZGR0FFNTFaOW9Wb0lMMThHalU0RVIrLzdGdHNveUZvOXhSRi9WM1JZ?=
- =?utf-8?B?OG9EMlZwbExsVXZJYmVIZXE3MkdrSlBtM0ZiN0cwRjVjYmNjQ3JzSXo4RGc3?=
- =?utf-8?B?L0dHeHdGZmhvU084Q3N3UEVBcFZ5V0N4dzhWM3pQR2FsZnkzamF6eXBjR054?=
- =?utf-8?B?ZlRhNXFjdHhOa25DZU5CZTdFRVNUMGdiekNWQ2dBaFpDeDlBcnJGaFkxbTVx?=
- =?utf-8?B?R3l5S2lqL0xvSWZyWjdwemlvNlpmZEd6Rzk5d2RjUHZvSzBGL2tDVDMvenVN?=
- =?utf-8?B?SUJGZjJ4M09aSEFkV0w3aTd2cWJBaEZIMW5TUlR1YnE0RWJCclJOaUNsd3Nz?=
- =?utf-8?B?eGswdG9xWStIaUVsSlhzUzloVm84dkJaS3JkbFBQbEtTSURWSUUrdjZUSllC?=
- =?utf-8?B?TEtBanlMc2duTzZtNnJHUEpvenZKekJ1K2twMVhhVXlVZG5tSXlBb1E3OTBB?=
- =?utf-8?B?MENZS1g5UkZXN3VlY2pzSHBQMU03L0V0RXl4OEtGK2QyNmhvSzR1bTdRbTVo?=
- =?utf-8?B?K29PTVpENW9lc2F1NHV4bHp0YWp1YU9WWWpXZUdzbnc5eHgvRktNV21LMjFo?=
- =?utf-8?B?RmszRW5PazZXdGhCS1FTTVgzblJPQlhscnY4c0F4dStFZmNxaDJkZkliek9X?=
- =?utf-8?B?aHV3UUN1bGtMdnJYZHF0dmU3ZVFOSEEvZ2hoZk1idnFYZjNmd0Q4eUJiRVpI?=
- =?utf-8?B?Ukx5RmZTeCsvWS9nNkt1dDFtMnc2UjN0cUY4c1NoL0IzY1hXbWgvNUo4QUQ5?=
- =?utf-8?B?UFFOdjQ4S2ZJeHVGREtRZWI2ZDc2YlBtNUh6cm1OSFVDcE5raVJLK3NHUllC?=
- =?utf-8?B?TllSN2F1Qy9pZGs0Sm5ZSkUwenhidTlTMlk5WXBCRHRna1BqTys4RTJ1bE0y?=
- =?utf-8?B?TnVKTkRkUXExNml5ZGVUUTdBaVlFRDJTUFMyUDVWKzVid2tFVEo2Lzg1TzNC?=
- =?utf-8?B?Wlh4ck4yS24vVWlEbzY3cCtaY1FGUFZBSGdNQnNPTGQvbDRxNVREekJDaUh1?=
- =?utf-8?B?T3Q5cnYrTitzL0hMVWt4a2tmczhoSVRpL2k1ZWJCWE1ZS2M0ODVDREhIekM3?=
- =?utf-8?B?a1k1R3ZlelpMdk5tUXVGNHV2KzNpdWE1NzFVSnRWU3R0dm55aXJXQm9UUmp1?=
- =?utf-8?B?TlVIMzkzQWZheEM4V2F5Z1RqMjVQekZrb1NXMWx1RDNabnlMUnh0SVQ3eSto?=
- =?utf-8?B?VTUwcXh2Q2oyQ3d1ZUp5eHNqZmhoR1VjR2Y5S2czdExtK3JNRVpMRmxLeC9E?=
- =?utf-8?B?cmd1a3QzdlgrVWozMTEzK3hpV09RZXRON3JPWXJnZ0lOUmg5OHFTRVVpT2Iv?=
- =?utf-8?B?N0s4S0Y0bzA4Wnp1eHdjbDFTaDY1K3hXNEI0dnJlZzU5NVZFMUlQMFVKM2lC?=
- =?utf-8?B?ZDdjL2VDQzhCby9uY3V3RHVLWTUvK3RDRHp2R1pWeHBSZ0liNEhhd2d6WDZL?=
- =?utf-8?B?WWhJVkhFRWQvUUZuZER5ZUE4ZzBXOGdHcjJOMlVwNlVHaTBhVkpLVk9qZjFL?=
- =?utf-8?B?OFI2dVJYaHpUZDNuNVo5STNrdXI1NG1WdG0wUTZSenlURStIMzArK2dqd2hr?=
- =?utf-8?B?bU1rbkhDUVdYVGR4T1ZDb3hDcTZlMitmWGtQT1ZsTFpPTWRqOEIxTjgwSVRr?=
- =?utf-8?B?RHBQdE56cXhIQStSMzkxaUJvWWcxT213TytuYWd2eUJWelFkc3ozb3l5RW8y?=
- =?utf-8?B?eUREQWNFRXlXQVMxWjV3U2luTzQrVUZXTGhOY2FRZTlOL3JTR0N0aHo1U0Z0?=
- =?utf-8?B?ZnhOSjJRZ1JoSFhzM2QzSk9jS2NRPT0=?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 486d9871-041d-42fe-435e-08db3f37d509
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rml3ZzZZbHViVmRURE9Nc0xITndiUTVSMVE3OGZIajBHbzYrajlvWE5pMUl5?=
+ =?utf-8?B?cVdzUzJuTUJCT2haM3g3WTFZdm5FTTNBU3JuMFQwblU1aUNIZ2dCZU5VRXR5?=
+ =?utf-8?B?THlPMC9JbXVWWGFWdFczbkRsVXd1V25rWHA2VXNJUW1sNjRLMXRrSCtNYUdS?=
+ =?utf-8?B?YmlJN1piNG11UVdWRi8wRkt4ZndJNFZ3MG0vSUlIOWhQMHo2bXJSR092bC9K?=
+ =?utf-8?B?TVJRTWF1S09KL2NPU0pRSlRUUWQzcDBVcXIrMEU2cmJWTkZQVnFzSlYzNGxi?=
+ =?utf-8?B?TzVLWTlZbHNmUjhTZkpPUFphYUFZYlFqNDFFWmVBY1MzRFh6TkVXZzVBZWxD?=
+ =?utf-8?B?dFJTNjY2bGNzWnpTbUhOVUw2cFM4VUcrMklNL2c4VTR3Q29nMDZKWWdmb2o5?=
+ =?utf-8?B?S2hnaGd3c2JaeFZ4RG5YREpDUGJMWk41a2t1WC9INHZzb2hFRm12OCs4WnBK?=
+ =?utf-8?B?QTMxclp3OFQ2YUdyZkdxYWEvbjFGMW5sZUtKMXdSVW53c3h4em5mdGRvUzdo?=
+ =?utf-8?B?RmlSVXJ6cW9Wbjl3VUJjWFUrclFwR2haYXhHdE5DaUh4S1ovWXM5ZkRzdDVp?=
+ =?utf-8?B?cjU0MzIvNW0vSXN1TVVMUFh0SkswdWJnV3p2c2Mwa2tzMS9qRC9hUmp1bzI1?=
+ =?utf-8?B?ZllPeU9lM1JJbGpUYzJlM2ZMSURHRWp4a1NmMXFYSHNvdkVLblYwMmlnWm9P?=
+ =?utf-8?B?Y1M2dUJtR0JkOERHNTlNaFJVbUdIWElpQW1XM0pVd2ZjUkorUDBxODM1UWxI?=
+ =?utf-8?B?ZDgyTTBkb1BsVzdxcmVkbXFFNVJlc2dRUHZleEdDRFFubUhSbFQySzlYNGNQ?=
+ =?utf-8?B?TGtmaHhyZXBMV1hhc1NDY2FrWE5GcnNvZTlJSVd3QVcwNTVXVFRleFVncUxW?=
+ =?utf-8?B?Y1BpZlViVkkwTE80a2ViclplUGlSd01BYkRMV0lITElIL1RMcjV6dGRTUWtH?=
+ =?utf-8?B?NXdJam9ialp0ZGE1Y25BOG0xM3IweExKSEJ0T0d3UkczaG5OVGcyaGNFMWYy?=
+ =?utf-8?B?REtIbjRBOFlDZXpyODFqVEJGR3JxUkZVQ2psbWhOa29mRzhacUloWjFkRDRy?=
+ =?utf-8?B?OXkrdXYxT2xROU9yaHRxNmluL3RvMytEWFBhVjZ4alNJQTYrVWFIckltUmJF?=
+ =?utf-8?B?TUFUOFBId1dUZXhXTTI5aHRsZnRranZ5MnFTZ3NWUnBrVnlQQmNGY2l6YnJj?=
+ =?utf-8?B?VzB3MkZ5ZHBhY2Rtd2xQNzF0Q1htTHhtRXpRckh0SUZMbGFLdU1LNm0rb2xJ?=
+ =?utf-8?B?Um5HcExHSlp4bDJyQ0M0azcwWEw0UkZkWUppZThCZTAvdmN3WUtxQ2dNaXN5?=
+ =?utf-8?B?SWVKY2pXTyt6NEdCVVBRaG5YVTBNWWhyejRyd0krc2pqMG9acWFOU3JBbHVO?=
+ =?utf-8?B?Ri9yOXFjUElPNmlCdGp3dXIwcUdxVi95UmNnMURZeDA4dDZxU1V4bmRqNHJx?=
+ =?utf-8?B?akpGTDA2NmR5S2tHSUVUcnBKQi9MS1g4eVRGQ1pTVW53WjJ2WUJPZGlkR3d0?=
+ =?utf-8?B?RGZrRWJ6QkZVOEpXdTFnVjh0d3YrdGc4VE85bUFyR1VsbE84cDUyRDlrWWlX?=
+ =?utf-8?B?cjY3SkY5K0ltaEZpTng2czg5LzdGMkZ2UXZBcXBFODhBOGdTak5Nby9IMVhN?=
+ =?utf-8?B?cWl0N3lkYTRzbFhMNTFpNGxsMW5KeTZDN3lTQSthQ1FVK2VoZkJndUZZZGp4?=
+ =?utf-8?B?U3lXTVkzcjd2dHlmaEE0a1lCcGQrSHNiMURuWlRPWjlVTXhIb25hdGc1M0s3?=
+ =?utf-8?B?eVF2bmk2NE55R1dic3lrMUpXeHZxUjdDcmhTUG5lUjU4ekQzSlJZbXpQWE1p?=
+ =?utf-8?B?T0RkRzA4c1JPcXR4cmFWdUMvZEZKMU9Pa3NlaGVjTDBuajRzWUdDWXJ3YWRs?=
+ =?utf-8?B?aEhWMjlyTXZ1eHgvSkZySFlHWll4d0ZRS0dSUGVaV3FjTUpmczB0NHRvVDJE?=
+ =?utf-8?B?bDJQOE9HeXZKdTM4SkJhdjBJbENMam10azdSK2lkelYxNUR2U3pabDNpMFFE?=
+ =?utf-8?B?VFVjY0JvUzFSRDF3bWFPVGM1eHU5RlM0ZWRGMjBMbk9CeDJpTDAzSzdhLzRP?=
+ =?utf-8?B?N1RGTWw5bjl0aXRWUVA2Tlg5by9sbmQzTFpnUlYybExNOWxrRDhNeDc0Mklp?=
+ =?utf-8?B?bWNCMG53djhVTFp0RzliWS9sWVRDbHl2NVY4SlZWcElTdmx3a09Cb2pQS1F2?=
+ =?utf-8?Q?cpPvJW6u15b4gMRyamZQtFs=3D?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd3b6097-8821-4c13-a357-08db3f3b3910
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4107.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2023 11:35:23.6190
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2023 11:59:39.8624
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OZ6ydsV//ir72n2XxjIEDbtgY1udDM0OBPTmyrmC6/lxY7aTPtkcoDJL2bBIdZjhI2VhYbjlfcfWId7Vzad29B8+vocovzpcovWO6CeKzOw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4431
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: nMqnAoQTMA1pXaQyRDyRDkkNb1GPOwuspHLueg82Ikt0POx8RR4YI9q+9EAz7M36Pin5Tyy6o1Yxj223NE7da2kOglT+ArI8P7q8D6f2l0kvdg+VtlDNvydSvF0J/+r2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB7154
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 12, 2023 at 01:31:18PM +0200, Jesper Dangaard Brouer wrote:
-> [You don't often get email from jbrouer@redhat.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> On 10/04/2023 17.11, Simon Horman wrote:
-> > On Sat, Apr 08, 2023 at 09:24:56PM +0200, Jesper Dangaard Brouer wrote:
-> > > Update API for bpf_xdp_metadata_rx_hash() with arg for xdp rss hash type
-> > > via mapping table.
-> > > 
-> > > The mlx5 hardware can also identify and RSS hash IPSEC.  This indicate
-> > > hash includes SPI (Security Parameters Index) as part of IPSEC hash.
-> > > 
-> > > Extend xdp core enum xdp_rss_hash_type with IPSEC hash type.
-> > > 
-> > > Fixes: bc8d405b1ba9 ("net/mlx5e: Support RX XDP metadata")
-> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> > > Acked-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
-> > >   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |   60 ++++++++++++++++++++++
-> > >   include/linux/mlx5/device.h                      |   14 ++++-
-> > >   include/net/xdp.h                                |    2 +
-> > >   3 files changed, 73 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > > index efe609f8e3aa..97ef1df94d50 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > > @@ -34,6 +34,7 @@
-> > >   #include <net/xdp_sock_drv.h>
-> > >   #include "en/xdp.h"
-> > >   #include "en/params.h"
-> > > +#include <linux/bitfield.h>
-> > > 
-> > >   int mlx5e_xdp_max_mtu(struct mlx5e_params *params, struct mlx5e_xsk_param *xsk)
-> > >   {
-> > > @@ -169,15 +170,72 @@ static int mlx5e_xdp_rx_timestamp(const struct xdp_md *ctx, u64 *timestamp)
-> > >      return 0;
-> > >   }
-> > > 
-> > > +/* Mapping HW RSS Type bits CQE_RSS_HTYPE_IP + CQE_RSS_HTYPE_L4 into 4-bits*/
-> > > +#define RSS_TYPE_MAX_TABLE  16 /* 4-bits max 16 entries */
-> > > +#define RSS_L4              GENMASK(1, 0)
-> > > +#define RSS_L3              GENMASK(3, 2) /* Same as CQE_RSS_HTYPE_IP */
-> > > +
-> > > +/* Valid combinations of CQE_RSS_HTYPE_IP + CQE_RSS_HTYPE_L4 sorted numerical */
-> > > +enum mlx5_rss_hash_type {
-> > > +    RSS_TYPE_NO_HASH        = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IP_NONE) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_NONE)),
-> > > +    RSS_TYPE_L3_IPV4        = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV4) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_NONE)),
-> > > +    RSS_TYPE_L4_IPV4_TCP    = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV4) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_TCP)),
-> > > +    RSS_TYPE_L4_IPV4_UDP    = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV4) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_UDP)),
-> > > +    RSS_TYPE_L4_IPV4_IPSEC  = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV4) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_IPSEC)),
-> > > +    RSS_TYPE_L3_IPV6        = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV6) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_NONE)),
-> > > +    RSS_TYPE_L4_IPV6_TCP    = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV6) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_TCP)),
-> > > +    RSS_TYPE_L4_IPV6_UDP    = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV6) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_UDP)),
-> > > +    RSS_TYPE_L4_IPV6_IPSEC  = (FIELD_PREP_CONST(RSS_L3, CQE_RSS_IPV6) |
-> > > +                               FIELD_PREP_CONST(RSS_L4, CQE_RSS_L4_IPSEC)),
-> > > +} mlx5_rss_hash_type;
-> > 
-> > Hi Jesper,
-> > 
-> > Sparse seems confused about 'mlx5_rss_hash_type' on the line above.
-> > And I am too. Perhaps it can be removed?
-> > 
-> 
-> Yes, it can be removed (in V8).
-> 
-> The reason/trick for doing this was to get compiler to create the enum
-> symbol, which allowed me to inspect the type using pahole (see cmd
-> below).  (This will also expose this to BTF, but it isn't actually
-> useful to keep around for BTF, so I will remove it in V8.)
 
-Thanks Jesper,
+On 4/15/23 8:09 AM, Lorenzo Stoakes wrote:
+> After the introduction of FOLL_SAME_FILE we no longer require vmas for any
+> invocation of pin_user_pages(), so eliminate this parameter from the
+> function and all callers.
+> 
+> This clears the way to removing the vmas parameter from GUP altogether.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>  arch/powerpc/mm/book3s64/iommu_api.c       | 2 +-
+>  drivers/infiniband/hw/qib/qib_user_pages.c | 2 +-
+>  drivers/infiniband/hw/usnic/usnic_uiom.c   | 2 +-
+>  drivers/infiniband/sw/siw/siw_mem.c        | 2 +-
+>  drivers/media/v4l2-core/videobuf-dma-sg.c  | 2 +-
+>  drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
+>  drivers/vhost/vdpa.c                       | 2 +-
+>  include/linux/mm.h                         | 3 +--
+>  io_uring/rsrc.c                            | 2 +-
+>  mm/gup.c                                   | 9 +++------
+>  mm/gup_test.c                              | 9 ++++-----
+>  net/xdp/xdp_umem.c                         | 2 +-
+>  12 files changed, 17 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
+> index f693bc753b6b..1bb7507325bc 100644
+> --- a/drivers/infiniband/hw/qib/qib_user_pages.c
+> +++ b/drivers/infiniband/hw/qib/qib_user_pages.c
+> @@ -111,7 +111,7 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
+>  		ret = pin_user_pages(start_page + got * PAGE_SIZE,
+>  				     num_pages - got,
+>  				     FOLL_LONGTERM | FOLL_WRITE,
+> -				     p + got, NULL);
+> +				     p + got);
+>  		if (ret < 0) {
+>  			mmap_read_unlock(current->mm);
+>  			goto bail_release;
 
-I didn't know that trick :)
+For Qib...
 
-> $ pahole -C mlx5_rss_hash_type
-> drivers/net/ethernet/mellanox/mlx5/core/en/xdp.o
-> enum mlx5_rss_hash_type {
->        RSS_TYPE_NO_HASH       = 0,
->        RSS_TYPE_L3_IPV4       = 4,
->        RSS_TYPE_L4_IPV4_TCP   = 5,
->        RSS_TYPE_L4_IPV4_UDP   = 6,
->        RSS_TYPE_L4_IPV4_IPSEC = 7,
->        RSS_TYPE_L3_IPV6       = 8,
->        RSS_TYPE_L4_IPV6_TCP   = 9,
->        RSS_TYPE_L4_IPV6_UDP   = 10,
->        RSS_TYPE_L4_IPV6_IPSEC = 11,
-> };
-> 
-> This is practical to for reviewers to see if below code is correct:
-> 
-> > +/* Invalid combinations will simply return zero, allows no boundary
-> checks */
-> > +static const enum xdp_rss_hash_type
-> mlx5_xdp_rss_type[RSS_TYPE_MAX_TABLE] = {
-> > +    [RSS_TYPE_NO_HASH]       = XDP_RSS_TYPE_NONE,
-> > +    [1]                      = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [2]                      = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [3]                      = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [RSS_TYPE_L3_IPV4]       = XDP_RSS_TYPE_L3_IPV4,
-> > +    [RSS_TYPE_L4_IPV4_TCP]   = XDP_RSS_TYPE_L4_IPV4_TCP,
-> > +    [RSS_TYPE_L4_IPV4_UDP]   = XDP_RSS_TYPE_L4_IPV4_UDP,
-> > +    [RSS_TYPE_L4_IPV4_IPSEC] = XDP_RSS_TYPE_L4_IPV4_IPSEC,
-> > +    [RSS_TYPE_L3_IPV6]       = XDP_RSS_TYPE_L3_IPV6,
-> > +    [RSS_TYPE_L4_IPV6_TCP]   = XDP_RSS_TYPE_L4_IPV6_TCP,
-> > +    [RSS_TYPE_L4_IPV6_UDP]   = XDP_RSS_TYPE_L4_IPV6_UDP,
-> > +    [RSS_TYPE_L4_IPV6_IPSEC] = XDP_RSS_TYPE_L4_IPV6_IPSEC,
-> > +    [12]                     = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [13]                     = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [14]                     = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +    [15]                     = XDP_RSS_TYPE_NONE, /* Implicit zero */
-> > +};
-> 
-> > drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c:198:3: warning: symbol 'mlx5_rss_hash_type' was not declared. Should it be static?
-> > 
-> > ...
-> > 
-> 
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+
