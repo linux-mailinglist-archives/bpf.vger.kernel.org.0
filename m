@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E406E4D92
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 17:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EA86E4D95
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbjDQPsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 11:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
+        id S231452AbjDQPsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 11:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbjDQPsM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 11:48:12 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43EF7ED8;
-        Mon, 17 Apr 2023 08:48:06 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id s23-20020a17090aba1700b00247a8f0dd50so2085130pjr.1;
-        Mon, 17 Apr 2023 08:48:06 -0700 (PDT)
+        with ESMTP id S231460AbjDQPsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 11:48:18 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8426BAD03;
+        Mon, 17 Apr 2023 08:48:10 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id q2so31014544pll.7;
+        Mon, 17 Apr 2023 08:48:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681746486; x=1684338486;
+        d=gmail.com; s=20221208; t=1681746490; x=1684338490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2wgVwyxor4VzOi7Z0g46ftmbnrT2RHnmbGZfAtqjbCA=;
-        b=Ypm/PtLVegJYJ/lNGHMLpLBuX0ZC+yhaM4vULV0Sgptn47FedbANYyDu8n0yy0tT46
-         rqo/w4dUDbRwOZ+Iu/QHP/H8EhzX39xR62wLm8hd1A0TNdFffBKdVpapFv8sngPgmiTj
-         p8tV8TeEYJuLMnek2JZ8XBAfR/a2G2sO+sCqnEVCal97CQs3kAjsRzVnBsA+Hfgt8Bjm
-         xVs2J9wyX4gyhKm/huz+i/YHG02ndgoSRuijtPBpZf85T9SZsWOBe25tz13waIw6dv20
-         bP1LuMdj8lVtgkULK0dl7YrlJ9HXhWUg+0KcBI8vChWhC6jTaDFndYayT6Rt4C0VkPFQ
-         7yrQ==
+        bh=vYG1b357oMKLvJvHyt8MmZQVmZpqrurlWW2QFSsi01Y=;
+        b=aXJTmhfln+ApLe5Z5D5qMz9viP1nylI6xGYmzkwjLUNPlqIXXUdw04ZeNKdRdE2mO+
+         PPg1qxngkETSBNc5iJXxeQ5xMFhyUsXL2ut2BnsTe4cK2WYOjYezUMmxwLHeFb1AuxFE
+         cHSJb3lGk01ziMkBmfQABhPY7kBPLinrDTrjtgT51ibo8mX9CttpZRoQrspYpTT2sRm2
+         ZC2vixgtOF5GE1HvM3nKGmCLAR/yCO58KHw4vc7XOgpJ4Af4CDhvJNuiLi1mHbC4VU0m
+         nS1KaX1LUhnrCmklhlt4fkIG0Tmdfu1fkT+Nbh2FsvuNIJbKApy8oel65Xv0Yh4AUvuM
+         vXbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681746486; x=1684338486;
+        d=1e100.net; s=20221208; t=1681746490; x=1684338490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2wgVwyxor4VzOi7Z0g46ftmbnrT2RHnmbGZfAtqjbCA=;
-        b=Ku7vCWL6SMXuNyuLGprMCfR1efwahsF1EmPl0WliXG7oSMxCBz4aMrKk5wwI67Fz1l
-         6NdVOVpFerre1W4VPIalV7ErSo9rr9VKPgLtWgGK4KV+Yvc5UA+7c7Y+XLhlMh+FE/MR
-         ODJzZajOvVgZQ2zrN+Mmkn32n9X+ug2W58CmR1tq5ZCVKuuEcdl+daoBLhUlfw+Dn5Hj
-         dTidIPW0O+jwsoPivDc/gdGc4wpH1AeSgWZoyZ9mNYizReCtCBoyj6s/Qbq/1CkMSWAT
-         bZtF5W2asx2GUH3AMstBNLQhrIqAkyJRWtEEk3/onO/KqNJsseuFSc/h8SQykP8Orduu
-         vLDA==
-X-Gm-Message-State: AAQBX9ehWsDYnXr57QqIvTS5rV79GXiqulsQCDxDLk7p22moRaVkYHrk
-        s2rI7wISXQiXcUBOGKK0r18=
-X-Google-Smtp-Source: AKy350aRsEhgOwTO8pE4AeOr4FeKjjKs5CWz9jyW4rIRAs6bXZ46yIQ0sAhVvwQaZaEgKJzE9d0Rxg==
-X-Received: by 2002:a17:902:d2c2:b0:1a6:7a19:331b with SMTP id n2-20020a170902d2c200b001a67a19331bmr14377306plc.5.1681746486035;
-        Mon, 17 Apr 2023 08:48:06 -0700 (PDT)
+        bh=vYG1b357oMKLvJvHyt8MmZQVmZpqrurlWW2QFSsi01Y=;
+        b=j5hWUCKLsqDvhntOiea5ab1KGAVEL4Z+VPwMqLU+Kzy0H/CtLVtLUE86hDwfh1XIS9
+         VLEANi7EIm98MBPaxq9RFUJetOFLpUK31SZWXwGSQ1/aycwh1l0arS+CUvdV81EE2LWQ
+         B1Y22yzzxLGcd5LGuDtW8i5naP9v+qa7qkxqdR9sW8sDtsmpWZsJ8q6uBVhmWJ9VHSy+
+         0k3ZBsmyBd9XOBw5ZrB1wLEncwByMaTjILQwvJ1Xim0YXNx9A8XlGZ/TaO2uXGIgxlPH
+         G4spIcYgpqbpWaGZkLyIO6jM6rqvAWVn3X1UsKYnDkdYwenVVkyyD4pDx5wHR+McR6Ja
+         YJNg==
+X-Gm-Message-State: AAQBX9e9d0yFi2hQlxdnaWsQ59omr/sNxcxWFYPjitP2kM0wYPoyyfH+
+        IbnA/mezmLTG6BymeAnqJt4=
+X-Google-Smtp-Source: AKy350aGHNWC1i6+7g7/8F3wKaZQKN+hE8U1ntgTH/I5O43I5uTSY+qgOFPV1ogAWkYO2XsxLM6cHg==
+X-Received: by 2002:a17:902:f14a:b0:1a1:f5dd:2dd5 with SMTP id d10-20020a170902f14a00b001a1f5dd2dd5mr10560624plb.13.1681746490024;
+        Mon, 17 Apr 2023 08:48:10 -0700 (PDT)
 Received: from vultr.guest ([2401:c080:3800:263c:5400:4ff:fe66:d27f])
-        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001a6b308fcaesm4437513plb.153.2023.04.17.08.48.02
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001a6b308fcaesm4437513plb.153.2023.04.17.08.48.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 08:48:05 -0700 (PDT)
+        Mon, 17 Apr 2023 08:48:09 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -57,9 +57,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         mhiramat@kernel.org
 Cc:     bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 3/6] tracing: Add the comment for allowing one single recursion in process context
-Date:   Mon, 17 Apr 2023 15:47:34 +0000
-Message-Id: <20230417154737.12740-4-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 4/6] selftests/bpf: Allow one single recursion in fentry recursion test
+Date:   Mon, 17 Apr 2023 15:47:35 +0000
+Message-Id: <20230417154737.12740-5-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230417154737.12740-1-laoar.shao@gmail.com>
 References: <20230417154737.12740-1-laoar.shao@gmail.com>
@@ -75,49 +75,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After TRACE_CTX_TRANSITION is applied, it will allow one single recursion
-in the process context. Below is an example,
-
-SEC("fentry/htab_map_delete_elem")
-int BPF_PROG(on_delete, struct bpf_map *map)
-{
-    pass2++;
-    bpf_map_delete_elem(&hash2, &key);
-    return 0;
-}
-
-In the above test case, the recursion will be detected at the second
-bpf_map_delete_elem() call in this prog. Illustrated as follows,
+This is a prepation for replacing prog->active with
+test_recursion_{acquire,release}, in which one single recursion in the
+process context is allowed. The behavior will be as follows,
 
 SEC("fentry/htab_map_delete_elem")
     pass2++;   <<<< Turn out to be 1 after this operation.
     bpf_map_delete_elem(&hash2, &key);
-         SEC("fentry/htab_map_delete_elem")       <<<< no recursion
+         SEC("fentry/htab_map_delete_elem")    <<<< not recursion
             pass2++; <<<< Turn out to be 2 after this operation.
             bpf_map_delete_elem(&hash2, &key);
                 SEC("fentry/htab_map_delete_elem") <<<< RECURSION
 
-We'd better explain this behavior explicitly.
+Hence we need to change the selftest to allow it. To be
+backward-compatibility, we allow both the old value and the new value
+to be expected, so a new helper ASSERT_IN_ARRAY() is introduced.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
 ---
- include/linux/trace_recursion.h | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/recursion.c |  7 +++++--
+ tools/testing/selftests/bpf/test_progs.h           | 19 +++++++++++++++++++
+ 2 files changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-index 80de2ee..445a055 100644
---- a/include/linux/trace_recursion.h
-+++ b/include/linux/trace_recursion.h
-@@ -168,6 +168,8 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
- 		 * will think a recursion occurred, and the event will be dropped.
- 		 * Let a single instance happen via the TRANSITION_BIT to
- 		 * not drop those events.
-+		 * After this rule is applied, one single recursion is allowed in
-+		 * the process context.
- 		 */
- 		bit = TRACE_CTX_TRANSITION + start;
- 		if (val & (1 << bit)) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/recursion.c b/tools/testing/selftests/bpf/prog_tests/recursion.c
+index 23552d3..dfbed2e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/recursion.c
++++ b/tools/testing/selftests/bpf/prog_tests/recursion.c
+@@ -8,6 +8,7 @@ void test_recursion(void)
+ 	struct bpf_prog_info prog_info = {};
+ 	__u32 prog_info_len = sizeof(prog_info);
+ 	struct recursion *skel;
++	int expected[2];
+ 	int key = 0;
+ 	int err;
+ 
+@@ -27,9 +28,11 @@ void test_recursion(void)
+ 
+ 	ASSERT_EQ(skel->bss->pass2, 0, "pass2 == 0");
+ 	bpf_map_delete_elem(bpf_map__fd(skel->maps.hash2), &key);
+-	ASSERT_EQ(skel->bss->pass2, 1, "pass2 == 1");
++	expected[1] = 2;
++	ASSERT_IN_ARRAY(skel->bss->pass2, expected, "pass2 in [0 2]");
+ 	bpf_map_delete_elem(bpf_map__fd(skel->maps.hash2), &key);
+-	ASSERT_EQ(skel->bss->pass2, 2, "pass2 == 2");
++	expected[1] = 4;
++	ASSERT_IN_ARRAY(skel->bss->pass2, expected, "pass2 in [0 4]");
+ 
+ 	err = bpf_prog_get_info_by_fd(bpf_program__fd(skel->progs.on_delete),
+ 				      &prog_info, &prog_info_len);
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 10ba432..79e96cc 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -245,6 +245,25 @@ struct msg {
+ 	___ok;								\
+ })
+ 
++#define ASSERT_IN_ARRAY(actual, expected, name) ({			\
++	static int duration;						\
++	typeof(actual) ___act = (actual);				\
++	typeof((expected)[0]) * ___exp = (expected);			\
++	bool ___ok = false;						\
++	int i;								\
++									\
++	for (i = 0; i < ARRAY_SIZE(expected); i++) {			\
++		if (___act == ___exp[i]) {				\
++			___ok = true;					\
++			break;						\
++		}							\
++	}								\
++	CHECK(!___ok, (name),						\
++	      "unexpected %s: actual %lld not in array\n",		\
++	      (name), (long long)(___act));				\
++	___ok;								\
++})
++
+ #define ASSERT_NEQ(actual, expected, name) ({				\
+ 	static int duration = 0;					\
+ 	typeof(actual) ___act = (actual);				\
 -- 
 1.8.3.1
 
