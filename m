@@ -2,126 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5086F6E4750
-	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528FD6E47C3
+	for <lists+bpf@lfdr.de>; Mon, 17 Apr 2023 14:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjDQMN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 08:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        id S231199AbjDQMab (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 08:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjDQMNz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 08:13:55 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A395D4EF1;
-        Mon, 17 Apr 2023 05:13:20 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id j15so4428007ybl.10;
-        Mon, 17 Apr 2023 05:13:20 -0700 (PDT)
+        with ESMTP id S229713AbjDQMaV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 08:30:21 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278AA40C8
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:30:14 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a29so27047193ljq.0
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 05:30:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681733598; x=1684325598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1681734613; x=1684326613;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SHhPz+EuIXTc1mVy+d6/xeEAaq2+DiiC9QI7fkSBxRM=;
-        b=BbNpNiGbmO3q3OE3llCQvT+0cvIcVVESgUqwP8dut5rK3te/4mV2aRs5xtYkhQvdru
-         iGRFHuEBEWCe//1QQNQLiUimO7oiSF4ir2Htu2JU6CmiYEafd+gXthH/+zfYPXh/t7h5
-         9NLD++wSaozK12jZ8chWzGHWcsLsKfJct47lB5Xb1F4MfkF7BwkwpIDl7MhBbUeW/M3B
-         npoj13RyjRsdrMbuvc3KzJT1ZIMl9ykYe5tbccpAht/h2ipRndQ1/5f68DI8YX2Qs17I
-         hE5aoarx/cm8AKuRLp57e6Dnme68istUazyQVeRZdsGnfZkSXKQrWDDP0e9WaAsOv3H5
-         oRoA==
+        bh=H9SW4BaZ1bnKVP1weVI2e85RynWnU48bLznC9wO1o9M=;
+        b=n3zPin0s6G1kVf80R6NptUIL4S3g+P69ADkrw+7CjbBdWnHZAogR6n8d7yvle5PpkC
+         N2qD3f66q4c1WuJJH3FC7IEyu49Ue0xXjqtxY5tz+Yd2eWdFli+V0m02Vs2vkkgobOb6
+         /EEatrtb5D817UZRcI4zZUpNKlarszn2yTNKMc633kSVLPqSxgDv+hIl6fQRW0Th5rud
+         5oJKMxbsSAn2FYb5E9GmEQTFxIKKSETJgwQToXiuD6bixtmU6h5/FXEYcmaysX9KpzuB
+         kaQA2hMmfpEFr2V5bYiHWmVt/p17AW/+J57BCjvw7aP1yPVqYWnC7e6oHnl2kWsTAJJ3
+         6DaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681733598; x=1684325598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1681734613; x=1684326613;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SHhPz+EuIXTc1mVy+d6/xeEAaq2+DiiC9QI7fkSBxRM=;
-        b=f6yjL6GyHXhP/MI2aa90uMnB0h/pYFhFhIYlzWMFHL240OhvQHqUebhPBKuf09OXiL
-         DvyzOMeleAwNzSppCF6fN8elIxXkGpq07o2xpBQRii8xx7FhOhsrBLFeb7Y+8w4rh4lY
-         QGAu4enB3bY4hVAYF5a4/5WaL6ripMAEvWf3mmm9oD47KDs5anS9r/ld3e2ew8v9pfT2
-         ffBvq1oT6KHGe37sVEbiYKZyDFzK5BD6fwgMMpT7FrumHOLu2/ssdjOPjHY+X/IgjnXh
-         L49KYa6nWulUB//4eoW2MW0unCjxEum4IjGFIUa5YD+LH5Ia4jBNV516hrO632FniJ2f
-         nJaw==
-X-Gm-Message-State: AAQBX9ed9/C3v1va5mGOqIaneLgJmZ/zS5ej810aEKlwYl35GlF0h+Tu
-        9FQz4ceo89dRdE07aHLCmc+WR4uqu1wzQ0dVGD0=
-X-Google-Smtp-Source: AKy350Zi96A5jujccZMknsThLjiF44PbqWdaH/fiFQYsDPOOiQsU6l9PuK4H5Co6mSVausbSA2EP4+TyOAKnpjlS0fg=
-X-Received: by 2002:a25:da0b:0:b0:b8f:6f3f:ed20 with SMTP id
- n11-20020a25da0b000000b00b8f6f3fed20mr7039281ybf.5.1681733597805; Mon, 17 Apr
- 2023 05:13:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
- <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk> <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
- <87ile011kz.fsf@toke.dk> <CAHApi-m4gu8SX_1rBtUwrw+1-Q3ERFEX-HPMcwcCK1OceirwuA@mail.gmail.com>
- <87o7nrzeww.fsf@toke.dk>
-In-Reply-To: <87o7nrzeww.fsf@toke.dk>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 17 Apr 2023 14:13:06 +0200
-Message-ID: <CAJ8uoz3Rts2Xfhqq+0cm3GES=dMb2hTqPzGm515oG_nmt=-Nbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Kal Cutter Conley <kal.conley@dectris.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+        bh=H9SW4BaZ1bnKVP1weVI2e85RynWnU48bLznC9wO1o9M=;
+        b=doJbbzEFexj2h7V0AJjpCNuKxEjOXybYbApXm8RMRhlUsVJqQJXwilz3c5AA6eItGi
+         Rr6D38TX7NK7eURLELJFwDpKiZqZt+AI1i4o0+75J/04v9TzdemwYdVU+OXE6ufbKv93
+         C4LsncOpQGICNrr0uf99CuTx8Iv/ao5SoMJx3cA0uhRqLrFcLli6A60EYbS30gl5plqh
+         4TFO+Dt8gV1oDy6WYrb9r/tS+H2rwKu1rfOr2LP/KreTsnDq87FYaY2jEhpgPzNzR2FI
+         H1k+ja1Rc05EPi/u1WzJsF/BstKAhjzhvYXEOiEZbVidA4Nu29FFl7tEH1eF0Yo/9qKU
+         6jTw==
+X-Gm-Message-State: AAQBX9ejDF/T4kT+wFkVFaNkdaEK2BZjxL1PfKdwDscAxC/dwTN83YGP
+        nGDD0h0hJwA/I4rBdTGZMblOBg==
+X-Google-Smtp-Source: AKy350bwGJE2C7V8hazROuRDBDgzLMhkcDD17prRT/qHi9ZNYNGhNGiMjSfhomMSdAYr9UncH37eIQ==
+X-Received: by 2002:a2e:9857:0:b0:2a8:c82f:2996 with SMTP id e23-20020a2e9857000000b002a8c82f2996mr759543ljj.43.1681734612901;
+        Mon, 17 Apr 2023 05:30:12 -0700 (PDT)
+Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id l20-20020a19c214000000b004ed149acc08sm1889569lfc.93.2023.04.17.05.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Apr 2023 05:30:12 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     stable@vger.kernel.org
+Cc:     acme@redhat.com, andres@anarazel.de, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Ben Hutchings <benh@debian.org>, Jiri Olsa <jolsa@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [backport PATCH 1/2] tools perf: Fix compilation error with new binutils
+Date:   Mon, 17 Apr 2023 14:29:42 +0200
+Message-Id: <20230417122943.2155502-2-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230417122943.2155502-1-anders.roxell@linaro.org>
+References: <20230417122943.2155502-1-anders.roxell@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 13 Apr 2023 at 22:52, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
->
-> Kal Cutter Conley <kal.conley@dectris.com> writes:
->
-> >> Well, you mentioned yourself that:
-> >>
-> >> > The disadvantage of this patchset is requiring the user to allocate
-> >> > HugeTLB pages which is an extra complication.
-> >
-> > It's a small extra complication *for the user*. However, users that
-> > need this feature are willing to allocate hugepages. We are one such
-> > user. For us, having to deal with packets split into disjoint buffers
-> > (from the XDP multi-buffer paradigm) is a significantly more annoying
-> > complication than allocating hugepages (particularly on the RX side).
->
-> "More annoying" is not a great argument, though. You're basically saying
-> "please complicate your code so I don't have to complicate mine". And
-> since kernel API is essentially frozen forever, adding more of them
-> carries a pretty high cost, which is why kernel developers tend not to
-> be easily swayed by convenience arguments (if all you want is a more
-> convenient API, just build one on top of the kernel primitives and wrap
-> it into a library).
->
-> So you'll need to come up with either (1) a use case that you *can't*
-> solve without this new API (with specifics as to why that is the case),
-> or (2) a compelling performance benchmark showing the complexity is
-> worth it. Magnus indicated he would be able to produce the latter, in
-> which case I'm happy to be persuaded by the numbers.
+From: Andres Freund <andres@anarazel.de>
 
-We will measure it and get back to you. Would be good with some numbers.
+binutils changed the signature of init_disassemble_info(), which now causes
+compilation failures for tools/perf/util/annotate.c, e.g. on debian
+unstable.
 
-> In any case, however, the behaviour needs to be consistent wrt the rest
-> of XDP, so it's not as simple as just increasing the limit (as I
-> mentioned in my previous email).
->
-> -Toke
->
+Relevant binutils commit:
+
+  https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+
+Wire up the feature test and switch to init_disassemble_info_compat(),
+which were introduced in prior commits, fixing the compilation failure.
+
+I verified that perf can still disassemble bpf programs by using bpftrace
+under load, recording a perf trace, and then annotating the bpf "function"
+with and without the changes. With old binutils there's no change in output
+before/after this patch. When comparing the output from old binutils (2.35)
+to new bintuils with the patch (upstream snapshot) there are a few output
+differences, but they are unrelated to this patch. An example hunk is:
+
+       1.15 :   55:mov    %rbp,%rdx
+       0.00 :   58:add    $0xfffffffffffffff8,%rdx
+       0.00 :   5c:xor    %ecx,%ecx
+  -    1.03 :   5e:callq  0xffffffffe12aca3c
+  +    1.03 :   5e:call   0xffffffffe12aca3c
+       0.00 :   63:xor    %eax,%eax
+  -    2.18 :   65:leaveq
+  -    2.82 :   66:retq
+  +    2.18 :   65:leave
+  +    2.82 :   66:ret
+
+Signed-off-by: Andres Freund <andres@anarazel.de>
+Acked-by: Quentin Monnet <quentin@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Ben Hutchings <benh@debian.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: bpf@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
+Link: https://lore.kernel.org/r/20220801013834.156015-5-andres@anarazel.de
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ tools/perf/Makefile.config | 8 ++++++++
+ tools/perf/util/annotate.c | 7 ++++---
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 3e7706c251e9..55905571f87b 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -281,6 +281,7 @@ FEATURE_CHECK_LDFLAGS-libpython := $(PYTHON_EMBED_LDOPTS)
+ FEATURE_CHECK_LDFLAGS-libaio = -lrt
+ 
+ FEATURE_CHECK_LDFLAGS-disassembler-four-args = -lbfd -lopcodes -ldl
++FEATURE_CHECK_LDFLAGS-disassembler-init-styled = -lbfd -lopcodes -ldl
+ 
+ CORE_CFLAGS += -fno-omit-frame-pointer
+ CORE_CFLAGS += -ggdb3
+@@ -838,13 +839,16 @@ else
+   ifeq ($(feature-libbfd-liberty), 1)
+     EXTLIBS += -lbfd -lopcodes -liberty
+     FEATURE_CHECK_LDFLAGS-disassembler-four-args += -liberty -ldl
++    FEATURE_CHECK_LDFLAGS-disassembler-init-styled += -liberty -ldl
+   else
+     ifeq ($(feature-libbfd-liberty-z), 1)
+       EXTLIBS += -lbfd -lopcodes -liberty -lz
+       FEATURE_CHECK_LDFLAGS-disassembler-four-args += -liberty -lz -ldl
++      FEATURE_CHECK_LDFLAGS-disassembler-init-styled += -liberty -ldl
+     endif
+   endif
+   $(call feature_check,disassembler-four-args)
++  $(call feature_check,disassembler-init-styled)
+ endif
+ 
+ ifeq ($(feature-libbfd-buildid), 1)
+@@ -957,6 +961,10 @@ ifeq ($(feature-disassembler-four-args), 1)
+     CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+ endif
+ 
++ifeq ($(feature-disassembler-init-styled), 1)
++    CFLAGS += -DDISASM_INIT_STYLED
++endif
++
+ ifeq (${IS_64_BIT}, 1)
+   ifndef NO_PERF_READ_VDSO32
+     $(call feature_check,compile-32)
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 308189454788..f2d1741b7610 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -1684,6 +1684,7 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
+ #define PACKAGE "perf"
+ #include <bfd.h>
+ #include <dis-asm.h>
++#include <tools/dis-asm-compat.h>
+ 
+ static int symbol__disassemble_bpf(struct symbol *sym,
+ 				   struct annotate_args *args)
+@@ -1726,9 +1727,9 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+ 		ret = errno;
+ 		goto out;
+ 	}
+-	init_disassemble_info(&info, s,
+-			      (fprintf_ftype) fprintf);
+-
++	init_disassemble_info_compat(&info, s,
++				     (fprintf_ftype) fprintf,
++				     fprintf_styled);
+ 	info.arch = bfd_get_arch(bfdf);
+ 	info.mach = bfd_get_mach(bfdf);
+ 
+-- 
+2.39.2
+
