@@ -2,78 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E736E69C7
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 18:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5938B6E6A1B
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 18:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjDRQnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 12:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S232523AbjDRQsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 12:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232440AbjDRQnL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 12:43:11 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6FD901F
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 09:43:04 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3f173af6712so16807395e9.1
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 09:43:04 -0700 (PDT)
+        with ESMTP id S231877AbjDRQsW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 12:48:22 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D2DD326
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 09:48:04 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-63b5e149d87so1637134b3a.2
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 09:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681836183; x=1684428183;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yChDZ6lPEiZFSMHS9eZZu5Rm2GjLj4bAjIDP+NDqrok=;
-        b=CbOa4jScJ2Dpm2/H1CXGGsXencDu9B2kIVkipDfkTLd/XLlNTDhzUSbbW/pkAS+Dif
-         /YDMTMR7geQAeVIW/x/EYx+5573zfEXGRRQ1STYee7aLwktt4YbZhXf4td/Jp3maCShw
-         sn8XzoANU9HGjhXUAQbjNzQrkcQcUfAMyEbhKRwkmY8RSZXpGTMuTWF1U8HkL1E25bfU
-         Ivg1qh8b2MZ3no1bzxrdpxoIVFkcTlD19Ao8fdOqMZPWbgcYw4T9edSig+ZUYuuvuqEy
-         liL2PEC10A95o4aVgw/s6mqAEyPPF7p7lWBPn/tY7dUeDiz/KzeFMFyBwIlVLRQS3+GY
-         bEmA==
+        d=google.com; s=20221208; t=1681836469; x=1684428469;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5rSxGUFrAmISVwIuFMTX0Aaejk/CKt02QLw7n2d5NOs=;
+        b=PfoljIC5AZgXfIxDU8fcFKkh+Ai7eQzzLzicR4jBjiom7LEoYDZGvTMDGrbG1Z4Ud7
+         uMFVTAK+JTtzoS0MKvtPGWwdSGtIBD8kbc4SfLXHCjA0I+SdKKcDb46CvxZO4RN+QKcr
+         4hGNVdTIfrAcrWEkQiQ8/3e7ZlrlhVk194MVJD6NQvH/IjLipRSf4B0QGnTZ6j+s3rfO
+         FoaxHebR4VegmT9yDpEETwUTkmKAd4ZKG8Yfxznn/n4SwSaLHbnH7ecVFw7Uf6szdwMe
+         597Gvj4Ii7piDYSmLzXGyGrd1L9thTQGMBdxwypwEggoGYj/8WHWeiNd3wF6/PVMsJk1
+         sufA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681836183; x=1684428183;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yChDZ6lPEiZFSMHS9eZZu5Rm2GjLj4bAjIDP+NDqrok=;
-        b=cIGJhsNqQWbXAWNrQT5G+syBT0+Sashy4q5ZvA1saJnZe4XfqifADykNLCg1QaomnE
-         ebWwDZy0JhansH53aHWyB/n0s2gfmTF27SL+2dOBFoMIJqguXkc2gIeFRwtqsFVyLDg2
-         tpS4EMOtKss/YhV/0nkiJNmkt4NyUgSIIX05fPIspIGIX+Nrwnf7I6Tm7EZygMy2r5P6
-         pQR++R0kTqDVD/m5wTud31bpTDgeI8PEs9dshS+fHTatjGp7GggZpsXjxDQSWB5ky3Y9
-         hgjFyTaH43YV9wUGILYmBREJlLpJvcznKp1AajdK4rQS4rHgXJHtwpYiof7Kglzil6K8
-         fGmA==
-X-Gm-Message-State: AAQBX9e+nte/1fo14uFDzbjQW6GTZ2LMfAo3dd9BDI044sQsR+w9P6o9
-        +5w2a9F42u+sfeJRdhnzWLPG9A==
-X-Google-Smtp-Source: AKy350YrXRtEQKRX0KiVbMNZGdfeus3NG5IKjGaNEi+qAfcTFVsBugEZT/BmblP55SKeMMT1mQlNHw==
-X-Received: by 2002:a5d:42d2:0:b0:2f4:e580:a72f with SMTP id t18-20020a5d42d2000000b002f4e580a72fmr2350432wrr.45.1681836182812;
-        Tue, 18 Apr 2023 09:43:02 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:192d:7ca1:96c2:5c9b? ([2a02:8011:e80c:0:192d:7ca1:96c2:5c9b])
-        by smtp.gmail.com with ESMTPSA id z8-20020a7bc7c8000000b003f1745c7df3sm5789492wmk.23.2023.04.18.09.43.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Apr 2023 09:43:02 -0700 (PDT)
-Message-ID: <d940f802-8aab-140d-7a87-9cf0b3a8ac9f@isovalent.com>
-Date:   Tue, 18 Apr 2023 17:43:01 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [backport PATCH 1/2] tools perf: Fix compilation error with new
- binutils
-Content-Language: en-GB
-To:     Ian Rogers <irogers@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     stable@vger.kernel.org, acme@redhat.com, andres@anarazel.de,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ben Hutchings <benh@debian.org>, Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org
-References: <20230417122943.2155502-1-anders.roxell@linaro.org>
- <20230417122943.2155502-2-anders.roxell@linaro.org>
- <CAP-5=fWUevSnyn5MtVO1p6cEVE8MvBTq4Qgth7RcPYueRERQKA@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAP-5=fWUevSnyn5MtVO1p6cEVE8MvBTq4Qgth7RcPYueRERQKA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        d=1e100.net; s=20221208; t=1681836469; x=1684428469;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5rSxGUFrAmISVwIuFMTX0Aaejk/CKt02QLw7n2d5NOs=;
+        b=KY1ZzdNTjKVEKMaFtPJ6d1IyyCvm3u3fYOEe6N9QW4F2P/pJxsK6qG1XWChPifuNWz
+         FvrXRe3hIBDQU92l3cfiUKukL7HEZ2pqdcTzS9KgG36fDEKINeCRo5m+Dhnlufsku0an
+         LAxrKHWKiLq8pCjLuG2INPEywr+liqXkcckiv2qGm1ux1mDF1Bc0eGJDrNEtjwtW4Slv
+         QcIWOB5yPM9SqeOM6piudrYWFMMXJBw8Kc7JjPIOKqhUWwZ97au2HepUa88Fhn8wtBHc
+         SaSvstTy7cWgwDiZKOEFON4gXLoP4QYhdXPleD9HMEx+Brupn0ZC4tJgfAHUKpTxFLk1
+         pufA==
+X-Gm-Message-State: AAQBX9clJR18LwFExpELxz2OXuOwPrzmjX3ag09lkV2fd0hSsnuMZ1r5
+        BXjn9i/0O/b6g46Hu14kLR/F30k=
+X-Google-Smtp-Source: AKy350ZqYBxtk9IGpUQI+ESsiEZ06M7bEzkTzb5twCE4jk0SIv/hlG6z2jLAoF7+l4gdKxwicmpHmjg=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:17a0:b0:63b:8778:99e5 with SMTP id
+ s32-20020a056a0017a000b0063b877899e5mr195402pfg.5.1681836468849; Tue, 18 Apr
+ 2023 09:47:48 -0700 (PDT)
+Date:   Tue, 18 Apr 2023 09:47:47 -0700
+In-Reply-To: <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
+Mime-Version: 1.0
+References: <20230413133355.350571-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com>
+ <CANn89iLuLkUvX-dDC=rJhtFcxjnVmfn_-crOevbQe+EjaEDGbg@mail.gmail.com>
+ <CAEivzxcEhfLttf0VK=NmHdQxF7CRYXNm6NwUVx6jx=-u2k-T6w@mail.gmail.com>
+ <CAKH8qBt+xPygUVPMUuzbi1HCJuxc4gYOdU6JkrFmSouRQgoG6g@mail.gmail.com>
+ <ZDoEG0VF6fb9y0EC@google.com> <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
+Message-ID: <ZD7Js4fj5YyI2oLd@google.com>
+Subject: Re: handling unsupported optlen in cgroup bpf getsockopt: (was [PATCH
+ net-next v4 2/4] net: socket: add sockopts blacklist for BPF cgroup hook)
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        daniel@iogearbox.net, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        linux-arch@vger.kernel.org,
+        Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,46 +87,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2023-04-17 10:14 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> On Mon, Apr 17, 2023 at 5:30 AM Anders Roxell <anders.roxell@linaro.org> wrote:
->>
->> From: Andres Freund <andres@anarazel.de>
->>
->> binutils changed the signature of init_disassemble_info(), which now causes
->> compilation failures for tools/perf/util/annotate.c, e.g. on debian
->> unstable.
-> 
-> Thanks, I believe the compilation issue may well be resolved by:
-> https://lore.kernel.org/lkml/20230311065753.3012826-8-irogers@google.com/
-> where binutils is made opt-in rather than opt-out.
+On 04/17, Martin KaFai Lau wrote:
+> On 4/14/23 6:55 PM, Stanislav Fomichev wrote:
+> > On 04/13, Stanislav Fomichev wrote:
+> > > On Thu, Apr 13, 2023 at 7:38=E2=80=AFAM Aleksandr Mikhalitsyn
+> > > <aleksandr.mikhalitsyn@canonical.com> wrote:
+> > > >=20
+> > > > On Thu, Apr 13, 2023 at 4:22=E2=80=AFPM Eric Dumazet <edumazet@goog=
+le.com> wrote:
+> > > > >=20
+> > > > > On Thu, Apr 13, 2023 at 3:35=E2=80=AFPM Alexander Mikhalitsyn
+> > > > > <aleksandr.mikhalitsyn@canonical.com> wrote:
+> > > > > >=20
+> > > > > > During work on SO_PEERPIDFD, it was discovered (thanks to Chris=
+tian),
+> > > > > > that bpf cgroup hook can cause FD leaks when used with sockopts=
+ which
+> > > > > > install FDs into the process fdtable.
+> > > > > >=20
+> > > > > > After some offlist discussion it was proposed to add a blacklis=
+t of
+> > > > >=20
+> > > > > We try to replace this word by either denylist or blocklist, even=
+ in changelogs.
+> > > >=20
+> > > > Hi Eric,
+> > > >=20
+> > > > Oh, I'm sorry about that. :( Sure.
+> > > >=20
+> > > > >=20
+> > > > > > socket options those can cause troubles when BPF cgroup hook is=
+ enabled.
+> > > > > >=20
+> > > > >=20
+> > > > > Can we find the appropriate Fixes: tag to help stable teams ?
+> > > >=20
+> > > > Sure, I will add next time.
+> > > >=20
+> > > > Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hook=
+s")
+> > > >=20
+> > > > I think it's better to add Stanislav Fomichev to CC.
+> > >=20
+> > > Can we use 'struct proto' bpf_bypass_getsockopt instead? We already
+> > > use it for tcp zerocopy, I'm assuming it should work in this case as
+> > > well?
+> >=20
+> > Jakub reminded me of the other things I wanted to ask here bug forgot:
+> >=20
+> > - setsockopt is probably not needed, right? setsockopt hook triggers
+> >    before the kernel and shouldn't leak anything
+> > - for getsockopt, instead of bypassing bpf completely, should we instea=
+d
+> >    ignore the error from the bpf program? that would still preserve
+> >    the observability aspect
+>=20
+> stealing this thread to discuss the optlen issue which may make sense to
+> bypass also.
+>=20
+> There has been issue with optlen. Other than this older post related to
+> optlen > PAGE_SIZE:
+> https://lore.kernel.org/bpf/5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.de=
+v/,
+> the recent one related to optlen that we have seen is
+> NETLINK_LIST_MEMBERSHIPS. The userspace passed in optlen =3D=3D 0 and the=
+ kernel
+> put the expected optlen (> 0) and 'return 0;' to userspace. The userspace
+> intention is to learn the expected optlen. This makes 'ctx.optlen >
+> max_optlen' and __cgroup_bpf_run_filter_getsockopt() ends up returning
+> -EFAULT to the userspace even the bpf prog has not changed anything.
 
-Hi,
-These commits are to make it possible to build against recent binutils,
-without having to leave it out at compile time, so as I understand they
-address a different issue?
+(ignoring -EFAULT issue) this seems like it needs to be
 
-> 
->> Relevant binutils commit:
->>
->>   https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
->>
->> Wire up the feature test and switch to init_disassemble_info_compat(),
->> which were introduced in prior commits, fixing the compilation failure.
-> 
-> I was kind of surprised to see no version check ifdef. Is
-> init_disassemble_info_compat is supported in older binutils?
+	if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
+		/* error */
+	}
 
-It is not part of binutils, it was introduced in commit a45b3d692623
-("tools include: add dis-asm-compat.h to handle version differences"),
-which should likely be backported alongside these ones if it hasn't been
-already. Possibly the others from the same series [0], as well?
+?
 
-I think all 5 patches from Andres' series were backported to 5.15 [1].
+> Does it make sense to also bypass the bpf prog when 'ctx.optlen >
+> max_optlen' for now (and this can use a separate patch which as usual
+> requires a bpf selftests)?
 
-[0]
-https://lore.kernel.org/all/20220703212551.1114923-1-andres@anarazel.de/t/#m999a44663894e235b523ffc41ce87e956019ea72
-[1]
-https://lore.kernel.org/all/e6e2df31-6327-f2ad-3049-0cbfa214ae5c@hauke-m.de/t/#u
+Yeah, makes sense. Replacing this -EFAULT with WARN_ON_ONCE or something
+seems like the way to go. It caused too much trouble already :-(
 
-Best regards,
-Quentin
+Should I prepare a patch or do you want to take a stab at it?
+
+> In the future, does it make sense to have a specific cgroup-bpf-prog (a
+> specific attach type?) that only uses bpf_dynptr kfunc to access the optv=
+al
+> such that it can enforce read-only for some optname and potentially also
+> track if bpf-prog has written a new optval? The bpf-prog can only return =
+1
+> (OK) and only allows using bpf_set_retval() instead. Likely there is stil=
+l
+> holes but could be a seed of thought to continue polishing the idea.
+
+Ack, let's think about it.
+
+Maybe we should re-evaluate 'getsockopt-happens-after-the-kernel' idea
+as well? If we can have a sleepable hook that can copy_from_user/copy_to_us=
+er,
+and we have a mostly working bpf_getsockopt (after your refactoring),
+I don't see why we need to continue the current scheme of triggering
+after the kernel?
+
+> > - or maybe we can even have a per-proto bpf_getsockopt_cleanup call tha=
+t
+> >    gets called whenever bpf returns an error to make sure protocols hav=
+e
+> >    a chance to handle that condition (and free the fd)
+> >=20
+>=20
+>=20
