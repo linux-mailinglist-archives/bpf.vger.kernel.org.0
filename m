@@ -2,146 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A583C6E6BAC
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 20:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBB56E6BC1
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 20:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjDRSE4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 14:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S232523AbjDRSKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 14:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbjDRSEz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 14:04:55 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA042717
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:04:51 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f048b144eeso67565e9.1
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:04:51 -0700 (PDT)
+        with ESMTP id S231160AbjDRSKq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 14:10:46 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC261FE4
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:10:44 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id fw30so22700274ejc.5
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681841090; x=1684433090;
+        d=gmail.com; s=20221208; t=1681841443; x=1684433443;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bVo7ErolbBsB3vbOoqmPHuRczZ4pjL/sGStpYzTmAxM=;
-        b=ZU5RGYlhPrrm3RUw1BAJD4ultlC7dOla6Lr/381b9LpQqBWglBq0ppKxwlU9+VwW2M
-         msjDDhP3G6FP/MJDlvw9WHNWoycAFQEK1CG2E+AxoRClYltCV0ke/P6Mp/bSZ9tg8sVf
-         s7kFlG7VZVRqpnP1CauObtccey3KhAJUwE/IlnQwXPdVJ8Rfwhx2WcvDSo8I7XBf2c+E
-         3FDWG6WCqT/xBrYcz57O2Unf215gtdpwlDaCTpY//bSDI82W9wr8KLyVA3XBzdIDYuJC
-         AQX0LuH73IcR+OEC9L+kBCdnN2DFePLw18BAbA+0j5sWsfiJiZvQokxB5ziUnLfkEX+f
-         Bm+Q==
+        bh=I4y22LQ7Bxjcjad3XJBlCzfrPAkmiYaCegefqV9K2lc=;
+        b=kwI5Pel5hnNtZwSz8muTMJ1iiIrh9aHtFq8uX1Vv97u97CDzBlIGz5ldst1KKVP4YL
+         DDRKhcz8eHpWhsSsc0SNguYK91V3hU8lIrAcprZVNSIXo1nFh1fnMYU15HAn+rTqScML
+         ej+jvjuzoKAPHQGj64+kY/n61rng26weJh/VASIr5hGf8Wcg1blWzCAUaaCYme+hyQZI
+         jzOggWXv40eb+l1o94/LI7oXwzBp+Hh7+5Z5RI7XLDAGws5SumRs/BQwxqlrnyAqvdmD
+         awh6R/1onhUr8QpRo4YKT0Ebgep02x9+3s8DWpskP0N2Zs/qV7IMtilVEZ/tfi7QoavW
+         cnfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681841090; x=1684433090;
+        d=1e100.net; s=20221208; t=1681841443; x=1684433443;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bVo7ErolbBsB3vbOoqmPHuRczZ4pjL/sGStpYzTmAxM=;
-        b=Esn8fL60AnNXyq8K/Xreyg08adB/BQjN11oyynFglTAAadtlOYa+v1en0DA+M1aVAc
-         k1BCSs4HJM6PfZ5o1CoF8/9fea68OE6WujcombWaZCKZTzbuH5Q0kqzXmYM+ulb3DCMv
-         wC6uUiaHs5X0jQkvhlGzl9Mo3rK83AIrkKcFdGckspvzng7MwmZl2NVSh/s5FkSJxw6A
-         WmdsdgyXpclRJ55OdVbxbVnL7oBk4SPx8fZJ/AZdpbOKScwFU18OOL17xuo56im/MHgz
-         Ar/cFF5oRI2TcKrWRl/R/gl0UNrMuI73Y8McCzlXIp+s1liLf+j2rTCEI3nTY7EIT/he
-         wUqQ==
-X-Gm-Message-State: AAQBX9fTChhE76NHnYvIGiHIyxUxl7Mqis5BNBeiH+W9gZEaPoJb+bBR
-        KN5d5BXSLsXnGpxEKctGdgNFBNTwatBBrsBtWGitSA==
-X-Google-Smtp-Source: AKy350a2qGvbYaY2rIFNyUnYbU0oiNOCuTWBN2WMAQLltFtgZZpkczBs4IU4AxO4IcKD/c5XRH1zdF6YZte2RTXgYl8=
-X-Received: by 2002:a05:600c:3c97:b0:3f1:73b8:b5fe with SMTP id
- bg23-20020a05600c3c9700b003f173b8b5femr7640wmb.3.1681841089846; Tue, 18 Apr
- 2023 11:04:49 -0700 (PDT)
+        bh=I4y22LQ7Bxjcjad3XJBlCzfrPAkmiYaCegefqV9K2lc=;
+        b=DoY4UTqw3Jm4a8sEAKcEniqHyYCY2HwzcqgKXPz6FPMzsIsuWPpEbF1ts2Y+1NIa3T
+         KRsGl2xrAxXPs/edAjMagJcyCtLaACLQ5fdbqoSeYL6F8stL8yM1InUz15oEZxxgjB3n
+         Tgplnca63ESE4IWou1BBYTvDG0PvRUP7DZMk1RbiW7TU/OkthY8F/dhBVhVucp13Bj7j
+         Ehv7tOzbSyZQI+SB8/SNlNkD3G9WefVzEhTzdjKK+N9XhBWGxUJQT2izCy/JNij8MNls
+         PRqGQdP4OxXEzgMCsCNcdiVGqGCuoEEDq/PUwXbyJ0RuQH4IdRKNxC6Ui24moVjKLx8n
+         PUpQ==
+X-Gm-Message-State: AAQBX9cRqSg/AbjNxK4RfFsAP4Dxes7OqMY+JjjAaPw47SZShJR44p8k
+        l1pEE+ZSuPoxUhq+9sQ6t3y0bj+UCVhkos2rbsE=
+X-Google-Smtp-Source: AKy350YiVsk07IGV00tk+CwiNY+ArKpF8WMOWoOmHp/KWZu0vGZHVT4S2DzLR0dUn3lxa/qKEiXUPT0Zg5AzNLAy61E=
+X-Received: by 2002:a17:907:920b:b0:930:3916:df17 with SMTP id
+ ka11-20020a170907920b00b009303916df17mr10319128ejb.0.1681841442572; Tue, 18
+ Apr 2023 11:10:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230417122943.2155502-1-anders.roxell@linaro.org>
- <20230417122943.2155502-2-anders.roxell@linaro.org> <CAP-5=fWUevSnyn5MtVO1p6cEVE8MvBTq4Qgth7RcPYueRERQKA@mail.gmail.com>
- <d940f802-8aab-140d-7a87-9cf0b3a8ac9f@isovalent.com>
-In-Reply-To: <d940f802-8aab-140d-7a87-9cf0b3a8ac9f@isovalent.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 18 Apr 2023 11:04:35 -0700
-Message-ID: <CAP-5=fVh=zNuwcQM++KFxt6ETv-Z6GpY9pWDQ=RbvnuSGUhT8g@mail.gmail.com>
-Subject: Re: [backport PATCH 1/2] tools perf: Fix compilation error with new binutils
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>, stable@vger.kernel.org,
-        acme@redhat.com, andres@anarazel.de, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
+References: <20230418002148.3255690-1-andrii@kernel.org> <20230418002148.3255690-4-andrii@kernel.org>
+ <CAADnVQK-JjutrU-TMCh6f9qfcY_9T2mr59+Lzcw5us8KwDEmug@mail.gmail.com>
+In-Reply-To: <CAADnVQK-JjutrU-TMCh6f9qfcY_9T2mr59+Lzcw5us8KwDEmug@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 18 Apr 2023 11:10:28 -0700
+Message-ID: <CAEf4BzaGEhszZ-VxB=0YdF989LQNZA-rnuZasEF_BB-Qy_hdNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] libbpf: improve handling of unresolved kfuncs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Ben Hutchings <benh@debian.org>, Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 9:43=E2=80=AFAM Quentin Monnet <quentin@isovalent.c=
-om> wrote:
+On Mon, Apr 17, 2023 at 6:10=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> 2023-04-17 10:14 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> > On Mon, Apr 17, 2023 at 5:30=E2=80=AFAM Anders Roxell <anders.roxell@li=
-naro.org> wrote:
-> >>
-> >> From: Andres Freund <andres@anarazel.de>
-> >>
-> >> binutils changed the signature of init_disassemble_info(), which now c=
-auses
-> >> compilation failures for tools/perf/util/annotate.c, e.g. on debian
-> >> unstable.
-> >
-> > Thanks, I believe the compilation issue may well be resolved by:
-> > https://lore.kernel.org/lkml/20230311065753.3012826-8-irogers@google.co=
-m/
-> > where binutils is made opt-in rather than opt-out.
+> On Mon, Apr 17, 2023 at 5:22=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
+g> wrote:
+> >                                 insn[0].imm =3D ext->ksym.kernel_btf_id=
+;
+> >                                 insn[0].off =3D ext->ksym.btf_fd_idx;
+> > -                       } else { /* unresolved weak kfunc */
+> > -                               insn[0].imm =3D 0;
+> > -                               insn[0].off =3D 0;
+> > +                       } else { /* unresolved weak kfunc call */
+> > +                               poison_kfunc_call(prog, i, relo->insn_i=
+dx, insn,
+> > +                                                 relo->ext_idx, ext);
 >
-> Hi,
-> These commits are to make it possible to build against recent binutils,
-> without having to leave it out at compile time, so as I understand they
-> address a different issue?
+> With that done should we remove:
+>     /* skip for now, but return error when we find this in fixup_kfunc_ca=
+ll */
+>     if (!insn->imm)
+>           return 0;
+> in check_kfunc_call()...
+>
+> and  if (!func_id && !offset) in add_kfunc_call() ?
+>
+> That was added in commit a5d827275241 ("bpf: Be conservative while
+> processing invalid kfunc calls")
 
-Kind of. We don't want the Linux perf build to break. Previously if
-binutils were installed then Linux perf would default to linking with
-it and break your build were binutils to change its API. That is no
-longer the case as we don't default to linking against binutils. This
-was motivated by distributions not being able to link Linux perf with
-binutils due to the license incompatibilities. I don't see a problem
-supporting linking against newer and older binutils if people want to
-on non-distributed binaries. We'll probably need more build
-tests/containers to cover the possibilities of this. I'm not sure
-what's motivating binutils support other than personal experimentation
-though.
-
-Thanks,
-Ian
-
-
-> >
-> >> Relevant binutils commit:
-> >>
-> >>   https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3D60a3=
-da00bd5407f07
-> >>
-> >> Wire up the feature test and switch to init_disassemble_info_compat(),
-> >> which were introduced in prior commits, fixing the compilation failure=
-.
-> >
-> > I was kind of surprised to see no version check ifdef. Is
-> > init_disassemble_info_compat is supported in older binutils?
->
-> It is not part of binutils, it was introduced in commit a45b3d692623
-> ("tools include: add dis-asm-compat.h to handle version differences"),
-> which should likely be backported alongside these ones if it hasn't been
-> already. Possibly the others from the same series [0], as well?
->
-> I think all 5 patches from Andres' series were backported to 5.15 [1].
->
-> [0]
-> https://lore.kernel.org/all/20220703212551.1114923-1-andres@anarazel.de/t=
-/#m999a44663894e235b523ffc41ce87e956019ea72
-> [1]
-> https://lore.kernel.org/all/e6e2df31-6327-f2ad-3049-0cbfa214ae5c@hauke-m.=
-de/t/#u
->
-> Best regards,
-> Quentin
+I guess?.. I don't know if there was any other situation that this fix
+was handling, but if it's only due to unresolved kfuncs by libbpf,
+then yep.
