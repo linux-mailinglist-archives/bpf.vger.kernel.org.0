@@ -2,80 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 512E76E589A
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 07:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E676E58BD
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 07:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjDRFdw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 01:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S229962AbjDRFpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 01:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjDRFdv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 01:33:51 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F42527C;
-        Mon, 17 Apr 2023 22:33:50 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id h42so600052vsv.1;
-        Mon, 17 Apr 2023 22:33:50 -0700 (PDT)
+        with ESMTP id S229514AbjDRFpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 01:45:16 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9E3423B
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 22:44:52 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id op30so16118760qvb.3
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 22:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681796029; x=1684388029;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btoO374fPa5onU2eXgJ4HR6tiMGcCFF/1uruvZyJrMA=;
-        b=bi6YChZtZX14ZlO75gXi5ZrBPeQ5kvd/II3t2NFxUr5T0qthK4SCQP8hC4G7m1Hw4b
-         QwQ7Hx0tzHnWpyvbH7kyw4H0fS+m0FGKgC5XT3j+ETfp1zTxaY0Mo46KsNibC+Udk2N0
-         O4gxVIffchphG6IyYuVV+mXe4TRJBAmcBKmu/D18oWul6nKPd1leNx0HMGKoXVAY47VZ
-         jDx5aJnvdfbGumWbA4F/YjxRW0xv7MxMWwS4Vkjq0PdoK2nSO8NrK8RcCMhp8Qrb13g9
-         Vjpu4ydo3W6B7BeV5gzDRpnmh6iBSBeA7/UVkIOTYTHM4oBwt1tMSJCd3HugfDvpn1qX
-         VAvA==
+        d=bytedance.com; s=google; t=1681796691; x=1684388691;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
+         :references:from:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IiOZgk6jnwXmajgQZ+L1GPoK22YoYyTWz0n0rEZoPdo=;
+        b=Up1UNKiZifKV/xPO3rzXGQ+rihujNepicf+4idK7rHuGqyMEbj/yyUfWFZPAVGR4aF
+         HsUL4tOJHMCYVT2sb7sdFncToHOrM0xhk7htIFyor5IGw6mpc+5eVTuaqKzrbnverNgL
+         kilnnwBgOkZaUU49u4KAmAQrejUOHw4PtFNfJnzwNnZJb3XTzGG7IxBxkxhbqSnjaV/t
+         NkAN+OXcwQC3OuGlyF8mxrhCIDa5T66Ja/NzSJzYUtDPwRFYnVL5Q0Sgmh7yNZV0oRpo
+         dg2hGxEUVzzWzRVQCDbKbNKZ8YgG3XTCC59tiDIadg5mdOTH+E8wkb6RRIkfJlQkYFLr
+         Tmgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681796029; x=1684388029;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btoO374fPa5onU2eXgJ4HR6tiMGcCFF/1uruvZyJrMA=;
-        b=erQrU0OnvTQI5YA5iQ9P606S+gSOqKxif/qgU3G6lG6bS80iA/u/3/ujYkKGcSXbC4
-         /3p68u51MoXOYPfr5B0ePFaPHlAlGzLDIKjFVpXcG802+hkTRGztjdYPz8xu83G8aTV1
-         t7/IL6kDBbMf9clnpPF6W/JzcnDkqFn1swXFA1EFoWhNFBpuNhjZa49iFsif/1kPfdr/
-         KuexKbjXFBfmUFfDyMK//G8zzEQ5jYm9oJBAUmq+Hv64R4rPxWSH+tqqT+Sq4Iin+tTm
-         I54YUYanB+wuYXDuwcrho9iVgI3bI4kvjQmmcHauHEszCXtetedaZG7Z5P7KHAxmd7/8
-         7+bQ==
-X-Gm-Message-State: AAQBX9cLfPbhU5RavoOKt+0TpA5Mh9LWDcexkKQK5K2C4vuuSRFEPXlQ
-        tvMnUroRaG18ffY8YxyoABSg/9smSF4+ckdxS7c=
-X-Google-Smtp-Source: AKy350Y+rCn5zqoN+WTxD60V46QnRZwyEdYAQKVW+mzCDUo57czmWZWxZ7+7dFLOCc0CSGnwYquwEoW3PvdRNrEhDmg=
-X-Received: by 2002:a67:c391:0:b0:42e:3c54:742b with SMTP id
- s17-20020a67c391000000b0042e3c54742bmr9515946vsj.0.1681796029072; Mon, 17 Apr
- 2023 22:33:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230418014037.2412394-1-drosen@google.com>
-In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 18 Apr 2023 08:33:38 +0300
-Message-ID: <CAOQ4uxhpFrRVcviQ6bK1ZMtZDSMXRFuqY-d_+uQ1C0YMDtQpLA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v3 00/37] FUSE BPF: A Stacked Filesystem
- Extension for FUSE
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
+        d=1e100.net; s=20221208; t=1681796691; x=1684388691;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
+         :references:from:mime-version:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IiOZgk6jnwXmajgQZ+L1GPoK22YoYyTWz0n0rEZoPdo=;
+        b=AQJhwRXBSEEBDyu2mFzm+QfuVHFJfo9QXd9Lw3w/N+KWzWuTAOPQzVbw/D43rYWRaQ
+         zJeuSxmusmUrW5wKZDlEr4H87VSslgKpUsWlTKnVaKfvG/Bd/txTjAKBk+ED+AaodKtW
+         IMu1gumpBh3QYs9Al+Q9cfkKm3mQ31X8IVdKf913cYiRTmKMshtLoXMELrQlYw98Imwx
+         a5JJTHO3Jtur/aYeC0oayiXD2CG8GlHGRpXybA6gnr1Tra9KgOaMwiydJGHamzPSemg2
+         VQMPl+D4f1g3+muZXg5dcsUUSS2W8wHZkoL1KoCVatEu3yT4ZBazRqDcVX0SUFriLrUk
+         fCdQ==
+X-Gm-Message-State: AAQBX9ds2I3IE4g8qXoGVTE7NKKgRaAv9uHA9SUhv+OfVJTLAHDtZHF1
+        e4ydEgoluDqQCEiSTGRjKNAy3gZDPUbrSCu1mJuRtLZX9bhUaLY=
+X-Google-Smtp-Source: AKy350Zs37lQTTrhf5dH/uqvHa3tLNDfP1gua4g6NB66QhJ7en6/0Iti1VAUOIYnXsDJTL4HO2+oM0qh2F+1Q/mKuxQ=
+X-Received: by 2002:a05:6214:ca4:b0:5f1:5f73:aec2 with SMTP id
+ s4-20020a0562140ca400b005f15f73aec2mr356620qvs.32.1681796691523; Mon, 17 Apr
+ 2023 22:44:51 -0700 (PDT)
+Received: from 44278815321 named unknown by gmailapi.google.com with HTTPREST;
+ Mon, 17 Apr 2023 22:44:47 -0700
+Mime-Version: 1.0
+From:   =?UTF-8?B?5a6L6ZSQ?= <songrui.771@bytedance.com>
+References: <20230417084449.99848-1-songrui.771@bytedance.com> <ZD09abW0YyHU3Snt@kroah.com>
+In-Reply-To: <ZD09abW0YyHU3Snt@kroah.com>
+Date:   Mon, 17 Apr 2023 22:44:47 -0700
+Message-ID: <CAAz4JzKB7kMi=fRZYSG=b4km-xA2gdBF32TFxU-ubqaaTs+_Hw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] libbpf: correct the macro KERNEL_VERSION
+ for old kernel
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,94 +73,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 4:40=E2=80=AFAM Daniel Rosenberg <drosen@google.com=
-> wrote:
+> > The introduced header file linux/version.h in libbpf_probes.c may have =
+a
+> > wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some o=
+ld
+> > kernel (Debian9, 10). Below is a version info example from Debian 10.
+> >
+> > release: 4.19.0-22-amd64
+> > version: #1 SMP Debian 4.19.260-1 (2022-09-29)
+> >
+> > The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)=
+),
+> > which a, b, and c stand for major, minor and patch version. So in examp=
+le here,
+> > the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260=
+) which
+> > is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_=
+VERSION_CODE
+> > in linux/version.h is defined to 267263.
+> >
+> > I noticed that the macro KERNEL_VERSION in linux/version.h of some new =
+kernel is
+> > defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And
+> > KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_=
+VERSION_CODE.
+> >
+> > The mismatched LINUX_VERSION_CODE which will cause failing to load kpro=
+be BPF
+> > programs in the version check of BPF syscall.
+> >
+> > The return value of get_kernel_version in libbpf_probes.c should be mat=
+ched to
+> > LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
+> >
+> > Signed-off-by: songrui.771 <songrui.771@bytedance.com>
 >
-> These patches extend FUSE to be able to act as a stacked filesystem. This
-> allows pure passthrough, where the fuse file system simply reflects the l=
-ower
-> filesystem, and also allows optional pre and post filtering in BPF and/or=
- the
-> userspace daemon as needed. This can dramatically reduce or even eliminat=
-e
-> transitions to and from userspace.
+> This needs to be your name, not your email alias (do you use ".771" as a
+> name to sign things with?)
+
+Thanks for your reminding. I will change it.
 >
-> In this patch set, I've reworked the bpf code to add a new struct_op type
-> instead of a new program type, and used new kfuncs in place of new helper=
-s.
-> Additionally, it now uses dynptrs for variable sized buffers. The first t=
-hree
-> patches are repeats of a previous patch set which I have not yet adjusted=
- for
-> comments. I plan to adjust those and submit them separately with fixes, b=
-ut
-> wanted to have the current fuse-bpf code visible before then.
+> > ---
+> >=C2=A0 tools/lib/bpf/libbpf_probes.c | 10 +++++++---
+> >=C2=A0 1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probe=
+s.c
+> > index 4f3bc968ff8e..5b22a880c7e7 100644
+> > --- a/tools/lib/bpf/libbpf_probes.c
+> > +++ b/tools/lib/bpf/libbpf_probes.c
+> > @@ -18,6 +18,10 @@
+> >=C2=A0 #include "libbpf.h"
+> >=C2=A0 #include "libbpf_internal.h"
+> >
+> > +#ifndef LIBBPF_KERNEL_VERSION
+> > +#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c=
+) > 255 ? 255 : (c)))
+> > +#endif
 >
-> Patches 4-7 mostly rearrange existing code to remove noise from the main =
-patch.
-> Patch 8 contains the main sections of fuse-bpf
-> Patches 9-25 implementing most FUSE functions as operations on a lower
-> filesystem. From patch 25, you can run fuse as a passthrough filesystem.
-> Patches 26-32 provide bpf functionality so that you can alter fuse parame=
-ters
-> via fuse_op programs.
-> Patch 33 extends this to userspace, and patches 34-37 add some testing
-> functionality.
->
+> What is wrong with using the KERNEL_VERSION() macro, it should be fixed
+> to work properly here, right?=C2=A0 Did we not get this resolved in the
+> main portion of the kernel already?
 
-That's a nice logical breakup for review.
+The KERNEL_VERSION() macro from linux/version.h is wrong in some old
+kernel(Debian 9, 10) that we would like to support. As you said, the
+problem was resolved in the newer kernel. Here is the difference:
 
-I feel there is so much subtle code in those patches that the
-only sane path forward is to review and merge them in phases.
+linux/version.h
+in older kernel: #define KERNEL_VERSION(a, b, c) (((a) << 16) + ((b)
+<< 8)) + (c)))
+in newer kernel: #define KERNEL_VERSION(a, b, c) KERNEL_VERSION(a, b,
+c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
 
-Your patches adds this config:
+Using the KERNEL_VERSION macro in the older kernel returns the kern
+version=C2=A0 which is=C2=A0 mismatched to the LINUX_VERSION_CODE that will
+cause failing to load the BPF kprobe program.
 
-+config FUSE_BPF
-+       bool "Adds BPF to fuse"
-+       depends on FUSE_FS
-+       depends on BPF
-+       help
-+         Extends FUSE by adding BPF to prefilter calls and
-potentially pass to a
-+         backing file system
+In my opinion, it is a more generic solution that corrects the
+KERNEL_VERSION() macro in libbpf to support some old kernel.
 
-Since your patches add the PASSTHROUGH functionality before adding
-BPF functionality, would it make sense to review and merge the PASSTHROUGH
-functionality strictly before the BPF functionality?
+Hope I make that clear. Thanks.
 
-Alternatively, you could aim to merge support for some PASSTHROUGH ops
-then support for some BPF functionality and then slowly add ops to both.
-
-Which brings me to my biggest concern.
-I still do not see how these patches replace Allesio's
-FUSE_DEV_IOC_PASSTHROUGH_OPEN patches.
-
-Is the idea here that ioctl needs to be done at FUSE_LOOKUP
-instead or in addition to the ioctl on FUSE_OPEN to setup the
-read/write passthrough on the backing file?
-
-I am missing things like the FILESYSTEM_MAX_STACK_DEPTH check that
-was added as a result of review on Allesio's patches.
-
-The reason I am concerned about this is that we are using the
-FUSE_DEV_IOC_PASSTHROUGH_OPEN patches and I would like
-to upstream their functionality sooner rather than later.
-These patches have already been running in production for a while
-I believe that they are running in Android as well and there is value
-in upsteaming well tested patches.
-
-The API does not need to stay FUSE_DEV_IOC_PASSTHROUGH_OPEN
-it should be an API that is extendable to FUSE-BPF, but it would be
-useful if the read/write passthrough could be the goal for first merge.
-
-Does any of this make sense to you?
-Can you draw a roadmap for merging FUSE-BPF that starts with
-a first (hopefully short term) phase that adds the read/write passthrough
-functionality?
-
-I can help with review and testing of that part if needed.
-I was planning to discuss this with you on LSFMM anyway,
-but better start the discussion beforehand.
-
-Thanks,
-Amir.
+Jerry Song
