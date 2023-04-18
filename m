@@ -2,329 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C18406E6595
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 15:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B7B6E65A2
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 15:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbjDRNL1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 09:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S232310AbjDRNPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 09:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbjDRNLV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 09:11:21 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DC916B1C;
-        Tue, 18 Apr 2023 06:11:16 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1pol75-0004GQ-7v; Tue, 18 Apr 2023 15:11:15 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <bpf@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        dxu@dxuuu.xyz, qde@naccy.de, Florian Westphal <fw@strlen.de>
-Subject: [PATCH bpf-next v3 6/6] bpf: add test_run support for netfilter program type
-Date:   Tue, 18 Apr 2023 15:10:38 +0200
-Message-Id: <20230418131038.18054-7-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230418131038.18054-1-fw@strlen.de>
-References: <20230418131038.18054-1-fw@strlen.de>
+        with ESMTP id S230070AbjDRNPp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 09:15:45 -0400
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AE5125B7
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 06:15:43 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-760d7046e89so349242239f.3
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 06:15:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681823742; x=1684415742;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d1E/CPVb6H8VyxRsyGiJWxP2UWi3TCzv8QPJdKDcVdk=;
+        b=KZXGXPOU2DZE9avtKOlvC2ns5WNssKwicm4zG6vohl+2+PieU0nC722NwteL7tSAeX
+         O0JJtAucAR1wRojyHBXqN1p8bRlbS9TcW0+/yvZwaH6quePe8uZYUaUYweSjg7anBmW9
+         lat/5hqI6MP7/vqmAumxZLAa038WMx+bSI9wjvErQBVPPBFvq1jWHMseKOuAHTJg0s2z
+         58Av5OVb3uXSUsDH1Yk6NCMG0xv9j/sTrn7n/VHnY3XerJMy43q0FTYJYy/cQapmXx1A
+         35CU7MXHd0JdNzLy2z2FFSShxM1wQR/J6sQxk6F4JP8tU/8kpFtC29cpzl8bwcreSX6i
+         PRpw==
+X-Gm-Message-State: AAQBX9eX5lwX561c9zd6mzJ7WAMEWUKHXXZDMbbSY2vzMMJOQIcx0AnI
+        526idDehI0sKNvTW60DOT2XyGztqE4WEMTaeNpMH5UozQnkD
+X-Google-Smtp-Source: AKy350bK6tUhkGWRadBcmLmWjSYESdTvhu9DQiBCzqdhfvo2xBb+dNdo/jaDbYIhm0DIoA9zM8Nu0yWO3Dtt07JP+fFHyoJAXZqA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:29c9:0:b0:40f:9ac9:50f2 with SMTP id
+ p192-20020a0229c9000000b0040f9ac950f2mr1559935jap.3.1681823742813; Tue, 18
+ Apr 2023 06:15:42 -0700 (PDT)
+Date:   Tue, 18 Apr 2023 06:15:42 -0700
+In-Reply-To: <000000000000ea7a5c05f051fd00@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c3f07505f99c1a97@google.com>
+Subject: Re: [syzbot] riscv/fixes boot error: WARNING in __apply_to_page_range (2)
+From:   syzbot <syzbot+5702f46b5b22bdb38b7e@syzkaller.appspotmail.com>
+To:     alex@ghiti.fr, andrii@kernel.org, aou@eecs.berkeley.edu,
+        ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dvyukov@google.com, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luke.r.nels@gmail.com, martin.lau@linux.dev, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, xi.wang@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-also extend prog_tests with a small retval test: values other
-than accept or drop (0, 1) will cause issues.
+This bug is marked as fixed by commit:
+riscv: Rework kasan population functions
 
-NF_QUEUE could be implemented later if we can guarantee that attachment
-of such programs can be rejected if they get attached to a pf/hook that
-doesn't support async reinjection.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-NF_STOLEN could be implemented via trusted helpers that can guarantee
-that the skb will eventually be free'd.
+#syz fix: exact-commit-title
 
-$ ./test_progs --allow=verifier_netfilter_retcode
- #278/1   verifier_netfilter_retcode/bpf_exit with invalid return code. test1:OK
- #278/2   verifier_netfilter_retcode/bpf_exit with valid return code. test2:OK
- #278/3   verifier_netfilter_retcode/bpf_exit with valid return code. test3:OK
- #278/4   verifier_netfilter_retcode/bpf_exit with invalid return code. test4:OK
- #278     verifier_netfilter_retcode:OK
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=5702f46b5b22bdb38b7e
+
 ---
- include/linux/bpf.h                           |   3 +
- net/bpf/test_run.c                            | 140 ++++++++++++++++++
- net/netfilter/nf_bpf_link.c                   |   1 +
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_netfilter_retcode.c    |  49 ++++++
- 5 files changed, 195 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
+[1] I expect the commit to be present in:
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 18b592fde896..e53ceee1df37 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2264,6 +2264,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
- int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
- 				const union bpf_attr *kattr,
- 				union bpf_attr __user *uattr);
-+int bpf_prog_test_run_nf(struct bpf_prog *prog,
-+			 const union bpf_attr *kattr,
-+			 union bpf_attr __user *uattr);
- bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		    const struct bpf_prog *prog,
- 		    struct bpf_insn_access_aux *info);
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index f170e8a17974..1f6d785ad028 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -19,7 +19,9 @@
- #include <linux/error-injection.h>
- #include <linux/smp.h>
- #include <linux/sock_diag.h>
-+#include <linux/netfilter.h>
- #include <net/xdp.h>
-+#include <net/netfilter/nf_bpf_link.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
-@@ -1691,6 +1693,144 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 	return err;
- }
- 
-+static int verify_and_copy_hook_state(struct nf_hook_state *state,
-+				      const struct nf_hook_state *user,
-+				      struct net_device *dev)
-+{
-+	if (user->in || user->out)
-+		return -EINVAL;
-+
-+	if (user->net || user->sk || user->okfn)
-+		return -EINVAL;
-+
-+	switch (user->pf) {
-+	case NFPROTO_IPV4:
-+	case NFPROTO_IPV6:
-+		switch (state->hook) {
-+		case NF_INET_PRE_ROUTING:
-+			state->in = dev;
-+			break;
-+		case NF_INET_LOCAL_IN:
-+			state->in = dev;
-+			break;
-+		case NF_INET_FORWARD:
-+			state->in = dev;
-+			state->out = dev;
-+			break;
-+		case NF_INET_LOCAL_OUT:
-+			state->out = dev;
-+			break;
-+		case NF_INET_POST_ROUTING:
-+			state->out = dev;
-+			break;
-+		}
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	state->pf = user->pf;
-+	state->hook = user->hook;
-+
-+	return 0;
-+}
-+
-+int bpf_prog_test_run_nf(struct bpf_prog *prog,
-+			 const union bpf_attr *kattr,
-+			 union bpf_attr __user *uattr)
-+{
-+	struct net *net = current->nsproxy->net_ns;
-+	struct net_device *dev = net->loopback_dev;
-+	struct nf_hook_state *user_ctx, hook_state = {
-+		.pf = NFPROTO_IPV4,
-+		.hook = NF_INET_PRE_ROUTING,
-+	};
-+	u32 size = kattr->test.data_size_in;
-+	u32 repeat = kattr->test.repeat;
-+	struct bpf_nf_ctx ctx = {
-+		.state = &hook_state,
-+	};
-+	struct sk_buff *skb = NULL;
-+	u32 retval, duration;
-+	void *data;
-+	int ret;
-+
-+	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
-+		return -EINVAL;
-+
-+	if (size < ETH_HLEN + sizeof(struct iphdr))
-+		return -EINVAL;
-+
-+	data = bpf_test_init(kattr, kattr->test.data_size_in, size,
-+			     NET_SKB_PAD + NET_IP_ALIGN,
-+			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
-+	if (IS_ERR(data))
-+		return PTR_ERR(data);
-+
-+	if (!repeat)
-+		repeat = 1;
-+
-+	user_ctx = bpf_ctx_init(kattr, sizeof(struct nf_hook_state));
-+	if (IS_ERR(user_ctx)) {
-+		kfree(data);
-+		return PTR_ERR(user_ctx);
-+	}
-+
-+	if (user_ctx) {
-+		ret = verify_and_copy_hook_state(&hook_state, user_ctx, dev);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	skb = slab_build_skb(data);
-+	if (!skb) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	data = NULL; /* data released via kfree_skb */
-+
-+	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
-+	__skb_put(skb, size);
-+
-+	skb->protocol = eth_type_trans(skb, dev);
-+
-+	skb_reset_network_header(skb);
-+
-+	ret = -EINVAL;
-+
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		if (hook_state.pf == NFPROTO_IPV4)
-+			break;
-+		goto out;
-+	case htons(ETH_P_IPV6):
-+		if (size < ETH_HLEN + sizeof(struct ipv6hdr))
-+			goto out;
-+		if (hook_state.pf == NFPROTO_IPV6)
-+			break;
-+		goto out;
-+	default:
-+		ret = -EPROTO;
-+		goto out;
-+	}
-+
-+	ctx.skb = skb;
-+
-+	ret = bpf_test_run(prog, &ctx, repeat, &retval, &duration, false);
-+	if (ret)
-+		goto out;
-+
-+	ret = bpf_test_finish(kattr, uattr, NULL, NULL, 0, retval, duration);
-+
-+out:
-+	kfree(user_ctx);
-+	kfree_skb(skb);
-+	kfree(data);
-+	return ret;
-+}
-+
- static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &test_sk_check_kfunc_ids,
-diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-index 2d12c978e4e7..01292e654b6a 100644
---- a/net/netfilter/nf_bpf_link.c
-+++ b/net/netfilter/nf_bpf_link.c
-@@ -167,6 +167,7 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- }
- 
- const struct bpf_prog_ops netfilter_prog_ops = {
-+	.test_run = bpf_prog_test_run_nf,
- };
- 
- static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 25bc8958dbfe..491efd5f22ff 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -29,6 +29,7 @@
- #include "verifier_map_ret_val.skel.h"
- #include "verifier_masking.skel.h"
- #include "verifier_meta_access.skel.h"
-+#include "verifier_netfilter_retcode.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -94,6 +95,7 @@ void test_verifier_map_ptr(void)              { RUN(verifier_map_ptr); }
- void test_verifier_map_ret_val(void)          { RUN(verifier_map_ret_val); }
- void test_verifier_masking(void)              { RUN(verifier_masking); }
- void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
-+void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-new file mode 100644
-index 000000000000..353ae6da00e1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test1")
-+__failure __msg("R0 is not a known value")
-+__naked void with_invalid_return_code_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = *(u64*)(r1 + 0);				\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test2")
-+__success
-+__naked void with_valid_return_code_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test3")
-+__success
-+__naked void with_valid_return_code_test3(void)
-+{
-+	asm volatile ("					\
-+	r0 = 1;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test4")
-+__failure __msg("R0 has value (0x2; 0x0)")
-+__naked void with_invalid_return_code_test4(void)
-+{
-+	asm volatile ("					\
-+	r0 = 2;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
--- 
-2.39.2
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 10 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
