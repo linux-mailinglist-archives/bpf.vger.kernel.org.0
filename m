@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ED96E6FAC
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 00:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245106E6FAD
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 00:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjDRWxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 18:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        id S230070AbjDRWxt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 18:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjDRWxr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 18:53:47 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94982D42
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 15:53:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l124-20020a252582000000b00b8f5572bcdaso14702810ybl.13
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 15:53:45 -0700 (PDT)
+        with ESMTP id S229526AbjDRWxs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 18:53:48 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DB92D62
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 15:53:47 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1a69a078eefso11175475ad.2
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 15:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681858425; x=1684450425;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VLgjrTkyEcYnS83pUlw9/gvrZRFajaENng+qitn7bWQ=;
-        b=bjFoWOlLvlFQfGfutJCa3viVf+3z22EoXY5mTBKJB9nd8RGgcKkro+g80kHakq2rr9
-         bFkJjakgk91ifgRBX1O2uWhNhAzm3DPGDZ79sTJwP8GZFRKyUOpPhqzPu7mJ6CforOdL
-         kkIMU7OgXihxVausWJhpA/Cy4LNkGUFPij96vYs7jLeca/ryxHNg2A/zLEeqbL0pLsc8
-         jJFPLjWpzrRQj4pwY0OSgp/9+1v3es/3VOrIj7ayacoN8TuyicPgRDYs1g7mnPBHhhTV
-         ds4/aVTJg0v7SF21N78FUMZZzPP6UogxQ+Gf6CPRBoP9aWXsJxpQvHQsz4M6rGiq5HEX
-         HaLw==
+        d=google.com; s=20221208; t=1681858427; x=1684450427;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C6n8HUKJS4l45R+zU2zt1qNsJUjLjbYoUfgWsoXx1DY=;
+        b=ncxA9ElCCEkIqcg6o1TtUMeMTEaXejApjUfQPjzbYAlmY4Y/kJrfdpl5oxaBidcI2i
+         xn1iuJDMhgOsPIqU+GP9HwcWTxZ+hZoU4UONGdb21HqrDkx19LPOltdM67OTc98pzgev
+         03yS72TdxRoI7PUHEZSkl1n5NTEbk0O2rPXYjLATeV1hxYY63wjDSYSapq0s6FWsLrzc
+         ZL9v6cUWjdRJ8IDkmtmSg5ZVQ37J6M62Yd1c7ZWcKxOTy8s9QnxLaIowYSnPopGj2uZ5
+         ntnPcxct+fw62gEvJW7YA2GzfJDeAnXuI4+zAagPat/u97jOimCeHfgBkr3RSW5DWAgO
+         5Tyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681858425; x=1684450425;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VLgjrTkyEcYnS83pUlw9/gvrZRFajaENng+qitn7bWQ=;
-        b=ghrFiAAYG1ryjwUfwxGYBb17uYIS7gNNOBbXBafpEDAK5P/bEpOQRzF9/MQ3efTTtk
-         C6MlrmwXNMytQMIRug+b/L/m3Ya3Mm17OPyf8NVDsH/U8EwoybtJftP+nqnc6nl1TONn
-         BUZrrTXo6Cr9EqqKRitheod4EDUdPXd8npB1Gg0+n+4qrwHQrwBWK58glHBz3IQqeWTh
-         /LJaEiIYKbxvJ3TtrJnO+wd3FNGhcLHJ3RbXJRien9L8jVpvjU1xLrojd8EJe5+5v0fM
-         qWm4Nk+WttdeP3TK5Xw4RRqG6tgF59Mkw622TDg+r9TfsCbvIo4BkYYYwtagLOFVIADl
-         0O+w==
-X-Gm-Message-State: AAQBX9fzbO3TUsTgbOVeDe+3zbhB9hco50/XdUe8OpZDN3y+mPj5AZ7k
-        ukRMHUEuGPZ0Cze5+u9+JrZPSVRI+rJx8icvQLbIdrX1tEMlz6b1dRI1eibcp4n22YjcRIiSbdL
-        WwoAe/0Ru6XilVXivsA8uQILYDuihqGqYOCoLlWwDXB5mWSV93Q==
-X-Google-Smtp-Source: AKy350a8Q4is11vH6d/q/0U4inb9uMB+WQop8gzkXge1fJuN87gpEXedDPki+lrln3lVMyo/otaIuWw=
+        d=1e100.net; s=20221208; t=1681858427; x=1684450427;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C6n8HUKJS4l45R+zU2zt1qNsJUjLjbYoUfgWsoXx1DY=;
+        b=U9jaGqp5yosmZimhJS4S6+KuhEyuCYlXnx+2S2ZLUP7sgRU4QzGgYwiEG31alMUHhG
+         /tk+gA3PExHHUP1dWtGn6Z3N/nFrtzuB05+pegJYoiCZjK8dTkfkv/gFvfa32zU7sXu+
+         KetQeSLdQldgym+a7lVvQKwFuthsIJCgS2vZJ6JigDfEMFWXt7hNXMXJOzRRGlIjVhCv
+         SNDcj4/NmkUICxtgNyOr37UY0EnQlPl8nZpc6gC4tNy1dPLt90nx56LbVDXv1OwWMVAE
+         vD6rBwhj8sSkVNRKgsXuiNdJpWGfseDsSRsfnLPJl4J7NiUFZ+VLUlhTvBxqUYigSzQ0
+         JicA==
+X-Gm-Message-State: AAQBX9d3nA936Xoj6yMlWcC5F6E79NepG/6wVbl3cQjdL1AXYIsp4VAn
+        zQ+maYTOhQ7q18GL3KqA89KAWtIbszsjWiOxqNjui3pRF7I6eJDJlaWTRbz3HAKOTXihIb2+aWF
+        552u+hQjrfeCU4elrbED6GfddilaEm6HXB+ng2e4HRfB1cYMeNA==
+X-Google-Smtp-Source: AKy350a8oO24AEnseSUmxh1/7s1gvf9F5BoyRb9H92io83X7LaOf2dUqFJ7YcwU9BCebTyYh/TLUfOo=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:cfce:0:b0:b75:8ac3:d5da with SMTP id
- f197-20020a25cfce000000b00b758ac3d5damr10594157ybg.4.1681858425181; Tue, 18
- Apr 2023 15:53:45 -0700 (PDT)
-Date:   Tue, 18 Apr 2023 15:53:37 -0700
+ (user=sdf job=sendgmr) by 2002:a17:902:d4ce:b0:1a6:b0d3:57f4 with SMTP id
+ o14-20020a170902d4ce00b001a6b0d357f4mr1442243plg.1.1681858426800; Tue, 18 Apr
+ 2023 15:53:46 -0700 (PDT)
+Date:   Tue, 18 Apr 2023 15:53:38 -0700
+In-Reply-To: <20230418225343.553806-1-sdf@google.com>
 Mime-Version: 1.0
+References: <20230418225343.553806-1-sdf@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230418225343.553806-1-sdf@google.com>
-Subject: [PATCH bpf-next 0/6] bpf: handle another corner case in getsockopt
+Message-ID: <20230418225343.553806-2-sdf@google.com>
+Subject: [PATCH bpf-next 1/6] bpf: Don't EFAULT for getsockopt with optval=NULL
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -69,43 +71,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin reports another case where getsockopt EFAULTs perfectly
-valid callers. Let's fix it and also replace EFAULT with
-pr_info_ratelimited. That should hopefully make this place
-less error prone.
+Some socket options do getsockopt with optval=NULL to estimate
+the size of the final buffer (which is returned via optlen).
+This breaks BPF getsockopt assumptions about permitted
+optval buffer size. Let's enforce these assumptions only
+when non-NULL optval is provided.
 
-First 2 patches fix the issue with NETLINK_LIST_MEMBERSHIPS and
-test it.
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Reported-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://lore.kernel.org/bpf/ZD7Js4fj5YyI2oLd@google.com/T/#mb68daf700f87a9244a15d01d00c3f0e5b08f49f7
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/cgroup.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Second 2 patches replace EFAULT with pr_inro_limited and update
-the tests.
-
-The remaining patches update documentation and existing selftests
-to be more gentle with 'optlen > 4096' cases. People might be
-copy-pasting from there, so let's be more pedantic.
-
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
-
-Stanislav Fomichev (6):
-  bpf: Don't EFAULT for getsockopt with optval=NULL
-  selftests/bpf: Verify optval=NULL case
-  bpf: Don't EFAULT for {g,s}setsockopt with wrong optlen
-  selftests/bpf: Update EFAULT {g,s}etsockopt selftests
-  selftests/bpf: Correctly handle optlen > 4096
-  bpf: Document EFAULT changes for sockopt
-
- Documentation/bpf/prog_cgroup_sockopt.rst     | 64 +++++++++++++++++--
- kernel/bpf/cgroup.c                           | 17 +++--
- .../selftests/bpf/prog_tests/sockopt.c        | 42 ++++--------
- .../selftests/bpf/prog_tests/sockopt_sk.c     | 28 ++++++++
- .../progs/cgroup_getset_retval_getsockopt.c   | 12 ++++
- .../progs/cgroup_getset_retval_setsockopt.c   | 16 +++++
- .../selftests/bpf/progs/sockopt_inherit.c     | 16 ++++-
- .../selftests/bpf/progs/sockopt_multi.c       | 24 ++++++-
- .../selftests/bpf/progs/sockopt_qos_to_cc.c   |  8 ++-
- .../testing/selftests/bpf/progs/sockopt_sk.c  | 33 ++++++++--
- 10 files changed, 211 insertions(+), 49 deletions(-)
-
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 53edb8ad2471..a06e118a9be5 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1921,14 +1921,17 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	if (ctx.optlen > max_optlen || ctx.optlen < 0) {
++	if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
+ 		ret = -EFAULT;
+ 		goto out;
+ 	}
+ 
+ 	if (ctx.optlen != 0) {
+-		if (copy_to_user(optval, ctx.optval, ctx.optlen) ||
+-		    put_user(ctx.optlen, optlen)) {
++		if (optval && copy_to_user(optval, ctx.optval, ctx.optlen)) {
++			ret = -EFAULT;
++			goto out;
++		}
++		if (put_user(ctx.optlen, optlen)) {
+ 			ret = -EFAULT;
+ 			goto out;
+ 		}
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
