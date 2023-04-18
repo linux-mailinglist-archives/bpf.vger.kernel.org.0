@@ -2,62 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDD26E6C59
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 20:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC636E6C5A
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 20:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjDRSp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 14:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        id S231701AbjDRSqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 14:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjDRSp3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 14:45:29 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5B39ED8
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:45:28 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-51b121871ecso1282299a12.3
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:45:28 -0700 (PDT)
+        with ESMTP id S229564AbjDRSqG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 14:46:06 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA802694
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:46:05 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-54fe3cd445aso164785417b3.5
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 11:46:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681843527; x=1684435527;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ObV/lYmOonetRVtIMDoXc7qy2QL0tGml3YAWAsCZCw=;
-        b=m9e14SSffC9uejGROINDRurYI6Br7OOjrq+Qelo7oP9u35xZvyJxsv8+K2qUNXi9Kr
-         YAu68GsDtIQkMxdBLKWCHC88pgWd5p2HjcvPi8VuHFeGeKWSC9DuxrIehENFQqGPklRc
-         7lQPEWJpPHdZtV/79J4pLGOeOKgGss8pVdmuyeqUo1Zd5crRU3HjUtvcOGNgQ73JiGDj
-         OoQbY3ZZr2YVUeCF0IkdvtI3ao0izpYK6YYXH7NkdLWWhVb/QXX3BkDdUVnBRo0LUyS8
-         h7s7ses1+5WJVa1oITDIRUjybpBAyb6oGmCWpeI7JDjjEll8gErGcVv3MN8w9KbMrypw
-         WPVw==
+        d=gmail.com; s=20221208; t=1681843564; x=1684435564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r5DwDcMLo0kfrF6PYlvResFE41Vi4fcHn5w37kdon8U=;
+        b=NV0gBrk4yCk6tfQ7IEsStcfJAuEhl8MQ45nVbDBaVbgDgSigjD0bK8cCrJSMG2hTNu
+         fzh13sB+/O7hOVcVd2490CsnjYGGZ4xbd2mo6q9x9fKdGQtk25q2AXh7p6+skHraU00+
+         /6yrU0NCza8IM+bvUk6doWhRKx5JWQoa6dZ7f82JoxP+9Ta8x7+dy4yoA0Z04yuspTUA
+         8x4ukQlNeMxwrKCGW12WvGxDVJzlqoKcf/G/R+Q6kAwDZd3OopZGi30yPlHAIDuM4Dfo
+         52x2p/YKtNaoK7KAPguBux6fzl0+USAj2qBsf+mCoSCNJZje7lmd6xgKMnjPoedy5NGY
+         kpCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681843527; x=1684435527;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ObV/lYmOonetRVtIMDoXc7qy2QL0tGml3YAWAsCZCw=;
-        b=iBctv9bQeNeJNPoLj4MhoyuMS9gJenGU9w7rrh+QhfFILKAz4XACeqRwrHkg1+4mOi
-         fGE1hlUdSXckrVfzkbf0aCq4KqwNR+xqCL/e3doL2DYQ3ytdEMSdBHuReszWp54NPk1M
-         oktk5N71Lw9jbBUiSbiguw0e+Jm4TdjbLNo5YXiB00+ntSaLC3tyzGrvdx64a/fs+5t+
-         EZgK332YN1ZcbNQ+4XzOubtftZDHG5bRM/ppHSAet08UZYatpF2hmBJ/dKStSDvyznsR
-         RhZ488kX/ypTN0MBx1k4BdKiwoDPaDlUgLBMPdkKZXQPmv9+MXXHBSqE9FLYWql7SGii
-         jhtw==
-X-Gm-Message-State: AAQBX9dc14IW1Zu5iYk8yfNrY8BII5eSIY6yM9LLVYrg9W9nFQhwCBtW
-        xLslEysSTBv4nPJ8OS9028QKXkk=
-X-Google-Smtp-Source: AKy350bxWk5m71muKfGcuOrl46mah//fiM88KnXwMqI4Ntp4fYTfQ05+OTMJRmnH+SD8OQ68aPU47Zo=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:521d:0:b0:51b:3c11:fb17 with SMTP id
- g29-20020a63521d000000b0051b3c11fb17mr904464pgb.12.1681843527589; Tue, 18 Apr
- 2023 11:45:27 -0700 (PDT)
-Date:   Tue, 18 Apr 2023 11:45:26 -0700
-In-Reply-To: <20230418153148.2231644-7-aditi.ghag@isovalent.com>
-Mime-Version: 1.0
-References: <20230418153148.2231644-1-aditi.ghag@isovalent.com> <20230418153148.2231644-7-aditi.ghag@isovalent.com>
-Message-ID: <ZD7lRqlxGfgzggAu@google.com>
-Subject: Re: [PATCH 6/7] selftests/bpf: Add helper to get port using getsockname
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1681843564; x=1684435564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r5DwDcMLo0kfrF6PYlvResFE41Vi4fcHn5w37kdon8U=;
+        b=LqTuQiYSnKYkykk68G+JR5QzP3mj3Ba6FKK6pc1nziPoRmZUOp4djTcj8F5YQitEdX
+         ppTzogNSWsGZRJZRKQiMm+/WqXBBCU6gAgFABI4Iw6vB+mnF7sjD1FJ79nPtRCKewtym
+         6h99pzVOYWD+OMjuLYwX1MkjGYCCsVA5zd5o9cqmfmCyeDcHUElYu4Da4X0Dx975xZOH
+         N9iTbe0teM59kEWfTp7O5OzmbuUWaCZBocd4hlwKVHhGekofXhXwApHP4HiIyu3tZOT4
+         CjAcTPVsNlYyCpaXi4bifIgochGdNPjgpjLrK6lvZp8mR2v6kesetu0Bt4rHtt1wqp6a
+         XDEQ==
+X-Gm-Message-State: AAQBX9djv6lxKs+ysSHanba0j6dv0DQOhDdW5IDj7U1jZtX6nE7uCeOZ
+        JBuH9ungdXlDHXdBZJabauuMPsP9+RCnVL7Gcns=
+X-Google-Smtp-Source: AKy350aiIIRdG42LZtX+GGVgeeXp3SECyx6C3nBvkLILarAGpWYWaHllIP//AYJvsRZVg9l3mXbxSd10MMCRSilKqso=
+X-Received: by 2002:a0d:cc81:0:b0:54e:e136:9f6b with SMTP id
+ o123-20020a0dcc81000000b0054ee1369f6bmr756700ywd.46.1681843564407; Tue, 18
+ Apr 2023 11:46:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230418002148.3255690-1-andrii@kernel.org> <20230418002148.3255690-4-andrii@kernel.org>
+ <CAADnVQK-JjutrU-TMCh6f9qfcY_9T2mr59+Lzcw5us8KwDEmug@mail.gmail.com>
+ <CAEf4BzaGEhszZ-VxB=0YdF989LQNZA-rnuZasEF_BB-Qy_hdNQ@mail.gmail.com> <CAADnVQ+xJ0sFR1E2rqPDVMd3Cf8MxJTHk+q3_65BEYG5_5BZ+w@mail.gmail.com>
+In-Reply-To: <CAADnVQ+xJ0sFR1E2rqPDVMd3Cf8MxJTHk+q3_65BEYG5_5BZ+w@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 18 Apr 2023 11:45:49 -0700
+Message-ID: <CAEf4BzZXhqr3g8FS=w9EEibzfsLYXwYjcGJLtpx=BQFJ-+HfvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] libbpf: improve handling of unresolved kfuncs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,83 +73,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/18, Aditi Ghag wrote:
-> The helper will be used to programmatically retrieve,
-> and pass ports in userspace and kernel selftest programs.
-> 
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
->  tools/testing/selftests/bpf/network_helpers.c | 28 +++++++++++++++++++
->  tools/testing/selftests/bpf/network_helpers.h |  1 +
->  2 files changed, 29 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-> index 596caa176582..7217cac762f0 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -427,3 +427,31 @@ void close_netns(struct nstoken *token)
->  	close(token->orig_netns_fd);
->  	free(token);
->  }
-> +
-> +int get_socket_local_port(int family, int sock_fd, __u16 *out_port)
-> +{
-> +	socklen_t addr_len;
-> +	int err;
+On Tue, Apr 18, 2023 at 11:14=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 18, 2023 at 11:10=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Apr 17, 2023 at 6:10=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Apr 17, 2023 at 5:22=E2=80=AFPM Andrii Nakryiko <andrii@kerne=
+l.org> wrote:
+> > > >                                 insn[0].imm =3D ext->ksym.kernel_bt=
+f_id;
+> > > >                                 insn[0].off =3D ext->ksym.btf_fd_id=
+x;
+> > > > -                       } else { /* unresolved weak kfunc */
+> > > > -                               insn[0].imm =3D 0;
+> > > > -                               insn[0].off =3D 0;
+> > > > +                       } else { /* unresolved weak kfunc call */
+> > > > +                               poison_kfunc_call(prog, i, relo->in=
+sn_idx, insn,
+> > > > +                                                 relo->ext_idx, ex=
+t);
+> > >
+> > > With that done should we remove:
+> > >     /* skip for now, but return error when we find this in fixup_kfun=
+c_call */
+> > >     if (!insn->imm)
+> > >           return 0;
+> > > in check_kfunc_call()...
+> > >
+> > > and  if (!func_id && !offset) in add_kfunc_call() ?
+> > >
+> > > That was added in commit a5d827275241 ("bpf: Be conservative while
+> > > processing invalid kfunc calls")
+> >
+> > I guess?.. I don't know if there was any other situation that this fix
+> > was handling, but if it's only due to unresolved kfuncs by libbpf,
+> > then yep.
+>
+> It was specifically to support weak kfunc with imm=3D=3D0 off=3D=3D0.
+> With libbpf doing poisoning and converting call kfunc into call
+> unknown helper that code is no longer needed.
+> The question is whether we should try to support new kernel plus old
+> libbpf combination.
 
-Sorry for keeping bikeshedding this part, but if you're going to do
-another respin, we can also drop the family argument:
-
-int get_socket_local_port(int sock_fd, __be16 *out_port)
-/*                                       ^^ maybe also do be16? */
-{
-	struct sockaddr_storage addr; 
-	socklen_t addrlen;
-
-	addrlen = sizeof(addr);
-	getsockname(sock_fd, (struct sockaddr *)&addr, &addrlen);
-
-	if (addr.ss_family == AF_INET) {
-	} else if () {
-	}
-}
-
-> +
-> +	if (family == AF_INET) {
-> +		struct sockaddr_in addr = {};
-> +
-> +		addr_len = sizeof(addr);
-> +		err = getsockname(sock_fd, (struct sockaddr *)&addr, &addr_len);
-> +		if (err < 0)
-> +			return err;
-> +		*out_port = addr.sin_port;
-> +		return 0;
-> +	} else if (family == AF_INET6) {
-> +		struct sockaddr_in6 addr = {};
-> +
-> +		addr_len = sizeof(addr);
-> +		err = getsockname(sock_fd, (struct sockaddr *)&addr, &addr_len);
-> +		if (err < 0)
-> +			return err;
-> +		*out_port = addr.sin6_port;
-> +		return 0;
-> +	}
-> +
-> +	return -1;
-> +}
-> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-> index f882c691b790..ca4a147b58b8 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.h
-> +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -56,6 +56,7 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
->  int make_sockaddr(int family, const char *addr_str, __u16 port,
->  		  struct sockaddr_storage *addr, socklen_t *len);
->  char *ping_command(int family);
-> +int get_socket_local_port(int family, int sock_fd, __u16 *out_port);
->  
->  struct nstoken;
->  /**
-> -- 
-> 2.34.1
-> 
+Let's drop this kernel-side kludge. I don't believe anyone is actively
+using __weak kfuncs yet, so it doesn't seem like it will hurt anyone.
+But let's do it in a follow up if the series is good to go as is.
