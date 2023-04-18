@@ -2,131 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC396E5A91
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 09:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8476E5BF4
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 10:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjDRHg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 03:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        id S231209AbjDRIXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 04:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjDRHgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 03:36:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AA74C1F;
-        Tue, 18 Apr 2023 00:36:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E9C762D6F;
-        Tue, 18 Apr 2023 07:36:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60AC2C433D2;
-        Tue, 18 Apr 2023 07:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681803382;
-        bh=E1EIySyr85mH28dqigAe0UMW4kBm9cIMgWf4lGA434Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jt2KCVvtGGVIeM4PDSCkgqGkbT+gt29mDtyO3GJO+f6LRY7iioOQ+L1/vhrefF3Ti
-         OfSP9TCAwoERgJZLFb8TH7Z2eL8oFCS951vlFBM+Vz94J/4t+UM1PAPL5t8jGKeVG2
-         bE7SWGZjcxnwW2MSnQvwdoACeEapvcaRF4AjZNI+3FkSEv71YCaEKNvdYfaoFSxv3q
-         G90IRrDdqsurdrM4fH0JL0bQWt6SuNjfj4yl+hqaVCHr6V9nlXxBFGJpkscTFvOgXI
-         gyJu0r8MFs1OOsAoHGUoCkPmt1Nqa4gcMUHF/1jJsUq0U2zVMI6/A7OWZU9ryOm7jd
-         z81weMrFJsm2Q==
-Date:   Tue, 18 Apr 2023 09:36:18 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
-        pabeni@redhat.com, bpf@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, nbd@nbd.name
-Subject: Re: issue with inflight pages from page_pool
-Message-ID: <ZD5IcgN5s9lCqIgl@lore-desk>
-References: <ZD2HjZZSOjtsnQaf@lore-desk>
- <CANn89iK7P2aONo0EB9o+YiRG+9VfqqVVra4cd14m_Vo4hcGVnQ@mail.gmail.com>
- <ZD2NSSYFzNeN68NO@lore-desk>
- <20230417112346.546dbe57@kernel.org>
- <ZD2TH4PsmSNayhfs@lore-desk>
- <20230417120837.6f1e0ef6@kernel.org>
- <ZD26lb2qdsdX16qa@lore-desk>
- <20230417163210.2433ae40@kernel.org>
+        with ESMTP id S231181AbjDRIXv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 04:23:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D197
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681806184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1e6yNdquB4xsiFuNvOIM1gyO7Q8DluDr1MXBiyIlSgQ=;
+        b=MCXdBDWZ6bbd0AV2zDSJ0/ZCuIlDvhMO1+WzcCdyGMFJGqrNOLmUdDbGVqv3w83vo7Dooa
+        x+6M/8gQ0UcyVandLRb76Bo4c3Wdrqs2JDhyY7Johfa+KrjpUjQHfX34NMIkFW3HCpwUO5
+        Z96PP/EqiBVqm6LfXT+D0pouP84xtSY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-353-DIFM3cwZO1mK-rKlC9KScg-1; Tue, 18 Apr 2023 04:23:03 -0400
+X-MC-Unique: DIFM3cwZO1mK-rKlC9KScg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f17352d605so2182645e9.0
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:23:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681806182; x=1684398182;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1e6yNdquB4xsiFuNvOIM1gyO7Q8DluDr1MXBiyIlSgQ=;
+        b=ZSzI1sZE1I+ftXGAhVFcR3bitJHimG8FpLv08ITf+BdsxZCiT9ck+mvaO5qwsGAZzB
+         /Ic6tvotLPDndlSYIpsC/dmYgE0flUIx3v3Fk4o98cF5oZhWGe1Tr7fQw2ZNxL8JC+Id
+         IglFLXhdMF3A1P+OyVrl9gK5fK0Bnb/PJPn7X5Z+wZiLl4TyxT6dX9MfR5OcrZfq56G3
+         slc0Oq/WUFNGd7+CvI0Utoa8W2bfVzNIpHSJUbtpHWhml7VNUD7muQi0McEKYA1Qn6a7
+         pcV4ZNHZ29RyIDGjbxb0sxeUEjC51d2FFWjHnJOaP5fO7fXm4INOsdSLzlrqc4OGlZzT
+         xXUg==
+X-Gm-Message-State: AAQBX9coPwywmqsmaigUGdsUex7EvKqCdcMoQivBhoYj+7P81nUDUKVD
+        eQ7EPiXnexo9/BzKYwxazKn8efkuuefUpaYAvrzm8x9L4ytDuOjVT55lcvlFW7PdwdVvqtpdmiN
+        vvxUdp3kzrqCO
+X-Received: by 2002:a05:600c:4ece:b0:3f1:7a4b:bf17 with SMTP id g14-20020a05600c4ece00b003f17a4bbf17mr806384wmq.1.1681806182354;
+        Tue, 18 Apr 2023 01:23:02 -0700 (PDT)
+X-Google-Smtp-Source: AKy350byrwt8zKkA6KQmn/pUpaIQr+7BvV1zUoEFWmUjX9/O3dnGwLxRgvc7EG8p6aX1EbXFc/Y2sQ==
+X-Received: by 2002:a05:600c:4ece:b0:3f1:7a4b:bf17 with SMTP id g14-20020a05600c4ece00b003f17a4bbf17mr806359wmq.1.1681806182108;
+        Tue, 18 Apr 2023 01:23:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-229-200.dyn.eolo.it. [146.241.229.200])
+        by smtp.gmail.com with ESMTPSA id c22-20020a05600c0ad600b003f16fc33fbesm7853277wmr.17.2023.04.18.01.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 01:23:01 -0700 (PDT)
+Message-ID: <d872b08538aface37cb21eecb8a793a7063c4c49.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 5/6] tsnep: Add XDP socket zero-copy RX
+ support
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Gerhard Engleder <gerhard@engleder-embedded.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com
+Date:   Tue, 18 Apr 2023 10:22:59 +0200
+In-Reply-To: <20230415144256.27884-6-gerhard@engleder-embedded.com>
+References: <20230415144256.27884-1-gerhard@engleder-embedded.com>
+         <20230415144256.27884-6-gerhard@engleder-embedded.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XpIrzH4lv/jz4U1A"
-Content-Disposition: inline
-In-Reply-To: <20230417163210.2433ae40@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, 2023-04-15 at 16:42 +0200, Gerhard Engleder wrote:
+> @@ -892,6 +900,37 @@ static int tsnep_rx_desc_available(struct tsnep_rx *=
+rx)
+>  		return rx->read - rx->write - 1;
+>  }
+> =20
+> +static void tsnep_rx_free_page_buffer(struct tsnep_rx *rx)
+> +{
+> +	struct page **page;
+> +
+> +	page =3D rx->page_buffer;
+> +	while (*page) {
+> +		page_pool_put_full_page(rx->page_pool, *page, false);
+> +		*page =3D NULL;
+> +		page++;
+> +	}
+> +}
 
---XpIrzH4lv/jz4U1A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-> On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
-> > > If it's that then I'm with Eric. There are many ways to keep the pages
-> > > in use, no point working around one of them and not the rest :( =20
-> >=20
-> > I was not clear here, my fault. What I mean is I can see the returned
-> > pages counter increasing from time to time, but during most of tests,
-> > even after 2h the tcp traffic has stopped, page_pool_release_retry()
-> > still complains not all the pages are returned to the pool and so the
-> > pool has not been deallocated yet.
-> > The chunk of code in my first email is just to demonstrate the issue
-> > and I am completely fine to get a better solution :)=20
->=20
-> Your problem is perhaps made worse by threaded NAPI, you have
-> defer-free skbs sprayed across all cores and no NAPI there to=20
-> flush them :(
+>  static void tsnep_rx_close(struct tsnep_rx *rx)
+>  {
+> +	if (rx->xsk_pool)
+> +		tsnep_rx_free_page_buffer(rx);
 
-yes, exactly :)
+It looks like the above could call tsnep_rx_free_page_buffer() with
+each page ptr in rx->page_buffer not zero. If so
+tsnep_rx_free_page_buffer() will do an out of bound access.
 
->=20
-> > I guess we just need a way to free the pool in a reasonable amount=20
-> > of time. Agree?
->=20
-> Whether we need to guarantee the release is the real question.
+Also, why testing rx->xsk_pool instead of rx->page_buffer?
 
-yes, this is the main goal of my email. The defer-free skbs behaviour seems=
- in
-contrast with the page_pool pending pages monitor mechanism or at least they
-do not work well together.
+Thanks!
 
-@Jesper, Ilias: any input on it?
+Paolo
 
-> Maybe it's more of a false-positive warning.
->=20
-> Flushing the defer list is probably fine as a hack, but it's not
-> a full fix as Eric explained. False positive can still happen.
-
-agree, it was just a way to give an idea of the issue, not a proper solutio=
-n.
-
-Regards,
-Lorenzo
-
->=20
-> I'm ambivalent. My only real request wold be to make the flushing=20
-> a helper in net/core/dev.c rather than open coded in page_pool.c.
->=20
-> Somewhat related - Eric, do we need to handle defer_list in dev_cpu_dead(=
-)?
-
---XpIrzH4lv/jz4U1A
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZD5IcgAKCRA6cBh0uS2t
-rIqjAQDYt+gEaRt7vfajC3orbaGEGZW1pkY7eWVcst5V6UfQSAEAxTxX8Ry4wPh6
-5yOcKeHWnsEuWXCC3QuiHpsgNIRCyg4=
-=tNWN
------END PGP SIGNATURE-----
-
---XpIrzH4lv/jz4U1A--
