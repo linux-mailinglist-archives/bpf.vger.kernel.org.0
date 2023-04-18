@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630936E571D
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17686E56F8
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjDRBqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 21:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        id S231140AbjDRBoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 21:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjDRBp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 21:45:28 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5E2A244
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:42:45 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-54f8b46f399so159478407b3.10
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:42:45 -0700 (PDT)
+        with ESMTP id S230461AbjDRBnc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 21:43:32 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BCC6E99
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:42:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id d132-20020a254f8a000000b00b868826cdfeso2898986ybb.0
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681782130; x=1684374130;
+        d=google.com; s=20221208; t=1681782135; x=1684374135;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sonv2s4tEj+40/A7AfoN8AqUe0dfHfI4UdTNmRzEFxw=;
-        b=oBeVq5vPwvXmVXOF0/baapps028QmRMh+Vlm0GWkzmw+jgbsqFHQ9sBTAZd0JvZW7H
-         scU0JaIRxGobib6u6o+5zkjMzh3ppHGop73In0Ks/95MOV9IySs+APkuaui0dDeA7Xs2
-         TNvxJEoPS5uUE3SKbFMDmqLPAzAN+EJZX72saESajrud3lyX+7DUAurdWqlQrzXD/2NP
-         SeN8VkGxabld1EkHRBpg69tL/kTM+CsY5ugSdmrcY5bWD/9zwLIU70IlmO0rvJiKt9Ta
-         x1P81M1rWJhi4F9P7KBAyNmIkaqe9wFJAvJZLcBnygwrhgMV8cacNucqUlI87UDqlhWR
-         dDxw==
+        bh=qi1Po8S34Kt7QbElMTr2iZrr48NSEyGebr4FBWlSvn0=;
+        b=MSsv99K1wdyZt0ehocN3dFGnyuMghLajhZABLr8jg/8pE9UjNyOpDMEfWyojc7bZxL
+         aIdIEzKOVqQM6eAiGt15nHbmio8M/8pFdNUqUKZ2eWJVCzjDh32WmTdHJZ10f5/POWF2
+         pAAEo+YIza9Rwrb6KL2LEkS8NvJFgrwQvEqP9WD4eGIxb87r1fEPbOg58UfyeUZSKVSH
+         sLjYM7/L0kSRcgdwJcbirerE7VCZnsIM4Z5WtlxXaqbbgNOGaNOEVE53+XYyUpwoREZh
+         Y35+i/5dEgBZjBXFGcHvoTytJSDXWndNAxfmRes5d05cuW6DV5UOQZPI/AnztxHlgPeK
+         mLsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681782130; x=1684374130;
+        d=1e100.net; s=20221208; t=1681782135; x=1684374135;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sonv2s4tEj+40/A7AfoN8AqUe0dfHfI4UdTNmRzEFxw=;
-        b=E1A6BZsG5cbmm0RuA2JhPBDmKpwnZDAyk5MHrEA3zGd4GJcFNcA8VQCuP1bQIPflrm
-         GEHG4khTSUP15pnt3J3kC5K6/rRE3zGLjIljVkqiqch4Cymw5DR1OpHd9QvRbSVf05Wg
-         uQpPnr1wF0U53bkbVVP2HJwb5UONv975wfvI8leAsFcqKi/xjY1oyvY/7il8qFms6+w6
-         58j3A0myQMQxo01hWRUA/ym6bBe1nD12HF0MPnrb3S32+mOSx+UZNbvJY18Q52AGRGDy
-         jkWtfzNV8MWOhcPrR683mKnjg6LxMFCzGe+RWA0eX1SHGAGBzD0tFrlluguaOdhQ6mVV
-         2wzQ==
-X-Gm-Message-State: AAQBX9eR3hohO14lwOJULH1W3vwtrY1LfSGLmxD/FGM+tlYvvjxVECU1
-        5DTQoalsu/7XPZxSBraKbvgKowSnvAI=
-X-Google-Smtp-Source: AKy350atgbwvzcoS6D9krUGkQk5hMb9O8+MnqZi16WWjaHH6yiJdYPqnKXAdzvHYzUemaFFJFZgGkpCmwCw=
+        bh=qi1Po8S34Kt7QbElMTr2iZrr48NSEyGebr4FBWlSvn0=;
+        b=BZCkwL3fWAQabFMryrXLXnWcWCrX3/qAnqfHBP581j32bJU7xq42rq2K21k+w5B81R
+         M7yWgxT/2UsOkdFwhGdgh0RU8NHrHtyYBOoXUyrbstiZY17LsaqFc/jUdoLBHqLGna41
+         ifeHgbA4OjFkbW0DCiPCUmAj2inA1F5YEIl5eLKBcVI648uWpow2GDdQWrx6RamTLbCD
+         aIbA8aJpqw+vcmQ5hg6jO0DdR4LWqc8IpEF3Sq6cS6ZE7phctA1kX/Ce4P2QFoNy7hzP
+         dNT1jVNfXqSuk24o1QZUuNripfDH/z015mkSpkJDjn94uaX80IppdV13uxH3wnu+UUBR
+         SGHQ==
+X-Gm-Message-State: AAQBX9fWErM2K+CHXwBYm6u7dYdsc6TJZdsYV+yOsorLhY5Rpp+ABEK2
+        3N7UFskpYsI4J/QFKZvR179kdPjtikU=
+X-Google-Smtp-Source: AKy350abrQ11ASojcePeUYEdiv/KTIkMP9GG/A+eTvQ5myvKQeYGNjXLXkAgj+/aiYds5ZlRZX6RdyULoaA=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:e67a:98b0:942d:86aa])
- (user=drosen job=sendgmr) by 2002:a25:d40f:0:b0:b8c:ad5:6b4e with SMTP id
- m15-20020a25d40f000000b00b8c0ad56b4emr10977247ybf.12.1681782129901; Mon, 17
- Apr 2023 18:42:09 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 18:40:35 -0700
+ (user=drosen job=sendgmr) by 2002:a25:6c41:0:b0:b8f:1d2c:243f with SMTP id
+ h62-20020a256c41000000b00b8f1d2c243fmr8371770ybc.1.1681782134824; Mon, 17 Apr
+ 2023 18:42:14 -0700 (PDT)
+Date:   Mon, 17 Apr 2023 18:40:37 -0700
 In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20230418014037.2412394-1-drosen@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230418014037.2412394-36-drosen@google.com>
-Subject: [RFC PATCH v3 35/37] tools: Add FUSE, update bpf includes
+Message-ID: <20230418014037.2412394-38-drosen@google.com>
+Subject: [RFC PATCH v3 37/37] fuse: Provide easy way to test fuse struct_op call
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>
@@ -73,1185 +73,792 @@ Cc:     Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Updates the bpf includes under tools, and adds fuse
+This is useful for quickly testing a struct_op program.
+I've been using this set up to test verifier changes.
+
+I'll eventually move those sorts of tests to bpf selftests
 
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
 ---
- tools/include/uapi/linux/bpf.h  |   12 +
- tools/include/uapi/linux/fuse.h | 1135 +++++++++++++++++++++++++++++++
- 2 files changed, 1147 insertions(+)
- create mode 100644 tools/include/uapi/linux/fuse.h
+ fs/fuse/inode.c                               |  70 ++
+ .../selftests/filesystems/fuse/Makefile       |   1 +
+ .../filesystems/fuse/struct_op_test.bpf.c     | 642 ++++++++++++++++++
+ 3 files changed, 713 insertions(+)
+ create mode 100644 tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4b20a7269bee..6521c40875c7 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -7155,4 +7155,16 @@ struct bpf_iter_num {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 7fd79efbdac1..d80c7282c91c 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -2071,16 +2071,83 @@ static void fuse_fs_cleanup(void)
  
-+/* Return Codes for Fuse BPF struct_op programs */
-+#define BPF_FUSE_CONTINUE		0
-+#define BPF_FUSE_USER			1
-+#define BPF_FUSE_USER_PREFILTER		2
-+#define BPF_FUSE_POSTFILTER		3
-+#define BPF_FUSE_USER_POSTFILTER	4
+ static struct kobject *fuse_kobj;
+ 
++static char struct_op_name[BPF_FUSE_NAME_MAX];
++static struct fuse_ops *fop = NULL;
 +
-+/* Op Code Filter values for BPF Programs */
-+#define FUSE_OPCODE_FILTER	0x0ffff
-+#define FUSE_PREFILTER		0x10000
-+#define FUSE_POSTFILTER		0x20000
++static ssize_t struct_op_store(struct kobject *kobj,
++		  struct kobj_attribute *attr,
++		  const char *buf, size_t count)
++{
++	size_t max = count;
 +
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/tools/include/uapi/linux/fuse.h b/tools/include/uapi/linux/fuse.h
++	if (max > BPF_FUSE_NAME_MAX) max = BPF_FUSE_NAME_MAX;
++	strncpy(struct_op_name, buf, max);
++	if (struct_op_name[max-1] == '\n')
++		struct_op_name[max-1] = 0;
++	put_fuse_ops(fop);
++	fop = find_fuse_ops(struct_op_name);
++	if (!fop)
++		printk("No struct op named %s found", struct_op_name);
++
++	return count;
++}
++
++static ssize_t struct_op_show(struct kobject *kobj,
++			    struct kobj_attribute *attr, char *buf)
++{
++	struct fuse_ops *op;
++	uint32_t result = 0;
++	struct bpf_fuse_meta_info meta;
++	struct fuse_mkdir_in in;
++	struct fuse_buffer name;
++	char name_buff[10] = "test";
++
++	name.data = &name_buff[0];
++	name.flags = BPF_FUSE_VARIABLE_SIZE;
++	name.max_size = 10;
++	name.size = 5;
++
++	op = fop;
++	if (!op) {
++		printk("Could not find fuse_op for %s", struct_op_name);
++		return 0;
++	}
++
++	if (op->mkdir_prefilter)
++		result = op->mkdir_prefilter(&meta, &in, &name);
++	else
++		printk("No func!!");
++
++	printk("in->mode:%d, name:%s result:%d", in.mode, (char *)name.data, result);
++	return sprintf(buf, "%d dyn:%s\n", result, (char *)name.data);
++}
++
++static struct kobj_attribute test_attr = __ATTR_RW(struct_op);
++
++static struct attribute *test_attrs[] = {
++	&test_attr.attr,
++	NULL,
++};
++
++static const struct attribute_group test_attr_group = {
++	.attrs = test_attrs,
++};
++
+ static int fuse_sysfs_init(void)
+ {
+ 	int err;
+ 
++	memset(struct_op_name, 0, BPF_FUSE_NAME_MAX);
+ 	fuse_kobj = kobject_create_and_add("fuse", fs_kobj);
+ 	if (!fuse_kobj) {
+ 		err = -ENOMEM;
+ 		goto out_err;
+ 	}
+ 
++	err = sysfs_create_group(fuse_kobj, &test_attr_group);
++	if (err)
++		goto tmp;
++
+ 	err = sysfs_create_mount_point(fuse_kobj, "connections");
+ 	if (err)
+ 		goto out_fuse_unregister;
+@@ -2089,6 +2156,8 @@ static int fuse_sysfs_init(void)
+ 
+  out_fuse_unregister:
+ 	kobject_put(fuse_kobj);
++tmp:
++	sysfs_remove_group(fuse_kobj, &test_attr_group);
+  out_err:
+ 	return err;
+ }
+@@ -2096,6 +2165,7 @@ static int fuse_sysfs_init(void)
+ static void fuse_sysfs_cleanup(void)
+ {
+ 	sysfs_remove_mount_point(fuse_kobj, "connections");
++	sysfs_remove_group(fuse_kobj, &test_attr_group);
+ 	kobject_put(fuse_kobj);
+ }
+ 
+diff --git a/tools/testing/selftests/filesystems/fuse/Makefile b/tools/testing/selftests/filesystems/fuse/Makefile
+index b2df4dec0651..ff28859f3268 100644
+--- a/tools/testing/selftests/filesystems/fuse/Makefile
++++ b/tools/testing/selftests/filesystems/fuse/Makefile
+@@ -52,6 +52,7 @@ SELFTESTS:=$(TOOLSDIR)/testing/selftests/
+ LDLIBS := -lpthread -lelf -lz
+ TEST_GEN_PROGS := fuse_test fuse_daemon
+ TEST_GEN_FILES := \
++  struct_op_test.bpf.o \
+ 	test.skel.h \
+ 	fd.sh \
+ 
+diff --git a/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c b/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
 new file mode 100644
-index 000000000000..72c2190a1b0a
+index 000000000000..2cb178d2fa0c
 --- /dev/null
-+++ b/tools/include/uapi/linux/fuse.h
-@@ -0,0 +1,1135 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
-+/*
-+    This file defines the kernel interface of FUSE
-+    Copyright (C) 2001-2008  Miklos Szeredi <miklos@szeredi.hu>
++++ b/tools/testing/selftests/filesystems/fuse/struct_op_test.bpf.c
+@@ -0,0 +1,642 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++// Copyright (c) 2021 Google LLC
 +
-+    This program can be distributed under the terms of the GNU GPL.
-+    See the file COPYING.
-+
-+    This -- and only this -- header file may also be distributed under
-+    the terms of the BSD Licence as follows:
-+
-+    Copyright (C) 2001-2007 Miklos Szeredi. All rights reserved.
-+
-+    Redistribution and use in source and binary forms, with or without
-+    modification, are permitted provided that the following conditions
-+    are met:
-+    1. Redistributions of source code must retain the above copyright
-+       notice, this list of conditions and the following disclaimer.
-+    2. Redistributions in binary form must reproduce the above copyright
-+       notice, this list of conditions and the following disclaimer in the
-+       documentation and/or other materials provided with the distribution.
-+
-+    THIS SOFTWARE IS PROVIDED BY AUTHOR AND CONTRIBUTORS ``AS IS'' AND
-+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-+    ARE DISCLAIMED.  IN NO EVENT SHALL AUTHOR OR CONTRIBUTORS BE LIABLE
-+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-+    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-+    SUCH DAMAGE.
-+*/
-+
-+/*
-+ * This file defines the kernel interface of FUSE
-+ *
-+ * Protocol changelog:
-+ *
-+ * 7.1:
-+ *  - add the following messages:
-+ *      FUSE_SETATTR, FUSE_SYMLINK, FUSE_MKNOD, FUSE_MKDIR, FUSE_UNLINK,
-+ *      FUSE_RMDIR, FUSE_RENAME, FUSE_LINK, FUSE_OPEN, FUSE_READ, FUSE_WRITE,
-+ *      FUSE_RELEASE, FUSE_FSYNC, FUSE_FLUSH, FUSE_SETXATTR, FUSE_GETXATTR,
-+ *      FUSE_LISTXATTR, FUSE_REMOVEXATTR, FUSE_OPENDIR, FUSE_READDIR,
-+ *      FUSE_RELEASEDIR
-+ *  - add padding to messages to accommodate 32-bit servers on 64-bit kernels
-+ *
-+ * 7.2:
-+ *  - add FOPEN_DIRECT_IO and FOPEN_KEEP_CACHE flags
-+ *  - add FUSE_FSYNCDIR message
-+ *
-+ * 7.3:
-+ *  - add FUSE_ACCESS message
-+ *  - add FUSE_CREATE message
-+ *  - add filehandle to fuse_setattr_in
-+ *
-+ * 7.4:
-+ *  - add frsize to fuse_kstatfs
-+ *  - clean up request size limit checking
-+ *
-+ * 7.5:
-+ *  - add flags and max_write to fuse_init_out
-+ *
-+ * 7.6:
-+ *  - add max_readahead to fuse_init_in and fuse_init_out
-+ *
-+ * 7.7:
-+ *  - add FUSE_INTERRUPT message
-+ *  - add POSIX file lock support
-+ *
-+ * 7.8:
-+ *  - add lock_owner and flags fields to fuse_release_in
-+ *  - add FUSE_BMAP message
-+ *  - add FUSE_DESTROY message
-+ *
-+ * 7.9:
-+ *  - new fuse_getattr_in input argument of GETATTR
-+ *  - add lk_flags in fuse_lk_in
-+ *  - add lock_owner field to fuse_setattr_in, fuse_read_in and fuse_write_in
-+ *  - add blksize field to fuse_attr
-+ *  - add file flags field to fuse_read_in and fuse_write_in
-+ *  - Add ATIME_NOW and MTIME_NOW flags to fuse_setattr_in
-+ *
-+ * 7.10
-+ *  - add nonseekable open flag
-+ *
-+ * 7.11
-+ *  - add IOCTL message
-+ *  - add unsolicited notification support
-+ *  - add POLL message and NOTIFY_POLL notification
-+ *
-+ * 7.12
-+ *  - add umask flag to input argument of create, mknod and mkdir
-+ *  - add notification messages for invalidation of inodes and
-+ *    directory entries
-+ *
-+ * 7.13
-+ *  - make max number of background requests and congestion threshold
-+ *    tunables
-+ *
-+ * 7.14
-+ *  - add splice support to fuse device
-+ *
-+ * 7.15
-+ *  - add store notify
-+ *  - add retrieve notify
-+ *
-+ * 7.16
-+ *  - add BATCH_FORGET request
-+ *  - FUSE_IOCTL_UNRESTRICTED shall now return with array of 'struct
-+ *    fuse_ioctl_iovec' instead of ambiguous 'struct iovec'
-+ *  - add FUSE_IOCTL_32BIT flag
-+ *
-+ * 7.17
-+ *  - add FUSE_FLOCK_LOCKS and FUSE_RELEASE_FLOCK_UNLOCK
-+ *
-+ * 7.18
-+ *  - add FUSE_IOCTL_DIR flag
-+ *  - add FUSE_NOTIFY_DELETE
-+ *
-+ * 7.19
-+ *  - add FUSE_FALLOCATE
-+ *
-+ * 7.20
-+ *  - add FUSE_AUTO_INVAL_DATA
-+ *
-+ * 7.21
-+ *  - add FUSE_READDIRPLUS
-+ *  - send the requested events in POLL request
-+ *
-+ * 7.22
-+ *  - add FUSE_ASYNC_DIO
-+ *
-+ * 7.23
-+ *  - add FUSE_WRITEBACK_CACHE
-+ *  - add time_gran to fuse_init_out
-+ *  - add reserved space to fuse_init_out
-+ *  - add FATTR_CTIME
-+ *  - add ctime and ctimensec to fuse_setattr_in
-+ *  - add FUSE_RENAME2 request
-+ *  - add FUSE_NO_OPEN_SUPPORT flag
-+ *
-+ *  7.24
-+ *  - add FUSE_LSEEK for SEEK_HOLE and SEEK_DATA support
-+ *
-+ *  7.25
-+ *  - add FUSE_PARALLEL_DIROPS
-+ *
-+ *  7.26
-+ *  - add FUSE_HANDLE_KILLPRIV
-+ *  - add FUSE_POSIX_ACL
-+ *
-+ *  7.27
-+ *  - add FUSE_ABORT_ERROR
-+ *
-+ *  7.28
-+ *  - add FUSE_COPY_FILE_RANGE
-+ *  - add FOPEN_CACHE_DIR
-+ *  - add FUSE_MAX_PAGES, add max_pages to init_out
-+ *  - add FUSE_CACHE_SYMLINKS
-+ *
-+ *  7.29
-+ *  - add FUSE_NO_OPENDIR_SUPPORT flag
-+ *
-+ *  7.30
-+ *  - add FUSE_EXPLICIT_INVAL_DATA
-+ *  - add FUSE_IOCTL_COMPAT_X32
-+ *
-+ *  7.31
-+ *  - add FUSE_WRITE_KILL_PRIV flag
-+ *  - add FUSE_SETUPMAPPING and FUSE_REMOVEMAPPING
-+ *  - add map_alignment to fuse_init_out, add FUSE_MAP_ALIGNMENT flag
-+ *
-+ *  7.32
-+ *  - add flags to fuse_attr, add FUSE_ATTR_SUBMOUNT, add FUSE_SUBMOUNTS
-+ *
-+ *  7.33
-+ *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
-+ *  - add FUSE_OPEN_KILL_SUIDGID
-+ *  - extend fuse_setxattr_in, add FUSE_SETXATTR_EXT
-+ *  - add FUSE_SETXATTR_ACL_KILL_SGID
-+ *
-+ *  7.34
-+ *  - add FUSE_SYNCFS
-+ *
-+ *  7.35
-+ *  - add FOPEN_NOFLUSH
-+ *
-+ *  7.36
-+ *  - extend fuse_init_in with reserved fields, add FUSE_INIT_EXT init flag
-+ *  - add flags2 to fuse_init_in and fuse_init_out
-+ *  - add FUSE_SECURITY_CTX init flag
-+ *  - add security context to create, mkdir, symlink, and mknod requests
-+ *  - add FUSE_HAS_INODE_DAX, FUSE_ATTR_DAX
-+ *
-+ *  7.37
-+ *  - add FUSE_TMPFILE
-+ *
-+ *  7.38
-+ *  - add FUSE_EXPIRE_ONLY flag to fuse_notify_inval_entry
-+ *  - add FOPEN_PARALLEL_DIRECT_WRITES
-+ *  - add total_extlen to fuse_in_header
-+ *  - add FUSE_MAX_NR_SECCTX
-+ *  - add extension header
-+ *  - add FUSE_EXT_GROUPS
-+ *  - add FUSE_CREATE_SUPP_GROUP
-+ */
-+
-+#ifndef _LINUX_FUSE_H
-+#define _LINUX_FUSE_H
-+
-+#ifdef __KERNEL__
++#include "vmlinux.h"
++//#include <uapi/linux/bpf.h>
++#include <linux/errno.h>
 +#include <linux/types.h>
-+#else
-+#include <stdint.h>
-+#endif
++//#include <linux/fuse.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_common.h"
++
++char _license[] SEC("license") = "GPL";
++
++#define BPF_STRUCT_OPS(type, name, args...)					\
++SEC("struct_ops/"#name)								\
++type BPF_PROG(name, ##args)
 +
 +/*
-+ * Version negotiation:
-+ *
-+ * Both the kernel and userspace send the version they support in the
-+ * INIT request and reply respectively.
-+ *
-+ * If the major versions match then both shall use the smallest
-+ * of the two minor versions for communication.
-+ *
-+ * If the kernel supports a larger major version, then userspace shall
-+ * reply with the major version it supports, ignore the rest of the
-+ * INIT message and expect a new INIT message from the kernel with a
-+ * matching major version.
-+ *
-+ * If the library supports a larger major version, then it shall fall
-+ * back to the major protocol version sent by the kernel for
-+ * communication and reply with that major version (and an arbitrary
-+ * supported minor version).
-+ */
-+
-+/** Version number of this interface */
-+#define FUSE_KERNEL_VERSION 7
-+
-+/** Minor version number of this interface */
-+#define FUSE_KERNEL_MINOR_VERSION 38
-+
-+/** The node ID of the root inode */
-+#define FUSE_ROOT_ID 1
-+
-+/* Make sure all structures are padded to 64bit boundary, so 32bit
-+   userspace works under 64bit kernels */
-+
-+struct fuse_attr {
-+	uint64_t	ino;
-+	uint64_t	size;
-+	uint64_t	blocks;
-+	uint64_t	atime;
-+	uint64_t	mtime;
-+	uint64_t	ctime;
-+	uint32_t	atimensec;
-+	uint32_t	mtimensec;
-+	uint32_t	ctimensec;
-+	uint32_t	mode;
-+	uint32_t	nlink;
-+	uint32_t	uid;
-+	uint32_t	gid;
-+	uint32_t	rdev;
-+	uint32_t	blksize;
-+	uint32_t	flags;
++struct test_struct {
++	uint32_t a;
++	uint32_t b;
++};
++
++
++*/
++//struct fuse_buffer;
++#define BPF_FUSE_CONTINUE		0
++/*struct fuse_ops {
++	uint32_t (*test_func)(void);
++	uint32_t (*test_func2)(struct test_struct *a);
++	uint32_t (*test_func3)(struct fuse_name *ptr);
++	//u32 (*open_prefilter)(struct bpf_fuse_hidden_info meh, struct bpf_fuse_meta_info header, struct fuse_open_in foi);
++	//u32 (*open_postfilter)(struct bpf_fuse_hidden_info meh, struct bpf_fuse_meta_info header, const struct fuse_open_in foi, struct fuse_open_out foo);
++	char name[BPF_FUSE_NAME_MAX];
++};
++*/
++extern uint32_t bpf_fuse_return_len(struct fuse_buffer *ptr) __ksym;
++extern void bpf_fuse_get_rw_dynptr(struct fuse_buffer *buffer, struct bpf_dynptr *dynptr, u64 size, bool copy) __ksym;
++extern void bpf_fuse_get_ro_dynptr(const struct fuse_buffer *buffer, struct bpf_dynptr *dynptr) __ksym;
++
++//extern struct bpf_key *bpf_lookup_user_key(__u32 serial, __u64 flags) __ksym;
++//extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
++//extern void bpf_key_put(struct bpf_key *key) __ksym;
++//extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
++//				      struct bpf_dynptr *sig_ptr,
++//				      struct bpf_key *trusted_keyring) __ksym;
++
++BPF_STRUCT_OPS(uint32_t, test_func, const struct bpf_fuse_meta_info *meta,
++				struct fuse_mkdir_in *in, struct fuse_buffer *name)
++{
++	int res = 0;
++	struct bpf_dynptr name_ptr;
++	char *name_buf;
++	//char dummy[7] = {};
++
++	bpf_fuse_get_ro_dynptr(name, &name_ptr);
++	name_buf = bpf_dynptr_slice(&name_ptr, 0, NULL, 4);
++	bpf_printk("Hello test print");
++	if (!name_buf)
++		return -ENOMEM;
++	if (!bpf_strncmp(name_buf, 4, "test"))
++		return 42;	
++
++	//if (bpf_fuse_namecmp(name, "test", 4) == 0)
++	//	return 42;
++
++	return res;
++}
++
++SEC(".struct_ops")
++struct fuse_ops test_ops = {
++	.mkdir_prefilter = (void *)test_func,
++	.name = "test",
++};
++
++BPF_STRUCT_OPS(uint32_t, open_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_open_in *in)
++{
++	bpf_printk("open_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, open_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_open_in *in,
++				struct fuse_open_out *out)
++{
++	bpf_printk("open_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, opendir_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_open_in *in)
++{
++	bpf_printk("opendir_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, opendir_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_open_in *in,
++				struct fuse_open_out *out)
++{
++	bpf_printk("opendir_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, create_open_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_create_in *in, struct fuse_buffer *name)
++{
++	bpf_printk("create_open_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, create_open_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_create_in *in, const struct fuse_buffer *name,
++				struct fuse_entry_out *entry_out, struct fuse_open_out *out)
++{
++	bpf_printk("create_open_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, release_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_release_in *in)
++{
++	bpf_printk("release_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, release_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_release_in *in)
++{
++	bpf_printk("release_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, releasedir_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_release_in *in)
++{
++	bpf_printk("releasedir_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, releasedir_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_release_in *in)
++{
++	bpf_printk("releasedir_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, flush_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_flush_in *in)
++{
++	bpf_printk("flush_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, flush_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_flush_in *in)
++{
++	bpf_printk("flush_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, lseek_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_lseek_in *in)
++{
++	bpf_printk("lseek_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, lseek_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_lseek_in *in,
++				struct fuse_lseek_out *out)
++{
++	bpf_printk("lseek_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, copy_file_range_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_copy_file_range_in *in)
++{
++	bpf_printk("copy_file_range_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, copy_file_range_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_copy_file_range_in *in,
++				struct fuse_write_out *out)
++{
++	bpf_printk("copy_file_range_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, fsync_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_fsync_in *in)
++{
++	bpf_printk("fsync_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, fsync_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_fsync_in *in)
++{
++	bpf_printk("fsync_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, dir_fsync_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_fsync_in *in)
++{
++	bpf_printk("dir_fsync_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, dir_fsync_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_fsync_in *in)
++{
++	bpf_printk("dir_fsync_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, getxattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_getxattr_in *in, struct fuse_buffer *name)
++{
++	bpf_printk("getxattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, getxattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_getxattr_in *in, const struct fuse_buffer *name,
++				struct fuse_buffer *value, struct fuse_getxattr_out *out)
++{
++	bpf_printk("getxattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, listxattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_getxattr_in *in)
++{
++	bpf_printk("listxattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, listxattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_getxattr_in *in,
++				struct fuse_buffer *value, struct fuse_getxattr_out *out)
++{
++	bpf_printk("listxattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, setxattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_setxattr_in *in, struct fuse_buffer *name,
++					struct fuse_buffer *value)
++{
++	bpf_printk("setxattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, setxattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_setxattr_in *in, const struct fuse_buffer *name,
++					const struct fuse_buffer *value)
++{
++	bpf_printk("setxattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, removexattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name)
++{
++	bpf_printk("removexattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, removexattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name)
++{
++	bpf_printk("removexattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, read_iter_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_read_in *in)
++{
++	bpf_printk("read_iter_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, read_iter_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_read_in *in,
++				struct fuse_read_iter_out *out)
++{
++	bpf_printk("read_iter_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, write_iter_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_write_in *in)
++{
++	bpf_printk("write_iter_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, write_iter_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_write_in *in,
++				struct fuse_write_iter_out *out)
++{
++	bpf_printk("write_iter_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, file_fallocate_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_fallocate_in *in)
++{
++	bpf_printk("file_fallocate_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, file_fallocate_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_fallocate_in *in)
++{
++	bpf_printk("file_fallocate_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, lookup_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name)
++{
++	bpf_printk("lookup_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, lookup_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name,
++				struct fuse_entry_out *out, struct fuse_buffer *entries)
++{
++	bpf_printk("lookup_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, mknod_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_mknod_in *in, struct fuse_buffer *name)
++{
++	bpf_printk("mknod_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, mknod_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_mknod_in *in, const struct fuse_buffer *name)
++{
++	bpf_printk("mknod_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, mkdir_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_mkdir_in *in, struct fuse_buffer *name)
++{
++	bpf_printk("mkdir_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, mkdir_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_mkdir_in *in, const struct fuse_buffer *name)
++{
++	bpf_printk("mkdir_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rmdir_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name)
++{
++	bpf_printk("rmdir_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rmdir_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name)
++{
++	bpf_printk("rmdir_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rename2_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_rename2_in *in, struct fuse_buffer *old_name,
++				struct fuse_buffer *new_name)
++{
++	bpf_printk("rename2_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rename2_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_rename2_in *in, const struct fuse_buffer *old_name,
++				const struct fuse_buffer *new_name)
++{
++	bpf_printk("rename2_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rename_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_rename_in *in, struct fuse_buffer *old_name,
++				struct fuse_buffer *new_name)
++{
++	bpf_printk("rename_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, rename_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_rename_in *in, const struct fuse_buffer *old_name,
++				const struct fuse_buffer *new_name)
++{
++	bpf_printk("rename_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, unlink_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name)
++{
++	bpf_printk("unlink_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, unlink_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name)
++{
++	bpf_printk("unlink_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, link_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_link_in *in, struct fuse_buffer *name)
++{
++	bpf_printk("link_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, link_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_link_in *in, const struct fuse_buffer *name)
++{
++	bpf_printk("link_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, getattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_getattr_in *in)
++{
++	bpf_printk("getattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, getattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_getattr_in *in,
++				struct fuse_attr_out *out)
++{
++	bpf_printk("getattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, setattr_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_setattr_in *in)
++{
++	bpf_printk("setattr_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, setattr_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_setattr_in *in,
++				struct fuse_attr_out *out)
++{
++	bpf_printk("setattr_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, statfs_prefilter, const struct bpf_fuse_meta_info *meta)
++{
++	bpf_printk("statfs_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, statfs_postfilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_statfs_out *out)
++{
++	bpf_printk("statfs_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, get_link_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name)
++{
++	bpf_printk("get_link_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, get_link_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name)
++{
++	bpf_printk("get_link_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, symlink_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_buffer *name, struct fuse_buffer *path)
++{
++	bpf_printk("symlink_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, symlink_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_buffer *name, const struct fuse_buffer *path)
++{
++	bpf_printk("symlink_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, readdir_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_read_in *in)
++{
++	bpf_printk("readdir_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, readdir_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_read_in *in,
++				struct fuse_read_out *out, struct fuse_buffer *buffer)
++{
++	bpf_printk("readdir_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, access_prefilter, const struct bpf_fuse_meta_info *meta,
++				struct fuse_access_in *in)
++{
++	bpf_printk("access_prefilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++BPF_STRUCT_OPS(uint32_t, access_postfilter, const struct bpf_fuse_meta_info *meta,
++				const struct fuse_access_in *in)
++{
++	bpf_printk("access_postfilter");
++	return BPF_FUSE_CONTINUE;
++}
++
++SEC(".struct_ops")
++struct fuse_ops trace_ops = {
++	.open_prefilter = (void *)open_prefilter,
++	.open_postfilter = (void *)open_postfilter,
++
++	.opendir_prefilter = (void *)opendir_prefilter,
++	.opendir_postfilter = (void *)opendir_postfilter,
++
++	.create_open_prefilter = (void *)create_open_prefilter,
++	.create_open_postfilter = (void *)create_open_postfilter,
++
++	.release_prefilter = (void *)release_prefilter,
++	.release_postfilter = (void *)release_postfilter,
++
++	.releasedir_prefilter = (void *)releasedir_prefilter,
++	.releasedir_postfilter = (void *)releasedir_postfilter,
++
++	.flush_prefilter = (void *)flush_prefilter,
++	.flush_postfilter = (void *)flush_postfilter,
++
++	.lseek_prefilter = (void *)lseek_prefilter,
++	.lseek_postfilter = (void *)lseek_postfilter,
++
++	.copy_file_range_prefilter = (void *)copy_file_range_prefilter,
++	.copy_file_range_postfilter = (void *)copy_file_range_postfilter,
++
++	.fsync_prefilter = (void *)fsync_prefilter,
++	.fsync_postfilter = (void *)fsync_postfilter,
++
++	.dir_fsync_prefilter = (void *)dir_fsync_prefilter,
++	.dir_fsync_postfilter = (void *)dir_fsync_postfilter,
++
++	.getxattr_prefilter = (void *)getxattr_prefilter,
++	.getxattr_postfilter = (void *)getxattr_postfilter,
++
++	.listxattr_prefilter = (void *)listxattr_prefilter,
++	.listxattr_postfilter = (void *)listxattr_postfilter,
++
++	.setxattr_prefilter = (void *)setxattr_prefilter,
++	.setxattr_postfilter = (void *)setxattr_postfilter,
++
++	.removexattr_prefilter = (void *)removexattr_prefilter,
++	.removexattr_postfilter = (void *)removexattr_postfilter,
++
++	.read_iter_prefilter = (void *)read_iter_prefilter,
++	.read_iter_postfilter = (void *)read_iter_postfilter,
++
++	.write_iter_prefilter = (void *)write_iter_prefilter,
++	.write_iter_postfilter = (void *)write_iter_postfilter,
++
++	.file_fallocate_prefilter = (void *)file_fallocate_prefilter,
++	.file_fallocate_postfilter = (void *)file_fallocate_postfilter,
++
++	.lookup_prefilter = (void *)lookup_prefilter,
++	.lookup_postfilter = (void *)lookup_postfilter,
++
++	.mknod_prefilter = (void *)mknod_prefilter,
++	.mknod_postfilter = (void *)mknod_postfilter,
++
++	.mkdir_prefilter = (void *)mkdir_prefilter,
++	.mkdir_postfilter = (void *)mkdir_postfilter,
++
++	.rmdir_prefilter = (void *)rmdir_prefilter,
++	.rmdir_postfilter = (void *)rmdir_postfilter,
++
++	.rename2_prefilter = (void *)rename2_prefilter,
++	.rename2_postfilter = (void *)rename2_postfilter,
++
++	.rename_prefilter = (void *)rename_prefilter,
++	.rename_postfilter = (void *)rename_postfilter,
++
++	.unlink_prefilter = (void *)unlink_prefilter,
++	.unlink_postfilter = (void *)unlink_postfilter,
++
++	.link_prefilter = (void *)link_prefilter,
++	.link_postfilter = (void *)link_postfilter,
++
++	.getattr_prefilter = (void *)getattr_prefilter,
++	.getattr_postfilter = (void *)getattr_postfilter,
++
++	.setattr_prefilter = (void *)setattr_prefilter,
++	.setattr_postfilter = (void *)setattr_postfilter,
++
++	.statfs_prefilter = (void *)statfs_prefilter,
++	.statfs_postfilter = (void *)statfs_postfilter,
++
++	.get_link_prefilter = (void *)get_link_prefilter,
++	.get_link_postfilter = (void *)get_link_postfilter,
++
++	.symlink_prefilter = (void *)symlink_prefilter,
++	.symlink_postfilter = (void *)symlink_postfilter,
++
++	.readdir_prefilter = (void *)readdir_prefilter,
++	.readdir_postfilter = (void *)readdir_postfilter,
++
++	.access_prefilter = (void *)access_prefilter,
++	.access_postfilter = (void *)access_postfilter,
++
++	.name = "trace_pre_ops",
 +};
-+
-+struct fuse_kstatfs {
-+	uint64_t	blocks;
-+	uint64_t	bfree;
-+	uint64_t	bavail;
-+	uint64_t	files;
-+	uint64_t	ffree;
-+	uint32_t	bsize;
-+	uint32_t	namelen;
-+	uint32_t	frsize;
-+	uint32_t	padding;
-+	uint32_t	spare[6];
-+};
-+
-+struct fuse_file_lock {
-+	uint64_t	start;
-+	uint64_t	end;
-+	uint32_t	type;
-+	uint32_t	pid; /* tgid */
-+};
-+
-+/**
-+ * Bitmasks for fuse_setattr_in.valid
-+ */
-+#define FATTR_MODE	(1 << 0)
-+#define FATTR_UID	(1 << 1)
-+#define FATTR_GID	(1 << 2)
-+#define FATTR_SIZE	(1 << 3)
-+#define FATTR_ATIME	(1 << 4)
-+#define FATTR_MTIME	(1 << 5)
-+#define FATTR_FH	(1 << 6)
-+#define FATTR_ATIME_NOW	(1 << 7)
-+#define FATTR_MTIME_NOW	(1 << 8)
-+#define FATTR_LOCKOWNER	(1 << 9)
-+#define FATTR_CTIME	(1 << 10)
-+#define FATTR_KILL_SUIDGID	(1 << 11)
-+
-+/**
-+ * Flags returned by the OPEN request
-+ *
-+ * FOPEN_DIRECT_IO: bypass page cache for this open file
-+ * FOPEN_KEEP_CACHE: don't invalidate the data cache on open
-+ * FOPEN_NONSEEKABLE: the file is not seekable
-+ * FOPEN_CACHE_DIR: allow caching this directory
-+ * FOPEN_STREAM: the file is stream-like (no file position at all)
-+ * FOPEN_NOFLUSH: don't flush data cache on close (unless FUSE_WRITEBACK_CACHE)
-+ * FOPEN_PARALLEL_DIRECT_WRITES: Allow concurrent direct writes on the same inode
-+ */
-+#define FOPEN_DIRECT_IO		(1 << 0)
-+#define FOPEN_KEEP_CACHE	(1 << 1)
-+#define FOPEN_NONSEEKABLE	(1 << 2)
-+#define FOPEN_CACHE_DIR		(1 << 3)
-+#define FOPEN_STREAM		(1 << 4)
-+#define FOPEN_NOFLUSH		(1 << 5)
-+#define FOPEN_PARALLEL_DIRECT_WRITES	(1 << 6)
-+
-+/**
-+ * INIT request/reply flags
-+ *
-+ * FUSE_ASYNC_READ: asynchronous read requests
-+ * FUSE_POSIX_LOCKS: remote locking for POSIX file locks
-+ * FUSE_FILE_OPS: kernel sends file handle for fstat, etc... (not yet supported)
-+ * FUSE_ATOMIC_O_TRUNC: handles the O_TRUNC open flag in the filesystem
-+ * FUSE_EXPORT_SUPPORT: filesystem handles lookups of "." and ".."
-+ * FUSE_BIG_WRITES: filesystem can handle write size larger than 4kB
-+ * FUSE_DONT_MASK: don't apply umask to file mode on create operations
-+ * FUSE_SPLICE_WRITE: kernel supports splice write on the device
-+ * FUSE_SPLICE_MOVE: kernel supports splice move on the device
-+ * FUSE_SPLICE_READ: kernel supports splice read on the device
-+ * FUSE_FLOCK_LOCKS: remote locking for BSD style file locks
-+ * FUSE_HAS_IOCTL_DIR: kernel supports ioctl on directories
-+ * FUSE_AUTO_INVAL_DATA: automatically invalidate cached pages
-+ * FUSE_DO_READDIRPLUS: do READDIRPLUS (READDIR+LOOKUP in one)
-+ * FUSE_READDIRPLUS_AUTO: adaptive readdirplus
-+ * FUSE_ASYNC_DIO: asynchronous direct I/O submission
-+ * FUSE_WRITEBACK_CACHE: use writeback cache for buffered writes
-+ * FUSE_NO_OPEN_SUPPORT: kernel supports zero-message opens
-+ * FUSE_PARALLEL_DIROPS: allow parallel lookups and readdir
-+ * FUSE_HANDLE_KILLPRIV: fs handles killing suid/sgid/cap on write/chown/trunc
-+ * FUSE_POSIX_ACL: filesystem supports posix acls
-+ * FUSE_ABORT_ERROR: reading the device after abort returns ECONNABORTED
-+ * FUSE_MAX_PAGES: init_out.max_pages contains the max number of req pages
-+ * FUSE_CACHE_SYMLINKS: cache READLINK responses
-+ * FUSE_NO_OPENDIR_SUPPORT: kernel supports zero-message opendir
-+ * FUSE_EXPLICIT_INVAL_DATA: only invalidate cached pages on explicit request
-+ * FUSE_MAP_ALIGNMENT: init_out.map_alignment contains log2(byte alignment) for
-+ *		       foffset and moffset fields in struct
-+ *		       fuse_setupmapping_out and fuse_removemapping_one.
-+ * FUSE_SUBMOUNTS: kernel supports auto-mounting directory submounts
-+ * FUSE_HANDLE_KILLPRIV_V2: fs kills suid/sgid/cap on write/chown/trunc.
-+ *			Upon write/truncate suid/sgid is only killed if caller
-+ *			does not have CAP_FSETID. Additionally upon
-+ *			write/truncate sgid is killed only if file has group
-+ *			execute permission. (Same as Linux VFS behavior).
-+ * FUSE_SETXATTR_EXT:	Server supports extended struct fuse_setxattr_in
-+ * FUSE_INIT_EXT: extended fuse_init_in request
-+ * FUSE_INIT_RESERVED: reserved, do not use
-+ * FUSE_SECURITY_CTX:	add security context to create, mkdir, symlink, and
-+ *			mknod
-+ * FUSE_HAS_INODE_DAX:  use per inode DAX
-+ * FUSE_CREATE_SUPP_GROUP: add supplementary group info to create, mkdir,
-+ *			symlink and mknod (single group that matches parent)
-+ */
-+#define FUSE_ASYNC_READ		(1 << 0)
-+#define FUSE_POSIX_LOCKS	(1 << 1)
-+#define FUSE_FILE_OPS		(1 << 2)
-+#define FUSE_ATOMIC_O_TRUNC	(1 << 3)
-+#define FUSE_EXPORT_SUPPORT	(1 << 4)
-+#define FUSE_BIG_WRITES		(1 << 5)
-+#define FUSE_DONT_MASK		(1 << 6)
-+#define FUSE_SPLICE_WRITE	(1 << 7)
-+#define FUSE_SPLICE_MOVE	(1 << 8)
-+#define FUSE_SPLICE_READ	(1 << 9)
-+#define FUSE_FLOCK_LOCKS	(1 << 10)
-+#define FUSE_HAS_IOCTL_DIR	(1 << 11)
-+#define FUSE_AUTO_INVAL_DATA	(1 << 12)
-+#define FUSE_DO_READDIRPLUS	(1 << 13)
-+#define FUSE_READDIRPLUS_AUTO	(1 << 14)
-+#define FUSE_ASYNC_DIO		(1 << 15)
-+#define FUSE_WRITEBACK_CACHE	(1 << 16)
-+#define FUSE_NO_OPEN_SUPPORT	(1 << 17)
-+#define FUSE_PARALLEL_DIROPS    (1 << 18)
-+#define FUSE_HANDLE_KILLPRIV	(1 << 19)
-+#define FUSE_POSIX_ACL		(1 << 20)
-+#define FUSE_ABORT_ERROR	(1 << 21)
-+#define FUSE_MAX_PAGES		(1 << 22)
-+#define FUSE_CACHE_SYMLINKS	(1 << 23)
-+#define FUSE_NO_OPENDIR_SUPPORT (1 << 24)
-+#define FUSE_EXPLICIT_INVAL_DATA (1 << 25)
-+#define FUSE_MAP_ALIGNMENT	(1 << 26)
-+#define FUSE_SUBMOUNTS		(1 << 27)
-+#define FUSE_HANDLE_KILLPRIV_V2	(1 << 28)
-+#define FUSE_SETXATTR_EXT	(1 << 29)
-+#define FUSE_INIT_EXT		(1 << 30)
-+#define FUSE_INIT_RESERVED	(1 << 31)
-+/* bits 32..63 get shifted down 32 bits into the flags2 field */
-+#define FUSE_SECURITY_CTX	(1ULL << 32)
-+#define FUSE_HAS_INODE_DAX	(1ULL << 33)
-+#define FUSE_CREATE_SUPP_GROUP	(1ULL << 34)
-+
-+/**
-+ * CUSE INIT request/reply flags
-+ *
-+ * CUSE_UNRESTRICTED_IOCTL:  use unrestricted ioctl
-+ */
-+#define CUSE_UNRESTRICTED_IOCTL	(1 << 0)
-+
-+/**
-+ * Release flags
-+ */
-+#define FUSE_RELEASE_FLUSH	(1 << 0)
-+#define FUSE_RELEASE_FLOCK_UNLOCK	(1 << 1)
-+
-+/**
-+ * Getattr flags
-+ */
-+#define FUSE_GETATTR_FH		(1 << 0)
-+
-+/**
-+ * Lock flags
-+ */
-+#define FUSE_LK_FLOCK		(1 << 0)
-+
-+/**
-+ * WRITE flags
-+ *
-+ * FUSE_WRITE_CACHE: delayed write from page cache, file handle is guessed
-+ * FUSE_WRITE_LOCKOWNER: lock_owner field is valid
-+ * FUSE_WRITE_KILL_SUIDGID: kill suid and sgid bits
-+ */
-+#define FUSE_WRITE_CACHE	(1 << 0)
-+#define FUSE_WRITE_LOCKOWNER	(1 << 1)
-+#define FUSE_WRITE_KILL_SUIDGID (1 << 2)
-+
-+/* Obsolete alias; this flag implies killing suid/sgid only. */
-+#define FUSE_WRITE_KILL_PRIV	FUSE_WRITE_KILL_SUIDGID
-+
-+/**
-+ * Read flags
-+ */
-+#define FUSE_READ_LOCKOWNER	(1 << 1)
-+
-+/**
-+ * Ioctl flags
-+ *
-+ * FUSE_IOCTL_COMPAT: 32bit compat ioctl on 64bit machine
-+ * FUSE_IOCTL_UNRESTRICTED: not restricted to well-formed ioctls, retry allowed
-+ * FUSE_IOCTL_RETRY: retry with new iovecs
-+ * FUSE_IOCTL_32BIT: 32bit ioctl
-+ * FUSE_IOCTL_DIR: is a directory
-+ * FUSE_IOCTL_COMPAT_X32: x32 compat ioctl on 64bit machine (64bit time_t)
-+ *
-+ * FUSE_IOCTL_MAX_IOV: maximum of in_iovecs + out_iovecs
-+ */
-+#define FUSE_IOCTL_COMPAT	(1 << 0)
-+#define FUSE_IOCTL_UNRESTRICTED	(1 << 1)
-+#define FUSE_IOCTL_RETRY	(1 << 2)
-+#define FUSE_IOCTL_32BIT	(1 << 3)
-+#define FUSE_IOCTL_DIR		(1 << 4)
-+#define FUSE_IOCTL_COMPAT_X32	(1 << 5)
-+
-+#define FUSE_IOCTL_MAX_IOV	256
-+
-+/**
-+ * Poll flags
-+ *
-+ * FUSE_POLL_SCHEDULE_NOTIFY: request poll notify
-+ */
-+#define FUSE_POLL_SCHEDULE_NOTIFY (1 << 0)
-+
-+/**
-+ * Fsync flags
-+ *
-+ * FUSE_FSYNC_FDATASYNC: Sync data only, not metadata
-+ */
-+#define FUSE_FSYNC_FDATASYNC	(1 << 0)
-+
-+/**
-+ * fuse_attr flags
-+ *
-+ * FUSE_ATTR_SUBMOUNT: Object is a submount root
-+ * FUSE_ATTR_DAX: Enable DAX for this file in per inode DAX mode
-+ */
-+#define FUSE_ATTR_SUBMOUNT      (1 << 0)
-+#define FUSE_ATTR_DAX		(1 << 1)
-+
-+/**
-+ * Open flags
-+ * FUSE_OPEN_KILL_SUIDGID: Kill suid and sgid if executable
-+ */
-+#define FUSE_OPEN_KILL_SUIDGID	(1 << 0)
-+
-+/**
-+ * setxattr flags
-+ * FUSE_SETXATTR_ACL_KILL_SGID: Clear SGID when system.posix_acl_access is set
-+ */
-+#define FUSE_SETXATTR_ACL_KILL_SGID	(1 << 0)
-+
-+/**
-+ * notify_inval_entry flags
-+ * FUSE_EXPIRE_ONLY
-+ */
-+#define FUSE_EXPIRE_ONLY		(1 << 0)
-+
-+/**
-+ * extension type
-+ * FUSE_MAX_NR_SECCTX: maximum value of &fuse_secctx_header.nr_secctx
-+ * FUSE_EXT_GROUPS: &fuse_supp_groups extension
-+ */
-+enum fuse_ext_type {
-+	/* Types 0..31 are reserved for fuse_secctx_header */
-+	FUSE_MAX_NR_SECCTX	= 31,
-+	FUSE_EXT_GROUPS		= 32,
-+	FUSE_ERROR_IN		= 33,
-+};
-+
-+enum fuse_opcode {
-+	FUSE_LOOKUP		= 1,
-+	FUSE_FORGET		= 2,  /* no reply */
-+	FUSE_GETATTR		= 3,
-+	FUSE_SETATTR		= 4,
-+	FUSE_READLINK		= 5,
-+	FUSE_SYMLINK		= 6,
-+	FUSE_MKNOD		= 8,
-+	FUSE_MKDIR		= 9,
-+	FUSE_UNLINK		= 10,
-+	FUSE_RMDIR		= 11,
-+	FUSE_RENAME		= 12,
-+	FUSE_LINK		= 13,
-+	FUSE_OPEN		= 14,
-+	FUSE_READ		= 15,
-+	FUSE_WRITE		= 16,
-+	FUSE_STATFS		= 17,
-+	FUSE_RELEASE		= 18,
-+	FUSE_FSYNC		= 20,
-+	FUSE_SETXATTR		= 21,
-+	FUSE_GETXATTR		= 22,
-+	FUSE_LISTXATTR		= 23,
-+	FUSE_REMOVEXATTR	= 24,
-+	FUSE_FLUSH		= 25,
-+	FUSE_INIT		= 26,
-+	FUSE_OPENDIR		= 27,
-+	FUSE_READDIR		= 28,
-+	FUSE_RELEASEDIR		= 29,
-+	FUSE_FSYNCDIR		= 30,
-+	FUSE_GETLK		= 31,
-+	FUSE_SETLK		= 32,
-+	FUSE_SETLKW		= 33,
-+	FUSE_ACCESS		= 34,
-+	FUSE_CREATE		= 35,
-+	FUSE_INTERRUPT		= 36,
-+	FUSE_BMAP		= 37,
-+	FUSE_DESTROY		= 38,
-+	FUSE_IOCTL		= 39,
-+	FUSE_POLL		= 40,
-+	FUSE_NOTIFY_REPLY	= 41,
-+	FUSE_BATCH_FORGET	= 42,
-+	FUSE_FALLOCATE		= 43,
-+	FUSE_READDIRPLUS	= 44,
-+	FUSE_RENAME2		= 45,
-+	FUSE_LSEEK		= 46,
-+	FUSE_COPY_FILE_RANGE	= 47,
-+	FUSE_SETUPMAPPING	= 48,
-+	FUSE_REMOVEMAPPING	= 49,
-+	FUSE_SYNCFS		= 50,
-+	FUSE_TMPFILE		= 51,
-+
-+	/* CUSE specific operations */
-+	CUSE_INIT		= 4096,
-+
-+	/* Reserved opcodes: helpful to detect structure endian-ness */
-+	CUSE_INIT_BSWAP_RESERVED	= 1048576,	/* CUSE_INIT << 8 */
-+	FUSE_INIT_BSWAP_RESERVED	= 436207616,	/* FUSE_INIT << 24 */
-+};
-+
-+enum fuse_notify_code {
-+	FUSE_NOTIFY_POLL   = 1,
-+	FUSE_NOTIFY_INVAL_INODE = 2,
-+	FUSE_NOTIFY_INVAL_ENTRY = 3,
-+	FUSE_NOTIFY_STORE = 4,
-+	FUSE_NOTIFY_RETRIEVE = 5,
-+	FUSE_NOTIFY_DELETE = 6,
-+	FUSE_NOTIFY_CODE_MAX,
-+};
-+
-+/* The read buffer is required to be at least 8k, but may be much larger */
-+#define FUSE_MIN_READ_BUFFER 8192
-+
-+#define FUSE_COMPAT_ENTRY_OUT_SIZE 120
-+
-+struct fuse_entry_out {
-+	uint64_t	nodeid;		/* Inode ID */
-+	uint64_t	generation;	/* Inode generation: nodeid:gen must
-+					   be unique for the fs's lifetime */
-+	uint64_t	entry_valid;	/* Cache timeout for the name */
-+	uint64_t	attr_valid;	/* Cache timeout for the attributes */
-+	uint32_t	entry_valid_nsec;
-+	uint32_t	attr_valid_nsec;
-+	struct fuse_attr attr;
-+};
-+
-+#define FUSE_BPF_MAX_ENTRIES	2
-+
-+enum fuse_bpf_type {
-+	FUSE_ENTRY_BACKING		= 1,
-+	FUSE_ENTRY_BPF			= 2,
-+	FUSE_ENTRY_REMOVE_BACKING	= 3,
-+	FUSE_ENTRY_REMOVE_BPF		= 4,
-+};
-+
-+#define BPF_FUSE_NAME_MAX 15
-+
-+struct fuse_bpf_entry_out {
-+	uint32_t	entry_type;
-+	uint32_t	unused;
-+	union {
-+		struct {
-+			uint64_t unused2;
-+			uint64_t fd;
-+		};
-+		char name[BPF_FUSE_NAME_MAX + 1];
-+	};
-+};
-+
-+struct fuse_forget_in {
-+	uint64_t	nlookup;
-+};
-+
-+struct fuse_forget_one {
-+	uint64_t	nodeid;
-+	uint64_t	nlookup;
-+};
-+
-+struct fuse_batch_forget_in {
-+	uint32_t	count;
-+	uint32_t	dummy;
-+};
-+
-+struct fuse_getattr_in {
-+	uint32_t	getattr_flags;
-+	uint32_t	dummy;
-+	uint64_t	fh;
-+};
-+
-+#define FUSE_COMPAT_ATTR_OUT_SIZE 96
-+
-+struct fuse_attr_out {
-+	uint64_t	attr_valid;	/* Cache timeout for the attributes */
-+	uint32_t	attr_valid_nsec;
-+	uint32_t	dummy;
-+	struct fuse_attr attr;
-+};
-+
-+#define FUSE_COMPAT_MKNOD_IN_SIZE 8
-+
-+struct fuse_mknod_in {
-+	uint32_t	mode;
-+	uint32_t	rdev;
-+	uint32_t	umask;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_mkdir_in {
-+	uint32_t	mode;
-+	uint32_t	umask;
-+};
-+
-+struct fuse_rename_in {
-+	uint64_t	newdir;
-+};
-+
-+struct fuse_rename2_in {
-+	uint64_t	newdir;
-+	uint32_t	flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_link_in {
-+	uint64_t	oldnodeid;
-+};
-+
-+struct fuse_setattr_in {
-+	uint32_t	valid;
-+	uint32_t	padding;
-+	uint64_t	fh;
-+	uint64_t	size;
-+	uint64_t	lock_owner;
-+	uint64_t	atime;
-+	uint64_t	mtime;
-+	uint64_t	ctime;
-+	uint32_t	atimensec;
-+	uint32_t	mtimensec;
-+	uint32_t	ctimensec;
-+	uint32_t	mode;
-+	uint32_t	unused4;
-+	uint32_t	uid;
-+	uint32_t	gid;
-+	uint32_t	unused5;
-+};
-+
-+struct fuse_open_in {
-+	uint32_t	flags;
-+	uint32_t	open_flags;	/* FUSE_OPEN_... */
-+};
-+
-+struct fuse_create_in {
-+	uint32_t	flags;
-+	uint32_t	mode;
-+	uint32_t	umask;
-+	uint32_t	open_flags;	/* FUSE_OPEN_... */
-+};
-+
-+struct fuse_open_out {
-+	uint64_t	fh;
-+	uint32_t	open_flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_release_in {
-+	uint64_t	fh;
-+	uint32_t	flags;
-+	uint32_t	release_flags;
-+	uint64_t	lock_owner;
-+};
-+
-+struct fuse_flush_in {
-+	uint64_t	fh;
-+	uint32_t	unused;
-+	uint32_t	padding;
-+	uint64_t	lock_owner;
-+};
-+
-+struct fuse_read_in {
-+	uint64_t	fh;
-+	uint64_t	offset;
-+	uint32_t	size;
-+	uint32_t	read_flags;
-+	uint64_t	lock_owner;
-+	uint32_t	flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_read_out {
-+	uint64_t	offset;
-+	uint32_t	again;
-+	uint32_t	padding;
-+};
-+
-+// This is likely not what we want
-+struct fuse_read_iter_out {
-+	uint64_t ret;
-+};
-+
-+#define FUSE_COMPAT_WRITE_IN_SIZE 24
-+
-+struct fuse_write_in {
-+	uint64_t	fh;
-+	uint64_t	offset;
-+	uint32_t	size;
-+	uint32_t	write_flags;
-+	uint64_t	lock_owner;
-+	uint32_t	flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_write_out {
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+// This is likely not what we want
-+struct fuse_write_iter_out {
-+	uint64_t ret;
-+};
-+
-+#define FUSE_COMPAT_STATFS_SIZE 48
-+
-+struct fuse_statfs_out {
-+	struct fuse_kstatfs st;
-+};
-+
-+struct fuse_fsync_in {
-+	uint64_t	fh;
-+	uint32_t	fsync_flags;
-+	uint32_t	padding;
-+};
-+
-+#define FUSE_COMPAT_SETXATTR_IN_SIZE 8
-+
-+struct fuse_setxattr_in {
-+	uint32_t	size;
-+	uint32_t	flags;
-+	uint32_t	setxattr_flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_getxattr_in {
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_getxattr_out {
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_lk_in {
-+	uint64_t	fh;
-+	uint64_t	owner;
-+	struct fuse_file_lock lk;
-+	uint32_t	lk_flags;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_lk_out {
-+	struct fuse_file_lock lk;
-+};
-+
-+struct fuse_access_in {
-+	uint32_t	mask;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_init_in {
-+	uint32_t	major;
-+	uint32_t	minor;
-+	uint32_t	max_readahead;
-+	uint32_t	flags;
-+	uint32_t	flags2;
-+	uint32_t	unused[11];
-+};
-+
-+#define FUSE_COMPAT_INIT_OUT_SIZE 8
-+#define FUSE_COMPAT_22_INIT_OUT_SIZE 24
-+
-+struct fuse_init_out {
-+	uint32_t	major;
-+	uint32_t	minor;
-+	uint32_t	max_readahead;
-+	uint32_t	flags;
-+	uint16_t	max_background;
-+	uint16_t	congestion_threshold;
-+	uint32_t	max_write;
-+	uint32_t	time_gran;
-+	uint16_t	max_pages;
-+	uint16_t	map_alignment;
-+	uint32_t	flags2;
-+	uint32_t	unused[7];
-+};
-+
-+#define CUSE_INIT_INFO_MAX 4096
-+
-+struct cuse_init_in {
-+	uint32_t	major;
-+	uint32_t	minor;
-+	uint32_t	unused;
-+	uint32_t	flags;
-+};
-+
-+struct cuse_init_out {
-+	uint32_t	major;
-+	uint32_t	minor;
-+	uint32_t	unused;
-+	uint32_t	flags;
-+	uint32_t	max_read;
-+	uint32_t	max_write;
-+	uint32_t	dev_major;		/* chardev major */
-+	uint32_t	dev_minor;		/* chardev minor */
-+	uint32_t	spare[10];
-+};
-+
-+struct fuse_interrupt_in {
-+	uint64_t	unique;
-+};
-+
-+struct fuse_bmap_in {
-+	uint64_t	block;
-+	uint32_t	blocksize;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_bmap_out {
-+	uint64_t	block;
-+};
-+
-+struct fuse_ioctl_in {
-+	uint64_t	fh;
-+	uint32_t	flags;
-+	uint32_t	cmd;
-+	uint64_t	arg;
-+	uint32_t	in_size;
-+	uint32_t	out_size;
-+};
-+
-+struct fuse_ioctl_iovec {
-+	uint64_t	base;
-+	uint64_t	len;
-+};
-+
-+struct fuse_ioctl_out {
-+	int32_t		result;
-+	uint32_t	flags;
-+	uint32_t	in_iovs;
-+	uint32_t	out_iovs;
-+};
-+
-+struct fuse_poll_in {
-+	uint64_t	fh;
-+	uint64_t	kh;
-+	uint32_t	flags;
-+	uint32_t	events;
-+};
-+
-+struct fuse_poll_out {
-+	uint32_t	revents;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_notify_poll_wakeup_out {
-+	uint64_t	kh;
-+};
-+
-+struct fuse_fallocate_in {
-+	uint64_t	fh;
-+	uint64_t	offset;
-+	uint64_t	length;
-+	uint32_t	mode;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_in_header {
-+	uint32_t	len;
-+	uint32_t	opcode;
-+	uint64_t	unique;
-+	uint64_t	nodeid;
-+	uint32_t	uid;
-+	uint32_t	gid;
-+	uint32_t	pid;
-+	uint16_t	total_extlen; /* length of extensions in 8byte units */
-+	uint16_t	padding;
-+	//uint32_t	error_in; uh oh
-+};
-+
-+struct fuse_out_header {
-+	uint32_t	len;
-+	int32_t		error;
-+	uint64_t	unique;
-+};
-+
-+struct fuse_dirent {
-+	uint64_t	ino;
-+	uint64_t	off;
-+	uint32_t	namelen;
-+	uint32_t	type;
-+	char name[];
-+};
-+
-+/* Align variable length records to 64bit boundary */
-+#define FUSE_REC_ALIGN(x) \
-+	(((x) + sizeof(uint64_t) - 1) & ~(sizeof(uint64_t) - 1))
-+
-+#define FUSE_NAME_OFFSET offsetof(struct fuse_dirent, name)
-+#define FUSE_DIRENT_ALIGN(x) FUSE_REC_ALIGN(x)
-+#define FUSE_DIRENT_SIZE(d) \
-+	FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET + (d)->namelen)
-+
-+struct fuse_direntplus {
-+	struct fuse_entry_out entry_out;
-+	struct fuse_dirent dirent;
-+};
-+
-+#define FUSE_NAME_OFFSET_DIRENTPLUS \
-+	offsetof(struct fuse_direntplus, dirent.name)
-+#define FUSE_DIRENTPLUS_SIZE(d) \
-+	FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET_DIRENTPLUS + (d)->dirent.namelen)
-+
-+struct fuse_notify_inval_inode_out {
-+	uint64_t	ino;
-+	int64_t		off;
-+	int64_t		len;
-+};
-+
-+struct fuse_notify_inval_entry_out {
-+	uint64_t	parent;
-+	uint32_t	namelen;
-+	uint32_t	flags;
-+};
-+
-+struct fuse_notify_delete_out {
-+	uint64_t	parent;
-+	uint64_t	child;
-+	uint32_t	namelen;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_notify_store_out {
-+	uint64_t	nodeid;
-+	uint64_t	offset;
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_notify_retrieve_out {
-+	uint64_t	notify_unique;
-+	uint64_t	nodeid;
-+	uint64_t	offset;
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+/* Matches the size of fuse_write_in */
-+struct fuse_notify_retrieve_in {
-+	uint64_t	dummy1;
-+	uint64_t	offset;
-+	uint32_t	size;
-+	uint32_t	dummy2;
-+	uint64_t	dummy3;
-+	uint64_t	dummy4;
-+};
-+
-+/* Device ioctls: */
-+#define FUSE_DEV_IOC_MAGIC		229
-+#define FUSE_DEV_IOC_CLONE		_IOR(FUSE_DEV_IOC_MAGIC, 0, uint32_t)
-+#define FUSE_DEV_IOC_BPF_RESPONSE(N) _IOW(FUSE_DEV_IOC_MAGIC, 125, char[N])
-+
-+struct fuse_lseek_in {
-+	uint64_t	fh;
-+	uint64_t	offset;
-+	uint32_t	whence;
-+	uint32_t	padding;
-+};
-+
-+struct fuse_lseek_out {
-+	uint64_t	offset;
-+};
-+
-+struct fuse_copy_file_range_in {
-+	uint64_t	fh_in;
-+	uint64_t	off_in;
-+	uint64_t	nodeid_out;
-+	uint64_t	fh_out;
-+	uint64_t	off_out;
-+	uint64_t	len;
-+	uint64_t	flags;
-+};
-+
-+#define FUSE_SETUPMAPPING_FLAG_WRITE (1ull << 0)
-+#define FUSE_SETUPMAPPING_FLAG_READ (1ull << 1)
-+struct fuse_setupmapping_in {
-+	/* An already open handle */
-+	uint64_t	fh;
-+	/* Offset into the file to start the mapping */
-+	uint64_t	foffset;
-+	/* Length of mapping required */
-+	uint64_t	len;
-+	/* Flags, FUSE_SETUPMAPPING_FLAG_* */
-+	uint64_t	flags;
-+	/* Offset in Memory Window */
-+	uint64_t	moffset;
-+};
-+
-+struct fuse_removemapping_in {
-+	/* number of fuse_removemapping_one follows */
-+	uint32_t        count;
-+};
-+
-+struct fuse_removemapping_one {
-+	/* Offset into the dax window start the unmapping */
-+	uint64_t        moffset;
-+	/* Length of mapping required */
-+	uint64_t	len;
-+};
-+
-+#define FUSE_REMOVEMAPPING_MAX_ENTRY   \
-+		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
-+
-+struct fuse_syncfs_in {
-+	uint64_t	padding;
-+};
-+
-+/*
-+ * For each security context, send fuse_secctx with size of security context
-+ * fuse_secctx will be followed by security context name and this in turn
-+ * will be followed by actual context label.
-+ * fuse_secctx, name, context
-+ */
-+struct fuse_secctx {
-+	uint32_t	size;
-+	uint32_t	padding;
-+};
-+
-+/*
-+ * Contains the information about how many fuse_secctx structures are being
-+ * sent and what's the total size of all security contexts (including
-+ * size of fuse_secctx_header).
-+ *
-+ */
-+struct fuse_secctx_header {
-+	uint32_t	size;
-+	uint32_t	nr_secctx;
-+};
-+
-+/**
-+ * struct fuse_ext_header - extension header
-+ * @size: total size of this extension including this header
-+ * @type: type of extension
-+ *
-+ * This is made compatible with fuse_secctx_header by using type values >
-+ * FUSE_MAX_NR_SECCTX
-+ */
-+struct fuse_ext_header {
-+	uint32_t	size;
-+	uint32_t	type;
-+};
-+
-+/**
-+ * struct fuse_supp_groups - Supplementary group extension
-+ * @nr_groups: number of supplementary groups
-+ * @groups: flexible array of group IDs
-+ */
-+struct fuse_supp_groups {
-+	uint32_t	nr_groups;
-+	uint32_t	groups[];
-+};
-+
-+#endif /* _LINUX_FUSE_H */
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
