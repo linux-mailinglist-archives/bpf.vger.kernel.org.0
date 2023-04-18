@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BBB6E56A2
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5743D6E56A8
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjDRBlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 21:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S230463AbjDRBl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 21:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjDRBlR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 21:41:17 -0400
+        with ESMTP id S230149AbjDRBlT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 21:41:19 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BFF6A76
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id c64-20020a254e43000000b00b92530ded91so3262310ybb.17
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F272619C
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d132-20020a254f8a000000b00b868826cdfeso2897574ybb.0
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681782064; x=1684374064;
+        d=google.com; s=20221208; t=1681782066; x=1684374066;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rGQ9sB/Rwqr1E4RbtpywhCeCd351RoNViaB6XX6OAcM=;
-        b=7a7FthehtIU1LDZHaPCjM+OU4rQTnwIJO65M0avbzwBgquVMpBou6qbE9n76s23acW
-         0ZLBEZD6ViB5CGK7UFFeuO58ubsaYIEMTp4GXx/KH8KrYV2koGO24wTVipTnAT5jPPv2
-         vDoFrFqHAHBzZbYHVKyk17HtLm24Tprum8PLjWK078LB0eS6ATINZq6HTShyS6UJyTbI
-         Pz0+UzgNTfLj4UnUR7Pl9WJGy4IzEKBoqH51/+5DCpzyuozlPN46l34XGNt300XMi2vv
-         0zHLgyVCJ6YKv4vRZGoF3hq5Tl/PhsQ2JO+iP5xq437JP1RbmlU4dS+oNmu6RXuBXKdD
-         Wvyw==
+        bh=Ma6LP7l9KdDYxD0yEhLpdRJpUgrAcoFlwvcgm95S2g0=;
+        b=d51SS6WG6e8IhBQxgiwtwAX6W6u5b/p5f3qAWDcVPo2jEbJQRrKfqB7fD2WB7ABXfm
+         f1QDkxS0AxwE1oa6FQ4jYY7ixPpnGwXCPx+AsK15KrITTIQeNrqN2cahcwamg4mHST/1
+         dLSOe/MQEeIXaOymPStG/HcmyjMuppTVyWgNDT62/a0q/oG3tDfVWH7rMGNawaD0o+Tp
+         Ni0kuHRqOhAOcNAtD4v/LtaKrjnY1QvynB5VRgotRKQA6MFysty3xo5ey1gq6oFLlnLv
+         /nnda2RIAREqoKgyxD+dqXX80U30yBXf5e+3lSppGCBf17IWxLGBotULgIChHzE5mTEv
+         issw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681782064; x=1684374064;
+        d=1e100.net; s=20221208; t=1681782066; x=1684374066;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rGQ9sB/Rwqr1E4RbtpywhCeCd351RoNViaB6XX6OAcM=;
-        b=GRHnBtEUZZqpVET+RpXZZ90lgHXbh+PtIzLjMxISS5rmr7Pfxee+uKNsI2OLV/npt/
-         MYHMDYfrHyr19lDhbR0BSWdnA/UCjV3E2pVh/7FvhtEF8ymlns4hzrW4YLsaI1GP3P3N
-         xfkTLEhd0l8UyoBsVVIRZ1KkpzYzoz/jD+i2jdRh8Ah9JJEpHqRGaJ+S//+S50QlvACb
-         Vm+0s2Fq4If/JXTBlBHAIjlBN5vC6DNDBDEy/eKUm3FdNIlvLJ3mh06W3SfgCQU3zCjA
-         2SwM8NXE+1MzllL3lJcG3Dni4N9kOxSniWDXoQJ5Bd+jbl7pYp2vOxhTlfmmU7UtC46B
-         JYXA==
-X-Gm-Message-State: AAQBX9dsuTHqr7ZO3zHdV0WdTPctLkS7NZW3gdbKpEvv6BnYY91uErm+
-        Xv/T0IfASf300y2xEWs5xn8Ym+7Qd0k=
-X-Google-Smtp-Source: AKy350bEg5Yq5yN301eh/701p5EkdiweIgQB8V883Xlr2DXOiBdY6xkRbjC+SVvzsfu/0C5Gu4BhRNTqFN8=
+        bh=Ma6LP7l9KdDYxD0yEhLpdRJpUgrAcoFlwvcgm95S2g0=;
+        b=GoYYSEk7dTdjNNUSSy9Hx+HRWrcqGtbpWa2myf+B+/KwvTRPBjvzVp0mGfB6ocZ3Ub
+         9MpwPVYSMSXhrF5EM009tvlveBPdDD+/IQC3urFZwXxE95264PsIRiQuIwHz0wIvHi3y
+         I5s8ivcONVBgHC5GV95m2kJWBDbQsb9AabUUWj2pURNL9DVzoFRvytm9bEHZrHuuev9K
+         s7Itwb8c+Big+t1KV8rIwQU7FqILBVXXdaRDheCLxHMyPPxsD9EtryUit8CeYSVza63r
+         jFS+yM5TIWEmgTXDr8YH8jRxLO4Uew9ykGp4HrcPReF81hrcqjp7YPy5iGMCphtbJmPI
+         Etaw==
+X-Gm-Message-State: AAQBX9eVj1vUNB+6sCtEIww2nF0theXFuRaYFf8d6sZ3nRgEnxsDjytN
+        tBMB44lntFWwPEz5sQOqn26OLAKwThM=
+X-Google-Smtp-Source: AKy350al/X5V7uOGTMzTFULq0yhZ2D34oueue8qfbReq7qB7OLV2hrBAIi9Rsio853MG4jn2Pq7Glue+WGc=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:e67a:98b0:942d:86aa])
- (user=drosen job=sendgmr) by 2002:a25:d10e:0:b0:b8f:3881:1638 with SMTP id
- i14-20020a25d10e000000b00b8f38811638mr8759594ybg.7.1681782064219; Mon, 17 Apr
- 2023 18:41:04 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 18:40:06 -0700
+ (user=drosen job=sendgmr) by 2002:a25:aaad:0:b0:b8f:6a46:537d with SMTP id
+ t42-20020a25aaad000000b00b8f6a46537dmr8996331ybi.6.1681782066667; Mon, 17 Apr
+ 2023 18:41:06 -0700 (PDT)
+Date:   Mon, 17 Apr 2023 18:40:07 -0700
 In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20230418014037.2412394-1-drosen@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230418014037.2412394-7-drosen@google.com>
-Subject: [RFC PATCH v3 06/37] fuse-bpf: Add data structures for fuse-bpf
+Message-ID: <20230418014037.2412394-8-drosen@google.com>
+Subject: [RFC PATCH v3 07/37] fuse-bpf: Prepare for fuse-bpf patch
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>
@@ -69,7 +69,8 @@ Cc:     Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
         Jonathan Corbet <corbet@lwn.net>,
         Joanne Koong <joannelkoong@gmail.com>,
         Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com,
-        Daniel Rosenberg <drosen@google.com>
+        Daniel Rosenberg <drosen@google.com>,
+        Paul Lawrence <paullawrence@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -81,105 +82,185 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-These structures will be used to interact between the fuse bpf calls and
-normal userspace calls
+This moves some functions and structs around to make the following patch
+easier to read.
 
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- include/linux/bpf_fuse.h | 84 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 include/linux/bpf_fuse.h
+ fs/fuse/dir.c    | 30 ------------------------------
+ fs/fuse/fuse_i.h | 35 +++++++++++++++++++++++++++++++++++
+ fs/fuse/inode.c  | 44 ++++++++++++++++++++++----------------------
+ 3 files changed, 57 insertions(+), 52 deletions(-)
 
-diff --git a/include/linux/bpf_fuse.h b/include/linux/bpf_fuse.h
-new file mode 100644
-index 000000000000..ce8b1b347496
---- /dev/null
-+++ b/include/linux/bpf_fuse.h
-@@ -0,0 +1,84 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2022 Google LLC.
-+ */
-+
-+#ifndef _BPF_FUSE_H
-+#define _BPF_FUSE_H
-+
-+#include <linux/types.h>
-+#include <linux/fuse.h>
-+
-+struct fuse_buffer {
-+	void *data;
-+	unsigned size;
-+	unsigned alloc_size;
-+	unsigned max_size;
-+	int flags;
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 35bc174f9ba2..55dd6e8b2e43 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -46,10 +46,6 @@ static inline u64 fuse_dentry_time(const struct dentry *entry)
+ }
+ 
+ #else
+-union fuse_dentry {
+-	u64 time;
+-	struct rcu_head rcu;
+-};
+ 
+ static inline void __fuse_dentry_settime(struct dentry *dentry, u64 time)
+ {
+@@ -83,27 +79,6 @@ static void fuse_dentry_settime(struct dentry *dentry, u64 time)
+ 	__fuse_dentry_settime(dentry, time);
+ }
+ 
+-/*
+- * FUSE caches dentries and attributes with separate timeout.  The
+- * time in jiffies until the dentry/attributes are valid is stored in
+- * dentry->d_fsdata and fuse_inode->i_time respectively.
+- */
+-
+-/*
+- * Calculate the time in jiffies until a dentry/attributes are valid
+- */
+-static u64 time_to_jiffies(u64 sec, u32 nsec)
+-{
+-	if (sec || nsec) {
+-		struct timespec64 ts = {
+-			sec,
+-			min_t(u32, nsec, NSEC_PER_SEC - 1)
+-		};
+-
+-		return get_jiffies_64() + timespec64_to_jiffies(&ts);
+-	} else
+-		return 0;
+-}
+ 
+ /*
+  * Set dentry and possibly attribute timeouts from the lookup/mk*
+@@ -115,11 +90,6 @@ void fuse_change_entry_timeout(struct dentry *entry, struct fuse_entry_out *o)
+ 		time_to_jiffies(o->entry_valid, o->entry_valid_nsec));
+ }
+ 
+-static u64 attr_timeout(struct fuse_attr_out *o)
+-{
+-	return time_to_jiffies(o->attr_valid, o->attr_valid_nsec);
+-}
+-
+ u64 entry_attr_timeout(struct fuse_entry_out *o)
+ {
+ 	return time_to_jiffies(o->attr_valid, o->attr_valid_nsec);
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 9b7fc7d3c7f1..01ca8bb87b4f 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -63,6 +63,14 @@ struct fuse_forget_link {
+ 	struct fuse_forget_link *next;
+ };
+ 
++/** FUSE specific dentry data */
++#if BITS_PER_LONG < 64
++union fuse_dentry {
++	u64 time;
++	struct rcu_head rcu;
 +};
++#endif
 +
-+/* These flags are used internally to track information about the fuse buffers.
-+ * Fuse sets some of the flags in init. The helper functions sets others, depending on what
-+ * was requested by the bpf program.
+ /** FUSE inode */
+ struct fuse_inode {
+ 	/** Inode data */
+@@ -1324,4 +1332,31 @@ struct fuse_file *fuse_file_open(struct fuse_mount *fm, u64 nodeid,
+ void fuse_file_release(struct inode *inode, struct fuse_file *ff,
+ 		       unsigned int open_flags, fl_owner_t id, bool isdir);
+ 
++/*
++ * FUSE caches dentries and attributes with separate timeout.  The
++ * time in jiffies until the dentry/attributes are valid is stored in
++ * dentry->d_fsdata and fuse_inode->i_time respectively.
 + */
-+// Flags set by FUSE
-+#define BPF_FUSE_IMMUTABLE	(1 << 0) // Buffer may not be written to
-+#define BPF_FUSE_VARIABLE_SIZE	(1 << 1) // Buffer length may be changed (growth requires alloc)
-+#define BPF_FUSE_MUST_ALLOCATE	(1 << 2) // Buffer must be re allocated before allowing writes
-+
-+// Flags set by helper function
-+#define BPF_FUSE_MODIFIED	(1 << 3) // The helper function allowed writes to the buffer
-+#define BPF_FUSE_ALLOCATED	(1 << 4) // The helper function allocated the buffer
 +
 +/*
-+ * BPF Fuse Args
-+ *
-+ * Used to translate between bpf program parameters and their userspace equivalent calls.
-+ * Variable sized arguments are held in fuse_buffers. To access these, bpf programs must
-+ * use kfuncs to access them as dynptrs.
-+ *
++ * Calculate the time in jiffies until a dentry/attributes are valid
 + */
++static inline u64 time_to_jiffies(u64 sec, u32 nsec)
++{
++	if (sec || nsec) {
++		struct timespec64 ts = {
++			sec,
++			min_t(u32, nsec, NSEC_PER_SEC - 1)
++		};
 +
-+#define FUSE_MAX_ARGS_IN 3
-+#define FUSE_MAX_ARGS_OUT 2
++		return get_jiffies_64() + timespec64_to_jiffies(&ts);
++	} else
++		return 0;
++}
 +
-+struct bpf_fuse_arg {
-+	union {
-+		void *value;
-+		struct fuse_buffer *buffer;
++static inline u64 attr_timeout(struct fuse_attr_out *o)
++{
++	return time_to_jiffies(o->attr_valid, o->attr_valid_nsec);
++}
++
+ #endif /* _FS_FUSE_I_H */
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index d66070af145d..a824ca100047 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -162,6 +162,28 @@ static ino_t fuse_squash_ino(u64 ino64)
+ 	return ino;
+ }
+ 
++static void fuse_fill_attr_from_inode(struct fuse_attr *attr,
++				      const struct fuse_inode *fi)
++{
++	*attr = (struct fuse_attr){
++		.ino		= fi->inode.i_ino,
++		.size		= fi->inode.i_size,
++		.blocks		= fi->inode.i_blocks,
++		.atime		= fi->inode.i_atime.tv_sec,
++		.mtime		= fi->inode.i_mtime.tv_sec,
++		.ctime		= fi->inode.i_ctime.tv_sec,
++		.atimensec	= fi->inode.i_atime.tv_nsec,
++		.mtimensec	= fi->inode.i_mtime.tv_nsec,
++		.ctimensec	= fi->inode.i_ctime.tv_nsec,
++		.mode		= fi->inode.i_mode,
++		.nlink		= fi->inode.i_nlink,
++		.uid		= fi->inode.i_uid.val,
++		.gid		= fi->inode.i_gid.val,
++		.rdev		= fi->inode.i_rdev,
++		.blksize	= 1u << fi->inode.i_blkbits,
 +	};
-+	unsigned size;
-+	bool is_buffer;
-+};
-+
-+struct bpf_fuse_meta_info {
-+	uint64_t nodeid;
-+	uint32_t opcode;
-+	uint32_t error_in;
-+};
-+
-+struct bpf_fuse_args {
-+	struct bpf_fuse_meta_info info;
-+	uint32_t in_numargs;
-+	uint32_t out_numargs;
-+	uint32_t flags;
-+	struct bpf_fuse_arg in_args[FUSE_MAX_ARGS_IN];
-+	struct bpf_fuse_arg out_args[FUSE_MAX_ARGS_OUT];
-+};
-+
-+// Mirrors for struct fuse_args flags
-+#define FUSE_BPF_FORCE (1 << 0)
-+#define FUSE_BPF_OUT_ARGVAR (1 << 6)
-+#define FUSE_BPF_IS_LOOKUP (1 << 11)
-+
-+static inline void *bpf_fuse_arg_value(const struct bpf_fuse_arg *arg)
-+{
-+	return arg->is_buffer ? arg->buffer : arg->value;
 +}
 +
-+static inline unsigned bpf_fuse_arg_size(const struct bpf_fuse_arg *arg)
-+{
-+	return arg->is_buffer ? arg->buffer->size : arg->size;
-+}
-+
-+#endif /* _BPF_FUSE_H */
+ void fuse_change_attributes_common(struct inode *inode, struct fuse_attr *attr,
+ 				   u64 attr_valid, u32 cache_mask)
+ {
+@@ -1394,28 +1416,6 @@ void fuse_dev_free(struct fuse_dev *fud)
+ }
+ EXPORT_SYMBOL_GPL(fuse_dev_free);
+ 
+-static void fuse_fill_attr_from_inode(struct fuse_attr *attr,
+-				      const struct fuse_inode *fi)
+-{
+-	*attr = (struct fuse_attr){
+-		.ino		= fi->inode.i_ino,
+-		.size		= fi->inode.i_size,
+-		.blocks		= fi->inode.i_blocks,
+-		.atime		= fi->inode.i_atime.tv_sec,
+-		.mtime		= fi->inode.i_mtime.tv_sec,
+-		.ctime		= fi->inode.i_ctime.tv_sec,
+-		.atimensec	= fi->inode.i_atime.tv_nsec,
+-		.mtimensec	= fi->inode.i_mtime.tv_nsec,
+-		.ctimensec	= fi->inode.i_ctime.tv_nsec,
+-		.mode		= fi->inode.i_mode,
+-		.nlink		= fi->inode.i_nlink,
+-		.uid		= fi->inode.i_uid.val,
+-		.gid		= fi->inode.i_gid.val,
+-		.rdev		= fi->inode.i_rdev,
+-		.blksize	= 1u << fi->inode.i_blkbits,
+-	};
+-}
+-
+ static void fuse_sb_defaults(struct super_block *sb)
+ {
+ 	sb->s_magic = FUSE_SUPER_MAGIC;
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
