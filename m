@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143416E569E
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BBB6E56A2
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjDRBlW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 21:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S230357AbjDRBlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 21:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjDRBlQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 21:41:16 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65C26A62
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:03 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-54f3e30726cso211598217b3.22
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:03 -0700 (PDT)
+        with ESMTP id S230244AbjDRBlR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 21:41:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BFF6A76
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id c64-20020a254e43000000b00b92530ded91so3262310ybb.17
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681782062; x=1684374062;
+        d=google.com; s=20221208; t=1681782064; x=1684374064;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lsQkf1cfcx1tPqZWAOmJuqvsGQVDqkZnL5eNvi6K+GA=;
-        b=UQ9uxhJbkgCQxRon02p9V9Zp2euXuXeVILgWOJj+rbvZ3QD7E30qpSzuqQRtpHzIcs
-         8tnRPiCMZyAQmeuciCikVJLw4VTasapz/7TmXSqFJVxajgMpiDPL3jaC69UU0eF3Pmld
-         suwPAwdtbxwHDIwMmZV1+ebFmsf+0c1mQqM0wqAbBAcWmTR/pu/B+pWRBe6CMDjEcF28
-         52pROSussOyzq+qdDWeLqKG/NteVXVxS9qOWASMLH+0EyOqr9kwiYoF84wPX73T5L1ct
-         9vIqWaFSNn9DOrA0aD+R+WbFQQl5+R6HM2rzlIC/vsjZJqWw523DmBw3bRNkdvwjG4sw
-         pLVQ==
+        bh=rGQ9sB/Rwqr1E4RbtpywhCeCd351RoNViaB6XX6OAcM=;
+        b=7a7FthehtIU1LDZHaPCjM+OU4rQTnwIJO65M0avbzwBgquVMpBou6qbE9n76s23acW
+         0ZLBEZD6ViB5CGK7UFFeuO58ubsaYIEMTp4GXx/KH8KrYV2koGO24wTVipTnAT5jPPv2
+         vDoFrFqHAHBzZbYHVKyk17HtLm24Tprum8PLjWK078LB0eS6ATINZq6HTShyS6UJyTbI
+         Pz0+UzgNTfLj4UnUR7Pl9WJGy4IzEKBoqH51/+5DCpzyuozlPN46l34XGNt300XMi2vv
+         0zHLgyVCJ6YKv4vRZGoF3hq5Tl/PhsQ2JO+iP5xq437JP1RbmlU4dS+oNmu6RXuBXKdD
+         Wvyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681782062; x=1684374062;
+        d=1e100.net; s=20221208; t=1681782064; x=1684374064;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lsQkf1cfcx1tPqZWAOmJuqvsGQVDqkZnL5eNvi6K+GA=;
-        b=YsrkzMxvDnb2yRJ/tukPRwpWVHf53TRP2LYi+CNklTY/X4pYapjZG9KkBD6jko/ZbW
-         d+huBhOHuMx329C6b0Ixkuj/6Q+ceaB1C2FOFHh3x0vZnPsW1FshEZWNGjM3e6mw2Vay
-         j6xuC9t+cQRxWSqzMI1+jfq4F27GVmrdyQp0gAuVk78OUZEIhhHE4IZmSPoIr389PVVO
-         LOc1Z+OOxusOOxxjk/0YX6Vq9PPECs/ylw+UOT8RB65HXfyISRnRycFUHKl95cYKho/J
-         zHY5qMh5INZ5xs3Te/6T2P6Nq/939k4dAOE9HeiSNVqEG+TS1sT90j5tyy7WGGRCDUwi
-         HrYg==
-X-Gm-Message-State: AAQBX9efOaJDw32cqnCjNtFhUeJYBs2y5oNRyaGoaY9hE1RrtC4TDNVu
-        2IEdl+JBCSa8xdKTfTTzimvYGROYpI8=
-X-Google-Smtp-Source: AKy350ZwWg/HHOg0CI32Fv3NaozHYx5kISDmv+5KnVkQwLfS05n+gGaQY14q9hCSUWer05c4Oi37kCTsPHw=
+        bh=rGQ9sB/Rwqr1E4RbtpywhCeCd351RoNViaB6XX6OAcM=;
+        b=GRHnBtEUZZqpVET+RpXZZ90lgHXbh+PtIzLjMxISS5rmr7Pfxee+uKNsI2OLV/npt/
+         MYHMDYfrHyr19lDhbR0BSWdnA/UCjV3E2pVh/7FvhtEF8ymlns4hzrW4YLsaI1GP3P3N
+         xfkTLEhd0l8UyoBsVVIRZ1KkpzYzoz/jD+i2jdRh8Ah9JJEpHqRGaJ+S//+S50QlvACb
+         Vm+0s2Fq4If/JXTBlBHAIjlBN5vC6DNDBDEy/eKUm3FdNIlvLJ3mh06W3SfgCQU3zCjA
+         2SwM8NXE+1MzllL3lJcG3Dni4N9kOxSniWDXoQJ5Bd+jbl7pYp2vOxhTlfmmU7UtC46B
+         JYXA==
+X-Gm-Message-State: AAQBX9dsuTHqr7ZO3zHdV0WdTPctLkS7NZW3gdbKpEvv6BnYY91uErm+
+        Xv/T0IfASf300y2xEWs5xn8Ym+7Qd0k=
+X-Google-Smtp-Source: AKy350bEg5Yq5yN301eh/701p5EkdiweIgQB8V883Xlr2DXOiBdY6xkRbjC+SVvzsfu/0C5Gu4BhRNTqFN8=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:e67a:98b0:942d:86aa])
- (user=drosen job=sendgmr) by 2002:a81:c406:0:b0:54d:913b:c9e8 with SMTP id
- j6-20020a81c406000000b0054d913bc9e8mr10100712ywi.5.1681782062021; Mon, 17 Apr
- 2023 18:41:02 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 18:40:05 -0700
+ (user=drosen job=sendgmr) by 2002:a25:d10e:0:b0:b8f:3881:1638 with SMTP id
+ i14-20020a25d10e000000b00b8f38811638mr8759594ybg.7.1681782064219; Mon, 17 Apr
+ 2023 18:41:04 -0700 (PDT)
+Date:   Mon, 17 Apr 2023 18:40:06 -0700
 In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20230418014037.2412394-1-drosen@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230418014037.2412394-6-drosen@google.com>
-Subject: [RFC PATCH v3 05/37] fuse-bpf: Update fuse side uapi
+Message-ID: <20230418014037.2412394-7-drosen@google.com>
+Subject: [RFC PATCH v3 06/37] fuse-bpf: Add data structures for fuse-bpf
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>
@@ -69,8 +69,7 @@ Cc:     Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
         Jonathan Corbet <corbet@lwn.net>,
         Joanne Koong <joannelkoong@gmail.com>,
         Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com,
-        Daniel Rosenberg <drosen@google.com>,
-        Paul Lawrence <paullawrence@google.com>
+        Daniel Rosenberg <drosen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -82,50 +81,105 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds structures which will be used to inform fuse about what it is being
-stacked on top of. Once filters are in place, error_in will inform the
-post filter if the backing call returned an error.
+These structures will be used to interact between the fuse bpf calls and
+normal userspace calls
 
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
-Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- include/uapi/linux/fuse.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ include/linux/bpf_fuse.h | 84 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 include/linux/bpf_fuse.h
 
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index 1b9d0dfae72d..04d96f34e9a1 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -607,6 +607,29 @@ struct fuse_entry_out {
- 	struct fuse_attr attr;
- };
- 
-+#define FUSE_BPF_MAX_ENTRIES	2
+diff --git a/include/linux/bpf_fuse.h b/include/linux/bpf_fuse.h
+new file mode 100644
+index 000000000000..ce8b1b347496
+--- /dev/null
++++ b/include/linux/bpf_fuse.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2022 Google LLC.
++ */
 +
-+enum fuse_bpf_type {
-+	FUSE_ENTRY_BACKING		= 1,
-+	FUSE_ENTRY_BPF			= 2,
-+	FUSE_ENTRY_REMOVE_BACKING	= 3,
-+	FUSE_ENTRY_REMOVE_BPF		= 4,
++#ifndef _BPF_FUSE_H
++#define _BPF_FUSE_H
++
++#include <linux/types.h>
++#include <linux/fuse.h>
++
++struct fuse_buffer {
++	void *data;
++	unsigned size;
++	unsigned alloc_size;
++	unsigned max_size;
++	int flags;
 +};
 +
-+#define BPF_FUSE_NAME_MAX 15
++/* These flags are used internally to track information about the fuse buffers.
++ * Fuse sets some of the flags in init. The helper functions sets others, depending on what
++ * was requested by the bpf program.
++ */
++// Flags set by FUSE
++#define BPF_FUSE_IMMUTABLE	(1 << 0) // Buffer may not be written to
++#define BPF_FUSE_VARIABLE_SIZE	(1 << 1) // Buffer length may be changed (growth requires alloc)
++#define BPF_FUSE_MUST_ALLOCATE	(1 << 2) // Buffer must be re allocated before allowing writes
 +
-+struct fuse_bpf_entry_out {
-+	uint32_t	entry_type;
-+	uint32_t	unused;
++// Flags set by helper function
++#define BPF_FUSE_MODIFIED	(1 << 3) // The helper function allowed writes to the buffer
++#define BPF_FUSE_ALLOCATED	(1 << 4) // The helper function allocated the buffer
++
++/*
++ * BPF Fuse Args
++ *
++ * Used to translate between bpf program parameters and their userspace equivalent calls.
++ * Variable sized arguments are held in fuse_buffers. To access these, bpf programs must
++ * use kfuncs to access them as dynptrs.
++ *
++ */
++
++#define FUSE_MAX_ARGS_IN 3
++#define FUSE_MAX_ARGS_OUT 2
++
++struct bpf_fuse_arg {
 +	union {
-+		struct {
-+			uint64_t unused2;
-+			uint64_t fd;
-+		};
-+		char name[BPF_FUSE_NAME_MAX + 1];
++		void *value;
++		struct fuse_buffer *buffer;
 +	};
++	unsigned size;
++	bool is_buffer;
 +};
 +
- struct fuse_forget_in {
- 	uint64_t	nlookup;
- };
++struct bpf_fuse_meta_info {
++	uint64_t nodeid;
++	uint32_t opcode;
++	uint32_t error_in;
++};
++
++struct bpf_fuse_args {
++	struct bpf_fuse_meta_info info;
++	uint32_t in_numargs;
++	uint32_t out_numargs;
++	uint32_t flags;
++	struct bpf_fuse_arg in_args[FUSE_MAX_ARGS_IN];
++	struct bpf_fuse_arg out_args[FUSE_MAX_ARGS_OUT];
++};
++
++// Mirrors for struct fuse_args flags
++#define FUSE_BPF_FORCE (1 << 0)
++#define FUSE_BPF_OUT_ARGVAR (1 << 6)
++#define FUSE_BPF_IS_LOOKUP (1 << 11)
++
++static inline void *bpf_fuse_arg_value(const struct bpf_fuse_arg *arg)
++{
++	return arg->is_buffer ? arg->buffer : arg->value;
++}
++
++static inline unsigned bpf_fuse_arg_size(const struct bpf_fuse_arg *arg)
++{
++	return arg->is_buffer ? arg->buffer->size : arg->size;
++}
++
++#endif /* _BPF_FUSE_H */
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
