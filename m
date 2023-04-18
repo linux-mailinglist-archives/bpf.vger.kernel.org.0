@@ -2,79 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D07506E5BFB
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 10:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057146E5CA7
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjDRI2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 04:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
+        id S231192AbjDRIz4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 04:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjDRI2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 04:28:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D124E63
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:27:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681806433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MREzUlrj7n/A3t+HzoYR0Y9aLZUZbKEGAr7lzy3qn2g=;
-        b=OJLsmc+nIV4+4hrKgs4cEAqAW5KV1DQw75kv+iA6QbANoo0XL9sdLFLCusTR530XeRicMp
-        rIwgOnJcg/788QsBz4zMT7hUFBYtmtfEo9xQ7cOdWVy/9JKbzhxNEE5VLW6sZqKoK1/yJJ
-        TO+qy84s35w5eprXEVSiIoo/e7jbOpE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-62-tLYjFbhzNy-RAezNItJpmA-1; Tue, 18 Apr 2023 04:27:11 -0400
-X-MC-Unique: tLYjFbhzNy-RAezNItJpmA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f0b1dcb286so3555605e9.1
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:27:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681806430; x=1684398430;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MREzUlrj7n/A3t+HzoYR0Y9aLZUZbKEGAr7lzy3qn2g=;
-        b=N4ClR01fq/XYBmp9hw8DY81/E7WO73tOu0rUyOuU7xrXNdn69+i7o5eAxNEt2bzNsm
-         3s348bzuOyTt7VDd0UyljRAl7riZfL0ob6lzN7QZD6PSgQibw4cA0mUZFs09zOvuyeg+
-         chhi2wLUheE41vB1RNl/anZU+gZoMR2hgf7vykTNJDcZJlnjTivFYFO2zSAv5oNR3MVE
-         pt5lRvF822bvQ8VvdNFE3+szrwu892V2MV0GTDVFyrlbHkHJoNGrbBFQyZwNVzdIjBbr
-         DHqe65wCuaYFdk0Khb7Lplg08ZQVHdiqURCh9Q9YDnIZnRWJ6wN1o3oouR3cnuOUXr6v
-         cVnw==
-X-Gm-Message-State: AAQBX9cK2yX8V8Tvgd+KFRPmPFOhJkg3VWF4Pb3y0HCr7eX/vR4iBWIF
-        lyogbLY7R4FsdVvquyQRCWu0eKAPDpXPweqRPxQNy3AmLCe9Dw3moud5Un1k4os2X8zDfKYf870
-        KKi6TSTeduoed
-X-Received: by 2002:a05:600c:3d18:b0:3f1:7490:e595 with SMTP id bh24-20020a05600c3d1800b003f17490e595mr3691444wmb.2.1681806430444;
-        Tue, 18 Apr 2023 01:27:10 -0700 (PDT)
-X-Google-Smtp-Source: AKy350Zg0WNXAUtuScHxVjRqynn872fn99A/LUSVDsZY3KNP0ldqKWsFWEKpdQ3Rj3NLNpfKkAlNaQ==
-X-Received: by 2002:a05:600c:3d18:b0:3f1:7490:e595 with SMTP id bh24-20020a05600c3d1800b003f17490e595mr3691426wmb.2.1681806430142;
-        Tue, 18 Apr 2023 01:27:10 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-229-200.dyn.eolo.it. [146.241.229.200])
-        by smtp.gmail.com with ESMTPSA id jb17-20020a05600c54f100b003f17316ab46sm6031322wmb.13.2023.04.18.01.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 01:27:09 -0700 (PDT)
-Message-ID: <e4309e95bc98ff2d464dd26fc4f3e77a914a6cb5.camel@redhat.com>
-Subject: Re: [PATCH net-next v2 6/6] tsnep: Add XDP socket zero-copy TX
- support
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-        bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com
-Date:   Tue, 18 Apr 2023 10:27:08 +0200
-In-Reply-To: <20230415144256.27884-7-gerhard@engleder-embedded.com>
-References: <20230415144256.27884-1-gerhard@engleder-embedded.com>
-         <20230415144256.27884-7-gerhard@engleder-embedded.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        with ESMTP id S229887AbjDRIzz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 04:55:55 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBD3729D;
+        Tue, 18 Apr 2023 01:55:48 -0700 (PDT)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33I7P2ME013943;
+        Tue, 18 Apr 2023 08:55:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=U6WUPreyjcO4opuyIz4xH9p+gbFh6AifVWqgRrcvYOc=;
+ b=ghKEhwZXC3CIeMGSfNuSKQRyy7i4FEuTzs16Kn2JWGg/RhDz5liOPCe8q+C0eof3OBcg
+ FREw5KpRvR2gUVPiegL8muJFOhI5vyRLUVdlY2XjL+WyNREJCkRKgFOblJ4JXx4BpCjH
+ 9nAXH1gXeRFiKGsMpV9oWaHMgWswOeC2h8TR8GPpqoJLOWPZTC1gYt3TzcunJvap51Od
+ MOwXeZewhq6AswKf+r9gBiuK2E10BAgsgu5DitJ0pmnTl9GKXm9iSIXvKGyZh4VPbhH6
+ MDGuo4bTW+Dxzbc2A5+8d2n/3udjfMepNSiB2EGrSqDFhjOkpalD2SZvVJpUIsz1aWHi nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q1psxaj09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Apr 2023 08:55:27 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33I8d1oc026435;
+        Tue, 18 Apr 2023 08:55:27 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q1psxahy3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Apr 2023 08:55:27 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33I6YjC3004335;
+        Tue, 18 Apr 2023 08:55:24 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3pyk6fhvww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 18 Apr 2023 08:55:24 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33I8tLRi13435536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 18 Apr 2023 08:55:21 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C81020043;
+        Tue, 18 Apr 2023 08:55:21 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 013E120040;
+        Tue, 18 Apr 2023 08:55:21 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 18 Apr 2023 08:55:20 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     broonie@kernel.org, hca@linux.ibm.com, sfr@canb.auug.org.au,
+        liam.howlett@oracle.com, acme@redhat.com, ast@kernel.org,
+        bpf@vger.kernel.org, linux-next@vger.kernel.org,
+        quentin@isovalent.com
+Cc:     Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH] bpftool: fix broken compile on s390 for linux-next repository
+Date:   Tue, 18 Apr 2023 10:55:16 +0200
+Message-Id: <20230418085516.1104514-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: b9aBxCBUHP3EKtS2jXtQ1nL2sd7Un27v
+X-Proofpoint-ORIG-GUID: 1DXDd7M9cNp-HQKMKlLpykQ8NjnGXVlL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-18_04,2023-04-17_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 impostorscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 clxscore=1011 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304180074
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,105 +88,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2023-04-15 at 16:42 +0200, Gerhard Engleder wrote:
-> Send and complete XSK pool frames within TX NAPI context. NAPI context
-> is triggered by ndo_xsk_wakeup.
->=20
-> Test results with A53 1.2GHz:
->=20
-> xdpsock txonly copy mode:
->                    pps            pkts           1.00
-> tx                 284,409        11,398,144
-> Two CPUs with 100% and 10% utilization.
->=20
-> xdpsock txonly zero-copy mode:
->                    pps            pkts           1.00
-> tx                 511,929        5,890,368
-> Two CPUs with 100% and 1% utilization.
->=20
-> Packet rate increases and CPU utilization is reduced.
->=20
-> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-> ---
->  drivers/net/ethernet/engleder/tsnep.h      |   2 +
->  drivers/net/ethernet/engleder/tsnep_main.c | 131 +++++++++++++++++++--
->  2 files changed, 123 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet=
-/engleder/tsnep.h
-> index d0bea605a1d1..11b29f56aaf9 100644
-> --- a/drivers/net/ethernet/engleder/tsnep.h
-> +++ b/drivers/net/ethernet/engleder/tsnep.h
-> @@ -70,6 +70,7 @@ struct tsnep_tx_entry {
->  	union {
->  		struct sk_buff *skb;
->  		struct xdp_frame *xdpf;
-> +		bool zc;
->  	};
->  	size_t len;
->  	DEFINE_DMA_UNMAP_ADDR(dma);
-> @@ -88,6 +89,7 @@ struct tsnep_tx {
->  	int read;
->  	u32 owner_counter;
->  	int increment_owner_counter;
-> +	struct xsk_buff_pool *xsk_pool;
-> =20
->  	u32 packets;
->  	u32 bytes;
-> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/eth=
-ernet/engleder/tsnep_main.c
-> index 13e5d4438082..de51d0cc8935 100644
-> --- a/drivers/net/ethernet/engleder/tsnep_main.c
-> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
-> @@ -54,6 +54,8 @@
->  #define TSNEP_TX_TYPE_SKB_FRAG	BIT(1)
->  #define TSNEP_TX_TYPE_XDP_TX	BIT(2)
->  #define TSNEP_TX_TYPE_XDP_NDO	BIT(3)
-> +#define TSNEP_TX_TYPE_XDP	(TSNEP_TX_TYPE_XDP_TX | TSNEP_TX_TYPE_XDP_NDO)
-> +#define TSNEP_TX_TYPE_XSK	BIT(4)
-> =20
->  #define TSNEP_XDP_TX		BIT(0)
->  #define TSNEP_XDP_REDIRECT	BIT(1)
-> @@ -322,13 +324,51 @@ static void tsnep_tx_init(struct tsnep_tx *tx)
->  	tx->increment_owner_counter =3D TSNEP_RING_SIZE - 1;
->  }
-> =20
-> +static void tsnep_tx_enable(struct tsnep_tx *tx)
-> +{
-> +	struct netdev_queue *nq;
-> +
-> +	nq =3D netdev_get_tx_queue(tx->adapter->netdev, tx->queue_index);
-> +
-> +	local_bh_disable();
-> +	__netif_tx_lock(nq, smp_processor_id());
+Commit 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+breaks the build of the perf tool on s390 in the linux-next repository.
+Here is the make output:
 
-The above 2 statements could be replaced with:
+make -C tools/perf
+....
+btf_dumper.c: In function 'dotlabel_puts':
+DEBUG: btf_dumper.c:838:25: error: '__fallthrough' undeclared \
+		(first use in this function); did you mean 'fallthrough'?
+DEBUG:   838 |                         __fallthrough;
+DEBUG:       |                         ^~~~~~~~~~~~~
+DEBUG:       |                         fallthrough
+DEBUG: btf_dumper.c:838:25: note: each undeclared identifier is reported \
+		only once for each function it appears in
+DEBUG: btf_dumper.c:837:25: warning: this statement may fall through \
+                [-Wimplicit-fallthrough=]
+DEBUG:   837 |                         putchar('\\');
+DEBUG:       |                         ^~~~~~~~~~~~~
+DEBUG: btf_dumper.c:839:17: note: here
+DEBUG:   839 |                 default:
+DEBUG:       |                 ^~~~~~~
+DEBUG: make[3]: *** [Makefile:247: /builddir/build/BUILD/kernel-6.2.fc37/\
+		        linux-6.2/tools/perf/util/bpf_skel/ \
+		        .tmp/bootstrap/btf_dumper.o] Error 1
 
-	__netif_tx_lock_bh()
+The compile fails because symbol __fallthrough unknown, but symbol
+fallthrough is known and works fine.
 
-> +	netif_tx_wake_queue(nq);
-> +	__netif_tx_unlock(nq);
-> +	local_bh_enable();
+Fix this and replace __fallthrough by fallthrough.
 
-__netif_tx_unlock_bh()
+With this change, the compile works.
 
-> +}
-> +
-> +static void tsnep_tx_disable(struct tsnep_tx *tx, struct napi_struct *na=
-pi)
-> +{
-> +	struct netdev_queue *nq;
-> +	u32 val;
-> +
-> +	nq =3D netdev_get_tx_queue(tx->adapter->netdev, tx->queue_index);
-> +
-> +	local_bh_disable();
-> +	__netif_tx_lock(nq, smp_processor_id());
+Output after:
 
-Same here.
+ # make -C tools/perf
+ ....
+ CC      util/bpf-filter.o
+ CC      util/bpf-filter-flex.o
+ LD      util/perf-in.o
+ LD      perf-in.o
+ LINK    perf
+ make: Leaving directory '/root/mirror-linux-next/tools/perf'
+ #
 
+Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+---
+ tools/bpf/bpftool/btf_dumper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
-
-Paolo
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+index 6c5e0e82da22..1b7f69714604 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
+ 		case '|':
+ 		case ' ':
+ 			putchar('\\');
+-			__fallthrough;
++			fallthrough;
+ 		default:
+ 			putchar(*s);
+ 		}
+-- 
+2.39.2
 
