@@ -2,255 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986DA6E591A
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 08:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EC86E591B
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 08:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjDRGIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 02:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S229824AbjDRGJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 02:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjDRGIW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 02:08:22 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C351259CC
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 23:08:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681798087; x=1713334087;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=jZd967WN7ppNIsQ78lhpWFyZRL3ypnT5Ghkvyq79brA=;
-  b=JORXJRdC/8iMNlNMlysrye6/a7wZw2SjUzI/bFQON8I3IdO7ZP6WgAH/
-   TOGLH2EUWTzRWppgaaLOrY13bI0y5Qy4ZzV/thurb11MVF5jSgtlLwV6j
-   ga5V4htdzlJkGXcpO3Zm/zBFrnJsRvken41rrZuPzxCiqiqa9dp0zEw84
-   htHtf/Bh2p2UZRVLGZyI3oafwECB2M6N9BVm9Yee4CeO5BP74C+YAq7Ka
-   CMGEMjmm+xkAbnQ1lNDtBTwWR8fyjfjlZduv9HDm+DzFd11ekSE5AJJfW
-   xm8wtqsNPnNey5+Rq+iEVPjAiupyZ5xsQTuVnGgD301ryQJvpPXzxrPtX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="325425551"
-X-IronPort-AV: E=Sophos;i="5.99,206,1677571200"; 
-   d="scan'208";a="325425551"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 23:08:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="1020687258"
-X-IronPort-AV: E=Sophos;i="5.99,206,1677571200"; 
-   d="scan'208";a="1020687258"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Apr 2023 23:08:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 17 Apr 2023 23:08:06 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Mon, 17 Apr 2023 23:08:06 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Mon, 17 Apr 2023 23:08:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HiX0AJMBLfNecwcy+EFGr5JtnLwlhBK4UX+uSQxc6ZkGZy7LHGvFw3jBlJZNZr9MwQTG3s9ZvanJcn/ebQRsU01tsy1c+V7MGrKNvZzSSXzLYPdOodiz6NeP6bHo8i76fIuvVDk11CIdDZIYUo4dIK/Eb7Ct12Q5VQoknFg8uitFMZ3rYpadP1e5Cn1ZbX/ua7lodfDbEiOQg/4iOWuy09yCBa/ZqJYNeuca6Ps7Do1RhUC2vm1XE91iVn0YeE1vcycfCrHOfa5X3TmaaAjRfcxsppoAcI+iNoStrreXrFBM0qwLrwy40b/n2Gy1awAa6F6vLOZ4PWokg2FvHjWIhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=th4JeeXdDZ+tQ9RWwwTjXm12iPhb0AEy2vQ1eVslPsE=;
- b=N/nrb/2DLnlOVxfYboVMbVfvbmAIl1994cw8SHDm6yl+NaDtXgiA1CIRRBxi0ZItXJ1LSKxAiaDXi2Xur9U8CRglOlcIuH782g32oYgzxaI9EIYONKUBfcMbTOPi/fBck4F6BmfAo0CbD/7yvpjui8uayI2yAlkvb4QbdstGtm8VsmjtxlTvvjH7D/tBIvEJDsYmKI21btqWxJTgo4nsEVTDUsBXQjahgopoUm3WahBi1FBf/uArUk0a+QUypC9lZhpHxQ49WlrGNj6cIRFeuAMmuZdqubtwP3fQBaDeTXteiEobXHNi+I733D4q16GeP1lqZOK/Yx0VtaMqdfbTXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
- by DM8PR11MB5607.namprd11.prod.outlook.com (2603:10b6:8:28::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Tue, 18 Apr
- 2023 06:07:58 +0000
-Received: from PH0PR11MB5830.namprd11.prod.outlook.com
- ([fe80::1c4e:86ae:810d:1fee]) by PH0PR11MB5830.namprd11.prod.outlook.com
- ([fe80::1c4e:86ae:810d:1fee%2]) with mapi id 15.20.6298.045; Tue, 18 Apr 2023
- 06:07:58 +0000
-From:   "Song, Yoong Siang" <yoong.siang.song@intel.com>
-To:     "Kanzenbach, Kurt" <kurt.kanzenbach@linutronix.de>,
-        "Brouer, Jesper" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Stanislav Fomichev" <sdf@google.com>,
-        =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
-CC:     "Brouer, Jesper" <brouer@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "martin.lau@kernel.org" <martin.lau@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
-        "Zaremba, Larysa" <larysa.zaremba@intel.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: RE: [PATCH bpf-next V1 5/5] selftests/bpf: xdp_hw_metadata track more
- timestamps
-Thread-Topic: [PATCH bpf-next V1 5/5] selftests/bpf: xdp_hw_metadata track
- more timestamps
-Thread-Index: AQHZcTz1X0h8VE1O+0qh5RVifeCknq8voQQAgADy+XA=
-Date:   Tue, 18 Apr 2023 06:07:58 +0000
-Message-ID: <PH0PR11MB5830D771AA05F28675173A42D89D9@PH0PR11MB5830.namprd11.prod.outlook.com>
-References: <168174338054.593471.8312147519616671551.stgit@firesoul>
- <168174344813.593471.4026230439937368990.stgit@firesoul>
- <87leiqsexd.fsf@kurt>
-In-Reply-To: <87leiqsexd.fsf@kurt>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|DM8PR11MB5607:EE_
-x-ms-office365-filtering-correlation-id: 4b42bdbe-421e-45dc-6675-08db3fd34255
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9PFiGaRR8y9JSE2iLGEpDOMhS82J6aycMDMAsRKkYJayRqndG5Z4DjFpnxFKc/YEwfCf6fFI+Y+2fCsiQlk2q7zOkOeZr/Xs7apm/BdiViM9P8wQLKYI50m+L5RoZ7TD8a2AFJ2C2zYvk/1zPRvg0m37mxW1qGSlrhmaTD7LKeFeRe+QSQkKlFL8+kJyZ7RK2IlAiabh6GZqwaSHfk2xXw2KInKZ8GTKLMJ4Q381qkJIxZARBF2LJhD0hty/n8rMZ98qYH9D5XaP42byp+xmVEcJbHi6cHM7ijwB6DuXv2WtI7hnk0kkpMjpnTZiIdCeZjvj+KXNhNmmvRIjoyH9x3/646E5LJN06m0RdBGeGC9GLGhZo8U3v7IsnCVSNuELQweWVD64O3/XQFHFA6+r9twf8ie+pyGMt/G2ZRLkZEXVmWLDqNlqo69w8oelybKdCZ8h5f6Ay2QpB3rYGVGl2Xh/CtqN2m1Q94LOl68Qpg6crqkXyH8TeLQhh1GGgfCduVkzNVs/RoVJh90DyMAsQwGaCB6jLcAIgsGt3t8O8+qJ2pFli3NxTEf8s7VOfn2T1MhJqpvtZFf8Cs5b3Y53VoF+WF8ZOXOFRPnk0w2tzww=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(366004)(376002)(39860400002)(396003)(451199021)(38100700002)(8936002)(8676002)(122000001)(38070700005)(5660300002)(7416002)(2906002)(33656002)(86362001)(52536014)(55016003)(478600001)(7696005)(71200400001)(54906003)(110136005)(186003)(966005)(9686003)(66946007)(53546011)(55236004)(6506007)(76116006)(66476007)(66446008)(26005)(41300700001)(82960400001)(316002)(83380400001)(4326008)(64756008)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?eBOVCNGQ91RtGoGR1j5mXN3drEBYf5ADwC4a2Vp9vLE3byAYV1jX6uxrKB?=
- =?iso-8859-1?Q?FYE588YpF1qASEDS65DgGog+rxvak2HnpJyDlpKEYu2HnN6XuckFVls7YF?=
- =?iso-8859-1?Q?eSt3sLN6SQ41KjOy7aZLWYoXCVuSIfd6Ga8Xi0ABp/LNagE/mZbkQcwdPk?=
- =?iso-8859-1?Q?f3VgCA43wNUt7K38LYUA9mp4WJcGimmYif+UXR2wiItJ4vcj9AORbcbzfi?=
- =?iso-8859-1?Q?YOuCAajavxiWzpRLfDp46YfeZDzKmjUc8FCPdJEDBDl7AjjPqAre5g1Lu1?=
- =?iso-8859-1?Q?3vDDUl11enqFbnE65DFQslF9mAXsM2WX1oiVAuoEdeV5nGjjMvVoB/fpxZ?=
- =?iso-8859-1?Q?Mr3ZhoWYBuLRE6/Iz8o+SUKX5JwYtQqg9c4PMrLw3+a6sqp+ApNjVy8FrD?=
- =?iso-8859-1?Q?iwyIO1iM7NZgOz2VRFccuhUppPjuVS22Uw6iz9vRT5mPFCIgxfj4k0sm+t?=
- =?iso-8859-1?Q?t8Npv1OjVeoPPt+J6fC4z8rpM96G6iooI/RTeyhy2c7/rKW3l8Dry2JUl3?=
- =?iso-8859-1?Q?CdMz8SVHxk52z7L8owsLAlOf2sS6E8UKS+6pN/UJJBvl8ixoGgzAjHG7C2?=
- =?iso-8859-1?Q?94d4GOmHGIwWuxWdSB3l6vpPAZeTsdfg0ZiEB3R21QWqWI3/EAqzPBfAH6?=
- =?iso-8859-1?Q?TrgSlMADU2PfiQVfwXCyluqbxdgc+zNBU7CGk/lLSUht3qFJJ+mGigeBLM?=
- =?iso-8859-1?Q?M8/eddAqXIXK+5CTCqhGz+MK7pmFKQhQnwMjBOjxbWhZkHAS722MJVBkEw?=
- =?iso-8859-1?Q?XYoPrC0Swncppu5uB6bz8oXMra0NtaKB5JLjKRJfQVC1X46PBBv4z2q18t?=
- =?iso-8859-1?Q?fjs9Hh/aUtHWKAref0d1AbHhYi5etbmara/kHIZGnOI3S4/VGI48cUIyTr?=
- =?iso-8859-1?Q?fZYI62QsdRIcLH2Dt5h3kINchzQRRMVJAhXkIQSNfz9ayP9UzbUJZAqqRd?=
- =?iso-8859-1?Q?4PQKQKcHFevi0S2UmrOWTW2YdJ6MrpjBINycfyOXupt0FXcTYokubia94x?=
- =?iso-8859-1?Q?fIlNUgOvADJtANpMD7EhGXRYqkfBCOAtRa51BkEUser09ZnthAJrNQFwDa?=
- =?iso-8859-1?Q?36Ez7r+80DfE/L3jvEB/nxgFbPfgXGXK3PvdLx6ogJaw6a8G3Hgt2NRfCZ?=
- =?iso-8859-1?Q?Op0IqMmeYzgOG/2WQz2TMAcTn4bRvzCcxQlzBUBb19VXVbMrilDSzChs5Y?=
- =?iso-8859-1?Q?pesL7jKDZAD/kphUtJk1Z6GG/FC/0j4qtVUwbvcOtukiTXRCAwZzud1Tow?=
- =?iso-8859-1?Q?6gLHUPspi/W7qUmEhpaTprJuzEszWrghcJ3xiDQh6rDBsfnovsQspbTIfh?=
- =?iso-8859-1?Q?pGgJrf77ViSAJf0YELZ8czwvIjm7EQD77uJZVUzADD4m18uPxE7BX3XMXm?=
- =?iso-8859-1?Q?5ch8Gboa9SJdzRNBa9oDYpSIbHQOS3ULyL3bUgjaALSUP30HGVIkJisiJr?=
- =?iso-8859-1?Q?6j0dsiOl1K69jLcXnSdR3t8GgVqdGp2fghUWDErBCvJ/FV6YeRJmSiUbjk?=
- =?iso-8859-1?Q?5Hgs8BPNc64RorKcx3z3ufKGRY5fVHcMXd8CXTsle378+TRIRXCQPezXl2?=
- =?iso-8859-1?Q?u/MXqF96tVKHpBbaewN8w1fmSDUEC4T22QtGz6EiQy3eRljMZtGnF1jW+T?=
- =?iso-8859-1?Q?tOj7M6M7UEz5sE/hQ9ZjErVpn9E878kVUmrcYejWAZU4i0kbEW5QZswQ?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229517AbjDRGJI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 02:09:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3574D2D4C;
+        Mon, 17 Apr 2023 23:09:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6EB362506;
+        Tue, 18 Apr 2023 06:09:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83323C433EF;
+        Tue, 18 Apr 2023 06:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1681798146;
+        bh=p8pWr5UG6WYTMI0mc7sS/B5Wj1Ni/0+4yMQqEWzlJTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yh0ZNY+3HuTvUV5eJLLMd5phEvw/m2/wtZnwhb0D3xEBEj5IBs8VHzZ8gFtMG4f2Q
+         REexeg59dRpl1AUNrJtgT0eJ6CczJT3l3bbai79NMBk1bje3nJq07EkFz1qG4nMvrx
+         odsH/9DGGd0Ro+8YAMInCmtuYCWjsIHPIjY0AmxY=
+Date:   Tue, 18 Apr 2023 08:09:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5a6L6ZSQ?= <songrui.771@bytedance.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH] libbpf: correct the macro KERNEL_VERSION
+ for old kernel
+Message-ID: <ZD4z_pS3fur-owIT@kroah.com>
+References: <20230417084449.99848-1-songrui.771@bytedance.com>
+ <ZD09abW0YyHU3Snt@kroah.com>
+ <CAAz4JzKB7kMi=fRZYSG=b4km-xA2gdBF32TFxU-ubqaaTs+_Hw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b42bdbe-421e-45dc-6675-08db3fd34255
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2023 06:07:58.6009
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yv33mAaZ+o+H1Ue2u2+UknwSxGMt+2GRFKsox1cGe8t5/+sARTbkQ0ZCMGsewS7kbanIkXx+ftr8E0t0IgOh6a6oGt3bfTdGV5sSWn9q/Ps=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR11MB5607
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAz4JzKB7kMi=fRZYSG=b4km-xA2gdBF32TFxU-ubqaaTs+_Hw@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Monday, April 17, 2023 11:32 PM, Kurt Kanzenbach <kurt.kanzenbach@linutr=
-onix.de> wrote:
->On Mon Apr 17 2023, Jesper Dangaard Brouer wrote:
->> To correlate the hardware RX timestamp with something, add tracking of
->> two software timestamps both clock source CLOCK_TAI (see description
->> in man clock_gettime(2)).
->>
->> XDP metadata is extended with xdp_timestamp for capturing when XDP
->> received the packet. Populated with BPF helper bpf_ktime_get_tai_ns().
->> I could not find a BPF helper for getting CLOCK_REALTIME, which would
->> have been preferred. In userspace when AF_XDP sees the packet another
->> software timestamp is recorded via clock_gettime() also clock source
->> CLOCK_TAI.
->>
->> Example output shortly after loading igc driver:
->>
->>   poll: 1 (0) skip=3D1 fail=3D0 redir=3D2
->>   xsk_ring_cons__peek: 1
->>   0x12557a8: rx_desc[1]->addr=3D100000000009000 addr=3D9100 comp_addr=3D=
-9000
->>   rx_hash: 0x82A96531 with RSS type:0x1
->>   rx_timestamp:  1681740540304898909 (sec:1681740540.3049)
->>   XDP RX-time:   1681740577304958316 (sec:1681740577.3050) delta
->sec:37.0001 (37000059.407 usec)
->>   AF_XDP time:   1681740577305051315 (sec:1681740577.3051) delta
->sec:0.0001 (92.999 usec)
->>   0x12557a8: complete idx=3D9 addr=3D9000
->>
->> The first observation is that the 37 sec difference between RX HW vs
->> XDP timestamps, which indicate hardware is likely clock source
->> CLOCK_REALTIME, because (as of this writing) CLOCK_TAI is initialised
->> with a 37 sec offset.
->
->Maybe I'm missing something here, but in order to compare the hardware wit=
-h
->software timestamps (e.g., by using bpf_ktime_get_tai_ns()) the time sourc=
-es
->have to be synchronized by using something like phc2sys. That should make =
-them
->comparable within reasonable range (nanoseconds).
->
->Thanks,
->Kurt
+On Mon, Apr 17, 2023 at 10:44:47PM -0700, 宋锐 wrote:
+> > > The introduced header file linux/version.h in libbpf_probes.c may have a
+> > > wrong macro KERNEL_VERSION for calculating LINUX_VERSION_CODE in some old
+> > > kernel (Debian9, 10). Below is a version info example from Debian 10.
+> > >
+> > > release: 4.19.0-22-amd64
+> > > version: #1 SMP Debian 4.19.260-1 (2022-09-29)
+> > >
+> > > The macro KERNEL_VERSION is defined to (((a) << 16) + ((b) << 8)) + (c)),
+> > > which a, b, and c stand for major, minor and patch version. So in example here,
+> > > the major is 4, minor is 19, patch is 260, the LINUX_VERSION(4, 19, 260) which
+> > > is 267268 should be matched to LINUX_VERSION_CODE. However, the KERNEL_VERSION_CODE
+> > > in linux/version.h is defined to 267263.
+> > >
+> > > I noticed that the macro KERNEL_VERSION in linux/version.h of some new kernel is
+> > > defined to (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c))). And
+> > > KERNEL_VERSION(4, 19, 260) is equal to 267263 which is the right LINUX_VERSION_CODE.
+> > >
+> > > The mismatched LINUX_VERSION_CODE which will cause failing to load kprobe BPF
+> > > programs in the version check of BPF syscall.
+> > >
+> > > The return value of get_kernel_version in libbpf_probes.c should be matched to
+> > > LINUX_VERSION_CODE by correcting the macro KERNEL_VERSION.
+> > >
+> > > Signed-off-by: songrui.771 <songrui.771@bytedance.com>
+> >
+> > This needs to be your name, not your email alias (do you use ".771" as a
+> > name to sign things with?)
+> 
+> Thanks for your reminding. I will change it.
+> >
+> > > ---
+> > >  tools/lib/bpf/libbpf_probes.c | 10 +++++++---
+> > >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> > > index 4f3bc968ff8e..5b22a880c7e7 100644
+> > > --- a/tools/lib/bpf/libbpf_probes.c
+> > > +++ b/tools/lib/bpf/libbpf_probes.c
+> > > @@ -18,6 +18,10 @@
+> > >  #include "libbpf.h"
+> > >  #include "libbpf_internal.h"
+> > >
+> > > +#ifndef LIBBPF_KERNEL_VERSION
+> > > +#define LIBBPF_KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
+> > > +#endif
+> >
+> > What is wrong with using the KERNEL_VERSION() macro, it should be fixed
+> > to work properly here, right?  Did we not get this resolved in the
+> > main portion of the kernel already?
+> 
+> The KERNEL_VERSION() macro from linux/version.h is wrong in some old
+> kernel(Debian 9, 10) that we would like to support. As you said, the
+> problem was resolved in the newer kernel. Here is the difference:
 
-Tested-by: Song Yoong Siang <yoong.siang.song@intel.com>
+But the kernels you want to "support" all have older kernel versions and
+so you do not need the change to the macro as they are not running newer
+kernel versions with an increased minor version number.
 
-I tested this patchset by using I226-LM (rev 04) NIC on Tiger Lake Platform=
-.
-I use testptp selftest tool to make sure PHC is almost same as system clock=
-.
-Below are the detail of test steps and result.
+So on those systems, building will work just fine, if not, then that's a
+Debian bug and they should fix it in their kernel packages.
 
-1. Run xdp_hw_metadata tool.
-   @DUT: sudo ./xdp_hw_metadata eth0
+> linux/version.h
+> in older kernel: #define KERNEL_VERSION(a, b, c) (((a) << 16) + ((b)
+> << 8)) + (c)))
+> in newer kernel: #define KERNEL_VERSION(a, b, c) KERNEL_VERSION(a, b,
+> c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
+> 
+> Using the KERNEL_VERSION macro in the older kernel returns the kern
+> version  which is  mismatched to the LINUX_VERSION_CODE that will
+> cause failing to load the BPF kprobe program.
+> 
+> In my opinion, it is a more generic solution that corrects the
+> KERNEL_VERSION() macro in libbpf to support some old kernel.
 
-2. Enable Rx HWTS for all incoming packets. Note: This step is not needed i=
-f
-   https://lore.kernel.org/all/20230414154902.2950535-1-yoong.siang.song@in=
-tel.com/
-   bug fix patch is applied to the igc driver.
-   @DUT: sudo hwstamp_ctl -i eth0 -r 1
+The KERNEL_VERSION() macro comes from the kernel you are building
+against.  And so that should match that kernel only.
 
-3. Set the ptp clock time from the system time using testptp tool.
-   @DUT: sudo ./testptp -d /dev/ptp0 -s
+thanks,
 
-4. Send UDP packet with 9091 port from link partner immediately after step =
-3.
-   @LinkPartner: echo -n xdp | nc -u -q1 <Destination IPv4 addr> 9091
-
-Result:
-   poll: 1 (0) skip=3D1 fail=3D0 redir=3D1
-   xsk_ring_cons__peek: 1
-   0x5626248d16d0: rx_desc[0]->addr=3D100000000008000 addr=3D8100 comp_addr=
-=3D8000
-   rx_hash: 0x35E1B60E with RSS type:0x1
-   rx_timestamp:  1677762195217129600 (sec:1677762195.2171)
-   XDP RX-time:   1677762195217202099 (sec:1677762195.2172) delta sec:0.000=
-1 (72.499 usec)
-   AF_XDP time:   1677762195217231775 (sec:1677762195.2172) delta sec:0.000=
-0 (29.676 usec)
-   0x5626248d16d0: complete idx=3D8 addr=3D8000
-
-
+greg k-h
