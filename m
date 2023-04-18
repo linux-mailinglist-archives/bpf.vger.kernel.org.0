@@ -2,272 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C21CB6E642C
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 14:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A946E6580
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 15:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjDRMqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 08:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S230023AbjDRNKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 09:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbjDRMqm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 08:46:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF90D14F5E
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 05:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681821957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pDXDjF1nYY/KD56jlqYvE6WKgtxK7sp+U3MRycfCfiA=;
-        b=X0mdOLUZphru6oWf3HZuDdwA43COkv/8YA8IKKOQre4A3GatajIy4yxcjSkyMz8GvVps/c
-        FgmcTWjYRBCw/62pGq3nbn/Lu2QsxtEobOBBO8YQMmcn0HP8CahQthbLWa5mmBuR6+5Rhn
-        yb7AmZF3Zu8kVrjhtEDDhTcH122KB+w=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-345-xlNlZ-7rOe6nkE_ld9pNMw-1; Tue, 18 Apr 2023 08:45:56 -0400
-X-MC-Unique: xlNlZ-7rOe6nkE_ld9pNMw-1
-Received: by mail-ej1-f71.google.com with SMTP id cd20-20020a170906b35400b0094f35212aadso2773756ejb.11
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 05:45:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681821955; x=1684413955;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pDXDjF1nYY/KD56jlqYvE6WKgtxK7sp+U3MRycfCfiA=;
-        b=T7Evxv5oFXFcJrGRX0zDuztyI06L6HFRaxGKKxRPCDaKW0oh3ZvQMNbgkiAVGEJQjS
-         n8Cl5shWXG8gNrUfHXfGprNW9S0HJgBu7pkjIaAy5Y6tlgFQUdgGnMqCOBXXSvWIrgPn
-         uQj0kzaS5xevcG5cY7WmQkfIKX8T4tDrXHT9xX6jz804RkUuLYpH52tU+LTw1xCT2GdH
-         AKw9F8Iu77wnBxLNroMkytkGQQKqQJ9OOonI08llXaIo8L+cmYW53Us5Fb817WS6jtMF
-         i3GiuUiM+wypgku6C0ZvXjfi6zRSMcBqHfa+SfS9+LlFPHpnNRz7ycBnA+kxYChSubLP
-         VvQg==
-X-Gm-Message-State: AAQBX9ehWiN0HOSU+pm7OposspRE1Hakn0019VUn2EWaOVgRJ0D4Hsy8
-        u8VR6rwMCOIPYLwPBBMcP2Vho1U0cyuHy6caYfpjk8KyE0QWXRyugfO1yBSIof5NJhXCyN1Av7j
-        3VOb6Xq+1DBX3
-X-Received: by 2002:a17:907:20c8:b0:93c:efaf:ba75 with SMTP id qq8-20020a17090720c800b0093cefafba75mr10178446ejb.37.1681821955283;
-        Tue, 18 Apr 2023 05:45:55 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aiC5zCA5YAs3FTtyCXVLr/PBTq902GZqsOW+OujaYsI0J5kBFLBO9dijp8pa5nkXMHxAU4EA==
-X-Received: by 2002:a17:907:20c8:b0:93c:efaf:ba75 with SMTP id qq8-20020a17090720c800b0093cefafba75mr10178419ejb.37.1681821954909;
-        Tue, 18 Apr 2023 05:45:54 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id rx22-20020a1709068e1600b0094f968ecc97sm2304338ejc.13.2023.04.18.05.45.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Apr 2023 05:45:54 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <6b04def5-a3aa-1f77-b29d-bea4845e2678@redhat.com>
-Date:   Tue, 18 Apr 2023 14:45:52 +0200
+        with ESMTP id S229811AbjDRNKy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 09:10:54 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27527132;
+        Tue, 18 Apr 2023 06:10:53 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pol6g-0004ED-Ef; Tue, 18 Apr 2023 15:10:50 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <bpf@vger.kernel.org>
+Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        dxu@dxuuu.xyz, qde@naccy.de, Florian Westphal <fw@strlen.de>
+Subject: [PATCH bpf-next v3 0/6] bpf: add netfilter program type
+Date:   Tue, 18 Apr 2023 15:10:32 +0200
+Message-Id: <20230418131038.18054-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Cc:     brouer@redhat.com,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "martin.lau@kernel.org" <martin.lau@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
-        "Zaremba, Larysa" <larysa.zaremba@intel.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH bpf-next V1 2/5] igc: add igc_xdp_buff wrapper for
- xdp_buff in driver
-Content-Language: en-US
-To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-References: <168174338054.593471.8312147519616671551.stgit@firesoul>
- <168174343294.593471.10523474360770220196.stgit@firesoul>
- <PH0PR11MB5830DD3BA9F6CBDA648F5AF8D89D9@PH0PR11MB5830.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB5830DD3BA9F6CBDA648F5AF8D89D9@PH0PR11MB5830.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add minimal support to hook bpf programs to netfilter hooks, e.g.
+PREROUTING or FORWARD.
 
-On 18/04/2023 06.34, Song, Yoong Siang wrote:
-> On Monday, April 17, 2023 10:57 PM, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->> Driver specific metadata data for XDP-hints kfuncs are propagated via tail
->> extending the struct xdp_buff with a locally scoped driver struct.
->>
->> Zero-Copy AF_XDP/XSK does similar tricks via struct xdp_buff_xsk. This
->> xdp_buff_xsk struct contains a CB area (24 bytes) that can be used for extending
->> the locally scoped driver into. The XSK_CHECK_PRIV_TYPE define catch size
->> violations build time.
->>
-> 
-> Since the main purpose of this patch is to introduce igc_xdp_buff, and
-> you have another two patches for timestamp and hash,
-> thus, suggest to move timestamp and hash related code into respective patches.
-> 
->> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->> ---
->> drivers/net/ethernet/intel/igc/igc.h      |    6 ++++++
->> drivers/net/ethernet/intel/igc/igc_main.c |   30 ++++++++++++++++++++++-------
->> 2 files changed, 29 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/igc/igc.h
->> b/drivers/net/ethernet/intel/igc/igc.h
->> index f7f9e217e7b4..c609a2e648f8 100644
->> --- a/drivers/net/ethernet/intel/igc/igc.h
->> +++ b/drivers/net/ethernet/intel/igc/igc.h
->> @@ -499,6 +499,12 @@ struct igc_rx_buffer {
->> 	};
->> };
->>
->> +/* context wrapper around xdp_buff to provide access to descriptor
->> +metadata */ struct igc_xdp_buff {
->> +	struct xdp_buff xdp;
->> +	union igc_adv_rx_desc *rx_desc;
-> 
-> Move rx_desc to 4th patch (Rx hash patch)
-> 
+For this the most relevant parts for registering a netfilter
+hook via the in-kernel api are exposed to userspace via bpf_link.
 
-Hmm, rx_desc is also needed by 3rd patch (Rx timestamp), so that would 
-break...
+The new program type is 'tracing style', i.e. there is no context
+access rewrite done by verifier, the function argument (struct bpf_nf_ctx)
+isn't stable.
+There is no support for direct packet access, dynptr api should be used
+instead.
 
-I can reorder patches, and have "Rx hash patch" come before "Rx 
-timestamp" patch.
+With this its possible to build a small test program such as:
 
+ #include "vmlinux.h"
+extern int bpf_dynptr_from_skb(struct __sk_buff *skb, __u64 flags,
+                               struct bpf_dynptr *ptr__uninit) __ksym;
+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
+                                   void *buffer, uint32_t buffer__sz) __ksym;
+SEC("netfilter")
+int nf_test(struct bpf_nf_ctx *ctx)
+{
+	struct nf_hook_state *state = ctx->state;
+	struct sk_buff *skb = ctx->skb;
+	const struct iphdr *iph, _iph;
+	const struct tcphdr *th, _th;
+	struct bpf_dynptr ptr;
 
->> +};
->> +
->> struct igc_q_vector {
->> 	struct igc_adapter *adapter;    /* backlink */
->> 	void __iomem *itr_register;
->> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c
->> b/drivers/net/ethernet/intel/igc/igc_main.c
->> index bfa9768d447f..3a844cf5be3f 100644
->> --- a/drivers/net/ethernet/intel/igc/igc_main.c
->> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
->> @@ -2236,6 +2236,8 @@ static bool igc_alloc_rx_buffers_zc(struct igc_ring
->> *ring, u16 count)
->> 	if (!count)
->> 		return ok;
->>
->> +	XSK_CHECK_PRIV_TYPE(struct igc_xdp_buff);
->> +
->> 	desc = IGC_RX_DESC(ring, i);
->> 	bi = &ring->rx_buffer_info[i];
->> 	i -= ring->count;
->> @@ -2520,8 +2522,8 @@ static int igc_clean_rx_irq(struct igc_q_vector
->> *q_vector, const int budget)
->> 		union igc_adv_rx_desc *rx_desc;
->> 		struct igc_rx_buffer *rx_buffer;
->> 		unsigned int size, truesize;
->> +		struct igc_xdp_buff ctx;
->> 		ktime_t timestamp = 0;
->> -		struct xdp_buff xdp;
->> 		int pkt_offset = 0;
->> 		void *pktbuf;
->>
->> @@ -2555,13 +2557,14 @@ static int igc_clean_rx_irq(struct igc_q_vector
->> *q_vector, const int budget)
->> 		}
->>
->> 		if (!skb) {
->> -			xdp_init_buff(&xdp, truesize, &rx_ring->xdp_rxq);
->> -			xdp_prepare_buff(&xdp, pktbuf - igc_rx_offset(rx_ring),
->> +			xdp_init_buff(&ctx.xdp, truesize, &rx_ring->xdp_rxq);
->> +			xdp_prepare_buff(&ctx.xdp, pktbuf - igc_rx_offset(rx_ring),
->> 					 igc_rx_offset(rx_ring) + pkt_offset,
->> 					 size, true);
->> -			xdp_buff_clear_frags_flag(&xdp);
->> +			xdp_buff_clear_frags_flag(&ctx.xdp);
->> +			ctx.rx_desc = rx_desc;
-> 
-> Move rx_desc to 4th patch (Rx hash patch)
+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
+		return NF_DROP;
 
-Again would break 3rd patch.
+	iph = bpf_dynptr_slice(&ptr, 0, &_iph, sizeof(_iph));
+	if (!iph)
+		return NF_DROP;
 
-> 
->>
->> -			skb = igc_xdp_run_prog(adapter, &xdp);
->> +			skb = igc_xdp_run_prog(adapter, &ctx.xdp);
->> 		}
->>
->> 		if (IS_ERR(skb)) {
->> @@ -2583,9 +2586,9 @@ static int igc_clean_rx_irq(struct igc_q_vector
->> *q_vector, const int budget)
->> 		} else if (skb)
->> 			igc_add_rx_frag(rx_ring, rx_buffer, skb, size);
->> 		else if (ring_uses_build_skb(rx_ring))
->> -			skb = igc_build_skb(rx_ring, rx_buffer, &xdp);
->> +			skb = igc_build_skb(rx_ring, rx_buffer, &ctx.xdp);
->> 		else
->> -			skb = igc_construct_skb(rx_ring, rx_buffer, &xdp,
->> +			skb = igc_construct_skb(rx_ring, rx_buffer, &ctx.xdp,
->> 						timestamp);
->>
->> 		/* exit if we failed to retrieve a buffer */ @@ -2686,6 +2689,15
->> @@ static void igc_dispatch_skb_zc(struct igc_q_vector *q_vector,
->> 	napi_gro_receive(&q_vector->napi, skb);  }
->>
->> +static struct igc_xdp_buff *xsk_buff_to_igc_ctx(struct xdp_buff *xdp) {
->> +	/* xdp_buff pointer used by ZC code path is alloc as xdp_buff_xsk. The
->> +	 * igc_xdp_buff shares its layout with xdp_buff_xsk and private
->> +	 * igc_xdp_buff fields fall into xdp_buff_xsk->cb
->> +	 */
->> +       return (struct igc_xdp_buff *)xdp; }
->> +
-> 
-> Move xsk_buff_to_igc_ctx to 3th patch (timestamp patch), which is first patch
-> adding xdp_metadata_ops support to igc.
-> 
+	th = bpf_dynptr_slice(&ptr, iph->ihl << 2, &_th, sizeof(_th));
+	if (!th)
+		return NF_DROP;
 
-Hmm, maybe, but that make the "wrapper" patch incomplete and then it
-gets "completed" in the first patch that adds a xdp_metadata_ops.
+	bpf_printk("accept %x:%d->%x:%d, hook %d ifin %d\n", iph->saddr, bpf_ntohs(th->source), iph->daddr, bpf_ntohs(th->dest), state->hook, state->in->ifindex);
+        return NF_ACCEPT;
+}
 
->> static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)  {
->> 	struct igc_adapter *adapter = q_vector->adapter; @@ -2704,6 +2716,7
->> @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int
->> budget)
->> 	while (likely(total_packets < budget)) {
->> 		union igc_adv_rx_desc *desc;
->> 		struct igc_rx_buffer *bi;
->> +		struct igc_xdp_buff *ctx;
->> 		ktime_t timestamp = 0;
->> 		unsigned int size;
->> 		int res;
->> @@ -2721,6 +2734,9 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector
->> *q_vector, const int budget)
->>
->> 		bi = &ring->rx_buffer_info[ntc];
->>
->> +		ctx = xsk_buff_to_igc_ctx(bi->xdp);
-> 
-> Move xsk_buff_to_igc_ctx to 3th patch (timestamp patch), which is first patch
-> adding xdp_metadata_ops support to igc.
->
-Sure, but it feels wrong to no "complete" the wrapper work in the
-wrapper patch.
+Then, tail /sys/kernel/tracing/trace_pipe.
 
->> +		ctx->rx_desc = desc;
-> 
-> Move rx_desc to 4th patch (Rx hash patch)
-> 
+Changes since v2:
+1. don't WARN when user calls 'bpftool loink detach' twice
+   restrict attachment to ip+ip6 families, lets relax this
+   later in case arp/bridge/netdev are needed too.
+2. show netfilter links in 'bpftool net' output as well.
 
-I'll reorder patch 3 and 4, else it doesn't make any sense to gradually
-introduce the members in wrapper struct igc_xdp_buff.
+Changes since v1:
+1. Don't fail to link when CONFIG_NETFILTER=n (build bot)
+2. Use test_progs instead of test_verifier (Alexei)
 
---Jesper
+Changes since last RFC version:
+1. extend 'bpftool link show' to print prio/hooknum etc
+2. extend 'nft list hooks' so it can print the bpf program id
+3. Add an extra patch to artificially restrict bpf progs with
+   same priority.  Its fine from a technical pov but it will
+   cause ordering issues (most recent one comes first).
+   Can be removed later.
+4. Add test_run support for netfilter prog type and a small
+   extension to verifier tests to make sure we can't return
+   verdicts like NF_STOLEN.
+5. Alter the netfilter part of the bpf_link uapi struct:
+   - add flags/reserved members.
+  Not used here except returning errors when they are nonzero.
+  Plan is to allow the bpf_link users to enable netfilter
+  defrag or conntrack engine by setting feature flags at
+  link create time in the future.
+
+Let me know if there is anything missing that has to be addressed
+before this can be merged.
+
+Florian Westphal (6):
+  bpf: add bpf_link support for BPF_NETFILTER programs
+  bpf: minimal support for programs hooked into netfilter framework
+  netfilter: nfnetlink hook: dump bpf prog id
+  netfilter: disallow bpf hook attachment at same priority
+  tools: bpftool: print netfilter link info
+  bpf: add test_run support for netfilter program type
+
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_types.h                     |   4 +
+ include/linux/netfilter.h                     |   1 +
+ include/net/netfilter/nf_bpf_link.h           |  15 ++
+ include/uapi/linux/bpf.h                      |  15 ++
+ include/uapi/linux/netfilter/nfnetlink_hook.h |  20 +-
+ kernel/bpf/btf.c                              |   6 +
+ kernel/bpf/syscall.c                          |   6 +
+ kernel/bpf/verifier.c                         |   3 +
+ net/bpf/test_run.c                            | 140 +++++++++++
+ net/core/filter.c                             |   1 +
+ net/netfilter/Kconfig                         |   3 +
+ net/netfilter/Makefile                        |   1 +
+ net/netfilter/core.c                          |  12 +
+ net/netfilter/nf_bpf_link.c                   | 229 ++++++++++++++++++
+ net/netfilter/nfnetlink_hook.c                |  81 ++++++-
+ tools/bpf/bpftool/link.c                      |  83 +++++++
+ tools/bpf/bpftool/main.h                      |   3 +
+ tools/bpf/bpftool/net.c                       | 105 ++++++++
+ tools/include/uapi/linux/bpf.h                |  15 ++
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../bpf/progs/verifier_netfilter_retcode.c    |  49 ++++
+ 23 files changed, 785 insertions(+), 14 deletions(-)
+ create mode 100644 include/net/netfilter/nf_bpf_link.h
+ create mode 100644 net/netfilter/nf_bpf_link.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
+
+-- 
+2.39.2
 
