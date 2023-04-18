@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7416E6E5696
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C1F6E5699
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjDRBlR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 21:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S230291AbjDRBlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 21:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjDRBlO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230135AbjDRBlO (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 17 Apr 2023 21:41:14 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F125FD5
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:40:58 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id c64-20020a254e43000000b00b92530ded91so3262176ybb.17
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:40:58 -0700 (PDT)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A5C59DC
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:00 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-552e3fa8f2fso32389117b3.19
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 18:41:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681782058; x=1684374058;
+        d=google.com; s=20221208; t=1681782060; x=1684374060;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XBLJQNnM/sLgs4vCqBW41kO32Rg1yqnQ90D80Go8URk=;
-        b=SnlbZJLk5Z7OPvXPJ7Etlra3omvGygVLH4yu2u9bDq4nCNczqjAQAtQj22wZ5lGEym
-         a2kgjgQG7BqI5HdR0cpPUsEdGAS9YmKkxAht+4KyhF01JzBn+Q5S7f6M6omvM0kkv6X/
-         evFfdOnXQGFj9+0aeZ9WMkNy0KSNFXRwAthNf6y5bZ8rWO/w27CqQ5dQ154gW44ArDBX
-         LVcYLjt6nZT7hh2nhtXt7Y7pRN6WJB/9+wNxQ55m08D8GmFVYpj4xvYPc2V9ZA197fka
-         hn+T6Z4cpwohIn0+D00N0XUIWGvmcKaMk9jEbjb1w7J1OC1OpxepDIj+esRwnqQA0EyG
-         F+LA==
+        bh=tI4xcmLYwpmFva3i/dRZyfQFdXSO1OOUgkc/BOul5Ro=;
+        b=2V9e6mUN9Le2shS/G4YvhPJcIGT2cNDZPr1QkNJOacyGU//myujH64KDbejS/tMlXz
+         4E6nR0HLcdcTv09CWWYmtKIX5wVZpN0ReS4cFCAJVsgaJjGnWqRP+K97KcNMss7R5lc/
+         8wSlpIQsxhUI3w04o4cPXpyg3kA0F6KHlojC/d7SlYfU/cCvQzPLbwOg1psSwLmSzRXn
+         Qn3vxYWDKyf/Fn+ASbJ7PU1gdKO1me/kfleFJ2griqgfwNcqIJ9AF057vwZ+pRcgxCsX
+         sF1c9SZLi/nimZi9xbCd1jVXTRuM8JHWnHdMqXKLly0BeGcWX5EH1LSs7jCfFcSZkogo
+         szkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681782058; x=1684374058;
+        d=1e100.net; s=20221208; t=1681782060; x=1684374060;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XBLJQNnM/sLgs4vCqBW41kO32Rg1yqnQ90D80Go8URk=;
-        b=Fdzd3QUOdWBc+OAgStR2yckgY5LttRaMOROWaBoL/KDInngEy0i5Q74NCJZkiwHuMO
-         nIQ2HytPrbkcYrbAHdPyW8RkTEVQR73nV2r6UNX1mTOQOBzjq7UddgjQRh9+wnvPZhdf
-         mG6w/IliKd8m1D2Jp2fHOT1p/iU5mwCBKnxwCYneCt+TKTrdr8erNSQnBZggOLsfYZTP
-         vBfDUTzJgu6+LN4ZXFsvzHn7u/Xo4qAEmSGnOS7mrV0HfSr9LCniqvjSQ3EJspWw6S5u
-         K6Ds4QDYAsYySYZOt0Ltrz6jzUxqc2phzasCXnj/Kr+vwhrFBhtJwCqsfm9TXGFYEzXb
-         9hgA==
-X-Gm-Message-State: AAQBX9ds3+VlE5PB7Kll8HFsglfQmr8gCXHD7RT6G4NiQUsgvCqTSyKh
-        YQY7zDAix/t0ToyYCe4eimLYcrdGF+M=
-X-Google-Smtp-Source: AKy350aqzaT5PLfkv6k+7JDnNf8qfXfskwThdpbUGB15DarKosOyvH1tWqog8UU17iAVxBXL9PBghU8UzVE=
+        bh=tI4xcmLYwpmFva3i/dRZyfQFdXSO1OOUgkc/BOul5Ro=;
+        b=TsDkhRsmNIXWx9T2WMQvbwiH5TMVB9t2ttWL3MkEf8KEpwV9QXEcVKc7J0IRpNjBrW
+         1OX7F6DK0/aPTUjtrAKy1G4s0TeaR2ljrb9EgPlXYNybOIveQk4xAe0qM/fSAogXOrZB
+         ULPU4vezMx03elAphzkQ8AVYhTNFVN6b/Aocf8kvp/o9udfkz75xMa7QVxz2lw/QaA8i
+         vk70U2hYUVyKNsw6aJxrYF0rrUv4DzNr5QbtwEEJeP0uhPiBR+CZOVENU+L3dcuczTrz
+         3khaPve0ejKIHby7RsZehp1lOT9gycTESoMfHC7GtEgKA+/QyTPRUX0NXOJJZJDiSEhM
+         Xrkg==
+X-Gm-Message-State: AAQBX9eA7QO869hM+gRkbKNQXJ3yXkUwJJhLwylAyA3okvNw6E8OtETq
+        vSgyL5wjanWNkxptc8yC2ShnMHBMZG8=
+X-Google-Smtp-Source: AKy350YKpzErYw3bq9/BlI+znfoyrC46XNLf6K9cGOqwUJLaLH9t7tNWGgZpyi5xKkrMqdSo1O9knK3ZgUU=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:e67a:98b0:942d:86aa])
- (user=drosen job=sendgmr) by 2002:a25:d7d3:0:b0:b6d:80ab:8bb6 with SMTP id
- o202-20020a25d7d3000000b00b6d80ab8bb6mr11010336ybg.1.1681782057858; Mon, 17
- Apr 2023 18:40:57 -0700 (PDT)
-Date:   Mon, 17 Apr 2023 18:40:03 -0700
+ (user=drosen job=sendgmr) by 2002:a25:d70a:0:b0:b77:ae4b:1b27 with SMTP id
+ o10-20020a25d70a000000b00b77ae4b1b27mr8727839ybg.8.1681782059999; Mon, 17 Apr
+ 2023 18:40:59 -0700 (PDT)
+Date:   Mon, 17 Apr 2023 18:40:04 -0700
 In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20230418014037.2412394-1-drosen@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230418014037.2412394-4-drosen@google.com>
-Subject: [RFC PATCH v3 03/37] selftests/bpf: Test allowing NULL buffer in
- dynptr slice
+Message-ID: <20230418014037.2412394-5-drosen@google.com>
+Subject: [RFC PATCH v3 04/37] fs: Generic function to convert iocb to rw flags
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>
@@ -70,68 +69,107 @@ Cc:     Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
         Jonathan Corbet <corbet@lwn.net>,
         Joanne Koong <joannelkoong@gmail.com>,
         Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com,
-        Daniel Rosenberg <drosen@google.com>
+        Alessio Balsini <balsini@google.com>,
+        Alessio Balsini <balsini@android.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_dynptr_slice(_rw) no longer requires a buffer for verification. If the
-buffer is needed, but not present, the function will return NULL.
+From: Alessio Balsini <balsini@google.com>
 
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
+OverlayFS implements its own function to translate iocb flags into rw
+flags, so that they can be passed into another vfs call.
+With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
+Jens created a 1:1 matching between the iocb flags and rw flags,
+simplifying the conversion.
+
+Reduce the OverlayFS code by making the flag conversion function generic
+and reusable.
+
+Signed-off-by: Alessio Balsini <balsini@android.com>
 ---
- .../testing/selftests/bpf/prog_tests/dynptr.c |  1 +
- .../selftests/bpf/progs/dynptr_success.c      | 21 +++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ fs/overlayfs/file.c | 23 +++++------------------
+ include/linux/fs.h  |  5 +++++
+ 2 files changed, 10 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-index d176c34a7d2e..db22cad32657 100644
---- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -20,6 +20,7 @@ static struct {
- 	{"test_ringbuf", SETUP_SYSCALL_SLEEP},
- 	{"test_skb_readonly", SETUP_SKB_PROG},
- 	{"test_dynptr_skb_data", SETUP_SKB_PROG},
-+	{"test_dynptr_skb_nobuff", SETUP_SKB_PROG},
- };
+diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+index 7c04f033aadd..759893e4da04 100644
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@ -15,6 +15,8 @@
+ #include <linux/fs.h>
+ #include "overlayfs.h"
  
- static void verify_success(const char *prog_name, enum test_setup_type setup_type)
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index b2fa6c47ecc0..a059ed8d4590 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -207,3 +207,24 @@ int test_dynptr_skb_data(struct __sk_buff *skb)
- 
- 	return 1;
++#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
++
+ struct ovl_aio_req {
+ 	struct kiocb iocb;
+ 	refcount_t ref;
+@@ -241,22 +243,6 @@ static void ovl_file_accessed(struct file *file)
+ 	touch_atime(&file->f_path);
  }
-+
-+SEC("?cgroup_skb/egress")
-+int test_dynptr_skb_no_buff(struct __sk_buff *skb)
+ 
+-static rwf_t ovl_iocb_to_rwf(int ifl)
+-{
+-	rwf_t flags = 0;
+-
+-	if (ifl & IOCB_NOWAIT)
+-		flags |= RWF_NOWAIT;
+-	if (ifl & IOCB_HIPRI)
+-		flags |= RWF_HIPRI;
+-	if (ifl & IOCB_DSYNC)
+-		flags |= RWF_DSYNC;
+-	if (ifl & IOCB_SYNC)
+-		flags |= RWF_SYNC;
+-
+-	return flags;
+-}
+-
+ static inline void ovl_aio_put(struct ovl_aio_req *aio_req)
+ {
+ 	if (refcount_dec_and_test(&aio_req->ref)) {
+@@ -316,7 +302,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+ 	if (is_sync_kiocb(iocb)) {
+ 		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
+-				    ovl_iocb_to_rwf(iocb->ki_flags));
++				    iocb_to_rw_flags(iocb->ki_flags,
++						     OVL_IOCB_MASK));
+ 	} else {
+ 		struct ovl_aio_req *aio_req;
+ 
+@@ -380,7 +367,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	if (is_sync_kiocb(iocb)) {
+ 		file_start_write(real.file);
+ 		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
+-				     ovl_iocb_to_rwf(ifl));
++				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
+ 		file_end_write(real.file);
+ 		/* Update size */
+ 		ovl_copyattr(inode);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index c85916e9f7db..c849074f44b7 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3009,6 +3009,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+ 	return 0;
+ }
+ 
++static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
 +{
-+	struct bpf_dynptr ptr;
-+	__u64 *data;
-+
-+	if (bpf_dynptr_from_skb(skb, 0, &ptr)) {
-+		err = 1;
-+		return 1;
-+	}
-+
-+	/* This should return NULL. SKB may require a buffer */
-+	data = bpf_dynptr_slice(&ptr, 0, NULL, 1);
-+	if (data) {
-+		err = 2;
-+		return 1;
-+	}
-+
-+	return 1;
++	return ifl & iocb_mask;
 +}
++
+ static inline ino_t parent_ino(struct dentry *dentry)
+ {
+ 	ino_t res;
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
