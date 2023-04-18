@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8476E5BF4
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 10:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07506E5BFB
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 10:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjDRIXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 04:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S231297AbjDRI2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 04:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjDRIXv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 04:23:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D197
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:23:05 -0700 (PDT)
+        with ESMTP id S229706AbjDRI2B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 04:28:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D124E63
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681806184;
+        s=mimecast20190719; t=1681806433;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1e6yNdquB4xsiFuNvOIM1gyO7Q8DluDr1MXBiyIlSgQ=;
-        b=MCXdBDWZ6bbd0AV2zDSJ0/ZCuIlDvhMO1+WzcCdyGMFJGqrNOLmUdDbGVqv3w83vo7Dooa
-        x+6M/8gQ0UcyVandLRb76Bo4c3Wdrqs2JDhyY7Johfa+KrjpUjQHfX34NMIkFW3HCpwUO5
-        Z96PP/EqiBVqm6LfXT+D0pouP84xtSY=
+        bh=MREzUlrj7n/A3t+HzoYR0Y9aLZUZbKEGAr7lzy3qn2g=;
+        b=OJLsmc+nIV4+4hrKgs4cEAqAW5KV1DQw75kv+iA6QbANoo0XL9sdLFLCusTR530XeRicMp
+        rIwgOnJcg/788QsBz4zMT7hUFBYtmtfEo9xQ7cOdWVy/9JKbzhxNEE5VLW6sZqKoK1/yJJ
+        TO+qy84s35w5eprXEVSiIoo/e7jbOpE=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-353-DIFM3cwZO1mK-rKlC9KScg-1; Tue, 18 Apr 2023 04:23:03 -0400
-X-MC-Unique: DIFM3cwZO1mK-rKlC9KScg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f17352d605so2182645e9.0
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:23:03 -0700 (PDT)
+ us-mta-62-tLYjFbhzNy-RAezNItJpmA-1; Tue, 18 Apr 2023 04:27:11 -0400
+X-MC-Unique: tLYjFbhzNy-RAezNItJpmA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f0b1dcb286so3555605e9.1
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 01:27:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681806182; x=1684398182;
+        d=1e100.net; s=20221208; t=1681806430; x=1684398430;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1e6yNdquB4xsiFuNvOIM1gyO7Q8DluDr1MXBiyIlSgQ=;
-        b=ZSzI1sZE1I+ftXGAhVFcR3bitJHimG8FpLv08ITf+BdsxZCiT9ck+mvaO5qwsGAZzB
-         /Ic6tvotLPDndlSYIpsC/dmYgE0flUIx3v3Fk4o98cF5oZhWGe1Tr7fQw2ZNxL8JC+Id
-         IglFLXhdMF3A1P+OyVrl9gK5fK0Bnb/PJPn7X5Z+wZiLl4TyxT6dX9MfR5OcrZfq56G3
-         slc0Oq/WUFNGd7+CvI0Utoa8W2bfVzNIpHSJUbtpHWhml7VNUD7muQi0McEKYA1Qn6a7
-         pcV4ZNHZ29RyIDGjbxb0sxeUEjC51d2FFWjHnJOaP5fO7fXm4INOsdSLzlrqc4OGlZzT
-         xXUg==
-X-Gm-Message-State: AAQBX9coPwywmqsmaigUGdsUex7EvKqCdcMoQivBhoYj+7P81nUDUKVD
-        eQ7EPiXnexo9/BzKYwxazKn8efkuuefUpaYAvrzm8x9L4ytDuOjVT55lcvlFW7PdwdVvqtpdmiN
-        vvxUdp3kzrqCO
-X-Received: by 2002:a05:600c:4ece:b0:3f1:7a4b:bf17 with SMTP id g14-20020a05600c4ece00b003f17a4bbf17mr806384wmq.1.1681806182354;
-        Tue, 18 Apr 2023 01:23:02 -0700 (PDT)
-X-Google-Smtp-Source: AKy350byrwt8zKkA6KQmn/pUpaIQr+7BvV1zUoEFWmUjX9/O3dnGwLxRgvc7EG8p6aX1EbXFc/Y2sQ==
-X-Received: by 2002:a05:600c:4ece:b0:3f1:7a4b:bf17 with SMTP id g14-20020a05600c4ece00b003f17a4bbf17mr806359wmq.1.1681806182108;
-        Tue, 18 Apr 2023 01:23:02 -0700 (PDT)
+        bh=MREzUlrj7n/A3t+HzoYR0Y9aLZUZbKEGAr7lzy3qn2g=;
+        b=N4ClR01fq/XYBmp9hw8DY81/E7WO73tOu0rUyOuU7xrXNdn69+i7o5eAxNEt2bzNsm
+         3s348bzuOyTt7VDd0UyljRAl7riZfL0ob6lzN7QZD6PSgQibw4cA0mUZFs09zOvuyeg+
+         chhi2wLUheE41vB1RNl/anZU+gZoMR2hgf7vykTNJDcZJlnjTivFYFO2zSAv5oNR3MVE
+         pt5lRvF822bvQ8VvdNFE3+szrwu892V2MV0GTDVFyrlbHkHJoNGrbBFQyZwNVzdIjBbr
+         DHqe65wCuaYFdk0Khb7Lplg08ZQVHdiqURCh9Q9YDnIZnRWJ6wN1o3oouR3cnuOUXr6v
+         cVnw==
+X-Gm-Message-State: AAQBX9cK2yX8V8Tvgd+KFRPmPFOhJkg3VWF4Pb3y0HCr7eX/vR4iBWIF
+        lyogbLY7R4FsdVvquyQRCWu0eKAPDpXPweqRPxQNy3AmLCe9Dw3moud5Un1k4os2X8zDfKYf870
+        KKi6TSTeduoed
+X-Received: by 2002:a05:600c:3d18:b0:3f1:7490:e595 with SMTP id bh24-20020a05600c3d1800b003f17490e595mr3691444wmb.2.1681806430444;
+        Tue, 18 Apr 2023 01:27:10 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Zg0WNXAUtuScHxVjRqynn872fn99A/LUSVDsZY3KNP0ldqKWsFWEKpdQ3Rj3NLNpfKkAlNaQ==
+X-Received: by 2002:a05:600c:3d18:b0:3f1:7490:e595 with SMTP id bh24-20020a05600c3d1800b003f17490e595mr3691426wmb.2.1681806430142;
+        Tue, 18 Apr 2023 01:27:10 -0700 (PDT)
 Received: from gerbillo.redhat.com (146-241-229-200.dyn.eolo.it. [146.241.229.200])
-        by smtp.gmail.com with ESMTPSA id c22-20020a05600c0ad600b003f16fc33fbesm7853277wmr.17.2023.04.18.01.23.00
+        by smtp.gmail.com with ESMTPSA id jb17-20020a05600c54f100b003f17316ab46sm6031322wmb.13.2023.04.18.01.27.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 01:23:01 -0700 (PDT)
-Message-ID: <d872b08538aface37cb21eecb8a793a7063c4c49.camel@redhat.com>
-Subject: Re: [PATCH net-next v2 5/6] tsnep: Add XDP socket zero-copy RX
+        Tue, 18 Apr 2023 01:27:09 -0700 (PDT)
+Message-ID: <e4309e95bc98ff2d464dd26fc4f3e77a914a6cb5.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 6/6] tsnep: Add XDP socket zero-copy TX
  support
 From:   Paolo Abeni <pabeni@redhat.com>
 To:     Gerhard Engleder <gerhard@engleder-embedded.com>,
@@ -64,10 +64,10 @@ To:     Gerhard Engleder <gerhard@engleder-embedded.com>,
 Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
         bjorn@kernel.org, magnus.karlsson@intel.com,
         maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com
-Date:   Tue, 18 Apr 2023 10:22:59 +0200
-In-Reply-To: <20230415144256.27884-6-gerhard@engleder-embedded.com>
+Date:   Tue, 18 Apr 2023 10:27:08 +0200
+In-Reply-To: <20230415144256.27884-7-gerhard@engleder-embedded.com>
 References: <20230415144256.27884-1-gerhard@engleder-embedded.com>
-         <20230415144256.27884-6-gerhard@engleder-embedded.com>
+         <20230415144256.27884-7-gerhard@engleder-embedded.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
@@ -83,35 +83,102 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, 2023-04-15 at 16:42 +0200, Gerhard Engleder wrote:
-> @@ -892,6 +900,37 @@ static int tsnep_rx_desc_available(struct tsnep_rx *=
-rx)
->  		return rx->read - rx->write - 1;
+> Send and complete XSK pool frames within TX NAPI context. NAPI context
+> is triggered by ndo_xsk_wakeup.
+>=20
+> Test results with A53 1.2GHz:
+>=20
+> xdpsock txonly copy mode:
+>                    pps            pkts           1.00
+> tx                 284,409        11,398,144
+> Two CPUs with 100% and 10% utilization.
+>=20
+> xdpsock txonly zero-copy mode:
+>                    pps            pkts           1.00
+> tx                 511,929        5,890,368
+> Two CPUs with 100% and 1% utilization.
+>=20
+> Packet rate increases and CPU utilization is reduced.
+>=20
+> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+> ---
+>  drivers/net/ethernet/engleder/tsnep.h      |   2 +
+>  drivers/net/ethernet/engleder/tsnep_main.c | 131 +++++++++++++++++++--
+>  2 files changed, 123 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet=
+/engleder/tsnep.h
+> index d0bea605a1d1..11b29f56aaf9 100644
+> --- a/drivers/net/ethernet/engleder/tsnep.h
+> +++ b/drivers/net/ethernet/engleder/tsnep.h
+> @@ -70,6 +70,7 @@ struct tsnep_tx_entry {
+>  	union {
+>  		struct sk_buff *skb;
+>  		struct xdp_frame *xdpf;
+> +		bool zc;
+>  	};
+>  	size_t len;
+>  	DEFINE_DMA_UNMAP_ADDR(dma);
+> @@ -88,6 +89,7 @@ struct tsnep_tx {
+>  	int read;
+>  	u32 owner_counter;
+>  	int increment_owner_counter;
+> +	struct xsk_buff_pool *xsk_pool;
+> =20
+>  	u32 packets;
+>  	u32 bytes;
+> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/eth=
+ernet/engleder/tsnep_main.c
+> index 13e5d4438082..de51d0cc8935 100644
+> --- a/drivers/net/ethernet/engleder/tsnep_main.c
+> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
+> @@ -54,6 +54,8 @@
+>  #define TSNEP_TX_TYPE_SKB_FRAG	BIT(1)
+>  #define TSNEP_TX_TYPE_XDP_TX	BIT(2)
+>  #define TSNEP_TX_TYPE_XDP_NDO	BIT(3)
+> +#define TSNEP_TX_TYPE_XDP	(TSNEP_TX_TYPE_XDP_TX | TSNEP_TX_TYPE_XDP_NDO)
+> +#define TSNEP_TX_TYPE_XSK	BIT(4)
+> =20
+>  #define TSNEP_XDP_TX		BIT(0)
+>  #define TSNEP_XDP_REDIRECT	BIT(1)
+> @@ -322,13 +324,51 @@ static void tsnep_tx_init(struct tsnep_tx *tx)
+>  	tx->increment_owner_counter =3D TSNEP_RING_SIZE - 1;
 >  }
 > =20
-> +static void tsnep_rx_free_page_buffer(struct tsnep_rx *rx)
+> +static void tsnep_tx_enable(struct tsnep_tx *tx)
 > +{
-> +	struct page **page;
+> +	struct netdev_queue *nq;
 > +
-> +	page =3D rx->page_buffer;
-> +	while (*page) {
-> +		page_pool_put_full_page(rx->page_pool, *page, false);
-> +		*page =3D NULL;
-> +		page++;
-> +	}
+> +	nq =3D netdev_get_tx_queue(tx->adapter->netdev, tx->queue_index);
+> +
+> +	local_bh_disable();
+> +	__netif_tx_lock(nq, smp_processor_id());
+
+The above 2 statements could be replaced with:
+
+	__netif_tx_lock_bh()
+
+> +	netif_tx_wake_queue(nq);
+> +	__netif_tx_unlock(nq);
+> +	local_bh_enable();
+
+__netif_tx_unlock_bh()
+
 > +}
+> +
+> +static void tsnep_tx_disable(struct tsnep_tx *tx, struct napi_struct *na=
+pi)
+> +{
+> +	struct netdev_queue *nq;
+> +	u32 val;
+> +
+> +	nq =3D netdev_get_tx_queue(tx->adapter->netdev, tx->queue_index);
+> +
+> +	local_bh_disable();
+> +	__netif_tx_lock(nq, smp_processor_id());
 
-[...]
+Same here.
 
->  static void tsnep_rx_close(struct tsnep_rx *rx)
->  {
-> +	if (rx->xsk_pool)
-> +		tsnep_rx_free_page_buffer(rx);
-
-It looks like the above could call tsnep_rx_free_page_buffer() with
-each page ptr in rx->page_buffer not zero. If so
-tsnep_rx_free_page_buffer() will do an out of bound access.
-
-Also, why testing rx->xsk_pool instead of rx->page_buffer?
 
 Thanks!
 
