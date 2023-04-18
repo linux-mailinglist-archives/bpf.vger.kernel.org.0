@@ -2,104 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E28016E5782
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 04:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B818D6E57A7
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 04:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjDRCav (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 22:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
+        id S230347AbjDRCyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 22:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjDRCav (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 22:30:51 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4875B35B7;
-        Mon, 17 Apr 2023 19:30:49 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VgNI19z_1681785044;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VgNI19z_1681785044)
-          by smtp.aliyun-inc.com;
-          Tue, 18 Apr 2023 10:30:45 +0800
-Message-ID: <1681784379.909136-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next] xsk: introduce xsk_dma_ops
-Date:   Tue, 18 Apr 2023 10:19:39 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-References: <20230417032750.7086-1-xuanzhuo@linux.alibaba.com>
- <ZDzKAD2SNe1q/XA6@infradead.org>
- <1681711081.378984-2-xuanzhuo@linux.alibaba.com>
- <20230417115610.7763a87c@kernel.org>
- <20230417115753.7fb64b68@kernel.org>
- <CACGkMEtPNPXFThHt4aNm4g-fC1DqTLcDnB_iBWb9-cAOHMYV_A@mail.gmail.com>
- <20230417181950.5db68526@kernel.org>
-In-Reply-To: <20230417181950.5db68526@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230283AbjDRCyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 22:54:37 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FF45FDA
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 19:54:09 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-63d2ba63dddso386472b3a.2
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 19:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1681786449; x=1684378449;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rI8CSW8wZY6h2DetmThed8bwX0CVp8MeiGi3ooxUQA0=;
+        b=H+aEpkToTaqeRZMoNe5U647O5kYJ1IqlYabxWBmtbtWHnfrsp7FBJSyhjgGneIyc5X
+         csQLFLvJhDJVW2KFJrN+/e2D77QfJd6toFrE64v4EDK9N20OWmC1v58XBX4KImHw5H3y
+         h13jgJtHlNd7uTOSunITpA9tqXgqggbEYlfg8FsyLrDZHjouUFzRTtOXih85qjLuEndk
+         wmbU/raenCrq8HqGisML+MEOiZJvfmqeRvGbM4/9T9bHl2Ub4pGWxsZtB5Lemx/BqMio
+         SMn1S3ki+4Y4GBfexFR9UXeVuQ8DRhr/p7h+49fpKXh6LHFspnLtU904my5R/S9i/M0v
+         FLxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681786449; x=1684378449;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rI8CSW8wZY6h2DetmThed8bwX0CVp8MeiGi3ooxUQA0=;
+        b=PLrX3Y7VuWO8mJQt2eFgqEtq/jVrPGBpR1lyyMEZ+ZoosRGmPN3jitLsOSdpfwn3fb
+         ZB1CGKSoBjzHajuV8UzDkd1Xv1u7+ml343aEGim5KueYTfDfjQKDKKOftwGytvttueiy
+         t4QDHF8ZiX3NqYV0i4e7ccqfTRJvSD+AnObzIiWfLsygQl+2ukryk9ymOBcE5Q1K+HhZ
+         KlCVUz3VeeDtLlywc1z+XPTk9fCdyWjbpaMs/xuMTE7XzdvR8gn4kYaNCk48wzaMuNGL
+         Kt6yccLrny43oXxQDOUw9P2WfOs9yAwLLwJpykaTQkx5VUUcikFZS+ibFYZcicKNZBEb
+         dKEg==
+X-Gm-Message-State: AAQBX9c0mmU6+c2EteDinm57uZnL1wLsLm6K2j1R52nO83j5rmLiHTZc
+        DJ/eel5hRlj6Oj7Rgzg9miLpsQ==
+X-Google-Smtp-Source: AKy350YpQrpKPDJGeX+yABq7FPc9EADNX5sZ8C+tl27EDJLN7iicddp5XLV7FcqMPPxIZ7AK4Evc+A==
+X-Received: by 2002:a05:6a00:cc7:b0:637:920c:25fd with SMTP id b7-20020a056a000cc700b00637920c25fdmr26555641pfv.17.1681786449272;
+        Mon, 17 Apr 2023 19:54:09 -0700 (PDT)
+Received: from [10.71.57.173] ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id a8-20020a62bd08000000b0062dd993fdfcsm8194548pff.105.2023.04.17.19.54.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Apr 2023 19:54:08 -0700 (PDT)
+Message-ID: <0460e6ac-40f9-6e47-e121-87c824658482@bytedance.com>
+Date:   Tue, 18 Apr 2023 10:53:59 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.10.0
+Subject: Re: Re: [PATCH 1/2] bpf: support access variable length array of
+ integer type
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, yangzhenze@bytedance.com,
+        wangdongdong.6@bytedance.com, zhouchengming@bytedance.com
+References: <20230417080749.39074-1-zhoufeng.zf@bytedance.com>
+ <20230417080749.39074-2-zhoufeng.zf@bytedance.com>
+ <20230418000833.keqhb7kdpibgaodt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <20230418000833.keqhb7kdpibgaodt@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 17 Apr 2023 18:19:50 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Tue, 18 Apr 2023 09:07:30 +0800 Jason Wang wrote:
-> > > > Would you mind explaining this a bit more to folks like me who are not
-> > > > familiar with VirtIO?  DMA API is supposed to hide the DMA mapping
-> > > > details from the stack, why is it not sufficient here.
-> >
-> > The reason is that legacy virtio device don't use DMA(vring_use_dma_api()).
-> >
-> > The AF_XDP assumes DMA for netdev doesn't work in this case. We need a
-> > way to make it work.
->
-> Can we not push this down to be bus level? virtio has its own bus it
-> can plug in whatever magic it wants into dma ops.
+在 2023/4/18 08:08, Alexei Starovoitov 写道:
+> On Mon, Apr 17, 2023 at 04:07:48PM +0800, Feng zhou wrote:
+>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>
+>> After this commit:
+>> bpf: Support variable length array in tracing programs (9c5f8a1008a1)
+>> Trace programs can access variable length array, but for structure
+>> type. This patch adds support for integer type.
+>>
+>> Example:
+>> Hook load_balance
+>> struct sched_domain {
+>> 	...
+>> 	unsigned long span[];
+>> }
+>>
+>> The access: sd->span[0].
+> The use case makes sense.
+> Please add it as a selftest. Either combine it with patch 2 or another patch 3.
+> and then resubmit.
+> Make sure to use [PATCH bpf-next] subject, so BPF CI knows how to test it.
 
-It is actually not possible.
-
-[1] https://lore.kernel.org/virtualization/ZDUCDeYLqAwQVJe7@infradead.org/
-
->
-> Doesn't have to be super fast for af_xdp's sake - for af_xdp dma mapping
-> is on the control path. You can keep using the if (vring_use_dma_api())
-> elsewhere for now if there is a perf concern.
-
-Sorry, I don't particularly understand this passage.
-
-Now, the question is if vring_use_dma_api() is false, then we cannot use DMA
-API in AF_XDP.
-
-The good news is that except for some of sync's operations, they are in the
-control path. I think it is very small effect on performance. Because in most
-case the sync is unnecessary.
-
-
->
-> Otherwise it really seems like we're bubbling up a virtio hack into
-> generic code :(
-
-Can we understand the purpose of this matter to back the DMA operation to the
-driver? Although I don't know if there are other drivers with similar
-requirements.
-
-Thanks.
-
-
+Will do, thanks.
 
