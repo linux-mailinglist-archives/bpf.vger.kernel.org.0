@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BDA6E572F
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 03:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703F26E574D
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 04:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjDRB4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Apr 2023 21:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
+        id S229951AbjDRCKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Apr 2023 22:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjDRB4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 21:56:00 -0400
+        with ESMTP id S229621AbjDRCKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 22:10:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F559769D;
-        Mon, 17 Apr 2023 18:55:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049841A1;
+        Mon, 17 Apr 2023 19:10:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7486062BCF;
-        Tue, 18 Apr 2023 01:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 435E8C433EF;
-        Tue, 18 Apr 2023 01:54:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B01062C38;
+        Tue, 18 Apr 2023 02:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D1335C433A0;
+        Tue, 18 Apr 2023 02:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681782871;
-        bh=34P0NtihnnKfz477IsAMctQ/pLvbKFNzLBx7JaoIYl8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iMgFF4RCqcxwsBBPLWq4eFrgdBkVMrKhs8plXoMbKsMOg/BqbygYjJpgMe9ry1nkP
-         Zw3Uo33JuTvNMp/ygca7VwgdqP2M0TwYLR8UxydQxBwKBVy0IOoEhy2qrFH6hLaMiZ
-         TQ4fAO6ixlRHfdx2OcNVgLTFl63gTvApYiHP7EM3aLfP3QtlidKz52AGFPFLpVkw/M
-         IIrog5jBuRsSrMwGpC0PKqMDwKSppCk1ljVNekiD2FbDjk+lk9wF8+VuPBvZ4Wkrcn
-         JAOtGHamei2bhFr0MxKky0Lnu1M10mPMPOTW1zGcgX41NP/FfMwbFJzV058e7u/d7r
-         grnIitYPy5xnA==
-Date:   Mon, 17 Apr 2023 18:54:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net v1] virtio_net: bugfix overflow inside
- xdp_linearize_page()
-Message-ID: <20230417185430.6b3ad2b9@kernel.org>
-In-Reply-To: <20230414060835.74975-1-xuanzhuo@linux.alibaba.com>
-References: <20230414060835.74975-1-xuanzhuo@linux.alibaba.com>
+        s=k20201202; t=1681783819;
+        bh=MvfqSWbs8IULCqRVEwCUVudPRPAhWInXRLQP6KdLf4g=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=N8dDczYqartLaUqoIyTNnBT8ml/i6GU3vvQJNL5tL0bcr7JsVZSDKTp30lcVwo6GV
+         xdS7LOzJs9sHbMRrAbSswEyY4ldrTzo8T08AnKJQC65WN9LOg0h5Uaj0ouhpNnzzqP
+         ubW3A/MVAXg4hxM3y/5y3mhos/Bh+v+XHRqYkB+IAmLOOmteXoiEVpRLxuj2vzhSKy
+         6PT2Qd/xDA6jCsHU7UKbRYi6+YBL7+pc4BJysYeGpUI0u9270ymphtBqPryzPUWfP7
+         mDLX3mQXeWGGOvGXJwpXHoD+n3Zz6vYEZRx9u6WzWqSXpr6P+WD9mI7GdTUuD+g/G4
+         n6zLzufhQHkVw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A8DA6C40C5E;
+        Tue, 18 Apr 2023 02:10:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v6 0/3] XDP Rx HWTS metadata for stmmac driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168178381968.5081.7896199883043114155.git-patchwork-notify@kernel.org>
+Date:   Tue, 18 Apr 2023 02:10:19 +0000
+References: <20230415064503.3225835-1-yoong.siang.song@intel.com>
+In-Reply-To: <20230415064503.3225835-1-yoong.siang.song@intel.com>
+To:     Song@ci.codeaurora.org, Yoong Siang <yoong.siang.song@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, sdf@google.com, alexanderduyck@fb.com,
+        brouer@redhat.com, boon.leong.ong@intel.com,
+        jacob.e.keller@intel.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xdp-hints@xdp-project.net
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,19 +64,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 14 Apr 2023 14:08:35 +0800 Xuan Zhuo wrote:
-> Here we copy the data from the original buf to the new page. But we
-> not check that it may be overflow.
-> 
-> As long as the size received(including vnethdr) is greater than 3840
-> (PAGE_SIZE -VIRTIO_XDP_HEADROOM). Then the memcpy will overflow.
-> 
-> And this is completely possible, as long as the MTU is large, such
-> as 4096. In our test environment, this will cause crash. Since crash is
-> caused by the written memory, it is meaningless, so I do not include it.
-> 
-> Fixes: 72979a6c3590 ("virtio_net: xdp, add slowpath case for non contiguous buffers")
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+Hello:
 
-Applied, thanks! Commit 853618d5886b in net.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sat, 15 Apr 2023 14:45:00 +0800 you wrote:
+> Implemented XDP receive hardware timestamp metadata for stmmac driver.
+> 
+> This patchset is tested with tools/testing/selftests/bpf/xdp_hw_metadata.
+> Below are the test steps and results.
+> 
+> Command on DUT:
+> 	sudo ./xdp_hw_metadata <interface name>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v6,1/3] net: stmmac: introduce wrapper for struct xdp_buff
+    https://git.kernel.org/netdev/net-next/c/5b24324a907c
+  - [net-next,v6,2/3] net: stmmac: add Rx HWTS metadata to XDP receive pkt
+    https://git.kernel.org/netdev/net-next/c/e3f9c3e34840
+  - [net-next,v6,3/3] net: stmmac: add Rx HWTS metadata to XDP ZC receive pkt
+    https://git.kernel.org/netdev/net-next/c/9570df353309
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
