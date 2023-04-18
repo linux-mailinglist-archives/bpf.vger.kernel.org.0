@@ -2,117 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368496E5E6F
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 12:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C6E6E5E7F
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 12:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjDRKRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 06:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        id S231336AbjDRKUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 06:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjDRKRv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 06:17:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A363C12
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 03:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681813022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ApoV6tQ/8bWNgsumqAtwyvPE2nYx/deLF6XAnhG6Ezo=;
-        b=KnEh9QNOaFkB0T29JkpbGDUKFLYwA8s7JwMuR2o4cx8V3TOHEx3hvOQjX1cwsUdLX1GFav
-        QG0T7Xl/wSvT9vFZ+lJtiI5PGvVK6oSEV5HLAIW9Bvrtwnw/rnEZl1Vd0EAblgwDS/U+mf
-        eU3gSltnqBXmYIgCWeUb6S4jVNiRVhA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-623-zuI5xRlVOhadMQHmXqGEPw-1; Tue, 18 Apr 2023 06:17:01 -0400
-X-MC-Unique: zuI5xRlVOhadMQHmXqGEPw-1
-Received: by mail-ej1-f72.google.com with SMTP id kr13-20020a1709079a0d00b0093be92e6ff4so10186811ejc.23
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 03:17:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681813020; x=1684405020;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ApoV6tQ/8bWNgsumqAtwyvPE2nYx/deLF6XAnhG6Ezo=;
-        b=EVgO2NVWHP2MQpA33hdQsADCu5wQYAh6WxIB6T38p28lLlZ7+xZKKnMpcTFnzUCT9v
-         AwOMVYdwJdqS0tIrfcdHuPc7Nmy3NBW8HKDD6Q0qeQ6o0V2xECm+TF+jwry5i2qrg7/e
-         4j4c0ddtxZIHoiwzw9PN4lWpeezXeikNQ6zDNs7VFAGXZvb99HzbG5EATnRlEB0MjM4+
-         j+zSWheRFWMKPWAOcj3y/8yDgyu2siJ1g6/8GLTFoBzuodSZ/HxOuXe9PZ11Lu+Ez4OJ
-         gIZuKsV7Nhbg59wjot7A/SnXRSqylBG3I01mfBtWUuQP3Bq9KqguXGZkc5a3zC9irRjs
-         +o6Q==
-X-Gm-Message-State: AAQBX9eM9iqNubjbeO2WQ30MV22nwBclXAesIcGEp4uT9Td0KO8jwSKy
-        jJpeqBBUS67SWtmzYhpFx058UftLAhfpsGxF/x5QaQnPfTAwEp5iQ9zo/wcb1XjDVfHRiesoU/E
-        YfdOyKhH8Pfb6
-X-Received: by 2002:a17:907:838d:b0:947:4828:4399 with SMTP id mv13-20020a170907838d00b0094748284399mr7869348ejc.12.1681813020428;
-        Tue, 18 Apr 2023 03:17:00 -0700 (PDT)
-X-Google-Smtp-Source: AKy350a+9FUztTLaTcXx8PE3l5G/TqPZEC561sVQryR4LTqFxkdQ1s67cLIsu1//A4fVbtZjLVD1Og==
-X-Received: by 2002:a17:907:838d:b0:947:4828:4399 with SMTP id mv13-20020a170907838d00b0094748284399mr7869332ejc.12.1681813020026;
-        Tue, 18 Apr 2023 03:17:00 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z17-20020a170906715100b0093f822321fesm7835354ejj.137.2023.04.18.03.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 03:16:59 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 99F12AA85EB; Tue, 18 Apr 2023 12:16:58 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kal Cutter Conley <kal.conley@dectris.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-In-Reply-To: <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
-References: <20230406130205.49996-1-kal.conley@dectris.com>
- <20230406130205.49996-2-kal.conley@dectris.com> <87sfdckgaa.fsf@toke.dk>
- <ZDBEng1KEEG5lOA6@boxer>
- <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk>
- <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
- <87ile011kz.fsf@toke.dk>
- <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 18 Apr 2023 12:16:58 +0200
-Message-ID: <874jpdwl45.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231337AbjDRKTs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 06:19:48 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906847AA9;
+        Tue, 18 Apr 2023 03:19:35 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VgQLRIi_1681813160;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VgQLRIi_1681813160)
+          by smtp.aliyun-inc.com;
+          Tue, 18 Apr 2023 18:19:31 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [RFC PATCH bpf-next v2 0/5] net/smc: Introduce BPF injection capability 
+Date:   Tue, 18 Apr 2023 18:19:15 +0800
+Message-Id: <1681813160-120214-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kal Cutter Conley <kal.conley@dectris.com> writes:
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
->> In addition, presumably when using this mode, the other XDP actions
->> (XDP_PASS, XDP_REDIRECT to other targets) would stop working unless we
->> add special handling for that in the kernel? We'll definitely need to
->> handle that somehow...
->
-> I am not familiar with all the details here. Do you know a reason why
-> these cases would stop working / why special handling would be needed?
-> For example, if I have a UMEM that uses hugepages and XDP_PASS is
-> returned, then the data is just copied into an SKB right? SKBs can
-> also be created directly from hugepages AFAIK. So I don't understand
-> what the issue would be. Can someone explain this concern?
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-Well, I was asking :) It may well be that the SKB path just works; did
-you test this? Pretty sure XDP_REDIRECT to another device won't, though?
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
--Toke
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
+
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
+
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This patches implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+v2 -> v1:
+
+1. Fix complie error if CONFIG_BPF_SYSCALL set while CONFIG_SMC_BPF not.
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202304070326.mYVdiX9k-lkp@intel.com/
+
+2. Fix potential reference leaks, smc_destruct may be prematurely retired
+due to pre conditions.
+
+D. Wythe (5):
+  net/smc: move smc_sock related structure definition
+  net/smc: net/smc: allow smc to negotiate protocols on policies
+  net/smc: allow set or get smc negotiator by sockopt
+  bpf: add smc negotiator support in BPF struct_ops
+  bpf/selftests: add selftest for SMC bpf capability
+
+ include/net/smc.h                                | 268 +++++++++++++++++
+ include/uapi/linux/smc.h                         |   1 +
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   1 +
+ net/smc/Kconfig                                  |  13 +
+ net/smc/af_smc.c                                 | 203 ++++++++++---
+ net/smc/bpf_smc.c                                | 360 +++++++++++++++++++++++
+ net/smc/smc.h                                    | 224 --------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
+ 10 files changed, 1187 insertions(+), 259 deletions(-)
+ create mode 100644 net/smc/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
 
