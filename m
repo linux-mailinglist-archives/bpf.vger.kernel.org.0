@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 482626E55B6
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 02:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B988C6E55B3
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 02:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjDRAWP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 17 Apr 2023 20:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        id S230053AbjDRAWJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 17 Apr 2023 20:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjDRAWK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Apr 2023 20:22:10 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8E14EE9
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:08 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 33HLJPr5018711
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:07 -0700
+        with ESMTP id S230045AbjDRAWI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Apr 2023 20:22:08 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9763AB3
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:04 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33HNwlkA019870
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:04 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3q0ehp128w-7
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q1g8683hw-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:07 -0700
-Received: from twshared25760.37.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 17 Apr 2023 17:22:04 -0700
+Received: from twshared52232.38.frc1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 17 Apr 2023 17:22:04 -0700
+ 15.1.2507.17; Mon, 17 Apr 2023 17:22:03 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id E77122E4F3595; Mon, 17 Apr 2023 17:21:57 -0700 (PDT)
+        id 4D0102E4F359D; Mon, 17 Apr 2023 17:21:59 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 4/6] selftests/bpf: add missing __weak kfunc log fixup test
-Date:   Mon, 17 Apr 2023 17:21:46 -0700
-Message-ID: <20230418002148.3255690-5-andrii@kernel.org>
+Subject: [PATCH bpf-next 5/6] libbpf: move bpf_for(), bpf_for_each(), and bpf_repeat() into bpf_helpers.h
+Date:   Mon, 17 Apr 2023 17:21:47 -0700
+Message-ID: <20230418002148.3255690-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230418002148.3255690-1-andrii@kernel.org>
 References: <20230418002148.3255690-1-andrii@kernel.org>
@@ -41,8 +41,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: nKStm-WMGAgBioxb9eNCpxiX6PZKcvF4
-X-Proofpoint-GUID: nKStm-WMGAgBioxb9eNCpxiX6PZKcvF4
+X-Proofpoint-GUID: JYHjx7DDO_wS0fweITBdSwifySXldGSO
+X-Proofpoint-ORIG-GUID: JYHjx7DDO_wS0fweITBdSwifySXldGSO
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-17_14,2023-04-17_01,2023-02-09_01
@@ -56,81 +56,241 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test validating that libbpf correctly poisons and reports __weak
-unresolved kfuncs in post-processed verifier log.
+To make it easier for bleeding-edge BPF applications, such as sched_ext,
+to utilize open-coded iterators, move bpf_for(), bpf_for_each(), and
+bpf_repeat() macros from selftests/bpf-internal bpf_misc.h helper, to
+libbpf-provided bpf_helpers.h header.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/log_fixup.c      | 31 +++++++++++++++++++
- .../selftests/bpf/progs/test_log_fixup.c      | 10 ++++++
- 2 files changed, 41 insertions(+)
+ tools/lib/bpf/bpf_helpers.h                  | 103 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_misc.h | 103 -------------------
+ 2 files changed, 103 insertions(+), 103 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/log_fixup.c b/tools/testing/selftests/bpf/prog_tests/log_fixup.c
-index bc27170bdeb0..dba71d98a227 100644
---- a/tools/testing/selftests/bpf/prog_tests/log_fixup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/log_fixup.c
-@@ -135,6 +135,35 @@ static void missing_map(void)
- 	test_log_fixup__destroy(skel);
- }
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index e7e1a8acc299..525dec66c129 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -291,4 +291,107 @@ enum libbpf_tristate {
+ /* Helper macro to print out debug messages */
+ #define bpf_printk(fmt, args...) ___bpf_pick_printk(args)(fmt, ##args)
  
-+static void missing_kfunc(void)
-+{
-+	char log_buf[8 * 1024];
-+	struct test_log_fixup* skel;
-+	int err;
++struct bpf_iter_num;
 +
-+	skel = test_log_fixup__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
++extern int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end) __ksym;
++extern int *bpf_iter_num_next(struct bpf_iter_num *it) __ksym;
++extern void bpf_iter_num_destroy(struct bpf_iter_num *it) __ksym;
 +
-+	bpf_program__set_autoload(skel->progs.use_missing_kfunc, true);
-+	bpf_program__set_log_buf(skel->progs.use_missing_kfunc, log_buf, sizeof(log_buf));
++#ifndef bpf_for_each
++/* bpf_for_each(iter_type, cur_elem, args...) provides generic construct for
++ * using BPF open-coded iterators without having to write mundane explicit
++ * low-level loop logic. Instead, it provides for()-like generic construct
++ * that can be used pretty naturally. E.g., for some hypothetical cgroup
++ * iterator, you'd write:
++ *
++ * struct cgroup *cg, *parent_cg = <...>;
++ *
++ * bpf_for_each(cgroup, cg, parent_cg, CG_ITER_CHILDREN) {
++ *     bpf_printk("Child cgroup id = %d", cg->cgroup_id);
++ *     if (cg->cgroup_id == 123)
++ *         break;
++ * }
++ *
++ * I.e., it looks almost like high-level for each loop in other languages,
++ * supports continue/break, and is verifiable by BPF verifier.
++ *
++ * For iterating integers, the difference betwen bpf_for_each(num, i, N, M)
++ * and bpf_for(i, N, M) is in that bpf_for() provides additional proof to
++ * verifier that i is in [N, M) range, and in bpf_for_each() case i is `int
++ * *`, not just `int`. So for integers bpf_for() is more convenient.
++ *
++ * Note: this macro relies on C99 feature of allowing to declare variables
++ * inside for() loop, bound to for() loop lifetime. It also utilizes GCC
++ * extension: __attribute__((cleanup(<func>))), supported by both GCC and
++ * Clang.
++ */
++#define bpf_for_each(type, cur, args...) for (							\
++	/* initialize and define destructor */							\
++	struct bpf_iter_##type ___it __attribute__((aligned(8), /* enforce, just in case */,	\
++						    cleanup(bpf_iter_##type##_destroy))),	\
++	/* ___p pointer is just to call bpf_iter_##type##_new() *once* to init ___it */		\
++			       *___p __attribute__((unused)) = (				\
++					bpf_iter_##type##_new(&___it, ##args),			\
++	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
++	/* for bpf_iter_##type##_destroy() when used from cleanup() attribute */		\
++					(void)bpf_iter_##type##_destroy, (void *)0);		\
++	/* iteration and termination check */							\
++	(((cur) = bpf_iter_##type##_next(&___it)));						\
++)
++#endif /* bpf_for_each */
 +
-+	err = test_log_fixup__load(skel);
-+	if (!ASSERT_ERR(err, "load_fail"))
-+		goto cleanup;
++#ifndef bpf_for
++/* bpf_for(i, start, end) implements a for()-like looping construct that sets
++ * provided integer variable *i* to values starting from *start* through,
++ * but not including, *end*. It also proves to BPF verifier that *i* belongs
++ * to range [start, end), so this can be used for accessing arrays without
++ * extra checks.
++ *
++ * Note: *start* and *end* are assumed to be expressions with no side effects
++ * and whose values do not change throughout bpf_for() loop execution. They do
++ * not have to be statically known or constant, though.
++ *
++ * Note: similarly to bpf_for_each(), it relies on C99 feature of declaring for()
++ * loop bound variables and cleanup attribute, supported by GCC and Clang.
++ */
++#define bpf_for(i, start, end) for (								\
++	/* initialize and define destructor */							\
++	struct bpf_iter_num ___it __attribute__((aligned(8), /* enforce, just in case */	\
++						 cleanup(bpf_iter_num_destroy))),		\
++	/* ___p pointer is necessary to call bpf_iter_num_new() *once* to init ___it */		\
++			    *___p __attribute__((unused)) = (					\
++				bpf_iter_num_new(&___it, (start), (end)),			\
++	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
++	/* for bpf_iter_num_destroy() when used from cleanup() attribute */			\
++				(void)bpf_iter_num_destroy, (void *)0);				\
++	({											\
++		/* iteration step */								\
++		int *___t = bpf_iter_num_next(&___it);						\
++		/* termination and bounds check */						\
++		(___t && ((i) = *___t, (i) >= (start) && (i) < (end)));				\
++	});											\
++)
++#endif /* bpf_for */
 +
-+	ASSERT_HAS_SUBSTR(log_buf,
-+			  "0: <invalid kfunc call>\n"
-+			  "kfunc 'bpf_nonexistent_kfunc' is referenced but wasn't resolved\n",
-+			  "log_buf");
++#ifndef bpf_repeat
++/* bpf_repeat(N) performs N iterations without exposing iteration number
++ *
++ * Note: similarly to bpf_for_each(), it relies on C99 feature of declaring for()
++ * loop bound variables and cleanup attribute, supported by GCC and Clang.
++ */
++#define bpf_repeat(N) for (									\
++	/* initialize and define destructor */							\
++	struct bpf_iter_num ___it __attribute__((aligned(8), /* enforce, just in case */	\
++						 cleanup(bpf_iter_num_destroy))),		\
++	/* ___p pointer is necessary to call bpf_iter_num_new() *once* to init ___it */		\
++			    *___p __attribute__((unused)) = (					\
++				bpf_iter_num_new(&___it, 0, (N)),				\
++	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
++	/* for bpf_iter_num_destroy() when used from cleanup() attribute */			\
++				(void)bpf_iter_num_destroy, (void *)0);				\
++	bpf_iter_num_next(&___it);								\
++	/* nothing here  */									\
++)
++#endif /* bpf_repeat */
 +
-+	if (env.verbosity > VERBOSE_NONE)
-+		printf("LOG:   \n=================\n%s=================\n", log_buf);
-+
-+cleanup:
-+	test_log_fixup__destroy(skel);
-+}
-+
- void test_log_fixup(void)
- {
- 	if (test__start_subtest("bad_core_relo_trunc_none"))
-@@ -147,4 +176,6 @@ void test_log_fixup(void)
- 		bad_core_relo_subprog();
- 	if (test__start_subtest("missing_map"))
- 		missing_map();
-+	if (test__start_subtest("missing_kfunc"))
-+		missing_kfunc();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_log_fixup.c b/tools/testing/selftests/bpf/progs/test_log_fixup.c
-index 60450cb0e72e..1bd48feaaa42 100644
---- a/tools/testing/selftests/bpf/progs/test_log_fixup.c
-+++ b/tools/testing/selftests/bpf/progs/test_log_fixup.c
-@@ -61,4 +61,14 @@ int use_missing_map(const void *ctx)
- 	return value != NULL;
- }
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 6e3b4903c541..3b307de8dab9 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -121,107 +121,4 @@
+ /* make it look to compiler like value is read and written */
+ #define __sink(expr) asm volatile("" : "+g"(expr))
  
-+extern int bpf_nonexistent_kfunc(void) __ksym __weak;
-+
-+SEC("?raw_tp/sys_enter")
-+int use_missing_kfunc(const void *ctx)
-+{
-+	bpf_nonexistent_kfunc();
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
+-struct bpf_iter_num;
+-
+-extern int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end) __ksym;
+-extern int *bpf_iter_num_next(struct bpf_iter_num *it) __ksym;
+-extern void bpf_iter_num_destroy(struct bpf_iter_num *it) __ksym;
+-
+-#ifndef bpf_for_each
+-/* bpf_for_each(iter_type, cur_elem, args...) provides generic construct for
+- * using BPF open-coded iterators without having to write mundane explicit
+- * low-level loop logic. Instead, it provides for()-like generic construct
+- * that can be used pretty naturally. E.g., for some hypothetical cgroup
+- * iterator, you'd write:
+- *
+- * struct cgroup *cg, *parent_cg = <...>;
+- *
+- * bpf_for_each(cgroup, cg, parent_cg, CG_ITER_CHILDREN) {
+- *     bpf_printk("Child cgroup id = %d", cg->cgroup_id);
+- *     if (cg->cgroup_id == 123)
+- *         break;
+- * }
+- *
+- * I.e., it looks almost like high-level for each loop in other languages,
+- * supports continue/break, and is verifiable by BPF verifier.
+- *
+- * For iterating integers, the difference betwen bpf_for_each(num, i, N, M)
+- * and bpf_for(i, N, M) is in that bpf_for() provides additional proof to
+- * verifier that i is in [N, M) range, and in bpf_for_each() case i is `int
+- * *`, not just `int`. So for integers bpf_for() is more convenient.
+- *
+- * Note: this macro relies on C99 feature of allowing to declare variables
+- * inside for() loop, bound to for() loop lifetime. It also utilizes GCC
+- * extension: __attribute__((cleanup(<func>))), supported by both GCC and
+- * Clang.
+- */
+-#define bpf_for_each(type, cur, args...) for (							\
+-	/* initialize and define destructor */							\
+-	struct bpf_iter_##type ___it __attribute__((aligned(8), /* enforce, just in case */,	\
+-						    cleanup(bpf_iter_##type##_destroy))),	\
+-	/* ___p pointer is just to call bpf_iter_##type##_new() *once* to init ___it */		\
+-			       *___p __attribute__((unused)) = (				\
+-					bpf_iter_##type##_new(&___it, ##args),			\
+-	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
+-	/* for bpf_iter_##type##_destroy() when used from cleanup() attribute */		\
+-					(void)bpf_iter_##type##_destroy, (void *)0);		\
+-	/* iteration and termination check */							\
+-	(((cur) = bpf_iter_##type##_next(&___it)));						\
+-)
+-#endif /* bpf_for_each */
+-
+-#ifndef bpf_for
+-/* bpf_for(i, start, end) implements a for()-like looping construct that sets
+- * provided integer variable *i* to values starting from *start* through,
+- * but not including, *end*. It also proves to BPF verifier that *i* belongs
+- * to range [start, end), so this can be used for accessing arrays without
+- * extra checks.
+- *
+- * Note: *start* and *end* are assumed to be expressions with no side effects
+- * and whose values do not change throughout bpf_for() loop execution. They do
+- * not have to be statically known or constant, though.
+- *
+- * Note: similarly to bpf_for_each(), it relies on C99 feature of declaring for()
+- * loop bound variables and cleanup attribute, supported by GCC and Clang.
+- */
+-#define bpf_for(i, start, end) for (								\
+-	/* initialize and define destructor */							\
+-	struct bpf_iter_num ___it __attribute__((aligned(8), /* enforce, just in case */	\
+-						 cleanup(bpf_iter_num_destroy))),		\
+-	/* ___p pointer is necessary to call bpf_iter_num_new() *once* to init ___it */		\
+-			    *___p __attribute__((unused)) = (					\
+-				bpf_iter_num_new(&___it, (start), (end)),			\
+-	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
+-	/* for bpf_iter_num_destroy() when used from cleanup() attribute */			\
+-				(void)bpf_iter_num_destroy, (void *)0);				\
+-	({											\
+-		/* iteration step */								\
+-		int *___t = bpf_iter_num_next(&___it);						\
+-		/* termination and bounds check */						\
+-		(___t && ((i) = *___t, (i) >= (start) && (i) < (end)));				\
+-	});											\
+-)
+-#endif /* bpf_for */
+-
+-#ifndef bpf_repeat
+-/* bpf_repeat(N) performs N iterations without exposing iteration number
+- *
+- * Note: similarly to bpf_for_each(), it relies on C99 feature of declaring for()
+- * loop bound variables and cleanup attribute, supported by GCC and Clang.
+- */
+-#define bpf_repeat(N) for (									\
+-	/* initialize and define destructor */							\
+-	struct bpf_iter_num ___it __attribute__((aligned(8), /* enforce, just in case */	\
+-						 cleanup(bpf_iter_num_destroy))),		\
+-	/* ___p pointer is necessary to call bpf_iter_num_new() *once* to init ___it */		\
+-			    *___p __attribute__((unused)) = (					\
+-				bpf_iter_num_new(&___it, 0, (N)),				\
+-	/* this is a workaround for Clang bug: it currently doesn't emit BTF */			\
+-	/* for bpf_iter_num_destroy() when used from cleanup() attribute */			\
+-				(void)bpf_iter_num_destroy, (void *)0);				\
+-	bpf_iter_num_next(&___it);								\
+-	/* nothing here  */									\
+-)
+-#endif /* bpf_repeat */
+-
+ #endif
 -- 
 2.34.1
 
