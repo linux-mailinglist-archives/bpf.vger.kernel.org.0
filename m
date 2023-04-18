@@ -2,134 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B626E6077
-	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 13:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07446E607E
+	for <lists+bpf@lfdr.de>; Tue, 18 Apr 2023 13:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjDRL4L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 07:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S231192AbjDRL5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 07:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjDRLyK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 07:54:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D5C3580
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 04:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681818781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZXvHe+hqlmu93yWIU70NYfBDF1m9Fy56L1Ru9xyKRuE=;
-        b=QUgtIgYGARewpbXm8X57dL1T9zklS+6mSzLLuDiRgSeIEePRw3gnwg+uHLLjsH160qKXmT
-        meKd2E7HttxhS8DOBsqYkK/It8YdiyPBa3mF39aj9SjDd0uxef4S85r4yBPwIz2nN+caH3
-        wC15c6jk3h8FzoNLwPwGgb71HG9mlr0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-zP0gvO5mOBOnHRvADCZT8w-1; Tue, 18 Apr 2023 07:49:35 -0400
-X-MC-Unique: zP0gvO5mOBOnHRvADCZT8w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-2fcec825133so158464f8f.3
-        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 04:49:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681818574; x=1684410574;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZXvHe+hqlmu93yWIU70NYfBDF1m9Fy56L1Ru9xyKRuE=;
-        b=XQWHHeBqyeS0vR+eHswphlhbnvWtK2wXW3/EoIf3tEh+/ChJM46wHYd/RcTHcYPE8S
-         yKIInL8jkasz2KDltIAwqjLRC0VBsSAti3nczXDh13ExoWQHdVPezeT6uoq6zLwgbxiQ
-         YzT8dA+SeqXf1sYJTtyAkFIKJznbBuHzDirzrCR0q8buWypMkq9EyMyqP5hkWmfBtYau
-         wSMGJJgO0kCtB5bn9ixtH/e2mDnCTQg6kRLEqUkgD1/FDOZxzVvHqrEuCtjO+UYYg1h7
-         rHBMMNd9PO/px3N+1dc3gChLAiuQBYxSLWuP4sJsoiVIii5jhkxoF5VsRLxm7TGVUvDa
-         aUSg==
-X-Gm-Message-State: AAQBX9d/gHXKYZQsn0rnZxUYsOh/uW5IaTrzTN5xboq4ddS4OOISeJ+i
-        OSSLCebC4XCuYWMfwPbj1q7HDBexloSrBWmtZuwus3tJDCuHkx3qIDarxKBjTHwucC9Mc7hMyCy
-        RVMNqMb1cP4BB
-X-Received: by 2002:adf:fc92:0:b0:2f9:338:743d with SMTP id g18-20020adffc92000000b002f90338743dmr1863031wrr.23.1681818574099;
-        Tue, 18 Apr 2023 04:49:34 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aYOVN1Z2VSO4baE6EM1hNDxkNcLBVWEre5foX9c33S7tdTllckYbjKhI5GlVc4jsmMnSneYQ==
-X-Received: by 2002:adf:fc92:0:b0:2f9:338:743d with SMTP id g18-20020adffc92000000b002f90338743dmr1863011wrr.23.1681818573765;
-        Tue, 18 Apr 2023 04:49:33 -0700 (PDT)
-Received: from redhat.com ([2.52.136.129])
-        by smtp.gmail.com with ESMTPSA id a7-20020adfed07000000b002fb2782219esm3758368wro.3.2023.04.18.04.49.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 04:49:33 -0700 (PDT)
-Date:   Tue, 18 Apr 2023 07:49:28 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231200AbjDRLzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 07:55:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23729742;
+        Tue, 18 Apr 2023 04:54:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AFDA625F0;
+        Tue, 18 Apr 2023 11:54:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F21D8C433A1;
+        Tue, 18 Apr 2023 11:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1681818846;
+        bh=AXG/C2BTZBum1dQyk9xGMcX+JvRAly8xQcU58qub2TY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YWm19zFa301nIsz39oDFn59dpZkUCH2MAVqlW5HDdaX1rAdGSRB1o1hw8xpyfUcxk
+         X9anxNHN9gXA711KO6QVbkC9vMQMmrEWLPfg0SpYzrhLQpuxuk8Bg+/XgY+V8O/PDX
+         3PAGR0NoOWjjFH4zYUdlavCcVT0IVvyXbuj4WOZMM4X7384z7GeQjLXcfkDp5IVA0v
+         cL5b7JyDHDBPPv7XW4tJDJsijvZAtKItqU2bI2OzA69vUdtHjcmS/I5PoG/PEXLzgf
+         lwtKNF5/+RRFRs4mUP+TEyi5xupeCBi1Zz4Y9Z65SKbw4disf506aJnBYryW1r3JVR
+         YgXncspNH3AwA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Aleksandr Nogikh <nogikh@google.com>, pulehui@huawei.com,
+        bpf@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v2 00/14] virtio_net: refactor xdp codes
-Message-ID: <20230418074911-mutt-send-email-mst@kernel.org>
-References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com>
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: arch/riscv/net/bpf_jit_comp64.c build error
+In-Reply-To: <CANp29Y6YqPbE9Y3iQEaTwD_YAQBvsxxRE=0COVYy=gBP-USvkg@mail.gmail.com>
+References: <CANp29Y6YqPbE9Y3iQEaTwD_YAQBvsxxRE=0COVYy=gBP-USvkg@mail.gmail.com>
+Date:   Tue, 18 Apr 2023 13:54:03 +0200
+Message-ID: <871qkh9zj8.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 02:53:13PM +0800, Xuan Zhuo wrote:
-> Due to historical reasons, the implementation of XDP in virtio-net is relatively
-> chaotic. For example, the processing of XDP actions has two copies of similar
-> code. Such as page, xdp_page processing, etc.
-> 
-> The purpose of this patch set is to refactor these code. Reduce the difficulty
-> of subsequent maintenance. Subsequent developers will not introduce new bugs
-> because of some complex logical relationships.
-> 
-> In addition, the supporting to AF_XDP that I want to submit later will also need
-> to reuse the logic of XDP, such as the processing of actions, I don't want to
-> introduce a new similar code. In this way, I can reuse these codes in the
-> future.
-> 
-> Please review.
-> 
-> Thanks.
+Aleksandr Nogikh <nogikh@google.com> writes:
 
-Big refactoring, pls allow a bit more time for review. Thanks!
+> Hi Pu Lehui,
+>
+> I'm writing to you regarding your following patch.
+>
+> Author: Pu Lehui <pulehui@huawei.com>
+> Date:   Wed Feb 15 21:52:04 2023 +0800
+>
+>     riscv, bpf: Add bpf_arch_text_poke support for RV64
+>
+> When trying to compile the "fixes" branch of the
+> "git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git" tree,
+> syzbot gets the following error:
+>
+> arch/riscv/net/bpf_jit_comp64.c: In function 'bpf_arch_text_poke':
+> arch/riscv/net/bpf_jit_comp64.c:691:9: error: implicit declaration of
+> function 'patch_text'; did you mean 'path_get'?
+> [-Werror=3Dimplicit-function-declaration]
+>   691 |   ret =3D patch_text(ip, new_insns, ninsns);
+>       |         ^~~~~~~~~~
+>       |         path_get
+>
+> FWIW the compiler is riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1
+> 20210110, GNU ld (GNU Binutils for Debian) 2.35.2.
+>
+> Could you please take a look?
 
-> v2:
->     1. re-split to make review more convenient
-> 
-> v1:
->     1. fix some variables are uninitialized
-> 
-> Xuan Zhuo (14):
->   virtio_net: mergeable xdp: put old page immediately
->   virtio_net: introduce mergeable_xdp_prepare()
->   virtio_net: optimize mergeable_xdp_prepare()
->   virtio_net: introduce virtnet_xdp_handler() to seprate the logic of
->     run xdp
->   virtio_net: introduce xdp res enums
->   virtio_net: separate the logic of freeing xdp shinfo
->   virtio_net: separate the logic of freeing the rest mergeable buf
->   virtio_net: auto release xdp shinfo
->   virtio_net: introduce receive_mergeable_xdp()
->   virtio_net: merge: remove skip_xdp
->   virtio_net: introduce receive_small_xdp()
->   virtio_net: small: optimize code
->   virtio_net: small: optimize code
->   virtio_net: small: remove skip_xdp
-> 
->  drivers/net/virtio_net.c | 625 +++++++++++++++++++++++----------------
->  1 file changed, 362 insertions(+), 263 deletions(-)
-> 
-> --
-> 2.32.0.3.g01195cf9f
+Randy sent a fix for this [1], which went in via the BPF tree. Pull in
+commit 2d311f480b52 ("riscv, bpf: Fix patch_text implicit declaration").
 
+
+Bj=C3=B6rn
+
+[1] https://lore.kernel.org/linux-riscv/20230227072016.14618-1-rdunlap@infr=
+adead.org/
