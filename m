@@ -2,65 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6121F6E7A6C
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 15:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16D76E7A9E
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 15:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbjDSNQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 09:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
+        id S231524AbjDSNY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 09:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbjDSNQD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 09:16:03 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17E9146F1;
-        Wed, 19 Apr 2023 06:16:01 -0700 (PDT)
+        with ESMTP id S233054AbjDSNYt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 09:24:49 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31718F;
+        Wed, 19 Apr 2023 06:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681910161; x=1713446161;
+  t=1681910665; x=1713446665;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=c0Lwj9yzszjKsHWBNQF6y0LFzSuPWZATi653tqh49/M=;
-  b=BmLxUOzHaQo4C7CoKusH1Y4/uujbbPm9yf7NKRphR4oqy1K0H5AeXLU/
-   2z51gMuyhvD5Sfq2Un319gY8yP9LFGIPa6PHs8zcjQQvH/dtnmn94ShJA
-   g5fUuGzuOdszWqEeJK7W61dIc964KpcA3B1qHRl9BaSfuz33R/4Ao/b/q
-   YzqJd6H0MkSpmOKCvqKpmRZlgQ0aEiIiflNVMSeQzy6sjg9zFEyYgiLE2
-   atlajUjH3IEpJWgg+5qZukhPFfRaTN5cp9ueS9wQr2v8hJ30Rdl0k5Tz5
-   HXeMU7Ebw+Y67B452Nx/MepwCjQlAF0DuJvmGmGTL7Ys2OczIIGlCg0ZC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="345444005"
+  bh=9KEtfQ4iIZUlv/YMOpRsQktsrJ3RqeofH7g8pTctUcI=;
+  b=YXh40gGp8D2IYzvZCXRaI0o40zZ8nJFcUggIx8TJUAsXuy689XY58mx0
+   ZLasfy649aI+MdLWw176TVdzX87epmSBW6191cYCxKS+hlrMDQykKjmrl
+   2WF5Rw4ptd8TqLEhoOdHB5UgAxeHxlDwwPFHDJ90T9ypb/XHc8+hoNv+t
+   BNw/440q/kYaX0Sv+7U5o07CF9MkDWky39qQ5QC3oMdnEbhiuSj5Li4VW
+   lZ7sI1RmLo4LT4j2aMNpGdvXZOhZN9hV+0iiCR3cyjFhRz0hQImKe3puY
+   /Q8buHncyi7f7zDDzVmBRUcNbnnLyUzvme2PE91UKul+uodL1vJp7IDGF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="325060293"
 X-IronPort-AV: E=Sophos;i="5.99,208,1677571200"; 
-   d="scan'208";a="345444005"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 06:15:59 -0700
+   d="scan'208";a="325060293"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 06:23:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="721926633"
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="780853545"
 X-IronPort-AV: E=Sophos;i="5.99,208,1677571200"; 
-   d="scan'208";a="721926633"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga008.jf.intel.com with ESMTP; 19 Apr 2023 06:15:58 -0700
+   d="scan'208";a="780853545"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Apr 2023 06:23:52 -0700
 Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ 15.1.2507.23; Wed, 19 Apr 2023 06:23:51 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
  fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Wed, 19 Apr 2023 06:15:57 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ 15.1.2507.23 via Frontend Transport; Wed, 19 Apr 2023 06:23:51 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
+ 15.1.2507.23; Wed, 19 Apr 2023 06:23:49 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S+9d2GXwLkqr+cFMy8Bb1uX7efSgRSkxeMwHA3U9sFUoCsJYryN8/ONDzoHOgioYG0xt9mteyrNPAOjvN2dxMGlAV85X0LURhCS3m1G0vrGOOMYDawha0xsb8gP7Bs0wDA6DuyAW0gosgd8nQ766K2RDoUxknAjqyn0i/odXBPTJoEe6Q0UTsVLh2R2YiYjGzl1Ja06S4k5JB+55niqw965gljM6wC36+oJXhXYrDsyh2L9t1JPus/DNLh7ipzVL7jCt5e1W0zWQr1oFJDOLkgJ6DDry8R0uBUpxY7yK8PxTplwjjgE3O4A22AySPhE8BXdEssiskjZhlJFIe2YVbQ==
+ b=B3NZGxI9SK51/mwSiELfmnazA5A8Pt4KU7+dvr542QqJYXKwEYb+Jb35QPI5ZdqlGS0pwLd+dgHU+7TtBEsGHt8s8D2xftliZ3160Nfh2iYsZuj4S4WHKIIP1oBFW40gG0FDy/gkDKNP3KotINIJ074gZ5bjfOCS0Vcyx1oKIIYiMDTVl6BfvjTl/ODDOh9EbFRgVD3ro2Tyg21H35AR/tIClYRziAdV+iL8ZXkZ1Ysm8gEKiWm1I7gosaVVuQe5D6ejBnO6OPSLjd6Ff8X/cSTXKvVyVGktwB5N1fg89QBLRhzlZ3rTX+5KXMfrZdmsMipM1ejLwBNtMAvL6Nc9Sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qEJI/qfVKzhHcZ28iP6Q3nPHgwjDfNgnawnjUStZ62Y=;
- b=Ww4dVCDRlbfbK7pS7ftzRXEsixnOhGXTdhYm5iiJ997LiTB7fdizWKA9/HF2Kjsm6FhSHgJEtnXL50Fy0KIvlE6eIedeTUYdggM2UFh+qvZ40WH1AJBQUf5ECgDMltdteBRgHhOwMIoMQ2LNV4b1L/3j4q5nDRa1ISPFruJUlmKq4OzGFZufo+gNTynWenmkm4NfJ1lnkPw1HdvwxozsEzghdFWb4le9E89y7NOCm/TA5s0fCgV6jOxUcfwp+ejVHMQRnzaBdeJQ7kDYC9ejzRjJJHrrfUnGIzxJtMp0q09LPwDZ1udatzykt3Y/yLUyDJn7OoUoq1/PP0GxZ7RtWQ==
+ bh=+4jQTWPOZ1TEOUeqMbB1BNxz4zrXRB7WUwpwzy1Q+xE=;
+ b=aF4g1Rs6QQoOWCdBMoPm+BXqTlfxxQxrWyk0x02CF+3RdJopDjlol9jBFUIVqWx71z6t+cNQ4pSvzlq+A2rfjJ0xfVyy/7/qYXsIv4HHtNHmXOYeAKBFIAlfX0cQD09xLUa7eCCmSo6aRUssgSQJ1Z9DVk1EoOEe+IrWDgqh0mGY7IZStgCZgwFz4WhaeOEcqQGoaxtdgk3lqaZjTmh/Q5CBl4OOhQt2lAjZDLKrj6bb6lRwXVP+hZv5xHipMVIws9Qa/F8JzK7UmWW2B5NihbH13DE1ord6UU7fk7e78AwNY/PgNrfUzl+VPbaiFP3NwkcbSt8r1H+s2Oev8UPZEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -70,116 +66,106 @@ Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
  by CH0PR11MB5411.namprd11.prod.outlook.com (2603:10b6:610:d2::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Wed, 19 Apr
- 2023 13:15:54 +0000
+ 2023 13:23:46 +0000
 Received: from DM6PR11MB3625.namprd11.prod.outlook.com
  ([fe80::4c38:d223:b2ac:813e]) by DM6PR11MB3625.namprd11.prod.outlook.com
  ([fe80::4c38:d223:b2ac:813e%5]) with mapi id 15.20.6319.020; Wed, 19 Apr 2023
- 13:15:54 +0000
-Message-ID: <d18eea7a-a71c-8de0-bde3-7ab000a77539@intel.com>
-Date:   Wed, 19 Apr 2023 15:14:48 +0200
+ 13:23:46 +0000
+Message-ID: <88d5a2f6-af43-c3f9-615d-701ef01d923d@intel.com>
+Date:   Wed, 19 Apr 2023 15:22:39 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.1
 Subject: Re: [PATCH net-next] xsk: introduce xsk_dma_ops
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, <netdev@vger.kernel.org>,
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     <netdev@vger.kernel.org>,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        "John Fastabend" <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        Jason Wang <jasowang@redhat.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Gerd Hoffmann <kraxel@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <ZDzKAD2SNe1q/XA6@infradead.org>
- <1681711081.378984-2-xuanzhuo@linux.alibaba.com>
- <20230417115610.7763a87c@kernel.org> <20230417115753.7fb64b68@kernel.org>
- <CACGkMEtPNPXFThHt4aNm4g-fC1DqTLcDnB_iBWb9-cAOHMYV_A@mail.gmail.com>
- <20230417181950.5db68526@kernel.org>
- <1681784379.909136-2-xuanzhuo@linux.alibaba.com>
- <20230417195400.482cfe75@kernel.org> <ZD4kMOym15pFcjq+@infradead.org>
- <20230417231947.3972f1a8@kernel.org> <ZD95RY9PjVRi7qz3@infradead.org>
+        Christoph Hellwig <hch@infradead.org>
+References: <20230417032750.7086-1-xuanzhuo@linux.alibaba.com>
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <ZD95RY9PjVRi7qz3@infradead.org>
+In-Reply-To: <20230417032750.7086-1-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0433.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:e::13) To DM6PR11MB3625.namprd11.prod.outlook.com
+X-ClientProxiedBy: DB8PR09CA0023.eurprd09.prod.outlook.com
+ (2603:10a6:10:a0::36) To DM6PR11MB3625.namprd11.prod.outlook.com
  (2603:10b6:5:13a::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH0PR11MB5411:EE_
-X-MS-Office365-Filtering-Correlation-Id: b7f577fb-bdb2-45d3-2c6b-08db40d83475
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Office365-Filtering-Correlation-Id: 94e159f6-16ae-43ce-8820-08db40d94dd3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BEs6J6N826pbCaezS6fzBwj/qM0tl8fnqDYrxraMf1tUBNA2W25WEJJFH38aP7+LVVYnNDuoNCxlZ/x8He1U+q36BxLXFCqwh5EYBIfpXZwXWxwfWCvMgIoTUlBw+rbmpsAO4vxjWUF7EGSSGyRXIJft4O2Ef/05/ReV5t/9LK7TXpO8zv0V38EhmVsx13gc1EitsANPeVQw6zSDK9D6go2h84psyv+nX0sjIMKl8rWmmuYIBPCed5hVePgrEKAyIDNoweVS/4Qi9EV9bOaayzRwVNaYDfBzORXIyaZk3rHlLXhPw1txPLsK0yCqJPrnxNN4yYhMLGiSsoW0bElPbFBbwZEQ+6WlXFDz8SFWbHjsnjPRXuPNf0EVlHm68fqEDZgwYqbu+IQoDRoL33FqUhObN6twPirLU4h70KW7JPjbMrU43sKH2F1fDi7cjlIC6QyyebCsJ6ED+GOI4gLyJUlkPGsaZY4qNy7jEvu8LDe+JQGvzQk/mVZLGpG39yJq4DPGJ58wD/gW1QRgexz+3I7xOd2GDHYuZeCtFnPD20bvDyDdjAv/fgoMtfAikXMCt7PYn6S+FwR3VEAm3PWZzWuMbi1r8FU2/KPsxFo0MKi6//PMuoxYmlAK3LYTpw5k+sjVaawYBN/ViA3PP7GAlg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(39860400002)(346002)(136003)(376002)(451199021)(110136005)(54906003)(36756003)(31696002)(86362001)(478600001)(82960400001)(41300700001)(8936002)(8676002)(38100700002)(7416002)(5660300002)(2906002)(66476007)(66556008)(66946007)(4326008)(316002)(6506007)(6512007)(26005)(186003)(6666004)(6486002)(2616005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: TJ1qFcGac2eC7QiGNy9ccYfkDGPaR9WGDtoS4D6i1FRUuU1QGzy5gnrTJ0AgFVWzU6KPUUHLYcdakG+DdeTaqXijp2eeYWbEOsSa/fYMFqIPoZGMLSOyw0gsH5/aD0Niicd3NgSTAm90QjN+xxIr2Nt6mcTRceXYcBRjoamYiXtNZMbENXZNTqhrBol2DLzmLndlKZo3TFwuN/dgXmxcP4L3IQKl2ur+yxxTLBoeoLGzTVs3kM6pWP4g4h/Ia+042KmksH2vOIaK2DxkjH3U75J413waCojAgcwjLUGIEXTSvb58A24YnmxJ3dhSpJSSOxC3jZ6UNKC5Prl6NSEMmZMQF5tFND7y4DjwbxsL55lUfQT/2nHGJx1Hi/2kHcg53MsWmJF8MeIl+6izlSlvXWZHlptPxGwap9B5Yr/Sp9g4nCfbeECYuk4LouU3ig8FM+FGIZvSwQII6KZfIPO8qpp4ZGvUAXh9Ircc3zJTN59WQm355hXLjpPEUFkNwGn5yS6V4HnKCFmps4UlG85TVbKBQPBYMIuRhzyehiIKutPmCJjuQO6+ngXycmYTyxd/anXJ31lgXQQKtsX6KYLSQHz0P3DUvpb71kOI3NVzDsMdSXZ7uojrCh5J7NRUW2ZAhPnrz3HDZdNkSR5CL3jDzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(39860400002)(346002)(136003)(376002)(451199021)(54906003)(36756003)(31696002)(86362001)(478600001)(82960400001)(41300700001)(8936002)(8676002)(38100700002)(7416002)(5660300002)(2906002)(66476007)(66556008)(66946007)(4326008)(6916009)(316002)(6506007)(6512007)(83380400001)(26005)(966005)(186003)(6666004)(6486002)(2616005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RktFTnQvelJ1ZmpuUlZhRlpsTk02V1I4MzdBMkd0UHlWV3lWQzN0SXBnblJX?=
- =?utf-8?B?blI5S2p1Ym5uSXJOdDV6UzJRSjJTblphdGV6NXdiYVlkSDMwS09yaERSSGh0?=
- =?utf-8?B?N3d3UHc0SUZoN0hXai81UDdzbEVYRVhSeFRkbUZ6d2lBSUhGdlhUUjF5aWRv?=
- =?utf-8?B?ZHE5dExQc3RaK3pJbHpYbVZTKzhUdWNKMXBjZE1QNU1ZU3NSYW0zT3hZSUlF?=
- =?utf-8?B?dzE3bFV1RE9KK0hOVXJKa3Rla1hKM2todTRKanBWL0k5TFJ4NHJHYTUva1JO?=
- =?utf-8?B?UERkbE9BNkJtaEVOWmVMSzZLdDZRcG53YVFpMUJTL0pkc0xHMWsrVU1ORHNM?=
- =?utf-8?B?ejlSaEFHaFZINkxoU3M2NE1TdXAzM20yMCtIVmV4RE1McGsvSXpVNVdJYWdn?=
- =?utf-8?B?TXQ0Y2kzV0lDNmo0Wk56M1Yyc3lrdmZSUmU3alB3cFErQkNSbWVGMll2QzdT?=
- =?utf-8?B?cUhab3o5b2NWU0xTdkl3N0hpRnhiSVJiQXE0ajFVelNjemE0T1gxRHI3VTBJ?=
- =?utf-8?B?SkI5OURSeWNjK0lCKzVRSUg1WlQ5MENEeHRmUFZVN2RjcCtKbkdaUTJvNmwv?=
- =?utf-8?B?WlJzV2RqMUV3c0VMcHo0TjY0cDZXR0ZiZU5SK3ZYLzJaS2JzUUZQeTU3MWpv?=
- =?utf-8?B?dmZqZXY5L1FKU0g1MnVDZCtTNFVSVFhBazlJdzM0b2FVZmF3dHByaWNtN3o4?=
- =?utf-8?B?dFZ1Qzl0Znh4aG1HSVhNYzEwcVhpMk5TS1JZWHRiajB0Q1dRd2ZQWm4ySVBI?=
- =?utf-8?B?Z1Vrdmw5eWJJUWVVVldUc0FjOVg2SFFNWXJ4ZVFOUHpmajdkdE02dWZFUjUr?=
- =?utf-8?B?Q3QrY0xnTzdjU3piNnBqb01mWE9UL2hiRHZEaVpuOFNJa1Q3ZjVJMnFsY3Y5?=
- =?utf-8?B?RW5OS3RMaEFXUDc5d0VCTTdUTHI0WWtnbk5WUmtkbVVNcTluU1JJQnVtUXZp?=
- =?utf-8?B?MU1TYXIwTHYyT2xZb0EvazE1V0UwSlhUV1QzNm5DT2NuZ0dud2pwU3VXc0Jp?=
- =?utf-8?B?bVV2WkIyREZEVC9Ldno2clpuM3dVZmZYTzlocEcwbGREaDBVcGpKWVVBNml6?=
- =?utf-8?B?NzFJT3dpaEdYbGJZeENQZldLMFBadndXTjVIdU5NVUt0c3ZmV05WcWJtOHc3?=
- =?utf-8?B?VGVvQVVGSG40Z3NjRC9OdHFrOTQwYy9JWEZ3TkMvT1dTejB5T1BKb3dNa3FP?=
- =?utf-8?B?M1FzOThjcFg0eDBLSDUySTNGZSt5Q0t4Z3dIYUh5ck5hZzAvT0lIbUhnQ1Ro?=
- =?utf-8?B?Tm4veFRycDdWTGxIZFcwd205WmMwWHB2RmNNNi9CV0cvOGg2SmR6a20rT2gr?=
- =?utf-8?B?NnBEZWV4a0pML1lrOXRKeWlNVWM1VVAyK3lTUFdkdDdOb2NjUHRyUkM1WTFE?=
- =?utf-8?B?VFNIT0VidHlYV0ZidDJMc3lTSlFpVkpBLzNHZ29EK2lVTjlwQVpua0ZuYmFL?=
- =?utf-8?B?Y3pNaTI0cWxTVDA2RUJYTlFXQjhBeXg0TGl0VkdXNTlmcUdnSVI1NTNHOHFq?=
- =?utf-8?B?WkhsM25XQVBta3hYV2phN281S3Yyc0JUTmxDMGlET0cyYksvcmFoMFNZYm9v?=
- =?utf-8?B?T3ZSK2E3eUpoLzk1N093Qm5SdkpQNTNxRFM3Zi9xMkc3Nm5QYTdEcFZSRi9R?=
- =?utf-8?B?cHp3aHJLQlgvdXNrMWpLeGIxdnJOdjVmelhVYnFySWlNc1kwZ0V3Z3JjdFhB?=
- =?utf-8?B?RzZkRVhYRVA3TDc4WG0vOTltM25YRU91dUZLWHNpZXlYZ05VT2xUUGthM0Jl?=
- =?utf-8?B?Y3ovMnQ2Nkxxbzl5SWpNUytvcjhLOHFobHVlU0dBM2l5WTd1K1hibGpWVjA0?=
- =?utf-8?B?M3B2QTZMdmJOS1lPZkMveUFDSGtibnl3SzA5OXVWYUJzcXpKUVBRV29oWVl5?=
- =?utf-8?B?dzdOQldpWVV0Vjg1QkJKbGxyVVRYd2MyL25henZLMWRVMlIrS2RRTS9iK3Yr?=
- =?utf-8?B?NVovQmpRWUJMeWM3M3c2U2VHS2g1OG56bzJ3VEpaSnAxWjFzZFVXQS80N2FM?=
- =?utf-8?B?K3l3UndFVlNsQ2xwWlNGWEw3N284T3BxVGdQNG5TUFJkY25CYjJYZkFlYjJH?=
- =?utf-8?B?VDM3dTQ3Y0VsbmxudzRuV0djMVgwQmhyQjdobmV6Z0FVK0lLc0tTS0ZodjdG?=
- =?utf-8?B?VCt3c2lYYW95VTlzYXh1TG9GRzZ5OWI1WTA4NlFwZVdKYldTdXAyMGNsV05U?=
- =?utf-8?B?V1E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7f577fb-bdb2-45d3-2c6b-08db40d83475
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1U0NjJ3UmVBL3BXYVlyVy9oWE5sL25hTUFxTGk3OU1nd2E5VlJRU3ZHbGdz?=
+ =?utf-8?B?N2s5aXpUNEVlbGdqcm13UitmaEs0a3VHSzlXeHhxQzQ2aFJkRkQ4eTNyT3BL?=
+ =?utf-8?B?NThCdERzYWVabENIL2hVRjZWNkcwbDQzY2d3akw5T3FNdHFGWFBObkVRM2gz?=
+ =?utf-8?B?MEhJTXZndWRJYXk2eHEvNlZiOFkwMmZ3NGc4ZE9zYTVyVjhnSXpyeXhtRHpu?=
+ =?utf-8?B?cEpuOHk2b09DK2R2N0pOWFdwSDNLYzlFQW5LeVQwUjhSei9VTW1za0h2MFZ5?=
+ =?utf-8?B?SjNRbFJQZnJ0d1R4RXFveTZISTNDZW5hQWdSR1JyNnlHOTdPcE9yTUxvbzhG?=
+ =?utf-8?B?cXpuSXBOMmMzNU5pcHpEb0l2Rk1nZ1dTa1RiRUNIblI1M2lCNHU2dkpDWGxs?=
+ =?utf-8?B?ODNMZnJqL2M2NVVkZXBhUStvYUs1Vlc0bWVRS3hBazJ5OURuM2NsS0tmUzJI?=
+ =?utf-8?B?WG1uMGZkZjdZZlMvT0EyZFhDRXdOYXBKV3FxakdSdms5azJoRWNLeDNBeFIw?=
+ =?utf-8?B?OE5xU0tOeWRZTHpIMTd6UWhBdUViV3VJOUZGbzZIeDB6aEF2WkFYMEtRc3B5?=
+ =?utf-8?B?OC80TlJtbncweHB4S3Q0NU9TRWQzWWhrTDlkME9CSG81cXd0bzhlS2dyZ1Iy?=
+ =?utf-8?B?TW1Xd0Rla1lJMjc2ZmtlbENKSC9CU0R5d0Ria0NRQTd4dU1VUTZ1RnYwRXpU?=
+ =?utf-8?B?cmluL1ZzbVB3WGl6V0dkYmhBblRicEdIWXp4NWdseUNhMHJYMkQxd0QzWG9s?=
+ =?utf-8?B?UklZS3ZYMkgrWU94dll5WkpKK1p1bU44L1FBRE4yL2hwamxuM28wRjJERGUx?=
+ =?utf-8?B?NTE4Mk5zTUcvM29lelJSeHZTT2wvQldpQ3FWVi9tSHl4Yk80NnlOUElsY2dH?=
+ =?utf-8?B?Ry9EQitBbEVYUitjTHBJRkVjTUFyZCtEdnVOMjlVN3F1NkhIeGV4aytWYU9n?=
+ =?utf-8?B?N0U0cXFxNUN5dUtrZ3kvZlFBOE90WE12T1I3YTdOeVZMN1ZTUE1IakltNUt5?=
+ =?utf-8?B?bDZpWU9aMnNFNmVNSnZjRUE0b2xDRGM4bXYya1QrWkJnd2xGK0FjbndUWko4?=
+ =?utf-8?B?a25aeUpzZ1p5ZjlMOEpjSCtHWFc3SnpseGpxbTAxTkR3aUJFQy9OS25MSGxa?=
+ =?utf-8?B?ZWd5YzhXbzA4U09UMDJBZXloUERYK1pVVmUyaXphL3AraGV6ZHFoeGgzc3Nx?=
+ =?utf-8?B?K3RxeEczdGJ0TzhsZksvbyt0TC9mWkNqc1ZEQlgzTU04NkFVbG1Bci9RUVpW?=
+ =?utf-8?B?NDZwZHJFbVhYTENpTlgrQllYbnEyRm5kaVU0eUQ3US80WkNEVlZHb2EvRkpi?=
+ =?utf-8?B?eGhhZmkyS0RGbVdXQ3Z0YjVJMzBEeWJjOGhWZjUzays4RmE2bS9hQllya3hC?=
+ =?utf-8?B?Y2dEZmt1WHh2V0xXUGhWeXZ3S1RvSW5xanNKVTRIM3hOVGQzSzZFUU11ckNZ?=
+ =?utf-8?B?c3RCMVRaV1Nyb3EycGhNcko0eUVCMnFIT0V5WFp2NkNuQzBLbEgrTStJVmVY?=
+ =?utf-8?B?UHVOcElYRUJlb01TNzJuU200cVo1QkJEMHhFdVRqcnFudk9SV3VTRmpOMWtQ?=
+ =?utf-8?B?VVR2RVZxS3NSRFdlSVR1elMvNlJzTEpsZVJ5WUtSNXJUbXdub1lpN0p6Ymdq?=
+ =?utf-8?B?Yko2amVPUUNyWWt1TzNxR0I0MFRvMUllb3JrczdTdDJweW5rOXNDSDhROUtr?=
+ =?utf-8?B?VFFvblFtcWdFZmtyVmlkby83VWdsVmVhMnZ0ZjZPS1Vqckh6REJGc01NRzF2?=
+ =?utf-8?B?SGZoQXVtanBRQ3cyK1JiRTdqRUVTVEppeUdSVU1EcXNNcktGOFVmU2w2cW9j?=
+ =?utf-8?B?MHdGU01BL0RQL2R1SDhqK0Evb0dvVFk3TEZZbVNDZGhabCtBVFo0QUw5K0tw?=
+ =?utf-8?B?UEVqMUE3TGd6aGh3eTdXQlI0Sm5LczI0V2pvRjZTZWRoSDR5Rk91VjU0OXYx?=
+ =?utf-8?B?SG5xa1NDTmovWXY0NTRJNkE2dTZkeUgvNStKRHEyYVRKNHJUWkxrcnpxeVRE?=
+ =?utf-8?B?MTBmWXJyLzRFRVdlajNzckwwZ05oak9DY1ZidFdIN3RNR0FmN05QRHVQeVhZ?=
+ =?utf-8?B?a1VvZUxZbXVmZTlSVW1CcjlEUnB2alM4UHJpRm10ZG1iNHBEWktPQVM4QzlL?=
+ =?utf-8?B?L3V3WEdsR3d4a2xpMHI5SE5FdHE1c3FuY0hINmVGK3dYU1hvOWFTUi94Tmoy?=
+ =?utf-8?B?WlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94e159f6-16ae-43ce-8820-08db40d94dd3
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2023 13:15:54.3621
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2023 13:23:46.4831
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2rrTgsk2uvJf5vyXOmclnjYgFnIiaDXL6VSicNbxJ4WM4MK6Is7ajAVZ56deolGvfNrKD3SilLIdWgkFhL7V4ZZIWE4oedLicaPgRy8oCMw=
+X-MS-Exchange-CrossTenant-UserPrincipalName: uoN53pdpeFrnZyWINZ+w97LbK21hMEYqwgP9gH8N1o3pLL9g3xkILoBG9xz84coeJEu4tJfRqfCUdGCFFXF0aqgBY+09xxpEuGODeb3LR6E=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5411
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -187,68 +173,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Christoph Hellwig <hch@infradead.org>
-Date: Tue, 18 Apr 2023 22:16:53 -0700
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Mon, 17 Apr 2023 11:27:50 +0800
 
-> On Mon, Apr 17, 2023 at 11:19:47PM -0700, Jakub Kicinski wrote:
->>> You can't just do dma mapping outside the driver, because there are
->>> drivers that do not require DMA mapping at all.  virtio is an example,
->>> but all the classic s390 drivers and some other odd virtualization
->>> ones are others.
->>
->> What bus are the classic s390 on (in terms of the device model)?
+> The purpose of this patch is to allow driver pass the own dma_ops to
+> xsk.
 > 
-> I think most of them are based on struct ccw_device, but I'll let the
-> s390 maintainers fill in.
+> This is to cope with the scene of virtio-net. If virtio does not have
+> VIRTIO_F_ACCESS_PLATFORM, then virtio cannot use DMA API. In this case,
+> XSK cannot use DMA API directly to achieve DMA address. Based on this
+> scene, we must let XSK support driver to use the driver's dma_ops.
 > 
-> Another interesting case that isn't really relevant for your networking
-> guys, but that caused as problems is RDMA.  For hardware RDMA devices
-> it wants the ULPs to DMA map, but it turns out we have various software
-> drivers that map to network drivers that do their own DMA mapping
-> at a much lower layer and after potentially splitting packets or
-> even mangling them.
+> On the other hand, the implementation of XSK as a highlevel code
+> should put the underlying operation of DMA to the driver layer.
+> The driver layer determines the implementation of the final DMA. XSK
+> should not make such assumptions. Everything will be simplified if DMA
+> is done at the driver level.
 > 
->>
->>>> I don't think it's reasonable to be bubbling up custom per-subsystem
->>>> DMA ops into all of them for the sake of virtio.  
->>>
->>> dma addresses and thus dma mappings are completely driver specific.
->>> Upper layers have no business looking at them.
-
-Here it's not an "upper layer". XSk core doesn't look at them or pass
-them between several drivers. It maps DMA solely via the struct device
-passed from the driver and then just gets-sets addresses for this driver
-only. Just like Page Pool does for regular Rx buffers. This got moved to
-the XSk core to not repeat the same code pattern in each driver.
-
->>
->> Damn, that's unfortunate. Thinking aloud -- that means that if we want 
->> to continue to pull memory management out of networking drivers to
->> improve it for all, cross-optimize with the rest of the stack and
->> allow various upcoming forms of zero copy -- then we need to add an
->> equivalent of dma_ops and DMA API locally in networking?
-
-Managing DMA addresses is totally fine as long as you don't try to pass
-mapped addresses between different drivers :D Page Pool already does
-that and I don't see a problem in that in general.
-
+> More is here:
+>     https://lore.kernel.org/virtualization/1681265026.6082013-1-xuanzhuo@linux.alibaba.com/
 > 
-> Can you explain what the actual use case is?
-> 
->>From the original patchset I suspect it is dma mapping something very
-> long term and then maybe doing syncs on it as needed?
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-As I mentioned, XSk provides some handy wrappers to map DMA for drivers.
-Previously, XSk was supported by real hardware drivers only, but here
-the developer tries to add support to virtio-net. I suspect he needs to
-use DMA mapping functions different from which the regular driver use.
-So this is far from dma_map_ops, the author picked wrong name :D
-And correct, for XSk we map one big piece of memory only once and then
-reuse it for buffers, no inflight map/unmap on hotpath (only syncs when
-needed). So this mapping is longterm and is stored in XSk core structure
-assigned to the driver which this mapping was done for.
-I think Jakub thinks of something similar, but for the "regular" Rx/Tx,
-not only XDP sockets :)
+[...]
+
+>  struct xsk_buff_pool {
+>  	/* Members only used in the control path first. */
+>  	struct device *dev;
+> @@ -85,6 +102,7 @@ struct xsk_buff_pool {
+>  	 * sockets share a single cq when the same netdev and queue id is shared.
+>  	 */
+>  	spinlock_t cq_lock;
+> +	struct xsk_dma_ops dma_ops;
+
+Why full struct, not a const pointer? You'll have indirect calls either
+way, copying the full struct won't reclaim you much performance.
+
+>  	struct xdp_buff_xsk *free_heads[];
+>  };
+>  
+
+[...]
+
+> @@ -424,18 +426,29 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
+>  		return 0;
+>  	}
+>  
+> +	if (!dma_ops) {
+> +		pool->dma_ops.map_page = dma_map_page_attrs;
+> +		pool->dma_ops.mapping_error = dma_mapping_error;
+> +		pool->dma_ops.need_sync = dma_need_sync;
+> +		pool->dma_ops.sync_single_range_for_device = dma_sync_single_range_for_device;
+> +		pool->dma_ops.sync_single_range_for_cpu = dma_sync_single_range_for_cpu;
+> +		dma_ops = &pool->dma_ops;
+> +	} else {
+> +		pool->dma_ops = *dma_ops;
+> +	}
+
+If DMA syncs are not needed on your x86_64 DMA-coherent system, it
+doesn't mean we all don't need it. Instead of filling pointers with
+"default" callbacks, you could instead avoid indirect calls at all when
+no custom DMA ops are specified. Pls see how for example Christoph did
+that for direct DMA. It would cost only one if-else for case without
+custom DMA ops here instead of an indirect call each time.
+
+(I *could* suggest using INDIRECT_CALL_WRAPPER(), but I won't, since
+ it's more expensive than direct checking and I feel like it's more
+ appropriate to check directly here)
+
+> +
+>  	dma_map = xp_create_dma_map(dev, pool->netdev, nr_pages, pool->umem);
+>  	if (!dma_map)
+>  		return -ENOMEM;
+[...]
 
 Thanks,
 Olek
