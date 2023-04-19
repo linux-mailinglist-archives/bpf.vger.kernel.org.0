@@ -2,327 +2,334 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A028C6E7FB9
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 18:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD26C6E7FCC
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 18:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbjDSQeg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 12:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S230340AbjDSQlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 12:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbjDSQef (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 12:34:35 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B119359FB
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:34:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so31342183ejj.12
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681922064; x=1684514064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LWsQO4oBp9uTdEKAqyFwlPtx40z7loTzOxzxC78ROZo=;
-        b=hgH7ocuZVUnA84AEbTSX5zlD9QRrAfXL8kxlvltt8visOyxMyz2q4vxxct2TPXAxql
-         quvL2tnaw21l30GFnMZeKGw6yLHUHVRkG5HjrOtgGe3e6uGZvFKrz7jtU9cmxmsoR6WH
-         dT+KxYH7dj39vNmF8utk9flzBttjUXHUz0W3aNT4KNL8l/Rsq4B75eAllWOBWh9u4pYN
-         XV0cQ+9kDQfXy0YXOBxcsAjghk3CYkrLYglAv7/qfZPeHzbWXHcXoRAFMPcZLU9Ec4+z
-         BYrGQq2uHBnh4rqIcyQyZtjKr2oqVJSYYXtJc0/8zuaxWncQxarPGBp9x67V/2OOfx9Y
-         wZ1Q==
+        with ESMTP id S232494AbjDSQlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 12:41:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED6046A9
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681922415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8cw7LajUVrrWi88fW/qgXBhZmkexifRz2S5k3mFR+pw=;
+        b=dmQfZXGC/tKjXeBB7EMXDiOVPzTGqhx3q6uR2/h9EnXZGn+Ij0zqgpKfi+Br8Snp7Pl8dH
+        aMAt1v28tgzzo9az5dc3xlZFaNVv0U8K6I4hFkdb28sVt3CqMC7c0CykLYGi0DXgqb1ZjG
+        AxeLOKNchX/OVmeVQAgN9cGDqsodqxw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-KPjbaKNuO26TsEMtlqToFw-1; Wed, 19 Apr 2023 12:40:13 -0400
+X-MC-Unique: KPjbaKNuO26TsEMtlqToFw-1
+Received: by mail-wm1-f71.google.com with SMTP id ay3-20020a05600c1e0300b003f1728ce786so1246221wmb.7
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:40:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681922064; x=1684514064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LWsQO4oBp9uTdEKAqyFwlPtx40z7loTzOxzxC78ROZo=;
-        b=dnVwvTtSnNbAOQfsDMitR9vtvLs4n6c2POvxEP3J+7GJBEfF7Mt2iza+lGfanOIpQx
-         E4RhcJmyRjkwbGur2qYWOnLJLyofDg1Cy3vbPl0KYwknmFXPXf/FKeek1nkEanEdgpkM
-         YYMjlQXFXaPNlmj+0nzVvVrRq7tGss0DXeSUH2GlgZLbY6bbTWHxUHT49mlNnyLZMUyq
-         9nZADLtOyCLDbcct4STZ02bCEbfQXQXSDK08nUqrxz8UiheAOX4/ltc/Yteu+FKGdfdh
-         TCAHgpmVTM4BbJo++VE/bZ/mM3Zhgtny+KjolurMRhQPbcy9DkB74e8UEQc8FHTmEhqS
-         7HPA==
-X-Gm-Message-State: AAQBX9d23ag9X6Z0zfNEP0I7DD/O1cCUpD7WBwwPIIAwoLQPmFQPF88n
-        AFs2UPINW1ZFvcpxf/Lt62EwfNtDo3K94vCduOY=
-X-Google-Smtp-Source: AKy350a6P/2hRTTKKCcc1LswAFwQukAj1Nqte9rfzsT4mIBI6cTcoqWAcWVUx0L15dvJ2TtNHh4WBS1LfAebz3iA9Lc=
-X-Received: by 2002:a17:906:3ed6:b0:94f:5847:8a8 with SMTP id
- d22-20020a1709063ed600b0094f584708a8mr12110820ejj.23.1681922063823; Wed, 19
- Apr 2023 09:34:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1681922412; x=1684514412;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8cw7LajUVrrWi88fW/qgXBhZmkexifRz2S5k3mFR+pw=;
+        b=eK8FOhZztvxXUZmmqNa9nbF4pYKWlnAZW25bjuSdNIVaBnjBAkYvMb2L14InXsH45K
+         nHti2XbWwwHmaOFXNJVX3u7o6TKp8ZRliZ2YPvSQaF7RT5KI59A0qpMgeSEHQWuffU4u
+         A9Ynd49YPr+vFRzRtXT4r/TzhL1MjtyJmvBnbSTh9VaMtotnjQYtgao9kTQ61K1MB/Qf
+         /GSxiTe2guIGEgh1YL5hvDVGnhEnPuIr8aUjV0Onwy57iD7ILVKm8toxpioyHPRrvDWL
+         Z9Ae6QGowb0cQ5q1cZ7zD+6g85d9ZlJ6behZ+CQtAOmmlUWOEpwIfPLjaHQe8RSinZgE
+         irPw==
+X-Gm-Message-State: AAQBX9e4LGK1sguQX1sv2ntaXLM+rpGSjODFLS4WBFzD7w/qhpBHkFqT
+        VXe+krweKCX64Ugzzj7wyiTBmzO2ZB9pC9rHYGUO1tZJfh+a/tg7nYwFFZuBLVYTmeyQQXivgg8
+        2X0Y60aa7Tq7rndnDr2sa
+X-Received: by 2002:a05:600c:28e:b0:3f0:85b8:ce6e with SMTP id 14-20020a05600c028e00b003f085b8ce6emr17988712wmk.37.1681922412290;
+        Wed, 19 Apr 2023 09:40:12 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aSlTFAYnbmpLzDBk1OmsNDKq6OhwEXTs8ATUPnKwEKb8oLQK9zZHmgHGgGRUhTnENpVBpMvg==
+X-Received: by 2002:a05:600c:28e:b0:3f0:85b8:ce6e with SMTP id 14-20020a05600c028e00b003f085b8ce6emr17988677wmk.37.1681922411872;
+        Wed, 19 Apr 2023 09:40:11 -0700 (PDT)
+Received: from localhost (net-130-25-106-149.cust.vodafonedsl.it. [130.25.106.149])
+        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003f182a10106sm1272600wma.8.2023.04.19.09.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Apr 2023 09:40:11 -0700 (PDT)
+Date:   Wed, 19 Apr 2023 18:40:09 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
+        pabeni@redhat.com, bpf@vger.kernel.org, nbd@nbd.name,
+        Toke Hoiland Jorgensen <toke@redhat.com>
+Subject: Re: issue with inflight pages from page_pool
+Message-ID: <ZEAZacIv9ssQF1hD@lore-desk>
+References: <ZD2TH4PsmSNayhfs@lore-desk>
+ <20230417120837.6f1e0ef6@kernel.org>
+ <ZD26lb2qdsdX16qa@lore-desk>
+ <20230417163210.2433ae40@kernel.org>
+ <ZD5IcgN5s9lCqIgl@lore-desk>
+ <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
+ <CANn89iKAVERmJjTyscwjRTjTeWBUgA9COz+8HVH09Q0ehHL9Gw@mail.gmail.com>
+ <ea762132-a6ff-379a-2cc2-6057754425f7@redhat.com>
+ <ZD/4/npAIvS1Co6e@lore-desk>
+ <e8df2654-6a5b-3c92-489d-2fe5e444135f@redhat.com>
 MIME-Version: 1.0
-References: <20230409033431.3992432-1-joannelkoong@gmail.com>
- <20230409033431.3992432-5-joannelkoong@gmail.com> <CAEf4BzZXgY3nZEPvAFhx3xd_uieDcpeQOBMYAUGDxrSnBEL+3w@mail.gmail.com>
- <CAJnrk1b+FsAUHneWdyarMs6kwd8CBNFi9s7n38KXQ2uF+NkvTw@mail.gmail.com>
- <CAEf4BzZPUmcSAPwtgVRebCDWccaU6EC3yHt99Asm=akoewbBEA@mail.gmail.com> <CAJnrk1a-+uC4najAKfP8T80tRUFSkOWt20-BG7+d9FZvo9-3AA@mail.gmail.com>
-In-Reply-To: <CAJnrk1a-+uC4najAKfP8T80tRUFSkOWt20-BG7+d9FZvo9-3AA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 19 Apr 2023 09:34:11 -0700
-Message-ID: <CAEf4BzbvV401TD3SZJhPk_CY9HVUdPXX5bjq7hh5qwfDO01jxw@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 4/5] bpf: Add bpf_dynptr_clone
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BG4t38bJ8cELjR3L"
+Content-Disposition: inline
+In-Reply-To: <e8df2654-6a5b-3c92-489d-2fe5e444135f@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 11:56=E2=80=AFPM Joanne Koong <joannelkoong@gmail.c=
-om> wrote:
->
-> On Mon, Apr 17, 2023 at 4:46=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Apr 13, 2023 at 11:03=E2=80=AFPM Joanne Koong <joannelkoong@gma=
-il.com> wrote:
-> > >
-> > > On Wed, Apr 12, 2023 at 3:12=E2=80=AFPM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Sat, Apr 8, 2023 at 8:34=E2=80=AFPM Joanne Koong <joannelkoong@g=
-mail.com> wrote:
-> > > > >
-> > > > > The cloned dynptr will point to the same data as its parent dynpt=
-r,
-> > > > > with the same type, offset, size and read-only properties.
-> > > > >
-> > > > > Any writes to a dynptr will be reflected across all instances
-> > > > > (by 'instance', this means any dynptrs that point to the same
-> > > > > underlying data).
-> > > > >
-> > > > > Please note that data slice and dynptr invalidations will affect =
-all
-> > > > > instances as well. For example, if bpf_dynptr_write() is called o=
-n an
-> > > > > skb-type dynptr, all data slices of dynptr instances to that skb
-> > > > > will be invalidated as well (eg data slices of any clones, parent=
-s,
-> > > > > grandparents, ...). Another example is if a ringbuf dynptr is sub=
-mitted,
-> > > > > any instance of that dynptr will be invalidated.
-> > > > >
-> > > > > Changing the view of the dynptr (eg advancing the offset or
-> > > > > trimming the size) will only affect that dynptr and not affect an=
-y
-> > > > > other instances.
-> > > > >
-> > > > > One example use case where cloning may be helpful is for hashing =
+
+--BG4t38bJ8cELjR3L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+>=20
+>=20
+> On 19/04/2023 16.21, Lorenzo Bianconi wrote:
+> > >=20
+> > > On 19/04/2023 14.09, Eric Dumazet wrote:
+> > > > On Wed, Apr 19, 2023 at 1:08=E2=80=AFPM Jesper Dangaard Brouer
+> > > > >=20
+> > > > >=20
+> > > > > On 18/04/2023 09.36, Lorenzo Bianconi wrote:
+> > > > > > > On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
+> > > > > > > > > If it's that then I'm with Eric. There are many ways to k=
+eep the pages
+> > > > > > > > > in use, no point working around one of them and not the r=
+est :(
+> > > > > > > >=20
+> > > > > > > > I was not clear here, my fault. What I mean is I can see th=
+e returned
+> > > > > > > > pages counter increasing from time to time, but during most=
+ of tests,
+> > > > > > > > even after 2h the tcp traffic has stopped, page_pool_releas=
+e_retry()
+> > > > > > > > still complains not all the pages are returned to the pool =
+and so the
+> > > > > > > > pool has not been deallocated yet.
+> > > > > > > > The chunk of code in my first email is just to demonstrate =
+the issue
+> > > > > > > > and I am completely fine to get a better solution :)
+> > > > > > >=20
+> > > > > > > Your problem is perhaps made worse by threaded NAPI, you have
+> > > > > > > defer-free skbs sprayed across all cores and no NAPI there to
+> > > > > > > flush them :(
+> > > > > >=20
+> > > > > > yes, exactly :)
+> > > > > >=20
+> > > > > > >=20
+> > > > > > > > I guess we just need a way to free the pool in a reasonable=
+ amount
+> > > > > > > > of time. Agree?
+> > > > > > >=20
+> > > > > > > Whether we need to guarantee the release is the real question.
+> > > > > >=20
+> > > > > > yes, this is the main goal of my email. The defer-free skbs beh=
+aviour seems in
+> > > > > > contrast with the page_pool pending pages monitor mechanism or =
+at least they
+> > > > > > do not work well together.
+> > > > > >=20
+> > > > > > @Jesper, Ilias: any input on it?
+> > > > > >=20
+> > > > > > > Maybe it's more of a false-positive warning.
+> > > > > > >=20
+> > > > > > > Flushing the defer list is probably fine as a hack, but it's =
+not
+> > > > > > > a full fix as Eric explained. False positive can still happen.
+> > > > > >=20
+> > > > > > agree, it was just a way to give an idea of the issue, not a pr=
+oper solution.
+> > > > > >=20
+> > > > > > Regards,
+> > > > > > Lorenzo
+> > > > > >=20
+> > > > > > >=20
+> > > > > > > I'm ambivalent. My only real request wold be to make the flus=
+hing
+> > > > > > > a helper in net/core/dev.c rather than open coded in page_poo=
+l.c.
+> > > > >=20
+> > > > > I agree. We need a central defer_list flushing helper
+> > > > >=20
+> > > > > It is too easy to say this is a false-positive warning.
+> > > > > IHMO this expose an issue with the sd->defer_list system.
+> > > > >=20
+> > > > > Lorenzo's test is adding+removing veth devices, which creates and=
+ runs
+> > > > > NAPI processing on random CPUs.  After veth netdevices (+NAPI) are
+> > > > > removed, nothing will naturally invoking net_rx_softirq on this C=
+PU.
+> > > > > Thus, we have SKBs waiting on CPUs sd->defer_list.  Further more =
+we will
+> > > > > not create new SKB with this skb->alloc_cpu, to trigger RX softir=
+q IPI
+> > > > > call (trigger_rx_softirq), even if this CPU process and frees SKB=
+s.
+> > > > >=20
+> > > > > I see two solutions:
+> > > > >=20
+> > > > >     (1) When netdevice/NAPI unregister happens call defer_list fl=
+ushing
+> > > > > helper.
+> > > > >=20
+> > > > >     (2) Use napi_watchdog to detect if defer_list is (many jiffie=
+s) old,
+> > > > > and then call defer_list flushing helper.
+> > > > >=20
+> > > > >=20
+> > > > > > >=20
+> > > > > > > Somewhat related - Eric, do we need to handle defer_list in d=
+ev_cpu_dead()?
+> > > > >=20
+> > > > > Looks to me like dev_cpu_dead() also need this flushing helper for
+> > > > > sd->defer_list, or at least moving the sd->defer_list to an sd th=
+at will
+> > > > > run eventually.
+> > > >=20
+> > > > I think I just considered having a few skbs in per-cpu list would n=
+ot
+> > > > be an issue,
+> > > > especially considering skbs can sit hours in tcp receive queues.
+> > > >=20
+> > >=20
+> > > It was the first thing I said to Lorenzo when he first reported the
+> > > problem to me (over chat): It is likely packets sitting in a TCP queu=
+e.
+> > > Then I instructed him to look at output from netstat to see queues and
+> > > look for TIME-WAIT, FIN-WAIT etc.
+> > >=20
+> > >=20
+> > > > Do we expect hacing some kind of callback/shrinker to instruct TCP =
 or
-> > > > > iterating through dynptr data. Cloning will allow the user to mai=
-ntain
-> > > > > the original view of the dynptr for future use, while also allowi=
-ng
-> > > > > views to smaller subsets of the data after the offset is advanced=
- or the
-> > > > > size is trimmed.
-> > > > >
-> > > > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > > > > ---
-> > > > >  kernel/bpf/helpers.c  |  14 +++++
-> > > > >  kernel/bpf/verifier.c | 125 ++++++++++++++++++++++++++++++++++++=
-+-----
-> > > > >  2 files changed, 126 insertions(+), 13 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > > index bac4c6fe49f0..108f3bcfa6da 100644
-> > > > > --- a/kernel/bpf/helpers.c
-> > > > > +++ b/kernel/bpf/helpers.c
-> > > > > @@ -2351,6 +2351,19 @@ __bpf_kfunc __u32 bpf_dynptr_get_offset(co=
-nst struct bpf_dynptr_kern *ptr)
-> > > > >         return ptr->offset;
-> > > > >  }
-> > > > >
-> > > > > +__bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
-> > > > > +                                struct bpf_dynptr_kern *clone__u=
-ninit)
-> > > >
-> > > > I think most of uses for bpf_dynptr_clone() would be to get a parti=
-al
-> > > > view (like you mentioned above, to, e.g., do a hashing of a part of
-> > > > the memory range). So it feels it would be best UX if clone would
-> > > > allow you to define a new range in one go. So e.g., to create a
-> > > > "sub-dynptr" for range of bytes [10, 30), it should be enough to:
-> > > >
-> > > > struct bpf_dynptr orig_ptr, new_ptr;
-> > > >
-> > > > bpf_dynptr_clone(&orig_ptr, 10, 30, &new_ptr);
-> > > >
-> > > > Instead of:
-> > > >
-> > > > bpf_dynptr_clone(&orig_ptr, &new_ptr);
-> > > > bpf_dynptr_advance(&new_ptr, 10);
-> > > > bpf_dynptr_trim(&new_ptr, bpf_dynptr_get_size(&orig_ptr) - 30);
-> > > >
-> > >
-> > > I don't think we can do this because we can't have bpf_dynptr_clone()
-> > > fail (which might happen if we take in a range, if the range is
-> > > invalid). This is because in the case where the clone is of a
-> > > reference-counted dynptr (eg like a ringbuf-type dynptr), the clone
-> > > even if it's invalid must be treated by the verifier as a legit dynpt=
-r
-> > > (since the verifier can't know ahead of time whether the clone call
-> > > will succeed or not) which means if the invalid clone dynptr is then
-> > > passed into a reference-releasing function, the verifier will release
-> > > the reference but the actual reference won't be released at runtime
-> > > (since the clone dynptr is invalid), which would leak the reference.
-> > > An example is something like:
-> > >
-> > >  // invalid range is passed, error is returned and new_ptr is invalid
-> > > bpf_dynptr_clone(&ringbuf_ptr, 9999999, 9999999, &new_ptr);
-> > > // this releases the reference and invalidates both new_ptr and ringb=
-uf_ptr
-> > > bpf_ringbuf_discard_dynptr(&new_ptr, 0);
-> > >
-> > > At runtime, bpf_ringbuf_discard_dynptr() will be a no-op since new_pt=
-r
-> > > is invalid - the ringbuf record still needs to be submitted/discarded=
-,
-> > > but the verifier will think this already happened
-> >
-> > Ah, tricky, good point. But ok, I guess with bpf_dynptr_adjust()
-> > proposal in another email this would be ok:
-> >
-> > bpf_dynptr_clone(..); /* always succeeds */
-> > bpf_dynptr_adjust(&new_ptr, 10, 30); /* could fail to adjust, but
-> > dynptr is left valid */
-> >
-> > Right?
->
-> Yes, this would be okay because if bpf_dynptr_adjust fails, the clone
-> is valid (it was unaffected) so submitting/discarding it later on
-> would correctly release the reference
+> > > > pipes to release all pages that prevent
+> > > > a page_pool to be freed ?
+> > > >=20
+> > >=20
+> > > This is *not* what I'm asking for.
+> > >=20
+> > > With TCP sockets (pipes etc) we can take care of closing the sockets
+> > > (and programs etc) to free up the SKBs (and perhaps wait for timeouts)
+> > > to make sure the page_pool shutdown doesn't hang.
+> > >=20
+> > > The problem arise for all the selftests that uses veth and bpf_test_r=
+un
+> > > (using bpf_test_run_xdp_live / xdp_test_run_setup).  For the selftests
+> > > we obviously take care of closing sockets and removing veth interfaces
+> > > again.  Problem: The defer_list corner-case isn't under our control.
+> > >=20
+> > >=20
+> > > > Here, we are talking of hundreds of thousands of skbs, compared to =
+at
+> > > > most 32 skbs per cpu.
+> > > >=20
+> > >=20
+> > > It is not a memory usage concern.
+> > >=20
+> > > > Perhaps sets sysctl_skb_defer_max to zero by default, so that admins
+> > > > can opt-in
+> > > >=20
+> > >=20
+> > > I really like the sd->defer_list system and I think is should be enab=
+led
+> > > by default.  Even if disabled by default, we still need to handle the=
+se
+> > > corner cases, as the selftests shouldn't start to cause-issues when t=
+his
+> > > gets enabled.
+> > >=20
+> > > The simple solution is: (1) When netdevice/NAPI unregister happens ca=
+ll
+> > > defer_list flushing helper.  And perhaps we also need to call it in
+> > > xdp_test_run_teardown().  How do you feel about that?
+> > >=20
+> > > --Jesper
+> > >=20
+> >=20
+> > Today I was discussing with Toke about this issue, and we were wonderin=
+g,
+> > if we just consider the page_pool use-case, what about moving the real =
+pool
+> > destroying steps when we return a page to the pool in page_pool_put_ful=
+l_page()
+> > if the pool has marked to be destroyed and there are no inflight pages =
+instead
+> > of assuming we have all the pages in the pool when we run page_pool_des=
+troy()?
+>=20
+> It sounds like you want to add a runtime check to the fast-path to
+> handle these corner cases?
+>=20
+> For performance reason we should not call page_pool_inflight() check in
+> fast-path, please!
 
-ok, cool, let's do that and keep things simple
+ack, right.
 
-> >
-> > >
-> > > >
-> > > > This, btw, shows the awkwardness of the bpf_dynptr_trim() approach.
-> > > >
-> > > > If someone really wanted an exact full-sized copy, it's trivial:
-> > > >
-> > > > bpf_dynptr_clone(&orig_ptr, 0, bpf_dynptr_get_size(&orig_ptr), &new=
-_ptr);
-> > > >
-> > > >
-> [...]
-> > > > > +static int unmark_stack_slots_dynptr(struct bpf_verifier_env *en=
-v, struct bpf_reg_state *reg)
-> > > > > +{
-> > > > > +       struct bpf_func_state *state =3D func(env, reg);
-> > > > > +       int spi;
-> > > > > +
-> > > > > +       spi =3D dynptr_get_spi(env, reg);
-> > > > > +       if (spi < 0)
-> > > > > +               return spi;
-> > > > > +
-> > > > > +       if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.=
-dynptr.type)) {
-> > > > > +               int ref_obj_id =3D state->stack[spi].spilled_ptr.=
-ref_obj_id;
-> > > > > +               int i;
-> > > > > +
-> > > > > +               /* If the dynptr has a ref_obj_id, then we need t=
-o invaldiate
-> > > >
-> > > > typo: invalidate
-> > > >
-> > > > > +                * two things:
-> > > > > +                *
-> > > > > +                * 1) Any dynptrs with a matching ref_obj_id (clo=
-nes)
-> > > > > +                * 2) Any slices associated with the ref_obj_id
-> > > >
-> > > > I think this is where this dynptr_id confusion comes from. The rule
-> > > > should be "any slices derived from this dynptr". But as mentioned o=
-n
-> > > > another thread, it's a separate topic which we can address later.
-> > > >
-> > > If there's a parent and a clone and slices derived from the parent an=
-d
-> > > slices derived from the clone, if the clone is invalidated then we
-> > > need to invalidate slices associated with the parent as well. So
-> > > shouldn't it be "any slices associated with the ref obj id" not "any
-> > > slices derived from this dynptr"? (also just a note, parent/clone
-> > > slices will share the same ref obj id and the same dynptr id, so
-> > > checking against either does the same thing)
-> >
-> > So, we have a ringbuf dynptr with ref_obj_id=3D1, id=3D2, ok? We clone =
-it,
-> > clone gets ref_obj_id=3D1, id=3D3. If either original dynptr or clone
-> > dynptr is released due to bpf_ringbuf_discard_dynptr(), we invalidate
-> > all the dynptrs with ref_obj_id=3D1. During invalidation of each dynptr=
-,
-> > we invalidate all the slices with ref_obj_id=3D=3Ddynptr's id. So we'll
-> > invalidate slices derived from dynptr with id=3D2 (original dynptr), an=
-d
-> > then all the slices derived from dynptr with id=3D3?
-> >
-> When we create a slice for a dynptr (through bpf_dynptr_data()), the
-> slice's reg->ref_obj_id is set to the dynptr's ref_obj_id (not
-> dynptr's id). During invalidation of the dynptr, we invalidate all the
-> slices with that ref obj id, which means we invalidate all slices for
-> any parents/clones.
-> [...]
+>=20
+> Details: You hopefully mean running/calling page_pool_release(pool) and n=
+ot
+> page_pool_destroy().
 
-Yep, because of how we define that ref_obj_id should be in refs array.
-What I'm saying is that we should probably change that to be more
-general "ID of an object which lifetime we are associated with". That
-would need some verifier internals adjustments.
+yes, I mean page_pool_release()
 
-So let's wrap up this particular ref_obj_id revamp discussion for now,
-it's a separate topic that will be just distracting us.
+>=20
+> I'm not totally against the idea, as long as someone is willing to do
+> extensive benchmarking that it doesn't affect fast-path performance.
+> Given we already read pool->p.flags in fast-path, it might be possible
+> to hide the extra branch (in the CPU pipeline).
+>=20
+>=20
+> > Maybe this means just get rid of the warn in page_pool_release_retry() =
+:)
+> >=20
+>=20
+> Sure, we can remove the print statement, but it feels like closing our
+> eyes and ignoring the problem.  We can remove the print statement, and
+> still debug the problem, as I have added tracepoints (to debug this).
+> But users will not report these issue early... on the other hand most of
+> these reports will likely be false-positives.
+>=20
+> This reminds me that Jakub's recent defer patches returning pages
+> 'directly' to the page_pool alloc-cache, will actually result in this
+> kind of bug.  This is because page_pool_destroy() assumes that pages
+> cannot be returned to alloc-cache, as driver will have "disconnected" RX
+> side.  We need to address this bug separately.  Lorenzo you didn't
+> happen to use a kernel with Jakub's patches included, do you?
 
-> > > > > +
-> > > > > +       err =3D process_dynptr_func(env, regno, insn_idx, arg_typ=
-e);
-> > > > > +       if (err < 0)
-> > > > > +               return err;
-> > > > > +
-> > > > > +       spi =3D dynptr_get_spi(env, reg);
-> > > > > +       if (spi < 0)
-> > > > > +               return spi;
-> > > > > +
-> > > > > +       first_reg_state =3D &state->stack[spi].spilled_ptr;
-> > > > > +       second_reg_state =3D &state->stack[spi - 1].spilled_ptr;
-> > > > > +       ref_obj_id =3D first_reg_state->ref_obj_id;
-> > > > > +
-> > > > > +       /* reassign the clone the same dynptr id as the original =
-*/
-> > > > > +       __mark_dynptr_reg(first_reg_state, dynptr_type, true, met=
-a->initialized_dynptr.id);
-> > > > > +       __mark_dynptr_reg(second_reg_state, dynptr_type, false, m=
-eta->initialized_dynptr.id);
-> > > >
-> > > > I'm not sure why clone should have the same dynptr_id? Isn't it a n=
-ew
-> > > > instance of a dynptr? I get preserving ref_obj_id (if refcounted), =
-but
-> > > > why reusing dynptr_id?..
-> > > >
-> > > I think we need to also copy over the dynptr id because in the case o=
-f
-> > > a non-reference counted dynptr, if the parent (or clone) is
-> > > invalidated (eg overwriting bytes of the dynptr on the stack), we mus=
-t
-> > > also invalidate the slices of the clone (or parent)
-> >
-> > yep, right now we'll have to do that because we have dynptr_id. But if
-> > we get rid of it and stick to ref_obj_id and id, then clone would need
-> > to get a new id, but keep ref_obj_id, right?
-> >
-> Thinking about this some more, I think you're right that we shouldn't
-> reuse the dynptr id. in fact, i think reusing it would lead to
-> incorrect behavior - in the example of a non-reference counted dynptr,
-> if the parent dynptr is overwritten on the stack (and thus
-> invalidated), that shouldn't invalidate the slices of the clone at
-> all. I'll change this in the next version
+nope, I did not tested them.
 
-ok
+Regards,
+Lorenzo
 
-> > > >
-> [...]
+>=20
+> --Jesper
+>=20
+>=20
+>=20
+
+--BG4t38bJ8cELjR3L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZEAZaQAKCRA6cBh0uS2t
+rLMiAP0Z372omA9TVhVXNUWSAgVcGFCPvUr1KUrzTqV/b8rdSwD/SV9Odpc7BjlW
+VooiG0Cpxs7fHYurGEu2pFLD8gSdkQc=
+=hZ9H
+-----END PGP SIGNATURE-----
+
+--BG4t38bJ8cELjR3L--
+
