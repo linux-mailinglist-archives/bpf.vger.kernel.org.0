@@ -2,66 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092F36E7100
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 04:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182A86E715C
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 04:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjDSCL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Apr 2023 22:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S231389AbjDSC4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Apr 2023 22:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjDSCL5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Apr 2023 22:11:57 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F6683C9;
-        Tue, 18 Apr 2023 19:11:56 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-24736790966so2262563a91.2;
-        Tue, 18 Apr 2023 19:11:56 -0700 (PDT)
+        with ESMTP id S231208AbjDSC4l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Apr 2023 22:56:41 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52966A49
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 19:56:39 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-54fc337a650so232215107b3.4
+        for <bpf@vger.kernel.org>; Tue, 18 Apr 2023 19:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681870316; x=1684462316;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EKzEYBMYX7WZqDuli+nPLqpoJWMnxCy7Q/NycVBMtMc=;
-        b=XvLxPooCYkT+5oVTrf/6xIeEEoHWqqCs8UmA3KtUcmcevGM4OVFB+vKlxS7dZaMECc
-         cXuh8a3M9U24T6D5J9jBqcyrvgHjioUQDZLaGv12VytzQIHKsuO4mfbCkJfNy8pxNX8s
-         H+L0wugTAzVw0U6/NmTb8EMGfo0LMiaP3XRoQFbeL2GFqTgvYbnUOPEeJn66LrVaNG5J
-         byzjFXEAOckKLIdzFytL8ifmuHa8TKTrFUUO/IjztVrIwwXQ5F55SwBHN2VNuBeZWWDP
-         7B0DGAEHpd91BfjLWzmgQMx3wsVN8K0bNQ+N2cPVAVsAEmvqqihr2lVKhImxtWhTn+F5
-         Jnow==
+        d=gmail.com; s=20221208; t=1681872999; x=1684464999;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DTfh+iwL3J2M1n0WP03+FR+9eXUJeLijVfY0+TBFzWg=;
+        b=cRSqRKv/CBbnVPgJE1BqkcxKTv9glPLeGWSp7t/48mp102FiHDffyNtMkWi1Y71qTD
+         cctwAMytS/nt9GIHmCtxKDQ7i3gvefcYMK33Wb/at6ggyOKVQOA8SlB6Rrw7BvI1hF4f
+         KF3uNXwy/SyyeqChm6NTLYpzUdSgeA338lsIaQLU63KYS6AW2lN20b+Ir96pZe4W1gIZ
+         z4pI+Ibp042kbKy4bTvYLrpJlLYmX6/Pj3x36BUELGUc8LPXDfnT160Og/pPCYjjAqa+
+         vLCWbVWNjIfUaMWnvGN0HjCsXqLwPuoGKxEx540wrZGOs/ZftlTPULvc/xOlHNatlAGI
+         hP9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681870316; x=1684462316;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EKzEYBMYX7WZqDuli+nPLqpoJWMnxCy7Q/NycVBMtMc=;
-        b=PDnvufksKY54neX78DugRVk4tXhmFatQDKRj9npfKRCDRtNUiV8YfFw4lA3+tbLY1v
-         nBBU/2t41hVPNJtxLTCoKXpx3jW7Cm7zwrXwmBcm5wtUlJrRPYCBzOeNT+wnc/92VKuU
-         ycUR81nvg71k8KzGE416qhRdM3LkwXBcUbgVOo+we+oNBG4XdGcj6n5vp9os97taSMWb
-         gfLdIEfWccLl7kiat5MnUjHair9LO3mOA/Y/2dkM8miK9kJNvBHf+oWhxcabeg2YSzLM
-         JpEiVZ2gjwnP1VEboDQjHCuDXlkq9zBIC7fN1PIcobhtjIWOiZmA26d+kyovtcqCVKmv
-         +AFw==
-X-Gm-Message-State: AAQBX9cRcyN1B88gjvWoSOndngjJf31Uhqja2xdhSwp1jKn4wGUu7Izg
-        ImqjwVmp2V7RtmuDtnC9nG4J1i7nN0Y=
-X-Google-Smtp-Source: AKy350aRRthAZA0vGhv3/Cr2qQzcrqdY1wRe60w2AEtcUdMzrjaf3DvuxtNvC3ByoOGK8l/jdH7HAw==
-X-Received: by 2002:a17:90a:d395:b0:247:53b4:ec52 with SMTP id q21-20020a17090ad39500b0024753b4ec52mr1294663pju.8.1681870315567;
-        Tue, 18 Apr 2023 19:11:55 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:4d31])
-        by smtp.gmail.com with ESMTPSA id nm20-20020a17090b19d400b00249604258b1sm236422pjb.38.2023.04.18.19.11.54
+        d=1e100.net; s=20221208; t=1681872999; x=1684464999;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DTfh+iwL3J2M1n0WP03+FR+9eXUJeLijVfY0+TBFzWg=;
+        b=kL1+MtoDEZnL0gFnKsZ3/OXPPt6b5gfc8P0HZVVfWktstFDrMICSsgNX8p70XvoqEe
+         NLy577VzwH67418ARnGUDHx1RIkztdMbzKopE8obRummUsX7RUT9fXukqoX+b/mtgoid
+         iHIOnXGwyS+3MeG5No5mFyMwdllAUnl6j18qWpwxwS1aX4fFoSU/YjLbzqroHYaj8ujc
+         f+qhUtfeokgT/WMuqhvG3GACLVIRtbIwprMxo8x7nz/MUL1vEa7ceeyP2BnBVb+VnsGr
+         vuspfgyuap3W2Wp/NXGoGgCsOWhP+HLL6Z74FUyJ5Y2nbeAwbIOJGEZkDrm45pQoEQVs
+         KKjw==
+X-Gm-Message-State: AAQBX9dwxewavS/jCuzo3LEWnDKXcRX+zeQ6mNMoaR7ZXZigeJG0om7t
+        PFyiiJxcAZtOhEsD3pZQBj7U29EWhEk=
+X-Google-Smtp-Source: AKy350Yw7N91SrPKognck0MrGRyylYmO9bOnlZ1Nb33cwk94OD/65GxLYJ1EIwvefDT0FBjPr8yWXQ==
+X-Received: by 2002:a81:b413:0:b0:54f:cfbf:22fa with SMTP id h19-20020a81b413000000b0054fcfbf22famr1842194ywi.25.1681872998681;
+        Tue, 18 Apr 2023 19:56:38 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:d7b6:a335:3f56:2311])
+        by smtp.gmail.com with ESMTPSA id eo9-20020a05690c2c0900b0054fa9e39be0sm2667585ywb.56.2023.04.18.19.56.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 19:11:55 -0700 (PDT)
-Date:   Tue, 18 Apr 2023 19:11:52 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, dxu@dxuuu.xyz, qde@naccy.de
-Subject: Re: [PATCH bpf-next v3 2/6] bpf: minimal support for programs hooked
- into netfilter framework
-Message-ID: <20230419021152.sjq4gttphzzy6b5f@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230418131038.18054-1-fw@strlen.de>
- <20230418131038.18054-3-fw@strlen.de>
+        Tue, 18 Apr 2023 19:56:38 -0700 (PDT)
+From:   Kui-Feng Lee <thinker.li@gmail.com>
+X-Google-Original-From: Kui-Feng Lee <kuifeng@meta.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+        yhs@meta.com
+Cc:     Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next v2 1/2] bpftool: Register struct_ops with a link.
+Date:   Tue, 18 Apr 2023 19:56:24 -0700
+Message-Id: <20230419025625.1289594-1-kuifeng@meta.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230418131038.18054-3-fw@strlen.de>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,211 +70,202 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 03:10:34PM +0200, Florian Westphal wrote:
-> This adds minimal support for BPF_PROG_TYPE_NETFILTER bpf programs
-> that will be invoked via the NF_HOOK() points in the ip stack.
-> 
-> Invocation incurs an indirect call.  This is not a necessity: Its
-> possible to add 'DEFINE_BPF_DISPATCHER(nf_progs)' and handle the
-> program invocation with the same method already done for xdp progs.
-> 
-> This isn't done here to keep the size of this chunk down.
-> 
-> Verifier restricts verdicts to either DROP or ACCEPT.
-> 
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  include/linux/bpf_types.h           |  4 ++
->  include/net/netfilter/nf_bpf_link.h |  5 +++
->  kernel/bpf/btf.c                    |  6 +++
->  kernel/bpf/verifier.c               |  3 ++
->  net/core/filter.c                   |  1 +
->  net/netfilter/nf_bpf_link.c         | 70 ++++++++++++++++++++++++++++-
->  6 files changed, 88 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index d4ee3ccd3753..39a999abb0ce 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -79,6 +79,10 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
->  #endif
->  BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
->  	      void *, void *)
-> +#ifdef CONFIG_NETFILTER
-> +BPF_PROG_TYPE(BPF_PROG_TYPE_NETFILTER, netfilter,
-> +	      struct bpf_nf_ctx, struct bpf_nf_ctx)
-> +#endif
->  
->  BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
->  BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
-> diff --git a/include/net/netfilter/nf_bpf_link.h b/include/net/netfilter/nf_bpf_link.h
-> index eeaeaf3d15de..6c984b0ea838 100644
-> --- a/include/net/netfilter/nf_bpf_link.h
-> +++ b/include/net/netfilter/nf_bpf_link.h
-> @@ -1,5 +1,10 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  
-> +struct bpf_nf_ctx {
-> +	const struct nf_hook_state *state;
-> +	struct sk_buff *skb;
-> +};
-> +
->  #if IS_ENABLED(CONFIG_NETFILTER_BPF_LINK)
->  int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
->  #else
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 027f9f8a3551..3556bb68e3ec 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -25,6 +25,9 @@
->  #include <linux/bsearch.h>
->  #include <linux/kobject.h>
->  #include <linux/sysfs.h>
-> +
-> +#include <net/netfilter/nf_bpf_link.h>
-> +
->  #include <net/sock.h>
->  #include "../tools/lib/bpf/relo_core.h"
->  
-> @@ -212,6 +215,7 @@ enum btf_kfunc_hook {
->  	BTF_KFUNC_HOOK_SK_SKB,
->  	BTF_KFUNC_HOOK_SOCKET_FILTER,
->  	BTF_KFUNC_HOOK_LWT,
-> +	BTF_KFUNC_HOOK_NETFILTER,
->  	BTF_KFUNC_HOOK_MAX,
->  };
->  
-> @@ -7800,6 +7804,8 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
->  	case BPF_PROG_TYPE_LWT_XMIT:
->  	case BPF_PROG_TYPE_LWT_SEG6LOCAL:
->  		return BTF_KFUNC_HOOK_LWT;
-> +	case BPF_PROG_TYPE_NETFILTER:
-> +		return BTF_KFUNC_HOOK_NETFILTER;
->  	default:
->  		return BTF_KFUNC_HOOK_MAX;
->  	}
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 1e05355facdc..fc7281d39e46 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13816,6 +13816,9 @@ static int check_return_code(struct bpf_verifier_env *env)
->  		}
->  		break;
->  
-> +	case BPF_PROG_TYPE_NETFILTER:
-> +		range = tnum_range(NF_DROP, NF_ACCEPT);
-> +		break;
->  	case BPF_PROG_TYPE_EXT:
->  		/* freplace program can return anything as its return value
->  		 * depends on the to-be-replaced kernel func or bpf program.
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 44fb997434ad..d9ce04ca22ce 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -11717,6 +11717,7 @@ static int __init bpf_kfunc_init(void)
->  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_IN, &bpf_kfunc_set_skb);
->  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_XMIT, &bpf_kfunc_set_skb);
->  	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
-> +	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER, &bpf_kfunc_set_skb);
->  	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
->  }
->  late_initcall(bpf_kfunc_init);
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index 0f937c6bee6d..2d12c978e4e7 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/bpf.h>
-> +#include <linux/filter.h>
->  #include <linux/netfilter.h>
->  
->  #include <net/netfilter/nf_bpf_link.h>
-> @@ -7,7 +8,13 @@
->  
->  static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb, const struct nf_hook_state *s)
->  {
-> -	return NF_ACCEPT;
-> +	const struct bpf_prog *prog = bpf_prog;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = s,
-> +		.skb = skb,
-> +	};
-> +
-> +	return bpf_prog_run(prog, &ctx);
->  }
->  
->  struct bpf_nf_link {
-> @@ -158,3 +165,64 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  
->  	return bpf_link_settle(&link_primer);
->  }
-> +
-> +const struct bpf_prog_ops netfilter_prog_ops = {
-> +};
-> +
-> +static bool nf_ptr_to_btf_id(struct bpf_insn_access_aux *info, const char *name)
-> +{
-> +	struct btf *btf;
-> +	s32 type_id;
-> +
-> +	btf = bpf_get_btf_vmlinux();
-> +	if (IS_ERR_OR_NULL(btf))
-> +		return false;
-> +
-> +	type_id = btf_find_by_name_kind(btf, name, BTF_KIND_STRUCT);
-> +	if (WARN_ON_ONCE(type_id < 0))
-> +		return false;
-> +
-> +	info->btf = btf;
-> +	info->btf_id = type_id;
-> +	info->reg_type = PTR_TO_BTF_ID | PTR_TRUSTED;
-> +	return true;
+You can include an optional path after specifying the object name for the
+'struct_ops register' subcommand.
 
-This can be improved. Instead of run-time search use pre-processed
-btf_tracing_ids[] approach.
-Add sk_buff and nf_hook_state to BTF_TRACING_TYPE_xxx
-and take btf ids from array.
+Since the commit 226bc6ae6405 ("Merge branch 'Transit between BPF TCP
+congestion controls.'") has been accepted, it is now possible to create a
+link for a struct_ops. This can be done by defining a struct_ops in
+SEC(".struct_ops.link") to make libbpf returns a real link. If we don't pin
+the links before leaving bpftool, they will disappear. To instruct bpftool
+to pin the links in a directory with the names of the maps, we need to
+provide the path of that directory.
 
-It can be a follow up,
-but since you're respinning anyway please add a selftest for ctx->skb, ctx->state.
-The patch 6 only validates the return codes.
+Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+---
+ tools/bpf/bpftool/common.c     | 14 +++++++
+ tools/bpf/bpftool/main.h       |  3 ++
+ tools/bpf/bpftool/prog.c       | 13 ------
+ tools/bpf/bpftool/struct_ops.c | 76 ++++++++++++++++++++++++++++------
+ 4 files changed, 80 insertions(+), 26 deletions(-)
 
-> +}
-> +
-> +static bool nf_is_valid_access(int off, int size, enum bpf_access_type type,
-> +			       const struct bpf_prog *prog,
-> +			       struct bpf_insn_access_aux *info)
-> +{
-> +	if (off < 0 || off >= sizeof(struct bpf_nf_ctx))
-> +		return false;
-> +
-> +	if (type == BPF_WRITE)
-> +		return false;
-> +
-> +	switch (off) {
-> +	case bpf_ctx_range(struct bpf_nf_ctx, skb):
-> +		if (size != sizeof_field(struct bpf_nf_ctx, skb))
-> +			return false;
-> +
-> +		return nf_ptr_to_btf_id(info, "sk_buff");
-> +	case bpf_ctx_range(struct bpf_nf_ctx, state):
-> +		if (size != sizeof_field(struct bpf_nf_ctx, state))
-> +			return false;
-> +
-> +		return nf_ptr_to_btf_id(info, "nf_hook_state");
-> +	default:
-> +		return false;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static const struct bpf_func_proto *
-> +bpf_nf_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> +{
-> +	return bpf_base_func_proto(func_id);
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 5a73ccf14332..1360c82ae732 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -1091,3 +1091,17 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
+ 	default:	return libbpf_bpf_attach_type_str(t);
+ 	}
+ }
++
++int pathname_concat(char *buf, int buf_sz, const char *path,
++		    const char *name)
++{
++	int len;
++
++	len = snprintf(buf, buf_sz, "%s/%s", path, name);
++	if (len < 0)
++		return -EINVAL;
++	if (len >= buf_sz)
++		return -ENAMETOOLONG;
++
++	return 0;
++}
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0ef373cef4c7..f09853f24422 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -262,4 +262,7 @@ static inline bool hashmap__empty(struct hashmap *map)
+ 	return map ? hashmap__size(map) == 0 : true;
+ }
+ 
++int pathname_concat(char *buf, int buf_sz, const char *path,
++		    const char *name);
++
+ #endif
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index afbe3ec342c8..6024b7316875 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1472,19 +1472,6 @@ auto_attach_program(struct bpf_program *prog, const char *path)
+ 	return err;
+ }
+ 
+-static int pathname_concat(char *buf, size_t buf_sz, const char *path, const char *name)
+-{
+-	int len;
+-
+-	len = snprintf(buf, buf_sz, "%s/%s", path, name);
+-	if (len < 0)
+-		return -EINVAL;
+-	if ((size_t)len >= buf_sz)
+-		return -ENAMETOOLONG;
+-
+-	return 0;
+-}
+-
+ static int
+ auto_attach_programs(struct bpf_object *obj, const char *path)
+ {
+diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
+index b389f4830e11..41643756e400 100644
+--- a/tools/bpf/bpftool/struct_ops.c
++++ b/tools/bpf/bpftool/struct_ops.c
+@@ -475,21 +475,48 @@ static int do_unregister(int argc, char **argv)
+ 	return cmd_retval(&res, true);
+ }
+ 
++static int pin_link(struct bpf_link *link, const char *pindir,
++		    const char *name)
++{
++	char pinfile[PATH_MAX];
++	int err;
++
++	err = pathname_concat(pinfile, sizeof(pinfile), pindir, name);
++	if (err)
++		return -1;
++
++	err = bpf_link__pin(link, pinfile);
++	if (err)
++		return -1;
++
++	return 0;
++}
++
+ static int do_register(int argc, char **argv)
+ {
+ 	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
++	__u32 link_info_len = sizeof(struct bpf_link_info);
++	struct bpf_link_info link_info = {};
+ 	struct bpf_map_info info = {};
+ 	__u32 info_len = sizeof(info);
+ 	int nr_errs = 0, nr_maps = 0;
++	const char *linkdir = NULL;
+ 	struct bpf_object *obj;
+ 	struct bpf_link *link;
+ 	struct bpf_map *map;
+ 	const char *file;
+ 
+-	if (argc != 1)
++	if (argc != 1 && argc != 2)
+ 		usage();
+ 
+ 	file = GET_ARG();
++	if (argc == 1)
++		linkdir = GET_ARG();
++
++	if (linkdir && mount_bpffs_for_pin(linkdir)) {
++		p_err("can't mount bpffs for pinning");
++		return -1;
++	}
+ 
+ 	if (verifier_logs)
+ 		/* log_level1 + log_level2 + stats, but not stable UAPI */
+@@ -519,21 +546,44 @@ static int do_register(int argc, char **argv)
+ 		}
+ 		nr_maps++;
+ 
+-		bpf_link__disconnect(link);
+-		bpf_link__destroy(link);
+-
+-		if (!bpf_map_get_info_by_fd(bpf_map__fd(map), &info,
+-					    &info_len))
+-			p_info("Registered %s %s id %u",
+-			       get_kern_struct_ops_name(&info),
+-			       bpf_map__name(map),
+-			       info.id);
+-		else
++		if (bpf_map_get_info_by_fd(bpf_map__fd(map), &info,
++					   &info_len)) {
+ 			/* Not p_err.  The struct_ops was attached
+ 			 * successfully.
+ 			 */
+ 			p_info("Registered %s but can't find id: %s",
+-			       bpf_map__name(map), strerror(errno));
++			      bpf_map__name(map), strerror(errno));
++			goto clean_link;
++		}
++		if (!(bpf_map__map_flags(map) & BPF_F_LINK)) {
++			p_info("Registered %s %s id %u",
++			       get_kern_struct_ops_name(&info),
++			       info.name,
++			       info.id);
++			goto clean_link;
++		}
++		if (bpf_link_get_info_by_fd(bpf_link__fd(link),
++						   &link_info,
++					    &link_info_len)) {
++			p_err("Registered %s but can't find link id: %s",
++			      bpf_map__name(map), strerror(errno));
++			nr_errs++;
++			goto clean_link;
++		}
++		if (linkdir && pin_link(link, linkdir, info.name)) {
++			p_err("can't pin link %u for %s: %s",
++			      link_info.id, info.name,
++			      strerror(errno));
++			nr_errs++;
++			goto clean_link;
++		}
++		p_info("Registered %s %s map id %u link id %u",
++		       get_kern_struct_ops_name(&info),
++		       info.name, info.id, link_info.id);
++
++clean_link:
++		bpf_link__disconnect(link);
++		bpf_link__destroy(link);
+ 	}
+ 
+ 	bpf_object__close(obj);
+@@ -562,7 +612,7 @@ static int do_help(int argc, char **argv)
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s { show | list } [STRUCT_OPS_MAP]\n"
+ 		"       %1$s %2$s dump [STRUCT_OPS_MAP]\n"
+-		"       %1$s %2$s register OBJ\n"
++		"       %1$s %2$s register OBJ [LINK_DIR]\n"
+ 		"       %1$s %2$s unregister STRUCT_OPS_MAP\n"
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+-- 
+2.34.1
 
-As a next step we probably need to generalize tc_cls_act_func_proto
-to take trusted ptr_to_btf skb instead of ctx.
-netfilter progs should be able to use bpf_skb_load_bytes and friends.
