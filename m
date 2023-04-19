@@ -2,88 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD26C6E7FCC
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 18:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D782E6E7FD8
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 18:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjDSQlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 12:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S233607AbjDSQmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 12:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232494AbjDSQlE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 12:41:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED6046A9
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:40:15 -0700 (PDT)
+        with ESMTP id S233712AbjDSQl7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 12:41:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CC246A9
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681922415;
+        s=mimecast20190719; t=1681922472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8cw7LajUVrrWi88fW/qgXBhZmkexifRz2S5k3mFR+pw=;
-        b=dmQfZXGC/tKjXeBB7EMXDiOVPzTGqhx3q6uR2/h9EnXZGn+Ij0zqgpKfi+Br8Snp7Pl8dH
-        aMAt1v28tgzzo9az5dc3xlZFaNVv0U8K6I4hFkdb28sVt3CqMC7c0CykLYGi0DXgqb1ZjG
-        AxeLOKNchX/OVmeVQAgN9cGDqsodqxw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=hlv123C+B2XbuevZfH+qzPUIEfiKhtHnPAxff1XZ5EU=;
+        b=JUjPRpWCOdgIJS1Drvnw/QkbQ5ErlgJAFhWgWlTcEgQXfKIM4Xu0qBvF8Tops/uw7V8/Oc
+        EhG/rQ4Makfkg/jBXhKfONdVIS6Xh+TXk0UFiXVtO+RFNKH+jWoIx1tl8XkMBRfFuw/l/V
+        ZGvLEWNqMcoBYWgu9WceKxSZ8ihQxI0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-68-KPjbaKNuO26TsEMtlqToFw-1; Wed, 19 Apr 2023 12:40:13 -0400
-X-MC-Unique: KPjbaKNuO26TsEMtlqToFw-1
-Received: by mail-wm1-f71.google.com with SMTP id ay3-20020a05600c1e0300b003f1728ce786so1246221wmb.7
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:40:13 -0700 (PDT)
+ us-mta-433-Qd7OeCnVMGmI3S51Gj0LTg-1; Wed, 19 Apr 2023 12:41:10 -0400
+X-MC-Unique: Qd7OeCnVMGmI3S51Gj0LTg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a342f6516so224866b.0
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 09:41:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681922412; x=1684514412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8cw7LajUVrrWi88fW/qgXBhZmkexifRz2S5k3mFR+pw=;
-        b=eK8FOhZztvxXUZmmqNa9nbF4pYKWlnAZW25bjuSdNIVaBnjBAkYvMb2L14InXsH45K
-         nHti2XbWwwHmaOFXNJVX3u7o6TKp8ZRliZ2YPvSQaF7RT5KI59A0qpMgeSEHQWuffU4u
-         A9Ynd49YPr+vFRzRtXT4r/TzhL1MjtyJmvBnbSTh9VaMtotnjQYtgao9kTQ61K1MB/Qf
-         /GSxiTe2guIGEgh1YL5hvDVGnhEnPuIr8aUjV0Onwy57iD7ILVKm8toxpioyHPRrvDWL
-         Z9Ae6QGowb0cQ5q1cZ7zD+6g85d9ZlJ6behZ+CQtAOmmlUWOEpwIfPLjaHQe8RSinZgE
-         irPw==
-X-Gm-Message-State: AAQBX9e4LGK1sguQX1sv2ntaXLM+rpGSjODFLS4WBFzD7w/qhpBHkFqT
-        VXe+krweKCX64Ugzzj7wyiTBmzO2ZB9pC9rHYGUO1tZJfh+a/tg7nYwFFZuBLVYTmeyQQXivgg8
-        2X0Y60aa7Tq7rndnDr2sa
-X-Received: by 2002:a05:600c:28e:b0:3f0:85b8:ce6e with SMTP id 14-20020a05600c028e00b003f085b8ce6emr17988712wmk.37.1681922412290;
-        Wed, 19 Apr 2023 09:40:12 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aSlTFAYnbmpLzDBk1OmsNDKq6OhwEXTs8ATUPnKwEKb8oLQK9zZHmgHGgGRUhTnENpVBpMvg==
-X-Received: by 2002:a05:600c:28e:b0:3f0:85b8:ce6e with SMTP id 14-20020a05600c028e00b003f085b8ce6emr17988677wmk.37.1681922411872;
-        Wed, 19 Apr 2023 09:40:11 -0700 (PDT)
-Received: from localhost (net-130-25-106-149.cust.vodafonedsl.it. [130.25.106.149])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003f182a10106sm1272600wma.8.2023.04.19.09.40.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 09:40:11 -0700 (PDT)
-Date:   Wed, 19 Apr 2023 18:40:09 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
-        pabeni@redhat.com, bpf@vger.kernel.org, nbd@nbd.name,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Subject: Re: issue with inflight pages from page_pool
-Message-ID: <ZEAZacIv9ssQF1hD@lore-desk>
-References: <ZD2TH4PsmSNayhfs@lore-desk>
- <20230417120837.6f1e0ef6@kernel.org>
- <ZD26lb2qdsdX16qa@lore-desk>
- <20230417163210.2433ae40@kernel.org>
- <ZD5IcgN5s9lCqIgl@lore-desk>
- <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
- <CANn89iKAVERmJjTyscwjRTjTeWBUgA9COz+8HVH09Q0ehHL9Gw@mail.gmail.com>
- <ea762132-a6ff-379a-2cc2-6057754425f7@redhat.com>
- <ZD/4/npAIvS1Co6e@lore-desk>
- <e8df2654-6a5b-3c92-489d-2fe5e444135f@redhat.com>
+        d=1e100.net; s=20221208; t=1681922469; x=1684514469;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hlv123C+B2XbuevZfH+qzPUIEfiKhtHnPAxff1XZ5EU=;
+        b=jfDpWz2KRKsA+ZJT1HKPpb5wXLZWa4aeq6qMtUL7t7wIsCUFkjQMplHDKvuc6F2XuA
+         /ESRPYqKUd3vJI42M2HMJmjichX9RBRGZkZI5b4N01zIGU3W9ILf+5+byvt15+TaK2Pi
+         2tUY/krmDBssXJzVyeM+I6JvPfq9bhpe8/M77fkbH714kMy8yWPV7NCpyWnx37a5B/69
+         +Cc3Ra7XscTWhkuiIwvbX+FQCYa5ew4X85yi9UyMClNem0mjfZQ9G8DNImr4c5MsMPgT
+         AzJW6e6Vly1gYF0rEmCJ0Mi3wgPBWN+rFMVPqgBOEjoxFl250u8c8B4D8ljsJkvamc2j
+         YMfA==
+X-Gm-Message-State: AAQBX9drwmvJSQTKb/fR1/x4nRxWNN9ee+RpgtMsHZ7hLsBjTZZl85dU
+        xxAsejaBKEB1WmWGkyirG+xHi84GaR6bc/Be4MOQTBILxR7JZoaKwJu+S8RoDbL70QL1Rlp4aHe
+        JtAHW1qzrtUmN
+X-Received: by 2002:aa7:d882:0:b0:506:747f:3bf0 with SMTP id u2-20020aa7d882000000b00506747f3bf0mr6496247edq.8.1681922469333;
+        Wed, 19 Apr 2023 09:41:09 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZhK35CXjndGgF5Spba/Mxq6IuaaMO7jT05DPVMg1qXuVeYR2ehgm+jxdc2+5FsBIsBaAX16g==
+X-Received: by 2002:aa7:d882:0:b0:506:747f:3bf0 with SMTP id u2-20020aa7d882000000b00506747f3bf0mr6496218edq.8.1681922468996;
+        Wed, 19 Apr 2023 09:41:08 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id g3-20020aa7c843000000b005029c47f814sm8170544edt.49.2023.04.19.09.41.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Apr 2023 09:41:08 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <925c8354-f3ba-53fb-3950-ec02d41a12a7@redhat.com>
+Date:   Wed, 19 Apr 2023 18:41:07 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BG4t38bJ8cELjR3L"
-Content-Disposition: inline
-In-Reply-To: <e8df2654-6a5b-3c92-489d-2fe5e444135f@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, martin.lau@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
+        yoong.siang.song@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com, kuba@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, hawk@kernel.org,
+        davem@davemloft.net
+Subject: Re: [PATCH bpf-next V2 5/5] selftests/bpf: xdp_hw_metadata track more
+ timestamps
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+References: <168182460362.616355.14591423386485175723.stgit@firesoul>
+ <168182466298.616355.2544377890818617459.stgit@firesoul>
+ <ZD7HJ3hdDdOSm/lK@google.com>
+In-Reply-To: <ZD7HJ3hdDdOSm/lK@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,245 +93,53 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---BG4t38bJ8cELjR3L
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
->=20
->=20
-> On 19/04/2023 16.21, Lorenzo Bianconi wrote:
-> > >=20
-> > > On 19/04/2023 14.09, Eric Dumazet wrote:
-> > > > On Wed, Apr 19, 2023 at 1:08=E2=80=AFPM Jesper Dangaard Brouer
-> > > > >=20
-> > > > >=20
-> > > > > On 18/04/2023 09.36, Lorenzo Bianconi wrote:
-> > > > > > > On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
-> > > > > > > > > If it's that then I'm with Eric. There are many ways to k=
-eep the pages
-> > > > > > > > > in use, no point working around one of them and not the r=
-est :(
-> > > > > > > >=20
-> > > > > > > > I was not clear here, my fault. What I mean is I can see th=
-e returned
-> > > > > > > > pages counter increasing from time to time, but during most=
- of tests,
-> > > > > > > > even after 2h the tcp traffic has stopped, page_pool_releas=
-e_retry()
-> > > > > > > > still complains not all the pages are returned to the pool =
-and so the
-> > > > > > > > pool has not been deallocated yet.
-> > > > > > > > The chunk of code in my first email is just to demonstrate =
-the issue
-> > > > > > > > and I am completely fine to get a better solution :)
-> > > > > > >=20
-> > > > > > > Your problem is perhaps made worse by threaded NAPI, you have
-> > > > > > > defer-free skbs sprayed across all cores and no NAPI there to
-> > > > > > > flush them :(
-> > > > > >=20
-> > > > > > yes, exactly :)
-> > > > > >=20
-> > > > > > >=20
-> > > > > > > > I guess we just need a way to free the pool in a reasonable=
- amount
-> > > > > > > > of time. Agree?
-> > > > > > >=20
-> > > > > > > Whether we need to guarantee the release is the real question.
-> > > > > >=20
-> > > > > > yes, this is the main goal of my email. The defer-free skbs beh=
-aviour seems in
-> > > > > > contrast with the page_pool pending pages monitor mechanism or =
-at least they
-> > > > > > do not work well together.
-> > > > > >=20
-> > > > > > @Jesper, Ilias: any input on it?
-> > > > > >=20
-> > > > > > > Maybe it's more of a false-positive warning.
-> > > > > > >=20
-> > > > > > > Flushing the defer list is probably fine as a hack, but it's =
-not
-> > > > > > > a full fix as Eric explained. False positive can still happen.
-> > > > > >=20
-> > > > > > agree, it was just a way to give an idea of the issue, not a pr=
-oper solution.
-> > > > > >=20
-> > > > > > Regards,
-> > > > > > Lorenzo
-> > > > > >=20
-> > > > > > >=20
-> > > > > > > I'm ambivalent. My only real request wold be to make the flus=
-hing
-> > > > > > > a helper in net/core/dev.c rather than open coded in page_poo=
-l.c.
-> > > > >=20
-> > > > > I agree. We need a central defer_list flushing helper
-> > > > >=20
-> > > > > It is too easy to say this is a false-positive warning.
-> > > > > IHMO this expose an issue with the sd->defer_list system.
-> > > > >=20
-> > > > > Lorenzo's test is adding+removing veth devices, which creates and=
- runs
-> > > > > NAPI processing on random CPUs.  After veth netdevices (+NAPI) are
-> > > > > removed, nothing will naturally invoking net_rx_softirq on this C=
-PU.
-> > > > > Thus, we have SKBs waiting on CPUs sd->defer_list.  Further more =
-we will
-> > > > > not create new SKB with this skb->alloc_cpu, to trigger RX softir=
-q IPI
-> > > > > call (trigger_rx_softirq), even if this CPU process and frees SKB=
-s.
-> > > > >=20
-> > > > > I see two solutions:
-> > > > >=20
-> > > > >     (1) When netdevice/NAPI unregister happens call defer_list fl=
-ushing
-> > > > > helper.
-> > > > >=20
-> > > > >     (2) Use napi_watchdog to detect if defer_list is (many jiffie=
-s) old,
-> > > > > and then call defer_list flushing helper.
-> > > > >=20
-> > > > >=20
-> > > > > > >=20
-> > > > > > > Somewhat related - Eric, do we need to handle defer_list in d=
-ev_cpu_dead()?
-> > > > >=20
-> > > > > Looks to me like dev_cpu_dead() also need this flushing helper for
-> > > > > sd->defer_list, or at least moving the sd->defer_list to an sd th=
-at will
-> > > > > run eventually.
-> > > >=20
-> > > > I think I just considered having a few skbs in per-cpu list would n=
-ot
-> > > > be an issue,
-> > > > especially considering skbs can sit hours in tcp receive queues.
-> > > >=20
-> > >=20
-> > > It was the first thing I said to Lorenzo when he first reported the
-> > > problem to me (over chat): It is likely packets sitting in a TCP queu=
-e.
-> > > Then I instructed him to look at output from netstat to see queues and
-> > > look for TIME-WAIT, FIN-WAIT etc.
-> > >=20
-> > >=20
-> > > > Do we expect hacing some kind of callback/shrinker to instruct TCP =
-or
-> > > > pipes to release all pages that prevent
-> > > > a page_pool to be freed ?
-> > > >=20
-> > >=20
-> > > This is *not* what I'm asking for.
-> > >=20
-> > > With TCP sockets (pipes etc) we can take care of closing the sockets
-> > > (and programs etc) to free up the SKBs (and perhaps wait for timeouts)
-> > > to make sure the page_pool shutdown doesn't hang.
-> > >=20
-> > > The problem arise for all the selftests that uses veth and bpf_test_r=
-un
-> > > (using bpf_test_run_xdp_live / xdp_test_run_setup).  For the selftests
-> > > we obviously take care of closing sockets and removing veth interfaces
-> > > again.  Problem: The defer_list corner-case isn't under our control.
-> > >=20
-> > >=20
-> > > > Here, we are talking of hundreds of thousands of skbs, compared to =
-at
-> > > > most 32 skbs per cpu.
-> > > >=20
-> > >=20
-> > > It is not a memory usage concern.
-> > >=20
-> > > > Perhaps sets sysctl_skb_defer_max to zero by default, so that admins
-> > > > can opt-in
-> > > >=20
-> > >=20
-> > > I really like the sd->defer_list system and I think is should be enab=
-led
-> > > by default.  Even if disabled by default, we still need to handle the=
-se
-> > > corner cases, as the selftests shouldn't start to cause-issues when t=
-his
-> > > gets enabled.
-> > >=20
-> > > The simple solution is: (1) When netdevice/NAPI unregister happens ca=
-ll
-> > > defer_list flushing helper.  And perhaps we also need to call it in
-> > > xdp_test_run_teardown().  How do you feel about that?
-> > >=20
-> > > --Jesper
-> > >=20
-> >=20
-> > Today I was discussing with Toke about this issue, and we were wonderin=
-g,
-> > if we just consider the page_pool use-case, what about moving the real =
-pool
-> > destroying steps when we return a page to the pool in page_pool_put_ful=
-l_page()
-> > if the pool has marked to be destroyed and there are no inflight pages =
-instead
-> > of assuming we have all the pages in the pool when we run page_pool_des=
-troy()?
->=20
-> It sounds like you want to add a runtime check to the fast-path to
-> handle these corner cases?
->=20
-> For performance reason we should not call page_pool_inflight() check in
-> fast-path, please!
+On 18/04/2023 18.36, Stanislav Fomichev wrote:
+> On 04/18, Jesper Dangaard Brouer wrote:
+>> To correlate the hardware RX timestamp with something, add tracking of
+>> two software timestamps both clock source CLOCK_TAI (see description in
+>> man clock_gettime(2)).
+>>
+>> XDP metadata is extended with xdp_timestamp for capturing when XDP
+>> received the packet. Populated with BPF helper bpf_ktime_get_tai_ns(). I
+>> could not find a BPF helper for getting CLOCK_REALTIME, which would have
+>> been preferred. In userspace when AF_XDP sees the packet another
+>> software timestamp is recorded via clock_gettime() also clock source
+>> CLOCK_TAI.
+>>
+[...]
 
-ack, right.
+>> More explanation of the output and how this can be used to identify
+>> clock drift for the HW clock can be seen here[1]:
+>>
+>> [1]https://github.com/xdp-project/xdp-project/blob/master/areas/hints/xdp_hints_kfuncs02_driver_igc.org
+>>
+>> Signed-off-by: Jesper Dangaard Brouer<brouer@redhat.com>
+> Acked-by: Stanislav Fomichev<sdf@google.com>
+> 
+>> ---
+>>   .../testing/selftests/bpf/progs/xdp_hw_metadata.c  |    4 +-
+>>   tools/testing/selftests/bpf/xdp_hw_metadata.c      |   47 ++++++++++++++++++--
+>>   tools/testing/selftests/bpf/xdp_metadata.h         |    1
+>>   3 files changed, 46 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> index e1c787815e44..b2dfd7066c6e 100644
+>> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+>> @@ -77,7 +77,9 @@ int rx(struct xdp_md *ctx)
+>>   	}
+>>   
+>>   	err = bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp);
+>> -	if (err)
+> [..]
+> 
+>> +	if (!err)
+>> +		meta->xdp_timestamp = bpf_ktime_get_tai_ns();
+> nit: why not set it unconditionally?
 
->=20
-> Details: You hopefully mean running/calling page_pool_release(pool) and n=
-ot
-> page_pool_destroy().
+Because userspace application doesn't use it for anything, when
+meta->rx_timestamp is zero.
 
-yes, I mean page_pool_release()
-
->=20
-> I'm not totally against the idea, as long as someone is willing to do
-> extensive benchmarking that it doesn't affect fast-path performance.
-> Given we already read pool->p.flags in fast-path, it might be possible
-> to hide the extra branch (in the CPU pipeline).
->=20
->=20
-> > Maybe this means just get rid of the warn in page_pool_release_retry() =
-:)
-> >=20
->=20
-> Sure, we can remove the print statement, but it feels like closing our
-> eyes and ignoring the problem.  We can remove the print statement, and
-> still debug the problem, as I have added tracepoints (to debug this).
-> But users will not report these issue early... on the other hand most of
-> these reports will likely be false-positives.
->=20
-> This reminds me that Jakub's recent defer patches returning pages
-> 'directly' to the page_pool alloc-cache, will actually result in this
-> kind of bug.  This is because page_pool_destroy() assumes that pages
-> cannot be returned to alloc-cache, as driver will have "disconnected" RX
-> side.  We need to address this bug separately.  Lorenzo you didn't
-> happen to use a kernel with Jakub's patches included, do you?
-
-nope, I did not tested them.
-
-Regards,
-Lorenzo
-
->=20
-> --Jesper
->=20
->=20
->=20
-
---BG4t38bJ8cELjR3L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZEAZaQAKCRA6cBh0uS2t
-rLMiAP0Z372omA9TVhVXNUWSAgVcGFCPvUr1KUrzTqV/b8rdSwD/SV9Odpc7BjlW
-VooiG0Cpxs7fHYurGEu2pFLD8gSdkQc=
-=hZ9H
------END PGP SIGNATURE-----
-
---BG4t38bJ8cELjR3L--
+--Jesper
 
