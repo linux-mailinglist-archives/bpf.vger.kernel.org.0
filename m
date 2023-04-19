@@ -2,386 +2,366 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7288E6E82F4
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 23:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F4F6E839C
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 23:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjDSVA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 17:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S231618AbjDSVZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 17:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjDSVA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 17:00:58 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AC759E3
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 14:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681938053; bh=+1plC04mXTaEE0pLCxgiFIuK3kJC3CyU45VC5Uaqtro=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=sJkqjUxCxJKFpx7VNPLJK8Y43wwfyMgK6JGtQL4CKubN2AlfPLdDeZuyGcJZfkXjezoILumqzATYL7QSI0Iw27RUXovs6WnoT9IfqCiirEijg9HgEBsGCb9JBZ5qXNKF+oR6cCG//hUdR8oH59RM+E5Dmi9QxonZxmuPgjeVUmJLrdfQ5earVSJBQNYfRvNiqdBfwad0EWIJQqHoH/VkM8cCMdbPoNgWPe4q3CY7asCoelPbGuFXvnnWTq+DQdO+Ve2QuVsziQZVrmNh+Ov9pWCsh47lKp4epSB8xZYiFlXbegPnFTAb3m5Vv0g5V7x9BX+GQNNI6LIQ6B/rm9rFQQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1681938053; bh=ri5N1DgBGSfEV7LKgDfAcndruTQcK201lgNhDs+Jp1j=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Ru2Wo4BsqUOAV7EYIZahGHqu+TDq1fSBrfLDFD0QAWi8TBdUjaahWA3qO1OW5wBPfdU3IudpMDgm7D4+2NMpDpxPloMe+RmlA4xeNmY112vwmezvw/gE3lFbsqBtJgJHnYqWsBzMwwocbPQF5WjnDbljLTxT0pvYBWxkdybggwMIOcnehQf0m6ObKqNjtR7a74mnONpdTTH8HECNGu3SU/BKuwZ7mQCAaO20NKrVXm4oYQ50K4Xe/h31M8GQL4RsN0m1Vzt5228GWxRF3Nsq3J4UhVEtxaAWnhQqp0XTMOxuvDaX2e/j61wDtgzdhJS0mSJix6rVEql02utYv+OCKw==
-X-YMail-OSG: 6pk1CPQVM1k.0F3YA7OFhN5mhuTGKfW2JemosMTk2NJhQQx3FG9iahUjyfWI39i
- RSWa4QxlAjcJ.I5p8DXjad6NtHzeH5yi_li4txm9cOvW6FKUJd8EB2Yd09RzeM2Eog1CUrBpu281
- 4Ctbp8zJYjROLby73x7y89.zOE0cXhT_IGMG.Mco2IdrKYFJfnJUeP78HejHrKLK8J5mIPWLB4nr
- k2i7f7IBDPF0Egzg5gSYuCzRJzPSmuRF42ZRVJtiNLoDOYvmoQYoxXc9ZGIX2hzB.bBgpf4sLZu9
- Uv_SfpipcAJNe26AFm_e9RsyaWWYtgXfcpVT9l9vWboYB4XWKwYie9cWQuIzPF2lEAnD.GrhmQ0z
- rLTp2qbFaAht0KPNI_XjtWpjb.WBtjh.EBiS_bRaLCirZ_pCq08FGC58SXRPefYZnBPYsqtL1LMf
- t8niFg09cdPMLcfmlspsaQZ3aY_RL22uxWiQpuW0_rEws.DtbhzTEYX._2QcHcYoGUDyum1BtQ7Q
- 9y3RBR2xggzHgnVEsEp1MhlEYCDkxTPMNBRj4_JnqhW8uEetm_3cBf_rYVsbpMA0rDX2.jjlYxrg
- t8vzH1bkszA2TYiluOE3ckjE4X4Ks7gE1J..USOS2H1SbpdslJcxnzHcGqqbhRgkgCOcBrnmTaql
- 4dmL_LxD9HTnyGieIpicvTpgDM9lADa8os7gNyEDsk7OGI2trl7Kc9Txhn_DzzadCZx6iKU7b_oc
- bnkfJVjCPNzYj8guIzk1PkntxbEpj0weAPBcBv11Dp_MsiWpYPEcg2rMVKMUjNolfhmXIea81IQZ
- EfbY2I52a4_bEjmD94sAU7G3nedsNL7v.z4g_tCwhETziRFEg7spBvhHY9fBAK7SfkQ9qYvTLHz2
- XeXIg6bugPO8LhmQjR_IgJgryvZuKXld2qoKkaO3I52FQmf2JzvjxZBkmoclsH.4TBP5xOm.seXE
- G1fId4P1lyWqE5aw.SZ2sokGIH3EGajw_uskuMxU6_cuBJX9GpEiMdWzWNUxsHGxbWsLf7MwIwpP
- VigPOTODHodPxTunSe8D7juVWbui74_KfHl_0tnV_OTwRKSQcqw1Oob7t_hHB5UDB1y0MbU1y1Oy
- VOWsq_6MHH4KFu4eOyRu9HcNlQHqf_Z46eHI1wnWUIfB6c_3gcp4rn6M6kjaoUuhFa9ufgKdExmi
- 9uZmEHah0pz8xxeA2I4NjcuIGyzQqqAzUuDB9iWumHV8PwPU8gPbxmM2C_dEs_EiU_SEhxlUDZKN
- hj9Eppr5vtbIcU4ojSFFXJFWaD2XXBbAUaJVfwf0s8L7btEvp85gseqqAJ45iwH.u7ng9.QTITzz
- lFG6CiN3Hqp0SvUAzLJATVKrAVEvkhSRyhG.2BJ.ugJNSTYjwOEAK9SGnCHf3NY094r_CP6Vj11d
- UEokIylMLS8igvzOEXsBxuybO.84ZWGGboAYsZUkOlggNK9lFG4NE8tKqGUCZ3in1MOUAsM.yhX5
- arSM8L2vGh8n3noG9qMnnir3UfEvVAjtUeTR8MJLkfI7jNQwpSswyhxUmU70PFPMAbmzvv7mBLCF
- JTO_TdBsZBOuzzynfJ_O8Y3b0d987PqVnDJPJB.hlO1IWPNGlvqxgilCuXJon.5e0MzEPTA6Y11o
- VlTA9eaApbvLf95QH2PtsKR_b7BiRBXxh840kwGO.aQw4V.lY3BPXyslisGyHTwpMyV.cKxASzf.
- 2wGA6w8zhymz4bXVSWVBY4zgUI0oXXMthPHiwFrjM.fSTfgzUhd_UhcGFQAgwbWULv7PM.1yFN1O
- cC6bq9AyuEjgOyU8SC34RfKhfzuiV9wLxCC.wm5jNfrb9zHs3ONI7eokMz.N7gDvBEkvoHqV.Ou2
- 5gdJY3453S.K1UG.HXhWvUtXIgMMLDudZoB76Wvsee.GlKAbAD7Rbevt1T4URcDO9TSY4fijdmVO
- CzExGOdVQbLDOHWAHG9pRn4JZAplZP1Do0KnDnnpSDza3FApZWHSVuGxMz4pb3KAW5XzSHC8x8e5
- pSin78zs_u0CDL3ByWaStAUtjVmhkhXUtE1M.WImdxHGVg0uwLUWMlSIDzk_UEqAENMJwfRGHpRP
- hHzyZ6Lu_A0WZ6KZjQ__QGz360r0lGtoy0A685DXPN.bXeTdlIy72cbGWfx6p.wBoubk_MtOYMC1
- UqjQhmE1PyYKZy0hqU.1QUKx31MrMTxE8g2_gqTMBWmQkPo5hRpoyC7V8DLPPgIGS.cQGpOSq3.s
- M9BNe2uw0ccU36W4ZAX2WbdZd_hknByZ97b3Kjj9_6h5AHJi.pD2vjfi.c4HU
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 3349cbd9-7002-4c38-b2f0-6f1fa2b4aa35
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Wed, 19 Apr 2023 21:00:53 +0000
-Received: by hermes--production-bf1-5f9df5c5c4-nnnf9 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f4da88f521bc765527e6f45641da90ea;
-          Wed, 19 Apr 2023 21:00:49 +0000 (UTC)
-Message-ID: <c16dd895-f488-241d-0be8-e56e5f0c1adb@schaufler-ca.com>
-Date:   Wed, 19 Apr 2023 14:00:44 -0700
+        with ESMTP id S232727AbjDSVY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 17:24:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB622111
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 14:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681939388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uaQHymcXw0G5greCJkKrqRv1UnH5au1Y5rlfhOXALhs=;
+        b=XvvC2x70ogoFRJMfbr+qqfrlSJVM3k2pafiEfEzZcQB1fKcynYGo+PLs2ZXiMoUpqx1UOP
+        /EYioM+HfkjBTXomTvyA8J7igP+rJYypKWh5HcJqU5UpJPEsCSK1giwZlmW/xTi6Wmyl9B
+        JcFDd7GHP08fIaGbWj9Q1lIYaIq9xH4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-312-GKZl4womNZif-h8hiS15WQ-1; Wed, 19 Apr 2023 17:23:07 -0400
+X-MC-Unique: GKZl4womNZif-h8hiS15WQ-1
+Received: by mail-ed1-f70.google.com with SMTP id g21-20020a50d0d5000000b005067d6335c3so570750edf.6
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 14:23:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681939386; x=1684531386;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uaQHymcXw0G5greCJkKrqRv1UnH5au1Y5rlfhOXALhs=;
+        b=Tr+FsEbccSPtUq1qKY8tyW3BBxyRNhW3BZvgG3KDjDOyowxHni8FeFRA5nsAybkogD
+         7/89QU5HFuSKeKJ/3aoapV20t3ZAKhphdA1lVbVoD3mpy6/cJSxwvE7BWNrx42J7tFfh
+         SfPyJPKxd2VnBUSE8UdMQmniLmnBy/7RMkeTv4QhLRcJ4R6xfE8DhxR4eRqT+AqfpDsQ
+         jW2pMYWshr/u2XL1DH7FPl3MNkSKHsG1G1Fa6QW3hw07AGG1iaQK3v8fz3kk150Jjb31
+         A7H6fFFivKo+yHZUbPF1cldTeGnrnOYGlCqITs8WEK5MB0dR6daJXM94xJi1st8mazEH
+         RsmA==
+X-Gm-Message-State: AAQBX9eifUR9jOgNDm20RUQH6RQhXeSSiOvZq993UH7uexCpAc6Y7As9
+        +tozyeHGFkAMfFOrLVMLFHHNsbO2ezwQBUAkI3UwQqdzMIJgUCMz8WhHy6xvaeGK0hD/A6UObMk
+        jBtcgGmskdtK8
+X-Received: by 2002:a17:907:7205:b0:953:5eb4:fe45 with SMTP id dr5-20020a170907720500b009535eb4fe45mr3248936ejc.23.1681939385015;
+        Wed, 19 Apr 2023 14:23:05 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YOTv3sBWq+Vepcji4L2B0tLPY3ZwdutkdiMpScSp2VrgN2RjKbZx8hngYcAD1+Azjb28NGZA==
+X-Received: by 2002:a17:907:7205:b0:953:5eb4:fe45 with SMTP id dr5-20020a170907720500b009535eb4fe45mr3248901ejc.23.1681939383961;
+        Wed, 19 Apr 2023 14:23:03 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id sa39-20020a1709076d2700b0094f410225c7sm5854659ejc.169.2023.04.19.14.23.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Apr 2023 14:23:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 843C0AA8C2B; Wed, 19 Apr 2023 23:23:02 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Mahe Tardy <mahe.tardy@gmail.com>,
+        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
+Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
+In-Reply-To: <CAEf4BzZfGewUgYsNNqCgES5Y5-pqbSRDbhtKiuSC7=G_83tyig@mail.gmail.com>
+References: <ZDfKBPXDQxH8HeX9@syu-laptop>
+ <CACdoK4L5A-qdUyQwVbe-KE+0NBPbgqYC1v0uf0i1U_S7KSnmuw@mail.gmail.com>
+ <20230414095007.GF63923@kunlun.suse.cz>
+ <b933fad3-7759-00d4-94cb-f20dd363b794@isovalent.com>
+ <20230414161520.GJ63923@kunlun.suse.cz>
+ <CAEf4Bzaw6DBHn=S9zKCXTSh7jW8xL9K6bzi1Q-e8j93thi2hmg@mail.gmail.com>
+ <20230418112454.GA15906@kitsune.suse.cz>
+ <CAEf4BzZf50fX7T9k47u+9YQrMbSLxLeA1qWwrdWToCZkMhynjg@mail.gmail.com>
+ <20230418174132.GE15906@kitsune.suse.cz> <ZD/3Ll7UPucyOYkk@syu-laptop.lan>
+ <CAEf4BzZfGewUgYsNNqCgES5Y5-pqbSRDbhtKiuSC7=G_83tyig@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 19 Apr 2023 23:23:02 +0200
+Message-ID: <87zg73tvm1.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] Smack modifications for: security: Allow all LSMs to
- provide xattrs for inode_init_security hook
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
-        nicolas.bouchinet@clip-os.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Mengchi Cheng <mengcc@amazon.com>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, kamatam@amazon.com,
-        yoonjaeh@amazon.com, Casey Schaufler <casey@schaufler-ca.com>
-References: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
- <20230411172337.340518-1-roberto.sassu@huaweicloud.com>
- <2dc6486f-ce9b-f171-14fe-48a90386e1b7@schaufler-ca.com>
- <8e7705972a0f306922d8bc4893cf940e319abb19.camel@huaweicloud.com>
- <72b46d0f-75c7-ac18-4984-2bf1d6dad352@schaufler-ca.com>
- <82ee6ddf66bb34470aa7b591df4d70783fdb2422.camel@huaweicloud.com>
- <91f05dc4-a4b7-b40a-ba1a-0ccc489c84b2@schaufler-ca.com>
- <5c50d98f1e5745c88270ae4ad3de6d9a803db4c6.camel@huaweicloud.com>
- <48c6073f-59b0-f5d1-532e-fe4b912b939d@schaufler-ca.com>
- <0fccab67e496f10f4ee7bf2220e70a655013935f.camel@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <0fccab67e496f10f4ee7bf2220e70a655013935f.camel@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21365 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/19/2023 6:46 AM, Roberto Sassu wrote:
-> On Tue, 2023-04-18 at 09:02 -0700, Casey Schaufler wrote:
->> On 4/18/2023 12:05 AM, Roberto Sassu wrote:
->>> On Mon, 2023-04-17 at 09:41 -0700, Casey Schaufler wrote:
->>>> On 4/13/2023 12:11 AM, Roberto Sassu wrote:
->>>>> On Wed, 2023-04-12 at 13:29 -0700, Casey Schaufler wrote:
->>>>>> On 4/12/2023 12:22 AM, Roberto Sassu wrote:
->>>>>>> On Tue, 2023-04-11 at 10:54 -0700, Casey Schaufler wrote:
->>>>>>>> On 4/11/2023 10:23 AM, Roberto Sassu wrote:
->>>>>>>>> From: Roberto Sassu <roberto.sassu@huawei.com>
->>>>>>>>>
->>>>>>>>> Very very quick modification. Not tested.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->>>>>>>>> ---
->>>>>>>>>  security/smack/smack.h     |  2 +-
->>>>>>>>>  security/smack/smack_lsm.c | 42 ++++++++++++++++++++------------------
->>>>>>>>>  2 files changed, 23 insertions(+), 21 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/security/smack/smack.h b/security/smack/smack.h
->>>>>>>>> index e2239be7bd6..f00c8498c60 100644
->>>>>>>>> --- a/security/smack/smack.h
->>>>>>>>> +++ b/security/smack/smack.h
->>>>>>>>> @@ -127,7 +127,7 @@ struct task_smack {
->>>>>>>>>  
->>>>>>>>>  #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
->>>>>>>>>  #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
->>>>>>>>> -#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
->>>>>>>>> +#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted (unused) */
->>>>>>>> See below ...
->>>>>>>>
->>>>>>>>>  #define	SMK_INODE_IMPURE	0x08	/* involved in an impure transaction */
->>>>>>>>>  
->>>>>>>>>  /*
->>>>>>>>> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
->>>>>>>>> index 8392983334b..b43820bdbd0 100644
->>>>>>>>> --- a/security/smack/smack_lsm.c
->>>>>>>>> +++ b/security/smack/smack_lsm.c
->>>>>>>>> @@ -54,12 +54,12 @@
->>>>>>>>>  
->>>>>>>>>  /*
->>>>>>>>>   * Smack uses multiple xattrs.
->>>>>>>>> - * SMACK64 - for access control, SMACK64EXEC - label for the program,
->>>>>>>>> - * SMACK64MMAP - controls library loading,
->>>>>>>>> + * SMACK64 - for access control,
->>>>>>>>>   * SMACK64TRANSMUTE - label initialization,
->>>>>>>>> - * Not saved on files - SMACK64IPIN and SMACK64IPOUT
->>>>>>>>> + * Not saved on files - SMACK64IPIN and SMACK64IPOUT,
->>>>>>>>> + * Must be set explicitly - SMACK64EXEC and SMACK64MMAP
->>>>>>>>>   */
->>>>>>>>> -#define SMACK_INODE_INIT_XATTRS 4
->>>>>>>>> +#define SMACK_INODE_INIT_XATTRS 2
->>>>>>>>>  
->>>>>>>>>  #ifdef SMACK_IPV6_PORT_LABELING
->>>>>>>>>  static DEFINE_MUTEX(smack_ipv6_lock);
->>>>>>>>> @@ -957,11 +957,11 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>>>>>>>>  				     const struct qstr *qstr,
->>>>>>>>>  				     struct xattr *xattrs, int *xattr_count)
->>>>>>>>>  {
->>>>>>>>> -	struct inode_smack *issp = smack_inode(inode);
->>>>>>>>>  	struct smack_known *skp = smk_of_current();
->>>>>>>>>  	struct smack_known *isp = smk_of_inode(inode);
->>>>>>>>>  	struct smack_known *dsp = smk_of_inode(dir);
->>>>>>>>>  	struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
->>>>>>>>> +	struct xattr *xattr2;
->>>>>>>> I'm going to channel Paul and suggest this be xattr_transmute instead of xattr2.
->>>>>>>> It also looks like it could move to be declared in the if clause.
->>>>>>>>
->>>>>>>>>  	int may;
->>>>>>>>>  
->>>>>>>>>  	if (xattr) {
->>>>>>>>> @@ -979,7 +979,17 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->>>>>>>>>  		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
->>>>>>>>>  		    smk_inode_transmutable(dir)) {
->>>>>>>>>  			isp = dsp;
->>>>>>>>> -			issp->smk_flags |= SMK_INODE_CHANGED;
->>>>>>>> I think you need to keep this. More below.
->>>>>>>>
->>>>>>>>> +			xattr2 = lsm_get_xattr_slot(xattrs, xattr_count);
->>>>>>>>> +			if (xattr2) {
->>>>>>>>> +				xattr2->value = kmemdup(TRANS_TRUE,
->>>>>>>>> +							TRANS_TRUE_SIZE,
->>>>>>>>> +							GFP_NOFS);
->>>>>>>>> +				if (xattr2->value == NULL)
->>>>>>>>> +					return -ENOMEM;
->>>>>>>>> +
->>>>>>>>> +				xattr2->value_len = TRANS_TRUE_SIZE;
->>>>>>>>> +				xattr2->name = XATTR_NAME_SMACKTRANSMUTE;
->>>>>>>>> +			}
->>>>>>>>>  		}
->>>>>>>>>  
->>>>>>>>>  		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
->>>>>>>>> @@ -3512,20 +3522,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
->>>>>>>>>  			 * If there is a transmute attribute on the
->>>>>>>>>  			 * directory mark the inode.
->>>>>>>>>  			 */
->>>>>>>>> -			if (isp->smk_flags & SMK_INODE_CHANGED) {
->>>>>>>>> -				isp->smk_flags &= ~SMK_INODE_CHANGED;
->>>>>>>>> -				rc = __vfs_setxattr(&nop_mnt_idmap, dp, inode,
->>>>>>>>> -					XATTR_NAME_SMACKTRANSMUTE,
->>>>>>>>> -					TRANS_TRUE, TRANS_TRUE_SIZE,
->>>>>>>>> -					0);
->>>>>>>>> -			} else {
->>>>>>>>> -				rc = __vfs_getxattr(dp, inode,
->>>>>>>>> -					XATTR_NAME_SMACKTRANSMUTE, trattr,
->>>>>>>>> -					TRANS_TRUE_SIZE);
->>>>>>>>> -				if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
->>>>>>>>> -						       TRANS_TRUE_SIZE) != 0)
->>>>>>>>> -					rc = -EINVAL;
->>>>>>>>> -			}
->>>>>>>>> +			rc = __vfs_getxattr(dp, inode,
->>>>>>>>> +					    XATTR_NAME_SMACKTRANSMUTE, trattr,
->>>>>>>>> +					    TRANS_TRUE_SIZE);
->>>>>>>>> +			if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
->>>>>>>>> +					       TRANS_TRUE_SIZE) != 0)
->>>>>>>>> +				rc = -EINVAL;
->>>>>>>> Where is the SMACK64_TRANSMUTE attribute going to get set on the file?
->>>>>>>> It's not going to get set in smack_init_inode_security(). The inode will
->>>>>>> Isn't that the purpose of the inode_init_security hook?
->>>>>> No. It initializes the in-memory inode. 
->>>>> I hope I'm not mistaken here...
->>>>>
->>>>> I make a small example. Filesystems call
->>>>> security_inode_init_security(). Ext4 does:
->>>>>
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/xattr_security.c?h=v6.3-rc6#n54
->>>>>
->>>>> security_inode_init_security() allocates new_xattrs. Each LSM fills
->>>>> new_xattrs. At the end of the loop, if there is at least one xattr
->>>>> filled, the initxattrs() callback passed by the caller of
->>>>> security_inode_init_security() is called.
->>>>>
->>>>> The ext4 initxattrs() callback is:
->>>>>
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/xattr_security.c?h=v6.3-rc6#n35
->>>>>
->>>>> which scans the xattr array and, for each xattr,
->>>>> calls ext4_xattr_set_handle().
->>>>>
->>>>> Maybe I'm overlooking it, but ext4_xattr_set_handle() is setting xattrs
->>>>> on the disk. Am I wrong?
->>>> Yes, you're wrong. I tried your change, and the SMACK64_TRANSMUTE isn't
->>>> set on the sub-directory when it's created. The __vfs_setxattr() call really
->>>> is necessary. 
->>> Could you please also check if there is any change with this fix:
->>>
->>> Replace:
->>>
->>> 	xattr2->name = XATTR_NAME_SMACKTRANSMUTE;
->>>
->>> with:
->>>
->>> 	xattr2->name = XATTR_SMACK_TRANSMUTE;
->>>
->>> Thanks
->> Unless I'm missing something really obvious there's no way that any
->> of the evm/ima changes would obviate the need for the __vfs_setxattr() call.
->> It's real easy to verify correct behavior, see the attached script.
->> (you'll want to change the "notroot" value to a user on your system)
-> I got some errors during xattr removal, so not sure if my patch was
-> working properly or not (it happened also without it, didn't
-> investigate more).
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-The script is demonstrating that those xattrs don't exist when they
-shouldn't, si all is good there.
+> On Wed, Apr 19, 2023 at 7:14=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.c=
+om> wrote:
+>>
+>> On Tue, Apr 18, 2023 at 07:41:32PM +0200, Michal Such=C3=A1nek wrote:
+>> > On Tue, Apr 18, 2023 at 09:38:20AM -0700, Andrii Nakryiko wrote:
+>> > > On Tue, Apr 18, 2023 at 4:24=E2=80=AFAM Michal Such=C3=A1nek <msucha=
+nek@suse.de> wrote:
+>> > > >
+>> > > > On Mon, Apr 17, 2023 at 05:20:03PM -0700, Andrii Nakryiko wrote:
+>> > > > > On Fri, Apr 14, 2023 at 9:15=E2=80=AFAM Michal Such=C3=A1nek <ms=
+uchanek@suse.de> wrote:
+>> > > > > > On Fri, Apr 14, 2023 at 01:30:02PM +0100, Quentin Monnet wrote:
+>> > > > > > > 2023-04-14 11:50 UTC+0200 ~ Michal Such=C3=A1nek <msuchanek@=
+suse.de>
+>> > > > > > > > Hello,
+>> > > > > > > >
+>> > > > > > > > On Fri, Apr 14, 2023 at 01:35:20AM +0100, Quentin Monnet w=
+rote:
+>> > > > > > > >> Hi Shung-Hsi,
+>> > > > > > > >>
+>> > > > > > > >> On Thu, 13 Apr 2023 at 10:23, Shung-Hsi Yu <shung-hsi.yu@=
+suse.com> wrote:
+>> > > > > > > >>>
+>> > > > > > > >>> Hi,
+>> > > > > > > >>>
+>> > > > > > > >>> I'm considering switch to bpftool's mirror on GitHub for=
+ packaging (instead
+>> > > > > > > >>> of using the source found in kernel), but realize that i=
+t should goes
+>> > > > > > > >>> hand-in-hand with how libbpf is packaged, which eventual=
+ly leads these
+>> > > > > > > >>> questions:
+>> > > > > > > >>>
+>> > > > > > > >>>   What is the suggested approach for packaging bpftool a=
+nd libbpf?
+>> > > > > > > >>>   Which source is preferred, GitHub or kernel?
+>> > > > > > > >>
+>> > > > > > > >> As you can see from the previous discussions, the suggest=
+ed approach
+>> > > > > > > >> would be to package from the GitHub mirror, with libbpf a=
+nd bpftool in
+>> > > > > > > >> sync.
+>> > > > > > > >>
+>> > > > > > > >> My main argument for the mirror is that it keeps things s=
+impler, and
+>> > > > > > > >> there's no need to deal with the rest of the kernel sourc=
+es for these
+>> > > > > > > >> packages. Download from the mirrors, build, ship. But the=
+n I have
+>> > > > > > > >> limited experience at packaging for distros, and I can un=
+derstand
+>> > > > > > > >> Toke's point of view, too. So ultimately, the call is you=
+rs.
+>> > > > > > > >
+>> > > > > > > > Things get only ever more complex when submodules are invo=
+lved.
+>> > > > > > >
+>> > > > > > > I understand the generic pain points from your other email. =
+But could
+>> > > > > > > you be more specific for the case of bpftool? It's not like =
+we're
+>> > > > > > > shipping all lib dependencies as submodules. Sync-ups are sp=
+ecifically
+>> > > > > > > aligned to the same commit used to sync the libbpf mirror, s=
+o that it's
+>> > > > > > > pretty much as if we had the right version of the library sh=
+ipped in the
+>> > > > > > > repository - only, it's one --recurse-submodules away.
+>> > > > > >
+>> > > > > > It's so in every project that uses submodules. Except git does=
+ not
+>> > > > > > recurse into submodules by default, you have to fix it up by h=
+and.
+>> > > > > > Forges don't support submodules so you will not get the submod=
+ule when
+>> > > > > > downloading the project archive, and won't see it the the proj=
+ect tree.
+>> > > > >
+>> > > > > git submodule update --init --recursive didn't work?
+>> > > >
+>> > > > That's one part of the manual fixup.
+>> > > >
+>> > > > The other part is after each git operation that could possibly cau=
+se the
+>> > > > submodules to go out of sync, basically any operation that changes=
+ the
+>> > > > checked-out commit.
+>> > > >
+>> > > > Of course, you can make some shell aliases that append whatever su=
+bmodule
+>> > > > chicanery to whatever git command you might issue, and tell everyo=
+ne
+>> > > > else to do that, and then it will work in that one shell, and not =
+in any
+>> > > > other shell nor any tool that invokes git directly.
+>> > >
+>> > > Are we discussing a *standard* Git submodule feature and argue that
+>> > > because it might be cumbersome or unfamiliar to some engineers that
+>> > > projects should avoid using Git submodules?
+>> >
+>> > As far as I am aware they are unfamiliar to *most* engineers, and for
+>> > good reasons.
+>> >
+>> > > For one, I don't have any special aliases for dealing with Git
+>> > > submodules and it works fine. If I jump between branches or tags whi=
+ch
+>> > > update Git submodule reference, I do above `git submodule update
+>> > > --init --recursive` explicitly if I see that Git status shows
+>> > > out-of-sync Git submodule state. If I want to update a Git submodule,
+>> > > I update the submodule's Git repo, and then git add it in the repo
+>> > > that uses this submodule. I haven't run into any other issues with
+>> > > this.
+>> >
+>> > You know, git could just handle submodules automagically. As you say,
+>> > it's not rocket science. For historical reasons it does not.
+>> >
+>> > With that working with submodules is cumbersome, and it's additional
+>> > thing that can break down that the engineer needs to be constantly awa=
+re
+>> > of increasing the mental overhead of working with such projects.
+>> >
+>> > It may not be much of a problem for people who work with such projects
+>> > daily but not everyone does. Those who don't need to do the mental
+>> > switch whenever submodules are encountered, and are prone to getting
+>> > issues when they forget that they have to go that extra mile for this
+>> > specific project.
+>>
+>> For me it's less about having to go through the extra loop. It's that
+>> submodules would require git to be installed, network access, which all =
+adds
+>> extra moving parts compared to a tarball...
+>>
+>> > > > > > After previous experience with submodules I did not even try, =
+I just
+>> > > > > > patched the makefile to use system libbpf before attempting an=
+ything
+>> > > > > > else.
+>> > > > >
+>> > > > > Quentin mentioned that he's packaging (or will package) libbpf s=
+ources
+>> > > > > as part of bpftool release on Github. I've been this for other
+>> > > > > libbpf-using tools as well, and it works pretty well (at least f=
+or
+>> > > > > Fedora and ArchLinux). E.g., srcs-full-* archives for veristat (=
+[0])
+>>
+>> and having libbpf included in bpftool release means the complain above no
+>> longer holds. Though I have yet test build the mirror version of libbpf =
+and
+>> bpftool like Michal has done.
+>
+> Great. This seems to work well for other tools that use libbpf through
+> submodule (anakryiko/retsnoop and libbpf/veristat on Github)
+>
+>>
+>> > > > > By switching up actual libbpf used to compile with bpftool, you =
+are
+>> > > > > potentially introducing subtle problems that your users will be =
+quite
+>> > > > > unhappy about, if they run into them. Let's work together to mak=
+e it
+>> > > > > easier for you to package bpftool properly. We can't switch bpft=
+ool to
+>> > > > > reliably use system-wide libbpf (either static or shared, doesn't
+>> > > > > matter) because of dependency on internal functionality.
+>> > > > >
+>> > > > >
+>> > > > >   [0] https://github.com/libbpf/veristat/releases/tag/v0.1
+>> > > >
+>> > > > So how many copies of libbpf do I need for having a CO-RE toolchai=
+n?
+>> > >
+>> > > What do you mean by "CO-RE toolchain"? bpftool, veristat, retsnoop,
+>> > > etc are tools. The fact they are using statically linked libbpf
+>> > > through Git submodule is irrelevant to end users. You need one libbpf
+>> > > in the system (for those who link dynamically against libbpf), the
+>> > > rest are just tools.
+>> > >
+>> > > >
+>> > > > Will different tools have different view of the kernel because the=
+y each
+>> > > > use different private copy of libbpf with different features?
+>> > >
+>> > > That's up to tools, not libbpf. You are over pivoting on libbpf here.
+>> > > There is one view of the kernel, it depends on what features the
+>> > > kernel supports. If the tool requires some specific functionality of
+>> > > libbpf, it will update its Git submodule reference to get a version =
+of
+>> > > libbpf that provides that feature. That's the point, an
+>> > > application/tool is in control of what kind of features it gets from
+>> > > libbpf.
+>>
+>> Since libbpf has a stable API & ABI, is it theoretically possible for
+>> bpftool, veristat, retsnoop, etc. all share the same version of libbpf?
+>
+> No, because libbpf is not just a set of APIs. Newer libbpf versions
+> support more BPF-side features, more kernel features, etc, etc. Libbpf
+> is not a typical user-space library, it is a BPF loader, and even if
+> user-visible API doesn't change, libbpf's support for various BPF-side
+> features is extended. Which is important for tools like bpftool,
+> retsnoop, veristat which rely on loading and working with BPF object
+> files.
 
->
-> However, I saw another discussion related to transmute:
->
-> https://lore.kernel.org/linux-security-module/20230419002338.566487-1-mengcc@amazon.com/
->
-> I add the people in CC.
->
-> The steps described were so easy to understand and executed, I tried
-> without and with overlayfs.
->
-> Without:
->
-> # echo "_ system rwxatl" > /sys/fs/smackfs/load2
-> # mkdir /data
-> # chsmack -a "system" /data
-> # chsmack -t /data
-> # mkdir -p /data/dir1/dir2
-> # chsmack /data/dir1
-> /data/dir1 access="system" transmute="TRUE"
-> # chsmack /data/dir1/dir2
-> /data/dir1/dir2 access="system" transmute="TRUE"
->
-> It seems to work, right?
->
-> With overlay fs it didn't work, same result as the one Mengchi
-> reported. Since Mengchi's solution was to set SMK_INODE_CHANGED, and I
-> want to get rid of it, I thought to investigate more.
->
-> Looking at smack_dentry_create_files_as(), I see that the label of the
-> process is overwritten with the label of the transmuting directory.
->
-> That causes smack_inode_init_security() to lookup the transmuting rule
-> on the overridden credential, and not on the original one.
->
-> In the example above, it means that, when overlayfs is creating the new
-> inode, the label of the process is system, not _. So no transmute
-> permission, and also the xattr will not be added, as observed by
-> Mengchi.
+The converse of this is also true: if your system is upgraded to a new
+kernel version with new BPF features, the libbpf version should follow
+it, and all applications linked against it will automatically take
+advantage of any bugfixes regardless without having to wait for each
+application to be updated.
 
-OK, I see that. Looks like the original implementation was poorly
-thought out/tested.
+Libbpf is really no different from any other library here, and I really
+don't get why you keep insisting it's "special"...
 
-> Hopefully I undertood the code, so in this particular case we would not
-> need to override the label of the process in smack_dentry_create_files_
-> as().
+>> What I'd like to do it build libbpf and bpftool out of bpftool GitHub
+>> mirror's release tarball (w/ submodule included, which exists now for
+>> snapshot). For the rest of the tool that does not depends on libbpf priv=
+ate
+>> function, have them dynamically link to the libbpf built from bpftool's
+>> source, just like how libelf is dynamically linked.
 >
-> If you see smack_inode_init_security():
->
-> 	struct smack_known *skp = smk_of_current();
-> 	struct smack_known *isp = smk_of_inode(inode);
-> 	struct smack_known *dsp = smk_of_inode(dir);
->
-> [...]
->
-> 		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
-> 		    smk_inode_transmutable(dir)) {
-> 			isp = dsp;
-> [...]
->
-> 		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
->
-> This code is telling, if there is a transmute rule, and the directory
-> is transmuting, set the label of the new inode to the label of the
-> directory. That should be already the result that we wanted to obtain.
->
-> The current code should have been doing it by overriding the label of
-> the process in smack_dentry_create_files_as() with the label of the
-> parent directory, and letting the inode being created with the
-> overridden label of the process. The transmute xattr is not set due to
-> the problem described above.
+> Please don't do it, let applications control which libbpf versions
+> they are using. It's not just about user space APIs, I can't emphasize
+> this enough. Don't think you know better than developers of respective
+> applications, don't try to dictate how those applications should be
+> organized and developed.
 
-That would explain the observed behavior.
+A well-behaved application will detect which features are available in
+the system version of the libraries they use, and if something is
+missing that it needs, either work around it or refuse to build. We do
+this with libbpf in xdp-tools and the only issues we've had with it has
+been the changing API in pre-1.0 libbpf...
 
-> So, as a quick test, I kept this patch with the change to xattr2->name, 
-> and skipped the label override in smack_dentry_create_files_as(). It
-> worked, I get the same result as without overlayfs. Wondering if the
-> process label override is necessary in other cases.
+> One good example is iproute2, which chose to link (or not) with libbpf
+> dynamically. Now users periodically report various issues where their
+> BPF object files are not loaded, and it often comes down to unexpected
+> version of libbpf (or lack of libbpf support altogether) which which
+> iproute2 was built/deployed. This is just putting a burden on iproute2
+> users, and accidentally libbpf maintainers, for no good reason.
 
-It's possible. It's been a long time since I've looked at this.
-I'm tempted to take a change to make overlayfs work upstream and
-then worry about the ima changes. There seems to be a lot more
-going on with the ima changes than is obvious from what's in the
-Smack code.
+How would this have been any different if iproute2 was statically linked
+against libbpf?
 
+>> I'm not saying that those tools should not have libbpf as submodule; as
+>> submodule do look useful. But for packaging I really would like to have =
+the
+>> option of choosing the exact version of libbpf being used.
 >
-> Roberto
->
->>> Roberto
->>>
->>>>> Thanks
->>>>>
->>>>> Roberto
->>>>>
->>>>>>> After all LSMs provide one or multiple xattrs, xattrs are going to be
->>>>>>> written to the disk with the initxattr() callback of filesystems.
->>>>>>>
->>>>>>> There is a small mistake above (XATTR_SMACK_TRANSMUTE instead
->>>>>>> of XATTR_NAME_SMACKTRANSMUTE, as we are providing just the suffix).
->>>>>> but I'm pretty sure the __vfs_setxattr() call is necessary to get
->>>>>> the attribute written out. With your change the in-memory inode will
->>>>>> get the attribute, but if you reboot it won't be on the directory.
->>>>>>
->>>>>>> 95 Passed, 0 Failed, 100% Success rate
->>>>>>>
->>>>>>> There was a test failing in dir-transmute.sh, before I fixed the xattr
->>>>>>> name.
->>>>>>>
->>>>>>> Thanks
->>>>>>>
->>>>>>> Roberto
->>>>>>>
->>>>>>>> know it's transmuting, but it won't get to disk without the __vfs_setxattr()
->>>>>>>> here in smack_d_instantiate(). Now, it's been a long time since that code
->>>>>>>> was written, so I could be wrong, but I'm pretty sure about that.
->>>>>>>>
->>>>>>>> I think that you should be fine with the changes in smack_init_inode_security(),
->>>>>>>> and leaving smack_d_instantiate() untouched. 
->>>>>>>>
->>>>>>>>>  			if (rc >= 0)
->>>>>>>>>  				transflag = SMK_INODE_TRANSMUTE;
->>>>>>>>>  		}
+> The exact version of libbpf used by bpftool, retsnoop, veristat, etc
+> *is not relevant* to you as a packager. If you want happy users, use
+> *exact* version of libbpf from submodule to build them, with which
+> application was developed, tested, and advertised supported BPF
+> features. There is no reuse to be done here, they all can be on
+> different (and sometimes not yet released) libbpf version. For good
+> reasons, which are outside of your control as a packager.
+
+This is... just not how distributions work. As a user I trust my
+distribution to provide me with a coherent system where critical system
+libraries are maintained and receive timely updates. And I absolutely
+trust the distribution more to do this over application developers who
+just vendor in some version as a submodule and leave it there until they
+need a new feature...
+
+-Toke
+
