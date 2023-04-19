@@ -2,149 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AB96E7D73
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472B96E7E71
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 17:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbjDSOvL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 10:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        id S232919AbjDSPhP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 11:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjDSOvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 10:51:09 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DED3C0D;
-        Wed, 19 Apr 2023 07:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=XxVD0hipqgth9ZJ1nyMDcD+GdG+KZvFQJbCVZuqDCbk=; b=RLUa4rew4gW8VMttcSSzHFOXI2
-        6BJLaD7o1tNNQ2LqmU0sRK1NJ2et0GGUVAXM+O2q7U83WPMphEUIZy0V94y6O9Cd48dO+5YLsvNAU
-        RhB0Jv8gdZRT9t1DMpeNYasiieJ7o2PwI4w3bvR8GuaoirxMOwU5hOeRUI9lJN4mHT8zAgUvztaNz
-        BPTXvMej8ZarsfTkXlHJGkapQk+gLTnYUwzWUs1RuorT1XkC/c42UUgyucz2E8eZ5oWhAbHxleuFB
-        fPnA1VZPfORv9+4tnP7Jk1oLSU0GRH9GAo9vjWnza8LkNMvxY0ooxxFyPKW0xnP7ZQ4LauO9MZcS+
-        UuPbG4hA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pp98v-0005CQ-SP; Wed, 19 Apr 2023 16:50:45 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pp98v-000HS5-Gk; Wed, 19 Apr 2023 16:50:45 +0200
-Subject: Re: [PATCH] bpftool: fix broken compile on s390 for linux-next
- repository
-To:     Thomas Richter <tmricht@linux.ibm.com>, broonie@kernel.org,
-        hca@linux.ibm.com, sfr@canb.auug.org.au, liam.howlett@oracle.com,
-        acme@redhat.com, ast@kernel.org, bpf@vger.kernel.org,
-        linux-next@vger.kernel.org, quentin@isovalent.com
-References: <20230418085516.1104514-1-tmricht@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <233a0b88-6857-0a1d-3609-6a74fa50c28c@iogearbox.net>
-Date:   Wed, 19 Apr 2023 16:50:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S231618AbjDSPhO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 11:37:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D612702
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 08:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681918585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fIFkJO8F3gxDTUR0SCeVeDhVp6dxAGrc4eSzBRpzmxM=;
+        b=IZRcMOFCLg4Yt0GxKcuGZr4/G5Ixi7fhipqJpDnyttVNPiqg/DIkO6cJA86q43jxEXLGZs
+        t5ZpIqHaf3izw7EksPvVHZPovq4M2Es941tsDY7rwjBzdQM1m8fWpFeIxwjHVmSt+/e4A2
+        Nam3V3rKesZBdF+SDmAScj2wSkH2Pco=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-226-Yq1MSKoyMcSCmlqh3m0GDA-1; Wed, 19 Apr 2023 11:36:24 -0400
+X-MC-Unique: Yq1MSKoyMcSCmlqh3m0GDA-1
+Received: by mail-ej1-f70.google.com with SMTP id b5-20020a1709062b4500b0094f7f3ff797so4307196ejg.17
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 08:36:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681918583; x=1684510583;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fIFkJO8F3gxDTUR0SCeVeDhVp6dxAGrc4eSzBRpzmxM=;
+        b=FHmtFlB6xNcVl4OE/DUs8i9j89Bzyc+mnxg1mJuBNiIn5yetHEjEfoyqxMPezf9dLN
+         74Y+Uy01VD79kAh9cgmfeLkXwCjeRK8n6ak0KELP9oJ5N90AP+gxSMGSU08p3Zr3hInp
+         tSvcRWjPjNIQE8cFcWhwbL2jgmur+LVROdGhqq+JPKr6o6bcQWBoalSF+byjNWj3dA13
+         Y7EcJ14mu4ImbRjt08RXOhflRq5tvNnCe05B1MYRwQAKVLHFPhpeIce759w4drkfcjj3
+         zOp4nZsSLfNss0IeqXBq0O3mMXEzbVfJD55oa4J+i5cGiLxVJ6K/qsFNIL/OA09V9thF
+         t1Vg==
+X-Gm-Message-State: AAQBX9fg9FySvcXpjXoxP8vGPEw/7+Gs5NEAl0w9yopBiEy62EJQiivZ
+        fMnR9IyyVRyU1EXY4EPF6UkJN1/VlgM/cqkqDJZXYpwi1kBjebhP6OFZR9BKwjs/OHW/oGl2Hrd
+        jgn526I8YJEgo
+X-Received: by 2002:a17:907:7205:b0:953:5eb4:fe45 with SMTP id dr5-20020a170907720500b009535eb4fe45mr2427082ejc.23.1681918583264;
+        Wed, 19 Apr 2023 08:36:23 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZBQ5s+OgzrOcqMXLOUyFaCmtlR2FfGKPP5XiTTHHwEPersR2eRqKFD1+tiyU1rwcXv7HSlkQ==
+X-Received: by 2002:a17:907:7205:b0:953:5eb4:fe45 with SMTP id dr5-20020a170907720500b009535eb4fe45mr2427045ejc.23.1681918582754;
+        Wed, 19 Apr 2023 08:36:22 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id hv14-20020a17090760ce00b0095251a3d66fsm2431837ejc.119.2023.04.19.08.36.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Apr 2023 08:36:22 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <e8df2654-6a5b-3c92-489d-2fe5e444135f@redhat.com>
+Date:   Wed, 19 Apr 2023 17:36:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230418085516.1104514-1-tmricht@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        hawk@kernel.org, ilias.apalodimas@linaro.org, davem@davemloft.net,
+        pabeni@redhat.com, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, nbd@nbd.name,
+        Toke Hoiland Jorgensen <toke@redhat.com>
+Subject: Re: issue with inflight pages from page_pool
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26880/Wed Apr 19 09:22:57 2023)
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <ZD2NSSYFzNeN68NO@lore-desk> <20230417112346.546dbe57@kernel.org>
+ <ZD2TH4PsmSNayhfs@lore-desk> <20230417120837.6f1e0ef6@kernel.org>
+ <ZD26lb2qdsdX16qa@lore-desk> <20230417163210.2433ae40@kernel.org>
+ <ZD5IcgN5s9lCqIgl@lore-desk>
+ <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
+ <CANn89iKAVERmJjTyscwjRTjTeWBUgA9COz+8HVH09Q0ehHL9Gw@mail.gmail.com>
+ <ea762132-a6ff-379a-2cc2-6057754425f7@redhat.com>
+ <ZD/4/npAIvS1Co6e@lore-desk>
+In-Reply-To: <ZD/4/npAIvS1Co6e@lore-desk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/18/23 10:55 AM, Thomas Richter wrote:
-> Commit 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
-> breaks the build of the perf tool on s390 in the linux-next repository.
-> Here is the make output:
-> 
-> make -C tools/perf
-> ....
-> btf_dumper.c: In function 'dotlabel_puts':
-> DEBUG: btf_dumper.c:838:25: error: '__fallthrough' undeclared \
-> 		(first use in this function); did you mean 'fallthrough'?
-> DEBUG:   838 |                         __fallthrough;
-> DEBUG:       |                         ^~~~~~~~~~~~~
-> DEBUG:       |                         fallthrough
-> DEBUG: btf_dumper.c:838:25: note: each undeclared identifier is reported \
-> 		only once for each function it appears in
-> DEBUG: btf_dumper.c:837:25: warning: this statement may fall through \
->                  [-Wimplicit-fallthrough=]
-> DEBUG:   837 |                         putchar('\\');
-> DEBUG:       |                         ^~~~~~~~~~~~~
-> DEBUG: btf_dumper.c:839:17: note: here
-> DEBUG:   839 |                 default:
-> DEBUG:       |                 ^~~~~~~
-> DEBUG: make[3]: *** [Makefile:247: /builddir/build/BUILD/kernel-6.2.fc37/\
-> 		        linux-6.2/tools/perf/util/bpf_skel/ \
-> 		        .tmp/bootstrap/btf_dumper.o] Error 1
-> 
-> The compile fails because symbol __fallthrough unknown, but symbol
-> fallthrough is known and works fine.
-> 
-> Fix this and replace __fallthrough by fallthrough.
-> 
-> With this change, the compile works.
-> 
-> Output after:
-> 
->   # make -C tools/perf
->   ....
->   CC      util/bpf-filter.o
->   CC      util/bpf-filter-flex.o
->   LD      util/perf-in.o
->   LD      perf-in.o
->   LINK    perf
->   make: Leaving directory '/root/mirror-linux-next/tools/perf'
->   #
-> 
-> Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->   tools/bpf/bpftool/btf_dumper.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-> index 6c5e0e82da22..1b7f69714604 100644
-> --- a/tools/bpf/bpftool/btf_dumper.c
-> +++ b/tools/bpf/bpftool/btf_dumper.c
-> @@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
->   		case '|':
->   		case ' ':
->   			putchar('\\');
-> -			__fallthrough;
-> +			fallthrough;
 
-The problem is however for current bpf-next, where this change breaks CI:
 
-https://github.com/kernel-patches/bpf/actions/runs/4737651765/jobs/8410684531
-
-   [...]
-     CC      /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/bpftool/feature.o
-     CC      /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/bpftool/disasm.o
-   btf_dumper.c:838:4: error: use of undeclared identifier 'fallthrough'
-                           fallthrough;
-                           ^
-   1 error generated.
-   [...]
-
-I would suggest as a clean path that'll work for both to just change from
-fallthrough; into /* fallthrough */ as done in objtool, then we can also
-work around BPF CI issue and merge this change in time.
-
->   		default:
->   			putchar(*s);
->   		}
+On 19/04/2023 16.21, Lorenzo Bianconi wrote:
+>>
+>> On 19/04/2023 14.09, Eric Dumazet wrote:
+>>> On Wed, Apr 19, 2023 at 1:08 PM Jesper Dangaard Brouer
+>>>>
+>>>>
+>>>> On 18/04/2023 09.36, Lorenzo Bianconi wrote:
+>>>>>> On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
+>>>>>>>> If it's that then I'm with Eric. There are many ways to keep the pages
+>>>>>>>> in use, no point working around one of them and not the rest :(
+>>>>>>>
+>>>>>>> I was not clear here, my fault. What I mean is I can see the returned
+>>>>>>> pages counter increasing from time to time, but during most of tests,
+>>>>>>> even after 2h the tcp traffic has stopped, page_pool_release_retry()
+>>>>>>> still complains not all the pages are returned to the pool and so the
+>>>>>>> pool has not been deallocated yet.
+>>>>>>> The chunk of code in my first email is just to demonstrate the issue
+>>>>>>> and I am completely fine to get a better solution :)
+>>>>>>
+>>>>>> Your problem is perhaps made worse by threaded NAPI, you have
+>>>>>> defer-free skbs sprayed across all cores and no NAPI there to
+>>>>>> flush them :(
+>>>>>
+>>>>> yes, exactly :)
+>>>>>
+>>>>>>
+>>>>>>> I guess we just need a way to free the pool in a reasonable amount
+>>>>>>> of time. Agree?
+>>>>>>
+>>>>>> Whether we need to guarantee the release is the real question.
+>>>>>
+>>>>> yes, this is the main goal of my email. The defer-free skbs behaviour seems in
+>>>>> contrast with the page_pool pending pages monitor mechanism or at least they
+>>>>> do not work well together.
+>>>>>
+>>>>> @Jesper, Ilias: any input on it?
+>>>>>
+>>>>>> Maybe it's more of a false-positive warning.
+>>>>>>
+>>>>>> Flushing the defer list is probably fine as a hack, but it's not
+>>>>>> a full fix as Eric explained. False positive can still happen.
+>>>>>
+>>>>> agree, it was just a way to give an idea of the issue, not a proper solution.
+>>>>>
+>>>>> Regards,
+>>>>> Lorenzo
+>>>>>
+>>>>>>
+>>>>>> I'm ambivalent. My only real request wold be to make the flushing
+>>>>>> a helper in net/core/dev.c rather than open coded in page_pool.c.
+>>>>
+>>>> I agree. We need a central defer_list flushing helper
+>>>>
+>>>> It is too easy to say this is a false-positive warning.
+>>>> IHMO this expose an issue with the sd->defer_list system.
+>>>>
+>>>> Lorenzo's test is adding+removing veth devices, which creates and runs
+>>>> NAPI processing on random CPUs.  After veth netdevices (+NAPI) are
+>>>> removed, nothing will naturally invoking net_rx_softirq on this CPU.
+>>>> Thus, we have SKBs waiting on CPUs sd->defer_list.  Further more we will
+>>>> not create new SKB with this skb->alloc_cpu, to trigger RX softirq IPI
+>>>> call (trigger_rx_softirq), even if this CPU process and frees SKBs.
+>>>>
+>>>> I see two solutions:
+>>>>
+>>>>     (1) When netdevice/NAPI unregister happens call defer_list flushing
+>>>> helper.
+>>>>
+>>>>     (2) Use napi_watchdog to detect if defer_list is (many jiffies) old,
+>>>> and then call defer_list flushing helper.
+>>>>
+>>>>
+>>>>>>
+>>>>>> Somewhat related - Eric, do we need to handle defer_list in dev_cpu_dead()?
+>>>>
+>>>> Looks to me like dev_cpu_dead() also need this flushing helper for
+>>>> sd->defer_list, or at least moving the sd->defer_list to an sd that will
+>>>> run eventually.
+>>>
+>>> I think I just considered having a few skbs in per-cpu list would not
+>>> be an issue,
+>>> especially considering skbs can sit hours in tcp receive queues.
+>>>
+>>
+>> It was the first thing I said to Lorenzo when he first reported the
+>> problem to me (over chat): It is likely packets sitting in a TCP queue.
+>> Then I instructed him to look at output from netstat to see queues and
+>> look for TIME-WAIT, FIN-WAIT etc.
+>>
+>>
+>>> Do we expect hacing some kind of callback/shrinker to instruct TCP or
+>>> pipes to release all pages that prevent
+>>> a page_pool to be freed ?
+>>>
+>>
+>> This is *not* what I'm asking for.
+>>
+>> With TCP sockets (pipes etc) we can take care of closing the sockets
+>> (and programs etc) to free up the SKBs (and perhaps wait for timeouts)
+>> to make sure the page_pool shutdown doesn't hang.
+>>
+>> The problem arise for all the selftests that uses veth and bpf_test_run
+>> (using bpf_test_run_xdp_live / xdp_test_run_setup).  For the selftests
+>> we obviously take care of closing sockets and removing veth interfaces
+>> again.  Problem: The defer_list corner-case isn't under our control.
+>>
+>>
+>>> Here, we are talking of hundreds of thousands of skbs, compared to at
+>>> most 32 skbs per cpu.
+>>>
+>>
+>> It is not a memory usage concern.
+>>
+>>> Perhaps sets sysctl_skb_defer_max to zero by default, so that admins
+>>> can opt-in
+>>>
+>>
+>> I really like the sd->defer_list system and I think is should be enabled
+>> by default.  Even if disabled by default, we still need to handle these
+>> corner cases, as the selftests shouldn't start to cause-issues when this
+>> gets enabled.
+>>
+>> The simple solution is: (1) When netdevice/NAPI unregister happens call
+>> defer_list flushing helper.  And perhaps we also need to call it in
+>> xdp_test_run_teardown().  How do you feel about that?
+>>
+>> --Jesper
+>>
 > 
+> Today I was discussing with Toke about this issue, and we were wondering,
+> if we just consider the page_pool use-case, what about moving the real pool
+> destroying steps when we return a page to the pool in page_pool_put_full_page()
+> if the pool has marked to be destroyed and there are no inflight pages instead
+> of assuming we have all the pages in the pool when we run page_pool_destroy()?
+
+It sounds like you want to add a runtime check to the fast-path to
+handle these corner cases?
+
+For performance reason we should not call page_pool_inflight() check in 
+fast-path, please!
+
+Details: You hopefully mean running/calling page_pool_release(pool) and 
+not page_pool_destroy().
+
+I'm not totally against the idea, as long as someone is willing to do
+extensive benchmarking that it doesn't affect fast-path performance.
+Given we already read pool->p.flags in fast-path, it might be possible
+to hide the extra branch (in the CPU pipeline).
+
+
+> Maybe this means just get rid of the warn in page_pool_release_retry() :)
+> 
+
+Sure, we can remove the print statement, but it feels like closing our
+eyes and ignoring the problem.  We can remove the print statement, and
+still debug the problem, as I have added tracepoints (to debug this).
+But users will not report these issue early... on the other hand most of
+these reports will likely be false-positives.
+
+This reminds me that Jakub's recent defer patches returning pages
+'directly' to the page_pool alloc-cache, will actually result in this
+kind of bug.  This is because page_pool_destroy() assumes that pages
+cannot be returned to alloc-cache, as driver will have "disconnected" RX
+side.  We need to address this bug separately.  Lorenzo you didn't
+happen to use a kernel with Jakub's patches included, do you?
+
+--Jesper
+
+
 
