@@ -2,173 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D026E7965
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 14:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6121F6E7A6C
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 15:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbjDSMJf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 08:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        id S233391AbjDSNQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 09:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233172AbjDSMJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 08:09:34 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84C215639
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 05:09:32 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-760f8ffb27fso68757239f.2
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 05:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1681906172; x=1684498172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ckZBqBNPcwiApkuDGy++lBTpdqH0T8qE8BpS9xSvzE=;
-        b=SlT8Dh7vH2OWYjB2Xeg0YKs3ZixdVUECcSdkThnFtzQKjXIdsaRd9tzPSu+iHpcL6m
-         d5ZipcAcGArqlLTPIeWY7YMl87QSt+vJF3pq1lHZJNz06h+fH5BSSFt8zKsi7oZayP9n
-         h4g0OKNPRPIG63o0TGbWpi6oMgHbo9TFJbcPTvxqWn5+UyAOAow6lKILJY6YVUp8EbiD
-         W/DBcnP3Wt0suN4CcJsjRkR0uVqg7xR2KO6wJmv6CkKpZQ7QDZUokh6numiuhncwm85R
-         gjqj3B903m1crGyGkAGLhF4xGhiqyfjDXCXv17R4kwhW6EC/WmXqb9gmT7dTt5eqx4gV
-         hKxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681906172; x=1684498172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ckZBqBNPcwiApkuDGy++lBTpdqH0T8qE8BpS9xSvzE=;
-        b=jYCjcT08ow2fTrXoBmqwySsl0/M6xGbBC7wk6Mkb3d8+UUeZTzXVcIKPXb5UR2emYA
-         /tlP7Qf3vesQITNFryto0FOSnJ55vJnxokG1BdGAyyIHDHk89ZZCvvJEYIvaUunPDlpl
-         KFhopv3KcSqIu/KkOTmhTD4Fp4wvWGP2HkDlIx5L9L6j3t5TP4hHsxNmXHcMfkgketOV
-         cWKKhEcX3X0mKI2VVomo2DjUsWZicm20wU0EjGLOFP9PHUDpMNJbZw8OSBhB3eITm5yh
-         9wiuuykKaKQSaBZ45nV2Ta+4jwNlqmMbVnLJjGYt4grAGlZXNMz1pcpDJXMm01/4DbEw
-         WfuA==
-X-Gm-Message-State: AAQBX9ds2QI6QxJllow8/iAtyJj1qPQAxqvunuYAdUgwHFOn0S6CGwEb
-        RSVpyW8fBT5et+kdbVVwb/6TIPZnVBiPp5xkDcOljg==
-X-Google-Smtp-Source: AKy350YQVqB1aBzXqR4YZcUJjMUghAu+Vvd8MhYV+ubnQm2Qq0RhbILtHV1KCGIrjxxez6iwhFwqmUQJePT7GAx/L4w=
-X-Received: by 2002:a6b:6519:0:b0:760:e308:1070 with SMTP id
- z25-20020a6b6519000000b00760e3081070mr3591853iob.0.1681906171752; Wed, 19 Apr
- 2023 05:09:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZD2HjZZSOjtsnQaf@lore-desk> <CANn89iK7P2aONo0EB9o+YiRG+9VfqqVVra4cd14m_Vo4hcGVnQ@mail.gmail.com>
- <ZD2NSSYFzNeN68NO@lore-desk> <20230417112346.546dbe57@kernel.org>
- <ZD2TH4PsmSNayhfs@lore-desk> <20230417120837.6f1e0ef6@kernel.org>
- <ZD26lb2qdsdX16qa@lore-desk> <20230417163210.2433ae40@kernel.org>
- <ZD5IcgN5s9lCqIgl@lore-desk> <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
-In-Reply-To: <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 19 Apr 2023 14:09:20 +0200
-Message-ID: <CANn89iKAVERmJjTyscwjRTjTeWBUgA9COz+8HVH09Q0ehHL9Gw@mail.gmail.com>
-Subject: Re: issue with inflight pages from page_pool
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, brouer@redhat.com,
-        netdev@vger.kernel.org, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, davem@davemloft.net,
-        pabeni@redhat.com, bpf@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, nbd@nbd.name
+        with ESMTP id S233378AbjDSNQD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 09:16:03 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17E9146F1;
+        Wed, 19 Apr 2023 06:16:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681910161; x=1713446161;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=c0Lwj9yzszjKsHWBNQF6y0LFzSuPWZATi653tqh49/M=;
+  b=BmLxUOzHaQo4C7CoKusH1Y4/uujbbPm9yf7NKRphR4oqy1K0H5AeXLU/
+   2z51gMuyhvD5Sfq2Un319gY8yP9LFGIPa6PHs8zcjQQvH/dtnmn94ShJA
+   g5fUuGzuOdszWqEeJK7W61dIc964KpcA3B1qHRl9BaSfuz33R/4Ao/b/q
+   YzqJd6H0MkSpmOKCvqKpmRZlgQ0aEiIiflNVMSeQzy6sjg9zFEyYgiLE2
+   atlajUjH3IEpJWgg+5qZukhPFfRaTN5cp9ueS9wQr2v8hJ30Rdl0k5Tz5
+   HXeMU7Ebw+Y67B452Nx/MepwCjQlAF0DuJvmGmGTL7Ys2OczIIGlCg0ZC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="345444005"
+X-IronPort-AV: E=Sophos;i="5.99,208,1677571200"; 
+   d="scan'208";a="345444005"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 06:15:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="721926633"
+X-IronPort-AV: E=Sophos;i="5.99,208,1677571200"; 
+   d="scan'208";a="721926633"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga008.jf.intel.com with ESMTP; 19 Apr 2023 06:15:58 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Wed, 19 Apr 2023 06:15:57 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Wed, 19 Apr 2023 06:15:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S+9d2GXwLkqr+cFMy8Bb1uX7efSgRSkxeMwHA3U9sFUoCsJYryN8/ONDzoHOgioYG0xt9mteyrNPAOjvN2dxMGlAV85X0LURhCS3m1G0vrGOOMYDawha0xsb8gP7Bs0wDA6DuyAW0gosgd8nQ766K2RDoUxknAjqyn0i/odXBPTJoEe6Q0UTsVLh2R2YiYjGzl1Ja06S4k5JB+55niqw965gljM6wC36+oJXhXYrDsyh2L9t1JPus/DNLh7ipzVL7jCt5e1W0zWQr1oFJDOLkgJ6DDry8R0uBUpxY7yK8PxTplwjjgE3O4A22AySPhE8BXdEssiskjZhlJFIe2YVbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qEJI/qfVKzhHcZ28iP6Q3nPHgwjDfNgnawnjUStZ62Y=;
+ b=Ww4dVCDRlbfbK7pS7ftzRXEsixnOhGXTdhYm5iiJ997LiTB7fdizWKA9/HF2Kjsm6FhSHgJEtnXL50Fy0KIvlE6eIedeTUYdggM2UFh+qvZ40WH1AJBQUf5ECgDMltdteBRgHhOwMIoMQ2LNV4b1L/3j4q5nDRa1ISPFruJUlmKq4OzGFZufo+gNTynWenmkm4NfJ1lnkPw1HdvwxozsEzghdFWb4le9E89y7NOCm/TA5s0fCgV6jOxUcfwp+ejVHMQRnzaBdeJQ7kDYC9ejzRjJJHrrfUnGIzxJtMp0q09LPwDZ1udatzykt3Y/yLUyDJn7OoUoq1/PP0GxZ7RtWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by CH0PR11MB5411.namprd11.prod.outlook.com (2603:10b6:610:d2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Wed, 19 Apr
+ 2023 13:15:54 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e%5]) with mapi id 15.20.6319.020; Wed, 19 Apr 2023
+ 13:15:54 +0000
+Message-ID: <d18eea7a-a71c-8de0-bde3-7ab000a77539@intel.com>
+Date:   Wed, 19 Apr 2023 15:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH net-next] xsk: introduce xsk_dma_ops
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <bpf@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <ZDzKAD2SNe1q/XA6@infradead.org>
+ <1681711081.378984-2-xuanzhuo@linux.alibaba.com>
+ <20230417115610.7763a87c@kernel.org> <20230417115753.7fb64b68@kernel.org>
+ <CACGkMEtPNPXFThHt4aNm4g-fC1DqTLcDnB_iBWb9-cAOHMYV_A@mail.gmail.com>
+ <20230417181950.5db68526@kernel.org>
+ <1681784379.909136-2-xuanzhuo@linux.alibaba.com>
+ <20230417195400.482cfe75@kernel.org> <ZD4kMOym15pFcjq+@infradead.org>
+ <20230417231947.3972f1a8@kernel.org> <ZD95RY9PjVRi7qz3@infradead.org>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <ZD95RY9PjVRi7qz3@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0433.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:e::13) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH0PR11MB5411:EE_
+X-MS-Office365-Filtering-Correlation-Id: b7f577fb-bdb2-45d3-2c6b-08db40d83475
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BEs6J6N826pbCaezS6fzBwj/qM0tl8fnqDYrxraMf1tUBNA2W25WEJJFH38aP7+LVVYnNDuoNCxlZ/x8He1U+q36BxLXFCqwh5EYBIfpXZwXWxwfWCvMgIoTUlBw+rbmpsAO4vxjWUF7EGSSGyRXIJft4O2Ef/05/ReV5t/9LK7TXpO8zv0V38EhmVsx13gc1EitsANPeVQw6zSDK9D6go2h84psyv+nX0sjIMKl8rWmmuYIBPCed5hVePgrEKAyIDNoweVS/4Qi9EV9bOaayzRwVNaYDfBzORXIyaZk3rHlLXhPw1txPLsK0yCqJPrnxNN4yYhMLGiSsoW0bElPbFBbwZEQ+6WlXFDz8SFWbHjsnjPRXuPNf0EVlHm68fqEDZgwYqbu+IQoDRoL33FqUhObN6twPirLU4h70KW7JPjbMrU43sKH2F1fDi7cjlIC6QyyebCsJ6ED+GOI4gLyJUlkPGsaZY4qNy7jEvu8LDe+JQGvzQk/mVZLGpG39yJq4DPGJ58wD/gW1QRgexz+3I7xOd2GDHYuZeCtFnPD20bvDyDdjAv/fgoMtfAikXMCt7PYn6S+FwR3VEAm3PWZzWuMbi1r8FU2/KPsxFo0MKi6//PMuoxYmlAK3LYTpw5k+sjVaawYBN/ViA3PP7GAlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(39860400002)(346002)(136003)(376002)(451199021)(110136005)(54906003)(36756003)(31696002)(86362001)(478600001)(82960400001)(41300700001)(8936002)(8676002)(38100700002)(7416002)(5660300002)(2906002)(66476007)(66556008)(66946007)(4326008)(316002)(6506007)(6512007)(26005)(186003)(6666004)(6486002)(2616005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RktFTnQvelJ1ZmpuUlZhRlpsTk02V1I4MzdBMkd0UHlWV3lWQzN0SXBnblJX?=
+ =?utf-8?B?blI5S2p1Ym5uSXJOdDV6UzJRSjJTblphdGV6NXdiYVlkSDMwS09yaERSSGh0?=
+ =?utf-8?B?N3d3UHc0SUZoN0hXai81UDdzbEVYRVhSeFRkbUZ6d2lBSUhGdlhUUjF5aWRv?=
+ =?utf-8?B?ZHE5dExQc3RaK3pJbHpYbVZTKzhUdWNKMXBjZE1QNU1ZU3NSYW0zT3hZSUlF?=
+ =?utf-8?B?dzE3bFV1RE9KK0hOVXJKa3Rla1hKM2todTRKanBWL0k5TFJ4NHJHYTUva1JO?=
+ =?utf-8?B?UERkbE9BNkJtaEVOWmVMSzZLdDZRcG53YVFpMUJTL0pkc0xHMWsrVU1ORHNM?=
+ =?utf-8?B?ejlSaEFHaFZINkxoU3M2NE1TdXAzM20yMCtIVmV4RE1McGsvSXpVNVdJYWdn?=
+ =?utf-8?B?TXQ0Y2kzV0lDNmo0Wk56M1Yyc3lrdmZSUmU3alB3cFErQkNSbWVGMll2QzdT?=
+ =?utf-8?B?cUhab3o5b2NWU0xTdkl3N0hpRnhiSVJiQXE0ajFVelNjemE0T1gxRHI3VTBJ?=
+ =?utf-8?B?SkI5OURSeWNjK0lCKzVRSUg1WlQ5MENEeHRmUFZVN2RjcCtKbkdaUTJvNmwv?=
+ =?utf-8?B?WlJzV2RqMUV3c0VMcHo0TjY0cDZXR0ZiZU5SK3ZYLzJaS2JzUUZQeTU3MWpv?=
+ =?utf-8?B?dmZqZXY5L1FKU0g1MnVDZCtTNFVSVFhBazlJdzM0b2FVZmF3dHByaWNtN3o4?=
+ =?utf-8?B?dFZ1Qzl0Znh4aG1HSVhNYzEwcVhpMk5TS1JZWHRiajB0Q1dRd2ZQWm4ySVBI?=
+ =?utf-8?B?Z1Vrdmw5eWJJUWVVVldUc0FjOVg2SFFNWXJ4ZVFOUHpmajdkdE02dWZFUjUr?=
+ =?utf-8?B?Q3QrY0xnTzdjU3piNnBqb01mWE9UL2hiRHZEaVpuOFNJa1Q3ZjVJMnFsY3Y5?=
+ =?utf-8?B?RW5OS3RMaEFXUDc5d0VCTTdUTHI0WWtnbk5WUmtkbVVNcTluU1JJQnVtUXZp?=
+ =?utf-8?B?MU1TYXIwTHYyT2xZb0EvazE1V0UwSlhUV1QzNm5DT2NuZ0dud2pwU3VXc0Jp?=
+ =?utf-8?B?bVV2WkIyREZEVC9Ldno2clpuM3dVZmZYTzlocEcwbGREaDBVcGpKWVVBNml6?=
+ =?utf-8?B?NzFJT3dpaEdYbGJZeENQZldLMFBadndXTjVIdU5NVUt0c3ZmV05WcWJtOHc3?=
+ =?utf-8?B?VGVvQVVGSG40Z3NjRC9OdHFrOTQwYy9JWEZ3TkMvT1dTejB5T1BKb3dNa3FP?=
+ =?utf-8?B?M1FzOThjcFg0eDBLSDUySTNGZSt5Q0t4Z3dIYUh5ck5hZzAvT0lIbUhnQ1Ro?=
+ =?utf-8?B?Tm4veFRycDdWTGxIZFcwd205WmMwWHB2RmNNNi9CV0cvOGg2SmR6a20rT2gr?=
+ =?utf-8?B?NnBEZWV4a0pML1lrOXRKeWlNVWM1VVAyK3lTUFdkdDdOb2NjUHRyUkM1WTFE?=
+ =?utf-8?B?VFNIT0VidHlYV0ZidDJMc3lTSlFpVkpBLzNHZ29EK2lVTjlwQVpua0ZuYmFL?=
+ =?utf-8?B?Y3pNaTI0cWxTVDA2RUJYTlFXQjhBeXg0TGl0VkdXNTlmcUdnSVI1NTNHOHFq?=
+ =?utf-8?B?WkhsM25XQVBta3hYV2phN281S3Yyc0JUTmxDMGlET0cyYksvcmFoMFNZYm9v?=
+ =?utf-8?B?T3ZSK2E3eUpoLzk1N093Qm5SdkpQNTNxRFM3Zi9xMkc3Nm5QYTdEcFZSRi9R?=
+ =?utf-8?B?cHp3aHJLQlgvdXNrMWpLeGIxdnJOdjVmelhVYnFySWlNc1kwZ0V3Z3JjdFhB?=
+ =?utf-8?B?RzZkRVhYRVA3TDc4WG0vOTltM25YRU91dUZLWHNpZXlYZ05VT2xUUGthM0Jl?=
+ =?utf-8?B?Y3ovMnQ2Nkxxbzl5SWpNUytvcjhLOHFobHVlU0dBM2l5WTd1K1hibGpWVjA0?=
+ =?utf-8?B?M3B2QTZMdmJOS1lPZkMveUFDSGtibnl3SzA5OXVWYUJzcXpKUVBRV29oWVl5?=
+ =?utf-8?B?dzdOQldpWVV0Vjg1QkJKbGxyVVRYd2MyL25henZLMWRVMlIrS2RRTS9iK3Yr?=
+ =?utf-8?B?NVovQmpRWUJMeWM3M3c2U2VHS2g1OG56bzJ3VEpaSnAxWjFzZFVXQS80N2FM?=
+ =?utf-8?B?K3l3UndFVlNsQ2xwWlNGWEw3N284T3BxVGdQNG5TUFJkY25CYjJYZkFlYjJH?=
+ =?utf-8?B?VDM3dTQ3Y0VsbmxudzRuV0djMVgwQmhyQjdobmV6Z0FVK0lLc0tTS0ZodjdG?=
+ =?utf-8?B?VCt3c2lYYW95VTlzYXh1TG9GRzZ5OWI1WTA4NlFwZVdKYldTdXAyMGNsV05U?=
+ =?utf-8?B?V1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7f577fb-bdb2-45d3-2c6b-08db40d83475
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2023 13:15:54.3621
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2rrTgsk2uvJf5vyXOmclnjYgFnIiaDXL6VSicNbxJ4WM4MK6Is7ajAVZ56deolGvfNrKD3SilLIdWgkFhL7V4ZZIWE4oedLicaPgRy8oCMw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5411
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 1:08=E2=80=AFPM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
-> On 18/04/2023 09.36, Lorenzo Bianconi wrote:
-> >> On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
-> >>>> If it's that then I'm with Eric. There are many ways to keep the pag=
-es
-> >>>> in use, no point working around one of them and not the rest :(
-> >>>
-> >>> I was not clear here, my fault. What I mean is I can see the returned
-> >>> pages counter increasing from time to time, but during most of tests,
-> >>> even after 2h the tcp traffic has stopped, page_pool_release_retry()
-> >>> still complains not all the pages are returned to the pool and so the
-> >>> pool has not been deallocated yet.
-> >>> The chunk of code in my first email is just to demonstrate the issue
-> >>> and I am completely fine to get a better solution :)
-> >>
-> >> Your problem is perhaps made worse by threaded NAPI, you have
-> >> defer-free skbs sprayed across all cores and no NAPI there to
-> >> flush them :(
-> >
-> > yes, exactly :)
-> >
-> >>
-> >>> I guess we just need a way to free the pool in a reasonable amount
-> >>> of time. Agree?
-> >>
-> >> Whether we need to guarantee the release is the real question.
-> >
-> > yes, this is the main goal of my email. The defer-free skbs behaviour s=
-eems in
-> > contrast with the page_pool pending pages monitor mechanism or at least=
- they
-> > do not work well together.
-> >
-> > @Jesper, Ilias: any input on it?
-> >
-> >> Maybe it's more of a false-positive warning.
-> >>
-> >> Flushing the defer list is probably fine as a hack, but it's not
-> >> a full fix as Eric explained. False positive can still happen.
-> >
-> > agree, it was just a way to give an idea of the issue, not a proper sol=
-ution.
-> >
-> > Regards,
-> > Lorenzo
-> >
-> >>
-> >> I'm ambivalent. My only real request wold be to make the flushing
-> >> a helper in net/core/dev.c rather than open coded in page_pool.c.
->
-> I agree. We need a central defer_list flushing helper
->
-> It is too easy to say this is a false-positive warning.
-> IHMO this expose an issue with the sd->defer_list system.
->
-> Lorenzo's test is adding+removing veth devices, which creates and runs
-> NAPI processing on random CPUs.  After veth netdevices (+NAPI) are
-> removed, nothing will naturally invoking net_rx_softirq on this CPU.
-> Thus, we have SKBs waiting on CPUs sd->defer_list.  Further more we will
-> not create new SKB with this skb->alloc_cpu, to trigger RX softirq IPI
-> call (trigger_rx_softirq), even if this CPU process and frees SKBs.
->
-> I see two solutions:
->
->   (1) When netdevice/NAPI unregister happens call defer_list flushing
-> helper.
->
->   (2) Use napi_watchdog to detect if defer_list is (many jiffies) old,
-> and then call defer_list flushing helper.
->
->
-> >>
-> >> Somewhat related - Eric, do we need to handle defer_list in dev_cpu_de=
-ad()?
->
-> Looks to me like dev_cpu_dead() also need this flushing helper for
-> sd->defer_list, or at least moving the sd->defer_list to an sd that will
-> run eventually.
+From: Christoph Hellwig <hch@infradead.org>
+Date: Tue, 18 Apr 2023 22:16:53 -0700
 
-I think I just considered having a few skbs in per-cpu list would not
-be an issue,
-especially considering skbs can sit hours in tcp receive queues.
+> On Mon, Apr 17, 2023 at 11:19:47PM -0700, Jakub Kicinski wrote:
+>>> You can't just do dma mapping outside the driver, because there are
+>>> drivers that do not require DMA mapping at all.  virtio is an example,
+>>> but all the classic s390 drivers and some other odd virtualization
+>>> ones are others.
+>>
+>> What bus are the classic s390 on (in terms of the device model)?
+> 
+> I think most of them are based on struct ccw_device, but I'll let the
+> s390 maintainers fill in.
+> 
+> Another interesting case that isn't really relevant for your networking
+> guys, but that caused as problems is RDMA.  For hardware RDMA devices
+> it wants the ULPs to DMA map, but it turns out we have various software
+> drivers that map to network drivers that do their own DMA mapping
+> at a much lower layer and after potentially splitting packets or
+> even mangling them.
+> 
+>>
+>>>> I don't think it's reasonable to be bubbling up custom per-subsystem
+>>>> DMA ops into all of them for the sake of virtio.  
+>>>
+>>> dma addresses and thus dma mappings are completely driver specific.
+>>> Upper layers have no business looking at them.
 
-Do we expect hacing some kind of callback/shrinker to instruct TCP or
-pipes to release all pages that prevent
-a page_pool to be freed ?
+Here it's not an "upper layer". XSk core doesn't look at them or pass
+them between several drivers. It maps DMA solely via the struct device
+passed from the driver and then just gets-sets addresses for this driver
+only. Just like Page Pool does for regular Rx buffers. This got moved to
+the XSk core to not repeat the same code pattern in each driver.
 
-Here, we are talking of hundreds of thousands of skbs, compared to at
-most 32 skbs per cpu.
+>>
+>> Damn, that's unfortunate. Thinking aloud -- that means that if we want 
+>> to continue to pull memory management out of networking drivers to
+>> improve it for all, cross-optimize with the rest of the stack and
+>> allow various upcoming forms of zero copy -- then we need to add an
+>> equivalent of dma_ops and DMA API locally in networking?
 
-Perhaps sets sysctl_skb_defer_max to zero by default, so that admins can op=
-t-in
+Managing DMA addresses is totally fine as long as you don't try to pass
+mapped addresses between different drivers :D Page Pool already does
+that and I don't see a problem in that in general.
+
+> 
+> Can you explain what the actual use case is?
+> 
+>>From the original patchset I suspect it is dma mapping something very
+> long term and then maybe doing syncs on it as needed?
+
+As I mentioned, XSk provides some handy wrappers to map DMA for drivers.
+Previously, XSk was supported by real hardware drivers only, but here
+the developer tries to add support to virtio-net. I suspect he needs to
+use DMA mapping functions different from which the regular driver use.
+So this is far from dma_map_ops, the author picked wrong name :D
+And correct, for XSk we map one big piece of memory only once and then
+reuse it for buffers, no inflight map/unmap on hotpath (only syncs when
+needed). So this mapping is longterm and is stored in XSk core structure
+assigned to the driver which this mapping was done for.
+I think Jakub thinks of something similar, but for the "regular" Rx/Tx,
+not only XDP sockets :)
+
+Thanks,
+Olek
