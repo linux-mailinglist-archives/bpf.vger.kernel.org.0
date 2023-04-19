@@ -2,59 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F97F6E7216
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 06:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562036E7292
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 07:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjDSEHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 00:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S231392AbjDSFRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 01:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbjDSEHs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 00:07:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACB84C1C;
-        Tue, 18 Apr 2023 21:07:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA26C63AD7;
-        Wed, 19 Apr 2023 04:07:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F17AC433D2;
-        Wed, 19 Apr 2023 04:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681877267;
-        bh=UHFMfq+tk9+KU3+6ycZDTXl9M/tQTAv6XtYu+cPYXKc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j3FrEcjlLA1gcwXOIuTdP5ugOnWMq4bGR4dxoof6qBY3JahcPh60wT0MC7cJEnklT
-         RJ/RGsAnZEI91rOPAh7+6erfQw7b5HX2z0McFs6Ht+ebV+A9HIyXIT5xXEuE202RXW
-         /Tp76QUhIm9lTNAci2/WF9gAbnuubk8dK+RndyWTYJZpwHVMTLyMVse6uQ4ZAyELeh
-         UGm9sS57hq9j/nIlzenvCT4bSAmKxm9kaUQ53yqOMjcdwOYuaWfE95fYhxaus6dklq
-         KnPNOOFuo4FUbnOhTjIKKTs93ULV7JHI2zf45mlzJ7i5/I2nBMaE0WHqwRu6y+nANt
-         xtqWVfY9AA5vw==
-Date:   Tue, 18 Apr 2023 21:07:45 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S231204AbjDSFRC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 01:17:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31BC30DC;
+        Tue, 18 Apr 2023 22:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3TYzjVAO8lFOigoxzvnuNLGE5Ej5y2RKbRN7nPAZnQc=; b=GZsS8wOzLRu165JMIeJQWnqCrJ
+        cFugFrh3LbSdfvJz1Z3udGZWBk+BVAZOz/zaz3027PrNh7I7H8vtfpmNDUwzp+Dek7cHaGoXRxlg+
+        N2vaKfChTbLEndgPdUy55MG7J48x/9JAdhttQ+YlYP5EIe57jWyFZPkVSsBR3YbZU1MMoAi1viRiJ
+        qMXnObMVXkIrqVmv7Dz8s+TWjJ0T6a0/YA2l9Q+WlIXS4cma2t2zwYmGcC1VB3rxY5dDB2IB/iG31
+        o3oeOAJ1e2SBbb++bbW7afi+MeVPZpH/idmWCOwbxgG7ppHdtDxUyY66DaY9ifrVbfFFgZxmPxlbd
+        4uQUixrw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pp0BZ-0045Qx-0m;
+        Wed, 19 Apr 2023 05:16:53 +0000
+Date:   Tue, 18 Apr 2023 22:16:53 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] MAINTAINERS: make me a reviewer of VIRTIO CORE AND NET
- DRIVERS
-Message-ID: <20230418210745.100e93a0@kernel.org>
-In-Reply-To: <1681876092.206569-1-xuanzhuo@linux.alibaba.com>
-References: <20230413071610.43659-1-xuanzhuo@linux.alibaba.com>
-        <1681876092.206569-1-xuanzhuo@linux.alibaba.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH net-next] xsk: introduce xsk_dma_ops
+Message-ID: <ZD95RY9PjVRi7qz3@infradead.org>
+References: <ZDzKAD2SNe1q/XA6@infradead.org>
+ <1681711081.378984-2-xuanzhuo@linux.alibaba.com>
+ <20230417115610.7763a87c@kernel.org>
+ <20230417115753.7fb64b68@kernel.org>
+ <CACGkMEtPNPXFThHt4aNm4g-fC1DqTLcDnB_iBWb9-cAOHMYV_A@mail.gmail.com>
+ <20230417181950.5db68526@kernel.org>
+ <1681784379.909136-2-xuanzhuo@linux.alibaba.com>
+ <20230417195400.482cfe75@kernel.org>
+ <ZD4kMOym15pFcjq+@infradead.org>
+ <20230417231947.3972f1a8@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230417231947.3972f1a8@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,22 +78,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Apr 2023 11:48:12 +0800 Xuan Zhuo wrote:
-> > I had some contributions to virtio/virtio-net and some support for it.
-> >
-> > * per-queue reset
-> > * virtio-net xdp
-> > * some bug fix
-> > * ......
-> >
-> > I make a humble request to grant the reviewer role for the virtio core
-> > and net drivers.  
+On Mon, Apr 17, 2023 at 11:19:47PM -0700, Jakub Kicinski wrote:
+> > You can't just do dma mapping outside the driver, because there are
+> > drivers that do not require DMA mapping at all.  virtio is an example,
+> > but all the classic s390 drivers and some other odd virtualization
+> > ones are others.
 > 
-> ping!!
+> What bus are the classic s390 on (in terms of the device model)?
 
-Please don't send meaningless pings, if you have a question ask it and
-make sure you set the right person in the To: header. 'Cause right now
-it looks like you're pinging yourself.
+I think most of them are based on struct ccw_device, but I'll let the
+s390 maintainers fill in.
 
--- 
-doc-bot: sub/impatient
+Another interesting case that isn't really relevant for your networking
+guys, but that caused as problems is RDMA.  For hardware RDMA devices
+it wants the ULPs to DMA map, but it turns out we have various software
+drivers that map to network drivers that do their own DMA mapping
+at a much lower layer and after potentially splitting packets or
+even mangling them.
+
+> 
+> > > I don't think it's reasonable to be bubbling up custom per-subsystem
+> > > DMA ops into all of them for the sake of virtio.  
+> > 
+> > dma addresses and thus dma mappings are completely driver specific.
+> > Upper layers have no business looking at them.
+> 
+> Damn, that's unfortunate. Thinking aloud -- that means that if we want 
+> to continue to pull memory management out of networking drivers to
+> improve it for all, cross-optimize with the rest of the stack and
+> allow various upcoming forms of zero copy -- then we need to add an
+> equivalent of dma_ops and DMA API locally in networking?
+
+Can you explain what the actual use case is?
+
+From the original patchset I suspect it is dma mapping something very
+long term and then maybe doing syncs on it as needed?
