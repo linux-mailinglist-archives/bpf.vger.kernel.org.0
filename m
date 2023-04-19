@@ -2,78 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 699066E78E9
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 13:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D026E7965
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 14:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbjDSLrS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 07:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
+        id S233179AbjDSMJf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 08:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjDSLrR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 07:47:17 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7B54C22;
-        Wed, 19 Apr 2023 04:47:15 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id dd8so19810868qvb.13;
-        Wed, 19 Apr 2023 04:47:15 -0700 (PDT)
+        with ESMTP id S233172AbjDSMJe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 08:09:34 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84C215639
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 05:09:32 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-760f8ffb27fso68757239f.2
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 05:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681904834; x=1684496834;
+        d=google.com; s=20221208; t=1681906172; x=1684498172;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nyDadJE1NbgjC8wC5oHDlohplbMrXbFJOr8OYm4fr0g=;
-        b=RzsTjKIWM6yKFuZODaI9MT7527b8MzXaBq+WUh30FXCvOUVRowFcFr90uQ+y0SB5Ha
-         Nbs44J8KP09W+ZINagNZPy7o7Wp+Bybwo6jXkNE+8esZ6aq01Lt2/wNs1PNPptjooC0F
-         6LNfgb+yv9sSw3vdkTTHRBVvhOt0+PRPRrPSA5C5Q5e4vGu432K3UgFP2PFFrfakG2pi
-         d/tSEjGL/Bq33rdcWVK9vOo0wD7B8JCfXSdijc/6guL11ssJFTWUxMd648Ee3ejvixQS
-         Xh2TzVTxSdZZQn78hRPTmuxx3GZEhU38U6bO0liS+d+BMX1hd/y2l4UwN8+cvtqS+lZY
-         zD5A==
+        bh=8ckZBqBNPcwiApkuDGy++lBTpdqH0T8qE8BpS9xSvzE=;
+        b=SlT8Dh7vH2OWYjB2Xeg0YKs3ZixdVUECcSdkThnFtzQKjXIdsaRd9tzPSu+iHpcL6m
+         d5ZipcAcGArqlLTPIeWY7YMl87QSt+vJF3pq1lHZJNz06h+fH5BSSFt8zKsi7oZayP9n
+         h4g0OKNPRPIG63o0TGbWpi6oMgHbo9TFJbcPTvxqWn5+UyAOAow6lKILJY6YVUp8EbiD
+         W/DBcnP3Wt0suN4CcJsjRkR0uVqg7xR2KO6wJmv6CkKpZQ7QDZUokh6numiuhncwm85R
+         gjqj3B903m1crGyGkAGLhF4xGhiqyfjDXCXv17R4kwhW6EC/WmXqb9gmT7dTt5eqx4gV
+         hKxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681904834; x=1684496834;
+        d=1e100.net; s=20221208; t=1681906172; x=1684498172;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nyDadJE1NbgjC8wC5oHDlohplbMrXbFJOr8OYm4fr0g=;
-        b=Dpo/tFKDVCx2y2Aj2NTJhMs+QQm4Xf4gJEh0rNdz9UYErL0J/XuMIAepKhyDPcRVT3
-         fbajH0uAFsLn2W6Vk/M2bGrayUNZS59nVvpwTzjUbHW31mI5/6SXXBvcQWJdO93KSjp5
-         HqfPP5pSeG5vPotieWzFZuym9AXZ0PdMFWXsGiXCKrI5aSJk9AWlOGzuqM38h4Dlhwxn
-         bL/biawgdpDIGPOgiYAoTH7IZjEXiaaLM2HDC8df1DsuTAQFrb2LoqJpaAjRqkIo+bcO
-         hc5uCvYXymZd6CJT/P33J92m1f9jbtn6UW6bCKYoh87Y45mmLBYDkqc3hF7/ldWUpJXz
-         D+vA==
-X-Gm-Message-State: AAQBX9dO+JQ7j0FAn9LNbny1jwquAEWHDj1A+eLrjLppR2RqChC7NZqf
-        Deaeiij7mcDEdk9GryhQy+UZYxGNWFv0hXM5q9o=
-X-Google-Smtp-Source: AKy350alDLnATEjliOOTmkIQ3+3cIHSnEkNtmVKehwKlEUoOwVP1HXCWzUwHYwRbame9IrQOAbt6wQ543n2m2VHD8z0=
-X-Received: by 2002:a05:6214:2348:b0:5f1:6892:7437 with SMTP id
- hu8-20020a056214234800b005f168927437mr4619986qvb.26.1681904834432; Wed, 19
- Apr 2023 04:47:14 -0700 (PDT)
+        bh=8ckZBqBNPcwiApkuDGy++lBTpdqH0T8qE8BpS9xSvzE=;
+        b=jYCjcT08ow2fTrXoBmqwySsl0/M6xGbBC7wk6Mkb3d8+UUeZTzXVcIKPXb5UR2emYA
+         /tlP7Qf3vesQITNFryto0FOSnJ55vJnxokG1BdGAyyIHDHk89ZZCvvJEYIvaUunPDlpl
+         KFhopv3KcSqIu/KkOTmhTD4Fp4wvWGP2HkDlIx5L9L6j3t5TP4hHsxNmXHcMfkgketOV
+         cWKKhEcX3X0mKI2VVomo2DjUsWZicm20wU0EjGLOFP9PHUDpMNJbZw8OSBhB3eITm5yh
+         9wiuuykKaKQSaBZ45nV2Ta+4jwNlqmMbVnLJjGYt4grAGlZXNMz1pcpDJXMm01/4DbEw
+         WfuA==
+X-Gm-Message-State: AAQBX9ds2QI6QxJllow8/iAtyJj1qPQAxqvunuYAdUgwHFOn0S6CGwEb
+        RSVpyW8fBT5et+kdbVVwb/6TIPZnVBiPp5xkDcOljg==
+X-Google-Smtp-Source: AKy350YQVqB1aBzXqR4YZcUJjMUghAu+Vvd8MhYV+ubnQm2Qq0RhbILtHV1KCGIrjxxez6iwhFwqmUQJePT7GAx/L4w=
+X-Received: by 2002:a6b:6519:0:b0:760:e308:1070 with SMTP id
+ z25-20020a6b6519000000b00760e3081070mr3591853iob.0.1681906171752; Wed, 19 Apr
+ 2023 05:09:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230417154737.12740-1-laoar.shao@gmail.com> <20230417154737.12740-6-laoar.shao@gmail.com>
- <20230417201457.c43xfcukjzm4u6vx@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <CALOAHbC4Bz_VX52zmv=sScBf0hzscMAC4+EwMCpnd1BcaSVJSw@mail.gmail.com> <CAADnVQJw9BCK2itE5bZWdQYz7D-8KdcH96E885zUakEDAOrC+Q@mail.gmail.com>
-In-Reply-To: <CAADnVQJw9BCK2itE5bZWdQYz7D-8KdcH96E885zUakEDAOrC+Q@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 19 Apr 2023 19:46:38 +0800
-Message-ID: <CALOAHbCtPR26it_Wdk7T_TETMTh2se6rgEbL_KC5XKtzvObjiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention mechanism
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
+References: <ZD2HjZZSOjtsnQaf@lore-desk> <CANn89iK7P2aONo0EB9o+YiRG+9VfqqVVra4cd14m_Vo4hcGVnQ@mail.gmail.com>
+ <ZD2NSSYFzNeN68NO@lore-desk> <20230417112346.546dbe57@kernel.org>
+ <ZD2TH4PsmSNayhfs@lore-desk> <20230417120837.6f1e0ef6@kernel.org>
+ <ZD26lb2qdsdX16qa@lore-desk> <20230417163210.2433ae40@kernel.org>
+ <ZD5IcgN5s9lCqIgl@lore-desk> <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
+In-Reply-To: <3449df3e-1133-3971-06bb-62dd0357de40@redhat.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 19 Apr 2023 14:09:20 +0200
+Message-ID: <CANn89iKAVERmJjTyscwjRTjTeWBUgA9COz+8HVH09Q0ehHL9Gw@mail.gmail.com>
+Subject: Re: issue with inflight pages from page_pool
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, brouer@redhat.com,
+        netdev@vger.kernel.org, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net,
+        pabeni@redhat.com, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, nbd@nbd.name
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,57 +77,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 11:38=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Apr 19, 2023 at 1:08=E2=80=AFPM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Mon, Apr 17, 2023 at 6:49=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > On Tue, Apr 18, 2023 at 4:15=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Apr 17, 2023 at 03:47:36PM +0000, Yafang Shao wrote:
-> > > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > > > index f61d513..3df39a5 100644
-> > > > --- a/kernel/bpf/trampoline.c
-> > > > +++ b/kernel/bpf/trampoline.c
-> > > > @@ -842,15 +842,21 @@ static __always_inline u64 notrace bpf_prog_s=
-tart_time(void)
-> > > >  static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, s=
-truct bpf_tramp_run_ctx *run_ctx)
-> > > >       __acquires(RCU)
-> > > >  {
-> > > > -     rcu_read_lock();
-> > > > -     migrate_disable();
-> > > > -
-> > > > -     run_ctx->saved_run_ctx =3D bpf_set_run_ctx(&run_ctx->run_ctx)=
-;
-> > > > +     int bit;
-> > > >
-> > > > -     if (unlikely(this_cpu_inc_return(*(prog->active)) !=3D 1)) {
-> > > > +     rcu_read_lock();
-> > > > +     bit =3D test_recursion_try_acquire(_THIS_IP_, _RET_IP_);
-> > >
-> > > and bpf will prevent ftrace to run and vice versa.
-> > > Not a good idea.
-> > >
-> > > One bpf prog will prevent different bpf prog to run since they share =
-current task.
-> > > Not a good idea either.
-> >
-> > That shouldn't happen. test_recursion_try_acquire() uses a
-> > per-task_struct value. One single task_struct can't run in parallel,
-> > right?
-> > Note that the bpf program running in softirq or irq context won't be
-> > prevented by it.
-> > IIUC, the bpf program should run in serial in one single task, right?
-> > That said, one bpf program can only run after another bpf program
-> > finished in the same task?
 >
-> bpf progs can nest in the same task.
+> On 18/04/2023 09.36, Lorenzo Bianconi wrote:
+> >> On Mon, 17 Apr 2023 23:31:01 +0200 Lorenzo Bianconi wrote:
+> >>>> If it's that then I'm with Eric. There are many ways to keep the pag=
+es
+> >>>> in use, no point working around one of them and not the rest :(
+> >>>
+> >>> I was not clear here, my fault. What I mean is I can see the returned
+> >>> pages counter increasing from time to time, but during most of tests,
+> >>> even after 2h the tcp traffic has stopped, page_pool_release_retry()
+> >>> still complains not all the pages are returned to the pool and so the
+> >>> pool has not been deallocated yet.
+> >>> The chunk of code in my first email is just to demonstrate the issue
+> >>> and I am completely fine to get a better solution :)
+> >>
+> >> Your problem is perhaps made worse by threaded NAPI, you have
+> >> defer-free skbs sprayed across all cores and no NAPI there to
+> >> flush them :(
+> >
+> > yes, exactly :)
+> >
+> >>
+> >>> I guess we just need a way to free the pool in a reasonable amount
+> >>> of time. Agree?
+> >>
+> >> Whether we need to guarantee the release is the real question.
+> >
+> > yes, this is the main goal of my email. The defer-free skbs behaviour s=
+eems in
+> > contrast with the page_pool pending pages monitor mechanism or at least=
+ they
+> > do not work well together.
+> >
+> > @Jesper, Ilias: any input on it?
+> >
+> >> Maybe it's more of a false-positive warning.
+> >>
+> >> Flushing the defer list is probably fine as a hack, but it's not
+> >> a full fix as Eric explained. False positive can still happen.
+> >
+> > agree, it was just a way to give an idea of the issue, not a proper sol=
+ution.
+> >
+> > Regards,
+> > Lorenzo
+> >
+> >>
+> >> I'm ambivalent. My only real request wold be to make the flushing
+> >> a helper in net/core/dev.c rather than open coded in page_pool.c.
+>
+> I agree. We need a central defer_list flushing helper
+>
+> It is too easy to say this is a false-positive warning.
+> IHMO this expose an issue with the sd->defer_list system.
+>
+> Lorenzo's test is adding+removing veth devices, which creates and runs
+> NAPI processing on random CPUs.  After veth netdevices (+NAPI) are
+> removed, nothing will naturally invoking net_rx_softirq on this CPU.
+> Thus, we have SKBs waiting on CPUs sd->defer_list.  Further more we will
+> not create new SKB with this skb->alloc_cpu, to trigger RX softirq IPI
+> call (trigger_rx_softirq), even if this CPU process and frees SKBs.
+>
+> I see two solutions:
+>
+>   (1) When netdevice/NAPI unregister happens call defer_list flushing
+> helper.
+>
+>   (2) Use napi_watchdog to detect if defer_list is (many jiffies) old,
+> and then call defer_list flushing helper.
+>
+>
+> >>
+> >> Somewhat related - Eric, do we need to handle defer_list in dev_cpu_de=
+ad()?
+>
+> Looks to me like dev_cpu_dead() also need this flushing helper for
+> sd->defer_list, or at least moving the sd->defer_list to an sd that will
+> run eventually.
 
-Do you mean the tail_call ?
+I think I just considered having a few skbs in per-cpu list would not
+be an issue,
+especially considering skbs can sit hours in tcp receive queues.
 
---=20
-Regards
-Yafang
+Do we expect hacing some kind of callback/shrinker to instruct TCP or
+pipes to release all pages that prevent
+a page_pool to be freed ?
+
+Here, we are talking of hundreds of thousands of skbs, compared to at
+most 32 skbs per cpu.
+
+Perhaps sets sysctl_skb_defer_max to zero by default, so that admins can op=
+t-in
