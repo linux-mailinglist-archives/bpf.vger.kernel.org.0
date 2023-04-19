@@ -2,56 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CE06E7D0B
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 16:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AB96E7D73
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 16:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjDSOkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 10:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S233471AbjDSOvL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 10:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbjDSOk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 10:40:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDD961BD;
-        Wed, 19 Apr 2023 07:40:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07C026371E;
-        Wed, 19 Apr 2023 14:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 679B3C433D2;
-        Wed, 19 Apr 2023 14:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681915219;
-        bh=L3rmvVZzfFOX0gs6NRkifbKhhR41UPWGrCyt1hya6Iw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OhbXDJNmnHv2BcsaGT0H4H6trflzXqzYp61LXriJT9xmSVBmzJuCyYBljVwSS7KGD
-         YE/8LxhP49ks/v9HL7+sl6q1cyGQ6Gfjn3zANvrRMuKjv7Q1aD1g+O7bDJKkH8KL8l
-         KFvbDQrLI7kMNPqIbzexYcA7LE9efEhEEj08ufDhBtR/nT2XcFmNYwTOspc/g38ePo
-         ecF3UqKy4NTj9rCDz8Gi3pUEQmS0z8tHzNEfa8MBc8els0KEbnOjtkMn0Jn1DYsQFg
-         tfXHuhBhnUaDoyIrv9yJE0PjIgRLKGReCyi8WXsVtUphUYmY6oCWGL9Zj+g543hmh8
-         +JEVI6phI6wMA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4BBE4C395EA;
-        Wed, 19 Apr 2023 14:40:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233464AbjDSOvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 10:51:09 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DED3C0D;
+        Wed, 19 Apr 2023 07:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=XxVD0hipqgth9ZJ1nyMDcD+GdG+KZvFQJbCVZuqDCbk=; b=RLUa4rew4gW8VMttcSSzHFOXI2
+        6BJLaD7o1tNNQ2LqmU0sRK1NJ2et0GGUVAXM+O2q7U83WPMphEUIZy0V94y6O9Cd48dO+5YLsvNAU
+        RhB0Jv8gdZRT9t1DMpeNYasiieJ7o2PwI4w3bvR8GuaoirxMOwU5hOeRUI9lJN4mHT8zAgUvztaNz
+        BPTXvMej8ZarsfTkXlHJGkapQk+gLTnYUwzWUs1RuorT1XkC/c42UUgyucz2E8eZ5oWhAbHxleuFB
+        fPnA1VZPfORv9+4tnP7Jk1oLSU0GRH9GAo9vjWnza8LkNMvxY0ooxxFyPKW0xnP7ZQ4LauO9MZcS+
+        UuPbG4hA==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pp98v-0005CQ-SP; Wed, 19 Apr 2023 16:50:45 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1pp98v-000HS5-Gk; Wed, 19 Apr 2023 16:50:45 +0200
+Subject: Re: [PATCH] bpftool: fix broken compile on s390 for linux-next
+ repository
+To:     Thomas Richter <tmricht@linux.ibm.com>, broonie@kernel.org,
+        hca@linux.ibm.com, sfr@canb.auug.org.au, liam.howlett@oracle.com,
+        acme@redhat.com, ast@kernel.org, bpf@vger.kernel.org,
+        linux-next@vger.kernel.org, quentin@isovalent.com
+References: <20230418085516.1104514-1-tmricht@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <233a0b88-6857-0a1d-3609-6a74fa50c28c@iogearbox.net>
+Date:   Wed, 19 Apr 2023 16:50:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/xsk: fix munmap for hugepage allocated
- umem
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168191521930.31115.14808766624287897927.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 Apr 2023 14:40:19 +0000
-References: <20230418143617.27762-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20230418143617.27762-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, tirthendu.sarkar@intel.com,
-        kal.conley@dectris.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230418085516.1104514-1-tmricht@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26880/Wed Apr 19 09:22:57 2023)
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,34 +64,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 18 Apr 2023 16:36:17 +0200 you wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On 4/18/23 10:55 AM, Thomas Richter wrote:
+> Commit 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> breaks the build of the perf tool on s390 in the linux-next repository.
+> Here is the make output:
 > 
-> Fix the unmapping of hugepage allocated umems so that they are
-> properly unmapped. The new test referred to in the fixes label,
-> introduced a test that allocated a umem that is not a multiple of a 2M
-> hugepage size. This is fine for mmap() that rounds the size up the
-> nearest multiple of 2M. But munmap() requires the size to be a
-> multiple of the hugepage size in order for it to unmap the region. The
-> current behaviour of not properly unmapping the umem, was discovered
-> when further additions of tests that require hugepages (unaligned mode
-> tests only) started failing as the system was running out of
-> hugepages.
+> make -C tools/perf
+> ....
+> btf_dumper.c: In function 'dotlabel_puts':
+> DEBUG: btf_dumper.c:838:25: error: '__fallthrough' undeclared \
+> 		(first use in this function); did you mean 'fallthrough'?
+> DEBUG:   838 |                         __fallthrough;
+> DEBUG:       |                         ^~~~~~~~~~~~~
+> DEBUG:       |                         fallthrough
+> DEBUG: btf_dumper.c:838:25: note: each undeclared identifier is reported \
+> 		only once for each function it appears in
+> DEBUG: btf_dumper.c:837:25: warning: this statement may fall through \
+>                  [-Wimplicit-fallthrough=]
+> DEBUG:   837 |                         putchar('\\');
+> DEBUG:       |                         ^~~~~~~~~~~~~
+> DEBUG: btf_dumper.c:839:17: note: here
+> DEBUG:   839 |                 default:
+> DEBUG:       |                 ^~~~~~~
+> DEBUG: make[3]: *** [Makefile:247: /builddir/build/BUILD/kernel-6.2.fc37/\
+> 		        linux-6.2/tools/perf/util/bpf_skel/ \
+> 		        .tmp/bootstrap/btf_dumper.o] Error 1
 > 
-> [...]
+> The compile fails because symbol __fallthrough unknown, but symbol
+> fallthrough is known and works fine.
+> 
+> Fix this and replace __fallthrough by fallthrough.
+> 
+> With this change, the compile works.
+> 
+> Output after:
+> 
+>   # make -C tools/perf
+>   ....
+>   CC      util/bpf-filter.o
+>   CC      util/bpf-filter-flex.o
+>   LD      util/perf-in.o
+>   LD      perf-in.o
+>   LINK    perf
+>   make: Leaving directory '/root/mirror-linux-next/tools/perf'
+>   #
+> 
+> Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> ---
+>   tools/bpf/bpftool/btf_dumper.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> index 6c5e0e82da22..1b7f69714604 100644
+> --- a/tools/bpf/bpftool/btf_dumper.c
+> +++ b/tools/bpf/bpftool/btf_dumper.c
+> @@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
+>   		case '|':
+>   		case ' ':
+>   			putchar('\\');
+> -			__fallthrough;
+> +			fallthrough;
 
-Here is the summary with links:
-  - [bpf-next] selftests/xsk: fix munmap for hugepage allocated umem
-    https://git.kernel.org/bpf/bpf-next/c/2ddade322925
+The problem is however for current bpf-next, where this change breaks CI:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+https://github.com/kernel-patches/bpf/actions/runs/4737651765/jobs/8410684531
 
+   [...]
+     CC      /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/bpftool/feature.o
+     CC      /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/bpftool/disasm.o
+   btf_dumper.c:838:4: error: use of undeclared identifier 'fallthrough'
+                           fallthrough;
+                           ^
+   1 error generated.
+   [...]
+
+I would suggest as a clean path that'll work for both to just change from
+fallthrough; into /* fallthrough */ as done in objtool, then we can also
+work around BPF CI issue and merge this change in time.
+
+>   		default:
+>   			putchar(*s);
+>   		}
+> 
 
