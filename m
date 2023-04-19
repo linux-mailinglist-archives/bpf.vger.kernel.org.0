@@ -2,251 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A016E77CE
-	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 12:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4986E77D3
+	for <lists+bpf@lfdr.de>; Wed, 19 Apr 2023 12:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjDSKyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 06:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        id S232521AbjDSKzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 06:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbjDSKyY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 06:54:24 -0400
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE4DE12CA4;
-        Wed, 19 Apr 2023 03:54:11 -0700 (PDT)
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 33JArQ9R010864;
-        Wed, 19 Apr 2023 05:53:26 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 33JArO2V010863;
-        Wed, 19 Apr 2023 05:53:24 -0500
-Date:   Wed, 19 Apr 2023 05:53:24 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
-Message-ID: <20230419105324.GA10725@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20230412043300.360803-1-andrii@kernel.org> <CAHC9VhQHmdZYnR=+rX-3FcRh127mhJt=jAnototfTiuSoOTptg@mail.gmail.com> <6436eea2.170a0220.97ead.52a8@mx.google.com> <20230414202345.GA3971@wind.enjellic.com> <CAEf4BzZQ8EYNe_oGDEoc0_a3k8C2CYe2F6scBD2Xj2MZ9TE7ug@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S232725AbjDSKzS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 06:55:18 -0400
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2045.outbound.protection.outlook.com [40.107.249.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EBD13C32;
+        Wed, 19 Apr 2023 03:54:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KklcQbJI6OUrxDuUbCkiQNP69sqKVuvMjPjRfDituPsP7kdKey5qvQekpVGWfpcJRDvFZu8ozIdyBUoh7BvjK2toe4vTx9Zw4dy3Y6WCp86CKFZdVwjrD3eNeNAfD4DQ0+A6Rno7X8yP2HPF8J6ODLCdkIzCVph4USvLqbuUDpLfa55A7iuvGsgt6Xv0jtJCKuutMyRhAwW4XDVxSRwTRdrvdM/yEa9twru2IZH/lNPZS/JrnXtS9KTJmTCOOaj4lUdSiBoaZJ13uclAc/yVBVPDvTPHUMtGY8Aocyr/2ig501B6Vnuw1ogiruQC9RvQRGvLOawMeGSwtZFD+HVK1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vaeXb3vdDKmXEKS+yDhiRxeTm06Q+y29UEBbsWxyffk=;
+ b=kInIcsiuBwRVGr8oKy7sYwWN+z7ZnZRd/pO+VqDfrZ17Pqy2TT2bjkVS401uvbD7ySV8nERjq8SJAQSiWoIsVllHtHgRzJybHQ4l5B/G9ZnEt/tAehe6Hz0JhHneRsiq6U7MW41NCIo4BHEl1STCHKchsAITtIfBL5iIvIhBPRVwO0dmw9CIuOjIQS+6MiT34SXyLzhHiXgVoBPFo7BdLrafTk8Mf4SwIrkr/jofzBSV3dIAUHxHTtvWF+DXvpFP9AHej6HG+bu8MJAa1nbGVtbdnJV61q7T2YVn1WtxIb+U88ZV9ZoyYroqAdy96V7o2haL6ddkwmBPsKBgTEQokQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vaeXb3vdDKmXEKS+yDhiRxeTm06Q+y29UEBbsWxyffk=;
+ b=z2CzmDglT1850DI7Kc92nipdq4RHAlqlXwTsN/ok65rS+Lb7x6R/qsrfju/odpFKqAC8gavUzCFBGZVGplL+27ZYszOKXDOAmO8C4XGvkuBij0D7QA8BN7d5xaYgSG0QISEGChpgNKhkWbUcUfGntD+oU6TyGQaxH8sd5GexcvFZ97kYLOwRN5k+ORd3kgA/96mcVvA0tB9u86Yt8EqZ5iLRNKSmu8lOjkJwRZ1JK92J1a/d5h1+ZBb7DzVwGJKw2plyBwZ/QaA2PYbstXoWfBq3p1Iw3cFzs7IeV6puJKQVGNmLGNhd3p4oJhgUSxyzw/IBGyT1gDKVg5ZTy/EqGQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
+ by PAWPR04MB9911.eurprd04.prod.outlook.com (2603:10a6:102:38b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.45; Wed, 19 Apr
+ 2023 10:54:56 +0000
+Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::e4c4:247e:4a08:7ed2]) by AS8PR04MB9510.eurprd04.prod.outlook.com
+ ([fe80::e4c4:247e:4a08:7ed2%2]) with mapi id 15.20.6298.045; Wed, 19 Apr 2023
+ 10:54:56 +0000
+Date:   Wed, 19 Apr 2023 18:54:40 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
+Message-ID: <ZD/IcBvVxtFtOhUC@syu-laptop.lan>
+References: <ZDfKBPXDQxH8HeX9@syu-laptop>
+ <87leiw11yz.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZQ8EYNe_oGDEoc0_a3k8C2CYe2F6scBD2Xj2MZ9TE7ug@mail.gmail.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 19 Apr 2023 05:53:26 -0500 (CDT)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87leiw11yz.fsf@toke.dk>
+X-ClientProxiedBy: FR3P281CA0086.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1f::13) To AS8PR04MB9510.eurprd04.prod.outlook.com
+ (2603:10a6:20b:44a::11)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|PAWPR04MB9911:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a87129f-b159-43b8-2832-08db40c482f2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ruVQuflHGZKAu9WeDKvTGoDexR2nmdaqzA4YFwWdlKWiZN5HnSgudQWP14EKe9Bl6NueiSNrPljCNvZBUP351/1lfiAIdYLayV0m4oneXslMth4OetIbc7Bs4A+q6LCqScD/NZzK+hP2BnDY1AVLp2X1ll2615jhJRJsTLRWy9QeVWSVuEvW2myh0XTxeqyDWb6PNR70uMfndPODAK5QmUxH7+zYlndKJyNDYPP22BX9OY4Z4NVavtfcTu+qhq9WcaROn53HtTZLOsvnMn8nYDSxzuAqh++gKP4p4HD5CQDCsuWvswwoJrKCscKGUzhFsdIE50lFABujzMsygANgyT1POuEOQRKkH2iu6AYyxwDP4n2yVzw/7av3HNRcnalf5o7vjd+4uQajrOjJ+ubzoAD3dw/YnFGKIjrNTi3mrOWiXw8q26axh3mZrdY1DcbdvW5Kog+OedzCnlFgh5jspu5L4r7PMYedwsRN7Tkg+gnGLR9Ty/COkSzA/1k3mY9ak29ASqvZp9+3Q9esxCVTg9mhGzTPEZCyJUPZYQL+OPQyS1Fw0ymhYAjWfrofNAQ1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(136003)(366004)(396003)(376002)(451199021)(4326008)(110136005)(66946007)(54906003)(316002)(66476007)(66556008)(478600001)(6666004)(6486002)(8676002)(5660300002)(41300700001)(2906002)(186003)(36756003)(8936002)(7416002)(86362001)(6506007)(6512007)(38100700002)(26005)(9686003)(83380400001)(66574015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TjFLYkZWVEkrWFY1V0Y2cVAvZFB0UWxYbjQ2TnQ2dzdydEJobnNIanJwQmVk?=
+ =?utf-8?B?NHNtL1QyS2wvclFRZVEwd3M5c3VKSTEwT2pkY3FTK2FyQndOZi9uRWZKdEsr?=
+ =?utf-8?B?QmkrSzVDZmx3VVl5WTVUTUUvTE5nMGc2S0JSSWwvVjdkcVo4ZHFyMms1Z2xx?=
+ =?utf-8?B?YlRyeml6Vkt3VzBPNFkwWjNxMXVDWEl4QWhERGo1aGNsS1pvUGo1dzBxcGVt?=
+ =?utf-8?B?Z0F0dEVwTE1uOHAvRUcyTFJGd2VnZlJ5N3NVbWZiQVV4Qi9rZjkwTGMwYjAw?=
+ =?utf-8?B?RXV2ZlZjOEs1bHdSK0dZak5yMVNxdTZDWlJkMTdlWllrVDMzL2tlNnBvNTNs?=
+ =?utf-8?B?eGdEYlgxRVIwdlpFYU1OdGV1a2dHdkJic0VaeGxyM1NWQ1J1UFpwY1N5TXFR?=
+ =?utf-8?B?UDhxTEFkUFJoblJBVnpkVFErTmFhaW9TMytYWUhYcWZndUtJM004Q1lMdmky?=
+ =?utf-8?B?a3pZeWlMYlkxY0d6Ly84NnpyeGlKR2JzQUJrSUJmbzEzeCtieVdrZzZMUldN?=
+ =?utf-8?B?ZWUrbyt4N2dEWmJlM2lXM2VJbWVoTW5LdW4zSkdiRzNMV3lrd1o2ZTM1bmRu?=
+ =?utf-8?B?ZHg2emp0S3NUWkcveXlXUTMyN2hmaGY0UXVQUzZOVGF5S3NlZFJpZ3A2Tkhh?=
+ =?utf-8?B?Ti9nRzNiTDNBUVVXVFV2dXdXV3dVVFhGWWVBMWZveUVvT2czR0xITWxLSitS?=
+ =?utf-8?B?RFFGVUc5cU11YVc5ODA5M2ZaWXloeGJTTzJJN2ZaSTFIbVpkT2lmSVhmOGFR?=
+ =?utf-8?B?MFovU3ZnOEhXRHVwc0xKbVdQU0NjYVYwRHNvM21CQXhROTI0d0ZDZHFuYWta?=
+ =?utf-8?B?YVVtSXpDTG9DR1ZEdWMyLzk3SmhtVDNmb1RSY2NyanlUY1pMYStqVFNmclBU?=
+ =?utf-8?B?RDlaTDJJUlpDUDR0V2duVnNSU2NaQS8yZ2x5SldLYWs1MGpKVmtvNlhiNW9C?=
+ =?utf-8?B?dTY0aVNSRnJ6bmdOUWdLVDVoSXE2SkVybjR3QVp1SHBsYVR2MGYraXlDMTR3?=
+ =?utf-8?B?T0ExNkV4ekJ1SWxPeHprMFpxU3JIaGE5ajVzZzd5clovemZsT01IQTdiVmhL?=
+ =?utf-8?B?SjZTYzBidWt1Vjk0NGRtUDJGWXdicmZjQVJrOHlOdUsxRVgvMCt3NmhHSTZL?=
+ =?utf-8?B?eGNXcGlGa2NoelRqczhMbXVaS1AxSWNVNmxNbk1VTW1iM0J4TmVvUC8wSmlD?=
+ =?utf-8?B?ckxGOEFOYWxVNjl2ZVJDckxiMUpvY3Mvd3BLV3lIYnNuRXZBZlExNnVNNXRo?=
+ =?utf-8?B?bzdHYWlwWDdXV2kzZHdncHFUdkIrV204R0R2UlVqdG9HNDZtSG1Nd2ZJb21k?=
+ =?utf-8?B?aGNESlh3RkFFVXEyblBIcnE5UTFaU1lTU0hSZllqTkZxUWtOZlk3MUpaYzVU?=
+ =?utf-8?B?VnZXYnVYLy9OWGdhTFlEa2dWd1E1NUppaHZKeHcvWnJvODJ4R3hKS3BYbmJ0?=
+ =?utf-8?B?cnVRWmdkNDFwa2FBZUZzTkY5eFdmSmVyOE5sQ05rZFJ0ZUhRV0llRjJvblM3?=
+ =?utf-8?B?Z1VVcmxOdnhZRVFyS0tqcVJ0TytlM1lGejNkenFucWdhMnZ6K3VXYlN5N1Ey?=
+ =?utf-8?B?UWlnM1FOdHRrYkZjY3JvRXdUN0FoVkYrMUNKTHROM2wyZ0IwTzVGTGttZ2Rp?=
+ =?utf-8?B?L2tONkJCZTlvd1ZUUjdjT3dlQWtuYlREVXYxSEY4UVI1YnJjN2RDdGxRd1Nw?=
+ =?utf-8?B?cVJRZ0hCNWhCYisvZm45QnYyRzlnQ3F1U00rcW1MMmN5ZTVMalFHTkZwcUpn?=
+ =?utf-8?B?Q1VJNlpCb0tnNU1EaExUdlc5M1hXbzRIaW50WGh6SzhDSUZUdWZGbXpDa05N?=
+ =?utf-8?B?SUx2akZyMWNBODNKWFFxdWlZTmFLOXpacUZDVmxXbU9hZEtTdk44VU5UaDE0?=
+ =?utf-8?B?K29HS2dSdk81MXh6RDVwSzBQK0thS202ODNDd1V0dDUzZ3A5ektrWXZYbkZX?=
+ =?utf-8?B?S3laKzJNY3RNMkRpVmpJODNjYmN0RGw0Yk1ZWVZ0NUEzeFVQQmFNa09STXJR?=
+ =?utf-8?B?K2tXa2Mwbzh6dHZNcjkvY3hMWXdTOHhsbHlsUW9NQW1zN1JDQjdlN1F6OWVa?=
+ =?utf-8?B?emkxVzhENHBjdUdsa3Q2aHRyYVBhTzNrcVJvWmNkSDc4MFBmU0xEVndxaWtw?=
+ =?utf-8?Q?syGTSHovgNKd+QA2HAYOd4Bj8?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a87129f-b159-43b8-2832-08db40c482f2
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2023 10:54:55.9945
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4N6US37hji4OqKjdQom6g4ynytt6eMicM4RWx0NH+LNFKLYq96uf2NoDgvNIh3mq7QhPM9grKJZZ6LNaHQtQiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9911
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 17, 2023 at 04:31:31PM -0700, Andrii Nakryiko wrote:
+Thanks for sharing! I though I'd expands on what you said to draw a clearer
+picture of the challenges.
 
-Hi, I hope the week is going well for everyone.
+On Thu, Apr 13, 2023 at 01:00:20PM +0200, Toke Høiland-Jørgensen wrote:
+> Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
+> 
+> > A side note: if we want all userspace visible libbpf to have a coherent
+> > version, perf needs to use the shared libbpf library as well (either
+> > autodetected or forced with LIBBPF_DYNAMIC=1 like Fedora[4]). But having to
+> > backport patches to kernel source to keep up with userspace package (libbpf)
+> > changes could be a pain.
 
-> On Fri, Apr 14, 2023 at 1:24???PM Dr. Greg <greg@enjellic.com> wrote:
-> >
-> > On Wed, Apr 12, 2023 at 10:47:13AM -0700, Kees Cook wrote:
-> >
-> > Hi, I hope the week is ending well for everyone.
-> >
-> > > On Wed, Apr 12, 2023 at 12:49:06PM -0400, Paul Moore wrote:
-> > > > On Wed, Apr 12, 2023 at 12:33???AM Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > > >
-> > > > > Add new LSM hooks, bpf_map_create_security and bpf_btf_load_security, which
-> > > > > are meant to allow highly-granular LSM-based control over the usage of BPF
-> > > > > subsytem. Specifically, to control the creation of BPF maps and BTF data
-> > > > > objects, which are fundamental building blocks of any modern BPF application.
-> > > > >
-> > > > > These new hooks are able to override default kernel-side CAP_BPF-based (and
-> > > > > sometimes CAP_NET_ADMIN-based) permission checks. It is now possible to
-> > > > > implement LSM policies that could granularly enforce more restrictions on
-> > > > > a per-BPF map basis (beyond checking coarse CAP_BPF/CAP_NET_ADMIN
-> > > > > capabilities), but also, importantly, allow to *bypass kernel-side
-> > > > > enforcement* of CAP_BPF/CAP_NET_ADMIN checks for trusted applications and use
-> > > > > cases.
-> > > >
-> > > > One of the hallmarks of the LSM has always been that it is
-> > > > non-authoritative: it cannot unilaterally grant access, it can only
-> > > > restrict what would have been otherwise permitted on a traditional
-> > > > Linux system.  Put another way, a LSM should not undermine the Linux
-> > > > discretionary access controls, e.g. capabilities.
-> > > >
-> > > > If there is a problem with the eBPF capability-based access controls,
-> > > > that problem needs to be addressed in how the core eBPF code
-> > > > implements its capability checks, not by modifying the LSM mechanism
-> > > > to bypass these checks.
-> >
-> > > I think semantics matter here. I wouldn't view this as _bypassing_
-> > > capability enforcement: it's just more fine-grained access control.
-> > >
-> > > For example, in many places we have things like:
-> > >
-> > >       if (!some_check(...) && !capable(...))
-> > >               return -EPERM;
-> > >
-> > > I would expect this is a similar logic. An operation can succeed if the
-> > > access control requirement is met. The mismatch we have through-out the
-> > > kernel is that capability checks aren't strictly done by LSM hooks. And
-> > > this series conceptually, I think, doesn't violate that -- it's changing
-> > > the logic of the capability checks, not the LSM (i.e. there no LSM hooks
-> > > yet here).
-> > >
-> > > The reason CAP_BPF was created was because there was nothing else that
-> > > would be fine-grained enough at the time.
+Here some more context for completeness. Kernel source changes are published
+at a much slower pace than userspace. When an application in the kernel
+source (e.g. perf) depends on the userspace library, it's kind of like
+trying to catchup a car on a bike, which is doable, as evident by the
+plethora of userspace libraries perf already depends on. While I don't
+having experience maintaining perf, judging by tools/perf/Makefile.config
+that does not seem like an easy feat.
 
-> > This was one of the issues, among others, that the TSEM LSM we are
-> > working to upstream, was designed to address and may be an avenue
-> > forward.
-> >
-> > TSEM, being narratival rather than deontologically based, provides a
-> > framework for security permissions that are based on a
-> > characterization of the event itself.  So the permissions are as
-> > variable as the contents of whatever BPF related information is passed
-> > to the bpf* LSM hooks [1].
-> >
-> > Currently, the tsem_bpf_* hooks are generically modeled.  We would
-> > certainly entertain any discussion or suggestions as to what elements
-> > of the structures passed to the hooks would be useful with respect
-> > to establishing security policies useful and appropriate to the BPF
-> > community.
+For perf to use libbpf in kernel would mean that it's just depending on
+something that moves at the same pace.
 
-> Could you please provide some links to get a bit more context and
-> information? I'd like to understand at least "narratival rather than
-> deontologically based" part of this.
+That said, maybe perf won't need additional backport to keep up with libbpf
+as long as we keep it within that same major version (and disable
+deprecation warning)? @Andrii
 
-We don't have much in the way of links, hopefully some simple prose
-will be helpful.
+Now that We've got pass libbpf 1.0 it seems like a good time to reconsider.
 
-'Narratival vs deontological' contrasts the logic philosophy that is
-being used in the design of a security architecture.
+> So basically, this here is the reason we're building libbpf from the
+> kernel tree for the RHEL package: If we use the github version we'd need
+> to juggle two different versions of libbpf, one for the in-kernel-tree
+> users (perf as you mention, but also the BPF selftests), and one for the
+> userspace packages. Also, having libbpf in the kernel tree means we can
+> just backport patches to it along with the BPF-related kernel patches
+> (we do quite extensive BPF backports for each RHEL version).
 
-Deontological implies that the security architecture is 'rules' based.
-A concept embraced by the classic mandatory access control
-architectures such as SeLinux.
+> Finally, building from the kernel tree means we can use the existing
+> kernel-related procedures for any out of order hotfixes (since AFAIK none
+> of the github repositories have any concept of stable branches that
+> receive fixes).
 
-Narratival, the logic predicate embraced by TSEM, implies that the
-security architecture is events based and is constructed from a
-narration of a known good workload by unit testing.
++1
 
-At the risk of indulging in further philosophical wonkiness, the two
-bodies of logic arise from the constrasting philosopies espoused by
-Immanual Kant and Georg Wilhelm Friedrich Hegel.  It is somewhat less
-precise, but a security architecture that is rules based would be
-considered 'Kantian' motivated while an events based architecture
-would be considered 'Hegelian' inspired.
+Got something similar in place as well and being able to stick with existing
+procedure is appealing. 
 
-So, departing from epistemology, what does all of this mean with
-respect to security.
+> YMMV of course, but figured I'd share our reasoning. To be clear,
+> building from the kernel tree is not without its own pain points (mostly
+> related to how the build scripts are structured for our kernel builds).
+> We've discussed moving to the github version of libbpf multiple times,
+> but every time we've concluded that it would be more, not less, painful
+> than having the kernel tree be the single source of truth.
 
-In a policy based architecture, the security decision is a product of
-the rules, in the case of SeLinux a rather complex corpus, that have
-been established to regulate the interaction of a role, subject and
-object label.
+We package maintainer are certainly quite hard to please :)
 
-In an events based architecture, the security decision is a product of
-the characteristics of the event.  From a granularity perspective,
-which seems to be an issue in this BPF/BTF discussion, the granularity
-of the security decision can be as variable as any of characteristics
-that is used to describe the LSM event at the operating system level.
+Just having an individual package easy to work with is not enough, we want
+it to be easier for most packages before jumping on the bandwagon, which is
+why this email ended up talking about perf despite it started as a
+discussion on packaging libbpf and bpftool.
 
-In TSEM, the characteristics of the event are used to generic a unique
-numeric coefficient specific to the event.  The TSEM documentation
-discusses the functional generation of these coefficients.
+I suppose the mileage depends on the build system & scripts in use and how
+much backporting is done; the more kernel backporting (along with more
+established processes in place), the more painful it'd be to move to the
+GitHub version. My gut feeling is that SLES do less backporting compared to
+RHEL when it comes to BPF, and that probably placed us closer to the middle
+ground.
 
-In the case of the three bpf LSM hooks that are in 6.5, this would be
-any of the characteristics embodied in the following variables.
+Thanks,
+Shung-Hsi
 
-bpf command
-bpf_attributes
-bpf_map
-fmode_t
-bpf_prog
-
-With respect to your problem at hand; Paul Moore suggested elsewhere
-in this thread that there were smart people hanging around on the list
-that might be able to comment on the challenge of CAP_BPF lacking
-granularity and being unavailable in a user namespace.
-
-I can't claim to being very smart, but I did hook up the big screen TV
-at our lake place in west-central Minnesota and it worked the first
-time, so here goes some thoughts.
-
-I can't claim a great deal of experience with BPF, but I'm assuming
-that any of the characteristics above, or that would be passed to the
-proposed BPF LSM hooks, would embody sufficient information about a
-BPF program to fully characterize it from a security perspective.
-
-I'm also assuming that the BPF implementation in the Linux kernel is
-now sufficiently featureful for a BPF program to assist in making a
-security decision by analyzing any of the attributes passed to an LSM
-hook for a subsequent and subordinate BPF program.
-
-We currently don't have support in TSEM for connecting a BPF program
-to an in kernel Trusted Modeling Agent (TMA), but it is on our radar
-screen, desperately seeking attention cycles.  With such hypothetical
-support in place, I would propose gating the ability to attach a BPF
-program to a TMA with CAP_BPF.  Said program would then assume the
-role of assisting the TMA in generating the security coefficients for
-subsequent BPF related security events in the modeling namespace.
-
-At that point, the security behavior of subsequent BPF programs will
-be under the control of the security model being run by the TMA
-assigned to that security namespace.  It can be as granular and
-restrictive as any security characteristics that would be described as
-being relevant to BPF.
-
-From a security perspective, you don't write any security policy, you
-unit test the BPF application and the trust orchestrator generates the
-security model that would be subsequently enforced.
-
-With this model, you don't override any existing security controls and
-the LSM implementation remains purely restrictive.  CAP_BPF regulates
-whether the BPF infrastructure can be accessed and BPF itself becomes
-responsible for defining the permissable security behavior of any
-subordinate BPF applications.
-
-There are undoubtedly considerations needed in the BPF implementation
-to support this model but I haven't had time to look at those
-particulars.
-
-There is further discussion of the concepts involved in the 18+ page
-documentation file that was included in the V0 release of TSEM.  Here
-is the lore link for the original series:
-
-https://lore.kernel.org/linux-security-module/20230204050954.11583-1-greg@enjellic.com/#t
-
-The V1 release, currently being finalized, is a significantly enhanced
-implementation but the architectural and security concepts discussed
-are all still relevant, if there is a desire to dig into this further.
-
-With respect to the thinking and writings of Kant and Hegel, Wikipedia
-is your friend.... :-)
-
-To conclude in a big picture context, if it hasn't already jumped out
-at people.  While TSEM operates practically from a narratival design
-perspective, it is designed to do so by applying either deterministic
-or machine learning models to the characterization and enforcement of
-the security behavior of a platform.
-
-The reason we have a somewhat intense interest in BPF is that HIDS
-based machine learning models need to do characteristic screening in
-order to be properly trained for anomaly detection.  BPF is a pathway
-to achieving this with a single kernel based trusted modeling agent
-implementation.
-
-Now, back to figuring out how to hook up the stereo/hifi.
-
-Have a good remainder of the week.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
+> -Toke
+> 
