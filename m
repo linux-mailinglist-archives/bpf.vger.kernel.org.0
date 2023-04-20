@@ -2,301 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 658A76E96F6
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 16:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6829C6E9781
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 16:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbjDTOXz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 10:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S231607AbjDTOrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 10:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjDTOXy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 10:23:54 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A48420C;
-        Thu, 20 Apr 2023 07:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682000606; x=1713536606;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=CV4L5rrlhrl553umOiLb1GVW6pnq3AUzvlMT2GorTiY=;
-  b=cwlgL4E84kFSqWvxWW7U6+0nvs3xqPE0p+rHWWKwR1+he+YmabgcT4+o
-   lFfmAEskDuuyYnfKp5Z0LWCKm1QxztjBNO7rNT6t0KzJKFGTNMrpyhojW
-   D+PpOnNbxErM8X2f8gXxAoawMHkrph4Y6Madti1pDjx9nQZJ7j/u9KzEc
-   vLzO/Q48gJ6YB0VksUnfuQf7Cpo8eYYhT4lYXIXhsAo28UdFKSuozp6E1
-   aQAgEX2HxpyfkPLj+CTOq7b69ceiTqnLqNMTL9oJHWS5P0LaW9LvKWL7k
-   jDYzxJcVGDHQRWa0rcvgxI51I2Yt+kjHbmZ1cX+LcuC+g9mhXTAy0Zl7A
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="344497588"
-X-IronPort-AV: E=Sophos;i="5.99,212,1677571200"; 
-   d="scan'208";a="344497588"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2023 07:23:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="685354301"
-X-IronPort-AV: E=Sophos;i="5.99,212,1677571200"; 
-   d="scan'208";a="685354301"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga007.jf.intel.com with ESMTP; 20 Apr 2023 07:23:20 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 20 Apr 2023 07:23:19 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 20 Apr 2023 07:23:19 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Thu, 20 Apr 2023 07:23:19 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Thu, 20 Apr 2023 07:23:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h8P165cJ8f565Wvrm9Swrsfik9nPikffNrIc/mBe7xVD9dnFunBpidQFhdukyJipVh36oQL9DL9gyhz00CUutulD3uecLYywcTlw5H/4iBxnWs0taBTOu98qBjF/+3gWq1bnGv1HUGDfWxtf8OOgKwgK49fHW2tgV1oe5DXGtYrZzubwZGB1V37Bss0oI5N/Tc9Zm1/yGuU6wijviZPN0BLX4tS5bekOZ0zWrKIEM5oK/S/0vOhjS7hrU0oemYAWUfX/YQzuI8ObxZUX9+29MLI4RidqFeZ25iYNbqzHcbuh0083ipKY3C8hVLjD4MmZ0O6errm+zYkWHPlfHq0QRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lCrhhTPr2KcIs73oMK0i1+V4eKlpN3BKJaeeEHvuDSQ=;
- b=Y/B3o2R/bz6PePqU2LwlhBOuvMayhGyKAT9ps/3FZlL0mL153K1mtBSekgDtQQYRSizxAgw+sSfokibtrrE6rEGFEaBw8x55aS4ArmhY9JxbqyMy49HWG/l6k5nMkNFUBey4H9J21UIJW3naLCSfhcl4g/KgFAcGtATnrk47ScxifEyt3kR0YA89144Zq7S9lm4e0/aKSjs555wRuseN2fW26pVo99lEGDmj2OKXb8qqK7zJAsRd5PKbu0zlBMyvP1uAjhlPXo8PSkDU4Ct1QV1+9TCPPsGd+7ATT4g4Et6U4glh0QNFUxirfK1DU/ZFWiTLhJgoCbogle2AaSbSXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- IA1PR11MB7872.namprd11.prod.outlook.com (2603:10b6:208:3fe::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6319.22; Thu, 20 Apr 2023 14:23:17 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9e4f:80cc:e0aa:6809%3]) with mapi id 15.20.6319.021; Thu, 20 Apr 2023
- 14:23:17 +0000
-Date:   Thu, 20 Apr 2023 16:23:10 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <bjorn@kernel.org>,
-        <magnus.karlsson@intel.com>, <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH net-next v3 1/6] tsnep: Replace modulo operation with mask
-Message-ID: <ZEFKzuPKGRv0bO35@boxer>
-References: <20230418190459.19326-1-gerhard@engleder-embedded.com>
- <20230418190459.19326-2-gerhard@engleder-embedded.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230418190459.19326-2-gerhard@engleder-embedded.com>
-X-ClientProxiedBy: FR3P281CA0040.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4a::8) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+        with ESMTP id S232076AbjDTOrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 10:47:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1724F420C
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 07:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682001981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UuarXWhrCLw27r1idqrDlI5FLRv5+VGgQS+BQN+kySE=;
+        b=bICqiBEwYCMI15DXiqVcEVjRTbPEF3gptU6SLJQG23pwv2V0HzBZThGBy1iw/FMncyR5pl
+        HuEvB65+Ndlsj5GD8VKmurN7Eu62w1DHizplJ+YFdaW57ByiTIl8M+XK1/60J3pBspRBC4
+        bTU7D2X/jPil+KRpeACF8z2sus7o2hE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-V90lZNE5MLavb0XVCe0lkQ-1; Thu, 20 Apr 2023 10:46:19 -0400
+X-MC-Unique: V90lZNE5MLavb0XVCe0lkQ-1
+Received: by mail-ed1-f70.google.com with SMTP id u19-20020a50a413000000b0050670a8cb7dso1680019edb.13
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 07:46:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682001978; x=1684593978;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UuarXWhrCLw27r1idqrDlI5FLRv5+VGgQS+BQN+kySE=;
+        b=RIxBlAi9EINP3sKjydSZxkfTcDJw7Q6sKKdRpugc8V643a201oF2NoiuGLJ/DmbebS
+         VZcJVeDIv5Rtmk160luRaBCJ/Ffvpk92CQgoN9KNFlkI5DXCmIyOEq0bTgcFvXMd8xdA
+         7xVHKy9gSGIh0oJmj493eXevZNW/mO18vrL851cbI3aczPB6ycZeI0ZjvEM5tQzYqcin
+         VwWWel51xg1Mwd8SGUA+iF+KkIeumkOkKJUiBatoHkGLDDz7WhWDKZSZbphglbXSU7uJ
+         6vaHfKcJw26W65SpoFRUDXwzo2W9t/lXophuYG19xNHfU8u9EM8kRms4UVSOoKrZUCk5
+         LWLg==
+X-Gm-Message-State: AAQBX9dSn2K5yZLuD7RcjItckH5DQWnNhgmI/8lvLeRLBCBoJetBk2dw
+        Gfi8SJIPxqLzcn8hTDXZLWrhuUknAMzvc+2u+hrMHQ+AfOpkmODnTUvMfqXQB+kN9gB0mThgD7v
+        3HYfBIY+ObvzR
+X-Received: by 2002:a17:906:111b:b0:94f:3b29:e0a5 with SMTP id h27-20020a170906111b00b0094f3b29e0a5mr1943155eja.20.1682001977143;
+        Thu, 20 Apr 2023 07:46:17 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bVKyRQEQS1oQMnyp1eKSRd3tU543f3P9723XA6YozXKkR6Y2hnYcF7OayZptFCnUqdPKZ6IQ==
+X-Received: by 2002:a17:906:111b:b0:94f:3b29:e0a5 with SMTP id h27-20020a170906111b00b0094f3b29e0a5mr1943092eja.20.1682001976345;
+        Thu, 20 Apr 2023 07:46:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d20-20020a05640208d400b00504ecc4fa96sm815127edz.95.2023.04.20.07.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Apr 2023 07:46:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 23388AA8E17; Thu, 20 Apr 2023 16:46:15 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Mahe Tardy <mahe.tardy@gmail.com>,
+        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
+Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
+In-Reply-To: <CAEf4BzY9Hr2M7dZXaTZCP4SRat+KpN42c89LG1Msn4PB+1O1YA@mail.gmail.com>
+References: <ZDfKBPXDQxH8HeX9@syu-laptop>
+ <CACdoK4L5A-qdUyQwVbe-KE+0NBPbgqYC1v0uf0i1U_S7KSnmuw@mail.gmail.com>
+ <20230414095007.GF63923@kunlun.suse.cz>
+ <b933fad3-7759-00d4-94cb-f20dd363b794@isovalent.com>
+ <20230414161520.GJ63923@kunlun.suse.cz>
+ <CAEf4Bzaw6DBHn=S9zKCXTSh7jW8xL9K6bzi1Q-e8j93thi2hmg@mail.gmail.com>
+ <20230418112454.GA15906@kitsune.suse.cz>
+ <CAEf4BzZf50fX7T9k47u+9YQrMbSLxLeA1qWwrdWToCZkMhynjg@mail.gmail.com>
+ <20230418174132.GE15906@kitsune.suse.cz> <ZD/3Ll7UPucyOYkk@syu-laptop.lan>
+ <CAEf4BzZfGewUgYsNNqCgES5Y5-pqbSRDbhtKiuSC7=G_83tyig@mail.gmail.com>
+ <87zg73tvm1.fsf@toke.dk>
+ <CAEf4BzY9Hr2M7dZXaTZCP4SRat+KpN42c89LG1Msn4PB+1O1YA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 20 Apr 2023 16:46:15 +0200
+Message-ID: <878remtxvs.fsf@toke.dk>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|IA1PR11MB7872:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0878ee81-9713-45c0-d808-08db41aac8bd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ynNrQr79t+3mX/j67cF2KjI8Zh4dDOsQTaoAXmDN0LxY2JlgDGetfB2ZwjKDReuCIjHJGhkcdvKXKkdA08PwMyc2fWQmhGB1qUxK7aNxTlrBXLV9C+dbgwAm0HbJzVRgkb0WUbkn+goXsgFM4oDqcWzyDJa6z7bZ3H76jKYVnFhZWmPhjsealzB/smabkbuQZtijtbP4Gz10jOxjnr76HU/xP55akvVxqpgz4sytnynQ687xSrkloLg1iZEVDLuJYyzLQks+NP59UGMv7Gr4gg0+swbn4RoCFxvmPyrIp/IMZcKWmo3lpuorQOT93Op5wpAPAk7e0IqZ160DctoWHl07azETDQYcM7iQAByk2lcXfQNwzhBjshTstSEnnsi70fIgmBHZ/buvENYFUWMa+mYksZmkyUvk1ODeUaVs2/7ItawVAeppthEzrHaT4KCsTBG+/EgfD7tljanF2Au7A73eLZZF3dt+XsvzLrs6Nu+OSXJXnDLuLqV3w6dhMBHVy839hh1as4vTXxn4dVrJX7mrrAWwVjpUWX76gnWNDx5wiQpO86gvhvtgXr2ov7Eu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(346002)(136003)(366004)(376002)(396003)(39860400002)(451199021)(186003)(6506007)(6512007)(9686003)(26005)(6486002)(6666004)(5660300002)(316002)(4326008)(41300700001)(66556008)(6916009)(66476007)(66946007)(8936002)(8676002)(44832011)(478600001)(82960400001)(38100700002)(2906002)(86362001)(33716001)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4nl07cDTLPVhctQhtyouifrCcfLdGgNcWoj6qr08lxqTK4apBe4iIu0clStC?=
- =?us-ascii?Q?6HsaOi0/h9Pq3hLu2A8lRaiBy5o9Ol2+c91kDdvpIPTof3yMQ7VQRi4hNkuV?=
- =?us-ascii?Q?Olms4O4BIXj6fJQHrv5/Vu3ZwNaY1wRt9jqc+9D0dggPuxiZpWi7117yGqxE?=
- =?us-ascii?Q?eKAUT+T4ra44bVlZyxN5x5qmaRK0v7K5wBqwzL/xLlOjBOf4GeC0wj5P4WNF?=
- =?us-ascii?Q?Uxt2mLOpzP9hjz12g5Oe8dcUHlHHCFYJu37dIQ9GIKqlmo4VrwpaKRLSewUL?=
- =?us-ascii?Q?4C2dKXxpKod38R8d0ZQZLaR3X+zg9tV2KK7jKJCAXDEpcRPPHkBXaa/o5YAT?=
- =?us-ascii?Q?2kuMGgEfw/zmMuSQcdw5gCz0Uma3rFA0GYt58/JwAJYW04SlsFvDc3VXghN+?=
- =?us-ascii?Q?f2f6fD1CNyCimyh1tj8eizQY/C4qproGfnpEQlvTtg2UsKKyNRxI96gn2Njk?=
- =?us-ascii?Q?3+Hf28TkNy4cX1MOpejDWI4rX9XUJAxsWWvV+zTie2vqvc8wIowFwtcxCvtp?=
- =?us-ascii?Q?NWVqrD1nB+dI0o/+N8g0rlVnJi8mPnIf9RVk55JlVrNegh+mR+rknciLHnpU?=
- =?us-ascii?Q?67hD3b5TKwjh0ido6eBFN8/2+EAxYxbfTFtPS3cm1BtvoD9AuUxCRoGclAEI?=
- =?us-ascii?Q?5RhuZtScWiD08kx/EZgemQDdixA8KWWuB3d3Pq55g6xMPq3darhWFpaHpqvj?=
- =?us-ascii?Q?ThM+9+iZ6ZnmuZRmqbe+m/8vzrdrYzDkyOdp/hB4ogrQZjqy0gUCD7xjj57q?=
- =?us-ascii?Q?IQiQXen0DIOUdxWF4NrfVohydiUkAg+dRQmJANbKoCxBGvew3dN4NpnnnrUQ?=
- =?us-ascii?Q?JS2pVYNMzIjSzBHYz/4qWU2Rvjz/zI0Z9dAFrD+aBmdGBraAlDJGUgqdRTmu?=
- =?us-ascii?Q?3ZgEAh8t2K6sYchMAo+/WbCPV2KuQkG13NzNxMk8yeQ6PQpBrLid86cDUHIW?=
- =?us-ascii?Q?bvS2gHUxWCJzBWNy2hhO/q0r9yBT+ELd5Llu5V35pC/vB5CLVp0hRQUoOGT+?=
- =?us-ascii?Q?v/Vl6w9dTKkX2Efl5rLqRMGS3A2SwQDreVhizTAo/L0kpOyRmyMfGLzJN7j9?=
- =?us-ascii?Q?ZRPDANZssTXDtGmoNwDxAOry082AS6vk0B6W3ObUJWBcqX6AY5XKdvoyXES0?=
- =?us-ascii?Q?jxe0cwQWmM6TTemjML3VTj0Ns7xcHkZCekiXawxebCTk0tyUImWevZOpnHHo?=
- =?us-ascii?Q?Hf836IYi+dAIL9V6re3BtY6Nf4TIYVSHVzxzzyEsyBHPi0nr83KsZtLQSOu6?=
- =?us-ascii?Q?kGtQQ4S+3MaRXyoM+koBVzLYjOd5SpzQTv8DedOrWIQghKz5straXhez8f2+?=
- =?us-ascii?Q?NKa9gPoEsr9B28RT4CWVPl7Z4NK+/ct9pF+1wYiNYl1m/UPLk/eTXY6cPToJ?=
- =?us-ascii?Q?CT9BSIyavB//qbZVX9ZUhuSSfnteYjI0PwTs0TgqYuekWWnyv0ceAOJx7N5B?=
- =?us-ascii?Q?4TJNhU7PXLBphTlP3ygoBMTiF1K0j7Ckv8QEDA1K0NaPE4+9hI6x/ov5hM71?=
- =?us-ascii?Q?ULd6i2/G2teQ1s5Tir679k+Jkm83YZqLoBTDAlRaSlfv7vRvBFLgiUANnPPB?=
- =?us-ascii?Q?oP00PjBg1L54A6uMnrGAIKbLV2G6suERWOnNbYcWZingw6fER+VdamydOVns?=
- =?us-ascii?Q?Wg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0878ee81-9713-45c0-d808-08db41aac8bd
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2023 14:23:17.2830
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZXplMJ2BSOcN5iw023834eIWp47vWf99THyEFy3BJqIgWlcWuP7fmzDSdITEbfJNKmt3cdejrH0DUaLP4dBNhUNfvFuQmZ4TrQqT0XeeqHE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7872
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 09:04:54PM +0200, Gerhard Engleder wrote:
-> TX/RX ring size is static and power of 2 to enable compiler to optimize
-> modulo operation to mask operation. Make this optimization already in
-> the code and don't rely on the compiler.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-I think this came out of my review, so:
-Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> >> > > > > By switching up actual libbpf used to compile with bpftool, you are
+>> >> > > > > potentially introducing subtle problems that your users will be quite
+>> >> > > > > unhappy about, if they run into them. Let's work together to make it
+>> >> > > > > easier for you to package bpftool properly. We can't switch bpftool to
+>> >> > > > > reliably use system-wide libbpf (either static or shared, doesn't
+>> >> > > > > matter) because of dependency on internal functionality.
+>> >> > > > >
+>> >> > > > >
+>> >> > > > >   [0] https://github.com/libbpf/veristat/releases/tag/v0.1
+>> >> > > >
+>> >> > > > So how many copies of libbpf do I need for having a CO-RE toolchain?
+>> >> > >
+>> >> > > What do you mean by "CO-RE toolchain"? bpftool, veristat, retsnoop,
+>> >> > > etc are tools. The fact they are using statically linked libbpf
+>> >> > > through Git submodule is irrelevant to end users. You need one libbpf
+>> >> > > in the system (for those who link dynamically against libbpf), the
+>> >> > > rest are just tools.
+>> >> > >
+>> >> > > >
+>> >> > > > Will different tools have different view of the kernel because they each
+>> >> > > > use different private copy of libbpf with different features?
+>> >> > >
+>> >> > > That's up to tools, not libbpf. You are over pivoting on libbpf here.
+>> >> > > There is one view of the kernel, it depends on what features the
+>> >> > > kernel supports. If the tool requires some specific functionality of
+>> >> > > libbpf, it will update its Git submodule reference to get a version of
+>> >> > > libbpf that provides that feature. That's the point, an
+>> >> > > application/tool is in control of what kind of features it gets from
+>> >> > > libbpf.
+>> >>
+>> >> Since libbpf has a stable API & ABI, is it theoretically possible for
+>> >> bpftool, veristat, retsnoop, etc. all share the same version of libbpf?
+>> >
+>> > No, because libbpf is not just a set of APIs. Newer libbpf versions
+>> > support more BPF-side features, more kernel features, etc, etc. Libbpf
+>> > is not a typical user-space library, it is a BPF loader, and even if
+>> > user-visible API doesn't change, libbpf's support for various BPF-side
+>> > features is extended. Which is important for tools like bpftool,
+>> > retsnoop, veristat which rely on loading and working with BPF object
+>> > files.
+>>
+>> The converse of this is also true: if your system is upgraded to a new
+>> kernel version with new BPF features, the libbpf version should follow
+>> it, and all applications linked against it will automatically take
+>> advantage of any bugfixes regardless without having to wait for each
+>> application to be updated.
+>
+> No, if my application was not developed to take advantage of a new
+> kernel feature, newer libbpf will do nothing for me. If my application
+> wants to support that feature, I'll update my application and
+> correspondingly update libbpf embedded in it. If my application is
+> affected by some bug fix, I'll update libbpf even faster than distros
+> will get to it.
 
-Does this give you a minor perf boost?
+You may do that, but you're also someone who is following the
+development of libbpf closely and pay attention to when bugs appear. Not
+all applications developers have the same vigilance for all the
+libraries they rely on. Which is the reason distros generally take on
+the responsibility of ensuring their users receive timely library
+updates.
 
-> 
-> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-> ---
->  drivers/net/ethernet/engleder/tsnep.h      |  1 +
->  drivers/net/ethernet/engleder/tsnep_main.c | 28 +++++++++++-----------
->  2 files changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
-> index 058c2bcf31a7..1de26aec78d3 100644
-> --- a/drivers/net/ethernet/engleder/tsnep.h
-> +++ b/drivers/net/ethernet/engleder/tsnep.h
-> @@ -18,6 +18,7 @@
->  #define TSNEP "tsnep"
->  
->  #define TSNEP_RING_SIZE 256
-> +#define TSNEP_RING_MASK (TSNEP_RING_SIZE - 1)
->  #define TSNEP_RING_RX_REFILL 16
->  #define TSNEP_RING_RX_REUSE (TSNEP_RING_SIZE - TSNEP_RING_SIZE / 4)
->  #define TSNEP_RING_ENTRIES_PER_PAGE (PAGE_SIZE / TSNEP_DESC_SIZE)
-> diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-> index ed1b6102cfeb..3d15e673894a 100644
-> --- a/drivers/net/ethernet/engleder/tsnep_main.c
-> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
-> @@ -292,7 +292,7 @@ static int tsnep_tx_ring_init(struct tsnep_tx *tx)
->  	}
->  	for (i = 0; i < TSNEP_RING_SIZE; i++) {
->  		entry = &tx->entry[i];
-> -		next_entry = &tx->entry[(i + 1) % TSNEP_RING_SIZE];
-> +		next_entry = &tx->entry[(i + 1) & TSNEP_RING_MASK];
->  		entry->desc->next = __cpu_to_le64(next_entry->desc_dma);
->  	}
->  
-> @@ -381,7 +381,7 @@ static int tsnep_tx_map(struct sk_buff *skb, struct tsnep_tx *tx, int count)
->  	int i;
->  
->  	for (i = 0; i < count; i++) {
-> -		entry = &tx->entry[(tx->write + i) % TSNEP_RING_SIZE];
-> +		entry = &tx->entry[(tx->write + i) & TSNEP_RING_MASK];
->  
->  		if (!i) {
->  			len = skb_headlen(skb);
-> @@ -419,7 +419,7 @@ static int tsnep_tx_unmap(struct tsnep_tx *tx, int index, int count)
->  	int i;
->  
->  	for (i = 0; i < count; i++) {
-> -		entry = &tx->entry[(index + i) % TSNEP_RING_SIZE];
-> +		entry = &tx->entry[(index + i) & TSNEP_RING_MASK];
->  
->  		if (entry->len) {
->  			if (entry->type & TSNEP_TX_TYPE_SKB)
-> @@ -481,9 +481,9 @@ static netdev_tx_t tsnep_xmit_frame_ring(struct sk_buff *skb,
->  		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
->  
->  	for (i = 0; i < count; i++)
-> -		tsnep_tx_activate(tx, (tx->write + i) % TSNEP_RING_SIZE, length,
-> +		tsnep_tx_activate(tx, (tx->write + i) & TSNEP_RING_MASK, length,
->  				  i == count - 1);
-> -	tx->write = (tx->write + count) % TSNEP_RING_SIZE;
-> +	tx->write = (tx->write + count) & TSNEP_RING_MASK;
->  
->  	skb_tx_timestamp(skb);
->  
-> @@ -516,7 +516,7 @@ static int tsnep_xdp_tx_map(struct xdp_frame *xdpf, struct tsnep_tx *tx,
->  	frag = NULL;
->  	len = xdpf->len;
->  	for (i = 0; i < count; i++) {
-> -		entry = &tx->entry[(tx->write + i) % TSNEP_RING_SIZE];
-> +		entry = &tx->entry[(tx->write + i) & TSNEP_RING_MASK];
->  		if (type & TSNEP_TX_TYPE_XDP_NDO) {
->  			data = unlikely(frag) ? skb_frag_address(frag) :
->  						xdpf->data;
-> @@ -589,9 +589,9 @@ static bool tsnep_xdp_xmit_frame_ring(struct xdp_frame *xdpf,
->  	length = retval;
->  
->  	for (i = 0; i < count; i++)
-> -		tsnep_tx_activate(tx, (tx->write + i) % TSNEP_RING_SIZE, length,
-> +		tsnep_tx_activate(tx, (tx->write + i) & TSNEP_RING_MASK, length,
->  				  i == count - 1);
-> -	tx->write = (tx->write + count) % TSNEP_RING_SIZE;
-> +	tx->write = (tx->write + count) & TSNEP_RING_MASK;
->  
->  	/* descriptor properties shall be valid before hardware is notified */
->  	dma_wmb();
-> @@ -691,7 +691,7 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
->  		/* xdpf is union with skb */
->  		entry->skb = NULL;
->  
-> -		tx->read = (tx->read + count) % TSNEP_RING_SIZE;
-> +		tx->read = (tx->read + count) & TSNEP_RING_MASK;
->  
->  		tx->packets++;
->  		tx->bytes += length + ETH_FCS_LEN;
-> @@ -839,7 +839,7 @@ static int tsnep_rx_ring_init(struct tsnep_rx *rx)
->  
->  	for (i = 0; i < TSNEP_RING_SIZE; i++) {
->  		entry = &rx->entry[i];
-> -		next_entry = &rx->entry[(i + 1) % TSNEP_RING_SIZE];
-> +		next_entry = &rx->entry[(i + 1) & TSNEP_RING_MASK];
->  		entry->desc->next = __cpu_to_le64(next_entry->desc_dma);
->  	}
->  
-> @@ -925,7 +925,7 @@ static int tsnep_rx_refill(struct tsnep_rx *rx, int count, bool reuse)
->  	int retval;
->  
->  	for (i = 0; i < count && !alloc_failed; i++) {
-> -		index = (rx->write + i) % TSNEP_RING_SIZE;
-> +		index = (rx->write + i) & TSNEP_RING_MASK;
->  
->  		retval = tsnep_rx_alloc_buffer(rx, index);
->  		if (unlikely(retval)) {
-> @@ -945,7 +945,7 @@ static int tsnep_rx_refill(struct tsnep_rx *rx, int count, bool reuse)
->  	}
->  
->  	if (enable) {
-> -		rx->write = (rx->write + i) % TSNEP_RING_SIZE;
-> +		rx->write = (rx->write + i) & TSNEP_RING_MASK;
->  
->  		/* descriptor properties shall be valid before hardware is
->  		 * notified
-> @@ -1090,7 +1090,7 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->  				 * empty RX ring, thus buffer cannot be used for
->  				 * RX processing
->  				 */
-> -				rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
-> +				rx->read = (rx->read + 1) & TSNEP_RING_MASK;
->  				desc_available++;
->  
->  				rx->dropped++;
-> @@ -1117,7 +1117,7 @@ static int tsnep_rx_poll(struct tsnep_rx *rx, struct napi_struct *napi,
->  		 */
->  		length -= TSNEP_RX_INLINE_METADATA_SIZE;
->  
-> -		rx->read = (rx->read + 1) % TSNEP_RING_SIZE;
-> +		rx->read = (rx->read + 1) & TSNEP_RING_MASK;
->  		desc_available++;
->  
->  		if (prog) {
-> -- 
-> 2.30.2
-> 
+> I've heard all such arguments over the last few years. They are not
+> convincing and my own practical experience shows irrelevance of the
+> above argument.
+
+I don't doubt your personal experience, I'm just objecting to you
+dismissing other points of view just because you haven't experienced
+them yourself.
+
+>> Libbpf is really no different from any other library here, and I really
+>> don't get why you keep insisting it's "special"...
+>
+> It's special in the sense that it provides two sets of APIs -- for
+> user-space (typical libraries) and BPF object files. Besides that, for
+> BPF-side it's not even a set of APIs (headers, helpers, etc), it also
+> provides some set of functionality that can improve or be extended
+> over time. E.g., libbpf used to not support non-inlined BPF
+> subprograms, and then it started supporting them. In terms of API/ABI
+> -- nothing changed. Yet the change is very important.
+
+Lots of libraries do that. File format libraries support new format
+features without changing their API, networking libraries support new
+protocol features, etc. So again, libbpf is not special in this
+respect.
+
+> Now, I build a tool that is using libbpf and some BPF functionality,
+> e.g., retsnoop. Libbpf just got SEC("ksyscall") support. Retsnoop
+> wants to take advantage of it. I just go and use SEC("ksyscall")
+> programs in .bpf.c files that are embedded inside retsnoop.
+> I don't have to *and don't want to* do feature detection of whether a
+> particular libbpf version that happens to be installed/packaged on the
+> system supports this version. I *know* it does, because I control it,
+> through a submodule. That's what I care about.
+
+Right, so just require a minimum version of the library where the API
+you want to use is available. That is pretty standard and distros deal
+with this all the time. This is not an argument for static linking or
+vendoring...
+
+> Whether some distro insists on libbpf being shared across any
+> libbpf-using application or not is none of my concern. Libbpf is an
+> implementation detail of my application (retsnoop), it's not for the
+> packager to decide how I develop and structure my tool.
+
+Right, well, you don't *have* to be cooperative with the wider
+ecosystem, of course. Just as packagers don't have to follow your
+recommendations if they have good reasons not to. I believe we've had
+this discussion before, and I don't think we're going to agree this time
+around either, so let's not waste any more virtual ink on rehashing it :)
+
+-Toke
+
