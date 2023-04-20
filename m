@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0956E8A5B
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179376E8A66
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjDTGZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 02:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
+        id S233903AbjDTGaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 02:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233801AbjDTGZD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 02:25:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050D86199
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:24:02 -0700 (PDT)
+        with ESMTP id S233713AbjDTG37 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 02:29:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15844220
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681971842;
+        s=mimecast20190719; t=1681972153;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y123myLqJr95ZMF3nPVNFw1AoKmEW863xATqLva+JBo=;
-        b=N8M3I14ovuOMh7qgpyn7uy896t62/QovEvX4iPL/ovmvNCMVwgpJPiL/kgg/T1GAgUfPux
-        qMdu+82o/BJLVyJeZMWnYvUuJ1ray2Xn4JpVuqNr8cerUlmBlEo2jSfz59V+odTPeDfqgC
-        pu3/XOAw4U3z7C5vP5W+U4msSyC/xxc=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=LgdnNmMXeh29yiOutomiP5kEsD1QGmIJDroopmJnClM=;
+        b=La+nyW1Zu9XGgdnTmBmEh/K3Dm+kinibzwJ6uJWpkFai4xSfUX8EWFtEDO1pS5VmC3RnWY
+        Ew5fIvQldoN84f6tKBlq7hM75j7oOwcl2Bueuo0ga+g92LIMHUzGr1zf/7PdfwsqqnfRND
+        vpDGjW+JkujVHNa4lvcnWSHwrIq8f38=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-575-y9o01B1_MFCYyvwElwLWWQ-1; Thu, 20 Apr 2023 02:24:00 -0400
-X-MC-Unique: y9o01B1_MFCYyvwElwLWWQ-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-187ed08e43eso95871fac.23
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:24:00 -0700 (PDT)
+ us-mta-650-OpBTHjhVO72pkaidwoQX8A-1; Thu, 20 Apr 2023 02:29:12 -0400
+X-MC-Unique: OpBTHjhVO72pkaidwoQX8A-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-38e4ba30272so198640b6e.0
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:29:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681971840; x=1684563840;
+        d=1e100.net; s=20221208; t=1681972151; x=1684564151;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y123myLqJr95ZMF3nPVNFw1AoKmEW863xATqLva+JBo=;
-        b=GYzJD6MWRrWhAMZKI/zlB8HYaCa9TdaYe+6vFwnmMBtvVxDjYWOPudkkvTugO+k7pt
-         Bgya4dswyXVDi66n90R3kZNLM9s13NC8OH8roVlIVJyl/W0UzwiQmkdtcIHk98H/DzrT
-         Eo83oeXouptVWNuY4GWt5PQyPC+zf1GTWkxf1rhT7L1Yfb1M1bepiXGZyHl375Z9Cb/o
-         fzKcChGTcgfMqS81PxOOfHrNVLeNBF1guWfk3SOckPX2p9h1j4bKhWsijKHP6AlAvmgv
-         shEcdj/Ou65w/g6r2tSxxsEwngtU1vQs/BJM+/6YM3s1PVlQbKIBH2ZpgYu4mTx6xMkf
-         bVWQ==
-X-Gm-Message-State: AAQBX9faw70+Pj6Si6NFFEoHirbO251Le7HXtlESTcxjjeuUNTnx2gh+
-        rjzDcZtlGjnrwiDzdiM47CxdDtm6WhNX2nYFJR8UEqt/DsWCQ89MC7QKc3aErtVAX6uhPycrNkv
-        /yQ1MVPi2yS81czlfOPd2FK7CG/CB
-X-Received: by 2002:a05:6820:1505:b0:53b:1086:7a09 with SMTP id ay5-20020a056820150500b0053b10867a09mr1515361oob.3.1681971840216;
-        Wed, 19 Apr 2023 23:24:00 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YZ9023xMIhN76cWcQP3LSGCkgsv1nWFysZV9l7/6RCwzCrtO7oQK+jA7mEm1PagXTGLa8eOtU0M6ddF1W+EPU=
-X-Received: by 2002:a05:6820:1505:b0:53b:1086:7a09 with SMTP id
- ay5-20020a056820150500b0053b10867a09mr1515349oob.3.1681971839957; Wed, 19 Apr
- 2023 23:23:59 -0700 (PDT)
+        bh=LgdnNmMXeh29yiOutomiP5kEsD1QGmIJDroopmJnClM=;
+        b=Yxt2lN/v1zOODfzlZhJuUi74YJDnB8Z25Zo9jhafwNLj8xf6p58vzoVNXFA3NLwUWS
+         Jg5iSclMgP7r5wptAJbFRoZWKUhyiANND09YMVa6oQPSNRyTQntNxvZOVc3eANpGDiWa
+         Mwq16g682own8D6ZKfrEObuWHOURiHbp/GyR2+vldCf9i6o/Pg+jFF4wedmE2GLGXHEa
+         FaIdeKcitOiKGHo6CjVsd6klN+ieA+2/nYGqOVcksfSe5Zg6IrXeo6K7j8M6ZmpnOTJl
+         FUl8ReZXlP1TnT1YHtPGE6AQwLpTQnDe/wKEXy61u8ag3CaaBzfqTDigoXxixqtGmSaP
+         k0vA==
+X-Gm-Message-State: AAQBX9cykth+/96DI7I8hC1Ldqe1j4snJCERqu1CyCgcS5YMB7kIJpMc
+        YopFXtveyoc94uOjSjCqVCOSRsSGmu6lVR86TZlC2xctGaYCdV09NdYFWrAb9vWyynUC7e2Lzse
+        4HUXXG6+dZsh+VSzZPGo//OvXfv34O0YlDLhJ6An0jw==
+X-Received: by 2002:a05:6808:1991:b0:38b:f2d1:db15 with SMTP id bj17-20020a056808199100b0038bf2d1db15mr344447oib.47.1681972151229;
+        Wed, 19 Apr 2023 23:29:11 -0700 (PDT)
+X-Google-Smtp-Source: AKy350YT4AHXQXgwTQRHka9aoNLwtjjr5EAkfqPeNamGyXLmUb3WmrSzik+6jAVvfDtUCTnI5MDVMEL5IUPiyqxatyk=
+X-Received: by 2002:a05:6808:1991:b0:38b:f2d1:db15 with SMTP id
+ bj17-20020a056808199100b0038bf2d1db15mr344442oib.47.1681972151022; Wed, 19
+ Apr 2023 23:29:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com> <20230418065327.72281-12-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20230418065327.72281-12-xuanzhuo@linux.alibaba.com>
+References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com> <20230418065327.72281-13-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20230418065327.72281-13-xuanzhuo@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 20 Apr 2023 14:23:48 +0800
-Message-ID: <CACGkMEsdwApvHFTWc4biY-AvwQf9sPuonYFU_Zdn2=wa3cHBjg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 11/14] virtio_net: introduce receive_small_xdp()
+Date:   Thu, 20 Apr 2023 14:28:59 +0800
+Message-ID: <CACGkMEsSR9uu1n7kFZLDxeje=_JWzadVtqcYizwYRypmnR4Wdw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 12/14] virtio_net: small: optimize code
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -85,245 +85,61 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Apr 18, 2023 at 2:53=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
 om> wrote:
 >
-> The purpose of this patch is to simplify the receive_small().
-> Separate all the logic of XDP of small into a function.
+> In the case of XDP-PASS, skb_reserve uses the delta to compatible
+> non-XDP, now remove this logic.
 >
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 165 +++++++++++++++++++++++----------------
->  1 file changed, 99 insertions(+), 66 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index a4bb25f39f12..34220f5f27d1 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -941,6 +941,98 @@ static struct page *xdp_linearize_page(struct receiv=
-e_queue *rq,
->         return NULL;
->  }
->
-> +static struct sk_buff *receive_small_xdp(struct net_device *dev,
-> +                                        struct virtnet_info *vi,
-> +                                        struct receive_queue *rq,
-> +                                        struct bpf_prog *xdp_prog,
-> +                                        void *buf,
-> +                                        unsigned int xdp_headroom,
-> +                                        unsigned int len,
-> +                                        unsigned int *xdp_xmit,
-> +                                        struct virtnet_rq_stats *stats)
-> +{
-> +       unsigned int header_offset =3D VIRTNET_RX_PAD + xdp_headroom;
-> +       unsigned int headroom =3D vi->hdr_len + header_offset;
-> +       struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf + header_offset;
-> +       struct page *page =3D virt_to_head_page(buf);
-> +       struct page *xdp_page;
-> +       unsigned int buflen;
-> +       struct xdp_buff xdp;
-> +       struct sk_buff *skb;
-> +       unsigned int delta =3D 0;
-> +       unsigned int metasize =3D 0;
-> +       void *orig_data;
-> +       u32 act;
-> +
-> +       if (unlikely(hdr->hdr.gso_type))
-> +               goto err_xdp;
-> +
-> +       buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-> +               SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +
-> +       if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
-> +               int offset =3D buf - page_address(page) + header_offset;
-> +               unsigned int tlen =3D len + vi->hdr_len;
-> +               int num_buf =3D 1;
-> +
-> +               xdp_headroom =3D virtnet_get_headroom(vi);
-> +               header_offset =3D VIRTNET_RX_PAD + xdp_headroom;
-> +               headroom =3D vi->hdr_len + header_offset;
-> +               buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-> +                       SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +               xdp_page =3D xdp_linearize_page(rq, &num_buf, page,
-> +                                             offset, header_offset,
-> +                                             &tlen);
-> +               if (!xdp_page)
-> +                       goto err_xdp;
-> +
-> +               buf =3D page_address(xdp_page);
-> +               put_page(page);
-> +               page =3D xdp_page;
-> +       }
-> +
-> +       xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
-> +       xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
-> +                        xdp_headroom, len, true);
-> +       orig_data =3D xdp.data;
-> +
-> +       act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats)=
-;
-> +
-> +       switch (act) {
-> +       case VIRTNET_XDP_RES_PASS:
-> +               /* Recalculate length in case bpf program changed it */
-> +               delta =3D orig_data - xdp.data;
-> +               len =3D xdp.data_end - xdp.data;
-> +               metasize =3D xdp.data - xdp.data_meta;
-> +               break;
-> +
-> +       case VIRTNET_XDP_RES_CONSUMED:
-> +               goto xdp_xmit;
-> +
-> +       case VIRTNET_XDP_RES_DROP:
-> +               goto err_xdp;
-> +       }
-> +
-> +       skb =3D build_skb(buf, buflen);
-> +       if (!skb)
-> +               goto err;
-> +
-> +       skb_reserve(skb, headroom - delta);
-> +       skb_put(skb, len);
-> +       if (metasize)
-> +               skb_metadata_set(skb, metasize);
-> +
-> +       return skb;
-> +
-> +err_xdp:
-> +       stats->xdp_drops++;
-> +err:
-> +       stats->drops++;
-> +       put_page(page);
-> +xdp_xmit:
-> +       return NULL;
-> +}
-> +
->  static struct sk_buff *receive_small(struct net_device *dev,
->                                      struct virtnet_info *vi,
->                                      struct receive_queue *rq,
-> @@ -957,9 +1049,6 @@ static struct sk_buff *receive_small(struct net_devi=
-ce *dev,
->         unsigned int buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom=
-) +
->                               SKB_DATA_ALIGN(sizeof(struct skb_shared_inf=
-o));
->         struct page *page =3D virt_to_head_page(buf);
-> -       unsigned int delta =3D 0;
-> -       struct page *xdp_page;
-> -       unsigned int metasize =3D 0;
->
->         len -=3D vi->hdr_len;
->         stats->bytes +=3D len;
-> @@ -979,57 +1068,10 @@ static struct sk_buff *receive_small(struct net_de=
-vice *dev,
->         rcu_read_lock();
->         xdp_prog =3D rcu_dereference(rq->xdp_prog);
->         if (xdp_prog) {
-> -               struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf + header_off=
-set;
-> -               struct xdp_buff xdp;
-> -               void *orig_data;
-> -               u32 act;
-> -
-> -               if (unlikely(hdr->hdr.gso_type))
-> -                       goto err_xdp;
-> -
-> -               if (unlikely(xdp_headroom < virtnet_get_headroom(vi))) {
-> -                       int offset =3D buf - page_address(page) + header_=
-offset;
-> -                       unsigned int tlen =3D len + vi->hdr_len;
-> -                       int num_buf =3D 1;
-> -
-> -                       xdp_headroom =3D virtnet_get_headroom(vi);
-> -                       header_offset =3D VIRTNET_RX_PAD + xdp_headroom;
-> -                       headroom =3D vi->hdr_len + header_offset;
-> -                       buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headr=
-oom) +
-> -                                SKB_DATA_ALIGN(sizeof(struct skb_shared_=
-info));
-> -                       xdp_page =3D xdp_linearize_page(rq, &num_buf, pag=
-e,
-> -                                                     offset, header_offs=
-et,
-> -                                                     &tlen);
-> -                       if (!xdp_page)
-> -                               goto err_xdp;
-> -
-> -                       buf =3D page_address(xdp_page);
-> -                       put_page(page);
-> -                       page =3D xdp_page;
-> -               }
-> -
-> -               xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
-> -               xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len=
-,
-> -                                xdp_headroom, len, true);
-> -               orig_data =3D xdp.data;
-> -
-> -               act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit=
-, stats);
-> -
-> -               switch (act) {
-> -               case VIRTNET_XDP_RES_PASS:
-> -                       /* Recalculate length in case bpf program changed=
- it */
-> -                       delta =3D orig_data - xdp.data;
-> -                       len =3D xdp.data_end - xdp.data;
-> -                       metasize =3D xdp.data - xdp.data_meta;
-> -                       break;
-> -
-> -               case VIRTNET_XDP_RES_CONSUMED:
-> -                       rcu_read_unlock();
-> -                       goto xdp_xmit;
-> -
-> -               case VIRTNET_XDP_RES_DROP:
-> -                       goto err_xdp;
-> -               }
-> +               skb =3D receive_small_xdp(dev, vi, rq, xdp_prog, buf, xdp=
-_headroom,
-> +                                       len, xdp_xmit, stats);
-> +               rcu_read_unlock();
-> +               return skb;
->         }
->         rcu_read_unlock();
->
-> @@ -1037,25 +1079,16 @@ static struct sk_buff *receive_small(struct net_d=
-evice *dev,
->         skb =3D build_skb(buf, buflen);
->         if (!skb)
->                 goto err;
-> -       skb_reserve(skb, headroom - delta);
-> +       skb_reserve(skb, headroom);
->         skb_put(skb, len);
-> -       if (!xdp_prog) {
-> -               buf +=3D header_offset;
-> -               memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
-> -       } /* keep zeroed vnet hdr since XDP is loaded */
-> -
-> -       if (metasize)
-> -               skb_metadata_set(skb, metasize);
->
-> +       buf +=3D header_offset;
-> +       memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
 
-So we end up with some code duplication between receive_small() and
-receive_small_xdp() on building skbs. Is this intended?
-
-For mergeable, we're probably fine since XDP_PASS doesn't need to
-get_buf(). But for the path of small, I wonder if it's better to keep
-the original code for building skb.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
 Thanks
 
->         return skb;
+> ---
+>  drivers/net/virtio_net.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 >
-> -err_xdp:
-> -       rcu_read_unlock();
-> -       stats->xdp_drops++;
->  err:
->         stats->drops++;
->         put_page(page);
-> -xdp_xmit:
->         return NULL;
->  }
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 34220f5f27d1..f6f5903face2 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -959,9 +959,7 @@ static struct sk_buff *receive_small_xdp(struct net_d=
+evice *dev,
+>         unsigned int buflen;
+>         struct xdp_buff xdp;
+>         struct sk_buff *skb;
+> -       unsigned int delta =3D 0;
+>         unsigned int metasize =3D 0;
+> -       void *orig_data;
+>         u32 act;
 >
+>         if (unlikely(hdr->hdr.gso_type))
+> @@ -994,14 +992,12 @@ static struct sk_buff *receive_small_xdp(struct net=
+_device *dev,
+>         xdp_init_buff(&xdp, buflen, &rq->xdp_rxq);
+>         xdp_prepare_buff(&xdp, buf + VIRTNET_RX_PAD + vi->hdr_len,
+>                          xdp_headroom, len, true);
+> -       orig_data =3D xdp.data;
+>
+>         act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats)=
+;
+>
+>         switch (act) {
+>         case VIRTNET_XDP_RES_PASS:
+>                 /* Recalculate length in case bpf program changed it */
+> -               delta =3D orig_data - xdp.data;
+>                 len =3D xdp.data_end - xdp.data;
+>                 metasize =3D xdp.data - xdp.data_meta;
+>                 break;
+> @@ -1017,7 +1013,7 @@ static struct sk_buff *receive_small_xdp(struct net=
+_device *dev,
+>         if (!skb)
+>                 goto err;
+>
+> -       skb_reserve(skb, headroom - delta);
+> +       skb_reserve(skb, xdp.data - buf);
+>         skb_put(skb, len);
+>         if (metasize)
+>                 skb_metadata_set(skb, metasize);
 > --
 > 2.32.0.3.g01195cf9f
 >
