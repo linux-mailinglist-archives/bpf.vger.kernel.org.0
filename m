@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4356E8B32
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EEA6E8B3B
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjDTHPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 03:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S233877AbjDTHPx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 03:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjDTHPb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 03:15:31 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C73D3AA8
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:29 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2466f65d7e0so404508a91.2
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:29 -0700 (PDT)
+        with ESMTP id S234011AbjDTHPw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 03:15:52 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0759440CA
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:50 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2470e93ea71so459073a91.0
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681974928; x=1684566928;
+        d=gmail.com; s=20221208; t=1681974949; x=1684566949;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4gghPNvRhC1KND3ZXhUUwZ2GZ9XHTJ8bFXjW0qe8qDc=;
-        b=pKyyFAbljlXWHp2wf7UZMHLstTvOIjv2Vx+izwVRUUekWOtIibGw0Dl05cwYgdKoyd
-         rd2+C/P/DVj+pQt/77raJJSbAVVcVZoQ5vldLgQgLTXKqFJ10qMi1i+zoxj/EjDLxhT7
-         Pnfc70YlmyChzvKDrBN/it4eD2Fsc7/bCnJV8zE6MrMDDPWSfOw4ioj5xGa7/dHQ6REH
-         T0ZryIj8a16ayRs9pjtvrbepFUcOh9RbT2zcEHaAhsdLfQuto5OFd5uoYSFBaOn6pOvV
-         +zoh7JXdbVV48O09b8R+3VIK8f0m6DaFsknaWXZWYwO/q9PV4deucCNRsMylSvX3vp/M
-         OG9g==
+        bh=foBgX29KmsxdT/6n9L7AxQAtmKsqf+eCDmE/O1qqaWA=;
+        b=azGvu+Mx34IDn6K0XpGnEDNq8QwF5Kbio62GiRyOsDBaSWjXB1eutZu7RzK6N8DjdX
+         hJ6gS9KQwH67jhxZlDHizLG5U8rnG7ZtB2n1eDhctzpFC+w0n5TB28z09Y7gtxOFCZSS
+         zM8/BmjawAD3BWe5rMCPkOGZ4e7AmnBlViPVB+NhYQXBTWeDW9wCn4DagoSNym/p8kAA
+         5IIKbapW/Vcv8okUEqeQlpNbGXURKj+xmjt/ls2nMayO3QPoyw2eLvUZgH5GhDRkIPhD
+         KMkZ0uWZwBUk875P0zB/R5/r5PTmKgf7Gj07uhPTjZkMfuJfva1kXygMFNe7cmGVhZvy
+         XRLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681974928; x=1684566928;
+        d=1e100.net; s=20221208; t=1681974949; x=1684566949;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4gghPNvRhC1KND3ZXhUUwZ2GZ9XHTJ8bFXjW0qe8qDc=;
-        b=AuJXDoVjJzsvUB3vz2lcR8djwhweZo68mV3mGIlXJVVemJVN9GOEx3QHjftCWQ3oze
-         /Ie5+tuJh8Ooa3xs7qM7N3v8u4ouU1NiIvboMH4VdwhujUSHgwTtz/wj4jWLS24FgstU
-         UnrXBxx9eyVlIWQFaCJKEDq+FawPIdMgb45v9rhZFsLSh3DcrBVFCMEL0TdbHzGqp4fD
-         OyaEGcjId3YUbqzbpNYOT/S6kvsyZbdwT3cnNe3n+7/6kCCjgXggW4gPLOaUV/3TTry9
-         9yOA/HNDkm2j17u+FTV+IhLDFf7ILM5Dya0Z8F7ccqeSbCc76eG+7czCQ24aVXqiLOtV
-         pY6g==
-X-Gm-Message-State: AAQBX9dhRelOP2WundOUCd2nOjoulNAEapn+BjeTDXA2NrHH5okwPc9U
-        llH1egIhOCJy+0RpdufHMcQDs9CHeEAfrQ==
-X-Google-Smtp-Source: AKy350aBNjOMYrOL0g3UsJfTWBWPyc3WzgVtY4VV13L61Sq+6CHQw7EUNEqmOf38dmwdztjOsNO25A==
-X-Received: by 2002:a17:90a:ee86:b0:247:90ea:1a81 with SMTP id i6-20020a17090aee8600b0024790ea1a81mr704727pjz.37.1681974928415;
-        Thu, 20 Apr 2023 00:15:28 -0700 (PDT)
+        bh=foBgX29KmsxdT/6n9L7AxQAtmKsqf+eCDmE/O1qqaWA=;
+        b=VquwfCovtCtmPLNzW3czLjqlv43yeUQVxhi6iNjg5xHGa9HOaFiOi6p3bzYXdnLyKF
+         TqgQjd2QP6KYOm/PdFeT5uj/Cbl2NvMDuVAUHcTalLM/G15N4KRMZFU6FxG6UzTNOpwC
+         ixLGPBaynB4aNvxVELhKrpV9NmAmhe8rz/+XHAXRtbcTaBHHETZyrxlkRp5XVDBv5kHe
+         O2BxunD8yy0sQrYy4ucF246jzp1yLlgbY47qjqw7znhQaLwwMX+Z+pq4YiDVLvDTKmp0
+         bJNB1EjrU4PY6GUGQ7dOBruRq9NI2MbpolNqlhLP+9rpL8KFYeAFjEMfujw6sFKKGqDv
+         O7Xg==
+X-Gm-Message-State: AAQBX9d/RGeohHZ9thCre6nPZTLqCL3dxdorm9wz0tzYPgGIV4mRVgwE
+        k75HoMEWzCvyMr4Z0LV2lFGUYggpWcHl1A==
+X-Google-Smtp-Source: AKy350Y4HvSioXihaA9OiLh64uwzedSTvF1DgbhD2arNCtoTyUm25qdHdTWpyIPOScyRc0Z26sTG/Q==
+X-Received: by 2002:a17:90b:1d01:b0:247:83ed:7e5d with SMTP id on1-20020a17090b1d0100b0024783ed7e5dmr798234pjb.18.1681974949282;
+        Thu, 20 Apr 2023 00:15:49 -0700 (PDT)
 Received: from gatsby.corp.tfbnw.net (75-172-126-232.tukw.qwest.net. [75.172.126.232])
-        by smtp.gmail.com with ESMTPSA id a7-20020a17090acb8700b00246b5a609d2sm588208pju.27.2023.04.20.00.15.28
+        by smtp.gmail.com with ESMTPSA id a7-20020a17090acb8700b00246b5a609d2sm588208pju.27.2023.04.20.00.15.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 00:15:28 -0700 (PDT)
+        Thu, 20 Apr 2023 00:15:49 -0700 (PDT)
 From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH v2 bpf-next 4/5] bpf: Add bpf_dynptr_clone
-Date:   Thu, 20 Apr 2023 00:14:13 -0700
-Message-Id: <20230420071414.570108-5-joannelkoong@gmail.com>
+Subject: [PATCH v2 bpf-next 5/5] selftests/bpf: add tests for dynptr convenience helpers
+Date:   Thu, 20 Apr 2023 00:14:14 -0700
+Message-Id: <20230420071414.570108-6-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230420071414.570108-1-joannelkoong@gmail.com>
 References: <20230420071414.570108-1-joannelkoong@gmail.com>
@@ -71,288 +71,649 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The cloned dynptr will point to the same data as its parent dynptr,
-with the same type, offset, size and read-only properties.
-
-Any writes to a dynptr will be reflected across all instances
-(by 'instance', this means any dynptrs that point to the same
-underlying data).
-
-Please note that data slice and dynptr invalidations will affect all
-instances as well. For example, if bpf_dynptr_write() is called on an
-skb-type dynptr, all data slices of dynptr instances to that skb
-will be invalidated as well (eg data slices of any clones, parents,
-grandparents, ...). Another example is if a ringbuf dynptr is submitted,
-any instance of that dynptr will be invalidated.
-
-Changing the view of the dynptr (eg advancing the offset or
-trimming the size) will only affect that dynptr and not affect any
-other instances.
-
-One example use case where cloning may be helpful is for hashing or
-iterating through dynptr data. Cloning will allow the user to maintain
-the original view of the dynptr for future use, while also allowing
-views to smaller subsets of the data after the offset is advanced or the
-size is trimmed.
+Add various tests for the added dynptr convenience helpers.
 
 Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 ---
- kernel/bpf/helpers.c  |  14 ++++++
- kernel/bpf/verifier.c | 105 ++++++++++++++++++++++++++++++++++--------
- 2 files changed, 99 insertions(+), 20 deletions(-)
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   6 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |   6 +
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 287 +++++++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 298 ++++++++++++++++++
+ 4 files changed, 597 insertions(+)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9018646b86db..1ebdc7f1a574 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2343,6 +2343,19 @@ __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
- 	return __bpf_dynptr_size(ptr);
- }
+diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+index 8c993ec8ceea..f3c41f8902a0 100644
+--- a/tools/testing/selftests/bpf/bpf_kfuncs.h
++++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+@@ -35,4 +35,10 @@ extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, __u32 offset,
+ extern void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr *ptr, __u32 offset,
+ 			      void *buffer, __u32 buffer__szk) __ksym;
  
-+__bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
-+				 struct bpf_dynptr_kern *clone__uninit)
-+{
-+	if (!ptr->data) {
-+		bpf_dynptr_set_null(clone__uninit);
-+		return -EINVAL;
-+	}
++extern int bpf_dynptr_adjust(const struct bpf_dynptr *ptr, __u32 start, __u32 end) __ksym;
++extern int bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym;
++extern int bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym;
++extern __u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym;
++extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym;
 +
-+	*clone__uninit = *ptr;
+ #endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+index d176c34a7d2e..0478916aff37 100644
+--- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+@@ -20,6 +20,12 @@ static struct {
+ 	{"test_ringbuf", SETUP_SYSCALL_SLEEP},
+ 	{"test_skb_readonly", SETUP_SKB_PROG},
+ 	{"test_dynptr_skb_data", SETUP_SKB_PROG},
++	{"test_adjust", SETUP_SYSCALL_SLEEP},
++	{"test_adjust_err", SETUP_SYSCALL_SLEEP},
++	{"test_zero_size_dynptr", SETUP_SYSCALL_SLEEP},
++	{"test_dynptr_is_null", SETUP_SYSCALL_SLEEP},
++	{"test_dynptr_is_rdonly", SETUP_SKB_PROG},
++	{"test_dynptr_clone", SETUP_SKB_PROG},
+ };
+ 
+ static void verify_success(const char *prog_name, enum test_setup_type setup_type)
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index 759eb5c245cd..efe4ce72d00e 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -1378,3 +1378,290 @@ int invalid_slice_rdwr_rdonly(struct __sk_buff *skb)
+ 
+ 	return 0;
+ }
++
++/* bpf_dynptr_adjust can only be called on initialized dynptrs */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #1")
++int dynptr_adjust_invalid(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	/* this should fail */
++	bpf_dynptr_adjust(&ptr, 1, 2);
 +
 +	return 0;
 +}
 +
- __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
- {
- 	return obj;
-@@ -2419,6 +2432,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_adjust)
- BTF_ID_FLAGS(func, bpf_dynptr_is_null)
- BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
- BTF_ID_FLAGS(func, bpf_dynptr_size)
-+BTF_ID_FLAGS(func, bpf_dynptr_clone)
- BTF_SET8_END(common_btf_ids)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1e05355facdc..164726673086 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -309,6 +309,7 @@ struct bpf_kfunc_call_arg_meta {
- 	struct {
- 		enum bpf_dynptr_type type;
- 		u32 id;
-+		u32 ref_obj_id;
- 	} initialized_dynptr;
- 	struct {
- 		u8 spi;
-@@ -847,11 +848,11 @@ static int destroy_if_dynptr_stack_slot(struct bpf_verifier_env *env,
- 				        struct bpf_func_state *state, int spi);
- 
- static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
--				   enum bpf_arg_type arg_type, int insn_idx)
-+				   enum bpf_arg_type arg_type, int insn_idx, int clone_ref_obj_id)
- {
- 	struct bpf_func_state *state = func(env, reg);
- 	enum bpf_dynptr_type type;
--	int spi, i, id, err;
-+	int spi, i, err;
- 
- 	spi = dynptr_get_spi(env, reg);
- 	if (spi < 0)
-@@ -887,7 +888,13 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- 
- 	if (dynptr_type_refcounted(type)) {
- 		/* The id is used to track proper releasing */
--		id = acquire_reference_state(env, insn_idx);
-+		int id;
++/* bpf_dynptr_is_null can only be called on initialized dynptrs */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #1")
++int dynptr_is_null_invalid(void *ctx)
++{
++	struct bpf_dynptr ptr;
 +
-+		if (clone_ref_obj_id)
-+			id = clone_ref_obj_id;
-+		else
-+			id = acquire_reference_state(env, insn_idx);
++	/* this should fail */
++	bpf_dynptr_is_null(&ptr);
 +
- 		if (id < 0)
- 			return id;
- 
-@@ -901,24 +908,15 @@ static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_
- 	return 0;
- }
- 
--static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-+static void invalidate_dynptr(struct bpf_verifier_env *env, struct bpf_func_state *state, int spi)
- {
--	struct bpf_func_state *state = func(env, reg);
--	int spi, i;
--
--	spi = dynptr_get_spi(env, reg);
--	if (spi < 0)
--		return spi;
-+	int i;
- 
- 	for (i = 0; i < BPF_REG_SIZE; i++) {
- 		state->stack[spi].slot_type[i] = STACK_INVALID;
- 		state->stack[spi - 1].slot_type[i] = STACK_INVALID;
- 	}
- 
--	/* Invalidate any slices associated with this dynptr */
--	if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type))
--		WARN_ON_ONCE(release_reference(env, state->stack[spi].spilled_ptr.ref_obj_id));
--
- 	__mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
- 	__mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
- 
-@@ -945,6 +943,52 @@ static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_re
- 	 */
- 	state->stack[spi].spilled_ptr.live |= REG_LIVE_WRITTEN;
- 	state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
++	return 0;
 +}
 +
-+static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
++/* bpf_dynptr_is_rdonly can only be called on initialized dynptrs */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #1")
++int dynptr_is_rdonly_invalid(void *ctx)
 +{
-+	struct bpf_func_state *state = func(env, reg);
-+	int spi;
++	struct bpf_dynptr ptr;
 +
-+	spi = dynptr_get_spi(env, reg);
-+	if (spi < 0)
-+		return spi;
++	/* this should fail */
++	bpf_dynptr_is_rdonly(&ptr);
 +
-+	if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type)) {
-+		int ref_obj_id = state->stack[spi].spilled_ptr.ref_obj_id;
-+		int i;
++	return 0;
++}
 +
-+		/* If the dynptr has a ref_obj_id, then we need to invalidate
-+		 * two things:
-+		 *
-+		 * 1) Any dynptrs with a matching ref_obj_id (clones)
-+		 * 2) Any slices derived from this dynptr.
-+		 */
++/* bpf_dynptr_size can only be called on initialized dynptrs */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #1")
++int dynptr_size_invalid(void *ctx)
++{
++	struct bpf_dynptr ptr;
 +
-+		/* Invalidate any slices associated with this dynptr */
-+		WARN_ON_ONCE(release_reference(env, ref_obj_id));
++	/* this should fail */
++	bpf_dynptr_size(&ptr);
 +
-+		/* Invalidate any dynptr clones */
-+		for (i = 1; i < state->allocated_stack / BPF_REG_SIZE; i++) {
-+			if (state->stack[i].spilled_ptr.ref_obj_id != ref_obj_id)
-+				continue;
++	return 0;
++}
 +
-+			/* it should always be the case that if the ref obj id
-+			 * matches then the stack slot also belongs to a
-+			 * dynptr
-+			 */
-+			if (state->stack[i].slot_type[0] != STACK_DYNPTR) {
-+				verbose(env, "verifier internal error: misconfigured ref_obj_id\n");
-+				return -EFAULT;
-+			}
-+			if (state->stack[i].spilled_ptr.dynptr.first_slot)
-+				invalidate_dynptr(env, state, i);
-+		}
++/* Only initialized dynptrs can be cloned */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #1")
++int clone_invalid1(void *ctx)
++{
++	struct bpf_dynptr ptr1;
++	struct bpf_dynptr ptr2;
 +
++	/* this should fail */
++	bpf_dynptr_clone(&ptr1, &ptr2);
++
++	return 0;
++}
++
++/* Can't overwrite an existing dynptr when cloning */
++SEC("?xdp")
++__failure __msg("cannot overwrite referenced dynptr")
++int clone_invalid2(struct xdp_md *xdp)
++{
++	struct bpf_dynptr ptr1;
++	struct bpf_dynptr clone;
++
++	bpf_dynptr_from_xdp(xdp, 0, &ptr1);
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &clone);
++
++	/* this should fail */
++	bpf_dynptr_clone(&ptr1, &clone);
++
++	bpf_ringbuf_submit_dynptr(&clone, 0);
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate its clones */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #3")
++int clone_invalidate1(void *ctx)
++{
++	struct bpf_dynptr clone;
++	struct bpf_dynptr ptr;
++	char read_data[64];
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone);
++
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), &clone, 0, 0);
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate its parent */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #3")
++int clone_invalidate2(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct bpf_dynptr clone;
++	char read_data[64];
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone);
++
++	bpf_ringbuf_submit_dynptr(&clone, 0);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0, 0);
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate its siblings */
++SEC("?raw_tp")
++__failure __msg("Expected an initialized dynptr as arg #3")
++int clone_invalidate3(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct bpf_dynptr clone1;
++	struct bpf_dynptr clone2;
++	char read_data[64];
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone1);
++
++	bpf_dynptr_clone(&ptr, &clone2);
++
++	bpf_ringbuf_submit_dynptr(&clone2, 0);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), &clone1, 0, 0);
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate any data slices
++ * of its clones
++ */
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'scalar'")
++int clone_invalidate4(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct bpf_dynptr clone;
++	int *data;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone);
++	data = bpf_dynptr_data(&clone, 0, sizeof(val));
++	if (!data)
++		return 0;
++
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++
++	/* this should fail */
++	*data = 123;
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate any data slices
++ * of its parent
++ */
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'scalar'")
++int clone_invalidate5(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct bpf_dynptr clone;
++	int *data;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++	data = bpf_dynptr_data(&ptr, 0, sizeof(val));
++	if (!data)
++		return 0;
++
++	bpf_dynptr_clone(&ptr, &clone);
++
++	bpf_ringbuf_submit_dynptr(&clone, 0);
++
++	/* this should fail */
++	*data = 123;
++
++	return 0;
++}
++
++/* Invalidating a dynptr should invalidate any data slices
++ * of its sibling
++ */
++SEC("?raw_tp")
++__failure __msg("invalid mem access 'scalar'")
++int clone_invalidate6(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct bpf_dynptr clone1;
++	struct bpf_dynptr clone2;
++	int *data;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone1);
++
++	bpf_dynptr_clone(&ptr, &clone2);
++
++	data = bpf_dynptr_data(&clone1, 0, sizeof(val));
++	if (!data)
++		return 0;
++
++	bpf_ringbuf_submit_dynptr(&clone2, 0);
++
++	/* this should fail */
++	*data = 123;
++
++	return 0;
++}
++
++/* A skb clone's data slices should be invalid anytime packet data changes */
++SEC("?tc")
++__failure __msg("invalid mem access 'scalar'")
++int clone_skb_packet_data(struct __sk_buff *skb)
++{
++	char buffer[sizeof(__u32)] = {};
++	struct bpf_dynptr clone;
++	struct bpf_dynptr ptr;
++	__u32 *data;
++
++	bpf_dynptr_from_skb(skb, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone);
++	data = bpf_dynptr_slice_rdwr(&clone, 0, buffer, sizeof(buffer));
++	if (!data)
++		return XDP_DROP;
++
++	if (bpf_skb_pull_data(skb, skb->len))
++		return SK_DROP;
++
++	/* this should fail */
++	*data = 123;
++
++	return 0;
++}
++
++/* A xdp clone's data slices should be invalid anytime packet data changes */
++SEC("?xdp")
++__failure __msg("invalid mem access 'scalar'")
++int clone_xdp_packet_data(struct xdp_md *xdp)
++{
++	char buffer[sizeof(__u32)] = {};
++	struct bpf_dynptr clone;
++	struct bpf_dynptr ptr;
++	struct ethhdr *hdr;
++	__u32 *data;
++
++	bpf_dynptr_from_xdp(xdp, 0, &ptr);
++
++	bpf_dynptr_clone(&ptr, &clone);
++	data = bpf_dynptr_slice_rdwr(&clone, 0, buffer, sizeof(buffer));
++	if (!data)
++		return XDP_DROP;
++
++	if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(*hdr)))
++		return XDP_DROP;
++
++	/* this should fail */
++	*data = 123;
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
+index b2fa6c47ecc0..be7de62de045 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -207,3 +207,301 @@ int test_dynptr_skb_data(struct __sk_buff *skb)
+ 
+ 	return 1;
+ }
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_adjust(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	__u32 bytes = 64;
++	__u32 off = 10;
++	__u32 trim = 15;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++
++	err = bpf_ringbuf_reserve_dynptr(&ringbuf, bytes, 0, &ptr);
++	if (err) {
++		err = 1;
++		goto done;
++	}
++
++	if (bpf_dynptr_size(&ptr) != bytes) {
++		err = 2;
++		goto done;
++	}
++
++	/* Advance the dynptr by off */
++	err = bpf_dynptr_adjust(&ptr, off, bpf_dynptr_size(&ptr));
++	if (err) {
++		err = 3;
++		goto done;
++	}
++
++	if (bpf_dynptr_size(&ptr) != bytes - off) {
++		err = 4;
++		goto done;
++	}
++
++	/* Trim the dynptr */
++	err = bpf_dynptr_adjust(&ptr, off, 15);
++	if (err) {
++		err = 5;
++		goto done;
++	}
++
++	/* Check that the size was adjusted correctly */
++	if (bpf_dynptr_size(&ptr) != trim - off) {
++		err = 6;
++		goto done;
++	}
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_adjust_err(void *ctx)
++{
++	char write_data[45] = "hello there, world!!";
++	struct bpf_dynptr ptr;
++	__u32 size = 64;
++	__u32 off = 20;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++
++	if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &ptr)) {
++		err = 1;
++		goto done;
++	}
++
++	/* Check that start can't be greater than end */
++	if (bpf_dynptr_adjust(&ptr, 5, 1) != -EINVAL) {
++		err = 2;
++		goto done;
++	}
++
++	/* Check that start can't be greater than size */
++	if (bpf_dynptr_adjust(&ptr, size + 1, size + 1) != -ERANGE) {
++		err = 3;
++		goto done;
++	}
++
++	/* Check that end can't be greater than size */
++	if (bpf_dynptr_adjust(&ptr, 0, size + 1) != -ERANGE) {
++		err = 4;
++		goto done;
++	}
++
++	if (bpf_dynptr_adjust(&ptr, off, size)) {
++		err = 5;
++		goto done;
++	}
++
++	/* Check that you can't write more bytes than available into the dynptr
++	 * after you've adjusted it
++	 */
++	if (bpf_dynptr_write(&ptr, 0, &write_data, sizeof(write_data), 0) != -E2BIG) {
++		err = 6;
++		goto done;
++	}
++
++	/* Check that even after adjusting, submitting/discarding
++	 * a ringbuf dynptr works
++	 */
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++	return 0;
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_zero_size_dynptr(void *ctx)
++{
++	char write_data = 'x', read_data;
++	struct bpf_dynptr ptr;
++	__u32 size = 64;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++
++	if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &ptr)) {
++		err = 1;
++		goto done;
++	}
++
++	/* After this, the dynptr has a size of 0 */
++	if (bpf_dynptr_adjust(&ptr, size, size)) {
++		err = 2;
++		goto done;
++	}
++
++	/* Test that reading + writing non-zero bytes is not ok */
++	if (bpf_dynptr_read(&read_data, sizeof(read_data), &ptr, 0, 0) != -E2BIG) {
++		err = 3;
++		goto done;
++	}
++
++	if (bpf_dynptr_write(&ptr, 0, &write_data, sizeof(write_data), 0) != -E2BIG) {
++		err = 4;
++		goto done;
++	}
++
++	/* Test that reading + writing 0 bytes from a 0-size dynptr is ok */
++	if (bpf_dynptr_read(&read_data, 0, &ptr, 0, 0)) {
++		err = 5;
++		goto done;
++	}
++
++	if (bpf_dynptr_write(&ptr, 0, &write_data, 0, 0)) {
++		err = 6;
++		goto done;
++	}
++
++	err = 0;
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_dynptr_is_null(void *ctx)
++{
++	struct bpf_dynptr ptr1;
++	struct bpf_dynptr ptr2;
++	__u64 size = 4;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++
++	/* Pass in invalid flags, get back an invalid dynptr */
++	if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 123, &ptr1) != -EINVAL) {
++		err = 1;
++		goto exit_early;
++	}
++
++	/* Test that the invalid dynptr is null */
++	if (!bpf_dynptr_is_null(&ptr1)) {
++		err = 2;
++		goto exit_early;
++	}
++
++	/* Get a valid dynptr */
++	if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &ptr2)) {
++		err = 3;
++		goto exit;
++	}
++
++	/* Test that the valid dynptr is not null */
++	if (bpf_dynptr_is_null(&ptr2)) {
++		err = 4;
++		goto exit;
++	}
++
++exit:
++	bpf_ringbuf_discard_dynptr(&ptr2, 0);
++exit_early:
++	bpf_ringbuf_discard_dynptr(&ptr1, 0);
++	return 0;
++}
++
++SEC("cgroup_skb/egress")
++int test_dynptr_is_rdonly(struct __sk_buff *skb)
++{
++	struct bpf_dynptr ptr1;
++	struct bpf_dynptr ptr2;
++	struct bpf_dynptr ptr3;
++
++	/* Pass in invalid flags, get back an invalid dynptr */
++	if (bpf_dynptr_from_skb(skb, 123, &ptr1) != -EINVAL) {
++		err = 1;
 +		return 0;
 +	}
 +
-+	invalidate_dynptr(env, state, spi);
- 
- 	return 0;
- }
-@@ -6662,7 +6706,7 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
-  * type, and declare it as 'const struct bpf_dynptr *' in their prototype.
-  */
- static int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn_idx,
--			       enum bpf_arg_type arg_type)
-+			       enum bpf_arg_type arg_type, int clone_ref_obj_id)
- {
- 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
- 	int err;
-@@ -6706,7 +6750,7 @@ static int process_dynptr_func(struct bpf_verifier_env *env, int regno, int insn
- 				return err;
- 		}
- 
--		err = mark_stack_slots_dynptr(env, reg, arg_type, insn_idx);
-+		err = mark_stack_slots_dynptr(env, reg, arg_type, insn_idx, clone_ref_obj_id);
- 	} else /* MEM_RDONLY and None case from above */ {
- 		/* For the reg->type == PTR_TO_STACK case, bpf_dynptr is never const */
- 		if (reg->type == CONST_PTR_TO_DYNPTR && !(arg_type & MEM_RDONLY)) {
-@@ -7616,7 +7660,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		err = check_mem_size_reg(env, reg, regno, true, meta);
- 		break;
- 	case ARG_PTR_TO_DYNPTR:
--		err = process_dynptr_func(env, regno, insn_idx, arg_type);
-+		err = process_dynptr_func(env, regno, insn_idx, arg_type, 0);
- 		if (err)
- 			return err;
- 		break;
-@@ -9580,6 +9624,7 @@ enum special_kfunc_type {
- 	KF_bpf_dynptr_from_xdp,
- 	KF_bpf_dynptr_slice,
- 	KF_bpf_dynptr_slice_rdwr,
-+	KF_bpf_dynptr_clone,
- };
- 
- BTF_SET_START(special_kfunc_set)
-@@ -9599,6 +9644,7 @@ BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
- BTF_ID(func, bpf_dynptr_slice)
- BTF_ID(func, bpf_dynptr_slice_rdwr)
-+BTF_ID(func, bpf_dynptr_clone)
- BTF_SET_END(special_kfunc_set)
- 
- BTF_ID_LIST(special_kfunc_list)
-@@ -9620,6 +9666,7 @@ BTF_ID(func, bpf_dynptr_from_skb)
- BTF_ID(func, bpf_dynptr_from_xdp)
- BTF_ID(func, bpf_dynptr_slice)
- BTF_ID(func, bpf_dynptr_slice_rdwr)
-+BTF_ID(func, bpf_dynptr_clone)
- 
- static bool is_kfunc_bpf_rcu_read_lock(struct bpf_kfunc_call_arg_meta *meta)
- {
-@@ -10315,6 +10362,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 		case KF_ARG_PTR_TO_DYNPTR:
- 		{
- 			enum bpf_arg_type dynptr_arg_type = ARG_PTR_TO_DYNPTR;
-+			int clone_ref_obj_id = 0;
- 
- 			if (reg->type != PTR_TO_STACK &&
- 			    reg->type != CONST_PTR_TO_DYNPTR) {
-@@ -10328,12 +10376,28 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 			if (is_kfunc_arg_uninit(btf, &args[i]))
- 				dynptr_arg_type |= MEM_UNINIT;
- 
--			if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb])
-+			if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_skb]) {
- 				dynptr_arg_type |= DYNPTR_TYPE_SKB;
--			else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_xdp])
-+			} else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_from_xdp]) {
- 				dynptr_arg_type |= DYNPTR_TYPE_XDP;
-+			} else if (meta->func_id == special_kfunc_list[KF_bpf_dynptr_clone] &&
-+				   (dynptr_arg_type & MEM_UNINIT)) {
-+				enum bpf_dynptr_type parent_type = meta->initialized_dynptr.type;
++	/* Test that an invalid dynptr is_rdonly returns false */
++	if (bpf_dynptr_is_rdonly(&ptr1)) {
++		err = 2;
++		return 0;
++	}
 +
-+				if (parent_type == BPF_DYNPTR_TYPE_INVALID) {
-+					verbose(env, "verifier internal error: no dynptr type for parent of clone\n");
-+					return -EFAULT;
-+				}
++	/* Get a read-only dynptr */
++	if (bpf_dynptr_from_skb(skb, 0, &ptr2)) {
++		err = 3;
++		return 0;
++	}
 +
-+				dynptr_arg_type |= (unsigned int)get_dynptr_type_flag(parent_type);
-+				clone_ref_obj_id = meta->initialized_dynptr.ref_obj_id;
-+				if (dynptr_type_refcounted(parent_type) && !clone_ref_obj_id) {
-+					verbose(env, "verifier internal error: missing ref obj id for parent of clone\n");
-+					return -EFAULT;
-+				}
-+			}
- 
--			ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type);
-+			ret = process_dynptr_func(env, regno, insn_idx, dynptr_arg_type, clone_ref_obj_id);
- 			if (ret < 0)
- 				return ret;
- 
-@@ -10346,6 +10410,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
- 				}
- 				meta->initialized_dynptr.id = id;
- 				meta->initialized_dynptr.type = dynptr_get_type(env, reg);
-+				meta->initialized_dynptr.ref_obj_id = dynptr_ref_obj_id(env, reg);
- 			}
- 
- 			break;
++	/* Test that the dynptr is read-only */
++	if (!bpf_dynptr_is_rdonly(&ptr2)) {
++		err = 4;
++		return 0;
++	}
++
++	/* Get a read-writeable dynptr */
++	if (bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr3)) {
++		err = 5;
++		goto done;
++	}
++
++	/* Test that the dynptr is read-only */
++	if (bpf_dynptr_is_rdonly(&ptr3)) {
++		err = 6;
++		goto done;
++	}
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr3, 0);
++	return 0;
++}
++
++SEC("cgroup_skb/egress")
++int test_dynptr_clone(struct __sk_buff *skb)
++{
++	struct bpf_dynptr ptr1;
++	struct bpf_dynptr ptr2;
++	__u32 off = 2, size;
++
++	/* Get a dynptr */
++	if (bpf_dynptr_from_skb(skb, 0, &ptr1)) {
++		err = 1;
++		return 0;
++	}
++
++	if (bpf_dynptr_adjust(&ptr1, off, bpf_dynptr_size(&ptr1))) {
++		err = 2;
++		return 0;
++	}
++
++	/* Clone the dynptr */
++	if (bpf_dynptr_clone(&ptr1, &ptr2)) {
++		err = 3;
++		return 0;
++	}
++
++	size = bpf_dynptr_size(&ptr1);
++
++	/* Check that the clone has the same size and rd-only */
++	if (bpf_dynptr_size(&ptr2) != size) {
++		err = 4;
++		return 0;
++	}
++
++	if (bpf_dynptr_is_rdonly(&ptr2) != bpf_dynptr_is_rdonly(&ptr1)) {
++		err = 5;
++		return 0;
++	}
++
++	/* Advance and trim the original dynptr */
++	bpf_dynptr_adjust(&ptr1, 5, 5);
++
++	/* Check that only original dynptr was affected, and the clone wasn't */
++	if (bpf_dynptr_size(&ptr2) != size) {
++		err = 6;
++		return 0;
++	}
++
++	return 0;
++}
 -- 
 2.34.1
 
