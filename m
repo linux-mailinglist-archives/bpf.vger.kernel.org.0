@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EE66E86AC
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 02:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4467F6E86AD
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 02:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjDTAmS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 20:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
+        id S231608AbjDTAmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 20:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjDTAmQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 20:42:16 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B41D2685
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:42:13 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-94a34d3812dso31021566b.3
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:42:13 -0700 (PDT)
+        with ESMTP id S231241AbjDTAmw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 20:42:52 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F6319BF
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:42:51 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id kt6so2822354ejb.0
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:42:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1681951332; x=1684543332;
+        d=isovalent.com; s=google; t=1681951370; x=1684543370;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tW4PJkjb+FWSlVhBWNdj8q8GhUe/g+/kBG1brMDKfPs=;
-        b=blJnypZMzqZzsEiWXlDe7qq2O+zt7PaEqkjLIlGnTMrjO1reLD13cN2K1lL/wwe9B6
-         9Ub+SZ+fheuP1ds6lV0XNMEDNGkYjTtX1oIpCYLZy5bUDs7eHGGNFjiRzieOKmVXtvzn
-         381MLQE/j9BjpR8GYoe4EdJBtO1UTJuiNFZ/gttnyUZecaZktWsUbcVDAYfvbEf8KJ2+
-         yRScXjk/MPSKc6EfNOB5K/e5T1wrAZBTdA2ZPe/QObK0EOXODikCs3olwan1uM8v+JHN
-         xm+huzBrvduP/g/VoVuPHASdYYp666I/B8y0j0yP9Q7JjkQi/h/t2TJJBaRnJhkHgH6r
-         RcIQ==
+        bh=If4GzO9PhViQX2Q9MwcVAV6O0mN1CeX4c6rXjqy5WCY=;
+        b=C9nopWZaks2SISD9F57OEo47joFwZVzw6dkT1RPPUVIEd9WDU86e3Ur+phvb3J+7lK
+         Ojwxojbfx+mFmYiFveFskQyUgCEEo4OEt9nNcaQxgEj78ywDHMiWaA7oNGMa+Ocxwkew
+         40VkvRNhI20z91/2F186y8rrxshejyDCM5Axssdx3+ZL7cknP2fgBrxAUGLpDIpwh7Bp
+         Uxm/KWuwUrIfg3iRsnp0z1p5EPeTrfjN+8iQzU4LDcsYBdHbtqOJ38g9ENE3Wp7C4tEx
+         UN3eSS8ccMRQBqNIC9RfOEJvm49DuJbKKrooUjINyxA5vE/wBajNYUukY4sDV/2jq+zG
+         NJLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681951332; x=1684543332;
+        d=1e100.net; s=20221208; t=1681951370; x=1684543370;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tW4PJkjb+FWSlVhBWNdj8q8GhUe/g+/kBG1brMDKfPs=;
-        b=Ec4j3anOPa3/PHu+ocH5LfMaqF0AOAYRWD0Sj3ZjKOizPBYLw0EFmTJjdO6U7gwQ2w
-         mFJ4k3sAtL1D8D2rFjrpoF5LQB+MXBUnyOP+CipolsX9Chfll9k1Ip3f0xiEIJ9JLvBx
-         RVUk1/leKgvzlt9g/P5LIkMJLZxMp7aglicoU/xZnci/KYeN4j0Vwq5KWiNfbz4bNMbM
-         UsCmp/KtyyNW6l9cSDwA2MhYGxMpSD61zSzlgjIB8CJJmqDqtHV2WTFj9TUtAE3xeaP2
-         ALlFXWdEbserzZeHN/jyP8XGC5KO1ofp9GV9WYgyMXRNolAjDDmOR4N1jfZqsdGhCp/B
-         0/hQ==
-X-Gm-Message-State: AAQBX9cFdnGKYxAr6PhyygZdcgMmZ/nxtzCoyw0Y78XaK3etxk4KqyIv
-        k2eF5C+Nkmuz/8XX7hsY+/KFr5EzoBMax0hxmEjaww==
-X-Google-Smtp-Source: AKy350YmO4T54S2PgczMfnsAYjJaQrurkCO3Sk9vVZldjeuXI8jzEuQp9DeymAz8XA7Y5nyGg0NiZ8eFdGuFWXH2lfA=
-X-Received: by 2002:aa7:cd4e:0:b0:505:513f:3d2d with SMTP id
- v14-20020aa7cd4e000000b00505513f3d2dmr6642216edw.40.1681951331885; Wed, 19
- Apr 2023 17:42:11 -0700 (PDT)
+        bh=If4GzO9PhViQX2Q9MwcVAV6O0mN1CeX4c6rXjqy5WCY=;
+        b=SnyBJZiwt2FyQylo9crhtLp8AkYwBtv3q98h3lU71j56/IK2ia5+Fnw2hLX12cS2ZL
+         aQfmQwpl1xT2YP1J2yRrh3KFAD3ewoHwXY8arAPJnc7AEKCTIZMnInBX+ar7feTQ5xtD
+         v3HeDB7D0w3OuVyocFVHD0M1vhYgID9a4l7OGOfJxWT8mJjFgQZgAm+kTlvGquDmfXQ1
+         vcRwbF5SMs5vh6kGOBT8hV6kZn63KX2uA8RSZXGwKTL5IZG/n+tCLTNVI2zGi6NsF/wn
+         N8BPNw01uBUWpDlAhxzvOnDU0xFeK4upc06g6pAX7dyeLmCxwoK56uUsyZq4moxXAqq2
+         /Z1Q==
+X-Gm-Message-State: AAQBX9cqowHyXSAUR4HXTbxp5not0sCcNhGhV/s9JphpJUBJUCLBJoIg
+        ohmtSgQj7+LzNef9pUBzQlKT7W4Hgm+9vezs/NsB0w==
+X-Google-Smtp-Source: AKy350aP8i8M4YY7Zps4S5wR1K1Y7BUNvTUoajHHp1bDRvKRedfYs27pwMhNhLgNiDt7gk8CON158LGenKzPxOQFwZ4=
+X-Received: by 2002:a17:906:5610:b0:94d:a2c2:9aeb with SMTP id
+ f16-20020a170906561000b0094da2c29aebmr16737208ejq.49.1681951370238; Wed, 19
+ Apr 2023 17:42:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230420002822.345222-1-kuifeng@meta.com>
-In-Reply-To: <20230420002822.345222-1-kuifeng@meta.com>
+References: <20230420002822.345222-1-kuifeng@meta.com> <20230420002822.345222-2-kuifeng@meta.com>
+In-Reply-To: <20230420002822.345222-2-kuifeng@meta.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Thu, 20 Apr 2023 01:42:00 +0100
-Message-ID: <CACdoK4LKSn88Hfs9eGJMWi9z6VMdvWBPQ3HCPmFs9RPTpKo9eA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpftool: Register struct_ops with a link.
+Date:   Thu, 20 Apr 2023 01:42:39 +0100
+Message-ID: <CACdoK4L_pWMS7MVHMS7idQn4vFrcE5WQLoJSruAgoDDVwxk-8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] bpftool: Update doc to explain struct_ops
+ register subcommand.
 To:     Kui-Feng Lee <thinker.li@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
         song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
@@ -69,17 +70,12 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, 20 Apr 2023 at 01:28, Kui-Feng Lee <thinker.li@gmail.com> wrote:
 >
-> You can include an optional path after specifying the object name for the
-> 'struct_ops register' subcommand.
->
-> Since the commit 226bc6ae6405 ("Merge branch 'Transit between BPF TCP
-> congestion controls.'") has been accepted, it is now possible to create a
-> link for a struct_ops. This can be done by defining a struct_ops in
-> SEC(".struct_ops.link") to make libbpf returns a real link. If we don't pin
-> the links before leaving bpftool, they will disappear. To instruct bpftool
-> to pin the links in a directory with the names of the maps, we need to
-> provide the path of that directory.
+> The "struct_ops register" subcommand now allows for an optional *LINK_DIR*
+> to be included. This specifies the directory path where bpftool will pin
+> struct_ops links with the same name as their corresponding map names.
 >
 > Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 
 Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+Thank you!
