@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2A26E8B31
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6BD6E8B30
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjDTHP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S234027AbjDTHP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 20 Apr 2023 03:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234019AbjDTHP2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231849AbjDTHP2 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 20 Apr 2023 03:15:28 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E41E3AA8
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:24 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5144043d9d1so495503a12.3
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:24 -0700 (PDT)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D2C35BE
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:27 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-24986c7cf2dso544619a91.2
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681974923; x=1684566923;
+        d=gmail.com; s=20221208; t=1681974926; x=1684566926;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z8QTAx0duk2qlOWc4EEWHRFN0AU0IXkRDr5X5he73kM=;
-        b=O9p8CchvhtMksXafeURIu7sHjCdTNtcy1aUlOmT3CC6K9C0GMCK5y5al1giI7yxRUU
-         iDhWOq8CKGnWP4GDEjn/eKj+CYlnVUEvD8dVdeegPAQb/hTL9ftTWRyY1Y4hGvHOAzDO
-         Xq/RzoRuk1ojWerjB2aylK4qVYtE/JAYAWNbY123nhkJdAsgcn+oh7gpJuiWaT+eWdhp
-         brgwiTno3HHmBhNOLIDq/XRKWg1wX5n0Mixdeg393hmbgWp3ekd4hMdePBn4VYNiyPnH
-         qyEknhP/pjSksLiSkrxpNexgLnyXd1OQ2qWZ5EuefOIJSVlu13affNDBKN2K3NbI6YTh
-         dfEQ==
+        bh=avaNQJACzMkp3LFkwVWmDzFw4o9gXtdfTz3/P7b1LP4=;
+        b=iwn5BSZJAyEG5mBRvrnXCf7sanVr4Nk7+21JtEJ72IZEqiXa8VLmp6195eOlBxVsg9
+         J5nZ0uf9w5Gs+4aUZ4Q9LVDzBrwPATUpjopleSCG1NaKFyN8RDRH/JFL2Zji7A0NXK2k
+         2nZGMFXye+Hbhya8ideuB0tMfWaLBMz88VohxfDtAgFRf0hFDthuQAPTEcCMNXpF0o5Y
+         VrF2avFgpPzPHfedIzYKFSt/2mC5t7DzqDbba5NHo4iCBj5rQ1Qe+L17vgot/n3OEgNt
+         090IflXvUM83KWXcH3/WcRof+3LiTh7kwl06UktcTJQbewPausqLuv2gE0RhOq233ZZz
+         AaHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681974923; x=1684566923;
+        d=1e100.net; s=20221208; t=1681974926; x=1684566926;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z8QTAx0duk2qlOWc4EEWHRFN0AU0IXkRDr5X5he73kM=;
-        b=Vn5XVPpAvu1deS2sQ5Koq832qoqzvCUYCcNz1E0qq2MRKLko647fwVLAJNef1kterU
-         RzdPWC9XULJkSuQpqP8v40/D1SVCdYAZPVtH7f3qAp0VR5cI0t+QkKJ/oFCGIN/K92oH
-         tvFGtA1jW5KZmLO/3GVWkpgOR2InZcJpyfP2CLjl35rcY9CqN6a6m7nlRPR4bVLDUe6M
-         V7p31emdGltgozccyUaKzF/ipFjIpUANxB1r5aJT/Tdh0V7SEKMAx0KPkqgEl3KRRXc8
-         sCc/eunLJwDhi6Y5wOKuSNI2XUE+5zq1J9wwfKDT8WAJKsRXvUf3fYM/FvWKpcWzR2O3
-         NlyA==
-X-Gm-Message-State: AAQBX9d4zZr41z+yXFNQ9O+7zs21ekMbRCoydUPMs44ZqdhTvu2HRKXI
-        QrBLADCzRzg0YoZARMHsJcPRLaBFWBONRg==
-X-Google-Smtp-Source: AKy350ZBaEf8v6UlLxJ3eJ+Yt210F6pNVcvy/yl7MVlzM37/ZmMtgnh2P5WrRU6s5wHz5sQX6qvc9w==
-X-Received: by 2002:a17:90b:10c:b0:23f:9fac:6b35 with SMTP id p12-20020a17090b010c00b0023f9fac6b35mr705035pjz.39.1681974923172;
-        Thu, 20 Apr 2023 00:15:23 -0700 (PDT)
+        bh=avaNQJACzMkp3LFkwVWmDzFw4o9gXtdfTz3/P7b1LP4=;
+        b=JgbUdHYLtqANMqJF9/9GUaNgAakd116YEEWlqSp8IShmIz5QqbWZLeXZRvMqQHd92U
+         NwjUYSaTUTUFVF+DSnucJxbvsq9nIVgfqeEvzvnGjsqlsLtb/o5MaBV+PfKwRre/gc8k
+         1pqt7Gajk4yDncwhyW4xa4oeAA9VJlk37ABxb7RvswLLcYwIvwAzYAviAyiXLsts0mlm
+         r2MV1BiTo/LTlwXpVFc8r2If8mky6K8GRSNcwAqKGu8qWiT6Z/DOWoTicSq+PoSZ3yHd
+         gx6Nj8r3eG61byevQVKn6ydIRfgS//50dvmn+OLGcVjtZnU84DzINzj9zmw7frlgMh97
+         qLYw==
+X-Gm-Message-State: AAQBX9doyX63v/cEH+qp0reIx3JpdEUwFKCwhYfrdW9DFUEDn1uLmTQa
+        XCRU1wPvVqQdYs7hKD+pvfnHtTkwYYyVEQ==
+X-Google-Smtp-Source: AKy350YAH4+VIaQu3sAuSRpLY7EFTIpiubCVCb7JcOHr0eESt90gPhDooQ9dqnuUGAsHJRRwCt+Low==
+X-Received: by 2002:a17:90b:f89:b0:247:13f5:47de with SMTP id ft9-20020a17090b0f8900b0024713f547demr639294pjb.44.1681974926458;
+        Thu, 20 Apr 2023 00:15:26 -0700 (PDT)
 Received: from gatsby.corp.tfbnw.net (75-172-126-232.tukw.qwest.net. [75.172.126.232])
-        by smtp.gmail.com with ESMTPSA id a7-20020a17090acb8700b00246b5a609d2sm588208pju.27.2023.04.20.00.15.22
+        by smtp.gmail.com with ESMTPSA id a7-20020a17090acb8700b00246b5a609d2sm588208pju.27.2023.04.20.00.15.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 00:15:22 -0700 (PDT)
+        Thu, 20 Apr 2023 00:15:26 -0700 (PDT)
 From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH v2 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
-Date:   Thu, 20 Apr 2023 00:14:11 -0700
-Message-Id: <20230420071414.570108-3-joannelkoong@gmail.com>
+Subject: [PATCH v2 bpf-next 3/5] bpf: Add bpf_dynptr_size
+Date:   Thu, 20 Apr 2023 00:14:12 -0700
+Message-Id: <20230420071414.570108-4-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230420071414.570108-1-joannelkoong@gmail.com>
 References: <20230420071414.570108-1-joannelkoong@gmail.com>
@@ -71,89 +71,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_dynptr_is_null returns true if the dynptr is null / invalid
-(determined by whether ptr->data is NULL), else false if
-the dynptr is a valid dynptr.
-
-bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
-else false if the dynptr is read-writable. If the dynptr is
-null / invalid, false is returned by default.
+bpf_dynptr_size returns the number of useable bytes in a dynptr.
 
 Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/helpers.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ include/linux/bpf.h      |  2 +-
+ kernel/bpf/helpers.c     | 15 ++++++++++++---
+ kernel/trace/bpf_trace.c |  4 ++--
+ 3 files changed, 15 insertions(+), 6 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 18b592fde896..a4429dac3a1b 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1197,7 +1197,7 @@ enum bpf_dynptr_type {
+ };
+ 
+ int bpf_dynptr_check_size(u32 size);
+-u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr);
++u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
+ 
+ #ifdef CONFIG_BPF_JIT
+ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 7ddf63ac93ce..566ed89f173b 100644
+index 566ed89f173b..9018646b86db 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -1423,7 +1423,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_proto = {
- #define DYNPTR_SIZE_MASK	0xFFFFFF
- #define DYNPTR_RDONLY_BIT	BIT(31)
- 
--static bool bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
-+static bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
- {
- 	return ptr->size & DYNPTR_RDONLY_BIT;
+@@ -1443,7 +1443,7 @@ static enum bpf_dynptr_type bpf_dynptr_get_type(const struct bpf_dynptr_kern *pt
+ 	return (ptr->size & ~(DYNPTR_RDONLY_BIT)) >> DYNPTR_TYPE_SHIFT;
  }
-@@ -1570,7 +1570,7 @@ BPF_CALL_5(bpf_dynptr_write, const struct bpf_dynptr_kern *, dst, u32, offset, v
- 	enum bpf_dynptr_type type;
- 	int err;
  
--	if (!dst->data || bpf_dynptr_is_rdonly(dst))
-+	if (!dst->data || __bpf_dynptr_is_rdonly(dst))
+-u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
++u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
+ {
+ 	return ptr->size & DYNPTR_SIZE_MASK;
+ }
+@@ -1476,7 +1476,7 @@ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
+ 
+ static int bpf_dynptr_check_off_len(const struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
+ {
+-	u32 size = bpf_dynptr_get_size(ptr);
++	u32 size = __bpf_dynptr_size(ptr);
+ 
+ 	if (len > size || offset > size - len)
+ 		return -E2BIG;
+@@ -2311,7 +2311,7 @@ __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 en
+ 	if (!ptr->data || start > end)
  		return -EINVAL;
  
- 	err = bpf_dynptr_check_off_len(dst, offset, len);
-@@ -1626,7 +1626,7 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynptr_kern *, ptr, u32, offset, u3
- 	if (err)
- 		return 0;
+-	size = bpf_dynptr_get_size(ptr);
++	size = __bpf_dynptr_size(ptr);
  
--	if (bpf_dynptr_is_rdonly(ptr))
-+	if (__bpf_dynptr_is_rdonly(ptr))
- 		return 0;
- 
- 	type = bpf_dynptr_get_type(ptr);
-@@ -2276,7 +2276,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
- __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
- 					void *buffer, u32 buffer__szk)
- {
--	if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
-+	if (!ptr->data || __bpf_dynptr_is_rdonly(ptr))
- 		return NULL;
- 
- 	/* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
-@@ -2322,6 +2322,19 @@ __bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 en
- 	return 0;
+ 	if (start > size || end > size)
+ 		return -ERANGE;
+@@ -2335,6 +2335,14 @@ __bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+ 	return __bpf_dynptr_is_rdonly(ptr);
  }
  
-+__bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
-+{
-+	return !ptr->data;
-+}
-+
-+__bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
++__bpf_kfunc __u32 bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
 +{
 +	if (!ptr->data)
-+		return false;
++		return -EINVAL;
 +
-+	return __bpf_dynptr_is_rdonly(ptr);
++	return __bpf_dynptr_size(ptr);
 +}
 +
  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
  {
  	return obj;
-@@ -2395,6 +2408,8 @@ BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+@@ -2410,6 +2418,7 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-+BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-+BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+ BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
++BTF_ID_FLAGS(func, bpf_dynptr_size)
  BTF_SET8_END(common_btf_ids)
  
  static const struct btf_kfunc_id_set common_kfunc_set = {
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index bcf91bc7bf71..8deb22a99abe 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1349,9 +1349,9 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+ 	}
+ 
+ 	return verify_pkcs7_signature(data_ptr->data,
+-				      bpf_dynptr_get_size(data_ptr),
++				      __bpf_dynptr_size(data_ptr),
+ 				      sig_ptr->data,
+-				      bpf_dynptr_get_size(sig_ptr),
++				      __bpf_dynptr_size(sig_ptr),
+ 				      trusted_keyring->key,
+ 				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+ 				      NULL);
 -- 
 2.34.1
 
