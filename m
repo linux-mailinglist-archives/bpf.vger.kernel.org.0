@@ -2,97 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B819B6E9812
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 17:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E656E9902
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 18:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbjDTPKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 11:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
+        id S233269AbjDTQCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 12:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjDTPKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 11:10:18 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B256A5FD4
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 08:10:16 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-24704a7bf34so926042a91.1
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 08:10:16 -0700 (PDT)
+        with ESMTP id S232671AbjDTQCa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 12:02:30 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081041FE3
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 09:02:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u3so7394935ejj.12
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 09:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1682003416; x=1684595416;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1682006547; x=1684598547;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y5IZLdpbJM/eTII3AcIeiqk0+XCcvjMI6PRoCKsISCI=;
-        b=XQZ9eRXYt86vSAqiwZs4rf1oJjtSNblInKQw7W3TeDQ98FHbWPWlwnLdkFkgkSuZh2
-         +uMLV1zgX+bHg0tPcyT7BFfXzjG2uYMvofDMfCPMriEJLLfe+GffboXiYz94JGgmtSHX
-         LY6qUm5bAZR+JXwNo3B7lb1byepwDsGYajifoIBYsih2DI47s2KZGpE7805e7vZOGr5u
-         O9jJzBhYv7PIYbFfGbhJYclb6k0Bceh2LIHN393UGD9pTNRR/12LiHXHCDyMX29cbNSB
-         yKcMvndarr9HhzezBqCzoDnmx/iLcyD9q5pk70PnNVIr1LuGkzxXgPN92zwwE26sw0Jc
-         hnng==
+        bh=bNyh2SqdsT0eIdUDD2Aic9+d0UcFAkJlkSbPvSGE5L8=;
+        b=eJqKDM5YhSzyhYkC1uDGNS4fA3eU+LzZz/bNHYFRfa4Led8J0dZWxpB7SMvGrPZKNk
+         wO2KER1BV9PZPaSoogGWlRq3wGzBHbN3L9b8WBS2YB1u+YNjInlJSGIuf/XPidftFTAJ
+         qFTzSA0X6PenKAjFz+3OXu6P710MpemxVejFfy1WK9oTw3YHa/5R9CGRyLmpug8kPyKo
+         sjyC8x+bgLUi0RdUZEcTOiBVhEmO2E5EX0wY/WiRvMF4oJfW57os3dfNlj9T1vHLfmzZ
+         uTY7WcXgetC/5+SZ6pF+y2oitVJUmvSXQtH/30tjmSACK31Ohsk21eybKHbfKk81LoBo
+         XcKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682003416; x=1684595416;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1682006547; x=1684598547;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y5IZLdpbJM/eTII3AcIeiqk0+XCcvjMI6PRoCKsISCI=;
-        b=A0nSGIy5LLUBzf7vlPWMnNq9Ed7esMRlQU3tCKOYWiTJ9wDX5c+gpQMsl5fb93gyjx
-         4gPTor7et1wn2JlChFj2L30iDP+yv6kJqzSnyBmo2ayWrf+H+J+FmPq69ozoPJyMbJoQ
-         95+R3R4j05RVZCgv+Sv1FCx0YXlp7zS31HmxJwreO8y/YTJhpXagAHk5Cut7fdSz3QDA
-         P4RZ8YTvPsnaDONZCUIxYqwS7fMh1v5Gqu7OPlGM7sr1C9kzco4VgdkS3IvgY7rzW2qw
-         6BXvaMys5bWBPh6/iNAyPCTl989ib90yUYDCieLPtI0aH5HmwnkbHMa//HKLe7mNM52t
-         gVfg==
-X-Gm-Message-State: AAQBX9fHRpdmv5IQuK/hez36WIkEcKKF7wFDF/WeNAFGladkdYwgrN+X
-        yMvzYdSPrQZkxvAol6XxBT8nBw==
-X-Google-Smtp-Source: AKy350bqlLt+pHWfNOQ/Vcn8El83+Gz2y75dUld1lKYVK72lJGfMAGhcp/R7KgsuANz5iZDihBQ0QQ==
-X-Received: by 2002:a17:90b:4b47:b0:247:bdd3:a034 with SMTP id mi7-20020a17090b4b4700b00247bdd3a034mr1911368pjb.37.1682003416119;
-        Thu, 20 Apr 2023 08:10:16 -0700 (PDT)
-Received: from hermes.local (204-195-120-218.wavecable.com. [204.195.120.218])
-        by smtp.gmail.com with ESMTPSA id lt24-20020a17090b355800b00247735d1463sm1312987pjb.39.2023.04.20.08.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 08:10:15 -0700 (PDT)
-Date:   Thu, 20 Apr 2023 08:10:13 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Gerhard Engleder <gerhard@engleder-embedded.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <bjorn@kernel.org>,
-        <magnus.karlsson@intel.com>, <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH net-next v3 1/6] tsnep: Replace modulo operation with
- mask
-Message-ID: <20230420081013.6e2040c5@hermes.local>
-In-Reply-To: <ZEFKzuPKGRv0bO35@boxer>
-References: <20230418190459.19326-1-gerhard@engleder-embedded.com>
-        <20230418190459.19326-2-gerhard@engleder-embedded.com>
-        <ZEFKzuPKGRv0bO35@boxer>
+        bh=bNyh2SqdsT0eIdUDD2Aic9+d0UcFAkJlkSbPvSGE5L8=;
+        b=CfDoxXhiSaf+505r+z3Bd7kttzNtxrec6X5ME/klcB4/1+xduA8uffckk+1KVb8uA5
+         nagtS8ambGf/ipXpmCRmCJpd36QMO9ploJKUbTBeXTC00+ynamjcrEaAmxRPntyARkhy
+         R7LYMSQX0JxhiAdBfd1dxyQoOZaTpq0Sz2DdAv8XED9d6WDU7wMivpvPJTdPibdPp/Rd
+         CwxYyElR5ygXBSvmsOKt17kMCBYDxDHjgl00pAG2hytq6n04YPUaueXznnepuU8yQJ/M
+         d7ni4HfyIV8Ap+OBz6WVLzv0Pu6w6a18RyHtZ6yR9RuD6MYXLdPzGpV+r246u7mMzZwp
+         s1yw==
+X-Gm-Message-State: AAQBX9fiU1f/Gldg0OwezW2Rb3tzcMhziYD4Sy+sk3Z27b764s4Ubat0
+        QDYIBbqSHqRX+z6yDjQQjIk0fXrRz/B8lTjQpQg=
+X-Google-Smtp-Source: AKy350aN0tyxgAyAUgMi5ASSLZoOug4TSG6NSDuEU030f4gFxV4bjOKovk5JJNq6f2szj0oqls0LD5saGLhG3NWVW3k=
+X-Received: by 2002:a17:906:4fc5:b0:93e:739f:b0b8 with SMTP id
+ i5-20020a1709064fc500b0093e739fb0b8mr854136ejw.3.1682006547329; Thu, 20 Apr
+ 2023 09:02:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <xunyjzy64q9b.fsf@redhat.com> <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 20 Apr 2023 09:02:15 -0700
+Message-ID: <CAADnVQLT1+b3SY8MuXss3tvng9RP43DmFAzaByAa6OuiWwZwbg@mail.gmail.com>
+Subject: Fwd: sys_enter tracepoint ctx structure
+To:     Yauheni Kaliuta <ykaliuta@redhat.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Artem Savkov <asavkov@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Apr 2023 16:23:10 +0200
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
-
-> On Tue, Apr 18, 2023 at 09:04:54PM +0200, Gerhard Engleder wrote:
-> > TX/RX ring size is static and power of 2 to enable compiler to optimize
-> > modulo operation to mask operation. Make this optimization already in
-> > the code and don't rely on the compiler.  
-> 
-> I think this came out of my review, so:
-> Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> 
-> Does this give you a minor perf boost?
-
-If you change the loop counter to be unsigned, then Gcc (and Clang)
-will optimize this into a mask operation.  That is a better simpler fix.
-
-If loop counter (i) is an integer, then compiler has keep the
-potential for wrap around.
+On Thu, Apr 20, 2023 at 6:57=E2=80=AFAM Yauheni Kaliuta <ykaliuta@redhat.co=
+m> wrote:
+>
+> Hi!
+>
+> Should perf_call_bpf_enter/exit (kernel/trace/trace_syscalls.c)
+> use struct trace_event_raw_sys_enter/exit instead of locally
+> crafted struct syscall_tp_t nowadays?
 
 
+No. It needs syscall_tp_t.
+
+> test_progs's vmlinux test
+> expects it as the context.
+
+
+what do you mean? Pls share a code pointer?
+
+>
+>
+> Or at least use struct trace_entry instead of struct pt_regs?
+
+
+no. It needs a pointer to pt_regs.
+See all of the pe_* flavor of helpers.
+
+>
+>
+> I have a problem with one RT patch with extends trace_entry.
+
+
+Just extend it. It shouldn't matter.
+I'm likely missing something.
