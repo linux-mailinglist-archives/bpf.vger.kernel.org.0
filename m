@@ -2,88 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101F36EA015
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 01:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECC86EA016
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 01:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjDTXk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 19:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35890 "EHLO
+        id S229840AbjDTXlN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 19:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjDTXk1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 19:40:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E15E196
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 16:40:21 -0700 (PDT)
+        with ESMTP id S229521AbjDTXlM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 19:41:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD358196;
+        Thu, 20 Apr 2023 16:41:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9812B64CD1
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 23:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EF0FAC433D2;
-        Thu, 20 Apr 2023 23:40:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7597560B39;
+        Thu, 20 Apr 2023 23:41:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D2D6C433D2;
+        Thu, 20 Apr 2023 23:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682034020;
-        bh=oqfROW44poag7AwCwZ5sO6q1Sn56/FNongi51VRQzjA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jc1iOY1+mLGHqMlLMy/xkBF0dkBc0RHVxnL3j/Yr5PZ11XDIQxgRv5RYFfUykZWWr
-         VA6nmvaVLdkwmlOHGsXa0pbSDyYWUitmOnYMUcaE1OMNscI5/BJHWJBvM5GPluFK2a
-         uWozIn2bu1TG2NcqLv6d4rpnq46+k/Znqv9DEJh3797syNeS27BdXCG1UxQT9uMTR/
-         OVD2Wwb7DEVL2dNi3yW3w8hByRS6B+2bnQhrSY/kd86AlkHknhzXB8RJkPnjhA1aHR
-         /rMVMC9k4N5jh+S43/I2d5263YWXkncPjp9wjU3hIc/qsls5s8KtS0ZMsranE4TXKo
-         JUX21yfUGJfjA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D2984E501E3;
-        Thu, 20 Apr 2023 23:40:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpftool: Replace "__fallthrough" by a comment to
- address merge conflict
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168203401985.29653.2966948536924910337.git-patchwork-notify@kernel.org>
-Date:   Thu, 20 Apr 2023 23:40:19 +0000
-References: <20230420003333.90901-1-quentin@isovalent.com>
-In-Reply-To: <20230420003333.90901-1-quentin@isovalent.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        broonie@kernel.org, hca@linux.ibm.com, sfr@canb.auug.org.au,
-        liam.howlett@oracle.com, acme@redhat.com, svens@linux.ibm.com,
-        tmricht@linux.ibm.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1682034070;
+        bh=bxHX0V8P90wfHHqEbZEWbg7aUtLdsEqx9+BhsFR5TaY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mEoKCQ6TLLL3gSv9jQziwMAMOrckYftB6CgBhzMbtDwvgXpeB82plRKFJXbcLWjsc
+         bx5qMTlBrgGeJQM8G8uEaWf5IOBQOthQZ7TRY/70+fPxbXkBSPp5MRJufJjp/829Lh
+         7zsHPcck+0SQ4R6SojQxnw6p+FJQyJLaYzBk1wI01DF47hPjOH6jXkFEJ+U19IP+DC
+         x4W2b6dJtDZBJ3BqSsuRirgU6ZfbtNZGCziF3NySh7VbJILfJyqpV7BofT75mcgJtR
+         gGXDJikAdkjvd1i2DXBBmeFRsrSh3/lqIWEkYZJueJP8S0K3E91v/M5ZxvCXFOFXEd
+         cwYBAy3Goa5Og==
+Date:   Fri, 21 Apr 2023 08:41:06 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 2/9] tracing/probes: Add fprobe events for tracing
+ function entry and exit.
+Message-Id: <20230421084106.5a02844971e18cdd8ad163be@kernel.org>
+In-Reply-To: <20230420184932.pgv5wiqqt4fzswdk@MacBook-Pro-6.local>
+References: <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
+        <168198995084.1795549.16754963116067902376.stgit@mhiramat.roam.corp.google.com>
+        <20230420184932.pgv5wiqqt4fzswdk@MacBook-Pro-6.local>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, 20 Apr 2023 11:49:32 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Thu, 20 Apr 2023 01:33:33 +0100 you wrote:
-> The recent support for inline annotations in control flow graphs
-> generated by bpftool introduced the usage of the "__fallthrough" macro
-> in a switch/case block in btf_dumper.c. This change went through the
-> bpf-next tree, but resulted in a merge conflict in linux-next, because
-> this macro has been renamed "fallthrough" (no underscores) in the
-> meantime.
+> On Thu, Apr 20, 2023 at 08:25:50PM +0900, Masami Hiramatsu (Google) wrote:
+> > +static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +			    struct pt_regs *regs)
+> > +{
+> > +	struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +	struct fentry_trace_entry_head *entry;
+> > +	struct hlist_head *head;
+> > +	int size, __size, dsize;
+> > +	int rctx;
+> > +
+> > +	if (bpf_prog_array_valid(call)) {
+> > +		unsigned long orig_ip = instruction_pointer(regs);
+> > +		int ret;
+> > +
+> > +		ret = trace_call_bpf(call, regs);
 > 
-> [...]
+> Please do not call bpf from fprobe.
+> There is no use case for it.
 
-Here is the summary with links:
-  - [bpf-next] bpftool: Replace "__fallthrough" by a comment to address merge conflict
-    https://git.kernel.org/bpf/bpf-next/c/4b7ef71ac977
+OK.
 
-You are awesome, thank you!
+> 
+> > +
+> > +		/*
+> > +		 * We need to check and see if we modified the pc of the
+> > +		 * pt_regs, and if so return 1 so that we don't do the
+> > +		 * single stepping.
+> > +		 */
+> > +		if (orig_ip != instruction_pointer(regs))
+> > +			return 1;
+> > +		if (!ret)
+> > +			return 0;
+> > +	}
+> > +
+> > +	head = this_cpu_ptr(call->perf_events);
+> > +	if (hlist_empty(head))
+> > +		return 0;
+> > +
+> > +	dsize = __get_data_size(&tf->tp, regs);
+> > +	__size = sizeof(*entry) + tf->tp.size + dsize;
+> > +	size = ALIGN(__size + sizeof(u32), sizeof(u64));
+> > +	size -= sizeof(u32);
+> > +
+> > +	entry = perf_trace_buf_alloc(size, NULL, &rctx);
+> > +	if (!entry)
+> > +		return 0;
+> > +
+> > +	entry->ip = entry_ip;
+> > +	memset(&entry[1], 0, dsize);
+> > +	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > +	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+> > +			      head, NULL);
+> > +	return 0;
+> > +}
+> > +NOKPROBE_SYMBOL(fentry_perf_func);
+> > +
+> > +static void
+> > +fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +		unsigned long ret_ip, struct pt_regs *regs)
+> > +{
+> > +	struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +	struct fexit_trace_entry_head *entry;
+> > +	struct hlist_head *head;
+> > +	int size, __size, dsize;
+> > +	int rctx;
+> > +
+> > +	if (bpf_prog_array_valid(call) && !trace_call_bpf(call, regs))
+> > +		return;
+> 
+> Same here.
+> These two parts look like copy-paste from kprobes.
+> I suspect this code wasn't tested at all.
+
+OK, I missed to test that bpf part. I thought bpf could be appended to
+any "trace-event" (looks like trace-event), isn't it?
+
+Thank you,
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
