@@ -2,195 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA756E8B6F
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1501A6E8C58
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 10:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbjDTH2X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 03:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
+        id S231458AbjDTIMf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 04:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbjDTH2X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 03:28:23 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EF244AF
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:27:27 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1a6762fd23cso7419145ad.3
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:27:26 -0700 (PDT)
+        with ESMTP id S234040AbjDTIMe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 04:12:34 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6D22D49;
+        Thu, 20 Apr 2023 01:12:32 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b94d8d530c3so143221276.0;
+        Thu, 20 Apr 2023 01:12:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1681975646; x=1684567646;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KY6KaCFZ5vdzzIXTUyV6D8NEGya8RvpCjdxKUFkIlbo=;
-        b=JdpK091tQZhcpVQCrGmT53jyzk0tdpPMrMjsOt2nhOO6VvJm4CHj6b3MGcEtFPjrmj
-         jRNPw5HUcEZWIJGHvsLxe344JI6DV18Gtby29KPcbI49o3qCSmqB71Eg+4RPCbqs4iPm
-         v3YHKLR5mv2ycE2z5Uzvthf87ASaR/OaOaKaMkZbPpGN/o1brGSdxKSc6IochSv6/AbZ
-         gDpcAdKFTBC8fGCg660IDSJI/tyA2ywbL5RjXTgpq/uufdxPrCODT/WuDOdKNukitBLv
-         z7znofi2TQ82y2kjpWhFiI7HRNVKU1n6s9umJI6PADeGkDWPZdOKeULaonHTZo5nIUD8
-         LGig==
+        d=gmail.com; s=20221208; t=1681978352; x=1684570352;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ufAhAdE0r7c7qaGNcRxtBn4ycIciFiGBaPdCDyt/jC4=;
+        b=Aii4cD7KcxtBNGj6ssDzMwkXLwpZ8acVamSTcN6ZFZ12JVINgOKCVPbXp06SITukmK
+         OgWW6IRFqv8dA0bn4BtD/bHrLomeLYQNjfC9wAkDbDZHtJbeM7eDZEJH9Y1tFmG3FVa5
+         EgxXf6AKfPISj099CUEABAeZxP0Sth1AKwvov6EMbpbS2u9m6Uti9Y3nJP9yrQuJBZgq
+         6Vj0I6mbcbIkAJTfP4dAV2Cl5c75V22LMbBYGz54ImxKyv/2fWSw8FO2nX7b6caquWKI
+         cXs+AoYmVqe225Z60j2piZ5O4kklgBO508a1Nc7jAhdHKeEZmSmy9o9xa2Jq8gmE4SNm
+         g+XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681975646; x=1684567646;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KY6KaCFZ5vdzzIXTUyV6D8NEGya8RvpCjdxKUFkIlbo=;
-        b=efhzIzxhlhgB+Bh7dK5k3mV5i+5Th2TuBMASM2vd4UGv+sJI8Q+dZrsFbbjOxKo/z4
-         5YLgnOx82Qe5nOnjuGoTVk5x3fmaVQxwxpWcv8uIPMuE7BVJHp95nZhsnFbqwaHwWw+r
-         kbUQubka2y+7CHOOd70rgNdzo7ztlAnhk/O5wcMWZGTc4+2LAwXhrUh+3cXQMWHxZ6TG
-         DVdSRdU7GWCDqGZj51Xs+Kn9VvouitQEOsiIabnLGtcn+WlsaS4E40Iu5A8wrDgoUBi3
-         Vo/O0kgdZCb93J/hqDK+ZIgqoDYtcvkNMGMEQh0FQacH+d82t3M67KuKD5q6/brk6ctT
-         a5jQ==
-X-Gm-Message-State: AAQBX9f0u2RuzeNEHwqoqq4vyi357r/KDKsRVeKFWao7CTFXdX4NWfeN
-        /MgtF6K/gr7Ir+yBpvFHyco22w==
-X-Google-Smtp-Source: AKy350Zh/YeQnWj7L0LszMWL1n63Iez1x6ZInscmr5n73w2GM1PRAMnrQpIboMm8xj558lZf9TY4Gg==
-X-Received: by 2002:a17:90a:d381:b0:249:7958:ea36 with SMTP id q1-20020a17090ad38100b002497958ea36mr847077pju.19.1681975646451;
-        Thu, 20 Apr 2023 00:27:26 -0700 (PDT)
-Received: from C02F52LSML85.bytedance.net ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id y18-20020a17090ad71200b0023440af7aafsm612160pju.9.2023.04.20.00.27.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 00:27:26 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        mykolal@fb.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
-        zhoufeng.zf@bytedance.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add testcase for bpf_task_under_cgroup
-Date:   Thu, 20 Apr 2023 15:26:57 +0800
-Message-Id: <20230420072657.80324-3-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20230420072657.80324-1-zhoufeng.zf@bytedance.com>
-References: <20230420072657.80324-1-zhoufeng.zf@bytedance.com>
+        d=1e100.net; s=20221208; t=1681978352; x=1684570352;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ufAhAdE0r7c7qaGNcRxtBn4ycIciFiGBaPdCDyt/jC4=;
+        b=Kzw5ggbrNJy4U3UnimiGIeIA1eQalDbceVgg6PeVSrVoI4pmrZc+HHYaEIcLTXWTzL
+         r1lT5z3EV5eDLHY8uWZBoWDgNfDRz+Ke++rrGL6gXlMbKSt/NZMYqGoLYHAEFq/860tR
+         kcM1bm9pcQsVWE/KHjWKMnHnlJVBQEKpNnu3ErB4auja6breOuPJ0l9y5Ztj4ooWpJjG
+         KfBnCVcZAx+5pN+xAzZFyrBaRJXEAjanMvBc3hqnBcDjlFuB464CIoOI4J9UPEAlkqw+
+         R0LkmB/TCfa6W2YWdVLFimHStNFaJWc84Nuzb1IRFwS+7CexC4YrdPiXsQeclQKhi+xQ
+         lUpw==
+X-Gm-Message-State: AAQBX9cqQdeo2Lb52elGLv5n57ZK3/NaTxHOvi11KC0q6yDoJmsRgLxI
+        G2ozHX4wV8AaNts6RVm7Svq9mBM9+F4NWK7vvKisn/x+SnFVmg==
+X-Google-Smtp-Source: AKy350br2VSLJGwe7XMvMryQMIcZde+pUbCFM+MFqX0o/o8o2NN/vN8gBDNkVie6wdkNcSISj1wnMJ/RBsJL/WTmjEw=
+X-Received: by 2002:a81:7857:0:b0:541:664e:b5d4 with SMTP id
+ t84-20020a817857000000b00541664eb5d4mr233169ywc.4.1681978352116; Thu, 20 Apr
+ 2023 01:12:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230418143617.27762-1-magnus.karlsson@gmail.com> <CAHApi-=_=ia8Pa23QRchxdx-ekPTgT5nYj=ktYGO4gRwP0cvCA@mail.gmail.com>
+In-Reply-To: <CAHApi-=_=ia8Pa23QRchxdx-ekPTgT5nYj=ktYGO4gRwP0cvCA@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 20 Apr 2023 10:12:21 +0200
+Message-ID: <CAJ8uoz3qM04VQF7FRmnVp_AZjGaPw25GJNn0ah-Jd0=eRCRsjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/xsk: fix munmap for hugepage allocated umem
+To:     Kal Cutter Conley <kal.conley@dectris.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, tirthendu.sarkar@intel.com,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
+On Thu, 20 Apr 2023 at 00:01, Kal Cutter Conley <kal.conley@dectris.com> wrote:
+>
+> > @@ -1286,16 +1287,19 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+> >         u64 umem_sz = ifobject->umem->num_frames * ifobject->umem->frame_size;
+> >         int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> >         LIBBPF_OPTS(bpf_xdp_query_opts, opts);
+> > +       off_t mmap_offset = 0;
+> >         void *bufs;
+> >         int ret;
+> >
+> > -       if (ifobject->umem->unaligned_mode)
+> > +       if (ifobject->umem->unaligned_mode) {
+> >                 mmap_flags |= MAP_HUGETLB;
+> > +               mmap_offset = MAP_HUGE_2MB;
+> > +       }
+>
+> MAP_HUGE_2MB should be ORed into mmap_flags. The offset argument
+> should be zero for MAP_ANONYMOUS mappings. The tests may still fail if
+> the default hugepage size is not 2MB.
 
-test_progs:
-Tests new ebpf helpers bpf_task_under_cgroup.
+You are correct that it should go into the flags field. Misread the
+man page so will send a fix.
 
-The bpf program saves the pid which call the getuid syscall within a
-given cgroup to a map to the remote_pid, which is convenient for the
-user-mode program to verify the test correctness.
+It was a conscious decision to require a hugepage size of 2M. I want
+it to fail if you do not have it since the rest of the code will not
+work if you are using some other size. Yes, it is possible to discover
+what hugepage sizes exist and act on that, but I want to keep the code
+simple.
 
-The user-mode program creates its own mount namespace, and mounts the
-cgroupsv2 hierarchy in there, call the getuid syscall, then check if
-remote_pid and local_pid are equal.
-
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
----
- .../bpf/prog_tests/task_under_cgroup.c        | 49 +++++++++++++++++++
- .../bpf/progs/test_task_under_cgroup.c        | 31 ++++++++++++
- 2 files changed, 80 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-new file mode 100644
-index 000000000000..4dd704b11a95
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Bytedance */
-+
-+#include <test_progs.h>
-+#include "test_task_under_cgroup.skel.h"
-+
-+#define FOO	"/foo"
-+
-+void test_task_under_cgroup(void)
-+{
-+	struct test_task_under_cgroup *skel;
-+	int ret, foo = -1, idx = 0;
-+
-+	skel = test_task_under_cgroup__open();
-+	if (!ASSERT_OK_PTR(skel, "test_task_under_cgroup__open"))
-+		return;
-+
-+	skel->rodata->local_pid = getpid();
-+
-+	ret = test_task_under_cgroup__load(skel);
-+	if (!ASSERT_OK(ret, "test_task_under_cgroup__load"))
-+		goto cleanup;
-+
-+	ret = test_task_under_cgroup__attach(skel);
-+	if (!ASSERT_OK(ret, "test_task_under_cgroup__attach"))
-+		goto cleanup;
-+
-+	foo = test__join_cgroup(FOO);
-+	if (!ASSERT_OK(foo < 0, "cgroup_join_foo"))
-+		goto cleanup;
-+
-+	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.cgroup_map), &idx,
-+				  &foo, BPF_ANY);
-+	if (!ASSERT_OK(ret < 0, "cgroup_map update"))
-+		goto cleanup;
-+
-+	syscall(__NR_getuid);
-+
-+	test_task_under_cgroup__detach(skel);
-+
-+	ASSERT_EQ(skel->bss->remote_pid, skel->rodata->local_pid,
-+		  "test task_under_cgroup");
-+
-+cleanup:
-+	if (foo)
-+		close(foo);
-+
-+	test_task_under_cgroup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-new file mode 100644
-index 000000000000..0f3d53f636de
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Bytedance */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+const volatile int local_pid;
-+int remote_pid;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} cgroup_map SEC(".maps");
-+
-+SEC("tp/syscalls/sys_enter_getuid")
-+int sysenter_getuid(const void *ctx)
-+{
-+	if (local_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	if (!bpf_task_under_cgroup(&cgroup_map, bpf_get_current_task_btf(), 0))
-+		return 0;
-+
-+	remote_pid = local_pid;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.20.1
-
+> >
+> >         if (ifobject->shared_umem)
+> >                 umem_sz *= 2;
+> >
+> > -       bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
+> > +       bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, mmap_offset);
+> >         if (bufs == MAP_FAILED)
+> >                 exit_with_error(errno);
+> >
+>
+> -Kal
