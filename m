@@ -2,254 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481E86E94E2
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 14:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7566E9514
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 14:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbjDTMpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 08:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
+        id S230040AbjDTMw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 08:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbjDTMps (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 08:45:48 -0400
+        with ESMTP id S229568AbjDTMw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 08:52:56 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6BD7A97;
-        Thu, 20 Apr 2023 05:45:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194DC10F5
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 05:52:55 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ppTfJ-0002b1-8Y; Thu, 20 Apr 2023 14:45:33 +0200
+        (envelope-from <fw@strlen.de>)
+        id 1ppTmO-0002eC-UK; Thu, 20 Apr 2023 14:52:52 +0200
+Date:   Thu, 20 Apr 2023 14:52:52 +0200
 From:   Florian Westphal <fw@strlen.de>
-To:     <bpf@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        dxu@dxuuu.xyz, qde@naccy.de, Florian Westphal <fw@strlen.de>
-Subject: [PATCH bpf-next v4 7/7] selftests/bpf: add missing netfilter return value and ctx access tests
-Date:   Thu, 20 Apr 2023 14:44:55 +0200
-Message-Id: <20230420124455.31099-8-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230420124455.31099-1-fw@strlen.de>
-References: <20230420124455.31099-1-fw@strlen.de>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: Re: bpf-next hang+kasan uaf refcount acquire splat when running
+ test_progs
+Message-ID: <20230420125252.GA12121@breakpoint.cc>
+References: <ZEEp+j22imoN6rn9@strlen.de>
+ <8c669c50ac494b9618e913f2e4096d5bdd8e2ee0.camel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c669c50ac494b9618e913f2e4096d5bdd8e2ee0.camel@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend prog_tests with two test cases:
+Eduard Zingerman <eddyz87@gmail.com> wrote:
+> > BUG: KASAN: slab-out-of-bounds in bpf_refcount_acquire_impl+0x63/0xd0
+> > Write of size 4 at addr ffff8881072b34e8 by task new_name/12847
+> > 
+> > CPU: 1 PID: 12847 Comm: new_name Not tainted 6.3.0-rc6+ #129
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  dump_stack_lvl+0x32/0x40
+> >  print_address_description.constprop.0+0x2b/0x3d0
+> >  ? bpf_refcount_acquire_impl+0x63/0xd0
+> >  print_report+0xb0/0x260
+> >  ? bpf_refcount_acquire_impl+0x63/0xd0
+> >  ? kasan_addr_to_slab+0x9/0x70
+> >  ? bpf_refcount_acquire_impl+0x63/0xd0
+> >  kasan_report+0xad/0xd0
+> >  ? bpf_refcount_acquire_impl+0x63/0xd0
+> >  kasan_check_range+0x13b/0x190
+> >  bpf_refcount_acquire_impl+0x63/0xd0
+> >  bpf_prog_affcc6c9d58016ca___insert_in_tree_and_list+0x54/0x131
+> >  bpf_prog_795203cdef4805f4_insert_and_remove_tree_true_list_true+0x15/0x11b
+> >  bpf_test_run+0x2a0/0x5f0
+> >  ? bpf_test_timer_continue+0x430/0x430
+> >  ? kmem_cache_alloc+0xe5/0x260
+> >  ? kasan_set_track+0x21/0x30
+> >  ? krealloc+0x9e/0xe0
+> >  bpf_prog_test_run_skb+0x890/0x1270
+> >  ? __kmem_cache_free+0x9f/0x170
+> >  ? bpf_prog_test_run_raw_tp+0x570/0x570
+> >  ? __fget_light+0x52/0x4d0
+> >  ? map_update_elem+0x680/0x680
+> >  __sys_bpf+0x75e/0xd10
+> >  ? bpf_link_by_id+0xa0/0xa0
+> >  ? rseq_get_rseq_cs+0x67/0x650
+> >  ? __blkcg_punt_bio_submit+0x1b0/0x1b0
+> >  __x64_sys_bpf+0x6f/0xb0
+> >  do_syscall_64+0x3a/0x80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7f2f6a8b392d
+> > Code: 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d3 e4 0c 00 f7 d8 64 89 01 48
+> > RSP: 002b:00007ffe46938328 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 0000000007150690 RCX: 00007f2f6a8b392d
+> > RDX: 0000000000000050 RSI: 00007ffe46938360 RDI: 000000000000000a
+> > RBP: 00007ffe46938340 R08: 0000000000000064 R09: 00007ffe46938360
+> > R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
+> > R13: 00007ffe46938b78 R14: 0000000000e09db0 R15: 00007f2f6a9ff000
+> >  </TASK>
+> > 
+> > I can also reproduce this on bpf-next/780c69830ec6b27e0224586ce26bc89552fcf163.
+> > Is this a known bug?
+> 
+> Hi Florian,
+> 
+> Thank you for the report, that's my bug :(
+> 
+> After the suggested change I can run the ./test_progs till the end
+>  (takes a few minutes, though). One test is failing: verifier_array_access,
+> this is because map it uses is not populated with values (as it was when this was
+> a part ./test_verifier).
 
- # ./test_progs --allow=verifier_netfilter_retcode
- #278/1   verifier_netfilter_retcode/bpf_exit with invalid return code. test1:OK
- #278/2   verifier_netfilter_retcode/bpf_exit with valid return code. test2:OK
- #278/3   verifier_netfilter_retcode/bpf_exit with valid return code. test3:OK
- #278/4   verifier_netfilter_retcode/bpf_exit with invalid return code. test4:OK
- #278     verifier_netfilter_retcode:OK
+Right, I see that failure too.
+> However, in the middle of execution I do see a trace similar to yours:
 
-This checks that only accept and drop (0,1) are permitted.
+I see this as well, to get to it quicker:
+./test_progs --allow=refcounted_kptr
 
-NF_QUEUE could be implemented later if we can guarantee that attachment
-of such programs can be rejected if they get attached to a pf/hook that
-doesn't support async reinjection.
 
-NF_STOLEN could be implemented via trusted helpers that can guarantee
-that the skb will eventually be free'd.
+> [   82.757127] ------------[ cut here ]------------
+> [   82.757667] refcount_t: saturated; leaking memory.
+> [   82.758098] WARNING: CPU: 0 PID: 176 at lib/refcount.c:22 refcount_warn_saturate+0x61/0xe0
 
-v4: test case for bpf_nf_ctx access checks, requested by Alexei Starovoitov.
+I get this one right after the kasan splat.
 
- # ./test_progs --allow=verifier_netfilter_ctx
- #280/1   verifier_netfilter_ctx/netfilter invalid context access, size too short:OK
- #280/2   verifier_netfilter_ctx/netfilter invalid context access, size too short:OK
- #280/3   verifier_netfilter_ctx/netfilter invalid context access, past end of ctx:OK
- #280/4   verifier_netfilter_ctx/netfilter invalid context, write:OK
- #280/5   verifier_netfilter_ctx/netfilter valid context access:OK
- #280/6   verifier_netfilter_ctx/netfilter valid context access @unpriv:OK
- #280     verifier_netfilter_ctx:OK
-Summary: 1/6 PASSED, 0 SKIPPED, 0 FAILED
+> Could you please share your config?
+> I'd like to reproduce the hang.
 
-This checks:
-1/2: partial reads of ctx->{skb,state} are rejected
-3. read access past sizeof(ctx) is rejected
-4. write to ctx content, e.g. 'ctx->skb = NULL;' is rejected
-5. ctx->skb and ctx->state can be read (valid case), but ...
-6. ... same program fails for unpriv (CAP_NET_ADMIN needed).
+It hangs for me if I just rerun 
+./test_progs --allow=refcounted_kptr
 
-Link: https://lore.kernel.org/bpf/20230419021152.sjq4gttphzzy6b5f@dhcp-172-26-102-232.dhcp.thefacebook.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- .../selftests/bpf/prog_tests/verifier.c       |  4 +
- .../bpf/progs/verifier_netfilter_ctx.c        | 82 +++++++++++++++++++
- .../bpf/progs/verifier_netfilter_retcode.c    | 49 +++++++++++
- 3 files changed, 135 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
+a couple of times (maybe once per cpu...?).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 25bc8958dbfe..2b4ded63ce9f 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -29,6 +29,8 @@
- #include "verifier_map_ret_val.skel.h"
- #include "verifier_masking.skel.h"
- #include "verifier_meta_access.skel.h"
-+#include "verifier_netfilter_ctx.skel.h"
-+#include "verifier_netfilter_retcode.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -94,6 +96,8 @@ void test_verifier_map_ptr(void)              { RUN(verifier_map_ptr); }
- void test_verifier_map_ret_val(void)          { RUN(verifier_map_ret_val); }
- void test_verifier_masking(void)              { RUN(verifier_masking); }
- void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
-+void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
-+void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-new file mode 100644
-index 000000000000..861b2266179f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+
-+#include "bpf_misc.h"
-+
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, size too short")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test1(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u8*)(r1 + %[__bpf_nf_ctx_state]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_state, offsetof(struct bpf_nf_ctx, state))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, size too short")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test2(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u16*)(r1 + %[__bpf_nf_ctx_skb]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, past end of ctx")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test3(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64*)(r1 + %[__bpf_nf_ctx_size]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_size, sizeof(struct bpf_nf_ctx))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context, write")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test4(void)
-+{
-+	asm volatile ("					\
-+	r2 = r1;					\
-+	*(u64*)(r2 + 0) = r1;				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter valid context access")
-+__success __failure_unpriv
-+__retval(1)
-+__naked void with_invalid_ctx_access_test5(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64*)(r1 + %[__bpf_nf_ctx_state]);	\
-+	r1 = *(u64*)(r1 + %[__bpf_nf_ctx_skb]);		\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_state, offsetof(struct bpf_nf_ctx, state)),
-+	  __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-+	: __clobber_all);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-new file mode 100644
-index 000000000000..353ae6da00e1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test1")
-+__failure __msg("R0 is not a known value")
-+__naked void with_invalid_return_code_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = *(u64*)(r1 + 0);				\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test2")
-+__success
-+__naked void with_valid_return_code_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test3")
-+__success
-+__naked void with_valid_return_code_test3(void)
-+{
-+	asm volatile ("					\
-+	r0 = 1;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test4")
-+__failure __msg("R0 has value (0x2; 0x0)")
-+__naked void with_invalid_return_code_test4(void)
-+{
-+	asm volatile ("					\
-+	r0 = 2;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
--- 
-2.39.2
-
+I'll send the config if that doesn't hang for you.
