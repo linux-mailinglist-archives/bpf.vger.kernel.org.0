@@ -2,60 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 965016E93EA
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 14:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4284A6E9462
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 14:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbjDTMN2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 08:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        id S231970AbjDTMcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 08:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbjDTMN1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 08:13:27 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F04F5BBC;
-        Thu, 20 Apr 2023 05:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1681992772; x=1713528772;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NRLHbDsBJVpzWvjpCk2Jx+iKC43ICF+rlOYgCNSiUaM=;
-  b=EboPsy9/3OWENkYyNUxLFr7Ly5iy7lIDdf5tH07BtCDnsy9I6jWMbqYL
-   k25QuZi7xYrSbqgM5EzJzGcHWYe9agJGZsaiQOXvVxm8BxKSP/hm8WXXR
-   ebNCmBy0H4GbXx0xyyjKTxLj+URRr6RzFltay/1MczLkgXoNLUeBrqh3c
-   ADNtSACbOzU+EKsfdxjrfj4ihPBT7g+DTJ2dCqIhkAguXojkBxF39hlM8
-   ZlLAF599nUufvRRt9khKlXAVrZmPMFd3XDvbxHs+6/YLc7Kz7SVhn/iiu
-   2x0cZlwzPc0QzzWf7SqnBG/a5IObEx767ez+6cEFLBcPRjVpb2RMAfp83
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.99,212,1677567600"; 
-   d="scan'208";a="209953526"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Apr 2023 05:12:08 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 20 Apr 2023 05:12:08 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Thu, 20 Apr 2023 05:12:03 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <richardcochran@gmail.com>,
-        <UNGLinuxDriver@microchip.com>, <maciej.fijalkowski@intel.com>,
-        <alexandr.lobakin@intel.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next] net: lan966x: Don't use xdp_frame when action is XDP_TX
-Date:   Thu, 20 Apr 2023 14:11:52 +0200
-Message-ID: <20230420121152.2737625-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.38.0
+        with ESMTP id S231868AbjDTMck (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 08:32:40 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893537A80;
+        Thu, 20 Apr 2023 05:32:17 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-2fe3fb8e25fso359651f8f.0;
+        Thu, 20 Apr 2023 05:32:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681993936; x=1684585936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kLLXiVx5ZXlRbmgfFrjTg14WDa0lYtFvhw7NAI2mimo=;
+        b=N5XToj2hnv44N3U9CSsIIV7oCSE2c85rC2hUBDjRCThisqIoRHOb5eIa0n4PLSVJUH
+         H+2XaiUCQX+M0VabhKvfZkdEWrOlkKImOF4NPYpuYstsZhc86lnnUANENB8Zo/JgWS9+
+         Pzzu80xXoyxuJroSSVZOg7q8NfVr/sx9IkeLllnqPFx73lo+6yQcKC33pmMKFFvEUIrF
+         JFoZZ1sH8weh7thDyLGSzFu8rKpkL3U45FClwUmC6aP3G35t79SThH5CP4z2fSDgk7No
+         TcGvQ/03+2iNRDd3Fnvn49aVexqvSH+kfv6CQHTolZHLpXScizWvkC+ASs7kaVcgCXut
+         0Dqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681993936; x=1684585936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kLLXiVx5ZXlRbmgfFrjTg14WDa0lYtFvhw7NAI2mimo=;
+        b=dMqThB+cWY9d3DwHuQWT15u2haBvDNFVyqupyCj4sL2Y6xIw9a886pRVg9DZ2fALKJ
+         rdIccUpz1F9L9uhmnxOTxzCTPjCA8WR413oUvbzCna5hwr9lGvT/jwDyjE9qIkJFOnuN
+         ZuDeEe/Lhp0qDI8YvtG9jCJ/ho8hz9AYx1/zWJjkybRZQhw8+BU3eEBdWVuJXE9p1WSg
+         zv0IvBdjly7REO3G7uPBop+gVwViBL2ljhBMnBKxjI8IAjmaGiztiRWWYs/Tfdqvw4om
+         MIbCSiA3tLnTTyTHVn7OyJ2ci1Yot3rtKjG61I/lcYO9BB6D1ZsHz0te16IYz69L+Xjt
+         8qfA==
+X-Gm-Message-State: AAQBX9eiBIhqcD32MvpXMf1Wl2gxFsai1hEQ9N4dAMZ1NTGrfu5X3BF/
+        /jSVltUp/GOstSVEN0D6i04=
+X-Google-Smtp-Source: AKy350Z0hfkprBBmYBXXeQ4v20OBXLfn2U2EbRwzpbYC2Dz8QJKSiR2XMWenJ26PmHdB4ByVhKlICA==
+X-Received: by 2002:a5d:4611:0:b0:2f6:987f:a0f5 with SMTP id t17-20020a5d4611000000b002f6987fa0f5mr1351297wrq.5.1681993935723;
+        Thu, 20 Apr 2023 05:32:15 -0700 (PDT)
+Received: from gsever-Latitude-7400.corp.proofpoint.com ([46.120.112.185])
+        by smtp.gmail.com with ESMTPSA id z16-20020a5d4410000000b002f79ea6746asm1835081wrq.94.2023.04.20.05.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Apr 2023 05:32:15 -0700 (PDT)
+From:   Gilad Sever <gilad9366@gmail.com>
+To:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
+        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz
+Cc:     eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Gilad Sever <gilad9366@gmail.com>
+Subject: [PATCH bpf 0/4] Socket lookup BPF API from tc/xdp ingress does not respect VRF bindings.
+Date:   Thu, 20 Apr 2023 15:31:51 +0300
+Message-Id: <20230420123155.497634-1-gilad9366@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,174 +74,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the action of an xdp program was XDP_TX, lan966x was creating
-a xdp_frame and use this one to send the frame back. But it is also
-possible to send back the frame without needing a xdp_frame, because
-it possible to send it back using the page.
-And then once the frame is transmitted is possible to use directly
-page_pool_recycle_direct as lan966x is using page pools.
-This would save some CPU usage on this path.
+When calling socket lookup from L2 (tc, xdp), VRF boundaries aren't
+respected. This patchset fixes this by regarding the incoming device's
+VRF attachment when performing the socket lookups from tc/xdp.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- .../ethernet/microchip/lan966x/lan966x_fdma.c | 35 +++++++++++--------
- .../ethernet/microchip/lan966x/lan966x_main.h |  2 ++
- .../ethernet/microchip/lan966x/lan966x_xdp.c  | 11 +++---
- 3 files changed, 27 insertions(+), 21 deletions(-)
+The first two patches are coding changes which facilitate this fix by
+factoring out the tc helper's logic which was shared with cg/sk_skb
+(which operate correctly).
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-index 2ed76bb61a731..7947259e67e4e 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-@@ -390,6 +390,7 @@ static void lan966x_fdma_stop_netdev(struct lan966x *lan966x)
- static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- {
- 	struct lan966x_tx *tx = &lan966x->tx;
-+	struct lan966x_rx *rx = &lan966x->rx;
- 	struct lan966x_tx_dcb_buf *dcb_buf;
- 	struct xdp_frame_bulk bq;
- 	struct lan966x_db *db;
-@@ -432,7 +433,8 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- 			if (dcb_buf->xdp_ndo)
- 				xdp_return_frame_bulk(dcb_buf->data.xdpf, &bq);
- 			else
--				xdp_return_frame_rx_napi(dcb_buf->data.xdpf);
-+				page_pool_recycle_direct(rx->page_pool,
-+							 dcb_buf->data.page);
- 		}
- 
- 		clear = true;
-@@ -702,6 +704,7 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
- int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 			   struct xdp_frame *xdpf,
- 			   struct page *page,
-+			   u32 len,
- 			   bool dma_map)
- {
- 	struct lan966x *lan966x = port->lan966x;
-@@ -722,6 +725,15 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 		goto out;
- 	}
- 
-+	/* Fill up the buffer */
-+	next_dcb_buf = &tx->dcbs_buf[next_to_use];
-+	next_dcb_buf->use_skb = false;
-+	next_dcb_buf->xdp_ndo = dma_map;
-+	next_dcb_buf->len = len + IFH_LEN_BYTES;
-+	next_dcb_buf->used = true;
-+	next_dcb_buf->ptp = false;
-+	next_dcb_buf->dev = port->dev;
-+
- 	/* Generate new IFH */
- 	if (dma_map) {
- 		if (xdpf->headroom < IFH_LEN_BYTES) {
-@@ -736,16 +748,18 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 
- 		dma_addr = dma_map_single(lan966x->dev,
- 					  xdpf->data - IFH_LEN_BYTES,
--					  xdpf->len + IFH_LEN_BYTES,
-+					  len + IFH_LEN_BYTES,
- 					  DMA_TO_DEVICE);
- 		if (dma_mapping_error(lan966x->dev, dma_addr)) {
- 			ret = NETDEV_TX_OK;
- 			goto out;
- 		}
- 
-+		next_dcb_buf->data.xdpf = xdpf;
-+
- 		/* Setup next dcb */
- 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
--					  xdpf->len + IFH_LEN_BYTES,
-+					  len + IFH_LEN_BYTES,
- 					  dma_addr);
- 	} else {
- 		ifh = page_address(page) + XDP_PACKET_HEADROOM;
-@@ -756,25 +770,18 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 		dma_addr = page_pool_get_dma_addr(page);
- 		dma_sync_single_for_device(lan966x->dev,
- 					   dma_addr + XDP_PACKET_HEADROOM,
--					   xdpf->len + IFH_LEN_BYTES,
-+					   len + IFH_LEN_BYTES,
- 					   DMA_TO_DEVICE);
- 
-+		next_dcb_buf->data.page = page;
-+
- 		/* Setup next dcb */
- 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
--					  xdpf->len + IFH_LEN_BYTES,
-+					  len + IFH_LEN_BYTES,
- 					  dma_addr + XDP_PACKET_HEADROOM);
- 	}
- 
--	/* Fill up the buffer */
--	next_dcb_buf = &tx->dcbs_buf[next_to_use];
--	next_dcb_buf->use_skb = false;
--	next_dcb_buf->data.xdpf = xdpf;
--	next_dcb_buf->xdp_ndo = dma_map;
--	next_dcb_buf->len = xdpf->len + IFH_LEN_BYTES;
- 	next_dcb_buf->dma_addr = dma_addr;
--	next_dcb_buf->used = true;
--	next_dcb_buf->ptp = false;
--	next_dcb_buf->dev = port->dev;
- 
- 	/* Start the transmission */
- 	lan966x_fdma_tx_start(tx, next_to_use);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index 851afb0166b19..59da35a2c93d4 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -243,6 +243,7 @@ struct lan966x_tx_dcb_buf {
- 	union {
- 		struct sk_buff *skb;
- 		struct xdp_frame *xdpf;
-+		struct page *page;
- 	} data;
- 	u32 len;
- 	u32 used : 1;
-@@ -544,6 +545,7 @@ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
- int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 			   struct xdp_frame *frame,
- 			   struct page *page,
-+			   u32 len,
- 			   bool dma_map);
- int lan966x_fdma_change_mtu(struct lan966x *lan966x);
- void lan966x_fdma_netdev_init(struct lan966x *lan966x, struct net_device *dev);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-index 2e6f486ec67d7..a8ad1f4e431cb 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-@@ -62,7 +62,7 @@ int lan966x_xdp_xmit(struct net_device *dev,
- 		struct xdp_frame *xdpf = frames[i];
- 		int err;
- 
--		err = lan966x_fdma_xmit_xdpf(port, xdpf, NULL, true);
-+		err = lan966x_fdma_xmit_xdpf(port, xdpf, NULL, xdpf->len, true);
- 		if (err)
- 			break;
- 
-@@ -76,7 +76,6 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- {
- 	struct bpf_prog *xdp_prog = port->xdp_prog;
- 	struct lan966x *lan966x = port->lan966x;
--	struct xdp_frame *xdpf;
- 	struct xdp_buff xdp;
- 	u32 act;
- 
-@@ -90,11 +89,9 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- 	case XDP_PASS:
- 		return FDMA_PASS;
- 	case XDP_TX:
--		xdpf = xdp_convert_buff_to_frame(&xdp);
--		if (!xdpf)
--			return FDMA_DROP;
--
--		return lan966x_fdma_xmit_xdpf(port, xdpf, page, false) ?
-+		return lan966x_fdma_xmit_xdpf(port, NULL, page,
-+					      data_len - IFH_LEN_BYTES,
-+					      false) ?
- 		       FDMA_DROP : FDMA_TX;
- 	case XDP_REDIRECT:
- 		if (xdp_do_redirect(port->dev, &xdp, xdp_prog))
+The third patch contains the actual bugfix.
+
+The fourth patch adds bpf tests for these lookup functions.
+
+Gilad Sever (4):
+  bpf: factor out socket lookup functions for the TC hookpoint.
+  bpf: Call __bpf_sk_lookup()/__bpf_skc_lookup() directly via TC
+    hookpoint
+  bpf: fix bpf socket lookup from tc/xdp to respect socket VRF bindings
+  selftests/bpf: Add tc_socket_lookup tests
+
+ net/core/filter.c                             | 132 +++++--
+ .../bpf/prog_tests/tc_socket_lookup.c         | 341 ++++++++++++++++++
+ .../selftests/bpf/progs/tc_socket_lookup.c    |  73 ++++
+ 3 files changed, 525 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_socket_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tc_socket_lookup.c
+
 -- 
-2.38.0
+2.34.1
 
