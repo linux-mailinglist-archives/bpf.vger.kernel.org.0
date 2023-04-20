@@ -2,79 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248A76E8EE3
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 12:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61C56E90AF
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 12:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjDTKFh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 06:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S235023AbjDTKqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 06:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234375AbjDTKF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 06:05:28 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7974C31
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 03:05:10 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id z6so5106196ejc.5
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 03:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1681985109; x=1684577109;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=agHckanpJDD7KAjWNvheb7t6bEqVdV1x737yZKOWzJE=;
-        b=HZIL/ncLDaoykRaDDbIr0py93KMFu9gfqXxWheJ57n58VBKusij35olKwzNry2blHQ
-         M64yvr9uN2vPz+JHnS5Ghhgmd10c+xFsaqT/3Tvxw0AGdnOw+HO2C5dKf2gJnAyzYvAR
-         zvCJnHNX202lJPrXckM8InvGAkMeOZGUcqUcY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681985109; x=1684577109;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=agHckanpJDD7KAjWNvheb7t6bEqVdV1x737yZKOWzJE=;
-        b=arz2qe4VwoDZ0lC4lXH9s62f6zkHq2PCFvEG3EHR/mpHl+3rjV9eyr5LQLw0x2SSdN
-         WLAFPqMNOXoF2Q8qoMt4xsPYy+UuV3J+UbnKc6RxA7gBxHSL9U9V4RWyz3YE/Qoxf3Wl
-         kciOF/4Wnr6NHTmDW1y/p0jbL9WXqS4KmI+lnOj2KDx68fi9IvYGb4b+L5m0TzcqPgwA
-         5485PnAHazsXPAdMGdGA1LnDhsY1r0gNj1mPN3GwxOZR76NQ+2uX0Wo3lqwkcNQTdyaa
-         HyDfbn9npaHCJLWrRQ/f4v46hIxW52/+l0OKsdQpl/3nze996Zk/53Ri6B1JKqVIyw0L
-         yqDQ==
-X-Gm-Message-State: AAQBX9ePr5j2fLvi43ILBObBn8iBclkq9O2xOXWPoLiD4dtHcEKONrhY
-        A8k9Ui4jE2RmLWTCmoxm49wd/Z4ycssYWOvD1e+/Gg==
-X-Google-Smtp-Source: AKy350buy0UUIHG3mG6NwefaD7Nyj+HBKl3H4/cEuoCGoJKe1RzomC8K5njIaRsiDP0WxbPsZB5oZupNRBWLCnxQOIE=
-X-Received: by 2002:a17:906:2001:b0:953:37c5:daef with SMTP id
- 1-20020a170906200100b0095337c5daefmr399563ejo.0.1681985109291; Thu, 20 Apr
- 2023 03:05:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230418143617.27762-1-magnus.karlsson@gmail.com>
- <CAHApi-=_=ia8Pa23QRchxdx-ekPTgT5nYj=ktYGO4gRwP0cvCA@mail.gmail.com> <CAJ8uoz3qM04VQF7FRmnVp_AZjGaPw25GJNn0ah-Jd0=eRCRsjg@mail.gmail.com>
-In-Reply-To: <CAJ8uoz3qM04VQF7FRmnVp_AZjGaPw25GJNn0ah-Jd0=eRCRsjg@mail.gmail.com>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Thu, 20 Apr 2023 12:09:56 +0200
-Message-ID: <CAHApi-=NkvNvbDJTwLcPfo_ZkRg9vfVNmQN50_LzA3K8t7Q4JQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/xsk: fix munmap for hugepage allocated umem
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, tirthendu.sarkar@intel.com,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233846AbjDTKpi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 06:45:38 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B525FE9;
+        Thu, 20 Apr 2023 03:44:52 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33K9OBMs020332;
+        Thu, 20 Apr 2023 10:44:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=JiP4gaodXYE5HqdkzObSDp1lyfjXWhoq3PMYmdlsmkI=;
+ b=UBmdFr4z5vi+OCGrGzJRjVwynCNjsEGshJFbizog0JX6dFd5v2HW268zR2hdJBQPzpvp
+ ufTkv58EVnf+uOpHegmGYYQAzjMsGBkagych/iPTha7NP0hhb74J7KA0qGxfesXj5QkJ
+ 4TRMC0gfKBJHThcQ9Tx010WFKYjiaHeoBG4ObjtTDh+iPEDJ6Jw/ft1L7rtE37UoXnQc
+ bAdTfvZ0ys4BPwWfpevCR+Qv2n5/AKgyVg9651yvrobAyWQzOr3eu+TPpVFeLVCau3xZ
+ 3jC5J/CXudsZ6QttEToqLklqNaf7/kMVX+V/rg6Aa7LWC54aCx8RpSXaSSOscsWZZfGu 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q32qvtpwk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Apr 2023 10:44:07 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 33KAW1vP031769;
+        Thu, 20 Apr 2023 10:44:06 GMT
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q32qvtpve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Apr 2023 10:44:06 +0000
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33K97YPM010080;
+        Thu, 20 Apr 2023 10:44:04 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([9.208.129.119])
+        by ppma03wdc.us.ibm.com (PPS) with ESMTPS id 3pykj7krdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Apr 2023 10:44:04 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33KAi3SO12452206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Apr 2023 10:44:03 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25B0158045;
+        Thu, 20 Apr 2023 10:44:03 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC4F958052;
+        Thu, 20 Apr 2023 10:44:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.16.65])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 20 Apr 2023 10:44:00 +0000 (GMT)
+Message-ID: <97849695ef53ab3186e59d8a2c6b74812f13ee19.camel@linux.ibm.com>
+Subject: Re: [PATCH] Smack modifications for: security: Allow all LSMs to
+ provide xattrs for inode_init_security hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+        nicolas.bouchinet@clip-os.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Mengchi Cheng <mengcc@amazon.com>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org, kamatam@amazon.com,
+        yoonjaeh@amazon.com
+Date:   Thu, 20 Apr 2023 06:44:00 -0400
+In-Reply-To: <a98ddf946c474a3500bdcd72766c6cb0043278ff.camel@huaweicloud.com>
+References: <c7f38789-fe47-8289-e73a-4d07fbaf791d@schaufler-ca.com>
+         <20230411172337.340518-1-roberto.sassu@huaweicloud.com>
+         <2dc6486f-ce9b-f171-14fe-48a90386e1b7@schaufler-ca.com>
+         <8e7705972a0f306922d8bc4893cf940e319abb19.camel@huaweicloud.com>
+         <72b46d0f-75c7-ac18-4984-2bf1d6dad352@schaufler-ca.com>
+         <82ee6ddf66bb34470aa7b591df4d70783fdb2422.camel@huaweicloud.com>
+         <91f05dc4-a4b7-b40a-ba1a-0ccc489c84b2@schaufler-ca.com>
+         <5c50d98f1e5745c88270ae4ad3de6d9a803db4c6.camel@huaweicloud.com>
+         <48c6073f-59b0-f5d1-532e-fe4b912b939d@schaufler-ca.com>
+         <0fccab67e496f10f4ee7bf2220e70a655013935f.camel@huaweicloud.com>
+         <c16dd895-f488-241d-0be8-e56e5f0c1adb@schaufler-ca.com>
+         <a98ddf946c474a3500bdcd72766c6cb0043278ff.camel@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YMT3HG0ZS9vIkqH-n2uqmA3l0ZvnTJcF
+X-Proofpoint-ORIG-GUID: HmNKNdJGFNLBRcpC25uuB5H0hmVx9xdl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-20_06,2023-04-20_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=860
+ clxscore=1011 bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304200085
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> It was a conscious decision to require a hugepage size of 2M. I want
-> it to fail if you do not have it since the rest of the code will not
-> work if you are using some other size. Yes, it is possible to discover
-> what hugepage sizes exist and act on that, but I want to keep the code
-> simple.
+On Thu, 2023-04-20 at 10:50 +0200, Roberto Sassu wrote:
+> > 
+> > It's possible. It's been a long time since I've looked at this.
+> > I'm tempted to take a change to make overlayfs work upstream and
+> > then worry about the ima changes. There seems to be a lot more
+> > going on with the ima changes than is obvious from what's in the
+> > Smack code.
 
-Yes. I understood that and I think the solution is reasonable. Sadly,
-it's not trivial to query the default hugepage size from userspace
-AFAIK. Is parsing /proc/meminfo the only way?
+It doesn't sound like the patch set introduces the overlayfs bug.
 
-What I meant was: "the tests may still fail _with the old mode of
-failure (out of memory)_ if the default hugepage size is > 2MB".
+The security_inode_init_security() change to initialize multiple LSMs
+and IMA xattrs and include them in the EVM hmac calculation is straight
+forward.
+
+In addition, the patch set creates the infrastructure for allowing
+multiple per LSM xattrs, as requested, to be initialized in
+security_inode_init_security() and included in the EVM hmac.
+
+Mimi
+
+> We could also set only SMACK64 in smack_inode_init_security(), and move
+> SMACKTRANSMUTE64 later, when we figure out how to fix the case of
+> overlayfs.
+> 
+> IMA and EVM would work in both cases.
+
