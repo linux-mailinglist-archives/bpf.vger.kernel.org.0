@@ -2,45 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB506E8A6C
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D829C6E8A99
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbjDTGcz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 02:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        id S233820AbjDTGpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 02:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbjDTGcy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 02:32:54 -0400
-Received: from out0-197.mail.aliyun.com (out0-197.mail.aliyun.com [140.205.0.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B1246B8
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:32:52 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047190;MF=amy.saq@antgroup.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---.SLDPi4._1681972364;
-Received: from 30.230.62.44(mailfrom:amy.saq@antgroup.com fp:SMTPD_---.SLDPi4._1681972364)
-          by smtp.aliyun-inc.com;
-          Thu, 20 Apr 2023 14:32:45 +0800
-Message-ID: <59e93ac7-9baf-48b1-809b-e935ecfbff03@antgroup.com>
-Date:   Thu, 20 Apr 2023 14:32:44 +0800
+        with ESMTP id S232606AbjDTGpb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 02:45:31 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BF8272D
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:45:28 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id t15so1613128ybb.1
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681973128; x=1684565128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FjmVOB9Fu0y6ipLQl7qPD5QOgaBMqIWI8n92Ln78HNw=;
+        b=HO6/oknLET6MgmlsusxcUHAL/28gG43/E5bk4uunLtkN87tOslVlw17A9WMN7Sa2Hb
+         dBlNIG5IRHj0PFqWvW/0Uu208ZN7mNTXvI4UrpICxMftfAlrhtiKk+vQYbUWmlnA7yiw
+         s//5rJncBNEauF5JXNCeqPAYjytEMV4oxa8kQDb/Je98g/E6NifOEvkWclA0cG7m4/AN
+         iRVAYY9FiZk+pSrXTodsAVArBR1QSZIuoQ+OUZQgw2fXLoYf+qBgPjzsC7iRQxLRMok3
+         XClnTOGWLELiujHZeTpnIlR0yeoE13i+pJbAge6B2Bz+UmUpeMmCm1VFIJkr01u6ZFGZ
+         dinQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681973128; x=1684565128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FjmVOB9Fu0y6ipLQl7qPD5QOgaBMqIWI8n92Ln78HNw=;
+        b=R6AUcMN1QVtXreym+zmEgJMMsK8qMr+u85q3NnT3m769+538Q8KLc6Tw0UDjIGtX/E
+         gI69Z7ghAHfzKVPwvHN6md0VjtsDJdRSRuH/Y8mmj5vcdC9HyQE2xhqCUZOQsCWsyLaY
+         JwbSz25zTTaDI0tc/daJlXUGO/hs05xkAQGKeoCj5jYngz8O1BF7D132iB1tH2hwxN1m
+         yJoJrCVXffaHnq7ZJt/ZyT1H397ofw5TUsz89g2GGqRxzhHuvy5RvZ9O/3B3mkiOLMFZ
+         SQPnjpYhqa+WAU3Rti4k5Mmd7zW+rkdUkQIfKCGQLUUgpvCJIc0c126b45DHtP8GSrxV
+         9Pvw==
+X-Gm-Message-State: AAQBX9dRJgG9Fd44MPxbHLvmTCMMAFlyuE3cVdOq6qndA9AiV5HI0ucD
+        mcL3v6DqOM55ja6a1ekM9Adm2ip4GiRcTTkpDmI=
+X-Google-Smtp-Source: AKy350YdChXguDyJWHsSPb7jaAAy8HhC5/QIQc3k14s1nnYUr/YzE1kQny7Vx41bmItM91D7S8u4ZQqqdz/fNXoYe+c=
+X-Received: by 2002:a25:cc57:0:b0:b96:3344:c211 with SMTP id
+ l84-20020a25cc57000000b00b963344c211mr387856ybf.10.1681973128119; Wed, 19 Apr
+ 2023 23:45:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC] A new bpf map type for fuzzy matching key
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
-        "=?UTF-8?B?5ZGo5by6KOS4reiIqik=?=" <shuze.zq@antgroup.com>,
-        "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
-        "=?UTF-8?B?5byg57uq5bOwKOS6keS8ryk=?=" <yunbo.zxf@antgroup.com>
-References: <303b5895-319d-2bb7-9909-10fec3323df2@antgroup.com>
- <CAADnVQ+3y0mbORnvCYNLdSGZ7hV5Qxskc3L-mTg0SmVpfwHFYQ@mail.gmail.com>
-From:   "=?UTF-8?B?5rKI5a6J55CqKOWHm+eOpSk=?=" <amy.saq@antgroup.com>
-In-Reply-To: <CAADnVQ+3y0mbORnvCYNLdSGZ7hV5Qxskc3L-mTg0SmVpfwHFYQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+References: <20230409033431.3992432-1-joannelkoong@gmail.com>
+ <20230409033431.3992432-3-joannelkoong@gmail.com> <CAEf4BzahPnJ08-eqh2S_jZ+wca4-DCq5JjFKQOAfgb+oYRqdkg@mail.gmail.com>
+In-Reply-To: <CAEf4BzahPnJ08-eqh2S_jZ+wca4-DCq5JjFKQOAfgb+oYRqdkg@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 19 Apr 2023 23:45:17 -0700
+Message-ID: <CAJnrk1bvC6Zp2y=9TVAyz5nmQ=+7CO9PhEfPbwawVid6mcrrEQ@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,165 +69,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Apr 12, 2023 at 2:50=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Apr 8, 2023 at 8:34=E2=80=AFPM Joanne Koong <joannelkoong@gmail.c=
+om> wrote:
+> >
+> > bpf_dynptr_is_null returns true if the dynptr is null / invalid
+> > (determined by whether ptr->data is NULL), else false if
+> > the dynptr is a valid dynptr.
+> >
+> > bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
+> > else false if the dynptr is read-writable.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  kernel/bpf/helpers.c | 23 +++++++++++++++++++----
+> >  1 file changed, 19 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 51b4c4b5dbed..e4e84e92a4c6 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1423,7 +1423,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_=
+proto =3D {
+> >  #define DYNPTR_SIZE_MASK       0xFFFFFF
+> >  #define DYNPTR_RDONLY_BIT      BIT(31)
+> >
+> > -static bool bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
+> > +static bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr)
+> >  {
+> >         return ptr->size & DYNPTR_RDONLY_BIT;
+> >  }
+> > @@ -1570,7 +1570,7 @@ BPF_CALL_5(bpf_dynptr_write, const struct bpf_dyn=
+ptr_kern *, dst, u32, offset, v
+> >         enum bpf_dynptr_type type;
+> >         int err;
+> >
+> > -       if (!dst->data || bpf_dynptr_is_rdonly(dst))
+> > +       if (!dst->data || __bpf_dynptr_is_rdonly(dst))
+> >                 return -EINVAL;
+> >
+> >         err =3D bpf_dynptr_check_off_len(dst, offset, len);
+> > @@ -1626,7 +1626,7 @@ BPF_CALL_3(bpf_dynptr_data, const struct bpf_dynp=
+tr_kern *, ptr, u32, offset, u3
+> >         if (err)
+> >                 return 0;
+> >
+> > -       if (bpf_dynptr_is_rdonly(ptr))
+> > +       if (__bpf_dynptr_is_rdonly(ptr))
+> >                 return 0;
+> >
+> >         type =3D bpf_dynptr_get_type(ptr);
+> > @@ -2254,7 +2254,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct b=
+pf_dynptr_kern *ptr, u32 offset
+> >  __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *=
+ptr, u32 offset,
+> >                                         void *buffer, u32 buffer__szk)
+> >  {
+> > -       if (!ptr->data || bpf_dynptr_is_rdonly(ptr))
+> > +       if (!ptr->data || __bpf_dynptr_is_rdonly(ptr))
+>
+> seems like all the uses of __bpf_dynptr_is_rdonly check !ptr->data
+> explicitly, so maybe move that ptr->data check inside and simplify all
+> the callers?
 
-在 2023/4/17 上午2:23, Alexei Starovoitov 写道:
-> On Sat, Apr 15, 2023 at 9:32 PM 沈安琪(凛玥) <amy.saq@antgroup.com> wrote:
->>
->> Hi everyone,
->>
->> For supporting fuzzy matching in bpf map as described in the original
->> question [0], we come up with a proposal that would like to have some
->> advice or comments from bpf thread. Thanks a lot for all the feedback :)
->>
->> We plan to implement a new bpf map type, naming BPF_FM_MAP, standing for
->> fuzzy matching map.
->> The basic idea is implementing a trie-tree using map of map runtime
->> structure.
->>
->> The number of tree levels equals to the number of fields in the key
->> struct. Assuming that the key struct has M fields, the first (M-1) level
->> of tree nodes will be hash maps with key as the value of (M-1)-th field
->> and entry as the fd of next level map. The last level, regarded as leaf
->> nodes, will be hash maps with key as the value of M-th field and entry
->> as user-defined entry for this BPF_FM_MAP.
->>
->> To support fuzzy matching, we add a special value -1 as (M-1)-th field
->> key if (M-1)-th field is set as general match.
->>
->> When looking up a target key in BPF_FM_MAP, it will lookup the first
->> level hashmap, matching the entry with the same value on this field and
->> with -1 if exists. Then it will lookup the next-level hashmap, whose fd
->> is the value it get from the previous level hashmap. It will go through
->> all the levels of tree and get a set of leaf nodes it matches. Finally,
->> it will sort the set of matched leaf nodes based on their priority,
->> which is defined in BPF_FM_MAP entry struct, and return the
->> corresponding return value also defined in BPF_FM_MAP entry struct.
->>
->>
->> Given a user-defined key struct and entry struct as following:
->>
->> struct fm_key {
->>       int a;
->>       int b;
->>       int c;
->> }
->>
->> struct fm_entry {
->>       int priority;
->>       int value;
->> }
->>
->> and declare a BPF_FM_MAP DEMO_MAP to store incoming key-value pair:
->>
->> struct {
->>       __uint(type, BPF_FM_MAP);
->>       __type(key, struct fm_key);
->>       __type(value, struct fm_entry);
->>       __uint(pinning, LIBBPF_PIN_BY_NAME);
->>       __uint(max_entries, 1024);
->>       __uint(map_flags, BPF_F_NO_PREALLOC);
->> } DEMO_MAP SEC(".maps");
->>
->> Now, we add the following three key-value pairs into DEMO_MAP:
->>
->> |a    |b    |c    |priority    |value    |
->> |-    |-    |1    |1           |1        |
->> |-    |2    |1    |2           |2        |
->> |3    |2    |1    |3           |3        |
->>
->> The tree will be constructed as following:
->>
->> field a             field b               field c
->>
->>                                             fd = 3
->>                                        ---->| key | (prioriy, value) |
->>                                       |     |  1  |       (1, 1) |
->>                                       |
->>                       fd = 1          |
->>                    -->| key | val |   |
->>                   |   | -1  |  3  |----     fd = 4
->>                   |   |  2  |  4  |-------->| key | (prioriy, value) |
->>    fd = 0         |                         |  1  |       (2, 2) |
->> | key | val |   |
->> | -1  |  1  |----
->> |  3  |  2  |----
->>                   |   fd = 2
->>                    -->| key | val |         fd = 5
->>                       |  2  |  5  |-------->| key | (prioriy, value) |
->>                                             |  1  |       (3, 3) |
->>
->>
->> After updating the tree, we have three target tuples to lookup in DEMO_MAP.
->>
->> struct fm_key t1 = {
->>       .a = 6,
->>       .b = 4,
->>       .c = 1
->> };
->>
->> struct fm_key t2 = {
->>       .a = 5,
->>       .b = 2,
->>       .c = 1
->> };
->>
->> struct fm_key t3 = {
->>       .a = 3,
->>       .b = 2,
->>       .c = 1
->> };
->>
->> // map lookup order: 0 -> 1 -> 3
->> // matched leaf nodes: (1, 1)
->> // picked return value: 1
->> map_lookup_elem(&DEMO_MAP, &t1) == 1
->>
->> // map loopup order: 0 -> 1 -> (3, 4)
->> // matched leaf nodes: (1, 1), (2, 2)
->> // picked return value: 2
->> map_lookup_elem(&DEMO_MAP, &t2) == 2
->>
->> // map lookup order: 0 -> (1, 2) -> (3, 4, 5)
->> // matched leaf nodes: (1, 1), (2, 2), (3, 3)
->> // picked return value: 3
->> map_loopup_elem(&DEMO_MAP, &t3) == 3
->>
->>
->> Thanks a lot for reviewing this proposal and we really appreciate any
->> feedback here.
-> This sounds like several hash maps chained together with a custom logic.
-> If so it's not clear why a new map type is necessary.
-> Just let bpf prog lookup multiple hash maps.
+i think combining it gets confusing in the case where ptr->data is
+null, as to how the invoked places interpret the return value. I think
+having the check spelled out more explicitly in the invoked places (eg
+bpf_dynptr_write, bpf_dynptr_data, ...) makes it more clear as well
+where the check for null is happening. for v2 I will leave this as is,
+but also happy to change it if you prefer the two be combined
 
-
-Dear Alexei,
-
-Thanks for reviewing the proposal.
-
-We have several motivation to have a new bpf map type to support fuzzy 
-matching.
-
-First of all, we find that fuzzy matching a N-element tuple is quite a 
-common scenario, especially in networking. With current bpf map types, 
-developers need to modify the target tuple's field and lookup the map 
-several times if they want to find all fuzzy-matched entries. Or, they 
-need to implement some runtime structures such as the one mentioned in 
-proposal each time to support fuzzy matching, which is quite time-consuming.
-
-Another reason is that this new bpf map type can provide better 
-performance than looking up maps several times to find all fuzzy matched 
-entries. Saying that we have a 3-element tuple(a, b, c), and each field 
-has m possible values. If we use a bpf hashmap, it will have m*m*m 
-entries. If a developer want to do fuzzy matching on each field, he/she 
-needs to do map lookup over m*m*m entries three times. With the bpf 
-fuzzy matching map as proposed, he/she needs to do map lookup over m 
-entries three times, which will give some performance benefit when m is 
-large.
-
-These are the two main reasons we have to implement a new bpf map type. 
-If there is better way to do so or any other comments, we are more than 
-happy to have further discussion in the thread.
-
-Sincerely,
-Amy
-
+>
+> Regardless, looks good:
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >                 return NULL;
+> >
+> >         /* bpf_dynptr_slice_rdwr is the same logic as bpf_dynptr_slice.
+> > @@ -2322,6 +2322,19 @@ __bpf_kfunc int bpf_dynptr_trim(struct bpf_dynpt=
+r_kern *ptr, u32 len)
+> >         return bpf_dynptr_adjust(ptr, 0, len);
+> >  }
+> >
+> > +__bpf_kfunc bool bpf_dynptr_is_null(struct bpf_dynptr_kern *ptr)
+> > +{
+> > +       return !ptr->data;
+> > +}
+> > +
+> > +__bpf_kfunc bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+> > +{
+> > +       if (!ptr->data)
+> > +               return false;
+> > +
+> > +       return __bpf_dynptr_is_rdonly(ptr);
+> > +}
+> > +
+> >  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+> >  {
+> >         return obj;
+> > @@ -2396,6 +2409,8 @@ BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEX=
+T | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_trim)
+> >  BTF_ID_FLAGS(func, bpf_dynptr_advance)
+> > +BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+> > +BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> >  BTF_SET8_END(common_btf_ids)
+> >
+> >  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> > --
+> > 2.34.1
+> >
