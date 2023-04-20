@@ -2,57 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF026E8AA4
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB1F6E8B2B
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 09:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbjDTGvx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 02:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        id S231797AbjDTHPO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 03:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjDTGvw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 02:51:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D76D1FE4;
-        Wed, 19 Apr 2023 23:51:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EFE4564557;
-        Thu, 20 Apr 2023 06:51:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B12DEC433EF;
-        Thu, 20 Apr 2023 06:51:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681973510;
-        bh=8aUhQHxP2OH7rnWWvgHTSZOrsTIfsKF0J85Hymzdvbc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ahsFN66RabqGD8NhT4bISSgI0WVrH74WIIBgAJpxHOL7xIWiYJv3qAfExi2FcxgTJ
-         vWPMnkgO5gPyOtDECtV8ULkCDSZV53ubCLlC7PiQSwY/K6f9AmHKIU6euTOR6ZpT8D
-         7afMFNSaRzfjibny86M6OXTP3hEpWxupk0TP1loKA3wjPaXLgidWsEcIDpQAHv2wk8
-         5oIOsr9pVoIVSqftO/ccouK+sasRu1koFpnfVsGUm5MKBEggjH8nzn52bNctovFKP+
-         DNXUVKO1MsM0SZPpFfx5VOLG0IY+MuC1nUAEKdKYD4nXGhcgjo3gSSMolEghXKrRy5
-         anN4afMjjRxhA==
-Date:   Thu, 20 Apr 2023 15:51:46 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org,
-        bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/6] tracing: Add generic
- test_recursion_try_acquire()
-Message-Id: <20230420155146.56099afbc6c73fc2e1065c62@kernel.org>
-In-Reply-To: <20230417154737.12740-3-laoar.shao@gmail.com>
-References: <20230417154737.12740-1-laoar.shao@gmail.com>
-        <20230417154737.12740-3-laoar.shao@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S234030AbjDTHPO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 03:15:14 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA4C35BE
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:07 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-246eebbde1cso519072a91.3
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 00:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681974907; x=1684566907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WiKQnAkY6Ma1naXObAb5T1iqQjf6RV6bQv/iulJmoE=;
+        b=ZqK3pJxVvDm+gK0tyOjygvJ6PWc04z/910y13+WetDMcaC7kZR0RyhZwcj1yAzZRUB
+         MOH23Bb7ZuvZ0OavkFyN7SshHbnkTXDg9kV7sgcRuu7oR7ew2uIQCuBNivDlYygugoqc
+         hrlJ+sTg7hApk3pguYm8YpmZmHjaW+699MauibwZ21siACzteOEQGDfdSz8HXEmfsUHw
+         +Qkki5nL1ZtsXxOHlZuEmZWpoj398wjLyMLrSbDKnPmzxPnyYzhsgYYehM0x31JhwbXh
+         QPNlbjCrb+yi19EDh5mgdNNRUIk6iiKGjj58AH8VwHurPk+nQMvabIaMNGULgeObPhFw
+         YstA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681974907; x=1684566907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4WiKQnAkY6Ma1naXObAb5T1iqQjf6RV6bQv/iulJmoE=;
+        b=hOq1uP52l+2LvH7CbdSrf/qmw+NvxihLQ02Ly0RLp6Ubi7tAyDUnyWWPJ7+Mt8LYN+
+         3buE7PqG6iNtXffdRBesR6cbfmqbFa5O4nUHb5GPalwVc1kz0kR1fUnI7c1js28HbOVM
+         zXiHlzT3eWXl6156ulCxHfegeimXLlLaGNR3wt5iOv7KXlzwsGVyPpM5DGU3YF6dIGfO
+         Q5NkIBob3G0DwSZIaKz0ZqvvnKRPXbzYi3bSSfEATFIbfQsLZnSGSkqI15jUwjAmPWzK
+         1E6+idYXCozR/N2bMIp6jwQ0UItFpGqbJesj5X89CdVnvOlYoscxmwScBGLmJlcMi0FW
+         95og==
+X-Gm-Message-State: AAQBX9exuijtdubIgPt4UW/zwNqr/mRgcmEbFkyiyh0Ktb4qBbuLnpzw
+        Ju/xIFl0tF+tY9Nf96YbG3PQ2WHwFACajg==
+X-Google-Smtp-Source: AKy350YV+Yy4XLY09ldG8ze1vPxS943aU9WAq+1qPOmaHD7tbSIQ0khvvj4flL0TyUXaM0puZGLAGA==
+X-Received: by 2002:a17:90a:fa96:b0:23b:3699:b8a9 with SMTP id cu22-20020a17090afa9600b0023b3699b8a9mr700651pjb.17.1681974906982;
+        Thu, 20 Apr 2023 00:15:06 -0700 (PDT)
+Received: from gatsby.corp.tfbnw.net (75-172-126-232.tukw.qwest.net. [75.172.126.232])
+        by smtp.gmail.com with ESMTPSA id a7-20020a17090acb8700b00246b5a609d2sm588208pju.27.2023.04.20.00.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Apr 2023 00:15:06 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH v2 bpf-next 0/5] Dynptr helpers
+Date:   Thu, 20 Apr 2023 00:14:09 -0700
+Message-Id: <20230420071414.570108-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,154 +68,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 17 Apr 2023 15:47:33 +0000
-Yafang Shao <laoar.shao@gmail.com> wrote:
+This patchset is the 3rd in the dynptr series. The 1st (dynptr
+fundamentals) can be found here [0] and the second (skb + xdp dynptrs)
+can be found here [1].
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The ftrace_test_recursion_trylock() also disables preemption. This is not
-> required, but was a clean up as every place that called it also disabled
-> preemption, and making the two tightly coupled appeared to make the code
-> simpler.
-> 
-> But the recursion protection can be used for other purposes that do not
-> require disabling preemption. As the recursion bits are attached to the
-> task_struct, it follows the task, so there's no need for preemption being
-> disabled.
-> 
-> Add test_recursion_try_acquire/release() functions to be used generically,
-> and separate it from being associated with ftrace. It also removes the
-> "lock" name, as there is no lock happening. Keeping the "lock" for the
-> ftrace version is better, as it at least differentiates that preemption is
-> being disabled (hence, "locking the CPU").
-> 
-> Link: https://lore.kernel.org/linux-trace-kernel/20230321020103.13494-1-laoar.shao@gmail.com/
-> 
-> Acked-by: Yafang Shao <laoar.shao@gmail.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+This patchset adds the following helpers for interacting with
+dynptrs:
 
-This looks good to me.
+int bpf_dynptr_adjust(struct bpf_dynptr *ptr, __u32 start, __u32 end) __ksym;
+int bpf_dynptr_is_null(const struct bpf_dynptr *ptr) __ksym;
+int bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym;
+__u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym;
+int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym;
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+[0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gmail.com/
+[1] https://lore.kernel.org/bpf/20230301154953.641654-1-joannelkoong@gmail.com/
 
-> ---
->  include/linux/trace_recursion.h | 47 ++++++++++++++++++++++++++++++-----------
->  kernel/trace/ftrace.c           |  2 ++
->  2 files changed, 37 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-> index d48cd92..80de2ee 100644
-> --- a/include/linux/trace_recursion.h
-> +++ b/include/linux/trace_recursion.h
-> @@ -150,9 +150,6 @@ static __always_inline int trace_get_context_bit(void)
->  # define trace_warn_on_no_rcu(ip)	false
->  #endif
->  
-> -/*
-> - * Preemption is promised to be disabled when return bit >= 0.
-> - */
->  static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsigned long pip,
->  							int start)
->  {
-> @@ -182,18 +179,11 @@ static __always_inline int trace_test_and_set_recursion(unsigned long ip, unsign
->  	val |= 1 << bit;
->  	current->trace_recursion = val;
->  	barrier();
-> -
-> -	preempt_disable_notrace();
-> -
->  	return bit;
->  }
->  
-> -/*
-> - * Preemption will be enabled (if it was previously enabled).
-> - */
->  static __always_inline void trace_clear_recursion(int bit)
->  {
-> -	preempt_enable_notrace();
->  	barrier();
->  	trace_recursion_clear(bit);
->  }
-> @@ -205,12 +195,18 @@ static __always_inline void trace_clear_recursion(int bit)
->   * tracing recursed in the same context (normal vs interrupt),
->   *
->   * Returns: -1 if a recursion happened.
-> - *           >= 0 if no recursion.
-> + *           >= 0 if no recursion and preemption will be disabled.
->   */
->  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->  							 unsigned long parent_ip)
->  {
-> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START);
-> +	int bit;
-> +
-> +	bit = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START);
-> +	if (unlikely(bit < 0))
-> +		return bit;
-> +	preempt_disable_notrace();
-> +	return bit;
->  }
->  
->  /**
-> @@ -221,6 +217,33 @@ static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->   */
->  static __always_inline void ftrace_test_recursion_unlock(int bit)
->  {
-> +	preempt_enable_notrace();
-> +	trace_clear_recursion(bit);
-> +}
-> +
-> +/**
-> + * test_recursion_try_acquire - tests for recursion in same context
-> + *
-> + * This will detect recursion of a function.
-> + *
-> + * Returns: -1 if a recursion happened.
-> + *           >= 0 if no recursion
-> + */
-> +static __always_inline int test_recursion_try_acquire(unsigned long ip,
-> +						      unsigned long parent_ip)
-> +{
-> +	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START);
-> +}
-> +
-> +/**
-> + * test_recursion_release - called after a success of test_recursion_try_acquire()
-> + * @bit: The return of a successful test_recursion_try_acquire()
-> + *
-> + * This releases the recursion lock taken by a non-negative return call
-> + * by test_recursion_try_acquire().
-> + */
-> +static __always_inline void test_recursion_release(int bit)
-> +{
->  	trace_clear_recursion(bit);
->  }
->  
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index c67bcc8..8ad3ab4 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7647,6 +7647,7 @@ void ftrace_reset_array_ops(struct trace_array *tr)
->  	if (bit < 0)
->  		return;
->  
-> +	preempt_disable();
->  	do_for_each_ftrace_op(op, ftrace_ops_list) {
->  		/* Stub functions don't need to be called nor tested */
->  		if (op->flags & FTRACE_OPS_FL_STUB)
-> @@ -7668,6 +7669,7 @@ void ftrace_reset_array_ops(struct trace_array *tr)
->  		}
->  	} while_for_each_ftrace_op(op);
->  out:
-> +	preempt_enable();
->  	trace_clear_recursion(bit);
->  }
->  
-> -- 
-> 1.8.3.1
-> 
+v1 -> v2:
+v1: https://lore.kernel.org/bpf/20230409033431.3992432-1-joannelkoong@gmail.com/
+* change bpf_dynptr_advance/trim to bpf_dynptr_adjust
+* rename bpf_dynptr_get_size to bpf_dynptr_size
+* refactor handling clone for process_dynptr_func, maintain unique ids
+  for parent and clone
+* remove bpf_dynptr_get_offset()
 
+Joanne Koong (5):
+  bpf: Add bpf_dynptr_adjust
+  bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
+  bpf: Add bpf_dynptr_size
+  bpf: Add bpf_dynptr_clone
+  selftests/bpf: add tests for dynptr convenience helpers
+
+ include/linux/bpf.h                           |   2 +-
+ kernel/bpf/helpers.c                          |  76 ++++-
+ kernel/bpf/verifier.c                         | 105 ++++--
+ kernel/trace/bpf_trace.c                      |   4 +-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |   6 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |   6 +
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 287 +++++++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 298 ++++++++++++++++++
+ 8 files changed, 755 insertions(+), 29 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.34.1
+
