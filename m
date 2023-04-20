@@ -2,94 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9956E8935
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 06:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29506E89F1
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 07:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbjDTEkx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 00:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54782 "EHLO
+        id S233633AbjDTF7H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 01:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbjDTEkk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 00:40:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FC255B7;
-        Wed, 19 Apr 2023 21:40:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CC97664282;
-        Thu, 20 Apr 2023 04:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 32964C433EF;
-        Thu, 20 Apr 2023 04:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681965620;
-        bh=EVkDgFk+gzSXEfIGqXu2Mh/eirZ1Wt0Isn7WHGFVFuU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Czp+7piA4XvkVhNtzE3DC9SmfDkRbyliWCJstJuwIu6+QPeMdT4EaoIXps1wR0Ozz
-         mV0X1Ljm2Kf/hABKCRYyLzyfDjGAYlscEAdVyae+aeeAUMNNK057YroNeALfKvtFal
-         7Hsn2fqgF8gKhsmEaz84mA6RqFcxOdfAbUEtZ98yzZKUw+f0xb+JJkt/OHO6mqI558
-         XRGLDYmV/4RIV+EmFss6xR+Qk101MvMu5MYC+NPv2169IFcyo6uD7IWKZEbTldardp
-         4v0iHUmiDKryZG9111fmtq1QundV4a07FCvbGPxugWrxOURvjEq/n+dWADgSEDduaN
-         MYYsZEyaYmPXQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13AECC395C8;
-        Thu, 20 Apr 2023 04:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231489AbjDTF7G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 01:59:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F7840DB
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 22:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1681970295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KF057K4EPoEi7HYYfZLwh+5zZUpwuxGtMZEQhcs8a28=;
+        b=SCJ5bW3t/YpjuHeMljZ5zyEdxUiUFMqA2j4GGzPrj2Mc1GnyUts2DumuRmLzlSj5FmGGg8
+        2rrjNkYecrlcjBu44o6kRWh7A673k31dheqjN8FBwdZWr1eI391jvCoVh2gT3Q0KBN4h7H
+        He4h0oeX1lMKzKAqV6t97OnkybkrCCM=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-TSJrXZRkOHmNuYFPJSyPcA-1; Thu, 20 Apr 2023 01:58:13 -0400
+X-MC-Unique: TSJrXZRkOHmNuYFPJSyPcA-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-54685706a5cso172115eaf.0
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 22:58:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681970293; x=1684562293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KF057K4EPoEi7HYYfZLwh+5zZUpwuxGtMZEQhcs8a28=;
+        b=hFjiWmZFCmGsTS4g6jkN+3x3Aw5QVC7BHVKs1BcOkt3TchiaiyeFD4qEEyTCtUh+5Y
+         k2LbiZEI5o8xhrE2+UiSFXXwCtw9KZLY+HObWOpXY671Xr4rcXsw5sA9gB+n8x3NjJW9
+         DkXcdXWkj1x3uMxBuKqzkT1KKlSzzpcYBRJRasN/YZmTOXYAyV/6qbVpB0B/YPoffdcz
+         2wLY5EOoYwJdYjAbVTPqnMjABKcyAAsEHb00CY1isJ6T9Hx8UWk2O59OhjhUatlVAdNj
+         Xmg2QoLnf6Q+CYyrT3BcpQv5MkrEec/aqcRSL4zj7TdcMyBUVmTmrmiE5Y1VkmR8v/Xz
+         8Vkw==
+X-Gm-Message-State: AAQBX9c+33tODrw0lJthTjdEf+gVs5leTNR3DqDhOoUvb4QFiPLJ7SSv
+        /emDtwr7Kh7bwl9eF5X22hQMkrQ3wURj13DwU26zVA1+zyD+swYcSA9/mTstrpP2PVwXmn9vQWr
+        shGIzLaMqQlSurxNfv9Na9tKG2g1Y
+X-Received: by 2002:a05:6870:6490:b0:17a:a59a:e931 with SMTP id cz16-20020a056870649000b0017aa59ae931mr442651oab.11.1681970292954;
+        Wed, 19 Apr 2023 22:58:12 -0700 (PDT)
+X-Google-Smtp-Source: AKy350aVtat0i5n6ON9ylDd4Y/gR2oczno6DFTBOtnGidKe3fSEPldtrEE9PXjuS68IAkvnrT0r72lkQGvdaZmGEdy4=
+X-Received: by 2002:a05:6870:6490:b0:17a:a59a:e931 with SMTP id
+ cz16-20020a056870649000b0017aa59ae931mr442643oab.11.1681970292689; Wed, 19
+ Apr 2023 22:58:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] Access variable length array relaxed for
- integer type
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168196562006.24751.2408162871776218216.git-patchwork-notify@kernel.org>
-Date:   Thu, 20 Apr 2023 04:40:20 +0000
-References: <20230420032735.27760-1-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20230420032735.27760-1-zhoufeng.zf@bytedance.com>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        mykolal@fb.com, shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com, zhouchengming@bytedance.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com> <20230418065327.72281-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20230418065327.72281-2-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 20 Apr 2023 13:58:01 +0800
+Message-ID: <CACGkMEv9KjfQzXKX27jmNeedn03HXob5p0E5Z2LT9GMut8VemA@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 01/14] virtio_net: mergeable xdp: put old page immediately
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Apr 18, 2023 at 2:53=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> In the xdp implementation of virtio-net mergeable, it always checks
+> whether two page is used and a page is selected to release. This is
+> complicated for the processing of action, and be careful.
+>
+> In the entire process, we have such principles:
+> * If xdp_page is used (PASS, TX, Redirect), then we release the old
+>   page.
+> * If it is a drop case, we will release two. The old page obtained from
+>   buf is release inside err_xdp, and xdp_page needs be relased by us.
+>
+> But in fact, when we allocate a new page, we can release the old page
+> immediately. Then just one is using, we just need to release the new
+> page for drop case. On the drop path, err_xdp will release the variable
+> "page", so we only need to let "page" point to the new xdp_page in
+> advance.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-On Thu, 20 Apr 2023 11:27:33 +0800 you wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> 
-> Add support for integer type of accessing variable length array.
-> Add a selftest to check it.
-> 
-> Feng Zhou (2):
->   bpf: support access variable length array of integer type
->   selftests/bpf: Add test to access integer type of variable array
-> 
-> [...]
+Thanks
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: support access variable length array of integer type
-    https://git.kernel.org/bpf/bpf-next/c/2569c7b8726f
-  - [bpf-next,v2,2/2] selftests/bpf: Add test to access integer type of variable array
-    https://git.kernel.org/bpf/bpf-next/c/5ff54dedf35b
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> ---
+>  drivers/net/virtio_net.c | 19 +++++++------------
+>  1 file changed, 7 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index e2560b6f7980..42435e762d72 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1245,6 +1245,9 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>                         if (!xdp_page)
+>                                 goto err_xdp;
+>                         offset =3D VIRTIO_XDP_HEADROOM;
+> +
+> +                       put_page(page);
+> +                       page =3D xdp_page;
+>                 } else if (unlikely(headroom < virtnet_get_headroom(vi)))=
+ {
+>                         xdp_room =3D SKB_DATA_ALIGN(VIRTIO_XDP_HEADROOM +
+>                                                   sizeof(struct skb_share=
+d_info));
+> @@ -1259,11 +1262,12 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+>                                page_address(page) + offset, len);
+>                         frame_sz =3D PAGE_SIZE;
+>                         offset =3D VIRTIO_XDP_HEADROOM;
+> -               } else {
+> -                       xdp_page =3D page;
+> +
+> +                       put_page(page);
+> +                       page =3D xdp_page;
+>                 }
+>
+> -               data =3D page_address(xdp_page) + offset;
+> +               data =3D page_address(page) + offset;
+>                 err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, dat=
+a, len, frame_sz,
+>                                                  &num_buf, &xdp_frags_tru=
+esz, stats);
+>                 if (unlikely(err))
+> @@ -1278,8 +1282,6 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>                         if (unlikely(!head_skb))
+>                                 goto err_xdp_frags;
+>
+> -                       if (unlikely(xdp_page !=3D page))
+> -                               put_page(page);
+>                         rcu_read_unlock();
+>                         return head_skb;
+>                 case XDP_TX:
+> @@ -1297,8 +1299,6 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>                                 goto err_xdp_frags;
+>                         }
+>                         *xdp_xmit |=3D VIRTIO_XDP_TX;
+> -                       if (unlikely(xdp_page !=3D page))
+> -                               put_page(page);
+>                         rcu_read_unlock();
+>                         goto xdp_xmit;
+>                 case XDP_REDIRECT:
+> @@ -1307,8 +1307,6 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>                         if (err)
+>                                 goto err_xdp_frags;
+>                         *xdp_xmit |=3D VIRTIO_XDP_REDIR;
+> -                       if (unlikely(xdp_page !=3D page))
+> -                               put_page(page);
+>                         rcu_read_unlock();
+>                         goto xdp_xmit;
+>                 default:
+> @@ -1321,9 +1319,6 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>                         goto err_xdp_frags;
+>                 }
+>  err_xdp_frags:
+> -               if (unlikely(xdp_page !=3D page))
+> -                       __free_pages(xdp_page, 0);
+> -
+>                 if (xdp_buff_has_frags(&xdp)) {
+>                         shinfo =3D xdp_get_shared_info_from_buff(&xdp);
+>                         for (i =3D 0; i < shinfo->nr_frags; i++) {
+> --
+> 2.32.0.3.g01195cf9f
+>
 
