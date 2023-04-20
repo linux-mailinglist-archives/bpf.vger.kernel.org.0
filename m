@@ -2,79 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FE26E8A71
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB506E8A6C
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 08:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbjDTGdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 02:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
+        id S233218AbjDTGcz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 02:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbjDTGdg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 02:33:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4660246B9
+        with ESMTP id S232009AbjDTGcy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 02:32:54 -0400
+Received: from out0-197.mail.aliyun.com (out0-197.mail.aliyun.com [140.205.0.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B1246B8
         for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681972371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PSt4vJ6JebWC94KoDTMIHxTA6Bf2J+lWbCuixu0az/4=;
-        b=dZiIlYa2/wIPqUP+8AU3HjO9o8YFE1SQVwEGApiXwL68M3njGy2bL5SSif1VVAnwNP8cEn
-        v8aLtaSbeoyVonC6mlDoFM1Z9p2fesw7x3QJk+43wGIWIwPooMs+8E8G3d11TymdPIEPWt
-        uN2Jjo3mhiD2Xy+I5TgX98VJtjSW+Es=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-404-ivQZE33INV-KFEA9MoZPTg-1; Thu, 20 Apr 2023 02:32:50 -0400
-X-MC-Unique: ivQZE33INV-KFEA9MoZPTg-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-38def77dd7fso385521b6e.0
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 23:32:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681972370; x=1684564370;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PSt4vJ6JebWC94KoDTMIHxTA6Bf2J+lWbCuixu0az/4=;
-        b=ZQLNY+4DGctu7MwGcrlUtN3o5+WHuDzc9cYFM8YdBoLAL0k0g14i+MnvUi86hj2hLS
-         3ELpTN79hx7WKnNmrUYUAUmaWj0inOV/O4wQLTcPg68G+r1BagqnT/Y7gmmGbrTmDhzT
-         Gs0EkzH/1RFoqRnv/3GAuZlHekg3+Uas5AYj3PXKDRAXMxxaX7huHCMQdjd9vexm6LmE
-         dcBHU3y62SXR0YeT4zrT0s+HS3pfClPsunxi9+VNbq904vXPiRDWtxjywgZ60sPei/Rs
-         Cn/ljUe8mSbbwrmLfLVnUsVIuAoNySGuNWFfZzDQMjYzvlGq3Nt2zrgmwbiY5B/AVdV1
-         4baA==
-X-Gm-Message-State: AAQBX9edCy2wyLo2dsm+c6UHBV4E8DOpk8LAm6cGPQJHnWwyfA+qbF5P
-        oVawoRdMCMfrRRmEduqOTiD3YGNPWmPo1tspz6ufVr/kZ6fMtaQrxZYKs/gtRpQ/ZMNFIgNz0ZR
-        zUjTyEmh9ho0iTuqOxj3cBAyk1rDu
-X-Received: by 2002:a05:6808:30a2:b0:38e:67d7:9d0e with SMTP id bl34-20020a05680830a200b0038e67d79d0emr328357oib.31.1681972369455;
-        Wed, 19 Apr 2023 23:32:49 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aeHvzKzDJfinP2eZ1Sdj3X4Zpydu2RwxzgLVr1a7/071YWVYaLIeuA0ANa6w9WFB2KKl0o7pvkgAkp4OyBTE4=
-X-Received: by 2002:a05:6808:30a2:b0:38e:67d7:9d0e with SMTP id
- bl34-20020a05680830a200b0038e67d79d0emr328341oib.31.1681972368876; Wed, 19
- Apr 2023 23:32:48 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047190;MF=amy.saq@antgroup.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---.SLDPi4._1681972364;
+Received: from 30.230.62.44(mailfrom:amy.saq@antgroup.com fp:SMTPD_---.SLDPi4._1681972364)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Apr 2023 14:32:45 +0800
+Message-ID: <59e93ac7-9baf-48b1-809b-e935ecfbff03@antgroup.com>
+Date:   Thu, 20 Apr 2023 14:32:44 +0800
 MIME-Version: 1.0
-References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com> <20230418065327.72281-14-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20230418065327.72281-14-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 20 Apr 2023 14:32:37 +0800
-Message-ID: <CACGkMEtubJ8ND01J+Arpa4TB5kfdap7t6f9D5qc7-XkeFZYRKQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 13/14] virtio_net: small: optimize code
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [RFC] A new bpf map type for fuzzy matching key
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
+        "=?UTF-8?B?5ZGo5by6KOS4reiIqik=?=" <shuze.zq@antgroup.com>,
+        "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>,
+        "=?UTF-8?B?5byg57uq5bOwKOS6keS8ryk=?=" <yunbo.zxf@antgroup.com>
+References: <303b5895-319d-2bb7-9909-10fec3323df2@antgroup.com>
+ <CAADnVQ+3y0mbORnvCYNLdSGZ7hV5Qxskc3L-mTg0SmVpfwHFYQ@mail.gmail.com>
+From:   "=?UTF-8?B?5rKI5a6J55CqKOWHm+eOpSk=?=" <amy.saq@antgroup.com>
+In-Reply-To: <CAADnVQ+3y0mbORnvCYNLdSGZ7hV5Qxskc3L-mTg0SmVpfwHFYQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,61 +48,165 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 2:53=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> Avoid the problem that some variables(headroom and so on) will repeat
-> the calculation when process xdp.
 
-While at it, if we agree to use separate code paths for building skbs.
+在 2023/4/17 上午2:23, Alexei Starovoitov 写道:
+> On Sat, Apr 15, 2023 at 9:32 PM 沈安琪(凛玥) <amy.saq@antgroup.com> wrote:
+>>
+>> Hi everyone,
+>>
+>> For supporting fuzzy matching in bpf map as described in the original
+>> question [0], we come up with a proposal that would like to have some
+>> advice or comments from bpf thread. Thanks a lot for all the feedback :)
+>>
+>> We plan to implement a new bpf map type, naming BPF_FM_MAP, standing for
+>> fuzzy matching map.
+>> The basic idea is implementing a trie-tree using map of map runtime
+>> structure.
+>>
+>> The number of tree levels equals to the number of fields in the key
+>> struct. Assuming that the key struct has M fields, the first (M-1) level
+>> of tree nodes will be hash maps with key as the value of (M-1)-th field
+>> and entry as the fd of next level map. The last level, regarded as leaf
+>> nodes, will be hash maps with key as the value of M-th field and entry
+>> as user-defined entry for this BPF_FM_MAP.
+>>
+>> To support fuzzy matching, we add a special value -1 as (M-1)-th field
+>> key if (M-1)-th field is set as general match.
+>>
+>> When looking up a target key in BPF_FM_MAP, it will lookup the first
+>> level hashmap, matching the entry with the same value on this field and
+>> with -1 if exists. Then it will lookup the next-level hashmap, whose fd
+>> is the value it get from the previous level hashmap. It will go through
+>> all the levels of tree and get a set of leaf nodes it matches. Finally,
+>> it will sort the set of matched leaf nodes based on their priority,
+>> which is defined in BPF_FM_MAP entry struct, and return the
+>> corresponding return value also defined in BPF_FM_MAP entry struct.
+>>
+>>
+>> Given a user-defined key struct and entry struct as following:
+>>
+>> struct fm_key {
+>>       int a;
+>>       int b;
+>>       int c;
+>> }
+>>
+>> struct fm_entry {
+>>       int priority;
+>>       int value;
+>> }
+>>
+>> and declare a BPF_FM_MAP DEMO_MAP to store incoming key-value pair:
+>>
+>> struct {
+>>       __uint(type, BPF_FM_MAP);
+>>       __type(key, struct fm_key);
+>>       __type(value, struct fm_entry);
+>>       __uint(pinning, LIBBPF_PIN_BY_NAME);
+>>       __uint(max_entries, 1024);
+>>       __uint(map_flags, BPF_F_NO_PREALLOC);
+>> } DEMO_MAP SEC(".maps");
+>>
+>> Now, we add the following three key-value pairs into DEMO_MAP:
+>>
+>> |a    |b    |c    |priority    |value    |
+>> |-    |-    |1    |1           |1        |
+>> |-    |2    |1    |2           |2        |
+>> |3    |2    |1    |3           |3        |
+>>
+>> The tree will be constructed as following:
+>>
+>> field a             field b               field c
+>>
+>>                                             fd = 3
+>>                                        ---->| key | (prioriy, value) |
+>>                                       |     |  1  |       (1, 1) |
+>>                                       |
+>>                       fd = 1          |
+>>                    -->| key | val |   |
+>>                   |   | -1  |  3  |----     fd = 4
+>>                   |   |  2  |  4  |-------->| key | (prioriy, value) |
+>>    fd = 0         |                         |  1  |       (2, 2) |
+>> | key | val |   |
+>> | -1  |  1  |----
+>> |  3  |  2  |----
+>>                   |   fd = 2
+>>                    -->| key | val |         fd = 5
+>>                       |  2  |  5  |-------->| key | (prioriy, value) |
+>>                                             |  1  |       (3, 3) |
+>>
+>>
+>> After updating the tree, we have three target tuples to lookup in DEMO_MAP.
+>>
+>> struct fm_key t1 = {
+>>       .a = 6,
+>>       .b = 4,
+>>       .c = 1
+>> };
+>>
+>> struct fm_key t2 = {
+>>       .a = 5,
+>>       .b = 2,
+>>       .c = 1
+>> };
+>>
+>> struct fm_key t3 = {
+>>       .a = 3,
+>>       .b = 2,
+>>       .c = 1
+>> };
+>>
+>> // map lookup order: 0 -> 1 -> 3
+>> // matched leaf nodes: (1, 1)
+>> // picked return value: 1
+>> map_lookup_elem(&DEMO_MAP, &t1) == 1
+>>
+>> // map loopup order: 0 -> 1 -> (3, 4)
+>> // matched leaf nodes: (1, 1), (2, 2)
+>> // picked return value: 2
+>> map_lookup_elem(&DEMO_MAP, &t2) == 2
+>>
+>> // map lookup order: 0 -> (1, 2) -> (3, 4, 5)
+>> // matched leaf nodes: (1, 1), (2, 2), (3, 3)
+>> // picked return value: 3
+>> map_loopup_elem(&DEMO_MAP, &t3) == 3
+>>
+>>
+>> Thanks a lot for reviewing this proposal and we really appreciate any
+>> feedback here.
+> This sounds like several hash maps chained together with a custom logic.
+> If so it's not clear why a new map type is necessary.
+> Just let bpf prog lookup multiple hash maps.
 
-It would be better to have a helper for building skb for non XDP
-cases, then we can hide those calculation there.
 
-Thanks
+Dear Alexei,
 
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index f6f5903face2..5a5636178bd3 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1040,11 +1040,10 @@ static struct sk_buff *receive_small(struct net_d=
-evice *dev,
->         struct sk_buff *skb;
->         struct bpf_prog *xdp_prog;
->         unsigned int xdp_headroom =3D (unsigned long)ctx;
-> -       unsigned int header_offset =3D VIRTNET_RX_PAD + xdp_headroom;
-> -       unsigned int headroom =3D vi->hdr_len + header_offset;
-> -       unsigned int buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom=
-) +
-> -                             SKB_DATA_ALIGN(sizeof(struct skb_shared_inf=
-o));
->         struct page *page =3D virt_to_head_page(buf);
-> +       unsigned int header_offset;
-> +       unsigned int headroom;
-> +       unsigned int buflen;
->
->         len -=3D vi->hdr_len;
->         stats->bytes +=3D len;
-> @@ -1072,6 +1071,11 @@ static struct sk_buff *receive_small(struct net_de=
-vice *dev,
->         rcu_read_unlock();
->
->  skip_xdp:
-> +       header_offset =3D VIRTNET_RX_PAD + xdp_headroom;
-> +       headroom =3D vi->hdr_len + header_offset;
-> +       buflen =3D SKB_DATA_ALIGN(GOOD_PACKET_LEN + headroom) +
-> +               SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +
->         skb =3D build_skb(buf, buflen);
->         if (!skb)
->                 goto err;
-> --
-> 2.32.0.3.g01195cf9f
->
+Thanks for reviewing the proposal.
+
+We have several motivation to have a new bpf map type to support fuzzy 
+matching.
+
+First of all, we find that fuzzy matching a N-element tuple is quite a 
+common scenario, especially in networking. With current bpf map types, 
+developers need to modify the target tuple's field and lookup the map 
+several times if they want to find all fuzzy-matched entries. Or, they 
+need to implement some runtime structures such as the one mentioned in 
+proposal each time to support fuzzy matching, which is quite time-consuming.
+
+Another reason is that this new bpf map type can provide better 
+performance than looking up maps several times to find all fuzzy matched 
+entries. Saying that we have a 3-element tuple(a, b, c), and each field 
+has m possible values. If we use a bpf hashmap, it will have m*m*m 
+entries. If a developer want to do fuzzy matching on each field, he/she 
+needs to do map lookup over m*m*m entries three times. With the bpf 
+fuzzy matching map as proposed, he/she needs to do map lookup over m 
+entries three times, which will give some performance benefit when m is 
+large.
+
+These are the two main reasons we have to implement a new bpf map type. 
+If there is better way to do so or any other comments, we are more than 
+happy to have further discussion in the thread.
+
+Sincerely,
+Amy
 
