@@ -2,56 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA2C6E9292
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 13:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9596E939D
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 14:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbjDTL2S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 07:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        id S233808AbjDTMDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 08:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbjDTL16 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 07:27:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6708983E0;
-        Thu, 20 Apr 2023 04:27:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCDC664852;
-        Thu, 20 Apr 2023 11:27:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96D55C4339B;
-        Thu, 20 Apr 2023 11:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681990022;
-        bh=JMzuvPGaUtd3Ue61+R7r8JPv3Iwr1kA9f/gFM8QNZ7k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IySFugKIUT2dEWjVXdKzZwZgpZCG4MYXlHqWVQAdHl9Cbb/s3CqMmq2QYhVCgJUXX
-         VeHdv6jUpOwreOtK9HmssmqGtAEVU0CRB6yz4mYW0KlqpjrgwKkVsOt/geHTIpGnWX
-         821KZV2sm+3JI/8Wk3MrKHcmFhEEenMHUfHRCBMX2SojdnHltiY4Kc9IOJYtX5flRO
-         1qjzQsE/LJHRZ86r+85i+WtswxNOUX2p+9Djvjp0S1HUG+wMZ/plQvPCwO/rEWvsE8
-         Zk2sPfLRcI8afYT/ZdQHkMbG66a5YeJhuuV61D/PFxpLl/P9WUe1IQi7QCGRYBP+5F
-         2S3WDCTfZPJoA==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        mhiramat@kernel.org, Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: [PATCH v5 9/9] selftests/ftrace: Add BTF arguments test cases
-Date:   Thu, 20 Apr 2023 20:26:57 +0900
-Message-ID:  <168199001790.1795549.440521983895126009.stgit@mhiramat.roam.corp.google.com>
-X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-In-Reply-To:  <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
-References:  <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
-User-Agent: StGit/0.19
+        with ESMTP id S232922AbjDTMDR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 08:03:17 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC3049FA
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 05:03:09 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1ppT0E-0002J0-3Y; Thu, 20 Apr 2023 14:03:06 +0200
+Date:   Thu, 20 Apr 2023 14:03:06 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     bpf@vger.kernel.org
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: bpf-next hang+kasan uaf refcount acquire splat when running
+ test_progs
+Message-ID: <ZEEp+j22imoN6rn9@strlen.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,114 +37,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Hello,
 
-Add test cases to check the BTF arguments correctly supported.
+while working on bpf-netfilter test cases i found that test_progs
+never invokes bpf_test_run().
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   54 ++++++++++++++++++++
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   10 ++++
- .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |   10 ++++
- 3 files changed, 74 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+After applying following small patch it gets called as expected.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-new file mode 100644
-index 000000000000..15515f0a8c9a
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-@@ -0,0 +1,54 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - add/remove probes with BTF arguments
-+# requires: dynamic_events "<argname>":README
-+
-+KPROBES=
-+FPROBES=
-+
-+if grep -qF "p[:[<group>/][<event>]] <place> [<args>]" README ; then
-+  KPROBES=yes
-+fi
-+if grep -qF "f[:[<group>/][<event>]] <func-name>[%return] [<args>]" README ; then
-+  FPROBES=yes
-+fi
-+
-+if [ -z "$KPROBES" -a "$FPROBES" ] ; then
-+  exit_unsupported
-+fi
-+
-+echo 0 > events/enable
-+echo > dynamic_events
-+
-+TP=kfree
-+
-+if [ "$FPROBES" ] ; then
-+echo "f:fpevent $TP object" >> dynamic_events
-+echo "t:tpevent $TP ptr" >> dynamic_events
-+
-+grep -q "fpevent.*object=object" dynamic_events
-+grep -q "tpevent.*ptr=ptr" dynamic_events
-+
-+echo > dynamic_events
-+
-+echo "f:fpevent $TP "'$$args' >> dynamic_events
-+echo "t:tpevent $TP "'$$args' >> dynamic_events
-+
-+grep -q "fpevent.*object=object" dynamic_events
-+grep -q "tpevent.*ptr=ptr" dynamic_events
-+! grep -q "tpevent.*_data" dynamic_events
-+fi
-+
-+echo > dynamic_events
-+
-+if [ "$KPROBES" ] ; then
-+echo "p:kpevent $TP object" >> dynamic_events
-+grep -q "kpevent.*object=object" dynamic_events
-+
-+echo > dynamic_events
-+
-+echo "p:kpevent $TP "'$$args' >> dynamic_events
-+grep -q "kpevent.*object=object" dynamic_events
-+fi
-+
-+clear_trace
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-index 549daa162d84..fb92566916a9 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -85,4 +85,14 @@ fi
- # %return suffix errors
- check_error 'f vfs_read^%hoge'		# BAD_ADDR_SUFFIX
- 
-+# BTF arguments errors
-+if grep -q "<argname>" README; then
-+check_error 'f vfs_read $$args ^$$args'		# DOUBLE_ARGS
-+check_error 'f vfs_read%return ^$$args'		# NOFENTRY_ARGS
-+check_error 'f vfs_read ^hoge'			# NO_BTFARG
-+else
-+check_error 'f vfs_read $$args'			# NOSUP_BTFARG
-+check_error 't kfree $$args'			# NOSUP_BTFARG
-+fi
-+
- exit 0
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-index 97c08867490a..f2d1edbb650a 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-@@ -103,4 +103,14 @@ check_error 'p vfs_read^%hoge'		# BAD_ADDR_SUFFIX
- check_error 'p ^vfs_read+10%return'	# BAD_RETPROBE
- fi
- 
-+# BTF arguments errors
-+if grep -q "<argname>" README; then
-+check_error 'p vfs_read $$args ^$$args'		# DOUBLE_ARGS
-+check_error 'r vfs_read ^$$args'		# NOFENTRY_ARGS
-+check_error 'p vfs_read+8 ^$$args'		# NOFENTRY_ARGS
-+check_error 'p vfs_read ^hoge'			# NO_BTFARG
-+else
-+check_error 'p vfs_read $$args'			# NOSUP_BTFARG
-+fi
-+
- exit 0
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index 47e9e076bc8f..e2a1bdc5a570 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -587,7 +587,7 @@ void run_subtest(struct test_loader *tester,
+                /* For some reason test_verifier executes programs
+                 * with all capabilities restored. Do the same here.
+                 */
+-               if (!restore_capabilities(&caps))
++               if (restore_capabilities(&caps))
+                        goto tobj_cleanup;
 
+                do_prog_test_run(bpf_program__fd(tprog), &retval);
+
+... but then output just hangs.  With KASAN enabled I see following splat,
+followed by a refcount saturation warning:
+
+BUG: KASAN: slab-out-of-bounds in bpf_refcount_acquire_impl+0x63/0xd0
+Write of size 4 at addr ffff8881072b34e8 by task new_name/12847
+
+CPU: 1 PID: 12847 Comm: new_name Not tainted 6.3.0-rc6+ #129
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x32/0x40
+ print_address_description.constprop.0+0x2b/0x3d0
+ ? bpf_refcount_acquire_impl+0x63/0xd0
+ print_report+0xb0/0x260
+ ? bpf_refcount_acquire_impl+0x63/0xd0
+ ? kasan_addr_to_slab+0x9/0x70
+ ? bpf_refcount_acquire_impl+0x63/0xd0
+ kasan_report+0xad/0xd0
+ ? bpf_refcount_acquire_impl+0x63/0xd0
+ kasan_check_range+0x13b/0x190
+ bpf_refcount_acquire_impl+0x63/0xd0
+ bpf_prog_affcc6c9d58016ca___insert_in_tree_and_list+0x54/0x131
+ bpf_prog_795203cdef4805f4_insert_and_remove_tree_true_list_true+0x15/0x11b
+ bpf_test_run+0x2a0/0x5f0
+ ? bpf_test_timer_continue+0x430/0x430
+ ? kmem_cache_alloc+0xe5/0x260
+ ? kasan_set_track+0x21/0x30
+ ? krealloc+0x9e/0xe0
+ bpf_prog_test_run_skb+0x890/0x1270
+ ? __kmem_cache_free+0x9f/0x170
+ ? bpf_prog_test_run_raw_tp+0x570/0x570
+ ? __fget_light+0x52/0x4d0
+ ? map_update_elem+0x680/0x680
+ __sys_bpf+0x75e/0xd10
+ ? bpf_link_by_id+0xa0/0xa0
+ ? rseq_get_rseq_cs+0x67/0x650
+ ? __blkcg_punt_bio_submit+0x1b0/0x1b0
+ __x64_sys_bpf+0x6f/0xb0
+ do_syscall_64+0x3a/0x80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f2f6a8b392d
+Code: 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d3 e4 0c 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffe46938328 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000007150690 RCX: 00007f2f6a8b392d
+RDX: 0000000000000050 RSI: 00007ffe46938360 RDI: 000000000000000a
+RBP: 00007ffe46938340 R08: 0000000000000064 R09: 00007ffe46938360
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
+R13: 00007ffe46938b78 R14: 0000000000e09db0 R15: 00007f2f6a9ff000
+ </TASK>
+
+I can also reproduce this on bpf-next/780c69830ec6b27e0224586ce26bc89552fcf163.
+Is this a known bug?
+
+If you can't reproduce this I can make .config available.
+
+Thanks.
