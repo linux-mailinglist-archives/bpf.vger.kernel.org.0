@@ -2,260 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAD96E9C63
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 21:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBDA6E9C9D
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 21:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjDTTTX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 15:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        id S229707AbjDTTrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 15:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbjDTTTU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 15:19:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3F32719;
-        Thu, 20 Apr 2023 12:18:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C3704648E6;
-        Thu, 20 Apr 2023 19:18:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BCEC433EF;
-        Thu, 20 Apr 2023 19:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682018335;
-        bh=A3iNLEAwuUSgID59L/NZFfMC7ShgNOqMGzRT+MXX/Dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sFe7U24bS++H8vxhQ6xbNjBxDL6+CGr3md0H99Drz3MnnQvEB6vIVXdoOTCz7yz5Q
-         ccXZCjpLL1NDoSkcR7gAkiWaevvVOW20n2/ehEighxi/+TNnH9KiXM+Ty9BvEUqse+
-         1ExhD+qh6Ctwk/5RysiGjWtzVA+fO/4my7bSs7jEJ0SCsI/vdWBsZc237XeWYdFszU
-         7vz/3VToRm0i661mgdAi3WxKH0ky67zOyy8mNLp11LfpzTMaA+DvxKlt6lflXCrTIy
-         9K4kG0eoK1qDO4XxYfz5QjR/koxF0UnxBfPhzsPiJ0Od2Om6dKUy/9nag3JTFGtr51
-         UuFjP0wXn2WyQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1E4FC403C5; Thu, 20 Apr 2023 16:18:52 -0300 (-03)
-Date:   Thu, 20 Apr 2023 16:18:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        David Miller <davem@davemloft.net>
-Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
-Message-ID: <ZEGQHAMwtvv3AVnm@kernel.org>
-References: <ZDfKBPXDQxH8HeX9@syu-laptop>
- <87leiw11yz.fsf@toke.dk>
- <ZD/IcBvVxtFtOhUC@syu-laptop.lan>
- <CAEf4BzbxfvR4Ji1q4wJCFHOxQgFzHr8t7TMK1VJj9sJ+a0srVQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        with ESMTP id S229521AbjDTTrV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 15:47:21 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584D340F0;
+        Thu, 20 Apr 2023 12:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682020040; x=1713556040;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=ucDqd/Hd6NzqqPKXvTnruKH6ZRDqKF7jDecsk0v9ocs=;
+  b=e/yE8L4jz/aPtLQR7NbznCbpIHR3xfcsYeaxvzPgKhdswkAZJxm2/MqO
+   PJReqUDoryBlHNYe6Mmqad6wMsajqLBH4ds1D7edyZxFuVnNg4i1DzPcJ
+   irsQhH2O8L8BMEPCLLttastzAm5SnAMeeYNw2T4r2mcz/7WEhJ1yKum+4
+   azoqRqxNVmAlPR1z4AI6Y5WrUaER5TirnpFFzzMdzURMRb8X/4D2TZ+cb
+   y8SUsaD9/x1crcjQPDowEazRktArLqk8K3s0/g3g52x5pXC1KqE8n4QhL
+   bdDAVqCXYECGQJB2Q/LOFyC+us0mGBzl1pFQw4gUbnF9ACvv4tACP9ejc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="325441821"
+X-IronPort-AV: E=Sophos;i="5.99,213,1677571200"; 
+   d="scan'208";a="325441821"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2023 12:47:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="642248658"
+X-IronPort-AV: E=Sophos;i="5.99,213,1677571200"; 
+   d="scan'208";a="642248658"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga003.jf.intel.com with ESMTP; 20 Apr 2023 12:47:19 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 20 Apr 2023 12:47:18 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Thu, 20 Apr 2023 12:47:18 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Thu, 20 Apr 2023 12:47:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JApuTegbHdpX0hBFX9vE7+sXDILgjlUhppzaFp9fPAKRnqjOY+nUFDN6td1+MQDEz5o1pqfT0lwAlwFHf6zEAN4jItw6yeRY8MSQe5aJNGmSlAYJflxu8eVbfb/TFJy31GiF+JbcKaJpts5eGqRH95QUACrDJgzGYbNOEAkyM+IX7LgrTjREMXESCQxDsdjFni757rK+SLZNu8dsVosUxopFOr4aU4NpY3MCwbUe1WL/rgdlD2SXJmi5vUG2tY4MHi1Q7pCg2Vz7LkLYefKIxjB2Hnj6vG5Eg+V3/i/29Gw5278KW4E1akzAxXMArq2UxQxEPrpmsX1VxhzXSb+O5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=teF3wVHj4XuVsOFQALC0eIC8SJY/RSMqKvy22QiBPmo=;
+ b=m9AgmHrhWEz6sdAc7OLvatIOOovzsP2VF6BAs/zgbyqWgkkPQzp0f6+Kn3VKzWWUyDUEi5VRpyOzZoYRBfxkgBUmijqySgHZnxJGmfSJhlC7kqGahx2um67twkg6emUvg3Ge72Ov+pL/9U1Frvl7iZ1ORxIh/91YxJrFK0tEUvZSValHz5Q/HAURLVUDEmK91vJMsyOqum3jK34EjYKrEIrAJ2K/5DGEs+GIf937+3+lG+OJYepAznVMQh5jAgVy191fzUOGe3l2ttajw9Gx5cHWPDrPJD+w2xo4hrRHIbJjhv1tP+BTiqNgRPF5xG8Dq11X/Mzg+2niLVmIAxcM1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DS7PR11MB6246.namprd11.prod.outlook.com (2603:10b6:8:99::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6298.30; Thu, 20 Apr 2023 19:47:16 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809%3]) with mapi id 15.20.6319.021; Thu, 20 Apr 2023
+ 19:47:16 +0000
+Date:   Thu, 20 Apr 2023 21:46:33 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Gerhard Engleder <gerhard@engleder-embedded.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
+        <pabeni@redhat.com>, <bjorn@kernel.org>,
+        <magnus.karlsson@intel.com>, <jonathan.lemon@gmail.com>
+Subject: Re: [PATCH net-next v3 5/6] tsnep: Add XDP socket zero-copy RX
+ support
+Message-ID: <ZEGWmYmsM2uV48Lh@boxer>
+References: <20230418190459.19326-1-gerhard@engleder-embedded.com>
+ <20230418190459.19326-6-gerhard@engleder-embedded.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbxfvR4Ji1q4wJCFHOxQgFzHr8t7TMK1VJj9sJ+a0srVQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230418190459.19326-6-gerhard@engleder-embedded.com>
+X-ClientProxiedBy: FR0P281CA0044.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::7) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DS7PR11MB6246:EE_
+X-MS-Office365-Filtering-Correlation-Id: d865541e-731a-4d5d-8a94-08db41d80b2d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zvn+kjB9nXtSmPYYnsq7k9KbeoYcRiK31cq/DvzB/8xdimm0I8VWEaWu6+IkLZn+QhYgTmfKsY0bT0Rh4QO7/D90xbyQQGIPtynN7RQayaK5o/VKdHEJo6+lkj59PqVslFWioCKXRU5ZPenu0uOAiN5s/jm9/NBYum+jGTruF9Zr1f/mDFQ8/HavFr1erje1t28tJU+RFGQSmfRnlea888mVQg6qtBlmnohiKG2+mJhpR1rhmHgyaO8SMCkFX7LMy1XdJ2vebGGThsc6yYaFTGXVaxNpFCuSXqv6vvxcM9upzGymLadPsJhg23sOSOoCsk2YAOIGG4o76Egw+lm6W+iURNS6hc+LgFYra0x7/tpkiusW21zQBhy9ttmZLLHQ3ZOcKRPyzOleQ2khs916dv4pf7wrJEZkTEhePZ/cfHbAZ6Hn8pZtbCjCcPTSCF00oIC9RkWGhoZ2S2wAqL4AtBQIrwiIDEHGDPjv7vkCTkZra6hZn2XrKpt3LuDkyKkSmH7cqFwKEwwE5lZG16zXYdqaaWPd8VBoHM76eQ28LzEJdizUH0HT6Gb38k/zsgI/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(136003)(366004)(346002)(376002)(396003)(39860400002)(451199021)(26005)(186003)(8676002)(38100700002)(9686003)(8936002)(6512007)(6506007)(478600001)(316002)(33716001)(66476007)(4326008)(66946007)(66556008)(6916009)(6666004)(6486002)(86362001)(82960400001)(41300700001)(44832011)(83380400001)(5660300002)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mKOBd4XLjDRyMaRdcCFeglCKsULNO2TDdGss+2EHCGDG6gfxjf8Q7c6bhIUi?=
+ =?us-ascii?Q?bn4/2VFGqNszRgz55khkjYs+DYP7Yy2XrOhgdRMN+1xCsfn1G+R1lp+Aoy9D?=
+ =?us-ascii?Q?+nr/LNHxlM95K7f4oy0oIfAjHXFN3b3/KLAEocAzlSHt24sTVA3tRcAaaNVi?=
+ =?us-ascii?Q?0FM2yrVcrrvX7GSXZIFviP2wpAX3Pdml/vjtZeFI3i4oxfmZD3AlQ6MOjq9h?=
+ =?us-ascii?Q?xDscFUCWRZLGZF1rm9f2x3MeNvYxpQwuTD8cTrp/5PzaTsrlvb9rshOOCejJ?=
+ =?us-ascii?Q?jsvLubhpgyNcwxirv28X2v3cO+fW+BB/CD2xVj89Ckc3gqH1vkwnW6Vj447A?=
+ =?us-ascii?Q?HdLWW/FYjkL9/sJWRD0k46PMgO9ZHIwQ2wLIQqM28niVzNpcc31SVj9e6eda?=
+ =?us-ascii?Q?C+Va7DKDGVle+wMWunjYi26qVcijqVWKyiouDC5BYmimbQZKrGCan7K1QLnL?=
+ =?us-ascii?Q?lYQqijgpjlnALS8iNKbe4SPM30J2tkVyzzdT5JaiGXZQDy8saZdM0gpsJDY5?=
+ =?us-ascii?Q?hitCNPE9W6mErybPzLvkMILvD/za5ZsfTYH/ESMni3YpIgjhk4g6j//l0WEF?=
+ =?us-ascii?Q?h3sPzyg3b9jtuxI0BmtLxm6vJwEYjTtsBFuUYnbR+qsDmJkfMK3YJmIrzsxJ?=
+ =?us-ascii?Q?UPYt6OLDdRToG/q1DmT12dVDZCW2JoLS2CDCM3n8q1eXNnhYJrGLTEw3VOJk?=
+ =?us-ascii?Q?ANvy44rnm+0Z9isc8TY19I+hreiKUIJHkrwaBP7U3rn77YCWXrVwQXPSIcVl?=
+ =?us-ascii?Q?7PzXtz3Naunxt0v7NR+8SYDJseA6R9aH1jOg8u/3DorXwMCw45FREk9jGviH?=
+ =?us-ascii?Q?xhiVfC6NYZ8e0VqnofwFm1IzdM7Cdy4yaxFnpMpi/wuoR6QuZOBVA4It3y/d?=
+ =?us-ascii?Q?fsMwS6Ry628o2duEAkQDODnuNsHs2rIK3BV8EeF+nCTgt2dNAB4xymqfHxPb?=
+ =?us-ascii?Q?2ytXaqmQfPIZWmIQ0yY9FyKtqdh6GDYnbt39hp9pKsMLyXZPs5FOoV9dLBM5?=
+ =?us-ascii?Q?g1yZDX6XrF1PfPUlVd//7ps/QrM18oLVWh1efuDscYJFbTplQ40dCoVgXZdt?=
+ =?us-ascii?Q?6Esa29dBv9lra/8eDd9A43M4pWg5T5a5/qikVCyPPIcqWhnzH4aNKRQCJMJ0?=
+ =?us-ascii?Q?YIvUxyZ/Qab/nyscGBlyl7iO7j05ONS9VDT+smU2soKfYyahUMpkk6fkh/60?=
+ =?us-ascii?Q?O8wCJivERt7kIKk5OURBIMGamJb7LYQZyxDme3DnXpPWdwAUW00gKM8XcWxC?=
+ =?us-ascii?Q?W32JnnOAbJTSM/5LiJW+rxbXf/8gnJ7A0W6QHm/lL1CCq+g3TVEez31IkCaj?=
+ =?us-ascii?Q?MSKhPpywQpUq1Z1uvEp9fF/jHwdQf7zqzmZ2OLLcmWFX88HqM5jCpjgeMX/i?=
+ =?us-ascii?Q?yI5wi/mrQ7f6k2jxN3Wuyk7ZlHsGbDkvqVjE7X2B9FW+p2lrwnWmXXs2c6m1?=
+ =?us-ascii?Q?4c2l7Oj54rJ9+/lfVZd4lcw+mfs6otOVa3kyY/9utR5jLSrv8gshggQQrPGz?=
+ =?us-ascii?Q?tlZexZJsVBjqQg+pyeKEdTlvU1yIttZqBF8AJbwN5M8hwq5kkeeqDz2/e7dC?=
+ =?us-ascii?Q?VVQBjHLt4CW4yy4TFg7z8Y57DrPFHB2LEC+b++K9FSpgMBD3mFXRGnSfwgE7?=
+ =?us-ascii?Q?GQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d865541e-731a-4d5d-8a94-08db41d80b2d
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2023 19:47:16.1325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: agzS/G1+QLFwoYBPq4pGv0s0fcPF2iIWWGGz7hLuo7pPhH0wEGWeMEA+5IBnI9J9q/9VpByqHVmOwzsDcusZXkMFoOihdl+Bh4+4px8+Gzg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6246
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Apr 19, 2023 at 12:42:39PM -0700, Andrii Nakryiko escreveu:
-> On Wed, Apr 19, 2023 at 3:55 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
-> >
-> > Thanks for sharing! I though I'd expands on what you said to draw a clearer
-> > picture of the challenges.
-> >
-> > On Thu, Apr 13, 2023 at 01:00:20PM +0200, Toke Høiland-Jørgensen wrote:
-> > > Shung-Hsi Yu <shung-hsi.yu@suse.com> writes:
-> > >
-> > > > A side note: if we want all userspace visible libbpf to have a coherent
-> > > > version, perf needs to use the shared libbpf library as well (either
-> > > > autodetected or forced with LIBBPF_DYNAMIC=1 like Fedora[4]). But having to
-> > > > backport patches to kernel source to keep up with userspace package (libbpf)
-> > > > changes could be a pain.
-> >
-> > Here some more context for completeness. Kernel source changes are published
-> > at a much slower pace than userspace. When an application in the kernel
-> > source (e.g. perf) depends on the userspace library, it's kind of like
-> > trying to catchup a car on a bike, which is doable, as evident by the
-
-That is why perf is continuously (at least) build tested against lots of
-distros, see the last test output:
-
-[perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.86.10/perf/perf-6.3.0-rc1.tar.xz
-[perfbuilder@five ~]$ time dm
-   1   151.45 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-16) , clang version 14.0.6 (Red Hat 14.0.6-1.module_el8.7.0+3277+b822483f)
-   2   150.54 almalinux:9                   : Ok   gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-2) , clang version 14.0.6 (Red Hat 14.0.6-4.el9_1)
-   3   159.04 alpine:3.15                   : Ok   gcc (Alpine 10.3.1_git20211027) 10.3.1 20211027 , Alpine clang version 12.0.1
-   4   153.81 alpine:3.16                   : Ok   gcc (Alpine 11.2.1_git20220219) 11.2.1 20220219 , Alpine clang version 13.0.1
-   5   137.88 alpine:3.17                   : Ok   gcc (Alpine 12.2.1_git20220924-r4) 12.2.1 20220924 , Alpine clang version 15.0.7
-   6   139.32 alpine:edge                   : Ok   gcc (Alpine 12.2.1_git20220924-r9) 12.2.1 20220924 , Alpine clang version 16.0.0
-   7   109.51 alt:p9                        : Ok   x86_64-alt-linux-gcc (GCC) 8.4.1 20200305 (ALT p9 8.4.1-alt0.p9.1) , clang version 10.0.0
-   8   104.99 alt:p10                       : Ok   x86_64-alt-linux-gcc (GCC) 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2) , clang version 11.0.1
-   9    85.35 alt:sisyphus                  : Ok   x86_64-alt-linux-gcc (GCC) 12.1.1 20220518 (ALT Sisyphus 12.1.1-alt2) , ALT Linux Team clang version 13.0.1
-  10   111.22 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-15) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2)
-  11   127.05 amazonlinux:2023              : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2)
-  12   126.56 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2)
-  13   154.76 archlinux:base                : Ok   gcc (GCC) 12.2.0 , clang version 14.0.6
-  14   135.39 centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-18) , clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+1258+af79b238)
-  15    40.01 clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 12.2.1 20230412 releases/gcc-12.2.0-699-g43ab94d20e
-  16    95.89 debian:10                     : Ok   gcc (Debian 8.3.0-6) 8.3.0 , Debian clang version 11.0.1-2~deb10u1
-  17   121.95 debian:11                     : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 11.0.1-2
-  18   136.49 debian:experimental           : Ok   gcc (Debian 12.2.0-14) 12.2.0 , Debian clang version 14.0.6
-  19    29.78 debian:experimental-x-arm64   : Ok   aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0
-  20    22.96 debian:experimental-x-mips    : Ok   mips-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0
-  21     3.37 debian:experimental-x-mips64  : FAIL gcc version 10.2.1 20210110 (Debian 10.2.1-6)
-  22    11.29 debian:experimental-x-mipsel  : FAIL gcc version 12.2.0 (Debian 12.2.0-14)
-  23    33.28 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2)
-  24    33.29 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6)
-  25    29.77 fedora:28                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)
-  26    32.27 fedora:29                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)
-  27    34.18 fedora:30                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)
-  28   139.98 fedora:31                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2) , clang version 9.0.1 (Fedora 9.0.1-4.fc31)
-  29   119.93 fedora:32                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 10.0.1 (Fedora 10.0.1-3.fc32)
-  30   123.87 fedora:33                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 11.0.0 (Fedora 11.0.0-3.fc33)
-  31   188.77 fedora:34                     : Ok   gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-2) , clang version 12.0.1 (Fedora 12.0.1-1.fc34)
-  32    22.44 fedora:34-x-ARC-glibc         : Ok   arc-linux-gcc (ARC HS GNU/Linux glibc toolchain 2019.03-rc1) 8.3.1 20190225
-  33    20.33 fedora:34-x-ARC-uClibc        : Ok   arc-linux-gcc (ARCv2 ISA Linux uClibc toolchain 2019.03-rc1) 8.3.1 20190225
-  34   172.51 fedora:35                     : Ok   gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-3) , clang version 13.0.1 (Fedora 13.0.1-1.fc35)
-  35   138.29 fedora:36                     : Ok   gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4) , clang version 14.0.5 (Fedora 14.0.5-2.fc36)
-  36   139.99 fedora:37                     : Ok   gcc (GCC) 12.2.1 20221121 (Red Hat 12.2.1-4) , clang version 15.0.7 (Fedora 15.0.7-1.fc37)
-  37   144.73 fedora:38                     : Ok   gcc (GCC) 13.0.1 20230401 (Red Hat 13.0.1-0) , clang version 16.0.0 (Fedora 16.0.0-2.fc38)
-  38   191.37 fedora:39                     : Ok   gcc (GCC) 13.0.1 20230404 (Red Hat 13.0.1-0) , clang version 16.0.1 (Fedora 16.0.1-1.fc39)
-  39   187.13 fedora:rawhide                : Ok   gcc (GCC) 13.0.1 20230404 (Red Hat 13.0.1-0) , clang version 16.0.1 (Fedora 16.0.1-1.fc39)
-  40    13.08 gentoo:stage3                 : FAIL gcc version 12.2.1 20230121 (Gentoo 12.2.1_p20230121-r1 p10)
-  41   152.25 manjaro:base                  : Ok   gcc (GCC) 12.2.1 20230201 , clang version 15.0.7
-  42   148.30 opensuse:15.4                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 13.0.1
-  43   152.82 opensuse:15.5                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 15.0.7
-  44   187.75 opensuse:tumbleweed           : Ok   gcc (SUSE Linux) 12.2.1 20221020 [revision 0aaef83351473e8f4eb774f8f999bbe87a4866d7] , clang version 15.0.6
-  45   133.67 oraclelinux:8                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-16.0.2) , clang version 14.0.6 (Red Hat 14.0.6-1.0.1.module+el8.7.0+20823+214a699d)
-  46   132.26 oraclelinux:9                 : Ok   gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-2.1.0.2) , clang version 14.0.6 (Red Hat 14.0.6-4.0.1.el9_1)
-  47   150.02 rockylinux:8                  : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-16) , clang version 14.0.6 (Red Hat 14.0.6-1.module+el8.7.0+1080+d88dc670)
-  48   133.78 rockylinux:9                  : Ok   gcc (GCC) 11.3.1 20220421 (Red Hat 11.3.1-2) , clang version 14.0.6 (Red Hat 14.0.6-4.el9_1)
-  49    28.97 ubuntu:18.04                  : Ok   gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  50    25.06 ubuntu:18.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-  51    25.06 ubuntu:18.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
-  52    20.54 ubuntu:18.04-x-m68k           : Ok   m68k-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  53    24.56 ubuntu:18.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  54    26.07 ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  55    26.46 ubuntu:18.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  56   113.72 ubuntu:18.04-x-riscv64        : Ok   riscv64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  57    22.55 ubuntu:18.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  58    24.35 ubuntu:18.04-x-sh4            : Ok   sh4-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  59    22.54 ubuntu:18.04-x-sparc64        : Ok   sparc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-  60    31.87 ubuntu:20.04                  : Ok   gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
-  61   179.64 ubuntu:22.04                  : Ok   gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0 , Ubuntu clang version 14.0.0-1ubuntu1
-  62     1.26 ubuntu:22.04-x-riscv64        : FAIL gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04)
-  63    87.25 ubuntu:22.10                  : Ok   gcc (Ubuntu 12.2.0-3ubuntu1) 12.2.0 , Ubuntu clang version 15.0.7
-  64    86.96 ubuntu:23.04                  : Ok   gcc (Ubuntu 12.2.0-17ubuntu1) 12.2.0 , Ubuntu clang version 15.0.7
-BUILD_TARBALL_HEAD=f8b04f975d2c3d7c8e8cb53155744c20a41813ac
-65 6011.52
-
-real	101m23.391s
-user	0m51.216s
-sys	0m40.407s
-[perfbuilder@five ~]$
-
-> > plethora of userspace libraries perf already depends on. While I don't
-> > having experience maintaining perf, judging by tools/perf/Makefile.config
-> > that does not seem like an easy feat.
-
-Not that bad having the tests we have in place :-)
-
-> > For perf to use libbpf in kernel would mean that it's just depending on
-> > something that moves at the same pace.
-
-More tests to check build both with the in-kernel libbpf and with the
-one in the distro:
-
-⬢[acme@toolbox perf-tools-next]$ grep LIBBPF_DYNAMIC tools/perf/tests/make
-make_libbpf_dynamic := LIBBPF_DYNAMIC=1
-⬢[acme@toolbox perf-tools-next]$
-
-
-> > That said, maybe perf won't need additional backport to keep up with libbpf
-> > as long as we keep it within that same major version (and disable
-> > deprecation warning)? @Andrii
-> >
-> > Now that We've got pass libbpf 1.0 it seems like a good time to reconsider.
+On Tue, Apr 18, 2023 at 09:04:58PM +0200, Gerhard Engleder wrote:
+> Add support for XSK zero-copy to RX path. The setup of the XSK pool can
+> be done at runtime. If the netdev is running, then the queue must be
+> disabled and enabled during reconfiguration. This can be done easily
+> with functions introduced in previous commits.
 > 
-> I'm not sure what the proposal is, but I'll delegate to Arnaldo.
- 
-> > > So basically, this here is the reason we're building libbpf from the
-> > > kernel tree for the RHEL package: If we use the github version we'd need
-> > > to juggle two different versions of libbpf, one for the in-kernel-tree
-> > > users (perf as you mention, but also the BPF selftests), and one for the
-
-Have you tried with LIBBPF_DYNAMIC=1?
-
-> > > userspace packages. Also, having libbpf in the kernel tree means we can
-> > > just backport patches to it along with the BPF-related kernel patches
-> > > (we do quite extensive BPF backports for each RHEL version).
-> >
-> > > Finally, building from the kernel tree means we can use the existing
-> > > kernel-related procedures for any out of order hotfixes (since AFAIK none
-> > > of the github repositories have any concept of stable branches that
-> > > receive fixes).
-> >
-> > +1
-> >
-> > Got something similar in place as well and being able to stick with existing
-> > procedure is appealing.
-> >
-> > > YMMV of course, but figured I'd share our reasoning. To be clear,
-> > > building from the kernel tree is not without its own pain points (mostly
-> > > related to how the build scripts are structured for our kernel builds).
-> > > We've discussed moving to the github version of libbpf multiple times,
-> > > but every time we've concluded that it would be more, not less, painful
-> > > than having the kernel tree be the single source of truth.
-> >
-> > We package maintainer are certainly quite hard to please :)
-> >
-> > Just having an individual package easy to work with is not enough, we want
-> > it to be easier for most packages before jumping on the bandwagon, which is
-> > why this email ended up talking about perf despite it started as a
-> > discussion on packaging libbpf and bpftool.
-> >
-> > I suppose the mileage depends on the build system & scripts in use and how
-> > much backporting is done; the more kernel backporting (along with more
-> > established processes in place), the more painful it'd be to move to the
-> > GitHub version. My gut feeling is that SLES do less backporting compared to
-> > RHEL when it comes to BPF, and that probably placed us closer to the middle
-> > ground.
+> A more important property is that, if the netdev is running, then the
+> setup of the XSK pool shall not stop the netdev in case of errors. A
+> broken netdev after a failed XSK pool setup is bad behavior. Therefore,
+> the allocation and setup of resources during XSK pool setup is done only
+> before any queue is disabled. Additionally, freeing and later allocation
+> of resources is eliminated in some cases. Page pool entries are kept for
+> later use. Two memory models are registered in parallel. As a result,
+> the XSK pool setup cannot fail during queue reconfiguration.
 > 
-> Even though libbpf source is developed in kernel repo, it's not tied
-> to specific kernel. So any kernel backports have no relevance to
-> libbpf itself. It's yet another reason to switch to Github mirror.
-> Github is merging libbpf-related fixes from both bpf and bpf-next
-> trees during sync, and is meant to always be the latest and best
-> version with all fixes included.
+> In contrast to other drivers, XSK pool setup and XDP BPF program setup
+> are separate actions. XSK pool setup can be done without any XDP BPF
+> program. The XDP BPF program can be added, removed or changed without
+> any reconfiguration of the XSK pool.
 > 
-> I won't claim anything for perf, maybe Arnaldo can clarify, but I
-> suspect that perf is also meant to be relatively independent from
-> specific kernel and work on wide variety of kernels.
+> Test results with A53 1.2GHz:
 > 
-> As for stable branches. For libbpf, we don't have it because we didn't
-> need it yet. We did have bug fix patch releases that seem to be
-> working out fine, though.
+> xdpsock rxdrop copy mode:
+>                    pps            pkts           1.00
+> rx                 856,054        10,625,775
+> Two CPUs with both 100% utilization.
 > 
-> >
-> > Thanks,
-> > Shung-Hsi
-> >
-> > > -Toke
-> > >
+> xdpsock rxdrop zero-copy mode:
+>                    pps            pkts           1.00
+> rx                 889,388        4,615,284
+> Two CPUs with 100% and 20% utilization.
+> 
+> xdpsock l2fwd copy mode:
+>                    pps            pkts           1.00
+> rx                 248,985        7,315,885
+> tx                 248,921        7,315,885
+> Two CPUs with 100% and 10% utilization.
+> 
+> xdpsock l2fwd zero-copy mode:
+>                    pps            pkts           1.00
+> rx                 254,735        3,039,456
+> tx                 254,735        3,039,456
+> Two CPUs with 100% and 4% utilization.
 
--- 
+Thanks for sharing the numbers. This is for 64 byte frames?
 
-- Arnaldo
+> 
+> Packet rate increases and CPU utilization is reduced in both cases.
+> 100% CPU load seems to the base load. This load is consumed by ksoftirqd
+> just for dropping the generated packets without xdpsock running.
+> 
+> Using batch API reduced CPU utilization slightly, but measurements are
+> not stable enough to provide meaningful numbers.
+> 
+> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+> ---
+>  drivers/net/ethernet/engleder/tsnep.h      |  13 +-
+>  drivers/net/ethernet/engleder/tsnep_main.c | 494 ++++++++++++++++++++-
+>  drivers/net/ethernet/engleder/tsnep_xdp.c  |  66 +++
+>  3 files changed, 558 insertions(+), 15 deletions(-)
+> 
+
+(...)
+
+>  static const struct net_device_ops tsnep_netdev_ops = {
+>  	.ndo_open = tsnep_netdev_open,
+>  	.ndo_stop = tsnep_netdev_close,
+> @@ -1713,6 +2177,7 @@ static const struct net_device_ops tsnep_netdev_ops = {
+>  	.ndo_setup_tc = tsnep_tc_setup,
+>  	.ndo_bpf = tsnep_netdev_bpf,
+>  	.ndo_xdp_xmit = tsnep_netdev_xdp_xmit,
+> +	.ndo_xsk_wakeup = tsnep_netdev_xsk_wakeup,
+>  };
+>  
+>  static int tsnep_mac_init(struct tsnep_adapter *adapter)
+> @@ -1973,7 +2438,8 @@ static int tsnep_probe(struct platform_device *pdev)
+>  
+>  	netdev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+>  			       NETDEV_XDP_ACT_NDO_XMIT |
+> -			       NETDEV_XDP_ACT_NDO_XMIT_SG;
+> +			       NETDEV_XDP_ACT_NDO_XMIT_SG |
+> +			       NETDEV_XDP_ACT_XSK_ZEROCOPY;
+
+In theory enabling this feature here before implementing Tx ZC can expose
+you to some broken behavior, so just for the sake of completeness, i would
+move this to Tx ZC patch.
+
+>  
