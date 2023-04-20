@@ -2,117 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA746E867D
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 02:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C6F6E8698
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 02:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbjDTA2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Apr 2023 20:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
+        id S230247AbjDTAdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Apr 2023 20:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbjDTA2h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Apr 2023 20:28:37 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA12630ED
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:28:36 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-54fc337a650so23131267b3.4
-        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:28:36 -0700 (PDT)
+        with ESMTP id S230059AbjDTAdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Apr 2023 20:33:44 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFE910FD
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:33:40 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f1738d0d4cso1710955e9.1
+        for <bpf@vger.kernel.org>; Wed, 19 Apr 2023 17:33:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681950515; x=1684542515;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5SthL6OHqX6FzuwDi0PaNEc2NoQeNojtmQVxNqnY9Lc=;
-        b=UXCJ+jE/8haW4LtFwim+TPRw8ZumTxs63Y9R/KNzIArfxiJXUCdhj3HCrQmQoPgvhi
-         vavaFxDj59WE35f77k6bQLwjlfTIA17gD/0mc6M7X1Rk20ynqsjqaTHxRPSeDzdn8bAR
-         ONmbYAQv0u6HzbmD48c3xyTmhjzOEReHMkhCXcagNpDMhdWryotmAX8UTHaqqvj8YD43
-         /m22A/pwBfNtAe+OPpOTCpNXm/A1otXdGOPHD1qMGocGuvF8Ia08atiUX50Wcr6j9Gr9
-         aFEyFObgTeFzSKITdhHG127cPnCZI9zL1UXi7GzVZx2yLWaxEEGSTWS4KYrTTyMNQBs3
-         97Zw==
+        d=isovalent.com; s=google; t=1681950819; x=1684542819;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UIYP4oG1399xp7l5yP6cSIIg2FxTbL9dP4yBn1WImQY=;
+        b=JiD0HLB4IPZqnQlRjhFpYel4v73OXFbuVhB5xuxT9uQk56WeKSe8l7UsExUGyLhpq7
+         V4IcSV+KFq1DdFsK9/sWFKLHGSvFri7cM715tDAahDDFI4ZPrUMkFxCZxBGr452zgT0D
+         +t22BplNWJTIFj+6w4BpgF9l6uZNp3PYzxIGrEcbUedIFzFAK0+cLLDaxYNTgjRdcv8T
+         pkmyv76Fg5hIcsUI24euTV8AWDKpRxrOldHhv0KWTATqLHyWoBqMUvErYnSqK0PZ2+Kj
+         16Et/7YTkH61aBDE5AFgcrsCtOw1ng0rnWaTxa3qhilS+bgg3PaAP1KilXkJrLQjk5SD
+         KI1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681950515; x=1684542515;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5SthL6OHqX6FzuwDi0PaNEc2NoQeNojtmQVxNqnY9Lc=;
-        b=I+AEBlfbzubWm0hlJC+c90IyV/NC0+6SL+yVGxrClPDPgeSIOn6KF5OYRdRR3kR1mv
-         jqHyB1Wr7tANNiePYr+VJdeUVM2V9+lD4f4FGh7VMu82RVAskstcxj/kW7D+dHExoJAh
-         OMM5zGyNMjSCl5UbkPTjyUwMaopuQzm1VZSqvp4LD04oV+cE9jKZ09r6MH8vgBZn7VrR
-         KhEaM4B31xsOlrsNZPsAj2OXVvYJvzfZp/NKvkDC+HMSoQUj9gLfputUQqc6MbLPs5cq
-         N+xptSqKx0Sv2ww3msIfdNTzUl9B8YjkFzQjqlqA4bXUfT7wcXNkLdObNGzCbD1q9K28
-         /hUw==
-X-Gm-Message-State: AAQBX9fvQQYJ5UdR/tVzCHiGDySVG1D3ei8oIiy7eFt2mKsDiiw0iCnz
-        kdP8MfSn2E5BqSWoOltnfzOIaud1IIc=
-X-Google-Smtp-Source: AKy350Y75qKmArDKR1fKcJc8vd0D6L7H/Ng6l+AVS1KYxXuI1jDX0gkq7uy2nA7wHyVBagkAAW39AA==
-X-Received: by 2002:a81:4e0b:0:b0:54b:fd2a:7288 with SMTP id c11-20020a814e0b000000b0054bfd2a7288mr4666284ywb.39.1681950515447;
-        Wed, 19 Apr 2023 17:28:35 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:7d97:458e:fc71:f392])
-        by smtp.gmail.com with ESMTPSA id j1-20020a0df901000000b0054f9dc9c7f2sm30822ywf.44.2023.04.19.17.28.34
+        d=1e100.net; s=20221208; t=1681950819; x=1684542819;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UIYP4oG1399xp7l5yP6cSIIg2FxTbL9dP4yBn1WImQY=;
+        b=gpRgX22QZcM7TSJI6D+JPXXW0RZWZKQSPz/NmJnMGS5hzsDA5vV6JznZIEE05SGQgu
+         hthPOWnTs741qDYthfM2AdBUV5RVvt/ZSccRVstKPPDwyEA7dk3y6oAuZffq8tu+jrAL
+         Ye1/9m9MqMOgV095Mzq+KJRiOww1cLov/nDga3M/IkRbDa/MlJeyy1L+Je1lOb1IS4IH
+         zptRuh1ceLpXvBYVrr2HWxBcnFnTXbH46xKGVU7D6n4K2wSASWpwfnIVYOLqrSIr8s5Y
+         wULFS67jZ1/NmqsKhdA4RU4c7vYmi4L0yxOJli4Ri1tw/xsXXX/gwQIeq97cfZlw7GWZ
+         FVRA==
+X-Gm-Message-State: AAQBX9dXzR+/pfcMZXDj6n2ARPMUpM3QQLQ4BkZu77YnB0rSfZTMIKHu
+        Y3jJw5dUEmXV2KHL73aptwq90g==
+X-Google-Smtp-Source: AKy350bXPjnvaazksfhlNMyVg+0CF91uqAGJT5BXI14h98mrvzq5l03wL7ziuCIorQRvaMNeDEoReg==
+X-Received: by 2002:a05:6000:1112:b0:2fe:562c:c0dc with SMTP id z18-20020a056000111200b002fe562cc0dcmr4042380wrw.40.1681950818815;
+        Wed, 19 Apr 2023 17:33:38 -0700 (PDT)
+Received: from harfang.fritz.box ([2a02:8011:e80c:0:9d89:dbf3:be67:5a7b])
+        by smtp.gmail.com with ESMTPSA id w9-20020a05600c474900b003f17e37ce60sm3623446wmo.47.2023.04.19.17.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Apr 2023 17:28:35 -0700 (PDT)
-From:   Kui-Feng Lee <thinker.li@gmail.com>
-X-Google-Original-From: Kui-Feng Lee <kuifeng@meta.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
-        yhs@meta.com, quentin@isovalent.com
-Cc:     Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next v3 2/2] bpftool: Update doc to explain struct_ops register subcommand.
-Date:   Wed, 19 Apr 2023 17:28:22 -0700
-Message-Id: <20230420002822.345222-2-kuifeng@meta.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230420002822.345222-1-kuifeng@meta.com>
-References: <20230420002822.345222-1-kuifeng@meta.com>
+        Wed, 19 Apr 2023 17:33:38 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH bpf-next] bpftool: Replace "__fallthrough" by a comment to address merge conflict
+Date:   Thu, 20 Apr 2023 01:33:33 +0100
+Message-Id: <20230420003333.90901-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The "struct_ops register" subcommand now allows for an optional *LINK_DIR*
-to be included. This specifies the directory path where bpftool will pin
-struct_ops links with the same name as their corresponding map names.
+The recent support for inline annotations in control flow graphs
+generated by bpftool introduced the usage of the "__fallthrough" macro
+in a switch/case block in btf_dumper.c. This change went through the
+bpf-next tree, but resulted in a merge conflict in linux-next, because
+this macro has been renamed "fallthrough" (no underscores) in the
+meantime.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+To address the conflict, we temporarily switch to a simple comment
+instead of a macro.
+
+Related: commit f7a858bffcdd ("tools: Rename __fallthrough to fallthrough")
+
+Fixes: 9fd496848b1c ("bpftool: Support inline annotations when dumping the CFG of a program")
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Link: https://lore.kernel.org/all/yt9dttxlwal7.fsf@linux.ibm.com/
+Reported-by: Thomas Richter <tmricht@linux.ibm.com>
+Link: https://lore.kernel.org/bpf/20230412123636.2358949-1-tmricht@linux.ibm.com/
+Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- .../bpf/bpftool/Documentation/bpftool-struct_ops.rst | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ tools/bpf/bpftool/btf_dumper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-index ee53a122c0c7..8022b5321dbe 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-@@ -26,7 +26,7 @@ STRUCT_OPS COMMANDS
- 
- |	**bpftool** **struct_ops { show | list }** [*STRUCT_OPS_MAP*]
- |	**bpftool** **struct_ops dump** [*STRUCT_OPS_MAP*]
--|	**bpftool** **struct_ops register** *OBJ*
-+|	**bpftool** **struct_ops register** *OBJ* [*LINK_DIR*]
- |	**bpftool** **struct_ops unregister** *STRUCT_OPS_MAP*
- |	**bpftool** **struct_ops help**
- |
-@@ -51,10 +51,14 @@ DESCRIPTION
- 		  for the given struct_ops.  Otherwise, it dumps all struct_ops
- 		  currently existing in the system.
- 
--	**bpftool struct_ops register** *OBJ*
-+	**bpftool struct_ops register** *OBJ* [*LINK_DIR*]
- 		  Register bpf struct_ops from *OBJ*.  All struct_ops under
--		  the ELF section ".struct_ops" will be registered to
--		  its kernel subsystem.
-+		  the ELF section ".struct_ops" and ".struct_ops.link" will
-+		  be registered to its kernel subsystem.  For each
-+		  struct_ops in the ".struct_ops.link" section, a link
-+		  will be created.  You can give *LINK_DIR* to provide a
-+		  directory path where these links will be pinned with the
-+		  same name as their corresponding map name.
- 
- 	**bpftool struct_ops unregister**  *STRUCT_OPS_MAP*
- 		  Unregister the *STRUCT_OPS_MAP* from the kernel subsystem.
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+index 6c5e0e82da22..294de231db99 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -835,7 +835,7 @@ static void dotlabel_puts(const char *s)
+ 		case '|':
+ 		case ' ':
+ 			putchar('\\');
+-			__fallthrough;
++			/* fallthrough */
+ 		default:
+ 			putchar(*s);
+ 		}
 -- 
 2.34.1
 
