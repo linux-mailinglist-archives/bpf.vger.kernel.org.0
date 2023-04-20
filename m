@@ -2,109 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1501A6E8C58
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 10:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438E76E8D2F
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 10:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjDTIMf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 04:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S234522AbjDTIvp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 04:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234040AbjDTIMe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 04:12:34 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6D22D49;
-        Thu, 20 Apr 2023 01:12:32 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b94d8d530c3so143221276.0;
-        Thu, 20 Apr 2023 01:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681978352; x=1684570352;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ufAhAdE0r7c7qaGNcRxtBn4ycIciFiGBaPdCDyt/jC4=;
-        b=Aii4cD7KcxtBNGj6ssDzMwkXLwpZ8acVamSTcN6ZFZ12JVINgOKCVPbXp06SITukmK
-         OgWW6IRFqv8dA0bn4BtD/bHrLomeLYQNjfC9wAkDbDZHtJbeM7eDZEJH9Y1tFmG3FVa5
-         EgxXf6AKfPISj099CUEABAeZxP0Sth1AKwvov6EMbpbS2u9m6Uti9Y3nJP9yrQuJBZgq
-         6Vj0I6mbcbIkAJTfP4dAV2Cl5c75V22LMbBYGz54ImxKyv/2fWSw8FO2nX7b6caquWKI
-         cXs+AoYmVqe225Z60j2piZ5O4kklgBO508a1Nc7jAhdHKeEZmSmy9o9xa2Jq8gmE4SNm
-         g+XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681978352; x=1684570352;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ufAhAdE0r7c7qaGNcRxtBn4ycIciFiGBaPdCDyt/jC4=;
-        b=Kzw5ggbrNJy4U3UnimiGIeIA1eQalDbceVgg6PeVSrVoI4pmrZc+HHYaEIcLTXWTzL
-         r1lT5z3EV5eDLHY8uWZBoWDgNfDRz+Ke++rrGL6gXlMbKSt/NZMYqGoLYHAEFq/860tR
-         kcM1bm9pcQsVWE/KHjWKMnHnlJVBQEKpNnu3ErB4auja6breOuPJ0l9y5Ztj4ooWpJjG
-         KfBnCVcZAx+5pN+xAzZFyrBaRJXEAjanMvBc3hqnBcDjlFuB464CIoOI4J9UPEAlkqw+
-         R0LkmB/TCfa6W2YWdVLFimHStNFaJWc84Nuzb1IRFwS+7CexC4YrdPiXsQeclQKhi+xQ
-         lUpw==
-X-Gm-Message-State: AAQBX9cqQdeo2Lb52elGLv5n57ZK3/NaTxHOvi11KC0q6yDoJmsRgLxI
-        G2ozHX4wV8AaNts6RVm7Svq9mBM9+F4NWK7vvKisn/x+SnFVmg==
-X-Google-Smtp-Source: AKy350br2VSLJGwe7XMvMryQMIcZde+pUbCFM+MFqX0o/o8o2NN/vN8gBDNkVie6wdkNcSISj1wnMJ/RBsJL/WTmjEw=
-X-Received: by 2002:a81:7857:0:b0:541:664e:b5d4 with SMTP id
- t84-20020a817857000000b00541664eb5d4mr233169ywc.4.1681978352116; Thu, 20 Apr
- 2023 01:12:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230418143617.27762-1-magnus.karlsson@gmail.com> <CAHApi-=_=ia8Pa23QRchxdx-ekPTgT5nYj=ktYGO4gRwP0cvCA@mail.gmail.com>
-In-Reply-To: <CAHApi-=_=ia8Pa23QRchxdx-ekPTgT5nYj=ktYGO4gRwP0cvCA@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 20 Apr 2023 10:12:21 +0200
-Message-ID: <CAJ8uoz3qM04VQF7FRmnVp_AZjGaPw25GJNn0ah-Jd0=eRCRsjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/xsk: fix munmap for hugepage allocated umem
-To:     Kal Cutter Conley <kal.conley@dectris.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, tirthendu.sarkar@intel.com,
-        bpf@vger.kernel.org
+        with ESMTP id S234179AbjDTIuy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 04:50:54 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4F34C18;
+        Thu, 20 Apr 2023 01:49:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Q2B0T5nZ7z9v7Gw;
+        Thu, 20 Apr 2023 16:39:21 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAXxTtK_EBkfX87Ag--.1933S2;
+        Thu, 20 Apr 2023 09:48:24 +0100 (CET)
+Message-ID: <2f90828cc8e9e1ab369790a3da687790c4348b0f.camel@huaweicloud.com>
+Subject: Re: [PATCH] Smack modifications for: security: Allow all LSMs to
+ provide xattrs for inode_init_security hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Mengchi Cheng <mengcc@amazon.com>
+Cc:     bpf@vger.kernel.org, casey@schaufler-ca.com,
+        dmitry.kasatkin@gmail.com, eparis@parisplace.org,
+        jmorris@namei.org, kamatam@amazon.com, keescook@chromium.org,
+        kpsingh@kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        nicolas.bouchinet@clip-os.org, paul@paul-moore.com,
+        reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com,
+        selinux@vger.kernel.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, yoonjaeh@amazon.com,
+        zohar@linux.ibm.com
+Date:   Thu, 20 Apr 2023 10:48:06 +0200
+In-Reply-To: <20230419192516.757220-1-mengcc@amazon.com>
+References: <0fccab67e496f10f4ee7bf2220e70a655013935f.camel@huaweicloud.com>
+         <20230419192516.757220-1-mengcc@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwAXxTtK_EBkfX87Ag--.1933S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw18ur43Cw13Kr48AF4ktFb_yoW7Aw4xpF
+        Z8Ga43Krs5Jw17CayvvF47AF4F9rWkGa15XFnFgry7AF13Kr1Igr98Xr12kryxJrsY93Wq
+        vF4jvr9xZr4Uu37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj4hE8wAAsF
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Apr 2023 at 00:01, Kal Cutter Conley <kal.conley@dectris.com> wrote:
->
-> > @@ -1286,16 +1287,19 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
-> >         u64 umem_sz = ifobject->umem->num_frames * ifobject->umem->frame_size;
-> >         int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> >         LIBBPF_OPTS(bpf_xdp_query_opts, opts);
-> > +       off_t mmap_offset = 0;
-> >         void *bufs;
-> >         int ret;
-> >
-> > -       if (ifobject->umem->unaligned_mode)
-> > +       if (ifobject->umem->unaligned_mode) {
-> >                 mmap_flags |= MAP_HUGETLB;
-> > +               mmap_offset = MAP_HUGE_2MB;
-> > +       }
->
-> MAP_HUGE_2MB should be ORed into mmap_flags. The offset argument
-> should be zero for MAP_ANONYMOUS mappings. The tests may still fail if
-> the default hugepage size is not 2MB.
+On Wed, 2023-04-19 at 12:25 -0700, Mengchi Cheng wrote:
+> > I got some errors during xattr removal, so not sure if my patch was
+> > working properly or not (it happened also without it, didn't
+> > investigate more).
+> > 
+> > However, I saw another discussion related to transmute:
+> > 
+> > https://lore.kernel.org/linux-security-module/20230419002338.566487-1-mengcc@amazon.com/
+> > 
+> > I add the people in CC.
+> > 
+> > The steps described were so easy to understand and executed, I tried
+> > without and with overlayfs.
+> > 
+> > Without:
+> > 
+> > # echo "_ system rwxatl" > /sys/fs/smackfs/load2
+> > # mkdir /data
+> > # chsmack -a "system" /data
+> > # chsmack -t /data
+> > # mkdir -p /data/dir1/dir2
+> > # chsmack /data/dir1
+> > /data/dir1 access="system" transmute="TRUE"
+> > # chsmack /data/dir1/dir2
+> > /data/dir1/dir2 access="system" transmute="TRUE"
+> > 
+> > It seems to work, right?
+> > 
+> > With overlay fs it didn't work, same result as the one Mengchi
+> > reported. Since Mengchi's solution was to set SMK_INODE_CHANGED, and I
+> > want to get rid of it, I thought to investigate more.
+> > 
+> > Looking at smack_dentry_create_files_as(), I see that the label of the
+> > process is overwritten with the label of the transmuting directory.
+> > 
+> > That causes smack_inode_init_security() to lookup the transmuting rule
+> > on the overridden credential, and not on the original one.
+> > 
+> > In the example above, it means that, when overlayfs is creating the new
+> > inode, the label of the process is system, not _. So no transmute
+> > permission, and also the xattr will not be added, as observed by
+> > Mengchi.
+> > 
+> > Hopefully I undertood the code, so in this particular case we would not
+> > need to override the label of the process in smack_dentry_create_files_
+> > as().
+> > 
+> > If you see smack_inode_init_security():
+> > 
+> > 	struct smack_known *skp = smk_of_current();
+> > 	struct smack_known *isp = smk_of_inode(inode);
+> > 	struct smack_known *dsp = smk_of_inode(dir);
+> > 
+> > [...]
+> > 
+> > 		if (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
+> > 		    smk_inode_transmutable(dir)) {
+> > 			isp = dsp;
+> > [...]
+> > 
+> > 		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
+> > 
+> > This code is telling, if there is a transmute rule, and the directory
+> > is transmuting, set the label of the new inode to the label of the
+> > directory. That should be already the result that we wanted to obtain.
+> > 
+> > The current code should have been doing it by overriding the label of
+> > the process in smack_dentry_create_files_as() with the label of the
+> > parent directory, and letting the inode being created with the
+> > overridden label of the process. The transmute xattr is not set due to
+> > the problem described above.
+> > 
+> > So, as a quick test, I kept this patch with the change to xattr2->name, 
+> > and skipped the label override in smack_dentry_create_files_as(). It
+> > worked, I get the same result as without overlayfs. Wondering if the
+> > process label override is necessary in other cases.
+> 
+> If I understand correctly, removing the if block below is what you suggested.
 
-You are correct that it should go into the flags field. Misread the
-man page so will send a fix.
+Yes, more or less is what I did.
 
-It was a conscious decision to require a hugepage size of 2M. I want
-it to fail if you do not have it since the rest of the code will not
-work if you are using some other size. Yes, it is possible to discover
-what hugepage sizes exist and act on that, but I want to keep the code
-simple.
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index cfcbb748da25..a867288e9de9 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -4769,8 +4769,8 @@ static int smack_dentry_create_files_as(struct dentry *dentry, int mode,
+>                  * providing access is transmuting use the containing
+>                  * directory label instead of the process label.
+>                  */
+> -               if (may > 0 && (may & MAY_TRANSMUTE))
+> -                       ntsp->smk_task = isp->smk_inode;
+> +//             if (may > 0 && (may & MAY_TRANSMUTE))
+> +//                     ntsp->smk_task = isp->smk_inode;
+>         }
+>         return 0;
+>  }
+> 
+> This way will have issue in the following situation on the vanila kernel.
+> data in the lowerdir has "_" label before overlay and dir1 is already
+> created in the lowerdir.
+> # chsmack /data
+> /data access="_"
+> # chsmack /data/dir1
+> /data/dir1 access="system" transmute="TRUE"
+> Apply overlay on data directory and set the smack rule in the same way.
+> data has the same smack label.
+> # chsmack /data
+> /data access="system" transmute="TRUE"
 
-> >
-> >         if (ifobject->shared_umem)
-> >                 umem_sz *= 2;
-> >
-> > -       bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-> > +       bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, mmap_offset);
-> >         if (bufs == MAP_FAILED)
-> >                 exit_with_error(errno);
-> >
->
-> -Kal
+I'm using an older kernel, but I get _ instead of system.
+
+> After that, remove dir1 and mkdir dir1 again. dir1 did not get the correct
+> label.
+> # rm -r /data/dir1
+> # mkdir -p /data/dir1
+> # chsmack /data/dir1
+> /data/dir1 access="_"
+
+Unfortunately, it cannot work:
+
+Thread 3 hit Breakpoint 1, smack_inode_init_security (...) at security/smack/smack_lsm.c:959
+959	{
+(gdb) p dir->i_ino
+$12 = 9169116
+(gdb) p dsp
+$13 = (struct smack_known *) 0xffffffff831fc0a0 <smack_known_floor>
+
+
+ls -i /home/root/data_work/
+9169116 work
+
+So, transmuting is decided on the working directory.
+
+If I do:
+
+# chsmack -a system -t /home/root/data_work/work/
+# mkdir /data/dir1
+# chsmack /data/dir1
+/data/dir1 access="system" transmute="TRUE"
+
+I obtain the expected result. However, this problem is due to how overlayfs works:
+
+static int ovl_create_over_whiteout(struct dentry *dentry, struct inode *inode,
+				    struct ovl_cattr *cattr)
+{
+
+[...]
+
+	newdentry = ovl_create_temp(ofs, workdir, cattr);
+	err = PTR_ERR(newdentry);
+	if (IS_ERR(newdentry))
+		goto out_dput;
+
+
+The good news seems to be that, once you set the label to the correct
+directory, transmuting works with the changes I proposed.
+
+Roberto
+
+> Since I am not very familiar your change. Could you help check with your
+> patch will this issue also happen? 
+> 
+> 
+> Best,
+> Mengchi
+> 
+> >  
+> > Roberto
+
