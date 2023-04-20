@@ -2,214 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6829C6E9781
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 16:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A9D6E9795
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 16:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjDTOrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 10:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        id S231836AbjDTOu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 10:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbjDTOrG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 10:47:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1724F420C
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 07:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682001981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UuarXWhrCLw27r1idqrDlI5FLRv5+VGgQS+BQN+kySE=;
-        b=bICqiBEwYCMI15DXiqVcEVjRTbPEF3gptU6SLJQG23pwv2V0HzBZThGBy1iw/FMncyR5pl
-        HuEvB65+Ndlsj5GD8VKmurN7Eu62w1DHizplJ+YFdaW57ByiTIl8M+XK1/60J3pBspRBC4
-        bTU7D2X/jPil+KRpeACF8z2sus7o2hE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-264-V90lZNE5MLavb0XVCe0lkQ-1; Thu, 20 Apr 2023 10:46:19 -0400
-X-MC-Unique: V90lZNE5MLavb0XVCe0lkQ-1
-Received: by mail-ed1-f70.google.com with SMTP id u19-20020a50a413000000b0050670a8cb7dso1680019edb.13
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 07:46:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682001978; x=1684593978;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UuarXWhrCLw27r1idqrDlI5FLRv5+VGgQS+BQN+kySE=;
-        b=RIxBlAi9EINP3sKjydSZxkfTcDJw7Q6sKKdRpugc8V643a201oF2NoiuGLJ/DmbebS
-         VZcJVeDIv5Rtmk160luRaBCJ/Ffvpk92CQgoN9KNFlkI5DXCmIyOEq0bTgcFvXMd8xdA
-         7xVHKy9gSGIh0oJmj493eXevZNW/mO18vrL851cbI3aczPB6ycZeI0ZjvEM5tQzYqcin
-         VwWWel51xg1Mwd8SGUA+iF+KkIeumkOkKJUiBatoHkGLDDz7WhWDKZSZbphglbXSU7uJ
-         6vaHfKcJw26W65SpoFRUDXwzo2W9t/lXophuYG19xNHfU8u9EM8kRms4UVSOoKrZUCk5
-         LWLg==
-X-Gm-Message-State: AAQBX9dSn2K5yZLuD7RcjItckH5DQWnNhgmI/8lvLeRLBCBoJetBk2dw
-        Gfi8SJIPxqLzcn8hTDXZLWrhuUknAMzvc+2u+hrMHQ+AfOpkmODnTUvMfqXQB+kN9gB0mThgD7v
-        3HYfBIY+ObvzR
-X-Received: by 2002:a17:906:111b:b0:94f:3b29:e0a5 with SMTP id h27-20020a170906111b00b0094f3b29e0a5mr1943155eja.20.1682001977143;
-        Thu, 20 Apr 2023 07:46:17 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bVKyRQEQS1oQMnyp1eKSRd3tU543f3P9723XA6YozXKkR6Y2hnYcF7OayZptFCnUqdPKZ6IQ==
-X-Received: by 2002:a17:906:111b:b0:94f:3b29:e0a5 with SMTP id h27-20020a170906111b00b0094f3b29e0a5mr1943092eja.20.1682001976345;
-        Thu, 20 Apr 2023 07:46:16 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d20-20020a05640208d400b00504ecc4fa96sm815127edz.95.2023.04.20.07.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Apr 2023 07:46:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 23388AA8E17; Thu, 20 Apr 2023 16:46:15 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Mahe Tardy <mahe.tardy@gmail.com>,
-        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
-Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
-In-Reply-To: <CAEf4BzY9Hr2M7dZXaTZCP4SRat+KpN42c89LG1Msn4PB+1O1YA@mail.gmail.com>
-References: <ZDfKBPXDQxH8HeX9@syu-laptop>
- <CACdoK4L5A-qdUyQwVbe-KE+0NBPbgqYC1v0uf0i1U_S7KSnmuw@mail.gmail.com>
- <20230414095007.GF63923@kunlun.suse.cz>
- <b933fad3-7759-00d4-94cb-f20dd363b794@isovalent.com>
- <20230414161520.GJ63923@kunlun.suse.cz>
- <CAEf4Bzaw6DBHn=S9zKCXTSh7jW8xL9K6bzi1Q-e8j93thi2hmg@mail.gmail.com>
- <20230418112454.GA15906@kitsune.suse.cz>
- <CAEf4BzZf50fX7T9k47u+9YQrMbSLxLeA1qWwrdWToCZkMhynjg@mail.gmail.com>
- <20230418174132.GE15906@kitsune.suse.cz> <ZD/3Ll7UPucyOYkk@syu-laptop.lan>
- <CAEf4BzZfGewUgYsNNqCgES5Y5-pqbSRDbhtKiuSC7=G_83tyig@mail.gmail.com>
- <87zg73tvm1.fsf@toke.dk>
- <CAEf4BzY9Hr2M7dZXaTZCP4SRat+KpN42c89LG1Msn4PB+1O1YA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 20 Apr 2023 16:46:15 +0200
-Message-ID: <878remtxvs.fsf@toke.dk>
+        with ESMTP id S231611AbjDTOu1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 10:50:27 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1B049FA;
+        Thu, 20 Apr 2023 07:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682002224; x=1713538224;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8GP9c8pqSm4pXcvcyAMy62P3Xq2wnuFqpcM1Kue+xPw=;
+  b=dWbRkA5gqu18+LmuaLwWoIjGIpg5bfWbLmk28pp5yYTXErfJtxiQqdB9
+   NIaYg0VzR0bGuQyJk79S7C2Te76TXTB8Wo/YP9TN8kU8JeN/JDPiNFolo
+   5YmFty9z/Ke4tt7n+vZn3/dHqOXv8Gksjm0bul3OldwJ8MP4GO2KRF68X
+   0IamWT7gzEBybHhzseCil5pC2KULKqfpQpaoV4Vpvbr9OWZbBlWCcpn22
+   uvWf9OQQTI/0MBtTqEnhTc5S0XlIDHLmeO3C4fU9cF5E91EDLgtmOycRz
+   0ZimLNHkjNV7VIuiq+EWj+TYrjmo2tZ5rhEgDSgzLzBsplTLDa9x9wCWq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="408667471"
+X-IronPort-AV: E=Sophos;i="5.99,212,1677571200"; 
+   d="scan'208";a="408667471"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2023 07:50:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="724439489"
+X-IronPort-AV: E=Sophos;i="5.99,213,1677571200"; 
+   d="scan'208";a="724439489"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP; 20 Apr 2023 07:50:23 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 20 Apr 2023 07:50:23 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 20 Apr 2023 07:50:22 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Thu, 20 Apr 2023 07:50:22 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Thu, 20 Apr 2023 07:50:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MDay/fwVz3On8xyIFqea6NS3qCEFRthLIL1HcSEWPPWW6jvywCaqlc6OC4YCYNzC9QSe14hpXfbZy0QgUWWWhLu0sfN1fU+vM9yo3cQyZQWUnKERefKw+YTfS75KGsu9UjVQpkqx0ooSv94kUeoxuYHs0p45atrU2bXbqJUwjumEWA2W4n7cHIBi1iLzKUPU0Wj+Njihe3mjeXcNBHEdtzKFo4zTy27yMKM7EB+7KNT8tJ+XoZ+0mmqnF4c5fO5oTTZnIDiROM2tKmZSnQxTHFBGsT08z0iKgfbpkeEZf5hVrJegeEl0q1c+pGKk6GhduoOG7GZgjpFyZTk9Z4Fpag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e9y5vBcwdeYfX/cIHqeVwj4jcfFLcHztLIAvm+lHlIk=;
+ b=BHX70XRTIrwiqhRBicaja2afnFzoWWQ6hmzPGSIVVHQsMm4R1nEbL7IHN2HEoV+bheJDxpGnlzVqNcwTBE8BO2ewrixqcgNhRAVCnuJ3tYeNOUQTXzArXEBapoyrMklkOiJnooynsiRoSnX7iFf/O/erSKssgO4a+bqMyL4AsNSc4gsalng3EUjFwvH1m6LEuiGccHZk4DycL81HeThfEIHwFmhtldIcfWickpyzy4C1mY9xJCs/9rOo35mQony9YUCaaWlqim1MI3MBbFixipcAGmEV3u34iuXMsbuyxUqsULyIPbngD5qEabO96krfwbZYzbnXrWfK/JgObF29ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by CY8PR11MB7900.namprd11.prod.outlook.com (2603:10b6:930:7a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Thu, 20 Apr
+ 2023 14:50:20 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e%5]) with mapi id 15.20.6319.022; Thu, 20 Apr 2023
+ 14:50:20 +0000
+Message-ID: <f79e2dde-6d45-cc97-0cde-05454bdb5077@intel.com>
+Date:   Thu, 20 Apr 2023 16:49:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH net-next] net: lan966x: Don't use xdp_frame when action is
+ XDP_TX
+Content-Language: en-US
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <richardcochran@gmail.com>,
+        <UNGLinuxDriver@microchip.com>, <maciej.fijalkowski@intel.com>,
+        <alexandr.lobakin@intel.com>
+References: <20230420121152.2737625-1-horatiu.vultur@microchip.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230420121152.2737625-1-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PAZP264CA0118.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:1ef::23) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CY8PR11MB7900:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fff4f08-a47a-46e5-b57d-08db41ae9006
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q86TThGrvvz2JRky/9YGMN0G3rsOWaitQARzAdx6cW8WHCVQaEtH59oZfniIOF6SoqWzyVVAhdtr/WAC1X6Oh+9koDhKzHYB3yOaqt2QanuGVG3Tqb+bmhwLeezxbVcZGjeqy3xoPtfozFDGAMFUKroa9dL+Td8+GDIfwd/DFCpgxz3XQoYi8cMre7yS+aALBKxw0Z6olCCDKHZ8scskFPQb0hawlPVnOr9X/8csRh47qDK/19du+nWod1Fke3MtsYrf9JL49EIvWi+iJh9py/MQ9g1COWhNtp6uT7GB8S/qQPhJ9n8+EQ/SBDXBRjw8Ri7ZMHyorQIcg5IN5V/I3+z5xCXT0756k2h4u9ZN9300bUW+lrAV0aHs2Zh43EkRtVq9IAgaWsl/+ysTQpJ+vqvCKDRzNsYUadmeWFGgAMyks1Byy46WR5oJcs7TYLCLYCebmVkHSR+Lx6YPFnXLGdiTbL4IWvLjP8MSj1sdsqdwCxr4S0f+WJ3GcJkWgW1Wr4u9T1X6Ty3Z1x0vBqpoxe6b2uTwkePuZ85+wgfNS4DFHlGhZX/YlGc1cUHNzocjURBeVzB07f3vWsMo4+2LanG3BasWOf87xylN3gciBdB/bMaOe2BjwPdPP4cmmryebg/LeyuYdEwxdOA1xfVNzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(376002)(366004)(136003)(39860400002)(451199021)(66476007)(6916009)(66946007)(66556008)(478600001)(5660300002)(7416002)(8936002)(8676002)(316002)(82960400001)(41300700001)(38100700002)(4326008)(186003)(2616005)(6486002)(6666004)(107886003)(6512007)(6506007)(26005)(31696002)(86362001)(36756003)(2906002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFpPdytCTU9GQS94TFpXdmJmWXJUcGtHNS80K0tBVmJpM0tDR2d0NjR0TlRl?=
+ =?utf-8?B?WTBUS3lQbEhEQ1QvS0NLME02M2RmRFJwQ0tLeXVtYkFqSlpobkpsOEo0UXhP?=
+ =?utf-8?B?NW9nTitNa3gxbk4xYXpMamFLWXd4cG81MDhpN0x3QzdLU3IvU3BoakRUbnI2?=
+ =?utf-8?B?bW9NbEJiZDZTZXV1eXBXckNQdDF6TUM3WVNGL1J5aU9VejlkV2hteTNuSk81?=
+ =?utf-8?B?QTFLQ0o4VjFwK2pyb21KcXIrYiticC9DY3F0MWJOcTRuVTNKeTBMaUhDU054?=
+ =?utf-8?B?SWR0eVFtU1BqWE5PbVFCY2o4UGdJd0k4N0IyTXArZGR2SEUybzVQOWZBTmsw?=
+ =?utf-8?B?NVNaZDJabDVpY2QxSUZuTWJiWlk2YU1Lb3piT1FBSjR4YWRCVXVwWlVjU3lm?=
+ =?utf-8?B?akFmM1ZDSEhHajNoTjF3VG1ROXJ5VVRBdzNkbTB2VTZ4b2lCejJhZ2RWRW5k?=
+ =?utf-8?B?V0JJUGFocC9Hd3RFYzNXK1FXazhud3NrdkcweWplbTd3NWF0aDA2TjlGZUs3?=
+ =?utf-8?B?U1prczJZOVlra2Z0ZEJmbGxRMUhzbmFTam5OaWNjSkRHcStWbkJyZW55MGM1?=
+ =?utf-8?B?ZGVYcVZ0TFdPZW4yN21obnE0M0ZRR1RkSmY5TmJXek9rSkZRZTBSakJoRDBz?=
+ =?utf-8?B?cThzbHJJSFFKOGZHRVhRSjduVmlOa0szQ1UrT3hPWmlMRk5HM1dBb1FKMjFS?=
+ =?utf-8?B?WC9vZXU1aHBDNUY4aEpwalNzNzMxWURndXora2J3ZDh0U01Mb29XMU5BV0FC?=
+ =?utf-8?B?ZlBrYTFRZkN3b0tjWmFId3hhS3htN1pJWXhmeHRMcnI4RUxERlZGNXFPSWVD?=
+ =?utf-8?B?S1dQYXluNldWeUUzYzRSbFhDYitkbW5Vb0xHZ1dLRVRuejRSS0hRRURuL1lC?=
+ =?utf-8?B?b0xJRy9MbG5aK3laMTFXbXFha0JCakt0YVFnbXduVzJjUWw4dmhHQVRVWC8w?=
+ =?utf-8?B?N2U1ZllEVmxRdW1iYlFJcEVLTzgvUVhwamp2cUdWYndsM3ZxRmFOZ241aVZC?=
+ =?utf-8?B?VjdONFl0cWpPUHp2ajRPd1BmMWlwdFBKQ01iNERnZkNWVkc0U1EzVnd3d1hJ?=
+ =?utf-8?B?L0VBNlBGbjNZN20weXMvdm9OQ3BXL2dNOVVxVDhmLzhhZWpVblZjVCt1VkxK?=
+ =?utf-8?B?OVNKeFhsd00vZ25KQjlsN0ZsSFhzYTdlTGNydWRiZHdGUTI2aFpuNjZSc1M2?=
+ =?utf-8?B?Y2E2VUgwZXpmNlU3cTdPazZVMjRrTUszZDR1eHlpZnp6TG8zOWZLWmlRNEhV?=
+ =?utf-8?B?WjJTWFhCQ0Z2RE9KbEdwK1h6UXdCcTVqYW1wYUFGY2toL2pHdHM3T1NWdmQr?=
+ =?utf-8?B?Z2tmK2dRSUZPRlFqVVRFcVNxYzBudlV3d2lvTGNQL1BzL2RldGRvWW9xcHl0?=
+ =?utf-8?B?bFBLVWVtUEhjMS83VmtBOG1MOGF4UHRmNGVadC9CVk1DVlBrYmVzWUQ3Uk9C?=
+ =?utf-8?B?clJVZG1OcnIwVFh2VUZCM1dmM2E2dDN5UDlDbnBHeW5LcHJ5WUxnV3k5MGpk?=
+ =?utf-8?B?MytmalZIRFFvUSs5RFpaYXFDOVJucUxuS1N3WnErcDZrQ0FtVk41dWN5SUQx?=
+ =?utf-8?B?dUZzV2d6ZFpLa1N3cVhsOWEwaTVhbFBiN1ZpMXQyMWZGN0JwbGd1YlR0Qkov?=
+ =?utf-8?B?WjNFamR2U3lSeHFva0dFREFBWU1ZUDhJbGdMalRjSFFkcWRvekFrMTFGaVdw?=
+ =?utf-8?B?OUdZNDdtVnRQbXJNSE1jekpXaG51dlpocEtBS25sNVNQbTFjZGx4RU1YeHRv?=
+ =?utf-8?B?cStVOXl5NTVRdEt0dlJGTVRLb3BWS1BOazlENmk1emRMNVNBZmNrak1sUVlD?=
+ =?utf-8?B?THdMY1o0MElNaUpLQTVSck5jbDkrM0R6NXhnYUtwK0pNN3FrZ1p0aGsyNTA1?=
+ =?utf-8?B?U3d3M1RNNlF2aEhoNDI4bGwvejRGK0lPYzRyVFgrNzhJMUlCLzZIeEoxemZE?=
+ =?utf-8?B?L0JtK0x1Z0h6SkRNeElycnN5bjNjbGF6MS8zL3BuY2ZrRmozRXI3WEwxTGtH?=
+ =?utf-8?B?bFlWN01RSXhxc01Hc0hqQTMzQVppY2d3cEY3WlhqcGFzYVIvSXJBZjV3eHo4?=
+ =?utf-8?B?OEFkdytJRVp1THR3c1daWEZ1YnplYWZhb0NVSnhmaUZqTlN3Rnl1ZHhHSklK?=
+ =?utf-8?B?VUxnL2kyZ0FvTFhybjhvRTNIOEZJUFFhMERrTFNCNnpwSnRKQjBZT1N6MnNM?=
+ =?utf-8?B?a3c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fff4f08-a47a-46e5-b57d-08db41ae9006
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2023 14:50:20.2165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sI3gHp0Xu1fnfwoFuKoi4Ye0k5yvNgrn+jBxGyHXaakr3NrQPQnZ4rOMeO4Pe0FyqNQbC1UPbx2c3fCFzAwFMrLiyXSN5ktaHB483vDtyXw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7900
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+Date: Thu, 20 Apr 2023 14:11:52 +0200
 
->> >> > > > > By switching up actual libbpf used to compile with bpftool, you are
->> >> > > > > potentially introducing subtle problems that your users will be quite
->> >> > > > > unhappy about, if they run into them. Let's work together to make it
->> >> > > > > easier for you to package bpftool properly. We can't switch bpftool to
->> >> > > > > reliably use system-wide libbpf (either static or shared, doesn't
->> >> > > > > matter) because of dependency on internal functionality.
->> >> > > > >
->> >> > > > >
->> >> > > > >   [0] https://github.com/libbpf/veristat/releases/tag/v0.1
->> >> > > >
->> >> > > > So how many copies of libbpf do I need for having a CO-RE toolchain?
->> >> > >
->> >> > > What do you mean by "CO-RE toolchain"? bpftool, veristat, retsnoop,
->> >> > > etc are tools. The fact they are using statically linked libbpf
->> >> > > through Git submodule is irrelevant to end users. You need one libbpf
->> >> > > in the system (for those who link dynamically against libbpf), the
->> >> > > rest are just tools.
->> >> > >
->> >> > > >
->> >> > > > Will different tools have different view of the kernel because they each
->> >> > > > use different private copy of libbpf with different features?
->> >> > >
->> >> > > That's up to tools, not libbpf. You are over pivoting on libbpf here.
->> >> > > There is one view of the kernel, it depends on what features the
->> >> > > kernel supports. If the tool requires some specific functionality of
->> >> > > libbpf, it will update its Git submodule reference to get a version of
->> >> > > libbpf that provides that feature. That's the point, an
->> >> > > application/tool is in control of what kind of features it gets from
->> >> > > libbpf.
->> >>
->> >> Since libbpf has a stable API & ABI, is it theoretically possible for
->> >> bpftool, veristat, retsnoop, etc. all share the same version of libbpf?
->> >
->> > No, because libbpf is not just a set of APIs. Newer libbpf versions
->> > support more BPF-side features, more kernel features, etc, etc. Libbpf
->> > is not a typical user-space library, it is a BPF loader, and even if
->> > user-visible API doesn't change, libbpf's support for various BPF-side
->> > features is extended. Which is important for tools like bpftool,
->> > retsnoop, veristat which rely on loading and working with BPF object
->> > files.
->>
->> The converse of this is also true: if your system is upgraded to a new
->> kernel version with new BPF features, the libbpf version should follow
->> it, and all applications linked against it will automatically take
->> advantage of any bugfixes regardless without having to wait for each
->> application to be updated.
->
-> No, if my application was not developed to take advantage of a new
-> kernel feature, newer libbpf will do nothing for me. If my application
-> wants to support that feature, I'll update my application and
-> correspondingly update libbpf embedded in it. If my application is
-> affected by some bug fix, I'll update libbpf even faster than distros
-> will get to it.
+> When the action of an xdp program was XDP_TX, lan966x was creating
+> a xdp_frame and use this one to send the frame back. But it is also
+> possible to send back the frame without needing a xdp_frame, because
+> it possible to send it back using the page.
+> And then once the frame is transmitted is possible to use directly
+> page_pool_recycle_direct as lan966x is using page pools.
+> This would save some CPU usage on this path.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-You may do that, but you're also someone who is following the
-development of libbpf closely and pay attention to when bugs appear. Not
-all applications developers have the same vigilance for all the
-libraries they rely on. Which is the reason distros generally take on
-the responsibility of ensuring their users receive timely library
-updates.
+[...]
 
-> I've heard all such arguments over the last few years. They are not
-> convincing and my own practical experience shows irrelevance of the
-> above argument.
+> @@ -702,6 +704,7 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
+>  int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+>  			   struct xdp_frame *xdpf,
+>  			   struct page *page,
+> +			   u32 len,
+>  			   bool dma_map)
 
-I don't doubt your personal experience, I'm just objecting to you
-dismissing other points of view just because you haven't experienced
-them yourself.
+I think you can cut the number of arguments by almost a half:
 
->> Libbpf is really no different from any other library here, and I really
->> don't get why you keep insisting it's "special"...
->
-> It's special in the sense that it provides two sets of APIs -- for
-> user-space (typical libraries) and BPF object files. Besides that, for
-> BPF-side it's not even a set of APIs (headers, helpers, etc), it also
-> provides some set of functionality that can improve or be extended
-> over time. E.g., libbpf used to not support non-inlined BPF
-> subprograms, and then it started supporting them. In terms of API/ABI
-> -- nothing changed. Yet the change is very important.
+int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+			   void *ptr, u32 len)
+{
+	if (len) {
+		/* XDP_TX, ptr is page */
+		page = ptr;
 
-Lots of libraries do that. File format libraries support new format
-features without changing their API, networking libraries support new
-protocol features, etc. So again, libbpf is not special in this
-respect.
+		dma_sync_here(page, len);
+	} else {
+		/* XDP_REDIR, ptr is xdp_frame */
+		xdpf = ptr;
 
-> Now, I build a tool that is using libbpf and some BPF functionality,
-> e.g., retsnoop. Libbpf just got SEC("ksyscall") support. Retsnoop
-> wants to take advantage of it. I just go and use SEC("ksyscall")
-> programs in .bpf.c files that are embedded inside retsnoop.
-> I don't have to *and don't want to* do feature detection of whether a
-> particular libbpf version that happens to be installed/packaged on the
-> system supports this version. I *know* it does, because I control it,
-> through a submodule. That's what I care about.
+		dma_map_here(xdpf->data, xdpf->len);
+	}
 
-Right, so just require a minimum version of the library where the API
-you want to use is available. That is pretty standard and distros deal
-with this all the time. This is not an argument for static linking or
-vendoring...
+@page and @xdpf are mutually exclusive. When @xdpf is non-null, @len is
+excessive (xdpf->len is here), so you can use @len as logical
+`len * !dma_map`, i.e. zero for REDIR and the actual frame length for TX.
 
-> Whether some distro insists on libbpf being shared across any
-> libbpf-using application or not is none of my concern. Libbpf is an
-> implementation detail of my application (retsnoop), it's not for the
-> packager to decide how I develop and structure my tool.
+I generally enjoy seeing how you constantly improve stuff in your driver :)
 
-Right, well, you don't *have* to be cooperative with the wider
-ecosystem, of course. Just as packagers don't have to follow your
-recommendations if they have good reasons not to. I believe we've had
-this discussion before, and I don't think we're going to agree this time
-around either, so let's not waste any more virtual ink on rehashing it :)
+>  {
+>  	struct lan966x *lan966x = port->lan966x;
+> @@ -722,6 +725,15 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+>  		goto out;
+>  	}
+[...]
 
--Toke
-
+Thanks,
+Olek
