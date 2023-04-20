@@ -2,102 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E656E9902
-	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 18:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC486E994E
+	for <lists+bpf@lfdr.de>; Thu, 20 Apr 2023 18:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjDTQCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 12:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S231695AbjDTQPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 12:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232671AbjDTQCa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 12:02:30 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081041FE3
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 09:02:29 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u3so7394935ejj.12
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 09:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682006547; x=1684598547;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bNyh2SqdsT0eIdUDD2Aic9+d0UcFAkJlkSbPvSGE5L8=;
-        b=eJqKDM5YhSzyhYkC1uDGNS4fA3eU+LzZz/bNHYFRfa4Led8J0dZWxpB7SMvGrPZKNk
-         wO2KER1BV9PZPaSoogGWlRq3wGzBHbN3L9b8WBS2YB1u+YNjInlJSGIuf/XPidftFTAJ
-         qFTzSA0X6PenKAjFz+3OXu6P710MpemxVejFfy1WK9oTw3YHa/5R9CGRyLmpug8kPyKo
-         sjyC8x+bgLUi0RdUZEcTOiBVhEmO2E5EX0wY/WiRvMF4oJfW57os3dfNlj9T1vHLfmzZ
-         uTY7WcXgetC/5+SZ6pF+y2oitVJUmvSXQtH/30tjmSACK31Ohsk21eybKHbfKk81LoBo
-         XcKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682006547; x=1684598547;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bNyh2SqdsT0eIdUDD2Aic9+d0UcFAkJlkSbPvSGE5L8=;
-        b=CfDoxXhiSaf+505r+z3Bd7kttzNtxrec6X5ME/klcB4/1+xduA8uffckk+1KVb8uA5
-         nagtS8ambGf/ipXpmCRmCJpd36QMO9ploJKUbTBeXTC00+ynamjcrEaAmxRPntyARkhy
-         R7LYMSQX0JxhiAdBfd1dxyQoOZaTpq0Sz2DdAv8XED9d6WDU7wMivpvPJTdPibdPp/Rd
-         CwxYyElR5ygXBSvmsOKt17kMCBYDxDHjgl00pAG2hytq6n04YPUaueXznnepuU8yQJ/M
-         d7ni4HfyIV8Ap+OBz6WVLzv0Pu6w6a18RyHtZ6yR9RuD6MYXLdPzGpV+r246u7mMzZwp
-         s1yw==
-X-Gm-Message-State: AAQBX9fiU1f/Gldg0OwezW2Rb3tzcMhziYD4Sy+sk3Z27b764s4Ubat0
-        QDYIBbqSHqRX+z6yDjQQjIk0fXrRz/B8lTjQpQg=
-X-Google-Smtp-Source: AKy350aN0tyxgAyAUgMi5ASSLZoOug4TSG6NSDuEU030f4gFxV4bjOKovk5JJNq6f2szj0oqls0LD5saGLhG3NWVW3k=
-X-Received: by 2002:a17:906:4fc5:b0:93e:739f:b0b8 with SMTP id
- i5-20020a1709064fc500b0093e739fb0b8mr854136ejw.3.1682006547329; Thu, 20 Apr
- 2023 09:02:27 -0700 (PDT)
+        with ESMTP id S231341AbjDTQPq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 12:15:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6FC10F6;
+        Thu, 20 Apr 2023 09:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8cylqzdP0hXk5+N5BXe5Y74wAIWGCOav7qKznB1OcHU=; b=XxVPm6LUtaULMeaI3bbiNdFmBk
+        MT0gzQoFXxLpTVFqApMHWsr9uCibCIZH/Ar5VtYm4BE9U8TAoxiELgcvErBDkD1lFZQP73U2jvKK4
+        MGYTVF3is9fL2r2XC/7Go/+1wV7CcRP4uV1sVx4d56ODJBNQEBRY89e+WYtlbgEXDo+ng9n4RW/eb
+        dhYksqqCLXLJ7oXuPTIzGIA5/HATPY7lArpuLuhiyGunZX1pJYLx/7/P6zeUPXkL9rQiWzB3FXXE5
+        ayJBzZCYD0s+XN4JcPD1Uv4CBypRW/SPmfLwW450ZLR5SNuxc9Q+ULPc9mrpfqhyOnTRrBd5zKiAT
+        YlsP+2Yw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1ppWwO-008WEu-01;
+        Thu, 20 Apr 2023 16:15:24 +0000
+Date:   Thu, 20 Apr 2023 09:15:23 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH net-next] xsk: introduce xsk_dma_ops
+Message-ID: <ZEFlG9rINkutmpCT@infradead.org>
+References: <CACGkMEtPNPXFThHt4aNm4g-fC1DqTLcDnB_iBWb9-cAOHMYV_A@mail.gmail.com>
+ <20230417181950.5db68526@kernel.org>
+ <1681784379.909136-2-xuanzhuo@linux.alibaba.com>
+ <20230417195400.482cfe75@kernel.org>
+ <ZD4kMOym15pFcjq+@infradead.org>
+ <20230417231947.3972f1a8@kernel.org>
+ <ZD95RY9PjVRi7qz3@infradead.org>
+ <d18eea7a-a71c-8de0-bde3-7ab000a77539@intel.com>
+ <ZEDYt/EQJk39dTuK@infradead.org>
+ <ff3d588e-10ac-36dd-06af-d55a79424ede@intel.com>
 MIME-Version: 1.0
-References: <xunyjzy64q9b.fsf@redhat.com> <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 20 Apr 2023 09:02:15 -0700
-Message-ID: <CAADnVQLT1+b3SY8MuXss3tvng9RP43DmFAzaByAa6OuiWwZwbg@mail.gmail.com>
-Subject: Fwd: sys_enter tracepoint ctx structure
-To:     Yauheni Kaliuta <ykaliuta@redhat.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Artem Savkov <asavkov@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff3d588e-10ac-36dd-06af-d55a79424ede@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 6:57=E2=80=AFAM Yauheni Kaliuta <ykaliuta@redhat.co=
-m> wrote:
->
-> Hi!
->
-> Should perf_call_bpf_enter/exit (kernel/trace/trace_syscalls.c)
-> use struct trace_event_raw_sys_enter/exit instead of locally
-> crafted struct syscall_tp_t nowadays?
+On Thu, Apr 20, 2023 at 03:59:39PM +0200, Alexander Lobakin wrote:
+> Hmm, currently almost all Ethernet drivers map Rx pages once and then
+> just recycle them, keeping the original DMA mapping. Which means pages
+> can have the same first mapping for very long time, often even for the
+> lifetime of the struct device. Same for XDP sockets, the lifetime of DMA
+> mappings equals the lifetime of sockets.
+> Does it mean we'd better review that approach and try switching to
+> dma_alloc_*() family (non-coherent/caching in our case)?
 
+Yes, exactly.  dma_alloc_noncoherent can be used exactly as alloc_pages
++ dma_map_* by the driver (including the dma_sync_* calls on reuse), but
+has a huge number of advantages.
 
-No. It needs syscall_tp_t.
+> Also, I remember I tried to do that for one my driver, but the thing
+> that all those functions zero the whole page(s) before returning them to
+> the driver ruins the performance -- we don't need to zero buffers for
+> receiving packets and spend a ton of cycles on it (esp. in cases when 4k
+> gets zeroed each time, but your main body of traffic is 64-byte frames).
 
-> test_progs's vmlinux test
-> expects it as the context.
-
-
-what do you mean? Pls share a code pointer?
-
->
->
-> Or at least use struct trace_entry instead of struct pt_regs?
-
-
-no. It needs a pointer to pt_regs.
-See all of the pe_* flavor of helpers.
-
->
->
-> I have a problem with one RT patch with extends trace_entry.
-
-
-Just extend it. It shouldn't matter.
-I'm likely missing something.
+Hmm, the single zeroing when doing the initial allocation shows up
+in these profiles?
