@@ -2,69 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8806C6EAD5A
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37A26EAD49
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjDUOpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 10:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
+        id S232975AbjDUOmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 10:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbjDUOp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 10:45:28 -0400
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09901444D
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 07:45:00 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-4ecb7fe8fb8so7014e87.0
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 07:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682087938; x=1684679938;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uE8L66mYi61Gg000YX9CaB4PguSbhnlIM05Rg2iq/GU=;
-        b=g3rmUy97ewR5Qob/EIc0qirnHyGan7c3n7pweFBrjd4IKEX1NVaHijC/5eHO4MNEDW
-         Ff3BUAQNyy0m/fGS9YWwhDtiFnB5bLlPAjjH6fTEFwOvUJbkRqH9u3P763jj6of+sfJV
-         eh1paFZ6ywkGWJqWKXSSu3i6LkZ0rb1dLjXid+GjA3s3hyJwVUlPonXyw6Cz30d88pjH
-         TLOU/sY30TqTHGlXm0/qbIZsfLkAThaztVPBD3OR4nmNuVPX6xNzmzb7bGHzouRJKy77
-         iQTEbiCwwv2DBX8+uESfd1BeUMHZ/N3avr3F3IScinfFcGzEoNS/DlIRNt1JSYsaTWTy
-         mWzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682087938; x=1684679938;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uE8L66mYi61Gg000YX9CaB4PguSbhnlIM05Rg2iq/GU=;
-        b=V23QcyA3fdUG+r3Ag6d3B+G3VPwldK6w/TwQnUlQhgGNlUpMbs7IAFisqWch4F5XaX
-         vFCDhcQk4zqXskY0/0qN5M3pATO3JQNmqEkYd2yfI01k7ZHcW0IkeRUaoq0NH0wtXsA1
-         v8dD1eXaRdE5c48Z0pS+2phXfta1Ljes5UlGqhK3r7OGfdiEgeq8u6ssDtKL5C6Oypqq
-         D/yCKB1FW1RKC1tjFQHGDHhMQdX9LW2XAEoB3NOZkmApvsXxNhf1AJ8StHHefvQh9iwQ
-         PcylDjFncnin8MMNySFXh5jL9/Up+KDM0tH/Rimt/ewPU04XzBgvYmadfUuHqxutEzod
-         dHlA==
-X-Gm-Message-State: AAQBX9ets4BRskRVQD2kIrhYj8zlC0SvtX6jp7pPmO3qT0cTB/fZ8hze
-        +t5j+638aW9ZAVCBMA098cy/ceOAjUVsI47sChRoRw==
-X-Google-Smtp-Source: AKy350ZyOfS4dtZ34VvdRpYL23nzMtyNO31vto5RCBtSVg3taplS7QBs38rFKaUmF1n0vGPY0tnESQznqaXNiGiGREk=
-X-Received: by 2002:a05:6512:110a:b0:4ed:af48:f8bb with SMTP id
- l10-20020a056512110a00b004edaf48f8bbmr104792lfg.5.1682087938324; Fri, 21 Apr
- 2023 07:38:58 -0700 (PDT)
+        with ESMTP id S232959AbjDUOmL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 10:42:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCE214F73;
+        Fri, 21 Apr 2023 07:41:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA2C565151;
+        Fri, 21 Apr 2023 14:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 30F87C433EF;
+        Fri, 21 Apr 2023 14:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682088021;
+        bh=kZ7gvK/5YC+dUYSNtEWHyg+7+yGvM4T1otJQAqhY4pg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=B4OySaK1kfWwB3eyGY/RRN1ozZsTetiWQoSLt492aj7xUmk+StYtGCE4pBI0gz5lE
+         /ulJ62v6QyiFn7VhoLqA5Xr1PfjbDNnc0VVHQSPbYJjvK4zj8M5NpG4jfdXF7G4qCh
+         aAQWjrUubNjI1tTxrLmtresY2dYobqJkh+viNFVmhtTdVAzhMCzv79ub0HoQUR6o8a
+         pbhcfFTxqgXf4l3KzxuQRB38OEeU1u3W/VtFPrJyYr8BLfXcLFhhp5EstXqKT9PdeM
+         w3pEcIlxxR69vLVMl7nmavNVhMjY5N/Kf1SN4eMHXNsYx6J5dinnDL26Bk3Dava4PB
+         pVESB9ubuBVlg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19E0EE501E7;
+        Fri, 21 Apr 2023 14:40:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <00000000000058b63f05f9d98811@google.com>
-In-Reply-To: <00000000000058b63f05f9d98811@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 21 Apr 2023 16:38:45 +0200
-Message-ID: <CACT4Y+ZfucZhM60YPphWiCLJr6+SGFhT+jjm8k1P-a_8Kkxsjg@mail.gmail.com>
-Subject: Re: [syzbot] [cgroups?] [mm?] KCSAN: data-race in drain_all_stock /
- drain_obj_stock (4)
-To:     syzbot <syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
-        shakeelb@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/xsk: put MAP_HUGE_2MB in correct argument
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168208802109.4759.4669418572848372343.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Apr 2023 14:40:21 +0000
+References: <20230421062208.3772-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20230421062208.3772-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, tirthendu.sarkar@intel.com,
+        kal.conley@dectris.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,107 +58,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 Apr 2023 at 16:33, syzbot
-<syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    534293368afa Merge tag 'kbuild-fixes-v6.3' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11a0c26ec80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=85fa20c996a2e46d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=774c29891415ab0fd29d
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/ec0e584af797/disk-53429336.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/423a67f52f94/vmlinux-53429336.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8409b9716faa/bzImage-53429336.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com
+Hello:
 
-Here this:
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-stock->cached_objcg = NULL;
+On Fri, 21 Apr 2023 08:22:08 +0200 you wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Put the flag MAP_HUGE_2MB in the correct flags argument instead of the
+> wrong offset argument.
+> 
+> Fixes: 2ddade322925 ("selftests/xsk: Fix munmap for hugepage allocated umem")
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> [...]
 
-runs concurrently with:
+Here is the summary with links:
+  - [bpf-next] selftests/xsk: put MAP_HUGE_2MB in correct argument
+    https://git.kernel.org/bpf/bpf-next/c/02e93e0475df
 
-if (stock->cached_objcg) {
-    memcg = obj_cgroup_memcg(stock->cached_objcg);
-
-If I am reading this correctly, this can cause a NULL deref, if
-cached_objcg is reset between the check and the use.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
-> ==================================================================
-> BUG: KCSAN: data-race in drain_all_stock / drain_obj_stock
->
-> write to 0xffff888237c2a2f8 of 8 bytes by task 19625 on cpu 0:
->  drain_obj_stock+0x408/0x4e0 mm/memcontrol.c:3306
->  refill_obj_stock+0x9c/0x1e0 mm/memcontrol.c:3340
->  obj_cgroup_uncharge+0xe/0x10 mm/memcontrol.c:3408
->  memcg_slab_free_hook mm/slab.h:587 [inline]
->  __cache_free mm/slab.c:3373 [inline]
->  __do_kmem_cache_free mm/slab.c:3577 [inline]
->  kmem_cache_free+0x105/0x280 mm/slab.c:3602
->  __d_free fs/dcache.c:298 [inline]
->  dentry_free fs/dcache.c:375 [inline]
->  __dentry_kill+0x422/0x4a0 fs/dcache.c:621
->  dentry_kill+0x8d/0x1e0
->  dput+0x118/0x1f0 fs/dcache.c:913
->  __fput+0x3bf/0x570 fs/file_table.c:329
->  ____fput+0x15/0x20 fs/file_table.c:349
->  task_work_run+0x123/0x160 kernel/task_work.c:179
->  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
->  exit_to_user_mode_loop+0xcf/0xe0 kernel/entry/common.c:171
->  exit_to_user_mode_prepare+0x6a/0xa0 kernel/entry/common.c:203
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
->  syscall_exit_to_user_mode+0x26/0x140 kernel/entry/common.c:296
->  do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> read to 0xffff888237c2a2f8 of 8 bytes by task 19632 on cpu 1:
->  obj_stock_flush_required mm/memcontrol.c:3319 [inline]
->  drain_all_stock+0x174/0x2a0 mm/memcontrol.c:2361
->  try_charge_memcg+0x6d0/0xd10 mm/memcontrol.c:2703
->  try_charge mm/memcontrol.c:2837 [inline]
->  mem_cgroup_charge_skmem+0x51/0x140 mm/memcontrol.c:7290
->  sock_reserve_memory+0xb1/0x390 net/core/sock.c:1025
->  sk_setsockopt+0x800/0x1e70 net/core/sock.c:1525
->  udp_lib_setsockopt+0x99/0x6c0 net/ipv4/udp.c:2692
->  udp_setsockopt+0x73/0xa0 net/ipv4/udp.c:2817
->  sock_common_setsockopt+0x61/0x70 net/core/sock.c:3668
->  __sys_setsockopt+0x1c3/0x230 net/socket.c:2271
->  __do_sys_setsockopt net/socket.c:2282 [inline]
->  __se_sys_setsockopt net/socket.c:2279 [inline]
->  __x64_sys_setsockopt+0x66/0x80 net/socket.c:2279
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> value changed: 0xffff8881382d52c0 -> 0xffff888138893740
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 1 PID: 19632 Comm: syz-executor.0 Not tainted 6.3.0-rc2-syzkaller-00387-g534293368afa #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000058b63f05f9d98811%40google.com.
