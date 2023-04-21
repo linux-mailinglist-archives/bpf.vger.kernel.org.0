@@ -2,94 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BE76EB1E7
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 20:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903576EB200
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 21:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbjDUS50 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 14:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
+        id S232616AbjDUTDD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 15:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbjDUS5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 14:57:25 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D986A3
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 11:57:24 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1a95aef9885so778815ad.1
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 11:57:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1682103443; x=1684695443;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=K6w/RFYQCEFH9lIrXtvEwcrLX8h6DWXUYJgShXYznQg=;
-        b=OtrMflDqpvTbf1hqYgFRh8MGT+y58+wd0bVv5hinaNy5myW2e97ZbV6smB3QQbXthK
-         n+PEWARqKca7qz5yg9HbPtAZgiBOEOtkxE8BazOztgokDXOuZqD5TjxBfo3CScJQjHnN
-         efXoJax0DOwqnK8bXbeEpaI/5UiFwmGMkX/Og=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682103443; x=1684695443;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K6w/RFYQCEFH9lIrXtvEwcrLX8h6DWXUYJgShXYznQg=;
-        b=EjNoHQKzVIWuReompxL/l7mipLT2+bkPk2ggPQwRZPryfapYS+VqAvUddQIoxQRIY5
-         6KDOM0O9r/jwpAhEOIwLflV2gFuxc4TMLltWy58SfkJUCvZ1LhbNLgGKZhGPk4DSoKAI
-         w3/fznt3fjUSGygMiO+jtV0gA7pd4gnYTbz/2ZvKTeAVFGaTLdwTlHWBIkdkYz8XKfXj
-         XI8dYoXkbn9rQiHjAxJFHg9CHKpoZal/lagzF4k5B6BFe0kDQj6NcnjsYrL1Jp9EZpb7
-         iCQG4pPxwxcPDbGCgcPm+kwlgCKAnPKAoOJWj3s2QfUmUDtljGf9OQscRZ9rhZVe3fvn
-         Sk5Q==
-X-Gm-Message-State: AAQBX9eYt44+awHR50jrt9IjVbDNHu3uKYn95YHLgC1y8spQNHQqZtN6
-        LfuBwOfV1cyt0DI0H9vfcUbiFw==
-X-Google-Smtp-Source: AKy350bG12cuo1lLGTQORAOtsIQ0fMwYcYa1pj62OYt+Y0tHZrEl1aCeqHuo4UlERPx1aBu4AAaXdg==
-X-Received: by 2002:a17:902:c405:b0:1a6:f5d5:b80a with SMTP id k5-20020a170902c40500b001a6f5d5b80amr8324490plk.38.1682103443706;
-        Fri, 21 Apr 2023 11:57:23 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o5-20020a17090aac0500b0024677263e36sm2932293pjq.43.2023.04.21.11.57.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 11:57:23 -0700 (PDT)
-Message-ID: <6442dc93.170a0220.aacc4.65b3@mx.google.com>
-X-Google-Original-Message-ID: <202304211151.@keescook>
-Date:   Fri, 21 Apr 2023 11:57:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kpsingh@kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/8] New BPF map and BTF security LSM hooks
-References: <CAHC9VhR6ebsxtjSG8-fm7e=HU+srmziVuO6MU+pMpeSBv4vN+A@mail.gmail.com>
- <6436f837.a70a0220.ada87.d446@mx.google.com>
- <CAHC9VhTF0JX3_zZ1ZRnoOw0ToYj6AsvK6OCiKqQgPvHepH9W3Q@mail.gmail.com>
- <CAEf4BzY9GPr9c2fTUS6ijHURtdNDL4xM6+JAEggEqLuz9sk4Dg@mail.gmail.com>
- <CAHC9VhT8RXG6zEwUdQZH4HE_HkF6B8XebWnUDc-k6AeH2NVe0w@mail.gmail.com>
- <CAEf4BzaRkAtyigmu9fybW0_+TZJJX2i93BXjiNUfazt2dFDFbQ@mail.gmail.com>
- <CAHC9VhQFJafyW5r9YzG47NjrBcKURj3D0V-u7eN2eb5tBM2pkg@mail.gmail.com>
- <CAEf4BzZa26JHa=gBgMm-sqyNy_S71-2Rs_-F6mrRXQF9z9KcmA@mail.gmail.com>
- <CAHC9VhRH6Z2r_A7YkDEmW7kiCA8e5j2u270gE48jpQmqS+t75A@mail.gmail.com>
- <CAEf4BzaBt0W3sWh_L4RRXEFYdBotzVEnQdqC7BO+PNWtD7eSUA@mail.gmail.com>
+        with ESMTP id S232753AbjDUTDA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 15:03:00 -0400
+Received: from mx06lb.world4you.com (mx06lb.world4you.com [81.19.149.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71752D6D;
+        Fri, 21 Apr 2023 12:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=eEuWTqs0YVu7RaS5LQziyU3OIVmoZUhvyPJQ7OK9geg=; b=RDTBajzX7FVxaSyEN8b62rfrXf
+        DjxTS0FqksWjoWBL5QYecIf+XwjXqdZPWI6X0b1hkfrrZzdq2Hnj+TQ1rgCmN+VszM8aiPZhWpZoZ
+        7DWdruSCcDjQhmGOPnoL48z+TUhp6NVObcohgPv3EmSLn1xoEPqvFNnJ1rogJoMilddQ=;
+Received: from [88.117.57.231] (helo=[10.0.0.160])
+        by mx06lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1ppw25-0006jZ-09;
+        Fri, 21 Apr 2023 21:02:57 +0200
+Message-ID: <fddf3dd3-2d75-3969-7a62-a4eeeb6ef553@engleder-embedded.com>
+Date:   Fri, 21 Apr 2023 21:02:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaBt0W3sWh_L4RRXEFYdBotzVEnQdqC7BO+PNWtD7eSUA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH net-next v3 6/6] tsnep: Add XDP socket zero-copy TX
+ support
+Content-Language: en-US
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+References: <20230418190459.19326-1-gerhard@engleder-embedded.com>
+ <20230418190459.19326-7-gerhard@engleder-embedded.com>
+ <ZEGd5QHTInP8WRlZ@boxer>
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+In-Reply-To: <ZEGd5QHTInP8WRlZ@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 05:00:55PM -0700, Andrii Nakryiko wrote:
-> Alright. I now do have an alternative approach in mind that will only
-> use restrictive LSMs and will still allow BPF usage within user
-> namespaces.
+On 20.04.23 22:17, Maciej Fijalkowski wrote:
+> On Tue, Apr 18, 2023 at 09:04:59PM +0200, Gerhard Engleder wrote:
+>> Send and complete XSK pool frames within TX NAPI context. NAPI context
+>> is triggered by ndo_xsk_wakeup.
+>>
+>> Test results with A53 1.2GHz:
+>>
+>> xdpsock txonly copy mode:
+>>                     pps            pkts           1.00
+>> tx                 284,409        11,398,144
+>> Two CPUs with 100% and 10% utilization.
+>>
+>> xdpsock txonly zero-copy mode:
+>>                     pps            pkts           1.00
+>> tx                 511,929        5,890,368
+>> Two CPUs with 100% and 1% utilization.
+> 
+> Hmm, I think l2fwd ZC numbers should be included here not in the previous
+> patch?
 
-It seems the problem with in the existing kernel is that bpf_capable() is
-rather inflexible. In only one place is sysctl_unprivileged_bpf_disabled
-checked (outside the unprivileged_ebpf_enabled() checks in CPU errata
-fixes).
+Will be done.
 
-Should CAP_BPF be per-namespace?
+>>
+>> Packet rate increases and CPU utilization is reduced.
+>>
+>> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+>> ---
+>>   drivers/net/ethernet/engleder/tsnep.h      |   2 +
+>>   drivers/net/ethernet/engleder/tsnep_main.c | 127 +++++++++++++++++++--
+>>   2 files changed, 119 insertions(+), 10 deletions(-)
+>>
 
--- 
-Kees Cook
+(...)
+
+>>   static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>   {
+>>   	struct tsnep_tx_entry *entry;
+>>   	struct netdev_queue *nq;
+>> +	int xsk_frames = 0;
+>>   	int budget = 128;
+>>   	int length;
+>>   	int count;
+>> @@ -676,7 +771,7 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>   		if ((entry->type & TSNEP_TX_TYPE_SKB) &&
+>>   		    skb_shinfo(entry->skb)->nr_frags > 0)
+>>   			count += skb_shinfo(entry->skb)->nr_frags;
+>> -		else if (!(entry->type & TSNEP_TX_TYPE_SKB) &&
+>> +		else if ((entry->type & TSNEP_TX_TYPE_XDP) &&
+>>   			 xdp_frame_has_frags(entry->xdpf))
+>>   			count += xdp_get_shared_info_from_frame(entry->xdpf)->nr_frags;
+>>   
+>> @@ -705,9 +800,11 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>   
+>>   		if (entry->type & TSNEP_TX_TYPE_SKB)
+>>   			napi_consume_skb(entry->skb, napi_budget);
+>> -		else
+>> +		else if (entry->type & TSNEP_TX_TYPE_XDP)
+>>   			xdp_return_frame_rx_napi(entry->xdpf);
+>> -		/* xdpf is union with skb */
+>> +		else
+>> +			xsk_frames++;
+>> +		/* xdpf and zc are union with skb */
+>>   		entry->skb = NULL;
+>>   
+>>   		tx->read = (tx->read + count) & TSNEP_RING_MASK;
+>> @@ -718,6 +815,14 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>   		budget--;
+>>   	} while (likely(budget));
+>>   
+>> +	if (tx->xsk_pool) {
+>> +		if (xsk_frames)
+>> +			xsk_tx_completed(tx->xsk_pool, xsk_frames);
+>> +		if (xsk_uses_need_wakeup(tx->xsk_pool))
+>> +			xsk_set_tx_need_wakeup(tx->xsk_pool);
+>> +		tsnep_xdp_xmit_zc(tx);
+> 
+> would be good to signal to NAPI if we are done with the work or is there a
+> need to be rescheduled (when you didn't manage to consume all of the descs
+> from XSK Tx ring).
+
+In my opinion this is already done. If some budget is left, then we are
+done and tsnep_tx_poll() returns true to signal work is complete. If
+buget gets zero, then tsnep_tx_poll() returns false to signal work is
+not complete. This return value is considered for the NAPI signaling
+by tsnep_poll().
