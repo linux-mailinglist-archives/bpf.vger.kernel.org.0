@@ -2,115 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB8A6EAE05
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 17:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064FF6EAE52
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 17:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbjDUP1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 11:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        id S232438AbjDUPwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 11:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjDUP1s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 11:27:48 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9896AF1A
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 08:27:46 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5050491cb04so2669409a12.0
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 08:27:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1682090865; x=1684682865;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gx5GxGtrrjOAGUdwY+1Co2nSlcyUyAY3EIxCkRgyP34=;
-        b=PxSombqCkAsg664VeNNmDxvmdjYf4dVj/5vyCqT9TwatG1st3eDRZnY9a5R4md+08R
-         Wlj29tQkP0zchjP27MtI4tzvWqid3espmDxOLkS0u8O6ChXIbmPMFUBTkEXVXwV9/2rO
-         G2km4+cC+4xjckG50ka0axJFD8eDMEfWiG8fo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682090865; x=1684682865;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gx5GxGtrrjOAGUdwY+1Co2nSlcyUyAY3EIxCkRgyP34=;
-        b=V9kLxCHd6ICv44a/VnCMAH+perrnXP6EJ56q+/R7FX0PQpZcWUWRr3Cuy1b+7vBk9z
-         ZmqnwYVrv/T45gUwEjitZWUsDO7xqeH2rgWbb9zIdxxg/Z5bu99yicqQ4MwfXlOwPtz5
-         BksVUNDFc7VnyKKn5I6vld68ouSbCHejdUbgEFCCCPtgB+URvQkDxwc0GR8BqIaZeu4E
-         TJ0Bowpp5d+t3VCxMs/8CKtFJ25yB44GZ3O+nvsDFb26+gYxw/oSRCeab9NLoYdyaJ2b
-         S6bu5Dlq4xa21WoQgCAPQ+lx/6IsRZigV1XnqO1bzQQdgGfOih3qEjrLD9+PcDYL67E7
-         3PsQ==
-X-Gm-Message-State: AAQBX9dqZM5dGCz4ij3Q8TNVZXN2gKkOazQnOR8JFMSM6yWaD6q0ofrB
-        +SblyZF16FLI3q/M9O7QtfSMYOXAPUNW9YqTkBEmYw==
-X-Google-Smtp-Source: AKy350Y68zZjWdPdSC6TpDMd7z4/NcQ7/qcne2yDz4AxGzEmekWkM42mEM6MlU1Eb30cHq26JDtT+nSbORqAIO55DgA=
-X-Received: by 2002:aa7:d81a:0:b0:504:98f1:464c with SMTP id
- v26-20020aa7d81a000000b0050498f1464cmr5176775edq.23.1682090865240; Fri, 21
- Apr 2023 08:27:45 -0700 (PDT)
+        with ESMTP id S231128AbjDUPwu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 11:52:50 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F54A93F4;
+        Fri, 21 Apr 2023 08:52:48 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1ppt42-0003hv-Aq; Fri, 21 Apr 2023 17:52:46 +0200
+Date:   Fri, 21 Apr 2023 17:52:46 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        dxu@dxuuu.xyz, qde@naccy.de
+Subject: Re: [PATCH bpf-next v4 7/7] selftests/bpf: add missing netfilter
+ return value and ctx access tests
+Message-ID: <20230421155246.GD12121@breakpoint.cc>
+References: <20230420124455.31099-1-fw@strlen.de>
+ <20230420124455.31099-8-fw@strlen.de>
+ <20230420201655.77kkgi3dh7fesoll@MacBook-Pro-6.local>
 MIME-Version: 1.0
-References: <20230406130205.49996-2-kal.conley@dectris.com>
- <87sfdckgaa.fsf@toke.dk> <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk> <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
- <87ile011kz.fsf@toke.dk> <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
- <874jpdwl45.fsf@toke.dk> <CAHApi-kcaMRPj4mEPs87_4Z6iO5qEpzOOcbVza7vxURqCtpz=Q@mail.gmail.com>
- <ZEJZYa8WT6A9VpOJ@boxer>
-In-Reply-To: <ZEJZYa8WT6A9VpOJ@boxer>
-From:   Kal Cutter Conley <kal.conley@dectris.com>
-Date:   Fri, 21 Apr 2023 17:27:33 +0200
-Message-ID: <CAHApi-ngO=hYTL449hUuV_b4mAa4NVS6eE5Uya1dZM6fEE7rPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230420201655.77kkgi3dh7fesoll@MacBook-Pro-6.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Here is the comparison between multi-buffer and jumbo frames that I did
-> for ZC ice driver. Configured MTU was 8192 as this is the frame size for
-> aligned mode when working with huge pages. I am presenting plain numbers
-> over here from xdpsock.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> On Thu, Apr 20, 2023 at 02:44:55PM +0200, Florian Westphal wrote:
+> > +
+> > +SEC("netfilter")
+> > +__description("netfilter valid context access")
+> > +__success __failure_unpriv
+> > +__retval(1)
+> > +__naked void with_invalid_ctx_access_test5(void)
+> > +{
+> > +	asm volatile ("					\
+> > +	r2 = *(u64*)(r1 + %[__bpf_nf_ctx_state]);	\
+> > +	r1 = *(u64*)(r1 + %[__bpf_nf_ctx_skb]);		\
+> > +	r0 = 1;						\
+> > +	exit;						\
+> > +"	:
+> > +	: __imm_const(__bpf_nf_ctx_state, offsetof(struct bpf_nf_ctx, state)),
+> > +	  __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
+> > +	: __clobber_all);
+> 
+> Could you write this one in C instead?
 >
-> Mbuf, packet size = 8192 - XDP_PACKET_HEADROOM
-> 885,705pps - rxdrop frame_size=4096
-> 806,307pps - l2fwd frame_size=4096
-> 877,989pps - rxdrop frame_size=2048
-> 773,331pps - l2fwd frame_size=2048
->
-> Jumbo, packet size = 8192 - XDP_PACKET_HEADROOM
-> 893,530pps - rxdrop frame_size=8192
-> 841,860pps - l2fwd frame_size=8192
+> Also check that skb and state are dereferenceable after that.
 
-Thanks so much for sharing these initial results! Do you have similar
-measurements for ~9000 byte packets in unaligned mode? We typically
-receive packets larger than 8192 bytes.
+My bad. Added this and that:
 
->
-> Kal might say that multi-buffer numbers are imaginary as these patches
-> were never shown to the public ;) but now that we have extensive test
-> suite I am fixing some last issues that stand out, so we are asking for
-> some more patience over here... overall i was expecting that they will be
-> much worse when compared to jumbo frames, but then again i believe this
-> implementation is not ideal and can be improved. Nevertheless, jumbo
-> frames support has its value.
+SEC("netfilter")
+__description("netfilter valid context read and invalid write")
+__failure __msg("only read is supported")
+int with_invalid_ctx_access_test5(struct bpf_nf_ctx *ctx)
+{
+  struct nf_hook_state *state = (void *)ctx->state;
 
-You made me chuckle ;-) Any measurements people can provide are
-helpful, even if they must be taken with a grain of salt. ;-). How
-much of your test suite can be upstreamed in the future? My assumption
-was the difference should be measurable, at least you have confirmed
-that. :-)
+  state->sk = NULL;
+  return 1;
+}
+
+SEC("netfilter")
+__description("netfilter test prog with skb and state read access")
+__success __failure_unpriv
+__retval(0)
+int with_valid_ctx_access_test6(struct bpf_nf_ctx *ctx)
+{
+  const struct nf_hook_state *state = ctx->state;
+  struct sk_buff *skb = ctx->skb;
+  const struct iphdr *iph;
+  const struct tcphdr *th;
+  u8 buffer_iph[20] = {};
+  u8 buffer_th[40] = {};
+  struct bpf_dynptr ptr;
+  uint8_t ihl;
+
+  if (skb->len <= 20 || bpf_dynptr_from_skb(skb, 0, &ptr))
+        return 1;
+
+  iph = bpf_dynptr_slice(&ptr, 0, buffer_iph, sizeof(buffer_iph));
+  if (!iph)
+    return 1;
+
+   if (state->pf != 2)
+     return 1;
+
+   ihl = iph->ihl << 2;
+   th = bpf_dynptr_slice(&ptr, ihl, buffer_th, sizeof(buffer_th));
+   if (!th)
+	return 1;
+
+     return th->dest == bpf_htons(22) ? 1 : 0;
+}
+
+"Worksforme".  Is there anything else thats missing?
+If not I'll send v5 on Monday.
+
+> Since they should be seen as trusted ptr_to_btf_id skb->len and state->sk should work.
+> You cannot craft this test case in asm, since it needs CO-RE.
+> 
+> Also see that BPF CI is not happy:
+> https://github.com/kernel-patches/bpf/actions/runs/4757642030/jobs/8455500277
+> Error: #112 libbpf_probe_prog_types
+> Error: #112/32 libbpf_probe_prog_types/BPF_PROG_TYPE_NETFILTER
+> Error: #113 libbpf_str
+> Error: #113/4 libbpf_str/bpf_prog_type_str
+
+prog_type_name[] lacks "netfilter" entry, and a missing 'case
+PROG_NETFILTER', v5 should pass this now.
