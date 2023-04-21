@@ -2,73 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AA76EB3BD
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 23:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6DB6EB494
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 00:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjDUVmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 17:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
+        id S229501AbjDUWRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 18:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjDUVmV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 17:42:21 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9497719AD
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 14:42:19 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-552a6357d02so25287317b3.3
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 14:42:19 -0700 (PDT)
+        with ESMTP id S233523AbjDUWRw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 18:17:52 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D70103
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:17:51 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-5051abd03a7so3155114a12.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682113339; x=1684705339;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l3iXp+irGUX635A++P4SzY2dTN9GRUPMK9mJEpvLk5c=;
-        b=FdmXez19XgyRtc/doiA8NbWgTlo1jpP4aJTPzhx0NajxcpjyerHsl5P1GWSVH1X2b2
-         hzBnEp54qnqXIgHaNyLzO5I7olucS1q2D0bKhTAzIkEQibxdi8tTKlfNg6xuylCFICZ5
-         wssg5+yKN6/VBgFCI5D9+gK6+RoqxrdKnB2Z0HAtHH0UAzMq0NE0L3YBdVBU7JKb+SDL
-         mqYTXqrLDZmDHKV41RGK5DMIwY+GL4F4BLPqSAFX9MUOu8uEExt7i+txQ82FOU9Fo8RR
-         44FddB67f46hprf77DgbSlHe4nbgu/+YQAOdVKR76uKjaFgUCbc8PrSrXyCw00gT0lkk
-         qeYA==
+        d=gmail.com; s=20221208; t=1682115469; x=1684707469;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6P6TFC0CklVpHKCZQA5K8w6hBhVznuAy9jhUE/lxHpg=;
+        b=r9uYOXlAuqBulVVzVTgCp7oGWYmE5FT6dCSlFY71CbmtsEPjxbfEgQ+ZKz1sHER0YH
+         FgVH7fhwCYsI9U9N35PBs3q0kMjTMvM40+50R0gMAmsK39nM2CPkyShvw3hFaNDoEksC
+         j0/EynThyr16orBW1Agtj5BrrZcT2GriJQzmHdoqtISnQtbrQsBswSCx1xQxE26lVDrZ
+         9bbnKuE/TTMNqk0O87gGdn7wWA06ntllJVhWaW0vGFrJtejoJQK/WPsU7Q7zO1/fAaoM
+         Nc00EdMcUTEVRWyfhzhSXqozFRNVTDt/YhKIFfOUy+5B5CeHehotWeBHDsEWNN0DTra2
+         pKow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682113339; x=1684705339;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l3iXp+irGUX635A++P4SzY2dTN9GRUPMK9mJEpvLk5c=;
-        b=R8g9bKM52aXz6yBjnCO1nS+JOecTo/gmNfdIcUOjN8IB5/C2Dm7dHWC07pb7xtcWm2
-         lUK2OWRdSJS8MLQv9tfTjRrKMQs3YHutgrkPzRH8gamcZRNO97stza+ArzltPGA920Jt
-         EmxvaTmYm4xMV3UxsFdC6uQ4038O63w5L93ErFwbqW5oEmqT6LXECPBFmOvklcnUi1pu
-         a5ChlqOP2dIIb3WhO98+geg8DqHmH1ZtOh5kGCICeCYQymsmqjUceKWbTMSbzHqDCwrh
-         TRzxcBc8kR1LT4oejkgIW9eJD5ti/9y/v/ythL84yOo2UZhy05/uXxMvkVAB1BPAQFoH
-         6a5Q==
-X-Gm-Message-State: AAQBX9cLuNxrwaWAD1blVl2o+nGqKEHoGbBo7i7hRwOXYzqvdrA4vl4F
-        lb3mG0n9b2Du0WmIwm4aCq8=
-X-Google-Smtp-Source: AKy350ZwZlAvwCGzQ7FpXSUGtLY7pAGGqpbsQI5j6qPARc9gQdzfkwz7YeFjBtP0UkR6ZrwaVQXMaQ==
-X-Received: by 2002:a81:4e08:0:b0:54f:b112:7680 with SMTP id c8-20020a814e08000000b0054fb1127680mr3016900ywb.41.1682113338800;
-        Fri, 21 Apr 2023 14:42:18 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:5982:695:6231:be41? ([2600:1700:6cf8:1240:5982:695:6231:be41])
-        by smtp.gmail.com with ESMTPSA id h7-20020a0dde07000000b0054662f7b42dsm1181372ywe.63.2023.04.21.14.42.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Apr 2023 14:42:18 -0700 (PDT)
-Message-ID: <4e7592dc-adf4-3fd6-7898-b658127339f0@gmail.com>
-Date:   Fri, 21 Apr 2023 14:42:16 -0700
+        d=1e100.net; s=20221208; t=1682115469; x=1684707469;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6P6TFC0CklVpHKCZQA5K8w6hBhVznuAy9jhUE/lxHpg=;
+        b=LsCyMRVnACuNMMEByuUZVIbwgxMe1r2J+CFCPPbsfiD1pOTDzSvxlfldwCniualfDs
+         lz8RBZ7BhloVYesq9PFFIaeb4bphbuyGR67orsIjqkVP9JF/6RxwQuxQYYk1b5zli+Bn
+         wVPZyGLDkQI2MJXiof9aaeDdiL2DawlhafczTXLNLUgYkCciqk9wVlJEb4gAZpNYMndw
+         Wl6djQn+glJzMnGyEgiqU07e/q1psYpfrAKwRktXEB6HqS1FfvusEeqp7Fz9NzQkuVaj
+         x/0iXy51l3eJjg5FjUM2DFHhdsECoZ/TM2tRtmERWcWdMlnpp34LXSvywFOiViB36udH
+         R/Jg==
+X-Gm-Message-State: AAQBX9cZQuUjcYYfiYMIy2MMp4l2ZhJHATtaUDahkLaLZzUy9dVX+x8r
+        Q31gbmGtl/JAMLYGb5Sj0wE=
+X-Google-Smtp-Source: AKy350YsbfE6hNFzM/UVCneWt/XKQWzMHEtmd4zn2ktF/lGVj2FtcQZnVvkf/nKU6EC3RlFIxSqqZg==
+X-Received: by 2002:aa7:db85:0:b0:506:87e9:d4b2 with SMTP id u5-20020aa7db85000000b0050687e9d4b2mr5689175edt.2.1682115469509;
+        Fri, 21 Apr 2023 15:17:49 -0700 (PDT)
+Received: from localhost ([2001:620:618:580:2:80b3:0:6d0])
+        by smtp.gmail.com with ESMTPSA id z15-20020aa7cf8f000000b005067d6b06efsm2233657edx.17.2023.04.21.15.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 15:17:49 -0700 (PDT)
+Date:   Sat, 22 Apr 2023 00:17:47 +0200
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 9/9] selftests/bpf: Add refcounted_kptr tests
+Message-ID: <atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd7tnwft34e3@xktodqeqevir>
+References: <20230415201811.343116-1-davemarchevsky@fb.com>
+ <20230415201811.343116-10-davemarchevsky@fb.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH bpf-next v3] bpftool: Show map IDs along with struct_ops
- links.
-Content-Language: en-US
-To:     Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, yhs@meta.com,
-        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-Cc:     Kui-Feng Lee <kuifeng@meta.com>,
-        Quentin Monnet <quentin@isovalent.com>
-References: <20230421181720.182365-1-kuifeng@meta.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230421181720.182365-1-kuifeng@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230415201811.343116-10-davemarchevsky@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,52 +74,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Due to a confliction, I have rebased this patch and sent v4.
-
-On 4/21/23 11:17, Kui-Feng Lee wrote:
-> A new link type, BPF_LINK_TYPE_STRUCT_OPS, was added to attach
-> struct_ops to links. (226bc6ae6405) It would be helpful for users to
-> know which map is associated with the link.
-> 
-> The assumption was that every link is associated with a BPF program, but
-> this does not hold true for struct_ops. It would be better to display
-> map_id instead of prog_id for struct_ops links. However, some tools may
-> rely on the old assumption and need a prog_id.  The discussion on the
-> mailing list suggests that tools should parse JSON format. We will maintain
-> the existing JSON format by adding a map_id without removing prog_id. As
-> for plain text format, we will remove prog_id from the header line and add
-> a map_id for struct_ops links.
-> 
-> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+On Sat, Apr 15, 2023 at 10:18:11PM CEST, Dave Marchevsky wrote:
+> Test refcounted local kptr functionality added in previous patches in
+> the series.
+>
+> Usecases which pass verification:
+>
+> * Add refcounted local kptr to both tree and list. Then, read and -
+>   possibly, depending on test variant - delete from tree, then list.
+>   * Also test doing read-and-maybe-delete in opposite order
+> * Stash a refcounted local kptr in a map_value, then add it to a
+>   rbtree. Read from both, possibly deleting after tree read.
+> * Add refcounted local kptr to both tree and list. Then, try reading and
+>   deleting twice from one of the collections.
+> * bpf_refcount_acquire of just-added non-owning ref should work, as
+>   should bpf_refcount_acquire of owning ref just out of bpf_obj_new
+>
+> Usecases which fail verification:
+>
+> * The simple successful bpf_refcount_acquire cases from above should
+>   both fail to verify if the newly-acquired owning ref is not dropped
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->   tools/bpf/bpftool/link.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> index f985b79cca27..c79f2e8927d6 100644
-> --- a/tools/bpf/bpftool/link.c
-> +++ b/tools/bpf/bpftool/link.c
-> @@ -195,6 +195,10 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
->   				 info->netns.netns_ino);
->   		show_link_attach_type_json(info->netns.attach_type, json_wtr);
->   		break;
-> +	case BPF_LINK_TYPE_STRUCT_OPS:
-> +		jsonw_uint_field(json_wtr, "map_id",
-> +				 info->struct_ops.map_id);
-> +		break;
->   	default:
->   		break;
->   	}
-> @@ -227,7 +231,10 @@ static void show_link_header_plain(struct bpf_link_info *info)
->   	else
->   		printf("type %u  ", info->type);
->   
-> -	printf("prog %u  ", info->prog_id);
-> +	if (info->type == BPF_LINK_TYPE_STRUCT_OPS)
-> +		printf("map %u  ", info->struct_ops.map_id);
-> +	else
-> +		printf("prog %u  ", info->prog_id);
->   }
->   
->   static void show_link_attach_type_plain(__u32 attach_type)
+> [...]
+> +SEC("?tc")
+> +__failure __msg("Unreleased reference id=3 alloc_insn=21")
+> +long rbtree_refcounted_node_ref_escapes(void *ctx)
+> +{
+> +	struct node_acquire *n, *m;
+> +
+> +	n = bpf_obj_new(typeof(*n));
+> +	if (!n)
+> +		return 1;
+> +
+> +	bpf_spin_lock(&glock);
+> +	bpf_rbtree_add(&groot, &n->node, less);
+> +	/* m becomes an owning ref but is never drop'd or added to a tree */
+> +	m = bpf_refcount_acquire(n);
+
+I am analyzing the set (and I'll reply in detail to the cover letter), but this
+stood out.
+
+Isn't this going to be problematic if n has refcount == 1 and is dropped
+internally by bpf_rbtree_add? Are we sure this can never occur? It took me some
+time, but the following schedule seems problematic.
+
+CPU 0					CPU 1
+n = bpf_obj_new
+lock(lock1)
+bpf_rbtree_add(rbtree1, n)
+m = bpf_rbtree_acquire(n)
+unlock(lock1)
+
+kptr_xchg(map, m) // move to map
+// at this point, refcount = 2
+					m = kptr_xchg(map, NULL)
+					lock(lock2)
+lock(lock1)				bpf_rbtree_add(rbtree2, m)
+p = bpf_rbtree_first(rbtree1)			if (!RB_EMPTY_NODE) bpf_obj_drop_impl(m) // A
+bpf_rbtree_remove(rbtree1, p)
+unlock(lock1)
+bpf_obj_drop(p) // B
+					bpf_refcount_acquire(m) // use-after-free
+					...
+
+B will decrement refcount from 1 to 0, after which bpf_refcount_acquire is
+basically performing a use-after-free (when fortunate, one will get a
+WARN_ON_ONCE splat for 0 to 1, otherwise, a silent refcount raise for some
+different object).
