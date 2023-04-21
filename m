@@ -2,299 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211316EB01E
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 19:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F3C6EB02E
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 19:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbjDURE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 13:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        id S232190AbjDURHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 13:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbjDUREU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 13:04:20 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F4416B1B;
-        Fri, 21 Apr 2023 10:03:41 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1ppuAZ-0004C2-Ix; Fri, 21 Apr 2023 19:03:35 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     <bpf@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        dxu@dxuuu.xyz, qde@naccy.de, Florian Westphal <fw@strlen.de>
-Subject: [PATCH bpf-next v5 7/7] selftests/bpf: add missing netfilter return value and ctx access tests
-Date:   Fri, 21 Apr 2023 19:03:00 +0200
-Message-Id: <20230421170300.24115-8-fw@strlen.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230421170300.24115-1-fw@strlen.de>
-References: <20230421170300.24115-1-fw@strlen.de>
+        with ESMTP id S229641AbjDURHj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 13:07:39 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-cusazlp170100000.outbound.protection.outlook.com [IPv6:2a01:111:f403:c111::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DFF659C;
+        Fri, 21 Apr 2023 10:07:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PyMp6cX5SKgSKpHoUxvVmmqNyHVoTpz5rDSSqc3rIzQRZ357GupqOpDEe08wXKmKbZMSDn4l9ryoDlaa+dr+KCWVR6Fdz6Vokm550qNtMV9FVixuRr7oxp8C99xzunFqUBK+kMSoXOIFgUgayTTo5h9tCqAz2+Zz02nzEFMJSTqw7ZAHK4qlbVxU1NMj8KLu5ZgIS7JdJUxuH8yIQqILyRHXLXZkchmhtxIak8iBQ0GIqpTlgcCFm+hSobN4QHYwbhVnwQAX7f6o0XkM6RMXDt4o8prvrhW3WjsdCJIQnLjbUyswUuEeM8Sh1yEkU5FP5e5jnBf1fnEZ8qTEDzFUxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fUAAqt2zlA6V2pSbGw5SVCTIpm+EIG4oMYK47XrZo8U=;
+ b=maLcHMQVF4hdbK8zpaidCULYDynk3fQUEmoXW7diU6HTqpRPTW0YRXMa3IyHF6tp4Q+9U3AISlcOxMAJqbagVpKnwEdO3zWIrYl94cSrk+w5CVO6KmjOfc1OpoCwItNQwSFWiCgDHlEG1LyvN46I3Eqx41ktQ1faAkiatSmkR3O1uV1DblVqd5C2EDF9XgVdMuYiZ4WNKzLLLdyWg7/oWKNejkQDGtEgx+d436o1giEjUKvOZQeoLbwl3jKckrPgGQLLGg4OUTvXpELdm0xI+tWqYBpKTgm106XUzvDiRa5mhrpqvkBvZJXJ43FFlo+3zNhqN7Z5bNeY8o4Ymt+CoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fUAAqt2zlA6V2pSbGw5SVCTIpm+EIG4oMYK47XrZo8U=;
+ b=X25t0itKRkrO940ISX+p934KpuxLcaLkrx4jjSqqcx4GcghzdQc5ViZfqNO476N2a81ulhHgXIuVXGKvDg/+YGQRvNoSRfTTRoWWeHkGMjNRBvdOK8UwCrB3v7HjU4vcDJ7q+zDXTJD9nkhvFjsNm8g9XBhg8Hvkrq826C/2kLw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by CO1PR21MB1316.namprd21.prod.outlook.com (2603:10b6:303:153::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.11; Fri, 21 Apr
+ 2023 17:07:27 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::3e5b:6d93:ceab:b4c6]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::3e5b:6d93:ceab:b4c6%4]) with mapi id 15.20.6340.015; Fri, 21 Apr 2023
+ 17:07:27 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Cc:     haiyangz@microsoft.com, decui@microsoft.com, kys@microsoft.com,
+        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+        longli@microsoft.com, ssengar@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        sharmaajay@microsoft.com, hawk@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next, 0/2] Update coding style and check alloc_frag
+Date:   Fri, 21 Apr 2023 10:06:56 -0700
+Message-Id: <1682096818-30056-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0102.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::17) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|CO1PR21MB1316:EE_
+X-MS-Office365-Filtering-Correlation-Id: ab36f4d2-e1aa-41dd-8e52-08db428ae230
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ABTrtml/CYL2cEisiyx6978TbO0Lr2Y8NiGOPpNnHAuqznQCVrx1OHAvKPIJE38EZM1EtnNPlki+XbYigIsQUXf+WR71odMNk62BdnyjM4CbsMmb5zhsPLwjo9xHcPgv8x16UVxgkv9sp/JocxXKN22dmQAlJU4Rjuy46Q7mgkfyuoz7aALDAObQ5em2rkOaw/JCutibLlSh6GRxnhsc33D2b2F8SwhTYPqSxMo0JKcdWQKy9BVxdQSzdMKLEsqKMJIHRw8E6Z4/0ABo7lQ603lV7euvQoa8lr/e15daJQlZm0gePl3mNsoncQroBjFOFJpO4iSo8bc96MIH5bs0xz/+oE1KK9arYC4HGKUoX4wzUJTf3QBEFSE3uhkTGINJwHg8dxmILD77Ud07vZWYlEnJPylI8UA/ZuYnMjmnuW06dpsMJMeEfw85NuSA4OHPiQzxan1VswO7J3//V2eSqEuK5/sd0Fg80spUjnqd6SJDaX23igfJ1WmEZohkfddO2bD8ofbxxQQAICcoSrEpLtxN8pl7rc38dc+rZrF8UEnaSL8qNEZtl1zqpeMEtYQcZGkXrx5S6r3hBWXlg2kmI0AU2CgL94JXYNXlDgvER9b7HmYbjgtMF2gEf5WHts7M45inCcHnhQiWKdiDUQrr7UDJ3q3pOVXyLgPRl5r2RJg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(346002)(366004)(39860400002)(451199021)(4326008)(66946007)(7846003)(66556008)(786003)(66476007)(316002)(36756003)(6506007)(26005)(82960400001)(38350700002)(38100700002)(82950400001)(6512007)(2616005)(186003)(83380400001)(5660300002)(41300700001)(8676002)(8936002)(478600001)(52116002)(10290500003)(6666004)(6486002)(15650500001)(7416002)(2906002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PjrQ3YnsYNGo+u44RDN0A7DLRhOB1tghQcgBN2fXf/eaqKPr95QFWg+I6h7V?=
+ =?us-ascii?Q?oZpghDbb58ceER8Tst8XPSLlhKHCAkjqvA45/EQldiqTiyqgW7/HzYec8Lbn?=
+ =?us-ascii?Q?4Qkti1BJmHPmU3up2PtcVlNmPgFs1oszZ3VGJVRbRyLwHMqiLSrE1DDUc8VL?=
+ =?us-ascii?Q?2AmyIkBGds3iEWN3P8HzYoOxcHZr2HATcTdSqIrJeN3Jd37CT8uaVrAu7rSW?=
+ =?us-ascii?Q?NV6BJEcpUewhTkXonCb93EK72tZDwMD3Bm3KOmkh7kfYLPmLivNnE4X0GUeW?=
+ =?us-ascii?Q?fskO6sHp3rlVZlLW1sK0n5XvLFp+m02DHkcbDos2gZMGaln92/wjp5b8iKUK?=
+ =?us-ascii?Q?EsGRkTEgt0DFKV8YwhKuS41rBs0X3t3CflhHIL1C1kLxNhIm2bEMYpNEBsvp?=
+ =?us-ascii?Q?uDrT7tak2390SkzQ7IwEv+bUs9XxtVSs6JzastGyktHFp1MxI28b7JuWJe8j?=
+ =?us-ascii?Q?Y6EBszLoc0JUcb1HBUcVG5qs6m1VF8mVFvb0EzXZgr41tDDNqvukT43n+aCe?=
+ =?us-ascii?Q?Ii3CpvG+dv+2Kf4XZn+MR3PaX7wIR0Mmf9LQ+ka2GK+lYsQfYr97P+i6bVGY?=
+ =?us-ascii?Q?CvAnfUYo49SiqV7wqS368KUT8niy8DUdLICxCif2krspfleWcAYL3v13iQl7?=
+ =?us-ascii?Q?XG2qX8v+OT/QHj0k6ehnHhNis+LW1WV1r5HJ44YVyuQFifJbl4i4VDDxMZVc?=
+ =?us-ascii?Q?W/x3A1IC5rAeNwOq0qojkX4s7mKJbnEtN/FG2dNCrAhnLFQ4is5QwQ1Tvk7D?=
+ =?us-ascii?Q?2VmVw9y0M5z38MaGcHmRwwS6M20Zs+4BTMWv7iqwWN9hUHojhz/BFTL71RyO?=
+ =?us-ascii?Q?4xy7zszDwB/Sv9/56yKbtkZHUceuThvpmluCNp+Ouof5B1fV5nhwvMew+G0e?=
+ =?us-ascii?Q?YQxfY9OSTCKSMutlsa0EVwwBQBZbjKlTID6x8dFmCCSvvj0GhZIsXvdKS2rd?=
+ =?us-ascii?Q?w2OmjobjBrGHi/aK+rKjxr3rgqWBJba5pPEF/wZ0pTIdreHMefy1McE9s5dg?=
+ =?us-ascii?Q?or/Os9yXgr4MNwBPwfSQ1qoku6Z0llvgstGK6t+xuxQqywOYINqrGU2DOHEy?=
+ =?us-ascii?Q?lt1NRNkIYngSEXX3orR63lwvzHfE4k/2bbjGrg1K/fNcgTzteXQypRB9DNcy?=
+ =?us-ascii?Q?IZ4incOca7wo04iiZtlG1Q3tE8U/NakQjqJGqycKpD5KNtSSge76QbKKCs45?=
+ =?us-ascii?Q?dxZdB3gtTJAiVhgba22GHHPJkrf7ikHeCtTrafWA6TLRbGmuo/257/Sv19z5?=
+ =?us-ascii?Q?BWfGda+RLL7uetYwrV05chGZqi7XsWX9BKt+dIckCBBjhFWisdIHXLalA3bq?=
+ =?us-ascii?Q?uM9pq2Ih8WnXFZmTTsqqZCPzlgfOlas8Yuj88DRjTEeht8k/6cDGpAlt9fBk?=
+ =?us-ascii?Q?YXQIxBDtJahY4aLGHlVvj5njb3JXewMajp5jyLRucGvgIN9GSf1tN5RvXdxn?=
+ =?us-ascii?Q?mnpvkk7AXVWt30jS/9R5jinq2jA13Z2FLVjkGIVH68IZoXo7A5YPcwN6qGk7?=
+ =?us-ascii?Q?hfppeEQkgEUKUlhfz/YQsBPu9NTK9gJbf2VAjRbcnSPfxoSk88xygnLLC0w8?=
+ =?us-ascii?Q?h4MMVyy9Ps/b04FFwNLQEkCaR2yPC1Ub1twmGB2Z?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab36f4d2-e1aa-41dd-8e52-08db428ae230
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2023 17:07:27.5727
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iyP678z3CtS8E6G5UlE5vx5S2b/1yKPn5wbpw15VtroqPtQOdN9m7RbgpI2eHUYVBy3sQ0BO4QDTtbfY0Ucxew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR21MB1316
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend prog_tests with two test cases:
+Follow up patches for the jumbo frame support.
 
- # ./test_progs --allow=verifier_netfilter_retcode
- #278/1   verifier_netfilter_retcode/bpf_exit with invalid return code. test1:OK
- #278/2   verifier_netfilter_retcode/bpf_exit with valid return code. test2:OK
- #278/3   verifier_netfilter_retcode/bpf_exit with valid return code. test3:OK
- #278/4   verifier_netfilter_retcode/bpf_exit with invalid return code. test4:OK
- #278     verifier_netfilter_retcode:OK
+As suggested by Jakub Kicinski, update coding style, and check napi_alloc_frag
+for possible fallback to single pages.
 
-This checks that only accept and drop (0,1) are permitted.
+Haiyang Zhang (2):
+  net: mana: Rename mana_refill_rxoob and remove some empty lines
+  net: mana: Check if netdev/napi_alloc_frag returns single page
 
-NF_QUEUE could be implemented later if we can guarantee that attachment
-of such programs can be rejected if they get attached to a pf/hook that
-doesn't support async reinjection.
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 24 ++++++++++++++-----
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-NF_STOLEN could be implemented via trusted helpers that can guarantee
-that the skb will eventually be free'd.
-
-v4: test case for bpf_nf_ctx access checks, requested by Alexei Starovoitov.
-v5: also check ctx->{state,skb} can be dereferenced (Alexei).
-
- # ./test_progs --allow=verifier_netfilter_ctx
- #281/1   verifier_netfilter_ctx/netfilter invalid context access, size too short:OK
- #281/2   verifier_netfilter_ctx/netfilter invalid context access, size too short:OK
- #281/3   verifier_netfilter_ctx/netfilter invalid context access, past end of ctx:OK
- #281/4   verifier_netfilter_ctx/netfilter invalid context, write:OK
- #281/5   verifier_netfilter_ctx/netfilter valid context read and invalid write:OK
- #281/6   verifier_netfilter_ctx/netfilter test prog with skb and state read access:OK
- #281/7   verifier_netfilter_ctx/netfilter test prog with skb and state read access @unpriv:OK
- #281     verifier_netfilter_ctx:OK
-Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
-
-This checks:
-1/2: partial reads of ctx->{skb,state} are rejected
-3. read access past sizeof(ctx) is rejected
-4. write to ctx content, e.g. 'ctx->skb = NULL;' is rejected
-5. ctx->state content cannot be altered
-6. ctx->state and ctx->skb can be dereferenced
-7. ... same program fails for unpriv (CAP_NET_ADMIN needed).
-
-Link: https://lore.kernel.org/bpf/20230419021152.sjq4gttphzzy6b5f@dhcp-172-26-102-232.dhcp.thefacebook.com/
-Link: https://lore.kernel.org/bpf/20230420201655.77kkgi3dh7fesoll@MacBook-Pro-6.local/
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- Update verifier_netfilter_ctx.c test cases
-
- .../selftests/bpf/prog_tests/verifier.c       |   4 +
- .../bpf/progs/verifier_netfilter_ctx.c        | 121 ++++++++++++++++++
- .../bpf/progs/verifier_netfilter_retcode.c    |  49 +++++++
- 3 files changed, 174 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 7c68d78da9ea..7534f5499d11 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -29,6 +29,8 @@
- #include "verifier_map_ret_val.skel.h"
- #include "verifier_masking.skel.h"
- #include "verifier_meta_access.skel.h"
-+#include "verifier_netfilter_ctx.skel.h"
-+#include "verifier_netfilter_retcode.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -103,6 +105,8 @@ void test_verifier_map_ptr(void)              { RUN(verifier_map_ptr); }
- void test_verifier_map_ret_val(void)          { RUN(verifier_map_ret_val); }
- void test_verifier_masking(void)              { RUN(verifier_masking); }
- void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
-+void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
-+void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-new file mode 100644
-index 000000000000..65bba330e7e5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_ctx.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+
-+#include "bpf_misc.h"
-+
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, size too short")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test1(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u8*)(r1 + %[__bpf_nf_ctx_state]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_state, offsetof(struct bpf_nf_ctx, state))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, size too short")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test2(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u16*)(r1 + %[__bpf_nf_ctx_skb]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context access, past end of ctx")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test3(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64*)(r1 + %[__bpf_nf_ctx_size]);	\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_size, sizeof(struct bpf_nf_ctx))
-+	: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("netfilter invalid context, write")
-+__failure __msg("invalid bpf_context access")
-+__naked void with_invalid_ctx_access_test4(void)
-+{
-+	asm volatile ("					\
-+	r2 = r1;					\
-+	*(u64*)(r2 + 0) = r1;				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-+	: __clobber_all);
-+}
-+
-+#define NF_DROP 0
-+#define NF_ACCEPT 1
-+
-+SEC("netfilter")
-+__description("netfilter valid context read and invalid write")
-+__failure __msg("only read is supported")
-+int with_invalid_ctx_access_test5(struct bpf_nf_ctx *ctx)
-+{
-+	struct nf_hook_state *state = (void *)ctx->state;
-+
-+	state->sk = NULL;
-+	return NF_ACCEPT;
-+}
-+
-+extern int bpf_dynptr_from_skb(struct sk_buff *skb, __u64 flags,
-+                               struct bpf_dynptr *ptr__uninit) __ksym;
-+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
-+                                   void *buffer, uint32_t buffer__sz) __ksym;
-+
-+SEC("netfilter")
-+__description("netfilter test prog with skb and state read access")
-+__success __failure_unpriv
-+__retval(0)
-+int with_valid_ctx_access_test6(struct bpf_nf_ctx *ctx)
-+{
-+	const struct nf_hook_state *state = ctx->state;
-+	struct sk_buff *skb = ctx->skb;
-+	const struct iphdr *iph;
-+	const struct tcphdr *th;
-+	u8 buffer_iph[20] = {};
-+	u8 buffer_th[40] = {};
-+	struct bpf_dynptr ptr;
-+	uint8_t ihl;
-+
-+	if (skb->len <= 20 || bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_ACCEPT;
-+
-+	iph = bpf_dynptr_slice(&ptr, 0, buffer_iph, sizeof(buffer_iph));
-+	if (!iph)
-+		return NF_ACCEPT;
-+
-+	if (state->pf != 2)
-+		return NF_ACCEPT;
-+
-+	ihl = iph->ihl << 2;
-+
-+	th = bpf_dynptr_slice(&ptr, ihl, buffer_th, sizeof(buffer_th));
-+	if (!th)
-+		return NF_ACCEPT;
-+
-+	return th->dest == bpf_htons(22) ? NF_ACCEPT : NF_DROP;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-new file mode 100644
-index 000000000000..353ae6da00e1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_netfilter_retcode.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test1")
-+__failure __msg("R0 is not a known value")
-+__naked void with_invalid_return_code_test1(void)
-+{
-+	asm volatile ("					\
-+	r0 = *(u64*)(r1 + 0);				\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test2")
-+__success
-+__naked void with_valid_return_code_test2(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with valid return code. test3")
-+__success
-+__naked void with_valid_return_code_test3(void)
-+{
-+	asm volatile ("					\
-+	r0 = 1;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+SEC("netfilter")
-+__description("bpf_exit with invalid return code. test4")
-+__failure __msg("R0 has value (0x2; 0x0)")
-+__naked void with_invalid_return_code_test4(void)
-+{
-+	asm volatile ("					\
-+	r0 = 2;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
 -- 
-2.39.2
+2.25.1
 
