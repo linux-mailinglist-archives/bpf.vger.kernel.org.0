@@ -2,69 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E000E6EAEB8
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 18:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A172E6EAECA
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 18:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbjDUQJV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 12:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S232169AbjDUQJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 12:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjDUQJU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 12:09:20 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7719719B6;
-        Fri, 21 Apr 2023 09:09:19 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-504eb1155d3so13575299a12.1;
-        Fri, 21 Apr 2023 09:09:19 -0700 (PDT)
+        with ESMTP id S232576AbjDUQJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 12:09:41 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B4314448
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:09:39 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-51f597c975fso2364137a12.0
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682093358; x=1684685358;
+        d=google.com; s=20221208; t=1682093379; x=1684685379;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L6nFZkGAQHDLDKXsLrnKLoGsBBd86+v29OZnbsaAUD4=;
-        b=qS8C1doa/3nAAHuZjTCqd1z7m0xzFS9xmUFWkSISL6zGj4ub+0hkTzvvWobc4r6jCo
-         77a4KH0OeTPeVuqaZ8hhkjGAQoLZ57jIKBHs2667eQPH7Ue0x7VAIEFlTFyjK5d/3LeX
-         +A/UNPLO+1zdE85D6/lHV7DXgoXikVrM7pgXJXpU22fu5/5dHsxgqk625/CUML6fZA41
-         hlRTJsrfA515dlXAsUJd5zAjFRCRvrdsddUBxEZ2HpLXYD33aHSF3lw+QSL0a5X4kuZT
-         tK23I1TAh4KHt/3lNaMuhtSpal/fi7MxUT+PuFv2hEemck09krJ1dZA7jUQ3B8j6taJV
-         PLPA==
+        bh=S7TyNAimvjnAmYvJHrfeJZkU6/BthWton9MEBpuDG5o=;
+        b=UKISpSfuqAV4Rhek6hhwVLHMI5Us4zFdHXXw5OTkf0Iu6eer2etJlVl2hhSR4xgU0Z
+         +lpXSfaW5+xDTmBtSeuHzJelM23Xy74yobIiEEvkc1AVmsvWu+BZ3VxeB7OWoYsFTXV0
+         MM/q7RnghK1lTsT+626qjxu/aGqHpjQOx55lAtQk9ZtV5eKnkmfKqy2xp5dqK9HMLt75
+         HDwTT82pX/Rg+viwbe7Y9theEukVOwVNgE3iQOik52I4ILeg4FSHuB3GAJManMLQ2ylh
+         22eYQOnIi0m3VN8YU6eLRsoEWokUMk8K+eUjTlWWJkfbvTRi7T6sdndjxbKpGzv1ciLa
+         DUkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682093358; x=1684685358;
+        d=1e100.net; s=20221208; t=1682093379; x=1684685379;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L6nFZkGAQHDLDKXsLrnKLoGsBBd86+v29OZnbsaAUD4=;
-        b=S1HXjRw6o+sz5jyw+Z5564WUDoQRawH6oB7cL/Yx9TzJNszQzqrLYQeZIw8Bsdx1LH
-         f4BpLla53tqGVvaTu2PFnIzEZD9Scyi92/a2vOG5L386anLBpkKqSLylVUThIh1n0PjL
-         8IzQJL1fFeEyqjqht3rr2j4xfM8L7/PWz2Q3PQzDEKNNiS9cNjZyUtpnQkBEgM46d8lr
-         YKzyhydSTh924U2sXO8cm9Lp7nLDMwsIVKyJi4xNU/aAtU7a8H8mVHRKaEcOiJKYICm/
-         tD9J8pogoD7RlEAelv4pBoOW/M7fPIKc71HEgp+MR6Gdggtag8wWrgnt4/t8L6ZqU3uK
-         WMWA==
-X-Gm-Message-State: AAQBX9cbhFo5N9c0Jyw0fkIJsNKXdaoPcplt+dDjCnXP/O54N6P9KWiY
-        PC5J1UPQs/GoR2+ECGTl12n+jvt152q3RjcGNoLSCoIBy0Y=
-X-Google-Smtp-Source: AKy350aBgjE3PSnNXfAEWtlBdeoB+8SnjTBEB6yX1XMnulsiIf2kGx8pV6wpzyw+STDKadG2uRKecbBn67mF52TzeJM=
-X-Received: by 2002:a05:6402:12c2:b0:506:a44c:e213 with SMTP id
- k2-20020a05640212c200b00506a44ce213mr4664284edx.20.1682093357789; Fri, 21 Apr
- 2023 09:09:17 -0700 (PDT)
+        bh=S7TyNAimvjnAmYvJHrfeJZkU6/BthWton9MEBpuDG5o=;
+        b=B3lmE/B/fo7FrFR2Cjpgj2BwnzZxrAACX79/RT/TtC6ot7N21nUuXHcLFD0XItKXaO
+         hOEEgcv0jkOlyFAsgAbUpmZU6zdurQvp4fNn73qL4VbjUwp+HWyZu4OTNIPHoI6x+Z/9
+         onE55gdUFq9prtv0mxZOBG/R6ybxltV7XIqxBLhCdy12Ra9JN4QgXd82xQkNPSqbBUD3
+         VnaFzqtVjJsXzlPEbK76Whw3qP3jxtvQEJ8kNfbWPb3jf2LFKCyU7lwz9n8eHA3+k9kW
+         a8p9jxts2IMUEQSV/ZK9H4lgla+Kge8CRi4MR48PzzVngbmbAe4gnM2eaGoRgPVEgurr
+         fpVw==
+X-Gm-Message-State: AAQBX9eyNy3bOx+FL7rG0/iWMSKahcSbuOGk0d8rxUZm8kgVd/blk9BO
+        7eMKgC4/E5sORChqSYRyP7HWVt7MB05A24/dIckGMg==
+X-Google-Smtp-Source: AKy350Ye2vOuRIDBOJdCoepC0ONFRzIligLExb2i6zq68huA8Hdu/H1Zi/eh+nnED6esJ6dCoIDfHdgA3LgOd6ztY28=
+X-Received: by 2002:a17:90a:950e:b0:24b:2ef6:64d5 with SMTP id
+ t14-20020a17090a950e00b0024b2ef664d5mr5488306pjo.47.1682093378997; Fri, 21
+ Apr 2023 09:09:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230420124455.31099-1-fw@strlen.de> <20230420124455.31099-8-fw@strlen.de>
- <20230420201655.77kkgi3dh7fesoll@MacBook-Pro-6.local> <20230421155246.GD12121@breakpoint.cc>
-In-Reply-To: <20230421155246.GD12121@breakpoint.cc>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Apr 2023 09:09:06 -0700
-Message-ID: <CAADnVQLtKtrH-UhaJdn+5d+qObcuQ8TEuVDbpqx2Az=dN1DwWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 7/7] selftests/bpf: add missing netfilter
- return value and ctx access tests
-To:     Florian Westphal <fw@strlen.de>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, Quentin Deslandes <qde@naccy.de>
+References: <20230418225343.553806-1-sdf@google.com> <20230418225343.553806-4-sdf@google.com>
+ <4a2e1b70-9055-f5d9-c286-3e5760f06811@iogearbox.net>
+In-Reply-To: <4a2e1b70-9055-f5d9-c286-3e5760f06811@iogearbox.net>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 21 Apr 2023 09:09:27 -0700
+Message-ID: <CAKH8qBshg+bF59LUXypxvPX1Gek2AASL+DQydVLMgqGT4ONfGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/6] bpf: Don't EFAULT for {g,s}setsockopt with
+ wrong optlen
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,89 +73,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 8:52=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
-te:
+On Fri, Apr 21, 2023 at 8:24=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > On Thu, Apr 20, 2023 at 02:44:55PM +0200, Florian Westphal wrote:
-> > > +
-> > > +SEC("netfilter")
-> > > +__description("netfilter valid context access")
-> > > +__success __failure_unpriv
-> > > +__retval(1)
-> > > +__naked void with_invalid_ctx_access_test5(void)
-> > > +{
-> > > +   asm volatile ("                                 \
-> > > +   r2 =3D *(u64*)(r1 + %[__bpf_nf_ctx_state]);       \
-> > > +   r1 =3D *(u64*)(r1 + %[__bpf_nf_ctx_skb]);         \
-> > > +   r0 =3D 1;                                         \
-> > > +   exit;                                           \
-> > > +"  :
-> > > +   : __imm_const(__bpf_nf_ctx_state, offsetof(struct bpf_nf_ctx, sta=
-te)),
-> > > +     __imm_const(__bpf_nf_ctx_skb, offsetof(struct bpf_nf_ctx, skb))
-> > > +   : __clobber_all);
+> On 4/19/23 12:53 AM, Stanislav Fomichev wrote:
+> > Over time, we've found out several special socket option cases which ne=
+ed
+> > special treatment. And if BPF program doesn't handle them correctly, th=
+is
+> > might EFAULT perfectly valid {g,s}setsockopt calls.
 > >
-> > Could you write this one in C instead?
+> > The intention of the EFAULT was to make it apparent to the
+> > developers that the program is doing something wrong.
+> > However, this inadvertently might affect production workloads
+> > with the BPF programs that are not too careful.
+>
+> Took in the first two for now. It would be good if the commit description
+> in here could have more details for posterity given this is too vague.
+
+Thanks! Will try to repost next week with more details.
+
+> > Let's try to minimize the chance of BPF program screwing up userspace
+> > by ignoring the output of those BPF programs (instead of returning
+> > EFAULT to the userspace). pr_info_ratelimited those cases to
+> > the dmesg to help with figuring out what's going wrong.
 > >
-> > Also check that skb and state are dereferenceable after that.
+> > Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+> > Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >   kernel/bpf/cgroup.c | 8 ++++++--
+> >   1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > index a06e118a9be5..af4d20864fb4 100644
+> > --- a/kernel/bpf/cgroup.c
+> > +++ b/kernel/bpf/cgroup.c
+> > @@ -1826,7 +1826,9 @@ int __cgroup_bpf_run_filter_setsockopt(struct soc=
+k *sk, int *level,
+> >               ret =3D 1;
+> >       } else if (ctx.optlen > max_optlen || ctx.optlen < -1) {
+> >               /* optlen is out of bounds */
+> > -             ret =3D -EFAULT;
+> > +             pr_info_ratelimited(
+> > +                     "bpf setsockopt returned unexpected optlen=3D%d (=
+max_optlen=3D%d)\n",
+> > +                     ctx.optlen, max_optlen);
 >
-> My bad. Added this and that:
->
-> SEC("netfilter")
-> __description("netfilter valid context read and invalid write")
-> __failure __msg("only read is supported")
-> int with_invalid_ctx_access_test5(struct bpf_nf_ctx *ctx)
-> {
->   struct nf_hook_state *state =3D (void *)ctx->state;
->
->   state->sk =3D NULL;
->   return 1;
-> }
->
-> SEC("netfilter")
-> __description("netfilter test prog with skb and state read access")
-> __success __failure_unpriv
-> __retval(0)
-> int with_valid_ctx_access_test6(struct bpf_nf_ctx *ctx)
-> {
->   const struct nf_hook_state *state =3D ctx->state;
->   struct sk_buff *skb =3D ctx->skb;
->   const struct iphdr *iph;
->   const struct tcphdr *th;
->   u8 buffer_iph[20] =3D {};
->   u8 buffer_th[40] =3D {};
->   struct bpf_dynptr ptr;
->   uint8_t ihl;
->
->   if (skb->len <=3D 20 || bpf_dynptr_from_skb(skb, 0, &ptr))
->         return 1;
+> Does it help any regular user if this log message is seen? I kind of doub=
+t it a bit,
+> it might create more confusion if log gets spammed with it, imo.
 
-Use NF_ACCEPT instead of 1 ?
-Sadly it's not an enum yet, so it's not in vmlinux.h
-The prog would need to manually #define it.
+Agreed, but we need some way to let the users know that their bpf
+program is doing the wrong thing (if they set the optlen too high for
+example).
+Any other better alternatives to expose those events?
 
+> >       } else {
+> >               /* optlen within bounds, run kernel handler */
+> >               ret =3D 0;
+> > @@ -1922,7 +1924,9 @@ int __cgroup_bpf_run_filter_getsockopt(struct soc=
+k *sk, int level,
+> >               goto out;
+> >
+> >       if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
+> > -             ret =3D -EFAULT;
+> > +             pr_info_ratelimited(
+> > +                     "bpf getsockopt returned unexpected optlen=3D%d (=
+max_optlen=3D%d)\n",
+> > +                     ctx.optlen, max_optlen);
+> >               goto out;
+> >       }
+> >
+> >
 >
->   iph =3D bpf_dynptr_slice(&ptr, 0, buffer_iph, sizeof(buffer_iph));
->   if (!iph)
->     return 1;
->
->    if (state->pf !=3D 2)
->      return 1;
->
->    ihl =3D iph->ihl << 2;
->    th =3D bpf_dynptr_slice(&ptr, ihl, buffer_th, sizeof(buffer_th));
->    if (!th)
->         return 1;
->
->      return th->dest =3D=3D bpf_htons(22) ? 1 : 0;
-> }
-
-Perfect. That's what I wanted to see.
-Without above example it's hard for people to see how ctx->skb
-can be accessed to parse the packet.
-
-> "Worksforme".  Is there anything else thats missing?
-> If not I'll send v5 on Monday.
-
-ship it any time. Don't delay.
