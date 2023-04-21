@@ -2,135 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC2D6EA2D0
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 06:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214266EA340
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 07:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjDUEb1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 00:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
+        id S231574AbjDUFij (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 01:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjDUEbZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 00:31:25 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629DD525C;
-        Thu, 20 Apr 2023 21:31:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VgbJzgk_1682051473;
-Received: from 30.221.149.253(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VgbJzgk_1682051473)
-          by smtp.aliyun-inc.com;
-          Fri, 21 Apr 2023 12:31:19 +0800
-Message-ID: <3990a85c-c8d9-d20d-0c6d-f111ed872b7a@linux.alibaba.com>
-Date:   Fri, 21 Apr 2023 12:31:12 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC PATCH bpf-next v3 0/5] net/smc: Introduce BPF injection
- capability
-Content-Language: en-US
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1682051033-66125-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1682051033-66125-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        with ESMTP id S231509AbjDUFii (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 01:38:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FF165B7;
+        Thu, 20 Apr 2023 22:38:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E188564DC5;
+        Fri, 21 Apr 2023 05:38:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F0A8C433D2;
+        Fri, 21 Apr 2023 05:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682055513;
+        bh=okX8G73kUYpMvr7PR1bTBTURUIZ0HskAOzEnVg/ac5k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rcq5qUUbeaGkV0SXQHTsMfe1ovnEc1Ga4y8233Pk/NDzDU21nWqH8OzY6CS7RgNaR
+         sQAxx6bX8nvfWZIYS4+zHlbtl0xcRaTldYz4Q+BCoMo+TFU8AEdo8zk0ySCDAZNGff
+         gMrbXQf00qVW0qBwlJ9+/Eug4KytKGpw+vcU4Nh1DzySTreycombjlRxwalViElGxb
+         x0J7KjYEwgyvVEhtPknJAIqexkE2aJd8S1lrPVXnUqthoJkKKYEQlLVPkIT0xmLXgz
+         g+KiqQ5i+Pn7fNXpl5rywQiQqRSL7FltkyMnw1XKWAe2+sOGke4AP6XDukp26TvQze
+         k6gwnYjZ8hHZw==
+Date:   Fri, 21 Apr 2023 14:38:28 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v5 2/9] tracing/probes: Add fprobe events for tracing
+ function entry and exit.
+Message-Id: <20230421143828.bb274512144e133eb5fead1a@kernel.org>
+In-Reply-To: <CAADnVQ+R3ySQpFDnn-2EtUooDmkwTBCh_yRjqNBDhS5SvWrTYQ@mail.gmail.com>
+References: <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
+        <168198995084.1795549.16754963116067902376.stgit@mhiramat.roam.corp.google.com>
+        <20230420184932.pgv5wiqqt4fzswdk@MacBook-Pro-6.local>
+        <20230421084106.5a02844971e18cdd8ad163be@kernel.org>
+        <CAADnVQ+R3ySQpFDnn-2EtUooDmkwTBCh_yRjqNBDhS5SvWrTYQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 20 Apr 2023 16:46:08 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Hi Martin,
+> On Thu, Apr 20, 2023 at 4:41 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Thu, 20 Apr 2023 11:49:32 -0700
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >
+> > > On Thu, Apr 20, 2023 at 08:25:50PM +0900, Masami Hiramatsu (Google) wrote:
+> > > > +static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > > > +                       struct pt_regs *regs)
+> > > > +{
+> > > > +   struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > > > +   struct fentry_trace_entry_head *entry;
+> > > > +   struct hlist_head *head;
+> > > > +   int size, __size, dsize;
+> > > > +   int rctx;
+> > > > +
+> > > > +   if (bpf_prog_array_valid(call)) {
+> > > > +           unsigned long orig_ip = instruction_pointer(regs);
+> > > > +           int ret;
+> > > > +
+> > > > +           ret = trace_call_bpf(call, regs);
+> > >
+> > > Please do not call bpf from fprobe.
+> > > There is no use case for it.
+> >
+> > OK.
+> >
+> > >
+> > > > +
+> > > > +           /*
+> > > > +            * We need to check and see if we modified the pc of the
+> > > > +            * pt_regs, and if so return 1 so that we don't do the
+> > > > +            * single stepping.
+> > > > +            */
+> > > > +           if (orig_ip != instruction_pointer(regs))
+> > > > +                   return 1;
+> > > > +           if (!ret)
+> > > > +                   return 0;
+> > > > +   }
+> > > > +
+> > > > +   head = this_cpu_ptr(call->perf_events);
+> > > > +   if (hlist_empty(head))
+> > > > +           return 0;
+> > > > +
+> > > > +   dsize = __get_data_size(&tf->tp, regs);
+> > > > +   __size = sizeof(*entry) + tf->tp.size + dsize;
+> > > > +   size = ALIGN(__size + sizeof(u32), sizeof(u64));
+> > > > +   size -= sizeof(u32);
+> > > > +
+> > > > +   entry = perf_trace_buf_alloc(size, NULL, &rctx);
+> > > > +   if (!entry)
+> > > > +           return 0;
+> > > > +
+> > > > +   entry->ip = entry_ip;
+> > > > +   memset(&entry[1], 0, dsize);
+> > > > +   store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > > > +   perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+> > > > +                         head, NULL);
+> > > > +   return 0;
+> > > > +}
+> > > > +NOKPROBE_SYMBOL(fentry_perf_func);
+> > > > +
+> > > > +static void
+> > > > +fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > > > +           unsigned long ret_ip, struct pt_regs *regs)
+> > > > +{
+> > > > +   struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > > > +   struct fexit_trace_entry_head *entry;
+> > > > +   struct hlist_head *head;
+> > > > +   int size, __size, dsize;
+> > > > +   int rctx;
+> > > > +
+> > > > +   if (bpf_prog_array_valid(call) && !trace_call_bpf(call, regs))
+> > > > +           return;
+> > >
+> > > Same here.
+> > > These two parts look like copy-paste from kprobes.
+> > > I suspect this code wasn't tested at all.
+> >
+> > OK, I missed to test that bpf part. I thought bpf could be appended to
+> > any "trace-event" (looks like trace-event), isn't it?
+> 
+> No. We're not applying bpf filtering to any random event
+> that gets introduced in a tracing subsystem.
+> fprobe falls into that category.
+> Every hook where bpf can be invoked has to be thought through.
+> That mental exercise didn't happen here.
 
-At now, most of the issues you mentioned have been resolved, mainly 
-including
+OK. Just out of curiousity, where is the "tracepoint" filter applied?
+In the kernel (verifier?) or the userspace?
 
-1. Use RCU instead of read write lock
-2. Support for update
-3. Negotiator requires a name
-4. Added a KConfig with a default value of N to avoid affecting users 
-who do not require SMC.
-5. Revised some issues with test cases.
-
-Do you have any other suggestions? If any, please let me know. Thank a 
-lot! 😁
-If there are no other opinions, I plan to convert the RFC into a formal 
-PATCH.
-What do you think?
-
-Best wishes
-D. Wythe
+Thank you,
 
 
-On 4/21/23 12:23 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> This patches attempt to introduce BPF injection capability for SMC,
-> and add selftest to ensure code stability.
->
-> As we all know that the SMC protocol is not suitable for all scenarios,
-> especially for short-lived. However, for most applications, they cannot
-> guarantee that there are no such scenarios at all. Therefore, apps
-> may need some specific strategies to decide shall we need to use SMC
-> or not, for example, apps can limit the scope of the SMC to a specific
-> IP address or port.
->
-> Based on the consideration of transparent replacement, we hope that apps
-> can remain transparent even if they need to formulate some specific
-> strategies for SMC using. That is, do not need to recompile their code.
->
-> On the other hand, we need to ensure the scalability of strategies
-> implementation. Although it is simple to use socket options or sysctl,
-> it will bring more complexity to subsequent expansion.
->
-> Fortunately, BPF can solve these concerns very well, users can write
-> thire own strategies in eBPF to choose whether to use SMC or not.
-> And it's quite easy for them to modify their strategies in the future.
->
-> This patches implement injection capability for SMC via struct_ops.
-> In that way, we can add new injection scenarios in the future.
->
-> v3 -> v2:
->
-> 1. Fix format errors in subject.
-> 2. Remove unnecessary conditions in Kconfig.
->
-> v2 -> v1:
->
-> 1. Fix complie error if CONFIG_BPF_SYSCALL set while CONFIG_SMC_BPF not.
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304070326.mYVdiX9k-lkp@intel.com/
->
-> 2. Fix potential reference leaks, smc_destruct may be prematurely retired
-> due to pre conditions.
->
-> D. Wythe (5):
->    net/smc: move smc_sock related structure definition
->    net/smc: allow smc to negotiate protocols on policies
->    net/smc: allow set or get smc negotiator by sockopt
->    bpf: add smc negotiator support in BPF struct_ops
->    bpf/selftests: add selftest for SMC bpf capability
->
->   include/net/smc.h                                | 268 +++++++++++++++++
->   include/uapi/linux/smc.h                         |   1 +
->   kernel/bpf/bpf_struct_ops_types.h                |   4 +
->   net/Makefile                                     |   1 +
->   net/smc/Kconfig                                  |  11 +
->   net/smc/af_smc.c                                 | 203 ++++++++++---
->   net/smc/bpf_smc.c                                | 360 +++++++++++++++++++++++
->   net/smc/smc.h                                    | 224 --------------
->   tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
->   tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
->   10 files changed, 1185 insertions(+), 259 deletions(-)
->   create mode 100644 net/smc/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
->
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
