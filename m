@@ -2,124 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A9A6EA139
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 03:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1C86EA159
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 04:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbjDUBtH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 21:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        id S232277AbjDUCAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 22:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbjDUBtG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 21:49:06 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E132244A0;
-        Thu, 20 Apr 2023 18:49:05 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-63d2ba63dddso1493864b3a.2;
-        Thu, 20 Apr 2023 18:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682041745; x=1684633745;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j6eFFid3zYK7gTdaKpKvDnC8bu0Wn+9im+sC1MyL9qY=;
-        b=TdwbyvxPuvtR1I2lwaDkYB8gJwIJWUaVGU8kpm9m3u+vPjnlWpIACkny4dEeBYD+PL
-         z1hzi5bdG0TslPCknsyiQzSJrgUpDWMt+rweQPCa/Rw21KKquYvaRM/aWli2aYCKmgeS
-         3eQ31vpSvQ9FY6DAEOt0z00iN/G5IbEvX4NQqiBXN0PjjzPALFiMuamiMbuVl9TSeVjO
-         OcgPfFnw7ALE04YSjj7qgIJ3mMhrO1FzLqhWUmcHwgC91mZb8ygZSnlHL+z7nOhn+YUS
-         PX2mUcwmYU/WRHIRS3DM7dNQvCTHiDUf82t4mUrwB01jvIrGY1fOEr5jByWAzIViwCl8
-         3jFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682041745; x=1684633745;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j6eFFid3zYK7gTdaKpKvDnC8bu0Wn+9im+sC1MyL9qY=;
-        b=CWFbpSUo1MK1yna0BehhOXUeGa3cLiLvgB8aDBj2ACNCSl39xYl7SER+uva2p/iMit
-         veCoJ2ihkwDq6tcEewLNJrQI0JDpBeUI0d8GSog6Ewj0Go9otKK0gVXmblI/EyJeg1IZ
-         YKnng9VFDyTax5K5DC6MNzBjvrGQW6iCA5FDIrJOJIRibBaWd9tfuZ0TuHC5dEp1MOa3
-         yBMg783D/M9Q8u2Ys1Fu2jhvNHeedkBQBmzvWhJm5df3L+3elz/vG/hYJijb13L7dYVm
-         x0TtvDqekBV3YwOmQyqeUlYRWvlRvg6UB8YcM9is6pXsevxU8nHE8WR2dMTORygi9cE4
-         m3+w==
-X-Gm-Message-State: AAQBX9cQtCzw+iq15DE+NZ+wOg+wrMNERerPPBB5qMt2bSJi7WDWSG2B
-        yPOpfAJ5cmQiVSdBBZ4AoR8=
-X-Google-Smtp-Source: AKy350aMCk1+Y4L38EDM0Ce6hL00N31UAOM6RDeiSysp/mhTNoE6CEmoWSLGUwZp9WYOkbZ6Mc4O6w==
-X-Received: by 2002:a05:6a00:2e8f:b0:626:1523:b10d with SMTP id fd15-20020a056a002e8f00b006261523b10dmr3965921pfb.4.1682041745129;
-        Thu, 20 Apr 2023 18:49:05 -0700 (PDT)
-Received: from dhcp-172-26-102-232.DHCP.thefacebook.com ([2620:10d:c090:400::5:ef5e])
-        by smtp.gmail.com with ESMTPSA id fb10-20020a056a002d8a00b00631fecabdcfsm1904980pfb.97.2023.04.20.18.49.03
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 20 Apr 2023 18:49:04 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        fw@strlen.de, eddyz87@gmail.com, davemarchevsky@meta.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf-next] bpf: Fix race between btf_put and btf_idr walk.
-Date:   Thu, 20 Apr 2023 18:49:01 -0700
-Message-Id: <20230421014901.70908-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+        with ESMTP id S229660AbjDUCAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 22:00:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB96E3C34
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 19:00:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6741B64CE6
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:00:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C0775C4339B;
+        Fri, 21 Apr 2023 02:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682042419;
+        bh=G5qdHJtG7YBVLasUz4BxoGsx7uyCSlfc6GJVjJG/xG8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YDWwWIXJcJ9zrycSj+iJ+eR8EXaSz9jPjKxNrVQDW/JROb4bp5C1nFv85OYk03HzI
+         w807WP17eOOVjoUgwwoEVhlKozTW7EBUIIarfX63Altw5ngdx1eCPlXDaShj6MY0sD
+         QlmA7atYeFNyx6XLgMy2JZLYnbQg4HS+TJ6SwBzBNz54SNtlfQr1C+qIff/kULNNak
+         7+oJY1OxngNXmkyjwtq3tWdIHJuzDNT24tIHXkPHJkj9lPI8pjThz1OejAVJbNo2xX
+         Boykk3GPhizRWAexyBUPHcgaDKyxJAhpPrTD7fR/07K8YA6/Z7OiCJJ4rhq97bIjWH
+         y+vgiXyRnnYhg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A809BE501E3;
+        Fri, 21 Apr 2023 02:00:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next 0/4] fix __retval() being always ignored
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168204241968.27140.15302922849910536093.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Apr 2023 02:00:19 +0000
+References: <20230420232317.2181776-1-eddyz87@gmail.com>
+In-Reply-To: <20230420232317.2181776-1-eddyz87@gmail.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+        yhs@fb.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+Hello:
 
-Florian and Eduard reported hard dead lock:
-[   58.433327]  _raw_spin_lock_irqsave+0x40/0x50
-[   58.433334]  btf_put+0x43/0x90
-[   58.433338]  bpf_find_btf_id+0x157/0x240
-[   58.433353]  btf_parse_fields+0x921/0x11c0
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-This happens since btf->refcount can be 1 at the time of btf_put() and
-btf_put() will call btf_free_id() which will try to grab btf_idr_lock
-and will dead lock.
-Avoid the issue by doing btf_put() without locking.
+On Fri, 21 Apr 2023 02:23:13 +0300 you wrote:
+> Florian Westphal found a bug in test_loader.c processing of __retval tag.
+> Because of this bug the function test_loader.c:do_prog_test_run()
+> never executed and all __retval test tags were ignored. See [1].
+> 
+> Fix for this bug uncovers two additional bugs:
+> - During test_verifier tests migration to inline assembly (see [2])
+>   I missed the fact that some tests require maps to contain mock values;
+> - Some issue with a new refcounted_kptr test, which causes kernel to
+>   produce dead lock and refcount saturation warnings when subject to
+>   libbpf's bpf_test_run_opts().
+> 
+> [...]
 
-Reported-by: Florian Westphal <fw@strlen.de>
-Reported-by: Eduard Zingerman <eddyz87@gmail.com>
-Fixes: 3d78417b60fb ("bpf: Add bpf_btf_find_by_name_kind() helper.")
-Fixes: 1e89106da253 ("bpf: Add bpf_core_add_cands() and wire it into bpf_core_apply_relo_insn().")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/btf.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Here is the summary with links:
+  - [bpf-next,1/4] selftests/bpf: disable program test run for progs/refcounted_kptr.c
+    https://git.kernel.org/bpf/bpf-next/c/7c4b96c00043
+  - [bpf-next,2/4] selftests/bpf: fix __retval() being always ignored
+    https://git.kernel.org/bpf/bpf-next/c/7cdddb99e4a6
+  - [bpf-next,3/4] selftests/bpf: add pre bpf_prog_test_run_opts() callback for test_loader
+    https://git.kernel.org/bpf/bpf-next/c/5b22f4d1436b
+  - [bpf-next,4/4] selftests/bpf: populate map_array_ro map for verifier_array_access test
+    https://git.kernel.org/bpf/bpf-next/c/cbb110bc6672
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index a0887ee44e89..7db4ec125fbd 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -577,8 +577,8 @@ static s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
- 			*btf_p = btf;
- 			return ret;
- 		}
--		spin_lock_bh(&btf_idr_lock);
- 		btf_put(btf);
-+		spin_lock_bh(&btf_idr_lock);
- 	}
- 	spin_unlock_bh(&btf_idr_lock);
- 	return ret;
-@@ -8354,12 +8354,10 @@ bpf_core_find_cands(struct bpf_core_ctx *ctx, u32 local_type_id)
- 		btf_get(mod_btf);
- 		spin_unlock_bh(&btf_idr_lock);
- 		cands = bpf_core_add_cands(cands, mod_btf, btf_nr_types(main_btf));
--		if (IS_ERR(cands)) {
--			btf_put(mod_btf);
-+		btf_put(mod_btf);
-+		if (IS_ERR(cands))
- 			return ERR_CAST(cands);
--		}
- 		spin_lock_bh(&btf_idr_lock);
--		btf_put(mod_btf);
- 	}
- 	spin_unlock_bh(&btf_idr_lock);
- 	/* cands is a pointer to kmalloced memory here if cands->cnt > 0
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
