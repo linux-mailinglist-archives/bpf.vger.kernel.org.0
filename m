@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7436EB0E7
+	by mail.lfdr.de (Postfix) with ESMTP id C72BC6EB0E9
 	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 19:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbjDURne (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 13:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S233140AbjDURng (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 13:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbjDURnX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 13:43:23 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F987EDD
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:43:07 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-2f939bea9ebso1851565f8f.0
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:43:07 -0700 (PDT)
+        with ESMTP id S232766AbjDURnY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 13:43:24 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AF193F3
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:43:08 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f1957e80a2so18121345e9.1
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:43:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682098985; x=1684690985;
+        d=gmail.com; s=20221208; t=1682098987; x=1684690987;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MiuvGIClNsEIagMd1FZ+2rHU8wqfRWr9jhPMeSLP8mg=;
-        b=btL856ZXyRf/XiR1PJxdQiWsCj71vStmenZYuD21o7cKEgPs32bLk0BzIIoJymShAe
-         Z94DzTwtp1nF5+OnYE3nF/gMSqBVZ+sBd9zgMeMCPy0NX6aG/gfEnVNWwq4VebrJ2QCl
-         R2mnm9LBSX0Q5rWseit0R7/HJKCCzjA01iNRK4EPlApJyZw71CDkPxTaQDqa3zgRuds2
-         TrZdeRUhg6e4+AdyXbeVUzEbADBj7q83q4BTCfM7ILXmbpYfT0ugpDr48AiKz8ugTgau
-         Iumn7LSHoE4FO6d0oWUWu05JDicVVx5WdDs/spP/bgkroI1XfpVdxjEA6DqEZUY+z0lN
-         EyMw==
+        bh=mdlIyWD2h5iDC7/QEobaar3wvJ8iJMDcSt599XJX+L8=;
+        b=Om86w3r4lapgrVl32HwpLBHvLaODrr5GcuuyGqe1MYGGpNAdZzjRrOtymL+VngnjI0
+         YHr4vUthQPEVBsGFQsXHS5khiBga5CpWytsDBfkalWh6cn5BlS3nW3x7lQUfSs1J7++y
+         seB2XTP0tDuwazGCrkDX6KqVwNfZ+5tEHy1MK+Xf0T7OW/JTutExxNuD1Oojr2SOnGoj
+         yKlrO/sV6o+lnNkH8r7VrIaKJeKvmY85CLdtJEYuswL9ez7RTeKhNND/tVxt5/4XfKPH
+         61JLKwg084yxo44ONZgmCmjfZWR3YcZ41KTEPpQjvD+mC5tYstAPU/Y+Rxz5PkOl/a3J
+         gjyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682098985; x=1684690985;
+        d=1e100.net; s=20221208; t=1682098987; x=1684690987;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MiuvGIClNsEIagMd1FZ+2rHU8wqfRWr9jhPMeSLP8mg=;
-        b=iEQHHCQis2FAo5WL6/xJB/ZaXQtXTaFdIqIDajMalS8FyZ369ojwKJqqXbxAJsDI4s
-         /pt6aSVWrEWWUs8TJT7EfjmY1cktfg64r85qiFPDsGAnuLnoiMp/j5bto+kiWrbdtfCO
-         80Pc3XBzkjPwSxeJOcYm/uxG2ebQIlYewedQjyBW98N0ouvAKeHI5DqcXQr8+0BnrC+f
-         qiOa3i7vrVaBHoXzi/4O3Gdl4nlvzPg6il/R/lt30a36mka8vPa/8XXpEcl0zUIiN4rt
-         0xqDwArvafJyxbwnxqi0XR+YT0EV0CjPnamKxse1ZSr9jOXsbH4fSjqs4ml4Is0QeUrv
-         RjeA==
-X-Gm-Message-State: AAQBX9etnq5b9pPIXc67xz/7SRhnp27oOFQmpUivdLiaZJC0sR5F7AHd
-        NsSpOhxoHkLCqZoJ4SuKAheDDRDU6z3Nfg==
-X-Google-Smtp-Source: AKy350ZxyyWW38boL6Deg0gdPLUYRHv9szhV/tNxUQjNO6M2RHv7LfutgygfP83sN2Prl58eZeWfuQ==
-X-Received: by 2002:a5d:508c:0:b0:2fb:600e:55bd with SMTP id a12-20020a5d508c000000b002fb600e55bdmr4609122wrt.39.1682098985483;
-        Fri, 21 Apr 2023 10:43:05 -0700 (PDT)
+        bh=mdlIyWD2h5iDC7/QEobaar3wvJ8iJMDcSt599XJX+L8=;
+        b=lmMM/cvC2JHrK8J04hHdtgC35UcX79Fz4BeDOINXgG/jAI17Rugo9VXAQx2wkg9Zan
+         z+XZoKbGAiBU0sSvKjCI0ZSJl01YYBwMMjnIPTWpXQ8Nt8bw7vRwHcxtJ8RAGejn2cws
+         PHfG6N0avWAjZ55Ti9LYooHpxts28erHzEonXKH9V/TYMd8/57b3SjQdVLPsEG/npNYM
+         8gz/g56DbL1McGVjXeFh9R8rsWoZwA5v0BHioEhg0hdC5Qu9vzSFy9EitdTSAzxtQBdE
+         XWQpUaKZP9GmESaxlSmR/qSer42HCXfaSrspjdS6s27AVW8MHJ5ulvLM3WnsXVkgiXv4
+         TUmA==
+X-Gm-Message-State: AAQBX9fTJEixykHbvMCMJwmoBK2NThEExe68VtA+OYmukcAO5KDmV/lE
+        7/MFLqPgaEEYxtqWowOBeaGzF12yW4QvSg==
+X-Google-Smtp-Source: AKy350Y9Rm8DpdyBQqUFPeAFTxpt0LlA4VKhOCDS5+qSIaYJbiMPYt0cIsPBXDl4j4p1lPhWXB8O6A==
+X-Received: by 2002:a5d:4705:0:b0:2fb:b869:bc08 with SMTP id y5-20020a5d4705000000b002fbb869bc08mr9018204wrq.23.1682098986658;
+        Fri, 21 Apr 2023 10:43:06 -0700 (PDT)
 Received: from bigfoot.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id f4-20020a0560001b0400b002ffbf2213d4sm4849933wrz.75.2023.04.21.10.43.04
+        by smtp.gmail.com with ESMTPSA id f4-20020a0560001b0400b002ffbf2213d4sm4849933wrz.75.2023.04.21.10.43.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 10:43:05 -0700 (PDT)
+        Fri, 21 Apr 2023 10:43:06 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         kernel-team@fb.com, yhs@fb.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 17/24] selftests/bpf: verifier/runtime_jit converted to inline assembly
-Date:   Fri, 21 Apr 2023 20:42:27 +0300
-Message-Id: <20230421174234.2391278-18-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 18/24] selftests/bpf: verifier/search_pruning converted to inline assembly
+Date:   Fri, 21 Apr 2023 20:42:28 +0300
+Message-Id: <20230421174234.2391278-19-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230421174234.2391278-1-eddyz87@gmail.com>
 References: <20230421174234.2391278-1-eddyz87@gmail.com>
@@ -72,639 +72,653 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test verifier/runtime_jit automatically converted to use inline assembly.
+Test verifier/search_pruning automatically converted to use inline assembly.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
  .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_runtime_jit.c          | 360 ++++++++++++++++++
- .../selftests/bpf/verifier/runtime_jit.c      | 231 -----------
- 3 files changed, 362 insertions(+), 231 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_runtime_jit.c
- delete mode 100644 tools/testing/selftests/bpf/verifier/runtime_jit.c
+ .../bpf/progs/verifier_search_pruning.c       | 339 ++++++++++++++++++
+ .../selftests/bpf/verifier/search_pruning.c   | 266 --------------
+ 3 files changed, 341 insertions(+), 266 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_search_pruning.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/search_pruning.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index f0b9b74c43d7..072b0eb47391 100644
+index 072b0eb47391..1ef44e699e9c 100644
 --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
 +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -48,6 +48,7 @@
- #include "verifier_ref_tracking.skel.h"
+@@ -49,6 +49,7 @@
  #include "verifier_regalloc.skel.h"
  #include "verifier_ringbuf.skel.h"
-+#include "verifier_runtime_jit.skel.h"
+ #include "verifier_runtime_jit.skel.h"
++#include "verifier_search_pruning.skel.h"
  #include "verifier_spill_fill.skel.h"
  #include "verifier_stack_ptr.skel.h"
  #include "verifier_uninit.skel.h"
-@@ -137,6 +138,7 @@ void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
- void test_verifier_ref_tracking(void)         { RUN(verifier_ref_tracking); }
+@@ -139,6 +140,7 @@ void test_verifier_ref_tracking(void)         { RUN(verifier_ref_tracking); }
  void test_verifier_regalloc(void)             { RUN(verifier_regalloc); }
  void test_verifier_ringbuf(void)              { RUN(verifier_ringbuf); }
-+void test_verifier_runtime_jit(void)          { RUN(verifier_runtime_jit); }
+ void test_verifier_runtime_jit(void)          { RUN(verifier_runtime_jit); }
++void test_verifier_search_pruning(void)       { RUN(verifier_search_pruning); }
  void test_verifier_spill_fill(void)           { RUN(verifier_spill_fill); }
  void test_verifier_stack_ptr(void)            { RUN(verifier_stack_ptr); }
  void test_verifier_uninit(void)               { RUN(verifier_uninit); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_runtime_jit.c b/tools/testing/selftests/bpf/progs/verifier_runtime_jit.c
+diff --git a/tools/testing/selftests/bpf/progs/verifier_search_pruning.c b/tools/testing/selftests/bpf/progs/verifier_search_pruning.c
 new file mode 100644
-index 000000000000..27ebfc1fd9ee
+index 000000000000..5a14498d352f
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_runtime_jit.c
-@@ -0,0 +1,360 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_search_pruning.c
+@@ -0,0 +1,339 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Converted from tools/testing/selftests/bpf/verifier/runtime_jit.c */
++/* Converted from tools/testing/selftests/bpf/verifier/search_pruning.c */
 +
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
 +#include "bpf_misc.h"
 +
-+void dummy_prog_42_socket(void);
-+void dummy_prog_24_socket(void);
-+void dummy_prog_loop1_socket(void);
-+void dummy_prog_loop2_socket(void);
++#define MAX_ENTRIES 11
 +
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 4);
-+	__uint(key_size, sizeof(int));
-+	__array(values, void (void));
-+} map_prog1_socket SEC(".maps") = {
-+	.values = {
-+		[0] = (void *)&dummy_prog_42_socket,
-+		[1] = (void *)&dummy_prog_loop1_socket,
-+		[2] = (void *)&dummy_prog_24_socket,
-+	},
++struct test_val {
++	unsigned int index;
++	int foo[MAX_ENTRIES];
 +};
 +
 +struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 8);
-+	__uint(key_size, sizeof(int));
-+	__array(values, void (void));
-+} map_prog2_socket SEC(".maps") = {
-+	.values = {
-+		[1] = (void *)&dummy_prog_loop2_socket,
-+		[2] = (void *)&dummy_prog_24_socket,
-+		[7] = (void *)&dummy_prog_42_socket,
-+	},
-+};
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, long long);
++	__type(value, struct test_val);
++} map_hash_48b SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, long long);
++	__type(value, long long);
++} map_hash_8b SEC(".maps");
 +
 +SEC("socket")
-+__auxiliary __auxiliary_unpriv
-+__naked void dummy_prog_42_socket(void)
-+{
-+	asm volatile ("r0 = 42; exit;");
-+}
-+
-+SEC("socket")
-+__auxiliary __auxiliary_unpriv
-+__naked void dummy_prog_24_socket(void)
-+{
-+	asm volatile ("r0 = 24; exit;");
-+}
-+
-+SEC("socket")
-+__auxiliary __auxiliary_unpriv
-+__naked void dummy_prog_loop1_socket(void)
-+{
-+	asm volatile ("			\
-+	r3 = 1;				\
-+	r2 = %[map_prog1_socket] ll;	\
-+	call %[bpf_tail_call];		\
-+	r0 = 41;			\
-+	exit;				\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__auxiliary __auxiliary_unpriv
-+__naked void dummy_prog_loop2_socket(void)
-+{
-+	asm volatile ("			\
-+	r3 = 1;				\
-+	r2 = %[map_prog2_socket] ll;	\
-+	call %[bpf_tail_call];		\
-+	r0 = 41;			\
-+	exit;				\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog2_socket)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, prog once")
-+__success __success_unpriv __retval(42)
-+__naked void call_within_bounds_prog_once(void)
++__description("pointer/scalar confusion in state equality check (way 1)")
++__success __failure_unpriv __msg_unpriv("R0 leaks addr as return value")
++__retval(POINTER_VALUE)
++__naked void state_equality_check_way_1(void)
 +{
 +	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l0_%=;				\
++	r0 = *(u64*)(r0 + 0);				\
++	goto l1_%=;					\
++l0_%=:	r0 = r10;					\
++l1_%=:	goto l2_%=;					\
++l2_%=:	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("pointer/scalar confusion in state equality check (way 2)")
++__success __failure_unpriv __msg_unpriv("R0 leaks addr as return value")
++__retval(POINTER_VALUE)
++__naked void state_equality_check_way_2(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 != 0 goto l0_%=;				\
++	r0 = r10;					\
++	goto l1_%=;					\
++l0_%=:	r0 = *(u64*)(r0 + 0);				\
++l1_%=:	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++SEC("lwt_in")
++__description("liveness pruning and write screening")
++__failure __msg("R0 !read_ok")
++__naked void liveness_pruning_and_write_screening(void)
++{
++	asm volatile ("					\
++	/* Get an unknown value */			\
++	r2 = *(u32*)(r1 + 0);				\
++	/* branch conditions teach us nothing about R2 */\
++	if r2 >= 0 goto l0_%=;				\
++	r0 = 0;						\
++l0_%=:	if r2 >= 0 goto l1_%=;				\
++	r0 = 0;						\
++l1_%=:	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("varlen_map_value_access pruning")
++__failure __msg("R0 unbounded memory access")
++__failure_unpriv __msg_unpriv("R0 leaks addr")
++__flag(BPF_F_ANY_ALIGNMENT)
++__naked void varlen_map_value_access_pruning(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_hash_48b] ll;			\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l0_%=;				\
++	r1 = *(u64*)(r0 + 0);				\
++	w2 = %[max_entries];				\
++	if r2 s> r1 goto l1_%=;				\
++	w1 = 0;						\
++l1_%=:	w1 <<= 2;					\
++	r0 += r1;					\
++	goto l2_%=;					\
++l2_%=:	r1 = %[test_val_foo];				\
++	*(u64*)(r0 + 0) = r1;				\
++l0_%=:	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_48b),
++	  __imm_const(max_entries, MAX_ENTRIES),
++	  __imm_const(test_val_foo, offsetof(struct test_val, foo))
++	: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("search pruning: all branches should be verified (nop operation)")
++__failure __msg("R6 invalid mem access 'scalar'")
++__naked void should_be_verified_nop_operation(void)
++{
++	asm volatile ("					\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = 0;						\
++	*(u64*)(r2 + 0) = r1;				\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l0_%=;				\
++	r3 = *(u64*)(r0 + 0);				\
++	if r3 == 0xbeef goto l1_%=;			\
++	r4 = 0;						\
++	goto l2_%=;					\
++l1_%=:	r4 = 1;						\
++l2_%=:	*(u64*)(r10 - 16) = r4;				\
++	call %[bpf_ktime_get_ns];			\
++	r5 = *(u64*)(r10 - 16);				\
++	if r5 == 0 goto l0_%=;				\
++	r6 = 0;						\
++	r1 = 0xdead;					\
++	*(u64*)(r6 + 0) = r1;				\
++l0_%=:	exit;						\
++"	:
++	: __imm(bpf_ktime_get_ns),
++	  __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("search pruning: all branches should be verified (invalid stack access)")
++/* in privileged mode reads from uninitialized stack locations are permitted */
++__success __failure_unpriv
++__msg_unpriv("invalid read from stack off -16+0 size 8")
++__retval(0)
++__naked void be_verified_invalid_stack_access(void)
++{
++	asm volatile ("					\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = 0;						\
++	*(u64*)(r2 + 0) = r1;				\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l0_%=;				\
++	r3 = *(u64*)(r0 + 0);				\
++	r4 = 0;						\
++	if r3 == 0xbeef goto l1_%=;			\
++	*(u64*)(r10 - 16) = r4;				\
++	goto l2_%=;					\
++l1_%=:	*(u64*)(r10 - 24) = r4;				\
++l2_%=:	call %[bpf_ktime_get_ns];			\
++	r5 = *(u64*)(r10 - 16);				\
++l0_%=:	exit;						\
++"	:
++	: __imm(bpf_ktime_get_ns),
++	  __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
++	: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("precision tracking for u32 spill/fill")
++__failure __msg("R0 min value is outside of the allowed memory range")
++__naked void tracking_for_u32_spill_fill(void)
++{
++	asm volatile ("					\
++	r7 = r1;					\
++	call %[bpf_get_prandom_u32];			\
++	w6 = 32;					\
++	if r0 == 0 goto l0_%=;				\
++	w6 = 4;						\
++l0_%=:	/* Additional insns to introduce a pruning point. */\
++	call %[bpf_get_prandom_u32];			\
 +	r3 = 0;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 1;						\
++	r3 = 0;						\
++	if r0 == 0 goto l1_%=;				\
++	r3 = 0;						\
++l1_%=:	/* u32 spill/fill */				\
++	*(u32*)(r10 - 8) = r6;				\
++	r8 = *(u32*)(r10 - 8);				\
++	/* out-of-bound map value access for r6=32 */	\
++	r1 = 0;						\
++	*(u64*)(r10 - 16) = r1;				\
++	r2 = r10;					\
++	r2 += -16;					\
++	r1 = %[map_hash_8b] ll;				\
++	call %[bpf_map_lookup_elem];			\
++	if r0 == 0 goto l2_%=;				\
++	r0 += r8;					\
++	r1 = *(u32*)(r0 + 0);				\
++l2_%=:	r0 = 0;						\
 +	exit;						\
 +"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
++	: __imm(bpf_get_prandom_u32),
++	  __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_hash_8b)
 +	: __clobber_all);
 +}
 +
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, prog loop")
-+__success __success_unpriv __retval(41)
-+__naked void call_within_bounds_prog_loop(void)
++SEC("tracepoint")
++__description("precision tracking for u32 spills, u64 fill")
++__failure __msg("div by zero")
++__naked void for_u32_spills_u64_fill(void)
 +{
 +	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	r6 = r0;					\
++	w7 = 0xffffffff;				\
++	/* Additional insns to introduce a pruning point. */\
 +	r3 = 1;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 1;						\
++	r3 = 1;						\
++	r3 = 1;						\
++	r3 = 1;						\
++	call %[bpf_get_prandom_u32];			\
++	if r0 == 0 goto l0_%=;				\
++	r3 = 1;						\
++l0_%=:	w3 /= 0;					\
++	/* u32 spills, u64 fill */			\
++	*(u32*)(r10 - 4) = r6;				\
++	*(u32*)(r10 - 8) = r7;				\
++	r8 = *(u64*)(r10 - 8);				\
++	/* if r8 != X goto pc+1  r8 known in fallthrough branch */\
++	if r8 != 0xffffffff goto l1_%=;			\
++	r3 = 1;						\
++l1_%=:	/* if r8 == X goto pc+1  condition always true on first\
++	 * traversal, so starts backtracking to mark r8 as requiring\
++	 * precision. r7 marked as needing precision. r6 not marked\
++	 * since it's not tracked.			\
++	 */						\
++	if r8 == 0xffffffff goto l2_%=;			\
++	/* fails if r8 correctly marked unknown after fill. */\
++	w3 /= 0;					\
++l2_%=:	r0 = 0;						\
 +	exit;						\
 +"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
++	: __imm(bpf_get_prandom_u32)
 +	: __clobber_all);
 +}
 +
 +SEC("socket")
-+__description("runtime/jit: tail_call within bounds, no prog")
-+__success __success_unpriv __retval(1)
-+__naked void call_within_bounds_no_prog(void)
++__description("allocated_stack")
++__success __msg("processed 15 insns")
++__success_unpriv __msg_unpriv("") __log_level(1) __retval(0)
++__naked void allocated_stack(void)
 +{
 +	asm volatile ("					\
-+	r3 = 3;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
++	r6 = r1;					\
++	call %[bpf_get_prandom_u32];			\
++	r7 = r0;					\
++	if r0 == 0 goto l0_%=;				\
++	r0 = 0;						\
++	*(u64*)(r10 - 8) = r6;				\
++	r6 = *(u64*)(r10 - 8);				\
++	*(u8*)(r10 - 9) = r7;				\
++	r7 = *(u8*)(r10 - 9);				\
++l0_%=:	if r0 != 0 goto l1_%=;				\
++l1_%=:	if r0 != 0 goto l2_%=;				\
++l2_%=:	if r0 != 0 goto l3_%=;				\
++l3_%=:	if r0 != 0 goto l4_%=;				\
++l4_%=:	exit;						\
 +"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
++	: __imm(bpf_get_prandom_u32)
 +	: __clobber_all);
 +}
 +
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, key 2")
-+__success __success_unpriv __retval(24)
-+__naked void call_within_bounds_key_2(void)
-+{
-+	asm volatile ("					\
-+	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
-+	: __clobber_all);
-+}
++/* The test performs a conditional 64-bit write to a stack location
++ * fp[-8], this is followed by an unconditional 8-bit write to fp[-8],
++ * then data is read from fp[-8]. This sequence is unsafe.
++ *
++ * The test would be mistakenly marked as safe w/o dst register parent
++ * preservation in verifier.c:copy_register_state() function.
++ *
++ * Note the usage of BPF_F_TEST_STATE_FREQ to force creation of the
++ * checkpoint state after conditional 64-bit assignment.
++ */
 +
 +SEC("socket")
-+__description("runtime/jit: tail_call within bounds, key 2 / key 2, first branch")
-+__success __success_unpriv __retval(24)
-+__naked void _2_key_2_first_branch(void)
++__description("write tracking and register parent chain bug")
++/* in privileged mode reads from uninitialized stack locations are permitted */
++__success __failure_unpriv
++__msg_unpriv("invalid read from stack off -8+1 size 8")
++__retval(0) __flag(BPF_F_TEST_STATE_FREQ)
++__naked void and_register_parent_chain_bug(void)
 +{
 +	asm volatile ("					\
-+	r0 = 13;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
++	/* r6 = ktime_get_ns() */			\
++	call %[bpf_ktime_get_ns];			\
++	r6 = r0;					\
++	/* r0 = ktime_get_ns() */			\
++	call %[bpf_ktime_get_ns];			\
++	/* if r0 > r6 goto +1 */			\
++	if r0 > r6 goto l0_%=;				\
++	/* *(u64 *)(r10 - 8) = 0xdeadbeef */		\
++	r0 = 0xdeadbeef;				\
++	*(u64*)(r10 - 8) = r0;				\
++l0_%=:	r1 = 42;					\
++	*(u8*)(r10 - 8) = r1;				\
++	r2 = *(u64*)(r10 - 8);				\
++	/* exit(0) */					\
++	r0 = 0;						\
 +	exit;						\
 +"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, key 2 / key 2, second branch")
-+__success __success_unpriv __retval(24)
-+__naked void _2_key_2_second_branch(void)
-+{
-+	asm volatile ("					\
-+	r0 = 14;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, key 0 / key 2, first branch")
-+__success __success_unpriv __retval(24)
-+__naked void _0_key_2_first_branch(void)
-+{
-+	asm volatile ("					\
-+	r0 = 13;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 0;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, key 0 / key 2, second branch")
-+__success __success_unpriv __retval(42)
-+__naked void _0_key_2_second_branch(void)
-+{
-+	asm volatile ("					\
-+	r0 = 14;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 0;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 2;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, different maps, first branch")
-+__success __failure_unpriv __msg_unpriv("tail_call abusing map_ptr")
-+__retval(1)
-+__naked void bounds_different_maps_first_branch(void)
-+{
-+	asm volatile ("					\
-+	r0 = 13;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 0;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 0;						\
-+	r2 = %[map_prog2_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_addr(map_prog2_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call within bounds, different maps, second branch")
-+__success __failure_unpriv __msg_unpriv("tail_call abusing map_ptr")
-+__retval(42)
-+__naked void bounds_different_maps_second_branch(void)
-+{
-+	asm volatile ("					\
-+	r0 = 14;					\
-+	*(u8*)(r1 + %[__sk_buff_cb_0]) = r0;		\
-+	r0 = *(u8*)(r1 + %[__sk_buff_cb_0]);		\
-+	if r0 == 13 goto l0_%=;				\
-+	r3 = 0;						\
-+	r2 = %[map_prog1_socket] ll;			\
-+	goto l1_%=;					\
-+l0_%=:	r3 = 0;						\
-+	r2 = %[map_prog2_socket] ll;			\
-+l1_%=:	call %[bpf_tail_call];				\
-+	r0 = 1;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket),
-+	  __imm_addr(map_prog2_socket),
-+	  __imm_const(__sk_buff_cb_0, offsetof(struct __sk_buff, cb[0]))
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: tail_call out of bounds")
-+__success __success_unpriv __retval(2)
-+__naked void tail_call_out_of_bounds(void)
-+{
-+	asm volatile ("					\
-+	r3 = 256;					\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 2;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: pass negative index to tail_call")
-+__success __success_unpriv __retval(2)
-+__naked void negative_index_to_tail_call(void)
-+{
-+	asm volatile ("					\
-+	r3 = -1;					\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 2;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("runtime/jit: pass > 32bit index to tail_call")
-+__success __success_unpriv __retval(42)
-+/* Verifier rewrite for unpriv skips tail call here. */
-+__retval_unpriv(2)
-+__naked void _32bit_index_to_tail_call(void)
-+{
-+	asm volatile ("					\
-+	r3 = 0x100000000 ll;				\
-+	r2 = %[map_prog1_socket] ll;			\
-+	call %[bpf_tail_call];				\
-+	r0 = 2;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_tail_call),
-+	  __imm_addr(map_prog1_socket)
++	: __imm(bpf_ktime_get_ns)
 +	: __clobber_all);
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/runtime_jit.c b/tools/testing/selftests/bpf/verifier/runtime_jit.c
+diff --git a/tools/testing/selftests/bpf/verifier/search_pruning.c b/tools/testing/selftests/bpf/verifier/search_pruning.c
 deleted file mode 100644
-index 94c399d1faca..000000000000
---- a/tools/testing/selftests/bpf/verifier/runtime_jit.c
+index 745d6b5842fd..000000000000
+--- a/tools/testing/selftests/bpf/verifier/search_pruning.c
 +++ /dev/null
-@@ -1,231 +0,0 @@
+@@ -1,266 +0,0 @@
 -{
--	"runtime/jit: tail_call within bounds, prog once",
+-	"pointer/scalar confusion in state equality check (way 1)",
 -	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+-	BPF_JMP_A(1),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
+-	BPF_JMP_A(0),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_prog1 = { 1 },
+-	.fixup_map_hash_8b = { 3 },
 -	.result = ACCEPT,
--	.retval = 42,
--},
--{
--	"runtime/jit: tail_call within bounds, prog loop",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, 1),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 1 },
--	.result = ACCEPT,
--	.retval = 41,
--},
--{
--	"runtime/jit: tail_call within bounds, no prog",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, 3),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 1 },
--	.result = ACCEPT,
--	.retval = 1,
--},
--{
--	"runtime/jit: tail_call within bounds, key 2",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 1 },
--	.result = ACCEPT,
--	.retval = 24,
--},
--{
--	"runtime/jit: tail_call within bounds, key 2 / key 2, first branch",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 13),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 5, 9 },
--	.result = ACCEPT,
--	.retval = 24,
--},
--{
--	"runtime/jit: tail_call within bounds, key 2 / key 2, second branch",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 14),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 5, 9 },
--	.result = ACCEPT,
--	.retval = 24,
--},
--{
--	"runtime/jit: tail_call within bounds, key 0 / key 2, first branch",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 13),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 5, 9 },
--	.result = ACCEPT,
--	.retval = 24,
--},
--{
--	"runtime/jit: tail_call within bounds, key 0 / key 2, second branch",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 14),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 2),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 5, 9 },
--	.result = ACCEPT,
--	.retval = 42,
--},
--{
--	"runtime/jit: tail_call within bounds, different maps, first branch",
--	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 13),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog1 = { 5 },
--	.fixup_prog2 = { 9 },
+-	.retval = POINTER_VALUE,
 -	.result_unpriv = REJECT,
--	.errstr_unpriv = "tail_call abusing map_ptr",
--	.result = ACCEPT,
--	.retval = 1,
+-	.errstr_unpriv = "R0 leaks addr as return value"
 -},
 -{
--	"runtime/jit: tail_call within bounds, different maps, second branch",
+-	"pointer/scalar confusion in state equality check (way 2)",
 -	.insns = {
--	BPF_MOV64_IMM(BPF_REG_0, 14),
--	BPF_STX_MEM(BPF_B, BPF_REG_1, BPF_REG_0,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1,
--		    offsetof(struct __sk_buff, cb[0])),
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 13, 4),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
--	BPF_MOV64_IMM(BPF_REG_3, 0),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 1),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_10),
+-	BPF_JMP_A(1),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_prog1 = { 5 },
--	.fixup_prog2 = { 9 },
+-	.fixup_map_hash_8b = { 3 },
+-	.result = ACCEPT,
+-	.retval = POINTER_VALUE,
 -	.result_unpriv = REJECT,
--	.errstr_unpriv = "tail_call abusing map_ptr",
--	.result = ACCEPT,
--	.retval = 42,
+-	.errstr_unpriv = "R0 leaks addr as return value"
 -},
 -{
--	"runtime/jit: tail_call out of bounds",
+-	"liveness pruning and write screening",
 -	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, 256),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 2),
+-	/* Get an unknown value */
+-	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, 0),
+-	/* branch conditions teach us nothing about R2 */
+-	BPF_JMP_IMM(BPF_JGE, BPF_REG_2, 0, 1),
+-	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_JMP_IMM(BPF_JGE, BPF_REG_2, 0, 1),
+-	BPF_MOV64_IMM(BPF_REG_0, 0),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_prog1 = { 1 },
--	.result = ACCEPT,
--	.retval = 2,
+-	.errstr = "R0 !read_ok",
+-	.result = REJECT,
+-	.prog_type = BPF_PROG_TYPE_LWT_IN,
 -},
 -{
--	"runtime/jit: pass negative index to tail_call",
+-	"varlen_map_value_access pruning",
 -	.insns = {
--	BPF_MOV64_IMM(BPF_REG_3, -1),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 2),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 8),
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, 0),
+-	BPF_MOV32_IMM(BPF_REG_2, MAX_ENTRIES),
+-	BPF_JMP_REG(BPF_JSGT, BPF_REG_2, BPF_REG_1, 1),
+-	BPF_MOV32_IMM(BPF_REG_1, 0),
+-	BPF_ALU32_IMM(BPF_LSH, BPF_REG_1, 2),
+-	BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_1),
+-	BPF_JMP_IMM(BPF_JA, 0, 0, 0),
+-	BPF_ST_MEM(BPF_DW, BPF_REG_0, 0, offsetof(struct test_val, foo)),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_prog1 = { 1 },
--	.result = ACCEPT,
--	.retval = 2,
+-	.fixup_map_hash_48b = { 3 },
+-	.errstr_unpriv = "R0 leaks addr",
+-	.errstr = "R0 unbounded memory access",
+-	.result_unpriv = REJECT,
+-	.result = REJECT,
+-	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
 -},
 -{
--	"runtime/jit: pass > 32bit index to tail_call",
+-	"search pruning: all branches should be verified (nop operation)",
 -	.insns = {
--	BPF_LD_IMM64(BPF_REG_3, 0x100000000ULL),
--	BPF_LD_MAP_FD(BPF_REG_2, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_tail_call),
--	BPF_MOV64_IMM(BPF_REG_0, 2),
+-		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-		BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
+-		BPF_LD_MAP_FD(BPF_REG_1, 0),
+-		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 11),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_0, 0),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_3, 0xbeef, 2),
+-		BPF_MOV64_IMM(BPF_REG_4, 0),
+-		BPF_JMP_A(1),
+-		BPF_MOV64_IMM(BPF_REG_4, 1),
+-		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_4, -16),
+-		BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_5, BPF_REG_10, -16),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_5, 0, 2),
+-		BPF_MOV64_IMM(BPF_REG_6, 0),
+-		BPF_ST_MEM(BPF_DW, BPF_REG_6, 0, 0xdead),
+-		BPF_EXIT_INSN(),
+-	},
+-	.fixup_map_hash_8b = { 3 },
+-	.errstr = "R6 invalid mem access 'scalar'",
+-	.result = REJECT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"search pruning: all branches should be verified (invalid stack access)",
+-	.insns = {
+-		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-		BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
+-		BPF_LD_MAP_FD(BPF_REG_1, 0),
+-		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 8),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_0, 0),
+-		BPF_MOV64_IMM(BPF_REG_4, 0),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_3, 0xbeef, 2),
+-		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_4, -16),
+-		BPF_JMP_A(1),
+-		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_4, -24),
+-		BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_5, BPF_REG_10, -16),
+-		BPF_EXIT_INSN(),
+-	},
+-	.fixup_map_hash_8b = { 3 },
+-	.errstr_unpriv = "invalid read from stack off -16+0 size 8",
+-	.result_unpriv = REJECT,
+-	/* in privileged mode reads from uninitialized stack locations are permitted */
+-	.result = ACCEPT,
+-},
+-{
+-	"precision tracking for u32 spill/fill",
+-	.insns = {
+-		BPF_MOV64_REG(BPF_REG_7, BPF_REG_1),
+-		BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
+-		BPF_MOV32_IMM(BPF_REG_6, 32),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
+-		BPF_MOV32_IMM(BPF_REG_6, 4),
+-		/* Additional insns to introduce a pruning point. */
+-		BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
+-		BPF_MOV64_IMM(BPF_REG_3, 0),
+-		BPF_MOV64_IMM(BPF_REG_3, 0),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 0),
+-		/* u32 spill/fill */
+-		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_6, -8),
+-		BPF_LDX_MEM(BPF_W, BPF_REG_8, BPF_REG_10, -8),
+-		/* out-of-bound map value access for r6=32 */
+-		BPF_ST_MEM(BPF_DW, BPF_REG_10, -16, 0),
+-		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -16),
+-		BPF_LD_MAP_FD(BPF_REG_1, 0),
+-		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
+-		BPF_ALU64_REG(BPF_ADD, BPF_REG_0, BPF_REG_8),
+-		BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_EXIT_INSN(),
+-	},
+-	.fixup_map_hash_8b = { 15 },
+-	.result = REJECT,
+-	.errstr = "R0 min value is outside of the allowed memory range",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"precision tracking for u32 spills, u64 fill",
+-	.insns = {
+-		BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
+-		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+-		BPF_MOV32_IMM(BPF_REG_7, 0xffffffff),
+-		/* Additional insns to introduce a pruning point. */
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		BPF_ALU32_IMM(BPF_DIV, BPF_REG_3, 0),
+-		/* u32 spills, u64 fill */
+-		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_6, -4),
+-		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_7, -8),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_10, -8),
+-		/* if r8 != X goto pc+1  r8 known in fallthrough branch */
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_8, 0xffffffff, 1),
+-		BPF_MOV64_IMM(BPF_REG_3, 1),
+-		/* if r8 == X goto pc+1  condition always true on first
+-		 * traversal, so starts backtracking to mark r8 as requiring
+-		 * precision. r7 marked as needing precision. r6 not marked
+-		 * since it's not tracked.
+-		 */
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_8, 0xffffffff, 1),
+-		/* fails if r8 correctly marked unknown after fill. */
+-		BPF_ALU32_IMM(BPF_DIV, BPF_REG_3, 0),
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "div by zero",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"allocated_stack",
+-	.insns = {
+-		BPF_ALU64_REG(BPF_MOV, BPF_REG_6, BPF_REG_1),
+-		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
+-		BPF_ALU64_REG(BPF_MOV, BPF_REG_7, BPF_REG_0),
+-		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 5),
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -8),
+-		BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_10, -8),
+-		BPF_STX_MEM(BPF_B, BPF_REG_10, BPF_REG_7, -9),
+-		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_10, -9),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 0),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 0),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 0),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 0),
+-		BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
+-	.result_unpriv = ACCEPT,
+-	.insn_processed = 15,
+-},
+-/* The test performs a conditional 64-bit write to a stack location
+- * fp[-8], this is followed by an unconditional 8-bit write to fp[-8],
+- * then data is read from fp[-8]. This sequence is unsafe.
+- *
+- * The test would be mistakenly marked as safe w/o dst register parent
+- * preservation in verifier.c:copy_register_state() function.
+- *
+- * Note the usage of BPF_F_TEST_STATE_FREQ to force creation of the
+- * checkpoint state after conditional 64-bit assignment.
+- */
+-{
+-	"write tracking and register parent chain bug",
+-	.insns = {
+-	/* r6 = ktime_get_ns() */
+-	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+-	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+-	/* r0 = ktime_get_ns() */
+-	BPF_EMIT_CALL(BPF_FUNC_ktime_get_ns),
+-	/* if r0 > r6 goto +1 */
+-	BPF_JMP_REG(BPF_JGT, BPF_REG_0, BPF_REG_6, 1),
+-	/* *(u64 *)(r10 - 8) = 0xdeadbeef */
+-	BPF_ST_MEM(BPF_DW, BPF_REG_FP, -8, 0xdeadbeef),
+-	/* r1 = 42 */
+-	BPF_MOV64_IMM(BPF_REG_1, 42),
+-	/* *(u8 *)(r10 - 8) = r1 */
+-	BPF_STX_MEM(BPF_B, BPF_REG_FP, BPF_REG_1, -8),
+-	/* r2 = *(u64 *)(r10 - 8) */
+-	BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_FP, -8),
+-	/* exit(0) */
+-	BPF_MOV64_IMM(BPF_REG_0, 0),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_prog1 = { 2 },
+-	.flags = BPF_F_TEST_STATE_FREQ,
+-	.errstr_unpriv = "invalid read from stack off -8+1 size 8",
+-	.result_unpriv = REJECT,
+-	/* in privileged mode reads from uninitialized stack locations are permitted */
 -	.result = ACCEPT,
--	.retval = 42,
--	/* Verifier rewrite for unpriv skips tail call here. */
--	.retval_unpriv = 2,
 -},
 -- 
 2.40.0
