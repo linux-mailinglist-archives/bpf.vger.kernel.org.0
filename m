@@ -2,211 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603486EB302
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 22:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95F86EB32A
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 22:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjDUUpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 16:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S232847AbjDUUzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 16:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbjDUUpb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 16:45:31 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36B81FCE
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:45:29 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f17e584462so22064935e9.2
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:45:29 -0700 (PDT)
+        with ESMTP id S232017AbjDUUzq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 16:55:46 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4701FFB
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:55:44 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-63b50a02bffso2345872b3a.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682109928; x=1684701928;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rEWZrvSHxaTJxbITBq44XPm4Epwm/Ypf8OdsXei8kjo=;
-        b=a2IS489VG8PN5uLO+nVFV6j9drMHuohD3OT3kDyznJk/ryj/atNsnsJB4MO1opSSbC
-         VuxLlyiv3P008+kxxLCL8kxIpHcdFkTvbuq8bO1BLlV+OVpGp+loZsJ6+FHatdTNg5eX
-         SaV6WdzpunHGpFQWbIhqennrqEhG22M58vyNDaCr94KQc1uSBJzn2YQAJQ4Z7AxVwVJJ
-         HtxylwnBsLMnHTqX36PCJ7bItUCLye/o+Yf4wwIuS8rHakjI/hpPdAKEu5dH5GreAciQ
-         HPUKSFdIdKLpGuD74tIhlZzZVJiB907yaMtmhts6EuUygXZAqLc2gFaQIaJf+2BDvq6g
-         NS8Q==
+        d=gmail.com; s=20221208; t=1682110543; x=1684702543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TEoUvmC7P6gtKUn+6tddEyOtFaXH0h0t30pvu3Cxco4=;
+        b=qsDL6teL9u+AJOLLlxAdioFbQIqVG/sfr5FwwUxwMYJtzHOmHvi0JRJP5pa/X1NY2/
+         QrAoT+sLfbjmQSKCmuzPlwxYF1wv7sUGG0n3B0BoVmT8uFbxJC3P8hZHrP52r03ojsJ0
+         imNl06NisTQ7s6t0qDM/J45GjJxP31aT9770V0yKpFuT4vNYGPSc7AOp8DWWHui1RwP9
+         2R37+5rY9bv8hgJhaQBR0oGCOcJLdFom5PvKfV5g+NijN89tVEI5hLWIOaAnOY3R8mvM
+         DwEB+KQpDz6hR6G53RLxMqWtdviwJJyrMCjeM65UogNrFkOtANBO2PEoFl+IwVXw0fnm
+         Aghg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682109928; x=1684701928;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rEWZrvSHxaTJxbITBq44XPm4Epwm/Ypf8OdsXei8kjo=;
-        b=HUNe0omaxqs541WtpOVnJca4pTGZPoOrlG82ctyAlPXhVcnVZvUdYfg1+ftlu3hL/O
-         +jDazrvgGFKT1x7wjMIvNw6od+RMpB0tzea2gCVoJAMU64kku3dyL6ZOgZ3zVz7qmiPS
-         3YgXsIsjKi24OhYTpwGP5bZ/RzOz/OYMiFogB32SNSlXT7oQVimHpNrK6tPaeLoinEn2
-         yAkHbtr1ucCIe0ww3M4geAXvXxeCbCOQOmxWmgAkD38CI61/iZItkiBl4RR8FRJbgwtM
-         24BmDfdSV/VIYWEVIYI4VD9GyhHlUDnV3GEfQ7oFrnWcbaxLlmm4lWaioWHieuVNnhLE
-         K6Ug==
-X-Gm-Message-State: AAQBX9fngFnzI5X3tI1S02SLQZlTH9NIRaZIr//ZnhDd3aYkVTq+mHSm
-        XfBorjxoTNwo5VEXuVr1FgOeX8SGn1xrmA==
-X-Google-Smtp-Source: AKy350Y/V9/5egen6xh9f7jViKMrWu0dq6mGhKYsBvE+r3ASs9R6GLIIhZkS1oQ27hl8oFFU0t7VHg==
-X-Received: by 2002:a7b:cbd5:0:b0:3ee:96f0:ea31 with SMTP id n21-20020a7bcbd5000000b003ee96f0ea31mr2915890wmi.18.1682109927764;
-        Fri, 21 Apr 2023 13:45:27 -0700 (PDT)
-Received: from bigfoot.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id u8-20020a7bc048000000b003f1952a4bdesm1930264wmc.26.2023.04.21.13.45.26
+        d=1e100.net; s=20221208; t=1682110543; x=1684702543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TEoUvmC7P6gtKUn+6tddEyOtFaXH0h0t30pvu3Cxco4=;
+        b=FpideiEuVpjpTh5T5+TbMbW1sC4U/av48Rbervs08z/kkYqcqQpICDRrzkgolcW4x5
+         Nb+McmOirYuE1ElGRvNZSWom3wwdgrplT7qKtCCxeCxc3vVNXVP1kjCZT7GHDRz693FY
+         twWHooUqXkz0znG5iExIk4pMw4XoVU03Aonyvpj2KCLMq1+jJV55xTxgodMFrsCTrxng
+         SJ7jM2OAh2cKHhod4JSpffJKJS/4HWSPUXAlVRFrx/diFiN00p1ifdg1tz21NDYB1EQd
+         C572nJK7SIupE/numj7UL0OBbrKL39EZjwCg1clT5uuW3IL0gPLrlbC2tNdafXGK/OaM
+         kB3A==
+X-Gm-Message-State: AAQBX9f3QChKhW7vD/wb3mfRipP9m3bbnWx4n0dA4jfRZXUu71IVfRzC
+        XL3RRjLuo3q82mKNny1h2Q0UwyffnXU=
+X-Google-Smtp-Source: AKy350YMDuEXFr8GfO7DJGCr9zLr+RHprCWfjTgID8g6LZDH42g5flPxVVkPGc/FDVGzatfE+SiJvA==
+X-Received: by 2002:a05:6a20:12ca:b0:f3:1b6:f468 with SMTP id v10-20020a056a2012ca00b000f301b6f468mr104339pzg.6.1682110543512;
+        Fri, 21 Apr 2023 13:55:43 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:ef5e])
+        by smtp.gmail.com with ESMTPSA id z10-20020a630a4a000000b0051b93103665sm2942815pgk.63.2023.04.21.13.55.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 13:45:27 -0700 (PDT)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org
-Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        kernel-team@fb.com, yhs@fb.com,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: verifier/prevent_map_lookup converted to inline assembly
-Date:   Fri, 21 Apr 2023 23:45:14 +0300
-Message-Id: <20230421204514.2450907-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.40.0
+        Fri, 21 Apr 2023 13:55:42 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 13:55:40 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daan De Meyer <daan.j.demeyer@gmail.com>
+Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v3 03/10] bpf: Allow read access to addr_len
+ from cgroup sockaddr programs
+Message-ID: <20230421205540.bklwtswdrxybrjsl@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230421162718.440230-1-daan.j.demeyer@gmail.com>
+ <20230421162718.440230-4-daan.j.demeyer@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230421162718.440230-4-daan.j.demeyer@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test verifier/prevent_map_lookup automatically converted to use inline assembly.
+On Fri, Apr 21, 2023 at 06:27:11PM +0200, Daan De Meyer wrote:
+>   *
+>   * This function will return %-EPERM if an attached program is found and
+> - * returned value != 1 during execution. In all other cases, 0 is returned.
+> + * returned value != 1 during execution. In all other cases, the new address
+> + * length of the sockaddr is returned.
+>   */
+>  int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  				      struct sockaddr *uaddr,
+> +				      u32 uaddrlen,
+>  				      enum cgroup_bpf_attach_type atype,
+>  				      void *t_ctx,
+>  				      u32 *flags)
+> @@ -1469,9 +1472,11 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  		.sk = sk,
+>  		.uaddr = uaddr,
+>  		.t_ctx = t_ctx,
+> +		.uaddrlen = uaddrlen,
+>  	};
+>  	struct sockaddr_storage unspec;
+>  	struct cgroup *cgrp;
+> +	int ret;
+>  
+>  	/* Check socket family since not all sockets represent network
+>  	 * endpoint (e.g. AF_UNIX).
+> @@ -1482,11 +1487,16 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>  	if (!ctx.uaddr) {
+>  		memset(&unspec, 0, sizeof(unspec));
+>  		ctx.uaddr = (struct sockaddr *)&unspec;
+> +		ctx.uaddrlen = sizeof(unspec);
+>  	}
+>  
+>  	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> -	return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> -				     0, flags);
+> +	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
+> +				    0, flags);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return (int) ctx.uaddrlen;
 
-This was a part of a series [1] but could not be applied becuase
-another patch from a series had to be witheld.
-
-[1] https://lore.kernel.org/bpf/20230421174234.2391278-1-eddyz87@gmail.com/
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../bpf/progs/verifier_prevent_map_lookup.c   | 61 +++++++++++++++++++
- .../bpf/verifier/prevent_map_lookup.c         | 29 ---------
- 3 files changed, 63 insertions(+), 29 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
- delete mode 100644 tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index c8bab8b1a6a4..2497716ee379 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -42,6 +42,7 @@
- #include "verifier_meta_access.skel.h"
- #include "verifier_netfilter_ctx.skel.h"
- #include "verifier_netfilter_retcode.skel.h"
-+#include "verifier_prevent_map_lookup.skel.h"
- #include "verifier_raw_stack.skel.h"
- #include "verifier_raw_tp_writable.skel.h"
- #include "verifier_reg_equal.skel.h"
-@@ -140,6 +141,7 @@ void test_verifier_masking(void)              { RUN(verifier_masking); }
- void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
- void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
- void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
-+void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
- void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
- void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c b/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
-new file mode 100644
-index 000000000000..8d27c780996f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Converted from tools/testing/selftests/bpf/verifier/prevent_map_lookup.c */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} map_stacktrace SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 8);
-+	__uint(key_size, sizeof(int));
-+	__array(values, void (void));
-+} map_prog2_socket SEC(".maps");
-+
-+SEC("perf_event")
-+__description("prevent map lookup in stack trace")
-+__failure __msg("cannot pass map_type 7 into func bpf_map_lookup_elem")
-+__naked void map_lookup_in_stack_trace(void)
-+{
-+	asm volatile ("					\
-+	r1 = 0;						\
-+	*(u64*)(r10 - 8) = r1;				\
-+	r2 = r10;					\
-+	r2 += -8;					\
-+	r1 = %[map_stacktrace] ll;			\
-+	call %[bpf_map_lookup_elem];			\
-+	exit;						\
-+"	:
-+	: __imm(bpf_map_lookup_elem),
-+	  __imm_addr(map_stacktrace)
-+	: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("prevent map lookup in prog array")
-+__failure __msg("cannot pass map_type 3 into func bpf_map_lookup_elem")
-+__failure_unpriv
-+__naked void map_lookup_in_prog_array(void)
-+{
-+	asm volatile ("					\
-+	r1 = 0;						\
-+	*(u64*)(r10 - 8) = r1;				\
-+	r2 = r10;					\
-+	r2 += -8;					\
-+	r1 = %[map_prog2_socket] ll;			\
-+	call %[bpf_map_lookup_elem];			\
-+	exit;						\
-+"	:
-+	: __imm(bpf_map_lookup_elem),
-+	  __imm_addr(map_prog2_socket)
-+	: __clobber_all);
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-deleted file mode 100644
-index fc4e301260f6..000000000000
---- a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-+++ /dev/null
-@@ -1,29 +0,0 @@
--{
--	"prevent map lookup in stack trace",
--	.insns = {
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_map_stacktrace = { 3 },
--	.result = REJECT,
--	.errstr = "cannot pass map_type 7 into func bpf_map_lookup_elem",
--	.prog_type = BPF_PROG_TYPE_PERF_EVENT,
--},
--{
--	"prevent map lookup in prog array",
--	.insns = {
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_prog2 = { 3 },
--	.result = REJECT,
--	.errstr = "cannot pass map_type 3 into func bpf_map_lookup_elem",
--},
--- 
-2.40.0
-
+But that is big behavioral change..
+instead of 0 or 1 now it will be sizeof(unspec) or 1?
+That will surely break some of the __cgroup_bpf_run_filter_sock_addr callers.
