@@ -2,175 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BB56EA8F9
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 13:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AF96EA951
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 13:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjDULSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 07:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S232001AbjDULgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 07:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjDULSk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 07:18:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8470010A
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 04:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682075876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+a819jXQkhWrRCkf1kmbqhc9TRLDMyUVW4Zd+vmWTnQ=;
-        b=PIA/Yz04iAhJbOzCPVnt8jz9/3y8JV7f0tQwceA+IMwvI9IzdQ1b+Xx9vFaUKkx75OcYnB
-        QwdW9gS5GyBBvtky91+SAlxlN7PJvbE/rAom9V2sMtEYqvJvraqULR/su2xojXHOHKWPNt
-        h3/7l9NFAU6O9Qvn02qSxEKYgFPgzK4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-590-gX2HJHduMuGATRoheuo5gQ-1; Fri, 21 Apr 2023 07:17:53 -0400
-X-MC-Unique: gX2HJHduMuGATRoheuo5gQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6C0985A5A3;
-        Fri, 21 Apr 2023 11:17:52 +0000 (UTC)
-Received: from astarta.redhat.com (unknown [10.39.192.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CC04140EBF4;
-        Fri, 21 Apr 2023 11:17:51 +0000 (UTC)
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Artem Savkov <asavkov@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>,
-        Jerome Marchand <jmarchan@redhat.com>
-Subject: Re: sys_enter tracepoint ctx structure
-References: <xunyjzy64q9b.fsf@redhat.com>
-        <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
-        <xunyjzy6z3vu.fsf@redhat.com>
-        <CAADnVQK-Dig-5DB6tM_sgggyvqHUXSbBud0R=rAPWT2VRtQ-ZQ@mail.gmail.com>
-        <xunyfs8uz0z1.fsf@redhat.com>
-        <CAADnVQ+ZSTpUvV7fQ-UxCoRBCc8NYfcYHY0K9mKka=vhT6LO=Q@mail.gmail.com>
-Date:   Fri, 21 Apr 2023 14:17:49 +0300
-In-Reply-To: <CAADnVQ+ZSTpUvV7fQ-UxCoRBCc8NYfcYHY0K9mKka=vhT6LO=Q@mail.gmail.com>
-        (Alexei Starovoitov's message of "Thu, 20 Apr 2023 16:12:49 -0700")
-Message-ID: <xunybkjhzdpe.fsf@redhat.com>
+        with ESMTP id S231675AbjDULgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 07:36:25 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636CCC0E;
+        Fri, 21 Apr 2023 04:35:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id F1E15600F2;
+        Fri, 21 Apr 2023 13:35:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1682076952; bh=IGXmsfuT92LLRa2whQYPoOabsM4yoa1huIum4sr6paY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=UMUmw7H1tbiK8/TCoS9hO9JwdWIZGWB/ELhzbpo0lTr/Fup5TWgNOaa2z8ESkMo4U
+         kZfW0bZIU+ujtyaEjLS8YhAEbECelrsHHcU1c8LVW4N+oTPeB0i72GbgSbcY65/CxJ
+         yjq+f5/BGlRbUQg+qJOFVmzq/xKpPRdfDNkuyAm6Lz6hmmZBQXBLnUPClsvMDnVMor
+         i0//xHJ2KFNQXpzVQTJfEHnVA0mBnB9WiYVWkZosXBs+p0/4Ye5RNaPrRmUwDm9Qnv
+         JZHsbByfpB8YEovdesZk5gq5z2sNuY5CVYVu6CJIx8b2DLCn9oaPD/jbYtA2mgLoGg
+         W2q/Ic5T7dAFg==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fIc5lsbTSreK; Fri, 21 Apr 2023 13:35:49 +0200 (CEST)
+Received: from [10.0.1.117] (grf-nat.grf.hr [161.53.83.23])
+        by domac.alu.hr (Postfix) with ESMTPSA id 07681600E9;
+        Fri, 21 Apr 2023 13:35:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1682076949; bh=IGXmsfuT92LLRa2whQYPoOabsM4yoa1huIum4sr6paY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=xRxG1emW3QdvM8PKii4T+o7xqJ+LY1OYWGsJndx8RMTTwfNsc26dDz7AL/n+bpaRC
+         hTDcraBZWaCwAlQ7x+G9JHgj11uEiE6Rj1Eu5heiTEZ9GZ35KjDKo4VksHr1wj4cc+
+         9ijqxGiGLPIbPQ84z+dEL7GFRtFzvZ87pnf+1qLLpLXqWvB9EfjQdG9EPo+KZpK9QD
+         AAd5WdL2yxc/NAyvLDBmzsQ9GI0kqmhpQ0V5swTvNlUQ8HgzrXRL+lwhjT6V0KHaGN
+         jbba9/wpfB4ePfOmyDkBxqH0D8dfwPxjb//PT9ryyPhdYEVZo0dWeBmzwef21ffQXE
+         AyRD5HcHYxN7g==
+Message-ID: <060ff7a3-126f-3da5-4d93-0139e8fc4a9b@alu.unizg.hr>
+Date:   Fri, 21 Apr 2023 13:35:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [BUG] [FIXED: TESTED] kmemleak in rtnetlink_rcv() triggered by
+ selftests/drivers/net/team in build cdc9718d5e59
+Content-Language: en-US, hr
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Florent Fourcot <florent.fourcot@wifirst.fr>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Petr Machata <petrm@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>
+References: <78a8a03b-6070-3e6b-5042-f848dab16fb8@alu.unizg.hr>
+ <ZDLyZX545Cw+aLhE@shredder>
+ <67b3fa90-ad29-29f1-e6f3-fb674d255a1e@alu.unizg.hr>
+ <7650b2eb-0aee-a2b0-2e64-c9bc63210f67@alu.unizg.hr>
+ <ZDhHvUrkua8gLMfZ@shredder>
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZDhHvUrkua8gLMfZ@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Alexei!
+On 13.4.2023. 20:19, Ido Schimmel wrote:
+> On Mon, Apr 10, 2023 at 07:34:09PM +0200, Mirsad Goran Todorovac wrote:
+>> I've ran "make kselftest" with vanilla torvalds tree 6.3-rc5 + your patch.
+>>
+>> It failed two lines after "enslaved device client - ns-A IP" which passed OK.
+>>
+>> Is this hang for 5 hours in selftests: net: fcnal-test.sh test, at the line
+>> (please see to the end):
+> 
+> It's not clear to me if the test failed for you or just got stuck. The
+> output below is all "[ OK ]".
+> 
+> I ran the test with my patch and got:
+> 
+> Tests passed: 875
+> Tests failed:   5
+> 
+> I don't believe the failures are related to my patch given the test
+> doesn't use bonding.
+> 
+> See more below.
+> 
+>>
+>> # ###########################################################################
+>> # IPv4 address binds
+>> # ###########################################################################
+>> #
+>> #
+>> # #################################################################
+>> # No VRF
+>> #
+>> # SYSCTL: net.ipv4.ping_group_range=0 2147483647
+>> #
+>> # TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
+>> # TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
+>> # TEST: Raw socket bind to local address - ns-A loopback IP                     [ OK ]
+>> # TEST: Raw socket bind to local address after device bind - ns-A loopback IP   [ OK ]
+>> # TEST: Raw socket bind to nonlocal address - nonlocal IP                       [ OK ]
+>> # TEST: TCP socket bind to nonlocal address - nonlocal IP                       [ OK ]
+>> # TEST: ICMP socket bind to nonlocal address - nonlocal IP                      [ OK ]
+>> # TEST: ICMP socket bind to broadcast address - broadcast                       [ OK ]
+>> # TEST: ICMP socket bind to multicast address - multicast                       [ OK ]
+>> # TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
+>> # TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
+>> #
+>> # #################################################################
+>> # With VRF
+>> #
+>> # SYSCTL: net.ipv4.ping_group_range=0 2147483647
+>> #
+>> # TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
+>> # TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
+>> # TEST: Raw socket bind to local address after VRF bind - ns-A IP               [ OK ]
+>> # TEST: Raw socket bind to local address - VRF IP                               [ OK ]
+>> # TEST: Raw socket bind to local address after device bind - VRF IP             [ OK ]
+>> # TEST: Raw socket bind to local address after VRF bind - VRF IP                [ OK ]
+>> # TEST: Raw socket bind to out of scope address after VRF bind - ns-A loopback IP  [ OK ]
+>> # TEST: Raw socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
+>> # TEST: TCP socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
+>> # TEST: ICMP socket bind to nonlocal address after VRF bind - nonlocal IP       [ OK ]
+>> # TEST: ICMP socket bind to broadcast address after VRF bind - broadcast        [ OK ]
+>> # TEST: ICMP socket bind to multicast address after VRF bind - multicast        [ OK ]
+>> # TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
+>> # TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
+>> # TEST: TCP socket bind to local address - VRF IP                               [ OK ]
+>> # TEST: TCP socket bind to local address after device bind - VRF IP             [ OK ]
+>> # TEST: TCP socket bind to invalid local address for VRF - ns-A loopback IP     [ OK ]
+>> # TEST: TCP socket bind to invalid local address for device bind - ns-A loopback IP  [ OK ]
+>> #
+>> # ###########################################################################
+>> # Run time tests - ipv4
+>> # ###########################################################################
+>> #
+>> # TEST: Device delete with active traffic - ping in - ns-A IP                   [ OK ]
+>> # TEST: Device delete with active traffic - ping in - VRF IP                    [ OK ]
+>> # TEST: Device delete with active traffic - ping out - ns-B IP                  [ OK ]
+>> # TEST: TCP active socket, global server - ns-A IP                              [ OK ]
+>> # TEST: TCP active socket, global server - VRF IP                               [ OK ]
+>> # TEST: TCP active socket, VRF server - ns-A IP                                 [ OK ]
+>> # TEST: TCP active socket, VRF server - VRF IP                                  [ OK ]
+>> # TEST: TCP active socket, enslaved device server - ns-A IP                     [ OK ]
+>> # TEST: TCP active socket, VRF client - ns-A IP                                 [ OK ]
+>> # TEST: TCP active socket, enslaved device client - ns-A IP                     [ OK ]
+>> # TEST: TCP active socket, global server, VRF client, local - ns-A IP           [ OK ]
+>> # TEST: TCP active socket, global server, VRF client, local - VRF IP            [ OK ]
+>> # TEST: TCP active socket, VRF server and client, local - ns-A IP               [ OK ]
+>> # TEST: TCP active socket, VRF server and client, local - VRF IP                [ OK ]
+>> # TEST: TCP active socket, global server, enslaved device client, local - ns-A IP  [ OK ]
+>> # TEST: TCP active socket, VRF server, enslaved device client, local - ns-A IP  [ OK ]
+>> # TEST: TCP active socket, enslaved device server and client, local - ns-A IP   [ OK ]
+>> # TEST: TCP passive socket, global server - ns-A IP                             [ OK ]
+>> # TEST: TCP passive socket, global server - VRF IP                              [ OK ]
+>> # TEST: TCP passive socket, VRF server - ns-A IP                                [ OK ]
+>> # TEST: TCP passive socket, VRF server - VRF IP                                 [ OK ]
+>> # TEST: TCP passive socket, enslaved device server - ns-A IP                    [ OK ]
+>> # TEST: TCP passive socket, VRF client - ns-A IP                                [ OK ]
+>> # TEST: TCP passive socket, enslaved device client - ns-A IP                    [ OK ]
+>> # TEST: TCP passive socket, global server, VRF client, local - ns-A IP          [ OK ]
+>>
+>> Hope this helps.
+>>
+>> I also have a iwlwifi DEADLOCK and I don't know if these should be reported independently.
+>> (I don't think it is related to the patch.)
+> 
+> If the test got stuck, then it might be related to the deadlock in
+> iwlwifi. Try running the test without iwlwifi and see if it helps. If
+> not, I suggest starting a different thread about this issue.
+> 
+> Will submit the bonding patch over the weekend.
 
->>>>> On Thu, 20 Apr 2023 16:12:49 -0700, Alexei Starovoitov  wrote:
- > On Thu, Apr 20, 2023 at 2:40=E2=80=AFPM Yauheni Kaliuta <ykaliuta@redhat=
-.com> wrote:
- >> >>>>> On Thu, 20 Apr 2023 13:54:26 -0700, Alexei Starovoitov  wrote:
- >> > On Thu, Apr 20, 2023 at 1:37=E2=80=AFPM Yauheni Kaliuta <ykaliuta@red=
-hat.com> wrote:
- >> >> >>>>> On Thu, 20 Apr 2023 08:59:09 -0700, Alexei Starovoitov  wrote:
- >> >> >>
- >> >> >> Should perf_call_bpf_enter/exit (kernel/trace/trace_syscalls.c)
- >> >> >> use struct trace_event_raw_sys_enter/exit instead of locally
- >> >> >> crafted struct syscall_tp_t nowadays?
- >> >>
- >> >>
- >> >> > No. It needs syscall_tp_t.
- >> >>
- >> >> > test_progs's vmlinux test
- >> >> >> expects it as the context.
- >> >> >>
- >> >>
- >> >> > what do you mean? Pls share a code pointer?
- >> >>
- >> >> https://github.com/torvalds/linux/blob/master/tools/testing/selftest=
-s/bpf/progs/test_vmlinux.c#L19
- >> >>
- >> >> SEC("tp/syscalls/sys_enter_nanosleep")
- >> >> int handle__tp(struct trace_event_raw_sys_enter *args)
- >>=20
- >> > I see. That bit is correct and that's what bpftrace is doing
- >> > when attaching to syscalls.
- >> > What do you see in your patched RT kernel when you do:
- >> > cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/for=
-mat
- >> > ?
- >> > Depending on the answer we might need to fix
- >> > the kernel side that has to use struct trace_entry
- >> > in syscall_tp_t instead of plain long long.
- >>=20
- >> # cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/for=
-mat
- >> name: sys_enter_nanosleep
- >> ID: 374
- >> format:
- >> field:unsigned short common_type;       offset:0;       size:2; signed:=
-0;
- >> field:unsigned char common_flags;       offset:2;       size:1; signed:=
-0;
- >> field:unsigned char common_preempt_count;       offset:3;       size:1;=
- signed:0;
- >> field:int common_pid;   offset:4;       size:4; signed:1;
- >> field:unsigned char common_preempt_lazy_count;  offset:8;       size:1;=
- signed:0;
- >>=20
- >> field:int __syscall_nr; offset:12;      size:4; signed:1;
- >> field:struct __kernel_timespec * rqtp;  offset:16;      size:8; signed:=
-0;
- >> field:struct __kernel_timespec * rmtp;  offset:24;      size:8; signed:=
-0;
- >>=20
- >> print fmt: "rqtp: 0x%08lx, rmtp: 0x%08lx", ((unsigned long)(REC->rqtp))=
-, ((unsigned long)(REC->rmtp))
+Tested it again, with only the net selftest subtree:
 
+tools/testing/selftests/Makefile:
+TARGETS += drivers/net/bonding
+TARGETS += drivers/net/team
+TARGETS += net
+TARGETS += net/af_unix
+TARGETS += net/forwarding
+TARGETS += net/hsr
+# TARGETS += net/mptcp
+TARGETS += net/openvswitch
+TARGETS += netfilter
 
- > Lol.
- > Jiri even fixed the issue with this format in bpftrace 3 years ago:
- > https://github.com/iovisor/bpftrace/commit/a2e3d5dbc03ceb49b776cf5602d31=
-896158844a7
+and it failed to reproduce the hang. (NOTE: In fact, it was only a script stall forever,
+not a "kill -9 <PID>" non-killable process.)
 
-Hehe :)
+With or without iwlwifi module, now it appears to work as a standalone test.
 
- > Let's fix the kernel side too. Something like this should do it:
+The problem might indeed be a spurious lockup in iwlwifi. I've noticed an attempt to
+lock a locked lock from within the interrupt in the journalctl logs, but I am really
+not that familiar with the iwlwifi driver's code ... It is apparently not a deterministic
+error bound to repeat with every test.
 
- > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls=
-.c
- > index 942ddbdace4a..7aa1f4299486 100644
- > --- a/kernel/trace/trace_syscalls.c
- > +++ b/kernel/trace/trace_syscalls.c
- > @@ -555,7 +555,7 @@ static int perf_call_bpf_enter(struct
- > trace_event_call *call, struct pt_regs *re
- >                                struct syscall_trace_enter *rec)
- >  {
- >         struct syscall_tp_t {
- > -               unsigned long long regs;
- > +               struct trace_entry ent;
- >                 unsigned long syscall_nr;
- >                 unsigned long args[SYSCALL_DEFINE_MAXARGS];
- >         } param;
- > @@ -657,7 +657,7 @@ static int perf_call_bpf_exit(struct
- > trace_event_call *call, struct pt_regs *reg
- >                               struct syscall_trace_exit *rec)
- >  {
- >         struct syscall_tp_t {
- > -               unsigned long long regs;
- > +               struct trace_entry ent;
+I reckon the tests prior to the net subtree have done something to my kernel but thus far
+I could not isolate the culprit test.
 
+# tools/testing/selftests/net/fcnal-test.sh alone passes OK.
 
- > pls add build_bug_on that sizeof(ent) >=3D sizeof(void*).
+> Thanks for testing
 
-Ok. Should the line *(struct pt_regs **)&param =3D regs; be commented someh=
-ow?
+Not at all. I apologise for the false alarm.
 
---=20
-WBR,
-Yauheni Kaliuta
+Thanks for patching at such short notice.
+
+The patch closes the memory leak, and the latest change was obviously the most suspected one,
+but now it doesn't seem so.
+
+It would require more work to isolate the particular test that caused the hang, but I don't
+know if I have enough resources, mainly the time. And the guiding idea that I am going in the
+right direction. :-/
+
+Best regards,
+Mirsad
+
+-- 
+Mirsad Todorovac
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb
+Republic of Croatia, the European Union
+
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
 
