@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95F86EB32A
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 22:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B9F6EB342
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 23:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbjDUUzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 16:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        id S232243AbjDUVBl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 17:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232017AbjDUUzq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 16:55:46 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4701FFB
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:55:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-63b50a02bffso2345872b3a.2
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:55:44 -0700 (PDT)
+        with ESMTP id S231535AbjDUVBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 17:01:40 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CCBE74
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 14:01:38 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-63b8b19901fso3339130b3a.3
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 14:01:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682110543; x=1684702543;
+        d=gmail.com; s=20221208; t=1682110898; x=1684702898;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TEoUvmC7P6gtKUn+6tddEyOtFaXH0h0t30pvu3Cxco4=;
-        b=qsDL6teL9u+AJOLLlxAdioFbQIqVG/sfr5FwwUxwMYJtzHOmHvi0JRJP5pa/X1NY2/
-         QrAoT+sLfbjmQSKCmuzPlwxYF1wv7sUGG0n3B0BoVmT8uFbxJC3P8hZHrP52r03ojsJ0
-         imNl06NisTQ7s6t0qDM/J45GjJxP31aT9770V0yKpFuT4vNYGPSc7AOp8DWWHui1RwP9
-         2R37+5rY9bv8hgJhaQBR0oGCOcJLdFom5PvKfV5g+NijN89tVEI5hLWIOaAnOY3R8mvM
-         DwEB+KQpDz6hR6G53RLxMqWtdviwJJyrMCjeM65UogNrFkOtANBO2PEoFl+IwVXw0fnm
-         Aghg==
+        bh=PibLMqJcdZmYNbzkWP4DV4XRlStPOsBjGB5w3KrKah0=;
+        b=SnjSAuiX3mxubuX98xbrojEm/Djerm9q7rf1CTCswrwB7Tu0tcN5L8eVEDl/QjzhcG
+         wghiMdKvIfWYD0123reylrLvFNkXtGqn0IqzVLNiI7xg3PsbzXocD/ML+XH6VSRH92Bw
+         OYKzR52fdmGXRZhXtHYxobvyRaqBYa9e6szn9acOFo41eZOi8GZgeEgA0Q7YhqjG1PqO
+         0F9ufxqr4kFzp5OBgPrxKogpXG/yJQVw6loWnsvoee8vO5iTZlSuCSGAUH6C/jp1Gd+P
+         IiVusxOsX/8WxVVqbuN7C8WqtqyYaMVBJLBmvcMc2nbiWPeULA8/nH/p37ztRKE5Ac/G
+         0+EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682110543; x=1684702543;
+        d=1e100.net; s=20221208; t=1682110898; x=1684702898;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TEoUvmC7P6gtKUn+6tddEyOtFaXH0h0t30pvu3Cxco4=;
-        b=FpideiEuVpjpTh5T5+TbMbW1sC4U/av48Rbervs08z/kkYqcqQpICDRrzkgolcW4x5
-         Nb+McmOirYuE1ElGRvNZSWom3wwdgrplT7qKtCCxeCxc3vVNXVP1kjCZT7GHDRz693FY
-         twWHooUqXkz0znG5iExIk4pMw4XoVU03Aonyvpj2KCLMq1+jJV55xTxgodMFrsCTrxng
-         SJ7jM2OAh2cKHhod4JSpffJKJS/4HWSPUXAlVRFrx/diFiN00p1ifdg1tz21NDYB1EQd
-         C572nJK7SIupE/numj7UL0OBbrKL39EZjwCg1clT5uuW3IL0gPLrlbC2tNdafXGK/OaM
-         kB3A==
-X-Gm-Message-State: AAQBX9f3QChKhW7vD/wb3mfRipP9m3bbnWx4n0dA4jfRZXUu71IVfRzC
-        XL3RRjLuo3q82mKNny1h2Q0UwyffnXU=
-X-Google-Smtp-Source: AKy350YMDuEXFr8GfO7DJGCr9zLr+RHprCWfjTgID8g6LZDH42g5flPxVVkPGc/FDVGzatfE+SiJvA==
-X-Received: by 2002:a05:6a20:12ca:b0:f3:1b6:f468 with SMTP id v10-20020a056a2012ca00b000f301b6f468mr104339pzg.6.1682110543512;
-        Fri, 21 Apr 2023 13:55:43 -0700 (PDT)
+        bh=PibLMqJcdZmYNbzkWP4DV4XRlStPOsBjGB5w3KrKah0=;
+        b=kBMFf6lXD6tIF/g0OJ7t17qxjihBCeQZ3GuHPWyhnhZlVoEmQxm/KjZaLEOzdPa5q5
+         tadTc90ETHeT91mynQC0fO2om1MfPrrpw/pvMHmwRsjvqx68KJwBINH/GUXkOiiAV0NF
+         fkPikozqRggqYzEbY/WParSgVESxi0ebzvI43uJJXK5FsHb9qS3wjn/pn9XMBYLDwYCy
+         r+RdXLDSnDWeniFv5h/enc4gNcrA1V8jGyX7WQDqggZUpLrMN6GZIn/d9o9DhcfjYDYs
+         qJK/m9s+1iyhSQsFYCx8Es9jwhTRkNU+BDqlw+Dgs4ZYJJYzgQVrZumuzxBfRoSD2hIs
+         iE0A==
+X-Gm-Message-State: AAQBX9fmo+burYuLhGXbb6CnFVkqS3FSZ9CvFPgzi1JCYe2IqpXXKZFj
+        DMd3O95JuXThLSSHrn6WIjc=
+X-Google-Smtp-Source: AKy350aCB/gK252dlX44vwdNhFr5L3TXa3oUnQO3sG/eqlNc0NT70Y0BC94Of+LwFzm8YYTQJkQZ6A==
+X-Received: by 2002:a05:6a20:4418:b0:f2:b6d6:e3fa with SMTP id ce24-20020a056a20441800b000f2b6d6e3famr2796247pzb.38.1682110897938;
+        Fri, 21 Apr 2023 14:01:37 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:ef5e])
-        by smtp.gmail.com with ESMTPSA id z10-20020a630a4a000000b0051b93103665sm2942815pgk.63.2023.04.21.13.55.42
+        by smtp.gmail.com with ESMTPSA id o8-20020a056a0015c800b0062dd8809d6esm3376831pfu.150.2023.04.21.14.01.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 13:55:42 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 13:55:40 -0700
+        Fri, 21 Apr 2023 14:01:37 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 14:01:35 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Daan De Meyer <daan.j.demeyer@gmail.com>
 Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v3 03/10] bpf: Allow read access to addr_len
- from cgroup sockaddr programs
-Message-ID: <20230421205540.bklwtswdrxybrjsl@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v3 05/10] bpf: Add bpf_sock_addr_set() to allow
+ writing sockaddr len from bpf
+Message-ID: <20230421210135.v4msbkuj433j75g4@dhcp-172-26-102-232.dhcp.thefacebook.com>
 References: <20230421162718.440230-1-daan.j.demeyer@gmail.com>
- <20230421162718.440230-4-daan.j.demeyer@gmail.com>
+ <20230421162718.440230-6-daan.j.demeyer@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230421162718.440230-4-daan.j.demeyer@gmail.com>
+In-Reply-To: <20230421162718.440230-6-daan.j.demeyer@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,48 +71,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 06:27:11PM +0200, Daan De Meyer wrote:
->   *
->   * This function will return %-EPERM if an attached program is found and
-> - * returned value != 1 during execution. In all other cases, 0 is returned.
-> + * returned value != 1 during execution. In all other cases, the new address
-> + * length of the sockaddr is returned.
->   */
->  int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
->  				      struct sockaddr *uaddr,
-> +				      u32 uaddrlen,
->  				      enum cgroup_bpf_attach_type atype,
->  				      void *t_ctx,
->  				      u32 *flags)
-> @@ -1469,9 +1472,11 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
->  		.sk = sk,
->  		.uaddr = uaddr,
->  		.t_ctx = t_ctx,
-> +		.uaddrlen = uaddrlen,
->  	};
->  	struct sockaddr_storage unspec;
->  	struct cgroup *cgrp;
-> +	int ret;
+On Fri, Apr 21, 2023 at 06:27:13PM +0200, Daan De Meyer wrote:
+> As prep for adding unix socket support to the cgroup sockaddr hooks,
+> let's add a kfunc bpf_sock_addr_set() that allows modifying the
+> sockaddr length from bpf. This is required to allow modifying AF_UNIX
+> sockaddrs correctly.
+> 
+> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> ---
+>  net/core/filter.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 51 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 44fb997434ad..1c656e2d7b58 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -81,6 +81,7 @@
+>  #include <net/xdp.h>
+>  #include <net/mptcp.h>
+>  #include <net/netfilter/nf_conntrack_bpf.h>
+> +#include <linux/un.h>
 >  
->  	/* Check socket family since not all sockets represent network
->  	 * endpoint (e.g. AF_UNIX).
-> @@ -1482,11 +1487,16 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
->  	if (!ctx.uaddr) {
->  		memset(&unspec, 0, sizeof(unspec));
->  		ctx.uaddr = (struct sockaddr *)&unspec;
-> +		ctx.uaddrlen = sizeof(unspec);
->  	}
+>  static const struct bpf_func_proto *
+>  bpf_sk_base_func_proto(enum bpf_func_id func_id);
+> @@ -11670,6 +11671,44 @@ __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
 >  
->  	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> -	return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
-> -				     0, flags);
-> +	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
-> +				    0, flags);
-> +	if (ret)
-> +		return ret;
+>  	return 0;
+>  }
 > +
-> +	return (int) ctx.uaddrlen;
+> +__bpf_kfunc int bpf_sock_addr_set(struct bpf_sock_addr_kern *sa_kern,
+> +				  const void *addr, u32 addrlen__sz)
 
-But that is big behavioral change..
-instead of 0 or 1 now it will be sizeof(unspec) or 1?
-That will surely break some of the __cgroup_bpf_run_filter_sock_addr callers.
+I think the verifier doesn't check validity of void* pointer for kfuncs.
+Should it be 'struct sockaddr_un *' ?
+
+> +{
+> +	const struct sockaddr *sa = addr;
+> +
+> +	if (addrlen__sz <= offsetof(struct sockaddr, sa_family))
+> +		return -EINVAL;
+> +
+> +	if (addrlen__sz > sizeof(struct sockaddr_storage))
+> +		return -EINVAL;
+> +
+> +	if (sa->sa_family != sa_kern->uaddr->sa_family)
+> +		return -EINVAL;
+> +
+> +	switch (sa->sa_family) {
+> +	case AF_INET:
+> +		if (addrlen__sz < sizeof(struct sockaddr_in))
+> +			return -EINVAL;
+> +		break;
+> +	case AF_INET6:
+> +		if (addrlen__sz < SIN6_LEN_RFC2133)
+> +			return -EINVAL;
+> +		break;
+> +	case AF_UNIX:
+> +		if (addrlen__sz <= offsetof(struct sockaddr_un, sun_path) ||
+> +		    addrlen__sz > sizeof(struct sockaddr_un))
+> +			return -EINVAL;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	memcpy(sa_kern->uaddr, sa, addrlen__sz);
+> +	sa_kern->uaddrlen = addrlen__sz;
+> +
+> +	return 0;
+> +}
+>  __diag_pop();
+>  
+>  int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
+> @@ -11694,6 +11733,10 @@ BTF_SET8_START(bpf_kfunc_check_set_xdp)
+>  BTF_ID_FLAGS(func, bpf_dynptr_from_xdp)
+>  BTF_SET8_END(bpf_kfunc_check_set_xdp)
+>  
+> +BTF_SET8_START(bpf_kfunc_check_set_sock_addr)
+> +BTF_ID_FLAGS(func, bpf_sock_addr_set)
+
+It probably needs KF_TRUSTED_ARGS.
