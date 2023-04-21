@@ -2,78 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFA56EAD76
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4FE6EAD98
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjDUOw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 10:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
+        id S231742AbjDUO7A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 10:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjDUOwz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 10:52:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A35EB771;
-        Fri, 21 Apr 2023 07:52:49 -0700 (PDT)
+        with ESMTP id S233081AbjDUO6z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 10:58:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785F3A274;
+        Fri, 21 Apr 2023 07:58:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=J9qyPU+PVnsNsWzTVs4DoiCRroFoofUuOFvtJinm82Q=; b=YRhhNtQVDz+1hX//XCxHP/YsIP
-        9aAfbEclTj5/QSEk7AnKYOgmGBgADCYIyheaW8eJemBmSlEQ/2vSW5shnHyPr40uhHjhs1Y7yPj9X
-        eXVO44Y187UjR54YHjwaSCNXHsAIAuXvc/nnWXKdvIl/3UoERRRBRJPwwtbfm7zgOPQx762hcbPM7
-        UXTAamIUsT7dwHO32xHlzi6LsFKJbjB7qBtLfmeEt6ArG0mbfx6VDLPTMVKvaS4eP+BC9beqI0aDN
-        eVF1lQCdtwgro4fzD2bBqdEuW7NcLgLmm+r9CLBW23p0KBpf5bgnj6HpICEWibmPRqyWRhzF9J/B5
-        /xXEvWfA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pps7r-000NGA-SA; Fri, 21 Apr 2023 16:52:39 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1pps7r-000VNF-7l; Fri, 21 Apr 2023 16:52:39 +0200
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next V2 0/5] XDP-hints: XDP kfunc
- metadata for driver igc
-To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Brouer, Jesper" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "martin.lau@kernel.org" <martin.lau@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
-        "Zaremba, Larysa" <larysa.zaremba@intel.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-References: <168182460362.616355.14591423386485175723.stgit@firesoul>
- <PH0PR11MB583075A0520F8760657FC4BED89D9@PH0PR11MB5830.namprd11.prod.outlook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f134a734-c67e-b546-b1ef-53da676acaf4@iogearbox.net>
-Date:   Fri, 21 Apr 2023 16:52:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T9LXOdWMRXqaqS22weQhZo+/CD9S/0W7jBzVygMsK3Y=; b=InAJCSPOAlj1EKhhmNXf/r3IkX
+        6oW/gCF1ILhOM4eo3jviU83s+rVoOoIeFKFv57K4WyTkSf7ji0/t7AfrGlT9txK4DdnMOQ571f91R
+        PzYDogvvJM8tmfcZK8Jbs0R2aPa03EPJ41nKD4GbqtXJ6iIkEv1MJ6cvoeZGKKf5bD3dvYhEQ1WtU
+        hHJ4jEilijTsBkM0aC4ShNx+LDVeYYyQGw8R58W/f/HQxssV8lTTBGzu75RSgxi8ztIX8ZCFwlaUi
+        3EHwyEOdSVgiR4aPlsu6fsVJwqZdGVpZmQemafsBk8AQPG6LHdeYyD59Gp9CSUAb6fhrNpIGzJWOQ
+        cyI84C7Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ppsDj-00FLN0-P2; Fri, 21 Apr 2023 14:58:43 +0000
+Date:   Fri, 21 Apr 2023 15:58:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, tytso@mit.edu,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Christie <michael.christie@oracle.com>
+Subject: Re: [syzbot] [ext4?] [mm?] KCSAN: data-race in strscpy / strscpy (3)
+Message-ID: <ZEKko6U2MxfkXgs5@casper.infradead.org>
+References: <000000000000b9915d05f9d98bdd@google.com>
+ <CACT4Y+a3J0Z2PThebH6UaUWchKLWec8qApuv1ezYGKjf67Xctg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <PH0PR11MB583075A0520F8760657FC4BED89D9@PH0PR11MB5830.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26883/Fri Apr 21 09:25:39 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+a3J0Z2PThebH6UaUWchKLWec8qApuv1ezYGKjf67Xctg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,46 +60,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/18/23 4:53 PM, Song, Yoong Siang wrote:
-> On Tuesday, April 18, 2023 9:31 PM, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->> Implement both RX hash and RX timestamp XDP hints kfunc metadata for driver
->> igc.
->>
->> First patch fix RX hashing for igc in general.
->>
->> Last patch change test program xdp_hw_metadata to track more timestamps,
->> which helps us correlate the hardware RX timestamp with something.
->>
->> ---
->> To maintainers: I'm uncertain which git tree this should be sent against. This is
->> primary NIC driver code (net-next), but it's BPF/XDP related (bpf-next) via
->> xdp_metadata_ops.
->>
->> Jesper Dangaard Brouer (5):
->>       igc: enable and fix RX hash usage by netstack
->>       igc: add igc_xdp_buff wrapper for xdp_buff in driver
->>       igc: add XDP hints kfuncs for RX hash
->>       igc: add XDP hints kfuncs for RX timestamp
->>       selftests/bpf: xdp_hw_metadata track more timestamps
->>
->>
->> drivers/net/ethernet/intel/igc/igc.h          |  35 ++++++
->> drivers/net/ethernet/intel/igc/igc_main.c     | 116 ++++++++++++++++--
->> .../selftests/bpf/progs/xdp_hw_metadata.c     |   4 +-
->> tools/testing/selftests/bpf/xdp_hw_metadata.c |  47 ++++++-
->> tools/testing/selftests/bpf/xdp_metadata.h    |   1 +
->> 5 files changed, 186 insertions(+), 17 deletions(-)
->>
->> --
+On Fri, Apr 21, 2023 at 04:43:19PM +0200, Dmitry Vyukov wrote:
+> On Fri, 21 Apr 2023 at 16:33, syzbot
+> <syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    76f598ba7d8e Merge tag 'for-linus' of git://git.kernel.org..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=133bfbedc80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9c5d44636e91081b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=c2de99a72baaa06d31f3
+> > compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/a3654f5f77b9/disk-76f598ba.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/abfb4aaa5772/vmlinux-76f598ba.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/789fb5546551/bzImage-76f598ba.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com
 > 
-> This patchset lgtm.
-> Thanks for the changes.
+> +bpf maintainers
+> 
+> If I am reading this correctly, this can cause a leak of kernel memory
+> and/or crash via bpf_get_current_comm helper.
+> 
+> strcpy() can temporary leave comm buffer non-0 terminated as it
+> terminates it only after the copy:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/lib/string.c?id=76f598ba7d8e2bfb4855b5298caedd5af0c374a8#n184
+> 
+> If bpf_get_current_comm() observes such non-0-terminated comm, it will
+> start reading off bounds.
 
-Siang, can I take this into the patches as your:
+Just to be clear, this isn't ext4 at all; ext4 happens to be calling
+kthread_create(), but it's actually a generic kthread problem, right?
 
-Acked-by: Song Yoong Siang <yoong.siang.song@intel.com>
+I'm not sure how it is that bpf is able to see the task before comm is
+initialised; that seems to be the real race here, that comm is not set
+before the kthread is a schedulable entity?  Adding the scheduler people.
 
-?
-
-Thanks,
-Daniel
+> > ==================================================================
+> > BUG: KCSAN: data-race in strscpy / strscpy
+> >
+> > write to 0xffff88812ed8b730 of 8 bytes by task 16157 on cpu 1:
+> >  strscpy+0xa9/0x170 lib/string.c:165
+> >  strscpy_pad+0x27/0x80 lib/string_helpers.c:835
+> >  __set_task_comm+0x46/0x140 fs/exec.c:1232
+> >  set_task_comm include/linux/sched.h:1984 [inline]
+> >  __kthread_create_on_node+0x2b2/0x320 kernel/kthread.c:474
+> >  kthread_create_on_node+0x8a/0xb0 kernel/kthread.c:512
+> >  ext4_run_lazyinit_thread fs/ext4/super.c:3848 [inline]
+> >  ext4_register_li_request+0x407/0x650 fs/ext4/super.c:3983
+> >  __ext4_fill_super fs/ext4/super.c:5480 [inline]
+> >  ext4_fill_super+0x3f4a/0x43f0 fs/ext4/super.c:5637
+> >  get_tree_bdev+0x2b1/0x3a0 fs/super.c:1303
+> >  ext4_get_tree+0x1c/0x20 fs/ext4/super.c:5668
+> >  vfs_get_tree+0x51/0x190 fs/super.c:1510
+> >  do_new_mount+0x200/0x650 fs/namespace.c:3042
+> >  path_mount+0x498/0xb40 fs/namespace.c:3372
+> >  do_mount fs/namespace.c:3385 [inline]
+> >  __do_sys_mount fs/namespace.c:3594 [inline]
+> >  __se_sys_mount+0x27f/0x2d0 fs/namespace.c:3571
+> >  __x64_sys_mount+0x67/0x80 fs/namespace.c:3571
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >
+> > read to 0xffff88812ed8b733 of 1 bytes by task 16161 on cpu 0:
+> >  strscpy+0xde/0x170 lib/string.c:174
+> >  ____bpf_get_current_comm kernel/bpf/helpers.c:260 [inline]
+> >  bpf_get_current_comm+0x45/0x70 kernel/bpf/helpers.c:252
+> >  ___bpf_prog_run+0x281/0x3050 kernel/bpf/core.c:1822
+> >  __bpf_prog_run32+0x74/0xa0 kernel/bpf/core.c:2043
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:1124 [inline]
+> >  __bpf_prog_run include/linux/filter.h:601 [inline]
+> >  bpf_prog_run include/linux/filter.h:608 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2263 [inline]
+> >  bpf_trace_run4+0x9f/0x140 kernel/trace/bpf_trace.c:2304
+> >  __traceiter_sched_switch+0x3a/0x50 include/trace/events/sched.h:222
+> >  trace_sched_switch include/trace/events/sched.h:222 [inline]
+> >  __schedule+0x7e7/0x8e0 kernel/sched/core.c:6622
+> >  schedule+0x51/0x80 kernel/sched/core.c:6701
+> >  schedule_preempt_disabled+0x10/0x20 kernel/sched/core.c:6760
+> >  kthread+0x11c/0x1e0 kernel/kthread.c:369
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+> >
+> > value changed: 0x72 -> 0x34
+> >
+> > Reported by Kernel Concurrency Sanitizer on:
+> > CPU: 0 PID: 16161 Comm: ext4lazyinit Not tainted 6.3.0-rc5-syzkaller-00022-g76f598ba7d8e #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
+> > ==================================================================
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
