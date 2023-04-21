@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286C06EA504
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 09:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AED6EA51F
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 09:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjDUHjW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 03:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        id S229878AbjDUHoo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 03:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjDUHjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 03:39:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919F393C2;
-        Fri, 21 Apr 2023 00:39:07 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D6E4F1FDDB;
-        Fri, 21 Apr 2023 07:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1682062745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SW/BafQPTgaGXLW01L/Le1hsXVIB2LKcUVfRqpb3Xc8=;
-        b=jH+MV53ySUGWpcyc017NVY4EGdbvHoiylIZ7T0UG/mJR/Zqxq+VAJ+/S4xhM7JVmGz65iv
-        sM/cdTfzCW32JwMzoYOTAJk6xMH7bF1tNFEkXGaur5gLiLvfjZVtnUlIoG58rVDMUton5e
-        9NKjlyAEBFLeZZhImeHfSjCld7/q3e8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1682062745;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SW/BafQPTgaGXLW01L/Le1hsXVIB2LKcUVfRqpb3Xc8=;
-        b=NKeSGXGa/D7a0vlQYkmKcFNoeEedpJvnDVX8ZuXIJGAVLRCRTaUfm1HrloDhRwfrnftOos
-        3iAcpTphvwv8X2Dw==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4FBEC2C141;
-        Fri, 21 Apr 2023 07:39:05 +0000 (UTC)
-Date:   Fri, 21 Apr 2023 09:39:04 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        with ESMTP id S229642AbjDUHon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 03:44:43 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BCC9E
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 00:44:41 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33L0bZLj028961
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 00:44:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=t39WmlztQWJ40GtgJXmHkCcNLcYVRXIdNJ2KzEDVzQA=;
+ b=quDKSUlBEFvHBl+oxi7EqtsUhSUHJkBTqet/23EmsO7o0iXmJ8mM7yOrz1MSr5QggPco
+ FmjkpM0YSPP314/XcNzrAFqZ+NF1pC8P3hHZjcg2m+DAwmKW2s3ug17L0HOn+koAFeIE
+ uqISnCc4PihO9bz3lj7JwbtqfF3En/l9K4c= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q3g3p9nh0-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 00:44:40 -0700
+Received: from twshared34392.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 21 Apr 2023 00:44:39 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 0C5051C857B1D; Fri, 21 Apr 2023 00:44:32 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf 02/11] bpftool: define a local bpf_perf_link to
- fix accessing its fields
-Message-ID: <20230421073904.GJ15906@kitsune.suse.cz>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <20220421003152.339542-3-alobakin@pm.me>
- <20230414095457.GG63923@kunlun.suse.cz>
- <9952dc32-f464-c85a-d812-946d6b0ac734@intel.com>
- <20230414162821.GK63923@kunlun.suse.cz>
- <CAEf4BzYx=dSXp-TkpjzyhSP+9WY71uR4Xq4Um5YzerbfOtJOfA@mail.gmail.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Florian Westphal <fw@strlen.de>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] bpf: Fix bpf_refcount_acquire's refcount_t address calculation
+Date:   Fri, 21 Apr 2023 00:44:31 -0700
+Message-ID: <20230421074431.3548349-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: k1UYywY2FgrzpyTe3eNPPMHq3rTMmb9J
+X-Proofpoint-ORIG-GUID: k1UYywY2FgrzpyTe3eNPPMHq3rTMmb9J
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYx=dSXp-TkpjzyhSP+9WY71uR4Xq4Um5YzerbfOtJOfA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-21_02,2023-04-20_01,2023-02-09_01
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,80 +68,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 04:07:38PM -0700, Andrii Nakryiko wrote:
-> On Fri, Apr 14, 2023 at 9:28 AM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Fri, Apr 14, 2023 at 05:18:27PM +0200, Alexander Lobakin wrote:
-> > > From: Michal Suchánek <msuchanek@suse.de>
-> > > Date: Fri, 14 Apr 2023 11:54:57 +0200
-> > >
-> > > > Hello,
-> > >
-> > > Hey-hey,
-> > >
-> > > >
-> > > > On Thu, Apr 21, 2022 at 12:38:58AM +0000, Alexander Lobakin wrote:
-> > > >> When building bpftool with !CONFIG_PERF_EVENTS:
-> > > >>
-> > > >> skeleton/pid_iter.bpf.c:47:14: error: incomplete definition of type 'struct bpf_perf_link'
-> > > >>         perf_link = container_of(link, struct bpf_perf_link, link);
-> > > >>                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:74:22: note: expanded from macro 'container_of'
-> > > >>                 ((type *)(__mptr - offsetof(type, member)));    \
-> > > >>                                    ^~~~~~~~~~~~~~~~~~~~~~
-> > > >> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:68:60: note: expanded from macro 'offsetof'
-> > > >>  #define offsetof(TYPE, MEMBER)  ((unsigned long)&((TYPE *)0)->MEMBER)
-> > > >>                                                   ~~~~~~~~~~~^
-> > > >> skeleton/pid_iter.bpf.c:44:9: note: forward declaration of 'struct bpf_perf_link'
-> > > >>         struct bpf_perf_link *perf_link;
-> > > >>                ^
-> > > >>
-> > > >> &bpf_perf_link is being defined and used only under the ifdef.
-> > > >> Define struct bpf_perf_link___local with the `preserve_access_index`
-> > > >> attribute inside the pid_iter BPF prog to allow compiling on any
-> > > >> configs. CO-RE will substitute it with the real struct bpf_perf_link
-> > > >> accesses later on.
-> > > >> container_of() is not CO-REd, but it is a noop for
-> > > >> bpf_perf_link <-> bpf_link and the local copy is a full mirror of
-> > > >> the original structure.
-> > > >>
-> > > >> Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
-> > > >
-> > > > This does not solve the problem completely. Kernels that don't have
-> > > > CONFIG_PERF_EVENTS in the first place are also missing the enum value
-> > > > BPF_LINK_TYPE_PERF_EVENT which is used as the condition for handling the
-> > > > cookie.
-> > >
-> > > Sorry, I haven't been working with my home/private stuff for more than a
-> > > year already. I may get back to it some day when I'm tired of Lua (curse
-> > > words, sorry :D), but for now the series is "a bit" abandoned.
-> >
-> > This part still appllies and works for me with the caveat that
-> > BPF_LINK_TYPE_PERF_EVENT also needs to be defined.
-> >
-> > > I think there was alternative solution proposed there, which promised to
-> > > be more flexible. But IIRC it also doesn't touch the enum (was it added
-> > > recently? Because it was building just fine a year ago on config without
-> > > perf events).
-> >
-> > It was added in 5.15. Not sure there is a kernel.org LTS kernel usable
-> > for CO-RE that does not have it, technically 5.4 would work if it was
-> > built monolithic, it does not have module BTF, only kernel IIRC.
-> >
-> > Nonetheless, the approach to handling features completely missing in the
-> > running kernel should be figured out one way or another. I would be
-> > surprised if this was the last feature to be added that bpftool needs to
-> > know about.
-> 
-> Are we talking about bpftool built from kernel sources or from Github?
-> Kernel source version should have access to latest UAPI headers and so
-> BPF_LINK_TYPE_PERF_EVENT should be available. Github version, if it
-> doesn't do that already, can use UAPI headers distributed (and used
-> for building) with libbpf through submodule.
+When calculating the address of the refcount_t struct within a local
+kptr, bpf_refcount_acquire_impl should add refcount_off bytes to the
+address of the local kptr. Due to some missing parens, the function is
+incorrectly adding sizeof(refcount_t) * refcount_off bytes. This patch
+fixes the calculation.
 
-It does have a copy of the uapi headers but apparently does not use
-them. Using them directly might cause conflict with vmlinux.h, though.
+Due to the incorrect calculation, bpf_refcount_acquire_impl was trying
+to refcount_inc some memory well past the end of local kptrs, resulting
+in kasan and refcount complaints, as reported in [0]. In that thread,
+Florian and Eduard discovered that bpf selftests written in the new
+style - with __success and an expected __retval, specifically - were not
+actually being run. As a result, selftests added in bpf_refcount series
+weren't really exercising this behavior, and thus didn't unearth the
+bug.
 
-Thanks
+With this fixed behavior it's safe to revert commit 7c4b96c00043
+("selftests/bpf: disable program test run for progs/refcounted_kptr.c"),
+this patch does so.
 
-Michal
+  [0]: https://lore.kernel.org/bpf/ZEEp+j22imoN6rn9@strlen.de/
+
+Reported-by: Florian Westphal <fw@strlen.de>
+Reported-by: Eduard Zingerman <eddyz87@gmail.com>
+Fixes: 7c50b1cb76ac ("bpf: Add bpf_refcount_acquire kfunc")
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+---
+ kernel/bpf/helpers.c                                | 2 +-
+ tools/testing/selftests/bpf/progs/refcounted_kptr.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 00e5fb0682ac..8d368fa353f9 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1925,7 +1925,7 @@ __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__=
+refcounted_kptr, void *meta
+ 	/* Could just cast directly to refcount_t *, but need some code using
+ 	 * bpf_refcount type so that it is emitted in vmlinux BTF
+ 	 */
+-	ref =3D (struct bpf_refcount *)p__refcounted_kptr + meta->record->refcoun=
+t_off;
++	ref =3D (struct bpf_refcount *)(p__refcounted_kptr + meta->record->refcou=
+nt_off);
+=20
+ 	refcount_inc((refcount_t *)ref);
+ 	return (void *)p__refcounted_kptr;
+diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr.c b/tools/te=
+sting/selftests/bpf/progs/refcounted_kptr.c
+index b6b2d4f97b19..1d348a225140 100644
+--- a/tools/testing/selftests/bpf/progs/refcounted_kptr.c
++++ b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
+@@ -219,7 +219,7 @@ static long __read_from_unstash(int idx)
+ #define INSERT_READ_BOTH(rem_tree, rem_list, desc)			\
+ SEC("tc")								\
+ __description(desc)							\
+-__success /* __retval(579) temporarily disabled */			\
++__success __retval(579)							\
+ long insert_and_remove_tree_##rem_tree##_list_##rem_list(void *ctx)	\
+ {									\
+ 	long err, tree_data, list_data;					\
+@@ -258,7 +258,7 @@ INSERT_READ_BOTH(false, true, "insert_read_both: remove=
+ from list");
+ #define INSERT_READ_BOTH(rem_tree, rem_list, desc)			\
+ SEC("tc")								\
+ __description(desc)							\
+-__success /* __retval(579) temporarily disabled */			\
++__success __retval(579)							\
+ long insert_and_remove_lf_tree_##rem_tree##_list_##rem_list(void *ctx)	\
+ {									\
+ 	long err, tree_data, list_data;					\
+@@ -296,7 +296,7 @@ INSERT_READ_BOTH(false, true, "insert_read_both_list_fi=
+rst: remove from list");
+ #define INSERT_DOUBLE_READ_AND_DEL(read_fn, read_root, desc)		\
+ SEC("tc")								\
+ __description(desc)							\
+-__success /* temporarily __retval(-1) disabled */			\
++__success __retval(-1)							\
+ long insert_double_##read_fn##_and_del_##read_root(void *ctx)		\
+ {									\
+ 	long err, list_data;						\
+@@ -329,7 +329,7 @@ INSERT_DOUBLE_READ_AND_DEL(__read_from_list, head, "ins=
+ert_double_del: 2x read-a
+ #define INSERT_STASH_READ(rem_tree, desc)				\
+ SEC("tc")								\
+ __description(desc)							\
+-__success /* __retval(84) temporarily disabled */			\
++__success __retval(84)							\
+ long insert_rbtree_and_stash__del_tree_##rem_tree(void *ctx)		\
+ {									\
+ 	long err, tree_data, map_data;					\
+--=20
+2.34.1
+
