@@ -2,130 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B356EB25B
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 21:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3544A6EB273
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 21:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjDUTk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 15:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        id S233604AbjDUTra (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 15:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbjDUTk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 15:40:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFFC2137
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 12:40:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C244765292
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 19:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 29C2BC433D2;
-        Fri, 21 Apr 2023 19:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682106024;
-        bh=VM0vt4hpb/nIeOKefqkAhoyyeHrLh0sV7s6Mp4mRaEE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WZ12ZuXdGdwWqN9YTWyTn58tm9Lm7nYCirQjw1FjzrhINnJm3o7ne6uepgAW0Y/WO
-         UJEa5thA+9ZEnOMAGIPFc5zfFFZmFYBphSqL9lUAw9ipIJPCAISyWo2FdQtaUrWt8S
-         tApVaxudO2tX3YVSh0vUi7hdo9MAkLkABPzRjqatBHAD/aR0Tj1qdbLE2RhdIKjjmq
-         W5UMDxVR+hVS2LC6lvgfwUqtlOHVqoDeUKUcepP7UFUgR9nAme9wuxAWuWASdGZEdU
-         hjkLN4wtODKynGoPApsFvM7iL4p7agAQrOQLDg2OvERN7dapf1ect4eY0yNXrMAyZH
-         Y//r8HZy6o7MQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 06747E270DB;
-        Fri, 21 Apr 2023 19:40:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233595AbjDUTrD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 15:47:03 -0400
+Received: from mx16lb.world4you.com (mx16lb.world4you.com [81.19.149.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D31E2706;
+        Fri, 21 Apr 2023 12:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fe68eK0bVDCf5qIMRbw1E2lHObPgUYpO1u25sIzNrAo=; b=heHRmDFw2Q+/sMg1cDdUpZQ+2e
+        Jj0NUwXSkcnWNYeGTA1rE8jOzlrVjJa5Ah8IFwH+R7tl5AgPh1i+DWCSWHrXJJaCh5dAnH3AVxUaO
+        8JrYDDYQmjVVKeZ7emT3CoMNzKexM7ebsPsyt0bZXlInnO2wY7MHLeX7ScIe57lLq2qM=;
+Received: from [88.117.57.231] (helo=hornet.engleder.at)
+        by mx16lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1ppwig-0006HW-5A; Fri, 21 Apr 2023 21:46:58 +0200
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        Gerhard Engleder <gerhard@engleder-embedded.com>
+Subject: [PATCH net-next v4 0/6] tsnep: XDP socket zero-copy support
+Date:   Fri, 21 Apr 2023 21:46:50 +0200
+Message-Id: <20230421194656.48063-1-gerhard@engleder-embedded.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 00/24] Second set of verifier/*.c migrated to inline
- assembly
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168210602402.3425.11823949766258477429.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Apr 2023 19:40:24 +0000
-References: <20230421174234.2391278-1-eddyz87@gmail.com>
-In-Reply-To: <20230421174234.2391278-1-eddyz87@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
-        yhs@fb.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-AV-Do-Run: Yes
+X-ACL-Warn: X-W4Y-Internal
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Implement XDP socket zero-copy support for tsnep driver. I tried to
+follow existing drivers like igc as far as possible. But one main
+difference is that tsnep does not need any reconfiguration for XDP BPF
+program setup. So I decided to keep this behavior no matter if a XSK
+pool is used or not. As a result, tsnep starts using the XSK pool even
+if no XDP BPF program is available.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Another difference is that I tried to prevent potentially failing
+allocations during XSK pool setup. E.g. both memory models for page pool
+and XSK pool are registered all the time. Thus, XSK pool setup cannot
+end up with not working queues.
 
-On Fri, 21 Apr 2023 20:42:10 +0300 you wrote:
-> This is a follow up for RFC [1]. It migrates a second batch of 23
-> verifier/*.c tests to inline assembly and use of ./test_progs for
-> actual execution. Link to the first batch is [2].
-> 
-> The migration is done by a python script (see [3]) with minimal manual
-> adjustments.
-> 
-> [...]
+Some prework is done to reduce the last two XSK commits to actual XSK
+changes.
 
-Here is the summary with links:
-  - [bpf-next,01/24] selftests/bpf: Add notion of auxiliary programs for test_loader
-    https://git.kernel.org/bpf/bpf-next/c/63bb645b9da3
-  - [bpf-next,02/24] selftests/bpf: verifier/bounds converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/c92336559ac0
-  - [bpf-next,03/24] selftests/bpf: verifier/bpf_get_stack converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/965a3f913e72
-  - [bpf-next,04/24] selftests/bpf: verifier/btf_ctx_access converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/37467c79e16a
-  - [bpf-next,05/24] selftests/bpf: verifier/ctx converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/fcd36964f22b
-  - [bpf-next,06/24] selftests/bpf: verifier/d_path converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/608028024384
-  - [bpf-next,07/24] selftests/bpf: verifier/direct_packet_access converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/0a372c9c0812
-  - [bpf-next,08/24] selftests/bpf: verifier/jeq_infer_not_null converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/a5828e3154d1
-  - [bpf-next,09/24] selftests/bpf: verifier/loops1 converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/a6fc14dc5e8d
-  - [bpf-next,10/24] selftests/bpf: verifier/lwt converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/b427ca576f83
-  - [bpf-next,11/24] selftests/bpf: verifier/map_in_map converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/4a400ef9ba41
-  - [bpf-next,12/24] selftests/bpf: verifier/map_ptr_mixing converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/aee1779f0dec
-  - [bpf-next,13/24] selftests/bpf: verifier/precise converted to inline assembly
-    (no matching commit)
-  - [bpf-next,14/24] selftests/bpf: verifier/prevent_map_lookup converted to inline assembly
-    (no matching commit)
-  - [bpf-next,15/24] selftests/bpf: verifier/ref_tracking converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/8be632795996
-  - [bpf-next,16/24] selftests/bpf: verifier/regalloc converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/16a42573c253
-  - [bpf-next,17/24] selftests/bpf: verifier/runtime_jit converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/65222842ca04
-  - [bpf-next,18/24] selftests/bpf: verifier/search_pruning converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/034d9ad25db3
-  - [bpf-next,19/24] selftests/bpf: verifier/sock converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/426fc0e3fce2
-  - [bpf-next,20/24] selftests/bpf: verifier/spin_lock converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/f323a81806bd
-  - [bpf-next,21/24] selftests/bpf: verifier/subreg converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/81d1d6dd4037
-  - [bpf-next,22/24] selftests/bpf: verifier/unpriv converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/82887c2568e4
-  - [bpf-next,23/24] selftests/bpf: verifier/value_illegal_alu converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/efe25a330b10
-  - [bpf-next,24/24] selftests/bpf: verifier/value_ptr_arith converted to inline assembly
-    https://git.kernel.org/bpf/bpf-next/c/4db10a8243df
+v4:
+- move l2fwd ZC numbers to last commit (Maciej Fijalkowski)
+- mention frame size of measurements (Maciej Fijalkowski)
+- add NETDEV_XDP_ACT_XSK_ZEROCOPY flag with last commit (Maciej
+  Fijalkowski)
 
-You are awesome, thank you!
+v3:
+- use __netif_tx_lock_bh() (Paolo Abeni)
+- comment that rx->page_buffer is always zero terminated (Paolo Abeni)
+
+v2:
+- eliminate modulo op in TX/RX path (Maciej Fijalkowski)
+- eliminate retval variable in tsnep_rx_alloc_zc() (Maciej Fijalkowski)
+- scope variable entry within loop (Maciej Fijalkowski)
+- use DMA_ATTR_SKIP_CPU_SYNC directly (Maciej Fijalkowski)
+- union for page/xdp in tsnep_rx_entry (Maciej Fijalkowski)
+- provide performance numbers (Maciej Fijalkowski)
+- use xsk_buff_alloc_batch() (Maciej Fijalkowski)
+- use xsk_tx_peek_release_desc_batch() (Maciej Fijalkowski)
+- don't call tsnep_rx_reopen() if netdev is down
+- init adapter pointer of queue only once
+
+Gerhard Engleder (6):
+  tsnep: Replace modulo operation with mask
+  tsnep: Rework TX/RX queue initialization
+  tsnep: Add functions for queue enable/disable
+  tsnep: Move skb receive action to separate function
+  tsnep: Add XDP socket zero-copy RX support
+  tsnep: Add XDP socket zero-copy TX support
+
+ drivers/net/ethernet/engleder/tsnep.h      |  16 +-
+ drivers/net/ethernet/engleder/tsnep_main.c | 863 ++++++++++++++++++---
+ drivers/net/ethernet/engleder/tsnep_xdp.c  |  66 ++
+ 3 files changed, 822 insertions(+), 123 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
