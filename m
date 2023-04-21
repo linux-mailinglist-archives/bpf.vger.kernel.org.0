@@ -2,204 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1B86EAA5A
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 14:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B6F6EAB55
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 15:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbjDUM1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 08:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S232332AbjDUNPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 09:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjDUM1W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 08:27:22 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10331A5E4;
-        Fri, 21 Apr 2023 05:27:21 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-b9941f4a652so3864276.0;
-        Fri, 21 Apr 2023 05:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682080040; x=1684672040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQV0FUHVgTyr3sKGhtOpetQjh4FYMTAof8GhJk2jFzo=;
-        b=DOYBnsZ3Ca1fTcTjwnJpiKRKP+0seId83JMiXybBYOkYX6s22WKaqA2/pFO0hFjGkG
-         c5j+2GyaLyJIXVsQYWVfCjdS5Z/Gh+9QORCu6Lh3gGe9bpOSYt52d+NbmSIy9oaWlkz5
-         nOpRp47Cba4YCaLgAVUdZQIunKyNYuXFqSqi7ip1mukEXxmtFLLajuuLUrZ6yWU3ODx6
-         hnG/5kLYX/DHExgOF7dJUHcmy4hwNB3pU75eL3UggpVNXP2VL5lCjtiykwZlNae4IlSh
-         pe/T0fPWWVuZTYD3yiP1iAo+Vj7xokm+B2bFl/kNXq7+PFMWDlPk5znStfgBBrHr5SSW
-         eF7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682080040; x=1684672040;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DQV0FUHVgTyr3sKGhtOpetQjh4FYMTAof8GhJk2jFzo=;
-        b=OLMIWRYs42MBnXe4SkZNx9RUaePZb1eN1xNehe2K5Uo7FWLZ+PdL3WdS9OnPd0GohE
-         hO9WKmaXjh6oTyRwcadSD2qOLc/lj9EJB9qJ37DwfLtT54RqdCcDdVxdQm2ddZRvzoju
-         gre/haKli4KG6s+DjlsIhyMr7bleMsYKfUappkFQOIgjj062y3xGEGLTLMjkejxMSt+g
-         BSWbeMr8uLlKMCK5bNMte29qVyv/ZUlEdZiO8hcGwvXS5hjIxtL3gEjxSzVnrBQ8zAmJ
-         9w2EjbBWHa2uZXpYVVd0bHcoIo4BTpHcZxuItYRK2OlQOB4hxs1xp02ORlwZxc33uHYL
-         qrqw==
-X-Gm-Message-State: AAQBX9cFqSju7LaAnaIrCgtKUe+/ZGn1b2PSLh8eM18fN7o5OgPCicJX
-        n0gq+1bUp4CXdXLTby3vCx8V3x7OZU3YB9dhr7w=
-X-Google-Smtp-Source: AKy350ZoWJQiG1Y6sTZgVbEjMaUShUqiByyAL19aUrMuFWuJVKNYrgeKYH/X5MY56flB1H8dU3jAtgpD1omjKMpzrN4=
-X-Received: by 2002:a81:1a0b:0:b0:54f:a9e4:e79 with SMTP id
- a11-20020a811a0b000000b0054fa9e40e79mr2819066ywa.2.1682080040176; Fri, 21 Apr
- 2023 05:27:20 -0700 (PDT)
+        with ESMTP id S232265AbjDUNPj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 09:15:39 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D57A5F0;
+        Fri, 21 Apr 2023 06:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1682082937; x=1713618937;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kmiOUVgBvjfIs0p4hj+2OzOGUD9EcJfcUGBRPSb0QWE=;
+  b=GPRVPDMObKteuhX+d5bqVNEmjAz3TQa+p4F1IT3enbCH3SZmxNm1DgJA
+   N7K8HvnY5JCPaK4gDtDTLgsjzUhWUH3P6w8JdOz2wDJuTMfGwZn479wAB
+   a0MyfCRisr10wkW/8W3NQWRFCtu4kM8I8jDXNI+4nI3Liy26f6m+mLH4N
+   uXZKw426FjEEU2i/OJLQAsrfW7VFsmTKZVA7/V11TuJSqzZxw3ZOuxq32
+   78/cnBEgbLcXg4KaoF3FQayJK8QjYW/3KxwjM3O4NIUVpt5hw8XFjGcQo
+   rBQ7N3+DA58KM05rVkGb8aJQRAnmMxlt47OZOyq5qBXJBACiTxDDmNCRf
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.99,214,1677567600"; 
+   d="scan'208";a="148298571"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Apr 2023 06:15:35 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 21 Apr 2023 06:15:11 -0700
+Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 21 Apr 2023 06:15:08 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <richardcochran@gmail.com>, <UNGLinuxDriver@microchip.com>,
+        <alexandr.lobakin@intel.com>, <maciej.fijalkowski@intel.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v2] lan966x: Don't use xdp_frame when action is XDP_TX
+Date:   Fri, 21 Apr 2023 15:14:22 +0200
+Message-ID: <20230421131422.3530159-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-References: <20230406130205.49996-2-kal.conley@dectris.com>
- <87sfdckgaa.fsf@toke.dk> <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
- <875ya12phx.fsf@toke.dk> <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
- <87ile011kz.fsf@toke.dk> <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
- <874jpdwl45.fsf@toke.dk> <CAHApi-kcaMRPj4mEPs87_4Z6iO5qEpzOOcbVza7vxURqCtpz=Q@mail.gmail.com>
- <ZEJZYa8WT6A9VpOJ@boxer> <87r0sdsgpf.fsf@toke.dk>
-In-Reply-To: <87r0sdsgpf.fsf@toke.dk>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 21 Apr 2023 14:27:09 +0200
-Message-ID: <CAJ8uoz3WTCtqtU+EwHqDaKZfBrn=bVbNDhYYqNWahCo24ZHYZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Kal Cutter Conley <kal.conley@dectris.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 Apr 2023 at 12:01, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
->
-> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->
-> > On Tue, Apr 18, 2023 at 01:12:00PM +0200, Kal Cutter Conley wrote:
-> >
-> > Hi there,
-> >
-> >> > >> In addition, presumably when using this mode, the other XDP actio=
-ns
-> >> > >> (XDP_PASS, XDP_REDIRECT to other targets) would stop working unle=
-ss we
-> >> > >> add special handling for that in the kernel? We'll definitely nee=
-d to
-> >> > >> handle that somehow...
-> >> > >
-> >> > > I am not familiar with all the details here. Do you know a reason =
-why
-> >> > > these cases would stop working / why special handling would be nee=
-ded?
-> >> > > For example, if I have a UMEM that uses hugepages and XDP_PASS is
-> >> > > returned, then the data is just copied into an SKB right? SKBs can
-> >> > > also be created directly from hugepages AFAIK. So I don't understa=
-nd
-> >> > > what the issue would be. Can someone explain this concern?
-> >> >
-> >> > Well, I was asking :) It may well be that the SKB path just works; d=
-id
-> >> > you test this? Pretty sure XDP_REDIRECT to another device won't, tho=
-ugh?
-> >
-> > for XDP_PASS we have to allocate a new buffer and copy the contents fro=
-m
-> > current xdp_buff that was backed by xsk_buff_pool and give the current =
-one
-> > back to pool. I am not sure if __napi_alloc_skb() is always capable of
-> > handling len > PAGE_SIZE - i believe there might a particular combinati=
-on
-> > of settings that allows it, but if not we should have a fallback path t=
-hat
-> > would iterate over data and copy this to a certain (linear + frags) par=
-ts.
-> > This implies non-zero effort that is needed for jumbo frames ZC support=
-.
-> >
-> > I can certainly test this out and play with it - maybe this just works,=
- I
-> > didn't check yet. Even if it does, then we need some kind of temporary
-> > mechanism that will forbid loading ZC jumbo frames due to what Toke
-> > brought up.
->
-> Yeah, this was exactly the kind of thing I was worried about (same for
-> XDP_REDIRECT). Thanks for fleshing it out a bit :)
->
-> >> >
-> >>
-> >> I was also asking :-)
-> >>
-> >> I tested that the SKB path is usable today with this patch.
-> >> Specifically, sending and receiving large jumbo packets with AF_XDP
-> >> and that a non-multi-buffer XDP program could access the whole packet.
-> >> I have not specifically tested XDP_REDIRECT to another device or
-> >> anything with ZC since that is not possible without driver support.
-> >>
-> >> My feeling is, there wouldn't be non-trivial issues here since this
-> >> patchset changes nothing except allowing the maximum chunk size to be
-> >> larger. The driver either supports larger MTUs with XDP enabled or it
-> >> doesn't. If it doesn't, the frames are dropped anyway. Also, chunk
-> >> size mismatches between two XSKs (e.g. with XDP_REDIRECT) would be
-> >> something supported or not supported irrespective of this patchset.
-> >
-> > Here is the comparison between multi-buffer and jumbo frames that I did
-> > for ZC ice driver. Configured MTU was 8192 as this is the frame size fo=
-r
-> > aligned mode when working with huge pages. I am presenting plain number=
-s
-> > over here from xdpsock.
-> >
-> > Mbuf, packet size =3D 8192 - XDP_PACKET_HEADROOM
-> > 885,705pps - rxdrop frame_size=3D4096
-> > 806,307pps - l2fwd frame_size=3D4096
-> > 877,989pps - rxdrop frame_size=3D2048
-> > 773,331pps - l2fwd frame_size=3D2048
-> >
-> > Jumbo, packet size =3D 8192 - XDP_PACKET_HEADROOM
-> > 893,530pps - rxdrop frame_size=3D8192
-> > 841,860pps - l2fwd frame_size=3D8192
-> >
-> > Kal might say that multi-buffer numbers are imaginary as these patches
-> > were never shown to the public ;) but now that we have extensive test
-> > suite I am fixing some last issues that stand out, so we are asking for
-> > some more patience over here... overall i was expecting that they will =
-be
-> > much worse when compared to jumbo frames, but then again i believe this
-> > implementation is not ideal and can be improved. Nevertheless, jumbo
-> > frames support has its value.
->
-> Thank you for doing these! Okay, so that's between 1-4% improvement (vs
-> the 4k frags). I dunno, I wouldn't consider that a slam dunk; would
-> depend on the additional complexity if it is worth it to do both, IMO...
+When the action of an xdp program was XDP_TX, lan966x was creating
+a xdp_frame and use this one to send the frame back. But it is also
+possible to send back the frame without needing a xdp_frame, because
+it is possible to send it back using the page.
+And then once the frame is transmitted is possible to use directly
+page_pool_recycle_direct as lan966x is using page pools.
+This would save some CPU usage on this path, which results in higher
+number of transmitted frames. Bellow are the statistics:
+Frame size:    Improvement:
+64                ~8%
+256              ~11%
+512               ~8%
+1000              ~0%
+1500              ~0%
 
-If we are using 4K frags, the worst case is that we have to use 3
-frags to cover a 9K packet. Interpolating between the results above
-would mean somewhere in the 1 - 6% range of improvement with jumbo
-frames. Something that is not covered by these tests at all is the
-overhead of an abstraction layer for dealing with multiple buffers. I
-believe many applications would choose to have one to hide the fact
-that there are multiple buffers. So I think these improvement numbers
-are on the lower side.
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+v1->v2:
+- reduce number of arguments for the function lan966x_fdma_xmit_xdpf,
+  as some of them are mutual exclusive, and other can be replaced with
+  deduced from the other ones
+- update commit message and add statistics for the improvement
+---
+ .../ethernet/microchip/lan966x/lan966x_fdma.c | 43 +++++++++++--------
+ .../ethernet/microchip/lan966x/lan966x_main.h |  6 +--
+ .../ethernet/microchip/lan966x/lan966x_xdp.c  | 10 ++---
+ 3 files changed, 31 insertions(+), 28 deletions(-)
 
-But agree that we should factor in the complexity of covering the
-cases you have brought up and see if it is worth it.
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+index 2ed76bb61a731..85c13231e0176 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
+@@ -390,6 +390,7 @@ static void lan966x_fdma_stop_netdev(struct lan966x *lan966x)
+ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
+ {
+ 	struct lan966x_tx *tx = &lan966x->tx;
++	struct lan966x_rx *rx = &lan966x->rx;
+ 	struct lan966x_tx_dcb_buf *dcb_buf;
+ 	struct xdp_frame_bulk bq;
+ 	struct lan966x_db *db;
+@@ -432,7 +433,8 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
+ 			if (dcb_buf->xdp_ndo)
+ 				xdp_return_frame_bulk(dcb_buf->data.xdpf, &bq);
+ 			else
+-				xdp_return_frame_rx_napi(dcb_buf->data.xdpf);
++				page_pool_recycle_direct(rx->page_pool,
++							 dcb_buf->data.page);
+ 		}
+ 
+ 		clear = true;
+@@ -699,15 +701,14 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
+ 	tx->last_in_use = next_to_use;
+ }
+ 
+-int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+-			   struct xdp_frame *xdpf,
+-			   struct page *page,
+-			   bool dma_map)
++int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len)
+ {
+ 	struct lan966x *lan966x = port->lan966x;
+ 	struct lan966x_tx_dcb_buf *next_dcb_buf;
+ 	struct lan966x_tx *tx = &lan966x->tx;
++	struct xdp_frame *xdpf;
+ 	dma_addr_t dma_addr;
++	struct page *page;
+ 	int next_to_use;
+ 	__be32 *ifh;
+ 	int ret = 0;
+@@ -722,8 +723,19 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+ 		goto out;
+ 	}
+ 
++	/* Fill up the buffer */
++	next_dcb_buf = &tx->dcbs_buf[next_to_use];
++	next_dcb_buf->use_skb = false;
++	next_dcb_buf->xdp_ndo = !len;
++	next_dcb_buf->len = len + IFH_LEN_BYTES;
++	next_dcb_buf->used = true;
++	next_dcb_buf->ptp = false;
++	next_dcb_buf->dev = port->dev;
++
+ 	/* Generate new IFH */
+-	if (dma_map) {
++	if (!len) {
++		xdpf = ptr;
++
+ 		if (xdpf->headroom < IFH_LEN_BYTES) {
+ 			ret = NETDEV_TX_OK;
+ 			goto out;
+@@ -743,11 +755,15 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+ 			goto out;
+ 		}
+ 
++		next_dcb_buf->data.xdpf = xdpf;
++
+ 		/* Setup next dcb */
+ 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
+ 					  xdpf->len + IFH_LEN_BYTES,
+ 					  dma_addr);
+ 	} else {
++		page = ptr;
++
+ 		ifh = page_address(page) + XDP_PACKET_HEADROOM;
+ 		memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
+ 		lan966x_ifh_set_bypass(ifh, 1);
+@@ -756,25 +772,18 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+ 		dma_addr = page_pool_get_dma_addr(page);
+ 		dma_sync_single_for_device(lan966x->dev,
+ 					   dma_addr + XDP_PACKET_HEADROOM,
+-					   xdpf->len + IFH_LEN_BYTES,
++					   len + IFH_LEN_BYTES,
+ 					   DMA_TO_DEVICE);
+ 
++		next_dcb_buf->data.page = page;
++
+ 		/* Setup next dcb */
+ 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
+-					  xdpf->len + IFH_LEN_BYTES,
++					  len + IFH_LEN_BYTES,
+ 					  dma_addr + XDP_PACKET_HEADROOM);
+ 	}
+ 
+-	/* Fill up the buffer */
+-	next_dcb_buf = &tx->dcbs_buf[next_to_use];
+-	next_dcb_buf->use_skb = false;
+-	next_dcb_buf->data.xdpf = xdpf;
+-	next_dcb_buf->xdp_ndo = dma_map;
+-	next_dcb_buf->len = xdpf->len + IFH_LEN_BYTES;
+ 	next_dcb_buf->dma_addr = dma_addr;
+-	next_dcb_buf->used = true;
+-	next_dcb_buf->ptp = false;
+-	next_dcb_buf->dev = port->dev;
+ 
+ 	/* Start the transmission */
+ 	lan966x_fdma_tx_start(tx, next_to_use);
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+index 757378516f1fd..27f272831ea5c 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+@@ -262,6 +262,7 @@ struct lan966x_tx_dcb_buf {
+ 	union {
+ 		struct sk_buff *skb;
+ 		struct xdp_frame *xdpf;
++		struct page *page;
+ 	} data;
+ 	u32 len;
+ 	u32 used : 1;
+@@ -593,10 +594,7 @@ int lan966x_ptp_setup_traps(struct lan966x_port *port, struct ifreq *ifr);
+ int lan966x_ptp_del_traps(struct lan966x_port *port);
+ 
+ int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
+-int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+-			   struct xdp_frame *frame,
+-			   struct page *page,
+-			   bool dma_map);
++int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len);
+ int lan966x_fdma_change_mtu(struct lan966x *lan966x);
+ void lan966x_fdma_netdev_init(struct lan966x *lan966x, struct net_device *dev);
+ void lan966x_fdma_netdev_deinit(struct lan966x *lan966x, struct net_device *dev);
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+index 2e6f486ec67d7..9ee61db8690b4 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
+@@ -62,7 +62,7 @@ int lan966x_xdp_xmit(struct net_device *dev,
+ 		struct xdp_frame *xdpf = frames[i];
+ 		int err;
+ 
+-		err = lan966x_fdma_xmit_xdpf(port, xdpf, NULL, true);
++		err = lan966x_fdma_xmit_xdpf(port, xdpf, 0);
+ 		if (err)
+ 			break;
+ 
+@@ -76,7 +76,6 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
+ {
+ 	struct bpf_prog *xdp_prog = port->xdp_prog;
+ 	struct lan966x *lan966x = port->lan966x;
+-	struct xdp_frame *xdpf;
+ 	struct xdp_buff xdp;
+ 	u32 act;
+ 
+@@ -90,11 +89,8 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
+ 	case XDP_PASS:
+ 		return FDMA_PASS;
+ 	case XDP_TX:
+-		xdpf = xdp_convert_buff_to_frame(&xdp);
+-		if (!xdpf)
+-			return FDMA_DROP;
+-
+-		return lan966x_fdma_xmit_xdpf(port, xdpf, page, false) ?
++		return lan966x_fdma_xmit_xdpf(port, page,
++					      data_len - IFH_LEN_BYTES) ?
+ 		       FDMA_DROP : FDMA_TX;
+ 	case XDP_REDIRECT:
+ 		if (xdp_do_redirect(port->dev, &xdp, xdp_prog))
+-- 
+2.38.0
 
-> -Toke
->
