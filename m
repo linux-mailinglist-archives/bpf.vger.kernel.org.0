@@ -2,177 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF1F6EA583
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 10:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226706EA684
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 11:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjDUIDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 04:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S230030AbjDUJF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 05:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbjDUIDr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 04:03:47 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E1A9004;
-        Fri, 21 Apr 2023 01:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1682064225; x=1713600225;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uaalytOD7E9KTAxWb0CBOWck+EskKmiavYRIJcVqFvs=;
-  b=ZdJVX5PmC8E6JvOq8ZsNx444i87GFrRhfCgJFsh6pXgw7QqlI7vzqGes
-   L7FHpEU2hKkxGPf1Ei+agi+KyFdler94/W96mVotnwe1DPDx6eKn327XM
-   7Qgj92QUpTKf4u7b99uivmP/xdI/TlpUg2dgwK4UqOmXAC9sOtbByb9ub
-   SwmcKzb1ZBIi5comdRvwc2oP7WeCT/94jnQwfe4WIuEeIGbjTYbLLMVUI
-   /a0IJdLvdhRlXvIVyKlOxk+IEYJLBqeVL6ccPspyzsm8xn6kVOwZtZUsO
-   TP5JpT0EI6ketHdQzzYiuOfuaHgc7kMu5j7PWKkpSVOSnzfXYvWSIzL23
-   A==;
-X-IronPort-AV: E=Sophos;i="5.99,214,1677567600"; 
-   d="scan'208";a="148255781"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Apr 2023 01:03:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 21 Apr 2023 01:03:40 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
- Transport; Fri, 21 Apr 2023 01:03:40 -0700
-Date:   Fri, 21 Apr 2023 10:03:39 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <richardcochran@gmail.com>,
-        <UNGLinuxDriver@microchip.com>, <alexandr.lobakin@intel.com>
-Subject: Re: [PATCH net-next] net: lan966x: Don't use xdp_frame when action
- is XDP_TX
-Message-ID: <20230421080339.x2fllg65qmcrk6vk@soft-dev3-1>
-References: <20230420121152.2737625-1-horatiu.vultur@microchip.com>
- <ZEGmHe2pyxwWiYRL@boxer>
+        with ESMTP id S231509AbjDUJF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 05:05:56 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFE79016
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:31 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-63b4bf2d74aso1687247b3a.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1682067931; x=1684659931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=akWWD6Hh6r+OYGyfrxLzmZDpacDQxQ27SVpN4XMCC9Q=;
+        b=hn6iQuC0rkz7WgMmaMAcsLAAvZra6ZxsIgMlDFed2YP1xoOH+yjOoPqvctYof5NHaJ
+         XoIqnD43aHZQY4jh2CXmBrxnN11oGVwBsmXcZ3cFjr7TS2sbhS9LLnLPM/JQNwGhMRLW
+         3TjdAUPNHlbDqbaVWRHTJOqCAHK5avxkQwCq84VKMAImyj6vDC3z2qh0cFHBnCIKsZoM
+         A1waAFM5XeQRZE8ZjQc6pYn5H+wGEwkIj+s9WK028cf7sIAxCPXjUShJcOHf40+SXEaw
+         e3KTrDQt7FFfLtBBLBUBEpHItHSHqM1p+8O6VfuWGwnMv35la7XtObm5aU4eLvZ1nv5Y
+         VrqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682067931; x=1684659931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=akWWD6Hh6r+OYGyfrxLzmZDpacDQxQ27SVpN4XMCC9Q=;
+        b=iQhaYSfz1+fobsf7l1eSq4Y91h5Z5CDfMEAnUd41F1ZbQQw/I4bkLz3fWYJ/raOUfW
+         PPwwFR3tBB6HP1cOAoYLitUIeUxFnacA70qaVMvMZRBc0ropF6eALQGWOEQHuopHcxxC
+         t35xhVU+mtKI5YqhQJhZ/BgNWEt/TA5eKLr+ZgJuuLKLmlFxXrxKbdf+7D6lKKY7JJFJ
+         zDcSe71z2EciEgriX7UAoLXI2HVKlORGUxk4vvTlEkcrJpvsZkbBTPVwKm31LQbd2ahF
+         /ZI/kKrokmzzxcXuuaI8q2Ug/IyEq6EPf8bihrfRLDFdLU46+0sXqNtVuZIam/+WdkO6
+         UOQQ==
+X-Gm-Message-State: AAQBX9ezlhOi1EZ0drPHR8ls27ytXso6xgyfgnBPkZfaDeTvGMOfTuED
+        I/DOSbNcR3mK+cKHRYwLqgNKsw==
+X-Google-Smtp-Source: AKy350ZMWKiIS/nyv1lpgmbo/fHUe68CiVCgs7QJ0XPwJHYTMJ8tqy3mCU2aNI65do0p5WFlUbaZPg==
+X-Received: by 2002:a05:6a20:12ca:b0:f0:4dbf:5f9f with SMTP id v10-20020a056a2012ca00b000f04dbf5f9fmr6785242pzg.29.1682067931044;
+        Fri, 21 Apr 2023 02:05:31 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id t3-20020a17090a950300b0024796ddd19bsm4192309pjo.7.2023.04.21.02.05.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 02:05:30 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v2 0/2] Introduce a new kfunc of bpf_task_under_cgroup
+Date:   Fri, 21 Apr 2023 17:04:01 +0800
+Message-Id: <20230421090403.15515-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <ZEGmHe2pyxwWiYRL@boxer>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 04/20/2023 22:52, Maciej Fijalkowski wrote:
-> [Some people who received this message don't often get email from maciej.fijalkowski@intel.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-Hi Maciej,
+Trace sched related functions, such as enqueue_task_fair, it is necessary to
+specify a task instead of the current task which within a given cgroup.
 
-> 
-> On Thu, Apr 20, 2023 at 02:11:52PM +0200, Horatiu Vultur wrote:
-> 
-> 'net: ' in patch subject is excessive to me
+Feng Zhou (2):
+  bpf: Add bpf_task_under_cgroup() kfunc
+  selftests/bpf: Add testcase for bpf_task_under_cgroup
 
-I usually have set this in the subject. I can remove this in the next
-version and I will try to keep in mind for other patches for lan966x.
+Changelog:
+v1->v2: Addressed comments from Alexei Starovoitov
+- Add kfunc instead.
+Details in here:
+https://lore.kernel.org/all/20230420072657.80324-1-zhoufeng.zf@bytedance.com/
 
-> 
-> > When the action of an xdp program was XDP_TX, lan966x was creating
-> > a xdp_frame and use this one to send the frame back. But it is also
-> > possible to send back the frame without needing a xdp_frame, because
-> > it possible to send it back using the page.
-> 
-> s/it/it is
-> 
-> > And then once the frame is transmitted is possible to use directly
-> > page_pool_recycle_direct as lan966x is using page pools.
-> > This would save some CPU usage on this path.
-> 
-> i remember this optimization gave me noticeable perf improvement, would
-> you mind sharing it in % on your side?
+ kernel/bpf/helpers.c                          | 19 ++++++++
+ .../bpf/prog_tests/task_under_cgroup.c        | 46 +++++++++++++++++++
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |  1 +
+ .../bpf/progs/test_task_under_cgroup.c        | 40 ++++++++++++++++
+ 4 files changed, 106 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
 
-The way I have done the measurements, is to measure actually how much
-more traffic can be send back. I tried with different frame sizes,
-frame size     improvement
-64                ~8%
-256              ~11%
-512               ~8%
-1000              ~0%
-1500              ~0%
-
-I will make sure do add this to the comments in the next version.
-
-> 
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  .../ethernet/microchip/lan966x/lan966x_fdma.c | 35 +++++++++++--------
-> >  .../ethernet/microchip/lan966x/lan966x_main.h |  2 ++
-> >  .../ethernet/microchip/lan966x/lan966x_xdp.c  | 11 +++---
-> >  3 files changed, 27 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > index 2ed76bb61a731..7947259e67e4e 100644
-> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-> > @@ -390,6 +390,7 @@ static void lan966x_fdma_stop_netdev(struct lan966x *lan966x)
-> >  static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
-> >  {
-> >       struct lan966x_tx *tx = &lan966x->tx;
-> > +     struct lan966x_rx *rx = &lan966x->rx;
-> >       struct lan966x_tx_dcb_buf *dcb_buf;
-> >       struct xdp_frame_bulk bq;
-> >       struct lan966x_db *db;
-> > @@ -432,7 +433,8 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
-> >                       if (dcb_buf->xdp_ndo)
-> >                               xdp_return_frame_bulk(dcb_buf->data.xdpf, &bq);
-> >                       else
-> > -                             xdp_return_frame_rx_napi(dcb_buf->data.xdpf);
-> > +                             page_pool_recycle_direct(rx->page_pool,
-> > +                                                      dcb_buf->data.page);
-> >               }
-> >
-> >               clear = true;
-> > @@ -702,6 +704,7 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
-> >  int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
-> >                          struct xdp_frame *xdpf,
-> >                          struct page *page,
-> > +                        u32 len,
-> 
-> agreed with Olek regarding arguments reduction here
-
-Yes, I will change this in the next version.
-
-> 
-> >                          bool dma_map)
-> >  {
-> >       struct lan966x *lan966x = port->lan966x;
-> > @@ -722,6 +725,15 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
-> >               goto out;
-> >       }
-> >
-> > +     /* Fill up the buffer */
-> > +     next_dcb_buf = &tx->dcbs_buf[next_to_use];
-> > +     next_dcb_buf->use_skb = false;
-> > +     next_dcb_buf->xdp_ndo = dma_map;
-> 
-> a bit misleading that xdp_ndo is a bool :P
-
-There are few other variables that are misleading :), I need to get to
-this and clean it a little bit.
-
-> 
-> > +     next_dcb_buf->len = len + IFH_LEN_BYTES;
-> > +     next_dcb_buf->used = true;
-> > +     next_dcb_buf->ptp = false;
-> > +     next_dcb_buf->dev = port->dev;
-> > +
-> >       /* Generate new IFH */
-> >       if (dma_map) {
-> >               if (xdpf->headroom < IFH_LEN_BYTES) {
 -- 
-/Horatiu
+2.20.1
+
