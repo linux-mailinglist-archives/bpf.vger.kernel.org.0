@@ -2,66 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EC46EA270
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 05:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4A86EA2AC
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 06:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjDUDql (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 23:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        id S231948AbjDUEYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 00:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjDUDqk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 23:46:40 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C4DE69
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 20:46:39 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-b992ed878ebso500529276.0
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 20:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682048798; x=1684640798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dLb6j6Jbecj/k1AahEPbNOUA0V64hSK8KLiUkqWelEM=;
-        b=AYvS6z1asGYTs+8l7+uXdUABw/V9NGF+Nu/qpdCriK5Wu/4vtOHPnLnTQ4wEfJb5MM
-         fA+Ak8oiOYP49jQyGUCi9O1pygjSN2lzuTaTXBPvDdDOVvXeDBfgJa/42QDmnkQV0qNc
-         250t1rxANo4dfFiRfplVL6jp0OwsanrJ2q7hpucdy05er1Rb98iLoPwIb89wjtgS2qUA
-         b86osJNJkZGw8dKw3kvqUmb2G/nhZXPf9Zw8dtqwr/ZtLZAf1kN52Wu7BAaANJZbt9Rx
-         FyjRheojB1BWCID+5TztNX40RwA5HZ1kv9nWeG5b4BdEJQsRhi0IkCyhxNpJBDu9l9fF
-         VFBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682048798; x=1684640798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dLb6j6Jbecj/k1AahEPbNOUA0V64hSK8KLiUkqWelEM=;
-        b=aDKTu8nMw9tdJSILrWoQAVoBJ6rwkOtYRCPM+rRwWHg1bashkphgvidkJUkK32YaHv
-         yQPyAboFyLWE5ozrtfZh1GhHDXfY3gWftQ62innZUubCVAyIcDIZ4uTmMlr4tvGF3B/R
-         YHlanZiQkJmBx1ftZAlZXuPc5RmYsF/AH5bvb3N2lZsjUYMngWkzTTyABJuPaQ3KWNu+
-         fiQ/D+oJonas28ihvMLx9ukUw7ifUDRsuU8ZJOsm4fAqWB2y38BAkVDJZbidEq88/wff
-         oYagrHoWiI4/rlcr2ajPNvJ313VQj08Kxq1+fq8sxelGsRk3mK5a/NSvO5IwiVKiUx/e
-         ryGQ==
-X-Gm-Message-State: AAQBX9fzY3Pf1o48vgiBS2NxhS6urJVKsUwBAPMkRfefRqDYZ+ItQTQ4
-        q9OQHRuu9lzv28nC75ITXo6oy/OYYAMORR0vStQ=
-X-Google-Smtp-Source: AKy350YXO70h6Xai9E0lwL6LGa9rMgu9THuXvMoiwdcUFfPNxgQX1Ev3eblfkHERbV8f8bJ2bMsjAA4fwDuNgC3Liic=
-X-Received: by 2002:a05:690c:444:b0:54f:dc41:8edf with SMTP id
- bj4-20020a05690c044400b0054fdc418edfmr872118ywb.2.1682048798308; Thu, 20 Apr
- 2023 20:46:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230420071414.570108-1-joannelkoong@gmail.com>
- <20230420071414.570108-2-joannelkoong@gmail.com> <20230420183809.hgzvfn627vc3zro4@MacBook-Pro-6.local>
-In-Reply-To: <20230420183809.hgzvfn627vc3zro4@MacBook-Pro-6.local>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 20 Apr 2023 20:46:27 -0700
-Message-ID: <CAJnrk1Z_FQatT2-utcMR0NjwQt-3RWv6Vbr871fX8xCHE-buDA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/5] bpf: Add bpf_dynptr_adjust
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S231208AbjDUEYN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 00:24:13 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA795FE6;
+        Thu, 20 Apr 2023 21:24:10 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VgbJvQl_1682051033;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VgbJvQl_1682051033)
+          by smtp.aliyun-inc.com;
+          Fri, 21 Apr 2023 12:24:06 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org,
+        sdf@google.com, haoluo@google.com, yhs@fb.com, edumazet@google.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [RFC PATCH bpf-next v3 0/5] net/smc: Introduce BPF injection capability 
+Date:   Fri, 21 Apr 2023 12:23:48 +0800
+Message-Id: <1682051033-66125-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,31 +41,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 11:38=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Apr 20, 2023 at 12:14:10AM -0700, Joanne Koong wrote:
-> >       return obj;
-> > @@ -2369,6 +2394,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_=
-NULL)
-> >  BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
-> >  BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
-> >  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
-> > +BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->
-> I've missed this earlier.
-> Shouldn't we change all the existing dynptr kfuncs to be KF_TRUSTED_ARGS?
-> Otherwise when people start passing bpf_dynptr-s from kernel code
-> (like fuse-bpf is planning to do)
-> the bpf prog might get vanilla ptr_to_btf_id to bpf_dynptr_kern.
-> It's probably not possible right now, so not a high-pri issue, but still.
-> Or something in the verifier makes sure that dynptr-s are all trusted?
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-In my understanding, the checks the verifier enforces for
-KF_TRUSTED_ARGS are that the reg->offset is 0 and the reg may not be
-null. The verifier logic does this for dynptrs currently, it enforces
-that reg->offset is 0 (in stack_slot_obj_get_spi()) and that the
-reg->type is PTR_TO_STACK or CONST_PTR_TO_DYNPTR (in
-check_kfunc_args() for KF_ARG_PTR_TO_DYNPTR case). But maybe it's a
-good idea to add the KF_TRUSTED_ARGS flag anyways in case more safety
-checks are added to KF_TRUSTED_ARGS in the future?
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
+
+As we all know that the SMC protocol is not suitable for all scenarios,
+especially for short-lived. However, for most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
+
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
+
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
+
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+This patches implement injection capability for SMC via struct_ops.
+In that way, we can add new injection scenarios in the future.
+
+v3 -> v2:
+
+1. Fix format errors in subject.
+2. Remove unnecessary conditions in Kconfig.
+
+v2 -> v1:
+
+1. Fix complie error if CONFIG_BPF_SYSCALL set while CONFIG_SMC_BPF not.
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202304070326.mYVdiX9k-lkp@intel.com/
+
+2. Fix potential reference leaks, smc_destruct may be prematurely retired
+due to pre conditions.
+
+D. Wythe (5):
+  net/smc: move smc_sock related structure definition
+  net/smc: allow smc to negotiate protocols on policies
+  net/smc: allow set or get smc negotiator by sockopt
+  bpf: add smc negotiator support in BPF struct_ops
+  bpf/selftests: add selftest for SMC bpf capability
+
+ include/net/smc.h                                | 268 +++++++++++++++++
+ include/uapi/linux/smc.h                         |   1 +
+ kernel/bpf/bpf_struct_ops_types.h                |   4 +
+ net/Makefile                                     |   1 +
+ net/smc/Kconfig                                  |  11 +
+ net/smc/af_smc.c                                 | 203 ++++++++++---
+ net/smc/bpf_smc.c                                | 360 +++++++++++++++++++++++
+ net/smc/smc.h                                    | 224 --------------
+ tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++
+ 10 files changed, 1185 insertions(+), 259 deletions(-)
+ create mode 100644 net/smc/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
+-- 
+1.8.3.1
+
