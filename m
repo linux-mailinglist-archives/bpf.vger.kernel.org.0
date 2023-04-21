@@ -2,224 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B936EB18D
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 20:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA4B6EB1AA
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 20:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjDUSYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 14:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        id S233193AbjDUSdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 14:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjDUSYY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 14:24:24 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA6519A;
-        Fri, 21 Apr 2023 11:24:23 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-63b5c4c76aaso1901274b3a.2;
-        Fri, 21 Apr 2023 11:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682101462; x=1684693462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OypLJRTEB5SbxLBh9tKcIDiFO23AVAYc9LxzvH6yqzM=;
-        b=WHuV4wkb9Ov9Uf5JAU4CitMPxP7KBxUhJPjwwGriFuvOl6r9AZaphtmjXhvPh0y/yf
-         07OzEem47p4XybvBedFkd8MuzzDwI8WPr8cM7GX2HVSQzNZKKNSEsJmeRrXw8vpwL4ee
-         ZGQQmsRNaix8T88vJcnlEvbL/5B3iXFg2yILvL/ljkao/Liy8fEu2BuGxK90gDY3jLBa
-         VwF6NB7+4YKLrR3K7dvS03tpoSdWTdirOWA5W3hFPwJdKlS3D3HsDHdmHsXl5nE7YnpZ
-         VrNgUkdf7HN19kfNTwcxn3o4EFzRdP2SNT0Ob+RIp9i9atj8bVc1zNlc81/2UYPSJWK0
-         HTjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682101462; x=1684693462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OypLJRTEB5SbxLBh9tKcIDiFO23AVAYc9LxzvH6yqzM=;
-        b=MIwOjMG42z8C2PXmZ09VrcFZA4HJikwBrx+GLrdNeDgZoEhHBFNXbXMbofivkYn/RE
-         Vdn0hS1BV2ZPHgdw+vMCacEz2UzmxpBOdQg+ovM3Q+g0gMLGfY7Rj7XXdf235drHdy1a
-         Ur9ViQjU/pwnnHjRtEDQhlGjoq+2lIsyBrfAZ1ogr0Q5F8Qx+LO5kt0C6lh1Q20va8Es
-         l35V3D4AvgP03B4ObyBX4ULi0KVTInWop56E6D3jYMA0gw7S/p/TXWtXK0MDOzCrPmCt
-         IhdcxasF7T+UTif+flOw9AUhv9yS9KC6GR16BXYJQ4eQd2lFWze44mKrmQLUNtLcA4cT
-         +/9g==
-X-Gm-Message-State: AAQBX9erfo9geSVB2lh7DTwlFStdH5C+1ScbKrtnAieJpZdZwxGG+YEr
-        c2J1/RMnEVpFJc+Ytyb7p7CjBRX0nTE=
-X-Google-Smtp-Source: AKy350bdqKhKObaXCm3kR3cZk3swBANng8Vxrne2H7FBqk2E7adQc211wBjk6FVGRCZsd+fI+AvV3g==
-X-Received: by 2002:a05:6a00:814:b0:63c:1be4:5086 with SMTP id m20-20020a056a00081400b0063c1be45086mr8028880pfk.6.1682101462459;
-        Fri, 21 Apr 2023 11:24:22 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:ef5e])
-        by smtp.gmail.com with ESMTPSA id c192-20020a621cc9000000b0063d44634d8csm3275518pfc.71.2023.04.21.11.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 11:24:21 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 11:24:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        mykolal@fb.com, shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add testcase for
- bpf_task_under_cgroup
-Message-ID: <20230421182418.5nvj4mp2vfumtmab@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230421090403.15515-1-zhoufeng.zf@bytedance.com>
- <20230421090403.15515-3-zhoufeng.zf@bytedance.com>
+        with ESMTP id S230110AbjDUSdI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 14:33:08 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C119B1BCB;
+        Fri, 21 Apr 2023 11:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1682101987; x=1713637987;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vUU6tG9KX3iUy8vtArJasd1+iOyl58okWHaGw2zYd4I=;
+  b=UZ8AN2x35EUvclr64obBlaus8D87UiHyIvX4YBP47XmGMeWV6tcK+2o0
+   Dhxdh8Ellb9bq8iYfbL7hi5jAL83lMftSoLoQw13+nGEvbBgssMK3jXve
+   mqKmkQOb0GezUYjvIcyg/B5y3e7qof34bbDMJX0FqlBCYUJ99mlj9WO1i
+   4ZzHkbVLiJWKsbfTrCdiWWjThYZWdQCvN7CG9urzkiA/tKSXMD/N4b9Yo
+   zFU+ISLGOOenG5PbLQuQnkYi8tH0fOT2GdJEHiWS03bNlLl1APte2wDcX
+   rA5crp8nv+L+L/F5x5bIBJiRW+76Y/l+YC1nQg4At1PxEfBhUEIWxiu4O
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.99,216,1677567600"; 
+   d="scan'208";a="210644301"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Apr 2023 11:33:06 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 21 Apr 2023 11:32:49 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Fri, 21 Apr 2023 11:32:48 -0700
+Date:   Fri, 21 Apr 2023 20:32:48 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <richardcochran@gmail.com>,
+        <UNGLinuxDriver@microchip.com>, <alexandr.lobakin@intel.com>,
+        <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH net-next v2] lan966x: Don't use xdp_frame when action is
+ XDP_TX
+Message-ID: <20230421183248.n7a2c67umthlm3fg@soft-dev3-1>
+References: <20230421131422.3530159-1-horatiu.vultur@microchip.com>
+ <714b6bd0-014f-a5ab-af02-d4d9e4390454@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20230421090403.15515-3-zhoufeng.zf@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <714b6bd0-014f-a5ab-af02-d4d9e4390454@intel.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 05:04:03PM +0800, Feng zhou wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+The 04/21/2023 15:34, Alexander Lobakin wrote:
 > 
-> test_progs:
-> Tests new kfunc bpf_task_under_cgroup().
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Date: Fri, 21 Apr 2023 15:14:22 +0200
 > 
-> The bpf program saves the pid which call the getuid syscall within a
-> given cgroup to the remote_pid, which is convenient for the user-mode
-> program to verify the test correctness.
+> [...]
 > 
-> The user-mode program creates its own mount namespace, and mounts the
-> cgroupsv2 hierarchy in there, call the getuid syscall, then check if
-> remote_pid and local_pid are equal.
+> > @@ -699,15 +701,14 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
+> >       tx->last_in_use = next_to_use;
+> >  }
+> >
+> > -int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+> > -                        struct xdp_frame *xdpf,
+> > -                        struct page *page,
+> > -                        bool dma_map)
+> > +int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len)
+> >  {
+> >       struct lan966x *lan966x = port->lan966x;
+> >       struct lan966x_tx_dcb_buf *next_dcb_buf;
+> >       struct lan966x_tx *tx = &lan966x->tx;
+> > +     struct xdp_frame *xdpf;
+> >       dma_addr_t dma_addr;
+> > +     struct page *page;
+> >       int next_to_use;
+> >       __be32 *ifh;
+> >       int ret = 0;
+> > @@ -722,8 +723,19 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+> >               goto out;
+> >       }
+> >
+> > +     /* Fill up the buffer */
+> > +     next_dcb_buf = &tx->dcbs_buf[next_to_use];
+> > +     next_dcb_buf->use_skb = false;
+> > +     next_dcb_buf->xdp_ndo = !len;
+> > +     next_dcb_buf->len = len + IFH_LEN_BYTES;
 > 
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
->  .../bpf/prog_tests/task_under_cgroup.c        | 46 +++++++++++++++++++
->  .../selftests/bpf/progs/cgrp_kfunc_common.h   |  1 +
->  .../bpf/progs/test_task_under_cgroup.c        | 40 ++++++++++++++++
->  3 files changed, 87 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-> new file mode 100644
-> index 000000000000..bd3deb469938
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
-> @@ -0,0 +1,46 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Bytedance */
-> +
-> +#include <test_progs.h>
-> +#include <cgroup_helpers.h>
-> +#include "test_task_under_cgroup.skel.h"
-> +
-> +#define FOO	"/foo"
-> +
-> +void test_task_under_cgroup(void)
-> +{
-> +	struct test_task_under_cgroup *skel;
-> +	int ret, foo = -1;
-> +
-> +	foo = test__join_cgroup(FOO);
-> +	if (!ASSERT_OK(foo < 0, "cgroup_join_foo"))
-> +		return;
-> +
-> +	skel = test_task_under_cgroup__open();
-> +	if (!ASSERT_OK_PTR(skel, "test_task_under_cgroup__open"))
-> +		goto cleanup;
-> +
-> +	skel->rodata->local_pid = getpid();
-> +	skel->rodata->cgid = get_cgroup_id(FOO);
-> +
-> +	ret = test_task_under_cgroup__load(skel);
-> +	if (!ASSERT_OK(ret, "test_task_under_cgroup__load"))
-> +		goto cleanup;
-> +
-> +	ret = test_task_under_cgroup__attach(skel);
-> +	if (!ASSERT_OK(ret, "test_task_under_cgroup__attach"))
-> +		goto cleanup;
-> +
-> +	syscall(__NR_getuid);
-> +
-> +	test_task_under_cgroup__detach(skel);
-> +
-> +	ASSERT_EQ(skel->bss->remote_pid, skel->rodata->local_pid,
-> +		  "test task_under_cgroup");
-> +
-> +cleanup:
-> +	if (foo)
-> +		close(foo);
+> Is it intended that for .ndo_xdp_xmit cases this field will equal just
+> %IFH_LEN_BYTES as @len is zero?
 
-Looks wrong. should be if (foo >= 0) ?
+Argh, no it is a mistake. For that case it should be xdpf->len +
+IFH_LEN_BYTES. As I focus on the XDP_TX, I fogot to test also
+XDP_REDIRECT. :(
+Thanks for the good catch!
 
-> +
-> +	test_task_under_cgroup__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-> index 22914a70db54..41b3ea231698 100644
-> --- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-> +++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-> @@ -26,6 +26,7 @@ struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
->  struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
->  void bpf_rcu_read_lock(void) __ksym;
->  void bpf_rcu_read_unlock(void) __ksym;
-> +int bpf_task_under_cgroup(struct cgroup *cgrp, struct task_struct *task) __ksym;
->  
->  static inline struct __cgrps_kfunc_map_value *cgrps_kfunc_map_value_lookup(struct cgroup *cgrp)
->  {
-> diff --git a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-> new file mode 100644
-> index 000000000000..e2740f9b029d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Bytedance */
-> +
-> +#include <vmlinux.h>
-> +#include <asm/unistd.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#include "cgrp_kfunc_common.h"
-> +
-> +const volatile int local_pid;
-> +const volatile long cgid;
-> +int remote_pid;
-> +
-> +SEC("tp_btf/sys_enter")
+I will fix this in the next version.
 
-pls narrow down to specific syscall. Like you use in user space part: getuid
-
-Also add this test to denylist.s390. See BPF CI failure.
-
-> +int BPF_PROG(sysenter, struct pt_regs *regs, long id)
-> +{
-> +	struct cgroup *cgrp;
-> +
-> +	if (id != __NR_getuid)
-> +		return 0;
-> +
-> +	if (local_pid != (bpf_get_current_pid_tgid() >> 32))
-> +		return 0;
-> +
-> +	cgrp = bpf_cgroup_from_id(cgid);
-> +	if (!cgrp)
-> +		return 0;
-> +
-> +	if (!bpf_task_under_cgroup(cgrp, bpf_get_current_task_btf()))
-> +		goto out;
-> +
-> +	remote_pid = local_pid;
-> +
-> +out:
-> +	bpf_cgroup_release(cgrp);
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> -- 
-> 2.20.1
 > 
+> > +     next_dcb_buf->used = true;
+> > +     next_dcb_buf->ptp = false;
+> > +     next_dcb_buf->dev = port->dev;
+> > +
+> >       /* Generate new IFH */
+> > -     if (dma_map) {
+> > +     if (!len) {
+> > +             xdpf = ptr;
+> > +
+> >               if (xdpf->headroom < IFH_LEN_BYTES) {
+> >                       ret = NETDEV_TX_OK;
+> >                       goto out;
+> [...]
+> 
+> Thanks,
+> Olek
+
+-- 
+/Horatiu
