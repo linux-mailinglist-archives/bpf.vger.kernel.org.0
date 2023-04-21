@@ -2,124 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA536EADF4
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 17:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB8A6EAE05
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 17:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbjDUPYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 11:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
+        id S232569AbjDUP1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 11:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjDUPYY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 11:24:24 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAC1E57
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 08:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=tdlOy7is+MFsIJaqmbGWlprWGKTrOKMgO1yt7DQMqB8=; b=cjMubpCcLJXMSlqsUpHK+uPGnj
-        PVKB+GPhKvrXkUoRjg+HoLZdkoNwDKWLn7MWiL6Oci/eUCdd4V8GZFHgNRPA3uk2L/MWE0WphmR/M
-        XfwDl3ra3uxWnyaFx1KeIlS+Onc3l0khIh72LjzdtqM5DSILQmPkPYhxx92sk6Z/hOFW56bZofYGn
-        7LmskBOP1QHJiPpoqWEJF4f/ACEliUsKtAlfo/mxSbakJN01nZhBnF3g7gNCl/0MmHVr61i0WpQL7
-        8O0Cy6nGEf/SeyRfxIMIm2RrakMGjo3BaG/RlY1SYIexMIyqtF9+2CBjSvKN8k9h7Z1JFd4r1FC+k
-        5o6EUr5Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ppscW-0001gr-Qn; Fri, 21 Apr 2023 17:24:20 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ppscW-000BoL-Dp; Fri, 21 Apr 2023 17:24:20 +0200
-Subject: Re: [PATCH bpf-next 3/6] bpf: Don't EFAULT for {g,s}setsockopt with
- wrong optlen
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        Martin KaFai Lau <martin.lau@kernel.org>
-References: <20230418225343.553806-1-sdf@google.com>
- <20230418225343.553806-4-sdf@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4a2e1b70-9055-f5d9-c286-3e5760f06811@iogearbox.net>
-Date:   Fri, 21 Apr 2023 17:24:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S231956AbjDUP1s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 11:27:48 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9896AF1A
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 08:27:46 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5050491cb04so2669409a12.0
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 08:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1682090865; x=1684682865;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gx5GxGtrrjOAGUdwY+1Co2nSlcyUyAY3EIxCkRgyP34=;
+        b=PxSombqCkAsg664VeNNmDxvmdjYf4dVj/5vyCqT9TwatG1st3eDRZnY9a5R4md+08R
+         Wlj29tQkP0zchjP27MtI4tzvWqid3espmDxOLkS0u8O6ChXIbmPMFUBTkEXVXwV9/2rO
+         G2km4+cC+4xjckG50ka0axJFD8eDMEfWiG8fo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682090865; x=1684682865;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gx5GxGtrrjOAGUdwY+1Co2nSlcyUyAY3EIxCkRgyP34=;
+        b=V9kLxCHd6ICv44a/VnCMAH+perrnXP6EJ56q+/R7FX0PQpZcWUWRr3Cuy1b+7vBk9z
+         ZmqnwYVrv/T45gUwEjitZWUsDO7xqeH2rgWbb9zIdxxg/Z5bu99yicqQ4MwfXlOwPtz5
+         BksVUNDFc7VnyKKn5I6vld68ouSbCHejdUbgEFCCCPtgB+URvQkDxwc0GR8BqIaZeu4E
+         TJ0Bowpp5d+t3VCxMs/8CKtFJ25yB44GZ3O+nvsDFb26+gYxw/oSRCeab9NLoYdyaJ2b
+         S6bu5Dlq4xa21WoQgCAPQ+lx/6IsRZigV1XnqO1bzQQdgGfOih3qEjrLD9+PcDYL67E7
+         3PsQ==
+X-Gm-Message-State: AAQBX9dqZM5dGCz4ij3Q8TNVZXN2gKkOazQnOR8JFMSM6yWaD6q0ofrB
+        +SblyZF16FLI3q/M9O7QtfSMYOXAPUNW9YqTkBEmYw==
+X-Google-Smtp-Source: AKy350Y68zZjWdPdSC6TpDMd7z4/NcQ7/qcne2yDz4AxGzEmekWkM42mEM6MlU1Eb30cHq26JDtT+nSbORqAIO55DgA=
+X-Received: by 2002:aa7:d81a:0:b0:504:98f1:464c with SMTP id
+ v26-20020aa7d81a000000b0050498f1464cmr5176775edq.23.1682090865240; Fri, 21
+ Apr 2023 08:27:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230418225343.553806-4-sdf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26883/Fri Apr 21 09:25:39 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230406130205.49996-2-kal.conley@dectris.com>
+ <87sfdckgaa.fsf@toke.dk> <ZDBEng1KEEG5lOA6@boxer> <CAHApi-nuD7iSY7fGPeMYiNf8YX3dG27tJx1=n8b_i=ZQdZGZbw@mail.gmail.com>
+ <875ya12phx.fsf@toke.dk> <CAHApi-=rMHt7uR8Sw1Vw+MHDrtkyt=jSvTvwz8XKV7SEb01CmQ@mail.gmail.com>
+ <87ile011kz.fsf@toke.dk> <CAHApi-=ODe-WtJ=m6bycQhKoQxb+kk2Yk9Fx5SgBsWUuWT_u-A@mail.gmail.com>
+ <874jpdwl45.fsf@toke.dk> <CAHApi-kcaMRPj4mEPs87_4Z6iO5qEpzOOcbVza7vxURqCtpz=Q@mail.gmail.com>
+ <ZEJZYa8WT6A9VpOJ@boxer>
+In-Reply-To: <ZEJZYa8WT6A9VpOJ@boxer>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Fri, 21 Apr 2023 17:27:33 +0200
+Message-ID: <CAHApi-ngO=hYTL449hUuV_b4mAa4NVS6eE5Uya1dZM6fEE7rPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] xsk: Support UMEM chunk_size > PAGE_SIZE
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/19/23 12:53 AM, Stanislav Fomichev wrote:
-> Over time, we've found out several special socket option cases which need
-> special treatment. And if BPF program doesn't handle them correctly, this
-> might EFAULT perfectly valid {g,s}setsockopt calls.
-> 
-> The intention of the EFAULT was to make it apparent to the
-> developers that the program is doing something wrong.
-> However, this inadvertently might affect production workloads
-> with the BPF programs that are not too careful.
+> Here is the comparison between multi-buffer and jumbo frames that I did
+> for ZC ice driver. Configured MTU was 8192 as this is the frame size for
+> aligned mode when working with huge pages. I am presenting plain numbers
+> over here from xdpsock.
+>
+> Mbuf, packet size = 8192 - XDP_PACKET_HEADROOM
+> 885,705pps - rxdrop frame_size=4096
+> 806,307pps - l2fwd frame_size=4096
+> 877,989pps - rxdrop frame_size=2048
+> 773,331pps - l2fwd frame_size=2048
+>
+> Jumbo, packet size = 8192 - XDP_PACKET_HEADROOM
+> 893,530pps - rxdrop frame_size=8192
+> 841,860pps - l2fwd frame_size=8192
 
-Took in the first two for now. It would be good if the commit description
-in here could have more details for posterity given this is too vague.
+Thanks so much for sharing these initial results! Do you have similar
+measurements for ~9000 byte packets in unaligned mode? We typically
+receive packets larger than 8192 bytes.
 
-> Let's try to minimize the chance of BPF program screwing up userspace
-> by ignoring the output of those BPF programs (instead of returning
-> EFAULT to the userspace). pr_info_ratelimited those cases to
-> the dmesg to help with figuring out what's going wrong.
-> 
-> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->   kernel/bpf/cgroup.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index a06e118a9be5..af4d20864fb4 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1826,7 +1826,9 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->   		ret = 1;
->   	} else if (ctx.optlen > max_optlen || ctx.optlen < -1) {
->   		/* optlen is out of bounds */
-> -		ret = -EFAULT;
-> +		pr_info_ratelimited(
-> +			"bpf setsockopt returned unexpected optlen=%d (max_optlen=%d)\n",
-> +			ctx.optlen, max_optlen);
+>
+> Kal might say that multi-buffer numbers are imaginary as these patches
+> were never shown to the public ;) but now that we have extensive test
+> suite I am fixing some last issues that stand out, so we are asking for
+> some more patience over here... overall i was expecting that they will be
+> much worse when compared to jumbo frames, but then again i believe this
+> implementation is not ideal and can be improved. Nevertheless, jumbo
+> frames support has its value.
 
-Does it help any regular user if this log message is seen? I kind of doubt it a bit,
-it might create more confusion if log gets spammed with it, imo.
-
->   	} else {
->   		/* optlen within bounds, run kernel handler */
->   		ret = 0;
-> @@ -1922,7 +1924,9 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
->   		goto out;
->   
->   	if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
-> -		ret = -EFAULT;
-> +		pr_info_ratelimited(
-> +			"bpf getsockopt returned unexpected optlen=%d (max_optlen=%d)\n",
-> +			ctx.optlen, max_optlen);
->   		goto out;
->   	}
->   
-> 
-
+You made me chuckle ;-) Any measurements people can provide are
+helpful, even if they must be taken with a grain of salt. ;-). How
+much of your test suite can be upstreamed in the future? My assumption
+was the difference should be measurable, at least you have confirmed
+that. :-)
