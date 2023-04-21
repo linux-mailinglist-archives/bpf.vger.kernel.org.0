@@ -2,142 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E99456EA840
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 12:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB56EA8F9
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 13:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbjDUKW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 06:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S229599AbjDULSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 07:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjDUKW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 06:22:57 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Apr 2023 03:22:15 PDT
-Received: from pv50p00im-ztdg10011301.me.com (pv50p00im-ztdg10011301.me.com [17.58.6.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0836C16B
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 03:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-        t=1682071923; bh=9LouxiBlmrmKuY4D4L114DxgCvo/TJdTAEmNocqna70=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=I7oHR8CUHrXpp00K5C88NdBdNLJvY/3rRPV2L72jQGXvRDpfRnOiaS45iy3QGPHzH
-         xQXs68VeBtcIgg6C57mS/JbpMmOTIW924gBAwRruZZckAzGMxYNxC5YXU5uHwGhidj
-         H4z+5bMizkzElg4vMfNRRVFMsSvpuK5hUNEf48DQkj7Waq5KLl5Mv6z/9iQ6/QL+To
-         6aeWIum9Z8yHnr6rblJcVt/8Znt64xPK0uN32J1YAfSRqHo+CppuNUROvFD+VSAca8
-         rTTsS/OvrnroQklZPb+xp98mM6utnWRlJmjDC9Np1FLBYNh6iDtBmmag3wSy5Wlqzg
-         iUikfYHNQRzQA==
-Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztdg10011301.me.com (Postfix) with ESMTPSA id 71B741801D9;
-        Fri, 21 Apr 2023 10:11:59 +0000 (UTC)
-From:   Xueming Feng <kuro@kuroa.me>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xueming Feng <kuro@kuroa.me>
-Subject: [PATCH] Dump map id instead of value for map_of_maps types
-Date:   Fri, 21 Apr 2023 18:11:54 +0800
-Message-Id: <20230421101154.23690-1-kuro@kuroa.me>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        with ESMTP id S229520AbjDULSk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 07:18:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8470010A
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 04:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682075876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+a819jXQkhWrRCkf1kmbqhc9TRLDMyUVW4Zd+vmWTnQ=;
+        b=PIA/Yz04iAhJbOzCPVnt8jz9/3y8JV7f0tQwceA+IMwvI9IzdQ1b+Xx9vFaUKkx75OcYnB
+        QwdW9gS5GyBBvtky91+SAlxlN7PJvbE/rAom9V2sMtEYqvJvraqULR/su2xojXHOHKWPNt
+        h3/7l9NFAU6O9Qvn02qSxEKYgFPgzK4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-590-gX2HJHduMuGATRoheuo5gQ-1; Fri, 21 Apr 2023 07:17:53 -0400
+X-MC-Unique: gX2HJHduMuGATRoheuo5gQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6C0985A5A3;
+        Fri, 21 Apr 2023 11:17:52 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.192.158])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CC04140EBF4;
+        Fri, 21 Apr 2023 11:17:51 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Artem Savkov <asavkov@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>,
+        Jerome Marchand <jmarchan@redhat.com>
+Subject: Re: sys_enter tracepoint ctx structure
+References: <xunyjzy64q9b.fsf@redhat.com>
+        <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
+        <xunyjzy6z3vu.fsf@redhat.com>
+        <CAADnVQK-Dig-5DB6tM_sgggyvqHUXSbBud0R=rAPWT2VRtQ-ZQ@mail.gmail.com>
+        <xunyfs8uz0z1.fsf@redhat.com>
+        <CAADnVQ+ZSTpUvV7fQ-UxCoRBCc8NYfcYHY0K9mKka=vhT6LO=Q@mail.gmail.com>
+Date:   Fri, 21 Apr 2023 14:17:49 +0300
+In-Reply-To: <CAADnVQ+ZSTpUvV7fQ-UxCoRBCc8NYfcYHY0K9mKka=vhT6LO=Q@mail.gmail.com>
+        (Alexei Starovoitov's message of "Thu, 20 Apr 2023 16:12:49 -0700")
+Message-ID: <xunybkjhzdpe.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: wVywTRvN0KikguucsLYVn11XDAQRkNGT
-X-Proofpoint-ORIG-GUID: wVywTRvN0KikguucsLYVn11XDAQRkNGT
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.572,17.11.64.514.0000000_definitions?=
- =?UTF-8?Q?=3D2022-06-21=5F01:2022-06-21=5F01,2020-02-14=5F11,2022-02-23?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=862
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 clxscore=1030 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2304210088
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When using `bpftool map dump` in plain format, it is usually
-more convenient to show the inner map id instead of raw value.
-Changing this behavior would help with quick debugging with
-`bpftool`, without disruption scripted behavior. Since user
-could dump the inner map with id, but need to convert value.
+Hi, Alexei!
 
-Signed-off-by: Xueming Feng <kuro@kuroa.me>
----
- tools/bpf/bpftool/main.c | 16 ++++++++++++++++
- tools/bpf/bpftool/main.h |  1 +
- tools/bpf/bpftool/map.c  |  9 +++++++--
- 3 files changed, 24 insertions(+), 2 deletions(-)
+>>>>> On Thu, 20 Apr 2023 16:12:49 -0700, Alexei Starovoitov  wrote:
+ > On Thu, Apr 20, 2023 at 2:40=E2=80=AFPM Yauheni Kaliuta <ykaliuta@redhat=
+.com> wrote:
+ >> >>>>> On Thu, 20 Apr 2023 13:54:26 -0700, Alexei Starovoitov  wrote:
+ >> > On Thu, Apr 20, 2023 at 1:37=E2=80=AFPM Yauheni Kaliuta <ykaliuta@red=
+hat.com> wrote:
+ >> >> >>>>> On Thu, 20 Apr 2023 08:59:09 -0700, Alexei Starovoitov  wrote:
+ >> >> >>
+ >> >> >> Should perf_call_bpf_enter/exit (kernel/trace/trace_syscalls.c)
+ >> >> >> use struct trace_event_raw_sys_enter/exit instead of locally
+ >> >> >> crafted struct syscall_tp_t nowadays?
+ >> >>
+ >> >>
+ >> >> > No. It needs syscall_tp_t.
+ >> >>
+ >> >> > test_progs's vmlinux test
+ >> >> >> expects it as the context.
+ >> >> >>
+ >> >>
+ >> >> > what do you mean? Pls share a code pointer?
+ >> >>
+ >> >> https://github.com/torvalds/linux/blob/master/tools/testing/selftest=
+s/bpf/progs/test_vmlinux.c#L19
+ >> >>
+ >> >> SEC("tp/syscalls/sys_enter_nanosleep")
+ >> >> int handle__tp(struct trace_event_raw_sys_enter *args)
+ >>=20
+ >> > I see. That bit is correct and that's what bpftrace is doing
+ >> > when attaching to syscalls.
+ >> > What do you see in your patched RT kernel when you do:
+ >> > cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/for=
+mat
+ >> > ?
+ >> > Depending on the answer we might need to fix
+ >> > the kernel side that has to use struct trace_entry
+ >> > in syscall_tp_t instead of plain long long.
+ >>=20
+ >> # cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/for=
+mat
+ >> name: sys_enter_nanosleep
+ >> ID: 374
+ >> format:
+ >> field:unsigned short common_type;       offset:0;       size:2; signed:=
+0;
+ >> field:unsigned char common_flags;       offset:2;       size:1; signed:=
+0;
+ >> field:unsigned char common_preempt_count;       offset:3;       size:1;=
+ signed:0;
+ >> field:int common_pid;   offset:4;       size:4; signed:1;
+ >> field:unsigned char common_preempt_lazy_count;  offset:8;       size:1;=
+ signed:0;
+ >>=20
+ >> field:int __syscall_nr; offset:12;      size:4; signed:1;
+ >> field:struct __kernel_timespec * rqtp;  offset:16;      size:8; signed:=
+0;
+ >> field:struct __kernel_timespec * rmtp;  offset:24;      size:8; signed:=
+0;
+ >>=20
+ >> print fmt: "rqtp: 0x%08lx, rmtp: 0x%08lx", ((unsigned long)(REC->rqtp))=
+, ((unsigned long)(REC->rmtp))
 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 08d0ac543c67..d297200c91f7 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -251,6 +251,22 @@ int detect_common_prefix(const char *arg, ...)
- 	return 0;
- }
- 
-+void fprint_uint(FILE *f, void *arg, unsigned int n)
-+{
-+	unsigned char *data = arg;
-+	unsigned int data_uint = 0;
-+
-+	for (unsigned int i = 0; i < n && i < 4; i++) {
-+	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+		data_uint |= data[i] << (i * 8);
-+	#else
-+		data_uint |= data[i] << ((n - i - 1) * 8);
-+	#endif
-+	}
-+
-+	fprintf(f, "%d", data_uint);
-+}
-+
- void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
- {
- 	unsigned char *data = arg;
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 0ef373cef4c7..7488ef38e7a9 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
- 
- bool is_prefix(const char *pfx, const char *str);
- int detect_common_prefix(const char *arg, ...);
-+void fprint_uint(FILE *f, void *arg, unsigned int n);
- void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
- void usage(void) __noreturn;
- 
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index aaeb8939e137..638bd8de8135 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
- 		}
- 
- 		if (info->value_size) {
--			printf("value:%c", break_names ? '\n' : ' ');
--			fprint_hex(stdout, value, info->value_size, " ");
-+			if (map_is_map_of_maps(info->type)) {
-+				printf("id:%c", break_names ? '\n' : ' ');
-+				fprint_uint(stdout, value, info->value_size);
-+			} else {
-+				printf("value:%c", break_names ? '\n' : ' ');
-+				fprint_hex(stdout, value, info->value_size, " ");
-+			}
- 		}
- 
- 		printf("\n");
--- 
-2.37.1 (Apple Git-137.1)
+
+ > Lol.
+ > Jiri even fixed the issue with this format in bpftrace 3 years ago:
+ > https://github.com/iovisor/bpftrace/commit/a2e3d5dbc03ceb49b776cf5602d31=
+896158844a7
+
+Hehe :)
+
+ > Let's fix the kernel side too. Something like this should do it:
+
+ > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls=
+.c
+ > index 942ddbdace4a..7aa1f4299486 100644
+ > --- a/kernel/trace/trace_syscalls.c
+ > +++ b/kernel/trace/trace_syscalls.c
+ > @@ -555,7 +555,7 @@ static int perf_call_bpf_enter(struct
+ > trace_event_call *call, struct pt_regs *re
+ >                                struct syscall_trace_enter *rec)
+ >  {
+ >         struct syscall_tp_t {
+ > -               unsigned long long regs;
+ > +               struct trace_entry ent;
+ >                 unsigned long syscall_nr;
+ >                 unsigned long args[SYSCALL_DEFINE_MAXARGS];
+ >         } param;
+ > @@ -657,7 +657,7 @@ static int perf_call_bpf_exit(struct
+ > trace_event_call *call, struct pt_regs *reg
+ >                               struct syscall_trace_exit *rec)
+ >  {
+ >         struct syscall_tp_t {
+ > -               unsigned long long regs;
+ > +               struct trace_entry ent;
+
+
+ > pls add build_bug_on that sizeof(ent) >=3D sizeof(void*).
+
+Ok. Should the line *(struct pt_regs **)&param =3D regs; be commented someh=
+ow?
+
+--=20
+WBR,
+Yauheni Kaliuta
 
