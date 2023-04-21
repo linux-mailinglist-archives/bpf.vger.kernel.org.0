@@ -2,79 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975AF6EB17E
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 20:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06486EB179
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 20:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjDUSVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 14:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        id S229532AbjDUSUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 14:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbjDUSVS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 14:21:18 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0354269E
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 11:21:11 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-120-46.bstnma.fios.verizon.net [173.48.120.46])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33LIKDJ5012294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Apr 2023 14:20:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1682101217; bh=iEkJZNbbn2+rcQzyVVWhPqOsJjmE4U6M5Uh3JgWMgHM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=OQxiIb5vjQ7L+dJq6P+Y8UrvnG49NnZ7b2UJ11crvw/DX36cgH6S5v0OU4swRrLtI
-         oXh96dMteXUJaHkQYMHkiD7gcBdE2yoT53pDj9TzTltUvr8eRqml1piRKEHedSYb74
-         eOCrkpZ+RDUqoeG9RPqVATJvRKQfVJDr2BDqoonZA8r2euA1A9XdrpIkvLqNtHxsv5
-         DnP8g/oNJPx4PlahRzuosmmDXWvcyJw+WKXd0OwE4rBfrl1eVw9NbJsY4MWIrX7Ajw
-         bannYGoP/UZtEdY/gZLuBHw5a6jk6JDVpwhjg0KmNg0k664AuszCdosgl2yehkqaM5
-         c6kB2DSVI0JSA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 23FCA15C3448; Fri, 21 Apr 2023 14:20:13 -0400 (EDT)
-Date:   Fri, 21 Apr 2023 14:20:13 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+c2de99a72baaa06d31f3@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [syzbot] [ext4?] [mm?] KCSAN: data-race in strscpy / strscpy (3)
-Message-ID: <20230421182013.GA19035@mit.edu>
-References: <000000000000b9915d05f9d98bdd@google.com>
- <CACT4Y+a3J0Z2PThebH6UaUWchKLWec8qApuv1ezYGKjf67Xctg@mail.gmail.com>
- <ZEKko6U2MxfkXgs5@casper.infradead.org>
- <13d484d3-d573-cd82-fff0-a35e27b8451e@oracle.com>
+        with ESMTP id S229476AbjDUSUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 14:20:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DE413E
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 11:20:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B98063C6B
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 18:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E064AC433D2;
+        Fri, 21 Apr 2023 18:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682101220;
+        bh=aYvFmp7DXLuA/ozHwTlVs722tHaQSJMWL27jU5QXyVQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=n8D9ZIgA+Ke/0tyDo1xJtv5I4tulescjOjYKGJ+kp7YNaUIqAv0xlkTiJ1dbSOU+E
+         I6swJf+vqZ4s3TN+dLaTe1ty7wryhjr0kbVNhMiQmUB4fxQFC9BgrYAaZxlxZcj88S
+         vwsSVeFmPBmNp0hEJgPcCSGLGN2Y9H9x9v7/1VfrjTNQmFjZuxyUzuvYA4EiZcwM1m
+         EP5yVkuvPerizTVXigyfMWE+IObkIcX54dvH45cSzNSqT1/mYoBJ+eDKtogK4fSo/9
+         KfixOLRvMTNTYcVTUwQIUGnjN3o3nR6aM7tLGxqZjFXvS3xhyL5Y6Bvh8g0MNGLsEU
+         VFXUNQOo8dwUw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C030AE270DB;
+        Fri, 21 Apr 2023 18:20:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <13d484d3-d573-cd82-fff0-a35e27b8451e@oracle.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 1/2] bpftool: Register struct_ops with a link.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168210121978.28314.15375823140972222895.git-patchwork-notify@kernel.org>
+Date:   Fri, 21 Apr 2023 18:20:19 +0000
+References: <20230420002822.345222-1-kuifeng@meta.com>
+In-Reply-To: <20230420002822.345222-1-kuifeng@meta.com>
+To:     Kui-Feng Lee <thinker.li@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+        yhs@meta.com, quentin@isovalent.com, kuifeng@meta.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 12:40:45PM -0500, Mike Christie wrote:
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 19 Apr 2023 17:28:21 -0700 you wrote:
+> You can include an optional path after specifying the object name for the
+> 'struct_ops register' subcommand.
 > 
-> I didn't see the beginning of this thread and I think the part of the
-> sysbot report that lists the patches/trees being used got cut off so
-> I'm not 100% sure what's in the kernel.
+> Since the commit 226bc6ae6405 ("Merge branch 'Transit between BPF TCP
+> congestion controls.'") has been accepted, it is now possible to create a
+> link for a struct_ops. This can be done by defining a struct_ops in
+> SEC(".struct_ops.link") to make libbpf returns a real link. If we don't pin
+> the links before leaving bpftool, they will disappear. To instruct bpftool
+> to pin the links in a directory with the names of the maps, we need to
+> provide the path of that directory.
+> 
+> [...]
 
-Syzbot reported this on commit 76f598ba7d8e which is upstream after v6.3-rc6.
+Here is the summary with links:
+  - [bpf-next,v3,1/2] bpftool: Register struct_ops with a link.
+    https://git.kernel.org/bpf/bpf-next/c/0232b7889786
+  - [bpf-next,v3,2/2] bpftool: Update doc to explain struct_ops register subcommand.
+    https://git.kernel.org/bpf/bpf-next/c/45cea721ea36
 
-Cheers,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-						- Ted
+
