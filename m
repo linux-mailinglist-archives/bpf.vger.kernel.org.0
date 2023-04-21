@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDD66EAEEE
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 18:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCFD6EAF1F
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 18:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjDUQVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 12:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
+        id S231719AbjDUQbY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 12:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjDUQVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 12:21:09 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC713212C
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:21:06 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-b8f5121503eso2479281276.1
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:21:06 -0700 (PDT)
+        with ESMTP id S231728AbjDUQbX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 12:31:23 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70131444B
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:31:20 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-956ff2399b1so240151366b.3
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 09:31:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682094065; x=1684686065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rDBYsu0Kkeg8+k/fpLfBkAa9CJm5I9LxEz8usqXQ4IU=;
-        b=DF0xmHKPPLAOg66Du2culDIqhVgXuANUPqdqUGHYrYV2CHyWVow1Db20ja9akftQHR
-         5kycEtMcZL6+vxypgtIVccEePm+4b3sH6+MARr/lvQPTnuh8jpBvPHFtUnA6q+Q0Wlt3
-         VoyhhTnNrnrp7qp7Srf+WCWwjLBW1DIialp1YoPIf18SYVmvG2SaUy01ovRzD1eNxHvy
-         upLX4/5TGp1PLasnyrcye9AP6hzr99v9aqIruRzNPNRlA9agWdA4vWubqDx9KGWvhmAI
-         o1074kpnFj+TRXMECo7reyHzc9LUgskJ6mkhku32AP3WIJ6ehjImF4VV76MO3CbCbN+m
-         zQGw==
+        d=gmail.com; s=20221208; t=1682094679; x=1684686679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PcxP/8Z++sdvHInrLVhxnGsApvqXVR8ubcoqa469K8I=;
+        b=phfT2/gNF0GEiUZIMQfdekUaUh4P1M+zE9956PzVkJ03NsvHQkZB+kim9PdWIPfeWz
+         MEhID6Oa3/Sop4JhTrf1v+IjtVStB1X9q+5iXHl4k+De5F7qB1lQ+marWPt4Lv9+D57c
+         N3pYEy9/LXJu497xVa620AZW02d8alYP5a3N/IFiUpLh6wcNwVMFx+jDAF0Lkk1R6tDw
+         piL6Q5l5NY1d8h/IpZvFE8+3NnOpouYPnJeyvSGLH+90oA9xBCXEUHvx20+HHFTF0afC
+         22J0OiKqCykJNH72xLl+gsDQ6SxIqI8q047nL7nlpVZTKZgtTH4luKCQV98dFpuytvco
+         lsTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682094065; x=1684686065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rDBYsu0Kkeg8+k/fpLfBkAa9CJm5I9LxEz8usqXQ4IU=;
-        b=K5UkKohu0egnl/MelzBARiwXawqQDBFB3nLlEuIKmofegdFLLpi5CRA+Fpyc+fAr0n
-         Y89ZGU9jy30cRj4SgHiuWjfQ7Ud3V2u4LlTZ5G0Al0IzuD12/Gi3lbzIJH2d2jGj0aqq
-         h4ZJXtAAlmxYHQ4NyjwqAYe/gnoITrTbpr/gnunPpSibLcQAtKtsW5umawSNUWR93STp
-         skZnIdf47xC9obzimJUd4ujaIrwmbLKzwBn45OL9s5TpVIYjDs47u9Liif6i3eYykp2A
-         prlV1QeAUzVMh6X8i4Ij9d/TfAM47M4wqNsPvGQzSFLM1Ywz2WA+8IL3H2yie/rKuowr
-         Np/Q==
-X-Gm-Message-State: AAQBX9eRXfzMExw8QrBEAw+4oynt+Dw6SqDzPS09HRF2q0sXSR06Udsl
-        zYXP4tQO0FaFX0n6fvIuxsM=
-X-Google-Smtp-Source: AKy350aEUj+kFAQ/8JYK4muu4qsSReNQ0rMzWPnJRg71VOr6FQotSb8OEJNXHhMCAoAGX4Ex1phFOQ==
-X-Received: by 2002:a0d:e68b:0:b0:54f:9e41:df5a with SMTP id p133-20020a0de68b000000b0054f9e41df5amr2380416ywe.15.1682094065711;
-        Fri, 21 Apr 2023 09:21:05 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:724e:a12f:f4b3:597b? ([2600:1700:6cf8:1240:724e:a12f:f4b3:597b])
-        by smtp.gmail.com with ESMTPSA id e131-20020a816989000000b0054f50f71834sm1022129ywc.124.2023.04.21.09.21.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Apr 2023 09:21:05 -0700 (PDT)
-Message-ID: <5f23696d-d7bd-774d-c45a-8a6bb13b9cb5@gmail.com>
-Date:   Fri, 21 Apr 2023 09:21:02 -0700
+        d=1e100.net; s=20221208; t=1682094679; x=1684686679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PcxP/8Z++sdvHInrLVhxnGsApvqXVR8ubcoqa469K8I=;
+        b=FgZ/dVfS2ZLnw5THpHUmM9P49ZLPsrSSymZEsrnoL6Axc8tSR9GxhvIT/hnSf9wW+w
+         MlBIAsKGgCiqyUFgywGFCnLQOAG4IHBqlVbEb8TVWd7eYdVCvnxucvvGMFftKCK3Vdy/
+         5Ym8XoNSKQ21/9kbPR97KRlgBq33lpjPu7UpIpNOwPQSF21aKC4tvWPk6sLlpsqxutyE
+         lOeYbDT8lp5KEXkrD8CCO+S25oyl/x7pZwE9Vjfq7+dh1x7tcCofaZFH4I4Xv7OHcuT0
+         Va8KMwjYATDeN+1RbqR0WK6tERPJB8SQU0CznFTfmbj0eypOB0uTQjYmeLIIJcky+eIY
+         N26w==
+X-Gm-Message-State: AAQBX9eSlsh5qs7dRRPhY26tOgKFcMNt3fO89C/5dfx+WQUYQmn6vfNF
+        z+COIgEvC2xF3FmvK4c4De1pUFUW0R59eQ==
+X-Google-Smtp-Source: AKy350Zfsr6xhWf0oQc6WTAprX3yM9YcX6aWIAaUynmlC7erDSowywBwVNjt+XHMOWXShZoha3HKfA==
+X-Received: by 2002:a17:907:c001:b0:94f:449e:75db with SMTP id ss1-20020a170907c00100b0094f449e75dbmr3473524ejc.52.1682094678715;
+        Fri, 21 Apr 2023 09:31:18 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:864b:8201:e534:34f4:1c34:8de7])
+        by smtp.googlemail.com with ESMTPSA id k9-20020a170906970900b009534211cc97sm2248578ejx.159.2023.04.21.09.31.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 09:31:18 -0700 (PDT)
+From:   Daan De Meyer <daan.j.demeyer@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Daan De Meyer <daan.j.demeyer@gmail.com>, martin.lau@linux.dev,
+        kernel-team@meta.com
+Subject: [PATCH bpf-next v3 00/10] Add cgroup sockaddr hooks for unix sockets
+Date:   Fri, 21 Apr 2023 18:27:08 +0200
+Message-Id: <20230421162718.440230-1-daan.j.demeyer@gmail.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH bpf-next v2] bpftool: Show map IDs along with struct_ops
- links.
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kui-Feng Lee <thinker.li@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
-        yhs@meta.com, song@kernel.org, kernel-team@meta.com,
-        andrii@kernel.org, Kui-Feng Lee <kuifeng@meta.com>,
-        Quentin Monnet <quentin@isovalent.com>
-References: <20230419003651.988865-1-kuifeng@meta.com>
- <CAEf4BzY3DOYZOQBfvvOEGdKaUF+M8DS8Q33devTWzjcEHkOuQg@mail.gmail.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <CAEf4BzY3DOYZOQBfvvOEGdKaUF+M8DS8Q33devTWzjcEHkOuQg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,64 +68,102 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Changes since v2:
 
+* Configuring the sock addr is now done via a new kfunc bpf_sock_addr_set()
+* The addrlen is exposed as u32 in bpf_sock_addr_kern
+* Selftests are updated to use the new kfunc and access the sockaddr via
+CORE
+* Added BTF_KFUNC_HOOK_SOCK_ADDR for BPF_PROG_TYPE_CGROUP_SOCK_ADDR
+* __cgroup_bpf_run_filter_sock_addr() now returns the modified addrlen
 
-On 4/20/23 16:41, Andrii Nakryiko wrote:
-> On Tue, Apr 18, 2023 at 5:37 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
->>
->> A new link type, BPF_LINK_TYPE_STRUCT_OPS, was added to attach
->> struct_ops to links. (226bc6ae6405) It would be helpful for users to
->> know which map is associated with the link.
->>
->> The assumption was that every link is associated with a BPF program, but
->> this does not hold true for struct_ops. It would be better to display
->> map_id instead of prog_id for struct_ops links. However, some tools may
->> rely on the old assumption and need a prog_id.  The discussion on the
->> mailing list suggests that tools should parse JSON format. We will maintain
->> the existing JSON format by adding a map_id without removing prog_id. As
->> for plain text format, we will remove prog_id from the header line and add
->> a map_id for struct_ops links.
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
->> ---
->>   tools/bpf/bpftool/link.c | 9 ++++++++-
->>   1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
->> index f985b79cca27..8eb8520bd7b4 100644
->> --- a/tools/bpf/bpftool/link.c
->> +++ b/tools/bpf/bpftool/link.c
->> @@ -195,6 +195,10 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
->>                                   info->netns.netns_ino);
->>                  show_link_attach_type_json(info->netns.attach_type, json_wtr);
->>                  break;
->> +       case BPF_LINK_TYPE_STRUCT_OPS:
->> +               jsonw_uint_field(json_wtr, "map_id",
->> +                                info->struct_ops.map_id);
->> +               break;
->>          default:
->>                  break;
->>          }
->> @@ -227,7 +231,10 @@ static void show_link_header_plain(struct bpf_link_info *info)
->>          else
->>                  printf("type %u  ", info->type);
->>
->> -       printf("prog %u  ", info->prog_id);
->> +       if (info->type == BPF_LINK_TYPE_STRUCT_OPS)
->> +               printf("map_id %u  ", info->struct_ops.map_id);
->> +       else
->> +               printf("prog %u  ", info->prog_id);
-> 
-> if we output "prog %u" for prog_id, shouldn't we just output "map %u"
-> for map_id?
+Changes since v1:
 
-"map" make sense to me.
+* Split into multiple patches instead of one single patch
+* Added unix support for all socket address hooks instead of only connect()
+* Switched approach to expose the socket address length to the bpf hook
+instead of recalculating the socket address length in kernelspace to
+properly support abstract unix socket addresses
+* Modified socket address hook tests to calculate the socket address length
+once and pass it around everywhere instead of recalculating the actual unix
+socket address length on demand.
+* Added some missing section name tests for getpeername()/getsockname()
 
-> 
->>   }
->>
->>   static void show_link_attach_type_plain(__u32 attach_type)
->> --
->> 2.34.1
->>
+This patch series extends the cgroup sockaddr hooks to include support for
+unix sockets. To add support for unix sockets, struct bpf_sock_addr is
+extended to expose the unix socket path (sun_path) and the socket address
+length to the bpf program. For unix sockets, the address length is writable,
+for the other socket address hook types, the address length is only readable.
+
+I intend to use these new hooks in systemd to reimplement the LogNamespace=
+feature, which allows running multiple instances of systemd-journald to
+process the logs of different services. systemd-journald also processes
+syslog messages, so currently, using log namespaces means all services running
+in the same log namespace have to live in the same private mount namespace
+so that systemd can mount the journal namespace's associated syslog socket
+over /dev/log to properly direct syslog messages from all services running
+in that log namespace to the correct systemd-journald instance. We want to
+relax this requirement so that processes running in disjoint mount namespaces
+can still run in the same log namespace. To achieve this, we can use these
+new hooks to rewrite the socket address of any connect(), sendto(), ...
+syscalls to /dev/log to the socket address of the journal namespace's syslog
+socket instead, which will transparently do the redirection without requiring
+use of a mount namespace and mounting over /dev/log.
+
+Aside from the above usecase, these hooks can more generally be used to
+transparently redirect unix sockets to different addresses as required by
+services.
+
+Daan De Meyer (10):
+  selftests/bpf: Add missing section name tests for
+    getpeername/getsockname
+  selftests/bpf: Track sockaddr length in sock addr tests
+  bpf: Allow read access to addr_len from cgroup sockaddr programs
+  bpf: Add BTF_KFUNC_HOOK_SOCK_ADDR
+  bpf: Add bpf_sock_addr_set() to allow writing sockaddr len from bpf
+  bpf: Implement cgroup sockaddr hooks for unix sockets
+  libbpf: Add support for cgroup unix socket address hooks
+  bpftool: Add support for cgroup unix socket address hooks
+  selftests/bpf: Add tests for cgroup unix socket address hooks
+  documentation/bpf: Document cgroup unix socket address hooks
+
+ Documentation/bpf/libbpf/program_types.rst    |  12 +
+ include/linux/bpf-cgroup-defs.h               |   6 +
+ include/linux/bpf-cgroup.h                    | 102 ++++---
+ include/linux/filter.h                        |   1 +
+ include/uapi/linux/bpf.h                      |  14 +-
+ kernel/bpf/btf.c                              |   3 +
+ kernel/bpf/cgroup.c                           |  27 +-
+ kernel/bpf/syscall.c                          |  18 ++
+ kernel/bpf/verifier.c                         |   7 +-
+ net/core/filter.c                             |  69 ++++-
+ net/ipv4/af_inet.c                            |   8 +-
+ net/ipv4/ping.c                               |   8 +-
+ net/ipv4/tcp_ipv4.c                           |   8 +-
+ net/ipv4/udp.c                                |  17 +-
+ net/ipv6/af_inet6.c                           |   8 +-
+ net/ipv6/ping.c                               |   8 +-
+ net/ipv6/tcp_ipv6.c                           |   8 +-
+ net/ipv6/udp.c                                |  14 +-
+ net/unix/af_unix.c                            | 102 ++++++-
+ .../bpftool/Documentation/bpftool-cgroup.rst  |  21 +-
+ tools/bpf/bpftool/cgroup.c                    |  17 +-
+ tools/bpf/bpftool/common.c                    |   6 +
+ tools/include/uapi/linux/bpf.h                |  14 +-
+ tools/lib/bpf/libbpf.c                        |  12 +
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  13 +
+ .../selftests/bpf/prog_tests/section_names.c  |  50 ++++
+ .../testing/selftests/bpf/progs/bindun_prog.c |  59 ++++
+ .../selftests/bpf/progs/connectun_prog.c      |  53 ++++
+ .../selftests/bpf/progs/recvmsgun_prog.c      |  59 ++++
+ .../selftests/bpf/progs/sendmsgun_prog.c      |  53 ++++
+ tools/testing/selftests/bpf/test_sock_addr.c  | 263 ++++++++++++++----
+ 31 files changed, 917 insertions(+), 143 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bindun_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/connectun_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsgun_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sendmsgun_prog.c
+
+--
+2.40.0
+
