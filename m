@@ -2,225 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BD36EB2F3
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 22:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603486EB302
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 22:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjDUUgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 16:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        id S232132AbjDUUpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 16:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbjDUUgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 16:36:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1C01FD8
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:36:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-504eb1155d3so15456425a12.1
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:36:05 -0700 (PDT)
+        with ESMTP id S231936AbjDUUpb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 16:45:31 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36B81FCE
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:45:29 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f17e584462so22064935e9.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 13:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1682109364; x=1684701364;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9C4iRAcHxYd3hTzygx6aqYfgA855/t2qm3XPVVp39o8=;
-        b=L4hQX8EchWvSHb3lt9++Z5AcKsWCXy9ODc8Rs8hEPPRiZKa+nOLzWWIKd3EDCnCiHR
-         ovSHT6mJNtgqMIhyPr8YlyLsyk5hTHkVMiF89Fsd98GVp4FSIqs2M/4vHk5mbI1IXb1D
-         TQqGadzpHoN7puFfAdfWJvLHPpg65wxJoI0Ro0F80dZLrR+qzwP7XkFcNu1miGFwDypm
-         cztd4IWF+/hW/UDzTpUY0UrIyWC3om+7hg7QkgXYLxRWYKTJXOEWAKvXoMqKah7ZPooy
-         /HiIQX/cZlyJuKqP6Pv2tpNE7S9u5vIOwO+fZOFpzfSumEj/oihqHz9uaD0LpSMvbyyz
-         mdUw==
+        d=gmail.com; s=20221208; t=1682109928; x=1684701928;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rEWZrvSHxaTJxbITBq44XPm4Epwm/Ypf8OdsXei8kjo=;
+        b=a2IS489VG8PN5uLO+nVFV6j9drMHuohD3OT3kDyznJk/ryj/atNsnsJB4MO1opSSbC
+         VuxLlyiv3P008+kxxLCL8kxIpHcdFkTvbuq8bO1BLlV+OVpGp+loZsJ6+FHatdTNg5eX
+         SaV6WdzpunHGpFQWbIhqennrqEhG22M58vyNDaCr94KQc1uSBJzn2YQAJQ4Z7AxVwVJJ
+         HtxylwnBsLMnHTqX36PCJ7bItUCLye/o+Yf4wwIuS8rHakjI/hpPdAKEu5dH5GreAciQ
+         HPUKSFdIdKLpGuD74tIhlZzZVJiB907yaMtmhts6EuUygXZAqLc2gFaQIaJf+2BDvq6g
+         NS8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682109364; x=1684701364;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1682109928; x=1684701928;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9C4iRAcHxYd3hTzygx6aqYfgA855/t2qm3XPVVp39o8=;
-        b=atNvUx8k4aw0A5oNKcUF3RVvfgWyOopm5ccTys7d1kOV/VnkH9L87shDK9kEE4Zd9S
-         fhUdrZOk3HaNpjeHsaPISzs3112gBrb85MP6kyGE9Gy2ialGcYZiuxvAHYc/lzJ5jbVH
-         VGVzKz4nlKYKCqDHtnnlZGI27BmoR4+UzX+ZdbQyHnZXnW9DaPXwcq+7MtOqq++nJuMW
-         K7iginVCTpt1Nl8OMBGr9PDTVVX+29ZEFUv+g2QAiDDaz5soHktptBr4+7aurNqi1NDp
-         fURalS9Hz6Fcq78nYIJWRM+iepc5AVSJZB6eaJy6/ZVozjwku3a+ICvVnewb1QO6rIC6
-         5V5A==
-X-Gm-Message-State: AAQBX9eF8sL76HSFU42Wimn40ckQ9EEMRCBaMCCooU7RvgmaH9s7sf00
-        qFlJli5eoZkBrJ/FpQFeOxybbujy6yicu1QVQgQpqw==
-X-Google-Smtp-Source: AKy350YawkIoWe+TmMCDYIhNAzy8JBMRQHBnFpv50X3s6g26p3NePwEt5L63FX1jiY+C+/VlZro1TBonZN/Aqswe6U0=
-X-Received: by 2002:a05:6402:11c7:b0:4fc:97d9:18ec with SMTP id
- j7-20020a05640211c700b004fc97d918ecmr9427739edw.21.1682109363800; Fri, 21 Apr
- 2023 13:36:03 -0700 (PDT)
+        bh=rEWZrvSHxaTJxbITBq44XPm4Epwm/Ypf8OdsXei8kjo=;
+        b=HUNe0omaxqs541WtpOVnJca4pTGZPoOrlG82ctyAlPXhVcnVZvUdYfg1+ftlu3hL/O
+         +jDazrvgGFKT1x7wjMIvNw6od+RMpB0tzea2gCVoJAMU64kku3dyL6ZOgZ3zVz7qmiPS
+         3YgXsIsjKi24OhYTpwGP5bZ/RzOz/OYMiFogB32SNSlXT7oQVimHpNrK6tPaeLoinEn2
+         yAkHbtr1ucCIe0ww3M4geAXvXxeCbCOQOmxWmgAkD38CI61/iZItkiBl4RR8FRJbgwtM
+         24BmDfdSV/VIYWEVIYI4VD9GyhHlUDnV3GEfQ7oFrnWcbaxLlmm4lWaioWHieuVNnhLE
+         K6Ug==
+X-Gm-Message-State: AAQBX9fngFnzI5X3tI1S02SLQZlTH9NIRaZIr//ZnhDd3aYkVTq+mHSm
+        XfBorjxoTNwo5VEXuVr1FgOeX8SGn1xrmA==
+X-Google-Smtp-Source: AKy350Y/V9/5egen6xh9f7jViKMrWu0dq6mGhKYsBvE+r3ASs9R6GLIIhZkS1oQ27hl8oFFU0t7VHg==
+X-Received: by 2002:a7b:cbd5:0:b0:3ee:96f0:ea31 with SMTP id n21-20020a7bcbd5000000b003ee96f0ea31mr2915890wmi.18.1682109927764;
+        Fri, 21 Apr 2023 13:45:27 -0700 (PDT)
+Received: from bigfoot.. (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id u8-20020a7bc048000000b003f1952a4bdesm1930264wmc.26.2023.04.21.13.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 13:45:27 -0700 (PDT)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        kernel-team@fb.com, yhs@fb.com,
+        Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: verifier/prevent_map_lookup converted to inline assembly
+Date:   Fri, 21 Apr 2023 23:45:14 +0300
+Message-Id: <20230421204514.2450907-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-References: <20230421162718.440230-1-daan.j.demeyer@gmail.com> <20230421162718.440230-9-daan.j.demeyer@gmail.com>
-In-Reply-To: <20230421162718.440230-9-daan.j.demeyer@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Fri, 21 Apr 2023 21:35:52 +0100
-Message-ID: <CACdoK4LKy8dtESERkQjCN-+QO6NyPUkKkkz+6veQfk9V=9S1xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 08/10] bpftool: Add support for cgroup unix
- socket address hooks
-To:     Daan De Meyer <daan.j.demeyer@gmail.com>
-Cc:     bpf@vger.kernel.org, martin.lau@linux.dev, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 Apr 2023 at 17:31, Daan De Meyer <daan.j.demeyer@gmail.com> wrote:
->
-> Add the necessary plumbing to hook up the new cgroup unix sockaddr
-> hooks into bpftool.
->
-> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
-> ---
->  .../bpftool/Documentation/bpftool-cgroup.rst  | 21 ++++++++++++++-----
->  tools/bpf/bpftool/cgroup.c                    | 17 ++++++++-------
->  tools/bpf/bpftool/common.c                    |  6 ++++++
->  3 files changed, 32 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> index bd015ec9847b..a2d990fa623b 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-> @@ -34,13 +34,16 @@ CGROUP COMMANDS
->  |      *ATTACH_TYPE* := { **cgroup_inet_ingress** | **cgroup_inet_egress** |
->  |              **cgroup_inet_sock_create** | **cgroup_sock_ops** |
->  |              **cgroup_device** | **cgroup_inet4_bind** | **cgroup_inet6_bind** |
-> -|              **cgroup_inet4_post_bind** | **cgroup_inet6_post_bind** |
-> -|              **cgroup_inet4_connect** | **cgroup_inet6_connect** |
-> +|              **cgroup_unix_bind** | **cgroup_inet4_post_bind** |
-> +|              **cgroup_inet6_post_bind** | **cgroup_inet4_connect** |
-> +|              **cgroup_inet6_connect** | **cgroup_unix_connect** |
->  |              **cgroup_inet4_getpeername** | **cgroup_inet6_getpeername** |
-> -|              **cgroup_inet4_getsockname** | **cgroup_inet6_getsockname** |
-> -|              **cgroup_udp4_sendmsg** | **cgroup_udp6_sendmsg** |
-> +|              **cgroup_unix_getpeername** | **cgroup_inet4_getsockname** |
-> +|              **cgroup_inet6_getsockname** | **cgroup_udp4_sendmsg** |
-> +|              **cgroup_udp6_sendmsg** | **cgroup_unix_sendmsg** |
->  |              **cgroup_udp4_recvmsg** | **cgroup_udp6_recvmsg** |
-> -|              **cgroup_sysctl** | **cgroup_getsockopt** | **cgroup_setsockopt** |
-> +|              **cgroup_unix_recvmsg** | **cgroup_sysctl** |
-> +|              **cgroup_getsockopt** | **cgroup_setsockopt** |
->  |              **cgroup_inet_sock_release** }
->  |      *ATTACH_FLAGS* := { **multi** | **override** }
->
-> @@ -98,25 +101,33 @@ DESCRIPTION
->                   **device** device access (since 4.15);
->                   **bind4** call to bind(2) for an inet4 socket (since 4.17);
->                   **bind6** call to bind(2) for an inet6 socket (since 4.17);
-> +                 **bindun** call to bind(2) for a unix socket (since 6.3);
->                   **post_bind4** return from bind(2) for an inet4 socket (since 4.17);
->                   **post_bind6** return from bind(2) for an inet6 socket (since 4.17);
->                   **connect4** call to connect(2) for an inet4 socket (since 4.17);
->                   **connect6** call to connect(2) for an inet6 socket (since 4.17);
-> +                 **connectun** call to connect(2) for a unix socket (since 6.3);
->                   **sendmsg4** call to sendto(2), sendmsg(2), sendmmsg(2) for an
->                   unconnected udp4 socket (since 4.18);
->                   **sendmsg6** call to sendto(2), sendmsg(2), sendmmsg(2) for an
->                   unconnected udp6 socket (since 4.18);
-> +                 **sendmsgun** call to sendto(2), sendmsg(2), sendmmsg(2) for
-> +                 an unconnected unix socket (since 6.3);
->                   **recvmsg4** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
->                   an unconnected udp4 socket (since 5.2);
->                   **recvmsg6** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
->                   an unconnected udp6 socket (since 5.2);
-> +                 **recvmsgun** call to recvfrom(2), recvmsg(2), recvmmsg(2) for
-> +                 an unconnected unix socket (since 6.3);
->                   **sysctl** sysctl access (since 5.2);
->                   **getsockopt** call to getsockopt (since 5.3);
->                   **setsockopt** call to setsockopt (since 5.3);
->                   **getpeername4** call to getpeername(2) for an inet4 socket (since 5.8);
->                   **getpeername6** call to getpeername(2) for an inet6 socket (since 5.8);
-> +                 **getpeernameun** call to getpeername(2) for a unix socket (since 6.3);
->                   **getsockname4** call to getsockname(2) for an inet4 socket (since 5.8);
->                   **getsockname6** call to getsockname(2) for an inet6 socket (since 5.8).
-> +                 **getsocknameun** call to getsockname(2) for a unix socket (since 6.3);
->                   **sock_release** closing an userspace inet socket (since 5.9).
->
->         **bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
-> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-> index ac846b0805b4..a9700e00064c 100644
-> --- a/tools/bpf/bpftool/cgroup.c
-> +++ b/tools/bpf/bpftool/cgroup.c
-> @@ -26,13 +26,16 @@
->         "       ATTACH_TYPE := { cgroup_inet_ingress | cgroup_inet_egress |\n" \
->         "                        cgroup_inet_sock_create | cgroup_sock_ops |\n" \
->         "                        cgroup_device | cgroup_inet4_bind |\n" \
-> -       "                        cgroup_inet6_bind | cgroup_inet4_post_bind |\n" \
-> -       "                        cgroup_inet6_post_bind | cgroup_inet4_connect |\n" \
-> -       "                        cgroup_inet6_connect | cgroup_inet4_getpeername |\n" \
-> -       "                        cgroup_inet6_getpeername | cgroup_inet4_getsockname |\n" \
-> -       "                        cgroup_inet6_getsockname | cgroup_udp4_sendmsg |\n" \
-> -       "                        cgroup_udp6_sendmsg | cgroup_udp4_recvmsg |\n" \
-> -       "                        cgroup_udp6_recvmsg | cgroup_sysctl |\n" \
-> +       "                        cgroup_inet6_bind | cgroup_unix_bind |\n" \
-> +       "                        cgroup_inet4_post_bind | cgroup_inet6_post_bind |\n" \
-> +       "                        cgroup_inet4_connect | cgroup_inet6_connect |\n" \
-> +       "                        cgroup_unix_connect | cgroup_inet4_getpeername |\n" \
-> +       "                        cgroup_inet6_getpeername | cgroup_unix_getpeername |\n" \
-> +       "                        cgroup_inet4_getsockname | cgroup_inet6_getsockname |\n" \
-> +       "                        cgroup_unix_getsockname | cgroup_udp4_sendmsg |\n" \
-> +       "                        cgroup_udp6_sendmsg | cgroup_unix_sendmsg |\n" \
-> +       "                        cgroup_udp4_recvmsg | cgroup_udp6_recvmsg |\n" \
-> +       "                        cgroup_unix_recvmsg | cgroup_sysctl |\n" \
->         "                        cgroup_getsockopt | cgroup_setsockopt |\n" \
->         "                        cgroup_inet_sock_release }"
->
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index 5a73ccf14332..71c219b186aa 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -1067,19 +1067,25 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
->         case BPF_CGROUP_DEVICE:                 return "device";
->         case BPF_CGROUP_INET4_BIND:             return "bind4";
->         case BPF_CGROUP_INET6_BIND:             return "bind6";
-> +       case BPF_CGROUP_UNIX_BIND:              return "bindun";
->         case BPF_CGROUP_INET4_CONNECT:          return "connect4";
->         case BPF_CGROUP_INET6_CONNECT:          return "connect6";
-> +       case BPF_CGROUP_UNIX_CONNECT:           return "connectun";
->         case BPF_CGROUP_INET4_POST_BIND:        return "post_bind4";
->         case BPF_CGROUP_INET6_POST_BIND:        return "post_bind6";
->         case BPF_CGROUP_INET4_GETPEERNAME:      return "getpeername4";
->         case BPF_CGROUP_INET6_GETPEERNAME:      return "getpeername6";
-> +       case BPF_CGROUP_UNIX_GETPEERNAME:       return "getpeernameun";
->         case BPF_CGROUP_INET4_GETSOCKNAME:      return "getsockname4";
->         case BPF_CGROUP_INET6_GETSOCKNAME:      return "getsockname6";
-> +       case BPF_CGROUP_UNIX_GETSOCKNAME:       return "getsocknameun";
->         case BPF_CGROUP_UDP4_SENDMSG:           return "sendmsg4";
->         case BPF_CGROUP_UDP6_SENDMSG:           return "sendmsg6";
-> +       case BPF_CGROUP_UNIX_SENDMSG:           return "sendmsgun";
->         case BPF_CGROUP_SYSCTL:                 return "sysctl";
->         case BPF_CGROUP_UDP4_RECVMSG:           return "recvmsg4";
->         case BPF_CGROUP_UDP6_RECVMSG:           return "recvmsg6";
-> +       case BPF_CGROUP_UNIX_RECVMSG:           return "recvmsgun";
->         case BPF_CGROUP_GETSOCKOPT:             return "getsockopt";
->         case BPF_CGROUP_SETSOCKOPT:             return "setsockopt";
->         case BPF_TRACE_RAW_TP:                  return "raw_tp";
-> --
-> 2.40.0
->
+Test verifier/prevent_map_lookup automatically converted to use inline assembly.
 
-Thanks a lot for this! I have two comments.
+This was a part of a series [1] but could not be applied becuase
+another patch from a series had to be witheld.
 
-First, function bpf_attach_type_input_str() is for legacy attach types
-names, those that bpftool used before commit 1ba5ad36e00f ("bpftool:
-Use libbpf_bpf_attach_type_str") and that are kept for backwards
-compatibility. Now we use type names provided by libbpf, so adding
-them to attach_type_name in libbpf as you do in patch 7 should be
-enough for bpftool to pick up the relevant names. The
-bpftool-cgroup.rst man page still uses the legacy names, which I
-didn't realise before your patch, and I'll need to fix. But for this
-patch I think we're good without adding alternative names, and by
-documenting the "cgroup/bindun" etc. forms in the man page.
+[1] https://lore.kernel.org/bpf/20230421174234.2391278-1-eddyz87@gmail.com/
 
-Another thing is that you updated the list of types to attach programs
-to cgroups, which is good, but ideally we would also need to document
-the new program "types" that we can pass on the command line to
-bpftool for loading programs, before attaching them (for example, we
-have "bpftool prog load <elf.o> </pinned/path> type cgroup/connect4").
-This means updating do_help() in prog.c, the list in
-Documentation/bpftool-prog.rst, and BPFTOOL_PROG_LOAD_TYPES in
-bash-completion/bpftool. Could you please update them too?
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../bpf/progs/verifier_prevent_map_lookup.c   | 61 +++++++++++++++++++
+ .../bpf/verifier/prevent_map_lookup.c         | 29 ---------
+ 3 files changed, 63 insertions(+), 29 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
 
-Thanks,
-Quentin
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index c8bab8b1a6a4..2497716ee379 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -42,6 +42,7 @@
+ #include "verifier_meta_access.skel.h"
+ #include "verifier_netfilter_ctx.skel.h"
+ #include "verifier_netfilter_retcode.skel.h"
++#include "verifier_prevent_map_lookup.skel.h"
+ #include "verifier_raw_stack.skel.h"
+ #include "verifier_raw_tp_writable.skel.h"
+ #include "verifier_reg_equal.skel.h"
+@@ -140,6 +141,7 @@ void test_verifier_masking(void)              { RUN(verifier_masking); }
+ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
+ void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
+ void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
++void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
+ void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
+ void test_verifier_raw_tp_writable(void)      { RUN(verifier_raw_tp_writable); }
+ void test_verifier_reg_equal(void)            { RUN(verifier_reg_equal); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c b/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
+new file mode 100644
+index 000000000000..8d27c780996f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_prevent_map_lookup.c
+@@ -0,0 +1,61 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Converted from tools/testing/selftests/bpf/verifier/prevent_map_lookup.c */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++struct {
++	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u64);
++} map_stacktrace SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 8);
++	__uint(key_size, sizeof(int));
++	__array(values, void (void));
++} map_prog2_socket SEC(".maps");
++
++SEC("perf_event")
++__description("prevent map lookup in stack trace")
++__failure __msg("cannot pass map_type 7 into func bpf_map_lookup_elem")
++__naked void map_lookup_in_stack_trace(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_stacktrace] ll;			\
++	call %[bpf_map_lookup_elem];			\
++	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_stacktrace)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("prevent map lookup in prog array")
++__failure __msg("cannot pass map_type 3 into func bpf_map_lookup_elem")
++__failure_unpriv
++__naked void map_lookup_in_prog_array(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	*(u64*)(r10 - 8) = r1;				\
++	r2 = r10;					\
++	r2 += -8;					\
++	r1 = %[map_prog2_socket] ll;			\
++	call %[bpf_map_lookup_elem];			\
++	exit;						\
++"	:
++	: __imm(bpf_map_lookup_elem),
++	  __imm_addr(map_prog2_socket)
++	: __clobber_all);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
+deleted file mode 100644
+index fc4e301260f6..000000000000
+--- a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
++++ /dev/null
+@@ -1,29 +0,0 @@
+-{
+-	"prevent map lookup in stack trace",
+-	.insns = {
+-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_map_stacktrace = { 3 },
+-	.result = REJECT,
+-	.errstr = "cannot pass map_type 7 into func bpf_map_lookup_elem",
+-	.prog_type = BPF_PROG_TYPE_PERF_EVENT,
+-},
+-{
+-	"prevent map lookup in prog array",
+-	.insns = {
+-	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+-	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+-	BPF_LD_MAP_FD(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+-	BPF_EXIT_INSN(),
+-	},
+-	.fixup_prog2 = { 3 },
+-	.result = REJECT,
+-	.errstr = "cannot pass map_type 3 into func bpf_map_lookup_elem",
+-},
+-- 
+2.40.0
+
