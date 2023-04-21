@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6DB6EB494
-	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 00:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B59E6EB51F
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 00:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjDUWRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 18:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S233866AbjDUWoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 18:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjDUWRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 18:17:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D70103
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:17:51 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-5051abd03a7so3155114a12.2
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:17:51 -0700 (PDT)
+        with ESMTP id S233627AbjDUWoL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 18:44:11 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41351BD9
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:44:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-504e232fe47so3863218a12.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 15:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682115469; x=1684707469;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6P6TFC0CklVpHKCZQA5K8w6hBhVznuAy9jhUE/lxHpg=;
-        b=r9uYOXlAuqBulVVzVTgCp7oGWYmE5FT6dCSlFY71CbmtsEPjxbfEgQ+ZKz1sHER0YH
-         FgVH7fhwCYsI9U9N35PBs3q0kMjTMvM40+50R0gMAmsK39nM2CPkyShvw3hFaNDoEksC
-         j0/EynThyr16orBW1Agtj5BrrZcT2GriJQzmHdoqtISnQtbrQsBswSCx1xQxE26lVDrZ
-         9bbnKuE/TTMNqk0O87gGdn7wWA06ntllJVhWaW0vGFrJtejoJQK/WPsU7Q7zO1/fAaoM
-         Nc00EdMcUTEVRWyfhzhSXqozFRNVTDt/YhKIFfOUy+5B5CeHehotWeBHDsEWNN0DTra2
-         pKow==
+        d=isovalent.com; s=google; t=1682117048; x=1684709048;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tvf5j/bINAOiQrCkYKeeaDxMIaoN8V+mcRrm9nEicRY=;
+        b=Ov7f87q+/GNcxXrkOnaERdvsYozN6ITub+SEYzIvIhDWs4EDVBoknOMx+R5E1AudF8
+         +hNH3cwIO85Ba53Hx2FGdcP4Ke3cVEfmjDIB8LAeJvesnVwsjMws0taaAC0Z3ScxxppB
+         f9sXawapASYud7MGVUciJPDAF8I3L9G8ENjp4DM9u9bpNnlajdgg3qcx1MBdiZ3UB2Fa
+         NeMLvIL9E+9M/rsaxsq7SOYCpkvY46G7xYRFTef5MFdtwOEXwRjkmSPi4eWGePakMnwZ
+         pXbehglwI+R+IHSTPYmZvVuA5yinKq8YLUw6Tc0gYBDSpxIRk1T3lHX200NH/BlXRa//
+         ja/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682115469; x=1684707469;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6P6TFC0CklVpHKCZQA5K8w6hBhVznuAy9jhUE/lxHpg=;
-        b=LsCyMRVnACuNMMEByuUZVIbwgxMe1r2J+CFCPPbsfiD1pOTDzSvxlfldwCniualfDs
-         lz8RBZ7BhloVYesq9PFFIaeb4bphbuyGR67orsIjqkVP9JF/6RxwQuxQYYk1b5zli+Bn
-         wVPZyGLDkQI2MJXiof9aaeDdiL2DawlhafczTXLNLUgYkCciqk9wVlJEb4gAZpNYMndw
-         Wl6djQn+glJzMnGyEgiqU07e/q1psYpfrAKwRktXEB6HqS1FfvusEeqp7Fz9NzQkuVaj
-         x/0iXy51l3eJjg5FjUM2DFHhdsECoZ/TM2tRtmERWcWdMlnpp34LXSvywFOiViB36udH
-         R/Jg==
-X-Gm-Message-State: AAQBX9cZQuUjcYYfiYMIy2MMp4l2ZhJHATtaUDahkLaLZzUy9dVX+x8r
-        Q31gbmGtl/JAMLYGb5Sj0wE=
-X-Google-Smtp-Source: AKy350YsbfE6hNFzM/UVCneWt/XKQWzMHEtmd4zn2ktF/lGVj2FtcQZnVvkf/nKU6EC3RlFIxSqqZg==
-X-Received: by 2002:aa7:db85:0:b0:506:87e9:d4b2 with SMTP id u5-20020aa7db85000000b0050687e9d4b2mr5689175edt.2.1682115469509;
-        Fri, 21 Apr 2023 15:17:49 -0700 (PDT)
-Received: from localhost ([2001:620:618:580:2:80b3:0:6d0])
-        by smtp.gmail.com with ESMTPSA id z15-20020aa7cf8f000000b005067d6b06efsm2233657edx.17.2023.04.21.15.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 15:17:49 -0700 (PDT)
-Date:   Sat, 22 Apr 2023 00:17:47 +0200
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        d=1e100.net; s=20221208; t=1682117048; x=1684709048;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tvf5j/bINAOiQrCkYKeeaDxMIaoN8V+mcRrm9nEicRY=;
+        b=AlIycmvtQd3n553ysVmBYklEIRW5BQo2/ZPFEofs4gaRwu3+cC/lI14O/FV+q7s5p8
+         CyXMNe5gQBx3kZ6LjFAJSonmI5w8J3N4zM68e0UdLANoZqa2AfHrgDFjHXDBVq9R6VYx
+         M9NF2AmsQEJcxlbcJ5YnnDRVv2dxxElFHl1kTf2G35IgYNXlhiKPA2qT0DoQr5tG8cGb
+         wlxHnaFFX9VMwYgdLcxQXIcI6xmZMu4ZYToHosZ0vUnoDr2VrwC6bwxWy8F1HGTTnDjM
+         cEznStvrNmsphFMfdzJ+HtUbbpP1BUJ0XuFR+LNVOOwqbgrPg1V6TelRTX8Xv2uPIxpT
+         GeYQ==
+X-Gm-Message-State: AAQBX9daFO45COkEITmJ+VpnO5FER6D0PbGAz/asTJASuZ4ZzI4cucra
+        e5m9SnijLOw6YvVFJe+O39vcaf7JKcNaW7zHBn5Mog==
+X-Google-Smtp-Source: AKy350Z7tsZGMHuCKfKxhW0176voBwFeqIcIduoNvJQR7FvSkUZn/IfrPrvT/mGuDF7WXe/8PffnqO89+53UAmMv9+k=
+X-Received: by 2002:a05:6402:1ad1:b0:504:7f60:9f6d with SMTP id
+ ba17-20020a0564021ad100b005047f609f6dmr5201714edb.9.1682117048360; Fri, 21
+ Apr 2023 15:44:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230421101154.23690-1-kuro@kuroa.me>
+In-Reply-To: <20230421101154.23690-1-kuro@kuroa.me>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Fri, 21 Apr 2023 23:43:57 +0100
+Message-ID: <CACdoK4Jez-Hpv2s6iSj_j2qxt6rrHLpXULbJbY72_w8LVECdbw@mail.gmail.com>
+Subject: Re: [PATCH] Dump map id instead of value for map_of_maps types
+To:     Xueming Feng <kuro@kuroa.me>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 9/9] selftests/bpf: Add refcounted_kptr tests
-Message-ID: <atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd7tnwft34e3@xktodqeqevir>
-References: <20230415201811.343116-1-davemarchevsky@fb.com>
- <20230415201811.343116-10-davemarchevsky@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230415201811.343116-10-davemarchevsky@fb.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,72 +74,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 15, 2023 at 10:18:11PM CEST, Dave Marchevsky wrote:
-> Test refcounted local kptr functionality added in previous patches in
-> the series.
+On Fri, 21 Apr 2023 at 11:12, Xueming Feng <kuro@kuroa.me> wrote:
 >
-> Usecases which pass verification:
+> When using `bpftool map dump` in plain format, it is usually
+> more convenient to show the inner map id instead of raw value.
+> Changing this behavior would help with quick debugging with
+> `bpftool`, without disruption scripted behavior. Since user
+
+s/disruption/disrupting/ ?
+
+> could dump the inner map with id, but need to convert value.
 >
-> * Add refcounted local kptr to both tree and list. Then, read and -
->   possibly, depending on test variant - delete from tree, then list.
->   * Also test doing read-and-maybe-delete in opposite order
-> * Stash a refcounted local kptr in a map_value, then add it to a
->   rbtree. Read from both, possibly deleting after tree read.
-> * Add refcounted local kptr to both tree and list. Then, try reading and
->   deleting twice from one of the collections.
-> * bpf_refcount_acquire of just-added non-owning ref should work, as
->   should bpf_refcount_acquire of owning ref just out of bpf_obj_new
->
-> Usecases which fail verification:
->
-> * The simple successful bpf_refcount_acquire cases from above should
->   both fail to verify if the newly-acquired owning ref is not dropped
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Signed-off-by: Xueming Feng <kuro@kuroa.me>
+
+Thanks for this patch! It looks good, with some minor comments below.
+
 > ---
-> [...]
-> +SEC("?tc")
-> +__failure __msg("Unreleased reference id=3 alloc_insn=21")
-> +long rbtree_refcounted_node_ref_escapes(void *ctx)
+>  tools/bpf/bpftool/main.c | 16 ++++++++++++++++
+>  tools/bpf/bpftool/main.h |  1 +
+>  tools/bpf/bpftool/map.c  |  9 +++++++--
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 08d0ac543c67..d297200c91f7 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -251,6 +251,22 @@ int detect_common_prefix(const char *arg, ...)
+>         return 0;
+>  }
+>
+> +void fprint_uint(FILE *f, void *arg, unsigned int n)
+
+I suppose you based this function on fprint_hex(). But for your
+function, let's remove the first argument? We always print to stdout.
+We can always turn it to a "fprint" version again if we need to print
+elsewhere in the future.
+
+Also, "arg" should probably be a "const"?
+
+Can you please rename "n" to "arg_size" or something similar?
+
 > +{
-> +	struct node_acquire *n, *m;
+> +       unsigned char *data = arg;
+> +       unsigned int data_uint = 0;
 > +
-> +	n = bpf_obj_new(typeof(*n));
-> +	if (!n)
-> +		return 1;
+> +       for (unsigned int i = 0; i < n && i < 4; i++) {
+
+Please move the declaration for "i" to the top of the function, for consistency.
+
+Also, why stop at i == 4? Couldn't this function be used for 8-byte
+long integers too? It should be up to the caller function to set "n"
+correctly.
+
+> +       #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+> +               data_uint |= data[i] << (i * 8);
+> +       #else
+> +               data_uint |= data[i] << ((n - i - 1) * 8);
+> +       #endif
+> +       }
 > +
-> +	bpf_spin_lock(&glock);
-> +	bpf_rbtree_add(&groot, &n->node, less);
-> +	/* m becomes an owning ref but is never drop'd or added to a tree */
-> +	m = bpf_refcount_acquire(n);
-
-I am analyzing the set (and I'll reply in detail to the cover letter), but this
-stood out.
-
-Isn't this going to be problematic if n has refcount == 1 and is dropped
-internally by bpf_rbtree_add? Are we sure this can never occur? It took me some
-time, but the following schedule seems problematic.
-
-CPU 0					CPU 1
-n = bpf_obj_new
-lock(lock1)
-bpf_rbtree_add(rbtree1, n)
-m = bpf_rbtree_acquire(n)
-unlock(lock1)
-
-kptr_xchg(map, m) // move to map
-// at this point, refcount = 2
-					m = kptr_xchg(map, NULL)
-					lock(lock2)
-lock(lock1)				bpf_rbtree_add(rbtree2, m)
-p = bpf_rbtree_first(rbtree1)			if (!RB_EMPTY_NODE) bpf_obj_drop_impl(m) // A
-bpf_rbtree_remove(rbtree1, p)
-unlock(lock1)
-bpf_obj_drop(p) // B
-					bpf_refcount_acquire(m) // use-after-free
-					...
-
-B will decrement refcount from 1 to 0, after which bpf_refcount_acquire is
-basically performing a use-after-free (when fortunate, one will get a
-WARN_ON_ONCE splat for 0 to 1, otherwise, a silent refcount raise for some
-different object).
+> +       fprintf(f, "%d", data_uint);
+> +}
+> +
+>  void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
+>  {
+>         unsigned char *data = arg;
+> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+> index 0ef373cef4c7..7488ef38e7a9 100644
+> --- a/tools/bpf/bpftool/main.h
+> +++ b/tools/bpf/bpftool/main.h
+> @@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
+>
+>  bool is_prefix(const char *pfx, const char *str);
+>  int detect_common_prefix(const char *arg, ...);
+> +void fprint_uint(FILE *f, void *arg, unsigned int n);
+>  void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
+>  void usage(void) __noreturn;
+>
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index aaeb8939e137..638bd8de8135 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+> @@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
+>                 }
+>
+>                 if (info->value_size) {
+> -                       printf("value:%c", break_names ? '\n' : ' ');
+> -                       fprint_hex(stdout, value, info->value_size, " ");
+> +                       if (map_is_map_of_maps(info->type)) {
+> +                               printf("id:%c", break_names ? '\n' : ' ');
+> +                               fprint_uint(stdout, value, info->value_size);
+> +                       } else {
+> +                               printf("value:%c", break_names ? '\n' : ' ');
+> +                               fprint_hex(stdout, value, info->value_size, " ");
+> +                       }
+>                 }
+>
+>                 printf("\n");
+> --
+> 2.37.1 (Apple Git-137.1)
+>
