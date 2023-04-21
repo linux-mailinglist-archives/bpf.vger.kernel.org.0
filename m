@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCF66EB0DE
+	by mail.lfdr.de (Postfix) with ESMTP id D08E46EB0DF
 	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 19:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjDURn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 13:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S229805AbjDURn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 13:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbjDURnM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S233355AbjDURnM (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 21 Apr 2023 13:43:12 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1A355AF
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:42:56 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f1957e80a2so18116835e9.1
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:42:56 -0700 (PDT)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1D759C9
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:42:57 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f195b164c4so3999745e9.1
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 10:42:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682098975; x=1684690975;
+        d=gmail.com; s=20221208; t=1682098976; x=1684690976;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NeJvSxjx784sBWolWdaqQIutCvZLOHAA7uZsJzJtHT8=;
-        b=g8IjyA/9M3Qvk5z1avhsPIyn3bKYnXiDY+e8d2LUgCGQz+B8D16NUrrpEFJ74JZrBy
-         DkFRskPnr8s5v4U0NTjZqDtY2CBd3Pgt1hXz94VdkgkZqh4JsCM/SqAq0C0clpGHXqpx
-         b5X81acwArS21uLC6Pe7qyN9Twf5IJdxeGCcVqwZnCdg4jh5BUzkIXPg8YtJDP/fUFdl
-         ItX9woF99fgqn0srvAvOBTiBBh+wywG9MeTUnqd9WZnQfsx4D19tpILplnenx+8alJCZ
-         1N+tcjRl855hLKIDCJYOirkV/EA1KG9WnGcc4sBNte9ph8KTC/TE0dLZZ50jLR/NNwQB
-         fceA==
+        bh=FtHegdPWnCoIIvj3+l4JBdWz9kJSGRAe8dNbroWWinI=;
+        b=O06I/38hNs7T5SlnDyk9JfEPJ6txHOmp1g+wrro+zP6HiR8dUXSnsCuFPoLsdv1wcU
+         N+xBb1PeZt0uMsMZrztqkocOybDvwTWB7bkTVAZSMqZUFoNBTRnnBiEG/nbnS9SSwtOA
+         racdFnFmD3CiT1hbLb27eYLI7MS7+oRqIhNMs2fosRpI0O/aVOOfALNn8va7gLPIZn+O
+         lP7duSnAcjXgemwOaFdNrXUuPO0VlDtwsjFP8b08rXvWJ3HKWL4VFXa4ZuddbsD1upoY
+         RDmEvaKuey4uPZBfBZ43kzfnCt4Sldpjp2qmq4+6H3WaYSfnDpeonHfpw6N3cQ2H3/U0
+         hoFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682098975; x=1684690975;
+        d=1e100.net; s=20221208; t=1682098976; x=1684690976;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NeJvSxjx784sBWolWdaqQIutCvZLOHAA7uZsJzJtHT8=;
-        b=i0z16YCXFMH/GzXaCfhPesWCb9hIfhl6jXpwnQvNpjr/nId+RsJh7VeZwKTrEOQJPn
-         2QwTC7iTm9lW63BdfH7gBr4rro4aHAwWrGV8MUJbOa58LQVGrIxrZ6HcMtaromYhyp03
-         J4A57r32BSTY2TQwF2qMkIIf+1XNdn34DCsEoDSGKx/oztVFa5/U360vFS+4MqTxuTTB
-         PV4HORxSdcFSnqaUSv4y0yJLngxHtONpK3on2tv8a+/qVkuYcaIKstD7a7ZBVxv4a8PF
-         6x12EChUl5cvUVbC7+JbM3vh8MiddJM+hM4kbDPsZYsXIcvHLe5Sif9rXHLM8ayU9UAj
-         A2bw==
-X-Gm-Message-State: AAQBX9emKFaI2H4fPs7pMQ4hqjs1ZtA3fVbKVkixVP/ftZaWaYPMEv+x
-        aYVZ3wk4U9LK+R/v6ImpsWdH584N2OwPBQ==
-X-Google-Smtp-Source: AKy350YE0MuzpAgNqI4On5gAEvrr6Ay4EZqy0s8WiR4RBPKxyfMQZygw5WQSCBECUVZyxKP9g/TGYQ==
-X-Received: by 2002:a5d:4645:0:b0:2cf:efa5:5322 with SMTP id j5-20020a5d4645000000b002cfefa55322mr8421264wrs.14.1682098974771;
-        Fri, 21 Apr 2023 10:42:54 -0700 (PDT)
+        bh=FtHegdPWnCoIIvj3+l4JBdWz9kJSGRAe8dNbroWWinI=;
+        b=Byxw1jfcckmqylS+mzkRe5+DGLFHPs2ama2cGL+s/MkzhZRC0tceTfezBDek5gJYkd
+         Hqr9SDlgoMkBqB/3TYaXTHxFBnOGJTSO+G5UZNubB8d1aHeh2vbjFIX34FKm78mtVXN4
+         LJ1yBTWgFYnzDM4UslXD9Lmpx44Tpqdm+dIL8d2rkxJAOpnDteuqHIAqt2SMwIpzkRpI
+         wO9KgOJUyfUFAI15JWK+0WwYrTIN2z8fHxiTKWLTUMim/mNmHCORK/w+ufoMXdwLmtwR
+         ymlKt22o19L4sh5YUbYyJPBefv3CoZo9NL7ujMweLG+Z7+cZCtof+bmPGOs/VGrM+aQs
+         uAlg==
+X-Gm-Message-State: AAQBX9fgAOHRjqpAw8EyFF+FMZNdjMtCIoSaKfY9A39EBEQeggFdjUZ7
+        x+D/uDD4chhhjGyUzdipWX2YC7zLu5OVjw==
+X-Google-Smtp-Source: AKy350aaYkGYJJkEaBcJiC90JIhfcwPq2MlV8RRcE++BNT9V2XJP807fc1QBGefkqtuGK8q6OxJvLg==
+X-Received: by 2002:a7b:c38e:0:b0:3f1:718d:a21c with SMTP id s14-20020a7bc38e000000b003f1718da21cmr2609436wmj.31.1682098975917;
+        Fri, 21 Apr 2023 10:42:55 -0700 (PDT)
 Received: from bigfoot.. (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id f4-20020a0560001b0400b002ffbf2213d4sm4849933wrz.75.2023.04.21.10.42.53
+        by smtp.gmail.com with ESMTPSA id f4-20020a0560001b0400b002ffbf2213d4sm4849933wrz.75.2023.04.21.10.42.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 10:42:54 -0700 (PDT)
+        Fri, 21 Apr 2023 10:42:55 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org
 Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         kernel-team@fb.com, yhs@fb.com,
         Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 08/24] selftests/bpf: verifier/jeq_infer_not_null converted to inline assembly
-Date:   Fri, 21 Apr 2023 20:42:18 +0300
-Message-Id: <20230421174234.2391278-9-eddyz87@gmail.com>
+Subject: [PATCH bpf-next 09/24] selftests/bpf: verifier/loops1 converted to inline assembly
+Date:   Fri, 21 Apr 2023 20:42:19 +0300
+Message-Id: <20230421174234.2391278-10-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230421174234.2391278-1-eddyz87@gmail.com>
 References: <20230421174234.2391278-1-eddyz87@gmail.com>
@@ -72,435 +72,525 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test verifier/jeq_infer_not_null automatically converted to use inline assembly.
+Test verifier/loops1 automatically converted to use inline assembly.
+
+There are a few modifications for the converted tests.
+"tracepoint" programs do not support test execution, change program
+type to "xdp" (which supports test execution) for the following tests
+that have __retval tags:
+- bounded loop, count to 4
+- bonded loop containing forward jump
+
+Also, remove the __retval tag for test:
+- bounded loop, count from positive unknown to 4
+
+As it's return value is a random number.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
  .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../bpf/progs/verifier_jeq_infer_not_null.c   | 213 ++++++++++++++++++
- .../bpf/verifier/jeq_infer_not_null.c         | 174 --------------
- 3 files changed, 215 insertions(+), 174 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_jeq_infer_not_null.c
- delete mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+ .../selftests/bpf/progs/verifier_loops1.c     | 259 ++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/loops1.c | 206 --------------
+ 3 files changed, 261 insertions(+), 206 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_loops1.c
+ delete mode 100644 tools/testing/selftests/bpf/verifier/loops1.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 2c9e61b9a83e..de5db0de98a1 100644
+index de5db0de98a1..33a50dbc2321 100644
 --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
 +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -29,6 +29,7 @@
- #include "verifier_helper_restricted.skel.h"
- #include "verifier_helper_value_access.skel.h"
- #include "verifier_int_ptr.skel.h"
-+#include "verifier_jeq_infer_not_null.skel.h"
+@@ -32,6 +32,7 @@
+ #include "verifier_jeq_infer_not_null.skel.h"
  #include "verifier_ld_ind.skel.h"
  #include "verifier_leak_ptr.skel.h"
++#include "verifier_loops1.skel.h"
  #include "verifier_map_ptr.skel.h"
-@@ -109,6 +110,7 @@ void test_verifier_helper_packet_access(void) { RUN(verifier_helper_packet_acces
- void test_verifier_helper_restricted(void)    { RUN(verifier_helper_restricted); }
- void test_verifier_helper_value_access(void)  { RUN(verifier_helper_value_access); }
- void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
-+void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_not_null); }
+ #include "verifier_map_ret_val.skel.h"
+ #include "verifier_masking.skel.h"
+@@ -113,6 +114,7 @@ void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
+ void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_not_null); }
  void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
  void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); }
++void test_verifier_loops1(void)               { RUN(verifier_loops1); }
  void test_verifier_map_ptr(void)              { RUN(verifier_map_ptr); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_jeq_infer_not_null.c b/tools/testing/selftests/bpf/progs/verifier_jeq_infer_not_null.c
+ void test_verifier_map_ret_val(void)          { RUN(verifier_map_ret_val); }
+ void test_verifier_masking(void)              { RUN(verifier_masking); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_loops1.c b/tools/testing/selftests/bpf/progs/verifier_loops1.c
 new file mode 100644
-index 000000000000..bf16b00502f2
+index 000000000000..5bc86af80a9a
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_jeq_infer_not_null.c
-@@ -0,0 +1,213 @@
++++ b/tools/testing/selftests/bpf/progs/verifier_loops1.c
+@@ -0,0 +1,259 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/* Converted from tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c */
++/* Converted from tools/testing/selftests/bpf/verifier/loops1.c */
 +
 +#include <linux/bpf.h>
 +#include <bpf/bpf_helpers.h>
 +#include "bpf_misc.h"
 +
-+struct {
-+	__uint(type, BPF_MAP_TYPE_XSKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, int);
-+} map_xskmap SEC(".maps");
-+
-+/* This is equivalent to the following program:
-+ *
-+ *   r6 = skb->sk;
-+ *   r7 = sk_fullsock(r6);
-+ *   r0 = sk_fullsock(r6);
-+ *   if (r0 == 0) return 0;    (a)
-+ *   if (r0 != r7) return 0;   (b)
-+ *   *r7->type;                (c)
-+ *   return 0;
-+ *
-+ * It is safe to dereference r7 at point (c), because of (a) and (b).
-+ * The test verifies that relation r0 == r7 is propagated from (b) to (c).
-+ */
-+SEC("cgroup/skb")
-+__description("jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL -> PTR_TO_SOCKET for JNE false branch")
-+__success __failure_unpriv __msg_unpriv("R7 pointer comparison")
-+__retval(0)
-+__naked void socket_for_jne_false_branch(void)
-+{
-+	asm volatile ("					\
-+	/* r6 = skb->sk; */				\
-+	r6 = *(u64*)(r1 + %[__sk_buff_sk]);		\
-+	/* if (r6 == 0) return 0; */			\
-+	if r6 == 0 goto l0_%=;				\
-+	/* r7 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	r7 = r0;					\
-+	/* r0 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	/* if (r0 == null) return 0; */			\
-+	if r0 == 0 goto l0_%=;				\
-+	/* if (r0 == r7) r0 = *(r7->type); */		\
-+	if r0 != r7 goto l0_%=;		/* Use ! JNE ! */\
-+	r0 = *(u32*)(r7 + %[bpf_sock_type]);		\
-+l0_%=:	/* return 0 */					\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_sk_fullsock),
-+	  __imm_const(__sk_buff_sk, offsetof(struct __sk_buff, sk)),
-+	  __imm_const(bpf_sock_type, offsetof(struct bpf_sock, type))
-+	: __clobber_all);
-+}
-+
-+/* Same as above, but verify that another branch of JNE still
-+ * prohibits access to PTR_MAYBE_NULL.
-+ */
-+SEC("cgroup/skb")
-+__description("jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL unchanged for JNE true branch")
-+__failure __msg("R7 invalid mem access 'sock_or_null'")
-+__failure_unpriv __msg_unpriv("R7 pointer comparison")
-+__naked void unchanged_for_jne_true_branch(void)
-+{
-+	asm volatile ("					\
-+	/* r6 = skb->sk */				\
-+	r6 = *(u64*)(r1 + %[__sk_buff_sk]);		\
-+	/* if (r6 == 0) return 0; */			\
-+	if r6 == 0 goto l0_%=;				\
-+	/* r7 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	r7 = r0;					\
-+	/* r0 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	/* if (r0 == null) return 0; */			\
-+	if r0 != 0 goto l0_%=;				\
-+	/* if (r0 == r7) return 0; */			\
-+	if r0 != r7 goto l1_%=;		/* Use ! JNE ! */\
-+	goto l0_%=;					\
-+l1_%=:	/* r0 = *(r7->type); */				\
-+	r0 = *(u32*)(r7 + %[bpf_sock_type]);		\
-+l0_%=:	/* return 0 */					\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_sk_fullsock),
-+	  __imm_const(__sk_buff_sk, offsetof(struct __sk_buff, sk)),
-+	  __imm_const(bpf_sock_type, offsetof(struct bpf_sock, type))
-+	: __clobber_all);
-+}
-+
-+/* Same as a first test, but not null should be inferred for JEQ branch */
-+SEC("cgroup/skb")
-+__description("jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL -> PTR_TO_SOCKET for JEQ true branch")
-+__success __failure_unpriv __msg_unpriv("R7 pointer comparison")
-+__retval(0)
-+__naked void socket_for_jeq_true_branch(void)
-+{
-+	asm volatile ("					\
-+	/* r6 = skb->sk; */				\
-+	r6 = *(u64*)(r1 + %[__sk_buff_sk]);		\
-+	/* if (r6 == null) return 0; */			\
-+	if r6 == 0 goto l0_%=;				\
-+	/* r7 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	r7 = r0;					\
-+	/* r0 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	/* if (r0 == null) return 0; */			\
-+	if r0 == 0 goto l0_%=;				\
-+	/* if (r0 != r7) return 0; */			\
-+	if r0 == r7 goto l1_%=;		/* Use ! JEQ ! */\
-+	goto l0_%=;					\
-+l1_%=:	/* r0 = *(r7->type); */				\
-+	r0 = *(u32*)(r7 + %[bpf_sock_type]);		\
-+l0_%=:	/* return 0; */					\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_sk_fullsock),
-+	  __imm_const(__sk_buff_sk, offsetof(struct __sk_buff, sk)),
-+	  __imm_const(bpf_sock_type, offsetof(struct bpf_sock, type))
-+	: __clobber_all);
-+}
-+
-+/* Same as above, but verify that another branch of JNE still
-+ * prohibits access to PTR_MAYBE_NULL.
-+ */
-+SEC("cgroup/skb")
-+__description("jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL unchanged for JEQ false branch")
-+__failure __msg("R7 invalid mem access 'sock_or_null'")
-+__failure_unpriv __msg_unpriv("R7 pointer comparison")
-+__naked void unchanged_for_jeq_false_branch(void)
-+{
-+	asm volatile ("					\
-+	/* r6 = skb->sk; */				\
-+	r6 = *(u64*)(r1 + %[__sk_buff_sk]);		\
-+	/* if (r6 == null) return 0; */			\
-+	if r6 == 0 goto l0_%=;				\
-+	/* r7 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	r7 = r0;					\
-+	/* r0 = sk_fullsock(skb); */			\
-+	r1 = r6;					\
-+	call %[bpf_sk_fullsock];			\
-+	/* if (r0 == null) return 0; */			\
-+	if r0 == 0 goto l0_%=;				\
-+	/* if (r0 != r7) r0 = *(r7->type); */		\
-+	if r0 == r7 goto l0_%=;		/* Use ! JEQ ! */\
-+	r0 = *(u32*)(r7 + %[bpf_sock_type]);		\
-+l0_%=:	/* return 0; */					\
-+	r0 = 0;						\
-+	exit;						\
-+"	:
-+	: __imm(bpf_sk_fullsock),
-+	  __imm_const(__sk_buff_sk, offsetof(struct __sk_buff, sk)),
-+	  __imm_const(bpf_sock_type, offsetof(struct bpf_sock, type))
-+	: __clobber_all);
-+}
-+
-+/* Maps are treated in a different branch of `mark_ptr_not_null_reg`,
-+ * so separate test for maps case.
-+ */
 +SEC("xdp")
-+__description("jne/jeq infer not null, PTR_TO_MAP_VALUE_OR_NULL -> PTR_TO_MAP_VALUE")
-+__success __retval(0)
-+__naked void null_ptr_to_map_value(void)
++__description("bounded loop, count to 4")
++__success __retval(4)
++__naked void bounded_loop_count_to_4(void)
 +{
 +	asm volatile ("					\
-+	/* r9 = &some stack to use as key */		\
-+	r1 = 0;						\
-+	*(u32*)(r10 - 8) = r1;				\
-+	r9 = r10;					\
-+	r9 += -8;					\
-+	/* r8 = process local map */			\
-+	r8 = %[map_xskmap] ll;				\
-+	/* r6 = map_lookup_elem(r8, r9); */		\
-+	r1 = r8;					\
-+	r2 = r9;					\
-+	call %[bpf_map_lookup_elem];			\
-+	r6 = r0;					\
-+	/* r7 = map_lookup_elem(r8, r9); */		\
-+	r1 = r8;					\
-+	r2 = r9;					\
-+	call %[bpf_map_lookup_elem];			\
-+	r7 = r0;					\
-+	/* if (r6 == 0) return 0; */			\
-+	if r6 == 0 goto l0_%=;				\
-+	/* if (r6 != r7) return 0; */			\
-+	if r6 != r7 goto l0_%=;				\
-+	/* read *r7; */					\
-+	r0 = *(u32*)(r7 + %[bpf_xdp_sock_queue_id]);	\
-+l0_%=:	/* return 0; */					\
 +	r0 = 0;						\
++l0_%=:	r0 += 1;					\
++	if r0 < 4 goto l0_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop, count to 20")
++__success
++__naked void bounded_loop_count_to_20(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++l0_%=:	r0 += 3;					\
++	if r0 < 20 goto l0_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop, count from positive unknown to 4")
++__success
++__naked void from_positive_unknown_to_4(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	if r0 s< 0 goto l0_%=;				\
++l1_%=:	r0 += 1;					\
++	if r0 < 4 goto l1_%=;				\
++l0_%=:	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop, count from totally unknown to 4")
++__success
++__naked void from_totally_unknown_to_4(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++l0_%=:	r0 += 1;					\
++	if r0 < 4 goto l0_%=;				\
 +	exit;						\
 +"	:
-+	: __imm(bpf_map_lookup_elem),
-+	  __imm_addr(map_xskmap),
-+	  __imm_const(bpf_xdp_sock_queue_id, offsetof(struct bpf_xdp_sock, queue_id))
++	: __imm(bpf_get_prandom_u32)
 +	: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop, count to 4 with equality")
++__success
++__naked void count_to_4_with_equality(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++l0_%=:	r0 += 1;					\
++	if r0 != 4 goto l0_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop, start in the middle")
++__failure __msg("back-edge")
++__naked void loop_start_in_the_middle(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++	goto l0_%=;					\
++l1_%=:	r0 += 1;					\
++l0_%=:	if r0 < 4 goto l1_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("xdp")
++__description("bounded loop containing a forward jump")
++__success __retval(4)
++__naked void loop_containing_a_forward_jump(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++l1_%=:	r0 += 1;					\
++	if r0 == r0 goto l0_%=;				\
++l0_%=:	if r0 < 4 goto l1_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded loop that jumps out rather than in")
++__success
++__naked void jumps_out_rather_than_in(void)
++{
++	asm volatile ("					\
++	r6 = 0;						\
++l1_%=:	r6 += 1;					\
++	if r6 > 10000 goto l0_%=;			\
++	call %[bpf_get_prandom_u32];			\
++	goto l1_%=;					\
++l0_%=:	exit;						\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("infinite loop after a conditional jump")
++__failure __msg("program is too large")
++__naked void loop_after_a_conditional_jump(void)
++{
++	asm volatile ("					\
++	r0 = 5;						\
++	if r0 < 4 goto l0_%=;				\
++l1_%=:	r0 += 1;					\
++	goto l1_%=;					\
++l0_%=:	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("bounded recursion")
++__failure __msg("back-edge")
++__naked void bounded_recursion(void)
++{
++	asm volatile ("					\
++	r1 = 0;						\
++	call bounded_recursion__1;			\
++	exit;						\
++"	::: __clobber_all);
++}
++
++static __naked __noinline __attribute__((used))
++void bounded_recursion__1(void)
++{
++	asm volatile ("					\
++	r1 += 1;					\
++	r0 = r1;					\
++	if r1 < 4 goto l0_%=;				\
++	exit;						\
++l0_%=:	call bounded_recursion__1;			\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("infinite loop in two jumps")
++__failure __msg("loop detected")
++__naked void infinite_loop_in_two_jumps(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++l1_%=:	goto l0_%=;					\
++l0_%=:	if r0 < 4 goto l1_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("tracepoint")
++__description("infinite loop: three-jump trick")
++__failure __msg("loop detected")
++__naked void infinite_loop_three_jump_trick(void)
++{
++	asm volatile ("					\
++	r0 = 0;						\
++l2_%=:	r0 += 1;					\
++	r0 &= 1;					\
++	if r0 < 2 goto l0_%=;				\
++	exit;						\
++l0_%=:	r0 += 1;					\
++	r0 &= 1;					\
++	if r0 < 2 goto l1_%=;				\
++	exit;						\
++l1_%=:	r0 += 1;					\
++	r0 &= 1;					\
++	if r0 < 2 goto l2_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("xdp")
++__description("not-taken loop with back jump to 1st insn")
++__success __retval(123)
++__naked void back_jump_to_1st_insn_1(void)
++{
++	asm volatile ("					\
++l0_%=:	r0 = 123;					\
++	if r0 == 4 goto l0_%=;				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("xdp")
++__description("taken loop with back jump to 1st insn")
++__success __retval(55)
++__naked void back_jump_to_1st_insn_2(void)
++{
++	asm volatile ("					\
++	r1 = 10;					\
++	r2 = 0;						\
++	call back_jump_to_1st_insn_2__1;		\
++	exit;						\
++"	::: __clobber_all);
++}
++
++static __naked __noinline __attribute__((used))
++void back_jump_to_1st_insn_2__1(void)
++{
++	asm volatile ("					\
++l0_%=:	r2 += r1;					\
++	r1 -= 1;					\
++	if r1 != 0 goto l0_%=;				\
++	r0 = r2;					\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("xdp")
++__description("taken loop with back jump to 1st insn, 2")
++__success __retval(55)
++__naked void jump_to_1st_insn_2(void)
++{
++	asm volatile ("					\
++	r1 = 10;					\
++	r2 = 0;						\
++	call jump_to_1st_insn_2__1;			\
++	exit;						\
++"	::: __clobber_all);
++}
++
++static __naked __noinline __attribute__((used))
++void jump_to_1st_insn_2__1(void)
++{
++	asm volatile ("					\
++l0_%=:	r2 += r1;					\
++	r1 -= 1;					\
++	if w1 != 0 goto l0_%=;				\
++	r0 = r2;					\
++	exit;						\
++"	::: __clobber_all);
 +}
 +
 +char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c b/tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+diff --git a/tools/testing/selftests/bpf/verifier/loops1.c b/tools/testing/selftests/bpf/verifier/loops1.c
 deleted file mode 100644
-index 67a1c07ead34..000000000000
---- a/tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+index 1af37187dc12..000000000000
+--- a/tools/testing/selftests/bpf/verifier/loops1.c
 +++ /dev/null
-@@ -1,174 +0,0 @@
+@@ -1,206 +0,0 @@
 -{
--	/* This is equivalent to the following program:
--	 *
--	 *   r6 = skb->sk;
--	 *   r7 = sk_fullsock(r6);
--	 *   r0 = sk_fullsock(r6);
--	 *   if (r0 == 0) return 0;    (a)
--	 *   if (r0 != r7) return 0;   (b)
--	 *   *r7->type;                (c)
--	 *   return 0;
--	 *
--	 * It is safe to dereference r7 at point (c), because of (a) and (b).
--	 * The test verifies that relation r0 == r7 is propagated from (b) to (c).
--	 */
--	"jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL -> PTR_TO_SOCKET for JNE false branch",
+-	"bounded loop, count to 4",
 -	.insns = {
--	/* r6 = skb->sk; */
--	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct __sk_buff, sk)),
--	/* if (r6 == 0) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_6, 0, 8),
--	/* r7 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--	/* r0 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	/* if (r0 == null) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
--	/* if (r0 == r7) r0 = *(r7->type); */
--	BPF_JMP_REG(BPF_JNE, BPF_REG_0, BPF_REG_7, 1), /* Use ! JNE ! */
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_7, offsetof(struct bpf_sock, type)),
--	/* return 0 */
 -	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -2),
 -	BPF_EXIT_INSN(),
 -	},
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R7 pointer comparison",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-	.retval = 4,
 -},
 -{
--	/* Same as above, but verify that another branch of JNE still
--	 * prohibits access to PTR_MAYBE_NULL.
--	 */
--	"jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL unchanged for JNE true branch",
+-	"bounded loop, count to 20",
 -	.insns = {
--	/* r6 = skb->sk */
--	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct __sk_buff, sk)),
--	/* if (r6 == 0) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_6, 0, 9),
--	/* r7 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--	/* r0 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	/* if (r0 == null) return 0; */
--	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 3),
--	/* if (r0 == r7) return 0; */
--	BPF_JMP_REG(BPF_JNE, BPF_REG_0, BPF_REG_7, 1), /* Use ! JNE ! */
--	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
--	/* r0 = *(r7->type); */
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_7, offsetof(struct bpf_sock, type)),
--	/* return 0 */
 -	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 3),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 20, -2),
 -	BPF_EXIT_INSN(),
 -	},
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
--	.result = REJECT,
--	.errstr = "R7 invalid mem access 'sock_or_null'",
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R7 pointer comparison",
--},
--{
--	/* Same as a first test, but not null should be inferred for JEQ branch */
--	"jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL -> PTR_TO_SOCKET for JEQ true branch",
--	.insns = {
--	/* r6 = skb->sk; */
--	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct __sk_buff, sk)),
--	/* if (r6 == null) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_6, 0, 9),
--	/* r7 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--	/* r0 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	/* if (r0 == null) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 3),
--	/* if (r0 != r7) return 0; */
--	BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_7, 1), /* Use ! JEQ ! */
--	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
--	/* r0 = *(r7->type); */
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_7, offsetof(struct bpf_sock, type)),
--	/* return 0; */
--	BPF_MOV64_IMM(BPF_REG_0, 0),
--	BPF_EXIT_INSN(),
--	},
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
 -	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R7 pointer comparison",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
 -},
 -{
--	/* Same as above, but verify that another branch of JNE still
--	 * prohibits access to PTR_MAYBE_NULL.
--	 */
--	"jne/jeq infer not null, PTR_TO_SOCKET_OR_NULL unchanged for JEQ false branch",
+-	"bounded loop, count from positive unknown to 4",
 -	.insns = {
--	/* r6 = skb->sk; */
--	BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct __sk_buff, sk)),
--	/* if (r6 == null) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_6, 0, 8),
--	/* r7 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--	/* r0 = sk_fullsock(skb); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
--	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
--	/* if (r0 == null) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
--	/* if (r0 != r7) r0 = *(r7->type); */
--	BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_7, 1), /* Use ! JEQ ! */
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_7, offsetof(struct bpf_sock, type)),
--	/* return 0; */
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
+-	BPF_JMP_IMM(BPF_JSLT, BPF_REG_0, 0, 2),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -2),
 -	BPF_EXIT_INSN(),
 -	},
--	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-	.retval = 4,
+-},
+-{
+-	"bounded loop, count from totally unknown to 4",
+-	.insns = {
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -2),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"bounded loop, count to 4 with equality",
+-	.insns = {
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 4, -2),
+-		BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"bounded loop, start in the middle",
+-	.insns = {
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_JMP_A(1),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-		BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -2),
+-		BPF_EXIT_INSN(),
+-	},
 -	.result = REJECT,
--	.errstr = "R7 invalid mem access 'sock_or_null'",
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R7 pointer comparison",
+-	.errstr = "back-edge",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-	.retval = 4,
 -},
 -{
--	/* Maps are treated in a different branch of `mark_ptr_not_null_reg`,
--	 * so separate test for maps case.
--	 */
--	"jne/jeq infer not null, PTR_TO_MAP_VALUE_OR_NULL -> PTR_TO_MAP_VALUE",
+-	"bounded loop containing a forward jump",
 -	.insns = {
--	/* r9 = &some stack to use as key */
--	BPF_ST_MEM(BPF_W, BPF_REG_10, -8, 0),
--	BPF_MOV64_REG(BPF_REG_9, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_9, -8),
--	/* r8 = process local map */
--	BPF_LD_MAP_FD(BPF_REG_8, 0),
--	/* r6 = map_lookup_elem(r8, r9); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_8),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_9),
--	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
--	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
--	/* r7 = map_lookup_elem(r8, r9); */
--	BPF_MOV64_REG(BPF_REG_1, BPF_REG_8),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_9),
--	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
--	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--	/* if (r6 == 0) return 0; */
--	BPF_JMP_IMM(BPF_JEQ, BPF_REG_6, 0, 2),
--	/* if (r6 != r7) return 0; */
--	BPF_JMP_REG(BPF_JNE, BPF_REG_6, BPF_REG_7, 1),
--	/* read *r7; */
--	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_7, offsetof(struct bpf_xdp_sock, queue_id)),
--	/* return 0; */
--	BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-		BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_0, 0),
+-		BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -3),
+-		BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-	.retval = 4,
+-},
+-{
+-	"bounded loop that jumps out rather than in",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_6, 0),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 1),
+-	BPF_JMP_IMM(BPF_JGT, BPF_REG_6, 10000, 2),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_prandom_u32),
+-	BPF_JMP_A(-4),
 -	BPF_EXIT_INSN(),
 -	},
--	.fixup_map_xskmap = { 3 },
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"infinite loop after a conditional jump",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_0, 5),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, 2),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_JMP_A(-2),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "program is too large",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"bounded recursion",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_1, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_1, 4, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, -5),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "back-edge",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"infinite loop in two jumps",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_JMP_A(0),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 4, -2),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "loop detected",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"infinite loop: three-jump trick",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_0, 0),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 2, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 2, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 1),
+-	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 1),
+-	BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 2, -11),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = REJECT,
+-	.errstr = "loop detected",
+-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+-},
+-{
+-	"not-taken loop with back jump to 1st insn",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_0, 123),
+-	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 4, -2),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
 -	.prog_type = BPF_PROG_TYPE_XDP,
+-	.retval = 123,
+-},
+-{
+-	"taken loop with back jump to 1st insn",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_1, 10),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
+-	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -3),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
+-	BPF_EXIT_INSN(),
+-	},
 -	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_XDP,
+-	.retval = 55,
+-},
+-{
+-	"taken loop with back jump to 1st insn, 2",
+-	.insns = {
+-	BPF_MOV64_IMM(BPF_REG_1, 10),
+-	BPF_MOV64_IMM(BPF_REG_2, 0),
+-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 1, 0, 1),
+-	BPF_EXIT_INSN(),
+-	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_1),
+-	BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
+-	BPF_JMP32_IMM(BPF_JNE, BPF_REG_1, 0, -3),
+-	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
+-	BPF_EXIT_INSN(),
+-	},
+-	.result = ACCEPT,
+-	.prog_type = BPF_PROG_TYPE_XDP,
+-	.retval = 55,
 -},
 -- 
 2.40.0
