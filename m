@@ -2,82 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E08B6EACFC
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D946B6EACFF
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjDUOcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 10:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
+        id S231991AbjDUOdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 10:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjDUOct (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 10:32:49 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D781700;
-        Fri, 21 Apr 2023 07:32:11 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-63b4bf2d74aso1915174b3a.2;
-        Fri, 21 Apr 2023 07:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682087527; x=1684679527;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PKDz2VHpFBglJoWx92yV80JbTCBVsrzDLB/aXuxYn7k=;
-        b=ltXM4AlOnELHD2rT+GbhgCb88ip1hWJV7dJsLlerzzZcvSs3NxFybmmyGrqG/ItvOy
-         2cTdRD2HBNGQ3fI1XEePdUp98Wqc2rUXhTVs/SBFmISGKDrfS/BjgNtkfxocmZCi8kua
-         BvksrgLW5e/H4mzcB/ZMw9HMO+4xSidWtr5Uz/6nO6POZzjEGUFFSxCLwWLL5mwAG9dd
-         3i5PxmWJGeeRTYLVyaZ3rv/jKgcFMEwWDS45ujq6euEu8KQxYSvzoAjGf8/+lPPLGoHR
-         oYYQ18dAwopIIgGlm4IisWOFF5GO4HSsEZLrNtSeGCr/rRK2nVYzDmeETxq5/i52p3yA
-         sRSg==
+        with ESMTP id S232509AbjDUOdb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 10:33:31 -0400
+Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E1C14452
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 07:32:54 -0700 (PDT)
+Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-329326caa4aso14719405ab.0
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 07:32:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682087527; x=1684679527;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PKDz2VHpFBglJoWx92yV80JbTCBVsrzDLB/aXuxYn7k=;
-        b=ECmmISS1zXsz1skAvz72ogGDzUUpTh3F+BHMgeBaQwKit2EOY1mqcYAEtHuxX6Xs5W
-         lisRJdKyAr7VAuZZ1L2I3vljxKLnXuQYLm1wxmmqulMbToOYa4bqsyEfJ9GKiIAmnBuR
-         vj7/2D9jFM8iVdlSn90U0jvDAOmI2qaqjG2m7aaHDjIJJvxaBRLUijHYSpa/nRK0v9O0
-         6QXZ9TKuoJt1JKJIkDhNfC650bIGTp7bvtp/rhC9wH6yoQjciv0mfmAOyiY9C16w0bMY
-         q/WOcXshkrPyG0rO53sHJxdxpubkFSVpMcDo/Q6+4z/yCPCUWnfO8HRq+6NrYKXH3fdR
-         emXw==
-X-Gm-Message-State: AAQBX9fv/OzoivjgKM6qD33N05cTRB2sqVJOPzkH2cnFMMMr5uplQnBD
-        /yuMAGSf2tESFiTe7X2NrtE=
-X-Google-Smtp-Source: AKy350ZCsPjHGHo3yUgkWG/vVX55EVxASCuC+pXoAwL+OTbbpyG9pnlp4y8BUcCz0XORvQXbwzlc9Q==
-X-Received: by 2002:a17:902:e80a:b0:1a8:32e:3256 with SMTP id u10-20020a170902e80a00b001a8032e3256mr6665679plg.35.1682087527036;
-        Fri, 21 Apr 2023 07:32:07 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id g18-20020a17090ae59200b00246a7401d23sm2767350pjz.41.2023.04.21.07.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 07:32:06 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Apr 2023 04:32:05 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 24/32] sched_ext: Add cgroup support
-Message-ID: <ZEKeZf3BwuUacRWT@slm.duckdns.org>
-References: <20230317213333.2174969-1-tj@kernel.org>
- <20230317213333.2174969-25-tj@kernel.org>
- <ZEGaZ+lQL7pHpmY5@righiandr-XPS-13-7390>
+        d=1e100.net; s=20221208; t=1682087574; x=1684679574;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MrFEuF/VNq5g9FqzV/mufM217urn03OllWFFKpr3C0U=;
+        b=OokezTyJ7K8rHEvomeHeqw7t6ZEr3+cH+cbKlaW93S77PfLsX+IgZzMIxuTuTTykwN
+         qjQcEZF34DgHmkXYn7bYo1g/8ziU4PO0jD3+mP6Hcuct8IXtfUqxAxNEmKpaL6HMPaqM
+         MsFc6EGazc6fF326mD3CkhWH+olvneLdcVg9BS5V5NQqkrff4jqMYOFvQPEhSyeNobUe
+         JlDB/BZbVV6lzi9gP1FoQeinU0CgVFH5ky64JKJ0gXkQ1rGpvnjf2HWHncpO7e2ioshE
+         QuKARVow5Knumm5fFuvkQ2+9c/lKGxykNxtrdUzG7ZTon/pcnuLw1ojfjM9zCCq5jbYQ
+         D6GQ==
+X-Gm-Message-State: AAQBX9dkevmJLduuP68NPpQevVajxPuLF89bHrlthHv6/+PFYiLWFTkA
+        vUrCAV0ZniwCXx644tPbXG+qz1Y0darJt8ZxVI4+fd4eLhtM
+X-Google-Smtp-Source: AKy350ZlAsHZRUrWgsrpnW6LYNe4Q395IQtSOVHE70CdCWoO7Ds2bk+VF/Hfu53hvQUp/gFyd/OBHcnpOl5lCXfBIb6rPdoJ2m/9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEGaZ+lQL7pHpmY5@righiandr-XPS-13-7390>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:6cb:b0:329:654a:1231 with SMTP id
+ p11-20020a056e0206cb00b00329654a1231mr2866845ils.5.1682087574284; Fri, 21 Apr
+ 2023 07:32:54 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 07:32:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000058b63f05f9d98811@google.com>
+Subject: [syzbot] [cgroups?] [mm?] KCSAN: data-race in drain_all_stock /
+ drain_obj_stock (4)
+From:   syzbot <syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
+        shakeelb@google.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,12 +59,83 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello,
 
-On Thu, Apr 20, 2023 at 10:02:47PM +0200, Andrea Righi wrote:
-> ^ #ifdef CONFIG_CGROUP_SCHED, otherwise we may get build errors, like:
-> 
-> kernel/sched/ext.c:4251:34: error: 'struct task_struct' has no member named 'sched_task_group'
+syzbot found the following issue on:
 
-Oops, thanks for spotting that. Will fix.
+HEAD commit:    534293368afa Merge tag 'kbuild-fixes-v6.3' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a0c26ec80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85fa20c996a2e46d
+dashboard link: https://syzkaller.appspot.com/bug?extid=774c29891415ab0fd29d
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
--- 
-tejun
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ec0e584af797/disk-53429336.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423a67f52f94/vmlinux-53429336.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8409b9716faa/bzImage-53429336.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+774c29891415ab0fd29d@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in drain_all_stock / drain_obj_stock
+
+write to 0xffff888237c2a2f8 of 8 bytes by task 19625 on cpu 0:
+ drain_obj_stock+0x408/0x4e0 mm/memcontrol.c:3306
+ refill_obj_stock+0x9c/0x1e0 mm/memcontrol.c:3340
+ obj_cgroup_uncharge+0xe/0x10 mm/memcontrol.c:3408
+ memcg_slab_free_hook mm/slab.h:587 [inline]
+ __cache_free mm/slab.c:3373 [inline]
+ __do_kmem_cache_free mm/slab.c:3577 [inline]
+ kmem_cache_free+0x105/0x280 mm/slab.c:3602
+ __d_free fs/dcache.c:298 [inline]
+ dentry_free fs/dcache.c:375 [inline]
+ __dentry_kill+0x422/0x4a0 fs/dcache.c:621
+ dentry_kill+0x8d/0x1e0
+ dput+0x118/0x1f0 fs/dcache.c:913
+ __fput+0x3bf/0x570 fs/file_table.c:329
+ ____fput+0x15/0x20 fs/file_table.c:349
+ task_work_run+0x123/0x160 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop+0xcf/0xe0 kernel/entry/common.c:171
+ exit_to_user_mode_prepare+0x6a/0xa0 kernel/entry/common.c:203
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x26/0x140 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+read to 0xffff888237c2a2f8 of 8 bytes by task 19632 on cpu 1:
+ obj_stock_flush_required mm/memcontrol.c:3319 [inline]
+ drain_all_stock+0x174/0x2a0 mm/memcontrol.c:2361
+ try_charge_memcg+0x6d0/0xd10 mm/memcontrol.c:2703
+ try_charge mm/memcontrol.c:2837 [inline]
+ mem_cgroup_charge_skmem+0x51/0x140 mm/memcontrol.c:7290
+ sock_reserve_memory+0xb1/0x390 net/core/sock.c:1025
+ sk_setsockopt+0x800/0x1e70 net/core/sock.c:1525
+ udp_lib_setsockopt+0x99/0x6c0 net/ipv4/udp.c:2692
+ udp_setsockopt+0x73/0xa0 net/ipv4/udp.c:2817
+ sock_common_setsockopt+0x61/0x70 net/core/sock.c:3668
+ __sys_setsockopt+0x1c3/0x230 net/socket.c:2271
+ __do_sys_setsockopt net/socket.c:2282 [inline]
+ __se_sys_setsockopt net/socket.c:2279 [inline]
+ __x64_sys_setsockopt+0x66/0x80 net/socket.c:2279
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+value changed: 0xffff8881382d52c0 -> 0xffff888138893740
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 19632 Comm: syz-executor.0 Not tainted 6.3.0-rc2-syzkaller-00387-g534293368afa #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
