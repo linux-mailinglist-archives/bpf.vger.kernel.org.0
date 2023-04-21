@@ -2,56 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AF96EA951
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 13:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BF96EA9B4
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 13:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbjDULgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 07:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
+        id S230207AbjDULzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 07:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbjDULgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 07:36:25 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636CCC0E;
-        Fri, 21 Apr 2023 04:35:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id F1E15600F2;
-        Fri, 21 Apr 2023 13:35:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1682076952; bh=IGXmsfuT92LLRa2whQYPoOabsM4yoa1huIum4sr6paY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UMUmw7H1tbiK8/TCoS9hO9JwdWIZGWB/ELhzbpo0lTr/Fup5TWgNOaa2z8ESkMo4U
-         kZfW0bZIU+ujtyaEjLS8YhAEbECelrsHHcU1c8LVW4N+oTPeB0i72GbgSbcY65/CxJ
-         yjq+f5/BGlRbUQg+qJOFVmzq/xKpPRdfDNkuyAm6Lz6hmmZBQXBLnUPClsvMDnVMor
-         i0//xHJ2KFNQXpzVQTJfEHnVA0mBnB9WiYVWkZosXBs+p0/4Ye5RNaPrRmUwDm9Qnv
-         JZHsbByfpB8YEovdesZk5gq5z2sNuY5CVYVu6CJIx8b2DLCn9oaPD/jbYtA2mgLoGg
-         W2q/Ic5T7dAFg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fIc5lsbTSreK; Fri, 21 Apr 2023 13:35:49 +0200 (CEST)
-Received: from [10.0.1.117] (grf-nat.grf.hr [161.53.83.23])
-        by domac.alu.hr (Postfix) with ESMTPSA id 07681600E9;
-        Fri, 21 Apr 2023 13:35:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1682076949; bh=IGXmsfuT92LLRa2whQYPoOabsM4yoa1huIum4sr6paY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=xRxG1emW3QdvM8PKii4T+o7xqJ+LY1OYWGsJndx8RMTTwfNsc26dDz7AL/n+bpaRC
-         hTDcraBZWaCwAlQ7x+G9JHgj11uEiE6Rj1Eu5heiTEZ9GZ35KjDKo4VksHr1wj4cc+
-         9ijqxGiGLPIbPQ84z+dEL7GFRtFzvZ87pnf+1qLLpLXqWvB9EfjQdG9EPo+KZpK9QD
-         AAd5WdL2yxc/NAyvLDBmzsQ9GI0kqmhpQ0V5swTvNlUQ8HgzrXRL+lwhjT6V0KHaGN
-         jbba9/wpfB4ePfOmyDkBxqH0D8dfwPxjb//PT9ryyPhdYEVZo0dWeBmzwef21ffQXE
-         AyRD5HcHYxN7g==
-Message-ID: <060ff7a3-126f-3da5-4d93-0139e8fc4a9b@alu.unizg.hr>
-Date:   Fri, 21 Apr 2023 13:35:47 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [BUG] [FIXED: TESTED] kmemleak in rtnetlink_rcv() triggered by
- selftests/drivers/net/team in build cdc9718d5e59
-Content-Language: en-US, hr
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S230188AbjDULzD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 07:55:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474D14ED3
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 04:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682078058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zTCkyNCDw87y9YK54Qoc5ZrsrCxJ0WjYKBdepsVglWA=;
+        b=AlY5BJ6H7dGiKWc4m+ux0bhIaACaVRDTO+4UmWHXJ6CyBm58WfDUHclOdY7IiTTBoVfRTe
+        /9WajgMQUmElU7FwrDY18iV4i7hLiGzpnGn0v2iQ1x9qbyeKKnOMlaeXB43RbeegRrppC4
+        twkjxbn6RI/6kgbisdKusKP1ytnS7nk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-408-6UW6y8vwP1GUIzZ5YPXdMQ-1; Fri, 21 Apr 2023 07:54:17 -0400
+X-MC-Unique: 6UW6y8vwP1GUIzZ5YPXdMQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f1754de18cso10171285e9.1
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 04:54:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682078056; x=1684670056;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zTCkyNCDw87y9YK54Qoc5ZrsrCxJ0WjYKBdepsVglWA=;
+        b=e/xrUVqluw6Y/aLz1fjDnmX/shtvKAzNx1y5Ap5vVINJSUfHWsRex3wM7AuPUZpJbK
+         XkgNAlRNoMk5Mdpmf7tQPqcb9eUrT9BKbI7WQqErlFLVnDnQL0z/LlIaWSRxpKjFS7fq
+         lg+otPPNGvtI+HgNJLfFCVkrfe4p0UF9A6a2bTWFDnI01djGvjTsO+SInkVUQZ6617Vd
+         9fmYku78uUxeDIk0hIiuUFmwC8ckhbf+XrxjXczF8W7hNPp3kCEwfrRruW7jmfMfaRb0
+         Rkp8ky71o6eea0VqVlExIEtD3mPr+2Hfloaysqg6FnlRNgEWAHGO7e4m0inC66ubduER
+         LSCw==
+X-Gm-Message-State: AAQBX9fsR1PCUNT9oWJhSJexHaEuIWY8A5Vw5gv0P0COd3dJmZ716vDF
+        hl6QWCSq8GWAzoAlQGuT/BOtZvX0ePOdrwuo9OqBnZRPVGHkUOtfH4NriI0uYnX++jwJoamvhRV
+        e1Ez1RHP4BjT/6EXK/dVi3+1Gmg==
+X-Received: by 2002:a1c:7c13:0:b0:3f0:7f4f:2aa8 with SMTP id x19-20020a1c7c13000000b003f07f4f2aa8mr1670977wmc.9.1682078055921;
+        Fri, 21 Apr 2023 04:54:15 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZPNvlOLr5DD66tuuC869SwSykh15XqDk/3/Joiay1rlLh5HihRAE02lGMlMCGfFwYa2F40+Q==
+X-Received: by 2002:a1c:7c13:0:b0:3f0:7f4f:2aa8 with SMTP id x19-20020a1c7c13000000b003f07f4f2aa8mr1670958wmc.9.1682078055497;
+        Fri, 21 Apr 2023 04:54:15 -0700 (PDT)
+Received: from redhat.com ([2.55.62.70])
+        by smtp.gmail.com with ESMTPSA id m2-20020a056000008200b002f53fa16239sm4216306wrx.103.2023.04.21.04.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 04:54:15 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 07:54:11 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
@@ -59,194 +66,189 @@ Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Florent Fourcot <florent.fourcot@wifirst.fr>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Petr Machata <petrm@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
-        Xin Long <lucien.xin@gmail.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>
-References: <78a8a03b-6070-3e6b-5042-f848dab16fb8@alu.unizg.hr>
- <ZDLyZX545Cw+aLhE@shredder>
- <67b3fa90-ad29-29f1-e6f3-fb674d255a1e@alu.unizg.hr>
- <7650b2eb-0aee-a2b0-2e64-c9bc63210f67@alu.unizg.hr>
- <ZDhHvUrkua8gLMfZ@shredder>
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZDhHvUrkua8gLMfZ@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v2 05/14] virtio_net: introduce xdp res enums
+Message-ID: <20230421075119-mutt-send-email-mst@kernel.org>
+References: <20230418065327.72281-1-xuanzhuo@linux.alibaba.com>
+ <20230418065327.72281-6-xuanzhuo@linux.alibaba.com>
+ <20230421025931-mutt-send-email-mst@kernel.org>
+ <1682061840.4864874-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1682061840.4864874-1-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13.4.2023. 20:19, Ido Schimmel wrote:
-> On Mon, Apr 10, 2023 at 07:34:09PM +0200, Mirsad Goran Todorovac wrote:
->> I've ran "make kselftest" with vanilla torvalds tree 6.3-rc5 + your patch.
->>
->> It failed two lines after "enslaved device client - ns-A IP" which passed OK.
->>
->> Is this hang for 5 hours in selftests: net: fcnal-test.sh test, at the line
->> (please see to the end):
+On Fri, Apr 21, 2023 at 03:24:00PM +0800, Xuan Zhuo wrote:
+> On Fri, 21 Apr 2023 03:00:15 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Tue, Apr 18, 2023 at 02:53:18PM +0800, Xuan Zhuo wrote:
+> > > virtnet_xdp_handler() is to process all the logic related to XDP. The
+> > > caller only needs to care about how to deal with the buf. So this commit
+> > > introduces new enums:
+> > >
+> > > 1. VIRTNET_XDP_RES_PASS: make skb by the buf
+> > > 2. VIRTNET_XDP_RES_DROP: xdp return drop action or some error, caller
+> > >    should release the buf
+> > > 3. VIRTNET_XDP_RES_CONSUMED: xdp consumed the buf, the caller doesnot to
+> > >    do anything
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> >
+> >
+> > I am not excited about using virtio specific enums then translating
+> > to standard ones.
 > 
-> It's not clear to me if the test failed for you or just got stuck. The
-> output below is all "[ OK ]".
 > 
-> I ran the test with my patch and got:
+> My fault, my expression is not very complete.
 > 
-> Tests passed: 875
-> Tests failed:   5
+> This is not a replacement, but just want to say, there are only three cases of
+> virtnet_xdp_handler. Caller only needs to handle this three cases. Instead
+> of paying attention to the detailed return results of XDP.
 > 
-> I don't believe the failures are related to my patch given the test
-> doesn't use bonding.
+> In addition, virtnet_xdp_handler returns XDP_TX, but in fact, the work of XDP_TX
+> is already done in Virtnet_xdp_handler. Caller does not need to do anything for
+> XDP_TX, giving people a feeling, XDP_TX does not need to be processed. I think
+> it is not good.
 > 
-> See more below.
+> Thanks.
+
+I don't really get it, sorry. If it's possible to stick to
+XDP return codes, that is preferable.
+
 > 
->>
->> # ###########################################################################
->> # IPv4 address binds
->> # ###########################################################################
->> #
->> #
->> # #################################################################
->> # No VRF
->> #
->> # SYSCTL: net.ipv4.ping_group_range=0 2147483647
->> #
->> # TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
->> # TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
->> # TEST: Raw socket bind to local address - ns-A loopback IP                     [ OK ]
->> # TEST: Raw socket bind to local address after device bind - ns-A loopback IP   [ OK ]
->> # TEST: Raw socket bind to nonlocal address - nonlocal IP                       [ OK ]
->> # TEST: TCP socket bind to nonlocal address - nonlocal IP                       [ OK ]
->> # TEST: ICMP socket bind to nonlocal address - nonlocal IP                      [ OK ]
->> # TEST: ICMP socket bind to broadcast address - broadcast                       [ OK ]
->> # TEST: ICMP socket bind to multicast address - multicast                       [ OK ]
->> # TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
->> # TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
->> #
->> # #################################################################
->> # With VRF
->> #
->> # SYSCTL: net.ipv4.ping_group_range=0 2147483647
->> #
->> # TEST: Raw socket bind to local address - ns-A IP                              [ OK ]
->> # TEST: Raw socket bind to local address after device bind - ns-A IP            [ OK ]
->> # TEST: Raw socket bind to local address after VRF bind - ns-A IP               [ OK ]
->> # TEST: Raw socket bind to local address - VRF IP                               [ OK ]
->> # TEST: Raw socket bind to local address after device bind - VRF IP             [ OK ]
->> # TEST: Raw socket bind to local address after VRF bind - VRF IP                [ OK ]
->> # TEST: Raw socket bind to out of scope address after VRF bind - ns-A loopback IP  [ OK ]
->> # TEST: Raw socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
->> # TEST: TCP socket bind to nonlocal address after VRF bind - nonlocal IP        [ OK ]
->> # TEST: ICMP socket bind to nonlocal address after VRF bind - nonlocal IP       [ OK ]
->> # TEST: ICMP socket bind to broadcast address after VRF bind - broadcast        [ OK ]
->> # TEST: ICMP socket bind to multicast address after VRF bind - multicast        [ OK ]
->> # TEST: TCP socket bind to local address - ns-A IP                              [ OK ]
->> # TEST: TCP socket bind to local address after device bind - ns-A IP            [ OK ]
->> # TEST: TCP socket bind to local address - VRF IP                               [ OK ]
->> # TEST: TCP socket bind to local address after device bind - VRF IP             [ OK ]
->> # TEST: TCP socket bind to invalid local address for VRF - ns-A loopback IP     [ OK ]
->> # TEST: TCP socket bind to invalid local address for device bind - ns-A loopback IP  [ OK ]
->> #
->> # ###########################################################################
->> # Run time tests - ipv4
->> # ###########################################################################
->> #
->> # TEST: Device delete with active traffic - ping in - ns-A IP                   [ OK ]
->> # TEST: Device delete with active traffic - ping in - VRF IP                    [ OK ]
->> # TEST: Device delete with active traffic - ping out - ns-B IP                  [ OK ]
->> # TEST: TCP active socket, global server - ns-A IP                              [ OK ]
->> # TEST: TCP active socket, global server - VRF IP                               [ OK ]
->> # TEST: TCP active socket, VRF server - ns-A IP                                 [ OK ]
->> # TEST: TCP active socket, VRF server - VRF IP                                  [ OK ]
->> # TEST: TCP active socket, enslaved device server - ns-A IP                     [ OK ]
->> # TEST: TCP active socket, VRF client - ns-A IP                                 [ OK ]
->> # TEST: TCP active socket, enslaved device client - ns-A IP                     [ OK ]
->> # TEST: TCP active socket, global server, VRF client, local - ns-A IP           [ OK ]
->> # TEST: TCP active socket, global server, VRF client, local - VRF IP            [ OK ]
->> # TEST: TCP active socket, VRF server and client, local - ns-A IP               [ OK ]
->> # TEST: TCP active socket, VRF server and client, local - VRF IP                [ OK ]
->> # TEST: TCP active socket, global server, enslaved device client, local - ns-A IP  [ OK ]
->> # TEST: TCP active socket, VRF server, enslaved device client, local - ns-A IP  [ OK ]
->> # TEST: TCP active socket, enslaved device server and client, local - ns-A IP   [ OK ]
->> # TEST: TCP passive socket, global server - ns-A IP                             [ OK ]
->> # TEST: TCP passive socket, global server - VRF IP                              [ OK ]
->> # TEST: TCP passive socket, VRF server - ns-A IP                                [ OK ]
->> # TEST: TCP passive socket, VRF server - VRF IP                                 [ OK ]
->> # TEST: TCP passive socket, enslaved device server - ns-A IP                    [ OK ]
->> # TEST: TCP passive socket, VRF client - ns-A IP                                [ OK ]
->> # TEST: TCP passive socket, enslaved device client - ns-A IP                    [ OK ]
->> # TEST: TCP passive socket, global server, VRF client, local - ns-A IP          [ OK ]
->>
->> Hope this helps.
->>
->> I also have a iwlwifi DEADLOCK and I don't know if these should be reported independently.
->> (I don't think it is related to the patch.)
 > 
-> If the test got stuck, then it might be related to the deadlock in
-> iwlwifi. Try running the test without iwlwifi and see if it helps. If
-> not, I suggest starting a different thread about this issue.
-> 
-> Will submit the bonding patch over the weekend.
-
-Tested it again, with only the net selftest subtree:
-
-tools/testing/selftests/Makefile:
-TARGETS += drivers/net/bonding
-TARGETS += drivers/net/team
-TARGETS += net
-TARGETS += net/af_unix
-TARGETS += net/forwarding
-TARGETS += net/hsr
-# TARGETS += net/mptcp
-TARGETS += net/openvswitch
-TARGETS += netfilter
-
-and it failed to reproduce the hang. (NOTE: In fact, it was only a script stall forever,
-not a "kill -9 <PID>" non-killable process.)
-
-With or without iwlwifi module, now it appears to work as a standalone test.
-
-The problem might indeed be a spurious lockup in iwlwifi. I've noticed an attempt to
-lock a locked lock from within the interrupt in the journalctl logs, but I am really
-not that familiar with the iwlwifi driver's code ... It is apparently not a deterministic
-error bound to repeat with every test.
-
-I reckon the tests prior to the net subtree have done something to my kernel but thus far
-I could not isolate the culprit test.
-
-# tools/testing/selftests/net/fcnal-test.sh alone passes OK.
-
-> Thanks for testing
-
-Not at all. I apologise for the false alarm.
-
-Thanks for patching at such short notice.
-
-The patch closes the memory leak, and the latest change was obviously the most suspected one,
-but now it doesn't seem so.
-
-It would require more work to isolate the particular test that caused the hang, but I don't
-know if I have enough resources, mainly the time. And the guiding idea that I am going in the
-right direction. :-/
-
-Best regards,
-Mirsad
-
--- 
-Mirsad Todorovac
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb
-Republic of Croatia, the European Union
-
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
+> >
+> > > ---
+> > >  drivers/net/virtio_net.c | 42 ++++++++++++++++++++++++++--------------
+> > >  1 file changed, 27 insertions(+), 15 deletions(-)
+> > >
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 0fa64c314ea7..4dfdc211d355 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -301,6 +301,15 @@ struct padded_vnet_hdr {
+> > >  	char padding[12];
+> > >  };
+> > >
+> > > +enum {
+> > > +	/* xdp pass */
+> > > +	VIRTNET_XDP_RES_PASS,
+> > > +	/* drop packet. the caller needs to release the page. */
+> > > +	VIRTNET_XDP_RES_DROP,
+> > > +	/* packet is consumed by xdp. the caller needs to do nothing. */
+> > > +	VIRTNET_XDP_RES_CONSUMED,
+> > > +};
+> > > +
+> > >  static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
+> > >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+> > >
+> > > @@ -803,14 +812,14 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+> > >
+> > >  	switch (act) {
+> > >  	case XDP_PASS:
+> > > -		return act;
+> > > +		return VIRTNET_XDP_RES_PASS;
+> > >
+> > >  	case XDP_TX:
+> > >  		stats->xdp_tx++;
+> > >  		xdpf = xdp_convert_buff_to_frame(xdp);
+> > >  		if (unlikely(!xdpf)) {
+> > >  			netdev_dbg(dev, "convert buff to frame failed for xdp\n");
+> > > -			return XDP_DROP;
+> > > +			return VIRTNET_XDP_RES_DROP;
+> > >  		}
+> > >
+> > >  		err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
+> > > @@ -818,19 +827,20 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+> > >  			xdp_return_frame_rx_napi(xdpf);
+> > >  		} else if (unlikely(err < 0)) {
+> > >  			trace_xdp_exception(dev, xdp_prog, act);
+> > > -			return XDP_DROP;
+> > > +			return VIRTNET_XDP_RES_DROP;
+> > >  		}
+> > > +
+> > >  		*xdp_xmit |= VIRTIO_XDP_TX;
+> > > -		return act;
+> > > +		return VIRTNET_XDP_RES_CONSUMED;
+> > >
+> > >  	case XDP_REDIRECT:
+> > >  		stats->xdp_redirects++;
+> > >  		err = xdp_do_redirect(dev, xdp, xdp_prog);
+> > >  		if (err)
+> > > -			return XDP_DROP;
+> > > +			return VIRTNET_XDP_RES_DROP;
+> > >
+> > >  		*xdp_xmit |= VIRTIO_XDP_REDIR;
+> > > -		return act;
+> > > +		return VIRTNET_XDP_RES_CONSUMED;
+> > >
+> > >  	default:
+> > >  		bpf_warn_invalid_xdp_action(dev, xdp_prog, act);
+> > > @@ -839,7 +849,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
+> > >  		trace_xdp_exception(dev, xdp_prog, act);
+> > >  		fallthrough;
+> > >  	case XDP_DROP:
+> > > -		return XDP_DROP;
+> > > +		return VIRTNET_XDP_RES_DROP;
+> > >  	}
+> > >  }
+> > >
+> > > @@ -987,17 +997,18 @@ static struct sk_buff *receive_small(struct net_device *dev,
+> > >  		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> > >
+> > >  		switch (act) {
+> > > -		case XDP_PASS:
+> > > +		case VIRTNET_XDP_RES_PASS:
+> > >  			/* Recalculate length in case bpf program changed it */
+> > >  			delta = orig_data - xdp.data;
+> > >  			len = xdp.data_end - xdp.data;
+> > >  			metasize = xdp.data - xdp.data_meta;
+> > >  			break;
+> > > -		case XDP_TX:
+> > > -		case XDP_REDIRECT:
+> > > +
+> > > +		case VIRTNET_XDP_RES_CONSUMED:
+> > >  			rcu_read_unlock();
+> > >  			goto xdp_xmit;
+> > > -		default:
+> > > +
+> > > +		case VIRTNET_XDP_RES_DROP:
+> > >  			goto err_xdp;
+> > >  		}
+> > >  	}
+> > > @@ -1324,18 +1335,19 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> > >  		act = virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit, stats);
+> > >
+> > >  		switch (act) {
+> > > -		case XDP_PASS:
+> > > +		case VIRTNET_XDP_RES_PASS:
+> > >  			head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+> > >  			if (unlikely(!head_skb))
+> > >  				goto err_xdp_frags;
+> > >
+> > >  			rcu_read_unlock();
+> > >  			return head_skb;
+> > > -		case XDP_TX:
+> > > -		case XDP_REDIRECT:
+> > > +
+> > > +		case VIRTNET_XDP_RES_CONSUMED:
+> > >  			rcu_read_unlock();
+> > >  			goto xdp_xmit;
+> > > -		default:
+> > > +
+> > > +		case VIRTNET_XDP_RES_DROP:
+> > >  			break;
+> > >  		}
+> > >  err_xdp_frags:
+> > > --
+> > > 2.32.0.3.g01195cf9f
+> >
 
