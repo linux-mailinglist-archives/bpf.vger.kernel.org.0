@@ -2,93 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1C86EA159
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 04:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF0E6EA1A8
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 04:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbjDUCAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Apr 2023 22:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        id S233225AbjDUCcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Apr 2023 22:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjDUCAW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Apr 2023 22:00:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB96E3C34
-        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 19:00:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6741B64CE6
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:00:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C0775C4339B;
-        Fri, 21 Apr 2023 02:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682042419;
-        bh=G5qdHJtG7YBVLasUz4BxoGsx7uyCSlfc6GJVjJG/xG8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YDWwWIXJcJ9zrycSj+iJ+eR8EXaSz9jPjKxNrVQDW/JROb4bp5C1nFv85OYk03HzI
-         w807WP17eOOVjoUgwwoEVhlKozTW7EBUIIarfX63Altw5ngdx1eCPlXDaShj6MY0sD
-         QlmA7atYeFNyx6XLgMy2JZLYnbQg4HS+TJ6SwBzBNz54SNtlfQr1C+qIff/kULNNak
-         7+oJY1OxngNXmkyjwtq3tWdIHJuzDNT24tIHXkPHJkj9lPI8pjThz1OejAVJbNo2xX
-         Boykk3GPhizRWAexyBUPHcgaDKyxJAhpPrTD7fR/07K8YA6/Z7OiCJJ4rhq97bIjWH
-         y+vgiXyRnnYhg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A809BE501E3;
-        Fri, 21 Apr 2023 02:00:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233541AbjDUCcc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Apr 2023 22:32:32 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BB32680
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 19:32:06 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-63b4dfead1bso1576726b3a.3
+        for <bpf@vger.kernel.org>; Thu, 20 Apr 2023 19:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1682044325; x=1684636325;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Os9mukvCSPKKdw4nMw1R9O8vMlREwTtiShtLG9IPKE=;
+        b=HCUz5FFzKFUHDPDgsikCdeCMO1zCq/dlZrN9CoWrMcHhOk5eW5mGuvAW0p45w19CZ9
+         6DhK5F2Gk1GWEBSlELCPFSghDIlDSe1DGcJsa3XDYcDtdAEhjPD95OxhadNqFqLjy31a
+         AEwqXTmEZj/G96t5M0pUJFRsj3q4EZINhn5IxkcSe8fP6t4MfV3qgawZfZCEP/9uKbME
+         XEmL0ckKkFWmjHQeQG7hPRTo7o4ucGkjtRfjE1LcDP8ADmrc3OOqwoNwl3GOCVz2MgqQ
+         qWNVGhGaMk/y7AJaDYlyWUfw2DAWzlQCWRH/UzMHCoGdZelgd211UAMLzH4/cQqVS8G9
+         RY2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682044325; x=1684636325;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+Os9mukvCSPKKdw4nMw1R9O8vMlREwTtiShtLG9IPKE=;
+        b=k2FMC2ChvcnlKO580SRTUDowSuMGjdbUqPEGEy0wdV5NqOdrQPHMIVQ8yBmWeBJ7Yz
+         TduZCrDZ2wgJL26BvCc6KrRXe4obvrvpNzSITS20/QpZ4+tSu3Cu/u9ZcAHdxNDWX2bF
+         fd0Y5ooSfdWeD6glwdSDX9mB2jOfpuBd2m3q3sGAL4VEJ7xEHOli7d7pAj68S9TRFPI0
+         XoXdFErIaCEGQMUXJD5cY1MVEAqloRHRHDmwbERzUnEP63jZ+kQbTVbKJK0Eo94+RFwl
+         HyZ83CIgqux8YL+mu4+N1JoynnfV6gIfZfiOUWsVPlWCj8ygYEssrhU63cuyv6TfCpVs
+         4LMQ==
+X-Gm-Message-State: AAQBX9cC6aEotuCnEYbITOETakKzbnSQDmW5gW33JYnVsG2AcVmtgfcA
+        hatsgDlmSRdDVmx1EkS05xBuBg==
+X-Google-Smtp-Source: AKy350an2piqFQ6UOXrk8jJ6gIyDjZgCDQB+P/aZgG82pfL/0ZNRMdlbfqgcUvlglP49ovd9ARWPuw==
+X-Received: by 2002:a05:6a00:1acd:b0:63d:2aac:7b88 with SMTP id f13-20020a056a001acd00b0063d2aac7b88mr4799316pfv.25.1682044325691;
+        Thu, 20 Apr 2023 19:32:05 -0700 (PDT)
+Received: from [10.71.57.173] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id o8-20020a62f908000000b006260526cf0csm1847551pfh.116.2023.04.20.19.31.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Apr 2023 19:32:05 -0700 (PDT)
+Message-ID: <184a2930-99ee-4cbe-9d9e-2f7d7fa8a2e2@bytedance.com>
+Date:   Fri, 21 Apr 2023 10:31:55 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.10.0
+Subject: Re: [External] Re: [PATCH bpf-next 1/2] bpf: Add
+ bpf_task_under_cgroup helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, yangzhenze@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+References: <20230420072657.80324-1-zhoufeng.zf@bytedance.com>
+ <20230420072657.80324-2-zhoufeng.zf@bytedance.com>
+ <CAADnVQ+ffmrJCMa2R48AtJL3nT93jtKEdRv3RFeJ3Vo2L6ukQA@mail.gmail.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <CAADnVQ+ffmrJCMa2R48AtJL3nT93jtKEdRv3RFeJ3Vo2L6ukQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/4] fix __retval() being always ignored
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168204241968.27140.15302922849910536093.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Apr 2023 02:00:19 +0000
-References: <20230420232317.2181776-1-eddyz87@gmail.com>
-In-Reply-To: <20230420232317.2181776-1-eddyz87@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
-        yhs@fb.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri, 21 Apr 2023 02:23:13 +0300 you wrote:
-> Florian Westphal found a bug in test_loader.c processing of __retval tag.
-> Because of this bug the function test_loader.c:do_prog_test_run()
-> never executed and all __retval test tags were ignored. See [1].
-> 
-> Fix for this bug uncovers two additional bugs:
-> - During test_verifier tests migration to inline assembly (see [2])
->   I missed the fact that some tests require maps to contain mock values;
-> - Some issue with a new refcounted_kptr test, which causes kernel to
->   produce dead lock and refcount saturation warnings when subject to
->   libbpf's bpf_test_run_opts().
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/4] selftests/bpf: disable program test run for progs/refcounted_kptr.c
-    https://git.kernel.org/bpf/bpf-next/c/7c4b96c00043
-  - [bpf-next,2/4] selftests/bpf: fix __retval() being always ignored
-    https://git.kernel.org/bpf/bpf-next/c/7cdddb99e4a6
-  - [bpf-next,3/4] selftests/bpf: add pre bpf_prog_test_run_opts() callback for test_loader
-    https://git.kernel.org/bpf/bpf-next/c/5b22f4d1436b
-  - [bpf-next,4/4] selftests/bpf: populate map_array_ro map for verifier_array_access test
-    https://git.kernel.org/bpf/bpf-next/c/cbb110bc6672
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+在 2023/4/21 02:22, Alexei Starovoitov 写道:
+> On Thu, Apr 20, 2023 at 12:27 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>
+>> This adds a bpf helper that's similar to the
+>> bpf_current_task_under_cgroup. The difference is that it is a
+>> designated task.
+>>
+>> When hook sched related functions, sometimes it is necessary to
+>> specify a task instead of the current task.
+>>
+>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>> ---
+>>   include/uapi/linux/bpf.h       | 13 +++++++++++++
+>>   kernel/bpf/verifier.c          |  4 +++-
+>>   kernel/trace/bpf_trace.c       | 31 +++++++++++++++++++++++++++++++
+>>   tools/include/uapi/linux/bpf.h | 13 +++++++++++++
+>>   4 files changed, 60 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 4b20a7269bee..3d31ddb39e10 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -5550,6 +5550,18 @@ union bpf_attr {
+>>    *             0 on success.
+>>    *
+>>    *             **-ENOENT** if the bpf_local_storage cannot be found.
+>> + *
+>> + * long bpf_task_under_cgroup(struct bpf_map *map, struct task_struct *task, u32 index)
+>> + *     Description
+>> + *             Check whether the probe is being run is the context of a given
+>> + *             subset of the cgroup2 hierarchy. The cgroup2 to test is held by
+>> + *             *map* of type **BPF_MAP_TYPE_CGROUP_ARRAY**, at *index*.
+>> + *     Return
+>> + *             The return value depends on the result of the test, and can be:
+>> + *
+>> + *             * 1, if assigned task belongs to the cgroup2.
+>> + *             * 0, if assigned task does not belong to the cgroup2.
+>> + *             * A negative error code, if an error occurred.
+>>    */
+>>   #define ___BPF_FUNC_MAPPER(FN, ctx...)                 \
+>>          FN(unspec, 0, ##ctx)                            \
+>> @@ -5764,6 +5776,7 @@ union bpf_attr {
+>>          FN(user_ringbuf_drain, 209, ##ctx)              \
+>>          FN(cgrp_storage_get, 210, ##ctx)                \
+>>          FN(cgrp_storage_delete, 211, ##ctx)             \
+>> +       FN(task_under_cgroup, 212, ##ctx)               \
+>>          /* */
+>>
+>>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 1e05355facdc..1e2c3c3e8d5f 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -7771,7 +7771,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>>                  break;
+>>          case BPF_MAP_TYPE_CGROUP_ARRAY:
+>>                  if (func_id != BPF_FUNC_skb_under_cgroup &&
+>> -                   func_id != BPF_FUNC_current_task_under_cgroup)
+>> +                   func_id != BPF_FUNC_current_task_under_cgroup &&
+>> +                   func_id != BPF_FUNC_task_under_cgroup)
+>>                          goto error;
+>>                  break;
+>>          case BPF_MAP_TYPE_CGROUP_STORAGE:
+>> @@ -7902,6 +7903,7 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>>                          goto error;
+>>                  break;
+>>          case BPF_FUNC_current_task_under_cgroup:
+>> +       case BPF_FUNC_task_under_cgroup:
+>>          case BPF_FUNC_skb_under_cgroup:
+>>                  if (map->map_type != BPF_MAP_TYPE_CGROUP_ARRAY)
+>>                          goto error;
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index bcf91bc7bf71..b02a04768824 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -814,6 +814,35 @@ static const struct bpf_func_proto bpf_current_task_under_cgroup_proto = {
+>>          .arg2_type      = ARG_ANYTHING,
+>>   };
+>>
+>> +BPF_CALL_3(bpf_task_under_cgroup, struct bpf_map *, map, struct task_struct *,
+>> +          task, u32, idx)
+>> +{
+>> +       struct bpf_array *array = container_of(map, struct bpf_array, map);
+>> +       struct cgroup *cgrp;
+>> +
+>> +       if (unlikely(!task))
+>> +               return -ENOENT;
+>> +
+>> +       if (unlikely(idx >= array->map.max_entries))
+>> +               return -E2BIG;
+>> +
+>> +       cgrp = READ_ONCE(array->ptrs[idx]);
+>> +       if (unlikely(!cgrp))
+>> +               return -EAGAIN;
+>> +
+>> +       return task_under_cgroup_hierarchy(task, cgrp);
+> We don't add helpers anymore.
+> Please wrap task_under_cgroup_hierarchy() as a kfunc
+> that takes two TRUSTED pointers task and cgroup.
+Will do, thanks.
