@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15476EA686
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 11:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE356EA683
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 11:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjDUJGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 05:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        id S231588AbjDUJFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 05:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbjDUJGD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 05:06:03 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D79974F
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:39 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-63b7588005fso1810069b3a.0
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:39 -0700 (PDT)
+        with ESMTP id S231492AbjDUJFv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 05:05:51 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7870D974C
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-24986ade373so1715685a91.2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 02:05:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1682067939; x=1684659939;
+        d=bytedance.com; s=google; t=1682067947; x=1684659947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n7Gor+HyigWUptAicqNrnUV7OWWzKb4EB5Y/NKnzKDk=;
-        b=AqSlwQWUT8L9K4ECbDjaIgqfE+kvnhVu5XBk/orZX4TvYWdP2JMIqo2EAtGtbRxJfC
-         Brh4aTcdFPDFq2W87VZ/lyuijo9i1XabaMupybi9TG0KSAY3n8/7qduVme4N96E4yVA2
-         Nj+pwpfWHDBHw3cIo8iABR+i1MYBeBXXfmen/MpKf0HlyPiD1h76aosi7w87DCCtHO07
-         JKkyfOBfAhgZw3BAHfXERUUWzW977vxcuDbT9EIVdancwvMmEJ1Mx5K/EBtXD0ikYN69
-         8bzf4UCap2tn4ZEEB6XaBNOe9DmevejMIJmTB8sVVp86vmMz1a1/4OvloqZ9sY1qBcb+
-         8XFQ==
+        bh=t0gJQV+jBsuJN+dqapwDGx8wuqSDbN1mALWddpdSsEk=;
+        b=S5Ivxp968YSA3NDLM8BeS1NCb2DfvXA3IuISPyCNzeNTePZMImiqO1QFMplQ3aXvDz
+         /JvtVHFnfcDqRSLbbaCRYizZ6eVphwrfwkjJf7dk2xAGd6ln9qyu2KFaV5fIQGQLEGbh
+         UFTjg240tmdYVaKwG8OZ6gX0sCfvi3mqh0IFgjtv3fmK0Ctvild8XBJs1iZoKvJFwu54
+         qQqD2rnDRafbasd6xUreABRj/ccs0fL2FTpiONAYRciJzBzv3/2xzI1k/ZZ/gFwxgUY5
+         HePnsiegALfcpVVlCX9aIdraq+Dy+PNzgb9CdkwgZPAqjAbqksx1axNBgTMMnjnnUNXn
+         zPMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682067939; x=1684659939;
+        d=1e100.net; s=20221208; t=1682067947; x=1684659947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n7Gor+HyigWUptAicqNrnUV7OWWzKb4EB5Y/NKnzKDk=;
-        b=XWo4z4S7IvBlirt/CBr+jhtJhoelG0va/XJ29o+dNsU0EWJk5nvoeDNSxP1zeKa0JV
-         dsCUlC8EAhFk8G6/TSAVCER7lx6C8QkQhrJGv5C5O9hZBkx7VWwyr9bDWB/g5Fob8RiS
-         OMgb1X7aRmR46fQjTIHP5gdQ0dO1g5VdnFdWP7nQnBwFcGUMd/Uh3+iLhBjReezWouWk
-         dBhOtPR8x6yWzQrRYd/bhh+lY0W/7GLidwWyA1mWZdCKd7jOg1W8UlhjpWxlDeVbKH5W
-         81CZzC9hXAAn/eWXE2ZS6ItNC7O8DXR35L7z4Bdo50tD+gPphGThrvk9Y5Wm6vPVJgca
-         XJbg==
-X-Gm-Message-State: AAQBX9eQSqNFj2Kyv6LRNHqXaQ2nwhQ1hxEJCuGKczlqybabpeYX7pve
-        GcIOgtigwPmGluH3tqfKA3LLvQ==
-X-Google-Smtp-Source: AKy350bGh0r2HzVUtnjDAeGQE04dIbA1FwnRRA9ypzIonP3Wg6Gtjp/PUEQ/1HsEFKLZ3Q2UYyU5bQ==
-X-Received: by 2002:a05:6a20:42a3:b0:ef:6883:cfc3 with SMTP id o35-20020a056a2042a300b000ef6883cfc3mr5418119pzj.58.1682067939009;
-        Fri, 21 Apr 2023 02:05:39 -0700 (PDT)
+        bh=t0gJQV+jBsuJN+dqapwDGx8wuqSDbN1mALWddpdSsEk=;
+        b=LlFeNqmqPSQ+hH0DngTFbuNvcIyFnd/+cB39iA5kYUlcIil4fhPpm4YW0lwqUJxpq2
+         UX5FMtR/WKgbQeKTaGGeON3E60IaDYv4iSnjRv7WDW4tZUW2ldB3aQUuLbvF0D+5AEJZ
+         Sn6NESJwS4fnP0lsbFOLPkEGf9bOKXTBJe7Tu2dKXAalzHE9DhZ+PdH3v9EYp4r+xGzL
+         nFhL6uZ964ruGSI2Jyco2Fa+0cU39oio5dDdTUbfhDZU4GrPg9aPh1+TTz0336e+hk5H
+         3w36w/R84jlzFos1RKZfPw+wr0z0IpSiYYr7G2/yEdYGFP06TrN6rKNtq+UKT4b7bY4I
+         1RtQ==
+X-Gm-Message-State: AAQBX9e75CKtuzcr2D6M2vs3/ZDToQbKXY++ojHl3iA4HgvrMGO9+v1a
+        Wyo6lloKQ0/MUnqJqWQwjXdrfw==
+X-Google-Smtp-Source: AKy350Yq/tolYlOhf1pDRg+pi8crdvgzu8tht/po/DMcygONgBqFFU6dDpp2J5xJKwIpk+nmGlNlMw==
+X-Received: by 2002:a17:90a:3004:b0:246:681c:71fd with SMTP id g4-20020a17090a300400b00246681c71fdmr4294867pjb.6.1682067946936;
+        Fri, 21 Apr 2023 02:05:46 -0700 (PDT)
 Received: from C02F52LSML85.bytedance.net ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id t3-20020a17090a950300b0024796ddd19bsm4192309pjo.7.2023.04.21.02.05.31
+        by smtp.gmail.com with ESMTPSA id t3-20020a17090a950300b0024796ddd19bsm4192309pjo.7.2023.04.21.02.05.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 02:05:38 -0700 (PDT)
+        Fri, 21 Apr 2023 02:05:46 -0700 (PDT)
 From:   Feng zhou <zhoufeng.zf@bytedance.com>
 To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, song@kernel.org, yhs@fb.com,
@@ -60,9 +60,9 @@ Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
         yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
         zhoufeng.zf@bytedance.com
-Subject: [PATCH bpf-next v2 1/2] bpf: Add bpf_task_under_cgroup() kfunc
-Date:   Fri, 21 Apr 2023 17:04:02 +0800
-Message-Id: <20230421090403.15515-2-zhoufeng.zf@bytedance.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add testcase for bpf_task_under_cgroup
+Date:   Fri, 21 Apr 2023 17:04:03 +0800
+Message-Id: <20230421090403.15515-3-zhoufeng.zf@bytedance.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230421090403.15515-1-zhoufeng.zf@bytedance.com>
 References: <20230421090403.15515-1-zhoufeng.zf@bytedance.com>
@@ -71,7 +71,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -80,54 +80,136 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-Add a kfunc that's similar to the bpf_current_task_under_cgroup.
-The difference is that it is a designated task.
+test_progs:
+Tests new kfunc bpf_task_under_cgroup().
 
-When hook sched related functions, sometimes it is necessary to
-specify a task instead of the current task.
+The bpf program saves the pid which call the getuid syscall within a
+given cgroup to the remote_pid, which is convenient for the user-mode
+program to verify the test correctness.
+
+The user-mode program creates its own mount namespace, and mounts the
+cgroupsv2 hierarchy in there, call the getuid syscall, then check if
+remote_pid and local_pid are equal.
 
 Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
 ---
- kernel/bpf/helpers.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../bpf/prog_tests/task_under_cgroup.c        | 46 +++++++++++++++++++
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |  1 +
+ .../bpf/progs/test_task_under_cgroup.c        | 40 ++++++++++++++++
+ 3 files changed, 87 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 00e5fb0682ac..88e3247b5c44 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2142,6 +2142,24 @@ __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
- 		return NULL;
- 	return cgrp;
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+new file mode 100644
+index 000000000000..bd3deb469938
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Bytedance */
 +
-+/**
-+ * bpf_task_under_cgroup - Check whether the task is a given subset of the
-+ * cgroup2 hierarchy. The cgroup2 to test is assigned by cgrp.
-+ * @cgrp: assigned cgrp.
-+ * @task: assigned task.
-+ */
-+__bpf_kfunc int bpf_task_under_cgroup(struct cgroup *cgrp,
-+				      struct task_struct *task)
++#include <test_progs.h>
++#include <cgroup_helpers.h>
++#include "test_task_under_cgroup.skel.h"
++
++#define FOO	"/foo"
++
++void test_task_under_cgroup(void)
 +{
-+	if (unlikely(!cgrp))
-+		return -EAGAIN;
++	struct test_task_under_cgroup *skel;
++	int ret, foo = -1;
 +
-+	if (unlikely(!task))
-+		return -ENOENT;
++	foo = test__join_cgroup(FOO);
++	if (!ASSERT_OK(foo < 0, "cgroup_join_foo"))
++		return;
 +
-+	return task_under_cgroup_hierarchy(task, cgrp);
++	skel = test_task_under_cgroup__open();
++	if (!ASSERT_OK_PTR(skel, "test_task_under_cgroup__open"))
++		goto cleanup;
++
++	skel->rodata->local_pid = getpid();
++	skel->rodata->cgid = get_cgroup_id(FOO);
++
++	ret = test_task_under_cgroup__load(skel);
++	if (!ASSERT_OK(ret, "test_task_under_cgroup__load"))
++		goto cleanup;
++
++	ret = test_task_under_cgroup__attach(skel);
++	if (!ASSERT_OK(ret, "test_task_under_cgroup__attach"))
++		goto cleanup;
++
++	syscall(__NR_getuid);
++
++	test_task_under_cgroup__detach(skel);
++
++	ASSERT_EQ(skel->bss->remote_pid, skel->rodata->local_pid,
++		  "test task_under_cgroup");
++
++cleanup:
++	if (foo)
++		close(foo);
++
++	test_task_under_cgroup__destroy(skel);
 +}
- #endif /* CONFIG_CGROUPS */
+diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+index 22914a70db54..41b3ea231698 100644
+--- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
++++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
+@@ -26,6 +26,7 @@ struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level) __ksym;
+ struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
+ void bpf_rcu_read_lock(void) __ksym;
+ void bpf_rcu_read_unlock(void) __ksym;
++int bpf_task_under_cgroup(struct cgroup *cgrp, struct task_struct *task) __ksym;
  
- /**
-@@ -2341,6 +2359,7 @@ BTF_ID_FLAGS(func, bpf_cgroup_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cgroup_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_SET8_END(generic_btf_ids)
+ static inline struct __cgrps_kfunc_map_value *cgrps_kfunc_map_value_lookup(struct cgroup *cgrp)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
+new file mode 100644
+index 000000000000..e2740f9b029d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Bytedance */
++
++#include <vmlinux.h>
++#include <asm/unistd.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++#include "cgrp_kfunc_common.h"
++
++const volatile int local_pid;
++const volatile long cgid;
++int remote_pid;
++
++SEC("tp_btf/sys_enter")
++int BPF_PROG(sysenter, struct pt_regs *regs, long id)
++{
++	struct cgroup *cgrp;
++
++	if (id != __NR_getuid)
++		return 0;
++
++	if (local_pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
++
++	cgrp = bpf_cgroup_from_id(cgid);
++	if (!cgrp)
++		return 0;
++
++	if (!bpf_task_under_cgroup(cgrp, bpf_get_current_task_btf()))
++		goto out;
++
++	remote_pid = local_pid;
++
++out:
++	bpf_cgroup_release(cgrp);
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.20.1
 
