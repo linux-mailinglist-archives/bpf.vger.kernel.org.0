@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9248A6EACF8
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E08B6EACFC
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 16:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjDUOb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 10:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        id S230233AbjDUOcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 10:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbjDUOb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 10:31:27 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD514695;
-        Fri, 21 Apr 2023 07:31:26 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1a66e7a52d3so18841735ad.0;
-        Fri, 21 Apr 2023 07:31:26 -0700 (PDT)
+        with ESMTP id S232666AbjDUOct (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 10:32:49 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D781700;
+        Fri, 21 Apr 2023 07:32:11 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-63b4bf2d74aso1915174b3a.2;
+        Fri, 21 Apr 2023 07:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682087486; x=1684679486;
+        d=gmail.com; s=20221208; t=1682087527; x=1684679527;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nKhBu8sG6Yo56k0RSsJ8wWqsAKsW1s8Uamb5SWZYgmk=;
-        b=n3ftHlJTpDJTkhfmUdCx6lBZTh4cfghTRGbTz3FvC4THayyOQtgN77Abu9ocarHQgr
-         8nFhZuVDAb2VCja7jEil9DfV3soQQHx42HhgvhLV7AzRJvfv3KepPonCF0oergHy5x3I
-         Fw4buBJcMGJYJ6stwT0NRdlkt022MQK52ST0n+kOsFD7W2ql3m1a0+CjfJhhdDtXhTQE
-         bqKPWgh80N1ZAbqlVQUfNYl6sbvah77a5gQ/8BB6jLQhV3Acjhs2d2m704esGj2SK1Tb
-         woSvx4G+raElIdfKeYFOO9AOn4ocPOyPmCnhAfQkrqR2iA86UW3A+NgQa4vAESxzRtzQ
-         8Rww==
+        bh=PKDz2VHpFBglJoWx92yV80JbTCBVsrzDLB/aXuxYn7k=;
+        b=ltXM4AlOnELHD2rT+GbhgCb88ip1hWJV7dJsLlerzzZcvSs3NxFybmmyGrqG/ItvOy
+         2cTdRD2HBNGQ3fI1XEePdUp98Wqc2rUXhTVs/SBFmISGKDrfS/BjgNtkfxocmZCi8kua
+         BvksrgLW5e/H4mzcB/ZMw9HMO+4xSidWtr5Uz/6nO6POZzjEGUFFSxCLwWLL5mwAG9dd
+         3i5PxmWJGeeRTYLVyaZ3rv/jKgcFMEwWDS45ujq6euEu8KQxYSvzoAjGf8/+lPPLGoHR
+         oYYQ18dAwopIIgGlm4IisWOFF5GO4HSsEZLrNtSeGCr/rRK2nVYzDmeETxq5/i52p3yA
+         sRSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682087486; x=1684679486;
+        d=1e100.net; s=20221208; t=1682087527; x=1684679527;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nKhBu8sG6Yo56k0RSsJ8wWqsAKsW1s8Uamb5SWZYgmk=;
-        b=NYDpIcUIpCPJ44lNOLzD+q2ps7NgbSirbZ7XF2wp1ic4ngKul+f4rQJavA8I6fnCdq
-         Kza7DVldZmMtIbceWq5vTIvdLvUWVsSpFZ53M8O+W7KS6aqTUp7OdJ7wT8PI5+0Gp/Nx
-         mQyDmVo23PrIILyiPB/gtxfqRX0CquSkjHosMqdkJQG1CIHIZAh829cTSEhquWpSzQYU
-         UCQe8P7Io8az7zoVUJoETep5wk2/7mi5jyVHx/L3fPl6itn1WtZ8Q7BDFVTg6SwEftom
-         rq69licFU7J2NuQiEQRAFjLUs/+7GnnjLQTHe4LiE4VQ9zy8G4HIcv5tjp9ZVXLjedL/
-         2c8Q==
-X-Gm-Message-State: AAQBX9cED/ja+qBlkbrQH7yjv75JAhFtQ2bPKCT2PBk0+gVzjO07tG1U
-        Dh+S+3d+zl31j6Rr7prAROI=
-X-Google-Smtp-Source: AKy350bILZA+mnUYouk96Lb5R8bvZWVAEsO0G7f03O40kqNKn6GIzLpCW14jdGIP/mVBHuNfx/ZIOA==
-X-Received: by 2002:a17:903:40cc:b0:1a0:6bd4:ea78 with SMTP id t12-20020a17090340cc00b001a06bd4ea78mr5285204pld.31.1682087485496;
-        Fri, 21 Apr 2023 07:31:25 -0700 (PDT)
+        bh=PKDz2VHpFBglJoWx92yV80JbTCBVsrzDLB/aXuxYn7k=;
+        b=ECmmISS1zXsz1skAvz72ogGDzUUpTh3F+BHMgeBaQwKit2EOY1mqcYAEtHuxX6Xs5W
+         lisRJdKyAr7VAuZZ1L2I3vljxKLnXuQYLm1wxmmqulMbToOYa4bqsyEfJ9GKiIAmnBuR
+         vj7/2D9jFM8iVdlSn90U0jvDAOmI2qaqjG2m7aaHDjIJJvxaBRLUijHYSpa/nRK0v9O0
+         6QXZ9TKuoJt1JKJIkDhNfC650bIGTp7bvtp/rhC9wH6yoQjciv0mfmAOyiY9C16w0bMY
+         q/WOcXshkrPyG0rO53sHJxdxpubkFSVpMcDo/Q6+4z/yCPCUWnfO8HRq+6NrYKXH3fdR
+         emXw==
+X-Gm-Message-State: AAQBX9fv/OzoivjgKM6qD33N05cTRB2sqVJOPzkH2cnFMMMr5uplQnBD
+        /yuMAGSf2tESFiTe7X2NrtE=
+X-Google-Smtp-Source: AKy350ZCsPjHGHo3yUgkWG/vVX55EVxASCuC+pXoAwL+OTbbpyG9pnlp4y8BUcCz0XORvQXbwzlc9Q==
+X-Received: by 2002:a17:902:e80a:b0:1a8:32e:3256 with SMTP id u10-20020a170902e80a00b001a8032e3256mr6665679plg.35.1682087527036;
+        Fri, 21 Apr 2023 07:32:07 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id jh22-20020a170903329600b001a5262134d7sm2828397plb.202.2023.04.21.07.31.24
+        by smtp.gmail.com with ESMTPSA id g18-20020a17090ae59200b00246a7401d23sm2767350pjz.41.2023.04.21.07.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 07:31:25 -0700 (PDT)
+        Fri, 21 Apr 2023 07:32:06 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Apr 2023 04:31:23 -1000
+Date:   Fri, 21 Apr 2023 04:32:05 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Andrea Righi <andrea.righi@canonical.com>
 Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
@@ -63,16 +63,16 @@ Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
         derkling@google.com, haoluo@google.com, dvernet@meta.com,
         dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH 28/32] sched_ext: Implement core-sched support
-Message-ID: <ZEKeO7CI_ESpZS2H@slm.duckdns.org>
+        kernel-team@meta.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 24/32] sched_ext: Add cgroup support
+Message-ID: <ZEKeZf3BwuUacRWT@slm.duckdns.org>
 References: <20230317213333.2174969-1-tj@kernel.org>
- <20230317213333.2174969-29-tj@kernel.org>
- <ZEGY28sZgvEL7ssi@righiandr-XPS-13-7390>
+ <20230317213333.2174969-25-tj@kernel.org>
+ <ZEGaZ+lQL7pHpmY5@righiandr-XPS-13-7390>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZEGY28sZgvEL7ssi@righiandr-XPS-13-7390>
+In-Reply-To: <ZEGaZ+lQL7pHpmY5@righiandr-XPS-13-7390>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -84,50 +84,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Andrea.
+Hello,
 
-On Thu, Apr 20, 2023 at 09:56:11PM +0200, Andrea Righi wrote:
-> On Fri, Mar 17, 2023 at 11:33:29AM -1000, Tejun Heo wrote:
-> ...
-> >  
-> > +static int balance_scx(struct rq *rq, struct task_struct *prev,
-> > +		       struct rq_flags *rf)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = balance_one(rq, prev, rf, true);
-> > +
-> > +	/*
-> > +	 * When core-sched is enabled, this ops.balance() call will be followed
-> > +	 * by put_prev_scx() and pick_task_scx() on this CPU and pick_task_scx()
-> > +	 * on the SMT siblings. Balance the siblings too.
-> > +	 */
-> > +	if (sched_core_enabled(rq)) {
-> > +		const struct cpumask *smt_mask = cpu_smt_mask(cpu_of(rq));
+On Thu, Apr 20, 2023 at 10:02:47PM +0200, Andrea Righi wrote:
+> ^ #ifdef CONFIG_CGROUP_SCHED, otherwise we may get build errors, like:
 > 
-> balance_scx() should be a no-op if CONFIG_SCHED_SMT is undefined or we
-> may get a build error here.
-> 
-> For example with a minimal ppc64le config (and CONFIG_SCHED_SMT off) I
-> can reproduce this:
-> 
->  ./arch/powerpc/include/asm/smp.h:139:22: error: implicit declaration of function 'cpu_smt_mask'; did you mean 'cpu_cpu_mask'? [-Werror=implicit-function-declaration]
-> 
-> So maybe have something like this (or similar):
-> 
-> #ifdef CONFIG_SCHED_SMT
-> ...
-> #else
-> static inline int balance_scx(struct rq *rq, struct task_struct *prev,
-> 		       struct rq_flags *rf)
-> {
-> 	return 0
-> }
-> #endif
+> kernel/sched/ext.c:4251:34: error: 'struct task_struct' has no member named 'sched_task_group'
 
-Will fix.
-
-Thank you.
+Oops, thanks for spotting that. Will fix.
 
 -- 
 tejun
