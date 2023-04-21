@@ -2,263 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B6F6EAB55
-	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 15:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6BA6EABBF
+	for <lists+bpf@lfdr.de>; Fri, 21 Apr 2023 15:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjDUNPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 09:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S231739AbjDUNgE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 09:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbjDUNPj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 09:15:39 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D57A5F0;
-        Fri, 21 Apr 2023 06:15:37 -0700 (PDT)
+        with ESMTP id S231285AbjDUNgD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 09:36:03 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BA3E6B;
+        Fri, 21 Apr 2023 06:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1682082937; x=1713618937;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kmiOUVgBvjfIs0p4hj+2OzOGUD9EcJfcUGBRPSb0QWE=;
-  b=GPRVPDMObKteuhX+d5bqVNEmjAz3TQa+p4F1IT3enbCH3SZmxNm1DgJA
-   N7K8HvnY5JCPaK4gDtDTLgsjzUhWUH3P6w8JdOz2wDJuTMfGwZn479wAB
-   a0MyfCRisr10wkW/8W3NQWRFCtu4kM8I8jDXNI+4nI3Liy26f6m+mLH4N
-   uXZKw426FjEEU2i/OJLQAsrfW7VFsmTKZVA7/V11TuJSqzZxw3ZOuxq32
-   78/cnBEgbLcXg4KaoF3FQayJK8QjYW/3KxwjM3O4NIUVpt5hw8XFjGcQo
-   rBQ7N3+DA58KM05rVkGb8aJQRAnmMxlt47OZOyq5qBXJBACiTxDDmNCRf
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682084162; x=1713620162;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=zf1MUQu1TV5ZdqwNqDZuluCCIpLkRf3GKXcIf2elivU=;
+  b=de6ng3svoT6QSa19R3VKaVzzTg5RWvqMpBNK6/2iZZh2KZXuk54aNYRC
+   x5X1v2YGQMcr3B/CWmEl5ECDq2wa8jVjYxl/p53FAqNazrqtFEtr0qnTl
+   ivGOUT3piJWNOS3tAR2fi08redmLjX4h28Qxcbrk52/Fal3Gd5Narfok7
+   3XaV8WZVM0r2SBKFfdA9zwFa/ZqsC/sle1sfMoB6ycEfKkjYvDwukphL5
+   Ij/7okHBxaNvVcJxi0FcAQfp3VCRhpf75Bo/B8uG7kcGj8gOOg2zEvplR
+   kEEKgEJXpFvao+WoofBz/P65KA57ZEWush2+GK0rn2qqHpOs4iIbvy2AH
    Q==;
-X-IronPort-AV: E=Sophos;i="5.99,214,1677567600"; 
-   d="scan'208";a="148298571"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Apr 2023 06:15:35 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="325592542"
+X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
+   d="scan'208";a="325592542"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2023 06:36:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10686"; a="722742612"
+X-IronPort-AV: E=Sophos;i="5.99,214,1677571200"; 
+   d="scan'208";a="722742612"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga008.jf.intel.com with ESMTP; 21 Apr 2023 06:36:01 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 21 Apr 2023 06:15:11 -0700
-Received: from soft-dev3-1.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 21 Apr 2023 06:15:08 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <richardcochran@gmail.com>, <UNGLinuxDriver@microchip.com>,
-        <alexandr.lobakin@intel.com>, <maciej.fijalkowski@intel.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v2] lan966x: Don't use xdp_frame when action is XDP_TX
-Date:   Fri, 21 Apr 2023 15:14:22 +0200
-Message-ID: <20230421131422.3530159-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.38.0
+ 15.1.2507.23; Fri, 21 Apr 2023 06:36:01 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 21 Apr 2023 06:36:01 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Fri, 21 Apr 2023 06:36:01 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Fri, 21 Apr 2023 06:36:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hcR5gq/ylQX6lMc1KVJNCbmJetqg7KOIARZWhTzbILv8cEQhj+GPKWgTTxD8K3ppA/AgOGaaKSRZ7qci4LBVeVif/E7PHt8iyQKr0i4kR67w2kvYcRQ5mGrCburPpBpXnUwwY1H6K2gigi9enzKToa/INAdVIuV7zBSZzIVfyis+oValfsa/JO/xrhArKcJd+mDSKDtv0yXEvD3JnQT09y3w7OYsMHA8UPQJ3Brqz0es49pJXPmXQvl5U/0YtLkn0Q/1eX2KiKpqsypIcRatE3CcobnzQXnflgZVkIJXT5cIZS+v/VWzXNcQrVRk1rxvk3OySVBeEuBTm5lYTRoNeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wm0/VGSo0RKT4qkZGgtlMYJI95zmhsecUF1dn8t41Ls=;
+ b=lFSnZCaWM6V3cYMA/5B51hrYAPBMfPHqiOj07FE7rRxM/0JMibDBb3QTFwb2G7DT5W/Sa483aAAqkyLMd/Ix5l4h+wW5IrWgH4pwBuHu3ste7zvBJ/DQ02ht5JuJL9aTISo5w56CdXAwPPt7dnuYgOB5hWk1HJTuhHOZLqabYRMnydV/RXYOEpVLRp5enuiwkcWANUZtm2Vv4tCoQaf/TB/C1BWs1R2s+9RlRXpHuTSnfgi2koTEiHiELCmRu9gRX4xQ3NcDaaVU3VqcrMoaqIwpoEcQp3rkKj4x2bJDIItQ16CBdfi/9hu8vw+8Mb7/3mzciZd8pLMRrMp3tlqsFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by MW4PR11MB6837.namprd11.prod.outlook.com (2603:10b6:303:221::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.22; Fri, 21 Apr
+ 2023 13:35:58 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::4c38:d223:b2ac:813e%5]) with mapi id 15.20.6319.022; Fri, 21 Apr 2023
+ 13:35:58 +0000
+Message-ID: <714b6bd0-014f-a5ab-af02-d4d9e4390454@intel.com>
+Date:   Fri, 21 Apr 2023 15:34:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH net-next v2] lan966x: Don't use xdp_frame when action is
+ XDP_TX
+Content-Language: en-US
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <richardcochran@gmail.com>,
+        <UNGLinuxDriver@microchip.com>, <alexandr.lobakin@intel.com>,
+        <maciej.fijalkowski@intel.com>
+References: <20230421131422.3530159-1-horatiu.vultur@microchip.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230421131422.3530159-1-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0183.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a4::11) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|MW4PR11MB6837:EE_
+X-MS-Office365-Filtering-Correlation-Id: 09b1e13a-7cec-41a6-004c-08db426d56bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hg+y2kF+g9FuOK6QYTYbXU/I5D9DyZj/+FVMPJcfN4o0HuCZm4T3wKEwvb460c6wJ/uO+TWbGR7v3OPFkPbCgcYS7Kk0MvIGCcCAOHQ2a6NYDzw5fnN6hheIYC5UeQSiyFvCibjsQOO7kmL2MTmlmaYLLIYQgZzedWp/zUvt4hXbH1lfvenjpqDBZnn5UYx8RpFBWUXVSfa2ZpZ8yiuEVvOXTDvFg4537C1YhjvVQSLeCXPb6bY53XxVU2FTzB6WExjMGAG4ncy07CW4nUSfNGZJxKbYn6PPVnTt13sXOlMPFpv+Ay2LX+7ke1mGU1RLCK9Cetrvf/dloSiLVBeSirnrYjP7J63GBl2Nw/RhM4ZcGwsauxucC7UYaaaYLodby8lkVHoimQsaqFWy7SV2CfFgGbzVE81G8ziqYQVzC1qxZotI+epdqm8KojolXta/EhZcC4d0FAmm0lsx+99Wjdwk4pl6FlW2yStkLH8FLUijaibZf7icDRaYJlQ0UvQXWBJdR+gtp6+Xo1aJF/kKbDm5+iyzqJD/o97u/DybqCu59oUbNTi0RUlKaH7p4ir0u+kaMHQ4sT5ug7ID5UO8pQtND5uLRD9TAWblsA9RIy+nKKEHBUfAvxHg9z90h/YOCXdiNVZd6bhZVDpPhbsvkg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199021)(4326008)(66476007)(6916009)(316002)(66946007)(66556008)(478600001)(6666004)(6486002)(8936002)(41300700001)(8676002)(5660300002)(2906002)(7416002)(86362001)(82960400001)(31696002)(36756003)(38100700002)(2616005)(6512007)(6506007)(26005)(186003)(107886003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZGNpM2FDRnhtZHhTeUJBOW1DenNvYXhacVZwYXltVXg4cXpqU1dBWFJPakhB?=
+ =?utf-8?B?S0YzWVE1ZElPYWQ4b0ZuUmU3N1NQdFIzRnpBL2wvSEk4a29aUXV2NGpRSmVz?=
+ =?utf-8?B?YlBqL0p6YWNJTWE4ZmlSQVdYWU92MTc4Mmgwbkt0UUpRbUkxR0tRbEk4U2Ra?=
+ =?utf-8?B?U0hiUWJuZWZ1am1lZ3BBYjhPY2haRHlZNytIdVlnWmFPektZVWUwV2dLbmNz?=
+ =?utf-8?B?dGJoRVJjTlBpZ1lwODljZVZFZm5kNitia29OWllRWjhaaStKWXVhVm9jY21v?=
+ =?utf-8?B?UmhhQUxicWo2blRvZlNUMWlOenBGdTc5cGphMENHSFBzSVRpaWVPTkFESXVp?=
+ =?utf-8?B?U09pd3NETzY1UFFKLzJpek55aEdkcXpVMStPYzFjUTFiQlpzTWkzNXFFWlJr?=
+ =?utf-8?B?bzh6eXo3Q20vTlpsUHlxNWtvazR6cEs4cUJoVlJibUljVG5UbDJ0QVR6cmxP?=
+ =?utf-8?B?aGU0WHRrYkU3NXJ3SFViL3c2K3pLbmF4WTlFczVjN1ZQQTZoNUF3Q2xMZnp0?=
+ =?utf-8?B?NytjcWVwaHAvdENVWktIZHNpRHNiOUxxbkpqL0RoZ2NaamlSV09DN2IxOEFi?=
+ =?utf-8?B?WG9GOVRMS295WHNYUVUyNkk0Q3Z4UThtN1dMNFlOMXpyUjdzL09FS3ovRERR?=
+ =?utf-8?B?ajlHMHZscThJUzVucklPd2hTZld6Z09XTFdDVFRvWkl1R3ZncVNaQmRBOWs2?=
+ =?utf-8?B?WFZNV2hVYk5LNDE1YW9tZ2lSSWFyQURIMTExQzAxL3N5Mm1nTHB1dndJWnVZ?=
+ =?utf-8?B?enpQNkVXaGo1SXR6NmllR3o5Y0ZSZ0thMGcxZXhUV0dNQlNOTExCVjdjQWhS?=
+ =?utf-8?B?MGFGRVlydjUxYVp5c2k0QXh4VnZtTGxhcEQxeU1BUlFOY004bW1QeGplZFNv?=
+ =?utf-8?B?VkZ5c2h0eUcwQUw0cXQyVkdYcDFNdTZiL3RiaGFhLytSQWxrbk40ZkxBQXdp?=
+ =?utf-8?B?V05GejlnbnlaR1RSWm1XeDJhajV5WlJkMk11TUZQUWczUFNhajZ1Zll4Qzc1?=
+ =?utf-8?B?akpBcjl3N2R2dHdNajlJZmZRSzBtQ3IrcjNKdUFRYXZmYVZXMnB2OTJBNmR4?=
+ =?utf-8?B?cmNWNW50NnlMQ3kyQTQyTGJaQnd0anNEengrQ2ZvemxucUwxNnRxZ3p1dWc2?=
+ =?utf-8?B?RTNOM3hZUnhZbWw5bXVZMVJqR0luTUdDN0tVc1B0bnh1NHJjeGcrNlJEcFRD?=
+ =?utf-8?B?d3lGdTJmQW1qK0lVRW1BbVdGVVhBVVM5ajRhcHBpazhiZkNKdmZqNk85NnVQ?=
+ =?utf-8?B?Vm43MSthUVpTQk50akpiRW1DT1pYTEYxai9LVDBOdFdqYWhFOHNaaTFyNW5I?=
+ =?utf-8?B?NkZYSVBYQzVGc1lIRVUvaU93L1hFYWhTNldlaXBTMEU0ejV3Z0JiWGJmMWgw?=
+ =?utf-8?B?aHVLc3ZkS3Z1THZQSnRTL3I2Qm1ZTWpwYXYzWDJaYkVudFMrUk92ZXNiUUh0?=
+ =?utf-8?B?MHRwU1hPU1NrcG93emhFS05ITFFGRlVmcWNQcmxieTFhVWROL284QUczYUl4?=
+ =?utf-8?B?WDUvMzhhdjFlMzZIbm9rdzVVZG9IUGthMUdMWUFicUhSYjJIcnRPSE5ML0tR?=
+ =?utf-8?B?bjVrdG5rOStWQW5GcEcyaithelhrZ1AyaittZUs2ZkJRYkJMVUkwMUFFQlQ2?=
+ =?utf-8?B?SStVU000am41R2hDenJwZ2NkdmhLMTdjZVlINWVBZnMvQ2h2a3JwdjNIaC9K?=
+ =?utf-8?B?ZHJLRk80ZWtqeFpmOFlJS2Iyd1QrUmhoMUdCK0JhWmt3dGU0L1lmSjFGYXZY?=
+ =?utf-8?B?Y0ZCOExVMTFrUVY1VnRVTWJXbzZIMFpYSjhNZEVBTm9IK2RXbVJhN2tMdXp4?=
+ =?utf-8?B?em44N2NPNDlubWViY1dPTjdnUVliMGl2NnhqWFRHOGZIcnA4RU1rSEtyYWdL?=
+ =?utf-8?B?WnlNT2lEdHhuQy9hYnVuQVJxeGROQkl3bXEvZkhtZ2p0dVRESFpjQTZlV0dV?=
+ =?utf-8?B?QUM3RnYrUkNwOHJSSTdkb0JMajRrME1EOWVVa00vdHNycDJ3R3RxTlQ3dHI0?=
+ =?utf-8?B?bTZJWEhXblN3MlVnOUlBYklFNVNhbk9HTlBkZ2NJOStiaVVNWU5VL3JQUGxy?=
+ =?utf-8?B?a1lKcEpYaTQvdis3d0FiWGJSSFNuTTNDNzc2cE5LMlBPR0RvdWN2TkNCbHZv?=
+ =?utf-8?B?L1lkWTVMMHJ2L0pmcW1hRWtlRzJrNFlNWDVOSUd4S3Q2THc0UzFZZUl6aTA2?=
+ =?utf-8?B?UGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09b1e13a-7cec-41a6-004c-08db426d56bd
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2023 13:35:58.0868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i/VcM3TQFzFQ9WSyN7u84wL+TYBbuS+9+NJn38ABRXt5wLZHmz0hpUV2IKZUZ2YPB9A7DaBEbbtUKHJWMJIaXMDmnydM3Cazq5Uo0+CWFGY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6837
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the action of an xdp program was XDP_TX, lan966x was creating
-a xdp_frame and use this one to send the frame back. But it is also
-possible to send back the frame without needing a xdp_frame, because
-it is possible to send it back using the page.
-And then once the frame is transmitted is possible to use directly
-page_pool_recycle_direct as lan966x is using page pools.
-This would save some CPU usage on this path, which results in higher
-number of transmitted frames. Bellow are the statistics:
-Frame size:    Improvement:
-64                ~8%
-256              ~11%
-512               ~8%
-1000              ~0%
-1500              ~0%
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+Date: Fri, 21 Apr 2023 15:14:22 +0200
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
-v1->v2:
-- reduce number of arguments for the function lan966x_fdma_xmit_xdpf,
-  as some of them are mutual exclusive, and other can be replaced with
-  deduced from the other ones
-- update commit message and add statistics for the improvement
----
- .../ethernet/microchip/lan966x/lan966x_fdma.c | 43 +++++++++++--------
- .../ethernet/microchip/lan966x/lan966x_main.h |  6 +--
- .../ethernet/microchip/lan966x/lan966x_xdp.c  | 10 ++---
- 3 files changed, 31 insertions(+), 28 deletions(-)
+> When the action of an xdp program was XDP_TX, lan966x was creating
+> a xdp_frame and use this one to send the frame back. But it is also
+> possible to send back the frame without needing a xdp_frame, because
+> it is possible to send it back using the page.
+> And then once the frame is transmitted is possible to use directly
+> page_pool_recycle_direct as lan966x is using page pools.
+> This would save some CPU usage on this path, which results in higher
+> number of transmitted frames. Bellow are the statistics:
+> Frame size:    Improvement:
+> 64                ~8%
+> 256              ~11%
+> 512               ~8%
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-index 2ed76bb61a731..85c13231e0176 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_fdma.c
-@@ -390,6 +390,7 @@ static void lan966x_fdma_stop_netdev(struct lan966x *lan966x)
- static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- {
- 	struct lan966x_tx *tx = &lan966x->tx;
-+	struct lan966x_rx *rx = &lan966x->rx;
- 	struct lan966x_tx_dcb_buf *dcb_buf;
- 	struct xdp_frame_bulk bq;
- 	struct lan966x_db *db;
-@@ -432,7 +433,8 @@ static void lan966x_fdma_tx_clear_buf(struct lan966x *lan966x, int weight)
- 			if (dcb_buf->xdp_ndo)
- 				xdp_return_frame_bulk(dcb_buf->data.xdpf, &bq);
- 			else
--				xdp_return_frame_rx_napi(dcb_buf->data.xdpf);
-+				page_pool_recycle_direct(rx->page_pool,
-+							 dcb_buf->data.page);
- 		}
- 
- 		clear = true;
-@@ -699,15 +701,14 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
- 	tx->last_in_use = next_to_use;
- }
- 
--int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
--			   struct xdp_frame *xdpf,
--			   struct page *page,
--			   bool dma_map)
-+int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len)
- {
- 	struct lan966x *lan966x = port->lan966x;
- 	struct lan966x_tx_dcb_buf *next_dcb_buf;
- 	struct lan966x_tx *tx = &lan966x->tx;
-+	struct xdp_frame *xdpf;
- 	dma_addr_t dma_addr;
-+	struct page *page;
- 	int next_to_use;
- 	__be32 *ifh;
- 	int ret = 0;
-@@ -722,8 +723,19 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 		goto out;
- 	}
- 
-+	/* Fill up the buffer */
-+	next_dcb_buf = &tx->dcbs_buf[next_to_use];
-+	next_dcb_buf->use_skb = false;
-+	next_dcb_buf->xdp_ndo = !len;
-+	next_dcb_buf->len = len + IFH_LEN_BYTES;
-+	next_dcb_buf->used = true;
-+	next_dcb_buf->ptp = false;
-+	next_dcb_buf->dev = port->dev;
-+
- 	/* Generate new IFH */
--	if (dma_map) {
-+	if (!len) {
-+		xdpf = ptr;
-+
- 		if (xdpf->headroom < IFH_LEN_BYTES) {
- 			ret = NETDEV_TX_OK;
- 			goto out;
-@@ -743,11 +755,15 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 			goto out;
- 		}
- 
-+		next_dcb_buf->data.xdpf = xdpf;
-+
- 		/* Setup next dcb */
- 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
- 					  xdpf->len + IFH_LEN_BYTES,
- 					  dma_addr);
- 	} else {
-+		page = ptr;
-+
- 		ifh = page_address(page) + XDP_PACKET_HEADROOM;
- 		memset(ifh, 0x0, sizeof(__be32) * IFH_LEN);
- 		lan966x_ifh_set_bypass(ifh, 1);
-@@ -756,25 +772,18 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
- 		dma_addr = page_pool_get_dma_addr(page);
- 		dma_sync_single_for_device(lan966x->dev,
- 					   dma_addr + XDP_PACKET_HEADROOM,
--					   xdpf->len + IFH_LEN_BYTES,
-+					   len + IFH_LEN_BYTES,
- 					   DMA_TO_DEVICE);
- 
-+		next_dcb_buf->data.page = page;
-+
- 		/* Setup next dcb */
- 		lan966x_fdma_tx_setup_dcb(tx, next_to_use,
--					  xdpf->len + IFH_LEN_BYTES,
-+					  len + IFH_LEN_BYTES,
- 					  dma_addr + XDP_PACKET_HEADROOM);
- 	}
- 
--	/* Fill up the buffer */
--	next_dcb_buf = &tx->dcbs_buf[next_to_use];
--	next_dcb_buf->use_skb = false;
--	next_dcb_buf->data.xdpf = xdpf;
--	next_dcb_buf->xdp_ndo = dma_map;
--	next_dcb_buf->len = xdpf->len + IFH_LEN_BYTES;
- 	next_dcb_buf->dma_addr = dma_addr;
--	next_dcb_buf->used = true;
--	next_dcb_buf->ptp = false;
--	next_dcb_buf->dev = port->dev;
- 
- 	/* Start the transmission */
- 	lan966x_fdma_tx_start(tx, next_to_use);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index 757378516f1fd..27f272831ea5c 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -262,6 +262,7 @@ struct lan966x_tx_dcb_buf {
- 	union {
- 		struct sk_buff *skb;
- 		struct xdp_frame *xdpf;
-+		struct page *page;
- 	} data;
- 	u32 len;
- 	u32 used : 1;
-@@ -593,10 +594,7 @@ int lan966x_ptp_setup_traps(struct lan966x_port *port, struct ifreq *ifr);
- int lan966x_ptp_del_traps(struct lan966x_port *port);
- 
- int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
--int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
--			   struct xdp_frame *frame,
--			   struct page *page,
--			   bool dma_map);
-+int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len);
- int lan966x_fdma_change_mtu(struct lan966x *lan966x);
- void lan966x_fdma_netdev_init(struct lan966x *lan966x, struct net_device *dev);
- void lan966x_fdma_netdev_deinit(struct lan966x *lan966x, struct net_device *dev);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-index 2e6f486ec67d7..9ee61db8690b4 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-@@ -62,7 +62,7 @@ int lan966x_xdp_xmit(struct net_device *dev,
- 		struct xdp_frame *xdpf = frames[i];
- 		int err;
- 
--		err = lan966x_fdma_xmit_xdpf(port, xdpf, NULL, true);
-+		err = lan966x_fdma_xmit_xdpf(port, xdpf, 0);
- 		if (err)
- 			break;
- 
-@@ -76,7 +76,6 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- {
- 	struct bpf_prog *xdp_prog = port->xdp_prog;
- 	struct lan966x *lan966x = port->lan966x;
--	struct xdp_frame *xdpf;
- 	struct xdp_buff xdp;
- 	u32 act;
- 
-@@ -90,11 +89,8 @@ int lan966x_xdp_run(struct lan966x_port *port, struct page *page, u32 data_len)
- 	case XDP_PASS:
- 		return FDMA_PASS;
- 	case XDP_TX:
--		xdpf = xdp_convert_buff_to_frame(&xdp);
--		if (!xdpf)
--			return FDMA_DROP;
--
--		return lan966x_fdma_xmit_xdpf(port, xdpf, page, false) ?
-+		return lan966x_fdma_xmit_xdpf(port, page,
-+					      data_len - IFH_LEN_BYTES) ?
- 		       FDMA_DROP : FDMA_TX;
- 	case XDP_REDIRECT:
- 		if (xdp_do_redirect(port->dev, &xdp, xdp_prog))
--- 
-2.38.0
+Nice bump, esp. for 256 }:>
 
+> 1000              ~0%
+> 1500              ~0%
+
+[...]
+
+> @@ -699,15 +701,14 @@ static void lan966x_fdma_tx_start(struct lan966x_tx *tx, int next_to_use)
+>  	tx->last_in_use = next_to_use;
+>  }
+>  
+> -int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+> -			   struct xdp_frame *xdpf,
+> -			   struct page *page,
+> -			   bool dma_map)
+> +int lan966x_fdma_xmit_xdpf(struct lan966x_port *port, void *ptr, u32 len)
+>  {
+>  	struct lan966x *lan966x = port->lan966x;
+>  	struct lan966x_tx_dcb_buf *next_dcb_buf;
+>  	struct lan966x_tx *tx = &lan966x->tx;
+> +	struct xdp_frame *xdpf;
+>  	dma_addr_t dma_addr;
+> +	struct page *page;
+>  	int next_to_use;
+>  	__be32 *ifh;
+>  	int ret = 0;
+> @@ -722,8 +723,19 @@ int lan966x_fdma_xmit_xdpf(struct lan966x_port *port,
+>  		goto out;
+>  	}
+>  
+> +	/* Fill up the buffer */
+> +	next_dcb_buf = &tx->dcbs_buf[next_to_use];
+> +	next_dcb_buf->use_skb = false;
+> +	next_dcb_buf->xdp_ndo = !len;
+> +	next_dcb_buf->len = len + IFH_LEN_BYTES;
+
+Is it intended that for .ndo_xdp_xmit cases this field will equal just
+%IFH_LEN_BYTES as @len is zero?
+
+> +	next_dcb_buf->used = true;
+> +	next_dcb_buf->ptp = false;
+> +	next_dcb_buf->dev = port->dev;
+> +
+>  	/* Generate new IFH */
+> -	if (dma_map) {
+> +	if (!len) {
+> +		xdpf = ptr;
+> +
+>  		if (xdpf->headroom < IFH_LEN_BYTES) {
+>  			ret = NETDEV_TX_OK;
+>  			goto out;
+[...]
+
+Thanks,
+Olek
