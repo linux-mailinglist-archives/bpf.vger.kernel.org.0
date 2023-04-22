@@ -2,83 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 517AD6EB738
-	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 05:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D966EB7CD
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 09:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjDVDuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 23:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
+        id S229484AbjDVHfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Apr 2023 03:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjDVDub (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 23:50:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ADE1FC3;
-        Fri, 21 Apr 2023 20:50:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 591C063BC3;
-        Sat, 22 Apr 2023 03:50:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B7D30C433D2;
-        Sat, 22 Apr 2023 03:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682135429;
-        bh=iVkHaE8eCMl3ljbEGwhZ7UfOkU1P4VOuz5eSyh6hsJs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Mm2l/pDjZHyavhmyxdHLapgBUbzYpEkbcAX5E/yAmuNKBneoRZp4EFNOmsATE6UqO
-         hTUzhTvxyXTF52SMaA9QjHRTEjHx6vF+w/A0MxMH4e6nbUiY2cBiPv2mvoRloTGkzk
-         d+372hcZZ9mIHfgG0kaLAjQjkz/KXoXJOz0gS9HWUwHvOUKzCF46R4D+ZEZGSqXbZv
-         YPnKJ2K69VQM0WdDDtEL+vXVcfKoYkDDXHdBW8Yv3wY29S4kT5jGY353zhjf8acS2X
-         QWh2tkeMYOThZTkiqAUxutamR238P3m5ahBypt5CNxEO4VTitSiP+FCnDoh0iis1tW
-         nn5fhqrgy0Y8w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A543AE270DA;
-        Sat, 22 Apr 2023 03:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229451AbjDVHfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Apr 2023 03:35:52 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128DE1BD4
+        for <bpf@vger.kernel.org>; Sat, 22 Apr 2023 00:35:51 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1pq7me-0008RK-MU; Sat, 22 Apr 2023 09:35:48 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH bpf-next] bpf: fix link failure with NETFILTER=y INET=n
+Date:   Sat, 22 Apr 2023 09:35:44 +0200
+Message-Id: <20230422073544.17634-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <202304220903.fRZTJtxe-lkp@intel.com>
+References: <202304220903.fRZTJtxe-lkp@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2023-04-21
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168213542967.31717.12562943743588428880.git-patchwork-notify@kernel.org>
-Date:   Sat, 22 Apr 2023 03:50:29 +0000
-References: <20230421211035.9111-1-daniel@iogearbox.net>
-In-Reply-To: <20230421211035.9111-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Explicitly check if NETFILTER_BPF_LINK is enabled, else configs
+that have NETFILTER=y but CONFIG_INET=n fail to link:
 
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+> kernel/bpf/syscall.o: undefined reference to `netfilter_prog_ops'
+> kernel/bpf/verifier.o: undefined reference to `netfilter_verifier_ops'
 
-On Fri, 21 Apr 2023 23:10:35 +0200 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 71 non-merge commits during the last 8 day(s) which contain
-> a total of 116 files changed, 13397 insertions(+), 8896 deletions(-).
-> 
-> [...]
+Fixes: fd9c663b9ad6 ("bpf: minimal support for programs hooked into netfilter framework")
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202304220903.fRZTJtxe-lkp@intel.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ checked that my 'goodconfig' still yields a kernel that accepts bpf-nf progs.
 
-Here is the summary with links:
-  - pull-request: bpf-next 2023-04-21
-    https://git.kernel.org/netdev/net-next/c/9a82cdc28f47
+ include/linux/bpf_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You are awesome, thank you!
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 39a999abb0ce..fc0d6f32c687 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -79,7 +79,7 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
+ #endif
+ BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
+ 	      void *, void *)
+-#ifdef CONFIG_NETFILTER
++#ifdef CONFIG_NETFILTER_BPF_LINK
+ BPF_PROG_TYPE(BPF_PROG_TYPE_NETFILTER, netfilter,
+ 	      struct bpf_nf_ctx, struct bpf_nf_ctx)
+ #endif
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.2
 
