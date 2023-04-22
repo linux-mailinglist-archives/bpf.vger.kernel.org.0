@@ -2,70 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0C66EB5CE
-	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 01:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE58C6EB6BA
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 04:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbjDUXtQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 19:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
+        id S229571AbjDVCDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 22:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233722AbjDUXtP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 19:49:15 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179A269A
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 16:49:12 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-63b62d2f729so2335802b3a.1
-        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 16:49:12 -0700 (PDT)
+        with ESMTP id S232989AbjDVCDu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 22:03:50 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE081BE2
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 19:03:48 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a640c23a62f3a-94ed7e49541so325224266b.1
+        for <bpf@vger.kernel.org>; Fri, 21 Apr 2023 19:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682120952; x=1684712952;
+        d=gmail.com; s=20221208; t=1682129027; x=1684721027;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vwu16qh1V/GyV82zpD2/gkTBBGQiP7a1RNAclzcE0SA=;
-        b=XvRL9pDDVLgKMTe+Ru+jAHyu7aP0ktiP/RG/VrSdXJ1tsi9y6kpECYmT/Cn5eEvV0I
-         uelLIR0XaQoW4G+WezfVxxtUn23xQWFKVa6I0HC0uCoD8RWxP1DneNJ8zyGNGp+b2FZV
-         hPmcBK0Sr96lsFUvP4uKstztukS4vdEiSEZxsLHBtWDdZpBQCvQ49MFdVXrnXoRGbu4L
-         0jDlZGKaivVAFYXeguXoTkU/hTAWB+k6XfkHlKw6Tc4WL/cQuQfbpKKqPnjkF5q8/B71
-         0CGNJ3dx2+xCGor+l+Ntw+M3lrKXTdHZFydeueZQQXXg0qez2PT0GVHCSCZoJutdQbCQ
-         HkDA==
+        bh=L4DH+n/U75TF0wS2WAEoC48uqRpoWpaTRmvBqFuBPa8=;
+        b=DIHkxeQBT0vFzzVLqcGwmGC0SFs1rF47KsCSLJIDCs3RqypPKPcpTTltQLXMu0FpQE
+         X0Rwuj1IVZLpDOZu2c+aPUIzm62EpzX5oKrEc+gkb+K7Ehd6yW+tpgzVegIs8CsVPBsG
+         ZEQ5rFItgJLDY/XwYPcDJbdTNdPCijkPSocWSsK5hZz/1maC9i/AP60LHbdxJGs/WDo4
+         ezbpBH9zk72TFmU7gQrlnmld6JKfd+MOm/SKuCKYu413RNNDf7NU32waWxWIYSbYru/A
+         ye13gpx4quW1j8ljXuQQgreIBDsVXhm/2LKj394jfOmu5kh1ecUcl80TdejBLFajKqv3
+         qeyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682120952; x=1684712952;
+        d=1e100.net; s=20221208; t=1682129027; x=1684721027;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vwu16qh1V/GyV82zpD2/gkTBBGQiP7a1RNAclzcE0SA=;
-        b=QJ4owtb+6Mdn7aRu/xsbkbr363v1uG0PtZWRFkg24XDipdpIiVvihDd4lBhCWAkkgK
-         tdkquBPepD3y7v/4DN7fxnXF7KMxEJ8P9FQNPqbZo5XRgcqbU5Xxg2P2xL3i4X9eRo6E
-         SXsZo2wApz9EP377jq/WrKDnKavrARhOrj1J81Vyd8+mlxMlt8D+F2n3wFRczEdIppfp
-         deh+vKV7NvbS4Pmj7rlNyXHdfSCAd0sy+xAQ0zEhykPKLtMD+GV445X30FPq8gu2ZhYR
-         JeBmFqnO/fDQOpn07fNSO3taH+FpT4sYbo+zlFfI0pde3E1J2QdWkuxIN5GI/iCtasCX
-         qARg==
-X-Gm-Message-State: AAQBX9dB2gX18ZSml+LVdOCIhEEQxk5VeCdjFxYkppHRTYuJ7h3YNlYs
-        6ATPar/CGTl83xsXjI7KJQo=
-X-Google-Smtp-Source: AKy350ZDohTI3wcuOxZfZWr2TLG7VZ83mHKjanXodpOLPX8Z2cxCjZxzO4+XxQhHx7fyXbo2txziTA==
-X-Received: by 2002:a05:6a00:178c:b0:63d:3ae1:e3ba with SMTP id s12-20020a056a00178c00b0063d3ae1e3bamr9313015pfg.6.1682120951839;
-        Fri, 21 Apr 2023 16:49:11 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:ef5e])
-        by smtp.gmail.com with ESMTPSA id w2-20020a62c702000000b0063d3fbf4783sm3436837pfg.80.2023.04.21.16.49.09
+        bh=L4DH+n/U75TF0wS2WAEoC48uqRpoWpaTRmvBqFuBPa8=;
+        b=Pnz+E/9jO1g0p6pO0yCmyJ5qx3qGzyolT9WM0ul6j1Zf8IfVb+iKsJqpdcvOzC61dB
+         qidtNfyNsdQZTI37zeg8GiNkESjQjrmQqB5NrNdiDXQZAV9s6cSCGC7LCtqw94eblDi+
+         eeYmSKDuFuT7AnvgWiPgqdE/Hm3L6+n5v3wBk+w64I8z+5uq2v2Px8inR31x+tpEMamL
+         JlQOFaj9FgkK6+WZGVrdz8CrfeAWAb0poWeZ9xcdvbD8u14EtPC61PS1bw9gDnOA3lRd
+         cWsZQREgFAj6Kzp6XWMTxG9MQViMwCGyhRXKgYY3PC+QDkm8oPp0S/Ba2Gym1EtBKgZq
+         limg==
+X-Gm-Message-State: AAQBX9e705PlJtP9eOSJlLhF9T8ifD+7AQkaBS9hPQzVrFQm5YQuXK36
+        SnzU8JLxmZ5A3K5rCed5oVk=
+X-Google-Smtp-Source: AKy350ZFIPSsD+IgQc5nOeBg6Knl2cc7JSuiicJkLus8gDQaeOrjU4XWAbdNZaJKViim92Yvf5SL3w==
+X-Received: by 2002:a17:906:bc4b:b0:94f:6025:be53 with SMTP id s11-20020a170906bc4b00b0094f6025be53mr3826900ejv.50.1682129026978;
+        Fri, 21 Apr 2023 19:03:46 -0700 (PDT)
+Received: from localhost ([2001:620:618:580:2:80b3:0:6d0])
+        by smtp.gmail.com with ESMTPSA id a11-20020a17090682cb00b0094f5179540fsm2713089ejy.83.2023.04.21.19.03.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 16:49:10 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 16:49:08 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        Fri, 21 Apr 2023 19:03:46 -0700 (PDT)
+Date:   Sat, 22 Apr 2023 04:03:45 +0200
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 9/9] selftests/bpf: Add refcounted_kptr tests
-Message-ID: <20230421234908.tixmdprfxz5ixh6m@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2 bpf-next 0/9] Shared ownership for local kptrs
+Message-ID: <d7hyspcow5wtjcmw4fugdgyp3fwhljwuscp3xyut5qnwivyeru@ysdq543otzv2>
 References: <20230415201811.343116-1-davemarchevsky@fb.com>
- <20230415201811.343116-10-davemarchevsky@fb.com>
- <atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd7tnwft34e3@xktodqeqevir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd7tnwft34e3@xktodqeqevir>
+In-Reply-To: <20230415201811.343116-1-davemarchevsky@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,94 +73,183 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 22, 2023 at 12:17:47AM +0200, Kumar Kartikeya Dwivedi wrote:
-> On Sat, Apr 15, 2023 at 10:18:11PM CEST, Dave Marchevsky wrote:
-> > Test refcounted local kptr functionality added in previous patches in
-> > the series.
-> >
-> > Usecases which pass verification:
-> >
-> > * Add refcounted local kptr to both tree and list. Then, read and -
-> >   possibly, depending on test variant - delete from tree, then list.
-> >   * Also test doing read-and-maybe-delete in opposite order
-> > * Stash a refcounted local kptr in a map_value, then add it to a
-> >   rbtree. Read from both, possibly deleting after tree read.
-> > * Add refcounted local kptr to both tree and list. Then, try reading and
-> >   deleting twice from one of the collections.
-> > * bpf_refcount_acquire of just-added non-owning ref should work, as
-> >   should bpf_refcount_acquire of owning ref just out of bpf_obj_new
-> >
-> > Usecases which fail verification:
-> >
-> > * The simple successful bpf_refcount_acquire cases from above should
-> >   both fail to verify if the newly-acquired owning ref is not dropped
-> >
-> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > ---
-> > [...]
-> > +SEC("?tc")
-> > +__failure __msg("Unreleased reference id=3 alloc_insn=21")
-> > +long rbtree_refcounted_node_ref_escapes(void *ctx)
-> > +{
-> > +	struct node_acquire *n, *m;
-> > +
-> > +	n = bpf_obj_new(typeof(*n));
-> > +	if (!n)
-> > +		return 1;
-> > +
-> > +	bpf_spin_lock(&glock);
-> > +	bpf_rbtree_add(&groot, &n->node, less);
-> > +	/* m becomes an owning ref but is never drop'd or added to a tree */
-> > +	m = bpf_refcount_acquire(n);
-> 
-> I am analyzing the set (and I'll reply in detail to the cover letter), but this
-> stood out.
-> 
-> Isn't this going to be problematic if n has refcount == 1 and is dropped
-> internally by bpf_rbtree_add? Are we sure this can never occur? It took me some
-> time, but the following schedule seems problematic.
-> 
-> CPU 0					CPU 1
-> n = bpf_obj_new
-> lock(lock1)
-> bpf_rbtree_add(rbtree1, n)
-> m = bpf_rbtree_acquire(n)
-> unlock(lock1)
-> 
-> kptr_xchg(map, m) // move to map
-> // at this point, refcount = 2
-> 					m = kptr_xchg(map, NULL)
-> 					lock(lock2)
-> lock(lock1)				bpf_rbtree_add(rbtree2, m)
-> p = bpf_rbtree_first(rbtree1)			if (!RB_EMPTY_NODE) bpf_obj_drop_impl(m) // A
-> bpf_rbtree_remove(rbtree1, p)
-> unlock(lock1)
-> bpf_obj_drop(p) // B
+On Sat, Apr 15, 2023 at 10:18:02PM CEST, Dave Marchevsky wrote:
+> This series adds support for refcounted local kptrs to the verifier. A local
+> kptr is 'refcounted' if its type contains a struct bpf_refcount field:
+>
+>   struct refcounted_node {
+>     long data;
+>     struct bpf_list_node ll;
+>     struct bpf_refcount ref;
+>   };
+>
+> bpf_refcount is used to implement shared ownership for local kptrs.
+>
+> Motivating usecase
+> ==================
+>
+> If a struct has two collection node fields, e.g.:
+>
+>   struct node {
+>     long key;
+>     long val;
+>     struct bpf_rb_node rb;
+>     struct bpf_list_node ll;
+>   };
+>
+> It's not currently possible to add a node to both the list and rbtree:
+>
+>   long bpf_prog(void *ctx)
+>   {
+>     struct node *n = bpf_obj_new(typeof(*n));
+>     if (!n) { /* ... */ }
+>
+>     bpf_spin_lock(&lock);
+>
+>     bpf_list_push_back(&head, &n->ll);
+>     bpf_rbtree_add(&root, &n->rb, less); /* Assume a resonable less() */
+>     bpf_spin_unlock(&lock);
+>   }
+>
+> The above program will fail verification due to current owning / non-owning ref
+> logic: after bpf_list_push_back, n is a non-owning reference and thus cannot be
+> passed to bpf_rbtree_add. The only way to get an owning reference for the node
+> that was added is to bpf_list_pop_{front,back} it.
+>
+> More generally, verifier ownership semantics expect that a node has one
+> owner (program, collection, or stashed in map) with exclusive ownership
+> of the node's lifetime. The owner free's the node's underlying memory when it
+> itself goes away.
+>
+> Without a shared ownership concept it's impossible to express many real-world
+> usecases such that they pass verification.
+>
+> Semantic Changes
+> ================
+>
+> Before this series, the verifier could make this statement: "whoever has the
+> owning reference has exclusive ownership of the referent's lifetime". As
+> demonstrated in the previous section, this implies that a BPF program can't
+> have an owning reference to some node if that node is in a collection. If
+> such a state were possible, the node would have multiple owners, each thinking
+> they have exclusive ownership. In order to support shared ownership it's
+> necessary to modify the exclusive ownership semantic.
+>
+> After this series' changes, an owning reference has ownership of the referent's
+> lifetime, but it's not necessarily exclusive. The referent's underlying memory
+> is guaranteed to be valid (i.e. not free'd) until the reference is dropped or
+> used for collection insert.
+>
+> This change doesn't affect UX of owning or non-owning references much:
+>
+>   * insert kfuncs (bpf_rbtree_add, bpf_list_push_{front,back}) still require
+>     an owning reference arg, as ownership still must be passed to the
+>     collection in a shared-ownership world.
+>
+>   * non-owning references still refer to valid memory without claiming
+>     any ownership.
+> [...]
 
-You probably meant:
-p2 = bpf_rbtree_remove(rbtree1, p)
+I think there are a series of major issues right now. I am not sure everything
+can be addressed using bug fixes.
+
+If I had to summarize the main problems in one liners:
+The mutation of the node fields of an object can be racy.
+Lack of collection identity either at runtime or verification.
+
+--
+
+It is possible for multiple CPUs to get owned references to an object containing
+a rbtree or list node, and they can attempt to modify those fields in parallel
+without any synchronization.
+
+CPU 0					CPU 1
+n = bpf_obj_new(...)
+m = bpf_refcount_acquire(n)
+kptr_xchg(map, m)
+					m = kptr_xchg(map, NULL)
+// m == n
+bpf_spin_lock(lock1)			bpf_spin_lock(lock2)
+bpf_rbtree_add(rbtree1, m)		bpf_rbtree_add(rbtree2, n)
+	if (!RB_EMPTY_NODE)			if (!RB_EMPTY_NODE) // RACE, both continue with 'else'
+bpf_spin_unlock(lock1)			bpf_spin_unlock(lock2)
+
+--
+
+Blocking kptr_xchg for shared ownership nodes as a stopgap solution won't be
+sufficient. Consider this:
+
+Two CPUs can do (consider rbtree1 having the only element we add from CPU 0):
+
+CPU 0					CPU 1
+n = bpf_obj_new(...)
+bpf_spin_lock(lock1)
+bpf_rbtree_add(rbtree1, n)
+m = bpf_refcount_acquire(n)
+bpf_spin_unlock(lock1)
+					bpf_spin_lock(lock1)
+					n = bpf_rbtree_remove(bpf_rbtree_first(rbtree1))
+					bpf_spin_unlock(lock1)
+// let m == n
+bpf_spin_lock(lock1)			bpf_spin_lock(lock2)
+bpf_rbtree_add(rbtree1, m)		bpf_rbtree_add(rbtree2, n)
+	if (!RB_EMPTY_NODE)			if (!RB_EMPTY_NODE) // RACE, both continue with 'else'
+bpf_spin_unlock(lock1)			bpf_spin_unlock(lock2)
+
+--
+
+There's also no discussion on the problem with collection identities we
+discussed before (maybe you plan to address it later):
+https://lore.kernel.org/bpf/45e80d2e-af16-8584-12ec-c4c301d9a69d@meta.com
+
+But static tracaking won't be sufficient any longer. Considering another case
+where the runtime will be confused about which rbtree a node belongs to.
+
+CPU 0								CPU 1
+n = bpf_obj_new(...)
+m = bpf_refcount_acquire(n)
+kptr_xchg(map, m)
+								p = kptr_xchg(map, NULL)
+								lock(lock2)
+								bpf_rbtree_add(rbtree2, p->rnode)
+								unlock(lock2)
+lock(lock1)
+bpf_list_push_back(head1, n->lnode)
+// make n non-owning ref
+bpf_rbtree_remove(rbtree1, n->rnode); // OOPS, remove without lock2
 unlock(lock1)
-if (p2)
-  bpf_obj_drop(p2)
 
-> 					bpf_refcount_acquire(m) // use-after-free
-> 					...
-> 
-> B will decrement refcount from 1 to 0, after which bpf_refcount_acquire is
-> basically performing a use-after-free (when fortunate, one will get a
-> WARN_ON_ONCE splat for 0 to 1, otherwise, a silent refcount raise for some
-> different object).
+--
 
-As discussed earlier we'll be switching all bpf_obj_new to use BPF_MA_REUSE_AFTER_RCU_GP.
+I can come up with multiple other examples. The point I'm trying to drive home
+is that it's a more fundamental issue in the way things are set up right now,
+not something that was overlooked during the implementation.
 
-and to adress 0->1 transition.. it does look like we need to two flavors of bpf_refcount_acquire.
-One of owned refs and another for non-owned.
-The owned bpf_refcount_acquire() can stay KF_ACQUIRE with refcount_inc,
-while bpf_refcount_acquire() for non-own will use KF_ACQUIRE | KF_RET_NULL and refcount_inc_not_zero.
-The bpf prog can use bpf_refcount_acquire everywhere and the verifier will treat it on the spot
-differently depending on the argument.
-So the code:
-n = bpf_obj_new();
-if (!n) ...;
-m = bpf_refcount_acquire(n);
-doesn't need to check if (!m).
+The root cause is that access to a node's fields is going to be racy once
+multiple CPUs have *mutable* references to it. The lack of ownership information
+mapped to the collection either at runtime or during verification is also a
+separate problem.
+
+When we were discussing this a few months ago, we tried to form consensus on
+synchronizing updates over a node using an 'owner' pointer to eliminate similar
+races. Every node field has an associated owner field, which each updater
+modifying that node synchronizes over.
+
+In short:
+Node's owner describes its state at runtime.
+node.owner == ptr_of_ds // part of DS
+node.owner == NULL // not part of DS
+node.owner == BPF_PTR_POISON // busy (about to go to NULL or ptr_of_ds before BPF_EXIT)
+
+cmpxchg(node.owner, NULL, BPF_PTR_POISON) to make a free node busy.
+bpf_rbtree_add and such will do this to claim node ownership before trying to
+link it in, and then store owner to ptr_of_ds. The _store_ will be the
+*linearization* point of bpf_rbtree_add, not cmpxchg.
+
+READ_ONCE(node.owner) == ptr_of_ds to ensure node belongs to locked ds, and will
+remain in this state until the end of CS, since ptr_to_ds to NULL only happens
+in remove under a held lock for the ds. bpf_rbtree_remove will do this check
+before WRITE_ONCE of NULL to unlink a node.
+
+Ofcourse, this is slower, and requires extra space in the object, but unless
+this or something else is used to eliminate races, there will be bugs.
