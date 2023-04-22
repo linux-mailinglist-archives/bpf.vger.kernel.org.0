@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B69C6EB70D
-	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 05:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517AD6EB738
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 05:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjDVDWe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 23:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
+        id S229578AbjDVDuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 23:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjDVDWd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 23:22:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8CC1BEF;
-        Fri, 21 Apr 2023 20:22:32 -0700 (PDT)
+        with ESMTP id S229580AbjDVDub (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 23:50:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ADE1FC3;
+        Fri, 21 Apr 2023 20:50:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20CB66534A;
-        Sat, 22 Apr 2023 03:22:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01156C433EF;
-        Sat, 22 Apr 2023 03:22:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 591C063BC3;
+        Sat, 22 Apr 2023 03:50:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B7D30C433D2;
+        Sat, 22 Apr 2023 03:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682133751;
-        bh=dgE/4f1ZoIV0GXhKl47XBKXpyQMOV0InJmJFu1xkGho=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O4MfaUdWgCZl+fCM6r1IIpxPmxpmktd2d1XLdUviGgszC7L/aQV8aDVC1Wjt5V+XW
-         U86gBUtaYD/apkXEdTlK5swTb/vXUXDYEjUWuIMnRc+de/dl4lSRlFBL0+kw6i9lqX
-         50nxLwlmUh9EcSnjYy5GSEyq3LLfGd+JHFZLuEfJS9BKiLDmRmiwv0vnMqY1LTk4lX
-         OJdaTwMsR6c/31twy/fA5Viv6cHet8ncxPddEXSb8dnCE4kCE12qWmgIYU+Eo449TT
-         CY927sNshM2uVEnLaiijfmB/W8rfgWqRtB1EYiYS8E0qmv8+dwfWZrDevyL3U8XUnc
-         2RZ3cqDkl3h6Q==
-Date:   Fri, 21 Apr 2023 20:22:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        toke@redhat.com, mtahhan@redhat.com, lorenzo.bianconi@redhat.com
-Subject: Re: [PATCH net-next 1/2] net: veth: add page_pool for page
- recycling
-Message-ID: <20230421202230.2fa44cca@kernel.org>
-In-Reply-To: <b1c7efdc33221fdb588995b385415d68b149aa73.1681987376.git.lorenzo@kernel.org>
-References: <cover.1681987376.git.lorenzo@kernel.org>
-        <b1c7efdc33221fdb588995b385415d68b149aa73.1681987376.git.lorenzo@kernel.org>
+        s=k20201202; t=1682135429;
+        bh=iVkHaE8eCMl3ljbEGwhZ7UfOkU1P4VOuz5eSyh6hsJs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Mm2l/pDjZHyavhmyxdHLapgBUbzYpEkbcAX5E/yAmuNKBneoRZp4EFNOmsATE6UqO
+         hTUzhTvxyXTF52SMaA9QjHRTEjHx6vF+w/A0MxMH4e6nbUiY2cBiPv2mvoRloTGkzk
+         d+372hcZZ9mIHfgG0kaLAjQjkz/KXoXJOz0gS9HWUwHvOUKzCF46R4D+ZEZGSqXbZv
+         YPnKJ2K69VQM0WdDDtEL+vXVcfKoYkDDXHdBW8Yv3wY29S4kT5jGY353zhjf8acS2X
+         QWh2tkeMYOThZTkiqAUxutamR238P3m5ahBypt5CNxEO4VTitSiP+FCnDoh0iis1tW
+         nn5fhqrgy0Y8w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A543AE270DA;
+        Sat, 22 Apr 2023 03:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2023-04-21
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168213542967.31717.12562943743588428880.git-patchwork-notify@kernel.org>
+Date:   Sat, 22 Apr 2023 03:50:29 +0000
+References: <20230421211035.9111-1-daniel@iogearbox.net>
+In-Reply-To: <20230421211035.9111-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,54 +57,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Apr 2023 13:16:21 +0200 Lorenzo Bianconi wrote:
-> @@ -727,17 +729,21 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->  			goto drop;
->  
->  		/* Allocate skb head */
-> -		page = alloc_page(GFP_ATOMIC | __GFP_NOWARN);
-> +		if (rq->page_pool)
+Hello:
 
-There's some condition under which we can get to XDP enabled but no
-pool?
+This pull request was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> +			page = page_pool_dev_alloc_pages(rq->page_pool);
->  		if (!page)
->  			goto drop;
->  
->  		nskb = build_skb(page_address(page), PAGE_SIZE);
->  		if (!nskb) {
-> -			put_page(page);
-> +			page_pool_put_full_page(rq->page_pool, page, false);
+On Fri, 21 Apr 2023 23:10:35 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 71 non-merge commits during the last 8 day(s) which contain
+> a total of 116 files changed, 13397 insertions(+), 8896 deletions(-).
+> 
+> [...]
 
-You can recycle direct, AFAIU the basic rule of thumb is that it's
-always safe to recycle direct from the context which allocates from
-the pool.
+Here is the summary with links:
+  - pull-request: bpf-next 2023-04-21
+    https://git.kernel.org/netdev/net-next/c/9a82cdc28f47
 
->  			goto drop;
->  		}
->  
->  		skb_reserve(nskb, VETH_XDP_HEADROOM);
-> +		skb_copy_header(nskb, skb);
-> +		skb_mark_for_recycle(nskb);
-> +
->  		size = min_t(u32, skb->len, max_head_size);
->  		if (skb_copy_bits(skb, 0, nskb->data, size)) {
->  			consume_skb(nskb);
-> @@ -745,16 +751,17 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->  		}
->  		skb_put(nskb, size);
->  
-> -		skb_copy_header(nskb, skb);
->  		head_off = skb_headroom(nskb) - skb_headroom(skb);
->  		skb_headers_offset_update(nskb, head_off);
->  
->  		/* Allocate paged area of new skb */
->  		off = size;
->  		len = skb->len - off;
-> +		page = NULL;
-
-Why do you clear the page pointer?
-
+You are awesome, thank you!
 -- 
-pw-bot: cr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
