@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839806EB6EC
-	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 04:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FA16EB702
+	for <lists+bpf@lfdr.de>; Sat, 22 Apr 2023 05:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjDVC7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Apr 2023 22:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59576 "EHLO
+        id S229511AbjDVDMc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Apr 2023 23:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjDVC7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Apr 2023 22:59:38 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B6A1FF7;
-        Fri, 21 Apr 2023 19:59:35 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-63b60365f53so3620094b3a.0;
-        Fri, 21 Apr 2023 19:59:35 -0700 (PDT)
+        with ESMTP id S229468AbjDVDMU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Apr 2023 23:12:20 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B98A212F;
+        Fri, 21 Apr 2023 20:12:17 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1a920d4842bso22632115ad.2;
+        Fri, 21 Apr 2023 20:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682132375; x=1684724375;
+        d=gmail.com; s=20221208; t=1682133137; x=1684725137;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3i3Pn4wnj6lesipTkLQH8sxZ2mRUU74G+3y/8gTu1w=;
-        b=UH4GO9Ohh05MsA+h/Y8A9agWx1RyDnn8MACe8e3YtAakICczP2L6O0oH09vAvNXKoJ
-         2xZSRJT2OEFzaI80nXD6smjWv8ikTIRwJ7e/s2c7SaWcGjPcyotWbgabh4t8t+75a2kT
-         yiSU0Bnj23/G1jf9mlmtSeIToHNHFB3g38wmVkHpsBQo5Bk8POZ5FiQ9mn7e4YS0ajgX
-         itXnGSGkaJKBH5S0nmQv/89C4AN8Fm9FqOGFfsYVRPboL2J7YRu74wHiD8M3E6g6kjfj
-         dCdMqV0QfFWkSLQoQs+NHwv5ngMYBhanzDg3LKBh4kZXwgfdcnVdDxROUsJ35ivEQgiA
-         t37g==
+        bh=MEpnpG7QRt6nvlT43uWQoEBJ6Lz/U6u3NHSk3c4yQZc=;
+        b=Gq2tB3WoN/EnhWH1uvc0Yu+bENqB4A8dNwm8PhqQO97gxKZ2MAwPolyWIbugj6u9T3
+         JNS8ei0Fs5o4edTnJhtJfT5tuQqJVvYME7+uFlpMeUS6hMOOBv4WWwsdYEXESyTeYxuP
+         hF2pB9b0KOgkvPf2UNfCiDnuPZZL9W9XBOA/+P58JSdA8aBbOdaoFcgGxU/NHSMjj551
+         HTvl4P+a1GUJKhiT1+ZvkNzzhQOgyO5qhBDTuCES0rhbdIDJHg3AarpKeJTm9H6/jFtA
+         u2zM3HYQ09ACCDbpXn9+RUh2fBZx6GpFECHSi7Losq94mcWkwhqWcV5vMJtZT5F5Ueyn
+         dxsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682132375; x=1684724375;
+        d=1e100.net; s=20221208; t=1682133137; x=1684725137;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i3i3Pn4wnj6lesipTkLQH8sxZ2mRUU74G+3y/8gTu1w=;
-        b=LrfscD+tieMpt8zwZA2At8b2Rf20Rp2f3e/1EUKoqqcuxyzFR9FvDLyqp7noy82XlG
-         rvmnmPDYdcXjxxLDzT7aBKQXD6OA5OtTVZeAzKR8LO3Df8DfwE9cc7JXnsp05y3/XG37
-         mTpmZ5gQAeZSDW1EcJkLu3035F1dOzsz226EKTY5lizrLL0eK+bsmQ7OcMhbz5/YmkFm
-         +07l2mGPUizJRZR4LTFfe3FWcgIjnUhk7//CxfujPDeKpDiekPf/ipVpc/syeH3LmINr
-         cRUngkSlqGu/WCVFO3M+DZ+K8sPX9s87St1sSZ+Bbbrz58fk++DHMA6AMJhpE7UiHiB+
-         P7Iw==
-X-Gm-Message-State: AAQBX9f6AVcdKXt+PtX/fVd+W7mnGD/xQXQ9aYwG7j590bAw0XMY2Slj
-        ucsNrTcDS/lTt2OjtFFxfk0=
-X-Google-Smtp-Source: AKy350beE2joYbeb53+zKtM9veOvd3SlsnBc3IYK57gbSHfIEbl7+KemNteb0T/nW8EbUgnIcmoSVQ==
-X-Received: by 2002:a05:6a00:2d88:b0:63d:2d99:2e7c with SMTP id fb8-20020a056a002d8800b0063d2d992e7cmr9482546pfb.0.1682132375013;
-        Fri, 21 Apr 2023 19:59:35 -0700 (PDT)
+        bh=MEpnpG7QRt6nvlT43uWQoEBJ6Lz/U6u3NHSk3c4yQZc=;
+        b=ashlfL8LTb1+wY/OLH9eCQLOUmewdZZXE733wCrnLoi41xItnSrqpG614qNDDKJCvL
+         A9CjAF744XyUo1Lmp6mdPtzRMG2o6Yp77o1Lik32O8mUZ1pTcL2pkc3KrRVUOT+7C7pP
+         x3JkoMUz84oJPm69MzSQPRg90P8vANeN7AXu0AQNY4pizqDX7wVyb+AdA8UiB1IaSsX/
+         b4hLUwXoR+uT/2v5Xt103RHDmgiI0HONrId+lIuTXia6BhiXtrZPGWE/YEm+L9zTp+Nw
+         xKGExd2lUWpc3DnTW4DyJG0l2JoqupvFvzQ5+uOxZdO4FGRvJGaobDcbqKo0zjmg0Ebg
+         QgEQ==
+X-Gm-Message-State: AAQBX9d1cxq328hxA1XXrYQMTG9M2xmFpJh8AvdskqG3LPYmjWJJYtZ+
+        oscX8FO4Y9mJrHxCgs5Gj2s=
+X-Google-Smtp-Source: AKy350YV0uLpffzd+/HJVTT+lpApEt4H4XJnLLHkt5r28bFDtY15yDhBZc8/CvK+VYwymp1ytlLmzA==
+X-Received: by 2002:a17:902:c405:b0:1a6:f5d5:b80a with SMTP id k5-20020a170902c40500b001a6f5d5b80amr9717068plk.38.1682133136532;
+        Fri, 21 Apr 2023 20:12:16 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:ef5e])
-        by smtp.gmail.com with ESMTPSA id x12-20020a65538c000000b0050bc03741ffsm3186429pgq.84.2023.04.21.19.59.32
+        by smtp.gmail.com with ESMTPSA id u2-20020a17090282c200b001a4edbabad3sm3287708plz.230.2023.04.21.20.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Apr 2023 19:59:34 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 19:59:30 -0700
+        Fri, 21 Apr 2023 20:12:16 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 20:12:13 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Hou Tao <houtao@huaweicloud.com>
 Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
@@ -63,15 +63,14 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: Re: [RFC bpf-next v2 1/4] selftests/bpf: Add benchmark for bpf
- memory allocator
-Message-ID: <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [RFC bpf-next v2 4/4] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Message-ID: <20230422031213.ubhzng67qf7axt7x@dhcp-172-26-102-232.dhcp.thefacebook.com>
 References: <20230408141846.1878768-1-houtao@huaweicloud.com>
- <20230408141846.1878768-2-houtao@huaweicloud.com>
+ <20230408141846.1878768-5-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230408141846.1878768-2-houtao@huaweicloud.com>
+In-Reply-To: <20230408141846.1878768-5-houtao@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -82,592 +81,616 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 08, 2023 at 10:18:43PM +0800, Hou Tao wrote:
+On Sat, Apr 08, 2023 at 10:18:46PM +0800, Hou Tao wrote:
 > From: Hou Tao <houtao1@huawei.com>
 > 
-> The benchmark could be used to compare the performance of hash map
-> operations and the memory usage between different flavors of bpf memory
-> allocator (e.g., no bpf ma vs bpf ma vs reuse-after-gp bpf ma). It also
-> could be used to check the performance improvement or the memory saving
-> of bpf memory allocator optimization and check whether or not a specific
-> use case is suitable for bpf memory allocator.
+> Currently the freed objects in bpf memory allocator may be reused
+> immediately by new allocation, it introduces use-after-bpf-ma-free
+> problem for non-preallocated hash map and makes lookup procedure
+> return incorrect result. The immediate reuse also makes introducing
+> new use case more difficult (e.g. qp-trie).
 > 
-> The benchmark creates a non-preallocated hash map which uses bpf memory
-> allocator and shows the operation performance and the memory usage of
-> the hash map under different use cases:
-> (1) no_op
-> Only create the hash map and there is no operations on hash map. It is
-> used as the baseline. When each CPUs complete the iteartion of
-> nonoverlapping part of hash map, the loop count is increased.
-> (2) overwrite
-> Each CPU overwrites nonoverlapping part of hash map. When each CPU
-> completes one round of iteration, the loop count is increased.
-> (3) batch_add_batch_del
-> Each CPU adds then deletes nonoverlapping part of hash map in batch.
-> When each CPU completes one round of iteration, the loop count is
-> increased.
-> (4) add_del_on_diff_cpu
-> Each two CPUs add and delete nonoverlapping part of map concurrently.
-> When each CPU completes one round of iteration, the loop count is
-> increased.
+> So introduce BPF_MA_REUSE_AFTER_RCU_GP to solve these problems. For
+> BPF_MA_REUSE_AFTER_GP, the freed objects are reused only after one RCU
+> grace period and may be returned back to slab system after another
+> RCU-tasks-trace grace period. So for bpf programs which care about reuse
+> problem, these programs can use bpf_rcu_read_{lock,unlock}() to access
+> these freed objects safely and for those which doesn't care, there will
+> be safely use-after-bpf-ma-free because these objects have not been
+> freed by bpf memory allocator.
 > 
-> The following benchmark results show that bpf memory allocator doesn't
-> handle add_del_on_diff_cpu scenario very well. Because map deletion
-> always happen on a different CPU than the map addition and the freed
-> memory can never be reused.
+> To make these freed elements being reusab quickly, BPF_MA_REUSE_AFTER_GP
+> dynamically allocates memory to create many inflight RCU callbacks to
+> mark these freed element being reusable. These memories used for
+> bpf_reuse_batch will be freed when these RCU callbacks complete. When no
+> memory is available, synchronize_rcu_expedited() will be used to make
+> these freed element reusable. In order to reduce the risk of OOM, part
+> of these reusable memory will be freed through RCU-tasks-trace grace
+> period. Before these freeing memories are freed, these memories are also
+> available for reuse.
+> 
+> The following are the benchmark results when comparing between different
+> flavors of bpf memory allocator. These results show:
+> * The performance of reuse-after-rcu-gp bpf ma is good than no bpf ma.
+>   Its memory usage is also good than no bpf ma except for
+>   add_del_on_diff_cpu case.
+> * The memory usage of reuse-after-rcu-gp bpf ma increases a lot compared
+>   with normal bpf ma.
+> * The memory usage of free-after-rcu-gp bpf ma is better than
+>   reuse-after-rcu-gp bpf ma, but its performance is bad than
+>   reuse-after-ruc-gp because it doesn't do reuse.
+> 
+> (1) no bpf memory allocator (v6.0.19)
 
-what do you mean "can never be reused" ?
-bpf_ma frees back to slab when num of elems in per-cpu freelist
-is above watermark.
+meaning that htab is using kmalloc and call_rcu to free, right?
 
-> ./bench htab-mem --use-case $name --max-entries 16384 \
-> 	--full 50 -d 7 -w 3 --producers=8 --prod-affinity=0-7
+> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+> | --                  | --         | --                   | --                |
+> | no_op               | 1187       | 1.05                 | 1.05              |
+> | overwrite           | 3.74       | 32.52                | 84.18             |
+> | batch_add_batch_del | 2.23       | 26.38                | 48.75             |
+> | add_del_on_diff_cpu | 3.92       | 33.72                | 48.96             |
+> 
+> (2) normal bpf memory allocator
+> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+> | --                  | --         | --                   | --                |
+> | no_op               | 1187       | 0.96                 | 1.00              |
+> | overwrite           | 27.12      | 2.5                  | 2.99              |
+> | batch_add_batch_del | 8.9        | 2.77                 | 3.24              |
+> | add_del_on_diff_cpu | 11.30      | 218.54               | 440.37            |
+> 
+> (3) reuse-after-rcu-gp bpf memory allocator
+
+that's the one you're implementing below, right?
+
+> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+> | --                  | --         | --                   | --                |
+> | no_op               | 1276       | 0.96                 | 1.00              |
+> | overwrite           | 15.66      | 25.00                | 33.07             |
+> | batch_add_batch_del | 10.32      | 18.84                | 22.64             |
+> | add_del_on_diff_cpu | 13.00      | 550.50               | 748.74            |
+> 
+> (4) free-after-rcu-gp bpf memory allocator (free directly through call_rcu)
+
+What do you mean? htab uses bpf_ma, but does call_rcu before doing bpf_mem_free ?
+
 > 
 > | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
 > | --                  | --         | --                   | --                |
-> | no_op               | 1129       | 1.15                 | 1.15              |
-> | overwrite           | 24.37      | 2.07                 | 2.97              |
-> | batch_add_batch_del | 10.58      | 2.91                 | 3.36              |
-> | add_del_on_diff_cpu | 13.14      | 380.66               | 633.99            |
+> | no_op               | 1263       | 0.96                 | 1.00              |
+> | overwrite           | 10.73      | 12.33                | 20.32             |
+> | batch_add_batch_del | 7.02       | 9.45                 | 14.07             |
+> | add_del_on_diff_cpu | 8.99       | 131.64               | 204.42            |
 
-large mem for diff_cpu case needs to be investigated.
+Depending on what we care about all the extra complexity in bpf_ma with reuse-after-rcu-gp
+buys us a bit better perf, but many times worse memory consumption?
 
-> 
-> ./bench htab-mem --preallocated --use-case $name --max-entries 16384 \
-> 	--full 50 -d 7 -w 3 --producers=8 --prod-affinity=0-7
-> 
-> | name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
-> | --                  | --         | --                   | --                |
-> | no_op               | 1195       | 2.11                 | 2.16              |
-> | overwrite           | 34.02      | 1.96                 | 2.00              |
-> | batch_add_batch_del | 19.25      | 1.96                 | 2.00              |
-> | add_del_on_diff_cpu | 8.70       | 1.96                 | 2.00              |
-> 
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  tools/testing/selftests/bpf/Makefile          |   3 +
->  tools/testing/selftests/bpf/bench.c           |   4 +
->  .../selftests/bpf/benchs/bench_htab_mem.c     | 273 ++++++++++++++++++
->  .../selftests/bpf/progs/htab_mem_bench.c      | 145 ++++++++++
->  4 files changed, 425 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
+>  include/linux/bpf_mem_alloc.h |   1 +
+>  kernel/bpf/memalloc.c         | 353 +++++++++++++++++++++++++++++++---
+>  2 files changed, 326 insertions(+), 28 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index c02184eaae69..74a45c790d4a 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -647,11 +647,13 @@ $(OUTPUT)/bench_local_storage.o: $(OUTPUT)/local_storage_bench.skel.h
->  $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_rcu_tasks_trace_bench.skel.h
->  $(OUTPUT)/bench_local_storage_create.o: $(OUTPUT)/bench_local_storage_create.skel.h
->  $(OUTPUT)/bench_bpf_hashmap_lookup.o: $(OUTPUT)/bpf_hashmap_lookup.skel.h
-> +$(OUTPUT)/bench_htab_mem.o: $(OUTPUT)/htab_mem_bench.skel.h
->  $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
->  $(OUTPUT)/bench: LDLIBS += -lm
->  $(OUTPUT)/bench: $(OUTPUT)/bench.o \
->  		 $(TESTING_HELPERS) \
->  		 $(TRACE_HELPERS) \
-> +		 $(CGROUP_HELPERS) \
->  		 $(OUTPUT)/bench_count.o \
->  		 $(OUTPUT)/bench_rename.o \
->  		 $(OUTPUT)/bench_trigger.o \
-> @@ -664,6 +666,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
->  		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o \
->  		 $(OUTPUT)/bench_bpf_hashmap_lookup.o \
->  		 $(OUTPUT)/bench_local_storage_create.o \
-> +		 $(OUTPUT)/bench_htab_mem.o \
->  		 #
->  	$(call msg,BINARY,,$@)
->  	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
-> diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-> index d9c080ac1796..d3d9ae321b74 100644
-> --- a/tools/testing/selftests/bpf/bench.c
-> +++ b/tools/testing/selftests/bpf/bench.c
-> @@ -279,6 +279,7 @@ extern struct argp bench_local_storage_rcu_tasks_trace_argp;
->  extern struct argp bench_strncmp_argp;
->  extern struct argp bench_hashmap_lookup_argp;
->  extern struct argp bench_local_storage_create_argp;
-> +extern struct argp bench_htab_mem_argp;
->  
->  static const struct argp_child bench_parsers[] = {
->  	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
-> @@ -290,6 +291,7 @@ static const struct argp_child bench_parsers[] = {
->  		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
->  	{ &bench_hashmap_lookup_argp, 0, "Hashmap lookup benchmark", 0 },
->  	{ &bench_local_storage_create_argp, 0, "local-storage-create benchmark", 0 },
-> +	{ &bench_htab_mem_argp, 0, "hash map memory benchmark", 0 },
->  	{},
+> diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+> index 148347950e16..e7f68432713b 100644
+> --- a/include/linux/bpf_mem_alloc.h
+> +++ b/include/linux/bpf_mem_alloc.h
+> @@ -18,6 +18,7 @@ struct bpf_mem_alloc {
+>  /* flags for bpf_mem_alloc_init() */
+>  enum {
+>  	BPF_MA_PERCPU = 1U << 0,
+> +	BPF_MA_REUSE_AFTER_RCU_GP = 1U << 1,
 >  };
 >  
-> @@ -518,6 +520,7 @@ extern const struct bench bench_local_storage_cache_hashmap_control;
->  extern const struct bench bench_local_storage_tasks_trace;
->  extern const struct bench bench_bpf_hashmap_lookup;
->  extern const struct bench bench_local_storage_create;
-> +extern const struct bench bench_htab_mem;
->  
->  static const struct bench *benchs[] = {
->  	&bench_count_global,
-> @@ -559,6 +562,7 @@ static const struct bench *benchs[] = {
->  	&bench_local_storage_tasks_trace,
->  	&bench_bpf_hashmap_lookup,
->  	&bench_local_storage_create,
-> +	&bench_htab_mem,
+>  /* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 072102476019..262100f89610 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -63,6 +63,10 @@ static u8 size_index[24] __ro_after_init = {
+>  	2	/* 192 */
 >  };
 >  
->  static void find_benchmark(void)
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> new file mode 100644
-> index 000000000000..116821a2a7dd
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> @@ -0,0 +1,273 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-> +#include <argp.h>
-> +#include <stdbool.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
+> +static struct workqueue_struct *bpf_ma_wq;
 > +
-> +#include "bench.h"
-> +#include "cgroup_helpers.h"
-> +#include "htab_mem_bench.skel.h"
+> +static void bpf_ma_prepare_reuse_work(struct work_struct *work);
 > +
-> +static struct htab_mem_ctx {
-> +	struct htab_mem_bench *skel;
-> +	int fd;
-> +} ctx;
+>  static int bpf_mem_cache_idx(size_t size)
+>  {
+>  	if (!size || size > 4096)
+> @@ -98,18 +102,36 @@ struct bpf_mem_cache {
+>  	int free_cnt;
+>  	int low_watermark, high_watermark, batch;
+>  	int percpu_size;
+> +	int cpu;
+>  	unsigned int flags;
+>  
+> +	raw_spinlock_t reuse_lock;
+> +	bool abort_reuse;
+> +	struct llist_head reuse_ready_head;
+> +	struct llist_node *reuse_ready_tail;
+> +	struct llist_head wait_for_free;
+> +	struct llist_head prepare_reuse_head;
+> +	struct llist_node *prepare_reuse_tail;
+> +	unsigned int prepare_reuse_cnt;
+> +	atomic_t reuse_cb_in_progress;
+> +	struct work_struct reuse_work;
 > +
-> +static struct htab_mem_args {
-> +	u32 max_entries;
-> +	u32 value_size;
-> +	u32 full;
-> +	const char *use_case;
-> +	bool preallocated;
-> +} args = {
-> +	.max_entries = 16384,
-> +	.full = 50,
-> +	.value_size = 8,
-> +	.use_case = "overwrite",
-> +	.preallocated = false,
+>  	struct rcu_head rcu;
+>  	struct llist_head free_by_rcu;
+>  	struct llist_head waiting_for_gp;
+> -	atomic_t call_rcu_in_progress;
+> +	atomic_t free_cb_in_progress;
+>  };
+>  
+>  struct bpf_mem_caches {
+>  	struct bpf_mem_cache cache[NUM_CACHES];
+>  };
+>  
+> +struct bpf_reuse_batch {
+> +	struct bpf_mem_cache *c;
+> +	struct llist_node *head, *tail;
+> +	struct rcu_head rcu;
 > +};
 > +
-> +enum {
-> +	ARG_MAX_ENTRIES = 10000,
-> +	ARG_FULL_PERCENT = 10001,
-> +	ARG_VALUE_SIZE = 10002,
-> +	ARG_USE_CASE = 10003,
-> +	ARG_PREALLOCATED = 10004,
-> +};
-> +
-> +static const struct argp_option opts[] = {
-> +	{ "max-entries", ARG_MAX_ENTRIES, "MAX_ENTRIES", 0,
-> +	  "Set the max entries of hash map (default 16384)" },
-> +	{ "full", ARG_FULL_PERCENT, "FULL", 0,
-> +	  "Set the full percent of hash map (default 50)" },
-> +	{ "value-size", ARG_VALUE_SIZE, "VALUE_SIZE", 0,
-> +	  "Set the value size of hash map (default 8)" },
-> +	{ "use-case", ARG_USE_CASE, "USE_CASE", 0,
-> +	  "Set the use case of hash map: no_op|overwrite|batch_add_batch_del|add_del_on_diff_cpu" },
-> +	{ "preallocated", ARG_PREALLOCATED, NULL, 0, "use preallocated hash map" },
-> +	{},
-> +};
-> +
-> +static error_t htab_mem_parse_arg(int key, char *arg, struct argp_state *state)
+>  static struct llist_node notrace *__llist_del_first(struct llist_head *head)
+>  {
+>  	struct llist_node *entry, *next;
+> @@ -154,6 +176,45 @@ static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
+>  #endif
+>  }
+>  
+> +static void *bpf_ma_get_reusable_obj(struct bpf_mem_cache *c)
 > +{
-> +	switch (key) {
-> +	case ARG_MAX_ENTRIES:
-> +		args.max_entries = strtoul(arg, NULL, 10);
-> +		break;
-> +	case ARG_FULL_PERCENT:
-> +		args.full = strtoul(arg, NULL, 10);
-> +		if (!args.full || args.full > 100) {
-> +			fprintf(stderr, "invalid full percent %u\n", args.full);
-> +			argp_usage(state);
+> +	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP) {
+> +		unsigned long flags;
+> +		void *obj;
+> +
+> +		if (llist_empty(&c->reuse_ready_head) && llist_empty(&c->wait_for_free))
+> +			return NULL;
+> +
+> +		/* reuse_ready_head and wait_for_free may be manipulated by
+> +		 * kworker and RCU callbacks.
+> +		 */
+> +		raw_spin_lock_irqsave(&c->reuse_lock, flags);
+> +		obj = __llist_del_first(&c->reuse_ready_head);
+> +		if (obj) {
+> +			if (llist_empty(&c->reuse_ready_head))
+> +				c->reuse_ready_tail = NULL;
+> +		} else {
+> +			obj = __llist_del_first(&c->wait_for_free);
 > +		}
-> +		break;
-> +	case ARG_VALUE_SIZE:
-> +		args.value_size = strtoul(arg, NULL, 10);
-> +		break;
-> +	case ARG_USE_CASE:
-> +		args.use_case = strdup(arg);
-> +		break;
-> +	case ARG_PREALLOCATED:
-> +		args.preallocated = true;
-> +		break;
-> +	default:
-> +		return ARGP_ERR_UNKNOWN;
+> +		raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
+> +		return obj;
 > +	}
 > +
-> +	return 0;
+> +	/*
+> +	 * free_by_rcu is only manipulated by irq work refill_work().
+> +	 * IRQ works on the same CPU are called sequentially, so it is
+> +	 * safe to use __llist_del_first() here. If alloc_bulk() is
+> +	 * invoked by the initial prefill, there will be no running
+> +	 * refill_work(), so __llist_del_first() is fine as well.
+> +	 *
+> +	 * In most cases, objects on free_by_rcu are from the same CPU.
+> +	 * If some objects come from other CPUs, it doesn't incur any
+> +	 * harm because NUMA_NO_NODE means the preference for current
+> +	 * numa node and it is not a guarantee.
+> +	 */
+> +	return __llist_del_first(&c->free_by_rcu);
 > +}
 > +
-> +const struct argp bench_htab_mem_argp = {
-> +	.options = opts,
-> +	.parser = htab_mem_parse_arg,
-> +};
+>  /* Mostly runs from irq_work except __init phase. */
+>  static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+>  {
+> @@ -165,19 +226,7 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+>  	memcg = get_memcg(c);
+>  	old_memcg = set_active_memcg(memcg);
+>  	for (i = 0; i < cnt; i++) {
+> -		/*
+> -		 * free_by_rcu is only manipulated by irq work refill_work().
+> -		 * IRQ works on the same CPU are called sequentially, so it is
+> -		 * safe to use __llist_del_first() here. If alloc_bulk() is
+> -		 * invoked by the initial prefill, there will be no running
+> -		 * refill_work(), so __llist_del_first() is fine as well.
+> -		 *
+> -		 * In most cases, objects on free_by_rcu are from the same CPU.
+> -		 * If some objects come from other CPUs, it doesn't incur any
+> -		 * harm because NUMA_NO_NODE means the preference for current
+> -		 * numa node and it is not a guarantee.
+> -		 */
+> -		obj = __llist_del_first(&c->free_by_rcu);
+> +		obj = bpf_ma_get_reusable_obj(c);
+>  		if (!obj) {
+>  			/* Allocate, but don't deplete atomic reserves that typical
+>  			 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
+> @@ -236,7 +285,7 @@ static void __free_rcu(struct rcu_head *head)
+>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>  
+>  	free_all(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
+> -	atomic_set(&c->call_rcu_in_progress, 0);
+> +	atomic_set(&c->free_cb_in_progress, 0);
+>  }
+>  
+>  static void __free_rcu_tasks_trace(struct rcu_head *head)
+> @@ -264,7 +313,7 @@ static void do_call_rcu(struct bpf_mem_cache *c)
+>  {
+>  	struct llist_node *llnode, *t;
+>  
+> -	if (atomic_xchg(&c->call_rcu_in_progress, 1))
+> +	if (atomic_xchg(&c->free_cb_in_progress, 1))
+>  		return;
+>  
+>  	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
+> @@ -409,6 +458,8 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
+>  			c->objcg = objcg;
+>  			c->percpu_size = percpu_size;
+>  			c->flags = flags;
+> +			c->cpu = cpu;
+> +			INIT_WORK(&c->reuse_work, bpf_ma_prepare_reuse_work);
+>  			prefill_mem_cache(c, cpu);
+>  		}
+>  		ma->cache = pc;
+> @@ -433,6 +484,8 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
+>  			c->unit_size = sizes[i];
+>  			c->objcg = objcg;
+>  			c->flags = flags;
+> +			c->cpu = cpu;
+> +			INIT_WORK(&c->reuse_work, bpf_ma_prepare_reuse_work);
+>  			prefill_mem_cache(c, cpu);
+>  		}
+>  	}
+> @@ -444,18 +497,40 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
+>  static void drain_mem_cache(struct bpf_mem_cache *c)
+>  {
+>  	bool percpu = !!c->percpu_size;
+> +	struct llist_node *head[3];
+> +	unsigned long flags;
+>  
+>  	/* No progs are using this bpf_mem_cache, but htab_map_free() called
+>  	 * bpf_mem_cache_free() for all remaining elements and they can be in
+>  	 * free_by_rcu or in waiting_for_gp lists, so drain those lists now.
+>  	 *
+> -	 * Except for waiting_for_gp list, there are no concurrent operations
+> -	 * on these lists, so it is safe to use __llist_del_all().
+> +	 * Except for waiting_for_gp and free_llist_extra list, there are no
+> +	 * concurrent operations on these lists, so it is safe to use
+> +	 * __llist_del_all().
+>  	 */
+>  	free_all(__llist_del_all(&c->free_by_rcu), percpu);
+>  	free_all(llist_del_all(&c->waiting_for_gp), percpu);
+>  	free_all(__llist_del_all(&c->free_llist), percpu);
+> -	free_all(__llist_del_all(&c->free_llist_extra), percpu);
+> +	free_all(llist_del_all(&c->free_llist_extra), percpu);
 > +
-> +static void htab_mem_validate(void)
+> +	if (!(c->flags & BPF_MA_REUSE_AFTER_RCU_GP))
+> +		return;
+> +
+> +	raw_spin_lock_irqsave(&c->reuse_lock, flags);
+> +	/* Indicate kworker and RCU callback to free elements directly
+> +	 * instead of adding new elements into these lists.
+> +	 */
+> +	c->abort_reuse = true;
+> +	head[0] = __llist_del_all(&c->prepare_reuse_head);
+> +	c->prepare_reuse_tail = NULL;
+> +	head[1] = __llist_del_all(&c->reuse_ready_head);
+> +	c->reuse_ready_tail = NULL;
+> +	head[2] = __llist_del_all(&c->wait_for_free);
+> +	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
+> +
+> +	free_all(head[0], percpu);
+> +	free_all(head[1], percpu);
+> +	free_all(head[2], percpu);
+>  }
+>  
+>  static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
+> @@ -466,10 +541,39 @@ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
+>  	ma->caches = NULL;
+>  }
+>  
+> +static void bpf_ma_cancel_reuse_work(struct bpf_mem_alloc *ma)
 > +{
-> +	if (env.consumer_cnt != 1) {
-> +		fprintf(stderr, "htab mem benchmark doesn't support multi-consumer!\n");
-> +		exit(1);
+> +	struct bpf_mem_caches *cc;
+> +	struct bpf_mem_cache *c;
+> +	int cpu, i;
+> +
+> +	if (ma->cache) {
+> +		for_each_possible_cpu(cpu) {
+> +			c = per_cpu_ptr(ma->cache, cpu);
+> +			cancel_work_sync(&c->reuse_work);
+> +		}
+> +	}
+> +	if (ma->caches) {
+> +		for_each_possible_cpu(cpu) {
+> +			cc = per_cpu_ptr(ma->caches, cpu);
+> +			for (i = 0; i < NUM_CACHES; i++) {
+> +				c = &cc->cache[i];
+> +				cancel_work_sync(&c->reuse_work);
+> +			}
+> +		}
 > +	}
 > +}
 > +
-> +static int setup_and_join_cgroup(const char *path)
+>  static void free_mem_alloc(struct bpf_mem_alloc *ma)
+>  {
+> -	/* waiting_for_gp lists was drained, but __free_rcu might
+> -	 * still execute. Wait for it now before we freeing percpu caches.
+> +	bool reuse_after_rcu_gp = ma->flags & BPF_MA_REUSE_AFTER_RCU_GP;
+> +
+> +	/* Cancel the inflight kworkers */
+> +	if (reuse_after_rcu_gp)
+> +		bpf_ma_cancel_reuse_work(ma);
+> +
+> +	/* For normal bpf ma, waiting_for_gp lists was drained, but __free_rcu
+> +	 * might still execute. Wait for it now before we freeing percpu caches.
+>  	 *
+>  	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
+>  	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
+> @@ -477,9 +581,13 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
+>  	 * so if call_rcu(head, __free_rcu) is skipped due to
+>  	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
+>  	 * using rcu_trace_implies_rcu_gp() as well.
+> +	 *
+> +	 * For reuse-after-rcu-gp bpf ma, use rcu_barrier_tasks_trace() to
+> +	 * wait for the pending bpf_ma_free_reusable_cb() and use rcu_barrier()
+> +	 * to wait for the pending bpf_ma_reuse_cb().
+>  	 */
+>  	rcu_barrier_tasks_trace();
+> -	if (!rcu_trace_implies_rcu_gp())
+> +	if (reuse_after_rcu_gp || !rcu_trace_implies_rcu_gp())
+>  		rcu_barrier();
+>  	free_mem_alloc_no_barrier(ma);
+>  }
+> @@ -512,6 +620,7 @@ static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
+>  	}
+>  
+>  	/* Defer barriers into worker to let the rest of map memory to be freed */
+> +	copy->flags = ma->flags;
+>  	copy->cache = ma->cache;
+>  	ma->cache = NULL;
+>  	copy->caches = ma->caches;
+> @@ -541,7 +650,9 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>  			 */
+>  			irq_work_sync(&c->refill_work);
+>  			drain_mem_cache(c);
+> -			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+> +			rcu_in_progress += atomic_read(&c->free_cb_in_progress);
+> +			/* Pending kworkers or RCU callbacks */
+> +			rcu_in_progress += atomic_read(&c->reuse_cb_in_progress);
+>  		}
+>  		/* objcg is the same across cpus */
+>  		if (c->objcg)
+> @@ -556,7 +667,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>  				c = &cc->cache[i];
+>  				irq_work_sync(&c->refill_work);
+>  				drain_mem_cache(c);
+> -				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+> +				rcu_in_progress += atomic_read(&c->free_cb_in_progress);
+> +				rcu_in_progress += atomic_read(&c->reuse_cb_in_progress);
+>  			}
+>  		}
+>  		if (c->objcg)
+> @@ -600,18 +712,183 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
+>  	return llnode;
+>  }
+>  
+> +static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c, struct llist_node *head,
+> +					      struct llist_node *tail)
 > +{
-> +	int err, fd;
+> +	unsigned long flags;
+> +	bool abort;
 > +
-> +	err = setup_cgroup_environment();
-> +	if (err) {
-> +		fprintf(stderr, "setup cgroup env failed\n");
-> +		return -1;
+> +	raw_spin_lock_irqsave(&c->reuse_lock, flags);
+> +	abort = c->abort_reuse;
+> +	if (!abort) {
+> +		if (llist_empty(&c->reuse_ready_head))
+> +			c->reuse_ready_tail = tail;
+> +		__llist_add_batch(head, tail, &c->reuse_ready_head);
 > +	}
+> +	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
 > +
-> +	err = create_and_get_cgroup(path);
-> +	if (err < 0) {
-> +		fprintf(stderr, "create cgroup %s failed\n", path);
-> +		goto out;
-> +	}
-> +	fd = err;
-> +
-> +	err = join_cgroup(path);
-> +	if (err) {
-> +		fprintf(stderr, "join cgroup %s failed\n", path);
-> +		close(fd);
-> +		goto out;
-> +	}
-> +
-> +	return fd;
-> +out:
-> +	cleanup_cgroup_environment();
-> +	return -1;
+> +	/* Don't move these objects to reuse_ready list and free
+> +	 * these objects directly.
+> +	 */
+> +	if (abort)
+> +		free_all(head, !!c->percpu_size);
 > +}
 > +
-> +static void htab_mem_setup(void)
+> +static void bpf_ma_reuse_cb(struct rcu_head *rcu)
 > +{
-> +	struct bpf_program *prog;
-> +	struct bpf_map *map;
-> +	int err;
+> +	struct bpf_reuse_batch *batch = container_of(rcu, struct bpf_reuse_batch, rcu);
+> +	struct bpf_mem_cache *c = batch->c;
 > +
-> +	setup_libbpf();
-> +
-> +	err = setup_and_join_cgroup("/htab_mem");
-> +	if (err < 0)
-> +		exit(1);
-> +	ctx.fd = err;
-> +
-> +	ctx.skel = htab_mem_bench__open();
-> +	if (!ctx.skel) {
-> +		fprintf(stderr, "failed to open skeleton\n");
-> +		goto cleanup;
-> +	}
-> +
-> +	map = ctx.skel->maps.htab;
-> +	bpf_map__set_max_entries(map, args.max_entries);
-> +	bpf_map__set_value_size(map, args.value_size);
-> +	if (args.preallocated)
-> +		bpf_map__set_map_flags(map, bpf_map__map_flags(map) & ~BPF_F_NO_PREALLOC);
-> +
-> +	map = ctx.skel->maps.array;
-> +	bpf_map__set_max_entries(map, args.max_entries);
-> +	bpf_map__set_value_size(map, args.value_size);
-> +
-> +	prog = bpf_object__find_program_by_name(ctx.skel->obj, args.use_case);
-> +	if (!prog) {
-> +		fprintf(stderr, "no such use-case: %s\n", args.use_case);
-> +		fprintf(stderr, "available use case:");
-> +		bpf_object__for_each_program(prog, ctx.skel->obj)
-> +			fprintf(stderr, " %s", bpf_program__name(prog));
-> +		fprintf(stderr, "\n");
-> +		goto cleanup;
-> +	}
-> +	bpf_program__set_autoload(prog, true);
-> +
-> +	ctx.skel->bss->nr_thread = env.producer_cnt;
-> +	ctx.skel->bss->nr_entries = (uint64_t)args.max_entries * args.full / 100;
-> +
-> +	err = htab_mem_bench__load(ctx.skel);
-> +	if (err) {
-> +		fprintf(stderr, "failed to load skeleton\n");
-> +		goto cleanup;
-> +	}
-> +	err = htab_mem_bench__attach(ctx.skel);
-> +	if (err) {
-> +		fprintf(stderr, "failed to attach skeleton\n");
-> +		goto cleanup;
-> +	}
-> +	return;
-> +cleanup:
-> +	close(ctx.fd);
-> +	cleanup_cgroup_environment();
-> +	htab_mem_bench__destroy(ctx.skel);
-> +	exit(1);
+> +	bpf_ma_add_to_reuse_ready_or_free(c, batch->head, batch->tail);
+> +	atomic_dec(&c->reuse_cb_in_progress);
+> +	kfree(batch);
 > +}
 > +
-> +static void *htab_mem_producer(void *ctx)
+> +static bool bpf_ma_try_free_reuse_objs(struct bpf_mem_cache *c)
 > +{
-> +	while (true)
-> +		(void)syscall(__NR_getpgid);
-> +	return NULL;
+> +	struct llist_node *head, *tail;
+> +	bool do_free;
+> +
+> +	if (llist_empty(&c->reuse_ready_head))
+> +		return false;
+> +
+> +	do_free = !atomic_xchg(&c->free_cb_in_progress, 1);
+> +	if (!do_free)
+> +		return false;
+> +
+> +	head = __llist_del_all(&c->reuse_ready_head);
+> +	tail = c->reuse_ready_tail;
+> +	c->reuse_ready_tail = NULL;
+> +
+> +	__llist_add_batch(head, tail, &c->wait_for_free);
+> +
+> +	return true;
 > +}
 > +
-> +static void *htab_mem_consumer(void *ctx)
+> +static void bpf_ma_free_reusable_cb(struct rcu_head *rcu)
 > +{
-> +	return NULL;
+> +	struct bpf_mem_cache *c = container_of(rcu, struct bpf_mem_cache, rcu);
+> +	struct llist_node *head;
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&c->reuse_lock, flags);
+> +	head = __llist_del_all(&c->wait_for_free);
+> +	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
+> +
+> +	free_all(head, !!c->percpu_size);
+> +	atomic_set(&c->free_cb_in_progress, 0);
 > +}
 > +
-> +static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
+> +static void bpf_ma_prepare_reuse_work(struct work_struct *work)
 > +{
-> +	char buf[32];
-> +	int fd;
+> +	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, reuse_work);
+> +	struct llist_node *head, *tail, *llnode, *tmp;
+> +	struct bpf_reuse_batch *batch;
+> +	unsigned long flags;
+> +	bool do_free;
 > +
-> +	fd = openat(ctx.fd, name, O_RDONLY);
-> +	if (fd < 0) {
-> +		fprintf(stderr, "no %s\n", name);
-> +		*value = 0;
+> +	local_irq_save(flags);
+> +	/* When CPU is offline, the running CPU may be different with
+> +	 * the CPU which submitted the work. When these two CPUs are the same,
+> +	 * kworker may be interrupted by NMI, so increase active to protect
+> +	 * again such concurrency.
+> +	 */
+> +	if (c->cpu == smp_processor_id())
+> +		WARN_ON_ONCE(local_inc_return(&c->active) != 1);
+> +	raw_spin_lock(&c->reuse_lock);
+> +	head = __llist_del_all(&c->prepare_reuse_head);
+> +	tail = c->prepare_reuse_tail;
+> +	c->prepare_reuse_tail = NULL;
+> +	c->prepare_reuse_cnt = 0;
+> +	if (c->cpu == smp_processor_id())
+> +		local_dec(&c->active);
+> +
+> +	/* Try to free elements in reusable list. Before these elements are
+> +	 * freed in RCU cb, these element will still be available for reuse.
+> +	 */
+> +	do_free = bpf_ma_try_free_reuse_objs(c);
+> +	raw_spin_unlock(&c->reuse_lock);
+> +	local_irq_restore(flags);
+> +
+> +	if (do_free)
+> +		call_rcu_tasks_trace(&c->rcu, bpf_ma_free_reusable_cb);
+> +
+> +	llist_for_each_safe(llnode, tmp, llist_del_all(&c->free_llist_extra)) {
+> +		if (!head)
+> +			tail = llnode;
+> +		llnode->next = head;
+> +		head = llnode->next;
+> +	}
+> +	/* Draining is in progress ? */
+> +	if (!head) {
+> +		/* kworker completes and no RCU callback */
+> +		atomic_dec(&c->reuse_cb_in_progress);
 > +		return;
 > +	}
 > +
-> +	buf[sizeof(buf) - 1] = 0;
-> +	read(fd, buf, sizeof(buf) - 1);
-> +	*value = strtoull(buf, NULL, 0);
-> +
-> +	close(fd);
-> +}
-> +
-> +static void htab_mem_measure(struct bench_res *res)
-> +{
-> +	res->hits = atomic_swap(&ctx.skel->bss->loop_cnt, 0);
-> +	htab_mem_read_mem_cgrp_file("memory.current", &res->gp_ct);
-> +}
-> +
-> +static void htab_mem_report_progress(int iter, struct bench_res *res, long delta_ns)
-> +{
-> +	double loop, mem;
-> +
-> +	loop = res->hits / 1000.0 / (delta_ns / 1000000000.0);
-> +	mem = res->gp_ct / 1048576.0;
-> +	printf("Iter %3d (%7.3lfus): ", iter, (delta_ns - 1000000000) / 1000.0);
-> +	printf("loop %7.2lfk/s, memory usage %7.2lfMiB\n", loop, mem);
-> +}
-> +
-> +static void htab_mem_report_final(struct bench_res res[], int res_cnt)
-> +{
-> +	double mem_mean = 0.0, mem_stddev = 0.0;
-> +	double loop_mean = 0.0, loop_stddev = 0.0;
-> +	unsigned long peak_mem;
-> +	int i;
-> +
-> +	for (i = 0; i < res_cnt; i++) {
-> +		loop_mean += res[i].hits / 1000.0 / (0.0 + res_cnt);
-> +		mem_mean += res[i].gp_ct / 1048576.0 / (0.0 + res_cnt);
+> +	batch = kmalloc(sizeof(*batch), GFP_KERNEL);
+> +	if (!batch) {
+> +		synchronize_rcu_expedited();
+> +		bpf_ma_add_to_reuse_ready_or_free(c, head, tail);
+> +		/* kworker completes and no RCU callback */
+> +		atomic_dec(&c->reuse_cb_in_progress);
+> +		return;
 > +	}
-> +	if (res_cnt > 1)  {
-> +		for (i = 0; i < res_cnt; i++) {
-> +			loop_stddev += (loop_mean - res[i].hits / 1000.0) *
-> +				       (loop_mean - res[i].hits / 1000.0) /
-> +				       (res_cnt - 1.0);
-> +			mem_stddev += (mem_mean - res[i].gp_ct / 1048576.0) *
-> +				      (mem_mean - res[i].gp_ct / 1048576.0) /
-> +				      (res_cnt - 1.0);
+> +
+> +	batch->c = c;
+> +	batch->head = head;
+> +	batch->tail = tail;
+> +	call_rcu(&batch->rcu, bpf_ma_reuse_cb);
+> +}
+> +
+> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+> +{
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	/* In case a NMI-context bpf program is also freeing object. */
+> +	if (local_inc_return(&c->active) == 1) {
+> +		bool try_queue_work = false;
+> +
+> +		/* kworker may remove elements from prepare_reuse_head */
+> +		raw_spin_lock(&c->reuse_lock);
+> +		if (llist_empty(&c->prepare_reuse_head))
+> +			c->prepare_reuse_tail = llnode;
+> +		__llist_add(llnode, &c->prepare_reuse_head);
+> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
+> +			/* Zero out prepare_reuse_cnt early to prevent
+> +			 * unnecessary queue_work().
+> +			 */
+> +			c->prepare_reuse_cnt = 0;
+> +			try_queue_work = true;
 > +		}
-> +		loop_stddev = sqrt(loop_stddev);
-> +		mem_stddev = sqrt(mem_stddev);
+> +		raw_spin_unlock(&c->reuse_lock);
+> +
+> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
+> +			/* Use reuse_cb_in_progress to indicate there is
+> +			 * inflight reuse kworker or reuse RCU callback.
+> +			 */
+> +			atomic_inc(&c->reuse_cb_in_progress);
+> +			/* Already queued */
+> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
+
+how many kthreads are spawned by wq in the peak?
+
+> +				atomic_dec(&c->reuse_cb_in_progress);
+> +		}
+> +	} else {
+> +		llist_add(llnode, &c->free_llist_extra);
 > +	}
-> +
-> +	htab_mem_read_mem_cgrp_file("memory.peak", &peak_mem);
-> +	printf("Summary: loop %7.2lf \u00B1 %7.2lfk/s, memory usage %7.2lf \u00B1 %7.2lfMiB, "
-> +	       "peak memory usage %7.2lfMiB\n",
-> +	       loop_mean, loop_stddev, mem_mean, mem_stddev, peak_mem / 1048576.0);
+> +	local_dec(&c->active);
+> +	local_irq_restore(flags);
 > +}
 > +
-> +const struct bench bench_htab_mem = {
-> +	.name = "htab-mem",
-> +	.argp = &bench_htab_mem_argp,
-> +	.validate = htab_mem_validate,
-> +	.setup = htab_mem_setup,
-> +	.producer_thread = htab_mem_producer,
-> +	.consumer_thread = htab_mem_consumer,
-> +	.measure = htab_mem_measure,
-> +	.report_progress = htab_mem_report_progress,
-> +	.report_final = htab_mem_report_final,
-> +};
-> diff --git a/tools/testing/selftests/bpf/progs/htab_mem_bench.c b/tools/testing/selftests/bpf/progs/htab_mem_bench.c
-> new file mode 100644
-> index 000000000000..f320cb3a11e8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_mem_bench.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-> +#include <stdbool.h>
-> +#include <errno.h>
-> +#include <linux/types.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +struct update_ctx {
-> +	unsigned int from;
-> +	unsigned int step;
-> +	unsigned int max;
-> +};
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(key_size, 4);
-> +	__uint(map_flags, BPF_F_NO_PREALLOC);
-> +} htab SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(key_size, 4);
-> +} array SEC(".maps");
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +unsigned int nr_entries = 0;
-> +unsigned int nr_thread = 0;
-> +long loop_cnt = 0;
-> +
-> +static int noop_htab(unsigned int i, struct update_ctx *ctx)
+>  /* Though 'ptr' object could have been allocated on a different cpu
+>   * add it to the free_llist of the current cpu.
+>   * Let kfree() logic deal with it when it's later called from irq_work.
+>   */
+> -static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
+> +static void notrace immediate_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+>  {
+> -	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
+>  	unsigned long flags;
+>  	int cnt = 0;
+>  
+> -	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
+> -
+>  	local_irq_save(flags);
+>  	if (local_inc_return(&c->active) == 1) {
+>  		__llist_add(llnode, &c->free_llist);
+> @@ -633,6 +910,18 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
+>  		irq_work_raise(c);
+>  }
+>  
+> +static inline void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
 > +{
-> +	if (ctx->from >= ctx->max)
-> +		return 1;
+> +	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
 > +
-> +	ctx->from += ctx->step;
-> +	return 0;
-> +}
+> +	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
 > +
-> +static int write_htab(unsigned int i, struct update_ctx *ctx, unsigned int flags)
-> +{
-> +	__u64 *value;
-> +
-> +	if (ctx->from >= ctx->max)
-> +		return 1;
-> +
-> +	value = bpf_map_lookup_elem(&array, &ctx->from);
-> +	if (value)
-> +		bpf_map_update_elem(&htab, &ctx->from, value, flags);
-
-What is a point of doing lookup from giant array of en element with zero value
-to copy it into htab?
-Why not to use single zero inited elem for all htab ops?
-
-> +	ctx->from += ctx->step;
-> +
-> +	return 0;
-> +}
-> +
-> +static int overwrite_htab(unsigned int i, struct update_ctx *ctx)
-> +{
-> +	return write_htab(i, ctx, 0);
-> +}
-> +
-> +static int newwrite_htab(unsigned int i, struct update_ctx *ctx)
-> +{
-> +	return write_htab(i, ctx, BPF_NOEXIST);
-> +}
-> +
-> +static int del_htab(unsigned int i, struct update_ctx *ctx)
-> +{
-> +	__u64 *value;
-> +
-> +	if (ctx->from >= ctx->max)
-> +		return 1;
-> +
-> +	value = bpf_map_lookup_elem(&array, &ctx->from);
-> +	if (value)
-> +		bpf_map_delete_elem(&htab, &ctx->from);
-
-even worse here.
-Why lookup from array to delete the elem by key from htab?
-
-The if (ctx->from >= ctx->max) check is done before the lookup,
-so lookup will succeed and disarded immediately.
-array lookup is fast, but the waste of cpu cycles is meaningless.
-
-> +	ctx->from += ctx->step;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_getpgid")
-> +int no_op(void *ctx)
-> +{
-> +	struct update_ctx update;
-> +
-> +	update.from = bpf_get_smp_processor_id();
-> +	update.step = nr_thread;
-> +	update.max = nr_entries;
-> +	bpf_loop(update.max, noop_htab, &update, 0);
-> +	__sync_fetch_and_add(&loop_cnt, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_getpgid")
-> +int overwrite(void *ctx)
-> +{
-> +	struct update_ctx update;
-> +
-> +	update.from = bpf_get_smp_processor_id();
-> +	update.step = nr_thread;
-> +	update.max = nr_entries;
-> +	bpf_loop(update.max, overwrite_htab, &update, 0);
-> +
-> +	__sync_fetch_and_add(&loop_cnt, 1);
-> +	return 0;
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_getpgid")
-> +int batch_add_batch_del(void *ctx)
-> +{
-> +	struct update_ctx update;
-> +
-> +	update.from = bpf_get_smp_processor_id();
-> +	update.step = nr_thread;
-> +	update.max = nr_entries;
-> +	bpf_loop(update.max, overwrite_htab, &update, 0);
-> +
-> +	update.from = bpf_get_smp_processor_id();
-> +	bpf_loop(update.max, del_htab, &update, 0);
-> +
-> +	__sync_fetch_and_add(&loop_cnt, 1);
-> +	return 0;
-> +}
-> +
-> +SEC("?tp/syscalls/sys_enter_getpgid")
-> +int add_del_on_diff_cpu(void *ctx)
-> +{
-> +	struct update_ctx update;
-> +	unsigned int from;
-> +
-> +	from = bpf_get_smp_processor_id();
-> +	update.from = from / 2;
-> +	update.step = nr_thread / 2;
-> +	update.max = nr_entries;
-> +
-> +	if (from & 1)
-> +		bpf_loop(update.max, newwrite_htab, &update, 0);
+> +	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP)
+> +		wait_gp_reuse_free(c, llnode);
 > +	else
-> +		bpf_loop(update.max, del_htab, &update, 0);
-
-This is oddly shaped test.
-deleter cpu may run ahead of newwrite_htab.
-deleter will try to delete elems that don't exist.
-Loop of few thousand iterations is not a lot for one cpu to run ahead.
-
-Each loop will run 16k times and every time you step += 4.
-So 3/4 of these 16k runs it will be hitting if (ctx->from >= ctx->max) condition.
-What are you measuring?
-
+> +		immediate_reuse_free(c, llnode);
+> +}
 > +
-> +	__sync_fetch_and_add(&loop_cnt, 1);
+>  /* Called from BPF program or from sys_bpf syscall.
+>   * In both cases migration is disabled.
+>   */
+> @@ -724,3 +1013,11 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
+>  
+>  	return !ret ? NULL : ret + LLIST_NODE_SZ;
+>  }
+> +
+> +static int __init bpf_ma_init(void)
+> +{
+> +	bpf_ma_wq = alloc_workqueue("bpf_ma", WQ_MEM_RECLAIM, 0);
+> +	BUG_ON(!bpf_ma_wq);
 > +	return 0;
 > +}
+> +late_initcall(bpf_ma_init);
 > -- 
 > 2.29.2
 > 
