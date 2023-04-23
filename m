@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE78D6EC063
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 16:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1542C6EC069
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbjDWO0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 10:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S229579AbjDWOdZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 10:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbjDWO0t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 10:26:49 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CBC211D;
-        Sun, 23 Apr 2023 07:26:37 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a5197f00e9so29945375ad.1;
-        Sun, 23 Apr 2023 07:26:37 -0700 (PDT)
+        with ESMTP id S229476AbjDWOdY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 10:33:24 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5524A1B6
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 07:33:23 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1a66e7a52d3so28757255ad.0
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 07:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682259997; x=1684851997;
+        d=gmail.com; s=20221208; t=1682260403; x=1684852403;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hDbIntu1UOpJwHdFve9fpGJWyayD8KIlufUr0WwNJSo=;
-        b=Ijgdn5SI4/jYVJ/JoB3fYabmjKi8mK5UBs9FGq6kbTAEqR/557qSm824tCrQW2a/5d
-         GNWGzps4K/u7aLe8YAZuHRtNuuHoBJzce+87l5GU+pHBUeRZGq7knP5S5+myY1qU38Pf
-         Gyi7oy0ICXuC66GlsvpxaEiuOITcVzHWIumVrFt3lRQE+fUbVj85EEGejxG+KjBnFlvb
-         e5W+hRsxu438NJoBGwCkGw2vYS/vWp8yd0W3sPxUyuHAryVqinV3AiIRrdOKmlVzzBRV
-         zHTUgd+g4LYWcHswJnDcWExkQ/XCZoJNQGBOTGbR372/WgxXCILdDdLrBbPtzlNbZ2on
-         yMsQ==
+        bh=6ITY5aJv69KGP30OnYEJXVzRwR4u25/o3s+tam+7eO4=;
+        b=TApT87yuX5Mfi6ullA/Wg0EZ2QlsIyQc90duol+N1sUEQSkfck3mQz9ZY/uAxX7q3C
+         WwulBYqXcmHCJs+nxp38e2/+sIXrnTOBGyCpKJMnGvIZHySAcA/pMGLkJEeaziCBSnd0
+         XuJJctr64RBgI2EvUHPBHBnekVr4LpdVovots8YeJB2TB6sCis6si5EV6zHd9I+pnPP7
+         CMCWvANGT/YaGxqgp3U5LOOTS7GUCnhswjIYQqtLLNmY3p77rM7C+0Vk1ay+qPzjIqTZ
+         iy2LIyANbdoyc3lkakqq9wnBgPl6xleT+A+VrQvns58gTfDwDGRmHF/asUKgh4W1O6aS
+         09vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682259997; x=1684851997;
+        d=1e100.net; s=20221208; t=1682260403; x=1684852403;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=hDbIntu1UOpJwHdFve9fpGJWyayD8KIlufUr0WwNJSo=;
-        b=QLxjkBYxuJyGDHc7AMWhprrhMr8uMgQl6w6QbDicWjMt2saSAiVw1B1QLEQ+wJ+s9v
-         ygyGmBWnTvC/j2rSWZFjCqix4AJM4fUyDpEVJT+mhUOAfE9+OORRCESXnGF9pXDy8LoB
-         nNPz5Yc/sdNxEnO/mc2oML919zcV5+uaJL137wkaZ77OuoATZ0YKLFVeOzZkRzmPeS06
-         xcfxojXoJnj9gpF+cK/aA0Gws3xA81IJPQGSzO57Vg3j46ngrfNbz0hitPbUIKd3Q6J6
-         KwZII/P2hx1iy0qj8gafg3oVdi0NzXFEcfEdB/Saft/OPO6klNqeWkfcGPs1xGMIOj1r
-         aCsQ==
-X-Gm-Message-State: AAQBX9cOjkIOzGR9sPFhIdY8hyOznfyTQPGVjmAx1n7dwH4HSHJURlaw
-        czak0VG96qn76xQjveXJ5Tk=
-X-Google-Smtp-Source: AKy350aoN241w7nbxKmiEzOtYF0nSPMYkpeFuUU9y0F40NjrExcFXuUWa/u9dTd8fj7PzRYupvy6kQ==
-X-Received: by 2002:a17:902:e5cd:b0:1a6:5487:3f97 with SMTP id u13-20020a170902e5cd00b001a654873f97mr13878348plf.64.1682259996750;
-        Sun, 23 Apr 2023 07:26:36 -0700 (PDT)
+        bh=6ITY5aJv69KGP30OnYEJXVzRwR4u25/o3s+tam+7eO4=;
+        b=K02J6rAnFYOoJ3XYw7sifWNUet939z1rRgIYEBOAzv+Q2zc9StLS/UUPbeIwHTEUsX
+         QE1MjUUsBlNL9hA2YlQefsH9HeCK6tRbBF3XRQUyF65PWcKqm2gdb97ExEDBvhE54nwe
+         ZsQiTpAZMAcHP7WY0Hvnk/tcDZLh5jbZ7oCyotJIqzzQ1/oWjJbdEnDzTheECdOSLerI
+         PaButZaPsbf3/WpEIZWYmVcWcVdAI7r49y6u6GULiI/VRVFaWLWwGkWo4Q+dxYfc76ST
+         U6PmXpf3CUJIQExzzeJISALVJvOYOklFYPuh7WBAd9Rbohg0D9cnXD0QW72GNZ2xQW66
+         6oqg==
+X-Gm-Message-State: AAQBX9e5A7FaaZii7CpaoDfS2TzXuahM6QWcrvgPqxvthUYsOWxl4VM4
+        A1m/0DCNPpAVSPwkCeB00Mg=
+X-Google-Smtp-Source: AKy350amA68R+maUV+QqbYVFhbnmH5cXDhmko+0qlVQsz5hqKCDuveJbvsKNw+1po+/VkCG4FpKOtw==
+X-Received: by 2002:a17:902:d582:b0:1a9:20ea:f49b with SMTP id k2-20020a170902d58200b001a920eaf49bmr12133963plh.24.1682260402684;
+        Sun, 23 Apr 2023 07:33:22 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:5905:623a:c41:59e1])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170902c11100b001a6801fd9easm5136730pli.176.2023.04.23.07.26.35
+        by smtp.gmail.com with ESMTPSA id t7-20020a170902bc4700b001a6b5d569fesm5132965plz.215.2023.04.23.07.33.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 07:26:36 -0700 (PDT)
-Date:   Sun, 23 Apr 2023 07:26:35 -0700
+        Sun, 23 Apr 2023 07:33:22 -0700 (PDT)
+Date:   Sun, 23 Apr 2023 07:33:20 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Joe Stringer <joe@isovalent.com>, bpf@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, corbet@lwn.net, martin.lau@linux.dev,
-        bagasdotme@gmail.com, maxtram95@gmail.com, john.fastabend@gmail.com
-Message-ID: <6445401b297a1_19af02083@john.notmuch>
-In-Reply-To: <20230422172054.3355436-2-joe@isovalent.com>
-References: <20230422172054.3355436-1-joe@isovalent.com>
- <20230422172054.3355436-2-joe@isovalent.com>
-Subject: RE: [PATCH bpf-next v5 2/2] docs/bpf: Add LRU internals description
- and graph
+To:     Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev, yhs@meta.com,
+        song@kernel.org, kernel-team@meta.com, andrii@kernel.org
+Cc:     Kui-Feng Lee <kuifeng@meta.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Message-ID: <644541b078b3f_19af0208e5@john.notmuch>
+In-Reply-To: <20230421214131.352662-1-kuifeng@meta.com>
+References: <20230421214131.352662-1-kuifeng@meta.com>
+Subject: RE: [PATCH bpf-next v4] bpftool: Show map IDs along with struct_ops
+ links.
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -75,22 +75,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joe Stringer wrote:
-> Extend the bpf hashmap docs to include a brief description of the
-> internals of the LRU map type (setting appropriate API expectations),
-> including the original commit message from Martin and a variant on the
-> graph that I had presented during my Linux Plumbers Conference 2022 talk
-> on "Pressure feedback for LRU map types"[0].
+Kui-Feng Lee wrote:
+> A new link type, BPF_LINK_TYPE_STRUCT_OPS, was added to attach
+> struct_ops to links. (226bc6ae6405) It would be helpful for users to
+> know which map is associated with the link.
 > 
-> The node names in the dot file correspond roughly to the functions where
-> the logic for those decisions or steps is defined, to help curious
-> developers to cross-reference and update this logic if the details of
-> the LRU implementation ever differ from this description.
+> The assumption was that every link is associated with a BPF program, but
+> this does not hold true for struct_ops. It would be better to display
+> map_id instead of prog_id for struct_ops links. However, some tools may
+> rely on the old assumption and need a prog_id.  The discussion on the
+> mailing list suggests that tools should parse JSON format. We will maintain
+> the existing JSON format by adding a map_id without removing prog_id. As
+> for plain text format, we will remove prog_id from the header line and add
+> a map_id for struct_ops links.
 > 
-> [0]: https://lpc.events/event/16/contributions/1368/
-> 
-> Signed-off-by: Joe Stringer <joe@isovalent.com>
-> Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 > ---
+
+LGTM
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
