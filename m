@@ -2,127 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0198D6EBDBD
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 09:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAEE6EBDCB
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 09:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjDWHmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 03:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
+        id S230144AbjDWHzC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 03:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbjDWHm3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 03:42:29 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CFD30CA;
-        Sun, 23 Apr 2023 00:42:05 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5050497df77so4833546a12.1;
-        Sun, 23 Apr 2023 00:42:05 -0700 (PDT)
+        with ESMTP id S229854AbjDWHzB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 03:55:01 -0400
+Received: from mail-ed1-x563.google.com (mail-ed1-x563.google.com [IPv6:2a00:1450:4864:20::563])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7D210D9
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 00:54:59 -0700 (PDT)
+Received: by mail-ed1-x563.google.com with SMTP id 4fb4d7f45d1cf-504eac2f0b2so5547492a12.3
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 00:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682235718; x=1684827718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hmxngamBqLpmbuuAmyp8lBrhC3luyh8KMPPH2GTU8M8=;
-        b=FEzdkxayUbAYdOaOqfyQ50Z1pi8C7fEn+wx1HX9y7NFFGz/PSJtQa9Bb4twqEdDj4r
-         GJV80/lu8u+nGyHeIpIgi9EaRM3aq9Z8pm0bsTreWT+Ehu8P5HcHvuuMWR4T94iN0UdS
-         aXgm4TIEJxjj7tfa7Bw0Ur9p26jLI3twhgfna6nkUYemWqaNGwgyOtLdCPtFDFGfpVmb
-         HPgVVQWUm5qGQkLZA+XK5Bu11Wk8icaBjlU9IGbtlMwj/qCWm/EHkt6GGn/6kmQq35Zo
-         fSWT8+3MSBVUPR5tSpPbFXpic0zb9SLnk1AZ319X/FcREsaR8MQHnKw7PXT6XWjxX5Zd
-         VQiw==
+        d=dectris.com; s=google; t=1682236498; x=1684828498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8eN7Be/85uzfpyW2w/rr50iULiGv8D2Gnkfs37ktaYM=;
+        b=rNC4EJKXU49aedFwPrZkwlJrx07csMDu16FlwNyYTADq2p1Xdr/K3g3uaArMvAUc9e
+         9Wrw2wXWZNQSnaKnIvDD31gFW1UpuQ6MEDUWssKk2AHRP4A3XTWiCKYEEohWO9KuTMiv
+         9TD8+BTUznpT+EKqAbp45/6QMeXsJ1NjIHpeg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682235718; x=1684827718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hmxngamBqLpmbuuAmyp8lBrhC3luyh8KMPPH2GTU8M8=;
-        b=gEYPZcj1nV8QGzD1/kVqtwxcqrbQfXmaoNY0dx3IErSxUnrG+g22MT47bBMzQ14nWN
-         mVlisbXycxFK10HmsONfd6XJrg32c458pIM2Ht5LjIaCdIK+q1gp3+FgMoqqsGSQ9Jh2
-         kktbApiOTV5uXJGoHc84N7LHBbuRNRyGz9mY6f1iJsjphlWEw7fu1KQ9hVfGBorEXtkW
-         lkGTMgsFvnpzAhggORO8iGWmgLlmZ6nwPbEjd5wZDqewmk3RM++rPZ9mVLYx9E05QzAk
-         n/xydPnRu91MLqa2wmQGHeCb7XwJWV6dFD5CHp0YZXFbUXog8EOMFUAK869yo0Rz0Cj/
-         ZAjQ==
-X-Gm-Message-State: AAQBX9ecTV3FUwn7Vk96Pq2bJAehwfTSWTQPTUco1sbUA13hfyrq61k7
-        NAIKC6gJEXCQIBlvBTQ3e2E=
-X-Google-Smtp-Source: AKy350bV3KIE8/g9FHvTK0jWz3NS2HY6Y5AyJLSqKNGHVdFyO2hq52J+bADGwPYhKg5M7n45jzEa5g==
-X-Received: by 2002:a17:906:fd47:b0:94e:75f8:668 with SMTP id wi7-20020a170906fd4700b0094e75f80668mr5732534ejb.56.1682235718077;
-        Sun, 23 Apr 2023 00:41:58 -0700 (PDT)
-Received: from krava ([83.240.63.111])
-        by smtp.gmail.com with ESMTPSA id f12-20020a50ee8c000000b00504ae3a5adfsm3561605edr.2.2023.04.23.00.41.57
+        d=1e100.net; s=20221208; t=1682236498; x=1684828498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8eN7Be/85uzfpyW2w/rr50iULiGv8D2Gnkfs37ktaYM=;
+        b=mGompCn3KFHYjgZ+I+HsoeOfxBvysjs3943P3uMPb6IrSS0voQFQj7tbgWUc6qSVpD
+         kl+ssHvd4vDFYlKc9Ep5sDmm4AHVer9MT2fvHgnPihvI/Zh8bnFuxCrJWBBmTYp6clz1
+         uzfY2LS8Knt2d7aghwSyt8SZvKph9LKxFw84SsKaF8t2YmT1VWjly+DmuP47JDNATUBi
+         4s6x3wYIEntLyOTYoVgkEpkFuCDcJK1FRDqlMKkFw2yKqIAFLYitOhKvO8NNaljgmR63
+         K9be9wfm8ATw4WH9OfvRiu+htfkeXQXO9R5pIZViM3GOYIyWdO7uYg8/RKRF9IkQ57gz
+         L/yg==
+X-Gm-Message-State: AAQBX9f9OajcrzLxz0JjThRlfv3I6jAH5dVSpvU9xhx+pXSPfvpxiPQk
+        M5P/tGQXeZjNZfY7kvQHd3/m5wzSBJssidGxgKa/5TI+AxeX
+X-Google-Smtp-Source: AKy350YLtMPDAkgPEJsURq5+gvm+IsB0e3MuHJpNtuodio4i6qQUIhDApkdP+hTygnE+RIN7cpFUaLrJqsOA
+X-Received: by 2002:aa7:d6ca:0:b0:508:4808:b62b with SMTP id x10-20020aa7d6ca000000b005084808b62bmr9552284edr.22.1682236497826;
+        Sun, 23 Apr 2023 00:54:57 -0700 (PDT)
+Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
+        by smtp-relay.gmail.com with ESMTPS id y15-20020a50bb0f000000b00504940f2549sm1549894ede.40.2023.04.23.00.54.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 00:41:57 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 23 Apr 2023 09:41:54 +0200
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH v5 4/9] tracing/probes: Add tracepoint support on
- fprobe_event
-Message-ID: <ZEThQgkJV7esVGdR@krava>
-References: <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
- <168198997089.1795549.1009510263722958117.stgit@mhiramat.roam.corp.google.com>
+        Sun, 23 Apr 2023 00:54:57 -0700 (PDT)
+X-Relaying-Domain: dectris.com
+From:   Kal Conley <kal.conley@dectris.com>
+To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xsk: Use pool->dma_pages to check for DMA
+Date:   Sun, 23 Apr 2023 09:53:34 +0200
+Message-Id: <20230423075335.92597-1-kal.conley@dectris.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <168198997089.1795549.1009510263722958117.stgit@mhiramat.roam.corp.google.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 08:26:10PM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Allow fprobe_event to trace raw tracepoints so that user can trace
-> tracepoints which don't have traceevent wrappers. This new event is
-> always available if fprobe event is enabled since the tracepoint is
-> disabled, trace-event and dynamic event is also not available.
+Compare pool->dma_pages instead of pool->dma_pages_cnt to check for an
+active DMA mapping. pool->dma_pages needs to be read anyway to access
+the map so this compiles to more efficient code.
 
-I thought of ftrace tracepoints wrappers as standard in distros,
-could you specify which config options that involves?
+Signed-off-by: Kal Conley <kal.conley@dectris.com>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ include/net/xsk_buff_pool.h | 2 +-
+ net/xdp/xsk_buff_pool.c     | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-> +	if (trace_fprobe_is_tracepoint(tf)) {
-> +		struct tracepoint *tpoint = tf->tpoint;
-> +		unsigned long ip = (unsigned long)tpoint->probestub;
-> +		/*
-> +		 * Here, we do 2 steps to enable fprobe on a tracepoint.
-> +		 * At first, put __probestub_##TP function on the tracepoint
-> +		 * and put a fprobe on the stub function.
-> +		 */
-> +		ret = tracepoint_probe_register_prio_may_exist(tpoint,
-> +					tpoint->probestub, NULL, 0);
-> +		if (ret < 0)
-> +			return ret;
-> +		return register_fprobe_ips(&tf->fp, &ip, 1);
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index d318c769b445..a8d7b8a3688a 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+ 	if (likely(!cross_pg))
+ 		return false;
+ 
+-	return pool->dma_pages_cnt &&
++	return pool->dma_pages &&
+ 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
+ }
+ 
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index b2df1e0f8153..26f6d304451e 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -350,7 +350,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
+ {
+ 	struct xsk_dma_map *dma_map;
+ 
+-	if (pool->dma_pages_cnt == 0)
++	if (!pool->dma_pages)
+ 		return;
+ 
+ 	dma_map = xp_find_dma_map(pool);
+@@ -364,6 +364,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
+ 
+ 	__xp_dma_unmap(dma_map, attrs);
+ 	kvfree(pool->dma_pages);
++	pool->dma_pages = NULL;
+ 	pool->dma_pages_cnt = 0;
+ 	pool->dev = NULL;
+ }
+@@ -503,7 +504,7 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
+ 	if (pool->unaligned) {
+ 		xskb = pool->free_heads[--pool->free_heads_cnt];
+ 		xp_init_xskb_addr(xskb, pool, addr);
+-		if (pool->dma_pages_cnt)
++		if (pool->dma_pages)
+ 			xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
+ 	} else {
+ 		xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
+@@ -569,7 +570,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
+ 		if (pool->unaligned) {
+ 			xskb = pool->free_heads[--pool->free_heads_cnt];
+ 			xp_init_xskb_addr(xskb, pool, addr);
+-			if (pool->dma_pages_cnt)
++			if (pool->dma_pages)
+ 				xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
+ 		} else {
+ 			xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
+-- 
+2.39.2
 
-nice idea
-
-jirka
-
-> +	}
-> +
->  	/* TODO: handle filter, nofilter or symbol list */
->  	return register_fprobe(&tf->fp, tf->symbol, NULL);
->  }
-> @@ -699,6 +723,12 @@ static void __unregister_trace_fprobe(struct trace_fprobe *tf)
->  	if (trace_fprobe_is_registered(tf)) {
->  		unregister_fprobe(&tf->fp);
->  		memset(&tf->fp, 0, sizeof(tf->fp));
-> +		if (trace_fprobe_is_tracepoint(tf)) {
-> +			tracepoint_probe_unregister(tf->tpoint,
-> +					tf->tpoint->probestub, NULL);
-> +			tf->tpoint = NULL;
-> +			tf->mod = NULL;
-> +		}
->  	}
->  }
-
-SNIP
