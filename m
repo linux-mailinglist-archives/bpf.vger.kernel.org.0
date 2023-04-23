@@ -2,58 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF906EC2ED
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 00:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9653B6EC303
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 00:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjDWW3s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 18:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        id S229581AbjDWW4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 18:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjDWW3r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 18:29:47 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ABA10DE
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 15:29:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1a50cb65c92so32041525ad.0
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 15:29:45 -0700 (PDT)
+        with ESMTP id S229458AbjDWW4x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 18:56:53 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56360E7C;
+        Sun, 23 Apr 2023 15:56:52 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3f09b4a1527so39198315e9.0;
+        Sun, 23 Apr 2023 15:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1682288984; x=1684880984;
+        d=gmail.com; s=20221208; t=1682290611; x=1684882611;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WCA3zsna6vFeV798erY3+vSi/BvHgoXGHGGpFGJHBjM=;
-        b=CSv4RH6SXo/8LhDuQi8y+f+aMDFvLryZeZLhrGCIHJ76AP0hsBy9FXFG82OCSDXpdw
-         w8F2b+EujbdmHkHGv/Yp2eXHQ1Q2MYfO8Vu1ERFY1LXyjQpIg0lB+5VlMI/ocJwxnhdc
-         Xr7ocs5kYhWzgrbsToVMuFqmxnhx9PMp/1Es7VJKZagcRT2c06hsYHc4SKreGkyREEPk
-         mCg+asSla1YXUzn1ZIV7XG9Mcyje8X207NucVVd2pMhQOzQUptnWXdlOsGXi/9ALcAP/
-         iq+8gIFu9tNpqRG1e620R+RCQL23t/f9n43Ntbw7lzsRcOiSQ4oQmZOQImEBwjpawJpm
-         dy5w==
+        bh=FySrqR3I9d2HCqC1MT7U/tQkVY+ilau9mLcrZc6QcIY=;
+        b=mZT7t8bzo16wHQRVA8V4NkONZ6iLIScE5PMAGD/1ZThj5o5tvY6c0aR23RyV47Na5v
+         C2ucjU2s7HX+Cm5ykpK4CZzExQaeEDfEaDLJBOTb2LxBhznZ/9DHrOxfB3pQXD/nUhxj
+         vpuIixxNzcT+GmZoZSj4M5bHWeFXg4ZK0isnDzgkTGU2Abs4UU081rSvp3+C9jGHem1O
+         9uZ4tn/P6ryrVDM48/tLSf1jS5x0n2NS5BCxPX2td7APmh8p+SdCE+DlUErBq1Jj62XJ
+         gPUG4HQYSty3Mb3k5mIsSDU6ix7zk/F78x1cRISue3UiCbAARPpvzD/wkUBQ0S0ZUGuv
+         Qw1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682288984; x=1684880984;
+        d=1e100.net; s=20221208; t=1682290611; x=1684882611;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WCA3zsna6vFeV798erY3+vSi/BvHgoXGHGGpFGJHBjM=;
-        b=Dl7Jz/Xnax9+HaCIWSd+BuJ6jFdDJHf5Co1e0ZTyVDjJzgUvRBEhZOkGhI2h+QryFG
-         kEEMwJ93oIHzZOnDf2JjxZPztgZtLdcLMQHedVT3gCHsk0CzjVKiV8/UcyZWwIIw0RIl
-         rI2gOT/zrRvyM6/zuewyiOt1+Iu29YP9y6GyI32BW+ss/dcEu9quNaFgTx83AwXO3IAK
-         ozLZkfg0JolzImpSir7FtplmQPH5+ZJVlWbn3ET2zEnegoczUG0zmqeLAX8yip/Qd1G/
-         POZTgxokP3CUTLnh5+Uz5EV/vISvqhSyzViuW7g7XhXeeK8RSCHnX+OOBVfFldlTUUsQ
-         h24g==
-X-Gm-Message-State: AAQBX9eI5hfhvbTYQ2qZJa3REpzBQuQ/fug0rkQM+XOepQAEoaC9Y8cI
-        FgsOPfVYzaC60YfbNidMxW5ZUg==
-X-Google-Smtp-Source: AKy350ZR4n3yiJ8OSE0TQKFE8uJrXQJX3r2CnA0Tf9NWbUzvYbwag62F1wj/UfIK9SSx06miuG3AKw==
-X-Received: by 2002:a17:902:e849:b0:1a6:dba5:2e3e with SMTP id t9-20020a170902e84900b001a6dba52e3emr14801275plg.25.1682288984544;
-        Sun, 23 Apr 2023 15:29:44 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-41-174.pa.nsw.optusnet.com.au. [49.180.41.174])
-        by smtp.gmail.com with ESMTPSA id bh8-20020a170902a98800b001a641ea111fsm5444609plb.112.2023.04.23.15.29.43
+        bh=FySrqR3I9d2HCqC1MT7U/tQkVY+ilau9mLcrZc6QcIY=;
+        b=LZ9+/Wph3dsatxtmEemfv6TnBqVYiwvs6Eg61EKB9GL8VencbHM/g6WARsHm9n3H4C
+         ksKRwj1h+ayYItGfeGnrK/1TYWjRVUPUBPWUgJD5y2+vf47vETrf/DBAILrT4xtQa1so
+         7VHFt3ync3XeC1j6ir89eMksUPqhkJqE9gM2bbCiaV+RZfT3kyVluJ37maT5vEyzugWG
+         aBexsPdtqjvga8RCCKby92I58CsIkhcCMele2iP+oGN1VwJe/eMYHJ3/Q4621E5ReAJH
+         EmAVPLYQGKQ/NNmPnXYFnGIWcNYLca7y+Ytw6KMB2rMGhD43mJ1QTSyksOI4bi3igiHh
+         XZJw==
+X-Gm-Message-State: AAQBX9d/WpFpHayaP2HUNspPB+JDsuYoZvRSeaXSuPlxspHdDOPNB+LL
+        X7EHxUhFWAqRznucAal1Xe8=
+X-Google-Smtp-Source: AKy350b82f+U7u9J6kn0j7kDyXpFIBXu+ByS2Jos5JwWTL0rqSZb8T8t659h3+NCD45oLu9KUIqrgA==
+X-Received: by 2002:a7b:c5d4:0:b0:3f0:a0bb:58ef with SMTP id n20-20020a7bc5d4000000b003f0a0bb58efmr6224103wmk.25.1682290610521;
+        Sun, 23 Apr 2023 15:56:50 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id p17-20020a056000019100b002fda1b12a0bsm9585766wrx.2.2023.04.23.15.56.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 15:29:44 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1pqiDF-0074Ij-4U; Mon, 24 Apr 2023 08:29:41 +1000
-Date:   Mon, 24 Apr 2023 08:29:41 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
+        Sun, 23 Apr 2023 15:56:49 -0700 (PDT)
+Date:   Sun, 23 Apr 2023 23:56:48 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     Dave Chinner <david@fromorbit.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
@@ -90,105 +87,131 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
  default
-Message-ID: <20230423222941.GR447837@dread.disaster.area>
+Message-ID: <14c6f0f3-0747-4800-8718-4f109f7321ea@lucifer.local>
 References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
+ <20230423222941.GR447837@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230423222941.GR447837@dread.disaster.area>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 22, 2023 at 02:37:05PM +0100, Lorenzo Stoakes wrote:
-> +/*
-> + * Writing to file-backed mappings using GUP is a fundamentally broken operation
-> + * as kernel write access to GUP mappings may not adhere to the semantics
-> + * expected by a file system.
-> + *
-> + * In most instances we disallow this broken behaviour, however there are some
-> + * exceptions to this enforced here.
-> + */
-> +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
-> +					  unsigned long gup_flags)
-> +{
-> +	struct file *file = vma->vm_file;
-> +
-> +	/* If we aren't pinning then no problematic write can occur. */
-> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
-> +		return true;
-> +
-> +	/* Special mappings should pose no problem. */
-> +	if (!file)
-> +		return true;
+On Mon, Apr 24, 2023 at 08:29:41AM +1000, Dave Chinner wrote:
+> On Sat, Apr 22, 2023 at 02:37:05PM +0100, Lorenzo Stoakes wrote:
+> > +/*
+> > + * Writing to file-backed mappings using GUP is a fundamentally broken operation
+> > + * as kernel write access to GUP mappings may not adhere to the semantics
+> > + * expected by a file system.
+> > + *
+> > + * In most instances we disallow this broken behaviour, however there are some
+> > + * exceptions to this enforced here.
+> > + */
+> > +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
+> > +					  unsigned long gup_flags)
+> > +{
+> > +	struct file *file = vma->vm_file;
+> > +
+> > +	/* If we aren't pinning then no problematic write can occur. */
+> > +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
+> > +		return true;
+> > +
+> > +	/* Special mappings should pose no problem. */
+> > +	if (!file)
+> > +		return true;
+>
+> Ok...
+>
+> > +
+> > +	/* Has the caller explicitly indicated this case is acceptable? */
+> > +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
+> > +		return true;
+> > +
+> > +	/* shmem and hugetlb mappings do not have problematic semantics. */
+> > +	return vma_is_shmem(vma) || is_file_hugepages(file);
+> > +}
+>
+> This looks backwards. We only want the override to occur when the
+> target won't otherwise allow it. i.e.  This should be:
+>
+> 	if (vma_is_shmem(vma))
+> 		return true;
+> 	if (is_file_hugepages(vma)
+> 		return true;
+>
+> 	/*
+> 	 * Issue a warning only if we are allowing a write to a mapping
+> 	 * that does not support what we are attempting to do functionality.
+> 	 */
+> 	if (WARN_ON_ONCE(gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING))
+> 		return true;
+> 	return false;
+>
+> i.e. we only want the warning to fire when the override is
+> triggered - indicating that the caller is actually using a file
+> mapping in a broken way, not when it is being used on
+> file/filesystem that actually supports file mappings in this way.
+>
+> >  static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+> >  {
+> >  	vm_flags_t vm_flags = vma->vm_flags;
+> >  	int write = (gup_flags & FOLL_WRITE);
+> >  	int foreign = (gup_flags & FOLL_REMOTE);
+> > +	bool vma_anon = vma_is_anonymous(vma);
+> >
+> >  	if (vm_flags & (VM_IO | VM_PFNMAP))
+> >  		return -EFAULT;
+> >
+> > -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
+> > +	if ((gup_flags & FOLL_ANON) && !vma_anon)
+> >  		return -EFAULT;
+> >
+> >  	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
+> > @@ -978,6 +1008,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+> >  		return -EFAULT;
+> >
+> >  	if (write) {
+> > +		if (!vma_anon &&
+> > +		    WARN_ON_ONCE(!can_write_file_mapping(vma, gup_flags)))
+> > +			return -EFAULT;
+>
+> Yeah, the warning definitely belongs in the check function when the
+> override triggers allow broken behaviour to proceed, not when we
+> disallow a write fault because the underlying file/filesystem does
+> not support the operation being attempted.
 
-Ok...
+I disagree for two reasons:-
 
-> +
-> +	/* Has the caller explicitly indicated this case is acceptable? */
-> +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
-> +		return true;
-> +
-> +	/* shmem and hugetlb mappings do not have problematic semantics. */
-> +	return vma_is_shmem(vma) || is_file_hugepages(file);
-> +}
+1. There are places in the kernel that rely on this broken behaviour, most
+   notably ptrace (and /proc/$pid/mem), but also the other places where you
+   can see I've added this flag. I'm not sure spamming warnings for
+   ordinary cases would be useful.
 
-This looks backwards. We only want the override to occur when the
-target won't otherwise allow it. i.e.  This should be:
+2. The purpose of putting a warning here is to catch any case I might have
+   missed where broken behaviour is required, but now disallowed, because it
+   might actually be hard for a GUP user to track down that this is why the
+   GUP is no longer functioning (since all they'll see is an -EFAULT).
 
-	if (vma_is_shmem(vma))
-		return true;
-	if (is_file_hugepages(vma)
-		return true;
+This warned upon check should in reality not occur, because it implies the
+GUP user is trying to do something broken and is _not_ explicitly telling
+GUP that it knows it's doing it and can live with the consequences. And on
+that basis, is worthy of a warning so we know we have to go put this flag
+in that place (and know it is a source of problematic GUP usage), or fix
+the caller.
 
-	/*
-	 * Issue a warning only if we are allowing a write to a mapping
-	 * that does not support what we are attempting to do functionality.
-	 */
-	if (WARN_ON_ONCE(gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING))
-		return true;
-	return false;
+An example case is placing breakpoints in gdb, without the flag being set
+for /proc/$pid/mem this will just fail. Raising a kernel warning when a
+user places a breakpoint seems... unhelpful :)
 
-i.e. we only want the warning to fire when the override is
-triggered - indicating that the caller is actually using a file
-mapping in a broken way, not when it is being used on
-file/filesystem that actually supports file mappings in this way.
-
->  static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->  {
->  	vm_flags_t vm_flags = vma->vm_flags;
->  	int write = (gup_flags & FOLL_WRITE);
->  	int foreign = (gup_flags & FOLL_REMOTE);
-> +	bool vma_anon = vma_is_anonymous(vma);
->  
->  	if (vm_flags & (VM_IO | VM_PFNMAP))
->  		return -EFAULT;
->  
-> -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
-> +	if ((gup_flags & FOLL_ANON) && !vma_anon)
->  		return -EFAULT;
->  
->  	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
-> @@ -978,6 +1008,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->  		return -EFAULT;
->  
->  	if (write) {
-> +		if (!vma_anon &&
-> +		    WARN_ON_ONCE(!can_write_file_mapping(vma, gup_flags)))
-> +			return -EFAULT;
-
-Yeah, the warning definitely belongs in the check function when the
-override triggers allow broken behaviour to proceed, not when we
-disallow a write fault because the underlying file/filesystem does
-not support the operation being attempted.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> -Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
