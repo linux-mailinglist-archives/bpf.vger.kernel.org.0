@@ -2,112 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDE86EC249
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 22:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FA76EC28B
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 23:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjDWUnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 16:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        id S229929AbjDWV4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 17:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjDWUnE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 16:43:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8D710C9
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 13:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682282536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7QcY3a3kH0+Rq9gUuMPOzuma/qnGDgBISD5Gp0wCqpU=;
-        b=gb+HIoUeLIOBkEaAgTXw+1aqqmGvqynD/h0OChsbYhCORq2nt4fRWj8a7ixuvxsiimNykq
-        9PWiS7J/NhRMjmylD8uwLpXV4Lv6q3NFsTNlur2/Y9Un60iz61CllVsnz/KAEQ2Pv55Z2i
-        6SFiOkkFeGJcOVkLwDsgmyOKgzq6p0c=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-597-m6iZX3ljO1q8H6n9pnz7AQ-1; Sun, 23 Apr 2023 16:42:14 -0400
-X-MC-Unique: m6iZX3ljO1q8H6n9pnz7AQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-2ef39671038so1084031f8f.2
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 13:42:14 -0700 (PDT)
+        with ESMTP id S229507AbjDWV4y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 17:56:54 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5519FE76;
+        Sun, 23 Apr 2023 14:56:53 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-63b51fd2972so3090804b3a.3;
+        Sun, 23 Apr 2023 14:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682287013; x=1684879013;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=GSgAcoXgSDnWS/7yo+J3yz1PI9CqV55UTloz7w6JFJg=;
+        b=mI8g70FtRaOn0BDc513vRcKXtM2bIrOVEJBBwwqGUpjE+COcmbbHdqgvYmWHKoT3Cl
+         lSYv0Le0/hihWHj6WuI9eyKL1MFAnjX4LMqgj06Vkdot3yc3QwxpcdXUi9crt5ehbdua
+         6Q8ROTyKY6tR5A6vU0zkEcBd7YybPV5OdClqACO+Y4LpYo8awTI97SDHBbuNKW3otXdr
+         NgmoAmdQScalAl1q4r4O1ukXAadbyPf4s15pF8va6zVoqsf/TAXNXuvSq1PGTTyeNx5H
+         Ofptob2i/KM7178cRUcXiOhSc05QtnkoDCFllQJN1WHJiGcy0phED6mgpjBKr77VJqOQ
+         /0fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682282534; x=1684874534;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20221208; t=1682287013; x=1684879013;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7QcY3a3kH0+Rq9gUuMPOzuma/qnGDgBISD5Gp0wCqpU=;
-        b=TTFOhfn/m0p3jcAlWAlkzPZjKfbV2D1VwXKIKHVsj3+cOJvUZQbdIomC5Jpl3xMyWw
-         K+gmfCmSleFBQ9V09Bw5jMQeUaR/JDyVKYWLTlXNxM4o0DORygxmvMh5zMulV/ta3rRh
-         MDglCIcvamzZ/vj+hjQ24xNdn3w6xyCUFIIKmYyndR5Y5rPr9eEnf46Kt2coFLLQAz3c
-         9M0sZaI/9x/my4/4jLn28elyEJXdarCRGM7/Y+vQLO3qsosai52NYdTT+3lDvE7KeC/I
-         ifM1+cTA3SSJMNIa6WtEP2H3OkS9XhZgrfEGlSd0wllRNHOW+wDS2QWOsewW4iqPCBu4
-         ETgA==
-X-Gm-Message-State: AAQBX9dNKEW5zd4NvdxsGjB8TjYrnxeeekAVa7Iuj6L0Nnsw0KEgPd3c
-        w3hpIVvT3AqQ8Nz2eP4eH7jYPR0L3mqCU2cimwJ7gxL7WUMFOGXS+36i6RTOadSGCm7Q8XuD4Yc
-        HIEg9ud5bX17H
-X-Received: by 2002:a5d:4e01:0:b0:304:6715:8728 with SMTP id p1-20020a5d4e01000000b0030467158728mr4236853wrt.18.1682282533889;
-        Sun, 23 Apr 2023 13:42:13 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YdnKi+ZHb6STgweUlm/aZE45mVPCJXP21umah/V38ji93a8lhhwXhK5QKMqTIOSKpR49O6oQ==
-X-Received: by 2002:a5d:4e01:0:b0:304:6715:8728 with SMTP id p1-20020a5d4e01000000b0030467158728mr4236836wrt.18.1682282533574;
-        Sun, 23 Apr 2023 13:42:13 -0700 (PDT)
-Received: from redhat.com ([2.55.17.255])
-        by smtp.gmail.com with ESMTPSA id c1-20020a5d4f01000000b002fc0de07930sm9307913wru.13.2023.04.23.13.42.09
+        bh=GSgAcoXgSDnWS/7yo+J3yz1PI9CqV55UTloz7w6JFJg=;
+        b=T0bQh/nQfXLLleZS5p7bbBJ8hjyNkzI1r8defNurHeb9jE5IRjmSCgTlqMCKhd/K9M
+         vArEcxXECqMMe+Zo/P99fapQzENP2rTuGzB/xBUa4mAS6VPc6OcmUq0tGEr7dQZAyh76
+         +PbPqoFOpk/zTtt7Fnl5RLptyUEBvFC2bYidRUF0mc2FdqDgC7bp+tP5Vt2MXZIYfc4s
+         nP6sNHWvmnQOGAICabyHXDHsjdIacxojs0YYItl1UXPOUJFmVsMsqURKCZFays+e3J+M
+         nFcz9txTOQF9c6UiD/Zo+W/w/GF/iXmFwRugn6+PrHdeZqZQ+xENbidN38Vw/PsaxKrD
+         1wzA==
+X-Gm-Message-State: AAQBX9c6N966aUIBktxnbUpKHGflLU/6tpf6/mzkR90OhtbCv+FDg7cU
+        GNouAJqDxDwobPIYtIJslso=
+X-Google-Smtp-Source: AKy350bxTKCgkE0vmaTH9OzhX0yQCdIJm/bTBrn2ymbEUGtlBxpehl5opTmCv0u/D+Z+pqvYAoS3ig==
+X-Received: by 2002:a05:6a00:1ad1:b0:63b:89a2:d624 with SMTP id f17-20020a056a001ad100b0063b89a2d624mr15378143pfv.12.1682287012528;
+        Sun, 23 Apr 2023 14:56:52 -0700 (PDT)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6700:7f00:2833:1d0a:7988:4146])
+        by smtp.gmail.com with ESMTPSA id 123-20020a621881000000b00627df85cd72sm5990230pfy.199.2023.04.23.14.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 13:42:12 -0700 (PDT)
-Date:   Sun, 23 Apr 2023 16:42:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH net-next v1] xsk: introduce xsk_dma_cbs
-Message-ID: <20230423161828-mutt-send-email-mst@kernel.org>
-References: <20230423062546.96880-1-xuanzhuo@linux.alibaba.com>
- <ZETUAMqKc8iLhTk3@kroah.com>
+        Sun, 23 Apr 2023 14:56:52 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>
+Subject: [PATCH] perf lock contention: Fix struct rq lock access
+Date:   Sun, 23 Apr 2023 14:56:50 -0700
+Message-ID: <20230423215650.287812-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZETUAMqKc8iLhTk3@kroah.com>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 23, 2023 at 08:45:20AM +0200, Greg KH wrote:
-> On Sun, Apr 23, 2023 at 02:25:45PM +0800, Xuan Zhuo wrote:
-> > The purpose of this patch is to allow driver pass the own dma callbacks
-> > to xsk.
-> > 
-> > This is to cope with the scene of virtio-net. If virtio does not have
-> > VIRTIO_F_ACCESS_PLATFORM, then virtio cannot use DMA API. In this case,
-> > xsk cannot use DMA API directly to achieve DMA address. Based on this
-> > scene, we must let xsk support driver to use the driver's dma callbacks.
-> 
-> Why does virtio need to use dma?  That seems to go against the overall
-> goal of virtio's new security restrictions that are being proposed
-> (where they do NOT want it to use dma as it is not secure).
+The BPF CO-RE's ignore suffix rule requires three underscores.
+Otherwise it'd fail like below:
 
-Yes, they exactly use dma, specifically dma into bounce buffer.
+  $ sudo perf lock contention -ab
+  libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid argument
+  libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
+  reg type unsupported for arg#0 function collect_lock_syms#380
+  ; int BPF_PROG(collect_lock_syms)
+  0: (b7) r6 = 0                        ; R6_w=0
+  1: (b7) r7 = 0                        ; R7_w=0
+  2: (b7) r9 = 1                        ; R9_w=1
+  3: <invalid CO-RE relocation>
+  failed to resolve CO-RE relocation <byte_off> [381] struct rq__new.__lock (0:0 @ offset 0)
 
+Fixes: 0c1228486bef ("perf lock contention: Support pre-5.14 kernels")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 8911e2a077d8..30c193078bdb 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -418,11 +418,11 @@ int contention_end(u64 *ctx)
+ 
+ extern struct rq runqueues __ksym;
+ 
+-struct rq__old {
++struct rq___old {
+ 	raw_spinlock_t lock;
+ } __attribute__((preserve_access_index));
+ 
+-struct rq__new {
++struct rq___new {
+ 	raw_spinlock_t __lock;
+ } __attribute__((preserve_access_index));
+ 
+@@ -434,8 +434,8 @@ int BPF_PROG(collect_lock_syms)
+ 
+ 	for (int i = 0; i < MAX_CPUS; i++) {
+ 		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
+-		struct rq__new *rq_new = (void *)rq;
+-		struct rq__old *rq_old = (void *)rq;
++		struct rq___new *rq_new = (void *)rq;
++		struct rq___old *rq_old = (void *)rq;
+ 
+ 		if (rq == NULL)
+ 			break;
+-- 
+2.40.0.634.g4ca3ef3211-goog
 
