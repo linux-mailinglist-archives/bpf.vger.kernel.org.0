@@ -2,158 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2316EBF26
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 13:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0AA6EBF4A
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 14:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjDWLlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 07:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
+        id S229493AbjDWMRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 08:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjDWLla (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 07:41:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEAF10D8;
-        Sun, 23 Apr 2023 04:41:28 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-2f6401ce8f8so1984305f8f.3;
-        Sun, 23 Apr 2023 04:41:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682250087; x=1684842087;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kpS45IYQE4yTiEppNYA/ViNM2eZOtP6RpIfPQh7BvVQ=;
-        b=h5GQ6ED1qo7quwyDOldE9/IYcHQfVDcsz5AX9Kq/35//2zfaikcSRwLWvZtA/g1/Rx
-         +EMKLlcTTlBIU8NFj3DcR+XtvkE32209IlrAeDxwXPswINQWZ/QJjbYzfzJeFTAyMby7
-         p4uco9UZRjmzwrskjR2pmFPEAYFQetT76/J7toweeWI+yskg1a9ffwGeCaCaXBSK1Bsc
-         +fqtdxmq5681v5Uaq2q+w02cPxfGshT4+dNP5Ie0LV+13TGEDErOqamHSCo29mKn5GAl
-         5760+8fh60mtQLom8A9kTBAHc/SyhNU7TLGKBty6Mk5p3Zof9i2n0XG26sI3q2cyBODd
-         3TXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682250087; x=1684842087;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpS45IYQE4yTiEppNYA/ViNM2eZOtP6RpIfPQh7BvVQ=;
-        b=DkHfx3EVUzoI+n7pBI0eoov/8VUhE0b1vUgZOuRm7YOjq2+flv8yvHbs0VGVNuh/0y
-         GPYrAB9jgTejFYdq/98WK3iVkqpbcAYsrjF47YwX0tAA0mzhCG8JrYp3bZLO1rBqjRAy
-         iV026vuqFNafPde36W/jporn5pKxhG/UyBn7A5jZ+XhND3ETkG1m0icCObPtgegP3aBF
-         TSVrZHGnA4k+oo/9aw0aaOHpeOyaSTdmq3wfbVWzdyhujaignv9WowLYDFS3TmiMNapA
-         z9TgTkgBV9ibzKJzF6kxxNUmJW2+EeSQ9fD1/sn0mUAbS9fY479SqeGS1zcw8WTeazYb
-         wOfQ==
-X-Gm-Message-State: AAQBX9f0gbsQxt4jd4IwCLzkM+a8fKisWeCatw1+QoKyK10T8C5/a0/Z
-        mnLo2v0Ri5MPs541jSlecek=
-X-Google-Smtp-Source: AKy350aIlb+c7V0wHfcNLQc8C2fqbuo7uG0MxTk/DFunQiamw8jtQ/5vfj49gjbqDZbmKHGDqEBp7Q==
-X-Received: by 2002:a5d:5307:0:b0:2fe:6b1e:3818 with SMTP id e7-20020a5d5307000000b002fe6b1e3818mr7692501wrv.51.1682250086693;
-        Sun, 23 Apr 2023 04:41:26 -0700 (PDT)
-Received: from [192.168.0.157] ([46.120.112.185])
-        by smtp.gmail.com with ESMTPSA id e5-20020a5d5005000000b0030469635629sm3486346wrt.62.2023.04.23.04.41.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Apr 2023 04:41:25 -0700 (PDT)
-Message-ID: <2ebf97ba-1bd2-3286-7feb-d2e7f4c95383@gmail.com>
-Date:   Sun, 23 Apr 2023 14:41:22 +0300
+        with ESMTP id S229473AbjDWMRw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 08:17:52 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D1610EA;
+        Sun, 23 Apr 2023 05:17:50 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Q46h52x4CzKtRC;
+        Sun, 23 Apr 2023 20:16:53 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sun, 23 Apr
+ 2023 20:17:48 +0800
+Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
+ recycling
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, <netdev@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <lorenzo.bianconi@redhat.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+References: <cover.1682188837.git.lorenzo@kernel.org>
+ <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
+Date:   Sun, 23 Apr 2023 20:17:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH bpf,v2 0/4] Socket lookup BPF API from tc/xdp ingress does
- not respect VRF bindings.
+In-Reply-To: <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
-        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
-        shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz,
-        eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230420145041.508434-1-gilad9366@gmail.com>
- <ZEFrcoG+QS/PRbew@google.com>
-From:   Gilad Sever <gilad9366@gmail.com>
-In-Reply-To: <ZEFrcoG+QS/PRbew@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2023/4/23 2:54, Lorenzo Bianconi wrote:
+>  struct veth_priv {
+> @@ -727,17 +729,20 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>  			goto drop;
+>  
+>  		/* Allocate skb head */
+> -		page = alloc_page(GFP_ATOMIC | __GFP_NOWARN);
+> +		page = page_pool_dev_alloc_pages(rq->page_pool);
+>  		if (!page)
+>  			goto drop;
+>  
+>  		nskb = build_skb(page_address(page), PAGE_SIZE);
 
-On 20/04/2023 19:42, Stanislav Fomichev wrote:
-> On 04/20, Gilad Sever wrote:
->> When calling socket lookup from L2 (tc, xdp), VRF boundaries aren't
->> respected. This patchset fixes this by regarding the incoming device's
->> VRF attachment when performing the socket lookups from tc/xdp.
->>
->> The first two patches are coding changes which facilitate this fix by
->> factoring out the tc helper's logic which was shared with cg/sk_skb
->> (which operate correctly).
-> Why is not relevant for cgroup/egress? Is it already running with
-> the correct device?
-Yes.
->
-> Also, do we really need all this refactoring and separate paths?
-> Can we just add that bpf_l2_sdif part to the existing code?
-> It will trigger for tc, but I'm assuming it will be a no-op for cgroup
-> path?
-The reason we preferred the refactoring is to avoid triggering `inet_sdif()`
-from tc/xdp. This is because in our understanding, the IPCB is undefined 
-before
-IP processing so it seems incorrect to use `inet_sdif()` from tc/xdp.
+If page pool is used with PP_FLAG_PAGE_FRAG, maybe there is some additional
+improvement for the MTU 1500B case, it seem a 4K page is able to hold two skb.
+And we can reduce the memory usage too, which is a significant saving if page
+size is 64K.
 
-We did come up with a different option which could spare most of the 
-refactoring
-and still partially separate the two paths:
 
-Pass sdif to __bpf_skc_lookup() but instead of using different functions
-for tc, calculate sdif by calling `dev_sdif()` in bpf_skc_lookup() only when
-netif_is_l3_master() is false. In other words:
+>  		if (!nskb) {
+> -			put_page(page);
+> +			page_pool_put_full_page(rq->page_pool, page, true);
+>  			goto drop;
+>  		}
+>  
+>  		skb_reserve(nskb, VETH_XDP_HEADROOM);
+> +		skb_copy_header(nskb, skb);
+> +		skb_mark_for_recycle(nskb);
+> +
+>  		size = min_t(u32, skb->len, max_head_size);
+>  		if (skb_copy_bits(skb, 0, nskb->data, size)) {
+>  			consume_skb(nskb);
+> @@ -745,7 +750,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>  		}
+>  		skb_put(nskb, size);
+>  
+> -		skb_copy_header(nskb, skb);
+>  		head_off = skb_headroom(nskb) - skb_headroom(skb);
+>  		skb_headers_offset_update(nskb, head_off);
+>  
+> @@ -754,7 +758,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>  		len = skb->len - off;
+>  
+>  		for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
+> -			page = alloc_page(GFP_ATOMIC | __GFP_NOWARN);
+> +			page = page_pool_dev_alloc_pages(rq->page_pool);
+>  			if (!page) {
+>  				consume_skb(nskb);
+>  				goto drop;
+> @@ -1002,11 +1006,37 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>  	return done;
+>  }
+>  
+> +static int veth_create_page_pool(struct veth_rq *rq)
+> +{
+> +	struct page_pool_params pp_params = {
+> +		.order = 0,
+> +		.pool_size = VETH_RING_SIZE,
 
-- xdp callers would check the device's l3 enslaved state using the new 
-`dev_sdif()`
-- sock_addr callers would use inet{,6}_sdif() as they did before
-- cg/tc share the same code path, so when netif_is_l3_master() is true
-   use inet{,6}_sdif() and when it is false use dev_sdif(). this relies 
-on the following
-   assumptions:
-   - tc programs don't run on l3 master devices
-   - cgroup callers never see l3 enslaved devices
-   - inet{,6}_sdif() isn't relevant for non l3 master devices
+It seems better to allocate different poo_size according to
+the mtu, so that the best proformance is achiced using the
+least memory?
 
-In our opinion, it's safer to factor out the tc flow as in the patchset, 
-similar to XDP
-which has its own functions.
-
-What do you think?
-> And regarding bpf_l2_sdif: seems like it's really generic and should
-> probably be called something like dev_sdif?
-Agreed. I'll rename in the next patch.
->
->> The third patch contains the actual bugfix.
->>
->> The fourth patch adds bpf tests for these lookup functions.
->> ---
->> v2: Fixed uninitialized var in test patch (4).
->>
->> Gilad Sever (4):
->>    bpf: factor out socket lookup functions for the TC hookpoint.
->>    bpf: Call __bpf_sk_lookup()/__bpf_skc_lookup() directly via TC
->>      hookpoint
->>    bpf: fix bpf socket lookup from tc/xdp to respect socket VRF bindings
->>    selftests/bpf: Add tc_socket_lookup tests
->>
->>   net/core/filter.c                             | 132 +++++--
->>   .../bpf/prog_tests/tc_socket_lookup.c         | 341 ++++++++++++++++++
->>   .../selftests/bpf/progs/tc_socket_lookup.c    |  73 ++++
->>   3 files changed, 525 insertions(+), 21 deletions(-)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_socket_lookup.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/tc_socket_lookup.c
->>
->> -- 
->> 2.34.1
->>
