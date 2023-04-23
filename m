@@ -2,124 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0E76EC0E9
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 17:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DEE6EC0FF
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 18:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjDWPx4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 11:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        id S229606AbjDWQPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 12:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjDWPxz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 11:53:55 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81306E6F
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 08:53:54 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4efe8991b8aso1303036e87.0
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 08:53:54 -0700 (PDT)
+        with ESMTP id S229493AbjDWQPw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 12:15:52 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28076E74
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 09:15:51 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-94a34a14a54so634554566b.1
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 09:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682265233; x=1684857233;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e24w503MQ9S82/uvccS06cym8XRFCTMJaG97VA8q4T4=;
-        b=hbjiAY7Bnhva6ioKJTT0253vVp2DPzIDMTkQDBUiVU5cAWQ+UiqQe4wIOpgMwHfWcc
-         B/B1RUe6VFTRIpsaw4tGiX37/A0cPuN6hjfTTA4rL3crnL3hznuKyM4Br/yFOIZlzKs5
-         TGThBKCykdPBg7hcb2RDdAXruiNGdAhFF1To5fs4Iou6SO1hi3vTrDsLICCiQVkGvGVH
-         punlAdjOIMkZetm+DigD2ott5AlM4IgZX+59NfkkAxzbZg7jngiXRmci2r9Q17ZIE43k
-         zQKQ/UunqudSqaTQSksIBl/YSQoeP8AMr1/4kLnDX0GerOVS1biVyrejclIcJtARB9GD
-         2zxA==
+        d=gmail.com; s=20221208; t=1682266549; x=1684858549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mDxM2/nZgVv5AuzM6A953wR/5pPPA3QiV9tEhmexKvE=;
+        b=d++vfO0cOXmCM9GAkFcVGWkZcilZN1FFL3V6mb61439kFoMXB0+NXOg6NFzqrg3oHJ
+         /U9XJtVijIWhKECQ7MEm0Kz4XIP8BMZNn7Kg4ZMw1QxrRAZe63uUXLHdmW92VnYwcZTQ
+         2CQfLymzHTVefYIJsN9VbjisYaZ0uqt5zKZu/s8vfmJwcdWpFG3GOfylQLYv6DYK9aIm
+         63VWmeXEvdV/3BlCAgGtfBs3kC45ZXb/F6jv+Flz6ITe1k9J/Nu3Jz+luW5+kojKOPdh
+         V38arHiydFIVWyhCeNPOqRwKBFahZQp2fReXjFOOKQSnR7iUWwnNwJ0xsoDfiGMuvaQi
+         UYbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682265233; x=1684857233;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e24w503MQ9S82/uvccS06cym8XRFCTMJaG97VA8q4T4=;
-        b=YrnTYGJ8gf7mN2bcUt/eVpHI2VLCix5Dn7J8stT4PpystfNrkSHEKVXNIVRYK+hGZr
-         9pFv7vGpmPwBp74mXathCKzgsG9NsrpCX3JI9McrvyP2M6m9W4EALO5GfO0rgu/a8YZY
-         ohZBSDm/LsaioErqBbkZxFlqhD5U1RUJ5jPBGGYLJ9Kx9zVsCvJdEVp/Elqz4XA7xqnd
-         eUSUOSeyoLctDNzBdxOe8diJDrqnrw4AfUz1yOUN1BK2MhXjIqXB3s3s2SjvrZwdvUEQ
-         /iwBsoG3nXjQ86n+7MYqNQEN9INm3b6k3W5wDV5fJ8OPrRK9Iv/E+sj/hvT1d0uO0ZtK
-         Dz2w==
-X-Gm-Message-State: AAQBX9ex1cwMtp0p5mOtESvaB1Y72F67Z1mhDJJjhtDKJwHuxzjTQ7a5
-        pAdR5uI4y9/l+NxSDivHc3yqA0JaIwH6E7m4OzM=
-X-Google-Smtp-Source: AKy350aWxPe2EMvl8N7rmoQ+jLUPFltsuYW9gU1lLu9XYgk2fayyZUaXfn+RPM6NRSYOc0oBz/8/fCygtS1lHi3WfSU=
-X-Received: by 2002:ac2:5204:0:b0:4eb:30f9:eeca with SMTP id
- a4-20020ac25204000000b004eb30f9eecamr3485088lfl.28.1682265232462; Sun, 23 Apr
- 2023 08:53:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682266549; x=1684858549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mDxM2/nZgVv5AuzM6A953wR/5pPPA3QiV9tEhmexKvE=;
+        b=aw8BB6LdxXo++0bQ+65djpFI9A02sZ/XGesuk7aI0bRvX8DScS3MmffgJ6hpom54XQ
+         /MT3gKPZUyuL9mgSnhdeCihvUGmrld2LVtiQKgBgXdUBGKNTeqWKxh70xEzyBS+DdwYj
+         hUbmpgzW9yMImSU7gmJ5la1xb51ndfhWASHIwQClRc0JEIYNIT+eLvFXQ160yJoKr6nj
+         opJz8xZwwdlxYSlh1Wm6Ca/tM4GCzhFOMoX/k2adeY5oqcAVsElkqWCpjRZH5PIGxw7a
+         Sf5HUYA4RK0yFDzsVdIyQCY2EO25BSZ2ezw2s2SN8VX4e3LC/NR9tckAyKfC1fNMa+HM
+         Ke7Q==
+X-Gm-Message-State: AAQBX9fyvi/WbNQAIMN1KFAb6BRkDoTsHFqMeT/HoKSvsrejv8n3k+dU
+        DZ4bunkuZroJLjdlYMDeegIUOC4SikyCoM6EkoU=
+X-Google-Smtp-Source: AKy350bTYtZldrYti6ZO3iN7RVYiUlTWdwYL/Bxee8vHcplpK2amIqpCVxFZDqQ4K5tKYbj53cePksKUMAHckIBmncM=
+X-Received: by 2002:a17:906:5904:b0:94f:928a:af0f with SMTP id
+ h4-20020a170906590400b0094f928aaf0fmr7362723ejq.47.1682266549219; Sun, 23 Apr
+ 2023 09:15:49 -0700 (PDT)
 MIME-Version: 1.0
-Sender: ginabahg@gmail.com
-Received: by 2002:a2e:8785:0:b0:2a9:f98d:21c8 with HTTP; Sun, 23 Apr 2023
- 08:53:51 -0700 (PDT)
-From:   Mrs Josephine Raya <josephine.raya226@gmail.com>
-Date:   Sun, 23 Apr 2023 03:53:51 -1200
-X-Google-Sender-Auth: F8ETOx25LuGGmwsgjViVAM4tSOU
-Message-ID: <CAL2p_XkZ_dEcJ8eNbDWCcCatL=2mDhwgukvg1q9vPj7R9zyzGA@mail.gmail.com>
-Subject: My name is Mrs. Josephine Raya from Indonesia,
-To:     undisclosed-recipients:;
+References: <xunyjzy64q9b.fsf@redhat.com> <CAADnVQ+JdPGV95Y30PskgdOomU2K0UXsoCydgqaJfJ5j4S8BtQ@mail.gmail.com>
+ <xunyjzy6z3vu.fsf@redhat.com> <CAADnVQK-Dig-5DB6tM_sgggyvqHUXSbBud0R=rAPWT2VRtQ-ZQ@mail.gmail.com>
+ <xunyfs8uz0z1.fsf@redhat.com> <CAADnVQ+ZSTpUvV7fQ-UxCoRBCc8NYfcYHY0K9mKka=vhT6LO=Q@mail.gmail.com>
+ <xunybkjhzdpe.fsf@redhat.com> <CAADnVQKGrSvJHXbsqzEF=QSuePF5KzGUKeC_HWsY56bTTSRWMw@mail.gmail.com>
+ <xunybkjfyno7.fsf@redhat.com>
+In-Reply-To: <xunybkjfyno7.fsf@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 23 Apr 2023 09:15:37 -0700
+Message-ID: <CAADnVQKGJNBf4EtG8kE2-xvnvw+=fb6XG3-ce6G3-csy-fd=rw@mail.gmail.com>
+Subject: Re: sys_enter tracepoint ctx structure
+To:     Yauheni Kaliuta <ykaliuta@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Artem Savkov <asavkov@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>,
+        Jerome Marchand <jmarchan@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_00,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_FROM,HK_NAME_FM_MR_MRS,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,
-        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0001]
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:134 listed in]
-        [list.dnswl.org]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [ginabahg[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.5 HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  3.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-My name is Mrs. Josephine Raya from Indonesia,
+On Sun, Apr 23, 2023 at 2:04=E2=80=AFAM Yauheni Kaliuta <ykaliuta@redhat.co=
+m> wrote:
+>
+> Hi, Alexei!
+>
+> >>>>> On Fri, 21 Apr 2023 09:02:34 -0700, Alexei Starovoitov  wrote:
+>  > On Fri, Apr 21, 2023 at 4:17=E2=80=AFAM Yauheni Kaliuta <ykaliuta@redh=
+at.com> wrote:
+>  >> >>>>> On Thu, 20 Apr 2023 16:12:49 -0700, Alexei Starovoitov  wrote:
+>  >> > On Thu, Apr 20, 2023 at 2:40=E2=80=AFPM Yauheni Kaliuta <ykaliuta@r=
+edhat.com> wrote:
+>  >> >> >>>>> On Thu, 20 Apr 2023 13:54:26 -0700, Alexei Starovoitov  wrot=
+e:
+>  >> >> > On Thu, Apr 20, 2023 at 1:37=E2=80=AFPM Yauheni Kaliuta <ykaliut=
+a@redhat.com> wrote:
+>  >> >> >> >>>>> On Thu, 20 Apr 2023 08:59:09 -0700, Alexei Starovoitov  w=
+rote:
+>
+> [...]
+>
+>  >> > Let's fix the kernel side too. Something like this should do it:
+>  >>
+>  >> > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_sys=
+calls.c
+>  >> > index 942ddbdace4a..7aa1f4299486 100644
+>  >> > --- a/kernel/trace/trace_syscalls.c
+>  >> > +++ b/kernel/trace/trace_syscalls.c
+>  >> > @@ -555,7 +555,7 @@ static int perf_call_bpf_enter(struct
+>  >> > trace_event_call *call, struct pt_regs *re
+>  >> >                                struct syscall_trace_enter *rec)
+>  >> >  {
+>  >> >         struct syscall_tp_t {
+>  >> > -               unsigned long long regs;
+>  >> > +               struct trace_entry ent;
+>  >> >                 unsigned long syscall_nr;
+>  >> >                 unsigned long args[SYSCALL_DEFINE_MAXARGS];
+>  >> >         } param;
+>  >> > @@ -657,7 +657,7 @@ static int perf_call_bpf_exit(struct
+>  >> > trace_event_call *call, struct pt_regs *reg
+>  >> >                               struct syscall_trace_exit *rec)
+>  >> >  {
+>  >> >         struct syscall_tp_t {
+>  >> > -               unsigned long long regs;
+>  >> > +               struct trace_entry ent;
+>  >>
+>  >>
+>  >> > pls add build_bug_on that sizeof(ent) >=3D sizeof(void*).
+>  >>
+>  >> Ok. Should the line *(struct pt_regs **)&param =3D regs; be commented=
+ somehow?
+>
+>  > commented out?
+>
+> No, no :)
+>
+>  > No. It's mandatory.
+>  > And the reason for build_bug_on existence... to make sure that there
+>  > is enough space there.
+>
+> Yes, it's clear for sure.
+>
+> It can be not obvious why basically 'ent' is inited with
+> 'regs'. Before it was called 'regs' at least.
 
-I know that this message might come to you as a surprise because we
-don't know each other nor have we ever met before but accept it with
-an open and positive mind. I have a Very important request that made
-me to contact you; I was diagnosed with ovarian cancer disease which
-doctors have confirmed and announced to me that i have just few days
-to leave, Now that I=E2=80=99m ending the race like this, without any famil=
-y
-members and no child, I just came across your email contact from my
-personal search.
-
-I=E2=80=99m a business woman from Indonesia dealing with gold exportation h=
-ere
-in the Republic of Burkina Faso. I have decided to hand over the sum of
-($10.5 Million Dollar) in my account to you for the help of orphanage
-homes/the needy once in your location to fulfill my wish on earth. But
-before handing over my data=E2=80=99s to you, kindly assure me that you wil=
-l
-take only 50% of the money and share the rest to orphanage homes/the
-needy once in your country, Return to enable me forward to you the
-bank contact details now that I have access to the Internet in the
-hospital to enable you to contact the bank, always check your email
-always remember me for doing good.
-
-Your early response will be appreciated.
-
-Yours Faithfully,
-Mrs Josephine Raya
+Got it :) Yeah. A comment describing the intent would be nice.
