@@ -2,73 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FA76EC28B
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 23:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF906EC2ED
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 00:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjDWV4z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 17:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
+        id S229641AbjDWW3s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 18:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjDWV4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 17:56:54 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5519FE76;
-        Sun, 23 Apr 2023 14:56:53 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-63b51fd2972so3090804b3a.3;
-        Sun, 23 Apr 2023 14:56:53 -0700 (PDT)
+        with ESMTP id S229521AbjDWW3r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 18:29:47 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ABA10DE
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 15:29:45 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1a50cb65c92so32041525ad.0
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 15:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682287013; x=1684879013;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=GSgAcoXgSDnWS/7yo+J3yz1PI9CqV55UTloz7w6JFJg=;
-        b=mI8g70FtRaOn0BDc513vRcKXtM2bIrOVEJBBwwqGUpjE+COcmbbHdqgvYmWHKoT3Cl
-         lSYv0Le0/hihWHj6WuI9eyKL1MFAnjX4LMqgj06Vkdot3yc3QwxpcdXUi9crt5ehbdua
-         6Q8ROTyKY6tR5A6vU0zkEcBd7YybPV5OdClqACO+Y4LpYo8awTI97SDHBbuNKW3otXdr
-         NgmoAmdQScalAl1q4r4O1ukXAadbyPf4s15pF8va6zVoqsf/TAXNXuvSq1PGTTyeNx5H
-         Ofptob2i/KM7178cRUcXiOhSc05QtnkoDCFllQJN1WHJiGcy0phED6mgpjBKr77VJqOQ
-         /0fw==
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1682288984; x=1684880984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WCA3zsna6vFeV798erY3+vSi/BvHgoXGHGGpFGJHBjM=;
+        b=CSv4RH6SXo/8LhDuQi8y+f+aMDFvLryZeZLhrGCIHJ76AP0hsBy9FXFG82OCSDXpdw
+         w8F2b+EujbdmHkHGv/Yp2eXHQ1Q2MYfO8Vu1ERFY1LXyjQpIg0lB+5VlMI/ocJwxnhdc
+         Xr7ocs5kYhWzgrbsToVMuFqmxnhx9PMp/1Es7VJKZagcRT2c06hsYHc4SKreGkyREEPk
+         mCg+asSla1YXUzn1ZIV7XG9Mcyje8X207NucVVd2pMhQOzQUptnWXdlOsGXi/9ALcAP/
+         iq+8gIFu9tNpqRG1e620R+RCQL23t/f9n43Ntbw7lzsRcOiSQ4oQmZOQImEBwjpawJpm
+         dy5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682287013; x=1684879013;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20221208; t=1682288984; x=1684880984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GSgAcoXgSDnWS/7yo+J3yz1PI9CqV55UTloz7w6JFJg=;
-        b=T0bQh/nQfXLLleZS5p7bbBJ8hjyNkzI1r8defNurHeb9jE5IRjmSCgTlqMCKhd/K9M
-         vArEcxXECqMMe+Zo/P99fapQzENP2rTuGzB/xBUa4mAS6VPc6OcmUq0tGEr7dQZAyh76
-         +PbPqoFOpk/zTtt7Fnl5RLptyUEBvFC2bYidRUF0mc2FdqDgC7bp+tP5Vt2MXZIYfc4s
-         nP6sNHWvmnQOGAICabyHXDHsjdIacxojs0YYItl1UXPOUJFmVsMsqURKCZFays+e3J+M
-         nFcz9txTOQF9c6UiD/Zo+W/w/GF/iXmFwRugn6+PrHdeZqZQ+xENbidN38Vw/PsaxKrD
-         1wzA==
-X-Gm-Message-State: AAQBX9c6N966aUIBktxnbUpKHGflLU/6tpf6/mzkR90OhtbCv+FDg7cU
-        GNouAJqDxDwobPIYtIJslso=
-X-Google-Smtp-Source: AKy350bxTKCgkE0vmaTH9OzhX0yQCdIJm/bTBrn2ymbEUGtlBxpehl5opTmCv0u/D+Z+pqvYAoS3ig==
-X-Received: by 2002:a05:6a00:1ad1:b0:63b:89a2:d624 with SMTP id f17-20020a056a001ad100b0063b89a2d624mr15378143pfv.12.1682287012528;
-        Sun, 23 Apr 2023 14:56:52 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6700:7f00:2833:1d0a:7988:4146])
-        by smtp.gmail.com with ESMTPSA id 123-20020a621881000000b00627df85cd72sm5990230pfy.199.2023.04.23.14.56.51
+        bh=WCA3zsna6vFeV798erY3+vSi/BvHgoXGHGGpFGJHBjM=;
+        b=Dl7Jz/Xnax9+HaCIWSd+BuJ6jFdDJHf5Co1e0ZTyVDjJzgUvRBEhZOkGhI2h+QryFG
+         kEEMwJ93oIHzZOnDf2JjxZPztgZtLdcLMQHedVT3gCHsk0CzjVKiV8/UcyZWwIIw0RIl
+         rI2gOT/zrRvyM6/zuewyiOt1+Iu29YP9y6GyI32BW+ss/dcEu9quNaFgTx83AwXO3IAK
+         ozLZkfg0JolzImpSir7FtplmQPH5+ZJVlWbn3ET2zEnegoczUG0zmqeLAX8yip/Qd1G/
+         POZTgxokP3CUTLnh5+Uz5EV/vISvqhSyzViuW7g7XhXeeK8RSCHnX+OOBVfFldlTUUsQ
+         h24g==
+X-Gm-Message-State: AAQBX9eI5hfhvbTYQ2qZJa3REpzBQuQ/fug0rkQM+XOepQAEoaC9Y8cI
+        FgsOPfVYzaC60YfbNidMxW5ZUg==
+X-Google-Smtp-Source: AKy350ZR4n3yiJ8OSE0TQKFE8uJrXQJX3r2CnA0Tf9NWbUzvYbwag62F1wj/UfIK9SSx06miuG3AKw==
+X-Received: by 2002:a17:902:e849:b0:1a6:dba5:2e3e with SMTP id t9-20020a170902e84900b001a6dba52e3emr14801275plg.25.1682288984544;
+        Sun, 23 Apr 2023 15:29:44 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-41-174.pa.nsw.optusnet.com.au. [49.180.41.174])
+        by smtp.gmail.com with ESMTPSA id bh8-20020a170902a98800b001a641ea111fsm5444609plb.112.2023.04.23.15.29.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 14:56:52 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        Sun, 23 Apr 2023 15:29:44 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1pqiDF-0074Ij-4U; Mon, 24 Apr 2023 08:29:41 +1000
+Date:   Mon, 24 Apr 2023 08:29:41 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Song Liu <song@kernel.org>
-Subject: [PATCH] perf lock contention: Fix struct rq lock access
-Date:   Sun, 23 Apr 2023 14:56:50 -0700
-Message-ID: <20230423215650.287812-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
+ default
+Message-ID: <20230423222941.GR447837@dread.disaster.area>
+References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,55 +106,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF CO-RE's ignore suffix rule requires three underscores.
-Otherwise it'd fail like below:
+On Sat, Apr 22, 2023 at 02:37:05PM +0100, Lorenzo Stoakes wrote:
+> +/*
+> + * Writing to file-backed mappings using GUP is a fundamentally broken operation
+> + * as kernel write access to GUP mappings may not adhere to the semantics
+> + * expected by a file system.
+> + *
+> + * In most instances we disallow this broken behaviour, however there are some
+> + * exceptions to this enforced here.
+> + */
+> +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
+> +					  unsigned long gup_flags)
+> +{
+> +	struct file *file = vma->vm_file;
+> +
+> +	/* If we aren't pinning then no problematic write can occur. */
+> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
+> +		return true;
+> +
+> +	/* Special mappings should pose no problem. */
+> +	if (!file)
+> +		return true;
 
-  $ sudo perf lock contention -ab
-  libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid argument
-  libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
-  reg type unsupported for arg#0 function collect_lock_syms#380
-  ; int BPF_PROG(collect_lock_syms)
-  0: (b7) r6 = 0                        ; R6_w=0
-  1: (b7) r7 = 0                        ; R7_w=0
-  2: (b7) r9 = 1                        ; R9_w=1
-  3: <invalid CO-RE relocation>
-  failed to resolve CO-RE relocation <byte_off> [381] struct rq__new.__lock (0:0 @ offset 0)
+Ok...
 
-Fixes: 0c1228486bef ("perf lock contention: Support pre-5.14 kernels")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> +
+> +	/* Has the caller explicitly indicated this case is acceptable? */
+> +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
+> +		return true;
+> +
+> +	/* shmem and hugetlb mappings do not have problematic semantics. */
+> +	return vma_is_shmem(vma) || is_file_hugepages(file);
+> +}
 
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 8911e2a077d8..30c193078bdb 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -418,11 +418,11 @@ int contention_end(u64 *ctx)
- 
- extern struct rq runqueues __ksym;
- 
--struct rq__old {
-+struct rq___old {
- 	raw_spinlock_t lock;
- } __attribute__((preserve_access_index));
- 
--struct rq__new {
-+struct rq___new {
- 	raw_spinlock_t __lock;
- } __attribute__((preserve_access_index));
- 
-@@ -434,8 +434,8 @@ int BPF_PROG(collect_lock_syms)
- 
- 	for (int i = 0; i < MAX_CPUS; i++) {
- 		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
--		struct rq__new *rq_new = (void *)rq;
--		struct rq__old *rq_old = (void *)rq;
-+		struct rq___new *rq_new = (void *)rq;
-+		struct rq___old *rq_old = (void *)rq;
- 
- 		if (rq == NULL)
- 			break;
+This looks backwards. We only want the override to occur when the
+target won't otherwise allow it. i.e.  This should be:
+
+	if (vma_is_shmem(vma))
+		return true;
+	if (is_file_hugepages(vma)
+		return true;
+
+	/*
+	 * Issue a warning only if we are allowing a write to a mapping
+	 * that does not support what we are attempting to do functionality.
+	 */
+	if (WARN_ON_ONCE(gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING))
+		return true;
+	return false;
+
+i.e. we only want the warning to fire when the override is
+triggered - indicating that the caller is actually using a file
+mapping in a broken way, not when it is being used on
+file/filesystem that actually supports file mappings in this way.
+
+>  static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+>  {
+>  	vm_flags_t vm_flags = vma->vm_flags;
+>  	int write = (gup_flags & FOLL_WRITE);
+>  	int foreign = (gup_flags & FOLL_REMOTE);
+> +	bool vma_anon = vma_is_anonymous(vma);
+>  
+>  	if (vm_flags & (VM_IO | VM_PFNMAP))
+>  		return -EFAULT;
+>  
+> -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
+> +	if ((gup_flags & FOLL_ANON) && !vma_anon)
+>  		return -EFAULT;
+>  
+>  	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
+> @@ -978,6 +1008,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+>  		return -EFAULT;
+>  
+>  	if (write) {
+> +		if (!vma_anon &&
+> +		    WARN_ON_ONCE(!can_write_file_mapping(vma, gup_flags)))
+> +			return -EFAULT;
+
+Yeah, the warning definitely belongs in the check function when the
+override triggers allow broken behaviour to proceed, not when we
+disallow a write fault because the underlying file/filesystem does
+not support the operation being attempted.
+
+-Dave.
 -- 
-2.40.0.634.g4ca3ef3211-goog
-
+Dave Chinner
+david@fromorbit.com
