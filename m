@@ -2,144 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAEE6EBDCB
-	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 09:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1836EBDD9
+	for <lists+bpf@lfdr.de>; Sun, 23 Apr 2023 10:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbjDWHzC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 03:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        id S229725AbjDWIDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Apr 2023 04:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjDWHzB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 03:55:01 -0400
-Received: from mail-ed1-x563.google.com (mail-ed1-x563.google.com [IPv6:2a00:1450:4864:20::563])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7D210D9
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 00:54:59 -0700 (PDT)
-Received: by mail-ed1-x563.google.com with SMTP id 4fb4d7f45d1cf-504eac2f0b2so5547492a12.3
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 00:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dectris.com; s=google; t=1682236498; x=1684828498;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8eN7Be/85uzfpyW2w/rr50iULiGv8D2Gnkfs37ktaYM=;
-        b=rNC4EJKXU49aedFwPrZkwlJrx07csMDu16FlwNyYTADq2p1Xdr/K3g3uaArMvAUc9e
-         9Wrw2wXWZNQSnaKnIvDD31gFW1UpuQ6MEDUWssKk2AHRP4A3XTWiCKYEEohWO9KuTMiv
-         9TD8+BTUznpT+EKqAbp45/6QMeXsJ1NjIHpeg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682236498; x=1684828498;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8eN7Be/85uzfpyW2w/rr50iULiGv8D2Gnkfs37ktaYM=;
-        b=mGompCn3KFHYjgZ+I+HsoeOfxBvysjs3943P3uMPb6IrSS0voQFQj7tbgWUc6qSVpD
-         kl+ssHvd4vDFYlKc9Ep5sDmm4AHVer9MT2fvHgnPihvI/Zh8bnFuxCrJWBBmTYp6clz1
-         uzfY2LS8Knt2d7aghwSyt8SZvKph9LKxFw84SsKaF8t2YmT1VWjly+DmuP47JDNATUBi
-         4s6x3wYIEntLyOTYoVgkEpkFuCDcJK1FRDqlMKkFw2yKqIAFLYitOhKvO8NNaljgmR63
-         K9be9wfm8ATw4WH9OfvRiu+htfkeXQXO9R5pIZViM3GOYIyWdO7uYg8/RKRF9IkQ57gz
-         L/yg==
-X-Gm-Message-State: AAQBX9f9OajcrzLxz0JjThRlfv3I6jAH5dVSpvU9xhx+pXSPfvpxiPQk
-        M5P/tGQXeZjNZfY7kvQHd3/m5wzSBJssidGxgKa/5TI+AxeX
-X-Google-Smtp-Source: AKy350YLtMPDAkgPEJsURq5+gvm+IsB0e3MuHJpNtuodio4i6qQUIhDApkdP+hTygnE+RIN7cpFUaLrJqsOA
-X-Received: by 2002:aa7:d6ca:0:b0:508:4808:b62b with SMTP id x10-20020aa7d6ca000000b005084808b62bmr9552284edr.22.1682236497826;
-        Sun, 23 Apr 2023 00:54:57 -0700 (PDT)
-Received: from fedora.dectris.local (dect-ch-bad-pfw.cyberlink.ch. [62.12.151.50])
-        by smtp-relay.gmail.com with ESMTPS id y15-20020a50bb0f000000b00504940f2549sm1549894ede.40.2023.04.23.00.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 00:54:57 -0700 (PDT)
-X-Relaying-Domain: dectris.com
-From:   Kal Conley <kal.conley@dectris.com>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S229640AbjDWIDk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Apr 2023 04:03:40 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B18CCC;
+        Sun, 23 Apr 2023 01:03:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Q413n2SkVz4f403Q;
+        Sun, 23 Apr 2023 16:03:33 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgCH4BpV5kRkmKD5HQ--.8129S2;
+        Sun, 23 Apr 2023 16:03:35 +0800 (CST)
+Subject: Re: [RFC bpf-next v2 1/4] selftests/bpf: Add benchmark for bpf memory
+ allocator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xsk: Use pool->dma_pages to check for DMA
-Date:   Sun, 23 Apr 2023 09:53:34 +0200
-Message-Id: <20230423075335.92597-1-kal.conley@dectris.com>
-X-Mailer: git-send-email 2.39.2
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20230408141846.1878768-1-houtao@huaweicloud.com>
+ <20230408141846.1878768-2-houtao@huaweicloud.com>
+ <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <7f5062a2-f235-6cf2-f10c-9fcb5dfcb5db@huaweicloud.com>
+Date:   Sun, 23 Apr 2023 16:03:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230422025930.fwoodzn6jlqe2jt5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgCH4BpV5kRkmKD5HQ--.8129S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF43Cr4rJw18tr4UWr48Zwb_yoW5XF4xpa
+        y8Ga4UZ3Z8JwnY9348Xw4vqrW8Xw48Gw47tr4jyryqk3sxur1fK3yfKF48WFW8GFy3GFyY
+        qw4Du3y7Z3WruFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Compare pool->dma_pages instead of pool->dma_pages_cnt to check for an
-active DMA mapping. pool->dma_pages needs to be read anyway to access
-the map so this compiles to more efficient code.
+Hi,
 
-Signed-off-by: Kal Conley <kal.conley@dectris.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- include/net/xsk_buff_pool.h | 2 +-
- net/xdp/xsk_buff_pool.c     | 7 ++++---
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index d318c769b445..a8d7b8a3688a 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- 	if (likely(!cross_pg))
- 		return false;
- 
--	return pool->dma_pages_cnt &&
-+	return pool->dma_pages &&
- 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
- }
- 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index b2df1e0f8153..26f6d304451e 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -350,7 +350,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
- {
- 	struct xsk_dma_map *dma_map;
- 
--	if (pool->dma_pages_cnt == 0)
-+	if (!pool->dma_pages)
- 		return;
- 
- 	dma_map = xp_find_dma_map(pool);
-@@ -364,6 +364,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
- 
- 	__xp_dma_unmap(dma_map, attrs);
- 	kvfree(pool->dma_pages);
-+	pool->dma_pages = NULL;
- 	pool->dma_pages_cnt = 0;
- 	pool->dev = NULL;
- }
-@@ -503,7 +504,7 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
- 	if (pool->unaligned) {
- 		xskb = pool->free_heads[--pool->free_heads_cnt];
- 		xp_init_xskb_addr(xskb, pool, addr);
--		if (pool->dma_pages_cnt)
-+		if (pool->dma_pages)
- 			xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
- 	} else {
- 		xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
-@@ -569,7 +570,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
- 		if (pool->unaligned) {
- 			xskb = pool->free_heads[--pool->free_heads_cnt];
- 			xp_init_xskb_addr(xskb, pool, addr);
--			if (pool->dma_pages_cnt)
-+			if (pool->dma_pages)
- 				xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
- 		} else {
- 			xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
--- 
-2.39.2
+On 4/22/2023 10:59 AM, Alexei Starovoitov wrote:
+> On Sat, Apr 08, 2023 at 10:18:43PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> The benchmark could be used to compare the performance of hash map
+>> operations and the memory usage between different flavors of bpf memory
+>> allocator (e.g., no bpf ma vs bpf ma vs reuse-after-gp bpf ma). It also
+>> could be used to check the performance improvement or the memory saving
+>> of bpf memory allocator optimization and check whether or not a specific
+>> use case is suitable for bpf memory allocator.
+>>
+>> The benchmark creates a non-preallocated hash map which uses bpf memory
+>> allocator and shows the operation performance and the memory usage of
+>> the hash map under different use cases:
+>> (1) no_op
+>> Only create the hash map and there is no operations on hash map. It is
+>> used as the baseline. When each CPUs complete the iteartion of
+>> nonoverlapping part of hash map, the loop count is increased.
+>> (2) overwrite
+>> Each CPU overwrites nonoverlapping part of hash map. When each CPU
+>> completes one round of iteration, the loop count is increased.
+>> (3) batch_add_batch_del
+>> Each CPU adds then deletes nonoverlapping part of hash map in batch.
+>> When each CPU completes one round of iteration, the loop count is
+>> increased.
+>> (4) add_del_on_diff_cpu
+>> Each two CPUs add and delete nonoverlapping part of map concurrently.
+>> When each CPU completes one round of iteration, the loop count is
+>> increased.
+>>
+>> The following benchmark results show that bpf memory allocator doesn't
+>> handle add_del_on_diff_cpu scenario very well. Because map deletion
+>> always happen on a different CPU than the map addition and the freed
+>> memory can never be reused.
+SNIP
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int add_del_on_diff_cpu(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +	unsigned int from;
+>> +
+>> +	from = bpf_get_smp_processor_id();
+>> +	update.from = from / 2;
+>> +	update.step = nr_thread / 2;
+>> +	update.max = nr_entries;
+>> +
+>> +	if (from & 1)
+>> +		bpf_loop(update.max, newwrite_htab, &update, 0);
+>> +	else
+>> +		bpf_loop(update.max, del_htab, &update, 0);
+> This is oddly shaped test.
+> deleter cpu may run ahead of newwrite_htab.
+> deleter will try to delete elems that don't exist.
+> Loop of few thousand iterations is not a lot for one cpu to run ahead.
+>
+> Each loop will run 16k times and every time you step += 4.
+> So 3/4 of these 16k runs it will be hitting if (ctx->from >= ctx->max) condition.
+> What are you measuring?
+I think it would be better to synchronize between deletion CPU and addition CPU.
+Will fix it.
+>
+>> +
+>> +	__sync_fetch_and_add(&loop_cnt, 1);
+>> +	return 0;
+>> +}
+>> -- 
+>> 2.29.2
+>>
+> .
 
