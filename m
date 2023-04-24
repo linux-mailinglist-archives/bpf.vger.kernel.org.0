@@ -2,92 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 018186EC938
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3373A6EC9CC
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 12:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjDXJoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 05:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        id S229659AbjDXKHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 06:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjDXJoH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 05:44:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07721713;
-        Mon, 24 Apr 2023 02:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BRIrwy0kQdwT4EzFe+pET36tqMqrZ3x2lV8f+aiDp0o=; b=sKre1o4N12rBN2s6VMCYvSlIKD
-        UD8rtV8hxFgVmQiK9p59wjVR8jQOS2igrMKonMepZrIreqEaFcQ+dRh7QFHuLz77EUS2rCDrUKIqY
-        UJiaRCLwG+RmrMWH/s+4CTjD4VNXmyD2aw+4htLHzVV0oSbm7Oyt6TMXFaaAygExrw/ncLA4PgZXW
-        1DlbGmcjx+MpZQxwK0rdXSKXmKvEmyHGUT+xJUa2lkHhzapjK/g6+CGBgb/RCWgK4epn2BBNby9+m
-        E7GMoLxIoZ1YeJQQPP9V7ApL6vS/RudyUT3zhRMFLXgyCiYg67dDAi/ZQs6AXC6SsCv33Gv2lC49V
-        ARXDDMQw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pqsjk-00FqZ6-2V;
-        Mon, 24 Apr 2023 09:43:56 +0000
-Date:   Mon, 24 Apr 2023 02:43:56 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <ZEZPXHN4OXIYhP+V@infradead.org>
-References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
+        with ESMTP id S229603AbjDXKHy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 06:07:54 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE38B7
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 03:07:53 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-2f9b9aa9d75so2596339f8f.0
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 03:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682330871; x=1684922871;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G7upYASidmeqEEydII3qqc7RD6bnaXjO6ELYE2uwAgE=;
+        b=UVqeweXbMYOeC3K/ULyF1nImE9e6LxTGoCNSVktvF5JuB9GSEkQw1xho2dQpa3vp4x
+         1fZYMoQYAqUKUlV1V/sVXMqz9MV8N+Z7JaX9Zksk+qvvNS+oXR29bBJ+l3ioYIlUYP+q
+         oxZAE4RUdkgFPmSVHAIU02F7QLXvVw4GnTwfRXsrYewO69gbmdmd3/sQuV2/vmG1cNGA
+         6zk/SIJDhng9Cw5tcZreUefKHkG1QOctj6lrCiJI2cxEA6iGM6F7xYIi6CMRWrrFCuYM
+         qeFhlV3X+IjULtVfW/EwdcKOP8GiTtXKQL521SGqsyzR9EPCD9FU+lS/K+nPkhgBPBLq
+         Ef4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682330871; x=1684922871;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G7upYASidmeqEEydII3qqc7RD6bnaXjO6ELYE2uwAgE=;
+        b=Oglmu7m6XgiFlwwq8jZ6xWE7WDAUzguYjLAUdbd7tZSJ76iGstz2piQHHG0X2dUr7k
+         J4HmqrNc0rBs7gx8XZq3AzKY6ZDybID6JLoD0TOUbRKvPAsb9P2vRBZXtIRjENVAu3B4
+         lKRz8akNvN5lnIQvyKCuK+N48sr8tak5QzjKPZQTN6qODFtL4ZrohyVKtOb3IHAsJGsu
+         HD6KgdmPeglLFJZfdtdyIE9F7XrLAVCY0PrYVGv0UM9J+M4foXXTUA34Fv8ZA0pxeTSJ
+         w7Pg7KPjWv515poB2Wp2SOWAqJJ8s3dKkiRF56UyWidi0asvEb7D+68bb2snbmZR6BZi
+         4CDg==
+X-Gm-Message-State: AAQBX9f3wuhgcwX7qTmJX/+IFcANlN/7WLHGTMl1HG1IQAEIvFSyfRcp
+        h4mk40eDMnZPIIF8WLfhfkIECZGLUpHsOgewMGk=
+X-Google-Smtp-Source: AKy350ZjToJInwBH8xJyZ8cOSff7FDOIUiVOioejMZMVPHvXCntsHa4Pi2Dj6aTURVkHkdaS8Iejeu/p5yRrFQ/NEXQ=
+X-Received: by 2002:a5d:408e:0:b0:2f7:fb78:9694 with SMTP id
+ o14-20020a5d408e000000b002f7fb789694mr8870244wrp.17.1682330871701; Mon, 24
+ Apr 2023 03:07:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Received: by 2002:a5d:540f:0:b0:2bf:cbee:1860 with HTTP; Mon, 24 Apr 2023
+ 03:07:51 -0700 (PDT)
+Reply-To: mariamkouame.info@myself.com
+From:   Mariam Kouame <contact.mariamkouame4@gmail.com>
+Date:   Mon, 24 Apr 2023 03:07:51 -0700
+Message-ID: <CAHkNMZzeUiZDZ=tTCuugT=L3yNWmT13KMVQeU7Aj=OoQOYKwAw@mail.gmail.com>
+Subject: from mariam kouame
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm pretty sure DIRECT I/O reads that write into file backed mappings
-are out there in the wild.
+Dear,
 
-So while I wish we had never allowed this, the exercise seems futile and
-instead we need to work on supporting this usecase, with the FOLL_PIN
-infrastructure being a big step toward that.
+Please grant me permission to share a very crucial discussion with
+you.I am looking forward to hearing from you at your earliest
+convenience.
+
+Mrs. Mariam Kouame
