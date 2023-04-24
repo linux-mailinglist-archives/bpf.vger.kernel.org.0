@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FD76ED209
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB9A6ED20D
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjDXQG7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 12:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        id S231992AbjDXQHN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 12:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbjDXQGz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 12:06:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C063E7EFB
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:06:53 -0700 (PDT)
+        with ESMTP id S232025AbjDXQHK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 12:07:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF34783D5
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:07:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A1D561B3B
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:06:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F306FC433D2;
-        Mon, 24 Apr 2023 16:06:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24032619FC
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:07:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D523FC433EF;
+        Mon, 24 Apr 2023 16:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682352412;
-        bh=pNRjBUNyKBNcAnDVy1rTVmvLfFVckIGQV5XaTb0Zfb0=;
+        s=k20201202; t=1682352422;
+        bh=HYt5JDtZlLnwAK+JXhGXzLxuJvMWlEihTTaEk87/VPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FYYxnDOYVhM0aIo/brcLuIbYted4gGrHIPdR8jQlQxglDFTEfPuynIHb/Ui9KFidD
-         Od1JKWk6mm9Wt4bS2wzU70TXf/9Z3/YVlGEdwVwcqdsNCfrrYNz1GMwtTuZO9vgo5R
-         S2Yek1ePq2Ok1WpxUS8yeoSkfuecWfSVtEjMW6VPHnUnb8RLjOgskNE0enPFXUPDo5
-         UWcgoyycl3wr8T/zPDboWqlN4FQqcPoGeoAXyr0s9OYgG8xxqW29oc0u7ZR+n5VBeB
-         86cudWc5bd8/wiFFObjXxvMzqfSoJ8PB+s5nLFL8WqRYr7+EpofhT5gic0uyTCY0G0
-         +JJPEA4LDe6xQ==
+        b=PBcB//a/AHIeSCPIuFN1ahrNO+Dd37iJd1uhUoLI7NigTp0IX7IMN1hZ+rdT8BfbZ
+         TgoTeaGO4tAqRuS6wdWV1OE9dDBrC87rFjN6vvxzAQ31+KJj7edn4ZqjhIKX3GdZ6L
+         QcUTtKp0CK2D8+Fd6NpipzLpCp0xdSO1zdK/v0sBAJvnIz+fxiq5EV15e0pRW+7KD1
+         vnc080iOiTQVxDrWna0TpmE1eUGu2WarlMfuPGyRwUZfKyJNoFL7ikC9slbgiVjarx
+         yf/6TFZv08f/LpwOWojb3eb2nGQ1knKMdA48VgREwoejta9LBhkFWzA4eDO6RrkOm9
+         Jcr+pxrGTjkwg==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,16 +42,16 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [RFC/PATCH bpf-next 12/20] libbpf: Add uprobe multi link support to bpf_program__attach_usdt
-Date:   Mon, 24 Apr 2023 18:04:39 +0200
-Message-Id: <20230424160447.2005755-13-jolsa@kernel.org>
+Subject: [RFC/PATCH bpf-next 13/20] selftests/bpf: Add uprobe_multi skel test
+Date:   Mon, 24 Apr 2023 18:04:40 +0200
+Message-Id: <20230424160447.2005755-14-jolsa@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230424160447.2005755-1-jolsa@kernel.org>
 References: <20230424160447.2005755-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,292 +60,161 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding uprobe_multi bool to struct bpf_usdt_opts. If it's true
-the usdt_manager_attach_usdt will use uprobe_multi link to attach
-to usdt probes.
+Adding uprobe_multi test for skeleton load/attach functions,
+to test skeleton auto attach for uprobe_multi link.
 
-The bpf program for usdt probe needs to have BPF_TRACE_UPROBE_MULTI
-set as expected_attach_type.
-
-Because current uprobe is implemented through perf event interface,
-it allows the pid filter for uprobes. This is not the case for
-uprobe_multi link, so the pid filter is not allowed for that.
+Test that bpf_get_func_ip works properly for uprobe_multi
+attachment.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c          |   9 ++-
- tools/lib/bpf/libbpf.h          |   2 +
- tools/lib/bpf/libbpf_internal.h |   2 +-
- tools/lib/bpf/usdt.c            | 127 ++++++++++++++++++++++++--------
- 4 files changed, 105 insertions(+), 35 deletions(-)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 66 +++++++++++++++++++
+ .../selftests/bpf/progs/uprobe_multi.c        | 63 ++++++++++++++++++
+ 2 files changed, 129 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 70353aaac86e..25d32aa605e8 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6817,7 +6817,6 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 	if (!insns || !insns_cnt)
- 		return -EINVAL;
- 
--	load_attr.expected_attach_type = prog->expected_attach_type;
- 	if (kernel_supports(obj, FEAT_PROG_NAME))
- 		prog_name = prog->name;
- 	load_attr.attach_prog_fd = prog->attach_prog_fd;
-@@ -6853,6 +6852,9 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 		insns_cnt = prog->insns_cnt;
- 	}
- 
-+	/* allow prog_prepare_load_fn to change expected_attach_type */
-+	load_attr.expected_attach_type = prog->expected_attach_type;
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+new file mode 100644
+index 000000000000..f68cda122ac2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	if (obj->gen_loader) {
- 		bpf_gen__prog_load(obj->gen_loader, prog->type, prog->name,
- 				   license, insns, insns_cnt, &load_attr,
-@@ -11730,6 +11732,7 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
- 	struct bpf_object *obj = prog->obj;
- 	struct bpf_link *link;
- 	__u64 usdt_cookie;
-+	bool uprobe_multi;
- 	int err;
- 
- 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
-@@ -11766,8 +11769,10 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
- 	}
- 
- 	usdt_cookie = OPTS_GET(opts, usdt_cookie, 0);
-+	uprobe_multi = OPTS_GET(opts, uprobe_multi, 0);
- 	link = usdt_manager_attach_usdt(obj->usdt_man, prog, pid, binary_path,
--					usdt_provider, usdt_name, usdt_cookie);
-+					usdt_provider, usdt_name, usdt_cookie,
-+					uprobe_multi);
- 	err = libbpf_get_error(link);
- 	if (err)
- 		return libbpf_err_ptr(err);
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 921ab2a94cec..025feb21c2ec 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -673,6 +673,8 @@ struct bpf_usdt_opts {
- 	size_t sz;
- 	/* custom user-provided value accessible through usdt_cookie() */
- 	__u64 usdt_cookie;
-+	/* use uprobe_multi link */
-+	bool uprobe_multi;
- 	size_t :0;
- };
- #define bpf_usdt_opts__last_field usdt_cookie
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index e4d05662a96c..5d5f61d0bcfb 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -567,7 +567,7 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
- 					   const struct bpf_program *prog,
- 					   pid_t pid, const char *path,
- 					   const char *usdt_provider, const char *usdt_name,
--					   __u64 usdt_cookie);
-+					   __u64 usdt_cookie, bool uprobe_multi);
- 
- static inline bool is_pow_of_2(size_t x)
- {
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index b8402e3f9eb2..f55dbd47d29e 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -803,11 +803,20 @@ struct bpf_link_usdt {
- 	size_t spec_cnt;
- 	int *spec_ids;
- 
-+	bool has_uprobe_multi;
++#include <unistd.h>
++#include <test_progs.h>
++#include "uprobe_multi.skel.h"
 +
- 	size_t uprobe_cnt;
- 	struct {
- 		long abs_ip;
- 		struct bpf_link *link;
- 	} *uprobes;
-+	struct {
-+		char **paths;
-+		unsigned long *offsets;
-+		unsigned long *ref_ctr_offsets;
-+		__u64 *cookies;
-+		struct bpf_link *link;
-+	} uprobe_multi;
- };
- 
- static int bpf_link_usdt_detach(struct bpf_link *link)
-@@ -816,19 +825,23 @@ static int bpf_link_usdt_detach(struct bpf_link *link)
- 	struct usdt_manager *man = usdt_link->usdt_man;
- 	int i;
- 
--	for (i = 0; i < usdt_link->uprobe_cnt; i++) {
--		/* detach underlying uprobe link */
--		bpf_link__destroy(usdt_link->uprobes[i].link);
--		/* there is no need to update specs map because it will be
--		 * unconditionally overwritten on subsequent USDT attaches,
--		 * but if BPF cookies are not used we need to remove entry
--		 * from ip_to_spec_id map, otherwise we'll run into false
--		 * conflicting IP errors
--		 */
--		if (!man->has_bpf_cookie) {
--			/* not much we can do about errors here */
--			(void)bpf_map_delete_elem(bpf_map__fd(man->ip_to_spec_id_map),
--						  &usdt_link->uprobes[i].abs_ip);
-+	if (usdt_link->has_uprobe_multi) {
-+		bpf_link__destroy(usdt_link->uprobe_multi.link);
++noinline void uprobe_multi_func_1(void)
++{
++	asm volatile ("");
++}
++
++noinline void uprobe_multi_func_2(void)
++{
++	asm volatile ("");
++}
++
++noinline void uprobe_multi_func_3(void)
++{
++	asm volatile ("");
++}
++
++static void uprobe_multi_test_run(struct uprobe_multi *skel)
++{
++	skel->bss->uprobe_multi_func_1_addr = (u64) uprobe_multi_func_1;
++	skel->bss->uprobe_multi_func_2_addr = (u64) uprobe_multi_func_2;
++	skel->bss->uprobe_multi_func_3_addr = (u64) uprobe_multi_func_3;
++
++	skel->bss->pid = getpid();
++
++	uprobe_multi_func_1();
++	uprobe_multi_func_2();
++	uprobe_multi_func_3();
++
++	ASSERT_EQ(skel->bss->uprobe_multi_func_1_result, 1, "uprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_2_result, 1, "uprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_3_result, 1, "uprobe_multi_func_3_result");
++
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_1_result, 1, "uretprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_2_result, 1, "uretprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_3_result, 1, "uretprobe_multi_func_3_result");
++}
++
++static void test_skel_api(void)
++{
++	struct uprobe_multi *skel = NULL;
++	int err;
++
++	skel = uprobe_multi__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
++		goto cleanup;
++
++	err = uprobe_multi__attach(skel);
++	if (!ASSERT_OK(err, "uprobe_multi__attach"))
++		goto cleanup;
++
++	uprobe_multi_test_run(skel);
++
++cleanup:
++	uprobe_multi__destroy(skel);
++}
++
++void test_uprobe_multi_test(void)
++{
++	if (test__start_subtest("skel_api"))
++		test_skel_api();
++}
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+new file mode 100644
+index 000000000000..a5dc00938217
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <stdbool.h>
++
++char _license[] SEC("license") = "GPL";
++
++__u64 uprobe_multi_func_1_addr = 0;
++__u64 uprobe_multi_func_2_addr = 0;
++__u64 uprobe_multi_func_3_addr = 0;
++
++__u64 uprobe_multi_func_1_result = 0;
++__u64 uprobe_multi_func_2_result = 0;
++__u64 uprobe_multi_func_3_result = 0;
++
++__u64 uretprobe_multi_func_1_result = 0;
++__u64 uretprobe_multi_func_2_result = 0;
++__u64 uretprobe_multi_func_3_result = 0;
++
++int pid = 0;
++bool test_cookie = false;
++
++static void uprobe_multi_check(void *ctx, bool is_return)
++{
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return;
++
++	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
++	__u64 addr = bpf_get_func_ip(ctx);
++
++#define SET(__var, __addr, __cookie) ({			\
++	if (addr == __addr &&				\
++	   (!test_cookie || (cookie == __cookie)))	\
++		__var = 1;				\
++})
++
++	if (is_return) {
++		SET(uretprobe_multi_func_1_result, uprobe_multi_func_1_addr, 2);
++		SET(uretprobe_multi_func_2_result, uprobe_multi_func_2_addr, 3);
++		SET(uretprobe_multi_func_3_result, uprobe_multi_func_3_addr, 1);
 +	} else {
-+		for (i = 0; i < usdt_link->uprobe_cnt; i++) {
-+			/* detach underlying uprobe link */
-+			bpf_link__destroy(usdt_link->uprobes[i].link);
-+			/* there is no need to update specs map because it will be
-+			 * unconditionally overwritten on subsequent USDT attaches,
-+			 * but if BPF cookies are not used we need to remove entry
-+			 * from ip_to_spec_id map, otherwise we'll run into false
-+			 * conflicting IP errors
-+			 */
-+			if (!man->has_bpf_cookie) {
-+				/* not much we can do about errors here */
-+				(void)bpf_map_delete_elem(bpf_map__fd(man->ip_to_spec_id_map),
-+							  &usdt_link->uprobes[i].abs_ip);
-+			}
- 		}
- 	}
- 
-@@ -868,9 +881,16 @@ static void bpf_link_usdt_dealloc(struct bpf_link *link)
- {
- 	struct bpf_link_usdt *usdt_link = container_of(link, struct bpf_link_usdt, link);
- 
--	free(usdt_link->spec_ids);
--	free(usdt_link->uprobes);
--	free(usdt_link);
-+	if (usdt_link->has_uprobe_multi) {
-+		free(usdt_link->uprobe_multi.paths);
-+		free(usdt_link->uprobe_multi.offsets);
-+		free(usdt_link->uprobe_multi.ref_ctr_offsets);
-+		free(usdt_link->uprobe_multi.cookies);
-+	} else {
-+		free(usdt_link->spec_ids);
-+		free(usdt_link->uprobes);
-+		free(usdt_link);
-+	}
- }
- 
- static size_t specs_hash_fn(long key, void *ctx)
-@@ -941,16 +961,22 @@ static int allocate_spec_id(struct usdt_manager *man, struct hashmap *specs_hash
- struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct bpf_program *prog,
- 					  pid_t pid, const char *path,
- 					  const char *usdt_provider, const char *usdt_name,
--					  __u64 usdt_cookie)
-+					  __u64 usdt_cookie, bool uprobe_multi)
- {
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts_multi);
- 	int i, fd, err, spec_map_fd, ip_map_fd;
- 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
- 	struct hashmap *specs_hash = NULL;
- 	struct bpf_link_usdt *link = NULL;
- 	struct usdt_target *targets = NULL;
-+	struct bpf_link *uprobe_link;
- 	size_t target_cnt;
- 	Elf *elf;
- 
-+	/* The uprobe_multi link does not have pid filter. */
-+	if (uprobe_multi && pid >= 0)
-+		return libbpf_err_ptr(-EINVAL);
-+
- 	spec_map_fd = bpf_map__fd(man->specs_map);
- 	ip_map_fd = bpf_map__fd(man->ip_to_spec_id_map);
- 
-@@ -1001,19 +1027,32 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 		goto err_out;
- 	}
- 
-+	link->has_uprobe_multi = uprobe_multi;
- 	link->usdt_man = man;
- 	link->link.detach = &bpf_link_usdt_detach;
- 	link->link.dealloc = &bpf_link_usdt_dealloc;
- 
--	link->uprobes = calloc(target_cnt, sizeof(*link->uprobes));
--	if (!link->uprobes) {
--		err = -ENOMEM;
--		goto err_out;
-+	if (uprobe_multi) {
-+		link->uprobe_multi.paths = calloc(target_cnt, sizeof(*link->uprobe_multi.paths));
-+		link->uprobe_multi.offsets = calloc(target_cnt, sizeof(*link->uprobe_multi.offsets));
-+		link->uprobe_multi.ref_ctr_offsets = calloc(target_cnt, sizeof(*link->uprobe_multi.ref_ctr_offsets));
-+		link->uprobe_multi.cookies = calloc(target_cnt, sizeof(*link->uprobe_multi.cookies));
-+
-+		if (!link->uprobe_multi.paths || !link->uprobe_multi.offsets ||
-+		    !link->uprobe_multi.ref_ctr_offsets || !link->uprobe_multi.cookies) {
-+			err = -ENOMEM;
-+			goto err_out;
-+		}
-+	} else {
-+		link->uprobes = calloc(target_cnt, sizeof(*link->uprobes));
-+		if (!link->uprobes) {
-+			err = -ENOMEM;
-+			goto err_out;
-+		}
- 	}
- 
- 	for (i = 0; i < target_cnt; i++) {
- 		struct usdt_target *target = &targets[i];
--		struct bpf_link *uprobe_link;
- 		bool is_new;
- 		int spec_id;
- 
-@@ -1049,20 +1088,44 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 			goto err_out;
- 		}
- 
--		opts.ref_ctr_offset = target->sema_off;
--		opts.bpf_cookie = man->has_bpf_cookie ? spec_id : 0;
--		uprobe_link = bpf_program__attach_uprobe_opts(prog, pid, path,
--							      target->rel_ip, &opts);
-+		if (uprobe_multi) {
-+			link->uprobe_multi.paths[i] = (char *) path;
-+			link->uprobe_multi.offsets[i] = target->rel_ip;
-+			link->uprobe_multi.ref_ctr_offsets[i] = target->sema_off;
-+			link->uprobe_multi.cookies[i] = spec_id;
-+		} else {
-+			opts.ref_ctr_offset = target->sema_off;
-+			opts.bpf_cookie = man->has_bpf_cookie ? spec_id : 0;
-+			uprobe_link = bpf_program__attach_uprobe_opts(prog, pid, path,
-+								      target->rel_ip, &opts);
-+			err = libbpf_get_error(uprobe_link);
-+			if (err) {
-+				pr_warn("usdt: failed to attach uprobe #%d for '%s:%s' in '%s': %d\n",
-+					i, usdt_provider, usdt_name, path, err);
-+				goto err_out;
-+			}
-+
-+			link->uprobes[i].link = uprobe_link;
-+			link->uprobes[i].abs_ip = target->abs_ip;
-+			link->uprobe_cnt++;
-+		}
++		SET(uprobe_multi_func_1_result, uprobe_multi_func_1_addr, 3);
++		SET(uprobe_multi_func_2_result, uprobe_multi_func_2_addr, 1);
++		SET(uprobe_multi_func_3_result, uprobe_multi_func_3_addr, 2);
 +	}
 +
-+	if (uprobe_multi) {
-+		opts_multi.cnt = target_cnt;
-+		opts_multi.paths = (const char **) link->uprobe_multi.paths;
-+		opts_multi.offsets = link->uprobe_multi.offsets;
-+		opts_multi.ref_ctr_offsets = link->uprobe_multi.ref_ctr_offsets;
-+		opts_multi.cookies = link->uprobe_multi.cookies;
++#undef SET
++}
 +
-+		uprobe_link = bpf_program__attach_uprobe_multi_opts(prog, NULL, NULL, &opts_multi);
- 		err = libbpf_get_error(uprobe_link);
- 		if (err) {
--			pr_warn("usdt: failed to attach uprobe #%d for '%s:%s' in '%s': %d\n",
--				i, usdt_provider, usdt_name, path, err);
-+			pr_warn("usdt: failed to attach uprobe multi for '%s:%s' in '%s': %d\n",
-+				usdt_provider, usdt_name, path, err);
- 			goto err_out;
- 		}
--
--		link->uprobes[i].link = uprobe_link;
--		link->uprobes[i].abs_ip = target->abs_ip;
--		link->uprobe_cnt++;
-+		link->uprobe_multi.link = uprobe_link;
- 	}
- 
- 	free(targets);
++SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
++int test_uprobe(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, false);
++	return 0;
++}
++
++SEC("uretprobe.multi//proc/self/exe:uprobe_multi_func_*")
++int test_uretprobe(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, true);
++	return 0;
++}
 -- 
 2.40.0
 
