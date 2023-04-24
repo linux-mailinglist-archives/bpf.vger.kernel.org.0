@@ -2,174 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE676EC888
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018186EC938
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjDXJRe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 05:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
+        id S229658AbjDXJoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 05:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjDXJRd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 05:17:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254F6E55
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682327811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OOLaU++cN0JupiCmd2yyryZfyq6J4szaekNpgpM2HQc=;
-        b=c/K7pXaU6yqNkK0AuXCEMerdzrgDcPuBha8y2XGrFudYF3Alwb+MWlrRiFRFCmeqqKbKve
-        Jh/FX9KK1dIt+4NH9r9jVzhEUFrRKyYCM4qDdS6E632i6a8M7+9AoS26IHf4ozb+caXGnY
-        T58iYB2AbXqioDanphDzqEm0+pEHyZE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-493-lDgO3gCNPk2SSqQBSfroEw-1; Mon, 24 Apr 2023 05:16:49 -0400
-X-MC-Unique: lDgO3gCNPk2SSqQBSfroEw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f195c06507so28533145e9.1
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:16:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682327808; x=1684919808;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OOLaU++cN0JupiCmd2yyryZfyq6J4szaekNpgpM2HQc=;
-        b=Q70T/7mosCRTboynXGIwJFVQhyfd1gNtTqRd1J95iKpNFrn1D1eUaBf2pcw5RWZ4P5
-         OhSzv7bEp4DGYxj+uEc0DetHB30JfdkhqJqEEpq15ejMNK2kjXMsn/hwtDe46RrN8Tda
-         cKDXgs5yX5/t/KpmOrv854sqs7faVxbI6/niMy+6/DpaksBhZO0wTwDl42Nc9dnTUVDK
-         1hoohPiYJ+zvWTNGTIJAnnQp3ZvEqONBLq4oSQ6EOFc/1eF7tMISpiPRbTzvd49ME7zM
-         5NYYAi3iVbXILVu9Y1Ty6BDomrhPK7xTqIUoeqR5zB9qzDZNYrxGawhej+te9IJG4o/x
-         NY5A==
-X-Gm-Message-State: AAQBX9ctYxHHdUaM/ASgphJwH6vJbR2MdRzDcOPbyh1WdjCkEWi8J83B
-        amvzbZx2OtrnEk+f5JfdgrvIN5uSoylXYoHiF4tygEC+12ptzrOLQX/Tj5iwXwCoqLnn2KqtS/v
-        CI18dFnJMs41S
-X-Received: by 2002:a05:600c:1ca8:b0:3f1:7382:b59a with SMTP id k40-20020a05600c1ca800b003f17382b59amr8037649wms.15.1682327808281;
-        Mon, 24 Apr 2023 02:16:48 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bBqS/KzqRiQ7MMETrEit3S+6Gq/Xn6728Mt7GN/5xj2CU9xcYe65Be7PSaTvqqYV52P6LjDw==
-X-Received: by 2002:a05:600c:1ca8:b0:3f1:7382:b59a with SMTP id k40-20020a05600c1ca800b003f17382b59amr8037621wms.15.1682327807873;
-        Mon, 24 Apr 2023 02:16:47 -0700 (PDT)
-Received: from localhost (77-32-99-124.dyn.eolo.it. [77.32.99.124])
-        by smtp.gmail.com with ESMTPSA id m18-20020a7bcb92000000b003f24f245f57sm2861354wmi.42.2023.04.24.02.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 02:16:47 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 11:17:16 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
-        john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
- recycling
-Message-ID: <ZEZJHCRsBVQwd9ie@localhost.localdomain>
-References: <cover.1682188837.git.lorenzo@kernel.org>
- <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
- <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
- <ZEU+vospFdm08IeE@localhost.localdomain>
- <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
+        with ESMTP id S229841AbjDXJoH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 05:44:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07721713;
+        Mon, 24 Apr 2023 02:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BRIrwy0kQdwT4EzFe+pET36tqMqrZ3x2lV8f+aiDp0o=; b=sKre1o4N12rBN2s6VMCYvSlIKD
+        UD8rtV8hxFgVmQiK9p59wjVR8jQOS2igrMKonMepZrIreqEaFcQ+dRh7QFHuLz77EUS2rCDrUKIqY
+        UJiaRCLwG+RmrMWH/s+4CTjD4VNXmyD2aw+4htLHzVV0oSbm7Oyt6TMXFaaAygExrw/ncLA4PgZXW
+        1DlbGmcjx+MpZQxwK0rdXSKXmKvEmyHGUT+xJUa2lkHhzapjK/g6+CGBgb/RCWgK4epn2BBNby9+m
+        E7GMoLxIoZ1YeJQQPP9V7ApL6vS/RudyUT3zhRMFLXgyCiYg67dDAi/ZQs6AXC6SsCv33Gv2lC49V
+        ARXDDMQw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pqsjk-00FqZ6-2V;
+        Mon, 24 Apr 2023 09:43:56 +0000
+Date:   Mon, 24 Apr 2023 02:43:56 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
+ by default
+Message-ID: <ZEZPXHN4OXIYhP+V@infradead.org>
+References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3/evO59xRVKF5uu+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+I'm pretty sure DIRECT I/O reads that write into file backed mappings
+are out there in the wild.
 
---3/evO59xRVKF5uu+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On 2023/4/23 22:20, Lorenzo Bianconi wrote:
-> >> On 2023/4/23 2:54, Lorenzo Bianconi wrote:
-> >>>  struct veth_priv {
-> >>> @@ -727,17 +729,20 @@ static int veth_convert_skb_to_xdp_buff(struct =
-veth_rq *rq,
-> >>>  			goto drop;
-> >>> =20
-> >>>  		/* Allocate skb head */
-> >>> -		page =3D alloc_page(GFP_ATOMIC | __GFP_NOWARN);
-> >>> +		page =3D page_pool_dev_alloc_pages(rq->page_pool);
-> >>>  		if (!page)
-> >>>  			goto drop;
-> >>> =20
-> >>>  		nskb =3D build_skb(page_address(page), PAGE_SIZE);
-> >>
-> >> If page pool is used with PP_FLAG_PAGE_FRAG, maybe there is some addit=
-ional
-> >> improvement for the MTU 1500B case, it seem a 4K page is able to hold =
-two skb.
-> >> And we can reduce the memory usage too, which is a significant saving =
-if page
-> >> size is 64K.
-> >=20
-> > please correct if I am wrong but I think the 1500B MTU case does not fi=
-t in the
-> > half-page buffer size since we need to take into account VETH_XDP_HEADR=
-OOM.
-> > In particular:
-> >=20
-> > - VETH_BUF_SIZE =3D 2048
-> > - VETH_XDP_HEADROOM =3D 256 + 2 =3D 258
->=20
-> On some arch the NET_IP_ALIGN is zero.
->=20
-> I suppose XDP_PACKET_HEADROOM are for xdp_frame and data_meta, it seems
-> xdp_frame is only 40 bytes for 64 bit arch and max size of metalen is 32
-> as xdp_metalen_invalid() suggest, is there any other reason why we need
-> 256 bytes here?
-
-XDP_PACKET_HEADROOM must be greater than (40 + 32)B because you may want pu=
-sh
-new data at the beginning of the xdp_buffer/xdp_frame running
-bpf_xdp_adjust_head() helper.
-I think 256B has been selected for XDP_PACKET_HEADROOM since it is 4 cachel=
-ines
-(but I can be wrong).
-There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 192B but
-this is not merged yet and it is not related to this series. We can address
-your comments in a follow-up patch when XDP_PACKET_HEADROOM series is merge=
-d.
-
-Regards,
-Lorenzo
-
->=20
-> > - max_headsize =3D SKB_WITH_OVERHEAD(VETH_BUF_SIZE - VETH_XDP_HEADROOM)=
- =3D 1470
-> >=20
-> > Even in this case we will need the consume a full page. In fact, perfor=
-mances
-> > are a little bit worse:
-> >=20
-> > MTU 1500: tcp throughput ~ 8.3Gbps
-> >=20
-> > Do you agree or am I missing something?
-> >=20
-> > Regards,
-> > Lorenzo
->=20
-
---3/evO59xRVKF5uu+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZEZJGQAKCRA6cBh0uS2t
-rO1YAP0b/ukzdC69Ik8Aurwu2ZhsLqlpb/h4VC2lo6R4c1+FEAEA4YnkRaXXcorN
-sXbmJndOLuBVdUAh2og9OuV/eP8bcgY=
-=g7RL
------END PGP SIGNATURE-----
-
---3/evO59xRVKF5uu+--
-
+So while I wish we had never allowed this, the exercise seems futile and
+instead we need to work on supporting this usecase, with the FOLL_PIN
+infrastructure being a big step toward that.
