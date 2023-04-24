@@ -2,108 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4355A6ECBAE
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 13:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552156ECBBB
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 14:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbjDXL6N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 07:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S231665AbjDXMC4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 08:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjDXL6M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 07:58:12 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11C2F1;
-        Mon, 24 Apr 2023 04:58:10 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Q4k7Y3Hv1znbcx;
-        Mon, 24 Apr 2023 19:54:17 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 24 Apr
- 2023 19:58:07 +0800
-Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
- recycling
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-CC:     Lorenzo Bianconi <lorenzo@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>
-References: <cover.1682188837.git.lorenzo@kernel.org>
- <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
- <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
- <ZEU+vospFdm08IeE@localhost.localdomain>
- <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
- <ZEZJHCRsBVQwd9ie@localhost.localdomain>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <0c1790dc-dbeb-8664-64ca-1f71e6c4f3a9@huawei.com>
-Date:   Mon, 24 Apr 2023 19:58:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S230319AbjDXMCz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 08:02:55 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F50CE65;
+        Mon, 24 Apr 2023 05:02:54 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id BEBF35C01A8;
+        Mon, 24 Apr 2023 08:02:51 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 24 Apr 2023 08:02:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1682337771; x=
+        1682424171; bh=CRvO6aIzOksETinFwGWymGxM2N+ncqpqbziqE4P90jE=; b=K
+        s8mDDYXrnRqjqrU5BW4+OV7zVGUbFLVjLriun4tmAFCJELjr4REGLRVSHgHjhkjh
+        Xep4y/SqEidGausW58qWVR8jV0yGSvhN/Pkl61At06FSgniI8CibRUvR+YD1b+dh
+        noEgKtRqS7jqcbClfTrEG7qKpk/BLsPKrBL/8wNaYeGng0lPT93tpRlmm5nMvkRO
+        wi4gcS9PXeZGCx7SXYH1LjxMAn79yIinR33/dmBUHCf0uiBgYFB0tfc2MxYSEOY2
+        7f2skw3npSzI0p7FU8AxwJFFqhgj6O9HvOrMi402nmPpIQ/Mrbm5HNknsJC0uGXy
+        pf9CcxKfMg0SPZ/y5z/Gw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682337771; x=1682424171; bh=CRvO6aIzOksET
+        inFwGWymGxM2N+ncqpqbziqE4P90jE=; b=fExb4HuszmPiaoxHgs+cKxDIwLQU+
+        eEdwK2PqGEzrWcrFhpexicu42iT/FXcS1JopTEEOIjoC+XdgRDkrxeInk89/akXe
+        PgZ1PUW+MjIVtohFqSGh+/6W/f9JBBeF1B0vOX/z/0GNNKp8ybiJa/cvEWXD5Bh6
+        uqco/RnE0UyicwnzNTOr80Z6fKImcXU7a35zhWmi2s3LmSL0L9C9dklH/TShrowR
+        VrxsvxS7B30zdia8qb5kzgQhhFD0DSYAr4joSMPH4te8KQoir0o/UxY4XNrXUS+r
+        YHmdaKH+NHa3fUXEZ/GmZqCCZxTQUgUj2/cyvklGRoPFG59SjlT1zPIIA==
+X-ME-Sender: <xms:6m9GZANNYr6TGHymmAD1-8ch6CPDymdpqrqJCHFrWSvrXbg0y9_PAA>
+    <xme:6m9GZG-YxUHkJl6fztunDYkp2nnOQJAM7lEvUe-hY_Yw7_1-wOLbr63PYJNA00LF5
+    HQyk1__Q98Gxh__uCY>
+X-ME-Received: <xmr:6m9GZHT5yUcDaIuEjNwYi078xTrEsa0hHkih8eBHuRE4wyAXL-_SQD3kdB35IUUhS_bu2w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedutddggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdttddttddtvdenucfhrhhomhepfdfmihhr
+    ihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlsehshhhuthgvmhhovhdrnh
+    grmhgvqeenucggtffrrghtthgvrhhnpefhieeghfdtfeehtdeftdehgfehuddtvdeuheet
+    tddtheejueekjeegueeivdektdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhvrdhnrghmvg
+X-ME-Proxy: <xmx:6m9GZIva8NohubvE-CE0B9aBb6EAGLY58ZvjYHuVRLj-oFgK1r9VUA>
+    <xmx:6m9GZIezTduoYrFkQgeKd--0ZG2lvutgkn4yvHHLo4oWPRIxucHJpg>
+    <xmx:6m9GZM1Wu0LH7Uws3qx8n4fbr0wRPFxLbnj7kTuKLgmA7gzKUDZp2w>
+    <xmx:629GZADcnXNbrlZmost-ak_0YFJdISlmSeeG4Rh7NaAM9e0Zo7Vnzg>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Apr 2023 08:02:49 -0400 (EDT)
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 1FE9F10A0FA; Mon, 24 Apr 2023 15:02:47 +0300 (+03)
+Date:   Mon, 24 Apr 2023 15:02:47 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
+ default
+Message-ID: <20230424120247.k7cjmncmov32yv5r@box.shutemov.name>
+References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ZEZJHCRsBVQwd9ie@localhost.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/4/24 17:17, Lorenzo Bianconi wrote:
->> On 2023/4/23 22:20, Lorenzo Bianconi wrote:
->>>> On 2023/4/23 2:54, Lorenzo Bianconi wrote:
->>>>>  struct veth_priv {
->>>>> @@ -727,17 +729,20 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->>>>>  			goto drop;
->>>>>  
->>>>>  		/* Allocate skb head */
->>>>> -		page = alloc_page(GFP_ATOMIC | __GFP_NOWARN);
->>>>> +		page = page_pool_dev_alloc_pages(rq->page_pool);
->>>>>  		if (!page)
->>>>>  			goto drop;
->>>>>  
->>>>>  		nskb = build_skb(page_address(page), PAGE_SIZE);
->>>>
->>>> If page pool is used with PP_FLAG_PAGE_FRAG, maybe there is some additional
->>>> improvement for the MTU 1500B case, it seem a 4K page is able to hold two skb.
->>>> And we can reduce the memory usage too, which is a significant saving if page
->>>> size is 64K.
->>>
->>> please correct if I am wrong but I think the 1500B MTU case does not fit in the
->>> half-page buffer size since we need to take into account VETH_XDP_HEADROOM.
->>> In particular:
->>>
->>> - VETH_BUF_SIZE = 2048
->>> - VETH_XDP_HEADROOM = 256 + 2 = 258
->>
->> On some arch the NET_IP_ALIGN is zero.
->>
->> I suppose XDP_PACKET_HEADROOM are for xdp_frame and data_meta, it seems
->> xdp_frame is only 40 bytes for 64 bit arch and max size of metalen is 32
->> as xdp_metalen_invalid() suggest, is there any other reason why we need
->> 256 bytes here?
-> 
-> XDP_PACKET_HEADROOM must be greater than (40 + 32)B because you may want push
-> new data at the beginning of the xdp_buffer/xdp_frame running
-> bpf_xdp_adjust_head() helper.
-> I think 256B has been selected for XDP_PACKET_HEADROOM since it is 4 cachelines
-> (but I can be wrong).
-> There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 192B but
-> this is not merged yet and it is not related to this series. We can address
-> your comments in a follow-up patch when XDP_PACKET_HEADROOM series is merged.
+On Sat, Apr 22, 2023 at 02:37:05PM +0100, Lorenzo Stoakes wrote:
+> @@ -959,16 +959,46 @@ static int faultin_page(struct vm_area_struct *vma,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Writing to file-backed mappings using GUP is a fundamentally broken operation
+> + * as kernel write access to GUP mappings may not adhere to the semantics
+> + * expected by a file system.
+> + *
+> + * In most instances we disallow this broken behaviour, however there are some
+> + * exceptions to this enforced here.
+> + */
+> +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
+> +					  unsigned long gup_flags)
+> +{
+> +	struct file *file = vma->vm_file;
+> +
+> +	/* If we aren't pinning then no problematic write can occur. */
+> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
+> +		return true;
+> +
+> +	/* Special mappings should pose no problem. */
+> +	if (!file)
+> +		return true;
+> +
+> +	/* Has the caller explicitly indicated this case is acceptable? */
+> +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
+> +		return true;
+> +
+> +	/* shmem and hugetlb mappings do not have problematic semantics. */
+> +	return vma_is_shmem(vma) || is_file_hugepages(file);
 
-It worth mentioning that the performance gain in this patch is at the cost of
-more memory usage, at most of VETH_RING_SIZE(256) + PP_ALLOC_CACHE_SIZE(128)
-pages is used.
+Can this be generalized to any fs that doesn't have vm_ops->page_mkwrite()?
 
-IMHO, it seems better to limit the memory usage as much as possible, or provide a
-way to disable/enable page pool for user.
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
