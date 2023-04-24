@@ -2,109 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3229C6ED446
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 20:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772B46ED49F
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 20:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjDXSWO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 14:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
+        id S232370AbjDXSkr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 14:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjDXSWN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 14:22:13 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92467123;
-        Mon, 24 Apr 2023 11:22:07 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-2fe3fb8e25fso2894026f8f.0;
-        Mon, 24 Apr 2023 11:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682360526; x=1684952526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GNWb62e8CZIjs8fCUmW4pdVL9gTqXJEWDD+orJ1zuz0=;
-        b=H5waO2lVV3WBPBob6qcwDjzXxuUC5G8iugaCsakCau25e2nQVZkCEflYqfjCA79/+y
-         NPM55qPl5re3i0yMT/YrYCQH9VeeIYZQYU8OJJtaglvYTDa5raa6jLqgPkNeeN3oT7wa
-         P14wmAxZ2C2upU4ckUa+UiOKhgQv5ylRFql5AedoiuiJpk3cvv3kthNbfSPcBzdfOjLw
-         LFUmc0hsGAouMZd5Bq+mYaqFJspu6z4HesNUuf0ImsN7FEwgKhYb0QjwGwbr13jrAg9B
-         GAHkLUSMmAK1tNQwgf0vGKwQWwvZdAKrZS+YsNwcA/7TxUctioZnm0lMHRwQdhNuulVT
-         sJDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682360526; x=1684952526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GNWb62e8CZIjs8fCUmW4pdVL9gTqXJEWDD+orJ1zuz0=;
-        b=CAlNRDerE+Dgjs3BLFDp/kxmeepcAywH5cm8ZFzosLuuWt+EAJmXyEqDTaUg4DB1CM
-         /NH26WbpA4i41hS0WYO0VTIVcuYdPTEo6hce+JbhTNjP/qkY5TmAQb3jSuJtdGnQOwN+
-         1cXacfzBtaPhMg4hvCYAQwAWpgf5b+6frp35ZtSQi5gWT5RPArUmQB5EcfhSsdb8Duqv
-         APCip29aQRdhCVfv/2uRN3fhIN+xMUz0m842bidR7vyw/aI1ttkZs78mxPoCLnoRDRVW
-         DfJDetgbYm0X/j4LlTDSkLwS/4l/yt31gqVx3EkwMafeHFvD9IQ+zUjiCtzsw81TZ1wS
-         6XoA==
-X-Gm-Message-State: AAQBX9dQXqvCrPykzbtgNmaV2mxlf9sZT4ynkhk6ujDMMEZcdzLJGuq5
-        B+1ynsXriPiEbhWZTCEj6VE=
-X-Google-Smtp-Source: AKy350axh1bla12sBBL0jXPnMeWce8zQbehX+yTZ5r+1QdjTUe4lwDcOG4wov94gQPDhdmEZFp/48w==
-X-Received: by 2002:adf:f983:0:b0:2ef:ba4f:c821 with SMTP id f3-20020adff983000000b002efba4fc821mr8354283wrr.36.1682360525728;
-        Mon, 24 Apr 2023 11:22:05 -0700 (PDT)
-Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
-        by smtp.gmail.com with ESMTPSA id z18-20020adfe552000000b002f3e1122c1asm11316412wrm.15.2023.04.24.11.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 11:22:05 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 19:22:03 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <cfb5afaa-8636-4c7d-a1a2-2e0a85f9f3d3@lucifer.local>
-References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
- <ZEZPXHN4OXIYhP+V@infradead.org>
- <90a54439-5d30-4711-8a86-eba816782a66@lucifer.local>
- <ZEZ117OMCi0dFXqY@nvidia.com>
- <c8fff8b3-ead6-4f52-bf17-f2ef2e752b57@lucifer.local>
- <ZEaGjad50lqRNTWD@nvidia.com>
- <cd488979-d257-42b9-937f-470cc3c57f5e@lucifer.local>
- <ZEa+L5ivNDhCmgj4@nvidia.com>
+        with ESMTP id S232421AbjDXSkp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 14:40:45 -0400
+Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E3065A8;
+        Mon, 24 Apr 2023 11:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rZSvYRJCm1YwId/r2d17sDWM7tvYTeySLkDdNhdkAJE=; b=uQHFyDAGc6z2qS3ECawbp0LyOf
+        36e8Ka3Fu5xSPAaTMoOV8OQlIKtuunQ3yS2nBDGSBMAn/e3SnhOnmUmCodULfL4hjj2tkw2HTIFJ+
+        1oeTDgt1Xv/yytVvGajtt0Ol0Yityytrx0wVD1qORUEk85VnxQsKkym3iLYNf8P+qMxk=;
+Received: from [88.117.57.231] (helo=[10.0.0.160])
+        by mx05lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <gerhard@engleder-embedded.com>)
+        id 1pr178-0002J8-EK; Mon, 24 Apr 2023 20:40:38 +0200
+Message-ID: <f9442f99-783d-a227-df85-c602e6bdd752@engleder-embedded.com>
+Date:   Mon, 24 Apr 2023 20:40:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEa+L5ivNDhCmgj4@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH net-next v3 6/6] tsnep: Add XDP socket zero-copy TX
+ support
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+References: <20230418190459.19326-1-gerhard@engleder-embedded.com>
+ <20230418190459.19326-7-gerhard@engleder-embedded.com>
+ <ZEGd5QHTInP8WRlZ@boxer>
+ <fddf3dd3-2d75-3969-7a62-a4eeeb6ef553@engleder-embedded.com>
+ <ZEZv+5DJbEzn28+M@boxer>
+Content-Language: en-US
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+In-Reply-To: <ZEZv+5DJbEzn28+M@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,78 +61,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 02:36:47PM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 24, 2023 at 03:29:57PM +0100, Lorenzo Stoakes wrote:
-> > On Mon, Apr 24, 2023 at 10:39:25AM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Apr 24, 2023 at 01:38:49PM +0100, Lorenzo Stoakes wrote:
-> > >
-> > > > I was being fairly conservative in that list, though we certainly need to
-> > > > set the flag for /proc/$pid/mem and ptrace to avoid breaking this
-> > > > functionality (I observed breakpoints breaking without it which obviously
-> > > > is a no go :). I'm not sure if there's a more general way we could check
-> > > > for this though?
-> > >
-> > > More broadly we should make sure these usages of GUP safe somehow so
-> > > that it can reliably write to those types of pages without breaking
-> > > the current FS contract..
-> > >
-> > > I forget exactly, but IIRC, don't you have to hold some kind of page
-> > > spinlock while writing to the page memory?
-> > >
-> >
-> > I think perhaps you're thinking of the mm->mmap_lock? Which will be held
-> > for the FOLL_GET cases and simply prevent the VMA from disappearing below
-> > us but not do much else.
->
-> No not mmap_lock, I want to say there is a per-page lock that
-> interacts with the write protect, or at worst this needs to use the
-> page table spinlocks.
->
-> > I wonder whether we should do this check purely for FOLL_PIN to be honest?
-> > As this indicates medium to long-term access without mmap_lock held. This
-> > would exclude the /proc/$pid/mem and ptrace paths which use gup_remote().
->
-> Everything is buggy. FOLL_PIN is part of a someday solution to solve
-> it.
->
-> > That and a very specific use of uprobes are the only places that use
-> > FOLL_GET in this instance and each of them are careful in any case to
-> > handle setting the dirty page flag.
->
-> That is actually the bug :) Broadly the bug is to make a page dirty
-> without holding the right locks to actually dirty it.
->
-> Jason
 
-OK I guess you mean the folio lock :) Well there is
-unpin_user_pages_dirty_lock() and unpin_user_page_range_dirty_lock() and
-also set_page_dirty_lock() (used by __access_remote_vm()) which should
-avoid this.
 
-Also __access_remote_vm() which all the ptrace and /proc/$pid/mem use does
-set_page_dirty_lock() and only after the user actually writes to it (and
-with FOLL_FORCE of course).
+On 24.04.23 14:03, Maciej Fijalkowski wrote:
+> On Fri, Apr 21, 2023 at 09:02:56PM +0200, Gerhard Engleder wrote:
+>> On 20.04.23 22:17, Maciej Fijalkowski wrote:
+>>> On Tue, Apr 18, 2023 at 09:04:59PM +0200, Gerhard Engleder wrote:
+>>>> Send and complete XSK pool frames within TX NAPI context. NAPI context
+>>>> is triggered by ndo_xsk_wakeup.
+>>>>
+>>>> Test results with A53 1.2GHz:
+>>>>
+>>>> xdpsock txonly copy mode:
+>>>>                      pps            pkts           1.00
+>>>> tx                 284,409        11,398,144
+>>>> Two CPUs with 100% and 10% utilization.
+>>>>
+>>>> xdpsock txonly zero-copy mode:
+>>>>                      pps            pkts           1.00
+>>>> tx                 511,929        5,890,368
+>>>> Two CPUs with 100% and 1% utilization.
+>>>
+>>> Hmm, I think l2fwd ZC numbers should be included here not in the previous
+>>> patch?
+>>
+>> Will be done.
+>>
+>>>>
+>>>> Packet rate increases and CPU utilization is reduced.
+>>>>
+>>>> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+>>>> ---
+>>>>    drivers/net/ethernet/engleder/tsnep.h      |   2 +
+>>>>    drivers/net/ethernet/engleder/tsnep_main.c | 127 +++++++++++++++++++--
+>>>>    2 files changed, 119 insertions(+), 10 deletions(-)
+>>>>
+>>
+>> (...)
+>>
+>>>>    static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>>>    {
+>>>>    	struct tsnep_tx_entry *entry;
+>>>>    	struct netdev_queue *nq;
+>>>> +	int xsk_frames = 0;
+>>>>    	int budget = 128;
+>>>>    	int length;
+>>>>    	int count;
+>>>> @@ -676,7 +771,7 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>>>    		if ((entry->type & TSNEP_TX_TYPE_SKB) &&
+>>>>    		    skb_shinfo(entry->skb)->nr_frags > 0)
+>>>>    			count += skb_shinfo(entry->skb)->nr_frags;
+>>>> -		else if (!(entry->type & TSNEP_TX_TYPE_SKB) &&
+>>>> +		else if ((entry->type & TSNEP_TX_TYPE_XDP) &&
+>>>>    			 xdp_frame_has_frags(entry->xdpf))
+>>>>    			count += xdp_get_shared_info_from_frame(entry->xdpf)->nr_frags;
+>>>> @@ -705,9 +800,11 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>>>    		if (entry->type & TSNEP_TX_TYPE_SKB)
+>>>>    			napi_consume_skb(entry->skb, napi_budget);
+>>>> -		else
+>>>> +		else if (entry->type & TSNEP_TX_TYPE_XDP)
+>>>>    			xdp_return_frame_rx_napi(entry->xdpf);
+>>>> -		/* xdpf is union with skb */
+>>>> +		else
+>>>> +			xsk_frames++;
+>>>> +		/* xdpf and zc are union with skb */
+>>>>    		entry->skb = NULL;
+>>>>    		tx->read = (tx->read + count) & TSNEP_RING_MASK;
+>>>> @@ -718,6 +815,14 @@ static bool tsnep_tx_poll(struct tsnep_tx *tx, int napi_budget)
+>>>>    		budget--;
+>>>>    	} while (likely(budget));
+>>>> +	if (tx->xsk_pool) {
+>>>> +		if (xsk_frames)
+>>>> +			xsk_tx_completed(tx->xsk_pool, xsk_frames);
+>>>> +		if (xsk_uses_need_wakeup(tx->xsk_pool))
+>>>> +			xsk_set_tx_need_wakeup(tx->xsk_pool);
+>>>> +		tsnep_xdp_xmit_zc(tx);
+>>>
+>>> would be good to signal to NAPI if we are done with the work or is there a
+>>> need to be rescheduled (when you didn't manage to consume all of the descs
+>>> from XSK Tx ring).
+>>
+>> In my opinion this is already done. If some budget is left, then we are
+>> done and tsnep_tx_poll() returns true to signal work is complete. If
+>> buget gets zero, then tsnep_tx_poll() returns false to signal work is
+>> not complete. This return value is considered for the NAPI signaling
+>> by tsnep_poll().
+> 
+> i was only referring to tsnep_xdp_xmit_zc() being void on return. Thing is
+> that there is currently no way you would tell to napi there is more work
+> to be done. you should do so if desc_available == batch. That would mean
+> there might be still descriptors on XSK Tx ring ready to be consumed. NAPI
+> budget is out of the picture here.
 
-None of these are correctly telling a write notify filesystem about the
-change, however.
-
-We definitely need to keep ptrace and /proc/$pid/mem functioning correctly,
-and I given the privilege levels required I don't think there's a security
-issue there?
-
-I do think the mkwrite/write notify file system check is the correct one as
-these are the only ones to whom the page being dirty would matter to.
-
-So perhaps we can move forward with:-
-
-- Use mkwrite check rather than shmem/hugetlb.
-- ALWAYS enforce not write notify file system if FOLL_LONGTERM (that
-  removes a lot of the changes here).
-- If FOLL_FORCE, then allow this to override the check. This is required
-  for /proc/$pid/mem and ptrace and is a privileged operation anyway, so
-  can not cause a security issue.
-- Add a FOLL_WILL_UNPIN_DIRTY flag to indicate that the caller will
-  actually do so (required for process_vm_access cases).
-
-Alternatively we could implement something very cautious and opt-in, like a
-FOLL_CHECK_SANITY flag? (starting to feel like I need one of those myself :)
+Now I got it. Pending zero-copy work shall be signaled to napi directly.
+In current implementation it would be processed if TX interrupt signals
+completed descriptors. By signaling napi directly, the TX interrupt
+could be prevented. In my opinion both options are possible, but the
+performance may differ. I will check if telling napi that there is more
+work to be done would improve performance.
