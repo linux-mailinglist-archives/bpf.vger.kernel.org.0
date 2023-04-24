@@ -2,75 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BC46ED169
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 17:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8EA6ED1F4
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjDXPdI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 11:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
+        id S230430AbjDXQE4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 12:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbjDXPdH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 11:33:07 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFF57AAA
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 08:32:55 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-504eb1155d3so34345085a12.1
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 08:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1682350374; x=1684942374;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uAia9ZoCM3Ngt40DYLr2QLseOj/p7pPYWNkC2fjWJmw=;
-        b=qWrSGUzCxRq8qH9ciyQYay96/ootXHgah+P6qqyhGbCAQ2pJ8/OxJrzulk56To27uy
-         09RLg/kTfw37Y4n+Y6DBPHrqNJM86jTGeI+B59T2u0X1ivH2gkzn4r7IIy7tcMBPzleL
-         451KVjoReU+5shixxVPasIdCw/4ump/BEaTRo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682350374; x=1684942374;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uAia9ZoCM3Ngt40DYLr2QLseOj/p7pPYWNkC2fjWJmw=;
-        b=j4kOLa5JTurYRz47jhBLtSLX3Oqfu3SXx7gJW+S4h1cLkvC9F4YRwWYuiIPCuHseJu
-         4wnNvNeYu+2XUxe07QfwjuHikXTS/22Xq16MlGQMf3UI7aKFpn81zyAE7NaJUUHVGttX
-         Oo9olsNCDwAs2OcG6z8m1QRj9RFQ/ct4b9w0ougNFZWVFfO83oSTZNkLiQyorF2O+tNx
-         Cbtfw51yyQmsgtg50RvRBlZp/aH6iWjtzyOCZbcdGQjXGe8AQWNY4kubmgQFTeIsm0/I
-         y6RXsW59CshD7v+Ik/JuVpHxcLrC5/uT5nzHZ7navx3B5M3mP3fX9MVBh99GwSqiGRxd
-         Y+jg==
-X-Gm-Message-State: AAQBX9fjHLJNLuY3aG7DQhbZj9lrsWh/S+X4Qoyp24dKqW0cv8DSeyyo
-        iHlN+w/zPZfArglXNMXGd1XtUfdoTJ9iu8B9mD/kzw==
-X-Google-Smtp-Source: AKy350ZlEFYElE3Cz+YrZZbx+udm5MYxX+58hoksQpdxqtGw8JQgjq/51zlo+VJfHxiyRLGkhE1nZhNtsXCZO/Kgvz0=
-X-Received: by 2002:a17:906:d1cb:b0:957:9ddd:8809 with SMTP id
- bs11-20020a170906d1cb00b009579ddd8809mr8178755ejb.35.1682350374328; Mon, 24
- Apr 2023 08:32:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230418014037.2412394-1-drosen@google.com>
-In-Reply-To: <20230418014037.2412394-1-drosen@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 24 Apr 2023 17:32:42 +0200
-Message-ID: <CAJfpegtuNgbZfLiKnpzdEP0sNtCt=83NjGtBnmtvMaon2avv2w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v3 00/37] FUSE BPF: A Stacked Filesystem
- Extension for FUSE
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org,
+        with ESMTP id S232025AbjDXQEy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 12:04:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384F65FE4
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:04:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC0CF61C12
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:04:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E079C433EF;
+        Mon, 24 Apr 2023 16:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682352292;
+        bh=fc2sy1Uhd+Wcxoz+j0ps1HwJ6PGyOxz1gQiNg1Mk7DQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hAdseRrejZHIXoO5qwCz04rN+7Ho2f9p/NNLnF5nyYqOOf+SAmh5Az+oNfqYF8xnf
+         /LgEYztbJdX7B0lmslNS2LVH2ukVgn18sQ0Y0RVdoSR6vJF9J+5Udw9WNl/1tXJtJy
+         oyjmJZD0Uxf2TpepA2+FA4oPn3oR7i5OCBMwDIqacUlq9hi8nUerQHuGQiYUq9TA0C
+         Mh2aiz8yKIeUrUfVBVpOfDw9xD2JuyOG/H73kirfJ6bnCasvzp/xQwKzePHYuKnnP0
+         6LtcmGb46LDeJpZhG4PQQDPS34eMYr44vtlqPq1dihPhYgWB4w2lk81Wpwkvudd3O0
+         lBpXIpMGtagzw==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Viktor Malik <viktor.malik@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [RFC/PATCH bpf-next 00/20] bpf: Add multi uprobe link
+Date:   Mon, 24 Apr 2023 18:04:27 +0200
+Message-Id: <20230424160447.2005755-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.40.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,36 +59,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 18 Apr 2023 at 03:40, Daniel Rosenberg <drosen@google.com> wrote:
->
-> These patches extend FUSE to be able to act as a stacked filesystem. This
-> allows pure passthrough, where the fuse file system simply reflects the lower
-> filesystem, and also allows optional pre and post filtering in BPF and/or the
-> userspace daemon as needed. This can dramatically reduce or even eliminate
-> transitions to and from userspace.
+hi,
+this patchset is adding support to attach multiple uprobes and usdt probes
+through new uprobe_multi link.
 
-I'll ignore BPF for now and concentrate on the passthrough aspect,
-which I understand better.
+The current uprobe is attached through the perf event and attaching many
+uprobes takes a lot of time because of that.
 
-The security model needs to be thought about and documented.  Think
-about this: the fuse server now delegates operations it would itself
-perform to the passthrough code in fuse.  The permissions that would
-have been checked in the context of the fuse server are now checked in
-the context of the task performing the operation.  The server may be
-able to bypass seccomp restrictions.  Files that are open on the
-backing filesystem are now hidden (e.g. lsof won't find these), which
-allows the server to obfuscate accesses to backing files.  Etc.
+The main reason is that we need to install perf event for each probed function
+and profile shows perf event installation (perf_install_in_context) as culprit.
 
-These are not particularly worrying if the server is privileged, but
-fuse comes with the history of supporting unprivileged servers, so we
-should look at supporting passthrough with unprivileged servers as
-well.
+The new uprobe_multi link just creates raw uprobes and attaches the bpf
+program to them without perf event being involved.
 
-My other generic comment is that you should add justification for
-doing this in the first place.  I guess it's mainly performance.  So
-how performance can be won in real life cases?   It would also be good
-to measure the contribution of individual ops to that win.   Is there
-another reason for this besides performance?
+In addition to being faster we also save file descriptors. For the current
+uprobe attach we use extra perf event fd for each probed function. The new
+link just need one fd that covers all the functions we are attaching to.
 
-Thanks,
-Miklos
+By dropping perf we lose the ability to attach uprobe to specific pid.
+We can workaround that by having pid check directly in the bpf program,
+but we might need to check for another solution if that will turn out
+to be a problem.
+
+
+Attaching current bpftrace to 1000 uprobes:
+
+  # BPFTRACE_MAX_PROBES=100000 perf stat -e cycles,instructions \
+    ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:ms:1 { exit(); }' 
+    ...
+
+     126,666,390,509      cycles                                                                
+      29,973,207,307      instructions                     #    0.24  insn per cycle            
+
+        85.284833554 seconds time elapsed
+
+
+Same bpftrace setup with uprobe_multi support:
+
+  # perf stat -e cycles,instructions \
+    ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:ms:1 { exit(); }' 
+    ...
+
+       6,818,470,649      cycles                                                                
+      13,275,510,122      instructions                     #    1.95  insn per cycle            
+
+         1.943269451 seconds time elapsed
+
+
+I'm sending this as RFC because of:
+  - I added/exported some new elf_* helper functions in libbpf,
+    and I'm not sure that's the best/right way of doing this
+  - I'm not completely sure about the usdt integration in bpf_program__attach_usdt,
+    I was trying to detect uprobe_multi kernel support first, but ended up with
+    just new field for struct bpf_usdt_opts
+  - I plan to add more tests for usdt probes defined with refctr
+
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  uprobe_multi
+
+There are PRs for tetragon [1] and bpftrace [2] support.
+
+thanks,
+jirka
+
+
+[1] https://github.com/cilium/tetragon/pull/936
+[2] https://github.com/olsajiri/bpftrace/tree/uprobe_multi
+
+Cc: Viktor Malik <viktor.malik@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>
+---
+Jiri Olsa (20):
+      bpf: Add multi uprobe link
+      bpf: Add cookies support for uprobe_multi link
+      bpf: Add bpf_get_func_ip helper support for uprobe link
+      libbpf: Update uapi bpf.h tools header
+      libbpf: Add uprobe_multi attach type and link names
+      libbpf: Factor elf_for_each_symbol function
+      libbpf: Add elf_find_multi_func_offset function
+      libbpf: Add elf_find_patern_func_offset function
+      libbpf: Add bpf_link_create support for multi uprobes
+      libbpf: Add bpf_program__attach_uprobe_multi_opts function
+      libbpf: Add support for uprobe.multi/uprobe.multi program sections
+      libbpf: Add uprobe multi link support to bpf_program__attach_usdt
+      selftests/bpf: Add uprobe_multi skel test
+      selftests/bpf: Add uprobe_multi api test
+      selftests/bpf: Add uprobe_multi link test
+      selftests/bpf: Add uprobe_multi test program
+      selftests/bpf: Add uprobe_multi bench test
+      selftests/bpf: Add usdt_multi test program
+      selftests/bpf: Add usdt_multi bench test
+      selftests/bpf: Add uprobe_multi cookie test
+
+ include/linux/trace_events.h                               |   6 +
+ include/uapi/linux/bpf.h                                   |  15 +++
+ kernel/bpf/syscall.c                                       |  18 ++-
+ kernel/trace/bpf_trace.c                                   | 310 +++++++++++++++++++++++++++++++++++++++++++-
+ tools/include/uapi/linux/bpf.h                             |  15 +++
+ tools/lib/bpf/bpf.c                                        |  10 ++
+ tools/lib/bpf/bpf.h                                        |  10 +-
+ tools/lib/bpf/libbpf.c                                     | 653 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ tools/lib/bpf/libbpf.h                                     |  43 ++++++
+ tools/lib/bpf/libbpf.map                                   |   3 +
+ tools/lib/bpf/libbpf_internal.h                            |   2 +-
+ tools/lib/bpf/usdt.c                                       | 127 +++++++++++++-----
+ tools/testing/selftests/bpf/Makefile                       |  10 ++
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c        |  78 +++++++++++
+ tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c | 286 ++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_multi.c           |  72 +++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c      |  16 +++
+ tools/testing/selftests/bpf/uprobe_multi.c                 |  53 ++++++++
+ tools/testing/selftests/bpf/usdt_multi.c                   |  23 ++++
+ 19 files changed, 1634 insertions(+), 116 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
+ create mode 100644 tools/testing/selftests/bpf/usdt_multi.c
