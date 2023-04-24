@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADF26ED07D
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 16:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAAB6ED080
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 16:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjDXOqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 10:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
+        id S231726AbjDXOqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 10:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjDXOqC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 10:46:02 -0400
+        with ESMTP id S231733AbjDXOqP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 10:46:15 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48BE59F5;
-        Mon, 24 Apr 2023 07:46:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F53983C4;
+        Mon, 24 Apr 2023 07:46:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FC7C62207;
-        Mon, 24 Apr 2023 14:46:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5D8DC433EF;
-        Mon, 24 Apr 2023 14:45:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D28562275;
+        Mon, 24 Apr 2023 14:46:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9013DC433EF;
+        Mon, 24 Apr 2023 14:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682347560;
-        bh=atXhJJhwd5MHAOfI4qFdF5QYcFwglLv91Lc3dXq2Wxo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oxr9iMh7QLBjOO0QMvW5Rhitp37gczodx/GZuj+Mebl7IKAgUm84bTPQ4N4cOZRvi
-         W17JSRCeV56uKHUGCgC7ioiIArVbPH1bmbdwBXge22FHRzprRzbizjHGCyEHNVDNxj
-         wxfvErg4FMIhSaI2yGhDSG8EklF0q/YlHzV4e+EtsSjUgdNo+jxl4UrG+OX2bK94Nz
-         gWeMe6v/B/NSo+N+YAsf8MJz+ukiW86HKOphk+h9SNYj2R1QUmxFHXgBlkl7mXmLkc
-         MWpfvfNHwGZqXa2pTzu0pf8TfUObT18FtdNl9yVHPRzA9Q+aJFB84rpfoJhaVjGh/x
-         iJpooafR4wXVw==
+        s=k20201202; t=1682347571;
+        bh=VxV2+9zy5kEUWakhKEjpAZFWiMvLYw6ooSsZT8i/UtY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L/9pv72pQoe3pohK6tz6WwMKFOgtxH36jmklaVLNJ+VTklBHvrmqCJwGSDc2b9aoE
+         r6F8X/t4dKFp0iZqcDfxacRwNHN1aWh0BizThOjA5p9fkhIkQHAJSiPc0sQkETHa1+
+         0SklhqmIoeH/VW+jkDFVjpIOWcBvH2fbKsfkL9ik/yAaTBiTNGy0LbmKlYUfYB7V4t
+         Wq6mYVZilj7bn75rFMh8WycCKv54+0GE7Qm4s+9VbyJeNjd7PqJRcywYTGpUekSDBZ
+         gBYek4Q7FwITWA8zBhZqtApzynLzcWuoa97xZyq34JbGUpEg1VPgPzUJ+luuYlARDw
+         03LSWe/rNrWZg==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     linux-trace-kernel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
@@ -39,10 +39,12 @@ Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: [PATCH v6 00/10] tracing: Add fprobe events
-Date:   Mon, 24 Apr 2023 23:45:56 +0900
-Message-ID:  <168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com>
+Subject: [PATCH v6 01/10] fprobe: Pass return address to the handlers
+Date:   Mon, 24 Apr 2023 23:46:06 +0900
+Message-ID:  <168234756605.2210510.2088647782361809710.stgit@mhiramat.roam.corp.google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
+In-Reply-To:  <168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com>
+References:  <168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -57,139 +59,199 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Here is the 6th version of improve fprobe and add a basic fprobe event
-support for ftrace (tracefs) and perf. Here is the previous version.
+Pass return address as 'ret_ip' to the fprobe entry and return handlers.
 
-https://lore.kernel.org/all/168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com/
-
-I applied some feedbacks about BPF and BTF related code, and fix patch
-description. Major code changes are dropping the bpf_prog call [2/10],
-Making find_tracepoint() static [4/10], and using bpf_get_btf_vmlinux()
-[6/10]. This version also added a documentation about the fprobe events
-[10/10].
-
-You can also get this series from:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
-
-With this fprobe events, we can continue to trace function entry/exit
-even if the CONFIG_KPROBES_ON_FTRACE is not available. Since
-CONFIG_KPROBES_ON_FTRACE requires the CONFIG_DYNAMIC_FTRACE_WITH_REGS,
-it is not available if the architecture only supports
-CONFIG_DYNAMIC_FTRACE_WITH_ARGS (e.g. arm64). And that means kprobe
-events can not probe function entry/exit effectively on such architecture.
-But this problem can be solved if the dynamic events supports fprobe events
-because fprobe events doesn't use kprobe but ftrace via fprobe.
-
-FPROBE EVENTS
-=============
-
-Fprobe events allows user to add new events on the entry and exit of kernel
-functions (which can be ftraced). Unlike kprobe events, the fprobe events
-can only probe the function entry and exit, and it can only trace the
-function args, return value, and stacks. (no registers)
-For probing function body, users can continue to use the kprobe events.
-
-The tracepoint probe events (tprobe events) also allows user to add new
-events dynamically on the tracepoint. Most of the tracepoint already has
-trace-events, so this feature is useful if you only want to know a
-specific parameter, or trace the tracepoints which has no trace-events
-(e.g. sched_*_tp tracepoints only exposes the tracepoints.)
-
-The fprobe events syntax is;
-
- f[:[GRP/][EVENT]] FUNCTION [FETCHARGS]
- f[MAXACTIVE][:[GRP/][EVENT]] FUNCTION%return [FETCHARGS]
-
-And tracepoint probe events syntax is;
-
- t[:[GRP/][EVENT]] TRACEPOINT [FETCHARGS]
-
-This series includes BTF argument support for fprobe/tracepoint events,
-and kprobe events. This allows us to fetch a specific function parameter
-by name, and all parameters by '$$args'.
-Note that enabling this feature, you need to enable CONFIG_BPF_SYSCALL and
-confirm that your arch supports CONFIG_HAVE_FUNCTION_ARG_ACCESS_API.
-
-E.g.
-
- # echo 't kfree ptr' >> dynamic_events
- # echo 'f kfree object' >> dynamic_events
- # cat dynamic_events 
-t:tracepoints/kfree kfree ptr=ptr
-f:fprobes/kfree__entry kfree object=object
- # echo 1 > events/fprobes/enable
- # echo 1 > events/tracepoints/enable
- # echo > trace
- # head -n 20 trace | tail
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-            tail-84      [000] .....  1324.561958: kfree__entry: (kfree+0x4/0x140) object=0xffff888006383c00
-            tail-84      [000] ...1.  1324.561961: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff888006383c00
-            tail-84      [000] .....  1324.561988: kfree__entry: (kfree+0x4/0x140) object=0x0
-            tail-84      [000] ...1.  1324.561988: kfree: (__probestub_kfree+0x4/0x10) ptr=0x0
-            tail-84      [000] .....  1324.561989: kfree__entry: (kfree+0x4/0x140) object=0xffff88800671e600
-            tail-84      [000] ...1.  1324.561989: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff88800671e600
-            tail-84      [000] .....  1324.562368: kfree__entry: (kfree+0x4/0x140) object=0xffff8880065e0580
-            tail-84      [000] ...1.  1324.562369: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff8880065e0580
-
-
-Thank you,
-
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
+ include/linux/fprobe.h          |    6 ++++--
+ include/linux/rethook.h         |    2 +-
+ kernel/kprobes.c                |    1 +
+ kernel/trace/bpf_trace.c        |    6 ++++--
+ kernel/trace/fprobe.c           |    6 +++---
+ kernel/trace/rethook.c          |    3 ++-
+ lib/test_fprobe.c               |   10 +++++++---
+ samples/fprobe/fprobe_example.c |    6 ++++--
+ 8 files changed, 26 insertions(+), 14 deletions(-)
 
-Masami Hiramatsu (Google) (10):
-      fprobe: Pass return address to the handlers
-      tracing/probes: Add fprobe events for tracing function entry and exit.
-      selftests/ftrace: Add fprobe related testcases
-      tracing/probes: Add tracepoint support on fprobe_events
-      tracing/probes: Move event parameter fetching code to common parser
-      tracing/probes: Support function parameters if BTF is available
-      tracing/probes: Add $$args meta argument for all function args
-      selftests/ftrace: Add tracepoint probe test case
-      selftests/ftrace: Add BTF arguments test cases
-      Documentation: tracing/probes: Add fprobe event tracing document
+diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
+index 47fefc7f363b..134f0f59ffa8 100644
+--- a/include/linux/fprobe.h
++++ b/include/linux/fprobe.h
+@@ -35,9 +35,11 @@ struct fprobe {
+ 	int			nr_maxactive;
+ 
+ 	int (*entry_handler)(struct fprobe *fp, unsigned long entry_ip,
+-			     struct pt_regs *regs, void *entry_data);
++			     unsigned long ret_ip, struct pt_regs *regs,
++			     void *entry_data);
+ 	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
+-			     struct pt_regs *regs, void *entry_data);
++			     unsigned long ret_ip, struct pt_regs *regs,
++			     void *entry_data);
+ };
+ 
+ /* This fprobe is soft-disabled. */
+diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+index c8ac1e5afcd1..fdf26cd0e742 100644
+--- a/include/linux/rethook.h
++++ b/include/linux/rethook.h
+@@ -14,7 +14,7 @@
+ 
+ struct rethook_node;
+ 
+-typedef void (*rethook_handler_t) (struct rethook_node *, void *, struct pt_regs *);
++typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
+ 
+ /**
+  * struct rethook - The rethook management data structure.
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 00e177de91cc..ce13f1a35251 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2127,6 +2127,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ NOKPROBE_SYMBOL(pre_handler_kretprobe);
+ 
+ static void kretprobe_rethook_handler(struct rethook_node *rh, void *data,
++				      unsigned long ret_addr,
+ 				      struct pt_regs *regs)
+ {
+ 	struct kretprobe *rp = (struct kretprobe *)data;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d804172b709c..c0a32118f08f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2646,7 +2646,8 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+ 
+ static int
+ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+-			  struct pt_regs *regs, void *data)
++			  unsigned long ret_ip, struct pt_regs *regs,
++			  void *data)
+ {
+ 	struct bpf_kprobe_multi_link *link;
+ 
+@@ -2657,7 +2658,8 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+ 
+ static void
+ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
+-			       struct pt_regs *regs, void *data)
++			       unsigned long ret_ip, struct pt_regs *regs,
++			       void *data)
+ {
+ 	struct bpf_kprobe_multi_link *link;
+ 
+diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+index 9abb3905bc8e..973bc664fcc1 100644
+--- a/kernel/trace/fprobe.c
++++ b/kernel/trace/fprobe.c
+@@ -52,7 +52,7 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+ 	}
+ 
+ 	if (fp->entry_handler)
+-		ret = fp->entry_handler(fp, ip, ftrace_get_regs(fregs), entry_data);
++		ret = fp->entry_handler(fp, ip, parent_ip, ftrace_get_regs(fregs), entry_data);
+ 
+ 	/* If entry_handler returns !0, nmissed is not counted. */
+ 	if (rh) {
+@@ -81,7 +81,7 @@ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
+ }
+ 
+ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+-				struct pt_regs *regs)
++				unsigned long ret_ip, struct pt_regs *regs)
+ {
+ 	struct fprobe *fp = (struct fprobe *)data;
+ 	struct fprobe_rethook_node *fpr;
+@@ -91,7 +91,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+ 
+ 	fpr = container_of(rh, struct fprobe_rethook_node, node);
+ 
+-	fp->exit_handler(fp, fpr->entry_ip, regs,
++	fp->exit_handler(fp, fpr->entry_ip, ret_ip, regs,
+ 			 fp->entry_data_size ? (void *)fpr->data : NULL);
+ }
+ NOKPROBE_SYMBOL(fprobe_exit_handler);
+diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+index 32c3dfdb4d6a..fc196e186737 100644
+--- a/kernel/trace/rethook.c
++++ b/kernel/trace/rethook.c
+@@ -301,7 +301,8 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+ 			break;
+ 		handler = READ_ONCE(rhn->rethook->handler);
+ 		if (handler)
+-			handler(rhn, rhn->rethook->data, regs);
++			handler(rhn, rhn->rethook->data,
++				correct_ret_addr, regs);
+ 
+ 		if (first == node)
+ 			break;
+diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
+index 0fe5273e960b..ade7e3d93dac 100644
+--- a/lib/test_fprobe.c
++++ b/lib/test_fprobe.c
+@@ -39,7 +39,8 @@ static noinline u32 fprobe_selftest_nest_target(u32 value, u32 (*nest)(u32))
+ }
+ 
+ static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+-				     struct pt_regs *regs, void *data)
++				    unsigned long ret_ip,
++				    struct pt_regs *regs, void *data)
+ {
+ 	KUNIT_EXPECT_FALSE(current_test, preemptible());
+ 	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
+@@ -57,6 +58,7 @@ static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+ }
+ 
+ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
++				    unsigned long ret_ip,
+ 				    struct pt_regs *regs, void *data)
+ {
+ 	unsigned long ret = regs_return_value(regs);
+@@ -78,14 +80,16 @@ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
+ }
+ 
+ static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+-				     struct pt_regs *regs, void *data)
++				      unsigned long ret_ip,
++				      struct pt_regs *regs, void *data)
+ {
+ 	KUNIT_EXPECT_FALSE(current_test, preemptible());
+ 	return 0;
+ }
+ 
+ static notrace void nest_exit_handler(struct fprobe *fp, unsigned long ip,
+-				    struct pt_regs *regs, void *data)
++				      unsigned long ret_ip,
++				      struct pt_regs *regs, void *data)
+ {
+ 	KUNIT_EXPECT_FALSE(current_test, preemptible());
+ 	KUNIT_EXPECT_EQ(current_test, ip, target_nest_ip);
+diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
+index 4efc8feb6277..64e715e7ed11 100644
+--- a/samples/fprobe/fprobe_example.c
++++ b/samples/fprobe/fprobe_example.c
+@@ -49,6 +49,7 @@ static void show_backtrace(void)
+ }
+ 
+ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
++				unsigned long ret_ip,
+ 				struct pt_regs *regs, void *data)
+ {
+ 	if (use_trace)
+@@ -65,10 +66,11 @@ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+ 	return 0;
+ }
+ 
+-static void sample_exit_handler(struct fprobe *fp, unsigned long ip, struct pt_regs *regs,
++static void sample_exit_handler(struct fprobe *fp, unsigned long ip,
++				unsigned long ret_ip, struct pt_regs *regs,
+ 				void *data)
+ {
+-	unsigned long rip = instruction_pointer(regs);
++	unsigned long rip = ret_ip;
+ 
+ 	if (use_trace)
+ 		/*
 
-
- Documentation/trace/fprobetrace.rst                |  184 +++
- Documentation/trace/index.rst                      |    1 
- include/linux/fprobe.h                             |   11 
- include/linux/rethook.h                            |    2 
- include/linux/trace_events.h                       |    3 
- include/linux/tracepoint-defs.h                    |    1 
- include/linux/tracepoint.h                         |    5 
- kernel/kprobes.c                                   |    1 
- kernel/trace/Kconfig                               |   25 
- kernel/trace/Makefile                              |    1 
- kernel/trace/bpf_trace.c                           |    6 
- kernel/trace/fprobe.c                              |   17 
- kernel/trace/rethook.c                             |    3 
- kernel/trace/trace.c                               |   13 
- kernel/trace/trace.h                               |   11 
- kernel/trace/trace_eprobe.c                        |   44 -
- kernel/trace/trace_fprobe.c                        | 1194 ++++++++++++++++++++
- kernel/trace/trace_kprobe.c                        |   33 -
- kernel/trace/trace_probe.c                         |  440 ++++++-
- kernel/trace/trace_probe.h                         |   42 +
- kernel/trace/trace_uprobe.c                        |    8 
- lib/test_fprobe.c                                  |   10 
- samples/fprobe/fprobe_example.c                    |    6 
- .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   54 +
- .../ftrace/test.d/dynevent/add_remove_fprobe.tc    |   26 
- .../ftrace/test.d/dynevent/add_remove_tprobe.tc    |   27 
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   98 ++
- .../ftrace/test.d/dynevent/tprobe_syntax_errors.tc |   82 +
- .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |   12 
- 29 files changed, 2221 insertions(+), 139 deletions(-)
- create mode 100644 Documentation/trace/fprobetrace.rst
- create mode 100644 kernel/trace/trace_fprobe.c
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
-
---
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
