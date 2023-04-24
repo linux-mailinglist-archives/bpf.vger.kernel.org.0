@@ -2,166 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AE56ECC26
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 14:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DF06ECC8F
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 15:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbjDXMjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 08:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S231671AbjDXNFk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 09:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjDXMiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 08:38:54 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286242D48;
-        Mon, 24 Apr 2023 05:38:52 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-2f87c5b4635so4000373f8f.1;
-        Mon, 24 Apr 2023 05:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682339930; x=1684931930;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lx7DmyFlRlvWUed6TjzQKWfcWFQg770oVH4KZSEDJpQ=;
-        b=ctcFbIKD3/sGh/iRlKPOiUUf9u0p65PjOOh7L5IKugl3B7DMfLYLvPD05JAT4UfIRU
-         owA8xENxL0+tiOFgLY36MuWtu4e9t6FSMc4QOG4U3IyE2FEfx0trObDGyfie+q47qXCI
-         prKTVusoC1ooNsxJ+bJHAxX8dWA5mNJ0K4SQvsZty9PgmHEPOg1IUSZK9GkkKSFQ+y9s
-         Lm0dCdsW+glzrX7WYQIS1MKuL/WSAaLen7zJzXkIxHf2Y+KPcNo+765UmjHhr4ra7Ocb
-         Fh6Ut9GErO6ltAqq6EOmcyMPBenOQDLrEeXCwP3jyzP4JIKlkPnXC2V171/wrctulpFI
-         qVzg==
+        with ESMTP id S231645AbjDXNFj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 09:05:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A24C27
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 06:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682341476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/0YH7r11q6UscFZQ0zFEaIBNUY38Om/+S3bNYxbYC28=;
+        b=JrxY5WRHba6pPe4lwNFrcTHCpNcLCqydI7eG9jcMgW9CHD/q/ZmeYDAluHucNmZxX5BCoL
+        cwksM4wu9wrFZE1nIbI1ZuUerg7yhuNKJ5EsbOWRlU2MvGAbAVHhKRqYtwQWoYQpqQWX2v
+        Le+aQ00MMZ8v0T47nmXErIDudIUBvVQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-21-JNZi2I4-NIy-5pkqy22tNw-1; Mon, 24 Apr 2023 09:04:35 -0400
+X-MC-Unique: JNZi2I4-NIy-5pkqy22tNw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-953759a9d18so393536766b.0
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 06:04:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682339930; x=1684931930;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lx7DmyFlRlvWUed6TjzQKWfcWFQg770oVH4KZSEDJpQ=;
-        b=lvMyAR9B+t80pmLrOtixz84rZqtX1HKFmo+6BtXrs7sekP44W1qD0+f19f/aDXmoV+
-         xafZKKBYXMGNHBrz9KytMOVS26gWuzAEvcx9ZPTF1yYadhKHsgWq69n8GjNzF/lA+PH6
-         BONlzJHFF7y52kMILePR557OMF5ihYTNt2VoBhHGnAzMxOClGjT/K8s7R8ZoSHLZsZOe
-         OsPzDxwJILHjnX7BScSFsCZ32gS//1rjIUXuC4v49GmzBumZhvFFLBn4+/8jsS5KOdBp
-         c1xhvbhS6Q+y4+rWGT/b8iYWEBHftUsAtTmCleFLD0fOKDF6374KwqC5+FcGWAu63Avr
-         HQaQ==
-X-Gm-Message-State: AAQBX9frAa2EHIbH2uJcFQZnSYbNbcVKOsNJhi417oiwN0cVpWbvCPfz
-        JIHmYmtW08lMhgp+sEdipkM=
-X-Google-Smtp-Source: AKy350bDDaww1oPOEwHvoL6ufxQ6NB1xIwzcfg9BIoIp8pQcVilhbJJtyq1J1gNXn/x7K284jT2KmA==
-X-Received: by 2002:a5d:690e:0:b0:2f8:f3da:72cf with SMTP id t14-20020a5d690e000000b002f8f3da72cfmr8518834wru.18.1682339930413;
-        Mon, 24 Apr 2023 05:38:50 -0700 (PDT)
-Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
-        by smtp.gmail.com with ESMTPSA id i1-20020a05600011c100b002cff06039d7sm10651491wrx.39.2023.04.24.05.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 05:38:49 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 13:38:49 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <c8fff8b3-ead6-4f52-bf17-f2ef2e752b57@lucifer.local>
-References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
- <ZEZPXHN4OXIYhP+V@infradead.org>
- <90a54439-5d30-4711-8a86-eba816782a66@lucifer.local>
- <ZEZ117OMCi0dFXqY@nvidia.com>
+        d=1e100.net; s=20221208; t=1682341474; x=1684933474;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/0YH7r11q6UscFZQ0zFEaIBNUY38Om/+S3bNYxbYC28=;
+        b=QfrT0mkw0HQ0LO+walC11ZakXNsi+R4m7erjxw20eHw0otZkdcEWPIyJ417/GLyOeo
+         X4j1tzglMWsJrYTFB3WK5wPUdsywEPRv3CxgZ4Tba7eEzfBrzZefUvWak0XPjK0rBjEi
+         8vWUWP4whvf13DjoB2tD78z+gnDG14qvc7iNVOj0xnWeNZB+CngLSVSR675FxqaHoEgN
+         py6KTpvpUOjje8sDSLNFXhVyZ09IK8LS/7DCTmAxF/Gwe7KJxBPg+StviCd8vjbkpzxS
+         a/VFZdZmtlU9VEAfy0RLBEgMwSJ3fgvCC7DSgz8x8GSXqCUF53Wijrl8wnPL5gmOMKCq
+         qiUg==
+X-Gm-Message-State: AAQBX9cZKg1onURDPt/M9k57HpQHuk7Adv/TCVBWuYJMrv1WJtySSYT0
+        QubFN8iA4XHhNluowbZDOsqghAdvWOn//fMMsf/rb8c6/5nQNlnPMWOgw58f8heLiGUU+aepTVQ
+        dMBVVfc8t8cj6
+X-Received: by 2002:a17:906:300b:b0:951:756d:6542 with SMTP id 11-20020a170906300b00b00951756d6542mr10080422ejz.32.1682341473844;
+        Mon, 24 Apr 2023 06:04:33 -0700 (PDT)
+X-Google-Smtp-Source: AKy350Z2cQvL6MOBn9AOQgtIBxBTg+AhSMzFYt/T8A6VXgAuiTYliIhTBXv96NLAvRk+3Pi2rLh2Ig==
+X-Received: by 2002:a17:906:300b:b0:951:756d:6542 with SMTP id 11-20020a170906300b00b00951756d6542mr10080393ejz.32.1682341473529;
+        Mon, 24 Apr 2023 06:04:33 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id th7-20020a1709078e0700b009596e7e0dbasm1770916ejc.162.2023.04.24.06.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Apr 2023 06:04:32 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <6b44fcd0-9210-4b2b-780a-09e24bba508a@redhat.com>
+Date:   Mon, 24 Apr 2023 15:04:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEZ117OMCi0dFXqY@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        hawk@kernel.org, john.fastabend@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
+ recycling
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+References: <cover.1682188837.git.lorenzo@kernel.org>
+ <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
+ <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
+ <ZEU+vospFdm08IeE@localhost.localdomain>
+ <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
+ <ZEZJHCRsBVQwd9ie@localhost.localdomain>
+ <0c1790dc-dbeb-8664-64ca-1f71e6c4f3a9@huawei.com>
+In-Reply-To: <0c1790dc-dbeb-8664-64ca-1f71e6c4f3a9@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 09:28:07AM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 24, 2023 at 11:17:55AM +0100, Lorenzo Stoakes wrote:
-> > On Mon, Apr 24, 2023 at 02:43:56AM -0700, Christoph Hellwig wrote:
-> > > I'm pretty sure DIRECT I/O reads that write into file backed mappings
-> > > are out there in the wild.
->
-> I wonder if that is really the case? I know people tried this with
-> RDMA and it didn't get very far before testing uncovered data
-> corruption and kernel crashes.. Maybe O_DIRECT has a much smaller race
-> window so people can get away with it?
->
-> > I know Jason is keen on fixing this at a fundamental level and this flag is
-> > ultimately his suggestion, so it certainly doesn't stand in the way of this
-> > work moving forward.
->
-> Yeah, the point is to close it off, because while we wish it was
-> fixed properly, it isn't. We are still who knows how far away from it.
->
-> In the mean time this is a fairly simple way to oops the kernel,
-> especially with cases like io_uring and RDMA. So, I view it as a
-> security problem.
->
-> My general dislike was that io_uring protected itself from the
-> security problem and we left all the rest of the GUP users out to dry.
->
-> So, my suggestion was to mark the places where we want to allow this,
-> eg O_DIRECT, and block everwhere else. Lorenzo, I would significantly
-> par back the list you have.
 
-I was being fairly conservative in that list, though we certainly need to
-set the flag for /proc/$pid/mem and ptrace to avoid breaking this
-functionality (I observed breakpoints breaking without it which obviously
-is a no go :). I'm not sure if there's a more general way we could check
-for this though?
+On 24/04/2023 13.58, Yunsheng Lin wrote:
+> On 2023/4/24 17:17, Lorenzo Bianconi wrote:
+>>> On 2023/4/23 22:20, Lorenzo Bianconi wrote:
+>>>>> On 2023/4/23 2:54, Lorenzo Bianconi wrote:
+>>>>>>   struct veth_priv {
+>>>>>> @@ -727,17 +729,20 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>>>>>>   			goto drop;
+>>>>>>   
+>>>>>>   		/* Allocate skb head */
+>>>>>> -		page = alloc_page(GFP_ATOMIC | __GFP_NOWARN);
+>>>>>> +		page = page_pool_dev_alloc_pages(rq->page_pool);
+>>>>>>   		if (!page)
+>>>>>>   			goto drop;
+>>>>>>   
+>>>>>>   		nskb = build_skb(page_address(page), PAGE_SIZE);
+>>>>>
+>>>>> If page pool is used with PP_FLAG_PAGE_FRAG, maybe there is some additional
+>>>>> improvement for the MTU 1500B case, it seem a 4K page is able to hold two skb.
+>>>>> And we can reduce the memory usage too, which is a significant saving if page
+>>>>> size is 64K.
+>>>>
+>>>> please correct if I am wrong but I think the 1500B MTU case does not fit in the
+>>>> half-page buffer size since we need to take into account VETH_XDP_HEADROOM.
+>>>> In particular:
+>>>>
+>>>> - VETH_BUF_SIZE = 2048
+>>>> - VETH_XDP_HEADROOM = 256 + 2 = 258
+>>>
+>>> On some arch the NET_IP_ALIGN is zero.
+>>>
+>>> I suppose XDP_PACKET_HEADROOM are for xdp_frame and data_meta, it seems
+>>> xdp_frame is only 40 bytes for 64 bit arch and max size of metalen is 32
+>>> as xdp_metalen_invalid() suggest, is there any other reason why we need
+>>> 256 bytes here?
+>>
+>> XDP_PACKET_HEADROOM must be greater than (40 + 32)B because you may want push
+>> new data at the beginning of the xdp_buffer/xdp_frame running
+>> bpf_xdp_adjust_head() helper.
+>> I think 256B has been selected for XDP_PACKET_HEADROOM since it is 4 cachelines
+>> (but I can be wrong).
+>> There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 192B but
+>> this is not merged yet and it is not related to this series. We can address
+>> your comments in a follow-up patch when XDP_PACKET_HEADROOM series is merged.
+> 
+> It worth mentioning that the performance gain in this patch is at the cost of
+> more memory usage, at most of VETH_RING_SIZE(256) + PP_ALLOC_CACHE_SIZE(128)
+> pages is used.
+> 
 
-A perhaps slightly unpleasant solution might be to not enforce this when
-FOLL_FORCE is specified which is mostly a ptrace + friends thing then we
-could drop all those exceptions.
+The general scheme with XDP is trading memory for speed up.
 
-I wouldn't be totally opposed to dropping it for RDMA too, because I
-suspect accessing file-backed mappings for that is pretty iffy.
+> IMHO, it seems better to limit the memory usage as much as possible, or provide a
+> way to disable/enable page pool for user.
+> 
 
-Do you have a sense of which in the list you feel could be pared back?
+Well, that sort of it exists right... If you disable XDP, or actually
+NAPI (looking at patches), it will also disable the page pool.
 
->
-> I also suggest we force block it at some kernel lockdown level..
->
-> Alternatively, perhaps we abuse FOLL_LONGTERM and prevent it from
-> working with filebacked pages since, I think, the ease of triggering a
-> bug goes up the longer the pages are pinned.
->
+I want to high-light that Lorenzo is "just" replacing allocating a full
+page via alloc_page() to a faster api, that happens to cache some of
+these pages.
+In that sense, I think this patch makes sense ... isolated seen.
 
-This would solve the io_uring case and it is certainly more of a concern
-when the pin is intended to be kept around, though it feels a bit icky as a
-non-FOLL_LONGTERM pin could surely be problematic too?
+My concern beyond this patch is that netif_receive_generic_xdp() and
+veth_convert_skb_to_xdp_buff() are both dealing with SKB-to-XDP
+conversion, but they are diverting in how they do this.
+(Is the challenge that veth will also see "TX" SKBs?)
 
-> Jason
+Kind changing the direction, but I'm thinking why the beep are we
+allocating+copying the entire contents of the SKB.
+There must be a better way? (especially after XDP got frags support).
+
+--Jesper
+
