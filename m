@@ -2,121 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C196EC819
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 10:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8646EC879
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjDXIuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 04:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
+        id S231556AbjDXJKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 05:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjDXIuY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 04:50:24 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3778FA8;
-        Mon, 24 Apr 2023 01:50:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VgrC-uE_1682326217;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VgrC-uE_1682326217)
-          by smtp.aliyun-inc.com;
-          Mon, 24 Apr 2023 16:50:18 +0800
-Message-ID: <1682326210.6946251-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH bpf-next] xsk: Use pool->dma_pages to check for DMA
-Date:   Mon, 24 Apr 2023 16:50:10 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Kal Conley <kal.conley@dectris.com>
-Cc:     Kal Conley <kal.conley@dectris.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231262AbjDXJKX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 05:10:23 -0400
+Received: from pv50p00im-ztbu10011701.me.com (pv50p00im-ztbu10011701.me.com [17.58.6.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1D610CC
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
+        t=1682327416; bh=M/sdqbR+vlmXk2rHdpf5e5t4auOLHGIgUY1Nd7rPR/A=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=GpFjU0d1PJNfUU4+ujnHyR3HsqaCpMRTKiq0QD3GuY6FR2DQhl11WHsqjxdrQoqP/
+         q/Ev8MionYo7BiMO94+lHGT9I2dujNYkY8jkgWIgWt2s2t2HupHAdDsEwwLKYGI7vw
+         FdZTuO2pPIYIwKDwpo/XN/ODTgMa0eYj6EO7SfKFVN2QiNC2fg649Noe18lpVZD8lV
+         kTMQTyy7VMg8jXlaxwsCh//kyPWOzPa1K8Wjcof1UWNLIucXPRFzUXTVnZz++nMnbY
+         bFSsrojI2QOaYOoaefJIzqwiETL9BEwaFXtgECYWcPbkQMugDvFrQeWzSByGVfKBTM
+         LWGnt6tEyGD6w==
+Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
+        by pv50p00im-ztbu10011701.me.com (Postfix) with ESMTPSA id 256FE7403B6;
+        Mon, 24 Apr 2023 09:10:11 +0000 (UTC)
+From:   Xueming Feng <kuro@kuroa.me>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20230423180157.93559-1-kal.conley@dectris.com>
-In-Reply-To: <20230423180157.93559-1-kal.conley@dectris.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xueming Feng <kuro@kuroa.me>
+Subject: [PATCH bpf-next v2] bpftool: Dump map id instead of value for map_of_maps types
+Date:   Mon, 24 Apr 2023 17:09:35 +0800
+Message-Id: <20230424090935.52707-1-kuro@kuroa.me>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: zOockGF0ejbAe429Ws_nol25-ZSefIZ8
+X-Proofpoint-GUID: zOockGF0ejbAe429Ws_nol25-ZSefIZ8
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.11.64.514.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2022-02-23?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 clxscore=1030 adultscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2304240081
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 23 Apr 2023 20:01:56 +0200, Kal Conley <kal.conley@dectris.com> wrote:
-> Compare pool->dma_pages instead of pool->dma_pages_cnt to check for an
-> active DMA mapping. pool->dma_pages needs to be read anyway to access
-> the map so this compiles to more efficient code.
->
-> Signed-off-by: Kal Conley <kal.conley@dectris.com>
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+When using `bpftool map dump` in plain format, it is usually
+more convenient to show the inner map id instead of raw value.
+Changing this behavior would help with quick debugging with
+`bpftool`, without disrupting scripted behavior. Since user
+could dump the inner map with id, and need to convert value.
 
+Signed-off-by: Xueming Feng <kuro@kuroa.me>
+---
+Changes in v2:
+  - Fix commit message grammar.
+	- Change `print_uint` to only print to stdout, make `arg` const, and rename 
+	  `n` to `arg_size`.
+  - Make `print_uint` able to take any size of argument up to `unsigned long`, 
+		and print it as unsigned decimal.
 
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Thanks for the review and suggestions! I have changed my patch accordingly.
+There is a possibility that `arg_size` is larger than `unsigned long`,
+but previous review suggested that it should be up to the caller function to 
+set `arg_size` correctly. So I didn't add check for that, should I?
 
-> ---
->  include/net/xsk_buff_pool.h | 2 +-
->  net/xdp/xsk_buff_pool.c     | 7 ++++---
->  2 files changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-> index d318c769b445..a8d7b8a3688a 100644
-> --- a/include/net/xsk_buff_pool.h
-> +++ b/include/net/xsk_buff_pool.h
-> @@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
->  	if (likely(!cross_pg))
->  		return false;
->
-> -	return pool->dma_pages_cnt &&
-> +	return pool->dma_pages &&
->  	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
->  }
->
-> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> index b2df1e0f8153..26f6d304451e 100644
-> --- a/net/xdp/xsk_buff_pool.c
-> +++ b/net/xdp/xsk_buff_pool.c
-> @@ -350,7 +350,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
->  {
->  	struct xsk_dma_map *dma_map;
->
-> -	if (pool->dma_pages_cnt == 0)
-> +	if (!pool->dma_pages)
->  		return;
->
->  	dma_map = xp_find_dma_map(pool);
-> @@ -364,6 +364,7 @@ void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs)
->
->  	__xp_dma_unmap(dma_map, attrs);
->  	kvfree(pool->dma_pages);
-> +	pool->dma_pages = NULL;
->  	pool->dma_pages_cnt = 0;
->  	pool->dev = NULL;
->  }
-> @@ -503,7 +504,7 @@ static struct xdp_buff_xsk *__xp_alloc(struct xsk_buff_pool *pool)
->  	if (pool->unaligned) {
->  		xskb = pool->free_heads[--pool->free_heads_cnt];
->  		xp_init_xskb_addr(xskb, pool, addr);
-> -		if (pool->dma_pages_cnt)
-> +		if (pool->dma_pages)
->  			xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
->  	} else {
->  		xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
-> @@ -569,7 +570,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
->  		if (pool->unaligned) {
->  			xskb = pool->free_heads[--pool->free_heads_cnt];
->  			xp_init_xskb_addr(xskb, pool, addr);
-> -			if (pool->dma_pages_cnt)
-> +			if (pool->dma_pages)
->  				xp_init_xskb_dma(xskb, pool, pool->dma_pages, addr);
->  		} else {
->  			xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
-> --
-> 2.39.2
->
+ tools/bpf/bpftool/main.c | 15 +++++++++++++++
+ tools/bpf/bpftool/main.h |  1 +
+ tools/bpf/bpftool/map.c  |  9 +++++++--
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 08d0ac543c67..810c0dc10ecb 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -251,6 +251,21 @@ int detect_common_prefix(const char *arg, ...)
+ 	return 0;
+ }
+ 
++void print_uint(const void *arg, unsigned int arg_size)
++{
++	const unsigned char *data = arg;
++	unsigned long val = 0ul;
++
++	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
++		memcpy(&val, data, arg_size);
++	#else
++		memcpy((unsigned char *)&val + sizeof(val) - arg_size,
++		       data, arg_size);
++	#endif
++
++	fprintf(stdout, "%lu", val);
++}
++
+ void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
+ {
+ 	unsigned char *data = arg;
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0ef373cef4c7..0de671423431 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
+ 
+ bool is_prefix(const char *pfx, const char *str);
+ int detect_common_prefix(const char *arg, ...);
++void print_uint(const void *arg, unsigned int arg_size);
+ void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
+ void usage(void) __noreturn;
+ 
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index aaeb8939e137..f5be4c0564cf 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
+ 		}
+ 
+ 		if (info->value_size) {
+-			printf("value:%c", break_names ? '\n' : ' ');
+-			fprint_hex(stdout, value, info->value_size, " ");
++			if (map_is_map_of_maps(info->type)) {
++				printf("id:%c", break_names ? '\n' : ' ');
++				print_uint(value, info->value_size);
++			} else {
++				printf("value:%c", break_names ? '\n' : ' ');
++				fprint_hex(stdout, value, info->value_size, " ");
++			}
+ 		}
+ 
+ 		printf("\n");
+-- 
+2.37.1 (Apple Git-137.1)
+
