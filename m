@@ -2,260 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A63006ED31D
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 19:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414E46ED3AE
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 19:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbjDXRGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 13:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S232244AbjDXRh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 13:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjDXRGi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 13:06:38 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48C14EED
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 10:06:36 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-63b57c49c4cso4015318b3a.3
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 10:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682355996; x=1684947996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5EEWS79TKEuhbit6OUpFdqDeF72y6fox6I/RJUsHISU=;
-        b=nYjtIykyAI+1fziZyYa0yifeT2qLuD3amhV7ZMtBZY8aNu7bxYIU/DC5vI1qbIh5we
-         rDjDRQdzXGu4tZSxfoJJKGJKgFzpL8XN8fnZkH4m3hnkHeRgPROodPtHCqtmINs4ESoj
-         anbjxDN5yDGre3E/7IGeDFD4EPfr+mwDYeQgvn/xHgGgbGE4z3TzLv0z2Ft4s4/PKULM
-         t2BFoHqQC8euq9cH7R1TFV9rQB61o8s3pCWW5HYDZVrBF/1IINRdWntDuNngvGuL+VGR
-         Ke2mQQ9dOvfULt9QwUXWrC8Ylu6S1dmIIpmoQi6yOUWfaXYlKR+WV52l3Ix6ihOSqIo7
-         cPgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682355996; x=1684947996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5EEWS79TKEuhbit6OUpFdqDeF72y6fox6I/RJUsHISU=;
-        b=iSidEpZBT/YRfUaCihNXxlWeODhaVug3EztLhmfgIhIPeEwwuB78i7WQ33Y3sT9X8M
-         kx6XkVxoSbPjdMfA9N5c4a2G0b06wdDDvJSl4Ki1MdpFXDYk3AuArC4jo0Xm3ef/89CX
-         US/VvlmYWvy6e94kvvUBhCgeQ3FY/UJL38gnDPUKhGTuRoOewuavYK9mTfq1c4nsSCFJ
-         jryIiUib9lNJTeCxvnQZkUNdhMwINLxpgbRFOzdz/hw0oXqgoNHDvfnGQwwFgCN6B1t+
-         zuWxWKPehRvkQpL3ZxSwUO7E+8jUhjQS4hWq9KbaxTOC0pvWp0/C6mNwhht0dEcuCE0E
-         VtxQ==
-X-Gm-Message-State: AAQBX9dDhC6X0d4zEZ8oC6SwWy6sIQXW8vaFyIiXzzuUjabH4gVlgD5o
-        vNPa4fXLIPq82Gc1fBGX3sPPl/k12yAZdWEbaEaaKQ==
-X-Google-Smtp-Source: AKy350Zc5CiL2onGifwnLM4pfmBPls37fOJGhYMfUtixpmHeBYyhKl9G+x8iv8PS4jllJFSREAFMCnVvKRPi95cHqCY=
-X-Received: by 2002:a17:90b:297:b0:234:f77:d6d2 with SMTP id
- az23-20020a17090b029700b002340f77d6d2mr13966476pjb.45.1682355995966; Mon, 24
- Apr 2023 10:06:35 -0700 (PDT)
+        with ESMTP id S232245AbjDXRhU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 13:37:20 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2082.outbound.protection.outlook.com [40.107.92.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CF1974D;
+        Mon, 24 Apr 2023 10:37:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nldD+G+ppU2R/zsYDBCHsWO1igr/13TBUKwID0TDdrtp9mDOCPAZQtw194aBfdQ1TNZBsvKdOnAjAwp1jLNCFcegUhOCImFLWrVwN4nxwgriv48ykSaTNGA+eSQNYkVh1UbtsDjlurmkQY/d85QXp1oKSEO8p22ZP3L14UqeBLDwhHPFqH8NAFnsHkOc0kwcHmipFfoOePiyLeO/PfpuSXEJL8ci9Vr5sgit5TLF9ch0uuUegheixnigKYU2GslcAzrs/wBhdZtaUfRr+3TwOaC2LKtB9Q4974HPEHs+Oab74MxiNhmyj9xkROx5OsoO8FXivTC8sG5TJMcYcoAC/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TuIzqzxwk4rNBUXcOjx1dWMmwO4377C1NigcUXvF3/s=;
+ b=n/+RbkKFtY5/wjXcs0nQ14XvC5R8xZFzgHwC/lDHwxCUa4GcHxu77O0UfM8BYNK0R2SOeI3lwMHxvcBWwQBWfkyvoTte70B8RJWwRu4DH4GkgLZH96OfGWFFDAgGlhg2vnR9MPwLvwuI8j4gXTdsnQ0gtjd53BPgAsTmftfehbxh8w+5F9CqLRVORjrpjBWt9Hx5uB3NgEOg5vss6GhyMsoh26xAZ2Vjjk5910XBpmdC7puy7VdNbVtKa0RXM4ldZpx7VxJHSc+vGjQwYIrsVT4N+nS9BIU/LMl4bLwqXPqkWAgNp3wQ4LhCHoTc+u1LRjhX/biaBvCzkme0GIrlHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TuIzqzxwk4rNBUXcOjx1dWMmwO4377C1NigcUXvF3/s=;
+ b=TBTtqZwKUf/msEaFnBOknRsUrT1zwjrekuog2tc9gkfCIz4vGXEuXSH2rRSZ21xBugWIL2dOiN57Bd+BobpQBv9qrhT2+VRPf5S+r0ccGTD7fhpeobDshNoqW9O5sJWCwOdYHVEcfA/PQb9g4aNaQZlj3tY4XX2rpdha3cDvkgkzh3yXQ/On+Kbs2pImOjhBeqXX7kEd78/EpklAHAWz2p5I01bdtloFsjBHpvDm0wu7scOOVJNPo2hf9Opte4NudFnTztasJVY3AjvmSNXyjka+jbQElapwTeT8gI0aUoMtig4sUCrVkgvPXscNbHC/lwdXtKpt4ibtS4ynCK3cYA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BL3PR12MB6523.namprd12.prod.outlook.com (2603:10b6:208:3bf::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.33; Mon, 24 Apr
+ 2023 17:36:51 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::f7a7:a561:87e9:5fab%5]) with mapi id 15.20.6319.033; Mon, 24 Apr 2023
+ 17:36:51 +0000
+Date:   Mon, 24 Apr 2023 14:36:47 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
+ by default
+Message-ID: <ZEa+L5ivNDhCmgj4@nvidia.com>
+References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
+ <ZEZPXHN4OXIYhP+V@infradead.org>
+ <90a54439-5d30-4711-8a86-eba816782a66@lucifer.local>
+ <ZEZ117OMCi0dFXqY@nvidia.com>
+ <c8fff8b3-ead6-4f52-bf17-f2ef2e752b57@lucifer.local>
+ <ZEaGjad50lqRNTWD@nvidia.com>
+ <cd488979-d257-42b9-937f-470cc3c57f5e@lucifer.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd488979-d257-42b9-937f-470cc3c57f5e@lucifer.local>
+X-ClientProxiedBy: YT4PR01CA0181.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:110::8) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20230420145041.508434-1-gilad9366@gmail.com> <20230420145041.508434-5-gilad9366@gmail.com>
- <ZEFr1M0PDziB2c9g@google.com> <da23eb41-f3b6-16cb-def7-c87388c55423@gmail.com>
-In-Reply-To: <da23eb41-f3b6-16cb-def7-c87388c55423@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 24 Apr 2023 10:06:24 -0700
-Message-ID: <CAKH8qBtQepoFJxYKJCm7GxxLpK8C7ghPdghSyTmo+4pnL2jn2w@mail.gmail.com>
-Subject: Re: [PATCH bpf,v2 4/4] selftests/bpf: Add tc_socket_lookup tests
-To:     Gilad Sever <gilad9366@gmail.com>
-Cc:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
-        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
-        shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz,
-        eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL3PR12MB6523:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9a25ebf8-1819-489e-160c-08db44ea7cb1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uL8m6NlQxw3mOffdBaxu0SMIWa0o3MUSNIN1bclfhkyXinS89IPjZR80GD+TcEUyZ2bKtxcX124UCz95ffgUMbIGJr4udvzPQEj8mwn0FtXtHr2SRdWaUYZZsOgaY7ZBoD8nX4EPFATd1DKvdqcLutLxBzuKhkae+N+NxOUlpD3B0GPLvrxXSGeaa3usPk4R3iPdw9f5Ad2lshxPEHuBgdRk182x/pNgogYogcNapZvoFn3g+PBxIjCmtwp4n3euhtGI5YFF/Ikktyx84BnL9DF5HFtiu2QBmYUcXZuloL2Kvz2S4xxZLQRpB6jiOM2SsiKPl4Q6F/QFC0SSrq8bnHs3hlPzEnqlpqSEsoT5GCt59F51t5jx3zfrYDzmvQkhAsCGxrARmlmfgwf6VFSaa6wy0FhUJrAmJybtC46hX0NfFHHiK9xjKz+o1r/ELsIDw4qxzWwTVa6C8+g0HutqbjB1r4hWtdcUic57UR74wQomD9uScBYwC84eVWytKT//vQUhPPUh4o+gjCQuZ8JXGhQ2362n3feQGOAVBIRyWP1wj3wUvky/dlB51qBwT0Uh1Q2ph+ay/CZF28Zyt+lVnQBWQDwMn43ZQFmA3CTG9QI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(451199021)(6512007)(26005)(6506007)(8676002)(8936002)(4326008)(6916009)(66476007)(66556008)(66946007)(54906003)(316002)(36756003)(41300700001)(478600001)(7406005)(7416002)(6486002)(6666004)(5660300002)(38100700002)(86362001)(2906002)(2616005)(186003)(83380400001)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mzjXt7yZY8DsN5Mb+yWWLnXgFhIdPkQva9YgzpbHmhADnOHTEwAdb6JmxYv8?=
+ =?us-ascii?Q?RjH1fuNJDTjDis8I9V5DLV6VQL+7iO3ZgTdYUmGsFEVYZTMdRHRfi+MogJ2I?=
+ =?us-ascii?Q?Thn6n/SacdL2bWi0GVA6AnxqCFRup9OY9oKXpfZecNXHlmndaz4rnkak75Hp?=
+ =?us-ascii?Q?91cj3enaNtiLxo8TjS1HJqJvS6brUUCrEc7R+xJ6dAZaKnULe6UVob8owTJe?=
+ =?us-ascii?Q?ziYkaIhS5CmgLlJGuRASGdtnFjBjd+SOooLF85/SSgI1ztksKVssUFBvDwq6?=
+ =?us-ascii?Q?vGQxe8VGJOJcum+kuPFMYokU8sciyfpiPNyjWfhA/wsX0UBFQlUvANsyMBFE?=
+ =?us-ascii?Q?o1aJp0SIRiAZkpw/qKcKvf8TEEXXO/BOvmCAWtZ+zU3mn6RPeuhe7P4Lwxul?=
+ =?us-ascii?Q?WoRNjuui7L6XWRitsCBRjv0Uhp0Bz3QCefSRm4ghL/RuO8nil3aC0U/n0wzV?=
+ =?us-ascii?Q?dnzgrY5h848GGM8mdcHuj8IbSZckHBiMWowWpXS2Aq7LGmvF854H/PFSpmHg?=
+ =?us-ascii?Q?rSSjhPENhBUOeRWmkEWdAIkjxeDB2nAF516te3H+0u0fXZ3VlCyvkxqCgM+K?=
+ =?us-ascii?Q?sH9cvZg+fPva/s9Cs5yRFbeZmSRsArvfEV2euTkdzJjm0Jlh6E6DeE6xvlOr?=
+ =?us-ascii?Q?WNol8xsHYPAGsXxhR1IZmmrHku17xEYzKraLeq2RA9wJMelFoanYfHMw5+pm?=
+ =?us-ascii?Q?G58zcJAtd0eO0gi+z05oeJntxEcX2KOnTD8whRXX44NZl7zJ9WfN+uyC7THh?=
+ =?us-ascii?Q?BupZ/kkMP9Hn8GluH11cytuoovsmgZC0MtXTkki5uhxiRarC5Julj6CyqcRH?=
+ =?us-ascii?Q?M7WFPuVAO/PflCpRnWb3ENn6URaIrYUs+cV2nU3p5yS55VNtlYh6tHO6BR7Q?=
+ =?us-ascii?Q?emm7R6eb/PW2BiSxzEsuegS/LpU1zfkgdvzw3E2oxQ/NvVlA4c8BtZXis6fM?=
+ =?us-ascii?Q?2wcOBGkY8pWGMDa28rlgbXZpEuznZzyr3ctokfiWKJsmUqumjD9eR4ao7LXc?=
+ =?us-ascii?Q?6GP4vfjcHX0G1bgbYJCaa08L+R0C5VBSaLn6+R7zdF0OhDbBDmoEZa0tiF5n?=
+ =?us-ascii?Q?e8ys6scr06sPTGU7lcRPOfONNmdNnv8sWSJT4TZUJpNNyhglsDOEuh2Kyua4?=
+ =?us-ascii?Q?8gJwxkCTMpIE9xnz/xUXAu+4ovVYua527oU5R6FqNzfPxw3X+QrWmPP1rl96?=
+ =?us-ascii?Q?MbLgyraDBsqDtRN94XMsXqhpSCHJ41TktjI68c5oteScLYV2x0B8ZA6nFk/l?=
+ =?us-ascii?Q?0DS80tjlfA7f6Vq/ER7WbzOe982TUS7nHxJnd7jgMV06txfEiSfvI/+N0A57?=
+ =?us-ascii?Q?RS/nqH8EGnQkL3RyypP0vvnzqhFvnRwZjy1GqYPdkXLcgr47Kh15VcDWKM0h?=
+ =?us-ascii?Q?vrsBj5isjRM8RyQTd+X4YJBVY2ro8Zh9yd/qbI1P9hwapEw341lZRbH9BQWO?=
+ =?us-ascii?Q?g2Kl6weZWRd71OKUgL4JWod/bGbVXlZR0Y7EK059G9DnQUvApW7cvHhOxi1y?=
+ =?us-ascii?Q?JlEwZi6Ru42TlQrk/++fKf9ZqIcseOWEJHmOa6TvfXoAO0DPHh+QxK09dKQ/?=
+ =?us-ascii?Q?GhxzIzphNYELIJLhjX4HbKsPQ6wARv7xAp9fHUxa?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a25ebf8-1819-489e-160c-08db44ea7cb1
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2023 17:36:51.0143
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KpVEdGdBAb2mTr21PmeJt5/jtpeoSR0a7by5TaZQterhLw7uuk9lDjwLutIP62hy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6523
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 23, 2023 at 2:31=E2=80=AFAM Gilad Sever <gilad9366@gmail.com> w=
-rote:
->
->
-> On 20/04/2023 19:44, Stanislav Fomichev wrote:
-> > On 04/20, Gilad Sever wrote:
-> >> Verify that socket lookup via TC with all BPF APIs is VRF aware.
-> >>
-> >> Signed-off-by: Gilad Sever <gilad9366@gmail.com>
-> >> ---
-> >> v2: Fix build by initializing vars with -1
-> >> ---
-> >>   .../bpf/prog_tests/tc_socket_lookup.c         | 341 ++++++++++++++++=
-++
-> >>   .../selftests/bpf/progs/tc_socket_lookup.c    |  73 ++++
-> >>   2 files changed, 414 insertions(+)
-> >>   create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_socket_=
-lookup.c
-> >>   create mode 100644 tools/testing/selftests/bpf/progs/tc_socket_looku=
-p.c
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_socket_lookup.c=
- b/tools/testing/selftests/bpf/prog_tests/tc_socket_lookup.c
-> >> new file mode 100644
-> >> index 000000000000..5dcaf0ea3f8c
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/tc_socket_lookup.c
-> >> @@ -0,0 +1,341 @@
-> >> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> >> +
-> >> +/*
-> >> + * Topology:
-> >> + * ---------
-> >> + *     NS1 namespace         |   NS2 namespace
-> >> + *                       |
-> >> + *     +--------------+      |   +--------------+
-> >> + *     |    veth01    |----------|    veth10    |
-> >> + *     | 172.16.1.100 |      |   | 172.16.1.200 |
-> >> + *     |     bpf      |      |   +--------------+
-> >> + *     +--------------+      |
-> >> + *      server(UDP/TCP)      |
-> >> + *  +-------------------+    |
-> >> + *  |        vrf1       |    |
-> >> + *  |  +--------------+ |    |   +--------------+
-> >> + *  |  |    veth02    |----------|    veth20    |
-> >> + *  |  | 172.16.2.100 | |    |   | 172.16.2.200 |
-> >> + *  |  |     bpf      | |    |   +--------------+
-> >> + *  |  +--------------+ |    |
-> >> + *  |   server(UDP/TCP) |    |
-> >> + *  +-------------------+    |
-> >> + *
-> >> + * Test flow
-> >> + * -----------
-> >> + *  The tests verifies that socket lookup via TC is VRF aware:
-> >> + *  1) Creates two veth pairs between NS1 and NS2:
-> >> + *     a) veth01 <-> veth10 outside the VRF
-> >> + *     b) veth02 <-> veth20 in the VRF
-> >> + *  2) Attaches to veth01 and veth02 a program that calls:
-> >> + *     a) bpf_skc_lookup_tcp() with TCP and tcp_skc is true
-> >> + *     b) bpf_sk_lookup_tcp() with TCP and tcp_skc is false
-> >> + *     c) bpf_sk_lookup_udp() with UDP
-> >> + *     The program stores the lookup result in bss->lookup_status.
-> >> + *  3) Creates a socket TCP/UDP server in/outside the VRF.
-> >> + *  4) The test expects lookup_status to be:
-> >> + *     a) 0 from device in VRF to server outside VRF
-> >> + *     b) 0 from device outside VRF to server in VRF
-> >> + *     c) 1 from device in VRF to server in VRF
-> >> + *     d) 1 from device outside VRF to server outside VRF
-> >> + */
-> >> +
-> >> +#include <net/if.h>
-> >> +
-> >> +#include "test_progs.h"
-> >> +#include "network_helpers.h"
-> >> +#include "tc_socket_lookup.skel.h"
-> >> +
-> >> +#define NS1 "tc_socket_lookup_1"
-> >> +#define NS2 "tc_socket_lookup_2"
-> >> +
-> >> +#define IP4_ADDR_VETH01 "172.16.1.100"
-> >> +#define IP4_ADDR_VETH10 "172.16.1.200"
-> >> +#define IP4_ADDR_VETH02 "172.16.2.100"
-> >> +#define IP4_ADDR_VETH20 "172.16.2.200"
-> >> +
-> >> +#define NON_VRF_PORT 5000
-> >> +#define IN_VRF_PORT 5001
-> >> +
-> >> +#define IO_TIMEOUT_SEC      3
-> >> +
-> >> +#define SYS(fmt, ...)                                               \
-> >> +    ({                                                      \
-> >> +            char cmd[1024];                                 \
-> >> +            snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
-> >> +            if (!ASSERT_OK(system(cmd), cmd))               \
-> >> +                    goto fail;                              \
-> >> +    })
-> >> +
-> >> +#define SYS_NOFAIL(fmt, ...)                                        \
-> >> +    ({                                                      \
-> >> +            char cmd[1024];                                 \
-> >> +            snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
-> >> +            system(cmd);                                    \
-> >> +    })
-> > [..]
+On Mon, Apr 24, 2023 at 03:29:57PM +0100, Lorenzo Stoakes wrote:
+> On Mon, Apr 24, 2023 at 10:39:25AM -0300, Jason Gunthorpe wrote:
+> > On Mon, Apr 24, 2023 at 01:38:49PM +0100, Lorenzo Stoakes wrote:
 > >
-> >> +static int make_socket(int sotype, const char *ip, int port,
-> >> +                   struct sockaddr_storage *addr)
-> >> +{
-> >> +    struct timeval timeo =3D { .tv_sec =3D IO_TIMEOUT_SEC };
-> >> +    int err, fd;
-> >> +
-> >> +    err =3D make_sockaddr(AF_INET, ip, port, addr, NULL);
-> >> +    if (!ASSERT_OK(err, "make_address"))
-> >> +            return -1;
-> >> +
-> >> +    fd =3D socket(AF_INET, sotype, 0);
-> >> +    if (!ASSERT_OK(fd < 0, "socket"))
-> >> +            return -1;
-> >> +
-> >> +    err =3D setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(ti=
-meo));
-> >> +    if (!ASSERT_OK(err, "setsockopt(SO_SNDTIMEO)"))
-> >> +            goto fail;
-> >> +
-> >> +    err =3D setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(ti=
-meo));
-> >> +    if (!ASSERT_OK(err, "setsockopt(SO_RCVTIMEO)"))
-> >> +            goto fail;
-> >> +
-> >> +    return fd;
-> >> +fail:
-> >> +    close(fd);
-> >> +    return -1;
-> >> +}
-> >> +
-> >> +static int make_server(int sotype, const char *ip, int port, const ch=
-ar *ifname)
-> >> +{
-> >> +    struct sockaddr_storage addr =3D {};
-> >> +    const int one =3D 1;
-> >> +    int err, fd =3D -1;
-> >> +
-> >> +    fd =3D make_socket(sotype, ip, port, &addr);
-> >> +    if (fd < 0)
-> >> +            return -1;
-> >> +
-> >> +    if (sotype =3D=3D SOCK_STREAM) {
-> >> +            err =3D setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &one,
-> >> +                             sizeof(one));
-> >> +            if (!ASSERT_OK(err, "setsockopt(SO_REUSEADDR)"))
-> >> +                    goto fail;
-> >> +    }
-> >> +
-> >> +    if (ifname) {
-> >> +            err =3D setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE,
-> >> +                             ifname, strlen(ifname) + 1);
-> >> +            if (!ASSERT_OK(err, "setsockopt(SO_BINDTODEVICE)"))
-> >> +                    goto fail;
-> >> +    }
-> >> +
-> >> +    err =3D bind(fd, (void *)&addr, sizeof(struct sockaddr_in));
-> >> +    if (!ASSERT_OK(err, "bind"))
-> >> +            goto fail;
-> >> +
-> >> +    if (sotype =3D=3D SOCK_STREAM) {
-> >> +            err =3D listen(fd, SOMAXCONN);
-> >> +            if (!ASSERT_OK(err, "listen"))
-> >> +                    goto fail;
-> >> +    }
-> >> +
-> >> +    return fd;
-> >> +fail:
-> >> +    close(fd);
-> >> +    return -1;
-> >> +}
-> > Any reason you're not using start_server from network_helpers.h?
-> > It's because I need to bind the server socket to the VRF device.
+> > > I was being fairly conservative in that list, though we certainly need to
+> > > set the flag for /proc/$pid/mem and ptrace to avoid breaking this
+> > > functionality (I observed breakpoints breaking without it which obviously
+> > > is a no go :). I'm not sure if there's a more general way we could check
+> > > for this though?
+> >
+> > More broadly we should make sure these usages of GUP safe somehow so
+> > that it can reliably write to those types of pages without breaking
+> > the current FS contract..
+> >
+> > I forget exactly, but IIRC, don't you have to hold some kind of page
+> > spinlock while writing to the page memory?
+> >
+> 
+> I think perhaps you're thinking of the mm->mmap_lock? Which will be held
+> for the FOLL_GET cases and simply prevent the VMA from disappearing below
+> us but not do much else.
 
-I see, thanks, so it's the SO_BINDTODEVICE part. Looks generic enough
-to belong to network_helpers.h. WDYT?
-Does it make sense to extend __start_server to support it? Or have a
-new separate network_helper for this?
+No not mmap_lock, I want to say there is a per-page lock that
+interacts with the write protect, or at worst this needs to use the
+page table spinlocks.
+
+> I wonder whether we should do this check purely for FOLL_PIN to be honest?
+> As this indicates medium to long-term access without mmap_lock held. This
+> would exclude the /proc/$pid/mem and ptrace paths which use gup_remote().
+
+Everything is buggy. FOLL_PIN is part of a someday solution to solve
+it.
+
+> That and a very specific use of uprobes are the only places that use
+> FOLL_GET in this instance and each of them are careful in any case to
+> handle setting the dirty page flag.
+
+That is actually the bug :) Broadly the bug is to make a page dirty
+without holding the right locks to actually dirty it.
+
+Jason
