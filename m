@@ -2,100 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 594A56EC688
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 08:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF3B6EC741
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 09:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjDXGvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 02:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
+        id S231360AbjDXHim (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 03:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbjDXGvp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 02:51:45 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159B926A3;
-        Sun, 23 Apr 2023 23:51:43 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f173af665fso24963195e9.3;
-        Sun, 23 Apr 2023 23:51:43 -0700 (PDT)
+        with ESMTP id S231348AbjDXHil (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 03:38:41 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E186AE7F;
+        Mon, 24 Apr 2023 00:38:39 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3f1950f5628so27701625e9.3;
+        Mon, 24 Apr 2023 00:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682319101; x=1684911101;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bpg9oYb+78qUrnYZwDEGvn854L618wBnXXbfmiz3zNo=;
-        b=VmcFknFwfUTacZeP8SNbm4iVcUYo+yv6oJjyWVAOsaCwms6qtrbmYFnq4zwpVLBcg1
-         7tyNIQcttY5KUXi2pWXg5/IiqsgETEFoltxSD6olC0ua6hEEYQbBtuhYpRXTBdAE0+X3
-         u+PbwBwwvYS5yPhd9gVLWKtMA2yFc4TXDoWIf2CJejTLrVwVFa8GaCZ5hxL8s7rWPzG7
-         PUuBSfsYo7zLxHJl0q2nPzW4gUM09MFYtQhxrZH7YsyJE2N1kkBkk2zNsFq5AgWyGYxJ
-         77qWsTyNgOHnzQYKIVbyRLdqSeBeOJRwhuJd/UcPFPlbIsRI3C+QZeM0KV2MXrFOBHLU
-         9UoQ==
+        d=gmail.com; s=20221208; t=1682321918; x=1684913918;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fCpnNeC1GLxVO8cSBcSgQyBm7wF8gZpeuq5aHD7x5G4=;
+        b=Fg4I+0EdGe2GGPzVYk2u/uA9mp7pU0Nn/8vdjJQ14QAnvPszIsHu9hC752YWdWtuBw
+         /QX2ZDzmSB18gF6SzzWu7+YbPCyEMkfQ6tLmdIfyjMA4IzNRCF+VHGgb0JBmB2TNwMPv
+         leP9jhGfApZBMP+gS4sMhBOh9M6/fBbJg8QzoPxcUXi259wBpZhsbAXbSURa+pQhJuxY
+         S2g2KcYotyxAs/pF7grKxVRPtRD9SBtnC+TqG6fWmWdHvHs2QPm1buWMCyVHtLVTzf/Z
+         0B0nxjs/3Ga0Qw0moOi7YWNy0Vb1wHbIhGHsFi3swLjssfLYBLcXodhW3yc79spXcAO+
+         LjVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682319101; x=1684911101;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bpg9oYb+78qUrnYZwDEGvn854L618wBnXXbfmiz3zNo=;
-        b=VqZVLb8Eo9jHWSCY8VKvihzJtrNfYRtxkGSUnZczEcOoAMgrt2dNybVRO5DlGdH8LC
-         TVPOUiTM1RELLgtmeHDsq5BoqxbXlPaVbzufAi4OOUMYaW4s4al1WJf/zhlPpURx2B1F
-         3FxIBLVyePoAQCqTOKmRr3kFbjPMwRyZGCdUG7Fb2FE/lN7bkoUxSIg65W+MJsiCnAoq
-         4+GN2vLO1rxcqAQosRlYxMX8c7wUqLU8lXsBnBfXKxeOacCiVnEdvPDp+PwrjpGx101n
-         TwcURC4xeqXTKtxOdfjye6j+jUsnkh8aXpOpnuXj4cU+tKQn1f3zYNvSjikdxAwRvTbk
-         C5XQ==
-X-Gm-Message-State: AAQBX9c08QILdbOK9wovYDxlz9iQEynvgHy568kFOTez1qEhFkg73vcM
-        TCLh4CwpDbfpzy5PtO+uyr0=
-X-Google-Smtp-Source: AKy350akafbRRaGy0JE/WdzcFbEx/fIkm2tRt5f4cumr9DWWaMBObhUvrryfF88FQg7nzw7H6qIltQ==
-X-Received: by 2002:a05:600c:24cd:b0:3f1:6ef6:c9d0 with SMTP id 13-20020a05600c24cd00b003f16ef6c9d0mr6311844wmu.17.1682319100951;
-        Sun, 23 Apr 2023 23:51:40 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id c9-20020a7bc009000000b003ede3e54ed7sm11366725wmb.6.2023.04.23.23.51.39
+        d=1e100.net; s=20221208; t=1682321918; x=1684913918;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fCpnNeC1GLxVO8cSBcSgQyBm7wF8gZpeuq5aHD7x5G4=;
+        b=Xxz2QbRT9TbvgNi0pKJ1AQEDHcelXSEs22zTxi0S+EjjmFzUdcZ6rgDErs4dUsda1Y
+         60R1RjnOBja2MhQrD7pbGkhtN9IRyMvlRSm7t2cwcNFmTAWG84duiXHCnXPippFr4/sz
+         wQM7HBbvLK0oDxuZqmdzSFpBjqlB5t6PI/ze1VHfdwSNnrkc6KBLP8PZZwTL4AZuZiES
+         jlgkwOFBe5R9i8aH1Hk6s5jNfNORtTeVqxVEVgYQICQsLmmE0nBebIAdnrPSEAgTooty
+         Hnex/cCKxwaP3j9lcpH8QNqS8wvHOJ24kzJvk17iRk7IK2BXL2ckhH94K/DOyKVPfZ1L
+         IbvA==
+X-Gm-Message-State: AAQBX9egz2315vI3lkPPE8bKkYZDvK+dLHMm25gNTNDRMGHl/P+/rXqx
+        CRcUaDNNEitP+se5nWNCDeo=
+X-Google-Smtp-Source: AKy350buA3FaT3ukDXDRelkwQFzWxvJfvb84LyWD9Xca8LqdvqE/k8wLgICUzrtQO3JAJESieYfVbg==
+X-Received: by 2002:a7b:c5c7:0:b0:3f1:75d0:6151 with SMTP id n7-20020a7bc5c7000000b003f175d06151mr7010464wmk.1.1682321918225;
+        Mon, 24 Apr 2023 00:38:38 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id d3-20020a05600c3ac300b003f19b3d89e9sm5174845wms.33.2023.04.24.00.38.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Apr 2023 23:51:40 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 07:51:39 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Mika =?iso-8859-1?Q?Penttil=E4?= <mpenttil@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mon, 24 Apr 2023 00:38:37 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 24 Apr 2023 09:38:35 +0200
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
- default
-Message-ID: <cc42e3d5-ccc0-46ed-a7dd-cc7d6a82eb8b@lucifer.local>
-References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
- <4b599782-3512-a177-c5b5-c562a22886c7@redhat.com>
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 4/9] tracing/probes: Add tracepoint support on
+ fprobe_event
+Message-ID: <ZEYx+2WWixBkDbTn@krava>
+References: <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
+ <168198997089.1795549.1009510263722958117.stgit@mhiramat.roam.corp.google.com>
+ <ZEThQgkJV7esVGdR@krava>
+ <20230423223740.9f1186a08b3b316b5a0156e7@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4b599782-3512-a177-c5b5-c562a22886c7@redhat.com>
+In-Reply-To: <20230423223740.9f1186a08b3b316b5a0156e7@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -106,244 +80,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 06:41:38AM +0300, Mika Penttilä wrote:
->
-> Hi,
->
->
-> On 22.4.2023 16.37, Lorenzo Stoakes wrote:
-> > It isn't safe to write to file-backed mappings as GUP does not ensure that
-> > the semantics associated with such a write are performed correctly, for
-> > instance filesystems which rely upon write-notify will not be correctly
-> > notified.
-> >
-> > There are exceptions to this - shmem and hugetlb mappings are (in effect)
-> > anonymous mappings by other names so we do permit this operation in these
-> > cases.
-> >
-> > In addition, if no pinning takes place (neither FOLL_GET nor FOLL_PIN is
-> > specified and neither flags gets implicitly set) then no writing can occur
-> > so we do not perform the check in this instance.
-> >
-> > This is an important exception, as populate_vma_page_range() invokes
-> > __get_user_pages() in this way (and thus so does __mm_populate(), used by
-> > MAP_POPULATE mmap() and mlock() invocations).
-> >
-> > There are GUP users within the kernel that do nevertheless rely upon this
-> > behaviour, so we introduce the FOLL_ALLOW_BROKEN_FILE_MAPPING flag to
-> > explicitly permit this kind of GUP access.
-> >
-> > This is required in order to not break userspace in instances where the
-> > uAPI might permit file-mapped addresses - a number of RDMA users require
-> > this for instance, as do the process_vm_[read/write]v() system calls,
-> > /proc/$pid/mem, ptrace and SDT uprobes. Each of these callers have been
-> > updated to use this flag.
-> >
-> > Making this change is an important step towards a more reliable GUP, and
-> > explicitly indicates which callers might encouter issues moving forward.
-> >
-> > Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > ---
-> >   drivers/infiniband/hw/qib/qib_user_pages.c |  3 +-
-> >   drivers/infiniband/hw/usnic/usnic_uiom.c   |  2 +-
-> >   drivers/infiniband/sw/siw/siw_mem.c        |  3 +-
-> >   fs/proc/base.c                             |  3 +-
-> >   include/linux/mm_types.h                   |  8 +++++
-> >   kernel/events/uprobes.c                    |  3 +-
-> >   mm/gup.c                                   | 36 +++++++++++++++++++++-
-> >   mm/memory.c                                |  3 +-
-> >   mm/process_vm_access.c                     |  2 +-
-> >   net/xdp/xdp_umem.c                         |  2 +-
-> >   10 files changed, 56 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
-> > index f693bc753b6b..b9019dad8008 100644
-> > --- a/drivers/infiniband/hw/qib/qib_user_pages.c
-> > +++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-> > @@ -110,7 +110,8 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
-> >   	for (got = 0; got < num_pages; got += ret) {
-> >   		ret = pin_user_pages(start_page + got * PAGE_SIZE,
-> >   				     num_pages - got,
-> > -				     FOLL_LONGTERM | FOLL_WRITE,
-> > +				     FOLL_LONGTERM | FOLL_WRITE |
-> > +				     FOLL_ALLOW_BROKEN_FILE_MAPPING,
-> >   				     p + got, NULL);
-> >   		if (ret < 0) {
-> >   			mmap_read_unlock(current->mm);
-> > diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-> > index 2a5cac2658ec..33cf79b248a9 100644
-> > --- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-> > +++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-> > @@ -85,7 +85,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
-> >   				int dmasync, struct usnic_uiom_reg *uiomr)
-> >   {
-> >   	struct list_head *chunk_list = &uiomr->chunk_list;
-> > -	unsigned int gup_flags = FOLL_LONGTERM;
-> > +	unsigned int gup_flags = FOLL_LONGTERM | FOLL_ALLOW_BROKEN_FILE_MAPPING;
-> >   	struct page **page_list;
-> >   	struct scatterlist *sg;
-> >   	struct usnic_uiom_chunk *chunk;
-> > diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-> > index f51ab2ccf151..bc3e8c0898e5 100644
-> > --- a/drivers/infiniband/sw/siw/siw_mem.c
-> > +++ b/drivers/infiniband/sw/siw/siw_mem.c
-> > @@ -368,7 +368,8 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
-> >   	struct mm_struct *mm_s;
-> >   	u64 first_page_va;
-> >   	unsigned long mlock_limit;
-> > -	unsigned int foll_flags = FOLL_LONGTERM;
-> > +	unsigned int foll_flags =
-> > +		FOLL_LONGTERM | FOLL_ALLOW_BROKEN_FILE_MAPPING;
-> >   	int num_pages, num_chunks, i, rv = 0;
-> >   	if (!can_do_mlock())
-> > diff --git a/fs/proc/base.c b/fs/proc/base.c
-> > index 96a6a08c8235..3e3f5ea9849f 100644
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -855,7 +855,8 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
-> >   	if (!mmget_not_zero(mm))
-> >   		goto free;
-> > -	flags = FOLL_FORCE | (write ? FOLL_WRITE : 0);
-> > +	flags = FOLL_FORCE | FOLL_ALLOW_BROKEN_FILE_MAPPING |
-> > +		(write ? FOLL_WRITE : 0);
-> >   	while (count > 0) {
-> >   		size_t this_len = min_t(size_t, count, PAGE_SIZE);
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 3fc9e680f174..e76637b4c78f 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -1185,6 +1185,14 @@ enum {
-> >   	FOLL_PCI_P2PDMA = 1 << 10,
-> >   	/* allow interrupts from generic signals */
-> >   	FOLL_INTERRUPTIBLE = 1 << 11,
-> > +	/*
-> > +	 * By default we disallow write access to known broken file-backed
-> > +	 * memory mappings (i.e. anything other than hugetlb/shmem
-> > +	 * mappings). Some code may rely upon being able to access this
-> > +	 * regardless for legacy reasons, thus we provide a flag to indicate
-> > +	 * this.
-> > +	 */
-> > +	FOLL_ALLOW_BROKEN_FILE_MAPPING = 1 << 12,
-> >   	/* See also internal only FOLL flags in mm/internal.h */
-> >   };
-> > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > index 59887c69d54c..ec330d3b0218 100644
-> > --- a/kernel/events/uprobes.c
-> > +++ b/kernel/events/uprobes.c
-> > @@ -373,7 +373,8 @@ __update_ref_ctr(struct mm_struct *mm, unsigned long vaddr, short d)
-> >   		return -EINVAL;
-> >   	ret = get_user_pages_remote(mm, vaddr, 1,
-> > -			FOLL_WRITE, &page, &vma, NULL);
-> > +				    FOLL_WRITE | FOLL_ALLOW_BROKEN_FILE_MAPPING,
-> > +				    &page, &vma, NULL);
-> >   	if (unlikely(ret <= 0)) {
-> >   		/*
-> >   		 * We are asking for 1 page. If get_user_pages_remote() fails,
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 1f72a717232b..68d5570c0bae 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -959,16 +959,46 @@ static int faultin_page(struct vm_area_struct *vma,
-> >   	return 0;
-> >   }
-> > +/*
-> > + * Writing to file-backed mappings using GUP is a fundamentally broken operation
-> > + * as kernel write access to GUP mappings may not adhere to the semantics
-> > + * expected by a file system.
-> > + *
-> > + * In most instances we disallow this broken behaviour, however there are some
-> > + * exceptions to this enforced here.
-> > + */
-> > +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
-> > +					  unsigned long gup_flags)
-> > +{
-> > +	struct file *file = vma->vm_file;
-> > +
-> > +	/* If we aren't pinning then no problematic write can occur. */
-> > +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
-> > +		return true;
-> > +
-> > +	/* Special mappings should pose no problem. */
-> > +	if (!file)
-> > +		return true;
-> > +
-> > +	/* Has the caller explicitly indicated this case is acceptable? */
-> > +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
-> > +		return true;
-> > +
-> > +	/* shmem and hugetlb mappings do not have problematic semantics. */
-> > +	return vma_is_shmem(vma) || is_file_hugepages(file);
-> > +}
-> > +
-> >   static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >   {
-> >   	vm_flags_t vm_flags = vma->vm_flags;
-> >   	int write = (gup_flags & FOLL_WRITE);
-> >   	int foreign = (gup_flags & FOLL_REMOTE);
-> > +	bool vma_anon = vma_is_anonymous(vma);
-> >   	if (vm_flags & (VM_IO | VM_PFNMAP))
-> >   		return -EFAULT;
-> > -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
-> > +	if ((gup_flags & FOLL_ANON) && !vma_anon)
-> >   		return -EFAULT;
-> >   	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
-> > @@ -978,6 +1008,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >   		return -EFAULT;
-> >   	if (write) {
-> > +		if (!vma_anon &&
-> > +		    WARN_ON_ONCE(!can_write_file_mapping(vma, gup_flags)))
-> > +			return -EFAULT;
-> > +
-> >   		if (!(vm_flags & VM_WRITE)) {
-> >   			if (!(gup_flags & FOLL_FORCE))
-> >   				return -EFAULT;
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 146bb94764f8..e3d535991548 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -5683,7 +5683,8 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr,
-> >   	if (!mm)
-> >   		return 0;
-> > -	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
-> > +	ret = __access_remote_vm(mm, addr, buf, len,
-> > +				 gup_flags | FOLL_ALLOW_BROKEN_FILE_MAPPING);
-> >   	mmput(mm);
-> > diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
-> > index 78dfaf9e8990..ef126c08e89c 100644
-> > --- a/mm/process_vm_access.c
-> > +++ b/mm/process_vm_access.c
-> > @@ -81,7 +81,7 @@ static int process_vm_rw_single_vec(unsigned long addr,
-> >   	ssize_t rc = 0;
-> >   	unsigned long max_pages_per_loop = PVM_MAX_KMALLOC_PAGES
-> >   		/ sizeof(struct pages *);
-> > -	unsigned int flags = 0;
-> > +	unsigned int flags = FOLL_ALLOW_BROKEN_FILE_MAPPING;
-> >   	/* Work out address and page range required */
-> >   	if (len == 0)
-> > diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> > index 02207e852d79..b93cfcaccb0d 100644
-> > --- a/net/xdp/xdp_umem.c
-> > +++ b/net/xdp/xdp_umem.c
-> > @@ -93,7 +93,7 @@ void xdp_put_umem(struct xdp_umem *umem, bool defer_cleanup)
-> >   static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
-> >   {
-> > -	unsigned int gup_flags = FOLL_WRITE;
-> > +	unsigned int gup_flags = FOLL_WRITE | FOLL_ALLOW_BROKEN_FILE_MAPPING;
-> >   	long npgs;
-> >   	int err;
->
-> Not sure about this in general, but seemss at least ptrace
-> (ptrace_access_vm()) seems to be broken here..
+On Sun, Apr 23, 2023 at 10:37:40PM +0900, Masami Hiramatsu wrote:
+> On Sun, 23 Apr 2023 09:41:54 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Thu, Apr 20, 2023 at 08:26:10PM +0900, Masami Hiramatsu (Google) wrote:
+> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > Allow fprobe_event to trace raw tracepoints so that user can trace
+> > > tracepoints which don't have traceevent wrappers. This new event is
+> > > always available if fprobe event is enabled since the tracepoint is
+> > > disabled, trace-event and dynamic event is also not available.
+> > 
+> > I thought of ftrace tracepoints wrappers as standard in distros,
+> > could you specify which config options that involves?
+> 
+> Ah, sorry, I'm completely confused you.
+> 
+> ----
+> This new event is always available if fprobe event is enabled. If the
+> tracepoint is disabled, trace-event and dynamic event including
+> fprobe is also not available.
+> ----
 
-Ah thanks, that was an oversight as it uses __access_remote_vm() rather
-than access_process_vm(). I had carefully examined both (and all other GUP
-callers) but in supplying the flag for the latter I in typically squeezy
-brained human fashion forgot to also do so for the former, will respin
-accordingly.
+so this basically adds another way of attaching to tracepoint through ftrace
+dynamic_events file interface.. but we can already attach to tracepoints
+through ftrace via /sys/kernel/debug/tracing/events/* right?
 
->
->
-> --Mika
->
->
+I'm trying to find out what's the config for which this new way of attaching
+tracepoints is useful
+
+thanks,
+jirka
+
+> 
+> > 
+> > > +	if (trace_fprobe_is_tracepoint(tf)) {
+> > > +		struct tracepoint *tpoint = tf->tpoint;
+> > > +		unsigned long ip = (unsigned long)tpoint->probestub;
+> > > +		/*
+> > > +		 * Here, we do 2 steps to enable fprobe on a tracepoint.
+> > > +		 * At first, put __probestub_##TP function on the tracepoint
+> > > +		 * and put a fprobe on the stub function.
+> > > +		 */
+> > > +		ret = tracepoint_probe_register_prio_may_exist(tpoint,
+> > > +					tpoint->probestub, NULL, 0);
+> > > +		if (ret < 0)
+> > > +			return ret;
+> > > +		return register_fprobe_ips(&tf->fp, &ip, 1);
+> > 
+> > nice idea
+> 
+> Thanks!
+> 
+> 
+> > 
+> > jirka
+> > 
+> > > +	}
+> > > +
+> > >  	/* TODO: handle filter, nofilter or symbol list */
+> > >  	return register_fprobe(&tf->fp, tf->symbol, NULL);
+> > >  }
+> > > @@ -699,6 +723,12 @@ static void __unregister_trace_fprobe(struct trace_fprobe *tf)
+> > >  	if (trace_fprobe_is_registered(tf)) {
+> > >  		unregister_fprobe(&tf->fp);
+> > >  		memset(&tf->fp, 0, sizeof(tf->fp));
+> > > +		if (trace_fprobe_is_tracepoint(tf)) {
+> > > +			tracepoint_probe_unregister(tf->tpoint,
+> > > +					tf->tpoint->probestub, NULL);
+> > > +			tf->tpoint = NULL;
+> > > +			tf->mod = NULL;
+> > > +		}
+> > >  	}
+> > >  }
+> > 
+> > SNIP
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
