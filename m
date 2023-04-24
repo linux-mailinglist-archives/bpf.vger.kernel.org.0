@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB9A6ED20D
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FBE6ED20E
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbjDXQHN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 12:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        id S232032AbjDXQHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 12:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjDXQHK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 12:07:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF34783D5
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:07:03 -0700 (PDT)
+        with ESMTP id S232100AbjDXQHS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 12:07:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778EC4C2E
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:07:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24032619FC
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:07:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D523FC433EF;
-        Mon, 24 Apr 2023 16:06:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1321061C12
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD64C4339E;
+        Mon, 24 Apr 2023 16:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682352422;
-        bh=HYt5JDtZlLnwAK+JXhGXzLxuJvMWlEihTTaEk87/VPg=;
+        s=k20201202; t=1682352432;
+        bh=Yua+mSx3jhG2H/ndNz/mXoRUf/3XrDIomHGmvzz0K44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBcB//a/AHIeSCPIuFN1ahrNO+Dd37iJd1uhUoLI7NigTp0IX7IMN1hZ+rdT8BfbZ
-         TgoTeaGO4tAqRuS6wdWV1OE9dDBrC87rFjN6vvxzAQ31+KJj7edn4ZqjhIKX3GdZ6L
-         QcUTtKp0CK2D8+Fd6NpipzLpCp0xdSO1zdK/v0sBAJvnIz+fxiq5EV15e0pRW+7KD1
-         vnc080iOiTQVxDrWna0TpmE1eUGu2WarlMfuPGyRwUZfKyJNoFL7ikC9slbgiVjarx
-         yf/6TFZv08f/LpwOWojb3eb2nGQ1knKMdA48VgREwoejta9LBhkFWzA4eDO6RrkOm9
-         Jcr+pxrGTjkwg==
+        b=nV1oU4aeCBaifn7uNKNTvXgQgWSHzfMyl51eBBWt9A960DBKV+sulc8CrAZMyjDkG
+         2M9NGrqCI9kdLYMAjfLTyHGWHi4BHmBP3HZ+6VAoWJf+Jc4xuDsVzqByhHrny1v2ug
+         Mn9C/h01Dw+5MLz+OCnrcvcdptbtD5SV8uvpzAYpiSeBdXh5uhRrF4mTavH9noOKbE
+         7kNQ/qTAxDJZD+1gYud4SGivN6a8pefwOhmltQ6/sEe2aKcE0rBqwekMMnZ5qj+wRH
+         Yw8jOHqKvlgyowF7F+/WKgNg3pZUV8Cu6uAR3H6PqfFdJ5NtsQ64IuBErGRlXOVL3I
+         reoQWezGiAb0A==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,16 +42,16 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [RFC/PATCH bpf-next 13/20] selftests/bpf: Add uprobe_multi skel test
-Date:   Mon, 24 Apr 2023 18:04:40 +0200
-Message-Id: <20230424160447.2005755-14-jolsa@kernel.org>
+Subject: [RFC/PATCH bpf-next 14/20] selftests/bpf: Add uprobe_multi api test
+Date:   Mon, 24 Apr 2023 18:04:41 +0200
+Message-Id: <20230424160447.2005755-15-jolsa@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230424160447.2005755-1-jolsa@kernel.org>
 References: <20230424160447.2005755-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,161 +60,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding uprobe_multi test for skeleton load/attach functions,
-to test skeleton auto attach for uprobe_multi link.
+Adding uprobe_multi test for bpf_program__attach_uprobe_multi_opts
+attach function.
 
-Test that bpf_get_func_ip works properly for uprobe_multi
-attachment.
+Testing attachment using glob patterns and via bpf_uprobe_multi_opts
+paths/syms fields.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 66 +++++++++++++++++++
- .../selftests/bpf/progs/uprobe_multi.c        | 63 ++++++++++++++++++
- 2 files changed, 129 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
+ .../bpf/prog_tests/uprobe_multi_test.c        | 55 +++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-new file mode 100644
-index 000000000000..f68cda122ac2
---- /dev/null
+index f68cda122ac2..179b78a4b711 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "uprobe_multi.skel.h"
-+
-+noinline void uprobe_multi_func_1(void)
+@@ -59,8 +59,63 @@ static void test_skel_api(void)
+ 	uprobe_multi__destroy(skel);
+ }
+ 
++static void
++test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_multi_opts *opts)
 +{
-+	asm volatile ("");
-+}
-+
-+noinline void uprobe_multi_func_2(void)
-+{
-+	asm volatile ("");
-+}
-+
-+noinline void uprobe_multi_func_3(void)
-+{
-+	asm volatile ("");
-+}
-+
-+static void uprobe_multi_test_run(struct uprobe_multi *skel)
-+{
-+	skel->bss->uprobe_multi_func_1_addr = (u64) uprobe_multi_func_1;
-+	skel->bss->uprobe_multi_func_2_addr = (u64) uprobe_multi_func_2;
-+	skel->bss->uprobe_multi_func_3_addr = (u64) uprobe_multi_func_3;
-+
-+	skel->bss->pid = getpid();
-+
-+	uprobe_multi_func_1();
-+	uprobe_multi_func_2();
-+	uprobe_multi_func_3();
-+
-+	ASSERT_EQ(skel->bss->uprobe_multi_func_1_result, 1, "uprobe_multi_func_1_result");
-+	ASSERT_EQ(skel->bss->uprobe_multi_func_2_result, 1, "uprobe_multi_func_2_result");
-+	ASSERT_EQ(skel->bss->uprobe_multi_func_3_result, 1, "uprobe_multi_func_3_result");
-+
-+	ASSERT_EQ(skel->bss->uretprobe_multi_func_1_result, 1, "uretprobe_multi_func_1_result");
-+	ASSERT_EQ(skel->bss->uretprobe_multi_func_2_result, 1, "uretprobe_multi_func_2_result");
-+	ASSERT_EQ(skel->bss->uretprobe_multi_func_3_result, 1, "uretprobe_multi_func_3_result");
-+}
-+
-+static void test_skel_api(void)
-+{
++	struct bpf_link *link1 = NULL, *link2 = NULL;
 +	struct uprobe_multi *skel = NULL;
-+	int err;
 +
 +	skel = uprobe_multi__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi"))
 +		goto cleanup;
 +
-+	err = uprobe_multi__attach(skel);
-+	if (!ASSERT_OK(err, "uprobe_multi__attach"))
++	link1 = bpf_program__attach_uprobe_multi_opts(skel->progs.test_uprobe,
++						      binary, pattern, opts);
++	if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi_opts"))
++		goto cleanup;
++
++	opts->retprobe = true;
++	link2 = bpf_program__attach_uprobe_multi_opts(skel->progs.test_uretprobe,
++						      binary, pattern, opts);
++	if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_opts_retprobe"))
 +		goto cleanup;
 +
 +	uprobe_multi_test_run(skel);
 +
 +cleanup:
++	bpf_link__destroy(link2);
++	bpf_link__destroy(link1);
 +	uprobe_multi__destroy(skel);
 +}
 +
-+void test_uprobe_multi_test(void)
++static void test_attach_api_pattern(void)
 +{
-+	if (test__start_subtest("skel_api"))
-+		test_skel_api();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-new file mode 100644
-index 000000000000..a5dc00938217
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <stdbool.h>
++	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
 +
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 uprobe_multi_func_1_addr = 0;
-+__u64 uprobe_multi_func_2_addr = 0;
-+__u64 uprobe_multi_func_3_addr = 0;
-+
-+__u64 uprobe_multi_func_1_result = 0;
-+__u64 uprobe_multi_func_2_result = 0;
-+__u64 uprobe_multi_func_3_result = 0;
-+
-+__u64 uretprobe_multi_func_1_result = 0;
-+__u64 uretprobe_multi_func_2_result = 0;
-+__u64 uretprobe_multi_func_3_result = 0;
-+
-+int pid = 0;
-+bool test_cookie = false;
-+
-+static void uprobe_multi_check(void *ctx, bool is_return)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return;
-+
-+	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
-+	__u64 addr = bpf_get_func_ip(ctx);
-+
-+#define SET(__var, __addr, __cookie) ({			\
-+	if (addr == __addr &&				\
-+	   (!test_cookie || (cookie == __cookie)))	\
-+		__var = 1;				\
-+})
-+
-+	if (is_return) {
-+		SET(uretprobe_multi_func_1_result, uprobe_multi_func_1_addr, 2);
-+		SET(uretprobe_multi_func_2_result, uprobe_multi_func_2_addr, 3);
-+		SET(uretprobe_multi_func_3_result, uprobe_multi_func_3_addr, 1);
-+	} else {
-+		SET(uprobe_multi_func_1_result, uprobe_multi_func_1_addr, 3);
-+		SET(uprobe_multi_func_2_result, uprobe_multi_func_2_addr, 1);
-+		SET(uprobe_multi_func_3_result, uprobe_multi_func_3_addr, 2);
-+	}
-+
-+#undef SET
++	test_attach_api("/proc/self/exe", "uprobe_multi_func_*", &opts);
++	test_attach_api("/proc/self/exe", "uprobe_multi_func_?", &opts);
 +}
 +
-+SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
-+int test_uprobe(struct pt_regs *ctx)
++static void test_attach_api_syms(void)
 +{
-+	uprobe_multi_check(ctx, false);
-+	return 0;
++	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
++	const char *syms[3] = {
++		"uprobe_multi_func_1",
++		"uprobe_multi_func_2",
++		"uprobe_multi_func_3",
++	};
++
++	opts.syms = syms;
++	opts.cnt = ARRAY_SIZE(syms);
++	test_attach_api("/proc/self/exe", NULL, &opts);
 +}
 +
-+SEC("uretprobe.multi//proc/self/exe:uprobe_multi_func_*")
-+int test_uretprobe(struct pt_regs *ctx)
-+{
-+	uprobe_multi_check(ctx, true);
-+	return 0;
-+}
+ void test_uprobe_multi_test(void)
+ {
+ 	if (test__start_subtest("skel_api"))
+ 		test_skel_api();
++	if (test__start_subtest("attach_api_pattern"))
++		test_attach_api_pattern();
++	if (test__start_subtest("attach_api_syms"))
++		test_attach_api_syms();
+ }
 -- 
 2.40.0
 
