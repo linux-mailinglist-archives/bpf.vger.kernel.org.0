@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA8C6ED214
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319B46ED216
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 18:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjDXQIG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 12:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S232102AbjDXQIO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 12:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbjDXQIE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 12:08:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E90E6A6A
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:08:03 -0700 (PDT)
+        with ESMTP id S232100AbjDXQIO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 12:08:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5214A6A6B
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 09:08:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F06C861B3C
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:08:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C3C3C433EF;
-        Mon, 24 Apr 2023 16:07:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E38E660C7A
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 16:08:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 899CBC4339E;
+        Mon, 24 Apr 2023 16:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682352482;
-        bh=jeRBYAPrZoVhm4oe2dQRln7UT1N8OBRKJkmPMI4mX/o=;
+        s=k20201202; t=1682352492;
+        bh=DOqitYxEBJmzYF5oGx5UAJL4LhJhfOlSHLkMOOk4GB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHsU8zOZg3IiiFYPz07xsxiGthg6AqqV0UW8cOra6oO6iGM9pH8AhNMvEZ6mq94QC
-         oo0rKBkRpOuHhJhm9hOFhGomxyNEvHnbYBTOxrnMVz71AiI4TrSrzKcBwabrxEF1zO
-         KNdGTUpvZmml2lP1k7lDJQrAz/d2zgWQRcyQsi+RlJehHLoWCBQe6oMtB1MJzOA0C2
-         YJUEit5ttfi6Lu56z+ZeUArnwnuVcqJSh950FcVJuzBXV3QuobEKkXdMr0lVNlwZHk
-         J1vgeq8tvLkD78QtR6T+DBAmEr+TAVpEqCLN3USGA/iOGzciQsiOv25JlclXe83ms4
-         MrBj5d1AO6nvQ==
+        b=VMPUPF7lEYpEpf2gULsB+Rc8LUiC+s6DgOcwe6N7C+rLgYu6zRKPOpJ93DLkUU1h3
+         QJGEzSMZKFWKqSwfV2ISm7oqUgIxWSYbfGVcsG7X/52IYgVLaFhyCUKhgkQmsE7vRK
+         2OotoGapHUyeglLsnt6wMfSJ5oV2LsJ0NZC4CMZbY6XkBkXIKvi6MH+pTtOe0oz2+6
+         SqzYd6p/rKilaUMdhn6j7YNh1R0iT80TKsHKJMcV3W4S/Mk1DpxS2nTGpLzWlgTTL5
+         OU087Fip6z+3Kf31DhvRegJFErZnFHfUkXnzdYOJjoQVN66j8UM5pdvRW8FnSZWYSp
+         t+rP2DH2sgeTg==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,16 +42,16 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [RFC/PATCH bpf-next 19/20] selftests/bpf: Add usdt_multi bench test
-Date:   Mon, 24 Apr 2023 18:04:46 +0200
-Message-Id: <20230424160447.2005755-20-jolsa@kernel.org>
+Subject: [RFC/PATCH bpf-next 20/20] selftests/bpf: Add uprobe_multi cookie test
+Date:   Mon, 24 Apr 2023 18:04:47 +0200
+Message-Id: <20230424160447.2005755-21-jolsa@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230424160447.2005755-1-jolsa@kernel.org>
 References: <20230424160447.2005755-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,139 +60,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test that attaches 50k usdt probes in usdt_multi binary.
-
-After the attach is done we run the binary and make sure we get
-proper amount of hits.
-
-With current uprobes:
-
-  # perf stat --null ./test_progs -n 254/6
-  #254/6   uprobe_multi_test/bench_usdt:OK
-  #254     uprobe_multi_test:OK
-  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-
-   Performance counter stats for './test_progs -n 254/6':
-
-      1353.659680562 seconds time elapsed
-
-With uprobe_multi link:
-
-  # perf stat --null ./test_progs -n 254/6
-  #254/6   uprobe_multi_test/bench_usdt:OK
-  #254     uprobe_multi_test:OK
-  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-
-   Performance counter stats for './test_progs -n 254/6':
-
-         0.322046364 seconds time elapsed
+Adding test for cookies setup/retrieval in uprobe_link uprobes
+and making sure bpf_get_attach_cookie works properly.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 54 +++++++++++++++++++
- .../selftests/bpf/progs/uprobe_multi_usdt.c   | 16 ++++++
- 2 files changed, 70 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
+ .../selftests/bpf/prog_tests/bpf_cookie.c     | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 9a89c61359a1..ff08d4b8dbfe 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -3,6 +3,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "uprobe_multi.skel.h"
-+#include "uprobe_multi_usdt.skel.h"
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+index 26b2d1bffdfd..0e2d9ebe9258 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+@@ -11,6 +11,7 @@
+ #include <bpf/btf.h>
+ #include "test_bpf_cookie.skel.h"
+ #include "kprobe_multi.skel.h"
++#include "uprobe_multi.skel.h"
  
- noinline void uprobe_multi_func_1(void)
- {
-@@ -217,6 +218,57 @@ void test_bench_attach_uprobe(void)
- 	printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
+ /* uprobe attach point */
+ static noinline void trigger_func(void)
+@@ -239,6 +240,81 @@ static void kprobe_multi_attach_api_subtest(void)
+ 	bpf_link__destroy(link1);
+ 	kprobe_multi__destroy(skel);
  }
- 
-+void test_bench_attach_usdt(void)
++
++/* defined in prog_tests/uprobe_multi_test.c */
++void uprobe_multi_func_1(void);
++void uprobe_multi_func_2(void);
++void uprobe_multi_func_3(void);
++
++static void uprobe_multi_test_run(struct uprobe_multi *skel)
 +{
-+	struct uprobe_multi_usdt *skel = NULL;
-+	long attach_start_ns, attach_end_ns;
-+	long detach_start_ns, detach_end_ns;
-+	double attach_delta, detach_delta;
-+	LIBBPF_OPTS(bpf_usdt_opts, opts,
-+		.uprobe_multi = true,
-+	);
-+	struct bpf_program *prog;
-+	int err;
++	skel->bss->uprobe_multi_func_1_addr = (u64) uprobe_multi_func_1;
++	skel->bss->uprobe_multi_func_2_addr = (u64) uprobe_multi_func_2;
++	skel->bss->uprobe_multi_func_3_addr = (u64) uprobe_multi_func_3;
 +
-+	skel = uprobe_multi_usdt__open();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
++	skel->bss->pid = getpid();
++	skel->bss->test_cookie = true;
++
++	uprobe_multi_func_1();
++	uprobe_multi_func_2();
++	uprobe_multi_func_3();
++
++	ASSERT_EQ(skel->bss->uprobe_multi_func_1_result, 1, "uprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_2_result, 1, "uprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_3_result, 1, "uprobe_multi_func_3_result");
++
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_1_result, 1, "uretprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_2_result, 1, "uretprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_3_result, 1, "uretprobe_multi_func_3_result");
++}
++
++static void uprobe_multi_attach_api_subtest(void)
++{
++	struct bpf_link *link1 = NULL, *link2 = NULL;
++	struct uprobe_multi *skel = NULL;
++	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
++	const char *syms[3] = {
++		"uprobe_multi_func_1",
++		"uprobe_multi_func_2",
++		"uprobe_multi_func_3",
++	};
++	__u64 cookies[3];
++
++	cookies[0] = 3; /* uprobe_multi_func_1 */
++	cookies[1] = 1; /* uprobe_multi_func_2 */
++	cookies[2] = 2; /* uprobe_multi_func_3 */
++
++	opts.syms = syms;
++	opts.cnt = ARRAY_SIZE(syms);
++	opts.cookies = &cookies[0];
++
++	skel = uprobe_multi__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi"))
 +		goto cleanup;
 +
-+	bpf_object__for_each_program(prog, skel->obj)
-+		bpf_program__set_autoload(prog, false);
-+
-+	bpf_program__set_autoload(skel->progs.usdt0, true);
-+	bpf_program__set_expected_attach_type(skel->progs.usdt0, BPF_TRACE_UPROBE_MULTI);
-+
-+	err = uprobe_multi_usdt__load(skel);
-+	if (!ASSERT_EQ(err, 0, "strncmp_test load"))
++	link1 = bpf_program__attach_uprobe_multi_opts(skel->progs.test_uprobe,
++						      "/proc/self/exe", NULL, &opts);
++	if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi_opts"))
 +		goto cleanup;
 +
-+	attach_start_ns = get_time_ns();
++	cookies[0] = 2; /* uprobe_multi_func_1 */
++	cookies[1] = 3; /* uprobe_multi_func_2 */
++	cookies[2] = 1; /* uprobe_multi_func_3 */
 +
-+	skel->links.usdt0 = bpf_program__attach_usdt(skel->progs.usdt0, -1, "./usdt_multi",
-+						     "test", "usdt", &opts);
-+	if (!ASSERT_OK_PTR(skel->links.usdt0, "usdt_link"))
++	opts.retprobe = true;
++	link2 = bpf_program__attach_uprobe_multi_opts(skel->progs.test_uretprobe,
++						      "/proc/self/exe", NULL, &opts);
++	if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_opts_retprobe"))
 +		goto cleanup;
 +
-+	attach_end_ns = get_time_ns();
-+
-+	system("./usdt_multi");
-+
-+	ASSERT_EQ(skel->bss->count, 50000, "usdt_count");
++	uprobe_multi_test_run(skel);
 +
 +cleanup:
-+	detach_start_ns = get_time_ns();
-+	uprobe_multi_usdt__destroy(skel);
-+	detach_end_ns = get_time_ns();
-+
-+	attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
-+	detach_delta = (detach_end_ns - detach_start_ns) / 1000000000.0;
-+
-+	printf("%s: attached in %7.3lfs\n", __func__, attach_delta);
-+	printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
++	bpf_link__destroy(link2);
++	bpf_link__destroy(link1);
++	uprobe_multi__destroy(skel);
 +}
 +
- void test_uprobe_multi_test(void)
+ static void uprobe_subtest(struct test_bpf_cookie *skel)
  {
- 	if (test__start_subtest("skel_api"))
-@@ -229,4 +281,6 @@ void test_uprobe_multi_test(void)
- 		test_link_api();
- 	if (test__start_subtest("bench_uprobe"))
- 		test_bench_attach_uprobe();
-+	if (test__start_subtest("bench_usdt"))
-+		test_bench_attach_usdt();
- }
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c b/tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
-new file mode 100644
-index 000000000000..9e1c33d0bd2f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/usdt.bpf.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int count;
-+
-+SEC("usdt")
-+int usdt0(struct pt_regs *ctx)
-+{
-+	count++;
-+	return 0;
-+}
+ 	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
+@@ -515,6 +591,8 @@ void test_bpf_cookie(void)
+ 		kprobe_multi_attach_api_subtest();
+ 	if (test__start_subtest("uprobe"))
+ 		uprobe_subtest(skel);
++	if (test__start_subtest("multi_uprobe_attach_api"))
++		uprobe_multi_attach_api_subtest();
+ 	if (test__start_subtest("tracepoint"))
+ 		tp_subtest(skel);
+ 	if (test__start_subtest("perf_event"))
 -- 
 2.40.0
 
