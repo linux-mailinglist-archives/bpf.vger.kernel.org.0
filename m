@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B8B6ED57A
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7626ED587
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbjDXTqu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 15:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S232159AbjDXTtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 15:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjDXTqu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 15:46:50 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8685B8C
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:46:49 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-63b62d2f729so4047734b3a.1
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:46:49 -0700 (PDT)
+        with ESMTP id S232821AbjDXTtl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 15:49:41 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC645FF0
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1a677dffb37so42549345ad.2
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682365609; x=1684957609;
+        d=gmail.com; s=20221208; t=1682365777; x=1684957777;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hNC8FgloV+azAmjYrmYkPDzFDekEApPC3gjDmncj4RU=;
-        b=N6qYz4okTKI9eWkpo1m1DEc7oQ1aF2Vwpb21eKFXZ2wUu0FZACPKE/w6agDtp37rJs
-         kKkbf1OVUhGIjNf8RtSZZVnu7t/lu/Cz3vrXgqHuNni+CXvQiejL34lAE8GAkPB1AnSB
-         VFgDML2Lsa73ZHrPM5wLs1yPDCdSEWS2FFT2gmjyB1+rYtfep4lkgO3/ClBbR59BnrBd
-         QxG+U26JcT7x4QD87s3h0814gyhbjl/9TT2igCEb0CHpgjHg3o7bAwq/emr9dTr8DK4Q
-         ia7qK0BviowYaTTQqPlxj0Vl8iCXb6laDCZBRPqi2OysaXYjT6HgjGNtYYYhPnxrpU8x
-         YXLg==
+        bh=ncXeF8+lSv+yUHjZGKkNhp0Jv9CE7Y6CwXT+QMlocgs=;
+        b=ioI2c6rKmrBM7w5lAyzS3elYoLlGr4WX7+PFpkRPWL06xjkVAh74juiPP2bN+sFz8w
+         TdeqNYyDXb+x8YFDGK9OcsCriKiLWT704o22ueLXUGib9SE4BlBIDVwa+b+nMgbMBZDy
+         wzaOuGVrIa11p7O1XXh0H+z1Al2Ucow3Iz+MFstLc9E26oL7VAkb4C9Q+Z25SGP0ypUd
+         eLcMT5G9MvFlrVJZcZ73cIPT8oPX0DI5VDN2Yk+fXogP9yUcfzktu3M8RLFZvTYrStkD
+         yOQTy1La/a9NFB9oaWH3m322ZsFkzfxwHvgzXR5hV6FU52UjNleJBd1P5BaggMY0yR11
+         A6aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682365609; x=1684957609;
+        d=1e100.net; s=20221208; t=1682365777; x=1684957777;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=hNC8FgloV+azAmjYrmYkPDzFDekEApPC3gjDmncj4RU=;
-        b=HNHvWiaoPG2hoJ/cslOoCKtUZc3m3XOgIBs3bTaFOzw4Rk8hiRHbs8PbAuNz9LwZrb
-         dCZpGKZHqo3GoddN00othdqd7/vUMIHp2a4E6zRK15AK3ilpnusZeMdhXHWan4eyIaMN
-         V7ur+RzzVTbfH9YTdnzYZQ3o9Vu51ONSUVJm8h4qUb/c6bA6tjQJzWH5d/fOKHIS75Cq
-         1N5PvV4MhD7dyYqzzvn2qgVltN5aUYBE4Ob2yZ9OQbNhrQmv8GBYjPGznc6+0ExUE3t2
-         PNIxL7gIzUjHqJPV2LA/QMj4QDwSc4ov6lSVbAFVbp8y2uMOIrssdySpjr0C3uElDwX5
-         gwDw==
-X-Gm-Message-State: AAQBX9faPhnwegNroYpzaLjZCzRppFzIgQ/vuG9xtNlwkJOsjI4tXIIg
-        fWBIdru6bpxNBbsfWWiCMAI=
-X-Google-Smtp-Source: AKy350afHGlGjcZr+W5xgNQ7LqgMJYxNFgHOg8IvWsy08vSrdZ66WbG66Xc9FS1pyAJ8pXK+MM+Qsw==
-X-Received: by 2002:a05:6a00:1a56:b0:63d:3789:733f with SMTP id h22-20020a056a001a5600b0063d3789733fmr20274727pfv.15.1682365608583;
-        Mon, 24 Apr 2023 12:46:48 -0700 (PDT)
+        bh=ncXeF8+lSv+yUHjZGKkNhp0Jv9CE7Y6CwXT+QMlocgs=;
+        b=FIMoUy+uwXWAXTiZouLnnPNxMWnSPZDOCW2y7M1zb75TC1CR22+iFhsRV3DF1+fpA4
+         fj0azQzNGK5pOklGYTsErqpNM7V7FATCXsgL2FNfmYJB2kR/XgMd4hmWqi3t3+6936Iv
+         scBrvTpb+YVyw/J9zOr1OpTYZiHpSBVsWXIM5Pm2Q42aPVXL0Tx3KMY6vQCy85a5iryZ
+         PCbO9DrjGr/lIDzKGG2epHIpEclVo3+eNro/MxjvJVhoiPQLTRDx7dhPd+mrrRfb2BEr
+         Lurvm4Hzo5DwvonzVNWHnn7lZHea4yu0u4Z7pWOWNhdPzXhRDCEpawtryUPwKE9/uDaT
+         IJIA==
+X-Gm-Message-State: AAQBX9f0MEF8OkqfUpJ9WJDPybiHzvGIrxldEhiQYFu6vBclhOK0M3wT
+        vInhyGX3Mvarly80HFPViTuHV8UVIc4=
+X-Google-Smtp-Source: AKy350aDTINZgc1Nj6WKEzmVblq3CYB+DNrwsSkYJIagd1OcMyS9TIYqFRebDlxGjuQYQkEWba4txw==
+X-Received: by 2002:a17:903:24e:b0:1a6:4a64:4d27 with SMTP id j14-20020a170903024e00b001a64a644d27mr18782941plh.40.1682365777414;
+        Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:d8b6:344e:b81a:e8b5])
-        by smtp.gmail.com with ESMTPSA id p2-20020a056a000a0200b00638c9a2ba5csm7831577pfh.62.2023.04.24.12.46.47
+        by smtp.gmail.com with ESMTPSA id bd2-20020a170902830200b001a68d45e52dsm6901912plb.249.2023.04.24.12.49.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 12:46:48 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 12:46:46 -0700
+        Mon, 24 Apr 2023 12:49:36 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 12:49:35 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Message-ID: <6446dca6c74fd_389cc208e3@john.notmuch>
-In-Reply-To: <20230420071414.570108-2-joannelkoong@gmail.com>
+Message-ID: <6446dd4faa312_389cc208c3@john.notmuch>
+In-Reply-To: <20230420071414.570108-3-joannelkoong@gmail.com>
 References: <20230420071414.570108-1-joannelkoong@gmail.com>
- <20230420071414.570108-2-joannelkoong@gmail.com>
-Subject: RE: [PATCH v2 bpf-next 1/5] bpf: Add bpf_dynptr_adjust
+ <20230420071414.570108-3-joannelkoong@gmail.com>
+Subject: RE: [PATCH v2 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and
+ bpf_dynptr_is_rdonly
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -74,84 +75,16 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Joanne Koong wrote:
-> Add a new kfunc
+> bpf_dynptr_is_null returns true if the dynptr is null / invalid
+> (determined by whether ptr->data is NULL), else false if
+> the dynptr is a valid dynptr.
 > 
-> int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end);
-> 
-> which adjusts the dynptr to reflect the new [start, end) interval.
-> In particular, it advances the offset of the dynptr by "start" bytes,
-> and if end is less than the size of the dynptr, then this will trim the
-> dynptr accordingly.
-> 
-> Adjusting the dynptr interval may be useful in certain situations.
-> For example, when hashing which takes in generic dynptrs, if the dynptr
-> points to a struct but only a certain memory region inside the struct
-> should be hashed, adjust can be used to narrow in on the
-> specific region to hash.
-
-Would you want to prohibit creating an empty dynptr with [start, start)?
-
+> bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
+> else false if the dynptr is read-writable. If the dynptr is
+> null / invalid, false is returned by default.
 > 
 > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  kernel/bpf/helpers.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 00e5fb0682ac..7ddf63ac93ce 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1448,6 +1448,13 @@ u32 bpf_dynptr_get_size(const struct bpf_dynptr_kern *ptr)
->  	return ptr->size & DYNPTR_SIZE_MASK;
->  }
->  
-> +static void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size)
-> +{
-> +	u32 metadata = ptr->size & ~DYNPTR_SIZE_MASK;
-> +
-> +	ptr->size = new_size | metadata;
-> +}
-> +
->  int bpf_dynptr_check_size(u32 size)
->  {
->  	return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
-> @@ -2297,6 +2304,24 @@ __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 o
->  	return bpf_dynptr_slice(ptr, offset, buffer, buffer__szk);
->  }
->  
-> +__bpf_kfunc int bpf_dynptr_adjust(struct bpf_dynptr_kern *ptr, u32 start, u32 end)
-> +{
-> +	u32 size;
-> +
-> +	if (!ptr->data || start > end)
-> +		return -EINVAL;
-> +
-> +	size = bpf_dynptr_get_size(ptr);
-> +
-> +	if (start > size || end > size)
-> +		return -ERANGE;
 
-maybe 'start >= size'? OTOH if the verifier doesn't mind I guess its OK
-to create the thing even if it doesn't make much sense.
-
-> +
-> +	ptr->offset += start;
-> +	bpf_dynptr_set_size(ptr, end - start);
-> +
-> +	return 0;
-> +}
-> +
->  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
->  {
->  	return obj;
-> @@ -2369,6 +2394,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_SET8_END(common_btf_ids)
->  
->  static const struct btf_kfunc_id_set common_kfunc_set = {
-> -- 
-> 2.34.1
-> 
+Acked-by: John Fastabend <john.fastabend@gmail.com>
