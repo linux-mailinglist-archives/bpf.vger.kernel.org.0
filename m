@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9E16ED088
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB896ED087
 	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 16:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbjDXOrB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 10:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
+        id S231805AbjDXOrF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 10:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjDXOqz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 10:46:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092F67EC6;
-        Mon, 24 Apr 2023 07:46:31 -0700 (PDT)
+        with ESMTP id S231775AbjDXOq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 10:46:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14859020;
+        Mon, 24 Apr 2023 07:46:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A478614E7;
-        Mon, 24 Apr 2023 14:46:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BE3C433D2;
-        Mon, 24 Apr 2023 14:46:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4261C60BB5;
+        Mon, 24 Apr 2023 14:46:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF3AC433D2;
+        Mon, 24 Apr 2023 14:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682347590;
-        bh=Rr6xQgk50Y4ZGBCzUd1zUs+X3lNoqxnJIVxDwxiF6LU=;
+        s=k20201202; t=1682347600;
+        bh=xZhw2zVLqA6QeVYNUDtNH0J+DX2L5vSikK7LT56q/Qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7XOvPOyqVikRyGEifVCiH4sHKcQe13b6Eb8YU2dfLAUgGTJIRFVBrTDSDkpfVRGj
-         P9U5DlC+Y82aRDHK/7RAnvdp99S1OW4qWFQ4uLegnP09Uq7Md0uHtbhUUU0843jNuI
-         nhUJB1DPYlQUF2JoWbd8457KeyZXXpkwquFKJuD24A3VUk9jyHQmvPfC2nlbA2ALh7
-         gvvbSkTpipttNpQ/Z/jBOpSEGIiYE11a81mPbm4O9toWrB+aCAQiPCdbMqZiyNfrqs
-         HPcpuyAFfW6xGA5Z619sfCjuXzZZEruV3xxVDfh30M+Cx13MT17dMwjEJreBUwTsPr
-         QvfR4LE8guJ6g==
+        b=Ga0BSqxkke7TmRtj0VM56vkX88vKovVz1+hnauXkO+61tty53oZaPPJqujrstw6N4
+         cU/DvDBcQzgZnGTWeLjnFwkCmsJ4CfUzO7CcSgU2iJG+n4zvJw21PP32Pwk9ssE/rx
+         k6luOU0wfg9iFNd7JpdBLjj3j7ypqvtSRlobGU0M4OtG59SuD0q7vNpOJhV5+Vg7A0
+         JjYH8+1ehGoIMuYPRCdwGC1BevPUNIDYExnSPW2iifHN/9eXYeBy7M9Vl5PjUlIndU
+         wV0+lhFQkiKw/RqXgdW1IUlxr3bLzKDJVBnbhe/h4jJbNALIG9WdhhhFhkQi4IO065
+         1FfY3QvnX45bg==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     linux-trace-kernel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
@@ -39,9 +39,9 @@ Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: [PATCH v6 03/10] selftests/ftrace: Add fprobe related testcases
-Date:   Mon, 24 Apr 2023 23:46:26 +0900
-Message-ID:  <168234758615.2210510.1692515046812893982.stgit@mhiramat.roam.corp.google.com>
+Subject: [PATCH v6 04/10] tracing/probes: Add tracepoint support on fprobe_events
+Date:   Mon, 24 Apr 2023 23:46:36 +0900
+Message-ID:  <168234759609.2210510.15393231666417208991.stgit@mhiramat.roam.corp.google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
 In-Reply-To:  <168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com>
 References:  <168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com>
@@ -49,8 +49,8 @@ User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,142 +61,448 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Add syntax error testcase and add-remove testcase for fprobe events.
-This ensures that the fprobe events can be added/removed and parser
-handles syntax errors correctly.
+Allow fprobe_events to trace raw tracepoints so that user can trace
+tracepoints which don't have traceevent wrappers. This new event is
+always available if the fprobe_events is enabled (thus no kconfig),
+because the fprobe_events depends on the trace-event and traceporint.
+
+e.g.
+ # echo 't sched_overutilized_tp' >> dynamic_events
+ # echo 't 9p_client_req' >> dynamic_events
+ # cat dynamic_events
+t:tracepoints/sched_overutilized_tp sched_overutilized_tp
+t:tracepoints/_9p_client_req 9p_client_req
+
+The event name is based on the tracepoint name, but if it is started
+with digit character, an underscore '_' will be added.
+
+NOTE: to avoid further confusion, this renames TPARG_FL_TPOINT to
+TPARG_FL_TEVENT because this flag is used for eprobe (trace-event probe).
+And reuse TPARG_FL_TPOINT for this raw tracepoint probe.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- .../ftrace/test.d/dynevent/add_remove_fprobe.tc    |   26 ++++++
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   88 ++++++++++++++++++++
- 2 files changed, 114 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+Changes in v6:
+ - Update description
+ - Make find_tracepoint() static.
+ - Fix some checkpatches warnings.
+---
+ include/linux/tracepoint-defs.h |    1 
+ include/linux/tracepoint.h      |    5 ++
+ kernel/trace/trace.c            |    1 
+ kernel/trace/trace_eprobe.c     |    2 -
+ kernel/trace/trace_fprobe.c     |  129 +++++++++++++++++++++++++++++++++++++--
+ kernel/trace/trace_probe.c      |   15 +++--
+ kernel/trace/trace_probe.h      |   14 ++++
+ 7 files changed, 152 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe.tc
-new file mode 100644
-index 000000000000..53e0d5671687
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe.tc
-@@ -0,0 +1,26 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - add/remove fprobe events
-+# requires: dynamic_events "f[:[<group>/][<event>]] <func-name>[%return] [<args>]": README
-+
-+echo 0 > events/enable
-+echo > dynamic_events
-+
-+PLACE=$FUNCTION_FORK
-+
-+echo "f:myevent1 $PLACE" >> dynamic_events
-+echo "f:myevent2 $PLACE%return" >> dynamic_events
-+
-+grep -q myevent1 dynamic_events
-+grep -q myevent2 dynamic_events
-+test -d events/fprobes/myevent1
-+test -d events/fprobes/myevent2
-+
-+echo "-:myevent2" >> dynamic_events
-+
-+grep -q myevent1 dynamic_events
-+! grep -q myevent2 dynamic_events
-+
-+echo > dynamic_events
-+
-+clear_trace
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-new file mode 100644
-index 000000000000..549daa162d84
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -0,0 +1,88 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Fprobe event parser error log check
-+# requires: dynamic_events "f[:[<group>/][<event>]] <func-name>[%return] [<args>]": README
-+
-+check_error() { # command-with-error-pos-by-^
-+    ftrace_errlog_check 'trace_fprobe' "$1" 'dynamic_events'
+diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+index e7c2276be33e..4dc4955f0fbf 100644
+--- a/include/linux/tracepoint-defs.h
++++ b/include/linux/tracepoint-defs.h
+@@ -35,6 +35,7 @@ struct tracepoint {
+ 	struct static_call_key *static_call_key;
+ 	void *static_call_tramp;
+ 	void *iterator;
++	void *probestub;
+ 	int (*regfunc)(void);
+ 	void (*unregfunc)(void);
+ 	struct tracepoint_func __rcu *funcs;
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 6811e43c1b5c..88c0ba623ee6 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -303,6 +303,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 	__section("__tracepoints_strings") = #_name;			\
+ 	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);	\
+ 	int __traceiter_##_name(void *__data, proto);			\
++	void __probestub_##_name(void *__data, proto);			\
+ 	struct tracepoint __tracepoint_##_name	__used			\
+ 	__section("__tracepoints") = {					\
+ 		.name = __tpstrtab_##_name,				\
+@@ -310,6 +311,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		.static_call_key = &STATIC_CALL_KEY(tp_func_##_name),	\
+ 		.static_call_tramp = STATIC_CALL_TRAMP_ADDR(tp_func_##_name), \
+ 		.iterator = &__traceiter_##_name,			\
++		.probestub = &__probestub_##_name,			\
+ 		.regfunc = _reg,					\
+ 		.unregfunc = _unreg,					\
+ 		.funcs = NULL };					\
+@@ -330,6 +332,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ 		}							\
+ 		return 0;						\
+ 	}								\
++	void __probestub_##_name(void *__data, proto)			\
++	{								\
++	}								\
+ 	DEFINE_STATIC_CALL(tp_func_##_name, __traceiter_##_name);
+ 
+ #define DEFINE_TRACE(name, proto, args)		\
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 4d7d5708d3cd..9da9c979faa3 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5653,6 +5653,7 @@ static const char readme_msg[] =
+ #endif
+ #ifdef CONFIG_FPROBE_EVENTS
+ 	"\t           f[:[<group>/][<event>]] <func-name>[%return] [<args>]\n"
++	"\t           t[:[<group>/][<event>]] <tracepoint> [<args>]\n"
+ #endif
+ #ifdef CONFIG_HIST_TRIGGERS
+ 	"\t           s:[synthetic/]<event> <field> [<field>]\n"
+diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+index 67e854979d53..fd64cd5d5745 100644
+--- a/kernel/trace/trace_eprobe.c
++++ b/kernel/trace/trace_eprobe.c
+@@ -817,7 +817,7 @@ find_and_get_event(const char *system, const char *event_name)
+ 
+ static int trace_eprobe_tp_update_arg(struct trace_eprobe *ep, const char *argv[], int i)
+ {
+-	unsigned int flags = TPARG_FL_KERNEL | TPARG_FL_TPOINT;
++	unsigned int flags = TPARG_FL_KERNEL | TPARG_FL_TEVENT;
+ 	int ret;
+ 
+ 	ret = traceprobe_parse_probe_arg(&ep->tp, i, argv[i], flags);
+diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+index 0049d9ef2402..7c8be8a3616f 100644
+--- a/kernel/trace/trace_fprobe.c
++++ b/kernel/trace/trace_fprobe.c
+@@ -9,6 +9,7 @@
+ #include <linux/module.h>
+ #include <linux/rculist.h>
+ #include <linux/security.h>
++#include <linux/tracepoint.h>
+ #include <linux/uaccess.h>
+ 
+ #include "trace_dynevent.h"
+@@ -17,6 +18,7 @@
+ #include "trace_probe_tmpl.h"
+ 
+ #define FPROBE_EVENT_SYSTEM "fprobes"
++#define TRACEPOINT_EVENT_SYSTEM "tracepoints"
+ #define RETHOOK_MAXACTIVE_MAX 4096
+ 
+ static int trace_fprobe_create(const char *raw_command);
+@@ -41,6 +43,8 @@ struct trace_fprobe {
+ 	struct dyn_event	devent;
+ 	struct fprobe		fp;
+ 	const char		*symbol;
++	struct tracepoint	*tpoint;
++	struct module		*mod;
+ 	struct trace_probe	tp;
+ };
+ 
+@@ -68,6 +72,11 @@ static bool trace_fprobe_is_return(struct trace_fprobe *tf)
+ 	return tf->fp.exit_handler != NULL;
+ }
+ 
++static bool trace_fprobe_is_tracepoint(struct trace_fprobe *tf)
++{
++	return tf->tpoint != NULL;
 +}
 +
-+check_error 'f^100 vfs_read'		# MAXACT_NO_KPROBE
-+check_error 'f^1a111 vfs_read'		# BAD_MAXACT
-+check_error 'f^100000 vfs_read'		# MAXACT_TOO_BIG
+ static const char *trace_fprobe_symbol(struct trace_fprobe *tf)
+ {
+ 	return tf->symbol ? tf->symbol : "unknown";
+@@ -669,6 +678,21 @@ static int __register_trace_fprobe(struct trace_fprobe *tf)
+ 	else
+ 		tf->fp.flags |= FPROBE_FL_DISABLED;
+ 
++	if (trace_fprobe_is_tracepoint(tf)) {
++		struct tracepoint *tpoint = tf->tpoint;
++		unsigned long ip = (unsigned long)tpoint->probestub;
++		/*
++		 * Here, we do 2 steps to enable fprobe on a tracepoint.
++		 * At first, put __probestub_##TP function on the tracepoint
++		 * and put a fprobe on the stub function.
++		 */
++		ret = tracepoint_probe_register_prio_may_exist(tpoint,
++					tpoint->probestub, NULL, 0);
++		if (ret < 0)
++			return ret;
++		return register_fprobe_ips(&tf->fp, &ip, 1);
++	}
 +
-+check_error 'f ^non_exist_func'		# BAD_PROBE_ADDR (enoent)
-+check_error 'f ^vfs_read+10'		# BAD_PROBE_ADDR
-+check_error 'f:^/bar vfs_read'		# NO_GROUP_NAME
-+check_error 'f:^12345678901234567890123456789012345678901234567890123456789012345/bar vfs_read'	# GROUP_TOO_LONG
+ 	/* TODO: handle filter, nofilter or symbol list */
+ 	return register_fprobe(&tf->fp, tf->symbol, NULL);
+ }
+@@ -679,6 +703,12 @@ static void __unregister_trace_fprobe(struct trace_fprobe *tf)
+ 	if (trace_fprobe_is_registered(tf)) {
+ 		unregister_fprobe(&tf->fp);
+ 		memset(&tf->fp, 0, sizeof(tf->fp));
++		if (trace_fprobe_is_tracepoint(tf)) {
++			tracepoint_probe_unregister(tf->tpoint,
++					tf->tpoint->probestub, NULL);
++			tf->tpoint = NULL;
++			tf->mod = NULL;
++		}
+ 	}
+ }
+ 
+@@ -742,7 +772,8 @@ static int append_trace_fprobe(struct trace_fprobe *tf, struct trace_fprobe *to)
+ {
+ 	int ret;
+ 
+-	if (trace_fprobe_is_return(tf) != trace_fprobe_is_return(to)) {
++	if (trace_fprobe_is_return(tf) != trace_fprobe_is_return(to) ||
++	    trace_fprobe_is_tracepoint(tf) != trace_fprobe_is_tracepoint(to)) {
+ 		trace_probe_log_set_index(0);
+ 		trace_probe_log_err(0, DIFF_PROBE_TYPE);
+ 		return -EEXIST;
+@@ -812,6 +843,58 @@ static int register_trace_fprobe(struct trace_fprobe *tf)
+ 	return ret;
+ }
+ 
++static int __tracepoint_probe_module_cb(struct notifier_block *self,
++					unsigned long val, void *data)
++{
++	struct tp_module *tp_mod = data;
++	struct trace_fprobe *tf;
++	struct dyn_event *pos;
 +
-+check_error 'f:^foo.1/bar vfs_read'	# BAD_GROUP_NAME
-+check_error 'f:^ vfs_read'		# NO_EVENT_NAME
-+check_error 'f:foo/^12345678901234567890123456789012345678901234567890123456789012345 vfs_read'	# EVENT_TOO_LONG
-+check_error 'f:foo/^bar.1 vfs_read'	# BAD_EVENT_NAME
++	if (val != MODULE_STATE_GOING)
++		return NOTIFY_DONE;
 +
-+check_error 'f vfs_read ^$retval'	# RETVAL_ON_PROBE
-+check_error 'f vfs_read ^$stack10000'	# BAD_STACK_NUM
++	mutex_lock(&event_mutex);
++	for_each_trace_fprobe(tf, pos) {
++		if (tp_mod->mod == tf->mod) {
++			tracepoint_probe_unregister(tf->tpoint,
++					tf->tpoint->probestub, NULL);
++			tf->tpoint = NULL;
++			tf->mod = NULL;
++		}
++	}
++	mutex_unlock(&event_mutex);
 +
-+check_error 'f vfs_read ^$arg10000'	# BAD_ARG_NUM
++	return NOTIFY_DONE;
++}
 +
-+check_error 'f vfs_read ^$none_var'	# BAD_VAR
-+check_error 'f vfs_read ^%rax'		# BAD_VAR
++static struct notifier_block tracepoint_module_nb = {
++	.notifier_call = __tracepoint_probe_module_cb,
++};
 +
-+check_error 'f vfs_read ^@12345678abcde'	# BAD_MEM_ADDR
-+check_error 'f vfs_read ^@+10'		# FILE_ON_KPROBE
++struct __find_tracepoint_cb_data {
++	const char *tp_name;
++	struct tracepoint *tpoint;
++};
 +
-+grep -q "imm-value" README && \
-+check_error 'f vfs_read arg1=\^x'	# BAD_IMM
-+grep -q "imm-string" README && \
-+check_error 'f vfs_read arg1=\"abcd^'	# IMMSTR_NO_CLOSE
++static void __find_tracepoint_cb(struct tracepoint *tp, void *priv)
++{
++	struct __find_tracepoint_cb_data *data = priv;
 +
-+check_error 'f vfs_read ^+0@0)'		# DEREF_NEED_BRACE
-+check_error 'f vfs_read ^+0ab1(@0)'	# BAD_DEREF_OFFS
-+check_error 'f vfs_read +0(+0(@0^)'	# DEREF_OPEN_BRACE
++	if (!data->tpoint && !strcmp(data->tp_name, tp->name))
++		data->tpoint = tp;
++}
 +
-+if grep -A1 "fetcharg:" README | grep -q '\$comm' ; then
-+check_error 'f vfs_read +0(^$comm)'	# COMM_CANT_DEREF
-+fi
++static struct tracepoint *find_tracepoint(const char *tp_name)
++{
++	struct __find_tracepoint_cb_data data = {
++		.tp_name = tp_name,
++	};
 +
-+check_error 'f vfs_read ^&1'		# BAD_FETCH_ARG
++	for_each_kernel_tracepoint(__find_tracepoint_cb, &data);
 +
++	return data.tpoint;
++}
 +
-+# We've introduced this limitation with array support
-+if grep -q ' <type>\\\[<array-size>\\\]' README; then
-+check_error 'f vfs_read +0(^+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(@0))))))))))))))'	# TOO_MANY_OPS?
-+check_error 'f vfs_read +0(@11):u8[10^'		# ARRAY_NO_CLOSE
-+check_error 'f vfs_read +0(@11):u8[10]^a'	# BAD_ARRAY_SUFFIX
-+check_error 'f vfs_read +0(@11):u8[^10a]'	# BAD_ARRAY_NUM
-+check_error 'f vfs_read +0(@11):u8[^256]'	# ARRAY_TOO_BIG
-+fi
+ static int __trace_fprobe_create(int argc, const char *argv[])
+ {
+ 	/*
+@@ -820,6 +903,8 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 	 *      f[:[GRP/][EVENT]] [MOD:]KSYM [FETCHARGS]
+ 	 *  - Add fexit probe:
+ 	 *      f[N][:[GRP/][EVENT]] [MOD:]KSYM%return [FETCHARGS]
++	 *  - Add tracepoint probe:
++	 *      t[:[GRP/][EVENT]] TRACEPOINT [FETCHARGS]
+ 	 *
+ 	 * Fetch args:
+ 	 *  $retval	: fetch return value
+@@ -845,10 +930,16 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 	char buf[MAX_EVENT_NAME_LEN];
+ 	char gbuf[MAX_EVENT_NAME_LEN];
+ 	unsigned int flags = TPARG_FL_KERNEL;
++	bool is_tracepoint = false;
+ 
+-	if (argv[0][0] != 'f' || argc < 2)
++	if ((argv[0][0] != 'f' && argv[0][0] != 't') || argc < 2)
+ 		return -ECANCELED;
+ 
++	if (argv[0][0] == 't') {
++		is_tracepoint = true;
++		group = TRACEPOINT_EVENT_SYSTEM;
++	}
 +
-+check_error 'f vfs_read @11:^unknown_type'	# BAD_TYPE
-+check_error 'f vfs_read $stack0:^string'	# BAD_STRING
-+check_error 'f vfs_read @11:^b10@a/16'		# BAD_BITFIELD
+ 	trace_probe_log_init("trace_fprobe", argc, argv);
+ 
+ 	event = strchr(&argv[0][1], ':');
+@@ -882,14 +973,14 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 
+ 	trace_probe_log_set_index(1);
+ 
+-	/* a symbol specified */
++	/* a symbol(or tracepoint) must be specified */
+ 	symbol = kstrdup(argv[1], GFP_KERNEL);
+ 	if (!symbol)
+ 		return -ENOMEM;
+ 
+ 	tmp = strchr(symbol, '%');
+ 	if (tmp) {
+-		if (!strcmp(tmp, "%return")) {
++		if (!is_tracepoint && !strcmp(tmp, "%return")) {
+ 			*tmp = '\0';
+ 			is_return = true;
+ 		} else {
+@@ -906,6 +997,8 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 	flags |= TPARG_FL_FENTRY;
+ 	if (is_return)
+ 		flags |= TPARG_FL_RETURN;
++	if (is_tracepoint)
++		flags |= TPARG_FL_TPOINT;
+ 
+ 	trace_probe_log_set_index(0);
+ 	if (event) {
+@@ -917,8 +1010,11 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 
+ 	if (!event) {
+ 		/* Make a new event name */
+-		snprintf(buf, MAX_EVENT_NAME_LEN, "%s__%s", symbol,
+-			 is_return ? "exit" : "entry");
++		if (is_tracepoint)
++			strscpy(buf, symbol, MAX_EVENT_NAME_LEN);
++		else
++			snprintf(buf, MAX_EVENT_NAME_LEN, "%s__%s", symbol,
++				 is_return ? "exit" : "entry");
+ 		sanitize_event_name(buf);
+ 		event = buf;
+ 	}
+@@ -932,6 +1028,18 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+ 		WARN_ON_ONCE(ret != -ENOMEM);
+ 		goto out;	/* We know tf is not allocated */
+ 	}
 +
-+check_error 'f vfs_read ^arg123456789012345678901234567890=@11'	# ARG_NAME_TOO_LOG
-+check_error 'f vfs_read ^=@11'			# NO_ARG_NAME
-+check_error 'f vfs_read ^var.1=@11'		# BAD_ARG_NAME
-+check_error 'f vfs_read var1=@11 ^var1=@12'	# USED_ARG_NAME
-+check_error 'f vfs_read ^+1234567(+1234567(+1234567(+1234567(+1234567(+1234567(@1234))))))'	# ARG_TOO_LONG
-+check_error 'f vfs_read arg1=^'			# NO_ARG_BODY
++	if (is_tracepoint) {
++		tf->tpoint = find_tracepoint(tf->symbol);
++		if (!tf->tpoint) {
++			trace_probe_log_set_index(1);
++			trace_probe_log_err(0, NO_TRACEPOINT);
++			goto parse_error;
++		}
++		tf->mod = __module_text_address(
++				(unsigned long)tf->tpoint->probestub);
++	}
 +
+ 	argc -= 2; argv += 2;
+ 
+ 	/* parse arguments */
+@@ -991,7 +1099,10 @@ static int trace_fprobe_show(struct seq_file *m, struct dyn_event *ev)
+ 	struct trace_fprobe *tf = to_trace_fprobe(ev);
+ 	int i;
+ 
+-	seq_putc(m, 'f');
++	if (trace_fprobe_is_tracepoint(tf))
++		seq_putc(m, 't');
++	else
++		seq_putc(m, 'f');
+ 	if (trace_fprobe_is_return(tf) && tf->fp.nr_maxactive)
+ 		seq_printf(m, "%d", tf->fp.nr_maxactive);
+ 	seq_printf(m, ":%s/%s", trace_probe_group_name(&tf->tp),
+@@ -1048,6 +1159,10 @@ static __init int init_fprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = register_tracepoint_module_notifier(&tracepoint_module_nb);
++	if (ret)
++		return ret;
 +
-+# multiprobe errors
-+if grep -q "Create/append/" README && grep -q "imm-value" README; then
-+echo "f:fprobes/testevent $FUNCTION_FORK" > dynamic_events
-+check_error '^f:fprobes/testevent do_exit%return'	# DIFF_PROBE_TYPE
+ 	return 0;
+ }
+ core_initcall(init_fprobe_trace_early);
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 8646b097d56c..dffbed2ddae9 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -292,7 +292,7 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+ 	int ret = 0;
+ 	int len;
+ 
+-	if (flags & TPARG_FL_TPOINT) {
++	if (flags & TPARG_FL_TEVENT) {
+ 		if (code->data)
+ 			return -EFAULT;
+ 		code->data = kstrdup(arg, GFP_KERNEL);
+@@ -326,8 +326,7 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+ 	} else if (strcmp(arg, "comm") == 0 || strcmp(arg, "COMM") == 0) {
+ 		code->op = FETCH_OP_COMM;
+ #ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
+-	} else if (((flags & TPARG_FL_MASK) ==
+-		    (TPARG_FL_KERNEL | TPARG_FL_FENTRY)) &&
++	} else if (tparg_is_function_entry(flags) &&
+ 		   (len = str_has_prefix(arg, "arg"))) {
+ 		ret = kstrtoul(arg + len, 10, &param);
+ 		if (ret) {
+@@ -338,6 +337,12 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+ 		}
+ 		code->op = FETCH_OP_ARG;
+ 		code->param = (unsigned int)param - 1;
++		/*
++		 * The tracepoint probe will probe a stub function, and the
++		 * first parameter of the stub is a dummy and should be ignored.
++		 */
++		if (flags & TPARG_FL_TPOINT)
++			code->param++;
+ #endif
+ 	} else
+ 		goto inval_var;
+@@ -393,7 +398,7 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
+ 		break;
+ 
+ 	case '%':	/* named register */
+-		if (flags & (TPARG_FL_TPOINT | TPARG_FL_FPROBE)) {
++		if (flags & (TPARG_FL_TEVENT | TPARG_FL_FPROBE)) {
+ 			/* eprobe and fprobe do not handle registers */
+ 			trace_probe_log_err(offs, BAD_VAR);
+ 			break;
+@@ -633,7 +638,7 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 	 * Since $comm and immediate string can not be dereferenced,
+ 	 * we can find those by strcmp. But ignore for eprobes.
+ 	 */
+-	if (!(flags & TPARG_FL_TPOINT) &&
++	if (!(flags & TPARG_FL_TEVENT) &&
+ 	    (strcmp(arg, "$comm") == 0 || strcmp(arg, "$COMM") == 0 ||
+ 	     strncmp(arg, "\\\"", 2) == 0)) {
+ 		/* The type of $comm must be "string", and not an array. */
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index a2ee6d336bd8..6b23206068f7 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -360,10 +360,19 @@ int trace_probe_print_args(struct trace_seq *s, struct probe_arg *args, int nr_a
+ #define TPARG_FL_RETURN BIT(0)
+ #define TPARG_FL_KERNEL BIT(1)
+ #define TPARG_FL_FENTRY BIT(2)
+-#define TPARG_FL_TPOINT BIT(3)
++#define TPARG_FL_TEVENT BIT(3)
+ #define TPARG_FL_USER   BIT(4)
+ #define TPARG_FL_FPROBE BIT(5)
+-#define TPARG_FL_MASK	GENMASK(5, 0)
++#define TPARG_FL_TPOINT BIT(6)
++#define TPARG_FL_MASK	GENMASK(6, 0)
 +
-+# Explicitly use printf "%s" to not interpret \1
-+printf "%s" "f:fprobes/testevent $FUNCTION_FORK abcd=\\1" > dynamic_events
-+check_error "f:fprobes/testevent $FUNCTION_FORK ^bcd=\\1"	# DIFF_ARG_TYPE
-+check_error "f:fprobes/testevent $FUNCTION_FORK ^abcd=\\1:u8"	# DIFF_ARG_TYPE
-+check_error "f:fprobes/testevent $FUNCTION_FORK ^abcd=\\\"foo\"" # DIFF_ARG_TYPE
-+check_error "^f:fprobes/testevent $FUNCTION_FORK abcd=\\1"	# SAME_PROBE
-+fi
++static inline bool tparg_is_function_entry(unsigned int flags)
++{
++	/* Tracpoint probe is also function entry */
++	unsigned int mask = TPARG_FL_MASK & ~TPARG_FL_TPOINT;
 +
-+# %return suffix errors
-+check_error 'f vfs_read^%hoge'		# BAD_ADDR_SUFFIX
-+
-+exit 0
++	return (flags & mask) == (TPARG_FL_KERNEL | TPARG_FL_FENTRY);
++}
+ 
+ extern int traceprobe_parse_probe_arg(struct trace_probe *tp, int i,
+ 				const char *argv, unsigned int flags);
+@@ -410,6 +419,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+ 	C(MAXACT_TOO_BIG,	"Maxactive is too big"),		\
+ 	C(BAD_PROBE_ADDR,	"Invalid probed address or symbol"),	\
+ 	C(BAD_RETPROBE,		"Retprobe address must be an function entry"), \
++	C(NO_TRACEPOINT,	"Tracepoint is not found"),		\
+ 	C(BAD_ADDR_SUFFIX,	"Invalid probed address suffix"), \
+ 	C(NO_GROUP_NAME,	"Group name is not specified"),		\
+ 	C(GROUP_TOO_LONG,	"Group name is too long"),		\
 
