@@ -2,196 +2,496 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A98E56ED534
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15156ED53E
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjDXTSq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 15:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S232308AbjDXTUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 15:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbjDXTSi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 15:18:38 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE12E6D;
-        Mon, 24 Apr 2023 12:18:37 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3f1738d0d4cso31247715e9.1;
-        Mon, 24 Apr 2023 12:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682363916; x=1684955916;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1q/4i2elk3BA3Rj+QoCYnRS4MnuAVuxCMWMhVXymMw=;
-        b=Vxlkf6eXc8hNlYZKosRpWF10A+8sPT/LRwFFpD5gCIgEgQHJBPpwl9XiMM+9uYDKuC
-         YSn4qSHxRINZbV3uwOtC94D3OJm+l367BKSLmUgej0ndLIhkKZCtmFmrkUxlSmVoNLJe
-         GRvJGjJKlxVnK4G0OrmF46tlTXyKPBtRd5H8joCvOh7P0ty5Hfzc4EEEMj+Q9zl/9W3a
-         2u7zMqMYAbF8qwiF8KdyV6Lrl3fV/JR5w2wyzmlnUmeeCGpse4JDmBWv8KwSdBiOfCzT
-         R6s4Y8XFOF0n78/m5pa0JPN8s76eyEnWzqN3PPZdKTQlQArnoA98jmakIPBtAhbCfvpQ
-         Bs/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682363916; x=1684955916;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P1q/4i2elk3BA3Rj+QoCYnRS4MnuAVuxCMWMhVXymMw=;
-        b=df0z6N76T4awY3Xt3ePqv5lJp9pL4it6/fpJu5Bn5Dr5EuaTpIVRk74CL1ae/z+4sf
-         RUkwMjzEpieb8hU4lhDKSoGmzNeSzeYHT7gPRZKaVKt/Fkyevo7J0vc7AopTR9Wl/v1Q
-         9CeUZ6u8QGWZEWgWqoUTCChb6sEfIqu6ZU3w72Rinzvu/DJK5yP+b/wWxOpdBX67NDfE
-         LLzLzbrI5j2GPZRnTF7/Ar1I7JdwbkqW9WUEpsfKFJ6i2Ay5AmU81cZIzxpFAdfDD4Sn
-         Z5O2cLbZS5y1TlEtei1Ad1B4nFB32RiC8zuwo5DNrdF2nmIA4b0epGPnsB2a8NobwZuF
-         3w7w==
-X-Gm-Message-State: AAQBX9dITIGKVrLIi/JLFjvhW1gph42p+HyCqqagJt7knxp3JHsVrQ09
-        RCHN/Jw7avFYnIL5JYKNo2A=
-X-Google-Smtp-Source: AKy350ZDhAPYuLEpF8HIpNccA9jbhB9WMePiz/zH6jKMYHFwbOFzbI0LXgErhPvQ+QtiuM8faomL1A==
-X-Received: by 2002:a5d:5962:0:b0:2cf:ee9d:ce2f with SMTP id e34-20020a5d5962000000b002cfee9dce2fmr10085377wri.19.1682363915655;
-        Mon, 24 Apr 2023 12:18:35 -0700 (PDT)
-Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
-        by smtp.gmail.com with ESMTPSA id j14-20020adfea4e000000b002fc3d8c134bsm11397032wrn.74.2023.04.24.12.18.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 12:18:34 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 20:18:33 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <f00058b8-0397-465f-9db5-ddd30a5efe8e@lucifer.local>
-References: <c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com>
- <ZEZPXHN4OXIYhP+V@infradead.org>
- <90a54439-5d30-4711-8a86-eba816782a66@lucifer.local>
- <ZEZ117OMCi0dFXqY@nvidia.com>
- <c8fff8b3-ead6-4f52-bf17-f2ef2e752b57@lucifer.local>
- <ZEaGjad50lqRNTWD@nvidia.com>
- <cd488979-d257-42b9-937f-470cc3c57f5e@lucifer.local>
- <ZEa+L5ivNDhCmgj4@nvidia.com>
- <cfb5afaa-8636-4c7d-a1a2-2e0a85f9f3d3@lucifer.local>
- <ZEbQeImOiaXrydBE@nvidia.com>
+        with ESMTP id S232289AbjDXTUi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 15:20:38 -0400
+Received: from out-39.mta1.migadu.com (out-39.mta1.migadu.com [IPv6:2001:41d0:203:375::27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387674C2B
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:20:35 -0700 (PDT)
+Message-ID: <79062e12-6492-362e-c5e3-b08931da0818@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1682364033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t3CEdFWGw09p9O4pUP393uVZOgjdY4uYMfAlPb3fOhw=;
+        b=Xop/z1P5khmkDPUXS7Cfz3uNE/rjYBwukAXjofrqzxKx8QdmgzkS5l/Y7n4rzYnxUvwbVy
+        XI1CCPd5pTc+B1pcOEPyImFgvoAMxasqGrxbSPXiUmxKJMyzcKo4vHvHRRX2iYJvLgjKnS
+        MqDM1gLTuIT4pWGH9Ef8PXu1fJnv334=
+Date:   Mon, 24 Apr 2023 12:20:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZEbQeImOiaXrydBE@nvidia.com>
+Subject: Re: [PATCH 7/7] selftests/bpf: Test bpf_sock_destroy
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     sdf@google.com, edumazet@google.com, bpf@vger.kernel.org
+References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
+ <20230418153148.2231644-8-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230418153148.2231644-8-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 03:54:48PM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 24, 2023 at 07:22:03PM +0100, Lorenzo Stoakes wrote:
->
-> > OK I guess you mean the folio lock :) Well there is
-> > unpin_user_pages_dirty_lock() and unpin_user_page_range_dirty_lock() and
-> > also set_page_dirty_lock() (used by __access_remote_vm()) which should
-> > avoid this.
->
-> It has been a while, but IIRC, these are all basically racy, the
-> comment in front of set_page_dirty_lock() even says it is racy..
->
-> The race is that a FS cleans a page and thinks it cannot become dirty,
-> and then it becomes dirty - and all variations of that..
->
-> Looking around a bit, I suppose what I'd expect to see is a sequence
-> sort of like what do_page_mkwrite() does:
->
->         /* Synchronize with the FS and get the page locked */
->      	ret = vmf->vma->vm_ops->page_mkwrite(vmf);
-> 	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE)))
-> 		return ret;
-> 	if (unlikely(!(ret & VM_FAULT_LOCKED))) {
-> 		lock_page(page);
-> 		if (!page->mapping) {
-> 			unlock_page(page);
-> 			return 0; /* retry */
-> 		}
-> 		ret |= VM_FAULT_LOCKED;
-> 	} else
-> 		VM_BUG_ON_PAGE(!PageLocked(page), page);
->
-> 	/* Write to the page with the CPU */
-> 	va = kmap_local_atomic(page);
-> 	memcpy(va, ....);
-> 	kunmap_local_atomic(page);
->
-> 	/* Tell the FS and unlock it. */
-> 	set_page_dirty(page);
-> 	unlock_page(page);
->
-> I don't know if this is is exactly right, but it seems closerish
->
-> So maybe some kind of GUP interfaces that returns single locked pages
-> is the right direction? IDK
->
-> Or maybe we just need to make a memcpy primitive that works while
-> holding the PTLs?
->
+On 4/18/23 8:31 AM, Aditi Ghag wrote:
+> The test cases for destroying sockets mirror the intended usages of the
+> bpf_sock_destroy kfunc using iterators.
+> 
+> The destroy helpers set `ECONNABORTED` error code that we can validate in
+> the test code with client sockets. But UDP sockets have an overriding error
+> code from the disconnect called during abort, so the error code the
+> validation is only done for TCP sockets.
+> 
+> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+> ---
+>   .../selftests/bpf/prog_tests/sock_destroy.c   | 217 ++++++++++++++++++
+>   .../selftests/bpf/progs/sock_destroy_prog.c   | 147 ++++++++++++
+>   2 files changed, 364 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+> new file mode 100644
+> index 000000000000..51f2454b7b4b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
+> @@ -0,0 +1,217 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +#include "sock_destroy_prog.skel.h"
+> +#include "network_helpers.h"
+> +
+> +#define TEST_NS "sock_destroy_netns"
+> +
+> +static void start_iter_sockets(struct bpf_program *prog)
+> +{
+> +	struct bpf_link *link;
+> +	char buf[50] = {};
+> +	int iter_fd, len;
+> +
+> +	link = bpf_program__attach_iter(prog, NULL);
+> +	if (!ASSERT_OK_PTR(link, "attach_iter"))
+> +		return;
+> +
+> +	iter_fd = bpf_iter_create(bpf_link__fd(link));
+> +	if (!ASSERT_GE(iter_fd, 0, "create_iter"))
+> +		goto free_link;
+> +
+> +	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> +		;
+> +	ASSERT_GE(len, 0, "read");
+> +
+> +	close(iter_fd);
+> +
+> +free_link:
+> +	bpf_link__destroy(link);
+> +}
+> +
+> +static void test_tcp_client(struct sock_destroy_prog *skel)
+> +{
+> +	int serv = -1, clien = -1, n = 0;
 
-I think this patch suggestion has scope crept from 'incremental
-improvement' to 'major rework of GUP' at this point. Also surely you'd want
-to obtain the PTL of all mappings to a file? This seems really unworkable
-and I don't think holding a folio lock over a long period is sensible
-either.
+Together with the multiple goto labels, all the ' = -1' init looks weird. May as 
+well: keep this ' = -1' init, always test for -1 before close() and remove the 
+need to have mulpite goto label in each test_*() function.
 
-> > We definitely need to keep ptrace and /proc/$pid/mem functioning correctly,
-> > and I given the privilege levels required I don't think there's a security
-> > issue there?
->
-> Even root is not allowed to trigger data corruption or oops inside the
-> kernel.
->
-> Jason
+The 'n = 0' init is not needed for sure.
 
-Of course, but isn't this supposed to be an incremental fix? It feels a
-little contradictory to want to introduce a flag intentionally to try to
-highlight brokenness then to not accept any solution that doesn't solve
-that brokenness.
+> +
+> +	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
+> +	if (!ASSERT_GE(serv, 0, "start_server"))
+> +		goto cleanup_serv;
+> +
+> +	clien = connect_to_fd(serv, 0);
+> +	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+> +		goto cleanup_serv;
+> +
+> +	serv = accept(serv, NULL, NULL);
+> +	if (!ASSERT_GE(serv, 0, "serv accept"))
+> +		goto cleanup;
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_GE(n, 0, "client send"))
 
-In any case, I feel that this patch isn't going to go anywhere as-is, it's
-insufficiently large to solve the problem as a whole (I think that's a
-bigger problem we can return to later), and there appears to be no taste
-for an incremental improvement, even from the suggester :)
+nit. Could be more strict. ASSERT_EQ(n, 1, ...)?
 
-As a result, I suggest we take the cautious route in order to unstick the
-vmas patch series - introduce an OPT-IN flag which allows the check to be
-made, and update io_uring to use this.
+> +		goto cleanup;
+> +
+> +	/* Run iterator program that destroys connected client sockets. */
+> +	start_iter_sockets(skel->progs.iter_tcp6_client);
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+> +		goto cleanup;
+> +	ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed socket");
+> +
+> +
 
-That way it defers the larger discussion around this improvement, avoids
-breaking anything, provides some basis in code for this check and is a net,
-incremental small and digestible improvement.
+Patchwork 
+(https://patchwork.kernel.org/project/netdevbpf/patch/20230418153148.2231644-8-aditi.ghag@isovalent.com/) 
+reports:
+
+CHECK: Please don't use multiple blank lines
+#90: FILE: tools/testing/selftests/bpf/prog_tests/sock_destroy.c:62:
++
++
+
+CHECK: Please don't use multiple blank lines
+#130: FILE: tools/testing/selftests/bpf/prog_tests/sock_destroy.c:102:
++
++
+
+CHECK: Please don't use multiple blank lines
+#137: FILE: tools/testing/selftests/bpf/prog_tests/sock_destroy.c:109:
++
++
+
+> +cleanup:
+> +	close(clien);
+> +cleanup_serv:
+> +	close(serv);
+> +}
+> +
+> +static void test_tcp_server(struct sock_destroy_prog *skel)
+> +{
+> +	int serv = -1, clien = -1, n = 0, err;
+> +	__u16 serv_port = 0;
+
+serv_port init is also not needed.
+
+> +
+> +	serv = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
+> +	if (!ASSERT_GE(serv, 0, "start_server"))
+> +		goto cleanup_serv;
+> +	err = get_socket_local_port(AF_INET6, serv, &serv_port);
+> +	if (!ASSERT_EQ(err, 0, "get_local_port"))
+> +		goto cleanup;
+
+Like here, it is obvious that it should be 'goto cleanup_serv;'
+Test -1 before close() and avoid this multiple goto label confusion.
+
+> +	skel->bss->serv_port = serv_port;
+> +
+> +	clien = connect_to_fd(serv, 0);
+> +	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+> +		goto cleanup_serv;
+> +
+> +	serv = accept(serv, NULL, NULL);
+> +	if (!ASSERT_GE(serv, 0, "serv accept"))
+> +		goto cleanup;
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_GE(n, 0, "client send"))
+> +		goto cleanup;
+> +
+> +	/* Run iterator program that destroys server sockets. */
+> +	start_iter_sockets(skel->progs.iter_tcp6_server);
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+> +		goto cleanup;
+> +	ASSERT_EQ(errno, ECONNRESET, "error code on destroyed socket");
+> +
+> +
+> +cleanup:
+> +	close(clien);
+> +cleanup_serv:
+> +	close(serv);
+> +}
+> +
+> +
+> +static void test_udp_client(struct sock_destroy_prog *skel)
+> +{
+> +	int serv = -1, clien = -1, n = 0;
+> +
+> +	serv = start_server(AF_INET6, SOCK_DGRAM, NULL, 0, 0);
+> +	if (!ASSERT_GE(serv, 0, "start_server"))
+> +		goto cleanup_serv;
+> +
+> +	clien = connect_to_fd(serv, 0);
+> +	if (!ASSERT_GE(clien, 0, "connect_to_fd"))
+> +		goto cleanup_serv;
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_GE(n, 0, "client send"))
+> +		goto cleanup;
+> +
+> +	/* Run iterator program that destroys sockets. */
+> +	start_iter_sockets(skel->progs.iter_udp6_client);
+> +
+> +	n = send(clien, "t", 1, 0);
+> +	if (!ASSERT_LT(n, 0, "client_send on destroyed socket"))
+> +		goto cleanup;
+> +	/* UDP sockets have an overriding error code after they are disconnected,
+> +	 * so we don't check for ECONNABORTED error code.
+> +	 */
+> +
+> +cleanup:
+> +	close(clien);
+> +cleanup_serv:
+> +	close(serv);
+> +}
+> +
+> +static void test_udp_server(struct sock_destroy_prog *skel)
+> +{
+> +	int *listen_fds = NULL, n, i, err;
+> +	unsigned int num_listens = 5;
+> +	char buf[1];
+> +	__u16 serv_port;
+> +
+> +	/* Start reuseport servers. */
+> +	listen_fds = start_reuseport_server(AF_INET6, SOCK_DGRAM,
+> +					    "::1", 0, 0, num_listens);
+> +	if (!ASSERT_OK_PTR(listen_fds, "start_reuseport_server"))
+> +		goto cleanup;
+> +	err = get_socket_local_port(AF_INET6, listen_fds[0], &serv_port);
+> +	if (!ASSERT_EQ(err, 0, "get_local_port"))
+> +		goto cleanup;
+> +	skel->bss->serv_port = ntohs(serv_port);
+
+This is different from test_tcp_server() which has serv_port in network order. 
+Either order is fine but be consistent across tests.
+
+> +
+> +	/* Run iterator program that destroys server sockets. */
+> +	start_iter_sockets(skel->progs.iter_udp6_server);
+> +
+> +	for (i = 0; i < num_listens; ++i) {
+> +		n = read(listen_fds[i], buf, sizeof(buf));
+> +		if (!ASSERT_EQ(n, -1, "read") ||
+> +		    !ASSERT_EQ(errno, ECONNABORTED, "error code on destroyed socket"))
+> +			break;
+> +	}
+> +	ASSERT_EQ(i, num_listens, "server socket");
+> +
+> +cleanup:
+> +	free_fds(listen_fds, num_listens);
+> +}
+> +
+> +void test_sock_destroy(void)
+> +{
+> +	struct sock_destroy_prog *skel;
+> +	struct nstoken *nstoken = NULL;
+
+This init looks unnecessary.
+
+> +	int cgroup_fd = 0;
+
+Looks wrong to init a fd to 0. I don't think an init is needed either.
+
+> +
+> +	skel = sock_destroy_prog__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		return;
+> +
+> +	cgroup_fd = test__join_cgroup("/sock_destroy");
+> +	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
+> +		goto close_cgroup_fd;
+> +
+> +	skel->links.sock_connect = bpf_program__attach_cgroup(
+> +		skel->progs.sock_connect, cgroup_fd);
+> +	if (!ASSERT_OK_PTR(skel->links.sock_connect, "prog_attach"))
+> +		goto close_cgroup_fd;
+> +
+> +	SYS(fail, "ip netns add %s", TEST_NS);
+> +	SYS(fail, "ip -net %s link set dev lo up", TEST_NS);
+> +
+> +	nstoken = open_netns(TEST_NS);
+> +	if (!ASSERT_OK_PTR(nstoken, "open_netns"))
+> +		goto fail;
+> +
+> +	if (test__start_subtest("tcp_client"))
+> +		test_tcp_client(skel);
+> +	if (test__start_subtest("tcp_server"))
+> +		test_tcp_server(skel);
+> +	if (test__start_subtest("udp_client"))
+> +		test_udp_client(skel);
+> +	if (test__start_subtest("udp_server"))
+> +		test_udp_server(skel);
+> +
+> +
+> +fail:
+> +	if (nstoken)
+> +		close_netns(nstoken);
+> +	SYS_NOFAIL("ip netns del " TEST_NS " &> /dev/null");
+> +close_cgroup_fd:
+> +	close(cgroup_fd);
+> +	sock_destroy_prog__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/sock_destroy_prog.c b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+> new file mode 100644
+> index 000000000000..1f265e0d9dea
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog.c
+> @@ -0,0 +1,147 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +#include "bpf_tracing_net.h"
+> +
+> +#define AF_INET6 10
+
+Not needed. This has already been defined in bpf_tracing_net.h.
+
+> +
+> +__u16 serv_port = 0;
+> +
+> +int bpf_sock_destroy(struct sock_common *sk) __ksym;
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__type(key, __u32);
+> +	__type(value, __u64);
+> +} tcp_conn_sockets SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__type(key, __u32);
+> +	__type(value, __u64);
+> +} udp_conn_sockets SEC(".maps");
+> +
+> +SEC("cgroup/connect6")
+> +int sock_connect(struct bpf_sock_addr *ctx)
+> +{
+> +	int key = 0;
+> +	__u64 sock_cookie = 0;
+> +	__u32 keyc = 0;
+> +
+> +	if (ctx->family != AF_INET6 || ctx->user_family != AF_INET6)
+> +		return 1;
+> +
+> +	sock_cookie = bpf_get_socket_cookie(ctx);
+> +	if (ctx->protocol == IPPROTO_TCP)
+> +		bpf_map_update_elem(&tcp_conn_sockets, &key, &sock_cookie, 0);
+> +	else if (ctx->protocol == IPPROTO_UDP)
+> +		bpf_map_update_elem(&udp_conn_sockets, &keyc, &sock_cookie, 0);
+> +	else
+> +		return 1;
+> +
+> +	return 1;
+> +}
+> +
+> +SEC("iter/tcp")
+> +int iter_tcp6_client(struct bpf_iter__tcp *ctx)
+> +{
+> +	struct sock_common *sk_common = ctx->sk_common;
+> +	__u64 sock_cookie = 0;
+> +	__u64 *val;
+> +	int key = 0;
+> +
+> +	if (!sk_common)
+> +		return 0;
+> +
+> +	if (sk_common->skc_family != AF_INET6)
+> +		return 0;
+> +
+> +	sock_cookie  = bpf_get_socket_cookie(sk_common);
+> +	val = bpf_map_lookup_elem(&tcp_conn_sockets, &key);
+> +	if (!val)
+> +		return 0;
+> +	/* Destroy connected client sockets. */
+> +	if (sock_cookie == *val)
+> +		bpf_sock_destroy(sk_common);
+> +
+> +	return 0;
+> +}
+> +
+> +SEC("iter/tcp")
+> +int iter_tcp6_server(struct bpf_iter__tcp *ctx)
+> +{
+> +	struct sock_common *sk_common = ctx->sk_common;
+> +	struct tcp6_sock *tcp_sk;
+> +	const struct inet_connection_sock *icsk;
+> +	const struct inet_sock *inet;
+> +	__u16 srcp;
+> +
+> +	if (!sk_common)
+> +		return 0;
+> +
+> +	if (sk_common->skc_family != AF_INET6)
+> +		return 0;
+> +
+> +	tcp_sk = bpf_skc_to_tcp6_sock(sk_common);
+> +	if (!tcp_sk)
+> +		return 0;
+> +
+> +	icsk = &tcp_sk->tcp.inet_conn;
+> +	inet = &icsk->icsk_inet;
+> +	srcp = inet->inet_sport;
+> +
+> +	/* Destroy server sockets. */
+> +	if (srcp == serv_port)
+> +		bpf_sock_destroy(sk_common);
+> +
+> +	return 0;
+> +}
+> +
+> +
+> +SEC("iter/udp")
+> +int iter_udp6_client(struct bpf_iter__udp *ctx)
+> +{
+> +	struct udp_sock *udp_sk = ctx->udp_sk;
+> +	struct sock *sk = (struct sock *) udp_sk;
+> +	__u64 sock_cookie = 0, *val;
+> +	int key = 0;
+> +
+> +	if (!sk)
+> +		return 0;
+> +
+> +	sock_cookie  = bpf_get_socket_cookie(sk);
+> +	val = bpf_map_lookup_elem(&udp_conn_sockets, &key);
+> +	if (!val)
+> +		return 0;
+> +	/* Destroy connected client sockets. */
+> +	if (sock_cookie == *val)
+> +		bpf_sock_destroy((struct sock_common *)sk);
+> +
+> +	return 0;
+> +}
+> +
+> +SEC("iter/udp")
+> +int iter_udp6_server(struct bpf_iter__udp *ctx)
+> +{
+> +	struct udp_sock *udp_sk = ctx->udp_sk;
+> +	struct sock *sk = (struct sock *) udp_sk;
+> +	__u16 srcp;
+> +	struct inet_sock *inet;
+> +
+> +	if (!sk)
+> +		return 0;
+> +
+> +	inet = &udp_sk->inet;
+> +	srcp = bpf_ntohs(inet->inet_sport);
+
+Try sk->sk_num if host order is preferred.
+
+> +	if (srcp == serv_port)
+> +		bpf_sock_destroy((struct sock_common *)sk);
+> +
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+
