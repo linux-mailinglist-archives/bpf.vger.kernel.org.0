@@ -2,152 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8646EC879
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE676EC888
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjDXJKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 05:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
+        id S231422AbjDXJRe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 05:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjDXJKX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 05:10:23 -0400
-Received: from pv50p00im-ztbu10011701.me.com (pv50p00im-ztbu10011701.me.com [17.58.6.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1D610CC
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-        t=1682327416; bh=M/sdqbR+vlmXk2rHdpf5e5t4auOLHGIgUY1Nd7rPR/A=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=GpFjU0d1PJNfUU4+ujnHyR3HsqaCpMRTKiq0QD3GuY6FR2DQhl11WHsqjxdrQoqP/
-         q/Ev8MionYo7BiMO94+lHGT9I2dujNYkY8jkgWIgWt2s2t2HupHAdDsEwwLKYGI7vw
-         FdZTuO2pPIYIwKDwpo/XN/ODTgMa0eYj6EO7SfKFVN2QiNC2fg649Noe18lpVZD8lV
-         kTMQTyy7VMg8jXlaxwsCh//kyPWOzPa1K8Wjcof1UWNLIucXPRFzUXTVnZz++nMnbY
-         bFSsrojI2QOaYOoaefJIzqwiETL9BEwaFXtgECYWcPbkQMugDvFrQeWzSByGVfKBTM
-         LWGnt6tEyGD6w==
-Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztbu10011701.me.com (Postfix) with ESMTPSA id 256FE7403B6;
-        Mon, 24 Apr 2023 09:10:11 +0000 (UTC)
-From:   Xueming Feng <kuro@kuroa.me>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xueming Feng <kuro@kuroa.me>
-Subject: [PATCH bpf-next v2] bpftool: Dump map id instead of value for map_of_maps types
-Date:   Mon, 24 Apr 2023 17:09:35 +0800
-Message-Id: <20230424090935.52707-1-kuro@kuroa.me>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        with ESMTP id S231364AbjDXJRd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 05:17:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254F6E55
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682327811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OOLaU++cN0JupiCmd2yyryZfyq6J4szaekNpgpM2HQc=;
+        b=c/K7pXaU6yqNkK0AuXCEMerdzrgDcPuBha8y2XGrFudYF3Alwb+MWlrRiFRFCmeqqKbKve
+        Jh/FX9KK1dIt+4NH9r9jVzhEUFrRKyYCM4qDdS6E632i6a8M7+9AoS26IHf4ozb+caXGnY
+        T58iYB2AbXqioDanphDzqEm0+pEHyZE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-493-lDgO3gCNPk2SSqQBSfroEw-1; Mon, 24 Apr 2023 05:16:49 -0400
+X-MC-Unique: lDgO3gCNPk2SSqQBSfroEw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f195c06507so28533145e9.1
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 02:16:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682327808; x=1684919808;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OOLaU++cN0JupiCmd2yyryZfyq6J4szaekNpgpM2HQc=;
+        b=Q70T/7mosCRTboynXGIwJFVQhyfd1gNtTqRd1J95iKpNFrn1D1eUaBf2pcw5RWZ4P5
+         OhSzv7bEp4DGYxj+uEc0DetHB30JfdkhqJqEEpq15ejMNK2kjXMsn/hwtDe46RrN8Tda
+         cKDXgs5yX5/t/KpmOrv854sqs7faVxbI6/niMy+6/DpaksBhZO0wTwDl42Nc9dnTUVDK
+         1hoohPiYJ+zvWTNGTIJAnnQp3ZvEqONBLq4oSQ6EOFc/1eF7tMISpiPRbTzvd49ME7zM
+         5NYYAi3iVbXILVu9Y1Ty6BDomrhPK7xTqIUoeqR5zB9qzDZNYrxGawhej+te9IJG4o/x
+         NY5A==
+X-Gm-Message-State: AAQBX9ctYxHHdUaM/ASgphJwH6vJbR2MdRzDcOPbyh1WdjCkEWi8J83B
+        amvzbZx2OtrnEk+f5JfdgrvIN5uSoylXYoHiF4tygEC+12ptzrOLQX/Tj5iwXwCoqLnn2KqtS/v
+        CI18dFnJMs41S
+X-Received: by 2002:a05:600c:1ca8:b0:3f1:7382:b59a with SMTP id k40-20020a05600c1ca800b003f17382b59amr8037649wms.15.1682327808281;
+        Mon, 24 Apr 2023 02:16:48 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bBqS/KzqRiQ7MMETrEit3S+6Gq/Xn6728Mt7GN/5xj2CU9xcYe65Be7PSaTvqqYV52P6LjDw==
+X-Received: by 2002:a05:600c:1ca8:b0:3f1:7382:b59a with SMTP id k40-20020a05600c1ca800b003f17382b59amr8037621wms.15.1682327807873;
+        Mon, 24 Apr 2023 02:16:47 -0700 (PDT)
+Received: from localhost (77-32-99-124.dyn.eolo.it. [77.32.99.124])
+        by smtp.gmail.com with ESMTPSA id m18-20020a7bcb92000000b003f24f245f57sm2861354wmi.42.2023.04.24.02.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Apr 2023 02:16:47 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 11:17:16 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+        john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
+ recycling
+Message-ID: <ZEZJHCRsBVQwd9ie@localhost.localdomain>
+References: <cover.1682188837.git.lorenzo@kernel.org>
+ <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
+ <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
+ <ZEU+vospFdm08IeE@localhost.localdomain>
+ <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: zOockGF0ejbAe429Ws_nol25-ZSefIZ8
-X-Proofpoint-GUID: zOockGF0ejbAe429Ws_nol25-ZSefIZ8
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.11.64.514.0000000_definitions?=
- =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2022-02-23?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 clxscore=1030 adultscore=0 phishscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2304240081
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3/evO59xRVKF5uu+"
+Content-Disposition: inline
+In-Reply-To: <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When using `bpftool map dump` in plain format, it is usually
-more convenient to show the inner map id instead of raw value.
-Changing this behavior would help with quick debugging with
-`bpftool`, without disrupting scripted behavior. Since user
-could dump the inner map with id, and need to convert value.
 
-Signed-off-by: Xueming Feng <kuro@kuroa.me>
----
-Changes in v2:
-  - Fix commit message grammar.
-	- Change `print_uint` to only print to stdout, make `arg` const, and rename 
-	  `n` to `arg_size`.
-  - Make `print_uint` able to take any size of argument up to `unsigned long`, 
-		and print it as unsigned decimal.
+--3/evO59xRVKF5uu+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the review and suggestions! I have changed my patch accordingly.
-There is a possibility that `arg_size` is larger than `unsigned long`,
-but previous review suggested that it should be up to the caller function to 
-set `arg_size` correctly. So I didn't add check for that, should I?
+> On 2023/4/23 22:20, Lorenzo Bianconi wrote:
+> >> On 2023/4/23 2:54, Lorenzo Bianconi wrote:
+> >>>  struct veth_priv {
+> >>> @@ -727,17 +729,20 @@ static int veth_convert_skb_to_xdp_buff(struct =
+veth_rq *rq,
+> >>>  			goto drop;
+> >>> =20
+> >>>  		/* Allocate skb head */
+> >>> -		page =3D alloc_page(GFP_ATOMIC | __GFP_NOWARN);
+> >>> +		page =3D page_pool_dev_alloc_pages(rq->page_pool);
+> >>>  		if (!page)
+> >>>  			goto drop;
+> >>> =20
+> >>>  		nskb =3D build_skb(page_address(page), PAGE_SIZE);
+> >>
+> >> If page pool is used with PP_FLAG_PAGE_FRAG, maybe there is some addit=
+ional
+> >> improvement for the MTU 1500B case, it seem a 4K page is able to hold =
+two skb.
+> >> And we can reduce the memory usage too, which is a significant saving =
+if page
+> >> size is 64K.
+> >=20
+> > please correct if I am wrong but I think the 1500B MTU case does not fi=
+t in the
+> > half-page buffer size since we need to take into account VETH_XDP_HEADR=
+OOM.
+> > In particular:
+> >=20
+> > - VETH_BUF_SIZE =3D 2048
+> > - VETH_XDP_HEADROOM =3D 256 + 2 =3D 258
+>=20
+> On some arch the NET_IP_ALIGN is zero.
+>=20
+> I suppose XDP_PACKET_HEADROOM are for xdp_frame and data_meta, it seems
+> xdp_frame is only 40 bytes for 64 bit arch and max size of metalen is 32
+> as xdp_metalen_invalid() suggest, is there any other reason why we need
+> 256 bytes here?
 
- tools/bpf/bpftool/main.c | 15 +++++++++++++++
- tools/bpf/bpftool/main.h |  1 +
- tools/bpf/bpftool/map.c  |  9 +++++++--
- 3 files changed, 23 insertions(+), 2 deletions(-)
+XDP_PACKET_HEADROOM must be greater than (40 + 32)B because you may want pu=
+sh
+new data at the beginning of the xdp_buffer/xdp_frame running
+bpf_xdp_adjust_head() helper.
+I think 256B has been selected for XDP_PACKET_HEADROOM since it is 4 cachel=
+ines
+(but I can be wrong).
+There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 192B but
+this is not merged yet and it is not related to this series. We can address
+your comments in a follow-up patch when XDP_PACKET_HEADROOM series is merge=
+d.
 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 08d0ac543c67..810c0dc10ecb 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -251,6 +251,21 @@ int detect_common_prefix(const char *arg, ...)
- 	return 0;
- }
- 
-+void print_uint(const void *arg, unsigned int arg_size)
-+{
-+	const unsigned char *data = arg;
-+	unsigned long val = 0ul;
-+
-+	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+		memcpy(&val, data, arg_size);
-+	#else
-+		memcpy((unsigned char *)&val + sizeof(val) - arg_size,
-+		       data, arg_size);
-+	#endif
-+
-+	fprintf(stdout, "%lu", val);
-+}
-+
- void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
- {
- 	unsigned char *data = arg;
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 0ef373cef4c7..0de671423431 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
- 
- bool is_prefix(const char *pfx, const char *str);
- int detect_common_prefix(const char *arg, ...);
-+void print_uint(const void *arg, unsigned int arg_size);
- void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
- void usage(void) __noreturn;
- 
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index aaeb8939e137..f5be4c0564cf 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
- 		}
- 
- 		if (info->value_size) {
--			printf("value:%c", break_names ? '\n' : ' ');
--			fprint_hex(stdout, value, info->value_size, " ");
-+			if (map_is_map_of_maps(info->type)) {
-+				printf("id:%c", break_names ? '\n' : ' ');
-+				print_uint(value, info->value_size);
-+			} else {
-+				printf("value:%c", break_names ? '\n' : ' ');
-+				fprint_hex(stdout, value, info->value_size, " ");
-+			}
- 		}
- 
- 		printf("\n");
--- 
-2.37.1 (Apple Git-137.1)
+Regards,
+Lorenzo
+
+>=20
+> > - max_headsize =3D SKB_WITH_OVERHEAD(VETH_BUF_SIZE - VETH_XDP_HEADROOM)=
+ =3D 1470
+> >=20
+> > Even in this case we will need the consume a full page. In fact, perfor=
+mances
+> > are a little bit worse:
+> >=20
+> > MTU 1500: tcp throughput ~ 8.3Gbps
+> >=20
+> > Do you agree or am I missing something?
+> >=20
+> > Regards,
+> > Lorenzo
+>=20
+
+--3/evO59xRVKF5uu+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZEZJGQAKCRA6cBh0uS2t
+rO1YAP0b/ukzdC69Ik8Aurwu2ZhsLqlpb/h4VC2lo6R4c1+FEAEA4YnkRaXXcorN
+sXbmJndOLuBVdUAh2og9OuV/eP8bcgY=
+=g7RL
+-----END PGP SIGNATURE-----
+
+--3/evO59xRVKF5uu+--
 
