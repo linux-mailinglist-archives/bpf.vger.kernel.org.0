@@ -2,185 +2,362 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2AE6EC455
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 06:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4B36EC504
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 07:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjDXEZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 00:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S229625AbjDXFqy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 01:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjDXEZG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 00:25:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAADE1FE3;
-        Sun, 23 Apr 2023 21:25:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 38FDC61B4B;
-        Mon, 24 Apr 2023 04:25:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D359AC433EF;
-        Mon, 24 Apr 2023 04:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682310303;
-        bh=Zua6L/hjc3WFgygJ/KfVa8EDxia4HmdVPahd6/IlxdE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L9lMFFYp0hzVZ2TEwHcNm5kYoZ//Ys+PeMosVEnwMlD+vj4GlNKqaMnRSufZFl0FI
-         zNInAQ4FlON1bKKRd95XES27j7i5aT2Zf3C3FuoZ5EDZhmNxa9IYv5b/zaRZ100jL+
-         +ArPLlR1rsveMG0/oclONaUJq1PyUV89BeVQUwVc1jt4zM3vD/lt4R14RUH/d37Ijw
-         kNVRB/xLJclOC8gC8EkHqq6kiXdnkLpVbJ+iCw62faSHcM8RAyKlo03y6EufyhWZs3
-         fL2MT4jpM3B5bLxsX0+GdD+8bzqzJo4G7g2AdbTUKmEFyzQQW+YCXKuc3PN1qtqe+g
-         6u6RT51rn+o0A==
-Date:   Mon, 24 Apr 2023 13:24:59 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v5 2/9] tracing/probes: Add fprobe events for tracing
- function entry and exit.
-Message-Id: <20230424132459.2f373669e178c3be74e71b0e@kernel.org>
-In-Reply-To: <CAADnVQKAqZybpvzWRFCXmfbUSpaM2YYx9shRSSLnYWp=tQMyHg@mail.gmail.com>
-References: <168198993129.1795549.8306571027057356176.stgit@mhiramat.roam.corp.google.com>
-        <168198995084.1795549.16754963116067902376.stgit@mhiramat.roam.corp.google.com>
-        <20230420184932.pgv5wiqqt4fzswdk@MacBook-Pro-6.local>
-        <20230421084106.5a02844971e18cdd8ad163be@kernel.org>
-        <CAADnVQ+R3ySQpFDnn-2EtUooDmkwTBCh_yRjqNBDhS5SvWrTYQ@mail.gmail.com>
-        <20230421143828.bb274512144e133eb5fead1a@kernel.org>
-        <CAADnVQKAqZybpvzWRFCXmfbUSpaM2YYx9shRSSLnYWp=tQMyHg@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229478AbjDXFqx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 01:46:53 -0400
+Received: from out-32.mta0.migadu.com (out-32.mta0.migadu.com [91.218.175.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4BD92
+        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 22:46:48 -0700 (PDT)
+Message-ID: <251b0a3f-47d6-d9ad-0c8e-b707fa286c7c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1682315206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDmcv6uyGAnhDJx5mX9MEy483v7hU9sc4J6YESMrcyE=;
+        b=HomTK5dtFCTn38BqIUHZzseILB3HVhOvqt+t/yL6LkvLLRSHXEI++Sfw8MXID2oIdeaLRt
+        o5MO3/a2K38pL6Vz7DBasYSd+VK6pOr9lL/dva+bStQRcH0++9Al1JhGO5FzXwRFxxv+S9
+        Tgw1y3Pk0aJQot3n8vPbFflVC745I3I=
+Date:   Sun, 23 Apr 2023 22:46:38 -0700
+MIME-Version: 1.0
+Subject: Re: [PATCH 4/7] bpf: udp: Implement batching for sockets iterator
+Content-Language: en-US
+To:     Aditi Ghag <aditi.ghag@isovalent.com>
+Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
+ <20230418153148.2231644-5-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230418153148.2231644-5-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 Apr 2023 09:31:12 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Thu, Apr 20, 2023 at 10:38 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Thu, 20 Apr 2023 16:46:08 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > > On Thu, Apr 20, 2023 at 4:41 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > >
-> > > > On Thu, 20 Apr 2023 11:49:32 -0700
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > > On Thu, Apr 20, 2023 at 08:25:50PM +0900, Masami Hiramatsu (Google) wrote:
-> > > > > > +static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
-> > > > > > +                       struct pt_regs *regs)
-> > > > > > +{
-> > > > > > +   struct trace_event_call *call = trace_probe_event_call(&tf->tp);
-> > > > > > +   struct fentry_trace_entry_head *entry;
-> > > > > > +   struct hlist_head *head;
-> > > > > > +   int size, __size, dsize;
-> > > > > > +   int rctx;
-> > > > > > +
-> > > > > > +   if (bpf_prog_array_valid(call)) {
-> > > > > > +           unsigned long orig_ip = instruction_pointer(regs);
-> > > > > > +           int ret;
-> > > > > > +
-> > > > > > +           ret = trace_call_bpf(call, regs);
-> > > > >
-> > > > > Please do not call bpf from fprobe.
-> > > > > There is no use case for it.
-> > > >
-> > > > OK.
-> > > >
-> > > > >
-> > > > > > +
-> > > > > > +           /*
-> > > > > > +            * We need to check and see if we modified the pc of the
-> > > > > > +            * pt_regs, and if so return 1 so that we don't do the
-> > > > > > +            * single stepping.
-> > > > > > +            */
-> > > > > > +           if (orig_ip != instruction_pointer(regs))
-> > > > > > +                   return 1;
-> > > > > > +           if (!ret)
-> > > > > > +                   return 0;
-> > > > > > +   }
-> > > > > > +
-> > > > > > +   head = this_cpu_ptr(call->perf_events);
-> > > > > > +   if (hlist_empty(head))
-> > > > > > +           return 0;
-> > > > > > +
-> > > > > > +   dsize = __get_data_size(&tf->tp, regs);
-> > > > > > +   __size = sizeof(*entry) + tf->tp.size + dsize;
-> > > > > > +   size = ALIGN(__size + sizeof(u32), sizeof(u64));
-> > > > > > +   size -= sizeof(u32);
-> > > > > > +
-> > > > > > +   entry = perf_trace_buf_alloc(size, NULL, &rctx);
-> > > > > > +   if (!entry)
-> > > > > > +           return 0;
-> > > > > > +
-> > > > > > +   entry->ip = entry_ip;
-> > > > > > +   memset(&entry[1], 0, dsize);
-> > > > > > +   store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
-> > > > > > +   perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
-> > > > > > +                         head, NULL);
-> > > > > > +   return 0;
-> > > > > > +}
-> > > > > > +NOKPROBE_SYMBOL(fentry_perf_func);
-> > > > > > +
-> > > > > > +static void
-> > > > > > +fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
-> > > > > > +           unsigned long ret_ip, struct pt_regs *regs)
-> > > > > > +{
-> > > > > > +   struct trace_event_call *call = trace_probe_event_call(&tf->tp);
-> > > > > > +   struct fexit_trace_entry_head *entry;
-> > > > > > +   struct hlist_head *head;
-> > > > > > +   int size, __size, dsize;
-> > > > > > +   int rctx;
-> > > > > > +
-> > > > > > +   if (bpf_prog_array_valid(call) && !trace_call_bpf(call, regs))
-> > > > > > +           return;
-> > > > >
-> > > > > Same here.
-> > > > > These two parts look like copy-paste from kprobes.
-> > > > > I suspect this code wasn't tested at all.
-> > > >
-> > > > OK, I missed to test that bpf part. I thought bpf could be appended to
-> > > > any "trace-event" (looks like trace-event), isn't it?
-> > >
-> > > No. We're not applying bpf filtering to any random event
-> > > that gets introduced in a tracing subsystem.
-> > > fprobe falls into that category.
-> > > Every hook where bpf can be invoked has to be thought through.
-> > > That mental exercise didn't happen here.
-> >
-> > OK. Just out of curiousity, where is the "tracepoint" filter applied?
-> > In the kernel (verifier?) or the userspace?
+On 4/18/23 8:31 AM, Aditi Ghag wrote:
+> Batch UDP sockets from BPF iterator that allows for overlapping locking
+> semantics in BPF/kernel helpers executed in BPF programs.  This facilitates
+> BPF socket destroy kfunc (introduced by follow-up patches) to execute from
+> BPF iterator programs.
 > 
-> Sorry. I don't understand the question.
-> Are you talking about BPF_PROG_TYPE_TRACEPOINT or BPF_PROG_TYPE_RAW_TRACEPOINT ?
+> Previously, BPF iterators acquired the sock lock and sockets hash table
+> bucket lock while executing BPF programs. This prevented BPF helpers that
+> again acquire these locks to be executed from BPF iterators.  With the
+> batching approach, we acquire a bucket lock, batch all the bucket sockets,
+> and then release the bucket lock. This enables BPF or kernel helpers to
+> skip sock locking when invoked in the supported BPF contexts.
+> 
+> The batching logic is similar to the logic implemented in TCP iterator:
+> https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
+> 
+> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+> ---
+>   net/ipv4/udp.c | 209 +++++++++++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 203 insertions(+), 6 deletions(-)
+> 
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 8689ed171776..f1c001641e53 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -3148,6 +3148,145 @@ struct bpf_iter__udp {
+>   	int bucket __aligned(8);
+>   };
+>   
+> +struct bpf_udp_iter_state {
+> +	struct udp_iter_state state;
+> +	unsigned int cur_sk;
+> +	unsigned int end_sk;
+> +	unsigned int max_sk;
+> +	int offset;
+> +	struct sock **batch;
+> +	bool st_bucket_done;
+> +};
+> +
+> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
+> +				      unsigned int new_batch_sz);
+> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
+> +{
+> +	struct bpf_udp_iter_state *iter = seq->private;
+> +	struct udp_iter_state *state = &iter->state;
+> +	struct net *net = seq_file_net(seq);
+> +	struct udp_seq_afinfo afinfo;
+> +	struct udp_table *udptable;
+> +	unsigned int batch_sks = 0;
+> +	bool resized = false;
+> +	struct sock *sk;
+> +
+> +	/* The current batch is done, so advance the bucket. */
+> +	if (iter->st_bucket_done) {
+> +		state->bucket++;
+> +		iter->offset = 0;
+> +	}
+> +
+> +	afinfo.family = AF_UNSPEC;
+> +	afinfo.udp_table = NULL;
+> +	udptable = udp_get_table_afinfo(&afinfo, net);
+> +
+> +again:
+> +	/* New batch for the next bucket.
+> +	 * Iterate over the hash table to find a bucket with sockets matching
+> +	 * the iterator attributes, and return the first matching socket from
+> +	 * the bucket. The remaining matched sockets from the bucket are batched
+> +	 * before releasing the bucket lock. This allows BPF programs that are
+> +	 * called in seq_show to acquire the bucket lock if needed.
+> +	 */
+> +	iter->cur_sk = 0;
+> +	iter->end_sk = 0;
+> +	iter->st_bucket_done = false;
+> +	batch_sks = 0;
+> +
+> +	for (; state->bucket <= udptable->mask; state->bucket++) {
+> +		struct udp_hslot *hslot2 = &udptable->hash2[state->bucket];
+> +
+> +		if (hlist_empty(&hslot2->head)) {
+> +			iter->offset = 0;
+> +			continue;
+> +		}
+> +
+> +		spin_lock_bh(&hslot2->lock);
+> +		udp_portaddr_for_each_entry(sk, &hslot2->head) {
+> +			if (seq_sk_match(seq, sk)) {
+> +				/* Resume from the last iterated socket at the
+> +				 * offset in the bucket before iterator was stopped.
+> +				 */
+> +				if (iter->offset) {
+> +					--iter->offset;
+> +					continue;
+> +				}
+> +				if (iter->end_sk < iter->max_sk) {
+> +					sock_hold(sk);
+> +					iter->batch[iter->end_sk++] = sk;
+> +				}
+> +				batch_sks++;
+> +			}
+> +		}
+> +		spin_unlock_bh(&hslot2->lock);
+> +
+> +		if (iter->end_sk)
+> +			break;
+> +
+> +		/* Reset the current bucket's offset before moving to the next bucket. */
+> +		iter->offset = 0;
+> +	}
+> +
+> +	/* All done: no batch made. */
+> +	if (!iter->end_sk)
+> +		return NULL;
+> +
+> +	if (iter->end_sk == batch_sks) {
+> +		/* Batching is done for the current bucket; return the first
+> +		 * socket to be iterated from the batch.
+> +		 */
+> +		iter->st_bucket_done = true;
+> +		goto ret;
 
-I thought that you filtered the available events by name, but I found
-that perf_event_set_bpf_prog() checks TRACE_EVENT_FL_* flags and
-its combinations. Yeah, in that case this new fprobe event introduced
-TRACE_EVENT_FL_FPROBE and bpf will reject to use it.
+nit. "ret" is a variable name in some other changes in this patch. How about 
+directly "return iter->batch[0];" here or change the label name to something 
+else like "done"?
 
-OK, let me remove the BPF support from this series. I think the fprobe
-event can be used as same as kprobe events, but I have a plan to change
-it for supporting fprobe wider architectures. Thus it will require a bit
-different way to get the register values.
+> +	}
+> +	if (!resized && !bpf_iter_udp_realloc_batch(iter, batch_sks * 3 / 2)) {
+> +		resized = true;
+> +		/* Go back to the previous bucket to resize its batch. */
 
-Thank you,
+nit. I found the "to resize its batch" part confusing. The resize has already 
+been done in the above bpf_iter_udp_realloc_batch(). How about something like, 
+"After getting a larger max_sk, retry one more time to grab the whole bucket" ?
 
+> +		state->bucket--;
+> +		goto again;
+> +	}
+> +ret:
+> +	return iter->batch[0];
+> +}
+> +
+> +static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	struct bpf_udp_iter_state *iter = seq->private;
+> +	struct sock *sk;
+> +
+> +	/* Whenever seq_next() is called, the iter->cur_sk is
+> +	 * done with seq_show(), so unref the iter->cur_sk.
+> +	 */
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		sock_put(iter->batch[iter->cur_sk++]);
+> +		++iter->offset;
+> +	}
+> +
+> +	/* After updating iter->cur_sk, check if there are more sockets
+> +	 * available in the current bucket batch.
+> +	 */
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		sk = iter->batch[iter->cur_sk];
+> +	} else {
+> +		// Prepare a new batch.
+> +		sk = bpf_iter_udp_batch(seq);
+> +	}
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+nit. remove "{ }" for one liner if-else statement.
+
+> +
+> +	++*pos;
+> +	return sk;
+> +}
+> +
+> +static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	/* bpf iter does not support lseek, so it always
+> +	 * continue from where it was stop()-ped.
+> +	 */
+> +	if (*pos)
+> +		return bpf_iter_udp_batch(seq);
+> +
+> +	return SEQ_START_TOKEN;
+> +}
+> +
+>   static int udp_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
+>   			     struct udp_sock *udp_sk, uid_t uid, int bucket)
+>   {
+> @@ -3168,18 +3307,37 @@ static int bpf_iter_udp_seq_show(struct seq_file *seq, void *v)
+>   	struct bpf_prog *prog;
+>   	struct sock *sk = v;
+>   	uid_t uid;
+> +	int rc;
+
+nit. be consistent with variable name. "ret" is used in other changes in this patch.
+
+>   
+>   	if (v == SEQ_START_TOKEN)
+>   		return 0;
+>   
+> +	lock_sock(sk);
+> +
+> +	if (unlikely(sk_unhashed(sk))) {
+> +		rc = SEQ_SKIP;
+> +		goto unlock;
+> +	}
+> +
+>   	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
+>   	meta.seq = seq;
+>   	prog = bpf_iter_get_info(&meta, false);
+> -	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
+> +	rc = udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
+> +
+> +unlock:
+> +	release_sock(sk);
+> +	return rc;
+> +}
+> +
+> +static void bpf_iter_udp_put_batch(struct bpf_udp_iter_state *iter)
+> +{
+> +	while (iter->cur_sk < iter->end_sk)
+> +		sock_put(iter->batch[iter->cur_sk++]);
+>   }
+>   
+>   static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
+>   {
+> +	struct bpf_udp_iter_state *iter = seq->private;
+>   	struct bpf_iter_meta meta;
+>   	struct bpf_prog *prog;
+>   
+> @@ -3190,12 +3348,15 @@ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
+>   			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
+>   	}
+>   
+> -	udp_seq_stop(seq, v);
+> +	if (iter->cur_sk < iter->end_sk) {
+> +		bpf_iter_udp_put_batch(iter);
+> +		iter->st_bucket_done = false;
+> +	}
+>   }
+>   
+>   static const struct seq_operations bpf_iter_udp_seq_ops = {
+> -	.start		= udp_seq_start,
+> -	.next		= udp_seq_next,
+> +	.start		= bpf_iter_udp_seq_start,
+> +	.next		= bpf_iter_udp_seq_next,
+>   	.stop		= bpf_iter_udp_seq_stop,
+>   	.show		= bpf_iter_udp_seq_show,
+>   };
+> @@ -3424,21 +3585,57 @@ static struct pernet_operations __net_initdata udp_sysctl_ops = {
+>   DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
+>   		     struct udp_sock *udp_sk, uid_t uid, int bucket)
+>   
+> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
+> +				      unsigned int new_batch_sz)
+> +{
+> +	struct sock **new_batch;
+> +
+> +	new_batch = kvmalloc_array(new_batch_sz, sizeof(*new_batch),
+> +				   GFP_USER | __GFP_NOWARN);
+> +	if (!new_batch)
+> +		return -ENOMEM;
+> +
+> +	bpf_iter_udp_put_batch(iter);
+> +	kvfree(iter->batch);
+> +	iter->batch = new_batch;
+> +	iter->max_sk = new_batch_sz;
+> +
+> +	return 0;
+> +}
+> +
+> +#define INIT_BATCH_SZ 16
+> +
+>   static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
+>   {
+> -	return bpf_iter_init_seq_net(priv_data, aux);
+> +	struct bpf_udp_iter_state *iter = priv_data;
+> +	int ret;
+> +
+> +	ret = bpf_iter_init_seq_net(priv_data, aux);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
+> +	if (ret) {
+> +		bpf_iter_fini_seq_net(priv_data);
+> +		return ret;
+
+nit. remove this "return ret;" statement.
+
+Others lgtm. I will continue with the rest of the patchset tomorrow.
+
+> +	}
+> +
+> +	return ret;
+>   }
+>   
+>   static void bpf_iter_fini_udp(void *priv_data)
+>   {
+> +	struct bpf_udp_iter_state *iter = priv_data;
+> +
+>   	bpf_iter_fini_seq_net(priv_data);
+> +	kvfree(iter->batch);
+>   }
+>   
+>   static const struct bpf_iter_seq_info udp_seq_info = {
+>   	.seq_ops		= &bpf_iter_udp_seq_ops,
+>   	.init_seq_private	= bpf_iter_init_udp,
+>   	.fini_seq_private	= bpf_iter_fini_udp,
+> -	.seq_priv_size		= sizeof(struct udp_iter_state),
+> +	.seq_priv_size		= sizeof(struct bpf_udp_iter_state),
+>   };
+>   
+>   static struct bpf_iter_reg udp_reg_info = {
+
