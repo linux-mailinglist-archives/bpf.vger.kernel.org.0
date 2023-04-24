@@ -2,104 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9A46ED3FD
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 19:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1BD6ED40A
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 20:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjDXR6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 13:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
+        id S232266AbjDXSAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 14:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjDXR6R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 13:58:17 -0400
-Received: from out-13.mta1.migadu.com (out-13.mta1.migadu.com [95.215.58.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2405E5FE4
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 10:58:15 -0700 (PDT)
-Message-ID: <118c84c2-bb4e-72ac-5b0d-b23100867b3e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682359093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d3+5XGbUE770uw9jB3mKTHUu/GzssGXewM29kYrY7aw=;
-        b=Sc1bxLwZ2+GrPYALjMGx9HZSOLoKtbI4mtvUnDKQSIXfCnvMsRRKeb4Gpg13bBa0hVSOar
-        ChOLSVH3/Dn3dkNh/q63ZSIINSuGGqvRSlWPTTuGPb/efNEcDhGoISwQVfmSj2VoOOM4xU
-        AQBB8AwmQVwD/PI9tX8sLhCWjnwd5hI=
-Date:   Mon, 24 Apr 2023 10:58:10 -0700
+        with ESMTP id S232229AbjDXSAK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 14:00:10 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F9C76BB
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 11:00:08 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-3ef639004d4so25129611cf.1
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 11:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1682359207; x=1684951207;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LlRkGSdEXncwM0PBf9n/N1FPqEniuAvpiADhOOV7oaU=;
+        b=Nc/htkEIM7gLjkyElNiu0ClSDaT8ixeMNVYverT4Tm8Q9Q9OmUiTTzNCWfTYN3JY4i
+         V+5bdaILYV6CWcO+gcFbABYnFng3LljWEKwwI+QzYlCIhXwg6DldQAkO93ckNzLB1ndd
+         txWe/8B/8qNJZHYbklf5BIvpG55Gm2ZBYc25jV33zJYpdshOJSHN3VEJQXFOxXfVcgd9
+         M8Ctfeoo5HB1UvFSdoWFVz4TMkfR+Xyw/8uaFHMdlWD+U2QfZld7gZQRo4owmGeVDOXF
+         HSieHPxrfK5TlCfDK6e46UiFFsvGPA8bod8EDk6cBA9CxCj0fQUqfun/MS+9n7fGuFn3
+         /Fyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682359207; x=1684951207;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LlRkGSdEXncwM0PBf9n/N1FPqEniuAvpiADhOOV7oaU=;
+        b=eV+CvlVj5/cZtgcOa1QEHnXhBVlOSluFYkl/6K9YzRvX9dR9eFLmnHNm4SGD1+YEuw
+         9ZCt5rxT7s4z7UtO6G60zanOk8jEN5O25h0kYRkqqoBLjvzhu9raxdNY6qlkX5aPxdmy
+         0bCjuSxuFouXFtDVJIeFYgCEBYUt1TSX7BWHs9nw7GgMpRfehSoOoDDT2wW3dnScG5nG
+         raD5gp1uYYQ5Ih/PVoaBWXn3HlPofF7G6KBTE1sr0Gl9qwrcPYMalz1HJ7zK7MRXp0oW
+         eRM7oMK/ItZvB44dopIHY6K8F0d9Ssz1+7wzboixFrhWjqIwVXRZ1F1aqhKiVGQ+CAgM
+         yZgw==
+X-Gm-Message-State: AAQBX9ctBrKtVzI+rzL4fnUu5qo6MSbKjSy5ZDclcebCrBoPrUuTC5Mi
+        45dlX0Iti4wUFoL9hZANmJKAVw==
+X-Google-Smtp-Source: AKy350bpnv/TpaRXAb+ndcpC76lPNYkO86R3kHlzwtU+DD/DIjuKQqPWiuJnS63KYsdheQg9wYpiLQ==
+X-Received: by 2002:ac8:5cc8:0:b0:3ef:4da0:a1fc with SMTP id s8-20020ac85cc8000000b003ef4da0a1fcmr24514049qta.50.1682359207561;
+        Mon, 24 Apr 2023 11:00:07 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id u28-20020a05622a199c00b003c034837d8fsm3812578qtc.33.2023.04.24.11.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Apr 2023 11:00:07 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1pr0Tn-001VxD-Q2;
+        Mon, 24 Apr 2023 14:59:59 -0300
+Date:   Mon, 24 Apr 2023 14:59:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
+ default
+Message-ID: <ZEbDn8fVRvm5XeEl@ziepe.ca>
+References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
+ <20230424120247.k7cjmncmov32yv5r@box.shutemov.name>
+ <3273f5f3-65d9-4366-9424-c688264992f9@lucifer.local>
+ <20230424134026.di6nf2an3a2g63a6@box.shutemov.name>
 MIME-Version: 1.0
-Subject: Re: [PATCH 6/7] selftests/bpf: Add helper to get port using
- getsockname
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     bpf@vger.kernel.org, kafai@fb.com, edumazet@google.com,
-        Stanislav Fomichev <sdf@google.com>
-References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
- <20230418153148.2231644-7-aditi.ghag@isovalent.com>
- <ZD7lRqlxGfgzggAu@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZD7lRqlxGfgzggAu@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230424134026.di6nf2an3a2g63a6@box.shutemov.name>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/18/23 11:45 AM, Stanislav Fomichev wrote:
->> +
->> +int get_socket_local_port(int family, int sock_fd, __u16 *out_port)
->> +{
->> +	socklen_t addr_len;
->> +	int err;
+On Mon, Apr 24, 2023 at 04:40:26PM +0300, Kirill A. Shutemov wrote:
+> > Something more general would be preferable, however I believe there were
+> > concerns broader than write notify, for instance not correctly marking the
+> > folio dirty after writing to it, though arguably the caller should
+> > certainly be ensuring that (and in many cases, do).
 > 
-> Sorry for keeping bikeshedding this part, but if you're going to do
-> another respin, we can also drop the family argument:
+> It doesn't make much sense to me.
 > 
-> int get_socket_local_port(int sock_fd, __be16 *out_port)
-> /*                                       ^^ maybe also do be16? */
+> Shared writable mapping without page_mkwrite (or pfn_write) will setup
+> writeable PTE even on read faults[1], so you will not get the page dirty,
+> unless you scan page table entries for dirty bit.
 
-I would also just return the port as the return value instead of having another 
-arg for this. The int is more than enough.
+The general statement for supporting GUP is that the VMA owner never
+relies on write protect, either explicitly through removing the write
+bit in the PTE or implicitly through zapping the inode and removing
+all PTEs.
 
-> {
-> 	struct sockaddr_storage addr;
-> 	socklen_t addrlen;
-> 
-> 	addrlen = sizeof(addr);
-> 	getsockname(sock_fd, (struct sockaddr *)&addr, &addrlen);
-> 
-> 	if (addr.ss_family == AF_INET) {
-> 	} else if () {
-> 	}
-> }
-> 
->> +
->> +	if (family == AF_INET) {
->> +		struct sockaddr_in addr = {};
->> +
->> +		addr_len = sizeof(addr);
->> +		err = getsockname(sock_fd, (struct sockaddr *)&addr, &addr_len);
->> +		if (err < 0)
->> +			return err;
->> +		*out_port = addr.sin_port;
->> +		return 0;
->> +	} else if (family == AF_INET6) {
->> +		struct sockaddr_in6 addr = {};
->> +
->> +		addr_len = sizeof(addr);
->> +		err = getsockname(sock_fd, (struct sockaddr *)&addr, &addr_len);
->> +		if (err < 0)
->> +			return err;
->> +		*out_port = addr.sin6_port;
->> +		return 0;
->> +	}
->> +
->> +	return -1;
->> +}
+The general bug we have is that the FS does some action to prevent
+writes and then becomes surprised that the page was made dirty.
 
+GUP allows write access to the page to continue past any write protect
+action the FS takes.
+
+AFAIK all GUP users do correctly do mkdirty and we have helpers to
+support this during unpin, that is not the bug.
+
+So, I don't know about page_mkwrite, if it correlates with the abvoe
+then great :)
+
+Jason
