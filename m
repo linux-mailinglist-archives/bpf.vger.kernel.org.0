@@ -2,64 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7626ED587
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DA46ED598
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 21:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbjDXTtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 15:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
+        id S232617AbjDXTxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 15:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbjDXTtl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 15:49:41 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC645FF0
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1a677dffb37so42549345ad.2
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
+        with ESMTP id S232797AbjDXTxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 15:53:16 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5485B8C
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:52:44 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1a920d484bdso40764765ad.1
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 12:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682365777; x=1684957777;
+        d=gmail.com; s=20221208; t=1682365945; x=1684957945;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ncXeF8+lSv+yUHjZGKkNhp0Jv9CE7Y6CwXT+QMlocgs=;
-        b=ioI2c6rKmrBM7w5lAyzS3elYoLlGr4WX7+PFpkRPWL06xjkVAh74juiPP2bN+sFz8w
-         TdeqNYyDXb+x8YFDGK9OcsCriKiLWT704o22ueLXUGib9SE4BlBIDVwa+b+nMgbMBZDy
-         wzaOuGVrIa11p7O1XXh0H+z1Al2Ucow3Iz+MFstLc9E26oL7VAkb4C9Q+Z25SGP0ypUd
-         eLcMT5G9MvFlrVJZcZ73cIPT8oPX0DI5VDN2Yk+fXogP9yUcfzktu3M8RLFZvTYrStkD
-         yOQTy1La/a9NFB9oaWH3m322ZsFkzfxwHvgzXR5hV6FU52UjNleJBd1P5BaggMY0yR11
-         A6aA==
+        bh=QcQOIt0qOSo6KB7OE69fbdJrAYh9oFpDnkHfal+p1jo=;
+        b=bBkBN0G55dGN+h74dphyYp4Oo6AiCOeXviBv9XJh9SGkFh5AEAW0f+GkpxJKdXGw+8
+         FJcuG7WtS6VAAtJgy2uzkUgKzTmOWMyeLA7/CIuXzNnzjb7fRMYnULY3tVbbbMwc74Sw
+         QZZMG3sV+1E72iW7CmHeTXfOsIOJOTXPYj9qNrcuTd+ywnoszYKYay/A/jQRrFkp9spG
+         uzQZ4B2MSTGTwvjy1pFSQqSBhOcsHYukLw2grrTOZscAPuTYYz1Ke5CmZkmuc2oDq5TW
+         iqwTaQaAZSb+JmdkvJW6GqfJX028Hbof1fxhYJuMGg0BMYFbknwt+uUn3bN4TGtgJoQo
+         tZzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682365777; x=1684957777;
+        d=1e100.net; s=20221208; t=1682365945; x=1684957945;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ncXeF8+lSv+yUHjZGKkNhp0Jv9CE7Y6CwXT+QMlocgs=;
-        b=FIMoUy+uwXWAXTiZouLnnPNxMWnSPZDOCW2y7M1zb75TC1CR22+iFhsRV3DF1+fpA4
-         fj0azQzNGK5pOklGYTsErqpNM7V7FATCXsgL2FNfmYJB2kR/XgMd4hmWqi3t3+6936Iv
-         scBrvTpb+YVyw/J9zOr1OpTYZiHpSBVsWXIM5Pm2Q42aPVXL0Tx3KMY6vQCy85a5iryZ
-         PCbO9DrjGr/lIDzKGG2epHIpEclVo3+eNro/MxjvJVhoiPQLTRDx7dhPd+mrrRfb2BEr
-         Lurvm4Hzo5DwvonzVNWHnn7lZHea4yu0u4Z7pWOWNhdPzXhRDCEpawtryUPwKE9/uDaT
-         IJIA==
-X-Gm-Message-State: AAQBX9f0MEF8OkqfUpJ9WJDPybiHzvGIrxldEhiQYFu6vBclhOK0M3wT
-        vInhyGX3Mvarly80HFPViTuHV8UVIc4=
-X-Google-Smtp-Source: AKy350aDTINZgc1Nj6WKEzmVblq3CYB+DNrwsSkYJIagd1OcMyS9TIYqFRebDlxGjuQYQkEWba4txw==
-X-Received: by 2002:a17:903:24e:b0:1a6:4a64:4d27 with SMTP id j14-20020a170903024e00b001a64a644d27mr18782941plh.40.1682365777414;
-        Mon, 24 Apr 2023 12:49:37 -0700 (PDT)
+        bh=QcQOIt0qOSo6KB7OE69fbdJrAYh9oFpDnkHfal+p1jo=;
+        b=JMm2onGbgWDrlXk5bEPNhQxYBfVCPCm4kP6Z08N2fqX/EmKHkpYHbaXGCfDDGfqrk7
+         G0Y32CkctYgL0s9akn3iDzmVXAiGiKLEuvIMWtfRhAjGVml0i7cJakQ/Uc44NQPsSKIY
+         1KNdxT5G1SSafKjaGTQSqlLGaRvsZDPeZfIeaXXTnMuIo4AnTGw6O80g+bj/fxWpQOiH
+         gZ/bvti9sNQ4X+IpY2xWF1klYjEpRULqXt/lCXjBVBJOBu89McrD1SvKoPCzt4antO5n
+         36D3luLTuoqSWhJsfPt5xlFfE9qgbnxo4zHEC0/WfFQTyT7OhMxTLXVnu/xyvPbaMAqP
+         QCBA==
+X-Gm-Message-State: AAQBX9caB/6hDvMa0vcAFQ2mWu7rhnxw3v9JoZ+AwDk/SqWxJh2ve4aZ
+        DZEF8blNt250oMVoWIOcHNo=
+X-Google-Smtp-Source: AKy350Zz6e1CKe3JAGIAdE7dayOMd0aQuActdgYix1YhmoZCTxb8B7x0Uq1BOtVluWq+UU1bikdogQ==
+X-Received: by 2002:a17:902:c98a:b0:1a6:e564:6046 with SMTP id g10-20020a170902c98a00b001a6e5646046mr12575607plc.46.1682365944741;
+        Mon, 24 Apr 2023 12:52:24 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:d8b6:344e:b81a:e8b5])
-        by smtp.gmail.com with ESMTPSA id bd2-20020a170902830200b001a68d45e52dsm6901912plb.249.2023.04.24.12.49.36
+        by smtp.gmail.com with ESMTPSA id om12-20020a17090b3a8c00b002405d3bbe42sm8680673pjb.0.2023.04.24.12.52.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Apr 2023 12:49:36 -0700 (PDT)
-Date:   Mon, 24 Apr 2023 12:49:35 -0700
+        Mon, 24 Apr 2023 12:52:24 -0700 (PDT)
+Date:   Mon, 24 Apr 2023 12:52:22 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Message-ID: <6446dd4faa312_389cc208c3@john.notmuch>
-In-Reply-To: <20230420071414.570108-3-joannelkoong@gmail.com>
+Message-ID: <6446ddf671562_389cc20852@john.notmuch>
+In-Reply-To: <20230420071414.570108-4-joannelkoong@gmail.com>
 References: <20230420071414.570108-1-joannelkoong@gmail.com>
- <20230420071414.570108-3-joannelkoong@gmail.com>
-Subject: RE: [PATCH v2 bpf-next 2/5] bpf: Add bpf_dynptr_is_null and
- bpf_dynptr_is_rdonly
+ <20230420071414.570108-4-joannelkoong@gmail.com>
+Subject: RE: [PATCH v2 bpf-next 3/5] bpf: Add bpf_dynptr_size
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -75,16 +74,9 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Joanne Koong wrote:
-> bpf_dynptr_is_null returns true if the dynptr is null / invalid
-> (determined by whether ptr->data is NULL), else false if
-> the dynptr is a valid dynptr.
-> 
-> bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
-> else false if the dynptr is read-writable. If the dynptr is
-> null / invalid, false is returned by default.
+> bpf_dynptr_size returns the number of useable bytes in a dynptr.
 > 
 > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
