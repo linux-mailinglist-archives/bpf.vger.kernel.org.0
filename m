@@ -2,66 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5766ED7A5
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 00:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B596ED828
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 00:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjDXWPU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 18:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        id S233066AbjDXWxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 18:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbjDXWPU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 18:15:20 -0400
-Received: from out-20.mta0.migadu.com (out-20.mta0.migadu.com [91.218.175.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23965B90
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 15:15:18 -0700 (PDT)
-Message-ID: <76dcba72-4e52-9ea1-cabd-b4c9f431c556@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682374516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D3ieoeduemyGOYEF5gJ539RlefTxpBD7AMbw6Hv9its=;
-        b=JGkzlrG6TSlzMx56GQZmFzLg8GugOOkwUzulpbQ260+rc6+ZTITGnQrISCeJhCeILdpSwt
-        Qs4VUwl1Edmaru0LD3AXTe1oqLNwnBxPuTKE6aHaAR/ZCe3kbtuknH6Zt5pcc5R8cHW+Lh
-        Xq8kfIafMyzEs2wUUzySxHaqty4olqg=
-Date:   Mon, 24 Apr 2023 15:15:13 -0700
+        with ESMTP id S232544AbjDXWxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 18:53:09 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0B47AA3
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 15:53:06 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-505934ccc35so8719560a12.2
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 15:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1682376785; x=1684968785;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lb9V5qEz8uwYJMRGS2n+7cwxt++F8Vl5cfnWbWpg2NA=;
+        b=oqBZV0kBPqtAYvC/4m7in4/HJVjt2Cq2tq+xjPyWe6vOXlUcae6M/NmBFzDz/FPGrX
+         AG2o8U04UdF21KwSmuhBGZ1q2DHETDwPFLMrgZrFyDGnBs4S312y0jexltI499BS+Nbf
+         U4J9A0MQ8UK8x7eGinOq2eMOG1HC++DT1KCug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682376785; x=1684968785;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lb9V5qEz8uwYJMRGS2n+7cwxt++F8Vl5cfnWbWpg2NA=;
+        b=daxdO+ogxtmJ+GhmCtO9sfrwCcBz7kBXkzX03poS9hkF+ZZVkAVGX0T0bBy1+7XF+a
+         R/NKv7APvivDE6BfudQnvAdda0fpXTNGnABWxIZsqQQY9IvQWK9egVD/q6Nb2eCzzUT+
+         DdIsqstAKM9HHSgGXwLjPr7TgfKlkT1zPrmvKBESxerDqIr2Uoszq9oQFG+mksaTs1YO
+         j/prctlg47wRj/obwD2eKbo8mjOoRQZD3rWCzjWBzgrOql3tgJah9bKzga1TuadXggzk
+         FFiBCzWE0z6vjmIY4ZNM4JtO3v1HURow0fcHQmB92N7XOebIgZ6pTkv0aUruZkpHTd4G
+         VDVw==
+X-Gm-Message-State: AAQBX9dcsrRR8BfjH1KbtVo8W+Yze9kCXKvg2AOTU2TnccrFpYz1Q9Sp
+        py/HCfaZOO8Kqc8N5STpvmfJO8545q6cPlwp7lL6bQ==
+X-Google-Smtp-Source: AKy350bV1SaUES6IvRlxAiUCsXAqw751wdGR/d9hfAt2fNVjRZuydHYBPeewsR9bUeFBdElZDsrQXIucfmuElG1ioTY=
+X-Received: by 2002:aa7:d490:0:b0:508:422b:a61 with SMTP id
+ b16-20020aa7d490000000b00508422b0a61mr14430531edr.4.1682376785287; Mon, 24
+ Apr 2023 15:53:05 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 bpf-next 0/7] bpf: Add socket destroy capability
-Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     sdf@google.com, edumazet@google.com, bpf@vger.kernel.org
-References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230423075335.92597-1-kal.conley@dectris.com> <6446d34f9568_338f220872@john.notmuch>
+In-Reply-To: <6446d34f9568_338f220872@john.notmuch>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Tue, 25 Apr 2023 00:52:53 +0200
+Message-ID: <CAHApi-=Vr4VARgoDNB1T906gfDNB5L5_U24zE=ZHQi+qd__e8w@mail.gmail.com>
+Subject: Re: [PATCH] xsk: Use pool->dma_pages to check for DMA
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/18/23 8:31 AM, Aditi Ghag wrote:
-> This patch adds the capability to destroy sockets in BPF. We plan to use
-> the capability in Cilium to force client sockets to reconnect when their
-> remote load-balancing backends are deleted. The other use case is
-> on-the-fly policy enforcement where existing socket connections prevented
-> by policies need to be terminated.
+> > Compare pool->dma_pages instead of pool->dma_pages_cnt to check for an
+> > active DMA mapping. pool->dma_pages needs to be read anyway to access
+> > the map so this compiles to more efficient code.
+>
+> Was it noticable in some sort of performance test?
 
-If the earlier kfunc filter patch 
-(https://lore.kernel.org/bpf/1ECC8AAA-C2E6-4F8A-B7D3-5E90BDEE7C48@isovalent.com/) 
-looks fine to you, please include it into the next revision. This patchset needs 
-it. Usual thing to do is to keep my sob (and author if not much has changed) and 
-add your sob. The test needs to be broken out into a separate patch though. It 
-needs to use the '__failure __msg("calling kernel function bpf_sock_destroy is 
-not allowed")'. There are many examples in selftests, eg. the dynptr_fail.c.
+This patch is part of the patchset found at
+https://lore.kernel.org/all/20230412162114.19389-3-kal.conley@dectris.com/
+which is being actively discussed and needs to be resubmitted anyway
+because of a conflict. While the discussion continues, I am submitting
+this patch by itself because I think it's an improvement on its own
+(regardless of what happens with the rest of the linked patchset). On
+one system, I measured a performance regression of 2-3% with xdpsock
+and the linked changes without the current patch. With the current
+patch, the performance regression was no longer observed.
 
-Please also fix the subject in the patches. They are all missing the bpf-next 
-and revision tag.
+> > diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> > index d318c769b445..a8d7b8a3688a 100644
+> > --- a/include/net/xsk_buff_pool.h
+> > +++ b/include/net/xsk_buff_pool.h
+> > @@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+> >       if (likely(!cross_pg))
+> >               return false;
+> >
+> > -     return pool->dma_pages_cnt &&
+> > +     return pool->dma_pages &&
+> >              !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
+> >  }
 
+I would consider the above code part of the "fast path". It may be
+executed approximately once per frame in unaligned mode.
+
+> This seems to be used in the setup/tear-down paths so your optimizing
+> a control side. Is there a fast path with this code? I walked the
+> ice driver. If its just setup code we should do whatever is more
+> readable.
+
+It is not only used in setup/tear-down paths (see above).
+Additionally, I believe the code is also _more_ readable with this
+patch applied. In particular, this patch reduces cognitive complexity
+since people (and compilers) reading the code don't need to
+additionally think about pool->dma_pages_cnt.
+
+> Both the _alloc_ cases read neighboring free_heads_cnt so your saving a load I guess?
+> This is so deep into micro-optimizing I'm curious if you could measure it?
+
+It is saving a load which also reduces code size. This will affect
+other decisions such as what to inline. Also in the linked patchset,
+dma_pages and dma_pages_cnt do not share a cache line (on x86_64).
+
+>
+> >               } else {
+> >                       xskb = &pool->heads[xp_aligned_extract_idx(pool, addr)];
+>
+> I'm not actually against optimizing but maybe another idea. Why do we have to
+> check at all? Seems if the DMA has been disabled/unmapped the driver shouldn't
+> be trying to call xsk_buff_alloc_batch? Then you can just drop the 'if' check.
+>
+> It feels to me the drivers shouldn't even be calling this after unmapping
+> the dma. WDYT?
+
+Many of these code paths are used both for ZC and copy modes. You
+might be right that this particular case is only used with DMA.
