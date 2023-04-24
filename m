@@ -2,112 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 744296EC420
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 05:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5AA6EC43C
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 06:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbjDXDob (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Apr 2023 23:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S229493AbjDXEI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 00:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbjDXDoQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Apr 2023 23:44:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB39544A7
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 20:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682307705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x0/Gqmlp5F3e84VZzqWw27RJ/qxOUG7Vcqc9AjwjGKg=;
-        b=faXCtIrAQLGBSeJkfELtc3dqMQO1HTLU5fsdenJDOjFAPUDcTIj47nTYenIfRpKA+ZRwsk
-        XfkM9mxpx3ZJs1JkWlGaGAU1xCqr5y8QmVkk+DUjVqqNW3eDrN3m4HzwaxTnMkI26MbzWl
-        KAyzfoUPy8DVDvSjjW4COtbzLqdVPY4=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-tAoa0FKbMjCI3jInCiIRfA-1; Sun, 23 Apr 2023 23:41:43 -0400
-X-MC-Unique: tAoa0FKbMjCI3jInCiIRfA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4edb884cdc3so1719026e87.1
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 20:41:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682307701; x=1684899701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=x0/Gqmlp5F3e84VZzqWw27RJ/qxOUG7Vcqc9AjwjGKg=;
-        b=h0ebWhDsAaxDldt8AdBhpooOTF2E7fg29XJim2eh0t3/gtG+Qk9gBKagRkQdSYdByz
-         SJR6OfQPY6cmjlp4Do14RIQNlA/jBNaMDnKreHM525NZCOdzzc50iDiFEyWQF2oYFaDX
-         eq+s1i9zSMlctyajKLif/rBNAnEwFPeQHPkWihQfmpx9a7lTAnYnWsOFVN38IPOxzD2n
-         liVzKP5XU46AGXf4rTkVbvw0NvzPKuFYl9XdMUyeZCARJ3R0vlLS3mC6zPLOC05zfnK2
-         RkOSCK9jfLGwntcL4E05nc///losVjKbKziJPWo1r3wIISr108+/BFzgvlmhbwrusLMz
-         6GeA==
-X-Gm-Message-State: AAQBX9eyklfKqyTw0CiFu/AQ7o+WDjwWn2bkhLLy8m5SoL4bst9WzJYw
-        vy6Z5wih0HYERsMnmgTd9+Ndu0YZHT0qJgkqVr5mmSkVWF9JIwU7uK4NjlJoXDRgKOPIGnOhcmR
-        +3Dxnv1u/j6Y=
-X-Received: by 2002:a19:c503:0:b0:4db:513b:6ef4 with SMTP id w3-20020a19c503000000b004db513b6ef4mr2801696lfe.11.1682307701257;
-        Sun, 23 Apr 2023 20:41:41 -0700 (PDT)
-X-Google-Smtp-Source: AKy350akLmVLz77aNwLtIlKSi4nJUWSFQY6BgoD/WOht8xio4frsi16eCfgOgUB/LaSrLLzhy5Ej9A==
-X-Received: by 2002:a19:c503:0:b0:4db:513b:6ef4 with SMTP id w3-20020a19c503000000b004db513b6ef4mr2801666lfe.11.1682307700896;
-        Sun, 23 Apr 2023 20:41:40 -0700 (PDT)
-Received: from [192.168.1.121] (85-23-48-202.bb.dnainternet.fi. [85.23.48.202])
-        by smtp.gmail.com with ESMTPSA id a5-20020a056512374500b004db3d57c3a8sm1510791lfs.96.2023.04.23.20.41.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Apr 2023 20:41:40 -0700 (PDT)
-Message-ID: <4b599782-3512-a177-c5b5-c562a22886c7@redhat.com>
-Date:   Mon, 24 Apr 2023 06:41:38 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] mm/gup: disallow GUP writing to file-backed mappings by
- default
-Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
+        with ESMTP id S229477AbjDXEI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 00:08:26 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A5B271C;
+        Sun, 23 Apr 2023 21:08:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682309304; x=1713845304;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=3ENYRb2UWht2Sr+Z6tRo+3xDvXiOPJLsUZsZ/btkXHA=;
+  b=D5+JcnYBVH4owSP7saKq7hYRXRhZEnbUYcFfSddb8bIq9pxw6OViMory
+   suIizre1nPKyaw5nkQCs2y+lpQBsW1O/U+PkVGCQDd3ImbLyCJHvT+AWO
+   /1p6zqE285WIeQ4/hJxS4/mUg1596LE90vVWtvy27mO7xV+hH7x3rlzxj
+   qDaEUjX80MbFYygVIwr0k4vIQICVilUlGI5G8zg7REIj9ixlepLtmN2Nr
+   zXNgo3N2m19ZlKtRc5PyEnT0WkXQlR/xsf1xlN3K+IXW0LUVjCRMGoZ/l
+   iWtaVCog3KdQt1EK3StMty5UqKOs0DSldDDwEHmTKuLymrWKZLAlTf4R2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="411630611"
+X-IronPort-AV: E=Sophos;i="5.99,221,1677571200"; 
+   d="scan'208";a="411630611"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2023 21:08:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="757534767"
+X-IronPort-AV: E=Sophos;i="5.99,221,1677571200"; 
+   d="scan'208";a="757534767"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga008.fm.intel.com with ESMTP; 23 Apr 2023 21:08:23 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Sun, 23 Apr 2023 21:08:23 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Sun, 23 Apr 2023 21:08:22 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Sun, 23 Apr 2023 21:08:22 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Sun, 23 Apr 2023 21:08:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LpPQw65XAa7FU5k6vtiSD9usUuDA71t9SmFHlSIXKxmk6I3QlaECnz2gSjGzsXV8t4uqUNSrvBVkZ8IKm4KSV6UXspKbZ/t0sAe5jhRRiqhaifRjMRJL3Eax54Qn77PyH+kgaVWHmtzSv5nO1Qh2MyLps7pw7ZLenSa3lDa87Hs7+TPxT7lAhwOYnvgLeOq7A8J0+KINggXC/D0CiOYafuUnn7s+MkXrgrfZBUdHAgaUCkB/PYXnMNjztie/BoheNLmWLR90x8+18aNwjC7auyi2P5dtLTrnu7ZO8IMwcWAYBJU/Cvu2MVrprmZnYbXG/yVgy7Q9r3X3b+pGhmuXoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yRWwYfRNIPXC5C+7JSJtvljEX1vjsFd+09COQOlb8xE=;
+ b=oHvyCGChZxIE/Qm3ViQQCo9eb8xlHWUDXfqZXRJyl8QNmAWvNFNxxUwDKouKhdXsxT3ZYL2i38Wev6dhZUDPPecjnhlz6B8RIPiI8828nEPx2wrw3anX0/5Cprj+ihRH0KRNSkJPR+u7geVNAeZHJEbejORRSLbIsQFldzmGRs07OuEQKX7YmRIWwpGExgRs6takIcAxcqN/X1cXtaO6nZEj5aNkrStoLN6gIsqW+knHAbZqiHA3Q/DaqGzdXTEVt85YdO3fl3LztJWQEQ2FeSsNxmCkUnnSWGxCmrHvHPWQ/5sRQ2SQOnO4BPiVUDUMkUTCWmDwsjjDEKf6fCmFxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN2PR11MB4045.namprd11.prod.outlook.com (2603:10b6:208:135::27)
+ by DS0PR11MB7785.namprd11.prod.outlook.com (2603:10b6:8:f1::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6319.32; Mon, 24 Apr 2023 04:08:20 +0000
+Received: from MN2PR11MB4045.namprd11.prod.outlook.com
+ ([fe80::2100:c02a:b4c4:c8a6]) by MN2PR11MB4045.namprd11.prod.outlook.com
+ ([fe80::2100:c02a:b4c4:c8a6%3]) with mapi id 15.20.6319.032; Mon, 24 Apr 2023
+ 04:08:20 +0000
+From:   "Rout, ChandanX" <chandanx.rout@intel.com>
+To:     John Hickey <jjh@daedalian.us>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     Shujin Li <lishujin@kuaishou.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
-From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mpenttil@redhat.com>
-In-Reply-To: <f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Xing, Wanli" <xingwanli@kuaishou.com>
+Subject: RE: [Intel-wired-lan] [PATCH net v4] ixgbe: Fix panic during XDP_TX
+ with > 64 CPUs
+Thread-Topic: [Intel-wired-lan] [PATCH net v4] ixgbe: Fix panic during XDP_TX
+ with > 64 CPUs
+Thread-Index: AQHZdmJmROmiD13VOU6Jw+EaZnUixQ==
+Date:   Mon, 24 Apr 2023 04:08:20 +0000
+Message-ID: <MN2PR11MB40458F7BFA0EEA533384764CEA679@MN2PR11MB4045.namprd11.prod.outlook.com>
+References: <ZC2IYWgTUFCnlKc9@boxer> <20230413230300.54858-1-jjh@daedalian.us>
+In-Reply-To: <20230413230300.54858-1-jjh@daedalian.us>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN2PR11MB4045:EE_|DS0PR11MB7785:EE_
+x-ms-office365-filtering-correlation-id: 51ef2f1a-7f18-423d-4031-08db44798a0e
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RUUSsN2mAbd4TvP26GphKvgTqtoxs37UJ80bNzMeYWj8RoftshCklnIzksbVZ4+blK1gZC9TQ2Xx6hlflPuU6vZ4pMqTSlwSv1jc8Xn+FggS5gIpRSbIb4qeBZzoQwpHKMllPskqypeUR04+L2/Ec5Qymp8hgIuxJNjqmUlck1RSVj2QT1YrQ0s9Sz4jYmEVrgZZW7b0zbGgGAN3TFnM0bbLS0cJ4l2UcyFqUg7CBV4dldtIrSjHwffCOXOuY9nA+uAAwiwP6xSP//LXbcMhGSY9bFcne8C5IevPW8IGRcg0WTy5KKvwXDl0osyXtln+x4wjEFYs6xKgdHIBC3Y7N7xsacHkF8CXVdRcoc+rQcOf+EPfxB644xDoHPIe43MQZaXYb/CYCkaMa9qAdOIvZrIJo2vreCMNGxifouiY1AnDedtL5+1JnPckPkH1NeVmGE+OX9BLEdcGEQIW6a5SaojbgbLVbaQzo8KbxxYRzZmlIZJ4U+TBlHIqYLxvj9aYmMQdyhxeT0f3K7fK/QhoLTtQcdbbFRDJbZQCbLBvtSIfp1wQfIml//a5GInLhtFNYBTodcHQJ8qFFndRnKMjfvZ/+2Dga6oWmNjf3wYPHtUeOD4a+6GEWizAEIzhuqFb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB4045.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(39860400002)(376002)(366004)(346002)(451199021)(9686003)(6506007)(26005)(38070700005)(55016003)(83380400001)(186003)(82960400001)(38100700002)(122000001)(66946007)(478600001)(76116006)(86362001)(64756008)(66556008)(66476007)(66446008)(8936002)(8676002)(54906003)(7416002)(110136005)(52536014)(5660300002)(71200400001)(7696005)(41300700001)(2906002)(4326008)(33656002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+999+U3T0/IWRyZmNpjlwH2PwTNLIPmrhTpabSAS2o0kzXdt+VFJmAnNZ9Ht?=
+ =?us-ascii?Q?lXIrKMFZDUxOi4O5dy9jB+detUFA21ffZJBwNi6ZWEEplfvxlucMLqdCe2oo?=
+ =?us-ascii?Q?B+/86qAlFT87z418lH38276PDEgSxBRfKr6/cBqpiC3SJqrpq1eLpqZLWz20?=
+ =?us-ascii?Q?VP+V8TOJDCK697xDqUjfpZnSBV4jMNSPziMccfoN+7+ugsBvUNxFnuK6v7yt?=
+ =?us-ascii?Q?uzALi0oIuQpnJYDAkcrMn8nGh3CYEtfR0sLgk1dY5pVg2yUkLzlbytO/iVn+?=
+ =?us-ascii?Q?ClbtJekYLBrYM1x/PQxe4JRUnOkN4r70HENZcZbkVNq8RlPZC+0wWqHvi5tZ?=
+ =?us-ascii?Q?cWbGB15SpUN8hv4yJlv0Ky2TSw/wpkeU85e4sCBxEZ93orRANB7IKPri2FwP?=
+ =?us-ascii?Q?hiplL5cCv+zqrPS5F+tyWe/F5g81mDm/i/YA79LVA1f5Gr6wH7yIyxMhcso8?=
+ =?us-ascii?Q?AGLznKFJMnJK+2b8r9ewdM6OBkcq6sC+eVqz2c7oEueZOP166mdFKSxzbjBS?=
+ =?us-ascii?Q?PQ0fp09DewbRAljp6YdaKuX7ZeSSobPAi2OK3hdFzhdo1/q5uuvIqO9cba6n?=
+ =?us-ascii?Q?s9a3nLH/eSLolR0d3sFW6O6pMUEuav0nqoIQ4k9UaVhMjgTyZBDx/9sCip2v?=
+ =?us-ascii?Q?w5DSrrear4PoB4DDPJ/2C1kSvFsJmXTNXEDnSKK1WKP7ger0/NzOxT1f6n8Q?=
+ =?us-ascii?Q?b9Hkpaa7itwrCjEie1akbDHyE8twHWI6EuAjxPGvyT+iFZeZnzeWAl44W13s?=
+ =?us-ascii?Q?CsRXrtVzu+ioEAh4AuGv31OXjy2Fd4JXiGVwHHMIJMTUpg2lKJFb9m2tElKc?=
+ =?us-ascii?Q?B+hESwVLXZg/kzqI3lpIQGaZ8hS85DvjglYihpBuRQCPzbqOZ0zXXS7vBFzV?=
+ =?us-ascii?Q?E8GGEkUaO/twq25hNdbVsWVK2Y9fxGJPzMHZHOnE99L515APalGFDoQQzQds?=
+ =?us-ascii?Q?lIn7MaQhav//87U3JvpfDzYMQWb7JLIxBGCBX3O+JQUGqECGE6p2Vkdw1ZrW?=
+ =?us-ascii?Q?3BrtJoVPm7/IuO/jDXX1JB4ldNegw8AfD+OFuZfLpDiovaGE6oaUh/YOYllA?=
+ =?us-ascii?Q?AXqAh0YcHZjSdhPzm5VpxHi/V+ZSIadY5B50BN83I9Jeh4eOOM3+aaPk2VP8?=
+ =?us-ascii?Q?P6ayhWQQaa/r+3Qqnol4Kb9N/Sxby5eW47x6SCW7ux0tfhudzWvUODh9h3Mt?=
+ =?us-ascii?Q?p5ei8iyJzV4thHytvSzjCgfM0ZYaGY5ypEpX0uB1XGdbqf/6uZ532JiE95Q0?=
+ =?us-ascii?Q?NBb2quIVPQ+JRtCWaXPqc/2r0mqbP7bo+IGtdQf8qgdMpaPVqhIHspPkkpUd?=
+ =?us-ascii?Q?hFwAeBnaNkIzy2RVpHxDtVmTmhibzMarM3kHPbAnc3z6Lb7wKZ6YlttlVrq2?=
+ =?us-ascii?Q?PfDr/8K/9E3NOSk0fuf+fmVcIXRohwT/p/7AcLkvuw4Y9VfeDbP9jL7Emh7z?=
+ =?us-ascii?Q?UM4e/pG0fNBajhPgwboCnIYbrYu5boT6XldSB08IIojz41xk5wTOKnfwwGpw?=
+ =?us-ascii?Q?QZxtBR16x1EcjlZ9H/kYWsB2TK0w3hGJEfFZG0f9G/JpE8jfJQI0GIz4ctRZ?=
+ =?us-ascii?Q?V/Mtilbstykb/aZUsncNVZJoZGUzTLTX52wGDv0J?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB4045.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51ef2f1a-7f18-423d-4031-08db44798a0e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2023 04:08:20.0470
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OjX3VYrWlH4jdplawQygSPJ657dljRsDq/gsXXmDOaFCknYqn1+/HnA9ZH+unXIO1Y1H7rqMy57BibIrG0QWcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7785
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -115,251 +168,137 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Hi,
 
+>-----Original Message-----
+>From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+>John Hickey
+>Sent: 14 April 2023 04:33
+>To: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+>Cc: Shujin Li <lishujin@kuaishou.com>; Alexei Starovoitov <ast@kernel.org>=
+;
+>Jesper Dangaard Brouer <hawk@kernel.org>; Daniel Borkmann
+><daniel@iogearbox.net>; intel-wired-lan@lists.osuosl.org; John Fastabend
+><john.fastabend@gmail.com>; Brandeburg, Jesse
+><jesse.brandeburg@intel.com>; John Hickey <jjh@daedalian.us>; Eric
+>Dumazet <edumazet@google.com>; Nguyen, Anthony L
+><anthony.l.nguyen@intel.com>; netdev@vger.kernel.org; Jakub Kicinski
+><kuba@kernel.org>; bpf@vger.kernel.org; Paolo Abeni
+><pabeni@redhat.com>; David S. Miller <davem@davemloft.net>; linux-
+>kernel@vger.kernel.org; Xing, Wanli <xingwanli@kuaishou.com>
+>Subject: [Intel-wired-lan] [PATCH net v4] ixgbe: Fix panic during XDP_TX w=
+ith
+>> 64 CPUs
+>
+>Commit 4fe815850bdc ("ixgbe: let the xdpdrv work with more than 64 cpus")
+>adds support to allow XDP programs to run on systems with more than
+>64 CPUs by locking the XDP TX rings and indexing them using cpu % 64
+>(IXGBE_MAX_XDP_QS).
+>
+>Upon trying this out patch on a system with more than 64 cores, the kernel
+>paniced with an array-index-out-of-bounds at the return in
+>ixgbe_determine_xdp_ring in ixgbe.h, which means
+>ixgbe_determine_xdp_q_idx was just returning the cpu instead of cpu %
+>IXGBE_MAX_XDP_QS.  An example
+>splat:
+>
+>
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> UBSAN: array-index-out-of-bounds in
+> /var/lib/dkms/ixgbe/5.18.6+focal-1/build/src/ixgbe.h:1147:26
+> index 65 is out of range for type 'ixgbe_ring *[64]'
+>
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: kernel NULL pointer dereference, address: 0000000000000058
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page  PGD 0 P4D 0
+> Oops: 0000 [#1] SMP NOPTI
+> CPU: 65 PID: 408 Comm: ksoftirqd/65
+> Tainted: G          IOE     5.15.0-48-generic #54~20.04.1-Ubuntu
+> Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 2.5.4 01/13/2020
+> RIP: 0010:ixgbe_xmit_xdp_ring+0x1b/0x1c0 [ixgbe]
+> Code: 3b 52 d4 cf e9 42 f2 ff ff 66 0f 1f 44 00 00 0f 1f 44 00 00 55 b9
+> 00 00 00 00 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 08 <44> 0f b7
+> 47 58 0f b7 47 5a 0f b7 57 54 44 0f b7 76 08 66 41 39 c0
+> RSP: 0018:ffffbc3fcd88fcb0 EFLAGS: 00010282
+> RAX: ffff92a253260980 RBX: ffffbc3fe68b00a0 RCX: 0000000000000000
+> RDX: ffff928b5f659000 RSI: ffff928b5f659000 RDI: 0000000000000000
+> RBP: ffffbc3fcd88fce0 R08: ffff92b9dfc20580 R09: 0000000000000001
+> R10: 3d3d3d3d3d3d3d3d R11: 3d3d3d3d3d3d3d3d R12: 0000000000000000
+> R13: ffff928b2f0fa8c0 R14: ffff928b9be20050 R15: 000000000000003c
+> FS:  0000000000000000(0000) GS:ffff92b9dfc00000(0000)
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000058 CR3: 000000011dd6a002 CR4: 00000000007706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+>  ixgbe_poll+0x103e/0x1280 [ixgbe]
+>  ? sched_clock_cpu+0x12/0xe0
+>  __napi_poll+0x30/0x160
+>  net_rx_action+0x11c/0x270
+>  __do_softirq+0xda/0x2ee
+>  run_ksoftirqd+0x2f/0x50
+>  smpboot_thread_fn+0xb7/0x150
+>  ? sort_range+0x30/0x30
+>  kthread+0x127/0x150
+>  ? set_kthread_struct+0x50/0x50
+>  ret_from_fork+0x1f/0x30
+>  </TASK>
+>
+>I think this is how it happens:
+>
+>Upon loading the first XDP program on a system with more than 64 CPUs,
+>ixgbe_xdp_locking_key is incremented in ixgbe_xdp_setup.  However,
+>immediately after this, the rings are reconfigured by ixgbe_setup_tc.
+>ixgbe_setup_tc calls ixgbe_clear_interrupt_scheme which calls
+>ixgbe_free_q_vectors which calls ixgbe_free_q_vector in a loop.
+>ixgbe_free_q_vector decrements ixgbe_xdp_locking_key once per call if it i=
+s
+>non-zero.  Commenting out the decrement in ixgbe_free_q_vector stopped
+>my system from panicing.
+>
+>I suspect to make the original patch work, I would need to load an XDP
+>program and then replace it in order to get ixgbe_xdp_locking_key back
+>above 0 since ixgbe_setup_tc is only called when transitioning between XDP
+>and non-XDP ring configurations, while ixgbe_xdp_locking_key is
+>incremented every time ixgbe_xdp_setup is called.
+>
+>Also, ixgbe_setup_tc can be called via ethtool --set-channels, so this bec=
+omes
+>another path to decrement ixgbe_xdp_locking_key to 0 on systems with
+>more than 64 CPUs.
+>
+>Since ixgbe_xdp_locking_key only protects the XDP_TX path and is tied to t=
+he
+>number of CPUs present, there is no reason to disable it upon unloading an
+>XDP program.  To avoid confusion, I have moved enabling
+>ixgbe_xdp_locking_key into ixgbe_sw_init, which is part of the probe path.
+>
+>Fixes: 4fe815850bdc ("ixgbe: let the xdpdrv work with more than 64 cpus")
+>Signed-off-by: John Hickey <jjh@daedalian.us>
+>Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>---
+>v1 -> v2:
+>	Added Fixes and net tag.  No code changes.
+>v2 -> v3:
+>	Added splat.  Slight clarification as to why ixgbe_xdp_locking_key
+>	is not turned off.  Based on feedback from Maciej Fijalkowski.
+>v3 -> v4:
+>	Moved setting ixgbe_xdp_locking_key into the probe path.
+>	Commit message cleanup.
+>---
+> drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 3 ---
+>drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
+> 2 files changed, 4 insertions(+), 5 deletions(-)
+>
 
-On 22.4.2023 16.37, Lorenzo Stoakes wrote:
-> It isn't safe to write to file-backed mappings as GUP does not ensure that
-> the semantics associated with such a write are performed correctly, for
-> instance filesystems which rely upon write-notify will not be correctly
-> notified.
-> 
-> There are exceptions to this - shmem and hugetlb mappings are (in effect)
-> anonymous mappings by other names so we do permit this operation in these
-> cases.
-> 
-> In addition, if no pinning takes place (neither FOLL_GET nor FOLL_PIN is
-> specified and neither flags gets implicitly set) then no writing can occur
-> so we do not perform the check in this instance.
-> 
-> This is an important exception, as populate_vma_page_range() invokes
-> __get_user_pages() in this way (and thus so does __mm_populate(), used by
-> MAP_POPULATE mmap() and mlock() invocations).
-> 
-> There are GUP users within the kernel that do nevertheless rely upon this
-> behaviour, so we introduce the FOLL_ALLOW_BROKEN_FILE_MAPPING flag to
-> explicitly permit this kind of GUP access.
-> 
-> This is required in order to not break userspace in instances where the
-> uAPI might permit file-mapped addresses - a number of RDMA users require
-> this for instance, as do the process_vm_[read/write]v() system calls,
-> /proc/$pid/mem, ptrace and SDT uprobes. Each of these callers have been
-> updated to use this flag.
-> 
-> Making this change is an important step towards a more reliable GUP, and
-> explicitly indicates which callers might encouter issues moving forward.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
->   drivers/infiniband/hw/qib/qib_user_pages.c |  3 +-
->   drivers/infiniband/hw/usnic/usnic_uiom.c   |  2 +-
->   drivers/infiniband/sw/siw/siw_mem.c        |  3 +-
->   fs/proc/base.c                             |  3 +-
->   include/linux/mm_types.h                   |  8 +++++
->   kernel/events/uprobes.c                    |  3 +-
->   mm/gup.c                                   | 36 +++++++++++++++++++++-
->   mm/memory.c                                |  3 +-
->   mm/process_vm_access.c                     |  2 +-
->   net/xdp/xdp_umem.c                         |  2 +-
->   10 files changed, 56 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
-> index f693bc753b6b..b9019dad8008 100644
-> --- a/drivers/infiniband/hw/qib/qib_user_pages.c
-> +++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-> @@ -110,7 +110,8 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
->   	for (got = 0; got < num_pages; got += ret) {
->   		ret = pin_user_pages(start_page + got * PAGE_SIZE,
->   				     num_pages - got,
-> -				     FOLL_LONGTERM | FOLL_WRITE,
-> +				     FOLL_LONGTERM | FOLL_WRITE |
-> +				     FOLL_ALLOW_BROKEN_FILE_MAPPING,
->   				     p + got, NULL);
->   		if (ret < 0) {
->   			mmap_read_unlock(current->mm);
-> diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-> index 2a5cac2658ec..33cf79b248a9 100644
-> --- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-> +++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-> @@ -85,7 +85,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
->   				int dmasync, struct usnic_uiom_reg *uiomr)
->   {
->   	struct list_head *chunk_list = &uiomr->chunk_list;
-> -	unsigned int gup_flags = FOLL_LONGTERM;
-> +	unsigned int gup_flags = FOLL_LONGTERM | FOLL_ALLOW_BROKEN_FILE_MAPPING;
->   	struct page **page_list;
->   	struct scatterlist *sg;
->   	struct usnic_uiom_chunk *chunk;
-> diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-> index f51ab2ccf151..bc3e8c0898e5 100644
-> --- a/drivers/infiniband/sw/siw/siw_mem.c
-> +++ b/drivers/infiniband/sw/siw/siw_mem.c
-> @@ -368,7 +368,8 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
->   	struct mm_struct *mm_s;
->   	u64 first_page_va;
->   	unsigned long mlock_limit;
-> -	unsigned int foll_flags = FOLL_LONGTERM;
-> +	unsigned int foll_flags =
-> +		FOLL_LONGTERM | FOLL_ALLOW_BROKEN_FILE_MAPPING;
->   	int num_pages, num_chunks, i, rv = 0;
->   
->   	if (!can_do_mlock())
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 96a6a08c8235..3e3f5ea9849f 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -855,7 +855,8 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
->   	if (!mmget_not_zero(mm))
->   		goto free;
->   
-> -	flags = FOLL_FORCE | (write ? FOLL_WRITE : 0);
-> +	flags = FOLL_FORCE | FOLL_ALLOW_BROKEN_FILE_MAPPING |
-> +		(write ? FOLL_WRITE : 0);
->   
->   	while (count > 0) {
->   		size_t this_len = min_t(size_t, count, PAGE_SIZE);
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 3fc9e680f174..e76637b4c78f 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -1185,6 +1185,14 @@ enum {
->   	FOLL_PCI_P2PDMA = 1 << 10,
->   	/* allow interrupts from generic signals */
->   	FOLL_INTERRUPTIBLE = 1 << 11,
-> +	/*
-> +	 * By default we disallow write access to known broken file-backed
-> +	 * memory mappings (i.e. anything other than hugetlb/shmem
-> +	 * mappings). Some code may rely upon being able to access this
-> +	 * regardless for legacy reasons, thus we provide a flag to indicate
-> +	 * this.
-> +	 */
-> +	FOLL_ALLOW_BROKEN_FILE_MAPPING = 1 << 12,
->   
->   	/* See also internal only FOLL flags in mm/internal.h */
->   };
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 59887c69d54c..ec330d3b0218 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -373,7 +373,8 @@ __update_ref_ctr(struct mm_struct *mm, unsigned long vaddr, short d)
->   		return -EINVAL;
->   
->   	ret = get_user_pages_remote(mm, vaddr, 1,
-> -			FOLL_WRITE, &page, &vma, NULL);
-> +				    FOLL_WRITE | FOLL_ALLOW_BROKEN_FILE_MAPPING,
-> +				    &page, &vma, NULL);
->   	if (unlikely(ret <= 0)) {
->   		/*
->   		 * We are asking for 1 page. If get_user_pages_remote() fails,
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 1f72a717232b..68d5570c0bae 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -959,16 +959,46 @@ static int faultin_page(struct vm_area_struct *vma,
->   	return 0;
->   }
->   
-> +/*
-> + * Writing to file-backed mappings using GUP is a fundamentally broken operation
-> + * as kernel write access to GUP mappings may not adhere to the semantics
-> + * expected by a file system.
-> + *
-> + * In most instances we disallow this broken behaviour, however there are some
-> + * exceptions to this enforced here.
-> + */
-> +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
-> +					  unsigned long gup_flags)
-> +{
-> +	struct file *file = vma->vm_file;
-> +
-> +	/* If we aren't pinning then no problematic write can occur. */
-> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
-> +		return true;
-> +
-> +	/* Special mappings should pose no problem. */
-> +	if (!file)
-> +		return true;
-> +
-> +	/* Has the caller explicitly indicated this case is acceptable? */
-> +	if (gup_flags & FOLL_ALLOW_BROKEN_FILE_MAPPING)
-> +		return true;
-> +
-> +	/* shmem and hugetlb mappings do not have problematic semantics. */
-> +	return vma_is_shmem(vma) || is_file_hugepages(file);
-> +}
-> +
->   static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->   {
->   	vm_flags_t vm_flags = vma->vm_flags;
->   	int write = (gup_flags & FOLL_WRITE);
->   	int foreign = (gup_flags & FOLL_REMOTE);
-> +	bool vma_anon = vma_is_anonymous(vma);
->   
->   	if (vm_flags & (VM_IO | VM_PFNMAP))
->   		return -EFAULT;
->   
-> -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
-> +	if ((gup_flags & FOLL_ANON) && !vma_anon)
->   		return -EFAULT;
->   
->   	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
-> @@ -978,6 +1008,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->   		return -EFAULT;
->   
->   	if (write) {
-> +		if (!vma_anon &&
-> +		    WARN_ON_ONCE(!can_write_file_mapping(vma, gup_flags)))
-> +			return -EFAULT;
-> +
->   		if (!(vm_flags & VM_WRITE)) {
->   			if (!(gup_flags & FOLL_FORCE))
->   				return -EFAULT;
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 146bb94764f8..e3d535991548 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5683,7 +5683,8 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr,
->   	if (!mm)
->   		return 0;
->   
-> -	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
-> +	ret = __access_remote_vm(mm, addr, buf, len,
-> +				 gup_flags | FOLL_ALLOW_BROKEN_FILE_MAPPING);
->   
->   	mmput(mm);
->   
-> diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
-> index 78dfaf9e8990..ef126c08e89c 100644
-> --- a/mm/process_vm_access.c
-> +++ b/mm/process_vm_access.c
-> @@ -81,7 +81,7 @@ static int process_vm_rw_single_vec(unsigned long addr,
->   	ssize_t rc = 0;
->   	unsigned long max_pages_per_loop = PVM_MAX_KMALLOC_PAGES
->   		/ sizeof(struct pages *);
-> -	unsigned int flags = 0;
-> +	unsigned int flags = FOLL_ALLOW_BROKEN_FILE_MAPPING;
->   
->   	/* Work out address and page range required */
->   	if (len == 0)
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 02207e852d79..b93cfcaccb0d 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -93,7 +93,7 @@ void xdp_put_umem(struct xdp_umem *umem, bool defer_cleanup)
->   
->   static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
->   {
-> -	unsigned int gup_flags = FOLL_WRITE;
-> +	unsigned int gup_flags = FOLL_WRITE | FOLL_ALLOW_BROKEN_FILE_MAPPING;
->   	long npgs;
->   	int err;
->   
-
-Not sure about this in general, but seemss at least ptrace 
-(ptrace_access_vm()) seems to be broken here..
-
-
---Mika
-
-
+Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent Worke=
+r at Intel)
