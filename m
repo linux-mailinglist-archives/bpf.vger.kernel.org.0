@@ -2,362 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4B36EC504
-	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 07:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28F26EC675
+	for <lists+bpf@lfdr.de>; Mon, 24 Apr 2023 08:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjDXFqy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Apr 2023 01:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S230482AbjDXGpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Apr 2023 02:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjDXFqx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Apr 2023 01:46:53 -0400
-Received: from out-32.mta0.migadu.com (out-32.mta0.migadu.com [91.218.175.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4BD92
-        for <bpf@vger.kernel.org>; Sun, 23 Apr 2023 22:46:48 -0700 (PDT)
-Message-ID: <251b0a3f-47d6-d9ad-0c8e-b707fa286c7c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682315206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDmcv6uyGAnhDJx5mX9MEy483v7hU9sc4J6YESMrcyE=;
-        b=HomTK5dtFCTn38BqIUHZzseILB3HVhOvqt+t/yL6LkvLLRSHXEI++Sfw8MXID2oIdeaLRt
-        o5MO3/a2K38pL6Vz7DBasYSd+VK6pOr9lL/dva+bStQRcH0++9Al1JhGO5FzXwRFxxv+S9
-        Tgw1y3Pk0aJQot3n8vPbFflVC745I3I=
-Date:   Sun, 23 Apr 2023 22:46:38 -0700
+        with ESMTP id S230340AbjDXGpq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Apr 2023 02:45:46 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75E13AAE;
+        Sun, 23 Apr 2023 23:45:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q4bHP1fyXz4f3tNf;
+        Mon, 24 Apr 2023 14:45:37 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgCnmuiNJUZkr9fFHw--.41710S2;
+        Mon, 24 Apr 2023 14:45:34 +0800 (CST)
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] bpf iterator for file-system
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     lsf-pc@lists.linux-foundation.org, Nhat Pham <nphamcs@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-fsdevel@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>
+References: <0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com>
+ <CAOQ4uxggt_je51t0MWSfRS0o7UFSYj7GDHSJd026kMfF9TvLiA@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a1e5d6e0-4772-f42a-96b8-eccefdb6127e@huaweicloud.com>
+Date:   Mon, 24 Apr 2023 14:45:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/7] bpf: udp: Implement batching for sockets iterator
+In-Reply-To: <CAOQ4uxggt_je51t0MWSfRS0o7UFSYj7GDHSJd026kMfF9TvLiA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     kafai@fb.com, sdf@google.com, edumazet@google.com,
-        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
-References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
- <20230418153148.2231644-5-aditi.ghag@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230418153148.2231644-5-aditi.ghag@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: Syh0CgCnmuiNJUZkr9fFHw--.41710S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuryUZrW7WFyUZF4kKF17KFg_yoW5KFW7pF
+        WruF4rKr4kJw48Aw4vyayxXay0v34fuF47X3s5XrW5urWUZFna9wn7Kr15ZFyDCrs8CF1a
+        vF4qk3s5tF98XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/18/23 8:31 AM, Aditi Ghag wrote:
-> Batch UDP sockets from BPF iterator that allows for overlapping locking
-> semantics in BPF/kernel helpers executed in BPF programs.  This facilitates
-> BPF socket destroy kfunc (introduced by follow-up patches) to execute from
-> BPF iterator programs.
-> 
-> Previously, BPF iterators acquired the sock lock and sockets hash table
-> bucket lock while executing BPF programs. This prevented BPF helpers that
-> again acquire these locks to be executed from BPF iterators.  With the
-> batching approach, we acquire a bucket lock, batch all the bucket sockets,
-> and then release the bucket lock. This enables BPF or kernel helpers to
-> skip sock locking when invoked in the supported BPF contexts.
-> 
-> The batching logic is similar to the logic implemented in TCP iterator:
-> https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
-> 
-> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
->   net/ipv4/udp.c | 209 +++++++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 203 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 8689ed171776..f1c001641e53 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -3148,6 +3148,145 @@ struct bpf_iter__udp {
->   	int bucket __aligned(8);
->   };
->   
-> +struct bpf_udp_iter_state {
-> +	struct udp_iter_state state;
-> +	unsigned int cur_sk;
-> +	unsigned int end_sk;
-> +	unsigned int max_sk;
-> +	int offset;
-> +	struct sock **batch;
-> +	bool st_bucket_done;
-> +};
-> +
-> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-> +				      unsigned int new_batch_sz);
-> +static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
-> +{
-> +	struct bpf_udp_iter_state *iter = seq->private;
-> +	struct udp_iter_state *state = &iter->state;
-> +	struct net *net = seq_file_net(seq);
-> +	struct udp_seq_afinfo afinfo;
-> +	struct udp_table *udptable;
-> +	unsigned int batch_sks = 0;
-> +	bool resized = false;
-> +	struct sock *sk;
-> +
-> +	/* The current batch is done, so advance the bucket. */
-> +	if (iter->st_bucket_done) {
-> +		state->bucket++;
-> +		iter->offset = 0;
-> +	}
-> +
-> +	afinfo.family = AF_UNSPEC;
-> +	afinfo.udp_table = NULL;
-> +	udptable = udp_get_table_afinfo(&afinfo, net);
-> +
-> +again:
-> +	/* New batch for the next bucket.
-> +	 * Iterate over the hash table to find a bucket with sockets matching
-> +	 * the iterator attributes, and return the first matching socket from
-> +	 * the bucket. The remaining matched sockets from the bucket are batched
-> +	 * before releasing the bucket lock. This allows BPF programs that are
-> +	 * called in seq_show to acquire the bucket lock if needed.
-> +	 */
-> +	iter->cur_sk = 0;
-> +	iter->end_sk = 0;
-> +	iter->st_bucket_done = false;
-> +	batch_sks = 0;
-> +
-> +	for (; state->bucket <= udptable->mask; state->bucket++) {
-> +		struct udp_hslot *hslot2 = &udptable->hash2[state->bucket];
-> +
-> +		if (hlist_empty(&hslot2->head)) {
-> +			iter->offset = 0;
-> +			continue;
-> +		}
-> +
-> +		spin_lock_bh(&hslot2->lock);
-> +		udp_portaddr_for_each_entry(sk, &hslot2->head) {
-> +			if (seq_sk_match(seq, sk)) {
-> +				/* Resume from the last iterated socket at the
-> +				 * offset in the bucket before iterator was stopped.
-> +				 */
-> +				if (iter->offset) {
-> +					--iter->offset;
-> +					continue;
-> +				}
-> +				if (iter->end_sk < iter->max_sk) {
-> +					sock_hold(sk);
-> +					iter->batch[iter->end_sk++] = sk;
-> +				}
-> +				batch_sks++;
-> +			}
-> +		}
-> +		spin_unlock_bh(&hslot2->lock);
-> +
-> +		if (iter->end_sk)
-> +			break;
-> +
-> +		/* Reset the current bucket's offset before moving to the next bucket. */
-> +		iter->offset = 0;
-> +	}
-> +
-> +	/* All done: no batch made. */
-> +	if (!iter->end_sk)
-> +		return NULL;
-> +
-> +	if (iter->end_sk == batch_sks) {
-> +		/* Batching is done for the current bucket; return the first
-> +		 * socket to be iterated from the batch.
-> +		 */
-> +		iter->st_bucket_done = true;
-> +		goto ret;
+Hi,
 
-nit. "ret" is a variable name in some other changes in this patch. How about 
-directly "return iter->batch[0];" here or change the label name to something 
-else like "done"?
-
-> +	}
-> +	if (!resized && !bpf_iter_udp_realloc_batch(iter, batch_sks * 3 / 2)) {
-> +		resized = true;
-> +		/* Go back to the previous bucket to resize its batch. */
-
-nit. I found the "to resize its batch" part confusing. The resize has already 
-been done in the above bpf_iter_udp_realloc_batch(). How about something like, 
-"After getting a larger max_sk, retry one more time to grab the whole bucket" ?
-
-> +		state->bucket--;
-> +		goto again;
-> +	}
-> +ret:
-> +	return iter->batch[0];
-> +}
-> +
-> +static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct bpf_udp_iter_state *iter = seq->private;
-> +	struct sock *sk;
-> +
-> +	/* Whenever seq_next() is called, the iter->cur_sk is
-> +	 * done with seq_show(), so unref the iter->cur_sk.
-> +	 */
-> +	if (iter->cur_sk < iter->end_sk) {
-> +		sock_put(iter->batch[iter->cur_sk++]);
-> +		++iter->offset;
-> +	}
-> +
-> +	/* After updating iter->cur_sk, check if there are more sockets
-> +	 * available in the current bucket batch.
-> +	 */
-> +	if (iter->cur_sk < iter->end_sk) {
-> +		sk = iter->batch[iter->cur_sk];
-> +	} else {
-> +		// Prepare a new batch.
-> +		sk = bpf_iter_udp_batch(seq);
-> +	}
-
-nit. remove "{ }" for one liner if-else statement.
-
-> +
-> +	++*pos;
-> +	return sk;
-> +}
-> +
-> +static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	/* bpf iter does not support lseek, so it always
-> +	 * continue from where it was stop()-ped.
-> +	 */
-> +	if (*pos)
-> +		return bpf_iter_udp_batch(seq);
-> +
-> +	return SEQ_START_TOKEN;
-> +}
-> +
->   static int udp_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
->   			     struct udp_sock *udp_sk, uid_t uid, int bucket)
->   {
-> @@ -3168,18 +3307,37 @@ static int bpf_iter_udp_seq_show(struct seq_file *seq, void *v)
->   	struct bpf_prog *prog;
->   	struct sock *sk = v;
->   	uid_t uid;
-> +	int rc;
-
-nit. be consistent with variable name. "ret" is used in other changes in this patch.
-
->   
->   	if (v == SEQ_START_TOKEN)
->   		return 0;
->   
-> +	lock_sock(sk);
-> +
-> +	if (unlikely(sk_unhashed(sk))) {
-> +		rc = SEQ_SKIP;
-> +		goto unlock;
-> +	}
-> +
->   	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
->   	meta.seq = seq;
->   	prog = bpf_iter_get_info(&meta, false);
-> -	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
-> +	rc = udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
-> +
-> +unlock:
-> +	release_sock(sk);
-> +	return rc;
-> +}
-> +
-> +static void bpf_iter_udp_put_batch(struct bpf_udp_iter_state *iter)
-> +{
-> +	while (iter->cur_sk < iter->end_sk)
-> +		sock_put(iter->batch[iter->cur_sk++]);
->   }
->   
->   static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
->   {
-> +	struct bpf_udp_iter_state *iter = seq->private;
->   	struct bpf_iter_meta meta;
->   	struct bpf_prog *prog;
->   
-> @@ -3190,12 +3348,15 @@ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
->   			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
->   	}
->   
-> -	udp_seq_stop(seq, v);
-> +	if (iter->cur_sk < iter->end_sk) {
-> +		bpf_iter_udp_put_batch(iter);
-> +		iter->st_bucket_done = false;
-> +	}
->   }
->   
->   static const struct seq_operations bpf_iter_udp_seq_ops = {
-> -	.start		= udp_seq_start,
-> -	.next		= udp_seq_next,
-> +	.start		= bpf_iter_udp_seq_start,
-> +	.next		= bpf_iter_udp_seq_next,
->   	.stop		= bpf_iter_udp_seq_stop,
->   	.show		= bpf_iter_udp_seq_show,
->   };
-> @@ -3424,21 +3585,57 @@ static struct pernet_operations __net_initdata udp_sysctl_ops = {
->   DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
->   		     struct udp_sock *udp_sk, uid_t uid, int bucket)
->   
-> +static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-> +				      unsigned int new_batch_sz)
-> +{
-> +	struct sock **new_batch;
-> +
-> +	new_batch = kvmalloc_array(new_batch_sz, sizeof(*new_batch),
-> +				   GFP_USER | __GFP_NOWARN);
-> +	if (!new_batch)
-> +		return -ENOMEM;
-> +
-> +	bpf_iter_udp_put_batch(iter);
-> +	kvfree(iter->batch);
-> +	iter->batch = new_batch;
-> +	iter->max_sk = new_batch_sz;
-> +
-> +	return 0;
-> +}
-> +
-> +#define INIT_BATCH_SZ 16
-> +
->   static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
->   {
-> -	return bpf_iter_init_seq_net(priv_data, aux);
-> +	struct bpf_udp_iter_state *iter = priv_data;
-> +	int ret;
-> +
-> +	ret = bpf_iter_init_seq_net(priv_data, aux);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
-> +	if (ret) {
-> +		bpf_iter_fini_seq_net(priv_data);
-> +		return ret;
-
-nit. remove this "return ret;" statement.
-
-Others lgtm. I will continue with the rest of the patchset tomorrow.
-
-> +	}
-> +
-> +	return ret;
->   }
->   
->   static void bpf_iter_fini_udp(void *priv_data)
->   {
-> +	struct bpf_udp_iter_state *iter = priv_data;
-> +
->   	bpf_iter_fini_seq_net(priv_data);
-> +	kvfree(iter->batch);
->   }
->   
->   static const struct bpf_iter_seq_info udp_seq_info = {
->   	.seq_ops		= &bpf_iter_udp_seq_ops,
->   	.init_seq_private	= bpf_iter_init_udp,
->   	.fini_seq_private	= bpf_iter_fini_udp,
-> -	.seq_priv_size		= sizeof(struct udp_iter_state),
-> +	.seq_priv_size		= sizeof(struct bpf_udp_iter_state),
->   };
->   
->   static struct bpf_iter_reg udp_reg_info = {
+On 4/16/2023 3:55 PM, Amir Goldstein wrote:
+> On Tue, Feb 28, 2023 at 5:47 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From time to time, new syscalls have been proposed to gain more observability
+>> for file-system:
+>>
+>> (1) getvalues() [0]. It uses a hierarchical namespace API to gather and return
+>> multiple values in single syscall.
+>> (2) cachestat() [1].  It returns the cache status (e.g., number of dirty pages)
+>> of a given file in a scalable way.
+>>
+>> All these proposals requires adding a new syscall. Here I would like to propose
+>> another solution for file system observability: bpf iterator for file system
+>> object. The initial idea came when I was trying to implement a filefrag-like
+>> page cache tool with support for multi-order folio, so that we can know the
+>> number of multi-order folios and the orders of those folios in page cache. After
+>> developing a demo for it, I realized that we could use it to provide more
+>> observability for file system objects. e.g., dumping the per-cpu iostat for a
+>> super block [2],  iterating all inodes in a super-block to dump info for
+>> specific inodes (e.g., unlinked but pinned inode), or displaying the flags of a
+>> specific mount.
+>>
+>> The BPF iterator was introduced in v5.8 [3] to support flexible content dumping
+>> for kernel objects. It works by creating bpf iterator file [4], which is a
+>> seq-like read-only file, and the content of the bpf iterator file is determined
+>> by a previously loaded bpf program, so userspace can read the bpf iterator file
+>> to get the information it needs. However there are some unresolved issues:
+>> (1) The privilege.
+>> Loading the bpf program requires CAP_ADMIN or CAP_BPF. This means that the
+>> observability will be available to the privileged process. Maybe we can load the
+>> bpf program through a privileged process and make the bpf iterator file being
+>> readable for normal users.
+>> (2) Prevent pinning the super-block
+>> In the current naive implementation, the bpf iterator simply pins the
+>> super-block of the passed fd and prevents the super-block from being destroyed.
+>> Perhaps fs-pin is a better choice, so the bpf iterator can be deactivated after
+>> the filesystem is umounted.
+>>
+>> I hope to send out an RFC soon before LSF/MM/BPF for further discussion.
+> Hi Hou,
+>
+> IIUC, there is not much value in making this a cross track session.
+> Seems like an FS track session that has not much to do with BPF
+> development.
+>
+> Am I understanding correctly or are there any cross subsystem
+> interactions that need to be discussed?
+Yes. Although the patchset for file-system iterator is still not ready, but I
+think the BPF mechanisms for file-system iterator is ready, so a cross track
+session maybe unnecessary.
+>
+> Perhaps we can join you as co-speaker for Miklos' traditional
+> "fsinfo" session?
+Thanks. I am glad to be a co-speaker for fsinfo session.
+>
+> Thanks,
+> Amir.
+>
+>> [0]:
+>> https://lore.kernel.org/linux-fsdevel/YnEeuw6fd1A8usjj@miu.piliscsaba.redhat.com/
+>> [1]: https://lore.kernel.org/linux-mm/20230219073318.366189-1-nphamcs@gmail.com/
+>> [2]:
+>> https://lore.kernel.org/linux-fsdevel/CAJfpegsCKEx41KA1S2QJ9gX9BEBG4_d8igA0DT66GFH2ZanspA@mail.gmail.com/
+>> [3]: https://lore.kernel.org/bpf/20200509175859.2474608-1-yhs@fb.com/
+>> [4]: https://docs.kernel.org/bpf/bpf_iterators.html
+>>
+>> _______________________________________________
+>> Lsf-pc mailing list
+>> Lsf-pc@lists.linux-foundation.org
+>> https://lists.linuxfoundation.org/mailman/listinfo/lsf-pc
 
