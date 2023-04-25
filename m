@@ -2,89 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3194A6EE08F
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 12:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476EC6EE100
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 13:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbjDYKpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 06:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44996 "EHLO
+        id S233628AbjDYLTQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 07:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233822AbjDYKpB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 06:45:01 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C380213E;
-        Tue, 25 Apr 2023 03:44:59 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 600852F4;
-        Tue, 25 Apr 2023 03:45:43 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 960D03F5A1;
-        Tue, 25 Apr 2023 03:44:57 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] perf build: Fix unescaped # in perf build-test
-Date:   Tue, 25 Apr 2023 11:44:13 +0100
-Message-Id: <20230425104414.1723571-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S233451AbjDYLTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 07:19:16 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8279B1707;
+        Tue, 25 Apr 2023 04:19:14 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Q5KD93cVDz17XFB;
+        Tue, 25 Apr 2023 19:15:21 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 25 Apr
+ 2023 19:19:12 +0800
+Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
+ recycling
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+CC:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+References: <cover.1682188837.git.lorenzo@kernel.org>
+ <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
+ <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
+ <ZEU+vospFdm08IeE@localhost.localdomain>
+ <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
+ <ZEZJHCRsBVQwd9ie@localhost.localdomain>
+ <0c1790dc-dbeb-8664-64ca-1f71e6c4f3a9@huawei.com> <ZEZ/xXcOv9Co5Vif@boxer>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <99890c72-eb61-e032-944a-6671d6494c23@huawei.com>
+Date:   Tue, 25 Apr 2023 19:19:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZEZ/xXcOv9Co5Vif@boxer>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With the following bash and make versions:
+On 2023/4/24 21:10, Maciej Fijalkowski wrote:
+>>> There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 192B but
+>>> this is not merged yet and it is not related to this series. We can address
+>>> your comments in a follow-up patch when XDP_PACKET_HEADROOM series is merged.
+> 
+> Intel drivers still work just fine at 192 headroom and split the page but
+> it makes it problematic for BIG TCP where MAX_SKB_FRAGS from shinfo needs
 
-  $ make --version
-  GNU Make 4.2.1
-  Built for aarch64-unknown-linux-gnu
+I am not sure why we are not enabling skb_shinfo(skb)->frag_list to support
+BIG TCP instead of increasing MAX_SKB_FRAGS, perhaps there was some disscution
+about this in the past I am not aware of?
 
-  $ bash --version
-  GNU bash, version 5.0.17(1)-release (aarch64-unknown-linux-gnu)
+> to be increased. So it's the tailroom that becomes the bottleneck, not the
+> headroom. I believe at some point we will convert our drivers to page_pool
+> with full 4k page dedicated for a single frame.
 
-This error is encountered when running the build-test target:
-
-  $ make -C tools/perf build-test
-  tests/make:181: *** unterminated call to function 'shell': missing ')'.  Stop.
-  make: *** [Makefile:103: build-test] Error 2
-
-Fix it by escaping the # which was causing make to interpret the rest of
-the line as a comment leaving the unclosed opening bracket.
-
-Fixes: 56d5229471ee ("tools build: Pass libbpf feature only if libbpf 1.0+")
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/tests/make | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/make b/tools/perf/tests/make
-index d75876126631..8dd3f8090352 100644
---- a/tools/perf/tests/make
-+++ b/tools/perf/tests/make
-@@ -178,7 +178,7 @@ run += make_install_prefix_slash
- # run += make_install_pdf
- run += make_minimal
- 
--old_libbpf := $(shell echo "#include <bpf/libbpf.h>" | $(CC) -E -dM -x c -| egrep -q "define[[:space:]]+LIBBPF_MAJOR_VERSION[[:space:]]+0{1}")
-+old_libbpf := $(shell echo '\#include <bpf/libbpf.h>' | $(CC) -E -dM -x c -| egrep -q "define[[:space:]]+LIBBPF_MAJOR_VERSION[[:space:]]+0{1}")
- 
- ifneq ($(old_libbpf),)
- run += make_libbpf_dynamic
--- 
-2.34.1
+Can we use header splitting to ensure there is enough tailroom for
+napi_build_skb() or xdp_frame with shinfo?
 
