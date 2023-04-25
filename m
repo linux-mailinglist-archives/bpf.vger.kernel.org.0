@@ -2,150 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6D26EE9AB
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 23:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2BC6EE9AF
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 23:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236384AbjDYV2H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 17:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S231927AbjDYV2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 17:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbjDYV2F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 17:28:05 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7236B238;
-        Tue, 25 Apr 2023 14:27:20 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PLEDN2022298;
-        Tue, 25 Apr 2023 14:26:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=CzEQZ5gka1RIxivt4rkTWfy8aj7iwhasIB+al8Y/8aI=;
- b=Ml2TyOzLObzpwmTtMNQYyQSIX3mc6eNUWTnuWFnG0Dd0L67ZrTT6Mur320jwrS9yeNmU
- IQpx1H8b3Wq4hq0jyRvOIHKmBZeyORts6mwIS8KqlWzm8mY8FUlZF0+DDnuO7BNIRwO9
- tbkKaXLHfkAdQBbzq+Y8bP9rsmx5gH9bNTf38NbYqHlZCZARGKTC9b4ZzsyyKHr9ZFE3
- h+k1eNShrFcw1iNI9pVxCcDcPiFmIvbmtD1a315HubGuqboTEEve3kGhX2ugXD0cA2BJ
- 17NkTyvAhzg6GMZwUyHyybz0ysHI0ri96gfPPIxOr4MAicUDonj/g+Zb4m1zSGIRUpcW BQ== 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2049.outbound.protection.outlook.com [104.47.74.49])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6mws8s90-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Apr 2023 14:26:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gk4FNrAxpwmQkZSwL0Slo7OFFRY6xnrWxgS3lSKfqxOalhXIMJf3J0QArzBM2jQ9s1ldVl5NbGr4WhWFZqeZeKSg0M0f/gy7591np57X0JlWLcFYOq4A0yyBt2zttjEp0EJb1KFSo4hAnGTDMtEfUTNCQ6QrBXTn6GyT1SbPr5Q/jUGgXJ7nY5eyvG3Sn4hAvu0WsUdN6NfGQSSzEAdTQrAb34Oa3FL1wgesHTssS2Vp6tcelJCbvkc9wGHvjb/fFwPAQsRwDzjMLHj0+Jnzg+hXg4r5ad6hxKjH3Kk1adSGYouZkjzCFtJ7wp46ETDtlPIxw9DFp1PlxNAS8X0gbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CzEQZ5gka1RIxivt4rkTWfy8aj7iwhasIB+al8Y/8aI=;
- b=S1OVRxg3YpQc8NuOd0FlWQdUkmxVnImaM/kebALVVpVWY/nLuncYQg70V97aSBEUevhND5f7iKuIU77TulARRPytML5FR5/wdBn7hJ55Xlumr+RC9O+7zupKp+Mp/5goj+9hKnOQfRYHtcp1shu43IMMpCvQTxZwwYRg6n8OjgIT1RMMORxlcbHpP7xZSmEMzSrfOc+c1t+v5cnt1xndf5ykgumMTTTl0eJDxD6+zXdgMosts/yySPYEUWqwaIdzgGdFo6DzVbEYB336t5BjHmyTEkh+ditsdOZG+2ICOHd6EBGJYV2xmhk9hfHzfICaZrNDbyucqjaeAasBVw2Zzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by IA1PR15MB5468.namprd15.prod.outlook.com (2603:10b6:208:3a8::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.33; Tue, 25 Apr
- 2023 21:25:59 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6319.033; Tue, 25 Apr 2023
- 21:25:59 +0000
-Message-ID: <23649e1d-8fee-079a-21de-87f7024add81@meta.com>
-Date:   Tue, 25 Apr 2023 14:25:54 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC][PATCH 4/6] bpf: Introduce bpf_verify_umd_signature() kfunc
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
-        mykolal@fb.com, shuah@kernel.org
-Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230425173557.724688-1-roberto.sassu@huaweicloud.com>
- <20230425173557.724688-5-roberto.sassu@huaweicloud.com>
-Content-Language: en-US
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230425173557.724688-5-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0282.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S236287AbjDYV2f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 17:28:35 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADFD729A;
+        Tue, 25 Apr 2023 14:28:27 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-b99f374179bso1896036276.3;
+        Tue, 25 Apr 2023 14:28:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682458106; x=1685050106;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KN4OwG7Q8S0Ej2HKI/K8Bzq4Vn4sob6zcbuKi/+SBdk=;
+        b=Oz4UbWpnj6Eh8d8V1VZ88IAXj/GUdzOFDQ7w7bab738unz4j94g2KIoScKa+JBOCee
+         6AnhR9ro+G/dg6bIlF2wDf9EwKsttEkhVZE4qfSu1PAFYXABo2gReoNJ9t29CBk03uNK
+         WIzhAM11FzK7JQ6v7Dg6EJm6hIrI0Ya4Wmn/Rji2zbxmmJXSTWwOKuszPUH6UmJy61do
+         I16qnR2ojZu0deWpR74s3SB0w9bl8DfCbf/z0dnpeQclzEMH4Srg6RnMUQK9E8ud6W4b
+         TEylmunEnL3QI+CN6gagBCfpGDHnuxJpIC9iHTZv69VdTqdBgfItR3wsUuyqYHmjR+9Z
+         axBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682458106; x=1685050106;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KN4OwG7Q8S0Ej2HKI/K8Bzq4Vn4sob6zcbuKi/+SBdk=;
+        b=RX+z1QSUhFzsvtf9CiKILQAyLWJRsJgJmKHlO7qlDhqCLoJT7Ny1H3Gcim0WcPODxE
+         kvFgXTWPFK2ovF46NlCwTvHWUzppRfZymaE/eo4dOsnObxEayAuQ2XrRBws4rMnFQwLs
+         k9sCCeM5WRVMTwCdfcsBir6HFd1ofjsvgMmEjuiUd28fF9F+1oGkl0UlcPgEholimjlt
+         E12M0NV2qsRIxx5x63w8dnrkJ/h/LTC/wxGtEXPmtbEEcTajcq9g/g7EoOwcY9kmPoF7
+         GvPCX1IzE0Z4tLJgvJFzYir3+/L7r/N89JzsDPVvbmbqklxVSMzgKUUSci3l9c7U72le
+         wZvw==
+X-Gm-Message-State: AAQBX9evgEDI+8da7VbesvOM8wgPn/jDzQGSdQ/N9FmW6zsHHSsAa5eL
+        PImpV5utL6mnpqIQsvadKmk=
+X-Google-Smtp-Source: AKy350ZVCFaWXkFzYXnWip3LB4JLnKNxWp2+EpTCsvVEqE0yp6pu7FPsDxWtnMNKoFBSatYHM/lYuw==
+X-Received: by 2002:a25:4243:0:b0:b75:9a44:5342 with SMTP id p64-20020a254243000000b00b759a445342mr13550844yba.4.1682458106526;
+        Tue, 25 Apr 2023 14:28:26 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:ba8:150e:68:30f0? ([2600:1700:6cf8:1240:ba8:150e:68:30f0])
+        by smtp.gmail.com with ESMTPSA id d134-20020a25e68c000000b00b9949799ce3sm2639289ybh.32.2023.04.25.14.28.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Apr 2023 14:28:26 -0700 (PDT)
+Message-ID: <927ddd10-ae5b-886c-6725-3daf04456e52@gmail.com>
+Date:   Tue, 25 Apr 2023 14:28:19 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|IA1PR15MB5468:EE_
-X-MS-Office365-Filtering-Correlation-Id: b0a84833-eae0-4ee5-a269-08db45d3aa0c
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AF9VZRo07uMYgCEol/pk3/cvzL3XkNIsoFv/Zqqe3vKveVzMrmPJ4TD/vQrfN5Z0j+FVxjPrJGvt2rZWJeECa9V3groX4cF4tYLnpIwKHKpjvqnJkhbI+ETXU6eY18dz+HoD5bCVO9gi4fiEWcMUhBjNgt84w2uK28Xea0evmQ0vaGWRFRa+2cO2dVJr9NjaUqOxK+SqDJ1nLxitQ1rGdlQ6UjVPHjA0/v755ha76eNpRITWyP/ucV+CYknpU91gK16Ki1sn0STWuSyGe1on//YvN/lRg42OP1yCSq7Yan1atKXvhD8o63HRfnmyq3PWIy6CsX3tQEXmHXpmob1DsVK5hJIAmg8R2OW7Xik4rMGvYSzHt0gNqAE5VcemVRGSXldthxwozWcBh/zzJ2g1oxwtuLp9d5OMiTAaZxgdGsbVJVAWB7j5ORi1K4q6G0LfideuN+PGvS+b74WYQQacSmu9SrTalDUnKSdjOWu7/6IxRK365fXkPKXS7Nk40BbaojL3LgtFtamDCBe7VRvHPx7JYlwkpIarRsAabaoDXC7TA3CkZpE4bb5rUCSH1pByX1aIbabLFibNRLp7tQJfMMxZEaSJb+apU4M4Cz1IRJGUDmBa9MWZc5BlwOmvg6gio0ujHKo+CK6FQrPZUwjOAtxlVVDsyA3MWQ5PJ6deeoc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(451199021)(36756003)(8676002)(8936002)(478600001)(66476007)(4326008)(66946007)(7416002)(66556008)(41300700001)(316002)(38100700002)(2906002)(921005)(5660300002)(2616005)(86362001)(186003)(31686004)(6506007)(6512007)(53546011)(31696002)(6666004)(6486002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U1NZRUN6VjJhQURxOWNTcW9ibGl2Q01VOE5kbXd0QjVJQ2JqcklmaVF2UUtU?=
- =?utf-8?B?aDR6RHVQNnhBZ0sxOFNyUEp4aDFpUkdnSEhkcFRWQXNjb1lGK29rMVZicmIr?=
- =?utf-8?B?QVpHWjZoQjF1TlVNb3hMYmFjZ1h1SURGK2pjLzN3TTVCa0EvUHRXQzZuVEJv?=
- =?utf-8?B?THNwcXlHWDB2aTBQL29icnM4aXE0OEVTb2FSYnlKQ1lYTVJLcThpbUJEeU5h?=
- =?utf-8?B?M0JsS1NjbzdkbFBZbmJIYUZ0K3RLa1pod1loUW5jR1o5emJuMytSVGg2QTRN?=
- =?utf-8?B?OFVyeFR0RkQvb0lFSWJ1SlpJNm1FcDlJNlNqMlVxOFVUenc2UUpBcDkzRnB2?=
- =?utf-8?B?VVMrejJiUzFBUGtFM0NnRG1ZKzJ2akhtazdzRGhZeTBBdzNNOVRxaWFVZFlr?=
- =?utf-8?B?YzRHaE0xVWN6RUxybStNV2ZMenlsUlE5NXpIMnpnN2c4empBUURlK0pVWmNZ?=
- =?utf-8?B?WFlRZmdhOGRKajVWZTVhUGpsZHJBa0R1SGtPbkIvbHpydGxDbE1IQnQvanFn?=
- =?utf-8?B?bnpTdVhiZnhvL3RSSGIvYkVBSHVVdjlLUzZ2eXE1dmtSSGkrOExHOEt0L2VG?=
- =?utf-8?B?R3IwTlhZNmR4cy9YVWNuek1sVE1hUTJyUGxyS2lxMVdjTUxwczlUN2FiZnUv?=
- =?utf-8?B?eSsycUFUWmlDU3BrUkMzaTJTUVV5NUNrQm1uWXRDeFRnd1pablUwdlNNQ3Zl?=
- =?utf-8?B?Nk82b2Q0TG1HUW1GdmxCQnZuTnN4T0ZMT0NzRTg2TWtjUTdRNGllNnFrVTNQ?=
- =?utf-8?B?Nnp0ZFJhQ2RRTU1ERlZ0K25zVTFza1VyNG8xbDE5aE5tb0N5RDFtK3k0WHZz?=
- =?utf-8?B?a3d4Q2xYS2dia2UvelgrQlhwbHVVVWE3TUQvVjk4V0ZKRzRVWURKL2ZYMzRM?=
- =?utf-8?B?cmlWeis3VUdndHpXZEJac25rMUxESjd2V0FZekxET3c1SHlMMnR5cjBWYXJW?=
- =?utf-8?B?VjI1R3RZM0pGWnJzMDYxempoaDVSTzZnUFZFa3ByQ1JDY2VsamVqT0NIRFkw?=
- =?utf-8?B?U0RJVytUMzQvalRLYzV2Ti9UbWNjcXJ3MlV6RVRVSVdiVE42NVVnSG1EZm9k?=
- =?utf-8?B?T0J5NFJTVkd0VW5LSEdWdlk4OUt6MVFSYjEvRVVCbVBRaW1EdzQxT1E2Ym5r?=
- =?utf-8?B?L1RncWt4bE5hSnJnSDVsdFRJUnk0YUtIQ1pQTVpER1hTWFBMazB0b29hYXJh?=
- =?utf-8?B?NFRwK0dBaGVyREFMOWt1NnhHQ1RPRzQyM2k2bW5KRUFIWlA1MU95RUFvOVcv?=
- =?utf-8?B?c21RblQwWExFTFVlK2V6aUtnYVVhRWxSTVBiQkRmb2tyS2lmOHZiUzlMU2dh?=
- =?utf-8?B?N0pwSzArZ1pyS2I0OEJRR01iaDFEaVk0b0QrdzQxYVkrL0h4dGh3UENJMmVU?=
- =?utf-8?B?Z2hsTFRvdUU1YmI4V0tlWnQzRkN3VHQ3UmZQY3FidDFMZFd6WVR6ZnMxQ2JZ?=
- =?utf-8?B?U1MyNFkzcG4reUlkYUtFeWhxWERRbFg3Mmd3ZjBMenVjelVHL1NNSCs2anhk?=
- =?utf-8?B?eDVWbWNHVEg5aDBFeHZYRmp5R2lHYWIyYUNzUldvRGpWa3cyQXJDclFZUEV4?=
- =?utf-8?B?U1p6SUFJTWZQQ3BTdmw4Wk9MRGlVWENFclhjSmNlUW1yd2dNWi9Rc2YrTDFQ?=
- =?utf-8?B?TC9uUXN1cVR5RjRWYUZsNjRpc2VTTVloMnlqdDNQaS94Z0pkNmVYZ1cxSVRu?=
- =?utf-8?B?dkhKRzBpc3g2RlVNODNiOXg1T01nUU5RN3NoRnhVZ3laQzVmdytCZVVrRTJm?=
- =?utf-8?B?bzFCTHR3UUtRUGFjamoxME5Nb2ZCMkFvdUxWVHlZclhQZEEvRlVJQlB3RlB3?=
- =?utf-8?B?OG02VGNzb3pXR3MzUlpDc2YyZ3BhVm5MeEJYV2FhS0FJMG1Lamt0UFFtM0Jr?=
- =?utf-8?B?MVN3eHhpTkljd2NWRjNta2N3aWxyRFlmbzRydytpTWsydWRDcWN5aDIvMjlm?=
- =?utf-8?B?MWVOKzlFcC9LcE4zSEhuOTNjZGxXTlhXVjQ5NUxsUkdGcE1Jemg0Rmt2ejdx?=
- =?utf-8?B?RHcrdVRUaHNuNGl6eEJLY1E4RlNjczJmSkJwdlNjcVYycnFNRFd1NFk5WUFI?=
- =?utf-8?B?Ry9XOVhBVVRoN2kwUlUrdmNuMmp6QXJaSk1TZDNFM3NUaE9nbkhqUXR6MmxX?=
- =?utf-8?B?YWswc2FON1ExS0lXNkhiZVoxSnlJMjFlWGRNQzhIZk9QNmRySzBTMm51RE9C?=
- =?utf-8?B?ZVE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0a84833-eae0-4ee5-a269-08db45d3aa0c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2023 21:25:59.8094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G9Hr59ysr0qZFN12+VMRokc1OfEeNSt7EsS9eW6ZNKyes5I3Im4/zzQ9mhBqb33F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR15MB5468
-X-Proofpoint-GUID: nU1ZT4x-9HxVnFAQmOyWJUUlp9O36u0A
-X-Proofpoint-ORIG-GUID: nU1ZT4x-9HxVnFAQmOyWJUUlp9O36u0A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-25_08,2023-04-25_01,2023-02-09_01
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: handling unsupported optlen in cgroup bpf getsockopt: (was [PATCH
+ net-next v4 2/4] net: socket: add sockopts blacklist for BPF cgroup hook)
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        daniel@iogearbox.net, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        linux-arch@vger.kernel.org,
+        Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        bpf <bpf@vger.kernel.org>
+References: <20230413133355.350571-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com>
+ <CANn89iLuLkUvX-dDC=rJhtFcxjnVmfn_-crOevbQe+EjaEDGbg@mail.gmail.com>
+ <CAEivzxcEhfLttf0VK=NmHdQxF7CRYXNm6NwUVx6jx=-u2k-T6w@mail.gmail.com>
+ <CAKH8qBt+xPygUVPMUuzbi1HCJuxc4gYOdU6JkrFmSouRQgoG6g@mail.gmail.com>
+ <ZDoEG0VF6fb9y0EC@google.com>
+ <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
+ <ZD7Js4fj5YyI2oLd@google.com>
+ <b453462a-3d98-8d0f-9cc0-543032de5a5f@gmail.com>
+ <CAKH8qBusi0AWpo_iDaFkLFPUhgZy7-p6JwhimCkpYMhWnToE7g@mail.gmail.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAKH8qBusi0AWpo_iDaFkLFPUhgZy7-p6JwhimCkpYMhWnToE7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -154,129 +99,124 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/25/23 10:35 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On 4/25/23 11:42, Stanislav Fomichev wrote:
+> On Tue, Apr 25, 2023 at 10:59 AM Kui-Feng Lee <sinquersw@gmail.com> wrote:
+>>
+>>
+>>
+>> On 4/18/23 09:47, Stanislav Fomichev wrote:
+>>> On 04/17, Martin KaFai Lau wrote:
+>>>> On 4/14/23 6:55 PM, Stanislav Fomichev wrote:
+>>>>> On 04/13, Stanislav Fomichev wrote:
+>>>>>> On Thu, Apr 13, 2023 at 7:38 AM Aleksandr Mikhalitsyn
+>>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
+>>>>>>>
+>>>>>>> On Thu, Apr 13, 2023 at 4:22 PM Eric Dumazet <edumazet@google.com> wrote:
+>>>>>>>>
+>>>>>>>> On Thu, Apr 13, 2023 at 3:35 PM Alexander Mikhalitsyn
+>>>>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
+>>>>>>>>>
+>>>>>>>>> During work on SO_PEERPIDFD, it was discovered (thanks to Christian),
+>>>>>>>>> that bpf cgroup hook can cause FD leaks when used with sockopts which
+>>>>>>>>> install FDs into the process fdtable.
+>>>>>>>>>
+>>>>>>>>> After some offlist discussion it was proposed to add a blacklist of
+>>>>>>>>
+>>>>>>>> We try to replace this word by either denylist or blocklist, even in changelogs.
+>>>>>>>
+>>>>>>> Hi Eric,
+>>>>>>>
+>>>>>>> Oh, I'm sorry about that. :( Sure.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>> socket options those can cause troubles when BPF cgroup hook is enabled.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Can we find the appropriate Fixes: tag to help stable teams ?
+>>>>>>>
+>>>>>>> Sure, I will add next time.
+>>>>>>>
+>>>>>>> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+>>>>>>>
+>>>>>>> I think it's better to add Stanislav Fomichev to CC.
+>>>>>>
+>>>>>> Can we use 'struct proto' bpf_bypass_getsockopt instead? We already
+>>>>>> use it for tcp zerocopy, I'm assuming it should work in this case as
+>>>>>> well?
+>>>>>
+>>>>> Jakub reminded me of the other things I wanted to ask here bug forgot:
+>>>>>
+>>>>> - setsockopt is probably not needed, right? setsockopt hook triggers
+>>>>>      before the kernel and shouldn't leak anything
+>>>>> - for getsockopt, instead of bypassing bpf completely, should we instead
+>>>>>      ignore the error from the bpf program? that would still preserve
+>>>>>      the observability aspect
+>>>>
+>>>> stealing this thread to discuss the optlen issue which may make sense to
+>>>> bypass also.
+>>>>
+>>>> There has been issue with optlen. Other than this older post related to
+>>>> optlen > PAGE_SIZE:
+>>>> https://lore.kernel.org/bpf/5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux.dev/,
+>>>> the recent one related to optlen that we have seen is
+>>>> NETLINK_LIST_MEMBERSHIPS. The userspace passed in optlen == 0 and the kernel
+>>>> put the expected optlen (> 0) and 'return 0;' to userspace. The userspace
+>>>> intention is to learn the expected optlen. This makes 'ctx.optlen >
+>>>> max_optlen' and __cgroup_bpf_run_filter_getsockopt() ends up returning
+>>>> -EFAULT to the userspace even the bpf prog has not changed anything.
+>>>
+>>> (ignoring -EFAULT issue) this seems like it needs to be
+>>>
+>>>        if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
+>>>                /* error */
+>>>        }
+>>>
+>>> ?
+>>>
+>>>> Does it make sense to also bypass the bpf prog when 'ctx.optlen >
+>>>> max_optlen' for now (and this can use a separate patch which as usual
+>>>> requires a bpf selftests)?
+>>>
+>>> Yeah, makes sense. Replacing this -EFAULT with WARN_ON_ONCE or something
+>>> seems like the way to go. It caused too much trouble already :-(
+>>>
+>>> Should I prepare a patch or do you want to take a stab at it?
+>>>
+>>>> In the future, does it make sense to have a specific cgroup-bpf-prog (a
+>>>> specific attach type?) that only uses bpf_dynptr kfunc to access the optval
+>>>> such that it can enforce read-only for some optname and potentially also
+>>>> track if bpf-prog has written a new optval? The bpf-prog can only return 1
+>>>> (OK) and only allows using bpf_set_retval() instead. Likely there is still
+>>>> holes but could be a seed of thought to continue polishing the idea.
+>>>
+>>> Ack, let's think about it.
+>>>
+>>> Maybe we should re-evaluate 'getsockopt-happens-after-the-kernel' idea
+>>> as well? If we can have a sleepable hook that can copy_from_user/copy_to_user,
+>>> and we have a mostly working bpf_getsockopt (after your refactoring),
+>>> I don't see why we need to continue the current scheme of triggering
+>>> after the kernel?
+>>
+>> Since a sleepable hook would cause some restrictions, perhaps, we could
+>> introduce something like the promise pattern.  In our case here, BPF
+>> program call an async version of copy_from_user()/copy_to_user() to
+>> return a promise.
 > 
-> Introduce the bpf_verify_umd_signature() kfunc, to verify UMD-parsed
-> signatures. The parameters and usage are the same as for
-> bpf_verify_pkcs7_signature().
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   kernel/trace/bpf_trace.c | 69 ++++++++++++++++++++++++++++++++--------
->   1 file changed, 55 insertions(+), 14 deletions(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index e8da032bb6f..c9cae337596 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1271,7 +1271,7 @@ __bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
->    * The key pointer is marked as invalid, to prevent bpf_key_put() from
->    * attempting to decrement the key reference count on that pointer. The key
->    * pointer set in such way is currently understood only by
-> - * verify_pkcs7_signature().
-> + * verify_pkcs7_signature() and verify_umd_signature().
->    *
->    * Set *id* to one of the values defined in include/linux/verification.h:
->    * 0 for the primary keyring (immutable keyring of system keys);
-> @@ -1317,6 +1317,27 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
->   }
->   
->   #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> +static int validate_key(struct bpf_key *trusted_keyring)
-> +{
-> +	int ret = 0;
-> +
-> +	if (trusted_keyring->has_ref) {
-> +		/*
-> +		 * Do the permission check deferred in bpf_lookup_user_key().
-> +		 * See bpf_lookup_user_key() for more details.
-> +		 *
-> +		 * A call to key_task_permission() here would be redundant, as
-> +		 * it is already done by keyring_search() called by
-> +		 * find_asymmetric_key().
-> +		 */
-> +		ret = key_validate(trusted_keyring->key);
-> +		if (ret < 0)
-> +			return ret;
+> Having a promise might work. This is essentially what we already do
+> with sockets/etc with acquire/release pattern.
 
-The above
-	if (ret < 0)
-		return ret;
-can be removed.
+Would you mind to give me some context of the socket things?
 
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   /**
->    * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
->    * @data_ptr: data to verify
-> @@ -1334,19 +1355,9 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
->   {
->   	int ret;
->   
-> -	if (trusted_keyring->has_ref) {
-> -		/*
-> -		 * Do the permission check deferred in bpf_lookup_user_key().
-> -		 * See bpf_lookup_user_key() for more details.
-> -		 *
-> -		 * A call to key_task_permission() here would be redundant, as
-> -		 * it is already done by keyring_search() called by
-> -		 * find_asymmetric_key().
-> -		 */
-> -		ret = key_validate(trusted_keyring->key);
-> -		if (ret < 0)
-> -			return ret;
-> -	}
-> +	ret = validate_key(trusted_keyring);
-> +	if (ret < 0)
-> +		return ret;
->   
->   	return verify_pkcs7_signature(data_ptr->data,
->   				      bpf_dynptr_get_size(data_ptr),
-> @@ -1356,6 +1367,35 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
->   				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
->   				      NULL);
->   }
-> +
-> +/**
-> + * bpf_verify_umd_signature - Verify a UMD-parsed signature
-> + * @data_ptr: Data to verify
-> + * @sig_ptr: Signature of the data
-> + * @trusted_keyring: Keyring with keys trusted for signature verification
-> + *
-> + * Verify the UMD-parsed signature *sig_ptr* against the supplied *data_ptr*
-> + * with keys in a keyring referenced by *trusted_keyring*.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +__bpf_kfunc int bpf_verify_umd_signature(struct bpf_dynptr_kern *data_ptr,
-> +					 struct bpf_dynptr_kern *sig_ptr,
-> +					 struct bpf_key *trusted_keyring)
-> +{
-> +	int ret;
-> +
-> +	ret = validate_key(trusted_keyring);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return verify_umd_signature(data_ptr->data,
-> +				    bpf_dynptr_get_size(data_ptr),
-> +				    sig_ptr->data, bpf_dynptr_get_size(sig_ptr),
-> +				    trusted_keyring->key,
-> +				    VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-> +				    NULL);
-> +}
->   #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
->   
->   __diag_pop();
-> @@ -1366,6 +1406,7 @@ BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
->   BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
->   #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
->   BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
-> +BTF_ID_FLAGS(func, bpf_verify_umd_signature, KF_SLEEPABLE)
->   #endif
->   BTF_SET8_END(key_sig_kfunc_set)
->   
+> 
+> What are the sleepable restrictions you're hinting about? I feel like
+> with the sleepable bpf, we can also remove all the temporary buffer
+> management / extra copies which sounds like a win to me. (we have this
+> ugly heuristics with BPF_SOCKOPT_KERN_BUF_SIZE) The program can
+> allocate temporary buffers if needed..
+> 
+>>>>> - or maybe we can even have a per-proto bpf_getsockopt_cleanup call that
+>>>>>      gets called whenever bpf returns an error to make sure protocols have
+>>>>>      a chance to handle that condition (and free the fd)
+>>>>>
+>>>>
+>>>>
