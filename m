@@ -2,231 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810BD6EE7A4
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 20:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F9F6EE86A
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 21:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbjDYSnN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 14:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
+        id S235139AbjDYTnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 15:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbjDYSnM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 14:43:12 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9818814F43
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 11:43:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-24756a12ba0so4275895a91.1
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 11:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682448190; x=1685040190;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9r/LuIGjx8rrrWo+CZqGbK9n/EXyber61jogDduPh4o=;
-        b=vtV3wBJHtnKPGsYJrJ8ojlk7oCjHxAwyeJoQso+XJ1HTkxl9SS8nngqu1iHr1vfdP2
-         R3hRjAdY2OQfQiKy374/JzF7Y0XSJ37LKrieQ9Y6Q7SBCTdIakL2XCmgkZm7qmx1OcGG
-         fY4LGcT/oF+mD8dF+Hi1CLdE5RunYO4WaESN791EbrObQovyaFkdTFYCQ5rDJLX3Vpxb
-         3Xmlhbc+hAyhEkRu9tTUv+tvqMQjYUJQRqVMTCvJ6qcSzozx46V5+mTJpG3EeNgGp74x
-         mj6FjWzyDNfbb+39wnYn/4Tj+FQIwqm8cPDSqVGWDqkmnfJU6mxjZn4aBhOity0+Y0BE
-         CZ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682448190; x=1685040190;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9r/LuIGjx8rrrWo+CZqGbK9n/EXyber61jogDduPh4o=;
-        b=XSwfxLcI7xcvw0P90g2gEgXR7PaFiVWmANS/dP4V9yCPe9kVYw609jihWl+/fJDzBU
-         jITAX5dzHQTJ7qeIQ9VoM/5BrfNmSZXlgjqRnamGfHxDcOtFl+CgvY5OQgTzZUdFd+c6
-         nMhYrOf5hSLy/sLFguBLaFqIJAZ7ZjTWbZbRo6dqzG/sJKw7H8aJk6hR1EpLbUTY5mPH
-         1ObjZe37OObHcIE3VtDzp40C46KjmzEgQzF3Dv/KN6W5wAOYuYjRFoDFgAZV4iyyZKQN
-         tvrBzmivhEUrQSm3KOMxyI+gQJrnzRYofML+xWxu7Anc7ga7cXGsZVWCSYqkDCHkbsa3
-         NJiw==
-X-Gm-Message-State: AAQBX9e8BV+NK4g7Mi4EyoL9LHdBI9IjOHETOLQdiUB2SKcieBAru3t1
-        eZioKXYrtiOaZ4VGrRma5Ds2e2rx16F4GpfM4TJ/Mg==
-X-Google-Smtp-Source: AKy350ZZPv49tW4jIrpNQbuGE03auCjlVZ5DpZtvMTqVnf3KdZs/jN0kTN73n6FbKawjFqKNlE6RRmAV2mthsoE4Jcs=
-X-Received: by 2002:a17:90b:1642:b0:247:6c78:6c3f with SMTP id
- il2-20020a17090b164200b002476c786c3fmr19434427pjb.29.1682448189925; Tue, 25
- Apr 2023 11:43:09 -0700 (PDT)
+        with ESMTP id S234970AbjDYTnc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 15:43:32 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132B57EFA
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 12:43:31 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PJJmgh008305;
+        Tue, 25 Apr 2023 12:43:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=POx/wWWYLfHZNUwp4psaXD0YJaIxxh66wLlXSAnuDoQ=;
+ b=k8k/hkxx4zTXLRcBGkv9LGen8zuHbbY3fxVi0NSWUak2HG8kzNoUfc4D3/TUbIK1hAXY
+ czOBRnkRwh/UYayOyc23RQrAcCf7uGQdTGQw0PfyTTGm1XRkfY3tAZnLfw/EZuR8O9rd
+ LyeI4WYfRVe7Yr/vOkN273LFM/AXwseBUNJOC4tyAc8Px6hjzOlrlZ97DR6FLmQnNjde
+ 7TcqrTh/E5839di3Sr4rs+/LNH0ch4DNmCbhHoTwczVT+mBmaDY1XCG0MLM3axCjDAxt
+ jGeSTkPhZQCnivF2zKb24OlswhJB/j4eVZodzp581hF3hqH4iBZdaEjEofAgiwM+H4Pq kw== 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2044.outbound.protection.outlook.com [104.47.51.44])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6mws84q0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Apr 2023 12:43:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cn1OHchExBILLsA4BbrqfdNHkF+LjSP7WCBy3O83JWDcvsHTTTgJUu4ATcWtmjWh0MVObaBNB7UGQtk+7w3gVPjKnUOQxalZSGy8QOj1DL+wKsG022lFXUocpE1VCu4ipxpfy4r+goEhdgq5gW29afJN6iLNgEHvbMY6KCRNnQlx+lZbY5mSSPioA53Obrd18W5T9nIMtel/rYvA3f7gcAe9KhnYs5DmaryJmTB/aYx/D0+pxoMjJrLxspKbuXeW4D3yGKjZk4ZmqW6rFUYT8UI/EbQ3L8poj4z5d933OfEhlqla3NB3uenmcxRdoat23duA19/BMgvBnsUGMDET8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=POx/wWWYLfHZNUwp4psaXD0YJaIxxh66wLlXSAnuDoQ=;
+ b=VonfOo4m7n2gneco4JcMbFdSvi3eRlht4XsU77gppJEj9clls21TYHsOiBYB07QsG8Pxbnsee0MvSZVsE6k7WKK1zAHLMzvLVRK1/KiDmnQN1ocnW6zQc3UyeeBkbqQQNPZo/pwyJLbHsifuetRcvEbQUEvQvraPGLXYwMKBSel0EAkExII4QfNqrvMSpQUZna6vFlpnDWg/TDwAUjfR90JhI3E9EFNZTJjeYhn+3PGHywuQmSnmTVtO24jZ7meFRrTu9MI4fK1EtYg51F1JdFf/E3qGuNg1tVRSH2rqOBDtZN2ZsoraiczuRjxzYP5sdk8Dqm1nOfDfLZslTp+HNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MW4PR15MB4585.namprd15.prod.outlook.com (2603:10b6:303:106::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.34; Tue, 25 Apr
+ 2023 19:43:08 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6319.033; Tue, 25 Apr 2023
+ 19:43:08 +0000
+Message-ID: <d20f40ba-36af-5060-d4e0-c467d59203ef@meta.com>
+Date:   Tue, 25 Apr 2023 12:43:05 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [PATCH bpf-next] bpf: Make bpf_helper_defs.h c++ friendly
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Peng Wei <pengweiprc@google.com>
+References: <20230425000144.3125269-1-sdf@google.com>
+ <fb24192d-b443-4e0b-df99-2a8f972cdf0a@meta.com>
+ <CAKH8qBuCMk_Ct5+gwRjc3f_3Rq17D+WOV4LaSLJZpuOHU6a6kg@mail.gmail.com>
+ <45aba643-7862-f615-6f6d-ff706e74a1b8@meta.com>
+ <CAKH8qBtyTnb=N+hiHMntsRaxBYz=2KQD55gssXQfk2LFwdhLJQ@mail.gmail.com>
+ <9488aafe-ce2b-0bf2-8e34-6cbf42328f58@meta.com>
+ <CAKH8qBt9eSq9JCRu8BqzUZ_9FLJhpMsgNf56DC6n97uOwg6Tww@mail.gmail.com>
+Content-Language: en-US
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <CAKH8qBt9eSq9JCRu8BqzUZ_9FLJhpMsgNf56DC6n97uOwg6Tww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR05CA0101.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::42) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20230413133355.350571-1-aleksandr.mikhalitsyn@canonical.com>
- <20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com>
- <CANn89iLuLkUvX-dDC=rJhtFcxjnVmfn_-crOevbQe+EjaEDGbg@mail.gmail.com>
- <CAEivzxcEhfLttf0VK=NmHdQxF7CRYXNm6NwUVx6jx=-u2k-T6w@mail.gmail.com>
- <CAKH8qBt+xPygUVPMUuzbi1HCJuxc4gYOdU6JkrFmSouRQgoG6g@mail.gmail.com>
- <ZDoEG0VF6fb9y0EC@google.com> <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
- <ZD7Js4fj5YyI2oLd@google.com> <b453462a-3d98-8d0f-9cc0-543032de5a5f@gmail.com>
-In-Reply-To: <b453462a-3d98-8d0f-9cc0-543032de5a5f@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 25 Apr 2023 11:42:58 -0700
-Message-ID: <CAKH8qBusi0AWpo_iDaFkLFPUhgZy7-p6JwhimCkpYMhWnToE7g@mail.gmail.com>
-Subject: Re: handling unsupported optlen in cgroup bpf getsockopt: (was [PATCH
- net-next v4 2/4] net: socket: add sockopts blacklist for BPF cgroup hook)
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        daniel@iogearbox.net, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        linux-arch@vger.kernel.org,
-        Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW4PR15MB4585:EE_
+X-MS-Office365-Filtering-Correlation-Id: b7b164c6-00f2-4460-a749-08db45c54bd3
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5gGmFceej62HhweYUYNjt5+vgi5b5qllXYE1sJ6Vw6+cpgbIJDAoBZ1edGLo2dPDnUsqQsAcBf+HwTTphF+mu6MkD0k+crtQ/PmRJpj2VjaeeWnYjc/UEG9na4TebM8Td+e7Yio8fnH/DIfLnOalpw6c5m5oBcUOd4KHXuCjjJGYFnlxJDl9Kvh9XVYIA4j36ciNB9wkKGqY/cnZKHNhCCoBoDfm7WeB6DQglwUk8wyuyU+uNievq2wlxVSGnlLGtAicNENqESTUIv/9szpn3tLbVhqLzY78jFHJgLpCvhFOyuF+1dkfbo617HFXJztZEZYvun+q7MzvGw3UqrrOv46GDuJ1b7ngk9CaCO/PrhMj+4rlNOqoWrGIPsyPLCHkY/BGymhQJEX83AHwV1VqDzi5k5FIfQYUh5c9L5tmrDCotr2e3Z3moJ7wFHIvY7amJ/rd3X41OLueuT4v1tVcqBWeBO4sK5UR50GMrBQYHC9AfrMjiUGFE+x7Gq6GG7FO0tMomELQ1kuURO/ert4ZLF8CLN680elc7I7C89Qbj0ZBYtBId4OJC79vk9IwV2WfuHhSp5STOQnUvChVdQLbBAd26hOGRyfnadL5vRDIyLS67QgsSUFzQWa7h81D+tYJ+wy5arIZEICTrZWwsXXw7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(451199021)(53546011)(186003)(6512007)(6506007)(316002)(66476007)(66556008)(6916009)(4326008)(5660300002)(66946007)(6666004)(6486002)(31686004)(83380400001)(2616005)(31696002)(36756003)(8936002)(8676002)(2906002)(7416002)(86362001)(478600001)(38100700002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZFlRUi90eE5yNnFpYkxMbGM1L215aEdNWXZXRlBvSU9WbHZMUGVJekNqRmhp?=
+ =?utf-8?B?dlRCOHo2MDFHcGN1T3FqQU92SHFaOFRMeENOcm5ZUmdwSFZpcGlCY3Y0OC9G?=
+ =?utf-8?B?WnNYdDBiVldNRjFvVGVWV2svNnFQT3dSaVlYVnNzVkpJbG9XcHFXWTdtY20w?=
+ =?utf-8?B?dHhxNHJ0TTBibHNxZG9TbmFMenM1SFA0cmpsSWZVT3pwTnlkME5sU21Obll3?=
+ =?utf-8?B?UWE5blArTUlxbzhuQXQ5MktETmVpMW9sd25jZXFNRkwzWHcvQ1RGU3N4bWE5?=
+ =?utf-8?B?N2xKT0R4bUEzY29nT21ZMHB5eFIyS1BmTHNONVlHUnJrL2x3ME1xbWtNNmRl?=
+ =?utf-8?B?d0loRGREeDdCQVBFeGM2dXhQeVhUZVk0WVlFRmIybFNPVkZhaE1XeUFXdDh1?=
+ =?utf-8?B?M2czcFUrS0JkVi9ERUE0dlo0K1JaQ1ZmV253Wk1SUVZlR2F2bFlqemZTUjVh?=
+ =?utf-8?B?TDREdGluOFZybEh1Q01OSm1pU0J4NWg1bUs4WDhWdGVGM3RZQ3o3MlN1V21p?=
+ =?utf-8?B?a2NFMVVGRGlEVUt4ZWlmekl0Qnc0elRZVUJ3c2VYZFVWaGEwOCt6eksyMmdr?=
+ =?utf-8?B?YWptNXBEcGVRQUdKZ0xWUk9JejFWZFdlakhCV3NBRXdoYTBLWWVETllXRXE5?=
+ =?utf-8?B?dTlpeHlCc2VLN3pRSTZoSDR4c216cGZOc3pDZEo3Zm50cjVVNUJVbmRObGtp?=
+ =?utf-8?B?bHBJZm92eFlNenNwVWlCN0VxOGJ0TWxZbU5leWVwUVJncGU4ZFAzTU90aWhs?=
+ =?utf-8?B?ZzhTTFlZUGN1YXZvclhqbXlQTU0xa1I3OE9GUkdXRUhoSUZCSWNxSDJOYW1J?=
+ =?utf-8?B?aDBLeWdKOGZiaVo4WDl6NFFlUTl6RnpSVkVLd3djOVU2b2llcERndXhYVDN5?=
+ =?utf-8?B?M0d3YlMzRWZoanVZUTRmYU5Fc2ZsQkdSUTc2K0pzTUdYM1hCOFl2U04vWnBs?=
+ =?utf-8?B?cGF3b2tlRlA1aE9uSnJEMlJQMDAwUzVKUW94S3RHbCtGVTJnejZrZVBNUGlL?=
+ =?utf-8?B?TlJjVFRqUmhSamd0NjBpWXRoVVBiNUtNanpTT3BvTGtNd2d4dTU0SEV5UUhW?=
+ =?utf-8?B?WjFQS09MYnczWHVjTEM5a3V1QUJJMW9RWWZhS2g4MzRhS2dGTTd2aThYN0Nu?=
+ =?utf-8?B?ZVdTNUw1aVpRMjlsNzZqMWVFSGYybnkrWGZPajVmZVJsaUlNUmQ2aUJXYWJj?=
+ =?utf-8?B?TjdZenlDNHM4bTZ1bkd6VUQ5Q2lGcGdLbDZob0w1cER6TCt2RDRrbHNEeDZo?=
+ =?utf-8?B?eUxXOWNVRGJJOFRTZ0dzM1NaakhlWFNhU2hLNHVCWGxaUTdTRzRyY1lZdGkv?=
+ =?utf-8?B?QTB6ZFppcUduRG1TL2ZEd1RUVEFDQUI2VmhKZEs1QnUxYWRSTnJBZnF2SnZT?=
+ =?utf-8?B?aU1GanlwQ0J1cDB5dDFXb1lCWGNPOGxXQ2wrYXlwaTk2RU1aa0RXeGVOMThR?=
+ =?utf-8?B?aHNvOTBSMm9Zc2tFZ3h0MzF4aW95VmdHMkYxZlVld0RLcm1RejZDYzBrc013?=
+ =?utf-8?B?NGMyS1hzUlYvTFJHU3NOOTFtWXppSit2YmwvWU9rUVV0NmllbDVWbVQ5WU9B?=
+ =?utf-8?B?UytSejlEcldNVU4rT01qYUVEL3psQTl3S3dZVXFvSVl0NzFkTnNRYlBxbGJU?=
+ =?utf-8?B?K1IwdHVGRXBOS0dYRE5tR1NzdCs1c0xXc2hHcjgxUmVuUlFCY2NZNGNaNUVi?=
+ =?utf-8?B?Z2hhbnc2NEdmMzZSVnZLdHIySjZ6cllvYUh3MzZuS09Oa20xVFBqMjFvWHh3?=
+ =?utf-8?B?ZU0rZmZpTlNNVTg1VTE5bERtd0cxYm92MGpZNjk2dU0rOEUwTXRibzQ3OHNW?=
+ =?utf-8?B?OGk1SllTSmw5YlF3MjNzQUpjVk5EUmlML1ZNTnBzMTFGKzRCRlpjWGRTNUIw?=
+ =?utf-8?B?dnp2N0syOU9ReWxHUGQxUlJvTEd3SjJMSGkxRUd5QWJRQVd4dzg0QktJSCsv?=
+ =?utf-8?B?dlNqU2pjRmVSZmx3SFNjTk4wZEN5eTE3YlI2bkZUbktNN0dUNVJNbGlZclJJ?=
+ =?utf-8?B?dXJYRStwMDRVNXBZR0ZiSFNnNjlZSjdIWEp0M1pUUFhobUhYcElIYTl0NVdz?=
+ =?utf-8?B?QjJBb1VZQjdlMDhqTlZlaG43S1M3ZUNOaHlwSkRvY3BvKzBPSGp5Ym1XMjI3?=
+ =?utf-8?B?RnZRbzZFSU0ySGJiVEdZdU1PM3YvQXpPUzMwRk1Ed1ZvMWhSNWZ4MnRYUVRK?=
+ =?utf-8?B?bEE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7b164c6-00f2-4460-a749-08db45c54bd3
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2023 19:43:08.7312
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Du+FSGtfgEAHlvrfKLOTBBe+RFo7oYGgN3pyMyJr8P7//wUrR4DnSejDH2aTi/g/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4585
+X-Proofpoint-GUID: y7EjiRsPNR1Yxwc1yL0FDZPX-mlxSVbz
+X-Proofpoint-ORIG-GUID: y7EjiRsPNR1Yxwc1yL0FDZPX-mlxSVbz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-25_08,2023-04-25_01,2023-02-09_01
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 10:59=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com>=
- wrote:
->
->
->
-> On 4/18/23 09:47, Stanislav Fomichev wrote:
-> > On 04/17, Martin KaFai Lau wrote:
-> >> On 4/14/23 6:55 PM, Stanislav Fomichev wrote:
-> >>> On 04/13, Stanislav Fomichev wrote:
-> >>>> On Thu, Apr 13, 2023 at 7:38=E2=80=AFAM Aleksandr Mikhalitsyn
-> >>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
-> >>>>>
-> >>>>> On Thu, Apr 13, 2023 at 4:22=E2=80=AFPM Eric Dumazet <edumazet@goog=
-le.com> wrote:
-> >>>>>>
-> >>>>>> On Thu, Apr 13, 2023 at 3:35=E2=80=AFPM Alexander Mikhalitsyn
-> >>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
-> >>>>>>>
-> >>>>>>> During work on SO_PEERPIDFD, it was discovered (thanks to Christi=
-an),
-> >>>>>>> that bpf cgroup hook can cause FD leaks when used with sockopts w=
-hich
-> >>>>>>> install FDs into the process fdtable.
-> >>>>>>>
-> >>>>>>> After some offlist discussion it was proposed to add a blacklist =
-of
-> >>>>>>
-> >>>>>> We try to replace this word by either denylist or blocklist, even =
-in changelogs.
-> >>>>>
-> >>>>> Hi Eric,
-> >>>>>
-> >>>>> Oh, I'm sorry about that. :( Sure.
-> >>>>>
-> >>>>>>
-> >>>>>>> socket options those can cause troubles when BPF cgroup hook is e=
-nabled.
-> >>>>>>>
-> >>>>>>
-> >>>>>> Can we find the appropriate Fixes: tag to help stable teams ?
-> >>>>>
-> >>>>> Sure, I will add next time.
-> >>>>>
-> >>>>> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hook=
-s")
-> >>>>>
-> >>>>> I think it's better to add Stanislav Fomichev to CC.
-> >>>>
-> >>>> Can we use 'struct proto' bpf_bypass_getsockopt instead? We already
-> >>>> use it for tcp zerocopy, I'm assuming it should work in this case as
-> >>>> well?
-> >>>
-> >>> Jakub reminded me of the other things I wanted to ask here bug forgot=
-:
-> >>>
-> >>> - setsockopt is probably not needed, right? setsockopt hook triggers
-> >>>     before the kernel and shouldn't leak anything
-> >>> - for getsockopt, instead of bypassing bpf completely, should we inst=
-ead
-> >>>     ignore the error from the bpf program? that would still preserve
-> >>>     the observability aspect
-> >>
-> >> stealing this thread to discuss the optlen issue which may make sense =
-to
-> >> bypass also.
-> >>
-> >> There has been issue with optlen. Other than this older post related t=
-o
-> >> optlen > PAGE_SIZE:
-> >> https://lore.kernel.org/bpf/5c8b7d59-1f28-2284-f7b9-49d946f2e982@linux=
-.dev/,
-> >> the recent one related to optlen that we have seen is
-> >> NETLINK_LIST_MEMBERSHIPS. The userspace passed in optlen =3D=3D 0 and =
-the kernel
-> >> put the expected optlen (> 0) and 'return 0;' to userspace. The usersp=
-ace
-> >> intention is to learn the expected optlen. This makes 'ctx.optlen >
-> >> max_optlen' and __cgroup_bpf_run_filter_getsockopt() ends up returning
-> >> -EFAULT to the userspace even the bpf prog has not changed anything.
-> >
-> > (ignoring -EFAULT issue) this seems like it needs to be
-> >
-> >       if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
-> >               /* error */
-> >       }
-> >
-> > ?
-> >
-> >> Does it make sense to also bypass the bpf prog when 'ctx.optlen >
-> >> max_optlen' for now (and this can use a separate patch which as usual
-> >> requires a bpf selftests)?
-> >
-> > Yeah, makes sense. Replacing this -EFAULT with WARN_ON_ONCE or somethin=
-g
-> > seems like the way to go. It caused too much trouble already :-(
-> >
-> > Should I prepare a patch or do you want to take a stab at it?
-> >
-> >> In the future, does it make sense to have a specific cgroup-bpf-prog (=
-a
-> >> specific attach type?) that only uses bpf_dynptr kfunc to access the o=
-ptval
-> >> such that it can enforce read-only for some optname and potentially al=
-so
-> >> track if bpf-prog has written a new optval? The bpf-prog can only retu=
-rn 1
-> >> (OK) and only allows using bpf_set_retval() instead. Likely there is s=
-till
-> >> holes but could be a seed of thought to continue polishing the idea.
-> >
-> > Ack, let's think about it.
-> >
-> > Maybe we should re-evaluate 'getsockopt-happens-after-the-kernel' idea
-> > as well? If we can have a sleepable hook that can copy_from_user/copy_t=
-o_user,
-> > and we have a mostly working bpf_getsockopt (after your refactoring),
-> > I don't see why we need to continue the current scheme of triggering
-> > after the kernel?
->
-> Since a sleepable hook would cause some restrictions, perhaps, we could
-> introduce something like the promise pattern.  In our case here, BPF
-> program call an async version of copy_from_user()/copy_to_user() to
-> return a promise.
 
-Having a promise might work. This is essentially what we already do
-with sockets/etc with acquire/release pattern.
 
-What are the sleepable restrictions you're hinting about? I feel like
-with the sleepable bpf, we can also remove all the temporary buffer
-management / extra copies which sounds like a win to me. (we have this
-ugly heuristics with BPF_SOCKOPT_KERN_BUF_SIZE) The program can
-allocate temporary buffers if needed..
+On 4/25/23 11:35 AM, Stanislav Fomichev wrote:
+> On Tue, Apr 25, 2023 at 11:29 AM Yonghong Song <yhs@meta.com> wrote:
+>>
+>>
+>>
+>> On 4/25/23 11:22 AM, Stanislav Fomichev wrote:
+>>> On Tue, Apr 25, 2023 at 11:10 AM Yonghong Song <yhs@meta.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 4/25/23 10:04 AM, Stanislav Fomichev wrote:
+>>>>> On Mon, Apr 24, 2023 at 6:56 PM Yonghong Song <yhs@meta.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 4/24/23 5:01 PM, Stanislav Fomichev wrote:
+>>>>>>> From: Peng Wei <pengweiprc@google.com>
+>>>>>>>
+>>>>>>> Compiling C++ BPF programs with existing bpf_helper_defs.h is not
+>>>>
+>>>> Just curious, why you want to compile BPF programs with C++?
+>>>> The patch looks good to me. But it would be great to know
+>>>> some reasoning since a lot of stuff, e.g., some CORE related
+>>>> intrinsics, not available for C++.
+>>>
+>>> Can you share more? What's not available? Any pointers to the docs maybe?
+>>
+>> Sorry, it is an attribute, instead of instrinsics.
+>>
+>> The attribute preserve_access_index/btf_type_tag/btf_decl_tag are all C
+>> only.
+> 
+> Interesting, thanks! I don't think we use btf_type_tag/btf_decl_tag in
+> the program we want to try c++, but losing preserve_access_index might
+> be unfortunate :-( But we'll see..
+> Btw, any reason these are explicitly opted out from c++? Doesn't seem
+> like there is anything c-specific in them?
 
-> >>> - or maybe we can even have a per-proto bpf_getsockopt_cleanup call t=
-hat
-> >>>     gets called whenever bpf returns an error to make sure protocols =
-have
-> >>>     a chance to handle that condition (and free the fd)
-> >>>
-> >>
-> >>
+Initial use case is C only. If we say to support C++, we will
+need to add attribute processing codes in various other places
+(member functions, templates, other c++ constructs, etc.)
+to convert these attributes to proper debuginfo. There are no use
+cases for this, so we didn't do it in the first place.
+
+> The c++ we are talking about here is mostly "c with classes +
+> templates"; no polymorphism / inheritance.
+> 
+>> In llvm-project/clang/include/clang/Basic/Attr.td:
+>>
+>> def BPFPreserveAccessIndex : InheritableAttr,
+>>                                TargetSpecificAttr<TargetBPF>  {
+>>     let Spellings = [Clang<"preserve_access_index">];
+>>     let Subjects = SubjectList<[Record], ErrorDiag>;
+>>     let Documentation = [BPFPreserveAccessIndexDocs];
+>>     let LangOpts = [COnly];
+>> }
+>>
+>> def BTFDeclTag : InheritableAttr {
+>>     let Spellings = [Clang<"btf_decl_tag">];
+>>     let Args = [StringArgument<"BTFDeclTag">];
+>>     let Subjects = SubjectList<[Var, Function, Record, Field, TypedefName],
+>>                                ErrorDiag>;
+>>     let Documentation = [BTFDeclTagDocs];
+>>     let LangOpts = [COnly];
+>> }
+>>
+>> def BTFTypeTag : TypeAttr {
+>>     let Spellings = [Clang<"btf_type_tag">];
+>>     let Args = [StringArgument<"BTFTypeTag">];
+>>     let Documentation = [BTFTypeTagDocs];
+>>     let LangOpts = [COnly];
+>> }
+>>
+>>
+>>
+>>>
+>>> People here want to try to use c++ to see if templating helps with v4
+>>> vs v6 handling.
+>>> We have a bunch of copy-paste around this place and would like to see
+>>> whether c++ could make it a bit more readable.
+>>>
+>>>>>>> possible due to stricter C++ type conversions. C++ complains
+>>>>>>> about (void *) type conversions:
+>>>>>>>
+>>>>>>> bpf_helper_defs.h:57:67: error: invalid conversion from ‘void*’ to ‘void* (*)(void*, const void*)’ [-fpermissive]
+>>>>>>>        57 | static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+>>>>>>>           |                                                                   ^~~~~~~~~~
+>>>>>>>           |                                                                   |
+>>>>>>>           |                                                                   void*
+>>>>>>>
+>>>>>>> Extend bpf_doc.py to use proper function type instead of void.
+>>>>>>
+>>>>>> Could you specify what exactly the compilation command triggering the
+>>>>>> above error?
+>>>>>
+>>>>> The following does it for me:
+>>>>> clang++ --include linux/types.h ./tools/lib/bpf/bpf_helper_defs.h
+>>>>
+>>>> Thanks. It would be good if you add the above compilation command
+>>>> in the commit message.
+>>>
+>>> Sure, will add.
+>>>
+>>>>>
+>>>>>
+>>>>>>>
+>>>>>>> Before:
+>>>>>>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+>>>>>>>
+>>>>>>> After:
+>>>>>>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *(*)(void *map, const void *key)) 1;
+>>>>>>>
+>>>>>>> Signed-off-by: Peng Wei <pengweiprc@google.com>
+>>>>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>>>>>>> ---
+>>>>>>>      scripts/bpf_doc.py | 7 ++++++-
+>>>>>>>      1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+>>>>>>> index eaae2ce78381..fa21137a90e7 100755
+>>>>>>> --- a/scripts/bpf_doc.py
+>>>>>>> +++ b/scripts/bpf_doc.py
+>>>>>>> @@ -827,6 +827,9 @@ COMMANDS
+>>>>>>>                      print(' *{}{}'.format(' \t' if line else '', line))
+>>>>>>>
+>>>>>>>              print(' */')
+>>>>>>> +        fptr_type = '%s%s(*)(' % (
+>>>>>>> +            self.map_type(proto['ret_type']),
+>>>>>>> +            ((' ' + proto['ret_star']) if proto['ret_star'] else ''))
+>>>>>>>              print('static %s %s(*%s)(' % (self.map_type(proto['ret_type']),
+>>>>>>>                                            proto['ret_star'], proto['name']), end='')
+>>>>>>>              comma = ''
+>>>>>>> @@ -845,8 +848,10 @@ COMMANDS
+>>>>>>>                      one_arg += '{}'.format(n)
+>>>>>>>                  comma = ', '
+>>>>>>>                  print(one_arg, end='')
+>>>>>>> +            fptr_type += one_arg
+>>>>>>>
+>>>>>>> -        print(') = (void *) %d;' % helper.enum_val)
+>>>>>>> +        fptr_type += ')'
+>>>>>>> +        print(') = (%s) %d;' % (fptr_type, helper.enum_val))
+>>>>>>>              print('')
+>>>>>>>
+>>>>>>>      ###############################################################################
