@@ -2,145 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D456EE3D1
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 16:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9E86EE41D
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 16:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjDYOUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 10:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
+        id S234070AbjDYOlu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 10:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbjDYOUc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 10:20:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BFE1545B
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 07:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682432361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=thZWYLLZcDX55mVu1+A52YHxk2dw+nbxOfZf7i61JuY=;
-        b=dyNe+EAg8Ubmgh2E7ILoV2Gw6iammy48P1hSgxwRV0vS84cDMPZZ6xwMo0KXs17BHY9V/y
-        Cb2XBcAtBumK6eH61ovoz8kfaGs3McPYVbax3zHXwP8v8GxGQfObS1boCSJ3B4IHQC+Z0z
-        A228HKEXHfFM9YW2vj0CEuBnMUUy0v8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-TX_53gUrMbOKuKNR0dG4iA-1; Tue, 25 Apr 2023 10:13:11 -0400
-X-MC-Unique: TX_53gUrMbOKuKNR0dG4iA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f065208a64so33891525e9.3
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 07:13:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682431989; x=1685023989;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=thZWYLLZcDX55mVu1+A52YHxk2dw+nbxOfZf7i61JuY=;
-        b=cu8WwfvslBvmywMyX+vNgS/t3qeGr9RxCO6d/gQMH8yZkTtPmIXENccjR2aTfOONfi
-         +Fu3L/wy4TYNPKuNZ8gOVhf/8jssF2UBueSTjdHapz7SJKc63KZJV4RUceGDRsybR3Gt
-         1gjrVv7TJYN1Knm4qCQT5yUjEUAGQPsydbmyCvjwCmvC4Mqz7CGc11z0ZcB0bDN/+H0F
-         kIr2pfufO9YJmoYejShGKCI57FogcPStawTAPG903/DYYBt+ZVFgt9NB64m65mdT7iR1
-         aXDlikF44uUeyphxx9mHTvYz09IMca0GpAKIwk0Q0MqEmMfG0wtXinWGSioXHQTBrr16
-         nakA==
-X-Gm-Message-State: AAQBX9fQ5MUWlYuGoV7THeM71n3QkFycGB+yo8uM4De2tMjkoolLTaKm
-        ogkoiUlUHhHUK7driN/TRpssi4T3OfUKvC/4nIkNfuaW3uaOSsIr8xWLhC4EeOR/3yNwb6l+/ai
-        /Xuq0Fqtywnbx
-X-Received: by 2002:a1c:ed01:0:b0:3f1:7b8d:38ec with SMTP id l1-20020a1ced01000000b003f17b8d38ecmr10305874wmh.35.1682431989729;
-        Tue, 25 Apr 2023 07:13:09 -0700 (PDT)
-X-Google-Smtp-Source: AKy350bJGY+FZC43FdCJjTRL7XkjQU2DBR+cD6qqUiqenfVzDuWXgnT/+wvkpBSWPa/aO83OrDN9FA==
-X-Received: by 2002:a1c:ed01:0:b0:3f1:7b8d:38ec with SMTP id l1-20020a1ced01000000b003f17b8d38ecmr10305856wmh.35.1682431989391;
-        Tue, 25 Apr 2023 07:13:09 -0700 (PDT)
-Received: from localhost (net-130-25-106-149.cust.vodafonedsl.it. [130.25.106.149])
-        by smtp.gmail.com with ESMTPSA id c21-20020a7bc855000000b003f17300c7dcsm15023553wml.48.2023.04.25.07.13.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Apr 2023 07:13:08 -0700 (PDT)
-Date:   Tue, 25 Apr 2023 16:13:07 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
-        john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v2 net-next 1/2] net: veth: add page_pool for page
- recycling
-Message-ID: <ZEff8wJmZ3konvbV@lore-desk>
-References: <cover.1682188837.git.lorenzo@kernel.org>
- <6298f73f7cc7391c7c4a52a6a89b1ae21488bda1.1682188837.git.lorenzo@kernel.org>
- <4f008243-49d0-77aa-0e7f-d20be3a68f3c@huawei.com>
- <ZEU+vospFdm08IeE@localhost.localdomain>
- <3c78f045-aa8e-22a5-4b38-ab271122a79e@huawei.com>
- <ZEZJHCRsBVQwd9ie@localhost.localdomain>
- <0c1790dc-dbeb-8664-64ca-1f71e6c4f3a9@huawei.com>
- <ZEZ/xXcOv9Co5Vif@boxer>
- <99890c72-eb61-e032-944a-6671d6494c23@huawei.com>
+        with ESMTP id S234206AbjDYOls (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 10:41:48 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20655E70;
+        Tue, 25 Apr 2023 07:41:46 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PEdIE3019450;
+        Tue, 25 Apr 2023 14:41:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vRPRtK8KjcRKyKQy/fRSw1fzRpw6Z/d8aTjxblAzL1E=;
+ b=TY5CX6U1C2wytU3HZzFkrRifHR8Jy/mAbJlzPU28yYhikDTb4QYGrsgaTekuYXUuC3fn
+ Kcw5BDtpbOwWhQpSVstty9/LiW9n2z86rKpduEkgf6sceH6XxTncywzMlU+BYX6vG/8g
+ roUoR6h/kRK/SuUJ9kTxyT/WVpJpjMSvSz18Iu9P1azR1pTA6SpPaQU+pAgCacgyWWYm
+ p3n1mQJF2YGdTgtzJYoItlehcV5lqua4C3KteFGnYBotg4VQ5OYXYbIWqXiSQCkZFL2q
+ 8iObFtXwhDHE5XdQE/5jV4oC8fL0eseIm2KDJF29M3o64qDJTgXrpI5lSewkoWxzqLi6 0A== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3q6gdr1e57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Apr 2023 14:41:17 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 33P9WuU1030934;
+        Tue, 25 Apr 2023 14:36:14 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma01fra.de.ibm.com (PPS) with ESMTPS id 3q47771gf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 Apr 2023 14:36:14 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 33PEaCMp20120284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 Apr 2023 14:36:12 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A8B220040;
+        Tue, 25 Apr 2023 14:36:12 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D443920043;
+        Tue, 25 Apr 2023 14:36:11 +0000 (GMT)
+Received: from localhost (unknown [9.43.63.166])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 25 Apr 2023 14:36:11 +0000 (GMT)
+Date:   Tue, 25 Apr 2023 20:06:09 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH v2] powerpc/bpf: populate extable entries only during the
+ last pass
+To:     bpf@vger.kernel.org, Hari Bathini <hbathini@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, stable@vger.kernel.org
+References: <20230425065829.18189-1-hbathini@linux.ibm.com>
+In-Reply-To: <20230425065829.18189-1-hbathini@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CadSs8zlJcx9K3kf"
-Content-Disposition: inline
-In-Reply-To: <99890c72-eb61-e032-944a-6671d6494c23@huawei.com>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1682433035.4gm2n74mmz.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rNAs5dQ3hLvbVosu1utqWW6RXjlOPqBL
+X-Proofpoint-GUID: rNAs5dQ3hLvbVosu1utqWW6RXjlOPqBL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-25_07,2023-04-25_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=962 spamscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2304250127
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---CadSs8zlJcx9K3kf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On 2023/4/24 21:10, Maciej Fijalkowski wrote:
-> >>> There was a discussion in the past to reduce XDP_PACKET_HEADROOM to 1=
-92B but
-> >>> this is not merged yet and it is not related to this series. We can a=
-ddress
-> >>> your comments in a follow-up patch when XDP_PACKET_HEADROOM series is=
- merged.
-> >=20
-> > Intel drivers still work just fine at 192 headroom and split the page b=
-ut
-> > it makes it problematic for BIG TCP where MAX_SKB_FRAGS from shinfo nee=
-ds
+Hari Bathini wrote:
+> Since commit 85e031154c7c ("powerpc/bpf: Perform complete extra passes
+> to update addresses"), two additional passes are performed to avoid
+> space and CPU time wastage on powerpc. But these extra passes led to
+> WARN_ON_ONCE() hits in bpf_add_extable_entry() as extable entries are
+> populated again, during the extra pass, without resetting the index.
+> Fix it by resetting entry index before repopulating extable entries,
+> if and when there is an additional pass.
 >=20
-> I am not sure why we are not enabling skb_shinfo(skb)->frag_list to suppo=
-rt
-> BIG TCP instead of increasing MAX_SKB_FRAGS, perhaps there was some dissc=
-ution
-> about this in the past I am not aware of?
+> Fixes: 85e031154c7c ("powerpc/bpf: Perform complete extra passes to updat=
+e addresses")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> ---
+>  arch/powerpc/net/bpf_jit_comp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+
+
+- Naveen
+
 >=20
-> > to be increased. So it's the tailroom that becomes the bottleneck, not =
-the
-> > headroom. I believe at some point we will convert our drivers to page_p=
-ool
-> > with full 4k page dedicated for a single frame.
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_c=
+omp.c
+> index e93aefcfb83f..37043dfc1add 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -101,6 +101,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog =
+*fp)
+>  		bpf_hdr =3D jit_data->header;
+>  		proglen =3D jit_data->proglen;
+>  		extra_pass =3D true;
+> +		/* During extra pass, ensure index is reset before repopulating extabl=
+e entries */
+> +		cgctx.exentry_idx =3D 0;
+>  		goto skip_init_ctx;
+>  	}
+> =20
+> --=20
+> 2.40.0
 >=20
-> Can we use header splitting to ensure there is enough tailroom for
-> napi_build_skb() or xdp_frame with shinfo?
 >=20
-
-since veth_convert_skb_to_xdp_buff() runs in veth_poll() I think we can use
-napi_build_skb(). I tested it and we get an improvement (9.65Gbps vs 9.2Gbps
-for 1500B frames).
-
-Regards,
-Lorenzo
-
---CadSs8zlJcx9K3kf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZEff8gAKCRA6cBh0uS2t
-rMbdAQD3WHQe/mjpUtHWLC7RlTGjjTZB2VrCKz6tldyN9wIguQEAsjoeLh830e8k
-AGbqbbOerSm9+RznSSmS08hoTh5VLQ8=
-=njoc
------END PGP SIGNATURE-----
-
---CadSs8zlJcx9K3kf--
-
