@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931076EEA71
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 00:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459576EEA72
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 00:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236157AbjDYWzQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 18:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
+        id S234534AbjDYWzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 18:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234534AbjDYWzP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 18:55:15 -0400
+        with ESMTP id S236176AbjDYWzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 18:55:16 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C849E58
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 15:55:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488A74496
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 15:55:15 -0700 (PDT)
 Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PLEOql022679
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 15:55:14 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PLECIJ022198
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 15:55:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=DK9BiSaygivGzkHU2rPTTpmtK2Ygsjf+OKdNPfmBpPQ=;
- b=ODVeDQd1/x8vXQfJhrMYSRVnaBEc/Wfljc6nARgY49x/rk356xQ09Z01e7pZjTUURUCj
- lR1y+By7eCjBCyYcx6LXlyY6qpezvsM8b00DwxsAKP/j7qHzGBpBEuf1e0dok6w9HpV5
- EOd/uX40Cyns+iqsHbVOfeSlST1/poLVJALJ9JNRE57WrkONdbAJd4AIDm/dNAseu9Dc
- +nNEpkRqvgdTuvTGWrgnPFEBCPMvVFPjG+cO3JJcNgxTNWVahIcARTm/iL+yfkNkVElC
- UqyDe6VtYJs7GRu5KXfOW3gDpOfL6x39t3XM5jEVN8Z0gQsIpAzNXrIj/Nq4ZR63CCH7 VA== 
+ bh=4FTvvBuxvmeKDZpCtf+9m9XoKYfvNnxAksjzqg7ZW6o=;
+ b=NlatSVj3FXxoFThYL2HUaV9J+D54ydxzZDOkmCh3X0rTSVvY6qNY+eH+UPWTe/xrcqWH
+ YzZ8idW5Ejwuqa/3w5/Z1uwpvGCntEal6ZXTUzffZ3jmRrUIVJRl10fBTJ4RfeFGvyY3
+ 0pvEF2LgCuFRvS5R9NtQl3jnJymsVelZo98nQ+a1AdyDpV35/hUxxSjcb/WAnEkcRHmT
+ DtifzkJnR89ETL3rLEj1nFENA/ye09ob7zGUfA80m9Rk7KxEaospNhiedW9y2YZifJKP
+ k2jhx3tvMJk0whr0vV7KLYDSB25vC+Rde2Gn6iU4TLOgstAf4OOE5MHT/Q8RGaSpLhNi Ew== 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6mws98uk-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6mws98tt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 15:55:14 -0700
-Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+Received: from twshared29091.48.prn1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 25 Apr 2023 15:54:53 -0700
+ 15.1.2507.23; Tue, 25 Apr 2023 15:54:48 -0700
 Received: by devvm5710.vll0.facebook.com (Postfix, from userid 624576)
-        id 2B0532A34508; Tue, 25 Apr 2023 15:54:39 -0700 (PDT)
+        id 4258E2A3451B; Tue, 25 Apr 2023 15:54:41 -0700 (PDT)
 From:   Stephen Veiss <sveiss@meta.com>
 To:     <bpf@vger.kernel.org>
 CC:     Stephen Veiss <sveiss@meta.com>
-Subject: [PATCH bpf-next 1/2] selftests/bpf: extract insert_test from parse_test_list
-Date:   Tue, 25 Apr 2023 15:54:00 -0700
-Message-ID: <20230425225401.1075796-2-sveiss@meta.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: test_progs can read test lists from file
+Date:   Tue, 25 Apr 2023 15:54:01 -0700
+Message-ID: <20230425225401.1075796-3-sveiss@meta.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230425225401.1075796-1-sveiss@meta.com>
 References: <20230425225401.1075796-1-sveiss@meta.com>
@@ -49,8 +49,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: ahHvElujomhrMmcn7Y7OzLaIF-gXyLJ7
-X-Proofpoint-ORIG-GUID: ahHvElujomhrMmcn7Y7OzLaIF-gXyLJ7
+X-Proofpoint-GUID: cQI96YEfZkussZA39-EIr2LVF3NLsUC7
+X-Proofpoint-ORIG-GUID: cQI96YEfZkussZA39-EIr2LVF3NLsUC7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-25_08,2023-04-25_01,2023-02-09_01
@@ -65,250 +65,247 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Split the logic to insert new tests into test filter sets out from
-parse_test_list.
+Improve test selection logic when using -a/-b/-d/-t options.
+The list of tests to include or exclude can now be read from a file,
+specified as @<filename>.
 
-Fix the subtest insertion logic to reuse an existing top-level test
-filter, which prevents the creation of duplicate top-level test filters
-each with a single subtest.
+The file contains one name (or wildcard pattern) per line, and
+comments beginning with # are ignored.
+
+These options can be passed multiple times to read more than one file.
 
 Signed-off-by: Stephen Veiss <sveiss@meta.com>
 ---
- .../selftests/bpf/prog_tests/arg_parsing.c    |  13 ++
- tools/testing/selftests/bpf/testing_helpers.c | 176 +++++++++++-------
- 2 files changed, 117 insertions(+), 72 deletions(-)
+ .../selftests/bpf/prog_tests/arg_parsing.c    | 50 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_progs.c      | 39 +++++++++++----
+ tools/testing/selftests/bpf/testing_helpers.c | 49 ++++++++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.h |  3 ++
+ 4 files changed, 132 insertions(+), 9 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools=
 /testing/selftests/bpf/prog_tests/arg_parsing.c
-index b17bfa0e0aac..3754cd5f8c0a 100644
+index 3754cd5f8c0a..e0c6ef2dda70 100644
 --- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
 +++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-@@ -96,6 +96,19 @@ static void test_parse_test_list(void)
- 		goto error;
- 	ASSERT_OK(strcmp("*bpf_cookie*", set.tests[0].name), "test name");
- 	ASSERT_OK(strcmp("*trace*", set.tests[0].subtests[0]), "subtest name");
-+	free_test_filter_set(&set);
-+
-+	ASSERT_OK(parse_test_list("t/subtest1,t/subtest2", &set, true),
-+		  "parsing");
-+	if (!ASSERT_EQ(set.cnt, 1, "count of test filters"))
-+		goto error;
-+	if (!ASSERT_OK_PTR(set.tests, "test filters initialized"))
-+		goto error;
-+	if (!ASSERT_EQ(set.tests[0].subtest_cnt, 2, "subtest filters count"))
-+		goto error;
-+	ASSERT_OK(strcmp("t", set.tests[0].name), "test name");
-+	ASSERT_OK(strcmp("subtest1", set.tests[0].subtests[0]), "subtest name")=
-;
-+	ASSERT_OK(strcmp("subtest2", set.tests[0].subtests[1]), "subtest name")=
-;
- error:
+@@ -113,8 +113,58 @@ static void test_parse_test_list(void)
  	free_test_filter_set(&set);
  }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testin=
-g/selftests/bpf/testing_helpers.c
-index 0b5e0829e5be..14322371e1d8 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -70,92 +70,124 @@ int parse_num_list(const char *s, bool **num_set, in=
-t *num_set_len)
- 	return 0;
- }
 =20
-+static int do_insert_test(struct test_filter_set *set,
-+			  char *test_str,
-+			  char *subtest_str)
++static void test_parse_test_list_file(void)
 +{
-+	struct test_filter *tmp, *test;
-+	char **ctmp;
-+	int i;
++	char tmpfile[80];
++	int fd;
++	FILE *fp;
++	struct test_filter_set set;
 +
-+	for (i =3D 0; i < set->cnt; i++) {
-+		test =3D &set->tests[i];
++	snprintf(tmpfile, sizeof(tmpfile), "/tmp/bpf_arg_parsing_test.XXXXXX");
++	fd =3D mkstemp(tmpfile);
++	ASSERT_GE(fd, 0, "create tmp");
 +
-+		if (strcmp(test_str, test->name) =3D=3D 0) {
-+			free(test_str);
-+			goto subtest;
-+		}
-+	}
++	fp =3D fdopen(fd, "w");
 +
-+	tmp =3D realloc(set->tests, sizeof(*test) * (set->cnt + 1));
-+	if (!tmp)
-+		return -ENOMEM;
++	fprintf(fp, "# comment\n");
++	fprintf(fp, "  test_with_spaces    \n");
++	fprintf(fp, "testA/subtest    # comment\n");
++	fprintf(fp, "testB#comment with no space\n");
++	fprintf(fp, "testB # duplicate\n");
++	fprintf(fp, "testA/subtest # subtest duplicate\n");
++	fprintf(fp, "testA/subtest2\n");
++	fprintf(fp, "testC_no_eof_newline");
 +
-+	set->tests =3D tmp;
-+	test =3D &set->tests[set->cnt];
++	if (!ASSERT_OK(ferror(fp), "prepare tmp"))
++		goto error;
 +
-+	test->name =3D test_str;
-+	test->subtests =3D NULL;
-+	test->subtest_cnt =3D 0;
++	if (!ASSERT_OK(fclose(fp), "close tmp"))
++		goto error;
 +
-+	set->cnt++;
++	init_test_filter_set(&set);
 +
-+subtest:
-+	if (!subtest_str)
-+		return 0;
++	ASSERT_OK(parse_test_list_file(tmpfile, &set, true), "parse file");
 +
-+	for (i =3D 0; i < test->subtest_cnt; i++) {
-+		if (strcmp(subtest_str, test->subtests[i]) =3D=3D 0) {
-+			free(subtest_str);
-+			return 0;
-+		}
-+	}
++	ASSERT_EQ(set.cnt, 4, "test  count");
++	ASSERT_OK(strcmp("test_with_spaces", set.tests[0].name), "test 0 name")=
+;
++	ASSERT_EQ(set.tests[0].subtest_cnt, 0, "test 0 subtest count");
++	ASSERT_OK(strcmp("testA", set.tests[1].name), "test 1 name");
++	ASSERT_EQ(set.tests[1].subtest_cnt, 2, "test 1 subtest count");
++	ASSERT_OK(strcmp("subtest", set.tests[1].subtests[0]), "test 1 subtest =
+0");
++	ASSERT_OK(strcmp("subtest2", set.tests[1].subtests[1]), "test 1 subtest=
+ 1");
++	ASSERT_OK(strcmp("testB", set.tests[2].name), "test 2 name");
++	ASSERT_OK(strcmp("testC_no_eof_newline", set.tests[3].name), "test 3 na=
+me");
 +
-+	ctmp =3D realloc(test->subtests,
-+		       sizeof(*test->subtests) * (test->subtest_cnt + 1));
-+	if (!ctmp)
-+		return -ENOMEM;
++	free_test_filter_set(&set);
 +
-+	test->subtests =3D ctmp;
-+	test->subtests[test->subtest_cnt] =3D subtest_str;
-+
-+	test->subtest_cnt++;
-+
-+	return 0;
++error:
++	remove(tmpfile);
 +}
 +
-+static int insert_test(struct test_filter_set *set,
-+		       char *test_spec,
-+		       bool is_glob_pattern)
+ void test_arg_parsing(void)
+ {
+ 	if (test__start_subtest("test_parse_test_list"))
+ 		test_parse_test_list();
++	if (test__start_subtest("test_parse_test_list_file"))
++		test_parse_test_list_file();
+ }
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/sel=
+ftests/bpf/test_progs.c
+index ea82921110da..cf80d28c76e8 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -714,7 +714,13 @@ static struct test_state test_states[ARRAY_SIZE(prog=
+_test_defs)];
+=20
+ const char *argp_program_version =3D "test_progs 0.1";
+ const char *argp_program_bug_address =3D "<bpf@vger.kernel.org>";
+-static const char argp_program_doc[] =3D "BPF selftests test runner";
++static const char argp_program_doc[] =3D
++"BPF selftests test runner\v"
++"Options accepting the NAMES parameter take either a comma-separated lis=
+t\n"
++"of test names, or a filename prefixed with @. The file contains one nam=
+e\n"
++"(or wildcard pattern) per line, and comments beginning with # are ignor=
+ed.\n"
++"\n"
++"These options can be passed repeatedly to read multiple files.\n";
+=20
+ enum ARG_KEYS {
+ 	ARG_TEST_NUM =3D 'n',
+@@ -797,6 +803,7 @@ extern int extra_prog_load_log_flags;
+ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ {
+ 	struct test_env *env =3D state->input;
++	int err;
+=20
+ 	switch (key) {
+ 	case ARG_TEST_NUM: {
+@@ -821,18 +828,32 @@ static error_t parse_arg(int key, char *arg, struct=
+ argp_state *state)
+ 	}
+ 	case ARG_TEST_NAME_GLOB_ALLOWLIST:
+ 	case ARG_TEST_NAME: {
+-		if (parse_test_list(arg,
+-				    &env->test_selector.whitelist,
+-				    key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST))
+-			return -ENOMEM;
++		if (arg[0] =3D=3D '@')
++			err =3D parse_test_list_file(arg + 1,
++						   &env->test_selector.whitelist,
++						   key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST);
++		else
++			err =3D parse_test_list(arg,
++					      &env->test_selector.whitelist,
++					      key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST);
++
++		if (err)
++			return err;
+ 		break;
+ 	}
+ 	case ARG_TEST_NAME_GLOB_DENYLIST:
+ 	case ARG_TEST_NAME_BLACKLIST: {
+-		if (parse_test_list(arg,
+-				    &env->test_selector.blacklist,
+-				    key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST))
+-			return -ENOMEM;
++		if (arg[0] =3D=3D '@')
++			err =3D parse_test_list_file(arg + 1,
++						   &env->test_selector.blacklist,
++						   key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST);
++		else
++			err =3D parse_test_list(arg,
++					      &env->test_selector.blacklist,
++					      key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST);
++
++		if (err)
++			return err;
+ 		break;
+ 	}
+ 	case ARG_VERIFIER_STATS:
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testin=
+g/selftests/bpf/testing_helpers.c
+index 14322371e1d8..d8bea5c2a4d6 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+ /* Copyright (C) 2019 Netronome Systems, Inc. */
+ /* Copyright (C) 2020 Facebook, Inc. */
++#include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+@@ -167,6 +168,54 @@ static int insert_test(struct test_filter_set *set,
+ 	return -ENOMEM;
+ }
+=20
++int parse_test_list_file(const char *path,
++			 struct test_filter_set *set,
++			 bool is_glob_pattern)
 +{
-+	char *pattern, *subtest_str, *ext_test_str, *ext_subtest_str =3D NULL;
-+	int glob_chars =3D 0;
++	FILE *f;
++	size_t buflen =3D 0;
++	char *buf =3D NULL, *capture_start, *capture_end, *scan_end;
++	int err;
 +
-+	if (is_glob_pattern) {
-+		pattern =3D "%s";
-+	} else {
-+		pattern =3D "*%s*";
-+		glob_chars =3D 2;
++	f =3D fopen(path, "r");
++	if (!f) {
++		err =3D -errno;
++		fprintf(stderr, "Failed to open '%s': %d\n", path, err);
++		return err;
 +	}
 +
-+	subtest_str =3D strchr(test_spec, '/');
-+	if (subtest_str) {
-+		*subtest_str =3D '\0';
-+		subtest_str +=3D 1;
++	while (getline(&buf, &buflen, f) !=3D -1) {
++		capture_start =3D buf;
++
++		while (isspace(*capture_start))
++			++capture_start;
++
++		capture_end =3D capture_start;
++		scan_end =3D capture_start;
++
++		while (*scan_end && *scan_end !=3D '#') {
++			if (!isspace(*scan_end))
++				capture_end =3D scan_end;
++
++			++scan_end;
++		}
++
++		if (capture_end =3D=3D capture_start)
++			continue;
++
++		*(++capture_end) =3D '\0';
++
++		err =3D insert_test(set, capture_start, is_glob_pattern);
++		if (err) {
++			fclose(f);
++			return err;
++		}
 +	}
 +
-+	ext_test_str =3D malloc(strlen(test_spec) + glob_chars + 1);
-+	if (!ext_test_str)
-+		goto err;
-+
-+	sprintf(ext_test_str, pattern, test_spec);
-+
-+	if (subtest_str) {
-+		ext_subtest_str =3D malloc(strlen(subtest_str) + glob_chars + 1);
-+		if (!ext_subtest_str)
-+			goto err;
-+
-+		sprintf(ext_subtest_str, pattern, subtest_str);
-+	}
-+
-+	return do_insert_test(set, ext_test_str, ext_subtest_str);
-+
-+err:
-+	free(ext_test_str);
-+	free(ext_subtest_str);
-+
-+	return -ENOMEM;
++	fclose(f);
++	return 0;
 +}
 +
  int parse_test_list(const char *s,
  		    struct test_filter_set *set,
  		    bool is_glob_pattern)
- {
--	char *input, *state =3D NULL, *next;
--	struct test_filter *tmp, *tests =3D NULL;
--	int i, j, cnt =3D 0;
-+	char *input, *state =3D NULL, *test_spec;
-+	int err;
+diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testin=
+g/selftests/bpf/testing_helpers.h
+index eb8790f928e4..98f09bbae86f 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.h
++++ b/tools/testing/selftests/bpf/testing_helpers.h
+@@ -20,5 +20,8 @@ struct test_filter_set;
+ int parse_test_list(const char *s,
+ 		    struct test_filter_set *test_set,
+ 		    bool is_glob_pattern);
++int parse_test_list_file(const char *path,
++			 struct test_filter_set *test_set,
++			 bool is_glob_pattern);
 =20
- 	input =3D strdup(s);
- 	if (!input)
- 		return -ENOMEM;
-=20
--	while ((next =3D strtok_r(state ? NULL : input, ",", &state))) {
--		char *subtest_str =3D strchr(next, '/');
--		char *pattern =3D NULL;
--		int glob_chars =3D 0;
--
--		tmp =3D realloc(tests, sizeof(*tests) * (cnt + 1));
--		if (!tmp)
--			goto err;
--		tests =3D tmp;
--
--		tests[cnt].subtest_cnt =3D 0;
--		tests[cnt].subtests =3D NULL;
--
--		if (is_glob_pattern) {
--			pattern =3D "%s";
--		} else {
--			pattern =3D "*%s*";
--			glob_chars =3D 2;
-+	while ((test_spec =3D strtok_r(state ? NULL : input, ",", &state))) {
-+		err =3D insert_test(set, test_spec, is_glob_pattern);
-+		if (err) {
-+			free(input);
-+			return err;
- 		}
--
--		if (subtest_str) {
--			char **tmp_subtests =3D NULL;
--			int subtest_cnt =3D tests[cnt].subtest_cnt;
--
--			*subtest_str =3D '\0';
--			subtest_str +=3D 1;
--			tmp_subtests =3D realloc(tests[cnt].subtests,
--					       sizeof(*tmp_subtests) *
--					       (subtest_cnt + 1));
--			if (!tmp_subtests)
--				goto err;
--			tests[cnt].subtests =3D tmp_subtests;
--
--			tests[cnt].subtests[subtest_cnt] =3D
--				malloc(strlen(subtest_str) + glob_chars + 1);
--			if (!tests[cnt].subtests[subtest_cnt])
--				goto err;
--			sprintf(tests[cnt].subtests[subtest_cnt],
--				pattern,
--				subtest_str);
--
--			tests[cnt].subtest_cnt++;
--		}
--
--		tests[cnt].name =3D malloc(strlen(next) + glob_chars + 1);
--		if (!tests[cnt].name)
--			goto err;
--		sprintf(tests[cnt].name, pattern, next);
--
--		cnt++;
- 	}
-=20
--	tmp =3D realloc(set->tests, sizeof(*tests) * (cnt + set->cnt));
--	if (!tmp)
--		goto err;
--
--	memcpy(tmp +  set->cnt, tests, sizeof(*tests) * cnt);
--	set->tests =3D tmp;
--	set->cnt +=3D cnt;
--
--	free(tests);
- 	free(input);
- 	return 0;
--
--err:
--	for (i =3D 0; i < cnt; i++) {
--		for (j =3D 0; j < tests[i].subtest_cnt; j++)
--			free(tests[i].subtests[j]);
--
--		free(tests[i].name);
--	}
--	free(tests);
--	free(input);
--	return -ENOMEM;
- }
-=20
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_inf=
-o *info)
+ __u64 read_perf_max_sample_freq(void);
 --=20
 2.34.1
 
