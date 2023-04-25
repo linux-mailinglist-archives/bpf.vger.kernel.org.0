@@ -2,157 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783E66EE006
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 12:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45BB6EE072
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 12:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbjDYKMI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 06:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S233737AbjDYKiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 06:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbjDYKMH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 06:12:07 -0400
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044CDC15B;
-        Tue, 25 Apr 2023 03:12:05 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 1B7DD2B0671D;
-        Tue, 25 Apr 2023 06:12:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 25 Apr 2023 06:12:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1682417521; x=
-        1682424721; bh=6ykmRoJ2ViKku45z63OOrhQO86nvESrAdiWG+K7bYwg=; b=c
-        TDVrrJwJKmBSLCZheZhCKbfhHj89iyuDI9vXtVPgz7Ym9svXdHwoke8YmZXCqthh
-        Dw/yM/Yh6/Jv7G+J6l6Hz8flfXI8blB1z1RdOTyprn4atgk5r/DyuW3RMbxU5w5R
-        Si1LutW9YV4Ae12xbcNxhUZ6Z0mRfVihmRIuRAt3clBMGEoo68fwSqrMZtChKUZD
-        vtUDX/Ybm48ar48ml6553kpg21Diy6e3UNUHLcKlx+Wmw0n6bt/9aNBmpO2rsJ2g
-        9jb58e80XBwgakjaHtHw/nkJ0wasVCDg+Kvn6VcIvfTlQ/NiJJyWfBkmhvmETTEj
-        zHTqFHPh2Hhe3XEIN54aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1682417521; x=1682424721; bh=6ykmRoJ2ViKku
-        45z63OOrhQO86nvESrAdiWG+K7bYwg=; b=WJYj4cV/CB4Wt++zgV0y3XLrBW2V8
-        IdDYNBmyW2TZ1BrHyTSM9xB23HAFhIxnRPIIfMUl4cwi3LitMeI4niSUQDfl9LDx
-        OPYbWpYhJlZmJg03JnqcJmvWCtPqpqA/6HouMN/xIHvYuPM5P5dx0vYavhlOn8Tm
-        5LsAwNBieltv76YqxmRogvh50Xm6vyEAdzjio6lCgUIoZsNnqvgWFgioK8zPaaKw
-        hMhwsBKgdekr/gn033pJNRMzyaELXGIdSWOA4MneADwWnj/xsxdsheSx2jvrh+oG
-        UnZN4Re0NkR2JE7gRX8TD+r9w+ApJAQWuqc3dDXd9mB2rjvlwdtOVKDMw==
-X-ME-Sender: <xms:badHZHZYeUEJENgpRE-Mpgrt1Kvgbk2MbTmcyCjfaBtU_2hp4c4IQA>
-    <xme:badHZGbK4g4wsD9GCgR3WiRiO_Iia6kZTZANxPHNHZF7XueO7yYEp0ernSM95mBun
-    XnNqO-UuaPRKcTMugA>
-X-ME-Received: <xmr:badHZJ8p0BmVMjsWocvSADfdKF8pvgWXCejORpFkadjfYUkLpzXhOisfhMbwrbdPYMUaVw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeduvddgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdttddttddtvdenucfhrhhomhepfdfmihhr
-    ihhllhcutecurdcuufhhuhhtvghmohhvfdcuoehkihhrihhllhesshhhuhhtvghmohhvrd
-    hnrghmvgeqnecuggftrfgrthhtvghrnhepgfdtveeugeethfffffeklefgkeelgfekfedt
-    heeileetuefhkeefleduvddtkeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdrnhgrmhgv
-X-ME-Proxy: <xmx:badHZNr-fYgDaMsdl0i06VFTXfz4uwQu1qn-h1U2NkURVghgIOZnjA>
-    <xmx:badHZCoj2YlNzXGd--O7PUdLSPYnUr9pSyEqOofDPvkdLLGnyL_tTA>
-    <xmx:badHZDRRqh6NXkdKb-2c7-BTlI6SRGXQ9rU1uFuPtofbAfFpt2ZXzQ>
-    <xmx:cadHZPqdozY9VQMi-DJd91YwjAyNau4zQj66k-gSVvDIlBKXdE7pyUOlFp8>
-Feedback-ID: ie3994620:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 25 Apr 2023 06:11:57 -0400 (EDT)
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id F3F9D10BAC9; Tue, 25 Apr 2023 13:11:53 +0300 (+03)
-Date:   Tue, 25 Apr 2023 13:11:53 +0300
-From:   "Kirill A . Shutemov" <kirill@shutemov.name>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
+        with ESMTP id S233472AbjDYKiF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 06:38:05 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EEE513E
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 03:38:02 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-504eb1155d3so41836548a12.1
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 03:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1682419081; x=1685011081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQbVV5oFtqD8s7pQD8RC1iJUAO1cx6YB2hV383hEmHM=;
+        b=X4A8yPy4O2ZWaGepFwmkfkj1x8IgV6AClLH9YT3M08LijBuX1Wju1dKF5BSj7Y+JbW
+         p7m1SeiLUhcFtnvDxUdGMc3DHlcN2LpXwQjYjgK/7HkhMRHS8gjrTn0II4P3qUDt/h7S
+         TaByY7OWxSVqunYKKUmdIp55FUSn7ppwFn0ew=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682419081; x=1685011081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RQbVV5oFtqD8s7pQD8RC1iJUAO1cx6YB2hV383hEmHM=;
+        b=GTDyJp7pA0DXqbtZOgwn4Nk8OpFAU/4B72LZLJk9TYUieUaz+3xIcucjbr12B7jymi
+         Aoz3FBwGtGNGgQVsP+GVFqOSFSgy9L40NB7MBzr16VVedBQoM7x+nhMu/K1o1lDqlbAR
+         EvfVexIKqXy9QI5ChVuSFBv1MYlQQ4H74S0kHvFejkGTRJFmbY5+VhHp/460Jd1NP+J7
+         bXQy5/vF/rgnAB5pf/cQ7ohL8zpOgnhf5QOqHEW3B1LCMEwuzSf9nA9lUw3SbkkdtWYf
+         PhqJNjmW8WcR4c+DIxoV6YLF/Vhikqek7e1AKUz3MkCRMjj2ufaKuli1L493zYKWmWeL
+         HQIA==
+X-Gm-Message-State: AAQBX9eDJdc09M3gAugF0wBtsXFOWN8Es5ApCOLJKvhV4V+t2JicPAbX
+        H/9J3qEepjXbf6u7s+cigHcDXaqnfYCvkqXGQbwbTA==
+X-Google-Smtp-Source: AKy350aPsjzcRn4vSkaG2WH8TE6JDcGXVHn8SZwlybVEftI+43TQ5g6f833EvwiDoqOVYfFfbZUAma51h4+L+P//bUM=
+X-Received: by 2002:a17:906:9399:b0:94e:ec0f:5f70 with SMTP id
+ l25-20020a170906939900b0094eec0f5f70mr12147954ejx.10.1682419080863; Tue, 25
+ Apr 2023 03:38:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230423075335.92597-1-kal.conley@dectris.com>
+ <6446d34f9568_338f220872@john.notmuch> <CAHApi-=Vr4VARgoDNB1T906gfDNB5L5_U24zE=ZHQi+qd__e8w@mail.gmail.com>
+ <ZEej6ZJVAgzRueyA@boxer>
+In-Reply-To: <ZEej6ZJVAgzRueyA@boxer>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Tue, 25 Apr 2023 12:37:49 +0200
+Message-ID: <CAHApi-mt18_RZeikzK-LXjybdc9Y2ZzPcWHmHQEREC-BKcb+8g@mail.gmail.com>
+Subject: Re: [PATCH] xsk: Use pool->dma_pages to check for DMA
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v3] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <20230425101153.xxi4arpwkz7ijnvm@box.shutemov.name>
-References: <23c19e27ef0745f6d3125976e047ee0da62569d4.1682406295.git.lstoakes@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23c19e27ef0745f6d3125976e047ee0da62569d4.1682406295.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 08:14:14AM +0100, Lorenzo Stoakes wrote:
-> GUP does not correctly implement write-notify semantics, nor does it
-> guarantee that the underlying pages are correctly dirtied, which could lead
-> to a kernel oops or data corruption when writing to file-backed mappings.
-> 
-> This is only relevant when the mappings are file-backed and the underlying
-> file system requires folio dirty tracking. File systems which do not, such
-> as shmem or hugetlb, are not at risk and therefore can be written to
-> without issue.
-> 
-> Unfortunately this limitation of GUP has been present for some time and
-> requires future rework of the GUP API in order to provide correct write
-> access to such mappings.
-> 
-> In the meantime, we add a check for the most broken GUP case -
-> FOLL_LONGTERM - which really under no circumstances can safely access
-> dirty-tracked file mappings.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
-> v3:
-> - Rebased on latest mm-unstable as of 24th April 2023.
-> - Explicitly check whether file system requires folio dirtying. Note that
->   vma_wants_writenotify() could not be used directly as it is very much focused
->   on determining if the PTE r/w should be set (e.g. assuming private mapping
->   does not require it as already set, soft dirty considerations).
+> Okay, 2-3% but with what settings? rxdrop for unaligned mode? what chunk
+> size etc? We need this kind of info, "compiles to more efficient code"
+> from original commit message is too generic and speculative to me. 2-3% of
+> perf diff against specific xdpsock setup is real improvement and is a
+> strong argument for getting this patch as-is, by its own.
 
-Hm. Okay. Have you considered having a common base for your case and
-vma_wants_writenotify()? Code duplication doesn't look good.
+I don't have the exact numbers anymore. I measured a performance
+difference (up to 2-3%) with different settings including rxdrop and
+unaligned mode. The exact settings you have in the commit message from
+the linked patch. I didn't go into details in the commit message
+because I thought this change would be a slam dunk. I don't think
+there is any reason to believe the code is slower with this patch. If
+anything, it should generally be faster. At the very least it will
+lead to more efficient code in terms of size since dma_pages_cnt is no
+longer read. Also I think the code is more readable with this patch.
 
+>
+> >
+> > > > diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> > > > index d318c769b445..a8d7b8a3688a 100644
+> > > > --- a/include/net/xsk_buff_pool.h
+> > > > +++ b/include/net/xsk_buff_pool.h
+> > > > @@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+> > > >       if (likely(!cross_pg))
+> > > >               return false;
+> > > >
+> > > > -     return pool->dma_pages_cnt &&
+> > > > +     return pool->dma_pages &&
+> > > >              !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
+> > > >  }
+> >
+> > I would consider the above code part of the "fast path". It may be
+> > executed approximately once per frame in unaligned mode.
+> >
+> > > This seems to be used in the setup/tear-down paths so your optimizing
+> > > a control side. Is there a fast path with this code? I walked the
+> > > ice driver. If its just setup code we should do whatever is more
+> > > readable.
+> >
+> > It is not only used in setup/tear-down paths (see above).
+> > Additionally, I believe the code is also _more_ readable with this
+> > patch applied. In particular, this patch reduces cognitive complexity
+> > since people (and compilers) reading the code don't need to
+> > additionally think about pool->dma_pages_cnt.
+>
+> John was referring to xp_dma_unmap() with the comment above which indeed
+> is a teardown path, so probably this doesn't matter from performance
+> perspective and you could avoid this chunk from your patch.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+The setup/tear-down lines were also changed to keep the code
+consistent. It doesn't make sense to sometimes check dma_pages_cnt and
+other times dma_pages.
+
+>
+> >
+> > > Both the _alloc_ cases read neighboring free_heads_cnt so your saving a load I guess?
+> > > This is so deep into micro-optimizing I'm curious if you could measure it?
+> >
+> > It is saving a load which also reduces code size. This will affect
+> > other decisions such as what to inline. Also in the linked patchset,
+> > dma_pages and dma_pages_cnt do not share a cache line (on x86_64).
+>
+> Yes I believe that the with your patch on unaligned mode by touching the
+> dma_pages you're warming the relevant cache line for your setup.
+
+dma_pages is touched anyway right after. That is the point of this
+patch: since dma_pages already needs to be loaded into a register,
+just check that instead of loading an additional field possibly from a
+different cache line.
