@@ -2,46 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 175576EDD03
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 09:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3906EDD3B
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 09:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjDYHqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 03:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S233214AbjDYHwn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 03:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjDYHqc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 03:46:32 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6129F;
-        Tue, 25 Apr 2023 00:46:30 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VgzJO0s_1682408786;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VgzJO0s_1682408786)
-          by smtp.aliyun-inc.com;
-          Tue, 25 Apr 2023 15:46:27 +0800
-Message-ID: <1682408766.7832832-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v3 07/15] virtio_net: auto release xdp shinfo
-Date:   Tue, 25 Apr 2023 15:46:06 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S231189AbjDYHwm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 03:52:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5239F
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 00:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682409115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LN+Qupnqrx3nxABl/NIAu7chVBT65o1KteV7K9jKs8k=;
+        b=aZPlKaTIGasBRjqnlmwimKZqJsf/0GB/3zCFvSvM9qKCP13Ca8wSWiCym8GdVmrTwkJA4V
+        COeYeUWi7ZkNsHekM++fMNifJy4v8v7xf+OjTt0iQUgr9StA9/5AZcf6o6pupeX8MfVmEv
+        6MPsofQNMcU4Jf5/GN669MmUvZgCxs4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-492-z5WumunfNjq4vlvQUXogPQ-1; Tue, 25 Apr 2023 03:51:53 -0400
+X-MC-Unique: z5WumunfNjq4vlvQUXogPQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f21e35dc08so9402165e9.2
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 00:51:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682409112; x=1685001112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LN+Qupnqrx3nxABl/NIAu7chVBT65o1KteV7K9jKs8k=;
+        b=SkFwzdolg04D6g9Wb+UmOx910VtwFZkIclIuXjrmsvq1NyLcr4W3ibK73r7juZh4u+
+         9uRWGmuliOMtqV+WK5P1Ktb7Lb0Vsf+Ad6Gv79iCPpLdeC8d6gTOhlv+PvU3sluN3rOc
+         X7HfEQAIMrHml0r/Qpwy3ZcxmgsUM3uOkIrJ9AUvLkvDGSdgxy959k1LKlBLLG1DNMSq
+         QuUNfYDr+uuI7BV6iG0FNJJea7RiQhI3nG7p239KaYy9dhf+io96ML3zblRJdYDBSsvm
+         rJ6v80EcWC/T6BkDwu/uJVgALdPZVcyt36M40APOUHJcbxLHAi7qkFgRjln5nmGZO86a
+         gpkg==
+X-Gm-Message-State: AAQBX9d2lZoinAfEPfGjPeIsXALcz/xt5PwKpOSaHBdZcZGpJLxNlS+v
+        EJbbRa/9AUY7b3CptQpXv6WWiqMyXUiTUk3SZSoykFt5m/zKfYGtkGuqAgibhstjEiTngD+pqte
+        qVgtLYex1UN+Q
+X-Received: by 2002:a05:600c:3649:b0:3f1:e5f2:5e86 with SMTP id y9-20020a05600c364900b003f1e5f25e86mr4762895wmq.23.1682409112471;
+        Tue, 25 Apr 2023 00:51:52 -0700 (PDT)
+X-Google-Smtp-Source: AKy350ZvYSm0BmOXto3eV5uDy4ezuJbU7lrOsrd6Ji2Rlo2HbihXXA127mPR01nyk9gbKectoF7/Aw==
+X-Received: by 2002:a05:600c:3649:b0:3f1:e5f2:5e86 with SMTP id y9-20020a05600c364900b003f1e5f25e86mr4762869wmq.23.1682409112085;
+        Tue, 25 Apr 2023 00:51:52 -0700 (PDT)
+Received: from redhat.com ([2.55.61.39])
+        by smtp.gmail.com with ESMTPSA id b5-20020a056000054500b002e5ff05765esm12545401wrf.73.2023.04.25.00.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Apr 2023 00:51:51 -0700 (PDT)
+Date:   Tue, 25 Apr 2023 03:51:47 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <20230423105736.56918-1-xuanzhuo@linux.alibaba.com>
- <20230423105736.56918-8-xuanzhuo@linux.alibaba.com>
- <CACGkMEsNLa9ETksZBi-fkni3c0FzpdNFr-y87Gt48-QKuLDPtg@mail.gmail.com>
-In-Reply-To: <CACGkMEsNLa9ETksZBi-fkni3c0FzpdNFr-y87Gt48-QKuLDPtg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: Re: [PATCH vhost v7 00/11] virtio core prepares for AF_XDP
+Message-ID: <20230425034700-mutt-send-email-mst@kernel.org>
+References: <20230425073613.8839-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230425073613.8839-1-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,157 +85,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Apr 2023 15:41:28 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Sun, Apr 23, 2023 at 6:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
-.com> wrote:
-> >
-> > virtnet_build_xdp_buff_mrg() and virtnet_xdp_handler() auto
-> > release xdp shinfo then the caller no need to careful the xdp shinfo.
->
-> Thinking of this, I think releasing frags in
-> virtnet_build_xdp_buff_mrg() is fine. But for virtnet_xdp_handler(),
-> it's better to be done by the caller, since the frags were prepared by
-> the caller anyhow.
+On Tue, Apr 25, 2023 at 03:36:02PM +0800, Xuan Zhuo wrote:
+> ## About DMA APIs
+> 
+> Now, virtio may can not work with DMA APIs when virtio features do not have
+> VIRTIO_F_ACCESS_PLATFORM.
+> 
+> 1. I tried to let DMA APIs return phy address by virtio-device. But DMA APIs just
+>    work with the "real" devices.
+> 2. I tried to let xsk support callballs to get phy address from virtio-net
+>    driver as the dma address. But the maintainers of xsk may want to use dma-buf
+>    to replace the DMA APIs. I think that may be a larger effort. We will wait
+>    too long.
+> 
+> So rethinking this, firstly, we can support premapped-dma only for devices with
+> VIRTIO_F_ACCESS_PLATFORM. In the case of af-xdp, if the users want to use it,
+> they have to update the device to support VIRTIO_F_RING_RESET, and they can also
+> enable the device's VIRTIO_F_ACCESS_PLATFORM feature by the way.
+
+I don't understand this last sentence. If you think ring
+reset can change device features then the answer is no, it can't.
+
+If you are saying device has to set VIRTIO_F_ACCESS_PLATFORM to
+benefit from this work, that's fine at least as a first approach.
+Note that setting VIRTIO_F_ACCESS_PLATFORM breaks old guests
+(it's a secirity boundary), e.g. it is not available for
+transitional devices.
+So to support transitional devices, we might want to find another way to
+address this down the road, but as a first step, I agree just going with
+DMA is fine.
 
 
-I agree this.
+> Thanks for the help from Christoph.
+> 
+> =================
+> 
+> XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+> copy feature of xsk (XDP socket) needs to be supported by the driver. The
+> performance of zero copy is very good.
+> 
+> ENV: Qemu with vhost.
+> 
+>                    vhost cpu | Guest APP CPU |Guest Softirq CPU | PPS
+> -----------------------------|---------------|------------------|------------
+> xmit by sockperf:     90%    |   100%        |                  |  318967
+> xmit by xsk:          100%   |   30%         |   33%            | 1192064
+> recv by sockperf:     100%   |   68%         |   100%           |  692288
+> recv by xsk:          100%   |   33%         |   43%            |  771670
+> 
+> Before achieving the function of Virtio-Net, we also have to let virtio core
+> support these features:
+> 
+> 1. virtio core support premapped
+> 2. virtio core support reset per-queue
+> 3. introduce DMA APIs to virtio core
+> 
+> Please review.
+> 
+> Thanks.
+> 
+> v7:
+>  1. virtqueue_dma_dev() return NULL when virtio is without DMA API.
+> 
+> v6:
+>  1. change the size of the flags to u32.
+> 
+> v5:
+>  1. fix for error handler
+>  2. add flags to record internal dma mapping
+> 
+> v4:
+>  1. rename map_inter to dma_map_internal
+>  2. fix: Excess function parameter 'vq' description in 'virtqueue_dma_dev'
+> 
+> v3:
+>  1. add map_inter to struct desc state to reocrd whether virtio core do dma map
+> 
+> v2:
+>  1. based on sgs[0]->dma_address to judgment is premapped
+>  2. based on extra.addr to judgment to do unmap for no-indirect desc
+>  3. based on indir_desc to judgment to do unmap for indirect desc
+>  4. rename virtqueue_get_dma_dev to virtqueue_dma_dev
+> 
+> v1:
+>  1. expose dma device. NO introduce the api for dma and sync
+>  2. split some commit for review.
+> 
+> Xuan Zhuo (11):
+>   virtio_ring: split: separate dma codes
+>   virtio_ring: packed: separate dma codes
+>   virtio_ring: packed-indirect: separate dma codes
+>   virtio_ring: split: support premapped
+>   virtio_ring: packed: support premapped
+>   virtio_ring: packed-indirect: support premapped
+>   virtio_ring: update document for virtqueue_add_*
+>   virtio_ring: introduce virtqueue_dma_dev()
+>   virtio_ring: correct the expression of the description of
+>     virtqueue_resize()
+>   virtio_ring: separate the logic of reset/enable from virtqueue_resize
+>   virtio_ring: introduce virtqueue_reset()
+> 
+>  drivers/virtio/virtio_ring.c | 352 +++++++++++++++++++++++++----------
+>  include/linux/virtio.h       |   4 +
+>  2 files changed, 259 insertions(+), 97 deletions(-)
+> 
+> --
+> 2.32.0.3.g01195cf9f
 
-Thanks.
-
-
->
-> Thanks
->
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 29 +++++++++++++++++------------
-> >  1 file changed, 17 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 5f37a1cef61e..c6bf425e8844 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -825,7 +825,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp=
-_prog, struct xdp_buff *xdp,
-> >                 xdpf =3D xdp_convert_buff_to_frame(xdp);
-> >                 if (unlikely(!xdpf)) {
-> >                         netdev_dbg(dev, "convert buff to frame failed f=
-or xdp\n");
-> > -                       return XDP_DROP;
-> > +                       goto drop;
-> >                 }
-> >
-> >                 err =3D virtnet_xdp_xmit(dev, 1, &xdpf, 0);
-> > @@ -833,7 +833,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp=
-_prog, struct xdp_buff *xdp,
-> >                         xdp_return_frame_rx_napi(xdpf);
-> >                 } else if (unlikely(err < 0)) {
-> >                         trace_xdp_exception(dev, xdp_prog, act);
-> > -                       return XDP_DROP;
-> > +                       goto drop;
-> >                 }
-> >                 *xdp_xmit |=3D VIRTIO_XDP_TX;
-> >                 return act;
-> > @@ -842,7 +842,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp=
-_prog, struct xdp_buff *xdp,
-> >                 stats->xdp_redirects++;
-> >                 err =3D xdp_do_redirect(dev, xdp, xdp_prog);
-> >                 if (err)
-> > -                       return XDP_DROP;
-> > +                       goto drop;
-> >
-> >                 *xdp_xmit |=3D VIRTIO_XDP_REDIR;
-> >                 return act;
-> > @@ -854,8 +854,12 @@ static int virtnet_xdp_handler(struct bpf_prog *xd=
-p_prog, struct xdp_buff *xdp,
-> >                 trace_xdp_exception(dev, xdp_prog, act);
-> >                 fallthrough;
-> >         case XDP_DROP:
-> > -               return XDP_DROP;
-> > +               break;
-> >         }
-> > +
-> > +drop:
-> > +       put_xdp_frags(xdp);
-> > +       return XDP_DROP;
-> >  }
-> >
-> >  static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
-> > @@ -1190,7 +1194,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_=
-device *dev,
-> >                                  dev->name, *num_buf,
-> >                                  virtio16_to_cpu(vi->vdev, hdr->num_buf=
-fers));
-> >                         dev->stats.rx_length_errors++;
-> > -                       return -EINVAL;
-> > +                       goto err;
-> >                 }
-> >
-> >                 stats->bytes +=3D len;
-> > @@ -1209,7 +1213,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_=
-device *dev,
-> >                         pr_debug("%s: rx error: len %u exceeds truesize=
- %lu\n",
-> >                                  dev->name, len, (unsigned long)(truesi=
-ze - room));
-> >                         dev->stats.rx_length_errors++;
-> > -                       return -EINVAL;
-> > +                       goto err;
-> >                 }
-> >
-> >                 frag =3D &shinfo->frags[shinfo->nr_frags++];
-> > @@ -1224,6 +1228,10 @@ static int virtnet_build_xdp_buff_mrg(struct net=
-_device *dev,
-> >
-> >         *xdp_frags_truesize =3D xdp_frags_truesz;
-> >         return 0;
-> > +
-> > +err:
-> > +       put_xdp_frags(xdp);
-> > +       return -EINVAL;
-> >  }
-> >
-> >  static void *mergeable_xdp_get_buf(struct virtnet_info *vi,
-> > @@ -1353,7 +1361,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >                 err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, d=
-ata, len, frame_sz,
-> >                                                  &num_buf, &xdp_frags_t=
-ruesz, stats);
-> >                 if (unlikely(err))
-> > -                       goto err_xdp_frags;
-> > +                       goto err_xdp;
-> >
-> >                 act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xm=
-it, stats);
-> >
-> > @@ -1361,7 +1369,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >                 case XDP_PASS:
-> >                         head_skb =3D build_skb_from_xdp_buff(dev, vi, &=
-xdp, xdp_frags_truesz);
-> >                         if (unlikely(!head_skb))
-> > -                               goto err_xdp_frags;
-> > +                               goto err_xdp;
-> >
-> >                         rcu_read_unlock();
-> >                         return head_skb;
-> > @@ -1370,11 +1378,8 @@ static struct sk_buff *receive_mergeable(struct =
-net_device *dev,
-> >                         rcu_read_unlock();
-> >                         goto xdp_xmit;
-> >                 default:
-> > -                       break;
-> > +                       goto err_xdp;
-> >                 }
-> > -err_xdp_frags:
-> > -               put_xdp_frags(&xdp);
-> > -               goto err_xdp;
-> >         }
-> >         rcu_read_unlock();
-> >
-> > --
-> > 2.32.0.3.g01195cf9f
-> >
->
