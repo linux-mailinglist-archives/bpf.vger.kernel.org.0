@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6876EDB06
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 07:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050016EDB22
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 07:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjDYFFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 01:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S233155AbjDYFT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 01:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjDYFFq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 01:05:46 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487D47EF1
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 22:05:44 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-54fe2e39156so62402577b3.2
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 22:05:44 -0700 (PDT)
+        with ESMTP id S229756AbjDYFT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 01:19:56 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2C71BC9;
+        Mon, 24 Apr 2023 22:19:55 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-b996127ec71so4206664276.0;
+        Mon, 24 Apr 2023 22:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682399143; x=1684991143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V4NP/vn7C7QZ5EHPeV3lUYcFD2gXJrIxdSbZFhmjjuQ=;
-        b=ox9kzEhPzxbo0Zg4SqlB3Vqcun/GjeeWOAQdnludXoL8ZYnPVpLcfM9nE2LLIvp+kf
-         BRZLuc4uD+VU2fsc028T0qJfYGbKCkJNVTbDNuRUliPKLEFzQZ24UaRWlnwfan76NuNW
-         iwFRfhSHjOc7LxppNQ6WlB/oJ+QoFP05kb7pW+kimY6V0Y8RJf7UhRdQaArnimb2gxxy
-         kmm9XpvkhUwHZPxf+dlE71CJ6qTzgTFU7fi/F0KoZ79sAm/LLUF0Wf9lHhV8esAZ5KUA
-         U8cdsoovfeQ95lQ8+b0u+uuErBpt5k8K0ITv+YqXcwVKTUUjQhbpveWb3/9ngeIxC6oB
-         l3Fw==
+        d=gmail.com; s=20221208; t=1682399994; x=1684991994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t+2gV9DQiHmLQJdOqC+WhOvIWGTo3P7fJoIundTeuNU=;
+        b=SL66LD7/Yx+ry8j2b/Rbvh4aFxXaawJf5pzga/S+om1kdbebVMYYFWlxZDsQMAa3ik
+         i7ZuPqs+sVh7HeqLLdc0jrWHyPUbkLw/8kIs37R6ucRQPRMDHu+8wanPQid55CNRUMcx
+         xMVN7/Zc8M6yRryJ7l3qYZzAboz5XP4w+Xcy7p2rE86ld+lNQOQiZBynQ7lu5iwUbet5
+         9x0Ofu8iC+3f0lsObL9Cc5DZWCqH1X+vZS7du7HaBrUhbl23XlMzLblo2TGmQVN7k2AJ
+         ui6250cJtfX2ku4dag6utC+DAKTIoqwkXZDi4+UB7Q6ewAOHMoBW/YLQxHJrkuAZAc3P
+         cn6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682399143; x=1684991143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V4NP/vn7C7QZ5EHPeV3lUYcFD2gXJrIxdSbZFhmjjuQ=;
-        b=dwAMny9dPvuHyje/61SNBngwbQZM2LE0exGhPT5jwrxjj8iCYmRv2lGNjHAc5t+O6N
-         vdjZDtDgOCmacOQrvWa/Itu2dgX/cszqqyTTmmLeNd95MzQkFIEErlMRk22bKWYHz46q
-         dJVZoQAthcuoQeJEIsrln8tDiAzRIqEgI45TnPit3Cfh2qb7bKwCkzWxBk/uqC3nF2+o
-         CSfv8plzXjQMTJhBGzEXOZcw8eTMkF7AjbkVcq4d0whJS8lFLGcUHbmLVUXdh9aLIeFT
-         sBwotBg4bfAeMow2HkqGxP5xxm1zkstAB/gfQ/ERHm9FxIpJEFTEmWhQWWGH+X8Oytl8
-         cdkA==
-X-Gm-Message-State: AAQBX9e4BlhhysmX+4S60X1VO5fRNuW0MqAoQMX0ULySa/LQ4tw3sxdZ
-        gbhja7LWZHLAbWEDoR1SnMmWTa3Fk+k+qqrZhLI=
-X-Google-Smtp-Source: AKy350ZZz9/v7W79ZAnYzJMmfeEE2gb6bEgZT+yXatqZjpet1YOylbKBq5FKLdUMcKNKlzXNlV9Wg+0PmnRU3VW+UHM=
-X-Received: by 2002:a0d:d753:0:b0:544:9cfb:72bb with SMTP id
- z80-20020a0dd753000000b005449cfb72bbmr9354676ywd.52.1682399143439; Mon, 24
- Apr 2023 22:05:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682399994; x=1684991994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t+2gV9DQiHmLQJdOqC+WhOvIWGTo3P7fJoIundTeuNU=;
+        b=XIkwzU9T5BLisUN02KHdj+Dlxx1SKtK7lLO3zFziA/rrEft1epmhPMx5syrdT2Kntl
+         GUMpXPEbl87qB3RdZe9Y9A1bUTvNGzuufxlMNLicwVE7pQSibRtIrT8CusiO+rh7LKh5
+         hyXe0lnUoTpE4VOWxjYZyZ1E0Sr/g2FhT5lWpP9pB2n44QQdd4QP4yvheF7VV/p2BRzz
+         9Zrxtl9RDrwoHl4VGjiCjKS6FXMhdMMnYmO5z05LUWWrMawkWrJ0WcnsO/VKmdyIcJ6R
+         LoLnQ8kPugENQGi3vINZVspAo68EtsYkthBmrq+onvuGIUhAhhZcpdq1HW4DQLwhy1rX
+         /RQw==
+X-Gm-Message-State: AAQBX9d52rOg+I5CGJytgV8Dj6T1EyH5i6pU4b2MIQpRhlZXpZfvrHAR
+        FXyr5t8Iqoezms9I1iav0mg=
+X-Google-Smtp-Source: AKy350bLfv0pBevlxtfGW/6CL7b+uW0xyWO9gCC2Q4op1yUG+r3QVYszjMxD5qSJTJ0OUQYYbec3rw==
+X-Received: by 2002:a25:2493:0:b0:b93:6a15:5dda with SMTP id k141-20020a252493000000b00b936a155ddamr12822323ybk.29.1682399994352;
+        Mon, 24 Apr 2023 22:19:54 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:10e6:a48a:c0d5:4f85? ([2600:1700:6cf8:1240:10e6:a48a:c0d5:4f85])
+        by smtp.gmail.com with ESMTPSA id l16-20020a0de210000000b00555ccdd7948sm3384204ywe.98.2023.04.24.22.19.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Apr 2023 22:19:53 -0700 (PDT)
+Message-ID: <6353e12d-6fe6-f42b-4277-b32e2b2268a8@gmail.com>
+Date:   Mon, 24 Apr 2023 22:19:52 -0700
 MIME-Version: 1.0
-References: <20230420071414.570108-1-joannelkoong@gmail.com>
- <20230420071414.570108-2-joannelkoong@gmail.com> <20230420183809.hgzvfn627vc3zro4@MacBook-Pro-6.local>
- <CAJnrk1Z_FQatT2-utcMR0NjwQt-3RWv6Vbr871fX8xCHE-buDA@mail.gmail.com> <CAADnVQJ_LGrfAFfcDKkx5nEAXQi19jKPhVJzK8nUX9u7WYf-hQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJ_LGrfAFfcDKkx5nEAXQi19jKPhVJzK8nUX9u7WYf-hQ@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 24 Apr 2023 22:05:32 -0700
-Message-ID: <CAJnrk1b5m+J77aVqMqruSX9X15jwrv+vibFGf5OMvSjcJ9Zxqw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/5] bpf: Add bpf_dynptr_adjust
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH bpf-next v2] bpftool: Dump map id instead of value for
+ map_of_maps types
+Content-Language: en-US
+To:     Xueming Feng <kuro@kuroa.me>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, quentin@isovalent.com, sdf@google.com,
+        song@kernel.org, yhs@fb.com
+References: <f804fd67-87a9-4762-7e31-23abacdf6086@gmail.com>
+ <20230425035803.49919-1-kuro@kuroa.me>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230425035803.49919-1-kuro@kuroa.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,110 +79,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 22, 2023 at 4:44=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Apr 20, 2023 at 8:46=E2=80=AFPM Joanne Koong <joannelkoong@gmail.=
-com> wrote:
-> >
-> > On Thu, Apr 20, 2023 at 11:38=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Apr 20, 2023 at 12:14:10AM -0700, Joanne Koong wrote:
-> > > >       return obj;
-> > > > @@ -2369,6 +2394,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_=
-RET_NULL)
-> > > >  BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
-> > > >  BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
-> > > >  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
-> > > > +BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> > >
-> > > I've missed this earlier.
-> > > Shouldn't we change all the existing dynptr kfuncs to be KF_TRUSTED_A=
-RGS?
-> > > Otherwise when people start passing bpf_dynptr-s from kernel code
-> > > (like fuse-bpf is planning to do)
-> > > the bpf prog might get vanilla ptr_to_btf_id to bpf_dynptr_kern.
-> > > It's probably not possible right now, so not a high-pri issue, but st=
-ill.
-> > > Or something in the verifier makes sure that dynptr-s are all trusted=
-?
-> >
-> > In my understanding, the checks the verifier enforces for
-> > KF_TRUSTED_ARGS are that the reg->offset is 0 and the reg may not be
-> > null. The verifier logic does this for dynptrs currently, it enforces
-> > that reg->offset is 0 (in stack_slot_obj_get_spi()) and that the
-> > reg->type is PTR_TO_STACK or CONST_PTR_TO_DYNPTR (in
-> > check_kfunc_args() for KF_ARG_PTR_TO_DYNPTR case). But maybe it's a
-> > good idea to add the KF_TRUSTED_ARGS flag anyways in case more safety
-> > checks are added to KF_TRUSTED_ARGS in the future?
->
-> Yeah. You're right.
-> The verifier is doing the same checks for dynptr and for trusted ptrs.
-> So adding KF_TRUSTED_ARGS to bpf_dynptr_adjust is not mandatory.
-> Maybe an opportunity to generalize the checks between
-> KF_ARG_PTR_TO_BTF_ID and KF_ARG_PTR_TO_DYNPTR.
-> But KF_TRUSTED_ARGS is necessary for bpf_dynptr_from_skb
-> otherwise old style ptr_to_btf_id skb can be passed in.
->
-> For example the following passes test_progs:
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index d9ce04ca22ce..abb14036b455 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -11718,6 +11718,7 @@ static int __init bpf_kfunc_init(void)
->         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_XMIT,
-> &bpf_kfunc_set_skb);
->         ret =3D ret ?:
-> register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL,
-> &bpf_kfunc_set_skb);
->         ret =3D ret ?:
-> register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER,
-> &bpf_kfunc_set_skb);
-> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> &bpf_kfunc_set_skb);
->         return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
-> &bpf_kfunc_set_xdp);
->  }
->  late_initcall(bpf_kfunc_init);
-> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c
-> b/tools/testing/selftests/bpf/progs/dynptr_success.c
-> index b2fa6c47ecc0..bd8fbc3e04ea 100644
-> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-> @@ -4,6 +4,7 @@
->  #include <string.h>
->  #include <linux/bpf.h>
->  #include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
->  #include "bpf_misc.h"
->  #include "bpf_kfuncs.h"
->  #include "errno.h"
-> @@ -187,6 +188,15 @@ int test_skb_readonly(struct __sk_buff *skb)
->         return 1;
->  }
->
-> +SEC("fentry/__kfree_skb")
-> +int BPF_PROG(test_skb, struct __sk_buff *skb)
-> +{
-> +       struct bpf_dynptr ptr;
-> +
-> +       bpf_dynptr_from_skb(skb, 0, &ptr);
-> +       return 0;
-> +}
->
-> but shouldn't. skb in fentry is not trusted.
-> It's not an issue right now, because bpf_dynptr_from_skb()
-> is enabled for networking prog types only,
-> but BPF_PROG_TYPE_NETFILTER is already blending the boundary.
-> It's more networking than tracing and normal tracing should
-> be able to examine skb. dynptr allows to do it nicely.
-> Not a blocker for this set. Just something to follow up.
 
-Ahh I see, thanks for the explanation. I'm trying to find where this
-happens in the code - i see the check in the verifier for
-is_trusted_reg() (when we call check_kfunc_args() for the
-KF_ARG_PTR_TO_BTF_ID case) so it seems like the skb ctx reg is trusted
-if it's been marked as either MEM_ALLOC or PTR_TRUSTED, and it's
-untrusted if it's not. But where does this get marked as PTR_TRUSTED
-for networking prog types?
+
+On 4/24/23 20:58, Xueming Feng wrote:
+>> On 4/24/23 02:09, Xueming Feng wrote:
+>>> When using `bpftool map dump` in plain format, it is usually
+>>> more convenient to show the inner map id instead of raw value.
+>>> Changing this behavior would help with quick debugging with
+>>> `bpftool`, without disrupting scripted behavior. Since user
+>>> could dump the inner map with id, and need to convert value.
+>>>
+>>> Signed-off-by: Xueming Feng <kuro@kuroa.me>
+>>> ---
+>>> Changes in v2:
+>>>     - Fix commit message grammar.
+>>> 	- Change `print_uint` to only print to stdout, make `arg` const, and rename
+>>> 	  `n` to `arg_size`.
+>>>     - Make `print_uint` able to take any size of argument up to `unsigned long`,
+>>> 		and print it as unsigned decimal.
+>>>
+>>> Thanks for the review and suggestions! I have changed my patch accordingly.
+>>> There is a possibility that `arg_size` is larger than `unsigned long`,
+>>> but previous review suggested that it should be up to the caller function to
+>>> set `arg_size` correctly. So I didn't add check for that, should I?
+>>>
+>>>    tools/bpf/bpftool/main.c | 15 +++++++++++++++
+>>>    tools/bpf/bpftool/main.h |  1 +
+>>>    tools/bpf/bpftool/map.c  |  9 +++++++--
+>>>    3 files changed, 23 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+>>> index 08d0ac543c67..810c0dc10ecb 100644
+>>> --- a/tools/bpf/bpftool/main.c
+>>> +++ b/tools/bpf/bpftool/main.c
+>>> @@ -251,6 +251,21 @@ int detect_common_prefix(const char *arg, ...)
+>>>    	return 0;
+>>>    }
+>>>    
+>>> +void print_uint(const void *arg, unsigned int arg_size)
+>>> +{
+>>> +	const unsigned char *data = arg;
+>>> +	unsigned long val = 0ul;
+>>> +
+>>> +	#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+>>> +		memcpy(&val, data, arg_size);
+>>> +	#else
+>>> +		memcpy((unsigned char *)&val + sizeof(val) - arg_size,
+>>> +		       data, arg_size);
+>>> +	#endif
+> 
+> On Mon, 24 Apr 2023 09:44:18 -0700, Kui-Feng Lee wrote:
+>> Is it possible that arg_size is bigger than sizeof(val)?
+> 
+> Yes it is possible, I had the thought of adding a check. But as I mentioned
+> before the diff section, previous review
+> https://lore.kernel.org/bpf/20230421101154.23690-1-kuro@kuroa.me/ suggested that
+> I should leave it to the caller function to behave. If I were to add a check,
+> what action do you recommend if the check fails? Print a '-1', do nothing,
+> or just use the first sizeof(val) bytes?
+
+In the previous patch, it may have integer overflow, but it is never 
+buffer underrun.  This version uses memcpy and may cause buffer underrun 
+if arg_size is bigger than sizeof(val).  I would say that at least 
+prevent buffer underrun from happening.
+
+> 
+>>> +
+>>> +	fprintf(stdout, "%lu", val);
+>>> +}
+>>> +
+>>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
+>>>    {
+>>>    	unsigned char *data = arg;
+>>> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+>>> index 0ef373cef4c7..0de671423431 100644
+>>> --- a/tools/bpf/bpftool/main.h
+>>> +++ b/tools/bpf/bpftool/main.h
+>>> @@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
+>>>    
+>>>    bool is_prefix(const char *pfx, const char *str);
+>>>    int detect_common_prefix(const char *arg, ...);
+>>> +void print_uint(const void *arg, unsigned int arg_size);
+>>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
+>>>    void usage(void) __noreturn;
+>>>    
+>>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+>>> index aaeb8939e137..f5be4c0564cf 100644
+>>> --- a/tools/bpf/bpftool/map.c
+>>> +++ b/tools/bpf/bpftool/map.c
+>>> @@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
+>>>    		}
+>>>    
+>>>    		if (info->value_size) {
+>>> -			printf("value:%c", break_names ? '\n' : ' ');
+>>> -			fprint_hex(stdout, value, info->value_size, " ");
+>>> +			if (map_is_map_of_maps(info->type)) {
+>>> +				printf("id:%c", break_names ? '\n' : ' ');
+>>> +				print_uint(value, info->value_size);
+>>> +			} else {
+>>> +				printf("value:%c", break_names ? '\n' : ' ');
+>>> +				fprint_hex(stdout, value, info->value_size, " ");
+>>> +			}
+>>>    		}
+>>>    
+>>>    		printf("\n");
