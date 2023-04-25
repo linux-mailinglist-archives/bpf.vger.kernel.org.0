@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919E76EDB80
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 08:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B0D6EDBB5
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 08:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbjDYGJv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 02:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        id S232845AbjDYGiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 02:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbjDYGJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 02:09:49 -0400
-Received: from pv50p00im-ztbu10021601.me.com (pv50p00im-ztbu10021601.me.com [17.58.6.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9FAAD2E
-        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 23:09:47 -0700 (PDT)
+        with ESMTP id S231428AbjDYGiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 02:38:00 -0400
+Received: from pv50p00im-tydg10021701.me.com (pv50p00im-tydg10021701.me.com [17.58.6.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483F7E9
+        for <bpf@vger.kernel.org>; Mon, 24 Apr 2023 23:37:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-        t=1682402986; bh=XRQW1cQRj3VpX+F0n3pPfIVgf/nwNr+TzcqKbgCJw6E=;
+        t=1682404677; bh=AtnDc7pWa0CYdHFbae5uSVEe7HPDyHCYHPe7s+HzyVA=;
         h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=PyyU4RGpFFdoAMp8XYQYnhDi7ZYYUSIGVU4R0HkdQwKErS/asPBb+EnVUg6rHOKiD
-         aQGMDjRs2vilDax49Gc/tabEVrms4fYCUJL0YRVB+P6Hj6inLIaoharpPoRXYmU7UV
-         BsNAv6qYWEYJvk622uCBmOkp9nwDhSKg6Qg323moSNbVEewWog9Dex28+yqVid3F9p
-         siCzYMnYLBbjtL79CCxizHMP//aCAf5oxiks56fmkMkADa4k7LKBXUkZaO9V+of65J
-         h8DcEBCfPVVHmLobGx8xEGF/Wk+cDx4MkPuIzlENE2j7piGSvqYvmsDJXNbCVm9vyv
-         b/bIHl6ANujfw==
+        b=Qg4qMYVxAAs7QfO2aRdUElYa9EN+3tKzyg9WkhuNFglQRQPf0hvX4yXKvoAXCZeeq
+         WuUbwNgKn8yiJ0HFA3t4BETYNsOOcvQcs6cp1y6kTCEHtRd20+8uJiUxXicSFewE1v
+         kNzKMWBuETyRXUIXdKA6g06WO7WFTorRAoURcPMr33QA359sXfFJBNPXNw0Ze8dqSi
+         jAS/jHn7lUfL2t59/XH+wf6E+7UxtbVbJHdQfO/v4HTBFOmTOxta3wjPtWqcZLFoR/
+         DKMJIT8D0rF/Ar4HijgjnwHrpoDMGD51LAVvI9JAv3yj9t/laUVQfi1RnHyJWxsYS0
+         4sgmmsz8Nfb9Q==
 Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztbu10021601.me.com (Postfix) with ESMTPSA id 6B2358023D;
-        Tue, 25 Apr 2023 06:09:42 +0000 (UTC)
+        by pv50p00im-tydg10021701.me.com (Postfix) with ESMTPSA id 8D2383A0C0D;
+        Tue, 25 Apr 2023 06:37:53 +0000 (UTC)
 From:   Xueming Feng <kuro@kuroa.me>
-To:     sinquersw@gmail.com
+To:     yhs@meta.com
 Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
         jolsa@kernel.org, kpsingh@kernel.org, kuro@kuroa.me,
         linux-kernel@vger.kernel.org, martin.lau@linux.dev,
         quentin@isovalent.com, sdf@google.com, song@kernel.org, yhs@fb.com
 Subject: Re: [PATCH bpf-next v2] bpftool: Dump map id instead of value for map_of_maps types
-Date:   Tue, 25 Apr 2023 14:09:38 +0800
-Message-Id: <20230425060938.51020-1-kuro@kuroa.me>
+Date:   Tue, 25 Apr 2023 14:37:50 +0800
+Message-Id: <20230425063750.72642-1-kuro@kuroa.me>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <6353e12d-6fe6-f42b-4277-b32e2b2268a8@gmail.com>
-References: <6353e12d-6fe6-f42b-4277-b32e2b2268a8@gmail.com>
+In-Reply-To: <561b0f03-4a3a-89d3-5793-a0d69535ca0f@meta.com>
+References: <561b0f03-4a3a-89d3-5793-a0d69535ca0f@meta.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: DSLQazJ2klkQkRozrq7pH5kxpU2KODMh
-X-Proofpoint-GUID: DSLQazJ2klkQkRozrq7pH5kxpU2KODMh
+X-Proofpoint-ORIG-GUID: 1LvcXIxTfN7FMPf-6mBsy-6lGA08URWM
+X-Proofpoint-GUID: 1LvcXIxTfN7FMPf-6mBsy-6lGA08URWM
 X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
  =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.11.64.514.0000000_definitions?=
  =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2022-02-23?=
  =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- clxscore=1030 phishscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2304250056
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ suspectscore=0 clxscore=1030 adultscore=0 phishscore=0 mlxlogscore=967
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2209130000 definitions=main-2304250060
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -61,8 +61,8 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->On 4/24/23 20:58, Xueming Feng wrote:
->>> On 4/24/23 02:09, Xueming Feng wrote:
+>On 4/24/23 9:10 PM, Xueming Feng wrote:
+>>> On 4/24/23 2:09 AM, Xueming Feng wrote:
 >>>> When using `bpftool map dump` in plain format, it is usually
 >>>> more convenient to show the inner map id instead of raw value.
 >>>> Changing this behavior would help with quick debugging with
@@ -107,62 +107,89 @@ X-Mailing-List: bpf@vger.kernel.org
 >>>> +		memcpy((unsigned char *)&val + sizeof(val) - arg_size,
 >>>> +		       data, arg_size);
 >>>> +	#endif
+>>>> +
+>>>> +	fprintf(stdout, "%lu", val);
+>>>> +}
+>>>> +
+>>>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
+>>>>    {
+>>>>    	unsigned char *data = arg;
+>>>> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+>>>> index 0ef373cef4c7..0de671423431 100644
+>>>> --- a/tools/bpf/bpftool/main.h
+>>>> +++ b/tools/bpf/bpftool/main.h
+>>>> @@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
+>>>>    
+>>>>    bool is_prefix(const char *pfx, const char *str);
+>>>>    int detect_common_prefix(const char *arg, ...);
+>>>> +void print_uint(const void *arg, unsigned int arg_size);
+>>>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
+>>>>    void usage(void) __noreturn;
+>>>>    
+>>>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+>>>> index aaeb8939e137..f5be4c0564cf 100644
+>>>> --- a/tools/bpf/bpftool/map.c
+>>>> +++ b/tools/bpf/bpftool/map.c
+>>>> @@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
+>>>>    		}
+>>>>    
+>>>>    		if (info->value_size) {
+>>>> -			printf("value:%c", break_names ? '\n' : ' ');
+>>>> -			fprint_hex(stdout, value, info->value_size, " ");
+>>>> +			if (map_is_map_of_maps(info->type)) {
+>>>> +				printf("id:%c", break_names ? '\n' : ' ');
+>>> 1> +				print_uint(value, info->value_size);
 >> 
->> On Mon, 24 Apr 2023 09:44:18 -0700, Kui-Feng Lee wrote:
->>> Is it possible that arg_size is bigger than sizeof(val)?
+>> On Mon, 24 Apr 2023 18:07:27 -0700, Yonghong Song wrote:
+>>> For all map_in_map types, the inner map value size is 32bit int which
+>>> represents a fd (for map creation) and a id (for map info), e.g., in
+>>> show_prog_maps() in prog.c. So maybe we can simplify the code as below:
+>>> 	printf("id: %u", *(unsigned int *)value);
 >> 
->> Yes it is possible, I had the thought of adding a check. But as I mentioned
->> before the diff section, previous review
->> https://lore.kernel.org/bpf/20230421101154.23690-1-kuro@kuroa.me/ suggested that
->> I should leave it to the caller function to behave. If I were to add a check,
->> what action do you recommend if the check fails? Print a '-1', do nothing,
->> or just use the first sizeof(val) bytes?
+>> That is true, maybe the "id" could also be changed to "map_id" to follow the
+>> convention. Do you think that `print_uint` could be useful in the future?
+>> If that is the case, should I keep using it here as an example usage, and to
+>> avoid dead code? Or should I just remove it?
 
-On Mon, 24 Apr 2023 22:19:52 -0700, Kui-Feng Lee wrote:
-> In the previous patch, it may have integer overflow, but it is never 
-> buffer underrun.  This version uses memcpy and may cause buffer underrun 
-> if arg_size is bigger than sizeof(val).  I would say that at least 
-> prevent buffer underrun from happening.
+On Mon, 24 Apr 2023 22:58:10 -0700, Yonghong Song wrote:
+> Maybe, "inner_map_id" is a better choice. For array of maps, some array 
+> element value could be 0, implying "inner_map_id 0", but I think it is
+> okay, people should know a real inner_map_id (or any map_id) should 
+> never be 0.
+> 
+> Function "print_uint" is not needed any more. Please remove it.
 
-Thanks for the advice! This function is pending remove in the next version of 
-this patch. But I will remember this for future patches.
+Will reflect this in v3.
 
->>> +
->>> +	fprintf(stdout, "%lu", val);
->>> +}
->>> +
->>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep)
->>>    {
->>>    	unsigned char *data = arg;
->>> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
->>> index 0ef373cef4c7..0de671423431 100644
->>> --- a/tools/bpf/bpftool/main.h
->>> +++ b/tools/bpf/bpftool/main.h
->>> @@ -90,6 +90,7 @@ void __printf(1, 2) p_info(const char *fmt, ...);
->>>    
->>>    bool is_prefix(const char *pfx, const char *str);
->>>    int detect_common_prefix(const char *arg, ...);
->>> +void print_uint(const void *arg, unsigned int arg_size);
->>>    void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
->>>    void usage(void) __noreturn;
->>>    
->>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
->>> index aaeb8939e137..f5be4c0564cf 100644
->>> --- a/tools/bpf/bpftool/map.c
->>> +++ b/tools/bpf/bpftool/map.c
->>> @@ -259,8 +259,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
->>>    		}
->>>    
->>>    		if (info->value_size) {
->>> -			printf("value:%c", break_names ? '\n' : ' ');
->>> -			fprint_hex(stdout, value, info->value_size, " ");
->>> +			if (map_is_map_of_maps(info->type)) {
->>> +				printf("id:%c", break_names ? '\n' : ' ');
->>> +				print_uint(value, info->value_size);
->>> +			} else {
->>> +				printf("value:%c", break_names ? '\n' : ' ');
->>> +				fprint_hex(stdout, value, info->value_size, " ");
->>> +			}
->>>    		}
->>>    
->>>    		printf("\n");
+> 
+> Please add the command line to dump map values triggering the above 
+> change, also the actual dumps with and without this patch.
+
+$ bpftool map dump id 138
+Without patch:
+```
+key:
+fc 00 00 00 00 00 00 00  00 00 00 00 00 00 00 05
+27 16 06 00
+value:
+8b 00 00 00
+Found 1 element
+```
+With patch:
+```
+key:
+fc 00 00 00 00 00 00 00  00 00 00 00 00 00 00 05
+27 16 06 00
+inner_map_id:
+139 
+Found 1 element
+```
+
+>> 
+>>>> +			} else {
+>>>> +				printf("value:%c", break_names ? '\n' : ' ');
+>>>> +				fprint_hex(stdout, value, info->value_size, " ");
+>>>> +			}
+>>>>    		}
+>>>>    
+>>>>    		printf("\n");
