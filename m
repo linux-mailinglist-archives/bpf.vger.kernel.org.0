@@ -2,229 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73306EDCEE
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 09:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690246EDCF9
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 09:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbjDYHmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 03:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S229705AbjDYHp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 03:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232847AbjDYHma (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 03:42:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB079F
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 00:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682408504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vgtdiCdfMaL2IrJBuUV1QXhdAi7SKOJBtJL5aY2h2cc=;
-        b=ITGW8aWVStXqq3rThNQcv7c9Hlpv1L7XSE/p7pOLxZb3V06tGXx6oZ2hvffCditCiXAczB
-        cBtdJt6fY3yQxTFjm2aaNv8fg/xf+hgNe/uIHYenwna3mSQsT116tN4XtGjfP6jBopuOdp
-        cVHEW1HHspWYltwWoT5e23BdvCESrsE=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-wFGrqcrMMVC_1PkUCRzcnA-1; Tue, 25 Apr 2023 03:41:42 -0400
-X-MC-Unique: wFGrqcrMMVC_1PkUCRzcnA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-4edd5a7cddeso5444728e87.0
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 00:41:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682408500; x=1685000500;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vgtdiCdfMaL2IrJBuUV1QXhdAi7SKOJBtJL5aY2h2cc=;
-        b=cPI9/G4DTtzMnxmpKQ1mDUaSKUI2Yars3qRoPBx506lHED2FXH2OoNRmVQxyCq3Twd
-         v1FlOFSE0aSJFRj0W/Iz/f2SwcrtLzyzQrsMATMx5+fbIH6xky0ut2LIde1ZSraajbCY
-         TCPk1AJL1gwxRi4ZqbJSDBLSujtjExHXWb70SmYiJwc0DOt383xc3bu5Rl/QLSjAYYiJ
-         3b2XFbSah2/i1N/jF0FMgivunF4L+dML613VcPzBAsdCCXpV9BvFStwScYXRv1t1KYWi
-         btO0JzFz7EVH4Jt9jg1lCJSy03j0C0jFUH3QbjlsdHPkjEhVOMgLSafrqAFIIHSsYgyV
-         jkKQ==
-X-Gm-Message-State: AAQBX9fBy8IBqMagHn1oVUh586Bsq7jqypzYEOOwcXg71LZbDHaNLBMj
-        J5xxcDvAe701Kq1/X1GHTnb7KYdcFsLz6UpjvbTNmGcS+G8inJjAD8C0r+JQk295KdT9r59cVLF
-        WM827YY7wp6F/u/PX2zED7P26CvWz
-X-Received: by 2002:a2e:b545:0:b0:2a7:6bcd:d8ba with SMTP id a5-20020a2eb545000000b002a76bcdd8bamr3586477ljn.3.1682408500559;
-        Tue, 25 Apr 2023 00:41:40 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YtbsDQ78FOkCn5PwXZvtQ47STnF7zTV74XDSGcUXlb0/2BkgSi60VfkPJBn54CRLDkO8ajP3e/Op9gmlv53QU=
-X-Received: by 2002:a2e:b545:0:b0:2a7:6bcd:d8ba with SMTP id
- a5-20020a2eb545000000b002a76bcdd8bamr3586468ljn.3.1682408500213; Tue, 25 Apr
- 2023 00:41:40 -0700 (PDT)
+        with ESMTP id S232274AbjDYHpz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 03:45:55 -0400
+Received: from mail.simsborovin.com (mail.simsborovin.com [89.40.118.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8503A2
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 00:45:52 -0700 (PDT)
+Received: by mail.simsborovin.com (Postfix, from userid 1001)
+        id BAF9083F49; Tue, 25 Apr 2023 08:45:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=simsborovin.com;
+        s=mail; t=1682408754;
+        bh=so3xiFooQ9N0D/cd/+ivPaO6nnHsd9cY/G2xa/w5Tfg=;
+        h=Date:From:To:Subject:From;
+        b=oF/pxOcma80XKWvzqGJ+2Z8r9niIRVJRHV07cJf2YNjcRFy+jq2JnJbC73i25Pf9L
+         rQlqtcXasVEqQOUj9vflV3k2ljMK/hYUGDSw748YSz1TKKOGYISh9uSYUjFpOj54T+
+         ibA77t7Ah7UOBj6W3ZFmbmv2hEkvY4JoqBn2osn/rNN2pBclo0VLpWh+q+6snKt9o0
+         xuNp663JYdS9aKFD1U0HGT84PKhx/RARPiMzdk1esCszo7kX91kTQ4FChLLzMgzLYH
+         4uyWhf/JDMQi0C1LAmtT1pPoJT6eN5x6wxJ5MQeNYD/xU6XGjPU5eUAcXCUDlfTdfW
+         2t2hXj3+KNi9Q==
+Received: by mail.simsborovin.com for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 07:45:35 GMT
+Message-ID: <20230425074501-0.1.35.b853.0.3xpowg5j4o@simsborovin.com>
+Date:   Tue, 25 Apr 2023 07:45:35 GMT
+From:   "Konrad Trojanowski" <konrad.trojanowski@simsborovin.com>
+To:     <bpf@vger.kernel.org>
+Subject: W sprawie samochodu
+X-Mailer: mail.simsborovin.com
 MIME-Version: 1.0
-References: <20230423105736.56918-1-xuanzhuo@linux.alibaba.com> <20230423105736.56918-8-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20230423105736.56918-8-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 25 Apr 2023 15:41:28 +0800
-Message-ID: <CACGkMEsNLa9ETksZBi-fkni3c0FzpdNFr-y87Gt48-QKuLDPtg@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 07/15] virtio_net: auto release xdp shinfo
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 23, 2023 at 6:57=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> virtnet_build_xdp_buff_mrg() and virtnet_xdp_handler() auto
-> release xdp shinfo then the caller no need to careful the xdp shinfo.
+Dzie=C5=84 dobry,
 
-Thinking of this, I think releasing frags in
-virtnet_build_xdp_buff_mrg() is fine. But for virtnet_xdp_handler(),
-it's better to be done by the caller, since the frags were prepared by
-the caller anyhow.
+chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
+, je=C5=9Bli chodzi o system monitoringu GPS.
 
-Thanks
+Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
+e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
+a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
 
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 29 +++++++++++++++++------------
->  1 file changed, 17 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 5f37a1cef61e..c6bf425e8844 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -825,7 +825,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_p=
-rog, struct xdp_buff *xdp,
->                 xdpf =3D xdp_convert_buff_to_frame(xdp);
->                 if (unlikely(!xdpf)) {
->                         netdev_dbg(dev, "convert buff to frame failed for=
- xdp\n");
-> -                       return XDP_DROP;
-> +                       goto drop;
->                 }
->
->                 err =3D virtnet_xdp_xmit(dev, 1, &xdpf, 0);
-> @@ -833,7 +833,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_p=
-rog, struct xdp_buff *xdp,
->                         xdp_return_frame_rx_napi(xdpf);
->                 } else if (unlikely(err < 0)) {
->                         trace_xdp_exception(dev, xdp_prog, act);
-> -                       return XDP_DROP;
-> +                       goto drop;
->                 }
->                 *xdp_xmit |=3D VIRTIO_XDP_TX;
->                 return act;
-> @@ -842,7 +842,7 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_p=
-rog, struct xdp_buff *xdp,
->                 stats->xdp_redirects++;
->                 err =3D xdp_do_redirect(dev, xdp, xdp_prog);
->                 if (err)
-> -                       return XDP_DROP;
-> +                       goto drop;
->
->                 *xdp_xmit |=3D VIRTIO_XDP_REDIR;
->                 return act;
-> @@ -854,8 +854,12 @@ static int virtnet_xdp_handler(struct bpf_prog *xdp_=
-prog, struct xdp_buff *xdp,
->                 trace_xdp_exception(dev, xdp_prog, act);
->                 fallthrough;
->         case XDP_DROP:
-> -               return XDP_DROP;
-> +               break;
->         }
-> +
-> +drop:
-> +       put_xdp_frags(xdp);
-> +       return XDP_DROP;
->  }
->
->  static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
-> @@ -1190,7 +1194,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_de=
-vice *dev,
->                                  dev->name, *num_buf,
->                                  virtio16_to_cpu(vi->vdev, hdr->num_buffe=
-rs));
->                         dev->stats.rx_length_errors++;
-> -                       return -EINVAL;
-> +                       goto err;
->                 }
->
->                 stats->bytes +=3D len;
-> @@ -1209,7 +1213,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_de=
-vice *dev,
->                         pr_debug("%s: rx error: len %u exceeds truesize %=
-lu\n",
->                                  dev->name, len, (unsigned long)(truesize=
- - room));
->                         dev->stats.rx_length_errors++;
-> -                       return -EINVAL;
-> +                       goto err;
->                 }
->
->                 frag =3D &shinfo->frags[shinfo->nr_frags++];
-> @@ -1224,6 +1228,10 @@ static int virtnet_build_xdp_buff_mrg(struct net_d=
-evice *dev,
->
->         *xdp_frags_truesize =3D xdp_frags_truesz;
->         return 0;
-> +
-> +err:
-> +       put_xdp_frags(xdp);
-> +       return -EINVAL;
->  }
->
->  static void *mergeable_xdp_get_buf(struct virtnet_info *vi,
-> @@ -1353,7 +1361,7 @@ static struct sk_buff *receive_mergeable(struct net=
-_device *dev,
->                 err =3D virtnet_build_xdp_buff_mrg(dev, vi, rq, &xdp, dat=
-a, len, frame_sz,
->                                                  &num_buf, &xdp_frags_tru=
-esz, stats);
->                 if (unlikely(err))
-> -                       goto err_xdp_frags;
-> +                       goto err_xdp;
->
->                 act =3D virtnet_xdp_handler(xdp_prog, &xdp, dev, xdp_xmit=
-, stats);
->
-> @@ -1361,7 +1369,7 @@ static struct sk_buff *receive_mergeable(struct net=
-_device *dev,
->                 case XDP_PASS:
->                         head_skb =3D build_skb_from_xdp_buff(dev, vi, &xd=
-p, xdp_frags_truesz);
->                         if (unlikely(!head_skb))
-> -                               goto err_xdp_frags;
-> +                               goto err_xdp;
->
->                         rcu_read_unlock();
->                         return head_skb;
-> @@ -1370,11 +1378,8 @@ static struct sk_buff *receive_mergeable(struct ne=
-t_device *dev,
->                         rcu_read_unlock();
->                         goto xdp_xmit;
->                 default:
-> -                       break;
-> +                       goto err_xdp;
->                 }
-> -err_xdp_frags:
-> -               put_xdp_frags(&xdp);
-> -               goto err_xdp;
->         }
->         rcu_read_unlock();
->
-> --
-> 2.32.0.3.g01195cf9f
->
+Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
+dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
+szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
+mne znaczenie.
 
+Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
+b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
+
+
+Pozdrawiam
+Konrad Trojanowski
