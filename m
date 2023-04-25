@@ -2,189 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84476EDE18
-	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 10:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073AC6EDE73
+	for <lists+bpf@lfdr.de>; Tue, 25 Apr 2023 10:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbjDYIb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 04:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S233571AbjDYIqv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 04:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbjDYIax (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 04:30:53 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD44CC2F;
-        Tue, 25 Apr 2023 01:30:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VgzRXeJ_1682411409;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VgzRXeJ_1682411409)
-          by smtp.aliyun-inc.com;
-          Tue, 25 Apr 2023 16:30:09 +0800
-Message-ID: <1682410913.3294404-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v7 00/11] virtio core prepares for AF_XDP
-Date:   Tue, 25 Apr 2023 16:21:53 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        with ESMTP id S233633AbjDYIqi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 04:46:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA8E1445F
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 01:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682412196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z0zVDpGNPOtgS6OZt5Y/hC+DSyVwR0iNEJU4rcM7cZw=;
+        b=DVTQTx44+1hQWLZWQZL76m1frryKtCO9W5LxJQ1zgjdN618w1LORQ4mLNh5ISXHw2wZO5N
+        I1inozdMekjFgx9CzHtXLF3m/uKb/rO58lC07m3hNkTHr7w1xTVJ6BNJNF1u/uRxFo005p
+        wsSx+Mmy+PDm5OAvL497O8PeFCh+dV4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-338-t7PNqE-lMfCGcmKDEFsoHg-1; Tue, 25 Apr 2023 04:43:14 -0400
+X-MC-Unique: t7PNqE-lMfCGcmKDEFsoHg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a341efd9aso616622966b.0
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 01:43:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682412193; x=1685004193;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z0zVDpGNPOtgS6OZt5Y/hC+DSyVwR0iNEJU4rcM7cZw=;
+        b=Ew1GvKQdtNVfFG+Bg8PRT0W5VJS3DJkJ29zQWQHYn7BJDMGdZ5azTkEJjwXoc9GLUl
+         aH0HdGuGTnfVZoyZmo/wpYlvg+ogirXToVSI+prWDoiWO2AAIFA0hlFBzywMWXGrAM9i
+         yI4WrlLSS7/h+0JkRdpo1k2Bys3cNsn5e1PR0TWovVuoT4CCnTkLH5+AXDhMcfB78UOB
+         3vp39HSsbcQWwUWoU2bivKKWD6pJvSPbfFvJXKO7AIUioPmJBDTFXq2bd6X03s4RnLFx
+         hbL1x4pSEZJDFABsuFL0uDvMDyC3U6UU6jtOmy2gdx31Df6KdWzN8LfKMsM7ks9iIoBJ
+         cdjg==
+X-Gm-Message-State: AAQBX9dzA2mU7k/+59wv1Ax+hbgw0TLQ0nCGtcPoUqrV8Jo6mTPsJbGT
+        PHLN/Ofnh5Cp4jo/RbplnPGkyDFR21ga/mVirhCsSqni8Ly+zMUZOn2znBSbBjT6zsly9MadHbg
+        3DNj4IQO4mYcK
+X-Received: by 2002:a17:907:a688:b0:953:4d9e:4dc5 with SMTP id vv8-20020a170907a68800b009534d9e4dc5mr11371470ejc.22.1682412193248;
+        Tue, 25 Apr 2023 01:43:13 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bMzEkeOJ+lrxIh0zBcCHx4TX83ikBmu1uOT+zXFM5ixyoq1CeTkKqu+M7H2eyoLrpcS9oLHw==
+X-Received: by 2002:a17:907:a688:b0:953:4d9e:4dc5 with SMTP id vv8-20020a170907a68800b009534d9e4dc5mr11371436ejc.22.1682412192893;
+        Tue, 25 Apr 2023 01:43:12 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id bh20-20020a170906a0d400b0094fbb76f49esm6589052ejb.17.2023.04.25.01.43.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Apr 2023 01:43:12 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <e6bc2340-9cb5-def1-b347-af25ce2f8225@redhat.com>
+Date:   Tue, 25 Apr 2023 10:43:02 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Cc:     brouer@redhat.com, netdev@vger.kernel.org, martin.lau@kernel.org,
+        ast@kernel.org, alexandr.lobakin@intel.com,
+        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
         John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-References: <20230425073613.8839-1-xuanzhuo@linux.alibaba.com>
- <20230425034700-mutt-send-email-mst@kernel.org>
- <1682409903.8734658-2-xuanzhuo@linux.alibaba.com>
- <20230425041246-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230425041246-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        yoong.siang.song@intel.com, intel-wired-lan@lists.osuosl.org,
+        pabeni@redhat.com, jesse.brandeburg@intel.com,
+        Stanislav Fomichev <sdf@google.com>, kuba@kernel.org,
+        edumazet@google.com, hawk@kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next V2 1/5] igc: enable and fix RX hash usage by
+ netstack
+Content-Language: en-US
+To:     davem@davemloft.net, bpf@vger.kernel.org, daniel@iogearbox.net
+References: <168182460362.616355.14591423386485175723.stgit@firesoul>
+ <168182464270.616355.11391652654430626584.stgit@firesoul>
+ <644544b3206f0_19af02085e@john.notmuch>
+ <622a8fa6-ec07-c150-250b-5467b0cddb0c@redhat.com>
+ <6446d5af80e06_338f220820@john.notmuch>
+In-Reply-To: <6446d5af80e06_338f220820@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Apr 2023 04:13:09 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Tue, Apr 25, 2023 at 04:05:03PM +0800, Xuan Zhuo wrote:
-> > On Tue, 25 Apr 2023 03:51:47 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Tue, Apr 25, 2023 at 03:36:02PM +0800, Xuan Zhuo wrote:
-> > > > ## About DMA APIs
-> > > >
-> > > > Now, virtio may can not work with DMA APIs when virtio features do not have
-> > > > VIRTIO_F_ACCESS_PLATFORM.
-> > > >
-> > > > 1. I tried to let DMA APIs return phy address by virtio-device. But DMA APIs just
-> > > >    work with the "real" devices.
-> > > > 2. I tried to let xsk support callballs to get phy address from virtio-net
-> > > >    driver as the dma address. But the maintainers of xsk may want to use dma-buf
-> > > >    to replace the DMA APIs. I think that may be a larger effort. We will wait
-> > > >    too long.
-> > > >
-> > > > So rethinking this, firstly, we can support premapped-dma only for devices with
-> > > > VIRTIO_F_ACCESS_PLATFORM. In the case of af-xdp, if the users want to use it,
-> > > > they have to update the device to support VIRTIO_F_RING_RESET, and they can also
-> > > > enable the device's VIRTIO_F_ACCESS_PLATFORM feature by the way.
-> > >
-> > > I don't understand this last sentence. If you think ring
-> > > reset can change device features then the answer is no, it can't.
-> >
-> >
-> > Sorry, I should remove "by the way".
-> >
-> >
-> > >
-> > > If you are saying device has to set VIRTIO_F_ACCESS_PLATFORM to
-> > > benefit from this work, that's fine at least as a first approach.
-> > > Note that setting VIRTIO_F_ACCESS_PLATFORM breaks old guests
-> > > (it's a secirity boundary), e.g. it is not available for
-> > > transitional devices.
-> > > So to support transitional devices, we might want to find another way to
-> > > address this down the road,
-> >
-> > Maybe dma-buf is a way. I'll look into it, especially some practice on xsk.
-> >
-> > > but as a first step, I agree just going with
-> > > DMA is fine.
-> >
-> >
-> > Thanks.
->
-> Pls do make sure to disable the feature when !VIRTIO_F_ACCESS_PLATFORM
-> though.
 
-If you refer to the implementation inside virtio-net, this feature will depend
-on the return of virtqueue_dma_dev().
+On 24/04/2023 21.17, John Fastabend wrote:
+>>> Just curious why not copy the logic from the other driver fms10k, ice, ect.
+>>>
+>>> 	skb_set_hash(skb, le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
+>>> 		     (IXGBE_RSS_L4_TYPES_MASK & (1ul << rss_type)) ?
+>>> 		     PKT_HASH_TYPE_L4 : PKT_HASH_TYPE_L3);
+>> Detail: This code mis-categorize (e.g. ARP) PKT_HASH_TYPE_L2 as
+>> PKT_HASH_TYPE_L3, but as core reduces this further to one SKB bit, it
+>> doesn't really matter.
+>>
+>>> avoiding the table logic. Do the driver folks care?
+>> The define IXGBE_RSS_L4_TYPES_MASK becomes the "table" logic as a 1-bit
+>> true/false table.  It is a more compact table, let me know if this is
+>> preferred.
+>>
+>> Yes, it is really upto driver maintainer people to decide, what code is
+>> preferred ?
+ >
+> Yeah doesn't matter much to me either way. I was just looking at code
+> compared to ice driver while reviewing.
 
-But virtqueue_dma_dev() depends "use_dma_api". When xen_domain() is true and
-!VIRTIO_F_ACCESS_PLATFORM, the "use_dma_api" is true.
+My preference is to apply this patchset. We/I can easily followup and
+change this to use the more compact approach later (if someone prefers).
 
-So what kind of situation do you mean?
+I know net-next is "closed", but this patchset was posted prior to the
+close.  Plus, a number of companies are waiting for the XDP-hint for HW
+RX timestamp.  The support for driver stmmac is already in net-next
+(commit e3f9c3e34840 ("net: stmmac: add Rx HWTS metadata to XDP receive
+pkt")). Thus, it would be a help if both igc+stmmac changes land in same
+kernel version, as both drivers are being evaluated by these companies.
 
-Thanks.
+Pretty please,
+--Jesper
 
->
-> >
-> > >
-> > >
-> > > > Thanks for the help from Christoph.
-> > > >
-> > > > =================
-> > > >
-> > > > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-> > > > copy feature of xsk (XDP socket) needs to be supported by the driver. The
-> > > > performance of zero copy is very good.
-> > > >
-> > > > ENV: Qemu with vhost.
-> > > >
-> > > >                    vhost cpu | Guest APP CPU |Guest Softirq CPU | PPS
-> > > > -----------------------------|---------------|------------------|------------
-> > > > xmit by sockperf:     90%    |   100%        |                  |  318967
-> > > > xmit by xsk:          100%   |   30%         |   33%            | 1192064
-> > > > recv by sockperf:     100%   |   68%         |   100%           |  692288
-> > > > recv by xsk:          100%   |   33%         |   43%            |  771670
-> > > >
-> > > > Before achieving the function of Virtio-Net, we also have to let virtio core
-> > > > support these features:
-> > > >
-> > > > 1. virtio core support premapped
-> > > > 2. virtio core support reset per-queue
-> > > > 3. introduce DMA APIs to virtio core
-> > > >
-> > > > Please review.
-> > > >
-> > > > Thanks.
-> > > >
-> > > > v7:
-> > > >  1. virtqueue_dma_dev() return NULL when virtio is without DMA API.
-> > > >
-> > > > v6:
-> > > >  1. change the size of the flags to u32.
-> > > >
-> > > > v5:
-> > > >  1. fix for error handler
-> > > >  2. add flags to record internal dma mapping
-> > > >
-> > > > v4:
-> > > >  1. rename map_inter to dma_map_internal
-> > > >  2. fix: Excess function parameter 'vq' description in 'virtqueue_dma_dev'
-> > > >
-> > > > v3:
-> > > >  1. add map_inter to struct desc state to reocrd whether virtio core do dma map
-> > > >
-> > > > v2:
-> > > >  1. based on sgs[0]->dma_address to judgment is premapped
-> > > >  2. based on extra.addr to judgment to do unmap for no-indirect desc
-> > > >  3. based on indir_desc to judgment to do unmap for indirect desc
-> > > >  4. rename virtqueue_get_dma_dev to virtqueue_dma_dev
-> > > >
-> > > > v1:
-> > > >  1. expose dma device. NO introduce the api for dma and sync
-> > > >  2. split some commit for review.
-> > > >
-> > > > Xuan Zhuo (11):
-> > > >   virtio_ring: split: separate dma codes
-> > > >   virtio_ring: packed: separate dma codes
-> > > >   virtio_ring: packed-indirect: separate dma codes
-> > > >   virtio_ring: split: support premapped
-> > > >   virtio_ring: packed: support premapped
-> > > >   virtio_ring: packed-indirect: support premapped
-> > > >   virtio_ring: update document for virtqueue_add_*
-> > > >   virtio_ring: introduce virtqueue_dma_dev()
-> > > >   virtio_ring: correct the expression of the description of
-> > > >     virtqueue_resize()
-> > > >   virtio_ring: separate the logic of reset/enable from virtqueue_resize
-> > > >   virtio_ring: introduce virtqueue_reset()
-> > > >
-> > > >  drivers/virtio/virtio_ring.c | 352 +++++++++++++++++++++++++----------
-> > > >  include/linux/virtio.h       |   4 +
-> > > >  2 files changed, 259 insertions(+), 97 deletions(-)
-> > > >
-> > > > --
-> > > > 2.32.0.3.g01195cf9f
-> > >
->
