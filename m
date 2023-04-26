@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BE76EFB17
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257F76EFB1B
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239359AbjDZT1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S233500AbjDZTbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbjDZT1q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:27:46 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA31FE6
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:27:45 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-507bdc5ca2aso13319270a12.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:27:45 -0700 (PDT)
+        with ESMTP id S232651AbjDZTbh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:31:37 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936C41BC9
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:31:36 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-94f6c285d92so1435875866b.3
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:31:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682537264; x=1685129264;
+        d=gmail.com; s=20221208; t=1682537495; x=1685129495;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UvTcalYaj21YYy9Kv0V+9yTDYudEE1Vl77K0LtelASc=;
-        b=Zvt4wq1uQunLp3WngUSwpZ7tgS8bpzyNwYLRSmNUbLyyij5czco1uufQYgEgAo81S2
-         W1yKs9je3lO3eGodXmfOY8BlCxmmUKTLFOq0zO9NZphmH+VUp3/cESuSKSnMSjZN8/B+
-         3OMhwHiry4bm5LVoIN4HKQkjbmWKKa3LV81EXq/0jJi4faE+yNU4b41aQrBQjlf735rq
-         4VefQqgbFrBw8O54OiJbr8OF4gd5DFYbO7CjQqLV76NnyXCqKmX78zw/rLVBtSCZQtoS
-         Fa2uPbZav2NqzRqZUKdNKE4FE0AIIRld4IAnTgp/R/VEZkKcG0+TnCVJLdDjnuRil6if
-         QISg==
+        bh=BAuhENIDW+mPHz/TqlUb/yS++0lqkXi8gSsihTMP/ZM=;
+        b=CD4lHdl14j+WXSbBjD+J77TFPyxabpS4U7PYXQDwKKtyB6z2CRafgkj0Fnzu3q+QUk
+         d61dTAdvfwiBCeR0nMMjdn5ZPRP6OrAgFeWaRgsWtAIyGcvnQoNjyKwx6De6SueDPQ5n
+         Ha5uIwyG6Wmi6TOcdeY9TcONSYBrlYOyrQUhFFmxdVGhj2WI4mGZE8ykEtLHLMz60ieV
+         Ps+ruvtPKPNT8xyZwpKsxOicKx2+JVwO+0xJquSOxoqvygH9i6W7Tu8PxbZVZV+n9hUx
+         jDOlk8AKPi6SpYPSpOep2oV0xVmXNet/zUMGUif6bJshAWEUyGl1Gv+OgL3YCyjLEPWk
+         783A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682537264; x=1685129264;
+        d=1e100.net; s=20221208; t=1682537495; x=1685129495;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UvTcalYaj21YYy9Kv0V+9yTDYudEE1Vl77K0LtelASc=;
-        b=OnAvJvT766tnu06zQ98z9LkOS/AnsS1lNoXRLo8+i63qiAwirxYkrASFff+UGXQgcM
-         0D61d0W93pA7zo1icXoMCwdk8V9JvKTRONuMjeg3huEjKWbuUmrZGpBjvVAUUdnQREzT
-         MQo2NDq8QJADsj7FYMkLTLqcIfK3jWaKuwXwScYtVJlgpfAZ8pebUWqZY72IMFSqI287
-         MQw2baBOBSrtJo0CuBubbbgxDjdrnkXKBOrE7M+9QkY58AcycuXxOLh192C3gcRNt3bf
-         oEgKztp2i5/UXBuRwWERjVsvUVuPD6Q63J1hlJ9J1SfgKRyiLDcJ74rUvC26bc13h/wA
-         LX6Q==
-X-Gm-Message-State: AAQBX9dSIawtLGYdaX30nKamC1IlhLzazBooQJWsuNGileRTQ28dA6Am
-        bV45tdtHtbVpgsP0bYOeOAKceIhwSd2EnhCFsZhT8DKv
-X-Google-Smtp-Source: AKy350bDcZatDv7OBVazk5y523JCr/GgZJxG0PB3mLOQxFF17ihMttmS6i5PXjktlTO7etKK2LWYULyZJEHCc60Xy7g=
-X-Received: by 2002:aa7:d897:0:b0:506:87cb:149f with SMTP id
- u23-20020aa7d897000000b0050687cb149fmr17931678edq.39.1682537263576; Wed, 26
- Apr 2023 12:27:43 -0700 (PDT)
+        bh=BAuhENIDW+mPHz/TqlUb/yS++0lqkXi8gSsihTMP/ZM=;
+        b=HVZ/4DGs7G2Q4Jh+/J2HXkzI+Q5bJ4DEe+cEiiaee5sfqEV8zsH+5MDH8gOgEurQuS
+         duys6RJqIHiCfE1dkBu/bzu8suniGO0GaDy0G/9ofe4+h6HLWnzwaPspOx9zDjoAfb6u
+         +DwZ3uiyTV9T6XFfjxgg5pvL2NMedrerRaCZgjdz51kq+y625gcSDmvGiMT5DeHPkjOp
+         icJNFYoi7ZiuLstG5w+mslcwiOUibP796TBq5asW76CjbNEisBtQn4pbAZZfhnD5kpaR
+         09sLgkEhtg+3lGbuxRol4IlQzSn0HmR+pZehfayvhGjykCZyY1kcbUzrZRJ2K++GeuQU
+         vHpg==
+X-Gm-Message-State: AAQBX9cHCVfd1v/mL6kxwbPkdArwbJBgcOMMuwZJnpwh3bgpYiBwPlnj
+        vLxJb1QaJWIfZx/vPrJKrlobqo2+7chOWc+TFZs=
+X-Google-Smtp-Source: AKy350aX2OhHoSjfqkoPft3MioA3VNNYBqNQseRWXPDQf+l2iUdK7x33aBifGspbpaJEFucetCUGO3ui6q15C55u+GQ=
+X-Received: by 2002:a17:906:830d:b0:94f:4d4d:23 with SMTP id
+ j13-20020a170906830d00b0094f4d4d0023mr21276922ejx.68.1682537494975; Wed, 26
+ Apr 2023 12:31:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-7-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-7-jolsa@kernel.org>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-12-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-12-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:27:31 -0700
-Message-ID: <CAEf4Bza8L7YKbVvNAsRn_RDKx8PuHYZpO7HSWuZuubioEsEmbQ@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 06/20] libbpf: Factor elf_for_each_symbol function
+Date:   Wed, 26 Apr 2023 12:31:22 -0700
+Message-ID: <CAEf4BzbgOP2gvwh_oWb-V6UfgGwo4Wwzja_cEdJfvzB8VqL5zw@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 11/20] libbpf: Add support for
+ uprobe.multi/uprobe.multi program sections
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -76,50 +77,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Apr 24, 2023 at 9:06=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Currently we have elf_find_func_offset function that looks up
-> symbol in the binary and returns its offset to be used for uprobe
-> attachment.
+> Adding support for uprobe.multi/uprobe.multi program sections
+> to allow auto attach of multi_uprobe programs.
 >
-> For attaching multiple uprobes we will need interface that allows
-> us to get offsets for multiple symbols specified either by name or
-> regular expression.
->
-> Factoring out elf_for_each_symbol helper function that iterates
-> all symbols in binary and calls following callbacks:
->
->   fn_match - on each symbol
->              if it returns error < 0, we bail out with that error
->   fn_done  - when we finish iterating symbol section,
->              if it returns true, we don't iterate next section
->
-> It will be used in following changes to lookup multiple symbols
-> and their offsets.
->
-> Changing elf_find_func_offset to use elf_for_each_symbol with
-> single_match callback that's looking to match single function.
->
-
-Given we have multiple uses for this for_each_elf_symbol, would it
-make sense to implement it as an iterator (following essentially the
-same pattern that BPF open-coded iterator is doing, where state is in
-a small struct, and then we call next() until we get back NULL?)
-
-This will lead to cleaner code overall, I think. And it does seem func
-to implement it this (composable) way.
-
-Also, I think we are at the point where libbpf.c is becoming pretty
-bloated, so we should try to split out coherent subsets of
-functionality into separate files. ELF helpers seem like a good group
-of functionality  to move to a separate file? Maybe as a separate
-patch set and/or follow up, but think about whether you can do part of
-that during refactoring?
-
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c | 185 +++++++++++++++++++++++++----------------
->  1 file changed, 114 insertions(+), 71 deletions(-)
+>  tools/lib/bpf/libbpf.c | 38 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
 >
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index c786bc142791..70353aaac86e 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8628,6 +8628,7 @@ static int attach_tp(const struct bpf_program *prog=
+, long cookie, struct bpf_lin
+>  static int attach_raw_tp(const struct bpf_program *prog, long cookie, st=
+ruct bpf_link **link);
+>  static int attach_trace(const struct bpf_program *prog, long cookie, str=
+uct bpf_link **link);
+>  static int attach_kprobe_multi(const struct bpf_program *prog, long cook=
+ie, struct bpf_link **link);
+> +static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
+ie, struct bpf_link **link);
+>  static int attach_lsm(const struct bpf_program *prog, long cookie, struc=
+t bpf_link **link);
+>  static int attach_iter(const struct bpf_program *prog, long cookie, stru=
+ct bpf_link **link);
+>
+> @@ -8643,6 +8644,8 @@ static const struct bpf_sec_def section_defs[] =3D =
+{
+>         SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_=
+uprobe),
+>         SEC_DEF("kprobe.multi+",        KPROBE, BPF_TRACE_KPROBE_MULTI, S=
+EC_NONE, attach_kprobe_multi),
+>         SEC_DEF("kretprobe.multi+",     KPROBE, BPF_TRACE_KPROBE_MULTI, S=
+EC_NONE, attach_kprobe_multi),
+> +       SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_NONE, attach_uprobe_multi),
+> +       SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, S=
+EC_NONE, attach_uprobe_multi),
+>         SEC_DEF("ksyscall+",            KPROBE, 0, SEC_NONE, attach_ksysc=
+all),
+>         SEC_DEF("kretsyscall+",         KPROBE, 0, SEC_NONE, attach_ksysc=
+all),
+>         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt)=
+,
+> @@ -10611,6 +10614,41 @@ static int attach_kprobe_multi(const struct bpf_=
+program *prog, long cookie, stru
+>         return libbpf_get_error(*link);
+>  }
+>
+> +static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
+ie, struct bpf_link **link)
+> +{
+> +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
+> +       char *probe_type =3D NULL, *binary_path =3D NULL, *func_name =3D =
+NULL;
+> +       int n, ret =3D -EINVAL;
+> +
+> +       *link =3D NULL;
+> +
+> +       n =3D sscanf(prog->sec_name, "%m[^/]/%m[^:]:%m[a-zA-Z0-9_.*?]+",
 
-[...]
+Arnaldo recently brought to my attention that Go doesn't do mangling,
+so their function names are crazy, e.g.:
+
+"go/doc/comment.(*parseDoc).code"
+
+So we should think about making no assumptions about pattern inside
+`%m[a-zA-Z0-9_.*?]`
+
+> +                  &probe_type, &binary_path, &func_name);
+> +       switch (n) {
+> +       case 1:
+> +               /* handle SEC("u[ret]probe") - format is valid, but auto-=
+attach is impossible. */
+> +               ret =3D 0;
+> +               break;
+> +       case 2:
+> +               pr_warn("prog '%s': section '%s' missing ':function[+offs=
+et]' specification\n",
+> +                       prog->name, prog->sec_name);
+> +               break;
+> +       case 3:
+> +               opts.retprobe =3D strcmp(probe_type, "uretprobe.multi");
+> +               *link =3D bpf_program__attach_uprobe_multi_opts(prog, bin=
+ary_path, func_name, &opts);
+> +               ret =3D libbpf_get_error(*link);
+> +               break;
+> +       default:
+> +               pr_warn("prog '%s': invalid format of section definition =
+'%s'\n", prog->name,
+> +                       prog->sec_name);
+> +               break;
+> +       }
+> +       free(probe_type);
+> +       free(binary_path);
+> +       free(func_name);
+> +       return ret;
+> +}
+> +
+>  static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
+>                                          const char *binary_path, uint64_=
+t offset)
+>  {
+> --
+> 2.40.0
+>
