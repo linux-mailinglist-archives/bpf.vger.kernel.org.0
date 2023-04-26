@@ -2,141 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B73656EF803
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 17:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B3A6EF82C
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 18:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240511AbjDZPyA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 11:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
+        id S239381AbjDZQLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 12:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239512AbjDZPx7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 11:53:59 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE04B6588
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:53:58 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2470e26b570so4146685a91.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682524438; x=1685116438;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8StZ9v7+npJf4QTWtBrbESsLcSma5y/BndiRsu/T0yk=;
-        b=7ALJW2oMr/CRRNAa0GEOJYHZwHS6WBiKcQQGaNR22npC7YqG6dR93YTErQ+5OztCIb
-         M/EfS8E1F1f+C3Ukx46A/uolSO3gotH5pjKs4c5tf1ScM3xkcc6bEGXnrxhrpbjIpOaT
-         lJquPqkk0OEcIBvhHogzV69Kf9952VnAriygn04tbDM33nx3NyzqlqSpBmKX/qaQs8UI
-         pBNTG6NoQMvITVCCYXV9wz5fR+Lput8XW3nds6Sq+PlPCl7AfMxwGhj9oeRMQ3Qp6kWZ
-         p/hCRkeF19jil5XjzGRUzzfbNJ5RSvbI9NY7TUv2/rv3F7/Rx0+CLD34FNbd9H4tyFcq
-         7ilw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682524438; x=1685116438;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8StZ9v7+npJf4QTWtBrbESsLcSma5y/BndiRsu/T0yk=;
-        b=aJQEYbbpbOtmBoQYy+iWTmYwHUZd+9S6i2j+EVlBRXqqtIA4hAueyJWPAHzquuA41e
-         56eC5YJVdJhvoeBwurRpQOm28I3YkVkRfwn2T5x2JUEk9UqhoY4ClFWOk/e0CBHbr9rO
-         Ry64aoRuqYm647ddQS1fZwk0btuafh7/Dy9dq+jHpvTmlrjF70RsSltauFSIgeaKaLF5
-         FXUPu76h9MKsJYQOLsQzEN1VZ/RySYEdbQ/Nef6b5hGaqF/LERvIYeYFU5FKkfI+Y8VJ
-         /ttpjegvikf9/MHTfi8O0eb8Om4pYK8NZcKmydK34As1m5nPbhGofGBJVWjLeWpTNT1C
-         zokw==
-X-Gm-Message-State: AAQBX9fHJ2LZk3ekJYwoH8lFItI6GLEvCNpUbc4b+tcnfbb4oI9NRHD9
-        BLEZLKQOEZfgE6YHUE7paJacSuCWXwCyCyXtJbLyVtG3homLvZsJB6VP/Mz8C/df2l1V+F69oSX
-        xmIotrCZDIdDgP0+PG+hdR23FPL5iaqrsDcYtX4NnrIFwOlZQgw==
-X-Google-Smtp-Source: AKy350YlF86e8XFbdDuDk+FqWf+8KB86KKO4l+AdqMGmhR/dYDB4HOLlSnTMNk/4MUehu6hY5HQVL5Y=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:a4e:b0:247:1639:9650 with SMTP id
- o72-20020a17090a0a4e00b0024716399650mr5028745pjo.2.1682524438292; Wed, 26 Apr
- 2023 08:53:58 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 08:53:57 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230426155357.4158846-1-sdf@google.com>
-Subject: [PATCH bpf-next v2] bpf: Make bpf_helper_defs.h c++ friendly
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        Peng Wei <pengweiprc@google.com>, Yonghong Song <yhs@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234484AbjDZQLG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 12:11:06 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30A349E0
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 09:11:03 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33Q9VX1b024229
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 09:11:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=s2048-2021-q4;
+ bh=hO6LH/hYAg7sCkMg37ZjZBXr2vrBUdyOdne7XRGUWWk=;
+ b=Bcazb2PkM/Dxzc1GkgpguJz/rqCkfPGAUIZ12hoB21UBjHXQ7lh7nFxFg/B8Ytjdwkyu
+ bfD0uJudZhY39UeebMvkT6qkvz5A55K2NyVnymqhIV2RMNTZtGlxXi6Z+LsBZeWOJXT/
+ GcNsV0jP88uHSP2jUTXqkGy6pYNj9cZjWlxp/KRmakoV8n/iK2mkyYW3ehiaqSR+YC7v
+ EBsCxyNqTMfpu+kmFylQSGFfYn3pktIllGE/d5alr7Uo33DafUiz2xxaUKT4lKIQOO8t
+ Ftaw1xtdYAfr7uLdoJg9WuF3kCoo0awBQr3GPMV9cpzlsk9hYUT/OQklsgHWh5qijqSa Og== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6mruers8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 09:11:02 -0700
+Received: from twshared24695.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 26 Apr 2023 09:11:02 -0700
+Received: by devvm5710.vll0.facebook.com (Postfix, from userid 624576)
+        id 253B32B41702; Wed, 26 Apr 2023 09:10:53 -0700 (PDT)
+Date:   Wed, 26 Apr 2023 09:10:53 -0700
+From:   Stephen Veiss <sveiss@meta.com>
+To:     Yonghong Song <yhs@meta.com>
+CC:     <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: test_progs can read test
+ lists from file
+Message-ID: <ZElNDYRVTGCzxBOd@meta.com>
+References: <20230425225401.1075796-1-sveiss@meta.com>
+ <20230425225401.1075796-3-sveiss@meta.com>
+ <3c83f3ae-c707-1852-57a6-18ac295a9f79@meta.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3c83f3ae-c707-1852-57a6-18ac295a9f79@meta.com>
+X-FB-Internal: Safe
+X-Proofpoint-GUID: GlNLYpTVNt6ziiteHowoo6mBGKH9Y1FQ
+X-Proofpoint-ORIG-GUID: GlNLYpTVNt6ziiteHowoo6mBGKH9Y1FQ
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-26_08,2023-04-26_03,2023-02-09_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Peng Wei <pengweiprc@google.com>
+On Tue, Apr 25, 2023 at 09:25:40PM -0700, Yonghong Song wrote:
+> On 4/25/23 3:54 PM, Stephen Veiss wrote:
+> > +static const char argp_program_doc[] =
+> > +"BPF selftests test runner\v"
+> 
+> What does it mean to use "\v" here?
 
-Compiling C++ BPF programs with existing bpf_helper_defs.h is not
-possible due to stricter C++ type conversions. C++ complains
-about (void *) type conversions:
+argp splits the documentation string on \v. The part before \v shows
+up at the start of the --help output, while the part after appears
+after the detailed help text for the arguments. [1]
 
-$ clang++ --include linux/types.h ./tools/lib/bpf/bpf_helper_defs.h
+Happy to take all your other suggestions; I'll revise and resend the
+patch series later in the week.
 
-bpf_helper_defs.h:57:67: error: invalid conversion from =E2=80=98void*=E2=
-=80=99 to =E2=80=98void* (*)(void*, const void*)=E2=80=99 [-fpermissive]
-   57 | static void *(*bpf_map_lookup_elem)(void *map, const void *key) =3D=
- (void *) 1;
-      |                                                                   ^=
-~~~~~~~~~
-      |                                                                   |
-      |                                                                   v=
-oid*
+Thanks,
 
-Extend bpf_doc.py to use proper function type instead of void.
+Stephen
 
-Before:
-static void *(*bpf_map_lookup_elem)(void *map, const void *key) =3D (void *=
-) 1;
-
-After:
-static void *(*bpf_map_lookup_elem)(void *map, const void *key) =3D (void *=
-(*)(void *map, const void *key)) 1;
-
-v2:
-- add clang++ invocation example (Yonghong)
-
-Cc: Yonghong Song <yhs@meta.com>
-Signed-off-by: Peng Wei <pengweiprc@google.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- scripts/bpf_doc.py | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index eaae2ce78381..fa21137a90e7 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -827,6 +827,9 @@ COMMANDS
-                 print(' *{}{}'.format(' \t' if line else '', line))
-=20
-         print(' */')
-+        fptr_type =3D '%s%s(*)(' % (
-+            self.map_type(proto['ret_type']),
-+            ((' ' + proto['ret_star']) if proto['ret_star'] else ''))
-         print('static %s %s(*%s)(' % (self.map_type(proto['ret_type']),
-                                       proto['ret_star'], proto['name']), e=
-nd=3D'')
-         comma =3D ''
-@@ -845,8 +848,10 @@ COMMANDS
-                 one_arg +=3D '{}'.format(n)
-             comma =3D ', '
-             print(one_arg, end=3D'')
-+            fptr_type +=3D one_arg
-=20
--        print(') =3D (void *) %d;' % helper.enum_val)
-+        fptr_type +=3D ')'
-+        print(') =3D (%s) %d;' % (fptr_type, helper.enum_val))
-         print('')
-=20
- ##########################################################################=
-#####
---=20
-2.40.1.495.gc816e09b53d-goog
-
+[1] https://www.gnu.org/software/libc/manual/html_node/Argp-Parsers.html
