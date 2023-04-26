@@ -2,59 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8EE6EFA8C
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1D96EFA8F
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjDZTA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
+        id S235121AbjDZTCG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjDZTA0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:00:26 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFEAE46
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:00:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-959a626b622so656814966b.0
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:00:25 -0700 (PDT)
+        with ESMTP id S229822AbjDZTCF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:02:05 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB547EEC
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:02:00 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-50847469a7fso10957673a12.0
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:02:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682535623; x=1685127623;
+        d=gmail.com; s=20221208; t=1682535719; x=1685127719;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pNiWafIPn2IjbxCCkejn4x2B+QmJ6q7Zckp96FKqAro=;
-        b=igFGNIDSUlzlZvFt7cjgXzxaOgZf0gvOyfchRUKvsu5OrJgawppOwIXfsOPa+g2f7T
-         gwrokfOSNMOXhyBxF1uoB+zSA/HgJowr83gIUgkxwDimROOSpqYRrhAA1uK+TAApkrY+
-         NThYG+s+cpNSZ/j78fCshGiLQNuAKSd8bVes+5mgvGtlau1KtsyR1B9YwZm0Ull8uNTh
-         nFs0h+DAe7rSfH6e+UBm16vdo119QvddTN0FWan1ZX4/yn1UVErM8LRAtB6prg+ZYYeD
-         fLhYb0HsmkwtpqPzMCXDvCyyDJpx0pQQg/rZrq1FM9uz/w1E3zfabHyfrdnZ80J3ctQ7
-         7E2A==
+        bh=9+aNExW0Z1q6nb0N7z0B5Yvv26PB0AXApeM3jmK2eYk=;
+        b=SC4WlZfr/PP+nrBM08WL2cHLfKg/MVqVPxUDcOe+OCY7ZWlQ5WDjQ9lYFum9F/oPpH
+         qck55iieNE0nogCkPqSgjEsF7fxVa16NqsZeuIK/8TKpqLg/T/pylj2klbwxMA+1GL6/
+         B+bYAuY4y3q+mi3ArcvYnBmTx9s1s/EIuMph8hY2l+De0t48u/uRegoEf4zEVejRvZfp
+         S9p8g8KFE2S5AEkgbpxhpmBy/RJVK7QlscA5bwCGxPTvRkWxdyptOGxvHs7v6zOq/mvJ
+         qu0l2m9PTmxXvzDyhZEFjDoLbd7HR2CeBDNwbcAKk4OCFhn9v7VVy86xJjmR9cpmY2B5
+         Z8QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682535623; x=1685127623;
+        d=1e100.net; s=20221208; t=1682535719; x=1685127719;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pNiWafIPn2IjbxCCkejn4x2B+QmJ6q7Zckp96FKqAro=;
-        b=f+263OX/zcjWENfbhaYCGpG1Sy7gJvE2+6R6MwpUonX9P+FpN13WZUj5mFeEd0zHpU
-         j7N1QlviS/cjYg7tSAOV9x/XQW5LzrM2qnhY2zsuj/m9oRPcXtIawBXl9L3mUtUA59By
-         0gHOknEXEWxjAK1jovTDehy/9ykPwbwloG2vu0S792MuQAD+LfEBUEX70Wj43uKIXVtA
-         mHrSJrgxP9yIp+ZEyLOBjWw6ZKUgjpzLZUH8i/rhpY7gOhb8VnnevdUQ4w5EiJNSa25g
-         7B5jwpSOQtvkM2kUohurtaMDjEjBfAZcneWh/1FYPBR5YLSa1P7V5fFxrqWfc72CjR9f
-         R2vg==
-X-Gm-Message-State: AAQBX9e3U6dxzKBmtdigb+eV5JcELUCcsa9fsIFExRU6o5bB8Lom0H5z
-        OdzWGA2MC3jERlhFvs76YDt+DEjruW69L80y08ECQmdz
-X-Google-Smtp-Source: AKy350ZAAqfGz6ZG0VdhvCcY+Kq9T0JFXskSb4/MJGfQM1AiE0Lq4yceWXzwso4GsjMmxIsLllSZRlyPdaCJCQHUIgo=
-X-Received: by 2002:a17:906:2897:b0:94e:e092:6eda with SMTP id
- o23-20020a170906289700b0094ee0926edamr18095696ejd.53.1682535623347; Wed, 26
- Apr 2023 12:00:23 -0700 (PDT)
+        bh=9+aNExW0Z1q6nb0N7z0B5Yvv26PB0AXApeM3jmK2eYk=;
+        b=YtPFhj0GeOcFUr4W0QdXeHe5GszF2ycjJ5UVPy5ORiiUYgL7L+LYhSMDD8f1VleZ1v
+         t8DFlqOSp3ekkleAa6W0gXjaaNhNEBxic1LmHAa3CXvtnQj853tH5mDuLw5tlunCsK8Y
+         bLxBWodEs2d9cCI+4WLO4fF1/c1gXOoZ7A9JEbjMAYEA880nwk7zzzPVPH7NvtiPs3Jh
+         4z5DqVQIZuBrQj8OKKBaOFNQJjzC50k3UZe6ObKzrpdyZQOsHrQwuudj84NR4nqismBY
+         5omggA2eWEeYm51mZ1l87o6yCBmVRDKUyDGEYSIa6Cy4XFbmvRLrIzzNo/lYYqDJqrlA
+         hAag==
+X-Gm-Message-State: AAQBX9d6PRMw7IQZ5PsRTNstj2U7Qm4i6HZ9GqPThZ6mpQBDIJRvtYjm
+        1NCdD9OnyikJl2UbH9gA2CPpOh1MyayKMwgQjOI=
+X-Google-Smtp-Source: AKy350YSFZM7XJgV/+heDN7Mwdm6Mzvw6f8bfthhyG9XdSV+iHBTiK+CPLIH/1irpyfvTk9vrbZ3yBtkW8rlMYUOtRI=
+X-Received: by 2002:a05:6402:1849:b0:506:7d34:51d1 with SMTP id
+ v9-20020a056402184900b005067d3451d1mr19982049edy.29.1682535719228; Wed, 26
+ Apr 2023 12:01:59 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-2-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-2-jolsa@kernel.org>
+ <20230424221120.h3vdmuehxi33st4n@dhcp-172-26-102-232.dhcp.thefacebook.com> <ZEejcYDRbxDGebAr@krava>
+In-Reply-To: <ZEejcYDRbxDGebAr@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:00:10 -0700
-Message-ID: <CAEf4BzZ1C488vfg=Nvqv6wGhm7TEHdG9YEjaEBExYHCLML54cg@mail.gmail.com>
+Date:   Wed, 26 Apr 2023 12:01:47 -0700
+Message-ID: <CAEf4BzbuKeukcsch7NRFwLPGD7nkLEJXEm8ps+3RYzopy2YiUA@mail.gmail.com>
 Subject: Re: [RFC/PATCH bpf-next 01/20] bpf: Add multi uprobe link
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
@@ -76,154 +78,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Apr 25, 2023 at 2:55=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> Adding new multi uprobe link that allows to attach bpf program
-> to multiple uprobes.
+> On Mon, Apr 24, 2023 at 03:11:20PM -0700, Alexei Starovoitov wrote:
+> > On Mon, Apr 24, 2023 at 06:04:28PM +0200, Jiri Olsa wrote:
+> > > +
+> > > +static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+> > > +                      unsigned long entry_ip,
+> > > +                      struct pt_regs *regs)
+> > > +{
+> > > +   struct bpf_uprobe_multi_link *link =3D uprobe->link;
+> > > +   struct bpf_uprobe_multi_run_ctx run_ctx =3D {
+> > > +           .entry_ip =3D entry_ip,
+> > > +   };
+> > > +   struct bpf_run_ctx *old_run_ctx;
+> > > +   int err;
+> > > +
+> > > +   preempt_disable();
+> >
+> > preempt_disable? Which year is this? :)
+> > Let's allow sleepable from the start.
+> > See bpf_prog_run_array_sleepable.
 >
-> Uprobes to attach are specified via new link_create uprobe_multi
-> union:
+> ok, we should probably add also 'multi.uprobe.s' section so the program
+> gets loaded with the BPF_F_SLEEPABLE flag.. or maybe we can enable that
+> by default for 'multi.uprobe' section
+
+"uprobe.multi.s" rather, to follow "kprobe.multi.s". But we can't make
+it sleepable always/by default. Sleepable BPF programs are not just
+better types of programs, they have their own limitations, so it has
+to be the user's choice to go with sleepable or non-sleepable.
+
 >
->   struct {
->           __u32           flags;
->           __u32           cnt;
->           __aligned_u64   paths;
->           __aligned_u64   offsets;
->           __aligned_u64   ref_ctr_offsets;
->   } uprobe_multi;
->
-> Uprobes are defined in paths/offsets/ref_ctr_offsets arrays with
-> the same 'cnt' length. Each uprobe is defined with a single index
-> in all three arrays:
->
->   paths[idx], offsets[idx] and/or ref_ctr_offsets[idx]
->
-> The 'flags' supports single bit for now that marks the uprobe as
-> return probe.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/trace_events.h |   6 +
->  include/uapi/linux/bpf.h     |  14 +++
->  kernel/bpf/syscall.c         |  16 ++-
->  kernel/trace/bpf_trace.c     | 231 +++++++++++++++++++++++++++++++++++
->  4 files changed, 265 insertions(+), 2 deletions(-)
->
-
-[...]
-
-> @@ -4666,10 +4667,21 @@ static int link_create(union bpf_attr *attr, bpfp=
-tr_t uattr)
->                 ret =3D bpf_perf_link_attach(attr, prog);
->                 break;
->         case BPF_PROG_TYPE_KPROBE:
-> +               /* Ensure that program with eBPF_TRACE_UPROBE_MULTI attac=
-h type can
-
-eBPF_TRACE_UPROBE_MULTI :)
-
-> +                * attach only to uprobe_multi link. It has its own runti=
-me context
-> +                * which is specific for get_func_ip/get_attach_cookie he=
-lpers.
-> +                */
-> +               if (prog->expected_attach_type =3D=3D BPF_TRACE_UPROBE_MU=
-LTI &&
-> +                   attr->link_create.attach_type !=3D BPF_TRACE_UPROBE_M=
-ULTI) {
-> +                       ret =3D -EINVAL;
-> +                       goto out;
-> +               }
-
-as Yonghong pointed out, you check this condition in
-bpf_uprobe_multi_link_attach() already, so why redundant check?
-
->                 if (attr->link_create.attach_type =3D=3D BPF_PERF_EVENT)
->                         ret =3D bpf_perf_link_attach(attr, prog);
-> -               else
-> +               else if (attr->link_create.attach_type =3D=3D BPF_TRACE_K=
-PROBE_MULTI)
->                         ret =3D bpf_kprobe_multi_link_attach(attr, prog);
-> +               else if (attr->link_create.attach_type =3D=3D BPF_TRACE_U=
-PROBE_MULTI)
-> +                       ret =3D bpf_uprobe_multi_link_attach(attr, prog);
->                 break;
->         default:
->                 ret =3D -EINVAL;
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index bcf91bc7bf71..b84a7d01abf4 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -23,6 +23,7 @@
->  #include <linux/sort.h>
->  #include <linux/key.h>
->  #include <linux/verification.h>
-> +#include <linux/namei.h>
->
->  #include <net/bpf_sk_storage.h>
->
-> @@ -2901,3 +2902,233 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_r=
-un_ctx *ctx)
->         return 0;
->  }
->  #endif
-> +
-> +#ifdef CONFIG_UPROBES
-> +struct bpf_uprobe_multi_link;
-> +
-> +struct bpf_uprobe {
-> +       struct bpf_uprobe_multi_link *link;
-> +       struct inode *inode;
-> +       loff_t offset;
-> +       loff_t ref_ctr_offset;
-
-you seem to need this only during link creation, so we are wasting 8
-bytes here per each instance of bpf_uprobe for no good reason? You
-should be able to easily move this out of bpf_uprobe into a temporary
-array.
-
-> +       struct uprobe_consumer consumer;
-> +};
-> +
-> +struct bpf_uprobe_multi_link {
-> +       struct bpf_link link;
-> +       u32 cnt;
-> +       struct bpf_uprobe *uprobes;
-> +};
-> +
-
-[...]
-
-> +       if (prog->expected_attach_type !=3D BPF_TRACE_UPROBE_MULTI)
-> +               return -EINVAL;
-> +
-> +       flags =3D attr->link_create.uprobe_multi.flags;
-> +       if (flags & ~BPF_F_UPROBE_MULTI_RETURN)
-> +               return -EINVAL;
-> +
-> +       upaths =3D u64_to_user_ptr(attr->link_create.uprobe_multi.paths);
-> +       uoffsets =3D u64_to_user_ptr(attr->link_create.uprobe_multi.offse=
-ts);
-> +       if (!!upaths !=3D !!uoffsets)
-> +               return -EINVAL;
-
-when having these as NULL would be ok? cnt =3D=3D 0? or is there some
-valid situation?
-
-> +
-> +       uref_ctr_offsets =3D u64_to_user_ptr(attr->link_create.uprobe_mul=
-ti.ref_ctr_offsets);
-
-if upaths is NULL, uref_ctr_offsets should be NULL as well?
-
-> +
-> +       cnt =3D attr->link_create.uprobe_multi.cnt;
-> +       if (!cnt)
-> +               return -EINVAL;
-> +
-> +       uprobes =3D kvcalloc(cnt, sizeof(*uprobes), GFP_KERNEL);
-> +       if (!uprobes)
-> +               return -ENOMEM;
-> +
+> >
+> > Other than this the set looks great.
+> >
+> > > +
+> > > +   if (unlikely(__this_cpu_inc_return(bpf_prog_active) !=3D 1)) {
+> > > +           err =3D 0;
+> > > +           goto out;
+> > > +   }
+> > > +
+> > > +   rcu_read_lock();
+> > > +   old_run_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
+> > > +   err =3D bpf_prog_run(link->link.prog, regs);
+> > > +   bpf_reset_run_ctx(old_run_ctx);
+> > > +   rcu_read_unlock();
+> > > +
 
 [...]
