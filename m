@@ -2,77 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F606EFD0A
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 00:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC1C6EFD0C
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 00:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239785AbjDZWH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 18:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S239947AbjDZWHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 18:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239185AbjDZWHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 18:07:25 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4E22704
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 15:07:15 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-24756a12ba0so5329677a91.1
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 15:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682546834; x=1685138834;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6o3HhDAjNO89E3A0MRfU/b89KbqoEVo8Ba34QDXA+YA=;
-        b=vOoliF7YSsdLjONkRkZIomxWjUfYe8LKdJb6rEHeLX6RhV38s/FBR4eoLfKYHW7zE3
-         IavK6ET/Qqw5poSNg/YQZq3rl6vIwPoyAUWlMwIL/UgLwhldJ2/Nd9O47mnyXXXL9cvc
-         sbFEtL3hc7qQh5FF+QVgJ+bj4+U9dfQxRkPyP9jul2D1FVAiTPMHklz+MO3UfFTHw1Xm
-         oXIIx8QlKD6IFFHxrWK2XZK4XxjXuoHPzTZ/2hRqfXcOlir58wsKvMi0q4JRPoYFFWOv
-         e4yhq3ur0yW91dT8QCcgI0Rp96j+86/T/j+x9r6LdVItESTZ1/6fDdvYKWk3gPn4jiib
-         l8Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682546834; x=1685138834;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6o3HhDAjNO89E3A0MRfU/b89KbqoEVo8Ba34QDXA+YA=;
-        b=gNma0Z20RlrcsmPfofjgn0hg0jCJDZAJXuaZulcHqx5/wIVrf2Pb22lMSfTCE8hqJR
-         MuZrMPLDJn8J4XoSQHGIX4m+GXZoAyAv1tKPAk7ULL4Vnl3D0YVtBbCJhu9o4JVmpOiC
-         EIbWxXE8YdkWHalDOlZcfrtbxZYkOQuZuBgiUEjPVgft4BWreKHc5icW9glIxbNWGHi3
-         nTXrxHX/bQ5Umrrs2YrJqVgdJfdlQ1IA8ES/CiDX9dB1mEgaJquCYyqH9jmxA5GIAt4q
-         LXDJHXx5pRxK+5GyKBXB/LVKwRpoI0vpPmoYUKMKcOa5fo6oHgQlCPOp9oVa/o+gR1Xh
-         jYjw==
-X-Gm-Message-State: AAQBX9f9tL2cI5GjBzlIygvHxmBDkxq+6zwCZfaTkSqXTA40kVw60VvP
-        sVooAJ9LP8iueI377xnh4vHNWltSVcSueoEpw+8k6g==
-X-Google-Smtp-Source: AKy350bX4vKLe+c9/tywLjSWFK8JD/QrNCXcfXaXMeIppYVuasWMVt/WvZF7gUIFFE4mxooBAPv/W+J2eK4njGwo/b8=
-X-Received: by 2002:a17:90a:8589:b0:249:7224:41cb with SMTP id
- m9-20020a17090a858900b00249722441cbmr22904088pjn.31.1682546834469; Wed, 26
- Apr 2023 15:07:14 -0700 (PDT)
+        with ESMTP id S239759AbjDZWH3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 18:07:29 -0400
+Received: from out-4.mta0.migadu.com (out-4.mta0.migadu.com [IPv6:2001:41d0:1004:224b::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BE91BFC
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 15:07:28 -0700 (PDT)
+Message-ID: <1879ff8d-87e2-6132-9b47-99e40af26d2a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1682546846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ovzg2cWWExNm8UXqjfcd7FaCtR2dp9C8p0k7ZLlD2Sg=;
+        b=fKJwkI5gN5kdag/kndRBIcaYbzDH/nrhwpOgF5XiRB4WAcjQyoGEcG72hT7J6ZWhhk9Mew
+        ZOczGxroEoAWutDpV1d2nC2DqjJg6bm4o9O/Yh7YLHhVQpMOqd0k2rFVoWRaryrQEZ3o6j
+        KaonGRTjIN//8voXR0tYDEeMwN8jsu8=
+Date:   Wed, 26 Apr 2023 15:07:24 -0700
 MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Wed, 26 Apr 2023 15:07:03 -0700
-Message-ID: <CA+PiJmTHO3SPM_LvwFYWP+uf_KU4QytBshGzk78CZi8oGJ+rnw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Dynptr Verifier Adjustments
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+Subject: Re: [PATCH bpf-next v3 03/10] bpf: Allow read access to addr_len from
+ cgroup sockaddr programs
+Content-Language: en-US
+To:     Daan De Meyer <daan.j.demeyer@gmail.com>
+Cc:     kernel-team@meta.com, bpf@vger.kernel.org
+References: <20230421162718.440230-1-daan.j.demeyer@gmail.com>
+ <20230421162718.440230-4-daan.j.demeyer@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230421162718.440230-4-daan.j.demeyer@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,24 +50,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> It is expected that you build the freshest vmlinux image before
-> building selftests, because we generate vmlinux.h from it. In your
-> case we generated vmlinux.h from your system-wide
-> /sys/kernel/btf/vmlinux BTF information, which doesn't yet have latest
-> UAPI enums.
->
-I'm still unable to build the selftests. I've got it pointed to a
-locally built kernel built using the config/config.x86_64, and have
-tried running the vmtest.sh script, and building just the tests via
-make. I'm using O= to direct it to the out directory for the kernel
-build. I've been hitting various errors when trying this. Confusingly
-the error message isn't always the same. Currently from a clean build,
-it complains about "linux/atomic.h" not found via #include
-"../../../include/linux/filter.h"'s in various files. Other times it's
-complained about the various helper functions from bpf_helper_defs.h
-being unused.
+On 4/21/23 9:27 AM, Daan De Meyer wrote:
+> As prep for adding unix socket support to the cgroup sockaddr hooks,
+> let's expose the sockaddr addrlen in bpf_sock_addr_kern. While not
+> important for AF_INET or AF_INET6, the sockaddr length is important
+> when working with AF_UNIX sockaddrs as the size of the sockaddr cannot
+> be determined just from the address family or the sockaddr's contents.
+> 
+> __cgroup_bpf_run_filter_sock_addr() is modified to return the addr_len
+> in preparation for adding unix socket support for which we'll need to
+> return the modified address length.
+> 
+> Signed-off-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+> ---
+>   include/linux/bpf-cgroup.h | 73 +++++++++++++++++++-------------------
+>   include/linux/filter.h     |  1 +
+>   kernel/bpf/cgroup.c        | 16 +++++++--
+>   net/ipv4/af_inet.c         |  8 ++---
+>   net/ipv4/ping.c            |  8 ++++-
+>   net/ipv4/tcp_ipv4.c        |  8 ++++-
+>   net/ipv4/udp.c             | 17 ++++++---
+>   net/ipv6/af_inet6.c        |  8 ++---
+>   net/ipv6/ping.c            |  8 ++++-
+>   net/ipv6/tcp_ipv6.c        |  8 ++++-
+>   net/ipv6/udp.c             | 14 ++++++--
+>   11 files changed, 111 insertions(+), 58 deletions(-)
+> 
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index 57e9e109257e..f3f5adf3881f 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -120,6 +120,7 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+>   
+>   int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>   				      struct sockaddr *uaddr,
+> +				      u32 uaddrlen,
 
-I'm not sure if I'm invoking the command wrong, or missing
-dependencies or something. I got past some earlier issues by updating
-clang. Any idea what I'm doing wrong?
+If the bpf_sock_addr_set() kfunc can only change the sin[6]_addr and unix_path 
+(the comment in patch 5), the "u32 uaddrlen" can be changed to "u32 *uaddrlen" 
+here. The new unix_path length can be passed back to af_unix.c in "*uaddrlen". 
+The inet[6] code path can just pass NULL and most of the code churn in this 
+patch will no longer be needed?
+
