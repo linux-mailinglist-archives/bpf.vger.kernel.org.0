@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F192F6EFAC9
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA386EFACE
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjDZTOD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        id S236193AbjDZTO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjDZTOD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:14:03 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126F5185
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:13:34 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-95316faa3a8so1425755566b.2
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:13:33 -0700 (PDT)
+        with ESMTP id S239593AbjDZTOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:14:54 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A4C4683
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:14:32 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-94f0dd117dcso1110412866b.3
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682536412; x=1685128412;
+        d=gmail.com; s=20221208; t=1682536470; x=1685128470;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A7qLe9xoGQAtvSX/k61PvNxTN1RH0wiXnhCUKQsGbPA=;
-        b=ZdKXHwE5Kytb2wZE6E8NEH5fUAPCDuTdHP+UW72cG/SxvQdm7EsuUUEN2HbJDp1Mjg
-         YhWT8Fk+jrqD49XNHO4oRTjpc310YoHj3LfcYYQXNIxszrfb3+HNEWtS6SWNU2zIQRnC
-         FBKFDmkCx+Bs6hIOqr7LGKd2wIRWiU+ikddBbO17fzB+rNSKCewmefHrSeufKW0ySa+d
-         U6l1iGpDLAmx3NMez+/f/lrM2N3UUV1h/YyeQRe/Q6/pIfRZicQaCeydwm0IeHzEFSz6
-         v2pbwwOlId8BnFmO3uIehiRZqB1YbNo/RAgi0dfsH3iA8omcNUvuzkfTFR9Xdtk/Yd33
-         Ux7g==
+        bh=KGqEnYAnG4Q3VPm1Ke7WmD5YQbCYEfs4z8luTPzLEas=;
+        b=QYyKpYDNbMdeSpDXOo6aVhjmI+BlGRprznWdiys3DsmjR7czTm2cxY5Lvruw+jOH6H
+         6Lodn8mHDJCPVEjYNNPUuNOyHbfG5S0cguNWuoFmgRDSVN+l2SlPRNAknqae7VvM5YY+
+         VyCAcc4TX6d9nowH5GsJZ/Z8gpPkysRzk433SYeizHvfJc+1bXroGBZ89bhexJTwFteB
+         r08Bg3N6QSalfAmle5xAiqmxW90n8M2dmQM1JznPk/d6XwXalSW6wlnmZhpo6TPkdIz6
+         M8NkfMUUkf2Hpy26w1xXjdDDPcsI9sKXvfyKw2EH6IrnVU3Tc59ngiY+wCvxiUYib4CL
+         uLLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682536412; x=1685128412;
+        d=1e100.net; s=20221208; t=1682536470; x=1685128470;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A7qLe9xoGQAtvSX/k61PvNxTN1RH0wiXnhCUKQsGbPA=;
-        b=GTR487jogn33C4IM5dZ88Zf4wk2s3EwuR392SX3/CaVCxw+3/cZJ5CG/N2oil+ltP5
-         rdAdOd+d/rbFZsosfBibtk20dC6zQ+RMe+RszhXlHVlSrxp8yrKgBK46U2F62Ms+GD5U
-         5iflIZPfP1aQB2irXzkLZg7bAfN6VTDEGe6MCOJIbUZBN/dDPs2mUlLjdQlBvjoAjnFh
-         Ml1vdMY9dgRiVvwbYjO+E7geWHIquAAhi/Pzh1hpx+LWiY23dSQN+6ETNF5wtl6Ggi4S
-         k890SQQlXkHDP0BtHvzT3IQWE0RP8kc/3oLAQnN2EMpcPX34S3ZDfO9PT6lUpB/5Zlwi
-         841w==
-X-Gm-Message-State: AAQBX9cDChD7Z7QzrbndgYCKWJSV7n5VLmO6c1A8gDXnERWLch9Kxgrb
-        iv42eE+vFWxQqYkuLiO5ZZYrlZDLndN1ojeGcGo=
-X-Google-Smtp-Source: AKy350Y7TNPHsQ26xhDcNJeUK9ld3MzEJRsscyrtnMnk8Intwod7pcScvwUv3glr4Kgi32c9QK7YUeK2qi3pPfmJusM=
-X-Received: by 2002:a17:906:8a62:b0:94f:969e:c52b with SMTP id
- hy2-20020a1709068a6200b0094f969ec52bmr14977106ejc.74.1682536412045; Wed, 26
- Apr 2023 12:13:32 -0700 (PDT)
+        bh=KGqEnYAnG4Q3VPm1Ke7WmD5YQbCYEfs4z8luTPzLEas=;
+        b=ItI2wGN41RSEvhuLcUMkaTAJ4DFLH5BB7U3r+mlVzZCV4l5CqsgC1MvkMdo7LfgyLo
+         tpjvBbkbywAayORFwdmIW241B264kNj8sn28BcICC6dxrykrSxCULgnPnIeUxDENcGLI
+         6KZ9nAuUOqaOQ76xSCu0tvDAVhGIbL4nYmHvBux7Cf/TEtU9mwkZBLpSUT/8mfQ6Z8Lg
+         4Kj2O8082HZxCTX3wF1b1d5BppVICtDKV2H5pzidD3wXhTDFhwB2ho+sVbNf8Zeorvpd
+         UCEwOyNQzoBJ/o8aA5oMZ1wFmnr81wkSoanUHNHYODuLpCaCnBWN+CWj4pnaQus4mcP2
+         gw1g==
+X-Gm-Message-State: AAQBX9eOvRvDTl+WtOHk8mAPbISjqIQe+wZEQznxNhSjAlYAbuiWC+s5
+        bZ3NBP9HmNUwSDM82yqG3CN017DQys9W8M5KzbIXSWKj
+X-Google-Smtp-Source: AKy350a4oRftU5cGTCt86rWeWN6NMWZpZxB1fteHFHkM1kFRcnkjulCeumnHGmHhnGOEBzSV6cOQvyc5cEbQR2iMP5o=
+X-Received: by 2002:a17:907:7616:b0:953:4db7:c30e with SMTP id
+ jx22-20020a170907761600b009534db7c30emr16879807ejc.76.1682536470298; Wed, 26
+ Apr 2023 12:14:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-3-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-3-jolsa@kernel.org>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-5-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-5-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:13:20 -0700
-Message-ID: <CAEf4Bzb5H6caJ24HWhRnOmqOU9nbqruDp1MP0pcStqd8OyvhJQ@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 02/20] bpf: Add cookies support for
- uprobe_multi link
+Date:   Wed, 26 Apr 2023 12:14:18 -0700
+Message-ID: <CAEf4BzZOsy0wC_RFHfJrG9zLjPUa86EencCOZto8FMnOMCpFOQ@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 04/20] libbpf: Update uapi bpf.h tools header
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -79,57 +78,68 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding support to specify cookies array for uprobe_multi link.
->
-> The cookies array share indexes and length with other uprobe_multi
-> arrays (paths/offsets/ref_ctr_offsets).
->
-> The cookies[i] value defines cookie for i-the uprobe and will be
-> returned by bpf_get_attach_cookie helper when called from ebpf
-> program hooked to that specific uprobe.
+> Updating uapi bpf.h tools header with new uprobe_multi
+> link interface.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/uapi/linux/bpf.h |  1 +
->  kernel/bpf/syscall.c     |  2 +-
->  kernel/trace/bpf_trace.c | 46 +++++++++++++++++++++++++++++++++++++---
->  3 files changed, 45 insertions(+), 4 deletions(-)
+
+let's merge this with the original UAPI header update patch? We used
+to split this out for libbpf sync purposes, but it is handled easily
+with current sync script, so no  need to make this a separate patch
+(but up to you, I don't mind either)
+
+>  tools/include/uapi/linux/bpf.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 >
-
-LGTM, one nit below
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-[...]
-
->  static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
-> @@ -2964,6 +2982,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprob=
-e,
->         struct bpf_uprobe_multi_link *link =3D uprobe->link;
->         struct bpf_uprobe_multi_run_ctx run_ctx =3D {
->                 .entry_ip =3D entry_ip,
-> +               .uprobe =3D uprobe,
->         };
->         struct bpf_run_ctx *old_run_ctx;
->         int err;
-> @@ -3005,6 +3024,16 @@ uprobe_multi_link_ret_handler(struct uprobe_consum=
-er *con, unsigned long func, s
->         return uprobe_prog_run(uprobe, func, regs);
->  }
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 1bb11a6ee667..77ce2159478d 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+>         BPF_TRACE_KPROBE_MULTI,
+>         BPF_LSM_CGROUP,
+>         BPF_STRUCT_OPS,
+> +       BPF_TRACE_UPROBE_MULTI,
+>         __MAX_BPF_ATTACH_TYPE
+>  };
 >
-> +static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
-> +{
-> +       struct bpf_uprobe_multi_run_ctx *run_ctx;
+> @@ -1052,6 +1053,7 @@ enum bpf_link_type {
+>         BPF_LINK_TYPE_KPROBE_MULTI =3D 8,
+>         BPF_LINK_TYPE_STRUCT_OPS =3D 9,
+>         BPF_LINK_TYPE_NETFILTER =3D 10,
+> +       BPF_LINK_TYPE_UPROBE_MULTI =3D 11,
+>
+>         MAX_BPF_LINK_TYPE,
+>  };
+> @@ -1169,6 +1171,11 @@ enum bpf_link_type {
+>   */
+>  #define BPF_F_KPROBE_MULTI_RETURN      (1U << 0)
+>
+> +/* link_create.uprobe_multi.flags used in LINK_CREATE command for
+> + * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
+> + */
+> +#define BPF_F_UPROBE_MULTI_RETURN      (1U << 0)
 > +
-> +       if (WARN_ON_ONCE(!ctx))
-> +               return 0;
-
-do we need this check?... seems redundant, tbh
-
-> +       run_ctx =3D container_of(current->bpf_ctx, struct bpf_uprobe_mult=
-i_run_ctx, run_ctx);
-> +       return run_ctx->uprobe->cookie;
-> +}
-> +
-
-[...]
+>  /* When BPF ldimm64's insn[0].src_reg !=3D 0 then this can have
+>   * the following extensions:
+>   *
+> @@ -1568,6 +1575,14 @@ union bpf_attr {
+>                                 __s32           priority;
+>                                 __u32           flags;
+>                         } netfilter;
+> +                       struct {
+> +                               __u32           flags;
+> +                               __u32           cnt;
+> +                               __aligned_u64   paths;
+> +                               __aligned_u64   offsets;
+> +                               __aligned_u64   ref_ctr_offsets;
+> +                               __aligned_u64   cookies;
+> +                       } uprobe_multi;
+>                 };
+>         } link_create;
+>
+> --
+> 2.40.0
+>
