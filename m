@@ -2,76 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9CD6EF37E
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 13:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F7E6EF38E
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 13:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240408AbjDZLhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 07:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S240584AbjDZLnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 07:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbjDZLh3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 07:37:29 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9B53C0C;
-        Wed, 26 Apr 2023 04:37:28 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-54fb8a8a597so83247497b3.0;
-        Wed, 26 Apr 2023 04:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682509047; x=1685101047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lALWCsz62LMjyxVOtF5eFTXt3IIcI+kzdO5VholoM0M=;
-        b=aioUzD9jPCAN3+Y5ZT3ovJOGMiPiJ+2Pbj8X11ALOrbMWxlL6sGdsVqrAVckXGxlwE
-         zEZqzhh804Vn6luTB7ecv8o/AhVB59USNr84Sg76F3w7rJyIZbYZSyTAJ5aUNRHMZyJC
-         2EuO9WdFV2KiXGh9t1qZixZ3+oKXM86tPps541kAJjwuUV0nQ4zokKpILJ6gAsk6SR/+
-         uB7CUAP+/0ubTre/so20SSSSgkWVZ8Iq8gEU5mJVMQfaD7Hnw8KN9eoXSaUwuB4smkJv
-         6oc4CuJxXeXNwEeGRIgEQqvpoItkD9ct+nZH32t8wiu6jqJtKnL8a54ZuG4pbS6ckgDL
-         rBEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682509047; x=1685101047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lALWCsz62LMjyxVOtF5eFTXt3IIcI+kzdO5VholoM0M=;
-        b=IVHZCBIXewqKq7Uh+1ORwLGY/l6YykVguK+aHr6d3B/sZlwp47MPEuYv24hkRqImMf
-         N+7s1gorUD9bN9/qK7HgyB0Rh5PyC2W0VxDOk5Ptyh3De7kfNqjdRXGw6GiiywNhayFd
-         t13m8MmlJHsRQQLk7ixEDhLPzofc0kHQDjc098bjQWkV33KM38OiIed/AP2Y2CHGlPL8
-         F+7cMr8wR2bh8ojYCV7fd4E7k0SLbnwIjJKb3kKgKqKiKOOXCESZ8EvsECxmIwGQmboz
-         w0/keYM8bGotov4pGttWonWSFxYrd7cVdhs3BTzVbOr6hrVIVMBSsQvYj6raMg5KVfis
-         nWpw==
-X-Gm-Message-State: AAQBX9f5Jsb4/8JPe/gEGGcZHPxvME5LZe0U8SsJZOkYPH0ob9fb+bLQ
-        DxO0EpKJ0+KPjMvIo4YEV5pzYC0mNO7WEibl1wo=
-X-Google-Smtp-Source: AKy350bnB3r9FlsXadUNiokOGQ0tpZzid9gBfpCokyroyABd4z3nFL48eg2idUGJ/BoPRJjqSzCj9cGB6LqdRtdQJLs=
-X-Received: by 2002:a0d:e24e:0:b0:552:a605:e408 with SMTP id
- l75-20020a0de24e000000b00552a605e408mr13495487ywe.12.1682509047657; Wed, 26
- Apr 2023 04:37:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <00000000000079eebe05fa2ea9ad@google.com> <CANiq72mor1BkxpAT=v0EsQJN-7fvMjo9K5ooVk1x7ZbBDEyn8g@mail.gmail.com>
- <CACT4Y+aMdct_tjSYsBvvtGoDji6feOiANogRbp3N41qkzU+5CQ@mail.gmail.com>
- <CANiq72nm2dU2o_x_GQ5SdsXaK6yZiDXG2hXEYMykViEAZvuMqQ@mail.gmail.com>
- <CACT4Y+YyYnwg4a1zjTnBU=t0x5Brt1rGuzz-5pXf2Fz3cKf4FQ@mail.gmail.com>
- <CANiq72=vMydenfkxQx4X7kYvHD0cHzNK19xxxqow3WcLStsdRA@mail.gmail.com> <CACT4Y+ZrwXB1W31Rr7rUUOoW15YbKfnC0khY9KnNk8FTf5uQnA@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZrwXB1W31Rr7rUUOoW15YbKfnC0khY9KnNk8FTf5uQnA@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 26 Apr 2023 13:37:16 +0200
-Message-ID: <CANiq72=pZy6RzomqbKtM5Ky43+Y0y3c1HQkbwrpS-1FHcEqYqg@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: BUG: unable to handle kernel NULL
- pointer dereference in __dabt_svc
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzkaller@googlegroups.com, alex.gaynor@gmail.com,
-        andriy.shevchenko@linux.intel.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, bpf@vger.kernel.org, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        ojeda@kernel.org, pmladek@suse.com, rostedt@goodmis.org,
-        rust-for-linux@vger.kernel.org, senozhatsky@chromium.org,
-        syzkaller-bugs@googlegroups.com, wedsonaf@gmail.com,
-        Joe Perches <joe@perches.com>
+        with ESMTP id S240571AbjDZLng (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 07:43:36 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CE74C04;
+        Wed, 26 Apr 2023 04:43:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Q5xYv0M32z9v7Yn;
+        Wed, 26 Apr 2023 19:32:51 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAn7lQ6Dklko7NWAg--.7207S2;
+        Wed, 26 Apr 2023 12:43:07 +0100 (CET)
+Message-ID: <40fbededd8dbe3b70fffb179574f344e9b0aed17.camel@huaweicloud.com>
+Subject: Re: [RFC][PATCH 3/6] verification: Introduce verify_umd_signature()
+ and verify_umd_message_sig()
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        rostedt@goodmis.org, mhiramat@kernel.org, mykolal@fb.com,
+        shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, bpf@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 26 Apr 2023 13:42:45 +0200
+In-Reply-To: <CS69GBAMXJ1X.1T8NO0CZUBXLG@suppilovahvero>
+References: <20230425173557.724688-1-roberto.sassu@huaweicloud.com>
+         <20230425173557.724688-4-roberto.sassu@huaweicloud.com>
+         <CS69GBAMXJ1X.1T8NO0CZUBXLG@suppilovahvero>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwAn7lQ6Dklko7NWAg--.7207S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7GFyruF4rXw4xKFWxZF43KFg_yoW8Jryxpa
+        n5tF4fKr1Dtr1jyayxKry3ZFW8tw4Yyr1DWw1DC3y5Za4rWFyY9r1Iga13uFZ8ur1FkFZI
+        vanIqa45Z3WDA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4yCiAAAsh
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,89 +73,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 12:43=E2=80=AFPM Dmitry Vyukov <dvyukov@google.com>=
- wrote:
->
-> I understand your intentions and they make sense.
+On Wed, 2023-04-26 at 03:28 +0300, Jarkko Sakkinen wrote:
+> On Tue Apr 25, 2023 at 8:35 PM EEST, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > 
+> > Introduce verify_umd_signature() and verify_umd_message_sig(), to verify
+> > UMD-parsed signatures from detached data. It aims to be used by kernel
+> > subsystems wishing to verify the authenticity of system data, with
+> > system-defined keyrings as trust anchor.
+> 
+> UMD is not generic knowledge. It is a term coined up in this patch set
+> so please open code it to each patch.
 
-Thanks! I am glad you agree it may have some value -- please see below
-for details.
+Yes, Linus also commented on this:
 
-> But adding this logic to syzbot won't help thousands of users of
-> get_maintainer.pl and dozens of other testing systems. There also will
+https://lwn.net/ml/linux-kernel/CAHk-=wihqhksXHkcjuTrYmC-vajeRcNh3s6eeoJNxS7wp77dFQ@mail.gmail.com/
 
-I haven't said otherwise -- as I said, I think it would be nice to
-have this be part of the kernel itself. :)
+I will check if the full name is mentioned at least once. So far, it
+seems that using umd for function names should be ok.
 
-> be a bit of get_maintainer.pl inside of syzbot code, so now all kernel
-> developers will need to be aware of it and also submit changes to
-> syzbot when they want to change maintainers logic.
->
-> I think this also equally applies to all other users of K:.
-> And a number of them had similar complaints re how K; works.
+> One discussion points should be what these handlers should be called.
+> Right now the patch set is misleads the reader to think as this was
+> some kind of "official" term and set to stone.
 
-Yeah, I would imagine so.
+I proposed some naming here (dependency of this patch set):
 
-> I am thinking if K: should actually apply just to patches and be
-> ignored for source files?
+https://lore.kernel.org/bpf/20230317145240.363908-6-roberto.sassu@huaweicloud.com/
 
-I considered that -- for things like Rust, it could make sense, but
-perhaps somebody is already using `K:` to match files they do care
-about, rather than `F:`. So we would need to ask others, but I think
-it is fine.
+Please let me know if it sounds reasonable to you.
 
-> If there are files that belong to "rust" (or "bpf" or any other user
-> of K:), then I think these should be just listed explicitly in the
-> subsystem (that should be a limited set of files that can be
-> enumerated with wildcards).
+Thanks
 
-Yes, at least for Rust, modulo omissions, we match files explicitly
-with `F:`. We have a couple unimportant omissions, e.g.
-`.rustfmt.toml`, but I can send a patch.
+Roberto
 
-Personally, I have always seen `F:` files (and `N:`-matched ones) as
-having more weight than `K:`-matched ones, i.e. I saw `K:` as more of
-a "it depends on what it matches -- discretion needed".
-
-From a quick look, most `K:`-using subsystems seem to list `F:` and
-`N:` as I would expect.
-
-> It's also reasonable to apply K: to patches.
-
-Yes, definitely, for Rust, that is our main use case, i.e. it is
-mainly why we wanted to have the `K:` entry: to catch changes to
-things that are tagged with "Rust" in C files (early on, at least).
-
-It is particularly important for us, since we are also considering
-having more of these annotations in the future.
-
-> But if a random source file happened to mention "rust" somewhere once,
-> I am not sure you want to be CCed on all issues in that file.
-> Does it sound reasonable?
-
-For Rust, yes, that would probably work for us. Not sure for all
-subsystems using `K:`, though.
-
-Having said that, I suggested including the kernel config too in this
-decision (i.e. not for the patches case, but for testers finding
-runtime issues), because it adds information: it leaves reports out
-when something is not even enabled but matched via `K:`, but still
-allows a Cc when matched via `K:` and enabled. It is, of course, still
-potentially a false positive, but some subsystems may want to hear
-about those.
-
-For instance, for Rust, this would be fine early on, since we don't
-expect many to have `RUST=3Dy` to begin with, and thus the odd false
-positive report via `K:` is fine. Later on, this heuristic may change,
-and we may not change those matches anymore (especially since, by
-then, the goal is that subsystems would be taking care of their own
-Rust bits).
-
-This is what I was suggesting to then put in `get_maintainer.pl`, e.g.
-a `--bot` option (or `--runtime`, or `--config-based-filtering`, or
-similar) option. Then the bots can add that option on their side.
-
-Thanks again for considering this!
-
-Cheers,
-Miguel
