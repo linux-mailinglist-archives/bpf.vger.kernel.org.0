@@ -2,256 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BBC6EF7F4
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 17:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B536EF7FD
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 17:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241305AbjDZPvZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 11:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S241072AbjDZPwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 11:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241179AbjDZPvL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 11:51:11 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC965253
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:51:10 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1a66e7a52d3so55892675ad.0
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:51:10 -0700 (PDT)
+        with ESMTP id S241033AbjDZPwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 11:52:45 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D236A65
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:52:37 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-247296def99so5115090a91.1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682524269; x=1685116269;
+        d=google.com; s=20221208; t=1682524357; x=1685116357;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JAZt4SwBq0kzUhXCO374DApwwiCqj65AMLJ7jYfFhVY=;
-        b=wONEkvpfq/eASdg9qtRBkCqKPWIGN7jF9+5WyNuWNLb/Jtu4Y/jEn/IxoxPGIXv9Q5
-         Ev3gX0JaGekf02cXAI9Sibu8PvQhanwkfz/r4trzy0QIwtNaVcyGLkEu5mKrgf7rHtfk
-         ca3DM0w8EIe0xAXzP4z7TNHaDXKrQCBk4fkg6CHLtiNb3pA7w+Bt6m4X6/hK+WyatIgR
-         LFv463ZxN9D6wwr9/ammqIwg/pkcWmkuEHiOKhI7km6/JPefaTB/eiw/Foiq3GOdVAcV
-         R2nCBd4tyihhOPhTwbaeyKwuwaVEZ3Cxw3xx9qpE9jrlV5kvsg4rRVqSlrR6dPF9+/zX
-         kSeA==
+        bh=JxPVtgdaZRZShlRnK5AyFRm6hvPrBVlnqOIxoJf2T08=;
+        b=APiwUK5Tr3CHsLl/3Fzvf/oZh0BHHUyEJQrasw5lfK/C/aj9QT2Cm9BhAgFa+ZCtJG
+         sSBY++BA3k5h278Wsu5EWiecaWyv1ig9MG4W4em4M+QwDMe1kIdHyB5qHApV5BGwp8tf
+         4dUuayJAUJuYDCi6aHqOSwFsX8PbyxEnva5c+QR0cqp4JnuZLTKe7j2B8B7wDMnuLHy9
+         kO6BT69WGyGhvpnc6GSo5hc8WUN4v5bRFgmRNp4aeEz51KSTWObV7wfSjmNXl9cOEkFt
+         m80gKhkyANu9HmW8aDqGHhhFWaHJLymy8lfr1a1nd0RPaDP7pC8d86YrGgrrIRgg+8kH
+         AJxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682524269; x=1685116269;
+        d=1e100.net; s=20221208; t=1682524357; x=1685116357;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JAZt4SwBq0kzUhXCO374DApwwiCqj65AMLJ7jYfFhVY=;
-        b=dz45VrG1egy55j8lmyxtfVcYTR+VLdtpK+5ulwphqIQV/PWxTUa0y/LYqjss/ujXaI
-         00evzbS+84SbMMSekD3JdpJmCwMNTF8+diA8LjLLA7+zphVypntq3+aSJsRLic1SViB0
-         ByUUWoAix/Hb5wCMpJCDd3S3N00ketW3ohfmTETIaFxxITJglQzHQq3UzlL663NJfBOE
-         VU1iW4BCXoYcte8TUVGZIEHo2Y8RvU8CbOYG0GlpsEtAo+Hlj/BdMdQY/QoYDH3X4zaW
-         fmMKVaDoGeAZDDKkZy2fHEmy6SFJFKW1grCcUrXSAF/B616HhCjpq4Wf488YNWDeVO3l
-         Moow==
-X-Gm-Message-State: AAQBX9djh1xfnZazq8Tlliai1eNb8ReeJlQuPXAuawLSHSi51P2uo6L7
-        VS0k7zYutPWmXCpA/XMwgicuhAgXmjio7PaR6qyovQ==
-X-Google-Smtp-Source: AKy350ZHHrz8NBOxCi4LboZHUxE7CP1TxQqDc8DjZYCaDw4hQPwaGjWQZ+1aaUgkQ7SKzFENBcL2UkIDr/m4KoG2S0A=
-X-Received: by 2002:a17:902:d582:b0:1a9:20ea:f49b with SMTP id
- k2-20020a170902d58200b001a920eaf49bmr22387086plh.24.1682524269347; Wed, 26
- Apr 2023 08:51:09 -0700 (PDT)
+        bh=JxPVtgdaZRZShlRnK5AyFRm6hvPrBVlnqOIxoJf2T08=;
+        b=Ynb5scd4Te1YI0W+8yqr3NEnQI1pW0Idu5bVgwsITpxctbEX4Om4PxTW7jCqER6DRs
+         U60NIEUnu2pOThpgTm9vahFRSzUqzgc5pBWDd7i2ke55zSD6SRCcdlU99BKormMd/nyS
+         h+NtTun2GW78zdeig3RfnbHIV1nftrjckF8CSXvDppt6mumHzlbAy500XrZxfiCezVWF
+         i9QjagTScJhWGXYkxYpZMXSBBaCMUheeh1lIX9ZkZ5uBMUpjSYqspKO9qbDL9kTgBIg0
+         j+pfLuML9JPELhr65g4hnKx9rahdEVIBbrdYmkJK/DF6PV8fWhu7puCz46gHK7QY9CDN
+         OUcg==
+X-Gm-Message-State: AAQBX9c6u5BMzpEFEz9BQSwx0qXNOJM/Gly6BuQX4t5LK5im1FesEhaM
+        PhLGMwkNI6jAMYzcGuprP6VCxVUyA9AfKWYSwcGNhA==
+X-Google-Smtp-Source: AKy350b0WLlnYynpfKdseZ3DUA0f5nUk+xvGN6rnnSi3L+i9ZO/rCnYDg5gI1S08xoO99Fe179AVu1uB+aV4bQcClkE=
+X-Received: by 2002:a17:90b:143:b0:247:ad6d:7250 with SMTP id
+ em3-20020a17090b014300b00247ad6d7250mr21975429pjb.12.1682524357060; Wed, 26
+ Apr 2023 08:52:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230413133355.350571-1-aleksandr.mikhalitsyn@canonical.com>
- <20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com>
- <CANn89iLuLkUvX-dDC=rJhtFcxjnVmfn_-crOevbQe+EjaEDGbg@mail.gmail.com>
- <CAEivzxcEhfLttf0VK=NmHdQxF7CRYXNm6NwUVx6jx=-u2k-T6w@mail.gmail.com>
- <CAKH8qBt+xPygUVPMUuzbi1HCJuxc4gYOdU6JkrFmSouRQgoG6g@mail.gmail.com>
- <ZDoEG0VF6fb9y0EC@google.com> <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
- <ZD7Js4fj5YyI2oLd@google.com> <b453462a-3d98-8d0f-9cc0-543032de5a5f@gmail.com>
- <CAKH8qBusi0AWpo_iDaFkLFPUhgZy7-p6JwhimCkpYMhWnToE7g@mail.gmail.com> <4e177291-0f94-ab71-a982-f3e9f1f64280@gmail.com>
-In-Reply-To: <4e177291-0f94-ab71-a982-f3e9f1f64280@gmail.com>
+References: <20230425000144.3125269-1-sdf@google.com> <fb24192d-b443-4e0b-df99-2a8f972cdf0a@meta.com>
+ <CAKH8qBuCMk_Ct5+gwRjc3f_3Rq17D+WOV4LaSLJZpuOHU6a6kg@mail.gmail.com>
+ <45aba643-7862-f615-6f6d-ff706e74a1b8@meta.com> <CAKH8qBtyTnb=N+hiHMntsRaxBYz=2KQD55gssXQfk2LFwdhLJQ@mail.gmail.com>
+ <9488aafe-ce2b-0bf2-8e34-6cbf42328f58@meta.com> <CAKH8qBt9eSq9JCRu8BqzUZ_9FLJhpMsgNf56DC6n97uOwg6Tww@mail.gmail.com>
+ <d20f40ba-36af-5060-d4e0-c467d59203ef@meta.com>
+In-Reply-To: <d20f40ba-36af-5060-d4e0-c467d59203ef@meta.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 26 Apr 2023 08:50:58 -0700
-Message-ID: <CAKH8qBs=JeNRGkGi6hCEoc+50bKS1h1LMsex_T+dDk0c7s1OQg@mail.gmail.com>
-Subject: Re: handling unsupported optlen in cgroup bpf getsockopt: (was [PATCH
- net-next v4 2/4] net: socket: add sockopts blacklist for BPF cgroup hook)
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        daniel@iogearbox.net, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        linux-arch@vger.kernel.org,
-        Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        bpf <bpf@vger.kernel.org>
+Date:   Wed, 26 Apr 2023 08:52:25 -0700
+Message-ID: <CAKH8qBtxZizNBWP0gXcPWj6YUCppbxhahi872K7m_7gJoBQEYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Make bpf_helper_defs.h c++ friendly
+To:     Yonghong Song <yhs@meta.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Peng Wei <pengweiprc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 2:11=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
-wrote:
+On Tue, Apr 25, 2023 at 12:43=E2=80=AFPM Yonghong Song <yhs@meta.com> wrote=
+:
 >
 >
 >
-> On 4/25/23 11:42, Stanislav Fomichev wrote:
-> > On Tue, Apr 25, 2023 at 10:59=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.=
-com> wrote:
+> On 4/25/23 11:35 AM, Stanislav Fomichev wrote:
+> > On Tue, Apr 25, 2023 at 11:29=E2=80=AFAM Yonghong Song <yhs@meta.com> w=
+rote:
 > >>
 > >>
 > >>
-> >> On 4/18/23 09:47, Stanislav Fomichev wrote:
-> >>> On 04/17, Martin KaFai Lau wrote:
-> >>>> On 4/14/23 6:55 PM, Stanislav Fomichev wrote:
-> >>>>> On 04/13, Stanislav Fomichev wrote:
-> >>>>>> On Thu, Apr 13, 2023 at 7:38=E2=80=AFAM Aleksandr Mikhalitsyn
-> >>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
-> >>>>>>>
-> >>>>>>> On Thu, Apr 13, 2023 at 4:22=E2=80=AFPM Eric Dumazet <edumazet@go=
-ogle.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On Thu, Apr 13, 2023 at 3:35=E2=80=AFPM Alexander Mikhalitsyn
-> >>>>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>> During work on SO_PEERPIDFD, it was discovered (thanks to Chris=
-tian),
-> >>>>>>>>> that bpf cgroup hook can cause FD leaks when used with sockopts=
- which
-> >>>>>>>>> install FDs into the process fdtable.
-> >>>>>>>>>
-> >>>>>>>>> After some offlist discussion it was proposed to add a blacklis=
-t of
-> >>>>>>>>
-> >>>>>>>> We try to replace this word by either denylist or blocklist, eve=
-n in changelogs.
-> >>>>>>>
-> >>>>>>> Hi Eric,
-> >>>>>>>
-> >>>>>>> Oh, I'm sorry about that. :( Sure.
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>>> socket options those can cause troubles when BPF cgroup hook is=
- enabled.
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Can we find the appropriate Fixes: tag to help stable teams ?
-> >>>>>>>
-> >>>>>>> Sure, I will add next time.
-> >>>>>>>
-> >>>>>>> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt ho=
-oks")
-> >>>>>>>
-> >>>>>>> I think it's better to add Stanislav Fomichev to CC.
+> >> On 4/25/23 11:22 AM, Stanislav Fomichev wrote:
+> >>> On Tue, Apr 25, 2023 at 11:10=E2=80=AFAM Yonghong Song <yhs@meta.com>=
+ wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 4/25/23 10:04 AM, Stanislav Fomichev wrote:
+> >>>>> On Mon, Apr 24, 2023 at 6:56=E2=80=AFPM Yonghong Song <yhs@meta.com=
+> wrote:
 > >>>>>>
-> >>>>>> Can we use 'struct proto' bpf_bypass_getsockopt instead? We alread=
-y
-> >>>>>> use it for tcp zerocopy, I'm assuming it should work in this case =
-as
-> >>>>>> well?
-> >>>>>
-> >>>>> Jakub reminded me of the other things I wanted to ask here bug forg=
-ot:
-> >>>>>
-> >>>>> - setsockopt is probably not needed, right? setsockopt hook trigger=
-s
-> >>>>>      before the kernel and shouldn't leak anything
-> >>>>> - for getsockopt, instead of bypassing bpf completely, should we in=
-stead
-> >>>>>      ignore the error from the bpf program? that would still preser=
-ve
-> >>>>>      the observability aspect
+> >>>>>>
+> >>>>>>
+> >>>>>> On 4/24/23 5:01 PM, Stanislav Fomichev wrote:
+> >>>>>>> From: Peng Wei <pengweiprc@google.com>
+> >>>>>>>
+> >>>>>>> Compiling C++ BPF programs with existing bpf_helper_defs.h is not
 > >>>>
-> >>>> stealing this thread to discuss the optlen issue which may make sens=
-e to
-> >>>> bypass also.
-> >>>>
-> >>>> There has been issue with optlen. Other than this older post related=
- to
-> >>>> optlen > PAGE_SIZE:
-> >>>> https://lore.kernel.org/bpf/5c8b7d59-1f28-2284-f7b9-49d946f2e982@lin=
-ux.dev/,
-> >>>> the recent one related to optlen that we have seen is
-> >>>> NETLINK_LIST_MEMBERSHIPS. The userspace passed in optlen =3D=3D 0 an=
-d the kernel
-> >>>> put the expected optlen (> 0) and 'return 0;' to userspace. The user=
-space
-> >>>> intention is to learn the expected optlen. This makes 'ctx.optlen >
-> >>>> max_optlen' and __cgroup_bpf_run_filter_getsockopt() ends up returni=
-ng
-> >>>> -EFAULT to the userspace even the bpf prog has not changed anything.
+> >>>> Just curious, why you want to compile BPF programs with C++?
+> >>>> The patch looks good to me. But it would be great to know
+> >>>> some reasoning since a lot of stuff, e.g., some CORE related
+> >>>> intrinsics, not available for C++.
 > >>>
-> >>> (ignoring -EFAULT issue) this seems like it needs to be
-> >>>
-> >>>        if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
-> >>>                /* error */
-> >>>        }
-> >>>
-> >>> ?
-> >>>
-> >>>> Does it make sense to also bypass the bpf prog when 'ctx.optlen >
-> >>>> max_optlen' for now (and this can use a separate patch which as usua=
-l
-> >>>> requires a bpf selftests)?
-> >>>
-> >>> Yeah, makes sense. Replacing this -EFAULT with WARN_ON_ONCE or someth=
-ing
-> >>> seems like the way to go. It caused too much trouble already :-(
-> >>>
-> >>> Should I prepare a patch or do you want to take a stab at it?
-> >>>
-> >>>> In the future, does it make sense to have a specific cgroup-bpf-prog=
- (a
-> >>>> specific attach type?) that only uses bpf_dynptr kfunc to access the=
- optval
-> >>>> such that it can enforce read-only for some optname and potentially =
-also
-> >>>> track if bpf-prog has written a new optval? The bpf-prog can only re=
-turn 1
-> >>>> (OK) and only allows using bpf_set_retval() instead. Likely there is=
- still
-> >>>> holes but could be a seed of thought to continue polishing the idea.
-> >>>
-> >>> Ack, let's think about it.
-> >>>
-> >>> Maybe we should re-evaluate 'getsockopt-happens-after-the-kernel' ide=
-a
-> >>> as well? If we can have a sleepable hook that can copy_from_user/copy=
-_to_user,
-> >>> and we have a mostly working bpf_getsockopt (after your refactoring),
-> >>> I don't see why we need to continue the current scheme of triggering
-> >>> after the kernel?
+> >>> Can you share more? What's not available? Any pointers to the docs ma=
+ybe?
 > >>
-> >> Since a sleepable hook would cause some restrictions, perhaps, we coul=
-d
-> >> introduce something like the promise pattern.  In our case here, BPF
-> >> program call an async version of copy_from_user()/copy_to_user() to
-> >> return a promise.
+> >> Sorry, it is an attribute, instead of instrinsics.
+> >>
+> >> The attribute preserve_access_index/btf_type_tag/btf_decl_tag are all =
+C
+> >> only.
 > >
-> > Having a promise might work. This is essentially what we already do
-> > with sockets/etc with acquire/release pattern.
-> >
-> > What are the sleepable restrictions you're hinting about? I feel like
-> AFAIK, a sleepable program can use only some types of maps; for example,
-> array, hash, ringbuf,... etc.  Other types of maps are unavailable to
-> sleepable programs; for example, sockmap, sockhash.
-
-Sure, but it doesn't have to stay that way. (hypothetically) If we
-think that sleepable makes sense, we can try to expand the scope.
-
-> > with the sleepable bpf, we can also remove all the temporary buffer
-> > management / extra copies which sounds like a win to me. (we have this
-> > ugly heuristics with BPF_SOCKOPT_KERN_BUF_SIZE) The program can
-> > allocate temporary buffers if needed..
-> Agree!
+> > Interesting, thanks! I don't think we use btf_type_tag/btf_decl_tag in
+> > the program we want to try c++, but losing preserve_access_index might
+> > be unfortunate :-( But we'll see..
+> > Btw, any reason these are explicitly opted out from c++? Doesn't seem
+> > like there is anything c-specific in them?
 >
->
+> Initial use case is C only. If we say to support C++, we will
+> need to add attribute processing codes in various other places
+> (member functions, templates, other c++ constructs, etc.)
+> to convert these attributes to proper debuginfo. There are no use
+> cases for this, so we didn't do it in the first place.
+
+I see. In this case, let me respin the patch as is with the clang++
+command to reproduce.
+We'll experiment with our program internally to see whether these are
+the showstoppers.
+
+> > The c++ we are talking about here is mostly "c with classes +
+> > templates"; no polymorphism / inheritance.
 > >
-> >>>>> - or maybe we can even have a per-proto bpf_getsockopt_cleanup call=
- that
-> >>>>>      gets called whenever bpf returns an error to make sure protoco=
-ls have
-> >>>>>      a chance to handle that condition (and free the fd)
+> >> In llvm-project/clang/include/clang/Basic/Attr.td:
+> >>
+> >> def BPFPreserveAccessIndex : InheritableAttr,
+> >>                                TargetSpecificAttr<TargetBPF>  {
+> >>     let Spellings =3D [Clang<"preserve_access_index">];
+> >>     let Subjects =3D SubjectList<[Record], ErrorDiag>;
+> >>     let Documentation =3D [BPFPreserveAccessIndexDocs];
+> >>     let LangOpts =3D [COnly];
+> >> }
+> >>
+> >> def BTFDeclTag : InheritableAttr {
+> >>     let Spellings =3D [Clang<"btf_decl_tag">];
+> >>     let Args =3D [StringArgument<"BTFDeclTag">];
+> >>     let Subjects =3D SubjectList<[Var, Function, Record, Field, Typede=
+fName],
+> >>                                ErrorDiag>;
+> >>     let Documentation =3D [BTFDeclTagDocs];
+> >>     let LangOpts =3D [COnly];
+> >> }
+> >>
+> >> def BTFTypeTag : TypeAttr {
+> >>     let Spellings =3D [Clang<"btf_type_tag">];
+> >>     let Args =3D [StringArgument<"BTFTypeTag">];
+> >>     let Documentation =3D [BTFTypeTagDocs];
+> >>     let LangOpts =3D [COnly];
+> >> }
+> >>
+> >>
+> >>
+> >>>
+> >>> People here want to try to use c++ to see if templating helps with v4
+> >>> vs v6 handling.
+> >>> We have a bunch of copy-paste around this place and would like to see
+> >>> whether c++ could make it a bit more readable.
+> >>>
+> >>>>>>> possible due to stricter C++ type conversions. C++ complains
+> >>>>>>> about (void *) type conversions:
+> >>>>>>>
+> >>>>>>> bpf_helper_defs.h:57:67: error: invalid conversion from =E2=80=98=
+void*=E2=80=99 to =E2=80=98void* (*)(void*, const void*)=E2=80=99 [-fpermis=
+sive]
+> >>>>>>>        57 | static void *(*bpf_map_lookup_elem)(void *map, const =
+void *key) =3D (void *) 1;
+> >>>>>>>           |                                                      =
+             ^~~~~~~~~~
+> >>>>>>>           |                                                      =
+             |
+> >>>>>>>           |                                                      =
+             void*
+> >>>>>>>
+> >>>>>>> Extend bpf_doc.py to use proper function type instead of void.
+> >>>>>>
+> >>>>>> Could you specify what exactly the compilation command triggering =
+the
+> >>>>>> above error?
 > >>>>>
+> >>>>> The following does it for me:
+> >>>>> clang++ --include linux/types.h ./tools/lib/bpf/bpf_helper_defs.h
 > >>>>
-> >>>>
+> >>>> Thanks. It would be good if you add the above compilation command
+> >>>> in the commit message.
+> >>>
+> >>> Sure, will add.
+> >>>
+> >>>>>
+> >>>>>
+> >>>>>>>
+> >>>>>>> Before:
+> >>>>>>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) =
+=3D (void *) 1;
+> >>>>>>>
+> >>>>>>> After:
+> >>>>>>> static void *(*bpf_map_lookup_elem)(void *map, const void *key) =
+=3D (void *(*)(void *map, const void *key)) 1;
+> >>>>>>>
+> >>>>>>> Signed-off-by: Peng Wei <pengweiprc@google.com>
+> >>>>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>>>>>> ---
+> >>>>>>>      scripts/bpf_doc.py | 7 ++++++-
+> >>>>>>>      1 file changed, 6 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> >>>>>>> index eaae2ce78381..fa21137a90e7 100755
+> >>>>>>> --- a/scripts/bpf_doc.py
+> >>>>>>> +++ b/scripts/bpf_doc.py
+> >>>>>>> @@ -827,6 +827,9 @@ COMMANDS
+> >>>>>>>                      print(' *{}{}'.format(' \t' if line else '',=
+ line))
+> >>>>>>>
+> >>>>>>>              print(' */')
+> >>>>>>> +        fptr_type =3D '%s%s(*)(' % (
+> >>>>>>> +            self.map_type(proto['ret_type']),
+> >>>>>>> +            ((' ' + proto['ret_star']) if proto['ret_star'] else=
+ ''))
+> >>>>>>>              print('static %s %s(*%s)(' % (self.map_type(proto['r=
+et_type']),
+> >>>>>>>                                            proto['ret_star'], pro=
+to['name']), end=3D'')
+> >>>>>>>              comma =3D ''
+> >>>>>>> @@ -845,8 +848,10 @@ COMMANDS
+> >>>>>>>                      one_arg +=3D '{}'.format(n)
+> >>>>>>>                  comma =3D ', '
+> >>>>>>>                  print(one_arg, end=3D'')
+> >>>>>>> +            fptr_type +=3D one_arg
+> >>>>>>>
+> >>>>>>> -        print(') =3D (void *) %d;' % helper.enum_val)
+> >>>>>>> +        fptr_type +=3D ')'
+> >>>>>>> +        print(') =3D (%s) %d;' % (fptr_type, helper.enum_val))
+> >>>>>>>              print('')
+> >>>>>>>
+> >>>>>>>      ############################################################=
+###################
