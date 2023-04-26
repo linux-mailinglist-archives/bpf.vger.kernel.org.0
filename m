@@ -2,321 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E7E6EF79C
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 17:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E046EF7F0
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240843AbjDZPQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 11:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
+        id S240591AbjDZPvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 11:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240523AbjDZPQd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 11:16:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA2A59FE
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682522144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=btvlxsLNMBwIhDJuOQ2AKkOzN4j/Yy1O9lQbuvlEHBE=;
-        b=EMosev3P3xONGrKataEYKR45AMdc+MlCZW7Pt4cJIEacXByxGY0LAin/eygYaKsbMrjk+i
-        id1AJkbdSySk44rZeLx90a8wOApOoUzBKRwZKDZR6c9zS9w4zKwDsxXM7p/jo9X19pf1zo
-        Sa5KfEJegpFq7NGcgNyXUo18Ff3OOf0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-602-t_IcDOtoO8GjO39En1JbMw-1; Wed, 26 Apr 2023 11:15:43 -0400
-X-MC-Unique: t_IcDOtoO8GjO39En1JbMw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-95847b4b4e7so550336466b.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:15:43 -0700 (PDT)
+        with ESMTP id S239361AbjDZPvH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 11:51:07 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9C25255
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:51:05 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-52091c58109so6810465a12.2
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 08:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682524265; x=1685116265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XJZ6NHRQS+3nZd9cVcd+FkVeTPqzQKMLt90y8l8WCOI=;
+        b=Ot0av20P7Hqq04Hq1PCr0ozz1hy05T/NcWFTJuVhxzZELgcaVKSB45hnHn6FNWPc8o
+         SxAscrFtDZEFhD6SfsTUceZLEfLLtnExFGwKcZX9zydmWdKq5Vt5FnHeN/farR9nhfh4
+         MwEEXEbX1nZGSBRS3Ly+v7MV9q9D2X0C5kGmDB3Yv64ygU4XxqeOV1CKC5d5RQNmBd0O
+         HbMfLI4wSqIyjWBFVrXsoKzgy0aQa5bjtLrwFyTT8q5OKiiK1H8Xl5hCIp9LPDmw12fs
+         WtT69uPrYv/azt88cQI7CWdwToYNQGshE6c9cYoeXiWhQQCPeTSYdD+BuJexvvGHO2Gg
+         6qFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682522141; x=1685114141;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=btvlxsLNMBwIhDJuOQ2AKkOzN4j/Yy1O9lQbuvlEHBE=;
-        b=AhLzU90dtPDM0OxvmLvGNTgTsV7BQiiF/X+GWxo41FsdLWpzPU6w07A0G1fCuqXORb
-         oS2Yj+GYKUNUTVW6zyYXdAZpp6yhkqvIQPxIGMB/Rgeio0Nlns8GSgWF60QrV06hDd8/
-         hKnXSndr8NZC7gJ0cR+bvmDSBrjdwgX9SxI8x8ketdPjat62GcmwQ0G6yRmMY3bd0rD+
-         E+wjEl9Q2YTKq0hbnSMBp0LG2jdBXpAuIW44b3PtvUVWZDJa7M/VSiKf61QTQs9TKXLG
-         7rBVFEJASQYxDmpau2nQr2woriVOo7gYqh1qQs/NsM5r5Wgvneg56+DaY6WaS4F9RA9t
-         L9Lg==
-X-Gm-Message-State: AAQBX9dq/2Hfmc1iQtiGluT6zt26ZaV/ZyddPCIdWMgNuEDgrq9f16EF
-        MjvRRnv9OdreWPNM9guqvLYn+JMpbZ9vHtULwRG/nc+2kM+s34nyZS4MpgNXxHPRT4bOTVuw9xm
-        tDIkfWQKSTf2S
-X-Received: by 2002:a17:906:76d4:b0:94f:764e:e311 with SMTP id q20-20020a17090676d400b0094f764ee311mr16470418ejn.16.1682522141533;
-        Wed, 26 Apr 2023 08:15:41 -0700 (PDT)
-X-Google-Smtp-Source: AKy350aLnMVhJGlV5O3U+aToD+Ujz+A+5OsDyS4ehiTZ1imYMoUMDGCWaq9PFUtXrSz7/Q6baWvYKQ==
-X-Received: by 2002:a17:906:76d4:b0:94f:764e:e311 with SMTP id q20-20020a17090676d400b0094f764ee311mr16470383ejn.16.1682522141162;
-        Wed, 26 Apr 2023 08:15:41 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id bq6-20020a056402214600b0050470aa444fsm6892866edb.51.2023.04.26.08.15.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Apr 2023 08:15:40 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <82545fdc-31cc-b963-06c8-151b538bc8a3@redhat.com>
-Date:   Wed, 26 Apr 2023 17:15:38 +0200
+        d=1e100.net; s=20221208; t=1682524265; x=1685116265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XJZ6NHRQS+3nZd9cVcd+FkVeTPqzQKMLt90y8l8WCOI=;
+        b=F4ZPV/mEjaAcI1j4JIDoJdL6s9M1cfymYAVKVS0iV0GC/n6IkkyDG5vn8KVHQDGK0i
+         ppUdPGIY9nWW6NQxyB9kQ3WPb+NyEIo0kZKZ9HTGpR4upC9PTJlaPCBiv33/IU+B5o+y
+         3oarqrcS4UfeW/h4BF3dXvT3WrnKQIVsW40b54QveAb296QqMwDlvhvnvZb5Ym1vLdV9
+         VTOdec0VaibnKHqoX2U86W6SltGNPBV8SO6F6/XWCgmXrH45pHEQbBvydorNPflkVvGu
+         mwkJ6odmC5S1cURKhOQ6qDzNm1kDx17Y1fmyLm1zqFJAUifT0rTHAEYTCK5cZMHDweLg
+         GH2g==
+X-Gm-Message-State: AAQBX9eGGnOYGgQurqRP+n09fAQbe+GI6y6q/JZU7evo5cy2bFgb3ZrE
+        VdNhFJ+pN0026WnzbMtuRR97CUzhJwhwB3eW7NvVZQ==
+X-Google-Smtp-Source: ACHHUZ4vXXN3s9xWz7hucC/toMsWJLyps8E5ryQJ08zx75g679Zv0oCHThA7sUO209hqbMvFkQCCc5n64TyNLjdxyU4=
+X-Received: by 2002:a17:90a:fb4d:b0:247:2680:4090 with SMTP id
+ iq13-20020a17090afb4d00b0024726804090mr8856401pjb.11.1682524264954; Wed, 26
+ Apr 2023 08:51:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
-        lorenzo@kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        linyunsheng@huawei.com, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+References: <20230413133355.350571-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230413133355.350571-3-aleksandr.mikhalitsyn@canonical.com>
+ <CANn89iLuLkUvX-dDC=rJhtFcxjnVmfn_-crOevbQe+EjaEDGbg@mail.gmail.com>
+ <CAEivzxcEhfLttf0VK=NmHdQxF7CRYXNm6NwUVx6jx=-u2k-T6w@mail.gmail.com>
+ <CAKH8qBt+xPygUVPMUuzbi1HCJuxc4gYOdU6JkrFmSouRQgoG6g@mail.gmail.com>
+ <ZDoEG0VF6fb9y0EC@google.com> <a4591e85-d58b-0efd-c8a4-2652dc69ff68@linux.dev>
+ <ZD7Js4fj5YyI2oLd@google.com> <b453462a-3d98-8d0f-9cc0-543032de5a5f@gmail.com>
+ <CAKH8qBusi0AWpo_iDaFkLFPUhgZy7-p6JwhimCkpYMhWnToE7g@mail.gmail.com> <927ddd10-ae5b-886c-6725-3daf04456e52@gmail.com>
+In-Reply-To: <927ddd10-ae5b-886c-6725-3daf04456e52@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 26 Apr 2023 08:50:53 -0700
+Message-ID: <CAKH8qBu3d+DpnyaCusRV3Q5xPCjuC4ym0PfJJ7pAOov+Mg2ayw@mail.gmail.com>
+Subject: Re: handling unsupported optlen in cgroup bpf getsockopt: (was [PATCH
+ net-next v4 2/4] net: socket: add sockopts blacklist for BPF cgroup hook)
+To:     Kui-Feng Lee <sinquersw@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        daniel@iogearbox.net, Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V1 2/3] page_pool: Use static_key for
- shutdown phase
-Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <168244288038.1741095.1092368365531131826.stgit@firesoul>
- <168244294384.1741095.6037010854411310099.stgit@firesoul>
- <20230425233027.w3olphld4nkcdvry@dhcp-172-26-102-232.dhcp.thefacebook.com>
-In-Reply-To: <20230425233027.w3olphld4nkcdvry@dhcp-172-26-102-232.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Leon Romanovsky <leon@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        linux-arch@vger.kernel.org,
+        Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Apr 25, 2023 at 2:28=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
+wrote:
+>
+>
+>
+> On 4/25/23 11:42, Stanislav Fomichev wrote:
+> > On Tue, Apr 25, 2023 at 10:59=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.=
+com> wrote:
+> >>
+> >>
+> >>
+> >> On 4/18/23 09:47, Stanislav Fomichev wrote:
+> >>> On 04/17, Martin KaFai Lau wrote:
+> >>>> On 4/14/23 6:55 PM, Stanislav Fomichev wrote:
+> >>>>> On 04/13, Stanislav Fomichev wrote:
+> >>>>>> On Thu, Apr 13, 2023 at 7:38=E2=80=AFAM Aleksandr Mikhalitsyn
+> >>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
+> >>>>>>>
+> >>>>>>> On Thu, Apr 13, 2023 at 4:22=E2=80=AFPM Eric Dumazet <edumazet@go=
+ogle.com> wrote:
+> >>>>>>>>
+> >>>>>>>> On Thu, Apr 13, 2023 at 3:35=E2=80=AFPM Alexander Mikhalitsyn
+> >>>>>>>> <aleksandr.mikhalitsyn@canonical.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> During work on SO_PEERPIDFD, it was discovered (thanks to Chris=
+tian),
+> >>>>>>>>> that bpf cgroup hook can cause FD leaks when used with sockopts=
+ which
+> >>>>>>>>> install FDs into the process fdtable.
+> >>>>>>>>>
+> >>>>>>>>> After some offlist discussion it was proposed to add a blacklis=
+t of
+> >>>>>>>>
+> >>>>>>>> We try to replace this word by either denylist or blocklist, eve=
+n in changelogs.
+> >>>>>>>
+> >>>>>>> Hi Eric,
+> >>>>>>>
+> >>>>>>> Oh, I'm sorry about that. :( Sure.
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>>> socket options those can cause troubles when BPF cgroup hook is=
+ enabled.
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> Can we find the appropriate Fixes: tag to help stable teams ?
+> >>>>>>>
+> >>>>>>> Sure, I will add next time.
+> >>>>>>>
+> >>>>>>> Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt ho=
+oks")
+> >>>>>>>
+> >>>>>>> I think it's better to add Stanislav Fomichev to CC.
+> >>>>>>
+> >>>>>> Can we use 'struct proto' bpf_bypass_getsockopt instead? We alread=
+y
+> >>>>>> use it for tcp zerocopy, I'm assuming it should work in this case =
+as
+> >>>>>> well?
+> >>>>>
+> >>>>> Jakub reminded me of the other things I wanted to ask here bug forg=
+ot:
+> >>>>>
+> >>>>> - setsockopt is probably not needed, right? setsockopt hook trigger=
+s
+> >>>>>      before the kernel and shouldn't leak anything
+> >>>>> - for getsockopt, instead of bypassing bpf completely, should we in=
+stead
+> >>>>>      ignore the error from the bpf program? that would still preser=
+ve
+> >>>>>      the observability aspect
+> >>>>
+> >>>> stealing this thread to discuss the optlen issue which may make sens=
+e to
+> >>>> bypass also.
+> >>>>
+> >>>> There has been issue with optlen. Other than this older post related=
+ to
+> >>>> optlen > PAGE_SIZE:
+> >>>> https://lore.kernel.org/bpf/5c8b7d59-1f28-2284-f7b9-49d946f2e982@lin=
+ux.dev/,
+> >>>> the recent one related to optlen that we have seen is
+> >>>> NETLINK_LIST_MEMBERSHIPS. The userspace passed in optlen =3D=3D 0 an=
+d the kernel
+> >>>> put the expected optlen (> 0) and 'return 0;' to userspace. The user=
+space
+> >>>> intention is to learn the expected optlen. This makes 'ctx.optlen >
+> >>>> max_optlen' and __cgroup_bpf_run_filter_getsockopt() ends up returni=
+ng
+> >>>> -EFAULT to the userspace even the bpf prog has not changed anything.
+> >>>
+> >>> (ignoring -EFAULT issue) this seems like it needs to be
+> >>>
+> >>>        if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
+> >>>                /* error */
+> >>>        }
+> >>>
+> >>> ?
+> >>>
+> >>>> Does it make sense to also bypass the bpf prog when 'ctx.optlen >
+> >>>> max_optlen' for now (and this can use a separate patch which as usua=
+l
+> >>>> requires a bpf selftests)?
+> >>>
+> >>> Yeah, makes sense. Replacing this -EFAULT with WARN_ON_ONCE or someth=
+ing
+> >>> seems like the way to go. It caused too much trouble already :-(
+> >>>
+> >>> Should I prepare a patch or do you want to take a stab at it?
+> >>>
+> >>>> In the future, does it make sense to have a specific cgroup-bpf-prog=
+ (a
+> >>>> specific attach type?) that only uses bpf_dynptr kfunc to access the=
+ optval
+> >>>> such that it can enforce read-only for some optname and potentially =
+also
+> >>>> track if bpf-prog has written a new optval? The bpf-prog can only re=
+turn 1
+> >>>> (OK) and only allows using bpf_set_retval() instead. Likely there is=
+ still
+> >>>> holes but could be a seed of thought to continue polishing the idea.
+> >>>
+> >>> Ack, let's think about it.
+> >>>
+> >>> Maybe we should re-evaluate 'getsockopt-happens-after-the-kernel' ide=
+a
+> >>> as well? If we can have a sleepable hook that can copy_from_user/copy=
+_to_user,
+> >>> and we have a mostly working bpf_getsockopt (after your refactoring),
+> >>> I don't see why we need to continue the current scheme of triggering
+> >>> after the kernel?
+> >>
+> >> Since a sleepable hook would cause some restrictions, perhaps, we coul=
+d
+> >> introduce something like the promise pattern.  In our case here, BPF
+> >> program call an async version of copy_from_user()/copy_to_user() to
+> >> return a promise.
+> >
+> > Having a promise might work. This is essentially what we already do
+> > with sockets/etc with acquire/release pattern.
+>
+> Would you mind to give me some context of the socket things?
 
-On 26/04/2023 01.30, Alexei Starovoitov wrote:
-> On Tue, Apr 25, 2023 at 07:15:43PM +0200, Jesper Dangaard Brouer wrote:
->> Performance is very important for page pool (PP). This add the use of
->> static_key APIs for regaining a single instruction, which makes the
->> new PP shutdown scheme zero impact.
->>
->> We are uncertain if this is 100% correct, because static_key APIs uses
->> a mutex lock and it is uncertain if all contexts that can return pages
->> can support this. We could spawn a workqueue (like we just removed) to
->> workaround this issue.
-> 
-> With debug atomic sleep the issue should be trivial to see.
-> iirc the callers of xdp_flush_frame_bulk() need to do it under rcu_read_lock equivalent,
-> which is not sleepable and mutex-es should warn.
-> 
+I'm mostly referring to the infra around KF_ACQUIRE/KF_RELEASE where
+the verifier already has some resource tracking functionality. We can
+probably extend it to verify that the program does copy_to_user
+equivalent at the end of the run (or somehow specifically marks that
+it's not needed).
 
-Sure, adding CONFIG_DEBUG_ATOMIC_SLEEP and (keeping) CONFIG_DEBUG_MUTEXES.
-
-Testing this with veth changes that added page_pool to veth
-commit 0ebab78cbcbf ("net: veth: add page_pool for page recycling").
-which makes it easier to create/trigger inflight packets
-via softnet_data->defer_list.
-
-It confirms my suspicion, this patch is not correct.
-
-The dmesg warning looks like below.
-(The XXX printk is just from my own debugging patch)
-
-The call site net_rx_action+0xe7 is skb_defer_free_flush
-  $ ./scripts/faddr2line vmlinux net_rx_action+0xe7
-  net_rx_action+0xe7/0x360:
-  skb_defer_free_flush at net/core/dev.c:6615
-  (inlined by) skb_defer_free_flush at net/core/dev.c:6601
-  (inlined by) net_rx_action at net/core/dev.c:6677
-
-
-[ 1540.073256] XXX page_pool_shutdown_attempt() inflight=24
-[ 1540.078654] XXX page_pool_destroy() Enter into shutdown phase - 
-inflight=24
-[ 1540.094234] XXX page_pool_shutdown_attempt() inflight=23
-[ 1540.099626] XXX page_pool_shutdown_attempt() inflight=22
-[ 1540.105012] XXX page_pool_shutdown_attempt() inflight=21
-[ 1540.110402] XXX page_pool_shutdown_attempt() inflight=20
-[ 1540.115793] XXX page_pool_shutdown_attempt() inflight=19
-[ 1540.121183] XXX page_pool_shutdown_attempt() inflight=18
-[ 1540.126564] XXX page_pool_shutdown_attempt() inflight=17
-[ 1540.131945] XXX page_pool_shutdown_attempt() inflight=16
-[ 1540.137329] XXX page_pool_shutdown_attempt() inflight=15
-[ 1540.142710] XXX page_pool_shutdown_attempt() inflight=14
-[ 1540.148110] XXX page_pool_shutdown_attempt() inflight=13
-[ 1540.153512] XXX page_pool_shutdown_attempt() inflight=12
-[ 1540.312284] XXX page_pool_shutdown_attempt() inflight=11
-[ 1540.317712] XXX page_pool_shutdown_attempt() inflight=10
-[ 1540.323128] XXX page_pool_shutdown_attempt() inflight=9
-[ 1540.328459] XXX page_pool_shutdown_attempt() inflight=8
-[ 1540.333788] XXX page_pool_shutdown_attempt() inflight=7
-[ 1540.339111] XXX page_pool_shutdown_attempt() inflight=6
-[ 1540.344439] XXX page_pool_shutdown_attempt() inflight=5
-[ 1540.349768] XXX page_pool_shutdown_attempt() inflight=4
-[ 1540.355091] XXX page_pool_shutdown_attempt() inflight=3
-[ 1540.360420] XXX page_pool_shutdown_attempt() inflight=2
-[ 1540.365741] XXX page_pool_shutdown_attempt() inflight=1
-[ 1540.371064] BUG: sleeping function called from invalid context at 
-include/linux/percpu-rwsem.h:49
-[ 1540.380052] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 
-26501, name: netperf
-[ 1540.388171] preempt_count: 101, expected: 0
-[ 1540.392452] RCU nest depth: 2, expected: 0
-[ 1540.396640] CPU: 2 PID: 26501 Comm: netperf Not tainted 
-6.3.0-rc7-net-next-pp-shutdown-vm-lock-dbg+ #67
-[ 1540.406147] Hardware name: Supermicro Super Server/X10SRi-F, BIOS 
-2.0a 08/01/2016
-[ 1540.413749] Call Trace:
-[ 1540.416289]  <IRQ>
-[ 1540.418395]  dump_stack_lvl+0x32/0x50
-[ 1540.422160]  __might_resched+0x11c/0x160
-[ 1540.426182]  cpus_read_lock+0x16/0x60
-[ 1540.429942]  static_key_slow_dec+0x17/0x50
-[ 1540.434137]  page_pool_shutdown_attempt+0x50/0x60
-[ 1540.438940]  page_pool_return_skb_page+0x68/0xe0
-[ 1540.443654]  skb_free_head+0x4f/0x90
-[ 1540.447326]  skb_release_data+0x142/0x1a0
-[ 1540.451435]  napi_consume_skb+0x6b/0x180
-[ 1540.455448]  net_rx_action+0xe7/0x360
-[ 1540.459209]  __do_softirq+0xcb/0x2b1
-[ 1540.462885]  do_softirq+0x63/0x90
-[ 1540.466297]  </IRQ>
-[ 1540.468487]  <TASK>
-[ 1540.470671]  __local_bh_enable_ip+0x64/0x70
-[ 1540.474948]  __dev_queue_xmit+0x257/0x8a0
-[ 1540.479049]  ? __ip_local_out+0x48/0x160
-[ 1540.483070]  ip_finish_output2+0x25c/0x540
-[ 1540.487255]  __ip_queue_xmit+0x171/0x420
-[ 1540.491266]  ? ___slab_alloc+0xd1/0x670
-[ 1540.495202]  __tcp_transmit_skb+0x83c/0x950
-[ 1540.499486]  tcp_write_xmit+0x373/0xa60
-[ 1540.503419]  __tcp_push_pending_frames+0x32/0xf0
-[ 1540.508125]  tcp_sendmsg_locked+0x3a0/0xa10
-[ 1540.512408]  tcp_sendmsg+0x27/0x40
-[ 1540.515907]  sock_sendmsg+0x8b/0xa0
-[ 1540.519494]  ? sockfd_lookup_light+0x12/0x70
-[ 1540.523856]  __sys_sendto+0xeb/0x130
-[ 1540.527531]  ? __switch_to_asm+0x3a/0x80
-[ 1540.531549]  ? rseq_get_rseq_cs+0x32/0x290
-[ 1540.535736]  ? rseq_ip_fixup+0x14f/0x1e0
-[ 1540.539751]  __x64_sys_sendto+0x20/0x30
-[ 1540.543686]  do_syscall_64+0x3a/0x90
-[ 1540.547357]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[ 1540.552502] RIP: 0033:0x7f389f713680
-[ 1540.556174] Code: 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 41 89 ca 
-64 8b 04 25 18 00 00 00 85 c0 75 1d 45 31 c9 45 31 c0 b8 2c 00 00 00 0f 
-05 <48> 3d 00 f0 ff ff 77 68 c3 0f 1f 80 00 00 00 00 55 48 83 ec 20 48
-[ 1540.575075] RSP: 002b:00007ffcb4d4a538 EFLAGS: 00000246 ORIG_RAX: 
-000000000000002c
-[ 1540.582755] RAX: ffffffffffffffda RBX: 000000000063fd28 RCX: 
-00007f389f713680
-[ 1540.589983] RDX: 0000000000004000 RSI: 0000000001ac3c40 RDI: 
-0000000000000004
-[ 1540.597208] RBP: 00007ffcb4d4a570 R08: 0000000000000000 R09: 
-0000000000000000
-[ 1540.604438] R10: 0000000000000000 R11: 0000000000000246 R12: 
-000000000063fcf8
-[ 1540.611664] R13: 00007ffcb4d4a910 R14: 0000000000000000 R15: 
-00007f389fa87000
-[ 1540.618896]  </TASK>
-[ 1540.621199] ------------[ cut here ]------------
-[ 1540.625911] WARNING: CPU: 2 PID: 26501 at kernel/smp.c:912 
-smp_call_function_many_cond+0x2c1/0x2e0
-[ 1540.635001] Modules linked in: veth nf_defrag_ipv6 nf_defrag_ipv4 
-ib_umad rdma_ucm ib_ipoib rdma_cm iw_cm irdma ib_cm ice 
-intel_uncore_frequency intel_uncore_frequency_common coretemp kvm_intel 
-mlx5_ib kvm ib_uverbs irqbypass rapl intel_cstate ib_core i2c_i801 
-intel_uncore pcspkr i2c_smbus bfq acpi_ipmi wmi ipmi_si ipmi_devintf 
-ipmi_msghandler acpi_pad sch_fq_codel drm fuse zram zsmalloc mlx5_core 
-ixgbe i40e igb igc sd_mod t10_pi mlxfw psample hid_generic 
-crc64_rocksoft_generic i2c_algo_bit crc64_rocksoft i2c_core mdio ptp 
-pps_core [last unloaded: bpfilter]
-[ 1540.684653] CPU: 2 PID: 26501 Comm: netperf Tainted: G        W 
-    6.3.0-rc7-net-next-pp-shutdown-vm-lock-dbg+ #67
-[ 1540.695642] Hardware name: Supermicro Super Server/X10SRi-F, BIOS 
-2.0a 08/01/2016
-[ 1540.703239] RIP: 0010:smp_call_function_many_cond+0x2c1/0x2e0
-[ 1540.709090] Code: fe ff ff 8b 44 24 14 48 c7 c6 a0 04 fc 82 8b 15 85 
-f4 e6 01 48 8b 3c 24 8d 48 01 48 63 c9 e8 36 c5 4b 00 89 c2 e9 c5 fd ff 
-ff <0f> 0b e9 86 fd ff ff 8b 7c 24 28 e8 4f b8 f7 ff eb af 66 66 2e 0f
-[ 1540.727999] RSP: 0018:ffffc9000003cda8 EFLAGS: 00010206
-[ 1540.733322] RAX: 0000000000000102 RBX: ffffffff8383b2ea RCX: 
-0000000000000003
-[ 1540.740552] RDX: 0000000000000000 RSI: ffffffff810271a0 RDI: 
-ffffffff82fc04a0
-[ 1540.747782] RBP: 0000000000000000 R08: 0000000000000000 R09: 
-0000000000000001
-[ 1540.755008] R10: 000000087c9e9000 R11: ffffffff82c4f620 R12: 
-0000000000000000
-[ 1540.762241] R13: ffffffff8383b300 R14: 0000000000000002 R15: 
-0000000000000001
-[ 1540.769474] FS:  00007f389f954740(0000) GS:ffff88887fc80000(0000) 
-knlGS:0000000000000000
-[ 1540.777685] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1540.783528] CR2: 00007f1e27582000 CR3: 000000015775c004 CR4: 
-00000000003706e0
-[ 1540.790761] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[ 1540.797987] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[ 1540.805220] Call Trace:
-[ 1540.807763]  <IRQ>
-[ 1540.809868]  ? __pfx_do_sync_core+0x10/0x10
-[ 1540.814146]  on_each_cpu_cond_mask+0x20/0x40
-[ 1540.818514]  text_poke_bp_batch+0x9e/0x250
-[ 1540.822708]  text_poke_finish+0x1b/0x30
-[ 1540.826644]  arch_jump_label_transform_apply+0x16/0x30
-[ 1540.831880]  __static_key_slow_dec_cpuslocked.part.0+0x2f/0x40
-[ 1540.837809]  static_key_slow_dec+0x30/0x50
-[ 1540.841999]  page_pool_shutdown_attempt+0x50/0x60
-[ 1540.846803]  page_pool_return_skb_page+0x68/0xe0
-[ 1540.851517]  skb_free_head+0x4f/0x90
-[ 1540.855194]  skb_release_data+0x142/0x1a0
-[ 1540.859300]  napi_consume_skb+0x6b/0x180
-[ 1540.863320]  net_rx_action+0xe7/0x360
-[ 1540.867082]  __do_softirq+0xcb/0x2b1
-[ 1540.870756]  do_softirq+0x63/0x90
-[ 1540.874171]  </IRQ>
-[ 1540.876359]  <TASK>
-[ 1540.878553]  __local_bh_enable_ip+0x64/0x70
-[ 1540.882829]  __dev_queue_xmit+0x257/0x8a0
-[ 1540.886938]  ? __ip_local_out+0x48/0x160
-[ 1540.890959]  ip_finish_output2+0x25c/0x540
-[ 1540.895155]  __ip_queue_xmit+0x171/0x420
-[ 1540.899175]  ? ___slab_alloc+0xd1/0x670
-[ 1540.903108]  __tcp_transmit_skb+0x83c/0x950
-[ 1540.907393]  tcp_write_xmit+0x373/0xa60
-[ 1540.911327]  __tcp_push_pending_frames+0x32/0xf0
-[ 1540.916041]  tcp_sendmsg_locked+0x3a0/0xa10
-[ 1540.920324]  tcp_sendmsg+0x27/0x40
-[ 1540.923821]  sock_sendmsg+0x8b/0xa0
-[ 1540.927411]  ? sockfd_lookup_light+0x12/0x70
-[ 1540.931780]  __sys_sendto+0xeb/0x130
-[ 1540.935456]  ? __switch_to_asm+0x3a/0x80
-[ 1540.939477]  ? rseq_get_rseq_cs+0x32/0x290
-[ 1540.943670]  ? rseq_ip_fixup+0x14f/0x1e0
-[ 1540.947693]  __x64_sys_sendto+0x20/0x30
-[ 1540.951626]  do_syscall_64+0x3a/0x90
-[ 1540.955300]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-[ 1540.960451] RIP: 0033:0x7f389f713680
-[ 1540.964124] Code: 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 41 89 ca 
-64 8b 04 25 18 00 00 00 85 c0 75 1d 45 31 c9 45 31 c0 b8 2c 00 00 00 0f 
-05 <48> 3d 00 f0 ff ff 77 68 c3 0f 1f 80 00 00 00 00 55 48 83 ec 20 48
-[ 1540.983035] RSP: 002b:00007ffcb4d4a538 EFLAGS: 00000246 ORIG_RAX: 
-000000000000002c
-[ 1540.990724] RAX: ffffffffffffffda RBX: 000000000063fd28 RCX: 
-00007f389f713680
-[ 1540.997957] RDX: 0000000000004000 RSI: 0000000001ac3c40 RDI: 
-0000000000000004
-[ 1541.005187] RBP: 00007ffcb4d4a570 R08: 0000000000000000 R09: 
-0000000000000000
-[ 1541.012422] R10: 0000000000000000 R11: 0000000000000246 R12: 
-000000000063fcf8
-[ 1541.019649] R13: 00007ffcb4d4a910 R14: 0000000000000000 R15: 
-00007f389fa87000
-[ 1541.026881]  </TASK>
-[ 1541.029166] ---[ end trace 0000000000000000 ]---
-[ 1541.033925] XXX page_pool_shutdown_attempt() inflight=0
-
-
-
-
+> >
+> > What are the sleepable restrictions you're hinting about? I feel like
+> > with the sleepable bpf, we can also remove all the temporary buffer
+> > management / extra copies which sounds like a win to me. (we have this
+> > ugly heuristics with BPF_SOCKOPT_KERN_BUF_SIZE) The program can
+> > allocate temporary buffers if needed..
+> >
+> >>>>> - or maybe we can even have a per-proto bpf_getsockopt_cleanup call=
+ that
+> >>>>>      gets called whenever bpf returns an error to make sure protoco=
+ls have
+> >>>>>      a chance to handle that condition (and free the fd)
+> >>>>>
+> >>>>
+> >>>>
