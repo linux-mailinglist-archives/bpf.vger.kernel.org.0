@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CC46EEB25
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 01:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B898C6EEB34
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 02:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237540AbjDYX4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Apr 2023 19:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
+        id S238067AbjDZAEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Apr 2023 20:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236716AbjDYX4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Apr 2023 19:56:24 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE29014453
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 16:56:22 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PLERBa028347;
-        Tue, 25 Apr 2023 16:56:06 -0700
+        with ESMTP id S238071AbjDZAD6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Apr 2023 20:03:58 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031B88699
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 17:03:56 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33PLEMJO012487;
+        Tue, 25 Apr 2023 17:03:40 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=+/c9+3odcA4+wOfLWt9tX4oCnFEOEQol1pHw+hh+5TM=;
- b=O2Js7HbHU5SJTdItFGf2QjjrRPus1lA/1hNUJEPlSaaMa0Ha/T1j8C/t7Ywdpd8SBYLT
- ep918wBsnjtn5uPETTccvZ8zTWDD++kRaXr0nVS8cVEOXFmyXxfp5PE7nmrWDBE+Vkva
- EEhGoB3oylRCUnkvtA44muYWCaobIikEvIKyipZ+4z7YWudfkqdyMCwXwzGW4IOMz62V
- ItJLblyO9TGEFgbAIOathAmV3CFjUBda8pAiOD638U1NDrfkHHh8FtDuL0mFm/q3kQhS
- OMXEmcndrO8Kw1rViH4oVzYExrtEVezbSMYIm1cbPEgKN6XEwWizk7ahoZPer33dsp1g Zw== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q6ek7mrnj-1
+ bh=2v0fZx5qEArUJA3fYbt/2qrG8l5pf46shGtu4qh6+j4=;
+ b=cXjKlVypU0NmWERKfRp4/Y3Y0xJD34COBLNWtXrrbxfGZg9Wv6tus+BGQJDbx/OPq221
+ QnEwKKs/XPLsh1QdvfdaUFcYBDop0BTrBZOb4RTeLshc3PrwLsdAwlFcoq7GhpSV6Joo
+ M967Z1aF1emGQq5bMKc19klFMvVY15L8CX5ehKEPUxoXAj/a0RQ9kAW74DmILx9B1a9c
+ oun2/WnVjgeRqlAeKcJ0vVqdVKBZhUQKw7i6FqwA4zLoEwk7SkbFhHuOb799hewMjL2X
+ O+69cWYQM/ztok2vPMm5ktTJvVdDpb1g1z+HOcNZT2FVB0DXvO616LgKhbxfpF5hJCps MQ== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q687r6nyq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Apr 2023 16:56:06 -0700
+        Tue, 25 Apr 2023 17:03:40 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lsOsrX0obcMS1QMi4dtdvU7sElvK9iJcxxcyZbZIhiyH7Ws07GArQJgscwpPd2ZW0hzAcL56Y/nZCh26twmDAUxyeHVxlHZT/MvUMbA5zg7RdPEoXL6aoDg7TDCsda9RN0RskJECDDFnGOiPRnU5irZHYIA/8QB5dz6xM21fC5ubqv6CW3KH+dAl0SNe8YesK7CrVJ+C4koD893ZcgSabGnWkWtDgNcRVdp20BzcL+jtRweN4Zoz3bdTtd003wsV1OEvgyzCoQxoMamr8/EhZsvVYfmln8YMc4phj5Aw0+o7vLdaiMuVs5XZNh5ULFqkn7kNdhgy2jsULVpqj0Yc8w==
+ b=gzMgeG3QG2OGT7DgYH+ejxg5+zAx6OfbYEoJ+27CLFYNCKzQCzXSk+vBD2ufkDvTD0lVsmFEj+hRKIiecVUH+bjMcJFZImU41bPypIwx8s0VcHnvGrhgOUyVnegYD9+1dqblPr8crAhzpqOOL7g4GcvCzj/sbjTqEhwiXB82GFEvi+ehhtNixhlBREikSc8eRPVWtNyjkx2ggqfMUivH8XJBqj/dPUJvgLxE90lXdvie42NchMjhu40bkr9a5Crht/tIXGt7owQVGuitftUshx0KyViWDjNjLwP0fTMPK/OnyoqIQgVdpqFY44BKFmVpXfBRsoRdj82icOM1s4cqqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+/c9+3odcA4+wOfLWt9tX4oCnFEOEQol1pHw+hh+5TM=;
- b=XMqFZmTah8y2hI5wXzSWMWcwcKtBK08YGKCoHFPRW+iYQv4fH726mi0MlfcmiEGXiZmPISOwDyUB+eAUQy0nLKv8P4oBbepnKxm8pgmZ4F1dAhmzGM54g6jt1YCHWu0f0Gzf0wvv8mHdX1irUuOAvkkyBu9t25Ix/sI9oV2pFymZRkpLfvJnIFhFd/WggoOuggJ+nMGSOsxB6c1xjhnhJztcVAniJGDwS4IUiIFa+hDuacxaYb0OKlJgrAEWLdixtKnmXbYXDf1veXwXeTvA4PUwR4lfTxcLIPMV6tZIpwxg9l/VrAoYPJOBhJ3/0RJIJ20pmfF02+8G78igUQ9/1A==
+ bh=2v0fZx5qEArUJA3fYbt/2qrG8l5pf46shGtu4qh6+j4=;
+ b=HEPptQODAzjAYNTwUKA+ymh9fH7t6ymuUcOL+G3K6OoUPUEnfy2nyumD6QadwKjk8GBBX6aydYa1E/wQWFOLO0vWUUqTuO8zIdRjvJS5faDZ2E5RYmttPi4I+ZMUyhDRGk/0Dps/6LBhATtr5OrHtBgzgqxDWhl4c5/RWFir4TbvL27VacV6wJuKSCSKkhmUEqhXKmdE+ZyegbFYA6Q/jEB3qLQc31Xgui3oS3i9AkaUpHok9Kl33mO/0kpUMiw7+OzVWKf97DJcAg9cV+B5n6/3gFp/rWggArkOjRf4EohnsFidGJ1k1I9ooHKbipUY1p6YvfGEcHJicL68TemuhQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB4575.namprd15.prod.outlook.com (2603:10b6:510:89::22) with
+ by DM6PR15MB3926.namprd15.prod.outlook.com (2603:10b6:5:2b2::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.33; Tue, 25 Apr
- 2023 23:56:04 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6319.34; Wed, 26 Apr
+ 2023 00:03:38 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6319.033; Tue, 25 Apr 2023
- 23:56:04 +0000
-Message-ID: <d7e22ae7-0080-1ad3-e05b-379890953f95@meta.com>
-Date:   Tue, 25 Apr 2023 16:56:00 -0700
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6319.033; Wed, 26 Apr 2023
+ 00:03:37 +0000
+Message-ID: <0aa9d56b-9c23-9229-5c37-a40b14489869@meta.com>
+Date:   Tue, 25 Apr 2023 17:03:33 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC/PATCH bpf-next 01/20] bpf: Add multi uprobe link
+Subject: Re: [RFC/PATCH bpf-next 02/20] bpf: Add cookies support for
+ uprobe_multi link
+Content-Language: en-US
 To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
@@ -65,76 +67,74 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Hao Luo <haoluo@google.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
 References: <20230424160447.2005755-1-jolsa@kernel.org>
- <20230424160447.2005755-2-jolsa@kernel.org>
-Content-Language: en-US
+ <20230424160447.2005755-3-jolsa@kernel.org>
 From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230424160447.2005755-2-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-3-jolsa@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0144.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::29) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-ClientProxiedBy: BYAPR01CA0030.prod.exchangelabs.com (2603:10b6:a02:80::43)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH0PR15MB4575:EE_
-X-MS-Office365-Filtering-Correlation-Id: efa7e202-9bc1-4630-5c0b-08db45e8a12e
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM6PR15MB3926:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b921690-4f08-4700-0edb-08db45e9af76
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IVUxNa+G9Xn9ic4emEPse1be9f/rksgf8oq7mA1IRx90fUQhMi4/kGN4GpBBslA4sz54bgAT8yPxl3f0bFloGX23S6LwpTj7Il0JVoEXK0Vj/Ep/1qnE2ZEH+Fu6E6+wXD1xv/jeLPCsZd7638lO3xhK3N9hlTBuGY/QbziNG++XSlKJRk0O+QpCCIMDzB67ilITjbpy2q3bQDBTDVwsV2qwLbGTzLuXA0a66o9Hjz++HTiq3+eNhPQ5QGGqw6f99S1UEGERdLOSAaDzf/DZ+IM1vKIiGJqx+BWY4gr7KANLF37HZrLP63EiX/i3YjQEDaENDuJNaVzv+tFxcTDcrwebXgfJFTT+GLeZnc/cmR/tAdhVlxNzqZQ/fdqAkslpXz/2Wrnn5jMRrC0AGrgPwWzwhIC+JXpjIyKQyr2mvwx67qs0UTcNfLnkQ/GK2JHJjwXxq2zbhRrrE1ECOGV1SCiRoEj/G9Ql8R2hXsUowvEpNImkrgknkFh34PK0LjYBB4iEwSoZOxRFglxG1zRzl6HfVvMSQvIchlVvNwtbG4oSRtYj+JxGomd3ny09eP3afmzN/3lzPqUf5N1Zet3mAWQdICFQMY7ewq/92K0b8QH7FVZbXbHUWjLAB+CcEqoL4+vdbPi4oV/3D6VvBAB94g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(451199021)(186003)(38100700002)(6506007)(6512007)(53546011)(83380400001)(2616005)(2906002)(8676002)(8936002)(5660300002)(7416002)(36756003)(478600001)(41300700001)(54906003)(31696002)(86362001)(110136005)(4326008)(6486002)(316002)(6666004)(66556008)(66476007)(66946007)(31686004)(66899021)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 89esJdNlT75Y71Gn8piUpDrCoyeRrh42oupPKGxVnKRNkKrjkKIk+cjcS+ubgl4VWt+8nFyJtvBkn9JuJzf6P6DH1zDORwaO28x8ly/WdcwUatkfka0dxTUag7hTk68XTBKqouuB/KVgHVF7Thx3ie+4I95x/W0NY6iWQPHbK7azgj7pWwOUcpDYEb4pvcH5M0aVYgTMfBR2te0sUnHl1B3yjmWCpYhHUQMO+d0Fz/VUGQzGUZmC23LzBzp7zahD2V2NiBI2wSAeGiQ6P5Hmb+xtYmPEQbmbCnqpz16aXuB1zNPcTPH2JnQZHUfxhEeh1drlw7A0bgBS8adQvVRPop5DqM2O4FO1cKPblpY763Wzi7lHrsyxz+EDj6QQmWBFGutOZc5mfTXVYBT3qicIG5E9QF8VplMNIrr2Qe8KnZMJZEEmvs4GRV9hZQI3uKbCRK7U3xK34RLMlNoET8qIOu4KCDWPoS0lcUZPJdva1f+XLgfzVYVhweL0R1HgjlhP1MkfcZBlfdbyqivoSzlOLxDmszx1R3VTOu/gaTOiaAs6TdQFJ0aOkzZ0P0A535K9qaKXny59CwIoNtPXaAl2OzPnnuBm0XirCfULCUL9m2kaL6QeMfx1q5pdRrQsMsgAUeuu9yEbDwepzQI/2Vz8gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(366004)(39860400002)(376002)(451199021)(186003)(31696002)(54906003)(110136005)(86362001)(478600001)(36756003)(6486002)(38100700002)(6666004)(2906002)(7416002)(5660300002)(8676002)(8936002)(66476007)(66556008)(4326008)(66946007)(41300700001)(316002)(6506007)(53546011)(6512007)(2616005)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TE8yVlhlcjdTRzVDLzNJRE90ZXBtSzdVYXNTaVZpb0l4Mk9RRnZnNXJpN1Mz?=
- =?utf-8?B?SnJVVURqZ2I2ajV4OGxDclYrYTg3emYwMHdTZEJoc0h0endGS1NaV20xejlp?=
- =?utf-8?B?YWoyeGk5d3ZqcldMY0xuWXl1cXB0a0pCdWpRNXN1MnpZbWI3WjlDVkU5WnJa?=
- =?utf-8?B?ZDBRRjVUT0pHVGo3NktFZmpTN3phRi9lRmpZM0R5VTd3cWhPbjkrRWdrRnd1?=
- =?utf-8?B?a2kvVC9FMkk2YWMrVXFwSXBTaUJZcnJNMmg2c1RUeUhmcXJvTnVENE00K0k4?=
- =?utf-8?B?elBmRW9YZTVOcWV6eWFTcXJnTmdiOUJ3OHVLYldwcFVtWll0V0czcHBzNVYy?=
- =?utf-8?B?ZWJVNkl5L2psUklIQ0xvNjVKd0NMTk5JQ0VBMDB3amlwWkp4WnRaWUtGVDVN?=
- =?utf-8?B?K0l5R0c3UFRFV2lrWGttV3piVDhkaU9NUHVycXBxbFpmR1BkdHREMDN5clVp?=
- =?utf-8?B?bEptNWtoWHEyK3dVdC9PQSt4TkJWTklFOFpWd2UzVFgxU0RvMU4zUHBwV0NZ?=
- =?utf-8?B?bkhzS1ZPbEd2QVo2eVoraVVSR0VsV3J1bDJlZDFmZTJWTUVER1RkTS93T2FW?=
- =?utf-8?B?UXRJNk5UZWdjeDJZanp3eE1xN3pDMm5oUGdlMThVU1N4UEE0SmM2blFtMG13?=
- =?utf-8?B?WVI1anVka2JlYmFIMS9PTGFhTHBOeHM5SWQ4RE9mODkyd09vNkJZa2JVL1Bk?=
- =?utf-8?B?QUdYSXltVkdjMVVoM0Y5dUVpR2Jjdlk2aFlNM3l1MDlweEVCU2ZqZzJIK3VH?=
- =?utf-8?B?aitUNjZQSEVWZE5mZVV4c1RWais0OGJ1WGVJV3oza1ROMGt4OW1LY0J5bjFV?=
- =?utf-8?B?UWZoUHVreUYrOVVnbnhHVzhOdVlkR1JUKzJqbzRUVlVkdGQzMUxnQWV3azE2?=
- =?utf-8?B?N0tkY1dGaDh5U0FlZ0E0b3F0RmN1RzFaMHlINmNvNHE3TkFkRmhqcUdoR3Yr?=
- =?utf-8?B?bnEvVk5ySk13NDMxUFR4VklQUmN5YmhzcnBrWFlvK204b1VwSUkwM1BSLy9D?=
- =?utf-8?B?QmRLU0cyNFpPc3JJVWtKMFdqNHM1RSt2dC9YVEliUVFjTk1zZFU2ZlhpeDlW?=
- =?utf-8?B?RWJVS2hsUDA0RUhzR2R1ekFxUjZJd1lpUzlicGJ4NVRubTdvRFF5eVBRQVlB?=
- =?utf-8?B?Z0NhWFEzQmV4UTZNOEV2K21ldlRKcXFFV0pPaFd2TjlwVVE3WnZOdW1hQUFI?=
- =?utf-8?B?anhtUjAwd1Z3cmdRQzg5SDUwTGE1aXltMkNlK2NXMlpYdk5RejVPOW9uL0hF?=
- =?utf-8?B?M1k2VmE2YXBOMnJEUnIvLzJDRkZzM014UDQ1UEVqL1IydUxlVi8va29MbWoy?=
- =?utf-8?B?Z29sZFU4Ri82bHpQcjcxakdiMDJ1aCtzMDhxWVM4Ykk1blkyTkF1UkxpcGdN?=
- =?utf-8?B?RmN3bURscnU0N0FUUDNiQ0dWVHFJZVU1czBWaWwxSm83QnRQb0lzcHUySVk3?=
- =?utf-8?B?VjV4cE0yT0JpaXdJQjJqS1ZLRmlnMzV4dUdZcGlPSmhocW5CeTBsZm1wSEVS?=
- =?utf-8?B?czNPUkhOdnhTZzJMbCt3MXVrMWZsSW1sRnAxL0lnOHJicmR2NitOc21ka0I0?=
- =?utf-8?B?aDdJYkkzbFByOTJaQ2hycnFkMUNFVGsrbGhDYlQ2aFdWVzUwMmVWcWlYamFn?=
- =?utf-8?B?ckgwUG1kVzRaamZwR1JzaHpsM0RDczJ5ZDF3NS9yM1djWHlCZFVNOWlMMnNB?=
- =?utf-8?B?UzV1ZlJKRGo4SjZTMWo2SHRWSGFBTzFNZmJmWkRBVkpwT1VPNWxJd1BGbjR2?=
- =?utf-8?B?S2t6K2djZTdUV2JzQmRGZ1oyczVJSEZ0cUp1TWgwL3VVOVhpMHlGSTkyOHZ1?=
- =?utf-8?B?Q2tvSGtvTWdTQzJlSzJ4eGdTK3FqMUlLclJJcWdnVTYzSTd0WnJDbGlYU09n?=
- =?utf-8?B?bW1rSjZpTFEvcVkwK3lwTVFXNEEwWGgwNDdQM3B2WUR6SExCb0lyZ3BKNmdp?=
- =?utf-8?B?L2tVc1VRdTJTUHBKZjd6YndSaFZsY3ZvMHdDdVdjWnVDNkFLM1c3SzlwdVJv?=
- =?utf-8?B?NXV0bENhNklnV2p3cDJsY0ZsdkxTK3h6bkRLNGNVVjhWK0xaVE9nWm10YjNn?=
- =?utf-8?B?d3g2d0c3L0FsS2R5RGFXL1J1YzN4cDJPVEI5dXF6ZGJ3eWR4ZitBZ05Ud3RL?=
- =?utf-8?B?U1IyZlZqdnZ5d1NocUtjZUhrWllRbFgrT3lJK1ZUMEQvblArMTBXK21LZnNT?=
- =?utf-8?B?SVE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SWdNcnEwRUF2bXVUY3htRVpVcXV3SERlM203eDhIVGxBT05PcU52c0pwbSt1?=
+ =?utf-8?B?cmpXeTB1QWtObEVrdndkWXFlcHZEL29WVDVaZlFlQUlhK2hqbWs5Z2xxTUU0?=
+ =?utf-8?B?RjUvNFk2eEJqRmNyZVdkSmtiVWxNSHRTOVhvenJLQkhJK2NWQUFrTEVWa0ZB?=
+ =?utf-8?B?Ykx6TXdwTXREZlRuL1F4SlB5ZVN6Uys4OW5FS09lRk5DL2pDeitMbE03VTNj?=
+ =?utf-8?B?RUFFZFhiYkpFQnJqcFpXRmRqVk1oMCt0NFFtTlcvclJDYTVvSFh5OTBkMGdR?=
+ =?utf-8?B?TStudzYvaGxJYXd1UjRHVVRsdXhlTzZMVHZwM25Pc1FYbG1WSzY2YWVraWxU?=
+ =?utf-8?B?bFMzYjd4cFZTOFBFK0M2ZTJDdk5GaisreC9CWGlRUXJpaHpRdEZBd0o1VXJZ?=
+ =?utf-8?B?Y0xJamZzbDFtbEozWmhGYzIvcHZ1ZDhBMTZlMTBaY2Q5dUl4aU1wTi96MXRl?=
+ =?utf-8?B?TlZ3a2Nwdm1QVWw1YTZ2YVhpb0JTcmRVNWtLZXlBaHpoeG85SytLUm9LcW1j?=
+ =?utf-8?B?WGtPalROTHhpeE1ONktyYWpGRGorYTExZ1hZekt1UG1taHBiYlBRcDgyUUFL?=
+ =?utf-8?B?TVF6SGp6cWN2N1U1VXJ4WHZrRURCSEU5Qm4zMzVyZ2dOL21adTI3aWs5ZHNW?=
+ =?utf-8?B?TVVoMFpHSUxad0RsUnRLZGF5RUdERGhNbGpZNERaNThxNEwzMlF4UDRkeWNN?=
+ =?utf-8?B?WFFiaTdINUZhTTY5bVR5N3FYVWR6ZGlKQnRaT1pIWTdEMDd2azBRcVJra0tN?=
+ =?utf-8?B?WERlNlRPYUY5UEZzZkYwWGVmK3FCSmRWRUpCcHJFTzBWTENqR0htQnRheWJZ?=
+ =?utf-8?B?ejdjemZLaG9rL2h4RVhBSTR0SU5GaWJLMXBpaWVhUnZzUXN2anhBdnhTaUdG?=
+ =?utf-8?B?Zys3QTV4TFI5ekFONHJvcFF1aEg1Tko3Vzc0S2o1NWNnbUhycEFwVjFYaHVE?=
+ =?utf-8?B?U1F1VTVweGVhMmVOL25KMCs5cytTMU02RnVhZk1XU0VEaDk1QXNDK3pvL0hG?=
+ =?utf-8?B?OU9mTmxGVHUyZFZxRkN4ZDdqSU5hNGxXT2s2ZklKeWNrdlhTcUpDSjA1ZGNq?=
+ =?utf-8?B?d1A3SnZqNEE0SSt5QjBtZVhHZHJjN3JlYUxzcjVMNGN1TlhxWWJRUXl4RHVl?=
+ =?utf-8?B?bUdpcE1zTU56K0k1OWZyRFRYaHRTZk5uLzhYUHRXaVpveVRnTkZ3cGYxOXhV?=
+ =?utf-8?B?Nm1hb0VxaHo1VUJyOXNCT0krdTdtakxiOVk3NHl1d1UxTk5nTVNMOCsxT0Mv?=
+ =?utf-8?B?N2tEKzlCcnRiNzBnQ1BUTG5XZEV5dlNmcDFPcXZBOHNuM3NVMGdvNXlraitk?=
+ =?utf-8?B?MFF6Z3B6azBxd0JHaHNzaE4xSEtwVU93Y0ZLNkFPenVDaFQzMWo2Nkp6bEpl?=
+ =?utf-8?B?Q0psc0Z5bW50Q05GMHlOQWVEdjFDQzNObmZ2V09FY1VOdDN0UlpETHNVN216?=
+ =?utf-8?B?VEd0aEt3Q2x0TVhlbGc3Z2UyK3FmSlA4Z20zM3BxbTB5aHk0SFk3cG9IYXIv?=
+ =?utf-8?B?WkV4cFBvOGdiVXByaGlIa1FsWDJSOWhqcEw1ZWxpY2hLM3hSZGFIOGo1dzJZ?=
+ =?utf-8?B?d2FpQlVBalpJYlJMT2tBWmtiY2tvNG1SWm9YRk1WWkFNWG5yOUttMlhtY2Qx?=
+ =?utf-8?B?dGhOT0laOEVBVlRpRmpXcUdRMUtMancxNUZhbHBOSWFDNE1UbUhjSVVaWE5C?=
+ =?utf-8?B?UldrQWN0cjNUVjMzek9jQkJwUCtkYkhpMFc3eXpGOGxFazcvb1JGTnM5TUxr?=
+ =?utf-8?B?bzkrdElxQTU4Z1NVYkc4Nk03SkhHOThpVThhWVhQK0NXODV1UHhPR0dOb04y?=
+ =?utf-8?B?cUkzc0JaYWVaYWJIM2UrK3V0aHpINU9aUmRlbmQ2bWN0S2lFWGlKY3hteUF2?=
+ =?utf-8?B?VTlFSmoxcWpjTUxablZSelJlb2NqNHRzcDI2QndnRzE1SEpCaWVwUWt3Ny9o?=
+ =?utf-8?B?MlNSTmtZTy9nNUs2Q0R6YUtQblNMc0FwZmhQc3N4NFJlRWxkaGZmYS9iMWwz?=
+ =?utf-8?B?UWlPTUVhMjAvOUFjdEZkUEVCdHZyenNidUQzVE1wZW1xcnhuYXgzbkx2RC9X?=
+ =?utf-8?B?RnIvL0l4c1dTQmxOc2FWcVRBcjI4RnJXUStaMVFRYWg3Z0x5WVZUVW1RcXZQ?=
+ =?utf-8?B?NC9PeUtxRk9oVi9OM3ZlNVBGbmtSK3ZIMmFWcjdqcHcwM2xrK21EQk1YcGpH?=
+ =?utf-8?B?WlE9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efa7e202-9bc1-4630-5c0b-08db45e8a12e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b921690-4f08-4700-0edb-08db45e9af76
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2023 23:56:04.4132
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2023 00:03:37.7848
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oVurKwtocsQYA3MhR9nVVA1837sVSAi3L/esBoeODZPDJlOO9UfOTZ2MGXRKg6e9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4575
-X-Proofpoint-ORIG-GUID: Ubkb1IzNbY6NtPI7192ohWrFuRndtt9E
-X-Proofpoint-GUID: Ubkb1IzNbY6NtPI7192ohWrFuRndtt9E
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8pWfawT+HW99WzkHNd/x1+TfYajWP31KfXTpcpDd/N+AnCknm+A02jx2CtD7Qpvi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3926
+X-Proofpoint-ORIG-GUID: JYauYIKHPTW0djBQ4wAFYFrQ14n41KOP
+X-Proofpoint-GUID: JYauYIKHPTW0djBQ4wAFYFrQ14n41KOP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-04-25_10,2023-04-25_01,2023-02-09_01
@@ -152,261 +152,84 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 4/24/23 9:04 AM, Jiri Olsa wrote:
-> Adding new multi uprobe link that allows to attach bpf program
-> to multiple uprobes.
+> Adding support to specify cookies array for uprobe_multi link.
 > 
-> Uprobes to attach are specified via new link_create uprobe_multi
-> union:
+> The cookies array share indexes and length with other uprobe_multi
+> arrays (paths/offsets/ref_ctr_offsets).
 > 
->    struct {
->            __u32           flags;
->            __u32           cnt;
->            __aligned_u64   paths;
->            __aligned_u64   offsets;
->            __aligned_u64   ref_ctr_offsets;
->    } uprobe_multi;
-> 
-> Uprobes are defined in paths/offsets/ref_ctr_offsets arrays with
-> the same 'cnt' length. Each uprobe is defined with a single index
-> in all three arrays:
-> 
->    paths[idx], offsets[idx] and/or ref_ctr_offsets[idx]
-
-paths[idx], offsets[idx] and optional ref_ctr_offsets[idx]?
-
-> 
-> The 'flags' supports single bit for now that marks the uprobe as
-> return probe.
+> The cookies[i] value defines cookie for i-the uprobe and will be
+> returned by bpf_get_attach_cookie helper when called from ebpf
+> program hooked to that specific uprobe.
 > 
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->   include/linux/trace_events.h |   6 +
->   include/uapi/linux/bpf.h     |  14 +++
->   kernel/bpf/syscall.c         |  16 ++-
->   kernel/trace/bpf_trace.c     | 231 +++++++++++++++++++++++++++++++++++
->   4 files changed, 265 insertions(+), 2 deletions(-)
+>   include/uapi/linux/bpf.h |  1 +
+>   kernel/bpf/syscall.c     |  2 +-
+>   kernel/trace/bpf_trace.c | 46 +++++++++++++++++++++++++++++++++++++---
+>   3 files changed, 45 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index 0e373222a6df..b0db245fc0f5 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -749,6 +749,7 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
->   			    u32 *fd_type, const char **buf,
->   			    u64 *probe_offset, u64 *probe_addr);
->   int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
-> +int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
->   #else
->   static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
->   {
-> @@ -795,6 +796,11 @@ bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->   {
->   	return -EOPNOTSUPP;
->   }
-> +static inline int
-> +bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->   #endif
->   
->   enum {
 > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 1bb11a6ee667..debc041c6ca5 100644
+> index debc041c6ca5..77ce2159478d 100644
 > --- a/include/uapi/linux/bpf.h
 > +++ b/include/uapi/linux/bpf.h
-> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
->   	BPF_TRACE_KPROBE_MULTI,
->   	BPF_LSM_CGROUP,
->   	BPF_STRUCT_OPS,
-> +	BPF_TRACE_UPROBE_MULTI,
->   	__MAX_BPF_ATTACH_TYPE
->   };
->   
-> @@ -1052,6 +1053,7 @@ enum bpf_link_type {
->   	BPF_LINK_TYPE_KPROBE_MULTI = 8,
->   	BPF_LINK_TYPE_STRUCT_OPS = 9,
->   	BPF_LINK_TYPE_NETFILTER = 10,
-> +	BPF_LINK_TYPE_UPROBE_MULTI = 11,
->   
->   	MAX_BPF_LINK_TYPE,
->   };
-> @@ -1169,6 +1171,11 @@ enum bpf_link_type {
->    */
->   #define BPF_F_KPROBE_MULTI_RETURN	(1U << 0)
->   
-> +/* link_create.uprobe_multi.flags used in LINK_CREATE command for
-> + * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-> + */
-> +#define BPF_F_UPROBE_MULTI_RETURN	(1U << 0)
-> +
->   /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
->    * the following extensions:
->    *
-> @@ -1568,6 +1575,13 @@ union bpf_attr {
->   				__s32		priority;
->   				__u32		flags;
->   			} netfilter;
-> +			struct {
-> +				__u32		flags;
-> +				__u32		cnt;
-> +				__aligned_u64	paths;
-> +				__aligned_u64	offsets;
-> +				__aligned_u64	ref_ctr_offsets;
-> +			} uprobe_multi;
+> @@ -1581,6 +1581,7 @@ union bpf_attr {
+>   				__aligned_u64	paths;
+>   				__aligned_u64	offsets;
+>   				__aligned_u64	ref_ctr_offsets;
+> +				__aligned_u64	cookies;
+>   			} uprobe_multi;
 >   		};
 >   	} link_create;
->   
 > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 14f39c1e573e..0b789a33317b 100644
+> index 0b789a33317b..5b2dc7ae8616 100644
 > --- a/kernel/bpf/syscall.c
 > +++ b/kernel/bpf/syscall.c
-> @@ -4601,7 +4601,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->   		break;
->   	case BPF_PROG_TYPE_KPROBE:
->   		if (attr->link_create.attach_type != BPF_PERF_EVENT &&
-> -		    attr->link_create.attach_type != BPF_TRACE_KPROBE_MULTI) {
-> +		    attr->link_create.attach_type != BPF_TRACE_KPROBE_MULTI &&
-> +		    attr->link_create.attach_type != BPF_TRACE_UPROBE_MULTI) {
->   			ret = -EINVAL;
->   			goto out;
->   		}
-> @@ -4666,10 +4667,21 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->   		ret = bpf_perf_link_attach(attr, prog);
->   		break;
->   	case BPF_PROG_TYPE_KPROBE:
-> +		/* Ensure that program with eBPF_TRACE_UPROBE_MULTI attach type can
-> +		 * attach only to uprobe_multi link. It has its own runtime context
-> +		 * which is specific for get_func_ip/get_attach_cookie helpers.
-> +		 */
-> +		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI &&
-> +		    attr->link_create.attach_type != BPF_TRACE_UPROBE_MULTI) {
-> +			ret = -EINVAL;
-> +			goto out;
-> +		}
-
-The above seems redundant since it is checked in 
-bpf_uprobe_multi_link_attach().
-That is why the BPF_TRACE_KPROBE_MULTI is not checked here since
-bpf_kprobe_multi_link_attach() checks it.
-
->   		if (attr->link_create.attach_type == BPF_PERF_EVENT)
->   			ret = bpf_perf_link_attach(attr, prog);
-> -		else
-> +		else if (attr->link_create.attach_type == BPF_TRACE_KPROBE_MULTI)
->   			ret = bpf_kprobe_multi_link_attach(attr, prog);
-> +		else if (attr->link_create.attach_type == BPF_TRACE_UPROBE_MULTI)
-> +			ret = bpf_uprobe_multi_link_attach(attr, prog);
->   		break;
->   	default:
->   		ret = -EINVAL;
+> @@ -4566,7 +4566,7 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+>   	return err;
+>   }
+>   
+> -#define BPF_LINK_CREATE_LAST_FIELD link_create.kprobe_multi.cookies
+> +#define BPF_LINK_CREATE_LAST_FIELD link_create.uprobe_multi.cookies
+>   static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>   {
+>   	enum bpf_prog_type ptype;
 > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index bcf91bc7bf71..b84a7d01abf4 100644
+> index b84a7d01abf4..f795cfc00e5f 100644
 > --- a/kernel/trace/bpf_trace.c
 > +++ b/kernel/trace/bpf_trace.c
-> @@ -23,6 +23,7 @@
->   #include <linux/sort.h>
->   #include <linux/key.h>
->   #include <linux/verification.h>
-> +#include <linux/namei.h>
+> @@ -87,6 +87,8 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
+>   static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx);
+>   static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx);
 >   
->   #include <net/bpf_sk_storage.h>
+> +static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx);
+> +
+>   /**
+>    * trace_call_bpf - invoke BPF program
+>    * @call: tracepoint event
+> @@ -1089,6 +1091,18 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_kmulti = {
+>   	.arg1_type	= ARG_PTR_TO_CTX,
+>   };
 >   
-> @@ -2901,3 +2902,233 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
->   	return 0;
->   }
->   #endif
-> +
-> +#ifdef CONFIG_UPROBES
-> +struct bpf_uprobe_multi_link;
-> +
-> +struct bpf_uprobe {
-> +	struct bpf_uprobe_multi_link *link;
-> +	struct inode *inode;
-> +	loff_t offset;
-> +	loff_t ref_ctr_offset;
-> +	struct uprobe_consumer consumer;
-> +};
-> +
-> +struct bpf_uprobe_multi_link {
-> +	struct bpf_link link;
-> +	u32 cnt;
-> +	struct bpf_uprobe *uprobes;
-> +};
-> +
-> +struct bpf_uprobe_multi_run_ctx {
-> +	struct bpf_run_ctx run_ctx;
-> +	unsigned long entry_ip;
-> +};
-> +
-> +static void bpf_uprobe_unregister(struct bpf_uprobe *uprobes, u32 cnt)
+> +BPF_CALL_1(bpf_get_attach_cookie_uprobe_multi, struct pt_regs *, regs)
 > +{
-> +	u32 i;
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		uprobe_unregister(uprobes[i].inode, uprobes[i].offset,
-> +				  &uprobes[i].consumer);
-> +	}
+> +	return bpf_uprobe_multi_cookie(current->bpf_ctx);
 > +}
-> +
-> +static void bpf_uprobe_multi_link_release(struct bpf_link *link)
-> +{
-> +	struct bpf_uprobe_multi_link *umulti_link;
-> +
-> +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-> +	bpf_uprobe_unregister(umulti_link->uprobes, umulti_link->cnt);
-> +}
-> +
-> +static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-> +{
-> +	struct bpf_uprobe_multi_link *umulti_link;
-> +
-> +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-> +	kvfree(umulti_link->uprobes);
-> +	kfree(umulti_link);
-> +}
-> +
-> +static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
-> +	.release = bpf_uprobe_multi_link_release,
-> +	.dealloc = bpf_uprobe_multi_link_dealloc,
-> +};
-> +
-> +static int uprobe_prog_run(struct bpf_uprobe *uprobe,
-> +			   unsigned long entry_ip,
-> +			   struct pt_regs *regs)
-> +{
-> +	struct bpf_uprobe_multi_link *link = uprobe->link;
-> +	struct bpf_uprobe_multi_run_ctx run_ctx = {
-> +		.entry_ip = entry_ip,
-> +	};
-> +	struct bpf_run_ctx *old_run_ctx;
-> +	int err;
-> +
-> +	preempt_disable();
 
-Alexei has pointed out here.
-preempt_disable() is not favored.
-We should use migrate_disable/enable().
-For non sleepable program, the below rcu_read_lock() is okay.
-For sleepable program, use rcu_read_lock_trace().
-See __bpf_prog_enter_sleepable_recur() in trampoline.c as
-an example.
+the argument regs is not used here.
+looks like we have the same issue for
+   bpf_get_attach_cookie_kprobe_multi
+   bpf_get_attach_cookie_trace
+   bpf_get_attach_cookie_tracing
+
+I think this probably for preserving uapi. So I am okay with
+the above, just want to point it out.
 
 > +
-> +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-> +		err = 0;
-> +		goto out;
-> +	}
-> +
-> +	rcu_read_lock();
-> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> +	err = bpf_prog_run(link->link.prog, regs);
-> +	bpf_reset_run_ctx(old_run_ctx);
-> +	rcu_read_unlock();
-> +
-> + out:
-> +	__this_cpu_dec(bpf_prog_active);
-> +	preempt_enable();
-> +	return err;
-> +}
+> +static const struct bpf_func_proto bpf_get_attach_cookie_proto_umulti = {
+> +	.func		= bpf_get_attach_cookie_uprobe_multi,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_CTX,
+> +};
 > +
 [...]
