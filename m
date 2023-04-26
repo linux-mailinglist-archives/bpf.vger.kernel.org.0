@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0046E6EEE63
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 08:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730F76EEE74
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 08:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239490AbjDZGeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 02:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S239495AbjDZGkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 02:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjDZGeV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 02:34:21 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5287426B8
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 23:34:20 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4efea87c578so7064e87.1
-        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 23:34:20 -0700 (PDT)
+        with ESMTP id S239223AbjDZGko (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 02:40:44 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7659DE62
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 23:40:38 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4efea87c578so7093e87.1
+        for <bpf@vger.kernel.org>; Tue, 25 Apr 2023 23:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682490858; x=1685082858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XekK5PekC7GoeZPCg+JQ/nn8VHa69nWLh19xCdeTJX8=;
-        b=tNobsBe8wdLBadc9rDYBW9mMu9SV1Pa4ANSSxEBEcmKyXI5i9RZTFE2JLVFX2djq3M
-         /fVF1Gih5smO/7k+3WrWaZg7nIUyDHQsOkAMRclD6F7wR4W9xj9qg+Fi5D4yqH2PSVUg
-         zRypLAW3/GVV2HdQk3Zo6oeK9ZrLiPB6V7aSDXYEMXfJ3QqrgyxavVT/Y8gfh6L4UQUu
-         477lIryfWrqBaJxGZ3CjaK6IFAXTek82lKqy51o9MVPJOIcyLb7SgCnq4Uk25Kg0z9ho
-         FOn+1/cwleiYiDUrNkiOtSsVctAV5OOOIJdpYttNgOQ2x36nPx40HPtAO4KXAuDERZt1
-         nMsQ==
+        d=google.com; s=20221208; t=1682491237; x=1685083237;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=26EaJCB4BLLjpmwn+UJgLwabpmkPDEPq9rinV+1slYg=;
+        b=VDIVNx8LrwzttePAvdnXS2sDN2anEP+SmBVydC+gTIck5cs4NM01wEgckxFMBH/8DB
+         Fj29SrK1x8MLN7v/rA5mQg5Z7ai9GdF/tuYZpKTkAI77zFORov6oyciyadm1vr4xipxM
+         n3lY1Dbh0xQ/asAgJJMz3gzsb1oFS2/5DAoftRk3WUOfPehnCVlh0vc9LeOvzWC9Rd6C
+         nLX81wAUVKYDjTRmapCXJZjDjvhh1kYV67j4tsJJn5m+CaiwKrThuufoKGxnsnjSyTZ8
+         yWH8uUpOy850MNsLVVOCzlwBYW+awdFfPQYzAOUeWf90+uvCsErqJ9gISEvLcHf0bsNJ
+         ZepQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682490858; x=1685082858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XekK5PekC7GoeZPCg+JQ/nn8VHa69nWLh19xCdeTJX8=;
-        b=ZWtHQssc4COwACJCPbVHT6mD1oxg4qwBF3XaIbHzgp6kRP8kkJSbBlfSqmr/4bQ2XQ
-         q5qmcWIXHLQRDmkODlp52pm5edC3mOU47GuAc4fYph6i8BA8DEizya5ePu7VdyyefBbS
-         BWzlYSneInOkXp/BJyzFRZ0K62wkeOkEgm1bliINuS/GN6T22tbXmUeHEfAodLDQnaXh
-         o0OdqG1kS8DB2aS/+k0keBB6xxLqmzAGO7v9IjP7Bq6Dcgmsixw6FpChjeOnKjnN5nw0
-         CQSNyVRJm0Jt94rTxyG2b7D1iRd05vPzW86F3JYZ/lyb0QisQHqyGnO7Snc3t7Ges1SG
-         Q7BQ==
-X-Gm-Message-State: AC+VfDy2kkTdlWHq9LqPdJjwGAj2e3CVx4yN0N0k+mtQ/mFsnAfco04S
-        VEsQca6cvHjBP2c59f2deFmIcztYgQWy5DFSWanZVA==
-X-Google-Smtp-Source: ACHHUZ5a3/l9GMjyHQhJHM3/n5Wle1SDQKtgzHRC2aZgoZGtyH4dB5Vj7wN0dpP43pA24oEUaBPjG0HUmgIGEYHDH8M=
-X-Received: by 2002:a05:6512:3c8b:b0:4e8:5117:71ae with SMTP id
- h11-20020a0565123c8b00b004e8511771aemr80332lfv.3.1682490858408; Tue, 25 Apr
- 2023 23:34:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682491237; x=1685083237;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=26EaJCB4BLLjpmwn+UJgLwabpmkPDEPq9rinV+1slYg=;
+        b=VqKIxP8xL+nWbQdYeAwX51iLrqap3NHmUWII6I/wIAOurCfEFjYSLh4o0/LB5Py1vG
+         zaaafddB/LwZNfDwwBuxFc/Y67UfJzbf73rncwp1MLOyIM6MDnKt2INwe+d1XgZl1S/k
+         T0OUnT2mnWiThIDD6nxh8h0IHloYjQ84VVWMvm0QC3WKZIa/8mhZimTwqP7SAOtQ1Jak
+         c4TF1v2KTh1Czj5ZLV35sGt6/z0jrWbTqD9loXNJuRQ+0nB7HNjd5eKrY6nYBlOXqcDt
+         6Upo1MKHCBJKcRCrgMlBbe7eS0f31rbwq/p2jf3hrqL10KAiw6df8CSAzwtgHyeKjt5K
+         aNTg==
+X-Gm-Message-State: AC+VfDzag3IDteQ956OZMoGGE0G/MLyzWIc59SUE38pRFHhXOHsDNx7p
+        ECs1XVQbgzKwqJuWEcGpnBA+5SX3G+WkKVLqzrQ7Hw==
+X-Google-Smtp-Source: ACHHUZ5cVNzl395xaBLbIB0gf8rLCrYPuaZPJN0WZn147Mwa5s1vko3C35Ob71ekGdCqtq/gzHms8ZpADoD8xdj8JKI=
+X-Received: by 2002:a05:6512:4023:b0:4ea:e5e2:c893 with SMTP id
+ br35-20020a056512402300b004eae5e2c893mr65339lfb.1.1682491236524; Tue, 25 Apr
+ 2023 23:40:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000079eebe05fa2ea9ad@google.com> <CANiq72mor1BkxpAT=v0EsQJN-7fvMjo9K5ooVk1x7ZbBDEyn8g@mail.gmail.com>
-In-Reply-To: <CANiq72mor1BkxpAT=v0EsQJN-7fvMjo9K5ooVk1x7ZbBDEyn8g@mail.gmail.com>
+References: <00000000000079eebe05fa2ea9ad@google.com> <20230426044928.GD1496740@google.com>
+In-Reply-To: <20230426044928.GD1496740@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 26 Apr 2023 08:34:05 +0200
-Message-ID: <CACT4Y+aMdct_tjSYsBvvtGoDji6feOiANogRbp3N41qkzU+5CQ@mail.gmail.com>
+Date:   Wed, 26 Apr 2023 08:40:23 +0200
+Message-ID: <CACT4Y+bJQOYV4_VumkrwobDio8CH-oqT2Wuo4Gzz2+BkX6tqzA@mail.gmail.com>
 Subject: Re: [syzbot] upstream boot error: BUG: unable to handle kernel NULL
  pointer dereference in __dabt_svc
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     syzkaller@googlegroups.com, alex.gaynor@gmail.com,
-        andriy.shevchenko@linux.intel.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, bpf@vger.kernel.org, gary@garyguo.net,
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     syzbot <syzbot+d692037148a8169fc9dd@syzkaller.appspotmail.com>,
+        alex.gaynor@gmail.com, andriy.shevchenko@linux.intel.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
+        bpf@vger.kernel.org, gary@garyguo.net,
         linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
         ojeda@kernel.org, pmladek@suse.com, rostedt@goodmis.org,
-        rust-for-linux@vger.kernel.org, senozhatsky@chromium.org,
-        syzkaller-bugs@googlegroups.com, wedsonaf@gmail.com
+        rust-for-linux@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        wedsonaf@gmail.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -75,37 +75,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Apr 2023 at 23:36, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
+On Wed, 26 Apr 2023 at 06:49, Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
 >
-> Hi syzbot engineers,
+> On (23/04/25 13:06), syzbot wrote:
+> > 8<--- cut here ---
+> > Unable to handle kernel NULL pointer dereference at virtual address 000005fc when read
+> > [000005fc] *pgd=80000080004003, *pmd=00000000
+> > Internal error: Oops: 206 [#1] PREEMPT SMP ARM
+> > Modules linked in:
+> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.3.0-syzkaller #0
+> > Hardware name: ARM-Versatile Express
 >
-> On Tue, Apr 25, 2023 at 10:06=E2=80=AFPM syzbot
-> <syzbot+d692037148a8169fc9dd@syzkaller.appspotmail.com> wrote:
-> >
-> > HEAD commit:    de10553fce40 Merge tag 'x86-apic-2023-04-24' of git://g=
-it...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D14bdae68280=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D975b8311f6b=
-96bca
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd692037148a81=
-69fc9dd
-> > compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110=
-, GNU ld (GNU Binutils for Debian) 2.35.2
-> > userspace arch: arm
+> > Insufficient stack space to handle exception!
 >
-> I am not sure what triggered the bot to consider Rust here -- the
-> config does not enable it.
+> So much stuff is going on there.
 >
-> What am I missing?
+> > Task stack:     [0xdf85c000..0xdf85e000]
+> > IRQ stack:      [0xdf804000..0xdf806000]
+> > Overflow stack: [0x828ae000..0x828af000]
+> > Internal error: kernel stack overflow: 0 [#2] PREEMPT SMP ARM
+> > Modules linked in:
+> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.3.0-syzkaller #0
+> > Hardware name: ARM-Versatile Express
+> > PC is at __dabt_svc+0x14/0x60 arch/arm/kernel/entry-armv.S:210
+> > LR is at vsnprintf+0x378/0x408 lib/vsprintf.c:2862
+> > pc : [<80200a74>]    lr : [<817ad5d8>]    psr: 00000193
+> > sp : df804028  ip : df805868  fp : df805864
+> > r10: 00000060  r9 : ffffffff  r8 : 00000010
+> > r7 : 00000020  r6 : 00000004  r5 : ffffffff  r4 : df805960
+> > r3 : ffffffff  r2 : 00000040  r1 : ffffffff  r0 : 8264d250
+> > Flags: nzcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> > Control: 30c5387d  Table: 80003000  DAC: 00000000
+> > Register r0 information:
+> > 8<--- cut here ---
+> > Unable to handle kernel NULL pointer dereference at virtual address 000001ff when read
+> > [000001ff] *pgd=80000080004003, *pmd=00000000
+> > Internal error: Oops: 206 [#3] PREEMPT SMP ARM
+> > Modules linked in:
+> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.3.0-syzkaller #0
+> > Hardware name: ARM-Versatile Express
+> > PC is at __find_vmap_area mm/vmalloc.c:841 [inline]
+> > PC is at find_vmap_area mm/vmalloc.c:1862 [inline]
+> > PC is at find_vm_area mm/vmalloc.c:2571 [inline]
+> > PC is at vmalloc_dump_obj+0x38/0xb4 mm/vmalloc.c:4108
+> > LR is at __raw_spin_lock include/linux/spinlock_api_smp.h:132 [inline]
+> > LR is at _raw_spin_lock+0x18/0x58 kernel/locking/spinlock.c:154
+>
+> Not sure if I can make sense out of this.
 
-Hi Miguel,
++linux-arm-kernel@
 
-The crash is in lib/vsprintf.c and:
-
-$ scripts/get_maintainer.pl -f lib/vsprintf.c
-...
-rust-for-linux@vger.kernel.org (open list:RUST)
-...
+I suspect this is some recent arch/arm related corruption.
+There are also these similar boot crashes that started happening at
+roughly the same time:
+https://syzkaller.appspot.com/bug?id=4d697346183db2f86ba2f76acb7d66e7731f88df
+https://syzkaller.appspot.com/bug?id=dcd98d67539fe4d0d28d2e655e510569eda6f4de
