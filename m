@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBB16EFADA
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCC96EFB11
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbjDZTSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        id S236122AbjDZTZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjDZTSA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:18:00 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13074FF
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:17:59 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-50506111a6eso13830965a12.1
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:17:58 -0700 (PDT)
+        with ESMTP id S234643AbjDZTYt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:24:49 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2860226B8
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:24:30 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5066ce4f725so10991143a12.1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682536677; x=1685128677;
+        d=gmail.com; s=20221208; t=1682537068; x=1685129068;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zihP0FVvNq/zb4OyvOHfwnz1MSnZAJw5hAefcFKWQP0=;
-        b=hjlWBh3apcdHao3Y4VxsUzMDU8y0pIbCYnwcP9eyTVGavFDEhFJwyBeR2jqNBVI/0E
-         /5TmXhMK7Y4hinr6CLfwJghHa3btP323zj7zT0AeMeoCViKY4ZQDbmSP/WAfMaWXWl3u
-         280gftbcLyXiIU2t0nN34ztC2ile/FH9WEAn+yudzPIqNJgDwSi2F3Fs7Z0Rcv6YYCq2
-         mCuKTjDuqnYIbvY7DHqOeVfdap0X4gtqo7u5OxP7FwQFsqJKXIAy3UkLjz42S+Ycie8k
-         edFektFSMquJu49XIrdeGWaiYOfTftPvV7IYt3RIC4z6fWQIZ12L6rsa9MCEnOUiCyog
-         oPig==
+        bh=vdLbvibj1IxG+sUfqeICR4jorhWVaQNVTMb8cqMkFWI=;
+        b=km/EjHcPmHBUxhiJzJjs8yoRwpv+IbRot/Ym5oBwU8+xfH77QJ1pVr5x68Tmjn1v6a
+         ge7htmuI5DxW46iHayr5jwVcX24Uvpm/kESTadwlb7e5V8lCfWvt6wJb044qqGoGz9MF
+         4+DdRKW7xZ2YAauvl+FgiGf6MYoEs/XMPuuVY6y4gFhCLbzv2U59mM/TQ5pusORBNYhf
+         9jzWu5FpzhS50jla5XPEgZhrNHJ38iv3GyOCc4plsTVHDEGa6fNmVbYi5JhDD+vqO0YL
+         QikijJSeweruHPJAv8mSirYmSJnb1NvX3VYGYEkHz/o46tZ6nQNRvJec6yTFrkt9x7Df
+         ZB2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682536677; x=1685128677;
+        d=1e100.net; s=20221208; t=1682537068; x=1685129068;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zihP0FVvNq/zb4OyvOHfwnz1MSnZAJw5hAefcFKWQP0=;
-        b=edmX0/2AXM9t5pYLHq8xUE5BHoAWqv4wjCPCEsKoWOtSquaDcl/SZPAXWsd3LzgMH4
-         dQ7B59VtOTRFlj5kvqzX08/mc7QHfKj2hpY5GDo3/2M14z/lUdcdwmRaTyVh7pyk323K
-         ZoBTBtt+IR6Qn7TR8XhTgt4OwKpTzrjbauGj+qPHIGG0Pu4Q7sVvVjoJiGl6jbxfXPnS
-         3a7Q0yZZutvdkYNNYzXkDkEci7EETJJZ5t6OyW+nb6b3gxxZYMhHchy/14HAcVZi9NzN
-         8LKVS0L49h8d2lqTehWOuAvxR1H4bEiX+lk4Q/HFProwe33b4k0w46lo9Q1v096w0/jM
-         /J+w==
-X-Gm-Message-State: AAQBX9daN+5pJl7wdI4AjL4aY3bIKlzChn13pgRKozQjZPX4D5w9UMwu
-        ZkOURUTV0nTB9g5JZ2mopZJSaeqWHWCvC9eTsssiKC0a/pM=
-X-Google-Smtp-Source: AKy350YpubPAgYJiN2vswVYUdsf1RMUIc4G9sFUa9uBuajD3dHolClyg79w8XIUKLFaqCv7TsUzDg3W/9anSgW5v2ss=
-X-Received: by 2002:a05:6402:10c2:b0:504:9cec:8afb with SMTP id
- p2-20020a05640210c200b005049cec8afbmr18070563edu.2.1682536677317; Wed, 26 Apr
- 2023 12:17:57 -0700 (PDT)
+        bh=vdLbvibj1IxG+sUfqeICR4jorhWVaQNVTMb8cqMkFWI=;
+        b=I8w8u5NwpZ0Le5zz9DhIltx2W4FGq8aq/xP8H45Q1UHsPon2NjoUar9iPgpPnI3GfF
+         3Lp0UYVfd9E0EGg7nyRqqps5nzwqAPqnswJq7sZj2Y5LnbWcrRPfcqe4Fs6t6hKjRQoH
+         J/vHmWPjJ1fvbThYLgndHAXz7iB4ahuotrUaWJE1SQBuufh47FPWwL0jiWSuYTsJyxOo
+         783zJuXb+qr12Jh67uk1DJsSbbzdrvuD7HlGTTsor7pD8d3Uc8hXEp+IzxZ8O7hRmV+m
+         kPWizDyH/eMucgqwkTyzo0bnBT1UtuVKi2MHaM1fUuVONldG0jmhiAyzq0Wjw4c01gR+
+         H3iw==
+X-Gm-Message-State: AAQBX9fq0XI4slpCBE3pDmQ2IWvP+wvK6ZvrtM1cOspkTCdXfHsi4lat
+        xpRB0PG0RkthizecqpkNKtx2Goruy7D7jt3MYDE=
+X-Google-Smtp-Source: AKy350Ylj/V59SXkPNZIuFnRVYwaqIeoaIps1ITGOYb70oxli7/hPADAlKYoSiYmgqa4jnXy+INGxN9WVFvdNb6M2x4=
+X-Received: by 2002:a50:e604:0:b0:506:e626:2da with SMTP id
+ y4-20020a50e604000000b00506e62602damr22245472edm.4.1682537068417; Wed, 26 Apr
+ 2023 12:24:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-2-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-2-jolsa@kernel.org>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-9-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-9-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:17:45 -0700
-Message-ID: <CAEf4Bzayo2gUTyBZGUsv5LbgRY+wLrwNsP_1=hc4HU5SOGVjrA@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 01/20] bpf: Add multi uprobe link
+Date:   Wed, 26 Apr 2023 12:24:16 -0700
+Message-ID: <CAEf4BzYKkPHBqbr1pXjA6jEkvJTpu0bjFHt0Nu0bm4un3DD6mQ@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 08/20] libbpf: Add elf_find_patern_func_offset
+ function
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,71 +69,71 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Apr 24, 2023 at 9:06=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding new multi uprobe link that allows to attach bpf program
-> to multiple uprobes.
+> Adding elf_find_patern_func_offset function that looks up
+> offsets for symbols specified by pattern argument.
 >
-> Uprobes to attach are specified via new link_create uprobe_multi
-> union:
+> The 'pattern' argument allows wildcards (*?' supported).
 >
->   struct {
->           __u32           flags;
->           __u32           cnt;
->           __aligned_u64   paths;
->           __aligned_u64   offsets;
->           __aligned_u64   ref_ctr_offsets;
->   } uprobe_multi;
->
-> Uprobes are defined in paths/offsets/ref_ctr_offsets arrays with
-> the same 'cnt' length. Each uprobe is defined with a single index
-> in all three arrays:
->
->   paths[idx], offsets[idx] and/or ref_ctr_offsets[idx]
->
-> The 'flags' supports single bit for now that marks the uprobe as
-> return probe.
+> Offsets are returned in allocated array together with its
+> size and needs to be released by the caller.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/trace_events.h |   6 +
->  include/uapi/linux/bpf.h     |  14 +++
->  kernel/bpf/syscall.c         |  16 ++-
->  kernel/trace/bpf_trace.c     | 231 +++++++++++++++++++++++++++++++++++
->  4 files changed, 265 insertions(+), 2 deletions(-)
+
+
+Why do we need to expose any elf-related helpers as libbpf public API?
+Just to use them in selftests? If yes, then selftests can use libbpf
+internal helpers just like bpftool due to static linking. In general,
+it of course doesn't make sense for libbpf to provide ELF helpers as
+part of its API.
+
+Also s/patern/pattern/.
+
+
+>  tools/lib/bpf/libbpf.c   | 121 +++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |   7 +++
+>  tools/lib/bpf/libbpf.map |   1 +
+>  3 files changed, 129 insertions(+)
 >
-
-[...]
-
-> +static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-> +{
-> +       struct bpf_uprobe_multi_link *umulti_link;
-> +
-> +       umulti_link =3D container_of(link, struct bpf_uprobe_multi_link, =
-link);
-> +       kvfree(umulti_link->uprobes);
-> +       kfree(umulti_link);
-> +}
-> +
-> +static const struct bpf_link_ops bpf_uprobe_multi_link_lops =3D {
-> +       .release =3D bpf_uprobe_multi_link_release,
-> +       .dealloc =3D bpf_uprobe_multi_link_dealloc,
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 0b15609d4573..7eb7035f7b73 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11052,6 +11052,127 @@ elf_find_multi_func_offset(const char *binary_p=
+ath, int cnt,
+>         return ret;
+>  }
+>
+> +struct match_pattern_data {
+> +       const char *pattern;
+> +       struct elf_func_offset *func_offs;
+> +       size_t func_offs_cnt;
+> +       size_t func_offs_cap;
 > +};
 > +
+> +static int pattern_done(void *_data)
+> +{
+> +       struct match_pattern_data *data =3D _data;
+> +
+> +       // If we found anything in the first symbol section, do not searc=
+h others
+> +       // to avoid duplicates.
 
-let's implement show_fdinfo and fill_link_info as well? At least we
-can display how many instances of uprobe are attached for a given
-link? And depending on what we decide with single or multi paths per
-link, we could output path to the binary, right? And PID as well, if
-we agree that it's possible to support it. Thanks!
+C++ comment
 
+
+> +       return data->func_offs_cnt;
+> +}
+> +
 
 [...]
