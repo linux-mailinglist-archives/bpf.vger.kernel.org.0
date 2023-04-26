@@ -2,206 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80426EF394
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 13:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703766EF4C6
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 14:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbjDZLo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 07:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
+        id S240650AbjDZM5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 08:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbjDZLo6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 07:44:58 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34304C3F;
-        Wed, 26 Apr 2023 04:44:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Q5xcg6yW2z9v7H0;
-        Wed, 26 Apr 2023 19:35:15 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDXQOyNDklkVnlZAg--.7127S2;
-        Wed, 26 Apr 2023 12:44:27 +0100 (CET)
-Message-ID: <ade93f7324c5f07511a0793f702024d41889636d.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH 4/6] bpf: Introduce bpf_verify_umd_signature() kfunc
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Yonghong Song <yhs@meta.com>, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
-        mykolal@fb.com, shuah@kernel.org
-Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, bpf@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 26 Apr 2023 13:44:09 +0200
-In-Reply-To: <23649e1d-8fee-079a-21de-87f7024add81@meta.com>
-References: <20230425173557.724688-1-roberto.sassu@huaweicloud.com>
-         <20230425173557.724688-5-roberto.sassu@huaweicloud.com>
-         <23649e1d-8fee-079a-21de-87f7024add81@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230401AbjDZM5a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 08:57:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01B62684
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 05:57:28 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-505934ccc35so12250363a12.2
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 05:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dectris.com; s=google; t=1682513847; x=1685105847;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=j1QsbQyF3TR/hoFInEXmDClrMvJnRmuE6Ofnl/uFp38=;
+        b=JmiY6YfBuybCRpi0/YDE8hX7+l6vTaPtTJ79KCJCouinYq1bCpGXoFcc26Bo/pDCfy
+         o4Nn4EiaaS5OOUNhKEbnkQxC3OhyMnr1F/Po4sE+yRvRLT49zfFp0dLSd5DlRpwblCL+
+         uto0euo/3QfNZtfjgrpwBJWVIkme+wT+ak18Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682513847; x=1685105847;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j1QsbQyF3TR/hoFInEXmDClrMvJnRmuE6Ofnl/uFp38=;
+        b=KMDaiinZgWxlHdu/p1dKDLD/jGGX/tD/lQ75FnEX/d8ziLjPeMA6AMgodLmZu1THE7
+         QKhEtmZByEu/oo7Pc58FYXCSwETRXZ/4OOD2TTxS8OPogBV/XtL6V5HU3mkaL22fTApn
+         K24xb3q5+MuxPMcSmTuARVrBU+HDGr5WU3HkIi6BCoyTWz7O1lwwfZ25xWENMSwAbfMW
+         yKekNEkb6RTKm+oXiNDMA2L9Q43SEu5HHieWCyY5AVT3pnD71+kKtSPpOcaFqtDHH8bY
+         F5Tm3c2vbLNGryBfiKAv+Qpzf189jo3yPryz3srJu3yra06Djf6ZPZrN/r3hwS8GJVPa
+         Y3gA==
+X-Gm-Message-State: AAQBX9c8dRbQt8O17pQ3u1Q7EVA/ql5sIKZ9IFs5O08oAC/EvTLgyiEb
+        lFXvqjq/VydmFTm01JN9syfpqkFMgrHxR1XmamN2jw==
+X-Google-Smtp-Source: AKy350ZGTmt/6Xm8J8Z+YJRO5ZAF5Cg9M4AsqmY4MImaN2aS8xw7FbSFm0eUoRt/8GYZH6ApMntLSdSXB3B6vwQeM54=
+X-Received: by 2002:aa7:c74e:0:b0:502:1cae:8b11 with SMTP id
+ c14-20020aa7c74e000000b005021cae8b11mr19006448eds.23.1682513847171; Wed, 26
+ Apr 2023 05:57:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwDXQOyNDklkVnlZAg--.7127S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr48Gr1Utw4kWF4UJry8Grg_yoWrZw15pF
-        W8KF4F9ry8JF1xtFyUXa13Za4Skws2qw17G3sFya4fGFnavr1fCw18tF45W3sYk348trZ5
-        ZrW0q34a93W5GaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
-        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQATBF1jj4yCiQABsh
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230423075335.92597-1-kal.conley@dectris.com>
+ <6446d34f9568_338f220872@john.notmuch> <CAHApi-=Vr4VARgoDNB1T906gfDNB5L5_U24zE=ZHQi+qd__e8w@mail.gmail.com>
+ <644837cec75d1_8f94b20880@john.notmuch>
+In-Reply-To: <644837cec75d1_8f94b20880@john.notmuch>
+From:   Kal Cutter Conley <kal.conley@dectris.com>
+Date:   Wed, 26 Apr 2023 15:02:17 +0200
+Message-ID: <CAHApi-kzaJxQTRgZqYmMSWYa6CW6b0U6x9Sdpk_Kt=fd2hPCjA@mail.gmail.com>
+Subject: Re: [PATCH] xsk: Use pool->dma_pages to check for DMA
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2023-04-25 at 14:25 -0700, Yonghong Song wrote:
-> 
-> On 4/25/23 10:35 AM, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Introduce the bpf_verify_umd_signature() kfunc, to verify UMD-parsed
-> > signatures. The parameters and usage are the same as for
-> > bpf_verify_pkcs7_signature().
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >   kernel/trace/bpf_trace.c | 69 ++++++++++++++++++++++++++++++++--------
-> >   1 file changed, 55 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index e8da032bb6f..c9cae337596 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1271,7 +1271,7 @@ __bpf_kfunc struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
-> >    * The key pointer is marked as invalid, to prevent bpf_key_put() from
-> >    * attempting to decrement the key reference count on that pointer. The key
-> >    * pointer set in such way is currently understood only by
-> > - * verify_pkcs7_signature().
-> > + * verify_pkcs7_signature() and verify_umd_signature().
-> >    *
-> >    * Set *id* to one of the values defined in include/linux/verification.h:
-> >    * 0 for the primary keyring (immutable keyring of system keys);
-> > @@ -1317,6 +1317,27 @@ __bpf_kfunc void bpf_key_put(struct bpf_key *bkey)
-> >   }
-> >   
-> >   #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> > +static int validate_key(struct bpf_key *trusted_keyring)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (trusted_keyring->has_ref) {
-> > +		/*
-> > +		 * Do the permission check deferred in bpf_lookup_user_key().
-> > +		 * See bpf_lookup_user_key() for more details.
-> > +		 *
-> > +		 * A call to key_task_permission() here would be redundant, as
-> > +		 * it is already done by keyring_search() called by
-> > +		 * find_asymmetric_key().
-> > +		 */
-> > +		ret = key_validate(trusted_keyring->key);
-> > +		if (ret < 0)
-> > +			return ret;
-> 
-> The above
-> 	if (ret < 0)
-> 		return ret;
-> can be removed.
+> > > Was it noticable in some sort of performance test?
+> >
+> > This patch is part of the patchset found at
+> > https://lore.kernel.org/all/20230412162114.19389-3-kal.conley@dectris.com/
+> > which is being actively discussed and needs to be resubmitted anyway
+> > because of a conflict. While the discussion continues, I am submitting
+> > this patch by itself because I think it's an improvement on its own
+> > (regardless of what happens with the rest of the linked patchset). On
+> > one system, I measured a performance regression of 2-3% with xdpsock
+> > and the linked changes without the current patch. With the current
+> > patch, the performance regression was no longer observed.
+>
+> Would be nice to have in commit message so reader has an idea the
+> perf numbers are in fact better.
 
-Right, thanks!
+When I measured this patch by itself (on bpf-next), I didn't measure
+any statistically significant performance gains. However, it did allow
+me to avoid a regression when combined with the other linked patch (as
+mentioned). I don't know if it makes sense to mention that other
+change which is not even applied to any tree. I was mainly submitting
+this patch from the perspective of the code being better not
+contingent on any provable performance gains.
 
-Roberto
+>
+> >
+> > > > diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> > > > index d318c769b445..a8d7b8a3688a 100644
+> > > > --- a/include/net/xsk_buff_pool.h
+> > > > +++ b/include/net/xsk_buff_pool.h
+> > > > @@ -180,7 +180,7 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+> > > >       if (likely(!cross_pg))
+> > > >               return false;
+> > > >
+> > > > -     return pool->dma_pages_cnt &&
+> > > > +     return pool->dma_pages &&
+> > > >              !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
+> > > >  }
+> >
+> > I would consider the above code part of the "fast path". It may be
+> > executed approximately once per frame in unaligned mode.
+>
+> In the unlikely case though is my reading. So really shouldn't
+> be called for every packet or we have other perf issues by that
+> likely() there.
+>
+> I assume the above is where the perf is being gained because below
+> two things are in setup/tear down. But then we are benchmarking
+> an unlikely() path?
 
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >   /**
-> >    * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
-> >    * @data_ptr: data to verify
-> > @@ -1334,19 +1355,9 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
-> >   {
-> >   	int ret;
-> >   
-> > -	if (trusted_keyring->has_ref) {
-> > -		/*
-> > -		 * Do the permission check deferred in bpf_lookup_user_key().
-> > -		 * See bpf_lookup_user_key() for more details.
-> > -		 *
-> > -		 * A call to key_task_permission() here would be redundant, as
-> > -		 * it is already done by keyring_search() called by
-> > -		 * find_asymmetric_key().
-> > -		 */
-> > -		ret = key_validate(trusted_keyring->key);
-> > -		if (ret < 0)
-> > -			return ret;
-> > -	}
-> > +	ret = validate_key(trusted_keyring);
-> > +	if (ret < 0)
-> > +		return ret;
-> >   
-> >   	return verify_pkcs7_signature(data_ptr->data,
-> >   				      bpf_dynptr_get_size(data_ptr),
-> > @@ -1356,6 +1367,35 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
-> >   				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-> >   				      NULL);
-> >   }
-> > +
-> > +/**
-> > + * bpf_verify_umd_signature - Verify a UMD-parsed signature
-> > + * @data_ptr: Data to verify
-> > + * @sig_ptr: Signature of the data
-> > + * @trusted_keyring: Keyring with keys trusted for signature verification
-> > + *
-> > + * Verify the UMD-parsed signature *sig_ptr* against the supplied *data_ptr*
-> > + * with keys in a keyring referenced by *trusted_keyring*.
-> > + *
-> > + * Return: 0 on success, a negative value on error.
-> > + */
-> > +__bpf_kfunc int bpf_verify_umd_signature(struct bpf_dynptr_kern *data_ptr,
-> > +					 struct bpf_dynptr_kern *sig_ptr,
-> > +					 struct bpf_key *trusted_keyring)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = validate_key(trusted_keyring);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	return verify_umd_signature(data_ptr->data,
-> > +				    bpf_dynptr_get_size(data_ptr),
-> > +				    sig_ptr->data, bpf_dynptr_get_size(sig_ptr),
-> > +				    trusted_keyring->key,
-> > +				    VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-> > +				    NULL);
-> > +}
-> >   #endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-> >   
-> >   __diag_pop();
-> > @@ -1366,6 +1406,7 @@ BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
-> >   BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
-> >   #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> >   BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
-> > +BTF_ID_FLAGS(func, bpf_verify_umd_signature, KF_SLEEPABLE)
-> >   #endif
-> >   BTF_SET8_END(key_sig_kfunc_set)
-> >   
+I was testing with large chunk sizes in unaligned mode (4000-4096
+bytes) with ZC. For chunk sizes nearly as large as PAGE_SIZE the
+unlikely path is actually the main path.
 
+> >
+> > > This seems to be used in the setup/tear-down paths so your optimizing
+> > > a control side. Is there a fast path with this code? I walked the
+> > > ice driver. If its just setup code we should do whatever is more
+> > > readable.
+> >
+> > It is not only used in setup/tear-down paths (see above).
+> > Additionally, I believe the code is also _more_ readable with this
+> > patch applied. In particular, this patch reduces cognitive complexity
+> > since people (and compilers) reading the code don't need to
+> > additionally think about pool->dma_pages_cnt.
+> >
+> > > Both the _alloc_ cases read neighboring free_heads_cnt so your saving a load I guess?
+> > > This is so deep into micro-optimizing I'm curious if you could measure it?
+> >
+> > It is saving a load which also reduces code size. This will affect
+> > other decisions such as what to inline. Also in the linked patchset,
+> > dma_pages and dma_pages_cnt do not share a cache line (on x86_64).
+>
+> But again buried in an unlikely path. Sure but removing the conditional
+> altogether would be even better.
+
+Yeah, I think that is another improvement to consider.
+
+> So my understanding is ZC is preferred and default mode and copy modes
+> are primarily fall back modes. So we are punishing the good case here
+> for a fallback to copy mode. I think overall refactoring the code to
+> avoid burdoning the fast case with a fallback slow case would be ideal
+> solution.
+
+I agree that ZC is preferred and this patch is aimed at improving the
+ZC path. The performance gain I observed was for ZC.
+
+> However, I agree just on readability the patch is fine and good. No
+> objection on my side. But I think if we are making performance
+> arguments for 2-3% here the better thing to do is remove the check
+> and unlikely() and we would see better benchmarks when using the
+> ZC mode which as I understand it is what performance aware folks should
+> be doing.
+
+I totally agree that other better improvements exist but I don't think
+they make this patch any less desirable. This change is only meant as
+a small incremental improvement.
