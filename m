@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA386EFACE
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C17E6EFAD1
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbjDZTO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
+        id S234750AbjDZTPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239593AbjDZTOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:14:54 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A4C4683
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:14:32 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-94f0dd117dcso1110412866b.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:14:31 -0700 (PDT)
+        with ESMTP id S239327AbjDZTPO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:15:14 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B530359C7
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:15:07 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5051abd03a7so11174064a12.2
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682536470; x=1685128470;
+        d=gmail.com; s=20221208; t=1682536506; x=1685128506;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KGqEnYAnG4Q3VPm1Ke7WmD5YQbCYEfs4z8luTPzLEas=;
-        b=QYyKpYDNbMdeSpDXOo6aVhjmI+BlGRprznWdiys3DsmjR7czTm2cxY5Lvruw+jOH6H
-         6Lodn8mHDJCPVEjYNNPUuNOyHbfG5S0cguNWuoFmgRDSVN+l2SlPRNAknqae7VvM5YY+
-         VyCAcc4TX6d9nowH5GsJZ/Z8gpPkysRzk433SYeizHvfJc+1bXroGBZ89bhexJTwFteB
-         r08Bg3N6QSalfAmle5xAiqmxW90n8M2dmQM1JznPk/d6XwXalSW6wlnmZhpo6TPkdIz6
-         M8NkfMUUkf2Hpy26w1xXjdDDPcsI9sKXvfyKw2EH6IrnVU3Tc59ngiY+wCvxiUYib4CL
-         uLLw==
+        bh=aHth1HSjcUblD6HuiQbwly/jJ3B37VHNRLoG+u/0ydk=;
+        b=k6Q+rjup/8u/HUJi3yNE61GrFZrOv6sd5Yq/EFJnxQPvneOgfW6wvd4hxoDKXEs6bg
+         3uPBMfI5QDiXUtVqYJJeXWn5uqSDVyOd3WpJZ6Z7y4T4ySOKhxY9K1o1De93u53jAPVs
+         8l0+cDSePzZ8ryQ0E1V68NXaHkzwjB5UMF/GQOg33kLwlRttDvNppREno+8LZhnnnzwz
+         HJxXB1I0OvAjhQCI6OsyGxD0TxTL3fg+bP426++i7bWpScWA4Tjzrf7VwPc/6DqcV/0b
+         Ho9sb4/7c+iiQbLSu1R7YriYYHjuvkaHN3EbdVsjKPrq4vBW5Swjb0E6owcV7P2LXKzL
+         By2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682536470; x=1685128470;
+        d=1e100.net; s=20221208; t=1682536506; x=1685128506;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KGqEnYAnG4Q3VPm1Ke7WmD5YQbCYEfs4z8luTPzLEas=;
-        b=ItI2wGN41RSEvhuLcUMkaTAJ4DFLH5BB7U3r+mlVzZCV4l5CqsgC1MvkMdo7LfgyLo
-         tpjvBbkbywAayORFwdmIW241B264kNj8sn28BcICC6dxrykrSxCULgnPnIeUxDENcGLI
-         6KZ9nAuUOqaOQ76xSCu0tvDAVhGIbL4nYmHvBux7Cf/TEtU9mwkZBLpSUT/8mfQ6Z8Lg
-         4Kj2O8082HZxCTX3wF1b1d5BppVICtDKV2H5pzidD3wXhTDFhwB2ho+sVbNf8Zeorvpd
-         UCEwOyNQzoBJ/o8aA5oMZ1wFmnr81wkSoanUHNHYODuLpCaCnBWN+CWj4pnaQus4mcP2
-         gw1g==
-X-Gm-Message-State: AAQBX9eOvRvDTl+WtOHk8mAPbISjqIQe+wZEQznxNhSjAlYAbuiWC+s5
-        bZ3NBP9HmNUwSDM82yqG3CN017DQys9W8M5KzbIXSWKj
-X-Google-Smtp-Source: AKy350a4oRftU5cGTCt86rWeWN6NMWZpZxB1fteHFHkM1kFRcnkjulCeumnHGmHhnGOEBzSV6cOQvyc5cEbQR2iMP5o=
-X-Received: by 2002:a17:907:7616:b0:953:4db7:c30e with SMTP id
- jx22-20020a170907761600b009534db7c30emr16879807ejc.76.1682536470298; Wed, 26
- Apr 2023 12:14:30 -0700 (PDT)
+        bh=aHth1HSjcUblD6HuiQbwly/jJ3B37VHNRLoG+u/0ydk=;
+        b=gt+W1lgAZIMYABLaJgvcc1Q+DVIz/N41MtUK9FAh8FIn/M9h3m47258ewT9IMHqjU4
+         AHUcgFtu0OB6aGqEfhzHvXEskXhd5hmyQWgb5BmXmOfgSs0qQMvnlwa9qAglPxTpN6l5
+         mAd7lJE/WNgc1JrmNARPJJFF4bQB60BUGnmFysV5bW2t0aijRk0DJRCj3FHoOihT1pi+
+         fwCpSMp6ZgOedzjw1nJOYqfy27piJkkIPicSnnQ7LDt6O8PHFFOkWwQxcMymJCm92vPl
+         Kd2BRfNfOwk0oIPlcc5Er4Yh48J3HUQrL42EJdggAatk6Nb9qHrFFedd3t30ORN8IhPi
+         NzGg==
+X-Gm-Message-State: AAQBX9cY9qXgERFub4gtgp43JG1ZX034o117Hf/1GdU2J9UhBI+hFWZh
+        eTbv++A0wmFqpIqI+RAWjV7KqaJ7FWOKACobSy8=
+X-Google-Smtp-Source: AKy350aMbs1KmLVhksLaLP7Y7L5uGV8jo06QPYbCQMEErTTBrayhVXYU56hlghQGKmsEkVL2ru5bROSgLRZ3XyFblw0=
+X-Received: by 2002:aa7:d9c1:0:b0:509:bf63:a97e with SMTP id
+ v1-20020aa7d9c1000000b00509bf63a97emr16062029eds.16.1682536505789; Wed, 26
+ Apr 2023 12:15:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-5-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-5-jolsa@kernel.org>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-6-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-6-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:14:18 -0700
-Message-ID: <CAEf4BzZOsy0wC_RFHfJrG9zLjPUa86EencCOZto8FMnOMCpFOQ@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 04/20] libbpf: Update uapi bpf.h tools header
+Date:   Wed, 26 Apr 2023 12:14:54 -0700
+Message-ID: <CAEf4Bzbg1bvXcjqoK=CY3nHA7e5r34yedb82nir7-J37bJ9=xg@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 05/20] libbpf: Add uprobe_multi attach type
+ and link names
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -78,68 +79,37 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Updating uapi bpf.h tools header with new uprobe_multi
-> link interface.
+> Adding new uprobe_multi attach type and link names,
+> so the functions can resolve the new values.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
 
-let's merge this with the original UAPI header update patch? We used
-to split this out for libbpf sync purposes, but it is handled easily
-with current sync script, so no  need to make this a separate patch
-(but up to you, I don't mind either)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/include/uapi/linux/bpf.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  tools/lib/bpf/libbpf.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 1bb11a6ee667..77ce2159478d 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
->         BPF_TRACE_KPROBE_MULTI,
->         BPF_LSM_CGROUP,
->         BPF_STRUCT_OPS,
-> +       BPF_TRACE_UPROBE_MULTI,
->         __MAX_BPF_ATTACH_TYPE
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1cbacf9e71f3..b5bde1f19831 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -117,6 +117,7 @@ static const char * const attach_type_name[] =3D {
+>         [BPF_PERF_EVENT]                =3D "perf_event",
+>         [BPF_TRACE_KPROBE_MULTI]        =3D "trace_kprobe_multi",
+>         [BPF_STRUCT_OPS]                =3D "struct_ops",
+> +       [BPF_TRACE_UPROBE_MULTI]        =3D "trace_uprobe_multi",
 >  };
 >
-> @@ -1052,6 +1053,7 @@ enum bpf_link_type {
->         BPF_LINK_TYPE_KPROBE_MULTI =3D 8,
->         BPF_LINK_TYPE_STRUCT_OPS =3D 9,
->         BPF_LINK_TYPE_NETFILTER =3D 10,
-> +       BPF_LINK_TYPE_UPROBE_MULTI =3D 11,
->
->         MAX_BPF_LINK_TYPE,
+>  static const char * const link_type_name[] =3D {
+> @@ -131,6 +132,7 @@ static const char * const link_type_name[] =3D {
+>         [BPF_LINK_TYPE_KPROBE_MULTI]            =3D "kprobe_multi",
+>         [BPF_LINK_TYPE_STRUCT_OPS]              =3D "struct_ops",
+>         [BPF_LINK_TYPE_NETFILTER]               =3D "netfilter",
+> +       [BPF_LINK_TYPE_UPROBE_MULTI]            =3D "uprobe_multi",
 >  };
-> @@ -1169,6 +1171,11 @@ enum bpf_link_type {
->   */
->  #define BPF_F_KPROBE_MULTI_RETURN      (1U << 0)
 >
-> +/* link_create.uprobe_multi.flags used in LINK_CREATE command for
-> + * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-> + */
-> +#define BPF_F_UPROBE_MULTI_RETURN      (1U << 0)
-> +
->  /* When BPF ldimm64's insn[0].src_reg !=3D 0 then this can have
->   * the following extensions:
->   *
-> @@ -1568,6 +1575,14 @@ union bpf_attr {
->                                 __s32           priority;
->                                 __u32           flags;
->                         } netfilter;
-> +                       struct {
-> +                               __u32           flags;
-> +                               __u32           cnt;
-> +                               __aligned_u64   paths;
-> +                               __aligned_u64   offsets;
-> +                               __aligned_u64   ref_ctr_offsets;
-> +                               __aligned_u64   cookies;
-> +                       } uprobe_multi;
->                 };
->         } link_create;
->
+>  static const char * const map_type_name[] =3D {
 > --
 > 2.40.0
 >
