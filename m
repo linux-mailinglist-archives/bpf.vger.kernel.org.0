@@ -2,74 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D450E6EF268
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 12:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520A96EF291
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 12:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240525AbjDZKnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 06:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
+        id S240263AbjDZKsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 06:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240467AbjDZKn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 06:43:28 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C58B49F6
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 03:43:23 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4edc63e066fso7184e87.1
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 03:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682505801; x=1685097801;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1l22hRUUq/IeT+lj7j9mcQyEj+B5z+NRQ6K59AKwb4M=;
-        b=dQ4cunzURjxkU0Leg7LAnW10B6iCwcl0niLLMCTpkjxaqk9CfBvAZ1HgYEeuNEf5Df
-         zZ184SgUKghynTw2tZX+ypOybCxdyCKNL7DMU9IjJu/PdtY2ux8Z/c/xxwn9U7NV4+x8
-         dbDsyMs04VHMB/zNnOJP4wUr69uff9Qqm/M2aWU00bT2qFUwxtFouULN9tFgPzMneHyv
-         lVGDvP5erVVVmurehevtjGrXnOk0JRJsNeS0ZcaQFAOhgyLAM7167hxcZoAYKmlGkLH6
-         KJ9Wkxb5NWiCh8R/jpMyPupA7BUJu+0Opr7z9XpWThO1NjmwZjfbmqdUc5nQgVBLootZ
-         T22g==
+        with ESMTP id S240059AbjDZKrv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 06:47:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34960211B
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 03:47:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682506022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q7eSG1klkAdyLEaNU1h7MS+MxhJ0DOqewp5Z8jQS+rk=;
+        b=F1NAXP23RESFvqE515uSZfCqvlrPgo6WHQ+LKn1Vx/rnL7gR9IbT3buydMNvkKdBLW/qkN
+        QrT/X5PpP0KK5j+IdmKII2hWNa6BhdlSgQAIjnv/e41DJjJrMFbfrbcWd8Sirrv2uggk4P
+        K0ViDOY0f3sTZ1psLVSnbVEebn8CllE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-509-fZyjQ4SzPQKHYdDFx92TyQ-1; Wed, 26 Apr 2023 06:47:01 -0400
+X-MC-Unique: fZyjQ4SzPQKHYdDFx92TyQ-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-506a4c0af47so6512766a12.1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 03:47:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682505801; x=1685097801;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1l22hRUUq/IeT+lj7j9mcQyEj+B5z+NRQ6K59AKwb4M=;
-        b=UPp2oB0rrTuWZXVND+BhOjfzVwKHMXi5ZD3cpz7QuD00XDAD1PVogkIj1LKmYgAB0F
-         V0nXQKKpM+sa396n17OenOS6zkJtsunudjxMykEDsIH4iWagx6ZoxZatnIs4LEbbDNhz
-         4ghztNGbREz06IDG2x+5zmknVZHRGx1Ckb9F9nZvC41ug4QOGEvfiX382FU1S3iBTI7L
-         3CG5xdW389KjnT0yWR5B4+ia7ae6hvGqi/AJmi972NLe4/jGYnzDc6UbwjwfiEdyj9ia
-         vadY7fWMgu0PGo9FA8YrnsJ1XFOqfUUIq3nRZ32QK2rYd0BYrlHL5OlfG2uyolmJlWWj
-         +gmg==
-X-Gm-Message-State: AC+VfDxGjHmVL5RDcuZ60bXE7ZtxvuqOo4f6HFTAFhriwms+Ao6Ux2yh
-        XLkAJYrEU5R/k3uFp08wYeJotKeAFk0TFPaO5VYXsg==
-X-Google-Smtp-Source: ACHHUZ4B5f1M+sCvV1r/JKCKg4wqK2GIXRKY8DLF7nDMlL59wkEK2UGwq1KEigLY8M1WXsEVAUtJ+zjYP4xY+/V/nWc=
-X-Received: by 2002:a05:6512:b08:b0:4e8:3fc8:4f80 with SMTP id
- w8-20020a0565120b0800b004e83fc84f80mr177986lfu.4.1682505801347; Wed, 26 Apr
- 2023 03:43:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682506020; x=1685098020;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q7eSG1klkAdyLEaNU1h7MS+MxhJ0DOqewp5Z8jQS+rk=;
+        b=SdpFF3Pe3UbDKF1scjBh3WGav0ehhFgHDrtkgJmMQ2DuZ1f02JarokJhthETd3nLNH
+         FYP2menmOfUoeTGBH6yrzz+uAfgdrgSqxuMkGe+9cTYMdCI284GPtyr0lTB7EI8FfB7q
+         1LrH9TZx1ohi7FGTCsHRJ3muIntizRAylrVLbN7M6/0WS4uUYiKE5n4OYL3b6eXyEpNi
+         uKJJ6c36JyMGAHvbTmTHmzmrOvCAplNQIao/AZdXWj7CPMLFKzPY1uJbZ2SYMcMjOmKj
+         lPG7XD39jJX4bo1MujEfMaYlMucRIuk0T4U0kD2OxrbP/ZbOj2aAGrZjHFBo4tDpBtTD
+         aYXw==
+X-Gm-Message-State: AAQBX9fpM3nPfZ8gywYU9hIs8GbGQemKo4vN8rN3Xry8I0LPFWyFakzE
+        isqcrf8clPanv7ptYiOgof5ozyGe9WgRrVkpskGGe8VoSW/s/MrYU0CpxTiO7hUewp8EzYs8wvA
+        8k8IBCiwBsaY5
+X-Received: by 2002:a17:906:a84c:b0:947:c8d5:fb2a with SMTP id dx12-20020a170906a84c00b00947c8d5fb2amr17287732ejb.48.1682506019820;
+        Wed, 26 Apr 2023 03:46:59 -0700 (PDT)
+X-Google-Smtp-Source: AKy350bueCmxCjDSmFglv2TB/hZ+jA43sk3LCYfVFX9cQwRdfdOgUzEC5j8gS5n5MB/sN1wMbcmEvQ==
+X-Received: by 2002:a17:906:a84c:b0:947:c8d5:fb2a with SMTP id dx12-20020a170906a84c00b00947c8d5fb2amr17287691ejb.48.1682506019416;
+        Wed, 26 Apr 2023 03:46:59 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id lb16-20020a170907785000b0094ee700d8e4sm7946826ejc.44.2023.04.26.03.46.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 03:46:58 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 44A81AAA41C; Wed, 26 Apr 2023 12:46:58 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kal Conley <kal.conley@dectris.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Kal Conley <kal.conley@dectris.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 2/4] xsk: Support UMEM chunk_size > PAGE_SIZE
+In-Reply-To: <20230412162114.19389-3-kal.conley@dectris.com>
+References: <20230412162114.19389-1-kal.conley@dectris.com>
+ <20230412162114.19389-3-kal.conley@dectris.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 26 Apr 2023 12:46:58 +0200
+Message-ID: <87v8hij4yl.fsf@toke.dk>
 MIME-Version: 1.0
-References: <00000000000079eebe05fa2ea9ad@google.com> <CANiq72mor1BkxpAT=v0EsQJN-7fvMjo9K5ooVk1x7ZbBDEyn8g@mail.gmail.com>
- <CACT4Y+aMdct_tjSYsBvvtGoDji6feOiANogRbp3N41qkzU+5CQ@mail.gmail.com>
- <CANiq72nm2dU2o_x_GQ5SdsXaK6yZiDXG2hXEYMykViEAZvuMqQ@mail.gmail.com>
- <CACT4Y+YyYnwg4a1zjTnBU=t0x5Brt1rGuzz-5pXf2Fz3cKf4FQ@mail.gmail.com> <CANiq72=vMydenfkxQx4X7kYvHD0cHzNK19xxxqow3WcLStsdRA@mail.gmail.com>
-In-Reply-To: <CANiq72=vMydenfkxQx4X7kYvHD0cHzNK19xxxqow3WcLStsdRA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 26 Apr 2023 12:43:08 +0200
-Message-ID: <CACT4Y+ZrwXB1W31Rr7rUUOoW15YbKfnC0khY9KnNk8FTf5uQnA@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: BUG: unable to handle kernel NULL
- pointer dereference in __dabt_svc
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     syzkaller@googlegroups.com, alex.gaynor@gmail.com,
-        andriy.shevchenko@linux.intel.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, bpf@vger.kernel.org, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        ojeda@kernel.org, pmladek@suse.com, rostedt@goodmis.org,
-        rust-for-linux@vger.kernel.org, senozhatsky@chromium.org,
-        syzkaller-bugs@googlegroups.com, wedsonaf@gmail.com,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,46 +96,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 26 Apr 2023 at 12:30, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
-> > In which of the dozens of kernel testing systems? ;)
-> > And also in heads of thousands of kernel developers and users?
-> > All of them use get_maintainer.pl.
->
-> I am aware, but `get_maintainer.pl` is fine as it is -- we still want
-> to know about things that touch things that mention Rust in general,
-> so that we can possibly be helpful to others, especially early on.
->
-> However, if a bot is testing the kernel with Rust actually disabled at
-> runtime, what I am saying is that the chance that it has something to
-> do with Rust is quite low, especially if matched via `K:` rather than
-> `F:`. Thus my request.
->
-> Now, it could be nice to have some logic like that in
-> `get_maintainer.pl` encoded for all bots to filter things out based on
-> the kernel config and the type of match; but otherwise, yes, the bots
-> would need to add the logic.
->
-> Cc'ing Joe in case this is already possible in `get_maintainer.pl` or
-> whether there could be a better approach.
+Kal Conley <kal.conley@dectris.com> writes:
 
-I understand your intentions and they make sense.
-But adding this logic to syzbot won't help thousands of users of
-get_maintainer.pl and dozens of other testing systems. There also will
-be a bit of get_maintainer.pl inside of syzbot code, so now all kernel
-developers will need to be aware of it and also submit changes to
-syzbot when they want to change maintainers logic.
+> Add core AF_XDP support for chunk sizes larger than PAGE_SIZE. This
+> enables sending/receiving jumbo ethernet frames up to the theoretical
+> maximum of 64 KiB. For chunk sizes > PAGE_SIZE, the UMEM is required
+> to consist of HugeTLB VMAs (and be hugepage aligned). Initially, only
+> SKB mode is usable pending future driver work.
 
-I think this also equally applies to all other users of K:.
-And a number of them had similar complaints re how K; works.
+So I still really don't understand why this is useful without the driver
+support, and I think it's premature to merge it before that is present.
+It also seems you didn't address any of the issues we discussed back on
+v3, but instead just reposted (and didn't even Cc me, so I missed that
+until now).
 
-I am thinking if K: should actually apply just to patches and be
-ignored for source files?
-If there are files that belong to "rust" (or "bpf" or any other user
-of K:), then I think these should be just listed explicitly in the
-subsystem (that should be a limited set of files that can be
-enumerated with wildcards).
-It's also reasonable to apply K: to patches.
-But if a random source file happened to mention "rust" somewhere once,
-I am not sure you want to be CCed on all issues in that file.
-Does it sound reasonable?
+So, FWIW, consider this my:
+
+Nacked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
