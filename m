@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257F76EFB1B
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C616EFB20
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 21:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjDZTbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 15:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S236381AbjDZTdT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 15:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbjDZTbh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 15:31:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936C41BC9
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:31:36 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-94f6c285d92so1435875866b.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:31:36 -0700 (PDT)
+        with ESMTP id S239615AbjDZTdR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 15:33:17 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C072684
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:33:07 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-504eac2f0b2so13085756a12.3
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 12:33:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682537495; x=1685129495;
+        d=gmail.com; s=20221208; t=1682537586; x=1685129586;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BAuhENIDW+mPHz/TqlUb/yS++0lqkXi8gSsihTMP/ZM=;
-        b=CD4lHdl14j+WXSbBjD+J77TFPyxabpS4U7PYXQDwKKtyB6z2CRafgkj0Fnzu3q+QUk
-         d61dTAdvfwiBCeR0nMMjdn5ZPRP6OrAgFeWaRgsWtAIyGcvnQoNjyKwx6De6SueDPQ5n
-         Ha5uIwyG6Wmi6TOcdeY9TcONSYBrlYOyrQUhFFmxdVGhj2WI4mGZE8ykEtLHLMz60ieV
-         Ps+ruvtPKPNT8xyZwpKsxOicKx2+JVwO+0xJquSOxoqvygH9i6W7Tu8PxbZVZV+n9hUx
-         jDOlk8AKPi6SpYPSpOep2oV0xVmXNet/zUMGUif6bJshAWEUyGl1Gv+OgL3YCyjLEPWk
-         783A==
+        bh=P7sZaAqrtEX9/N0wYEoEgig7d/0mKMBJk8C9Vn4bxnI=;
+        b=piSvqZXBI7BXoXfbATGwXDp3SLwa/y5hOJc+uLq/52Qam9L8Oa13AVIjSnmRzij+dW
+         XnPAwM67wEuqGKVaBz+vSVaopAKiowXpHgzYdyodOxU/RB8Nr7ZwvEyD5NczswV82z81
+         V8ESLfIA9yJFzlX//GrZioGlmTPiopd0KIFO6+PvhGZURCeaYGcp1Q6o0MgPA6GuLlpV
+         rmP+Z4ddM6FXAgpgu4ozmXGJ98H5IqUY2g8mSnufX1emvIkvs+B2yQ4zhIZUegbOp+fS
+         9rF86q/XjChA3kbwqNMQr7TGWgq7I5PJCknTZmFlm3sgplb5zk3vFuZ38DTR8uo1ZoWn
+         XitA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682537495; x=1685129495;
+        d=1e100.net; s=20221208; t=1682537586; x=1685129586;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BAuhENIDW+mPHz/TqlUb/yS++0lqkXi8gSsihTMP/ZM=;
-        b=HVZ/4DGs7G2Q4Jh+/J2HXkzI+Q5bJ4DEe+cEiiaee5sfqEV8zsH+5MDH8gOgEurQuS
-         duys6RJqIHiCfE1dkBu/bzu8suniGO0GaDy0G/9ofe4+h6HLWnzwaPspOx9zDjoAfb6u
-         +DwZ3uiyTV9T6XFfjxgg5pvL2NMedrerRaCZgjdz51kq+y625gcSDmvGiMT5DeHPkjOp
-         icJNFYoi7ZiuLstG5w+mslcwiOUibP796TBq5asW76CjbNEisBtQn4pbAZZfhnD5kpaR
-         09sLgkEhtg+3lGbuxRol4IlQzSn0HmR+pZehfayvhGjykCZyY1kcbUzrZRJ2K++GeuQU
-         vHpg==
-X-Gm-Message-State: AAQBX9cHCVfd1v/mL6kxwbPkdArwbJBgcOMMuwZJnpwh3bgpYiBwPlnj
-        vLxJb1QaJWIfZx/vPrJKrlobqo2+7chOWc+TFZs=
-X-Google-Smtp-Source: AKy350aX2OhHoSjfqkoPft3MioA3VNNYBqNQseRWXPDQf+l2iUdK7x33aBifGspbpaJEFucetCUGO3ui6q15C55u+GQ=
-X-Received: by 2002:a17:906:830d:b0:94f:4d4d:23 with SMTP id
- j13-20020a170906830d00b0094f4d4d0023mr21276922ejx.68.1682537494975; Wed, 26
- Apr 2023 12:31:34 -0700 (PDT)
+        bh=P7sZaAqrtEX9/N0wYEoEgig7d/0mKMBJk8C9Vn4bxnI=;
+        b=UFaPUaAB2u1SKikoTmYgIOMkMxjYWzD5CDDkrzXm2FgCGRy52tf93mZ/sUPms50B0S
+         oslkUrYrj0RGE8QmN0SX1BhhkWVZAu7svxcIzqHbg+q0shYgVMMdfmVk3werz8bOZBOm
+         NrAvA40toKgGSmObqxG27yfsOlj18xu2y9QMqRgjFwnAXvT/HpsWKcA19t0sv82NsINg
+         ZJ8Ln+x4vtz/gH0WmMbEt7X8fJ9cRm5AmLwF4vzoQWkO7mG6cSkBXks57lfYhnr1jTer
+         Ie2nlpZ4kjtJerzFhZcuqErTxsxwLGoILzsAPceNYcHecxu6G1m4In2gA9Nq24fWpMV1
+         mTVQ==
+X-Gm-Message-State: AAQBX9eCUiJXupG/u2VkuAJBnG5tP6BiKUEKqSARayjcP3S2pOyG9XqQ
+        3aGQUPZwqbacOOGJRl/hmP4AVQ99xFkJdiKGu/0=
+X-Google-Smtp-Source: AKy350Zs5IirITAeWBzaw4ylCuJmxT4yQ5PDpr6U7uC1AEcArrGsl+CCRVXY61eBDtw0josd1O6SAiVfAGmWST31coE=
+X-Received: by 2002:a50:ee07:0:b0:506:9984:9236 with SMTP id
+ g7-20020a50ee07000000b0050699849236mr17978879eds.15.1682537586385; Wed, 26
+ Apr 2023 12:33:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-12-jolsa@kernel.org>
-In-Reply-To: <20230424160447.2005755-12-jolsa@kernel.org>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-13-jolsa@kernel.org>
+In-Reply-To: <20230424160447.2005755-13-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 12:31:22 -0700
-Message-ID: <CAEf4BzbgOP2gvwh_oWb-V6UfgGwo4Wwzja_cEdJfvzB8VqL5zw@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 11/20] libbpf: Add support for
- uprobe.multi/uprobe.multi program sections
+Date:   Wed, 26 Apr 2023 12:32:54 -0700
+Message-ID: <CAEf4Bzbku8kkAe1ptDqDYrwPqRFqCZO0VisNX9Vt1tf0H7kkBA@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 12/20] libbpf: Add uprobe multi link support
+ to bpf_program__attach_usdt
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -79,110 +79,29 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Apr 24, 2023 at 9:06=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding support for uprobe.multi/uprobe.multi program sections
-> to allow auto attach of multi_uprobe programs.
+> Adding uprobe_multi bool to struct bpf_usdt_opts. If it's true
+> the usdt_manager_attach_usdt will use uprobe_multi link to attach
+> to usdt probes.
+>
+> The bpf program for usdt probe needs to have BPF_TRACE_UPROBE_MULTI
+> set as expected_attach_type.
+>
+> Because current uprobe is implemented through perf event interface,
+> it allows the pid filter for uprobes. This is not the case for
+> uprobe_multi link, so the pid filter is not allowed for that.
+
+Ok, yep, let's fix that at kernel UAPI level and use multi-uprobe
+transparently, if kernel supports it. This seems like a big UX problem
+currently with uprobe.multi (and consequently with USDT programs)
+
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+>  tools/lib/bpf/libbpf.c          |   9 ++-
+>  tools/lib/bpf/libbpf.h          |   2 +
+>  tools/lib/bpf/libbpf_internal.h |   2 +-
+>  tools/lib/bpf/usdt.c            | 127 ++++++++++++++++++++++++--------
+>  4 files changed, 105 insertions(+), 35 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index c786bc142791..70353aaac86e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8628,6 +8628,7 @@ static int attach_tp(const struct bpf_program *prog=
-, long cookie, struct bpf_lin
->  static int attach_raw_tp(const struct bpf_program *prog, long cookie, st=
-ruct bpf_link **link);
->  static int attach_trace(const struct bpf_program *prog, long cookie, str=
-uct bpf_link **link);
->  static int attach_kprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link);
-> +static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link);
->  static int attach_lsm(const struct bpf_program *prog, long cookie, struc=
-t bpf_link **link);
->  static int attach_iter(const struct bpf_program *prog, long cookie, stru=
-ct bpf_link **link);
->
-> @@ -8643,6 +8644,8 @@ static const struct bpf_sec_def section_defs[] =3D =
-{
->         SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_=
-uprobe),
->         SEC_DEF("kprobe.multi+",        KPROBE, BPF_TRACE_KPROBE_MULTI, S=
-EC_NONE, attach_kprobe_multi),
->         SEC_DEF("kretprobe.multi+",     KPROBE, BPF_TRACE_KPROBE_MULTI, S=
-EC_NONE, attach_kprobe_multi),
-> +       SEC_DEF("uprobe.multi+",        KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
-> +       SEC_DEF("uretprobe.multi+",     KPROBE, BPF_TRACE_UPROBE_MULTI, S=
-EC_NONE, attach_uprobe_multi),
->         SEC_DEF("ksyscall+",            KPROBE, 0, SEC_NONE, attach_ksysc=
-all),
->         SEC_DEF("kretsyscall+",         KPROBE, 0, SEC_NONE, attach_ksysc=
-all),
->         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt)=
-,
-> @@ -10611,6 +10614,41 @@ static int attach_kprobe_multi(const struct bpf_=
-program *prog, long cookie, stru
->         return libbpf_get_error(*link);
->  }
->
-> +static int attach_uprobe_multi(const struct bpf_program *prog, long cook=
-ie, struct bpf_link **link)
-> +{
-> +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-> +       char *probe_type =3D NULL, *binary_path =3D NULL, *func_name =3D =
-NULL;
-> +       int n, ret =3D -EINVAL;
-> +
-> +       *link =3D NULL;
-> +
-> +       n =3D sscanf(prog->sec_name, "%m[^/]/%m[^:]:%m[a-zA-Z0-9_.*?]+",
 
-Arnaldo recently brought to my attention that Go doesn't do mangling,
-so their function names are crazy, e.g.:
-
-"go/doc/comment.(*parseDoc).code"
-
-So we should think about making no assumptions about pattern inside
-`%m[a-zA-Z0-9_.*?]`
-
-> +                  &probe_type, &binary_path, &func_name);
-> +       switch (n) {
-> +       case 1:
-> +               /* handle SEC("u[ret]probe") - format is valid, but auto-=
-attach is impossible. */
-> +               ret =3D 0;
-> +               break;
-> +       case 2:
-> +               pr_warn("prog '%s': section '%s' missing ':function[+offs=
-et]' specification\n",
-> +                       prog->name, prog->sec_name);
-> +               break;
-> +       case 3:
-> +               opts.retprobe =3D strcmp(probe_type, "uretprobe.multi");
-> +               *link =3D bpf_program__attach_uprobe_multi_opts(prog, bin=
-ary_path, func_name, &opts);
-> +               ret =3D libbpf_get_error(*link);
-> +               break;
-> +       default:
-> +               pr_warn("prog '%s': invalid format of section definition =
-'%s'\n", prog->name,
-> +                       prog->sec_name);
-> +               break;
-> +       }
-> +       free(probe_type);
-> +       free(binary_path);
-> +       free(func_name);
-> +       return ret;
-> +}
-> +
->  static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
->                                          const char *binary_path, uint64_=
-t offset)
->  {
-> --
-> 2.40.0
->
+[...]
