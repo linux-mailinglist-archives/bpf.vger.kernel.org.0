@@ -2,71 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4406EF9D1
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 20:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FE96EF9E8
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 20:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbjDZSJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 14:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
+        id S231186AbjDZSQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 14:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234747AbjDZSJh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 14:09:37 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215157DAF
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 11:09:36 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-517bb01bac9so5361628a12.0
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 11:09:36 -0700 (PDT)
+        with ESMTP id S239340AbjDZSQx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 14:16:53 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130E07DB0
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 11:16:52 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-504fce3d7fbso11516859a12.2
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 11:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682532575; x=1685124575;
+        d=gmail.com; s=20221208; t=1682533010; x=1685125010;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/Uh2mmnVVJ4a3YubCjfRfDulVq2Jba+qSmT/b6yIxAs=;
-        b=osODbhIuvZbiilm5k41lEBCIpF+2bjdNngs9yJ69ASoSp0mkLim9WSVUdwje/8tr5i
-         HmMPiDYgQqTZBG32JnrCzkZGEuzGpSZM7yEe9KPv/kZO2gxoNtSOHOPQW5UP88cK2PZf
-         Qwmcmst7lvejXEkmSaeNANdT4Ee0RfJoy5rl7VEvRZIiWtmCOd1t5aw/lIORX7zwZLMJ
-         rgUGAqHAaa0KpuA9XRhut2KK5ktNRxuFdXz1oYScRjlSRjWOB8D9uE+D4S/FkyYPSGf5
-         KWr29x+jdYburVG77gPumvGH0bIo2S4xhuk8St7/bosyN+RqsYYnghYwM63OhXH3nhuw
-         9ICQ==
+        bh=ZSJjfTp9BF/c3lgFOhXd3iue4rIwAt3YVys1O3wyRLs=;
+        b=jGwmzmTe4mjwOYhkNGF9t7EidpjB8dwub1LbIhFy8mQ9K7QDqaXyPHr8U21p+fkz8S
+         q25GV87QjCgtqvxluW1R/lg+p7cJ1MQiozh0NCFiT4lYtTkfKZb4SZG1X+e9FG+B2AZ/
+         iebagT5vHw9lcN0LsiYdBLulBbM1XtCSOzX1xiu+pgtJDcDKqTc3FHCf050FczB7XMqJ
+         srNZAfzT7hC/oZp0GLJdktpBq/92MVYJs6/2/1LO35AynNGgBz9XeGOzW/y8GEmtFt/Z
+         e9QeSjuAREzLKTCrKji+uEfmD4hPZWO+W0ofqd/V7/F4QrMstV4s41BCZXqIYJB+LOQp
+         SMoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682532575; x=1685124575;
+        d=1e100.net; s=20221208; t=1682533010; x=1685125010;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/Uh2mmnVVJ4a3YubCjfRfDulVq2Jba+qSmT/b6yIxAs=;
-        b=HlC7r5AFVVIJRZHyiuBQE+MynyVl5si/AHhdS+soK2ouvChUdb2CeQNY5OpK3g/wG1
-         ONWUqAIqmCAsrfe688P75OMJcu8hdxEk1pInDh0nzxLU8gQ6YTU5eoAF6C9FmXPApq5z
-         cLDO8RJukkvz6iWMIRKLXTSqFonWyBX9JEp7InN80UbaWJygYkkiAwac3TsysjfzkAZq
-         thRvbyq6MtlCtp+x3GZRwt7NHWzvMyMArIZj2lATvY5O2XiVggQbTPKs4qdOMaFHTO33
-         8kyc7sSXmS7ON9EiBYa8H+iPzcof0eKAl2aB9tM2AW24eIoCdrHZ4n79CLB6z6nzZU79
-         tRKQ==
-X-Gm-Message-State: AAQBX9dB8KPbCrDquoqQHwtorp4DJtL/pACP1bX3hX4eCGPPJ+y2GpFN
-        UlxovRvwSwJLswoPxTkRih2bVwY3y2PkSMi8rM4Cnw==
-X-Google-Smtp-Source: AKy350bo2EXi/GPhUdDywMbKveB0ZREOFdSr+ni/Dkeic/U/tYVwuh5NI4QQDvifIZ2NmLc/laZEexd7Qk8qd0BeBJo=
-X-Received: by 2002:a17:90b:304:b0:240:f8a6:55c7 with SMTP id
- ay4-20020a17090b030400b00240f8a655c7mr21701568pjb.20.1682532575398; Wed, 26
- Apr 2023 11:09:35 -0700 (PDT)
+        bh=ZSJjfTp9BF/c3lgFOhXd3iue4rIwAt3YVys1O3wyRLs=;
+        b=cJa3DfbExDSZmqR5CSRc7oIVP+XUp6Q6xUb/nDoCtnUq3tIxZyw4PNwxjBdygypuV1
+         vL0b52ClvJs1VBiZ3zGvWttfFwE91cnFKCVlxreNIXfszg8MpQmbuOuQUzg3i9SssroO
+         u97oyQm/HQqve6lO4FnDzjl1mGDvln12gAc9270ApcI6m2GzRQNL63ASE+MxgzqiXMlw
+         Iyut7uRt1MA74jDoXXy+dENMaXHwHPefTXbGQRguVt9GqFmhtAETnWrfK+DJpj+iXuDR
+         Z2DvSjvJz2vlklqNd8bdSI4vPbapKgZkaLhJIkTsk9vO00Qk1Is6i+iV4TIN0Q1EJHBl
+         GgeQ==
+X-Gm-Message-State: AAQBX9dEZdiVFOU0KaZcI6/G58ooaq0rZGqnrjFVDLfGM58CBdmVeH+H
+        1D1qU/2fSfJjs+zmJNeBmD0tF3JwOXeSIOmOKj8=
+X-Google-Smtp-Source: AKy350Y2N3pnVfAUsaFMxNKkw1FEZUfJ4AAUlrsvG/1g5aM/uXd9R8+tIxztWRp7uTIbZlpJVhAFxTEVe7i+eBIJ7EQ=
+X-Received: by 2002:a05:6402:1807:b0:504:8173:ec8c with SMTP id
+ g7-20020a056402180700b005048173ec8cmr20881912edy.13.1682533010357; Wed, 26
+ Apr 2023 11:16:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230426055030.3743074-1-yhs@fb.com>
-In-Reply-To: <20230426055030.3743074-1-yhs@fb.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 26 Apr 2023 11:09:24 -0700
-Message-ID: <CAKwvOdnXh0e0F=_5nuVcMNsHAkqkc+K5FrOmktFZ76z3X_zHug@mail.gmail.com>
-Subject: Re: [PATCH dwarves] btf_encoder: Fix a dwarf type DW_ATE_unsigned_1024
- to btf encoding issue
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eduard Zingerman <eddyz87@gmail.com>, kernel-team@fb.com,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
+References: <20230420071414.570108-1-joannelkoong@gmail.com> <20230420071414.570108-5-joannelkoong@gmail.com>
+In-Reply-To: <20230420071414.570108-5-joannelkoong@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Apr 2023 11:16:37 -0700
+Message-ID: <CAEf4BzbbC7jizOPn9J=MOEZXeMErP4sgWNV82QVooufs4DZVeA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: Add bpf_dynptr_clone
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,73 +68,187 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 10:50=E2=80=AFPM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Apr 20, 2023 at 12:15=E2=80=AFAM Joanne Koong <joannelkoong@gmail.c=
+om> wrote:
 >
-> Nick Desaulniers reported an issue ([1]) where an 128-byte sized type
-> (DW_ATE_unsigned_1024) cannot be encoded into BTF with failure message
-> likes below:
->   $ pahole -J reduced.o
->   [2] INT DW_ATE_unsigned_1024 Error emitting BTF type
->   Encountered error while encoding BTF.
-> See [1] for how to reproduce the issue.
+> The cloned dynptr will point to the same data as its parent dynptr,
+> with the same type, offset, size and read-only properties.
 >
-> The failure is due to currently BTF int type only supports upto 16
-> bytes (__int128) and in this case the dwarf int type is 128-byte.
+> Any writes to a dynptr will be reflected across all instances
+> (by 'instance', this means any dynptrs that point to the same
+> underlying data).
 >
-> The DW_ATE_unsigned_1024 is not a normal type for variable/func
-> declaration etc. It is used in DW_AT_location. There are two
-> ways to resolve this issue.
->   (1). If btf encoding is expected, remove all dwarf int types
->        where btf encoding will failure, e.g., non-power-of-2
->        bytes, or greater than 16 bytes.
->   (2). do a sanitization in btf_encoder ([2]).
+> Please note that data slice and dynptr invalidations will affect all
+> instances as well. For example, if bpf_dynptr_write() is called on an
+> skb-type dynptr, all data slices of dynptr instances to that skb
+> will be invalidated as well (eg data slices of any clones, parents,
+> grandparents, ...). Another example is if a ringbuf dynptr is submitted,
+> any instance of that dynptr will be invalidated.
 >
-> This patch uses method (2) since it is a simple fix in btf_encoder.
-> I checked my local built vmlinux with latest
-> bpf-next. There is only one instance of DW_ATE_unsigned_24 (used in
-> DW_AT_location) so I expect irregular int types should be very rare.
+> Changing the view of the dynptr (eg advancing the offset or
+> trimming the size) will only affect that dynptr and not affect any
+> other instances.
 >
->   [1] https://github.com/libbpf/libbpf/pull/680
->   [2] commit 7d8e829f636f ("btf_encoder: Sanitize non-regular int base ty=
-pe")
+> One example use case where cloning may be helpful is for hashing or
+> iterating through dynptr data. Cloning will allow the user to maintain
+> the original view of the dynptr for future use, while also allowing
+> views to smaller subsets of the data after the offset is advanced or the
+> size is trimmed.
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-
-Thanks, this fixed the above reported error for me.  My report is just
-forwarded from Satya.
-
-Reported-by: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-I don't know if that change has other implications for unusual byte sizes.
-
-We might need to consider at some point waiting to validate
-DW_TAG_base_type until we know that they're not used outside of
-DW_AT_location expressions.
-
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > ---
->  btf_encoder.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/bpf/helpers.c  |  14 ++++++
+>  kernel/bpf/verifier.c | 105 ++++++++++++++++++++++++++++++++++--------
+>  2 files changed, 99 insertions(+), 20 deletions(-)
 >
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 65f6e71..1aa0ad0 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -394,7 +394,7 @@ static int32_t btf_encoder__add_base_type(struct btf_=
-encoder *encoder, const str
->          * these non-regular int types to avoid libbpf/kernel complaints.
->          */
->         byte_sz =3D BITS_ROUNDUP_BYTES(bt->bit_size);
-> -       if (!byte_sz || (byte_sz & (byte_sz - 1))) {
-> +       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16) {
->                 name =3D "__SANITIZED_FAKE_INT__";
->                 byte_sz =3D 4;
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 9018646b86db..1ebdc7f1a574 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2343,6 +2343,19 @@ __bpf_kfunc __u32 bpf_dynptr_size(const struct bpf=
+_dynptr_kern *ptr)
+>         return __bpf_dynptr_size(ptr);
+>  }
+>
+> +__bpf_kfunc int bpf_dynptr_clone(struct bpf_dynptr_kern *ptr,
+> +                                struct bpf_dynptr_kern *clone__uninit)
+> +{
+> +       if (!ptr->data) {
+> +               bpf_dynptr_set_null(clone__uninit);
+> +               return -EINVAL;
+> +       }
+> +
+> +       *clone__uninit =3D *ptr;
+> +
+> +       return 0;
+> +}
+> +
+>  __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
+>  {
+>         return obj;
+> @@ -2419,6 +2432,7 @@ BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+>  BTF_ID_FLAGS(func, bpf_dynptr_size)
+> +BTF_ID_FLAGS(func, bpf_dynptr_clone)
+>  BTF_SET8_END(common_btf_ids)
+>
+>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1e05355facdc..164726673086 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -309,6 +309,7 @@ struct bpf_kfunc_call_arg_meta {
+>         struct {
+>                 enum bpf_dynptr_type type;
+>                 u32 id;
+> +               u32 ref_obj_id;
+>         } initialized_dynptr;
+>         struct {
+>                 u8 spi;
+> @@ -847,11 +848,11 @@ static int destroy_if_dynptr_stack_slot(struct bpf_=
+verifier_env *env,
+>                                         struct bpf_func_state *state, int=
+ spi);
+>
+>  static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct =
+bpf_reg_state *reg,
+> -                                  enum bpf_arg_type arg_type, int insn_i=
+dx)
+> +                                  enum bpf_arg_type arg_type, int insn_i=
+dx, int clone_ref_obj_id)
+>  {
+>         struct bpf_func_state *state =3D func(env, reg);
+>         enum bpf_dynptr_type type;
+> -       int spi, i, id, err;
+> +       int spi, i, err;
+>
+>         spi =3D dynptr_get_spi(env, reg);
+>         if (spi < 0)
+> @@ -887,7 +888,13 @@ static int mark_stack_slots_dynptr(struct bpf_verifi=
+er_env *env, struct bpf_reg_
+>
+>         if (dynptr_type_refcounted(type)) {
+>                 /* The id is used to track proper releasing */
+> -               id =3D acquire_reference_state(env, insn_idx);
+> +               int id;
+> +
+> +               if (clone_ref_obj_id)
+> +                       id =3D clone_ref_obj_id;
+> +               else
+> +                       id =3D acquire_reference_state(env, insn_idx);
+> +
+>                 if (id < 0)
+>                         return id;
+>
+> @@ -901,24 +908,15 @@ static int mark_stack_slots_dynptr(struct bpf_verif=
+ier_env *env, struct bpf_reg_
+>         return 0;
+>  }
+>
+> -static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struc=
+t bpf_reg_state *reg)
+> +static void invalidate_dynptr(struct bpf_verifier_env *env, struct bpf_f=
+unc_state *state, int spi)
+>  {
+> -       struct bpf_func_state *state =3D func(env, reg);
+> -       int spi, i;
+> -
+> -       spi =3D dynptr_get_spi(env, reg);
+> -       if (spi < 0)
+> -               return spi;
+> +       int i;
+>
+>         for (i =3D 0; i < BPF_REG_SIZE; i++) {
+>                 state->stack[spi].slot_type[i] =3D STACK_INVALID;
+>                 state->stack[spi - 1].slot_type[i] =3D STACK_INVALID;
 >         }
-> --
-> 2.34.1
 >
+> -       /* Invalidate any slices associated with this dynptr */
+> -       if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.t=
+ype))
+> -               WARN_ON_ONCE(release_reference(env, state->stack[spi].spi=
+lled_ptr.ref_obj_id));
+> -
+>         __mark_reg_not_init(env, &state->stack[spi].spilled_ptr);
+>         __mark_reg_not_init(env, &state->stack[spi - 1].spilled_ptr);
+>
+> @@ -945,6 +943,52 @@ static int unmark_stack_slots_dynptr(struct bpf_veri=
+fier_env *env, struct bpf_re
+>          */
+>         state->stack[spi].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+>         state->stack[spi - 1].spilled_ptr.live |=3D REG_LIVE_WRITTEN;
+> +}
+> +
+> +static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struc=
+t bpf_reg_state *reg)
+> +{
+> +       struct bpf_func_state *state =3D func(env, reg);
+> +       int spi;
+> +
+> +       spi =3D dynptr_get_spi(env, reg);
+> +       if (spi < 0)
+> +               return spi;
+> +
+> +       if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.t=
+ype)) {
 
+I inverted this condition, did invalidate_dynptr(spi), return 0. This
+reduced nestedness of refcounted case handling code below.
 
---=20
-Thanks,
-~Nick Desaulniers
+The rest looks great!
+
+> +               int ref_obj_id =3D state->stack[spi].spilled_ptr.ref_obj_=
+id;
+> +               int i;
+> +
+> +               /* If the dynptr has a ref_obj_id, then we need to invali=
+date
+> +                * two things:
+> +                *
+> +                * 1) Any dynptrs with a matching ref_obj_id (clones)
+> +                * 2) Any slices derived from this dynptr.
+> +                */
+> +
+
+[...]
