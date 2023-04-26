@@ -2,419 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5CB6EEF52
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 09:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0346EEF65
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 09:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239596AbjDZHbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 03:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S239654AbjDZHiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 03:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239731AbjDZHbB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 03:31:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7AF3581
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 00:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682494209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLspASTGSiAR360dsQr/mZmbgGL5Gs/KZwVbTVVr1Hc=;
-        b=UvF1sGjckXoEBhcXuQktM6sXaUDNfl76mCz73AxmJytRyQBFLLB5k/fVXU2YLglAlk9SlX
-        6dSALVuUR02od972tmAN0hqTz5lRWQSlQGkUIHYe+eSMmsoOtuqNXAA24awepD27a7rFpy
-        na2HS54NfPkMEHzLklh2+dY+arSwlrI=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-5-7oOJpjv_PTeYIvMmo0z9Mg-1; Wed, 26 Apr 2023 03:30:07 -0400
-X-MC-Unique: 7oOJpjv_PTeYIvMmo0z9Mg-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4edc5d704bbso3178692e87.2
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 00:30:07 -0700 (PDT)
+        with ESMTP id S239381AbjDZHiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 03:38:01 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E00F3581
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 00:37:59 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-95316faa3a8so1268157966b.2
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 00:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682494678; x=1685086678;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8i3FKHlDifIZDSUlM3GadQoCcX5it8Xz2TYPfoDVKpY=;
+        b=g+0KtpMCdlGE8XjwW1LdxQipayi8+YepN9Y3kutlgSsJ/jY1dCVnOE771dWeA1KgYf
+         wF9mnneDcyVWpFkxZo5f6Bzpg4KJ/mj+z2ZrupaO5WJZEGHZURJo4BH5CNhsuYXpFSv1
+         8igglM21K81AvsDzE5IIZsDNMNWIEpsSZeijybbYdtH33sNv9ZEiVpzf1YO/tIb7G8qv
+         iOClSZCpoO14k5/kBf827eUDsjZf2Yo4ZeCbggAPVGiidQfNLUHCW+fjMrPzoPDw3ybt
+         EZCwM6T4gKjXbMdVmgzWykzgZo17l9I2LDEzYo9kSlJhIO34uCDF6NUkT3TCImt2tD7m
+         NZbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682494206; x=1685086206;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qLspASTGSiAR360dsQr/mZmbgGL5Gs/KZwVbTVVr1Hc=;
-        b=YTfxpzG8Uc8I1+W9tMeuMer4a088LZHXa8JQYaRRXElqLzuqhkyQjt/QSDuj0ln7Et
-         /YlvLJxv86iCDfeuuKmzRhmjy+l7/AqneAYCya7milCv/awpCKs7gjvfRB4AzvLAhuZ0
-         pUP2xORtPBNPhZ7AYOGPXyTpnk3/rO0YQdMlFhH9ZseaBrJl3c0u24ZYvrFBcmZtgr7x
-         BKshzZh5j7BPHSeiYhhS3XEt+5wGIGLNGPkykSrX3MYz62JEnI9IQ6/hBi1ZRKc4JJc5
-         jHZ+KRLyPfCCrau4wDdtmhPQLYtOmuqp10B8W+1LSoDDbas+uyXl50WXVDpwG+PIveAM
-         J2Lw==
-X-Gm-Message-State: AAQBX9dwB+aJJq09Rkz/DmY7Oz9vKTK2ZamRdxSwOa7dWVQTBPBRPqD6
-        VBsM+rv9DOfUyrHNid2+lUd04bJdntQvqQPT5a84xiaxb/hlKAFqpCHVqznQ5nElb2fCBNSWXWS
-        R+rWyn42qtSg=
-X-Received: by 2002:a05:6512:926:b0:4ef:ebb2:afe0 with SMTP id f6-20020a056512092600b004efebb2afe0mr2981919lft.42.1682494206352;
-        Wed, 26 Apr 2023 00:30:06 -0700 (PDT)
-X-Google-Smtp-Source: AKy350YTqQZn3KVY6F+7bINc/LgeaavbJ1qPFgjrUawfxC7IL7luA2996opUteRvieyUOhaupPLzEQ==
-X-Received: by 2002:a05:6512:926:b0:4ef:ebb2:afe0 with SMTP id f6-20020a056512092600b004efebb2afe0mr2981899lft.42.1682494205916;
-        Wed, 26 Apr 2023 00:30:05 -0700 (PDT)
-Received: from [192.168.1.121] (85-23-48-202.bb.dnainternet.fi. [85.23.48.202])
-        by smtp.gmail.com with ESMTPSA id 5-20020ac25685000000b004ec7c0f2178sm2362493lfr.63.2023.04.26.00.30.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Apr 2023 00:30:04 -0700 (PDT)
-Message-ID: <831f0d02-7671-97bf-a968-e2e5bf92dfd7@redhat.com>
-Date:   Wed, 26 Apr 2023 10:30:03 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        d=1e100.net; s=20221208; t=1682494678; x=1685086678;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8i3FKHlDifIZDSUlM3GadQoCcX5it8Xz2TYPfoDVKpY=;
+        b=gLuv+4lZPK6mN5AIv0LhZ5IIX4o05TMa5/ztTTet98d750y8EI/Gmd2apR+HwrTMiN
+         X/Pt3PyxWYwbERmTNSVYNx9ZVrdIIF3lNTHKl52at6YucEgrFnQQXOVWagDyLIfcXMPB
+         k4Pt24xawJeRVtH2pcrshF9WjpRgmlVjw5emFK+8LI9dHZBXOBh+clgADYLL4blHmQ9s
+         sruU3QNqEA4V6Z6Edh8zC8nVgop7/647bJO8BWwpOU+towOdOPjHUbHm8jbe3MT82IE6
+         lVRu5zg/6OlOLgf9L+LrFoNEgro+48F9xXLww77B3Wbz2X9tOm1Yg2WBXUs48yNVRxyZ
+         4LVw==
+X-Gm-Message-State: AAQBX9dSadkCd29wlXWwi4K3rgwxRnTAKJsfyENMPTnSQob7gAIJgbOp
+        8nd/Y8v+WDJ28Hvkqcm5Jj8=
+X-Google-Smtp-Source: AKy350ZJznRxr/2gBAljDLYsxDVET0mmUSt2ombNwNw88LAeEqYK990xlXLRcxKk54jBl28/Sc0adA==
+X-Received: by 2002:a17:906:3b56:b0:94f:cc7:fd7f with SMTP id h22-20020a1709063b5600b0094f0cc7fd7fmr16199135ejf.65.1682494677652;
+        Wed, 26 Apr 2023 00:37:57 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id x10-20020a1709064bca00b0095334355a34sm7795034ejv.96.2023.04.26.00.37.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Apr 2023 00:37:57 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 26 Apr 2023 09:37:55 +0200
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        David Hildenbrand <david@redhat.com>
-References: <3b92d56f55671a0389252379237703df6e86ea48.1682464032.git.lstoakes@gmail.com>
- <a68fa8f2-8619-63ff-3525-ede7ed1f0a9f@redhat.com>
- <5ffd7f32-d236-4da4-93f7-c2fe39a6e035@lucifer.local>
- <aa0d9a98-7dd1-0188-d382-5835cf1ddf3a@redhat.com>
- <b7f8daba-1250-4a45-895e-cbb20cc6c2dd@lucifer.local>
-From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mpenttil@redhat.com>
-In-Reply-To: <b7f8daba-1250-4a45-895e-cbb20cc6c2dd@lucifer.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [RFC/PATCH bpf-next 01/20] bpf: Add multi uprobe link
+Message-ID: <ZEjU0ykZZTHMVlZt@krava>
+References: <20230424160447.2005755-1-jolsa@kernel.org>
+ <20230424160447.2005755-2-jolsa@kernel.org>
+ <d7e22ae7-0080-1ad3-e05b-379890953f95@meta.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7e22ae7-0080-1ad3-e05b-379890953f95@meta.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 26.4.2023 10.20, Lorenzo Stoakes wrote:
-> On Wed, Apr 26, 2023 at 10:10:14AM +0300, Mika Penttilä wrote:
->>
->>
->> On 26.4.2023 10.00, Lorenzo Stoakes wrote:
->>> On Wed, Apr 26, 2023 at 06:18:38AM +0300, Mika Penttilä wrote:
->>>> Hi,
->>>>
->>>>
->>>> On 26.4.2023 2.15, Lorenzo Stoakes wrote:
->>>>> GUP does not correctly implement write-notify semantics, nor does it
->>>>> guarantee that the underlying pages are correctly dirtied, which could lead
->>>>> to a kernel oops or data corruption when writing to file-backed mappings.
->>>>>
->>>>> This is only relevant when the mappings are file-backed and the underlying
->>>>> file system requires folio dirty tracking. File systems which do not, such
->>>>> as shmem or hugetlb, are not at risk and therefore can be written to
->>>>> without issue.
->>>>>
->>>>> Unfortunately this limitation of GUP has been present for some time and
->>>>> requires future rework of the GUP API in order to provide correct write
->>>>> access to such mappings.
->>>>>
->>>>> In the meantime, we add a check for the most broken GUP case -
->>>>> FOLL_LONGTERM - which really under no circumstances can safely access
->>>>> dirty-tracked file mappings.
->>>>>
->>>>> As part of this change we separate out vma_needs_dirty_tracking() as a
->>>>> helper function to determine this, which is distinct from
->>>>> vma_wants_writenotify() which is specific to determining which PTE flags to
->>>>> set.
->>>>>
->>>>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
->>>>> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
->>>>> ---
->>>>> v4:
->>>>> - Split out vma_needs_dirty_tracking() from vma_wants_writenotify() to reduce
->>>>>      duplication and update to use this in the GUP check. Note that both separately
->>>>>      check vm_ops_needs_writenotify() as the latter needs to test this before the
->>>>>      vm_pgprot_modify() test, resulting in vma_wants_writenotify() checking this
->>>>>      twice, however it is such a small check this should not be egregious.
->>>>>
->>>>> v3:
->>>>> - Rebased on latest mm-unstable as of 24th April 2023.
->>>>> - Explicitly check whether file system requires folio dirtying. Note that
->>>>>      vma_wants_writenotify() could not be used directly as it is very much focused
->>>>>      on determining if the PTE r/w should be set (e.g. assuming private mapping
->>>>>      does not require it as already set, soft dirty considerations).
->>>>> - Tested code against shmem and hugetlb mappings - confirmed that these are not
->>>>>      disallowed by the check.
->>>>> - Eliminate FOLL_ALLOW_BROKEN_FILE_MAPPING flag and instead perform check only
->>>>>      for FOLL_LONGTERM pins.
->>>>> - As a result, limit check to internal GUP code.
->>>>>     https://lore.kernel.org/all/23c19e27ef0745f6d3125976e047ee0da62569d4.1682406295.git.lstoakes@gmail.com/
->>>>>
->>>>> v2:
->>>>> - Add accidentally excluded ptrace_access_vm() use of
->>>>>      FOLL_ALLOW_BROKEN_FILE_MAPPING.
->>>>> - Tweak commit message.
->>>>> https://lore.kernel.org/all/c8ee7e02d3d4f50bb3e40855c53bda39eec85b7d.1682321768.git.lstoakes@gmail.com/
->>>>>
->>>>> v1:
->>>>> https://lore.kernel.org/all/f86dc089b460c80805e321747b0898fd1efe93d7.1682168199.git.lstoakes@gmail.com/
->>>>>
->>>>>     include/linux/mm.h |  1 +
->>>>>     mm/gup.c           | 26 +++++++++++++++++++++++++-
->>>>>     mm/mmap.c          | 37 ++++++++++++++++++++++++++++---------
->>>>>     3 files changed, 54 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>>> index 37554b08bb28..f7da02fc89c6 100644
->>>>> --- a/include/linux/mm.h
->>>>> +++ b/include/linux/mm.h
->>>>> @@ -2433,6 +2433,7 @@ extern unsigned long move_page_tables(struct vm_area_struct *vma,
->>>>>     #define  MM_CP_UFFD_WP_ALL                 (MM_CP_UFFD_WP | \
->>>>>     					    MM_CP_UFFD_WP_RESOLVE)
->>>>> +bool vma_needs_dirty_tracking(struct vm_area_struct *vma);
->>>>>     int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot);
->>>>>     static inline bool vma_wants_manual_pte_write_upgrade(struct vm_area_struct *vma)
->>>>>     {
->>>>> diff --git a/mm/gup.c b/mm/gup.c
->>>>> index 1f72a717232b..53652453037c 100644
->>>>> --- a/mm/gup.c
->>>>> +++ b/mm/gup.c
->>>>> @@ -959,16 +959,37 @@ static int faultin_page(struct vm_area_struct *vma,
->>>>>     	return 0;
->>>>>     }
->>>>> +/*
->>>>> + * Writing to file-backed mappings which require folio dirty tracking using GUP
->>>>> + * is a fundamentally broken operation as kernel write access to GUP mappings
->>>>> + * may not adhere to the semantics expected by a file system.
->>>>> + */
->>>>> +static inline bool can_write_file_mapping(struct vm_area_struct *vma,
->>>>> +					  unsigned long gup_flags)
->>>>> +{
->>>>> +	/* If we aren't pinning then no problematic write can occur. */
->>>>> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
->>>>> +		return true;
->>>>> +
->>>>> +	/* We limit this check to the most egregious case - a long term pin. */
->>>>> +	if (!(gup_flags & FOLL_LONGTERM))
->>>>> +		return true;
->>>>> +
->>>>> +	/* If the VMA requires dirty tracking then GUP will be problematic. */
->>>>> +	return vma_needs_dirty_tracking(vma);
->>>>> +}
->>>>> +
->>>>>     static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->>>>>     {
->>>>>     	vm_flags_t vm_flags = vma->vm_flags;
->>>>>     	int write = (gup_flags & FOLL_WRITE);
->>>>>     	int foreign = (gup_flags & FOLL_REMOTE);
->>>>> +	bool vma_anon = vma_is_anonymous(vma);
->>>>>     	if (vm_flags & (VM_IO | VM_PFNMAP))
->>>>>     		return -EFAULT;
->>>>> -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
->>>>> +	if ((gup_flags & FOLL_ANON) && !vma_anon)
->>>>>     		return -EFAULT;
->>>>>     	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
->>>>> @@ -978,6 +999,9 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
->>>>>     		return -EFAULT;
->>>>>     	if (write) {
->>>>> +		if (!vma_anon && !can_write_file_mapping(vma, gup_flags))
->>>>> +			return -EFAULT;
->>>>> +
->>>>>     		if (!(vm_flags & VM_WRITE)) {
->>>>>     			if (!(gup_flags & FOLL_FORCE))
->>>>>     				return -EFAULT;
->>>>> diff --git a/mm/mmap.c b/mm/mmap.c
->>>>> index 536bbb8fa0ae..aac638dd22cf 100644
->>>>> --- a/mm/mmap.c
->>>>> +++ b/mm/mmap.c
->>>>> @@ -1475,6 +1475,32 @@ SYSCALL_DEFINE1(old_mmap, struct mmap_arg_struct __user *, arg)
->>>>>     }
->>>>>     #endif /* __ARCH_WANT_SYS_OLD_MMAP */
->>>>> +/* Do VMA operations imply write notify is required? */
->>>>> +static inline bool vm_ops_needs_writenotify(
->>>>> +	const struct vm_operations_struct *vm_ops)
->>>>> +{
->>>>> +	return vm_ops && (vm_ops->page_mkwrite || vm_ops->pfn_mkwrite);
->>>>> +}
->>>>> +
->>>>> +/*
->>>>> + * Does this VMA require the underlying folios to have their dirty state
->>>>> + * tracked?
->>>>> + */
->>>>> +bool vma_needs_dirty_tracking(struct vm_area_struct *vma)
->>>>> +{
->>>>> +	/* Does the filesystem need to be notified? */
->>>>> +	if (vm_ops_needs_writenotify(vma->vm_ops))
->>>>> +		return true;
->>>>> +
->>>>> +	/* Specialty mapping? */
->>>>> +	if (vma->vm_flags & VM_PFNMAP)
->>>>> +		return false;
->>>>> +
->>>>> +	/* Can the mapping track the dirty pages? */
->>>>> +	return vma->vm_file && vma->vm_file->f_mapping &&
->>>>> +		mapping_can_writeback(vma->vm_file->f_mapping);
->>>>> +}
->>>>> +
->>>>
->>>> What would be the exact reproducer of the problem? AFAIK writenotify is
->>>> handled (by handle_mm_fault()) for non cow mappings (shared), where it only
->>>> matters.
->>>
->>> The issue is reproduced simply by page_to_virt(pinned_page)[0] = 'x' :)
->>>
->>> The problem is that no faulting actually occurs, so no writenotify, and no
->>
->>
->> Could you elaborate? GUP calls handle_mm_fault() that invokes the write
->> notify the pte is made first writable. Of course, virt(pinned_page)[0] = 'x'
->> is not supposed to fault while using the kernel mapping.
->>
-> 
-> The issue is how dirtying works. Typically for a dirty-tracking mapping the
-> kernel makes the mapping read-only, then when a write fault occurs,
-> writenotify is called and the folio is marked dirty. This way the file
-> system knows which files to writeback, then after writeback it 'cleans'
-> them, restoring the read-only mapping and relying on the NEXT write marking
-> write notifying and marking the folio dirty again.
-> 
-
-I know how the dirty tracking works :). And gup itself actually triggers 
-the _first_ fault on a read only pte.
-
-So the problem is accessing the page after that, somewehere in future. I 
-think this is something you should write on the description. Because, 
-technically, GUP itself works and does invoke the write notify. So the 
-misleading part is you say in the description it doesn't. While you mean 
-a later write, from a driver or such, doesn't.
-
-
-
-> If we GUP, _especially_ if it's long term, we run the risk of a write to
-> the folio _after_ it has been cleaned and if the caller tries to do the
-> 'right thing' and mark the folio dirty, it being marked dirty at an
-> unexpected time which might race with other things and thus oops.
-> 
-> The issue is that this dirtying mechanism implicitly relies on the memory
-> _only_ being accessed via user mappings, but we're providing another way to
-> access that memory bypassing all that.
-> 
-> It's been a fundamental flaw in GUP for some time. This change tries to
-> make things a little better by precluding the riskiest version of this
-> which is the caller indicating that the pin is longterm (via
-> FOLL_LONGTERM).
-> 
-> For an example of a user trying to sensibly avoid this, see io_pin_pages()
-> in io_uring/rsrc.c. This is where io_uring tries to explicitly avoid this
-> themselves, something that GUP should clearly be doing.
-> 
-> After this change, that code can be removed and we will live in a world
-> where linux has a saner GUP :)
-> 
-> Of course we need to make more fundamental changes moving forward, the idea
-> is this improves the situation and eliminates the need for the open-coded
-> solution for io_uring which unblocks my other patch series which is also
-> trying to make GUP more sane.
+On Tue, Apr 25, 2023 at 04:56:00PM -0700, Yonghong Song wrote:
 > 
 > 
->>
->>
->>> PG_dirty tracking does either. Unexpected page dirtying can occur even
->>> after they are cleaned in folio_clear_dirty_for_io(), because the caller
->>> might manually mark the page dirty at an unexpected time as with the
->>> unpin_*dirty*() helpers.
->>>
->>> I think the long-term solution is to provide a different interface where
->>> pages are passed back briefly with locks held and with a manual invocation
->>> of writeprotect, or perhaps some kthread_use_mm() thing so we actually
->>> trigger the faulting logic, but in the meantime this change helps restore
->>> some sanity.
->>>
->>>>
->>>> GUP will only allow FOLL_FORCE without faulting for PageAnonExclusive pages.
->>>> So if you want something beyond normal cow semantics you have custom vm_ops
->>>> (and mmap() and fault())
->>>
->>> This has nothing to do with FOLL_FORCE.
->>>
->>>>
->>>> Also for longterm pinning gups vs fork vs swap there has been fixes by david
->>>> recently.
->>>
->>> I don't think these are relevant in any way to this issue.
->>>
->>>>
->>>>
->>>>
->>>>>     /*
->>>>>      * Some shared mappings will want the pages marked read-only
->>>>>      * to track write events. If so, we'll downgrade vm_page_prot
->>>>> @@ -1484,14 +1510,13 @@ SYSCALL_DEFINE1(old_mmap, struct mmap_arg_struct __user *, arg)
->>>>>     int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
->>>>>     {
->>>>>     	vm_flags_t vm_flags = vma->vm_flags;
->>>>> -	const struct vm_operations_struct *vm_ops = vma->vm_ops;
->>>>>     	/* If it was private or non-writable, the write bit is already clear */
->>>>>     	if ((vm_flags & (VM_WRITE|VM_SHARED)) != ((VM_WRITE|VM_SHARED)))
->>>>>     		return 0;
->>>>>     	/* The backer wishes to know when pages are first written to? */
->>>>> -	if (vm_ops && (vm_ops->page_mkwrite || vm_ops->pfn_mkwrite))
->>>>> +	if (vm_ops_needs_writenotify(vma->vm_ops))
->>>>>     		return 1;
->>>>>     	/* The open routine did something to the protections that pgprot_modify
->>>>> @@ -1511,13 +1536,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
->>>>>     	if (userfaultfd_wp(vma))
->>>>>     		return 1;
->>>>> -	/* Specialty mapping? */
->>>>> -	if (vm_flags & VM_PFNMAP)
->>>>> -		return 0;
->>>>> -
->>>>> -	/* Can the mapping track the dirty pages? */
->>>>> -	return vma->vm_file && vma->vm_file->f_mapping &&
->>>>> -		mapping_can_writeback(vma->vm_file->f_mapping);
->>>>> +	return vma_needs_dirty_tracking(vma);
->>>>>     }
->>>>>     /*
->>>>
->>>>
->>>> --Mika
->>>>
->>>
->>
->>
+> On 4/24/23 9:04 AM, Jiri Olsa wrote:
+> > Adding new multi uprobe link that allows to attach bpf program
+> > to multiple uprobes.
+> > 
+> > Uprobes to attach are specified via new link_create uprobe_multi
+> > union:
+> > 
+> >    struct {
+> >            __u32           flags;
+> >            __u32           cnt;
+> >            __aligned_u64   paths;
+> >            __aligned_u64   offsets;
+> >            __aligned_u64   ref_ctr_offsets;
+> >    } uprobe_multi;
+> > 
+> > Uprobes are defined in paths/offsets/ref_ctr_offsets arrays with
+> > the same 'cnt' length. Each uprobe is defined with a single index
+> > in all three arrays:
+> > 
+> >    paths[idx], offsets[idx] and/or ref_ctr_offsets[idx]
 > 
+> paths[idx], offsets[idx] and optional ref_ctr_offsets[idx]?
 
+yes
 
---Mika
+> 
+> > 
+> > The 'flags' supports single bit for now that marks the uprobe as
+> > return probe.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   include/linux/trace_events.h |   6 +
+> >   include/uapi/linux/bpf.h     |  14 +++
+> >   kernel/bpf/syscall.c         |  16 ++-
+> >   kernel/trace/bpf_trace.c     | 231 +++++++++++++++++++++++++++++++++++
+> >   4 files changed, 265 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> > index 0e373222a6df..b0db245fc0f5 100644
+> > --- a/include/linux/trace_events.h
+> > +++ b/include/linux/trace_events.h
+> > @@ -749,6 +749,7 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
+> >   			    u32 *fd_type, const char **buf,
+> >   			    u64 *probe_offset, u64 *probe_addr);
+> >   int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+> > +int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+> >   #else
+> >   static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+> >   {
+> > @@ -795,6 +796,11 @@ bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >   {
+> >   	return -EOPNOTSUPP;
+> >   }
+> > +static inline int
+> > +bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > +{
+> > +	return -EOPNOTSUPP;
+> > +}
+> >   #endif
+> >   enum {
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 1bb11a6ee667..debc041c6ca5 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+> >   	BPF_TRACE_KPROBE_MULTI,
+> >   	BPF_LSM_CGROUP,
+> >   	BPF_STRUCT_OPS,
+> > +	BPF_TRACE_UPROBE_MULTI,
+> >   	__MAX_BPF_ATTACH_TYPE
+> >   };
+> > @@ -1052,6 +1053,7 @@ enum bpf_link_type {
+> >   	BPF_LINK_TYPE_KPROBE_MULTI = 8,
+> >   	BPF_LINK_TYPE_STRUCT_OPS = 9,
+> >   	BPF_LINK_TYPE_NETFILTER = 10,
+> > +	BPF_LINK_TYPE_UPROBE_MULTI = 11,
+> >   	MAX_BPF_LINK_TYPE,
+> >   };
+> > @@ -1169,6 +1171,11 @@ enum bpf_link_type {
+> >    */
+> >   #define BPF_F_KPROBE_MULTI_RETURN	(1U << 0)
+> > +/* link_create.uprobe_multi.flags used in LINK_CREATE command for
+> > + * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
+> > + */
+> > +#define BPF_F_UPROBE_MULTI_RETURN	(1U << 0)
+> > +
+> >   /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+> >    * the following extensions:
+> >    *
+> > @@ -1568,6 +1575,13 @@ union bpf_attr {
+> >   				__s32		priority;
+> >   				__u32		flags;
+> >   			} netfilter;
+> > +			struct {
+> > +				__u32		flags;
+> > +				__u32		cnt;
+> > +				__aligned_u64	paths;
+> > +				__aligned_u64	offsets;
+> > +				__aligned_u64	ref_ctr_offsets;
+> > +			} uprobe_multi;
+> >   		};
+> >   	} link_create;
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 14f39c1e573e..0b789a33317b 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -4601,7 +4601,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+> >   		break;
+> >   	case BPF_PROG_TYPE_KPROBE:
+> >   		if (attr->link_create.attach_type != BPF_PERF_EVENT &&
+> > -		    attr->link_create.attach_type != BPF_TRACE_KPROBE_MULTI) {
+> > +		    attr->link_create.attach_type != BPF_TRACE_KPROBE_MULTI &&
+> > +		    attr->link_create.attach_type != BPF_TRACE_UPROBE_MULTI) {
+> >   			ret = -EINVAL;
+> >   			goto out;
+> >   		}
+> > @@ -4666,10 +4667,21 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+> >   		ret = bpf_perf_link_attach(attr, prog);
+> >   		break;
+> >   	case BPF_PROG_TYPE_KPROBE:
+> > +		/* Ensure that program with eBPF_TRACE_UPROBE_MULTI attach type can
+> > +		 * attach only to uprobe_multi link. It has its own runtime context
+> > +		 * which is specific for get_func_ip/get_attach_cookie helpers.
+> > +		 */
+> > +		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI &&
+> > +		    attr->link_create.attach_type != BPF_TRACE_UPROBE_MULTI) {
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> 
+> The above seems redundant since it is checked in
+> bpf_uprobe_multi_link_attach().
+> That is why the BPF_TRACE_KPROBE_MULTI is not checked here since
+> bpf_kprobe_multi_link_attach() checks it.
 
+for standard kprobe type program we do not check expected_attach_type,
+but get_func_ip/get_attach_cookie helpers functions are picked based on
+that:
+
+        case BPF_FUNC_get_attach_cookie:
+                if (prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI)
+                        return &bpf_get_attach_cookie_proto_kmulti;
+                if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI)
+                        return &bpf_get_attach_cookie_proto_umulti;
+                return &bpf_get_attach_cookie_proto_trace;
+
+so standard kprobe attached through BPF_PERF_EVENT would run BPF_TRACE_UPROBE_MULTI
+version of the helper and crash, because there's different context used
+
+it's probably a problem for kprobe_multi as well, I'll check and have
+separate patch for that
+
+> > +static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
+> > +{
+> > +	struct bpf_uprobe_multi_link *umulti_link;
+> > +
+> > +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+> > +	kvfree(umulti_link->uprobes);
+> > +	kfree(umulti_link);
+> > +}
+> > +
+> > +static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
+> > +	.release = bpf_uprobe_multi_link_release,
+> > +	.dealloc = bpf_uprobe_multi_link_dealloc,
+> > +};
+> > +
+> > +static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+> > +			   unsigned long entry_ip,
+> > +			   struct pt_regs *regs)
+> > +{
+> > +	struct bpf_uprobe_multi_link *link = uprobe->link;
+> > +	struct bpf_uprobe_multi_run_ctx run_ctx = {
+> > +		.entry_ip = entry_ip,
+> > +	};
+> > +	struct bpf_run_ctx *old_run_ctx;
+> > +	int err;
+> > +
+> > +	preempt_disable();
+> 
+> Alexei has pointed out here.
+> preempt_disable() is not favored.
+> We should use migrate_disable/enable().
+> For non sleepable program, the below rcu_read_lock() is okay.
+> For sleepable program, use rcu_read_lock_trace().
+> See __bpf_prog_enter_sleepable_recur() in trampoline.c as
+> an example.
+
+yes, I'll fix that
+
+thanks,
+jirka
