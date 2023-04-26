@@ -2,154 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9536EF05F
-	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 10:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AFE6EF079
+	for <lists+bpf@lfdr.de>; Wed, 26 Apr 2023 10:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239892AbjDZIl7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 04:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        id S240200AbjDZIvn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 04:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239464AbjDZIl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 04:41:57 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576793C1F;
-        Wed, 26 Apr 2023 01:41:55 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f1cfed93e2so40348445e9.3;
-        Wed, 26 Apr 2023 01:41:55 -0700 (PDT)
+        with ESMTP id S240184AbjDZIvd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 04:51:33 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC0D40F4;
+        Wed, 26 Apr 2023 01:51:32 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-2f27a9c7970so6138219f8f.2;
+        Wed, 26 Apr 2023 01:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682498514; x=1685090514;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ArnfC+A36KVaoJFRoRkLOWAFxiyb01QcwAzoyNZQfrk=;
-        b=n9wa3FOCIYkEV0LwxjD7q+MJsqrZ/xLRGpZrfpm1L41Qr0+7o4/6/ZYD3BlbEcftEO
-         TWzgVeMf+XcQ9HsFH1vuDYssuU38PJbkjpIsGzwFEbwFCxKe2ZxojqC72bKxomHDmIz1
-         ay801JAtzkZglQqSXez+EB2JvaC/I7cUlvzIIvgZSWJZs9weW1ABvcyD5u63Q7mIkki6
-         NRPaCiSqUjxrZoe54A9PXGWESh3VCD77XzFDvAwQdpuwjTppXlqu1YvSuLi/m5BtM6YY
-         xlJl3a4CxRtLkhLlWSNRXKvWu1vgt+ugy9vY0Wy2ASvgNice9SZVxwotBJabFXuk4qjl
-         bI5w==
+        d=gmail.com; s=20221208; t=1682499091; x=1685091091;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hSMr42fxTWyyNAG5/aU9KwCRtGwIQIyKAkulVMr9X74=;
+        b=pn3Z4+DzRyrUv+n2f07SYhiXYVC5MwiWUGGC6hrzNclD2hGT3ia8Gkl5dUjBIHEp/s
+         lecGJdL9K2dEyZsrSEAnc3lMA9e7mbfqPPhDPNqIBXtIAEXHaLy+prS3vOWvkoXIFPys
+         6TG5WRBDot9jtSO0DCK5sfzPRPKpu9L45+10xtWd7Qc0zgIKxTeabukTFxvrU2dflf61
+         302RE0J5epZlL0Bh7V7HYkx8KL7VBaTDhWOrwXvLeFHikY+LQCCfxn4jtVTi1gHxf7t7
+         tf0MjXd49yo0++Y2jIEy+Fyu7taYS3i2t/zrwfeMCv+ufr3M15Z6kTvRTjY1kYSkZtGv
+         I6ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682498514; x=1685090514;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ArnfC+A36KVaoJFRoRkLOWAFxiyb01QcwAzoyNZQfrk=;
-        b=YDzQ8taQ/HxY7KP1222ajKQ7hRqmvKGiNq7SgPDaDenvfQJaCD+Qmz66aBifskidli
-         AN0kwt3Cg7w5o9W2cPWz8yWHIw3GMga9ILzgn12jXlXRBHCu4qxUPUpUWGZkkxfCTFPw
-         kMmMX1kWqI5HWgsWVC7QHWPZIelnqikxiqSQJduHOumrZJD3geoS0Q1YLIjGUYJizJSr
-         9YOqiK/RHCL69TCdIDcTg3hnxruSAqsQLctuC3bwbgfT6WQP5WQv5lpT/GCmXy+wZEn6
-         Ff7eIX5JRWfi3MJioiYhpDNcYpS8afRkIcjHyLqOmqcnK0ee7RqzfcfB7cKpmq88Kquc
-         XqEQ==
-X-Gm-Message-State: AAQBX9cmd5cVsly/BEnpoynABUkHpVkJvfMep395e1KzyHVGT4/kVInq
-        9GLhVonkrFh3cHEa3TLGcYw=
-X-Google-Smtp-Source: AKy350Z5NR02Z8oNrVzXCbdERtnNyDO/QN/D6Phr2ymfd0ldQFATBh9gLJnkGVzoLJVNHjNxs5dl8A==
-X-Received: by 2002:a05:600c:2201:b0:3f1:806d:33ad with SMTP id z1-20020a05600c220100b003f1806d33admr11101118wml.6.1682498513622;
-        Wed, 26 Apr 2023 01:41:53 -0700 (PDT)
-Received: from localhost (ip-185-104-136-48.ptr.icomera.net. [185.104.136.48])
-        by smtp.gmail.com with ESMTPSA id t13-20020a7bc3cd000000b003f173c566b5sm17344264wmj.5.2023.04.26.01.41.52
+        d=1e100.net; s=20221208; t=1682499091; x=1685091091;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hSMr42fxTWyyNAG5/aU9KwCRtGwIQIyKAkulVMr9X74=;
+        b=lujh47+oMTvqeAJxBKrpas+gV8fjdiu4TMLPq+p2RenDS+bcFXnY0YhH8ae94Ajyyl
+         yWqF2IKtUU/b52U7Odf4gMgzyzzf9QdC6U8KuuaqquHG4Dfbn8uiUFAksddIwGvq++oQ
+         Oih2ZIuj8j3dB7bLtYcp9oaV6C88Mfg1WzD198YP+ntfwBHuZRbnAKfVUuUGpHWEZQWl
+         aJ00gN7lDdirtWImZGRmtJkP4HdvfOzqS/8e3PpCV1eVWyji+bfwUHPHIXtKY6kUudAd
+         ItTNaWM8IVjWaKC9OBnPU4Hqj8R9z9Qcui+4Y+1C1tnERe94oQRudNUMtID9SY9Rgy8l
+         HApg==
+X-Gm-Message-State: AAQBX9cYFEv4J7ZbJyFCOu115YM6LP0PpD1mN4aAuRnp9x/UOrlOWXtQ
+        OSywjzAbXTFkgc2kffWBB9o=
+X-Google-Smtp-Source: AKy350YLfM67FsA6sKVyWaH7hmGiGrS4KkSmYE0OxKnVxty373+iARlq35uodKWHpoO3KDHFSxKOzg==
+X-Received: by 2002:adf:ed07:0:b0:2f5:7079:599e with SMTP id a7-20020adfed07000000b002f57079599emr14183045wro.12.1682499090569;
+        Wed, 26 Apr 2023 01:51:30 -0700 (PDT)
+Received: from localhost.localdomain ([46.120.112.185])
+        by smtp.gmail.com with ESMTPSA id q11-20020a5d574b000000b003049d7b9f4csm1229838wrw.32.2023.04.26.01.51.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Apr 2023 01:41:52 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 09:41:51 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Mika =?iso-8859-1?Q?Penttil=E4?= <mpenttil@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v4] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <ZEjjz_zqynWj0Kcc@murray>
-References: <3b92d56f55671a0389252379237703df6e86ea48.1682464032.git.lstoakes@gmail.com>
- <a68fa8f2-8619-63ff-3525-ede7ed1f0a9f@redhat.com>
- <5ffd7f32-d236-4da4-93f7-c2fe39a6e035@lucifer.local>
- <aa0d9a98-7dd1-0188-d382-5835cf1ddf3a@redhat.com>
- <b7f8daba-1250-4a45-895e-cbb20cc6c2dd@lucifer.local>
- <831f0d02-7671-97bf-a968-e2e5bf92dfd7@redhat.com>
+        Wed, 26 Apr 2023 01:51:29 -0700 (PDT)
+From:   Gilad Sever <gilad9366@gmail.com>
+To:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
+        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz
+Cc:     eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Gilad Sever <gilad9366@gmail.com>
+Subject: [PATCH bpf,v3 0/4] Socket lookup BPF API from tc/xdp ingress does not respect VRF bindings.
+Date:   Wed, 26 Apr 2023 11:51:18 +0300
+Message-Id: <20230426085122.376768-1-gilad9366@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <831f0d02-7671-97bf-a968-e2e5bf92dfd7@redhat.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 10:30:03AM +0300, Mika Penttilä wrote:
+When calling socket lookup from L2 (tc, xdp), VRF boundaries aren't
+respected. This patchset fixes this by regarding the incoming device's
+VRF attachment when performing the socket lookups from tc/xdp.
 
-[snip]
+The first two patches are coding changes which factor out the tc helper's
+logic which was shared with cg/sk_skb (which operate correctly).
 
-> > The issue is how dirtying works. Typically for a dirty-tracking mapping the
-> > kernel makes the mapping read-only, then when a write fault occurs,
-> > writenotify is called and the folio is marked dirty. This way the file
-> > system knows which files to writeback, then after writeback it 'cleans'
-> > them, restoring the read-only mapping and relying on the NEXT write marking
-> > write notifying and marking the folio dirty again.
-> >
->
-> I know how the dirty tracking works :). And gup itself actually triggers the
-> _first_ fault on a read only pte.
+This refactoring is needed in order to avoid affecting the cgroup/sk_skb
+flows as there does not seem to be a strict criteria for discerning which
+flow the helper is called from based on the net device or packet
+information.
 
-I'm sure you don't mean to, but this comes off as sarcastic, 'I know how X
-works :)' is not a helpful comment. However, equally apologies if I seemed
-patronising, not intentional, I am just trying to be as clear as possible,
-which always risks sounding that way :)
+The third patch contains the actual bugfix.
 
-Regardless, this is a very good point! I think I was a little too implicit
-in the whole 'at any time the kernel chooses to write to this writenotify
-won't happen', and you are absolutely right in that we are not clear enough
-about that.
+The fourth patch adds bpf tests for these lookup functions.
+---
+v3: - Rename bpf_l2_sdif() to dev_sdif() as suggested by Stanislav Fomichev
+    - Added xdp tests as suggested by Daniel Borkmann
+    - Use start_server() to avoid duplicate code as suggested by Stanislav Fomichev
 
->
-> So the problem is accessing the page after that, somewehere in future. I
-> think this is something you should write on the description. Because,
-> technically, GUP itself works and does invoke the write notify. So the
-> misleading part is you say in the description it doesn't. While you mean a
-> later write, from a driver or such, doesn't.
->
+v2: Fixed uninitialized var in test patch (4).
 
-Ack, agreed this would be a useful improvement. Will fix on next spin!
+Gilad Sever (4):
+  bpf: factor out socket lookup functions for the TC hookpoint.
+  bpf: Call __bpf_sk_lookup()/__bpf_skc_lookup() directly via TC
+    hookpoint
+  bpf: fix bpf socket lookup from tc/xdp to respect socket VRF bindings
+  selftests/bpf: Add vrf_socket_lookup tests
 
-[snip]
+ net/core/filter.c                             | 132 +++++--
+ .../bpf/prog_tests/vrf_socket_lookup.c        | 327 ++++++++++++++++++
+ .../selftests/bpf/progs/vrf_socket_lookup.c   |  88 +++++
+ 3 files changed, 526 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
+
+-- 
+2.34.1
+
