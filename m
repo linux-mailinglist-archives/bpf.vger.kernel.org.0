@@ -2,119 +2,533 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8858E6F0A68
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 19:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F90A6F0ADF
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 19:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244132AbjD0RA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 13:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        id S244302AbjD0Rbo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 13:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243603AbjD0RA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 13:00:57 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C5110DC;
-        Thu, 27 Apr 2023 10:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=VY35CR0N+ZDTgEcRw5IUuyTLgtNiCtDZ/FIVsL1y6PM=; b=IyEXV1IrvDNYBhMp8VbJm9h2sY
-        vuqxYwjjCDOs+hrN0dXCufM/8KHB6lZowlIwIoueLR4nfON1ikjtCcYmSrzAm2t6CAcl/xxrERr2U
-        iMhnjGnFYxmXGQE4yueCE4CLLj1/7eWDS8BhNizWjGdqnNY20UPcr82hRYvHw2nkBAJ/3WldFOnaH
-        rpaxw75v3rZE/MR0PccJPokoNiNtpgNDXHv0q4AiY8gnKMLwb/aSys3yYuGrLig0lzGTfKIw5vcWw
-        aeLfssMRAxsoHIgozihQUDkL8S2OI4EkAhBcAVRfmfBHCOh0aYc65jCQl7D5xNE82QyMSOjKXEM/K
-        Z+haDrVQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps4z6-000JZO-Kc; Thu, 27 Apr 2023 19:00:44 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps4z5-000QuO-Us; Thu, 27 Apr 2023 19:00:43 +0200
-Subject: Re: [PATCH bpf-next V2 1/5] igc: enable and fix RX hash usage by
- netstack
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>, davem@davemloft.net,
-        bpf@vger.kernel.org
-Cc:     brouer@redhat.com, netdev@vger.kernel.org, martin.lau@kernel.org,
-        ast@kernel.org, alexandr.lobakin@intel.com,
-        larysa.zaremba@intel.com, xdp-hints@xdp-project.net,
-        John Fastabend <john.fastabend@gmail.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        yoong.siang.song@intel.com, intel-wired-lan@lists.osuosl.org,
-        pabeni@redhat.com, jesse.brandeburg@intel.com,
-        Stanislav Fomichev <sdf@google.com>, kuba@kernel.org,
-        edumazet@google.com, hawk@kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <168182460362.616355.14591423386485175723.stgit@firesoul>
- <168182464270.616355.11391652654430626584.stgit@firesoul>
- <644544b3206f0_19af02085e@john.notmuch>
- <622a8fa6-ec07-c150-250b-5467b0cddb0c@redhat.com>
- <6446d5af80e06_338f220820@john.notmuch>
- <e6bc2340-9cb5-def1-b347-af25ce2f8225@redhat.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <86517b44-b998-a4ac-da13-1f30d5f69975@iogearbox.net>
-Date:   Thu, 27 Apr 2023 19:00:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <e6bc2340-9cb5-def1-b347-af25ce2f8225@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26889/Thu Apr 27 09:25:48 2023)
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S243441AbjD0Rbn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 13:31:43 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756393AB1
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 10:31:38 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5187bd3d365so7885891a12.3
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 10:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682616698; x=1685208698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIHAsi2ks0oJ/aPzB5untDwVtI889eiDGf3XoWMzx+Q=;
+        b=4HdV1ul0iTGtQYeVIDHtgMWPZTr5+PlcYe5SsJHSsGDmp9QC3JGnvofo2v6dUR1+Ce
+         2ZV4AxcMRs3nx28BHLJcnYY23TECLrhYAfRvqIEBvR0xZbL8nysurgxI2Hl6D+zv2QtB
+         jBGIDC+LJoVgKznq9zKZdnAdfTLWZS89aBnUGGgGoP0WckNv8bfRlfVoC+9nkcnIoHbM
+         Ig1VjWkg/NZWKYgnG2oM6/AwU3R8laZfMYfiPDx+QBlWNSf5so2DdP9FxojLlBAasUmq
+         R4aPbUTe4luBK7u9qaUmWFRmBF9cMSnFN1vm+ZnK9SsR9Xy2OvFnjwPS56od1aokRUuo
+         Gj7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682616698; x=1685208698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIHAsi2ks0oJ/aPzB5untDwVtI889eiDGf3XoWMzx+Q=;
+        b=HWPnUHFzDQWjM4JVUp8SIynGp4CwBKfBG/wYzUVRzRe81jcgSckBKQAaQ3djwS7fVz
+         0SYtdKL26IOyZ6jsAYVPnKeXGfAh4rWAjXhAAC5nM8+/R6vEkplNv5RNLjsMRMSh28nF
+         2UGxc8G5OPCLb4cwptzPqqh2MLCiSWmMXpSaP820h7srrj6yC9jCn9/rTebpRxYQR0I2
+         0qLtdrq6N7IeEl9+pAPZyMlIECteiNLNCK3Un5g/QayHeLB8ziImVABexzvRkdg/W0rQ
+         Z0TGxzPedaVq7zb+DMuKUEMYbZHuObd7cMRmEOQUCNdqd6bmdyGsuIKeLW/qoDl22uPj
+         TFOQ==
+X-Gm-Message-State: AC+VfDxkUm0iz7wzvfSQOaM7R8wdWXbKQdu/vr8kyS0D1BZXaz5wsD58
+        oaLpDXSjdSchsmwdH/MhHnzjNMU=
+X-Google-Smtp-Source: ACHHUZ5ovsVZzB1CyIen2Aoea3QVK5W4Ai1SmOXXgIIAUcyeG3AlIF39YbP4bzzc0NHzqQIIaFPLqxQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:2b17:0:b0:513:a748:c7d5 with SMTP id
+ r23-20020a632b17000000b00513a748c7d5mr569486pgr.3.1682616697791; Thu, 27 Apr
+ 2023 10:31:37 -0700 (PDT)
+Date:   Thu, 27 Apr 2023 10:31:36 -0700
+In-Reply-To: <20230426085122.376768-5-gilad9366@gmail.com>
+Mime-Version: 1.0
+References: <20230426085122.376768-1-gilad9366@gmail.com> <20230426085122.376768-5-gilad9366@gmail.com>
+Message-ID: <ZEqxeBmk3txU+34B@google.com>
+Subject: Re: [PATCH bpf,v3 4/4] selftests/bpf: Add vrf_socket_lookup tests
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Gilad Sever <gilad9366@gmail.com>
+Cc:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
+        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+        shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz,
+        eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/25/23 10:43 AM, Jesper Dangaard Brouer wrote:
-> On 24/04/2023 21.17, John Fastabend wrote:
->>>> Just curious why not copy the logic from the other driver fms10k, ice, ect.
->>>>
->>>>     skb_set_hash(skb, le32_to_cpu(rx_desc->wb.lower.hi_dword.rss),
->>>>              (IXGBE_RSS_L4_TYPES_MASK & (1ul << rss_type)) ?
->>>>              PKT_HASH_TYPE_L4 : PKT_HASH_TYPE_L3);
->>> Detail: This code mis-categorize (e.g. ARP) PKT_HASH_TYPE_L2 as
->>> PKT_HASH_TYPE_L3, but as core reduces this further to one SKB bit, it
->>> doesn't really matter.
->>>
->>>> avoiding the table logic. Do the driver folks care?
->>> The define IXGBE_RSS_L4_TYPES_MASK becomes the "table" logic as a 1-bit
->>> true/false table.  It is a more compact table, let me know if this is
->>> preferred.
->>>
->>> Yes, it is really upto driver maintainer people to decide, what code is
->>> preferred ?
->  >
->> Yeah doesn't matter much to me either way. I was just looking at code
->> compared to ice driver while reviewing.
+On 04/26, Gilad Sever wrote:
+> Verify that socket lookup via TC/XDP with all BPF APIs is VRF aware.
 > 
-> My preference is to apply this patchset. We/I can easily followup and
-> change this to use the more compact approach later (if someone prefers).
+> Reviewed-by: Eyal Birger <eyal.birger@gmail.com>
+> Signed-off-by: Gilad Sever <gilad9366@gmail.com>
+> ---
+> v2: Fix build by initializing vars with -1
+> ---
+> v3: Added xdp tests as suggested by Daniel Borkmann
+> v3: Use start_server() to avoid duplicate code as suggested by
+>     Stanislav Fomichev
+> ---
+>  .../bpf/prog_tests/vrf_socket_lookup.c        | 327 ++++++++++++++++++
+>  .../selftests/bpf/progs/vrf_socket_lookup.c   |  88 +++++
+>  2 files changed, 415 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c b/tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
+> new file mode 100644
+> index 000000000000..b0b8791f4968
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
+> @@ -0,0 +1,327 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> +
+> +/*
+> + * Topology:
+> + * ---------
+> + *     NS0 namespace         |   NS1 namespace
+> + *			     |
+> + *     +--------------+      |   +--------------+
+> + *     |    veth01    |----------|    veth10    |
+> + *     | 172.16.1.100 |      |   | 172.16.1.200 |
+> + *     |     bpf      |      |   +--------------+
+> + *     +--------------+      |
+> + *      server(UDP/TCP)      |
+> + *  +-------------------+    |
+> + *  |        vrf1       |    |
+> + *  |  +--------------+ |    |   +--------------+
+> + *  |  |    veth02    |----------|    veth20    |
+> + *  |  | 172.16.2.100 | |    |   | 172.16.2.200 |
+> + *  |  |     bpf      | |    |   +--------------+
+> + *  |  +--------------+ |    |
+> + *  |   server(UDP/TCP) |    |
+> + *  +-------------------+    |
+> + *
+> + * Test flow
+> + * -----------
+> + *  The tests verifies that socket lookup via TC is VRF aware:
+> + *  1) Creates two veth pairs between NS0 and NS1:
+> + *     a) veth01 <-> veth10 outside the VRF
+> + *     b) veth02 <-> veth20 in the VRF
+> + *  2) Attaches to veth01 and veth02 a program that calls:
+> + *     a) bpf_skc_lookup_tcp() with TCP and tcp_skc is true
+> + *     b) bpf_sk_lookup_tcp() with TCP and tcp_skc is false
+> + *     c) bpf_sk_lookup_udp() with UDP
+> + *     The program stores the lookup result in bss->lookup_status.
+> + *  3) Creates a socket TCP/UDP server in/outside the VRF.
+> + *  4) The test expects lookup_status to be:
+> + *     a) 0 from device in VRF to server outside VRF
+> + *     b) 0 from device outside VRF to server in VRF
+> + *     c) 1 from device in VRF to server in VRF
+> + *     d) 1 from device outside VRF to server outside VRF
+> + */
+> +
+> +#include <net/if.h>
+> +
+> +#include "test_progs.h"
+> +#include "network_helpers.h"
+> +#include "vrf_socket_lookup.skel.h"
+> +
+> +#define NS0 "vrf_socket_lookup_0"
+> +#define NS1 "vrf_socket_lookup_1"
+> +
+> +#define IP4_ADDR_VETH01 "172.16.1.100"
+> +#define IP4_ADDR_VETH10 "172.16.1.200"
+> +#define IP4_ADDR_VETH02 "172.16.2.100"
+> +#define IP4_ADDR_VETH20 "172.16.2.200"
+> +
+> +#define NON_VRF_PORT 5000
+> +#define IN_VRF_PORT 5001
+> +
+> +#define TIMEOUT_MS 3000
+> +
+> +#define SYS(fmt, ...)						\
+> +	({							\
+> +		char cmd[1024];					\
+> +		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
+> +		if (!ASSERT_OK(system(cmd), cmd))		\
+> +			goto fail;				\
+> +	})
+> +
 
-Consistency might help imo and would avoid questions/confusion on /why/
-doing it differently for igc vs some of the others.
+The bot complains about SYS being redefined:
+   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c:62: error: "SYS" redefined [-Werror]
+     62 | #define SYS(fmt, ...)      \
+        | 
+  In file included from /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c:45:
+  ./test_progs.h:380: note: this is the location of the previous definition
+    380 | #define SYS(goto_label, fmt, ...)     \
 
-> I know net-next is "closed", but this patchset was posted prior to the
-> close.  Plus, a number of companies are waiting for the XDP-hint for HW
-> RX timestamp.  The support for driver stmmac is already in net-next
-> (commit e3f9c3e34840 ("net: stmmac: add Rx HWTS metadata to XDP receive
-> pkt")). Thus, it would be a help if both igc+stmmac changes land in same
-> kernel version, as both drivers are being evaluated by these companies.
+Looks like test_progs.h already defines it (along with SYS_NOFAIL).
 
-Given merge window is open now and net-next closed, it's too late to land
-(unless Dave/Jakub thinks otherwise given it touches also driver bits).
-I've applied the series to bpf-next right now.
-
-Thanks,
-Daniel
+> +#define SYS_NOFAIL(fmt, ...)					\
+> +	({							\
+> +		char cmd[1024];					\
+> +		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
+> +		system(cmd);					\
+> +	})
+> +
+> +static int make_socket(int sotype, const char *ip, int port,
+> +		       struct sockaddr_storage *addr)
+> +{
+> +	int err, fd;
+> +
+> +	err = make_sockaddr(AF_INET, ip, port, addr, NULL);
+> +	if (!ASSERT_OK(err, "make_address"))
+> +		return -1;
+> +
+> +	fd = socket(AF_INET, sotype, 0);
+> +	if (!ASSERT_GE(fd, 0, "socket"))
+> +		return -1;
+> +
+> +	if (!ASSERT_OK(settimeo(fd, TIMEOUT_MS), "settimeo"))
+> +		goto fail;
+> +
+> +	return fd;
+> +fail:
+> +	close(fd);
+> +	return -1;
+> +}
+> +
+> +static int make_server(int sotype, const char *ip, int port, const char *ifname)
+> +{
+> +	int err, fd = -1;
+> +
+> +	fd = start_server(AF_INET, sotype, ip, port, TIMEOUT_MS);
+> +	if (!ASSERT_GE(fd, 0, "start_server"))
+> +		return -1;
+> +
+> +	if (ifname) {
+> +		err = setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE,
+> +				 ifname, strlen(ifname) + 1);
+> +		if (!ASSERT_OK(err, "setsockopt(SO_BINDTODEVICE)"))
+> +			goto fail;
+> +	}
+> +
+> +	return fd;
+> +fail:
+> +	close(fd);
+> +	return -1;
+> +}
+> +
+> +static int attach_progs(char *ifname, int tc_prog_fd, int xdp_prog_fd)
+> +{
+> +	LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 1,
+> +		    .prog_fd = tc_prog_fd);
+> +	LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_INGRESS);
+> +	int ret, ifindex;
+> +
+> +	ifindex = if_nametoindex(ifname);
+> +	if (!ASSERT_NEQ(ifindex, 0, "if_nametoindex"))
+> +		return -1;
+> +	hook.ifindex = ifindex;
+> +
+> +	ret = bpf_tc_hook_create(&hook);
+> +	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
+> +		return ret;
+> +
+> +	ret = bpf_tc_attach(&hook, &opts);
+> +	if (!ASSERT_OK(ret, "bpf_tc_attach")) {
+> +		bpf_tc_hook_destroy(&hook);
+> +		return ret;
+> +	}
+> +	ret = bpf_xdp_attach(ifindex, xdp_prog_fd, 0, NULL);
+> +	if (!ASSERT_OK(ret, "bpf_xdp_attach")) {
+> +		bpf_tc_hook_destroy(&hook);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	SYS_NOFAIL("test -f /var/run/netns/" NS0 " && ip netns delete "
+> +		   NS0);
+> +	SYS_NOFAIL("test -f /var/run/netns/" NS1 " && ip netns delete "
+> +		   NS1);
+> +}
+> +
+> +static int setup(struct vrf_socket_lookup *skel)
+> +{
+> +	int tc_prog_fd, xdp_prog_fd, ret = 0;
+> +	struct nstoken *nstoken = NULL;
+> +
+> +	SYS("ip netns add " NS0);
+> +	SYS("ip netns add " NS1);
+> +
+> +	/* NS0 <-> NS1 [veth01 <-> veth10] */
+> +	SYS("ip link add veth01 netns " NS0 " type veth peer name veth10 netns "
+> +	    NS1);
+> +	SYS("ip -net " NS0 " addr add " IP4_ADDR_VETH01 "/24 dev veth01");
+> +	SYS("ip -net " NS0 " link set dev veth01 up");
+> +	SYS("ip -net " NS1 " addr add " IP4_ADDR_VETH10 "/24 dev veth10");
+> +	SYS("ip -net " NS1 " link set dev veth10 up");
+> +
+> +	/* NS0 <-> NS1 [veth02 <-> veth20] */
+> +	SYS("ip link add veth02 netns " NS0 " type veth peer name veth20 netns "
+> +	    NS1);
+> +	SYS("ip -net " NS0 " addr add " IP4_ADDR_VETH02 "/24 dev veth02");
+> +	SYS("ip -net " NS0 " link set dev veth02 up");
+> +	SYS("ip -net " NS1 " addr add " IP4_ADDR_VETH20 "/24 dev veth20");
+> +	SYS("ip -net " NS1 " link set dev veth20 up");
+> +
+> +	/* veth02 -> vrf1  */
+> +	SYS("ip -net " NS0 " link add vrf1 type vrf table 11");
+> +	SYS("ip -net " NS0 " route add vrf vrf1 unreachable default metric "
+> +	    "4278198272");
+> +	SYS("ip -net " NS0 " link set vrf1 alias vrf");
+> +	SYS("ip -net " NS0 " link set vrf1 up");
+> +	SYS("ip -net " NS0 " link set veth02 master vrf1");
+> +
+> +	/* Attach TC and XDP progs to veth devices in NS0 */
+> +	nstoken = open_netns(NS0);
+> +	if (!ASSERT_OK_PTR(nstoken, "setns " NS0))
+> +		goto fail;
+> +	tc_prog_fd = bpf_program__fd(skel->progs.tc_socket_lookup);
+> +	if (!ASSERT_GE(tc_prog_fd, 0, "bpf_program__tc_fd"))
+> +		goto fail;
+> +	xdp_prog_fd = bpf_program__fd(skel->progs.xdp_socket_lookup);
+> +	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__xdp_fd"))
+> +		goto fail;
+> +
+> +	if (attach_progs("veth01", tc_prog_fd, xdp_prog_fd))
+> +		goto fail;
+> +
+> +	if (attach_progs("veth02", tc_prog_fd, xdp_prog_fd))
+> +		goto fail;
+> +
+> +	goto close;
+> +fail:
+> +	ret = -1;
+> +close:
+> +	if (nstoken)
+> +		close_netns(nstoken);
+> +	return ret;
+> +}
+> +
+> +static int test_lookup(struct vrf_socket_lookup *skel, int sotype,
+> +		       const char *ip, int port, bool test_xdp, bool tcp_skc,
+> +		       int lookup_status_exp)
+> +{
+> +	static const char msg[] = "Hello Server";
+> +	struct sockaddr_storage addr = {};
+> +	int fd, ret = 0;
+> +
+> +	fd = make_socket(sotype, ip, port, &addr);
+> +	if (fd < 0)
+> +		return -1;
+> +
+> +	skel->bss->test_xdp = test_xdp;
+> +	skel->bss->tcp_skc = tcp_skc;
+> +	skel->bss->lookup_status = -1;
+> +
+> +	if (sotype == SOCK_STREAM)
+> +		connect(fd, (void *)&addr, sizeof(struct sockaddr_in));
+> +	else
+> +		sendto(fd, msg, sizeof(msg), 0, (void *)&addr,
+> +		       sizeof(struct sockaddr_in));
+> +
+> +	if (!ASSERT_EQ(skel->bss->lookup_status, lookup_status_exp,
+> +		       "lookup_status"))
+> +		goto fail;
+> +
+> +	goto close;
+> +
+> +fail:
+> +	ret = -1;
+> +close:
+> +	close(fd);
+> +	return ret;
+> +}
+> +
+> +static void _test_vrf_socket_lookup(struct vrf_socket_lookup *skel, int sotype,
+> +				    bool test_xdp, bool tcp_skc)
+> +{
+> +	int in_vrf_server = -1, non_vrf_server = -1;
+> +	struct nstoken *nstoken = NULL;
+> +
+> +	nstoken = open_netns(NS0);
+> +	if (!ASSERT_OK_PTR(nstoken, "setns " NS0))
+> +		goto done;
+> +
+> +	/* Open sockets in and outside VRF */
+> +	non_vrf_server = make_server(sotype, "0.0.0.0", NON_VRF_PORT, NULL);
+> +	if (!ASSERT_GE(non_vrf_server, 0, "make_server__outside_vrf_fd"))
+> +		goto done;
+> +
+> +	in_vrf_server = make_server(sotype, "0.0.0.0", IN_VRF_PORT, "veth02");
+> +	if (!ASSERT_GE(in_vrf_server, 0, "make_server__in_vrf_fd"))
+> +		goto done;
+> +
+> +	/* Perform test from NS1 */
+> +	close_netns(nstoken);
+> +	nstoken = open_netns(NS1);
+> +	if (!ASSERT_OK_PTR(nstoken, "setns " NS1))
+> +		goto done;
+> +
+> +	if (!ASSERT_OK(test_lookup(skel, sotype, IP4_ADDR_VETH02, NON_VRF_PORT,
+> +				   test_xdp, tcp_skc, 0), "in_to_out"))
+> +		goto done;
+> +	if (!ASSERT_OK(test_lookup(skel, sotype, IP4_ADDR_VETH02, IN_VRF_PORT,
+> +				   test_xdp, tcp_skc, 1), "in_to_in"))
+> +		goto done;
+> +	if (!ASSERT_OK(test_lookup(skel, sotype, IP4_ADDR_VETH01, NON_VRF_PORT,
+> +				   test_xdp, tcp_skc, 1), "out_to_out"))
+> +		goto done;
+> +	if (!ASSERT_OK(test_lookup(skel, sotype, IP4_ADDR_VETH01, IN_VRF_PORT,
+> +				   test_xdp, tcp_skc, 0), "out_to_in"))
+> +		goto done;
+> +
+> +done:
+> +	if (non_vrf_server >= 0)
+> +		close(non_vrf_server);
+> +	if (in_vrf_server >= 0)
+> +		close(in_vrf_server);
+> +	if (nstoken)
+> +		close_netns(nstoken);
+> +}
+> +
+> +void test_vrf_socket_lookup(void)
+> +{
+> +	struct vrf_socket_lookup *skel;
+> +
+> +	cleanup();
+> +
+> +	skel = vrf_socket_lookup__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "vrf_socket_lookup__open_and_load"))
+> +		return;
+> +
+> +	if (!ASSERT_OK(setup(skel), "setup"))
+> +		goto done;
+> +
+> +	if (test__start_subtest("tc_socket_lookup_tcp"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, false, false);
+> +	if (test__start_subtest("tc_socket_lookup_tcp_skc"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, false, false);
+> +	if (test__start_subtest("tc_socket_lookup_udp"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, false, false);
+> +	if (test__start_subtest("xdp_socket_lookup_tcp"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, true, false);
+> +	if (test__start_subtest("xdp_socket_lookup_tcp_skc"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, true, false);
+> +	if (test__start_subtest("xdp_socket_lookup_udp"))
+> +		_test_vrf_socket_lookup(skel, SOCK_STREAM, true, false);
+> +
+> +done:
+> +	vrf_socket_lookup__destroy(skel);
+> +	cleanup();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/vrf_socket_lookup.c b/tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
+> new file mode 100644
+> index 000000000000..26e07a252585
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
+> @@ -0,0 +1,88 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <linux/ip.h>
+> +#include <linux/in.h>
+> +#include <linux/if_ether.h>
+> +#include <linux/pkt_cls.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +#include <stdbool.h>
+> +
+> +int lookup_status;
+> +bool test_xdp;
+> +bool tcp_skc;
+> +
+> +#define CUR_NS BPF_F_CURRENT_NETNS
+> +
+> +static void socket_lookup(void *ctx, void *data_end, void *data)
+> +{
+> +	struct ethhdr *eth = data;
+> +	struct bpf_sock_tuple *tp;
+> +	struct bpf_sock *sk;
+> +	struct iphdr *iph;
+> +	int tplen;
+> +
+> +	if (eth + 1 > data_end)
+> +		return;
+> +
+> +	if (eth->h_proto != bpf_htons(ETH_P_IP))
+> +		return;
+> +
+> +	iph = (struct iphdr *)(eth + 1);
+> +	if (iph + 1 > data_end)
+> +		return;
+> +
+> +	tp = (struct bpf_sock_tuple *)&iph->saddr;
+> +	tplen = sizeof(tp->ipv4);
+> +	if ((void *)tp + tplen > data_end)
+> +		return;
+> +
+> +	switch (iph->protocol) {
+> +	case IPPROTO_TCP:
+> +		if (tcp_skc)
+> +			sk = bpf_skc_lookup_tcp(ctx, tp, tplen, CUR_NS, 0);
+> +		else
+> +			sk = bpf_sk_lookup_tcp(ctx, tp, tplen, CUR_NS, 0);
+> +		break;
+> +	case IPPROTO_UDP:
+> +		sk = bpf_sk_lookup_udp(ctx, tp, tplen, CUR_NS, 0);
+> +		break;
+> +	default:
+> +		return;
+> +	}
+> +
+> +	lookup_status = 0;
+> +
+> +	if (sk) {
+> +		bpf_sk_release(sk);
+> +		lookup_status = 1;
+> +	}
+> +}
+> +
+> +SEC("tc")
+> +int tc_socket_lookup(struct __sk_buff *skb)
+> +{
+> +	void *data_end = (void *)(long)skb->data_end;
+> +	void *data = (void *)(long)skb->data;
+> +
+> +	if (test_xdp)
+> +		return TC_ACT_UNSPEC;
+> +
+> +	socket_lookup(skb, data_end, data);
+> +	return TC_ACT_UNSPEC;
+> +}
+> +
+> +SEC("xdp")
+> +int xdp_socket_lookup(struct xdp_md *xdp)
+> +{
+> +	void *data_end = (void *)(long)xdp->data_end;
+> +	void *data = (void *)(long)xdp->data;
+> +
+> +	if (!test_xdp)
+> +		return XDP_PASS;
+> +
+> +	socket_lookup(xdp, data_end, data);
+> +	return XDP_PASS;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> -- 
+> 2.34.1
+> 
