@@ -2,168 +2,306 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF57A6F0B19
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 19:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E8E6F0BB5
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 20:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244265AbjD0RlW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 13:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        id S244353AbjD0SDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 14:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244351AbjD0RlT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 13:41:19 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D944EF8;
-        Thu, 27 Apr 2023 10:40:58 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-555d2b43a23so101790777b3.2;
-        Thu, 27 Apr 2023 10:40:58 -0700 (PDT)
+        with ESMTP id S244363AbjD0SDe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 14:03:34 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641C32701
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 11:03:29 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1a66bd44f7eso93274515ad.0
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 11:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682617258; x=1685209258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4YiPlscKcsFpiAIVg/QnmX/Efo3gqXjg0Osgaqylhwg=;
-        b=JQz16BzFR4nnFHk5Pa2pPodKSGzZ19hbsAurXVI9KEmuFf8ytmMU9iLwf7JIPsGAGH
-         V22dOexPE38Pc9Dwfnm3MTigg8DpinHNOtZYcChaF5a+k32uYRVmdt60x3teUr+cnJW3
-         AABAwGOveZT2GZCrEHI4oDLc8F7y8BWcNaGkizn2l+lbjTgvV+WhggOfLAx8g850gxya
-         l6CRGjqBVT97SAof/vb9alwveBaG5vV3AVNPD9jGWb3kAWE78ifWDAKVisPLqE6Nv7+X
-         W/SCfZNpxgYORSJee6O0CMmvrOPZNCAEP8FqcmbkuUIq6TK5c04sicAlL6IqBrr2Mn9q
-         Oueg==
+        d=google.com; s=20221208; t=1682618609; x=1685210609;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQSj4LpooRjB5FoMJ53KaKTza3Ld5W3Dd2MFQvwsKqs=;
+        b=6Em1rD8+ZUYGqbgudZ9AbaFrS2lXTd24Q45HzlC9Ixk8jT3rBAkLq4syJHzgos9Iy4
+         tAwLjhljhI/cLi5BHwvXGE7fmnwIcDWtP1Dd5VyrxEXyOs0YJtyOnsd7vy8FvEK41zsN
+         FnGc4Fmw23qxnTpghLlF1ool5Jlx5/SkcGWsL+1LsrJZEHV4pfiTivA2SvaKv9Q25PYt
+         iRO/2SkYMVjsdCqn2uUKXzk3X53/C5amRvVOw0qkZPxrP96NX4BNPc2d6vhOLI4et/rC
+         QUUbZhYJUXW+3o7FabTUp+mZttyyNBBdgIHu/jEHXfELtD0CQu5PjtFqvpeOXZPgTv2o
+         8ekg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682617258; x=1685209258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4YiPlscKcsFpiAIVg/QnmX/Efo3gqXjg0Osgaqylhwg=;
-        b=N4idp+4BkBBv38tb9lBiiprxHLEkBomsGs5wtwagJEZC9Dqn/YIypbJdpRfHkM/tBs
-         FD+WxRfrmD+FeAxWsdGT5fkOoNku5HP1FvXHZ8otYHeiS8rHi2z0ey7bQ+TKU4GFijiI
-         irMjDlSGA0qrNZDJh1ec+9rGWkwpJyh4xhwRBJcHTyltXVacX/mfmcba3MO58JgIj/lN
-         9J6jreFwOBn3Y6a63B58g7jaKtvnaZjn5dA4soFs3qN9O2bOYk96Hg3VR2eOJJ0xId4h
-         /QgJA8LYJSFvzCbNBTp8AcZxPVRcJ5CZ4VHs5bFzqgYOWnmP6DscMUrCzddS3jcDVxj2
-         E7FQ==
-X-Gm-Message-State: AC+VfDySWE22H4G2CKmx12RWs3YXJZzCEWjBmtYMoG+GSigGldb55X3j
-        gbiDTUCsyknHYW9QlA5spg4=
-X-Google-Smtp-Source: ACHHUZ5c+S2ZdsL2LjiDk1VOZ+W7MfAcFL25cTJI7lA7YQYD24M6VE0Lr0C1tmKDiaH779KOhRm8rQ==
-X-Received: by 2002:a0d:dec1:0:b0:54f:8b56:bb2 with SMTP id h184-20020a0ddec1000000b0054f8b560bb2mr1722145ywe.9.1682617257902;
-        Thu, 27 Apr 2023 10:40:57 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:81b0:ce95:be9e:c5c9? ([2600:1700:6cf8:1240:81b0:ce95:be9e:c5c9])
-        by smtp.gmail.com with ESMTPSA id r2-20020a815d02000000b0054f97b52934sm4987285ywb.54.2023.04.27.10.40.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Apr 2023 10:40:57 -0700 (PDT)
-Message-ID: <a6ca62a4-d7e6-cdae-b763-fa52ff26a14f@gmail.com>
-Date:   Thu, 27 Apr 2023 10:40:54 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH bpf-next 2/5] net/smc: allow smc to negotiate protocols on
- policies
-Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        pabeni@redhat.com, song@kernel.org, sdf@google.com,
-        haoluo@google.com, yhs@fb.com, edumazet@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        guwen@linux.alibaba.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1682501055-4736-1-git-send-email-alibuda@linux.alibaba.com>
- <1682501055-4736-3-git-send-email-alibuda@linux.alibaba.com>
- <8e1694ec-9acf-a4bd-4dd2-28a258e1436b@gmail.com>
- <a8555236-2bef-b0fb-d8a8-dde3058a2271@linux.alibaba.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <a8555236-2bef-b0fb-d8a8-dde3058a2271@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1682618609; x=1685210609;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQSj4LpooRjB5FoMJ53KaKTza3Ld5W3Dd2MFQvwsKqs=;
+        b=L0RgGKTY5ZI9msWwMV9HVy3eufPt3M1FvZSEOS+pUngxdapLOcr1RdasthN2CULhA3
+         EcBmlg3KbZ7GZid1IULYTL6jlHamZamtvLU4MLrqPH/i7MJbKuGhqL9R+J0n+RL59eW4
+         IW3aL3udJbbwMaocmASemSUCj33FDO/1vVS1dGLpQBOotu6NTJExBbgmp8RIQhlX4TaH
+         MMSpv/Kx463yloZCexcErwGFnYELY5FLfIQ171XiEOq4HIFAjCCENauYaDbVQM4ry4Iq
+         /UH097U66zE0VtS7tQhpOOGQXFKY6uSVK04cw/OyP3xZ/WKX+n9itV4bmOkodLbHQJLf
+         gGoQ==
+X-Gm-Message-State: AC+VfDzst/xnKRZWnc09Hk26CaSiN1WNOXIBJIQZoHpRApr+frBb4TGS
+        1W9Y+Sv0A2Sf5GzjA1lkFTAwwng=
+X-Google-Smtp-Source: ACHHUZ6bh+IXnbdDs8bT9lwb3YLGimmxY1LXDvK/pPXLkw3lh68vOVhrbMJi6Pdu67A8OHodl9FWsTM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:487:b0:1a6:b221:daa1 with SMTP id
+ jj7-20020a170903048700b001a6b221daa1mr781558plb.0.1682618608845; Thu, 27 Apr
+ 2023 11:03:28 -0700 (PDT)
+Date:   Thu, 27 Apr 2023 11:03:27 -0700
+In-Reply-To: <20230426085122.376768-4-gilad9366@gmail.com>
+Mime-Version: 1.0
+References: <20230426085122.376768-1-gilad9366@gmail.com> <20230426085122.376768-4-gilad9366@gmail.com>
+Message-ID: <ZEq47yhL58mceV3C@google.com>
+Subject: Re: [PATCH bpf,v3 3/4] bpf: fix bpf socket lookup from tc/xdp to
+ respect socket VRF bindings
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Gilad Sever <gilad9366@gmail.com>
+Cc:     dsahern@kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
+        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+        shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz,
+        eyal.birger@gmail.com, shmulik.ladkani@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 04/26, Gilad Sever wrote:
+> When calling bpf_sk_lookup_tcp(), bpf_sk_lookup_udp() or
+> bpf_skc_lookup_tcp() from tc/xdp ingress, VRF socket bindings aren't
+> respoected, i.e. unbound sockets are returned, and bound sockets aren't
+> found.
+> 
+> VRF binding is determined by the sdif argument to sk_lookup(), however
+> when called from tc the IP SKB control block isn't initialized and thus
+> inet{,6}_sdif() always returns 0.
+> 
+> Fix by calculating sdif for the tc/xdp flows by observing the device's
+> l3 enslaved state.
+> 
+> The cg/sk_skb hooking points which are expected to support
+> inet{,6}_sdif() pass sdif=-1 which makes __bpf_skc_lookup() use the
+> existing logic.
+> 
+> Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+> Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> Reviewed-by: Eyal Birger <eyal.birger@gmail.com>
+> Signed-off-by: Gilad Sever <gilad9366@gmail.com>
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+
+with one nit below
+
+> ---
+> v3: Rename bpf_l2_sdif() to dev_sdif() as suggested by Stanislav Fomichev
+> ---
+>  net/core/filter.c | 63 +++++++++++++++++++++++++++++++----------------
+>  1 file changed, 42 insertions(+), 21 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index f43f86fc1235..894913aaa29f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6529,12 +6529,11 @@ static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
+>  static struct sock *
+>  __bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>  		 struct net *caller_net, u32 ifindex, u8 proto, u64 netns_id,
+> -		 u64 flags)
+> +		 u64 flags, int sdif)
+>  {
+>  	struct sock *sk = NULL;
+>  	struct net *net;
+>  	u8 family;
+> -	int sdif;
+>  
+>  	if (len == sizeof(tuple->ipv4))
+>  		family = AF_INET;
+> @@ -6546,10 +6545,12 @@ __bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>  	if (unlikely(flags || !((s32)netns_id < 0 || netns_id <= S32_MAX)))
+>  		goto out;
+>  
+> -	if (family == AF_INET)
+> -		sdif = inet_sdif(skb);
+> -	else
+> -		sdif = inet6_sdif(skb);
+> +	if (sdif < 0) {
+> +		if (family == AF_INET)
+> +			sdif = inet_sdif(skb);
+> +		else
+> +			sdif = inet6_sdif(skb);
+> +	}
+>  
+>  	if ((s32)netns_id < 0) {
+>  		net = caller_net;
+> @@ -6569,10 +6570,11 @@ __bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>  static struct sock *
+>  __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>  		struct net *caller_net, u32 ifindex, u8 proto, u64 netns_id,
+> -		u64 flags)
+> +		u64 flags, int sdif)
+>  {
+>  	struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+> -					   ifindex, proto, netns_id, flags);
+> +					   ifindex, proto, netns_id, flags,
+> +					   sdif);
+>  
+>  	if (sk) {
+>  		struct sock *sk2 = sk_to_full_sk(sk);
+> @@ -6612,7 +6614,7 @@ bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>  	}
+>  
+>  	return __bpf_skc_lookup(skb, tuple, len, caller_net, ifindex, proto,
+> -				netns_id, flags);
+> +				netns_id, flags, -1);
+>  }
+>  
+>  static struct sock *
+> @@ -6701,15 +6703,25 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
+>  	.arg5_type	= ARG_ANYTHING,
+>  };
+ 
+
+[..]
+
+> +static int dev_sdif(const struct net_device *dev)
+> +{
+> +#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
+> +	if (netif_is_l3_slave(dev))
+> +		return dev->ifindex;
+> +#endif
+> +	return 0;
+> +}
 
 
-On 4/26/23 20:30, D. Wythe wrote:
-> 
-> Hi Lee,
-> 
-> 
-> On 4/27/23 12:47 AM, Kui-Feng Lee wrote:
->>
->>
->> On 4/26/23 02:24, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>> diff --git a/net/smc/bpf_smc.c b/net/smc/bpf_smc.c
->>> new file mode 100644
->>> index 0000000..0c0ec05
->>> --- /dev/null
->>> +++ b/net/smc/bpf_smc.c
->>> @@ -0,0 +1,201 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->> ... cut ...
-> 
-> Will fix it, Thanks.
-> 
->>> +
->>> +/* register ops */
->>> +int smc_sock_register_negotiator_ops(struct smc_sock_negotiator_ops 
->>> *ops)
->>> +{
->>> +    int ret;
->>> +
->>> +    ret = smc_sock_validate_negotiator_ops(ops);
->>> +    if (ret)
->>> +        return ret;
->>> +
->>> +    /* calt key by name hash */
->>> +    ops->key = jhash(ops->name, sizeof(ops->name), strlen(ops->name));
->>> +
->>> +    spin_lock(&smc_sock_negotiator_list_lock);
->>> +    if (smc_negotiator_ops_get_by_key(ops->key)) {
->>> +        pr_notice("smc: %s negotiator already registered\n", 
->>> ops->name);
->>> +        ret = -EEXIST;
->>> +    } else {
->>> +        list_add_tail_rcu(&ops->list, &smc_sock_negotiator_list);
->>> +    }
->>> +    spin_unlock(&smc_sock_negotiator_list_lock);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(smc_sock_register_negotiator_ops);
->>
->> This and following functions are not specific to BPF, right?
->> I found you have more BPF specific code in this file in following
->> patches.  But, I feel these function should not in this file since
->> they are not BPF specific because file name "bpf_smc.c" hints.
-> 
-> Yes. Logically those functions are not suitable for being placed in 
-> "bpf_smc.c".
-> However, since SMC is compiled as modules by default, and currently
-> struct ops needs to be built in, or specific symbols will not be found 
-> during linking.
-> 
-> Of course, I can separate those this function in another new file, which 
-> can also be built in.
-> I may have to introduce a new KConfig likes SMC_NEGOTIATOR. But this 
-> feature is  only effective
-> when eBPF exists, so from the perspective of SMC, it would also be kind 
-> of weird.
-On the other hand, this feature is only effective when SMC exists.
-Even without BPF, you still can implement a negotiator in a module.
-Since you have exported these symbols, I suspect that you expect
-negotiators in modules or builtin, right?  If I am wrong about exports,
-perhaps you should stop exporting since they are used locally only.
+nit: should this go into include/linux/netdevice.h?
 
-> 
-> But whatever, if you do think it's necessary, I can split it into two 
-> files.
-> 
-> Besh wishes.
-> D. Wythe
-> 
-> 
+> +
+>  BPF_CALL_5(bpf_tc_skc_lookup_tcp, struct sk_buff *, skb,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u64, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(skb->dev);
+> +	int sdif = dev_sdif(skb->dev);
+>  	int ifindex = skb->dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_skc_lookup(skb, tuple, len, caller_net,
+>  					       ifindex, IPPROTO_TCP, netns_id,
+> -					       flags);
+> +					       flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_tc_skc_lookup_tcp_proto = {
+> @@ -6728,11 +6740,12 @@ BPF_CALL_5(bpf_tc_sk_lookup_tcp, struct sk_buff *, skb,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u64, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(skb->dev);
+> +	int sdif = dev_sdif(skb->dev);
+>  	int ifindex = skb->dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_sk_lookup(skb, tuple, len, caller_net,
+>  					      ifindex, IPPROTO_TCP, netns_id,
+> -					      flags);
+> +					      flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_tc_sk_lookup_tcp_proto = {
+> @@ -6751,11 +6764,12 @@ BPF_CALL_5(bpf_tc_sk_lookup_udp, struct sk_buff *, skb,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u64, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(skb->dev);
+> +	int sdif = dev_sdif(skb->dev);
+>  	int ifindex = skb->dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_sk_lookup(skb, tuple, len, caller_net,
+>  					      ifindex, IPPROTO_UDP, netns_id,
+> -					      flags);
+> +					      flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_tc_sk_lookup_udp_proto = {
+> @@ -6788,11 +6802,13 @@ BPF_CALL_5(bpf_xdp_sk_lookup_udp, struct xdp_buff *, ctx,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u32, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(ctx->rxq->dev);
+> -	int ifindex = ctx->rxq->dev->ifindex;
+> +	struct net_device *dev = ctx->rxq->dev;
+> +	int sdif = dev_sdif(dev);
+> +	int ifindex = dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_sk_lookup(NULL, tuple, len, caller_net,
+>  					      ifindex, IPPROTO_UDP, netns_id,
+> -					      flags);
+> +					      flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_xdp_sk_lookup_udp_proto = {
+> @@ -6811,11 +6827,13 @@ BPF_CALL_5(bpf_xdp_skc_lookup_tcp, struct xdp_buff *, ctx,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u32, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(ctx->rxq->dev);
+> -	int ifindex = ctx->rxq->dev->ifindex;
+> +	struct net_device *dev = ctx->rxq->dev;
+> +	int sdif = dev_sdif(dev);
+> +	int ifindex = dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_skc_lookup(NULL, tuple, len, caller_net,
+>  					       ifindex, IPPROTO_TCP, netns_id,
+> -					       flags);
+> +					       flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_xdp_skc_lookup_tcp_proto = {
+> @@ -6834,11 +6852,13 @@ BPF_CALL_5(bpf_xdp_sk_lookup_tcp, struct xdp_buff *, ctx,
+>  	   struct bpf_sock_tuple *, tuple, u32, len, u32, netns_id, u64, flags)
+>  {
+>  	struct net *caller_net = dev_net(ctx->rxq->dev);
+> -	int ifindex = ctx->rxq->dev->ifindex;
+> +	struct net_device *dev = ctx->rxq->dev;
+> +	int sdif = dev_sdif(dev);
+> +	int ifindex = dev->ifindex;
+>  
+>  	return (unsigned long)__bpf_sk_lookup(NULL, tuple, len, caller_net,
+>  					      ifindex, IPPROTO_TCP, netns_id,
+> -					      flags);
+> +					      flags, sdif);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_xdp_sk_lookup_tcp_proto = {
+> @@ -6858,7 +6878,8 @@ BPF_CALL_5(bpf_sock_addr_skc_lookup_tcp, struct bpf_sock_addr_kern *, ctx,
+>  {
+>  	return (unsigned long)__bpf_skc_lookup(NULL, tuple, len,
+>  					       sock_net(ctx->sk), 0,
+> -					       IPPROTO_TCP, netns_id, flags);
+> +					       IPPROTO_TCP, netns_id, flags,
+> +					       -1);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_sock_addr_skc_lookup_tcp_proto = {
+> @@ -6877,7 +6898,7 @@ BPF_CALL_5(bpf_sock_addr_sk_lookup_tcp, struct bpf_sock_addr_kern *, ctx,
+>  {
+>  	return (unsigned long)__bpf_sk_lookup(NULL, tuple, len,
+>  					      sock_net(ctx->sk), 0, IPPROTO_TCP,
+> -					      netns_id, flags);
+> +					      netns_id, flags, -1);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_sock_addr_sk_lookup_tcp_proto = {
+> @@ -6896,7 +6917,7 @@ BPF_CALL_5(bpf_sock_addr_sk_lookup_udp, struct bpf_sock_addr_kern *, ctx,
+>  {
+>  	return (unsigned long)__bpf_sk_lookup(NULL, tuple, len,
+>  					      sock_net(ctx->sk), 0, IPPROTO_UDP,
+> -					      netns_id, flags);
+> +					      netns_id, flags, -1);
+>  }
+>  
+>  static const struct bpf_func_proto bpf_sock_addr_sk_lookup_udp_proto = {
+> -- 
+> 2.34.1
 > 
