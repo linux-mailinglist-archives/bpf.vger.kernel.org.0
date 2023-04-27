@@ -2,86 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA6D6F0D25
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8596F0D55
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344204AbjD0UaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S245540AbjD0Ui4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344203AbjD0UaW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:30:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B032137;
-        Thu, 27 Apr 2023 13:30:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D236563F9B;
-        Thu, 27 Apr 2023 20:30:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E8E4C433EF;
-        Thu, 27 Apr 2023 20:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682627420;
-        bh=24+VeYb6T1HFq5slOW08jZBYoMoL09riRKeWSl9l4fw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eeueGLik8VI+eJ0ZEr/XqtVsKbAzc8EADDE48BRLYguiMOdXsaSUXMYgeHT0Zy9km
-         T07nmKpZgmQPMTr2emCg1dpWmVQKPXFMpZMpwzIWXYjGKECCBuZuKwF8tMd57Dprf6
-         NftzojSxUchoMYm/pdF3VZ189sntw1rje+Zxngo4JC2IUjMmBa2MFwji8GP0B0FabT
-         IS7FW3sWMrBF+EO6aRWUArAaSjX8lPxTznC+ZFUdltm0cFvO0JHztUzCcoTlN0OisT
-         wZ2rdxsMv4gdUdTGTP5trrOu2zz6pZjxpLo2iMk61ykqLpcLKMnu3vTSfxj+qsxtQi
-         xof7JXbYy+eMQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 08E3CE5FFC8;
-        Thu, 27 Apr 2023 20:30:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S245168AbjD0Uiz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:38:55 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EA33C15;
+        Thu, 27 Apr 2023 13:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=mb+mw9RoqPzSHwk13zdaZsc81X0xQJcY8tYM6v4FHUI=; b=IJYieqMbLLhnFwjYIv3DzoJbc6
+        w/TidPHt60tuVQEEqr2cd6v1r0PgUuRcEGqsd5mmjkhtUxKBI+bRystWAwkyNBgHUWnF/eScr9Y1D
+        NUFJjXWNu0P+iFi3KSriG6s92Hs7HbV+W6GKOKq89rnxvBCa1RK18Wp/YKF6orgZz+N7SRi5Bztl3
+        JdTCK7zs1vA00180MS5iE3vhv4mAFhqt5zHIgBaCaKf96yuXanhbB6jkHLhpqZtboKduPUu8sHk8R
+        P1OlEVE9sL9+XsUtmh4QkdM4ghZlhzBJAbQ/3POrDxAABHgDZ9AHYPISto+BDensactLlt7QlGYcF
+        acSlnwJQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ps8OB-00019O-KX; Thu, 27 Apr 2023 22:38:51 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ps8OB-000VKx-9i; Thu, 27 Apr 2023 22:38:51 +0200
+Subject: Re: [PATCH v1] selftests/bpf: Do not use sign-file as testcase
+To:     Stanislav Fomichev <sdf@google.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <88e3ab23029d726a2703adcf6af8356f7a2d3483.1682607419.git.legion@kernel.org>
+ <ZEq+u0CWs8eO2ED/@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <66b8d805-06db-a0ca-9a69-b715d03d4f5e@iogearbox.net>
+Date:   Thu, 27 Apr 2023 22:38:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] xsk: Use pool->dma_pages to check for DMA
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168262742003.5696.300971021135194454.git-patchwork-notify@kernel.org>
-Date:   Thu, 27 Apr 2023 20:30:20 +0000
-References: <20230423180157.93559-1-kal.conley@dectris.com>
-In-Reply-To: <20230423180157.93559-1-kal.conley@dectris.com>
-To:     Kal Cutter Conley <kal.conley@dectris.com>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZEq+u0CWs8eO2ED/@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26889/Thu Apr 27 09:25:48 2023)
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Sun, 23 Apr 2023 20:01:56 +0200 you wrote:
-> Compare pool->dma_pages instead of pool->dma_pages_cnt to check for an
-> active DMA mapping. pool->dma_pages needs to be read anyway to access
-> the map so this compiles to more efficient code.
+On 4/27/23 8:28 PM, Stanislav Fomichev wrote:
+> On 04/27, Alexey Gladkov wrote:
+>> The sign-file utility (from scripts/) is used in prog_tests/verify_pkcs7_sig.c,
+>> but the utility should not be called as a test. Executing this utility
+>> produces the following error:
+>>
+>> selftests: /linux/tools/testing/selftests/bpf: urandom_read
+>> ok 16 selftests: /linux/tools/testing/selftests/bpf: urandom_read
+>>
+>> selftests: /linux/tools/testing/selftests/bpf: sign-file
+>> not ok 17 selftests: /linux/tools/testing/selftests/bpf: sign-file # exit=2
+>>
+>> Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc")
+>> Signed-off-by: Alexey Gladkov <legion@kernel.org>
 > 
-> Signed-off-by: Kal Conley <kal.conley@dectris.com>
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Acked-by: Stanislav Fomichev <sdf@google.com>
 > 
-> [...]
+>>   tools/testing/selftests/bpf/Makefile | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index b677dcd0b77a..fd214d1526d4 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -88,8 +88,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
+>>   	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
+>>   	xdp_features
+>>   
+>> -TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
+>> -TEST_GEN_FILES += liburandom_read.so
+>> +TEST_GEN_FILES += liburandom_read.so urandom_read sign-file
 
-Here is the summary with links:
-  - [bpf-next] xsk: Use pool->dma_pages to check for DMA
-    https://git.kernel.org/bpf/bpf-next/c/6ec7be9a2d2b
+Given you move over both of them, the commit msg should be adapted accordingly
+since it mainly talks about sign-file, less so about urandom_read.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Also now that you remove the TEST_CUSTOM_PROGS, we should probably also remove
+the other two instances:
 
+tools/testing/selftests/bpf/Makefile:91:TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
+tools/testing/selftests/bpf/Makefile:156:        $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
+tools/testing/selftests/bpf/Makefile:674:EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR) \
+
+>>   # Emit succinct information message describing current building step
+>>   # $1 - generic step name (e.g., CC, LINK, etc);
+>> -- 
+>> 2.33.7
+>>
 
