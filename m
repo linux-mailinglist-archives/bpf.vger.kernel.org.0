@@ -2,153 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D4D6F002D
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 06:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADAE6F003B
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 06:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239395AbjD0E17 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 27 Apr 2023 00:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
+        id S239395AbjD0EvR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 00:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234980AbjD0E17 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 00:27:59 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3532D79
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:27:58 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-555d2810415so115445737b3.0
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:27:58 -0700 (PDT)
+        with ESMTP id S229455AbjD0EvQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 00:51:16 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE523A9A;
+        Wed, 26 Apr 2023 21:51:15 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5066ce4f725so11644555a12.1;
+        Wed, 26 Apr 2023 21:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682571073; x=1685163073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dv/T/W7pRAkc9VUSDCf9kjnSeM6SfBwY++UqlxaB4tE=;
+        b=TU6qBvsraGr/PDh1DyTkTLg+/Xigjm+y5cJeHoVYUX3EUXez5s0I9jXvel/gT5YU4w
+         eSXd/YJP53KfR7bFYNe9qFGr33zQddJAJpROkDrifvgTOBfnpL2RiDgFptcp8nm1S4i1
+         2Ka/4/CSgkrXbL7yasmi9MiHcV7SXr59aaPq9cL/4OObYn8dI7WqyFyTslNYsM/669Nn
+         1yHRpeNffQjFJ2sjBS/JLd3f1FchaOycy0SSivn5KUjcaadYgk5pXmBP7v/sOd0vpvXS
+         XxOgyauBomaJdnYOZL6bQyB1yTNzwIMK9ABFSnkruCLZUZBpNfB5KB6btGyWy3O6QuTi
+         JMpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682569677; x=1685161677;
+        d=1e100.net; s=20221208; t=1682571073; x=1685163073;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6+e6/Fx8P0I3hL3FNrSQrDXI1FUZppPMChi8reymTgs=;
-        b=KFqMba6Hhe8JCwGE3N2Mh1sPkI92Li+xHq6ea21/NFURHWjMYeSk5hW9avti1ZY4b7
-         65U+bETDokZ+PFx6SdDz0MK59e5aVm0lAgC68/3ETZQUVWyEnyiEH0nRKsNzNZqkZgD7
-         NwaF7nM29UqdEo8Ccg0ugVpzPBm/xoOIuaM53oJFt7tGeUeaJWUnLwyl7PIsRAr+Wur0
-         Gb9rxkTqHwhCx1rcm4SJWCKvmhjnJPfIe2M31QX1qpQ/hPtm0bmhfvkF2JK33u75DLwo
-         Xt7soHEO+XW2SNBzMJAay4S65HaYJMQvDDBEXOVP5y8Lk7rDX5NrxR6h5VCmMsJYcNkF
-         ojhw==
-X-Gm-Message-State: AC+VfDwmN4KSXscrhZyISPqJbay/K6kKWIC/a+DiAw0W1+rZTIFmNVWB
-        q5Pfz2u6JTD2/lLpPTFWjenthMvmbCTC+JgNC2U=
-X-Google-Smtp-Source: ACHHUZ6TAA8/CoTO/uaj4OsN+bG9stCdG/YoaZtIJ5XuZIn1t0PRgBu5G8+M+CLLNHYkT49HEyuVtfogBrvpxzWqtQE=
-X-Received: by 2002:a81:a196:0:b0:552:e5dd:3d0a with SMTP id
- y144-20020a81a196000000b00552e5dd3d0amr350255ywg.17.1682569677128; Wed, 26
- Apr 2023 21:27:57 -0700 (PDT)
+        bh=Dv/T/W7pRAkc9VUSDCf9kjnSeM6SfBwY++UqlxaB4tE=;
+        b=Fp6AMLgTxl+K84MDT28rMj03Qbl6GwcM1pruTwWevHyL/AUaG6mfQ+nEHXztCEpKss
+         i6J8GBE70c/a6Chpxn76xXur5EXBKSzNPFNk9tGc6H7eEfoCJhMgT/UdfZIbyvI9vr5d
+         JzdmpgnUSztAx8YJc5vPiv/zh/IuQ0TAXMGChXPTIviqhmfvxQt2xF5okvDmALvD1m/I
+         1s7ASLRQBpgMw7/InyxY0Lz4+jTuKrDaf6z1X+G3KW4Et5J9jea90vc1+S4rbgzYi91M
+         WVgsnCZ7iENQ4OcavHuR/pQbKg1lmMAwDOP3qLvvKnG8dt1zUiXCpEAD0FfSiuUAiVKY
+         5QRQ==
+X-Gm-Message-State: AC+VfDzFOjBJWmFPSM4SwgEPNO6mWtSfPsefQFWFXQ6w/RPiqm81DvHR
+        jnWeLH8SD3fLFa+UAgUkSoqApnFiNRtYo64HXpQ=
+X-Google-Smtp-Source: ACHHUZ7VomFwJpz3T51TO/fNw0h4O+/KuW4wIOZiQEghUGCmhk3QJTs1/yaTtfELL5yTcSgZuPaQGLHkiOUMf2QM838=
+X-Received: by 2002:a50:fe91:0:b0:504:af14:132d with SMTP id
+ d17-20020a50fe91000000b00504af14132dmr580571edt.13.1682571073362; Wed, 26 Apr
+ 2023 21:51:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
- <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com> <c2a5cb6d-8779-4197-d491-d2249bb49635@gmail.com>
-In-Reply-To: <c2a5cb6d-8779-4197-d491-d2249bb49635@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 26 Apr 2023 21:27:45 -0700
-Message-ID: <CAM9d7cjsu4R=BGaKTUrCckGG-B8wbSbf0NLUBzSk8McX5DrRwg@mail.gmail.com>
-Subject: Re: [HELP] failed to resolve CO-RE relocation
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+References: <20230421170300.24115-1-fw@strlen.de> <20230421170300.24115-2-fw@strlen.de>
+In-Reply-To: <20230421170300.24115-2-fw@strlen.de>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Apr 2023 21:51:01 -0700
+Message-ID: <CAEf4Bzby3gwHmvz1cjcNHKFPA1LQdTq85TpCmOg=GB6=bQwjOQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/7] bpf: add bpf_link support for
+ BPF_NETFILTER programs
+To:     Florian Westphal <fw@strlen.de>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, dxu@dxuuu.xyz, qde@naccy.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hengqi,
+On Fri, Apr 21, 2023 at 10:07=E2=80=AFAM Florian Westphal <fw@strlen.de> wr=
+ote:
+>
+> Add bpf_link support skeleton.  To keep this reviewable, no bpf program
+> can be invoked yet, if a program is attached only a c-stub is called and
+> not the actual bpf program.
+>
+> Defaults to 'y' if both netfilter and bpf syscall are enabled in kconfig.
+>
+> Uapi example usage:
+>         union bpf_attr attr =3D { };
+>
+>         attr.link_create.prog_fd =3D progfd;
+>         attr.link_create.attach_type =3D 0; /* unused */
+>         attr.link_create.netfilter.pf =3D PF_INET;
+>         attr.link_create.netfilter.hooknum =3D NF_INET_LOCAL_IN;
+>         attr.link_create.netfilter.priority =3D -128;
+>
+>         err =3D bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
+>
+> ... this would attach progfd to ipv4:input hook.
+>
+> Such hook gets removed automatically if the calling program exits.
+>
+> BPF_NETFILTER program invocation is added in followup change.
+>
+> NF_HOOK_OP_BPF enum will eventually be read from nfnetlink_hook, it
+> allows to tell userspace which program is attached at the given hook
+> when user runs 'nft hook list' command rather than just the priority
+> and not-very-helpful 'this hook runs a bpf prog but I can't tell which
+> one'.
+>
+> Will also be used to disallow registration of two bpf programs with
+> same priority in a followup patch.
+>
+> v4: arm32 cmpxchg only supports 32bit operand
+>     s/prio/priority/
+> v3: restrict prog attachment to ip/ip6 for now, lets lift restrictions if
+>     more use cases pop up (arptables, ebtables, netdev ingress/egress etc=
+).
+>
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  no changes since last version
+>
+>  include/linux/netfilter.h           |   1 +
+>  include/net/netfilter/nf_bpf_link.h |  10 ++
+>  include/uapi/linux/bpf.h            |  14 +++
+>  kernel/bpf/syscall.c                |   6 ++
+>  net/netfilter/Kconfig               |   3 +
+>  net/netfilter/Makefile              |   1 +
+>  net/netfilter/nf_bpf_link.c         | 159 ++++++++++++++++++++++++++++
+>  7 files changed, 194 insertions(+)
+>  create mode 100644 include/net/netfilter/nf_bpf_link.h
+>  create mode 100644 net/netfilter/nf_bpf_link.c
+>
+> diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+> index c8e03bcaecaa..0762444e3767 100644
+> --- a/include/linux/netfilter.h
+> +++ b/include/linux/netfilter.h
+> @@ -80,6 +80,7 @@ typedef unsigned int nf_hookfn(void *priv,
+>  enum nf_hook_ops_type {
+>         NF_HOOK_OP_UNDEFINED,
+>         NF_HOOK_OP_NF_TABLES,
+> +       NF_HOOK_OP_BPF,
+>  };
+>
+>  struct nf_hook_ops {
+> diff --git a/include/net/netfilter/nf_bpf_link.h b/include/net/netfilter/=
+nf_bpf_link.h
+> new file mode 100644
+> index 000000000000..eeaeaf3d15de
+> --- /dev/null
+> +++ b/include/net/netfilter/nf_bpf_link.h
+> @@ -0,0 +1,10 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#if IS_ENABLED(CONFIG_NETFILTER_BPF_LINK)
+> +int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog=
+);
+> +#else
+> +static inline int bpf_nf_link_attach(const union bpf_attr *attr, struct =
+bpf_prog *prog)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+> +#endif
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 4b20a7269bee..1bb11a6ee667 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -986,6 +986,7 @@ enum bpf_prog_type {
+>         BPF_PROG_TYPE_LSM,
+>         BPF_PROG_TYPE_SK_LOOKUP,
+>         BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+> +       BPF_PROG_TYPE_NETFILTER,
+>  };
+>
+>  enum bpf_attach_type {
+> @@ -1050,6 +1051,7 @@ enum bpf_link_type {
+>         BPF_LINK_TYPE_PERF_EVENT =3D 7,
+>         BPF_LINK_TYPE_KPROBE_MULTI =3D 8,
+>         BPF_LINK_TYPE_STRUCT_OPS =3D 9,
+> +       BPF_LINK_TYPE_NETFILTER =3D 10,
+>
+>         MAX_BPF_LINK_TYPE,
+>  };
+> @@ -1560,6 +1562,12 @@ union bpf_attr {
+>                                  */
+>                                 __u64           cookie;
+>                         } tracing;
+> +                       struct {
+> +                               __u32           pf;
+> +                               __u32           hooknum;
 
-On Wed, Apr 26, 2023 at 9:20 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->
-> Hi, Namhyung
->
-> On 2023/4/27 10:21, Namhyung Kim wrote:
-> > Hello Andrii,
-> >
-> > On Wed, Apr 26, 2023 at 6:19 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Wed, Apr 26, 2023 at 5:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >>>
-> >>> Hello,
-> >>>
-> >>> I'm having a problem of loading perf lock contention BPF program [1]
-> >>> on old kernels.  It has collect_lock_syms() to get the address of each
-> >>> CPU's run-queue lock.  The kernel 5.14 changed the name of the field
-> >>> so there's bpf_core_field_exists to check the name like below.
-> >>>
-> >>>         if (bpf_core_field_exists(rq_new->__lock))
-> >>>                 lock_addr = (__u64)&rq_new->__lock;
-> >>>         else
-> >>>                 lock_addr = (__u64)&rq_old->lock;
-> >>
-> >> I suspect compiler rewrites it to something like
-> >>
-> >>    lock_addr = (__u64)&rq_old->lock;
-> >>    if (bpf_core_field_exists(rq_new->__lock))
-> >>         lock_addr = (__u64)&rq_new->__lock;
-> >>
-> >> so rq_old relocation always happens and ends up being not guarded
-> >> properly. You can try adding barrier_var(rq_new) and
-> >> barrier_var(rq_old) around if and inside branches, that should
-> >> pessimize compiler
-> >>
-> >> alternatively if you do
-> >>
-> >> if (bpf_core_field_exists(rq_new->__lock))
-> >>     lock_addr = (__u64)&rq_new->__lock;
-> >> else if (bpf_core_field_exists(rq_old->lock))
-> >>     lock_addr = (__u64)&rq_old->lock;
-> >> else
-> >>     lock_addr = 0; /* or signal error somehow */
-> >>
-> >> It might work as well.
-> >
-> > Thanks a lot for your comment!
-> >
-> > I've tried the below code but no luck. :(
-> >
-> >         barrier_var(rq_old);
-> >         barrier_var(rq_new);
-> >
-> >         if (bpf_core_field_exists(rq_old->lock)) {
-> >             barrier_var(rq_old);
-> >             lock_addr = (__u64)&rq_old->lock;
->
-> Have you tried `BPF_CORE_READ(rq_old, lock)` ?
+catching up on stuff a bit...
 
-No, but I think it'd dereference the lock, right?
-I just want to get the address of the lock field.
+enum nf_inet_hooks {
+        NF_INET_PRE_ROUTING,
+        NF_INET_LOCAL_IN,
+        NF_INET_FORWARD,
+        NF_INET_LOCAL_OUT,
+        NF_INET_POST_ROUTING,
+        NF_INET_NUMHOOKS,
+        NF_INET_INGRESS =3D NF_INET_NUMHOOKS,
+};
 
-Thanks,
-Namhyung
+So it seems like this "hook number" is more like "hook type", is my
+understanding correct? If so, wouldn't it be cleaner and more uniform
+with, say, cgroup network hooks to provide hook type as
+expected_attach_type? It would also allow to have a nicer interface in
+libbpf, by specifying that as part of SEC():
 
+SEC("netfilter/pre_routing"), SEC("netfilter/local_in"), etc...
+
+Also, it seems like you actually didn't wire NETFILTER link support in
+libbpf completely. See bpf_link_create under tools/lib/bpf/bpf.c, it
+has to handle this new type of link as well. Existing tests seem a bit
+bare-bones for SEC("netfilter"), would it be possible to add something
+that will demonstrate it a bit better and will be actually executed at
+runtime and validated?
+
+
+> +                               __s32           priority;
+> +                               __u32           flags;
+> +                       } netfilter;
+>                 };
+>         } link_create;
 >
-> >         } else if (bpf_core_field_exists(rq_new->__lock)) {
-> >             barrier_var(rq_new);
-> >             lock_addr = (__u64)&rq_new->__lock;
-> >         } else
-> >             lock_addr = 0;
-> >
-> >
-> > ; int BPF_PROG(collect_lock_syms)
-> > 0: (b7) r8 = 0                        ; R8_w=0
-> > 1: (b7) r7 = 1                        ; R7_w=1
-> > 2: <invalid CO-RE relocation>
-> > failed to resolve CO-RE relocation <byte_off> [381] struct
-> > rq___old.lock (0:0 @ offset 0)
-> > processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > peak_states 0 mark_read
-> >
-> > Thanks,
-> > Namhyung
->
-> Cheers,
-> Hengqi
+
+[...]
