@@ -2,177 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033A46F0022
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE906F0023
 	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 06:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242745AbjD0EUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 00:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S239605AbjD0EUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 00:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239605AbjD0EUF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S242680AbjD0EUF (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 27 Apr 2023 00:20:05 -0400
-Received: from pv50p00im-hyfv10021501.me.com (pv50p00im-hyfv10021501.me.com [17.58.6.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4B62D73
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEF330CA
         for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kuroa.me; s=sig1;
-        t=1682569202; bh=NjHmeX5/5YWb0KrtA8dXibV4xoGQyqlvMwQ9oeLChCY=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=VU18TfG5f9ZdE26XAq2zd6ihTzH+IswvT0GYWeL6BPiqSUlFRflzbuqhlzT/adX4G
-         B51mAeNYOkZ1UwMNTtudbVGtBgHoTSy9sfd36RucKTqYkRJ0+nl9Jr0tY4dtIV131T
-         TsVAA13YW8G4xdU39lvFITWGysWmRUyTgLkH18Al5mUnXgX6gshXbvHSNQ+lpb6l0h
-         O1VeC12ekhawLzztiZ8QR2v6g3aCq0/z8gU9/MQisJVuUUKXDaD/UsbqSYQ4V/N3DC
-         uPM4njGYPJWjDcmfZwQ9fitbMNgrtnaGhDLy0wI6OaUzv+XlvvknTFRl/De39hwp9r
-         Q8d8XxKZMRi+A==
-Received: from localhost.localdomain (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-hyfv10021501.me.com (Postfix) with ESMTPSA id 95FB32C0283;
-        Thu, 27 Apr 2023 04:19:57 +0000 (UTC)
-From:   Xueming Feng <kuro@kuroa.me>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xueming Feng <kuro@kuroa.me>
-Subject: [PATCH bpf-next v3] bpftool: Dump map id instead of value for map_of_maps types
-Date:   Thu, 27 Apr 2023 12:19:49 +0800
-Message-Id: <20230427041949.93752-1-kuro@kuroa.me>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-63b46186c03so9305239b3a.3
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682569202; x=1685161202;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7JcDqVlZRaVk0slNIHGqHr7vj7InB9xHBZxncx31Fz8=;
+        b=F6MXaByzy6ZXA3h9SgY3Up0XJSstr33f2QWR9Oc0K7yDhDoUPdJefS4yuhfCi3uddw
+         siX3y/VyyQ/sdbvf44JwCmd8aQNdkjtnEqE/S/j7dcvxDyXG2gyBpy7hjkly2/6dwwK/
+         GVUZpuR/aBeY8TVgVEIjg8pZ26JQ/TuAEFZXaeYbY/7hmx9AWEFnMga0j4lPU5yOitzG
+         V31yVTyaorPdi0VQBliZaMJTUiW+Ai04JdObj7fD5+gbRxGsuy2kLxGECRPkdUZ+lMKN
+         yAyqHQPGwNZ+BOHR/r/LOtaaqDZ/dZVJeEGHMzSStWwMgSZuCQKvPglauQXMPj95KgQh
+         wbQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682569202; x=1685161202;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7JcDqVlZRaVk0slNIHGqHr7vj7InB9xHBZxncx31Fz8=;
+        b=DQylsaoOqmstyqhUysDWD9w0tsrqvcuZwiX/qsZ5fnXcyPsizRhblZzoui1ecN8mu6
+         /+onp0yWIzHwGtcz1/H5NjY/qLFfWGRYs/Hufae8HEinL/e4Moa5hOUJR67TTGJHaEEw
+         HM9+eqI3AsnQpeAHw+K1Fp2/PB8Gi7QSmxz2/qpV9MU3GIhHyQk7yCfOcycKCT69G1hl
+         D7eUsLqZZmIx2I3+w/6eZ1oc1hosTvEDLv5GCs9Z4D483JNSTRD94B+odrzlUPu3o8K5
+         O1IIk2SFrG8aPq2w7j2MGPg04Xm82UlZncG5vCBz4gMxu2jhIH7awfhsqeNm4/dE4YQj
+         updw==
+X-Gm-Message-State: AC+VfDwUZrhmOcOIc45NWQRAx9haFcP86YahGi7yt+Up+TS+XojvOYAY
+        efwLGrI+Xe6/V2+A4d/+nGw=
+X-Google-Smtp-Source: ACHHUZ6+pYyfh6BnSBX0dHqnq6hz6kgILyVvV6Tb1Kd2ftjY3mJJFrhSznpTNjZwffreMxv5TDWSuQ==
+X-Received: by 2002:a05:6a00:21cf:b0:63d:368b:76b4 with SMTP id t15-20020a056a0021cf00b0063d368b76b4mr585606pfj.17.1682569202495;
+        Wed, 26 Apr 2023 21:20:02 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.111])
+        by smtp.gmail.com with ESMTPSA id v2-20020a62c302000000b0063b54ccc123sm10548747pfg.196.2023.04.26.21.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Apr 2023 21:20:02 -0700 (PDT)
+Message-ID: <c2a5cb6d-8779-4197-d491-d2249bb49635@gmail.com>
+Date:   Thu, 27 Apr 2023 12:19:58 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [HELP] failed to resolve CO-RE relocation
+Content-Language: en-US
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+References: <20230427001425.563232-1-namhyung@kernel.org>
+ <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+ <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: eUiaztbSIHcM1W_QfcSb9ixks5qo62A-
-X-Proofpoint-ORIG-GUID: eUiaztbSIHcM1W_QfcSb9ixks5qo62A-
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.572,17.11.64.514.0000000_definitions?=
- =?UTF-8?Q?=3D2022-06-21=5F01:2022-06-21=5F01,2020-02-14=5F11,2022-02-23?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 suspectscore=0
- bulkscore=0 clxscore=1030 mlxlogscore=999 malwarescore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2304270037
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When using `bpftool map dump` with map_of_maps, it is usually
-more convenient to show the inner map id instead of raw value.
+Hi, Namhyung
 
-We are changing the plain print behavior to show inner_map_id
-instead of hex value, this would help with quick look up of
-inner map with `bpftool map dump id <inner_map_id>`.
-To avoid disrupting scripted behavior, we will add a new
-`inner_map_id` field to json output instead of replacing value.
+On 2023/4/27 10:21, Namhyung Kim wrote:
+> Hello Andrii,
+> 
+> On Wed, Apr 26, 2023 at 6:19 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Wed, Apr 26, 2023 at 5:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>>>
+>>> Hello,
+>>>
+>>> I'm having a problem of loading perf lock contention BPF program [1]
+>>> on old kernels.  It has collect_lock_syms() to get the address of each
+>>> CPU's run-queue lock.  The kernel 5.14 changed the name of the field
+>>> so there's bpf_core_field_exists to check the name like below.
+>>>
+>>>         if (bpf_core_field_exists(rq_new->__lock))
+>>>                 lock_addr = (__u64)&rq_new->__lock;
+>>>         else
+>>>                 lock_addr = (__u64)&rq_old->lock;
+>>
+>> I suspect compiler rewrites it to something like
+>>
+>>    lock_addr = (__u64)&rq_old->lock;
+>>    if (bpf_core_field_exists(rq_new->__lock))
+>>         lock_addr = (__u64)&rq_new->__lock;
+>>
+>> so rq_old relocation always happens and ends up being not guarded
+>> properly. You can try adding barrier_var(rq_new) and
+>> barrier_var(rq_old) around if and inside branches, that should
+>> pessimize compiler
+>>
+>> alternatively if you do
+>>
+>> if (bpf_core_field_exists(rq_new->__lock))
+>>     lock_addr = (__u64)&rq_new->__lock;
+>> else if (bpf_core_field_exists(rq_old->lock))
+>>     lock_addr = (__u64)&rq_old->lock;
+>> else
+>>     lock_addr = 0; /* or signal error somehow */
+>>
+>> It might work as well.
+> 
+> Thanks a lot for your comment!
+> 
+> I've tried the below code but no luck. :(
+> 
+>         barrier_var(rq_old);
+>         barrier_var(rq_new);
+> 
+>         if (bpf_core_field_exists(rq_old->lock)) {
+>             barrier_var(rq_old);
+>             lock_addr = (__u64)&rq_old->lock;
 
-plain print:
-```
-$ bpftool map dump id 138
+Have you tried `BPF_CORE_READ(rq_old, lock)` ?
 
-Without Patch:
-key:
-fc 00 00 00 00 00 00 00  00 00 00 00 00 00 00 05
-27 16 06 00
-value:
-8b 00 00 00
-Found 1 element
+>         } else if (bpf_core_field_exists(rq_new->__lock)) {
+>             barrier_var(rq_new);
+>             lock_addr = (__u64)&rq_new->__lock;
+>         } else
+>             lock_addr = 0;
+> 
+> 
+> ; int BPF_PROG(collect_lock_syms)
+> 0: (b7) r8 = 0                        ; R8_w=0
+> 1: (b7) r7 = 1                        ; R7_w=1
+> 2: <invalid CO-RE relocation>
+> failed to resolve CO-RE relocation <byte_off> [381] struct
+> rq___old.lock (0:0 @ offset 0)
+> processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read
+> 
+> Thanks,
+> Namhyung
 
-With Patch:
-key:
-fc 00 00 00 00 00 00 00  00 00 00 00 00 00 00 05
-27 16 06 00
-inner_map_id:
-139
-Found 1 element
-```
-
-json print:
-```
-$ bpftool -p map dump id 567
-
-Without Patch:
-[{
-        "key": ["0xc0","0x00","0x02","0x05","0x27","0x16","0x06","0x00"
-        ],
-        "value": ["0x38","0x02","0x00","0x00"
-        ]
-    }
-]
-
-With Patch:
-[{
-        "key": ["0xc0","0x00","0x02","0x05","0x27","0x16","0x06","0x00"
-        ],
-        "value": ["0x38","0x02","0x00","0x00"
-        ],
-        "inner_map_id": 568
-    }
-]
-```
-
-Signed-off-by: Xueming Feng <kuro@kuroa.me>
----
-
-Changes in v3:
- - In plain print, use printf() directly since inner map id is always a 32bit int.
- - Remove unused print_uint() function.
- - Rename `id` to `inner_map_id` in plain print output for clearness.
- - Add a new `inner_map_id` field to json output.
- - Add example output to commit message.
-
-Changes in v2:
- - Fix commit message grammar.
- - Change `print_uint` to only print to stdout, make `arg` const, 
-   and rename `n` to `arg_size`.
- - Make `print_uint` able to take any size of argument up to `unsigned long`, 
-   and print it as unsigned decimal.
-
-Sorry for taking this long, my compiling machine is acting weird. And thanks for
-the reviews and suggestions!
-
- tools/bpf/bpftool/map.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index aaeb8939e137..afcd8455db74 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -139,6 +139,10 @@ static void print_entry_json(struct bpf_map_info *info, unsigned char *key,
- 		print_hex_data_json(key, info->key_size);
- 		jsonw_name(json_wtr, "value");
- 		print_hex_data_json(value, info->value_size);
-+		if (map_is_map_of_maps(info->type)) {
-+			jsonw_uint_field(json_wtr, "inner_map_id",
-+					 *(unsigned int *)value);
-+		}
- 		if (btf) {
- 			struct btf_dumper d = {
- 				.btf = btf,
-@@ -259,8 +263,13 @@ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
- 		}
- 
- 		if (info->value_size) {
--			printf("value:%c", break_names ? '\n' : ' ');
--			fprint_hex(stdout, value, info->value_size, " ");
-+			if (map_is_map_of_maps(info->type)) {
-+				printf("inner_map_id:%c", break_names ? '\n' : ' ');
-+				printf("%u ", *(unsigned int *)value);
-+			} else {
-+				printf("value:%c", break_names ? '\n' : ' ');
-+				fprint_hex(stdout, value, info->value_size, " ");
-+			}
- 		}
- 
- 		printf("\n");
--- 
-2.37.1 (Apple Git-137.1)
-
+Cheers,
+Hengqi
