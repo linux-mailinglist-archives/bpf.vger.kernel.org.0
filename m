@@ -2,79 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5366F0F1D
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC496F0F27
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344155AbjD0Xgt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 19:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
+        id S1344374AbjD0Xi7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 19:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344199AbjD0Xgs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 19:36:48 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D65559D
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:36:30 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-64115eef620so8665800b3a.1
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:36:29 -0700 (PDT)
+        with ESMTP id S1344305AbjD0Xi5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 19:38:57 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870A6272E
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:38:54 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-94f7a7a3351so1749935266b.2
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682638589; x=1685230589;
+        d=gmail.com; s=20221208; t=1682638733; x=1685230733;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZR28aZTtyd2FOq2+x/D3Azav1fghqMGnnJ3OBjU1db8=;
-        b=QcNL4WTD7BAZ45uZ2rUZBbHaGb5NGq88OMFb/hk+6h14hkmiOAuxcM6o8gxy7BWb6s
-         7ZPujWviSqnQUcUVMS9L5QsXEECDvEvaPYxqivp87T18IDo0ebxAKMiYrIpH+sT5cpdy
-         Sv1lHGvKFRi2CHt3R0PhNVr4VK3oxlWYxQTcLN0AWiaCV4Kv0ug4brrnI0+MMSLdO6fS
-         JL8OPt4Tjqe8nb59x+qSmZBO1nOowz0M0vYoCIZXJcPjoTSbUjTe/+WlgVE8ZCTRZF//
-         /soGydjss1oGYhoub1jY9+MrWs1N93zW9UX52KYodnuYbsHbJ1/Mgu1IC6Z4ZXHa4Acl
-         rDmA==
+        bh=SSL5+ZagBNgA2TzcgmqMrKCYqLWjHQPWRpdWy6ifPPk=;
+        b=eLfqq9hKXtsNYEiYKON+fD8pvQRKpBQKN2zrWO0gvZFgC0B7uSaMbtQrbcyId95W27
+         B3ofNS/rGnCZcs9Y4A+dtXXylEkEBMbd+tK2AL6bUOk8AnRNZUIIqqNSRNpy40rU5zAM
+         Mns9AnGvbdu3CYoPGKueCqgk8F6K/VTYTXoebD1Q1Z6dqCLRauW2qEhy0h4lbPscdCUN
+         D3fMyuntFyoCnRQUgc6E8iVQk2f9bR0MIapZNS4MJvx4tMVvmTdI8w0MNQrF+0O8qn8A
+         eIi6sapo7AJWIvIkQoPjTdpjU5oqOG5nlNz3gRzOHaGvxdcjZ6OG5p+sKfl15cgLmUmp
+         XgSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682638589; x=1685230589;
+        d=1e100.net; s=20221208; t=1682638733; x=1685230733;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZR28aZTtyd2FOq2+x/D3Azav1fghqMGnnJ3OBjU1db8=;
-        b=bMvIKNpQGFEONpJd2Rpbd/mqux5ropavriTLu+LvUfon+L/xs5oaW0lU8grGhR68mF
-         vNvgFH1SIVo+4c1cmIE+rl1AEtYVrymvVDqSXIhfbbD//QfA3i19PvUR5neTxV9ZN6Hs
-         MEdEzDRTSSLKH1oKbuPXdqQIBMfX06pkZkJOgUv8V89nao4kEooxaWjKKdOmMjODhqr5
-         UcP9D1Bbw6yQqBwhwKLxnJmJEfsJPDariiYRGzELz9+iN9lHWMjgbDW8xFFjvcpXZdO8
-         d2XzoIjsB5so8PJxs8xrdWkFx5VDLhs9zLWFZYGc4J4sYEKkH/Ay3dGUywcBp4e9wHnB
-         3ZmQ==
-X-Gm-Message-State: AC+VfDwtE42+ahRs2r6v75qoF2WMYYA2d1yzw/eyJtd2cKQa4iNgN873
-        tNp+Lp3LS3/tXPn6N0TQZdriKVxFuUNxNE3ubtBQHw==
-X-Google-Smtp-Source: ACHHUZ6yJzEMVVoXMIG1hh3C2IuooL/DG3uom1bZlv2jJpIj4Ggw5K4nRIaVYciqBWns5Bc7nqnAnXUjK1Eo57YDGRs=
-X-Received: by 2002:a17:90a:dd83:b0:244:d441:8f68 with SMTP id
- l3-20020a17090add8300b00244d4418f68mr9245486pjv.16.1682638589170; Thu, 27 Apr
- 2023 16:36:29 -0700 (PDT)
+        bh=SSL5+ZagBNgA2TzcgmqMrKCYqLWjHQPWRpdWy6ifPPk=;
+        b=DQoSs8vAy1oVsZt+FtMuBQjw1cs8yeVrKVORDsyKetvLftwNmbXjiOlGXzrKf6P7W3
+         GeIRNXsXk4GObS/SBWkpTa9COKIZjxI5X9m0WVknYi1XMWrnxa8qNmnGMZOEwpUqiPjD
+         eVFEMI5HTRazVNyggw7vC/Kg+vYVjNEJZ1v0tEiF7k1lMTKBP9V07/TmFXKK/J3FGyWX
+         iuLbn0Rgtgl4UMdW3LYhdX6Piq1jQ+YOGQuQvoAe2MPTzLEpaQZ4ht9v91+BYnTNu8MD
+         +buPsD3QCrTW5gOR9blD7/DfPauwV2LC/VtBLQLk6q1hZ7AjabQ9OGuCLy3R2UIv0L1C
+         PI0Q==
+X-Gm-Message-State: AC+VfDwU6lXGiR1rLNSbv1f4zwSY2bCR7QsWl7Xf2HlqxB3hzjEnV8aS
+        6lxcLBI54NqhVvDvzXy8L5T7YfB5mey1H4D4m3U=
+X-Google-Smtp-Source: ACHHUZ6F1HOA8h1SWNZYPpFIOjDRnJeKerqQztCOChK0T3qveDmhTCVUgbTbTfxRPdFU+Od/TJSexXfMSWnYODbcTf8=
+X-Received: by 2002:a17:907:948f:b0:94e:5c28:1c19 with SMTP id
+ dm15-20020a170907948f00b0094e5c281c19mr3094669ejc.5.1682638733007; Thu, 27
+ Apr 2023 16:38:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
- <CA+PiJmTHO3SPM_LvwFYWP+uf_KU4QytBshGzk78CZi8oGJ+rnw@mail.gmail.com> <CAEf4BzZ_4kcM5=Jo3JoWQWugS3wkrtoteyM8YqkykFvYywG+kg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ_4kcM5=Jo3JoWQWugS3wkrtoteyM8YqkykFvYywG+kg@mail.gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 27 Apr 2023 16:36:18 -0700
-Message-ID: <CA+PiJmTsEsUi3c5soodZHxS_PvMPnJG-4bFvdfpLq-kPZ0j4UQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Dynptr Verifier Adjustments
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+ <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+ <CAEf4BzaZhjgPNaNH2yFxjZ-C+ZaSJRg9EWzOCcMOP-CV7kDHBA@mail.gmail.com>
+ <ZEn/EOnsH2RP//24@google.com> <CAEf4BzZHS5NprN2ya03Re_1hvC0nNyz_qYEhbD=sGou+m=OWHw@mail.gmail.com>
+ <CAM9d7chFp42ar3dMmhHxhHR=CVRg64cMvNQDE98M-EuRmU5EfQ@mail.gmail.com>
+In-Reply-To: <CAM9d7chFp42ar3dMmhHxhHR=CVRg64cMvNQDE98M-EuRmU5EfQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 27 Apr 2023 16:38:41 -0700
+Message-ID: <CAEf4Bzb6RTmpjC-QhmqxU5K+mSKZ+ng2Z6o1v7b_PmxocaD8zw@mail.gmail.com>
+Subject: Re: [HELP] failed to resolve CO-RE relocation
+To:     Namhyung Kim <namhyung@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,27 +77,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 4:39=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Apr 27, 2023 at 4:28=E2=80=AFPM Namhyung Kim <namhyung@gmail.com> w=
+rote:
 >
-> Don't know, show the sequence of commands you are running?
+> On Thu, Apr 27, 2023 at 3:15=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > Ok, I didn't manage to force compiler to behave as long as
+> > `&rq_old->lock` pattern was used. So I went for a different approach.
+> > This works:
 >
-> I have linux source in ~/linux, and KBUILD_OUTPUT set to
-> ~/linux-build/default. And it only takes this:
+> Thanks!  It works for me too!
 >
-> $ cd ~/linux
-> $ make -j90 # build kernel
-> $ cd tools/testing/selftests/bpf
-> $ make -j90 # build selftests
->
-> And that's it.
+> Can I use this patch with your Co-developed-by tag ?
 
-I've tried the same, modulo some paths. I'm pretty sure it's version
-related at this point.
-The current issue I'm seeing is "error: indirect call in function,
-which are not supported by eBPF" when using GCC-BPF for
-progs/bind4_prog.c
+of course
 
-Currently using clang 16.0.0 and gcc 12.2.0-14.
-I did manage to get it to build by just commenting out TEST_GEN_PROGS
-+=3D test_progs-bpf_gcc
+>
+> Thanks,
+> Namhyung
+>
+>
+> >
+> > $ git diff
+> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > index 8911e2a077d8..8d3cfbb3cc65 100644
+> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > @@ -418,32 +418,32 @@ int contention_end(u64 *ctx)
+> >
+> >  extern struct rq runqueues __ksym;
+> >
+> > -struct rq__old {
+> > +struct rq___old {
+> >         raw_spinlock_t lock;
+> >  } __attribute__((preserve_access_index));
+> >
+> > -struct rq__new {
+> > +struct rq___new {
+> >         raw_spinlock_t __lock;
+> >  } __attribute__((preserve_access_index));
+> >
+> >  SEC("raw_tp/bpf_test_finish")
+> >  int BPF_PROG(collect_lock_syms)
+> >  {
+> > -       __u64 lock_addr;
+> > +       __u64 lock_addr, lock_off;
+> >         __u32 lock_flag;
+> >
+> > +       if (bpf_core_field_exists(struct rq___new, __lock))
+> > +               lock_off =3D offsetof(struct rq___new, __lock);
+> > +       else
+> > +               lock_off =3D offsetof(struct rq___old, lock);
+> > +
+> >         for (int i =3D 0; i < MAX_CPUS; i++) {
+> >                 struct rq *rq =3D bpf_per_cpu_ptr(&runqueues, i);
+> > -               struct rq__new *rq_new =3D (void *)rq;
+> > -               struct rq__old *rq_old =3D (void *)rq;
+> >
+> >                 if (rq =3D=3D NULL)
+> >                         break;
+> >
+> > -               if (bpf_core_field_exists(rq_new->__lock))
+> > -                       lock_addr =3D (__u64)&rq_new->__lock;
+> > -               else
+> > -                       lock_addr =3D (__u64)&rq_old->lock;
+> > +               lock_addr =3D (__u64)(void *)rq + lock_off;
+> >                 lock_flag =3D LOCK_CLASS_RQLOCK;
+> >                 bpf_map_update_elem(&lock_syms, &lock_addr,
+> > &lock_flag, BPF_ANY);
+> >         }
+> >
+> >
+> > > Thanks,
+> > > Namhyung
+> > >
+> > >
