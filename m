@@ -2,80 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE83E6F05E6
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 14:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCC36F0608
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 14:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243388AbjD0MgX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 08:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
+        id S243788AbjD0MoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 08:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjD0MgW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 08:36:22 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D989B3AAA;
-        Thu, 27 Apr 2023 05:36:21 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-74de7635180so809485185a.3;
-        Thu, 27 Apr 2023 05:36:21 -0700 (PDT)
+        with ESMTP id S243517AbjD0MoH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 08:44:07 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8A3E78
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 05:44:05 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f315735514so21770425e9.1
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 05:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682598981; x=1685190981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uamYaAPiGbEuD/CCuWzrQEEft21M2zokyUeiq+isD7s=;
-        b=BTlbPFOcy9ohq/rnIcEzr3ktsmGoIkLS5TIak2p0WjRjIS7tVD1nIqK8H28Io6XqVb
-         9aLFzRITd38OHn++1iixe4l+zH9eVbZwDAfhDkBPWusPk/VSHTt3diuofZ1nXTms4rWa
-         JJDnLuoNxKzEPHBsTTAesrqHvIflWeuCV+ypelKfuvD4O+TPSpqMCXAzeoegikWjB/Xn
-         oB//Q9Oj0JVMjfEMXdE+932BDwJurikQ3prEJSDaerswpy8Wg2pAA2X1sKEPI4tHB6Go
-         ZHMRvXK14JUWYrPAmxUScss3xazUqYC7wB2ZNdtCocebfo9MWUezS6nhOC52uXfScmbO
-         Xkvg==
+        d=gmail.com; s=20221208; t=1682599444; x=1685191444;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V1ZyRoh8JO8Pmby88tKfy3l2M9+0WcCXNZ4berods00=;
+        b=BtB6Ito6WSnEbLHc4IAchoD+TTq1ceIBJHoLLm1OcGgGUwdR7lSGxnxpDUvTX9qNwp
+         65J5RSftDq4KJ4H/RvOHqFUmnX0DR2R3lOyZm9uJ/KWJZUNVnNeCFVzsjrdbTfUPKO7c
+         0x5ONvDOQ6CB1qZ5+UujLNlfzlZ4zZomKePKfZia61MffXEbL99yNyV2wMLbDl0hX7OV
+         MtfT00qGV/x+x4VgbA3M7mYefrjJ/kA238bYtur+FgMcgO9G5IAYutAifhbor2mPcbDR
+         wAYCdNRBjxZ13Lznz+ZdTOaR0dv9TRpVaoVeGcw8DKtERQySTahopNeZWM0Mp0t4pLdr
+         oSNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682598981; x=1685190981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uamYaAPiGbEuD/CCuWzrQEEft21M2zokyUeiq+isD7s=;
-        b=kbVIus5Zlt1nLD/D602IavKg+fKqXa8euUDk5wNeoKeKslEGCRlnf/+FguDfLS7nNr
-         J6OS79tYntZJI5mU8S0NEMJtcagDbH23QkSrOQTJWkoaC/7KZbmAFJ9+aJ/EqObjj/Y3
-         VIpIh7k+9564H7g/f607IQDM+muou5KLm35tSuqVBKwA3ZWSyDUCZf6NWXsF9ztJEqZN
-         XR+OHdg9S99O2R8wQuWrQdVUn9uXvDjenVOGaTr1ah+kcyRFgCTsbBT6N7BbxoHDkBMl
-         U3PAvPdg5UG624P4gmPagdoy7DtOAxfHxAF2cW6HB6nTfR+GG2xwJ9N0XXgOPCTS1vNJ
-         IiWg==
-X-Gm-Message-State: AC+VfDxH0DdzGYSmcdfON4HaNzKOiGX6g63VQOGlZ8rfJB4Iu66akujw
-        aDTw+E6YwojY5QuMYT4n6TkG8IA+UJ1Met7kKKQ=
-X-Google-Smtp-Source: ACHHUZ6z1cQlttoN0k2H76P2WsRE9QHnUy28HBxx03rn8CVmetWUfgyzpbwJvo84hWza6TQwkxJK0ed6dgn0FdEClcE=
-X-Received: by 2002:ad4:5fca:0:b0:615:29ab:e4c6 with SMTP id
- jq10-20020ad45fca000000b0061529abe4c6mr2008193qvb.45.1682598981060; Thu, 27
- Apr 2023 05:36:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230417154737.12740-1-laoar.shao@gmail.com> <20230417154737.12740-6-laoar.shao@gmail.com>
- <20230417201457.c43xfcukjzm4u6vx@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <CALOAHbC4Bz_VX52zmv=sScBf0hzscMAC4+EwMCpnd1BcaSVJSw@mail.gmail.com>
- <CAADnVQJw9BCK2itE5bZWdQYz7D-8KdcH96E885zUakEDAOrC+Q@mail.gmail.com>
- <CALOAHbCtPR26it_Wdk7T_TETMTh2se6rgEbL_KC5XKtzvObjiA@mail.gmail.com>
- <CAADnVQ+FO-+1OALTtgVkcpH3Adc6xS9qjzORyq2vwVtwY2UoxQ@mail.gmail.com>
- <20230424174049.1c9e54dd@rorschach.local.home> <CALOAHbAx+W3-iBS6=FsPPShbEuSSZeyQWvLque+uF9Suwe3-HA@mail.gmail.com>
- <CALOAHbAqsSq+gVg9xTYGAkrdZaFXc=PVoOYqej33dCEjWtHfFw@mail.gmail.com>
-In-Reply-To: <CALOAHbAqsSq+gVg9xTYGAkrdZaFXc=PVoOYqej33dCEjWtHfFw@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 27 Apr 2023 20:35:45 +0800
-Message-ID: <CALOAHbCXRwp9--MV2k8z3aJyAL6vzQLimtHgkeza7g0C=Edb8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention mechanism
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        d=1e100.net; s=20221208; t=1682599444; x=1685191444;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V1ZyRoh8JO8Pmby88tKfy3l2M9+0WcCXNZ4berods00=;
+        b=PS4w8ZR5lrso8ZrY1co3mEwgrJdSrgI8LJOf64c/mewItEo5OmxJ2GwcV6GTJXqg5r
+         sR+Tje5UwpH7C7UOhq5MZC/5xAr1hqsg9gEUfLHveSdN2RNLA47/SwsAcb3cI73C7RBS
+         2KCjzHwFHTXUubWcZTobRqsJQkdYT3vVI+D8pnnenic8R09rOdIM/Q+Flu1EKk8dXIz/
+         tbaEtB2/F8RuO2kkGrH7HNJcyCg9xfu38zChG5CGkgvZXGnpZQPlt/cClA3zoOyPZbNF
+         ekROfnTKNs3TaiBYe1ztBzyucAifB1y1MhbxilubPmZknIicTAmOVs1nhxiyVr4tLl86
+         6GPQ==
+X-Gm-Message-State: AC+VfDz3SDiRM5YVTtXu8/Ph+hiG9REJtX2PHqAATw1mDVV5R3EbSoH5
+        n3ulInE+bDY8EaxTpDoer6w=
+X-Google-Smtp-Source: ACHHUZ6ggAEiM61+fcwf/R1HEC7evu06TDrsDP8ioME5d/kLr1YH0peUVR7TflxFBXQ3HdZaz6OMJA==
+X-Received: by 2002:a7b:c7c4:0:b0:3f1:6f57:6fd1 with SMTP id z4-20020a7bc7c4000000b003f16f576fd1mr1593524wmk.9.1682599444225;
+        Thu, 27 Apr 2023 05:44:04 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c444900b003f173be2ccfsm32469279wmn.2.2023.04.27.05.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Apr 2023 05:44:03 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 27 Apr 2023 14:44:01 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Viktor Malik <viktor.malik@gmail.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [RFC/PATCH bpf-next 00/20] bpf: Add multi uprobe link
+Message-ID: <ZEpuEUTAOZ2XoYPt@krava>
+References: <20230424160447.2005755-1-jolsa@kernel.org>
+ <CAEf4BzbCogCFVmr-C4XQNR4KF3_kj_yFeeTcevdmfm1veu-26w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbCogCFVmr-C4XQNR4KF3_kj_yFeeTcevdmfm1veu-26w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,107 +84,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 8:15=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> On Thu, Apr 27, 2023 at 5:57=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
+On Wed, Apr 26, 2023 at 12:09:59PM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 24, 2023 at 9:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > On Tue, Apr 25, 2023 at 5:40=E2=80=AFAM Steven Rostedt <rostedt@goodmis=
-.org> wrote:
-> > >
-> > > On Wed, 19 Apr 2023 15:46:34 -0700
-> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > > No. Just one prog at entry into any of the kernel functions
-> > > > and another prog at entry of funcs that 1st bpf prog called indirec=
-tly.
-> > > > Like one prog is tracing networking events while another
-> > > > is focusing on mm. They should not conflict.
-> > >
-> > > You mean that you have:
-> > >
-> > > function start:
-> > >   __bpf_prog_enter_recur()
-> > >     bpf_program1()
-> > >       __bpf_prog_enter_recur()
-> > >         bpf_program2();
-> > >       __bpf_prog_exit_recur()
-> > >   __bpf_prog_exit_recur()
-> > >
-> > >   rest of function
-> > >
-> > > That is, a bpf program can be called within another bpf pogram betwee=
-n
-> > > the prog_enter and prog_exit(), that is in the same context (normal,
-> > > softirq, irq, etc)?
-> > >
+> > hi,
+> > this patchset is adding support to attach multiple uprobes and usdt probes
+> > through new uprobe_multi link.
 > >
-> > Right, that can happen per my verification. Below is a simple bpf
-> > program to verify it.
+> > The current uprobe is attached through the perf event and attaching many
+> > uprobes takes a lot of time because of that.
 > >
-> > struct {
-> >     __uint(type, BPF_MAP_TYPE_LPM_TRIE);
-> >     __type(key, __u64);
-> >     __type(value, __u64);
-> >     __uint(max_entries, 1024);
-> >     __uint(map_flags, BPF_F_NO_PREALLOC);
-> > } write_map SEC(".maps");
+> > The main reason is that we need to install perf event for each probed function
+> > and profile shows perf event installation (perf_install_in_context) as culprit.
 > >
-> > __u64 key;
+> > The new uprobe_multi link just creates raw uprobes and attaches the bpf
+> > program to them without perf event being involved.
 > >
-> > SEC("fentry/kernel_clone")
-> > int program1()
-> > {
-> >     __u64 value =3D 1;
+> > In addition to being faster we also save file descriptors. For the current
+> > uprobe attach we use extra perf event fd for each probed function. The new
+> > link just need one fd that covers all the functions we are attaching to.
+> 
+> All of the above are good reasons and thanks for tackling multi-uprobe!
+> 
 > >
-> >     bpf_printk("before update");
-> >     // It will call trie_update_elem and thus trigger program2.
-> >     bpf_map_update_elem(&write_map, &key, &value, BPF_ANY);
-> >     __sync_fetch_and_add(&key, 1);
-> >     bpf_printk("after update");
-> >     return 0;
-> > }
+> > By dropping perf we lose the ability to attach uprobe to specific pid.
+> > We can workaround that by having pid check directly in the bpf program,
+> > but we might need to check for another solution if that will turn out
+> > to be a problem.
 > >
-> > SEC("fentry/trie_update_elem")
-> > int program2()
-> > {
-> >     bpf_printk("trie_update_elem");
-> >     return 0;
-> > }
-> >
-> > The result as follows,
-> >
-> >          kubelet-203203  [018] ....1  9579.862862:
-> > __bpf_prog_enter_recur: __bpf_prog_enter_recur
-> >          kubelet-203203  [018] ...11  9579.862869: bpf_trace_printk:
-> > before update
-> >          kubelet-203203  [018] ....2  9579.862869:
-> > __bpf_prog_enter_recur: __bpf_prog_enter_recur
-> >          kubelet-203203  [018] ...12  9579.862870: bpf_trace_printk:
-> > trie_update_elem
-> >          kubelet-203203  [018] ....2  9579.862870:
-> > __bpf_prog_exit_recur: __bpf_prog_exit_recur
-> >          kubelet-203203  [018] ...11  9579.862870: bpf_trace_printk:
-> > after update
-> >          kubelet-203203  [018] ....1  9579.862871:
-> > __bpf_prog_exit_recur: __bpf_prog_exit_recur
-> >
-> > Note that we can't trace __bpf_prog_enter_recur and
-> > __bpf_prog_exit_recur, so we have to modify the kernel to print them.
-> >
->
-> ... However, surprisingly it still works even after this patchset is
-> applied, because the hardirq/softirq flag is set when the program2 is
-> running, see also the flags in the above trace_pipe output. Is that
-> expected ?!
-> I need  some time to figure it out, but maybe you have a quick answer...
+> 
+> I think this is a big deal, because it makes multi-uprobe not a
+> drop-in replacement for normal uprobes even for typical scenarios. It
+> might be why you couldn't do transparent use of uprobe.multi in USDT?
 
-Answer it by myself, that is because of the
-allowing-one-single-recursion rule. I misread the trace flags before.
-Sorry about the noise.
+yes
 
+> 
+> But I'm not sure why this is a problem? How does perf handle this?
+> Does it do runtime filtering or something more efficient that prevents
+> uprobe to be triggered for other PIDs in the first place? If it's the
+> former, then why can't we do the same simple check ourselves if pid
+> filter is specified?
 
---=20
-Regards
-Yafang
+so the standard uprobe is basically a perf event and as such it can be
+created with 'pid' as a target.. and such perf event will get installed
+only when the process with that pid is scheduled in and uninstalled
+when it's scheduled out
+
+> 
+> I also see that uprobe_consumer has filter callback, not sure if it's
+> a better solution just for pid filtering, but might be another way to
+> do this?
+
+yes, that's probably how we will have to do that, will check
+
+> 
+> Another aspect I wanted to discuss (and I don't know the right answer)
+> was whether we need to support separate binary path for each offset?
+> It would simplify (and trim down memory usage significantly) a bunch
+> of internals if we knew we are dealing with single inode for each
+> multi-uprobe link. I'm trying to think if it would be limiting in
+> practice to have to create link per each binary, and so far it seems
+> like usually user-space code will do symbol resolution per ELF file
+> anyways, so doesn't seem limiting to have single path + multiple
+> offsets/cookies within that file. For USDTs use case even ref_ctr is
+> probably the same, but I'd keep it 1:1 with offset and cookie anyways.
+> For uniformity and generality.
+> 
+> WDYT?
+
+right, it's waste for single binary, but I guess it's not a big waste,
+because when you have single binary you just repeat the same pointer,
+not the path
+
+it's fast enough to be called multiple times for each binary you want
+to trace, but it'd be also nice to be able to attach all in once ;-)
+
+maybe we could have a bit in flags saying paths[0] is valid for all
+
+> 
+> >
+> > Attaching current bpftrace to 1000 uprobes:
+> >
+> >   # BPFTRACE_MAX_PROBES=100000 perf stat -e cycles,instructions \
+> >     ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:ms:1 { exit(); }'
+> >     ...
+> >
+> >      126,666,390,509      cycles
+> >       29,973,207,307      instructions                     #    0.24  insn per cycle
+> >
+> >         85.284833554 seconds time elapsed
+> >
+> >
+> > Same bpftrace setup with uprobe_multi support:
+> >
+> >   # perf stat -e cycles,instructions \
+> >     ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:ms:1 { exit(); }'
+> >     ...
+> >
+> >        6,818,470,649      cycles
+> >       13,275,510,122      instructions                     #    1.95  insn per cycle
+> >
+> >          1.943269451 seconds time elapsed
+> >
+> >
+> > I'm sending this as RFC because of:
+> >   - I added/exported some new elf_* helper functions in libbpf,
+> >     and I'm not sure that's the best/right way of doing this
+> 
+> didn't get to that yet, sounds suspicious :)
+> 
+> >   - I'm not completely sure about the usdt integration in bpf_program__attach_usdt,
+> >     I was trying to detect uprobe_multi kernel support first, but ended up with
+> >     just new field for struct bpf_usdt_opts
+> 
+> haven't gotten to this yet as well, but it has to be auto-detectable,
+> not an option (at least I don't see why it wouldn't be, but let me get
+> to the patch)
+
+thanks,
+jirka
