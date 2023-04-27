@@ -2,76 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FBF6F0700
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 16:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6D26F0742
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 16:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243603AbjD0OJv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 10:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
+        id S243284AbjD0OXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 10:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243793AbjD0OJs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 10:09:48 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A583B3;
-        Thu, 27 Apr 2023 07:09:47 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2a7af0cb2e6so83431321fa.0;
-        Thu, 27 Apr 2023 07:09:47 -0700 (PDT)
+        with ESMTP id S243764AbjD0OXZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 10:23:25 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A124EFE;
+        Thu, 27 Apr 2023 07:22:59 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-74dfa88c65aso732109085a.3;
+        Thu, 27 Apr 2023 07:22:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682604585; x=1685196585;
+        d=gmail.com; s=20221208; t=1682605378; x=1685197378;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4pwcNvRo5z2nVUMX/uZ1W6JD2aLSWrd7xPnZuunQPQw=;
-        b=rTAwYH+oBCJ5cswKiK2qp1TYyfuFRKSz79P0iPnwy4h7oht/22WoC23UnUxtlLwyW2
-         9FkXvtLJkKUgUaGAcWhQMF0MNXQnI84P4lJBcM8QsKSVT/p4sY8ArlbG6P0aF0Db9a1C
-         q/lZdDmRrhcRzEvM8qubMX3h5zg5GeqRR417ODpFGtPi3gJQ4bCAkit4W7VGaZ4yN33R
-         rF1JsaDOED/4K49amEuZ/bQYcCOfZPL3RSFx7WRUuQ5edkwhOLC4wFTeA0m2Q1peyAUY
-         cdCNYl4QcobrjP9YKbFgfyBxCIW2iezD4yC4wa0f/2gbx1cI0MxDmbKb9Eb7gCpd0LtW
-         T8Iw==
+        bh=Ihii9EjlXiAdx0f82DQddbpxiD6F+hujfxzkjDoYupw=;
+        b=iam8C2iaAP/nvY5obUIGDwucNtlXUMapen7RQk6Z8yC/DSoLZX8WOqaIdZ4TazF1CT
+         ukjcsikbQkOmptMQNd7ezTGku69ABKA01nlOOn5LZMnxR1oidIRTZlv+NPnnBF6Qf0B4
+         lqhFD+HPQ2e3IdE/v0NKSY3cGVz6LllwSWUsEZeBq8jFAkThpeDLW+ekekD8cYJ/L0ik
+         uWC9YvmuudvtwdbslkFQ4agjAti5LH7vRlwy7kNPj0EX1Y5qRKnPD9tjDb0pniN4hZi4
+         Fhdf6mGXgZScubch6BhgXLkgPplKk7gRKuVt4V8mfmJb16NRRJ51BHzpj41yNIAjBUYu
+         8zCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682604585; x=1685196585;
+        d=1e100.net; s=20221208; t=1682605378; x=1685197378;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4pwcNvRo5z2nVUMX/uZ1W6JD2aLSWrd7xPnZuunQPQw=;
-        b=TgaYpo+ERZqe2FG+THvUMeiMYVl0Fvi77dYAI9RS7joCiWwgyqltq065+H17ru2XBu
-         puwyOuHAw7XVcEKoZuvOPVStvijZKVYu3pDoA5wYxzOPiTbKWhQQ94t7qMU/KjjQlhRn
-         8pG7BO/04RU9x91WCkeuwYgnnZr/hgyKEkVeCwzq3aDr2nhrStJ4yvWxEL45xQxm1/Gy
-         QTeMGAHwSYKTYkYqcZgYoMfpqLXYniIpYmE3xDQ44LsGwEI8TX8Nwlpa/Syh/dwgnOrY
-         8WCyvVzC363cSgxSnNWuKUBCkhsLkWonoJVlWt/I1xP38UI0fLiMFx7lhncDJ5s1MRGs
-         dzmQ==
-X-Gm-Message-State: AC+VfDzGk0SgBwBqbHEW70yW8DPbTiD3WonlovVH/Vu+vdVV4fwxO07L
-        nSQvRcmlsqMzvRt7sem4AsCkCjYxKRx76W0Afs8=
-X-Google-Smtp-Source: ACHHUZ7n9b/qjduU9jc9Ig7Ov9YVsLlv+M8ClIW3z75J8TWYNsHQHqQ/eyGQvnW0QFKDT/FdVad3QOUTHnaOB0kKu1o=
-X-Received: by 2002:a2e:999a:0:b0:2a7:a616:c39 with SMTP id
- w26-20020a2e999a000000b002a7a6160c39mr718349lji.48.1682604585169; Thu, 27 Apr
- 2023 07:09:45 -0700 (PDT)
+        bh=Ihii9EjlXiAdx0f82DQddbpxiD6F+hujfxzkjDoYupw=;
+        b=jhR3mjeD5X4zg/jxqUI8Olw4WSYAsDPW1nEopCXKIvTDQLX6FZIYVswxbxM/dJiZEv
+         eVYCMpXwTAcRylE807/M4CQo2uImIoxN5/ZPKulLIaB0PPQ6yj3RR8VriM1UZAAdDEHI
+         I/hOIH4WV3Ht4g6bDsGB/uZKvDuXppRLGpjnjdEbmwOO0d+yilsZCPLLXiucUwRhhnTC
+         5mrTu92gBfDQdbMlFmnLpAjoY45l5vXGajj9x8qK3TXvEoaKQLqAK5lvtj46fTNmuWHw
+         hpmx/bDXfwUwHvR2UGLXjIErRtcy8J+TzAjGkhdXEK6nDTj3gLKvvaX6bDRsccfe79Em
+         vZZA==
+X-Gm-Message-State: AC+VfDxFuhtfeuHs7S7PsRmLmooW9ZWx/cHXYAneSkDue9TNx+CtdeSF
+        a8lFtQMb2MNJoSuoTpWzhNabhnvG+Zgy3n/mK9VEXVaaqWPkTQ==
+X-Google-Smtp-Source: ACHHUZ6ZE8lQRjSnUKI0P72E0fIK02tEQnqR5cJJdB9neS/jgZIcacpO4/4gzyf+g4w51NIAvTh1WNLJhyqyirfznv4=
+X-Received: by 2002:a05:6214:1c4e:b0:5f0:23be:a301 with SMTP id
+ if14-20020a0562141c4e00b005f023bea301mr2631139qvb.5.1682605378480; Thu, 27
+ Apr 2023 07:22:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1682603719.git.lorenzo@kernel.org> <b834b5a0c5e0e76a2ae34b1525a7761ef59c20d8.1682603719.git.lorenzo@kernel.org>
-In-Reply-To: <b834b5a0c5e0e76a2ae34b1525a7761ef59c20d8.1682603719.git.lorenzo@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 27 Apr 2023 07:09:33 -0700
-Message-ID: <CAADnVQLy9VRagq_=fTd2=Hw-ceR51hDSPYj3yo3=7v8z6fbtYw@mail.gmail.com>
-Subject: Re: [PATCH net 2/2] selftests/bpf: add xdp_feature selftest for bond device
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Marek Majtyka <alardam@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20230417154737.12740-1-laoar.shao@gmail.com> <20230417154737.12740-6-laoar.shao@gmail.com>
+ <20230427092628.21fd23e4@gandalf.local.home>
+In-Reply-To: <20230427092628.21fd23e4@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 27 Apr 2023 22:22:22 +0800
+Message-ID: <CALOAHbBX1C-eg93Hf3xPLsdsaBzoGn1pHh9jb3Z_-T-7HD60wA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention mechanism
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
+        bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,16 +73,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 7:04=E2=80=AFAM Lorenzo Bianconi <lorenzo@kernel.or=
-g> wrote:
+On Thu, Apr 27, 2023 at 9:26=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
 >
-> Introduce selftests to check xdp_feature support for bond driver.
+> On Mon, 17 Apr 2023 15:47:36 +0000
+> Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/xdp_bonding.c    | 121 ++++++++++++++++++
->  1 file changed, 121 insertions(+)
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index f61d513..3df39a5 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -842,15 +842,21 @@ static __always_inline u64 notrace bpf_prog_start=
+_time(void)
+> >  static u64 notrace __bpf_prog_enter_recur(struct bpf_prog *prog, struc=
+t bpf_tramp_run_ctx *run_ctx)
+> >       __acquires(RCU)
+>
+> Because __bpf_prog_enter_recur() and __bpf_prog_exit_recur() can
+> legitimately nest (as you pointed out later in the thread), I think my
+> original plan is the way to go.
+>
+>
+>
+> >  {
+> > -     rcu_read_lock();
+> > -     migrate_disable();
+> > -
+> > -     run_ctx->saved_run_ctx =3D bpf_set_run_ctx(&run_ctx->run_ctx);
+> > +     int bit;
+> >
+> > -     if (unlikely(this_cpu_inc_return(*(prog->active)) !=3D 1)) {
+> > +     rcu_read_lock();
+> > +     bit =3D test_recursion_try_acquire(_THIS_IP_, _RET_IP_);
+> > +     run_ctx->recursion_bit =3D bit;
+> > +     if (bit < 0) {
+> > +             preempt_disable_notrace();
+> >               bpf_prog_inc_misses_counter(prog);
+> > +             preempt_enable_notrace();
+> >               return 0;
+> >       }
+> > +
+> > +     migrate_disable();
+>
+> Just encompass the migrate_disable/enable() with the recursion protection=
+.
+>
+> That is, here add:
+>
+>         test_recursion_release(recursion_bit);
+>
+> No need to save it in the run_ctx, as you can use a local variable.
+>
+> As I mentioned, if it passes when checking migrate_disable() it will also
+> pass when checking around migrate_enable() so the two will still be paire=
+d
+> properly, even if only the migrate_enable() starts recursing.
+>
+>
+>   bit =3D test_recursion_try_acquire() // OK
+>   if (bit < 0)
+>         return;
+>   migrate_disable();
+>   test_recursion_release(bit);
+>
+>   [..]
+>
+>   bit =3D test_recursion_try_acquire() // OK
+>   migrate_enable() // traced and recurses...
+>
+>     bit =3D test_recursion_try_acquire() // fails
+>     if (bit < 0)
+>           return; // returns here
+>     migrate_disable() // does not get called.
+>
+> The recursion around migrate_disable/enable() is needed because it's done
+> before other checks. You can't attach the test_recursion logic to the
+> __bpf_prog_enter/exit() routines, because those can legitimately recurse.
+>
 
-Please always submit patches that touch bpf selftest via bpf tree.
-Otherwise BPF CI doesn't run on them.
-We've seen failures in the past when such patches went through net tree.
+IIUC, the acquire/release pair works as follows,
+
+   test_recursion_try_acquire
+     [ protection area ]
+   test_recursion_release
+
+After release, there will be no protection, and thus it will fail the
+tools/testing/selftests/bpf/progs/recursion.c[1] test case, because
+the recursion occurs in the bpf_prog_run() itself,
+
+  __bpf_prog_enter
+     test_recursion_try_acquire
+     [...]
+     test_recursion_release
+  // no protection after the release
+  bpf_prog_run()
+    bpf_prog_run() // the recursion can't be prevented.
+        __bpf_prog_enter
+            test_recursion_try_acquire
+            [...]
+            test_recursion_release
+       bpf_prog_run()
+           bpf_prog_run()
+               __bpf_prog_enter
+                  test_recursion_try_acquire
+                  [...]
+                  test_recursion_release
+              bpf_prog_run()
+              [ And so on ... ]
+
+[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
+tools/testing/selftests/bpf/progs/recursion.c#n38
+
+--=20
+Regards
+Yafang
