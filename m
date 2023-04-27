@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F056F0E54
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 00:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62116F0E55
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 00:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344053AbjD0W2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 18:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S1344097AbjD0W3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 18:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344032AbjD0W2v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 18:28:51 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED935BD
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:28:49 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50a145a0957so11287195a12.1
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:28:49 -0700 (PDT)
+        with ESMTP id S1344032AbjD0W33 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 18:29:29 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD1235BD
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:29:28 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5067736607fso15807030a12.0
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682634528; x=1685226528;
+        d=gmail.com; s=20221208; t=1682634566; x=1685226566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I7ooR+mmzJmti7b/0suxo47dopLeFknPmNBcCRGVJ1g=;
-        b=KSDBFd/OI4Fk7eNZleTBWqVZEiav3iW8SjNHOIMyizyJy/XjNg2U+mlUIy/nIsJF3m
-         eTWJF0FcizLTj4w4J02ef3cRx58q6fEbnb1DJSZf8RFvSDUzGyZtkET7ZmKKHEj76FSu
-         /9YOTP0au+K9Zh80q+O0H4MEpSvz7NaqjaUvFbdESGpTfW1Hbn/9nXzAS6E6brnNOIyv
-         1Mud5vEWbr5rVEddyio4Wpz/JWdhc8wRph3gfAqC4n9A3XjKJ9yGY9BuHPXHj+d4o4Db
-         mb2S5ULLrDByMEHRnseT2pK5p4Dn8I0LrowMhNk8oGqGTervVK7AWWbY1x7gQ42P4u5/
-         Lb6w==
+        bh=2nu9c+JYVDXoXRe7gMJDNxF765maXU8cKOOwpQT2K5c=;
+        b=kEbrB9n6AIeUH92NxhIH4jUusc03GjByYNLSu6mfNU+XP/aVA9BFgvWiy4ROEFRSyB
+         6nL7TE1K5qjUv2uUpoodM3hy7d8/Ic5VUEbrzlOaXnbDxT/9kTFfrYTSPRrX8YquVo8n
+         G9z8emcdQJk5QkkIkYHARVYv9nn55tGWwY2teK4M3B/5hMk+sQhHm7Cpfv6ZHCRXlEZt
+         UuRHuN46MjaAGhxsamFC2AYKwNTZ2i3xuyrzg04YnuvsJn5wXT3fMhDIml6Kg+h1YsCB
+         VdrO03ZDAgFBYBrsENmMd4j/YFCVKGSguZqhelCczCwS33Mcn09hC26WiNcmH10oBy1b
+         WQLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682634528; x=1685226528;
+        d=1e100.net; s=20221208; t=1682634566; x=1685226566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I7ooR+mmzJmti7b/0suxo47dopLeFknPmNBcCRGVJ1g=;
-        b=JCrpdvFLBOdoIZsJzg3P0C29urHI5kHkmPgCOhnhTzQIvKPzukBLpPjInw6XpDr7bV
-         1hEDfieuZJkF9Yf4gLz9yYrIJOV1ytVjpuhxMAEobs2ICO1ASGWlsqiN/Szqzg52tofq
-         94/FmQWLpaj49o/1vHuASnro7oDz6HlUdZf4M6r5ffuleRiwQEXHDLSM4tHnv6pE89O4
-         IPp0ZSvl5IMZ2fmDiKiginvKio42yFzOT52xVz9DUhWHVavu/o4ODHi85eHjPWTEGZZx
-         an+uLOIDLO3xh5V8warr2znS4UoMerE6yqmgHuUqTAgaWcduPz5O6qPOty2Q8lwiWkfa
-         F21w==
-X-Gm-Message-State: AC+VfDx1n30PFgNm6S042cUF+zZZVwKZIvqdOuSscP1eXOyEc7BX5qvD
-        x7fZe0cFR11obwEwMeKgIdxgjfk663NtJ0UF9gE=
-X-Google-Smtp-Source: ACHHUZ6DkarN1+tQGFEJYWXoZvsFxc+Evd/vjrPKWNyNb0k01Yk5/QFCU4EEu4asksciUPYthNadJNkYWIdjxbRlvbc=
-X-Received: by 2002:a05:6402:42c8:b0:506:71bd:3931 with SMTP id
- i8-20020a05640242c800b0050671bd3931mr8230224edc.2.1682634528226; Thu, 27 Apr
- 2023 15:28:48 -0700 (PDT)
+        bh=2nu9c+JYVDXoXRe7gMJDNxF765maXU8cKOOwpQT2K5c=;
+        b=Jx3vpQUcNuLWLOmCF0Al8CXAJWcTNFyVm+cmi/09GXaqjWCXOc0KRIma7ufaMjxytV
+         /Ndg+2jA4zn8Ybbcud+hcOL1hKzMRFqA5vS9Q9dz8HCt1JN63lizvjMS0KFwMcteG5Uv
+         j4Yp5ux1OgQqNng7ssmcM4sZZjGBWjow+HFpY5fhr7jXxHFETqUekJQs7MOb08PhEZZW
+         TKqunBIxe4vqHV/ikD5yQRY67TZ96KzypKemYYishPor/ZHLWx9Lcux6Dy+um5mqsX08
+         Mu3fJyZT2wCvaEI6vJO+7Y8nZARXyetFmfllRRNjxO/1p4MzlgFssxCw2qVeCdOjhaQM
+         XMaQ==
+X-Gm-Message-State: AC+VfDy6biKRmLduIjNoIsgQA4vItaeFrmmyKE3jUHLA52cvywqrEqcN
+        l64+eGMwg5j/UuhjniKSPCphfmdRQQojpzWYvsk=
+X-Google-Smtp-Source: ACHHUZ5w5ljNLxqiuZUnGgoIyfrjKgm8NDgDyPNEpnhpF5CAJvEZ+7bU1yBWrCNnF2lyEkAQShYi9s0oZYHfoUlMg5o=
+X-Received: by 2002:aa7:c85a:0:b0:504:8efb:c103 with SMTP id
+ g26-20020aa7c85a000000b005048efbc103mr2754973edt.0.1682634566332; Thu, 27 Apr
+ 2023 15:29:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-7-jolsa@kernel.org>
- <CAEf4Bza8L7YKbVvNAsRn_RDKx8PuHYZpO7HSWuZuubioEsEmbQ@mail.gmail.com> <ZEp3bfmJG2HBe2rK@krava>
-In-Reply-To: <ZEp3bfmJG2HBe2rK@krava>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-9-jolsa@kernel.org>
+ <CAEf4BzYKkPHBqbr1pXjA6jEkvJTpu0bjFHt0Nu0bm4un3DD6mQ@mail.gmail.com> <ZEp2xfXGu4kTY7Q3@krava>
+In-Reply-To: <ZEp2xfXGu4kTY7Q3@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Apr 2023 15:28:36 -0700
-Message-ID: <CAEf4BzZu7nnviv1KHUNBRCEufzLiE9NV+oDZ41VRU0M3acWRrg@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 06/20] libbpf: Factor elf_for_each_symbol function
+Date:   Thu, 27 Apr 2023 15:29:13 -0700
+Message-ID: <CAEf4BzbKF+meB5N-eN0tcMdacofhh8hed0Oy2nKtL=AK5ngSnA@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 08/20] libbpf: Add elf_find_patern_func_offset
+ function
 To:     Jiri Olsa <olsajiri@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -77,88 +78,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 6:24=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+On Thu, Apr 27, 2023 at 6:21=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> On Wed, Apr 26, 2023 at 12:27:31PM -0700, Andrii Nakryiko wrote:
-> > On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
+> On Wed, Apr 26, 2023 at 12:24:16PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Apr 24, 2023 at 9:06=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
 ote:
 > > >
-> > > Currently we have elf_find_func_offset function that looks up
-> > > symbol in the binary and returns its offset to be used for uprobe
-> > > attachment.
+> > > Adding elf_find_patern_func_offset function that looks up
+> > > offsets for symbols specified by pattern argument.
 > > >
-> > > For attaching multiple uprobes we will need interface that allows
-> > > us to get offsets for multiple symbols specified either by name or
-> > > regular expression.
+> > > The 'pattern' argument allows wildcards (*?' supported).
 > > >
-> > > Factoring out elf_for_each_symbol helper function that iterates
-> > > all symbols in binary and calls following callbacks:
+> > > Offsets are returned in allocated array together with its
+> > > size and needs to be released by the caller.
 > > >
-> > >   fn_match - on each symbol
-> > >              if it returns error < 0, we bail out with that error
-> > >   fn_done  - when we finish iterating symbol section,
-> > >              if it returns true, we don't iterate next section
-> > >
-> > > It will be used in following changes to lookup multiple symbols
-> > > and their offsets.
-> > >
-> > > Changing elf_find_func_offset to use elf_for_each_symbol with
-> > > single_match callback that's looking to match single function.
-> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
 > >
-> > Given we have multiple uses for this for_each_elf_symbol, would it
-> > make sense to implement it as an iterator (following essentially the
-> > same pattern that BPF open-coded iterator is doing, where state is in
-> > a small struct, and then we call next() until we get back NULL?)
 > >
-> > This will lead to cleaner code overall, I think. And it does seem func
-> > to implement it this (composable) way.
+> > Why do we need to expose any elf-related helpers as libbpf public API?
+> > Just to use them in selftests? If yes, then selftests can use libbpf
+> > internal helpers just like bpftool due to static linking. In general,
+> > it of course doesn't make sense for libbpf to provide ELF helpers as
+> > part of its API.
 >
-> ok, I'll check the open-coded iterator for this
+> I use them in bpftrace ;-) I can move the implementation in there,
+> if we don't want to expose it.. it was just convenient to use libbpf
 
-Do check it, as it's a useful thing on BPF side. But tl;dr for libbpf
-internal use we could do something like:
-
-struct elf_iter {
-    Elf *elf;
-    size_t next_sym_idx;
-};
-
-and in the code the use will be something like
-
-struct elf_iter;
-elf_iter_init(*iter, elf); /* sets next_sym_idx to 0 */
-
-while ((sym =3D elf_iter_next(&iter))) {
-   /* use sym */
-}
-
-
-And we can tune the returned result to have symbol index, etc, of course.
-
-
+yep, let's not expose elf helpers as libbpf UAPI
 
 >
 > >
-> > Also, I think we are at the point where libbpf.c is becoming pretty
-> > bloated, so we should try to split out coherent subsets of
-> > functionality into separate files. ELF helpers seem like a good group
-> > of functionality  to move to a separate file? Maybe as a separate
-> > patch set and/or follow up, but think about whether you can do part of
-> > that during refactoring?
+> > Also s/patern/pattern/.
 >
-> right, sounds good, will check
+> ok
+>
+> >
+> >
+> > >  tools/lib/bpf/libbpf.c   | 121 +++++++++++++++++++++++++++++++++++++=
+++
+> > >  tools/lib/bpf/libbpf.h   |   7 +++
+> > >  tools/lib/bpf/libbpf.map |   1 +
+> > >  3 files changed, 129 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 0b15609d4573..7eb7035f7b73 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -11052,6 +11052,127 @@ elf_find_multi_func_offset(const char *bina=
+ry_path, int cnt,
+> > >         return ret;
+> > >  }
+> > >
+> > > +struct match_pattern_data {
+> > > +       const char *pattern;
+> > > +       struct elf_func_offset *func_offs;
+> > > +       size_t func_offs_cnt;
+> > > +       size_t func_offs_cap;
+> > > +};
+> > > +
+> > > +static int pattern_done(void *_data)
+> > > +{
+> > > +       struct match_pattern_data *data =3D _data;
+> > > +
+> > > +       // If we found anything in the first symbol section, do not s=
+earch others
+> > > +       // to avoid duplicates.
+> >
+> > C++ comment
+>
+> ok, will fix
 >
 > thanks,
 > jirka
->
-> >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 185 +++++++++++++++++++++++++--------------=
---
-> > >  1 file changed, 114 insertions(+), 71 deletions(-)
-> > >
-> >
-> > [...]
