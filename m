@@ -2,115 +2,448 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8596F0D55
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA8D6F0D81
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245540AbjD0Ui4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
+        id S1344063AbjD0UyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245168AbjD0Uiz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:38:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EA33C15;
-        Thu, 27 Apr 2023 13:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=mb+mw9RoqPzSHwk13zdaZsc81X0xQJcY8tYM6v4FHUI=; b=IJYieqMbLLhnFwjYIv3DzoJbc6
-        w/TidPHt60tuVQEEqr2cd6v1r0PgUuRcEGqsd5mmjkhtUxKBI+bRystWAwkyNBgHUWnF/eScr9Y1D
-        NUFJjXWNu0P+iFi3KSriG6s92Hs7HbV+W6GKOKq89rnxvBCa1RK18Wp/YKF6orgZz+N7SRi5Bztl3
-        JdTCK7zs1vA00180MS5iE3vhv4mAFhqt5zHIgBaCaKf96yuXanhbB6jkHLhpqZtboKduPUu8sHk8R
-        P1OlEVE9sL9+XsUtmh4QkdM4ghZlhzBJAbQ/3POrDxAABHgDZ9AHYPISto+BDensactLlt7QlGYcF
-        acSlnwJQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps8OB-00019O-KX; Thu, 27 Apr 2023 22:38:51 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps8OB-000VKx-9i; Thu, 27 Apr 2023 22:38:51 +0200
-Subject: Re: [PATCH v1] selftests/bpf: Do not use sign-file as testcase
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexey Gladkov <legion@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <88e3ab23029d726a2703adcf6af8356f7a2d3483.1682607419.git.legion@kernel.org>
- <ZEq+u0CWs8eO2ED/@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <66b8d805-06db-a0ca-9a69-b715d03d4f5e@iogearbox.net>
-Date:   Thu, 27 Apr 2023 22:38:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S1344137AbjD0Ux7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:53:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95F31721
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1682628793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6ShlQl7AZJnro9dI3S/M/PUpToCiqlwYhj0slYc/8Rg=;
+        b=Q0VmuHOj2cyh/RcE/SFL7DvTyYu+5qqQ6X5j1HYyIoOZWQVYoaYwa9oV881cy20r8mrNpQ
+        DPfEE7Y8uHF4Mm4t4Cc1tiMHDgHNCoA5O9wmwThybL6luwTra/LuZmJiLbcoXp3Gj5Jf1A
+        WtxNpEdGXFf0X70tviFL2fcdh74OsEk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-qvDxLe_UNz-TBNGlCyKbRg-1; Thu, 27 Apr 2023 16:53:11 -0400
+X-MC-Unique: qvDxLe_UNz-TBNGlCyKbRg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-505b696f254so8895221a12.3
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:53:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682628790; x=1685220790;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ShlQl7AZJnro9dI3S/M/PUpToCiqlwYhj0slYc/8Rg=;
+        b=ZdPw2QlSc5zkRdPLeV/5VD4eqkYMwRHKq0nVmHxwXMRcVas9zVyL1hsYyJiTNkx8ZU
+         F2xE0ATefaQU/If6+JOr3wrpaOJOeJp2y96wvTfHEBd1O4kN+Ofg5WKWjLyDU1v8yBXO
+         ahSqKpSgJ8R5zE4XvxI5pZehvipHHEw/6E14WProXeNuhaaVgwN20HtFX0lZTiNn0mEg
+         g4DHU99Wwqi7qahOgOX/L5l4vcPGd3DsOMyCtXCIQc013mi7t9ZPPDFnyLhdZMI1Fhs6
+         hQv0J387xM00zyVky6VL/UQdh9s1s99fqUp9u5uw8ReCooo5F1LbcU8WaM3f1s+trFgB
+         mccw==
+X-Gm-Message-State: AC+VfDywKo9plnKSrY3ydopZkiJrN8EuYCmjC8lq58pxmsX83JA9H0Aq
+        J6YN+gbzsssHdcYFMMSp/JRlSfAmJCKDa1RCIhbaYZKuUDZL8TEOzt1CGaJPVX6qtAb+xqL7Ven
+        VlJByl3xHqq5J
+X-Received: by 2002:a05:6402:2d5:b0:50a:276f:a3c9 with SMTP id b21-20020a05640202d500b0050a276fa3c9mr858574edx.30.1682628790485;
+        Thu, 27 Apr 2023 13:53:10 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7b91GlpreBUh9qhwokVg+4QQYghXryPd+3GaTjTgPLfi00ShI8TAbf5hziBjZENoy2lIjgfg==
+X-Received: by 2002:a05:6402:2d5:b0:50a:276f:a3c9 with SMTP id b21-20020a05640202d500b0050a276fa3c9mr858544edx.30.1682628789926;
+        Thu, 27 Apr 2023 13:53:09 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id g15-20020aa7c58f000000b0050841de16e9sm8192617edq.64.2023.04.27.13.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Apr 2023 13:53:09 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D1373ADC8C2; Thu, 27 Apr 2023 22:53:08 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, lorenzo@kernel.org,
+        linyunsheng@huawei.com, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
+Subject: Re: [PATCH RFC net-next/mm V2 1/2] page_pool: Remove workqueue in
+ new shutdown scheme
+In-Reply-To: <168262351129.2036355.1136491155595493268.stgit@firesoul>
+References: <168262348084.2036355.16294550378793036683.stgit@firesoul>
+ <168262351129.2036355.1136491155595493268.stgit@firesoul>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 27 Apr 2023 22:53:08 +0200
+Message-ID: <871qk582tn.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <ZEq+u0CWs8eO2ED/@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26889/Thu Apr 27 09:25:48 2023)
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/27/23 8:28 PM, Stanislav Fomichev wrote:
-> On 04/27, Alexey Gladkov wrote:
->> The sign-file utility (from scripts/) is used in prog_tests/verify_pkcs7_sig.c,
->> but the utility should not be called as a test. Executing this utility
->> produces the following error:
->>
->> selftests: /linux/tools/testing/selftests/bpf: urandom_read
->> ok 16 selftests: /linux/tools/testing/selftests/bpf: urandom_read
->>
->> selftests: /linux/tools/testing/selftests/bpf: sign-file
->> not ok 17 selftests: /linux/tools/testing/selftests/bpf: sign-file # exit=2
->>
->> Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc")
->> Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> 
->>   tools/testing/selftests/bpf/Makefile | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index b677dcd0b77a..fd214d1526d4 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -88,8 +88,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
->>   	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
->>   	xdp_features
->>   
->> -TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
->> -TEST_GEN_FILES += liburandom_read.so
->> +TEST_GEN_FILES += liburandom_read.so urandom_read sign-file
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-Given you move over both of them, the commit msg should be adapted accordingly
-since it mainly talks about sign-file, less so about urandom_read.
+> This removes the workqueue scheme that periodically tests when
+> inflight reach zero such that page_pool memory can be freed.
+>
+> This change adds code to fast-path free checking for a shutdown flags
+> bit after returning PP pages.
 
-Also now that you remove the TEST_CUSTOM_PROGS, we should probably also remove
-the other two instances:
+I think the general approach is workable, but spotted a few issues with
+the details, see below.
 
-tools/testing/selftests/bpf/Makefile:91:TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
-tools/testing/selftests/bpf/Makefile:156:        $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
-tools/testing/selftests/bpf/Makefile:674:EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR) \
+> Performance is very important for PP, as the fast path is used for
+> XDP_DROP use-cases where NIC drivers recycle PP pages directly into PP
+> alloc cache.
+>
+> The goal were that this code change should have zero impact on this
+> fast-path. The slight code reorg of likely() are deliberate. Micro
+> benchmarking done via kernel module[1] on x86_64, shows this code
+> change only cost a single instruction extra (approx 0.3 nanosec on CPU
+> E5-1650 @3.60GHz).
+>
+> It is possible to make this code zero impact via static_key, but that
+> change is not considered worth the complexity.
+>
+> [1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  include/net/page_pool.h |    9 ++--
+>  net/core/page_pool.c    |  100 +++++++++++++++++++++++++++++------------------
+>  2 files changed, 66 insertions(+), 43 deletions(-)
+>
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index c8ec2f34722b..a71c0f2695b0 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -50,6 +50,9 @@
+>  				 PP_FLAG_DMA_SYNC_DEV |\
+>  				 PP_FLAG_PAGE_FRAG)
+>  
+> +/* Internal flag: PP in shutdown phase, waiting for inflight pages */
+> +#define PP_FLAG_SHUTDOWN	BIT(8)
+> +
+>  /*
+>   * Fast allocation side cache array/stack
+>   *
+> @@ -151,11 +154,6 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, void *stats)
+>  struct page_pool {
+>  	struct page_pool_params p;
+>  
+> -	struct delayed_work release_dw;
+> -	void (*disconnect)(void *);
+> -	unsigned long defer_start;
+> -	unsigned long defer_warn;
+> -
+>  	u32 pages_state_hold_cnt;
+>  	unsigned int frag_offset;
+>  	struct page *frag_page;
+> @@ -165,6 +163,7 @@ struct page_pool {
+>  	/* these stats are incremented while in softirq context */
+>  	struct page_pool_alloc_stats alloc_stats;
+>  #endif
+> +	void (*disconnect)(void *);
+>  	u32 xdp_mem_id;
+>  
+>  	/*
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index e212e9d7edcb..b8359d84e30f 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -23,9 +23,6 @@
+>  
+>  #include <trace/events/page_pool.h>
+>  
+> -#define DEFER_TIME (msecs_to_jiffies(1000))
+> -#define DEFER_WARN_INTERVAL (60 * HZ)
+> -
+>  #define BIAS_MAX	LONG_MAX
+>  
+>  #ifdef CONFIG_PAGE_POOL_STATS
+> @@ -380,6 +377,10 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+>  	struct page *page;
+>  	int i, nr_pages;
+>  
+> +	/* API usage BUG: PP in shutdown phase, cannot alloc new pages */
+> +	if (WARN_ON(pool->p.flags & PP_FLAG_SHUTDOWN))
+> +		return NULL;
+> +
+>  	/* Don't support bulk alloc for high-order pages */
+>  	if (unlikely(pp_order))
+>  		return __page_pool_alloc_page_order(pool, gfp);
+> @@ -445,15 +446,20 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
+>  }
+>  EXPORT_SYMBOL(page_pool_alloc_pages);
+>  
+> +/* Avoid inlining code to avoid speculative fetching cacheline */
+> +noinline u32 pp_read_hold_cnt(struct page_pool *pool)
+> +{
+> +	return READ_ONCE(pool->pages_state_hold_cnt);
+> +}
+> +
+>  /* Calculate distance between two u32 values, valid if distance is below 2^(31)
+>   *  https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
+>   */
+>  #define _distance(a, b)	(s32)((a) - (b))
+>  
+> -static s32 page_pool_inflight(struct page_pool *pool)
+> +static s32 __page_pool_inflight(struct page_pool *pool,
+> +				u32 hold_cnt, u32 release_cnt)
+>  {
+> -	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
+> -	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
+>  	s32 inflight;
+>  
+>  	inflight = _distance(hold_cnt, release_cnt);
+> @@ -464,6 +470,16 @@ static s32 page_pool_inflight(struct page_pool *pool)
+>  	return inflight;
+>  }
+>  
+> +static s32 page_pool_inflight(struct page_pool *pool)
+> +{
+> +	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
+> +	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
+> +	return __page_pool_inflight(pool, hold_cnt, release_cnt);
+> +}
+> +
+> +static int page_pool_free_attempt(struct page_pool *pool,
+> +				  u32 hold_cnt, u32 release_cnt);
+> +
+>  /* Disconnects a page (from a page_pool).  API users can have a need
+>   * to disconnect a page (from a page_pool), to allow it to be used as
+>   * a regular page (that will eventually be returned to the normal
+> @@ -471,8 +487,10 @@ static s32 page_pool_inflight(struct page_pool *pool)
+>   */
+>  void page_pool_release_page(struct page_pool *pool, struct page *page)
+>  {
+> +	unsigned int flags = READ_ONCE(pool->p.flags);
+>  	dma_addr_t dma;
+> -	int count;
+> +	u32 release_cnt;
+> +	u32 hold_cnt;
+>  
+>  	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+>  		/* Always account for inflight pages, even if we didn't
+> @@ -490,11 +508,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>  skip_dma_unmap:
+>  	page_pool_clear_pp_info(page);
+>  
+> -	/* This may be the last page returned, releasing the pool, so
+> -	 * it is not safe to reference pool afterwards.
+> -	 */
+> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
+> -	trace_page_pool_state_release(pool, page, count);
+> +	if (flags & PP_FLAG_SHUTDOWN)
+> +		hold_cnt = pp_read_hold_cnt(pool);
+> +
+> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
+> +	trace_page_pool_state_release(pool, page, release_cnt);
+> +
+> +	/* In shutdown phase, last page will free pool instance */
+> +	if (flags & PP_FLAG_SHUTDOWN)
+> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
 
->>   # Emit succinct information message describing current building step
->>   # $1 - generic step name (e.g., CC, LINK, etc);
->> -- 
->> 2.33.7
->>
+Since the assumption is that no new pages will be allocated once the
+PP_FLAG_SHUTDOWN is set (i.e., hold_count can not increase in the case),
+I don't think it matters what order you read the hold and release counts
+in? So you could simplify the above to just:
+
+> +	if (flags & PP_FLAG_SHUTDOWN)
+> +		page_pool_free_attempt(pool, pp_read_hold_cnt(pool), release_cnt);
+
+and drop the second check of the flag further up?
+
+You could probably even lose the hold_cnt argument entirely from
+page_pool_free_attempt() and just have it call pp_read_hold_cnt() directly?
+
+>  }
+>  EXPORT_SYMBOL(page_pool_release_page);
+>  
+> @@ -535,7 +557,7 @@ static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
+>  static bool page_pool_recycle_in_cache(struct page *page,
+>  				       struct page_pool *pool)
+>  {
+> -	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE)) {
+> +	if (pool->alloc.count == PP_ALLOC_CACHE_SIZE) {
+>  		recycle_stat_inc(pool, cache_full);
+>  		return false;
+>  	}
+> @@ -546,6 +568,8 @@ static bool page_pool_recycle_in_cache(struct page *page,
+>  	return true;
+>  }
+>  
+> +static void page_pool_empty_ring(struct page_pool *pool);
+> +
+>  /* If the page refcnt == 1, this will try to recycle the page.
+>   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+>   * the configured size min(dma_sync_size, pool->max_len).
+> @@ -572,7 +596,8 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>  			page_pool_dma_sync_for_device(pool, page,
+>  						      dma_sync_size);
+>  
+> -		if (allow_direct && in_softirq() &&
+> +		/* During PP shutdown, no direct recycle must occur */
+> +		if (likely(allow_direct && in_softirq()) &&
+>  		    page_pool_recycle_in_cache(page, pool))
+>  			return NULL;
+>  
+> @@ -609,6 +634,8 @@ void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
+>  		recycle_stat_inc(pool, ring_full);
+>  		page_pool_return_page(pool, page);
+>  	}
+> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
+> +		page_pool_empty_ring(pool);
+>  }
+>  EXPORT_SYMBOL(page_pool_put_defragged_page);
+>  
+> @@ -648,13 +675,17 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+>  
+>  	/* Hopefully all pages was return into ptr_ring */
+>  	if (likely(i == bulk_len))
+> -		return;
+> +		goto out;
+>  
+>  	/* ptr_ring cache full, free remaining pages outside producer lock
+>  	 * since put_page() with refcnt == 1 can be an expensive operation
+>  	 */
+>  	for (; i < bulk_len; i++)
+>  		page_pool_return_page(pool, data[i]);
+> +
+> +out:
+> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
+> +		page_pool_empty_ring(pool);
+>  }
+>  EXPORT_SYMBOL(page_pool_put_page_bulk);
+>  
+> @@ -737,6 +768,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
+>  }
+>  EXPORT_SYMBOL(page_pool_alloc_frag);
+>  
+> +noinline
+>  static void page_pool_empty_ring(struct page_pool *pool)
+>  {
+>  	struct page *page;
+> @@ -796,39 +828,29 @@ static void page_pool_scrub(struct page_pool *pool)
+>  	page_pool_empty_ring(pool);
+>  }
+
+So this is not in the diff context, but page_pool_empty_ring() does
+this:
+
+static void page_pool_empty_ring(struct page_pool *pool)
+{
+	struct page *page;
+
+	/* Empty recycle ring */
+	while ((page = ptr_ring_consume_bh(&pool->ring))) {
+		/* Verify the refcnt invariant of cached pages */
+		if (!(page_ref_count(page) == 1))
+			pr_crit("%s() page_pool refcnt %d violation\n",
+				__func__, page_ref_count(page));
+
+		page_pool_return_page(pool, page);
+	}
+}
+
+...and with this patch, that page_pool_return_page() call will now free
+the pool memory entirely when the last page is returned. When it does
+this, the condition in the while loop will still execute afterwards; it
+would return false, but if the pool was freed, it's now referencing
+freed memory when trying to read from pool->ring.
+
+So I think page_pool_empty_ring needs to either pull out all the pages
+in the ring to an on-stack buffer before calling page_pool_return_page()
+on them, or there needs to be some other way to break the loop early.
+
+There are a couple of other places where page_pool_return_page() is
+called in a loop where the loop variable lives inside struct page_pool,
+so we need to be absolutely sure they will never be called in the
+shutdown stage, or they'll have to be fixed as well.
+
+>  
+> -static int page_pool_release(struct page_pool *pool)
+> +noinline
+> +static int page_pool_free_attempt(struct page_pool *pool,
+> +				  u32 hold_cnt, u32 release_cnt)
+>  {
+>  	int inflight;
+>  
+> -	page_pool_scrub(pool);
+> -	inflight = page_pool_inflight(pool);
+> +	inflight = __page_pool_inflight(pool, hold_cnt, release_cnt);
+>  	if (!inflight)
+>  		page_pool_free(pool);
+>  
+>  	return inflight;
+>  }
+>  
+> -static void page_pool_release_retry(struct work_struct *wq)
+> +static int page_pool_release(struct page_pool *pool)
+>  {
+> -	struct delayed_work *dwq = to_delayed_work(wq);
+> -	struct page_pool *pool = container_of(dwq, typeof(*pool), release_dw);
+>  	int inflight;
+>  
+> -	inflight = page_pool_release(pool);
+> +	page_pool_scrub(pool);
+> +	inflight = page_pool_inflight(pool);
+>  	if (!inflight)
+> -		return;
+> -
+> -	/* Periodic warning */
+> -	if (time_after_eq(jiffies, pool->defer_warn)) {
+> -		int sec = (s32)((u32)jiffies - (u32)pool->defer_start) / HZ;
+> -
+> -		pr_warn("%s() stalled pool shutdown %d inflight %d sec\n",
+> -			__func__, inflight, sec);
+> -		pool->defer_warn = jiffies + DEFER_WARN_INTERVAL;
+> -	}
+> +		page_pool_free(pool);
+>  
+> -	/* Still not ready to be disconnected, retry later */
+> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
+> +	return inflight;
+>  }
+>  
+>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
+> @@ -868,11 +890,13 @@ void page_pool_destroy(struct page_pool *pool)
+>  	if (!page_pool_release(pool))
+>  		return;
+>  
+> -	pool->defer_start = jiffies;
+> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
+> +	/* PP have pages inflight, thus cannot immediately release memory.
+> +	 * Enter into shutdown phase.
+> +	 */
+> +	pool->p.flags |= PP_FLAG_SHUTDOWN;
+
+I think there's another race here: once the flag is set in this line
+(does this need a memory barrier, BTW?), another CPU can return the last
+outstanding page, read the flag and call page_pool_empty_ring(). If this
+happens before the call to page_pool_empty_ring() below, you'll get a
+use-after-free.
+
+To avoid this, we could artificially bump the pool->hold_cnt *before*
+setting the flag above; that way we know that the page_pool_empty_ring()
+won't trigger a release, because inflight pages will never go below 1.
+And then, below the page_pool_empty_ring() call below, we can add an
+artificial bump of the release_cnt as well, which means we'll get proper
+atomic semantics on the counters and only ever release once. I.e.,:
+
+> -	INIT_DELAYED_WORK(&pool->release_dw, page_pool_release_retry);
+> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
+> +	/* Concurrent CPUs could have returned last pages into ptr_ring */
+> +	page_pool_empty_ring(pool);
+
+        release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
+        page_pool_free_attempt(pool, release_cnt);
+
+
+-Toke
 
