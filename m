@@ -2,73 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A876F0EDD
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5366F0F1D
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjD0X2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 19:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S1344155AbjD0Xgt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 19:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344097AbjD0X2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 19:28:12 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F411C272E
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:28:10 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-b9a6869dd3cso2692445276.2
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:28:10 -0700 (PDT)
+        with ESMTP id S1344199AbjD0Xgs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 19:36:48 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D65559D
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:36:30 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-64115eef620so8665800b3a.1
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682638090; x=1685230090;
+        d=google.com; s=20221208; t=1682638589; x=1685230589;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GCNur8ye00lfwuEn8aqgDObynVvMHHHZO3F1ug6RXms=;
-        b=eqilKu2foh+ZS+T8W9A4VyDLeS3SBrTOUZ7cfPK5BuHwK0nGmYOPYb6fNyc5YAwKug
-         aeUV8N45wDdWNqp2/Xl0MtdYBeYVbhtBuuWI61df/RdGun32D1j087ODb5g1k1ILQApE
-         8IploToxkcBFMGetLa4S0rmERG3UMbqGgMEsowdh+N08oUJILJCmWm55+SATGpnPDDvM
-         DBpSZ/440VlaKOZo5ldDZ6bKsJWCyz8A5KP2TBYldtqf6Ycnvju20coHBfXLqPpc8efc
-         KAdrwZa7/g0eDeD4CdGCoKVLc/51r0wgTjptUef74QTz3hzzKKHofjQSfg4A9SgMkxo3
-         FH4w==
+        bh=ZR28aZTtyd2FOq2+x/D3Azav1fghqMGnnJ3OBjU1db8=;
+        b=QcNL4WTD7BAZ45uZ2rUZBbHaGb5NGq88OMFb/hk+6h14hkmiOAuxcM6o8gxy7BWb6s
+         7ZPujWviSqnQUcUVMS9L5QsXEECDvEvaPYxqivp87T18IDo0ebxAKMiYrIpH+sT5cpdy
+         Sv1lHGvKFRi2CHt3R0PhNVr4VK3oxlWYxQTcLN0AWiaCV4Kv0ug4brrnI0+MMSLdO6fS
+         JL8OPt4Tjqe8nb59x+qSmZBO1nOowz0M0vYoCIZXJcPjoTSbUjTe/+WlgVE8ZCTRZF//
+         /soGydjss1oGYhoub1jY9+MrWs1N93zW9UX52KYodnuYbsHbJ1/Mgu1IC6Z4ZXHa4Acl
+         rDmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682638090; x=1685230090;
+        d=1e100.net; s=20221208; t=1682638589; x=1685230589;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GCNur8ye00lfwuEn8aqgDObynVvMHHHZO3F1ug6RXms=;
-        b=fnX+YyYC5aeUtIxkibAz9HadrE3SgoWxfhLxa7tnua8zlkfUP2WHZA9gv9nk6H2FSB
-         FzXHCNAigR5W/1g12vf2OSNQOId5YrP+1qY22vd7qqklbK4qNgTzyW8JjCNpPtaH27kD
-         17JkgCUSVilpDPZbvfa3+M6nchyQcunSBXfqZmpsxwW9hCm91rEzHjTRDoLWOnTplTGw
-         iFuK383vc+ScBjxLnRCebX0gp0xmHY57ga9H1zOK6HFsOL960+xR3BDnS7z0erzC/Wds
-         yC7Sfoq96udj7YXO0v1Pd0HnR8mHScmIe+Qh0vKG3Rve7bJ1gMFtDuZp/6y1eJwGU8gE
-         ymCA==
-X-Gm-Message-State: AC+VfDzvkUc7XVY7J/lo8gVG+ebAwll8gBUQMCqBS4in5FtxZfVYa93b
-        jONQk+A0OJGzkIRlKeDjtCP6V0rs/p3PHOYKxEI=
-X-Google-Smtp-Source: ACHHUZ7/D4mY0md+2Pdoms2gl7DWZzFxYpmvN+UrYuDuDdadu2RnJ2pFzjePhW75qScD53DXmfWkVrI7t1d6IdFOS4A=
-X-Received: by 2002:a25:19d4:0:b0:b9a:7b56:bcb4 with SMTP id
- 203-20020a2519d4000000b00b9a7b56bcb4mr2210008ybz.42.1682638090065; Thu, 27
- Apr 2023 16:28:10 -0700 (PDT)
+        bh=ZR28aZTtyd2FOq2+x/D3Azav1fghqMGnnJ3OBjU1db8=;
+        b=bMvIKNpQGFEONpJd2Rpbd/mqux5ropavriTLu+LvUfon+L/xs5oaW0lU8grGhR68mF
+         vNvgFH1SIVo+4c1cmIE+rl1AEtYVrymvVDqSXIhfbbD//QfA3i19PvUR5neTxV9ZN6Hs
+         MEdEzDRTSSLKH1oKbuPXdqQIBMfX06pkZkJOgUv8V89nao4kEooxaWjKKdOmMjODhqr5
+         UcP9D1Bbw6yQqBwhwKLxnJmJEfsJPDariiYRGzELz9+iN9lHWMjgbDW8xFFjvcpXZdO8
+         d2XzoIjsB5so8PJxs8xrdWkFx5VDLhs9zLWFZYGc4J4sYEKkH/Ay3dGUywcBp4e9wHnB
+         3ZmQ==
+X-Gm-Message-State: AC+VfDwtE42+ahRs2r6v75qoF2WMYYA2d1yzw/eyJtd2cKQa4iNgN873
+        tNp+Lp3LS3/tXPn6N0TQZdriKVxFuUNxNE3ubtBQHw==
+X-Google-Smtp-Source: ACHHUZ6yJzEMVVoXMIG1hh3C2IuooL/DG3uom1bZlv2jJpIj4Ggw5K4nRIaVYciqBWns5Bc7nqnAnXUjK1Eo57YDGRs=
+X-Received: by 2002:a17:90a:dd83:b0:244:d441:8f68 with SMTP id
+ l3-20020a17090add8300b00244d4418f68mr9245486pjv.16.1682638589170; Thu, 27 Apr
+ 2023 16:36:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
- <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
- <CAEf4BzaZhjgPNaNH2yFxjZ-C+ZaSJRg9EWzOCcMOP-CV7kDHBA@mail.gmail.com>
- <ZEn/EOnsH2RP//24@google.com> <CAEf4BzZHS5NprN2ya03Re_1hvC0nNyz_qYEhbD=sGou+m=OWHw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZHS5NprN2ya03Re_1hvC0nNyz_qYEhbD=sGou+m=OWHw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 27 Apr 2023 16:27:59 -0700
-Message-ID: <CAM9d7chFp42ar3dMmhHxhHR=CVRg64cMvNQDE98M-EuRmU5EfQ@mail.gmail.com>
-Subject: Re: [HELP] failed to resolve CO-RE relocation
+References: <20230406004018.1439952-1-drosen@google.com> <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
+ <CA+PiJmTHO3SPM_LvwFYWP+uf_KU4QytBshGzk78CZi8oGJ+rnw@mail.gmail.com> <CAEf4BzZ_4kcM5=Jo3JoWQWugS3wkrtoteyM8YqkykFvYywG+kg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ_4kcM5=Jo3JoWQWugS3wkrtoteyM8YqkykFvYywG+kg@mail.gmail.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 27 Apr 2023 16:36:18 -0700
+Message-ID: <CA+PiJmTsEsUi3c5soodZHxS_PvMPnJG-4bFvdfpLq-kPZ0j4UQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Dynptr Verifier Adjustments
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,73 +82,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 3:15=E2=80=AFPM Andrii Nakryiko
+On Wed, Apr 26, 2023 at 4:39=E2=80=AFPM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
-> Ok, I didn't manage to force compiler to behave as long as
-> `&rq_old->lock` pattern was used. So I went for a different approach.
-> This works:
+>
+> Don't know, show the sequence of commands you are running?
+>
+> I have linux source in ~/linux, and KBUILD_OUTPUT set to
+> ~/linux-build/default. And it only takes this:
+>
+> $ cd ~/linux
+> $ make -j90 # build kernel
+> $ cd tools/testing/selftests/bpf
+> $ make -j90 # build selftests
+>
+> And that's it.
 
-Thanks!  It works for me too!
+I've tried the same, modulo some paths. I'm pretty sure it's version
+related at this point.
+The current issue I'm seeing is "error: indirect call in function,
+which are not supported by eBPF" when using GCC-BPF for
+progs/bind4_prog.c
 
-Can I use this patch with your Co-developed-by tag ?
-
-Thanks,
-Namhyung
-
-
->
-> $ git diff
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> index 8911e2a077d8..8d3cfbb3cc65 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -418,32 +418,32 @@ int contention_end(u64 *ctx)
->
->  extern struct rq runqueues __ksym;
->
-> -struct rq__old {
-> +struct rq___old {
->         raw_spinlock_t lock;
->  } __attribute__((preserve_access_index));
->
-> -struct rq__new {
-> +struct rq___new {
->         raw_spinlock_t __lock;
->  } __attribute__((preserve_access_index));
->
->  SEC("raw_tp/bpf_test_finish")
->  int BPF_PROG(collect_lock_syms)
->  {
-> -       __u64 lock_addr;
-> +       __u64 lock_addr, lock_off;
->         __u32 lock_flag;
->
-> +       if (bpf_core_field_exists(struct rq___new, __lock))
-> +               lock_off =3D offsetof(struct rq___new, __lock);
-> +       else
-> +               lock_off =3D offsetof(struct rq___old, lock);
-> +
->         for (int i =3D 0; i < MAX_CPUS; i++) {
->                 struct rq *rq =3D bpf_per_cpu_ptr(&runqueues, i);
-> -               struct rq__new *rq_new =3D (void *)rq;
-> -               struct rq__old *rq_old =3D (void *)rq;
->
->                 if (rq =3D=3D NULL)
->                         break;
->
-> -               if (bpf_core_field_exists(rq_new->__lock))
-> -                       lock_addr =3D (__u64)&rq_new->__lock;
-> -               else
-> -                       lock_addr =3D (__u64)&rq_old->lock;
-> +               lock_addr =3D (__u64)(void *)rq + lock_off;
->                 lock_flag =3D LOCK_CLASS_RQLOCK;
->                 bpf_map_update_elem(&lock_syms, &lock_addr,
-> &lock_flag, BPF_ANY);
->         }
->
->
-> > Thanks,
-> > Namhyung
-> >
-> >
+Currently using clang 16.0.0 and gcc 12.2.0-14.
+I did manage to get it to build by just commenting out TEST_GEN_PROGS
++=3D test_progs-bpf_gcc
