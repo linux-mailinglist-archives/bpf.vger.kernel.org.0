@@ -2,109 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BD96F0CD6
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7882D6F0CDE
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344045AbjD0UF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S1343615AbjD0UKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344077AbjD0UF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:05:26 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0D2359D;
-        Thu, 27 Apr 2023 13:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=gUdQqSB70eOPUq7yX+9RzGvH6V4bI9S8SRAVMdNM5n8=; b=iCQsTqXFNo3L5y+k1Rf4a2wpoB
-        3NlGxhZ4Tycl26wePNMqqDSDFJVwveF2FOpR4TFHUFz7k2RrHwk3FKc7TzZ8WO7dftacwgdJ54rKG
-        zacclXGTCllJO2j7pMHcGECyli2mL5Am3SITJbVVVBhm45wgOBXWEttRWq6d8dTc/USxyPEGgf9Fa
-        xrKvjWX0qFrLXyXWLmcQu7pAoFpk4IiQaMi6J7n8VZRMbFtKCJm6GjkoPfGYnLcwJ0SMEzvvl0Myp
-        40nLk1BeQnX983JSrAnV6naizObaSmEG9ZJQN0Cly/pMYtK7TH1EVTtBK0HRq3YSc4FHzh5Vme4bE
-        4nqa357w==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps7rB-000I5U-4Q; Thu, 27 Apr 2023 22:04:45 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps7rA-000DyF-HV; Thu, 27 Apr 2023 22:04:44 +0200
-Subject: Re: [PATCH bpf] selftests/bpf: fix pkg-config call building sign-file
-To:     Jeremy Sowden <jeremy@azazel.net>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230426215032.415792-1-jeremy@azazel.net>
- <e1bd99a4ea209277d657f7fb7ccdc26451113fc9.camel@huaweicloud.com>
- <20230427195814.GE415348@azazel.net>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e0ce3c40-bc47-02a3-5e89-e74916a58630@iogearbox.net>
-Date:   Thu, 27 Apr 2023 22:04:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S245168AbjD0UKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:10:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE30C2D74;
+        Thu, 27 Apr 2023 13:10:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 85F1B63F71;
+        Thu, 27 Apr 2023 20:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CC5DFC4339B;
+        Thu, 27 Apr 2023 20:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682626219;
+        bh=qoO9gr3mZL+pQDOhmWVeLgTjeillcDNBWuS9b5f9fe0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MF3G96+od6lS4geKf/YIXKI+tIGvFyP5Uj8zIk4aTh5xcegzW9TmkBe1WqEuiuF2g
+         p9VlcCZkT06wwQLbR9JGAmmSH/7uA5CXrQQuCUT9RUcVdGDK+ReUIdCm0H82ejDKaG
+         Hps2UeXJn2QxI3fkUVMUbTyjcV1EHvJguYdu2FFED0Nkte53GveFyF0VjcBMShEYQN
+         bnZiSnHwY3VXIAB6A2ewh8AXglhI8YKzeYLAsxijUt31NUXbntfgMrUCVU/qozXbC6
+         oZsL4CsZpG5HFVIoX/owpTX5kiHWc4QsC2JKXMRWE/d4xH4/a+sQteQZuHV/yse07S
+         9GIXh2ZRTkWvg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B12D4C39562;
+        Thu, 27 Apr 2023 20:10:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20230427195814.GE415348@azazel.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26889/Thu Apr 27 09:25:48 2023)
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Update the aarch64 tests deny list
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168262621972.29037.2266972486752352083.git-patchwork-notify@kernel.org>
+Date:   Thu, 27 Apr 2023 20:10:19 +0000
+References: <20230427143207.635263-1-revest@chromium.org>
+In-Reply-To: <20230427143207.635263-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
+        mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
+        xukuohai@huaweicloud.com, mark.rutland@arm.com
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/27/23 9:58 PM, Jeremy Sowden wrote:
-> On 2023-04-27, at 08:52:27 +0200, Roberto Sassu wrote:
->> On Wed, 2023-04-26 at 22:50 +0100, Jeremy Sowden wrote:
->>> When building sign-file, the call to get the CFLAGS for libcrypto is
->>> missing white-space between `pkg-config` and `--cflags`:
->>>
->>>    $(shell $(HOSTPKG_CONFIG)--cflags libcrypto 2> /dev/null)
->>>
->>> Removing the redirection of stderr, we see:
->>>
->>>    $ make -C tools/testing/selftests/bpf sign-file
->>>    make: Entering directory '[...]/tools/testing/selftests/bpf'
->>>    make: pkg-config--cflags: No such file or directory
->>>      SIGN-FILE sign-file
->>>    make: Leaving directory '[...]/tools/testing/selftests/bpf'
->>>
->>> Add the missing space.
->>>
->>> Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc")
->>> Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
->>
->> Thanks.
->>
->> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
->>
->> Roberto
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Thu, 27 Apr 2023 16:32:07 +0200 you wrote:
+> Now that ftrace supports direct call on arm64, BPF tracing programs work
+> on that architecture. This fixes the vast majority of BPF selftests
+> except for:
 > 
-> Thanks.  I was having e-mail problems yesterday when I sent the original
-> message with the patch in it, and it didn't reach some of the
-> recipients.  I'll send it again with your `Reviewed-by:` attached.
+> - multi_kprobe programs which require fprobe, not available on arm64 yet
+> - tracing_struct which requires trampoline support to access struct args
+> 
+> [...]
 
-No need, already took it, thanks. Looks like patchbot did not reply. :/
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Update the aarch64 tests deny list
+    https://git.kernel.org/bpf/bpf-next/c/a46441192084
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=415d7a49cd796a11cfbeaa360b13721bba5117bb
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
