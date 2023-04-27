@@ -2,157 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2846F0643
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 14:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458646F0647
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 15:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243370AbjD0M7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 08:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
+        id S243594AbjD0NAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 09:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243532AbjD0M66 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 08:58:58 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A719AF
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 05:58:53 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3f19b9d5358so62261335e9.1
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 05:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682600332; x=1685192332;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+pqvpoX8hGLPKKs+BEBG6jvBBSOUyl9ztD88PvqfbnI=;
-        b=Io1XoRPO79+yIiuvXLtXXDQk1/G9e2c5F1HaUbFvhXFWeRTuRVkVrLpgTVlkOb3ic2
-         Tgra0PNpVDtHTT/+PE6xDrTIctQV4Pi57PK1BMQRkJMBqr8h6WT42AOiUMwtdLXMMsqh
-         bN4ocZfnH2PKbyTGOuqVpXGKJC/MQr7ffB99/wBa2jB/ZHtb/IG/8IVeo/OUG5KRv1dr
-         U4IU2E54cKJiihZtuTyy0c24UgV7MUadx3eqn0QvnqjUg/yiTnKeAidbgCPCg4g14/fO
-         44yptCxJUyggnaF8O/XwwfpwDyty2RTHZp13KE2wTngXZunYBGXqOCTQGgzDmdvLAkvi
-         Bx6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682600332; x=1685192332;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+pqvpoX8hGLPKKs+BEBG6jvBBSOUyl9ztD88PvqfbnI=;
-        b=iAPcN5qlflc2jwo5rxCzMLbuPxP3WXxEps0LsHEa/4GvH3wk56wHOyYCBdHUXW/BDF
-         71YeP2aJ05QvdYrxuVQvkIPFjZO6QUuvpu6jxsvJJB5FnwRGL+CSZ+6l7vgV1GwGjhpl
-         L+WHFnWjPWFOX8LHPMa57ts7GBqwBlFLeU7Df16a3gNo4awzPLOnQhOQyyrDC9uWG5Ni
-         rKLbDf0TtpgFaKH98yzyOdyeAmInrbCKMTvY6g6H2Fmq0blJ43G/u0x4C2DpzTKeeCmZ
-         Lr4+xHtAgls93ZBW8VEOM9q7Qx3dCKTbyIpQsll/Al8d2FG63z0mISsnhrDYNpce6u2c
-         oIPg==
-X-Gm-Message-State: AC+VfDxzbFl8VYcvj3d/+e8s5KuMr5tSnw+cCFn5qozJ6u4caWVuS1uA
-        fhYXhGJso6RM3oL1TOgjmmQ=
-X-Google-Smtp-Source: ACHHUZ46vn0M7Ntg8+9C+rE7MckmRY8G5yQypyg1ohI91+sPORhquxcqoIbW1N56BXI2iv0/E/4vjg==
-X-Received: by 2002:a1c:f30b:0:b0:3f1:75d2:a6a7 with SMTP id q11-20020a1cf30b000000b003f175d2a6a7mr1405169wmq.36.1682600332118;
-        Thu, 27 Apr 2023 05:58:52 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
-        by smtp.gmail.com with ESMTPSA id w23-20020a05600c099700b003f17af4c4e0sm24486701wmp.9.2023.04.27.05.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Apr 2023 05:58:51 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 27 Apr 2023 14:58:49 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC/PATCH bpf-next 04/20] libbpf: Update uapi bpf.h tools header
-Message-ID: <ZEpxiRt5aSYg/BeL@krava>
-References: <20230424160447.2005755-1-jolsa@kernel.org>
- <20230424160447.2005755-5-jolsa@kernel.org>
- <CAEf4BzZOsy0wC_RFHfJrG9zLjPUa86EencCOZto8FMnOMCpFOQ@mail.gmail.com>
+        with ESMTP id S243467AbjD0NAV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 09:00:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F6E114
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 06:00:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 81E5063D32
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:00:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D1D29C4339B;
+        Thu, 27 Apr 2023 13:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682600419;
+        bh=lrs4uoe5EDJt0hRT+mk6+sXEj1qclIPRvZ7E/y5CFEY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W7PgWWeaOyZe8SMQViDQtPBC2OOwAjpMIoq0EvPT0nTYiU3YLudk43pxy9cC1NNPr
+         GFaRgjRiTVt7TkYpqOfYZAJZ75sUimGpJIQXNByyPgX5WjcS8xASTi7SWmol+K/1T7
+         6lxB7Pn8h1XDzw2fYIZUGJwnDwYvpSBrRnAg0N01DkiS28lueYHK58TMHzmHnzo4+h
+         4sMxuh0bYeymC28Pu4qumSFkDsjuzqbe0kcjL5U9SJiYRfQ0hxCFFIIWCfafm481vj
+         sPn2k/RV7nYm6LLeUkMJlMoz1qD29XzhxGS1Mk3dCcTqw+TohfRbrAEDkqpQsOEf0F
+         HUHyYBXkzJ3AQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7BA2E270D6;
+        Thu, 27 Apr 2023 13:00:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZOsy0wC_RFHfJrG9zLjPUa86EencCOZto8FMnOMCpFOQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v4] bpftool: Show map IDs along with struct_ops
+ links.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168260041973.6278.15468448375833515409.git-patchwork-notify@kernel.org>
+Date:   Thu, 27 Apr 2023 13:00:19 +0000
+References: <20230421214131.352662-1-kuifeng@meta.com>
+In-Reply-To: <20230421214131.352662-1-kuifeng@meta.com>
+To:     Kui-Feng Lee <thinker.li@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+        yhs@meta.com, song@kernel.org, kernel-team@meta.com,
+        andrii@kernel.org, kuifeng@meta.com, quentin@isovalent.com
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 12:14:18PM -0700, Andrii Nakryiko wrote:
-> On Mon, Apr 24, 2023 at 9:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Updating uapi bpf.h tools header with new uprobe_multi
-> > link interface.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Fri, 21 Apr 2023 14:41:31 -0700 you wrote:
+> A new link type, BPF_LINK_TYPE_STRUCT_OPS, was added to attach
+> struct_ops to links. (226bc6ae6405) It would be helpful for users to
+> know which map is associated with the link.
 > 
-> let's merge this with the original UAPI header update patch? We used
-> to split this out for libbpf sync purposes, but it is handled easily
-> with current sync script, so no  need to make this a separate patch
-> (but up to you, I don't mind either)
-
-ok, will merge it
-
-thanks,
-jirka
-
+> The assumption was that every link is associated with a BPF program, but
+> this does not hold true for struct_ops. It would be better to display
+> map_id instead of prog_id for struct_ops links. However, some tools may
+> rely on the old assumption and need a prog_id.  The discussion on the
+> mailing list suggests that tools should parse JSON format. We will maintain
+> the existing JSON format by adding a map_id without removing prog_id. As
+> for plain text format, we will remove prog_id from the header line and add
+> a map_id for struct_ops links.
 > 
-> >  tools/include/uapi/linux/bpf.h | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index 1bb11a6ee667..77ce2159478d 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
-> >         BPF_TRACE_KPROBE_MULTI,
-> >         BPF_LSM_CGROUP,
-> >         BPF_STRUCT_OPS,
-> > +       BPF_TRACE_UPROBE_MULTI,
-> >         __MAX_BPF_ATTACH_TYPE
-> >  };
-> >
-> > @@ -1052,6 +1053,7 @@ enum bpf_link_type {
-> >         BPF_LINK_TYPE_KPROBE_MULTI = 8,
-> >         BPF_LINK_TYPE_STRUCT_OPS = 9,
-> >         BPF_LINK_TYPE_NETFILTER = 10,
-> > +       BPF_LINK_TYPE_UPROBE_MULTI = 11,
-> >
-> >         MAX_BPF_LINK_TYPE,
-> >  };
-> > @@ -1169,6 +1171,11 @@ enum bpf_link_type {
-> >   */
-> >  #define BPF_F_KPROBE_MULTI_RETURN      (1U << 0)
-> >
-> > +/* link_create.uprobe_multi.flags used in LINK_CREATE command for
-> > + * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-> > + */
-> > +#define BPF_F_UPROBE_MULTI_RETURN      (1U << 0)
-> > +
-> >  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-> >   * the following extensions:
-> >   *
-> > @@ -1568,6 +1575,14 @@ union bpf_attr {
-> >                                 __s32           priority;
-> >                                 __u32           flags;
-> >                         } netfilter;
-> > +                       struct {
-> > +                               __u32           flags;
-> > +                               __u32           cnt;
-> > +                               __aligned_u64   paths;
-> > +                               __aligned_u64   offsets;
-> > +                               __aligned_u64   ref_ctr_offsets;
-> > +                               __aligned_u64   cookies;
-> > +                       } uprobe_multi;
-> >                 };
-> >         } link_create;
-> >
-> > --
-> > 2.40.0
-> >
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v4] bpftool: Show map IDs along with struct_ops links.
+    https://git.kernel.org/bpf/bpf-next/c/74fc8801edc2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
