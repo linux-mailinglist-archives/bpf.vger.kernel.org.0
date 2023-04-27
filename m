@@ -2,149 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A53B6F0CF4
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AEB6F0CCC
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344165AbjD0USL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
+        id S229788AbjD0UEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344045AbjD0USK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:18:10 -0400
-X-Greylist: delayed 1121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Apr 2023 13:18:09 PDT
-Received: from ulthar.dreamlands.azazel.net (wan.azazel.net [81.187.77.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E13B3ABC;
-        Thu, 27 Apr 2023 13:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vVMK0DmoTVin8v+RKwMB1x+zt92VjiVf5R1eGxA+9Ks=; b=nH4/jvP+w5LbS4HpcOH1UgI3is
-        /iytLTAfnnvZ/T5RRDqRq4usCneIywBasHitLIVdl6kRp4o3KEhIWUUX2rGkPrBkFLNhYpKvKuTlr
-        56d7zW7RRQl4CKxLOY9fptKbCbgZuFr9hKJbNChLIzhummoEBhFS0b/4yO+ZCE9aBggtzghKEUFpt
-        cESJEjjsUroeFS1XjPgydfgFoOuHF7Td485RW2bt6P1Hsa6+GGlQNht1bB0GAaLEEgRzKU1jLI5JM
-        PE605vx6Z7S8aB6koS6eDY2OcahwIPdkW4gMmb+6+yX9A0emWv264cVcv0OSQ30lmADM0Af9jfKKk
-        ObL+NzsA==;
-Received: from azazel by ulthar.dreamlands.azazel.net with local (Exim 4.96)
-        (envelope-from <azazel@azazel.net>)
-        id 1ps7ks-0021kV-29;
-        Thu, 27 Apr 2023 20:58:14 +0100
-Date:   Thu, 27 Apr 2023 20:58:14 +0100
-From:   Jeremy Sowden <jeremy@azazel.net>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf] selftests/bpf: fix pkg-config call building sign-file
-Message-ID: <20230427195814.GE415348@azazel.net>
-References: <20230426215032.415792-1-jeremy@azazel.net>
- <e1bd99a4ea209277d657f7fb7ccdc26451113fc9.camel@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mRi/Sh4c9dkl2g8K"
-Content-Disposition: inline
-In-Reply-To: <e1bd99a4ea209277d657f7fb7ccdc26451113fc9.camel@huaweicloud.com>
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: azazel@azazel.net
-X-SA-Exim-Scanned: No (on ulthar.dreamlands.azazel.net); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229750AbjD0UEM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:04:12 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A280030FC
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:04:11 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-247c0ee87aaso5186548a91.0
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682625851; x=1685217851;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yiyQnJT8xAERESugkKaVw6YWxdx1ItFdxkpRxA9aCPQ=;
+        b=lNhTs1zsOhAbEzgSO/c9lXN1DfT63sv+ZR++XOuMMkwW78FklMqI1BUiTC2WfZyYTf
+         cZDw19M45OwR31fY8M/WLu+c8bN09WgVGeGoxR1zfZZ7nePmrIz/eJ0jrvQoO+15MXi6
+         1dQBDU5r5JFhOEVyx3n/S+Ens4eK/xR33oyh4LdJshOLV6CvwLtVtcx2k8e2c1nY7dtB
+         6/i+iga9d3ztU2wUsd1kBZGx9rFHTSpabMxHdPpxkh6Awyu7/Gf81X4YrXd73lcotI1S
+         Qjya/MJCaktLchOYZ2wjJAgaFh0XzYvdNUfskZi4c2y36wh/oJjhz8jdjNopRsi+nfav
+         HJ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682625851; x=1685217851;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yiyQnJT8xAERESugkKaVw6YWxdx1ItFdxkpRxA9aCPQ=;
+        b=eCaDDH24He6ZEvf1l49644poFc1gP92zzq0CQ5AtW43mGSt9q4bngQLeCujt2b5nOw
+         if6ersqXYvxpd5+6m03vmaJMJqnftaE9cnh/TAn8/vcMiPtNp55UDXzymZ9dK1Lmtfge
+         NRFdm2TMWuo1c5EfOaz8LOFJYvTyvTrL2eK1WYu/gdLMfCNQjsIBKzcJKCSG7IL4dJPm
+         G1nKYq51gDOeLeuxAIpzbcbT6f5onx5FPZoUskcTTnwF4GVB4Xh7XR0Cc2A16PonAxQK
+         aQhPC6pcTTr39DtLGjzTciHfRLUOha7dGFR1KWzTb2RvPp+fwH7xoqA9FYxTASw4ErjJ
+         8CRQ==
+X-Gm-Message-State: AC+VfDwTpqXWBGVT6ZIE1J1Ke4X3MNu5lkenwEy2QCSSahNM0JVdG+zX
+        K5wmRaCQw+3wn6TS+XDfcHZwfbzUIzlW4EZ+Nr/cow1dCPidn4U/pm72/mnUQvDzrV8EDZSi/gy
+        E0y2+oxgrBiDxcHABLTtF+BQFg/KXRuliGGDAL7jdEsYADxG9ow==
+X-Google-Smtp-Source: ACHHUZ4ok/gtVITncOOj+mITAf5IyEJ7eDwhB5PM2ySlI0plqLEr67VR8FKbcB534FKq+7VMx5H/UjE=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:7388:b0:247:3048:58ef with SMTP id
+ j8-20020a17090a738800b00247304858efmr810163pjg.6.1682625850978; Thu, 27 Apr
+ 2023 13:04:10 -0700 (PDT)
+Date:   Thu, 27 Apr 2023 13:04:05 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
+Message-ID: <20230427200409.1785263-1-sdf@google.com>
+Subject: [PATCH bpf-next v2 0/4] bpf: Don't EFAULT for {g,s}setsockopt with
+ wrong optlen
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+optval larger than PAGE_SIZE leads to EFAULT if the BPF program
+isn't careful enough. This is often overlooked and might break
+completely unrelated socket options. Instead of EFAULT,
+let's ignore BPF program buffer changes. See the first patch for
+more info.
 
---mRi/Sh4c9dkl2g8K
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In addition, clearly document this corner case and reset optlen
+in our selftests (in case somebody copy-pastes from them).
 
-On 2023-04-27, at 08:52:27 +0200, Roberto Sassu wrote:
-> On Wed, 2023-04-26 at 22:50 +0100, Jeremy Sowden wrote:
-> > When building sign-file, the call to get the CFLAGS for libcrypto is
-> > missing white-space between `pkg-config` and `--cflags`:
-> >=20
-> >   $(shell $(HOSTPKG_CONFIG)--cflags libcrypto 2> /dev/null)
-> >=20
-> > Removing the redirection of stderr, we see:
-> >=20
-> >   $ make -C tools/testing/selftests/bpf sign-file
-> >   make: Entering directory '[...]/tools/testing/selftests/bpf'
-> >   make: pkg-config--cflags: No such file or directory
-> >     SIGN-FILE sign-file
-> >   make: Leaving directory '[...]/tools/testing/selftests/bpf'
-> >=20
-> > Add the missing space.
-> >=20
-> > Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_sign=
-ature() kfunc")
-> > Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
->=20
-> Thanks.
->=20
-> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Roberto
+Stanislav Fomichev (4):
+  bpf: Don't EFAULT for {g,s}setsockopt with wrong optlen
+  selftests/bpf: Update EFAULT {g,s}etsockopt selftests
+  selftests/bpf: Correctly handle optlen > 4096
+  bpf: Document EFAULT changes for sockopt
 
-Thanks.  I was having e-mail problems yesterday when I sent the original
-message with the patch in it, and it didn't reach some of the
-recipients.  I'll send it again with your `Reviewed-by:` attached.
+ Documentation/bpf/prog_cgroup_sockopt.rst     | 57 ++++++++++++-
+ kernel/bpf/cgroup.c                           | 12 +++
+ .../selftests/bpf/prog_tests/sockopt.c        | 80 +++++++++++++++++--
+ .../progs/cgroup_getset_retval_getsockopt.c   | 12 +++
+ .../progs/cgroup_getset_retval_setsockopt.c   | 16 ++++
+ .../selftests/bpf/progs/sockopt_inherit.c     | 16 +++-
+ .../selftests/bpf/progs/sockopt_multi.c       | 24 +++++-
+ .../selftests/bpf/progs/sockopt_qos_to_cc.c   |  8 +-
+ .../testing/selftests/bpf/progs/sockopt_sk.c  | 25 ++++--
+ 9 files changed, 230 insertions(+), 20 deletions(-)
 
-J.
+-- 
+2.40.1.495.gc816e09b53d-goog
 
-> > ---
-> >  tools/testing/selftests/bpf/Makefile | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
-ests/bpf/Makefile
-> > index b677dcd0b77a..ad01c9e1ff12 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -197,7 +197,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read=
-_aux.c $(OUTPUT)/liburandom_r
-> > =20
-> >  $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
-> >  	$(call msg,SIGN-FILE,,$@)
-> > -	$(Q)$(CC) $(shell $(HOSTPKG_CONFIG)--cflags libcrypto 2> /dev/null) \
-> > +	$(Q)$(CC) $(shell $(HOSTPKG_CONFIG) --cflags libcrypto 2> /dev/null) \
-> >  		  $< -o $@ \
-> >  		  $(shell $(HOSTPKG_CONFIG) --libs libcrypto 2> /dev/null || echo -l=
-crypto)
-> > =20
-
---mRi/Sh4c9dkl2g8K
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmRK084ACgkQKYasCr3x
-BA3WMw//dtfaKXgeSzYYSiB5uUJ91AnWV5EhEUZhFmgrxl9zATqbS+UimZ2X3JiV
-uuHbQQixkxwB8FNUYmEVGQpIjuJonWnTFhorfWvVTzr4hDNTsycE/FyB9ROYUWBJ
-0+T3aMcm8tBS8hqasPncs33TgEolPlO902kyUaB5NCfZOKNWW88wUOA6EiAILN5L
-nEmOK8BwIt68gO55fAWm/zOObyG17YdYdmI6EBCdxW8UaVUCbO9K4DJDoPsy2e8u
-QauB6vpiGLJAFQEnGaKeecEnBRYJFEGMop/bLEnuThRR9Cc6W8cW2iTo2ltF4ljy
-CwwF6yO11Ua6cGF+0s/gvFnTfHwtOfuIRmQcSQEoaZyTWrE8M1bmK55WCxiaQb4B
-Cpeylu3XnCCRZzHUoxQutc9+4lt87EdgQLRHVv1SbGVMYgJiDdhNMu/ZxXZp4eDN
-VRFklTPVumtH1IUYGwjIfpIl8JCZAE+yOeLmMjE7PgrD3Ay+UB3FYE6irW8+Q/rp
-GG1AdIMlqkq9Tuj6hv+9ymtfBgZBaaS6aCoFqJaEHKVmJwHBRxOA7DpeVh+zkLBd
-Oh+fxnmvxm54Np/EjvyY/D2BvuIu2ZkhHACwozvIwydc51+9f86ksR3zKUWyHSlZ
-UKoV4IlblMs98QvNiw3I91fBPwLCUsMzjI7UyDUMgsVpzCrQTZE=
-=sPuM
------END PGP SIGNATURE-----
-
---mRi/Sh4c9dkl2g8K--
