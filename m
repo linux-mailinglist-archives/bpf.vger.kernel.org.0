@@ -2,72 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 686A06F050E
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 13:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967206F053C
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 13:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243706AbjD0LfX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 07:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
+        id S243606AbjD0L7D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 07:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243152AbjD0LfW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 07:35:22 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418064ECB
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 04:35:21 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-74de9ce136cso394443385a.1
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 04:35:21 -0700 (PDT)
+        with ESMTP id S243283AbjD0L7C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 07:59:02 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6FA4C3D;
+        Thu, 27 Apr 2023 04:59:00 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-959a626b622so797830466b.0;
+        Thu, 27 Apr 2023 04:59:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682595320; x=1685187320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QENmgqijtQ7Lze6rVY9lo5aD++tfVhipzceIpocc7WU=;
-        b=aegjBXupufAtvHDtpwCZYf9IWfkGYTgU0PQMWFI3n07wlULLXVzqQJ60f5N4vmHCeh
-         LAQKadbNBd3eWf164Jq/LLe+A9Bwpsp1G3a3eGOcI3UfTqsCqDXkpRfS6BLrS4Bs71HN
-         3vbK5ldfztsdW6mN60r0fzqHpWlC8L6dWXuhOppHWhX00W/eWR831Qsr+xErq6eUUfmg
-         qGly3ufaT0RIA2BE5frmB8xtXWou/BvQ87RehKUBdiPqkGiye/Gni+Cq1ojc4meAESJH
-         NL/s8vyeMplbZKyh7H8H979aDLCwXk0+JFx7wn+aN89lYG/ZxScHCSpWvah2zTvO+4tQ
-         aGSg==
+        d=gmail.com; s=20221208; t=1682596739; x=1685188739;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AE7Pspd28nFtHWfyIzA120GvJp4aroY+ZH6NEOLYSVY=;
+        b=fgKLrUtQzL7xid5SkT14yLFXtyHM4Krt/K+Vesqq6FddnrKpdE5lN4tQ9YDsDTkFr3
+         bHfJDJHTjHFfGsTr9C5XddTJyIs3JmngwkkCJHilsVQPJKkRdK06+zYr7YSUrfaLAh7Z
+         FzRTDZcBCuy7rmzM7XJ8G61tUIEWr/aiwDchxCqv6rQnLk0zjJ5mubKQUx7Z/zsq+iuo
+         lg7TsEiQbQSUqrx29E6BRsvePZvHTeEwoAS9QKlGxRvpXx/naySV8aPifxKfhXBDNt0N
+         aE3DPFNJyU+r0r4TTqTzfakJGrnbFJ75RB80NoJ1qKTp8ZqczciQRFZCDKP6oyMsH3dF
+         vcsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682595320; x=1685187320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QENmgqijtQ7Lze6rVY9lo5aD++tfVhipzceIpocc7WU=;
-        b=ao0jmJdPLGYOW+zb5AcZnek2UF/LtAaPPwp2wEygA/f2exqQN4UgXRWP/FBaPx9IAy
-         bSbeMLKgFsn30uiMbW1XHdOvmH5rMaDR0RK8kPguD+HXrdIXja3ob/PSLszDa3cSmDjD
-         R6adjl5K54LigqgtmrqoYmxHzCxew/gWvOcQ/owsxDWiY9dzya8Vaysd+JdtXhspIU5L
-         cfnrBvbS9HlsodgOwV8qAAH5Wi2gcupm1w8FTwNCK4sr8BGDNSW6GNgqM12kD3f5uXci
-         36JUiF2is8xl8O65EpsWCB4nqNZDaM/BvSA6gqn2nQ2aU/yrsrZonYRrPRsj1g+h80PD
-         l7xw==
-X-Gm-Message-State: AC+VfDxBWsGf5cZWE1xuDQn4nmR6b8cGvb4rA1hDAFocwHqWuGAufM17
-        EVEJ00/0AhUMZ5OZkMmOdjnZkiikO8N+lkXIaUA=
-X-Google-Smtp-Source: ACHHUZ4zY9gFpM6iuDJTJ61OjMKBhjgRyQyi4vQ1KgkMUvUSvR81KHA/eWb99m7s9HbACnaDTn9kK1B2DeIksVkR5SM=
-X-Received: by 2002:ad4:5cc4:0:b0:5c9:a0ce:df0c with SMTP id
- iu4-20020ad45cc4000000b005c9a0cedf0cmr1628507qvb.22.1682595320368; Thu, 27
- Apr 2023 04:35:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1682596739; x=1685188739;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AE7Pspd28nFtHWfyIzA120GvJp4aroY+ZH6NEOLYSVY=;
+        b=i9yIHrduY3WzqSL1zjqeD6MUrxIxSeij6qsR4FgrL5E9hivIK3V5YpAgC+uAwByrd1
+         AjVMx+uxBd4Wubku/gL89Rk+/YwSM09Vqb/O60S9o8DMpdxPB5NLqqdQQheuE1A3KHgj
+         7fUaTKgyAJ+5hEKi+jyfFKmincUSjnn46n8+xQkpB06zqG0ejjIJnt6SEgak/NKV0P5L
+         0UyJQsWDiL+7/FoRG8ecPOpeMsDxImAAU2y1oIs/94t2xCwo7BVfMcTjYrtzrZzg5wH2
+         4lKpex75tZdtUTaEO5WYxxtpbdqeEYJzXI0VLGEO3wK0/lFtGq8Z0NIOw7mz/L8PxJ0H
+         HUFQ==
+X-Gm-Message-State: AC+VfDxvXngGkBAbNr0MmD955tyDCKM1stRwFLHw1D/FQiDmbJtpjGAS
+        /MPR5lSD6yd4czpcpYsALzs=
+X-Google-Smtp-Source: ACHHUZ7lpvqWveupZjInIJ3m9ZqG439Xu8iO1z3t4DXYCmhoeZazsYr/aAslTH1pP9VgZXhTerGgUA==
+X-Received: by 2002:a17:907:968a:b0:939:e870:2b37 with SMTP id hd10-20020a170907968a00b00939e8702b37mr1610565ejc.70.1682596739003;
+        Thu, 27 Apr 2023 04:58:59 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
+        by smtp.gmail.com with ESMTPSA id e1-20020a17090681c100b0094f67ea6598sm9491285ejx.193.2023.04.27.04.58.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Apr 2023 04:58:58 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 27 Apr 2023 13:58:56 +0200
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH v7 00/11] tracing: Add fprobe events
+Message-ID: <ZEpjgKmDwg1GTCTR@krava>
+References: <168255826500.2565678.17719875734305974633.stgit@mhiramat.roam.corp.google.com>
 MIME-Version: 1.0
-References: <20230424161104.3737-1-laoar.shao@gmail.com> <20230424161104.3737-3-laoar.shao@gmail.com>
- <CAADnVQKr3bmG2FfydcbXjwx5gML7NYjPiDtW+B1D+hc7hmD3QA@mail.gmail.com>
-In-Reply-To: <CAADnVQKr3bmG2FfydcbXjwx5gML7NYjPiDtW+B1D+hc7hmD3QA@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 27 Apr 2023 19:34:44 +0800
-Message-ID: <CALOAHbCFAV1Tvko1HWhD9CYTqcY_ojP47ZxpWhyi=Sib8+5iWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] fork: Rename mm_init to task_mm_init
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <168255826500.2565678.17719875734305974633.stgit@mhiramat.roam.corp.google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -78,117 +76,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 5:13=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 24, 2023 at 9:12=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > The kernel will panic as follows when attaching fexit to mm_init,
-> >
-> > [   86.549700] ------------[ cut here ]------------
-> > [   86.549712] BUG: kernel NULL pointer dereference, address: 000000000=
-0000078
-> > [   86.549713] #PF: supervisor read access in kernel mode
-> > [   86.549715] #PF: error_code(0x0000) - not-present page
-> > [   86.549716] PGD 10308f067 P4D 10308f067 PUD 11754e067 PMD 0
-> > [   86.549719] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > [   86.549722] CPU: 9 PID: 9829 Comm: main_amd64 Kdump: loaded Not tain=
-ted 6.3.0-rc6+ #12
-> > [   86.549725] RIP: 0010:check_preempt_wakeup+0xd1/0x310
-> > [   86.549754] Call Trace:
-> > [   86.549755]  <TASK>
-> > [   86.549757]  check_preempt_curr+0x5e/0x70
-> > [   86.549761]  ttwu_do_activate+0xab/0x350
-> > [   86.549763]  try_to_wake_up+0x314/0x680
-> > [   86.549765]  wake_up_process+0x15/0x20
-> > [   86.549767]  insert_work+0xb2/0xd0
-> > [   86.549772]  __queue_work+0x20a/0x400
-> > [   86.549774]  queue_work_on+0x7b/0x90
-> > [   86.549778]  drm_fb_helper_sys_imageblit+0xd7/0xf0 [drm_kms_helper]
-> > [   86.549801]  drm_fbdev_fb_imageblit+0x5b/0xb0 [drm_kms_helper]
-> > [   86.549813]  soft_cursor+0x1cb/0x250
-> > [   86.549816]  bit_cursor+0x3ce/0x630
-> > [   86.549818]  fbcon_cursor+0x139/0x1c0
-> > [   86.549821]  ? __pfx_bit_cursor+0x10/0x10
-> > [   86.549822]  hide_cursor+0x31/0xd0
-> > [   86.549825]  vt_console_print+0x477/0x4e0
-> > [   86.549828]  console_flush_all+0x182/0x440
-> > [   86.549832]  console_unlock+0x58/0xf0
-> > [   86.549834]  vprintk_emit+0x1ae/0x200
-> > [   86.549837]  vprintk_default+0x1d/0x30
-> > [   86.549839]  vprintk+0x5c/0x90
-> > [   86.549841]  _printk+0x58/0x80
-> > [   86.549843]  __warn_printk+0x7e/0x1a0
-> > [   86.549845]  ? trace_preempt_off+0x1b/0x70
-> > [   86.549848]  ? trace_preempt_on+0x1b/0x70
-> > [   86.549849]  ? __percpu_counter_init+0x8e/0xb0
-> > [   86.549853]  refcount_warn_saturate+0x9f/0x150
-> > [   86.549855]  mm_init+0x379/0x390
-> > [   86.549859]  bpf_trampoline_6442453440_0+0x23/0x1000
-> > [   86.549862]  mm_init+0x5/0x390
-> > [   86.549865]  ? mm_alloc+0x4e/0x60
-> > [   86.549866]  alloc_bprm+0x8a/0x2e0
-> > [   86.549869]  do_execveat_common.isra.0+0x67/0x240
-> > [   86.549872]  __x64_sys_execve+0x37/0x50
-> > [   86.549874]  do_syscall_64+0x38/0x90
-> > [   86.549877]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> >
-> > The reason is that when we attach the btf id of the function mm_init we
-> > actually attach the mm_init defined in init/main.c rather than the
-> > function defined in kernel/fork.c. That can be proved by parsing
-> > /sys/kernel/btf/vmlinux:
-> >
-> > [2493] FUNC 'initcall_blacklist' type_id=3D2477 linkage=3Dstatic
-> > [2494] FUNC_PROTO '(anon)' ret_type_id=3D21 vlen=3D1
-> >         'buf' type_id=3D57
-> > [2495] FUNC 'early_randomize_kstack_offset' type_id=3D2494 linkage=3Dst=
-atic
-> > [2496] FUNC 'mm_init' type_id=3D118 linkage=3Dstatic
-> > [2497] FUNC 'trap_init' type_id=3D118 linkage=3Dstatic
-> > [2498] FUNC 'thread_stack_cache_init' type_id=3D118 linkage=3Dstatic
-> >
-> > From the above information we can find that the FUNCs above and below
-> > mm_init are all defined in init/main.c. So there's no doubt that the
-> > mm_init is also the function defined in init/main.c.
-> >
-> > So when a task calls mm_init and thus the bpf trampoline is triggered i=
-t
-> > will use the information of the mm_init defined in init/main.c. Then th=
-e
-> > panic will occur.
-> >
-> > It seems that there're issues in btf, for example it is unnecessary to
-> > generate btf for the functions annonated with __init. We need to improv=
-e
-> > btf. However we also need to change the function defined in
-> > kernel/fork.c to task_mm_init to better distinguish them. After it is
-> > renamed to task_mm_init, the /sys/kernel/btf/vmlinux will be:
-> >
-> > [13970] FUNC 'mm_alloc' type_id=3D13969 linkage=3Dstatic
-> > [13971] FUNC_PROTO '(anon)' ret_type_id=3D204 vlen=3D3
-> >         'mm' type_id=3D204
-> >         'p' type_id=3D197
-> >         'user_ns' type_id=3D452
-> > [13972] FUNC 'task_mm_init' type_id=3D13971 linkage=3Dstatic
-> > [13973] FUNC 'coredump_filter_setup' type_id=3D3804 linkage=3Dstatic
-> > [13974] FUNC_PROTO '(anon)' ret_type_id=3D197 vlen=3D2
-> >         'orig' type_id=3D197
-> >         'node' type_id=3D21
-> > [13975] FUNC 'dup_task_struct' type_id=3D13974 linkage=3Dstatic
-> >
-> > And then attaching task_mm_init won't panic. Improving the btf will be
-> > handled later.
->
-> We're not going to hack the kernel to workaround pahole issue.
-> Let's fix pahole instead.
-> cc-ing Alan for ideas.
+On Thu, Apr 27, 2023 at 10:17:45AM +0900, Masami Hiramatsu (Google) wrote:
+> Hi,
+> 
+> Here is the 7th version of improve fprobe and add a basic fprobe event
+> support for ftrace (tracefs) and perf. Here is the previous version.
+> 
+> https://lore.kernel.org/all/168234755610.2210510.12133559313738141202.stgit@mhiramat.roam.corp.google.com/
+> 
+> This version is rebased on the latest linux-trace/for-next, fixes
+> bpf_get_btf_vmlinux() return value check [6/11] and adds new BTF $retval
+> type support [9/11] (I forgot to implement this feature last time).
+> Also updates according to the BTF $retval type support.
+> 
+> You can also get this series from:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
+> 
+> With this fprobe events, we can continue to trace function entry/exit
+> even if the CONFIG_KPROBES_ON_FTRACE is not available. Since
+> CONFIG_KPROBES_ON_FTRACE requires the CONFIG_DYNAMIC_FTRACE_WITH_REGS,
+> it is not available if the architecture only supports
+> CONFIG_DYNAMIC_FTRACE_WITH_ARGS (e.g. arm64). And that means kprobe
+> events can not probe function entry/exit effectively on such architecture.
+> But this problem can be solved if the dynamic events supports fprobe events
+> because fprobe events doesn't use kprobe but ftrace via fprobe.
+> 
+> FPROBE EVENTS
+> =============
+> 
+> Fprobe events allows user to add new events on the entry and exit of kernel
+> functions (which can be ftraced). Unlike kprobe events, the fprobe events
+> can only probe the function entry and exit, and it can only trace the
+> function args, return value, and stacks. (no registers)
+> For probing function body, users can continue to use the kprobe events.
+> 
+> The tracepoint probe events (tprobe events) also allows user to add new
+> events dynamically on the tracepoint. Most of the tracepoint already has
+> trace-events, so this feature is useful if you only want to know a
+> specific parameter, or trace the tracepoints which has no trace-events
+> (e.g. sched_*_tp tracepoints only exposes the tracepoints.)
+> 
+> The fprobe events syntax is;
+> 
+>  f[:[GRP/][EVENT]] FUNCTION [FETCHARGS]
+>  f[MAXACTIVE][:[GRP/][EVENT]] FUNCTION%return [FETCHARGS]
+> 
+> And tracepoint probe events syntax is;
+> 
+>  t[:[GRP/][EVENT]] TRACEPOINT [FETCHARGS]
+> 
+> This series includes BTF argument support for fprobe/tracepoint events,
+> and kprobe events. This allows us to fetch a specific function parameter
+> by name, and all parameters by '$$args'.
 
-Any comment on it, Alan ?
-I think we can just skip generating BTF for the functions in
-__section(".init.text"),  as these functions will be freed after
-kernel init. There won't be use cases for them.
+are you planning to fetch and display more complicated types in future?
+like strings or dereferencing struct field from argument pointer
 
---=20
-Regards
-Yafang
+> Note that enabling this feature, you need to enable CONFIG_BPF_SYSCALL and
+> confirm that your arch supports CONFIG_HAVE_FUNCTION_ARG_ACCESS_API.
+> 
+> E.g.
+> 
+>  # echo 't kfree ptr' >> dynamic_events
+>  # echo 'f kfree object' >> dynamic_events
+>  # cat dynamic_events 
+> t:tracepoints/kfree kfree ptr=ptr
+> f:fprobes/kfree__entry kfree object=object
+>  # echo 1 > events/fprobes/enable
+>  # echo 1 > events/tracepoints/enable
+>  # echo > trace
+>  # head -n 20 trace | tail
+> #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> #              | |         |   |||||     |         |
+>             tail-84      [000] .....  1324.561958: kfree__entry: (kfree+0x4/0x140) object=0xffff888006383c00
+>             tail-84      [000] ...1.  1324.561961: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff888006383c00
+>             tail-84      [000] .....  1324.561988: kfree__entry: (kfree+0x4/0x140) object=0x0
+>             tail-84      [000] ...1.  1324.561988: kfree: (__probestub_kfree+0x4/0x10) ptr=0x0
+>             tail-84      [000] .....  1324.561989: kfree__entry: (kfree+0x4/0x140) object=0xffff88800671e600
+>             tail-84      [000] ...1.  1324.561989: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff88800671e600
+>             tail-84      [000] .....  1324.562368: kfree__entry: (kfree+0x4/0x140) object=0xffff8880065e0580
+>             tail-84      [000] ...1.  1324.562369: kfree: (__probestub_kfree+0x4/0x10) ptr=0xffff8880065e0580
+
+I checked with perf and record/stat/script seem to work fine with this
+
+  # ./perf record -e 'fprobes:myprobe'
+  ^C[ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.162 MB perf.data (1 samples) ]
+
+  # ./perf script
+    systemd-oomd   479 [001] 14550.722079: fprobes:myprobe: (ffffffff81505be0) filename=0x557b033662b0
+
+perf trace seems to be off with __probe_ip for some reason:
+
+  # ./perf trace -e 'fprobes:myprobe'
+     0.000 systemd-oomd/479 fprobes:myprobe(__probe_ip: -2125440032, filename: 93986839069680)
+     1.189 systemd-oomd/479 fprobes:myprobe(__probe_ip: -2125440032, filename: 93986839070144)
+
+but it's probably perf issue
+
+thanks,
+jirka
