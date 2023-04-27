@@ -2,448 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA8D6F0D81
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4A66F0D8B
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 23:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344063AbjD0UyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
+        id S1344027AbjD0VDh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 17:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344137AbjD0Ux7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:53:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95F31721
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682628793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ShlQl7AZJnro9dI3S/M/PUpToCiqlwYhj0slYc/8Rg=;
-        b=Q0VmuHOj2cyh/RcE/SFL7DvTyYu+5qqQ6X5j1HYyIoOZWQVYoaYwa9oV881cy20r8mrNpQ
-        DPfEE7Y8uHF4Mm4t4Cc1tiMHDgHNCoA5O9wmwThybL6luwTra/LuZmJiLbcoXp3Gj5Jf1A
-        WtxNpEdGXFf0X70tviFL2fcdh74OsEk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-qvDxLe_UNz-TBNGlCyKbRg-1; Thu, 27 Apr 2023 16:53:11 -0400
-X-MC-Unique: qvDxLe_UNz-TBNGlCyKbRg-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-505b696f254so8895221a12.3
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:53:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682628790; x=1685220790;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ShlQl7AZJnro9dI3S/M/PUpToCiqlwYhj0slYc/8Rg=;
-        b=ZdPw2QlSc5zkRdPLeV/5VD4eqkYMwRHKq0nVmHxwXMRcVas9zVyL1hsYyJiTNkx8ZU
-         F2xE0ATefaQU/If6+JOr3wrpaOJOeJp2y96wvTfHEBd1O4kN+Ofg5WKWjLyDU1v8yBXO
-         ahSqKpSgJ8R5zE4XvxI5pZehvipHHEw/6E14WProXeNuhaaVgwN20HtFX0lZTiNn0mEg
-         g4DHU99Wwqi7qahOgOX/L5l4vcPGd3DsOMyCtXCIQc013mi7t9ZPPDFnyLhdZMI1Fhs6
-         hQv0J387xM00zyVky6VL/UQdh9s1s99fqUp9u5uw8ReCooo5F1LbcU8WaM3f1s+trFgB
-         mccw==
-X-Gm-Message-State: AC+VfDywKo9plnKSrY3ydopZkiJrN8EuYCmjC8lq58pxmsX83JA9H0Aq
-        J6YN+gbzsssHdcYFMMSp/JRlSfAmJCKDa1RCIhbaYZKuUDZL8TEOzt1CGaJPVX6qtAb+xqL7Ven
-        VlJByl3xHqq5J
-X-Received: by 2002:a05:6402:2d5:b0:50a:276f:a3c9 with SMTP id b21-20020a05640202d500b0050a276fa3c9mr858574edx.30.1682628790485;
-        Thu, 27 Apr 2023 13:53:10 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7b91GlpreBUh9qhwokVg+4QQYghXryPd+3GaTjTgPLfi00ShI8TAbf5hziBjZENoy2lIjgfg==
-X-Received: by 2002:a05:6402:2d5:b0:50a:276f:a3c9 with SMTP id b21-20020a05640202d500b0050a276fa3c9mr858544edx.30.1682628789926;
-        Thu, 27 Apr 2023 13:53:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g15-20020aa7c58f000000b0050841de16e9sm8192617edq.64.2023.04.27.13.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Apr 2023 13:53:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D1373ADC8C2; Thu, 27 Apr 2023 22:53:08 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, lorenzo@kernel.org,
-        linyunsheng@huawei.com, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V2 1/2] page_pool: Remove workqueue in
- new shutdown scheme
-In-Reply-To: <168262351129.2036355.1136491155595493268.stgit@firesoul>
-References: <168262348084.2036355.16294550378793036683.stgit@firesoul>
- <168262351129.2036355.1136491155595493268.stgit@firesoul>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 27 Apr 2023 22:53:08 +0200
-Message-ID: <871qk582tn.fsf@toke.dk>
+        with ESMTP id S230028AbjD0VDf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 17:03:35 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF9A1FF3
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 14:03:34 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 33RIPpbN008023;
+        Thu, 27 Apr 2023 14:03:19 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=EJ9MCDWgMSymFiQrcXyG2Sli71T8eDUqhdfvfYsKqj8=;
+ b=h7KlSgk1w2bClvyO7v1Cw3UNqz2xKJJ/1uksVYmG6XgDxdq8kYkhubGE2RDgED3bE9s2
+ QQ4WUarAl+k950l7KjIrM5mqnUW6No2kxoKatN4F+CUSPjNfsX3V0E1DokhVxpkPzUCP
+ jww7vFH6KBS6bMCcMZ0lX91A70ISh5KQxizGovwawfMR8D2w7cx7MTgThOchJ50P8Xzm
+ 3mbFIkvwtSYm3UKr5O1U1JJONoW8O8qfe6m+6mcLsqmfECNRESZwl75mto0u5MV06WWh
+ 46pcGaHT9j70ZWbsQF+6ZiZh3wg/o+SEW6dz6qqVtvs50v/pJRljiM++8r/a/8ZJkojz 4w== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2043.outbound.protection.outlook.com [104.47.73.43])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3q7utb2mg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Apr 2023 14:03:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ssc/qT3fb53X+31Hr1ilbhfWaP/90gKkvMEgNritY+XEKtXRf9L3UHtw//+K2fWGlyCt/hPaoXSrfQQwCcJhTAStmt1SlP7KGK904D5GPuYdnVrsONEfimZVXZtXRDBE7JRFrTo/KqzH4CNENtlh0NpvzugE/ZHt4Tck0PNHCmjnwsltOlq3GZoSgVkwWmOyGAtXxPNXw1gaUYih5/ER4zpfFXIgGVxSRp42ouGdDbw8jaA+pLyi9N6lj5gjXISP+aPcvo6oOYe9U0Jgk9nTGhlar5QQuubxOHjZSNkXJ3RGDmd4IZIfCnkxCK657G4AYmTXLN1g54oOiiE9ZB3DBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n1USl9XnctX2TJABx/H+050af1RSAHjNe6loNbOixyI=;
+ b=E6J4gKiuGWD2KTwwWc2CMsPB/0HkN8X+kBfKO10kSjtbXvQMIkrtbmqm9+XOaSLS//onk1KKp00bN1A7NXQdS7DIPf0AK7ZaLbFCz9+Iph/ssl4WcrJW0Pzo2xvIMeJDro6wgSytg+vmt/LeFhAEoMTDTFolME/5YBrdpougQlDTdDXqs0YaVfddolQNCFVwrYnU/sGQ/neMqlrDsDW76o1vetsB2CUaY5EeUE5ec7TS2Rwv6VbLa/5Y9bVLWWynM7SLjiU6ozu94HYstk7c2aaLrQRREQXFr8bZPm+ZdHKBgNHZ6UntZdGIPFjLdf0HE+ePAnBmDR4NDbaciN+nqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DS0PR15MB6093.namprd15.prod.outlook.com (2603:10b6:8:12c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.20; Thu, 27 Apr
+ 2023 21:03:17 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6340.022; Thu, 27 Apr 2023
+ 21:03:17 +0000
+Message-ID: <47b33bed-40ed-a051-e66b-178f1bfb95ac@meta.com>
+Date:   Thu, 27 Apr 2023 14:03:14 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix selftest
+ test_global_funcs/global_func1 failure with latest clang
+Content-Language: en-US
+To:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20230425174744.1758515-1-yhs@fb.com>
+ <e6b0a452-3f5e-2eea-51cb-484b342361c0@iogearbox.net>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <e6b0a452-3f5e-2eea-51cb-484b342361c0@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: SJ0PR05CA0038.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS0PR15MB6093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d155238-1461-4e9d-ac06-08db4762d2ad
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KysTpWbtqUTjfjv4dOPb19mBsCepouRZ6z4Q6e4VfVMDTxSLJJi1tGeMD4EYRvWyfd7pDt3Qu7fp6OafejDdfimLObg/EOCz6Sc4s3xpu0OpTgPA7fMXIuRFiM7rUv7YNTHEnFvLsvaVB+Ena7wFGyWLDGOPutO61/yYOTi7cNwL24x2lDwRCiQ7a1oTEfH0SMcewj2wFKkTczxuSHSOMXjYTFxHtQMN8LISfzVv3+UVdafHfFI1pqQcFQMeBmTSv11CWWVBxE5dkMw/BB7ckVE/8gDxm+RglTeQavTkqU2gAGaz7rQLZwAcjXU+uxp1uh3nFe9oMrgPBiUk18FzhgpYcFh/qdAxilG5Er+DZb7zLjAuXf+gbgjPQmvBaVPbBtwpxIjcFITOjb7OWIsl4gHI0IJUj29hKIphSIFrBVuNmGXiSPtzm6uP8qDQD5XfxwOxWASt0Pyef+5EoxUcdBO/coy3JrQt7CKZGhYB/FAYdIhNqXdbtcrAZROOCjdkbIchJnWTBxQqoSyfSRg8w2XgmD51sW3KmoPytC+EnFmKDl5pArEqbPR1lxKSBPFFNd7gzY+37t7a9sVMJlOJIYUQbjJjVJCwvSUdbPNm8NSPyT/HtkQLtWzSd4/X1ZTgX2kh4ehho3WkvrEsSVXLkQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199021)(66476007)(83380400001)(110136005)(6486002)(2616005)(478600001)(186003)(6666004)(6506007)(966005)(54906003)(6512007)(53546011)(31696002)(5660300002)(8676002)(36756003)(41300700001)(2906002)(66946007)(38100700002)(66556008)(4326008)(316002)(8936002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cDdVLzVlRlJlUlhvZTQ0M1pGRElmeU5Rd2wzUWtONENOSmo1VjdhM29BRlZZ?=
+ =?utf-8?B?TlJGR2R3cWVsMGtQd3hRTXVGYkFJeWRwUENyNFRWTG1CZktlL1VLbEM5ekZo?=
+ =?utf-8?B?eTVuV3ZiWTZVdEI3M2NWM1dYd3lYbnZSTkVNamlmdzBielZSQjNEUlZiR09W?=
+ =?utf-8?B?V2hUSUdEZk1zRyt0SmVwZ3c1Z1pSdHNwd1c5QzdvLzg0VUptV2RHRHJDY1N2?=
+ =?utf-8?B?TzhWZ2pOV3EvOW1HV1lnWGkvZVRXMG05dEpNSm1xaFpVdHlqN21ITjFHWlB1?=
+ =?utf-8?B?Tm1TRzNQZUpXd0E1Z0IvNW5nd1pYMjN3Um1ZOHRiTC81Ris5dDBtUWVxR1hX?=
+ =?utf-8?B?SGwwa3h4K1Vxc3k5TjY3NEpVQkIzaFI1bDBUbkJ2cDhvaUZGbW9kcFFTcDRL?=
+ =?utf-8?B?QXJPMFhpYUN2U2hIakZpYVg1Mlp6MllFR2ljNDcwY1NaK2llZVRyU240YTRU?=
+ =?utf-8?B?K1E4WTdPZGdaMzhKZzVMbjlyMGFvVXNZZnFlaHVUdzhVS0pqNmYwVEZRYjRl?=
+ =?utf-8?B?VVNrRHF5RE1RUEZubWFDRlpHek81OWRWR3FWTEtPNy92RkFFcDgrNGhCN3dS?=
+ =?utf-8?B?dHVSN0RoblNmZVQrMTZ3UFBpRVF0YlVndDVsZTM5MGltZEJmbktzRzZFaHBo?=
+ =?utf-8?B?em9QK25aWkR4bHNMODE2ckFBT3NzaTJROTAyTVl1TUltdXQ1QVkrcVA1SDZS?=
+ =?utf-8?B?a21XUE5QOFJOOFB6VnhlUmlmNXZXMmhWN3p4cm56NXduVW9CTXRBRmRyNGhw?=
+ =?utf-8?B?ZFlDMitTYlhBb2QvZ1VjKzJSMWtNSTMzS0JIazFENFZ2V1lBMWRGMjlxdDRN?=
+ =?utf-8?B?ZW9qK1Q3SWNsUEJNNUpDaWlPK2drT3o5N0Z4U1BEVXRHWHNEd29aUFRrWkNz?=
+ =?utf-8?B?enhNTHlERExVdGtlVlBvcnVHOXBHekJHeGthdENZZ1hyR3l5OWFlRGcrUDI1?=
+ =?utf-8?B?K3VEeDExcWhWNWR0VHFoUXdpcHk1TUFtWEFhcXArVUZxMGZHY1oxVFZwOExV?=
+ =?utf-8?B?YVRiUExHd0RNaGRTVUJKSG50RlJUUGl0WGJmK2Z2ei9tbzRFTURsRUpIZkdS?=
+ =?utf-8?B?VmJyN0svY0lNdnYwdEY2dHlrTDdFSi9xZGRRWHB3OHhYNENkWitwVytkTFFX?=
+ =?utf-8?B?K1YyMTJYb2s0NS93Mm5MRk9LY2todWRkNU43VTJYbmkrZjV2aEhYTFNoeXBo?=
+ =?utf-8?B?TmRHSFNBZkRLbW4vaWdVMEZPM0V6anlIM3VtYWNsMDRUUWdOZXhDenVKVWFO?=
+ =?utf-8?B?N05vQ0k1YW0xczdIckhDTDdGVFh5VENSVGRTZWx0SkhOaW9VUTNpUU41SjN6?=
+ =?utf-8?B?UGxQWG9UdmI1NkQ5VUpNNlVma3c1MUI1dnNIZXhEcHNhWkxkUU90QWZtQytF?=
+ =?utf-8?B?bWRqV2F3dVZiSVYwS3gvelpaaUI2U3dhVEZlcGtOcG9hNmpHcVF4LzBhcWhP?=
+ =?utf-8?B?WE51MHFKNGxHTGlPa29QNG8wcnpWa2hnMmtjZzRSZEdwcSsyYytma0k3UC9V?=
+ =?utf-8?B?NmxwTEZLSnBkSEp2OURiWHFHYVFpSEEzU2MrTzF4ZFEwRVpnUjRDenZHb0Nr?=
+ =?utf-8?B?RGx0WGw5Z3VtTHRKQXJEN0wxSVBpcVRiK2NTelNNbEl4UzBYZmd2emtXM0V5?=
+ =?utf-8?B?aGFIdHFTaDc5N3hCaHJ6Y3dKMXVVbnFNM2pSdlRSc25CRVpkcTc3VHBuZVBw?=
+ =?utf-8?B?WjZCVmtkdXJMY1ExeWtac0JTdll6eEVDV2VrdmFNS2hVazNQZWVaRTZMNVEz?=
+ =?utf-8?B?Tllib1R2SjVlRit6dW91TFhJNlNlWHA0YVVWVjZ1K3RNaW1TOVVyL09tOWVC?=
+ =?utf-8?B?bGhWZmhmZ01GMmpxWWdoYnVMR0V2SVFZQVUvNStjM3BqMjBndWJ1dkUrT1V2?=
+ =?utf-8?B?dmlzc3h0SGpNeFltQTRBNStsajFteE83M21lR2lEbnd6aXgvOEd4OTg3cUJG?=
+ =?utf-8?B?UzVHbTFMS3NYREZUVFRKUWRPN053WmFVNkY5QnRvKzZJREhqYXFVSFhIUGg1?=
+ =?utf-8?B?NGUyN2hYUmF3bGtQZ1F3VnRqaGM0aXZ2NjJpT055a1dnOFI3eWkyRC9MS0Jr?=
+ =?utf-8?B?blQrQlU5SmxjNXI2SWxzNWJpaXRZVW1qaC9qKzU2VzJ4bWZzdnl2aUcwZjdW?=
+ =?utf-8?B?RGxVbVZnNTl5a0Rhemd5RG5BZFI1QWdoMG1UUTNTT2pBMmNjMklqUXc4Yjll?=
+ =?utf-8?B?dXc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d155238-1461-4e9d-ac06-08db4762d2ad
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2023 21:03:17.1535
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eXqfH++xrxVGVWcNllJ1mhmB1m1+8MewRHpLh7WzjblVScBQrqt+xcxDvNmFMmy+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR15MB6093
+X-Proofpoint-GUID: fkMJTY6UcwtFrnQUNumT_SB0Fbcx_Ee1
+X-Proofpoint-ORIG-GUID: fkMJTY6UcwtFrnQUNumT_SB0Fbcx_Ee1
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-27_09,2023-04-27_01,2023-02-09_01
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer <brouer@redhat.com> writes:
-
-> This removes the workqueue scheme that periodically tests when
-> inflight reach zero such that page_pool memory can be freed.
->
-> This change adds code to fast-path free checking for a shutdown flags
-> bit after returning PP pages.
-
-I think the general approach is workable, but spotted a few issues with
-the details, see below.
-
-> Performance is very important for PP, as the fast path is used for
-> XDP_DROP use-cases where NIC drivers recycle PP pages directly into PP
-> alloc cache.
->
-> The goal were that this code change should have zero impact on this
-> fast-path. The slight code reorg of likely() are deliberate. Micro
-> benchmarking done via kernel module[1] on x86_64, shows this code
-> change only cost a single instruction extra (approx 0.3 nanosec on CPU
-> E5-1650 @3.60GHz).
->
-> It is possible to make this code zero impact via static_key, but that
-> change is not considered worth the complexity.
->
-> [1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
->
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  include/net/page_pool.h |    9 ++--
->  net/core/page_pool.c    |  100 +++++++++++++++++++++++++++++------------------
->  2 files changed, 66 insertions(+), 43 deletions(-)
->
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index c8ec2f34722b..a71c0f2695b0 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -50,6 +50,9 @@
->  				 PP_FLAG_DMA_SYNC_DEV |\
->  				 PP_FLAG_PAGE_FRAG)
->  
-> +/* Internal flag: PP in shutdown phase, waiting for inflight pages */
-> +#define PP_FLAG_SHUTDOWN	BIT(8)
-> +
->  /*
->   * Fast allocation side cache array/stack
->   *
-> @@ -151,11 +154,6 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, void *stats)
->  struct page_pool {
->  	struct page_pool_params p;
->  
-> -	struct delayed_work release_dw;
-> -	void (*disconnect)(void *);
-> -	unsigned long defer_start;
-> -	unsigned long defer_warn;
-> -
->  	u32 pages_state_hold_cnt;
->  	unsigned int frag_offset;
->  	struct page *frag_page;
-> @@ -165,6 +163,7 @@ struct page_pool {
->  	/* these stats are incremented while in softirq context */
->  	struct page_pool_alloc_stats alloc_stats;
->  #endif
-> +	void (*disconnect)(void *);
->  	u32 xdp_mem_id;
->  
->  	/*
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index e212e9d7edcb..b8359d84e30f 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -23,9 +23,6 @@
->  
->  #include <trace/events/page_pool.h>
->  
-> -#define DEFER_TIME (msecs_to_jiffies(1000))
-> -#define DEFER_WARN_INTERVAL (60 * HZ)
-> -
->  #define BIAS_MAX	LONG_MAX
->  
->  #ifdef CONFIG_PAGE_POOL_STATS
-> @@ -380,6 +377,10 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
->  	struct page *page;
->  	int i, nr_pages;
->  
-> +	/* API usage BUG: PP in shutdown phase, cannot alloc new pages */
-> +	if (WARN_ON(pool->p.flags & PP_FLAG_SHUTDOWN))
-> +		return NULL;
-> +
->  	/* Don't support bulk alloc for high-order pages */
->  	if (unlikely(pp_order))
->  		return __page_pool_alloc_page_order(pool, gfp);
-> @@ -445,15 +446,20 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
->  }
->  EXPORT_SYMBOL(page_pool_alloc_pages);
->  
-> +/* Avoid inlining code to avoid speculative fetching cacheline */
-> +noinline u32 pp_read_hold_cnt(struct page_pool *pool)
-> +{
-> +	return READ_ONCE(pool->pages_state_hold_cnt);
-> +}
-> +
->  /* Calculate distance between two u32 values, valid if distance is below 2^(31)
->   *  https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
->   */
->  #define _distance(a, b)	(s32)((a) - (b))
->  
-> -static s32 page_pool_inflight(struct page_pool *pool)
-> +static s32 __page_pool_inflight(struct page_pool *pool,
-> +				u32 hold_cnt, u32 release_cnt)
->  {
-> -	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
-> -	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
->  	s32 inflight;
->  
->  	inflight = _distance(hold_cnt, release_cnt);
-> @@ -464,6 +470,16 @@ static s32 page_pool_inflight(struct page_pool *pool)
->  	return inflight;
->  }
->  
-> +static s32 page_pool_inflight(struct page_pool *pool)
-> +{
-> +	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
-> +	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
-> +	return __page_pool_inflight(pool, hold_cnt, release_cnt);
-> +}
-> +
-> +static int page_pool_free_attempt(struct page_pool *pool,
-> +				  u32 hold_cnt, u32 release_cnt);
-> +
->  /* Disconnects a page (from a page_pool).  API users can have a need
->   * to disconnect a page (from a page_pool), to allow it to be used as
->   * a regular page (that will eventually be returned to the normal
-> @@ -471,8 +487,10 @@ static s32 page_pool_inflight(struct page_pool *pool)
->   */
->  void page_pool_release_page(struct page_pool *pool, struct page *page)
->  {
-> +	unsigned int flags = READ_ONCE(pool->p.flags);
->  	dma_addr_t dma;
-> -	int count;
-> +	u32 release_cnt;
-> +	u32 hold_cnt;
->  
->  	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
->  		/* Always account for inflight pages, even if we didn't
-> @@ -490,11 +508,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
->  skip_dma_unmap:
->  	page_pool_clear_pp_info(page);
->  
-> -	/* This may be the last page returned, releasing the pool, so
-> -	 * it is not safe to reference pool afterwards.
-> -	 */
-> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
-> -	trace_page_pool_state_release(pool, page, count);
-> +	if (flags & PP_FLAG_SHUTDOWN)
-> +		hold_cnt = pp_read_hold_cnt(pool);
-> +
-> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
-> +	trace_page_pool_state_release(pool, page, release_cnt);
-> +
-> +	/* In shutdown phase, last page will free pool instance */
-> +	if (flags & PP_FLAG_SHUTDOWN)
-> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
-
-Since the assumption is that no new pages will be allocated once the
-PP_FLAG_SHUTDOWN is set (i.e., hold_count can not increase in the case),
-I don't think it matters what order you read the hold and release counts
-in? So you could simplify the above to just:
-
-> +	if (flags & PP_FLAG_SHUTDOWN)
-> +		page_pool_free_attempt(pool, pp_read_hold_cnt(pool), release_cnt);
-
-and drop the second check of the flag further up?
-
-You could probably even lose the hold_cnt argument entirely from
-page_pool_free_attempt() and just have it call pp_read_hold_cnt() directly?
-
->  }
->  EXPORT_SYMBOL(page_pool_release_page);
->  
-> @@ -535,7 +557,7 @@ static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
->  static bool page_pool_recycle_in_cache(struct page *page,
->  				       struct page_pool *pool)
->  {
-> -	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE)) {
-> +	if (pool->alloc.count == PP_ALLOC_CACHE_SIZE) {
->  		recycle_stat_inc(pool, cache_full);
->  		return false;
->  	}
-> @@ -546,6 +568,8 @@ static bool page_pool_recycle_in_cache(struct page *page,
->  	return true;
->  }
->  
-> +static void page_pool_empty_ring(struct page_pool *pool);
-> +
->  /* If the page refcnt == 1, this will try to recycle the page.
->   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
->   * the configured size min(dma_sync_size, pool->max_len).
-> @@ -572,7 +596,8 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  			page_pool_dma_sync_for_device(pool, page,
->  						      dma_sync_size);
->  
-> -		if (allow_direct && in_softirq() &&
-> +		/* During PP shutdown, no direct recycle must occur */
-> +		if (likely(allow_direct && in_softirq()) &&
->  		    page_pool_recycle_in_cache(page, pool))
->  			return NULL;
->  
-> @@ -609,6 +634,8 @@ void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
->  		recycle_stat_inc(pool, ring_full);
->  		page_pool_return_page(pool, page);
->  	}
-> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
-> +		page_pool_empty_ring(pool);
->  }
->  EXPORT_SYMBOL(page_pool_put_defragged_page);
->  
-> @@ -648,13 +675,17 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
->  
->  	/* Hopefully all pages was return into ptr_ring */
->  	if (likely(i == bulk_len))
-> -		return;
-> +		goto out;
->  
->  	/* ptr_ring cache full, free remaining pages outside producer lock
->  	 * since put_page() with refcnt == 1 can be an expensive operation
->  	 */
->  	for (; i < bulk_len; i++)
->  		page_pool_return_page(pool, data[i]);
-> +
-> +out:
-> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
-> +		page_pool_empty_ring(pool);
->  }
->  EXPORT_SYMBOL(page_pool_put_page_bulk);
->  
-> @@ -737,6 +768,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
->  }
->  EXPORT_SYMBOL(page_pool_alloc_frag);
->  
-> +noinline
->  static void page_pool_empty_ring(struct page_pool *pool)
->  {
->  	struct page *page;
-> @@ -796,39 +828,29 @@ static void page_pool_scrub(struct page_pool *pool)
->  	page_pool_empty_ring(pool);
->  }
-
-So this is not in the diff context, but page_pool_empty_ring() does
-this:
-
-static void page_pool_empty_ring(struct page_pool *pool)
-{
-	struct page *page;
-
-	/* Empty recycle ring */
-	while ((page = ptr_ring_consume_bh(&pool->ring))) {
-		/* Verify the refcnt invariant of cached pages */
-		if (!(page_ref_count(page) == 1))
-			pr_crit("%s() page_pool refcnt %d violation\n",
-				__func__, page_ref_count(page));
-
-		page_pool_return_page(pool, page);
-	}
-}
-
-...and with this patch, that page_pool_return_page() call will now free
-the pool memory entirely when the last page is returned. When it does
-this, the condition in the while loop will still execute afterwards; it
-would return false, but if the pool was freed, it's now referencing
-freed memory when trying to read from pool->ring.
-
-So I think page_pool_empty_ring needs to either pull out all the pages
-in the ring to an on-stack buffer before calling page_pool_return_page()
-on them, or there needs to be some other way to break the loop early.
-
-There are a couple of other places where page_pool_return_page() is
-called in a loop where the loop variable lives inside struct page_pool,
-so we need to be absolutely sure they will never be called in the
-shutdown stage, or they'll have to be fixed as well.
-
->  
-> -static int page_pool_release(struct page_pool *pool)
-> +noinline
-> +static int page_pool_free_attempt(struct page_pool *pool,
-> +				  u32 hold_cnt, u32 release_cnt)
->  {
->  	int inflight;
->  
-> -	page_pool_scrub(pool);
-> -	inflight = page_pool_inflight(pool);
-> +	inflight = __page_pool_inflight(pool, hold_cnt, release_cnt);
->  	if (!inflight)
->  		page_pool_free(pool);
->  
->  	return inflight;
->  }
->  
-> -static void page_pool_release_retry(struct work_struct *wq)
-> +static int page_pool_release(struct page_pool *pool)
->  {
-> -	struct delayed_work *dwq = to_delayed_work(wq);
-> -	struct page_pool *pool = container_of(dwq, typeof(*pool), release_dw);
->  	int inflight;
->  
-> -	inflight = page_pool_release(pool);
-> +	page_pool_scrub(pool);
-> +	inflight = page_pool_inflight(pool);
->  	if (!inflight)
-> -		return;
-> -
-> -	/* Periodic warning */
-> -	if (time_after_eq(jiffies, pool->defer_warn)) {
-> -		int sec = (s32)((u32)jiffies - (u32)pool->defer_start) / HZ;
-> -
-> -		pr_warn("%s() stalled pool shutdown %d inflight %d sec\n",
-> -			__func__, inflight, sec);
-> -		pool->defer_warn = jiffies + DEFER_WARN_INTERVAL;
-> -	}
-> +		page_pool_free(pool);
->  
-> -	/* Still not ready to be disconnected, retry later */
-> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
-> +	return inflight;
->  }
->  
->  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
-> @@ -868,11 +890,13 @@ void page_pool_destroy(struct page_pool *pool)
->  	if (!page_pool_release(pool))
->  		return;
->  
-> -	pool->defer_start = jiffies;
-> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
-> +	/* PP have pages inflight, thus cannot immediately release memory.
-> +	 * Enter into shutdown phase.
-> +	 */
-> +	pool->p.flags |= PP_FLAG_SHUTDOWN;
-
-I think there's another race here: once the flag is set in this line
-(does this need a memory barrier, BTW?), another CPU can return the last
-outstanding page, read the flag and call page_pool_empty_ring(). If this
-happens before the call to page_pool_empty_ring() below, you'll get a
-use-after-free.
-
-To avoid this, we could artificially bump the pool->hold_cnt *before*
-setting the flag above; that way we know that the page_pool_empty_ring()
-won't trigger a release, because inflight pages will never go below 1.
-And then, below the page_pool_empty_ring() call below, we can add an
-artificial bump of the release_cnt as well, which means we'll get proper
-atomic semantics on the counters and only ever release once. I.e.,:
-
-> -	INIT_DELAYED_WORK(&pool->release_dw, page_pool_release_retry);
-> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
-> +	/* Concurrent CPUs could have returned last pages into ptr_ring */
-> +	page_pool_empty_ring(pool);
-
-        release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
-        page_pool_free_attempt(pool, release_cnt);
 
 
--Toke
+On 4/27/23 1:23 PM, Daniel Borkmann wrote:
+> On 4/25/23 7:47 PM, Yonghong Song wrote:
+>> The selftest test_global_funcs/global_func1 failed with the latest 
+>> clang17.
+>> The reason is due to upstream ArgumentPromotionPass ([1]),
+>> which may manipulate static function parameters and cause inlining
+>> although the funciton is marked as noinline.
+>>
+>> The original code:
+>>    static __attribute__ ((noinline))
+>>    int f0(int var, struct __sk_buff *skb)
+>>    {
+>>          return skb->len;
+>>    }
+>>
+>>    __attribute__ ((noinline))
+>>    int f1(struct __sk_buff *skb)
+>>    {
+>>     ...
+>>          return f0(0, skb) + skb->len;
+>>    }
+>>
+>>    ...
+>>
+>>    SEC("tc")
+>>    __failure __msg("combined stack size of 4 calls is 544")
+>>    int global_func1(struct __sk_buff *skb)
+>>    {
+>>          return f0(1, skb) + f1(skb) + f2(2, skb) + f3(3, skb, 4);
+>>    }
+>>
+>> After ArgumentPromotionPass, the code is translated to
+>>    static __attribute__ ((noinline))
+>>    int f0(int var, int skb_len)
+>>    {
+>>          return skb_len;
+>>    }
+>>
+>>    __attribute__ ((noinline))
+>>    int f1(struct __sk_buff *skb)
+>>    {
+>>     ...
+>>          return f0(0, skb->len) + skb->len;
+>>    }
+>>
+>>    ...
+>>
+>>    SEC("tc")
+>>    __failure __msg("combined stack size of 4 calls is 544")
+>>    int global_func1(struct __sk_buff *skb)
+>>    {
+>>          return f0(1, skb->len) + f1(skb) + f2(2, skb) + f3(3, skb, 4);
+>>    }
+>>
+>> And later llvm InstCombine phase recognized that f0()
+>> simplify returns the value of the second argument and removed f0()
+>> completely and the final code looks like:
+>>    __attribute__ ((noinline))
+>>    int f1(struct __sk_buff *skb)
+>>    {
+>>     ...
+>>          return skb->len + skb->len;
+>>    }
+>>
+>>    ...
+>>
+>>    SEC("tc")
+>>    __failure __msg("combined stack size of 4 calls is 544")
+>>    int global_func1(struct __sk_buff *skb)
+>>    {
+>>          return skb->len + f1(skb) + f2(2, skb) + f3(3, skb, 4);
+>>    }
+>>
+>> If f0() is not inlined, the verification will fail with stack size
+>> 544 for a particular callchain. With f0() inlined, the maximum
+>> stack size is 512 which is in the limit.
+>>
+>> Let us add a `asm volatile ("")` in f0() to prevent ArgumentPromotionPass
+>> from hoisting the code to its caller, and this fixed the test failure.
+>>
+>>    [1] 
+>> https://reviews.llvm.org/D148269
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   tools/testing/selftests/bpf/progs/test_global_func1.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/test_global_func1.c 
+>> b/tools/testing/selftests/bpf/progs/test_global_func1.c
+>> index b85fc8c423ba..17a9f59bf5f3 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_global_func1.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_global_func1.c
+>> @@ -10,6 +10,8 @@
+>>   static __attribute__ ((noinline))
+>>   int f0(int var, struct __sk_buff *skb)
+>>   {
+>> +    asm volatile ("");
+>> +
+>>       return skb->len;
+> 
+> Is it planned to get this reverted before the final llvm/clang 17 is
+> officially released (you mentioned the TTI hook in [1])?
 
+No. This fix will not be reverted even with final clang17.
+
+The TTI hook I am used (https://reviews.llvm.org/D148551) is
+to prevent the optimization from increasing the number of parameter
+beyond 5. In this particular case, the number of arguments
+remains at 2, so BPF backend TTI hook has no effect.
+
+> 
+> Thanks,
+> Daniel
