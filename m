@@ -2,66 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A666F082E
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 17:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F846F0870
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243558AbjD0PYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 11:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
+        id S244155AbjD0Pdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 11:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243459AbjD0PYK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 11:24:10 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65718113;
-        Thu, 27 Apr 2023 08:24:09 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-5ef4885bc39so38576776d6.2;
-        Thu, 27 Apr 2023 08:24:09 -0700 (PDT)
+        with ESMTP id S232630AbjD0Pdj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 11:33:39 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A81420E
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 08:33:38 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4efe8991b8aso7165129e87.0
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 08:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682609048; x=1685201048;
+        d=gmail.com; s=20221208; t=1682609616; x=1685201616;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DKhnqaYrWh0VRI0RjHLFiEQEfw/PaxTNK9hFCLYl2ZQ=;
-        b=fWGEvATYqJuv/ziuBu5WMvCmI6wq3pOdiYtUJ53pYvsbBAOocRF6+VmO663imzHOMO
-         aXGEJNT0zZ+lkL+Ueht76h3sFvynFXY/SEpWmI8CM7D9xySJEjzggSoClX0MoFpmOaKW
-         Ni8qVuhic8ZokVYdfbS9HQb3iNt0ALCpxWSqNLv3l7XiGURMAgZEIF+XpwWHLouVfOGA
-         P6CBKsGQElJ4t2S83VVRKeclIikBarmg+dN7KoGB7ODup3LqXVUSyYJnWys1hzdygZy7
-         oHOB12WbypLeqYmMcIsmesfpqA4uGK+3C0gJEsrSm2eLOqj4guaUCR3XVaBN2w6ksBxa
-         Z6AA==
+        bh=0Q9GCw5VwcnkyuhXdME3SxZj0A8xBDhe1kN40RnWOfI=;
+        b=iP5SlGxp5rrKgPKRq+ysMhaRavRxalWq/ed/XTN27eiUQNSdP8kpjcFv2B5tdWuk9G
+         llgL/NCMU0MsAY9aC0n8nSHrZaT8KSsTfvDTOr3yf0imDp1Lwv6UHXqEmgBpLz03W6ma
+         k24JQnamj8osCQsD8TesDUurX7JNrGgfU2nBHha0/K+gE4W210OYukcjXdF4XCEEg+Y5
+         dr2tv/OYO57gSo8b7gkDS7zD+7Ds6xc+J7cCiDNsUJyUSrFsAszauKUsJ0/sIMWpWDGc
+         LEugj4mJeuY1QS2UgY4l0Ok7jbN/yKMAUGiuJJPmW1kR+BEg6hAnPRzVqyQ5JO6S/OW6
+         q2HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682609048; x=1685201048;
+        d=1e100.net; s=20221208; t=1682609616; x=1685201616;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DKhnqaYrWh0VRI0RjHLFiEQEfw/PaxTNK9hFCLYl2ZQ=;
-        b=LtXRHvH5B+sNNexLamBr9ohjaVVxVpyh6kYo/h00gzglsNUdUIkoGk5L9feE36N0sw
-         vTlwirNFiABQ8VKvsl3w3NAjAkdTzosOgTTOR5HxaDaXN9KE4bJcPrKq8JSJnCeQsuP3
-         C0zifEWKmzpew+TRj8zGAN9FWOH7roKJuP0K0csaX61P8sJx40+VqTzkSFrVH/afNPU0
-         I7k/7/7Km8TcLq1V2j4sfkSzx+AT9Wt1UgfT4pjdh8bYw4FcjYcReWGOX7wljWyBu5ih
-         PMRG2AluHrt/HjcMpq1/DAfM2zHoCY4Vg9KQUh9ZigqIayIIvCQqCVH3I5btFn1dyPHv
-         GOww==
-X-Gm-Message-State: AC+VfDxSxIFT6wRgyIbODqU+02Yva5Hd9mXFDTiieUZ6QTsOgTEEAuZa
-        bPiNWDW5uJB5bfz3Iv9c1Kub/DKL8z8qBgR5a19CVbWZ4LlNbg==
-X-Google-Smtp-Source: ACHHUZ4JYIpkNatZAOGXxmiMGWoALnYGPEAb4EhrkSK49IDwuZBO5ok8wCBVXl6GghlW6/Gwupu8Prvx81o66r2IR+k=
-X-Received: by 2002:ad4:5aa2:0:b0:5e8:3496:e641 with SMTP id
- u2-20020ad45aa2000000b005e83496e641mr3159318qvg.13.1682609048555; Thu, 27 Apr
- 2023 08:24:08 -0700 (PDT)
+        bh=0Q9GCw5VwcnkyuhXdME3SxZj0A8xBDhe1kN40RnWOfI=;
+        b=LNZ6ee4YDjHZxEA041jSBEf7Pwf53cyFfB/nrQdJXk5i6jTGLWJhE1KFdcXmm7iAIr
+         EQJUTTDbzfl0bmAqZJD5djY9RRRvO0TFj8z4q1Lpv+28BFxy7bdE4kTdVLv+Ue/j/2wN
+         9v4i/B62ztOjBY1cSFz48uX9AVgvza10KxD3O1lgpt0q2SNDyyk0H/Ws5ysPAGcOrCuK
+         tEDUZGw09ywHPpGLlXJrYLap8nZYaRKI+OkC3CgjZQ0gbBAf6N3bDZLCzsbwANzRfKO0
+         5DlQyBiXqKTyEaV7cD7pwPmHYC7G5fDsq/FxbIV5PIuU2u5to4qajDq1BlGdCp7jcxeQ
+         AudA==
+X-Gm-Message-State: AC+VfDymILhjkd+3iMTYD2FtLy8Oh2D9v8z9p6n67GFu4uP5LqidnK2n
+        3yKc+QVs9wxhTZIeq6iLbzEb+jkrO7EpKAQbMc4/3yqG
+X-Google-Smtp-Source: ACHHUZ6WCeL1WswUXiw5OZObfUR2GH3jkieXKmxWiea2Wz3AWdZPKCxhnW+8QQsRaK7oumCqogf06pX1zjeYu7kPnfM=
+X-Received: by 2002:a2e:95c2:0:b0:2a7:73a2:d915 with SMTP id
+ y2-20020a2e95c2000000b002a773a2d915mr806605ljh.5.1682609615924; Thu, 27 Apr
+ 2023 08:33:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230417154737.12740-1-laoar.shao@gmail.com> <20230417154737.12740-6-laoar.shao@gmail.com>
- <20230427092628.21fd23e4@gandalf.local.home> <CALOAHbBX1C-eg93Hf3xPLsdsaBzoGn1pHh9jb3Z_-T-7HD60wA@mail.gmail.com>
- <20230427111842.2e40fe3c@gandalf.local.home>
-In-Reply-To: <20230427111842.2e40fe3c@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 27 Apr 2023 23:23:31 +0800
-Message-ID: <CALOAHbDRSNvihv5n0jJpAsK3onezRRipO78RG3rAf3LGgkzYHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf: Improve tracing recursion prevention mechanism
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mhiramat@kernel.org,
-        bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <878reeilxk.fsf@oracle.com> <733c57eb-1299-57ae-7aa5-a9dbd51f5559@meta.com>
+ <87zg6ufnrr.fsf@oracle.com> <CAADnVQ+MNbWCWD14xf50nK-CsAdzQqsnY3x4uSuxO=pNDdmZXA@mail.gmail.com>
+ <87o7n98wep.fsf@oracle.com>
+In-Reply-To: <87o7n98wep.fsf@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 27 Apr 2023 08:33:24 -0700
+Message-ID: <CAADnVQL9L99VeNZSDDLw_XTSNJhf7y6QKrRa8k7cpVFPP19NEQ@mail.gmail.com>
+Subject: Re: Support for the pseudo-C BPF assembler syntax in GAS
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Cc:     Eddy Z <eddyz87@gmail.com>, Yonghong Song <yhs@meta.com>,
+        bpf <bpf@vger.kernel.org>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        gmartinezq07@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,48 +74,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 11:18=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
-g> wrote:
+On Thu, Apr 27, 2023 at 3:14=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
 >
-> On Thu, 27 Apr 2023 22:22:22 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> > IIUC, the acquire/release pair works as follows,
+> Odd.  I replied to this yesterday, but somehow it wasn't sent.
+>
+> > On Wed, Apr 26, 2023 at 12:35=E2=80=AFPM Jose E. Marchesi
+> > <jose.marchesi@oracle.com> wrote:
+> >>
+> >>
+> >> > On 4/26/23 10:37 AM, Jose E. Marchesi wrote:
+> >> >> Just a heads up, we just committed support for the assembly syntax
+> >> >> used
+> >> >> by clang to the GNU assembler [1].
+> >> >
+> >> > Thanks! Do you which gcc release is expected to contain these change=
+s?
+> >>
+> >> This is the assembler, i.e. binutils.
+> >> We don't need to update the compiler.
+> >>
+> >> >> Salud!
+> >> >> [1] https://sourceware.org/pipermail/binutils/2023-April/127222.htm=
+l
 > >
-> >    test_recursion_try_acquire
-> >      [ protection area ]
-> >    test_recursion_release
-> >
-> > After release, there will be no protection, and thus it will fail the
-> > tools/testing/selftests/bpf/progs/recursion.c[1] test case, because
-> > the recursion occurs in the bpf_prog_run() itself,
+> > This is awesome!
+> > We recently converted tens of thousands of lines of bpf asm from macros
+> > to inline asm in C.
+> > See tools/testing/selftests/bpf/progs/verifier_*.c
+> > I wonder how gas-bpf can deal with that.
 >
-> But bpf programs are allowed to recurs. Hence, you need separate logic to
-> detect that. The test_recursion_*() code is for cases that are not allowe=
-d
-> to recurs.
+> Inline assembly shall work.
 >
-
-Agreed.
-
-> >
-> >   __bpf_prog_enter
-> >      test_recursion_try_acquire
-> >      [...]
-> >      test_recursion_release
-> >   // no protection after the release
-> >   bpf_prog_run()
-> >     bpf_prog_run() // the recursion can't be prevented.
+> > We had to fix several inline asm issues in clang to get to this point
+> > and probably more to come.
 >
-> But I thought you can run a bpf_prog from another bpf_prog. So you don't
-> want to prevent it. You need other logic to detect if it was not suppose =
-to
-> recurs.
+> We will give these tests a try and fix problems as we find them :)
 >
+> We actually came with some ambiguities, undefined stuff, and other
+> issues with the syntax while doing the implementation.  We hope to
+> discuss some of that during the LSF/MM/BPF next week, so we can
+> consolidate the language in both toolchains.
+>
+> Speaking of which, we are preparing the material for the "compiled BPF"
+> activity during LSF/MM/BPF.  I think the BPF track hasn't been scheduled
+> yet, but how much time will we have to discuss about the topic?
 
-If so, we have to keep the prog->active to prevent it, then I'm not
-sure if it is worth adding test_recursion_*().
+Awesome. I'd love to participate.
 
---=20
-Regards
-Yafang
+Martin, Daniel,
+What is the schedule for bpf track ?
