@@ -2,65 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E866EFEEE
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 03:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6831B6EFEF3
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 03:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242970AbjD0BUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 21:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S242685AbjD0BZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Apr 2023 21:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243032AbjD0BU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 21:20:27 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A3544A4
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 18:20:00 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-508418b6d59so14417731a12.3
-        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 18:20:00 -0700 (PDT)
+        with ESMTP id S242745AbjD0BZV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 21:25:21 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9253AA1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 18:25:20 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-956eacbe651so1440712566b.3
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 18:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682558391; x=1685150391;
+        d=gmail.com; s=20221208; t=1682558718; x=1685150718;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w8ZvBBQjgBl1WV0E0U+OsFJ/NXgqDBJGJgiNX7TA4MI=;
-        b=SouTqhLBACgBFlnDlJufx3E/6WGN2g4z4BzGU8rqfkt2+5USayVgU5+Oe8jDK4OG5i
-         /bavNWcAQJ1Kv53YIjdoCV8hyyov4vH6V5iLM6kY7FjzzHrqKhugARxhYC3s2vzfJYit
-         EfqWjPL/THyxKeC+cjiLAnLlSws+fMo4XRcjGepUpIZ0dordVbEyDjmPCI79GxtzEXuo
-         1XG3qd79UsIqjkHzyvrwxYOFhw9XyRwsNnXPxPWhYrqJN9zjRju/x6WdjEh6MVjcXE2w
-         ReeHSEWdXh/Cpz4mzmJUFltacSg9COG/Rot0TukioccyJcwsVUfkrQT5qearLRJQLE1h
-         EuXg==
+        bh=MgWNVDhXQKQMtkPENBPEdg1ZbFl1MI/YY7cFIXCeUAc=;
+        b=ARWJ9LQ/crQ4XNhAGxkjMLJjR6W4tb8jg7ctSL42fmVLWcFFskVnoFtF7zAG988p0/
+         Dmi19mBbPvF2/V3OXsNwXxYDuzSClwBfc2exOSlOidiRwb4mjfJ6HT1q2JQerFAZUL6Z
+         FQdRNi1jKKvX7LpcxpAk5Z24ueZtS5zC1SGa4h3e3Gyhpy2FbRM+aNsXkgj3tEOp1Sja
+         MJcy4Fbf4WvY3799gbbAh7+APK8uDplSaEITV0doLW4J1prQ1qUNe9ZBFXrhHOaHK0uQ
+         1jk20DAk91YUxaAI+ZEZVxF0hha5F5Qv+XQjNTwpPPa3jKi161cWeslDGMkEdleKTTsL
+         kipw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682558391; x=1685150391;
+        d=1e100.net; s=20221208; t=1682558718; x=1685150718;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w8ZvBBQjgBl1WV0E0U+OsFJ/NXgqDBJGJgiNX7TA4MI=;
-        b=khapuAMDUWh1M7oDTwT8NpvWTsdk8ASBTIdXJmlt0xVKyTEgzQDTE9R1n3XNj94e4B
-         0rEyq/UGfvK5HwkV6RQVoFyD3AsRGhEjXpm4OQs+bS8a5CYCqyFyxhD4Vz8JXoVlnW1l
-         eBn724eAesoydopDU30ZXKT088M8PqSaH14O57baIjlCw7xMRt2RR7bqnFF9+uenz1m6
-         fcW+fDDIm72EHcOtAk97U9yedpWQAIp2i6EXjY/oLMz/iBYaJjjZOemAItYoqWOUxa+t
-         B6aqP5tspOTdE0W8SuKGNXYBUyW2V9m+7CgATyM+7cUcbWsyt2650uYk9MtpZoOPgk/l
-         L9XQ==
-X-Gm-Message-State: AC+VfDywOMXCkrI7TJdcS33dygO9B9bOopYWNZJrgw5Iiip3rGJoiD51
-        JBdnsRSokcsG3znC1O54A9CpiCkoT2ceHRXfipw=
-X-Google-Smtp-Source: ACHHUZ5xz35GahuWOZvAZm/sBi4vWCXZ4fZlDp4PPH1fi8GZRiTbeRLP3cuvFyw+OLXrgR8++DRyoqDQ+lTTr09no9s=
-X-Received: by 2002:a05:6402:47:b0:506:92d7:6dce with SMTP id
- f7-20020a056402004700b0050692d76dcemr249833edu.15.1682558390788; Wed, 26 Apr
- 2023 18:19:50 -0700 (PDT)
+        bh=MgWNVDhXQKQMtkPENBPEdg1ZbFl1MI/YY7cFIXCeUAc=;
+        b=FXuZe7EwUZ8cxtJaBZGCXLpBUtrjJvfiCr9oYI5m8blHPNR6lHdiGTwh3XkNkd/eQS
+         eOGw/2NBV7qD8+eLKXqwNRU/IpxA3DKCfN2tpiPggFE4KQyST8vLfMERHCcMfvAE5bKQ
+         s4y7ZSh3Sa5XvV20ExZnMygtgLwK3UJ4En2Z8hQmFctaG0zAsWZdKcmPaSUs6kBjR7Fl
+         jkeKk3fGB8QK8UZg3/4FDY/ufhe5n+FBdTEyjCCzSS9TfQnP9BIIlgUP7GeqhgNpmbVa
+         j+BfluS3dtuTNy2jg8afG8NWlqdJplP/Yc2uUtXtd49SpCPwfe+ayFeIahYCzCST2Bx8
+         Z+AQ==
+X-Gm-Message-State: AAQBX9cid0sWwGHrSeNcBVXuizipa8apcTBnMuUpwae2HZPyAZgY5Mqn
+        v4+F4ARA4E1AbS1w/Ygv1jZqgmBT2Kb8Jh9Jn5o=
+X-Google-Smtp-Source: AKy350Yn037Ri7SE4TDJuee0J/8ZTYoyhAybIwI6nV/W98KYRbyFZoCD06RmyW6jZaLMmQAA8SdvwQingpM/NvqUhWU=
+X-Received: by 2002:a17:906:5dd2:b0:946:2fa6:3b85 with SMTP id
+ p18-20020a1709065dd200b009462fa63b85mr17080108ejv.36.1682558718387; Wed, 26
+ Apr 2023 18:25:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230427001425.563232-1-namhyung@kernel.org>
-In-Reply-To: <20230427001425.563232-1-namhyung@kernel.org>
+References: <20230426155357.4158846-1-sdf@google.com>
+In-Reply-To: <20230426155357.4158846-1-sdf@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 18:19:38 -0700
-Message-ID: <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
-Subject: Re: [HELP] failed to resolve CO-RE relocation
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+Date:   Wed, 26 Apr 2023 18:25:06 -0700
+Message-ID: <CAEf4BzatobESuMtP=ndHuf+imtX1ovM-4+cnV9c=UdsC=teZBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Make bpf_helper_defs.h c++ friendly
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        Peng Wei <pengweiprc@google.com>, Yonghong Song <yhs@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,78 +71,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 5:14=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Wed, Apr 26, 2023 at 8:54=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
+ wrote:
 >
-> Hello,
+> From: Peng Wei <pengweiprc@google.com>
 >
-> I'm having a problem of loading perf lock contention BPF program [1]
-> on old kernels.  It has collect_lock_syms() to get the address of each
-> CPU's run-queue lock.  The kernel 5.14 changed the name of the field
-> so there's bpf_core_field_exists to check the name like below.
+> Compiling C++ BPF programs with existing bpf_helper_defs.h is not
+> possible due to stricter C++ type conversions. C++ complains
+> about (void *) type conversions:
 >
->         if (bpf_core_field_exists(rq_new->__lock))
->                 lock_addr =3D (__u64)&rq_new->__lock;
->         else
->                 lock_addr =3D (__u64)&rq_old->lock;
+> $ clang++ --include linux/types.h ./tools/lib/bpf/bpf_helper_defs.h
+>
+> bpf_helper_defs.h:57:67: error: invalid conversion from =E2=80=98void*=E2=
+=80=99 to =E2=80=98void* (*)(void*, const void*)=E2=80=99 [-fpermissive]
 
-I suspect compiler rewrites it to something like
+Can you use -fpermissive instead? As Yonghong said, C++ is not really
+supported, so pretending we do will just cause more confusion and
+issues down the line.
 
-   lock_addr =3D (__u64)&rq_old->lock;
-   if (bpf_core_field_exists(rq_new->__lock))
-        lock_addr =3D (__u64)&rq_new->__lock;
+BTW, can you elaborate more on v4 vs v6 code reuse (or what was it)? I
+wonder if there is something that would stay within C domain that
+could be done?
 
-so rq_old relocation always happens and ends up being not guarded
-properly. You can try adding barrier_var(rq_new) and
-barrier_var(rq_old) around if and inside branches, that should
-pessimize compiler
-
-alternatively if you do
-
-if (bpf_core_field_exists(rq_new->__lock))
-    lock_addr =3D (__u64)&rq_new->__lock;
-else if (bpf_core_field_exists(rq_old->lock))
-    lock_addr =3D (__u64)&rq_old->lock;
-else
-    lock_addr =3D 0; /* or signal error somehow */
-
-It might work as well.
-
+>    57 | static void *(*bpf_map_lookup_elem)(void *map, const void *key) =
+=3D (void *) 1;
+>       |                                                                  =
+ ^~~~~~~~~~
+>       |                                                                  =
+ |
+>       |                                                                  =
+ void*
 >
-> Note that I've applied a patch [2] to fix an issue with this code.
+> Extend bpf_doc.py to use proper function type instead of void.
 >
-> It works fine on my machine (with a newer kernel), but failed on the
-> old kernels.  I guess it'd go to the else part without a problem but
-> it didn't for some reason.
+> Before:
+> static void *(*bpf_map_lookup_elem)(void *map, const void *key) =3D (void=
+ *) 1;
 >
-> Then I change the code to check the rq_old first.  It works well on
-> the old kernels but fails on newer kernels.. :(
+> After:
+> static void *(*bpf_map_lookup_elem)(void *map, const void *key) =3D (void=
+ *(*)(void *map, const void *key)) 1;
 >
->     libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid ar=
-gument
->     libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
->     reg type unsupported for arg#0 function collect_lock_syms#380
->     0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->     ; int BPF_PROG(collect_lock_syms)
->     0: (b7) r6 =3D 0                        ; R6_w=3D0
->     1: (b7) r7 =3D 0                        ; R7_w=3D0
->     2: (b7) r9 =3D 1                        ; R9_w=3D1
->     3: <invalid CO-RE relocation>
->     failed to resolve CO-RE relocation <byte_off> [381] struct rq___old.l=
-ock (0:0 @ offset 0)
->     processed 4 insns (limit 1000000) max_states_per_insn 0 total_states =
-0 peak_states 0 mark_read 0
+> v2:
+> - add clang++ invocation example (Yonghong)
 >
-> I'm curious what went wrong with this.  I guess it's supposed to work
-> on any kernel verions by definition.  Not sure the compiler generated
-> a wrong reloc or something.  Maybe I just made silly mistakes..
+> Cc: Yonghong Song <yhs@meta.com>
+> Signed-off-by: Peng Wei <pengweiprc@google.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  scripts/bpf_doc.py | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> Do you see anything wrong?  Any hints to debug this issue?
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index eaae2ce78381..fa21137a90e7 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -827,6 +827,9 @@ COMMANDS
+>                  print(' *{}{}'.format(' \t' if line else '', line))
 >
-> Thanks,
-> Namhyung
+>          print(' */')
+> +        fptr_type =3D '%s%s(*)(' % (
+> +            self.map_type(proto['ret_type']),
+> +            ((' ' + proto['ret_star']) if proto['ret_star'] else ''))
+>          print('static %s %s(*%s)(' % (self.map_type(proto['ret_type']),
+>                                        proto['ret_star'], proto['name']),=
+ end=3D'')
+>          comma =3D ''
+> @@ -845,8 +848,10 @@ COMMANDS
+>                  one_arg +=3D '{}'.format(n)
+>              comma =3D ', '
+>              print(one_arg, end=3D'')
+> +            fptr_type +=3D one_arg
 >
+> -        print(') =3D (void *) %d;' % helper.enum_val)
+> +        fptr_type +=3D ')'
+> +        print(') =3D (%s) %d;' % (fptr_type, helper.enum_val))
+>          print('')
 >
-> [1] file://linux/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> [2] https://lore.kernel.org/lkml/20230423215650.287812-1-namhyung@kernel.=
-org/
+>  ########################################################################=
+#######
+> --
+> 2.40.1.495.gc816e09b53d-goog
+>
