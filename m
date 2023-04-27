@@ -2,165 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503916EFEFD
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 03:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30E26EFF51
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 04:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242808AbjD0BlA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Apr 2023 21:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
+        id S242863AbjD0CVy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 26 Apr 2023 22:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242677AbjD0Bk7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Apr 2023 21:40:59 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B481D3AA1;
-        Wed, 26 Apr 2023 18:40:57 -0700 (PDT)
-Received: from dggpemm500013.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Q6JHx736nz18KQP;
-        Thu, 27 Apr 2023 09:37:01 +0800 (CST)
-Received: from [10.67.108.67] (10.67.108.67) by dggpemm500013.china.huawei.com
- (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 27 Apr
- 2023 09:40:55 +0800
-Message-ID: <be9efa60-14ec-ba46-91e1-9feb56c40fb8@huawei.com>
-Date:   Thu, 27 Apr 2023 09:40:50 +0800
+        with ESMTP id S242731AbjD0CVx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Apr 2023 22:21:53 -0400
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9489040C8
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 19:21:51 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-b8f5121503eso11785304276.1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 19:21:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682562111; x=1685154111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvnAVeNcRKqdKnyB1uAj6sbx4Y0HtMVrJHqDP260jiY=;
+        b=imKUZ/K2gea0Y0qOsy/v+CmurfcjMUiD1Sr7Ks68snwOK6kmagZcDyDcxqcHmhbu/v
+         7506To9DlM49hAfdeVZdBMz59M/7tMjsk1EiDIblHf1nz31rtKUlbHGY8d4cKFXzDZj5
+         LsO0GcksVLtlkEF91EmCXi9m7oMYRAm9Vy1hTqRb4P6gz2Fo7kzB6O/YALyNAAB6Jz75
+         biRZVBBjwzn/diD84B2g5k3eH6KpZaXRMFNEbScN8HijwmdCFRlL72KTTNVmCFehxncf
+         r/nsQrBLZC2r3teCNc+0oW9ufNdFy5kiWmtBQiyLdHYKHQFXCp4Vd5aIl9Pg6HiugJRn
+         FWoA==
+X-Gm-Message-State: AAQBX9ev8Uk/p6cD3f4FAbT6YIZaCPcHZh7xtTYChXZqX6OV+VphE+PK
+        gI3pNeetI+g37WoycGsw4PpgFlaU0+UB5QJ5P/Y=
+X-Google-Smtp-Source: AKy350YlPgosgB72PquVWyfTw3EtXji4daFRZyTGuFqUau24VPwlVxr/7+4xpoKhaUQWwEgDm4bq780q/LkdYG8zLrE=
+X-Received: by 2002:a25:dbc8:0:b0:b92:3bbf:f22b with SMTP id
+ g191-20020a25dbc8000000b00b923bbff22bmr18695928ybf.0.1682562110645; Wed, 26
+ Apr 2023 19:21:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Subject: Re: [PATCH] bpf: Unregister fentry when bpf_trampoline_unlink_prog
- fails to update image
-To:     Yonghong Song <yhs@meta.com>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-        <jolsa@kernel.org>
-References: <20230426095548.176045-1-chenzhongjin@huawei.com>
- <b594a56f-5e1f-da7f-0ab1-71751bd0c5e2@meta.com>
-Content-Language: en-US
-From:   Chen Zhongjin <chenzhongjin@huawei.com>
-In-Reply-To: <b594a56f-5e1f-da7f-0ab1-71751bd0c5e2@meta.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.108.67]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500013.china.huawei.com (7.185.36.172)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 26 Apr 2023 19:21:39 -0700
+Message-ID: <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+Subject: Re: [HELP] failed to resolve CO-RE relocation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/4/27 2:17, Yonghong Song wrote:
-> 
-> 
-> On 4/26/23 2:55 AM, Chen Zhongjin wrote:
->> In bpf_link_free, bpf trampoline will update the image and remove the
->> unlinked prog.
->>
->> bpf_trampoline_unlink_prog is committed as 'never fail', however it 
->> depends
->> on the result of image update. It is possible to fail if memory 
->> allocation
->> fail in bpf_trampoline_update.
-> 
-> Could you give more details which memory allocation fail here?
-> bpf_tramp_image_alloc()? Are you using some error injection or
-> this happens in your production workload?
-> 
-I guess it's an error injection because syzkaller reported this.
+Hello Andrii,
 
->>
->> The error result of bpf_trampoline_update can't be passed to 
->> bpf_link_free
->> because link release callback returns void. Then it will free the prog
->> whether image updating is successful or not.
->> If the old image tries to call a freed prog, it makes kernel panic.
->>
->>      BUG: unable to handle page fault for address: ffffffffc04a8d20
->>      #PF: supervisor instruction fetch in kernel mode
->>      #PF: error_code(0x0010) - not-present page
->>      RIP: 0010:0xffffffffc04a8d20
->>      Code: Unable to access opcode bytes at RIP 0xffffffffc04a8cf6.
->>      ...
->>      Call Trace:
->>      ? bpf_trampoline_78223_0
->>      bpf_traced_function
->>      ...
-> 
-> Could you explain how 'the old image tries to call a freed prog'?
-> IIUC, the previous bpf_link_free() should not be available to
-> call the bpf prog, right?
-> 
-What I mean here is, if failed to update the image, the image keeps 
-unchanged but the unlinked prog will be freed later.
-Next time when it enter the trampoline the image will call freed prog.
+On Wed, Apr 26, 2023 at 6:19 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Apr 26, 2023 at 5:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > I'm having a problem of loading perf lock contention BPF program [1]
+> > on old kernels.  It has collect_lock_syms() to get the address of each
+> > CPU's run-queue lock.  The kernel 5.14 changed the name of the field
+> > so there's bpf_core_field_exists to check the name like below.
+> >
+> >         if (bpf_core_field_exists(rq_new->__lock))
+> >                 lock_addr = (__u64)&rq_new->__lock;
+> >         else
+> >                 lock_addr = (__u64)&rq_old->lock;
+>
+> I suspect compiler rewrites it to something like
+>
+>    lock_addr = (__u64)&rq_old->lock;
+>    if (bpf_core_field_exists(rq_new->__lock))
+>         lock_addr = (__u64)&rq_new->__lock;
+>
+> so rq_old relocation always happens and ends up being not guarded
+> properly. You can try adding barrier_var(rq_new) and
+> barrier_var(rq_old) around if and inside branches, that should
+> pessimize compiler
+>
+> alternatively if you do
+>
+> if (bpf_core_field_exists(rq_new->__lock))
+>     lock_addr = (__u64)&rq_new->__lock;
+> else if (bpf_core_field_exists(rq_old->lock))
+>     lock_addr = (__u64)&rq_old->lock;
+> else
+>     lock_addr = 0; /* or signal error somehow */
+>
+> It might work as well.
 
->>
->> Fix this when bpf_trampoline_update failed in bpf_trampoline_unlink_prog,
->> unregister fentry to disable the trampoline. Then other progs on the
->> trampoline can be unlinked safely and finally the trampoline will be
->> released.
-> 
-> Do we still leak tr->cur_image here?
-> 
-No, bpf_tramp_image_put() will free everything when all progs_cnt 
-decline to zero in bpf_trampoline_update(). It is a release function, 
-but called 'put'.
+Thanks a lot for your comment!
 
->>
->> Fixes: 88fd9e5352fe ("bpf: Refactor trampoline update code")
-> 
-> If the above is a refactoring patch, you should not use that
-> as 'Fixes' patch, you should pick one truely introduced the issue.
-> 
->> Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
->> ---
->>   kernel/bpf/trampoline.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
->> index d0ed7d6f5eec..6daa93b30e81 100644
->> --- a/kernel/bpf/trampoline.c
->> +++ b/kernel/bpf/trampoline.c
->> @@ -604,7 +604,10 @@ static int __bpf_trampoline_unlink_prog(struct 
->> bpf_tramp_link *link, struct bpf_
->>       }
->>       hlist_del_init(&link->tramp_hlist);
->>       tr->progs_cnt[kind]--;
->> -    return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->> +    err =  bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->> +    if (err && tr->cur_image)
->> +        unregister_fentry(tr, tr->cur_image->image);
-> 
-> If error happens for the all subsequent programs,
-> unregister_fentry() will be called multiple times. Any side effect?
-It will fail with no side effect. Actually if there is no error, 
-modify_fentry() will fail in update() as well. The fentry is available 
-until all progs are unlinked and the broken image is freed by 
-bpf_tramp_image_put().
+I've tried the below code but no luck. :(
 
-However with an extra state to record this happens, it's possible to 
-re-register the fentry with new image when the next link/unlink calls 
-update(). It will generate a new image and replace/free the error one.
-> 
-> Overall, I think this is an extreme corner case which happens
-> when kernel memory is extreme tight. If this is the case, not
-> sure whether it is worthwhile to fix it or not.
-> 
-Yes, it's a really rare case. I'm just not sure whether it needs some 
-best-effort to avoid kernel panic at this point.
+        barrier_var(rq_old);
+        barrier_var(rq_new);
 
-If you think it's not necessary. Just let it go.
+        if (bpf_core_field_exists(rq_old->lock)) {
+            barrier_var(rq_old);
+            lock_addr = (__u64)&rq_old->lock;
+        } else if (bpf_core_field_exists(rq_new->__lock)) {
+            barrier_var(rq_new);
+            lock_addr = (__u64)&rq_new->__lock;
+        } else
+            lock_addr = 0;
 
-Thanks for your time!
 
-Best,
-Chen
->> +    return err;
->>   }
->>   /* bpf_trampoline_unlink_prog() should never fail. */
+; int BPF_PROG(collect_lock_syms)
+0: (b7) r8 = 0                        ; R8_w=0
+1: (b7) r7 = 1                        ; R7_w=1
+2: <invalid CO-RE relocation>
+failed to resolve CO-RE relocation <byte_off> [381] struct
+rq___old.lock (0:0 @ offset 0)
+processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read
+
+Thanks,
+Namhyung
