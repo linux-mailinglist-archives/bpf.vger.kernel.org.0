@@ -2,64 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438216F0E50
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 00:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F056F0E54
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 00:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344065AbjD0WYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 18:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        id S1344053AbjD0W2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 18:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344032AbjD0WYl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 18:24:41 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33642715
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:24:39 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-94f7a0818aeso1428720366b.2
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:24:39 -0700 (PDT)
+        with ESMTP id S1344032AbjD0W2v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 18:28:51 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED935BD
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:28:49 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50a145a0957so11287195a12.1
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682634278; x=1685226278;
+        d=gmail.com; s=20221208; t=1682634528; x=1685226528;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2BKGxV2sd7b5ZjBU0VYs5O7TbPu5WekN5VI+jHbSxCU=;
-        b=ANp6TV68dKptg9Wtn4sYMPQ07ArkJIaq+k8R+U/Sbrhd7BVu9qU8QBsH/kj/BLnhy8
-         BTlWZOshq+D1csRBaZvFJlE56akd8b7FQ4ohXaIObEgbO/AcM0eA3gnv7QSdNms9Js3n
-         pjr7GA21Jdw8z4+egyoWfh0DItaUx7NSMhYEVEyJDTebCu6yCVDq3oWYdv3tcA17ZmMR
-         r+cOxCzBqixKmBFpQ6pfU4WdiZRzOrdP8AprE+FzAAEiA/scmjod80zZbNigzFucky2N
-         KkGZHxUVEC9wSXBh2VBsx5egT3tTLO2g0t8rajetMu9I9nPy/fr7aLuXU5b+Lw2c7JtS
-         1LGQ==
+        bh=I7ooR+mmzJmti7b/0suxo47dopLeFknPmNBcCRGVJ1g=;
+        b=KSDBFd/OI4Fk7eNZleTBWqVZEiav3iW8SjNHOIMyizyJy/XjNg2U+mlUIy/nIsJF3m
+         eTWJF0FcizLTj4w4J02ef3cRx58q6fEbnb1DJSZf8RFvSDUzGyZtkET7ZmKKHEj76FSu
+         /9YOTP0au+K9Zh80q+O0H4MEpSvz7NaqjaUvFbdESGpTfW1Hbn/9nXzAS6E6brnNOIyv
+         1Mud5vEWbr5rVEddyio4Wpz/JWdhc8wRph3gfAqC4n9A3XjKJ9yGY9BuHPXHj+d4o4Db
+         mb2S5ULLrDByMEHRnseT2pK5p4Dn8I0LrowMhNk8oGqGTervVK7AWWbY1x7gQ42P4u5/
+         Lb6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682634278; x=1685226278;
+        d=1e100.net; s=20221208; t=1682634528; x=1685226528;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2BKGxV2sd7b5ZjBU0VYs5O7TbPu5WekN5VI+jHbSxCU=;
-        b=KKGCv7/Y5oegj92DqQXPwgsapvwqbuVsiWiPsetY52SZUJRAxqsBTVPmAKTrlF2twU
-         YIsgl9eu1XORCnToY5iYCYXVYyy0WaS/frO13M0ZSv9YflG2BWR5NS0UQj3lQy00MuKy
-         hP0/VljPXNd6ZS7yfJfdijb9C1ShE1I++REqpyz6p/XddiKrSalrQctcusEbjuLwBrMp
-         kjZMXwI3LkRHmWweUGsVEbTAmJy2AslzAmy2NAkCzykK9vU+0UBBeiuYe4hU7VubVByg
-         YjUpYqY4KX8jPsED/uojTG311oQGks3kOwH4iVObEq8MqPW4Gsf8pXkeStYFTaOkcN8C
-         ISjQ==
-X-Gm-Message-State: AC+VfDyT0/4BdIUnkMPHbgdfxw0sJEZ8/BHpeWvdy74RAtZt10PoQ7hH
-        ifWxA2avZva/WlX2g+PY100f750FqWoF6wstd74=
-X-Google-Smtp-Source: ACHHUZ6tPqYC8CbgEf+OGLQ8kWNmX1vLA3JJkYq2xAivglCeUNYNeNl80fe3djSXQc0mmwASCLubSD+mZP4ch1ZtRGI=
-X-Received: by 2002:a17:907:97c9:b0:953:43a1:1988 with SMTP id
- js9-20020a17090797c900b0095343a11988mr2725588ejc.46.1682634278254; Thu, 27
- Apr 2023 15:24:38 -0700 (PDT)
+        bh=I7ooR+mmzJmti7b/0suxo47dopLeFknPmNBcCRGVJ1g=;
+        b=JCrpdvFLBOdoIZsJzg3P0C29urHI5kHkmPgCOhnhTzQIvKPzukBLpPjInw6XpDr7bV
+         1hEDfieuZJkF9Yf4gLz9yYrIJOV1ytVjpuhxMAEobs2ICO1ASGWlsqiN/Szqzg52tofq
+         94/FmQWLpaj49o/1vHuASnro7oDz6HlUdZf4M6r5ffuleRiwQEXHDLSM4tHnv6pE89O4
+         IPp0ZSvl5IMZ2fmDiKiginvKio42yFzOT52xVz9DUhWHVavu/o4ODHi85eHjPWTEGZZx
+         an+uLOIDLO3xh5V8warr2znS4UoMerE6yqmgHuUqTAgaWcduPz5O6qPOty2Q8lwiWkfa
+         F21w==
+X-Gm-Message-State: AC+VfDx1n30PFgNm6S042cUF+zZZVwKZIvqdOuSscP1eXOyEc7BX5qvD
+        x7fZe0cFR11obwEwMeKgIdxgjfk663NtJ0UF9gE=
+X-Google-Smtp-Source: ACHHUZ6DkarN1+tQGFEJYWXoZvsFxc+Evd/vjrPKWNyNb0k01Yk5/QFCU4EEu4asksciUPYthNadJNkYWIdjxbRlvbc=
+X-Received: by 2002:a05:6402:42c8:b0:506:71bd:3931 with SMTP id
+ i8-20020a05640242c800b0050671bd3931mr8230224edc.2.1682634528226; Thu, 27 Apr
+ 2023 15:28:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230424160447.2005755-1-jolsa@kernel.org> <CAEf4BzbCogCFVmr-C4XQNR4KF3_kj_yFeeTcevdmfm1veu-26w@mail.gmail.com>
- <ZEpuEUTAOZ2XoYPt@krava>
-In-Reply-To: <ZEpuEUTAOZ2XoYPt@krava>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <20230424160447.2005755-7-jolsa@kernel.org>
+ <CAEf4Bza8L7YKbVvNAsRn_RDKx8PuHYZpO7HSWuZuubioEsEmbQ@mail.gmail.com> <ZEp3bfmJG2HBe2rK@krava>
+In-Reply-To: <ZEp3bfmJG2HBe2rK@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Apr 2023 15:24:25 -0700
-Message-ID: <CAEf4BzZaj0Y_PhMVOfa5fpAMbStevjdrKxq3jfTA2Bq4VjtvDg@mail.gmail.com>
-Subject: Re: [RFC/PATCH bpf-next 00/20] bpf: Add multi uprobe link
+Date:   Thu, 27 Apr 2023 15:28:36 -0700
+Message-ID: <CAEf4BzZu7nnviv1KHUNBRCEufzLiE9NV+oDZ41VRU0M3acWRrg@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 06/20] libbpf: Factor elf_for_each_symbol function
 To:     Jiri Olsa <olsajiri@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Viktor Malik <viktor.malik@gmail.com>,
-        Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
@@ -79,156 +77,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 5:44=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+On Thu, Apr 27, 2023 at 6:24=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> On Wed, Apr 26, 2023 at 12:09:59PM -0700, Andrii Nakryiko wrote:
-> > On Mon, Apr 24, 2023 at 9:04=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
+> On Wed, Apr 26, 2023 at 12:27:31PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Apr 24, 2023 at 9:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
 ote:
 > > >
-> > > hi,
-> > > this patchset is adding support to attach multiple uprobes and usdt p=
-robes
-> > > through new uprobe_multi link.
+> > > Currently we have elf_find_func_offset function that looks up
+> > > symbol in the binary and returns its offset to be used for uprobe
+> > > attachment.
 > > >
-> > > The current uprobe is attached through the perf event and attaching m=
-any
-> > > uprobes takes a lot of time because of that.
+> > > For attaching multiple uprobes we will need interface that allows
+> > > us to get offsets for multiple symbols specified either by name or
+> > > regular expression.
 > > >
-> > > The main reason is that we need to install perf event for each probed=
- function
-> > > and profile shows perf event installation (perf_install_in_context) a=
-s culprit.
+> > > Factoring out elf_for_each_symbol helper function that iterates
+> > > all symbols in binary and calls following callbacks:
 > > >
-> > > The new uprobe_multi link just creates raw uprobes and attaches the b=
-pf
-> > > program to them without perf event being involved.
+> > >   fn_match - on each symbol
+> > >              if it returns error < 0, we bail out with that error
+> > >   fn_done  - when we finish iterating symbol section,
+> > >              if it returns true, we don't iterate next section
 > > >
-> > > In addition to being faster we also save file descriptors. For the cu=
-rrent
-> > > uprobe attach we use extra perf event fd for each probed function. Th=
-e new
-> > > link just need one fd that covers all the functions we are attaching =
-to.
-> >
-> > All of the above are good reasons and thanks for tackling multi-uprobe!
-> >
+> > > It will be used in following changes to lookup multiple symbols
+> > > and their offsets.
 > > >
-> > > By dropping perf we lose the ability to attach uprobe to specific pid=
-.
-> > > We can workaround that by having pid check directly in the bpf progra=
-m,
-> > > but we might need to check for another solution if that will turn out
-> > > to be a problem.
+> > > Changing elf_find_func_offset to use elf_for_each_symbol with
+> > > single_match callback that's looking to match single function.
 > > >
 > >
-> > I think this is a big deal, because it makes multi-uprobe not a
-> > drop-in replacement for normal uprobes even for typical scenarios. It
-> > might be why you couldn't do transparent use of uprobe.multi in USDT?
->
-> yes
->
+> > Given we have multiple uses for this for_each_elf_symbol, would it
+> > make sense to implement it as an iterator (following essentially the
+> > same pattern that BPF open-coded iterator is doing, where state is in
+> > a small struct, and then we call next() until we get back NULL?)
 > >
-> > But I'm not sure why this is a problem? How does perf handle this?
-> > Does it do runtime filtering or something more efficient that prevents
-> > uprobe to be triggered for other PIDs in the first place? If it's the
-> > former, then why can't we do the same simple check ourselves if pid
-> > filter is specified?
+> > This will lead to cleaner code overall, I think. And it does seem func
+> > to implement it this (composable) way.
 >
-> so the standard uprobe is basically a perf event and as such it can be
-> created with 'pid' as a target.. and such perf event will get installed
-> only when the process with that pid is scheduled in and uninstalled
-> when it's scheduled out
->
-> >
-> > I also see that uprobe_consumer has filter callback, not sure if it's
-> > a better solution just for pid filtering, but might be another way to
-> > do this?
->
-> yes, that's probably how we will have to do that, will check
+> ok, I'll check the open-coded iterator for this
 
-callback seems like overkill as we'll be paying indirect call price.
-So a simple if statement in either uprobe_prog_run or in
-uprobe_multi_link_ret_handler/uprobe_multi_link_handler seems like
-better solution, IMO.
+Do check it, as it's a useful thing on BPF side. But tl;dr for libbpf
+internal use we could do something like:
+
+struct elf_iter {
+    Elf *elf;
+    size_t next_sym_idx;
+};
+
+and in the code the use will be something like
+
+struct elf_iter;
+elf_iter_init(*iter, elf); /* sets next_sym_idx to 0 */
+
+while ((sym =3D elf_iter_next(&iter))) {
+   /* use sym */
+}
+
+
+And we can tune the returned result to have symbol index, etc, of course.
+
 
 
 >
 > >
-> > Another aspect I wanted to discuss (and I don't know the right answer)
-> > was whether we need to support separate binary path for each offset?
-> > It would simplify (and trim down memory usage significantly) a bunch
-> > of internals if we knew we are dealing with single inode for each
-> > multi-uprobe link. I'm trying to think if it would be limiting in
-> > practice to have to create link per each binary, and so far it seems
-> > like usually user-space code will do symbol resolution per ELF file
-> > anyways, so doesn't seem limiting to have single path + multiple
-> > offsets/cookies within that file. For USDTs use case even ref_ctr is
-> > probably the same, but I'd keep it 1:1 with offset and cookie anyways.
-> > For uniformity and generality.
-> >
-> > WDYT?
+> > Also, I think we are at the point where libbpf.c is becoming pretty
+> > bloated, so we should try to split out coherent subsets of
+> > functionality into separate files. ELF helpers seem like a good group
+> > of functionality  to move to a separate file? Maybe as a separate
+> > patch set and/or follow up, but think about whether you can do part of
+> > that during refactoring?
 >
-> right, it's waste for single binary, but I guess it's not a big waste,
-> because when you have single binary you just repeat the same pointer,
-> not the path
->
-> it's fast enough to be called multiple times for each binary you want
-> to trace, but it'd be also nice to be able to attach all in once ;-)
->
-> maybe we could have a bit in flags saying paths[0] is valid for all
-
-No need for extra flags. I was just thinking about having a simpler
-and more straightforward API, where you don't need to create another
-array with tons of duplicated string pointers. No big deal, I'm fine
-either way.
-
->
-> >
-> > >
-> > > Attaching current bpftrace to 1000 uprobes:
-> > >
-> > >   # BPFTRACE_MAX_PROBES=3D100000 perf stat -e cycles,instructions \
-> > >     ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:m=
-s:1 { exit(); }'
-> > >     ...
-> > >
-> > >      126,666,390,509      cycles
-> > >       29,973,207,307      instructions                     #    0.24 =
- insn per cycle
-> > >
-> > >         85.284833554 seconds time elapsed
-> > >
-> > >
-> > > Same bpftrace setup with uprobe_multi support:
-> > >
-> > >   # perf stat -e cycles,instructions \
-> > >     ./bpftrace -e 'uprobe:./uprobe_multi:uprobe_multi_func_* { }, i:m=
-s:1 { exit(); }'
-> > >     ...
-> > >
-> > >        6,818,470,649      cycles
-> > >       13,275,510,122      instructions                     #    1.95 =
- insn per cycle
-> > >
-> > >          1.943269451 seconds time elapsed
-> > >
-> > >
-> > > I'm sending this as RFC because of:
-> > >   - I added/exported some new elf_* helper functions in libbpf,
-> > >     and I'm not sure that's the best/right way of doing this
-> >
-> > didn't get to that yet, sounds suspicious :)
-> >
-> > >   - I'm not completely sure about the usdt integration in bpf_program=
-__attach_usdt,
-> > >     I was trying to detect uprobe_multi kernel support first, but end=
-ed up with
-> > >     just new field for struct bpf_usdt_opts
-> >
-> > haven't gotten to this yet as well, but it has to be auto-detectable,
-> > not an option (at least I don't see why it wouldn't be, but let me get
-> > to the patch)
+> right, sounds good, will check
 >
 > thanks,
 > jirka
+>
+> >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 185 +++++++++++++++++++++++++--------------=
+--
+> > >  1 file changed, 114 insertions(+), 71 deletions(-)
+> > >
+> >
+> > [...]
