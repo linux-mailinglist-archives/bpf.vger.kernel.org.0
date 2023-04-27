@@ -2,329 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B571A6F0E97
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 00:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A876F0EDD
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbjD0Wx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 18:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
+        id S229783AbjD0X2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 19:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjD0Wxz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 18:53:55 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B11BDC
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:53:54 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33RMnD9F006047
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:53:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=Tfg/2PoJ1PnlvHzjhmnbVWjloWiIpTXqZiImuElDW44=;
- b=Xy4bbIIYRyHr+O0ijpRW9mCuZXDDn5IX3cYa5GuedOM/yJJ1SkSmaJmJWfFztYZFDYB6
- PZHpTBQYB2uIk/501B+pIRBu46I/6xD2tDTjuYwN5qYgm2xQd8wlUqFZDiq7SFiX7w62
- 1JXB82eH2XvmbdGzvS8i2gT7NLzEkoYmBvU61C3rNRB5l0Yl2nunK6AY8VccgQhWR5f7
- F4lcpAzirFo/tpfv7Du01R8iHPWFEEk3CqxIJQ2ULWQ+OpP5jqWiFLu0pFHJc/fQiirE
- ogfo0HKleAvwavJytbWxaYJaROLYrwp51bIF+Q1iW1aDC64k1mBo0m0RqJnd0XhmFhGL gQ== 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q825ur0wu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 15:53:53 -0700
-Received: from twshared25760.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 27 Apr 2023 15:53:52 -0700
-Received: by devvm5710.vll0.facebook.com (Postfix, from userid 624576)
-        id 8F1372D198AA; Thu, 27 Apr 2023 15:53:39 -0700 (PDT)
-From:   Stephen Veiss <sveiss@meta.com>
-To:     <bpf@vger.kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     Yonghong Song <yhs@meta.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stephen Veiss <sveiss@meta.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: test_progs can read test lists from file
-Date:   Thu, 27 Apr 2023 15:53:33 -0700
-Message-ID: <20230427225333.3506052-3-sveiss@meta.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230427225333.3506052-1-sveiss@meta.com>
-References: <20230427225333.3506052-1-sveiss@meta.com>
+        with ESMTP id S1344097AbjD0X2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 19:28:12 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F411C272E
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:28:10 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-b9a6869dd3cso2692445276.2
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 16:28:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682638090; x=1685230090;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GCNur8ye00lfwuEn8aqgDObynVvMHHHZO3F1ug6RXms=;
+        b=eqilKu2foh+ZS+T8W9A4VyDLeS3SBrTOUZ7cfPK5BuHwK0nGmYOPYb6fNyc5YAwKug
+         aeUV8N45wDdWNqp2/Xl0MtdYBeYVbhtBuuWI61df/RdGun32D1j087ODb5g1k1ILQApE
+         8IploToxkcBFMGetLa4S0rmERG3UMbqGgMEsowdh+N08oUJILJCmWm55+SATGpnPDDvM
+         DBpSZ/440VlaKOZo5ldDZ6bKsJWCyz8A5KP2TBYldtqf6Ycnvju20coHBfXLqPpc8efc
+         KAdrwZa7/g0eDeD4CdGCoKVLc/51r0wgTjptUef74QTz3hzzKKHofjQSfg4A9SgMkxo3
+         FH4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682638090; x=1685230090;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GCNur8ye00lfwuEn8aqgDObynVvMHHHZO3F1ug6RXms=;
+        b=fnX+YyYC5aeUtIxkibAz9HadrE3SgoWxfhLxa7tnua8zlkfUP2WHZA9gv9nk6H2FSB
+         FzXHCNAigR5W/1g12vf2OSNQOId5YrP+1qY22vd7qqklbK4qNgTzyW8JjCNpPtaH27kD
+         17JkgCUSVilpDPZbvfa3+M6nchyQcunSBXfqZmpsxwW9hCm91rEzHjTRDoLWOnTplTGw
+         iFuK383vc+ScBjxLnRCebX0gp0xmHY57ga9H1zOK6HFsOL960+xR3BDnS7z0erzC/Wds
+         yC7Sfoq96udj7YXO0v1Pd0HnR8mHScmIe+Qh0vKG3Rve7bJ1gMFtDuZp/6y1eJwGU8gE
+         ymCA==
+X-Gm-Message-State: AC+VfDzvkUc7XVY7J/lo8gVG+ebAwll8gBUQMCqBS4in5FtxZfVYa93b
+        jONQk+A0OJGzkIRlKeDjtCP6V0rs/p3PHOYKxEI=
+X-Google-Smtp-Source: ACHHUZ7/D4mY0md+2Pdoms2gl7DWZzFxYpmvN+UrYuDuDdadu2RnJ2pFzjePhW75qScD53DXmfWkVrI7t1d6IdFOS4A=
+X-Received: by 2002:a25:19d4:0:b0:b9a:7b56:bcb4 with SMTP id
+ 203-20020a2519d4000000b00b9a7b56bcb4mr2210008ybz.42.1682638090065; Thu, 27
+ Apr 2023 16:28:10 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+ <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+ <CAEf4BzaZhjgPNaNH2yFxjZ-C+ZaSJRg9EWzOCcMOP-CV7kDHBA@mail.gmail.com>
+ <ZEn/EOnsH2RP//24@google.com> <CAEf4BzZHS5NprN2ya03Re_1hvC0nNyz_qYEhbD=sGou+m=OWHw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZHS5NprN2ya03Re_1hvC0nNyz_qYEhbD=sGou+m=OWHw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Thu, 27 Apr 2023 16:27:59 -0700
+Message-ID: <CAM9d7chFp42ar3dMmhHxhHR=CVRg64cMvNQDE98M-EuRmU5EfQ@mail.gmail.com>
+Subject: Re: [HELP] failed to resolve CO-RE relocation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: BEo7QQhlFCnzMbXpVFINszcbLJOSvhk5
-X-Proofpoint-ORIG-GUID: BEo7QQhlFCnzMbXpVFINszcbLJOSvhk5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-27_09,2023-04-27_01,2023-02-09_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Improve test selection logic when using -a/-b/-d/-t options.
-The list of tests to include or exclude can now be read from a file,
-specified as @<filename>.
+On Thu, Apr 27, 2023 at 3:15=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> Ok, I didn't manage to force compiler to behave as long as
+> `&rq_old->lock` pattern was used. So I went for a different approach.
+> This works:
 
-The file contains one name (or wildcard pattern) per line, and
-comments beginning with # are ignored.
+Thanks!  It works for me too!
 
-These options can be passed multiple times to read more than one file.
+Can I use this patch with your Co-developed-by tag ?
 
-Signed-off-by: Stephen Veiss <sveiss@meta.com>
----
+Thanks,
+Namhyung
 
-Notes:
-    There was a suggestion to replace remove() with close() in
-    test_parse_test_list_file. mkstemp() doesn't unlink the temp file it
-    creates, so this would have left a file behind. I did try to clean up
-    the error logic here slightly instead.
 
- .../selftests/bpf/prog_tests/arg_parsing.c    | 55 +++++++++++++++++++
- tools/testing/selftests/bpf/test_progs.c      | 37 +++++++++----
- tools/testing/selftests/bpf/testing_helpers.c | 47 ++++++++++++++++
- tools/testing/selftests/bpf/testing_helpers.h |  3 +
- 4 files changed, 132 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c b/tools=
-/testing/selftests/bpf/prog_tests/arg_parsing.c
-index 3754cd5f8c0a..bb143de68875 100644
---- a/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-+++ b/tools/testing/selftests/bpf/prog_tests/arg_parsing.c
-@@ -113,8 +113,63 @@ static void test_parse_test_list(void)
- 	free_test_filter_set(&set);
- }
-=20
-+static void test_parse_test_list_file(void)
-+{
-+	struct test_filter_set set;
-+	char tmpfile[80];
-+	FILE *fp;
-+	int fd;
-+
-+	snprintf(tmpfile, sizeof(tmpfile), "/tmp/bpf_arg_parsing_test.XXXXXX");
-+	fd =3D mkstemp(tmpfile);
-+	if (!ASSERT_GE(fd, 0, "create tmp"))
-+		return;
-+
-+	fp =3D fdopen(fd, "w");
-+	if (!ASSERT_NEQ(fp, NULL, "fdopen tmp")) {
-+		close(fd);
-+		goto out_remove;
-+	}
-+
-+	fprintf(fp, "# comment\n");
-+	fprintf(fp, "  test_with_spaces    \n");
-+	fprintf(fp, "testA/subtest    # comment\n");
-+	fprintf(fp, "testB#comment with no space\n");
-+	fprintf(fp, "testB # duplicate\n");
-+	fprintf(fp, "testA/subtest # subtest duplicate\n");
-+	fprintf(fp, "testA/subtest2\n");
-+	fprintf(fp, "testC_no_eof_newline");
-+	fflush(fp);
-+
-+	if (!ASSERT_OK(ferror(fp), "prepare tmp"))
-+		goto out_fclose;
-+
-+	init_test_filter_set(&set);
-+
-+	ASSERT_OK(parse_test_list_file(tmpfile, &set, true), "parse file");
-+
-+	ASSERT_EQ(set.cnt, 4, "test  count");
-+	ASSERT_OK(strcmp("test_with_spaces", set.tests[0].name), "test 0 name")=
-;
-+	ASSERT_EQ(set.tests[0].subtest_cnt, 0, "test 0 subtest count");
-+	ASSERT_OK(strcmp("testA", set.tests[1].name), "test 1 name");
-+	ASSERT_EQ(set.tests[1].subtest_cnt, 2, "test 1 subtest count");
-+	ASSERT_OK(strcmp("subtest", set.tests[1].subtests[0]), "test 1 subtest =
-0");
-+	ASSERT_OK(strcmp("subtest2", set.tests[1].subtests[1]), "test 1 subtest=
- 1");
-+	ASSERT_OK(strcmp("testB", set.tests[2].name), "test 2 name");
-+	ASSERT_OK(strcmp("testC_no_eof_newline", set.tests[3].name), "test 3 na=
-me");
-+
-+	free_test_filter_set(&set);
-+
-+out_fclose:
-+	fclose(fp);
-+out_remove:
-+	remove(tmpfile);
-+}
-+
- void test_arg_parsing(void)
- {
- 	if (test__start_subtest("test_parse_test_list"))
- 		test_parse_test_list();
-+	if (test__start_subtest("test_parse_test_list_file"))
-+		test_parse_test_list_file();
- }
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/sel=
-ftests/bpf/test_progs.c
-index ea82921110da..793689dcc170 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -714,7 +714,13 @@ static struct test_state test_states[ARRAY_SIZE(prog=
-_test_defs)];
-=20
- const char *argp_program_version =3D "test_progs 0.1";
- const char *argp_program_bug_address =3D "<bpf@vger.kernel.org>";
--static const char argp_program_doc[] =3D "BPF selftests test runner";
-+static const char argp_program_doc[] =3D
-+"BPF selftests test runner\v"
-+"Options accepting the NAMES parameter take either a comma-separated lis=
-t\n"
-+"of test names, or a filename prefixed with @. The file contains one nam=
-e\n"
-+"(or wildcard pattern) per line, and comments beginning with # are ignor=
-ed.\n"
-+"\n"
-+"These options can be passed repeatedly to read multiple files.\n";
-=20
- enum ARG_KEYS {
- 	ARG_TEST_NUM =3D 'n',
-@@ -797,6 +803,7 @@ extern int extra_prog_load_log_flags;
- static error_t parse_arg(int key, char *arg, struct argp_state *state)
- {
- 	struct test_env *env =3D state->input;
-+	int err =3D 0;
-=20
- 	switch (key) {
- 	case ARG_TEST_NUM: {
-@@ -821,18 +828,28 @@ static error_t parse_arg(int key, char *arg, struct=
- argp_state *state)
- 	}
- 	case ARG_TEST_NAME_GLOB_ALLOWLIST:
- 	case ARG_TEST_NAME: {
--		if (parse_test_list(arg,
--				    &env->test_selector.whitelist,
--				    key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST))
--			return -ENOMEM;
-+		if (arg[0] =3D=3D '@')
-+			err =3D parse_test_list_file(arg + 1,
-+						   &env->test_selector.whitelist,
-+						   key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST);
-+		else
-+			err =3D parse_test_list(arg,
-+					      &env->test_selector.whitelist,
-+					      key =3D=3D ARG_TEST_NAME_GLOB_ALLOWLIST);
-+
- 		break;
- 	}
- 	case ARG_TEST_NAME_GLOB_DENYLIST:
- 	case ARG_TEST_NAME_BLACKLIST: {
--		if (parse_test_list(arg,
--				    &env->test_selector.blacklist,
--				    key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST))
--			return -ENOMEM;
-+		if (arg[0] =3D=3D '@')
-+			err =3D parse_test_list_file(arg + 1,
-+						   &env->test_selector.blacklist,
-+						   key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST);
-+		else
-+			err =3D parse_test_list(arg,
-+					      &env->test_selector.blacklist,
-+					      key =3D=3D ARG_TEST_NAME_GLOB_DENYLIST);
-+
- 		break;
- 	}
- 	case ARG_VERIFIER_STATS:
-@@ -900,7 +917,7 @@ static error_t parse_arg(int key, char *arg, struct a=
-rgp_state *state)
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
--	return 0;
-+	return err;
- }
-=20
- /*
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testin=
-g/selftests/bpf/testing_helpers.c
-index fca617e87710..dc9595ade8de 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- /* Copyright (C) 2019 Netronome Systems, Inc. */
- /* Copyright (C) 2020 Facebook, Inc. */
-+#include <ctype.h>
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
-@@ -167,6 +168,52 @@ static int insert_test(struct test_filter_set *set,
- 	return -ENOMEM;
- }
-=20
-+int parse_test_list_file(const char *path,
-+			 struct test_filter_set *set,
-+			 bool is_glob_pattern)
-+{
-+	char *buf =3D NULL, *capture_start, *capture_end, *scan_end;
-+	size_t buflen =3D 0;
-+	int err =3D 0;
-+	FILE *f;
-+
-+	f =3D fopen(path, "r");
-+	if (!f) {
-+		err =3D -errno;
-+		fprintf(stderr, "Failed to open '%s': %d\n", path, err);
-+		return err;
-+	}
-+
-+	while (getline(&buf, &buflen, f) !=3D -1) {
-+		capture_start =3D buf;
-+
-+		while (isspace(*capture_start))
-+			++capture_start;
-+
-+		capture_end =3D capture_start;
-+		scan_end =3D capture_start;
-+
-+		while (*scan_end && *scan_end !=3D '#') {
-+			if (!isspace(*scan_end))
-+				capture_end =3D scan_end;
-+
-+			++scan_end;
-+		}
-+
-+		if (capture_end =3D=3D capture_start)
-+			continue;
-+
-+		*(++capture_end) =3D '\0';
-+
-+		err =3D insert_test(set, capture_start, is_glob_pattern);
-+		if (err)
-+			break;
-+	}
-+
-+	fclose(f);
-+	return err;
-+}
-+
- int parse_test_list(const char *s,
- 		    struct test_filter_set *set,
- 		    bool is_glob_pattern)
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testin=
-g/selftests/bpf/testing_helpers.h
-index eb8790f928e4..98f09bbae86f 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -20,5 +20,8 @@ struct test_filter_set;
- int parse_test_list(const char *s,
- 		    struct test_filter_set *test_set,
- 		    bool is_glob_pattern);
-+int parse_test_list_file(const char *path,
-+			 struct test_filter_set *test_set,
-+			 bool is_glob_pattern);
-=20
- __u64 read_perf_max_sample_freq(void);
---=20
-2.34.1
-
+>
+> $ git diff
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> index 8911e2a077d8..8d3cfbb3cc65 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -418,32 +418,32 @@ int contention_end(u64 *ctx)
+>
+>  extern struct rq runqueues __ksym;
+>
+> -struct rq__old {
+> +struct rq___old {
+>         raw_spinlock_t lock;
+>  } __attribute__((preserve_access_index));
+>
+> -struct rq__new {
+> +struct rq___new {
+>         raw_spinlock_t __lock;
+>  } __attribute__((preserve_access_index));
+>
+>  SEC("raw_tp/bpf_test_finish")
+>  int BPF_PROG(collect_lock_syms)
+>  {
+> -       __u64 lock_addr;
+> +       __u64 lock_addr, lock_off;
+>         __u32 lock_flag;
+>
+> +       if (bpf_core_field_exists(struct rq___new, __lock))
+> +               lock_off =3D offsetof(struct rq___new, __lock);
+> +       else
+> +               lock_off =3D offsetof(struct rq___old, lock);
+> +
+>         for (int i =3D 0; i < MAX_CPUS; i++) {
+>                 struct rq *rq =3D bpf_per_cpu_ptr(&runqueues, i);
+> -               struct rq__new *rq_new =3D (void *)rq;
+> -               struct rq__old *rq_old =3D (void *)rq;
+>
+>                 if (rq =3D=3D NULL)
+>                         break;
+>
+> -               if (bpf_core_field_exists(rq_new->__lock))
+> -                       lock_addr =3D (__u64)&rq_new->__lock;
+> -               else
+> -                       lock_addr =3D (__u64)&rq_old->lock;
+> +               lock_addr =3D (__u64)(void *)rq + lock_off;
+>                 lock_flag =3D LOCK_CLASS_RQLOCK;
+>                 bpf_map_update_elem(&lock_syms, &lock_addr,
+> &lock_flag, BPF_ANY);
+>         }
+>
+>
+> > Thanks,
+> > Namhyung
+> >
+> >
