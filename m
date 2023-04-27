@@ -2,102 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7936F0CE0
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D9F6F0CED
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344137AbjD0UK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 16:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S1344095AbjD0UPv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245168AbjD0UKz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 16:10:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4E82D74;
-        Thu, 27 Apr 2023 13:10:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=rm4VFHyDYsqXBKBCZiX6B5oR3dBaXDqMYN7/nV3rI0o=; b=oVjhWQHWCGmKy1M95S4AZgQpao
-        aPZfZFUwt0gqinnR6m4oxjlEQu8YYNfEY5wYHAgeWfURDtWW9eh6yB0j9w1ZCUaPLHjdamaTkC5dw
-        K+HliZCX9gTUW4J5N3ZLj3X/HWKYNtmzDrCKjLeGPNMwa/mNmVIIswQyITTh20FlpaB1hmfeIarje
-        KPLVkTfhs6Q9LtJaCzf6uyToiJPAlQYfVC3iPNUdYpd4HvBvKmS/mdOOnJvKRygqm1/0/4iZTRsfc
-        F/q76zK1DIqtAZaVnLaXFKzZixIe1ayxB06fUp25+johy6c+NNtWNVcaowsQu3HkctlJdPinrEAPE
-        LPFF1NqQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps7x5-000JeT-CV; Thu, 27 Apr 2023 22:10:51 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ps7x4-000Lnr-W5; Thu, 27 Apr 2023 22:10:51 +0200
-Subject: Re: [PATCH bpf-next] selftests/bpf: Update the aarch64 tests deny
- list
-To:     Stanislav Fomichev <sdf@google.com>,
-        Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, kpsingh@kernel.org, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, xukuohai@huaweicloud.com,
-        mark.rutland@arm.com
-References: <20230427143207.635263-1-revest@chromium.org>
- <CABRcYm+O-_GGhnAmJW6_=9vKeKSvzVLcxBRq3Pfjb3W0_HNjhw@mail.gmail.com>
- <ZErFdVXHhEdJ/m3G@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <60a7370b-9e6a-cba3-4d63-76d47a780982@iogearbox.net>
-Date:   Thu, 27 Apr 2023 22:10:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S231563AbjD0UPl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:15:41 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16811704
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:15:39 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2a8eb8db083so90403281fa.3
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 13:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682626538; x=1685218538;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K5Lnb7aTuHCWI4cpXtVhlA+gR45qQj9fnqWuqavBqZE=;
+        b=FSh5TG015rRxK14S5bL4dEMKAkWtDbqtUHXxLhoZWVgHXrEWuNlAeeTfHxPKxOHAu2
+         7xpDnYG46CkuK3r1TI/w78eBYdEK5QgC/78xs+fNYY8hKjWfNSWRIQSSj2G/srWvpKMC
+         SSBVsS2e0dpJb/czVbQyhUn0U815Lssb7BUCJDNQ5DiNSs1lSDbkLfMGOpBYUoDSUje9
+         2h9PycVhfXJ5XVeLVuLiyx5DnnbS7oZBVrAdPfhVJA295fActCWHA19Uz1IoKV0JB117
+         Sz2crvV/xlJ7op7eRAia4jB5W3eLWcBdDl4PjVPyVj09k8wmLzzHczRTJVcsuELpFFvq
+         CRrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682626538; x=1685218538;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K5Lnb7aTuHCWI4cpXtVhlA+gR45qQj9fnqWuqavBqZE=;
+        b=WlMb+PvzTZalUvRVdFBzBCFyDJ/mx9QgKCuw1jCq5Hh81LYDEDdFnCeuWVWSDawvMQ
+         DQkCD4m4ojHOnvePhrFe7tP0FkJZQQa4J1C7r9gPjCcPR754wycQYlrQuhmw33ptjgf1
+         me67eYS9ut5kfW77/gdxImSRgz6PupI3XAAqirJ9O26dDW9b8suMqp+lJeTfKgvp3Usb
+         luIgasOmVl6BuIU5rrkDqHH2J0UCdrcsIs0Vm4rbVCyl+rkzYX3KvoM3f0GgCP3pL3O2
+         4eP3FE3R+lvA0+yawZz3uSFkOm95l9tIMElzrpMIxrKUOJb1Quqc15SOLz9xt2HR1COb
+         j2Ug==
+X-Gm-Message-State: AC+VfDyhWoMN2zrrXM6oZ6ZW6lM8O4+6EtlC0IOnaGp48m/EjPI6dgHy
+        SlruH1e+pdUL8RpYxCxdSzVZ0zGYSJ5Nsk2bXxU/hayW
+X-Google-Smtp-Source: ACHHUZ4mREZR9T58cu3z55NvHsitsaISMDVuEq2CnVHJrsDhLj2eVzyIPDm7Ul8saZMgeCcBlob7zUPM7B5y0LcQ8RA=
+X-Received: by 2002:a2e:87c7:0:b0:2a8:bc4e:594f with SMTP id
+ v7-20020a2e87c7000000b002a8bc4e594fmr900235ljj.20.1682626537554; Thu, 27 Apr
+ 2023 13:15:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ZErFdVXHhEdJ/m3G@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26889/Thu Apr 27 09:25:48 2023)
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230426155357.4158846-1-sdf@google.com> <CAEf4BzatobESuMtP=ndHuf+imtX1ovM-4+cnV9c=UdsC=teZBQ@mail.gmail.com>
+ <CAKH8qBt4xqBUpXefqPk5AyU1Rr0-h-vCJzS_0Bu-987gL4wi4A@mail.gmail.com>
+In-Reply-To: <CAKH8qBt4xqBUpXefqPk5AyU1Rr0-h-vCJzS_0Bu-987gL4wi4A@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 27 Apr 2023 13:15:26 -0700
+Message-ID: <CAADnVQ+HMtb75JtPSV1oHXoPgxpZuOu0tE6RCZwxtXVKYduYqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Make bpf_helper_defs.h c++ friendly
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Peng Wei <pengweiprc@google.com>,
+        Yonghong Song <yhs@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/27/23 8:56 PM, Stanislav Fomichev wrote:
-> On 04/27, Florent Revest wrote:
->> On Thu, Apr 27, 2023 at 4:32 PM Florent Revest <revest@chromium.org> wrote:
->>>
->>> This patch updates the list of BPF selftests which are known to fail so
->>> the BPF CI can validate the tests which pass now.
->>
->> Note: I tested this denylist a few months back by sending a manual PR
->> to https://github.com/kernel-patches/bpf.
->> At the time, it worked
->> https://github.com/kernel-patches/bpf/actions/runs/4106542133/jobs/7085514761
->> (even though there seemed to be a known flake in the gcc variant but
->> unrelated to the new arch support)
->>
->> Every time I wanted to have the CI run on my PRs, I had to annoy Manu
->> by email (I wouldn't have the rights to trigger the CI by myself
->> otherwise). So I haven't tested this *actual* patch rebased on the
->> current CI before sending it to the list. (e.g. the
->> module_fentry_shadow test has been added since then and I just assumed
->> it would pass in CI like the rest)
->>
->> My understanding is that this patch should soon be picked up by the
->> testing bot and we can use that CI run to check that everything works
->> as intended. Let's wait for a CI green light before merging this! :)
->> If there are errors I'll send a v2
-> 
-> Looks green now:
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/4822595792/jobs/8590732278
+On Thu, Apr 27, 2023 at 9:59=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
+ wrote:
+>
+> RE unsupported C++: we are not really subscribing to support it here, rig=
+ht?
+> Just making it easier for the folks who want to experiment with it to
+> try it out.
 
-That's awesome to see ... big batch of tests which this unlocks!
+I think short term experiments should be out of tree.
+The experiments that lead to a long term goal can certainly be in tree.
+In that sense if your team is really going to invest into making
+c++ a supported front-end for bpf than this is a good first step.
+Such c++ flavor will have restrictions (like no virtual calls and
+exceptions) and it's ok. The basic things like CO-RE has to work though.
+In other words if there is a draft patch for llvm to enable
+existing attrs for c++ then this patch would be fine.
+This patch alone with no effort made on llvm side should stay out of tree.
