@@ -2,75 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3536F0029
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 06:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E58B6F002C
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 06:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242799AbjD0EZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 00:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        id S232050AbjD0E1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 00:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242703AbjD0EY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 00:24:58 -0400
+        with ESMTP id S234980AbjD0E1O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 00:27:14 -0400
 Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CAF30E0;
-        Wed, 26 Apr 2023 21:24:50 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-506c04dd879so13823569a12.3;
-        Wed, 26 Apr 2023 21:24:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819D593
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:27:12 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-50a145a0957so2969298a12.1
+        for <bpf@vger.kernel.org>; Wed, 26 Apr 2023 21:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682569489; x=1685161489;
+        d=gmail.com; s=20221208; t=1682569631; x=1685161631;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e9BPTABkCQ4wyIp6Wf2934lahb8sP4xbJb6UHZ9xVyw=;
-        b=KHlh84VSsn4sm4nugwRFHAFauJyxzdBLWxqsCzWNBEmI9BY4yIKs4uOO9iO6Fsw6nD
-         Knqhtuupm2OTXBhWjOAnrZnOVQAneDhXu1rAg9hViP5c1zQwQdmkjBCiTyPxx53YSsQE
-         OG76ZPvfHdLkfzVj3vqMnhDFZYXovmkg6E95p2QGJHtxXzuit+OUCWqKZS2quzuKtxvM
-         UznIIshU+4AT/2NUgjpbOzMWqDeZH9W8xQ8rUUsUwjd/2x/1GlHXPEcyF28gVUFxUYak
-         Fp+JY6xesvcEHd2+lDZtToWvv5c4v3+lvlwRAGY99s+0HVlntZaFw+2FktD/Vgbdj5oQ
-         wp7A==
+        bh=+KXcdvhP/M6zYFrqXIH58thfwzAMsR8d2RKOZjN9tlE=;
+        b=IXuSkxTk6k8M8KpItmkhwA5YkO0se06eLP9Opo7OpLc0ZiTPnuSxrQKKEMXxL1em9M
+         W7BJIZKITpwTGWEeZGWa6FXhF+M0a6vcjNtXXpkOSjrDImn/P6fDG4t7i3y22mZNkbrb
+         ECyXCYh9UeBG/l4UsZAe91gayplPaumR7SiKLk/DZlPNUjJI6BumNmz/tf+ao/MbgizE
+         rvg0MZjm9h0sAHFC8JFmLE3Od4etCvMnFUKKdTHKNS1GNRjB5+Htgc+hQa5ewgoBvR5U
+         qMy7PygtuYszNdXC0i+x1Jjj7zT6uxYLXPzQ9SETPC4Zj8S6pCWPnMAfsPE0sATZEENS
+         nc4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682569489; x=1685161489;
+        d=1e100.net; s=20221208; t=1682569631; x=1685161631;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e9BPTABkCQ4wyIp6Wf2934lahb8sP4xbJb6UHZ9xVyw=;
-        b=ObhC70V1A5C4bofjyhOseHdRFvY1bWXB1uoGTDiLx4ig3ebQnG3k80kNA9kYTiCGm+
-         yxNDImALVTTR/V9EXw28UH2GgamSKBFChXDlsL115gw7ewxfhtW8wAd/Ol2cpcWP9PFo
-         BsPp23qDYxYNRN52JdbpKJ2OOglMKkdVb8gvsFQ+GFPtcy/3hZ3RXn8SjAV/vnB2az5D
-         5hkUsiXOHoWh0m5dDAbbs+WjGfHGyX8fTueuA1sXkQEOE5vqJhWoGrnFCU9R71jxSE1B
-         PgKkRkXMyf3xJcjeiYvCWEblX0geNmDJlpBur+ibCSl2M7TOx+FlhT3EJDbGGC5AEBmB
-         XB9g==
-X-Gm-Message-State: AC+VfDw31a7siT7u/DOJna1qFBGld3bRucc5mOfoO9Hejpzle6Z1LEW1
-        vv7XMRnPwsAJjBhnQYL11eYLZ7qC83nqFryurFo=
-X-Google-Smtp-Source: ACHHUZ5fqfAwKjuAWSkAihFFHvEwlRfsA02iW3+avOLbRVhBPDOZ7ASIChRyDulgSARBNY1hKrj3N2Ty5GA1cdPmSDw=
-X-Received: by 2002:aa7:d603:0:b0:506:bc29:2ce7 with SMTP id
- c3-20020aa7d603000000b00506bc292ce7mr444319edr.29.1682569489175; Wed, 26 Apr
- 2023 21:24:49 -0700 (PDT)
+        bh=+KXcdvhP/M6zYFrqXIH58thfwzAMsR8d2RKOZjN9tlE=;
+        b=k0hGIkZrbIPj7D1Pll7bOsPupRDiCwntWVw1SlWHp/fw9L8iZwzU83sOwBjcOXMWu2
+         wODXH3/1vWtj9DJ8QCgdEG2YBQTLYu+8iMC7lbh9DNnXqxj7uG0SqAXEPd0bM5hU3A3P
+         ug8XtHg0tWuIWDquZ36NWglZPmeZrim3UO4VXqPgwN+m1yBfI09OuaasIo9Zvr3R4/kD
+         q+0NRiAzBa83jUobIpPFujVQZQRcSydWluuLx+HkQOqTbW6VLI+6jtpaAf9InZzI+ZJM
+         WkvfJoWnfvAcnf+07F2Wewc5YEHE7K9NjTh7pZ921PQRfi9F+hEQFW8B5mox63WcM5eB
+         ICog==
+X-Gm-Message-State: AC+VfDxbNacKQHPZLE93+N6F6PDkB9iTg/6fyoUf1YjI2cCeEsOA9V1q
+        QZvYstloBDFSbcTYiaSq2NyBjImDfl661mpRDhc=
+X-Google-Smtp-Source: ACHHUZ6vy5f1/XTK8UPQyjI4wcSJYAuJfDyrJuYqQ/+88QnqXgm8X+90WDLihJCl0GirsLQz2/PFFtwOuRvL8kmEh2Y=
+X-Received: by 2002:a05:6402:354d:b0:506:bda9:fcb9 with SMTP id
+ f13-20020a056402354d00b00506bda9fcb9mr4343996edd.4.1682569630789; Wed, 26 Apr
+ 2023 21:27:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230418014037.2412394-1-drosen@google.com> <20230418014037.2412394-36-drosen@google.com>
-In-Reply-To: <20230418014037.2412394-36-drosen@google.com>
+References: <20230427001425.563232-1-namhyung@kernel.org> <CAEf4BzYs6iD+iE4RZnXTKHhBHCOr9r7AdhsBWWDpivy7sshPKw@mail.gmail.com>
+ <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
+In-Reply-To: <CAM9d7ci3xAcnqdkpb-J4rv7yfiB2Trb-e2h7gfj6Wu5N_V7a-Q@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Apr 2023 21:24:37 -0700
-Message-ID: <CAEf4BzYD9P+1aP+q77i7RJPJW=iSS6-iTw+rfPuCz=FFB2MiZw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 35/37] tools: Add FUSE, update bpf includes
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+Date:   Wed, 26 Apr 2023 21:26:59 -0700
+Message-ID: <CAEf4BzaZhjgPNaNH2yFxjZ-C+ZaSJRg9EWzOCcMOP-CV7kDHBA@mail.gmail.com>
+Subject: Re: [HELP] failed to resolve CO-RE relocation
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,43 +74,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 17, 2023 at 6:42=E2=80=AFPM Daniel Rosenberg <drosen@google.com=
-> wrote:
+On Wed, Apr 26, 2023 at 7:21=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> Updates the bpf includes under tools, and adds fuse
+> Hello Andrii,
 >
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  tools/include/uapi/linux/bpf.h  |   12 +
->  tools/include/uapi/linux/fuse.h | 1135 +++++++++++++++++++++++++++++++
->  2 files changed, 1147 insertions(+)
->  create mode 100644 tools/include/uapi/linux/fuse.h
+> On Wed, Apr 26, 2023 at 6:19=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Apr 26, 2023 at 5:14=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > Hello,
+> > >
+> > > I'm having a problem of loading perf lock contention BPF program [1]
+> > > on old kernels.  It has collect_lock_syms() to get the address of eac=
+h
+> > > CPU's run-queue lock.  The kernel 5.14 changed the name of the field
+> > > so there's bpf_core_field_exists to check the name like below.
+> > >
+> > >         if (bpf_core_field_exists(rq_new->__lock))
+> > >                 lock_addr =3D (__u64)&rq_new->__lock;
+> > >         else
+> > >                 lock_addr =3D (__u64)&rq_old->lock;
+> >
+> > I suspect compiler rewrites it to something like
+> >
+> >    lock_addr =3D (__u64)&rq_old->lock;
+> >    if (bpf_core_field_exists(rq_new->__lock))
+> >         lock_addr =3D (__u64)&rq_new->__lock;
+> >
+> > so rq_old relocation always happens and ends up being not guarded
+> > properly. You can try adding barrier_var(rq_new) and
+> > barrier_var(rq_old) around if and inside branches, that should
+> > pessimize compiler
+> >
+> > alternatively if you do
+> >
+> > if (bpf_core_field_exists(rq_new->__lock))
+> >     lock_addr =3D (__u64)&rq_new->__lock;
+> > else if (bpf_core_field_exists(rq_old->lock))
+> >     lock_addr =3D (__u64)&rq_old->lock;
+> > else
+> >     lock_addr =3D 0; /* or signal error somehow */
+> >
+> > It might work as well.
 >
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 4b20a7269bee..6521c40875c7 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -7155,4 +7155,16 @@ struct bpf_iter_num {
->         __u64 __opaque[1];
->  } __attribute__((aligned(8)));
+> Thanks a lot for your comment!
 >
-> +/* Return Codes for Fuse BPF struct_op programs */
-> +#define BPF_FUSE_CONTINUE              0
-> +#define BPF_FUSE_USER                  1
-> +#define BPF_FUSE_USER_PREFILTER                2
-> +#define BPF_FUSE_POSTFILTER            3
-> +#define BPF_FUSE_USER_POSTFILTER       4
+> I've tried the below code but no luck. :(
 
-nit: can this be an enum instead? It would be more self-documenting,
-IMO. At given it's FUSE BPF-specific, why is it not in
-uapi/linux/fuse.h?
+Can you post an output of llvm-objdump -d <your.bpf.o> of the program
+(collect_lock_syms?) containing above code (or at least relevant
+portions with some buffer before/after to get a sense of what's going
+on)
 
-> +
-> +/* Op Code Filter values for BPF Programs */
-> +#define FUSE_OPCODE_FILTER     0x0ffff
-> +#define FUSE_PREFILTER         0x10000
-> +#define FUSE_POSTFILTER                0x20000
-> +
-
-[...]
+>
+>         barrier_var(rq_old);
+>         barrier_var(rq_new);
+>
+>         if (bpf_core_field_exists(rq_old->lock)) {
+>             barrier_var(rq_old);
+>             lock_addr =3D (__u64)&rq_old->lock;
+>         } else if (bpf_core_field_exists(rq_new->__lock)) {
+>             barrier_var(rq_new);
+>             lock_addr =3D (__u64)&rq_new->__lock;
+>         } else
+>             lock_addr =3D 0;
+>
+>
+> ; int BPF_PROG(collect_lock_syms)
+> 0: (b7) r8 =3D 0                        ; R8_w=3D0
+> 1: (b7) r7 =3D 1                        ; R7_w=3D1
+> 2: <invalid CO-RE relocation>
+> failed to resolve CO-RE relocation <byte_off> [381] struct
+> rq___old.lock (0:0 @ offset 0)
+> processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read
+>
+> Thanks,
+> Namhyung
