@@ -2,124 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98E46F0F33
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41546F0F3E
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 01:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344440AbjD0XnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 19:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        id S1344382AbjD0Xsm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 19:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344436AbjD0XnC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 19:43:02 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6175040FB;
-        Thu, 27 Apr 2023 16:42:54 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9505214c47fso1723030166b.1;
-        Thu, 27 Apr 2023 16:42:54 -0700 (PDT)
+        with ESMTP id S1344184AbjD0Xsi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 19:48:38 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151F91FF1;
+        Thu, 27 Apr 2023 16:48:38 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-63b5465fb99so7558337b3a.1;
+        Thu, 27 Apr 2023 16:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682638972; x=1685230972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mUlftFMQG/nmWGeOn+1YPkFCl4D5GTil/3fkguZjWM0=;
-        b=pa4d5xwQzC2locTY3gPMPASKVeXayCDl9KcPXWXN+q0pMCEDrVVnA2+MXVP9o/e6NU
-         EUKCojDx/XIxG6ScM4D7khM28ADklUOdokWnHxPGMfIyycx7XhLj7W/oEfT1D3ITSZaF
-         cjbMTxZ7hIlsg+wMwGNLiYn9ckVZWjrvYPmRc/OiLjzsWVmnpWXPhLT7WV023O9i6Chi
-         eQELvGbnN6+nUBnjTl3FRpYxlqgSW0js6lvKvRUXk+sNXIibxH5gMVfxovJOpt/5/dcX
-         ++so/TyIdErONKLHHCz42dCyrYSsx/vmAmuLTrh6gDMqNZqwwP+g7ArxgHQgjONyKsju
-         iFow==
+        d=gmail.com; s=20221208; t=1682639317; x=1685231317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hvu69ObOjDcoWXd9/X9TroW2MzYAQKs3/cK182eTWso=;
+        b=g3HuvbQZVP2pSxXHQq5VztWSAvsdyuZP5ZBaS5Wt/5ogAm1OprxA2RbaMZdQ+CTVcW
+         k5JDl+Dcfesu1P3kGh5FBK2y8B/KyTo+TQeVUoZKNh6fsBgRa0V/HCWx0Qo0pekT4kAy
+         VVS8BFIcUEDGhJ5XM3tg2YstfH50R6xRfWvkrj4icOIHKzHh4/9k53278/nOLXhrBQxc
+         5NZGCk9uww6uKK/Fh9uZSeIQfnX+jMZvOYecRE5EP076c4iWCNxaTqggLYfPGg8lRLZp
+         2izea5nCTvQyYiFHEHhluYXtX7V527ho5YDkQTeoHdoXhejgoCU7tp8ZBIIN59z7oRj0
+         f6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682638972; x=1685230972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mUlftFMQG/nmWGeOn+1YPkFCl4D5GTil/3fkguZjWM0=;
-        b=OEZ/T0S4TuPDhfTQ6GDtVH0RozhGS8ztcVMyKhVr0Qlyuds+gd9u9h/PhbAS5bGBpq
-         OCWdzOMUEeS2QA+cBWnP8J/w3E2ITkDfegbRLqHZ0veYCTl21EK+ifBGeFYtgEy9Neuz
-         ECs0/LXY4WHpuFZrT0FoB3R/sTCZAE2obECqzTEcmWLH74FTXYe1SqA3i+lt+eWigkuF
-         lHjOI1EgOO74408/9/M07ZAiI+ndPAfrwvAq1DiwUEV14I6G2UoHeYnmwoy2FyKfiRU3
-         HmGrsdDAg12XJq2mU2qBKpQR08qNxQ0qclc2H/t7mSm8qopBPbiaoNnBveJpVBPXLFuB
-         UbIA==
-X-Gm-Message-State: AC+VfDz4PWtco94K7ME2O7b8ArHWrir++PXl5hDuo2as3kCn6Yyru+ND
-        QQgMQsQdbqCAiVf8lih4TJKW5IWuzMRxtHn/naA=
-X-Google-Smtp-Source: ACHHUZ5WWMRF8S4mg49Zu1cIc9MR9R9ECYWxvmLB2L87Ad48iPMBZJMLcx2ImZFiGbgqsSIQ0HMrIItnPDBpGz5LB00=
-X-Received: by 2002:a17:907:a089:b0:932:7f5c:4bb2 with SMTP id
- hu9-20020a170907a08900b009327f5c4bb2mr3555970ejc.75.1682638972567; Thu, 27
- Apr 2023 16:42:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <CAEf4BzZ2zjJKhyUtZKUxbNXJMggcot4MyNEeg6n4Lho-EVbBbg@mail.gmail.com>
- <CA+PiJmTHO3SPM_LvwFYWP+uf_KU4QytBshGzk78CZi8oGJ+rnw@mail.gmail.com>
- <CAEf4BzZ_4kcM5=Jo3JoWQWugS3wkrtoteyM8YqkykFvYywG+kg@mail.gmail.com> <CA+PiJmTsEsUi3c5soodZHxS_PvMPnJG-4bFvdfpLq-kPZ0j4UQ@mail.gmail.com>
-In-Reply-To: <CA+PiJmTsEsUi3c5soodZHxS_PvMPnJG-4bFvdfpLq-kPZ0j4UQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 Apr 2023 16:42:40 -0700
-Message-ID: <CAEf4BzatBnBH8RHczLerMsW4NvTtx6xj5COjGzVvTkRxfciw4Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Dynptr Verifier Adjustments
-To:     Daniel Rosenberg <drosen@google.com>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        d=1e100.net; s=20221208; t=1682639317; x=1685231317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hvu69ObOjDcoWXd9/X9TroW2MzYAQKs3/cK182eTWso=;
+        b=flxv8fm7QO/xWXFXzn/faJkUK0AmaqnqoKqN70XHLXct02hxg9Az00q8EEA5w+fjP6
+         KXbM7uHBLkqN5hC6uV6n9ZwIIgmNWEqtlwnNUozh4K4sme9CqPkXfb6bjVYu1p8YZzwJ
+         wDMN50KgTqz7DrZvuL01BAZeY7hTudDSi6ply1QG9k6A0LihS7uMUqiWyNV+WA3WTVth
+         Yi52Di9Cc1StjgUe2sJ5SX9WX1u3J8yncxqRQanSMwdTC6U1t+gta8zh3k12fANqJQOV
+         bHCYynz77oKEzD68H86Aydx60fl1SQEHQfDi6dNEp/9hrLaT0ZPSDlgNXzrPFO5fIkUu
+         hJ6w==
+X-Gm-Message-State: AC+VfDwnGLm+FHuiSx2m2TlVR6QVujjBnRNOxOkr2upDqYQG8hQNqnI5
+        Sg1W2nQ+EhC3IN7R9b9bI5s=
+X-Google-Smtp-Source: ACHHUZ5twpgHIou96UOgioEHtYhnInA8Y/z/VeuakgmD02qRVv5fFPq1lyN7zXAxXzDzlnLqkTqoow==
+X-Received: by 2002:a05:6a00:23c1:b0:63d:3d08:4792 with SMTP id g1-20020a056a0023c100b0063d3d084792mr5334327pfc.32.1682639316271;
+        Thu, 27 Apr 2023 16:48:36 -0700 (PDT)
+Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:55cd:594d:edb:e780])
+        by smtp.gmail.com with ESMTPSA id p5-20020a056a000b4500b0062a56e51fd7sm13769425pfo.188.2023.04.27.16.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Apr 2023 16:48:35 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Song Liu <song@kernel.org>
+Subject: [PATCH 1/2] perf lock contention: Fix struct rq lock access
+Date:   Thu, 27 Apr 2023 16:48:32 -0700
+Message-ID: <20230427234833.1576130-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 4:36=E2=80=AFPM Daniel Rosenberg <drosen@google.com=
-> wrote:
->
-> On Wed, Apr 26, 2023 at 4:39=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > Don't know, show the sequence of commands you are running?
-> >
-> > I have linux source in ~/linux, and KBUILD_OUTPUT set to
-> > ~/linux-build/default. And it only takes this:
-> >
-> > $ cd ~/linux
-> > $ make -j90 # build kernel
-> > $ cd tools/testing/selftests/bpf
-> > $ make -j90 # build selftests
-> >
-> > And that's it.
->
-> I've tried the same, modulo some paths. I'm pretty sure it's version
-> related at this point.
-> The current issue I'm seeing is "error: indirect call in function,
-> which are not supported by eBPF" when using GCC-BPF for
-> progs/bind4_prog.c
+The BPF CO-RE's ignore suffix rule requires three underscores.
+Otherwise it'd fail like below:
 
-I don't think GCC-BPF is able to compile selftests properly just yet.
-So I guess the problem is that you do have some version of gcc-bpf in
-the system and selftest's Makefile tries to build gcc variants of
-test_progs? That's bad (I don't have GCC-BPF locally, and everyone
-else apparently as well).
+  $ sudo perf lock contention -ab
+  libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid argument
+  libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
+  reg type unsupported for arg#0 function collect_lock_syms#380
+  ; int BPF_PROG(collect_lock_syms)
+  0: (b7) r6 = 0                        ; R6_w=0
+  1: (b7) r7 = 0                        ; R7_w=0
+  2: (b7) r9 = 1                        ; R9_w=1
+  3: <invalid CO-RE relocation>
+  failed to resolve CO-RE relocation <byte_off> [381] struct rq__new.__lock (0:0 @ offset 0)
 
-So for now just `make BPF_GCC=3D` ? CC'ing Jose, we should probably
-agree on some criteria of "GCC-BPF is really capable of building
-selftests" and adjust Makefile to only attempt GCC BPF build in that
-case.
+Fixes: 0c1228486bef ("perf lock contention: Support pre-5.14 kernels")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 8911e2a077d8..30c193078bdb 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -418,11 +418,11 @@ int contention_end(u64 *ctx)
+ 
+ extern struct rq runqueues __ksym;
+ 
+-struct rq__old {
++struct rq___old {
+ 	raw_spinlock_t lock;
+ } __attribute__((preserve_access_index));
+ 
+-struct rq__new {
++struct rq___new {
+ 	raw_spinlock_t __lock;
+ } __attribute__((preserve_access_index));
+ 
+@@ -434,8 +434,8 @@ int BPF_PROG(collect_lock_syms)
+ 
+ 	for (int i = 0; i < MAX_CPUS; i++) {
+ 		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
+-		struct rq__new *rq_new = (void *)rq;
+-		struct rq__old *rq_old = (void *)rq;
++		struct rq___new *rq_new = (void *)rq;
++		struct rq___old *rq_old = (void *)rq;
+ 
+ 		if (rq == NULL)
+ 			break;
+-- 
+2.40.1.495.gc816e09b53d-goog
 
->
-> Currently using clang 16.0.0 and gcc 12.2.0-14.
-> I did manage to get it to build by just commenting out TEST_GEN_PROGS
-> +=3D test_progs-bpf_gcc
