@@ -2,128 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F26F0472
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 12:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686A06F050E
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 13:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243324AbjD0Ksp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 06:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S243706AbjD0LfX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 07:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbjD0Kso (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 06:48:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABC25597
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 03:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682592453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CN4GzFrEzUhAvKDGVknjzHxbBE0SJI9sNk2pKF0RC24=;
-        b=U/yIiHiFWvtzpLZ6JUBeCGjUHiVJ3a/k3E3lN7TEWZ4YA3YpgJejsAUn0o1TALdL9+F2br
-        V3ZeoB1Yo+i/HM7pfz9gy8iWHMOgkQE+cDsViQVqSnhLr+F/gKiS0dgUuJjGlQr4Xazw9+
-        /Xwj15lVoVYMg/vVR8pfUcJ0VuQUaQo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-63-RSdNb9FpM8WfLSnuXr5YCw-1; Thu, 27 Apr 2023 06:47:32 -0400
-X-MC-Unique: RSdNb9FpM8WfLSnuXr5YCw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a341ee4fcso989387366b.0
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 03:47:32 -0700 (PDT)
+        with ESMTP id S243152AbjD0LfW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 07:35:22 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418064ECB
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 04:35:21 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-74de9ce136cso394443385a.1
+        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 04:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682595320; x=1685187320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QENmgqijtQ7Lze6rVY9lo5aD++tfVhipzceIpocc7WU=;
+        b=aegjBXupufAtvHDtpwCZYf9IWfkGYTgU0PQMWFI3n07wlULLXVzqQJ60f5N4vmHCeh
+         LAQKadbNBd3eWf164Jq/LLe+A9Bwpsp1G3a3eGOcI3UfTqsCqDXkpRfS6BLrS4Bs71HN
+         3vbK5ldfztsdW6mN60r0fzqHpWlC8L6dWXuhOppHWhX00W/eWR831Qsr+xErq6eUUfmg
+         qGly3ufaT0RIA2BE5frmB8xtXWou/BvQ87RehKUBdiPqkGiye/Gni+Cq1ojc4meAESJH
+         NL/s8vyeMplbZKyh7H8H979aDLCwXk0+JFx7wn+aN89lYG/ZxScHCSpWvah2zTvO+4tQ
+         aGSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682592451; x=1685184451;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CN4GzFrEzUhAvKDGVknjzHxbBE0SJI9sNk2pKF0RC24=;
-        b=i3v8wOzGH391s9e112eWKb7j2Ot2McWXVD6uYsdC2Fc3dxLaiXomjyAf2AfxlLFDe1
-         HKCKyqTx4u29mCkxDBQemjr8W508+YTzQHiGryL56IUehLPurJfJm0l/S13sQ3r9DqtX
-         G+CstkFkT8Rjf0d66VuCztP8E83i/d3Pdj1dpyPkNuZNPa6ruQlASqopAiqkhLyjF9Oh
-         XZ7Sduk6957JohEbqN7KF4pmQp2GLnjkINm5vetWHK9LNe6Oho0thEMldqd0D7UhTjp3
-         6QgxBxufy8oYuK8R6FPIzVBZ+4kvErOuU6PBLb9/dEXtnXD6HdG+lIuJSEw1ndmo0XAP
-         D7rA==
-X-Gm-Message-State: AC+VfDzseXNzr3R3P8hWlK7imY7bC9Ov186Tj0gIQH83SzS3QApPs5DF
-        BpSbtF68Wp2cIWxaygHck0pDsmZ5FLM83w/9VFCUbg82kJHnNC/4IRsZgFLeI983bG0wvzG4OJ8
-        6spCzjCu3lsAYjiW0KDm/
-X-Received: by 2002:a17:906:58c3:b0:95f:bbb0:6d2d with SMTP id e3-20020a17090658c300b0095fbbb06d2dmr1530984ejs.63.1682592451110;
-        Thu, 27 Apr 2023 03:47:31 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7RzAsvWcEWh4jrQ03LV133GzxBlh06v8I/TxapHgut9EY0o+iO2PLcuimRa13SoVIrTImaMg==
-X-Received: by 2002:a17:906:58c3:b0:95f:bbb0:6d2d with SMTP id e3-20020a17090658c300b0095fbbb06d2dmr1530950ejs.63.1682592450699;
-        Thu, 27 Apr 2023 03:47:30 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id ku15-20020a170907788f00b009571293d6acsm8373416ejc.59.2023.04.27.03.47.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Apr 2023 03:47:30 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <e0bbcd20-77ec-4dc9-ada9-94aaf4ea44bb@redhat.com>
-Date:   Thu, 27 Apr 2023 12:47:28 +0200
+        d=1e100.net; s=20221208; t=1682595320; x=1685187320;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QENmgqijtQ7Lze6rVY9lo5aD++tfVhipzceIpocc7WU=;
+        b=ao0jmJdPLGYOW+zb5AcZnek2UF/LtAaPPwp2wEygA/f2exqQN4UgXRWP/FBaPx9IAy
+         bSbeMLKgFsn30uiMbW1XHdOvmH5rMaDR0RK8kPguD+HXrdIXja3ob/PSLszDa3cSmDjD
+         R6adjl5K54LigqgtmrqoYmxHzCxew/gWvOcQ/owsxDWiY9dzya8Vaysd+JdtXhspIU5L
+         cfnrBvbS9HlsodgOwV8qAAH5Wi2gcupm1w8FTwNCK4sr8BGDNSW6GNgqM12kD3f5uXci
+         36JUiF2is8xl8O65EpsWCB4nqNZDaM/BvSA6gqn2nQ2aU/yrsrZonYRrPRsj1g+h80PD
+         l7xw==
+X-Gm-Message-State: AC+VfDxBWsGf5cZWE1xuDQn4nmR6b8cGvb4rA1hDAFocwHqWuGAufM17
+        EVEJ00/0AhUMZ5OZkMmOdjnZkiikO8N+lkXIaUA=
+X-Google-Smtp-Source: ACHHUZ4zY9gFpM6iuDJTJ61OjMKBhjgRyQyi4vQ1KgkMUvUSvR81KHA/eWb99m7s9HbACnaDTn9kK1B2DeIksVkR5SM=
+X-Received: by 2002:ad4:5cc4:0:b0:5c9:a0ce:df0c with SMTP id
+ iu4-20020ad45cc4000000b005c9a0cedf0cmr1628507qvb.22.1682595320368; Thu, 27
+ Apr 2023 04:35:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Cc:     brouer@redhat.com, lorenzo@kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V1 1/3] page_pool: Remove workqueue in new
- shutdown scheme
-Content-Language: en-US
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-References: <168244288038.1741095.1092368365531131826.stgit@firesoul>
- <168244293875.1741095.10502498932946558516.stgit@firesoul>
- <48661b51-1cbb-e3e0-a909-6d0a1532733a@huawei.com>
-In-Reply-To: <48661b51-1cbb-e3e0-a909-6d0a1532733a@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230424161104.3737-1-laoar.shao@gmail.com> <20230424161104.3737-3-laoar.shao@gmail.com>
+ <CAADnVQKr3bmG2FfydcbXjwx5gML7NYjPiDtW+B1D+hc7hmD3QA@mail.gmail.com>
+In-Reply-To: <CAADnVQKr3bmG2FfydcbXjwx5gML7NYjPiDtW+B1D+hc7hmD3QA@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 27 Apr 2023 19:34:44 +0800
+Message-ID: <CALOAHbCFAV1Tvko1HWhD9CYTqcY_ojP47ZxpWhyi=Sib8+5iWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] fork: Rename mm_init to task_mm_init
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Apr 25, 2023 at 5:13=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Apr 24, 2023 at 9:12=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> >
+> > The kernel will panic as follows when attaching fexit to mm_init,
+> >
+> > [   86.549700] ------------[ cut here ]------------
+> > [   86.549712] BUG: kernel NULL pointer dereference, address: 000000000=
+0000078
+> > [   86.549713] #PF: supervisor read access in kernel mode
+> > [   86.549715] #PF: error_code(0x0000) - not-present page
+> > [   86.549716] PGD 10308f067 P4D 10308f067 PUD 11754e067 PMD 0
+> > [   86.549719] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > [   86.549722] CPU: 9 PID: 9829 Comm: main_amd64 Kdump: loaded Not tain=
+ted 6.3.0-rc6+ #12
+> > [   86.549725] RIP: 0010:check_preempt_wakeup+0xd1/0x310
+> > [   86.549754] Call Trace:
+> > [   86.549755]  <TASK>
+> > [   86.549757]  check_preempt_curr+0x5e/0x70
+> > [   86.549761]  ttwu_do_activate+0xab/0x350
+> > [   86.549763]  try_to_wake_up+0x314/0x680
+> > [   86.549765]  wake_up_process+0x15/0x20
+> > [   86.549767]  insert_work+0xb2/0xd0
+> > [   86.549772]  __queue_work+0x20a/0x400
+> > [   86.549774]  queue_work_on+0x7b/0x90
+> > [   86.549778]  drm_fb_helper_sys_imageblit+0xd7/0xf0 [drm_kms_helper]
+> > [   86.549801]  drm_fbdev_fb_imageblit+0x5b/0xb0 [drm_kms_helper]
+> > [   86.549813]  soft_cursor+0x1cb/0x250
+> > [   86.549816]  bit_cursor+0x3ce/0x630
+> > [   86.549818]  fbcon_cursor+0x139/0x1c0
+> > [   86.549821]  ? __pfx_bit_cursor+0x10/0x10
+> > [   86.549822]  hide_cursor+0x31/0xd0
+> > [   86.549825]  vt_console_print+0x477/0x4e0
+> > [   86.549828]  console_flush_all+0x182/0x440
+> > [   86.549832]  console_unlock+0x58/0xf0
+> > [   86.549834]  vprintk_emit+0x1ae/0x200
+> > [   86.549837]  vprintk_default+0x1d/0x30
+> > [   86.549839]  vprintk+0x5c/0x90
+> > [   86.549841]  _printk+0x58/0x80
+> > [   86.549843]  __warn_printk+0x7e/0x1a0
+> > [   86.549845]  ? trace_preempt_off+0x1b/0x70
+> > [   86.549848]  ? trace_preempt_on+0x1b/0x70
+> > [   86.549849]  ? __percpu_counter_init+0x8e/0xb0
+> > [   86.549853]  refcount_warn_saturate+0x9f/0x150
+> > [   86.549855]  mm_init+0x379/0x390
+> > [   86.549859]  bpf_trampoline_6442453440_0+0x23/0x1000
+> > [   86.549862]  mm_init+0x5/0x390
+> > [   86.549865]  ? mm_alloc+0x4e/0x60
+> > [   86.549866]  alloc_bprm+0x8a/0x2e0
+> > [   86.549869]  do_execveat_common.isra.0+0x67/0x240
+> > [   86.549872]  __x64_sys_execve+0x37/0x50
+> > [   86.549874]  do_syscall_64+0x38/0x90
+> > [   86.549877]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> >
+> > The reason is that when we attach the btf id of the function mm_init we
+> > actually attach the mm_init defined in init/main.c rather than the
+> > function defined in kernel/fork.c. That can be proved by parsing
+> > /sys/kernel/btf/vmlinux:
+> >
+> > [2493] FUNC 'initcall_blacklist' type_id=3D2477 linkage=3Dstatic
+> > [2494] FUNC_PROTO '(anon)' ret_type_id=3D21 vlen=3D1
+> >         'buf' type_id=3D57
+> > [2495] FUNC 'early_randomize_kstack_offset' type_id=3D2494 linkage=3Dst=
+atic
+> > [2496] FUNC 'mm_init' type_id=3D118 linkage=3Dstatic
+> > [2497] FUNC 'trap_init' type_id=3D118 linkage=3Dstatic
+> > [2498] FUNC 'thread_stack_cache_init' type_id=3D118 linkage=3Dstatic
+> >
+> > From the above information we can find that the FUNCs above and below
+> > mm_init are all defined in init/main.c. So there's no doubt that the
+> > mm_init is also the function defined in init/main.c.
+> >
+> > So when a task calls mm_init and thus the bpf trampoline is triggered i=
+t
+> > will use the information of the mm_init defined in init/main.c. Then th=
+e
+> > panic will occur.
+> >
+> > It seems that there're issues in btf, for example it is unnecessary to
+> > generate btf for the functions annonated with __init. We need to improv=
+e
+> > btf. However we also need to change the function defined in
+> > kernel/fork.c to task_mm_init to better distinguish them. After it is
+> > renamed to task_mm_init, the /sys/kernel/btf/vmlinux will be:
+> >
+> > [13970] FUNC 'mm_alloc' type_id=3D13969 linkage=3Dstatic
+> > [13971] FUNC_PROTO '(anon)' ret_type_id=3D204 vlen=3D3
+> >         'mm' type_id=3D204
+> >         'p' type_id=3D197
+> >         'user_ns' type_id=3D452
+> > [13972] FUNC 'task_mm_init' type_id=3D13971 linkage=3Dstatic
+> > [13973] FUNC 'coredump_filter_setup' type_id=3D3804 linkage=3Dstatic
+> > [13974] FUNC_PROTO '(anon)' ret_type_id=3D197 vlen=3D2
+> >         'orig' type_id=3D197
+> >         'node' type_id=3D21
+> > [13975] FUNC 'dup_task_struct' type_id=3D13974 linkage=3Dstatic
+> >
+> > And then attaching task_mm_init won't panic. Improving the btf will be
+> > handled later.
+>
+> We're not going to hack the kernel to workaround pahole issue.
+> Let's fix pahole instead.
+> cc-ing Alan for ideas.
 
+Any comment on it, Alan ?
+I think we can just skip generating BTF for the functions in
+__section(".init.text"),  as these functions will be freed after
+kernel init. There won't be use cases for them.
 
-On 27/04/2023 02.57, Yunsheng Lin wrote:
-> On 2023/4/26 1:15, Jesper Dangaard Brouer wrote:
->> @@ -609,6 +609,8 @@ void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
->>   		recycle_stat_inc(pool, ring_full);
->>   		page_pool_return_page(pool, page);
->>   	}
->> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
->> +		page_pool_shutdown_attempt(pool);
-> 
-> It seems we have allowed page_pool_shutdown_attempt() to be called
-> concurrently here, isn't there a time window between atomic_inc_return_relaxed()
-> and page_pool_inflight() for pool->pages_state_release_cnt, which may cause
-> double calling of page_pool_free()?
-> 
-
-Yes, I think that is correct.
-I actually woke up this morning thinking of this case of double freeing,
-and this time window.  Thanks for spotting and confirming this issue.
-
-Basically: Two concurrent CPUs executing page_pool_shutdown_attempt() 
-can both end-up seeing inflight equal zero, resulting in both of them 
-kfreeing the memory (in page_pool_free()) as they both think they are 
-the last user of PP instance.
-
-I've been thinking how to address this.
-This is my current idea:
-
-(1) Atomic variable inc and test (or cmpxchg) that resolves last user race.
-(2) Defer free to call_rcu callback to let other CPUs finish.
-(3) Might need rcu_read_lock() in page_pool_shutdown_attempt().
-
---Jesper
-
+--=20
+Regards
+Yafang
