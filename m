@@ -2,131 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84956F0C8A
-	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 21:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A53B6F0CF4
+	for <lists+bpf@lfdr.de>; Thu, 27 Apr 2023 22:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244186AbjD0T0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Apr 2023 15:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S1344165AbjD0USL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Apr 2023 16:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244522AbjD0T0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Apr 2023 15:26:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD7DE56
-        for <bpf@vger.kernel.org>; Thu, 27 Apr 2023 12:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682623523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wynb7GdU79YYV9ENu+xz5worQ7/3FbOaM+jXoCkc6Vg=;
-        b=C2Arh964tyXZS/NNe7fjqH0yrV+Lf76FwHHZ79s9C1ffPkCwSr6teA3nu6b7ajGPM5Rrgk
-        J7xz3yNbhcSLBY3oLpK/hdcha8pRyD2pzqvaFX+XXlNBDsuGPkJERE6+m/Bz/9vcXDeTWq
-        qej4HHm1gCaZ/8la71KAvFSEoNLgBZ4=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-571-kl80mYlSMgig3GF4mRmU3Q-1; Thu, 27 Apr 2023 15:25:18 -0400
-X-MC-Unique: kl80mYlSMgig3GF4mRmU3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7FD86281294A;
-        Thu, 27 Apr 2023 19:25:17 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 430DA1121314;
-        Thu, 27 Apr 2023 19:25:17 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 65F7C307372E8;
-        Thu, 27 Apr 2023 21:25:16 +0200 (CEST)
-Subject: [PATCH RFC net-next/mm V2 2/2] mm/page_pool: catch page_pool memory
- leaks
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, lorenzo@kernel.org,
-        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        linyunsheng@huawei.com, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Date:   Thu, 27 Apr 2023 21:25:16 +0200
-Message-ID: <168262351637.2036355.17064734185414935239.stgit@firesoul>
-In-Reply-To: <168262348084.2036355.16294550378793036683.stgit@firesoul>
-References: <168262348084.2036355.16294550378793036683.stgit@firesoul>
-User-Agent: StGit/1.4
+        with ESMTP id S1344045AbjD0USK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Apr 2023 16:18:10 -0400
+X-Greylist: delayed 1121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Apr 2023 13:18:09 PDT
+Received: from ulthar.dreamlands.azazel.net (wan.azazel.net [81.187.77.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E13B3ABC;
+        Thu, 27 Apr 2023 13:18:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=vVMK0DmoTVin8v+RKwMB1x+zt92VjiVf5R1eGxA+9Ks=; b=nH4/jvP+w5LbS4HpcOH1UgI3is
+        /iytLTAfnnvZ/T5RRDqRq4usCneIywBasHitLIVdl6kRp4o3KEhIWUUX2rGkPrBkFLNhYpKvKuTlr
+        56d7zW7RRQl4CKxLOY9fptKbCbgZuFr9hKJbNChLIzhummoEBhFS0b/4yO+ZCE9aBggtzghKEUFpt
+        cESJEjjsUroeFS1XjPgydfgFoOuHF7Td485RW2bt6P1Hsa6+GGlQNht1bB0GAaLEEgRzKU1jLI5JM
+        PE605vx6Z7S8aB6koS6eDY2OcahwIPdkW4gMmb+6+yX9A0emWv264cVcv0OSQ30lmADM0Af9jfKKk
+        ObL+NzsA==;
+Received: from azazel by ulthar.dreamlands.azazel.net with local (Exim 4.96)
+        (envelope-from <azazel@azazel.net>)
+        id 1ps7ks-0021kV-29;
+        Thu, 27 Apr 2023 20:58:14 +0100
+Date:   Thu, 27 Apr 2023 20:58:14 +0100
+From:   Jeremy Sowden <jeremy@azazel.net>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf] selftests/bpf: fix pkg-config call building sign-file
+Message-ID: <20230427195814.GE415348@azazel.net>
+References: <20230426215032.415792-1-jeremy@azazel.net>
+ <e1bd99a4ea209277d657f7fb7ccdc26451113fc9.camel@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mRi/Sh4c9dkl2g8K"
+Content-Disposition: inline
+In-Reply-To: <e1bd99a4ea209277d657f7fb7ccdc26451113fc9.camel@huaweicloud.com>
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: azazel@azazel.net
+X-SA-Exim-Scanned: No (on ulthar.dreamlands.azazel.net); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pages belonging to a page_pool (PP) instance must be freed through the
-PP APIs in-order to correctly release any DMA mappings and release
-refcnt on the DMA device when freeing PP instance. When PP release a
-page (page_pool_release_page) the page->pp_magic value is cleared.
 
-This patch detect a leaked PP page in free_page_is_bad() via
-unexpected state of page->pp_magic value being PP_SIGNATURE.
+--mRi/Sh4c9dkl2g8K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We choose to report and treat it as a bad page. It would be possible
-to release the page via returning it to the PP instance as the
-page->pp pointer is likely still valid.
+On 2023-04-27, at 08:52:27 +0200, Roberto Sassu wrote:
+> On Wed, 2023-04-26 at 22:50 +0100, Jeremy Sowden wrote:
+> > When building sign-file, the call to get the CFLAGS for libcrypto is
+> > missing white-space between `pkg-config` and `--cflags`:
+> >=20
+> >   $(shell $(HOSTPKG_CONFIG)--cflags libcrypto 2> /dev/null)
+> >=20
+> > Removing the redirection of stderr, we see:
+> >=20
+> >   $ make -C tools/testing/selftests/bpf sign-file
+> >   make: Entering directory '[...]/tools/testing/selftests/bpf'
+> >   make: pkg-config--cflags: No such file or directory
+> >     SIGN-FILE sign-file
+> >   make: Leaving directory '[...]/tools/testing/selftests/bpf'
+> >=20
+> > Add the missing space.
+> >=20
+> > Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_sign=
+ature() kfunc")
+> > Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
+>=20
+> Thanks.
+>=20
+> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Roberto
 
-Notice this code is only activated when either compiled with
-CONFIG_DEBUG_VM or boot cmdline debug_pagealloc=on, and
-CONFIG_PAGE_POOL.
+Thanks.  I was having e-mail problems yesterday when I sent the original
+message with the patch in it, and it didn't reach some of the
+recipients.  I'll send it again with your `Reviewed-by:` attached.
 
-Reduced example output of leak with PP_SIGNATURE = dead000000000040:
+J.
 
- BUG: Bad page state in process swapper/0  pfn:110bbf
- page:000000005bc8cfb8 refcount:0 mapcount:0 mapping:0000000000000000 index:0x110bbf000 pfn:0x110bbf
- flags: 0x2fffff80000000(node=0|zone=2|lastcpupid=0x1fffff)
- raw: 002fffff80000000 dead000000000040 ffff888117255000 0000000000000000
- raw: 0000000110bbf000 000000000000003e 00000000ffffffff 0000000000000000
- page dumped because: page_pool leak
- [...]
+> > ---
+> >  tools/testing/selftests/bpf/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index b677dcd0b77a..ad01c9e1ff12 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -197,7 +197,7 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read=
+_aux.c $(OUTPUT)/liburandom_r
+> > =20
+> >  $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
+> >  	$(call msg,SIGN-FILE,,$@)
+> > -	$(Q)$(CC) $(shell $(HOSTPKG_CONFIG)--cflags libcrypto 2> /dev/null) \
+> > +	$(Q)$(CC) $(shell $(HOSTPKG_CONFIG) --cflags libcrypto 2> /dev/null) \
+> >  		  $< -o $@ \
+> >  		  $(shell $(HOSTPKG_CONFIG) --libs libcrypto 2> /dev/null || echo -l=
+crypto)
+> > =20
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- mm/page_alloc.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+--mRi/Sh4c9dkl2g8K
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 8e39705c7bdc..137b72f8ab8b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1247,6 +1247,9 @@ static inline bool page_expected_state(struct page *page,
- 			page_ref_count(page) |
- #ifdef CONFIG_MEMCG
- 			page->memcg_data |
-+#endif
-+#ifdef CONFIG_PAGE_POOL
-+			((page->pp_magic & ~0x3UL) == PP_SIGNATURE) |
- #endif
- 			(page->flags & check_flags)))
- 		return false;
-@@ -1273,6 +1276,10 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
- #ifdef CONFIG_MEMCG
- 	if (unlikely(page->memcg_data))
- 		bad_reason = "page still charged to cgroup";
-+#endif
-+#ifdef CONFIG_PAGE_POOL
-+	if (unlikely((page->pp_magic & ~0x3UL) == PP_SIGNATURE))
-+		bad_reason = "page_pool leak";
- #endif
- 	return bad_reason;
- }
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmRK084ACgkQKYasCr3x
+BA3WMw//dtfaKXgeSzYYSiB5uUJ91AnWV5EhEUZhFmgrxl9zATqbS+UimZ2X3JiV
+uuHbQQixkxwB8FNUYmEVGQpIjuJonWnTFhorfWvVTzr4hDNTsycE/FyB9ROYUWBJ
+0+T3aMcm8tBS8hqasPncs33TgEolPlO902kyUaB5NCfZOKNWW88wUOA6EiAILN5L
+nEmOK8BwIt68gO55fAWm/zOObyG17YdYdmI6EBCdxW8UaVUCbO9K4DJDoPsy2e8u
+QauB6vpiGLJAFQEnGaKeecEnBRYJFEGMop/bLEnuThRR9Cc6W8cW2iTo2ltF4ljy
+CwwF6yO11Ua6cGF+0s/gvFnTfHwtOfuIRmQcSQEoaZyTWrE8M1bmK55WCxiaQb4B
+Cpeylu3XnCCRZzHUoxQutc9+4lt87EdgQLRHVv1SbGVMYgJiDdhNMu/ZxXZp4eDN
+VRFklTPVumtH1IUYGwjIfpIl8JCZAE+yOeLmMjE7PgrD3Ay+UB3FYE6irW8+Q/rp
+GG1AdIMlqkq9Tuj6hv+9ymtfBgZBaaS6aCoFqJaEHKVmJwHBRxOA7DpeVh+zkLBd
+Oh+fxnmvxm54Np/EjvyY/D2BvuIu2ZkhHACwozvIwydc51+9f86ksR3zKUWyHSlZ
+UKoV4IlblMs98QvNiw3I91fBPwLCUsMzjI7UyDUMgsVpzCrQTZE=
+=sPuM
+-----END PGP SIGNATURE-----
 
+--mRi/Sh4c9dkl2g8K--
