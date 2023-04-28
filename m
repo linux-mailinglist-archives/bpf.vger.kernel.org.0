@@ -2,238 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED85F6F1D6E
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 19:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010D26F1D75
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 19:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346358AbjD1RaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 13:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        id S230071AbjD1Rbm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 13:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344368AbjD1RaW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 13:30:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7841BE8
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682702980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIIwH7T02AjnTsmSMt7UxStS64AfVcp0/yWRRkLLOC0=;
-        b=aCY2SKw31EMEilRsPZAXUqCUJizuAIExHYRqDwdp73WupGOKFqT058O60RoVBUo7CyvZyi
-        1fHs0SMSpMdYZNnA10YoAXjmn8XaD3dCANgw4tBNdaTD3s0YKkC/kL8KsMM48ZqjIbOqyo
-        /etQjhIzCNdzKGVKI0mACkbIpTsY/Dk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-428-er5c5FZcPKi3je6cQUTZoA-1; Fri, 28 Apr 2023 13:29:39 -0400
-X-MC-Unique: er5c5FZcPKi3je6cQUTZoA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f1749c63c9so36638835e9.3
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:29:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682702978; x=1685294978;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EIIwH7T02AjnTsmSMt7UxStS64AfVcp0/yWRRkLLOC0=;
-        b=KRYhlrhj5xXvYt+ZOrtGwUzauUFZNCVysYi0Y8p+FuBJceVkwm7bxCO4Mt3y5wO+K6
-         h9JXqCM8tozoZ/thqbhdcg3gVuClivemQf1YiJsZd9tm20ks7cC8XFsT1phAHt9vF/bT
-         52i4UCt1ikj/Pxs1CZG3QX/mErAXQOiWvbPokibv0HI/72E2axfIMzgxBrcb3wNWv+Gf
-         pSDsCgaj+b2mNE0aLwEIO1t9J0+5MGzNiqly3Z/cjfb3I66uaZLZ8egYqrDnVz3ZvBOA
-         LrpU0ZwZK3GcTho4K8vHEKhxwWEr6v6hd9RlsjEnMSfxQ9gevXAQiQc48N4Xu58c4yhT
-         /uyg==
-X-Gm-Message-State: AC+VfDzVkSSqQr/6I+u0finCKUbqgU+R1OW6Wdf+O+6iMpCPZ61rKug0
-        FqVyCvxAT0xVwqStjjXcnibljTy1D9hrysbsqNAqFiiu4IwsZuB9CTwl5K5+iJJzox5YC40K/xE
-        yBYz6Fgu1LJGe
-X-Received: by 2002:a7b:c015:0:b0:3f1:662a:93d0 with SMTP id c21-20020a7bc015000000b003f1662a93d0mr4869030wmb.15.1682702978228;
-        Fri, 28 Apr 2023 10:29:38 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4h9gBJBIx2ZQJ+gm3oOoE/Rgj9KykEapquC53KsgU6XwysYEqKUCcp5L2ysNH2brGQpGxgmQ==
-X-Received: by 2002:a7b:c015:0:b0:3f1:662a:93d0 with SMTP id c21-20020a7bc015000000b003f1662a93d0mr4869002wmb.15.1682702977813;
-        Fri, 28 Apr 2023 10:29:37 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
-        by smtp.gmail.com with ESMTPSA id q16-20020a7bce90000000b003f09d7b6e20sm25059003wmj.2.2023.04.28.10.29.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 10:29:37 -0700 (PDT)
-Message-ID: <7e096879-4578-36df-4809-3b04f4c20587@redhat.com>
-Date:   Fri, 28 Apr 2023 19:29:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
- by default
+        with ESMTP id S229697AbjD1Rbl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 13:31:41 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041345253
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:31:13 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33SA6MfW003906;
+        Fri, 28 Apr 2023 10:30:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=R7Ozih4l0n5imSBQ/FnMw4GQD/zA25ZTCMcvp+sxTCw=;
+ b=huzZusT8mWKom/8iTzAsgljOLM4LOfMk4HqehB+NIweKhI1QV58n0KUWOwBPhE+6/Ek4
+ fL01xv0+tBvAohD+754PRn9k1+e/cg0iDqmopOgTd9oaaNGHjC14mQkk7rcZhQeI4sZk
+ uah5Jepx2wOYlM7melCThCQTQosNF14vy2RUjlsrRZUxGM7Zk39rpj7IsQfBiE+V8k7Q
+ rA/KnaP/c0DKzio3EbJH/dVP/Z/Gd6fZBvvTHAAbpvfnjZwYXBrOWNjfPoANIAWMM/Mj
+ Lz+WIfLsPXDcMTnj4s3/VK3s3iLEkyVOBqEVDRvCxjZW3Jj+63Nzmd/7yhs+FRHwwGiU dA== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3q84y3naew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Apr 2023 10:30:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ddsMecFU8qQZ1sW5d0DlKdMbN22UJSxWIJHOMWshW8YA3Co48Fs4Jd3/HRzk6h16ZwdVtHEFM8Vwb/ynRDuqU36rTM2KnC1eya6KP7/I2AS21Nadukskf7mMpQWgkJhp0YRKpaJfYNoiLXXaAbXYSsujs1EaqARbGR3eZr2CH4wzh6xwxPmmuRA44JmpyqKtPFPRMoINnCqoGBrjNGynXyWpwHxWr1udFhqxnJygEC/nBVL6rT4hETHgZwSKBVf8xf1q3i07ho+TiMY2nXFNh9RPVfjrznVBH0jFv9CRxFDLnAYgHMVO/MrkMN9pq6NrzBQLjAgx76B0LxGyLscXCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R7Ozih4l0n5imSBQ/FnMw4GQD/zA25ZTCMcvp+sxTCw=;
+ b=U1feXit+VZ3aZQAY+EBSqMp/GlovBakX7mav4FyagUwRTmQclO3TxzOUuf78FzpRycxrnxyJy0NrE3WCCRT+7DAnQRu8x2ihWvu21hDOj8atT4caYTYfisSpl4aqUYgkHcltevNXm08cCb9ymhATZd9H7q0+jXP23qdMeu4LE6bZlRiMzKKVu4In6CjLM0VBBJDkw9oEQxXqVZV9oFcknT3CwgC30sjyNoZg1LnrNmNAMfMydCTG153Zp/tefiw0dtunROwh/cBlyg7jrnMd2SZ8uxcTVVFZ1FIBo56JOnDm5KhiYzPDmQNX3YRX9JpSdVBV6Bb6qp+uG+9HXsZtaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SJ0PR15MB4552.namprd15.prod.outlook.com (2603:10b6:a03:379::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.23; Fri, 28 Apr
+ 2023 17:30:54 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6340.022; Fri, 28 Apr 2023
+ 17:30:54 +0000
+Message-ID: <006349b9-7cec-bf02-2732-90aaf614f342@meta.com>
+Date:   Fri, 28 Apr 2023 10:30:51 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [PATCH bpf-next] libbpf: Fix overflow detection when dumping
+ bitfields
 Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <077c4b21-8806-455f-be98-d7052a584259@lucifer.local>
- <62ec50da-5f73-559c-c4b3-bde4eb215e08@redhat.com>
- <6ddc7ac4-4091-632a-7b2c-df2005438ec4@redhat.com>
- <20230428160925.5medjfxkyvmzfyhq@box.shutemov.name>
- <39cc0f26-8fc2-79dd-2e84-62238d27fd98@redhat.com>
- <20230428162207.o3ejmcz7rzezpt6n@box.shutemov.name> <ZEv2196tk5yWvgW5@x1n>
- <173337c0-14f4-3246-15ff-7fbf03861c94@redhat.com>
- <40fc128f-1978-42db-b9c1-77ac3c2cebfe@lucifer.local>
- <3d7fcfab-e445-1dc7-f000-9fbe7bea04c0@redhat.com>
- <bd470e63-e2e0-4532-8aab-cffe326688b6@lucifer.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <bd470e63-e2e0-4532-8aab-cffe326688b6@lucifer.local>
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20230428155035.530862-1-iii@linux.ibm.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230428155035.530862-1-iii@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BYAPR02CA0006.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ0PR15MB4552:EE_
+X-MS-Office365-Filtering-Correlation-Id: b882be1e-5705-4422-fded-08db480e51cd
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Py3vGfI1rKKuLSedd9Pf2SwzHDjs9k2Y7LnoTVNUTW4u5rnx8Wsk/dxPuVYYWAwc+PpCbAg1QzcmsRtSIyBYd+iREcopDYLY2YVQmy2owpmtZ8yFmxLFOog8Fwi3t7Jx670EcBfNKSvdMxpY1NEZUNxzhTl2zFyIRaZWQXsl/Ppi6yidfhAZLz5pAJCRKsm0RHW455OugvoHLEH6af3dYGHQAbKl0Hqqo3O8URb5osWpbyCioGFbJvrhqvYMe3xhlQEG9gSpjXLHvXRznzF9fzfsyqyJNTS8wk4y3UTdAZRbPR+YhS88HNAgPurLQw+xJXmUM9XVQc/5eofttCUQGH93uPCeEGHbaDV6Uom9/tkwmXxJqz8+GETuWOBQCnu7Z8BUxmwdl1XzKPr45o8Tjf3pP6hwCP4GHesUwOmM+My/8izcRMHgNeBGEcEHACAo/kQVlwua04kBbzJKkl94a0NIOhkqQxwThqcnpyOCuhzkat72B66+udUZ9PXSyoZrHE8JhfaQQkKMkYEMoqoYhiTSxR7BDH0OsmRG704GC48D2O/wFUCY+Rv93oiVhuLyRSAM1UPpt2jWx9S7iTSgi4eClhrtXVH1J54ffpU547reDJMS+z7i30yazqH7pYR+hpdtthO7UYs9tp81ioya2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(346002)(39860400002)(366004)(451199021)(54906003)(110136005)(478600001)(5660300002)(8676002)(8936002)(36756003)(2906002)(31696002)(86362001)(38100700002)(66556008)(66946007)(66476007)(4326008)(316002)(41300700001)(186003)(53546011)(6506007)(6512007)(31686004)(83380400001)(966005)(2616005)(6486002)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXdvUERENTd2Kzd4b2gxNUswcVRUZGFVd2h4alNBOVlydHNYa2JYTG0vVHFx?=
+ =?utf-8?B?ZGhBT05OZmdiOVliZHVOM292MXBIc1YzL1RodThmMlQ4aTZRWjREUHliczk4?=
+ =?utf-8?B?dXZSZUxlOVNIWnJtblF6NmtQMnNDNnFyYlN1d0NaOXVhQ0lXNG5mZDRsSXVC?=
+ =?utf-8?B?cStaaWlWWkxhTDRCb1ZHNUNDM1hNeVlKeEdLKzh5ZnBJN2IxZ00venJDbU5R?=
+ =?utf-8?B?RlU5RUxhZThKRE1CSUhhYzBNVWdqOUNJM3JWbGRGdzF3K0hPWHlSZzFhenBD?=
+ =?utf-8?B?OHdSbldwU0pleVNjMXBXZnRaVFQvQ3hRTHV6UmNzbGxMRkRmWDRFK04yQkRv?=
+ =?utf-8?B?ZXd2SG52VjVEQU10K3p1OVNhY3RIYUdpVENsd2RwM1J2d3ZxTnRCVjVNMFlr?=
+ =?utf-8?B?c1hTaWZ3b2IzMk4xV3ZmZ09QNlpQL0VMRXlReG9xVG5xcE43ZEZ6cUFobW5N?=
+ =?utf-8?B?UjlRSVp3ZFVqRks4T09KbFJqaVNDZFhNc3d1aDdGOFIrSCtUQXNyU1VydFNm?=
+ =?utf-8?B?RTdpVkdrdDFFdG4vOU0rOGJ1amM5WUZmV0kwaGlxRDl0MHA1S3RzeGRzaU5o?=
+ =?utf-8?B?dUkycC9vckcrZGFHbllQM2VmMktWTTAzTXIwL0ZweDFQVi9pSnNVUmlHTmRG?=
+ =?utf-8?B?T1pzN2wrL1hoSTVIaWlMWTkyZ2ZBVWZGSHQxVzBWNkloUS9kUjh3M2hzdmN6?=
+ =?utf-8?B?S2dDNkJwYnQxMXBlT2w0UnlLSVRicDhSWXVxNVFnWDd1NVBlcmJZUnZ4WFhl?=
+ =?utf-8?B?SU1rNVlVZXdhdlJ5UEtwd3l4UjhGaklrY2FmUi9TZXlPdXZ2aEpjNHFuZ2Iy?=
+ =?utf-8?B?ZmhGWllBQkRVOURHUDQxdFFKNnJSZ2VUQVQwb3orU0NPcjNJWnBBc1pLTzY1?=
+ =?utf-8?B?OTA1TFQwY1pPdTlUejlML091S3VLNEdWQ3JLU25NdXd3R0lVdFNpZTlNcEh0?=
+ =?utf-8?B?anNNZGJIOGowWUcwNnB1UVFkaFlOM0dlMDU1QlZUVTB5Wkh6T0hnRVJFTkg2?=
+ =?utf-8?B?UC8xMnQzTmwrcUk0WS9ZTGlhWEs2N2hVWHBuV1BsT0xLRUdValZjVHN0Mi9S?=
+ =?utf-8?B?Rkt5RlBha08wVGw1NDd4RDJOMmRoeGxPRXVQUmZmbDQ0YTJxOHFNVzZ4NmVB?=
+ =?utf-8?B?eUxqeWRHZ0swSytqWkltNEljTy9vODJBQmNPV1R0cEdEUWpoanV2VUQ2VFdB?=
+ =?utf-8?B?aTRLVFJRNXlLa3hLemEwcjRaQW5ISUE3SXh5YnNzVGYxR1lLbkdGQ0Q3ZmF2?=
+ =?utf-8?B?MzcrbE5WWlcydTl1Y2dXZ3plWk0yc0VuQitjMDAramM4WDFWMG1LMXNsWTNm?=
+ =?utf-8?B?eHBjTVVmTTJ2WUxSVkJMTUNIWS9LdkFEMDUxN3JFbjJmbkZObEdjYWxZcFIw?=
+ =?utf-8?B?VG4vYWhydnZIeWU3N2t3SldMWHJjalhwcDRxdkpBaXZhdzl6bVgreFRZUEtG?=
+ =?utf-8?B?TUNpd0cwTEU2T01GVURzOE5lQXFwSXFZZ25aS1FwY3pIQ3c5Q1pzeDNQRS9o?=
+ =?utf-8?B?RkpmakR1WUlNL216c2JJRVpBWVpTN2FDWmRJb2RjWWYwdUJYN3RVbTA4ZXJZ?=
+ =?utf-8?B?cXczV1J2Y3U5SzhDZmJvQThRRzhmUmVINEVjTWJQMnVjQXVmRHFCdEZ6Nkda?=
+ =?utf-8?B?MmpDWjQ3a1NkZGFERFRLOGJhNXhEVkcyYWVxQmkxc0swL0lhYWhadE5sY1Nj?=
+ =?utf-8?B?dnpwZXF4M3hXeXVjbUx6LzhEVlgzRk55RWx4ZWNRRkNZT0llVDZHb1U0VUlT?=
+ =?utf-8?B?KzFrSXRUbzY5eWhkLy9Oa3dhai93OU9sQVU2SlBLMEFpM0lpeGl3RWVnTVI2?=
+ =?utf-8?B?SndvYzlqLzE2SzZDckpXYnI1QjRXMmcyQ240cElQdlc4QUVTMCt4cnY2aXFO?=
+ =?utf-8?B?R2Z6Y0syL0tZNFY4ZmFxWTE2N2lOOS9SNWQrN2RBUUxBZFF4dDllcHdsOTNE?=
+ =?utf-8?B?MnlYVkltV2VQQ0VEYTAyRGN1QlVFN011QmFIT3pHUCtURGJPTXpSWVl5SEVC?=
+ =?utf-8?B?alA3WC9aNDFHR2xFZURDb1NEZTRTT3ZsRGUzRllZQWQ1SUhXMEE2cExpNDlm?=
+ =?utf-8?B?RW9ieHFteGlzK0ZFUnJ1dEpCNnFSUHUwSURLd1JJakhvcFUwMFBnRWRpQUIz?=
+ =?utf-8?B?TTNuSE5UVXhnWUQyMkl2eXRZcE5wcVF6WVJlelp3eWhFajdieGt6dHFaMjh3?=
+ =?utf-8?B?UVE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b882be1e-5705-4422-fded-08db480e51cd
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2023 17:30:54.4383
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qzLHIe4NpoC+ZGTXSWLWUUsvOun8E2snonkpBbVi+Qkr4su0aD57zI9UAYFebQ3e
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4552
+X-Proofpoint-ORIG-GUID: ynBcctfk2EPQN52wbF2EsVoQ8GYRjQGH
+X-Proofpoint-GUID: ynBcctfk2EPQN52wbF2EsVoQ8GYRjQGH
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-04-28_04,2023-04-27_01,2023-02-09_01
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28.04.23 19:13, Lorenzo Stoakes wrote:
-> On Fri, Apr 28, 2023 at 07:05:38PM +0200, David Hildenbrand wrote:
->> On 28.04.23 19:01, Lorenzo Stoakes wrote:
->>> On Fri, Apr 28, 2023 at 06:51:46PM +0200, David Hildenbrand wrote:
->>>> On 28.04.23 18:39, Peter Xu wrote:
->>>>> On Fri, Apr 28, 2023 at 07:22:07PM +0300, Kirill A . Shutemov wrote:
->>>>>> On Fri, Apr 28, 2023 at 06:13:03PM +0200, David Hildenbrand wrote:
->>>>>>> On 28.04.23 18:09, Kirill A . Shutemov wrote:
->>>>>>>> On Fri, Apr 28, 2023 at 05:43:52PM +0200, David Hildenbrand wrote:
->>>>>>>>> On 28.04.23 17:34, David Hildenbrand wrote:
->>>>>>>>>> On 28.04.23 17:33, Lorenzo Stoakes wrote:
->>>>>>>>>>> On Fri, Apr 28, 2023 at 05:23:29PM +0200, David Hildenbrand wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Security is the primary case where we have historically closed uAPI
->>>>>>>>>>>>>> items.
->>>>>>>>>>>>>
->>>>>>>>>>>>> As this patch
->>>>>>>>>>>>>
->>>>>>>>>>>>> 1) Does not tackle GUP-fast
->>>>>>>>>>>>> 2) Does not take care of !FOLL_LONGTERM
->>>>>>>>>>>>>
->>>>>>>>>>>>> I am not convinced by the security argument in regard to this patch.
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> If we want to sells this as a security thing, we have to block it
->>>>>>>>>>>>> *completely* and then CC stable.
->>>>>>>>>>>>
->>>>>>>>>>>> Regarding GUP-fast, to fix the issue there as well, I guess we could do
->>>>>>>>>>>> something similar as I did in gup_must_unshare():
->>>>>>>>>>>>
->>>>>>>>>>>> If we're in GUP-fast (no VMA), and want to pin a !anon page writable,
->>>>>>>>>>>> fallback to ordinary GUP. IOW, if we don't know, better be safe.
->>>>>>>>>>>
->>>>>>>>>>> How do we determine it's non-anon in the first place? The check is on the
->>>>>>>>>>> VMA. We could do it by following page tables down to folio and checking
->>>>>>>>>>> folio->mapping for PAGE_MAPPING_ANON I suppose?
->>>>>>>>>>
->>>>>>>>>> PageAnon(page) can be called from GUP-fast after grabbing a reference.
->>>>>>>>>> See gup_must_unshare().
->>>>>>>>>
->>>>>>>>> IIRC, PageHuge() can also be called from GUP-fast and could special-case
->>>>>>>>> hugetlb eventually, as it's table while we hold a (temporary) reference.
->>>>>>>>> Shmem might be not so easy ...
->>>>>>>>
->>>>>>>> page->mapping->a_ops should be enough to whitelist whatever fs you want.
->>>>>>>>
->>>>>>>
->>>>>>> The issue is how to stabilize that from GUP-fast, such that we can safely
->>>>>>> dereference the mapping. Any idea?
->>>>>>>
->>>>>>> At least for anon page I know that page->mapping only gets cleared when
->>>>>>> freeing the page, and we don't dereference the mapping but only check a
->>>>>>> single flag stored alongside the mapping. Therefore, PageAnon() is fine in
->>>>>>> GUP-fast context.
->>>>>>
->>>>>> What codepath you are worry about that clears ->mapping on pages with
->>>>>> non-zero refcount?
->>>>>>
->>>>>> I can only think of truncate (and punch hole). READ_ONCE(page->mapping)
->>>>>> and fail GUP_fast if it is NULL should be fine, no?
->>>>>>
->>>>>> I guess we should consider if the inode can be freed from under us and the
->>>>>> mapping pointer becomes dangling. But I think we should be fine here too:
->>>>>> VMA pins inode and VMA cannot go away from under GUP.
->>>>>
->>>>> Can vma still go away if during a fast-gup?
->>>>>
->>>>
->>>> So, after we grabbed the page and made sure the the PTE didn't change (IOW,
->>>> the PTE was stable while we processed it), the page can get unmapped (but
->>>> not freed, because we hold a reference) and the VMA can theoretically go
->>>> away (and as far as I understand, nothing stops the file from getting
->>>> deleted, truncated etc).
->>>>
->>>> So we might be looking at folio->mapping and the VMA is no longer there.
->>>> Maybe even the file is no longer there.
->>>>
->>>
->>> This shouldn't be an issue though right? Because after a pup call unlocks the
->>> mmap_lock we're in the same situation anyway. GUP doesn't generally guarantee
->>> the mapping remains valid, only pinning the underlying folio.
->>
->> Yes. But the issue here is rather dereferencing something that has already
->> been freed, eventually leading to undefined behavior.
->>
+
+
+On 4/28/23 8:50 AM, Ilya Leoshkevich wrote:
+> btf_dump test fails on s390x with the following error:
 > 
-> Is that an issue with interrupts disabled though? Will block page tables being
-> removed and as Kirill says (sorry I maybe misinterpreted you) we should be ok.
+>      unexpected return value dumping fs_context: actual -7 != expected 280
+> 
+> This happens when processing the fs_context.phase member: its type size
+> is 4, but there are less bytes left until the end of the struct. The
+> problem is that btf_dump_type_data_check_overflow() does not handle
+> bitfields.
+> 
+> Add bitfield support; make sure that byte boundaries, which are
+> computed from bit boundaries, are rounded up.
 
-Let's rule out page table freeing. If our VMA only spans a single page 
-and falls into the same PMD as another VMA, an munmap() would not even 
-free a single page table.
+Ilya, Martin has submitted a patch yesterday to fix the issue:
+ 
+https://lore.kernel.org/bpf/20230428013638.1581263-1-martin.lau@linux.dev/
 
-However, if unmapping a page (flushing the TLB) would imply an IPI as 
-Kirill said, we'd be fine. I recall that that's not the case for all 
-architectures, but I might be just wrong.
-
-... and now I'll stop reading mails until Tuesday :)
-
--- 
-Thanks,
-
-David / dhildenb
-
+> 
+> Fixes: 920d16af9b42 ("libbpf: BTF dumper support for typed data")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>   tools/lib/bpf/btf_dump.c | 12 +++++++++---
+>   1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 580985ee5545..f8b538e8d753 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -2250,9 +2250,11 @@ static int btf_dump_type_data_check_overflow(struct btf_dump *d,
+>   					     const struct btf_type *t,
+>   					     __u32 id,
+>   					     const void *data,
+> -					     __u8 bits_offset)
+> +					     __u8 bits_offset,
+> +					     __u8 bit_sz)
+>   {
+>   	__s64 size = btf__resolve_size(d->btf, id);
+> +	const void *end;
+>   
+>   	if (size < 0 || size >= INT_MAX) {
+>   		pr_warn("unexpected size [%zu] for id [%u]\n",
+> @@ -2280,7 +2282,11 @@ static int btf_dump_type_data_check_overflow(struct btf_dump *d,
+>   	case BTF_KIND_PTR:
+>   	case BTF_KIND_ENUM:
+>   	case BTF_KIND_ENUM64:
+> -		if (data + bits_offset / 8 + size > d->typed_dump->data_end)
+> +		if (bit_sz)
+> +			end = data + (bits_offset + bit_sz + 7) / 8;
+> +		else
+> +			end = data + (bits_offset + 7) / 8 + size;
+> +		if (end > d->typed_dump->data_end)
+>   			return -E2BIG;
+>   		break;
+>   	default:
+> @@ -2407,7 +2413,7 @@ static int btf_dump_dump_type_data(struct btf_dump *d,
+>   {
+>   	int size, err = 0;
+>   
+> -	size = btf_dump_type_data_check_overflow(d, t, id, data, bits_offset);
+> +	size = btf_dump_type_data_check_overflow(d, t, id, data, bits_offset, bit_sz);
+>   	if (size < 0)
+>   		return size;
+>   	err = btf_dump_type_data_check_zero(d, t, id, data, bits_offset, bit_sz);
