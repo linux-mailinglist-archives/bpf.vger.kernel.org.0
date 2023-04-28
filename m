@@ -2,190 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0A06F1618
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 12:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC006F1664
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 13:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345699AbjD1Kz0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 06:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S1345398AbjD1LIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 07:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345729AbjD1KzS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 06:55:18 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9181211C
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 03:55:15 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f182d745deso96438495e9.0
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 03:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682679314; x=1685271314;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=O6y1BM7sJx78pClJ9c1x2f53ywnKF20R2M17ETNTSZY=;
-        b=Db41/o8NlQ+TBrrauIMonjvpkI864TgNp/q5vr/POn+FWgSJ4w+Hefq9Ifc33A1k51
-         HzB8NGu/NYV2VBtatE6n45qtytqxh6+aARW6qIAaMr5whQBEU37p5SViIRA/aecmVLE7
-         kOO0y0zqlSThyZWdPBml9/ysyvda7a8w41l2RKs5m9yLAcwwCkufsbg7vtzEo2ZEKmo/
-         yLAUQzvy+mQ7nc0jnIaUzkD8aBJstQOvZvjOHbCl/7CqBrVonUG30fUVwiQ8RFMmvMxB
-         +iDBpXZHoDMaClXxRUTq502m//ilnqpre3C3dVhs3eXpJDPWp1tqcltbXzlOptDKY/q+
-         RFKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682679314; x=1685271314;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O6y1BM7sJx78pClJ9c1x2f53ywnKF20R2M17ETNTSZY=;
-        b=JV4+y7A8ZbNU3qK3XOcAG5ZxqVkUeowzJaDcETMq9aS1g/ZmLK4HIvlvlvyqOVTvrh
-         rpBarUpvF2iNMRz0yLAQZkh5cCVr2lTH6Sq2zouYS9kuMys9wHdFl9i2ZhW08jwi2L7b
-         kVp0AzxDut/Eh+Fe58uvPe1F8qoZVjJ0CVE9Rbb3HGIKedfxTjxcXMCxGI++tdq0Vsbx
-         4txD9jjoTEvyitMvFztQjgtW5TPpKuKcjUJ4E1bnszkpb+Nl2phZnnpp4pOjrlZslG+B
-         E+eiMlpob1xXFUwgojkmJHcW/+zJ3VJhIFSEvj0Vt+GXDC1JzTAJ8E8CJZ/RSsCk/Rh6
-         7+qg==
-X-Gm-Message-State: AC+VfDzKA1HHPE8Pt1IZGzQb8UAHPUXbDgIeFpC/EVkbjRN6Wqmq5cZA
-        BuojFTyAlPUeD9lbN1gJx2lhJoLaOaPX4w==
-X-Google-Smtp-Source: ACHHUZ5hBrfVah2gzGQzz0Mx8iWHb9RVWixJLUskGvpdya6oLA7pWy5N/gMjymK3qV1SA3RsbloypQ==
-X-Received: by 2002:a7b:c7d3:0:b0:3ef:622c:26d3 with SMTP id z19-20020a7bc7d3000000b003ef622c26d3mr3727505wmk.35.1682679314007;
-        Fri, 28 Apr 2023 03:55:14 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
-        by smtp.gmail.com with ESMTPSA id p14-20020a05600c358e00b003f188f608b9sm24813318wmq.8.2023.04.28.03.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Apr 2023 03:55:13 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 28 Apr 2023 12:55:11 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Viktor Malik <viktor.malik@gmail.com>,
-        Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [RFC/PATCH bpf-next 00/20] bpf: Add multi uprobe link
-Message-ID: <ZEumD2RvDfvEs2o5@krava>
-References: <20230424160447.2005755-1-jolsa@kernel.org>
- <CAEf4BzbCogCFVmr-C4XQNR4KF3_kj_yFeeTcevdmfm1veu-26w@mail.gmail.com>
- <ZEpuEUTAOZ2XoYPt@krava>
- <CAEf4BzZaj0Y_PhMVOfa5fpAMbStevjdrKxq3jfTA2Bq4VjtvDg@mail.gmail.com>
+        with ESMTP id S1345445AbjD1LIM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 07:08:12 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836BE468F
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 04:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=EIpj9NBrOGmizzfKhLH1UUzuBDHC+GqDc7rVRb4Q03w=; b=bedzFNURa8J2JJSY2XOOedTJu0
+        sy20+Xh1aWdzx9oOiJGbhvBa0m84w0l7Z0GEZduauGkXW43QvHdDA5N8zeYx1O8LltVfsfqd45b0x
+        D++8nu19aJbWlmI7P54b8s095K3R0zSBjkMLuIhdxDEIo5WyM6jri/kLr1CIhl6Y3YDypz+Gcrvt4
+        h+prHwfZxD0cNPvT8/RrDRSuQCEl7bg0KDvlcaFMrg+0a86wrrQj8947RNu+Z2krQikMVGxGuFwTo
+        hep6vH3z46cHT+ABsqmp8qNQpLHpMD+Ou5cfvJFYR+Yv4TvTFlLIAGfZMO0UAXGUaQpjbjrwv0Y0M
+        PXL4cjOA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1psLxE-000HYy-0w; Fri, 28 Apr 2023 13:07:56 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1psLxD-000Tg0-N5; Fri, 28 Apr 2023 13:07:55 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add fexit_sleep to
+ DENYLIST.aarch64
+To:     Manu Bretelle <chantr4@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@meta.com,
+        Manu Bretelle <chantra@meta.com>, revest@chromium.org
+References: <20230428034726.2593484-1-martin.lau@linux.dev>
+ <ZEteyNfBuJXlxnhG@worktop>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7801acd8-2a97-857e-dd99-07a3f85002cb@iogearbox.net>
+Date:   Fri, 28 Apr 2023 13:07:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZaj0Y_PhMVOfa5fpAMbStevjdrKxq3jfTA2Bq4VjtvDg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZEteyNfBuJXlxnhG@worktop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26890/Fri Apr 28 09:22:55 2023)
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 03:24:25PM -0700, Andrii Nakryiko wrote:
-> On Thu, Apr 27, 2023 at 5:44 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Wed, Apr 26, 2023 at 12:09:59PM -0700, Andrii Nakryiko wrote:
-> > > On Mon, Apr 24, 2023 at 9:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > hi,
-> > > > this patchset is adding support to attach multiple uprobes and usdt probes
-> > > > through new uprobe_multi link.
-> > > >
-> > > > The current uprobe is attached through the perf event and attaching many
-> > > > uprobes takes a lot of time because of that.
-> > > >
-> > > > The main reason is that we need to install perf event for each probed function
-> > > > and profile shows perf event installation (perf_install_in_context) as culprit.
-> > > >
-> > > > The new uprobe_multi link just creates raw uprobes and attaches the bpf
-> > > > program to them without perf event being involved.
-> > > >
-> > > > In addition to being faster we also save file descriptors. For the current
-> > > > uprobe attach we use extra perf event fd for each probed function. The new
-> > > > link just need one fd that covers all the functions we are attaching to.
-> > >
-> > > All of the above are good reasons and thanks for tackling multi-uprobe!
-> > >
-> > > >
-> > > > By dropping perf we lose the ability to attach uprobe to specific pid.
-> > > > We can workaround that by having pid check directly in the bpf program,
-> > > > but we might need to check for another solution if that will turn out
-> > > > to be a problem.
-> > > >
-> > >
-> > > I think this is a big deal, because it makes multi-uprobe not a
-> > > drop-in replacement for normal uprobes even for typical scenarios. It
-> > > might be why you couldn't do transparent use of uprobe.multi in USDT?
-> >
-> > yes
-> >
-> > >
-> > > But I'm not sure why this is a problem? How does perf handle this?
-> > > Does it do runtime filtering or something more efficient that prevents
-> > > uprobe to be triggered for other PIDs in the first place? If it's the
-> > > former, then why can't we do the same simple check ourselves if pid
-> > > filter is specified?
-> >
-> > so the standard uprobe is basically a perf event and as such it can be
-> > created with 'pid' as a target.. and such perf event will get installed
-> > only when the process with that pid is scheduled in and uninstalled
-> > when it's scheduled out
-> >
-> > >
-> > > I also see that uprobe_consumer has filter callback, not sure if it's
-> > > a better solution just for pid filtering, but might be another way to
-> > > do this?
-> >
-> > yes, that's probably how we will have to do that, will check
+On 4/28/23 7:51 AM, Manu Bretelle wrote:
+> On Thu, Apr 27, 2023 at 08:47:26PM -0700, Martin KaFai Lau wrote:
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> It is reported that the fexit_sleep never returns in aarch64.
 > 
-> callback seems like overkill as we'll be paying indirect call price.
-> So a simple if statement in either uprobe_prog_run or in
-> uprobe_multi_link_ret_handler/uprobe_multi_link_handler seems like
-> better solution, IMO.
-
-it looks like the consumer->filter is checked/executed before installing
-the breakpoint for uprobe, so it could be actually faster than current
-uprobe pid filter.. I'll check and have it there in next version
-
+> Just to clarify, this was only happening against kernels compiled with
+> llvm-16. It was working fine against kernel compiled with gcc.
 > 
-> 
-> >
-> > >
-> > > Another aspect I wanted to discuss (and I don't know the right answer)
-> > > was whether we need to support separate binary path for each offset?
-> > > It would simplify (and trim down memory usage significantly) a bunch
-> > > of internals if we knew we are dealing with single inode for each
-> > > multi-uprobe link. I'm trying to think if it would be limiting in
-> > > practice to have to create link per each binary, and so far it seems
-> > > like usually user-space code will do symbol resolution per ELF file
-> > > anyways, so doesn't seem limiting to have single path + multiple
-> > > offsets/cookies within that file. For USDTs use case even ref_ctr is
-> > > probably the same, but I'd keep it 1:1 with offset and cookie anyways.
-> > > For uniformity and generality.
-> > >
-> > > WDYT?
-> >
-> > right, it's waste for single binary, but I guess it's not a big waste,
-> > because when you have single binary you just repeat the same pointer,
-> > not the path
-> >
-> > it's fast enough to be called multiple times for each binary you want
-> > to trace, but it'd be also nice to be able to attach all in once ;-)
-> >
-> > maybe we could have a bit in flags saying paths[0] is valid for all
-> 
-> No need for extra flags. I was just thinking about having a simpler
-> and more straightforward API, where you don't need to create another
-> array with tons of duplicated string pointers. No big deal, I'm fine
-> either way.
+>> The remaining tests cannot start. Put this test into DENYLIST.aarch64
+>> for now so that other tests can continue to run in the CI.
 
-ok
++Florent (for visibility and/or if you plan to look into it)
 
-thanks,
-jirka
+>> Reported-by: Manu Bretelle <chantra@meta.com>
+>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> ---
+>>   tools/testing/selftests/bpf/DENYLIST.aarch64 | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> index 4b6b18424140..cd42e2825bd2 100644
+>> --- a/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> +++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+>> @@ -1,5 +1,6 @@
+>>   bpf_cookie/multi_kprobe_attach_api               # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>>   bpf_cookie/multi_kprobe_link_api                 # kprobe_multi_link_api_subtest:FAIL:fentry_raw_skel_load unexpected error: -3
+>> +fexit_sleep                                      # The test never returns. The remaining tests cannot start.
+>>   kprobe_multi_bench_attach                        # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+>>   kprobe_multi_test/attach_api_addrs               # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+>>   kprobe_multi_test/attach_api_pattern             # bpf_program__attach_kprobe_multi_opts unexpected error: -95
+>> -- 
+>> 2.34.1
+>>
+
