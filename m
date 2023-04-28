@@ -2,212 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B35F6F1CE8
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359756F1D38
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 19:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346342AbjD1Qwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 12:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
+        id S230478AbjD1RLz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 13:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346312AbjD1Qwj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 12:52:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5A35B90
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682700712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9UJtOJNRjK11X6Ax3/YkWZBfom69VzTQrdhUY1o0X2A=;
-        b=NfjmJ/XLiOgrCEOdPGzsJG2fw5EFqEeoCNn2LNoTvYO2A4YVu144R5odSk2YK/9Zzh6Gs3
-        qhhXLhvlNPxDqUeIrW3cdJ8pbNOQ9pBTaFSpjuT9+ObdEN5D02QNKqQHQztky7VobyGh/S
-        nz44COvGRZcgyUIZ8ZcJVKizWxmaGHE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-r9WO9gRyNcuuJnDcPgQN5w-1; Fri, 28 Apr 2023 12:51:50 -0400
-X-MC-Unique: r9WO9gRyNcuuJnDcPgQN5w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f3157128b4so44655375e9.0
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:51:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682700710; x=1685292710;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9UJtOJNRjK11X6Ax3/YkWZBfom69VzTQrdhUY1o0X2A=;
-        b=NexyfX8a9R8hce5iAPtbafUrVvGFNbydNNJBROlRDYva1sXOKh/FO77QWpEAz9kxqE
-         QNlNCQyvJO9wPy3IfXRyBak7mXpOz/crZqChvaWApdT1rKZtKzTtVfVvs9r263LNECCH
-         SvlgRCVH8lvThK+KvGBHpSBA2/E4eLg6HmAquev/+6Z5SSVhNk9bPjf4INUCPbnhzshg
-         PE0fAM4HKLgFSL3d79wG4++fdxvBKESoJ5JlQLowWIhgKQtn3zuWn3FuitmsVAArGz/d
-         q0Os0FYekFb3dw94LaPJ0y2Z/PKs7q0jmSio8abRaao0TqE+R2P11vI25vPsA5HT31Ur
-         iDHA==
-X-Gm-Message-State: AC+VfDwYPKMZuvFBJMfdccL7rf5GMHjbvqFdEqM2UOTh/LEKJqBvMaFi
-        hPGAjNCZiqBGmli/9Cc1doen++wPz7IGanLqnx9mT8+YWdqFdKBj13VigHJRggQ/FZWNGC+DQ/b
-        f3s4Pv0KvGvE7
-X-Received: by 2002:a05:600c:350c:b0:3ee:93d2:c915 with SMTP id h12-20020a05600c350c00b003ee93d2c915mr7076514wmq.6.1682700709865;
-        Fri, 28 Apr 2023 09:51:49 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ60Cqp35VglescQbd9Qlua4PQaNkjEb7zMR9lmAYMkPHuIxZahgFKPYNKGQ/ziaWLb1VaUG8g==
-X-Received: by 2002:a05:600c:350c:b0:3ee:93d2:c915 with SMTP id h12-20020a05600c350c00b003ee93d2c915mr7076499wmq.6.1682700709524;
-        Fri, 28 Apr 2023 09:51:49 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
-        by smtp.gmail.com with ESMTPSA id k18-20020a05600c0b5200b003edf2dc7ca3sm24690362wmr.34.2023.04.28.09.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 09:51:48 -0700 (PDT)
-Message-ID: <173337c0-14f4-3246-15ff-7fbf03861c94@redhat.com>
-Date:   Fri, 28 Apr 2023 18:51:46 +0200
+        with ESMTP id S229441AbjD1RLy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 13:11:54 -0400
+X-Greylist: delayed 1048 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Apr 2023 10:11:52 PDT
+Received: from smtpout15.mo541.mail-out.ovh.net (smtpout15.mo541.mail-out.ovh.net [146.59.177.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23E31FF0
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:11:52 -0700 (PDT)
+Received: from ex4.mail.ovh.net (unknown [10.110.115.87])
+        by mo541.mail-out.ovh.net (Postfix) with ESMTPS id 0EB2B25E16;
+        Fri, 28 Apr 2023 16:54:22 +0000 (UTC)
+Received: from [192.168.1.125] (93.21.160.242) by DAG10EX1.indiv4.local
+ (172.16.2.91) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.23; Fri, 28 Apr
+ 2023 18:54:21 +0200
+Message-ID: <d6de9d40-ff59-4cb6-5a97-f8b72a5d853e@naccy.de>
+Date:   Fri, 28 Apr 2023 18:54:21 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 1/7] bpf: add bpf_link support for
+ BPF_NETFILTER programs
 Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
- <ZEvZtIb2EDb/WudP@nvidia.com>
- <094d2074-5b69-5d61-07f7-9f962014fa68@redhat.com>
- <400da248-a14e-46a4-420a-a3e075291085@redhat.com>
- <077c4b21-8806-455f-be98-d7052a584259@lucifer.local>
- <62ec50da-5f73-559c-c4b3-bde4eb215e08@redhat.com>
- <6ddc7ac4-4091-632a-7b2c-df2005438ec4@redhat.com>
- <20230428160925.5medjfxkyvmzfyhq@box.shutemov.name>
- <39cc0f26-8fc2-79dd-2e84-62238d27fd98@redhat.com>
- <20230428162207.o3ejmcz7rzezpt6n@box.shutemov.name> <ZEv2196tk5yWvgW5@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
- by default
-In-Reply-To: <ZEv2196tk5yWvgW5@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Florian Westphal <fw@strlen.de>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <netfilter-devel@vger.kernel.org>, <dxu@dxuuu.xyz>
+References: <20230421170300.24115-1-fw@strlen.de>
+ <20230421170300.24115-2-fw@strlen.de>
+ <CAEf4Bzby3gwHmvz1cjcNHKFPA1LQdTq85TpCmOg=GB6=bQwjOQ@mail.gmail.com>
+ <20230427091015.GD3155@breakpoint.cc>
+ <CAEf4BzZrmUv27AJp0dDxBDMY_B8e55-wLs8DUKK69vCWsCG_pQ@mail.gmail.com>
+From:   Quentin Deslandes <qde@naccy.de>
+In-Reply-To: <CAEf4BzZrmUv27AJp0dDxBDMY_B8e55-wLs8DUKK69vCWsCG_pQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [93.21.160.242]
+X-ClientProxiedBy: CAS8.indiv4.local (172.16.1.8) To DAG10EX1.indiv4.local
+ (172.16.2.91)
+X-Ovh-Tracer-Id: 18031849959880257134
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedrfedukedguddtiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfhisehtkeertddtvdejnecuhfhrohhmpefsuhgvnhhtihhnucffvghslhgrnhguvghsuceoqhguvgesnhgrtggthidruggvqeenucggtffrrghtthgvrhhnpeejteetveefhfeludfggeejgffhudekffelhffhjeelieelvddvleevkeeiveetudenucfkphepuddvjedrtddrtddruddpleefrddvuddrudeitddrvdegvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehquggvsehnrggttgihrdguvgeqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheprghnughrihhirdhnrghkrhihihhkohesghhmrghilhdrtghomhdpfhifsehsthhrlhgvnhdruggvpdgsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpnhgvthhfihhlthgvrhdquggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpugiguhesugiguhhuuhdrgiihiidpoffvtefjohhsthepmhhoheeguddpmhhouggvpehsmhhtphhouhht
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28.04.23 18:39, Peter Xu wrote:
-> On Fri, Apr 28, 2023 at 07:22:07PM +0300, Kirill A . Shutemov wrote:
->> On Fri, Apr 28, 2023 at 06:13:03PM +0200, David Hildenbrand wrote:
->>> On 28.04.23 18:09, Kirill A . Shutemov wrote:
->>>> On Fri, Apr 28, 2023 at 05:43:52PM +0200, David Hildenbrand wrote:
->>>>> On 28.04.23 17:34, David Hildenbrand wrote:
->>>>>> On 28.04.23 17:33, Lorenzo Stoakes wrote:
->>>>>>> On Fri, Apr 28, 2023 at 05:23:29PM +0200, David Hildenbrand wrote:
->>>>>>>>>>
->>>>>>>>>> Security is the primary case where we have historically closed uAPI
->>>>>>>>>> items.
->>>>>>>>>
->>>>>>>>> As this patch
->>>>>>>>>
->>>>>>>>> 1) Does not tackle GUP-fast
->>>>>>>>> 2) Does not take care of !FOLL_LONGTERM
->>>>>>>>>
->>>>>>>>> I am not convinced by the security argument in regard to this patch.
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> If we want to sells this as a security thing, we have to block it
->>>>>>>>> *completely* and then CC stable.
->>>>>>>>
->>>>>>>> Regarding GUP-fast, to fix the issue there as well, I guess we could do
->>>>>>>> something similar as I did in gup_must_unshare():
->>>>>>>>
->>>>>>>> If we're in GUP-fast (no VMA), and want to pin a !anon page writable,
->>>>>>>> fallback to ordinary GUP. IOW, if we don't know, better be safe.
->>>>>>>
->>>>>>> How do we determine it's non-anon in the first place? The check is on the
->>>>>>> VMA. We could do it by following page tables down to folio and checking
->>>>>>> folio->mapping for PAGE_MAPPING_ANON I suppose?
->>>>>>
->>>>>> PageAnon(page) can be called from GUP-fast after grabbing a reference.
->>>>>> See gup_must_unshare().
->>>>>
->>>>> IIRC, PageHuge() can also be called from GUP-fast and could special-case
->>>>> hugetlb eventually, as it's table while we hold a (temporary) reference.
->>>>> Shmem might be not so easy ...
->>>>
->>>> page->mapping->a_ops should be enough to whitelist whatever fs you want.
->>>>
+On 28/04/2023 00:21, Andrii Nakryiko wrote:
+> On Thu, Apr 27, 2023 at 2:10 AM Florian Westphal <fw@strlen.de> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>>> @@ -1560,6 +1562,12 @@ union bpf_attr {
+>>>>                                  */
+>>>>                                 __u64           cookie;
+>>>>                         } tracing;
+>>>> +                       struct {
+>>>> +                               __u32           pf;
+>>>> +                               __u32           hooknum;
 >>>
->>> The issue is how to stabilize that from GUP-fast, such that we can safely
->>> dereference the mapping. Any idea?
+>>> catching up on stuff a bit...
 >>>
->>> At least for anon page I know that page->mapping only gets cleared when
->>> freeing the page, and we don't dereference the mapping but only check a
->>> single flag stored alongside the mapping. Therefore, PageAnon() is fine in
->>> GUP-fast context.
+>>> enum nf_inet_hooks {
+>>>         NF_INET_PRE_ROUTING,
+>>>         NF_INET_LOCAL_IN,
+>>>         NF_INET_FORWARD,
+>>>         NF_INET_LOCAL_OUT,
+>>>         NF_INET_POST_ROUTING,
+>>>         NF_INET_NUMHOOKS,
+>>>         NF_INET_INGRESS = NF_INET_NUMHOOKS,
+>>> };
+>>>
+>>> So it seems like this "hook number" is more like "hook type", is my
+>>> understanding correct?
 >>
->> What codepath you are worry about that clears ->mapping on pages with
->> non-zero refcount?
->>
->> I can only think of truncate (and punch hole). READ_ONCE(page->mapping)
->> and fail GUP_fast if it is NULL should be fine, no?
->>
->> I guess we should consider if the inode can be freed from under us and the
->> mapping pointer becomes dangling. But I think we should be fine here too:
->> VMA pins inode and VMA cannot go away from under GUP.
+>> What is 'hook type'?
 > 
-> Can vma still go away if during a fast-gup?
+> I meant that it's not some dynamically generated number that could
+> change from the system to system, it's a fixed set of point in which
+> this BPF program can be triggered. The distinction I was trying to
+> make that it's actually different in nature compared to, say, ifindex,
+> as it is fixed by the kernel.
+
+Doesn't this ties the program to a specific hook then? Let's say you
+have a program counting the number of packets from a specific IP, and
+would you be able to attach it to both LOCAL_IN and FORWARD without
+modifying it?
+
+>>> If so, wouldn't it be cleaner and more uniform
+>>> with, say, cgroup network hooks to provide hook type as
+>>> expected_attach_type? It would also allow to have a nicer interface in
+>>> libbpf, by specifying that as part of SEC():
+>>>
+>>> SEC("netfilter/pre_routing"), SEC("netfilter/local_in"), etc...
+>>
+>> I don't understand how that would help.
+>> Attachment needs a priority and a family (ipv4, arp, etc.).
+>>
+>> If we allow netdev type we'll also need an ifindex.
+>> Daniel Xu work will need to pass extra arguments ("please enable ip
+>> defrag").
 > 
-
-So, after we grabbed the page and made sure the the PTE didn't change 
-(IOW, the PTE was stable while we processed it), the page can get 
-unmapped (but not freed, because we hold a reference) and the VMA can 
-theoretically go away (and as far as I understand, nothing stops the 
-file from getting deleted, truncated etc).
-
-So we might be looking at folio->mapping and the VMA is no longer there. 
-Maybe even the file is no longer there.
-
--- 
-Thanks,
-
-David / dhildenb
+> Ok, that's fine, if you think it doesn't make sense to pre-declare
+> that a given BPF program is supposed to be run only in, say,
+> PRE_ROUTING, then it's fine. We do declare this for other programs
+> (e.g., cgroup_skb/egress vs cgroup_skb/ingress), so it felt like this
+> might be a similar case.
+> 
+>>
+>>> Also, it seems like you actually didn't wire NETFILTER link support in
+>>> libbpf completely. See bpf_link_create under tools/lib/bpf/bpf.c, it
+>>> has to handle this new type of link as well. Existing tests seem a bit
+>>> bare-bones for SEC("netfilter"), would it be possible to add something
+>>> that will demonstrate it a bit better and will be actually executed at
+>>> runtime and validated?
+>>
+>> I can have a look.
+> 
+> It probably makes sense to add bpf_program__attach_netfilter() API as
+> well which will return `struct bpf_link *`. Right now libbpf support
+> for NETFILTER is very incomplete.
 
