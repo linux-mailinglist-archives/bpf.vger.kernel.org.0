@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5AF6F20F6
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 00:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517166F2101
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 00:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346840AbjD1WiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 18:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        id S1346748AbjD1Wn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 18:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346828AbjD1WiD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 18:38:03 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on20608.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe59::608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662E959DA;
-        Fri, 28 Apr 2023 15:37:47 -0700 (PDT)
+        with ESMTP id S1345956AbjD1Wn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 18:43:58 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2076.outbound.protection.outlook.com [40.107.95.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926EA1FEF;
+        Fri, 28 Apr 2023 15:43:57 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=exKd0P5m7/vAa2SphfFBgnkCd9vLi4H6A8xgoSDzUDMViH5deTKLIAwVXZ+drr9A2yazaR/5K7f8h8H32wMlTdNTtnao87O8SvZV2Pq5uB53GXy960KBIWGAiIvDt6dPCcmUMmS8sSV9dly0o15zOu4aHPfKO28zye2bvMzo9He+UoWmjMWKByPmH2ueWcJWaOup2bXX84/MVFoYcbsBUrb6Jquuv5MumE2KSx49ICi4W2TOd6keVNzgzkQePffhRg5gqsz2rugm10XiGclS9fsQxlqcaMrCOTxgFTwy++UkaAs7jJJaLO1ItmFczIzF+QbNIL0o7TeWHQfepCNKmg==
+ b=G77uFLUs04hEm2oqfjxlDQbI7BvEPfs4PYpnj8rQYKP8J8Homs627moZEynrU6GHrYeLz4a7+EonAcBrGDIHF3KPDLxLCq+XB6DFkEbs9DRrYNnI1DS1wPTFGXELMBcTw/VbAnxWrNrYmMNugXA+dhHMkF5PL70s5yqwoRab6x4O10psma3YpwPqvFkqb0dwZ+soCY2gUlridjNNx/cThWzselI22TWoC3HxHxXayShy5Z29BeQtYxR3sqlCzyFi1VYOOkmke8K1Xd4xcJtWZKI3OnvH/481iFj0mSmvcPGSQepP0N+XdoQZDB5GA2LxYqSHyh2nxHJUmQu9oVwgPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VGqIbEi2Dws6Nh8Vb+4WJHJUjlwhkBjvy701pGKlw/Y=;
- b=gnknoyfoYebAwMtda0CtPduykvIXka52pFj8/SiCiR7+BFSU/qOdz5HtPEmt8s1aVDLdkC+jhnCqOof+hw8BkEabtsBtBZ5dU3b1/eJdqsg5Aa23L5TBRnnkUU4kds+44ZIqeZo1Whr3zkidNNtbNnhlQzxa08Y2R/A1WR+RKVwmitBneHnOFCGXmx8QsVEaOaRXOHWmJYh9qSu0u2Ay1yyl4Z+8meVl2BQ/g5OYkytbScPKutsjgrHbTEDotLtw8nqmfcw8PAmB8tZ0KWOybgRdA8t/NHOGUt781DF4Hyl1ibETGwUNHNrjn5ZDP/o6RNeJLeJRYja5wNvJSthzoA==
+ bh=qoCALTqgj1Ni9DxZfeyCJQtjrltarziYshLWzrKBR1M=;
+ b=TzR/0Kwi2u+tuTZFugikyPkdlhOzSfAO63WQMYtJzI/vT6MBgOBOOyg8fJagI/GZfvo0tkCAeYCkKonxumFtWIQ6bo2FAWpiWHGlXDWcumiMvDLkmqvGt3ea0krDmqEsdGjTyn7bofm32u1KXhDWgNw4kuveTAOrJ7M89RElI51mwrNTUaGUzbsTcm4onDkDRSBN4PbRfpAUuPpqXVV9fNGqnjysKNOQ1fO0T7dJSb6SFJB5XojEgV/nL4b2WW1YYSHa9siHep16ZtttqUnjhHON8dby0bS72qxGmb8DFiJ1eXfFENLCGWlbReW1G82XAWK1f/4a2RxmpSQ5LRAJ5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=lists.linux-foundation.org
+ 216.228.118.232) smtp.rcpttodomain=lists.linux-foundation.org
  smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
  header.from=nvidia.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VGqIbEi2Dws6Nh8Vb+4WJHJUjlwhkBjvy701pGKlw/Y=;
- b=QNa+1K80vxNTqopGuc5Yr4opAcTuTHmJHoHkiVKJje2FKeAxXqKRWg7WuGaxZPN8o8zFeZIdpoUJ5DQafckY3jycM/T3yq9gexgcZs2p/N2gTIESF4ENh5JCXTEX80XM1y7Sh03IVDFeP5edgwLOhMx7xIfAV65rWbxG1GYWPi7n2GlyAUgwz0VSQaBbg82y9MWYcSYgzGGrvN0v7+5lKZDd6fmtpIJPcx4aw9LTKjaBeFi06vemQNzU6ZZ++7rzh8ri4qAROHRP1ooONHlpVU7nSVJimS06JJeXWauVVKAL9sIkao+4uSlqc0xGYESBJTgspDCjUKdy/WEGfFQ4IQ==
-Received: from MW4PR03CA0279.namprd03.prod.outlook.com (2603:10b6:303:b5::14)
- by MW6PR12MB8960.namprd12.prod.outlook.com (2603:10b6:303:23e::22) with
+ bh=qoCALTqgj1Ni9DxZfeyCJQtjrltarziYshLWzrKBR1M=;
+ b=GVqvV6Pkx3atw8ci7QzlAoJ4k8fzS+ji9+t7hZXBDY8r8D6FLAhF6WBM9rPhg3IZWNYBhAU0f/tkWTF6cGVlfMUyLAuQddx496ui4EKhAwIXUaNKySIVRS7MM/ZjJK/aDIkVn8d/xIgdnKzksufUvu2mSmT55U96y/dg8facTV/6ypT8nmOI8wwY4nJLIB/RnYSyvLqFc87b8mlTMD+XmWXpGbVafucMRRDot/eUmKgfEVKQVnAQUOewHyaKAy+DM/tQG+swGAnhJBkiZCCNafwiy42bMUDMMcTj5udffDZRzhJ7ttb6dIZGBhwQ5Y5IF/drJeVOfRkegPLkYg6r8w==
+Received: from MW4PR04CA0362.namprd04.prod.outlook.com (2603:10b6:303:81::7)
+ by PH0PR12MB7012.namprd12.prod.outlook.com (2603:10b6:510:21c::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.21; Fri, 28 Apr
- 2023 22:37:44 +0000
-Received: from CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b5:cafe::c7) by MW4PR03CA0279.outlook.office365.com
- (2603:10b6:303:b5::14) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 22:43:55 +0000
+Received: from CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:81:cafe::39) by MW4PR04CA0362.outlook.office365.com
+ (2603:10b6:303:81::7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.24 via Frontend
- Transport; Fri, 28 Apr 2023 22:37:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ Transport; Fri, 28 Apr 2023 22:43:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1NAM11FT045.mail.protection.outlook.com (10.13.175.181) with Microsoft SMTP
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CO1NAM11FT055.mail.protection.outlook.com (10.13.175.129) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6340.25 via Frontend Transport; Fri, 28 Apr 2023 22:37:44 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.6340.24 via Frontend Transport; Fri, 28 Apr 2023 22:43:55 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 28 Apr 2023
- 15:37:32 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 28 Apr
- 2023 15:37:32 -0700
-Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Fri, 28 Apr
- 2023 15:37:30 -0700
+ 15:43:54 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Fri, 28 Apr 2023 15:43:54 -0700
+Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Fri, 28 Apr 2023 15:43:53 -0700
 From:   Feng Liu <feliu@nvidia.com>
 To:     <virtualization@lists.linux-foundation.org>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
@@ -70,107 +70,71 @@ CC:     Jason Wang <jasowang@redhat.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         Feng Liu <feliu@nvidia.com>, "William Tu" <witu@nvidia.com>,
         Parav Pandit <parav@nvidia.com>
-Subject: [PATCH net v1 1/2] virtio_net: Fix error unwinding of XDP initialization
-Date:   Fri, 28 Apr 2023 18:37:12 -0400
-Message-ID: <20230428223712.67499-1-feliu@nvidia.com>
+Subject: [PATCH net v1 2/2] virtio_net: Close queue pairs using helper function
+Date:   Fri, 28 Apr 2023 18:43:46 -0400
+Message-ID: <20230428224346.68211-1-feliu@nvidia.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT045:EE_|MW6PR12MB8960:EE_
-X-MS-Office365-Filtering-Correlation-Id: 630cbd54-b5d5-4e8a-6938-08db48392f18
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT055:EE_|PH0PR12MB7012:EE_
+X-MS-Office365-Filtering-Correlation-Id: 779dd040-173e-4a29-fdbb-08db483a0c3a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eaAbERAKqri5HWQIh+4/VIRY5eYP/FGkVZflHVbICQR8c/UhOLQ+g0SSkY49OnEFQAujfGMtna+Z6/FdxKKGQ3QZQMaP1r3SYGTbrOkijvcU1aioB74SwJMjLlyv77jQZOlDVGijHS+S4H8CaqPbLp8NNVj34AZepFXz5exHa4ptqZaBD3ZOM7M3zIW0WHV6JtLPjD5vBCiO2YsFE+hc0Ws7Yt6gSCGyEbC5h+bZZ0npbovvevyIfjq+Rw2aCm3kuswsHyy7eCkSliK4MOM8LWfuI9Y6a1l4WG+JS2uEGDxsW3uRsJCXfJRRx+iObo7hHsyapJxZFVm1AsC95K+iDD6sTtwUK+XPrkIB0xddHRIDEtKTeIWPQL1lGjvgQr60KEeL9drKYikhknvVMVwBqX5Wkm/LAOnPttzYpHOEljRGQa6LM+kwnka8Faxy5NuQK1wbQZcFnOoYHmvz+qkiw7xKsTEPH+OYf4sgSLBmBiBpJ9PliRqAQIdeGCoep+Hzh/NDoy/w0OyXxtskiSa+MIksNf9Fhcdi1MPwvippJOTNZWc6FK9hwZ9FIG8f5MqM0kod6tCTsDKKxrca5e+H+rzDcZbJ7uERcth86CvbQsub44E81T2SFbfBimVjJzT5QSo6ea5McZVKm6GYMQW3wxOFpl12D6jbpLKPZ4zMaAzYXdITMhi2fpy2K/vaxrW/KnXHCQhX09iejy3RdChf0w==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(346002)(396003)(451199021)(40470700004)(36840700001)(46966006)(1076003)(26005)(40460700003)(186003)(54906003)(110136005)(478600001)(82310400005)(8676002)(7696005)(5660300002)(6666004)(36756003)(8936002)(2906002)(82740400003)(41300700001)(70206006)(4326008)(86362001)(316002)(70586007)(7636003)(356005)(107886003)(40480700001)(2616005)(83380400001)(336012)(426003)(36860700001)(47076005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: hhgbru8bZAjs4CTLunG26FXMPTFWzxorX3ZH49r7xOSM6NQPyR0xjpgFMkgPVGVEIbt30bxtoq+6TnF1ufQe8aEH0t7GVh4fU5xWCRz1JeqD8b9keniqLNFRusUf3UjmOixIMu9etmnQJMLF5+ztmLJ7wb09ajRdep8vmyNS1iGWqOF0K6qoXZvRFyuDNHcppvurmrimRPA6cEc+cXC6MHpaBcDfumrkUEm0qIGxznCo8JxurD5NzfT/W8mp2ayY6WEEMszFgDMkIo0pOeaGS5BzoeoguLBHxumHtcQDiNR2pmsSXwVF4awoBdXlfeTbwPCFel3+FGWongN5z2UzhqEyrbBWLAFEW+ColltqEkQuULy0OuplNfdpy8gqJUGrDGr99ju3C4tFZ+OXlsMebVu6ViKN63GiMUTfmO4ljhcQy/oDFj7CO2Dc3/dyemM9qVGYHbxxI6+i1XgcYH/6Om8O3OWozGuskbymGIo08dfsJzqQQ/aH1w+fzYRE1fQGys68+U3x+hFqzi9CTTF1B5b8IWyhAWQXu8BK4I8VL5bx0EJ0BSqHh6MOS3w7CkDWNC5W3g+Gus7ISoqs6VtDUzP+iQOVJrNChrNT2SivxNRf6OHtF3yQmojGN+CoEtOXfuhO4BZRKj8jnAi2YGCv2JZFDIHr686O0twNmjCrbX3i6H0Gce5YVvnlFXlMeC96D4eCBzwLs6ZA8f0iXK50k0tr9Idx+bEx3p9lWaNHcmg=
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(396003)(376002)(451199021)(36840700001)(40470700004)(46966006)(426003)(336012)(40480700001)(47076005)(36860700001)(83380400001)(2616005)(186003)(40460700003)(1076003)(26005)(70586007)(86362001)(2906002)(316002)(70206006)(4744005)(7636003)(4326008)(82740400003)(107886003)(356005)(41300700001)(478600001)(110136005)(54906003)(82310400005)(36756003)(8936002)(5660300002)(6666004)(7696005)(8676002)(46800400005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2023 22:37:44.2271
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2023 22:43:55.2615
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 630cbd54-b5d5-4e8a-6938-08db48392f18
+X-MS-Exchange-CrossTenant-Network-Message-Id: 779dd040-173e-4a29-fdbb-08db483a0c3a
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8960
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7012
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When initializing XDP in virtnet_open(), some rq xdp initialization
-may hit an error causing net device open failed. However, previous
-rqs have already initialized XDP and enabled NAPI, which is not the
-expected behavior. Need to roll back the previous rq initialization
-to avoid leaks in error unwinding of init code.
+Use newly introduced helper function that exactly does the same of
+closing the queue pairs.
 
-Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
 Signed-off-by: Feng Liu <feliu@nvidia.com>
 Reviewed-by: William Tu <witu@nvidia.com>
 Reviewed-by: Parav Pandit <parav@nvidia.com>
 ---
- drivers/net/virtio_net.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ drivers/net/virtio_net.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 8d8038538fc4..fc6ee833a09f 100644
+index fc6ee833a09f..5cd78e154d14 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -1868,6 +1868,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
- 	return received;
- }
+@@ -2319,11 +2319,8 @@ static int virtnet_close(struct net_device *dev)
+ 	/* Make sure refill_work doesn't re-enable napi! */
+ 	cancel_delayed_work_sync(&vi->refill);
  
-+static void virtnet_disable_qp(struct virtnet_info *vi, int qp_index)
-+{
-+	virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
-+	napi_disable(&vi->rq[qp_index].napi);
-+	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
-+}
-+
- static int virtnet_open(struct net_device *dev)
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
-@@ -1883,20 +1890,27 @@ static int virtnet_open(struct net_device *dev)
- 
- 		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
- 		if (err < 0)
--			return err;
-+			goto err_xdp_info_reg;
- 
- 		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
- 						 MEM_TYPE_PAGE_SHARED, NULL);
--		if (err < 0) {
--			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--			return err;
--		}
-+		if (err < 0)
-+			goto err_xdp_reg_mem_model;
- 
- 		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
- 		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
- 	}
+-	for (i = 0; i < vi->max_queue_pairs; i++) {
+-		virtnet_napi_tx_disable(&vi->sq[i].napi);
+-		napi_disable(&vi->rq[i].napi);
+-		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+-	}
++	for (i = 0; i < vi->max_queue_pairs; i++)
++		virtnet_disable_qp(vi, i);
  
  	return 0;
-+
-+	/* error unwinding of xdp init */
-+err_xdp_reg_mem_model:
-+	xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-+err_xdp_info_reg:
-+	for (i = i - 1; i >= 0; i--)
-+		virtnet_disable_qp(vi, i);
-+
-+	return err;
  }
- 
- static int virtnet_poll_tx(struct napi_struct *napi, int budget)
 -- 
 2.37.1 (Apple Git-137.1)
 
