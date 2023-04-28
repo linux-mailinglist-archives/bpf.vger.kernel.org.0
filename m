@@ -2,65 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A86F2006
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 23:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3946F200B
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 23:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjD1VSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 17:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
+        id S1345702AbjD1VTj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 17:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjD1VSu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 17:18:50 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C06211C;
-        Fri, 28 Apr 2023 14:18:49 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-94f7a0818aeso40902966b.2;
-        Fri, 28 Apr 2023 14:18:49 -0700 (PDT)
+        with ESMTP id S1345610AbjD1VTi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 17:19:38 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB6B1FF7
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 14:19:37 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5055141a8fdso241871a12.3
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 14:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682716728; x=1685308728;
+        d=gmail.com; s=20221208; t=1682716776; x=1685308776;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B0yu+PGePfgOn7Dr4AaCeHmSNPX477Sl7q4z5WfJr3k=;
-        b=B8TOc+pJlAYzkk1X3X96kUHA7doLFTW8l7DDb0fWE61FFxKOCBtIs6FlSlNNP392XK
-         fP//IiGiq09fSmTprEuBnP1SDj6I5TSnFA79QXWm4Mvh9cs8jdzdMlh3vS/bff9o9d79
-         XTkJe2z///wiLsz4c6Et7HzHf2AXe8aum4kvPDPNVtLkBM6cKyRWPAPN9sTxi/wtHClb
-         TaW7HT220/nBlhrnh1yUOO/dKBfxppeX442HhNUqQJIpN7UQjya2+z5JSX+hYt9WzJ1X
-         y9nv8IdQAwl2T57rukjzBg8nHABxV7v1+31xwMBtmTy3p+jNAT4WT99couD0hOIfOPf7
-         t2Rw==
+        bh=8iWd7BAFLDGaLG7tHAfGqEHFeECwXXfcDb4kWniOhdY=;
+        b=NqHAVFTDQh2ZN82Ny4qXkCzogPlscOQnev5JdEapI4lc8f7FrAldScYasu0Zj2N3XE
+         DbcA72WdKHHpoWw0bKz0I4XSeHww/3EpRmX0/ua9MCOjIJI5/rP99uQtYgtQNQHYtCJj
+         oRdDbCurwvmSHHTpDZUHd5fq2MSFmeTXCzypTrT8kCadCNjMMpbRuFfudgb9uwty6NpG
+         iTjkMR4iz4dK0uNwGjdysy8TiU2U1d4jAswDh2EFPmx+T69nwI/DEuXjF6hUlo3IZf57
+         p+zkND2UU23boOiY9Gp9LNiZhaqnnmg80Z22AVrrLw/EqJveZtMDxHHLKUpD6eNlUlUA
+         GilA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682716728; x=1685308728;
+        d=1e100.net; s=20221208; t=1682716776; x=1685308776;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B0yu+PGePfgOn7Dr4AaCeHmSNPX477Sl7q4z5WfJr3k=;
-        b=VO+H8WAevDOY7TcByjwnTHhCHqHI2+gTMnvgtjE1bMrk3Tw0R1J/Dsryxgin/zON9A
-         5ZD7OkUOeIabq+emSDQdVxz2WA3QDckVJl4cCnCWjw29bjD+vKSlUtkFAHIa442m7eP0
-         Ac+PTpyrQQeKS23qy3gQKUtzaonVN32D4sQecFY5vQjpUu0cQqZqOMCFQitwK5IOqz2h
-         AAG6QnkJqHID1g0Hx1KxaDEEKmwBWLKRiDNB/fkYEKHon6mCxwAn3kRC7dVcYlA8eVv1
-         7MJS8Yyc3qIiWFboCS2sI4aRpS7sAhOQsID6s9LkWHLtCSmZqQpQo3rFacckO/Uw9s5e
-         HUYw==
-X-Gm-Message-State: AC+VfDwVYjQFExvsAQxmDkvbvDFpEUZAeiuJasFPg5aQ2WoaZUTitVB0
-        pQ2T0ozN84eOfEbMP9z+L3adpqbaCqsy2/NHs3g=
-X-Google-Smtp-Source: ACHHUZ6HGII9pyMTvBUXKdFtK5Pw60ncRx2oaFxnTUJ7UB8cvn8ENmaTQVN40tMnBP3M9G4W/jHRSyKa9vfZloEi4ZA=
-X-Received: by 2002:a17:907:3faa:b0:94a:99a4:58d7 with SMTP id
- hr42-20020a1709073faa00b0094a99a458d7mr7114563ejc.15.1682716727472; Fri, 28
- Apr 2023 14:18:47 -0700 (PDT)
+        bh=8iWd7BAFLDGaLG7tHAfGqEHFeECwXXfcDb4kWniOhdY=;
+        b=TYVLAZdvEiZJsHs4rcrBgd5ZEzhZdapH8GnIUATIJYqnWaHUgJbgdu4eJ8ub1s8ElT
+         jqVYF7XsiwXCAV4PAOBWcbDawB3jKoRNp+trVR5cYoZJEywRjZJ7zK/Ab5qsgmVYOTik
+         xgORZQIlAsdgwn7tA9rOxo7iEfEvGmiFxwChM53ntv7QjE+5rvcAYQIkjlpz5TH9NHWl
+         V9OhZfWkgoLc8kz7MgrbjdYrAWj/jAXaJbwbPdwoMf4mssHIu1Nf34BjWRb0Lw971v1j
+         LbqsyA6GHiyfh0PE0eCpZ+V8scSg0nj66KSQm1GSuFO08ar8sd0USGcJjTpsHpnob/fo
+         P78A==
+X-Gm-Message-State: AC+VfDz5wBGx1RPN/sQQU92Rz1gu/jWz86rMk50apqk0YsO0js1EOZlt
+        0tsNr1E+ldHQYjnB4crsTN3MRL5JzRrf84CGNlU=
+X-Google-Smtp-Source: ACHHUZ6NH3BQExw7R6s9qTkDVhvigsjJ+Vkwpb9MRfOA0IoXU9VFq+cq7uhn/Ome24b/b+ym6ma00PWsg4RRJQMv128=
+X-Received: by 2002:a05:6402:183:b0:50a:11ce:4d24 with SMTP id
+ r3-20020a056402018300b0050a11ce4d24mr172499edv.15.1682716775514; Fri, 28 Apr
+ 2023 14:19:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230421170300.24115-1-fw@strlen.de> <20230421170300.24115-2-fw@strlen.de>
- <CAEf4Bzby3gwHmvz1cjcNHKFPA1LQdTq85TpCmOg=GB6=bQwjOQ@mail.gmail.com>
- <20230427091015.GD3155@breakpoint.cc> <CAEf4BzZrmUv27AJp0dDxBDMY_B8e55-wLs8DUKK69vCWsCG_pQ@mail.gmail.com>
- <d6de9d40-ff59-4cb6-5a97-f8b72a5d853e@naccy.de>
-In-Reply-To: <d6de9d40-ff59-4cb6-5a97-f8b72a5d853e@naccy.de>
+References: <20230424160447.2005755-1-jolsa@kernel.org> <CAEf4BzbCogCFVmr-C4XQNR4KF3_kj_yFeeTcevdmfm1veu-26w@mail.gmail.com>
+ <ZEpuEUTAOZ2XoYPt@krava> <CAEf4BzZaj0Y_PhMVOfa5fpAMbStevjdrKxq3jfTA2Bq4VjtvDg@mail.gmail.com>
+ <ZEumD2RvDfvEs2o5@krava>
+In-Reply-To: <ZEumD2RvDfvEs2o5@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Apr 2023 14:18:35 -0700
-Message-ID: <CAEf4BzbWCKTMzU=w0STOZM23hTbVtqoMamgB3wC3e+X3xNKZ9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/7] bpf: add bpf_link support for
- BPF_NETFILTER programs
-To:     Quentin Deslandes <qde@naccy.de>
-Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        dxu@dxuuu.xyz
+Date:   Fri, 28 Apr 2023 14:19:23 -0700
+Message-ID: <CAEf4Bza13OFvDToApa58i2wZvN4=-0=p0p55-eAEEyYXmAKxkg@mail.gmail.com>
+Subject: Re: [RFC/PATCH bpf-next 00/20] bpf: Add multi uprobe link
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Viktor Malik <viktor.malik@gmail.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,93 +80,141 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 9:54=E2=80=AFAM Quentin Deslandes <qde@naccy.de> wr=
-ote:
+On Fri, Apr 28, 2023 at 3:55=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> On 28/04/2023 00:21, Andrii Nakryiko wrote:
-> > On Thu, Apr 27, 2023 at 2:10=E2=80=AFAM Florian Westphal <fw@strlen.de>=
- wrote:
-> >>
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >>>> @@ -1560,6 +1562,12 @@ union bpf_attr {
-> >>>>                                  */
-> >>>>                                 __u64           cookie;
-> >>>>                         } tracing;
-> >>>> +                       struct {
-> >>>> +                               __u32           pf;
-> >>>> +                               __u32           hooknum;
-> >>>
-> >>> catching up on stuff a bit...
-> >>>
-> >>> enum nf_inet_hooks {
-> >>>         NF_INET_PRE_ROUTING,
-> >>>         NF_INET_LOCAL_IN,
-> >>>         NF_INET_FORWARD,
-> >>>         NF_INET_LOCAL_OUT,
-> >>>         NF_INET_POST_ROUTING,
-> >>>         NF_INET_NUMHOOKS,
-> >>>         NF_INET_INGRESS =3D NF_INET_NUMHOOKS,
-> >>> };
-> >>>
-> >>> So it seems like this "hook number" is more like "hook type", is my
-> >>> understanding correct?
-> >>
-> >> What is 'hook type'?
+> On Thu, Apr 27, 2023 at 03:24:25PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Apr 27, 2023 at 5:44=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> =
+wrote:
+> > >
+> > > On Wed, Apr 26, 2023 at 12:09:59PM -0700, Andrii Nakryiko wrote:
+> > > > On Mon, Apr 24, 2023 at 9:04=E2=80=AFAM Jiri Olsa <jolsa@kernel.org=
+> wrote:
+> > > > >
+> > > > > hi,
+> > > > > this patchset is adding support to attach multiple uprobes and us=
+dt probes
+> > > > > through new uprobe_multi link.
+> > > > >
+> > > > > The current uprobe is attached through the perf event and attachi=
+ng many
+> > > > > uprobes takes a lot of time because of that.
+> > > > >
+> > > > > The main reason is that we need to install perf event for each pr=
+obed function
+> > > > > and profile shows perf event installation (perf_install_in_contex=
+t) as culprit.
+> > > > >
+> > > > > The new uprobe_multi link just creates raw uprobes and attaches t=
+he bpf
+> > > > > program to them without perf event being involved.
+> > > > >
+> > > > > In addition to being faster we also save file descriptors. For th=
+e current
+> > > > > uprobe attach we use extra perf event fd for each probed function=
+. The new
+> > > > > link just need one fd that covers all the functions we are attach=
+ing to.
+> > > >
+> > > > All of the above are good reasons and thanks for tackling multi-upr=
+obe!
+> > > >
+> > > > >
+> > > > > By dropping perf we lose the ability to attach uprobe to specific=
+ pid.
+> > > > > We can workaround that by having pid check directly in the bpf pr=
+ogram,
+> > > > > but we might need to check for another solution if that will turn=
+ out
+> > > > > to be a problem.
+> > > > >
+> > > >
+> > > > I think this is a big deal, because it makes multi-uprobe not a
+> > > > drop-in replacement for normal uprobes even for typical scenarios. =
+It
+> > > > might be why you couldn't do transparent use of uprobe.multi in USD=
+T?
+> > >
+> > > yes
+> > >
+> > > >
+> > > > But I'm not sure why this is a problem? How does perf handle this?
+> > > > Does it do runtime filtering or something more efficient that preve=
+nts
+> > > > uprobe to be triggered for other PIDs in the first place? If it's t=
+he
+> > > > former, then why can't we do the same simple check ourselves if pid
+> > > > filter is specified?
+> > >
+> > > so the standard uprobe is basically a perf event and as such it can b=
+e
+> > > created with 'pid' as a target.. and such perf event will get install=
+ed
+> > > only when the process with that pid is scheduled in and uninstalled
+> > > when it's scheduled out
+> > >
+> > > >
+> > > > I also see that uprobe_consumer has filter callback, not sure if it=
+'s
+> > > > a better solution just for pid filtering, but might be another way =
+to
+> > > > do this?
+> > >
+> > > yes, that's probably how we will have to do that, will check
 > >
-> > I meant that it's not some dynamically generated number that could
-> > change from the system to system, it's a fixed set of point in which
-> > this BPF program can be triggered. The distinction I was trying to
-> > make that it's actually different in nature compared to, say, ifindex,
-> > as it is fixed by the kernel.
+> > callback seems like overkill as we'll be paying indirect call price.
+> > So a simple if statement in either uprobe_prog_run or in
+> > uprobe_multi_link_ret_handler/uprobe_multi_link_handler seems like
+> > better solution, IMO.
 >
-> Doesn't this ties the program to a specific hook then? Let's say you
-> have a program counting the number of packets from a specific IP, and
-> would you be able to attach it to both LOCAL_IN and FORWARD without
-> modifying it?
+> it looks like the consumer->filter is checked/executed before installing
+> the breakpoint for uprobe, so it could be actually faster than current
+> uprobe pid filter.. I'll check and have it there in next version
 
-By default, yes (but you can work around that). From your and
-Florian's replies it follows that these are not like
-expected_attach_type, if I understand correctly. So I'm fine with
-having them as attach argument, not part of program type and attach
-type.
+ah, so if it's not executed on each uprobe run, then yeah, that would be be=
+st
 
 >
-> >>> If so, wouldn't it be cleaner and more uniform
-> >>> with, say, cgroup network hooks to provide hook type as
-> >>> expected_attach_type? It would also allow to have a nicer interface i=
-n
-> >>> libbpf, by specifying that as part of SEC():
-> >>>
-> >>> SEC("netfilter/pre_routing"), SEC("netfilter/local_in"), etc...
-> >>
-> >> I don't understand how that would help.
-> >> Attachment needs a priority and a family (ipv4, arp, etc.).
-> >>
-> >> If we allow netdev type we'll also need an ifindex.
-> >> Daniel Xu work will need to pass extra arguments ("please enable ip
-> >> defrag").
 > >
-> > Ok, that's fine, if you think it doesn't make sense to pre-declare
-> > that a given BPF program is supposed to be run only in, say,
-> > PRE_ROUTING, then it's fine. We do declare this for other programs
-> > (e.g., cgroup_skb/egress vs cgroup_skb/ingress), so it felt like this
-> > might be a similar case.
 > >
-> >>
-> >>> Also, it seems like you actually didn't wire NETFILTER link support i=
-n
-> >>> libbpf completely. See bpf_link_create under tools/lib/bpf/bpf.c, it
-> >>> has to handle this new type of link as well. Existing tests seem a bi=
-t
-> >>> bare-bones for SEC("netfilter"), would it be possible to add somethin=
-g
-> >>> that will demonstrate it a bit better and will be actually executed a=
-t
-> >>> runtime and validated?
-> >>
-> >> I can have a look.
+> > >
+> > > >
+> > > > Another aspect I wanted to discuss (and I don't know the right answ=
+er)
+> > > > was whether we need to support separate binary path for each offset=
+?
+> > > > It would simplify (and trim down memory usage significantly) a bunc=
+h
+> > > > of internals if we knew we are dealing with single inode for each
+> > > > multi-uprobe link. I'm trying to think if it would be limiting in
+> > > > practice to have to create link per each binary, and so far it seem=
+s
+> > > > like usually user-space code will do symbol resolution per ELF file
+> > > > anyways, so doesn't seem limiting to have single path + multiple
+> > > > offsets/cookies within that file. For USDTs use case even ref_ctr i=
+s
+> > > > probably the same, but I'd keep it 1:1 with offset and cookie anywa=
+ys.
+> > > > For uniformity and generality.
+> > > >
+> > > > WDYT?
+> > >
+> > > right, it's waste for single binary, but I guess it's not a big waste=
+,
+> > > because when you have single binary you just repeat the same pointer,
+> > > not the path
+> > >
+> > > it's fast enough to be called multiple times for each binary you want
+> > > to trace, but it'd be also nice to be able to attach all in once ;-)
+> > >
+> > > maybe we could have a bit in flags saying paths[0] is valid for all
 > >
-> > It probably makes sense to add bpf_program__attach_netfilter() API as
-> > well which will return `struct bpf_link *`. Right now libbpf support
-> > for NETFILTER is very incomplete.
+> > No need for extra flags. I was just thinking about having a simpler
+> > and more straightforward API, where you don't need to create another
+> > array with tons of duplicated string pointers. No big deal, I'm fine
+> > either way.
 >
+> ok
+>
+> thanks,
+> jirka
