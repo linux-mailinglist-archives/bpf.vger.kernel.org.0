@@ -2,77 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D966F1FFF
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 23:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737A86F2006
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 23:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjD1VPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 17:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S229707AbjD1VSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 17:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjD1VPW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 17:15:22 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2141BCF;
-        Fri, 28 Apr 2023 14:15:20 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-94eee951c70so40025766b.3;
-        Fri, 28 Apr 2023 14:15:20 -0700 (PDT)
+        with ESMTP id S229614AbjD1VSu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 17:18:50 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C06211C;
+        Fri, 28 Apr 2023 14:18:49 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-94f7a0818aeso40902966b.2;
+        Fri, 28 Apr 2023 14:18:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682716518; x=1685308518;
+        d=gmail.com; s=20221208; t=1682716728; x=1685308728;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vnOuX41j7F8VPQ++N8fwERH3Nnxkown4YdoEOz69K7k=;
-        b=q8lV/QWREQGaYpuwQbGQsIaDg7x2f2gbopVAZVomDzbAmY1kVGwmfg9XsjlW7N1lvZ
-         QfhGuJeMLFI06faVBalTAgi185wP0B5+kaghyJ4diDg666G1jes013MsG7OdA+uHTuNd
-         MAYB+e40GWDAuBPu/+eYflt6tbKGXaBRUyvlpXV5OK8N8ZLbsEHg9cybIM+ix3Bq8hnP
-         YYNKAh9MShDOA2VVv8ELVccssKkmRanUGarrUwWBqhfZkQ5j1Hr4iin95pmnyEomPypp
-         7ES0tnqho7+SU4Jx7XzgDV0A7KfBdr0EQwsFzLPyBgXqUgTgAxLZFG+Yo+EBakZw8Arm
-         JySQ==
+        bh=B0yu+PGePfgOn7Dr4AaCeHmSNPX477Sl7q4z5WfJr3k=;
+        b=B8TOc+pJlAYzkk1X3X96kUHA7doLFTW8l7DDb0fWE61FFxKOCBtIs6FlSlNNP392XK
+         fP//IiGiq09fSmTprEuBnP1SDj6I5TSnFA79QXWm4Mvh9cs8jdzdMlh3vS/bff9o9d79
+         XTkJe2z///wiLsz4c6Et7HzHf2AXe8aum4kvPDPNVtLkBM6cKyRWPAPN9sTxi/wtHClb
+         TaW7HT220/nBlhrnh1yUOO/dKBfxppeX442HhNUqQJIpN7UQjya2+z5JSX+hYt9WzJ1X
+         y9nv8IdQAwl2T57rukjzBg8nHABxV7v1+31xwMBtmTy3p+jNAT4WT99couD0hOIfOPf7
+         t2Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682716518; x=1685308518;
+        d=1e100.net; s=20221208; t=1682716728; x=1685308728;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vnOuX41j7F8VPQ++N8fwERH3Nnxkown4YdoEOz69K7k=;
-        b=BexE+pBlHPjlIyddwrh1ACm5QONYKaUA/UxXFSiSJW1LkxEe8gJvZNXEsS4VNIyCqn
-         icJkUYuNrhz8sjEFXNMbmXQ0VQ4qhwbD5BbjNCkXRyaoeAZTWcaNLWBJs5tkp83fLEdA
-         1Cn7iNAjZFe3tlsEJQBs72LdVMHIf75GDELv49cDFVLSGbaWskYRSG85Flf+zJz+uqou
-         MSQPJN2l0EVG98QxXP9MW1eZqmdKJ0uQLm5u9D+YSn5iZRYNbKCt15FKDZxMEvDZVERa
-         I2YtpDpx5Ptkx9zcRxYIFWol0xO03BMy8v4sJXPBGOPDdakY9KuL4nts3Ccve7v7Oy8g
-         mQGA==
-X-Gm-Message-State: AC+VfDyUT8vizIjH27tKvnQjAqgtYIh4miqKAfkeiv9PTUEpE6jlRmNx
-        VBq7OljUw63+lrBeIzkLBnzsvODoJ9Rka3FGeJA=
-X-Google-Smtp-Source: ACHHUZ7SBXVnVKJcbWYCfEy6/Fo6/HCKByGNeZ9FCWhpJ8mqyG7C2ewgxistHOK/nB6Ua+NXzueXd4uDF0fYfBRgCzA=
-X-Received: by 2002:a17:907:d8c:b0:947:ebd5:c798 with SMTP id
- go12-20020a1709070d8c00b00947ebd5c798mr8152904ejc.54.1682716518476; Fri, 28
- Apr 2023 14:15:18 -0700 (PDT)
+        bh=B0yu+PGePfgOn7Dr4AaCeHmSNPX477Sl7q4z5WfJr3k=;
+        b=VO+H8WAevDOY7TcByjwnTHhCHqHI2+gTMnvgtjE1bMrk3Tw0R1J/Dsryxgin/zON9A
+         5ZD7OkUOeIabq+emSDQdVxz2WA3QDckVJl4cCnCWjw29bjD+vKSlUtkFAHIa442m7eP0
+         Ac+PTpyrQQeKS23qy3gQKUtzaonVN32D4sQecFY5vQjpUu0cQqZqOMCFQitwK5IOqz2h
+         AAG6QnkJqHID1g0Hx1KxaDEEKmwBWLKRiDNB/fkYEKHon6mCxwAn3kRC7dVcYlA8eVv1
+         7MJS8Yyc3qIiWFboCS2sI4aRpS7sAhOQsID6s9LkWHLtCSmZqQpQo3rFacckO/Uw9s5e
+         HUYw==
+X-Gm-Message-State: AC+VfDwVYjQFExvsAQxmDkvbvDFpEUZAeiuJasFPg5aQ2WoaZUTitVB0
+        pQ2T0ozN84eOfEbMP9z+L3adpqbaCqsy2/NHs3g=
+X-Google-Smtp-Source: ACHHUZ6HGII9pyMTvBUXKdFtK5Pw60ncRx2oaFxnTUJ7UB8cvn8ENmaTQVN40tMnBP3M9G4W/jHRSyKa9vfZloEi4ZA=
+X-Received: by 2002:a17:907:3faa:b0:94a:99a4:58d7 with SMTP id
+ hr42-20020a1709073faa00b0094a99a458d7mr7114563ejc.15.1682716727472; Fri, 28
+ Apr 2023 14:18:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4Bzaw6DBHn=S9zKCXTSh7jW8xL9K6bzi1Q-e8j93thi2hmg@mail.gmail.com>
- <20230418112454.GA15906@kitsune.suse.cz> <CAEf4BzZf50fX7T9k47u+9YQrMbSLxLeA1qWwrdWToCZkMhynjg@mail.gmail.com>
- <20230418174132.GE15906@kitsune.suse.cz> <ZD/3Ll7UPucyOYkk@syu-laptop.lan>
- <CAEf4BzZfGewUgYsNNqCgES5Y5-pqbSRDbhtKiuSC7=G_83tyig@mail.gmail.com>
- <87zg73tvm1.fsf@toke.dk> <CAEf4BzY9Hr2M7dZXaTZCP4SRat+KpN42c89LG1Msn4PB+1O1YA@mail.gmail.com>
- <878remtxvs.fsf@toke.dk> <CAEf4BzafdhjjxxW-7ovbO9vpGa3KVTV4iESe+gjRk7UyJtg6aA@mail.gmail.com>
- <ZEuOK8Rvlm52d2DK@syu-laptop>
-In-Reply-To: <ZEuOK8Rvlm52d2DK@syu-laptop>
+References: <20230421170300.24115-1-fw@strlen.de> <20230421170300.24115-2-fw@strlen.de>
+ <CAEf4Bzby3gwHmvz1cjcNHKFPA1LQdTq85TpCmOg=GB6=bQwjOQ@mail.gmail.com>
+ <20230427091015.GD3155@breakpoint.cc> <CAEf4BzZrmUv27AJp0dDxBDMY_B8e55-wLs8DUKK69vCWsCG_pQ@mail.gmail.com>
+ <d6de9d40-ff59-4cb6-5a97-f8b72a5d853e@naccy.de>
+In-Reply-To: <d6de9d40-ff59-4cb6-5a97-f8b72a5d853e@naccy.de>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 28 Apr 2023 14:15:06 -0700
-Message-ID: <CAEf4Bzb9UZykRSczsP5quSEL5DvneuYfB2eLmnLKee_YrCROpw@mail.gmail.com>
-Subject: Re: Packaging bpftool and libbpf: GitHub or kernel?
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Tony Jones <tonyj@suse.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Mahe Tardy <mahe.tardy@gmail.com>,
-        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Date:   Fri, 28 Apr 2023 14:18:35 -0700
+Message-ID: <CAEf4BzbWCKTMzU=w0STOZM23hTbVtqoMamgB3wC3e+X3xNKZ9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/7] bpf: add bpf_link support for
+ BPF_NETFILTER programs
+To:     Quentin Deslandes <qde@naccy.de>
+Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        dxu@dxuuu.xyz
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,104 +73,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 2:13=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.com=
-> wrote:
+On Fri, Apr 28, 2023 at 9:54=E2=80=AFAM Quentin Deslandes <qde@naccy.de> wr=
+ote:
 >
-> On Thu, Apr 20, 2023 at 02:39:17PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Apr 20, 2023 at 7:46=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@redhat.com> wrote:
-> > > [snip]
-> > > Right, well, you don't *have* to be cooperative with the wider
-> > > ecosystem, of course. Just as packagers don't have to follow your
-> > > recommendations if they have good reasons not to. I believe we've had
-> > > this discussion before, and I don't think we're going to agree this t=
-ime
-> > > around either, so let's not waste any more virtual ink on rehashing i=
-t :)
+> On 28/04/2023 00:21, Andrii Nakryiko wrote:
+> > On Thu, Apr 27, 2023 at 2:10=E2=80=AFAM Florian Westphal <fw@strlen.de>=
+ wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>> @@ -1560,6 +1562,12 @@ union bpf_attr {
+> >>>>                                  */
+> >>>>                                 __u64           cookie;
+> >>>>                         } tracing;
+> >>>> +                       struct {
+> >>>> +                               __u32           pf;
+> >>>> +                               __u32           hooknum;
+> >>>
+> >>> catching up on stuff a bit...
+> >>>
+> >>> enum nf_inet_hooks {
+> >>>         NF_INET_PRE_ROUTING,
+> >>>         NF_INET_LOCAL_IN,
+> >>>         NF_INET_FORWARD,
+> >>>         NF_INET_LOCAL_OUT,
+> >>>         NF_INET_POST_ROUTING,
+> >>>         NF_INET_NUMHOOKS,
+> >>>         NF_INET_INGRESS =3D NF_INET_NUMHOOKS,
+> >>> };
+> >>>
+> >>> So it seems like this "hook number" is more like "hook type", is my
+> >>> understanding correct?
+> >>
+> >> What is 'hook type'?
 > >
-> > Exactly, so I'm not sure why we are even having this conversation all
-> > over again. I agree on not wasting virtual ink anymore. I'm not
-> > forcing anyone to follow my advice, I expect others to not force me to
-> > follow theirs.
+> > I meant that it's not some dynamically generated number that could
+> > change from the system to system, it's a fixed set of point in which
+> > this BPF program can be triggered. The distinction I was trying to
+> > make that it's actually different in nature compared to, say, ifindex,
+> > as it is fixed by the kernel.
 >
-> Thanks for still going through the reasoning.
->
-> I don't have anything to add to the discussion, so instead here's an atte=
-mpt
-> to summarize the thread thus far, reading between the lines here and ther=
-e
-> to keep it terse but complete; feel free to point out where I misundersto=
-od.
->
->
-> # Packaging bpftool and libbpf
->
-> - bpftool and libbpf version should be kept in sync
->   - interdependency is by design
->   - bpftool uses private functionality of libbpf
->   - bpftool generated file is tie to specific libbpf (?)
+> Doesn't this ties the program to a specific hook then? Let's say you
+> have a program counting the number of packets from a specific IP, and
+> would you be able to attach it to both LOCAL_IN and FORWARD without
+> modifying it?
 
-this bullet point is not true, generated BPF skeleton or statically
-linked BPF object file should work across wide range of libbpf
-versions
+By default, yes (but you can work around that). From your and
+Florian's replies it follows that these are not like
+expected_attach_type, if I understand correctly. So I'm fine with
+having them as attach argument, not part of program type and attach
+type.
 
 >
-> - the GitHub mirror is the recommended source
+> >>> If so, wouldn't it be cleaner and more uniform
+> >>> with, say, cgroup network hooks to provide hook type as
+> >>> expected_attach_type? It would also allow to have a nicer interface i=
+n
+> >>> libbpf, by specifying that as part of SEC():
+> >>>
+> >>> SEC("netfilter/pre_routing"), SEC("netfilter/local_in"), etc...
+> >>
+> >> I don't understand how that would help.
+> >> Attachment needs a priority and a family (ipv4, arp, etc.).
+> >>
+> >> If we allow netdev type we'll also need an ifindex.
+> >> Daniel Xu work will need to pass extra arguments ("please enable ip
+> >> defrag").
+> >
+> > Ok, that's fine, if you think it doesn't make sense to pre-declare
+> > that a given BPF program is supposed to be run only in, say,
+> > PRE_ROUTING, then it's fine. We do declare this for other programs
+> > (e.g., cgroup_skb/egress vs cgroup_skb/ingress), so it felt like this
+> > might be a similar case.
+> >
+> >>
+> >>> Also, it seems like you actually didn't wire NETFILTER link support i=
+n
+> >>> libbpf completely. See bpf_link_create under tools/lib/bpf/bpf.c, it
+> >>> has to handle this new type of link as well. Existing tests seem a bi=
+t
+> >>> bare-bones for SEC("netfilter"), would it be possible to add somethin=
+g
+> >>> that will demonstrate it a bit better and will be actually executed a=
+t
+> >>> runtime and validated?
+> >>
+> >> I can have a look.
+> >
+> > It probably makes sense to add bpf_program__attach_netfilter() API as
+> > well which will return `struct bpf_link *`. Right now libbpf support
+> > for NETFILTER is very incomplete.
 >
-> - benefits of using the GitHub mirror includes
->   - ease of upgrade
->   - maintainer crafted changelog
-
-I'd also say consistency between all distros (assuming everyone use
-Github mirror). Because release X means exactly the same set of
-commits.
-
->
-> - downsides of using the GitHub mirror has to do with kernel backporting
->
-> - git submodule requires extra work for distros to package
->   - offsetted if the source of submodules are released along
->
-> - bpftool releases will (have a file that) includes submodules' source al=
-ong
->   going forward
->
-> - bpftool and libbpf both should work on earlier kernel (if not it's a bu=
-g)
->
->
-> # Other
->
-> - motivations for GitHub mirror
->   - ease of distribution, packaging, build
->   - CI, to be used as submodule, Window support, etc.
->
-> - libbpf interface stability
->   - stable API and ABI (within major version)
->   - BPF object format is not considered stable
-
-BPF object file format is stable, but not frozen, it can keep evolving
-
->
-> - libbpf is not opinionated in how it's used as a library, either
->   - statically or dynamically linked
->   - a tagged release or a random commit
->
-> - on statically linking libbpf
->   - reasoning
->     - full control of implementation detail, decouples from distro packag=
-e
->   - against
->     - difficulty in applying fixes
->
-
-Looks good to me apart from things I pointed out above. Thanks for summariz=
-ing!
-
-
->
-> Shung-Hsi
->
-> > >
-> > > -Toke
-> > >
