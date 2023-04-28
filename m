@@ -2,62 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C4A6F2174
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 01:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7716F2176
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 01:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347062AbjD1X6p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 19:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S1346621AbjD1X7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 19:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347047AbjD1X6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 19:58:44 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CA426A2
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 16:58:42 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-51b67183546so196272a12.0
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 16:58:42 -0700 (PDT)
+        with ESMTP id S230104AbjD1X7w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 19:59:52 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11E2213C
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 16:59:50 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-518d325b8a2so365297a12.0
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 16:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682726322; x=1685318322;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lfYkrAoukEhOX0SrNXwfENrtbAo80Vbu2Y1/P7a0d2U=;
-        b=DpPE5qZ9aIc4IstKx9+hbptJ573gPBQDawiaMolKkFtTnoZ5o/LHkQgacL7K7aA3vO
-         LwxbpyQggq/Kqf32bYrdopoZ5MmYkelAErxkIc+udcYnl8njc7ssWKfK96jNGatEiF+J
-         tHsq4/rixAVcDSrJLxxF+S1tqbv4sKRNvuXd+fvNgHTRMAedfMr9GSfAdRm+NU45OkNJ
-         V9HTeiY1qXG8GbJJ7VfqKaLldpfmB+jLRiwNubLzwSuDgVNcD/IQswFNUnjtsbvUIeVu
-         e9jyesJAIJ4xiBAjbSACEWlhRBUIeOHmI3nNBAmTjnpCALMNH2Fyzr80qgpBAxzjMsM5
-         vVqA==
+        d=google.com; s=20221208; t=1682726390; x=1685318390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iVp1M1/KIVht30zWppXGrDsK4XnG/NqceW7/0Cw1cxY=;
+        b=DzfYCeJqgs6XVJofDJsEKflxo/+zvscs6V5AxsvpSVjvGkFN7/m2eajAu8mLulIgeH
+         XZsziatILI2+IABW6KftYRe87Cv5VV9n0yPf7+qGJi35QECnXlM5PlsBRbYDmzKboVlb
+         YS71s5+blNF3934vMZHpbhtUPKiydEZ/+EtiZDF6Ft/VjSUxakKlapLGXvvwVdGcR6dD
+         0rGaNoN3BuArFen1T2YLgTFg6bmHbj83UErIQsINlOOM4TEKRR2wp+8WgLIWi0GnWavR
+         oE9xdruHg10A/QqLHt03aK6FlhAMeapt1rbGFvX+Ggmeq5JJWzR4IKMXF5zC3ZFWoiWA
+         Ja1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682726322; x=1685318322;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lfYkrAoukEhOX0SrNXwfENrtbAo80Vbu2Y1/P7a0d2U=;
-        b=I/r2KmMVyv9QPPTDq1kRbgakzC/nLhsGVi99ujAJvAWr1DvWCXgqlPHbGPL+Lk3piE
-         22KR3eBxymAbsRd9Az+ZalOAP+wnLO58ys/p5n7moIR3JgPHvcINFqneptfmpYVmlTRs
-         rktqHvh4QUyUuG2eHp19pabnMAEb/25VEHrLoNyjPveXWTPY+K6pTBWMURCB5kqzxcJR
-         bQZ1WpGX+tSiB7jFrb8Ah8iQ2wYDlkjXjoa4pYpp0o1txk9x0rCMj7YpMZkkFQ/ZSS1P
-         OD4B7s3ApqHlzNPs+ZWjgDR7//1zHcI2EmRUDPzD9ZCxksPld9Gv8WiQqI4VJqSnc1ZC
-         +cfg==
-X-Gm-Message-State: AC+VfDyRMGMqB+s2EnmLs3iFXk8iLOxdkEUktC5W8PSRynAFSJjWPlK3
-        /rOHSOg4o73YUU5k4c9U2Z/rHWs=
-X-Google-Smtp-Source: ACHHUZ5knRVz+TuRIiUuXkAIIdC7l10b4uFPirDG5I23XAlukftUF/Uh5befRnxWwzXk/iWV9YY7L8M=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:6bc1:0:b0:503:77c9:45aa with SMTP id
- g184-20020a636bc1000000b0050377c945aamr1725510pgc.9.1682726322501; Fri, 28
- Apr 2023 16:58:42 -0700 (PDT)
-Date:   Fri, 28 Apr 2023 16:58:40 -0700
-In-Reply-To: <20230428222754.183432-2-inwardvessel@gmail.com>
-Mime-Version: 1.0
-References: <20230428222754.183432-1-inwardvessel@gmail.com> <20230428222754.183432-2-inwardvessel@gmail.com>
-Message-ID: <ZExdsHwc6Gy716am@google.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: add capability for resizing datasec maps
+        d=1e100.net; s=20221208; t=1682726390; x=1685318390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iVp1M1/KIVht30zWppXGrDsK4XnG/NqceW7/0Cw1cxY=;
+        b=gSJ4fULOMITHT/7dioFUAO0w+Lcmo/jm7LVkNE0kJRjDPISIYcQclU9xLoAukho28Z
+         Zo0rA5nufRs54nb6UC+dCdE5DFSdwOCk2it3yH7wKCkqspuxa8nQJfk+kx5dCcV69DKN
+         NJ1xnRsbazQc+8mTYswZib84R6sxMG7PARn1lyuI0gFeVk5b9uUZG8O41yJ+vDw7Axi0
+         6j1AfShWjNfZpw2paFYomU81AKoYNqMF+WZoaqQcJ04Igo1I54jvHubTHxmNnUoFux7j
+         q14ZT2edeeyGbb3wxcyOLQ9UdJ3pgf6jYJXaaqoLoJwH8/flhnWY08fY4yWyksPqog0u
+         KpoA==
+X-Gm-Message-State: AC+VfDxDxmescJI/Y5Ht2DSHDPpWza5dWxmFpmrhFg7mCXobjfGhRefg
+        Y1G9IGp/fs5T0LwIFejgYEWyTlwbD3aa9NEu6eYLiA==
+X-Google-Smtp-Source: ACHHUZ47SqQfe8BMa2KNApgOUldgy03ihHuj8tF/vr2bmwBoLqaS55huDUgA5QzR7YPApA1GYn9g9yDFl1CmLr5mQwQ=
+X-Received: by 2002:a17:90a:bb17:b0:24d:d7fd:86c3 with SMTP id
+ u23-20020a17090abb1700b0024dd7fd86c3mr153962pjr.16.1682726390278; Fri, 28 Apr
+ 2023 16:59:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230427200409.1785263-1-sdf@google.com> <20230427200409.1785263-3-sdf@google.com>
+ <ac7c31cc-7f8f-1066-1aa1-ad4d734998c5@linux.dev>
+In-Reply-To: <ac7c31cc-7f8f-1066-1aa1-ad4d734998c5@linux.dev>
 From:   Stanislav Fomichev <sdf@google.com>
-To:     JP Kobryn <inwardvessel@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Date:   Fri, 28 Apr 2023 16:59:39 -0700
+Message-ID: <CAKH8qBu=ehBZsusAaVwxO1DNK=NxFupR8RwtotsPSZmdiTw=Zw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: Update EFAULT
+ {g,s}etsockopt selftests
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,147 +73,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/28, JP Kobryn wrote:
-> This patch updates bpf_map__set_value_size() so that if the given map is a
-> datasec, it will attempt to resize it. If the following criteria is met,
-> the resizing can be performed:
->  - BTF info is present
->  - the map is a datasec
->  - the datasec contains a single variable
->  - the single variable is an array
-> 
-> The new map_datasec_resize() function is used to perform the resizing
-> of the associated memory mapped region and adjust BTF so that the original
-> array variable points to a new BTF array that is sized to cover the
-> requested size. The new array size will be rounded up to a multiple of
-> the element size.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 138 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 138 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 1cbacf9e71f3..991649cacc10 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9412,12 +9412,150 @@ __u32 bpf_map__value_size(const struct bpf_map *map)
->  	return map->def.value_size;
->  }
->  
-> +static bool map_is_datasec(struct bpf_map *map)
-> +{
-> +	struct btf *btf;
-> +	struct btf_type *map_type;
-> +
-> +	btf = bpf_object__btf(map->obj);
-> +	if (!btf)
-> +		return false;
-> +
-> +	map_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
-> +
-> +	return btf_is_datasec(map_type);
-> +}
-> +
-> +static int map_datasec_resize(struct bpf_map *map, __u32 size)
-> +{
-> +	int err;
-> +	struct btf *btf;
-> +	struct btf_type *datasec_type, *var_type, *resolved_type, *array_element_type;
-> +	struct btf_var_secinfo *var;
-> +	struct btf_array *array;
-> +	__u32 resolved_id, new_array_id;
-> +	__u32 rounded_sz;
-> +	__u32 nr_elements;
-> +	__u32 old_value_sz = map->def.value_size;
-> +	size_t old_mmap_sz, new_mmap_sz;
-> +
-> +	/* btf is required and datasec map must be memory mapped */
-> +	btf = bpf_object__btf(map->obj);
-> +	if (!btf) {
-> +		pr_warn("cannot resize datasec map '%s' while btf info is not present\n",
-> +				bpf_map__name(map));
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	datasec_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
-> +	if (!btf_is_datasec(datasec_type)) {
-> +		pr_warn("attempted to resize datasec map '%s' but map is not a datasec\n",
-> +				bpf_map__name(map));
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!map->mmaped) {
-> +		pr_warn("cannot resize datasec map '%s' while map is unexpectedly not memory mapped\n",
-> +				bpf_map__name(map));
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* datasec must only have a single variable */
-> +	if (btf_vlen(datasec_type) != 1) {
-> +		pr_warn("cannot resize datasec map '%s' that does not consist of a single var\n",
-> +				bpf_map__name(map));
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* the single variable has to be an array */
-> +	var = btf_var_secinfos(datasec_type);
-> +	resolved_id = btf__resolve_type(btf, var->type);
-> +	resolved_type = btf_type_by_id(btf, resolved_id);
-> +	if (!btf_is_array(resolved_type)) {
-> +		pr_warn("cannot resize datasec map '%s' whose single var is not an array\n",
-> +				bpf_map__name(map));
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* create a new array based on the existing array but with new length,
-> +	 * rounding up the requested size for alignment
-> +	 */
-> +	array = btf_array(resolved_type);
-> +	array_element_type = btf_type_by_id(btf, array->type);
-> +	rounded_sz = roundup(size, array_element_type->size);
-> +	nr_elements = rounded_sz / array_element_type->size;
-> +	new_array_id = btf__add_array(btf, array->index_type, array->type,
-> +			nr_elements);
-> +	if (new_array_id < 0) {
-> +		pr_warn("failed to resize datasec map '%s' due to failure in creating new array\n",
-> +				bpf_map__name(map));
-> +		err = new_array_id;
-> +
-> +		goto fail_array;
-> +	}
-> +
-> +	/* adding a new btf type invalidates existing pointers to btf objects.
-> +	 * refresh pointers before proceeding
-> +	 */
-> +	datasec_type = btf_type_by_id(btf, map->btf_value_type_id);
-> +	var = btf_var_secinfos(datasec_type);
-> +	var_type = btf_type_by_id(btf, var->type);
-> +
-> +	/* remap the associated memory */
-> +	old_value_sz = map->def.value_size;
-> +	old_mmap_sz = bpf_map_mmap_sz(map);
-> +	map->def.value_size = rounded_sz;
-> +	new_mmap_sz = bpf_map_mmap_sz(map);
-> +
-> +	if (munmap(map->mmaped, old_mmap_sz)) {
-> +		err = -errno;
-> +		pr_warn("failed to resize datasec map '%s' due to failure in munmap(), err:%d\n",
-> +			 bpf_map__name(map), err);
-> +
-> +		goto fail_mmap;
-> +	}
-> +
-> +	map->mmaped = mmap(NULL, new_mmap_sz, PROT_READ | PROT_WRITE,
-> +		   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+On Fri, Apr 28, 2023 at 4:57=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 4/27/23 1:04 PM, Stanislav Fomichev wrote:
+> > Instead of assuming EFAULT, let's assume the BPF program's
+> > output is ignored.
+> >
+> > Remove "getsockopt: deny arbitrary ctx->retval" because it
+> > was actually testing optlen. We have separate set of tests
+> > for retval.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/sockopt.c        | 80 +++++++++++++++++-=
+-
+> >   1 file changed, 74 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/t=
+esting/selftests/bpf/prog_tests/sockopt.c
+> > index aa4debf62fc6..8dad30ce910e 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
+> > @@ -273,10 +273,30 @@ static struct sockopt_test {
+> >               .error =3D EFAULT_GETSOCKOPT,
+> >       },
+> >       {
+> > -             .descr =3D "getsockopt: deny arbitrary ctx->retval",
+> > +             .descr =3D "getsockopt: ignore >PAGE_SIZE optlen",
+> >               .insns =3D {
+> > -                     /* ctx->retval =3D 123 */
+> > -                     BPF_MOV64_IMM(BPF_REG_0, 123),
+> > +                     /* write 0xFF to the first optval byte */
+> > +
+> > +                     /* r6 =3D ctx->optval */
+> > +                     BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1,
+> > +                                 offsetof(struct bpf_sockopt, optval))=
+,
+> > +                     /* r2 =3D ctx->optval */
+> > +                     BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> > +                     /* r6 =3D ctx->optval + 1 */
+> > +                     BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 1),
+> > +
+> > +                     /* r7 =3D ctx->optval_end */
+> > +                     BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_1,
+> > +                                 offsetof(struct bpf_sockopt, optval_e=
+nd)),
+> > +
+> > +                     /* if (ctx->optval + 1 <=3D ctx->optval_end) { */
+> > +                     BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
+> > +                     /* ctx->optval[0] =3D 0xF0 */
+> > +                     BPF_ST_MEM(BPF_B, BPF_REG_2, 0, 0xFF),
+> > +                     /* } */
+> > +
+> > +                     /* ctx->retval =3D 0 */
+> > +                     BPF_MOV64_IMM(BPF_REG_0, 0),
+> >                       BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_0,
+> >                                   offsetof(struct bpf_sockopt, retval))=
+,
+> >
+> > @@ -287,9 +307,10 @@ static struct sockopt_test {
+> >               .attach_type =3D BPF_CGROUP_GETSOCKOPT,
+> >               .expected_attach_type =3D BPF_CGROUP_GETSOCKOPT,
+> >
+> > -             .get_optlen =3D 64,
+> > -
+> > -             .error =3D EFAULT_GETSOCKOPT,
+> > +             .get_level =3D 1234,
+> > +             .get_optname =3D 5678,
+> > +             .get_optval =3D {}, /* the changes are ignored */
+> > +             .get_optlen =3D 4096 + 1,
+>
+> The patchset looks good. Thanks for taking care of it.
+>
+> One question, is it safe to the assume 4096 page size for all platforms i=
+n the
+> selftests?
 
-I'm probably missing something, but how does it work? This just mmaps
-new memory which the user-space side will see. What about the BPF side?
-
-I'm also assuming (maybe incorrectly?) that if the map is mmaped, it's
-already created in the kernel, so what's the point of the resizing?
+Good question; let me respin with sysconf() just to be safe..
