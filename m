@@ -2,324 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FCC6F20CA
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 00:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5AF6F20F6
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 00:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjD1W2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 18:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        id S1346840AbjD1WiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 18:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346479AbjD1W2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 18:28:13 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042462137
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 15:28:12 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-52867360efcso229546a12.2
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 15:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682720891; x=1685312891;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QhIr1P69QSyWe27YC0q38BmAGGLs2hivsqE/0X9WQSU=;
-        b=ikhxAzd/oJU4L3CU9ynZFJsGjFsJLogXw3S1JLGpat/zYYSSNSMC+ZKdCkEGWXPaIY
-         E5gUVSK8FxDPJ9fSYiUwIyDRomuWxt3N3JEe+9wRMUvRTYiz66uXoFckQdbsvsEpFMkf
-         jEGKxjgSykLf+U28NvJO9wglOZSGvTfRQEVE4FZq1EKVtVZ4sALdXwu185rFa86dag7l
-         1qCGwsRhd6jTYjjCY3YRDdgesUTKOtXLwOph3IWcLpRR7AlixiUX3GeIWudDEREPrg2L
-         TYTM/zCs6aTRDrUworwewSR5nuH2NnKARTkdo1Pezd6eDB9jVq9TJ3UkDf8ABvfuG0Un
-         xWdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682720891; x=1685312891;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QhIr1P69QSyWe27YC0q38BmAGGLs2hivsqE/0X9WQSU=;
-        b=jaLjHjbkkVMVIjVLGxikH/LFgRnvw5tB6MtA6dg2RWz1x8b1pGG0Lhe/18l8bwJeRn
-         kodPdvTwyn/SV08r698j0/C3mSk5qCJL3zdthI8dTTc4np9nPCzeJ+3biDoQnlsqBGMS
-         4Ia4xnAPJ3caLifm71Y19Z8PJdoEjiOcrTAsnQJKfIG/hyk1uX8opnfxUitpUNM6QoiE
-         ug6hwJeG+FApNZ55CMcgVZYzGAdyWn01m7G/xs8GUxwyv8AC4IOYHLao0O8y1Jo2+IJb
-         17nRVz90eZxaQJw5bacffdXphxltXHteQ+u510NNmCibr5XLxzU1DaRrnZAKD93gra2B
-         INJw==
-X-Gm-Message-State: AC+VfDxoZBFfJIcY39bD902BY4jPhefykk64l2AB1LO5sFXD/JV+CNEK
-        pPfj0WmkEl++UppsWw4yoEN/jgzpnhg=
-X-Google-Smtp-Source: ACHHUZ47AULuUh4auLUNcKA+VTmDj9kYEQ9noIEdLupc5Uu4boXBkks2A6Bba1LdRh2fXA1Md0aftQ==
-X-Received: by 2002:a17:902:f68b:b0:1aa:ce4d:c776 with SMTP id l11-20020a170902f68b00b001aace4dc776mr1406159plg.41.1682720891484;
-        Fri, 28 Apr 2023 15:28:11 -0700 (PDT)
-Received: from toolbox.. ([98.42.16.172])
-        by smtp.gmail.com with ESMTPSA id ba11-20020a170902720b00b001a63ba28052sm10465738plb.69.2023.04.28.15.28.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Apr 2023 15:28:10 -0700 (PDT)
-From:   JP Kobryn <inwardvessel@gmail.com>
-To:     bpf@vger.kernel.org, andrii@kernel.org
-Cc:     kernel-team@meta.com, inwardvessel@gmail.com
-Subject: [PATCH bpf-next 2/2] libbpf: selftests for resizing datasec maps
-Date:   Fri, 28 Apr 2023 15:27:54 -0700
-Message-Id: <20230428222754.183432-3-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230428222754.183432-1-inwardvessel@gmail.com>
-References: <20230428222754.183432-1-inwardvessel@gmail.com>
+        with ESMTP id S1346828AbjD1WiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 18:38:03 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on20608.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe59::608])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662E959DA;
+        Fri, 28 Apr 2023 15:37:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=exKd0P5m7/vAa2SphfFBgnkCd9vLi4H6A8xgoSDzUDMViH5deTKLIAwVXZ+drr9A2yazaR/5K7f8h8H32wMlTdNTtnao87O8SvZV2Pq5uB53GXy960KBIWGAiIvDt6dPCcmUMmS8sSV9dly0o15zOu4aHPfKO28zye2bvMzo9He+UoWmjMWKByPmH2ueWcJWaOup2bXX84/MVFoYcbsBUrb6Jquuv5MumE2KSx49ICi4W2TOd6keVNzgzkQePffhRg5gqsz2rugm10XiGclS9fsQxlqcaMrCOTxgFTwy++UkaAs7jJJaLO1ItmFczIzF+QbNIL0o7TeWHQfepCNKmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VGqIbEi2Dws6Nh8Vb+4WJHJUjlwhkBjvy701pGKlw/Y=;
+ b=gnknoyfoYebAwMtda0CtPduykvIXka52pFj8/SiCiR7+BFSU/qOdz5HtPEmt8s1aVDLdkC+jhnCqOof+hw8BkEabtsBtBZ5dU3b1/eJdqsg5Aa23L5TBRnnkUU4kds+44ZIqeZo1Whr3zkidNNtbNnhlQzxa08Y2R/A1WR+RKVwmitBneHnOFCGXmx8QsVEaOaRXOHWmJYh9qSu0u2Ay1yyl4Z+8meVl2BQ/g5OYkytbScPKutsjgrHbTEDotLtw8nqmfcw8PAmB8tZ0KWOybgRdA8t/NHOGUt781DF4Hyl1ibETGwUNHNrjn5ZDP/o6RNeJLeJRYja5wNvJSthzoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=lists.linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VGqIbEi2Dws6Nh8Vb+4WJHJUjlwhkBjvy701pGKlw/Y=;
+ b=QNa+1K80vxNTqopGuc5Yr4opAcTuTHmJHoHkiVKJje2FKeAxXqKRWg7WuGaxZPN8o8zFeZIdpoUJ5DQafckY3jycM/T3yq9gexgcZs2p/N2gTIESF4ENh5JCXTEX80XM1y7Sh03IVDFeP5edgwLOhMx7xIfAV65rWbxG1GYWPi7n2GlyAUgwz0VSQaBbg82y9MWYcSYgzGGrvN0v7+5lKZDd6fmtpIJPcx4aw9LTKjaBeFi06vemQNzU6ZZ++7rzh8ri4qAROHRP1ooONHlpVU7nSVJimS06JJeXWauVVKAL9sIkao+4uSlqc0xGYESBJTgspDCjUKdy/WEGfFQ4IQ==
+Received: from MW4PR03CA0279.namprd03.prod.outlook.com (2603:10b6:303:b5::14)
+ by MW6PR12MB8960.namprd12.prod.outlook.com (2603:10b6:303:23e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.21; Fri, 28 Apr
+ 2023 22:37:44 +0000
+Received: from CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b5:cafe::c7) by MW4PR03CA0279.outlook.office365.com
+ (2603:10b6:303:b5::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.24 via Frontend
+ Transport; Fri, 28 Apr 2023 22:37:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1NAM11FT045.mail.protection.outlook.com (10.13.175.181) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6340.25 via Frontend Transport; Fri, 28 Apr 2023 22:37:44 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 28 Apr 2023
+ 15:37:32 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 28 Apr
+ 2023 15:37:32 -0700
+Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Fri, 28 Apr
+ 2023 15:37:30 -0700
+From:   Feng Liu <feliu@nvidia.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Feng Liu <feliu@nvidia.com>, "William Tu" <witu@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>
+Subject: [PATCH net v1 1/2] virtio_net: Fix error unwinding of XDP initialization
+Date:   Fri, 28 Apr 2023 18:37:12 -0400
+Message-ID: <20230428223712.67499-1-feliu@nvidia.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT045:EE_|MW6PR12MB8960:EE_
+X-MS-Office365-Filtering-Correlation-Id: 630cbd54-b5d5-4e8a-6938-08db48392f18
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eaAbERAKqri5HWQIh+4/VIRY5eYP/FGkVZflHVbICQR8c/UhOLQ+g0SSkY49OnEFQAujfGMtna+Z6/FdxKKGQ3QZQMaP1r3SYGTbrOkijvcU1aioB74SwJMjLlyv77jQZOlDVGijHS+S4H8CaqPbLp8NNVj34AZepFXz5exHa4ptqZaBD3ZOM7M3zIW0WHV6JtLPjD5vBCiO2YsFE+hc0Ws7Yt6gSCGyEbC5h+bZZ0npbovvevyIfjq+Rw2aCm3kuswsHyy7eCkSliK4MOM8LWfuI9Y6a1l4WG+JS2uEGDxsW3uRsJCXfJRRx+iObo7hHsyapJxZFVm1AsC95K+iDD6sTtwUK+XPrkIB0xddHRIDEtKTeIWPQL1lGjvgQr60KEeL9drKYikhknvVMVwBqX5Wkm/LAOnPttzYpHOEljRGQa6LM+kwnka8Faxy5NuQK1wbQZcFnOoYHmvz+qkiw7xKsTEPH+OYf4sgSLBmBiBpJ9PliRqAQIdeGCoep+Hzh/NDoy/w0OyXxtskiSa+MIksNf9Fhcdi1MPwvippJOTNZWc6FK9hwZ9FIG8f5MqM0kod6tCTsDKKxrca5e+H+rzDcZbJ7uERcth86CvbQsub44E81T2SFbfBimVjJzT5QSo6ea5McZVKm6GYMQW3wxOFpl12D6jbpLKPZ4zMaAzYXdITMhi2fpy2K/vaxrW/KnXHCQhX09iejy3RdChf0w==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(346002)(396003)(451199021)(40470700004)(36840700001)(46966006)(1076003)(26005)(40460700003)(186003)(54906003)(110136005)(478600001)(82310400005)(8676002)(7696005)(5660300002)(6666004)(36756003)(8936002)(2906002)(82740400003)(41300700001)(70206006)(4326008)(86362001)(316002)(70586007)(7636003)(356005)(107886003)(40480700001)(2616005)(83380400001)(336012)(426003)(36860700001)(47076005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2023 22:37:44.2271
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 630cbd54-b5d5-4e8a-6938-08db48392f18
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8960
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds test coverage for resizing datasec maps. There are two
-tests which run a bpf program that sums the elements in the datasec array.
-After the datasec array is resized, each elements is assigned a value of 1
-so that the sum will be equal to the length of the array. Assertions are
-done to verify this. The first test attempts to resize to an aligned
-length while the second attempts to resize to a mis-aligned length where
-rounding up is expected to occur. The third test attempts to resize maps
-that do not meet the necessary criteria and assertions are done to confirm
-error codes are returned.
+When initializing XDP in virtnet_open(), some rq xdp initialization
+may hit an error causing net device open failed. However, previous
+rqs have already initialized XDP and enabled NAPI, which is not the
+expected behavior. Need to roll back the previous rq initialization
+to avoid leaks in error unwinding of init code.
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
+Signed-off-by: Feng Liu <feliu@nvidia.com>
+Reviewed-by: William Tu <witu@nvidia.com>
+Reviewed-by: Parav Pandit <parav@nvidia.com>
 ---
- .../bpf/prog_tests/global_map_resize.c        | 187 ++++++++++++++++++
- .../bpf/progs/test_global_map_resize.c        |  33 ++++
- 2 files changed, 220 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/global_map_resize.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_map_resize.c
+ drivers/net/virtio_net.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_map_resize.c b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
-new file mode 100644
-index 000000000000..f38df37664a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
-@@ -0,0 +1,187 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include <errno.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+#include "test_global_map_resize.skel.h"
-+#include "test_progs.h"
-+
-+static void run_program(void)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 8d8038538fc4..fc6ee833a09f 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1868,6 +1868,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+ 	return received;
+ }
+ 
++static void virtnet_disable_qp(struct virtnet_info *vi, int qp_index)
 +{
-+	(void)syscall(__NR_getpid);
++	virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
++	napi_disable(&vi->rq[qp_index].napi);
++	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
 +}
 +
-+static int setup(struct test_global_map_resize **skel)
-+{
-+	if (!skel)
-+		return -1;
+ static int virtnet_open(struct net_device *dev)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+@@ -1883,20 +1890,27 @@ static int virtnet_open(struct net_device *dev)
+ 
+ 		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
+ 		if (err < 0)
+-			return err;
++			goto err_xdp_info_reg;
+ 
+ 		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
+ 						 MEM_TYPE_PAGE_SHARED, NULL);
+-		if (err < 0) {
+-			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+-			return err;
+-		}
++		if (err < 0)
++			goto err_xdp_reg_mem_model;
+ 
+ 		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+ 		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
+ 	}
+ 
+ 	return 0;
 +
-+	*skel = test_global_map_resize__open();
-+	if (!ASSERT_OK_PTR(skel, "test_global_map_resize__open"))
-+		return -1;
++	/* error unwinding of xdp init */
++err_xdp_reg_mem_model:
++	xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
++err_xdp_info_reg:
++	for (i = i - 1; i >= 0; i--)
++		virtnet_disable_qp(vi, i);
 +
-+	(*skel)->rodata->pid = getpid();
-+
-+	return 0;
-+}
-+
-+static void teardown(struct test_global_map_resize **skel)
-+{
-+	if (skel && *skel)
-+		test_global_map_resize__destroy(*skel);
-+}
-+
-+static int resize_test(struct test_global_map_resize *skel,
-+		__u32 element_sz, __u32 desired_sz)
-+{
-+	int ret = 0;
-+	struct bpf_map *map;
-+	__u32 initial_sz, actual_sz;
-+	size_t nr_elements;
-+	int *initial_val;
-+	size_t initial_val_sz;
-+
-+	map = skel->maps.data_my_array;
-+
-+	initial_sz = bpf_map__value_size(map);
-+	ASSERT_EQ(initial_sz, element_sz, "initial size");
-+
-+	/* round up desired size to align with element size */
-+	desired_sz = roundup(desired_sz, element_sz);
-+	ret = bpf_map__set_value_size(map, desired_sz);
-+	if (!ASSERT_OK(ret, "bpf_map__set_value_size"))
-+		return ret;
-+
-+	/* refresh map pointer to avoid invalidation issues */
-+	map = skel->maps.data_my_array;
-+
-+	actual_sz = bpf_map__value_size(map);
-+	ASSERT_EQ(actual_sz, desired_sz, "resize");
-+
-+	/* set the expected number of elements based on the resized array */
-+	nr_elements = roundup(actual_sz, element_sz) / element_sz;
-+	skel->rodata->n = nr_elements;
-+
-+	/* create array for initial map value */
-+	initial_val_sz = element_sz * nr_elements;
-+	initial_val = malloc(initial_val_sz);
-+	if (!ASSERT_OK_PTR(initial_val, "malloc initial_val")) {
-+		ret = -ENOMEM;
-+
-+		goto cleanup;
-+	}
-+
-+	/* fill array with ones */
-+	for (int i = 0; i < nr_elements; ++i)
-+		initial_val[i] = 1;
-+
-+	/* set initial value */
-+	ASSERT_EQ(initial_val_sz, actual_sz, "initial value size");
-+
-+	ret = bpf_map__set_initial_value(map, initial_val, initial_val_sz);
-+	if (!ASSERT_OK(ret, "bpf_map__set_initial_val"))
-+		goto cleanup;
-+
-+	ret = test_global_map_resize__load(skel);
-+	if (!ASSERT_OK(ret, "test_global_map_resize__load"))
-+		goto cleanup;
-+
-+	ret = test_global_map_resize__attach(skel);
-+	if (!ASSERT_OK(ret, "test_global_map_resize__attach"))
-+		goto cleanup;
-+
-+	/* run the bpf program which will sum the contents of the array */
-+	run_program();
-+
-+	if (!ASSERT_EQ(skel->bss->sum, nr_elements, "sum"))
-+		goto cleanup;
-+
-+cleanup:
-+	if (initial_val)
-+		free(initial_val);
-+
-+	return ret;
-+}
-+
-+static void global_map_resize_aligned_subtest(void)
-+{
-+	struct test_global_map_resize *skel;
-+	const __u32 element_sz = (__u32)sizeof(int);
-+	const __u32 desired_sz = (__u32)sysconf(_SC_PAGE_SIZE) * 2;
-+
-+	/* preliminary check that desired_sz aligns with element_sz */
-+	if (!ASSERT_EQ(desired_sz % element_sz, 0, "alignment"))
-+		return;
-+
-+	if (setup(&skel))
-+		goto teardown;
-+
-+	if (resize_test(skel, element_sz, desired_sz))
-+		goto teardown;
-+
-+teardown:
-+	teardown(&skel);
-+}
-+
-+static void global_map_resize_roundup_subtest(void)
-+{
-+	struct test_global_map_resize *skel;
-+	const __u32 element_sz = (__u32)sizeof(int);
-+	/* set desired size a fraction of element size beyond an aligned size */
-+	const __u32 desired_sz = (__u32)sysconf(_SC_PAGE_SIZE) * 2 + element_sz / 2;
-+
-+	/* preliminary check that desired_sz does NOT align with element_sz */
-+	if (!ASSERT_NEQ(desired_sz % element_sz, 0, "alignment"))
-+		return;
-+
-+	if (setup(&skel))
-+		goto teardown;
-+
-+	if (resize_test(skel, element_sz, desired_sz))
-+		goto teardown;
-+
-+teardown:
-+	teardown(&skel);
-+}
-+
-+static void global_map_resize_invalid_subtest(void)
-+{
-+	int err;
-+	struct test_global_map_resize *skel;
-+	struct bpf_map *map;
-+	const __u32 desired_sz = 8192;
-+
-+	if (setup(&skel))
-+		goto teardown;
-+
-+	/* attempt to resize a global datasec map which is an array
-+	 * BUT is with a var in same datasec
-+	 */
-+	map = skel->maps.data_my_array_and_var;
-+	err = bpf_map__set_value_size(map, desired_sz);
-+	if (!ASSERT_EQ(err, -EINVAL, "bpf_map__set_value_size"))
-+		goto teardown;
-+
-+	/* attempt to resize a global datasec map which is NOT an array */
-+	map = skel->maps.data_my_non_array;
-+	err = bpf_map__set_value_size(map, desired_sz);
-+	if (!ASSERT_EQ(err, -EINVAL, "bpf_map__set_value_size"))
-+		goto teardown;
-+
-+teardown:
-+	teardown(&skel);
-+}
-+
-+void test_global_map_resize(void)
-+{
-+	if (test__start_subtest("global_map_resize_aligned"))
-+		global_map_resize_aligned_subtest();
-+
-+	if (test__start_subtest("global_map_resize_roundup"))
-+		global_map_resize_roundup_subtest();
-+
-+	if (test__start_subtest("global_map_resize_invalid"))
-+		global_map_resize_invalid_subtest();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-new file mode 100644
-index 000000000000..cffbba1b6020
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+const volatile pid_t pid;
-+const volatile size_t n;
-+
-+int my_array[1] SEC(".data.my_array");
-+
-+int my_array_with_neighbor[1] SEC(".data.my_array_and_var");
-+int my_var_with_neighbor SEC(".data.my_array_and_var");
-+
-+int my_non_array SEC(".data.my_non_array");
-+
-+int sum = 0;
-+
-+SEC("tp/syscalls/sys_enter_getpid")
-+int array_sum(void *ctx)
-+{
-+	if (pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	sum = 0;
-+
-+	for (size_t i = 0; i < n; ++i)
-+		sum += my_array[i];
-+
-+	return 0;
-+}
++	return err;
+ }
+ 
+ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
 -- 
-2.40.0
+2.37.1 (Apple Git-137.1)
 
