@@ -2,152 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA496F1C38
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587E46F1C48
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjD1QGE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 12:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        id S1346066AbjD1QJp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 12:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjD1QGC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 12:06:02 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D442709
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:06:00 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b8f51500a82so14867307276.2
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:06:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1682697960; x=1685289960;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b5lwLxqW5VKmY2A43cr9IwcGLbMR5CgyRtASHDDCzvw=;
-        b=Kgk4Eae1aP7UAuXMG2GCAySB2r0ZPNhQeU0yBcvJXJ6/0PIs4s7Ld+qmjhc7YMDJK8
-         3CHZHe+bkXTnnwKbXaypBSa9guGEx3TJDS/789EPghQfEh2m3QBTGkLfeX9kYi8F6i9i
-         YkrJ8FfhMdQbI0+Z1N3DpVbQ/F0NpEgDwHZcaFwC7KEEbTIKjW2hiUGxXwD/4ydBuAC6
-         A55pwq8Txjyp/zqzRvmxQpvZb3mWtxi2BlSAgQTmHbdrD0rqISv9QNCKGLB83iOOjzsw
-         /4GiOStfqQptBAeQmBGlX493AGsDpxdF2NASt1uCp/5ZLIJDbqt3D7sqalAc0gop2J75
-         wtKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682697960; x=1685289960;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b5lwLxqW5VKmY2A43cr9IwcGLbMR5CgyRtASHDDCzvw=;
-        b=c4oMMvPX5dyAUwymS5r49JUNK+RvnvI8neIYpLmwL7Zma4as7xMlL9G8lvR3jZ8VFI
-         MSA9Y3j0O0+sju44lItOn7Z6q3IxRcbzLtWRsX/hpntDyAmXvr+5SPRtS6VufnT/LYsB
-         wJTZlHqlRV2wCMT9WGsDewIM8tpfmfIhvsgvjqBdCFp6Ybwu+/pXzJSydq15tGeA0L+x
-         S8IwsqEcFq0qxg4EY+EqF/P7yl7h6ezzpgmEhdupx3AG1XBzUV/UWkuhAj/fp4lNvVOZ
-         n7Lku1M1WBPwRB41sYgEOD+sRixPaRFje9fnwN3UWLycDaSSdp9FT1Kt3/To/6/AUZRY
-         Jf8g==
-X-Gm-Message-State: AC+VfDwDOqCejx/X0A8mcNg9U9lvnrrfapTVXo77zAzTGUJsgk/RLz6t
-        Pr+/W6s6RLZ1vttevjRg0kYe+fxF8bxhSHzpJGh6
-X-Google-Smtp-Source: ACHHUZ6FGZWVLRbJ0Vtr4MD2R/979p76yJnZwYUUc8G4bL5ujRwJBt2UCfCS3wLLk3W8UDR0BgoH5jCuz8afYiz+U5A=
-X-Received: by 2002:a25:34c7:0:b0:b8e:e918:33ac with SMTP id
- b190-20020a2534c7000000b00b8ee91833acmr4602032yba.1.1682697959947; Fri, 28
- Apr 2023 09:05:59 -0700 (PDT)
+        with ESMTP id S1345696AbjD1QJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 12:09:41 -0400
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348D35261;
+        Fri, 28 Apr 2023 09:09:38 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 645C72B0694E;
+        Fri, 28 Apr 2023 12:09:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 28 Apr 2023 12:09:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1682698172; x=
+        1682705372; bh=cbTkCGhDldgonJsiL/EQyO8MV5eih+uB/j3ETloCYi8=; b=U
+        TKTcGQ8yytq19css891tWK51auYev0Reld9bJ2my3BP3Ifw8+k1H1f8i/2a2JcwW
+        4tUKfHWVGOe2XMolnZknhJILbtoA9XhdE7Pz/fuDtvzGQwm5l/ePS4LPlHWCIJ9H
+        igWwwG/T18AJtu6qcnbiJ06P1t4JZTVoKFg0hmp96woab3Wen/tOgb18Slzot/Zs
+        KT6dSF/51ILQfun3/pGQ+5g8RjJO1SswYg+tdzZhQ2vN3lw0b5o9YEU6xymzcVf+
+        xMZNDwY7kk7JA+ml7SgZn+Ls05W1+MmnllgCx8xaVgalQNH+nwTeqDq+mIflZwaI
+        PGzKAOeMLzsosAbl99HUw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682698172; x=1682705372; bh=cbTkCGhDldgon
+        JsiL/EQyO8MV5eih+uB/j3ETloCYi8=; b=KwoQuMAh1OWYUsQgYguWDapvbenN+
+        NPb1xxRBlTpeCEUB06Fmt1l8S5j051HrQN0bMWCA30PS/5c5y6x+JicySX2X1SML
+        nXjP2gqaVmpN3OHeFX19ZG2OfkP9XhkJFeG/8nBNWVJoDeU7Ytd7B21sMbraVKAJ
+        xpzmJviZg59T4n60trgG4+aXTgZUe2cPxyWOtiCPF4+aHa6/RIvDASNVjBxpM6P8
+        Hq5bMIPkTkfjhkXXzjcl3GqKwux6BGiC7FI8UWSAhpctF21GjFfYVyu9rF1zsi5Y
+        4pqy8t80fkltCAvjQr3KCe57qRmNjdnZkrak5kLMp45AvJrtV098LKWLQ==
+X-ME-Sender: <xms:ue9LZHc15g2COXDiT235MxBncV3-Ks6UYezPeeWJYINkFuXpOriZ_A>
+    <xme:ue9LZNPJt4JqPx1KiFB90OqISOQoJatrad8ziZdtMUM0EmMzeLgzASGf6Xn5QHcQF
+    _lVt5AnBdg2sXcV5gY>
+X-ME-Received: <xmr:ue9LZAjZeMdgdQ8y8BQ4sdXsnXbhYZHm7kQq_V2DxC_NU6jZ4RxHw2CuZwjg7GLDGYwtLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedukedgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdttddttddtvdenucfhrhhomhepfdfmihhr
+    ihhllhcutecurdcuufhhuhhtvghmohhvfdcuoehkihhrihhllhesshhhuhhtvghmohhvrd
+    hnrghmvgeqnecuggftrfgrthhtvghrnhepgfdtveeugeethfffffeklefgkeelgfekfedt
+    heeileetuefhkeefleduvddtkeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdrnhgrmhgv
+X-ME-Proxy: <xmx:ue9LZI8EtclLzxy3ZY7zPpzbhOAHJaYrRZ46mRD072g_oj5E51VD3Q>
+    <xmx:ue9LZDsvQ_abrLpWkCXZ-AZmB0XFGWRAkxFK35nN-oET8Jv2HlVuXA>
+    <xmx:ue9LZHG6VGyrNfjx6oHcM3AUlmxe7fSmc_YALlcAKXdHteQ9CfbL_Q>
+    <xmx:vO9LZFbSdoe0zavFOra8obUbyloAG3xDqqIz538zJw2J5uFgP_37lwMtrx8>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 28 Apr 2023 12:09:28 -0400 (EDT)
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 856481041AE; Fri, 28 Apr 2023 19:09:25 +0300 (+03)
+Date:   Fri, 28 Apr 2023 19:09:25 +0300
+From:   "Kirill A . Shutemov" <kirill@shutemov.name>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
+ by default
+Message-ID: <20230428160925.5medjfxkyvmzfyhq@box.shutemov.name>
+References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
+ <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
+ <ZEvZtIb2EDb/WudP@nvidia.com>
+ <094d2074-5b69-5d61-07f7-9f962014fa68@redhat.com>
+ <400da248-a14e-46a4-420a-a3e075291085@redhat.com>
+ <077c4b21-8806-455f-be98-d7052a584259@lucifer.local>
+ <62ec50da-5f73-559c-c4b3-bde4eb215e08@redhat.com>
+ <6ddc7ac4-4091-632a-7b2c-df2005438ec4@redhat.com>
 MIME-Version: 1.0
-References: <20230428030916.2966-1-rdunlap@infradead.org> <CAHC9VhQoa5yw2e1jiN844pxNXXT+CosJn9ip7ysFnsnUbQUi2Q@mail.gmail.com>
- <7a8df04e-ee81-8b4a-152f-1588b8d6cb42@infradead.org>
-In-Reply-To: <7a8df04e-ee81-8b4a-152f-1588b8d6cb42@infradead.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 28 Apr 2023 12:05:49 -0400
-Message-ID: <CAHC9VhS0KjFRjamDZsUCZHDRk1bg08JH0iFJi9SN3ZqMOg2+xQ@mail.gmail.com>
-Subject: Re: [PATCH] lsm: move hook comments docs to security/security.c
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ddc7ac4-4091-632a-7b2c-df2005438ec4@redhat.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 28, 2023 at 10:46=E2=80=AFAM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
-> On 4/28/23 07:43, Paul Moore wrote:
-> > On Thu, Apr 27, 2023 at 11:09=E2=80=AFPM Randy Dunlap <rdunlap@infradea=
-d.org> wrote:
-> >>
-> >> Fix one kernel-doc warning, but invesigating that led to other
-> >> kernel-doc movement (lsm_hooks.h to security.c) that needs to be
-> >> fixed also.
-> >>
-> >> include/linux/lsm_hooks.h:1: warning: no structured comments found
-> >>
-> >> Fixes: e261301c851a ("lsm: move the remaining LSM hook comments to sec=
-urity/security.c")
-> >> Fixes: 1cd2aca64a5d ("lsm: move the io_uring hook comments to security=
-/security.c")
-> >> Fixes: 452b670c7222 ("lsm: move the perf hook comments to security/sec=
-urity.c")
-> >> Fixes: 55e853201a9e ("lsm: move the bpf hook comments to security/secu=
-rity.c")
-> >> Fixes: b14faf9c94a6 ("lsm: move the audit hook comments to security/se=
-curity.c")
-> >> Fixes: 1427ddbe5cc1 ("lsm: move the binder hook comments to security/s=
-ecurity.c")
-> >> Fixes: 43fad2821876 ("lsm: move the sysv hook comments to security/sec=
-urity.c")
-> >> Fixes: ecc419a44535 ("lsm: move the key hook comments to security/secu=
-rity.c")
-> >> Fixes: 742b99456e86 ("lsm: move the xfrm hook comments to security/sec=
-urity.c")
-> >> Fixes: ac318aed5498 ("lsm: move the Infiniband hook comments to securi=
-ty/security.c")
-> >> Fixes: 4a49f592e931 ("lsm: move the SCTP hook comments to security/sec=
-urity.c")
-> >> Fixes: 6b6bbe8c02a1 ("lsm: move the socket hook comments to security/s=
-ecurity.c")
-> >> Fixes: 2c2442fd46cd ("lsm: move the AF_UNIX hook comments to security/=
-security.c")
-> >> Fixes: 2bcf51bf2f03 ("lsm: move the netlink hook comments to security/=
-security.c")
-> >> Fixes: 130c53bfee4b ("lsm: move the task hook comments to security/sec=
-urity.c")
-> >> Fixes: a0fd6480de48 ("lsm: move the file hook comments to security/sec=
-urity.c")
-> >> Fixes: 9348944b775d ("lsm: move the kernfs hook comments to security/s=
-ecurity.c")
-> >> Fixes: 916e32584dfa ("lsm: move the inode hook comments to security/se=
-curity.c")
-> >> Fixes: 08526a902cc4 ("lsm: move the filesystem hook comments to securi=
-ty/security.c")
-> >> Fixes: 36819f185590 ("lsm: move the fs_context hook comments to securi=
-ty/security.c")
-> >> Fixes: 1661372c912d ("lsm: move the program execution hook comments to=
- security/security.c")
-> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> >> Cc: Paul Moore <paul@paul-moore.com>
-> >> Cc: James Morris <jmorris@namei.org>
-> >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> >> Cc: linux-security-module@vger.kernel.org
-> >> Cc: Jonathan Corbet <corbet@lwn.net>
-> >> Cc: linux-doc@vger.kernel.org
-> >> Cc: KP Singh <kpsingh@kernel.org>
-> >> Cc: bpf@vger.kernel.org
-> >> ---
-> >>  Documentation/bpf/prog_lsm.rst             |    2 +-
-> >>  Documentation/security/lsm-development.rst |    6 +++---
-> >>  Documentation/security/lsm.rst             |    2 +-
-> >>  3 files changed, 5 insertions(+), 5 deletions(-)
-> >
-> > Thanks Randy.  Did you want to take this via the doc tree, or would
-> > you prefer if I pulled this into the LSM tree?
->
-> I think that the LSM tree would be appropriate for it.
+On Fri, Apr 28, 2023 at 05:43:52PM +0200, David Hildenbrand wrote:
+> On 28.04.23 17:34, David Hildenbrand wrote:
+> > On 28.04.23 17:33, Lorenzo Stoakes wrote:
+> > > On Fri, Apr 28, 2023 at 05:23:29PM +0200, David Hildenbrand wrote:
+> > > > > > 
+> > > > > > Security is the primary case where we have historically closed uAPI
+> > > > > > items.
+> > > > > 
+> > > > > As this patch
+> > > > > 
+> > > > > 1) Does not tackle GUP-fast
+> > > > > 2) Does not take care of !FOLL_LONGTERM
+> > > > > 
+> > > > > I am not convinced by the security argument in regard to this patch.
+> > > > > 
+> > > > > 
+> > > > > If we want to sells this as a security thing, we have to block it
+> > > > > *completely* and then CC stable.
+> > > > 
+> > > > Regarding GUP-fast, to fix the issue there as well, I guess we could do
+> > > > something similar as I did in gup_must_unshare():
+> > > > 
+> > > > If we're in GUP-fast (no VMA), and want to pin a !anon page writable,
+> > > > fallback to ordinary GUP. IOW, if we don't know, better be safe.
+> > > 
+> > > How do we determine it's non-anon in the first place? The check is on the
+> > > VMA. We could do it by following page tables down to folio and checking
+> > > folio->mapping for PAGE_MAPPING_ANON I suppose?
+> > 
+> > PageAnon(page) can be called from GUP-fast after grabbing a reference.
+> > See gup_must_unshare().
+> 
+> IIRC, PageHuge() can also be called from GUP-fast and could special-case
+> hugetlb eventually, as it's table while we hold a (temporary) reference.
+> Shmem might be not so easy ...
 
-Fair enough, I just merged this into the lsm/stable-6.4 branch and
-I'll send this up to Linus shortly.
+page->mapping->a_ops should be enough to whitelist whatever fs you want.
 
---=20
-paul-moore.com
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
