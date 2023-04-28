@@ -2,179 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B97F56F1C2F
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA496F1C38
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345295AbjD1QEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 12:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        id S230071AbjD1QGE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 12:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344932AbjD1QDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 12:03:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B3D468F
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682697788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ygEgijBc1IgIq8cFGjEh4tdLm5WBe48ZCNtdfsoShbQ=;
-        b=A1HD6QOK3rL1RjqQYAAc5lfO5JfPtnZ45aMwGSl+HYAPFo6Tzt7IaZ/tO8LrrkEGyeSDgZ
-        Wm1ZjuZLxuWwr/ZCA2y/cTOisOcZs/PKQGHaVWWX8FNnHqwgbPRtMfngkFvmI+MOJkubjH
-        9bGuk1U520so9Upn7o5bjmUlYtkZi9c=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-530-RP6cg2sjM9SiZ0ADkAM0DA-1; Fri, 28 Apr 2023 12:03:00 -0400
-X-MC-Unique: RP6cg2sjM9SiZ0ADkAM0DA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-2f625d521abso5860928f8f.3
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:03:00 -0700 (PDT)
+        with ESMTP id S229524AbjD1QGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 12:06:02 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D442709
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:06:00 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-b8f51500a82so14867307276.2
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1682697960; x=1685289960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b5lwLxqW5VKmY2A43cr9IwcGLbMR5CgyRtASHDDCzvw=;
+        b=Kgk4Eae1aP7UAuXMG2GCAySB2r0ZPNhQeU0yBcvJXJ6/0PIs4s7Ld+qmjhc7YMDJK8
+         3CHZHe+bkXTnnwKbXaypBSa9guGEx3TJDS/789EPghQfEh2m3QBTGkLfeX9kYi8F6i9i
+         YkrJ8FfhMdQbI0+Z1N3DpVbQ/F0NpEgDwHZcaFwC7KEEbTIKjW2hiUGxXwD/4ydBuAC6
+         A55pwq8Txjyp/zqzRvmxQpvZb3mWtxi2BlSAgQTmHbdrD0rqISv9QNCKGLB83iOOjzsw
+         /4GiOStfqQptBAeQmBGlX493AGsDpxdF2NASt1uCp/5ZLIJDbqt3D7sqalAc0gop2J75
+         wtKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682697779; x=1685289779;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ygEgijBc1IgIq8cFGjEh4tdLm5WBe48ZCNtdfsoShbQ=;
-        b=UtPb39AT3KAfGOPaNJMatcDcHvWr7NSFnf+xyMb9UH+9Jekt3QERzhqrvV3YYshxNs
-         zEYk35JAdzwQ6kqabwD0wLEI6rpO0TZWJtyv4o2sJBs6SJH7ICOim+rlZ32wa7TW5Y+v
-         uBgQFMN93LKk0/0MkjQ3GJ+TzTaK/YEh6e8Gujr4oNKIPJxtU4tpuZ84Vm1wbHSaC0wx
-         rsk3mk/XFA7khhuT9i+YXDxtWSmdN12wvWOpNw3bdRpHmcybPcz2KLysHVm8uBQrT25H
-         IHvRCJd9oi5RqGYAMS7e8xpGJzRyYsZR/tNWUI9G7nydPLmiksQvdwsEgMVPOuzESDHp
-         XKxg==
-X-Gm-Message-State: AC+VfDyX9+uy5ngU1U2C41tgsBdFefvvsz7y9Q8IU0n3e00lJB3ZvggE
-        SSJHQCg01/94d96+nUS+wAkDfFCMCxtT6HLsZ2yFDlI7kXOnMprMyT7egrH+LnBi9+kA9VlRG/0
-        ENjhV2qozeXd8
-X-Received: by 2002:a5d:595a:0:b0:304:7237:729a with SMTP id e26-20020a5d595a000000b003047237729amr4261534wri.67.1682697779308;
-        Fri, 28 Apr 2023 09:02:59 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7Ku7Blfk4RQb9TUtQ5+s7GnYVImteWm54uw3a9dTygTNMWUmW0JJgkbiWnH2eUAqvpUaXDng==
-X-Received: by 2002:a5d:595a:0:b0:304:7237:729a with SMTP id e26-20020a5d595a000000b003047237729amr4261467wri.67.1682697778920;
-        Fri, 28 Apr 2023 09:02:58 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05600c21c800b003f2390bdd0csm16068630wmj.32.2023.04.28.09.02.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 09:02:58 -0700 (PDT)
-Message-ID: <0e6ef85d-d53a-c847-c70b-900eb925a413@redhat.com>
-Date:   Fri, 28 Apr 2023 18:02:56 +0200
+        d=1e100.net; s=20221208; t=1682697960; x=1685289960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b5lwLxqW5VKmY2A43cr9IwcGLbMR5CgyRtASHDDCzvw=;
+        b=c4oMMvPX5dyAUwymS5r49JUNK+RvnvI8neIYpLmwL7Zma4as7xMlL9G8lvR3jZ8VFI
+         MSA9Y3j0O0+sju44lItOn7Z6q3IxRcbzLtWRsX/hpntDyAmXvr+5SPRtS6VufnT/LYsB
+         wJTZlHqlRV2wCMT9WGsDewIM8tpfmfIhvsgvjqBdCFp6Ybwu+/pXzJSydq15tGeA0L+x
+         S8IwsqEcFq0qxg4EY+EqF/P7yl7h6ezzpgmEhdupx3AG1XBzUV/UWkuhAj/fp4lNvVOZ
+         n7Lku1M1WBPwRB41sYgEOD+sRixPaRFje9fnwN3UWLycDaSSdp9FT1Kt3/To/6/AUZRY
+         Jf8g==
+X-Gm-Message-State: AC+VfDwDOqCejx/X0A8mcNg9U9lvnrrfapTVXo77zAzTGUJsgk/RLz6t
+        Pr+/W6s6RLZ1vttevjRg0kYe+fxF8bxhSHzpJGh6
+X-Google-Smtp-Source: ACHHUZ6FGZWVLRbJ0Vtr4MD2R/979p76yJnZwYUUc8G4bL5ujRwJBt2UCfCS3wLLk3W8UDR0BgoH5jCuz8afYiz+U5A=
+X-Received: by 2002:a25:34c7:0:b0:b8e:e918:33ac with SMTP id
+ b190-20020a2534c7000000b00b8ee91833acmr4602032yba.1.1682697959947; Fri, 28
+ Apr 2023 09:05:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
- <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
- <ZEvZtIb2EDb/WudP@nvidia.com>
- <094d2074-5b69-5d61-07f7-9f962014fa68@redhat.com>
- <400da248-a14e-46a4-420a-a3e075291085@redhat.com>
- <077c4b21-8806-455f-be98-d7052a584259@lucifer.local>
- <62ec50da-5f73-559c-c4b3-bde4eb215e08@redhat.com> <ZEvsx998gDFig/zq@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZEvsx998gDFig/zq@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230428030916.2966-1-rdunlap@infradead.org> <CAHC9VhQoa5yw2e1jiN844pxNXXT+CosJn9ip7ysFnsnUbQUi2Q@mail.gmail.com>
+ <7a8df04e-ee81-8b4a-152f-1588b8d6cb42@infradead.org>
+In-Reply-To: <7a8df04e-ee81-8b4a-152f-1588b8d6cb42@infradead.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 28 Apr 2023 12:05:49 -0400
+Message-ID: <CAHC9VhS0KjFRjamDZsUCZHDRk1bg08JH0iFJi9SN3ZqMOg2+xQ@mail.gmail.com>
+Subject: Re: [PATCH] lsm: move hook comments docs to security/security.c
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28.04.23 17:56, Peter Xu wrote:
-> On Fri, Apr 28, 2023 at 05:34:35PM +0200, David Hildenbrand wrote:
->> On 28.04.23 17:33, Lorenzo Stoakes wrote:
->>> On Fri, Apr 28, 2023 at 05:23:29PM +0200, David Hildenbrand wrote:
->>>>>>
->>>>>> Security is the primary case where we have historically closed uAPI
->>>>>> items.
->>>>>
->>>>> As this patch
->>>>>
->>>>> 1) Does not tackle GUP-fast
->>>>> 2) Does not take care of !FOLL_LONGTERM
->>>>>
->>>>> I am not convinced by the security argument in regard to this patch.
->>>>>
->>>>>
->>>>> If we want to sells this as a security thing, we have to block it
->>>>> *completely* and then CC stable.
->>>>
->>>> Regarding GUP-fast, to fix the issue there as well, I guess we could do
->>>> something similar as I did in gup_must_unshare():
->>>>
->>>> If we're in GUP-fast (no VMA), and want to pin a !anon page writable,
->>>> fallback to ordinary GUP. IOW, if we don't know, better be safe.
->>>
->>> How do we determine it's non-anon in the first place? The check is on the
->>> VMA. We could do it by following page tables down to folio and checking
->>> folio->mapping for PAGE_MAPPING_ANON I suppose?
->>
->> PageAnon(page) can be called from GUP-fast after grabbing a reference. See
->> gup_must_unshare().
-> 
-> Hmm.. Is it a good idea at all to sacrifise all "!anon" fast-gups for this?
-> People will silently got degrade even on legal pins on shmem/hugetlb, I
-> think, which seems to be still a very major use case.
-> 
+On Fri, Apr 28, 2023 at 10:46=E2=80=AFAM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
+> On 4/28/23 07:43, Paul Moore wrote:
+> > On Thu, Apr 27, 2023 at 11:09=E2=80=AFPM Randy Dunlap <rdunlap@infradea=
+d.org> wrote:
+> >>
+> >> Fix one kernel-doc warning, but invesigating that led to other
+> >> kernel-doc movement (lsm_hooks.h to security.c) that needs to be
+> >> fixed also.
+> >>
+> >> include/linux/lsm_hooks.h:1: warning: no structured comments found
+> >>
+> >> Fixes: e261301c851a ("lsm: move the remaining LSM hook comments to sec=
+urity/security.c")
+> >> Fixes: 1cd2aca64a5d ("lsm: move the io_uring hook comments to security=
+/security.c")
+> >> Fixes: 452b670c7222 ("lsm: move the perf hook comments to security/sec=
+urity.c")
+> >> Fixes: 55e853201a9e ("lsm: move the bpf hook comments to security/secu=
+rity.c")
+> >> Fixes: b14faf9c94a6 ("lsm: move the audit hook comments to security/se=
+curity.c")
+> >> Fixes: 1427ddbe5cc1 ("lsm: move the binder hook comments to security/s=
+ecurity.c")
+> >> Fixes: 43fad2821876 ("lsm: move the sysv hook comments to security/sec=
+urity.c")
+> >> Fixes: ecc419a44535 ("lsm: move the key hook comments to security/secu=
+rity.c")
+> >> Fixes: 742b99456e86 ("lsm: move the xfrm hook comments to security/sec=
+urity.c")
+> >> Fixes: ac318aed5498 ("lsm: move the Infiniband hook comments to securi=
+ty/security.c")
+> >> Fixes: 4a49f592e931 ("lsm: move the SCTP hook comments to security/sec=
+urity.c")
+> >> Fixes: 6b6bbe8c02a1 ("lsm: move the socket hook comments to security/s=
+ecurity.c")
+> >> Fixes: 2c2442fd46cd ("lsm: move the AF_UNIX hook comments to security/=
+security.c")
+> >> Fixes: 2bcf51bf2f03 ("lsm: move the netlink hook comments to security/=
+security.c")
+> >> Fixes: 130c53bfee4b ("lsm: move the task hook comments to security/sec=
+urity.c")
+> >> Fixes: a0fd6480de48 ("lsm: move the file hook comments to security/sec=
+urity.c")
+> >> Fixes: 9348944b775d ("lsm: move the kernfs hook comments to security/s=
+ecurity.c")
+> >> Fixes: 916e32584dfa ("lsm: move the inode hook comments to security/se=
+curity.c")
+> >> Fixes: 08526a902cc4 ("lsm: move the filesystem hook comments to securi=
+ty/security.c")
+> >> Fixes: 36819f185590 ("lsm: move the fs_context hook comments to securi=
+ty/security.c")
+> >> Fixes: 1661372c912d ("lsm: move the program execution hook comments to=
+ security/security.c")
+> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Cc: Paul Moore <paul@paul-moore.com>
+> >> Cc: James Morris <jmorris@namei.org>
+> >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> >> Cc: linux-security-module@vger.kernel.org
+> >> Cc: Jonathan Corbet <corbet@lwn.net>
+> >> Cc: linux-doc@vger.kernel.org
+> >> Cc: KP Singh <kpsingh@kernel.org>
+> >> Cc: bpf@vger.kernel.org
+> >> ---
+> >>  Documentation/bpf/prog_lsm.rst             |    2 +-
+> >>  Documentation/security/lsm-development.rst |    6 +++---
+> >>  Documentation/security/lsm.rst             |    2 +-
+> >>  3 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > Thanks Randy.  Did you want to take this via the doc tree, or would
+> > you prefer if I pulled this into the LSM tree?
+>
+> I think that the LSM tree would be appropriate for it.
 
-Right. Optimizing for hugetlb should be easy. Shmem is problematic.
+Fair enough, I just merged this into the lsm/stable-6.4 branch and
+I'll send this up to Linus shortly.
 
-I once raised to John that PageAnonExclusive is essentially a "anon page 
-is pinnable" flag. Too bad we don't have spare page flags ;)
-
--- 
-Thanks,
-
-David / dhildenb
-
+--=20
+paul-moore.com
