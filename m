@@ -2,186 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639BC6F1C65
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CCF6F1C6D
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 18:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345164AbjD1QNz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 12:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S229768AbjD1QRK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 12:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235154AbjD1QNy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 12:13:54 -0400
+        with ESMTP id S230071AbjD1QRJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 12:17:09 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B2D1BC3
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:13:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F7D1BC3
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682698390;
+        s=mimecast20190719; t=1682698581;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5xkaTJLSgSiHWckTCCg+jkvg+cPl3tpnSAiaPo9ljdQ=;
-        b=bFXqxpQeR41pnrpdyEt6RuMbE7wdU80Q+sWN10Utpw+SDFlA/DM4zJUedDfuIpSEWP115E
-        +3296zJJA/lKChLeotcqL213iVcFyUHhakT4puIeorMS2sjft7yGRi2kcUDS+RXEFq0ON4
-        kWhU+2gZ3D06HGSc1OHiaOdfby5i1wM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-246-jCz3TvsVOSu878kemIR0Uw-1; Fri, 28 Apr 2023 12:13:09 -0400
-X-MC-Unique: jCz3TvsVOSu878kemIR0Uw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f1749c63c9so36357455e9.3
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 09:13:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682698387; x=1685290387;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5xkaTJLSgSiHWckTCCg+jkvg+cPl3tpnSAiaPo9ljdQ=;
-        b=NTGt6NqJA2OaiNioKh/bAzuW0OZynLjckdObgJzT8aV2pRR1XVaXuvpJcCsUUnAEcG
-         krbiTJtCOjUuWMSh/MWVmPN1hsH3oL7t76MaXbtGF52CVzQdcZNOCTiQOjCTFVvAyODH
-         Kr8FA+deNL+Y52Jbq2qDS0AU2RNmUHGdF5DTBldl7FWkAMBexngYIkH8jBeqa8vmbaEE
-         llmoyFfSrigDn/0jcFV/560Jx26NUmJNM8NsRvcDt5hsqw+0yFFzwvsHg3e627WeqWTo
-         mGkL+kJSd5zkNYeURiq0jASo4OYXFbE1lyISTlVzXXjKxrO9IEhb/HieF2oJezQibX92
-         xfZA==
-X-Gm-Message-State: AC+VfDzyO+jjQDRmxtWYs15XfgiYXVun486hWWFp364McGKlhWlZ2uTQ
-        +pxCpIEUnW1XM5kJ/bocuW1XGaMwRK3mSIr6RwJ8VyJhI9HG4EScayM5hvCSwWLTASAEo1y/w9n
-        AmmAhUBVyAgzU
-X-Received: by 2002:a1c:cc0f:0:b0:3f1:718d:a21c with SMTP id h15-20020a1ccc0f000000b003f1718da21cmr4546921wmb.31.1682698386872;
-        Fri, 28 Apr 2023 09:13:06 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5UcVnruZKFM610WaYbD7KosGHJuT9juitvMObOnL1WWik01k7wINU0BT60S4IoSquURMFEKg==
-X-Received: by 2002:a1c:cc0f:0:b0:3f1:718d:a21c with SMTP id h15-20020a1ccc0f000000b003f1718da21cmr4546897wmb.31.1682698386533;
-        Fri, 28 Apr 2023 09:13:06 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
-        by smtp.gmail.com with ESMTPSA id c21-20020a7bc855000000b003f17300c7dcsm24667685wml.48.2023.04.28.09.13.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 09:13:06 -0700 (PDT)
-Message-ID: <39cc0f26-8fc2-79dd-2e84-62238d27fd98@redhat.com>
-Date:   Fri, 28 Apr 2023 18:13:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Content-Language: en-US
-To:     "Kirill A . Shutemov" <kirill@shutemov.name>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TvewqYuSzWNN7mxtbeM4khKlAp2Yo8QXThhKD8ctzeY=;
+        b=dhxBokgp0sQMHWTZRvF2SXFNAUd/vjw14hDvKQKOuH1LRW+PFykrCkFH64XwrYXcn4Odr5
+        5tHJDcZ+kPzfEmblDf8JkKexK0KXQm5ZeqkIyGUguDrRy2I60Y2QMH1LYrKDqStgQ96gIu
+        y646HLdmxYzY1R2JMNo9cvDg/bJOd5k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-616-d-dIVHqjMJOFk9aCOr-jjg-1; Fri, 28 Apr 2023 12:16:16 -0400
+X-MC-Unique: d-dIVHqjMJOFk9aCOr-jjg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9073D185A790;
+        Fri, 28 Apr 2023 16:16:15 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B884492C13;
+        Fri, 28 Apr 2023 16:16:15 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 43564307372E8;
+        Fri, 28 Apr 2023 18:16:14 +0200 (CEST)
+Subject: [PATCH RFC net-next/mm V3 0/2] page_pool: new approach for leak
+ detection and shutdown phase
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, lorenzo@kernel.org,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        linyunsheng@huawei.com, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
- <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
- <ZEvZtIb2EDb/WudP@nvidia.com>
- <094d2074-5b69-5d61-07f7-9f962014fa68@redhat.com>
- <400da248-a14e-46a4-420a-a3e075291085@redhat.com>
- <077c4b21-8806-455f-be98-d7052a584259@lucifer.local>
- <62ec50da-5f73-559c-c4b3-bde4eb215e08@redhat.com>
- <6ddc7ac4-4091-632a-7b2c-df2005438ec4@redhat.com>
- <20230428160925.5medjfxkyvmzfyhq@box.shutemov.name>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230428160925.5medjfxkyvmzfyhq@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
+Date:   Fri, 28 Apr 2023 18:16:14 +0200
+Message-ID: <168269854650.2191653.8465259808498269815.stgit@firesoul>
+User-Agent: StGit/1.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28.04.23 18:09, Kirill A . Shutemov wrote:
-> On Fri, Apr 28, 2023 at 05:43:52PM +0200, David Hildenbrand wrote:
->> On 28.04.23 17:34, David Hildenbrand wrote:
->>> On 28.04.23 17:33, Lorenzo Stoakes wrote:
->>>> On Fri, Apr 28, 2023 at 05:23:29PM +0200, David Hildenbrand wrote:
->>>>>>>
->>>>>>> Security is the primary case where we have historically closed uAPI
->>>>>>> items.
->>>>>>
->>>>>> As this patch
->>>>>>
->>>>>> 1) Does not tackle GUP-fast
->>>>>> 2) Does not take care of !FOLL_LONGTERM
->>>>>>
->>>>>> I am not convinced by the security argument in regard to this patch.
->>>>>>
->>>>>>
->>>>>> If we want to sells this as a security thing, we have to block it
->>>>>> *completely* and then CC stable.
->>>>>
->>>>> Regarding GUP-fast, to fix the issue there as well, I guess we could do
->>>>> something similar as I did in gup_must_unshare():
->>>>>
->>>>> If we're in GUP-fast (no VMA), and want to pin a !anon page writable,
->>>>> fallback to ordinary GUP. IOW, if we don't know, better be safe.
->>>>
->>>> How do we determine it's non-anon in the first place? The check is on the
->>>> VMA. We could do it by following page tables down to folio and checking
->>>> folio->mapping for PAGE_MAPPING_ANON I suppose?
->>>
->>> PageAnon(page) can be called from GUP-fast after grabbing a reference.
->>> See gup_must_unshare().
->>
->> IIRC, PageHuge() can also be called from GUP-fast and could special-case
->> hugetlb eventually, as it's table while we hold a (temporary) reference.
->> Shmem might be not so easy ...
-> 
-> page->mapping->a_ops should be enough to whitelist whatever fs you want.
-> 
+Patchset change summary:
+ - Remove PP workqueue and inflight warnings, instead rely on inflight
+   pages to trigger cleanup
+ - Moves leak detection to the MM-layer page allocator when combined
+   with CONFIG_DEBUG_VM.
 
-The issue is how to stabilize that from GUP-fast, such that we can 
-safely dereference the mapping. Any idea?
+The page_pool (PP) workqueue calling page_pool_release_retry generate
+too many false-positive reports. Further more, these reports of
+page_pool shutdown still having inflight packets are not very helpful
+to track down the root-cause.
 
-At least for anon page I know that page->mapping only gets cleared when 
-freeing the page, and we don't dereference the mapping but only check a 
-single flag stored alongside the mapping. Therefore, PageAnon() is fine 
-in GUP-fast context.
+In the past these reports have helped us catch driver bugs, that
+leaked pages by invoking put_page directly, often in code paths
+handling error cases. PP pages had a shorter lifespan (within driver
+and XDP code paths). Since PP pages got a recycle return path for
+SKBs, the lifespan for a PP page can be much longer. Thus, it is time
+to revisit periodic release retry mechanism. The default 60 sec
+lifespan assumption is obviously wrong/obsolete, as things like TCP
+sockets can keep SKBs around for much longer (e.g. retransmits,
+timeouts, NAPI defer schemes etc).
 
--- 
-Thanks,
+The inflight reports, means one of two things: (1) API user is still
+holding on, or (2) page got leaked and will never be returned to PP.
+The PP need to accept it have no control over (1) how long outstanding
+PP pages are kept by the API users. What we really want to is to catch
+are(2) pages that "leak". Meaning they didn't get proper returned via
+PP APIs.
 
-David / dhildenb
+Leaked PP pages result in these issues: (A) We can never release
+page_pool memory structs, which (B) holds on to a refcnt on struct
+device for DMA mapping, and (C) leaking DMA-mappings that (D) means a
+hardware device can potentially write into a page returned to the page
+allocator.
+
+V3: Fix races found Toke
+
+V2: Fix race found by Yunsheng Lin <linyunsheng@huawei.com>
+
+---
+
+Jesper Dangaard Brouer (2):
+      page_pool: Remove workqueue in new shutdown scheme
+      mm/page_pool: catch page_pool memory leaks
+
+
+ include/net/page_pool.h |   9 ++-
+ mm/page_alloc.c         |   7 ++
+ net/core/page_pool.c    | 138 ++++++++++++++++++++++++++++------------
+ 3 files changed, 110 insertions(+), 44 deletions(-)
+
+--
+Jesper
 
