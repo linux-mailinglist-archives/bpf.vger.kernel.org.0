@@ -2,70 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A63506F1D23
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE616F1D2B
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 19:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjD1RDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 13:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
+        id S229977AbjD1RG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 13:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjD1RDa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 13:03:30 -0400
+        with ESMTP id S230056AbjD1RG0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 13:06:26 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B67265AE
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:02:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF221BE1
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682701348;
+        s=mimecast20190719; t=1682701544;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zN+hlinWDo7HPckU96nAsQkShApM93gzKFjoIDnOxkE=;
-        b=NojjS2VEjlGzwAbO565WIMKXXrJfXYhvW1BFZQHF3rqYbbxaEB+10Gucls1s1gwn2gorPz
-        RY5j7RKcwKDR3nojuoNBCq6dTvOdpWOF0TdlIRsouRRy7WR8YNs4neXYIbXCHoFlHVq6Qp
-        RM36GJiHU6DHn0CrfWn0MT8KYDbDkOI=
+        bh=qcZ+WIIKui2ih8uJD3NXlW2Fr/ddGQDIFYF8VWxxYcs=;
+        b=fx1PJekASWLJe8WchFgSu7HRdzSUMvtjIUAFuHusiuNzs3NcXbYzaqgxqYQrkY6hNb5FIV
+        OcY4lXbUk8+FJyibqgAkiQqfdm3+EYiB7Mkot/Ieia2+FSyu83VsBfwgWXiGzHESoEUrut
+        VRju169iIYCM557/yrLeQ1EkatCVzw0=
 Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
  [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-kdiwlh65Pj2MM0iIwoopeg-1; Fri, 28 Apr 2023 13:02:27 -0400
-X-MC-Unique: kdiwlh65Pj2MM0iIwoopeg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-302cdf5d034so5424493f8f.0
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:02:26 -0700 (PDT)
+ us-mta-562-XNcU01rdOdOCAXt4zzf8Xg-1; Fri, 28 Apr 2023 13:05:43 -0400
+X-MC-Unique: XNcU01rdOdOCAXt4zzf8Xg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-2f446161e5aso6142149f8f.1
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 10:05:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682701346; x=1685293346;
+        d=1e100.net; s=20221208; t=1682701542; x=1685293542;
         h=content-transfer-encoding:in-reply-to:organization:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zN+hlinWDo7HPckU96nAsQkShApM93gzKFjoIDnOxkE=;
-        b=PsqUNQAmh1+8nCBAWV+67NqwQ2H1DpOqHOHIkIdzRRjsHSN4rCH22xwCIYzlwwS2Dk
-         /1fR1IxbpQapvTTU3zZbfqr6U0AkBTcH4bj9yeT9qWObgXsVd9auUI2pX5bkV9cWx4t+
-         uNgDMTZTJIC5rd809jJLssxK/H0UZgEUMELwotratWwC/RLm0gQregKwBqmRBNAz7lDW
-         XGeKOg2xdv7axq53KXxuhYHfXl6CL5PrT5OYgIpPTmjWbKr4HJkhXFJ2uS9OZ30qXyWR
-         +mFBpjs9TA/CQ389di6EKh8gvcSrDuhCEGBLgzLP2dgU/4KZ8Ipq2NBClEKqnzx0HxVv
-         YVcw==
-X-Gm-Message-State: AC+VfDy75jkHVZl8FsJF84HEu3yAKZ4oLoPf1U9ZjndZOa5nhqJH+5kn
-        +YlhKGADLyJnOH7/H9pB7hTMrBjsQ9sGMyFDQzD04bzppiGbG4bH4+meha8zSJyCE6+ASPoW324
-        kd5mWEhMUTqut
-X-Received: by 2002:a5d:40cd:0:b0:2ff:3a63:ed61 with SMTP id b13-20020a5d40cd000000b002ff3a63ed61mr4380621wrq.13.1682701345895;
-        Fri, 28 Apr 2023 10:02:25 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5IGpmPcW+sW5hDbaIE0RZbDfpW/KW7f3SgvaJbedb3u6P7PhLZRwvYbDxXsxQPtSCsSBa1uw==
-X-Received: by 2002:a5d:40cd:0:b0:2ff:3a63:ed61 with SMTP id b13-20020a5d40cd000000b002ff3a63ed61mr4380577wrq.13.1682701345525;
-        Fri, 28 Apr 2023 10:02:25 -0700 (PDT)
+        bh=qcZ+WIIKui2ih8uJD3NXlW2Fr/ddGQDIFYF8VWxxYcs=;
+        b=ZvYE9Z3nLwvRJHpPBsmjAdRuTeVVo9jQ5N0D9XR0GivsdC2dsmWV9YNyqVn03TcuEX
+         1NjVSIuaOEOfIdPNJhjQDdiZewKYZBzBr4NN449QXi/nOEu5Of1sMK5kS5nsoUBJTRX8
+         EYiGX6nPcqAEwsNbNgUndbI7Umhp2qE/d099txnqzWgpTSPnXcoZ279gECY9TeR580MK
+         H5qQgHj0zI/Kbr+kvO7eHtWGM36e5EBZ9A8hvHCUv2Su223Q1YAIevmsPIP5wYe/mjh7
+         mtMBx7uZbodUSasbYhEQ3aGhsvKxzpdmMHBEIUhN1yo7WRaF0If8xHrr1i1KJWvI9YwP
+         Wp6w==
+X-Gm-Message-State: AC+VfDwWhIEOvEoAtEk9EAI8naDYyQnLUNmMREumR8L2btqkvTOPxSG2
+        md07fkplnSQ+oc2ShUSsxRTBvCKhJfbey9KuUnjr6cLchz2Ke8saZMuvDD62VRRf0GnCLbCUIqz
+        UUuyKHEeBZxjO
+X-Received: by 2002:a5d:42c5:0:b0:2e5:31a3:38d4 with SMTP id t5-20020a5d42c5000000b002e531a338d4mr4645481wrr.55.1682701541844;
+        Fri, 28 Apr 2023 10:05:41 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5JDIkQuL8RvtQo+J5juy3yRpAXIxSzrWjCLBEsPvjv/ikxb+OC+k037Hoxb/q734TWFy/U7w==
+X-Received: by 2002:a5d:42c5:0:b0:2e5:31a3:38d4 with SMTP id t5-20020a5d42c5000000b002e531a338d4mr4645444wrr.55.1682701541451;
+        Fri, 28 Apr 2023 10:05:41 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
-        by smtp.gmail.com with ESMTPSA id d13-20020adfe88d000000b002e55cc69169sm21510251wrm.38.2023.04.28.10.02.23
+        by smtp.gmail.com with ESMTPSA id c7-20020a5d4cc7000000b002fa5a73bf9bsm21531981wrt.89.2023.04.28.10.05.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 10:02:24 -0700 (PDT)
-Message-ID: <1039c830-acec-d99b-b315-c2a6e26c34ca@redhat.com>
-Date:   Fri, 28 Apr 2023 19:02:22 +0200
+        Fri, 28 Apr 2023 10:05:40 -0700 (PDT)
+Message-ID: <3d7fcfab-e445-1dc7-f000-9fbe7bea04c0@redhat.com>
+Date:   Fri, 28 Apr 2023 19:05:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
 Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
  by default
 Content-Language: en-US
-To:     "Kirill A . Shutemov" <kirill@shutemov.name>
-Cc:     Peter Xu <peterx@redhat.com>, Lorenzo Stoakes <lstoakes@gmail.com>,
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
         Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -116,24 +117,23 @@ References: <094d2074-5b69-5d61-07f7-9f962014fa68@redhat.com>
  <39cc0f26-8fc2-79dd-2e84-62238d27fd98@redhat.com>
  <20230428162207.o3ejmcz7rzezpt6n@box.shutemov.name> <ZEv2196tk5yWvgW5@x1n>
  <173337c0-14f4-3246-15ff-7fbf03861c94@redhat.com>
- <20230428165623.pqchgi5gtfhxd5b5@box.shutemov.name>
+ <40fc128f-1978-42db-b9c1-77ac3c2cebfe@lucifer.local>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20230428165623.pqchgi5gtfhxd5b5@box.shutemov.name>
+In-Reply-To: <40fc128f-1978-42db-b9c1-77ac3c2cebfe@lucifer.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28.04.23 18:56, Kirill A . Shutemov wrote:
+On 28.04.23 19:01, Lorenzo Stoakes wrote:
 > On Fri, Apr 28, 2023 at 06:51:46PM +0200, David Hildenbrand wrote:
 >> On 28.04.23 18:39, Peter Xu wrote:
 >>> On Fri, Apr 28, 2023 at 07:22:07PM +0300, Kirill A . Shutemov wrote:
@@ -207,13 +207,17 @@ On 28.04.23 18:56, Kirill A . Shutemov wrote:
 >>
 >> So we might be looking at folio->mapping and the VMA is no longer there.
 >> Maybe even the file is no longer there.
+>>
 > 
-> No. VMA cannot get away before PTEs are unmapped and TLB is flushed. And
-> TLB flushing is serialized against GUP_fast().
+> This shouldn't be an issue though right? Because after a pup call unlocks the
+> mmap_lock we're in the same situation anyway. GUP doesn't generally guarantee
+> the mapping remains valid, only pinning the underlying folio.
 
+Yes. But the issue here is rather dereferencing something that has 
+already been freed, eventually leading to undefined behavior.
 
-The whole CONFIG_MMU_GATHER_RCU_TABLE_FREE handling makes the situation 
-more complicated.
+Maybe de-referencing folio->mapping is fine ... but yes, we could handle 
+that optimization in a separate patch.
 
 -- 
 Thanks,
