@@ -2,84 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2470E6F19F2
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 15:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2365F6F1A67
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 16:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346270AbjD1Nsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 09:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
+        id S229997AbjD1OVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 10:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346205AbjD1Nsw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 09:48:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C884C10
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 06:48:11 -0700 (PDT)
+        with ESMTP id S1346073AbjD1OVl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 10:21:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B42A11C
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 07:20:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1682689691;
+        s=mimecast20190719; t=1682691653;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jmGtCEfUXv1Vp+ULFOpSFCFJecVFUn3MtTRtzSJL8k0=;
-        b=SFwY5LaZzuen+qEKaEyIGwRRyXlauDx9L99P+lXpcb7Gs/DxeM7SQlMljKylKbq2pI8Kes
-        0zEvwloj9p2Q8Gv8Z4gykPhLIdiBG9TuD4sO8otOHw5o4aLkCH9P0jr9fE672PswU1bbFp
-        0kDIny9uRW9myvmNng37R/+eS8OdyII=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=gv0P60I1m+zx490TNpqDLMm/gN26L3C73hsWxl2z9Eg=;
+        b=Ks4BYZkJ+QdbQmvMnrhgGLw2PXJ8BOaGOy0An/6fYyqi3Z7JApbNKkI/mw+gnPZngBYMlf
+        h0KNCV3w+yRPSqoA5lqn+P6q/UzStbMBiBjTxae9W+v/KaMQ0CDIZFyDt+aDIsFLftYzrR
+        Q0Y9V2DY/LxdDZ4q6ax9VzEkxjkGefo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-dbp6zwcVPoGFwWXhEThwjA-1; Fri, 28 Apr 2023 09:48:09 -0400
-X-MC-Unique: dbp6zwcVPoGFwWXhEThwjA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9532170e7d3so941543466b.0
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 06:48:09 -0700 (PDT)
+ us-mta-578-eMmxIAlMOA2zD7Ic_ngylQ-1; Fri, 28 Apr 2023 10:20:51 -0400
+X-MC-Unique: eMmxIAlMOA2zD7Ic_ngylQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f065208a64so60974435e9.3
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 07:20:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682689688; x=1685281688;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmGtCEfUXv1Vp+ULFOpSFCFJecVFUn3MtTRtzSJL8k0=;
-        b=QP8CMLsoynn1JfE1X1maEFuYzYJ/NCo2zBc2vzIUcd3nuP6FZmvBaYf1863079pC7z
-         rwuJ0rqzDeXcnFX4g6x65ZRy3GPp2l3qZOMrcqXhcMd6eISZdEyU/y1VvllbF0SsGmyo
-         02N1SN8ILXku3p6CVjLnmcqbpqJa0CgRgZxWQp7g8rpKysZiy12i6j2sc3jP1nn8WJwO
-         NCzAYvVckMGE+FlRIONSSbhMVvkCM3P3feNf9jvFK4b9K9MbIQpJxlW7xOttNdvCzpgd
-         dIoXzZjYK4CiLTjnAQV9ZKlpeNxUyjPf2OCFjHqPc096GzyQPzy0t9TvuQ5c2q/CG6Xk
-         wIWw==
-X-Gm-Message-State: AC+VfDwWnXDmTCIIC2kVbIJGH6Mw7AIdDC4BadBhOeNT5wUUKAEZWksc
-        4wVnAg6wrp4zG0CuPikZYM9BOEFWvahEdjEfuVp5mB7lNv+ANguFfgf8BMpJ5CZwDCYTcdMxZw9
-        02PdX1AeIpiEz
-X-Received: by 2002:a17:907:7fa1:b0:94e:fe77:3f47 with SMTP id qk33-20020a1709077fa100b0094efe773f47mr7109102ejc.67.1682689688500;
-        Fri, 28 Apr 2023 06:48:08 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5t1ePMr3EFTQiRFXhOYJ5rDjHjJLZ/nUd7rk/dh2ocoIyXuYny0i8hZmcckTd67WikHzfiIg==
-X-Received: by 2002:a17:907:7fa1:b0:94e:fe77:3f47 with SMTP id qk33-20020a1709077fa100b0094efe773f47mr7109082ejc.67.1682689688144;
-        Fri, 28 Apr 2023 06:48:08 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id g23-20020a170906395700b0094f16a3ea9csm11169383eje.117.2023.04.28.06.48.06
+        d=1e100.net; s=20221208; t=1682691650; x=1685283650;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :content-language:references:cc:to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gv0P60I1m+zx490TNpqDLMm/gN26L3C73hsWxl2z9Eg=;
+        b=M1NmcUSot/zcGHDs04jBjOnswK3v6u4BEBKWNgXGxeecGfItzokRamA2ev7PcLJSXY
+         Ugoa24Ts0/7tRecF3JwnbgiIrploG74HGRiso9ZrcGvkgARzmWUgrfyfwG7VgVE325qY
+         dNuYrQ4V2YL2vMaCbG2C7b/bxkkQ+3Q3p7/OMTbym6DIqK+c1k9quIiyY/yRwVfdshh0
+         5vDfhfEwfc/r+GaUxK7RHRr7TxqdEVo+GcEH0074vfwxTWmC3jBrdS9vJduceTh41kGg
+         oNFMWpZodfO3AqQaI9OesSaJ2q8XSixdZdesUExdcHi7/SXNAEX99s69CtPWzWDupIGj
+         lm/A==
+X-Gm-Message-State: AC+VfDyBFFi3g7UIq0F0ZNklFJd57OmT7b6Z4XDjhetyXtDW/let5+g4
+        +f4NMA2E16XtEIDVZXXIamqw3Wd3KWmtUXkBQj34ODtHGZPCf4zi/PUagua1iAdm080Gs8nRmS4
+        0bVJmNRxezN4j
+X-Received: by 2002:a1c:f706:0:b0:3f2:5028:a54d with SMTP id v6-20020a1cf706000000b003f25028a54dmr4286865wmh.0.1682691649675;
+        Fri, 28 Apr 2023 07:20:49 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5Ef+6JXTWHdAiFME6ae0mlQwifNq9sneotXxTQMRQu6YRP1y3jjdZfpGN/dZmsrEadhA0T1g==
+X-Received: by 2002:a1c:f706:0:b0:3f2:5028:a54d with SMTP id v6-20020a1cf706000000b003f25028a54dmr4286805wmh.0.1682691649225;
+        Fri, 28 Apr 2023 07:20:49 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c726:9300:1711:356:6550:7502? (p200300cbc72693001711035665507502.dip0.t-ipconnect.de. [2003:cb:c726:9300:1711:356:6550:7502])
+        by smtp.gmail.com with ESMTPSA id z4-20020a05600c0a0400b003ef4cd057f5sm28589070wmp.4.2023.04.28.07.20.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Apr 2023 06:48:07 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f671f5da-d9bc-a559-2120-10c3491e6f6d@redhat.com>
-Date:   Fri, 28 Apr 2023 15:48:06 +0200
+        Fri, 28 Apr 2023 07:20:48 -0700 (PDT)
+Message-ID: <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
+Date:   Fri, 28 Apr 2023 16:20:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Cc:     brouer@redhat.com, lorenzo@kernel.org, linyunsheng@huawei.com,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Thunderbird/102.10.0
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V2 1/2] page_pool: Remove workqueue in new
- shutdown scheme
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
 Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-References: <168262348084.2036355.16294550378793036683.stgit@firesoul>
- <168262351129.2036355.1136491155595493268.stgit@firesoul>
- <871qk582tn.fsf@toke.dk>
-In-Reply-To: <871qk582tn.fsf@toke.dk>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
+ by default
+In-Reply-To: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
@@ -91,61 +124,213 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Sorry for jumping in late, I'm on vacation :)
 
-On 27/04/2023 22.53, Toke Høiland-Jørgensen wrote:
->> @@ -490,11 +508,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
->>   skip_dma_unmap:
->>   	page_pool_clear_pp_info(page);
->>   
->> -	/* This may be the last page returned, releasing the pool, so
->> -	 * it is not safe to reference pool afterwards.
->> -	 */
->> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
->> -	trace_page_pool_state_release(pool, page, count);
->> +	if (flags & PP_FLAG_SHUTDOWN)
->> +		hold_cnt = pp_read_hold_cnt(pool);
->> +
->> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
->> +	trace_page_pool_state_release(pool, page, release_cnt);
->> +
->> +	/* In shutdown phase, last page will free pool instance */
->> +	if (flags & PP_FLAG_SHUTDOWN)
->> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
- >
-> Since the assumption is that no new pages will be allocated once the
-> PP_FLAG_SHUTDOWN is set (i.e., hold_count can not increase in the case),
-> I don't think it matters what order you read the hold and release counts
-> in? So you could simplify the above to just:
+On 28.04.23 01:42, Lorenzo Stoakes wrote:
+> Writing to file-backed mappings which require folio dirty tracking using
+> GUP is a fundamentally broken operation, as kernel write access to GUP
+> mappings do not adhere to the semantics expected by a file system.
 > 
->> +	if (flags & PP_FLAG_SHUTDOWN)
->> +		page_pool_free_attempt(pool, pp_read_hold_cnt(pool), release_cnt);
-> and drop the second check of the flag further up?
+> A GUP caller uses the direct mapping to access the folio, which does not
+> cause write notify to trigger, nor does it enforce that the caller marks
+> the folio dirty.
+
+How should we enforce it? It would be a BUG in the GUP user.
+
 > 
-> You could probably even lose the hold_cnt argument entirely from
-> page_pool_free_attempt() and just have it call pp_read_hold_cnt() directly?
->
+> The problem arises when, after an initial write to the folio, writeback
+> results in the folio being cleaned and then the caller, via the GUP
+> interface, writes to the folio again.
+> 
+> As a result of the use of this secondary, direct, mapping to the folio no
+> write notify will occur, and if the caller does mark the folio dirty, this
+> will be done so unexpectedly.
 
-I unfortunately think we have to keep this approach.
+Right, in mprotect() code we only allow upgrading write permissions in 
+this case if the pte is dirty, so we always go via the pagefault path.
 
-The purpose is to read out data from *pool, such that it is safe to call
-page_pool_free_attempt() even when *pool memory have been freed.
-
-I believe there is a race window between atomic_inc_return() and freeing
-in page_pool_free_attempt(). (As we have tracepoints in this critical
-section we might even be able to increase the chance of the race)
-
-Imagine two CPUs freeing the last two PP pages.
-Hold=2 which means when release_cnt reach 2 inflight is zero.
-
-  CPU-1 : release_cnt 1 = atomic_inc_return();
-  CPU-1 : gets preempted (or runs slow bpf-prog in tracepoint)
-  CPU-2 : release_cnt 2 = atomic_inc_return();
-  CPU-2 : page_pool_free_attempt(pool, 2, release_cnt=2);
-  CPU-2 : find no-inflight -> calls page_pool_free(pool)
-  CPU-1 : page_pool_free_attempt(pool, 2, release_cnt=1);
-  CPU-1 : *use-after-free* deref pool->pages_state_hold_cnt
+> 
+> For example, consider the following scenario:-
+> 
+> 1. A folio is written to via GUP which write-faults the memory, notifying
+>     the file system and dirtying the folio.
+> 2. Later, writeback is triggered, resulting in the folio being cleaned and
+>     the PTE being marked read-only.
 
 
->>   }
->>   EXPORT_SYMBOL(page_pool_release_page);
+How would that be triggered? Would that writeback triggered by e.g., 
+fsync that Jan tried to tackle recently?
+
+
+> 3. The GUP caller writes to the folio, as it is mapped read/write via the
+>     direct mapping.
+> 4. The GUP caller, now done with the page, unpins it and sets it dirty
+>     (though it does not have to).
+> 
+> This results in both data being written to a folio without writenotify, and
+> the folio being dirtied unexpectedly (if the caller decides to do so).
+> 
+> This issue was first reported by Jan Kara [1] in 2018, where the problem
+> resulted in file system crashes.
+> 
+> This is only relevant when the mappings are file-backed and the underlying
+> file system requires folio dirty tracking. File systems which do not, such
+> as shmem or hugetlb, are not at risk and therefore can be written to
+> without issue.
+> 
+> Unfortunately this limitation of GUP has been present for some time and
+> requires future rework of the GUP API in order to provide correct write
+> access to such mappings.
+> 
+> However, for the time being we introduce this check to prevent the most
+> egregious case of this occurring, use of the FOLL_LONGTERM pin.
+> 
+> These mappings are considerably more likely to be written to after
+> folios are cleaned and thus simply must not be permitted to do so.
+> 
+> As part of this change we separate out vma_needs_dirty_tracking() as a
+> helper function to determine this which is distinct from
+> vma_wants_writenotify() which is specific to determining which PTE flags to
+> set.
+> 
+> [1]:https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz/
+> 
+
+
+This change has the potential to break existing setups. Simple example: 
+libvirt domains configured for file-backed VM memory that also has a 
+vfio device configured. It can easily be configured by users (evolving 
+VM configuration, copy-paste etc.). And it works from a VM perspective, 
+because the guest memory is essentially stale once the VM is shutdown 
+and the pages were unpinned. At least we're not concerned about stale 
+data on disk.
+
+With your changes, such VMs would no longer start, breaking existing 
+user setups with a kernel update.
+
+I don't really see a lot of reasons to perform this change now. It's 
+been known to be problematic for a long time. People are working on a 
+fix (I see Jan is already CCed, CCing Dave and Christop). FOLL_LONGTERM 
+check is only handling some of the problematic cases, so it's not even a 
+complete blocker.
+
+I know, Jason und John will disagree, but I don't think we want to be 
+very careful with changing the default.
+
+Sure, we could warn, or convert individual users using a flag 
+(io_uring). But maybe we should invest more energy on a fix?
+
+
+
+
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>   include/linux/mm.h |  1 +
+>   mm/gup.c           | 41 ++++++++++++++++++++++++++++++++++++++++-
+>   mm/mmap.c          | 36 +++++++++++++++++++++++++++---------
+>   3 files changed, 68 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 37554b08bb28..f7da02fc89c6 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2433,6 +2433,7 @@ extern unsigned long move_page_tables(struct vm_area_struct *vma,
+>   #define  MM_CP_UFFD_WP_ALL                 (MM_CP_UFFD_WP | \
+>   					    MM_CP_UFFD_WP_RESOLVE)
+> 
+> +bool vma_needs_dirty_tracking(struct vm_area_struct *vma);
+>   int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot);
+>   static inline bool vma_wants_manual_pte_write_upgrade(struct vm_area_struct *vma)
+>   {
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 1f72a717232b..d36a5db9feb1 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -959,16 +959,51 @@ static int faultin_page(struct vm_area_struct *vma,
+>   	return 0;
+>   }
+> 
+> +/*
+> + * Writing to file-backed mappings which require folio dirty tracking using GUP
+> + * is a fundamentally broken operation, as kernel write access to GUP mappings
+> + * do not adhere to the semantics expected by a file system.
+> + *
+> + * Consider the following scenario:-
+> + *
+> + * 1. A folio is written to via GUP which write-faults the memory, notifying
+> + *    the file system and dirtying the folio.
+> + * 2. Later, writeback is triggered, resulting in the folio being cleaned and
+> + *    the PTE being marked read-only.
+> + * 3. The GUP caller writes to the folio, as it is mapped read/write via the
+> + *    direct mapping.
+> + * 4. The GUP caller, now done with the page, unpins it and sets it dirty
+> + *    (though it does not have to).
+> + *
+> + * This results in both data being written to a folio without writenotify, and
+> + * the folio being dirtied unexpectedly (if the caller decides to do so).
+> + */
+> +static bool writeable_file_mapping_allowed(struct vm_area_struct *vma,
+> +					   unsigned long gup_flags)
+> +{
+> +	/* If we aren't pinning then no problematic write can occur. */
+> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
+> +		return true;
+
+FOLL_LONGTERM only applies to FOLL_PIN. This check can be dropped.
+
+> +
+> +	/* We limit this check to the most egregious case - a long term pin. */
+> +	if (!(gup_flags & FOLL_LONGTERM))
+> +		return true;
+> +
+> +	/* If the VMA requires dirty tracking then GUP will be problematic. */
+> +	return vma_needs_dirty_tracking(vma);
+> +}
+> +
+>   static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+>   {
+>   	vm_flags_t vm_flags = vma->vm_flags;
+>   	int write = (gup_flags & FOLL_WRITE);
+>   	int foreign = (gup_flags & FOLL_REMOTE);
+> +	bool vma_anon = vma_is_anonymous(vma);
+> 
+>   	if (vm_flags & (VM_IO | VM_PFNMAP))
+>   		return -EFAULT;
+> 
+> -	if (gup_flags & FOLL_ANON && !vma_is_anonymous(vma))
+> +	if ((gup_flags & FOLL_ANON) && !vma_anon)
+>   		return -EFAULT;
+> 
+>   	if ((gup_flags & FOLL_LONGTERM) && vma_is_fsdax(vma))
+> @@ -978,6 +1013,10 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
+>   		return -EFAULT;
+> 
+>   	if (write) {
+> +		if (!vma_anon &&
+> +		    !writeable_file_mapping_allowed(vma, gup_flags))
+> +			return -EFAULT;
+> +
+>   		if (!(vm_flags & VM_WRITE)) {
+>   			if (!(gup_flags & FOLL_FORCE))
+>   				return -EFAULT;
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 536bbb8fa0ae..7b6344d1832a 100644
+> --- a/mm/mmap.c
+
+
+I'm probably missing something, why don't we have to handle GUP-fast 
+(having said that, it's hard to handle ;) )? The sequence you describe 
+above should apply to GUP-fast as well, no?
+
+1) Pin writable mapped page using GUP-fast
+2) Trigger writeback
+3) Write to page via pin
+4) Unpin and set dirty
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
