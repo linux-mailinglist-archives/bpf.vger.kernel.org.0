@@ -2,111 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA0B6F122F
-	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 09:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDCE6F123A
+	for <lists+bpf@lfdr.de>; Fri, 28 Apr 2023 09:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345415AbjD1HPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 03:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S1345440AbjD1HSR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 03:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345425AbjD1HPO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 03:15:14 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E10412F;
-        Fri, 28 Apr 2023 00:15:13 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Q73WF4TkTz9y4yj;
-        Fri, 28 Apr 2023 15:04:25 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwBHFFtrcktk859eAg--.10972S2;
-        Fri, 28 Apr 2023 08:14:58 +0100 (CET)
-Message-ID: <f35ea79ac13f1f7ccf189f527d3e7f4d7133cdcd.camel@huaweicloud.com>
-Subject: Re: [PATCH v1] selftests/bpf: Do not use sign-file as testcase
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Stanislav Fomichev <sdf@google.com>,
-        Alexey Gladkov <legion@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Date:   Fri, 28 Apr 2023 09:14:44 +0200
-In-Reply-To: <ZEq+u0CWs8eO2ED/@google.com>
-References: <88e3ab23029d726a2703adcf6af8356f7a2d3483.1682607419.git.legion@kernel.org>
-         <ZEq+u0CWs8eO2ED/@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230002AbjD1HSQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 03:18:16 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3FC2694
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 00:17:50 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-52867360efcso3599054a12.2
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 00:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1682666270; x=1685258270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ukMaBLPXL+Km2GlrH9mAFaejvqqjOkS5iDjlAGQ7GAY=;
+        b=MJsEXN/X56AtbGcdtftxmkDoW4CjqAstmIw63sZCSjxnxfcz4HCr5gfJ0ZcNjsp+aU
+         VomhmzDYHgHGbiDjetF70zrlY0E9U2eXQl/s7fV1KCBy/rZLoSoFhNlrSXdeQ3epjujI
+         33zHwShNStT5XcnHJdLANH2a4UGUlmwFA+bvd35kJmFyZQRDsP+Z/FdPuoLZUUElnmXE
+         2uXO4si4jFYWkDADrJKEFG4DsRYs9/93dP+lNRdzDV4zwCRXMWdbJjI4dfH7ZjGpe9lw
+         +5kf1kH6a4Sx7rCjOwt115A9TXNRtM7jyYyCz+Se9lSmOfk4L3FjQofipcNvOnspEE2q
+         APPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682666270; x=1685258270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ukMaBLPXL+Km2GlrH9mAFaejvqqjOkS5iDjlAGQ7GAY=;
+        b=G9t/uLsYp4KQgPk1eEaTqCLEdOI9KI1a+62xDXYehgp7FtjrFdVqutP+1JQF+Merfe
+         P25GGRnRZG553YD/emeZWjUtcdoZgtfGOtqwktgqfvcakrZ78Q6YsRXWRsIkrWOyg+LY
+         e6Rx2gVrqqHgc5pmv2e7aGPY+JW3zS3S6Ll4xbEPir1qIDyvehPTeDkLGZsvdlHGkQZ2
+         /hbqqqXJ8FE0+4EA51HWv7aJZ4y97ixSCAQBaNVy0o+xmqW1Wdi/eYAcZWGfTWKGuES2
+         tyAor7sPOeVexCMdUjcQonXQEeKxcus0uxv1EQPfD2y44OQAAXuoGsw/WdE6g8t2hdgx
+         A8cA==
+X-Gm-Message-State: AC+VfDwElJN3E05ksEl7lhOu0CVPuzKVfPp4om5zvoSvRsCNVLjDxLrk
+        VE1c7RKLmUGX5e0lTTcgC1zTIw==
+X-Google-Smtp-Source: ACHHUZ5YsRCK7s1Ipah26XWJmbC2dPQFPOOLy6IpRQ+5lOSJft2l8ZFBG3iszAMzgA9g3+4R4kA+MQ==
+X-Received: by 2002:a17:90b:4a10:b0:237:b5d4:c0cc with SMTP id kk16-20020a17090b4a1000b00237b5d4c0ccmr4730936pjb.39.1682666269807;
+        Fri, 28 Apr 2023 00:17:49 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id j2-20020a17090a318200b0024739d29252sm14159939pjb.15.2023.04.28.00.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Apr 2023 00:17:49 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v4 0/2] Introduce a new kfunc of bpf_task_under_cgroup
+Date:   Fri, 28 Apr 2023 15:17:35 +0800
+Message-Id: <20230428071737.43849-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwBHFFtrcktk859eAg--.10972S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr15Xr13CFW3Gw1kKw4DJwb_yoW8AFWUpa
-        48Ja4YkryfXF1Ut3W0k3y2qF4rKFs7Xr4rW3WUtry3ZrnrJFykXr4fKFWYk3ZxGrWFgws8
-        Aa4IgF93ua1UJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-        AY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQABBF1jj4yaPAAAsf
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2023-04-27 at 11:28 -0700, Stanislav Fomichev wrote:
-> On 04/27, Alexey Gladkov wrote:
-> > The sign-file utility (from scripts/) is used in prog_tests/verify_pkcs7_sig.c,
-> > but the utility should not be called as a test. Executing this utility
-> > produces the following error:
-> > 
-> > selftests: /linux/tools/testing/selftests/bpf: urandom_read
-> > ok 16 selftests: /linux/tools/testing/selftests/bpf: urandom_read
-> > 
-> > selftests: /linux/tools/testing/selftests/bpf: sign-file
-> > not ok 17 selftests: /linux/tools/testing/selftests/bpf: sign-file # exit=2
-> > 
-> > Fixes: fc97590668ae ("selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc")
-> > Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+Trace sched related functions, such as enqueue_task_fair, it is necessary to
+specify a task instead of the current task which within a given cgroup.
 
-Thanks
+Feng Zhou (2):
+  bpf: Add bpf_task_under_cgroup() kfunc
+  selftests/bpf: Add testcase for bpf_task_under_cgroup
 
-Roberto
+Changelog:
+v3->v4: Addressed comments from Yonghong Song
+- Modify test cases and test other tasks, not the current task.
+Details in here:
+https://lore.kernel.org/all/20230427023019.73576-1-zhoufeng.zf@bytedance.com/
 
-> > ---
-> >  tools/testing/selftests/bpf/Makefile | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index b677dcd0b77a..fd214d1526d4 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -88,8 +88,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >  	xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metadata \
-> >  	xdp_features
-> >  
-> > -TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/sign-file
-> > -TEST_GEN_FILES += liburandom_read.so
-> > +TEST_GEN_FILES += liburandom_read.so urandom_read sign-file
-> >  
-> >  # Emit succinct information message describing current building step
-> >  # $1 - generic step name (e.g., CC, LINK, etc);
-> > -- 
-> > 2.33.7
-> > 
+v2->v3: Addressed comments from Alexei Starovoitov
+- Modify the comment information of the function.
+- Narrow down the testcase's hook point
+Details in here:
+https://lore.kernel.org/all/20230421090403.15515-1-zhoufeng.zf@bytedance.com/
+
+v1->v2: Addressed comments from Alexei Starovoitov
+- Add kfunc instead.
+Details in here:
+https://lore.kernel.org/all/20230420072657.80324-1-zhoufeng.zf@bytedance.com/
+
+ kernel/bpf/helpers.c                          | 20 +++++++
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+ .../bpf/prog_tests/task_under_cgroup.c        | 55 +++++++++++++++++++
+ .../bpf/progs/test_task_under_cgroup.c        | 51 +++++++++++++++++
+ 4 files changed, 127 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
+
+-- 
+2.20.1
 
