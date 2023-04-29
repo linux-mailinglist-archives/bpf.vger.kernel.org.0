@@ -2,82 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB846F23B2
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 10:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939356F23E3
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 11:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjD2IRf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Apr 2023 04:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S230440AbjD2Jlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Apr 2023 05:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjD2IRe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Apr 2023 04:17:34 -0400
-X-Greylist: delayed 1800 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 29 Apr 2023 01:17:33 PDT
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1003C172A;
-        Sat, 29 Apr 2023 01:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=ncDaDqDwwscytnxZqksS1TxOdUdsbxUd69f/Fut6Lo4=; b=cAYErngPgHPVbC8ryW4Rp8W9/P
-        IVMED0TPs9sVG9KZ9rz1T75JQtLdq+BPoDB0VJUiKaXrRbIbKGK5vnR8LFLDjZOYV5zx/QtpLDztP
-        OUQmRGn5rqgjR0Ae9lNnub8ad2yx2yFtRubTLBdlLXN28kWiIZVgN6XtUX4VVjSDu1XfM1vkocRdw
-        G6JB3RjPJ5g3FZZA80Ys+h+YKuoXl6nVVgMl9xhImAAJLS5e6JMFsuF7FgkoDs+ozdrMwJOxtPsT1
-        yPgglJbWeOHl+FqUpDn3lNuKUpPUz7hfkhkgccVY4beL0I1k8AlsC903Mf1z9tBMmn5HAKae3TzPL
-        bOeKUzLQ==;
-Received: from [2a01:e34:ec5d:a741:8a4c:7c4e:dc4c:1787] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1psf1d-00CzBD-UU; Sat, 29 Apr 2023 09:29:45 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.96)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1psf1c-009rOz-1w;
-        Sat, 29 Apr 2023 09:29:44 +0200
-Date:   Sat, 29 Apr 2023 09:29:44 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH] arm64: remove special treatment for the link order of
- head.o
-Message-ID: <ZEzHaJUP21Ln5XBt@aurel32.net>
-Mail-Followup-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" <bpf@vger.kernel.org>
-References: <20221012233500.156764-1-masahiroy@kernel.org>
- <ZBovCrMXJk7NPISp@aurel32.net>
- <CAMj1kXHwtb9aY+vd4e69Wg47GpL0sT=dDaCUA1sF7=edzc+Qeg@mail.gmail.com>
- <ZBzAp457rrO52FPy@aurel32.net>
- <CAMj1kXHvfHwQFX1SKbUvpHWOr3+i7Tp5Hod-_jZE4hDHZmmRZg@mail.gmail.com>
- <CAK7LNASdsWMP2jud4niOkrR5+a2jG-Vfo0XEa63bh3L3W6_t0Q@mail.gmail.com>
- <CAK7LNASUbyDV-kMi3fuihUdfnhtzHnk9wosQ0w-fuamDcT2ZBg@mail.gmail.com>
- <2d8f0889da0e3dfa9c1c8fe9da301d54636a2e6d.camel@gmail.com>
- <ZCNFi65T4anhk6hH@kernel.org>
+        with ESMTP id S230329AbjD2Jlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Apr 2023 05:41:31 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77741981;
+        Sat, 29 Apr 2023 02:41:28 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxv2mY8z4f3kpN;
+        Sat, 29 Apr 2023 17:41:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S4;
+        Sat, 29 Apr 2023 17:41:22 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: [RFC bpf-next v3 0/6] Handle immediate reuse in bpf memory allocator
+Date:   Sat, 29 Apr 2023 18:12:09 +0800
+Message-Id: <20230429101215.111262-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZCNFi65T4anhk6hH@kernel.org>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4DXrWktF1ktFW8AF1fJFb_yoW5tFyxpa
+        1fGw13Jr1qqrnrJwn7Arnrt3WrJw4kWry5KF4avr1Uu3yfXryxZrn2kF4FvF9xWFWxtFn8
+        Xr1v9wnxWa4rZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,116 +65,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023-03-28 16:52, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Mar 28, 2023 at 01:33:29PM +0300, Eduard Zingerman escreveu:
-> > On Sat, 2023-03-25 at 20:42 +0900, Masahiro Yamada wrote:
-> > [...]
-> > > > Strange.
-> > > > 
-> > > > I used the .config file Aurelien provided, but
-> > > > I still cannot reproduce this issue.
-> > > > 
-> > > > The vmlinux size is small as-is in the current mainline.
-> > > > 
-> > > > [mainline]
-> > > > 
-> > > > masahiro@zoe:~/ref/linux(master)$ git log --oneline -1
-> > > > 65aca32efdcb (HEAD -> master, origin/master, origin/HEAD) Merge tag
-> > > > 'mm-hotfixes-stable-2023-03-24-17-09' of
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> > > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-size  vmlinux
-> > > >    text    data     bss     dec     hex filename
-> > > > 24561282 8186912 622032 33370226 1fd3072 vmlinux
-> > > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-readelf -S
-> > > > vmlinux | grep -A1 BTF
-> > > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
-> > > >        000000000048209c  0000000000000000   A       0     0     1
-> > > >   [16] .BTF_ids          PROGBITS         ffff8000096427a4  016527a4
-> > > >        0000000000000a1c  0000000000000000   A       0     0     1
-> > > > 
-> > > > [mainline + revert 994b7ac]
-> > > > 
-> > > > masahiro@zoe:~/ref/linux2(testing)$ git log --oneline -2
-> > > > 856c80dd789c (HEAD -> testing) Revert "arm64: remove special treatment
-> > > > for the link order of head.o"
-> > > > 65aca32efdcb (origin/master, origin/HEAD, master) Merge tag
-> > > > 'mm-hotfixes-stable-2023-03-24-17-09' of
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> > > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-size  vmlinux
-> > > >    text    data     bss     dec     hex filename
-> > > > 24561329 8186912 622032 33370273 1fd30a1 vmlinux
-> > > > masahiro@zoe:~/ref/linux2(testing)$ aarch64-linux-gnu-readelf -S
-> > > > vmlinux | grep -A1 BTF
-> > > >   [15] .BTF              PROGBITS         ffff8000091c0708  011d0708
-> > > >        00000000004820cb  0000000000000000   A       0     0     1
-> > > >   [16] .BTF_ids          PROGBITS         ffff8000096427d4  016527d4
-> > > >        0000000000000a1c  0000000000000000   A       0     0     1
-> > > > 
-> > > > 
-> > > > 
-> > > > I still do not know what affects reproducibility.
-> > > > (compiler version, pahole version, etc. ?)
-> > > > 
-> > > > 
-> > > > 
-> > > > 
-> > > > Aurelien used GCC 12 + binutils 2.40, but
-> > > > my toolchain is a bit older.
-> > > > 
-> > > > FWIW, I tested this on Ubuntu 22.04LTS.
-> > > > 
-> > > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-gcc --version
-> > > > aarch64-linux-gnu-gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0
-> > > > Copyright (C) 2021 Free Software Foundation, Inc.
-> > > > This is free software; see the source for copying conditions.  There is NO
-> > > > warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> > > > 
-> > > > masahiro@zoe:~/ref/linux(master)$ pahole --version
-> > > > v1.22
-> > > > 
-> > > > masahiro@zoe:~/ref/linux(master)$ aarch64-linux-gnu-as --version
-> > > > GNU assembler (GNU Binutils for Ubuntu) 2.38
-> > > > Copyright (C) 2022 Free Software Foundation, Inc.
-> > > > This program is free software; you may redistribute it under the terms of
-> > > > the GNU General Public License version 3 or later.
-> > > > This program has absolutely no warranty.
-> > > > This assembler was configured for a target of `aarch64-linux-gnu'.
-> > > 
-> > > I did the same things in Deiban sid
-> > > in order to use newer versions of tools.
-> > 
-> > 
-> > Hi Masahiro,
-> > 
-> > An upgrade from gcc 11 to gcc 12, BTF section increase and a number of
-> > duplicate IDs reported by resolve_btfids matches the description of
-> > the following thread:
-> > 
-> > https://lore.kernel.org/bpf/Y%2FP1yxAuV6Wj3A0K@google.com/
-> > 
-> > The issue is caused by change in GNU assembler DWARF generation.
-> > I've sent a patch to fix it a few weeks ago and it is merged in
-> > dwarves master:
-> > 
-> > a9498899109d ("dwarf_loader: Fix for BTF id drift caused by adding unspecified types")
-> > 
-> > Could you please grab a fresh version of dwarves from:
-> > 
-> > git@github.com:acmel/dwarves.git
-> > 
-> > compile 'pahole' and try with?
-> 
-> pahole 1.25 is long overdue, so let see if this got fixed with what is
-> in master, please take a look, you can as well get it from:
-> 
-> git://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> 
+From: Hou Tao <houtao1@huawei.com>
 
-pahole 1.25 has been released, so I have tried a kernel build with it,
-and I confirm it fixes the issue. Thanks for the help.
+Hi,
 
-Aurelien
+As discussed in v1, currently the freed objects in bpf memory allocator
+may be reused immediately by the new allocation, it introduces
+use-after-bpf-ma-free problem for non-preallocated hash map and makes
+lookup procedure return incorrect result. The immediate reuse also makes
+introducing new use case more difficult (e.g. qp-trie).
+
+The patch series tries to solve these problems by introducing
+BPF_MA_{REUSE|FREE}_AFTER_RCU_GP in bpf memory allocator. For
+REUSE_AFTER_GP, the freed objects are reused only after one RCU grace
+period and may be freed by bpf memory allocator after another
+RCU-tasks-trace grace period. So for bpf programs which care about reuse
+problem, these programs can use bpf_rcu_read_{lock,unlock}() to access
+these objects safely and for those which doesn't care, there will be
+safely use-after-bpf-ma-free because these objects have not been freed
+by bpf memory allocator. FREE_AFTER_GP behavior differently. Instead of
+making the freed elements being reusable after one RCU GP, it directly
+freed these elements back to slab after one RCU GP, so sleepable bpf
+program must use bpf_rcu_read_{lock,unlock}() to access elements
+allocated from FREE_AFTER_GP bpf memory allocator.
+
+Personally I prefer FREE_AFTER_RCU_GP because its implementation is much
+simpler compared with REUSE_AFTER_RCU and its memory usage is also better
+than REUSE_AFTER_GP. But its shortcoming is also obvious, so I want to get
+some feedback before putting in more effort. As usual, comments and
+suggestions are always welcome.
+
+Change Log:
+v3:
+ * add BPF_MA_FREE_AFTER_RCU_GP bpf memory allocator
+ * Update htab memory benchmark
+   * move the benchmark patch to the last patch
+   * remove array and useless bpf_map_lookup_elem(&array, ...) in bpf
+     programs
+   * add synchronization between addition CPU and deletion CPU for
+     add_del_on_diff_cpu case to prevent unnecessary loop
+   * add the benchmark result for "extra call_rcu + bpf ma"
+
+v2: https://lore.kernel.org/bpf/20230408141846.1878768-1-houtao@huaweicloud.com/
+ * add a benchmark for bpf memory allocator to compare between different
+   flavor of bpf memory allocator.
+ * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
+v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+
+Hou Tao (6):
+  bpf: Factor out a common helper free_all()
+  bpf: Pass bitwise flags to bpf_mem_alloc_init()
+  bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+  bpf: Introduce BPF_MA_FREE_AFTER_RCU_GP
+  bpf: Add two module parameters in htab for memory benchmark
+  selftests/bpf: Add benchmark for bpf memory allocator
+
+ include/linux/bpf_mem_alloc.h                 |  10 +-
+ kernel/bpf/core.c                             |   2 +-
+ kernel/bpf/cpumask.c                          |   2 +-
+ kernel/bpf/hashtab.c                          |  43 +-
+ kernel/bpf/memalloc.c                         | 529 ++++++++++++++++--
+ tools/testing/selftests/bpf/Makefile          |   3 +
+ tools/testing/selftests/bpf/bench.c           |   4 +
+ .../selftests/bpf/benchs/bench_htab_mem.c     | 352 ++++++++++++
+ .../bpf/benchs/run_bench_htab_mem.sh          |  64 +++
+ .../selftests/bpf/progs/htab_mem_bench.c      | 135 +++++
+ 10 files changed, 1090 insertions(+), 54 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
 
 -- 
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                     http://aurel32.net
+2.29.2
+
