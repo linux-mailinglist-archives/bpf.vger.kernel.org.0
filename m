@@ -2,139 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182176F21B5
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 02:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017D46F2210
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 03:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347061AbjD2Aof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 20:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S1347251AbjD2B1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 21:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjD2Aof (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 20:44:35 -0400
-Received: from out-42.mta1.migadu.com (out-42.mta1.migadu.com [IPv6:2001:41d0:203:375::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB1A40DA
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 17:44:33 -0700 (PDT)
-Message-ID: <b87d7403-a64e-3678-19a0-1b0072ee4198@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682729070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5yGkJiAdBDjyaeb4OCjKwyzmRMdLyZtQv8JFSpdS6AQ=;
-        b=mw6M3eL2990VBhgBZMpDJRk9VODMg4Ee/69YWstWucsiEjG3fwbjeEfBCz3KGa0YVDWoiu
-        Dn7JkKEKL9FDWA6Ijtz445+xd5ItvmJbDs8ZoJzuXReyfl4X9BMJpIp5ahw2g1hUlRLmEe
-        SRcSseow1VPs3KgKvCULoImc15Yzeo4=
-Date:   Fri, 28 Apr 2023 17:44:27 -0700
+        with ESMTP id S1347074AbjD2B1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 21:27:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B48E7A;
+        Fri, 28 Apr 2023 18:27:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FD74614AD;
+        Sat, 29 Apr 2023 01:27:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37002C433D2;
+        Sat, 29 Apr 2023 01:27:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682731664;
+        bh=ZRDTKQMp+p7TvmVO01meyOc6q5mUqaXyAqx63RFLezc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kH51t25Nv9/QlCnFMxvjJEZTIvlN4IdUxvigW0bQr4wYmjxzbzR6efFqQ4o9aXX6h
+         OlHCeAmgwEJDt1dDnSoPI+7iuZylBzBqmXifY3oJ95DKoGPwNYKL4zV0mS/XaIysKF
+         683w0BqCv/SJL+ulP0udxr//8DAWLF+qUd5QTiGAN2UaI2gegOxD1Fr/y12JWNeUCW
+         YlzctBaZx5PaQLUqz5GXuD1b6zhSeWjoV+/F8G9R2r7l78LIEwPPblVeG/IAdn9UUv
+         rRukjxPNPxfFo9NaKcYc7UUrv3ngkTyHevUg85qoiiazT/TUxIHCgPpCmu5ybY14Em
+         7fq2M2/nGy0tg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 45BE6403B5; Fri, 28 Apr 2023 22:27:41 -0300 (-03)
+Date:   Fri, 28 Apr 2023 22:27:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hao Luo <haoluo@google.com>, Song Liu <song@kernel.org>
+Subject: Re: [PATCH 1/2] perf lock contention: Fix struct rq lock access
+Message-ID: <ZExyjXm6OF5oScGU@kernel.org>
+References: <20230427234833.1576130-1-namhyung@kernel.org>
+ <CAP-5=fX3pmozMci+hSSV3Nve6H6RUzusPY2_S7HeEtRJnZH7nA@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: Update EFAULT
- {g,s}etsockopt selftests
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org
-References: <20230427200409.1785263-1-sdf@google.com>
- <20230427200409.1785263-3-sdf@google.com>
- <ac7c31cc-7f8f-1066-1aa1-ad4d734998c5@linux.dev>
- <CAKH8qBu=ehBZsusAaVwxO1DNK=NxFupR8RwtotsPSZmdiTw=Zw@mail.gmail.com>
- <CAKH8qBt-+GDxcfoQP6rmodQzRbZ-Lz11wUpVmP98zDm4qxJKAw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBt-+GDxcfoQP6rmodQzRbZ-Lz11wUpVmP98zDm4qxJKAw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAP-5=fX3pmozMci+hSSV3Nve6H6RUzusPY2_S7HeEtRJnZH7nA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/28/23 5:32 PM, Stanislav Fomichev wrote:
-> On Fri, Apr 28, 2023 at 4:59 PM Stanislav Fomichev <sdf@google.com> wrote:
->>
->> On Fri, Apr 28, 2023 at 4:57 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>
->>> On 4/27/23 1:04 PM, Stanislav Fomichev wrote:
->>>> Instead of assuming EFAULT, let's assume the BPF program's
->>>> output is ignored.
->>>>
->>>> Remove "getsockopt: deny arbitrary ctx->retval" because it
->>>> was actually testing optlen. We have separate set of tests
->>>> for retval.
->>>>
->>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>>> ---
->>>>    .../selftests/bpf/prog_tests/sockopt.c        | 80 +++++++++++++++++--
->>>>    1 file changed, 74 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>> index aa4debf62fc6..8dad30ce910e 100644
->>>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>> @@ -273,10 +273,30 @@ static struct sockopt_test {
->>>>                .error = EFAULT_GETSOCKOPT,
->>>>        },
->>>>        {
->>>> -             .descr = "getsockopt: deny arbitrary ctx->retval",
->>>> +             .descr = "getsockopt: ignore >PAGE_SIZE optlen",
->>>>                .insns = {
->>>> -                     /* ctx->retval = 123 */
->>>> -                     BPF_MOV64_IMM(BPF_REG_0, 123),
->>>> +                     /* write 0xFF to the first optval byte */
->>>> +
->>>> +                     /* r6 = ctx->optval */
->>>> +                     BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1,
->>>> +                                 offsetof(struct bpf_sockopt, optval)),
->>>> +                     /* r2 = ctx->optval */
->>>> +                     BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
->>>> +                     /* r6 = ctx->optval + 1 */
->>>> +                     BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 1),
->>>> +
->>>> +                     /* r7 = ctx->optval_end */
->>>> +                     BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_1,
->>>> +                                 offsetof(struct bpf_sockopt, optval_end)),
->>>> +
->>>> +                     /* if (ctx->optval + 1 <= ctx->optval_end) { */
->>>> +                     BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
->>>> +                     /* ctx->optval[0] = 0xF0 */
->>>> +                     BPF_ST_MEM(BPF_B, BPF_REG_2, 0, 0xFF),
->>>> +                     /* } */
->>>> +
->>>> +                     /* ctx->retval = 0 */
->>>> +                     BPF_MOV64_IMM(BPF_REG_0, 0),
->>>>                        BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_0,
->>>>                                    offsetof(struct bpf_sockopt, retval)),
->>>>
->>>> @@ -287,9 +307,10 @@ static struct sockopt_test {
->>>>                .attach_type = BPF_CGROUP_GETSOCKOPT,
->>>>                .expected_attach_type = BPF_CGROUP_GETSOCKOPT,
->>>>
->>>> -             .get_optlen = 64,
->>>> -
->>>> -             .error = EFAULT_GETSOCKOPT,
->>>> +             .get_level = 1234,
->>>> +             .get_optname = 5678,
->>>> +             .get_optval = {}, /* the changes are ignored */
->>>> +             .get_optlen = 4096 + 1,
->>>
->>> The patchset looks good. Thanks for taking care of it.
->>>
->>> One question, is it safe to the assume 4096 page size for all platforms in the
->>> selftests?
->>
->> Good question; let me respin with sysconf() just to be safe..
+Em Thu, Apr 27, 2023 at 05:32:08PM -0700, Ian Rogers escreveu:
+> On Thu, Apr 27, 2023 at 4:48 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The BPF CO-RE's ignore suffix rule requires three underscores.
+> > Otherwise it'd fail like below:
+> >
+> >   $ sudo perf lock contention -ab
+> >   libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid argument
+> >   libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
+> >   reg type unsupported for arg#0 function collect_lock_syms#380
+> >   ; int BPF_PROG(collect_lock_syms)
+> >   0: (b7) r6 = 0                        ; R6_w=0
+> >   1: (b7) r7 = 0                        ; R7_w=0
+> >   2: (b7) r9 = 1                        ; R9_w=1
+> >   3: <invalid CO-RE relocation>
+> >   failed to resolve CO-RE relocation <byte_off> [381] struct rq__new.__lock (0:0 @ offset 0)
+> >
+> > Fixes: 0c1228486bef ("perf lock contention: Support pre-5.14 kernels")
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > 
-> Argh, the compiler yells at me:
-> error: initializer element is not a compile-time constant
-> 
-> I guess I'm just gonna do #define PAGE_SIZE 4096 and if we do hit some
-> problems on the other archs, I'll ifdef it in one place.
+> Acked-by: Ian Rogers <irogers@google.com>
 
-or run_test() can reinit optlen to sysconf_page_size + 1 if optlen == 4097.
+Thanks, applied the series.
+
+- Arnaldo
+
+ 
+> Thanks,
+> Ian
+> 
+> > ---
+> >  tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > index 8911e2a077d8..30c193078bdb 100644
+> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> > @@ -418,11 +418,11 @@ int contention_end(u64 *ctx)
+> >
+> >  extern struct rq runqueues __ksym;
+> >
+> > -struct rq__old {
+> > +struct rq___old {
+> >         raw_spinlock_t lock;
+> >  } __attribute__((preserve_access_index));
+> >
+> > -struct rq__new {
+> > +struct rq___new {
+> >         raw_spinlock_t __lock;
+> >  } __attribute__((preserve_access_index));
+> >
+> > @@ -434,8 +434,8 @@ int BPF_PROG(collect_lock_syms)
+> >
+> >         for (int i = 0; i < MAX_CPUS; i++) {
+> >                 struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
+> > -               struct rq__new *rq_new = (void *)rq;
+> > -               struct rq__old *rq_old = (void *)rq;
+> > +               struct rq___new *rq_new = (void *)rq;
+> > +               struct rq___old *rq_old = (void *)rq;
+> >
+> >                 if (rq == NULL)
+> >                         break;
+> > --
+> > 2.40.1.495.gc816e09b53d-goog
+> >
+
+-- 
+
+- Arnaldo
