@@ -2,96 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E02686F2237
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 03:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EF16F22E1
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 06:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347330AbjD2B6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 21:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
+        id S230328AbjD2EW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Apr 2023 00:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjD2B6C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 21:58:02 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BD03A8F
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 18:57:59 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1a68d61579bso4794125ad.1
-        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 18:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682733479; x=1685325479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JwYEXU7Lp9XroufPN43xvmiTz9v2gxPHNeujBe94GAs=;
-        b=RXfyW4VFENC5ciM0BkQroL4aTdKXdDxKRQP+lXVasRmQpe5AI9ZHyvuHYeeGYk3Qb3
-         5eGB9m1chP/gFDsK+Kq3oCrQGusaWdv4ohH1vJ1AauBiusk9QlXKDJxIcIXL/ysUJiuo
-         TJ8ryIERQ67DdKzkaBWura/eB3J3OP4gWII1O8nQCqHtILnjZkE20TC7iYsmfyoi2YcD
-         NVYLjMQk/hAcc+H6PB0dtfjya3cxCRCqtERmwcSfhVVfyFnWklGRnJI6OQH/9Y6bZpbv
-         0B8iJM+g4s5BoqriWl9kxk+QO331R/fFPpG6dylVLVil6y68Q6dXek410s1b5hZSql8w
-         pDgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682733479; x=1685325479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JwYEXU7Lp9XroufPN43xvmiTz9v2gxPHNeujBe94GAs=;
-        b=Hw1MoQNq/Eqphm4/TWTjTIO8MuUFKD1wc5cG1Lu9ssaf3Qs+c1hnPYv8qc7B727u/Z
-         qR7OO1hi2L7aBwjemEqkgGB9YOWAoYzachqDzREv3HAsHdaGINaW+7iXQrNS7c+1JdZX
-         /lQYXRU6qLHQuGBLofjBZJ4WXEOTwoqULLQJRbgXgKKWJZstnV//hwTd808N/7xcleOH
-         g/ikY2znIIu2av0etNwjXRm2JKh3lEP3iXaqaY0wXAutcqh9qLxARcPBeKUvh9dfXPtd
-         NubIiwAkDtdiNfP99Oy5UAJbxBFWtJShfw9uD7rNFYlb9/1qZOBaRQqTsbT2vwMps86n
-         G1uA==
-X-Gm-Message-State: AC+VfDw3CIPTlH9MtWYsNMwvGP33H/Y0W3ho0W0Ptm1EpAZGYIKugRQg
-        hWDWfAWdeIW1G15gwIyuc6REBmLbsNiuetAJR8i9k9LwmjpGJVdKMfu/xIBa
-X-Google-Smtp-Source: ACHHUZ6hnf26OkmiqUDWsr7DSiuPNV/BdRgyZpdsz5lR+uhorY4Vu4itliEAmdMKDWjt/ddvAknB/Tx9C46kEc/0Fy8=
-X-Received: by 2002:a17:902:f78a:b0:1a9:b62f:9338 with SMTP id
- q10-20020a170902f78a00b001a9b62f9338mr6290325pln.45.1682733479236; Fri, 28
- Apr 2023 18:57:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-3-drosen@google.com>
- <CAEf4BzakRfffU9+wLBNfhBi1dKxs03ibopJsMyEF6JAM-QJWjw@mail.gmail.com>
-In-Reply-To: <CAEf4BzakRfffU9+wLBNfhBi1dKxs03ibopJsMyEF6JAM-QJWjw@mail.gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Fri, 28 Apr 2023 18:57:48 -0700
-Message-ID: <CA+PiJmQJ8m_W_SF3GPe9pqnwJX0gbkWuuOz-WXHWcA7JExgMyg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229978AbjD2EW4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Apr 2023 00:22:56 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7EEC2D7F
+        for <bpf@vger.kernel.org>; Fri, 28 Apr 2023 21:22:53 -0700 (PDT)
+Received: from letrec.thunk.org ([76.150.80.181])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 33T4LADR028231
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Apr 2023 00:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1682742083; bh=x35IJH2Kq57CenRp9XDYUfeb7XaZg8EW3MY2fyeE+60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=XS8yR23bvao+hUGNsieKp+k9HHEALUC5GU00GcmAg3HvyJBiEA4Pf7P/ZI4AVQ/4m
+         DLsCymUXNURENk/BhLWJGBnSPN3z+hE+GUlBzE0/vn++JMO6ZbYi47/vZ6sz69dJPP
+         dD4T4XIq7/aIS7FJ5s0yWFeUKKqC16QwHnalBpfk4TSzBNznHp5ekdmDaJZYJAWvEo
+         aRNHWwjxwsCOYFn3dqKsxnWxYbJpYvC97hHCygeOb8wNnIIYN4XmlXjK2edXAQqOOc
+         NPi52OLJIF7HFuTRa1DdZThhZTGTOzIODXOHAGl9VpSeq/INVRfHPhguvb7UhY4OSr
+         wmO4iJOBFZj8g==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id A53098C01B4; Sat, 29 Apr 2023 00:21:09 -0400 (EDT)
+Date:   Sat, 29 Apr 2023 00:21:09 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
+ by default
+Message-ID: <ZEybNZ7Rev+XM4GU@mit.edu>
+References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
+ <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
+ <ZEvZtIb2EDb/WudP@nvidia.com>
+ <ZEwPscQu68kx32zF@mit.edu>
+ <ZEwVbPM2OPSeY21R@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZEwVbPM2OPSeY21R@nvidia.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 2:09=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> would this work correctly if someone passes a non-null buffer with too
-> small size? Can you please add a test for this use case.
->
-Working on a test case for this, but the test case I wrote fails
-without my patches.
-I'm just declaring a buffer of size 9 on the stack, and then passing
-in bpf_dynptr_slice that buffer, and size 10. That's passing the
-verifier just fine. In fact, it loads successfully up to size 16. I'm
-guessing that's adjusting for alignment? Still feels very strange. Is
-that expected behavior?
+On Fri, Apr 28, 2023 at 03:50:20PM -0300, Jason Gunthorpe wrote:
+> > Do we think we can still trigger a kernel crash, or maybe even some
+> > more exciting like an arbitrary buffer overrun, via the
+> > process_vm_writev(2) system call into a file-backed mmap'ed region?
+
+I paged back into my memory the details, and (un)fortunately(?) it
+probably can't be turned into high severity security exploit; it's
+"just" a silent case of data loss.  (Which is *so* much better.... :-)
+
+There was a reliable reproducer which was found by Syzkaller, that
+didn't require any kind of exotic hardware or setup[1], and we
+ultimately kluged a workaround in commit cc5095747edf ("ext4: don't
+BUG if someone dirty pages without asking ext4 first").
+
+[1] https://lore.kernel.org/all/Yg0m6IjcNmfaSokM@google.com/
+
+Commit cc5095747edf had the (un)fortunate(?) side effect that GUP
+writes to ext4 file-backed mappings no longer would cause random
+low-probability crashes on large installations using RDMA, which has
+apparently removed some of the motivation of really fixing the problem
+instead of papering over it.  The good news is that I'm no longer
+getting complaints from syzbot for this issue, and *I* don't have to
+support anyone trying to use RDMA into file-backed mappings.  :-)
+
+In any case, the file system maintainers' position (mine and I doubt
+Dave Chinner's position has changed) is that if you write to
+file-backed mappings via GUP/RDMA/process_vm_writev, and it causes
+silent data corruption, you get to keep both pieces, and don't go
+looking for us for anything other than sympathy...
+
+						- Ted
