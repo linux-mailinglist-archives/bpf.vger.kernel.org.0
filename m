@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59E6F23E5
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 11:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF9B6F23E4
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 11:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjD2Jle (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Apr 2023 05:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S230452AbjD2Jld (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Apr 2023 05:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbjD2Jlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230352AbjD2Jlb (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sat, 29 Apr 2023 05:41:31 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144431987;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA121993;
         Sat, 29 Apr 2023 02:41:29 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxx2b0Nz4f3tqG;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Q7kxx6mNSz4f3pG3;
         Sat, 29 Apr 2023 17:41:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S7;
-        Sat, 29 Apr 2023 17:41:26 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLBA5kxkK36NIQ--.13426S8;
+        Sat, 29 Apr 2023 17:41:27 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -32,31 +32,32 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
         houtao1@huawei.com
-Subject: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
-Date:   Sat, 29 Apr 2023 18:12:12 +0800
-Message-Id: <20230429101215.111262-4-houtao@huaweicloud.com>
+Subject: [RFC bpf-next v3 4/6] bpf: Introduce BPF_MA_FREE_AFTER_RCU_GP
+Date:   Sat, 29 Apr 2023 18:12:13 +0800
+Message-Id: <20230429101215.111262-5-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20230429101215.111262-1-houtao@huaweicloud.com>
 References: <20230429101215.111262-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S7
-X-Coremail-Antispam: 1UD129KBjvAXoWfJrW3WrWkGr48XFy8GryUJrb_yoW8CF15Jo
-        Wfuw43Wr18KFyIyayvvFy0kFnF9r1kW3sxAr4fGFZxZa4UZrW5ta9akF43Aa4fXF4FkF4D
-        Za40qw4DGr1rWryfn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYX7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr
-        Wl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-        xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-        Av7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
-        6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-TRANSID: gCh0CgD3rLBA5kxkK36NIQ--.13426S8
+X-Coremail-Antispam: 1UD129KBjvJXoW3GF45ur45WF4UKry8Kw13CFg_yoWxAw1xpF
+        WfCFyrAw4kXF4qgayaqan2yrnxKr40gw1UGFW7urySyr1furyqqrn7AFy7ZF45Crs7ArWS
+        grs8KFyfAr48XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYOVAac2xI67A07wC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcDDG
+        UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
@@ -70,554 +71,212 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Currently the freed objects in bpf memory allocator may be reused
-immediately by new allocation, it introduces use-after-bpf-ma-free
-problem for non-preallocated hash map and makes lookup procedure
-return incorrect result. The immediate reuse also makes introducing
-new use case more difficult (e.g. qp-trie).
+Beside REUSE_AFTER_RCU_GP, also introduce FREE_AFTER_RCU_GP to solve
+the immediate reuse problem as well. Compared with REUSE_AFTER_RCU_GP,
+the implementation of FREE_AFTER_RCU_GP is much simpler. It doesn't try
+to reuse these freed elements after one RCU GP is passed, instead it
+just directly frees these elements back to slab subsystem after one RCU
+GP. The shortcoming of FREE_AFTER_RCU_GP is that sleep-able program must
+access these elements by using bpf_rcu_read_{lock,unlock}, otherwise
+there will be use-after-free problem.
 
-So introduce BPF_MA_REUSE_AFTER_RCU_GP to solve these problems. For
-BPF_MA_REUSE_AFTER_GP, the freed objects are reused only after one RCU
-grace period and may be returned back to slab system after another
-RCU-tasks-trace grace period. So for bpf programs which care about reuse
-problem, these programs can use bpf_rcu_read_{lock,unlock}() to access
-these freed objects safely and for those which doesn't care, there will
-be safely use-after-bpf-ma-free because these objects have not been
-freed by bpf memory allocator.
-
-To make these freed elements being reusab quickly, BPF_MA_REUSE_AFTER_GP
-dynamically allocates memory to create many inflight RCU callbacks to
-mark these freed element being reusable. These memories used for
-bpf_reuse_batch will be freed when these RCU callbacks complete. When no
-memory is available, synchronize_rcu_expedited() will be used to make
-these freed element reusable. In order to reduce the risk of OOM, part
-of these reusable memory will be freed through RCU-tasks-trace grace
-period. Before these freeing memories are freed, these memories are also
-available for reuse.
+To simplify the implementation, FREE_AFTER_RCU_GP uses a global per-cpu
+free list to temporarily keep these freed elements and uses a per-cpu
+kworker to dynamically allocate RCU callback to free these freed
+elements when the number of freed elements is above the threshold.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
  include/linux/bpf_mem_alloc.h |   1 +
- kernel/bpf/memalloc.c         | 353 +++++++++++++++++++++++++++++++---
- 2 files changed, 326 insertions(+), 28 deletions(-)
+ kernel/bpf/memalloc.c         | 139 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 140 insertions(+)
 
 diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 148347950e16..e7f68432713b 100644
+index e7f68432713b..61e8556208a2 100644
 --- a/include/linux/bpf_mem_alloc.h
 +++ b/include/linux/bpf_mem_alloc.h
-@@ -18,6 +18,7 @@ struct bpf_mem_alloc {
- /* flags for bpf_mem_alloc_init() */
+@@ -19,6 +19,7 @@ struct bpf_mem_alloc {
  enum {
  	BPF_MA_PERCPU = 1U << 0,
-+	BPF_MA_REUSE_AFTER_RCU_GP = 1U << 1,
+ 	BPF_MA_REUSE_AFTER_RCU_GP = 1U << 1,
++	BPF_MA_FREE_AFTER_RCU_GP = 1U << 2,
  };
  
  /* 'size != 0' is for bpf_mem_alloc which manages fixed-size objects.
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 072102476019..262100f89610 100644
+index 262100f89610..5f6a4f2cfd37 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -63,6 +63,10 @@ static u8 size_index[24] __ro_after_init = {
+@@ -63,7 +63,26 @@ static u8 size_index[24] __ro_after_init = {
  	2	/* 192 */
  };
  
-+static struct workqueue_struct *bpf_ma_wq;
++#define BPF_MA_FREE_TYPE_NR 2
 +
-+static void bpf_ma_prepare_reuse_work(struct work_struct *work);
-+
- static int bpf_mem_cache_idx(size_t size)
- {
- 	if (!size || size > 4096)
-@@ -98,18 +102,36 @@ struct bpf_mem_cache {
- 	int free_cnt;
- 	int low_watermark, high_watermark, batch;
- 	int percpu_size;
++struct bpf_ma_free_ctx {
++	raw_spinlock_t lock;
 +	int cpu;
- 	unsigned int flags;
- 
-+	raw_spinlock_t reuse_lock;
-+	bool abort_reuse;
-+	struct llist_head reuse_ready_head;
-+	struct llist_node *reuse_ready_tail;
-+	struct llist_head wait_for_free;
-+	struct llist_head prepare_reuse_head;
-+	struct llist_node *prepare_reuse_tail;
-+	unsigned int prepare_reuse_cnt;
-+	atomic_t reuse_cb_in_progress;
-+	struct work_struct reuse_work;
-+
- 	struct rcu_head rcu;
- 	struct llist_head free_by_rcu;
- 	struct llist_head waiting_for_gp;
--	atomic_t call_rcu_in_progress;
-+	atomic_t free_cb_in_progress;
- };
- 
- struct bpf_mem_caches {
- 	struct bpf_mem_cache cache[NUM_CACHES];
- };
- 
-+struct bpf_reuse_batch {
-+	struct bpf_mem_cache *c;
-+	struct llist_node *head, *tail;
-+	struct rcu_head rcu;
++	local_t active;
++	/* For both no per-cpu and per-cpu */
++	struct llist_head to_free[BPF_MA_FREE_TYPE_NR];
++	unsigned int to_free_cnt[BPF_MA_FREE_TYPE_NR];
++	struct llist_head to_free_extra[BPF_MA_FREE_TYPE_NR];
++	struct delayed_work dwork;
 +};
 +
- static struct llist_node notrace *__llist_del_first(struct llist_head *head)
- {
- 	struct llist_node *entry, *next;
-@@ -154,6 +176,45 @@ static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
- #endif
++struct bpf_free_batch {
++	struct rcu_head rcu;
++	struct llist_node *to_free[BPF_MA_FREE_TYPE_NR];
++};
++
+ static struct workqueue_struct *bpf_ma_wq;
++static DEFINE_PER_CPU(struct bpf_ma_free_ctx, percpu_free_ctx);
+ 
+ static void bpf_ma_prepare_reuse_work(struct work_struct *work);
+ 
+@@ -910,6 +929,112 @@ static void notrace immediate_reuse_free(struct bpf_mem_cache *c, struct llist_n
+ 		irq_work_raise(c);
  }
  
-+static void *bpf_ma_get_reusable_obj(struct bpf_mem_cache *c)
++static void bpf_ma_batch_free_cb(struct rcu_head *rcu)
 +{
-+	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP) {
-+		unsigned long flags;
-+		void *obj;
++	struct bpf_free_batch *batch = container_of(rcu, struct bpf_free_batch, rcu);
 +
-+		if (llist_empty(&c->reuse_ready_head) && llist_empty(&c->wait_for_free))
-+			return NULL;
-+
-+		/* reuse_ready_head and wait_for_free may be manipulated by
-+		 * kworker and RCU callbacks.
-+		 */
-+		raw_spin_lock_irqsave(&c->reuse_lock, flags);
-+		obj = __llist_del_first(&c->reuse_ready_head);
-+		if (obj) {
-+			if (llist_empty(&c->reuse_ready_head))
-+				c->reuse_ready_tail = NULL;
-+		} else {
-+			obj = __llist_del_first(&c->wait_for_free);
-+		}
-+		raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
-+		return obj;
-+	}
-+
-+	/*
-+	 * free_by_rcu is only manipulated by irq work refill_work().
-+	 * IRQ works on the same CPU are called sequentially, so it is
-+	 * safe to use __llist_del_first() here. If alloc_bulk() is
-+	 * invoked by the initial prefill, there will be no running
-+	 * refill_work(), so __llist_del_first() is fine as well.
-+	 *
-+	 * In most cases, objects on free_by_rcu are from the same CPU.
-+	 * If some objects come from other CPUs, it doesn't incur any
-+	 * harm because NUMA_NO_NODE means the preference for current
-+	 * numa node and it is not a guarantee.
-+	 */
-+	return __llist_del_first(&c->free_by_rcu);
-+}
-+
- /* Mostly runs from irq_work except __init phase. */
- static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- {
-@@ -165,19 +226,7 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- 	memcg = get_memcg(c);
- 	old_memcg = set_active_memcg(memcg);
- 	for (i = 0; i < cnt; i++) {
--		/*
--		 * free_by_rcu is only manipulated by irq work refill_work().
--		 * IRQ works on the same CPU are called sequentially, so it is
--		 * safe to use __llist_del_first() here. If alloc_bulk() is
--		 * invoked by the initial prefill, there will be no running
--		 * refill_work(), so __llist_del_first() is fine as well.
--		 *
--		 * In most cases, objects on free_by_rcu are from the same CPU.
--		 * If some objects come from other CPUs, it doesn't incur any
--		 * harm because NUMA_NO_NODE means the preference for current
--		 * numa node and it is not a guarantee.
--		 */
--		obj = __llist_del_first(&c->free_by_rcu);
-+		obj = bpf_ma_get_reusable_obj(c);
- 		if (!obj) {
- 			/* Allocate, but don't deplete atomic reserves that typical
- 			 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
-@@ -236,7 +285,7 @@ static void __free_rcu(struct rcu_head *head)
- 	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
- 
- 	free_all(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
--	atomic_set(&c->call_rcu_in_progress, 0);
-+	atomic_set(&c->free_cb_in_progress, 0);
- }
- 
- static void __free_rcu_tasks_trace(struct rcu_head *head)
-@@ -264,7 +313,7 @@ static void do_call_rcu(struct bpf_mem_cache *c)
- {
- 	struct llist_node *llnode, *t;
- 
--	if (atomic_xchg(&c->call_rcu_in_progress, 1))
-+	if (atomic_xchg(&c->free_cb_in_progress, 1))
- 		return;
- 
- 	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
-@@ -409,6 +458,8 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
- 			c->objcg = objcg;
- 			c->percpu_size = percpu_size;
- 			c->flags = flags;
-+			c->cpu = cpu;
-+			INIT_WORK(&c->reuse_work, bpf_ma_prepare_reuse_work);
- 			prefill_mem_cache(c, cpu);
- 		}
- 		ma->cache = pc;
-@@ -433,6 +484,8 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
- 			c->unit_size = sizes[i];
- 			c->objcg = objcg;
- 			c->flags = flags;
-+			c->cpu = cpu;
-+			INIT_WORK(&c->reuse_work, bpf_ma_prepare_reuse_work);
- 			prefill_mem_cache(c, cpu);
- 		}
- 	}
-@@ -444,18 +497,40 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, unsigned int flags)
- static void drain_mem_cache(struct bpf_mem_cache *c)
- {
- 	bool percpu = !!c->percpu_size;
-+	struct llist_node *head[3];
-+	unsigned long flags;
- 
- 	/* No progs are using this bpf_mem_cache, but htab_map_free() called
- 	 * bpf_mem_cache_free() for all remaining elements and they can be in
- 	 * free_by_rcu or in waiting_for_gp lists, so drain those lists now.
- 	 *
--	 * Except for waiting_for_gp list, there are no concurrent operations
--	 * on these lists, so it is safe to use __llist_del_all().
-+	 * Except for waiting_for_gp and free_llist_extra list, there are no
-+	 * concurrent operations on these lists, so it is safe to use
-+	 * __llist_del_all().
- 	 */
- 	free_all(__llist_del_all(&c->free_by_rcu), percpu);
- 	free_all(llist_del_all(&c->waiting_for_gp), percpu);
- 	free_all(__llist_del_all(&c->free_llist), percpu);
--	free_all(__llist_del_all(&c->free_llist_extra), percpu);
-+	free_all(llist_del_all(&c->free_llist_extra), percpu);
-+
-+	if (!(c->flags & BPF_MA_REUSE_AFTER_RCU_GP))
-+		return;
-+
-+	raw_spin_lock_irqsave(&c->reuse_lock, flags);
-+	/* Indicate kworker and RCU callback to free elements directly
-+	 * instead of adding new elements into these lists.
-+	 */
-+	c->abort_reuse = true;
-+	head[0] = __llist_del_all(&c->prepare_reuse_head);
-+	c->prepare_reuse_tail = NULL;
-+	head[1] = __llist_del_all(&c->reuse_ready_head);
-+	c->reuse_ready_tail = NULL;
-+	head[2] = __llist_del_all(&c->wait_for_free);
-+	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
-+
-+	free_all(head[0], percpu);
-+	free_all(head[1], percpu);
-+	free_all(head[2], percpu);
- }
- 
- static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
-@@ -466,10 +541,39 @@ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
- 	ma->caches = NULL;
- }
- 
-+static void bpf_ma_cancel_reuse_work(struct bpf_mem_alloc *ma)
-+{
-+	struct bpf_mem_caches *cc;
-+	struct bpf_mem_cache *c;
-+	int cpu, i;
-+
-+	if (ma->cache) {
-+		for_each_possible_cpu(cpu) {
-+			c = per_cpu_ptr(ma->cache, cpu);
-+			cancel_work_sync(&c->reuse_work);
-+		}
-+	}
-+	if (ma->caches) {
-+		for_each_possible_cpu(cpu) {
-+			cc = per_cpu_ptr(ma->caches, cpu);
-+			for (i = 0; i < NUM_CACHES; i++) {
-+				c = &cc->cache[i];
-+				cancel_work_sync(&c->reuse_work);
-+			}
-+		}
-+	}
-+}
-+
- static void free_mem_alloc(struct bpf_mem_alloc *ma)
- {
--	/* waiting_for_gp lists was drained, but __free_rcu might
--	 * still execute. Wait for it now before we freeing percpu caches.
-+	bool reuse_after_rcu_gp = ma->flags & BPF_MA_REUSE_AFTER_RCU_GP;
-+
-+	/* Cancel the inflight kworkers */
-+	if (reuse_after_rcu_gp)
-+		bpf_ma_cancel_reuse_work(ma);
-+
-+	/* For normal bpf ma, waiting_for_gp lists was drained, but __free_rcu
-+	 * might still execute. Wait for it now before we freeing percpu caches.
- 	 *
- 	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
- 	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
-@@ -477,9 +581,13 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
- 	 * so if call_rcu(head, __free_rcu) is skipped due to
- 	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
- 	 * using rcu_trace_implies_rcu_gp() as well.
-+	 *
-+	 * For reuse-after-rcu-gp bpf ma, use rcu_barrier_tasks_trace() to
-+	 * wait for the pending bpf_ma_free_reusable_cb() and use rcu_barrier()
-+	 * to wait for the pending bpf_ma_reuse_cb().
- 	 */
- 	rcu_barrier_tasks_trace();
--	if (!rcu_trace_implies_rcu_gp())
-+	if (reuse_after_rcu_gp || !rcu_trace_implies_rcu_gp())
- 		rcu_barrier();
- 	free_mem_alloc_no_barrier(ma);
- }
-@@ -512,6 +620,7 @@ static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
- 	}
- 
- 	/* Defer barriers into worker to let the rest of map memory to be freed */
-+	copy->flags = ma->flags;
- 	copy->cache = ma->cache;
- 	ma->cache = NULL;
- 	copy->caches = ma->caches;
-@@ -541,7 +650,9 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 			 */
- 			irq_work_sync(&c->refill_work);
- 			drain_mem_cache(c);
--			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
-+			rcu_in_progress += atomic_read(&c->free_cb_in_progress);
-+			/* Pending kworkers or RCU callbacks */
-+			rcu_in_progress += atomic_read(&c->reuse_cb_in_progress);
- 		}
- 		/* objcg is the same across cpus */
- 		if (c->objcg)
-@@ -556,7 +667,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 				c = &cc->cache[i];
- 				irq_work_sync(&c->refill_work);
- 				drain_mem_cache(c);
--				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
-+				rcu_in_progress += atomic_read(&c->free_cb_in_progress);
-+				rcu_in_progress += atomic_read(&c->reuse_cb_in_progress);
- 			}
- 		}
- 		if (c->objcg)
-@@ -600,18 +712,183 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
- 	return llnode;
- }
- 
-+static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c, struct llist_node *head,
-+					      struct llist_node *tail)
-+{
-+	unsigned long flags;
-+	bool abort;
-+
-+	raw_spin_lock_irqsave(&c->reuse_lock, flags);
-+	abort = c->abort_reuse;
-+	if (!abort) {
-+		if (llist_empty(&c->reuse_ready_head))
-+			c->reuse_ready_tail = tail;
-+		__llist_add_batch(head, tail, &c->reuse_ready_head);
-+	}
-+	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
-+
-+	/* Don't move these objects to reuse_ready list and free
-+	 * these objects directly.
-+	 */
-+	if (abort)
-+		free_all(head, !!c->percpu_size);
-+}
-+
-+static void bpf_ma_reuse_cb(struct rcu_head *rcu)
-+{
-+	struct bpf_reuse_batch *batch = container_of(rcu, struct bpf_reuse_batch, rcu);
-+	struct bpf_mem_cache *c = batch->c;
-+
-+	bpf_ma_add_to_reuse_ready_or_free(c, batch->head, batch->tail);
-+	atomic_dec(&c->reuse_cb_in_progress);
++	free_all(batch->to_free[0], false);
++	free_all(batch->to_free[1], true);
 +	kfree(batch);
 +}
 +
-+static bool bpf_ma_try_free_reuse_objs(struct bpf_mem_cache *c)
++static void bpf_ma_schedule_free_dwork(struct bpf_ma_free_ctx *ctx)
 +{
-+	struct llist_node *head, *tail;
-+	bool do_free;
++	long delay, left;
++	u64 to_free_cnt;
 +
-+	if (llist_empty(&c->reuse_ready_head))
-+		return false;
-+
-+	do_free = !atomic_xchg(&c->free_cb_in_progress, 1);
-+	if (!do_free)
-+		return false;
-+
-+	head = __llist_del_all(&c->reuse_ready_head);
-+	tail = c->reuse_ready_tail;
-+	c->reuse_ready_tail = NULL;
-+
-+	__llist_add_batch(head, tail, &c->wait_for_free);
-+
-+	return true;
-+}
-+
-+static void bpf_ma_free_reusable_cb(struct rcu_head *rcu)
-+{
-+	struct bpf_mem_cache *c = container_of(rcu, struct bpf_mem_cache, rcu);
-+	struct llist_node *head;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&c->reuse_lock, flags);
-+	head = __llist_del_all(&c->wait_for_free);
-+	raw_spin_unlock_irqrestore(&c->reuse_lock, flags);
-+
-+	free_all(head, !!c->percpu_size);
-+	atomic_set(&c->free_cb_in_progress, 0);
-+}
-+
-+static void bpf_ma_prepare_reuse_work(struct work_struct *work)
-+{
-+	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, reuse_work);
-+	struct llist_node *head, *tail, *llnode, *tmp;
-+	struct bpf_reuse_batch *batch;
-+	unsigned long flags;
-+	bool do_free;
-+
-+	local_irq_save(flags);
-+	/* When CPU is offline, the running CPU may be different with
-+	 * the CPU which submitted the work. When these two CPUs are the same,
-+	 * kworker may be interrupted by NMI, so increase active to protect
-+	 * again such concurrency.
-+	 */
-+	if (c->cpu == smp_processor_id())
-+		WARN_ON_ONCE(local_inc_return(&c->active) != 1);
-+	raw_spin_lock(&c->reuse_lock);
-+	head = __llist_del_all(&c->prepare_reuse_head);
-+	tail = c->prepare_reuse_tail;
-+	c->prepare_reuse_tail = NULL;
-+	c->prepare_reuse_cnt = 0;
-+	if (c->cpu == smp_processor_id())
-+		local_dec(&c->active);
-+
-+	/* Try to free elements in reusable list. Before these elements are
-+	 * freed in RCU cb, these element will still be available for reuse.
-+	 */
-+	do_free = bpf_ma_try_free_reuse_objs(c);
-+	raw_spin_unlock(&c->reuse_lock);
-+	local_irq_restore(flags);
-+
-+	if (do_free)
-+		call_rcu_tasks_trace(&c->rcu, bpf_ma_free_reusable_cb);
-+
-+	llist_for_each_safe(llnode, tmp, llist_del_all(&c->free_llist_extra)) {
-+		if (!head)
-+			tail = llnode;
-+		llnode->next = head;
-+		head = llnode->next;
-+	}
-+	/* Draining is in progress ? */
-+	if (!head) {
-+		/* kworker completes and no RCU callback */
-+		atomic_dec(&c->reuse_cb_in_progress);
++	/* TODO: More reasonable threshold ? */
++	to_free_cnt = ctx->to_free_cnt[0] + ctx->to_free_cnt[1];
++	delay = to_free_cnt >= 256 ? 0 : HZ;
++	if (delayed_work_pending(&ctx->dwork)) {
++		left = ctx->dwork.timer.expires - jiffies;
++		if (delay < left)
++			mod_delayed_work(bpf_ma_wq, &ctx->dwork, delay);
 +		return;
 +	}
++	queue_delayed_work(bpf_ma_wq, &ctx->dwork, delay);
++}
++
++static void splice_llist(struct llist_head *llist, struct llist_node **head)
++{
++	struct llist_node *first, *last;
++
++	first = llist_del_all(llist);
++	if (!first)
++		return;
++
++	last = first;
++	while (last->next)
++		last = last->next;
++	last->next = *head;
++	*head = first;
++}
++
++static void bpf_ma_splice_to_free_list(struct bpf_ma_free_ctx *ctx, struct llist_node **to_free)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	/* Might be interrupted by a NMI which invokes unit_free() */
++	if (ctx->cpu == smp_processor_id())
++		WARN_ON_ONCE(local_inc_return(&ctx->active) != 1);
++	raw_spin_lock(&ctx->lock);
++	to_free[0] = __llist_del_all(&ctx->to_free[0]);
++	to_free[1] = __llist_del_all(&ctx->to_free[1]);
++	ctx->to_free_cnt[0] = 0;
++	ctx->to_free_cnt[1] = 0;
++	raw_spin_unlock(&ctx->lock);
++	if (ctx->cpu == smp_processor_id())
++		local_dec(&ctx->active);
++	local_irq_restore(flags);
++
++	splice_llist(&ctx->to_free_extra[0], &to_free[0]);
++	splice_llist(&ctx->to_free_extra[1], &to_free[1]);
++}
++
++static void bpf_ma_free_dwork(struct work_struct *work)
++{
++	struct bpf_ma_free_ctx *ctx = container_of(to_delayed_work(work),
++						       struct bpf_ma_free_ctx, dwork);
++	struct llist_node *to_free[BPF_MA_FREE_TYPE_NR];
++	struct bpf_free_batch *batch;
++
++	bpf_ma_splice_to_free_list(ctx, to_free);
 +
 +	batch = kmalloc(sizeof(*batch), GFP_KERNEL);
 +	if (!batch) {
 +		synchronize_rcu_expedited();
-+		bpf_ma_add_to_reuse_ready_or_free(c, head, tail);
-+		/* kworker completes and no RCU callback */
-+		atomic_dec(&c->reuse_cb_in_progress);
++		free_all(to_free[0], false);
++		free_all(to_free[1], true);
 +		return;
 +	}
 +
-+	batch->c = c;
-+	batch->head = head;
-+	batch->tail = tail;
-+	call_rcu(&batch->rcu, bpf_ma_reuse_cb);
++	batch->to_free[0] = to_free[0];
++	batch->to_free[1] = to_free[1];
++	call_rcu(&batch->rcu, bpf_ma_batch_free_cb);
 +}
 +
-+static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
++static void notrace wait_gp_direct_free(struct bpf_mem_cache *c, struct llist_node *llnode)
 +{
++	bool percpu = !!c->percpu_size;
++	struct bpf_ma_free_ctx *ctx;
 +	unsigned long flags;
 +
 +	local_irq_save(flags);
-+	/* In case a NMI-context bpf program is also freeing object. */
-+	if (local_inc_return(&c->active) == 1) {
-+		bool try_queue_work = false;
-+
-+		/* kworker may remove elements from prepare_reuse_head */
-+		raw_spin_lock(&c->reuse_lock);
-+		if (llist_empty(&c->prepare_reuse_head))
-+			c->prepare_reuse_tail = llnode;
-+		__llist_add(llnode, &c->prepare_reuse_head);
-+		if (++c->prepare_reuse_cnt > c->high_watermark) {
-+			/* Zero out prepare_reuse_cnt early to prevent
-+			 * unnecessary queue_work().
-+			 */
-+			c->prepare_reuse_cnt = 0;
-+			try_queue_work = true;
-+		}
-+		raw_spin_unlock(&c->reuse_lock);
-+
-+		if (try_queue_work && !work_pending(&c->reuse_work)) {
-+			/* Use reuse_cb_in_progress to indicate there is
-+			 * inflight reuse kworker or reuse RCU callback.
-+			 */
-+			atomic_inc(&c->reuse_cb_in_progress);
-+			/* Already queued */
-+			if (!queue_work(bpf_ma_wq, &c->reuse_work))
-+				atomic_dec(&c->reuse_cb_in_progress);
-+		}
++	ctx = this_cpu_ptr(&percpu_free_ctx);
++	if (local_inc_return(&ctx->active) == 1) {
++		raw_spin_lock(&ctx->lock);
++		__llist_add(llnode, &ctx->to_free[percpu]);
++		ctx->to_free_cnt[percpu] += 1;
++		bpf_ma_schedule_free_dwork(ctx);
++		raw_spin_unlock(&ctx->lock);
 +	} else {
-+		llist_add(llnode, &c->free_llist_extra);
++		llist_add(llnode, &ctx->to_free_extra[percpu]);
 +	}
-+	local_dec(&c->active);
++	local_dec(&ctx->active);
 +	local_irq_restore(flags);
 +}
 +
- /* Though 'ptr' object could have been allocated on a different cpu
-  * add it to the free_llist of the current cpu.
-  * Let kfree() logic deal with it when it's later called from irq_work.
-  */
--static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
-+static void notrace immediate_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+ static inline void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
  {
--	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
- 	unsigned long flags;
- 	int cnt = 0;
+ 	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
+@@ -918,6 +1043,8 @@ static inline void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
  
--	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
--
- 	local_irq_save(flags);
- 	if (local_inc_return(&c->active) == 1) {
- 		__llist_add(llnode, &c->free_llist);
-@@ -633,6 +910,18 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
- 		irq_work_raise(c);
+ 	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP)
+ 		wait_gp_reuse_free(c, llnode);
++	else if (c->flags & BPF_MA_FREE_AFTER_RCU_GP)
++		wait_gp_direct_free(c, llnode);
+ 	else
+ 		immediate_reuse_free(c, llnode);
  }
+@@ -1016,8 +1143,20 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
  
-+static inline void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
-+{
-+	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
+ static int __init bpf_ma_init(void)
+ {
++	int cpu;
 +
-+	BUILD_BUG_ON(LLIST_NODE_SZ > 8);
+ 	bpf_ma_wq = alloc_workqueue("bpf_ma", WQ_MEM_RECLAIM, 0);
+ 	BUG_ON(!bpf_ma_wq);
 +
-+	if (c->flags & BPF_MA_REUSE_AFTER_RCU_GP)
-+		wait_gp_reuse_free(c, llnode);
-+	else
-+		immediate_reuse_free(c, llnode);
-+}
++	for_each_possible_cpu(cpu) {
++		struct bpf_ma_free_ctx *ctx;
 +
- /* Called from BPF program or from sys_bpf syscall.
-  * In both cases migration is disabled.
-  */
-@@ -724,3 +1013,11 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
- 
- 	return !ret ? NULL : ret + LLIST_NODE_SZ;
++		ctx = per_cpu_ptr(&percpu_free_ctx, cpu);
++		raw_spin_lock_init(&ctx->lock);
++		ctx->cpu = cpu;
++		INIT_DELAYED_WORK(&ctx->dwork, bpf_ma_free_dwork);
++	}
++
+ 	return 0;
  }
-+
-+static int __init bpf_ma_init(void)
-+{
-+	bpf_ma_wq = alloc_workqueue("bpf_ma", WQ_MEM_RECLAIM, 0);
-+	BUG_ON(!bpf_ma_wq);
-+	return 0;
-+}
-+late_initcall(bpf_ma_init);
+ late_initcall(bpf_ma_init);
 -- 
 2.29.2
 
