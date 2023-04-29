@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017D46F2210
-	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 03:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED66B6F2231
+	for <lists+bpf@lfdr.de>; Sat, 29 Apr 2023 03:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347251AbjD2B1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Apr 2023 21:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S230284AbjD2Byk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Apr 2023 21:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347074AbjD2B1q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Apr 2023 21:27:46 -0400
+        with ESMTP id S230181AbjD2Byj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Apr 2023 21:54:39 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B48E7A;
-        Fri, 28 Apr 2023 18:27:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81541BF2;
+        Fri, 28 Apr 2023 18:54:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FD74614AD;
-        Sat, 29 Apr 2023 01:27:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37002C433D2;
-        Sat, 29 Apr 2023 01:27:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7328564136;
+        Sat, 29 Apr 2023 01:54:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC331C433EF;
+        Sat, 29 Apr 2023 01:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682731664;
-        bh=ZRDTKQMp+p7TvmVO01meyOc6q5mUqaXyAqx63RFLezc=;
+        s=k20201202; t=1682733277;
+        bh=BWlsiIT8REbab5TGuB49NyUrCOsShh0sQvphL3NLVKQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kH51t25Nv9/QlCnFMxvjJEZTIvlN4IdUxvigW0bQr4wYmjxzbzR6efFqQ4o9aXX6h
-         OlHCeAmgwEJDt1dDnSoPI+7iuZylBzBqmXifY3oJ95DKoGPwNYKL4zV0mS/XaIysKF
-         683w0BqCv/SJL+ulP0udxr//8DAWLF+qUd5QTiGAN2UaI2gegOxD1Fr/y12JWNeUCW
-         YlzctBaZx5PaQLUqz5GXuD1b6zhSeWjoV+/F8G9R2r7l78LIEwPPblVeG/IAdn9UUv
-         rRukjxPNPxfFo9NaKcYc7UUrv3ngkTyHevUg85qoiiazT/TUxIHCgPpCmu5ybY14Em
-         7fq2M2/nGy0tg==
+        b=LpaSyyjadTwRWK7+Syh5iYWgZ8ulkv+wSlt2vP1DrkHRxZuUJoohxwPZzfWoCpI1f
+         U/rdc/C6HItOX6PqjjYscgM01k66F7gJjhj+mY6JgqKENJ9R1/tB76GN/ZKw9nf/iN
+         TMHAkUU8jz3Taal1UgAD+0H1TZZ3QVHikJZwn15XV4Gi5L/hSSUR00XMQxCZpEkNX+
+         b9pJhvGQxGyE6I9m3KUWjLtke2WmLA4Pk8lH959vJpt8LHMedoo84V7rSv9j+jiGPi
+         eyGhfV7v/EnSEDgMbcXiu8uFVCzSunNfQ0a3/o7x4ggALuWfu2yTA+FSrOeR3GOM/D
+         a9FCu092W4ucw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 45BE6403B5; Fri, 28 Apr 2023 22:27:41 -0300 (-03)
-Date:   Fri, 28 Apr 2023 22:27:41 -0300
+        id 72711403B5; Fri, 28 Apr 2023 22:54:35 -0300 (-03)
+Date:   Fri, 28 Apr 2023 22:54:35 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hao Luo <haoluo@google.com>, Song Liu <song@kernel.org>
-Subject: Re: [PATCH 1/2] perf lock contention: Fix struct rq lock access
-Message-ID: <ZExyjXm6OF5oScGU@kernel.org>
-References: <20230427234833.1576130-1-namhyung@kernel.org>
- <CAP-5=fX3pmozMci+hSSV3Nve6H6RUzusPY2_S7HeEtRJnZH7nA@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] perf build: Fix unescaped # in perf build-test
+Message-ID: <ZEx42/HTgIjYf74z@kernel.org>
+References: <20230425104414.1723571-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fX3pmozMci+hSSV3Nve6H6RUzusPY2_S7HeEtRJnZH7nA@mail.gmail.com>
+In-Reply-To: <20230425104414.1723571-1-james.clark@arm.com>
 X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -64,72 +64,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Apr 27, 2023 at 05:32:08PM -0700, Ian Rogers escreveu:
-> On Thu, Apr 27, 2023 at 4:48 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The BPF CO-RE's ignore suffix rule requires three underscores.
-> > Otherwise it'd fail like below:
-> >
-> >   $ sudo perf lock contention -ab
-> >   libbpf: prog 'collect_lock_syms': BPF program load failed: Invalid argument
-> >   libbpf: prog 'collect_lock_syms': -- BEGIN PROG LOAD LOG --
-> >   reg type unsupported for arg#0 function collect_lock_syms#380
-> >   ; int BPF_PROG(collect_lock_syms)
-> >   0: (b7) r6 = 0                        ; R6_w=0
-> >   1: (b7) r7 = 0                        ; R7_w=0
-> >   2: (b7) r9 = 1                        ; R9_w=1
-> >   3: <invalid CO-RE relocation>
-> >   failed to resolve CO-RE relocation <byte_off> [381] struct rq__new.__lock (0:0 @ offset 0)
-> >
-> > Fixes: 0c1228486bef ("perf lock contention: Support pre-5.14 kernels")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Em Tue, Apr 25, 2023 at 11:44:13AM +0100, James Clark escreveu:
+> With the following bash and make versions:
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+>   $ make --version
+>   GNU Make 4.2.1
+>   Built for aarch64-unknown-linux-gnu
+> 
+>   $ bash --version
+>   GNU bash, version 5.0.17(1)-release (aarch64-unknown-linux-gnu)
+> 
+> This error is encountered when running the build-test target:
 
-Thanks, applied the series.
+Thanks, applied.
 
 - Arnaldo
 
  
-> Thanks,
-> Ian
+>   $ make -C tools/perf build-test
+>   tests/make:181: *** unterminated call to function 'shell': missing ')'.  Stop.
+>   make: *** [Makefile:103: build-test] Error 2
 > 
-> > ---
-> >  tools/perf/util/bpf_skel/lock_contention.bpf.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > index 8911e2a077d8..30c193078bdb 100644
-> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > @@ -418,11 +418,11 @@ int contention_end(u64 *ctx)
-> >
-> >  extern struct rq runqueues __ksym;
-> >
-> > -struct rq__old {
-> > +struct rq___old {
-> >         raw_spinlock_t lock;
-> >  } __attribute__((preserve_access_index));
-> >
-> > -struct rq__new {
-> > +struct rq___new {
-> >         raw_spinlock_t __lock;
-> >  } __attribute__((preserve_access_index));
-> >
-> > @@ -434,8 +434,8 @@ int BPF_PROG(collect_lock_syms)
-> >
-> >         for (int i = 0; i < MAX_CPUS; i++) {
-> >                 struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
-> > -               struct rq__new *rq_new = (void *)rq;
-> > -               struct rq__old *rq_old = (void *)rq;
-> > +               struct rq___new *rq_new = (void *)rq;
-> > +               struct rq___old *rq_old = (void *)rq;
-> >
-> >                 if (rq == NULL)
-> >                         break;
-> > --
-> > 2.40.1.495.gc816e09b53d-goog
-> >
+> Fix it by escaping the # which was causing make to interpret the rest of
+> the line as a comment leaving the unclosed opening bracket.
+> 
+> Fixes: 56d5229471ee ("tools build: Pass libbpf feature only if libbpf 1.0+")
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/tests/make | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+> index d75876126631..8dd3f8090352 100644
+> --- a/tools/perf/tests/make
+> +++ b/tools/perf/tests/make
+> @@ -178,7 +178,7 @@ run += make_install_prefix_slash
+>  # run += make_install_pdf
+>  run += make_minimal
+>  
+> -old_libbpf := $(shell echo "#include <bpf/libbpf.h>" | $(CC) -E -dM -x c -| egrep -q "define[[:space:]]+LIBBPF_MAJOR_VERSION[[:space:]]+0{1}")
+> +old_libbpf := $(shell echo '\#include <bpf/libbpf.h>' | $(CC) -E -dM -x c -| egrep -q "define[[:space:]]+LIBBPF_MAJOR_VERSION[[:space:]]+0{1}")
+>  
+>  ifneq ($(old_libbpf),)
+>  run += make_libbpf_dynamic
+> -- 
+> 2.34.1
+> 
 
 -- 
 
