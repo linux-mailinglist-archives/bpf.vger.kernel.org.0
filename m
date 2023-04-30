@@ -2,80 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2FD6F27AD
-	for <lists+bpf@lfdr.de>; Sun, 30 Apr 2023 07:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21A86F2866
+	for <lists+bpf@lfdr.de>; Sun, 30 Apr 2023 12:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjD3FGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Apr 2023 01:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
+        id S229513AbjD3KC4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Apr 2023 06:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjD3FGH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Apr 2023 01:06:07 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C85E19AC;
-        Sat, 29 Apr 2023 22:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682831166; x=1714367166;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wUIy27kaA7x1m/LYtCGQz0bQD3AE4rfsj1cxLUC2Tzk=;
-  b=MV/bw3PpAmXweL4gp3ujplDciWYiOscjXD+Z93RytSZUTYujoAssLg7R
-   mrMCUUmOg/s52DkRNpN2+ut0k+4DbBuJmpjo5/iRbw5e6p8mC4AlSYej4
-   JMAXdPpE3sv5DUCiaQqkUwvAH7fjB5N4uvc5x8E/b2vjsQ2XJJEM5B/yD
-   uPRZi/9XKVs5tP98fkIeM7UTI/ErLQwQf0yOd6wLnOF+xEJjDS0uJnCiV
-   JXUNr2n8IGKH3nFdXkY/UXV8k2W97P38PxRkbFt69qhDPgOhy089ZVN0p
-   hGsC4R1oL5DTNQojPkTVGxR8PJn+l5ZcNvcxqDvI9vj0mgTDDLAqAhpXs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10695"; a="348029659"
-X-IronPort-AV: E=Sophos;i="5.99,238,1677571200"; 
-   d="scan'208";a="348029659"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2023 22:06:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10695"; a="728115425"
-X-IronPort-AV: E=Sophos;i="5.99,238,1677571200"; 
-   d="scan'208";a="728115425"
-Received: from naamamex-mobl.ger.corp.intel.com (HELO [10.13.12.36]) ([10.13.12.36])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2023 22:05:58 -0700
-Message-ID: <499598fd-05fc-e3bc-be85-d74b47a0b46c@linux.intel.com>
-Date:   Sun, 30 Apr 2023 08:05:57 +0300
+        with ESMTP id S229565AbjD3KCz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Apr 2023 06:02:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60810213E;
+        Sun, 30 Apr 2023 03:02:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 57E5361307;
+        Sun, 30 Apr 2023 10:02:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3096AC433EF;
+        Sun, 30 Apr 2023 10:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682848972;
+        bh=/btdq5rgfT++kj3zrOz6f2xeLAKIuCUhQHgcDyc+0p4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bhbUBxfTlLn8fxz2b9JSx9X/QtK8RmJHR/cmH4zz0nt58xe1vxCHJfvXgAxUw5KRy
+         hQ9/WqcYA0akFiP3Y3D21sh1DnpdYM+EDbtjnVYSetmXTIcY7h10I7kNVY7v0347ZB
+         l3NedKyOfLUCw6VoZq2lG4aelCjpSuXdX9oCbEep6pNsDyTKwpY4o/OkqOFxEQESNV
+         yiNPftqp90b91uSvlMwiw/sEFQv3zqqqlPDfzKFFand4bfvfdv+v6FSl8yivKzz78k
+         Tt+95q1CaO0IJzq/W3IiKoPlATbt+Vsy1o4+7PQUT5gtt/e1JX76ccCL3D7WTiFy41
+         YlOPzrjvDsGkg==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, j.vosburgh@gmail.com,
+        andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
+        andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, alardam@gmail.com,
+        memxor@gmail.com, sdf@google.com, brouer@redhat.com,
+        toke@redhat.com
+Subject: [PATCH v2 net] bonding: add xdp_features support
+Date:   Sun, 30 Apr 2023 12:02:44 +0200
+Message-Id: <e82117190648e1cbb2740be44de71a21351c5107.1682848658.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [Intel-wired-lan] [PATCH net v3 1/1] igc: read before write to
- SRRCTL register
-Content-Language: en-US
-To:     Song Yoong Siang <yoong.siang.song@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Andre Guedes <andre.guedes@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     xdp-hints@xdp-project.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org
-References: <20230414154902.2950535-1-yoong.siang.song@intel.com>
-From:   "naamax.meir" <naamax.meir@linux.intel.com>
-In-Reply-To: <20230414154902.2950535-1-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,47 +56,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/14/2023 18:49, Song Yoong Siang wrote:
-> igc_configure_rx_ring() function will be called as part of XDP program
-> setup. If Rx hardware timestamp is enabled prio to XDP program setup,
-> this timestamp enablement will be overwritten when buffer size is
-> written into SRRCTL register.
-> 
-> Thus, this commit read the register value before write to SRRCTL
-> register. This commit is tested by using xdp_hw_metadata bpf selftest
-> tool. The tool enables Rx hardware timestamp and then attach XDP program
-> to igc driver. It will display hardware timestamp of UDP packet with
-> port number 9092. Below are detail of test steps and results.
-> 
-> Command on DUT:
->    sudo ./xdp_hw_metadata <interface name>
-> 
-> Command on Link Partner:
->    echo -n skb | nc -u -q1 <destination IPv4 addr> 9092
-> 
-> Result before this patch:
->    skb hwtstamp is not found!
-> 
-> Result after this patch:
->    found skb hwtstamp = 1677800973.642836757
-> 
-> Optionally, read PHC to confirm the values obtained are almost the same:
-> Command:
->    sudo ./testptp -d /dev/ptp0 -g
-> Result:
->    clock time: 1677800973.913598978 or Fri Mar  3 07:49:33 2023
-> 
-> Fixes: fc9df2a0b520 ("igc: Enable RX via AF_XDP zero-copy")
-> Cc: <stable@vger.kernel.org> # 5.14+
-> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Reviewed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
-> v2 -> v3: Refactor SRRCTL definitions to more human readable definitions
-> v1 -> v2: Fix indention
-> ---
->   drivers/net/ethernet/intel/igc/igc_base.h | 11 ++++++++---
->   drivers/net/ethernet/intel/igc/igc_main.c |  7 +++++--
->   2 files changed, 13 insertions(+), 5 deletions(-)
+Introduce xdp_features support for bonding driver according to the slave
+devices attached to the master one. xdp_features is required whenever we
+want to xdp_redirect traffic into a bond device and then into selected
+slaves attached to it.
 
-Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Change since v1:
+- remove bpf self-test patch from the series
+---
+ drivers/net/bonding/bond_main.c    | 48 ++++++++++++++++++++++++++++++
+ drivers/net/bonding/bond_options.c |  2 ++
+ include/net/bonding.h              |  1 +
+ 3 files changed, 51 insertions(+)
+
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 710548dbd0c1..c98121b426a4 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -1789,6 +1789,45 @@ static void bond_ether_setup(struct net_device *bond_dev)
+ 	bond_dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ }
+ 
++void bond_xdp_set_features(struct net_device *bond_dev)
++{
++	struct bonding *bond = netdev_priv(bond_dev);
++	xdp_features_t val = NETDEV_XDP_ACT_MASK;
++	struct list_head *iter;
++	struct slave *slave;
++
++	ASSERT_RTNL();
++
++	if (!bond_xdp_check(bond)) {
++		xdp_clear_features_flag(bond_dev);
++		return;
++	}
++
++	bond_for_each_slave(bond, slave, iter) {
++		struct net_device *dev = slave->dev;
++
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_BASIC)) {
++			xdp_clear_features_flag(bond_dev);
++			return;
++		}
++
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_REDIRECT))
++			val &= ~NETDEV_XDP_ACT_REDIRECT;
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
++			val &= ~NETDEV_XDP_ACT_NDO_XMIT;
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_XSK_ZEROCOPY))
++			val &= ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_HW_OFFLOAD))
++			val &= ~NETDEV_XDP_ACT_HW_OFFLOAD;
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_RX_SG))
++			val &= ~NETDEV_XDP_ACT_RX_SG;
++		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG))
++			val &= ~NETDEV_XDP_ACT_NDO_XMIT_SG;
++	}
++
++	xdp_set_features_flag(bond_dev, val);
++}
++
+ /* enslave device <slave> to bond device <master> */
+ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 		 struct netlink_ext_ack *extack)
+@@ -2236,6 +2275,8 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 			bpf_prog_inc(bond->xdp_prog);
+ 	}
+ 
++	bond_xdp_set_features(bond_dev);
++
+ 	slave_info(bond_dev, slave_dev, "Enslaving as %s interface with %s link\n",
+ 		   bond_is_active_slave(new_slave) ? "an active" : "a backup",
+ 		   new_slave->link != BOND_LINK_DOWN ? "an up" : "a down");
+@@ -2483,6 +2524,7 @@ static int __bond_release_one(struct net_device *bond_dev,
+ 	if (!netif_is_bond_master(slave_dev))
+ 		slave_dev->priv_flags &= ~IFF_BONDING;
+ 
++	bond_xdp_set_features(bond_dev);
+ 	kobject_put(&slave->kobj);
+ 
+ 	return 0;
+@@ -3930,6 +3972,9 @@ static int bond_slave_netdev_event(unsigned long event,
+ 		/* Propagate to master device */
+ 		call_netdevice_notifiers(event, slave->bond->dev);
+ 		break;
++	case NETDEV_XDP_FEAT_CHANGE:
++		bond_xdp_set_features(bond_dev);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -5874,6 +5919,9 @@ void bond_setup(struct net_device *bond_dev)
+ 	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
+ 		bond_dev->features |= BOND_XFRM_FEATURES;
+ #endif /* CONFIG_XFRM_OFFLOAD */
++
++	if (bond_xdp_check(bond))
++		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
+ }
+ 
+ /* Destroy a bonding device.
+diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+index f71d5517f829..0498fc6731f8 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -877,6 +877,8 @@ static int bond_option_mode_set(struct bonding *bond,
+ 			netdev_update_features(bond->dev);
+ 	}
+ 
++	bond_xdp_set_features(bond->dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/include/net/bonding.h b/include/net/bonding.h
+index c3843239517d..a60a24923b55 100644
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -659,6 +659,7 @@ void bond_destroy_sysfs(struct bond_net *net);
+ void bond_prepare_sysfs_group(struct bonding *bond);
+ int bond_sysfs_slave_add(struct slave *slave);
+ void bond_sysfs_slave_del(struct slave *slave);
++void bond_xdp_set_features(struct net_device *bond_dev);
+ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 		 struct netlink_ext_ack *extack);
+ int bond_release(struct net_device *bond_dev, struct net_device *slave_dev);
+-- 
+2.40.0
+
