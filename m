@@ -2,227 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092D86F3014
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 12:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFED6F30DA
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbjEAKME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 06:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+        id S232243AbjEAM16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 08:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjEAKMD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 06:12:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C87E6;
-        Mon,  1 May 2023 03:12:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F8E160C7E;
-        Mon,  1 May 2023 10:12:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60A2AC433EF;
-        Mon,  1 May 2023 10:11:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682935921;
-        bh=h0t6NLf28prZTTjCPR1Idcg/q0s9kcDfK8NqSvKf9Wg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dEaWyI/CIBFupTdf6wvte2v2hgOI6xJANFSpjayG1ygaBG28VelaFIbxGEYuVkspv
-         6Ro8HmET4h5E0O+UDLGAW9jPImuxYW+CsXljIuBUB1wIQzxpMYQigLhrlaLo9UihR1
-         MkwRbZn+TDa32ap06T1+J9zpOLXQKGegiNAJfPKtELKVU/xnaR1i/I8YSMZQnR8MaY
-         eP2iEz6DaFO/7aa9rRX7vUYWQ/cCMdd9XLhHbf9UppoZC1QYcS5n+q0tIpdH+28SYg
-         Vota32l8bgPMkxZDSsZFx+GlKVju0+embUiRRb3bu34xy9UfKx6msvKUu93eRlRRgk
-         CP8ILqYJaF7Zg==
-Date:   Mon, 1 May 2023 19:11:57 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH v7 08/11] tracing/probes: Add BTF retval type support
-Message-Id: <20230501191157.fc28453f345f415ae76bb82c@kernel.org>
-In-Reply-To: <168255834145.2565678.12184411713423630481.stgit@mhiramat.roam.corp.google.com>
-References: <168255826500.2565678.17719875734305974633.stgit@mhiramat.roam.corp.google.com>
-        <168255834145.2565678.12184411713423630481.stgit@mhiramat.roam.corp.google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231755AbjEAM15 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 08:27:57 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2114.outbound.protection.outlook.com [40.107.244.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09641A6;
+        Mon,  1 May 2023 05:27:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wt5/3zSL/rZ5YXcixUI3TWIp4ylJgxUbrPy1Fqj1hq3rcgwxhLlmrxj0ueEB+CxxiB3TPoCvZpr2JyZlsqonchjTE9XDL3jxGdiySLZifEMmSEWxrT6bUuMutsOtw0wLnQhpJWIqvnIOnM7TX/1H1K55Czvgvc5UUwCAX4cb1/aHE9XmNXIB/Zm/D1y609W2z4DyVrAhO5LJWWoV0RyKjcPTWlSX5UU1+z0bsCAmlb8eapB8hda21Ns9yHygFs1uU7uEEkEy2bYWq9PUHazopuwru3ehq9stdIFZ+Atj8pqfAsbsFvr+G0eJBry2djF3m8t6cF5v9GLbvTClVf+xbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=49enj4bGHVDbPILFVd4Kk2wFJyZsPnu/YCWf0MQVgnE=;
+ b=bGTiQYLR9CmHZEZIcHaRXiGTrjwfUTIH/mzwWRCPwVt6GPz2Wx9V4uL6VssonVnHmHls1zBmjMO210n228GvS3Wtg61ZTOYUqqkNx1P0Cxh0PzMTHisP1VihiGAq5TVFRnu01cOE9aeCAvIFKMdASs5W5m2oF/Sjj1jkmbVcS32tXD5XhbrUCNFHt0OGmG+kn06vZFASetKB5QtWT5ZMmsnt1etedSOV8pYjOhYqnJqOwqYNd81mdyz9YZYKPTEc596tePSollbXuh6KAECPO9s6T17SIqK3YHJLnE8aHtRLOS/3KXZMekfQv1CBiZwZmlAZWa7cVTLxAO4XRTE2yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=49enj4bGHVDbPILFVd4Kk2wFJyZsPnu/YCWf0MQVgnE=;
+ b=hOiLsXK/R0OXe/KQHotwhlF/GyyXX99/kst59mgGPiXfvdPZpvUPvQmtCJP6vj67tRxO4JlHtdaLVkyHNO4W5hYPjJxEFNnk00TEVpg0uLC8fe3Zb/S8xJzBPxqMJa6VJy9hMSUT+RHc8mIrhCj38ubaj++ouAC14k2FrwOeY2k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by DM6PR13MB4147.namprd13.prod.outlook.com (2603:10b6:5:2a0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.30; Mon, 1 May
+ 2023 12:27:51 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34%5]) with mapi id 15.20.6340.030; Mon, 1 May 2023
+ 12:27:50 +0000
+Date:   Mon, 1 May 2023 14:27:42 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Feng Liu <feliu@nvidia.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        William Tu <witu@nvidia.com>, Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH net v1 1/2] virtio_net: Fix error unwinding of XDP
+ initialization
+Message-ID: <ZE+wPrqKatZY/zDM@corigine.com>
+References: <20230428223712.67499-1-feliu@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230428223712.67499-1-feliu@nvidia.com>
+X-ClientProxiedBy: AM4PR07CA0013.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::26) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|DM6PR13MB4147:EE_
+X-MS-Office365-Filtering-Correlation-Id: e72ee9b1-8f26-4fa3-f03a-08db4a3f7a94
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EP3YDh6/oCTJYj804PI06fxANcLVZEpX6bivbi7jj9qLCCv4srmqPAgs7S5oTnaOXAxFerLEENQSkKOW9kJtUHA8lDcotzWvEqK6/xbsulv5w6vlXGGwcLJJTEUwLoT3tr/iyvFBlU4oNSH+/4O1LrWO1Lyj5upxTS1MqcDgXJP2w0lb5849CmkePppwpWylMEVETwPsk7SbROPhMtC3g7aW7kcbu6PUBTjtsqsmNwmeaKdxZfPFKasg7Wjf/P9eAKbg9U6GwMTvtF4T9aXN60Zukx2JgMCT24A405u8oOVAkH/ngQgkfjGBTLXchM+81QWxFLZ96CQqUcQfAT1CmtMm+4E6+R1LXAL0oppxeDJ1wK2gEuJTsk9pmC2k3ASIvwoXsBZ4Lm5U+NPK0mMlv6bhwfwOm57x0qgZ6J4B5oiRcn4zHtXeX3N2H2e64i6B9VfzpK4a4W1ruIFU6l5o1MCJ8kcKTK3GCthUXnqI/x22EMeIu83GGR71vOVWmWC+IltiUlQRrAJC6g3nGWK4wOT+qTWL21eg6W7gRVGW+CcQ77ZRbf4fucuWbFt9AxoQ2gW1Wx+WSDM6FbK9j31rHM9UxJ+8p4zeEbFJTOM95M0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(366004)(396003)(376002)(39830400003)(451199021)(2616005)(186003)(6506007)(478600001)(6512007)(6486002)(6666004)(4744005)(44832011)(2906002)(54906003)(7416002)(8676002)(86362001)(8936002)(5660300002)(38100700002)(36756003)(66476007)(66946007)(66556008)(41300700001)(6916009)(316002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WmgvXwNpIF9JY9aGlgn9lAFR0g+03dq41NWo3YW37yAfQdSjoF5QAyHLJ/hx?=
+ =?us-ascii?Q?lAn2DYVEPTBD4RYosk/SK8luEJYR71mKu2l0RABU0wpObl/yJKKs323juzgx?=
+ =?us-ascii?Q?yg14aV65b9BOIyta/Cio1dpuCSwaoANmUmq2g6dRlQuyx437egBano0BlqMO?=
+ =?us-ascii?Q?DT3exFgddg/r1+HrqRygGOGcPb/r28nYF/9qkfiSEtTToyEbqIP13khmVMZz?=
+ =?us-ascii?Q?K3zLgEsKxxHu3VpNL8F+lVaMsSNbeY6nqKmLY0B2+r4vmGu/ufcci/X8KsgR?=
+ =?us-ascii?Q?4iBGVlf0tTSip8MmvLISWeB/gw2WlIdchwsc3+XnfOtPGPRf8iIxBGrZ2BDU?=
+ =?us-ascii?Q?cT7Pjpk7OGxW7BXWAkPOsaaTwCvB/VHkXOhcHNNkW5i88TQkfIFxQO/j1Ehz?=
+ =?us-ascii?Q?7CC/+WeRKdHBhr3rb016BIbiqLBqpHuhNdubNviuTfhFFPD3c/B533WmsZ6Z?=
+ =?us-ascii?Q?9bBVUXk7Rb3EyelJE6cyn6KKkKn12zxdV1yf2HX6CrvPT6spLtSCQnK55Z2V?=
+ =?us-ascii?Q?aBLkdQoXPY6rE2ewDJDdBhkykNdj8voLOs/QvT2kCgyy9MZeD6pmnefgswNu?=
+ =?us-ascii?Q?JO+E79O5+guusu03k4ib5Kji3FeNlG6IcQ8oRECdul8GV96OXFJCBAvkcsZE?=
+ =?us-ascii?Q?5l38/Pem45jtuvyOl+5v5ewZs+LiGoXeKiKYflOlpVFoB55nGSYkoFIJj2wA?=
+ =?us-ascii?Q?PAwjSmdwv52zBTQEawGEf3sqnDOIRkayhKJt00DoBgNfgoci/wxOUdrFVkCh?=
+ =?us-ascii?Q?3Ix84puYF2rdasPJysHWL4HWPRVHFQJbE84ydOxeM7DUbWMXynKtEicJ8oAK?=
+ =?us-ascii?Q?rA/rtrMw1tosHCU7oqY+7GhlJG2+63ho8xmZJiCIZkIZODoBFMYfk+BnqJEs?=
+ =?us-ascii?Q?tJ9jC2Q32KFeCLS424KDFV2lDeuxXKIndYDUF0U/3Dlq3apOyKtt/wi9i7Aq?=
+ =?us-ascii?Q?Mi+2/feqMwxA/u8y0YO4g1odL3x6yVbUsi36s3WgkUDh8u9fT/uKKmh7MZ1y?=
+ =?us-ascii?Q?aoZB8ERUrbXkCVl9oevdMbuAMaXndsORDi87OLvrnp8p3AZY1pOoiEt7zK/z?=
+ =?us-ascii?Q?JnGjmN2IfrpytZiRrJY7p6xmp0a34Ia8wv3yUbRcqgCYJsS+D/od8F/HINGq?=
+ =?us-ascii?Q?b1mHdJTcDss5BJCRnYnRNV1PlzRvzIut+QNlwUCqqWcWNir5gqXXFU1Lf2lk?=
+ =?us-ascii?Q?Qh88cnIYDuYJ5PrOMEJwUQ95p7miGqbXGZe6kNOlob/cYjjNmfpu+RzqxHkr?=
+ =?us-ascii?Q?VLGr3D6yllD0dqSk6VMI/4twqfnBHZknCW0Ni5Qv/+XYobEWMiSaWmZABu3h?=
+ =?us-ascii?Q?jaIfmscCFFs86sdPKGID+joHOWuaQiqaWNyH/QSXeOaTqj0LiaBIeJaxsUge?=
+ =?us-ascii?Q?bE0QWYLM+YBstJW05gyKDHqZaaXGorZeGe1eqGsYWqaLOQP/a1W5VVUUw7Ls?=
+ =?us-ascii?Q?gcSD8aQ1FFB7aFGMPHdI2N8ZLc1MD6OJ4eoNGk1CNR0MLZzE0f7AmJG/Vh7/?=
+ =?us-ascii?Q?9rClWY04oqUaEYZBcuNURLfWp3nAb0S+hK4t34cqDrRCfExTD++SE6bdA9s8?=
+ =?us-ascii?Q?80CXpWDcU57cwWBtx7UpsMqoTz5c04tnhbadWimrQDb14vn2UWuSscppv5T6?=
+ =?us-ascii?Q?Omow7wtuXtOhLPp42arqOTkxdzQgydx6Xgb+397/+b8ZJ7MllrgqDtoDNxad?=
+ =?us-ascii?Q?3WOC+g=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e72ee9b1-8f26-4fa3-f03a-08db4a3f7a94
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2023 12:27:50.7298
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tmQNI0s8yxPWySxY1p0SNqd6HNm0u8sN58LSyxd5tAq2tFXIxkd6AXjblfSF6BXlXCOQh5ZbTItJzGPvyrix1h/12IvJ3/Lky0Aau40guyk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4147
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 27 Apr 2023 10:19:01 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Fri, Apr 28, 2023 at 06:37:12PM -0400, Feng Liu wrote:
+> When initializing XDP in virtnet_open(), some rq xdp initialization
+> may hit an error causing net device open failed. However, previous
+> rqs have already initialized XDP and enabled NAPI, which is not the
+> expected behavior. Need to roll back the previous rq initialization
+> to avoid leaks in error unwinding of init code.
 > 
-> Check the target function has non-void retval type and set the correct
-> fetch type if user doesn't specify it.
-> If the function returns void, $retval is rejected as below;
-> 
->  # echo 'f unregister_kprobes%return $retval' >> dynamic_events
-> sh: write error: No such file or directory
->  # cat error_log
-> [   37.488397] trace_fprobe: error: This function returns 'void' type
->   Command: f unregister_kprobes%return $retval
->                                        ^
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
-> Changes in v7:
->  - Introduce this as a new patch.
-> ---
->  kernel/trace/trace_probe.c |   65 +++++++++++++++++++++++++++++++++++++++++---
->  kernel/trace/trace_probe.h |    1 +
->  2 files changed, 61 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> index 4c3c70862a9a..16d8edfe3d15 100644
-> --- a/kernel/trace/trace_probe.c
-> +++ b/kernel/trace/trace_probe.c
-> @@ -371,13 +371,13 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
->  	return NULL;
->  }
->  
-> -static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
-> +static const struct btf_type *find_btf_func_proto(const char *funcname)
->  {
->  	struct btf *btf = traceprobe_get_btf();
->  	const struct btf_type *t;
->  	s32 id;
->  
-> -	if (!btf || !funcname || !nr)
-> +	if (!btf || !funcname)
->  		return ERR_PTR(-EINVAL);
->  
->  	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-> @@ -394,6 +394,20 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
->  	if (!btf_type_is_func_proto(t))
->  		return ERR_PTR(-ENOENT);
->  
-> +	return t;
-> +}
-> +
-> +static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
-> +{
-> +	const struct btf_type *t;
-> +
-> +	if (!funcname || !nr)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	t = find_btf_func_proto(funcname);
-> +	if (IS_ERR(t))
-> +		return (const struct btf_param *)t;
-> +
->  	*nr = btf_type_vlen(t);
->  
->  	if (*nr)
-> @@ -452,6 +466,32 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
->  	return find_fetch_type(typestr, ctx->flags);
->  }
->  
-> +static const struct fetch_type *parse_btf_retval_type(
-> +					struct traceprobe_parse_context *ctx)
-> +{
-> +	struct btf *btf = traceprobe_get_btf();
-> +	const char *typestr = NULL;
-> +	const struct btf_type *t;
-> +
-> +	if (btf && ctx->funcname) {
-> +		t = find_btf_func_proto(ctx->funcname);
-> +		if (!IS_ERR(t))
-> +			typestr = type_from_btf_id(btf, t->type);
-> +	}
-> +
-> +	return find_fetch_type(typestr, ctx->flags);
-> +}
-> +
-> +static bool is_btf_retval_void(const char *funcname)
-> +{
-> +	const struct btf_type *t;
-> +
-> +	t = find_btf_func_proto(funcname);
-> +	if (IS_ERR(t))
-> +		return false;
-> +
-> +	return t->type == 0;
-> +}
->  #else
->  static struct btf *traceprobe_get_btf(void)
->  {
-> @@ -469,8 +509,15 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
->  	trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
->  	return -EOPNOTSUPP;
->  }
-> +
->  #define parse_btf_arg_type(idx, ctx)		\
->  	find_fetch_type(NULL, ctx->flags)
-> +
-> +#define parse_btf_retval_type(ctx)		\
-> +	find_fetch_type(NULL, ctx->flags)
-> +
-> +#define is_btf_retval_void(funcname)	(false)
-> +
->  #endif
->  
->  #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
-> @@ -500,7 +547,12 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
->  
->  	if (strcmp(arg, "retval") == 0) {
->  		if (ctx->flags & TPARG_FL_RETURN) {
-> -			code->op = FETCH_OP_RETVAL;
-> +			if ((ctx->flags & TPARG_FL_KERNEL) &&
-> +			    is_btf_retval_void(ctx->funcname)) {
-> +				trace_probe_log_err(ctx->offset, NO_RETVAL);
-> +				ret = -ENOENT;
-> +			} else
-> +				code->op = FETCH_OP_RETVAL;
->  		} else {
->  			trace_probe_log_err(ctx->offset, RETVAL_ON_PROBE);
->  			ret = -EINVAL;
-> @@ -887,9 +939,12 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
->  		goto fail;
->  
->  	/* Update storing type if BTF is available */
-> -	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
-> -	    !t && code->op == FETCH_OP_ARG)
-> +	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
-> +	    if (code->op == FETCH_OP_ARG)
->  		parg->type = parse_btf_arg_type(code->param, ctx);
-> +	    else if (code->op == FETCH_OP_RETVAL)
-> +		parg->type = parse_btf_retval_type(ctx);
-> +	}
+> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
+> Signed-off-by: Feng Liu <feliu@nvidia.com>
+> Reviewed-by: William Tu <witu@nvidia.com>
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
 
-Oops, here are wrong indents. I have to fix this.
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-Thanks,
-
->  
->  	ret = -EINVAL;
->  	/* Store operation */
-> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-> index 8c5b029c5d62..3eb7c37c0984 100644
-> --- a/kernel/trace/trace_probe.h
-> +++ b/kernel/trace/trace_probe.h
-> @@ -444,6 +444,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
->  	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
->  	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
->  	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
-> +	C(NO_RETVAL,		"This function returns 'void' type"),	\
->  	C(BAD_STACK_NUM,	"Invalid stack number"),		\
->  	C(BAD_ARG_NUM,		"Invalid argument number"),		\
->  	C(BAD_VAR,		"Invalid $-valiable specified"),	\
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
