@@ -2,154 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5696F3878
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 21:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2B76F3A92
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 00:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjEATsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 15:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
+        id S229822AbjEAWjH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 18:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjEATsh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 15:48:37 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B4426B6
-        for <bpf@vger.kernel.org>; Mon,  1 May 2023 12:48:34 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-559ceb9eaa3so48050977b3.2
-        for <bpf@vger.kernel.org>; Mon, 01 May 2023 12:48:34 -0700 (PDT)
+        with ESMTP id S229653AbjEAWjG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 18:39:06 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76BB1726
+        for <bpf@vger.kernel.org>; Mon,  1 May 2023 15:39:04 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-51fdc1a1270so2013509a12.1
+        for <bpf@vger.kernel.org>; Mon, 01 May 2023 15:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682970513; x=1685562513;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=chEHtwwUNx/kX1jGhlTjBB+oOAO5Kgm7VaBZIC47/4s=;
-        b=bi0QDxo0IPUoqHr6P0yGO3r1chjkLhMofnUMpH9mwkJtotLNkv8lnOoGGWhCSCpX/F
-         2ar5nN8Z5tw9TLC4tlukN+VesHtF/Vs/ZeZkOeGTkU//QNnwjPUYG4ISRVoWxWb7SMcF
-         2/R1cTQMFC/E5OUioGovS+cxBRwzJyeaLc2AK1PAgHIUXYPSXbkB/7xwE6VU30m98AjF
-         UGZ9E4S0usCR8mwXVOvviTmBAVecx3P6nqWkqKUKtXmNnteWWbsw7/01nOAIBDRj7amd
-         shju2AM4MyOW08RZqfIdkDf6U7nB9474NCWf10+E4T7a07TactMxODm408Ays/7IOGUz
-         Mh/w==
+        d=isovalent.com; s=google; t=1682980744; x=1685572744;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NDcqkpeJ9FpMbQTWstGL4y3ofdnJwgu6ymAgZ8epW6o=;
+        b=JKKsc7tjyWnb1hS3805Xi3nT/f1hgN8ofxsO7aHuSV5NPRkfjr/3hFBpiksPwZOm/E
+         UyzFHgFqqK7ebidXXjuCLYQvt0B+49jtWhGX8lfIxfJ2K3gWh2sPx9okR8lZA8QmHkDw
+         Ew2goibwZxYC/jaURdY6W7tjxLFLyK9cbu+i7h9d9C2ySri5T587OXHav/oj7KHOh7NH
+         kZQfVxHkZMIe/n4cvf28aw+nHQaHdyv7SDvf2rhNP0rzQ2a6onph+UNu13oy8NV12KjJ
+         jCJ5T2WVUSVaUblqhY06pQ1A5dlx+FnLFKhVEeCjkVGdqTi0NR8FZQgCezRSPmdqIR+9
+         fO0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682970513; x=1685562513;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=chEHtwwUNx/kX1jGhlTjBB+oOAO5Kgm7VaBZIC47/4s=;
-        b=DD956xkE+xCwUWzH6zbAhmCXJWcz4FMUfvWXvSQtQ7JcmrMe5e38gTVYPj7yONtriF
-         ZACPgW0O61+lL5u4Q4/KUqzFJv5DXkgua2cL+3SKvIhuHuwP/zEwuAT0NU5eZwxcwqzj
-         dHBBUrNOdLI40ce+nYrvHQR64BtMt1VDLO095cjUIgKhhHjdoJSySSH23I4nPcvCxmOp
-         u+xNZkjE8xNOgTT5XUWYrY8wyagcVcf5xavlhtX777DJUgp8I+DgCspxu8Du3u7lYFFO
-         ATCfQIfrpTRlOz9D+fCSsFHLxbV00KTjs7FWt+Ad6dk5QPIGavk9wA6D4PUmpaT1SIrj
-         w3yQ==
-X-Gm-Message-State: AC+VfDxOjSs+QkvVcGENsGOTNd+etSBh1C2QM2aDposrKA2pL/Mgb7Wj
-        p+LzP+JbVlDtDF+77nlOAVAjjKx8kWNW3uac+k7iwa+PhqbiEFgC/zPIRgVMKVZh3xFwAQoHZBG
-        L2InsjjqXCKfpyovUcJOFFipQsq7HNTg4Pk2M3Tel97gBfRUsng==
-X-Google-Smtp-Source: ACHHUZ6BW32BHRSMn8bTFUcKBeEQY5jPfFOJuwMYrtIF/tZHRUcCh+Ez0Pht1gbfF6xUSTxCBeAUCkM=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a0d:ec4c:0:b0:55a:20a3:5ce3 with SMTP id
- r12-20020a0dec4c000000b0055a20a35ce3mr3033286ywn.3.1682970513703; Mon, 01 May
- 2023 12:48:33 -0700 (PDT)
-Date:   Mon,  1 May 2023 12:48:25 -0700
-In-Reply-To: <20230501194825.2864150-1-sdf@google.com>
-Mime-Version: 1.0
-References: <20230501194825.2864150-1-sdf@google.com>
-X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230501194825.2864150-5-sdf@google.com>
-Subject: [PATCH bpf-next v3 4/4] bpf: Document EFAULT changes for sockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1682980744; x=1685572744;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NDcqkpeJ9FpMbQTWstGL4y3ofdnJwgu6ymAgZ8epW6o=;
+        b=D3vrNYA+5N9bXxMU8U8C07lUuZUQtd3y84jYzrpXKzNApf9izo3guyihO6BdppU8YO
+         A8hZGnsDxeLcgFd2Uf2DwzR7TiHQ9+ZwnTpVMjQ6y4W9R8RjaFHE9opYc6cVeB0aOnIp
+         Da+PuyRXOHJQlEzZPkAtbT6PRhbJuh+Ix9aRn0RNPUNZjj4WwwfQEV/NgjH2Ybkn4NCh
+         mEMPva4O9XcyR7YyJwmaZUTu/9iaZL1r8326+wXWGL02aOZDyq+w01foqgNVNrk0Oa+/
+         7HARtPLscD+TuzSIbALEpdaSCG8YrJ9d/JoiVo5+CM3uruuDYd5ZKnLzYzh2UnT6lv42
+         lYBQ==
+X-Gm-Message-State: AC+VfDxrXw86ifi1VASc/nW6H+fO/xpC1LTKyWzjsWLklqkxUqYBvtfB
+        6ADZxNrG/fGm42P7tcFAR7g0hg==
+X-Google-Smtp-Source: ACHHUZ4uzpVYGn1QuMBUFloz15JnhhnmPdDLfnK1iDkKpZhF3dUFxkXHjZjLYAPO3NytY8xwZcUH5g==
+X-Received: by 2002:a05:6a20:8e0b:b0:f3:756e:e116 with SMTP id y11-20020a056a208e0b00b000f3756ee116mr20052389pzj.38.1682980744168;
+        Mon, 01 May 2023 15:39:04 -0700 (PDT)
+Received: from ?IPv6:2601:647:4900:1fbb:ec67:e52b:8070:1b56? ([2601:647:4900:1fbb:ec67:e52b:8070:1b56])
+        by smtp.gmail.com with ESMTPSA id t3-20020a056a00138300b006338e0a9728sm20413152pfg.109.2023.05.01.15.39.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 May 2023 15:39:03 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH 2/7] udp: seq_file: Remove bpf_seq_afinfo from
+ udp_iter_state
+From:   Aditi Ghag <aditi.ghag@isovalent.com>
+In-Reply-To: <86732f12-a53d-7d3b-9b8f-a717fd3237e2@linux.dev>
+Date:   Mon, 1 May 2023 15:39:01 -0700
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A50CFC57-91E9-41E6-8237-5F07E1BE8BC4@isovalent.com>
+References: <20230418153148.2231644-1-aditi.ghag@isovalent.com>
+ <20230418153148.2231644-3-aditi.ghag@isovalent.com>
+ <86732f12-a53d-7d3b-9b8f-a717fd3237e2@linux.dev>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-And add examples for how to correctly handle large optlens.
-This is less relevant now when we don't EFAULT anymore, but
-that's still the correct thing to do.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- Documentation/bpf/prog_cgroup_sockopt.rst | 57 ++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/bpf/prog_cgroup_sockopt.rst b/Documentation/bpf/prog_cgroup_sockopt.rst
-index 172f957204bf..1226a94af07a 100644
---- a/Documentation/bpf/prog_cgroup_sockopt.rst
-+++ b/Documentation/bpf/prog_cgroup_sockopt.rst
-@@ -98,10 +98,65 @@ When the ``optval`` is greater than the ``PAGE_SIZE``, the BPF program
-   indicates that the kernel should use BPF's trimmed ``optval``.
- 
- When the BPF program returns with the ``optlen`` greater than
--``PAGE_SIZE``, the userspace will receive ``EFAULT`` errno.
-+``PAGE_SIZE``, the userspace will receive original kernel
-+buffers without any modifications that the BPF program might have
-+applied.
- 
- Example
- =======
- 
-+Recommended way to handle BPF programs is as follows:
-+
-+.. code-block:: c
-+
-+	SEC("cgroup/getsockopt")
-+	int getsockopt(struct bpf_sockopt *ctx)
-+	{
-+		/* Custom socket option. */
-+		if (ctx->level == MY_SOL && ctx->optname == MY_OPTNAME) {
-+			ctx->retval = 0;
-+			optval[0] = ...;
-+			ctx->optlen = 1;
-+			return 1;
-+		}
-+
-+		/* Modify kernel's socket option. */
-+		if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
-+			ctx->retval = 0;
-+			optval[0] = ...;
-+			ctx->optlen = 1;
-+			return 1;
-+		}
-+
-+		/* optval larger than PAGE_SIZE use kernel's buffer. */
-+		if (ctx->optlen > PAGE_SIZE)
-+			ctx->optlen = 0;
-+
-+		return 1;
-+	}
-+
-+	SEC("cgroup/setsockopt")
-+	int setsockopt(struct bpf_sockopt *ctx)
-+	{
-+		/* Custom socket option. */
-+		if (ctx->level == MY_SOL && ctx->optname == MY_OPTNAME) {
-+			/* do something */
-+			ctx->optlen = -1;
-+			return 1;
-+		}
-+
-+		/* Modify kernel's socket option. */
-+		if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
-+			optval[0] = ...;
-+			return 1;
-+		}
-+
-+		/* optval larger than PAGE_SIZE use kernel's buffer. */
-+		if (ctx->optlen > PAGE_SIZE)
-+			ctx->optlen = 0;
-+
-+		return 1;
-+	}
-+
- See ``tools/testing/selftests/bpf/progs/sockopt_sk.c`` for an example
- of BPF program that handles socket options.
--- 
-2.40.1.495.gc816e09b53d-goog
+> On Apr 23, 2023, at 5:18 PM, Martin KaFai Lau <martin.lau@linux.dev> =
+wrote:
+>=20
+> On 4/18/23 8:31 AM, Aditi Ghag wrote:
+>> This is a preparatory commit to remove the field. The field was
+>> previously shared between proc fs and BPF UDP socket iterators. As =
+the
+>> follow-up commits will decouple the implementation for the iterators,
+>> remove the field. As for BPF socket iterator, filtering of sockets is
+>> exepected to be done in BPF programs.
+>> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+>> ---
+>>  include/net/udp.h |  1 -
+>>  net/ipv4/udp.c    | 34 ++++------------------------------
+>>  2 files changed, 4 insertions(+), 31 deletions(-)
+>> diff --git a/include/net/udp.h b/include/net/udp.h
+>> index de4b528522bb..5cad44318d71 100644
+>> --- a/include/net/udp.h
+>> +++ b/include/net/udp.h
+>> @@ -437,7 +437,6 @@ struct udp_seq_afinfo {
+>>  struct udp_iter_state {
+>>  	struct seq_net_private  p;
+>>  	int			bucket;
+>> -	struct udp_seq_afinfo	*bpf_seq_afinfo;
+>>  };
+>>    void *udp_seq_start(struct seq_file *seq, loff_t *pos);
+>> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+>> index c605d171eb2d..3c9eeee28678 100644
+>> --- a/net/ipv4/udp.c
+>> +++ b/net/ipv4/udp.c
+>> @@ -2997,10 +2997,7 @@ static struct sock *udp_get_first(struct =
+seq_file *seq, int start)
+>>  	struct udp_table *udptable;
+>>  	struct sock *sk;
+>>  -	if (state->bpf_seq_afinfo)
+>> -		afinfo =3D state->bpf_seq_afinfo;
+>> -	else
+>> -		afinfo =3D pde_data(file_inode(seq->file));
+>> +	afinfo =3D pde_data(file_inode(seq->file));
+>=20
+> I can see how this change will work after patch 4. However, this patch =
+alone cannot work independently as is. The udp bpf iter still uses the =
+udp_get_{first,next} and udp_seq_stop() up-to this patch.
+>=20
+> First, patch 3 refactoring should be done before patch 2 here. The =
+removal of 'struct udp_seq_afinfo *bpf_seq_afinfo' in patch 2 should be =
+done when all the necessary refactoring is in-place first.
+>=20
+> Also, this afinfo is passed to udp_get_table_afinfo(). How about =
+renaming udp_get_table_afinfo() to udp_get_table_seq() and having it =
+take the "seq" as the arg instead. This probably will deserve another =
+refactoring patch before finally removing bpf_seq_afinfo. Something like =
+this (un-compiled code):
+>=20
+> static struct udp_table *udp_get_table_seq(struct seq_file *seq,
+>                                           struct net *net)
+> {
+> 	const struct udp_seq_afinfo *afinfo;
+>=20
+>        if (st->bpf_seq_afinfo)
+>                return net->ipv4.udp_table;
+>=20
+> 	afinfo =3D pde_data(file_inode(seq->file));
+>        return afinfo->udp_table ? : net->ipv4.udp_table;
+> }
+>=20
+> Of course, when the later patch finally removes the bpf_seq_afinfo, =
+the 'if (st->bpf_seq_afinfo)' test should be replaced with the 'if =
+(seq->op =3D=3D &bpf_iter_udp_seq_ops)' test.
+>=20
+> That will also make the afinfo dance in bpf_iter_udp_batch() in patch =
+4 goes away.
+
+Sweet! I suppose it was worth resolving a few conflicts while creating =
+the new preparatory patch, especially since the refactoring simplified =
+unnecessary setting of afinfo in bpf_iter_udp_batch(). The additional =
+minor change that was needed was to forward declare =
+bpf_iter_udp_seq_ops. And of course, the if (seq->op =3D=3D =
+&bpf_iter_udp_seq_ops) check needed to be wrapped in the =
+CONFIG_BPF_SYSCALL ifdef.
+
+
+>=20
+>>    	udptable =3D udp_get_table_afinfo(afinfo, net);
+>>  @@ -3033,10 +3030,7 @@ static struct sock *udp_get_next(struct =
+seq_file *seq, struct sock *sk)
+>>  	struct udp_seq_afinfo *afinfo;
+>>  	struct udp_table *udptable;
+>>  -	if (state->bpf_seq_afinfo)
+>> -		afinfo =3D state->bpf_seq_afinfo;
+>> -	else
+>> -		afinfo =3D pde_data(file_inode(seq->file));
+>> +	afinfo =3D pde_data(file_inode(seq->file));
+>>    	do {
+>>  		sk =3D sk_next(sk);
+>> @@ -3094,10 +3088,7 @@ void udp_seq_stop(struct seq_file *seq, void =
+*v)
+>>  	struct udp_seq_afinfo *afinfo;
+>>  	struct udp_table *udptable;
+>>  -	if (state->bpf_seq_afinfo)
+>> -		afinfo =3D state->bpf_seq_afinfo;
+>> -	else
+>> -		afinfo =3D pde_data(file_inode(seq->file));
+>> +	afinfo =3D pde_data(file_inode(seq->file));
+>>    	udptable =3D udp_get_table_afinfo(afinfo, seq_file_net(seq));
+>>  @@ -3415,28 +3406,11 @@ DEFINE_BPF_ITER_FUNC(udp, struct =
+bpf_iter_meta *meta,
+>>    static int bpf_iter_init_udp(void *priv_data, struct =
+bpf_iter_aux_info *aux)
+>>  {
+>> -	struct udp_iter_state *st =3D priv_data;
+>> -	struct udp_seq_afinfo *afinfo;
+>> -	int ret;
+>> -
+>> -	afinfo =3D kmalloc(sizeof(*afinfo), GFP_USER | __GFP_NOWARN);
+>> -	if (!afinfo)
+>> -		return -ENOMEM;
+>> -
+>> -	afinfo->family =3D AF_UNSPEC;
+>> -	afinfo->udp_table =3D NULL;
+>> -	st->bpf_seq_afinfo =3D afinfo;
+>> -	ret =3D bpf_iter_init_seq_net(priv_data, aux);
+>> -	if (ret)
+>> -		kfree(afinfo);
+>> -	return ret;
+>> +	return bpf_iter_init_seq_net(priv_data, aux);
+>=20
+> Nice simplification with the bpf_seq_afinfo cleanup.
+>=20
+>>  }
+>>    static void bpf_iter_fini_udp(void *priv_data)
+>>  {
+>> -	struct udp_iter_state *st =3D priv_data;
+>> -
+>> -	kfree(st->bpf_seq_afinfo);
+>>  	bpf_iter_fini_seq_net(priv_data);
+>>  }
 
