@@ -2,253 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B666F315C
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 15:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BA06F316A
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 15:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjEANBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 09:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S232511AbjEANKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 09:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjEANBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 09:01:05 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD3DFD;
-        Mon,  1 May 2023 06:01:03 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4edcdfa8638so3061125e87.2;
-        Mon, 01 May 2023 06:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682946061; x=1685538061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kHw8Wqykebv4v2wIJmrv/QbMhmd2RawI/W+0ecfUZyA=;
-        b=ZDR5KhHKcNql2+upLP8v811c7IXfgDiaXT+/CJHGwmKIbEp7FVq5ewfrfoM3eJiDBf
-         EG2iLc0ipVTLFwdoau2fjsfJPhZF4gSXu26VycvAalTZFG5/E61ZVNlvzJFsEP0KPl+j
-         5LrWZLfdjVaSD/GF9HAxrBDd2qv9oBUdyGyN+yZbMJS+eKNMBiVzYqkN8cD0VqPB6If6
-         qcmNPG9rVOoU7R7WxDCbDW9htTE5awJp8CH5GCfObQkf8b7gmt0iKsfDaUN/A6y1axAX
-         Vojs+/p2kEB0Nllr5vahn8MvI0qaypzGMMmGcqfUFAQSBRXRC8eFMlS+2UKsoujDrIZp
-         Vbew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682946061; x=1685538061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kHw8Wqykebv4v2wIJmrv/QbMhmd2RawI/W+0ecfUZyA=;
-        b=U3Azcqyr9UV2NgUtVHOb2SA71s+R7A1FdXEbQ5KSQJ1IC/PdbGpVDLTQ1eME4ajpSV
-         EVTtkbRSlkCoZA47zL8oc9PYh05d87YNGretHvUZx9CD2v4wBVmJXJvgRSEdEfqLP42b
-         djImgZSsQAH4x8dcj0J3VuTMdaDHa0MAuO8julN2vvM0ngTB0qLJRGusLYl4u3+rc+Fy
-         VBFiwuxoSLzRt5GyobkR7AMTJ0oXw41hlSwIJ7eaRI3QY9WKyyRjfRGqPshiwcH/GINj
-         4Di/b/AqUNYz//kRs3N9kV9SO48RIkhiZJ069ZiSGikTGBkyNgkCInEKAEdCnV8r5c+L
-         L9ig==
-X-Gm-Message-State: AC+VfDwHd25CO2pXxYhRYHElsScwmmTUJpuP1+weZxQfU0U2V+m10J3z
-        VNOvwKsjblDaeemzLpBKvrc=
-X-Google-Smtp-Source: ACHHUZ58BxYKLqZvjNkIO0jwcFJOaOslwzj1axDy37xkUsYuE9Pa4ODVzU+v/w3vB9YvEotscbxvnA==
-X-Received: by 2002:ac2:51b7:0:b0:4f1:1d32:6d67 with SMTP id f23-20020ac251b7000000b004f11d326d67mr969608lfk.39.1682946061177;
-        Mon, 01 May 2023 06:01:01 -0700 (PDT)
-Received: from eg ([2a01:799:1727:1d00:7e7d:d8bc:5837:ddb2])
-        by smtp.gmail.com with ESMTPSA id l2-20020a05651c10c200b002a8afccf545sm4695307ljn.127.2023.05.01.06.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 06:01:00 -0700 (PDT)
-Date:   Mon, 1 May 2023 15:00:58 +0200
-From:   Espen Grindhaug <espen.grindhaug@gmail.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] libbpf: Improve version handling when attaching uprobe
-Message-ID: <ZE+4Ct7ZMecFy7YV@eg>
-References: <ZEV/EzOM+TJomP66@eg>
- <07e05c57-feb7-5482-9c07-eb41f976f9fd@meta.com>
- <ZErK0M/qAi/VS8U8@eg>
- <0e7b884a-05c3-83c7-0de1-9bfe14ff77b3@meta.com>
+        with ESMTP id S232269AbjEANKG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 09:10:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8A3138;
+        Mon,  1 May 2023 06:10:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1C7861B6F;
+        Mon,  1 May 2023 13:10:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CEAC433D2;
+        Mon,  1 May 2023 13:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682946603;
+        bh=q2LOo8DZ9DzX1K6opUxUJKbSPw9UrShTgYCNc5S37L8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TdduOyfNOkTCjAv14d3Lbf9w5DBNPd0/lgbyP4WSEG0XLE0j63VoCXtV6HRv7Z6lC
+         OdXXjXNSaZdYRVUw+ukp0soq9TXfKZa/zJhNL53jRsaSrmX++uDC4dTYt0k5MoVOvf
+         BRCmGT6SAH0ji9ORNqjd/c5p+H476wR3cczYOIJrVQGyxAhnAVA/31+HMZvfSgl5bs
+         G3l2huYI66XslSaCxLVNJfX/Mzg3sTbbq1ClJgPMnrSFLJ/7laYDZ9LGDdwvcptHWT
+         gLUz+qqqCzcMM1ftLUE3ArN2c9TXXv4azrxFJyn0N/NfSoeF/q7i/xi/bASMWaUJGu
+         BwcdAkeW5y5mQ==
+Date:   Mon, 1 May 2023 15:09:58 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
+        andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, alardam@gmail.com,
+        memxor@gmail.com, sdf@google.com, brouer@redhat.com,
+        toke@redhat.com
+Subject: Re: [PATCH v2 net] bonding: add xdp_features support
+Message-ID: <ZE+6JvsLC/n3TfQA@lore-desk>
+References: <e82117190648e1cbb2740be44de71a21351c5107.1682848658.git.lorenzo@kernel.org>
+ <95779.1682945812@vermin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aZYSzkC+IhWowyJX"
 Content-Disposition: inline
-In-Reply-To: <0e7b884a-05c3-83c7-0de1-9bfe14ff77b3@meta.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <95779.1682945812@vermin>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 27, 2023 at 06:19:29PM -0700, Yonghong Song wrote:
->
->
-> On 4/27/23 12:19 PM, Espen Grindhaug wrote:
-> > On Wed, Apr 26, 2023 at 02:47:27PM -0700, Yonghong Song wrote:
-> > >
-> > >
-> > > On 4/23/23 11:55 AM, Espen Grindhaug wrote:
-> > > > This change fixes the handling of versions in elf_find_func_offset.
-> > > > In the previous implementation, we incorrectly assumed that the
-> > >
-> > > Could you give more explanation/example in the commit message
-> > > what does 'incorrectly' mean here? In which situations the
-> > > current libbpf implementation will not be correct?
-> > >
+
+--aZYSzkC+IhWowyJX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>=20
+> >Introduce xdp_features support for bonding driver according to the slave
+> >devices attached to the master one. xdp_features is required whenever we
+> >want to xdp_redirect traffic into a bond device and then into selected
+> >slaves attached to it.
 > >
-> > How about something like this?
+> >Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+> >Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>=20
+> 	The patch looks ok to me, but the description sounds more like
+> feature enablement rather than a bug fix as the "Fixes:" tag and net
+> tree suggest.
+>=20
+> Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+
+Hi Jay,
+
+I think it is a fix because otherwise XDP_REDIRECT into a bond device
+is failing and the feature is already in Linus's tree.
+
+Regards,
+Lorenzo
+
+>=20
+> 	-J
+>=20
+> >---
+> >Change since v1:
+> >- remove bpf self-test patch from the series
+> >---
+> > drivers/net/bonding/bond_main.c    | 48 ++++++++++++++++++++++++++++++
+> > drivers/net/bonding/bond_options.c |  2 ++
+> > include/net/bonding.h              |  1 +
+> > 3 files changed, 51 insertions(+)
 > >
-> >
-> > libbpf: Improve version handling when attaching uprobe
-> >
-> > This change fixes the handling of versions in elf_find_func_offset.
-> >
-> > For example, let's assume we are trying to attach an uprobe to pthread_create in
-> > glibc. Prior to this commit, it would fail with an error message saying 'elf:
-> > ambiguous match [...]', this is because there are two entries in the symbol
-> > table with that name.
-> >
-> > $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep pthread_create
-> > 0000000000094cc0 T pthread_create@GLIBC_2.2.5
-> > 0000000000094cc0 T pthread_create@@GLIBC_2.34
-> >
-> > So we go ahead and modify our code to attach to 'pthread_create@@GLIBC_2.34',
-> > and this also fails, but this time with the error 'elf: failed to find symbol
-> > [...]'. This fails because we incorrectly assumed that the version information
-> > would be present in the string found in the string table, but there is only the
-> > string 'pthread_create'.
->
-> I tried one example with my centos8 libpthread library.
->
-> $ llvm-readelf -s /lib64/libc-2.28.so | grep pthread_cond_signal
->     39: 0000000000095f70    43 FUNC    GLOBAL DEFAULT    14
-> pthread_cond_signal@@GLIBC_2.3.2
->     40: 0000000000096250    43 FUNC    GLOBAL DEFAULT    14
-> pthread_cond_signal@GLIBC_2.2.5
->   3160: 0000000000096250    43 FUNC    LOCAL  DEFAULT    14
-> __pthread_cond_signal_2_0
->   3589: 0000000000095f70    43 FUNC    LOCAL  DEFAULT    14
-> __pthread_cond_signal
->   5522: 0000000000095f70    43 FUNC    GLOBAL DEFAULT    14
-> pthread_cond_signal@@GLIBC_2.3.2
->   5545: 0000000000096250    43 FUNC    GLOBAL DEFAULT    14
-> pthread_cond_signal@GLIBC_2.2.5
-> $ nm -D /lib64/libc-2.28.so | grep pthread_cond_signal
-> 0000000000095f70 T pthread_cond_signal@@GLIBC_2.3.2
-> 0000000000096250 T pthread_cond_signal@GLIBC_2.2.5
-> $
->
-> Note that two pthread_cond_signal functions have different addresses,
-> which is expected as they implemented for different versions.
->
-> But in your case,
-> > $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep pthread_create
-> > 0000000000094cc0 T pthread_create@GLIBC_2.2.5
-> > 0000000000094cc0 T pthread_create@@GLIBC_2.34
->
-> Two functions have the same address which is very weird and I suspect
-> some issues here at least needs some investigation.
->
+> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_=
+main.c
+> >index 710548dbd0c1..c98121b426a4 100644
+> >--- a/drivers/net/bonding/bond_main.c
+> >+++ b/drivers/net/bonding/bond_main.c
+> >@@ -1789,6 +1789,45 @@ static void bond_ether_setup(struct net_device *b=
+ond_dev)
+> > 	bond_dev->priv_flags &=3D ~IFF_TX_SKB_SHARING;
+> > }
+> >=20
+> >+void bond_xdp_set_features(struct net_device *bond_dev)
+> >+{
+> >+	struct bonding *bond =3D netdev_priv(bond_dev);
+> >+	xdp_features_t val =3D NETDEV_XDP_ACT_MASK;
+> >+	struct list_head *iter;
+> >+	struct slave *slave;
+> >+
+> >+	ASSERT_RTNL();
+> >+
+> >+	if (!bond_xdp_check(bond)) {
+> >+		xdp_clear_features_flag(bond_dev);
+> >+		return;
+> >+	}
+> >+
+> >+	bond_for_each_slave(bond, slave, iter) {
+> >+		struct net_device *dev =3D slave->dev;
+> >+
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_BASIC)) {
+> >+			xdp_clear_features_flag(bond_dev);
+> >+			return;
+> >+		}
+> >+
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_REDIRECT))
+> >+			val &=3D ~NETDEV_XDP_ACT_REDIRECT;
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
+> >+			val &=3D ~NETDEV_XDP_ACT_NDO_XMIT;
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_XSK_ZEROCOPY))
+> >+			val &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_HW_OFFLOAD))
+> >+			val &=3D ~NETDEV_XDP_ACT_HW_OFFLOAD;
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_RX_SG))
+> >+			val &=3D ~NETDEV_XDP_ACT_RX_SG;
+> >+		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG))
+> >+			val &=3D ~NETDEV_XDP_ACT_NDO_XMIT_SG;
+> >+	}
+> >+
+> >+	xdp_set_features_flag(bond_dev, val);
+> >+}
+> >+
+> > /* enslave device <slave> to bond device <master> */
+> > int bond_enslave(struct net_device *bond_dev, struct net_device *slave_=
+dev,
+> > 		 struct netlink_ext_ack *extack)
+> >@@ -2236,6 +2275,8 @@ int bond_enslave(struct net_device *bond_dev, stru=
+ct net_device *slave_dev,
+> > 			bpf_prog_inc(bond->xdp_prog);
+> > 	}
+> >=20
+> >+	bond_xdp_set_features(bond_dev);
+> >+
+> > 	slave_info(bond_dev, slave_dev, "Enslaving as %s interface with %s lin=
+k\n",
+> > 		   bond_is_active_slave(new_slave) ? "an active" : "a backup",
+> > 		   new_slave->link !=3D BOND_LINK_DOWN ? "an up" : "a down");
+> >@@ -2483,6 +2524,7 @@ static int __bond_release_one(struct net_device *b=
+ond_dev,
+> > 	if (!netif_is_bond_master(slave_dev))
+> > 		slave_dev->priv_flags &=3D ~IFF_BONDING;
+> >=20
+> >+	bond_xdp_set_features(bond_dev);
+> > 	kobject_put(&slave->kobj);
+> >=20
+> > 	return 0;
+> >@@ -3930,6 +3972,9 @@ static int bond_slave_netdev_event(unsigned long e=
+vent,
+> > 		/* Propagate to master device */
+> > 		call_netdevice_notifiers(event, slave->bond->dev);
+> > 		break;
+> >+	case NETDEV_XDP_FEAT_CHANGE:
+> >+		bond_xdp_set_features(bond_dev);
+> >+		break;
+> > 	default:
+> > 		break;
+> > 	}
+> >@@ -5874,6 +5919,9 @@ void bond_setup(struct net_device *bond_dev)
+> > 	if (BOND_MODE(bond) =3D=3D BOND_MODE_ACTIVEBACKUP)
+> > 		bond_dev->features |=3D BOND_XFRM_FEATURES;
+> > #endif /* CONFIG_XFRM_OFFLOAD */
+> >+
+> >+	if (bond_xdp_check(bond))
+> >+		bond_dev->xdp_features =3D NETDEV_XDP_ACT_MASK;
+> > }
+> >=20
+> > /* Destroy a bonding device.
+> >diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bo=
+nd_options.c
+> >index f71d5517f829..0498fc6731f8 100644
+> >--- a/drivers/net/bonding/bond_options.c
+> >+++ b/drivers/net/bonding/bond_options.c
+> >@@ -877,6 +877,8 @@ static int bond_option_mode_set(struct bonding *bond,
+> > 			netdev_update_features(bond->dev);
+> > 	}
+> >=20
+> >+	bond_xdp_set_features(bond->dev);
+> >+
+> > 	return 0;
+> > }
+> >=20
+> >diff --git a/include/net/bonding.h b/include/net/bonding.h
+> >index c3843239517d..a60a24923b55 100644
+> >--- a/include/net/bonding.h
+> >+++ b/include/net/bonding.h
+> >@@ -659,6 +659,7 @@ void bond_destroy_sysfs(struct bond_net *net);
+> > void bond_prepare_sysfs_group(struct bonding *bond);
+> > int bond_sysfs_slave_add(struct slave *slave);
+> > void bond_sysfs_slave_del(struct slave *slave);
+> >+void bond_xdp_set_features(struct net_device *bond_dev);
+> > int bond_enslave(struct net_device *bond_dev, struct net_device *slave_=
+dev,
+> > 		 struct netlink_ext_ack *extack);
+> > int bond_release(struct net_device *bond_dev, struct net_device *slave_=
+dev);
+> >--=20
+> >2.40.0
+>=20
+> ---
+> 	-Jay Vosburgh, jay.vosburgh@canonical.com
 
-I am no expert on this, but as far as I can tell, this is normal,
-although much more common on my Ubuntu machine than my Fedora machine.
+--aZYSzkC+IhWowyJX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Script to find duplicates:
+-----BEGIN PGP SIGNATURE-----
 
-nm -D /usr/lib64/libc-2.33.so | awk '
-{
-    addr = $1;
-    symbol = $3;
-    sub(/[@].*$/, "", symbol);
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZE+6JgAKCRA6cBh0uS2t
+rCmDAP0YWdd3vbHbl+csot+5Jm0snxLyVoTDst1/Y324Ff769QD+JtxmO6ksrwt4
+9ypI9AL5rUk2JlfdZIv3W8829cnajQA=
+=5EAL
+-----END PGP SIGNATURE-----
 
-    if (addr == prev_addr && symbol == prev_symbol) {
-        if (prev_symbol_printed == 0) {
-            print prev_line;
-            prev_symbol_printed = 1;
-        }
-        print;
-    } else {
-        prev_symbol_printed = 0;
-    }
-    prev_addr = addr;
-    prev_symbol = symbol;
-    prev_line = $0;
-}'
-
-
-> Second, for the symbol table, the following is ELF encoding,
->
-> typedef struct {
->         Elf64_Word      st_name;
->         unsigned char   st_info;
->         unsigned char   st_other;
->         Elf64_Half      st_shndx;
->         Elf64_Addr      st_value;
->         Elf64_Xword     st_size;
-> } Elf64_Sym;
->
-> where
-> st_name
->
->     An index into the object file's symbol string table, which holds the
-> character representations of the symbol names. If the value is nonzero, the
-> value represents a string table index that gives the symbol name. Otherwise,
-> the symbol table entry has no name.
->
-> So, the function name (including @..., @@...) should be in string table
-> which is the same for the above two pthread_cond_signal symbols.
->
-> I think it is worthwhile to debug why in your situation
-> pthread_create@GLIBC_2.2.5 and pthread_create@@GLIBC_2.34 do not
-> have them in the string table.
->
-
-I think you are mistaken here; the strings in the strings table don't contain
-the version. Take a look at this partial dump of the strings table.
-
-	$ readelf -W -p .dynstr /usr/lib64/libc-2.33.so
-
-	String dump of section '.dynstr':
-		[     1]  xdrmem_create
-		[     f]  __wctomb_chk
-		[    1c]  getmntent
-		[    26]  __freelocale
-		[    33]  __rawmemchr
-		[    3f]  _IO_vsprintf
-		[    4c]  getutent
-		[    55]  __file_change_detection_for_path
-	(...)
-		[  350e]  memrchr
-		[  3516]  pthread_cond_signal
-		[  352a]  __close
-	(...)
-		[  61b6]  GLIBC_2.2.5
-		[  61c2]  GLIBC_2.2.6
-		[  61ce]  GLIBC_2.3
-		[  61d8]  GLIBC_2.3.2
-		[  61e4]  GLIBC_2.3.3
-
-As you can see, the strings have no versions, and the version strings
-themselves are also in this table as entries at the end of the table.
-
-> >
-> > This patch reworks how we compare the symbol name provided by the user if it is
-> > qualified with a version (using @ or @@). We now look up the correct version
-> > string in the version symbol table before constructing the full name, as also
-> > done above by nm, before comparing.
-> >
-> > > > version information would be present in the string found in the
-> > > > string table.
-> > > >
-> > > > We now look up the correct version string in the version symbol
-> > > > table before constructing the full name and then comparing.
-> > > >
-> > > > This patch adds support for both name@version and name@@version to
-> > > > match output of the various elf parsers.
-> > > >
-> > > > Signed-off-by: Espen Grindhaug <espen.grindhaug@gmail.com>
-> > >
-> > > [...]
+--aZYSzkC+IhWowyJX--
