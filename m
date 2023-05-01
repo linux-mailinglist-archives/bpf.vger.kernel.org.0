@@ -2,151 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ACB6F2F24
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 09:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092D86F3014
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 12:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjEAH10 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 03:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
+        id S231166AbjEAKME (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 06:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjEAH1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 03:27:24 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F773E55
-        for <bpf@vger.kernel.org>; Mon,  1 May 2023 00:27:22 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-64115eef620so25138864b3a.1
-        for <bpf@vger.kernel.org>; Mon, 01 May 2023 00:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1682926042; x=1685518042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ibXuk7FbYrowdFzsiIEHtgPKzlyAO+Sfsye0fqZ102E=;
-        b=IKlhLUer77vP+NjL6egKLZ4SBjsZvxj/D3clB+asMNMvxbEKZVyD67jL8L+HgQcTZP
-         bx2+VCvjy6HeCWRCAKSjdVeCtOUPiNZOnarnxDf2Ay6KT0thLI2fnISAw3lEGAFT3jl2
-         kDsM3kvKxVx4yCWkUsfVNm1hwj4coNk2oyMCtjatrEV3EX4+4UoJMiPf3zbEvc9Jjg1m
-         0bcMJvDlbUEMRKu34+4Ed5M78tX9h6w4sQUUsnBU8Gli1HsSt1NKbMvyBp/4K2SrmTSi
-         DEZoHLZVnAjL+yBP9KaRc6NDRzIuI950QrEuS8Jegk9aH6BmTEHBRYboZ8q0GghNqhi2
-         OyTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682926042; x=1685518042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ibXuk7FbYrowdFzsiIEHtgPKzlyAO+Sfsye0fqZ102E=;
-        b=B8zx0TfyKEoucKYFCVmY2D9YG4SME1ECJ8qWx1aKqHjsM7VsaREyFFv4panIVAsPii
-         sJwSjFC1jaBn/bOG7eHEFwzIqtvDpONr5ne/r37YfwPNuverZiZ+AhK2V4D0n+eX1/J7
-         30x9s/QD+hmlCQIiyzDpSuGt+QlDTuL0hK0ish6MQe0zvY5jXAXB1IhzqC4cQHuahuad
-         Cc/jZT85CVFSQ36f5fAbaF63MohFicGu7eHn17ez61IhHK7r6TuBMvqVWKTyxW0rpdOu
-         /l8FcLkCaBpDbJzXVUkXb3JaY/9TsO5Cldm/K4V86m6dlij2/jq6p6zGSHG6rxcVW6cL
-         X/Fw==
-X-Gm-Message-State: AC+VfDxA/bIvSiiRQwAy+x6GvOGaC8/LN+JscbJHV26/EZ+2xERP911r
-        nH0Ktb8fBpLG0wWRwrR/RBrYaw==
-X-Google-Smtp-Source: ACHHUZ4UvG80mxUfpvf1acfCnS2H3KC6jDEcSFVNzFYuXXy+v/xi65gkE5IdZ0bX/96Zq1X5x+FUpg==
-X-Received: by 2002:a05:6a00:a16:b0:63d:3c39:ecc2 with SMTP id p22-20020a056a000a1600b0063d3c39ecc2mr17292848pfh.12.1682926041931;
-        Mon, 01 May 2023 00:27:21 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-88-204.pa.nsw.optusnet.com.au. [49.181.88.204])
-        by smtp.gmail.com with ESMTPSA id t40-20020a056a0013a800b0063d29df1589sm19371079pfg.136.2023.05.01.00.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 00:27:21 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1ptNwM-009yXy-1S; Mon, 01 May 2023 17:27:18 +1000
-Date:   Mon, 1 May 2023 17:27:18 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        David Hildenbrand <david@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        with ESMTP id S229921AbjEAKMD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 06:12:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C87E6;
+        Mon,  1 May 2023 03:12:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F8E160C7E;
+        Mon,  1 May 2023 10:12:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60A2AC433EF;
+        Mon,  1 May 2023 10:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682935921;
+        bh=h0t6NLf28prZTTjCPR1Idcg/q0s9kcDfK8NqSvKf9Wg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dEaWyI/CIBFupTdf6wvte2v2hgOI6xJANFSpjayG1ygaBG28VelaFIbxGEYuVkspv
+         6Ro8HmET4h5E0O+UDLGAW9jPImuxYW+CsXljIuBUB1wIQzxpMYQigLhrlaLo9UihR1
+         MkwRbZn+TDa32ap06T1+J9zpOLXQKGegiNAJfPKtELKVU/xnaR1i/I8YSMZQnR8MaY
+         eP2iEz6DaFO/7aa9rRX7vUYWQ/cCMdd9XLhHbf9UppoZC1QYcS5n+q0tIpdH+28SYg
+         Vota32l8bgPMkxZDSsZFx+GlKVju0+embUiRRb3bu34xy9UfKx6msvKUu93eRlRRgk
+         CP8ILqYJaF7Zg==
+Date:   Mon, 1 May 2023 19:11:57 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v5] mm/gup: disallow GUP writing to file-backed mappings
- by default
-Message-ID: <20230501072718.GF2155823@dread.disaster.area>
-References: <6b73e692c2929dc4613af711bdf92e2ec1956a66.1682638385.git.lstoakes@gmail.com>
- <afcc124e-7a9b-879c-dfdf-200426b84e24@redhat.com>
- <ZEvZtIb2EDb/WudP@nvidia.com>
- <ZEwPscQu68kx32zF@mit.edu>
- <ZEwVbPM2OPSeY21R@nvidia.com>
- <ZEybNZ7Rev+XM4GU@mit.edu>
- <ZE2ht9AGx321j0+s@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZE2ht9AGx321j0+s@nvidia.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH v7 08/11] tracing/probes: Add BTF retval type support
+Message-Id: <20230501191157.fc28453f345f415ae76bb82c@kernel.org>
+In-Reply-To: <168255834145.2565678.12184411713423630481.stgit@mhiramat.roam.corp.google.com>
+References: <168255826500.2565678.17719875734305974633.stgit@mhiramat.roam.corp.google.com>
+        <168255834145.2565678.12184411713423630481.stgit@mhiramat.roam.corp.google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 29, 2023 at 08:01:11PM -0300, Jason Gunthorpe wrote:
-> On Sat, Apr 29, 2023 at 12:21:09AM -0400, Theodore Ts'o wrote:
+On Thu, 27 Apr 2023 10:19:01 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> > In any case, the file system maintainers' position (mine and I doubt
-> > Dave Chinner's position has changed) is that if you write to
-> > file-backed mappings via GUP/RDMA/process_vm_writev, and it causes
-> > silent data corruption, you get to keep both pieces, and don't go
-> > looking for us for anything other than sympathy...
+> Check the target function has non-void retval type and set the correct
+> fetch type if user doesn't specify it.
+> If the function returns void, $retval is rejected as below;
 > 
-> This alone is enough reason to block it. I'm tired of this round and
-> round and I think we should just say enough, the mm will work to
-> enforce this view point. Files can only be written through PTEs.
+>  # echo 'f unregister_kprobes%return $retval' >> dynamic_events
+> sh: write error: No such file or directory
+>  # cat error_log
+> [   37.488397] trace_fprobe: error: This function returns 'void' type
+>   Command: f unregister_kprobes%return $retval
+>                                        ^
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+> Changes in v7:
+>  - Introduce this as a new patch.
+> ---
+>  kernel/trace/trace_probe.c |   65 +++++++++++++++++++++++++++++++++++++++++---
+>  kernel/trace/trace_probe.h |    1 +
+>  2 files changed, 61 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index 4c3c70862a9a..16d8edfe3d15 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -371,13 +371,13 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+>  	return NULL;
+>  }
+>  
+> -static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
+> +static const struct btf_type *find_btf_func_proto(const char *funcname)
+>  {
+>  	struct btf *btf = traceprobe_get_btf();
+>  	const struct btf_type *t;
+>  	s32 id;
+>  
+> -	if (!btf || !funcname || !nr)
+> +	if (!btf || !funcname)
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> @@ -394,6 +394,20 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
+>  	if (!btf_type_is_func_proto(t))
+>  		return ERR_PTR(-ENOENT);
+>  
+> +	return t;
+> +}
+> +
+> +static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
+> +{
+> +	const struct btf_type *t;
+> +
+> +	if (!funcname || !nr)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	t = find_btf_func_proto(funcname);
+> +	if (IS_ERR(t))
+> +		return (const struct btf_param *)t;
+> +
+>  	*nr = btf_type_vlen(t);
+>  
+>  	if (*nr)
+> @@ -452,6 +466,32 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
+>  	return find_fetch_type(typestr, ctx->flags);
+>  }
+>  
+> +static const struct fetch_type *parse_btf_retval_type(
+> +					struct traceprobe_parse_context *ctx)
+> +{
+> +	struct btf *btf = traceprobe_get_btf();
+> +	const char *typestr = NULL;
+> +	const struct btf_type *t;
+> +
+> +	if (btf && ctx->funcname) {
+> +		t = find_btf_func_proto(ctx->funcname);
+> +		if (!IS_ERR(t))
+> +			typestr = type_from_btf_id(btf, t->type);
+> +	}
+> +
+> +	return find_fetch_type(typestr, ctx->flags);
+> +}
+> +
+> +static bool is_btf_retval_void(const char *funcname)
+> +{
+> +	const struct btf_type *t;
+> +
+> +	t = find_btf_func_proto(funcname);
+> +	if (IS_ERR(t))
+> +		return false;
+> +
+> +	return t->type == 0;
+> +}
+>  #else
+>  static struct btf *traceprobe_get_btf(void)
+>  {
+> @@ -469,8 +509,15 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
+>  	trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
+>  	return -EOPNOTSUPP;
+>  }
+> +
+>  #define parse_btf_arg_type(idx, ctx)		\
+>  	find_fetch_type(NULL, ctx->flags)
+> +
+> +#define parse_btf_retval_type(ctx)		\
+> +	find_fetch_type(NULL, ctx->flags)
+> +
+> +#define is_btf_retval_void(funcname)	(false)
+> +
+>  #endif
+>  
+>  #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
+> @@ -500,7 +547,12 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+>  
+>  	if (strcmp(arg, "retval") == 0) {
+>  		if (ctx->flags & TPARG_FL_RETURN) {
+> -			code->op = FETCH_OP_RETVAL;
+> +			if ((ctx->flags & TPARG_FL_KERNEL) &&
+> +			    is_btf_retval_void(ctx->funcname)) {
+> +				trace_probe_log_err(ctx->offset, NO_RETVAL);
+> +				ret = -ENOENT;
+> +			} else
+> +				code->op = FETCH_OP_RETVAL;
+>  		} else {
+>  			trace_probe_log_err(ctx->offset, RETVAL_ON_PROBE);
+>  			ret = -EINVAL;
+> @@ -887,9 +939,12 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+>  		goto fail;
+>  
+>  	/* Update storing type if BTF is available */
+> -	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
+> -	    !t && code->op == FETCH_OP_ARG)
+> +	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
+> +	    if (code->op == FETCH_OP_ARG)
+>  		parg->type = parse_btf_arg_type(code->param, ctx);
+> +	    else if (code->op == FETCH_OP_RETVAL)
+> +		parg->type = parse_btf_retval_type(ctx);
+> +	}
 
-It has to be at least 5 years ago now that we were told that the
-next-gen RDMA hardware would be able to trigger hardware page faults
-when remote systems dirtied local pages.  This would enable
-->page-mkwrite to be run on file backed pages mapped pages just like
-local CPU write faults and everything would be fine.
+Oops, here are wrong indents. I have to fix this.
 
-Whatever happened to that? Are we still waiting for hardware that
-can trigger page faults from remote DMA transfers, or have hardware
-vendors given up on this?
+Thanks,
 
-Cheers,
+>  
+>  	ret = -EINVAL;
+>  	/* Store operation */
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index 8c5b029c5d62..3eb7c37c0984 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -444,6 +444,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+>  	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
+>  	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
+>  	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
+> +	C(NO_RETVAL,		"This function returns 'void' type"),	\
+>  	C(BAD_STACK_NUM,	"Invalid stack number"),		\
+>  	C(BAD_ARG_NUM,		"Invalid argument number"),		\
+>  	C(BAD_VAR,		"Invalid $-valiable specified"),	\
+> 
 
-Dave.
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
