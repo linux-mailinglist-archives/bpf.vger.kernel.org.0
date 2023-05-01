@@ -2,57 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF716F35C4
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 20:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576EB6F35C5
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 20:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbjEASXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 14:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S232178AbjEASYa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 14:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjEASXP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 14:23:15 -0400
+        with ESMTP id S229816AbjEASY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 14:24:29 -0400
 Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C03FDF
-        for <bpf@vger.kernel.org>; Mon,  1 May 2023 11:23:14 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-517bfcfe83fso1403147a12.2
-        for <bpf@vger.kernel.org>; Mon, 01 May 2023 11:23:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A174B13A
+        for <bpf@vger.kernel.org>; Mon,  1 May 2023 11:24:27 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5212ed3b16eso1412309a12.0
+        for <bpf@vger.kernel.org>; Mon, 01 May 2023 11:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682965394; x=1685557394;
+        d=google.com; s=20221208; t=1682965467; x=1685557467;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MUSvbTlQz6CHNkllC+k+THJoORehdMWbOzB7KMTGjRI=;
-        b=NSY2UQkgJUdNmi9xb/vElr6vOd0japjC/Dlvj6+Fp+VVSOb8oh/V0ZODuWXMh9xACc
-         n2sUtKa0lDtw5G0NALwqKV89oLolj4fPOOp8s2G7qPmmq+n+yqmo4u7GjJyG4UbLYveM
-         BEPvfSmSmo97Ou/x5Tc3sQqP/Zpn2uTXtLW5Q5xnWDoIb82AKKXZ16EXmFU1q2i4T1S/
-         z/jV4e3tdOpsznyhzthIBfvt4gHUF2q6SxMGa9u1gwPBSRZLe7IViIZKj5Dl7rYKHUVy
-         3+zSZpkOWdvDf2FAhGNwpI4Xh3omV8//scf5+c3xqSwq58fj6jGw0GfKNc8ngjuK7BEj
-         wBsg==
+        bh=cyrzpNd2c7gaAc1oqSQMCJ/QolEeldozvBNnNDOj5+k=;
+        b=DnMY79noAMZIEFpsM9pUvkEx9VQrcYI7ZgXuwAZe/6MRVZwg67HZZ2xGA/xDrSmTe6
+         i1HnMBO11JNO+uCVVpamxgYEevzdkhCcg8W+u1qdbCo2/mzJp/FEX70WQ1AL5A6WYt07
+         b+fVedP5jKqEp+5+UusMciMzMVzjyVyebfXoxCnb92jSCWFueAnNVns9gjkXX4yN3qK+
+         QIbEaJM0POirhLdp8IWWJcq7Fa9W/l7Oq/ruzHpBBM5kkCrRIejrS2nKc12MH0BwvFh+
+         EihglQAPh+rsYm9LSrFOCPnfcsexYH0t/0XvhXirRHZE8A6GfsTmj5vYaIo5H5+1v2Lf
+         GxIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682965394; x=1685557394;
+        d=1e100.net; s=20221208; t=1682965467; x=1685557467;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MUSvbTlQz6CHNkllC+k+THJoORehdMWbOzB7KMTGjRI=;
-        b=VUYTGt/CvoYoA2m1Pz1GlqpiSl8GpbQnr2xgKtBP5dbbBs1CM/pYjtryWLJRPiS5OS
-         GeaH0QFDh4SLBqtXYZ3ODKrkhVqbtH7lJX2QXpo+X1WNdbbWDxRN1CqWUgozBeX6pJe0
-         Q6045jCTekzbf+iAp82rwgUCz0Cmc41u2FT+/Wk1h8HPQX0AW/r3naX6qMemW5DEB+VB
-         1XwoePqJmm+JHTsUEsgXh133svde6JmDPrjrvO1BBYfAUDbKvbTLt0V7LJps5fsDmzL3
-         9buzYaqfn+Nf6BiJqG5d59x6i3DEwudadYBLbQilL0TXw0A1OewbzFG8PirusnzrPuyC
-         JVRA==
-X-Gm-Message-State: AC+VfDxbBcGKqsunE4w/cop2wKE9+2x2Pn4pF/C7Flhu1khLAEbLDJeI
-        iF7iPo9aNmUOxmMi94SLIjl2A9A=
-X-Google-Smtp-Source: ACHHUZ6xxKM1sECNIAxpnS9QpXHVBhSR0L+Gt+wT2/ZG8Ip9qDhsM+iQBwCRKJxqv6LfApSmtBa2sjQ=
+        bh=cyrzpNd2c7gaAc1oqSQMCJ/QolEeldozvBNnNDOj5+k=;
+        b=LrLoGCyFaUP7d/zIMsHaqoH54+y7FUtUWOVrJjhMl4VbAgrP/6O6gm2rw6WxTexS6C
+         W5MCAXYa2rjUTmhdF+zTk/ck3+lnJVe4+gG8vlhNAwmMXzYr/Ui/lXjAXacRtl37Ztkq
+         pJwhzJOwtBei6w9A+PUBakOFFxK0gsBGlyEiVCdFksE8YRvxTxy/UOm8Ge86MUReOviX
+         +OgqEIwN2DUZ9LMFDBOui9MZ4DSUBIDmhIPfgLeVEb4mg1ZPAOMJ248luE25n9wljzw2
+         RSSZLb/AlFR0CP6n3PyxZ/RMOLfsWjn/7ac4rYEB7Z6n49tyV4DjXV/n3nltfJPlFYK+
+         84/A==
+X-Gm-Message-State: AC+VfDwB+Z7NgdIQLC6jsSs63uf53fXI4+12+EzJFNIyIi7GOOu36rGT
+        fe5xsZQr9Bzrfpcx29XM/enN4j8=
+X-Google-Smtp-Source: ACHHUZ5k8XHiSx38IGdzelrOQdr6EpI+VwPDu+FizVXuTdxTdtO5JmwmqaS+ybW4TMmPogpLe8VpFok=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:6c85:0:b0:52c:3fd6:6ae0 with SMTP id
- h127-20020a636c85000000b0052c3fd66ae0mr88042pgc.12.1682965393928; Mon, 01 May
- 2023 11:23:13 -0700 (PDT)
-Date:   Mon, 1 May 2023 11:23:12 -0700
-In-Reply-To: <ZE/tzq0v/zkfO6cl@toolbox>
+ (user=sdf job=sendgmr) by 2002:a63:6904:0:b0:51b:500e:55d3 with SMTP id
+ e4-20020a636904000000b0051b500e55d3mr3622469pgc.6.1682965467155; Mon, 01 May
+ 2023 11:24:27 -0700 (PDT)
+Date:   Mon, 1 May 2023 11:24:25 -0700
+In-Reply-To: <20230428222754.183432-3-inwardvessel@gmail.com>
 Mime-Version: 1.0
-References: <20230428222754.183432-1-inwardvessel@gmail.com>
- <20230428222754.183432-2-inwardvessel@gmail.com> <ZExdsHwc6Gy716am@google.com>
- <ZE/tzq0v/zkfO6cl@toolbox>
-Message-ID: <ZFADkPfQq7vKuOaH@google.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: add capability for resizing datasec maps
+References: <20230428222754.183432-1-inwardvessel@gmail.com> <20230428222754.183432-3-inwardvessel@gmail.com>
+Message-ID: <ZFAD2VKGJWGUnxHb@google.com>
+Subject: Re: [PATCH bpf-next 2/2] libbpf: selftests for resizing datasec maps
 From:   Stanislav Fomichev <sdf@google.com>
 To:     JP Kobryn <inwardvessel@gmail.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, kernel-team@meta.com
@@ -67,163 +65,260 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/01, JP Kobryn wrote:
-> On Fri, Apr 28, 2023 at 04:58:40PM -0700, Stanislav Fomichev wrote:
-> > On 04/28, JP Kobryn wrote:
-> > > This patch updates bpf_map__set_value_size() so that if the given map is a
-> > > datasec, it will attempt to resize it. If the following criteria is met,
-> > > the resizing can be performed:
-> > >  - BTF info is present
-> > >  - the map is a datasec
-> > >  - the datasec contains a single variable
-> > >  - the single variable is an array
-> > > 
-> > > The new map_datasec_resize() function is used to perform the resizing
-> > > of the associated memory mapped region and adjust BTF so that the original
-> > > array variable points to a new BTF array that is sized to cover the
-> > > requested size. The new array size will be rounded up to a multiple of
-> > > the element size.
-> > > 
-> > > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 138 +++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 138 insertions(+)
-> > > 
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 1cbacf9e71f3..991649cacc10 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -9412,12 +9412,150 @@ __u32 bpf_map__value_size(const struct bpf_map *map)
-> > >  	return map->def.value_size;
-> > >  }
-> > >  
-> > > +static bool map_is_datasec(struct bpf_map *map)
-> > > +{
-> > > +	struct btf *btf;
-> > > +	struct btf_type *map_type;
-> > > +
-> > > +	btf = bpf_object__btf(map->obj);
-> > > +	if (!btf)
-> > > +		return false;
-> > > +
-> > > +	map_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
-> > > +
-> > > +	return btf_is_datasec(map_type);
-> > > +}
-> > > +
-> > > +static int map_datasec_resize(struct bpf_map *map, __u32 size)
-> > > +{
-> > > +	int err;
-> > > +	struct btf *btf;
-> > > +	struct btf_type *datasec_type, *var_type, *resolved_type, *array_element_type;
-> > > +	struct btf_var_secinfo *var;
-> > > +	struct btf_array *array;
-> > > +	__u32 resolved_id, new_array_id;
-> > > +	__u32 rounded_sz;
-> > > +	__u32 nr_elements;
-> > > +	__u32 old_value_sz = map->def.value_size;
-> > > +	size_t old_mmap_sz, new_mmap_sz;
-> > > +
-> > > +	/* btf is required and datasec map must be memory mapped */
-> > > +	btf = bpf_object__btf(map->obj);
-> > > +	if (!btf) {
-> > > +		pr_warn("cannot resize datasec map '%s' while btf info is not present\n",
-> > > +				bpf_map__name(map));
-> > > +
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	datasec_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
-> > > +	if (!btf_is_datasec(datasec_type)) {
-> > > +		pr_warn("attempted to resize datasec map '%s' but map is not a datasec\n",
-> > > +				bpf_map__name(map));
-> > > +
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	if (!map->mmaped) {
-> > > +		pr_warn("cannot resize datasec map '%s' while map is unexpectedly not memory mapped\n",
-> > > +				bpf_map__name(map));
-> > > +
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	/* datasec must only have a single variable */
-> > > +	if (btf_vlen(datasec_type) != 1) {
-> > > +		pr_warn("cannot resize datasec map '%s' that does not consist of a single var\n",
-> > > +				bpf_map__name(map));
-> > > +
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	/* the single variable has to be an array */
-> > > +	var = btf_var_secinfos(datasec_type);
-> > > +	resolved_id = btf__resolve_type(btf, var->type);
-> > > +	resolved_type = btf_type_by_id(btf, resolved_id);
-> > > +	if (!btf_is_array(resolved_type)) {
-> > > +		pr_warn("cannot resize datasec map '%s' whose single var is not an array\n",
-> > > +				bpf_map__name(map));
-> > > +
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	/* create a new array based on the existing array but with new length,
-> > > +	 * rounding up the requested size for alignment
-> > > +	 */
-> > > +	array = btf_array(resolved_type);
-> > > +	array_element_type = btf_type_by_id(btf, array->type);
-> > > +	rounded_sz = roundup(size, array_element_type->size);
-> > > +	nr_elements = rounded_sz / array_element_type->size;
-> > > +	new_array_id = btf__add_array(btf, array->index_type, array->type,
-> > > +			nr_elements);
-> > > +	if (new_array_id < 0) {
-> > > +		pr_warn("failed to resize datasec map '%s' due to failure in creating new array\n",
-> > > +				bpf_map__name(map));
-> > > +		err = new_array_id;
-> > > +
-> > > +		goto fail_array;
-> > > +	}
-> > > +
-> > > +	/* adding a new btf type invalidates existing pointers to btf objects.
-> > > +	 * refresh pointers before proceeding
-> > > +	 */
-> > > +	datasec_type = btf_type_by_id(btf, map->btf_value_type_id);
-> > > +	var = btf_var_secinfos(datasec_type);
-> > > +	var_type = btf_type_by_id(btf, var->type);
-> > > +
-> > > +	/* remap the associated memory */
-> > > +	old_value_sz = map->def.value_size;
-> > > +	old_mmap_sz = bpf_map_mmap_sz(map);
-> > > +	map->def.value_size = rounded_sz;
-> > > +	new_mmap_sz = bpf_map_mmap_sz(map);
-> > > +
-> > > +	if (munmap(map->mmaped, old_mmap_sz)) {
-> > > +		err = -errno;
-> > > +		pr_warn("failed to resize datasec map '%s' due to failure in munmap(), err:%d\n",
-> > > +			 bpf_map__name(map), err);
-> > > +
-> > > +		goto fail_mmap;
-> > > +	}
-> > > +
-> > > +	map->mmaped = mmap(NULL, new_mmap_sz, PROT_READ | PROT_WRITE,
-> > > +		   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-> > 
-> > I'm probably missing something, but how does it work? This just mmaps
-> > new memory which the user-space side will see. What about the BPF side?
-> > 
-> In general (not specific to this patch), all datasec maps are
-> memory mapped with an initialization image. See
-> bpf_object__load_skeleton() to see how this initial mapping is later
-> associated with the actual bpf maps (file descriptors) kernel side.
+On 04/28, JP Kobryn wrote:
+> This patch adds test coverage for resizing datasec maps. There are two
+> tests which run a bpf program that sums the elements in the datasec array.
+> After the datasec array is resized, each elements is assigned a value of 1
+> so that the sum will be equal to the length of the array. Assertions are
+> done to verify this. The first test attempts to resize to an aligned
+> length while the second attempts to resize to a mis-aligned length where
+> rounding up is expected to occur. The third test attempts to resize maps
+> that do not meet the necessary criteria and assertions are done to confirm
+> error codes are returned.
 > 
-> > I'm also assuming (maybe incorrectly?) that if the map is mmaped, it's
-> > already created in the kernel, so what's the point of the resizing?
-> 
-> This is still the initialization image being resized. This resizing
-> happens before the map is associated kernel side. If the map has already
-> been created on the bpf side, attempting to resize returns -EBUSY (not
-> new in this patch).
-
-I see, makes sense now, thanks!
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
+
+> ---
+>  .../bpf/prog_tests/global_map_resize.c        | 187 ++++++++++++++++++
+>  .../bpf/progs/test_global_map_resize.c        |  33 ++++
+>  2 files changed, 220 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_map_resize.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/global_map_resize.c b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+> new file mode 100644
+> index 000000000000..f38df37664a7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+> @@ -0,0 +1,187 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include <errno.h>
+> +#include <sys/syscall.h>
+> +#include <unistd.h>
+> +
+> +#include "test_global_map_resize.skel.h"
+> +#include "test_progs.h"
+> +
+> +static void run_program(void)
+> +{
+> +	(void)syscall(__NR_getpid);
+> +}
+> +
+> +static int setup(struct test_global_map_resize **skel)
+> +{
+> +	if (!skel)
+> +		return -1;
+> +
+> +	*skel = test_global_map_resize__open();
+> +	if (!ASSERT_OK_PTR(skel, "test_global_map_resize__open"))
+> +		return -1;
+> +
+> +	(*skel)->rodata->pid = getpid();
+> +
+> +	return 0;
+> +}
+> +
+> +static void teardown(struct test_global_map_resize **skel)
+> +{
+> +	if (skel && *skel)
+> +		test_global_map_resize__destroy(*skel);
+> +}
+> +
+> +static int resize_test(struct test_global_map_resize *skel,
+> +		__u32 element_sz, __u32 desired_sz)
+> +{
+> +	int ret = 0;
+> +	struct bpf_map *map;
+> +	__u32 initial_sz, actual_sz;
+> +	size_t nr_elements;
+> +	int *initial_val;
+> +	size_t initial_val_sz;
+> +
+> +	map = skel->maps.data_my_array;
+> +
+> +	initial_sz = bpf_map__value_size(map);
+> +	ASSERT_EQ(initial_sz, element_sz, "initial size");
+> +
+> +	/* round up desired size to align with element size */
+> +	desired_sz = roundup(desired_sz, element_sz);
+> +	ret = bpf_map__set_value_size(map, desired_sz);
+> +	if (!ASSERT_OK(ret, "bpf_map__set_value_size"))
+> +		return ret;
+> +
+> +	/* refresh map pointer to avoid invalidation issues */
+> +	map = skel->maps.data_my_array;
+> +
+> +	actual_sz = bpf_map__value_size(map);
+> +	ASSERT_EQ(actual_sz, desired_sz, "resize");
+> +
+> +	/* set the expected number of elements based on the resized array */
+> +	nr_elements = roundup(actual_sz, element_sz) / element_sz;
+> +	skel->rodata->n = nr_elements;
+> +
+> +	/* create array for initial map value */
+> +	initial_val_sz = element_sz * nr_elements;
+> +	initial_val = malloc(initial_val_sz);
+> +	if (!ASSERT_OK_PTR(initial_val, "malloc initial_val")) {
+> +		ret = -ENOMEM;
+> +
+> +		goto cleanup;
+> +	}
+> +
+> +	/* fill array with ones */
+> +	for (int i = 0; i < nr_elements; ++i)
+> +		initial_val[i] = 1;
+> +
+> +	/* set initial value */
+> +	ASSERT_EQ(initial_val_sz, actual_sz, "initial value size");
+> +
+> +	ret = bpf_map__set_initial_value(map, initial_val, initial_val_sz);
+> +	if (!ASSERT_OK(ret, "bpf_map__set_initial_val"))
+> +		goto cleanup;
+> +
+> +	ret = test_global_map_resize__load(skel);
+> +	if (!ASSERT_OK(ret, "test_global_map_resize__load"))
+> +		goto cleanup;
+> +
+> +	ret = test_global_map_resize__attach(skel);
+> +	if (!ASSERT_OK(ret, "test_global_map_resize__attach"))
+> +		goto cleanup;
+> +
+> +	/* run the bpf program which will sum the contents of the array */
+> +	run_program();
+> +
+> +	if (!ASSERT_EQ(skel->bss->sum, nr_elements, "sum"))
+> +		goto cleanup;
+> +
+> +cleanup:
+> +	if (initial_val)
+> +		free(initial_val);
+> +
+> +	return ret;
+> +}
+> +
+> +static void global_map_resize_aligned_subtest(void)
+> +{
+> +	struct test_global_map_resize *skel;
+> +	const __u32 element_sz = (__u32)sizeof(int);
+> +	const __u32 desired_sz = (__u32)sysconf(_SC_PAGE_SIZE) * 2;
+> +
+> +	/* preliminary check that desired_sz aligns with element_sz */
+> +	if (!ASSERT_EQ(desired_sz % element_sz, 0, "alignment"))
+> +		return;
+> +
+> +	if (setup(&skel))
+> +		goto teardown;
+> +
+> +	if (resize_test(skel, element_sz, desired_sz))
+> +		goto teardown;
+> +
+> +teardown:
+> +	teardown(&skel);
+> +}
+> +
+> +static void global_map_resize_roundup_subtest(void)
+> +{
+> +	struct test_global_map_resize *skel;
+> +	const __u32 element_sz = (__u32)sizeof(int);
+> +	/* set desired size a fraction of element size beyond an aligned size */
+> +	const __u32 desired_sz = (__u32)sysconf(_SC_PAGE_SIZE) * 2 + element_sz / 2;
+> +
+> +	/* preliminary check that desired_sz does NOT align with element_sz */
+> +	if (!ASSERT_NEQ(desired_sz % element_sz, 0, "alignment"))
+> +		return;
+> +
+> +	if (setup(&skel))
+> +		goto teardown;
+> +
+> +	if (resize_test(skel, element_sz, desired_sz))
+> +		goto teardown;
+> +
+> +teardown:
+> +	teardown(&skel);
+> +}
+> +
+> +static void global_map_resize_invalid_subtest(void)
+> +{
+> +	int err;
+> +	struct test_global_map_resize *skel;
+> +	struct bpf_map *map;
+> +	const __u32 desired_sz = 8192;
+> +
+> +	if (setup(&skel))
+> +		goto teardown;
+> +
+> +	/* attempt to resize a global datasec map which is an array
+> +	 * BUT is with a var in same datasec
+> +	 */
+> +	map = skel->maps.data_my_array_and_var;
+> +	err = bpf_map__set_value_size(map, desired_sz);
+> +	if (!ASSERT_EQ(err, -EINVAL, "bpf_map__set_value_size"))
+> +		goto teardown;
+> +
+> +	/* attempt to resize a global datasec map which is NOT an array */
+> +	map = skel->maps.data_my_non_array;
+> +	err = bpf_map__set_value_size(map, desired_sz);
+> +	if (!ASSERT_EQ(err, -EINVAL, "bpf_map__set_value_size"))
+> +		goto teardown;
+> +
+> +teardown:
+> +	teardown(&skel);
+> +}
+> +
+> +void test_global_map_resize(void)
+> +{
+> +	if (test__start_subtest("global_map_resize_aligned"))
+> +		global_map_resize_aligned_subtest();
+> +
+> +	if (test__start_subtest("global_map_resize_roundup"))
+> +		global_map_resize_roundup_subtest();
+> +
+> +	if (test__start_subtest("global_map_resize_invalid"))
+> +		global_map_resize_invalid_subtest();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+> new file mode 100644
+> index 000000000000..cffbba1b6020
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+> @@ -0,0 +1,33 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +const volatile pid_t pid;
+> +const volatile size_t n;
+> +
+> +int my_array[1] SEC(".data.my_array");
+> +
+> +int my_array_with_neighbor[1] SEC(".data.my_array_and_var");
+> +int my_var_with_neighbor SEC(".data.my_array_and_var");
+> +
+> +int my_non_array SEC(".data.my_non_array");
+> +
+> +int sum = 0;
+> +
+> +SEC("tp/syscalls/sys_enter_getpid")
+> +int array_sum(void *ctx)
+> +{
+> +	if (pid != (bpf_get_current_pid_tgid() >> 32))
+> +		return 0;
+> +
+> +	sum = 0;
+> +
+> +	for (size_t i = 0; i < n; ++i)
+> +		sum += my_array[i];
+> +
+> +	return 0;
+> +}
+> -- 
+> 2.40.0
+> 
