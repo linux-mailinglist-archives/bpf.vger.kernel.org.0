@@ -2,79 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E82736F338D
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 18:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FC46F33A2
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 18:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbjEAQab (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 12:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        id S232356AbjEAQug (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 12:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjEAQaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 12:30:30 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC69118;
-        Mon,  1 May 2023 09:30:28 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4edb26f762dso3322868e87.3;
-        Mon, 01 May 2023 09:30:28 -0700 (PDT)
+        with ESMTP id S232328AbjEAQuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 12:50:35 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B22110C2
+        for <bpf@vger.kernel.org>; Mon,  1 May 2023 09:50:32 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-63b35789313so1884867b3a.3
+        for <bpf@vger.kernel.org>; Mon, 01 May 2023 09:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682958626; x=1685550626;
+        d=gmail.com; s=20221208; t=1682959832; x=1685551832;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhyY7qHBH6sqFDpLFZPOfJAsbZ/jh+LoAySlLW5v564=;
-        b=Me/CK+eKkmHcSCfwKpOjXd4tUjZF5/VDgkPHJuAsRU9uwx2iltUZW9V/6Aawql5tij
-         LZkSM4/o1kwDNzBu42ImCSbv1mHZ3yRkQcx1Otv//k1xPBluguCEHQBDqZADbSBlbE1N
-         fTemcboLPfOvYqcPELmHxh6ykoU56XyJW3tCERgrvU/68XxI9NwlJamarm7h2864lSoN
-         rYsR/BzZxO1Po1Vvyp6wGlq4pGrPBB7AOCZgqw2gwo86beakGmupQYM073muOfbooOcu
-         SJGqQKmlXAq9mae/V2FQyOEBxfVyXpm3pCdoBwLOEHwam9zLaf29mo6UgmLOKRHfs5wZ
-         jAlw==
+        bh=QEflLLcWNWC/jvwtRq92vXF8nN7NQEJ3vnb6+zyUW3E=;
+        b=i2lIMFlEup6B76yVsFI7pmvYDcqNsBsWGOLY1GyUxI5iG3png7OSkrrNNfiboXJ81H
+         F8Ji1oiS9iDZz6keGPqiIl3eHtItp8pkrsejOebDaKU8nav3CUUr+GiwCxzN1GoiScPL
+         67iVTKOkaioYzwWpHZEkF62TnLHrkJG21n3Zuu8U7AMF1KJ16leVwxTNoAs3GsjPyJHS
+         D2P2tbXdMwJbM9gOrUdl2c8IjtsPMH7a+xBB96dK/ALZ65iySyCabR2ud3W6NT4xusD5
+         DW7cTIR8QXestBCYKEIehDRKCwOHc2LqHt/YgYpFMks1lh3hGyEKAjhwy9wpJqQ26mU2
+         w2vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682958626; x=1685550626;
+        d=1e100.net; s=20221208; t=1682959832; x=1685551832;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dhyY7qHBH6sqFDpLFZPOfJAsbZ/jh+LoAySlLW5v564=;
-        b=hyhDUhYgoR+DeGsL/a2H3U4RtCVc91/cf5hZNmbzsrm+bUtw3EMOupkWPWL9WaEK9O
-         9tp3pR/gDcY1sw9FtGkqvkMzHWbAKbJpnmetLkwa1/o/o0b/pRP0bmxNwjJN8hKCFSxy
-         Fr345iONUWJsu3v50JQZ1v4fD4xtOi9ynArIgANRXVGLs8nYZIpCjRX7SkegnJJknDfc
-         a4qRydJOlX4GfmXrCa5Lt8SeCRcf0LWa/TRBm8URoTKhXnm1I+PXHlZ8hgM5Axw9lMlW
-         /ViJGjWvpsg3TpW6LnhT95uIA7Dmx7hV8AhPh9j4GWAnguaBrNRhgPF/5a3urMlPpfUj
-         oL3w==
-X-Gm-Message-State: AC+VfDz5ohYptDSJC/m2oOBsOX/LXiZVbznVy9U2ydLstB3K2+gq4PRj
-        mlxRql3VwlLZeQHXZf1YNSs=
-X-Google-Smtp-Source: ACHHUZ4/2ceDc4pC1aiCJnTvLMRBf39++inShkCIxU+nSVgxHEh5RUZLR3y7ywLuIZVVxCn7yCoR5w==
-X-Received: by 2002:a05:6512:24a:b0:4db:3e56:55c8 with SMTP id b10-20020a056512024a00b004db3e5655c8mr4000247lfo.59.1682958626370;
-        Mon, 01 May 2023 09:30:26 -0700 (PDT)
-Received: from eg ([2a01:799:1727:1d00:bf75:af6:260e:41be])
-        by smtp.gmail.com with ESMTPSA id m19-20020ac24293000000b004edc585d6besm4799556lfh.285.2023.05.01.09.30.25
+        bh=QEflLLcWNWC/jvwtRq92vXF8nN7NQEJ3vnb6+zyUW3E=;
+        b=ggz2wqThcOc7KIsNZDoPgPuk7xu7wVhUDy3fa5YHnJu6JXy9BfrO5PIKublXUt23Sq
+         kyF2bees/FiJq4KrAnwklLub3bzQiieQK4JyN5dKAoU9W0USyElIy3N8+XjsV4dDgZQ+
+         XpmBgUBRP2YKVn7T/miFA9CP9xxs3q40zeOxEWjXXfBju1XwVqYIL81ay5KGIHYuUQmF
+         mByPBBLEDPs1OufUhdzRsKf0j1nb91DiWa7Ee0FV2OjEH/tzlxJnj5S8aKVsm3G4hjJO
+         3H4X0URw3SyxQtEi6AP6Sdj1hLLR1LbpT1x1PWWuwYet7OVszg00RhYOlifojvWip8/z
+         +0Uw==
+X-Gm-Message-State: AC+VfDyitNbyV7ESxmc5CKET7k8amlfQpKkzB7UnAgkuP66udl0nEPTI
+        wPBkSrbXaLpcruUilMOfEvQ=
+X-Google-Smtp-Source: ACHHUZ4HnEUc1FMhE0A/kgrzHeEHscgQU9gcE2cqCT/tkCwgltFIFZpE4vUmzQoNbBj4mfyE6nVnUQ==
+X-Received: by 2002:a05:6a00:2392:b0:641:4e80:a7c0 with SMTP id f18-20020a056a00239200b006414e80a7c0mr8152537pfc.22.1682959831476;
+        Mon, 01 May 2023 09:50:31 -0700 (PDT)
+Received: from toolbox ([98.42.16.172])
+        by smtp.gmail.com with ESMTPSA id g4-20020a056a001a0400b0062a7462d398sm20840494pfv.170.2023.05.01.09.50.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 09:30:25 -0700 (PDT)
-Date:   Mon, 1 May 2023 18:30:24 +0200
-From:   Espen Grindhaug <espen.grindhaug@gmail.com>
-To:     Yonghong Song <yhs@meta.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] libbpf: Improve version handling when attaching uprobe
-Message-ID: <ZE/pIM/z7x+35KQo@eg>
-References: <ZEV/EzOM+TJomP66@eg>
- <07e05c57-feb7-5482-9c07-eb41f976f9fd@meta.com>
- <ZErK0M/qAi/VS8U8@eg>
- <0e7b884a-05c3-83c7-0de1-9bfe14ff77b3@meta.com>
- <ZE+4Ct7ZMecFy7YV@eg>
- <533437a4-a76d-96e0-b04a-ab8eb7b5fb7f@meta.com>
+        Mon, 01 May 2023 09:50:30 -0700 (PDT)
+Date:   Mon, 1 May 2023 09:50:22 -0700
+From:   JP Kobryn <inwardvessel@gmail.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 1/2] libbpf: add capability for resizing datasec
+ maps
+Message-ID: <ZE/tzq0v/zkfO6cl@toolbox>
+References: <20230428222754.183432-1-inwardvessel@gmail.com>
+ <20230428222754.183432-2-inwardvessel@gmail.com>
+ <ZExdsHwc6Gy716am@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <533437a4-a76d-96e0-b04a-ab8eb7b5fb7f@meta.com>
+In-Reply-To: <ZExdsHwc6Gy716am@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -85,190 +72,160 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 01, 2023 at 08:23:35AM -0700, Yonghong Song wrote:
->
->
-> On 5/1/23 6:00 AM, Espen Grindhaug wrote:
-> > On Thu, Apr 27, 2023 at 06:19:29PM -0700, Yonghong Song wrote:
-> > >
-> > >
-> > > On 4/27/23 12:19 PM, Espen Grindhaug wrote:
-> > > > On Wed, Apr 26, 2023 at 02:47:27PM -0700, Yonghong Song wrote:
-> > > > >
-> > > > >
-> > > > > On 4/23/23 11:55 AM, Espen Grindhaug wrote:
-> > > > > > This change fixes the handling of versions in elf_find_func_offset.
-> > > > > > In the previous implementation, we incorrectly assumed that the
-> > > > >
-> > > > > Could you give more explanation/example in the commit message
-> > > > > what does 'incorrectly' mean here? In which situations the
-> > > > > current libbpf implementation will not be correct?
-> > > > >
-> > > >
-> > > > How about something like this?
-> > > >
-> > > >
-> > > > libbpf: Improve version handling when attaching uprobe
-> > > >
-> > > > This change fixes the handling of versions in elf_find_func_offset.
-> > > >
-> > > > For example, let's assume we are trying to attach an uprobe to pthread_create in
-> > > > glibc. Prior to this commit, it would fail with an error message saying 'elf:
-> > > > ambiguous match [...]', this is because there are two entries in the symbol
-> > > > table with that name.
-> > > >
-> > > > $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep pthread_create
-> > > > 0000000000094cc0 T pthread_create@GLIBC_2.2.5
-> > > > 0000000000094cc0 T pthread_create@@GLIBC_2.34
-> > > >
-> > > > So we go ahead and modify our code to attach to 'pthread_create@@GLIBC_2.34',
-> > > > and this also fails, but this time with the error 'elf: failed to find symbol
-> > > > [...]'. This fails because we incorrectly assumed that the version information
-> > > > would be present in the string found in the string table, but there is only the
-> > > > string 'pthread_create'.
-> > >
-> > > I tried one example with my centos8 libpthread library.
-> > >
-> > > $ llvm-readelf -s /lib64/libc-2.28.so | grep pthread_cond_signal
-> > >      39: 0000000000095f70    43 FUNC    GLOBAL DEFAULT    14
-> > > pthread_cond_signal@@GLIBC_2.3.2
-> > >      40: 0000000000096250    43 FUNC    GLOBAL DEFAULT    14
-> > > pthread_cond_signal@GLIBC_2.2.5
-> > >    3160: 0000000000096250    43 FUNC    LOCAL  DEFAULT    14
-> > > __pthread_cond_signal_2_0
-> > >    3589: 0000000000095f70    43 FUNC    LOCAL  DEFAULT    14
-> > > __pthread_cond_signal
-> > >    5522: 0000000000095f70    43 FUNC    GLOBAL DEFAULT    14
-> > > pthread_cond_signal@@GLIBC_2.3.2
-> > >    5545: 0000000000096250    43 FUNC    GLOBAL DEFAULT    14
-> > > pthread_cond_signal@GLIBC_2.2.5
-> > > $ nm -D /lib64/libc-2.28.so | grep pthread_cond_signal
-> > > 0000000000095f70 T pthread_cond_signal@@GLIBC_2.3.2
-> > > 0000000000096250 T pthread_cond_signal@GLIBC_2.2.5
-> > > $
-> > >
-> > > Note that two pthread_cond_signal functions have different addresses,
-> > > which is expected as they implemented for different versions.
-> > >
-> > > But in your case,
-> > > > $ nm -D /lib/x86_64-linux-gnu/libc.so.6 | grep pthread_create
-> > > > 0000000000094cc0 T pthread_create@GLIBC_2.2.5
-> > > > 0000000000094cc0 T pthread_create@@GLIBC_2.34
-> > >
-> > > Two functions have the same address which is very weird and I suspect
-> > > some issues here at least needs some investigation.
-> > >
-> >
-> > I am no expert on this, but as far as I can tell, this is normal,
-> > although much more common on my Ubuntu machine than my Fedora machine.
-> >
-> > Script to find duplicates:
-> >
-> > nm -D /usr/lib64/libc-2.33.so | awk '
-> > {
-> >      addr = $1;
-> >      symbol = $3;
-> >      sub(/[@].*$/, "", symbol);
-> >
-> >      if (addr == prev_addr && symbol == prev_symbol) {
-> >          if (prev_symbol_printed == 0) {
-> >              print prev_line;
-> >              prev_symbol_printed = 1;
-> >          }
-> >          print;
-> >      } else {
-> >          prev_symbol_printed = 0;
-> >      }
-> >      prev_addr = addr;
-> >      prev_symbol = symbol;
-> >      prev_line = $0;
-> > }'
-> >
-> >
-> > > Second, for the symbol table, the following is ELF encoding,
-> > >
-> > > typedef struct {
-> > >          Elf64_Word      st_name;
-> > >          unsigned char   st_info;
-> > >          unsigned char   st_other;
-> > >          Elf64_Half      st_shndx;
-> > >          Elf64_Addr      st_value;
-> > >          Elf64_Xword     st_size;
-> > > } Elf64_Sym;
-> > >
-> > > where
-> > > st_name
-> > >
-> > >      An index into the object file's symbol string table, which holds the
-> > > character representations of the symbol names. If the value is nonzero, the
-> > > value represents a string table index that gives the symbol name. Otherwise,
-> > > the symbol table entry has no name.
-> > >
-> > > So, the function name (including @..., @@...) should be in string table
-> > > which is the same for the above two pthread_cond_signal symbols.
-> > >
-> > > I think it is worthwhile to debug why in your situation
-> > > pthread_create@GLIBC_2.2.5 and pthread_create@@GLIBC_2.34 do not
-> > > have them in the string table.
-> > >
-> >
-> > I think you are mistaken here; the strings in the strings table don't contain
-> > the version. Take a look at this partial dump of the strings table.
-> >
-> > 	$ readelf -W -p .dynstr /usr/lib64/libc-2.33.so
-> >
-> > 	String dump of section '.dynstr':
-> > 		[     1]  xdrmem_create
-> > 		[     f]  __wctomb_chk
-> > 		[    1c]  getmntent
-> > 		[    26]  __freelocale
-> > 		[    33]  __rawmemchr
-> > 		[    3f]  _IO_vsprintf
-> > 		[    4c]  getutent
-> > 		[    55]  __file_change_detection_for_path
-> > 	(...)
-> > 		[  350e]  memrchr
-> > 		[  3516]  pthread_cond_signal
-> > 		[  352a]  __close
-> > 	(...)
-> > 		[  61b6]  GLIBC_2.2.5
-> > 		[  61c2]  GLIBC_2.2.6
-> > 		[  61ce]  GLIBC_2.3
-> > 		[  61d8]  GLIBC_2.3.2
-> > 		[  61e4]  GLIBC_2.3.3
-> >
-> > As you can see, the strings have no versions, and the version strings
-> > themselves are also in this table as entries at the end of the table.
->
-> I see you search .dynstr section. Do you think whether we should
-> search .strtab instead since it contains versioned symbols?
->
+On Fri, Apr 28, 2023 at 04:58:40PM -0700, Stanislav Fomichev wrote:
+> On 04/28, JP Kobryn wrote:
+> > This patch updates bpf_map__set_value_size() so that if the given map is a
+> > datasec, it will attempt to resize it. If the following criteria is met,
+> > the resizing can be performed:
+> >  - BTF info is present
+> >  - the map is a datasec
+> >  - the datasec contains a single variable
+> >  - the single variable is an array
+> > 
+> > The new map_datasec_resize() function is used to perform the resizing
+> > of the associated memory mapped region and adjust BTF so that the original
+> > array variable points to a new BTF array that is sized to cover the
+> > requested size. The new array size will be rounded up to a multiple of
+> > the element size.
+> > 
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 138 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 138 insertions(+)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 1cbacf9e71f3..991649cacc10 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -9412,12 +9412,150 @@ __u32 bpf_map__value_size(const struct bpf_map *map)
+> >  	return map->def.value_size;
+> >  }
+> >  
+> > +static bool map_is_datasec(struct bpf_map *map)
+> > +{
+> > +	struct btf *btf;
+> > +	struct btf_type *map_type;
+> > +
+> > +	btf = bpf_object__btf(map->obj);
+> > +	if (!btf)
+> > +		return false;
+> > +
+> > +	map_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
+> > +
+> > +	return btf_is_datasec(map_type);
+> > +}
+> > +
+> > +static int map_datasec_resize(struct bpf_map *map, __u32 size)
+> > +{
+> > +	int err;
+> > +	struct btf *btf;
+> > +	struct btf_type *datasec_type, *var_type, *resolved_type, *array_element_type;
+> > +	struct btf_var_secinfo *var;
+> > +	struct btf_array *array;
+> > +	__u32 resolved_id, new_array_id;
+> > +	__u32 rounded_sz;
+> > +	__u32 nr_elements;
+> > +	__u32 old_value_sz = map->def.value_size;
+> > +	size_t old_mmap_sz, new_mmap_sz;
+> > +
+> > +	/* btf is required and datasec map must be memory mapped */
+> > +	btf = bpf_object__btf(map->obj);
+> > +	if (!btf) {
+> > +		pr_warn("cannot resize datasec map '%s' while btf info is not present\n",
+> > +				bpf_map__name(map));
+> > +
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	datasec_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
+> > +	if (!btf_is_datasec(datasec_type)) {
+> > +		pr_warn("attempted to resize datasec map '%s' but map is not a datasec\n",
+> > +				bpf_map__name(map));
+> > +
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!map->mmaped) {
+> > +		pr_warn("cannot resize datasec map '%s' while map is unexpectedly not memory mapped\n",
+> > +				bpf_map__name(map));
+> > +
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* datasec must only have a single variable */
+> > +	if (btf_vlen(datasec_type) != 1) {
+> > +		pr_warn("cannot resize datasec map '%s' that does not consist of a single var\n",
+> > +				bpf_map__name(map));
+> > +
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* the single variable has to be an array */
+> > +	var = btf_var_secinfos(datasec_type);
+> > +	resolved_id = btf__resolve_type(btf, var->type);
+> > +	resolved_type = btf_type_by_id(btf, resolved_id);
+> > +	if (!btf_is_array(resolved_type)) {
+> > +		pr_warn("cannot resize datasec map '%s' whose single var is not an array\n",
+> > +				bpf_map__name(map));
+> > +
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* create a new array based on the existing array but with new length,
+> > +	 * rounding up the requested size for alignment
+> > +	 */
+> > +	array = btf_array(resolved_type);
+> > +	array_element_type = btf_type_by_id(btf, array->type);
+> > +	rounded_sz = roundup(size, array_element_type->size);
+> > +	nr_elements = rounded_sz / array_element_type->size;
+> > +	new_array_id = btf__add_array(btf, array->index_type, array->type,
+> > +			nr_elements);
+> > +	if (new_array_id < 0) {
+> > +		pr_warn("failed to resize datasec map '%s' due to failure in creating new array\n",
+> > +				bpf_map__name(map));
+> > +		err = new_array_id;
+> > +
+> > +		goto fail_array;
+> > +	}
+> > +
+> > +	/* adding a new btf type invalidates existing pointers to btf objects.
+> > +	 * refresh pointers before proceeding
+> > +	 */
+> > +	datasec_type = btf_type_by_id(btf, map->btf_value_type_id);
+> > +	var = btf_var_secinfos(datasec_type);
+> > +	var_type = btf_type_by_id(btf, var->type);
+> > +
+> > +	/* remap the associated memory */
+> > +	old_value_sz = map->def.value_size;
+> > +	old_mmap_sz = bpf_map_mmap_sz(map);
+> > +	map->def.value_size = rounded_sz;
+> > +	new_mmap_sz = bpf_map_mmap_sz(map);
+> > +
+> > +	if (munmap(map->mmaped, old_mmap_sz)) {
+> > +		err = -errno;
+> > +		pr_warn("failed to resize datasec map '%s' due to failure in munmap(), err:%d\n",
+> > +			 bpf_map__name(map), err);
+> > +
+> > +		goto fail_mmap;
+> > +	}
+> > +
+> > +	map->mmaped = mmap(NULL, new_mmap_sz, PROT_READ | PROT_WRITE,
+> > +		   MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> 
+> I'm probably missing something, but how does it work? This just mmaps
+> new memory which the user-space side will see. What about the BPF side?
+> 
+In general (not specific to this patch), all datasec maps are
+memory mapped with an initialization image. See
+bpf_object__load_skeleton() to see how this initial mapping is later
+associated with the actual bpf maps (file descriptors) kernel side.
 
-I searched .dynstr since my libc files only have that section, but I do see
-your point. If const char *binary_path points to an executable and not an
-.so file, then we would find some versioned symbols in the .strtab section.
-However, since libbpf supports using the .so as binary_path, would we not
-need the functionality to build the complete name regardless?
+> I'm also assuming (maybe incorrectly?) that if the map is mmaped, it's
+> already created in the kernel, so what's the point of the resizing?
 
-Adding a check to not build the full name if it already contains an '@' is
-probably a good idea, though.
+This is still the initialization image being resized. This resizing
+happens before the map is associated kernel side. If the map has already
+been created on the bpf side, attempting to resize returns -EBUSY (not
+new in this patch).
+-- 
 
-> >
-> > > >
-> > > > This patch reworks how we compare the symbol name provided by the user if it is
-> > > > qualified with a version (using @ or @@). We now look up the correct version
-> > > > string in the version symbol table before constructing the full name, as also
-> > > > done above by nm, before comparing.
-> > > >
-> > > > > > version information would be present in the string found in the
-> > > > > > string table.
-> > > > > >
-> > > > > > We now look up the correct version string in the version symbol
-> > > > > > table before constructing the full name and then comparing.
-> > > > > >
-> > > > > > This patch adds support for both name@version and name@@version to
-> > > > > > match output of the various elf parsers.
-> > > > > >
-> > > > > > Signed-off-by: Espen Grindhaug <espen.grindhaug@gmail.com>
-> > > > >
-> > > > > [...]
