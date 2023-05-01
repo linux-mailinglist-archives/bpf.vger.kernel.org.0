@@ -2,62 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1EE6F3874
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 21:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0BD6F3875
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 21:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbjEATs3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 15:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
+        id S232604AbjEATsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 15:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232625AbjEATs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 15:48:28 -0400
+        with ESMTP id S232625AbjEATsa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 15:48:30 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E242B2129
-        for <bpf@vger.kernel.org>; Mon,  1 May 2023 12:48:27 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-b9a6eeea78cso28818228276.0
-        for <bpf@vger.kernel.org>; Mon, 01 May 2023 12:48:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90C01FCE
+        for <bpf@vger.kernel.org>; Mon,  1 May 2023 12:48:28 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-b9a6eeea78cso28818342276.0
+        for <bpf@vger.kernel.org>; Mon, 01 May 2023 12:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682970507; x=1685562507;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=b6r+KaXFehpogpE5aa81mU+Qaa00RpnDSdQ3h+kE88w=;
-        b=JfWHByK5XHBahSCN84lE5QZWzdsq3qLEAnui36zUs/AmaC/bDCGYRSxOEZQXSE4c2j
-         wskR+qfgyzpN3EpyPN9Qd3rM5axM3NY4dphNXWd2NaJ6Tf7D0RCnJPx2XRDU78ejLHqJ
-         MeE+7twkF5PLLaXJ8OmXqG7N9KjzVzHCEquG9l2qNU8lw+QVkQ5sxkvI4givPYW+fYUM
-         W33YhRdiOAB6+wIiaUBBLcbcGCtgH/UOVZRHDqtBjAS+Is7q8SgzAYecE8FCcEKoddfh
-         Qb24Kw6mDJniAgUAz58Y7+XOw5AmcCk8WpA1k3GXoIbjK6LEzkN3k6mcKgWcjfBgJyQw
-         c+Ww==
+        d=google.com; s=20221208; t=1682970508; x=1685562508;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A7d8BZCLJAQcgyhTBz+Dgb0+EC6ehU2qiKsRrRK7gcs=;
+        b=eLywRKiAp4TzYV1w1dXzUou/IuAsuH8wBxpNypjoZqJlDRCbppTySxyUI+m6g0CwnX
+         QVbhlNX/mDqu2492pap8jvWZep8pwvD3in+Kf01xLr/rKSyrTXujm/mrNiZMDJ1pxA34
+         49kBpeG44E0RJfnnRo0Z6QGwlXbPWswYdkuOOCTIsZpvAT1kPfJrK5p01n0Xsp7SGvrh
+         7yk3I0Pmn7zfez58HjhSK5EAX24vVg0j0pgZISMqeDp4pgnk9Adl3dvqYMHJDvcoCIsl
+         aBXncStEevfnZ0vqhodplyAtxphId0rK0pFcTfWCrzzOPBbXb83/orZeP29Tz9mH+a6G
+         lBIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682970507; x=1685562507;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b6r+KaXFehpogpE5aa81mU+Qaa00RpnDSdQ3h+kE88w=;
-        b=hR1WMni7AKBiAr10H1igc2MVqvD9Tu8KCir1gxEfyzJD1gjvXO99vgwhOtIeIZHQKb
-         J+EmXeypx8gOl8YpOqrf2SY8DE2cugv1GTnaXYoFQmcCUDBr70n7tZ5iod9Kh3OGyAse
-         yK9VvIA+7+B4DNs7KVs6HI61j6oj+rNigfaZMs/UsGOdS1XZ1oGeXd6Y2mnd6E20eybY
-         1kT4eRYZwsmsLilm2tii0YY6dzxqHj64Gjf+Bju+9cTZ5ISQ8+40AUAK4q8fRDB6t31k
-         NaeEf/w8yJdWs+ScUaJkYUttxJMDkW4FrJyPd5yyKdOf0O9cPcAWr/uk7EZBpTxXKgEP
-         ogWA==
-X-Gm-Message-State: AC+VfDxBNAtmq822vMDJ6kvIwhVNKKprSFw05TwroqVCH5ML15jO7Ock
-        s+txwPUGxU9uZtr+a/1qcySziEH8A5M/hqG6j2Rv4YdzNYEpFZodJk6hyc5DPbfqWtG0+UzkT4C
-        r078kQI5C92E31GXJznfDvjj+xLl2UnbFeqr1OZmXs/6lOV2wkw==
-X-Google-Smtp-Source: ACHHUZ7iAx6CJb42oKpVVMqVGEr5n2gUYOwB+gMDa4/e1KiJqOcHDdci5bN9/OphoPY3LhdV1C9owLo=
+        d=1e100.net; s=20221208; t=1682970508; x=1685562508;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A7d8BZCLJAQcgyhTBz+Dgb0+EC6ehU2qiKsRrRK7gcs=;
+        b=BGNfW6U6zgc1hSCRE2ANbx8AaEk5VxIVcYu3dGYy2fGmyj1FRLhoFwvH3z+37DMMEh
+         FdOOUds7SX9Ea35T2OPtINsmiyf/RO25QsghwJThhmgOWAhFiO1e0NRq2/O8kvLa2/xQ
+         Cyu2J0FuDysyhI1wcyvm51o3PKNA6SdqZkwCwU2k/1A0mc/0nbEERUUoMdtGA6x3zcH6
+         2IEis/gjm/W0UquXlM+JiYhnDEOHn2WzKVra2dlGPS+sj9BAo7hOCsEWUkcs/viGwXo+
+         MiLRLHxZy3aNuA5JfiRbgG2/XrlUc1hjYqgQDnhmMOxVveJ0ESkHiCfQ3s8tWgnxymbp
+         d0vw==
+X-Gm-Message-State: AC+VfDzxKtVGuJbc4T0K9TLUIBnayzl+GQtKUQ4zyUXrpYPtsmXtCMfU
+        rVvZqVNsnMR+9u1aqwwbSUI9vtsFdYfEILbHC6x5/uo9/v93LVgts+RXhfTNxcw4e9wPSgIchlQ
+        hBClqfxtRS/s8bUeG0+Kcn0FFJgR8rLkUz0UHWPeRKK39mOc1hA==
+X-Google-Smtp-Source: ACHHUZ5emvL2K4aG/4yppqbYKd+bZXemK3BGSj96miPw2G8eex3NWSaAS3mGZgGpBMnqaT8G2cKG0C8=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:ca08:0:b0:557:616:7d63 with SMTP id
- p8-20020a81ca08000000b0055706167d63mr9120359ywi.1.1682970507140; Mon, 01 May
- 2023 12:48:27 -0700 (PDT)
-Date:   Mon,  1 May 2023 12:48:21 -0700
+ (user=sdf job=sendgmr) by 2002:a25:c0d0:0:b0:b9a:672d:23c9 with SMTP id
+ c199-20020a25c0d0000000b00b9a672d23c9mr8981347ybf.0.1682970508598; Mon, 01
+ May 2023 12:48:28 -0700 (PDT)
+Date:   Mon,  1 May 2023 12:48:22 -0700
+In-Reply-To: <20230501194825.2864150-1-sdf@google.com>
 Mime-Version: 1.0
+References: <20230501194825.2864150-1-sdf@google.com>
 X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
-Message-ID: <20230501194825.2864150-1-sdf@google.com>
-Subject: [PATCH bpf-next v3 0/4] bpf: Don't EFAULT for {g,s}setsockopt with
+Message-ID: <20230501194825.2864150-2-sdf@google.com>
+Subject: [PATCH bpf-next v3 1/4] bpf: Don't EFAULT for {g,s}setsockopt with
  wrong optlen
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
+        haoluo@google.com, jolsa@kernel.org,
+        Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -69,36 +72,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-optval larger than PAGE_SIZE leads to EFAULT if the BPF program
-isn't careful enough. This is often overlooked and might break
-completely unrelated socket options. Instead of EFAULT,
-let's ignore BPF program buffer changes. See the first patch for
-more info.
+With the way the hooks implemented right now, we have a special
+condition: optval larger than PAGE_SIZE will expose only first 4k into
+BPF; any modifications to the optval are ignored. If the BPF program
+doesn't handle this condition by resetting optlen to 0,
+the userspace will get EFAULT.
 
-In addition, clearly document this corner case and reset optlen
-in our selftests (in case somebody copy-pastes from them).
+The intention of the EFAULT was to make it apparent to the
+developers that the program is doing something wrong.
+However, this inadvertently might affect production workloads
+with the BPF programs that are not too careful (i.e., returning EFAULT
+for perfectly valid setsockopt/getsockopt calls).
 
-Stanislav Fomichev (4):
-  bpf: Don't EFAULT for {g,s}setsockopt with wrong optlen
-  selftests/bpf: Update EFAULT {g,s}etsockopt selftests
-  selftests/bpf: Correctly handle optlen > 4096
-  bpf: Document EFAULT changes for sockopt
+Let's try to minimize the chance of BPF program screwing up userspace
+by ignoring the output of those BPF programs (instead of returning
+EFAULT to the userspace). pr_info_once those cases to
+the dmesg to help with figuring out what's going wrong.
 
- Documentation/bpf/prog_cgroup_sockopt.rst     |  57 ++++++++-
- kernel/bpf/cgroup.c                           |  13 +++
- .../bpf/prog_tests/cgroup_getset_retval.c     |  20 ++++
- .../selftests/bpf/prog_tests/sockopt.c        |  98 +++++++++++++++-
- .../bpf/prog_tests/sockopt_inherit.c          |  59 +++-------
- .../selftests/bpf/prog_tests/sockopt_multi.c  | 110 +++++-------------
- .../bpf/prog_tests/sockopt_qos_to_cc.c        |   2 +
- .../progs/cgroup_getset_retval_getsockopt.c   |  13 +++
- .../progs/cgroup_getset_retval_setsockopt.c   |  17 +++
- .../selftests/bpf/progs/sockopt_inherit.c     |  18 ++-
- .../selftests/bpf/progs/sockopt_multi.c       |  26 ++++-
- .../selftests/bpf/progs/sockopt_qos_to_cc.c   |  10 +-
- .../testing/selftests/bpf/progs/sockopt_sk.c  |  25 ++--
- 13 files changed, 328 insertions(+), 140 deletions(-)
+v3:
+- don't hard-code PAGE_SIZE (Martin)
+- reset orig_optlen in getsockopt when kernel part succeeds (Martin)
 
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/cgroup.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index a06e118a9be5..88aeb0716a21 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1826,6 +1826,11 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 		ret = 1;
+ 	} else if (ctx.optlen > max_optlen || ctx.optlen < -1) {
+ 		/* optlen is out of bounds */
++		if (*optlen > PAGE_SIZE && ctx.optlen >= 0) {
++			pr_info_once("bpf setsockopt: ignoring program buffer with optlen=%d (max_optlen=%d)\n",
++				     ctx.optlen, max_optlen);
++			goto out;
++		}
+ 		ret = -EFAULT;
+ 	} else {
+ 		/* optlen within bounds, run kernel handler */
+@@ -1881,8 +1886,10 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 		.optname = optname,
+ 		.current_task = current,
+ 	};
++	int orig_optlen;
+ 	int ret;
+ 
++	orig_optlen = max_optlen;
+ 	ctx.optlen = max_optlen;
+ 	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
+ 	if (max_optlen < 0)
+@@ -1905,6 +1912,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 			ret = -EFAULT;
+ 			goto out;
+ 		}
++		orig_optlen = ctx.optlen;
+ 
+ 		if (copy_from_user(ctx.optval, optval,
+ 				   min(ctx.optlen, max_optlen)) != 0) {
+@@ -1922,6 +1930,11 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 		goto out;
+ 
+ 	if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
++		if (orig_optlen > PAGE_SIZE && ctx.optlen >= 0) {
++			pr_info_once("bpf getsockopt: ignoring program buffer with optlen=%d (max_optlen=%d)\n",
++				     ctx.optlen, max_optlen);
++			goto out;
++		}
+ 		ret = -EFAULT;
+ 		goto out;
+ 	}
 -- 
 2.40.1.495.gc816e09b53d-goog
 
