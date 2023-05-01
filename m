@@ -2,162 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FFC6F3676
-	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 21:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A796C6F3681
+	for <lists+bpf@lfdr.de>; Mon,  1 May 2023 21:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbjEATEs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 15:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S229871AbjEATKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 15:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232819AbjEATEq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 15:04:46 -0400
-Received: from out-1.mta1.migadu.com (out-1.mta1.migadu.com [IPv6:2001:41d0:203:375::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0671708
-        for <bpf@vger.kernel.org>; Mon,  1 May 2023 12:04:43 -0700 (PDT)
-Message-ID: <57221edc-a4b4-8125-86b5-a3cbbe5d36fa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682967882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LajlkcF00gnT/PyrnGVyPCE6wTn+TxTarIPA3YXAtjU=;
-        b=mZasrA19vpzKhO844RpIuTZIsS6ocuz1oeingoaqPRPTQ9qp83xpKDEpY6upUI1vloeU6x
-        nlgX7DxRsH9AVUjHttDHxx48EhJZBQ9PfyAUYSrlK+t6HGZhqCzTrtoaO+BK+sEurfgo/U
-        1S7gEoSFcCM7Cl694peam3WaiEWTn00=
-Date:   Mon, 1 May 2023 12:04:37 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/4] selftests/bpf: Update EFAULT
- {g,s}etsockopt selftests
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org
-References: <20230427200409.1785263-1-sdf@google.com>
- <20230427200409.1785263-3-sdf@google.com>
- <ac7c31cc-7f8f-1066-1aa1-ad4d734998c5@linux.dev>
- <CAKH8qBu=ehBZsusAaVwxO1DNK=NxFupR8RwtotsPSZmdiTw=Zw@mail.gmail.com>
- <CAKH8qBt-+GDxcfoQP6rmodQzRbZ-Lz11wUpVmP98zDm4qxJKAw@mail.gmail.com>
- <b87d7403-a64e-3678-19a0-1b0072ee4198@linux.dev>
- <CAKH8qBs2wB95dMr=1rEu-cgOBWrY+wmD5mC_R=gaVOLX18HVgQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAKH8qBs2wB95dMr=1rEu-cgOBWrY+wmD5mC_R=gaVOLX18HVgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229688AbjEATKa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 15:10:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C5C1708
+        for <bpf@vger.kernel.org>; Mon,  1 May 2023 12:10:29 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-b9a7550dca3so5025819276.0
+        for <bpf@vger.kernel.org>; Mon, 01 May 2023 12:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682968228; x=1685560228;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FWIlxJQRcWnLjOIUDTJbSfh4XgVjMf4ajKI0PtK8Upc=;
+        b=O5lvsEqN0MYH1blpGOOkkgbT7JMg7SG6dFxDvl1pKmykIQ2G7Qo+bPG6vIoyPEC4Hu
+         07Uf6FDJnXk5bsb4GFbJWJ/ecXoVx18tvZ77eZTy3JjlMHNFxf0h7msxqsI5VrnL+esb
+         hIkq+KbGoYHjLTFJrjeGLtT2f/A2VCyzG7hI0mp93UoLo3hL01glx4M91CZTL1Hy2Ar/
+         jhQZVXNQnvqs4fniC6P8Hsm9XQxwa7dY0ilns6p+b4NaqsjS5sET2SWMLCohNlmdgehE
+         cPZ6UWUfcjZHWaoR7DQ+Ae4OY2tH6jL350L6oK48zfa7NmRKTjVx72en7N2GbNpIDqce
+         K9eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682968228; x=1685560228;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FWIlxJQRcWnLjOIUDTJbSfh4XgVjMf4ajKI0PtK8Upc=;
+        b=ftsFJiu0f830inbvsbP5dZDIXCR0u56EmoXM3UsPEwDwjtc5AvRkQvaPqRSip7uKz3
+         FAGocGxRk2Uc+JNu5ti8YuaRkdPTKQF29XfMkAXkFG5oT/FYKPJsBg4yt9XLjQu4G+51
+         z3PZLnigCHbU0yxGV/GXyFpVijL0Snpoa7fEDEIw37706U4cWQH9LW0kw14zX4NQWTvC
+         81ANSnZ91Xt8r8wPwC8+lBEB736h5/EjaWSjlpBx4SLq4vy76aVxzyK2vCfTJTqpNNw+
+         t6sVnSjfVdOc+YXX+hau+Xik1cEjevBA+myYtKSOl0g8gs8+6bYAtTkmpXRCWYu6PBZ9
+         PhKw==
+X-Gm-Message-State: AC+VfDyXdjzkAAK5DVbIEyaJweSmgMBXo3M2BR4aBbMR6+F2pWY3SBeU
+        SqkAhlbNEM1AziK4LEX5a35Q9wJxM+Wk/eUKdtJFOC5XNjjpAaENN3yiFqY72ekODTf/Tc/cIsm
+        mSBE6AyN7afKFh8ioTQEiNZlGKHqn0aDwkw96W5tJVsPcW+t0tg==
+X-Google-Smtp-Source: ACHHUZ53eU+ZwpbB3GOckMG4Ir/qJoB+4nw0tZVGSKka6HC9LEaTxUGz7HxTRXKoMNQdqJwJgK3vl9M=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:a002:0:b0:b99:f14b:53c1 with SMTP id
+ x2-20020a25a002000000b00b99f14b53c1mr5225513ybh.6.1682968228406; Mon, 01 May
+ 2023 12:10:28 -0700 (PDT)
+Date:   Mon, 1 May 2023 12:10:26 -0700
+Mime-Version: 1.0
+Message-ID: <ZFAOojsT93ZxwNu3@google.com>
+Subject: [ANN] bpf development stats for 6.4
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/1/23 10:22 AM, Stanislav Fomichev wrote:
-> On Fri, Apr 28, 2023 at 5:44 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 4/28/23 5:32 PM, Stanislav Fomichev wrote:
->>> On Fri, Apr 28, 2023 at 4:59 PM Stanislav Fomichev <sdf@google.com> wrote:
->>>>
->>>> On Fri, Apr 28, 2023 at 4:57 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>>>>
->>>>> On 4/27/23 1:04 PM, Stanislav Fomichev wrote:
->>>>>> Instead of assuming EFAULT, let's assume the BPF program's
->>>>>> output is ignored.
->>>>>>
->>>>>> Remove "getsockopt: deny arbitrary ctx->retval" because it
->>>>>> was actually testing optlen. We have separate set of tests
->>>>>> for retval.
->>>>>>
->>>>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>>>>> ---
->>>>>>     .../selftests/bpf/prog_tests/sockopt.c        | 80 +++++++++++++++++--
->>>>>>     1 file changed, 74 insertions(+), 6 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>>>> index aa4debf62fc6..8dad30ce910e 100644
->>>>>> --- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
->>>>>> @@ -273,10 +273,30 @@ static struct sockopt_test {
->>>>>>                 .error = EFAULT_GETSOCKOPT,
->>>>>>         },
->>>>>>         {
->>>>>> -             .descr = "getsockopt: deny arbitrary ctx->retval",
->>>>>> +             .descr = "getsockopt: ignore >PAGE_SIZE optlen",
->>>>>>                 .insns = {
->>>>>> -                     /* ctx->retval = 123 */
->>>>>> -                     BPF_MOV64_IMM(BPF_REG_0, 123),
->>>>>> +                     /* write 0xFF to the first optval byte */
->>>>>> +
->>>>>> +                     /* r6 = ctx->optval */
->>>>>> +                     BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1,
->>>>>> +                                 offsetof(struct bpf_sockopt, optval)),
->>>>>> +                     /* r2 = ctx->optval */
->>>>>> +                     BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
->>>>>> +                     /* r6 = ctx->optval + 1 */
->>>>>> +                     BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 1),
->>>>>> +
->>>>>> +                     /* r7 = ctx->optval_end */
->>>>>> +                     BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_1,
->>>>>> +                                 offsetof(struct bpf_sockopt, optval_end)),
->>>>>> +
->>>>>> +                     /* if (ctx->optval + 1 <= ctx->optval_end) { */
->>>>>> +                     BPF_JMP_REG(BPF_JGT, BPF_REG_6, BPF_REG_7, 1),
->>>>>> +                     /* ctx->optval[0] = 0xF0 */
->>>>>> +                     BPF_ST_MEM(BPF_B, BPF_REG_2, 0, 0xFF),
->>>>>> +                     /* } */
->>>>>> +
->>>>>> +                     /* ctx->retval = 0 */
->>>>>> +                     BPF_MOV64_IMM(BPF_REG_0, 0),
->>>>>>                         BPF_STX_MEM(BPF_W, BPF_REG_1, BPF_REG_0,
->>>>>>                                     offsetof(struct bpf_sockopt, retval)),
->>>>>>
->>>>>> @@ -287,9 +307,10 @@ static struct sockopt_test {
->>>>>>                 .attach_type = BPF_CGROUP_GETSOCKOPT,
->>>>>>                 .expected_attach_type = BPF_CGROUP_GETSOCKOPT,
->>>>>>
->>>>>> -             .get_optlen = 64,
->>>>>> -
->>>>>> -             .error = EFAULT_GETSOCKOPT,
->>>>>> +             .get_level = 1234,
->>>>>> +             .get_optname = 5678,
->>>>>> +             .get_optval = {}, /* the changes are ignored */
->>>>>> +             .get_optlen = 4096 + 1,
->>>>>
->>>>> The patchset looks good. Thanks for taking care of it.
->>>>>
->>>>> One question, is it safe to the assume 4096 page size for all platforms in the
->>>>> selftests?
->>>>
->>>> Good question; let me respin with sysconf() just to be safe..
->>>
->>> Argh, the compiler yells at me:
->>> error: initializer element is not a compile-time constant
->>>
->>> I guess I'm just gonna do #define PAGE_SIZE 4096 and if we do hit some
->>> problems on the other archs, I'll ifdef it in one place.
->>
->> or run_test() can reinit optlen to sysconf_page_size + 1 if optlen == 4097.
-> 
-> Maybe I can do something like the following?
-> 
->                 if (test->set_optlen >= PAGE_SIZE) {
->                         int num_pages = test->set_optlen / PAGE_SIZE;
->                         int remainder = test->set_optlen % PAGE_SIZE;
-> 
->                         test->set_optlen = num_pages *
-> sysconf(_SC_PAGESIZE) + remainder;
->                 }
-> 
-> More verbose, but less magical than depending on 4097. 
+Hi all,
 
-LGTM.
+Here is my attempt to apply Jakub's scripts to analyze mailing list activit=
+y.
+See the following link for mode details and methodology:
+https://lore.kernel.org/netdev/4d47c418-32d9-4d6a-9510-a6a927ebe61b@lunn.ch=
+/T/#t
 
-> For the BPF side, I can probably pass proper value via bss..
+tl;dr: people/companies receive higher score when they participate in revie=
+ws
+(vs only sending patches).
 
-Make sense also.
+For now, I'm providing the numbers without any analysis.
 
+Individual Rankings
+-------------------
+
+Top 10 reviewers (thr):             Top 10 reviewers (msg):
+   1. [103] Alexei Starovoitov         1. [189] Alexei Starovoitov
+   2. [ 64] Andrii Nakryiko            2. [185] Andrii Nakryiko
+   3. [ 46] Stanislav Fomichev         3. [ 98] Stanislav Fomichev
+   4. [ 36] Daniel Borkmann            4. [ 87] Martin KaFai Lau
+   5. [ 32] Martin KaFai Lau           5. [ 66] Jakub Kicinski
+   6. [ 27] Yonghong Song              6. [ 59] Kui-Feng Lee
+   7. [ 27] Jakub Kicinski             7. [ 53] Jiri Olsa
+   8. [ 24] John Fastabend             8. [ 49] Yonghong Song
+   9. [ 24] Jiri Olsa                  9. [ 45] Daniel Borkmann
+  10. [ 20] Kui-Feng Lee              10. [ 43] David Vernet
+
+Top 15 authors (thr):               Top 10 authors (msg):
+   1. [ 32] Andrii Nakryiko            1. [201] Andrii Nakryiko
+   2. [ 21] Kal Conley                 2. [124] Xuan Zhuo
+   3. [ 19] Jesper Dangaard Brouer     3. [110] Jesper Dangaard Brouer
+   4. [ 18] Xuan Zhuo                  4. [107] Kui-Feng Lee
+   5. [ 15] David Vernet               5. [101] Eduard Zingerman
+   6. [ 15] Alexei Starovoitov         6. [ 86] Yafang Shao
+   7. [ 14] Dave Marchevsky            7. [ 77] John Fastabend
+   8. [ 14] Eduard Zingerman           8. [ 62] Alexei Starovoitov
+   9. [ 14] Lorenzo Bianconi           9. [ 53] Kal Conley
+  10. [ 13] Martin KaFai Lau          10. [ 52] Martin KaFai Lau
+  11. [ 13] Daniel Borkmann
+  12. [ 12] Kui-Feng Lee
+  13. [ 11] Song Yoong Siang
+  14. [ 11] Yafang Shao
+  15. [ 10] Dave Thaler
+
+Top 15 scores (positive):           Top 15 scores (negative):
+   1. [1330] Alexei Starovoitov        1. [106] Xuan Zhuo
+   2. [812] Andrii Nakryiko            2. [ 91] Kal Conley
+   3. [632] Stanislav Fomichev         3. [ 91] Kui-Feng Lee
+   4. [427] Martin KaFai Lau           4. [ 64] Dave Marchevsky
+   5. [401] Daniel Borkmann            5. [ 64] Yafang Shao
+   6. [380] Jakub Kicinski             6. [ 51] Song Yoong Siang
+   7. [363] Yonghong Song              7. [ 44] Florian Westphal
+   8. [334] Jiri Olsa                  8. [ 43] Joanne Koong
+   9. [316] Kui-Feng Lee               9. [ 40] Jiri Olsa
+  10. [261] Arnaldo Carvalho de Melo  10. [ 38] Feng zhou
+  11. [248] John Fastabend            11. [ 37] Dave Thaler
+  12. [233] Toke H=EF=BF=BDiland-J=EF=BF=BDrgensen    12. [ 37] "D. Wythe"
+  13. [228] "Michael S. Tsirkin"      13. [ 36] "Masami Hiramatsu (Google)"
+  14. [214] Kal Cutter Conley         14. [ 36] Yonghong Song
+  15. [206] Quentin Monnet            15. [ 32] Daniel Rosenberg
+
+Company Rankings
+----------------
+
+Note, company attribution requires mapping from the email to the company.
+People who are listed verbatim, feel free to share your company name
+over private or public email.
+
+Top 10 reviewers (thr):            Top 10 reviewers (msg):
+   1. [195] Meta                      1. [463] Meta
+   2. [ 93] Isovalent                 2. [205] RedHat
+   3. [ 72] RedHat                    3. [166] Google
+   4. [ 71] Google                    4. [161] Isovalent
+   5. [ 69] Intel                     5. [149] Intel
+   6. [ 19] Huawei                    6. [ 43] nVidia
+   7. [ 15] Eduard Zingerman          7. [ 38] Kal Cutter Conley
+   8. [ 15] nVidia                    8. [ 33] Eduard Zingerman
+   9. [ 14] Kal Cutter Conley         9. [ 33] Huawei
+  10. [ 12] Corigine                 10. [ 23] Paul Moore
+
+Top 15 authors (thr):              Top 10 authors (msg):
+   1. [134] Meta                      1. [640] Meta
+   2. [ 48] Isovalent                 2. [213] Google
+   3. [ 45] RedHat                    3. [210] Isovalent
+   4. [ 40] Google                    4. [175] RedHat
+   5. [ 36] Intel                     5. [164] Alibaba
+   6. [ 25] Huawei                    6. [101] Eduard Zingerman
+   7. [ 25] Alibaba                   7. [ 94] Intel
+   8. [ 21] Kal Conley                8. [ 86] Yafang Shao
+   9. [ 14] Microsoft                 9. [ 69] Huawei
+  10. [ 14] Eduard Zingerman         10. [ 53] Kal Conley
+  11. [ 14] IBM
+  12. [ 11] Yafang Shao
+  13. [  9] Oracle
+  14. [  8] Bytedance
+  15. [  8] Jason Xing
+
+Top 15 scores (positive):          Top 15 scores (negative):
+   1. [2152] Meta                     1. [147] Alibaba
+   2. [1001] Isovalent                2. [ 91] Kal Conley
+   3. [906] RedHat                    3. [ 64] Yafang Shao
+   4. [831] Intel                     4. [ 44] Florian Westphal
+   5. [814] Google                    5. [ 38] Bytedance
+   6. [227] nVidia                    6. [ 27] Kui-Feng Lee
+   7. [214] Kal Cutter Conley         7. [ 24] Gilad Sever
+   8. [160] Corigine                  8. [ 23] <zhongjun@uniontech.com>
+   9. [145] Huawei                    9. [ 23] Rong Tao
+  10. [122] Eduard Zingerman         10. [ 22] Tiezhu Yang
+  11. [111] Bagas Sanjaya            11. [ 20] Puranjay Mohan
+  12. [104] Paul Moore               12. [ 19] Lorenzo Stoakes
+  13. [ 76] Linux Foundation         13. [ 19] Gerhard Engleder
+  14. [ 65] IBM                      14. [ 19] Jason Xing
+  15. [ 64] Casey Schaufler          15. [ 16] Xueming Feng
+
+How to reproduce
+----------------
+
+This is mostly for myself so I don't forget how to do it next time.
+
+$ git log --oneline | head -n1
+ad1d2952b4e0 Re: [PATCH bpf-next 2/2] libbpf: selftests for resizing datase=
+c maps
+
+$ git log --oneline --since '02/21/2023' | tail -n 1
+e4662930a06f Re: [PATCH bpf-next V3] xdp: bpf_xdp_metadata use EOPNOTSUPP f=
+or no driver support
+
+$ git rev-list --count e4662930a06f..master
+5687
+
+$ ./ml-stat.py --repo bpf-0.git --db db.json --email-count 5687
+
+$ ./ml-stat.py --repo bpf-0.git --db db.json --email-count 5687 --corp
