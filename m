@@ -2,195 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF016F493C
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 19:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9AF6F494A
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 19:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234436AbjEBRlw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 13:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S234397AbjEBRpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 13:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234437AbjEBRlv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 13:41:51 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2087.outbound.protection.outlook.com [40.107.223.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CBDC3;
-        Tue,  2 May 2023 10:41:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZjdbYef3cgFU0YHr1dWl+MqSPmVqHredtckBMo1gA86gGvDE+4UNySQwPHhqqwkDRSPAM3R0ZrdI4giphpu9MAL8dGeNBHSGTmTxmeRKv+yKXHk3J6bLXmv6HCOykt2ui2+cNVwCeg4i39Z6PBpSQjImwkUCxitBFSSsoDhFWmbAnMALK4B128z4zqd/rWAplML0DnGSxLpH3iLXY7M42NA+49X/Q3vzCDEYVW/X7Ay00ikq1cGM3jbWF4M4dGmcz5QUKjon8yUIaTk+S0MugbdaAURcSYd2eg7rZewihFEItuVdlZVOdNi/NjzTDr39dY5FDqnVyONmdEwbtZxpWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Y68f86rlg26ncTi7MRdWfYxV6CtPY4Le/9FCMH5Q44=;
- b=A/W+a2Oiyb+Kx+ga6UGR2qBMtT8w13d0UZblQigugEqJTicO/VDHPqwz7vw62RabFcJpioZezXCO0qqeo5OH6SvH00cjM8oeYtucohLDvyk8UTqwpfkN7c3zR92XCYvSHBdbEijW9Y1/8wLtIEN8W2TW8O33Bd0IqtyjhuOMj3sUF899gnRpxcvC2WA1Vpsjed45w0a6VRVIHnSO2S6PApFEB8ZnUPS1WwByT1lhZeNj6hPJQ298Gpl9zBXBrRJ4rmqcFj0kRWUSu2NWI/ari8lMu5xmNAbzfQPFTs1mxTtKkti+Iy7UGQQmIieBNw4CtHsiIoh85fFWsG3uX78Ayg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=lists.linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Y68f86rlg26ncTi7MRdWfYxV6CtPY4Le/9FCMH5Q44=;
- b=YE7o2+Ff5qnEq8OoGUfegrsPXXdL6mdX2jJaNqYgM8YnNOfsHRD1hkqyIWpsPvlE+VZFqSe9TXK158381teJtVh6lGd7q2xWtTnboj1qMejXIGAbI7gZo++R5usrGdQCP37Ep/J6gVeXbU0yvOkem8eK4QpLRkb5FcCjSBtFUwLg6kFy40P49JRY69u84KLjtoZzmKZMALA3tsLVMfsnG2ismV7oGS6Z2aEndIaxLtc3DgjwOd+mfn9haQXF39neUXTViD8Q6T66zW5b4VuoqGLUzQGJ8indirNy75ReoUO/QyLg504dprih5kjy+nkCNguRbjaHz7PYfbFd05iZ5w==
-Received: from BN8PR03CA0016.namprd03.prod.outlook.com (2603:10b6:408:94::29)
- by BN9PR12MB5147.namprd12.prod.outlook.com (2603:10b6:408:118::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.31; Tue, 2 May
- 2023 17:41:47 +0000
-Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:94:cafe::94) by BN8PR03CA0016.outlook.office365.com
- (2603:10b6:408:94::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.20 via Frontend
- Transport; Tue, 2 May 2023 17:41:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6363.21 via Frontend Transport; Tue, 2 May 2023 17:41:47 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 2 May 2023
- 10:41:38 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Tue, 2 May 2023 10:41:37 -0700
-Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.126.190.180)
- with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Tue, 2 May
- 2023 10:41:36 -0700
-From:   Feng Liu <feliu@nvidia.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Feng Liu <feliu@nvidia.com>, William Tu <witu@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>
-Subject: [PATCH net v2] virtio_net: Fix error unwinding of XDP initialization
-Date:   Tue, 2 May 2023 13:41:34 -0400
-Message-ID: <20230502174134.32276-1-feliu@nvidia.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+        with ESMTP id S229575AbjEBRpu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 13:45:50 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CE3C3;
+        Tue,  2 May 2023 10:45:47 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3062c1e7df8so1908144f8f.1;
+        Tue, 02 May 2023 10:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683049546; x=1685641546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/465ioAn95NNEKxI/y1OxBfAvlwiRZKFhD46N2OZRqk=;
+        b=MDLyOim5BMRn6hfXjaVej53KW+5dmIM3Kl9aUN5vg5pGtYXJB3mydYvJYPbHAvr5W0
+         L8Nl8T5KFv+aMHZZ1EUjV0xn5gHIQQLJ8t/0RFiB3xgixHqpsIBsnCtLoPZ4M0IdEkae
+         iFnNOgkq4akftSubl/G37wbbq8Ryyeyqjalcc/nswPnpN2ygGGeD/MNZpVYD5dQwKmn3
+         Zw2waXt5myN4W17JESf1xHHsPzjuYjD9uQ8LE6SMACY0gesoDxJvnPXk89JVk2qVjwmn
+         sJ6SWbpbNvuodR5JVQGnq1AfcxkDsORytjYHKofxm8N9wP29zJW0uKO4EHE9s6x0CyzG
+         GzNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683049546; x=1685641546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/465ioAn95NNEKxI/y1OxBfAvlwiRZKFhD46N2OZRqk=;
+        b=ceQFAQ8hgXMJ8EMjf9oPuGecP19B+50yWH/j8g7UmuJNrow7YFoecdkIUWpDKJ05NM
+         9nK9PTBulx+xKxBqn5OcwnNPrRmagiSBwDydw9dzsiCxj9rg05h+78thPbNvqEHxZxSQ
+         xbky19i43AxaZrn7BnuBdhv3LfPlRoc2QDORyDwIsx0V1lvGbGZBn/w7P2sX+YKOMQdr
+         EkCoYY1nfAEx1jsaQD6tFwROIEezzK3iJ2HRH8Ir4EeI/qSRZ8aIEKH2hx6tTn2KcoRO
+         ZLJvvj4qelTNpUgvAF9XKhSlZp1YG8pXUSfFIWhbCd/A7KzXJNYvQaTjiFBg82pMz9Zy
+         DRJA==
+X-Gm-Message-State: AC+VfDwAfFNhZyaqFScTLnB/qVu01yO7l5uOQqKLa8w9buO1HIG+QzBZ
+        8p1kVWsyb6M53faYa24IifU=
+X-Google-Smtp-Source: ACHHUZ5GCNyVFMjZgxcHAoZ9opb9xSy+K8GBwSG7Hehx4pddEaJp9V9nLPRBUGf2oMsUu63waSSlog==
+X-Received: by 2002:adf:ce05:0:b0:306:34f6:de85 with SMTP id p5-20020adfce05000000b0030634f6de85mr2709622wrn.58.1683049546176;
+        Tue, 02 May 2023 10:45:46 -0700 (PDT)
+Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
+        by smtp.gmail.com with ESMTPSA id f15-20020a7bcd0f000000b003f182cc55c4sm36031959wmj.12.2023.05.02.10.45.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 May 2023 10:45:45 -0700 (PDT)
+Date:   Tue, 2 May 2023 18:45:44 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v7 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing
+ to file-backed mappings
+Message-ID: <88fcd103-7302-4838-a730-f7e0f189cfe7@lucifer.local>
+References: <cover.1683044162.git.lstoakes@gmail.com>
+ <b3a4441cade9770e00d24f5ecb75c8f4481785a4.1683044162.git.lstoakes@gmail.com>
+ <1691115d-dba4-636b-d736-6a20359a67c3@redhat.com>
+ <392debc7-2de8-440e-8b26-20f2d42cdf8d@lucifer.local>
+ <6f17af6b-0925-12bd-5041-14462dab2768@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT048:EE_|BN9PR12MB5147:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0eb4fc4-2250-446c-aaea-08db4b3480c7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tBnGmMjTOo+1tWu6gNwV22XwORnesxGLcpZWSN05XRpIK3RMvOa6s6gvU+654urDx5qs6OtEEvdMV99xzOV3a0Hl56HMkVYnKJf2cSnBjC13b99z56HTeIFmux0RHkJ/ogM8DQ0oAeU3kmaghOARwXGEenkaYiWK7YAIkJsPvyM+CV36p4FHits6L9KOw8VMzcZyGLJQ5RvdE+knO9sTV0JdmDi0gN9eIjpSrwOoiOOUkPLRXLg56kcHyEh2n/4MeBumOF+EqmuaA35DR1/VsBhR7CifjJBl/W00ycH95WhQaHSHavgZolFfiA4Br7DPM6sHwhyPEf5fkIy/Wdd/iEWOG37vimeawViuUcrJnI0CnrUfUnkQrtmkofUiUKW2iTSlokQBGfamTdYefVe4vy+PxqLVebc9d7+HIZxMp8aZWdYRyhkoRssSdFngBwJvG0Pq1YUSXRdQsWgJAzcYnQdYGQ8+D+dwxnTcfWv5g0TT/L12uILcFOXewStofYag4A9QrzR82c0PcNkRtX21HYq2T77Nf810uIDcjw8bC1Defwq+hULZWfFD5JNGnb4qYEH/GZ5fCvf2tXCxNUrkVArquggFjtUqOR/7j8EzB5x5B4nrg85l9OGqtcIbFTQLi0XTs/avDyFZlFYnSuNNO6GDdev3HB3Pn4NfyJyvT+/F4iXgP6s1ZJ7qj/1tIqM8aH/Ew2i3ssvOCVC2GlQdsg==
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(396003)(376002)(136003)(451199021)(40470700004)(46966006)(36840700001)(82740400003)(186003)(7636003)(356005)(1076003)(26005)(107886003)(36860700001)(47076005)(2616005)(336012)(83380400001)(426003)(5660300002)(8676002)(8936002)(82310400005)(2906002)(36756003)(40460700003)(40480700001)(110136005)(86362001)(54906003)(478600001)(7696005)(316002)(41300700001)(70586007)(4326008)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2023 17:41:47.1821
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0eb4fc4-2250-446c-aaea-08db4b3480c7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5147
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f17af6b-0925-12bd-5041-14462dab2768@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When initializing XDP in virtnet_open(), some rq xdp initialization
-may hit an error causing net device open failed. However, previous
-rqs have already initialized XDP and enabled NAPI, which is not the
-expected behavior. Need to roll back the previous rq initialization
-to avoid leaks in error unwinding of init code.
+On Tue, May 02, 2023 at 07:38:27PM +0200, David Hildenbrand wrote:
+> On 02.05.23 19:31, Lorenzo Stoakes wrote:
+> > On Tue, May 02, 2023 at 07:13:49PM +0200, David Hildenbrand wrote:
+> > > [...]
+> > >
+> > > > +{
+> > > > +	struct address_space *mapping;
+> > > > +
+> > > > +	/*
+> > > > +	 * GUP-fast disables IRQs - this prevents IPIs from causing page tables
+> > > > +	 * to disappear from under us, as well as preventing RCU grace periods
+> > > > +	 * from making progress (i.e. implying rcu_read_lock()).
+> > > > +	 *
+> > > > +	 * This means we can rely on the folio remaining stable for all
+> > > > +	 * architectures, both those that set CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> > > > +	 * and those that do not.
+> > > > +	 *
+> > > > +	 * We get the added benefit that given inodes, and thus address_space,
+> > > > +	 * objects are RCU freed, we can rely on the mapping remaining stable
+> > > > +	 * here with no risk of a truncation or similar race.
+> > > > +	 */
+> > > > +	lockdep_assert_irqs_disabled();
+> > > > +
+> > > > +	/*
+> > > > +	 * If no mapping can be found, this implies an anonymous or otherwise
+> > > > +	 * non-file backed folio so in this instance we permit the pin.
+> > > > +	 *
+> > > > +	 * shmem and hugetlb mappings do not require dirty-tracking so we
+> > > > +	 * explicitly whitelist these.
+> > > > +	 *
+> > > > +	 * Other non dirty-tracked folios will be picked up on the slow path.
+> > > > +	 */
+> > > > +	mapping = folio_mapping(folio);
+> > > > +	return !mapping || shmem_mapping(mapping) || folio_test_hugetlb(folio);
+> > >
+> > > "Folios in the swap cache return the swap mapping" -- you might disallow
+> > > pinning anonymous pages that are in the swap cache.
+> > >
+> > > I recall that there are corner cases where we can end up with an anon page
+> > > that's mapped writable but still in the swap cache ... so you'd fallback to
+> > > the GUP slow path (acceptable for these corner cases, I guess), however
+> > > especially the comment is a bit misleading then.
+> >
+> > How could that happen?
+> >
+> > >
+> > > So I'd suggest not dropping the folio_test_anon() check, or open-coding it
+> > > ... which will make this piece of code most certainly easier to get when
+> > > staring at folio_mapping(). Or to spell it out in the comment (usually I
+> > > prefer code over comments).
+> >
+> > I literally made this change based on your suggestion :) but perhaps I
+> > misinterpreted what you meant.
+> >
+> > I do spell it out in the comment that the page can be anonymous, But perhaps
+> > explicitly checking the mapping flags is the way to go.
+> >
+> > >
+> > > > +}
+> > > > +
+> > > >    /**
+> > > >     * try_grab_folio() - Attempt to get or pin a folio.
+> > > >     * @page:  pointer to page to be grabbed
+> > > > @@ -123,6 +170,8 @@ static inline struct folio *try_get_folio(struct page *page, int refs)
+> > > >     */
+> > > >    struct folio *try_grab_folio(struct page *page, int refs, unsigned int flags)
+> > > >    {
+> > > > +	bool is_longterm = flags & FOLL_LONGTERM;
+> > > > +
+> > > >    	if (unlikely(!(flags & FOLL_PCI_P2PDMA) && is_pci_p2pdma_page(page)))
+> > > >    		return NULL;
+> > > > @@ -136,8 +185,7 @@ struct folio *try_grab_folio(struct page *page, int refs, unsigned int flags)
+> > > >    		 * right zone, so fail and let the caller fall back to the slow
+> > > >    		 * path.
+> > > >    		 */
+> > > > -		if (unlikely((flags & FOLL_LONGTERM) &&
+> > > > -			     !is_longterm_pinnable_page(page)))
+> > > > +		if (unlikely(is_longterm && !is_longterm_pinnable_page(page)))
+> > > >    			return NULL;
+> > > >    		/*
+> > > > @@ -148,6 +196,16 @@ struct folio *try_grab_folio(struct page *page, int refs, unsigned int flags)
+> > > >    		if (!folio)
+> > > >    			return NULL;
+> > > > +		/*
+> > > > +		 * Can this folio be safely pinned? We need to perform this
+> > > > +		 * check after the folio is stabilised.
+> > > > +		 */
+> > > > +		if ((flags & FOLL_WRITE) && is_longterm &&
+> > > > +		    !folio_longterm_write_pin_allowed(folio)) {
+> > > > +			folio_put_refs(folio, refs);
+> > > > +			return NULL;
+> > > > +		}
+> > >
+> > > So we perform this change before validating whether the PTE changed.
+> > >
+> > > Hmm, naturally, I would have done it afterwards.
+> > >
+> > > IIRC, without IPI syncs during TLB flush (i.e.,
+> > > CONFIG_MMU_GATHER_RCU_TABLE_FREE), there is the possibility that
+> > > (1) We lookup the pte
+> > > (2) The page was unmapped and free
+> > > (3) The page gets reallocated and used
+> > > (4) We pin the page
+> > > (5) We dereference page->mapping
+> >
+> > But we have an implied RCU lock from disabled IRQs right? Unless that CONFIG
+> > option does something odd (I've not really dug into its brehaviour). It feels
+> > like that would break GUP-fast as a whole.
+> >
+> > >
+> > > If we then de-reference page->mapping that gets used by whoever allocated it
+> > > for something completely different (not a pointer to something reasonable),
+> > > I wonder if we might be in trouble.
+> > >
+> > > Checking first, whether the PTE changed makes sure that what we pinned and
+> > > what we're looking at is what we expected.
+> > >
+> > > ... I can spot that the page_is_secretmem() check is also done before that.
+> > > But it at least makes sure that it's still an LRU page before staring at the
+> > > mapping (making it a little safer?).
+> >
+> > As do we :)
+> >
+> > We also via try_get_folio() check to ensure that we aren't subject to a split.
+> >
+> > >
+> > > BUT, I keep messing up this part of the story. Maybe it all works as
+> > > expected because we will be synchronizing RCU somehow before actually
+> > > freeing the page in the !IPI case. ... but I think that's only true for page
+> > > tables with CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+> >
+> > My understanding based on what Peter said is that the IRQs being disabled should
+> > prevent anything bad from happening here.
+>
+>
+> ... only if we verified that the PTE didn't change IIUC. IRQs disabled only
+> protect you from the mapping getting freed and reused (because mappings are
+> freed via RCU IIUC).
+>
+> But as far as I can tell, it doesn't protect you from the page itself
+> getting freed and reused, and whoever freed the page uses page->mapping to
+> store something completely different.
 
-Also extract a helper function of disable queue pairs, and use newly
-introduced helper function in error unwinding and virtnet_close;
+Ack, and we'd not have mapping->inode to save us in an anon case either.
 
-Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
-Signed-off-by: Feng Liu <feliu@nvidia.com>
-Reviewed-by: William Tu <witu@nvidia.com>
-Reviewed-by: Parav Pandit <parav@nvidia.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/net/virtio_net.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+I'd rather be as cautious as we can possibly be, so let's move this to after the
+'PTE is the same' check then, will fix on respin.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 8d8038538fc4..5cd78e154d14 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1868,6 +1868,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
- 	return received;
- }
- 
-+static void virtnet_disable_qp(struct virtnet_info *vi, int qp_index)
-+{
-+	virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
-+	napi_disable(&vi->rq[qp_index].napi);
-+	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
-+}
-+
- static int virtnet_open(struct net_device *dev)
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
-@@ -1883,20 +1890,27 @@ static int virtnet_open(struct net_device *dev)
- 
- 		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
- 		if (err < 0)
--			return err;
-+			goto err_xdp_info_reg;
- 
- 		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
- 						 MEM_TYPE_PAGE_SHARED, NULL);
--		if (err < 0) {
--			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--			return err;
--		}
-+		if (err < 0)
-+			goto err_xdp_reg_mem_model;
- 
- 		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
- 		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
- 	}
- 
- 	return 0;
-+
-+	/* error unwinding of xdp init */
-+err_xdp_reg_mem_model:
-+	xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-+err_xdp_info_reg:
-+	for (i = i - 1; i >= 0; i--)
-+		virtnet_disable_qp(vi, i);
-+
-+	return err;
- }
- 
- static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-@@ -2305,11 +2319,8 @@ static int virtnet_close(struct net_device *dev)
- 	/* Make sure refill_work doesn't re-enable napi! */
- 	cancel_delayed_work_sync(&vi->refill);
- 
--	for (i = 0; i < vi->max_queue_pairs; i++) {
--		virtnet_napi_tx_disable(&vi->sq[i].napi);
--		napi_disable(&vi->rq[i].napi);
--		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
--	}
-+	for (i = 0; i < vi->max_queue_pairs; i++)
-+		virtnet_disable_qp(vi, i);
- 
- 	return 0;
- }
--- 
-2.37.1 (Apple Git-137.1)
+>
+> But, again, it's all complicated and confusing to me.
+>
 
+It's just a fiddly, complicated, delicate area I feel :) hence why I
+endeavour to take on board the community's views on this series to ensure
+we end up with the best possible implementation.
+
+>
+> page_is_secretmem() also doesn't use a READ_ONCE() ...
+
+Perhaps one for a follow up patch...
+
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
