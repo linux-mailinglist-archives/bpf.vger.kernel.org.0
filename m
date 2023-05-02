@@ -2,180 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE676F405D
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 11:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60316F4265
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 13:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjEBJmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 05:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        id S233333AbjEBLOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 07:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233526AbjEBJmg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 05:42:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640794C28;
-        Tue,  2 May 2023 02:42:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 002F562296;
-        Tue,  2 May 2023 09:42:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46B9C433EF;
-        Tue,  2 May 2023 09:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683020554;
-        bh=qFwCrUAdeDe+6FyE1HcfmlEiCM+MGFum/aeN1Xhqg9Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C8hVtt3BCKUhJT958diZsiDXocAFsGIFSAYf8v9fW5C/yhaj0FHBcVQIN+yO+FLsO
-         jZvYqr6AtRvBAOsujGv79Vh1OncGzDezPKVZLRw2klp+EnlftXsv0Wgm6SwHimbgPV
-         uz8Et3j+FV7rp2NFeEv4xAwLWSL38kkFTFXwbqzNHJFwH7pU30+JDLJcnLfNvBJhvQ
-         Z7OJrxNAmuDc259XqCHTjtpKpuTo1QDPGmGAXGPaPeh8T86hUJ4dD7/ZzYKkon4/Zw
-         EGlbwi38MnxGoytKNlSR99Cew3y0r+xFWvedcidOIRV9ky3Up2AQi3IJ0T81rbO9VO
-         S2m2QD5qh1k1g==
-Date:   Tue, 2 May 2023 11:42:30 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, j.vosburgh@gmail.com,
-        andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
-        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
-        alardam@gmail.com, memxor@gmail.com, sdf@google.com,
-        brouer@redhat.com, toke@redhat.com, Jussi Maki <joamaki@gmail.com>
-Subject: Re: [PATCH v2 net] bonding: add xdp_features support
-Message-ID: <ZFDbBmdgCDSvYZgG@lore-desk>
-References: <e82117190648e1cbb2740be44de71a21351c5107.1682848658.git.lorenzo@kernel.org>
- <1260d53a-1a05-9615-5a39-4c38171285fd@iogearbox.net>
- <5a1c7de53daaa6180b207ff42d1736f50b5d90b9.camel@redhat.com>
+        with ESMTP id S229457AbjEBLOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 07:14:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5FAA4;
+        Tue,  2 May 2023 04:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qSL9OkS9lUf+/Y0rKTYhB5gamqdgUqvemLYpwvoIblc=; b=nyzYxVwkDYSGs+p8GZKdRUmbVj
+        Guk04quwpkt4KIxKlgvRq3hDoGXk8vII7ZwOwysVQJCDxD43IcwITOv8Ukdr45u9zmDX6QMz4+ZLF
+        LqkGMCkKLaN//YYSjQyG5rR4N3Zm3NnDNwEoajETpYIv0qstEhNJpklrqzN+7T7GAfsy1KwEUWIp3
+        2ZzcofszrGMZajnGYhtwC+KoakXv3sPRbf2mmipIl0Okn41UYHFcjQqBRK0YkzxsIQRNfunJH19jn
+        gmExS18rx3m3bAnr1WnkjVxjqHvFlbaQ4e4wrs7y3THRwDT87WlmVeGXRICl7RWDw8PvbZ2LrvrCF
+        9u27uBeQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1ptnwv-00GI5F-13;
+        Tue, 02 May 2023 11:13:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEDB2300348;
+        Tue,  2 May 2023 13:13:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 79C6A23C5C34E; Tue,  2 May 2023 13:13:34 +0200 (CEST)
+Date:   Tue, 2 May 2023 13:13:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>
+Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing
+ to file-backed mappings
+Message-ID: <20230502111334.GP1597476@hirez.programming.kicks-ass.net>
+References: <cover.1682981880.git.lstoakes@gmail.com>
+ <dee4f4ad6532b0f94d073da263526de334d5d7e0.1682981880.git.lstoakes@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0F7tsVYL0TTrCsHs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a1c7de53daaa6180b207ff42d1736f50b5d90b9.camel@redhat.com>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <dee4f4ad6532b0f94d073da263526de334d5d7e0.1682981880.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, May 02, 2023 at 12:11:49AM +0100, Lorenzo Stoakes wrote:
+> @@ -95,6 +96,77 @@ static inline struct folio *try_get_folio(struct page *page, int refs)
+>  	return folio;
+>  }
+>  
+> +#ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> +static bool stabilise_mapping_rcu(struct folio *folio)
+> +{
+> +	struct address_space *mapping = READ_ONCE(folio->mapping);
+> +
+> +	rcu_read_lock();
+> +
+> +	return mapping == READ_ONCE(folio->mapping);
 
---0F7tsVYL0TTrCsHs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This doesn't make sense; why bother reading the same thing twice?
 
-> On Mon, 2023-05-01 at 15:33 +0200, Daniel Borkmann wrote:
-> > On 4/30/23 12:02 PM, Lorenzo Bianconi wrote:
-> > > Introduce xdp_features support for bonding driver according to the sl=
-ave
-> > > devices attached to the master one. xdp_features is required whenever=
- we
-> > > want to xdp_redirect traffic into a bond device and then into selected
-> > > slaves attached to it.
-> > >=20
-> > > Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> >=20
-> > Please also keep Jussi in Cc for bonding + XDP reviews [added here].
->=20
-> Perhaps worth adding such info to the maintainer file for future
-> memory?
->=20
-> > > ---
-> > > Change since v1:
-> > > - remove bpf self-test patch from the series
-> >=20
-> > Given you targeted net tree, was this patch run against BPF CI locally =
-=66rom
-> > your side to avoid breakage again?
-> >=20
-> > Thanks,
-> > Daniel
-> >=20
-> > > ---
-> > >   drivers/net/bonding/bond_main.c    | 48 +++++++++++++++++++++++++++=
-+++
-> > >   drivers/net/bonding/bond_options.c |  2 ++
-> > >   include/net/bonding.h              |  1 +
-> > >   3 files changed, 51 insertions(+)
-> > >=20
-> > > diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bo=
-nd_main.c
-> > > index 710548dbd0c1..c98121b426a4 100644
-> > > --- a/drivers/net/bonding/bond_main.c
-> > > +++ b/drivers/net/bonding/bond_main.c
-> > > @@ -1789,6 +1789,45 @@ static void bond_ether_setup(struct net_device=
- *bond_dev)
-> > >   	bond_dev->priv_flags &=3D ~IFF_TX_SKB_SHARING;
-> > >   }
-> > >  =20
-> > > +void bond_xdp_set_features(struct net_device *bond_dev)
-> > > +{
-> > > +	struct bonding *bond =3D netdev_priv(bond_dev);
-> > > +	xdp_features_t val =3D NETDEV_XDP_ACT_MASK;
-> > > +	struct list_head *iter;
-> > > +	struct slave *slave;
-> > > +
-> > > +	ASSERT_RTNL();
-> > > +
-> > > +	if (!bond_xdp_check(bond)) {
-> > > +		xdp_clear_features_flag(bond_dev);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	bond_for_each_slave(bond, slave, iter) {
-> > > +		struct net_device *dev =3D slave->dev;
-> > > +
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_BASIC)) {
-> > > +			xdp_clear_features_flag(bond_dev);
-> > > +			return;
-> > > +		}
-> > > +
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_REDIRECT))
-> > > +			val &=3D ~NETDEV_XDP_ACT_REDIRECT;
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
-> > > +			val &=3D ~NETDEV_XDP_ACT_NDO_XMIT;
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_XSK_ZEROCOPY))
-> > > +			val &=3D ~NETDEV_XDP_ACT_XSK_ZEROCOPY;
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_HW_OFFLOAD))
-> > > +			val &=3D ~NETDEV_XDP_ACT_HW_OFFLOAD;
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_RX_SG))
-> > > +			val &=3D ~NETDEV_XDP_ACT_RX_SG;
-> > > +		if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG))
-> > > +			val &=3D ~NETDEV_XDP_ACT_NDO_XMIT_SG;
->=20
-> Can we expect NETDEV_XDP_ACT_MASK changing in the future (e.g. new
-> features to be added)? If so the above code will break silently, as the
-> new features will be unconditionally enabled. What about adding a
-> BUILD_BUG() to catch such situation?=20
+Who cares if the thing changes from before; what you care about is that
+the value you see has stable storage, this doesn't help with that.
 
-I used NETDEV_XDP_ACT_MASK here in order to enable all the XDP features when
-we do not have any slave device attache to the bond one. If we add a new
-feature to netdev_xdp_act in the future I would say it is fine we inherit it
-here otherwise we will need to explicitly add it.
+> +}
+> +
+> +static void unlock_rcu(void)
+> +{
+> +	rcu_read_unlock();
+> +}
+> +#else
+> +static bool stabilise_mapping_rcu(struct folio *)
+> +{
+> +	return true;
+> +}
+> +
+> +static void unlock_rcu(void)
+> +{
+> +}
+> +#endif
 
-Regards,
-Lorenzo
+Anyway, this all can go away. RCU can't progress while you have
+interrupts disabled anyway.
 
->=20
-> >=20
-> Cheers,
->=20
-> Paolo
->=20
+> +/*
+> + * Used in the GUP-fast path to determine whether a FOLL_PIN | FOLL_LONGTERM |
+> + * FOLL_WRITE pin is permitted for a specific folio.
+> + *
+> + * This assumes the folio is stable and pinned.
+> + *
+> + * Writing to pinned file-backed dirty tracked folios is inherently problematic
+> + * (see comment describing the writeable_file_mapping_allowed() function). We
+> + * therefore try to avoid the most egregious case of a long-term mapping doing
+> + * so.
+> + *
+> + * This function cannot be as thorough as that one as the VMA is not available
+> + * in the fast path, so instead we whitelist known good cases.
+> + *
+> + * The folio is stable, but the mapping might not be. When truncating for
+> + * instance, a zap is performed which triggers TLB shootdown. IRQs are disabled
+> + * so we are safe from an IPI, but some architectures use an RCU lock for this
+> + * operation, so we acquire an RCU lock to ensure the mapping is stable.
+> + */
+> +static bool folio_longterm_write_pin_allowed(struct folio *folio)
+> +{
+> +	bool ret;
+> +
+> +	/* hugetlb mappings do not require dirty tracking. */
+> +	if (folio_test_hugetlb(folio))
+> +		return true;
+> +
 
---0F7tsVYL0TTrCsHs
-Content-Type: application/pgp-signature; name="signature.asc"
+This:
 
------BEGIN PGP SIGNATURE-----
+> +	if (stabilise_mapping_rcu(folio)) {
+> +		struct address_space *mapping = folio_mapping(folio);
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZFDbBgAKCRA6cBh0uS2t
-rEnmAQDf3MS21rCUSSrVOSZKk6ux1D6dv7vUqDkB/gH8gEpmHAD9FGNHnwjGIMkJ
-sEWp4Gpn4NInMkl2rSEukTTpH8Wq9g0=
-=wU/m
------END PGP SIGNATURE-----
+And this is 3rd read of folio->mapping, just for giggles?
 
---0F7tsVYL0TTrCsHs--
+> +
+> +		/*
+> +		 * Neither anonymous nor shmem-backed folios require
+> +		 * dirty tracking.
+> +		 */
+> +		ret = folio_test_anon(folio) ||
+> +			(mapping && shmem_mapping(mapping));
+> +	} else {
+> +		/* If the mapping is unstable, fallback to the slow path. */
+> +		ret = false;
+> +	}
+> +
+> +	unlock_rcu();
+> +
+> +	return ret;
+
+then becomes:
+
+
+	if (folio_test_anon(folio))
+		return true;
+
+	/*
+	 * Having IRQs disabled (as per GUP-fast) also inhibits RCU
+	 * grace periods from making progress, IOW. they imply
+	 * rcu_read_lock().
+	 */
+	lockdep_assert_irqs_disabled();
+
+	/*
+	 * Inodes and thus address_space are RCU freed and thus safe to
+	 * access at this point.
+	 */
+	mapping = folio_mapping(folio);
+	if (mapping && shmem_mapping(mapping))
+		return true;
+
+	return false;
+
+> +}
