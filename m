@@ -2,74 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3186F4678
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 16:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC80E6F469C
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 17:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbjEBO55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 10:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        id S234546AbjEBPFS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 11:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbjEBO54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 10:57:56 -0400
+        with ESMTP id S234520AbjEBPFI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 11:05:08 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859762118
-        for <bpf@vger.kernel.org>; Tue,  2 May 2023 07:57:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96DC2119
+        for <bpf@vger.kernel.org>; Tue,  2 May 2023 08:04:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683039434;
+        s=mimecast20190719; t=1683039860;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=15zhWnNnUv6N+Qv+v/91mVtnb9crmK+0j2EjkR4cdzk=;
-        b=Xc4jVMrFEIZlA4y98rP50vEVhdXsloq8JE9RIRAee3nigY0L0IRLzgHfCLGfdQbyxOlQca
-        qBK42ZaSbO8t8YX2wcdEghZJrQEu2TYymI0tXue1pCcL115XvcI9VkknzCoqEJKLGpty/K
-        lF+oiGpeN4tRJJoBcm1sRmRiX8MmeeE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=X3VqBpjJe45pWSOeflD2EoRODS2Pv6RFfC5l84cign8=;
+        b=jFwZ0LXdVTeNa/8H79/LhzRAnj7moh+/qTtPIhQqa7joqSk9B3cU/rHZUxQbQU0cRtFrrx
+        cv05qD+TK5K7cQlna5RFlcwi+Y7SRyid2aOe1mVEk2rh2tMVJP1XKNE3EYOehwaJwRUkC5
+        9Hm2q5IVAwI4MNO9eDUA1sDE45ci0/o=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-BpwDjLmtPnamnpk7tqizQQ-1; Tue, 02 May 2023 10:57:13 -0400
-X-MC-Unique: BpwDjLmtPnamnpk7tqizQQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3062e5d0cd3so806234f8f.3
-        for <bpf@vger.kernel.org>; Tue, 02 May 2023 07:57:12 -0700 (PDT)
+ us-mta-49-OpNi3w6yOmie_oT_EjHiSw-1; Tue, 02 May 2023 11:04:11 -0400
+X-MC-Unique: OpNi3w6yOmie_oT_EjHiSw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f33f8ffa05so12724505e9.1
+        for <bpf@vger.kernel.org>; Tue, 02 May 2023 08:04:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683039432; x=1685631432;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
+        d=1e100.net; s=20221208; t=1683039846; x=1685631846;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=15zhWnNnUv6N+Qv+v/91mVtnb9crmK+0j2EjkR4cdzk=;
-        b=QXwluhFuKnnjLNzg8j0xzkmgU1jKlw3mNDKgQaYudFo4nJmCLUhVtQP9cds3TuTo2h
-         cXk8J69LZGYdnQAaUyKXDgWB8Qfuk42/rTvoA/49nGYZoyXwv5izAh9zPjaKJJZV60cp
-         8WmbQ7q7PHFbZYK5L0Iq4miPawPoOk780YKpnmEbj0VEdc2H7WxWQRXllp6UqBrzce2V
-         7mCuV549bhoUoHtJnoILYUAVv11vMlakChEb9MLaeGdFmLPwFGkTXGaupfd28igCJa6h
-         qerFEFcyJ4WTVbhvz56HKU5dX5tX1nJuGsH4YNla2PnP0ZR0hH9OWmHiVehrZs3oDbOB
-         b7rg==
-X-Gm-Message-State: AC+VfDy8iiVM2yAH/AopWyZkoyCpEJMBHHYG71zNdpNfLOHMzNWHp4Ob
-        5Bwgt8BQmHn12ATgkEvWHabcauqw0xvexK6LXpPq3C1u2UOXtsAFM6melLy6gF7DQyByz4G8E3K
-        cibYyRfysbigz
-X-Received: by 2002:adf:e582:0:b0:306:3382:721d with SMTP id l2-20020adfe582000000b003063382721dmr3300009wrm.38.1683039431954;
-        Tue, 02 May 2023 07:57:11 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ475CGduIpgjlDxsGxpLL5lhRcGF08NepGsYJMzG5SoRIDtlUYjiVEpzVfjvt29SmQGLcE2OA==
-X-Received: by 2002:adf:e582:0:b0:306:3382:721d with SMTP id l2-20020adfe582000000b003063382721dmr3299967wrm.38.1683039431553;
-        Tue, 02 May 2023 07:57:11 -0700 (PDT)
+        bh=X3VqBpjJe45pWSOeflD2EoRODS2Pv6RFfC5l84cign8=;
+        b=ew+LlpQ/d5CEWyXIRIEFWuDpngxygXjdT+lb/pfqEwocqbpLTCTN8EpDMqlJC0kUpg
+         4m1btXY48wV6d9cqojvHpgNIQV+5SnQtS4XAAO8rqvEmp40Tc3QxScJAbpvsc51P7LSf
+         Oz5lFrlR+cpryf+tVoJ1FApPVE1NkJHbNRWRQBz8VSTvyME5KqsCBFhbRqMZL8CjAgJx
+         /zOhgHu5DzaO46628oIYro9ViKXHukXZjZ1Fpkuo8PT0ZbVYO6cElH3dhNEgEE1HGw8Z
+         Lj2PFlqRKvWSw4m/AvE12gty3hb16QNpfCahmbAyknPO2vZMuj2mhWVkhVEGZrH5nVCD
+         06Rw==
+X-Gm-Message-State: AC+VfDzoub0uXxwUm7QyFhNyB9kwajEYCecFlFvPJRm24lNBqQNGNAcu
+        iENuyNogHLF8gOf48eo7iCNVDiE1Z14h38oTX+Lmh/N1viXQijapXVsd2WYKW0u/62jMUk4ALEJ
+        KJA9alwgF36/7
+X-Received: by 2002:a05:600c:2155:b0:3f1:733b:8aba with SMTP id v21-20020a05600c215500b003f1733b8abamr12323014wml.35.1683039846152;
+        Tue, 02 May 2023 08:04:06 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7fR4SIsKy+pjVJlia2+ofkHkmOsp+3kyFCIl6F1FN9R8Gs5f1OzLPjrCnv9OT8frSEFeaEqg==
+X-Received: by 2002:a05:600c:2155:b0:3f1:733b:8aba with SMTP id v21-20020a05600c215500b003f1733b8abamr12322948wml.35.1683039845716;
+        Tue, 02 May 2023 08:04:05 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c700:2400:6b79:2aa:9602:7016? (p200300cbc70024006b7902aa96027016.dip0.t-ipconnect.de. [2003:cb:c700:2400:6b79:2aa:9602:7016])
-        by smtp.gmail.com with ESMTPSA id b10-20020a5d550a000000b0030639a86f9dsm1577608wrv.51.2023.05.02.07.57.08
+        by smtp.gmail.com with ESMTPSA id u5-20020a7bc045000000b003f32c9ea20fsm11140277wmc.11.2023.05.02.08.04.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 May 2023 07:57:10 -0700 (PDT)
-Message-ID: <203a8ed7-47fa-0830-c691-71d00517fecb@redhat.com>
-Date:   Tue, 2 May 2023 16:57:08 +0200
+        Tue, 02 May 2023 08:04:05 -0700 (PDT)
+Message-ID: <1d82794a-4c12-cdc3-a868-f013bf9fe46f@redhat.com>
+Date:   Tue, 2 May 2023 17:04:02 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
-Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
- file-backed mappings
 Content-Language: en-US
-To:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
         Matthew Wilcox <willy@infradead.org>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Leon Romanovsky <leon@kernel.org>,
@@ -110,14 +106,12 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Dave Chinner <david@fromorbit.com>,
         Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>
 References: <cover.1682981880.git.lstoakes@gmail.com>
- <dee4f4ad6532b0f94d073da263526de334d5d7e0.1682981880.git.lstoakes@gmail.com>
- <fbad9e18-f727-9703-33cf-545a2d33af76@linux.ibm.com>
- <7d56b424-ba79-4b21-b02c-c89705533852@lucifer.local>
- <a6bb0334-9aba-9fd8-6a9a-9d4a931b6da2@linux.ibm.com>
- <651bfe55-6e2a-0337-d755-c8d606f5317e@linux.ibm.com>
+ <ff543d504d2bf83f60b1fb478149b4b3d6298119.1682981880.git.lstoakes@gmail.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <651bfe55-6e2a-0337-d755-c8d606f5317e@linux.ibm.com>
+Subject: Re: [PATCH v6 2/3] mm/gup: disallow FOLL_LONGTERM GUP-nonfast writing
+ to file-backed mappings
+In-Reply-To: <ff543d504d2bf83f60b1fb478149b4b3d6298119.1682981880.git.lstoakes@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -131,59 +125,128 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02.05.23 15:35, Matthew Rosato wrote:
-> On 5/2/23 9:04 AM, Christian Borntraeger wrote:
->>
->>
->> Am 02.05.23 um 14:54 schrieb Lorenzo Stoakes:
->>> On Tue, May 02, 2023 at 02:46:28PM +0200, Christian Borntraeger wrote:
->>>> Am 02.05.23 um 01:11 schrieb Lorenzo Stoakes:
->>>>> Writing to file-backed dirty-tracked mappings via GUP is inherently broken
->>>>> as we cannot rule out folios being cleaned and then a GUP user writing to
->>>>> them again and possibly marking them dirty unexpectedly.
->>>>>
->>>>> This is especially egregious for long-term mappings (as indicated by the
->>>>> use of the FOLL_LONGTERM flag), so we disallow this case in GUP-fast as
->>>>> we have already done in the slow path.
->>>>
->>>> Hmm, does this interfer with KVM on s390 and PCI interpretion of interrupt delivery?
->>>> It would no longer work with file backed memory, correct?
->>>>
->>>> See
->>>> arch/s390/kvm/pci.c
->>>>
->>>> kvm_s390_pci_aif_enable
->>>> which does have
->>>> FOLL_WRITE | FOLL_LONGTERM
->>>> to
->>>>
->>>
->>> Does this memory map a dirty-tracked file? It's kind of hard to dig into where
->>> the address originates from without going through a ton of code. In worst case
->>> if the fast code doesn't find a whitelist it'll fall back to slow path which
->>> explicitly checks for dirty-tracked filesystem.
->>
->> It does pin from whatever QEMU uses as backing for the guest.
->>>
->>> We can reintroduce a flag to permit exceptions if this is really broken, are you
->>> able to test? I don't have an s390 sat around :)
->>
->> Matt (Rosato on cc) probably can. In the end, it would mean having
->>    <memoryBacking>
->>      <source type="file"/>
->>    </memoryBacking>
->>
->> In libvirt I guess.
+On 02.05.23 01:11, Lorenzo Stoakes wrote:
+> Writing to file-backed mappings which require folio dirty tracking using
+> GUP is a fundamentally broken operation, as kernel write access to GUP
+> mappings do not adhere to the semantics expected by a file system.
 > 
-> I am running with this series applied using a QEMU guest with memory-backend-file (using the above libvirt snippet) for a few different PCI device types and AEN forwarding (e.g. what is setup in kvm_s390_pci_aif_enable) is still working.
+> A GUP caller uses the direct mapping to access the folio, which does not
+> cause write notify to trigger, nor does it enforce that the caller marks
+> the folio dirty.
 > 
+> The problem arises when, after an initial write to the folio, writeback
+> results in the folio being cleaned and then the caller, via the GUP
+> interface, writes to the folio again.
+> 
+> As a result of the use of this secondary, direct, mapping to the folio no
+> write notify will occur, and if the caller does mark the folio dirty, this
+> will be done so unexpectedly.
+> 
+> For example, consider the following scenario:-
+> 
+> 1. A folio is written to via GUP which write-faults the memory, notifying
+>     the file system and dirtying the folio.
+> 2. Later, writeback is triggered, resulting in the folio being cleaned and
+>     the PTE being marked read-only.
+> 3. The GUP caller writes to the folio, as it is mapped read/write via the
+>     direct mapping.
+> 4. The GUP caller, now done with the page, unpins it and sets it dirty
+>     (though it does not have to).
+> 
+> This results in both data being written to a folio without writenotify, and
+> the folio being dirtied unexpectedly (if the caller decides to do so).
+> 
+> This issue was first reported by Jan Kara [1] in 2018, where the problem
+> resulted in file system crashes.
+> 
+> This is only relevant when the mappings are file-backed and the underlying
+> file system requires folio dirty tracking. File systems which do not, such
+> as shmem or hugetlb, are not at risk and therefore can be written to
+> without issue.
+> 
+> Unfortunately this limitation of GUP has been present for some time and
+> requires future rework of the GUP API in order to provide correct write
+> access to such mappings.
+> 
+> However, for the time being we introduce this check to prevent the most
+> egregious case of this occurring, use of the FOLL_LONGTERM pin.
+> 
+> These mappings are considerably more likely to be written to after
+> folios are cleaned and thus simply must not be permitted to do so.
+> 
+> This patch changes only the slow-path GUP functions, a following patch
+> adapts the GUP-fast path along similar lines.
+> 
+> [1]:https://lore.kernel.org/linux-mm/20180103100430.GE4911@quack2.suse.cz/
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Reviewed-by: Mika Penttilä <mpenttil@redhat.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   mm/gup.c | 41 ++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 40 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index ff689c88a357..0f09dec0906c 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -959,16 +959,51 @@ static int faultin_page(struct vm_area_struct *vma,
+>   	return 0;
+>   }
+>   
+> +/*
+> + * Writing to file-backed mappings which require folio dirty tracking using GUP
+> + * is a fundamentally broken operation, as kernel write access to GUP mappings
+> + * do not adhere to the semantics expected by a file system.
+> + *
+> + * Consider the following scenario:-
+> + *
+> + * 1. A folio is written to via GUP which write-faults the memory, notifying
+> + *    the file system and dirtying the folio.
+> + * 2. Later, writeback is triggered, resulting in the folio being cleaned and
+> + *    the PTE being marked read-only.
+> + * 3. The GUP caller writes to the folio, as it is mapped read/write via the
+> + *    direct mapping.
+> + * 4. The GUP caller, now done with the page, unpins it and sets it dirty
+> + *    (though it does not have to).
+> + *
+> + * This results in both data being written to a folio without writenotify, and
+> + * the folio being dirtied unexpectedly (if the caller decides to do so).
+> + */
+> +static bool writeable_file_mapping_allowed(struct vm_area_struct *vma,
+> +					   unsigned long gup_flags)
+> +{
+> +	/* If we aren't pinning then no problematic write can occur. */
+> +	if (!(gup_flags & (FOLL_GET | FOLL_PIN)))
+> +		return true;
 
-That's ... unexpected. :)
+I think we should really not look at FOLL_GET here. Just check for 
+FOLL_PIN (as said, even FOLL_LONGTERM would be sufficient, but I 
+understand the reasoning to keep it, although I would drop it :P ). It 
+also better matches your comment regarding pinning ...
 
-Either this series doesn't work as expected or you end up using a 
-filesystem that is still compatible. But I guess most applicable 
-filesystems (ext4, btrfs, xfs) all have a page_mkwrite callback and 
-should, therefore, disallow long-term pinning with this series.
+See the comment in is_valid_gup_args() regarding "LONGTERM can only be 
+specified when pinning". (well, there we also check that FOLL_PIN has to 
+be set ... ;) )
+
+> +
+> +	/* We limit this check to the most egregious case - a long term pin. */
+> +	if (!(gup_flags & FOLL_LONGTERM))
+> +		return true;
+> +
+> +	/* If the VMA requires dirty tracking then GUP will be problematic. */
+> +	return vma_needs_dirty_tracking(vma);
+
+
+... should that be "!vma_needs_dirty_tracking(vma)" ?
+
+If the fs needs dirty tracking, it should be disallowed.
+
+Maybe that explains why it's still working for Matthew in his s390x 
+test. ... or I am too tired and messed up :)
 
 -- 
 Thanks,
