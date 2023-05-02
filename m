@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5076F4D6C
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 01:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DC86F4D72
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 01:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjEBXJS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 2 May 2023 19:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S230012AbjEBXJj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 2 May 2023 19:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjEBXJR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 19:09:17 -0400
+        with ESMTP id S230037AbjEBXJg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 19:09:36 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1206426B9
-        for <bpf@vger.kernel.org>; Tue,  2 May 2023 16:09:16 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 342JX0m1015411
-        for <bpf@vger.kernel.org>; Tue, 2 May 2023 16:09:15 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A86B3A94
+        for <bpf@vger.kernel.org>; Tue,  2 May 2023 16:09:31 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 342JX2V4031666
+        for <bpf@vger.kernel.org>; Tue, 2 May 2023 16:09:30 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qaxg7p1x3-5
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qatf9fbnv-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 02 May 2023 16:09:15 -0700
-Received: from twshared38955.16.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 02 May 2023 16:09:30 -0700
+Received: from twshared35445.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 2 May 2023 16:09:11 -0700
+ 15.1.2507.23; Tue, 2 May 2023 16:09:16 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 9410D2FD4BCA5; Tue,  2 May 2023 16:06:27 -0700 (PDT)
+        id EDCDF2FD4BCC5; Tue,  2 May 2023 16:06:29 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC:     <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 03/10] bpf: centralize permissions checks for all BPF map types
-Date:   Tue, 2 May 2023 16:06:12 -0700
-Message-ID: <20230502230619.2592406-4-andrii@kernel.org>
+Subject: [PATCH bpf-next 04/10] bpf: remember if bpf_map was unprivileged and use that consistently
+Date:   Tue, 2 May 2023 16:06:13 -0700
+Message-ID: <20230502230619.2592406-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230502230619.2592406-1-andrii@kernel.org>
 References: <20230502230619.2592406-1-andrii@kernel.org>
@@ -41,8 +41,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: oup8iPqT4oCuKNhQ0ul6beAnHboGk_L6
-X-Proofpoint-ORIG-GUID: oup8iPqT4oCuKNhQ0ul6beAnHboGk_L6
+X-Proofpoint-GUID: eD0BvJ6DBAm5WLX5gLF-h-BqPqOp2jX9
+X-Proofpoint-ORIG-GUID: eD0BvJ6DBAm5WLX5gLF-h-BqPqOp2jX9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-02_12,2023-04-27_01,2023-02-09_01
@@ -56,337 +56,287 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This allows to do more centralized decisions later on, and generally
-makes it very explicit which maps are privileged and which are not
-(e.g., LRU_HASH and LRU_PERCPU_HASH, which are privileged HASH variants,
-as opposed to unprivileged HASH and HASH_PERCPU; now this is explicit
-and easy to verify).
+While some maps are allowed to be created with no extra privileges (like
+CAP_BPF and/or CAP_NET_ADMIN), some parts of BPF verifier logic do care
+about the presence of privileged for a given map.
+
+One such place is Spectre v1 mitigations in ARRAY map. Another, extra
+restrictions on maps having special embedded BTF-defined fields (like
+spin lock, etc).
+
+So record whether a map was privileged or not at the creation time and
+don't recheck bpf_capable() anymore.
+
+Handling Spectre v1 mitigation in ARRAY-like maps required a bit of code
+acrobatics: extracting size adjustment into a separate
+bpf_array_adjust_for_spec_v1() helper and calling it explicitly for
+ARRAY, PERCPU_ARRAY, PROG_ARRAY, CGROUP_ARRAY, PERF_EVENT_ARRAY and
+ARRAY_OF_MAPS to adjust passed in bpf_attrs, because these adjustments
+have to happen before map creation. Alternative would be to extend
+map_ops->map_alloc() callback with unprivileged flag, which seemed
+excessive, as all other maps don't care, but could be done if preferred.
+
+But once map->unpriv flag is recorded, handing BTF-defined fields was
+a breeze, dropping bpf_capable() check buried deeper in map_check_btf()
+validation logic.
+
+Once extra bit that required consideration was remembering unprivileged
+bit when dealing with map-in-maps and taking it into account when
+checking map metadata compatibility. Given unprivileged bit is important
+for correctness, it should be taken into account just like key and value
+sizes.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/bloom_filter.c                     |  3 -
- kernel/bpf/bpf_local_storage.c                |  3 -
- kernel/bpf/bpf_struct_ops.c                   |  3 -
- kernel/bpf/cpumap.c                           |  4 --
- kernel/bpf/devmap.c                           |  3 -
- kernel/bpf/hashtab.c                          |  6 --
- kernel/bpf/lpm_trie.c                         |  3 -
- kernel/bpf/queue_stack_maps.c                 |  4 --
- kernel/bpf/reuseport_array.c                  |  3 -
- kernel/bpf/stackmap.c                         |  3 -
- kernel/bpf/syscall.c                          | 70 ++++++++++++++++---
- net/core/sock_map.c                           |  4 --
- net/xdp/xskmap.c                              |  4 --
- .../bpf/prog_tests/unpriv_bpf_disabled.c      |  6 +-
- 14 files changed, 64 insertions(+), 55 deletions(-)
+ include/linux/bpf.h     |  4 ++-
+ kernel/bpf/arraymap.c   | 59 ++++++++++++++++++++++++-----------------
+ kernel/bpf/map_in_map.c |  3 ++-
+ kernel/bpf/syscall.c    | 25 +++++++++++++++--
+ kernel/bpf/verifier.c   |  6 ++---
+ 5 files changed, 65 insertions(+), 32 deletions(-)
 
-diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-index 540331b610a9..addf3dd57b59 100644
---- a/kernel/bpf/bloom_filter.c
-+++ b/kernel/bpf/bloom_filter.c
-@@ -86,9 +86,6 @@ static struct bpf_map *bloom_map_alloc(union bpf_attr *attr)
- 	int numa_node = bpf_map_attr_numa_node(attr);
- 	struct bpf_bloom_filter *bloom;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 456f33b9d205..479657bb113e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -273,7 +273,7 @@ struct bpf_map {
+ 		bool jited;
+ 		bool xdp_has_frags;
+ 	} owner;
+-	bool bypass_spec_v1;
++	bool unpriv;
+ 	bool frozen; /* write-once; write-protected by freeze_mutex */
+ };
  
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
+@@ -2058,6 +2058,8 @@ static inline bool bpf_bypass_spec_v1(void)
+ 	return perfmon_capable();
+ }
+ 
++int bpf_array_adjust_for_spec_v1(union bpf_attr *attr);
++
+ static inline bool bpf_bypass_spec_v4(void)
+ {
+ 	return perfmon_capable();
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 2058e89b5ddd..a51d22a3afd1 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -77,18 +77,9 @@ int array_map_alloc_check(union bpf_attr *attr)
+ 	return 0;
+ }
+ 
+-static struct bpf_map *array_map_alloc(union bpf_attr *attr)
++static u32 array_index_mask(u32 max_entries)
+ {
+-	bool percpu = attr->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
+-	int numa_node = bpf_map_attr_numa_node(attr);
+-	u32 elem_size, index_mask, max_entries;
+-	bool bypass_spec_v1 = bpf_bypass_spec_v1();
+-	u64 array_size, mask64;
+-	struct bpf_array *array;
 -
- 	if (attr->key_size != 0 || attr->value_size == 0 ||
- 	    attr->max_entries == 0 ||
- 	    attr->map_flags & ~BLOOM_CREATE_FLAG_MASK ||
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 47d9948d768f..b5149cfce7d4 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -723,9 +723,6 @@ int bpf_local_storage_map_alloc_check(union bpf_attr *attr)
- 	    !attr->btf_key_type_id || !attr->btf_value_type_id)
- 		return -EINVAL;
- 
--	if (!bpf_capable())
--		return -EPERM;
+-	elem_size = round_up(attr->value_size, 8);
 -
- 	if (attr->value_size > BPF_LOCAL_STORAGE_MAX_VALUE_SIZE)
- 		return -E2BIG;
+-	max_entries = attr->max_entries;
++	u64 mask64;
  
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index d3f0a4825fa6..116a0ce378ec 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -655,9 +655,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
- 	const struct btf_type *t, *vt;
- 	struct bpf_map *map;
+ 	/* On 32 bit archs roundup_pow_of_two() with max_entries that has
+ 	 * upper most bit set in u32 space is undefined behavior due to
+@@ -98,17 +89,38 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+ 	mask64 = 1ULL << mask64;
+ 	mask64 -= 1;
  
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
--
- 	st_ops = bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
- 	if (!st_ops)
- 		return ERR_PTR(-ENOTSUPP);
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 8ec18faa74ac..8a33e8747a0e 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -28,7 +28,6 @@
- #include <linux/sched.h>
- #include <linux/workqueue.h>
- #include <linux/kthread.h>
--#include <linux/capability.h>
- #include <trace/events/xdp.h>
- #include <linux/btf_ids.h>
- 
-@@ -89,9 +88,6 @@ static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
- 	u32 value_size = attr->value_size;
- 	struct bpf_cpu_map *cmap;
- 
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
--
- 	/* check sanity of attributes */
- 	if (attr->max_entries == 0 || attr->key_size != 4 ||
- 	    (value_size != offsetofend(struct bpf_cpumap_val, qsize) &&
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 802692fa3905..49cc0b5671c6 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -160,9 +160,6 @@ static struct bpf_map *dev_map_alloc(union bpf_attr *attr)
- 	struct bpf_dtab *dtab;
- 	int err;
- 
--	if (!capable(CAP_NET_ADMIN))
--		return ERR_PTR(-EPERM);
--
- 	dtab = bpf_map_area_alloc(sizeof(*dtab), NUMA_NO_NODE);
- 	if (!dtab)
- 		return ERR_PTR(-ENOMEM);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 00c253b84bf5..c69db80fc947 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -422,12 +422,6 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 	BUILD_BUG_ON(offsetof(struct htab_elem, fnode.next) !=
- 		     offsetof(struct htab_elem, hash_node.pprev));
- 
--	if (lru && !bpf_capable())
--		/* LRU implementation is much complicated than other
--		 * maps.  Hence, limit to CAP_BPF.
+-	index_mask = mask64;
+-	if (!bypass_spec_v1) {
+-		/* round up array size to nearest power of 2,
+-		 * since cpu will speculate within index_mask limits
 -		 */
--		return -EPERM;
--
- 	if (zero_seed && !capable(CAP_SYS_ADMIN))
- 		/* Guard against local DoS, and discourage production use. */
- 		return -EPERM;
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index e0d3ddf2037a..17c7e7782a1f 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -544,9 +544,6 @@ static struct bpf_map *trie_alloc(union bpf_attr *attr)
- {
- 	struct lpm_trie *trie;
+-		max_entries = index_mask + 1;
+-		/* Check for overflows. */
+-		if (max_entries < attr->max_entries)
+-			return ERR_PTR(-E2BIG);
+-	}
++	return (u32)mask64;
++}
++
++int bpf_array_adjust_for_spec_v1(union bpf_attr *attr)
++{
++	u32 max_entries, index_mask;
++
++	/* round up array size to nearest power of 2,
++	 * since cpu will speculate within index_mask limits
++	 */
++	index_mask = array_index_mask(attr->max_entries);
++	max_entries = index_mask + 1;
++	/* Check for overflows. */
++	if (max_entries < attr->max_entries)
++		return -E2BIG;
++
++	attr->max_entries = max_entries;
++	return 0;
++}
  
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
--
- 	/* check sanity of attributes */
- 	if (attr->max_entries == 0 ||
- 	    !(attr->map_flags & BPF_F_NO_PREALLOC) ||
-diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-index 601609164ef3..8d2ddcb7566b 100644
---- a/kernel/bpf/queue_stack_maps.c
-+++ b/kernel/bpf/queue_stack_maps.c
-@@ -7,7 +7,6 @@
- #include <linux/bpf.h>
- #include <linux/list.h>
- #include <linux/slab.h>
--#include <linux/capability.h>
- #include <linux/btf_ids.h>
- #include "percpu_freelist.h"
- 
-@@ -46,9 +45,6 @@ static bool queue_stack_map_is_full(struct bpf_queue_stack *qs)
- /* Called from syscall */
- static int queue_stack_map_alloc_check(union bpf_attr *attr)
- {
--	if (!bpf_capable())
--		return -EPERM;
--
- 	/* check sanity of attributes */
- 	if (attr->max_entries == 0 || attr->key_size != 0 ||
- 	    attr->value_size == 0 ||
-diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-index cbf2d8d784b8..4b4f9670f1a9 100644
---- a/kernel/bpf/reuseport_array.c
-+++ b/kernel/bpf/reuseport_array.c
-@@ -151,9 +151,6 @@ static struct bpf_map *reuseport_array_alloc(union bpf_attr *attr)
- 	int numa_node = bpf_map_attr_numa_node(attr);
- 	struct reuseport_array *array;
- 
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
--
- 	/* allocate all map elements and zero-initialize them */
- 	array = bpf_map_area_alloc(struct_size(array, ptrs, attr->max_entries), numa_node);
++static struct bpf_map *array_map_alloc(union bpf_attr *attr)
++{
++	bool percpu = attr->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
++	int numa_node = bpf_map_attr_numa_node(attr);
++	u32 elem_size, index_mask, max_entries;
++	u64 array_size;
++	struct bpf_array *array;
++
++	elem_size = round_up(attr->value_size, 8);
++
++	max_entries = attr->max_entries;
++	index_mask = array_index_mask(max_entries);
+ 	array_size = sizeof(*array);
+ 	if (percpu) {
+ 		array_size += (u64) max_entries * sizeof(void *);
+@@ -140,7 +152,6 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
  	if (!array)
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index b25fce425b2c..458bb80b14d5 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -74,9 +74,6 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
- 	u64 cost, n_buckets;
- 	int err;
+ 		return ERR_PTR(-ENOMEM);
+ 	array->index_mask = index_mask;
+-	array->map.bypass_spec_v1 = bypass_spec_v1;
  
--	if (!bpf_capable())
--		return ERR_PTR(-EPERM);
--
- 	if (attr->map_flags & ~STACK_CREATE_FLAG_MASK)
- 		return ERR_PTR(-EINVAL);
+ 	/* copy mandatory map attributes */
+ 	bpf_map_init_from_attr(&array->map, attr);
+@@ -216,7 +227,7 @@ static int array_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
+ 
+ 	*insn++ = BPF_ALU64_IMM(BPF_ADD, map_ptr, offsetof(struct bpf_array, value));
+ 	*insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
+-	if (!map->bypass_spec_v1) {
++	if (map->unpriv) {
+ 		*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 4);
+ 		*insn++ = BPF_ALU32_IMM(BPF_AND, ret, array->index_mask);
+ 	} else {
+@@ -1373,7 +1384,7 @@ static int array_of_map_gen_lookup(struct bpf_map *map,
+ 
+ 	*insn++ = BPF_ALU64_IMM(BPF_ADD, map_ptr, offsetof(struct bpf_array, value));
+ 	*insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
+-	if (!map->bypass_spec_v1) {
++	if (map->unpriv) {
+ 		*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 6);
+ 		*insn++ = BPF_ALU32_IMM(BPF_AND, ret, array->index_mask);
+ 	} else {
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index 2c5c64c2a53b..21cb4be92097 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -41,6 +41,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 		goto put;
+ 	}
+ 
++	inner_map_meta->unpriv = inner_map->unpriv;
+ 	inner_map_meta->map_type = inner_map->map_type;
+ 	inner_map_meta->key_size = inner_map->key_size;
+ 	inner_map_meta->value_size = inner_map->value_size;
+@@ -69,7 +70,6 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 	/* Misc members not needed in bpf_map_meta_equal() check. */
+ 	inner_map_meta->ops = inner_map->ops;
+ 	if (inner_map->ops == &array_map_ops) {
+-		inner_map_meta->bypass_spec_v1 = inner_map->bypass_spec_v1;
+ 		container_of(inner_map_meta, struct bpf_array, map)->index_mask =
+ 		     container_of(inner_map, struct bpf_array, map)->index_mask;
+ 	}
+@@ -98,6 +98,7 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
+ 		meta0->key_size == meta1->key_size &&
+ 		meta0->value_size == meta1->value_size &&
+ 		meta0->map_flags == meta1->map_flags &&
++		meta0->unpriv == meta1->unpriv &&
+ 		btf_record_equal(meta0->record, meta1->record);
+ }
  
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 3ab6c0dc241a..92127eaee467 100644
+index 92127eaee467..ffc61a764fe5 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -1103,17 +1103,6 @@ static int map_create(union bpf_attr *attr)
+@@ -1010,7 +1010,7 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+ 	if (!IS_ERR_OR_NULL(map->record)) {
+ 		int i;
+ 
+-		if (!bpf_capable()) {
++		if (map->unpriv) {
+ 			ret = -EPERM;
+ 			goto free_map_tab;
+ 		}
+@@ -1100,6 +1100,7 @@ static int map_create(union bpf_attr *attr)
+ 	int numa_node = bpf_map_attr_numa_node(attr);
+ 	u32 map_type = attr->map_type;
+ 	struct bpf_map *map;
++	bool unpriv;
  	int f_flags;
  	int err;
  
--	/* Intent here is for unprivileged_bpf_disabled to block key object
--	 * creation commands for unprivileged users; other actions depend
--	 * of fd availability and access to bpffs, so are dependent on
--	 * object creation success.  Capabilities are later verified for
--	 * operations such as load and map create, so even with unprivileged
--	 * BPF disabled, capability checks are still carried out for these
--	 * and other operations.
--	 */
--	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
--		return -EPERM;
--
- 	err = CHECK_ATTR(BPF_MAP_CREATE);
- 	if (err)
- 		return -EINVAL;
-@@ -1157,6 +1146,65 @@ static int map_create(union bpf_attr *attr)
- 		ops = &bpf_map_offload_ops;
- 	if (!ops->map_mem_usage)
- 		return -EINVAL;
-+
-+	/* Intent here is for unprivileged_bpf_disabled to block key object
-+	 * creation commands for unprivileged users; other actions depend
-+	 * of fd availability and access to bpffs, so are dependent on
-+	 * object creation success.  Capabilities are later verified for
-+	 * operations such as load and map create, so even with unprivileged
-+	 * BPF disabled, capability checks are still carried out for these
-+	 * and other operations.
-+	 */
-+	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-+		return -EPERM;
-+
-+	/* check privileged map type permissions */
-+	switch (map_type) {
-+	case BPF_MAP_TYPE_SK_STORAGE:
-+	case BPF_MAP_TYPE_INODE_STORAGE:
-+	case BPF_MAP_TYPE_TASK_STORAGE:
-+	case BPF_MAP_TYPE_CGRP_STORAGE:
-+	case BPF_MAP_TYPE_BLOOM_FILTER:
-+	case BPF_MAP_TYPE_LPM_TRIE:
-+	case BPF_MAP_TYPE_REUSEPORT_SOCKARRAY:
-+	case BPF_MAP_TYPE_STACK_TRACE:
-+	case BPF_MAP_TYPE_QUEUE:
-+	case BPF_MAP_TYPE_STACK:
-+	case BPF_MAP_TYPE_LRU_HASH:
-+	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-+	case BPF_MAP_TYPE_STRUCT_OPS:
-+	case BPF_MAP_TYPE_CPUMAP:
-+		if (!bpf_capable())
-+			return -EPERM;
-+		break;
-+	case BPF_MAP_TYPE_SOCKMAP:
-+	case BPF_MAP_TYPE_SOCKHASH:
-+	case BPF_MAP_TYPE_DEVMAP:
-+	case BPF_MAP_TYPE_DEVMAP_HASH:
-+	case BPF_MAP_TYPE_XSKMAP:
-+		if (!capable(CAP_NET_ADMIN))
-+			return -EPERM;
-+		break;
-+	case BPF_MAP_TYPE_ARRAY:
-+	case BPF_MAP_TYPE_PERCPU_ARRAY:
-+	case BPF_MAP_TYPE_PROG_ARRAY:
-+	case BPF_MAP_TYPE_PERF_EVENT_ARRAY:
-+	case BPF_MAP_TYPE_CGROUP_ARRAY:
-+	case BPF_MAP_TYPE_ARRAY_OF_MAPS:
-+	case BPF_MAP_TYPE_HASH:
-+	case BPF_MAP_TYPE_PERCPU_HASH:
-+	case BPF_MAP_TYPE_HASH_OF_MAPS:
-+	case BPF_MAP_TYPE_RINGBUF:
-+	case BPF_MAP_TYPE_USER_RINGBUF:
-+	case BPF_MAP_TYPE_CGROUP_STORAGE:
-+	case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
-+		/* unprivileged */
-+		break;
-+	default:
-+		WARN(1, "unsupported map type %d", map_type);
-+		return -EPERM;
+@@ -1176,6 +1177,7 @@ static int map_create(union bpf_attr *attr)
+ 	case BPF_MAP_TYPE_CPUMAP:
+ 		if (!bpf_capable())
+ 			return -EPERM;
++		unpriv = false;
+ 		break;
+ 	case BPF_MAP_TYPE_SOCKMAP:
+ 	case BPF_MAP_TYPE_SOCKHASH:
+@@ -1184,6 +1186,7 @@ static int map_create(union bpf_attr *attr)
+ 	case BPF_MAP_TYPE_XSKMAP:
+ 		if (!capable(CAP_NET_ADMIN))
+ 			return -EPERM;
++		unpriv = false;
+ 		break;
+ 	case BPF_MAP_TYPE_ARRAY:
+ 	case BPF_MAP_TYPE_PERCPU_ARRAY:
+@@ -1198,18 +1201,36 @@ static int map_create(union bpf_attr *attr)
+ 	case BPF_MAP_TYPE_USER_RINGBUF:
+ 	case BPF_MAP_TYPE_CGROUP_STORAGE:
+ 	case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
+-		/* unprivileged */
++		/* unprivileged is OK, but we still record if we had CAP_BPF */
++		unpriv = !bpf_capable();
+ 		break;
+ 	default:
+ 		WARN(1, "unsupported map type %d", map_type);
+ 		return -EPERM;
+ 	}
+ 
++	/* ARRAY-like maps have special sizing provisions for mitigating Spectre v1 */
++	if (unpriv) {
++		switch (map_type) {
++		case BPF_MAP_TYPE_ARRAY:
++		case BPF_MAP_TYPE_PERCPU_ARRAY:
++		case BPF_MAP_TYPE_PROG_ARRAY:
++		case BPF_MAP_TYPE_PERF_EVENT_ARRAY:
++		case BPF_MAP_TYPE_CGROUP_ARRAY:
++		case BPF_MAP_TYPE_ARRAY_OF_MAPS:
++			err = bpf_array_adjust_for_spec_v1(attr);
++			if (err)
++				return err;
++			break;
++		}
 +	}
 +
  	map = ops->map_alloc(attr);
  	if (IS_ERR(map))
  		return PTR_ERR(map);
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 7c189c2e2fbf..4b67bb5e7f9c 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -32,8 +32,6 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
- {
- 	struct bpf_stab *stab;
+ 	map->ops = ops;
+ 	map->map_type = map_type;
++	map->unpriv = unpriv;
  
--	if (!capable(CAP_NET_ADMIN))
--		return ERR_PTR(-EPERM);
- 	if (attr->max_entries == 0 ||
- 	    attr->key_size    != 4 ||
- 	    (attr->value_size != sizeof(u32) &&
-@@ -1085,8 +1083,6 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
- 	struct bpf_shtab *htab;
- 	int i, err;
+ 	err = bpf_obj_name_cpy(map->name, attr->map_name,
+ 			       sizeof(attr->map_name));
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ff4a8ab99f08..481aaf189183 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8731,11 +8731,9 @@ record_func_map(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+ 	}
  
--	if (!capable(CAP_NET_ADMIN))
--		return ERR_PTR(-EPERM);
- 	if (attr->max_entries == 0 ||
- 	    attr->key_size    == 0 ||
- 	    (attr->value_size != sizeof(u32) &&
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index 2c1427074a3b..e1c526f97ce3 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -5,7 +5,6 @@
- 
- #include <linux/bpf.h>
- #include <linux/filter.h>
--#include <linux/capability.h>
- #include <net/xdp_sock.h>
- #include <linux/slab.h>
- #include <linux/sched.h>
-@@ -68,9 +67,6 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
- 	int numa_node;
- 	u64 size;
- 
--	if (!capable(CAP_NET_ADMIN))
--		return ERR_PTR(-EPERM);
--
- 	if (attr->max_entries == 0 || attr->key_size != 4 ||
- 	    attr->value_size != 4 ||
- 	    attr->map_flags & ~(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY))
-diff --git a/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-index 8383a99f610f..0adf8d9475cb 100644
---- a/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-+++ b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
-@@ -171,7 +171,11 @@ static void test_unpriv_bpf_disabled_negative(struct test_unpriv_bpf_disabled *s
- 				prog_insns, prog_insn_cnt, &load_opts),
- 		  -EPERM, "prog_load_fails");
- 
--	for (i = BPF_MAP_TYPE_HASH; i <= BPF_MAP_TYPE_BLOOM_FILTER; i++)
-+	/* some map types require particular correct parameters which could be
-+	 * sanity-checked before enforcing -EPERM, so only validate that
-+	 * the simple ARRAY and HASH maps are failing with -EPERM
-+	 */
-+	for (i = BPF_MAP_TYPE_HASH; i <= BPF_MAP_TYPE_ARRAY; i++)
- 		ASSERT_EQ(bpf_map_create(i, NULL, sizeof(int), sizeof(int), 1, NULL),
- 			  -EPERM, "map_create_fails");
+ 	if (!BPF_MAP_PTR(aux->map_ptr_state))
+-		bpf_map_ptr_store(aux, meta->map_ptr,
+-				  !meta->map_ptr->bypass_spec_v1);
++		bpf_map_ptr_store(aux, meta->map_ptr, meta->map_ptr->unpriv);
+ 	else if (BPF_MAP_PTR(aux->map_ptr_state) != meta->map_ptr)
+-		bpf_map_ptr_store(aux, BPF_MAP_PTR_POISON,
+-				  !meta->map_ptr->bypass_spec_v1);
++		bpf_map_ptr_store(aux, BPF_MAP_PTR_POISON, meta->map_ptr->unpriv);
+ 	return 0;
+ }
  
 -- 
 2.34.1
