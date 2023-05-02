@@ -2,55 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EB76F42D0
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 13:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C276F434E
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 14:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjEBL3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 07:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S234109AbjEBMJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 08:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234009AbjEBL32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 07:29:28 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D67749C6;
-        Tue,  2 May 2023 04:28:55 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3f19b9d5358so36335435e9.1;
-        Tue, 02 May 2023 04:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683026927; x=1685618927;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lc/02gVv7T5hW5ex1vvWLxMMdnZDLieAI0WVDX3TE50=;
-        b=NnrBm48QBPHvNjG2DrwCZC6Hpx5npAg2MignqK4v/NRyxgPC3tVnkydxCbJMPd8lQr
-         iuYC/2lMn+Yq6zgcoLnNMm44upN0I0Hm1TrMhVeqMp1qzqHu8vU/d7wxkozi/1bwfCk7
-         tMk8VEndkRE6QGgFgYPJGonWCo4r7VfR0cxB9jYpvXDngAPrNGbMSmcwhUVD0HgoL5zV
-         ZnV6Kw0xywVoE+jEvxM8bc27HYIVWg/bOeG1MGRQV9FELhSfGoCtpNRFPxkwxX2JE+/1
-         HcGs3p2yQqgHNshLPrHZ7ZJi1dLweyi0j2f7hszdC/8Z1JxphC1s0toGr7HfSgHyHBeM
-         6/7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683026927; x=1685618927;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lc/02gVv7T5hW5ex1vvWLxMMdnZDLieAI0WVDX3TE50=;
-        b=LcOmwFIVCN3EzB+46Z1nMZRi8az79bTWE30SRB80IH8ZuThTYZoqgIM95EXl+YGfgn
-         +7xuwcPBd5Xcon5Plvyzk+yTU0j+m6n+hC9OLZhEp8rcCxKti0XMYv02mTWNNTkYqNhT
-         APAoqgbLU3UIsRCzFF2ODhOVVmnkzzUZREeGqEd4MSItrZvvWDLRw/WOZQyuFWky8p8Z
-         8H39OxhKFf9CAxcNRny+w7Pu74ly+O2LrTCFxpx2qoeutFX5eJuzzvLWqvCrk++D1IJe
-         iqmd4T9QWfsj7H59TSR04+RCDKJvUsevb9Pl4MDUNKLdgDU/ztDviZaDlr0lULgxmNwk
-         rD7w==
-X-Gm-Message-State: AC+VfDyAv3FaMMYtAqQfMqehdBWjHz1xs49/B+o4xf3wpdhMCtrBqXoV
-        9k+toj5/eHcrSTSau88vFdaEPoKB1KGl6w==
-X-Google-Smtp-Source: ACHHUZ6rq2VZBBMj2O6nzAN0pehT7/e5PEJD3oeVvMFQX+8UfFhEvHJE5oPVwp1pAJyUBOwWWbK5Eg==
-X-Received: by 2002:a1c:7203:0:b0:3f1:7b8d:38ec with SMTP id n3-20020a1c7203000000b003f17b8d38ecmr11412494wmc.35.1683026926860;
-        Tue, 02 May 2023 04:28:46 -0700 (PDT)
-Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05600c181000b003f046ad52efsm38360559wmp.31.2023.05.02.04.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 May 2023 04:28:46 -0700 (PDT)
-Date:   Tue, 2 May 2023 12:28:45 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
+        with ESMTP id S233554AbjEBMJE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 08:09:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C0F358B;
+        Tue,  2 May 2023 05:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pz1BFTrMbjtmTLSMUAMwv5KDjqVuW0L+OFuL8UBqI6M=; b=UKrjov+EaCK9CHW/8De9JD8ppd
+        WIAvUqI3xCyhKeUEWy4dg8GrMF+zoqXiitSmj2yLsjJX0In/tnDn/SnOJ9OVUF6SZHXf8cPpDv2KE
+        rQ08+4D83uNLFOaaJ2q9zRzM+XirpW5wcRZ0o9EhGPYg91REe8sz6VwLFkn+kslAqtCMzi0BJcgEi
+        2mr1mvcT0Gp95Sl5NZZEslKSWB2BTNGr+UHLLJMIQkfBdBgAuQbzT9kDg2CBJnJzMrLvk0Kvuyj12
+        uaKVqyt/rexm5oBsVlZbGOAF6Y7t+B9aFsOSgAjh7TQJeIMXCkXoyKQBxq5l4v4HqLq1hhn/9fIjc
+        G2Q4Popw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1ptonk-00GIcJ-0E;
+        Tue, 02 May 2023 12:08:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B838C300165;
+        Tue,  2 May 2023 14:08:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 784D023C5C351; Tue,  2 May 2023 14:08:10 +0200 (CEST)
+Date:   Tue, 2 May 2023 14:08:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
@@ -92,10 +80,11 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mika Penttila <mpenttil@redhat.com>,
         David Hildenbrand <david@redhat.com>,
         Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>
+        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+        Paul McKenney <paulmck@kernel.org>
 Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing
  to file-backed mappings
-Message-ID: <6edae55c-692e-4f6a-968a-fe6f860b2893@lucifer.local>
+Message-ID: <20230502120810.GD1597538@hirez.programming.kicks-ass.net>
 References: <cover.1682981880.git.lstoakes@gmail.com>
  <dee4f4ad6532b0f94d073da263526de334d5d7e0.1682981880.git.lstoakes@gmail.com>
  <20230502111334.GP1597476@hirez.programming.kicks-ass.net>
@@ -104,10 +93,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <ab66d15a-acd0-4d9b-aa12-49cddd12c6a5@lucifer.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -131,12 +120,15 @@ On Tue, May 02, 2023 at 12:25:54PM +0100, Lorenzo Stoakes wrote:
 > > > +	return mapping == READ_ONCE(folio->mapping);
 > >
 > > This doesn't make sense; why bother reading the same thing twice?
->
+> 
 > The intent is to see whether the folio->mapping has been truncated from
 > underneath us, as per the futex code that Kirill referred to which does
 > something similar [1].
->
-> >
+
+Yeah, but per that 3rd load you got nothing here. Also that futex code
+did the early load to deal with the !mapping case, but you're not doing
+that.
+
 > > Who cares if the thing changes from before; what you care about is that
 > > the value you see has stable storage, this doesn't help with that.
 > >
@@ -159,17 +151,31 @@ On Tue, May 02, 2023 at 12:25:54PM +0100, Lorenzo Stoakes wrote:
 > >
 > > Anyway, this all can go away. RCU can't progress while you have
 > > interrupts disabled anyway.
->
+> 
 > There seems to be other code in the kernel that assumes that this is not
-> the case, i.e. the futex code, though not sure if that's being run with
-> IRQs disabled... if not and it's absolutely certain that we need no special
-> handling for the RCU case, then happy days and more than glad to remove
-> this bit.
->
-> I'm far from an expert on RCU (I need to gain a better understanding of it)
-> so I'm deferring how best to proceed on _this part_ to the community.
->
-> >
+> the case,
+
+Yeah, so Paul went back on forth on that a bit. It used to be true in
+the good old days when everything was simple. Then Paul made things
+complicated by separating out sched-RCU bh-RCU and 'regular' RCU
+flavours.
+
+At that point disabling IRQs would only (officially) inhibit sched and
+bh RCU flavours, but not the regular RCU.
+
+But then some years ago Linus convinced Paul that having all these
+separate RCU flavours with separate QS rules was a big pain in the
+backside and Paul munged them all together again.
+
+So now, anything that inhibits any of the RCU flavours inhibits them
+all. So disabling IRQs is sufficient.
+
+> i.e. the futex code, though not sure if that's being run with
+> IRQs disabled...
+
+That futex code runs in preemptible context, per the lock_page() that
+can sleep etc.. :-)
+
 > > > +/*
 > > > + * Used in the GUP-fast path to determine whether a FOLL_PIN | FOLL_LONGTERM |
 > > > + * FOLL_WRITE pin is permitted for a specific folio.
@@ -204,16 +210,19 @@ On Tue, May 02, 2023 at 12:25:54PM +0100, Lorenzo Stoakes wrote:
 > > > +		struct address_space *mapping = folio_mapping(folio);
 > >
 > > And this is 3rd read of folio->mapping, just for giggles?
->
+> 
 > I like to giggle :)
->
+> 
 > Actually this is to handle the various cases in which the mapping might not
 > be what we want (i.e. have PAGE_MAPPING_FLAGS set) which doesn't appear to
 > have a helper exposed for a check. Given previous review about duplication
 > I felt best to reuse this even though it does access again... yes I felt
 > weird about doing that.
->
-> >
+
+Right, I had a peek inside folio_mapping(), but the point is that this
+3rd load might see yet *another* value of mapping from the prior two
+loads, rendering them somewhat worthless.
+
 > > > +
 > > > +		/*
 > > > +		 * Neither anonymous nor shmem-backed folios require
@@ -235,9 +244,11 @@ On Tue, May 02, 2023 at 12:25:54PM +0100, Lorenzo Stoakes wrote:
 > >
 > > 	if (folio_test_anon(folio))
 > > 		return true;
->
+> 
 > This relies on the mapping so belongs below the lockdep assert imo.
->
+
+Oh, right you are.
+
 > >
 > > 	/*
 > > 	 * Having IRQs disabled (as per GUP-fast) also inhibits RCU
@@ -257,10 +268,8 @@ On Tue, May 02, 2023 at 12:25:54PM +0100, Lorenzo Stoakes wrote:
 > > 	return false;
 > >
 > > > +}
->
+> 
 > I'm more than happy to do this (I'd rather drop the RCU bits if possible)
 > but need to be sure it's safe.
 
-Sorry forgot to include the [1]
-
-[1]:https://lore.kernel.org/all/20230428234332.2vhprztuotlqir4x@box.shutemov.name/
+GUP-fast as a whole relies on it :-)
