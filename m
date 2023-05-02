@@ -2,161 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A0B6F4A3E
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 21:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF156F4A48
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 21:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjEBTUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 15:20:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47502 "EHLO
+        id S229584AbjEBTY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 15:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjEBTUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 15:20:33 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B1A1BD4
-        for <bpf@vger.kernel.org>; Tue,  2 May 2023 12:20:32 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 342FTlJK009353;
-        Tue, 2 May 2023 12:20:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=7lqLT22tGCoGznzzjbAL5KsGpr3bYWXm4QgLcwZo0UE=;
- b=da0KL4ONemq2Bl5jqto7AGrKX7+3Cvd3qFKtQDRBS8UsxNymOlqfLj2G8W9OdeVoxq4i
- yaOC84awBQCMy7s+6p3z5Z4RU0BHw17aGMZOsfzEslhJUffhJjDkK9Za209zXzi78BAY
- erNRUa7eqGavAP2PFcbmr3yDBHY0m2Fj86QtI8lPR4xN2ffq9NR+A+qi/OgVKyL3vblJ
- o+E0EdHrMBzdoox3L3i2romt6kkScQrcaRyuRz6Vx5gbOFWMmY5gUjhwMkJZ5jPg7SOP
- j52AFfZZzoCTWCO4DOk/yBHle29l9ThS9XOaWMf/1MBFg7y5ZcbC3/WeycKARDGT7F4d +g== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2043.outbound.protection.outlook.com [104.47.73.43])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3qas9bp3c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 May 2023 12:20:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q9zAVYXC5ypWUq7YXqEIZ09JnSekdSk8el10nWEqO4hVV4owhf2j1A9bxQrMiX5Ln7J0R+O9sJHnVVZUdzkJ+/Tgx/9ss/9uNyPkjz/wEeUCPOUOZhXrYkhPiBdOh3lYDGaY+kGFQI4IEj+aet3KexvZJcrYxsSEZqjjf98Yin50//v7Kh6n1wlyYmZhrqYDdn+DLqydpViEced21sSKdRNtGOUN3QCn48TZ3Tb6/NM4vEVybMGJSOZMw4G6CHECgJhHo5B9C8KPohqHKglGXaXSS08TR4D/G/M0Z52RTO3/Dht/uP0Uiw6N9KusrP62bu+Jf/cF5OY4wc6eSlFCvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7lqLT22tGCoGznzzjbAL5KsGpr3bYWXm4QgLcwZo0UE=;
- b=oGJtLQ0+XTScijVflJI5l+P11uHyiKVHz9vZkznT+LWbMdSB61fuWzStxJ/T6QRpBGRDA3szsXlD9EGotVWlUNzoglw9zgI5c2jAiOX1pvsC9UPCL/1+U6YKnL1JoubBrYkuQzLXkUVKgynEnNZq6C3J6xyDTUMkglaKLOPSizUK2DMg01JYVyGinRuuulUmsKEz3T6blnDdBMwrOxI7ota14m4yaw2hVzeCn7x3K7Hq10Tw8/lDNf6pb231pZsGW7O48sRZfhQFtHo76hIbPllFTh7qyYL05N8xuXK3X/8zBA2QvDVRqJ8thf/Yt2ZdOrKqtf8zK6YlHlRCCCm99Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SJ2PR15MB5720.namprd15.prod.outlook.com (2603:10b6:a03:4ca::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.20; Tue, 2 May
- 2023 19:20:04 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6340.030; Tue, 2 May 2023
- 19:20:03 +0000
-Message-ID: <8b170d9b-f436-c8ae-ab10-751e253939ac@meta.com>
-Date:   Tue, 2 May 2023 12:19:59 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.1
-Subject: Re: [PATCH bpf-next] bpf: Print a warning only if writing to
- unprivileged_bpf_disabled.
+        with ESMTP id S229573AbjEBTYy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 15:24:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99131BF9
+        for <bpf@vger.kernel.org>; Tue,  2 May 2023 12:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683055447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eebKb+TsagwbVZx+TXwlGTIKwC3csstjJ30OZt/ChDs=;
+        b=hFHhaI+NAJ0Yz4zOM/mZejU9xm74DZVMtzrdpEb2zOHil8Ls6cAWsIVK1JPlzlm3mrFAj4
+        mX3cIH6y+Y5sXVltt+ckYOCc27trrzqi4rou6JZuQD82uWaWbuvHXOBbUiGukDJXAB3wqX
+        rd0cciTRvOv5CymL8AzB+YCqRii3/b8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-BERoZxU_ODCWR168bHYe3A-1; Tue, 02 May 2023 15:23:58 -0400
+X-MC-Unique: BERoZxU_ODCWR168bHYe3A-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-2fbb99cb2easo1170474f8f.1
+        for <bpf@vger.kernel.org>; Tue, 02 May 2023 12:23:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683055437; x=1685647437;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eebKb+TsagwbVZx+TXwlGTIKwC3csstjJ30OZt/ChDs=;
+        b=Jgj6PVA+YRbUUAT9WKYYFppilSUJ7Ze3GmouyvUJ2kdYsJNCnjQU5sXXzz/Kw+7EKq
+         2SPb4V11TJ5Alec/0FhZN4ASpf5OaFfC/R19+9qvEe3Ta7Xf2nhnAEb0OOitr/PTM22H
+         6fGu+RkzNDcbgL6dEAN5SKb4EhXp6byAiFxLwLLFixKuHuZYFSRcU9EzuFKvMY5hIlEh
+         vGCj6axb5+qYeTEXOT6yWQBWoa0p6OZPvVlyMWUIs4q+ej/o0Vfcm63ZDSxI/dMOEco4
+         M/WzkowVXEmTtqJ4kPXnbkTAtpYuPMCwx1NzZC50tcKBuGf4t3VLHcxksglc4AcKw6sM
+         qIdA==
+X-Gm-Message-State: AC+VfDyY+t1sIo1sjaXfOKqUuqNdzNOiegti5PSNIcShgFGjRcPru2HL
+        RYagQ4k43Syyg04tuQD8tLfXgl9XHCfVZxkDW7Dkeet0Pq9A89iqahJYaYbDDpE9MiM3YSVakkL
+        ohuMyEFemP3Xl
+X-Received: by 2002:a5d:4e08:0:b0:2fe:2775:6067 with SMTP id p8-20020a5d4e08000000b002fe27756067mr12850028wrt.28.1683055437190;
+        Tue, 02 May 2023 12:23:57 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ52sK3ZU3tbew+lQjq4BZTENLqPkH6FqYjfheHwv6rwX9tRJiuLFtrfQqzjGEl3dyA8PVf5BQ==
+X-Received: by 2002:a5d:4e08:0:b0:2fe:2775:6067 with SMTP id p8-20020a5d4e08000000b002fe27756067mr12849995wrt.28.1683055436775;
+        Tue, 02 May 2023 12:23:56 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c700:2400:6b79:2aa:9602:7016? (p200300cbc70024006b7902aa96027016.dip0.t-ipconnect.de. [2003:cb:c700:2400:6b79:2aa:9602:7016])
+        by smtp.gmail.com with ESMTPSA id p8-20020a05600c358800b003f1738d0d13sm52367092wmq.1.2023.05.02.12.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 May 2023 12:23:56 -0700 (PDT)
+Message-ID: <d8fa7322-8fab-b693-2075-3f5f2253ef88@redhat.com>
+Date:   Tue, 2 May 2023 21:23:53 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
+ file-backed mappings
 Content-Language: en-US
-To:     Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        kernel-team@meta.com, andrii@kernel.org
-Cc:     Kui-Feng Lee <kuifeng@meta.com>
-References: <20230502181418.308479-1-kuifeng@meta.com>
-From:   Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230502181418.308479-1-kuifeng@meta.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Mika Penttila <mpenttil@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>
+References: <f0acd8e4-8df8-dfae-b6b2-30eea3b14609@redhat.com>
+ <3c17e07a-a7f9-18fc-fa99-fa55a5920803@linux.ibm.com>
+ <ZFEqTo+l/S8IkBQm@nvidia.com> <ZFEtKe/XcnC++ACZ@x1n>
+ <ZFEt/ot6VKOgW1mT@nvidia.com>
+ <4fd5f74f-3739-f469-fd8a-ad0ea22ec966@redhat.com>
+ <ZFE07gfyp0aTsSmL@nvidia.com>
+ <1f29fe90-1482-7435-96bd-687e991a4e5b@redhat.com>
+ <ZFE4A7HbM9vGhACI@nvidia.com>
+ <6681789f-f70e-820d-a185-a17e638dfa53@redhat.com>
+ <ZFFMXswUwsQ6lRi5@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZFFMXswUwsQ6lRi5@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR17CA0005.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ2PR15MB5720:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5f3a353-b9fc-47e4-9434-08db4b423aee
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EkhVY6NgXwv1PTDcc43iruudghYxD2jrzcpdc60ptUN6JB75Q0JZWo//JDr3JgLGBm4PuJs079uQHbqj7sDN09/1IrrFrgP7GTruUGpn181+RUAEz6plWQCbCxsWRnT0mKwT37XZ6+IIB6qFnNg7qrdZ0kNOQK+n5BRT15c/d3exaWf/A9LEFM0GksFtRbjO4fWFBdhliQAQw93DLbUXeMogI10qYeMABnWKN7i5lBPJgC0yB6hsW625W/a7TP4Gbk/sOFLalujW9yF6S/IfcsL8tidm0KTAjS791cEwN7GniiGWq1pMxVhnA482Oyyzr/Lj1EW2LYIJQN2IE0m6kXsNGnRihVqGVIFNttPSFtsNwml2dq8SzUBlz6ok0WZxVdy0eQNHmlIbqwxFDuTh1Nwd7KFLhN5dnTY/8oxS7Cxw/z4p4HZuZT9IeHjTaR/ogiOyMWlE4YRnoD94PtbVBXF6uCRggZoP+ljR9IL0CwrU+rvJtZ5FJLl729pbgR+McPjALCbvGSJd8Ib/x6pecuKqCnJUFGxggZNHATsVTUi5FwkH3wwTeApGpsSSVe+X6RN8dsg6hOMP+ly2rasRQQmSGyGjguK7x90S2dqa6jFG8KPSZV9rI1EmtWDaVqD1MVgkJOrvprgBPghXmFEmKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(366004)(346002)(396003)(451199021)(4744005)(2906002)(38100700002)(5660300002)(36756003)(8676002)(8936002)(86362001)(31696002)(6486002)(6666004)(107886003)(6512007)(478600001)(6506007)(2616005)(83380400001)(31686004)(53546011)(186003)(316002)(66556008)(41300700001)(66476007)(66946007)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1hyRnRwQkhBZTE1YlluYm1rSmFQU2tHbUxxc3hjdmV0UWZhQkdqWngyKzZ6?=
- =?utf-8?B?dnVoVVFpcEdIVGQ3MHVCb0FpSjkvaWlITTVHVGVucXhjeFRQeDFWVDlSTjBh?=
- =?utf-8?B?cGhLSXcrSyt5Mll1YWxlS2UwaDhXNk5JWTBIVGN2KzF0VXJrc2lTVWZJNC9p?=
- =?utf-8?B?bHN1cXNKK2FzV3lUbEo2dDcxSk9uK1VZdVFmUHQyVUFuVUpURENqUExSakVF?=
- =?utf-8?B?aWtwSXkwYVJBbDVSN09KTXcvenNGdFI2YW4vUytDUWR6c2ErajlnMWZRQ0pZ?=
- =?utf-8?B?dmpJMGNNZXB3bzVtQ2JmdVBZeXM0TjM3ZWtoVjZnNWdWUUh2WVZmTUpqcmZV?=
- =?utf-8?B?cUhHd3RSWW1aM2hMYXRpRVdIY05pOHlVU0xjTGtINDVZVkhVOUNHdTB0TzJi?=
- =?utf-8?B?VDRvbHNacnpMZXRkWWlnUERxSTNnKzRDdGcwYURzTnF5ZVB5OXpWaENRNllN?=
- =?utf-8?B?UmIvT0N0d2NnQjhkRUxoN2xpam9ycEZBRXNtWEN6N2hZbi9ONmVRRnRVZE4w?=
- =?utf-8?B?eVBVb3F4d3ZhZkhyblhaeFp4WVVSNTJtd2dxYlVHeHhSL3psdXVwNkxId1Zs?=
- =?utf-8?B?VDBpU2haM1lrRHAyWHd2S3Y5WkJDMUZZaWc5bGMvUjJYVlRCeXc0aHQwZys4?=
- =?utf-8?B?ZEl4Y3ZxcVlzN0loSmc3VjA0d0wraFZ0cjRwSklmbEVVY2hzVUUxSXRjWlQ1?=
- =?utf-8?B?dzdYQnA3VGJ2YVpIbHpweXJkUDkxMG9KRzU4THUvais1MXdNamhHL0N6Qmx4?=
- =?utf-8?B?bnhhOUFOaWxnRGN0bUNaK09aYXFWNjJRNWxWWWd0dXpycHZPb2RHcW1rY1ZM?=
- =?utf-8?B?T1NTNUttMkZBanZiVzZCdTYrOE93djJucWpLTVJMU1dKd3owV09pQUUwY2wv?=
- =?utf-8?B?YXlickVaWkNNODF0QzhUWHFxdkI2M0V2bkpXeE5DQVpjUnFKOU1DYzBnTjN4?=
- =?utf-8?B?VFJxRmE1Qmd3OXgvTk5qZ0JuTXh3dGFhQkhTdTZUdHNEQkd0Nm4rb213SWxI?=
- =?utf-8?B?bkJyTkhvbXN3dlZNM2VhbjFnY1k4WGVjbkF6VVBDMks5MGs3L3pCem9hNzd6?=
- =?utf-8?B?YmNqODBoNzNQVGVKSHdvYXRuUG9KeXVyVGtxNTJLb0RQK3dPdStjRVEwenNo?=
- =?utf-8?B?ajM5N3hPaHVCOHpaYkxyWXBBZnVwUXVNYm5aYm1HVlNxNTZJVGsxay9MZ0pM?=
- =?utf-8?B?bHVzNHZnMGhnZUlMdVpGSTJ5N1c3TVA5Y0dHVHM0WFpXb2NDNGdvRDZ5WFdn?=
- =?utf-8?B?eVN1TU5va0d4YVMyUWZadTJTdXhUb3M5Z1IxSFV3cC95U3RSUlkzbkUwMXRF?=
- =?utf-8?B?V2VwUFgvaHlCWWFPMWNhMWgrNzNHWTNTUXdGVkFRWDVxRmkvMFgrRm92clVV?=
- =?utf-8?B?TGxyVUVqdEEzcDQ4QldBSGdkZjNuc1h3OC9XU211MVJDNHRJK0xSNmp3VUYy?=
- =?utf-8?B?Z2toRTBaSUpTRE9FeVcrb1Q2dTFiOGRHREVBRFpyajBBb2dJelE5VXljUEdT?=
- =?utf-8?B?MkFMMWRtbzhuZXAxMHN6NTlKNS9mUGs4VWFoY2hQMHIyZDQvT2diNFgvOVRP?=
- =?utf-8?B?bG42RXoyclVDekhUVmVLTGVyYlZIMFlsVy9ydFJlemVldUNUQ3hCNkE1V3dv?=
- =?utf-8?B?eVBudkZKb0RTblExcVZaejM0RzRFeTdGbmMvcC9GYVZSQWRPemVvU21QdzdP?=
- =?utf-8?B?M1dBTjUwVEEvQUQvdys3RFFud0VqdHVVS3R6RFg4bFo5ajNhMEJlU3RqZWVr?=
- =?utf-8?B?bmRIRFZ5TW5XZXF6WDFtR1lBSWcwY2dGbTRiZzFRN25rVG9xVHM0SXIyUG53?=
- =?utf-8?B?akIwc1pNYXJWU3hmRjUyajJIdkdoUGRtZ2YzUjE4RG4yY1B2b1NGT1dwRTZk?=
- =?utf-8?B?eFh6YTQwTlFZMDdIaDJhZ3dvNFdkSmpoMzZtZnlrUHhUaVhiYnp2TnBsSEV1?=
- =?utf-8?B?MVFqeWNRYmk2NUt6VE5zZU9WKysrY2U5WU9ZZVRPR2FqL2h6dzhlWFZDN080?=
- =?utf-8?B?R0NPOEZKTnIyanJuK1puWWVkNFRoNFVHbVRnTmEwbUhQdXpMcUhiUDY2U3Ri?=
- =?utf-8?B?bGg2SWx5NDM2QlpvN1J0ZGNUek5KMVRabzlwV05jRk0wSW02YmFVMWhZVWx2?=
- =?utf-8?B?aDFIWXJ5aEhIS0E2OU15WWhCMjEvcnZQUVlmSnF6RlByUURMTGx0L0xXbWFI?=
- =?utf-8?B?Qmc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5f3a353-b9fc-47e4-9434-08db4b423aee
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2023 19:20:03.3534
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n6X//VxlC47MzhXAg959zysqkbQWtZYdoTzP8+xwsb9DR3blq8cv9tFPWAr4TJCJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR15MB5720
-X-Proofpoint-ORIG-GUID: 3e22SG1LgqQNORzfd3ggCrMbVQcRiMq5
-X-Proofpoint-GUID: 3e22SG1LgqQNORzfd3ggCrMbVQcRiMq5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-02_11,2023-04-27_01,2023-02-09_01
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 02.05.23 19:46, Jason Gunthorpe wrote:
+> On Tue, May 02, 2023 at 06:32:23PM +0200, David Hildenbrand wrote:
+>> On 02.05.23 18:19, Jason Gunthorpe wrote:
+>>> On Tue, May 02, 2023 at 06:12:39PM +0200, David Hildenbrand wrote:
+>>>
+>>>>> It missses the general architectural point why we have all these
+>>>>> shootdown mechanims in other places - plares are not supposed to make
+>>>>> these kinds of assumptions. When the userspace unplugs the memory from
+>>>>> KVM or unmaps it from VFIO it is not still being accessed by the
+>>>>> kernel.
+>>>>
+>>>> Yes. Like having memory in a vfio iommu v1 and doing the same (mremap,
+>>>> munmap, MADV_DONTNEED, ...). Which is why we disable MADV_DONTNEED (e.g.,
+>>>> virtio-balloon) in QEMU with vfio.
+>>>
+>>> That is different, VFIO has it's own contract how it consumes the
+>>> memory from the MM and VFIO breaks all this stuff.
+>>>
+>>> But when you tell VFIO to unmap the memory it doesn't keep accessing
+>>> it in the background like this does.
+>>
+>> To me, this is similar to when QEMU (user space) triggers
+>> KVM_S390_ZPCIOP_DEREG_AEN, to tell KVM to disable AIF and stop using the
+>> page (1) When triggered by the guest explicitly (2) when resetting the VM
+>> (3) when resetting the virtual PCI device / configuration.
+>>
+>> Interrupt gets unregistered from HW (which stops using the page), the pages
+>> get unpinned. Pages get no longer used.
+>>
+>> I guess I am still missing (a) how this is fundamentally different (b) how
+>> it could be done differently.
+> 
+> It uses an address that is already scoped within the KVM memory map
+> and uses KVM's gpa_to_gfn() to translate it to some pinnable page
+> 
+> It is not some independent thing like VFIO, it is explicitly scoped
+> within the existing KVM structure and it does not follow any mutations
+> that are done to the gpa map through the usual KVM APIs.
+
+Right, it consumes guest physical addresses that are translated via the KVM memslots.
+Agreed that it does not (and possibly cannot easily) update the hardware when the KVM
+mapping (memslots) would ever change.
+
+I guess it's also not documented that this is not supported.
+
+> 
+>> I'd really be happy to learn how a better approach would look like that does
+>> not use longterm pinnings.
+> 
+> Sounds like the FW sadly needs pinnings. This is why I said it looks
+> like DMA. If possible it would be better to get the pinning through
+> VFIO, eg as a mdev
+> 
+> Otherwise, it would have been cleaner if this was divorced from KVM
+> and took in a direct user pointer, then maybe you could make the
+> argument is its own thing with its own lifetime rules. (then you are
+> kind of making your own mdev)
+
+It would be cleaner if user space would translate the GPA to a HVA and provid
+  that, agreed ...
+
+> 
+> Or, perhaps, this is really part of some radical "irqfd" that we've
+> been on and off talking about specifically to get this area of
+> interrupt bypass uAPI'd properly..
+
+Most probably. It's one of these very special cases ... thankfully:
+
+$ git grep -i longterm | grep kvm
+arch/s390/kvm/pci.c:    npages = pin_user_pages_fast(hva, 1, FOLL_WRITE | FOLL_LONGTERM, pages);
+arch/s390/kvm/pci.c:            npages = pin_user_pages_fast(hva, 1, FOLL_WRITE | FOLL_LONGTERM,
 
 
-On 5/2/23 11:14 AM, Kui-Feng Lee wrote:
-> Only print the warning message if you are writing to
-> "/proc/sys/kernel/unprivileged_bpf_disabled".
-> 
-> The kernel may print an annoying warning when you read
-> "/proc/sys/kernel/unprivileged_bpf_disabled" saying
-> 
->    WARNING: Unprivileged eBPF is enabled with eIBRS on, data leaks possible
->    via Spectre v2 BHB attacks!
-> 
-> However, this message is only meaningful when the feature is
-> disabled or enabled.
-> 
-> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+-- 
+Thanks,
 
-Acked-by: Yonghong Song <yhs@fb.com>
+David / dhildenb
+
