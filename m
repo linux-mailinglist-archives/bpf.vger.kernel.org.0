@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5038E6F3C0F
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 04:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786C76F3C15
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 04:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbjEBCTT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 May 2023 22:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S233506AbjEBCTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 May 2023 22:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233475AbjEBCTS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 May 2023 22:19:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCCB4215;
-        Mon,  1 May 2023 19:18:48 -0700 (PDT)
+        with ESMTP id S231915AbjEBCTp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 May 2023 22:19:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB394496;
+        Mon,  1 May 2023 19:19:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C73C620BA;
-        Tue,  2 May 2023 02:18:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E47C2C433EF;
-        Tue,  2 May 2023 02:18:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBC6A620DD;
+        Tue,  2 May 2023 02:18:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6751C433EF;
+        Tue,  2 May 2023 02:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682993922;
-        bh=6vun2L7Gqdjfz6gS8Y5EPS6ytnutljhikv/zk9HDEk8=;
+        s=k20201202; t=1682993931;
+        bh=Q8X75uxojwl36z/185Vnp5NwxkrdQsauwtqJ820GtUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fj1LLibaZ40PAlqsAIkDR2PJgJBJS252ojvGebgD2ofqpH3VcbooUQNKswQgbeVBd
-         +Wi2uabkYLYzk8JiZGA+lKI1fzUUmCerXzWNso7uoKcVVhKpnGvVqRq/O0lUhZrkEh
-         MDzNZWmdxlbTEsn3DrdBwgCu791FgxhjgPte0pVFRDtKKDNHYlxA0RaU+ecZjIjrp3
-         8Xro3PGPKDOSWCrLh+4k1/lisxX7rlASX23OIDBfNEAg2g04wRv9fNxmC7cyxWitbL
-         5z9yOUPnfQzNJ94TZhsKMlr7QEg7Siyc+KiLM5I1xVBNUOcLe/Ert5MxolT/D1aNqo
-         nGs/JefXb6vlA==
+        b=h8QItl89kGoy39zLksWOeEpDGjkFuCO38Mt6uBjZMvBB3tqr8qu1t1s/dfE73Vz3w
+         QtLGVQPF1HbB8W/v+VlTeHc7hZbI2gRvzDkkydNcwdh4qGVBnVv09ItUzz/lI5vKXy
+         Fi6/aZQTJoYVhkG/PjB+U9SJay2FjDNxAwbVxAHlF1Xecwiw6DNkRlYJnqdVVnCQeV
+         pPmmqGbOSU4K+2SdDGMt5kDbHm5yfpRmTYulbQUEQo3pluEmnTKqCowPNRZVf1yNh8
+         q3UverX62X2/FHY2TIJVEpNXlGE7E8GMRGo6xEYfpLqEnTauM316s8npTxV55bn2xF
+         y09ACrPKt4c+Q==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     linux-trace-kernel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
@@ -39,9 +39,9 @@ Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org
-Subject: [PATCH v9.1 09/11] selftests/ftrace: Add tracepoint probe test case
-Date:   Tue,  2 May 2023 11:18:38 +0900
-Message-ID:  <168299391886.3242086.13839435116039375339.stgit@mhiramat.roam.corp.google.com>
+Subject: [PATCH v9.1 10/11] selftests/ftrace: Add BTF arguments test cases
+Date:   Tue,  2 May 2023 11:18:47 +0900
+Message-ID:  <168299392783.3242086.1546512576090950143.stgit@mhiramat.roam.corp.google.com>
 X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
 In-Reply-To:  <168299383880.3242086.7182498102007986127.stgit@mhiramat.roam.corp.google.com>
 References:  <168299383880.3242086.7182498102007986127.stgit@mhiramat.roam.corp.google.com>
@@ -49,8 +49,8 @@ User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,135 +61,117 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Add test cases for tracepoint probe events.
+Add test cases to check the BTF arguments correctly supported.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- .../ftrace/test.d/dynevent/add_remove_tprobe.tc    |   27 +++++++
- .../ftrace/test.d/dynevent/tprobe_syntax_errors.tc |   82 ++++++++++++++++++++
- 2 files changed, 109 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
+Changes in v7:
+ - Add BTF void retval test case
+---
+ .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   54 ++++++++++++++++++++
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   11 ++++
+ .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |   11 ++++
+ 3 files changed, 76 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
 new file mode 100644
-index 000000000000..afc8412fde6b
+index 000000000000..15515f0a8c9a
 --- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
-@@ -0,0 +1,27 @@
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+@@ -0,0 +1,54 @@
 +#!/bin/sh
 +# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - add/remove tracepoint probe events
-+# requires: dynamic_events "t[:[<group>/][<event>]] <tracepoint> [<args>]": README
++# description: Generic dynamic event - add/remove probes with BTF arguments
++# requires: dynamic_events "<argname>":README
++
++KPROBES=
++FPROBES=
++
++if grep -qF "p[:[<group>/][<event>]] <place> [<args>]" README ; then
++  KPROBES=yes
++fi
++if grep -qF "f[:[<group>/][<event>]] <func-name>[%return] [<args>]" README ; then
++  FPROBES=yes
++fi
++
++if [ -z "$KPROBES" -a "$FPROBES" ] ; then
++  exit_unsupported
++fi
 +
 +echo 0 > events/enable
 +echo > dynamic_events
 +
-+TRACEPOINT1=kmem_cache_alloc
-+TRACEPOINT2=kmem_cache_free
++TP=kfree
 +
-+echo "t:myevent1 $TRACEPOINT1" >> dynamic_events
-+echo "t:myevent2 $TRACEPOINT2" >> dynamic_events
++if [ "$FPROBES" ] ; then
++echo "f:fpevent $TP object" >> dynamic_events
++echo "t:tpevent $TP ptr" >> dynamic_events
 +
-+grep -q myevent1 dynamic_events
-+grep -q myevent2 dynamic_events
-+test -d events/tracepoints/myevent1
-+test -d events/tracepoints/myevent2
-+
-+echo "-:myevent2" >> dynamic_events
-+
-+grep -q myevent1 dynamic_events
-+! grep -q myevent2 dynamic_events
++grep -q "fpevent.*object=object" dynamic_events
++grep -q "tpevent.*ptr=ptr" dynamic_events
 +
 +echo > dynamic_events
 +
++echo "f:fpevent $TP "'$$args' >> dynamic_events
++echo "t:tpevent $TP "'$$args' >> dynamic_events
++
++grep -q "fpevent.*object=object" dynamic_events
++grep -q "tpevent.*ptr=ptr" dynamic_events
++! grep -q "tpevent.*_data" dynamic_events
++fi
++
++echo > dynamic_events
++
++if [ "$KPROBES" ] ; then
++echo "p:kpevent $TP object" >> dynamic_events
++grep -q "kpevent.*object=object" dynamic_events
++
++echo > dynamic_events
++
++echo "p:kpevent $TP "'$$args' >> dynamic_events
++grep -q "kpevent.*object=object" dynamic_events
++fi
++
 +clear_trace
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
-new file mode 100644
-index 000000000000..c8dac5c1cfa8
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
-@@ -0,0 +1,82 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Tracepoint probe event parser error log check
-+# requires: dynamic_events "t[:[<group>/][<event>]] <tracepoint> [<args>]": README
-+
-+check_error() { # command-with-error-pos-by-^
-+    ftrace_errlog_check 'trace_fprobe' "$1" 'dynamic_events'
-+}
-+
-+check_error 't^100 kfree'		# BAD_MAXACT_TYPE
-+
-+check_error 't ^non_exist_tracepoint'	# NO_TRACEPOINT
-+check_error 't:^/bar kfree'		# NO_GROUP_NAME
-+check_error 't:^12345678901234567890123456789012345678901234567890123456789012345/bar kfree'	# GROUP_TOO_LONG
-+
-+check_error 't:^foo.1/bar kfree'	# BAD_GROUP_NAME
-+check_error 't:^ kfree'			# NO_EVENT_NAME
-+check_error 't:foo/^12345678901234567890123456789012345678901234567890123456789012345 kfree'	# EVENT_TOO_LONG
-+check_error 't:foo/^bar.1 kfree'	# BAD_EVENT_NAME
-+
-+check_error 't kfree ^$retval'		# RETVAL_ON_PROBE
-+check_error 't kfree ^$stack10000'	# BAD_STACK_NUM
-+
-+check_error 't kfree ^$arg10000'	# BAD_ARG_NUM
-+
-+check_error 't kfree ^$none_var'	# BAD_VAR
-+check_error 't kfree ^%rax'		# BAD_VAR
-+
-+check_error 't kfree ^@12345678abcde'	# BAD_MEM_ADDR
-+check_error 't kfree ^@+10'		# FILE_ON_KPROBE
-+
-+grep -q "imm-value" README && \
-+check_error 't kfree arg1=\^x'	# BAD_IMM
-+grep -q "imm-string" README && \
-+check_error 't kfree arg1=\"abcd^'	# IMMSTR_NO_CLOSE
-+
-+check_error 't kfree ^+0@0)'		# DEREF_NEED_BRACE
-+check_error 't kfree ^+0ab1(@0)'	# BAD_DEREF_OFFS
-+check_error 't kfree +0(+0(@0^)'	# DEREF_OPEN_BRACE
-+
-+if grep -A1 "fetcharg:" README | grep -q '\$comm' ; then
-+check_error 't kfree +0(^$comm)'	# COMM_CANT_DEREF
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+index 549daa162d84..f2d000bf6371 100644
+--- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+@@ -85,4 +85,15 @@ fi
+ # %return suffix errors
+ check_error 'f vfs_read^%hoge'		# BAD_ADDR_SUFFIX
+ 
++# BTF arguments errors
++if grep -q "<argname>" README; then
++check_error 'f vfs_read $$args ^$$args'		# DOUBLE_ARGS
++check_error 'f vfs_read%return ^$$args'		# NOFENTRY_ARGS
++check_error 'f vfs_read ^hoge'			# NO_BTFARG
++check_error 'f kfree%return ^$retval'		# NO_RETVAL
++else
++check_error 'f vfs_read $$args'			# NOSUP_BTFARG
++check_error 't kfree $$args'			# NOSUP_BTFARG
 +fi
 +
-+check_error 't kfree ^&1'		# BAD_FETCH_ARG
-+
-+
-+# We've introduced this limitation with array support
-+if grep -q ' <type>\\\[<array-size>\\\]' README; then
-+check_error 't kfree +0(^+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(@0))))))))))))))'	# TOO_MANY_OPS?
-+check_error 't kfree +0(@11):u8[10^'		# ARRAY_NO_CLOSE
-+check_error 't kfree +0(@11):u8[10]^a'		# BAD_ARRAY_SUFFIX
-+check_error 't kfree +0(@11):u8[^10a]'		# BAD_ARRAY_NUM
-+check_error 't kfree +0(@11):u8[^256]'		# ARRAY_TOO_BIG
+ exit 0
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
+index 97c08867490a..d9add5d408f0 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
+@@ -103,4 +103,15 @@ check_error 'p vfs_read^%hoge'		# BAD_ADDR_SUFFIX
+ check_error 'p ^vfs_read+10%return'	# BAD_RETPROBE
+ fi
+ 
++# BTF arguments errors
++if grep -q "<argname>" README; then
++check_error 'p vfs_read $$args ^$$args'		# DOUBLE_ARGS
++check_error 'r vfs_read ^$$args'		# NOFENTRY_ARGS
++check_error 'p vfs_read+8 ^$$args'		# NOFENTRY_ARGS
++check_error 'p vfs_read ^hoge'			# NO_BTFARG
++check_error 'r vfs_read ^$retval'		# NO_RETVAL
++else
++check_error 'p vfs_read $$args'			# NOSUP_BTFARG
 +fi
 +
-+check_error 't kfree @11:^unknown_type'		# BAD_TYPE
-+check_error 't kfree $stack0:^string'		# BAD_STRING
-+check_error 't kfree @11:^b10@a/16'		# BAD_BITFIELD
-+
-+check_error 't kfree ^arg123456789012345678901234567890=@11'	# ARG_NAME_TOO_LOG
-+check_error 't kfree ^=@11'			# NO_ARG_NAME
-+check_error 't kfree ^var.1=@11'		# BAD_ARG_NAME
-+check_error 't kfree var1=@11 ^var1=@12'	# USED_ARG_NAME
-+check_error 't kfree ^+1234567(+1234567(+1234567(+1234567(+1234567(+1234567(@1234))))))'	# ARG_TOO_LONG
-+check_error 't kfree arg1=^'			# NO_ARG_BODY
-+
-+
-+# multiprobe errors
-+if grep -q "Create/append/" README && grep -q "imm-value" README; then
-+echo "t:tracepoint/testevent kfree" > dynamic_events
-+check_error '^f:tracepoint/testevent kfree'	# DIFF_PROBE_TYPE
-+
-+# Explicitly use printf "%s" to not interpret \1
-+printf "%s" "t:tracepoints/testevent kfree abcd=\\1" > dynamic_events
-+check_error "t:tracepoints/testevent kfree ^bcd=\\1"	# DIFF_ARG_TYPE
-+check_error "t:tracepoints/testevent kfree ^abcd=\\1:u8"	# DIFF_ARG_TYPE
-+check_error "t:tracepoints/testevent kfree ^abcd=\\\"foo\"" # DIFF_ARG_TYPE
-+check_error "^t:tracepoints/testevent kfree abcd=\\1"	# SAME_PROBE
-+fi
-+
-+exit 0
+ exit 0
 
