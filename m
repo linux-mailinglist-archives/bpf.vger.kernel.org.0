@@ -2,69 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1016F45E7
-	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 16:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8886B6F4675
+	for <lists+bpf@lfdr.de>; Tue,  2 May 2023 16:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234463AbjEBOQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 10:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S234401AbjEBO5Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 10:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234427AbjEBOQX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 10:16:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45DB1BC
-        for <bpf@vger.kernel.org>; Tue,  2 May 2023 07:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683036921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eO6gdENCN2fXl+gir0RoO36SF1UR1xjrvPR5SmtqcoE=;
-        b=bNU0A4//q8/YtaSoMieUskdfi0ajSNE32MZZh5dTlyVRmxPnMPle/dyH/ze1rHUBSBJgz8
-        vbQzFJzWUYzNo+MP25VpqDyXUnBtOsnqgv1GFvuIbDnFYSjivMgmcAZ6TBYB0S37jNKzlZ
-        PahkzVbsFy6TKrcSAZy/hjuB36dE4ZQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-L7PE8_4ZPQCXioQFxZrB7g-1; Tue, 02 May 2023 10:15:20 -0400
-X-MC-Unique: L7PE8_4ZPQCXioQFxZrB7g-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f33f8ffa37so7091385e9.2
-        for <bpf@vger.kernel.org>; Tue, 02 May 2023 07:15:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683036919; x=1685628919;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eO6gdENCN2fXl+gir0RoO36SF1UR1xjrvPR5SmtqcoE=;
-        b=iOFGfmO45s1NeQGRgYEr7/oJk+mgvUuRVMcplex1bKOKUFcDMMMsl8xPaEfGr5ym2J
-         k+8Cn6SV0gcZ7HMqG3+LWgPebDopdAPKJKKZ8BQFUYMpuhCRFjY2QIbMfz3ZA+eRu3L+
-         CAM5iaye7Qb9dt71jmm0O77Y/Y07Sb3gPUEND0DxQLHwFmhaxZJzAnFeFmrrETmlr0xi
-         91RVDLsBiwzA1rZCU2U5hvIDWIrv2k9zxI9MW8FKVaKv3pfLXJL5zCZS+/M7qXNMQnNp
-         kZDg4PWQMySreenavHsaODZJ0R+JJDck82dJmXzC6bWxNPoxLJ0hIvDz4KOCl9qFvzdf
-         5vAQ==
-X-Gm-Message-State: AC+VfDyysA0XPZZCjeBSKeQX7ClMwHOIVyo+v1JnDQHTlB+CsAZn9xq9
-        m7nIPtgukx1VQXN7UoeX6c1rxw+otlCIdpp5HOXnIOkDNYlrMDiK0uJradndXv9slNxax+R199i
-        sEue49m8z67EC
-X-Received: by 2002:a05:600c:2183:b0:3ed:ec34:f1 with SMTP id e3-20020a05600c218300b003edec3400f1mr12040824wme.35.1683036919248;
-        Tue, 02 May 2023 07:15:19 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7b/XcsbsQnzRZmP99SuxpW9CijxoRkII9q7oYHBTDMbDugyRQH6OJnCz/4C+NcU01RLhcYbw==
-X-Received: by 2002:a05:600c:2183:b0:3ed:ec34:f1 with SMTP id e3-20020a05600c218300b003edec3400f1mr12040766wme.35.1683036918841;
-        Tue, 02 May 2023 07:15:18 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c700:2400:6b79:2aa:9602:7016? (p200300cbc70024006b7902aa96027016.dip0.t-ipconnect.de. [2003:cb:c700:2400:6b79:2aa:9602:7016])
-        by smtp.gmail.com with ESMTPSA id v11-20020a1cf70b000000b003f25b40fc24sm21090046wmh.6.2023.05.02.07.15.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 May 2023 07:15:17 -0700 (PDT)
-Message-ID: <f0acd8e4-8df8-dfae-b6b2-30eea3b14609@redhat.com>
-Date:   Tue, 2 May 2023 16:15:15 +0200
+        with ESMTP id S233656AbjEBO5Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 10:57:24 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D95213B;
+        Tue,  2 May 2023 07:57:23 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 342Ee516012859;
+        Tue, 2 May 2023 14:54:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=32y/nZeIEZmOi40iSqF/tJSaM/6yk3pyClxTBL1CuRM=;
+ b=pzEkjajBsqQK2aUX4AyPJSGIOPFiAn65gKlCk/dI1aTd9VrKwFHbRV9BZ+5JV9BIYe9c
+ TP5qassSUSpB5UHJ8PgfOd+IQpT/k5BctPPOPd+F3r7/cW51wWM+xdKpfqCaSFizH/0l
+ dt4+trmvVscrWQnQbqHeZb7T1Oa8cWzSkRnY8kvKz4zEkeD31h8xzy8cklCk1Rqqex4A
+ 2BCpqLQODg+LWaFcdxR7tcdJ5VJL6KHipFlBUh8A+UCsiJLRTDhKj/DzJs2ENZPhVg4L
+ Y1bX9wfihMhkVbTTh/eYJi/vA3ZPyKkQe0JdxY/TIFCghNBCM71NTm0bU6wurcJCr+9D SA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qb43shfdh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 May 2023 14:54:50 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 342EomgO020546;
+        Tue, 2 May 2023 14:54:48 GMT
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qb43shf8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 May 2023 14:54:48 +0000
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 342DWDbf011286;
+        Tue, 2 May 2023 14:54:44 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([9.208.130.97])
+        by ppma02dal.us.ibm.com (PPS) with ESMTPS id 3q8tv7uskc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 02 May 2023 14:54:44 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 342Ese1H23920954
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 May 2023 14:54:40 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76AAD5804E;
+        Tue,  2 May 2023 14:54:40 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDAD958056;
+        Tue,  2 May 2023 14:54:35 +0000 (GMT)
+Received: from [9.60.89.243] (unknown [9.60.89.243])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  2 May 2023 14:54:35 +0000 (GMT)
+Message-ID: <3c17e07a-a7f9-18fc-fa99-fa55a5920803@linux.ibm.com>
+Date:   Tue, 2 May 2023 10:54:35 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
+Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
+ file-backed mappings
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
+To:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
         Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -106,7 +109,7 @@ Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
         Pavel Begunkov <asml.silence@gmail.com>,
         Mika Penttila <mpenttil@redhat.com>,
         Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>
+        "Theodore Ts'o" <tytso@mit.edu>, Peter Xu <peterx@redhat.com>
 References: <7d56b424-ba79-4b21-b02c-c89705533852@lucifer.local>
  <a6bb0334-9aba-9fd8-6a9a-9d4a931b6da2@linux.ibm.com>
  <ZFEL20GQdomXGxko@nvidia.com>
@@ -118,77 +121,81 @@ References: <7d56b424-ba79-4b21-b02c-c89705533852@lucifer.local>
  <ZFEVQmFGL3GxZMaf@nvidia.com>
  <1ffbbfb7-6bca-0ab0-1a96-9ca81d5fa373@redhat.com>
  <ZFEYblElll3pWtn5@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v6 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
- file-backed mappings
-In-Reply-To: <ZFEYblElll3pWtn5@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+ <f0acd8e4-8df8-dfae-b6b2-30eea3b14609@redhat.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+In-Reply-To: <f0acd8e4-8df8-dfae-b6b2-30eea3b14609@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CxJFWMTr1AwlmvE516RFOxxqp85_cQ7r
+X-Proofpoint-ORIG-GUID: uXjpuXEqJyPIOFcBwIU_BPTS0bXnzkZb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-02_09,2023-04-27_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ phishscore=0 spamscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=842 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2305020124
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02.05.23 16:04, Jason Gunthorpe wrote:
-> On Tue, May 02, 2023 at 03:57:30PM +0200, David Hildenbrand wrote:
->> On 02.05.23 15:50, Jason Gunthorpe wrote:
->>> On Tue, May 02, 2023 at 03:47:43PM +0200, David Hildenbrand wrote:
->>>>> Eventually we want to implement a mechanism where we can dynamically pin in response to RPCIT.
+On 5/2/23 10:15 AM, David Hildenbrand wrote:
+> On 02.05.23 16:04, Jason Gunthorpe wrote:
+>> On Tue, May 02, 2023 at 03:57:30PM +0200, David Hildenbrand wrote:
+>>> On 02.05.23 15:50, Jason Gunthorpe wrote:
+>>>> On Tue, May 02, 2023 at 03:47:43PM +0200, David Hildenbrand wrote:
+>>>>>> Eventually we want to implement a mechanism where we can dynamically pin in response to RPCIT.
+>>>>>
+>>>>> Okay, so IIRC we'll fail starting the domain early, that's good. And if we
+>>>>> pin all guest memory (instead of small pieces dynamically), there is little
+>>>>> existing use for file-backed RAM in such zPCI configurations (because memory
+>>>>> cannot be reclaimed either way if it's all pinned), so likely there are no
+>>>>> real existing users.
 >>>>
->>>> Okay, so IIRC we'll fail starting the domain early, that's good. And if we
->>>> pin all guest memory (instead of small pieces dynamically), there is little
->>>> existing use for file-backed RAM in such zPCI configurations (because memory
->>>> cannot be reclaimed either way if it's all pinned), so likely there are no
->>>> real existing users.
+>>>> Right, this is VFIO, the physical HW can't tolerate not having pinned
+>>>> memory, so something somewhere is always pinning it.
+>>>>
+>>>> Which, again, makes it weird/wrong that this KVM code is pinning it
+>>>> again :\
 >>>
->>> Right, this is VFIO, the physical HW can't tolerate not having pinned
->>> memory, so something somewhere is always pinning it.
+>>> IIUC, that pinning is not for ordinary IOMMU / KVM memory access. It's for
+>>> passthrough of (adapter) interrupts.
 >>>
->>> Which, again, makes it weird/wrong that this KVM code is pinning it
->>> again :\
+>>> I have to speculate, but I guess for hardware to forward interrupts to the
+>>> VM, it has to pin the special guest memory page that will receive the
+>>> indications, to then configure (interrupt) hardware to target the interrupt
+>>> indications to that special guest page (using a host physical address).
 >>
->> IIUC, that pinning is not for ordinary IOMMU / KVM memory access. It's for
->> passthrough of (adapter) interrupts.
+>> Either the emulated access is "CPU" based happening through the KVM
+>> page table so it should use mmu_notifier locking.
 >>
->> I have to speculate, but I guess for hardware to forward interrupts to the
->> VM, it has to pin the special guest memory page that will receive the
->> indications, to then configure (interrupt) hardware to target the interrupt
->> indications to that special guest page (using a host physical address).
+>> Or it is "DMA" and should go through an IOVA through iommufd pinning
+>> and locking.
+>>
+>> There is no other ground, nothing in KVM should be inventing its own
+>> access methodology.
 > 
-> Either the emulated access is "CPU" based happening through the KVM
-> page table so it should use mmu_notifier locking.
+> I might be wrong, but this seems to be a bit different.
 > 
-> Or it is "DMA" and should go through an IOVA through iommufd pinning
-> and locking.
+> It cannot tolerate page faults (needs a host physical address), so memory notifiers don't really apply. (as a side note, KVM on s390x does not use mmu notifiers as we know them)
+
+The host physical address is one shared between underlying firmware and the host kvm.  Either might make changes to the referenced page and then issue an alert to the guest via a mechanism called GISA, giving impetus to the guest to look at that page and process the event.  As you say, firmware can't tolerate the page being unavailable; it's expecting that once we feed it that location it's always available until we remove it (kvm_s390_pci_aif_disable).
+
 > 
-> There is no other ground, nothing in KVM should be inventing its own
-> access methodology.
+> It's kind-of like DMA, but it's not really DMA.  It's the CPU delivering interrupts for a specific device. So we're configuring the interrupt controller I guess to target a guest memory page.
+> 
+> But I have way too little knowledge about zPCI and the code in question here. And if it could be converted to iommufd (and if that's really the right mechanism to use here).
+> 	
+> Hopefully Matthew knows the details and if this really needs to be special :)
 
-I might be wrong, but this seems to be a bit different.
-
-It cannot tolerate page faults (needs a host physical address), so 
-memory notifiers don't really apply. (as a side note, KVM on s390x does 
-not use mmu notifiers as we know them)
-
-It's kind-of like DMA, but it's not really DMA.  It's the CPU delivering 
-interrupts for a specific device. So we're configuring the interrupt 
-controller I guess to target a guest memory page.
-
-But I have way too little knowledge about zPCI and the code in question 
-here. And if it could be converted to iommufd (and if that's really the 
-right mechanism to use here).
-
-Hopefully Matthew knows the details and if this really needs to be 
-special :)
-
--- 
-Thanks,
-
-David / dhildenb
+I think I need to have a look at mmu_notifiers to understand that better, but in the end firmware still needs a reliable page to deliver events to.
+ 
 
