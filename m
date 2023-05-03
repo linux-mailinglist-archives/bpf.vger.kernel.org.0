@@ -2,68 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A940B6F619A
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 00:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEE26F61B8
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 01:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjECWyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 18:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        id S229502AbjECXGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 19:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjECWyK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 18:54:10 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B2B44B7
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 15:54:08 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ab05018381so33316875ad.2
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 15:54:08 -0700 (PDT)
+        with ESMTP id S229545AbjECXGI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 19:06:08 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760CA5FD9;
+        Wed,  3 May 2023 16:06:07 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-64115eef620so8502903b3a.1;
+        Wed, 03 May 2023 16:06:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1683154448; x=1685746448;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avjys7QME+mclT8grC8JsMORlSrK23DSEmt8E1wDeZY=;
-        b=QbNKIDHvDxSP9ng37nGB0Xf/c3db2BL9eIAzhFToX/Rdhr26Szab+KTcpWvilgEBG+
-         re532HK3AoXHtwPwBKQSeaA7rH+dgA9taEiLODkbr7pkbM8ZCeNpNxN7tU4PV65iDoLZ
-         4nRQ1/OzEEg10hlr5OEna4N0HGhjZAu+i914TFZR8BF5n2QWeCPmW2UUUJSzZ3FfV2Xf
-         Dt3faQ4K2/JIFPrsDQECzzLB8yx2fhx4wTnpVTu5URCs/JtiB3GggT4Ji63u/53WIVtU
-         F6YD8vs7kptlwe8/NbhTKYP7OuElteYfbLyVFj++0UM9ogWqtLCBD0QJ344CjFumazPi
-         rszg==
+        d=gmail.com; s=20221208; t=1683155167; x=1685747167;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M47T+MkfXcL+iES+vO37bcdby6t+YHTMo4v4UpuapmA=;
+        b=GyjtyxzzPJIzKLNckzBqhGn6EsHcW13SH4Ki9P94TvYHM/nQ4czEHPAYkzgf+csxqG
+         Fyizd6OJ+I2C09BwSgegy5CjhhFqMyjDHv20WOORrAARntsm+r+RlT1aLs99TYjqt9D/
+         kWpnm4QQ2ZskjjfPwcL0Ve4Rm9orMV2uzI9SKJUx5FBC7OsjuvhbEaA360KgwtDSS7ov
+         q3QsRLMtRGE5hSB56uvSDaQUPy6KE7lfJEVTjBXQn/r8qlc/8x4U/jfrgp033cpS0PWg
+         jwEpFx5ReowWxIfxZ/c5DBSAFOxFdgpFBQBKBhKNOoQWZVTJ+tmXPN4Qj00oxUnQ/Nj5
+         fw4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683154448; x=1685746448;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=avjys7QME+mclT8grC8JsMORlSrK23DSEmt8E1wDeZY=;
-        b=Ik6KvR1pXN/xYXZRSr+Bn97o4jIqBp0q8TdX0YSJZncukqVurCHajvfFDZC5vnjUoV
-         Ta64orWGquqDZdhyWTvQ8ahzG5V1XUKC30Nm0W8uLx3l7zZA+K/iIBYawcg06t5CLRYE
-         U1KAPmGbdtVXXYY7k3WiCjSOqB+YEv8z2Lb+mT3VmW/zbP8umRG/cjjnvHi4d4fa8aJV
-         KW8+nMFOAjfbc8Bp2P9oGdzvOHFbnaPIEkWf8Z6e/y045k3E0Xdj3dkAtwKBKko4oLhm
-         clO43R0B+tu1E7wpWsIiUbKrO0w48ZQtpL1RNivbIGXsvtTcaTKThKVob3UsX87CM9hx
-         iIbg==
-X-Gm-Message-State: AC+VfDxiEV7mSy3TMbLID7/KZqzxpG4mjUNm/EQtUA4/xXPId/l/9tjx
-        37nSLxDL/JsaI3GawmjC29FA5irJIbINuw+KypM=
-X-Google-Smtp-Source: ACHHUZ7uVC373u6dsI4hr7CsNZ90skCs69b8pKSs16vTc4mZvhv93qM8t+VC/lT5NN9zrRUzzbTIAw==
-X-Received: by 2002:a17:902:f68e:b0:1a2:58f1:5e1d with SMTP id l14-20020a170902f68e00b001a258f15e1dmr1938731plg.36.1683154448152;
-        Wed, 03 May 2023 15:54:08 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1709028a8200b001a641e4738asm2200443plo.1.2023.05.03.15.54.06
+        d=1e100.net; s=20221208; t=1683155167; x=1685747167;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M47T+MkfXcL+iES+vO37bcdby6t+YHTMo4v4UpuapmA=;
+        b=TsZvS5DWKanVXJ7r37BgotLdLb1yVTTd4fMENjcJpUAj+qbHbk1TXfiWlWyL6fUsVE
+         htnmlz60O6Vdebe62nKU57v/2+l/KjHSZmHcnOpsJmGIZ20xaYovtj7N5+D23j7rsrw/
+         8QTq6W7TgvjdmmrTFDdY3Ycq8tHOZekl2uu8Yeh7rFqBDuF9Yf1SnQop1edwJXEct/kU
+         P45uWiwJjPA/yvabfELUYu/AQo2RbEhwvnDc9POWpnL/aNPFgoGiWMMMLAtvp8dEPFQ8
+         6SMJXRaVFhoo+gp6fduiEg7hsKezaw52EhEs0S1UEliPrPN4zcYCkwGKWpDKpeEvtmyt
+         /pNQ==
+X-Gm-Message-State: AC+VfDyTnMxl4u+uij5xrno8lRA2NH6mxxFhdmxfOtFjSWnDRYAmptyp
+        1iEX66tEpuldteRoZ8CJoW8=
+X-Google-Smtp-Source: ACHHUZ6IdITKuMcPrZQPXVzz8DxHIwMl89ft/AfZdh9W5CLXG7fE4eF57eRLOYAeLuPhJiDTe4faUg==
+X-Received: by 2002:a05:6a00:a28:b0:63b:8dcc:84de with SMTP id p40-20020a056a000a2800b0063b8dcc84demr95158pfh.4.1683155166682;
+        Wed, 03 May 2023 16:06:06 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:396f])
+        by smtp.gmail.com with ESMTPSA id a24-20020aa795b8000000b0063d2dae6243sm24051211pfk.115.2023.05.03.16.06.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 15:54:07 -0700 (PDT)
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-To:     bpf@vger.kernel.org
-Cc:     kafai@fb.com, sdf@google.com, aditi.ghag@isovalent.com,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH v7 bpf-next 10/10] selftests/bpf: Extend bpf_sock_destroy tests
-Date:   Wed,  3 May 2023 22:53:51 +0000
-Message-Id: <20230503225351.3700208-11-aditi.ghag@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
-References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
+        Wed, 03 May 2023 16:06:06 -0700 (PDT)
+Date:   Wed, 3 May 2023 16:06:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Message-ID: <20230503230603.auijigbydnifxah5@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
+ <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <0fc99af7-fa0d-c5c7-00c4-3f446a5ad77b@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0fc99af7-fa0d-c5c7-00c4-3f446a5ad77b@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,68 +82,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit adds a test case to verify that the
-bpf_sock_destroy kfunc is not allowed from
-program attach types other than BPF trace iterator.
-Unsupprted programs calling the kfunc will be rejected by
-the verifier.
+On Wed, May 03, 2023 at 02:57:03PM -0700, Martin KaFai Lau wrote:
+> On 5/3/23 11:48 AM, Alexei Starovoitov wrote:
+> > What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
+> > Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
+> > (while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
+> > 
+> > After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
+> > Probably usage of bpf_mem_alloc in local storage can be simplified as well.
+> > Martin wdyt?
+> 
+> If the bpf prog always does a bpf_rcu_read_lock() before accessing the
+> (e.g.) task local storage, it can remove the reuse_now conditions in the
+> bpf_local_storage and directly call the bpf_mem_cache_free().
+> 
+> The only corner use case is when the bpf_prog or syscall does
+> bpf_task_storage_delete() instead of having the task storage stays with the
+> whole lifetime of the task_struct. Using REUSE_AFTER_RCU_GP will be a change
+> of this uaf guarantee to the sleepable program but it is still safe because
+> it is freed after tasks_trace gp. We could take this chance to align this
+> behavior of the local storage map to the other bpf maps.
+> 
+> For BPF_MA_FREE_AFTER_RCU_GP, there are cases that the bpf local storage
+> knows it can be freed without waiting tasks_trace gp. However, only
+> task/cgroup storages are in bpf ma and I don't believe this optimization
+> matter much for them. I would rather focus on the REUSE_AFTER_RCU_GP first.
 
-Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- .../selftests/bpf/prog_tests/sock_destroy.c   |  2 ++
- .../bpf/progs/sock_destroy_prog_fail.c        | 22 +++++++++++++++++++
- 2 files changed, 24 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/sock_destroy_prog_fail.c
+I'm confused which REUSE_AFTER_RCU_GP you meant.
+What I proposed above is REUSE_AFTER_rcu_GP_and_free_after_rcu_tasks_trace
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-index d5f76731b4a3..8f7d745e55a1 100644
---- a/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_destroy.c
-@@ -3,6 +3,7 @@
- #include <bpf/bpf_endian.h>
- 
- #include "sock_destroy_prog.skel.h"
-+#include "sock_destroy_prog_fail.skel.h"
- #include "network_helpers.h"
- 
- #define TEST_NS "sock_destroy_netns"
-@@ -204,6 +205,7 @@ void test_sock_destroy(void)
- 	if (test__start_subtest("udp_server"))
- 		test_udp_server(skel);
- 
-+	RUN_TESTS(sock_destroy_prog_fail);
- 
- cleanup:
- 	if (nstoken)
-diff --git a/tools/testing/selftests/bpf/progs/sock_destroy_prog_fail.c b/tools/testing/selftests/bpf/progs/sock_destroy_prog_fail.c
-new file mode 100644
-index 000000000000..dd6850b58e25
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/sock_destroy_prog_fail.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int bpf_sock_destroy(struct sock_common *sk) __ksym;
-+
-+SEC("tp_btf/tcp_destroy_sock")
-+__failure __msg("calling kernel function bpf_sock_destroy is not allowed")
-+int BPF_PROG(trace_tcp_destroy_sock, struct sock *sk)
-+{
-+	/* should not load */
-+	bpf_sock_destroy((struct sock_common *)sk);
-+
-+	return 0;
-+}
-+
--- 
-2.34.1
+Hou's proposals: 1. BPF_MA_REUSE_AFTER_two_RCUs_GP 2. BPF_MA_FREE_AFTER_single_RCU_GP
 
+If I'm reading bpf_local_storage correctly it can remove reuse_now logic
+in all conditions with REUSE_AFTER_rcu_GP_and_free_after_rcu_tasks_trace.
+What am I missing?
