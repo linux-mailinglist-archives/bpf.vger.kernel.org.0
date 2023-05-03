@@ -2,316 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E61C6F56CD
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 13:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744BE6F5713
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 13:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjECLCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 07:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
+        id S230052AbjECLTo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 07:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjECLCX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 07:02:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700F055B9;
-        Wed,  3 May 2023 04:01:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 77D2A22652;
-        Wed,  3 May 2023 11:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1683111706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S229964AbjECLTk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 07:19:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26881FCF
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 04:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683112733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=z8jwtQHJUM/AAWsjtHIjrtk50jYN3yDn+0AjU75Gl8I=;
-        b=YnHHB9XleIkwOgka1vGP8aJr57QABiFIYqyQyRc190pWEehlsHxHHfLtXMcwYmaPOpl+wN
-        PF7SwfH0/Fl3otDZ0ORMKPi1ufHEJI+u1wXNthvFYPJ19qsDYxRolPgvwjfiYKrU2fop0C
-        HIwPUQffZm/HAW8bbxEbbw1BFC9A3qE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1683111706;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z8jwtQHJUM/AAWsjtHIjrtk50jYN3yDn+0AjU75Gl8I=;
-        b=LbUksBymq3p4Gn1YivZps62g/RWguxmOUm3+x9IlBwCcn/cItgSEOeSSPICJnwGxuZWzIC
-        oNqeocndKtvnM6AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 60A45139F8;
-        Wed,  3 May 2023 11:01:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MroXFxo/UmRuSgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 03 May 2023 11:01:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DC334A0744; Wed,  3 May 2023 13:01:45 +0200 (CEST)
-Date:   Wed, 3 May 2023 13:01:45 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        bh=O5KcQFxt1OwjVipvmc6YpAr7EIfZDFTMkByui1W8njA=;
+        b=UOLFM/fIbUdOxroY87HhK0IudCIsItx32+XkL7u5TN4qCuQkFxy0raJje51SQAuTWtYujL
+        Haxcw8CFliFRD/t7dSvH4ezc5+jFEhoQn2KMYyo8P9aYKl4kPME7CCcQhjLkkLMRc5yP9Z
+        uH1pjFQORZ/JDXsjCC5SOdoYVBrrz/w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-139-dWDTDyp-PD-Ytj2VjFfeEg-1; Wed, 03 May 2023 07:18:52 -0400
+X-MC-Unique: dWDTDyp-PD-Ytj2VjFfeEg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9537db54c94so476670166b.2
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 04:18:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683112731; x=1685704731;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5KcQFxt1OwjVipvmc6YpAr7EIfZDFTMkByui1W8njA=;
+        b=fP4QXU7E2PFbx1gdfl3oYB18+nMGRhaoNuKuhMKQJHEbg8ddcqaU2tXhi+dpj+yh++
+         qbf9ln+YzTDDbYEBbI90oJ9jZActW2+DnUrlPXJuyLXhNmNDP5ubNzImWTIqsKV4Opeb
+         yG9P4jE0FEafk31QxhKCvwh2VATxOYGDbMvzepQmrhPhfPuG/ppdbgfpaBT+fFkz5LKc
+         PhpZCxDIWGndtdFS13c4rk0or4q++3RGkpb3mYl6JJnYJtGn4KL9KB/p7sqhM2OliCpH
+         hkgqMh2ze7A+NeCka7nWOXWFqY58DxZJKuZvOtrtezWRuMqIqDMLRr/8S5VIRvLyV5Xv
+         oYOQ==
+X-Gm-Message-State: AC+VfDymaVqcougVJVD0NYC4KtVP46cMiAUWwAbVAF2wz4lXkYijluHo
+        /f8yJj2cd1z3XCPWCTqSK6k1EMhpXNul27gbtTcGqyLDFoSFouzguIfuXPHY3vSLwhxt8anrO6L
+        OpfrTg838c5f1
+X-Received: by 2002:a17:907:3205:b0:965:6d21:48bc with SMTP id xg5-20020a170907320500b009656d2148bcmr818751ejb.75.1683112730250;
+        Wed, 03 May 2023 04:18:50 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6GAzfkY9LoIBGnjCpEUkjKgp2s37A98qN1w9G1olO5/gt5rwcw+5Pt8NlF11zSV/CThvGVFA==
+X-Received: by 2002:a17:907:3205:b0:965:6d21:48bc with SMTP id xg5-20020a170907320500b009656d2148bcmr818701ejb.75.1683112729351;
+        Wed, 03 May 2023 04:18:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id i10-20020a05640200ca00b0050bd9d3ddf3sm595879edu.42.2023.05.03.04.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 04:18:48 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E64B7AFC7B0; Wed,  3 May 2023 13:18:47 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
+        lorenzo@kernel.org, linyunsheng@huawei.com, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Paolo Abeni <pabeni@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Mika Penttila <mpenttil@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-Subject: Re: [PATCH v8 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing
- to file-backed mappings
-Message-ID: <20230503110145.74q5sm5psv7o7nrd@quack3>
-References: <cover.1683067198.git.lstoakes@gmail.com>
- <a690186fc37e1ea92556a7dbd0887fe201fcc709.1683067198.git.lstoakes@gmail.com>
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
+Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in
+ new shutdown scheme
+In-Reply-To: <20230502193309.382af41e@kernel.org>
+References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
+ <168269857929.2191653.13267688321246766547.stgit@firesoul>
+ <20230502193309.382af41e@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 03 May 2023 13:18:47 +0200
+Message-ID: <87ednxbr3c.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a690186fc37e1ea92556a7dbd0887fe201fcc709.1683067198.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 02-05-23 23:51:35, Lorenzo Stoakes wrote:
-> Writing to file-backed dirty-tracked mappings via GUP is inherently broken
-> as we cannot rule out folios being cleaned and then a GUP user writing to
-> them again and possibly marking them dirty unexpectedly.
-> 
-> This is especially egregious for long-term mappings (as indicated by the
-> use of the FOLL_LONGTERM flag), so we disallow this case in GUP-fast as
-> we have already done in the slow path.
-> 
-> We have access to less information in the fast path as we cannot examine
-> the VMA containing the mapping, however we can determine whether the folio
-> is anonymous or belonging to a whitelisted filesystem - specifically
-> hugetlb and shmem mappings.
-> 
-> We take special care to ensure that both the folio and mapping are safe to
-> access when performing these checks and document folio_fast_pin_allowed()
-> accordingly.
-> 
-> It's important to note that there are no APIs allowing users to specify
-> FOLL_FAST_ONLY for a PUP-fast let alone with FOLL_LONGTERM, so we can
-> always rely on the fact that if we fail to pin on the fast path, the code
-> will fall back to the slow path which can perform the more thorough check.
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Suggested-by: Kirill A . Shutemov <kirill@shutemov.name>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+Jakub Kicinski <kuba@kernel.org> writes:
 
-The patch looks good to me now. Feel free to add:
+> On Fri, 28 Apr 2023 18:16:19 +0200 Jesper Dangaard Brouer wrote:
+>> This removes the workqueue scheme that periodically tests when
+>> inflight reach zero such that page_pool memory can be freed.
+>> 
+>> This change adds code to fast-path free checking for a shutdown flags
+>> bit after returning PP pages.
+>
+> We can remove the warning without removing the entire delayed freeing
+> scheme. I definitely like the SHUTDOWN flag and patch 2 but I'm a bit
+> less clear on why the complexity of datapath freeing is justified.
+> Can you explain?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+You mean just let the workqueue keep rescheduling itself every minute
+for the (potentially) hours that skbs will stick around? Seems a bit
+wasteful, doesn't it? :)
 
-								Honza
+We did see an issue where creating and tearing down lots of page pools
+in a short period of time caused significant slowdowns due to the
+workqueue mechanism. Lots being "thousands per second". This is possible
+using the live packet mode of bpf_prog_run() for XDP, which will setup
+and destroy a page pool for each syscall...
 
-> ---
->  mm/gup.c | 102 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 102 insertions(+)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 0ea9ebec9547..1ab369b5d889 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -18,6 +18,7 @@
->  #include <linux/migrate.h>
->  #include <linux/mm_inline.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/shmem_fs.h>
->  
->  #include <asm/mmu_context.h>
->  #include <asm/tlbflush.h>
-> @@ -95,6 +96,83 @@ static inline struct folio *try_get_folio(struct page *page, int refs)
->  	return folio;
->  }
->  
-> +/*
-> + * Used in the GUP-fast path to determine whether a pin is permitted for a
-> + * specific folio.
-> + *
-> + * This call assumes the caller has pinned the folio, that the lowest page table
-> + * level still points to this folio, and that interrupts have been disabled.
-> + *
-> + * Writing to pinned file-backed dirty tracked folios is inherently problematic
-> + * (see comment describing the writable_file_mapping_allowed() function). We
-> + * therefore try to avoid the most egregious case of a long-term mapping doing
-> + * so.
-> + *
-> + * This function cannot be as thorough as that one as the VMA is not available
-> + * in the fast path, so instead we whitelist known good cases and if in doubt,
-> + * fall back to the slow path.
-> + */
-> +static bool folio_fast_pin_allowed(struct folio *folio, unsigned int flags)
-> +{
-> +	struct address_space *mapping;
-> +	unsigned long mapping_flags;
-> +
-> +	/*
-> +	 * If we aren't pinning then no problematic write can occur. A long term
-> +	 * pin is the most egregious case so this is the one we disallow.
-> +	 */
-> +	if ((flags & (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE)) !=
-> +	    (FOLL_PIN | FOLL_LONGTERM | FOLL_WRITE))
-> +		return true;
-> +
-> +	/* The folio is pinned, so we can safely access folio fields. */
-> +
-> +	/* Neither of these should be possible, but check to be sure. */
-> +	if (unlikely(folio_test_slab(folio) || folio_test_swapcache(folio)))
-> +		return false;
-> +
-> +	/* hugetlb mappings do not require dirty-tracking. */
-> +	if (folio_test_hugetlb(folio))
-> +		return true;
-> +
-> +	/*
-> +	 * GUP-fast disables IRQs. When IRQS are disabled, RCU grace periods
-> +	 * cannot proceed, which means no actions performed under RCU can
-> +	 * proceed either.
-> +	 *
-> +	 * inodes and thus their mappings are freed under RCU, which means the
-> +	 * mapping cannot be freed beneath us and thus we can safely dereference
-> +	 * it.
-> +	 */
-> +	lockdep_assert_irqs_disabled();
-> +
-> +	/*
-> +	 * However, there may be operations which _alter_ the mapping, so ensure
-> +	 * we read it once and only once.
-> +	 */
-> +	mapping = READ_ONCE(folio->mapping);
-> +
-> +	/*
-> +	 * The mapping may have been truncated, in any case we cannot determine
-> +	 * if this mapping is safe - fall back to slow path to determine how to
-> +	 * proceed.
-> +	 */
-> +	if (!mapping)
-> +		return false;
-> +
-> +	/* Anonymous folios are fine, other non-file backed cases are not. */
-> +	mapping_flags = (unsigned long)mapping & PAGE_MAPPING_FLAGS;
-> +	if (mapping_flags)
-> +		return mapping_flags == PAGE_MAPPING_ANON;
-> +
-> +	/*
-> +	 * At this point, we know the mapping is non-null and points to an
-> +	 * address_space object. The only remaining whitelisted file system is
-> +	 * shmem.
-> +	 */
-> +	return shmem_mapping(mapping);
-> +}
-> +
->  /**
->   * try_grab_folio() - Attempt to get or pin a folio.
->   * @page:  pointer to page to be grabbed
-> @@ -2464,6 +2542,11 @@ static int gup_pte_range(pmd_t pmd, pmd_t *pmdp, unsigned long addr,
->  			goto pte_unmap;
->  		}
->  
-> +		if (!folio_fast_pin_allowed(folio, flags)) {
-> +			gup_put_folio(folio, 1, flags);
-> +			goto pte_unmap;
-> +		}
-> +
->  		if (!pte_write(pte) && gup_must_unshare(NULL, flags, page)) {
->  			gup_put_folio(folio, 1, flags);
->  			goto pte_unmap;
-> @@ -2656,6 +2739,11 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
->  		return 0;
->  	}
->  
-> +	if (!folio_fast_pin_allowed(folio, flags)) {
-> +		gup_put_folio(folio, refs, flags);
-> +		return 0;
-> +	}
-> +
->  	if (!pte_write(pte) && gup_must_unshare(NULL, flags, &folio->page)) {
->  		gup_put_folio(folio, refs, flags);
->  		return 0;
-> @@ -2722,6 +2810,10 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
->  		return 0;
->  	}
->  
-> +	if (!folio_fast_pin_allowed(folio, flags)) {
-> +		gup_put_folio(folio, refs, flags);
-> +		return 0;
-> +	}
->  	if (!pmd_write(orig) && gup_must_unshare(NULL, flags, &folio->page)) {
->  		gup_put_folio(folio, refs, flags);
->  		return 0;
-> @@ -2762,6 +2854,11 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
->  		return 0;
->  	}
->  
-> +	if (!folio_fast_pin_allowed(folio, flags)) {
-> +		gup_put_folio(folio, refs, flags);
-> +		return 0;
-> +	}
-> +
->  	if (!pud_write(orig) && gup_must_unshare(NULL, flags, &folio->page)) {
->  		gup_put_folio(folio, refs, flags);
->  		return 0;
-> @@ -2797,6 +2894,11 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
->  		return 0;
->  	}
->  
-> +	if (!folio_fast_pin_allowed(folio, flags)) {
-> +		gup_put_folio(folio, refs, flags);
-> +		return 0;
-> +	}
-> +
->  	*nr += refs;
->  	folio_set_referenced(folio);
->  	return 1;
-> -- 
-> 2.40.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-Toke
+
