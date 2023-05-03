@@ -2,132 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFBA6F5A86
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 17:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10B16F5ADF
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 17:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjECPAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
+        id S229824AbjECPW1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 11:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjECPAe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 11:00:34 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BE149F9;
-        Wed,  3 May 2023 08:00:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NggceEvxQhh1xRFs3nfuVSxvUkFvBvv3pOTWL8RBZMlb5RlVqExKdyEBDhGf1a5hIbwt2mabqb/OZ7cOHHofZdNs2HYXvz+IzNZl+9x6LSZp5bsAzfGfkaKYNZ3gsinQluBOFZBGh5rb7eAKk22goSu6DAc6enexWZGMZeZbm8xfJV2kRQZVZmu1575ryTORmfd9xjQYC5ZlSpJvzCBjh+9yEqyaKH6ioES4dUWkwZ8wfiIwUJadGHkiWGZhuA5IcbIwjo3xuj5kQYtsxTxuN0Hdk6mHkby+eIJGPt4AFjrQ7LIhL5lQ+1gCxDaoVFb8oxtk3eYhJEGetcvsuFhZVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M9nXqdqYMcYrK/yplpC6fNvvdxium6IdSAbnQ1QFWjA=;
- b=JPKY3BF2xnlS/EpXi4BngNhenO2rlGeIB925jkmwEcUlCxVL/uown5LKde9FhCh3WSmK3GqkRM1W+zzHS6CtHC06fb+HSanbfP3Yc/a98Uf8Q8BE3zLMQd+Zfw5pzZAljvTvySjlVFbiKOktxU8+HsdWVyXcGhATnI+OmIlYA7FZZrzAOc4RV5xXtQjoCsiiyS8xINqkhojf8ZtVkeZw2qCiBpASLeqQpuqGXrxnrRVTRD6NjT9vg5QhsyFXP0OZde4euDlpZLwnxDaV5syxy5sR/CUxifRaEN7nER/vfJbJackJeTvQt+bn6md0lu4xeOVlzXzevpKM1cHA6L7YCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M9nXqdqYMcYrK/yplpC6fNvvdxium6IdSAbnQ1QFWjA=;
- b=UDkh79F278dO6oCdbJadnpOU8CZBBH69y2miRonTCDNSZx2foMWTWb6mXrjwl7VCvuXSFmtiaJwLiysQWsLTS4AUA42Oas1baFy1y/qIZxiPMu47UlKEXbihvvYoCU3mavmu5zQypgKc1pbW0jZw2EUAvdBUDmbOVLrtJUaBj76xMkwH8rxwOrLV/CISkbEaztL06btArZ13+fVVCloNLDX5zhNBysY186OFQ5WMMXBqv19MYcjj1s+tMUqZ1hw+OY9n2czNIwV6VYOL9KMieISjF6gL+THKo05qyD58l7p/bIjjPRcBQL2p8BBpNXb7DS4o/VSZLHKdP2JppjNWOQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6201.namprd12.prod.outlook.com (2603:10b6:930:26::16)
- by MW3PR12MB4538.namprd12.prod.outlook.com (2603:10b6:303:55::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6340.31; Wed, 3 May
- 2023 15:00:30 +0000
-Received: from CY5PR12MB6201.namprd12.prod.outlook.com
- ([fe80::a7a3:1d9d:1fa:5136]) by CY5PR12MB6201.namprd12.prod.outlook.com
- ([fe80::a7a3:1d9d:1fa:5136%6]) with mapi id 15.20.6363.020; Wed, 3 May 2023
- 15:00:30 +0000
-Message-ID: <482f00d4-d3f0-da85-93e3-a4a2e5597e12@nvidia.com>
-Date:   Wed, 3 May 2023 11:00:25 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.0
-Subject: Re: [PATCH net v3] virtio_net: Fix error unwinding of XDP
- initialization
-To:     Parav Pandit <parav@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bodong Wang <bodong@nvidia.com>, William Tu <witu@nvidia.com>
-References: <20230503003525.48590-1-feliu@nvidia.com>
- <PH0PR12MB54816403B23CE6D0AF2FD035DC6C9@PH0PR12MB5481.namprd12.prod.outlook.com>
-From:   Feng Liu <feliu@nvidia.com>
-In-Reply-To: <PH0PR12MB54816403B23CE6D0AF2FD035DC6C9@PH0PR12MB5481.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0222.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::17) To CY5PR12MB6201.namprd12.prod.outlook.com
- (2603:10b6:930:26::16)
+        with ESMTP id S229490AbjECPW0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 11:22:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7CE5592
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 08:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683127298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XC8wV8d4utIQPU7cQDu0VMu5Nni0CL2ZBh3dZH+zaH0=;
+        b=KwnkN9UA74escTlt3l8SuNXv4HjvKZXjzTu4pqIn9UDSU7aWY5pVqhAD0wI0yTGYOzZmP3
+        e1W5CvBBEMVBib29NL7h2LNHTriNW6gveiEjJ+tB38jUKFT+gYAMpIBgwoN5yhk7RcbQ2w
+        WH+tHB6400H1PMLz5Ypb/UYuemjcpaQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-7Pr0ESfqOaOARA9IepsIHQ-1; Wed, 03 May 2023 11:21:37 -0400
+X-MC-Unique: 7Pr0ESfqOaOARA9IepsIHQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9532170e883so685045866b.3
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 08:21:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683127296; x=1685719296;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XC8wV8d4utIQPU7cQDu0VMu5Nni0CL2ZBh3dZH+zaH0=;
+        b=GJJS6hTZPtVpHV1btxUMYCZHWyf/cUdAHiK6m8Dr2Nb2uFpbh2n+epch92u2mSd91g
+         wLp6nIVKfwLh60ud8CSQROmWssK7+XnKcTd6tkM/Kqiz/1MnCET8lp6pfsmDnynoK3Yf
+         Xgbc8seO3YvUExC2TFKRdiCQVNC6mYtFG/2Cm91wGgEi4zcelk6nZYt9bRK2cn2VpkUr
+         3T0QtmiFjHYksPD9dgxt/fAiJAwYWV82RtXTnJ/KM6IaPMr/PER35Fv0i/rgKZnP0I/2
+         o+UVegIz96cIx57U3HkOhyVZdq1VEjWKkSaC44Ly5kr+qG8bv34Dwms4+6O5rysFwZI2
+         GFOw==
+X-Gm-Message-State: AC+VfDzsP5L79yrcBMiyFKvtu5qyNxDONi/nA5RxwAsfaagvC//nCqEN
+        bzw4fvVaLj56f09bU3+uvHqBsFZLL+DPYE47zgkrSTSR1svqEL9To6wh8Oui1GWc2psEgaIbNR4
+        lt4LJNuDT7sjk
+X-Received: by 2002:a17:906:58cf:b0:94e:5679:d950 with SMTP id e15-20020a17090658cf00b0094e5679d950mr3369685ejs.72.1683127295748;
+        Wed, 03 May 2023 08:21:35 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4qpdJD1fniqvblBuJ7GPoKQRpSXnU4fJHqK7zUCVSBMlrmjake735X7fL76XqUJLBCSqt+CA==
+X-Received: by 2002:a17:906:58cf:b0:94e:5679:d950 with SMTP id e15-20020a17090658cf00b0094e5679d950mr3369651ejs.72.1683127295379;
+        Wed, 03 May 2023 08:21:35 -0700 (PDT)
+Received: from [192.168.42.222] (cgn-cgn9-185-107-14-3.static.kviknet.net. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id e14-20020a170906504e00b0094a90d3e385sm17279049ejk.30.2023.05.03.08.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 May 2023 08:21:34 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <1d44a0e4-f36c-7c61-7f02-7c2722883edf@redhat.com>
+Date:   Wed, 3 May 2023 17:21:33 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6201:EE_|MW3PR12MB4538:EE_
-X-MS-Office365-Filtering-Correlation-Id: 388416ab-4002-4626-7f60-08db4be72309
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vn46b0+jRY4njEtlkvp4NBucaHJW/Aw3eASiM9Pf6eNwEtOiHIRTdwIW1a4fZTy5JUtrZJRVcVHvX8D82RcVPmkLZe+YEstSYxkHq7GX7jjXmgJ1bpeLbRnmrkfCoJl9aj9MGFNEe5USDDn+2jFi5z67lIUBaLKdaLFdPIZHEWxO/2jz8EOtZ5sQEEh4fis59wJwA0ES8k/I0O+ludj0zRn2Ri9GfDGdrSAFW7VnfdASV1zcc5mKtPymCFHhUhna9pb6p9CTzB75LXLjrP/O5s0twkQ1WyR62tGjLUKcm6AzsviaLxpq+bsvqED+MYXu3yDUOa/GWDMj9QgzAvZ1qDu0jMnERc1tjrz4+5ZSbjEuVkA4lIOV3cL1PToJ3l4vPywgr0WCmJIep2DnP55FkwmYwAwL2Ru+tcDR+stAjF22tgqVtjZHo+OAqDGC/Pt7lDzXv1WU3wRzTjiaNvWT2BA2DtIoZeEqwaimlgJnMMtOdc/9B4+N+2eCOINAB8wsYIDwK9Wr6sG5TgkuR/nrDkw2+4CnsAOEb+0xBPMphETkckLMcCLsNtAq2kI6uGsO/3NkTsgmaanCgd70JXt07/6vaTp/zzF7pxHfG2VlF9S31QCfcttkdkNFY8CUMU3OQKLzRUcGsvXXkugZvT1jmw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(376002)(346002)(136003)(396003)(451199021)(31686004)(5660300002)(41300700001)(4744005)(2906002)(2616005)(8676002)(8936002)(316002)(6666004)(6486002)(38100700002)(66556008)(66476007)(4326008)(31696002)(86362001)(54906003)(478600001)(110136005)(36756003)(26005)(186003)(6512007)(66946007)(6506007)(107886003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TExQeFJILzhtYk5rSWNubnk2djV1ZFFqb1dtTVZtUUVCVU5aS3ZzM2dHaC92?=
- =?utf-8?B?UlY2ek00VGdoZUNIODNaYjBFSkZsWGJYUWU5Nm14MVg0UW5FTTJIQWo0K2Ex?=
- =?utf-8?B?MFR6VFg0VDMwN3RyOFM4VFcvaEo4bldBTjkzbENHM3hOTFZZbmpSWGt5Rkxu?=
- =?utf-8?B?UkJpRzM1RzcvSDRjeHl1ZTVCVmZubkNreTEwQ3FQUk1HanIraUpCT09XRlhy?=
- =?utf-8?B?WTUxbU04ZWkySC9xZ2NrNXNMQjJBZVg5MmUxa2hteDFNRXFPYVQza2VIbTU4?=
- =?utf-8?B?YjJQS0s4emE4aUdJV0hrQnltNHZJeGxqZ2FGcDRYeURseVdwTHYrUTZyMjJp?=
- =?utf-8?B?TTVuSFpZR3lHYUF3M3ZXNFliUUxrQnpodGkwSWFuM0NlUy9xZWFkQ2RzbTFV?=
- =?utf-8?B?S1ZVb2hxVk5BMnhPdWQxcncvR1B3a0UyY2ZHMmJXeEc1cVdpTVNySDd3dVFa?=
- =?utf-8?B?ejRqb1RIa2FGYXI4SHpuMzMvcFRzanlMZU1McFlDS1dUaGlBRFg4R094UkdZ?=
- =?utf-8?B?UlFsVmw3MlI1YytTTWdVZmp5Vmd1cWdYd0sveEtTZnFtMlRmK3lVcWd3QWw2?=
- =?utf-8?B?L2djKzJld25TVW9EQmVZcUNHc1JHVnMzcklnNDh0Tkx0Q0ZmSzZnZzFETnpt?=
- =?utf-8?B?VTFNbWE0dUpJYU5qSmJBaU1rVmNQaUEyQkdQUnN0Q0V3a1RZblpzRlY3cnFO?=
- =?utf-8?B?N2RuZEZ4c2dscy9xdVZLWHo1TDk4UW5WaWgrSGdHeCthYnVkZW9xaGExUmFj?=
- =?utf-8?B?RCtGK1Y4U3RGeG95RUtuSGRXYVE0L3A2VG4vZzF4WXJwT09PRmppK2NKMWE1?=
- =?utf-8?B?ZFAySytDeGRjeXpDRFZhWUIvVkF4MnlVM1k4K08vY2J4WUZhQzNyTkpldHFF?=
- =?utf-8?B?NGZ6TTN6dGZoSzdDVFkxeXlDRXZGNE1jWjNwY1VpNkNUR3lOeUtwWTg1eGJ1?=
- =?utf-8?B?UnNCR01oN2dhMEk0cUNtb3dHM3VCVE9YRGtFd0VaMVNwdFJuTFpMalQzdFo3?=
- =?utf-8?B?Ympma1hJMHgra3p3NzVyUENISWM3SmQ2QjJQOGJ1eTM4cUZpclFRNGVpWFQ0?=
- =?utf-8?B?OTNreU5uUVBtY3VyS1hyd1NvdENFbFF0UnpQc3BTZDZDTWNNbXhWVkE2YUg0?=
- =?utf-8?B?OFluaE4wSkRFNmRtY0JLeXpEbThsUFU5N3pqT2YrZzE3NDNQWUt6amRBMVk3?=
- =?utf-8?B?OUhCQm1EYlVoRTVGR0pqeEc3ekNiMk80WjZVbXYvemp1Z0hDb1RzRlYwd3ZS?=
- =?utf-8?B?VVNQd0NDVEVqcXNRZFllZ2JteXdxYVBMUTZLQ21ndkFqN3h6UjRTV1M4NGdH?=
- =?utf-8?B?YXlJRWNPRXpENEJJTytnUzA5eDBQMmRzNTlrc2JWdTdvbG5BVVBQTzJ0NDVU?=
- =?utf-8?B?c0JBVWh1eHpEeFFmUnprbmI0L2hVdENCcGR3SWFJTi9sZ0ZsSitNN0tuVHd2?=
- =?utf-8?B?eHN0YUNGQW5ROXN3U2VZK3A4MGdhaVc4b1J4NmE2YkFMU28vdHI2Y2ltQm5B?=
- =?utf-8?B?d1V5Z2lHUkhaZERPZUsrVEg2S3NYc25SeDc5bFQxanFOS2g1ajhVU3NVTitB?=
- =?utf-8?B?RlE3ZXAvL1V5NFVsdWtLeTFWcXpYMVh3dnVHNzhEVHJpdEo4cGJZR21DVk43?=
- =?utf-8?B?N25yWHRrKytCbHVyeDBwM1k1NHo2WUpDVWtHTWxVVWZ6M2hBVjFXZU9nUlZz?=
- =?utf-8?B?K3E3TGdNWkJXNGRoTlRLVkw1RllPS09YelRyQ3NWUnk0TFJJeVB4Y3orLy8v?=
- =?utf-8?B?a3B6QmlOMWRaY3l6SjRwTzJwbkJjdmkyYXB6SENkYTlJMENHSUV4aXVHQ3cx?=
- =?utf-8?B?NlFxNkhBYWl0SWVsUUpoR052OExXSWs3c0tRUGRVb2pWQTBxcnJzcTN1SlNa?=
- =?utf-8?B?YUhxbUtCeXduQiswOUc1bkh1a0sxZkRqeFRaMFlwZGV2cnVVUS94UGhMeVlC?=
- =?utf-8?B?clhyaW9OTGViUzkwK09FZ2tucjE0dkdzSzd6WU1CNndhTnYzN0RkZ09WcGJ0?=
- =?utf-8?B?cXpENE5WNk1WdVh3ZWNqdUhlaTEzc0ZGaWhReEdRQ2F3ZExaYXNubTFtR0pz?=
- =?utf-8?B?eGJhSmFwSlJNVnVOWFloSGNyeCtCZ1hENmtFMmNKaGxFNkF5UXdsV1plUmEv?=
- =?utf-8?Q?+JW3mQayz9gDILXH4A6pvX1bo?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 388416ab-4002-4626-7f60-08db4be72309
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2023 15:00:30.1887
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Mor5W2bqxhBZ+EYVCE28fzU8hQYuQqJHRxdHbW/heAK+BCeSqxeGix7+GG09//fG6t1OId+MsRonUatYxwOgFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4538
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Cc:     brouer@redhat.com, lorenzo@kernel.org, linyunsheng@huawei.com,
+        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
+Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in new
+ shutdown scheme
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
+References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
+ <168269857929.2191653.13267688321246766547.stgit@firesoul>
+ <87edo37kms.fsf@toke.dk>
+In-Reply-To: <87edo37kms.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -135,26 +92,366 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+On 28/04/2023 23.38, Toke Høiland-Jørgensen wrote:
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> 
+>> This removes the workqueue scheme that periodically tests when
+>> inflight reach zero such that page_pool memory can be freed.
+>>
+>> This change adds code to fast-path free checking for a shutdown flags
+>> bit after returning PP pages.
+>>
+>> Performance is very important for PP, as the fast path is used for
+>> XDP_DROP use-cases where NIC drivers recycle PP pages directly into PP
+>> alloc cache.
+>>
+>> This patch (since V3) shows zero impact on this fast path. Micro
+>> benchmarked with [1] on Intel CPU E5-1650 @3.60GHz. The slight code
+>> reorg of likely() are deliberate.
+> 
+> Oh, you managed to get rid of the small difference you were seeing
+> before? Nice! :)
 
-On 2023-05-02 p.m.11:14, Parav Pandit wrote:
+Yes! - fast path is not affected at all!!! :-)
+This is due to this small change in the V3.
+
+   +	if (page && pool->p.flags & PP_FLAG_SHUTDOWN)
+   +		page_pool_empty_ring(pool);
+
+Due to V3 change of moving free_attempt to page_pool_release_page()
+the page_pool_empty_ring() call (in page_pool_put_defragged_page)
+should only be called when (page != NULL).  This moves the ASM code
+for the PP_FLAG_SHUTDOWN out of the fast-path.
+
+I also measure the slightly slower path, recycle into ptr_ring, where I
+cannot really see any effect.  It is easier to understand, why/when is
+it important, when looking at the percentage effect of the measured 0.3
+nanosec overhead. For fast-path this would be approx 7%, while for
+this recycle path it is approx 1.8%.
+
+
 > 
->> From: Feng Liu <feliu@nvidia.com>
->> Sent: Tuesday, May 2, 2023 8:35 PM
+> Just a few questions, see below:
 > 
->> Issue: 3383038
-> Remove this internal garbage.
+>> [1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/bench_page_pool_simple.c
+>>
+>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> ---
+>>   include/net/page_pool.h |    9 +--
+>>   net/core/page_pool.c    |  138 ++++++++++++++++++++++++++++++++++-------------
+>>   2 files changed, 103 insertions(+), 44 deletions(-)
+>>
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index c8ec2f34722b..a71c0f2695b0 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -50,6 +50,9 @@
+>>   				 PP_FLAG_DMA_SYNC_DEV |\
+>>   				 PP_FLAG_PAGE_FRAG)
+>>   
+>> +/* Internal flag: PP in shutdown phase, waiting for inflight pages */
+>> +#define PP_FLAG_SHUTDOWN	BIT(8)
+>> +
+>>   /*
+>>    * Fast allocation side cache array/stack
+>>    *
+>> @@ -151,11 +154,6 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, void *stats)
+>>   struct page_pool {
+>>   	struct page_pool_params p;
+>>   
+>> -	struct delayed_work release_dw;
+>> -	void (*disconnect)(void *);
+>> -	unsigned long defer_start;
+>> -	unsigned long defer_warn;
+>> -
+>>   	u32 pages_state_hold_cnt;
+>>   	unsigned int frag_offset;
+>>   	struct page *frag_page;
+>> @@ -165,6 +163,7 @@ struct page_pool {
+>>   	/* these stats are incremented while in softirq context */
+>>   	struct page_pool_alloc_stats alloc_stats;
+>>   #endif
+>> +	void (*disconnect)(void *);
+>>   	u32 xdp_mem_id;
+>>   
+>>   	/*
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index e212e9d7edcb..54bdd140b7bd 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -23,9 +23,6 @@
+>>   
+>>   #include <trace/events/page_pool.h>
+>>   
+>> -#define DEFER_TIME (msecs_to_jiffies(1000))
+>> -#define DEFER_WARN_INTERVAL (60 * HZ)
+>> -
+>>   #define BIAS_MAX	LONG_MAX
+>>   
+>>   #ifdef CONFIG_PAGE_POOL_STATS
+>> @@ -380,6 +377,10 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+>>   	struct page *page;
+>>   	int i, nr_pages;
+>>   
+>> +	/* API usage BUG: PP in shutdown phase, cannot alloc new pages */
+>> +	if (WARN_ON(pool->p.flags & PP_FLAG_SHUTDOWN))
+>> +		return NULL;
+>> +
+>>   	/* Don't support bulk alloc for high-order pages */
+>>   	if (unlikely(pp_order))
+>>   		return __page_pool_alloc_page_order(pool, gfp);
+>> @@ -450,10 +451,9 @@ EXPORT_SYMBOL(page_pool_alloc_pages);
+>>    */
+>>   #define _distance(a, b)	(s32)((a) - (b))
+>>   
+>> -static s32 page_pool_inflight(struct page_pool *pool)
+>> +static s32 __page_pool_inflight(struct page_pool *pool,
+>> +				u32 hold_cnt, u32 release_cnt)
+>>   {
+>> -	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
+>> -	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
+>>   	s32 inflight;
+>>   
+>>   	inflight = _distance(hold_cnt, release_cnt);
+>> @@ -464,6 +464,17 @@ static s32 page_pool_inflight(struct page_pool *pool)
+>>   	return inflight;
+>>   }
+>>   
+>> +static s32 page_pool_inflight(struct page_pool *pool)
+>> +{
+>> +	u32 hold_cnt = READ_ONCE(pool->pages_state_hold_cnt);
+>> +	u32 release_cnt = atomic_read(&pool->pages_state_release_cnt);
+>> +	return __page_pool_inflight(pool, hold_cnt, release_cnt);
+>> +}
+>> +
+>> +static int page_pool_free_attempt(struct page_pool *pool,
+>> +				  u32 hold_cnt, u32 release_cnt);
+>> +static u32 pp_read_hold_cnt(struct page_pool *pool);
+>> +
+>>   /* Disconnects a page (from a page_pool).  API users can have a need
+>>    * to disconnect a page (from a page_pool), to allow it to be used as
+>>    * a regular page (that will eventually be returned to the normal
+>> @@ -471,8 +482,10 @@ static s32 page_pool_inflight(struct page_pool *pool)
+>>    */
+>>   void page_pool_release_page(struct page_pool *pool, struct page *page)
+>>   {
+>> +	unsigned int flags = READ_ONCE(pool->p.flags);
+>>   	dma_addr_t dma;
+>> -	int count;
+>> +	u32 release_cnt;
+>> +	u32 hold_cnt;
+>>   
+>>   	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+>>   		/* Always account for inflight pages, even if we didn't
+>> @@ -490,11 +503,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>>   skip_dma_unmap:
+>>   	page_pool_clear_pp_info(page);
+>>   
+>> -	/* This may be the last page returned, releasing the pool, so
+>> -	 * it is not safe to reference pool afterwards.
+>> -	 */
+>> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
+>> -	trace_page_pool_state_release(pool, page, count);
+>> +	if (flags & PP_FLAG_SHUTDOWN)
+>> +		hold_cnt = pp_read_hold_cnt(pool);
+>> +
+>> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
+>> +	trace_page_pool_state_release(pool, page, release_cnt);
+>> +
+>> +	/* In shutdown phase, last page will free pool instance */
+>> +	if (flags & PP_FLAG_SHUTDOWN)
+>> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
 > 
->> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
->> Signed-off-by: Feng Liu <feliu@nvidia.com>
->> Reviewed-by: William Tu <witu@nvidia.com>
->> Reviewed-by: Parav Pandit <parav@nvidia.com>
->> Reviewed-by: Simon Horman <simon.horman@corigine.com>
->> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> I'm curious why you decided to keep the hold_cnt read separate from the
+> call to free attempt? Not a huge deal, and I'm fine with keeping it this
+> way, just curious if you have any functional reason that I missed, or if
+> you just prefer this style? :)
+
+You seem to have missed my explanation in V2 reply:
+ 
+https://lore.kernel.org/all/f671f5da-d9bc-a559-2120-10c3491e6f6d@redhat.com/
+
 > 
->> Change-Id: Ib4c6a97cb7b837cfa484c593dd43a435c47ea68f
-> Remove this internal garbage.
-> Please run a local script not to forward the above garbage in upstream patches.
+>>   }
+>>   EXPORT_SYMBOL(page_pool_release_page);
+>>   
+>> @@ -535,7 +552,7 @@ static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
+>>   static bool page_pool_recycle_in_cache(struct page *page,
+>>   				       struct page_pool *pool)
+>>   {
+>> -	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE)) {
+>> +	if (pool->alloc.count == PP_ALLOC_CACHE_SIZE) {
+>>   		recycle_stat_inc(pool, cache_full);
+>>   		return false;
+>>   	}
+>> @@ -546,6 +563,8 @@ static bool page_pool_recycle_in_cache(struct page *page,
+>>   	return true;
+>>   }
+>>   
+>> +static void page_pool_empty_ring(struct page_pool *pool);
+>> +
+>>   /* If the page refcnt == 1, this will try to recycle the page.
+>>    * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+>>    * the configured size min(dma_sync_size, pool->max_len).
+>> @@ -572,7 +591,8 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>>   			page_pool_dma_sync_for_device(pool, page,
+>>   						      dma_sync_size);
+>>   
+>> -		if (allow_direct && in_softirq() &&
+>> +		/* During PP shutdown, no direct recycle must occur */
+>> +		if (likely(allow_direct && in_softirq()) &&
+>>   		    page_pool_recycle_in_cache(page, pool))
+>>   			return NULL;
+>>   
+>> @@ -609,6 +629,8 @@ void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
+>>   		recycle_stat_inc(pool, ring_full);
+>>   		page_pool_return_page(pool, page);
+>>   	}
+>> +	if (page && pool->p.flags & PP_FLAG_SHUTDOWN)
+>> +		page_pool_empty_ring(pool);
+>>   }
+>>   EXPORT_SYMBOL(page_pool_put_defragged_page);
+>>   
+>> @@ -646,6 +668,9 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+>>   	recycle_stat_add(pool, ring, i);
+>>   	page_pool_ring_unlock(pool);
+>>   
+>> +	if (pool->p.flags & PP_FLAG_SHUTDOWN)
+>> +		page_pool_empty_ring(pool);
+>> +
+>>   	/* Hopefully all pages was return into ptr_ring */
+>>   	if (likely(i == bulk_len))
+>>   		return;
+>> @@ -737,12 +762,18 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
+>>   }
+>>   EXPORT_SYMBOL(page_pool_alloc_frag);
+>>   
+>> +noinline
+>>   static void page_pool_empty_ring(struct page_pool *pool)
+>>   {
+>> -	struct page *page;
+>> +	struct page *page, *next;
+>> +
+>> +	next = ptr_ring_consume_bh(&pool->ring);
+>>   
+>>   	/* Empty recycle ring */
+>> -	while ((page = ptr_ring_consume_bh(&pool->ring))) {
+>> +	while (next) {
+>> +		page = next;
+>> +		next = ptr_ring_consume_bh(&pool->ring);
+>> +
+>>   		/* Verify the refcnt invariant of cached pages */
+>>   		if (!(page_ref_count(page) == 1))
+>>   			pr_crit("%s() page_pool refcnt %d violation\n",
+>> @@ -796,39 +827,36 @@ static void page_pool_scrub(struct page_pool *pool)
+>>   	page_pool_empty_ring(pool);
+>>   }
+>>   
+>> -static int page_pool_release(struct page_pool *pool)
+>> +/* Avoid inlining code to avoid speculative fetching cacheline */
+>> +noinline
+>> +static u32 pp_read_hold_cnt(struct page_pool *pool)
+>> +{
+>> +	return READ_ONCE(pool->pages_state_hold_cnt);
+>> +}
+>> +
+>> +noinline
+>> +static int page_pool_free_attempt(struct page_pool *pool,
+>> +				  u32 hold_cnt, u32 release_cnt)
+>>   {
+>>   	int inflight;
+>>   
+>> -	page_pool_scrub(pool);
+>> -	inflight = page_pool_inflight(pool);
+>> +	inflight = __page_pool_inflight(pool, hold_cnt, release_cnt);
+>>   	if (!inflight)
+>>   		page_pool_free(pool);
+>>   
+>>   	return inflight;
+>>   }
+>>   
+>> -static void page_pool_release_retry(struct work_struct *wq)
+>> +static int page_pool_release(struct page_pool *pool)
+>>   {
+>> -	struct delayed_work *dwq = to_delayed_work(wq);
+>> -	struct page_pool *pool = container_of(dwq, typeof(*pool), release_dw);
+>>   	int inflight;
+>>   
+>> -	inflight = page_pool_release(pool);
+>> +	page_pool_scrub(pool);
+>> +	inflight = page_pool_inflight(pool);
+>>   	if (!inflight)
+>> -		return;
+>> -
+>> -	/* Periodic warning */
+>> -	if (time_after_eq(jiffies, pool->defer_warn)) {
+>> -		int sec = (s32)((u32)jiffies - (u32)pool->defer_start) / HZ;
+>> -
+>> -		pr_warn("%s() stalled pool shutdown %d inflight %d sec\n",
+>> -			__func__, inflight, sec);
+>> -		pool->defer_warn = jiffies + DEFER_WARN_INTERVAL;
+>> -	}
+>> +		page_pool_free(pool);
+>>   
+>> -	/* Still not ready to be disconnected, retry later */
+>> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
+>> +	return inflight;
+>>   }
+>>   
+>>   void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
+>> @@ -856,6 +884,10 @@ EXPORT_SYMBOL(page_pool_unlink_napi);
+>>   
+>>   void page_pool_destroy(struct page_pool *pool)
+>>   {
+>> +	unsigned int flags;
+>> +	u32 release_cnt;
+>> +	u32 hold_cnt;
+>> +
+>>   	if (!pool)
+>>   		return;
+>>   
+>> @@ -868,11 +900,39 @@ void page_pool_destroy(struct page_pool *pool)
+>>   	if (!page_pool_release(pool))
+>>   		return;
+>>   
+>> -	pool->defer_start = jiffies;
+>> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
+>> +	/* PP have pages inflight, thus cannot immediately release memory.
+>> +	 * Enter into shutdown phase, depending on remaining in-flight PP
+>> +	 * pages to trigger shutdown process (on concurrent CPUs) and last
+>> +	 * page will free pool instance.
+>> +	 *
+>> +	 * There exist two race conditions here, we need to take into
+>> +	 * account in the following code.
+>> +	 *
+>> +	 * 1. Before setting PP_FLAG_SHUTDOWN another CPU released the last
+>> +	 *    pages into the ptr_ring.  Thus, it missed triggering shutdown
+>> +	 *    process, which can then be stalled forever.
+>> +	 *
+>> +	 * 2. After setting PP_FLAG_SHUTDOWN another CPU released the last
+>> +	 *    page, which triggered shutdown process and freed pool
+>> +	 *    instance. Thus, its not safe to dereference *pool afterwards.
+>> +	 *
+>> +	 * Handling races by holding a fake in-flight count, via
+>> +	 * artificially bumping pages_state_hold_cnt, which assures pool
+>> +	 * isn't freed under us.  For race(1) its safe to recheck ptr_ring
+>> +	 * (it will not free pool). Race(2) cannot happen, and we can
+>> +	 * release fake in-flight count as last step.
+>> +	 */
+>> +	hold_cnt = READ_ONCE(pool->pages_state_hold_cnt) + 1;
+>> +	smp_store_release(&pool->pages_state_hold_cnt, hold_cnt);
+>> +	barrier();
+>> +	flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN;
+>> +	smp_store_release(&pool->p.flags, flags);
 > 
-> You are missing the changelog from v0->v1->v2->v3.
-> Please add and resend with above things removed and with changelog.
-ok
+> So in the memory barrier documentation, store_release() is usually
+> paired with read_acquire(), but the code reading the flag uses
+> READ_ONCE(). I'm not sure if those are equivalent? (As in, I am asking
+> more than I'm saying they're not; I find it difficult to keep these
+> things straight...)
+> 
+
+I was hoping someone could help us say what barrier to use here?
+
+--Jesper
+
