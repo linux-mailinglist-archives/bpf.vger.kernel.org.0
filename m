@@ -2,64 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B68ED6F5DE5
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 20:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE9A6F5E02
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 20:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjECS2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 14:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        id S229988AbjECSe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 14:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjECS2v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 14:28:51 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503352680
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 11:28:50 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-b9a7766d1f2so6711049276.3
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 11:28:50 -0700 (PDT)
+        with ESMTP id S230470AbjECSew (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 14:34:52 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E155583C5;
+        Wed,  3 May 2023 11:34:31 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-94a342f7c4cso1063902666b.0;
+        Wed, 03 May 2023 11:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683138529; x=1685730529;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EZ/jGuqYbI8If8gOnXaeKTa2gI+Xs7Sbz/cjlu7FfLw=;
-        b=27VimN5M6KTdi+VlALws3NLGjjODWrvWzKyvn61EOf1GwirSbPz05RBpIS2FmqO54p
-         dm3Snoj3kb8mJJfDd8ukVudt+MtJvixRCqNpvNzo7MF8H4yMS0PW7wKuW0M15+5sVgJ2
-         HCeRI28uC2b4uk9BR6segWUtTXd01VgzNT1HtBlLnMTHedYf4uBXY6TxfcOdcZFlEXj9
-         vPrMTJQBboj74bBmIdA/YcRIgOEg717AXm1c8j5X+w1b8ufV8/SfiiJWfaZCO8rYssU7
-         jAYQU12opZTxsOgz2rCXt0J0ocFyHTCMEcz9pI5ZIqiSeIFD0tWG7w8hTB+sudtiVfsV
-         dApA==
+        d=gmail.com; s=20221208; t=1683138870; x=1685730870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xyL6ErGxtGK4gbcrXbY7+L3d/vbQkgK7HxYu2bCcYGY=;
+        b=Hyfqv2D/Vmdm2qFvoJ0/03cG9FwKp7F/gSIeqr4sgYcvejyBB87r94IUaNBhST7yVE
+         npRmmDaVs6LIVUbsUBG9t7M/UqpLPq+eftmvOBtGnYdRyHTXJjwJ6zesj+es8PaF5XHU
+         wQyE6sZfQ7VrBdLweKkk5Klq17iffIxZntoTmFywSrNt3Svyed2Eo8eiPNrba4aDEOPV
+         fPhImEWYSmvpS/IeAHtnG66QU3GSEUBLm9uq0DfOdC4NwBIDciwxNCEznXKkCIQQXj9X
+         vsupHh8Lu1hhe2h13Z4vKrlmL1PwA+QCTlrB+U2QRdVT/mGKSnD03QdOChUCv6figHdh
+         QUOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683138529; x=1685730529;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EZ/jGuqYbI8If8gOnXaeKTa2gI+Xs7Sbz/cjlu7FfLw=;
-        b=QMVE81EhcUAgbJlclasA3dGNl0fIVzyN12MQ561RCCz9MekXuO+eA+G+pVGagf1L7s
-         X/S3aSnK3eabiYcbBrawDfrbB9izrRoiVVLttIcRwD7oYiWb6SmiHKxLzLU5YFfixlNn
-         9hHLevJOudSoyXAiR7ZyXEV5e/aXwjVRg2T4LrttsD2dlIE5/0uHtCoon5NVOwF9iOlN
-         5qcmJg/znAkUSB6bPeGal6Waa1+Cse1apydYJ6bhiaUvfBbXqMTdUTsaTb5gKn1W+L/r
-         HFbkYsJ6ymW3+YE8KSS59SecOBuh47C741lVNNQ7GG+pxv9JVY095HLVc7OuyN4Clxyw
-         xicw==
-X-Gm-Message-State: AC+VfDy6hCovLPeV0T54jyVFUDZEUz946OOGDf7cAHAUn92Q8URlUjmH
-        zJfT6nDdb9wZ+dn6rf/9oQg32co=
-X-Google-Smtp-Source: ACHHUZ4Ns2eyWtzTY9XWeLEDabhawS/PJDJT8iiFHxPn1KSJPIByi6lGLXZmO7E/LMIYEi048fDV1Xg=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:2d27:0:b0:b9a:696a:770f with SMTP id
- t39-20020a252d27000000b00b9a696a770fmr13699499ybt.13.1683138529588; Wed, 03
- May 2023 11:28:49 -0700 (PDT)
-Date:   Wed, 3 May 2023 11:28:48 -0700
-In-Reply-To: <20230502230619.2592406-2-andrii@kernel.org>
-Mime-Version: 1.0
-References: <20230502230619.2592406-1-andrii@kernel.org> <20230502230619.2592406-2-andrii@kernel.org>
-Message-ID: <ZFKn4JjmiGTHyWpj@google.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: move unprivileged checks into
- map_create() and bpf_prog_load()
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1683138870; x=1685730870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xyL6ErGxtGK4gbcrXbY7+L3d/vbQkgK7HxYu2bCcYGY=;
+        b=Fx7aXC0okIDAFpEsl9oq03lQgVGRbZFF9iPzu+ARlyXCpBNn0GCsDYe8+cPJ8hl8pZ
+         W5bhOymR15V62UWzJTbTDe1204jBG+dOay0u9FfA148Av9l5/DMfFdli63nULRdqxftR
+         TiIiTz1uK68WW2TmaPbH+pn5qcO7juBRTaXUED0bd19IWFSiCZlJcwqpRn1vQzRQCuHK
+         3MLabC1o4Zoa56W3Yj88mVhMTBXqtNuw3rXKEnycOvjPzzesWPePEX2+7pu0R2D5Xy2q
+         ZUkFE60bhIZGDWBaNAqHBcaa3dmIHLVXR0GL4SvtvtynxqGEgEVvkLIDiW/fFvPDUfkj
+         btKA==
+X-Gm-Message-State: AC+VfDyEkAo5O04FlTkjb4map6LSVND7FCSdHjp+zXmU3YCCqQRC1KuR
+        7cQvMZa1IK+1wTzKyum9KF+w+W3w6TisLQWKznZMC9M/
+X-Google-Smtp-Source: ACHHUZ7a+hQOAcN6OMpUgSZPHGzi8ZUj4EGszToNKziX2RB/Nt4YhgZDxNyVmWXTjd/63KKAyBsdDGJOjhhvuxX4Dmk=
+X-Received: by 2002:a17:907:9705:b0:94e:1764:b0b5 with SMTP id
+ jg5-20020a170907970500b0094e1764b0b5mr4372303ejc.69.1683138870113; Wed, 03
+ May 2023 11:34:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-3-drosen@google.com>
+ <CAEf4BzakRfffU9+wLBNfhBi1dKxs03ibopJsMyEF6JAM-QJWjw@mail.gmail.com> <CA+PiJmQJ8m_W_SF3GPe9pqnwJX0gbkWuuOz-WXHWcA7JExgMyg@mail.gmail.com>
+In-Reply-To: <CA+PiJmQJ8m_W_SF3GPe9pqnwJX0gbkWuuOz-WXHWcA7JExgMyg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 May 2023 11:34:17 -0700
+Message-ID: <CAEf4BzbQthAhS_TzOuMecz45SXMf5zDL1c2XQ6xS6C5jpx-y+A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,42 +81,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/02, Andrii Nakryiko wrote:
-> Make each bpf() syscall command a bit more self-contained, making it
-> easier to further enhance it. We move sysctl_unprivileged_bpf_disabled
-> handling down to map_create() and bpf_prog_load(), two special commands
-> in this regard.
-> 
-> Also swap the order of checks, calling bpf_capable() only if
-> sysctl_unprivileged_bpf_disabled is true, avoiding unnecessary audit
-> messages.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/bpf/syscall.c | 37 ++++++++++++++++++++++---------------
->  1 file changed, 22 insertions(+), 15 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 14f39c1e573e..d5009fafe0f4 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1132,6 +1132,17 @@ static int map_create(union bpf_attr *attr)
->  	int f_flags;
->  	int err;
+On Fri, Apr 28, 2023 at 6:58=E2=80=AFPM Daniel Rosenberg <drosen@google.com=
+> wrote:
+>
+> On Thu, Apr 6, 2023 at 2:09=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > would this work correctly if someone passes a non-null buffer with too
+> > small size? Can you please add a test for this use case.
+> >
+> Working on a test case for this, but the test case I wrote fails
+> without my patches.
+> I'm just declaring a buffer of size 9 on the stack, and then passing
+> in bpf_dynptr_slice that buffer, and size 10. That's passing the
+> verifier just fine. In fact, it loads successfully up to size 16. I'm
+> guessing that's adjusting for alignment? Still feels very strange. Is
+> that expected behavior?
 
-[..]
-
-> +	/* Intent here is for unprivileged_bpf_disabled to block key object
-> +	 * creation commands for unprivileged users; other actions depend
-> +	 * of fd availability and access to bpffs, so are dependent on
-> +	 * object creation success.  Capabilities are later verified for
-> +	 * operations such as load and map create, so even with unprivileged
-> +	 * BPF disabled, capability checks are still carried out for these
-> +	 * and other operations.
-> +	 */
-> +	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-> +		return -EPERM;
-> +
-
-Does it make sense to have something like unpriv_bpf_capable() to avoid
-the copy-paste?
+pointer to stack is trickier (verifier will just mark part of stack as
+overwritten with random data), it's best to use map value pointer as a
+source of buffer. So try using ARRAY map with small value_size, do
+lookup_elem, check for NULL, and pass non-NULL pointer as a buffer.
