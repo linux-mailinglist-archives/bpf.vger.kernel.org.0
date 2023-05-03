@@ -2,143 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DAA6F5B84
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 17:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB1E6F5BD4
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 18:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjECPu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 11:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S229455AbjECQUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 12:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbjECPu1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 11:50:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5995FF9
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 08:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683128979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O4VP89Zv90qrgsob/vJ4a462qWannnDrJro4rCmwa5M=;
-        b=Sln4Meck3wZl9xDXzZjqNARUMKjAMEV1n3snFP+qEtLlUBXtYABCtKk89yQF4W3gM1XQxM
-        PQw4XppS5BS4WzdekMB4+DUu/fRhBVUQeimkq2/R5fBVIXUwG9uuAT8XjlMtI+jPk/wYLO
-        h+2i+b3tO/jgxQOC8t4vACZERG+4ilA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-488-z0AgMNaLNUGjXfXKrGANeA-1; Wed, 03 May 2023 11:49:38 -0400
-X-MC-Unique: z0AgMNaLNUGjXfXKrGANeA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-94f2d9389afso516524866b.2
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 08:49:37 -0700 (PDT)
+        with ESMTP id S229449AbjECQUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 12:20:22 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F20F1;
+        Wed,  3 May 2023 09:20:20 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2ac733b813fso11072891fa.1;
+        Wed, 03 May 2023 09:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683130819; x=1685722819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6oJaJ5PrPQ//M23xyU/2Ww+DvRXASYOAbGX+aLa2MYU=;
+        b=bdOJPXjBlqb0/dMsX2NYbIAlgrxtqJu8zmOrfNCF1LdlCtEyW9RAD29prQ/tuboOwW
+         lKD4sGtroNz8cEWGZwPiEA9J/gz0vPyApifltLMcuu1I77XI9PGnkwhd4JAzx0eOQXrq
+         ysW2X0E8pjnrziM8T8o9NjKhQ8QFVgnwhzC4R1rjnirPTjnlJWoU2hf2Iodhi0hWZG8z
+         wf7ImB4qOfNVc5lRggFlhs1iBWPmcYF8NhfTOIQK6M61G8Gj80pB/VlpkwiHQzC+N5Sf
+         GR7DGoF8OnDotqOHFaxzm4UOl7TIi+abBSTuGL8uuIRVeP+J4b5p0h8uIAVYAC8YFqMI
+         821A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683128977; x=1685720977;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4VP89Zv90qrgsob/vJ4a462qWannnDrJro4rCmwa5M=;
-        b=JkBP7PAXjzkIbkRkejsGdJQCt5obgk1whVV+7JePGFQq+iB8FwqfJ2f0DvSc8G0AMp
-         8Arz+cY6sBYtXFF3f57vWHyPbriHOI6CTGUGze80cqyQRX93QPI/C2H34BT+7z151Biy
-         mIh1YlR6JAD7yuetL1jC0HDkWZl2KY1W431Ci0RQpsBUvr8sxayTvBzJw1uNvLuBbRlY
-         Z7RQEQRdNYuqX7kjRICVO3uW4GggwfHaBjTaszKL6y0NU+iLvJspejr8fk2/oZHmI7Ce
-         OEwCPbR4RbDizV8B+cSsqaizoui+1LWj2GRJSL4qVqrI0MyK/uHY7fOIfHrRaH4qZeCZ
-         stjg==
-X-Gm-Message-State: AC+VfDyCCl+YRCz088GXeuy3uqW8QnoxBGnrvHUixzbfHHvqB4EGd7QP
-        c2pVsXSW5WXQLGjpf18SgDeKbk677CdPEZSpBA+z3j2ZWHeiP/A4B1PPDvqyBx/sL/3zwK7G5Sc
-        laej2wj+URzLL
-X-Received: by 2002:a17:907:c21:b0:933:3814:e0f4 with SMTP id ga33-20020a1709070c2100b009333814e0f4mr4712161ejc.16.1683128977008;
-        Wed, 03 May 2023 08:49:37 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6e5zv7cZWE/jkHWJTvri6PxUa3jx686lEP7V5PP9ooaEOwZDZGGsjXhQil4vBJmqj+KSXbvg==
-X-Received: by 2002:a17:907:c21:b0:933:3814:e0f4 with SMTP id ga33-20020a1709070c2100b009333814e0f4mr4712134ejc.16.1683128976703;
-        Wed, 03 May 2023 08:49:36 -0700 (PDT)
-Received: from [192.168.42.222] (cgn-cgn9-185-107-14-3.static.kviknet.net. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id th7-20020a1709078e0700b009596e7e0dbasm13598187ejc.162.2023.05.03.08.49.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 May 2023 08:49:36 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <3a5a28c4-01a3-793c-6969-475aba3ff3b5@redhat.com>
-Date:   Wed, 3 May 2023 17:49:34 +0200
+        d=1e100.net; s=20221208; t=1683130819; x=1685722819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6oJaJ5PrPQ//M23xyU/2Ww+DvRXASYOAbGX+aLa2MYU=;
+        b=NU+qyDEtxQD+roQncjeYxzEFE0rfw3i367+RuHqCmdYH2MWX1bhKkyLMhuDCxPn7g5
+         6KsXuGk9i8TqrhEQmJgCVezSnqcMMNyyoikm1eIZZ3zXzCJqFIYAQmzLg2uQ9aLYzfO5
+         qzt26A0Nt1nqUhxjq03JpQrnuNxYsrZkzKLaQWoGlPqr23/DfL4BeSM0/ap4SGiCdYju
+         66DVNNp4MtmrL03N0tEAHzNQ17HM/5fYeUXoTecNAgbbrJdxnKfY+uuC4lfYjdUDKIKf
+         +RdTiKx0PN1vt+lxSZ7WCV6iZ5Akl0K8PAZJ5t5F8KB41Wh9Dn5oBgiBgLxiaAEy4rMH
+         17VQ==
+X-Gm-Message-State: AC+VfDxJNJOJMoqn+zrTpU4KxHFv4KCjYeoGXF/gNLNIJqHPNVAJatV/
+        Kzt+qE2lPfHDyyYgT/ZfVW7qU904qGCAreKEzhM=
+X-Google-Smtp-Source: ACHHUZ6eGbSsOsju0SsuWwgDT+dCIW84R4PDyIme2zBsu+/jH2ZQU27gtEqS9w3emhQAXI67NhEEKnewD3vKp6TMMI0=
+X-Received: by 2002:a2e:7d12:0:b0:2a7:768c:f5ac with SMTP id
+ y18-20020a2e7d12000000b002a7768cf5acmr171925ljc.32.1683130818885; Wed, 03 May
+ 2023 09:20:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
-        lorenzo@kernel.org, linyunsheng@huawei.com, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in new
- shutdown scheme
-Content-Language: en-US
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
- <168269857929.2191653.13267688321246766547.stgit@firesoul>
- <20230502193309.382af41e@kernel.org> <87ednxbr3c.fsf@toke.dk>
-In-Reply-To: <87ednxbr3c.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230502005218.3627530-1-drosen@google.com> <20230502005218.3627530-2-drosen@google.com>
+In-Reply-To: <20230502005218.3627530-2-drosen@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 3 May 2023 09:20:07 -0700
+Message-ID: <CAADnVQ+KJgnB-aPKsZuMGyJ5Sp+FCzANBjoZqNuoZ8A5bzLqvg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] selftests/bpf: Test allowing NULL buffer in dynptr slice
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, May 1, 2023 at 5:52=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
+ wrote:
+>
+> bpf_dynptr_slice(_rw) no longer requires a buffer for verification. If th=
+e
+> buffer is needed, but not present, the function will return NULL.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/dynptr.c |  1 +
+>  .../selftests/bpf/progs/dynptr_success.c        | 17 +++++++++++++++++
+>  2 files changed, 18 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/test=
+ing/selftests/bpf/prog_tests/dynptr.c
+> index d176c34a7d2e..ac1fcaddcddf 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> @@ -20,6 +20,7 @@ static struct {
+>         {"test_ringbuf", SETUP_SYSCALL_SLEEP},
+>         {"test_skb_readonly", SETUP_SKB_PROG},
+>         {"test_dynptr_skb_data", SETUP_SKB_PROG},
+> +       {"test_dynptr_skb_no_buff", SETUP_SKB_PROG},
+>  };
 
+Please rebase and resubmit targeting bpf-next and with [PATCH bpf-next] sub=
+ject.
 
-On 03/05/2023 13.18, Toke Høiland-Jørgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
-> 
->> On Fri, 28 Apr 2023 18:16:19 +0200 Jesper Dangaard Brouer wrote:
->>> This removes the workqueue scheme that periodically tests when
->>> inflight reach zero such that page_pool memory can be freed.
->>>
->>> This change adds code to fast-path free checking for a shutdown flags
->>> bit after returning PP pages.
->>
->> We can remove the warning without removing the entire delayed freeing
->> scheme. I definitely like the SHUTDOWN flag and patch 2 but I'm a bit
->> less clear on why the complexity of datapath freeing is justified.
->> Can you explain?
-> 
-> You mean just let the workqueue keep rescheduling itself every minute
-> for the (potentially) hours that skbs will stick around? Seems a bit
-> wasteful, doesn't it? :)
-
-I agree that this workqueue that keeps rescheduling is wasteful.
-It actually reschedules every second, even more wasteful.
-NIC drivers will have many HW RX-queues, with separate PP instances, 
-that each can start a workqueue that resched every sec.
-
-Eric have convinced me that SKBs can "stick around" for longer than the
-assumptions in PP.  The old PP assumptions came from XDP-return path.
-It is time to cleanup.
-
-> 
-> We did see an issue where creating and tearing down lots of page pools
-> in a short period of time caused significant slowdowns due to the
-> workqueue mechanism. Lots being "thousands per second". This is possible
-> using the live packet mode of bpf_prog_run() for XDP, which will setup
-> and destroy a page pool for each syscall...
-
-Yes, the XDP live packet mode of bpf_prog_run is IMHO abusing the
-page_pool API.  We should fix that somehow, at least the case where live
-packet mode is only injecting a single packet, but still creates a PP
-instance. The PP in live packet mode IMHO only makes sense when
-repeatedly sending packets that gets recycles and are pre-inited by PP.
-
-This use of PP does exemplify why is it problematic to keep the workqueue.
-
-I have considered (and could be convinced) delaying the free via
-call_rcu, but it also create an unfortunate backlog of work in the case
-of live packet mode of bpf_prog_run.
-
---Jesper
-
+It doesn't apply:
+Using index info to reconstruct a base tree...
+M    tools/testing/selftests/bpf/prog_tests/dynptr.c
+M    tools/testing/selftests/bpf/progs/dynptr_success.c
+Falling back to patching base and 3-way merge...
+Auto-merging tools/testing/selftests/bpf/progs/dynptr_success.c
+CONFLICT (content): Merge conflict in
+tools/testing/selftests/bpf/progs/dynptr_success.c
+Auto-merging tools/testing/selftests/bpf/prog_tests/dynptr.c
+CONFLICT (content): Merge conflict in
+tools/testing/selftests/bpf/prog_tests/dynptr.c
+error: Failed to merge in the changes.
+Patch failed at 0002 selftests/bpf: Test allowing NULL buffer in dynptr sli=
+ce
