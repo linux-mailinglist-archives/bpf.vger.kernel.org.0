@@ -2,148 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 619076F4F0A
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 05:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE0E6F4F34
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 05:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjECDOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 May 2023 23:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S229487AbjECDpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 May 2023 23:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjECDOU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 May 2023 23:14:20 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EFC1FCD;
-        Tue,  2 May 2023 20:14:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kvEf2TwIT7wQ5TYusfrBXHSEgIJ2RJs5xP2iaNH64zU3/WCPK7vjRJYaKS8WmhMth/jQXJwBj/JlaraSNPk0jmH08hu4k6aP5f38yz/hQTxC3/5yK3ApfEY7zmo8xLtPf8MEniOrWq5OVx0XIm+dlMO+a3x2pkYEwfdj+BmAm6qxMGiIMV3ezG+qQWX82GdwpwaRKeyd9lH8yBsyXzKOa3bZHZ809J/oyR6vv0e/kLqcl7rq6j4Are+KpZE3EJD0A/REWHGWqHfSjL26mP53LyqLcv68BI8i9z3wGS6uprYOy/28Z+7axWjcpAVJO8jdTAZXx90X1NXxUSY+73ezbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yzZP/gsmbudKSXNL8D9BRYlR3JrAFvNok5hAXmrXH98=;
- b=k7MSScBGxY2G7ZDrK+0AIQ/K6MATe2kZl1BB3YPW+8CUMPOigK3LCQwh7Nq3aDFAaDwCK2EdYAiqJNObqikf3nVsuihSpZ8Rqt3S2DX0MUTDyje9qVgzOUrY8iuu6y54p9BdLPxqKi0n7tfJlZx3b1MSycPzUMRJo1++igIawHtGvoUMiVYk3t6Ce+elq2L5LwkZv2tCqj6IlfOP4PTiRDM5FW2AgsXCHzvAj6OJz0L/V4dSUto4xDfaf8AsWTFWf1IkO4AtDyti8S1tM5PE9eFJba8oGYvUetyWL0bELHQjLgOi/oJ1I35wFoNExwkmbBulafIjLABmQ3pgVP9oxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yzZP/gsmbudKSXNL8D9BRYlR3JrAFvNok5hAXmrXH98=;
- b=V4EbSkM0uhkjpW9l48cPHEwfq5NTBw6XtGH/9Y9hH3ADKDcaFPpGKgMy0JM5UN9bTvgFM+oaSCKXkhOcCQTEpURRNSJDm2Neyp95AiWffWoWp3dNsxGPV7+i6ceYqpUv6xHKurbDX7pDVrYu8JcDw/sID5rDdjyM58Xm8w9iur6TpIixvZHRStOXAcD8Li2Pexm7NVV0zx8pNsxFpVs5lyM9cbSl3d/6EgQGjwxa8G9M46LI4FTK+COyaaLOOSC4bjIxNa12qt29il7zY7u5fPFsVqIVUyMwFM8voAa3j1k0HmTrdaJ7kGUwAhbccfs1HKS+pCOfOB+j6llWYDI9Xg==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by SA0PR12MB7076.namprd12.prod.outlook.com (2603:10b6:806:2d5::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.20; Wed, 3 May
- 2023 03:14:17 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::1c51:21c0:c13c:3ed3]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::1c51:21c0:c13c:3ed3%2]) with mapi id 15.20.6363.020; Wed, 3 May 2023
- 03:14:17 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Feng Liu <feliu@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bodong Wang <bodong@nvidia.com>, William Tu <witu@nvidia.com>
-Subject: RE: [PATCH net v3] virtio_net: Fix error unwinding of XDP
- initialization
-Thread-Topic: [PATCH net v3] virtio_net: Fix error unwinding of XDP
- initialization
-Thread-Index: AQHZfVcwzjoxZpx/L0qvM1APBG0OYq9H318A
-Date:   Wed, 3 May 2023 03:14:17 +0000
-Message-ID: <PH0PR12MB54816403B23CE6D0AF2FD035DC6C9@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <20230503003525.48590-1-feliu@nvidia.com>
-In-Reply-To: <20230503003525.48590-1-feliu@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR12MB5481:EE_|SA0PR12MB7076:EE_
-x-ms-office365-filtering-correlation-id: 24c07e2e-897f-4c7a-e7ac-08db4b847ad0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +ZFrW+wqXYrppcu1cIPb+IkvARJ7EA1ykY0K0OJaYrGqVwOHssRb9paCZNYga1AV5GDZtaTJGvOBgcwsnm/xL7IkJ4M+Xb6ByNzhQUHrKSqNduLmh0P471KdV/w3Jo9bm5drE2HYf3hyi8XDcKcT/WuG+/3gk/EfIs8SzmYR/n5BEvb5+HXV+Ovk35pXaC6gguXYz8HWeWiH/2YrhOng88AHgemZSEGy8ICSx4ICYuVQDcY2pVO7XNyQzsvZ9i31ls+zjKD9qpaa/IuRWi/X4oEyRaSrU6AfDwphKuBHpE5FQavvdUZE+KAN/Na7+uujRWwEqeuy041yqjKopFKNGAKqhstghYJEin3CgFgg/B3yPuvnwkmKEGAr8STInY7boQpXe+06/CqPTAKQlJ/4y+dcLda6NIvl9wIqVtAJFEv9bWktE8i6gsvei0bvOjBp/i9Y+CUPJpMlcrkil5wtIPaqNmx1R0QjwSDJNDU2PLJDyO+1vgD3YEe0zuaM5TvFnu+Qlhz0DNfdOO3pjoT5UozlaFNADOvUommyZb4irHOBptYC3a90GJ+Ss6Tg5bu/tTD6f2VOpxSSidL0kC9igWzha+w2gbKDQfgaOW+1P0qmrAIllgajJfwCed0o6X3r
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(451199021)(4744005)(122000001)(41300700001)(8936002)(8676002)(5660300002)(52536014)(2906002)(86362001)(38070700005)(38100700002)(33656002)(71200400001)(7696005)(54906003)(55016003)(478600001)(186003)(9686003)(6506007)(107886003)(26005)(66946007)(4326008)(66446008)(66476007)(76116006)(66556008)(64756008)(316002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SgN/JCwvh1kYx6SP4G1g7cJsBnlU+NLUSBcn9blPdX/0qeNO2iJll8TDUw/4?=
- =?us-ascii?Q?Bsm5NMGv8P05szh100Bg89ic+uiYTR7XpmbzV9giwwomFeOAGf5UbxEUNAMU?=
- =?us-ascii?Q?B2kf7oiYgqvKBDxByhPzgfYENFOPWx+RlBCw862nphsqtUWBdL5oKmB2GkcM?=
- =?us-ascii?Q?5DJ1DqXzMrPB1CT84B8HO8MF7XKdiB1NSVFCDl+GNM+cG4V7ydeUteilXKiY?=
- =?us-ascii?Q?vW70rLdYhwit+zBRTE11xRKxlhJtiq+wcuA0fnlj0evJ5J1Uuvzy4Wdz3OhQ?=
- =?us-ascii?Q?2vap/ajs0TUEgsRtzuqLXBUrgCZ1EvmUChSrus91Mppjvk6AO/pwB4nFER2z?=
- =?us-ascii?Q?FmUGsiEmqElpxcSFWN4Ls8SLX84i1FbSzPl/h/Z75U1p27BUTevHzx0i/7RS?=
- =?us-ascii?Q?Xj34EDYWDMWxELzvttLGYOv7Ju1Q+zBwGo/7ckby9GfrLiVHQFf9pEQZuZBk?=
- =?us-ascii?Q?pAuAgOns2KkXMwoQNpaJNRCSo5QhXd0YMV5gHikAXknhrJ/fjSgocYJBR3WY?=
- =?us-ascii?Q?XqA4SUs/GRF/KUQ5yr4DSu5i63DIMn04X+BlPvJG5vcHj/hMUTXWMxdD83Ll?=
- =?us-ascii?Q?GASC5UkECnXvEM48PIwWvkMfuW685CYn1Tt8ikOiHDPHvkrse+xZnevKWo2e?=
- =?us-ascii?Q?1JgxLChAaFcKxbTZraIhpCfb5tiXo3HKi+rV7T+glr9yyKEBVNzjg2srDlSp?=
- =?us-ascii?Q?5gS527l244j0lMDQVcpfzZ+3kruv62F2fH72UTm5QAq9D4BzgoUdJTG7pscm?=
- =?us-ascii?Q?jEzNiAsvvYI12btE2HvSE9sumVbe7VpWdMXXgOu8nQQKLsWvETfkGzpzDycr?=
- =?us-ascii?Q?S6dr7S0mxMmdl3SYUUGu0MS0hDN36mQiHi0qYeISqkqaYRgO1tJ0Q3c4D/Ec?=
- =?us-ascii?Q?8M0CWxu5dvzBd/2rgFr2guYk+aA5CNaE65I37zQ7Jy/HAIfV0SDsOwhqABme?=
- =?us-ascii?Q?wx8r60RtsUKS2C2b6kr8peZnpvkI7yEFEpXSmbe2yk+vCJ8pTxZ2nM7OxH1/?=
- =?us-ascii?Q?ZDpHsO0hMGQtaPap77KIW1T9VFl0ydB5t6R2cLoYBxZFZyXOhWO8ontuN2+O?=
- =?us-ascii?Q?5VyOV5TL5biBYBGaGCUTIhALSj5gCERgCwTDcOVB79GVh0jMDWvNwHeiUtv6?=
- =?us-ascii?Q?J1u/2fdXdB3Wq2GYanhPNO72n5euBqa47K3KDwgTgdKYk2lK65akxj4rn/Tq?=
- =?us-ascii?Q?5Kn7vgk94+07OIjVdy4D4n/TSHonx7NwctkSbWpa6tMyEhcaGGuq0xi7YnZP?=
- =?us-ascii?Q?NhtGf8dFJOJpKXdlmj+xKihmYb4kQTgthPaVxN6BevSF88w9j2AgWumskYR3?=
- =?us-ascii?Q?9kfzEbBsK/m5163HiETOm3k57WwBA7Mo9Q51nNoI8ovr99TSDqR0wBhly6gb?=
- =?us-ascii?Q?wXpSX+2eKKVd4oZXqHyiaJ3PBVfJziill78DdaBQnc/n76JvkzQkarQZyUMS?=
- =?us-ascii?Q?VVUTFZQtT9i76qd6tOBe7v4hdkHVhp4qb1SOJTocwbGl8os5YoojXZD4Brk+?=
- =?us-ascii?Q?bTjCDqSSuY4U3zFiOp7KZW4TWiHjujjN/e9yNq/s1hNviKPJagVDbYSpX+LZ?=
- =?us-ascii?Q?T445rLDtoaegTRbs21o=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229461AbjECDpb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 May 2023 23:45:31 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4A92683;
+        Tue,  2 May 2023 20:45:29 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-77d46c7dd10so1521686241.0;
+        Tue, 02 May 2023 20:45:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683085529; x=1685677529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e/HXv6CG+LxJ7BClSWO3ugL9TVXyN0Lqq9OyDlKsu+U=;
+        b=hZ2fCikkaJ3a8AARHzwxnFamVk+Ky1uH8Sv3ZmruF70hU5fTJER//ZGjvUth/M+Tls
+         w+FlE6924Bz6XqfFZn50ZPuqGiHpw0PrAZtx5WVfEv2joJ6RyF/L4ynNU0jPzRak30Ck
+         z22nyDOyti4yCC9GS6fzKvB7vDbkmrt3kxYb9Z9RexGYEd51PgLB+zWssA18S7zmJ4Em
+         sdTP5SHmqQEzxnobgoPdo8+9/GfCBEVtZCEdVLhAhw1miPbyAXyUpJ5MwOLoObrXUbRN
+         tukCKwHxTTci7FSkFfebZdBTI+HKHArdxM8bCliFQxnkwQm/+WB9Nkvl8+DxWnwk0zTS
+         fPVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683085529; x=1685677529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e/HXv6CG+LxJ7BClSWO3ugL9TVXyN0Lqq9OyDlKsu+U=;
+        b=IYe22Jvc5IRMcVeW7LJ9/nz54Hg1X29GAYj89+iQHuU7mQv8zEH5Ka6eqwBQiCMNCe
+         O6ICOyyaebNCA1ms5x0F+2m38eu1N8+ZAh5jkPsALux2OjrOTJHmGdFzp44xkOjEj12Y
+         D4ksbrWSBM7iv7Q00Ru9cyaiWL6c1bF+R3ViqIA+rLEOtuhHiDynmGW/jnlYi+B62bCF
+         eaFRYIZzxWaXRDMsmg3klcH1xM2pXNNGJw79VqxXtyqb5zgvilrjOtfuz6MEmmo5RuLV
+         3qN4+b21tKQyD0rYkSAiSRO2pzhl51tcWQmY2ja93PqRSQXqApXdDqIH6YP0uvKJaIix
+         ANcA==
+X-Gm-Message-State: AC+VfDzR7jzgLk2UDP620tl6ZaMERugrcsHRPvFDR9TtbTpDdog8sSJ+
+        4A4Rk0f/Ahb6NSj/oWpH/4THO8YdYtAbkcfL/hY=
+X-Google-Smtp-Source: ACHHUZ5tzzMWOASC+yK6hxGcJYLcI+b9I/oT+mJ2v1V8ZQ4we7IPzywRC+azTftiFych0glVNcKyJE7ikI8ACK/DupM=
+X-Received: by 2002:a1f:5e10:0:b0:432:e55:b103 with SMTP id
+ s16-20020a1f5e10000000b004320e55b103mr290197vkb.3.1683085528720; Tue, 02 May
+ 2023 20:45:28 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24c07e2e-897f-4c7a-e7ac-08db4b847ad0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2023 03:14:17.1204
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7jSOxjuzy8Ae8xVP8PRvALp00RKvTaY4zwJMq+Rc0KgHJgxl87NX0SdTVhkWKF+8jKEffErpC6QHa8qp2EITQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7076
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230418014037.2412394-1-drosen@google.com> <20230418014037.2412394-9-drosen@google.com>
+ <20230502033825.ofcxttuquoanhe7b@dhcp-172-26-102-232.dhcp.thefacebook.com>
+In-Reply-To: <20230502033825.ofcxttuquoanhe7b@dhcp-172-26-102-232.dhcp.thefacebook.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 3 May 2023 06:45:17 +0300
+Message-ID: <CAOQ4uxi3WXb2MKx+YUnsCad2jUDtUuafFzuqJi0uo4us7xmfuA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 08/37] fuse: Add fuse-bpf, a stacked fs extension
+ for FUSE
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Rosenberg <drosen@google.com>,
+        Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com,
+        Paul Lawrence <paullawrence@google.com>,
+        Alessio Balsini <balsini@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, May 2, 2023 at 6:38=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Apr 17, 2023 at 06:40:08PM -0700, Daniel Rosenberg wrote:
+> > Fuse-bpf provides a short circuit path for Fuse implementations that ac=
+t
+> > as a stacked filesystem. For cases that are directly unchanged,
+> > operations are passed directly to the backing filesystem. Small
+> > adjustments can be handled by bpf prefilters or postfilters, with the
+> > option to fall back to userspace as needed.
+>
+> Here is my understanding of fuse-bpf design:
+> - bpf progs can mostly read-only access fuse_args before and after proper=
+ vfs
+>   operation on a backing path/file/inode.
+> - args are unconditionally prepared for bpf prog consumption, but progs w=
+on't
+>   be doing anything with them most of the time.
+> - progs unfortunately cannot do any real work. they're nothing but simple=
+ filters.
+>   They can give 'green light' for a fuse_FOO op to be delegated to proper=
+ vfs_FOO
+>   in backing file. The logic in this patch keeps track of backing_path/fi=
+le/inode.
+> - in other words bpf side is "dumb", but it's telling kernel what to do w=
+ith
+>   real things like path/file/inode and the kernel is doing real work and =
+calling vfs_*.
+>
+> This design adds non-negligible overhead to fuse when CONFIG_FUSE_BPF is =
+set.
+> Comparing to trip to user space it's close to zero, but the cost of
+> initialize_in/out + backing + finalize is not free.
+> The patch 33 is especially odd.
+> fuse has a traditional mechanism to upcall to user space with fuse_simple=
+_request.
+> The patch 33 allows bpf prog to return special return value and trigger t=
+wo more
+> fuse_bpf_simple_request-s to user space. Not clear why.
+> It seems to me that the main assumption of the fuse bpf design is that bp=
+f prog
+> has to stay short and simple. It cannot do much other than reading and co=
+mparing
+> strings with the help of dynptr.
+> How about we allow bpf attach to fuse_simple_request and nothing else?
+> All fuse ops call it anyway and cmd is already encoded in the args.
+> Then let bpf prog read fuse_args as-is (without converting them to bpf_fu=
+se_args)
+> and avoid doing actual fuse_req to user space.
+> Also allow bpf prog acquire and remember path/file/inode.
+> The verifier is already smart enough to track that the prog is doing it s=
+afely
+> without leaking references and what not.
+> And, of course, allow bpf prog call vfs_* via kfuncs.
+> In other words, instead of hard coding
+>  +#define bpf_fuse_backing(inode, io, out,                             \
+>  +                      initialize_in, initialize_out,                 \
+>  +                      backing, finalize, args...)                    \
+> one for each fuse_ops in the kernel let bpf prog do the same but on deman=
+d.
+> The biggest advantage is that this patch set instead of 95% on fuse side =
+and 5% on bpf
+> will become 5% addition to fuse code. All the logic will be handled purel=
+y by bpf.
+> Right now you're limiting it to one backing_file per fuse_file.
+> With bpf prog driving it the prog can keep multiple backing_files and shu=
+ffle
+> access to them as prog decides.
+> Instead of doing 'return BPF_FUSE_CONTINUE' the bpf progs will
+> pass 'path' to kfunc bpf_vfs_open, than stash 'struct bpf_file*', etc.
+> Probably will be easier to white board this idea during lsfmmbpf.
+>
 
-> From: Feng Liu <feliu@nvidia.com>
-> Sent: Tuesday, May 2, 2023 8:35 PM
+I have to admit that sounds a bit challenging, but I'm up for sitting
+in front of that whiteboard :)
 
-> Issue: 3383038
-Remove this internal garbage.
+BTW, thanks Daniel (Borkmann) for sorting out the cross track
+sessions for FS-BFP.
+We have another FS only session on FUSE-BFP, but I feel there is plenty
+to discuss on the FUSE-bypass part, as well as on the BPF part.
+Same goes for BFP iterators for filesystems session.
 
-> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
-> Signed-off-by: Feng Liu <feliu@nvidia.com>
-> Reviewed-by: William Tu <witu@nvidia.com>
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
-> Reviewed-by: Simon Horman <simon.horman@corigine.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
-> Change-Id: Ib4c6a97cb7b837cfa484c593dd43a435c47ea68f
-Remove this internal garbage.
-Please run a local script not to forward the above garbage in upstream patc=
-hes.
-
-You are missing the changelog from v0->v1->v2->v3.
-Please add and resend with above things removed and with changelog.
+Thanks,
+Amir.
