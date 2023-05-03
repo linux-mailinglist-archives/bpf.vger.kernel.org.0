@@ -2,71 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AA26F5908
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 15:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8AD6F5A1D
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 16:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjECNZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 09:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S230390AbjECOcv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 10:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjECNZC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 09:25:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC82E5264;
-        Wed,  3 May 2023 06:25:00 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 343DLiYp026377;
-        Wed, 3 May 2023 13:24:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=t7Z4GyVofl8KH3R21cSalBDAwo0cz6K18KiapRYFmk0=;
- b=YTahdXHZ9DCOaPJBHL5p3suGYwh5W+ixnWjdslkKzhwc5k+XtxGshINN/kF3W7r4WWIX
- 6ZgsmHsfdrefkhAnJ4negVLnhkiGNC6502w7rL5x2UPgVPtYTvpKa+AufaacO+PA/E/y
- Uy8bIuQSm8rD0Xun0yNYesGuH0Dh9GqkNE1hx7+5CIe7FFbScORvseZv/ZyZUuf8Qw3k
- /lmqU9KgkczXTQHUno7tgFoNnQbr7YlUDDINMwHfOVQZpI6z7AuP1DC7UDQkFA6xuai1
- EvFrwtFTbR0z67ksMoSjyEwoSGgBkuL3sZxNaKFmgmbxPyz8+w86frDkCNxhhc6Snt2h jQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qbr9h8nwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 May 2023 13:24:25 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 343DBqHf024587;
-        Wed, 3 May 2023 13:24:23 GMT
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qbr9h8nug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 May 2023 13:24:23 +0000
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 343CUqk5026692;
-        Wed, 3 May 2023 13:24:20 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([9.208.129.116])
-        by ppma01dal.us.ibm.com (PPS) with ESMTPS id 3q8tv99qcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 May 2023 13:24:20 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 343DOG0i16581142
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 May 2023 13:24:16 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B23CF58055;
-        Wed,  3 May 2023 13:24:16 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3AEDA5804E;
-        Wed,  3 May 2023 13:24:09 +0000 (GMT)
-Received: from [9.160.35.135] (unknown [9.160.35.135])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  3 May 2023 13:24:09 +0000 (GMT)
-Message-ID: <0cb48a73-db45-1207-2150-821086eab5df@linux.ibm.com>
-Date:   Wed, 3 May 2023 09:24:08 -0400
+        with ESMTP id S230323AbjECOcg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 10:32:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26C36A74
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 07:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683124303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jwgVjcmprHBa8NpoaXgJYiwFaH2ANM6d4RKcdmTha7o=;
+        b=Gu58W2LOoq0lh+3plcO641WrX3cE77msvg057OIztmEBE6szTd38IcT0cgnoUGf8bNgT8l
+        ilYRkMciSQz+nN19CXZNzVOx/ujoQHpMT3mhLGPU3dPRTZQUyJWoZpn66zbZMlQuo04/h+
+        QtDd+QsBQlAQwXaALccBO5ZS8LyjzmI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-VcltH4y1Pq-4Bp7JiP5oNg-1; Wed, 03 May 2023 10:31:40 -0400
+X-MC-Unique: VcltH4y1Pq-4Bp7JiP5oNg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f171d38db3so32366835e9.0
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 07:31:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683124299; x=1685716299;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jwgVjcmprHBa8NpoaXgJYiwFaH2ANM6d4RKcdmTha7o=;
+        b=F/ZT+c9vq3FVHXgP9iq/uzKuWb3v6NanqQxDBFo6685dwn4GX2JobMpHaPVo6teGNq
+         7apuJuuD9bcu0dT6nuBC4BkwLX5PH7aO8mvNyn5WNBeCGD3Zg5JpKIpwYeVn1mdB3xhJ
+         M2bHO5ujOFUvpUBcHmzAKsR6wcWzbdOGAaBvQf5PH+BIIgXkqSS4XR6qluMbVV5ody8D
+         YRfq0XmY6SGGt26cd6gK/BLRk+qoY+tzUJ18Nn02q0vSOq/d68kutL66ugpqA8u24jGP
+         IEoo0KaQeYaXYJ69HOxLGsbBf6pxMZD5G07kN3FLcLLoCGC1tfOR4xzL4ABDGxBYkzcI
+         B98Q==
+X-Gm-Message-State: AC+VfDyHGA/fsuWelgFv5buaXntWTTwOiloewWsnOi2MCQ2asZ5pUBfs
+        /A8yYpPE0tg7HN90bQQmLjS0rHgkD6EH9OLrPFwIk5EfnU9vTERXvozIHYbrLcwmubM9iVR9ft5
+        El2tqmpVs2Pov
+X-Received: by 2002:a05:600c:2212:b0:3f1:6ebe:d598 with SMTP id z18-20020a05600c221200b003f16ebed598mr14513934wml.7.1683124299684;
+        Wed, 03 May 2023 07:31:39 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4p6NwKtGvfJuosY5ZRZTEXkZFFMya7KCf1fgffm+RPeC5ZQYEbm68OqBiXftYqckyaEdvrXA==
+X-Received: by 2002:a05:600c:2212:b0:3f1:6ebe:d598 with SMTP id z18-20020a05600c221200b003f16ebed598mr14513907wml.7.1683124299231;
+        Wed, 03 May 2023 07:31:39 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c711:6a00:9109:6424:1804:a441? (p200300cbc7116a00910964241804a441.dip0.t-ipconnect.de. [2003:cb:c711:6a00:9109:6424:1804:a441])
+        by smtp.gmail.com with ESMTPSA id n3-20020a7bc5c3000000b003f0b1b8cd9bsm2116716wmk.4.2023.05.03.07.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 May 2023 07:31:38 -0700 (PDT)
+Message-ID: <aa326283-468f-6c40-4c47-de7cf7cc5994@redhat.com>
+Date:   Wed, 3 May 2023 16:31:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
-Subject: Re: [PATCH v8 0/3] mm/gup: disallow GUP writing to file-backed
- mappings by default
 Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
@@ -108,32 +104,23 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
         Pavel Begunkov <asml.silence@gmail.com>,
         Mika Penttila <mpenttil@redhat.com>,
         Dave Chinner <david@fromorbit.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Christian Borntraeger <borntraeger@linux.ibm.com>
 References: <cover.1683067198.git.lstoakes@gmail.com>
- <20d078c5-4ee6-18dc-d3a5-d76b6a68f64e@linux.ibm.com>
- <1b34e9a4-83c0-2f44-1457-dd8800b9287a@redhat.com>
- <80e3b8ee-c16d-062f-f483-06e21282e59c@linux.ibm.com>
- <976fcec0-d132-3a27-bbd2-01b21571bca2@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-In-Reply-To: <976fcec0-d132-3a27-bbd2-01b21571bca2@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+ <7ac8bb557517bcdc9225b4e4893a2ca7f603fcc4.1683067198.git.lstoakes@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v8 1/3] mm/mmap: separate writenotify and dirty tracking
+ logic
+In-Reply-To: <7ac8bb557517bcdc9225b4e4893a2ca7f603fcc4.1683067198.git.lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bBGbjL1BT7NUlN6uohu087clNiuGmNkf
-X-Proofpoint-GUID: Dn-rOS0FmD-1OwpBDUptu9MfNXcH6pk3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-03_08,2023-05-03_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=814 bulkscore=0
- adultscore=0 phishscore=0 spamscore=0 suspectscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2305030110
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,101 +128,159 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/3/23 8:53 AM, David Hildenbrand wrote:
-> On 03.05.23 13:25, Matthew Rosato wrote:
->> On 5/3/23 3:08 AM, David Hildenbrand wrote:
->>> On 03.05.23 02:31, Matthew Rosato wrote:
->>>> On 5/2/23 6:51 PM, Lorenzo Stoakes wrote:
->>>>> Writing to file-backed mappings which require folio dirty tracking using
->>>>> GUP is a fundamentally broken operation, as kernel write access to GUP
->>>>> mappings do not adhere to the semantics expected by a file system.
->>>>>
->>>>> A GUP caller uses the direct mapping to access the folio, which does not
->>>>> cause write notify to trigger, nor does it enforce that the caller marks
->>>>> the folio dirty.
->>>>>
->>>>> The problem arises when, after an initial write to the folio, writeback
->>>>> results in the folio being cleaned and then the caller, via the GUP
->>>>> interface, writes to the folio again.
->>>>>
->>>>> As a result of the use of this secondary, direct, mapping to the folio no
->>>>> write notify will occur, and if the caller does mark the folio dirty, this
->>>>> will be done so unexpectedly.
->>>>>
->>>>> For example, consider the following scenario:-
->>>>>
->>>>> 1. A folio is written to via GUP which write-faults the memory, notifying
->>>>>      the file system and dirtying the folio.
->>>>> 2. Later, writeback is triggered, resulting in the folio being cleaned and
->>>>>      the PTE being marked read-only.
->>>>> 3. The GUP caller writes to the folio, as it is mapped read/write via the
->>>>>      direct mapping.
->>>>> 4. The GUP caller, now done with the page, unpins it and sets it dirty
->>>>>      (though it does not have to).
->>>>>
->>>>> This change updates both the PUP FOLL_LONGTERM slow and fast APIs. As
->>>>> pin_user_pages_fast_only() does not exist, we can rely on a slightly
->>>>> imperfect whitelisting in the PUP-fast case and fall back to the slow case
->>>>> should this fail.
->>>>>
->>>>> v8:
->>>>> - Fixed typo writeable -> writable.
->>>>> - Fixed bug in writable_file_mapping_allowed() - must check combination of
->>>>>     FOLL_PIN AND FOLL_LONGTERM not either/or.
->>>>> - Updated vma_needs_dirty_tracking() to include write/shared to account for
->>>>>     MAP_PRIVATE mappings.
->>>>> - Move to open-coding the checks in folio_pin_allowed() so we can
->>>>>     READ_ONCE() the mapping and avoid unexpected compiler loads. Rename to
->>>>>     account for fact we now check flags here.
->>>>> - Disallow mapping == NULL or mapping & PAGE_MAPPING_FLAGS other than
->>>>>     anon. Defer to slow path.
->>>>> - Perform GUP-fast check _after_ the lowest page table level is confirmed to
->>>>>     be stable.
->>>>> - Updated comments and commit message for final patch as per Jason's
->>>>>     suggestions.
->>>>
->>>> Tested again on s390 using QEMU with a memory backend file (on ext4) and vfio-pci -- This time both vfio_pin_pages_remote (which will call pin_user_pages_remote(flags | FOLL_LONGTERM)) and the pin_user_pages_fast(FOLL_WRITE | FOLL_LONGTERM) in kvm_s390_pci_aif_enable are being allowed (e.g. returning positive pin count)
->>>
->>> At least it's consistent now ;) And it might be working as expected ...
->>>
->>> In v7:
->>> * pin_user_pages_fast() succeeded
->>> * vfio_pin_pages_remote() failed
->>>
->>> But also in v7:
->>> * GUP-fast allows pinning (anonymous) pages in MAP_PRIVATE file
->>>    mappings
->>> * Ordinary GUP allows pinning pages in MAP_PRIVATE file mappings
->>>
->>> In v8:
->>> * pin_user_pages_fast() succeeds
->>> * vfio_pin_pages_remote() succeeds
->>>
->>> But also in v8:
->>> * GUP-fast allows pinning (anonymous) pages in MAP_PRIVATE file
->>>    mappings
->>> * Ordinary GUP allows pinning pages in MAP_PRIVATE file mappings
->>>
->>>
->>> I have to speculate, but ... could it be that you are using a private mapping?
->>>
->>> In QEMU, unfortunately, the default for memory-backend-file is "share=off" (private) ... for memory-backend-memfd it is "share=on" (shared). The default is stupid ...
->>>
->>> If you invoke QEMU manually, can you specify "share=on" for the memory-backend-file? I thought libvirt would always default to "share=on" for file mappings (everything else doesn't make much sense) ... but you might have to specify
->>>      <access mode="shared"/>
->>> in addition to
->>>      <source type="file"/>
->>>
->>
->> Ah, there we go.  Yes, I was using the default of share=off.  When I instead specify share=on, now the pins will fail in both cases.
->>
+On 03.05.23 00:51, Lorenzo Stoakes wrote:
+> vma_wants_writenotify() is specifically intended for setting PTE page table
+> flags, accounting for existing page table flag state and whether the
+> filesystem performs dirty tracking.
 > 
-> Out of curiosity, how does that manifest?
+> Separate out the notions of dirty tracking and PTE write notify checking in
+> order that we can invoke the dirty tracking check from elsewhere.
 > 
-> I assume the VM is successfully created and as Linux tries initializing and using the device, we get a bunch of errors inside the VM, correct?
+> Note that this change introduces a very small duplicate check of the
+> separated out vm_ops_needs_writenotify() and vma_is_shared_writable()
+> functions. This is necessary to avoid making vma_needs_dirty_tracking()
+> needlessly complicated (e.g. passing flags or having it assume checks were
+> already performed). This is small enough that it doesn't seem too
+> egregious.
 > 
+> We check to ensure the mapping is shared writable, as any GUP caller will
+> be safe - MAP_PRIVATE mappings will be CoW'd and read-only file-backed
+> shared mappings are not permitted access, even with FOLL_FORCE.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Reviewed-by: Mika Penttilä <mpenttil@redhat.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   include/linux/mm.h |  1 +
+>   mm/mmap.c          | 53 ++++++++++++++++++++++++++++++++++------------
+>   2 files changed, 41 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 27ce77080c79..7b1d4e7393ef 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2422,6 +2422,7 @@ extern unsigned long move_page_tables(struct vm_area_struct *vma,
+>   #define  MM_CP_UFFD_WP_ALL                 (MM_CP_UFFD_WP | \
+>   					    MM_CP_UFFD_WP_RESOLVE)
+>   
+> +bool vma_needs_dirty_tracking(struct vm_area_struct *vma);
+>   int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot);
+>   static inline bool vma_wants_manual_pte_write_upgrade(struct vm_area_struct *vma)
+>   {
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 5522130ae606..fa7442e44cc2 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1475,6 +1475,42 @@ SYSCALL_DEFINE1(old_mmap, struct mmap_arg_struct __user *, arg)
+>   }
+>   #endif /* __ARCH_WANT_SYS_OLD_MMAP */
+>   
+> +/* Do VMA operations imply write notify is required? */
 
-Yes, that's correct.
+Nit: comment is superfluous, this is already self-documenting code.
 
-Which error comes first (an attempt at mapping something via type1 iommu or an attempt to register AEN) depends on the device type and the order of operations of the associated driver.  But in either case, you're going to see guest errors associated with that action.  mlx5 and ism give up rather quickly and just fail their probe. nvme in the guest is persistent and its actions keep re-attempting to setup AEN by issuing the associated instruction; but the associated blockdev will never show up. 
+> +static bool vm_ops_needs_writenotify(const struct vm_operations_struct *vm_ops)
+> +{
+> +	return vm_ops && (vm_ops->page_mkwrite || vm_ops->pfn_mkwrite);
+> +}
+> +
+> +/* Is this VMA shared and writable? */
+
+Nit: dito
+
+> +static bool vma_is_shared_writable(struct vm_area_struct *vma)
+> +{
+> +	return (vma->vm_flags & (VM_WRITE | VM_SHARED)) ==
+> +		(VM_WRITE | VM_SHARED);
+> +}
+> +
+> +/*
+> + * Does this VMA require the underlying folios to have their dirty state
+> + * tracked?
+> + */
+
+Nit: dito
+
+> +bool vma_needs_dirty_tracking(struct vm_area_struct *vma)
+> +{
+> +	/* Only shared, writable VMAs require dirty tracking. */
+> +	if (!vma_is_shared_writable(vma))
+> +		return false;
+> +
+> +	/* Does the filesystem need to be notified? */
+> +	if (vm_ops_needs_writenotify(vma->vm_ops))
+> +		return true;
+> +
+> +	/* Specialty mapping? */
+> +	if (vma->vm_flags & VM_PFNMAP)
+> +		return false;
+> +
+> +	/* Can the mapping track the dirty pages? */
+> +	return vma->vm_file && vma->vm_file->f_mapping &&
+> +		mapping_can_writeback(vma->vm_file->f_mapping);
+> +}
+> +
+>   /*
+>    * Some shared mappings will want the pages marked read-only
+>    * to track write events. If so, we'll downgrade vm_page_prot
+> @@ -1483,21 +1519,18 @@ SYSCALL_DEFINE1(old_mmap, struct mmap_arg_struct __user *, arg)
+>    */
+>   int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
+>   {
+> -	vm_flags_t vm_flags = vma->vm_flags;
+> -	const struct vm_operations_struct *vm_ops = vma->vm_ops;
+> -
+>   	/* If it was private or non-writable, the write bit is already clear */
+> -	if ((vm_flags & (VM_WRITE|VM_SHARED)) != ((VM_WRITE|VM_SHARED)))
+> +	if (!vma_is_shared_writable(vma))
+>   		return 0;
+>   
+>   	/* The backer wishes to know when pages are first written to? */
+> -	if (vm_ops && (vm_ops->page_mkwrite || vm_ops->pfn_mkwrite))
+> +	if (vm_ops_needs_writenotify(vma->vm_ops))
+>   		return 1;
+>   
+>   	/* The open routine did something to the protections that pgprot_modify
+>   	 * won't preserve? */
+>   	if (pgprot_val(vm_page_prot) !=
+> -	    pgprot_val(vm_pgprot_modify(vm_page_prot, vm_flags)))
+> +	    pgprot_val(vm_pgprot_modify(vm_page_prot, vma->vm_flags)))
+>   		return 0;
+>   
+>   	/*
+> @@ -1511,13 +1544,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
+>   	if (userfaultfd_wp(vma))
+>   		return 1;
+>   
+> -	/* Specialty mapping? */
+> -	if (vm_flags & VM_PFNMAP)
+> -		return 0;
+> -
+> -	/* Can the mapping track the dirty pages? */
+> -	return vma->vm_file && vma->vm_file->f_mapping &&
+> -		mapping_can_writeback(vma->vm_file->f_mapping);
+> +	return vma_needs_dirty_tracking(vma);
+>   }
+>   
+>   /*
+
+We now have duplicate vma_is_shared_writable() and 
+vm_ops_needs_writenotify() checks ...
+
+
+Maybe move the VM_PFNMAP and "/* Can the mapping track the dirty pages? 
+*/" checks into a separate helper and call that from both, 
+vma_wants_writenotify() and vma_needs_dirty_tracking() ?
+
+
+In any case
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
 
