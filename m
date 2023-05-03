@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87D46F6195
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 00:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D826F6196
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 00:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjECWyI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 18:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        id S229656AbjECWyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 18:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjECWyE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 18:54:04 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931AE44B7
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 15:54:02 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-64115eef620so8451971b3a.1
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 15:54:02 -0700 (PDT)
+        with ESMTP id S229746AbjECWyF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 18:54:05 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C5F7D80
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 15:54:03 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1ab0c697c84so21600505ad.3
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 15:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1683154442; x=1685746442;
+        d=isovalent.com; s=google; t=1683154443; x=1685746443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EcKx3nBKX8xE4I77EWn/gEVYn3xfHIo69qJzSU3VXDM=;
-        b=h15aTaaNLw+ceV+c+QIVUDdZ3UcRmPrhmZwzfT9CazYtiaTvOugavkwVnvoG3Nn2v4
-         7gXKGD/jp0CrPPTaIxC2F6RT5UYyaBhhafbW2X4Jaqc3qxAip4W1iSCfUD0darCIPQo2
-         MfGDqxQlV83WmmS8ncRc9Y3HsIaSfD2guJWAPSoIjq0/dSuJspRUeL0Fl1P1fK4FtKwh
-         oNGjhIlaGJgSsH/a/B1gkKoHGX4uP1PqgJK4RHv7MrPq5f0BZUDd1/5cRaOKchecec8i
-         yFj0WthymzuMqpYOxoakFuCR/g26rQpiqIulx4ln2EU7chIoX7Ska8RCb24gg7HgwrJ/
-         aDrQ==
+        bh=bySUk6SoSqiQ2FS6H9SXN/LOt2ukI0TjRH3U0ZGVQjs=;
+        b=OUF6kOxc9x4IGdqWXifSPNKiW7siSZnBErbuRB+LoGB5OC9PZd+DOTnzRfXtyKaySk
+         DM8IuhCJDHDX85jQK/yxHcp232MSnvEw+jc/KYZKTAqbKFNWJ6sp02zSrrpIQsedhjKt
+         xPPzWtLaRd2VLh04WScO8UrxPxi/Qkncm/1sLpp4KA8ao/tlvvwljE/GmcGCtXabMVhF
+         iuA33HhIrcY5UOa4h0loLs/CniAiYq178m1a4Ak4NZK9lT5A7v9ZlxSepmC96be9OObg
+         7Jyd/sMT9uwC0t1CVoI6GDQswCdrpAVRcS6eBNRJCtxGvd/hKDGE7TqkYdnVkSOhU7e7
+         78Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683154442; x=1685746442;
+        d=1e100.net; s=20221208; t=1683154443; x=1685746443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EcKx3nBKX8xE4I77EWn/gEVYn3xfHIo69qJzSU3VXDM=;
-        b=ICPSkcpR/xArofxwD+vPPeaOhofaXjZxOtavZJSqocu/4C6TuSHcJJyC/rXYwCAQgH
-         /EO5va1ls/dBKaKAKejrHMdpPIRsbOeIV1wO9d2uJW8/+gF4Hy/DDI57dXwPaTaD04Zp
-         oHqlG1QZGmZXBljZ0S8e2Moad7DbozHVhCDnEL4nYZ7iJT3hkle+ndcGXyybXH5BP1nP
-         QuJlA+P2z2w9Ljnwpfpf4qrtSboPjgko2z2RMyAzhYFDJZiTKodemCMPhOLCJ9U0S0ia
-         04N3fZGaS1jzeTM3rda35tju0Hzfby7LX8XXkwcJ6K5NUe3DULJCTEQhwTRTD5L/G3b5
-         xFOQ==
-X-Gm-Message-State: AC+VfDwPGmm2fXoeEsqZo8Ap9K/10CMnjbUSpLT6H3oawU7xvv5EmpFA
-        19BnjM5PCaaQxj+oZb9pCGTvYl1GU9D9i04Rxds=
-X-Google-Smtp-Source: ACHHUZ7mMRMEVLtjRRkSu1jiJQkBpNiQUEapOssD83MDtEg4/hTWOnr+suNrFfm7lUsbx7YTCNz/4g==
-X-Received: by 2002:a17:902:d2c5:b0:1a6:d0a8:c70f with SMTP id n5-20020a170902d2c500b001a6d0a8c70fmr1454819plc.5.1683154441735;
-        Wed, 03 May 2023 15:54:01 -0700 (PDT)
+        bh=bySUk6SoSqiQ2FS6H9SXN/LOt2ukI0TjRH3U0ZGVQjs=;
+        b=OmUwPTCAp2JyhgB1mhBlz5hgaHRCrhZ6QPxyXeE4zbXK5PXXTq7qK4VzQUtoL8zZbq
+         BE9f2UGtw6hjN4F6kFct8D56RkvF1lYqczApwgx9KZP72D1GWBWMQ8bEvbyf8Wse73fL
+         da9d/ZfLrFTPTUDujOfqw6wpDEAJMt6nc0aamPZILFKGeb+S4gEK/SoOz0BMw2SjAFhs
+         Z7VlNm1uR73ki7LM1BJxk3CelJ8PRQTkCzMMhlqr60mS9Gq/wJ5fdoQ8YEd5hK34HtMU
+         BI52k1J69RlfGxIZBDb1fUQfpN12hQ8NbUiKC5H9Fr3pYyjoSG0LsAXHWSpP6hNs+Z8E
+         5M6w==
+X-Gm-Message-State: AC+VfDyiVKDpW9objw03hDfGBKbx03Ujnad5HeSAbdS+iTUh0/qfTtKX
+        +ekChQZH6ZJkpHfy8uo8WSyIYGLNEYx++9/ukvU=
+X-Google-Smtp-Source: ACHHUZ50n09itwDceaumUImw0a/8+yIY01K3YF6UsjD35o7CSTk6LRGrL2A4iyyiry6Xoamwy9HWhw==
+X-Received: by 2002:a17:902:cec9:b0:1a8:626:6d9d with SMTP id d9-20020a170902cec900b001a806266d9dmr2061258plg.62.1683154442675;
+        Wed, 03 May 2023 15:54:02 -0700 (PDT)
 Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1709028a8200b001a641e4738asm2200443plo.1.2023.05.03.15.54.00
+        by smtp.gmail.com with ESMTPSA id p2-20020a1709028a8200b001a641e4738asm2200443plo.1.2023.05.03.15.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 15:54:01 -0700 (PDT)
+        Wed, 03 May 2023 15:54:02 -0700 (PDT)
 From:   Aditi Ghag <aditi.ghag@isovalent.com>
 To:     bpf@vger.kernel.org
 Cc:     kafai@fb.com, sdf@google.com, aditi.ghag@isovalent.com,
         Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH v7 bpf-next 04/10] udp: seq_file: Remove bpf_seq_afinfo from udp_iter_state
-Date:   Wed,  3 May 2023 22:53:45 +0000
-Message-Id: <20230503225351.3700208-5-aditi.ghag@isovalent.com>
+Subject: [PATCH v7 bpf-next 05/10] bpf: udp: Implement batching for sockets iterator
+Date:   Wed,  3 May 2023 22:53:46 +0000
+Message-Id: <20230503225351.3700208-6-aditi.ghag@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
 References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
@@ -71,84 +71,291 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a preparatory commit to remove the field. The field was
-previously shared between proc fs and BPF UDP socket iterators. As the
-follow-up commits will decouple the implementation for the iterators,
-remove the field. As for BPF socket iterator, filtering of sockets is
-exepected to be done in BPF programs.
+Batch UDP sockets from BPF iterator that allows for overlapping locking
+semantics in BPF/kernel helpers executed in BPF programs.  This facilitates
+BPF socket destroy kfunc (introduced by follow-up patches) to execute from
+BPF iterator programs.
+
+Previously, BPF iterators acquired the sock lock and sockets hash table
+bucket lock while executing BPF programs. This prevented BPF helpers that
+again acquire these locks to be executed from BPF iterators.  With the
+batching approach, we acquire a bucket lock, batch all the bucket sockets,
+and then release the bucket lock. This enables BPF or kernel helpers to
+skip sock locking when invoked in the supported BPF contexts.
+
+The batching logic is similar to the logic implemented in TCP iterator:
+https://lore.kernel.org/bpf/20210701200613.1036157-1-kafai@fb.com/.
 
 Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
 ---
- include/net/udp.h |  1 -
- net/ipv4/udp.c    | 25 +++++--------------------
- 2 files changed, 5 insertions(+), 21 deletions(-)
+ net/ipv4/udp.c | 205 +++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 199 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index de4b528522bb..5cad44318d71 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -437,7 +437,6 @@ struct udp_seq_afinfo {
- struct udp_iter_state {
- 	struct seq_net_private  p;
- 	int			bucket;
--	struct udp_seq_afinfo	*bpf_seq_afinfo;
- };
- 
- void *udp_seq_start(struct seq_file *seq, loff_t *pos);
 diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index c426ebafeb13..9f8c1554a9e4 100644
+index 9f8c1554a9e4..150551acab9d 100644
 --- a/net/ipv4/udp.c
 +++ b/net/ipv4/udp.c
-@@ -2993,14 +2993,16 @@ static bool seq_sk_match(struct seq_file *seq, const struct sock *sk)
- 		net_eq(sock_net(sk), seq_file_net(seq)));
+@@ -3148,6 +3148,143 @@ struct bpf_iter__udp {
+ 	int bucket __aligned(8);
+ };
+ 
++struct bpf_udp_iter_state {
++	struct udp_iter_state state;
++	unsigned int cur_sk;
++	unsigned int end_sk;
++	unsigned int max_sk;
++	int offset;
++	struct sock **batch;
++	bool st_bucket_done;
++};
++
++static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
++				      unsigned int new_batch_sz);
++static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
++{
++	struct bpf_udp_iter_state *iter = seq->private;
++	struct udp_iter_state *state = &iter->state;
++	struct net *net = seq_file_net(seq);
++	struct udp_table *udptable;
++	unsigned int batch_sks = 0;
++	bool resized = false;
++	struct sock *sk;
++
++	/* The current batch is done, so advance the bucket. */
++	if (iter->st_bucket_done) {
++		state->bucket++;
++		iter->offset = 0;
++	}
++
++	udptable = udp_get_table_seq(seq, net);
++
++again:
++	/* New batch for the next bucket.
++	 * Iterate over the hash table to find a bucket with sockets matching
++	 * the iterator attributes, and return the first matching socket from
++	 * the bucket. The remaining matched sockets from the bucket are batched
++	 * before releasing the bucket lock. This allows BPF programs that are
++	 * called in seq_show to acquire the bucket lock if needed.
++	 */
++	iter->cur_sk = 0;
++	iter->end_sk = 0;
++	iter->st_bucket_done = false;
++	batch_sks = 0;
++
++	for (; state->bucket <= udptable->mask; state->bucket++) {
++		struct udp_hslot *hslot2 = &udptable->hash2[state->bucket];
++
++		if (hlist_empty(&hslot2->head)) {
++			iter->offset = 0;
++			continue;
++		}
++
++		spin_lock_bh(&hslot2->lock);
++		udp_portaddr_for_each_entry(sk, &hslot2->head) {
++			if (seq_sk_match(seq, sk)) {
++				/* Resume from the last iterated socket at the
++				 * offset in the bucket before iterator was stopped.
++				 */
++				if (iter->offset) {
++					--iter->offset;
++					continue;
++				}
++				if (iter->end_sk < iter->max_sk) {
++					sock_hold(sk);
++					iter->batch[iter->end_sk++] = sk;
++				}
++				batch_sks++;
++			}
++		}
++		spin_unlock_bh(&hslot2->lock);
++
++		if (iter->end_sk)
++			break;
++
++		/* Reset the current bucket's offset before moving to the next bucket. */
++		iter->offset = 0;
++	}
++
++	/* All done: no batch made. */
++	if (!iter->end_sk)
++		return NULL;
++
++	if (iter->end_sk == batch_sks) {
++		/* Batching is done for the current bucket; return the first
++		 * socket to be iterated from the batch.
++		 */
++		iter->st_bucket_done = true;
++		goto done;
++	}
++	if (!resized && !bpf_iter_udp_realloc_batch(iter, batch_sks * 3 / 2)) {
++		resized = true;
++		/* After allocating a larger batch, retry one more time to grab
++		 * the whole bucket.
++		 */
++		state->bucket--;
++		goto again;
++	}
++done:
++	return iter->batch[0];
++}
++
++static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
++{
++	struct bpf_udp_iter_state *iter = seq->private;
++	struct sock *sk;
++
++	/* Whenever seq_next() is called, the iter->cur_sk is
++	 * done with seq_show(), so unref the iter->cur_sk.
++	 */
++	if (iter->cur_sk < iter->end_sk) {
++		sock_put(iter->batch[iter->cur_sk++]);
++		++iter->offset;
++	}
++
++	/* After updating iter->cur_sk, check if there are more sockets
++	 * available in the current bucket batch.
++	 */
++	if (iter->cur_sk < iter->end_sk)
++		sk = iter->batch[iter->cur_sk];
++	else
++		/* Prepare a new batch. */
++		sk = bpf_iter_udp_batch(seq);
++
++	++*pos;
++	return sk;
++}
++
++static void *bpf_iter_udp_seq_start(struct seq_file *seq, loff_t *pos)
++{
++	/* bpf iter does not support lseek, so it always
++	 * continue from where it was stop()-ped.
++	 */
++	if (*pos)
++		return bpf_iter_udp_batch(seq);
++
++	return SEQ_START_TOKEN;
++}
++
+ static int udp_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
+ 			     struct udp_sock *udp_sk, uid_t uid, int bucket)
+ {
+@@ -3168,18 +3305,37 @@ static int bpf_iter_udp_seq_show(struct seq_file *seq, void *v)
+ 	struct bpf_prog *prog;
+ 	struct sock *sk = v;
+ 	uid_t uid;
++	int ret;
+ 
+ 	if (v == SEQ_START_TOKEN)
+ 		return 0;
+ 
++	lock_sock(sk);
++
++	if (unlikely(sk_unhashed(sk))) {
++		ret = SEQ_SKIP;
++		goto unlock;
++	}
++
+ 	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
+ 	meta.seq = seq;
+ 	prog = bpf_iter_get_info(&meta, false);
+-	return udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
++	ret = udp_prog_seq_show(prog, &meta, v, uid, state->bucket);
++
++unlock:
++	release_sock(sk);
++	return ret;
++}
++
++static void bpf_iter_udp_put_batch(struct bpf_udp_iter_state *iter)
++{
++	while (iter->cur_sk < iter->end_sk)
++		sock_put(iter->batch[iter->cur_sk++]);
  }
  
-+static const struct seq_operations bpf_iter_udp_seq_ops;
- static struct udp_table *udp_get_table_seq(struct seq_file *seq,
- 					   struct net *net)
+ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
  {
--	const struct udp_iter_state *state = seq->private;
- 	const struct udp_seq_afinfo *afinfo;
++	struct bpf_udp_iter_state *iter = seq->private;
+ 	struct bpf_iter_meta meta;
+ 	struct bpf_prog *prog;
  
--	if (state->bpf_seq_afinfo)
-+#ifdef CONFIG_BPF_SYSCALL
-+	if (seq->op == &bpf_iter_udp_seq_ops)
- 		return net->ipv4.udp_table;
-+#endif
+@@ -3190,12 +3346,15 @@ static void bpf_iter_udp_seq_stop(struct seq_file *seq, void *v)
+ 			(void)udp_prog_seq_show(prog, &meta, v, 0, 0);
+ 	}
  
- 	afinfo = pde_data(file_inode(seq->file));
- 	return afinfo->udp_table ? : net->ipv4.udp_table;
-@@ -3424,28 +3426,11 @@ DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
+-	udp_seq_stop(seq, v);
++	if (iter->cur_sk < iter->end_sk) {
++		bpf_iter_udp_put_batch(iter);
++		iter->st_bucket_done = false;
++	}
+ }
  
+ static const struct seq_operations bpf_iter_udp_seq_ops = {
+-	.start		= udp_seq_start,
+-	.next		= udp_seq_next,
++	.start		= bpf_iter_udp_seq_start,
++	.next		= bpf_iter_udp_seq_next,
+ 	.stop		= bpf_iter_udp_seq_stop,
+ 	.show		= bpf_iter_udp_seq_show,
+ };
+@@ -3424,21 +3583,55 @@ static struct pernet_operations __net_initdata udp_sysctl_ops = {
+ DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta *meta,
+ 		     struct udp_sock *udp_sk, uid_t uid, int bucket)
+ 
++static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
++				      unsigned int new_batch_sz)
++{
++	struct sock **new_batch;
++
++	new_batch = kvmalloc_array(new_batch_sz, sizeof(*new_batch),
++				   GFP_USER | __GFP_NOWARN);
++	if (!new_batch)
++		return -ENOMEM;
++
++	bpf_iter_udp_put_batch(iter);
++	kvfree(iter->batch);
++	iter->batch = new_batch;
++	iter->max_sk = new_batch_sz;
++
++	return 0;
++}
++
++#define INIT_BATCH_SZ 16
++
  static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info *aux)
  {
--	struct udp_iter_state *st = priv_data;
--	struct udp_seq_afinfo *afinfo;
--	int ret;
--
--	afinfo = kmalloc(sizeof(*afinfo), GFP_USER | __GFP_NOWARN);
--	if (!afinfo)
--		return -ENOMEM;
--
--	afinfo->family = AF_UNSPEC;
--	afinfo->udp_table = NULL;
--	st->bpf_seq_afinfo = afinfo;
--	ret = bpf_iter_init_seq_net(priv_data, aux);
--	if (ret)
--		kfree(afinfo);
--	return ret;
-+	return bpf_iter_init_seq_net(priv_data, aux);
+-	return bpf_iter_init_seq_net(priv_data, aux);
++	struct bpf_udp_iter_state *iter = priv_data;
++	int ret;
++
++	ret = bpf_iter_init_seq_net(priv_data, aux);
++	if (ret)
++		return ret;
++
++	ret = bpf_iter_udp_realloc_batch(iter, INIT_BATCH_SZ);
++	if (ret)
++		bpf_iter_fini_seq_net(priv_data);
++
++	return ret;
  }
  
  static void bpf_iter_fini_udp(void *priv_data)
  {
--	struct udp_iter_state *st = priv_data;
--
--	kfree(st->bpf_seq_afinfo);
++	struct bpf_udp_iter_state *iter = priv_data;
++
  	bpf_iter_fini_seq_net(priv_data);
++	kvfree(iter->batch);
  }
  
+ static const struct bpf_iter_seq_info udp_seq_info = {
+ 	.seq_ops		= &bpf_iter_udp_seq_ops,
+ 	.init_seq_private	= bpf_iter_init_udp,
+ 	.fini_seq_private	= bpf_iter_fini_udp,
+-	.seq_priv_size		= sizeof(struct udp_iter_state),
++	.seq_priv_size		= sizeof(struct bpf_udp_iter_state),
+ };
+ 
+ static struct bpf_iter_reg udp_reg_info = {
 -- 
 2.34.1
 
