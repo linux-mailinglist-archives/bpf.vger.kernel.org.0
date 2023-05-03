@@ -2,80 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EF46F5E0D
-	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 20:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209AD6F5E7C
+	for <lists+bpf@lfdr.de>; Wed,  3 May 2023 20:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbjECSjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 14:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
+        id S229844AbjECStG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 14:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjECSjq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 14:39:46 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F1D4EDD;
-        Wed,  3 May 2023 11:39:45 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-94f7a0818aeso908176166b.2;
-        Wed, 03 May 2023 11:39:45 -0700 (PDT)
+        with ESMTP id S229714AbjECStA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 14:49:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F0A6A75;
+        Wed,  3 May 2023 11:48:46 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1aaff9c93a5so25882955ad.2;
+        Wed, 03 May 2023 11:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683139184; x=1685731184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hXawo9kiP+Vmzoz/c2lQQeKzlye9OM2UYu1dHvknnKI=;
-        b=P5g/bc4CJxpECNiGqxkyLXl2+x+qXT/PsfKky592bnfOuaqHgctz1pzcGnk7c7DLnZ
-         Gzc0Hpanaeq/vQIbd13QXdC59a3FWr6QSzLyePt81dZE6WZ+5vh4Sv80Mx16dm6IOjrR
-         d+ZMEk7AvVPLGPFJ1k+0BD7CwwGzlQECTbpvZyIOhzTzmmoKObZlQlax8OvfOCYJDiNW
-         +U5pwJ7ao1sl+qOm1RX3j+4U2sQmXbjfP2himr8IuoMYgYp8OzdKeHnHoFPrhX1rsf5m
-         Bdj6V2AWvEAxoTb2IeiIo1Cbx69kfo7zi/80chUqTmKT8tdSP02tNURGpoaZ5cTyzva9
-         393g==
+        d=gmail.com; s=20221208; t=1683139725; x=1685731725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHGrLK6Ja7GJoRBWTFAfctBGCxtJTjuvz3zG1yvxji8=;
+        b=qsCSq2eb6r9Ux5c3TJ9Tzn/SvJv6cyiMXqW4o+hZDWP2QsiGOvf9Gn0CYAKs2Zq95A
+         Kawo4z+t3xw8qMkyMjJrI1ewUHE1LHI9TxKL+1OkIHc2Arr9lER2POdmSs2RcNH50wAQ
+         t6Aw4i3Bmwme+POeAH0/VUs8+6cktrCrsXPwPZk9AAdMn4V/Jh5NnsHTnmPukxxhchiq
+         foTY321oZnnBxbTuLEvXaesI6vUyl6P/4/WliefHDYy4UKmx+MwLfZvl/8xehNn1ibQc
+         t/F2kGAO43gbR0Enm6N7QsSpbyQTkRjhC6YIf8nGh+UFNbJJrbOs5v1OF74wkzyvOpgQ
+         Og+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683139184; x=1685731184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hXawo9kiP+Vmzoz/c2lQQeKzlye9OM2UYu1dHvknnKI=;
-        b=L7HxfH+wr0+eHqIXwRz4gsJuxCKBQQ4cCwKgbaoX8TK1eSoe8tHb/DjW+uGOfXH2Ho
-         Hl5GK6q5NuoWkeoUHH9tFuQp97f0yAY72fvFc9Wp+ygYzhJRVaATWZ53hFXCMdseHQwg
-         ONXIlLPnkeUBe9whipeUFjk0Ma1cv1rGtWNqs3agl9uy/ARJ8wuUSwCdgenWfJggMbVP
-         WbBpMf0mEcfMuQx8uBK+Z1MuvNZD2AipuF7wSM5Bz0+vfQLTsfmFSA9iC2WSBDYn4m2z
-         1A+Ki3YQb+MriQqN6RcqFfDuGnyZ1JCXxoFLURKQeKf7OO2KHcwRdQd3I6xSWyJooDEb
-         Lyow==
-X-Gm-Message-State: AC+VfDy44OizYVxzVF6suH/S91CnqdpXzuzypMhN+nBSW4ELz3h2fDDT
-        FgZA2aikp5KRbdhF2C5KVE8uEk+f6hC658bnhIU=
-X-Google-Smtp-Source: ACHHUZ4FqJhmXnUo/9MSvsx/rBHxAFjruUTH3c2eTKi/Fu9MUkFzjkK2ZGcho5F9Qo3igWXoBGNqZGNw/UV+gQwQJ7M=
-X-Received: by 2002:a17:907:1b08:b0:957:1df0:9cbf with SMTP id
- mp8-20020a1709071b0800b009571df09cbfmr4694843ejc.19.1683139184132; Wed, 03
- May 2023 11:39:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230406004018.1439952-1-drosen@google.com> <20230406004018.1439952-2-drosen@google.com>
- <CAEf4BzbyX3i6k5eL6D-5enU+u58nVn_fK28zNBJ4w_Vm-+RiMQ@mail.gmail.com>
- <CAADnVQ+jQG95kVqkajr=zz2-vs24XedEXcBgSx29oAjqUsFn2g@mail.gmail.com> <CA+PiJmST4WUH061KaxJ4kRL=fqy3X6+Wgb2E2rrLT5OYjUzxfQ@mail.gmail.com>
-In-Reply-To: <CA+PiJmST4WUH061KaxJ4kRL=fqy3X6+Wgb2E2rrLT5OYjUzxfQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 May 2023 11:39:32 -0700
-Message-ID: <CAEf4Bza3ONHzV0OPu2q17g7Z6w4PD8hMAmjP6ov-hKstt7r55A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] bpf: verifier: Accept dynptr mem as mem in helpers
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        d=1e100.net; s=20221208; t=1683139725; x=1685731725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHGrLK6Ja7GJoRBWTFAfctBGCxtJTjuvz3zG1yvxji8=;
+        b=O+YDZu9iUUN1xVBQjFKC7FT+FgUQPuQVP2fvdFA4PN3jQOq5kMJq+DOu3HXYxZUK17
+         ZyPo/tKFzj+uE59lkwoMjEqXRSdXTRKHktPZ3Mnx5LNtWQvjA1biylUaoB+Aaiju8cdc
+         0Ytl9hTpOPJb2UKVF23te/tkBueK4Hn1DUw8skLFxiobehUupgHEYJei5cI+f0THmYNp
+         +ttiaDhNo5Zaf6dxgXwZxlgSpXDZKz/1YIDsU3VUDIeY9Je35lBtOy6fihqTZcy+doV9
+         3yyy2rMCjJsjJclX2TJdR1tutMGcTk6Aov4LSi8M38f7eqHHjzqYGRCJ2uurN273sWNh
+         Nqkg==
+X-Gm-Message-State: AC+VfDww3Hp2T5L3nfJqBzZT/r9Q6X+J1HyS4K9LDQ7+WTAUzzpq6kZ/
+        gfvY3p8VRia9bjsxrCyW+i4=
+X-Google-Smtp-Source: ACHHUZ7gkpK5QkAqbpxb1s6Xu7FcjLy4k2Y3b6K6injGlNKCp8lAxDNBikmYO2ajzPQiZM1jA3NODA==
+X-Received: by 2002:a17:903:22c6:b0:1aa:e650:bac3 with SMTP id y6-20020a17090322c600b001aae650bac3mr1299566plg.0.1683139725068;
+        Wed, 03 May 2023 11:48:45 -0700 (PDT)
+Received: from MacBook-Pro-6.local ([2620:10d:c090:500::6:f64b])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001aaecc0b6ffsm6780097plc.160.2023.05.03.11.48.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 11:48:44 -0700 (PDT)
+Date:   Wed, 3 May 2023 11:48:41 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mykola Lysenko <mykolal@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Message-ID: <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230429101215.111262-4-houtao@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,26 +80,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 1, 2023 at 6:12=E2=80=AFPM Daniel Rosenberg <drosen@google.com>=
- wrote:
->
-> On Thu, Apr 6, 2023 at 3:13=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > +1
-> > All of the DYNPTR_TYPE_FLAG_MASK flags cannot appear in type =3D=3D reg=
-->type
-> > here.
-> > They are either dynamic flags inside bpf_dynptr_kern->size
-> > or in arg_type.
-> > Like in bpf_dynptr_from_mem_proto.
->
-> Looking at this a bit more, I believe this is to enforce packet
-> restrictions for DYNPTR_TYPE_SKB and DYNPTR_TYPE_XDP. When a helper
-> function alters a packet, dynptr slices of it are invalidated. If I
-> remove that annotation entirely, then the invalid_data_slice family of
-> tests fail. bpf_dynptr_from_mem_proto is fine since that's just local
-> dynptrs, which don't have any extra limitations.
+On Sat, Apr 29, 2023 at 06:12:12PM +0800, Hou Tao wrote:
+> +
+> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+> +{
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	/* In case a NMI-context bpf program is also freeing object. */
+> +	if (local_inc_return(&c->active) == 1) {
+> +		bool try_queue_work = false;
+> +
+> +		/* kworker may remove elements from prepare_reuse_head */
+> +		raw_spin_lock(&c->reuse_lock);
+> +		if (llist_empty(&c->prepare_reuse_head))
+> +			c->prepare_reuse_tail = llnode;
+> +		__llist_add(llnode, &c->prepare_reuse_head);
+> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
+> +			/* Zero out prepare_reuse_cnt early to prevent
+> +			 * unnecessary queue_work().
+> +			 */
+> +			c->prepare_reuse_cnt = 0;
+> +			try_queue_work = true;
+> +		}
+> +		raw_spin_unlock(&c->reuse_lock);
+> +
+> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
+> +			/* Use reuse_cb_in_progress to indicate there is
+> +			 * inflight reuse kworker or reuse RCU callback.
+> +			 */
+> +			atomic_inc(&c->reuse_cb_in_progress);
+> +			/* Already queued */
+> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
 
+As Martin pointed out queue_work() is not safe here.
+The raw_spin_lock(&c->reuse_lock); earlier is not safe either.
+For the next version please drop workers and spin_lock from unit_free/alloc paths.
+If lock has to be taken it should be done from irq_work.
+Under no circumstances we can use alloc_workqueue(). No new kthreads.
 
-Ah, ok, thanks for investigating!
+We can avoid adding new flag to bpf_mem_alloc to reduce the complexity
+and do roughly equivalent of REUSE_AFTER_RCU_GP unconditionally in the following way:
+
+- alloc_bulk() won't be trying to steal from c->free_by_rcu.
+
+- do_call_rcu() does call_rcu(&c->rcu, __free_rcu) instead of task-trace version.
+
+- rcu_trace_implies_rcu_gp() is never used.
+
+- after RCU_GP __free_rcu() moves all waiting_for_gp elements into 
+  a size specific link list per bpf_mem_alloc (not per bpf_mem_cache which is per-cpu)
+  and does call_rcu_tasks_trace
+
+- Let's call this list ma->free_by_rcu_tasks_trace
+  (only one list for bpf_mem_alloc with known size or NUM_CACHES such lists when size == 0 at init)
+
+- any cpu alloc_bulk() can steal from size specific ma->free_by_rcu_tasks_trace list that
+  is protected by ma->spin_lock (1 or NUM_CACHES such locks)
+
+- ma->waiting_for_gp_tasks_trace will be freeing elements into slab
+
+What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
+Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
+(while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
+
+After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
+Probably usage of bpf_mem_alloc in local storage can be simplified as well.
+Martin wdyt?
+
+I think this approach adds minimal complexity to bpf_mem_alloc while solving all existing pain points
+including needs of qp-trie.
