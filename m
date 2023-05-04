@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-20-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-21-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A65456F76DB
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 454496F76E3
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:22:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E168B1C214D5
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 20:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82EC51C21680
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 20:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9085919BCE;
-	Thu,  4 May 2023 19:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1BB156E1;
+	Thu,  4 May 2023 19:52:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE9719BA8
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:52:10 +0000 (UTC)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB34AD37;
-	Thu,  4 May 2023 12:51:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C222D156DB
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:52:49 +0000 (UTC)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9EE23A04;
+	Thu,  4 May 2023 12:52:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 021CE6382A;
-	Thu,  4 May 2023 19:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A8FCC433A0;
-	Thu,  4 May 2023 19:50:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2D1A463855;
+	Thu,  4 May 2023 19:51:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0618C433D2;
+	Thu,  4 May 2023 19:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683229816;
-	bh=lOBkcsDzQUuW9Pi45KkisUhzKMdnKzR9v4PV7zWt69I=;
+	s=k20201202; t=1683229875;
+	bh=pmOPMzuPiL8Ga03MT73efD/AV8WBuz1sppmxcNEbGV8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uh4Oi4AN3hK3a6ruK3NijplZtWYNhc59Ec3egIyPrYmtIOcVh8waUDNRYEKDi1K3q
-	 TwaPUNX7X+5p/BWrK/8Ua8n4uumexDvlH0ov99qhZ+8G8Y9b6qeO9gSLC8iq+3noAe
-	 fLetfDvcV4kkEfYo+OKEDOL2hH7ONQosuGprqKW84yn1mgZrDVUdjImG5lVuHnfv4G
-	 aRU771N0QD5DHO3Keb8rizAn1hd8JoQQLQoteIf1e1clsiJPjNT+jFnyfkqrMYh3BX
-	 87O0lNC35XW6Q5iedJJkqLCWOTHt91n8kVJb81MTfwWa2nOsw4+AYXZwHZNcEC1glx
-	 bEj3I1DyejcRg==
+	b=jDpDlfaEJf5gquQzDdIzLI77J5KFQ2scCZYAUz+MuefPIX5GIWUrtJJblxzhEmeRY
+	 1qSP570SE+9xYIEK2tDcFv3yLzxE5ybtv9v340cs4zvOC/oAT0Rz3Eyrw6zgzevXHB
+	 Wvl6El1yNLcmJlEAXRtbPZai4mfgOcxjPbT2vNmTOE2hAD808n26/Fu8mX6sBK0lYw
+	 ghcjgRMZ2vwVcZGMNMkIM3mqXT/8wwbAMXgPtCP0OQ3BwYnRMcfnVdKtODPo8MrzLY
+	 UwBMkUA6sKHpyVuHWUqnegE3YuLfONat4cttOVRNtrneQlMZqlOKvHPGX171j48VKy
+	 yVZshAh/M/JLg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,12 +47,12 @@ Cc: Hao Zeng <zenghao@kylinos.cn>,
 	ast@kernel.org,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 16/24] samples/bpf: Fix fout leak in hbm's run_bpf_prog
-Date: Thu,  4 May 2023 15:49:29 -0400
-Message-Id: <20230504194937.3808414-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 14/18] samples/bpf: Fix fout leak in hbm's run_bpf_prog
+Date: Thu,  4 May 2023 15:50:36 -0400
+Message-Id: <20230504195042.3808716-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230504194937.3808414-1-sashal@kernel.org>
-References: <20230504194937.3808414-1-sashal@kernel.org>
+In-Reply-To: <20230504195042.3808716-1-sashal@kernel.org>
+References: <20230504195042.3808716-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,8 +62,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,10 +85,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
-index ff4c533dfac29..8e48489b96ae9 100644
+index e0fbab9bec83e..6d6d4e4ea8437 100644
 --- a/samples/bpf/hbm.c
 +++ b/samples/bpf/hbm.c
-@@ -308,6 +308,7 @@ static int run_bpf_prog(char *prog, int cg_id)
+@@ -307,6 +307,7 @@ static int run_bpf_prog(char *prog, int cg_id)
  		fout = fopen(fname, "w");
  		fprintf(fout, "id:%d\n", cg_id);
  		fprintf(fout, "ERROR: Could not lookup queue_stats\n");
