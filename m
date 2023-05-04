@@ -1,71 +1,72 @@
-Return-Path: <bpf+bounces-51-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7446D6F7966
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:52:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614276F7967
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A49A21C215B0
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:51:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 774EC1C215B0
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8D4C15D;
-	Thu,  4 May 2023 22:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63096C15B;
+	Thu,  4 May 2023 22:51:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8756156FB
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 22:51:46 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A495710F5
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 15:51:45 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-965d2749e2eso53006066b.1
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 15:51:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1D4156FB
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 22:51:53 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FC6A5CC
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 15:51:51 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-50bd37ca954so21835498a12.0
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 15:51:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683240705; x=1685832705;
+        d=gmail.com; s=20221208; t=1683240710; x=1685832710;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gmEg8kDK3lUpXqxzECc7b2DzwafaRdlo5aU2Xb/wJhE=;
-        b=XF3RVK2n6h1bytVpWnFBWd8aLEhXITsMw7kNzHsh7YsgfrncNuiexdOoa/aLTblIQS
-         UCL3gjRq5kHFNBq0M4jXwK/sEl0Y56IRFCVcO2/c28Fc3RHD5vMvXOoO0dFizOCROpF2
-         1cO9FOd/lRJS8Z/yrRwy8k6vhYcc5iT2PmxBJMFS9ia+eGc99dBpP80MQlJYpo8cP0+t
-         S4x7Zp6EESOhYePap2eDUTQiYTwMOpYUUgc1CKWZbfTRSmDecbE490xFHuXA3SweK2+Q
-         OaEhQDQH2WeLt4WDEOmQ+Rc7f+C+lOFe7BqJCrSmFWsITB3QoIC7u0Pofsylm89596es
-         9oEw==
+        bh=xS0dT1X/Z3mCP0O0YgAiu1gjV8/3HGBclaUjqd89Of8=;
+        b=Wb6HRvh/XcWXkD/v0hqOJmoCbAJ9UpikE5hgwDnJLozC5fcHhZjJ+vAr3docGVoUWI
+         mWxqiUxJMP2j/p5yw9qfTh8LbsnEGR6011eUdRHnwaZV/cLjN+RuNtcv6vTyk1zi1Hv8
+         oZXGx2mNVRUGu3BL97EhmI2uc3QCHgcLM/P+aSbIQrtWfTihtIwLIjlNbFSfzBHpPT4c
+         DftLcF5PepBAgW+w0CN8E800ho/5Y4IQ4f0+JFtxr5vsv9i1yEz8GGVE0YhuZI3dgag8
+         LbRJ/eNNsn1f9rMTEYYKhYcIS5EwHxDXY8m0xVJsho8PHUGHvdG2OOuxDHz6YBwx2Bom
+         yeBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683240705; x=1685832705;
+        d=1e100.net; s=20221208; t=1683240710; x=1685832710;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gmEg8kDK3lUpXqxzECc7b2DzwafaRdlo5aU2Xb/wJhE=;
-        b=WeQZEr+7KtemuPFvTxUhJ8oavLrcH+fYPZkY3z+pEKuvhzyXhljZUpDm0r7GhTlj+z
-         hncYb8PnFTIglHJS6tLg9TYo90VPvuvmhCV+1Juvd3f6iALoGyjQXBVMTKWC+gxulF2O
-         CySxtRl36tVndLS8V54+bbloaO+fc7LG2nU0m2tGmy9me0QQ/3dh8Q/zDE2oZ9k7KvHV
-         +cMlsMthwbJAOsU80BRRDlDimYUaqBi+fI8D1MDBxMWKDB33yILiIEpoz2Fxx8RvxKZu
-         eB9ErXecGsl1Xz7GGoEvo/sWordJjVUt7rgTOaXI7c6dBUvESwZ6p+106EZXJyGt40MH
-         Nblw==
-X-Gm-Message-State: AC+VfDyICuGgny+QfKUsq0YwmE+HggVQt5YLHc5+zyc4aGeSR1LkQXrg
-	eVdB6GmdBFnkZaZb0Zg2ILDq2DdpL2KMGLFvm9E=
-X-Google-Smtp-Source: ACHHUZ5YKPOzVoFaVGK6JAiX+KWqMrhbTf+2DHp1mqYFkLiOGrCYKMFg8oNXtDU+KIOMkRHzuAn5J0JHhKJFGDx8UaA=
-X-Received: by 2002:a17:907:944e:b0:933:be1:8f4f with SMTP id
- dl14-20020a170907944e00b009330be18f4fmr392102ejc.9.1683240705136; Thu, 04 May
- 2023 15:51:45 -0700 (PDT)
+        bh=xS0dT1X/Z3mCP0O0YgAiu1gjV8/3HGBclaUjqd89Of8=;
+        b=Kda2eRiu5hiTQeYXccX2Cw7E/rZL1NC/nODamFEY4UnkVIrDVgOsIuaarv0VeDx1v/
+         K5u+rz9/gYrW01dGR5HsI9PEBM6cx45YgQu/8qgWio+LhGv4L0W1puQaHzYhVFyhAy8C
+         rwIyoOhodf7RZgfe8rNWpD1vamuPtEzt+OV/rdo9bye3Q04EuAuum2dQDz5K05S8rDDm
+         wHCwHZY4q/Zc9xMZePT73h1vnZCTvqTbNSqt24jD/9MOPvhsBpw3W2XDwpPHZa+uNNDe
+         F3zhVkSMP8LzXDF3PKJSxajX18k1oF/S9qAfMUERDFpvp4QE2ap4JlD1+dIKviAEhd9E
+         LsHg==
+X-Gm-Message-State: AC+VfDymEskoeCah4Xbdlmj2wdXVkQjK3rUJabSibxlVRssTSeEPMSMc
+	VFJnCzhS7hdq/9tmbqz3+yI+SyB1g+BxwIpBF7MLM/Qm
+X-Google-Smtp-Source: ACHHUZ7PAj/GXYIT6iJq6NQMvYw0wuLf93qKPKJf6RR3nhFTSM3qeR6SuQsf1oXdWYY1my2bf0sLLk313iUtyjOFk10=
+X-Received: by 2002:a17:907:1c0c:b0:94a:653b:ba41 with SMTP id
+ nc12-20020a1709071c0c00b0094a653bba41mr253627ejc.15.1683240710156; Thu, 04
+ May 2023 15:51:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230502230619.2592406-1-andrii@kernel.org> <20230502230619.2592406-10-andrii@kernel.org>
- <20230504220941.rppjhdmnydlpm7ig@dhcp-172-26-102-232.dhcp.thefacebook.com>
-In-Reply-To: <20230504220941.rppjhdmnydlpm7ig@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230502230619.2592406-1-andrii@kernel.org> <20230502230619.2592406-11-andrii@kernel.org>
+ <20230504222033.gw64tn73fverqccf@dhcp-172-26-102-232.dhcp.thefacebook.com>
+In-Reply-To: <20230504222033.gw64tn73fverqccf@dhcp-172-26-102-232.dhcp.thefacebook.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 May 2023 15:51:32 -0700
-Message-ID: <CAEf4BzbNZX15oxbXszzUY8U6QWHKFDrRk-hk67usd_4ZhfEEVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 09/10] bpf: use recorded bpf_capable flag in JIT code
+Date: Thu, 4 May 2023 15:51:38 -0700
+Message-ID: <CAEf4BzbuUvJ6zLvJJpMRc6jkx0GqbWdPFKi2GJ7G1WsjXpeUog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 10/10] bpf: consistenly use program's recorded
+ capabilities in BPF verifier
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
@@ -78,29 +79,37 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 4, 2023 at 3:09=E2=80=AFPM Alexei Starovoitov
+On Thu, May 4, 2023 at 3:20=E2=80=AFPM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, May 02, 2023 at 04:06:18PM -0700, Andrii Nakryiko wrote:
-> >
-> > -int bpf_jit_charge_modmem(u32 size)
-> > +int bpf_jit_charge_modmem(u32 size, const struct bpf_prog *prog)
+> On Tue, May 02, 2023 at 04:06:19PM -0700, Andrii Nakryiko wrote:
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 4d057d39c286..c0d60da7e0e0 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -661,7 +661,7 @@ static bool bpf_prog_kallsyms_candidate(const struc=
+t bpf_prog *fp)
+> >  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
 > >  {
-> >       if (atomic_long_add_return(size, &bpf_jit_current) > READ_ONCE(bp=
-f_jit_limit)) {
-> > -             if (!bpf_capable()) {
-> > -                     atomic_long_sub(size, &bpf_jit_current);
-> > -                     return -EPERM;
-> > -             }
-> > +             if (prog ? prog->aux->bpf_capable : bpf_capable())
-> > +                     return 0;
+> >       if (!bpf_prog_kallsyms_candidate(fp) ||
+> > -         !bpf_capable())
+> > +         !fp->aux->bpf_capable)
+> >               return;
 >
-> I would drop this patch.
-> It still has to fall back to bpf_capable for trampolines and
-> its 'help' to cap_bpf is minimal. That limit on all practical systems is =
-huge.
-> It won't have any effect for your future follow ups for cap_bpf in contai=
-ners.
+> Looking at this bit made me worry about classic bpf.
+> bpf_prog_alloc_no_stats() zeros all fields include aux->bpf_capable.
+> And loading of classic progs doesn't go through bpf_check().
+> So fp->aux->bpf_capable will stay 'false' even when root loads cBPF.
+> It doesn't matter here, since bpf_prog_kallsyms_candidate() will return f=
+alse
+> for cBPF.
+>
+> Maybe we should init aux->bpf_capable in bpf_prog_alloc_no_stats()
+> to stay consistent between cBPF and eBPF ?
+> It probably has no effect, but anyone looking at crash dumps with drgn
+> will have a consistent view of aux->bpf_capable field.
 
-fair enough, will drop
+classic BPF predates my involvement with BPF, so I didn't even think
+about that. I'll check and make sure we do initialize aux->bpf_capable
+for that
 
