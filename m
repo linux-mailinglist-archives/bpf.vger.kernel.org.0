@@ -2,73 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA7B6F7151
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 19:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E139C6F720D
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 20:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjEDRmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 13:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S229535AbjEDSnx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 14:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjEDRmY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 13:42:24 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5703184;
-        Thu,  4 May 2023 10:42:18 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a5197f00e9so5776225ad.1;
-        Thu, 04 May 2023 10:42:18 -0700 (PDT)
+        with ESMTP id S229505AbjEDSnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 14:43:53 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D9B3C33
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 11:43:52 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6437c45318aso492861b3a.2
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 11:43:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683222138; x=1685814138;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oNxJTAZ9EL5DyV4TZNe9sWIgjQiMpe3voif3uF3Kb8s=;
-        b=j0YC9s8cJTnrodP5ECk0vMrFo1TNNCOBRDETiPoe5V3Iw3sBEXWrr+2t8TX235YrAp
-         EkfVAHTt8eXoJy8V8OFmlttmZZtSoCCK4qjWpjiwZCiCn7zOSSJlJkohLNGiWWgOz6P8
-         k+zxou9B9u1SfeR6rQxVGGqnJ/mREXUhASBsMPv9f6lps6gxBxLIOT8zzG+87FZ2Sjge
-         FRZLsomaSZWt/aOziZVwMvWZQWOrlwfDCVZcnoyBgTZNN7ZLzF946YrA6m/gQbnP9laF
-         nVcFN/NEh16huBlgxc0lROt8bjJ0V8XcrOMLqkVxnRila1v9iIppiYinriFclCkek0kg
-         x0zw==
+        d=google.com; s=20221208; t=1683225831; x=1685817831;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ha9RSXvIpFAnGYm0wSqKWRZJejM9l5JI9qdv5RvMa+g=;
+        b=Lz8TOEGqsTTc+2msjN7wgk8T+3A4XFGxtCDpwTR8JIEsgiS0Mz+VxITxHl64+12UsI
+         k7bWLs8E+A5+WpFnidFe/jagY9fdqr7r16ztPvcVTNzVKFu+1WXeAnwGMC0ffeL1yzcQ
+         0f2jdFNTU8HUldqcb5giNhLGS+RTBOiHFUUAGRZv0Fz+qinJdtlWXCusoc9TljXnYVTG
+         ihM5ZuxQ9zgwceYHGkS7ALq/dMbGMSn/7RPuyQe1VU5mlC/KzxL8KTLM35uabHwLBzqe
+         OgnwZTFgJMb8GhMPcOAqSZnk7d9ZcWx9reR73i1ro3j69GycSBe+HXpnCwn42ZtXyfda
+         Nmtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683222138; x=1685814138;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oNxJTAZ9EL5DyV4TZNe9sWIgjQiMpe3voif3uF3Kb8s=;
-        b=HgC7yfzB7JyJBO7+c2bavKieWGbbx6DzKJrukMzoUtzl2gontbH9ixfrkQprD369D9
-         ItNz3Kg3yBr0Cxcj8/q6dOk2jxV/0kbQNnSiALJ7v1uySxQdteDunDW9yTltlNSJjHSJ
-         TVFTrDn6UBCbUNd5hiP6QL8HmuDChMplxIJ+jz37BaPatFJJZrorjV6tfmn7LiKzlBOs
-         GOJSWOlTZMDF1hmJXPkI28vsbd6OBnzQiYB0pc7bWXhTddHVi0VaJ7m5yHmaX2wTNEXx
-         Ixtv8Uk5K0LIEZwRp92yZDvMThVO69uANCj4v/V3KB693XKOR9odcDG/FEhE4X2/7HqA
-         dTSw==
-X-Gm-Message-State: AC+VfDyCRSg25hYYTKP0/8KMj+SaxlcsarkB4TrEVgeZ2IBl++P8kF4I
-        XV7dHAeLOQ8VffgrsEW2jXs=
-X-Google-Smtp-Source: ACHHUZ6nuXnR8evkU736fKFCrEJMP9eUD+Rzrgin33+YiPGnovA4BO+FewTUW2UmbgEeJOsWnDQgSw==
-X-Received: by 2002:a17:902:c389:b0:1a9:5e33:72db with SMTP id g9-20020a170902c38900b001a95e3372dbmr4338562plg.28.1683222138274;
-        Thu, 04 May 2023 10:42:18 -0700 (PDT)
-Received: from localhost ([2605:59c8:148:ba10:c043:6b84:c4e4:75dd])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170902e9cb00b001aaf92130afsm7471835plk.116.2023.05.04.10.42.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 May 2023 10:42:17 -0700 (PDT)
-Date:   Thu, 04 May 2023 10:42:16 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, will@isovalent.com
-Message-ID: <6453ee784285e_51c92085e@john.notmuch>
-In-Reply-To: <877cto2fr2.fsf@cloudflare.com>
-References: <20230502155159.305437-1-john.fastabend@gmail.com>
- <20230502155159.305437-5-john.fastabend@gmail.com>
- <877cto2fr2.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf v7 04/13] bpf: sockmap, improved check for empty queue
+        d=1e100.net; s=20221208; t=1683225831; x=1685817831;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ha9RSXvIpFAnGYm0wSqKWRZJejM9l5JI9qdv5RvMa+g=;
+        b=g5EXWgKDuhVXcOknO2dwfwWjYwLqyBnBhR+icumzcIzgUvkzcjw/aTR3wv7ysecpTl
+         IaDKHLFebUlVbFFbDiPFgD73V1MwOBLqdtQzirZQcjIy20eb6juL8vNn0T+8CnwMYTgH
+         jGezvmwaO+mYJBRVzzfX+fS/dED4OtkzPpRB1VkO0G80NWAwztQl+SYzTPvycfJLosir
+         1w5OvnCVvc1w51aHwaxsfSRyJLXIeeYcl5pBSyzG9gBHo2peo16MA4WMt1K1JwcxBF4u
+         sSWdRJlqrgWJMoEe01i+FVFPY27qJP1D3e2BjhIcxPXdYa4CaaM7nQdP4UJLvsHvW407
+         rnhQ==
+X-Gm-Message-State: AC+VfDzeD3xxEx5p9YJLOEP6pv/oo9U3VzKNUx0OU2ibFyDEsYlL5hCE
+        CYA3DKyXNHFSA++NbVCeZ2TLp0sk76X3OUcT9v1+5DZe1OMMtsFgsCdolPiaDsd9SZqWBsCoL2l
+        sfkedlpf30O3cRBKp163nW2MEcQku1D4AxvW93Oq6kEA1zTMh/w==
+X-Google-Smtp-Source: ACHHUZ4Dyz0l0i+a58Pf5kLU4Iog38cn+f5O7k+7g09nnXUeD9HrCD2GrZsgUdgRh91yFdn0MVFf4yw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:d72:b0:643:5178:153b with SMTP id
+ n50-20020a056a000d7200b006435178153bmr807217pfv.3.1683225831447; Thu, 04 May
+ 2023 11:43:51 -0700 (PDT)
+Date:   Thu,  4 May 2023 11:43:45 -0700
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
+Message-ID: <20230504184349.3632259-1-sdf@google.com>
+Subject: [PATCH bpf-next v4 0/4] bpf: Don't EFAULT for {g,s}setsockopt with
+ wrong optlen
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,67 +69,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
-> > We noticed some rare sk_buffs were stepping past the queue when system was
-> > under memory pressure. The general theory is to skip enqueueing
-> > sk_buffs when its not necessary which is the normal case with a system
-> > that is properly provisioned for the task, no memory pressure and enough
-> > cpu assigned.
-> >
-> > But, if we can't allocate memory due to an ENOMEM error when enqueueing
-> > the sk_buff into the sockmap receive queue we push it onto a delayed
-> > workqueue to retry later. When a new sk_buff is received we then check
-> > if that queue is empty. However, there is a problem with simply checking
-> > the queue length. When a sk_buff is being processed from the ingress queue
-> > but not yet on the sockmap msg receive queue its possible to also recv
-> > a sk_buff through normal path. It will check the ingress queue which is
-> > zero and then skip ahead of the pkt being processed.
-> >
-> > Previously we used sock lock from both contexts which made the problem
-> > harder to hit, but not impossible.
-> >
-> > To fix instead of popping the skb from the queue entirely we peek the
-> > skb from the queue and do the copy there. This ensures checks to the
-> > queue length are non-zero while skb is being processed. Then finally
-> > when the entire skb has been copied to user space queue or another
-> > socket we pop it off the queue. This way the queue length check allows
-> > bypassing the queue only after the list has been completely processed.
-> >
-> > To reproduce issue we run NGINX compliance test with sockmap running and
-> > observe some flakes in our testing that we attributed to this issue.
-> >
-> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
-> > Tested-by: William Findlay <will@isovalent.com>
-> > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
+optval larger than PAGE_SIZE leads to EFAULT if the BPF program
+isn't careful enough. This is often overlooked and might break
+completely unrelated socket options. Instead of EFAULT,
+let's ignore BPF program buffer changes. See the first patch for
+more info.
 
-[...]
+In addition, clearly document this corner case and reset optlen
+in our selftests (in case somebody copy-pastes from them).
 
-> > @@ -677,8 +666,7 @@ static void sk_psock_backlog(struct work_struct *work)
-> >  							  len, ingress);
-> >  			if (ret <= 0) {
-> >  				if (ret == -EAGAIN) {
-> > -					sk_psock_skb_state(psock, state, skb,
-> > -							   len, off);
-> > +					sk_psock_skb_state(psock, state, len, off);
-> >  
-> >  					/* Delay slightly to prioritize any
-> >  					 * other work that might be here.
-> 
-> I've been staring at this bit and I think it doesn't matter if we update
-> psock->work_state when SK_PSOCK_TX_ENABLED has been cleared.
-> 
-> But what I think we shouldn't be doing here is scheduling
-> sk_psock_backlog again if SK_PSOCK_TX_ENABLED got cleared by
-> sk_psock_stop.
+v4:
+- ignore retval as well when optlen > PAGE_SIZE (Martin)
 
-Yeah I agree we shouldn't be scheduling with TX_ENABLED cleared. Otherwise
-while we cancle and sync the worker from the destroy path we could queue
-up more work here.
+v3:
+- don't hard-code PAGE_SIZE (Martin)
+- reset orig_optlen in getsockopt when kernel part succeeds (Martin)
 
-Also spotted another case of this where its not wrapped in a check. I guess
-we should fix it. Nice catch.
+Stanislav Fomichev (4):
+  bpf: Don't EFAULT for {g,s}setsockopt with wrong optlen
+  selftests/bpf: Update EFAULT {g,s}etsockopt selftests
+  selftests/bpf: Correctly handle optlen > 4096
+  bpf: Document EFAULT changes for sockopt
 
-v8 it is I guess thanks.
+ Documentation/bpf/prog_cgroup_sockopt.rst     |  57 ++++++++-
+ kernel/bpf/cgroup.c                           |  15 +++
+ .../bpf/prog_tests/cgroup_getset_retval.c     |  20 ++++
+ .../selftests/bpf/prog_tests/sockopt.c        | 103 +++++++++++++++-
+ .../bpf/prog_tests/sockopt_inherit.c          |  59 +++-------
+ .../selftests/bpf/prog_tests/sockopt_multi.c  | 110 +++++-------------
+ .../bpf/prog_tests/sockopt_qos_to_cc.c        |   2 +
+ .../progs/cgroup_getset_retval_getsockopt.c   |  13 +++
+ .../progs/cgroup_getset_retval_setsockopt.c   |  17 +++
+ .../selftests/bpf/progs/sockopt_inherit.c     |  18 ++-
+ .../selftests/bpf/progs/sockopt_multi.c       |  26 ++++-
+ .../selftests/bpf/progs/sockopt_qos_to_cc.c   |  10 +-
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  25 ++--
+ 13 files changed, 335 insertions(+), 140 deletions(-)
+
+-- 
+2.40.1.521.gf1e218fcd8-goog
+
