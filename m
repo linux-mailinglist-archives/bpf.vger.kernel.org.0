@@ -2,63 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6590A6F70F1
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 19:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA7B6F7151
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 19:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjEDRdw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 13:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S229675AbjEDRmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 13:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjEDRdv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 13:33:51 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F240CF
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 10:33:51 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-64115ef7234so9511801b3a.1
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 10:33:51 -0700 (PDT)
+        with ESMTP id S229494AbjEDRmY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 13:42:24 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5703184;
+        Thu,  4 May 2023 10:42:18 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a5197f00e9so5776225ad.1;
+        Thu, 04 May 2023 10:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683221630; x=1685813630;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LVU7iT+IxnD//jxQyJGnc0IbgmGhs3gwIVs0ILBHlC4=;
-        b=HOm4wNcJbhD9RojK1hKMcmf/iDDXNbDWcJM+ELOcbe/Y09GT1Y5RLWjrBeixvL/LVO
-         SfMnM7YNTlKO5x0oDlEuldx4sAcw1rIa49YLW2gtc06TgTshb2CZWIWRogn5L5QrP+WO
-         lWclFVRWb5KELDmH5wU4Loj+0UKYLZazxmPZZPEfhjusCKuqbuO9UqHqWToEiPQ87KMb
-         wFoKsTFZmKcOnx/EOlvBvwkNUOcyY30roAXRz/yBDBjaxWvx2+WAdkIQorK7UiDqS3+n
-         5cc+/BEJQAYrZ0l+oBWMVEa1nnXnitLVUFEUqU87VQpJGHQqkHYCLSBkaUv6weZ7E3pi
-         kXvA==
+        d=gmail.com; s=20221208; t=1683222138; x=1685814138;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oNxJTAZ9EL5DyV4TZNe9sWIgjQiMpe3voif3uF3Kb8s=;
+        b=j0YC9s8cJTnrodP5ECk0vMrFo1TNNCOBRDETiPoe5V3Iw3sBEXWrr+2t8TX235YrAp
+         EkfVAHTt8eXoJy8V8OFmlttmZZtSoCCK4qjWpjiwZCiCn7zOSSJlJkohLNGiWWgOz6P8
+         k+zxou9B9u1SfeR6rQxVGGqnJ/mREXUhASBsMPv9f6lps6gxBxLIOT8zzG+87FZ2Sjge
+         FRZLsomaSZWt/aOziZVwMvWZQWOrlwfDCVZcnoyBgTZNN7ZLzF946YrA6m/gQbnP9laF
+         nVcFN/NEh16huBlgxc0lROt8bjJ0V8XcrOMLqkVxnRila1v9iIppiYinriFclCkek0kg
+         x0zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683221630; x=1685813630;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LVU7iT+IxnD//jxQyJGnc0IbgmGhs3gwIVs0ILBHlC4=;
-        b=QJEZQvquuEEajhOBjMF9isrCXdUx53lRhMQ3Z65J+bTu3+lGXDZ8LFZJY3tGF3Sw8x
-         DCrwCR0G0Gf4meHJEMqalilsL62nZRqCTM4JIHn1TgvkO9ev0eMdnvrT/rzLLdZnfdIY
-         lMlWN6zcQdL+t4XnMxd7iyYpAbeK1qqxxdYWiT4sd4MAbZvPAg8u3mXWpFcMiqfqdein
-         YpQkZIdkeJVFnzSHuEUM1Td4HplgLKFQ8KRfAwDQcWY+MaX8QZK23povrZa+7k8d3TZc
-         DjAFxszqOmY7bTnuUtQjlzqiY/vskRYAo/iKlB71cHGeyjp4grfU7wjZ0WxqqViMMAXI
-         kiwA==
-X-Gm-Message-State: AC+VfDwGaPoJHpUH8+ucmpV3ev8b48w2rzs6VC3InQ/Zb86USXJmn1QN
-        vyFbtjc4JBODp/uY9DrURJt1llE=
-X-Google-Smtp-Source: ACHHUZ7Cz6o+nzL2hMvni+FXGnFRdN4a/d12fHW59ht8TZZmg7vUTtbYdD+uNqkdGpZBqfdUusPxPyw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:57c9:0:b0:521:70e7:a8b with SMTP id
- q9-20020a6557c9000000b0052170e70a8bmr120958pgr.1.1683221630608; Thu, 04 May
- 2023 10:33:50 -0700 (PDT)
-Date:   Thu, 4 May 2023 10:33:49 -0700
-In-Reply-To: <20230503225351.3700208-8-aditi.ghag@isovalent.com>
+        d=1e100.net; s=20221208; t=1683222138; x=1685814138;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oNxJTAZ9EL5DyV4TZNe9sWIgjQiMpe3voif3uF3Kb8s=;
+        b=HgC7yfzB7JyJBO7+c2bavKieWGbbx6DzKJrukMzoUtzl2gontbH9ixfrkQprD369D9
+         ItNz3Kg3yBr0Cxcj8/q6dOk2jxV/0kbQNnSiALJ7v1uySxQdteDunDW9yTltlNSJjHSJ
+         TVFTrDn6UBCbUNd5hiP6QL8HmuDChMplxIJ+jz37BaPatFJJZrorjV6tfmn7LiKzlBOs
+         GOJSWOlTZMDF1hmJXPkI28vsbd6OBnzQiYB0pc7bWXhTddHVi0VaJ7m5yHmaX2wTNEXx
+         Ixtv8Uk5K0LIEZwRp92yZDvMThVO69uANCj4v/V3KB693XKOR9odcDG/FEhE4X2/7HqA
+         dTSw==
+X-Gm-Message-State: AC+VfDyCRSg25hYYTKP0/8KMj+SaxlcsarkB4TrEVgeZ2IBl++P8kF4I
+        XV7dHAeLOQ8VffgrsEW2jXs=
+X-Google-Smtp-Source: ACHHUZ6nuXnR8evkU736fKFCrEJMP9eUD+Rzrgin33+YiPGnovA4BO+FewTUW2UmbgEeJOsWnDQgSw==
+X-Received: by 2002:a17:902:c389:b0:1a9:5e33:72db with SMTP id g9-20020a170902c38900b001a95e3372dbmr4338562plg.28.1683222138274;
+        Thu, 04 May 2023 10:42:18 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:c043:6b84:c4e4:75dd])
+        by smtp.gmail.com with ESMTPSA id 11-20020a170902e9cb00b001aaf92130afsm7471835plk.116.2023.05.04.10.42.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 May 2023 10:42:17 -0700 (PDT)
+Date:   Thu, 04 May 2023 10:42:16 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, will@isovalent.com
+Message-ID: <6453ee784285e_51c92085e@john.notmuch>
+In-Reply-To: <877cto2fr2.fsf@cloudflare.com>
+References: <20230502155159.305437-1-john.fastabend@gmail.com>
+ <20230502155159.305437-5-john.fastabend@gmail.com>
+ <877cto2fr2.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf v7 04/13] bpf: sockmap, improved check for empty queue
 Mime-Version: 1.0
-References: <20230503225351.3700208-1-aditi.ghag@isovalent.com> <20230503225351.3700208-8-aditi.ghag@isovalent.com>
-Message-ID: <ZFPsfT6LVQcgBvFR@google.com>
-Subject: Re: [PATCH v7 bpf-next 07/10] selftests/bpf: Add helper to get port
- using getsockname
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-Cc:     bpf@vger.kernel.org, kafai@fb.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,65 +76,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/03, Aditi Ghag wrote:
-> The helper will be used to programmatically retrieve,
-> and pass ports in userspace and kernel selftest programs.
-> 
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
+Jakub Sitnicki wrote:
+> On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
+> > We noticed some rare sk_buffs were stepping past the queue when system was
+> > under memory pressure. The general theory is to skip enqueueing
+> > sk_buffs when its not necessary which is the normal case with a system
+> > that is properly provisioned for the task, no memory pressure and enough
+> > cpu assigned.
+> >
+> > But, if we can't allocate memory due to an ENOMEM error when enqueueing
+> > the sk_buff into the sockmap receive queue we push it onto a delayed
+> > workqueue to retry later. When a new sk_buff is received we then check
+> > if that queue is empty. However, there is a problem with simply checking
+> > the queue length. When a sk_buff is being processed from the ingress queue
+> > but not yet on the sockmap msg receive queue its possible to also recv
+> > a sk_buff through normal path. It will check the ingress queue which is
+> > zero and then skip ahead of the pkt being processed.
+> >
+> > Previously we used sock lock from both contexts which made the problem
+> > harder to hit, but not impossible.
+> >
+> > To fix instead of popping the skb from the queue entirely we peek the
+> > skb from the queue and do the copy there. This ensures checks to the
+> > queue length are non-zero while skb is being processed. Then finally
+> > when the entire skb has been copied to user space queue or another
+> > socket we pop it off the queue. This way the queue length check allows
+> > bypassing the queue only after the list has been completely processed.
+> >
+> > To reproduce issue we run NGINX compliance test with sockmap running and
+> > observe some flakes in our testing that we attributed to this issue.
+> >
+> > Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+> > Tested-by: William Findlay <will@isovalent.com>
+> > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+[...]
 
-Looks great, thank you!
+> > @@ -677,8 +666,7 @@ static void sk_psock_backlog(struct work_struct *work)
+> >  							  len, ingress);
+> >  			if (ret <= 0) {
+> >  				if (ret == -EAGAIN) {
+> > -					sk_psock_skb_state(psock, state, skb,
+> > -							   len, off);
+> > +					sk_psock_skb_state(psock, state, len, off);
+> >  
+> >  					/* Delay slightly to prioritize any
+> >  					 * other work that might be here.
+> 
+> I've been staring at this bit and I think it doesn't matter if we update
+> psock->work_state when SK_PSOCK_TX_ENABLED has been cleared.
+> 
+> But what I think we shouldn't be doing here is scheduling
+> sk_psock_backlog again if SK_PSOCK_TX_ENABLED got cleared by
+> sk_psock_stop.
 
-> ---
->  tools/testing/selftests/bpf/network_helpers.c | 23 +++++++++++++++++++
->  tools/testing/selftests/bpf/network_helpers.h |  1 +
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-> index 596caa176582..a105c0cd008a 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -427,3 +427,26 @@ void close_netns(struct nstoken *token)
->  	close(token->orig_netns_fd);
->  	free(token);
->  }
-> +
-> +int get_socket_local_port(int sock_fd)
-> +{
-> +	struct sockaddr_storage addr;
-> +	socklen_t addrlen = sizeof(addr);
-> +	int err;
-> +
-> +	err = getsockname(sock_fd, (struct sockaddr *)&addr, &addrlen);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	if (addr.ss_family == AF_INET) {
-> +		struct sockaddr_in *sin = (struct sockaddr_in *)&addr;
-> +
-> +		return sin->sin_port;
-> +	} else if (addr.ss_family == AF_INET6) {
-> +		struct sockaddr_in6 *sin = (struct sockaddr_in6 *)&addr;
-> +
-> +		return sin->sin6_port;
-> +	}
-> +
-> +	return -1;
-> +}
-> diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-> index f882c691b790..694185644da6 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.h
-> +++ b/tools/testing/selftests/bpf/network_helpers.h
-> @@ -56,6 +56,7 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
->  int make_sockaddr(int family, const char *addr_str, __u16 port,
->  		  struct sockaddr_storage *addr, socklen_t *len);
->  char *ping_command(int family);
-> +int get_socket_local_port(int sock_fd);
->  
->  struct nstoken;
->  /**
-> -- 
-> 2.34.1
-> 
+Yeah I agree we shouldn't be scheduling with TX_ENABLED cleared. Otherwise
+while we cancle and sync the worker from the destroy path we could queue
+up more work here.
+
+Also spotted another case of this where its not wrapped in a check. I guess
+we should fix it. Nice catch.
+
+v8 it is I guess thanks.
