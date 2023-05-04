@@ -2,124 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC836F62B9
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 03:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924686F62C5
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 04:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229460AbjEDBrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 21:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        id S229519AbjEDCA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 22:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjEDBrG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 21:47:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EFBE1
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 18:47:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 345DA61A11
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 01:47:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8CA5C433D2;
-        Thu,  4 May 2023 01:47:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683164824;
-        bh=82XPEMDGqx/DupJFcJ/qnxYmRUq7vgjoNaQTnLllrxM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LJYq/vcA5MWieh9eK0b6mqjz3pHG4u5zDnJ9orgFr+NC6mxLoSrglv9U7pw/kqsMp
-         aXRCkvcsyJatKPkbUaFr2wEe8Gf+rw6+u7Xs/CpnG+r1vwfn8ErfHFOWrUdtWY7zkD
-         J6ft8ubJqI8jYXzpp4ZOoX8T3T4QPc7OKosE3fFukR/xsOp59149hoJ9KolPU6pnZN
-         lLzAheHDMkIbEtcDoRmSzyvyKRubPo4QRtJCLatcqPUBKvKuzSU/lP8mWkIMgGks3G
-         gAfz5A9KiNCQLzWdu100k2AsDuFKn5KUReB+U130cIyDI+XPjF8tqAWrrn99GgtQPD
-         HxpaK46iUD+vA==
-Date:   Wed, 3 May 2023 18:47:02 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
-        lorenzo@kernel.org, linyunsheng@huawei.com, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in
- new shutdown scheme
-Message-ID: <20230503184702.65dceb90@kernel.org>
-In-Reply-To: <3a5a28c4-01a3-793c-6969-475aba3ff3b5@redhat.com>
-References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
-        <168269857929.2191653.13267688321246766547.stgit@firesoul>
-        <20230502193309.382af41e@kernel.org>
-        <87ednxbr3c.fsf@toke.dk>
-        <3a5a28c4-01a3-793c-6969-475aba3ff3b5@redhat.com>
+        with ESMTP id S229482AbjEDCA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 22:00:57 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58EFB;
+        Wed,  3 May 2023 19:00:55 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-24e14a24c9dso6303a91.0;
+        Wed, 03 May 2023 19:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683165655; x=1685757655;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HRBOHh/tCmyWw1Poq3WxviOnrdJ0PJsvOsbXWNJkFdw=;
+        b=d40CmsXXOsoIkmc1dUsd6O4ZbixTS/RL+LYZKUKi3iVMAuCkLB0UcJQbx46TRKGAw4
+         J4eH00yQ1q4KVRYUJYv6KEIfjRl2cIWXILR0hJgkdaMal/ZGcwiQ6Jfa2i3lJ6QXSl8p
+         KywF7zhpQMIa2eQdP7v3Kti25ctAN6DymkQl4lrSfg6dcbAExmE+G777GNHJhhtOGqx+
+         /KJUW/cvnK+eJPRgezRDt5rzC/2j7UmZL/0uLHKpIrE+XxDA9cPXUxUrI/ryx2uF5Z1S
+         72AvhmiZWSEN4pKzYCQJq/h8PtGL+w2EsVLOinSQqoQQ4k5I7g6QJVqS14V/KCAjbq1x
+         2Wgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683165655; x=1685757655;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HRBOHh/tCmyWw1Poq3WxviOnrdJ0PJsvOsbXWNJkFdw=;
+        b=DdFbu9YkiHMZXQ+1VTa7DAMh2JWQzJHhsfIil7HgRgSNEBjF5Ep9jFo5RyY8WzUlIE
+         7WYURaM9gfoP2PbvEToYtaxQqLTX4MHCee4nia5XFDMrfCRVJhXwz1yY+kc1uffPFA8R
+         85otrbdnQl/WyJxQDb171Qc2f4oQaWUlLOw09RSZtWfiksxDiwZEw3ToTg0BoyjWuF5L
+         DqsTC7WtnSIimL1eHmefSYbJ18+wQASL106lc9PUCEeRfwVJN1UarWLK75qTHqgMxx93
+         RqZEShf5mm/kI8naOF2u5/NAzDESLEFVuFQ+Zu1M6CbChjlK3CjgnpdQYlZk6PVZ/JyF
+         yf/g==
+X-Gm-Message-State: AC+VfDzOPJm/Rbtl3hblYJ2jkkcgbwCoLCEfnUNLJAphAMJsUgcFt13E
+        cTAczVoDZ1CadxpKFG7b+DY=
+X-Google-Smtp-Source: ACHHUZ6I9a4D3bqASHnIw8Cy16pin+0jckQZIukmADgBbI8NkWUzhXn+SSYfB6sGSAWgiO0S3tBtWA==
+X-Received: by 2002:a17:90a:9412:b0:24d:f966:2503 with SMTP id r18-20020a17090a941200b0024df9662503mr574103pjo.38.1683165654721;
+        Wed, 03 May 2023 19:00:54 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:396f])
+        by smtp.gmail.com with ESMTPSA id ie14-20020a17090b400e00b0024e1172c1d3sm5237138pjb.32.2023.05.03.19.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 19:00:53 -0700 (PDT)
+Date:   Wed, 3 May 2023 19:00:51 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+Message-ID: <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
+ <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 May 2023 17:49:34 +0200 Jesper Dangaard Brouer wrote:
-> On 03/05/2023 13.18, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > Jakub Kicinski <kuba@kernel.org> writes:
-> >> We can remove the warning without removing the entire delayed freeing
-> >> scheme. I definitely like the SHUTDOWN flag and patch 2 but I'm a bit
-> >> less clear on why the complexity of datapath freeing is justified.
-> >> Can you explain? =20
-> >=20
-> > You mean just let the workqueue keep rescheduling itself every minute
-> > for the (potentially) hours that skbs will stick around? Seems a bit
-> > wasteful, doesn't it? :) =20
->=20
-> I agree that this workqueue that keeps rescheduling is wasteful.
-> It actually reschedules every second, even more wasteful.
-> NIC drivers will have many HW RX-queues, with separate PP instances,=20
-> that each can start a workqueue that resched every sec.
+On Thu, May 04, 2023 at 09:35:17AM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 5/4/2023 2:48 AM, Alexei Starovoitov wrote:
+> > On Sat, Apr 29, 2023 at 06:12:12PM +0800, Hou Tao wrote:
+> >> +
+> >> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+> >> +{
+> >> +	unsigned long flags;
+> >> +
+> >> +	local_irq_save(flags);
+> >> +	/* In case a NMI-context bpf program is also freeing object. */
+> >> +	if (local_inc_return(&c->active) == 1) {
+> >> +		bool try_queue_work = false;
+> >> +
+> >> +		/* kworker may remove elements from prepare_reuse_head */
+> >> +		raw_spin_lock(&c->reuse_lock);
+> >> +		if (llist_empty(&c->prepare_reuse_head))
+> >> +			c->prepare_reuse_tail = llnode;
+> >> +		__llist_add(llnode, &c->prepare_reuse_head);
+> >> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
+> >> +			/* Zero out prepare_reuse_cnt early to prevent
+> >> +			 * unnecessary queue_work().
+> >> +			 */
+> >> +			c->prepare_reuse_cnt = 0;
+> >> +			try_queue_work = true;
+> >> +		}
+> >> +		raw_spin_unlock(&c->reuse_lock);
+> >> +
+> >> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
+> >> +			/* Use reuse_cb_in_progress to indicate there is
+> >> +			 * inflight reuse kworker or reuse RCU callback.
+> >> +			 */
+> >> +			atomic_inc(&c->reuse_cb_in_progress);
+> >> +			/* Already queued */
+> >> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
+> > As Martin pointed out queue_work() is not safe here.
+> > The raw_spin_lock(&c->reuse_lock); earlier is not safe either.
+> I see. Didn't recognize these problems.
+> > For the next version please drop workers and spin_lock from unit_free/alloc paths.
+> > If lock has to be taken it should be done from irq_work.
+> > Under no circumstances we can use alloc_workqueue(). No new kthreads.
+> Is there any reason to prohibit the use of new kthread in irq_work ?
 
-There's a lot of work items flying around on a working system.
-I don't think the rare (and very cheap) PP check work is going=20
-to move the needle. You should see how many work items DIM schedules :(
+Because:
+1. there is a workable solution without kthreads.
+2. if there was no solution we would have to come up with one.
+kthread is not an answer. It's hard to reason about a setup when kthreads
+are in critical path due to scheduler. Assume the system is 100% cpu loaded.
+kthreads delays and behavior is unpredictable. We cannot subject memory alloc/free to it.
 
-I'd think that potentially having the extra memory pinned is much more
-of an issue than a periodic check, and that does not go away by
-changing the checking mechanism.
+> >
+> > We can avoid adding new flag to bpf_mem_alloc to reduce the complexity
+> > and do roughly equivalent of REUSE_AFTER_RCU_GP unconditionally in the following way:
+> >
+> > - alloc_bulk() won't be trying to steal from c->free_by_rcu.
+> >
+> > - do_call_rcu() does call_rcu(&c->rcu, __free_rcu) instead of task-trace version.
+> No sure whether or not one inflight RCU callback is enough. Will check.
+> If one is not enough, I may use kmalloc(__GFP_NOWAIT) in irq work to
+> allocate multiple RCU callbacks.
 
-> Eric have convinced me that SKBs can "stick around" for longer than the
-> assumptions in PP.  The old PP assumptions came from XDP-return path.
-> It is time to cleanup.
+Pls dont. Just assume it will work, implement the proposal (if you agree),
+come back with the numbers and then we will discuss again.
+We cannot keep arguing about merits of complicated patch set that was done on partial data.
+Just like the whole thing with kthreads.
+I requested early on: "pls no kthreads" and weeks later we're still arguing.
 
-I see. Regardless - should we have some count/statistic for the number
-of "zombie" page pools sitting around in the system? Could be useful
-for debug.
+> > - rcu_trace_implies_rcu_gp() is never used.
+> >
+> > - after RCU_GP __free_rcu() moves all waiting_for_gp elements into 
+> >   a size specific link list per bpf_mem_alloc (not per bpf_mem_cache which is per-cpu)
+> >   and does call_rcu_tasks_trace
+> >
+> > - Let's call this list ma->free_by_rcu_tasks_trace
+> >   (only one list for bpf_mem_alloc with known size or NUM_CACHES such lists when size == 0 at init)
+> >
+> > - any cpu alloc_bulk() can steal from size specific ma->free_by_rcu_tasks_trace list that
+> >   is protected by ma->spin_lock (1 or NUM_CACHES such locks)
+> To reduce the lock contention, alloc_bulk() can steal from the global
+> list in batch. 
 
-> > We did see an issue where creating and tearing down lots of page pools
-> > in a short period of time caused significant slowdowns due to the
-> > workqueue mechanism. Lots being "thousands per second". This is possible
-> > using the live packet mode of bpf_prog_run() for XDP, which will setup
-> > and destroy a page pool for each syscall... =20
->=20
-> Yes, the XDP live packet mode of bpf_prog_run is IMHO abusing the
-> page_pool API.  We should fix that somehow, at least the case where live
-> packet mode is only injecting a single packet, but still creates a PP
-> instance. The PP in live packet mode IMHO only makes sense when
-> repeatedly sending packets that gets recycles and are pre-inited by PP.
+Pls no special batches. The simplest implementation possible.
+alloc_bulk() has 'int cnt' argument. It will try to steal 'cnt' from ma->free_by_rcu_tasks_trace.
 
-+1, FWIW, I was surprised that we have a init_callback which sits in=20
-the fastpath exists purely for testing.
+> Had tried the global list before but I didn't do the
+> concurrent freeing, I think it could reduce the risk of OOM for
+> add_del_on_diff_cpu.
 
-> This use of PP does exemplify why is it problematic to keep the workqueue.
->=20
-> I have considered (and could be convinced) delaying the free via
-> call_rcu, but it also create an unfortunate backlog of work in the case
-> of live packet mode of bpf_prog_run.
+Maybe you've tried, but we didn't see the patches and we cannot take for granted
+anyone saying: "I've tried *foo*. It didn't work. That's why I'm doing *bar* here".
+Everything mm is tricky. Little details matter a lot.
+It's also questionable whether we should make any design decisions based on this benchmark
+and in particular based on add_del_on_diff_cpu part of it.
+I'm not saying we shouldn't consider it, but all numbers have a "decision weight"
+associated with them.
+For example: there is existing samples/bpf/map_perf_test benchmark.
+So far we haven't seen the numbers from it.
+Is it more important than your new bench? Yes and no. All numbers matter.
 
-Maybe let the pp used by BPF testing be reusable? No real driver will
-create thousands of PPs a seconds, that's not sane.
+> >
+> > - ma->waiting_for_gp_tasks_trace will be freeing elements into slab
+> >
+> > What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
+> > Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
+> > (while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
+> >
+> > After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
+> > Probably usage of bpf_mem_alloc in local storage can be simplified as well.
+> > Martin wdyt?
+> >
+> > I think this approach adds minimal complexity to bpf_mem_alloc while solving all existing pain points
+> > including needs of qp-trie.
+> Thanks for these great suggestions. Will try to do it in v4.
 
-Anyway, you'll choose what you'll choose. I just wanted to cast my vote
-for the work queue rather than the tricky lockless release code.
+Thanks.
+Also for benchmark, pls don't hack htab and benchmark as 'non-landable patches' (as in this series).
+Construct the patch series as:
+- prep patches
+- benchmark
+- unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_after_rcu_tasks_trace
+  with numbers from bench(s) before and after this patch.
