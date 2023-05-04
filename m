@@ -2,79 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0466F6748
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 10:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E099E6F68B0
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 11:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjEDI0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 04:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        id S229822AbjEDJxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 05:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjEDIZf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 04:25:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE826188;
-        Thu,  4 May 2023 01:19:01 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6C3EE21A0A;
-        Thu,  4 May 2023 08:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1683188340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SE8kDKCZ+c7mbSXXTz1hB+Dc3q2ET+MJaBGMBHVPxuE=;
-        b=qqz81J5rXY29diS8dUxT+DwNdzGK03QVBciwBhGWhqRQYup+b8Fx/Vd6kZw/QWsvcpzjXC
-        fJOsyi2Qe6oCHu9GO8DwDv0sv5N6b2t/vZtpLQhAs4v5rZLc0qPE3AjvtOHgwdzWGaGBI3
-        gXOBWYAtmSv8bMK5QqT4LWdMBIdi/48=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1683188340;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SE8kDKCZ+c7mbSXXTz1hB+Dc3q2ET+MJaBGMBHVPxuE=;
-        b=gUTCV9PWALmLrNF0TgfPTygIvQjiP/f738/GOu8YAausAc8/ewqmtapHC5ben6FjHaamr7
-        HUUa/uQHMaUZDmAQ==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        with ESMTP id S229563AbjEDJxA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 05:53:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C4ACD
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 02:52:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D2F132C141;
-        Thu,  4 May 2023 08:18:59 +0000 (UTC)
-Date:   Thu, 4 May 2023 10:18:58 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf 02/11] bpftool: define a local bpf_perf_link to
- fix accessing its fields
-Message-ID: <20230504081858.GV15906@kitsune.suse.cz>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <20220421003152.339542-3-alobakin@pm.me>
- <20230414095457.GG63923@kunlun.suse.cz>
- <9952dc32-f464-c85a-d812-946d6b0ac734@intel.com>
- <20230414162821.GK63923@kunlun.suse.cz>
- <CAEf4BzYx=dSXp-TkpjzyhSP+9WY71uR4Xq4Um5YzerbfOtJOfA@mail.gmail.com>
- <20230421073904.GJ15906@kitsune.suse.cz>
- <CACdoK4+KdM-sQKMO9WXk7kTL-x=Renjd0MuvSRT3JKbtzByyHQ@mail.gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48AC1632F0
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 09:52:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A36DC433EF;
+        Thu,  4 May 2023 09:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683193977;
+        bh=DU6h76G+KqnVkzW0zQzTZ0TbtGgB7UtkFId13fZx30k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KN+YmnlPRIxkxGNleGxMh31FgN8vYBnQ/H52VXLGgjdJW74Xmo3ruXEKlmq1LNcht
+         41i0sv9X6vTY0X6gqUZg4a7WR8dCbxWIqNNNwCJcyPN8KBt6KG2Gnw7J1M+rs05e0X
+         Ti3nGOx1GiNYXNIkmlXQniRScgEiomV9+W/GMGOrQuiyVYwzRVFBplAwvx99O7aQyQ
+         J2bqWOXmp/ysUEWaseRtB90J1LYgfJRR0R/JeNlkkusZx5MlB/sPlp/0R67v/nQpx7
+         28OJuPy3GmYNu1K1FX2wDkk81Rmj6IF9Q/zsRLH5vWtKwU2q//W4D18WDJGKEN9tcc
+         nOhqeOZG5SVOA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, j.vosburgh@gmail.com,
+        andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
+        andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, alardam@gmail.com,
+        memxor@gmail.com, sdf@google.com, brouer@redhat.com,
+        toke@redhat.com, joamaki@gmail.com
+Subject: [PATCH v3 net] bonding: add xdp_features support
+Date:   Thu,  4 May 2023 11:52:49 +0200
+Message-Id: <5969591cfc2336e45de08e1d272bdcee30942fb7.1683191281.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACdoK4+KdM-sQKMO9WXk7kTL-x=Renjd0MuvSRT3JKbtzByyHQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,102 +56,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Introduce xdp_features support for bonding driver according to the slave
+devices attached to the master one. xdp_features is required whenever we
+want to xdp_redirect traffic into a bond device and then into selected
+slaves attached to it.
 
-On Thu, May 04, 2023 at 12:43:52AM +0100, Quentin Monnet wrote:
-> On Fri, 21 Apr 2023 at 08:39, Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Thu, Apr 20, 2023 at 04:07:38PM -0700, Andrii Nakryiko wrote:
-> > > On Fri, Apr 14, 2023 at 9:28 AM Michal Suchánek <msuchanek@suse.de> wrote:
-> > > >
-> > > > On Fri, Apr 14, 2023 at 05:18:27PM +0200, Alexander Lobakin wrote:
-> > > > > From: Michal Suchánek <msuchanek@suse.de>
-> > > > > Date: Fri, 14 Apr 2023 11:54:57 +0200
-> > > > >
-> > > > > > Hello,
-> > > > >
-> > > > > Hey-hey,
-> > > > >
-> > > > > >
-> > > > > > On Thu, Apr 21, 2022 at 12:38:58AM +0000, Alexander Lobakin wrote:
-> > > > > >> When building bpftool with !CONFIG_PERF_EVENTS:
-> > > > > >>
-> > > > > >> skeleton/pid_iter.bpf.c:47:14: error: incomplete definition of type 'struct bpf_perf_link'
-> > > > > >>         perf_link = container_of(link, struct bpf_perf_link, link);
-> > > > > >>                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > >> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:74:22: note: expanded from macro 'container_of'
-> > > > > >>                 ((type *)(__mptr - offsetof(type, member)));    \
-> > > > > >>                                    ^~~~~~~~~~~~~~~~~~~~~~
-> > > > > >> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:68:60: note: expanded from macro 'offsetof'
-> > > > > >>  #define offsetof(TYPE, MEMBER)  ((unsigned long)&((TYPE *)0)->MEMBER)
-> > > > > >>                                                   ~~~~~~~~~~~^
-> > > > > >> skeleton/pid_iter.bpf.c:44:9: note: forward declaration of 'struct bpf_perf_link'
-> > > > > >>         struct bpf_perf_link *perf_link;
-> > > > > >>                ^
-> > > > > >>
-> > > > > >> &bpf_perf_link is being defined and used only under the ifdef.
-> > > > > >> Define struct bpf_perf_link___local with the `preserve_access_index`
-> > > > > >> attribute inside the pid_iter BPF prog to allow compiling on any
-> > > > > >> configs. CO-RE will substitute it with the real struct bpf_perf_link
-> > > > > >> accesses later on.
-> > > > > >> container_of() is not CO-REd, but it is a noop for
-> > > > > >> bpf_perf_link <-> bpf_link and the local copy is a full mirror of
-> > > > > >> the original structure.
-> > > > > >>
-> > > > > >> Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
-> > > > > >
-> > > > > > This does not solve the problem completely. Kernels that don't have
-> > > > > > CONFIG_PERF_EVENTS in the first place are also missing the enum value
-> > > > > > BPF_LINK_TYPE_PERF_EVENT which is used as the condition for handling the
-> > > > > > cookie.
-> > > > >
-> > > > > Sorry, I haven't been working with my home/private stuff for more than a
-> > > > > year already. I may get back to it some day when I'm tired of Lua (curse
-> > > > > words, sorry :D), but for now the series is "a bit" abandoned.
-> > > >
-> > > > This part still appllies and works for me with the caveat that
-> > > > BPF_LINK_TYPE_PERF_EVENT also needs to be defined.
-> > > >
-> > > > > I think there was alternative solution proposed there, which promised to
-> > > > > be more flexible. But IIRC it also doesn't touch the enum (was it added
-> > > > > recently? Because it was building just fine a year ago on config without
-> > > > > perf events).
-> > > >
-> > > > It was added in 5.15. Not sure there is a kernel.org LTS kernel usable
-> > > > for CO-RE that does not have it, technically 5.4 would work if it was
-> > > > built monolithic, it does not have module BTF, only kernel IIRC.
-> > > >
-> > > > Nonetheless, the approach to handling features completely missing in the
-> > > > running kernel should be figured out one way or another. I would be
-> > > > surprised if this was the last feature to be added that bpftool needs to
-> > > > know about.
-> > >
-> > > Are we talking about bpftool built from kernel sources or from Github?
-> > > Kernel source version should have access to latest UAPI headers and so
-> > > BPF_LINK_TYPE_PERF_EVENT should be available. Github version, if it
-> > > doesn't do that already, can use UAPI headers distributed (and used
-> > > for building) with libbpf through submodule.
-> >
-> > It does have a copy of the uapi headers but apparently does not use
-> > them. Using them directly might cause conflict with vmlinux.h, though.
-> 
-> Indeed, using the UAPI header here conflicts with vmlinux.h.
-> 
-> Looking again at some code I started last year but never finalised, I
-> used the following approach, redefining BPF_LINK_TYPE_PERF_EVENT with
-> CO-RE:
-> 
->     enum bpf_link_type___local {
->         BPF_LINK_TYPE_PERF_EVENT___local = 7,
->     };
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Change since v2:
+- take into account possible xdp-features added in the future in
+  bond_xdp_set_features routine not enumerating current supported features
 
-That's the same as I did except I used simple define instead of this
-fake enum.
+Change since v1:
+- remove bpf self-test patch from the series
+---
+ drivers/net/bonding/bond_main.c    | 29 +++++++++++++++++++++++++++++
+ drivers/net/bonding/bond_options.c |  2 ++
+ include/net/bonding.h              |  1 +
+ 3 files changed, 32 insertions(+)
 
-The enum only has value when it is complete and the compiler can check
-that a switch uses only known values, and can confuse things when values
-are missing.
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 710548dbd0c1..3fed888629f7 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -1789,6 +1789,26 @@ static void bond_ether_setup(struct net_device *bond_dev)
+ 	bond_dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ }
+ 
++void bond_xdp_set_features(struct net_device *bond_dev)
++{
++	struct bonding *bond = netdev_priv(bond_dev);
++	xdp_features_t val = NETDEV_XDP_ACT_MASK;
++	struct list_head *iter;
++	struct slave *slave;
++
++	ASSERT_RTNL();
++
++	if (!bond_xdp_check(bond)) {
++		xdp_clear_features_flag(bond_dev);
++		return;
++	}
++
++	bond_for_each_slave(bond, slave, iter)
++		val &= slave->dev->xdp_features;
++
++	xdp_set_features_flag(bond_dev, val);
++}
++
+ /* enslave device <slave> to bond device <master> */
+ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 		 struct netlink_ext_ack *extack)
+@@ -2236,6 +2256,8 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 			bpf_prog_inc(bond->xdp_prog);
+ 	}
+ 
++	bond_xdp_set_features(bond_dev);
++
+ 	slave_info(bond_dev, slave_dev, "Enslaving as %s interface with %s link\n",
+ 		   bond_is_active_slave(new_slave) ? "an active" : "a backup",
+ 		   new_slave->link != BOND_LINK_DOWN ? "an up" : "a down");
+@@ -2483,6 +2505,7 @@ static int __bond_release_one(struct net_device *bond_dev,
+ 	if (!netif_is_bond_master(slave_dev))
+ 		slave_dev->priv_flags &= ~IFF_BONDING;
+ 
++	bond_xdp_set_features(bond_dev);
+ 	kobject_put(&slave->kobj);
+ 
+ 	return 0;
+@@ -3930,6 +3953,9 @@ static int bond_slave_netdev_event(unsigned long event,
+ 		/* Propagate to master device */
+ 		call_netdevice_notifiers(event, slave->bond->dev);
+ 		break;
++	case NETDEV_XDP_FEAT_CHANGE:
++		bond_xdp_set_features(bond_dev);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -5874,6 +5900,9 @@ void bond_setup(struct net_device *bond_dev)
+ 	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
+ 		bond_dev->features |= BOND_XFRM_FEATURES;
+ #endif /* CONFIG_XFRM_OFFLOAD */
++
++	if (bond_xdp_check(bond))
++		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
+ }
+ 
+ /* Destroy a bonding device.
+diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+index f71d5517f829..0498fc6731f8 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -877,6 +877,8 @@ static int bond_option_mode_set(struct bonding *bond,
+ 			netdev_update_features(bond->dev);
+ 	}
+ 
++	bond_xdp_set_features(bond->dev);
++
+ 	return 0;
+ }
+ 
+diff --git a/include/net/bonding.h b/include/net/bonding.h
+index c3843239517d..a60a24923b55 100644
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -659,6 +659,7 @@ void bond_destroy_sysfs(struct bond_net *net);
+ void bond_prepare_sysfs_group(struct bonding *bond);
+ int bond_sysfs_slave_add(struct slave *slave);
+ void bond_sysfs_slave_del(struct slave *slave);
++void bond_xdp_set_features(struct net_device *bond_dev);
+ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
+ 		 struct netlink_ext_ack *extack);
+ int bond_release(struct net_device *bond_dev, struct net_device *slave_dev);
+-- 
+2.40.1
 
-Thanks
-
-Michal
