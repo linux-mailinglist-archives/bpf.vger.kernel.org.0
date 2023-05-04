@@ -2,175 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5D56F629F
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 03:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579136F62AF
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 03:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbjEDBZ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 21:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
+        id S229617AbjEDBf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 21:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjEDBZ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 21:25:28 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4605DE8
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 18:25:27 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-63b5ce4f069so6554243b3a.1
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 18:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1683163527; x=1685755527;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iw/s0eP91GDKpGCVxkHT9uuUiHifLxmRjxFAYYXvaY8=;
-        b=E5Pc80v7YQPxbm39RbS7T57OKc4rolXwRteIKdSLxPc2XfDDMTyItZ6Tlauy1MXZOQ
-         QxqKmlVCNsnYA4czkrLNDuqOH6qXJM0A0mCFoFWxzBZgxdY0n5sveYPgzaOiHcqbp5UU
-         yIcbqIHSs/W8bMuFpnUIbUueIqzC0ZeoDcAfdTxUYVIGd3dZlUXcsSJ2fxsYm/txlZMP
-         OHdxAexm7q03m6x4xOSlyh0pYRqFXJ7risDotVeP2R8Bzumg6CBlqIYUIOfZUWY87Tzb
-         S/jEBCxdFptRUXsO/kWX7c0LZWB5gP7gzSm2EvvBp2KzgbVPkkgFCBGg9jJAUpHyuzLY
-         xr1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683163527; x=1685755527;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iw/s0eP91GDKpGCVxkHT9uuUiHifLxmRjxFAYYXvaY8=;
-        b=DD4Fk+ny1MYi4gFqIxpA4tri81fKx6gZwkY7oEQthdzJcckgFWTaTjA8vLKe6/QIi/
-         CxzWdfW5k7ZtA4kDfv/whXXaPU10JEAiWI5C2KkxP/s0642yN89dLPlzljFGJbVZY5rb
-         96dRzH8iyir+UjN3R5pCfyqu4y2f1OcKeuVNZkepINbNON+8E9QTqam86oNZ65z+qntz
-         p4QGikb82xk6P2+BbsFA0MJZmeqfYL8Y4JmdBC7gLGiN2dKwki46lnq+wQvlXBer7Tp2
-         fuiDnvgduH14cNRjHyJ5/5YKLZs4WXP2mRJwofB+dXwlQw2NKjNLCPlUW1J54qzo10FT
-         p/PA==
-X-Gm-Message-State: AC+VfDx2GsDxuct6AO21kBZJSV3OwnZixFTTXMjPFMdHoaldQ70OTGGS
-        8yVIt8eu/AgO6P+1xOrtxvFY2Q==
-X-Google-Smtp-Source: ACHHUZ5n+JFW5YlifvmyHmYVshc71SzlF/DBb5E4Hfxver7PSva5jOiau4o/e2umubr2iAyWIrTM0A==
-X-Received: by 2002:a05:6a20:9384:b0:f2:e4c1:af7a with SMTP id x4-20020a056a20938400b000f2e4c1af7amr689706pzh.7.1683163526678;
-        Wed, 03 May 2023 18:25:26 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:1fbb:7453:356e:9803:f62d? ([2601:647:4900:1fbb:7453:356e:9803:f62d])
-        by smtp.gmail.com with ESMTPSA id om8-20020a17090b3a8800b002471deb13fcsm2041494pjb.6.2023.05.03.18.25.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 May 2023 18:25:26 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v7 bpf-next 04/10] udp: seq_file: Remove bpf_seq_afinfo
- from udp_iter_state
-From:   Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <20230503225351.3700208-5-aditi.ghag@isovalent.com>
-Date:   Wed, 3 May 2023 18:25:25 -0700
-Cc:     bpf@vger.kernel.org, kafai@fb.com,
+        with ESMTP id S229565AbjEDBf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 21:35:27 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE37172D;
+        Wed,  3 May 2023 18:35:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QBbwl5kcGz4f3nRF;
+        Thu,  4 May 2023 09:35:19 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgCHHpLVC1NkLNDYIg--.59163S2;
+        Thu, 04 May 2023 09:35:21 +0800 (CST)
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <73779BBC-48BB-4FE9-A673-36EA3DD79068@isovalent.com>
-References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
- <20230503225351.3700208-5-aditi.ghag@isovalent.com>
-To:     Aditi Ghag <aditi.ghag@isovalent.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com>
+ <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com>
+Date:   Thu, 4 May 2023 09:35:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgCHHpLVC1NkLNDYIg--.59163S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1DurWxGw43CF4DZw17GFg_yoWrGrWUpF
+        WSgry5AFs5Jr4Ik34vvrn29FWSkws5Kr1UtF48Xa47Ar15Wr9I9rZFkFW3uF93Cr4rAa4I
+        vrWDt3s3CrsYyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi,
 
-
-> On May 3, 2023, at 3:53 PM, Aditi Ghag <aditi.ghag@isovalent.com> =
-wrote:
->=20
-> This is a preparatory commit to remove the field. The field was
-> previously shared between proc fs and BPF UDP socket iterators. As the
-> follow-up commits will decouple the implementation for the iterators,
-> remove the field. As for BPF socket iterator, filtering of sockets is
-> exepected to be done in BPF programs.
->=20
-> Suggested-by: Martin KaFai Lau <martin.lau@kernel.org>
-> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
-> ---
-> include/net/udp.h |  1 -
-> net/ipv4/udp.c    | 25 +++++--------------------
-> 2 files changed, 5 insertions(+), 21 deletions(-)
->=20
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index de4b528522bb..5cad44318d71 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -437,7 +437,6 @@ struct udp_seq_afinfo {
-> struct udp_iter_state {
-> 	struct seq_net_private  p;
-> 	int			bucket;
-> -	struct udp_seq_afinfo	*bpf_seq_afinfo;
-> };
->=20
-> void *udp_seq_start(struct seq_file *seq, loff_t *pos);
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index c426ebafeb13..9f8c1554a9e4 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -2993,14 +2993,16 @@ static bool seq_sk_match(struct seq_file *seq, =
-const struct sock *sk)
-> 		net_eq(sock_net(sk), seq_file_net(seq)));
-> }
->=20
-> +static const struct seq_operations bpf_iter_udp_seq_ops;
-
->> net/ipv4/udp.c:3001:36: warning: 'bpf_iter_udp_seq_ops' defined but =
-not used [-Wunused-const-variable=3D]
-   3001 | static const struct seq_operations bpf_iter_udp_seq_ops;
-        |                                    ^~~~~~~~~~~~~~~~~~~~
-
-This would have to be wrapped with ifdef too.=20
-
-> static struct udp_table *udp_get_table_seq(struct seq_file *seq,
-> 					   struct net *net)
-> {
-> -	const struct udp_iter_state *state =3D seq->private;
-> 	const struct udp_seq_afinfo *afinfo;
->=20
-> -	if (state->bpf_seq_afinfo)
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	if (seq->op =3D=3D &bpf_iter_udp_seq_ops)
-> 		return net->ipv4.udp_table;
-> +#endif
->=20
-> 	afinfo =3D pde_data(file_inode(seq->file));
-> 	return afinfo->udp_table ? : net->ipv4.udp_table;
-> @@ -3424,28 +3426,11 @@ DEFINE_BPF_ITER_FUNC(udp, struct bpf_iter_meta =
-*meta,
->=20
-> static int bpf_iter_init_udp(void *priv_data, struct bpf_iter_aux_info =
-*aux)
-> {
-> -	struct udp_iter_state *st =3D priv_data;
-> -	struct udp_seq_afinfo *afinfo;
-> -	int ret;
-> -
-> -	afinfo =3D kmalloc(sizeof(*afinfo), GFP_USER | __GFP_NOWARN);
-> -	if (!afinfo)
-> -		return -ENOMEM;
-> -
-> -	afinfo->family =3D AF_UNSPEC;
-> -	afinfo->udp_table =3D NULL;
-> -	st->bpf_seq_afinfo =3D afinfo;
-> -	ret =3D bpf_iter_init_seq_net(priv_data, aux);
-> -	if (ret)
-> -		kfree(afinfo);
-> -	return ret;
-> +	return bpf_iter_init_seq_net(priv_data, aux);
-> }
->=20
-> static void bpf_iter_fini_udp(void *priv_data)
-> {
-> -	struct udp_iter_state *st =3D priv_data;
-> -
-> -	kfree(st->bpf_seq_afinfo);
-> 	bpf_iter_fini_seq_net(priv_data);
-> }
->=20
-> --=20
-> 2.34.1
->=20
+On 5/4/2023 2:48 AM, Alexei Starovoitov wrote:
+> On Sat, Apr 29, 2023 at 06:12:12PM +0800, Hou Tao wrote:
+>> +
+>> +static void notrace wait_gp_reuse_free(struct bpf_mem_cache *c, struct llist_node *llnode)
+>> +{
+>> +	unsigned long flags;
+>> +
+>> +	local_irq_save(flags);
+>> +	/* In case a NMI-context bpf program is also freeing object. */
+>> +	if (local_inc_return(&c->active) == 1) {
+>> +		bool try_queue_work = false;
+>> +
+>> +		/* kworker may remove elements from prepare_reuse_head */
+>> +		raw_spin_lock(&c->reuse_lock);
+>> +		if (llist_empty(&c->prepare_reuse_head))
+>> +			c->prepare_reuse_tail = llnode;
+>> +		__llist_add(llnode, &c->prepare_reuse_head);
+>> +		if (++c->prepare_reuse_cnt > c->high_watermark) {
+>> +			/* Zero out prepare_reuse_cnt early to prevent
+>> +			 * unnecessary queue_work().
+>> +			 */
+>> +			c->prepare_reuse_cnt = 0;
+>> +			try_queue_work = true;
+>> +		}
+>> +		raw_spin_unlock(&c->reuse_lock);
+>> +
+>> +		if (try_queue_work && !work_pending(&c->reuse_work)) {
+>> +			/* Use reuse_cb_in_progress to indicate there is
+>> +			 * inflight reuse kworker or reuse RCU callback.
+>> +			 */
+>> +			atomic_inc(&c->reuse_cb_in_progress);
+>> +			/* Already queued */
+>> +			if (!queue_work(bpf_ma_wq, &c->reuse_work))
+> As Martin pointed out queue_work() is not safe here.
+> The raw_spin_lock(&c->reuse_lock); earlier is not safe either.
+I see. Didn't recognize these problems.
+> For the next version please drop workers and spin_lock from unit_free/alloc paths.
+> If lock has to be taken it should be done from irq_work.
+> Under no circumstances we can use alloc_workqueue(). No new kthreads.
+Is there any reason to prohibit the use of new kthread in irq_work ?
+>
+> We can avoid adding new flag to bpf_mem_alloc to reduce the complexity
+> and do roughly equivalent of REUSE_AFTER_RCU_GP unconditionally in the following way:
+>
+> - alloc_bulk() won't be trying to steal from c->free_by_rcu.
+>
+> - do_call_rcu() does call_rcu(&c->rcu, __free_rcu) instead of task-trace version.
+No sure whether or not one inflight RCU callback is enough. Will check.
+If one is not enough, I may use kmalloc(__GFP_NOWAIT) in irq work to
+allocate multiple RCU callbacks.
+> - rcu_trace_implies_rcu_gp() is never used.
+>
+> - after RCU_GP __free_rcu() moves all waiting_for_gp elements into 
+>   a size specific link list per bpf_mem_alloc (not per bpf_mem_cache which is per-cpu)
+>   and does call_rcu_tasks_trace
+>
+> - Let's call this list ma->free_by_rcu_tasks_trace
+>   (only one list for bpf_mem_alloc with known size or NUM_CACHES such lists when size == 0 at init)
+>
+> - any cpu alloc_bulk() can steal from size specific ma->free_by_rcu_tasks_trace list that
+>   is protected by ma->spin_lock (1 or NUM_CACHES such locks)
+To reduce the lock contention, alloc_bulk() can steal from the global
+list in batch. Had tried the global list before but I didn't do the
+concurrent freeing, I think it could reduce the risk of OOM for
+add_del_on_diff_cpu.
+>
+> - ma->waiting_for_gp_tasks_trace will be freeing elements into slab
+>
+> What it means that sleepable progs using hashmap will be able to avoid uaf with bpf_rcu_read_lock().
+> Without explicit bpf_rcu_read_lock() it's still safe and equivalent to existing behavior of bpf_mem_alloc.
+> (while your proposed BPF_MA_FREE_AFTER_RCU_GP flavor is not safe to use in hashtab with sleepable progs)
+>
+> After that we can unconditionally remove rcu_head/call_rcu from bpf_cpumask and improve usability of bpf_obj_drop.
+> Probably usage of bpf_mem_alloc in local storage can be simplified as well.
+> Martin wdyt?
+>
+> I think this approach adds minimal complexity to bpf_mem_alloc while solving all existing pain points
+> including needs of qp-trie.
+Thanks for these great suggestions. Will try to do it in v4.
 
