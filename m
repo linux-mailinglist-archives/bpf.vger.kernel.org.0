@@ -2,56 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E13046F62FA
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 04:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7F06F6305
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 04:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjEDCmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 22:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        id S229622AbjEDCxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 22:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjEDCmh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 22:42:37 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C80E42;
-        Wed,  3 May 2023 19:42:35 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QBdM53dSFzLpHs;
-        Thu,  4 May 2023 10:39:45 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 4 May
- 2023 10:42:32 +0800
-Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in new
- shutdown scheme
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <netdev@vger.kernel.org>, Eric Dumazet <eric.dumazet@gmail.com>,
-        <linux-mm@kvack.org>, Mel Gorman <mgorman@techsingularity.net>
-CC:     <lorenzo@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <willy@infradead.org>
-References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
- <168269857929.2191653.13267688321246766547.stgit@firesoul>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <387f4653-1986-3ffe-65e7-448a59002ed0@huawei.com>
-Date:   Thu, 4 May 2023 10:42:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S229441AbjEDCxO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 22:53:14 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110BE4E
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 19:53:12 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64384274895so21025b3a.2
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 19:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683168792; x=1685760792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rI1nmThTALjLb4yiGEnt/u8i/RipddozPHzaD2QhlcA=;
+        b=FbhbpwT9oGhAuEf8r3KZ7LTm+SYqTAEL0l626TvJh0NgLBifQsuJ45pCf/x9vZM3Y/
+         ioOugnv4veeJOMSF7wbzJ2w4j06ebskELhreMtIg9oDwoSr0vVM1zAk1HAdsavc4awIe
+         d6VM7JQvtO4zgNJ7buG+cM+mEviw/9tlkhGqmNK6R7avsNbl3fjPYyKeX5E1ECqo1B5b
+         q1zumMyavqi+GeuYAQOY6WKz+SU839oyDT2Ho0R1g1nd9O7vik8DdhP6/aR78WePqSD4
+         Te/hmC5yjl83V2MNMaypY0K0vbadm6KCdcomR8S4eErL9d8hSGEIlirqEwZ2UXEHEGYC
+         +8gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683168792; x=1685760792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rI1nmThTALjLb4yiGEnt/u8i/RipddozPHzaD2QhlcA=;
+        b=mC3IU6ahV1/VTv959u9o18RoUxcLkYA1FyQbMggfsO9kmB55jVNaJamjcwJaILcQf/
+         LMhsKfhXaT2vUv7gz3PfMf7d1+nc+H9+H7gs+EApNv/nmHoydHHqOob5aJ7a6U+qdceP
+         YfCzWrGMZwHuTJ6LvRHhdExYhnZVG2wR77Gq5VKIiyE3Cg50s6Zt/Ny0rjhgVNNJjSir
+         GMmztb9XPBdjlSnyHZtKDDlWX6NKkkAZ+DWNTdPYBH3FwW86hJRz3Dg+YduDS9ksFkws
+         k/Zzrhtrtl+m7mqvqVq7JeARNU3VqQ8E+mxB3VAT2rM3U2bPHjvaNAGCikQHPFGLa7cM
+         6xNQ==
+X-Gm-Message-State: AC+VfDyzk8AtEL8GbBDG5F8Odvnziiu0sMYS+8pZuITkZFp7r57mgFR/
+        VrJX1qjguPhWR45z/1CPmHs=
+X-Google-Smtp-Source: ACHHUZ6ljPTc8l16dGAJ0orWxC7YRQfE+0WX3abYM8qUXeTxdrF+L8TrJ71nbdFhMxUz3CWlXkysxA==
+X-Received: by 2002:a05:6a00:1901:b0:624:2e60:f21e with SMTP id y1-20020a056a00190100b006242e60f21emr725178pfi.29.1683168792190;
+        Wed, 03 May 2023 19:53:12 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:396f])
+        by smtp.gmail.com with ESMTPSA id g4-20020a056a001a0400b0062a7462d398sm25093045pfv.170.2023.05.03.19.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 May 2023 19:53:11 -0700 (PDT)
+Date:   Wed, 3 May 2023 19:53:09 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 03/10] bpf: encapsulate precision backtracking
+ bookkeeping
+Message-ID: <20230504025309.actotyekpawodfar@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230425234911.2113352-1-andrii@kernel.org>
+ <20230425234911.2113352-4-andrii@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <168269857929.2191653.13267688321246766547.stgit@firesoul>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230425234911.2113352-4-andrii@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,123 +72,161 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2023/4/29 0:16, Jesper Dangaard Brouer wrote:
->  void page_pool_release_page(struct page_pool *pool, struct page *page)
->  {
-> +	unsigned int flags = READ_ONCE(pool->p.flags);
->  	dma_addr_t dma;
-> -	int count;
-> +	u32 release_cnt;
-> +	u32 hold_cnt;
+Few early comments so far...
+
+On Tue, Apr 25, 2023 at 04:49:04PM -0700, Andrii Nakryiko wrote:
+> Add struct backtrack_state and straightforward API around it to keep
+> track of register and stack masks used and maintained during precision
+> backtracking process. Having this logic separately allow to keep
+> high-level backtracking algorithm cleaner, but also it sets us up to
+> cleanly keep track of register and stack masks per frame, allowing (with
+> some further logic adjustments) to perform precision backpropagation
+> across multiple frames (i.e., subprog calls).
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/bpf_verifier.h |  15 ++
+>  kernel/bpf/verifier.c        | 258 ++++++++++++++++++++++++++---------
+>  2 files changed, 206 insertions(+), 67 deletions(-)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 3dd29a53b711..185bfaf0ec6b 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -238,6 +238,10 @@ enum bpf_stack_slot_type {
 >  
->  	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
->  		/* Always account for inflight pages, even if we didn't
-> @@ -490,11 +503,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
->  skip_dma_unmap:
->  	page_pool_clear_pp_info(page);
+>  #define BPF_REG_SIZE 8	/* size of eBPF register in bytes */
 >  
-> -	/* This may be the last page returned, releasing the pool, so
-> -	 * it is not safe to reference pool afterwards.
-> -	 */
-> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
-> -	trace_page_pool_state_release(pool, page, count);
-
-There is a time window between "unsigned int flags = READ_ONCE(pool->p.flags)"
-and flags checking, if page_pool_destroy() is called concurrently during that
-time window, it seems we will have a pp instance leaking problem here?
-
-It seems it is very hard to aovid this kind of corner case when using both
-flags & PP_FLAG_SHUTDOWN and release_cnt/hold_cnt checking to decide if pp
-instance can be freed.
-Can we use something like biased reference counting, which used by frag support
-in page pool? So that we only need to check only one variable and avoid cache
-bouncing as much as possible.
-
-> +	if (flags & PP_FLAG_SHUTDOWN)
-> +		hold_cnt = pp_read_hold_cnt(pool);
+> +#define BPF_REGMASK_ARGS ((1 << BPF_REG_1) | (1 << BPF_REG_2) | \
+> +			  (1 << BPF_REG_3) | (1 << BPF_REG_4) | \
+> +			  (1 << BPF_REG_5))
 > +
-> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
-> +	trace_page_pool_state_release(pool, page, release_cnt);
+>  #define BPF_DYNPTR_SIZE		sizeof(struct bpf_dynptr_kern)
+>  #define BPF_DYNPTR_NR_SLOTS		(BPF_DYNPTR_SIZE / BPF_REG_SIZE)
+>  
+> @@ -541,6 +545,16 @@ struct bpf_subprog_info {
+>  	bool is_async_cb;
+>  };
+>  
+> +struct bpf_verifier_env;
 > +
-> +	/* In shutdown phase, last page will free pool instance */
-> +	if (flags & PP_FLAG_SHUTDOWN)
-> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
+> +struct backtrack_state {
+> +	struct bpf_verifier_env *env;
+> +	u32 frame;
+> +	u32 bitcnt;
+> +	u32 reg_masks[MAX_CALL_FRAMES];
+> +	u64 stack_masks[MAX_CALL_FRAMES];
+> +};
+> +
+>  /* single container for all structs
+>   * one verifier_env per bpf_check() call
+>   */
+> @@ -578,6 +592,7 @@ struct bpf_verifier_env {
+>  		int *insn_stack;
+>  		int cur_stack;
+>  	} cfg;
+> +	struct backtrack_state bt;
+>  	u32 pass_cnt; /* number of times do_check() was called */
+>  	u32 subprog_cnt;
+>  	/* number of instructions analyzed by the verifier */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fea6fe4acba2..1cb89fe00507 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1254,6 +1254,12 @@ static bool is_spilled_reg(const struct bpf_stack_state *stack)
+>  	return stack->slot_type[BPF_REG_SIZE - 1] == STACK_SPILL;
 >  }
->  EXPORT_SYMBOL(page_pool_release_page);
-> 
-
-...
-
 >  
->  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
-> @@ -856,6 +884,10 @@ EXPORT_SYMBOL(page_pool_unlink_napi);
->  
->  void page_pool_destroy(struct page_pool *pool)
+> +static bool is_spilled_scalar_reg(const struct bpf_stack_state *stack)
+> +{
+> +	return stack->slot_type[BPF_REG_SIZE - 1] == STACK_SPILL &&
+> +	       stack->spilled_ptr.type == SCALAR_VALUE;
+> +}
+> +
+>  static void scrub_spilled_slot(u8 *stype)
 >  {
-> +	unsigned int flags;
-> +	u32 release_cnt;
-> +	u32 hold_cnt;
-> +
->  	if (!pool)
->  		return;
->  
-> @@ -868,11 +900,39 @@ void page_pool_destroy(struct page_pool *pool)
->  	if (!page_pool_release(pool))
->  		return;
->  
-> -	pool->defer_start = jiffies;
-> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
-> +	/* PP have pages inflight, thus cannot immediately release memory.
-> +	 * Enter into shutdown phase, depending on remaining in-flight PP
-> +	 * pages to trigger shutdown process (on concurrent CPUs) and last
-> +	 * page will free pool instance.
-> +	 *
-> +	 * There exist two race conditions here, we need to take into
-> +	 * account in the following code.
-> +	 *
-> +	 * 1. Before setting PP_FLAG_SHUTDOWN another CPU released the last
-> +	 *    pages into the ptr_ring.  Thus, it missed triggering shutdown
-> +	 *    process, which can then be stalled forever.
-> +	 *
-> +	 * 2. After setting PP_FLAG_SHUTDOWN another CPU released the last
-> +	 *    page, which triggered shutdown process and freed pool
-> +	 *    instance. Thus, its not safe to dereference *pool afterwards.
-> +	 *
-> +	 * Handling races by holding a fake in-flight count, via
-> +	 * artificially bumping pages_state_hold_cnt, which assures pool
-> +	 * isn't freed under us.  For race(1) its safe to recheck ptr_ring
-> +	 * (it will not free pool). Race(2) cannot happen, and we can
-> +	 * release fake in-flight count as last step.
-> +	 */
-> +	hold_cnt = READ_ONCE(pool->pages_state_hold_cnt) + 1;
-> +	smp_store_release(&pool->pages_state_hold_cnt, hold_cnt);
-
-I assume the smp_store_release() is used to ensure the correct order
-between the above store operations?
-There is data dependency between those two store operations, do we
-really need the smp_store_release() here?
-
-> +	barrier();
-> +	flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN;
-
-Do we need a stronger barrier like smp_rmb() to prevent cpu from
-executing "flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN"
-before "smp_store_release(&pool->pages_state_hold_cnt, hold_cnt)"
-even if there is a smp_store_release() barrier here?
-
-> +	smp_store_release(&pool->p.flags, flags);
-> +
-> +	/* Concurrent CPUs could have returned last pages into ptr_ring */
-> +	page_pool_empty_ring(pool);
->  
-> -	INIT_DELAYED_WORK(&pool->release_dw, page_pool_release_retry);
-> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
-> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
-> +	page_pool_free_attempt(pool, hold_cnt, release_cnt);
+>  	if (*stype != STACK_INVALID)
+> @@ -3144,12 +3150,137 @@ static const char *disasm_kfunc_name(void *data, const struct bpf_insn *insn)
+>  	return btf_name_by_offset(desc_btf, func->name_off);
 >  }
->  EXPORT_SYMBOL(page_pool_destroy);
 >  
-> 
-> 
-> .
-> 
+> +static inline void bt_init(struct backtrack_state *bt, u32 frame)
+> +{
+> +	bt->frame = frame;
+> +}
+> +
+> +static inline void bt_reset(struct backtrack_state *bt)
+> +{
+> +	struct bpf_verifier_env *env = bt->env;
+> +	memset(bt, 0, sizeof(*bt));
+> +	bt->env = env;
+> +}
+> +
+> +static inline u32 bt_bitcnt(struct backtrack_state *bt)
+> +{
+> +	return bt->bitcnt;
+> +}
+
+I could have missed it, but it doesn't look that any further patch uses
+the actual number of bits set.
+All uses are: if (bt_bitcnt(bt) != 0)
+
+Hence keeping bitcnt as extra 4 bytes and doing ++, -- on it
+seems wasteful.
+Maybe rename bt_bitcnt into bt_empty or bt_non_empty that
+will do !!bt->reg_masks[bt->frame] | !!bt->stack_masks[bt->frame]
+
+
+> +static inline int bt_subprog_enter(struct backtrack_state *bt)
+> +{
+> +	if (bt->frame == MAX_CALL_FRAMES - 1) {
+> +		verbose(bt->env, "BUG subprog enter from frame %d\n", bt->frame);
+> +		WARN_ONCE(1, "verifier backtracking bug");
+> +		return -EFAULT;
+> +	}
+> +	bt->frame++;
+> +	return 0;
+> +}
+> +
+> +static inline int bt_subprog_exit(struct backtrack_state *bt)
+> +{
+> +	if (bt->frame == 0) {
+> +		verbose(bt->env, "BUG subprog exit from frame 0\n");
+> +		WARN_ONCE(1, "verifier backtracking bug");
+> +		return -EFAULT;
+> +	}
+> +	bt->frame--;
+> +	return 0;
+> +}
+> +
+> +static inline void bt_set_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
+> +{
+> +	if (bt->reg_masks[frame] & (1 << reg))
+> +		return;
+> +
+> +	bt->reg_masks[frame] |= 1 << reg;
+> +	bt->bitcnt++;
+> +}
+
+It doesnt' look that any further patch is using bt_set_frame_reg with explicit frame.
+If not, collapse bt_set_frame_reg and bt_set_reg ?
+
+> +
+> +static inline void bt_clear_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
+> +{
+> +	if (!(bt->reg_masks[frame] & (1 << reg)))
+> +		return;
+> +
+> +	bt->reg_masks[frame] &= ~(1 << reg);
+> +	bt->bitcnt--;
+> +}
+
+If we remove ++,-- of bitcnt this function will be much shorter and faster:
++static inline void bt_clear_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
++{
++	bt->reg_masks[frame] &= ~(1 << reg);
++}
+
+Removing runtime conditional has a nice perf benefit. Obviously tiny in a grand scheme, but still.
+
+Overall it's a nice cleanup.
