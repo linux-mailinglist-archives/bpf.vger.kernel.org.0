@@ -2,175 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E099E6F68B0
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 11:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F526F694F
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 12:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjEDJxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 05:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
+        id S229742AbjEDKy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 06:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjEDJxA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 05:53:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C4ACD
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 02:52:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48AC1632F0
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 09:52:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A36DC433EF;
-        Thu,  4 May 2023 09:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1683193977;
-        bh=DU6h76G+KqnVkzW0zQzTZ0TbtGgB7UtkFId13fZx30k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KN+YmnlPRIxkxGNleGxMh31FgN8vYBnQ/H52VXLGgjdJW74Xmo3ruXEKlmq1LNcht
-         41i0sv9X6vTY0X6gqUZg4a7WR8dCbxWIqNNNwCJcyPN8KBt6KG2Gnw7J1M+rs05e0X
-         Ti3nGOx1GiNYXNIkmlXQniRScgEiomV9+W/GMGOrQuiyVYwzRVFBplAwvx99O7aQyQ
-         J2bqWOXmp/ysUEWaseRtB90J1LYgfJRR0R/JeNlkkusZx5MlB/sPlp/0R67v/nQpx7
-         28OJuPy3GmYNu1K1FX2wDkk81Rmj6IF9Q/zsRLH5vWtKwU2q//W4D18WDJGKEN9tcc
-         nOhqeOZG5SVOA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, j.vosburgh@gmail.com,
-        andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, bpf@vger.kernel.org,
-        andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, alardam@gmail.com,
-        memxor@gmail.com, sdf@google.com, brouer@redhat.com,
-        toke@redhat.com, joamaki@gmail.com
-Subject: [PATCH v3 net] bonding: add xdp_features support
-Date:   Thu,  4 May 2023 11:52:49 +0200
-Message-Id: <5969591cfc2336e45de08e1d272bdcee30942fb7.1683191281.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229622AbjEDKy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 06:54:27 -0400
+X-Greylist: delayed 478 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 04 May 2023 03:54:24 PDT
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E326349F7
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 03:54:24 -0700 (PDT)
+Received: from 102.wangsu.com (unknown [59.61.78.234])
+        by app2 (Coremail) with SMTP id SyJltAB3fibrjFNko5kBAA--.618S2;
+        Thu, 04 May 2023 18:46:04 +0800 (CST)
+From:   Pengcheng Yang <yangpc@wangsu.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, Pengcheng Yang <yangpc@wangsu.com>
+Subject: [PATCH bpf-next] bpftool: Support bpffs mountpoint as pin path for prog loadall
+Date:   Thu,  4 May 2023 18:45:38 +0800
+Message-Id: <1683197138-1894-1-git-send-email-yangpc@wangsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: SyJltAB3fibrjFNko5kBAA--.618S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4xJF4xurWUZF4DWrykZrb_yoW5AFykpw
+        4DJryrKr18Xr15ua17CFs8GrW3Grn3WFy0kF4UZ345Zr48t3s0qa17KF4Fgw15Wr13tayx
+        Zasa934vvF1fZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
+        84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxVWUJVW8JwAv7VCjz48v1sIE
+        Y20_Gr4lYx0Ec7CjxVAajcxG14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0x
+        vY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI
+        7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        jrBMNUUUUU=
+X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce xdp_features support for bonding driver according to the slave
-devices attached to the master one. xdp_features is required whenever we
-want to xdp_redirect traffic into a bond device and then into selected
-slaves attached to it.
+Currently, when using prog loadall, if the pin path is a bpffs
+mountpoint, bpffs will be repeatedly mounted to the parent directory
+of the bpffs mountpoint path.
 
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Fixes: 66c0e13ad236 ("drivers: net: turn on XDP features")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+For example,
+    $ bpftool prog loadall test.o /sys/fs/bpf
+currently bpffs will be repeatedly mounted to /sys/fs.
+
+Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
 ---
-Change since v2:
-- take into account possible xdp-features added in the future in
-  bond_xdp_set_features routine not enumerating current supported features
+ tools/bpf/bpftool/common.c | 9 ++++++---
+ tools/bpf/bpftool/iter.c   | 2 +-
+ tools/bpf/bpftool/main.h   | 2 +-
+ tools/bpf/bpftool/prog.c   | 2 +-
+ 4 files changed, 9 insertions(+), 6 deletions(-)
 
-Change since v1:
-- remove bpf self-test patch from the series
----
- drivers/net/bonding/bond_main.c    | 29 +++++++++++++++++++++++++++++
- drivers/net/bonding/bond_options.c |  2 ++
- include/net/bonding.h              |  1 +
- 3 files changed, 32 insertions(+)
-
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 710548dbd0c1..3fed888629f7 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1789,6 +1789,26 @@ static void bond_ether_setup(struct net_device *bond_dev)
- 	bond_dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 5a73ccf14332..880fcb45f89f 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -68,7 +68,7 @@ void p_info(const char *fmt, ...)
+ 	va_end(ap);
  }
  
-+void bond_xdp_set_features(struct net_device *bond_dev)
-+{
-+	struct bonding *bond = netdev_priv(bond_dev);
-+	xdp_features_t val = NETDEV_XDP_ACT_MASK;
-+	struct list_head *iter;
-+	struct slave *slave;
-+
-+	ASSERT_RTNL();
-+
-+	if (!bond_xdp_check(bond)) {
-+		xdp_clear_features_flag(bond_dev);
-+		return;
-+	}
-+
-+	bond_for_each_slave(bond, slave, iter)
-+		val &= slave->dev->xdp_features;
-+
-+	xdp_set_features_flag(bond_dev, val);
-+}
-+
- /* enslave device <slave> to bond device <master> */
- int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
- 		 struct netlink_ext_ack *extack)
-@@ -2236,6 +2256,8 @@ int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
- 			bpf_prog_inc(bond->xdp_prog);
- 	}
+-static bool is_bpffs(char *path)
++static bool is_bpffs(const char *path)
+ {
+ 	struct statfs st_fs;
  
-+	bond_xdp_set_features(bond_dev);
-+
- 	slave_info(bond_dev, slave_dev, "Enslaving as %s interface with %s link\n",
- 		   bond_is_active_slave(new_slave) ? "an active" : "a backup",
- 		   new_slave->link != BOND_LINK_DOWN ? "an up" : "a down");
-@@ -2483,6 +2505,7 @@ static int __bond_release_one(struct net_device *bond_dev,
- 	if (!netif_is_bond_master(slave_dev))
- 		slave_dev->priv_flags &= ~IFF_BONDING;
- 
-+	bond_xdp_set_features(bond_dev);
- 	kobject_put(&slave->kobj);
- 
- 	return 0;
-@@ -3930,6 +3953,9 @@ static int bond_slave_netdev_event(unsigned long event,
- 		/* Propagate to master device */
- 		call_netdevice_notifiers(event, slave->bond->dev);
- 		break;
-+	case NETDEV_XDP_FEAT_CHANGE:
-+		bond_xdp_set_features(bond_dev);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -5874,6 +5900,9 @@ void bond_setup(struct net_device *bond_dev)
- 	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
- 		bond_dev->features |= BOND_XFRM_FEATURES;
- #endif /* CONFIG_XFRM_OFFLOAD */
-+
-+	if (bond_xdp_check(bond))
-+		bond_dev->xdp_features = NETDEV_XDP_ACT_MASK;
+@@ -244,13 +244,16 @@ int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
+ 	return fd;
  }
  
- /* Destroy a bonding device.
-diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
-index f71d5517f829..0498fc6731f8 100644
---- a/drivers/net/bonding/bond_options.c
-+++ b/drivers/net/bonding/bond_options.c
-@@ -877,6 +877,8 @@ static int bond_option_mode_set(struct bonding *bond,
- 			netdev_update_features(bond->dev);
+-int mount_bpffs_for_pin(const char *name)
++int mount_bpffs_for_pin(const char *name, bool is_dir)
+ {
+ 	char err_str[ERR_MAX_LEN];
+ 	char *file;
+ 	char *dir;
+ 	int err = 0;
+ 
++	if (is_dir && is_bpffs(name))
++		return err;
++
+ 	file = malloc(strlen(name) + 1);
+ 	if (!file) {
+ 		p_err("mem alloc failed");
+@@ -286,7 +289,7 @@ int do_pin_fd(int fd, const char *name)
+ {
+ 	int err;
+ 
+-	err = mount_bpffs_for_pin(name);
++	err = mount_bpffs_for_pin(name, false);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+index 9a1d2365a297..6b0e5202ca7a 100644
+--- a/tools/bpf/bpftool/iter.c
++++ b/tools/bpf/bpftool/iter.c
+@@ -76,7 +76,7 @@ static int do_pin(int argc, char **argv)
+ 		goto close_obj;
  	}
  
-+	bond_xdp_set_features(bond->dev);
-+
- 	return 0;
- }
+-	err = mount_bpffs_for_pin(path);
++	err = mount_bpffs_for_pin(path, false);
+ 	if (err)
+ 		goto close_link;
  
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index c3843239517d..a60a24923b55 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -659,6 +659,7 @@ void bond_destroy_sysfs(struct bond_net *net);
- void bond_prepare_sysfs_group(struct bonding *bond);
- int bond_sysfs_slave_add(struct slave *slave);
- void bond_sysfs_slave_del(struct slave *slave);
-+void bond_xdp_set_features(struct net_device *bond_dev);
- int bond_enslave(struct net_device *bond_dev, struct net_device *slave_dev,
- 		 struct netlink_ext_ack *extack);
- int bond_release(struct net_device *bond_dev, struct net_device *slave_dev);
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0ef373cef4c7..665f23f68066 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -142,7 +142,7 @@ const char *get_fd_type_name(enum bpf_obj_type type);
+ char *get_fdinfo(int fd, const char *key);
+ int open_obj_pinned(const char *path, bool quiet);
+ int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
+-int mount_bpffs_for_pin(const char *name);
++int mount_bpffs_for_pin(const char *name, bool is_dir);
+ int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
+ int do_pin_fd(int fd, const char *name);
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index afbe3ec342c8..473ec01c00d6 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1747,7 +1747,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 		goto err_close_obj;
+ 	}
+ 
+-	err = mount_bpffs_for_pin(pinfile);
++	err = mount_bpffs_for_pin(pinfile, !first_prog_only);
+ 	if (err)
+ 		goto err_close_obj;
+ 
 -- 
-2.40.1
+2.38.1
 
