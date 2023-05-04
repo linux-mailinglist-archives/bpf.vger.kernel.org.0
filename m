@@ -2,155 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F526F694F
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 12:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422A76F6992
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 13:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjEDKy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 06:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        id S229768AbjEDLJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 07:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjEDKy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 06:54:27 -0400
-X-Greylist: delayed 478 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 04 May 2023 03:54:24 PDT
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E326349F7
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 03:54:24 -0700 (PDT)
-Received: from 102.wangsu.com (unknown [59.61.78.234])
-        by app2 (Coremail) with SMTP id SyJltAB3fibrjFNko5kBAA--.618S2;
-        Thu, 04 May 2023 18:46:04 +0800 (CST)
-From:   Pengcheng Yang <yangpc@wangsu.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, Pengcheng Yang <yangpc@wangsu.com>
-Subject: [PATCH bpf-next] bpftool: Support bpffs mountpoint as pin path for prog loadall
-Date:   Thu,  4 May 2023 18:45:38 +0800
-Message-Id: <1683197138-1894-1-git-send-email-yangpc@wangsu.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: SyJltAB3fibrjFNko5kBAA--.618S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF4xJF4xurWUZF4DWrykZrb_yoW5AFykpw
-        4DJryrKr18Xr15ua17CFs8GrW3Grn3WFy0kF4UZ345Zr48t3s0qa17KF4Fgw15Wr13tayx
-        Zasa934vvF1fZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj64x0Y40En7xvr7AKxVWUJVW8JwAv7VCjz48v1sIE
-        Y20_Gr4lYx0Ec7CjxVAajcxG14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0x
-        vY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI
-        7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        jrBMNUUUUU=
-X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S230214AbjEDLJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 07:09:29 -0400
+Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EAC448E
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 04:09:24 -0700 (PDT)
+Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-55a1462f9f6so2221857b3.3
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 04:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683198563; x=1685790563;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GROeopruJWajWKHt8r0gfzVZxA7J+E5dzgTrhJcym+A=;
+        b=M74sXPkjK4yTESDXjEh9VHufZayaiaEtWDMel6olq/v7ncO61ctW9/z2S8je2i1cYl
+         mx9JVKCkb55sBz+FrP1pC1cLsHhAMKnm1hWLqI4dd2DEQGmp+Nw7uEknBpVwpCLtDGOq
+         wImbeJMzHT4HKcRvSDwJR53gDV+HdpIxOAkkeENu78iwZm+twuvyrq0v2ilycXQp7szM
+         tH+3Cx+pt9hdW/OcQrCHTbU/zH2cb/WYFLFhLkFKVPvoIbsqPA7FtkENxCTy0VBm/dDt
+         EtmabeyGyrYn849rpOq2hN79cYptjaz1NSc/7eWzXLlxMPCJQdCxsZHPUQ4QyRnb1TIg
+         LylA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683198563; x=1685790563;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GROeopruJWajWKHt8r0gfzVZxA7J+E5dzgTrhJcym+A=;
+        b=lSbVVBxmQX36EOMKHKGx/kdiPJ+8ciXlaTB+I7Lqo8aFp/4Oz5DuMi0HEa5edLaT3l
+         n5w4tzCf/QzGD+4KkMe3ViExE1TLWhsCK0DQnUHN2F2J0MmZiSTYokbj0I9lMic40jsv
+         aMOGKj9RB/Hc9mcVgDpDzJo/jIooTyrPt9fQHfGJFxbslPvZTsBWwz6rJAJKk5UHxA8D
+         SaEHIjhGSylIHY9oEmuk1Romw/d6DLAm0eusw8IeXlCYDIP5XljeSNYgdCzS9fQ4HM2+
+         QYh1c2eOQa9bAtfYPVEcur7Zj2VLdj7JC0cIuF7TpR9EX0rtpoTnpQEmZUtMnQVoqmD2
+         qlRw==
+X-Gm-Message-State: AC+VfDzN5uUJYKOYVkI0aPhDrMwSug/l9F7JApIp+OwTDRg0rKAAF0/K
+        BIX2trVAcak+Z3LIlvxrFrb6Qz5zzuz2mVsMYQE=
+X-Google-Smtp-Source: ACHHUZ4+eVHXvY11VJjReHB05TqXb9+VvIQfgKJWiHPuJDqeTf9S2cg7qzfoGKhwi0+AR1SGLNMrdZOVSsFez3Kh1XY=
+X-Received: by 2002:a25:320f:0:b0:b9a:3836:bf15 with SMTP id
+ y15-20020a25320f000000b00b9a3836bf15mr26230592yby.37.1683198563740; Thu, 04
+ May 2023 04:09:23 -0700 (PDT)
+MIME-Version: 1.0
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Thu, 4 May 2023 19:09:12 +0800
+Message-ID: <CADxym3ax73kYEyJMZwN+bTwmX9VhZ3WJe+wC9RGGwpfdjLdf3g@mail.gmail.com>
+Subject: bpf: add support to check kernel features in BPF program
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, when using prog loadall, if the pin path is a bpffs
-mountpoint, bpffs will be repeatedly mounted to the parent directory
-of the bpffs mountpoint path.
+Hello,
 
-For example,
-    $ bpftool prog loadall test.o /sys/fs/bpf
-currently bpffs will be repeatedly mounted to /sys/fs.
+I find that it's not supported yet to check if the bpf features are
+supported by the target kernel in the BPF program, which makes
+it hard to keep the BPF program compatible with different kernel
+versions.
 
-Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
----
- tools/bpf/bpftool/common.c | 9 ++++++---
- tools/bpf/bpftool/iter.c   | 2 +-
- tools/bpf/bpftool/main.h   | 2 +-
- tools/bpf/bpftool/prog.c   | 2 +-
- 4 files changed, 9 insertions(+), 6 deletions(-)
+For example, I want to use the helper bpf_jiffies64(), but I am not
+sure if it is supported by the target, as my program can run in
+kernel 5.4 or kernel 5.10. Therefore, I have to compile two versions
+BPF elf and load one of them according to the current kernel version.
+The part of BPF program can be this:
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 5a73ccf14332..880fcb45f89f 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -68,7 +68,7 @@ void p_info(const char *fmt, ...)
- 	va_end(ap);
- }
- 
--static bool is_bpffs(char *path)
-+static bool is_bpffs(const char *path)
- {
- 	struct statfs st_fs;
- 
-@@ -244,13 +244,16 @@ int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
- 	return fd;
- }
- 
--int mount_bpffs_for_pin(const char *name)
-+int mount_bpffs_for_pin(const char *name, bool is_dir)
- {
- 	char err_str[ERR_MAX_LEN];
- 	char *file;
- 	char *dir;
- 	int err = 0;
- 
-+	if (is_dir && is_bpffs(name))
-+		return err;
-+
- 	file = malloc(strlen(name) + 1);
- 	if (!file) {
- 		p_err("mem alloc failed");
-@@ -286,7 +289,7 @@ int do_pin_fd(int fd, const char *name)
- {
- 	int err;
- 
--	err = mount_bpffs_for_pin(name);
-+	err = mount_bpffs_for_pin(name, false);
- 	if (err)
- 		return err;
- 
-diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
-index 9a1d2365a297..6b0e5202ca7a 100644
---- a/tools/bpf/bpftool/iter.c
-+++ b/tools/bpf/bpftool/iter.c
-@@ -76,7 +76,7 @@ static int do_pin(int argc, char **argv)
- 		goto close_obj;
- 	}
- 
--	err = mount_bpffs_for_pin(path);
-+	err = mount_bpffs_for_pin(path, false);
- 	if (err)
- 		goto close_link;
- 
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 0ef373cef4c7..665f23f68066 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -142,7 +142,7 @@ const char *get_fd_type_name(enum bpf_obj_type type);
- char *get_fdinfo(int fd, const char *key);
- int open_obj_pinned(const char *path, bool quiet);
- int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
--int mount_bpffs_for_pin(const char *name);
-+int mount_bpffs_for_pin(const char *name, bool is_dir);
- int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
- int do_pin_fd(int fd, const char *name);
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index afbe3ec342c8..473ec01c00d6 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1747,7 +1747,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 		goto err_close_obj;
- 	}
- 
--	err = mount_bpffs_for_pin(pinfile);
-+	err = mount_bpffs_for_pin(pinfile, !first_prog_only);
- 	if (err)
- 		goto err_close_obj;
- 
--- 
-2.38.1
+#ifdef BPF_FEATS_JIFFIES64
+  jiffies = bpf_jiffies64();
+#else
+  jiffies = 0;
+#endif
 
+And I will generate xxx_no_jiffies.skel.h and xxx_jiffies.skel.h
+with -DBPF_FEATS_JIFFIES64 or not.
+
+This method is too silly, as I have to compile 8(2*2*2) versions of
+the BPF program if I am not sure if 3 bpf helpers are supported by the
+target kernel.
+
+Therefore, I think it may be helpful if we can check if the helpers
+are support like this:
+
+if (bpf_core_helper_exist(bpf_jiffies64))
+  jiffies = bpf_jiffies64();
+else
+  jiffies = 0;
+
+And bpf_core_helper_exist() can be defined like this:
+
+#define bpf_core_helper_exist(helper)                        \
+    __builtin_preserve_helper_info(helper, BPF_HELPER_EXISTS)
+
+Besides, in order to prevent the verifier from checking the helper
+that is not supported, we need to remove the dead code in libbpf.
+As the kernel already has the ability to remove dead and nop insn,
+we can just make the dead insn to nop.
+
+Another option is to make the BPF program support "const value".
+Such const values can be rewrite before load, the dead code can
+be removed. For example:
+
+#define bpf_const_value __attribute__((preserve_const_value))
+
+bpf_const_value bool is_bpf_jiffies64_supported = 0;
+
+if (is_bpf_jiffies64_supported)
+  jiffies = bpf_jiffies64();
+else
+  jiffies = 0;
+
+The 'is_bpf_jiffies64_supported' will be compiled to an imm, and
+can be rewrite and relocated through libbpf by the user. Then, we
+can make the dead insn 'nop'.
+
+What do you think? I'm not sure if these methods work and want
+to get some advice before coding.
+
+Thanks!
+Menglong Dong
