@@ -1,77 +1,79 @@
-Return-Path: <bpf+bounces-39-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-40-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6526F78BE
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:04:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC1F6F78C9
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:09:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E6BA1C21493
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:04:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEC65280E22
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD30C15A;
-	Thu,  4 May 2023 22:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC4BC155;
+	Thu,  4 May 2023 22:09:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893CBC155
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 22:03:57 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7141154B
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 15:03:55 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-94f1d0d2e03so169798166b.0
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 15:03:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D037C
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 22:09:46 +0000 (UTC)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B312B1249B
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 15:09:44 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6439f186366so26245b3a.2
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 15:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683237834; x=1685829834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bm/MqcHvW+pNWto/Hy0s/2kAPfe9FtErNhA5b8gBZQo=;
-        b=DiSotULz7vnhefFfPt9lke2JwIftSaYwz9eACtZfr3bF6ra1iYkwh/8CSnIaYAkyIb
-         ShpCsbovCvbpAafso+F/u5ra4g602vp9N6d26VqQ8esZ10y6LKu4HmVzut6r4OeDr6TA
-         oveyoBUI4M2IdfSvrIQkbFfgr2Q3nLx5t+xqhLbryUAesrFGjdOtdrEm2XDsPGgTell5
-         C6fFEj87na4QUVYR/jy4aQMXWxt36uUdLNd4BX8l6UxmqbHcc320npmt2YsCNpzs7lXb
-         0szqY+IzuLguROASFXO7F32Yvz19ikS8bMDlHiDhi6AY0fIu6NbbI/qjAevRQcs5AcQb
-         GOHw==
+        d=gmail.com; s=20221208; t=1683238184; x=1685830184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pM/CJu6a7n3uARXl7xMzmgg9TR8hFopXFSlEMebtshE=;
+        b=U25AFYhjvZhXc2bIEx/nmsCdgXGEGYGL4/XmADIYpHme0Tz39DqBoNT3OJOZNznHWA
+         JwP6tTWjWIxJM5U8J0ANBrFjFhgg3cHVlfJjMNCHUYEVdqLJ7LKnVsJj5huBZlq5JKv5
+         e2QOVnunwroVydX8UV8ZnFe0S1E7IqLyJFSfs57JeCKPzhjWwrG3I0YY32hBb+h5by8s
+         LZ4UTGC6ta40UPwmN+eTfkV6At1F7OzF1w1sU3OBXGWeggngR4UEPuqPpTrdiPLokJPj
+         oDSwyyT0NVVxXQO2unh3gcZOBV8ds1l7u9OQ3UVaoTlxuv8tNOlFd42yyncsGDSyX3lN
+         +OeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683237834; x=1685829834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bm/MqcHvW+pNWto/Hy0s/2kAPfe9FtErNhA5b8gBZQo=;
-        b=FlFy/FztNnpGsPfM3fTNreIhAt007c7gbz78THDS3IeXH29/aIHQUuw5fMj3aJNN6O
-         VU1IU2h33BQx2CPzZCuaZh9yi0EGakx201dgMc6lGXWMU4bRoWsb0N9hNE53zl2CnOqD
-         gZo+FRBg2DQLxkc2VCVJGu6HY8OSsEqMMb43ej3Dl/ZkD4r0CS9WxuxGsy/DDSZmcWDy
-         dQ8stgctyFvp6GAzxUcxTOeqwZLyLw07pQ2th/h4wDnImAtYsi1LyMorvGe1p2JaTJgS
-         hZF4HhdjGB7Dsfl2ME9LghciN5N5/FNV1K4B4dS2cIPH66tf5kIXIiZGtELYfdHQ90cw
-         eOZg==
-X-Gm-Message-State: AC+VfDzlAdeJmugym24XL1CxtoH4l/Qtcs3YJ6fSaVS2nrC0hdlmJv31
-	HQRdYoXOiIQOxUoeaInOhVQSn/v/OR+x+BXFU8VM35oE
-X-Google-Smtp-Source: ACHHUZ5RBkMamS/E4lMRCOdHm5v2FyuV1OJ52N3GDyqMOij8CXVBgS9+9ZEGcf47eCXhvmQIzpsjNxDADJw89daoWHE=
-X-Received: by 2002:a17:906:ef09:b0:962:46d7:c8fc with SMTP id
- f9-20020a170906ef0900b0096246d7c8fcmr277343ejs.21.1683237834296; Thu, 04 May
- 2023 15:03:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683238184; x=1685830184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pM/CJu6a7n3uARXl7xMzmgg9TR8hFopXFSlEMebtshE=;
+        b=FJcRXyL48Y+ayt7B8aTCC5nuK0ALxXI/1XMrEzBV05Vg+hHl+ay99+OwL2226u6g2t
+         BG6+x18P3hP2OH0F0pHXAiMZz3vQn77tRk+RFTUXlg3a3XJmGm1chHh3P5ZROt0fdDUS
+         f12rLZZfyA6aOJnunPKNhWtPTtf4KHe6R3AKMPfzTj5MWdTa5fEs90Lxv1bu4dhooO43
+         pYTkV9vall+DV09zkInYzUQDbpot/FX73FxSlj/AftFOfTHoHFqq2cbzoCjGiMbf5/hR
+         P6UiOwbm6PodSMCctHjxfXMWBGeKCKDf1ofB6ap5wvvLIjVAi2+J7Ir6oiZ5jEHoVajA
+         l84A==
+X-Gm-Message-State: AC+VfDzUmQDkqpjPtDSMjMIQdNVPCpid8Sw9JfHQCFqVl2GaVniNRVHJ
+	N37l1DnCT12HvuuQjjtGf7A=
+X-Google-Smtp-Source: ACHHUZ4Xk3vqDv29bdSRA/i7CFHxcA16EOIVBoU/BSUW69p49u9BPTfMemu8GEQUIf1YVo/w7PtZBg==
+X-Received: by 2002:a05:6a00:179c:b0:627:6328:79f1 with SMTP id s28-20020a056a00179c00b00627632879f1mr4146955pfg.34.1683238184140;
+        Thu, 04 May 2023 15:09:44 -0700 (PDT)
+Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:cce7])
+        by smtp.gmail.com with ESMTPSA id e14-20020a62ee0e000000b006436ffa3dc4sm159446pfi.24.2023.05.04.15.09.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 May 2023 15:09:43 -0700 (PDT)
+Date: Thu, 4 May 2023 15:09:41 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 09/10] bpf: use recorded bpf_capable flag in JIT
+ code
+Message-ID: <20230504220941.rppjhdmnydlpm7ig@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230502230619.2592406-1-andrii@kernel.org>
+ <20230502230619.2592406-10-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230425234911.2113352-1-andrii@kernel.org> <20230425234911.2113352-9-andrii@kernel.org>
- <20230504165633.mtf3etaof3afscpa@MacBook-Pro-6.local>
-In-Reply-To: <20230504165633.mtf3etaof3afscpa@MacBook-Pro-6.local>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 May 2023 15:03:42 -0700
-Message-ID: <CAEf4BzbsWOiM+ZQhuWyktc4g5MineWGUH-ZG8bMgy8KGLSsYww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 08/10] bpf: support precision propagation in the
- presence of subprogs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230502230619.2592406-10-andrii@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,101 +81,21 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 4, 2023 at 9:56=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Apr 25, 2023 at 04:49:09PM -0700, Andrii Nakryiko wrote:
-> > Add support precision backtracking in the presence of subprogram frames=
- in
-> > jump history.
-> >
-> > This means supporting a few different kinds of subprogram invocation
-> > situations, all requiring a slightly different handling in precision
-> > backtracking handling logic:
-> >   - static subprogram calls;
-> >   - global subprogram calls;
-> >   - callback-calling helpers/kfuncs.
-> >
-> > For each of those we need to handle a few precision propagation cases:
-> >   - what to do with precision of subprog returns (r0);
-> >   - what to do with precision of input arguments;
-> >   - for all of them callee-saved registers in caller function should be
-> >     propagated ignoring subprog/callback part of jump history.
-> >
-> > N.B. Async callback-calling helpers (currently only
-> > bpf_timer_set_callback()) are transparent to all this because they set
-> > a separate async callback environment and thus callback's history is no=
-t
-> > shared with main program's history. So as far as all the changes in thi=
-s
-> > commit goes, such helper is just a regular helper.
-> >
-> > Let's look at all these situation in more details. Let's start with
-> > static subprogram being called, using an exxerpt of a simple main
-> > program and its static subprog, indenting subprog's frame slightly to
-> > make everything clear.
-> >
-> > frame 0                               frame 1                 precision=
- set
-> > =3D=3D=3D=3D=3D=3D=3D                               =3D=3D=3D=3D=3D=3D=
-=3D                 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> >  9: r6 =3D 456;
-> > 10: r1 =3D 123;                                         r6
-> > 11: call pc+10;                                               r1, r6
-> >                               22: r0 =3D r1;            r1
-> >                               23: exit                r0
-> > 12: r1 =3D <map_pointer>                                        r0, r6
-> > 13: r1 +=3D r0;                                         r0, r6
-> > 14: r1 +=3D r6;                                         r6;
-> > 15: exit
-> >
-> > As can be seen above main function is passing 123 as single argument to
-> > an identity (`return x;`) subprog. Returned value is used to adjust map
-> > pointer offset, which forces r0 to be marked as precise. Then
-> > instruction #14 does the same for callee-saved r6, which will have to b=
-e
-> > backtracked all the way to instruction #9. For brevity, precision sets
-> > for instruction #13 and #14 are combined in the diagram above.
-> >
-> > First, for subprog calls, r0 returned from subprog (in frame 0) has to
-> > go into subprog's frame 1, and should be cleared from frame 0. So we go
-> > back into subprog's frame knowing we need to mark r0 precise. We then
-> > see that insn #22 sets r0 from r1, so now we care about marking r1
-> > precise.  When we pop up from subprog's frame back into caller at
-> > insn #11 we keep r1, as it's an argument-passing register, so we eventu=
-ally
-> > find `10: r1 =3D 123;` and satify precision propagation chain for insn =
-#13.
-> >
-> > This example demonstrates two sets of rules:
-> >   - r0 returned after subprog call has to be moved into subprog's r0 se=
-t;
-> >   - *static* subprog arguments (r1-r5) are moved back to caller precisi=
-on set.
->
-> Haven't read the rest. Only commenting on the above...
->
-> The description of "precision set" combines multiple frames and skips the=
- lower
-> which makes it hard to reason.
+On Tue, May 02, 2023 at 04:06:18PM -0700, Andrii Nakryiko wrote:
+>  
+> -int bpf_jit_charge_modmem(u32 size)
+> +int bpf_jit_charge_modmem(u32 size, const struct bpf_prog *prog)
+>  {
+>  	if (atomic_long_add_return(size, &bpf_jit_current) > READ_ONCE(bpf_jit_limit)) {
+> -		if (!bpf_capable()) {
+> -			atomic_long_sub(size, &bpf_jit_current);
+> -			return -EPERM;
+> -		}
+> +		if (prog ? prog->aux->bpf_capable : bpf_capable())
+> +			return 0;
 
-I currently print "current frame" mask only, depending on whether
-instruction is in parent or subprog. But yeah, I can make it more
-explicit and print both frames' masks, to make it easier to follow
-
-> I think it should be:
->
-> 10: r1 =3D 123;                                           fr0: r6
-> 11: call pc+10;                                         fr0: r1, r6
->                                 22: r0 =3D r1;            fr0: r6; fr1: r=
-1
->                                 23: exit                fr0: r6; fr1: r0
-> 12: r1 =3D <map_pointer>                                  fr0: r0, r6
-> 13: r1 +=3D r0;                                           fr0: r0, r6
-> 14: r1 +=3D r6;                                           fr0: r6
->
-> Right?
-
-right, exactly, I'll use this format
+I would drop this patch.
+It still has to fall back to bpf_capable for trampolines and
+its 'help' to cap_bpf is minimal. That limit on all practical systems is huge.
+It won't have any effect for your future follow ups for cap_bpf in containers.
 
