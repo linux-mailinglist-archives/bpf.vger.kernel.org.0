@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7F06F6305
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 04:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A0D6F630B
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 04:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbjEDCxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 22:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
+        id S229470AbjEDCzo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 22:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjEDCxO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 22:53:14 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110BE4E
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 19:53:12 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64384274895so21025b3a.2
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 19:53:12 -0700 (PDT)
+        with ESMTP id S229441AbjEDCzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 22:55:43 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF838E68
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 19:55:40 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-643465067d1so31747b3a.0
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 19:55:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683168792; x=1685760792;
+        d=gmail.com; s=20221208; t=1683168940; x=1685760940;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rI1nmThTALjLb4yiGEnt/u8i/RipddozPHzaD2QhlcA=;
-        b=FbhbpwT9oGhAuEf8r3KZ7LTm+SYqTAEL0l626TvJh0NgLBifQsuJ45pCf/x9vZM3Y/
-         ioOugnv4veeJOMSF7wbzJ2w4j06ebskELhreMtIg9oDwoSr0vVM1zAk1HAdsavc4awIe
-         d6VM7JQvtO4zgNJ7buG+cM+mEviw/9tlkhGqmNK6R7avsNbl3fjPYyKeX5E1ECqo1B5b
-         q1zumMyavqi+GeuYAQOY6WKz+SU839oyDT2Ho0R1g1nd9O7vik8DdhP6/aR78WePqSD4
-         Te/hmC5yjl83V2MNMaypY0K0vbadm6KCdcomR8S4eErL9d8hSGEIlirqEwZ2UXEHEGYC
-         +8gw==
+        bh=lz5o6fbo9E4OwYsU6QcPT/MTSPW6UQMsVdgsggLtimA=;
+        b=f6H4inpp9XgUgvoZ7hlC9/qk2EKfDd77mJy7N2L+FpO5PKNWi9Ry49ETA1CwyxuEBa
+         MaXryua304Kb2ZBf0SdhxpOJxnwgGzgThllo+8MvX/qxcXsckZE4GVACF0jQU4lPGNQy
+         HX1BzsnoTuwoitvn1ZWTsuZC1oLr/nXbSrqnci9SNC2Wh9bMRYwdAHl0V+5DIYTOh47Z
+         lrmV94xvFqUVt6H9FIuGy3y/AfeNXtQBNHnVlFtedlCY8pags00+WUwvxeSVVTWUVlwo
+         V/Uzb93t1jFLnUh68+q1jpeoawGQ9PDjGf26G7pWF1/PX5zINjsiw8HMyrByT/UuddYX
+         5o3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683168792; x=1685760792;
+        d=1e100.net; s=20221208; t=1683168940; x=1685760940;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rI1nmThTALjLb4yiGEnt/u8i/RipddozPHzaD2QhlcA=;
-        b=mC3IU6ahV1/VTv959u9o18RoUxcLkYA1FyQbMggfsO9kmB55jVNaJamjcwJaILcQf/
-         LMhsKfhXaT2vUv7gz3PfMf7d1+nc+H9+H7gs+EApNv/nmHoydHHqOob5aJ7a6U+qdceP
-         YfCzWrGMZwHuTJ6LvRHhdExYhnZVG2wR77Gq5VKIiyE3Cg50s6Zt/Ny0rjhgVNNJjSir
-         GMmztb9XPBdjlSnyHZtKDDlWX6NKkkAZ+DWNTdPYBH3FwW86hJRz3Dg+YduDS9ksFkws
-         k/Zzrhtrtl+m7mqvqVq7JeARNU3VqQ8E+mxB3VAT2rM3U2bPHjvaNAGCikQHPFGLa7cM
-         6xNQ==
-X-Gm-Message-State: AC+VfDyzk8AtEL8GbBDG5F8Odvnziiu0sMYS+8pZuITkZFp7r57mgFR/
-        VrJX1qjguPhWR45z/1CPmHs=
-X-Google-Smtp-Source: ACHHUZ6ljPTc8l16dGAJ0orWxC7YRQfE+0WX3abYM8qUXeTxdrF+L8TrJ71nbdFhMxUz3CWlXkysxA==
-X-Received: by 2002:a05:6a00:1901:b0:624:2e60:f21e with SMTP id y1-20020a056a00190100b006242e60f21emr725178pfi.29.1683168792190;
-        Wed, 03 May 2023 19:53:12 -0700 (PDT)
+        bh=lz5o6fbo9E4OwYsU6QcPT/MTSPW6UQMsVdgsggLtimA=;
+        b=DfI7n5V2aBjzMTr7K6Nudbs0Soz9gSqZO3oD3+6ald6ZkwuWIz71J/Yk0LpdBDtWgE
+         EhlD5hRLDC97SPv795aZq+tuG6gAm+lUJaMxjLN4DzkNDx2IpNAqKlc1WTuAKCUDVjdz
+         2syBOHVR+LhWzIqUuxtCw4Jyx163h5rYI1vC/5m2OHMUs5l20ogUbiuMzn7Q2xasD+Mo
+         9zSDkGMi7iMuU8puQEl4tDpYzM7tL7miJ9DcSj+Z/g0cLEnJamWLwmGMEUY7l9vPmsjo
+         +XylOPAqtFbpXgCZ2D2leFD8OuqSB1zHdCzlXaS1EnPalQC/QoOXkibhrg1PMtmi9e2I
+         X41A==
+X-Gm-Message-State: AC+VfDzRhZHR3G+/nKyU6Bkogqw4318UjPfLYSPZYfu96d31Njs6Vxyd
+        dk5AuvxV3b0zcREFakelybw=
+X-Google-Smtp-Source: ACHHUZ4q+dnl3Oc63yyaihGGyFVTm2WJwVXQzD+2DIRTuyfEmw5gtJmE2idRSrBM8Bc1iUdq0NuMmQ==
+X-Received: by 2002:a05:6a20:914e:b0:f3:8fc6:6562 with SMTP id x14-20020a056a20914e00b000f38fc66562mr954378pzc.7.1683168940199;
+        Wed, 03 May 2023 19:55:40 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:396f])
-        by smtp.gmail.com with ESMTPSA id g4-20020a056a001a0400b0062a7462d398sm25093045pfv.170.2023.05.03.19.53.10
+        by smtp.gmail.com with ESMTPSA id q63-20020a632a42000000b0052c737ea9bbsm1116079pgq.39.2023.05.03.19.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 19:53:11 -0700 (PDT)
-Date:   Wed, 3 May 2023 19:53:09 -0700
+        Wed, 03 May 2023 19:55:39 -0700 (PDT)
+Date:   Wed, 3 May 2023 19:55:37 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 03/10] bpf: encapsulate precision backtracking
- bookkeeping
-Message-ID: <20230504025309.actotyekpawodfar@dhcp-172-26-102-232.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next 04/10] bpf: improve precision backtrack logging
+Message-ID: <20230504025537.dr32drbhiqxffgc7@dhcp-172-26-102-232.dhcp.thefacebook.com>
 References: <20230425234911.2113352-1-andrii@kernel.org>
- <20230425234911.2113352-4-andrii@kernel.org>
+ <20230425234911.2113352-5-andrii@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230425234911.2113352-4-andrii@kernel.org>
+In-Reply-To: <20230425234911.2113352-5-andrii@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,161 +71,146 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Few early comments so far...
-
-On Tue, Apr 25, 2023 at 04:49:04PM -0700, Andrii Nakryiko wrote:
-> Add struct backtrack_state and straightforward API around it to keep
-> track of register and stack masks used and maintained during precision
-> backtracking process. Having this logic separately allow to keep
-> high-level backtracking algorithm cleaner, but also it sets us up to
-> cleanly keep track of register and stack masks per frame, allowing (with
-> some further logic adjustments) to perform precision backpropagation
-> across multiple frames (i.e., subprog calls).
+On Tue, Apr 25, 2023 at 04:49:05PM -0700, Andrii Nakryiko wrote:
+> Add helper to format register and stack masks in more human-readable
+> format. Adjust logging a bit during backtrack propagation and especially
+> during forcing precision fallback logic to make it clearer what's going
+> on (with log_level=2, of course), and also start reporting affected
+> frame depth. This is in preparation for having more than one active
+> frame later when precision propagation between subprog calls is added.
 > 
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  include/linux/bpf_verifier.h |  15 ++
->  kernel/bpf/verifier.c        | 258 ++++++++++++++++++++++++++---------
->  2 files changed, 206 insertions(+), 67 deletions(-)
+>  include/linux/bpf_verifier.h                  |  13 ++-
+>  kernel/bpf/verifier.c                         |  72 ++++++++++--
+>  .../testing/selftests/bpf/verifier/precise.c  | 106 +++++++++---------
+>  3 files changed, 128 insertions(+), 63 deletions(-)
 > 
 > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 3dd29a53b711..185bfaf0ec6b 100644
+> index 185bfaf0ec6b..0ca367e13dd8 100644
 > --- a/include/linux/bpf_verifier.h
 > +++ b/include/linux/bpf_verifier.h
-> @@ -238,6 +238,10 @@ enum bpf_stack_slot_type {
+> @@ -18,8 +18,11 @@
+>   * that converting umax_value to int cannot overflow.
+>   */
+>  #define BPF_MAX_VAR_SIZ	(1 << 29)
+> -/* size of type_str_buf in bpf_verifier. */
+> -#define TYPE_STR_BUF_LEN 128
+> +/* size of tmp_str_buf in bpf_verifier.
+> + * we need at least 306 bytes to fit full stack mask representation
+> + * (in the "-8,-16,...,-512" form)
+> + */
+> +#define TMP_STR_BUF_LEN 320
 >  
->  #define BPF_REG_SIZE 8	/* size of eBPF register in bytes */
->  
-> +#define BPF_REGMASK_ARGS ((1 << BPF_REG_1) | (1 << BPF_REG_2) | \
-> +			  (1 << BPF_REG_3) | (1 << BPF_REG_4) | \
-> +			  (1 << BPF_REG_5))
-> +
->  #define BPF_DYNPTR_SIZE		sizeof(struct bpf_dynptr_kern)
->  #define BPF_DYNPTR_NR_SLOTS		(BPF_DYNPTR_SIZE / BPF_REG_SIZE)
->  
-> @@ -541,6 +545,16 @@ struct bpf_subprog_info {
->  	bool is_async_cb;
+>  /* Liveness marks, used for registers and spilled-regs (in stack slots).
+>   * Read marks propagate upwards until they find a write mark; they record that
+> @@ -621,8 +624,10 @@ struct bpf_verifier_env {
+>  	/* Same as scratched_regs but for stack slots */
+>  	u64 scratched_stack_slots;
+>  	u64 prev_log_pos, prev_insn_print_pos;
+> -	/* buffer used in reg_type_str() to generate reg_type string */
+> -	char type_str_buf[TYPE_STR_BUF_LEN];
+> +	/* buffer used to generate temporary string representations,
+> +	 * e.g., in reg_type_str() to generate reg_type string
+> +	 */
+> +	char tmp_str_buf[TMP_STR_BUF_LEN];
 >  };
 >  
-> +struct bpf_verifier_env;
-> +
-> +struct backtrack_state {
-> +	struct bpf_verifier_env *env;
-> +	u32 frame;
-> +	u32 bitcnt;
-> +	u32 reg_masks[MAX_CALL_FRAMES];
-> +	u64 stack_masks[MAX_CALL_FRAMES];
-> +};
-> +
->  /* single container for all structs
->   * one verifier_env per bpf_check() call
->   */
-> @@ -578,6 +592,7 @@ struct bpf_verifier_env {
->  		int *insn_stack;
->  		int cur_stack;
->  	} cfg;
-> +	struct backtrack_state bt;
->  	u32 pass_cnt; /* number of times do_check() was called */
->  	u32 subprog_cnt;
->  	/* number of instructions analyzed by the verifier */
+>  __printf(2, 0) void bpf_verifier_vlog(struct bpf_verifier_log *log,
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index fea6fe4acba2..1cb89fe00507 100644
+> index 1cb89fe00507..8faf9170acf0 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -1254,6 +1254,12 @@ static bool is_spilled_reg(const struct bpf_stack_state *stack)
->  	return stack->slot_type[BPF_REG_SIZE - 1] == STACK_SPILL;
+> @@ -604,9 +604,9 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+>  		 type & PTR_TRUSTED ? "trusted_" : ""
+>  	);
+>  
+> -	snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
+> +	snprintf(env->tmp_str_buf, TMP_STR_BUF_LEN, "%s%s%s",
+>  		 prefix, str[base_type(type)], postfix);
+> -	return env->type_str_buf;
+> +	return env->tmp_str_buf;
 >  }
 >  
-> +static bool is_spilled_scalar_reg(const struct bpf_stack_state *stack)
-> +{
-> +	return stack->slot_type[BPF_REG_SIZE - 1] == STACK_SPILL &&
-> +	       stack->spilled_ptr.type == SCALAR_VALUE;
-> +}
-> +
->  static void scrub_spilled_slot(u8 *stype)
->  {
->  	if (*stype != STACK_INVALID)
-> @@ -3144,12 +3150,137 @@ static const char *disasm_kfunc_name(void *data, const struct bpf_insn *insn)
->  	return btf_name_by_offset(desc_btf, func->name_off);
+>  static char slot_type_char[] = {
+> @@ -3275,6 +3275,45 @@ static inline bool bt_is_slot_set(struct backtrack_state *bt, u32 slot)
+>  	return bt->stack_masks[bt->frame] & (1ull << slot);
 >  }
 >  
-> +static inline void bt_init(struct backtrack_state *bt, u32 frame)
+> +/* format registers bitmask, e.g., "r0,r2,r4" for 0x15 mask */
+> +static void fmt_reg_mask(char *buf, ssize_t buf_sz, u32 reg_mask)
 > +{
-> +	bt->frame = frame;
-> +}
+> +	DECLARE_BITMAP(mask, 64);
+> +	bool first = true;
+> +	int i, n;
 > +
-> +static inline void bt_reset(struct backtrack_state *bt)
-> +{
-> +	struct bpf_verifier_env *env = bt->env;
-> +	memset(bt, 0, sizeof(*bt));
-> +	bt->env = env;
-> +}
+> +	buf[0] = '\0';
 > +
-> +static inline u32 bt_bitcnt(struct backtrack_state *bt)
-> +{
-> +	return bt->bitcnt;
-> +}
-
-I could have missed it, but it doesn't look that any further patch uses
-the actual number of bits set.
-All uses are: if (bt_bitcnt(bt) != 0)
-
-Hence keeping bitcnt as extra 4 bytes and doing ++, -- on it
-seems wasteful.
-Maybe rename bt_bitcnt into bt_empty or bt_non_empty that
-will do !!bt->reg_masks[bt->frame] | !!bt->stack_masks[bt->frame]
-
-
-> +static inline int bt_subprog_enter(struct backtrack_state *bt)
-> +{
-> +	if (bt->frame == MAX_CALL_FRAMES - 1) {
-> +		verbose(bt->env, "BUG subprog enter from frame %d\n", bt->frame);
-> +		WARN_ONCE(1, "verifier backtracking bug");
-> +		return -EFAULT;
+> +	bitmap_from_u64(mask, reg_mask);
+> +	for_each_set_bit(i, mask, 32) {
+> +		n = snprintf(buf, buf_sz, "%sr%d", first ? "" : ",", i);
+> +		first = false;
+> +		buf += n;
+> +		buf_sz -= n;
+> +		if (buf_sz < 0)
+> +			break;
 > +	}
-> +	bt->frame++;
-> +	return 0;
 > +}
-> +
-> +static inline int bt_subprog_exit(struct backtrack_state *bt)
+> +/* format stack slots bitmask, e.g., "-8,-24,-40" for 0x15 mask */
+> +static void fmt_stack_mask(char *buf, ssize_t buf_sz, u64 stack_mask)
 > +{
-> +	if (bt->frame == 0) {
-> +		verbose(bt->env, "BUG subprog exit from frame 0\n");
-> +		WARN_ONCE(1, "verifier backtracking bug");
-> +		return -EFAULT;
+> +	DECLARE_BITMAP(mask, 64);
+> +	bool first = true;
+> +	int i, n;
+> +
+> +	buf[0] = '\0';
+> +
+> +	bitmap_from_u64(mask, stack_mask);
+> +	for_each_set_bit(i, mask, 64) {
+> +		n = snprintf(buf, buf_sz, "%s%d", first ? "" : ",", -(i + 1) * 8);
+> +		first = false;
+> +		buf += n;
+> +		buf_sz -= n;
+> +		if (buf_sz < 0)
+> +			break;
 > +	}
-> +	bt->frame--;
-> +	return 0;
 > +}
 > +
-> +static inline void bt_set_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
-> +{
-> +	if (bt->reg_masks[frame] & (1 << reg))
-> +		return;
-> +
-> +	bt->reg_masks[frame] |= 1 << reg;
-> +	bt->bitcnt++;
-> +}
+>  /* For given verifier state backtrack_insn() is called from the last insn to
+>   * the first insn. Its purpose is to compute a bitmask of registers and
+>   * stack slots that needs precision in the parent verifier state.
+> @@ -3298,7 +3337,11 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx,
+>  	if (insn->code == 0)
+>  		return 0;
+>  	if (env->log.level & BPF_LOG_LEVEL2) {
+> -		verbose(env, "regs=%x stack=%llx before ", bt_reg_mask(bt), bt_stack_mask(bt));
+> +		fmt_reg_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_reg_mask(bt));
+> +		verbose(env, "mark_precise: frame%d: regs(0x%x)=%s ",
+> +			bt->frame, bt_reg_mask(bt), env->tmp_str_buf);
+> +		fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_stack_mask(bt));
+> +		verbose(env, "stack(0x%llx)=%s before ", bt_stack_mask(bt), env->tmp_str_buf);
 
-It doesnt' look that any further patch is using bt_set_frame_reg with explicit frame.
-If not, collapse bt_set_frame_reg and bt_set_reg ?
+Let's drop (0x%llx) part from regs and stack.
+With nice human readable addition no one will be reading the hex anymore.
+It's just wasting screen real estate.
 
-> +
-> +static inline void bt_clear_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
-> +{
-> +	if (!(bt->reg_masks[frame] & (1 << reg)))
-> +		return;
-> +
-> +	bt->reg_masks[frame] &= ~(1 << reg);
-> +	bt->bitcnt--;
-> +}
+> +	"mark_precise: frame0: last_idx 26 first_idx 20\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 25\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 24\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 23\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 22\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 20\
+> +	parent didn't have regs=4 stack=0 marks:\
+> +	mark_precise: frame0: last_idx 19 first_idx 10\
+> +	mark_precise: frame0: regs(0x4)=r2 stack(0x0)= before 19\
+> +	mark_precise: frame0: regs(0x200)=r9 stack(0x0)= before 18\
+> +	mark_precise: frame0: regs(0x300)=r8,r9 stack(0x0)= before 17\
+> +	mark_precise: frame0: regs(0x201)=r0,r9 stack(0x0)= before 15\
+> +	mark_precise: frame0: regs(0x201)=r0,r9 stack(0x0)= before 14\
+> +	mark_precise: frame0: regs(0x200)=r9 stack(0x0)= before 13\
+> +	mark_precise: frame0: regs(0x200)=r9 stack(0x0)= before 12\
+> +	mark_precise: frame0: regs(0x200)=r9 stack(0x0)= before 11\
+> +	mark_precise: frame0: regs(0x200)=r9 stack(0x0)= before 10\
+> +	parent already had regs=0 stack=0 marks:",
 
-If we remove ++,-- of bitcnt this function will be much shorter and faster:
-+static inline void bt_clear_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
-+{
-+	bt->reg_masks[frame] &= ~(1 << reg);
-+}
-
-Removing runtime conditional has a nice perf benefit. Obviously tiny in a grand scheme, but still.
-
-Overall it's a nice cleanup.
+This part would be much cleaner without (0x...)
