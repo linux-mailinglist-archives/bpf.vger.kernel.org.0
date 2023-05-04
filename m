@@ -1,58 +1,60 @@
-Return-Path: <bpf+bounces-11-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-12-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF0386F75E5
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:02:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525856F75E6
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267D928108A
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 20:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AEA61C20F76
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 20:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4720B79F6;
-	Thu,  4 May 2023 19:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F5911CB0;
+	Thu,  4 May 2023 19:47:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1906F11C87
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7A311C87
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:47:13 +0000 (UTC)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B2111D;
-	Thu,  4 May 2023 12:46:45 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2AA9005;
+	Thu,  4 May 2023 12:46:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 538EA637B8;
-	Thu,  4 May 2023 19:46:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1372C433A0;
-	Thu,  4 May 2023 19:46:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 900B6637C2;
+	Thu,  4 May 2023 19:46:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B688DC433D2;
+	Thu,  4 May 2023 19:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683229591;
-	bh=VM2vo1YQKFMHenaXVsD91Ap0kaBngepTBIMWG0E+15A=;
+	s=k20201202; t=1683229603;
+	bh=3cm8SZFDsBnS6NwwSOzv0TR1ysXO8bAgKi0mu4OgyUw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kOyJV7kdbwo1Z1YYzj2XITbLpSxjbiEo3vcTBf6xsSLiTqfwdktsHVrnlAECIcLeQ
-	 YRUt4WBAIjqtZXK39+39/QqFsp5NQytM95xYDYiIyY8t9AFmiIRfkfpyvPdUozP91/
-	 hMXtSB3DYuG/tnvKcL5CtT7f32vXLOTT0MruuZWoFzFYdNTF0xl3owgdhntqx5UVHX
-	 AV+CQncdw1fz/gGqyOh1CPrniClBW6sNuJ9dl5Ytlny2xEDsKCrniX80gtG/OfII6H
-	 j+/D0+5L74CIWX/FPk8WXKgSttTIznZqHZfLSt9rGfYVOAb6dwc2EZ7dM/g+CQgN/2
-	 qC2YPRtdyAPfw==
+	b=C09sAemq0NP2bsM7Mj3E7oi82KKroOPSOyql7ycm2kn3s0/0MX/Z7GIJ/XjENxqsN
+	 htNtH9/Ve3+jigOLttWz5EdF4dXad8JiHCEfzhel5nP7L/fA8ui9WbKa0+Tmzokd1I
+	 3WznFySC+olHbqyntL7LFdBBA0HckzgZV5cVYHpwSK/bdjN4sf1jCH3yJd58wiDucG
+	 kb/ONgaBsnbBQ6am8lHvc6dTnhCe2qzvnbP71Cc+y0JK70PC2q7xyQD5QL2a4fyKDM
+	 PztBDKCKeovGfNmkQ81n+FBBBbbrvDwga+x0lmGJm1R/TeuVUmsGhVzlBjZXewym4a
+	 XWgLU7/ikV8ZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	KP Singh <kpsingh@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Johan Almbladh <johan.almbladh@anyfinetworks.com>,
 	Sasha Levin <sashal@kernel.org>,
-	martin.lau@linux.dev,
-	daniel@iogearbox.net,
+	tsbogend@alpha.franken.de,
+	ast@kernel.org,
 	andrii@kernel.org,
+	paulburton@kernel.org,
+	linux-mips@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/49] bpf: Annotate data races in bpf_local_storage
-Date: Thu,  4 May 2023 15:45:39 -0400
-Message-Id: <20230504194626.3807438-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 05/49] bpf, mips: Implement DADDI workarounds for JIT
+Date: Thu,  4 May 2023 15:45:42 -0400
+Message-Id: <20230504194626.3807438-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230504194626.3807438-1-sashal@kernel.org>
 References: <20230504194626.3807438-1-sashal@kernel.org>
@@ -62,6 +64,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -72,81 +75,56 @@ X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-[ Upstream commit 0a09a2f933c73dc76ab0b72da6855f44342a8903 ]
+[ Upstream commit bbefef2f07080cd502a93cb1c529e1c8a6c4ac8e ]
 
-There are a few cases where hlist_node is checked to be unhashed without
-holding the lock protecting its modification. In this case, one must use
-hlist_unhashed_lockless to avoid load tearing and KCSAN reports. Fix
-this by using lockless variant in places not protected by the lock.
+For DADDI errata we just workaround by disable immediate operation
+for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
 
-Since this is not prompted by any actual KCSAN reports but only from
-code review, I have not included a fixes tag.
+All other use cases in JIT won't cause overflow thus they are all safe.
 
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
-Cc: KP Singh <kpsingh@kernel.org>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Link: https://lore.kernel.org/r/20230221200646.2500777-4-memxor@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Link: https://lore.kernel.org/bpf/20230228113305.83751-2-jiaxun.yang@flygoat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_local_storage.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ arch/mips/Kconfig            | 1 -
+ arch/mips/net/bpf_jit_comp.c | 4 ++++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index f27fa5ba7d722..d9d88a2cda5e5 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -51,11 +51,21 @@ owner_storage(struct bpf_local_storage_map *smap, void *owner)
- 	return map->ops->map_owner_storage_ptr(owner);
- }
- 
-+static bool selem_linked_to_storage_lockless(const struct bpf_local_storage_elem *selem)
-+{
-+	return !hlist_unhashed_lockless(&selem->snode);
-+}
-+
- static bool selem_linked_to_storage(const struct bpf_local_storage_elem *selem)
- {
- 	return !hlist_unhashed(&selem->snode);
- }
- 
-+static bool selem_linked_to_map_lockless(const struct bpf_local_storage_elem *selem)
-+{
-+	return !hlist_unhashed_lockless(&selem->map_node);
-+}
-+
- static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
- {
- 	return !hlist_unhashed(&selem->map_node);
-@@ -165,7 +175,7 @@ static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
- 	bool free_local_storage = false;
- 	unsigned long flags;
- 
--	if (unlikely(!selem_linked_to_storage(selem)))
-+	if (unlikely(!selem_linked_to_storage_lockless(selem)))
- 		/* selem has already been unlinked from sk */
- 		return;
- 
-@@ -199,7 +209,7 @@ void bpf_selem_unlink_map(struct bpf_local_storage_elem *selem)
- 	struct bpf_local_storage_map_bucket *b;
- 	unsigned long flags;
- 
--	if (unlikely(!selem_linked_to_map(selem)))
-+	if (unlikely(!selem_linked_to_map_lockless(selem)))
- 		/* selem has already be unlinked from smap */
- 		return;
- 
-@@ -410,7 +420,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
- 		err = check_flags(old_sdata, map_flags);
- 		if (err)
- 			return ERR_PTR(err);
--		if (old_sdata && selem_linked_to_storage(SELEM(old_sdata))) {
-+		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
- 			copy_map_value_locked(&smap->map, old_sdata->data,
- 					      value, false);
- 			return old_sdata;
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b26b77673c2cc..44763be3bd125 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -64,7 +64,6 @@ config MIPS
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+-				!CPU_DADDI_WORKAROUNDS && \
+ 				!CPU_R4000_WORKAROUNDS && \
+ 				!CPU_R4400_WORKAROUNDS
+ 	select HAVE_EXIT_THREAD
+diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
+index b17130d510d49..a40d926b65139 100644
+--- a/arch/mips/net/bpf_jit_comp.c
++++ b/arch/mips/net/bpf_jit_comp.c
+@@ -218,9 +218,13 @@ bool valid_alu_i(u8 op, s32 imm)
+ 		/* All legal eBPF values are valid */
+ 		return true;
+ 	case BPF_ADD:
++		if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
++			return false;
+ 		/* imm must be 16 bits */
+ 		return imm >= -0x8000 && imm <= 0x7fff;
+ 	case BPF_SUB:
++		if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
++			return false;
+ 		/* -imm must be 16 bits */
+ 		return imm >= -0x7fff && imm <= 0x8000;
+ 	case BPF_AND:
 -- 
 2.39.2
 
