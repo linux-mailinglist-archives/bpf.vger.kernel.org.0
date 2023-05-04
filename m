@@ -2,89 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 256936F6D47
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 15:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA286F6DB6
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 16:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjEDNtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 09:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
+        id S230364AbjEDO36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 10:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbjEDNti (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 09:49:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC383D8
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 06:48:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1683208095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/Psn8a+p+ivjgRfJh7gyQsRugc6c1mLJFD6NHz5B0co=;
-        b=fCLyKjaOzD+D3skfWTwcLp20XiyjiaXUrP41tTQZBISk4ix59tqcWYm3b+GRgWcud8FJzB
-        uUrY7DeGNAjX7vJ8XfzodfuWrQN/Mrb4PNq96X49PxAh+hrruWGMW4q6z4MgCbLw4B2SA5
-        biVUv8Awie1biXZutyzN/qyDEQZJbnY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-pfgSmva9Oey42euLBNAN1w-1; Thu, 04 May 2023 09:48:14 -0400
-X-MC-Unique: pfgSmva9Oey42euLBNAN1w-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-50bd72cd04bso555988a12.2
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 06:48:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683208093; x=1685800093;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Psn8a+p+ivjgRfJh7gyQsRugc6c1mLJFD6NHz5B0co=;
-        b=hiT68ajDBCFICzyPa+KbFZPN0dPIyeNM2Ms5OgwlMZcvfxrmTmgAwZPQT5hRvpMn7k
-         UtpVnNY4K4Ed9yOIw8m+xtSMPA1dBRp5jkbMlUJVNnp10v2gbMBQfjNiEN8T1o34z9W1
-         csGe0NR6Fu3gYghRPcp+7+HXVeu4FSOUvBIs+Zw6cFQPWef+wtQMKFLuquqH35IPPfTj
-         mY/E0YnfLOkIo4WsVOJUsn2p4Xy+YtcvMr8c6BOZCQZChGS3mcL4oo4whnazwMbK95dO
-         7wKANWZM3mtrgzoy14Y7vKHJhvPVtJWnK7+TthVn63C8YavbQwby3209KIjjv+24Mrt1
-         9JgQ==
-X-Gm-Message-State: AC+VfDypeco0NblxJ+qp2F9wfxiQrJcrzeDcbEZnXhLp1oChy8YVW290
-        nh2G9bqDTrsXBP1N9CoiLGLgdt4TntYVfNG9G6zhWWQLTSio+fW1milbiuJMmtcSD9EHljzV/C8
-        3cQxytTBGR8Tj
-X-Received: by 2002:a17:907:982:b0:94e:3d6f:9c0f with SMTP id bf2-20020a170907098200b0094e3d6f9c0fmr6373064ejc.55.1683208093268;
-        Thu, 04 May 2023 06:48:13 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5yAumZlKjgIkX67ze7eAZsMjh5PrIMF9NPniS81LmF2LlTPtKC5MLQHKTj0FxsOWYmK0Xrug==
-X-Received: by 2002:a17:907:982:b0:94e:3d6f:9c0f with SMTP id bf2-20020a170907098200b0094e3d6f9c0fmr6373042ejc.55.1683208092877;
-        Thu, 04 May 2023 06:48:12 -0700 (PDT)
-Received: from [192.168.42.222] (cgn-cgn9-185-107-14-3.static.kviknet.net. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170906c40d00b0094aa087578csm19031004ejz.171.2023.05.04.06.48.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 May 2023 06:48:12 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <3785321f-b2f8-d753-7efc-78ee40e6d0b6@redhat.com>
-Date:   Thu, 4 May 2023 15:48:10 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Cc:     brouer@redhat.com, lorenzo@kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
-Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in new
- shutdown scheme
+        with ESMTP id S230264AbjEDO34 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 10:29:56 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F9E86B0;
+        Thu,  4 May 2023 07:29:55 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344DO88S013857;
+        Thu, 4 May 2023 07:29:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=JA4VX07eIz72LE3ztyT2Tl2Nxt/s0M6KeMMrnvrHR2E=;
+ b=JcT/Na7CpulVBc/IYXFA6vcrl6JN73Gqn+CyOcKf/gYD/4USZA6qo2bAXmh55TGHwoEf
+ rv/+RKlo6kbHtK7V5OkBAMxRgOn6LMWFf2/HpC8seU/PMmeAr05tThkudS3elO5OtYMu
+ AEsfCxOzF0ggWMN7EYPcbX56tnhA89+v1OMmKRtN8tYD3OaIhMeCVgQigZdp1C1vAiZa
+ L7bLY1zUIadlyxsvipr1Y3uz4EqseeALnV/DDIsSuCJ2bwXWtUWB+2WpqWigzlIM5aG9
+ phjZxPd0XuRcLeyVvGPhNqmAqFZLwlxNb+vcuXdqaSbCRdfHUP6LwTFaBCuAAmdo6oEi QA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qc2g1c8f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 04 May 2023 07:29:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mFMay894JPFSFH1jnFKmrvKHIQW+RnGRm7uuEHdOQRKSVMIHNHwnnY5SgXUU+TV3fQWQZes+ZhNulbAufazJFtOBbvRXHSAW8rBsg6ww6HjGqti5eSuaFIGfJRNKCNXgCCo2cE9JFWebVBpUE5ALJEBKh7IG2casroSPORZn9dOpbp6CilVGRjv0ZNsU/UlmT4Q5OGIacoiYyod7XteQvmpS787OyvCaPjTTz/In0lnUHZYsnYIaRBftev1TMxLHW5JtPLZrDYg8QgXgB+4VfNz8LfSjjnruhdJ5pyxbmgKZqtvnpeQIZdqrhYOcuAcRB2SkxTKOI8QPiusNWEXveA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JA4VX07eIz72LE3ztyT2Tl2Nxt/s0M6KeMMrnvrHR2E=;
+ b=b2pquQrWggu56zQDVtzHy7GmglUOgHGJwVUPzRj7EZbziSi4ZqWcT8u+q7HXn/wLfpF9NYg19suKTPZA1ivYGZ+RTijD6WhoA56/nCZTM1NX1UfZLiiIcchaqObgNGKJWQjkET4HFY0LgrS8i/2l2mIKEW/Tc55TFGp69mla20mVLZ8zGQ0DX2qvcQSyXIBnJxh8emD9gV+DFGLUPjhIQWcLEpjoI+Mb2eZUmLDBpXWsqwGK8Obf1dchzMB1jGN6lWPBx15BcbcmQ2HgUAECQFXX0+G9vajOyB8SMITBctWXYzgZbncOJB5Ovesx+Kq3aP2uy4Ll/G1eQnbe1SFdZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by CY8PR15MB5899.namprd15.prod.outlook.com (2603:10b6:930:6c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.26; Thu, 4 May
+ 2023 14:29:18 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6363.022; Thu, 4 May 2023
+ 14:29:18 +0000
+Message-ID: <72f73a40-d793-11dd-af34-f1491312d3b5@meta.com>
+Date:   Thu, 4 May 2023 07:29:14 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.1
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: Add bpf_task_under_cgroup() kfunc
+To:     Feng zhou <zhoufeng.zf@bytedance.com>, martin.lau@linux.dev,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+        shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
+References: <20230504031513.13749-1-zhoufeng.zf@bytedance.com>
+ <20230504031513.13749-2-zhoufeng.zf@bytedance.com>
 Content-Language: en-US
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
-References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
- <168269857929.2191653.13267688321246766547.stgit@firesoul>
- <387f4653-1986-3ffe-65e7-448a59002ed0@huawei.com>
-In-Reply-To: <387f4653-1986-3ffe-65e7-448a59002ed0@huawei.com>
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230504031513.13749-2-zhoufeng.zf@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SJ0PR03CA0224.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CY8PR15MB5899:EE_
+X-MS-Office365-Filtering-Correlation-Id: 51d2538a-1393-43ee-592c-08db4cabf1cc
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IIi7Tt0EoOzlCeAK3mzj00GoyIAThdnnSzuTqPO2MDG1DHwAqU1hiuYQE+fh//NVAeNMH+JcK1FRSNy92t8pMIgFy4Vb2Xc9lltPx/BJZ5aLzFDJLIVXDAg+MNnZtCABPu/dKbbstUpRXBa9js7GmPfxkLizcXBOwhG2bFxFoQDhctIQ/A5ZEw+Haa3qP+d9eQ0cQvcItzAGcUxetY6zZzC84McTXsZoqz2CWx52+hJkCmSY9WmIWrQxhWQK6Yz/1EpDTGBhJ3EzIBDU9TkeocZSTGyOueo2OGX/F3wb9U71lDKXPvCImw0oxEHuSmHZlSvnDIhUcaBgBluerC2eLxyQV4nplbqK5SE4UTEBSy+2khnFAqUA4iT9fyH8T+ZOQJa96wDWUkXJwj4+blFOC2Cj+xjneN652zFdr4odBSFhwo4TQs0RznmhXCfjhKnP7L+xb8diyBRwrqZnTWCv+JaPwXBOj7d1Jb8wr3Sf0knF0i1aca/Qu9RSO2ssnomd6XIX2ZQdUoNJUpxYl65S99kfH6wEb2aQfzPF2lOK2wAN5+1IHFISu4YEqcIZ5Ynhc13LlUaUGrgb54UZmJkCv6rC8SrKeFU9h3C7iTScjYjoWopNsCSPGdk7cJxbJMgzegghTF4j+GduU/ZCUCOOSoynLHKKzCvYzzSL3O5/Phc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(451199021)(478600001)(2616005)(6486002)(31696002)(6666004)(86362001)(41300700001)(316002)(7416002)(5660300002)(8676002)(8936002)(921005)(38100700002)(66946007)(36756003)(4326008)(66556008)(66476007)(2906002)(4744005)(186003)(31686004)(53546011)(6512007)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ajdEbloxRS9tOEFmaVBMcnhxWHlnbXhoMmsvSyt3OEM2b2xWRzh0aWMvWlZp?=
+ =?utf-8?B?OXdnckIzTmFnM2Z2azBjbC9ueUExdXB2NTAyUjlLQSt1YWRNMlVJb0E4V0x3?=
+ =?utf-8?B?VkF4UlBJY3QrVWlNS0Fka1pVYUhGb3lCOHMrVWIzR0JOTTlEaDNwQWRuZkdV?=
+ =?utf-8?B?bklwTEpJZjRuZDZEY0hDdWhjRzA2UFpoZjVxVmdlSFc5eXIrdHZtWXFFR2t3?=
+ =?utf-8?B?ZTcvdG1MRmhmV29xYm9tci9WYnVHdnhkSzhuYXhTYkV5cEU2NUN6NWM1WnFO?=
+ =?utf-8?B?MXh0TXNDdWg5QlhHeHNOT0VFSDVoajNDVUJ3SzMxRzlNUWUrMU1tc0RaQkVk?=
+ =?utf-8?B?N2thZ0p4Slo2TkV4bEpibCtXRnZ2UndDMWpaczNJMWVYY0lPSFIwZDRwTi8w?=
+ =?utf-8?B?QWpVMFIvTC9SV2hGdWw4SGZQOFlGVFZ6UnhXOW9sRDRsc2h3UGZFTTUrTFAr?=
+ =?utf-8?B?OGNUUDB6RUF3NC9mZXJoa2E0amFUQU80cEhURlhPUHkrb2w5bmVRWVJ2NDM5?=
+ =?utf-8?B?dlI3d2tSYjUrVHhXWEUyWjVnaG5XWXNVV3BuNm41N0xVOXVCNGZlYnRZZ2tN?=
+ =?utf-8?B?SE90UHAzajAxTzdXSHZXdzZIZVRCN3Q2dUYvZFlFTk50UjlGOE9GZDlvN2NJ?=
+ =?utf-8?B?QkQrakJJNXBZTThWQk9mS1ZLSzdUMTdIVmdJUzhMV1o1YjRkbjZMWGd1MURD?=
+ =?utf-8?B?QmZoSUN2aUsyRWlkM3dic0tUTXpQN1dnalFxMWZyT29CMWNuOTlHVlVGazM0?=
+ =?utf-8?B?aXVmNllIcXFNdDM3azZyYkJoZW9kQStEeS9xV3diZXpTTHlMU3daL09JeEha?=
+ =?utf-8?B?VSt4TG11WTcwbnNkZUNJUnYycVdxeW10S0tCU1BrdmxUcE9kZ0xFcWdOR3BN?=
+ =?utf-8?B?a0ZBc2dVeDk3M2VLSWhRdDRGMU5MbjBjTEtxaWp2NlYwbzRMcnF2dm40WGhC?=
+ =?utf-8?B?MktMR2tvNmppYmdhSW5hbVc3OVRaVmQwNS80Vyt0MzRwRHB5OERkMXVnSFpB?=
+ =?utf-8?B?SXhyUEJsTUdiblRBN2JtZlNDVUNxRElkMGhrc25aMWNta08zUjlnYll3a2kv?=
+ =?utf-8?B?ZVhEWjFDWVZtN1FSdjY4YmpGOUk1a0ZMWkZkYVlKZjNHdkpXS0p4Nm80YjZV?=
+ =?utf-8?B?Qng5MVJBK0xJQWtqaDc3ajAybmdudytOMmNHclByZHNBN1I3U0h0dXhtQUVr?=
+ =?utf-8?B?eHp4YlhTM2kwcHdKamNXMGpobEFqdVRSTE5wQ28vd21QZG9XaG1GcUl4U29E?=
+ =?utf-8?B?Sy8yR2V6K0ZkM1JYQzhYVkdOcWNVS1hxSVBTbWE3c2JxdWdBeVlRQXI2RXB5?=
+ =?utf-8?B?ZDVrdzFQQzVuVjd0RXk4eE83NThCSXYwU2lnbTk2b25ZclZYcEt3NmtjeEdX?=
+ =?utf-8?B?UkxDbml3YzVDMkFTUnE1N0VPL2dnVEhZalZKOXJ2UVdkKytVMGQrNTBQK1o1?=
+ =?utf-8?B?M2JwdWNyMXY1TWhSQ3hlRmVyOElvQjNHS0tzYWlGc21jejdtMVA3VGs3ZTVB?=
+ =?utf-8?B?eFVwN2J1cnE3TVp3V3o2dkZIRENYbm95Sk9FaU12TmZtVjVVWmtjZXUwSlN6?=
+ =?utf-8?B?Tjk0aUh6Y2xRSEdMWllwT1drT3BVWVdGaUFtOGQwS0Y4eVNVMkVoeGFhVU9Q?=
+ =?utf-8?B?SnBWWmp0UUdmQ3RVSzJHK3BGV3d1NVFMZGE0YlNseG1meE1GbEk4MGdiVXNl?=
+ =?utf-8?B?SmVZWTRqaWdWQ0FiaVc1MzZpRDh3VTR6MTJELzRTdXNNYlMzaHlaV1pMRmVk?=
+ =?utf-8?B?bjNGZkRtd0RYdGV5V0d1bGJsRklpNE9WM1loQXI5azgyc3BvS2lrNlI2M3la?=
+ =?utf-8?B?VlB4TW5MTDBMUzFTL3cvb0xybjViT0d4MUZrKy8zZTdsSisrQUF4WkhpSk4z?=
+ =?utf-8?B?NTY4MzhhaythSjgybkFHRGVvaWdpaG9HS1crdUFRWXFKSDRZY1JqMzBvVzl6?=
+ =?utf-8?B?a29HSmFHWjdrSnhDcDk1R3RaMjUyMEk5RnpTb3pjcGc0dnBIVnI3bVJTd3M4?=
+ =?utf-8?B?YWtnNk9iQ3B3MmxWOEc0WHdkbENDUFVDdktydzlQMW5JQWNDWGRDVm8ycGVX?=
+ =?utf-8?B?YlN2MGRnWjFMZWNtUHFUaVptWkhqMkRNNS9mZmN0YUZGNlRCamNNRnZ5MTcw?=
+ =?utf-8?B?M0oyZlY2SUhiNkM2bTVkT1NwWmd2SmoxK3NWY1lJMCtiRU1NQ201WXdxUkFC?=
+ =?utf-8?B?bHc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51d2538a-1393-43ee-592c-08db4cabf1cc
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2023 14:29:18.4909
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1YMiwzMVSELf5rLp2g6O+DUYPiTnQ/NhHhGbCUwFy0mU7hvrNDKQbUx87i2DtyQy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR15MB5899
+X-Proofpoint-ORIG-GUID: 9bCAJVvOrCV2Skos8n0nGvB8vHHUENPk
+X-Proofpoint-GUID: 9bCAJVvOrCV2Skos8n0nGvB8vHHUENPk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-04_10,2023-05-04_01,2023-02-09_01
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -92,157 +150,19 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 04/05/2023 04.42, Yunsheng Lin wrote:
-> On 2023/4/29 0:16, Jesper Dangaard Brouer wrote:
->>   void page_pool_release_page(struct page_pool *pool, struct page *page)
->>   {
->> +	unsigned int flags = READ_ONCE(pool->p.flags);
->>   	dma_addr_t dma;
->> -	int count;
->> +	u32 release_cnt;
->> +	u32 hold_cnt;
->>   
->>   	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
->>   		/* Always account for inflight pages, even if we didn't
->> @@ -490,11 +503,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
->>   skip_dma_unmap:
->>   	page_pool_clear_pp_info(page);
->>   
->> -	/* This may be the last page returned, releasing the pool, so
->> -	 * it is not safe to reference pool afterwards.
->> -	 */
->> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
->> -	trace_page_pool_state_release(pool, page, count);
+
+On 5/3/23 8:15 PM, Feng zhou wrote:
+> From: Feng Zhou <zhoufeng.zf@bytedance.com>
 > 
-> There is a time window between "unsigned int flags = READ_ONCE(pool->p.flags)"
-> and flags checking, if page_pool_destroy() is called concurrently during that
-> time window, it seems we will have a pp instance leaking problem here?
+> Add a kfunc that's similar to the bpf_current_task_under_cgroup.
+> The difference is that it is a designated task.
 > 
-
-Nope, that is resolved by the code changes in page_pool_destroy(), see 
-below.
-
-> It seems it is very hard to aovid this kind of corner case when using both
-> flags & PP_FLAG_SHUTDOWN and release_cnt/hold_cnt checking to decide if pp
-> instance can be freed.
-> Can we use something like biased reference counting, which used by frag support
-> in page pool? So that we only need to check only one variable and avoid cache
-> bouncing as much as possible.
+> When hook sched related functions, sometimes it is necessary to
+> specify a task instead of the current task.
 > 
+> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-See below, I believe we are doing an equivalent refcnt bias trick, that
-solves these corner cases in page_pool_destroy().
-In short: hold_cnt is increased, prior to setting PP_FLAG_SHUTDOWN.
-Thus, if this code READ_ONCE flags without PP_FLAG_SHUTDOWN, we know it
-will not be the last to release pool->pages_state_release_cnt.
-Below: Perhaps, we should add a RCU grace period to make absolutely
-sure, that this code completes before page_pool_destroy() call completes.
+You can carry my Ack from previous revision since there
+is no change to the patch.
 
-
->> +	if (flags & PP_FLAG_SHUTDOWN)
->> +		hold_cnt = pp_read_hold_cnt(pool);
->> +
-
-I would like to avoid above code, and I'm considering using call_rcu(),
-which I think will resolve the race[0] this code deals with.
-As I explained here[0], this code deals with another kind of race.
-
-  [0] 
-https://lore.kernel.org/all/f671f5da-d9bc-a559-2120-10c3491e6f6d@redhat.com/
-
->> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
->> +	trace_page_pool_state_release(pool, page, release_cnt);
->> +
->> +	/* In shutdown phase, last page will free pool instance */
->> +	if (flags & PP_FLAG_SHUTDOWN)
->> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
->>   }
->>   EXPORT_SYMBOL(page_pool_release_page);
->>
-> 
-> ...
-> 
->>   
->>   void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
->> @@ -856,6 +884,10 @@ EXPORT_SYMBOL(page_pool_unlink_napi);
->>   
->>   void page_pool_destroy(struct page_pool *pool)
->>   {
->> +	unsigned int flags;
->> +	u32 release_cnt;
->> +	u32 hold_cnt;
->> +
->>   	if (!pool)
->>   		return;
->>   
->> @@ -868,11 +900,39 @@ void page_pool_destroy(struct page_pool *pool)
->>   	if (!page_pool_release(pool))
->>   		return;
->>   
->> -	pool->defer_start = jiffies;
->> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
->> +	/* PP have pages inflight, thus cannot immediately release memory.
->> +	 * Enter into shutdown phase, depending on remaining in-flight PP
->> +	 * pages to trigger shutdown process (on concurrent CPUs) and last
->> +	 * page will free pool instance.
->> +	 *
->> +	 * There exist two race conditions here, we need to take into
->> +	 * account in the following code.
->> +	 *
->> +	 * 1. Before setting PP_FLAG_SHUTDOWN another CPU released the last
->> +	 *    pages into the ptr_ring.  Thus, it missed triggering shutdown
->> +	 *    process, which can then be stalled forever.
->> +	 *
->> +	 * 2. After setting PP_FLAG_SHUTDOWN another CPU released the last
->> +	 *    page, which triggered shutdown process and freed pool
->> +	 *    instance. Thus, its not safe to dereference *pool afterwards.
->> +	 *
->> +	 * Handling races by holding a fake in-flight count, via
->> +	 * artificially bumping pages_state_hold_cnt, which assures pool
->> +	 * isn't freed under us.  For race(1) its safe to recheck ptr_ring
->> +	 * (it will not free pool). Race(2) cannot happen, and we can
->> +	 * release fake in-flight count as last step.
->> +	 */
->> +	hold_cnt = READ_ONCE(pool->pages_state_hold_cnt) + 1;
->> +	smp_store_release(&pool->pages_state_hold_cnt, hold_cnt);
-> 
-> I assume the smp_store_release() is used to ensure the correct order
-> between the above store operations?
-> There is data dependency between those two store operations, do we
-> really need the smp_store_release() here?
-> 
->> +	barrier();
->> +	flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN;
-> 
-> Do we need a stronger barrier like smp_rmb() to prevent cpu from
-> executing "flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN"
-> before "smp_store_release(&pool->pages_state_hold_cnt, hold_cnt)"
-> even if there is a smp_store_release() barrier here?
-> 
-I do see you point and how it is related to your above comment for
-page_pool_release_page().
-
-I think we need to replace barrier() with synchronize_rcu().
-Meaning we add a RCU grace period to "wait" for above code (in
-page_pool_release_page) that read the old flags value to complete.
-
-
->> +	smp_store_release(&pool->p.flags, flags);
-
-When doing a synchronize_rcu(), I assume this smp_store_release() is
-overkill, right?
-Will a WRITE_ONCE() be sufficient?
-
-Hmm, the synchronize_rcu(), shouldn't that be *after* storing the flags?
-
->> +
->> +	/* Concurrent CPUs could have returned last pages into ptr_ring */
->> +	page_pool_empty_ring(pool);
->>   
->> -	INIT_DELAYED_WORK(&pool->release_dw, page_pool_release_retry);
->> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
->> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
->> +	page_pool_free_attempt(pool, hold_cnt, release_cnt);
->>   }
->>   EXPORT_SYMBOL(page_pool_destroy);
-
+Acked-by: Yonghong Song <yhs@fb.com>
