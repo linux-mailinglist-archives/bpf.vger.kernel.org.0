@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9BF6F6466
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 07:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F136F646B
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 07:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjEDFd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 01:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S229645AbjEDFeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 01:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjEDFd7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 01:33:59 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9951B1BEB
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 22:33:57 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3440qRFG023172
-        for <bpf@vger.kernel.org>; Wed, 3 May 2023 22:33:56 -0700
+        with ESMTP id S229607AbjEDFeL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 01:34:11 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCBE2122
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 22:34:09 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3440qUPK016990
+        for <bpf@vger.kernel.org>; Wed, 3 May 2023 22:34:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=TabE7jwAh6oZYRmGnSUkJ6+20VLHXm/JpOuJLqf7+wE=;
- b=K3gPGid3pgkzome5qKSQt7q7v0yCWQxVnLT34+D9IA22gBe+INobWTAuaPjqcUtlmidH
- Lnw+DkgGpTSdoE0FwpWAR/1tfFjCZn8qJLFtwxAa1+/Gr24dPz5XVZl8K+ACW9Qn++91
- Kyctwn0krDsS6Nt0tbOtp0gq66dBxq3ttQc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qbhx28a31-1
+ bh=XFFAf5dfjl+Rt3jWqHNrw4NZbYLGA1/35aiH7fT0Mn0=;
+ b=LGL6+yVo2Zu6dAIGJRiPcwUWIb0NecK/bAq5ybDKo9EPtnGyHin0aPkU/aX0z0sorLtv
+ qhFw7uIz8akefFfr9Q6KunN2Kdj5ZERAjMuhOKyYkZMq6KB0rDgu845rFNjHsJOYCtvK
+ 2fhgFQHEck9dJ3KoYmWpmBC7cELoAGdpXbI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3qbkgnfnxh-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 22:33:56 -0700
-Received: from twshared4902.04.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 22:34:08 -0700
+Received: from twshared1349.05.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 3 May 2023 22:33:55 -0700
+ 15.1.2507.23; Wed, 3 May 2023 22:34:04 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 6CBA91D7BFC5B; Wed,  3 May 2023 22:33:47 -0700 (PDT)
+        id 614701D7BFC6C; Wed,  3 May 2023 22:33:49 -0700 (PDT)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -43,9 +43,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v1 bpf-next 3/9] bpf: Fix __bpf_{list,rbtree}_add's beginning-of-node calculation
-Date:   Wed, 3 May 2023 22:33:32 -0700
-Message-ID: <20230504053338.1778690-4-davemarchevsky@fb.com>
+Subject: [PATCH v1 bpf-next 4/9] bpf: Allow KF_DESTRUCTIVE-flagged kfuncs to be called under spinlock
+Date:   Wed, 3 May 2023 22:33:33 -0700
+Message-ID: <20230504053338.1778690-5-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230504053338.1778690-1-davemarchevsky@fb.com>
 References: <20230504053338.1778690-1-davemarchevsky@fb.com>
@@ -53,8 +53,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FDJri5Z8EkUiWEqeRkred-cgVCMbiU-7
-X-Proofpoint-GUID: FDJri5Z8EkUiWEqeRkred-cgVCMbiU-7
+X-Proofpoint-GUID: 7J7ELa3wHV6aY8qaOWy5s64NjyIg0TWv
+X-Proofpoint-ORIG-GUID: 7J7ELa3wHV6aY8qaOWy5s64NjyIg0TWv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-04_02,2023-05-03_01,2023-02-09_01
@@ -69,56 +69,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Given the pointer to struct bpf_{rb,list}_node within a local kptr and
-the byte offset of that field within the kptr struct, the calculation cha=
-nged
-by this patch is meant to find the beginning of the kptr so that it can
-be passed to bpf_obj_drop.
+In order to prevent deadlock the verifier currently disallows any
+function calls under bpf_spin_lock save for a small set of allowlisted
+helpers/kfuncs. A BPF program that calls destructive kfuncs might be
+trying to cause deadlock, and regardless is understood to be capable of
+causing system breakage of similar severity. Per kfuncs.rst:
 
-Unfortunately instead of doing
+  The KF_DESTRUCTIVE flag is used to indicate functions calling which is
+  destructive to the system. For example such a call can result in system
+  rebooting or panicking. Due to this additional restrictions apply to th=
+ese
+  calls.
 
-  ptr_to_kptr =3D ptr_to_node_field - offset_bytes
+Preventing BPF programs from crashing or otherwise blowing up the system
+is generally the verifier's goal, but destructive kfuncs might have such
+a state be their intended result. Preventing KF_DESTRUCTIVE kfunc calls
+under spinlock with the goal of safety is therefore unnecessarily
+strict. This patch modifies the "function calls are not allowed while
+holding a lock" check to allow calling destructive kfuncs with an
+active_lock.
 
-the calculation is erroneously doing
+The motivating usecase for this change - unsafe locking of
+bpf_spin_locks for easy testing of race conditions - is implemented in
+the next two patches in the series.
 
-  ptr_to_ktpr =3D ptr_to_node_field - (offset_bytes * sizeof(struct bpf_r=
-b_node))
+Note that the removed insn->off check was rejecting any calls to kfuncs
+defined in non-vmlinux BTF. In order to get the system in a broken or
+otherwise interesting state for inspection, developers might load a
+module implementing destructive kfuncs particular to their usecase. The
+unsafe_spin_{lock, unlock} kfuncs later in this series are a good
+example: there's no clear reason for them to be in vmlinux as they're
+specifically for BPF selftests, so they live in bpf_testmod. The check
+is removed in favor of a newly-added helper function to enable such
+usecases.
 
-or the bpf_list_node equivalent.
-
-This patch fixes the calculation.
-
-Fixes: d2dcc67df910 ("bpf: Migrate bpf_rbtree_add and bpf_list_push_{fron=
-t,back} to possibly fail")
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- kernel/bpf/helpers.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index bb6b4637ebf2..7a8968839e91 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1950,7 +1950,7 @@ static int __bpf_list_add(struct bpf_list_node *nod=
-e, struct bpf_list_head *head
- 		INIT_LIST_HEAD(h);
- 	if (!list_empty(n)) {
- 		/* Only called from BPF prog, no need to migrate_disable */
--		__bpf_obj_drop_impl(n - off, rec);
-+		__bpf_obj_drop_impl((void *)n - off, rec);
- 		return -EINVAL;
- 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 26c072e34834..f96e5b9c790b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -319,6 +319,11 @@ struct bpf_kfunc_call_arg_meta {
+ 	u64 mem_size;
+ };
 =20
-@@ -2032,7 +2032,7 @@ static int __bpf_rbtree_add(struct bpf_rb_root *roo=
-t, struct bpf_rb_node *node,
++static int fetch_kfunc_meta(struct bpf_verifier_env *env,
++			    struct bpf_insn *insn,
++			    struct bpf_kfunc_call_arg_meta *meta,
++			    const char **kfunc_name);
++
+ struct btf *btf_vmlinux;
 =20
- 	if (!RB_EMPTY_NODE(n)) {
- 		/* Only called from BPF prog, no need to migrate_disable */
--		__bpf_obj_drop_impl(n - off, rec);
-+		__bpf_obj_drop_impl((void *)n - off, rec);
- 		return -EINVAL;
- 	}
+ static DEFINE_MUTEX(bpf_verifier_lock);
+@@ -9989,6 +9994,21 @@ static bool is_rbtree_lock_required_kfunc(u32 btf_=
+id)
+ 	return is_bpf_rbtree_api_kfunc(btf_id);
+ }
 =20
++static bool is_kfunc_callable_in_spinlock(struct bpf_verifier_env *env,
++					  struct bpf_insn *insn)
++{
++	struct bpf_kfunc_call_arg_meta meta;
++
++	/* insn->off is idx into btf fd_array - 0 for vmlinux btf, else nonzero=
+ */
++	if (!insn->off && is_bpf_graph_api_kfunc(insn->imm))
++		return true;
++
++	if (fetch_kfunc_meta(env, insn, &meta, NULL))
++		return false;
++
++	return is_kfunc_destructive(&meta);
++}
++
+ static bool check_kfunc_is_graph_root_api(struct bpf_verifier_env *env,
+ 					  enum btf_field_type head_field_type,
+ 					  u32 kfunc_btf_id)
+@@ -15875,7 +15895,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 					if ((insn->src_reg =3D=3D BPF_REG_0 && insn->imm !=3D BPF_FUNC_spin=
+_unlock) ||
+ 					    (insn->src_reg =3D=3D BPF_PSEUDO_CALL) ||
+ 					    (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL &&
+-					     (insn->off !=3D 0 || !is_bpf_graph_api_kfunc(insn->imm)))) {
++					     !is_kfunc_callable_in_spinlock(env, insn))) {
+ 						verbose(env, "function calls are not allowed while holding a lock\=
+n");
+ 						return -EINVAL;
+ 					}
 --=20
 2.34.1
 
