@@ -2,130 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 422A76F6992
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 13:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256936F6D47
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 15:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjEDLJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 May 2023 07:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
+        id S231203AbjEDNtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 May 2023 09:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbjEDLJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 May 2023 07:09:29 -0400
-Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EAC448E
-        for <bpf@vger.kernel.org>; Thu,  4 May 2023 04:09:24 -0700 (PDT)
-Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-55a1462f9f6so2221857b3.3
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 04:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683198563; x=1685790563;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GROeopruJWajWKHt8r0gfzVZxA7J+E5dzgTrhJcym+A=;
-        b=M74sXPkjK4yTESDXjEh9VHufZayaiaEtWDMel6olq/v7ncO61ctW9/z2S8je2i1cYl
-         mx9JVKCkb55sBz+FrP1pC1cLsHhAMKnm1hWLqI4dd2DEQGmp+Nw7uEknBpVwpCLtDGOq
-         wImbeJMzHT4HKcRvSDwJR53gDV+HdpIxOAkkeENu78iwZm+twuvyrq0v2ilycXQp7szM
-         tH+3Cx+pt9hdW/OcQrCHTbU/zH2cb/WYFLFhLkFKVPvoIbsqPA7FtkENxCTy0VBm/dDt
-         EtmabeyGyrYn849rpOq2hN79cYptjaz1NSc/7eWzXLlxMPCJQdCxsZHPUQ4QyRnb1TIg
-         LylA==
+        with ESMTP id S230469AbjEDNti (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 May 2023 09:49:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC383D8
+        for <bpf@vger.kernel.org>; Thu,  4 May 2023 06:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1683208095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Psn8a+p+ivjgRfJh7gyQsRugc6c1mLJFD6NHz5B0co=;
+        b=fCLyKjaOzD+D3skfWTwcLp20XiyjiaXUrP41tTQZBISk4ix59tqcWYm3b+GRgWcud8FJzB
+        uUrY7DeGNAjX7vJ8XfzodfuWrQN/Mrb4PNq96X49PxAh+hrruWGMW4q6z4MgCbLw4B2SA5
+        biVUv8Awie1biXZutyzN/qyDEQZJbnY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-440-pfgSmva9Oey42euLBNAN1w-1; Thu, 04 May 2023 09:48:14 -0400
+X-MC-Unique: pfgSmva9Oey42euLBNAN1w-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-50bd72cd04bso555988a12.2
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 06:48:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683198563; x=1685790563;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GROeopruJWajWKHt8r0gfzVZxA7J+E5dzgTrhJcym+A=;
-        b=lSbVVBxmQX36EOMKHKGx/kdiPJ+8ciXlaTB+I7Lqo8aFp/4Oz5DuMi0HEa5edLaT3l
-         n5w4tzCf/QzGD+4KkMe3ViExE1TLWhsCK0DQnUHN2F2J0MmZiSTYokbj0I9lMic40jsv
-         aMOGKj9RB/Hc9mcVgDpDzJo/jIooTyrPt9fQHfGJFxbslPvZTsBWwz6rJAJKk5UHxA8D
-         SaEHIjhGSylIHY9oEmuk1Romw/d6DLAm0eusw8IeXlCYDIP5XljeSNYgdCzS9fQ4HM2+
-         QYh1c2eOQa9bAtfYPVEcur7Zj2VLdj7JC0cIuF7TpR9EX0rtpoTnpQEmZUtMnQVoqmD2
-         qlRw==
-X-Gm-Message-State: AC+VfDzN5uUJYKOYVkI0aPhDrMwSug/l9F7JApIp+OwTDRg0rKAAF0/K
-        BIX2trVAcak+Z3LIlvxrFrb6Qz5zzuz2mVsMYQE=
-X-Google-Smtp-Source: ACHHUZ4+eVHXvY11VJjReHB05TqXb9+VvIQfgKJWiHPuJDqeTf9S2cg7qzfoGKhwi0+AR1SGLNMrdZOVSsFez3Kh1XY=
-X-Received: by 2002:a25:320f:0:b0:b9a:3836:bf15 with SMTP id
- y15-20020a25320f000000b00b9a3836bf15mr26230592yby.37.1683198563740; Thu, 04
- May 2023 04:09:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683208093; x=1685800093;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Psn8a+p+ivjgRfJh7gyQsRugc6c1mLJFD6NHz5B0co=;
+        b=hiT68ajDBCFICzyPa+KbFZPN0dPIyeNM2Ms5OgwlMZcvfxrmTmgAwZPQT5hRvpMn7k
+         UtpVnNY4K4Ed9yOIw8m+xtSMPA1dBRp5jkbMlUJVNnp10v2gbMBQfjNiEN8T1o34z9W1
+         csGe0NR6Fu3gYghRPcp+7+HXVeu4FSOUvBIs+Zw6cFQPWef+wtQMKFLuquqH35IPPfTj
+         mY/E0YnfLOkIo4WsVOJUsn2p4Xy+YtcvMr8c6BOZCQZChGS3mcL4oo4whnazwMbK95dO
+         7wKANWZM3mtrgzoy14Y7vKHJhvPVtJWnK7+TthVn63C8YavbQwby3209KIjjv+24Mrt1
+         9JgQ==
+X-Gm-Message-State: AC+VfDypeco0NblxJ+qp2F9wfxiQrJcrzeDcbEZnXhLp1oChy8YVW290
+        nh2G9bqDTrsXBP1N9CoiLGLgdt4TntYVfNG9G6zhWWQLTSio+fW1milbiuJMmtcSD9EHljzV/C8
+        3cQxytTBGR8Tj
+X-Received: by 2002:a17:907:982:b0:94e:3d6f:9c0f with SMTP id bf2-20020a170907098200b0094e3d6f9c0fmr6373064ejc.55.1683208093268;
+        Thu, 04 May 2023 06:48:13 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5yAumZlKjgIkX67ze7eAZsMjh5PrIMF9NPniS81LmF2LlTPtKC5MLQHKTj0FxsOWYmK0Xrug==
+X-Received: by 2002:a17:907:982:b0:94e:3d6f:9c0f with SMTP id bf2-20020a170907098200b0094e3d6f9c0fmr6373042ejc.55.1683208092877;
+        Thu, 04 May 2023 06:48:12 -0700 (PDT)
+Received: from [192.168.42.222] (cgn-cgn9-185-107-14-3.static.kviknet.net. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id u13-20020a170906c40d00b0094aa087578csm19031004ejz.171.2023.05.04.06.48.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 May 2023 06:48:12 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <3785321f-b2f8-d753-7efc-78ee40e6d0b6@redhat.com>
+Date:   Thu, 4 May 2023 15:48:10 +0200
 MIME-Version: 1.0
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 4 May 2023 19:09:12 +0800
-Message-ID: <CADxym3ax73kYEyJMZwN+bTwmX9VhZ3WJe+wC9RGGwpfdjLdf3g@mail.gmail.com>
-Subject: bpf: add support to check kernel features in BPF program
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Cc:     brouer@redhat.com, lorenzo@kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org
+Subject: Re: [PATCH RFC net-next/mm V3 1/2] page_pool: Remove workqueue in new
+ shutdown scheme
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+        linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
+References: <168269854650.2191653.8465259808498269815.stgit@firesoul>
+ <168269857929.2191653.13267688321246766547.stgit@firesoul>
+ <387f4653-1986-3ffe-65e7-448a59002ed0@huawei.com>
+In-Reply-To: <387f4653-1986-3ffe-65e7-448a59002ed0@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
 
-I find that it's not supported yet to check if the bpf features are
-supported by the target kernel in the BPF program, which makes
-it hard to keep the BPF program compatible with different kernel
-versions.
+On 04/05/2023 04.42, Yunsheng Lin wrote:
+> On 2023/4/29 0:16, Jesper Dangaard Brouer wrote:
+>>   void page_pool_release_page(struct page_pool *pool, struct page *page)
+>>   {
+>> +	unsigned int flags = READ_ONCE(pool->p.flags);
+>>   	dma_addr_t dma;
+>> -	int count;
+>> +	u32 release_cnt;
+>> +	u32 hold_cnt;
+>>   
+>>   	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
+>>   		/* Always account for inflight pages, even if we didn't
+>> @@ -490,11 +503,15 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>>   skip_dma_unmap:
+>>   	page_pool_clear_pp_info(page);
+>>   
+>> -	/* This may be the last page returned, releasing the pool, so
+>> -	 * it is not safe to reference pool afterwards.
+>> -	 */
+>> -	count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
+>> -	trace_page_pool_state_release(pool, page, count);
+> 
+> There is a time window between "unsigned int flags = READ_ONCE(pool->p.flags)"
+> and flags checking, if page_pool_destroy() is called concurrently during that
+> time window, it seems we will have a pp instance leaking problem here?
+> 
 
-For example, I want to use the helper bpf_jiffies64(), but I am not
-sure if it is supported by the target, as my program can run in
-kernel 5.4 or kernel 5.10. Therefore, I have to compile two versions
-BPF elf and load one of them according to the current kernel version.
-The part of BPF program can be this:
+Nope, that is resolved by the code changes in page_pool_destroy(), see 
+below.
 
-#ifdef BPF_FEATS_JIFFIES64
-  jiffies = bpf_jiffies64();
-#else
-  jiffies = 0;
-#endif
+> It seems it is very hard to aovid this kind of corner case when using both
+> flags & PP_FLAG_SHUTDOWN and release_cnt/hold_cnt checking to decide if pp
+> instance can be freed.
+> Can we use something like biased reference counting, which used by frag support
+> in page pool? So that we only need to check only one variable and avoid cache
+> bouncing as much as possible.
+> 
 
-And I will generate xxx_no_jiffies.skel.h and xxx_jiffies.skel.h
-with -DBPF_FEATS_JIFFIES64 or not.
+See below, I believe we are doing an equivalent refcnt bias trick, that
+solves these corner cases in page_pool_destroy().
+In short: hold_cnt is increased, prior to setting PP_FLAG_SHUTDOWN.
+Thus, if this code READ_ONCE flags without PP_FLAG_SHUTDOWN, we know it
+will not be the last to release pool->pages_state_release_cnt.
+Below: Perhaps, we should add a RCU grace period to make absolutely
+sure, that this code completes before page_pool_destroy() call completes.
 
-This method is too silly, as I have to compile 8(2*2*2) versions of
-the BPF program if I am not sure if 3 bpf helpers are supported by the
-target kernel.
 
-Therefore, I think it may be helpful if we can check if the helpers
-are support like this:
+>> +	if (flags & PP_FLAG_SHUTDOWN)
+>> +		hold_cnt = pp_read_hold_cnt(pool);
+>> +
 
-if (bpf_core_helper_exist(bpf_jiffies64))
-  jiffies = bpf_jiffies64();
-else
-  jiffies = 0;
+I would like to avoid above code, and I'm considering using call_rcu(),
+which I think will resolve the race[0] this code deals with.
+As I explained here[0], this code deals with another kind of race.
 
-And bpf_core_helper_exist() can be defined like this:
+  [0] 
+https://lore.kernel.org/all/f671f5da-d9bc-a559-2120-10c3491e6f6d@redhat.com/
 
-#define bpf_core_helper_exist(helper)                        \
-    __builtin_preserve_helper_info(helper, BPF_HELPER_EXISTS)
+>> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
+>> +	trace_page_pool_state_release(pool, page, release_cnt);
+>> +
+>> +	/* In shutdown phase, last page will free pool instance */
+>> +	if (flags & PP_FLAG_SHUTDOWN)
+>> +		page_pool_free_attempt(pool, hold_cnt, release_cnt);
+>>   }
+>>   EXPORT_SYMBOL(page_pool_release_page);
+>>
+> 
+> ...
+> 
+>>   
+>>   void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
+>> @@ -856,6 +884,10 @@ EXPORT_SYMBOL(page_pool_unlink_napi);
+>>   
+>>   void page_pool_destroy(struct page_pool *pool)
+>>   {
+>> +	unsigned int flags;
+>> +	u32 release_cnt;
+>> +	u32 hold_cnt;
+>> +
+>>   	if (!pool)
+>>   		return;
+>>   
+>> @@ -868,11 +900,39 @@ void page_pool_destroy(struct page_pool *pool)
+>>   	if (!page_pool_release(pool))
+>>   		return;
+>>   
+>> -	pool->defer_start = jiffies;
+>> -	pool->defer_warn  = jiffies + DEFER_WARN_INTERVAL;
+>> +	/* PP have pages inflight, thus cannot immediately release memory.
+>> +	 * Enter into shutdown phase, depending on remaining in-flight PP
+>> +	 * pages to trigger shutdown process (on concurrent CPUs) and last
+>> +	 * page will free pool instance.
+>> +	 *
+>> +	 * There exist two race conditions here, we need to take into
+>> +	 * account in the following code.
+>> +	 *
+>> +	 * 1. Before setting PP_FLAG_SHUTDOWN another CPU released the last
+>> +	 *    pages into the ptr_ring.  Thus, it missed triggering shutdown
+>> +	 *    process, which can then be stalled forever.
+>> +	 *
+>> +	 * 2. After setting PP_FLAG_SHUTDOWN another CPU released the last
+>> +	 *    page, which triggered shutdown process and freed pool
+>> +	 *    instance. Thus, its not safe to dereference *pool afterwards.
+>> +	 *
+>> +	 * Handling races by holding a fake in-flight count, via
+>> +	 * artificially bumping pages_state_hold_cnt, which assures pool
+>> +	 * isn't freed under us.  For race(1) its safe to recheck ptr_ring
+>> +	 * (it will not free pool). Race(2) cannot happen, and we can
+>> +	 * release fake in-flight count as last step.
+>> +	 */
+>> +	hold_cnt = READ_ONCE(pool->pages_state_hold_cnt) + 1;
+>> +	smp_store_release(&pool->pages_state_hold_cnt, hold_cnt);
+> 
+> I assume the smp_store_release() is used to ensure the correct order
+> between the above store operations?
+> There is data dependency between those two store operations, do we
+> really need the smp_store_release() here?
+> 
+>> +	barrier();
+>> +	flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN;
+> 
+> Do we need a stronger barrier like smp_rmb() to prevent cpu from
+> executing "flags = READ_ONCE(pool->p.flags) | PP_FLAG_SHUTDOWN"
+> before "smp_store_release(&pool->pages_state_hold_cnt, hold_cnt)"
+> even if there is a smp_store_release() barrier here?
+> 
+I do see you point and how it is related to your above comment for
+page_pool_release_page().
 
-Besides, in order to prevent the verifier from checking the helper
-that is not supported, we need to remove the dead code in libbpf.
-As the kernel already has the ability to remove dead and nop insn,
-we can just make the dead insn to nop.
+I think we need to replace barrier() with synchronize_rcu().
+Meaning we add a RCU grace period to "wait" for above code (in
+page_pool_release_page) that read the old flags value to complete.
 
-Another option is to make the BPF program support "const value".
-Such const values can be rewrite before load, the dead code can
-be removed. For example:
 
-#define bpf_const_value __attribute__((preserve_const_value))
+>> +	smp_store_release(&pool->p.flags, flags);
 
-bpf_const_value bool is_bpf_jiffies64_supported = 0;
+When doing a synchronize_rcu(), I assume this smp_store_release() is
+overkill, right?
+Will a WRITE_ONCE() be sufficient?
 
-if (is_bpf_jiffies64_supported)
-  jiffies = bpf_jiffies64();
-else
-  jiffies = 0;
+Hmm, the synchronize_rcu(), shouldn't that be *after* storing the flags?
 
-The 'is_bpf_jiffies64_supported' will be compiled to an imm, and
-can be rewrite and relocated through libbpf by the user. Then, we
-can make the dead insn 'nop'.
+>> +
+>> +	/* Concurrent CPUs could have returned last pages into ptr_ring */
+>> +	page_pool_empty_ring(pool);
+>>   
+>> -	INIT_DELAYED_WORK(&pool->release_dw, page_pool_release_retry);
+>> -	schedule_delayed_work(&pool->release_dw, DEFER_TIME);
+>> +	release_cnt = atomic_inc_return(&pool->pages_state_release_cnt);
+>> +	page_pool_free_attempt(pool, hold_cnt, release_cnt);
+>>   }
+>>   EXPORT_SYMBOL(page_pool_destroy);
 
-What do you think? I'm not sure if these methods work and want
-to get some advice before coding.
-
-Thanks!
-Menglong Dong
