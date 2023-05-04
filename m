@@ -1,90 +1,153 @@
-Return-Path: <bpf+bounces-1-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB726F732F
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 21:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 666036F7360
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 21:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0893280E06
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 19:32:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226BB280DF7
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 19:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9130FEED0;
-	Thu,  4 May 2023 19:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73610F4FC;
+	Thu,  4 May 2023 19:41:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F4AA948
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:32:19 +0000 (UTC)
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98465FF9
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 12:32:17 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-61a4e03ccbcso8239416d6.2
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 12:32:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1683228737; x=1685820737;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nsRgewL0pjvnw1tfHXZ5MTL8XAAkGTgsfMc5BFkEpXc=;
-        b=W5qjfos73mL8ih0TV/FvzvepsEgrjyVWTgpNTX3MTENGVdJN54PVB8PRKtiqE7CFsM
-         ftJ9xpMei2sLWDHgmu9xW8hKz5QH728dVYAzil3iYrK1c7iwdRe62kofVcRlPDQYoBEf
-         gRd72tqzIXxgoPeXE49eScEqUVw5O5LdjV/18=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683228737; x=1685820737;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nsRgewL0pjvnw1tfHXZ5MTL8XAAkGTgsfMc5BFkEpXc=;
-        b=hKVAD/tkibhfZfZoieV0AGGRAHQO8Ob2Gf3+NHaYJooOLFIFOzfMSNFbzXj0mgJAzu
-         M/pLZ1RrqHRxneJ0QJ2bl3QI5OadNbvsAi1n8xl9EKyDcQMsdjyZJKl/hbnm06rh4+Xr
-         UDfr9NWUSg7JoG3zV5CRIlo4TGHj3bT5BaMt19vtbpEj/cIv3DWLViHXmyEmGdqxsbjy
-         pihd2ZblLd1D7fGWL+NvCGEBXKzVZS0fyHX10yKYoxEK5vTCabj7VFboF/fjR2+gVsD+
-         G0hG3EGL0mbOupTs+Cnla7pI1ooIoAA7+1frJedU2+/k573ntoqidUSc3Y4wOBSpuQAV
-         Uq1Q==
-X-Gm-Message-State: AC+VfDwcdUHWPRxd23QfySBwrHEKUcXR8iZPJLKph30ffmeyPvPvO+oO
-	2H4PE3vEGsBDxPlejDBWFdWVTMYj7N09ztaBU3s=
-X-Google-Smtp-Source: ACHHUZ6RvaGKhvIqstRK/dn+tlxKt46D6O1J6BM6fIPXw211mwn21lZ371MS8Drgd3HMSVvGktpiIg==
-X-Received: by 2002:ad4:5d6c:0:b0:5ef:4ae4:4da6 with SMTP id fn12-20020ad45d6c000000b005ef4ae44da6mr20598884qvb.31.1683228736883;
-        Thu, 04 May 2023 12:32:16 -0700 (PDT)
-Received: from meerkat.local (bras-base-mtrlpq5031w-grc-30-209-226-106-132.dsl.bell.ca. [209.226.106.132])
-        by smtp.gmail.com with ESMTPSA id i5-20020a0cf105000000b0061b5a3d1d54sm3640998qvl.87.2023.05.04.12.32.16
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 May 2023 12:32:16 -0700 (PDT)
-Date: Thu, 4 May 2023 15:32:14 -0400
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: bpf@vger.kernel.org
-Subject: [ANN] bpf mailing list migrated
-Message-ID: <20230504-repave-oppressor-82955e@meerkat>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA20F4EF
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:41:54 +0000 (UTC)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B3786A6;
+	Thu,  4 May 2023 12:41:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5185F6346C;
+	Thu,  4 May 2023 19:41:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E1B7C433A4;
+	Thu,  4 May 2023 19:41:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683229311;
+	bh=aO9wLY9VkyrPWwoLZCy0KVRPNB4O8b8O/bzkxxfOAvs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mn5cRWFXM3YePiO94GRCBS+Lh7cCLo9La5F1llPIITh6PkFeGF5RFOPLP8LvgoOXi
+	 iZ7aQzNnoeznU8R8fmkqHtSj1UI/Qs1p9luwyo8SaHVkCT+RZAKcPloFOxqJNrUK/n
+	 qZNp+9U+Oc076mvWYqA630YVLsnBq8Tn072K3qfe+LZR4H8HdaoP4PelSfH8bPotQe
+	 Sl/TDKFOtdKzW+EJ170+hKrUOiBlA7jEltfUA72uJkTcqJtUPC6zLfVyKVC9Ykg6Hh
+	 FJy/ZaYfDh9khJinMEV7rSrFMlPCRr1dvWLiMEHKaAVkfrOO+Nm7Jua1h+4RcnvcAc
+	 xl9IYySfHJAQw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	martin.lau@linux.dev,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.3 04/59] bpf: Annotate data races in bpf_local_storage
+Date: Thu,  4 May 2023 15:40:47 -0400
+Message-Id: <20230504194142.3805425-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230504194142.3805425-1-sashal@kernel.org>
+References: <20230504194142.3805425-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello, all:
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Hot on the heels of netdev mailing list migration, we have completed the
-migration of the bpf mailing list to be running on the new subspace system at
-LF.
+[ Upstream commit 0a09a2f933c73dc76ab0b72da6855f44342a8903 ]
 
-There is no action required on anyone's part and everything should work as
-before with only a change in the Received: headers.
+There are a few cases where hlist_node is checked to be unhashed without
+holding the lock protecting its modification. In this case, one must use
+hlist_unhashed_lockless to avoid load tearing and KCSAN reports. Fix
+this by using lockless variant in places not protected by the lock.
 
-There will be a small interruption in archiving later today as I migrate it
-to the new source of truth, but there will be no lost messages once the move
-is completed.
+Since this is not prompted by any actual KCSAN reports but only from
+code review, I have not included a fixes tag.
 
-Best regards,
-Konstantin
+Cc: Martin KaFai Lau <martin.lau@kernel.org>
+Cc: KP Singh <kpsingh@kernel.org>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Link: https://lore.kernel.org/r/20230221200646.2500777-4-memxor@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/bpf/bpf_local_storage.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 35f4138a54dc1..58da17ae51241 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -51,11 +51,21 @@ owner_storage(struct bpf_local_storage_map *smap, void *owner)
+ 	return map->ops->map_owner_storage_ptr(owner);
+ }
+ 
++static bool selem_linked_to_storage_lockless(const struct bpf_local_storage_elem *selem)
++{
++	return !hlist_unhashed_lockless(&selem->snode);
++}
++
+ static bool selem_linked_to_storage(const struct bpf_local_storage_elem *selem)
+ {
+ 	return !hlist_unhashed(&selem->snode);
+ }
+ 
++static bool selem_linked_to_map_lockless(const struct bpf_local_storage_elem *selem)
++{
++	return !hlist_unhashed_lockless(&selem->map_node);
++}
++
+ static bool selem_linked_to_map(const struct bpf_local_storage_elem *selem)
+ {
+ 	return !hlist_unhashed(&selem->map_node);
+@@ -174,7 +184,7 @@ static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
+ 	bool free_local_storage = false;
+ 	unsigned long flags;
+ 
+-	if (unlikely(!selem_linked_to_storage(selem)))
++	if (unlikely(!selem_linked_to_storage_lockless(selem)))
+ 		/* selem has already been unlinked from sk */
+ 		return;
+ 
+@@ -208,7 +218,7 @@ void bpf_selem_unlink_map(struct bpf_local_storage_elem *selem)
+ 	struct bpf_local_storage_map_bucket *b;
+ 	unsigned long flags;
+ 
+-	if (unlikely(!selem_linked_to_map(selem)))
++	if (unlikely(!selem_linked_to_map_lockless(selem)))
+ 		/* selem has already be unlinked from smap */
+ 		return;
+ 
+@@ -420,7 +430,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
+ 		err = check_flags(old_sdata, map_flags);
+ 		if (err)
+ 			return ERR_PTR(err);
+-		if (old_sdata && selem_linked_to_storage(SELEM(old_sdata))) {
++		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
+ 			copy_map_value_locked(&smap->map, old_sdata->data,
+ 					      value, false);
+ 			return old_sdata;
+-- 
+2.39.2
+
 
