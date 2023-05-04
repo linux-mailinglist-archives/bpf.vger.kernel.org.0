@@ -2,194 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A116F632F
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 05:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B46D6F633B
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 05:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjEDDO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 May 2023 23:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S229927AbjEDDQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 May 2023 23:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjEDDOb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 May 2023 23:14:31 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A41F10D1
-        for <bpf@vger.kernel.org>; Wed,  3 May 2023 20:14:07 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-643846c006fso64313b3a.0
-        for <bpf@vger.kernel.org>; Wed, 03 May 2023 20:14:07 -0700 (PDT)
+        with ESMTP id S229886AbjEDDP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 May 2023 23:15:57 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87831984
+        for <bpf@vger.kernel.org>; Wed,  3 May 2023 20:15:25 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1aaec9ad820so46029225ad.0
+        for <bpf@vger.kernel.org>; Wed, 03 May 2023 20:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683170044; x=1685762044;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TUICe8NWWHYXYgrrKj5WOGZQy1/3vJzVlZyYDZC1mxg=;
-        b=phDPmUstMuvFZyEVkxgi4QlOSIw64U9J2xEHOQnL5kYNu1QKffCil0+x02gyKPvXhV
-         aor5AuuSKH9Dpi/qtgP2x5kDBcGulTV9e7vVechuhrhLAuMLlRU9IYEUjCb0ePF1zy/p
-         /ATtD9SrJ2E5vL7vgsDsIHICN966nlQWlK1VVAFJn1KwCvfnll5FbUDFJKWPTXEnsQ4J
-         f7Gptkrvz8yhRV30PoXKzRGA7wSQPsxMHFD1zU5jGP+zaYfEeI2AE/WRE0pCniv/DjDg
-         Xz6qvKkvtPPTpWPnohDn2Qxom6aCe6uGSCtCgQA/NontS3wzJkpDIwNspbw0+WNyYSLV
-         h1Qg==
+        d=bytedance.com; s=google; t=1683170125; x=1685762125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xkrmk35Ky/85BXeTs5JHeSBG+pv+CkQQNQ4vZFORK28=;
+        b=H0xKmXg00rizh7koD72fKkzR5N23zr1oeXxjphDXAOULpcivedUmDRe4ACkOFDa0RS
+         CF57WbP4QUCHkEmu1irEOUxWFWSog21Pn6RzGKK1kcNZeKF5qeQfIO+97BnoME/c8uTR
+         4qnqNrc0huw7UYuOFQfwc2AOutSVDR3Gqo3CaRyCciu+jkfRHew9HHmJGd1AqX7N0bhh
+         4+l/eRrXr6hTlzgvTp61oM/lnOBV42hSzNkSgTrfPVy/ve+EyOQIwB9GaiEEEcITHti2
+         agIvqBHu737c8fOv1J7DGaDMokxDMLk5MPH8KTEhB2NXxfhloZ9GoNKAK3P7MVJ1LakT
+         h4ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683170044; x=1685762044;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TUICe8NWWHYXYgrrKj5WOGZQy1/3vJzVlZyYDZC1mxg=;
-        b=BnNRHCvf067u8Zsj+GeIv3k2xQjfK1JJKo+Men2nBokGmtFHwr4/Ln24slecWL/X4L
-         iFRPliZqkvPwdvs36pd4hTz/LFv42pnxiYOf6SoYsmDs7vwhqjp/T7td05uHJ5f4QsXR
-         VgOcFGd1ZMMVuIJ+3EXB/elcoCkly/+7KNURQPCSvlmdAwCXZyOgFEhRzyX86lXAN52d
-         wq/K2/bX2sdM8hIitjamz8VeqeoDx46+MvYplLUEnWc2DTqTOMR4oTuha6/HTg1twflz
-         /JO0Olv1laciUKFD1tyj4MzvbkTf4ViIMGiiZtPZfLh8EihH/rpKHs2NskctcOD6dj3n
-         wveg==
-X-Gm-Message-State: AC+VfDwvcPNx15KpW3NyiGxcBZRJJh5efdFCp9ekznqwsqSkixN3Itwm
-        Z74WieV9KXXC/qHcAoXBFOQ=
-X-Google-Smtp-Source: ACHHUZ5xiR8d7Ul48Xb5awaOkm+6qGg+ITS3/j3k4+fe3jwDR/U3Uy7rA8x4aiNoNrSKBW3lRWgX3g==
-X-Received: by 2002:a05:6a00:1913:b0:62a:c1fa:b253 with SMTP id y19-20020a056a00191300b0062ac1fab253mr839087pfi.31.1683170044113;
-        Wed, 03 May 2023 20:14:04 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:396f])
-        by smtp.gmail.com with ESMTPSA id y1-20020a056a001c8100b005a8173829d5sm24040620pfw.66.2023.05.03.20.14.02
+        d=1e100.net; s=20221208; t=1683170125; x=1685762125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xkrmk35Ky/85BXeTs5JHeSBG+pv+CkQQNQ4vZFORK28=;
+        b=gmfNazXV4bx0aGAQQhLUukjDUxv74EYTP0NGH66OrkDkyWoumZzZcXqCnbni/vVM9K
+         yvnmfYZ9vNLrEWf1GBh6eDByl0y05QeiQH2daaU46mFqwgNRfMTkrzCa9RiJx2Hx1Oca
+         HnuHBRLZzwZRRyqzJIUoewojkkjkcgYX072YlQqBhnGkGBoL0BNUsBCBt4EKhNPu8jAz
+         n9SO6xIIXCxwB4memc3qN9flsXPxwVf+Kfjcr+oLZ6EjDcUnxDbDAkHqaGyE1axsRmEw
+         UTzTvsCohXptl8zUVO1H7EU3OWrWLZZdkbCDS6v18rByN1r0VjT0BHT/2PLr78zC3/3V
+         Imjg==
+X-Gm-Message-State: AC+VfDwdaMFDQfTVNdaVaNlvzEGRYUdeA7Tq4N+Ac/N2ckmFHFDNBGUb
+        x3YavRWC+tJ8XZM3Xz8lg9TWDQ==
+X-Google-Smtp-Source: ACHHUZ4hu7USx+KN5GnVZpqUhumPBe2XDJMTC8+jNBH1K/EIRNRF1Sn3d1dZRLNXpaqNA/qanVhE5w==
+X-Received: by 2002:a17:902:ecc5:b0:1ab:1d81:f8f1 with SMTP id a5-20020a170902ecc500b001ab1d81f8f1mr2724951plh.46.1683170125157;
+        Wed, 03 May 2023 20:15:25 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id ix7-20020a170902f80700b001aaecc15d66sm7146121plb.289.2023.05.03.20.15.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 May 2023 20:14:03 -0700 (PDT)
-Date:   Wed, 3 May 2023 20:14:01 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 06/10] bpf: fix propagate_precision() logic for
- inner frames
-Message-ID: <20230504031401.pdfcnkjwke6bpjur@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230425234911.2113352-1-andrii@kernel.org>
- <20230425234911.2113352-7-andrii@kernel.org>
+        Wed, 03 May 2023 20:15:24 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mykolal@fb.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH bpf-next v5 0/2] Introduce a new kfunc of bpf_task_under_cgroup
+Date:   Thu,  4 May 2023 11:15:10 +0800
+Message-Id: <20230504031513.13749-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230425234911.2113352-7-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 25, 2023 at 04:49:07PM -0700, Andrii Nakryiko wrote:
-> Fix propagate_precision() logic to perform propagation of all necessary
-> registers and stack slots across all active frames *in one batch step*.
-> 
-> Doing this for each register/slot in each individual frame is wasteful,
-> but the main problem is that backtracking of instruction in any frame
-> except the deepest one just doesn't work. This is due to backtracking
-> logic relying on jump history, and available jump history always starts
-> (or ends, depending how you view it) in current frame. So, if
-> prog A (frame #0) called subprog B (frame #1) and we need to propagate
-> precision of, say, register R6 (callee-saved) within frame #0, we
-> actually don't even know where jump history that corresponds to prog
-> A even starts. We'd need to skip subprog part of jump history first to
-> be able to do this.
-> 
-> Luckily, with struct backtrack_state and __mark_chain_precision()
-> handling bitmasks tracking/propagation across all active frames at the
-> same time (added in previous patch), propagate_precision() can be both
-> fixed and sped up by setting all the necessary bits across all frames
-> and then performing one __mark_chain_precision() pass. This makes it
-> unnecessary to skip subprog parts of jump history.
-> 
-> We also improve logging along the way, to clearly specify which
-> registers' and slots' precision markings are propagated within which
-> frame.
-> 
-> Fixes: 529409ea92d5 ("bpf: propagate precision across all frames, not just the last one")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 49 +++++++++++++++++++++++++++----------------
->  1 file changed, 31 insertions(+), 18 deletions(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0b19b3d9af65..66d64ac10fb1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3885,14 +3885,12 @@ int mark_chain_precision(struct bpf_verifier_env *env, int regno)
->  	return __mark_chain_precision(env, env->cur_state->curframe, regno, -1);
->  }
->  
-> -static int mark_chain_precision_frame(struct bpf_verifier_env *env, int frame, int regno)
-> +static int mark_chain_precision_batch(struct bpf_verifier_env *env, int frame)
->  {
-> -	return __mark_chain_precision(env, frame, regno, -1);
-> -}
-> -
-> -static int mark_chain_precision_stack_frame(struct bpf_verifier_env *env, int frame, int spi)
-> -{
-> -	return __mark_chain_precision(env, frame, -1, spi);
-> +	/* we assume env->bt was set outside with desired reg and stack masks
-> +	 * for all frames
-> +	 */
-> +	return __mark_chain_precision(env, frame, -1, -1);
->  }
->  
->  static bool is_spillable_regtype(enum bpf_reg_type type)
-> @@ -15308,20 +15306,25 @@ static int propagate_precision(struct bpf_verifier_env *env,
->  	struct bpf_reg_state *state_reg;
->  	struct bpf_func_state *state;
->  	int i, err = 0, fr;
-> +	bool first;
->  
->  	for (fr = old->curframe; fr >= 0; fr--) {
->  		state = old->frame[fr];
->  		state_reg = state->regs;
-> +		first = true;
->  		for (i = 0; i < BPF_REG_FP; i++, state_reg++) {
->  			if (state_reg->type != SCALAR_VALUE ||
->  			    !state_reg->precise ||
->  			    !(state_reg->live & REG_LIVE_READ))
->  				continue;
-> -			if (env->log.level & BPF_LOG_LEVEL2)
-> -				verbose(env, "frame %d: propagating r%d\n", fr, i);
-> -			err = mark_chain_precision_frame(env, fr, i);
-> -			if (err < 0)
-> -				return err;
-> +			if (env->log.level & BPF_LOG_LEVEL2) {
-> +				if (first)
-> +					verbose(env, "frame %d: propagating r%d", fr, i);
-> +				else
-> +					verbose(env, ",r%d", i);
-> +			}
-> +			bt_set_frame_reg(&env->bt, fr, i);
-> +			first = false;
->  		}
->  
->  		for (i = 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
-> @@ -15332,14 +15335,24 @@ static int propagate_precision(struct bpf_verifier_env *env,
->  			    !state_reg->precise ||
->  			    !(state_reg->live & REG_LIVE_READ))
->  				continue;
-> -			if (env->log.level & BPF_LOG_LEVEL2)
-> -				verbose(env, "frame %d: propagating fp%d\n",
-> -					fr, (-i - 1) * BPF_REG_SIZE);
-> -			err = mark_chain_precision_stack_frame(env, fr, i);
-> -			if (err < 0)
-> -				return err;
-> +			if (env->log.level & BPF_LOG_LEVEL2) {
-> +				if (first)
-> +					verbose(env, "frame %d: propagating fp%d",
-> +						fr, (-i - 1) * BPF_REG_SIZE);
-> +				else
-> +					verbose(env, ",fp%d", (-i - 1) * BPF_REG_SIZE);
-> +			}
-> +			bt_set_frame_slot(&env->bt, fr, i);
-> +			first = false;
->  		}
-> +		if (!first)
-> +			verbose(env, "\n");
->  	}
-> +
-> +	err = mark_chain_precision_batch(env, old->curframe);
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-The optimization makes sense, sort-of, but 'first' flag is to separate frames on
-different lines ?
-The code in propagate_precision() before mark_chain_precision_batch()
-will only print '... propagating...' few times.
-regs and stack will be on one line anyway.
-Is it that ugly to print all frames on one line in practice?
-The 2nd and 3rd frames will be on one line too. Only 1st frame is on its own line?
-I'm not getting the idea of 'first'.
+Trace sched related functions, such as enqueue_task_fair, it is necessary to
+specify a task instead of the current task which within a given cgroup.
+
+Feng Zhou (2):
+  bpf: Add bpf_task_under_cgroup() kfunc
+  selftests/bpf: Add testcase for bpf_task_under_cgroup
+
+Changelog:
+v4->v5: Addressed comments from Yonghong Song
+- Some code format modifications.
+Details in here:
+https://lore.kernel.org/all/20230428071737.43849-1-zhoufeng.zf@bytedance.com/
+
+v3->v4: Addressed comments from Yonghong Song
+- Modify test cases and test other tasks, not the current task.
+Details in here:
+https://lore.kernel.org/all/20230427023019.73576-1-zhoufeng.zf@bytedance.com/
+
+v2->v3: Addressed comments from Alexei Starovoitov
+- Modify the comment information of the function.
+- Narrow down the testcase's hook point
+Details in here:
+https://lore.kernel.org/all/20230421090403.15515-1-zhoufeng.zf@bytedance.com/
+
+v1->v2: Addressed comments from Alexei Starovoitov
+- Add kfunc instead.
+Details in here:
+https://lore.kernel.org/all/20230420072657.80324-1-zhoufeng.zf@bytedance.com/
+
+ kernel/bpf/helpers.c                          | 20 +++++++
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+ .../bpf/prog_tests/task_under_cgroup.c        | 54 +++++++++++++++++++
+ .../bpf/progs/test_task_under_cgroup.c        | 51 ++++++++++++++++++
+ 4 files changed, 126 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_under_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
+
+-- 
+2.20.1
+
