@@ -1,74 +1,96 @@
-Return-Path: <bpf+bounces-53-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574E66F797D
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D1AC6F798E
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 01:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55231C215F0
-	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 22:55:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635FB1C2155D
+	for <lists+bpf@lfdr.de>; Thu,  4 May 2023 23:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA313C159;
-	Thu,  4 May 2023 22:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF0BC15D;
+	Thu,  4 May 2023 23:03:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2658156FB
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 22:55:04 +0000 (UTC)
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9C51329E
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 15:55:02 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-24e25e2808fso1038527a91.0
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 15:55:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A440C156
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 23:03:20 +0000 (UTC)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5594111D80;
+	Thu,  4 May 2023 16:03:18 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-50bd87539c2so1786665a12.0;
+        Thu, 04 May 2023 16:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683240902; x=1685832902;
+        d=gmail.com; s=20221208; t=1683241397; x=1685833397;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4Y3WaB+7u68QVLTvqAImIwBX+k2ZH3QEYhYnY5U75TQ=;
-        b=qM8iQmVnCPlKV9E4Llu5uMhb8Qvc1dPXm6IJr28uY4FN/wlQA6v1WQoilV5kMIriOn
-         VN3nFzu2BwuFBxpa8PfkjOFQeagiSLxY+zcuzV18P6f7VDOyyypuF48De+WLLLfSkO/i
-         ZawKzJ+mHYPHRxUPZPzrVQMYVon9I7Mx/sDSb30jhN6plNRLoT3wMDxvO40YcgXX05Lv
-         +3Dfppr1/MljqrZeHAYPUMLpl4UivYx/3wJ+MD6HCJPjnlcwQtcgCxmzsdNXv6LIkLPy
-         CWtBbb1mYnXq3I6+OkZB0GRc8Mz7C6ElJb8sCAbswO8q6yz0wlhu97TgfkAR/gWNEu61
-         AiQQ==
+        bh=yWOua6diagEP9w5UDlQh2ycV9iT1GzUYH6J+nVD3eqI=;
+        b=JOAqTnfq2v2NoKHBjFk5s3WofNsDwxh5HmOdKEE+W1tN6tefO9iZvJmDvJU5wgniar
+         2kg2d/wPux24xedU19v/X1Hl1YbFDokk0hgcMeD5lzSva0Q+Z9k2SaFNgwmf9MThF6dd
+         wujDiEPmjdLLf3pCexeDDNamwe1iVonEqvOxx30zdLZL63BQsFnyjI9MRCgsp65N22gJ
+         IxqSGE1/6mGHHuYGrXd31y8nMvfWg7BYE7d6LuRIMNWGuz3FMaxlUInXjI2uiamuenDs
+         93WlqBfO+mSluSWlC+er610/cQcfDs/U6HJSY8LAR3yhwH9PkMavKsdER1gguoO/79G3
+         xQnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683240902; x=1685832902;
+        d=1e100.net; s=20221208; t=1683241397; x=1685833397;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Y3WaB+7u68QVLTvqAImIwBX+k2ZH3QEYhYnY5U75TQ=;
-        b=ETJR1uMxiENQiVhOzYFaOCeta7lPWrGNWkk1B6YXaszeaX2ATLfiyBrtzxV3FhWjSb
-         8/bJkRm8AgK5xw/YjY/bTobYYnxw18XoEKY1G1IogaosV+FncAh/pP6cOHEzyFmhWfBG
-         0gH0vnZSCTkxThyvrLDYfU2z7L2LjN1QBxIiLYpE0RNYH6/FC+xUzMy84ptqOFYxko5d
-         vruEi0d7TjSIsExNBNlZySOKctdRlNYAbtX4mysvHrrFG9YUP5SX44r07c3eVm516Rmq
-         yrncm47/x/9ZJXuuT+/AV2NcIVLzp8R+x5LXorDWLaat8+iybyjiJlnyy9DhHG14y2Ph
-         qmiA==
-X-Gm-Message-State: AC+VfDxIDFaWzmY2DaCMA4f5Dwq37fS0rUy/af4AxkGeJv9V8tQq/P9o
-	fIy1ccbDwBwFiRb/z8Vm0WE=
-X-Google-Smtp-Source: ACHHUZ6rwtn9Hqmi8apr9gcC0f0XPeUya0jXcnLGXWH53gWmb0nD2yd+x9mCgRKMyygG7voWEch4mA==
-X-Received: by 2002:a17:90b:4c41:b0:24e:534f:7b70 with SMTP id np1-20020a17090b4c4100b0024e534f7b70mr3111701pjb.48.1683240902006;
-        Thu, 04 May 2023 15:55:02 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:cce7])
-        by smtp.gmail.com with ESMTPSA id z19-20020a63e113000000b005142206430fsm191552pgh.36.2023.05.04.15.55.00
+        bh=yWOua6diagEP9w5UDlQh2ycV9iT1GzUYH6J+nVD3eqI=;
+        b=CLaxHLfcS7B6W39NeFlUcg2VMsJbpaDLuOqHGNNE93+rVwt2ogqYdfaOKvk0cyQe3f
+         x5HwUXuUjbJqV88221gnEg1y5gc9qEIuBiKT4U9dx8nrBuDBbQKv8fBejlTWGQYohVGp
+         KdM7qSmJd/EApwFGKmdKVhECfnvX2dPzHio0UdB08ZI9XGIY7lGstCaNuDN0ch7xFlHM
+         lh1j/R5+tcS8pz7nFZKioeWgGb0cSFQhub5tZqMcQ4vExn8MKoYAci+NpkK3uY9od6hg
+         k0f2ND3c/JsERYuPaFnjBS20BQuD7bhiHhxU8qxO9N8ZIxqNgRc3zutW75nV7GFBqwpy
+         YjLA==
+X-Gm-Message-State: AC+VfDymeCJ9hqYgMkTdZAoOVNKE6lNxXRcGBX3jMpsJLn9f8Biq2V1B
+	GVfcMUEoCcJGxFNfuOE5LtU=
+X-Google-Smtp-Source: ACHHUZ6vBzjNsow+SMHuZ82EJHJLQtHJmiwifuvN6I4pxG0+/jC+M9At6bUXX6Dw8p7HUh2RXaXLcg==
+X-Received: by 2002:a17:907:98a:b0:94b:d57e:9d4b with SMTP id bf10-20020a170907098a00b0094bd57e9d4bmr382506ejc.2.1683241396599;
+        Thu, 04 May 2023 16:03:16 -0700 (PDT)
+Received: from krava ([83.240.61.110])
+        by smtp.gmail.com with ESMTPSA id bj6-20020a170906b04600b0096595cc0810sm139867ejb.72.2023.05.04.16.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 May 2023 15:55:01 -0700 (PDT)
-Date: Thu, 4 May 2023 15:54:59 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 04/10] bpf: remember if bpf_map was unprivileged
- and use that consistently
-Message-ID: <20230504225459.fjbvxfx45m7ym5ft@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230502230619.2592406-1-andrii@kernel.org>
- <20230502230619.2592406-5-andrii@kernel.org>
- <20230504200544.mikkqyc7h7ftxal3@MacBook-Pro-6.local>
- <CAEf4BzbT1MNiUC5A0MTFjVvYOsXnh06SHukGgvzx-wdjRV8uHw@mail.gmail.com>
+        Thu, 04 May 2023 16:03:16 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 5 May 2023 01:03:14 +0200
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Song Liu <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Changbin Du <changbin.du@huawei.com>, Hao Luo <haoluo@google.com>,
+	James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Roman Lozko <lozko.roma@gmail.com>,
+	Stephane Eranian <eranian@google.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: BPF skels in perf .Re: [GIT PULL] perf tools changes for v6.4
+Message-ID: <ZFQ5sjjtfEYzvHNP@krava>
+References: <20230503211801.897735-1-acme@kernel.org>
+ <CAHk-=wjY_3cBELRSLMpqCt6Eb71Qei2agfKSNsrr5KcpdEQCaA@mail.gmail.com>
+ <CAHk-=wgci+OTRacQZcvvapRcWkoiTFJ=VTe_JYtabGgZ9refmg@mail.gmail.com>
+ <ZFOSUab5XEJD0kxj@kernel.org>
+ <CAHk-=wgv1sKTdLWPC7XR1Px=pDNrDPDTKdX-T_2AQOwgkpWB2A@mail.gmail.com>
+ <ZFPw0scDq1eIzfHr@kernel.org>
+ <CAEf4BzaUU9vZU6R_020ru5ct0wh-p1M3ZFet-vYqcHvb9bW1Cw@mail.gmail.com>
+ <ZFQCccsx6GK+gY0j@kernel.org>
+ <ZFQoQjCNtyMIulp+@kernel.org>
+ <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,7 +100,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbT1MNiUC5A0MTFjVvYOsXnh06SHukGgvzx-wdjRV8uHw@mail.gmail.com>
+In-Reply-To: <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,39 +108,85 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 04, 2023 at 03:51:16PM -0700, Andrii Nakryiko wrote:
-> On Thu, May 4, 2023 at 1:05 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Thu, May 04, 2023 at 03:03:42PM -0700, Ian Rogers wrote:
+> On Thu, May 4, 2023 at 2:48 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > >
-> > On Tue, May 02, 2023 at 04:06:13PM -0700, Andrii Nakryiko wrote:
-> > >  }
+> > Em Thu, May 04, 2023 at 04:07:29PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Thu, May 04, 2023 at 11:50:07AM -0700, Andrii Nakryiko escreveu:
+> > > > On Thu, May 4, 2023 at 10:52 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > > Andrii, can you add some more information about the usage of vmlinux.h
+> > > > > instead of using kernel headers?
 > > >
-> > > -static struct bpf_map *array_map_alloc(union bpf_attr *attr)
-> > > +static u32 array_index_mask(u32 max_entries)
-> > >  {
-> > > -     bool percpu = attr->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
-> > > -     int numa_node = bpf_map_attr_numa_node(attr);
-> > > -     u32 elem_size, index_mask, max_entries;
-> > > -     bool bypass_spec_v1 = bpf_bypass_spec_v1();
+> > > > I'll just say that vmlinux.h is not a hard requirement to build BPF
+> > > > programs, it's more a convenience allowing easy access to definitions
+> > > > of both UAPI and kernel-internal structures for tracing needs and
+> > > > marking them relocatable using BPF CO-RE machinery. Lots of real-world
+> > > > applications just check-in pregenerated vmlinux.h to avoid build-time
+> > > > dependency on up-to-date host kernel and such.
+> > >
+> > > > If vmlinux.h generation and usage is causing issues, though, given
+> > > > that perf's BPF programs don't seem to be using many different kernel
+> > > > types, it might be a better option to just use UAPI headers for public
+> > > > kernel type definitions, and just define CO-RE-relocatable minimal
+> > > > definitions locally in perf's BPF code for the other types necessary.
+> > > > E.g., if perf needs only pid and tgid from task_struct, this would
+> > > > suffice:
+> > >
+> > > > struct task_struct {
+> > > >     int pid;
+> > > >     int tgid;
+> > > > } __attribute__((preserve_access_index));
+> > >
+> > > Yeah, that seems like a way better approach, no vmlinux involved, libbpf
+> > > CO-RE notices that task_struct changed from this two integers version
+> > > (of course) and does the relocation to where it is in the running kernel
+> > > by using /sys/kernel/btf/vmlinux.
 > >
-> > static inline bool bpf_bypass_spec_v1(void)
-> > {
-> >         return perfmon_capable();
-> > }
+> > Doing it for one of the skels, build tested, runtime untested, but not
+> > using any vmlinux, BTF to help, not that bad, more verbose, but at least
+> > we state what are the fields we actually use, have those attribute
+> > documenting that those offsets will be recorded for future use, etc.
 > >
-> > > +             /* unprivileged is OK, but we still record if we had CAP_BPF */
-> > > +             unpriv = !bpf_capable();
+> > Namhyung, can you please check that this works?
 > >
-> > map->unpriv flag makes sense as !CAP_BPF,
-> > but it's not equivalent to bpf_bypass_spec_v1.
+> > Thanks,
 > >
+> > - Arnaldo
+> >
+> > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > index 6a438e0102c5a2cb..f376d162549ebd74 100644
+> > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > @@ -1,11 +1,40 @@
+> >  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >  // Copyright (c) 2021 Facebook
+> >  // Copyright (c) 2021 Google
+> > -#include "vmlinux.h"
+> > +#include <linux/types.h>
+> > +#include <linux/bpf.h>
 > 
-> argh, right, it's perfmon_capable() :(
+> Compared to vmlinux.h here be dragons. It is easy to start dragging in
+> all of libc and that may not work due to missing #ifdefs, etc.. Could
+> we check in a vmlinux.h like libbpf-tools does?
+> https://github.com/iovisor/bcc/tree/master/libbpf-tools#vmlinuxh-generation
+> https://github.com/iovisor/bcc/tree/master/libbpf-tools/arm64
 > 
-> what do you propose? do bpf_capable and perfmon_capable fields for
-> each map separately? or keep unpriv and add perfmon_capable
-> separately? or any better ideas?..
+> This would also remove some of the errors that could be introduced by
+> copy+pasting enums, etc. and also highlight issues with things being
+> renamed as build time rather than runtime failures.
 
-Instead of map->unpriv I'd add map->bpf_capable and map->perfmon_capable
-just like we'll be doing to progs.
+we already have to deal with that, right? doing checks on fields in
+structs like mm_struct___old
+
+> Could this be some shared resource for the different linux tools
+> projects using a vmlinux.h? e.g. tools/lib/vmlinuxh with an
+> install_headers target that builds a vmlinux.h.
+
+I tried to do the minimal header and it's not too big,
+I pushed it in here:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=perf/vmlinux_h
+
+compile tested so far
+
+jirka
 
