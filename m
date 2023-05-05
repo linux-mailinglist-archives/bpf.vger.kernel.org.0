@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-94-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-92-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798E56F7BF9
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 06:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E743E6F7BF3
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 06:35:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4B841C2163B
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:36:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A9281C216EB
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334321876;
-	Fri,  5 May 2023 04:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3447F4C6D;
+	Fri,  5 May 2023 04:33:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CD7156C1
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 04:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A32156C1
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 04:33:50 +0000 (UTC)
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DB314349
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 21:36:16 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18D1AD20
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 21:33:49 -0700 (PDT)
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344KBNWQ024246
-	for <bpf@vger.kernel.org>; Thu, 4 May 2023 21:36:16 -0700
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344KBNTM024244
+	for <bpf@vger.kernel.org>; Thu, 4 May 2023 21:33:49 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qckh42j1e-5
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qckh42hnb-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 04 May 2023 21:36:16 -0700
-Received: from twshared6687.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 04 May 2023 21:33:49 -0700
+Received: from twshared18891.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 4 May 2023 21:36:13 -0700
+ 15.1.2507.23; Thu, 4 May 2023 21:33:47 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
 	id 2FC213006D8DA; Thu,  4 May 2023 21:33:40 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
@@ -53,15 +53,15 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: j8aCYCSM1oogLxz38BltmLMan1u_8GO0
-X-Proofpoint-GUID: j8aCYCSM1oogLxz38BltmLMan1u_8GO0
+X-Proofpoint-ORIG-GUID: 4gj1M0Gbk-fNpLTMjjeDIbuFwaUy9uub
+X-Proofpoint-GUID: 4gj1M0Gbk-fNpLTMjjeDIbuFwaUy9uub
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-04_15,2023-05-04_01,2023-02-09_01
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
 	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
