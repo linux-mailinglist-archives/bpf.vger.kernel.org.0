@@ -1,257 +1,263 @@
-Return-Path: <bpf+bounces-118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0269D6F84B8
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 16:18:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3356F8557
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 17:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC758281028
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 14:18:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 496CB281031
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 15:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00605C2C8;
-	Fri,  5 May 2023 14:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F37C2D3;
+	Fri,  5 May 2023 15:14:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62AF1FAB
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 14:17:52 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B65AAB
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 07:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1683296265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P1oCIf84RG7+6O7buoOZWskEuD34mndm17BNvxGm8Ys=;
-	b=MmhWQgxcTeSGfLuCMdymkGT+sBZD8oJ/8es0HsuRqMJNWtWRHDB7akKtd58If3E7+uxXon
-	dQNeiMm2vO83lBfeaF8tSliLxd17yJEuMefULKXZhE7VGcpUdO5v/vd5whKxwYBnBJRQOS
-	g3K/qhXyT/XpjxhRJ/Dk39eydayKixQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-411-F_eL8XpxP3qv_JQUTno2-w-1; Fri, 05 May 2023 10:17:44 -0400
-X-MC-Unique: F_eL8XpxP3qv_JQUTno2-w-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-306281812d6so748512f8f.2
-        for <bpf@vger.kernel.org>; Fri, 05 May 2023 07:17:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8DDBE7A
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 15:14:31 +0000 (UTC)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFF61BCA;
+	Fri,  5 May 2023 08:14:28 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4f0108a7d20so2132040e87.3;
+        Fri, 05 May 2023 08:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683299666; x=1685891666;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oegoxXyGIHmylmkklaLXWJVdylUtYMRDksZxxgTnY0w=;
+        b=p42IIgkZJZdYM019cvt5p4yYWtec7Tl60FHGEnllaoaXvo0XUFGNz0swJdqvcfB0ou
+         yQFVtwkPmBXfzuF/3KJHG5DGVGVQJXOm4RKNu2Z2D9Pju7xBrdbslmr71Kr7b1r4bYDo
+         262IerPoaHfYHTz0iNOLo1Nd1XNxr8Zt8+nI/QxyudxXzn3TolODVrBjduTMPb0nkU2S
+         MVwUccC3Vht/5kWun3NhspGc+YvSEmaMqxX2cJR9pDA+kAKbj81g0iiLnf2pyEc2Z+HV
+         cRH5BNaBG5X9wcwQaPgHTr+eHGUVJ0PW6W9LFnnPCSvgG/u5KeorJSGj0r/MJL6LubKs
+         0LtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683296262; x=1685888262;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :content-language:references:cc:to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P1oCIf84RG7+6O7buoOZWskEuD34mndm17BNvxGm8Ys=;
-        b=Wxnue7Ms31PdPD++1+AOPYdz5h9VZf6d2eoN1j1gOpv2PNTGI1amH0thGZwXpxvuHV
-         05uXdKx+FgaNtl455FYTLP1NOw6RYtWajKXLQyFGWxWzsoSuxVFUkkAObNF2x4Ztnzsp
-         oVakoEj2dI3BvEWLFiXcdegB9s8VIzVWF9HNljnsr9IlJ5ku3yp+rwPjTez++Bi3EFn1
-         wWB7sPK9rXnTptBPlNAEiBH6kOULBvUQw9Thzp/r4qcUJGgDF1eZ8DZP1+va+vn1GPYF
-         2/A2XOHv3xF1Wr4jkkMq8EZ3w+4dq65K54tnwS7C9YROWfuhgP+8jjghB+moCb1hCaCD
-         BGQA==
-X-Gm-Message-State: AC+VfDxCN2FLNnRmsK0KBnaEn80OfURF1jsUdZ/VJ9epp4VmGVF3x6JZ
-	NCSs4rRnlMsdA5BE0Jw/XsGUsRTdyvnmYfpC7ueAs9Pbn6WQfElCbh5otQgkcpcblXBQodWCQvj
-	/zAoWLZHmosEw
-X-Received: by 2002:adf:e948:0:b0:2fb:87f7:3812 with SMTP id m8-20020adfe948000000b002fb87f73812mr1224207wrn.1.1683296261853;
-        Fri, 05 May 2023 07:17:41 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5TcJqqd654Tk6HhTBKZ1iWhCqzdn+unDXZ1fRotGzitSWjcybH0sIfqEWc/QeEZR4qCpa8LQ==
-X-Received: by 2002:adf:e948:0:b0:2fb:87f7:3812 with SMTP id m8-20020adfe948000000b002fb87f73812mr1224169wrn.1.1683296261426;
-        Fri, 05 May 2023 07:17:41 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71f:6900:2b25:fc69:599e:3986? (p200300cbc71f69002b25fc69599e3986.dip0.t-ipconnect.de. [2003:cb:c71f:6900:2b25:fc69:599e:3986])
-        by smtp.gmail.com with ESMTPSA id h14-20020a5d6e0e000000b0030631dcbea6sm2548971wrz.77.2023.05.05.07.17.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 May 2023 07:17:40 -0700 (PDT)
-Message-ID: <ae9a1134-4f5b-4c26-6822-adff838c8702@redhat.com>
-Date: Fri, 5 May 2023 16:17:38 +0200
+        d=1e100.net; s=20221208; t=1683299666; x=1685891666;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oegoxXyGIHmylmkklaLXWJVdylUtYMRDksZxxgTnY0w=;
+        b=ABBnVJPoCYQ09tQwjD3hyGz0vYWri4O2mwFkn/ilTBQYI0Qw6tjj+ID34a3CrI0nnK
+         YhICamATzzIvXA3/xoMf3dX28733UFPMmli6vU4jqZ8Z3CxlkoguugueZTj2yd69iqgQ
+         EMGdQ0sB/YfyAfVYanV1M/9KbBQ4qts3MBbfQfDKOhJ+9hxok86nKmHEgeoLyVoRcx+O
+         k7RDq97P2RXGx0J4vusNMiCocTQR4Z+C3GzQl1xugw8sa6Aj4/Tj304jPm/fmkz0Laj8
+         qPeZZUsTPWmV5GVCmzYEP5aElr6/hNKOiS/dQwFKxQGFjJN+JZ7w7VCo0bfo7iwn2wIJ
+         BtbA==
+X-Gm-Message-State: AC+VfDyysFkD09urdnaLMnQo4MsoHoadZBLYQwtCREEGjCxWdNMYr0tN
+	SadRQVHMugD6O+1dfaweXd/a9Qj0rFmOrYWeoSo=
+X-Google-Smtp-Source: ACHHUZ6Nudfg9QFfCNejF73wLcnsuJ+BQGNiIFuQ+8BtnxjcgXU6SXZHYJdANmtPcNFLdrsU9lzdE8aYtSBwE9ju0uY=
+X-Received: by 2002:a05:6512:21ac:b0:4f1:3716:ab34 with SMTP id
+ c12-20020a05651221ac00b004f13716ab34mr531680lft.60.1683299666246; Fri, 05 May
+ 2023 08:14:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-To: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- Leon Romanovsky <leon@kernel.org>, Christian Benvenuti <benve@cisco.com>,
- Nelson Escobar <neescoba@cisco.com>, Bernard Metzler <bmt@zurich.ibm.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Christian Brauner <brauner@kernel.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
- Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
- Jan Kara <jack@suse.cz>, "Kirill A . Shutemov" <kirill@shutemov.name>,
- Pavel Begunkov <asml.silence@gmail.com>, Mika Penttila
- <mpenttil@redhat.com>, Dave Chinner <david@fromorbit.com>,
- Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
- Matthew Rosato <mjrosato@linux.ibm.com>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Christian Borntraeger <borntraeger@linux.ibm.com>
-References: <cover.1683067198.git.lstoakes@gmail.com>
- <a690186fc37e1ea92556a7dbd0887fe201fcc709.1683067198.git.lstoakes@gmail.com>
- <e4c92510-9756-d9a1-0055-4cd64a0c76d9@redhat.com>
- <c2a6311c-7fdc-4d12-9a3f-d2eed954c468@lucifer.local>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v8 3/3] mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
- file-backed mappings
-In-Reply-To: <c2a6311c-7fdc-4d12-9a3f-d2eed954c468@lucifer.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+References: <CAHk-=wjY_3cBELRSLMpqCt6Eb71Qei2agfKSNsrr5KcpdEQCaA@mail.gmail.com>
+ <CAHk-=wgci+OTRacQZcvvapRcWkoiTFJ=VTe_JYtabGgZ9refmg@mail.gmail.com>
+ <ZFOSUab5XEJD0kxj@kernel.org> <CAHk-=wgv1sKTdLWPC7XR1Px=pDNrDPDTKdX-T_2AQOwgkpWB2A@mail.gmail.com>
+ <ZFPw0scDq1eIzfHr@kernel.org> <CAEf4BzaUU9vZU6R_020ru5ct0wh-p1M3ZFet-vYqcHvb9bW1Cw@mail.gmail.com>
+ <ZFQCccsx6GK+gY0j@kernel.org> <ZFQoQjCNtyMIulp+@kernel.org>
+ <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
+ <ZFQ5sjjtfEYzvHNP@krava> <ZFUFmxDU/6Z/JEsi@kernel.org>
+In-Reply-To: <ZFUFmxDU/6Z/JEsi@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 5 May 2023 08:14:14 -0700
+Message-ID: <CAADnVQLe2HK8GN44fXJgKm+pr=JmK8LC_YU3i1fgyVfS+nQxDA@mail.gmail.com>
+Subject: Re: BPF skels in perf .Re: [GIT PULL] perf tools changes for v6.4
+To: Arnaldo Carvalho de Melo <acme@kernel.org>, Quentin Monnet <quentin@isovalent.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Ian Rogers <irogers@google.com>, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Song Liu <song@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Clark Williams <williams@redhat.com>, 
+	Kate Carcia <kcarcia@redhat.com>, LKML <linux-kernel@vger.kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Changbin Du <changbin.du@huawei.com>, Hao Luo <haoluo@google.com>, 
+	James Clark <james.clark@arm.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Roman Lozko <lozko.roma@gmail.com>, Stephane Eranian <eranian@google.com>, 
+	Thomas Richter <tmricht@linux.ibm.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
->> And there is nothing wrong about pinning an anon page that's still in the
->> swapcache. The following folio_test_anon() check will allow them.
->>
->> The check made sense in page_mapping(), but here it's not required.
-> 
-> Waaaaaaaaaait a second, you were saying before:-
-> 
->    "Folios in the swap cache return the swap mapping" -- you might disallow
->    pinning anonymous pages that are in the swap cache.
-> 
->    I recall that there are corner cases where we can end up with an anon
->    page that's mapped writable but still in the swap cache ... so you'd
->    fallback to the GUP slow path (acceptable for these corner cases, I
->    guess), however especially the comment is a bit misleading then.
-> 
-> So are we allowing or disallowing pinning anon swap cache pages? :P
+On Fri, May 5, 2023 at 6:33=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> Em Fri, May 05, 2023 at 01:03:14AM +0200, Jiri Olsa escreveu:
+> > On Thu, May 04, 2023 at 03:03:42PM -0700, Ian Rogers wrote:
+> > > On Thu, May 4, 2023 at 2:48=E2=80=AFPM Arnaldo Carvalho de Melo <acme=
+@kernel.org> wrote:
+> > > >
+> > > > Em Thu, May 04, 2023 at 04:07:29PM -0300, Arnaldo Carvalho de Melo =
+escreveu:
+> > > > > Em Thu, May 04, 2023 at 11:50:07AM -0700, Andrii Nakryiko escreve=
+u:
+> > > > > > On Thu, May 4, 2023 at 10:52=E2=80=AFAM Arnaldo Carvalho de Mel=
+o <acme@kernel.org> wrote:
+> > > > > > > Andrii, can you add some more information about the usage of =
+vmlinux.h
+> > > > > > > instead of using kernel headers?
+> > > > >
+> > > > > > I'll just say that vmlinux.h is not a hard requirement to build=
+ BPF
+> > > > > > programs, it's more a convenience allowing easy access to defin=
+itions
+> > > > > > of both UAPI and kernel-internal structures for tracing needs a=
+nd
+> > > > > > marking them relocatable using BPF CO-RE machinery. Lots of rea=
+l-world
+> > > > > > applications just check-in pregenerated vmlinux.h to avoid buil=
+d-time
+> > > > > > dependency on up-to-date host kernel and such.
+> > > > >
+> > > > > > If vmlinux.h generation and usage is causing issues, though, gi=
+ven
+> > > > > > that perf's BPF programs don't seem to be using many different =
+kernel
+> > > > > > types, it might be a better option to just use UAPI headers for=
+ public
+> > > > > > kernel type definitions, and just define CO-RE-relocatable mini=
+mal
+> > > > > > definitions locally in perf's BPF code for the other types nece=
+ssary.
+> > > > > > E.g., if perf needs only pid and tgid from task_struct, this wo=
+uld
+> > > > > > suffice:
+> > > > >
+> > > > > > struct task_struct {
+> > > > > >     int pid;
+> > > > > >     int tgid;
+> > > > > > } __attribute__((preserve_access_index));
+> > > > >
+> > > > > Yeah, that seems like a way better approach, no vmlinux involved,=
+ libbpf
+> > > > > CO-RE notices that task_struct changed from this two integers ver=
+sion
+> > > > > (of course) and does the relocation to where it is in the running=
+ kernel
+> > > > > by using /sys/kernel/btf/vmlinux.
+> > > >
+> > > > Doing it for one of the skels, build tested, runtime untested, but =
+not
+> > > > using any vmlinux, BTF to help, not that bad, more verbose, but at =
+least
+> > > > we state what are the fields we actually use, have those attribute
+> > > > documenting that those offsets will be recorded for future use, etc=
+.
+> > > >
+> > > > Namhyung, can you please check that this works?
+> > > >
+> > > > Thanks,
+> > > >
+> > > > - Arnaldo
+> > > >
+> > > > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/pe=
+rf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > index 6a438e0102c5a2cb..f376d162549ebd74 100644
+> > > > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > @@ -1,11 +1,40 @@
+> > > >  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > >  // Copyright (c) 2021 Facebook
+> > > >  // Copyright (c) 2021 Google
+> > > > -#include "vmlinux.h"
+> > > > +#include <linux/types.h>
+> > > > +#include <linux/bpf.h>
+> > >
+> > > Compared to vmlinux.h here be dragons. It is easy to start dragging i=
+n
+> > > all of libc and that may not work due to missing #ifdefs, etc.. Could
+> > > we check in a vmlinux.h like libbpf-tools does?
+> > > https://github.com/iovisor/bcc/tree/master/libbpf-tools#vmlinuxh-gene=
+ration
+> > > https://github.com/iovisor/bcc/tree/master/libbpf-tools/arm64
+> > >
+> > > This would also remove some of the errors that could be introduced by
+> > > copy+pasting enums, etc. and also highlight issues with things being
+> > > renamed as build time rather than runtime failures.
+> >
+> > we already have to deal with that, right? doing checks on fields in
+> > structs like mm_struct___old
+> >
+> > > Could this be some shared resource for the different linux tools
+> > > projects using a vmlinux.h? e.g. tools/lib/vmlinuxh with an
+> > > install_headers target that builds a vmlinux.h.
+> >
+> > I tried to do the minimal header and it's not too big,
+> > I pushed it in here:
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=
+=3Dperf/vmlinux_h
+> >
+> > compile tested so far
+>
+> I see it and it makes the change to be minimal, which is good at the
+> current stage, but I wonder if it wouldn't be better for us to define
+> just the ones not in UAPI and use the #include <linux/bpf.h>,
+> <linux/perf_event.h> as I did in the patches I posted here and Namhyung
+> tested at least one, this way the added vmlinux.h file get even smaller
+> by not including things like:
+>
+> [acme@quaco perf-tools]$ egrep -w '(perf_event_sample_format|bpf_perf_eve=
+nt_value|perf_sample_weight|perf_mem_data_src) {' include/uapi/linux/*.h
+> include/uapi/linux/bpf.h:struct bpf_perf_event_value {
+> include/uapi/linux/perf_event.h:enum perf_event_sample_format {
+> include/uapi/linux/perf_event.h:union perf_mem_data_src {
+> include/uapi/linux/perf_event.h:union perf_mem_data_src {
+> include/uapi/linux/perf_event.h:union perf_sample_weight {
+> [acme@quaco perf-tools]$
+>
+> Also why do we need these:
+>
+> +struct mm_struct {
+> +} __attribute__((preserve_access_index));
+> +
+> +struct raw_spinlock {
+> +} __attribute__((preserve_access_index));
+> +
+> +typedef struct raw_spinlock raw_spinlock_t;
+> +
+> +struct spinlock {
+> +} __attribute__((preserve_access_index));
+> +
+> +typedef struct spinlock spinlock_t;
+> +
+> +struct sighand_struct {
+> +       spinlock_t siglock;
+> +} __attribute__((preserve_access_index));
+>
+> We don't use them, they're just pointers you kept on:
+>
+> +struct task_struct {
+> +       struct css_set *cgroups;
+> +       pid_t pid;
+> +       pid_t tgid;
+> +       char comm[16];
+> +       struct mm_struct *mm;
+> +       struct sighand_struct *sighand;
+> +       unsigned int flags;
+> +} __attribute__((preserve_access_index));
+>
+> That with the preserve_access_index isn't needed, we need just the
+> fields that we access in the tools, right?
 
-If we have an exclusive anon page that's still in the swap cache, sure! :)
+Aside from that you probably want to take a look at BTFgen.
+Old doc:
+https://github.com/aquasecurity/btfhub/blob/main/docs/btfgen-internals.md
+which landed as
+"bpftool gen min_core_btf"
+man bpftool-gen
 
-I think there are ways that can be done, and nothing would actually 
-break. (I even wrote selftests in the cow selftests for that to amke 
-sure it works as expected)
-
-> 
-> I mean slow path would allow them if they are just marked anon so I'm inclined
-> to allow them.
-
-Exactly my reasoning.
-
-The less checks the better (especially if ordinary GUP just allows for 
-pinning it) :)
-
-> 
->>
->> I do agree regarding folio_test_slab(), though. Should we WARN in case we
->> would have one?
->>
->> if (WARN_ON_ONCE(folio_test_slab(folio)))
->> 	return false;
->>
-> 
-> God help us if we have a slab page at this point, so agreed worth doing, it
-> would surely have to arise from some dreadful bug/memory corruption.
-> 
-
-Or some nasty race condition that we managed to ignore with rechecking 
-if the PTEs/PMDs changed :)
-
->>> +	if (unlikely(folio_test_slab(folio) || folio_test_swapcache(folio)))
->>> +		return false;
->>> +
->>> +	/* hugetlb mappings do not require dirty-tracking. */
->>> +	if (folio_test_hugetlb(folio))
->>> +		return true;
->>> +
->>> +	/*
->>> +	 * GUP-fast disables IRQs. When IRQS are disabled, RCU grace periods
->>> +	 * cannot proceed, which means no actions performed under RCU can
->>> +	 * proceed either.
->>> +	 *
->>> +	 * inodes and thus their mappings are freed under RCU, which means the
->>> +	 * mapping cannot be freed beneath us and thus we can safely dereference
->>> +	 * it.
->>> +	 */
->>> +	lockdep_assert_irqs_disabled();
->>> +
->>> +	/*
->>> +	 * However, there may be operations which _alter_ the mapping, so ensure
->>> +	 * we read it once and only once.
->>> +	 */
->>> +	mapping = READ_ONCE(folio->mapping);
->>> +
->>> +	/*
->>> +	 * The mapping may have been truncated, in any case we cannot determine
->>> +	 * if this mapping is safe - fall back to slow path to determine how to
->>> +	 * proceed.
->>> +	 */
->>> +	if (!mapping)
->>> +		return false;
->>> +
->>> +	/* Anonymous folios are fine, other non-file backed cases are not. */
->>> +	mapping_flags = (unsigned long)mapping & PAGE_MAPPING_FLAGS;
->>> +	if (mapping_flags)
->>> +		return mapping_flags == PAGE_MAPPING_ANON;
->>
->> KSM pages are also (shared) anonymous folios, and that check would fail --
->> which is ok (the following unsharing checks rejects long-term pinning them),
->> but a bit inconstent with your comment and folio_test_anon().
->>
->> It would be more consistent (with your comment and also the folio_test_anon
->> implementation) to have here:
->>
->> 	return mapping_flags & PAGE_MAPPING_ANON;
->>
-> 
-> I explicitly excluded KSM out of fear that could be some breakage given they're
-> wrprotect'd + expected to CoW though? But I guess you mean they'd get picked up
-> by the unshare and so it doesn't matter + we wouldn't want to exclude an
-> PG_anon_exclusive case?
-
-Yes, unsharing handles that in the ordinary GUP and GUP-fast case. And 
-unsharing is neither GUP-fast nor even longterm specific (for anon pages).
-
-Reason I'm brining this up is that I think it's best if we let 
-folio_fast_pin_allowed() just check for what's absolutely GUP-fast specific.
-
-> 
-> I'll make the change in any case given the unshare check!
-> 
-> I notice the gup_huge_pgd() doesn't do an unshare but I mean, a PGD-sized huge
-> page probably isn't going to be CoW'd :P
-
-I spotted exactly the same thing and wondered about that (after all I 
-added all that unsharing logic ... so I should know). I'm sure there 
-must be a reason I didn't add it ;)
-
-... probably we should just add it even though it might essentially be 
-dead code for now (at least the cow selftests would try with each and 
-every hugetlb size and eventually reveal the problem on whatever arch 
-ends up using that code ... ).
-
-Do you want to send a patch to add unsharing to gup_huge_pgd() as well?
-
--- 
-Thanks,
-
-David / dhildenb
-
+It addresses the use case for kernels _without_ CONFIG_DEBUG_INFO_BTF.
 
