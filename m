@@ -1,200 +1,196 @@
-Return-Path: <bpf+bounces-136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 591326F88E4
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:47:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A00706F88F6
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0DC92810BF
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 18:47:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B85F2810AB
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 18:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C62C8DB;
-	Fri,  5 May 2023 18:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D1AC8E7;
+	Fri,  5 May 2023 18:48:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC76C12D
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 18:47:42 +0000 (UTC)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FF4203E8
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 11:47:37 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-24e25e2808fso1963972a91.0
-        for <bpf@vger.kernel.org>; Fri, 05 May 2023 11:47:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A23F156EF;
+	Fri,  5 May 2023 18:48:54 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0A018FD3;
+	Fri,  5 May 2023 11:48:52 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2ac8ee9cf7aso3465031fa.2;
+        Fri, 05 May 2023 11:48:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683312456; x=1685904456;
+        d=gmail.com; s=20221208; t=1683312530; x=1685904530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TciyR7juwxjGC/htL5PTfWm5OISl0NVnck7a0zAsIT8=;
-        b=0au1gkuGwAJUg/tFBIBbtgpI/2w8fXyRq/IZfcvHcv3t5mainJ/o+2Ls5QSbPNVtnb
-         m1qwEgn+rxiiY05aqLnTwqW8fOYU6TJhzaHBZEQnyE/NNFwhqNj/vhvAYTGDhB6Jcoex
-         1swU/ubSe2duWN130679KV+fPoFQnnXdLkYcr96Yukurp5viCl2A8gUDwrOD3bGVALvL
-         vNb1eGOTLmrHy6HDFZrzrTTN0iJUBwJuaIV3phJI4xoRbSIYsTOCuCZqHXyzjy/qyeBN
-         JaaK/oBGJ0tkpSQpsTdyfvTEqSHGMeAkKbDDQMrAuQFdTcS39dRiMvNau9oQtGeftU2a
-         Zw2g==
+        bh=GEImjqo4Dp5/B90VuSOXELs+WXxVvm2HyH+HGBF0hQ4=;
+        b=jjFYaFDYSeUzx3kAeBOpfqAqx6gQ1SaXr4s9REGSLNefWd6wqSeMnfAEGy2qu0f76u
+         OESnuRcyj/o4EHm6f/OTlLTQ40tmR0nAT7ogeCIlUFA9AfMn+RTOICptlXuELEQRTwCi
+         kopVOWGXYsfuSOqpW37VAZWSoOdyYmU6OQ9hko9x/vxwFQG2w9S5vUdkQHoVcWzmJhPg
+         20Q4V4e9dAwF136sqXxlO3WJZiyY/VeDoPcFseHKHajSkgiedStXjcxr+JEW4GJwyajT
+         VjpGtn3//fA87LEQPhIoiAQRabr/77dGtEv5Aa9rBipWSfuV9VVoP2I65ezAzsFXth62
+         K8vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683312456; x=1685904456;
+        d=1e100.net; s=20221208; t=1683312530; x=1685904530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TciyR7juwxjGC/htL5PTfWm5OISl0NVnck7a0zAsIT8=;
-        b=EtuCrwcaLOgVPz7SoL6/ZSVtP2mWgrboix6UcFzabF3vEz5bXH5JoGvq5r2Wx+U2MC
-         v05RFAw3n6tozL1MpU81LOUmTXXVSj5cYt6+yLM1osFRFhTKg5YH7pquYDVui2X6ZvZu
-         cb4fcINJJ8BImkXy7Voi9PKk9Wa6UTCqrACCW/VV7o1+eRGArkK9fpYUjj84ct1fuNoz
-         BgqUpTkeK1cpEwdBfBnynK0a/pDPbiKLWn52NSzsfyYi71TFHUj5jdUWUbmx1lyfPD1w
-         1s4nxNCnfe7e7O6yOZl219PGpnwi0kEmxX9MdZyPDK1oTLOHUxEYYQf/WI/TxEEwLOLU
-         XQ8A==
-X-Gm-Message-State: AC+VfDwHX58JxYQnncjdoeiM8ctOeLkmSuwxlomphTQHSmUmCcnvAFyA
-	RZ8Bbj0Xb5HCn1gXjt5yjynVe/xbhCtp/q0gED32T+7JQgWKXMPcl2nVhQ==
-X-Google-Smtp-Source: ACHHUZ7utIEcreENdSHaPbswG1gMpKqIUsm9lXXlGNnABKtKUqsfqXaIVW9WLaQuBkj67XrDx03Tc9wO65d1ohlSANA=
-X-Received: by 2002:a17:90b:3807:b0:24d:d7fd:86c3 with SMTP id
- mq7-20020a17090b380700b0024dd7fd86c3mr2307511pjb.16.1683312456482; Fri, 05
- May 2023 11:47:36 -0700 (PDT)
+        bh=GEImjqo4Dp5/B90VuSOXELs+WXxVvm2HyH+HGBF0hQ4=;
+        b=iuMl7jahLdm4DXOdQTSgNS6oohvq5IuRk1rCYX3M0DU/QyODmMdPMyGduVDiHD1kQd
+         NF9HQJ6ZLlwgRWMkPvN5uNhrCTn7ivBR9RGWrCZA/0TBsiG5onuCBiNJANfFOlgaBx/N
+         riQZIc/5+MOcmwJCCCVPNXdTCdDJBiT1iVDMA9QU2Q6hHTj//qeI3LDO7MkTMbsK7uME
+         Zl1NtWRyzzHEZHjozVH+4VOZ4/iIi+D4KC4q6uuTbv7aMhrFHqGdu8Eaup3xPLTDZd90
+         J46uiyK4KQmKxjgArXMqOPqjLhX7M+VALcxDhVLsWh9vfvm1TbMeXzlGAVnOjLqXhCGo
+         xNpA==
+X-Gm-Message-State: AC+VfDyGJCXkHq770/TUTqNPZSAl15j9t3NqlWaqm4URz7KZFtWrpmKQ
+	8LfayZlEtTbxb+cxJGsO4/85VItnnX9TWbE3Q+E=
+X-Google-Smtp-Source: ACHHUZ4tkxwoPn5CYMSOFSo2OJQvV6jfvySX/tLfWO/wRAV0L/jK3+nZymOI0ISCL+3Y+u52aPRbmuhqkok7qBaPiME=
+X-Received: by 2002:a2e:9d17:0:b0:2ac:7958:ed34 with SMTP id
+ t23-20020a2e9d17000000b002ac7958ed34mr639661lji.45.1683312530155; Fri, 05 May
+ 2023 11:48:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230505184550.1386802-1-sdf@google.com>
-In-Reply-To: <20230505184550.1386802-1-sdf@google.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Fri, 5 May 2023 11:47:25 -0700
-Message-ID: <CAKH8qBuDzThzDcN6WwyLmD75LSv0zrd-ZiwDMwVmJiQ82DxepQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] RFC: bpf: query effective progs without cgroup_mutex
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org
+References: <20230505060818.60037-1-zhoufeng.zf@bytedance.com>
+ <20230505060818.60037-2-zhoufeng.zf@bytedance.com> <CA+khW7g_gq1N=cNHC-5WG2nZ8a-wHSpwg_fc5=dQpkweGvROqA@mail.gmail.com>
+ <f7a85b88-aa8c-a26a-8ccb-a20c62a76faa@bytedance.com> <b592dba0-685b-942f-3e0a-88f656733eae@meta.com>
+In-Reply-To: <b592dba0-685b-942f-3e0a-88f656733eae@meta.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 5 May 2023 11:48:38 -0700
+Message-ID: <CAADnVQLS+6WQx7ZTk8O+Q3YAHm7bv+viTik+Xy-mQbK2YRf+Xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/2] bpf: Add bpf_task_under_cgroup() kfunc
+To: Yonghong Song <yhs@meta.com>
+Cc: Feng Zhou <zhoufeng.zf@bytedance.com>, Hao Luo <haoluo@google.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, yangzhenze@bytedance.com, 
+	Dongdong Wang <wangdongdong.6@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 5, 2023 at 11:45=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
- wrote:
+On Fri, May 5, 2023 at 11:44=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote:
 >
-> We're observing some stalls on the heavily loaded machines
-> in the cgroup_bpf_prog_query path. This is likely due to
-> being blocked on cgroup_mutex.
 >
-> IIUC, the cgroup_mutex is there mostly to protect the non-effective
-> fields (cgrp->bpf.progs) which might be changed by the update path.
-> For the BPF_F_QUERY_EFFECTIVE case, all we need is to rcu_dereference
-> a bunch of pointers (and keep them around for consistency), so
-> let's do it.
 >
-> Sending out as an RFC because it looks a bit ugly. It would also
-> be nice to handle non-effective case locklessly as well, but it
-> might require a larger rework.
+> On 5/5/23 12:18 AM, Feng Zhou wrote:
+> > =E5=9C=A8 2023/5/5 14:58, Hao Luo =E5=86=99=E9=81=93:
+> >> On Thu, May 4, 2023 at 11:08=E2=80=AFPM Feng zhou <zhoufeng.zf@bytedan=
+ce.com>
+> >> wrote:
+> >>>
+> >> <...>
+> >>> ---
+> >>>   kernel/bpf/helpers.c | 20 ++++++++++++++++++++
+> >>>   1 file changed, 20 insertions(+)
+> >>>
+> >>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >>> index bb6b4637ebf2..453cbd312366 100644
+> >>> --- a/kernel/bpf/helpers.c
+> >>> +++ b/kernel/bpf/helpers.c
+> >>> @@ -2149,6 +2149,25 @@ __bpf_kfunc struct cgroup
+> >>> *bpf_cgroup_from_id(u64 cgid)
+> >>>                  return NULL;
+> >>>          return cgrp;
+> >>>   }
+> >>> +
+> >>> +/**
+> >>> + * bpf_task_under_cgroup - wrap task_under_cgroup_hierarchy() as a
+> >>> kfunc, test
+> >>> + * task's membership of cgroup ancestry.
+> >>> + * @task: the task to be tested
+> >>> + * @ancestor: possible ancestor of @task's cgroup
+> >>> + *
+> >>> + * Tests whether @task's default cgroup hierarchy is a descendant of
+> >>> @ancestor.
+> >>> + * It follows all the same rules as cgroup_is_descendant, and only
+> >>> applies
+> >>> + * to the default hierarchy.
+> >>> + */
+> >>> +__bpf_kfunc long bpf_task_under_cgroup(struct task_struct *task,
+> >>> +                                      struct cgroup *ancestor)
+> >>> +{
+> >>> +       if (unlikely(!ancestor || !task))
+> >>> +               return -EINVAL;
+> >>> +
+> >>> +       return task_under_cgroup_hierarchy(task, ancestor);
+> >>> +}
+> >>>   #endif /* CONFIG_CGROUPS */
+> >>>
+> >>
+> >> I wonder in what situation a null 'task' or 'ancestor' can be passed.
+> >> Please call out in the comment that the returned value can be a
+> >> negative error, so that writing if(bpf_task_under_cgroup()) may cause
+> >> surprising results.
+> >>
+> >> Hao
+> >
+> > Hmm, you are right. As kfunc, the NULL value of the parameter is judged=
+,
+> > and bpf verify will prompt the developer to add it. There is really no
+> > need to add this part of the judgment. See other people's opinions.
 >
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  kernel/bpf/cgroup.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
+> Thanks for pointing out Hou.
 >
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index a06e118a9be5..c9d4b66e2c15 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1022,10 +1022,10 @@ static int __cgroup_bpf_query(struct cgroup *cgrp=
-, const union bpf_attr *attr,
->         __u32 __user *prog_attach_flags =3D u64_to_user_ptr(attr->query.p=
-rog_attach_flags);
->         bool effective_query =3D attr->query.query_flags & BPF_F_QUERY_EF=
-FECTIVE;
->         __u32 __user *prog_ids =3D u64_to_user_ptr(attr->query.prog_ids);
-> +       struct bpf_prog_array *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
->         enum bpf_attach_type type =3D attr->query.attach_type;
->         enum cgroup_bpf_attach_type from_atype, to_atype;
->         enum cgroup_bpf_attach_type atype;
-> -       struct bpf_prog_array *effective;
->         int cnt, ret =3D 0, i;
->         int total_cnt =3D 0;
->         u32 flags;
-> @@ -1051,9 +1051,9 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
-const union bpf_attr *attr,
+> Currently, bpf_task_under_cgroup() is marked as KF_RCU.
 >
->         for (atype =3D from_atype; atype <=3D to_atype; atype++) {
->                 if (effective_query) {
-> -                       effective =3D rcu_dereference_protected(cgrp->bpf=
-.effective[atype],
-> -                                                             lockdep_is_=
-held(&cgroup_mutex));
-> -                       total_cnt +=3D bpf_prog_array_length(effective);
-> +                       effective[atype] =3D rcu_dereference_protected(cg=
-rp->bpf.effective[atype],
-> +                                                                    lock=
-dep_is_held(&cgroup_mutex));
-> +                       total_cnt +=3D bpf_prog_array_length(effective[at=
-ype]);
->                 } else {
->                         total_cnt +=3D prog_list_length(&cgrp->bpf.progs[=
-atype]);
->                 }
-> @@ -1076,10 +1076,8 @@ static int __cgroup_bpf_query(struct cgroup *cgrp,=
- const union bpf_attr *attr,
+> Per documentation:
+> 2.4.7 KF_RCU flag
+> -----------------
 >
->         for (atype =3D from_atype; atype <=3D to_atype && total_cnt; atyp=
-e++) {
->                 if (effective_query) {
-> -                       effective =3D rcu_dereference_protected(cgrp->bpf=
-.effective[atype],
-> -                                                             lockdep_is_=
-held(&cgroup_mutex));
-> -                       cnt =3D min_t(int, bpf_prog_array_length(effectiv=
-e), total_cnt);
-> -                       ret =3D bpf_prog_array_copy_to_user(effective, pr=
-og_ids, cnt);
-> +                       cnt =3D min_t(int, bpf_prog_array_length(effectiv=
-e[atype]), total_cnt);
-> +                       ret =3D bpf_prog_array_copy_to_user(effective[aty=
-pe], prog_ids, cnt);
->                 } else {
->                         struct hlist_head *progs;
->                         struct bpf_prog_list *pl;
-> @@ -1118,11 +1116,23 @@ static int __cgroup_bpf_query(struct cgroup *cgrp=
-, const union bpf_attr *attr,
->  static int cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *a=
-ttr,
->                             union bpf_attr __user *uattr)
->  {
-> +       __u32 __user *prog_attach_flags =3D u64_to_user_ptr(attr->query.p=
-rog_attach_flags);
-> +       bool effective_query =3D attr->query.query_flags & BPF_F_QUERY_EF=
-FECTIVE;
-> +       bool need_mutex =3D false;
+> The KF_RCU flag is a weaker version of KF_TRUSTED_ARGS. The kfuncs
+> marked with
+> KF_RCU expect either PTR_TRUSTED or MEM_RCU arguments. The verifier
+> guarantees
+> that the objects are valid and there is no use-after-free. The pointers
+> are not
+> NULL, but the object's refcount could have reached zero. The kfuncs need =
+to
+> consider doing refcnt !=3D 0 check, especially when returning a KF_ACQUIR=
+E
+> pointer. Note as well that a KF_ACQUIRE kfunc that is KF_RCU should very
+> likely
+> also be KF_RET_NULL.
+>
+>
+> The pointer cannot be NULL, so the following line of code can be removed:
+>  >>> +       if (unlikely(!ancestor || !task))
+>  >>> +               return -EINVAL;
 
-Oops, this has to be true, but you get the idea...
+Right. With KF_RCU the verifier guarantees !=3D NULL.
+Let's get rid of this check.
+This will make the return value clean.
 
->         int ret;
->
-> -       mutex_lock(&cgroup_mutex);
-> +       if (effective_query && !prog_attach_flags)
-> +               need_mutex =3D false;
-> +
-> +       if (need_mutex)
-> +               mutex_lock(&cgroup_mutex);
-> +       else
-> +               rcu_read_lock();
->         ret =3D __cgroup_bpf_query(cgrp, attr, uattr);
-> -       mutex_unlock(&cgroup_mutex);
-> +       if (need_mutex)
-> +               mutex_unlock(&cgroup_mutex);
-> +       else
-> +               rcu_read_unlock();
->         return ret;
->  }
->
-> --
-> 2.40.1.521.gf1e218fcd8-goog
->
+> I think we do not need to check refcnt !=3D 0 case since ancestor and
+> task won't go away.
+
+correct.
+
+> In the example of second patch, both arguments are TRUSTED arguments
+> which is stronger than RCU, so the test itself is okay.
+> I am considering whether we should enforce arguments of the kfunc
+> to be KF_TRUSTED_ARGS, but I think esp. in some cases, cgroup
+> might be RCU protected e.g., task->cgroup->dfl_cgrp. So leaving argument
+> requirement as KF_RCU should be better.
+
++1
 
