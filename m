@@ -1,214 +1,200 @@
-Return-Path: <bpf+bounces-135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5267C6F88E3
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:47:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591326F88E4
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:47:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6012D1C21967
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 18:47:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0DC92810BF
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 18:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CD9C8DE;
-	Fri,  5 May 2023 18:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C62C8DB;
+	Fri,  5 May 2023 18:47:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB9DBE62;
-	Fri,  5 May 2023 18:47:17 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4A1203E0;
-	Fri,  5 May 2023 11:47:14 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 345FPZvM031290;
-	Fri, 5 May 2023 11:46:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=/o7cToMRRMI5NBtSdDxyU+f3+bHXmIuyysgWD/DyY0U=;
- b=Ms2kfr1xGtiWoIzcq0yoqJBQ5x28MazlYx6xVyvTloUsvWFWN4z2fDjokbkugrKIaaTb
- qJ8GMMKX8e0bYTXd+U7CxXstQu7RzLDZOhGyx0iiLYOaEqMHuJWTebojD3uju1a4yd2i
- JNVTBJDEn683/9uneWKKzng+evdOh4GWT4H54pHT4hwNMgegeKYlkpiuis0MJzlFq9Fq
- 5YivvifMjroTCTGk96fCeiSit+oRaJPae0OT3DQ1sTtxbc5MdO9fPrN3k/f0Uq7Isl/B
- DzQw0DLE3B54dXGGAEwsND9UM8maTvq08WWBwqv93JDpuqFyL0Ud6dUIVKn/qzcEtDUC 7w== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qd4e1sd5n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 May 2023 11:46:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XkV3VQyzEvMrSljKWBJiSOhIeUmroYh1p3Mm5nsP1h3eSd0kSCI3vAd7G9fKvwNvnDhOnhYi4Cg3C7mJpt3CeUc+a8Tq+4mCm7053mWqg4Xlh2nAJ2mv+VL4eTPEAOq9vIpm1LWdssgC7rIRZSTIK1tkVPipu+0v0LtZx0veGC4/DVfRr9aOFruGqYqn1dWTqpGxB7V3TDsJGaLTM64aVE3h5dQiEXYNqoEUAreevs2KSBLTWFZ83wgpxhmZWbvM9jBEvlmKWouJXlONZIpL+h4xVUetC2ERrNfbUL5sijltoaag39Rbc8nmlidH5UUrfHXX0wHZU4KfK2Cih2XzWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/o7cToMRRMI5NBtSdDxyU+f3+bHXmIuyysgWD/DyY0U=;
- b=af9F5W74PNCj0NtX5bCoOlb8O+c41qfzaErW+RBoF8MojgWQYtk4NR3NzKxqUj7MHMQ172l+nTzUBbv3kREY/d2TBmaEbxxVQISco9kFWsHvW6Gvq41/PNWCCgK72qJs21lEGhIVj2FRUDeuLAPsKr29qMpFLgdxQDk4gzta1+I1dEc6W15eKFHwB3y5TRFEtFXhSTzeIGwT6nV6sr6c54kkSBX0BitTO4VOSwH1kVlEK+sN1LGqGDZggFgjEJt+PxIfcZYUXyl405csm7G4ViV52mhUUylngnGpf6PwTsPbTq+5nGtpydCxEjYZNnpq8jg6EzOdRKgtHzKFt+XtDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by IA1PR15MB6339.namprd15.prod.outlook.com (2603:10b6:208:444::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.27; Fri, 5 May
- 2023 18:46:38 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6363.027; Fri, 5 May 2023
- 18:46:38 +0000
-Message-ID: <d5de53ef-3303-29c0-a4ae-4bede3ef315a@meta.com>
-Date: Fri, 5 May 2023 11:46:34 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.1
-Subject: Re: [PATCH bpf-next v6 2/2] selftests/bpf: Add testcase for
- bpf_task_under_cgroup
-Content-Language: en-US
-To: Feng Zhou <zhoufeng.zf@bytedance.com>, Hao Luo <haoluo@google.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        yangzhenze@bytedance.com, wangdongdong.6@bytedance.com
-References: <20230505060818.60037-1-zhoufeng.zf@bytedance.com>
- <20230505060818.60037-3-zhoufeng.zf@bytedance.com>
- <CA+khW7hZb6EJcoXUzkvrHKztsQ_J4cN+RRQjF-a73A8zE8S_NA@mail.gmail.com>
- <194f1ac1-6bb0-e3fc-5394-ad5cb95721d0@bytedance.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <194f1ac1-6bb0-e3fc-5394-ad5cb95721d0@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR05CA0018.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC76C12D
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 18:47:42 +0000 (UTC)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FF4203E8
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 11:47:37 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-24e25e2808fso1963972a91.0
+        for <bpf@vger.kernel.org>; Fri, 05 May 2023 11:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683312456; x=1685904456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TciyR7juwxjGC/htL5PTfWm5OISl0NVnck7a0zAsIT8=;
+        b=0au1gkuGwAJUg/tFBIBbtgpI/2w8fXyRq/IZfcvHcv3t5mainJ/o+2Ls5QSbPNVtnb
+         m1qwEgn+rxiiY05aqLnTwqW8fOYU6TJhzaHBZEQnyE/NNFwhqNj/vhvAYTGDhB6Jcoex
+         1swU/ubSe2duWN130679KV+fPoFQnnXdLkYcr96Yukurp5viCl2A8gUDwrOD3bGVALvL
+         vNb1eGOTLmrHy6HDFZrzrTTN0iJUBwJuaIV3phJI4xoRbSIYsTOCuCZqHXyzjy/qyeBN
+         JaaK/oBGJ0tkpSQpsTdyfvTEqSHGMeAkKbDDQMrAuQFdTcS39dRiMvNau9oQtGeftU2a
+         Zw2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683312456; x=1685904456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TciyR7juwxjGC/htL5PTfWm5OISl0NVnck7a0zAsIT8=;
+        b=EtuCrwcaLOgVPz7SoL6/ZSVtP2mWgrboix6UcFzabF3vEz5bXH5JoGvq5r2Wx+U2MC
+         v05RFAw3n6tozL1MpU81LOUmTXXVSj5cYt6+yLM1osFRFhTKg5YH7pquYDVui2X6ZvZu
+         cb4fcINJJ8BImkXy7Voi9PKk9Wa6UTCqrACCW/VV7o1+eRGArkK9fpYUjj84ct1fuNoz
+         BgqUpTkeK1cpEwdBfBnynK0a/pDPbiKLWn52NSzsfyYi71TFHUj5jdUWUbmx1lyfPD1w
+         1s4nxNCnfe7e7O6yOZl219PGpnwi0kEmxX9MdZyPDK1oTLOHUxEYYQf/WI/TxEEwLOLU
+         XQ8A==
+X-Gm-Message-State: AC+VfDwHX58JxYQnncjdoeiM8ctOeLkmSuwxlomphTQHSmUmCcnvAFyA
+	RZ8Bbj0Xb5HCn1gXjt5yjynVe/xbhCtp/q0gED32T+7JQgWKXMPcl2nVhQ==
+X-Google-Smtp-Source: ACHHUZ7utIEcreENdSHaPbswG1gMpKqIUsm9lXXlGNnABKtKUqsfqXaIVW9WLaQuBkj67XrDx03Tc9wO65d1ohlSANA=
+X-Received: by 2002:a17:90b:3807:b0:24d:d7fd:86c3 with SMTP id
+ mq7-20020a17090b380700b0024dd7fd86c3mr2307511pjb.16.1683312456482; Fri, 05
+ May 2023 11:47:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|IA1PR15MB6339:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38e5f31f-157d-49fc-e092-08db4d990eda
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	N9sRDQ32pnoNeYdWkhVm/FruIqPW9be9TsHvt+hJPDQ6ZZtrU4nW6//esPcuK1UZzwunL+MYDMguNj53/RXeSYJ1rzIqvWrhDra7/lk+6voDz73sV/ZqCkfHObtyBqVbdecR0YWQNjZJDsoJ5sZOkSLAf0rroSQuwLVDsE9u57LZQ1hZocPD4ob/PJeN7axaLHu/rFWBZP5To34GLH2tAoS/zIUhQf+2HwKsdLR4foTa49FbDDrQxycRCd5Mbug884lSkjo6DUJugdfqjpGd2IAlx4jAJHRbc8RyI/geBL3EognRE1jEL145vloZ2m31JjA1AA5nx2qT0odp/+JuIjY0Qo2ykWX1Z0jAOqSgJxsouaAq61KZXh2cz8Vl9Mpyf25q9B21H4acAhXtITVTVpEyXkOg4Tas2pp6CPYON6C5VexnO22RDi9TsuAMKYCDA0VidhWIGf8S+M92ua9goM0oWk0SDPAlNo0LbKozSZZCuI1846TAvc3QtucX1yahLNIEZxDdrtVzqLHppUaqgoGv3T8PnbexjzTUwu40Tdau9mWqd2UFSuwIHhJRM8nNMm4gN/aYyjq5/PaI48fGD10m9ZCI7K7RYQ+/vbQcpggpFnIrEah+6xe1rxmRx0CtSv56i33nEFNmI1ovOu+Zyw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(451199021)(36756003)(6666004)(31696002)(86362001)(478600001)(110136005)(316002)(66946007)(66556008)(66476007)(4326008)(6486002)(7416002)(8676002)(8936002)(5660300002)(2906002)(41300700001)(186003)(38100700002)(2616005)(6506007)(53546011)(6512007)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?dUNURW5wWUFuaHRmOCtnQU8xcVJBZ293NTlWUnR4ajlVZ3Q1NXNRTmc2VERW?=
- =?utf-8?B?OHR6YUNJNWJaQVkyelU4Z0ZVdkl4ZnIvM29lTVR0eUNZeCtlYjJLUmtKcmhS?=
- =?utf-8?B?REgrNW14ZHU3T1d1Ry9DWmlEZFI3VjFYdEdaZWJpNUtBeEYzMHZ1OXQ3YlU1?=
- =?utf-8?B?bzZjMFBLcUNTdkFIZFJJR1dDN25CcUJ1SUFaTUlGcWZDOXE2cmVOV3FFVk9L?=
- =?utf-8?B?d2gxM3J0bitpYU1pakhORGIxRTV5am4yM1dGYmtmRkgvcEQrUk9oR2xPSGg3?=
- =?utf-8?B?Vi9zalJ3OWEvOHZSOGNqRVBscU44WXNYM1F4THhyakxFR2lLMkpVNHpRcDBX?=
- =?utf-8?B?SlJFYkk4M3ppekFya0ZESUFMUW9xaE41OXZVeEhscVhGekVaWmFLZStHd0Uv?=
- =?utf-8?B?QUxSbXo3WmhvWkRySlIvMStvOVFjeCtSOS9vWm8va2RmaUlzSjVNamV5WTJR?=
- =?utf-8?B?WXNhSG9rZVpYVUI5MDhXWHF4QVByOU5DaGk4eHpPSmMvN0ZjMkJqZyt5Qngr?=
- =?utf-8?B?VThtQm5IWVdQR1AyRnVIM1p6SDZvYktqeVJuQmg3MThvY1lIUWd0NkFoV05h?=
- =?utf-8?B?M3plMGRtM2Rwbm9wOEdkcTc4MExZQUFsR2k5ZWQ4dmVDRDJUQVZ1T1NZS2t0?=
- =?utf-8?B?dElWUkFjNTlucUZtQnRxZU56dGpQblM4VDRpQUdJQzd4bEpFS2h0bktkcU9Z?=
- =?utf-8?B?SXBaUXFHaWNqSGZmemZ2YTN6M3o3QXBhQzBNdGN6VGtYWmxHU3ZwS0Npcld2?=
- =?utf-8?B?RjF3ZWF6OTBjZmVnWHJOenBSanUvdkdQeDBhSzN4SHdUUmZZMVI0bVRNb3hz?=
- =?utf-8?B?a3JLN09BU1grK1VtUHMvcFpRR2V4S2xwbnNsNktoKzZON0Rma1BHOVIyem83?=
- =?utf-8?B?bTZXUHNPeHdQZWtKVXhvOStNVG5LR283QXlIMGJQZk1GblNxZVdjMUpJNXdq?=
- =?utf-8?B?eWhZMkc3dXZZQUNpeGRRdkV1KzlqdGVuYjNqSkNkaWNtUjArM3d1Vy9yQVE5?=
- =?utf-8?B?bjBIWVFScW9wTjEvc3diSFVKSXJ5alpHaHRXSFltckIwRjl0LzR5U2NwOFo3?=
- =?utf-8?B?N2tFaU8vNm5kU3pLMmNBa053dHRDYVRmTy9jbElPT01Ya2ZQaTBkc1R3L0Yy?=
- =?utf-8?B?QjZteHN5cUlvaFpMbVFLNDdIdlg0RjhVT21xb0RzWUQ2UXlWOWltRGl4Lzkr?=
- =?utf-8?B?bzJnYXdrUzR5OUdrWi80VS9aem1HNDhsWVhZZTZFL2oyT3YwbDBWTmJlZDZv?=
- =?utf-8?B?M0ZiNnpBYk1QbXdmTWRTNWN3VmxwZ0NCa05mWDVGc2NsRUZZbDYwdVhvNmVs?=
- =?utf-8?B?ZE9vUG1va1pTaXhFQm9IeUFiNWVoTEx4TllrMzJwMk5Jejc1bTBXR3YyTzVo?=
- =?utf-8?B?aE5jZFNydDNqK05jV3VsNzUzYkttOUQwUTAvVXhZQWJEbUNVL0t5NnlLY2N1?=
- =?utf-8?B?S2xTNDVQWTRLalZxZHVHQzRyTmx1RzU0ZkZTa0NGTVFxWDVjUmpFOEthdk9w?=
- =?utf-8?B?TXFDNDhkNFc1TE9NS042VUwvZ0RLQy83NEdJakYxMUNmRzN6Y0w4SEw4enZD?=
- =?utf-8?B?akhybEsvMDF0SnVETHZZY05nNFhRY2xneUlmb1RQYTRMUFhpM0FmZ0VXUnFB?=
- =?utf-8?B?SUp5UXpxN2hyUEpJTXZ2QTFuby9jMTFCYnZPS1FHN3NHaXdyVWdNMEFUcFJP?=
- =?utf-8?B?eE92S3Fyc292M3F5djZMcGhhY0JYVEYwcVFCVzNpc3JvUHpQWXZGc2NLQlE1?=
- =?utf-8?B?ZXFCL2M1c08wZk9aaDhmL1lDWWV4VGk2SjhtckVEbEJwdGJHc3p1bHMveVo5?=
- =?utf-8?B?aFRYZCtQd2pqNkhRTDlyc3c0K0g5dTM4MDI1VFh4MnZNNWdrbisxYlZka2Yv?=
- =?utf-8?B?d2N5d001RFF2enZVK2d0RWhua3ovb3phS3pPdlF4ekY1RC9ZM0JqTS9LWUQy?=
- =?utf-8?B?TzhlREN3Zi94aGRSdExVOUhDaW9tQUI4VnBRTWZXQkVlWFhhbzF5Z2NhdW9n?=
- =?utf-8?B?UTZmb3kzemxCeUJaRGVPckUyNlNMbFRRenZxM1REMWZ1T1R4VXdPMXJyV3RW?=
- =?utf-8?B?SVRIVlFIa29Ia0wyN3R2WHFsRHFVVnZkeFNDd2VSdTliVnRDbVBMWTFWeWYy?=
- =?utf-8?B?OWt5QzdUbDUvbURhNVdOcTA2Mk1NY0hxaUN1eVNjU0dTbzR0QW1yVnZtVWhq?=
- =?utf-8?B?b3c9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38e5f31f-157d-49fc-e092-08db4d990eda
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2023 18:46:37.9841
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 98ytFXq9vwQuZ2E83DFsoVmfgJfCB5bKAbNuhJUdYaIIbI/zx9Zoe10O8kwUGn01
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR15MB6339
-X-Proofpoint-GUID: nizAYi9s0j80rRR0mxq-aefHgJwgOnUk
-X-Proofpoint-ORIG-GUID: nizAYi9s0j80rRR0mxq-aefHgJwgOnUk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-05_25,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230505184550.1386802-1-sdf@google.com>
+In-Reply-To: <20230505184550.1386802-1-sdf@google.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Fri, 5 May 2023 11:47:25 -0700
+Message-ID: <CAKH8qBuDzThzDcN6WwyLmD75LSv0zrd-ZiwDMwVmJiQ82DxepQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] RFC: bpf: query effective progs without cgroup_mutex
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Fri, May 5, 2023 at 11:45=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
+ wrote:
+>
+> We're observing some stalls on the heavily loaded machines
+> in the cgroup_bpf_prog_query path. This is likely due to
+> being blocked on cgroup_mutex.
+>
+> IIUC, the cgroup_mutex is there mostly to protect the non-effective
+> fields (cgrp->bpf.progs) which might be changed by the update path.
+> For the BPF_F_QUERY_EFFECTIVE case, all we need is to rcu_dereference
+> a bunch of pointers (and keep them around for consistency), so
+> let's do it.
+>
+> Sending out as an RFC because it looks a bit ugly. It would also
+> be nice to handle non-effective case locklessly as well, but it
+> might require a larger rework.
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  kernel/bpf/cgroup.c | 30 ++++++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index a06e118a9be5..c9d4b66e2c15 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1022,10 +1022,10 @@ static int __cgroup_bpf_query(struct cgroup *cgrp=
+, const union bpf_attr *attr,
+>         __u32 __user *prog_attach_flags =3D u64_to_user_ptr(attr->query.p=
+rog_attach_flags);
+>         bool effective_query =3D attr->query.query_flags & BPF_F_QUERY_EF=
+FECTIVE;
+>         __u32 __user *prog_ids =3D u64_to_user_ptr(attr->query.prog_ids);
+> +       struct bpf_prog_array *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
+>         enum bpf_attach_type type =3D attr->query.attach_type;
+>         enum cgroup_bpf_attach_type from_atype, to_atype;
+>         enum cgroup_bpf_attach_type atype;
+> -       struct bpf_prog_array *effective;
+>         int cnt, ret =3D 0, i;
+>         int total_cnt =3D 0;
+>         u32 flags;
+> @@ -1051,9 +1051,9 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
+const union bpf_attr *attr,
+>
+>         for (atype =3D from_atype; atype <=3D to_atype; atype++) {
+>                 if (effective_query) {
+> -                       effective =3D rcu_dereference_protected(cgrp->bpf=
+.effective[atype],
+> -                                                             lockdep_is_=
+held(&cgroup_mutex));
+> -                       total_cnt +=3D bpf_prog_array_length(effective);
+> +                       effective[atype] =3D rcu_dereference_protected(cg=
+rp->bpf.effective[atype],
+> +                                                                    lock=
+dep_is_held(&cgroup_mutex));
+> +                       total_cnt +=3D bpf_prog_array_length(effective[at=
+ype]);
+>                 } else {
+>                         total_cnt +=3D prog_list_length(&cgrp->bpf.progs[=
+atype]);
+>                 }
+> @@ -1076,10 +1076,8 @@ static int __cgroup_bpf_query(struct cgroup *cgrp,=
+ const union bpf_attr *attr,
+>
+>         for (atype =3D from_atype; atype <=3D to_atype && total_cnt; atyp=
+e++) {
+>                 if (effective_query) {
+> -                       effective =3D rcu_dereference_protected(cgrp->bpf=
+.effective[atype],
+> -                                                             lockdep_is_=
+held(&cgroup_mutex));
+> -                       cnt =3D min_t(int, bpf_prog_array_length(effectiv=
+e), total_cnt);
+> -                       ret =3D bpf_prog_array_copy_to_user(effective, pr=
+og_ids, cnt);
+> +                       cnt =3D min_t(int, bpf_prog_array_length(effectiv=
+e[atype]), total_cnt);
+> +                       ret =3D bpf_prog_array_copy_to_user(effective[aty=
+pe], prog_ids, cnt);
+>                 } else {
+>                         struct hlist_head *progs;
+>                         struct bpf_prog_list *pl;
+> @@ -1118,11 +1116,23 @@ static int __cgroup_bpf_query(struct cgroup *cgrp=
+, const union bpf_attr *attr,
+>  static int cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *a=
+ttr,
+>                             union bpf_attr __user *uattr)
+>  {
+> +       __u32 __user *prog_attach_flags =3D u64_to_user_ptr(attr->query.p=
+rog_attach_flags);
+> +       bool effective_query =3D attr->query.query_flags & BPF_F_QUERY_EF=
+FECTIVE;
+> +       bool need_mutex =3D false;
 
+Oops, this has to be true, but you get the idea...
 
-On 5/5/23 12:24 AM, Feng Zhou wrote:
-> 在 2023/5/5 15:13, Hao Luo 写道:
->> On Thu, May 4, 2023 at 11:08 PM Feng zhou <zhoufeng.zf@bytedance.com> 
->> wrote:
->>>
->>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>
->>> test_progs:
->>> Tests new kfunc bpf_task_under_cgroup().
->>>
->>> The bpf program saves the new task's pid within a given cgroup to
->>> the remote_pid, which is convenient for the user-mode program to
->>> verify the test correctness.
->>>
->>> The user-mode program creates its own mount namespace, and mounts the
->>> cgroupsv2 hierarchy in there, call the fork syscall, then check if
->>> remote_pid and local_pid are unequal.
->>>
->>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>> Acked-by: Yonghong Song <yhs@fb.com>
->>> ---
->>
->> Hi Feng,
->>
->> I have a comment about the methodology of the test, but the patch
->> looks ok to me. Why do we have to test via a tracing program? I think
->> what we need is just a task and a cgroup. Since we have the kfunc
->> bpf_task_from_pid() and bpf_cgroup_from_id(), we can write a syscall
->> program which takes a pid and a cgroup id as input and get the task
->> and cgroup objects directly in the program.
->>
->> I like testing via a syscall program because it doesn't depend on the
->> newtask tracepoint and it should be simpler. But I'm ok with the
->> current version of the patch, just have some thoughts.
->>
->> Hao
-> 
-> Yes, your method is also very good. The reason why I did this is because 
-> of Song's suggestion before, hope that the parameter of the hook point 
-> will have a task, so I chose this to test.
-
-The motivation of this patch is:
-   Trace sched related functions, such as enqueue_task_fair, it is 
-necessary to
-   specify a task instead of the current task which within a given cgroup.
-
-So I think it is okay to have a test related to sched.
+>         int ret;
+>
+> -       mutex_lock(&cgroup_mutex);
+> +       if (effective_query && !prog_attach_flags)
+> +               need_mutex =3D false;
+> +
+> +       if (need_mutex)
+> +               mutex_lock(&cgroup_mutex);
+> +       else
+> +               rcu_read_lock();
+>         ret =3D __cgroup_bpf_query(cgrp, attr, uattr);
+> -       mutex_unlock(&cgroup_mutex);
+> +       if (need_mutex)
+> +               mutex_unlock(&cgroup_mutex);
+> +       else
+> +               rcu_read_unlock();
+>         return ret;
+>  }
+>
+> --
+> 2.40.1.521.gf1e218fcd8-goog
+>
 
