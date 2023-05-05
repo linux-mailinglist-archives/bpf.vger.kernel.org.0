@@ -1,146 +1,338 @@
-Return-Path: <bpf+bounces-147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B834B6F8A61
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 22:49:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6056F8A91
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 23:13:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DC3E1C219F9
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:49:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14CB0281093
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 21:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A43D2F5;
-	Fri,  5 May 2023 20:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF8CD304;
+	Fri,  5 May 2023 21:12:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45B42F33
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 20:49:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39750C433EF;
-	Fri,  5 May 2023 20:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683319778;
-	bh=W59TR9E32Yah1dFs08dbWyLipmFb+psLrDFRxEQpgnE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VNMabUPhKyNss7GFEOqyfB6OMpKzdhW+nMaDUdTpEHltfzlk5hxr3llxJ/OfnmpOI
-	 ExgTNLC+SUY3gwxiXTJGCSGUHdjHcsRhsAaJ5dF9b5TmQwa1H9OYD1BKk8r2w2kGap
-	 T49SSvrJGIIoh1kokytEQ0IxTaOteXBy9oIXohVlslQKYNrdUngNOLKR5uzoxqz9c8
-	 BB6XGatN21KTLCr5v7WHgglG0OYwmKHHyR2y0pZAkQf55s37MLzK1zHBXsBdYSn5SI
-	 2yuizHDwQg0OyUhil5LU2WMBRtI+yZSZ7FKxRVXHUvx8UnGlrBeuhIhUl64a//ZLUG
-	 y+j65SzycWntg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id B04B6403B5; Fri,  5 May 2023 17:49:35 -0300 (-03)
-Date: Fri, 5 May 2023 17:49:35 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Clark Williams <williams@redhat.com>,
-	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F22AC2E4;
+	Fri,  5 May 2023 21:12:52 +0000 (UTC)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8A6525D;
+	Fri,  5 May 2023 14:12:49 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-2fe3fb8e25fso1560913f8f.0;
+        Fri, 05 May 2023 14:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683321168; x=1685913168;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ivGNSditmdzeyn97THXeuK5ctfSInTGF99RwYTHxIyU=;
+        b=Se4RPOYgOfoiULFR7wuPRZx0PsUzRm5UV2nhzweK+31TUkjUE6hKIdXlZgE09l+KRu
+         lRwdl2KESe9bIc7ePbVexlK589ChfPZjGVTj6cw9jl2YhiUNWUWigagPt2ir8DoQefZD
+         T+j1ZcJzgqjcHyyPs/nRMUHX+VNVayUJHgnywRuBRa+NpWNWtksGrDjfcUOR+7zXYEeK
+         0A7cuMoIOjMgMsgPWidsQ6IMbMhgdb2YllCI0JNK1bU+uvsVJJKjtrmp2sImuntq/wMT
+         HAZExBVApKK+sE7XsIFEHYMN+XbHQ1Ctx0rwgWlpooKzIDjA9Ox1W0DLx6oz4zcqQMLi
+         uPXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683321168; x=1685913168;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ivGNSditmdzeyn97THXeuK5ctfSInTGF99RwYTHxIyU=;
+        b=Es6DK2AepcOx/ib44iqCJVZ8pCHpAJ8TfPDEbC2FsfKfh5ILJUKgkclL7uvp9lC22U
+         x3S1dL2Pcne6HOGk8eVgKwINCU+qszKoE+mPmoA6uvqw+w8fgDuwBlgHZhJjg864mX16
+         mj2NFA/1kv6tfLHvEqXPtekiMdPfEOGl8Ft3xbNW5n6FXpn0Gi6HNHltmutplLDB7NT0
+         vRgx9T92uLivT+bQ5kiFAzwPifnjxU6kEZ5NHT6BUhexUTnZ8HStH/K1ZUXOHw2evvjg
+         Jqbgq/2bCk/XNVjF8Fql+aXny9MDCY55L2J+pY8hyFZYEGuumAOKeMd+gaG+o9zTZiR8
+         6GnQ==
+X-Gm-Message-State: AC+VfDzR7sK4kHGORvkD+7J1Is911yxTLVzjwr6Ao09kVEa5TIA+5UzW
+	jV9DTWFJB3Js0u9EXJVIJLw=
+X-Google-Smtp-Source: ACHHUZ4PoDkiooUQXPtEqVD0dJPVF0uY7rTGd+8/bIp0RwQ/+pfrOoEqfDcAJezNAwrh0MAE+evlug==
+X-Received: by 2002:adf:e987:0:b0:306:64b7:5413 with SMTP id h7-20020adfe987000000b0030664b75413mr2160113wrm.71.1683321167903;
+        Fri, 05 May 2023 14:12:47 -0700 (PDT)
+Received: from localhost (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
+        by smtp.gmail.com with ESMTPSA id l8-20020a5d4bc8000000b0030631f199f9sm3354382wrt.34.2023.05.05.14.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 May 2023 14:12:46 -0700 (PDT)
+Date: Fri, 5 May 2023 22:12:45 +0100
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Christian Benvenuti <benve@cisco.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	Changbin Du <changbin.du@huawei.com>, Hao Luo <haoluo@google.com>,
-	James Clark <james.clark@arm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Roman Lozko <lozko.roma@gmail.com>,
-	Stephane Eranian <eranian@google.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Mark Rutland <mark.rutland@arm.com>, Paul Clarke <pc@us.ibm.com>
-Subject: Re: [PATCH RFC/RFT] perf bpf skels: Stop using vmlinux.h generated
- from BTF, use subset of used structs + CO-RE. was Re: BPF skels in perf .Re:
- [GIT PULL] perf tools changes for v6.4
-Message-ID: <ZFVr38MZLGpBFaUg@kernel.org>
-References: <CAEf4BzaUU9vZU6R_020ru5ct0wh-p1M3ZFet-vYqcHvb9bW1Cw@mail.gmail.com>
- <ZFQCccsx6GK+gY0j@kernel.org>
- <ZFQoQjCNtyMIulp+@kernel.org>
- <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
- <ZFQ5sjjtfEYzvHNP@krava>
- <ZFUFmxDU/6Z/JEsi@kernel.org>
- <ZFU1PJrn8YtHIqno@kernel.org>
- <CAP-5=fWfmmMCRnEmzj_CXTKacp6gjrzmR49Ge_C5XRyfTegRjg@mail.gmail.com>
- <ZFVqeKLssg7uzxzI@krava>
- <CAP-5=fVgJdBvjV8S2xKswAFiSZvyCcUvZTO1bsLyUf-wQ0pBuw@mail.gmail.com>
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Oleg Nesterov <oleg@redhat.com>, Jason Gunthorpe <jgg@nvidia.com>,
+	John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Mika Penttila <mpenttil@redhat.com>,
+	Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+	Peter Xu <peterx@redhat.com>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>
+Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
+ mappings by default
+Message-ID: <69c4a74f-18bc-4efe-89ac-a7ddf8f8d0a1@lucifer.local>
+References: <cover.1683235180.git.lstoakes@gmail.com>
+ <6e96358e-bcb5-cc36-18c3-ec5153867b9a@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVgJdBvjV8S2xKswAFiSZvyCcUvZTO1bsLyUf-wQ0pBuw@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
+In-Reply-To: <6e96358e-bcb5-cc36-18c3-ec5153867b9a@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Em Fri, May 05, 2023 at 01:46:30PM -0700, Ian Rogers escreveu:
-> On Fri, May 5, 2023 at 1:43 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Fri, May 05, 2023 at 10:21:21PM +0200, David Hildenbrand wrote:
+> On 04.05.23 23:27, Lorenzo Stoakes wrote:
+> > Writing to file-backed mappings which require folio dirty tracking using
+> > GUP is a fundamentally broken operation, as kernel write access to GUP
+> > mappings do not adhere to the semantics expected by a file system.
 > >
-> > On Fri, May 05, 2023 at 10:04:47AM -0700, Ian Rogers wrote:
-> > > On Fri, May 5, 2023 at 9:56 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > >
-> > > > Em Fri, May 05, 2023 at 10:33:15AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > > Em Fri, May 05, 2023 at 01:03:14AM +0200, Jiri Olsa escreveu:
-> > > > > That with the preserve_access_index isn't needed, we need just the
-> > > > > fields that we access in the tools, right?
-> > > >
-> > > > I'm now doing build test this in many distro containers, without the two
-> > > > reverts, i.e. BPF skels continue as opt-out as in my pull request, to
-> > > > test build and also for the functionality tests on the tools using such
-> > > > bpf skels, see below, no touching of vmlinux nor BTF data during the
-> > > > build.
-> > > >
-> > > > - Arnaldo
-> > > >
-> > > > From 882adaee50bc27f85374aeb2fbaa5b76bef60d05 Mon Sep 17 00:00:00 2001
-> > > > From: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > > Date: Thu, 4 May 2023 19:03:51 -0300
-> > > > Subject: [PATCH 1/1] perf bpf skels: Stop using vmlinux.h generated from BTF,
-> > > >  use subset of used structs + CO-RE
-> > > >
-> > > > Linus reported a build break due to using a vmlinux without a BTF elf
-> > > > section to generate the vmlinux.h header with bpftool for use in the BPF
-> > > > tools in tools/perf/util/bpf_skel/*.bpf.c.
-> > > >
-> > > > Instead add a vmlinux.h file with the structs needed with the fields the
-> > > > tools need, marking the structs with __attribute__((preserve_access_index)),
-> > > > so that libbpf's CO-RE code can fixup the struct field offsets.
-> > > >
-> > > > In some cases the vmlinux.h file that was being generated by bpftool
-> > > > from the kernel BTF information was not needed at all, just including
-> > > > linux/bpf.h, sometimes linux/perf_event.h was enough as non-UAPI
-> > > > types were not being used.
-> > > >
-> > > > To keep te patch small, include those UAPI headers from the trimmed down
-> > > > vmlinux.h file, that then provides the tools with just the structs and
-> > > > the subset of its fields needed for them.
-> > > >
-> > > > Testing it:
-> > > >
-> > > >   # perf lock contention -b find / > /dev/null
+> > A GUP caller uses the direct mapping to access the folio, which does not
+> > cause write notify to trigger, nor does it enforce that the caller marks
+> > the folio dirty.
 > >
-> > I tested perf lock con -abv -L rcu_state sleep 1
-> > and needed fix below
+> > The problem arises when, after an initial write to the folio, writeback
+> > results in the folio being cleaned and then the caller, via the GUP
+> > interface, writes to the folio again.
 > >
-> > jirka
-> 
-> I thought this was fixed by:
-> https://lore.kernel.org/lkml/20230427234833.1576130-1-namhyung@kernel.org/
-> but I think that is just in perf-tools-next.
+> > As a result of the use of this secondary, direct, mapping to the folio no
+> > write notify will occur, and if the caller does mark the folio dirty, this
+> > will be done so unexpectedly.
+> >
+> > For example, consider the following scenario:-
+> >
+> > 1. A folio is written to via GUP which write-faults the memory, notifying
+> >     the file system and dirtying the folio.
+> > 2. Later, writeback is triggered, resulting in the folio being cleaned and
+> >     the PTE being marked read-only.
+> > 3. The GUP caller writes to the folio, as it is mapped read/write via the
+> >     direct mapping.
+> > 4. The GUP caller, now done with the page, unpins it and sets it dirty
+> >     (though it does not have to).
+> >
+> > This change updates both the PUP FOLL_LONGTERM slow and fast APIs. As
+> > pin_user_pages_fast_only() does not exist, we can rely on a slightly
+> > imperfect whitelisting in the PUP-fast case and fall back to the slow case
+> > should this fail.
+> >
+> >
+>
+> Thanks a lot, this looks pretty good to me!
 
-Nope, we have it in perf-tools:
+Thanks!
 
-commit e53de7b65a3ca59af268c78df2d773f277f717fd
-Author: Namhyung Kim <namhyung@kernel.org>
-Date:   Thu Apr 27 16:48:32 2023 -0700
+>
+> I started writing some selftests (assuming none would be in the works) using
+> iouring and and the gup_tests interface. So far, no real surprises for the general
+> GUP interaction [1].
+>
 
-    perf lock contention: Fix struct rq lock access
+Nice! I was using the cow selftests as just looking for something that
+touches FOLL_LONGTERM with PUP_fast, I hacked it so it always wrote just to
+test patches but clearly we need something more thorough.
+
+>
+> There are two things I noticed when registering an iouring fixed buffer (that differ
+> now from generic gup_test usage):
+>
+>
+> (1) Registering a fixed buffer targeting an unsupported MAP_SHARED FS file now fails with
+>     EFAULT (from pin_user_pages()) instead of EOPNOTSUPP (from io_pin_pages()).
+>
+> The man page for io_uring_register documents:
+>
+>        EOPNOTSUPP
+>               User buffers point to file-backed memory.
+>
+> ... we'd have to do some kind of errno translation in io_pin_pages(). But the
+> translation is not simple (sometimes we want to forward EOPNOTSUPP). That also
+> applies once we remove that special-casing in io_uring code.
+>
+> ... maybe we can simply update the manpage (stating that older kernels returned
+> EOPNOTSUPP) and start returning EFAULT?
+
+Yeah I noticed this discrepancy when going through initial attempts to
+refactor in the vmas patch series, I wonder how important it is to
+differentiate? I have a feeling it probably doesn't matter too much but
+obviously need input from Jens and Pavel.
+
+>
+>
+> (2) Registering a fixed buffer targeting a MAP_PRIVATE FS file fails with EOPNOTSUPP
+>     (from io_pin_pages()). As discussed, there is nothing wrong with pinning all-anon
+>     pages (resulting from breaking COW).
+>
+> That could be easily be handled (allow any !VM_MAYSHARE), and would automatically be
+> handled once removing the iouring special-casing.
+
+The entire intent of this series (for me :)) was to allow io_uring to just
+drop this code altogether so we can unblock my drop the 'vmas' parameter
+from GUP series [1].
+
+I always intended to respin that after this settled down, Jens and Pavel
+seemed onboard with this (and really they shouldn't need to be doing that
+check, that was always a failing in GUP).
+
+I will do a v5 of this soon.
+
+[1]: https://lore.kernel.org/all/cover.1681831798.git.lstoakes@gmail.com/
+
+>
+>
+> [1]
+>
+> # ./pin_longterm
+> # [INFO] detected hugetlb size: 2048 KiB
+> # [INFO] detected hugetlb size: 1048576 KiB
+> TAP version 13
+> 1..50
+> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd
+> ok 1 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+> ok 2 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+> ok 3 Pinning failed as expected
+> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+> ok 4 # SKIP need more free huge pages
+> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+> ok 5 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+> ok 6 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+> ok 7 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+> ok 8 Pinning failed as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+> ok 9 # SKIP need more free huge pages
+> # [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+> ok 10 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd
+> ok 11 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+> ok 12 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+> ok 13 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+> ok 14 # SKIP need more free huge pages
+> # [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+> ok 15 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+> ok 16 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+> ok 17 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+> ok 18 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+> ok 19 # SKIP need more free huge pages
+> # [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+> ok 20 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+> ok 21 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+> ok 22 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+> ok 23 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+> ok 24 # SKIP need more free huge pages
+> # [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+> ok 25 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+> ok 26 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+> ok 27 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+> ok 28 Pinning succeeded as expected
+> # [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+> ok 29 # SKIP need more free huge pages
+> # [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+> ok 30 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+> ok 31 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+> ok 32 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+> ok 33 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+> ok 34 # SKIP need more free huge pages
+> # [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+> ok 35 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+> ok 36 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+> ok 37 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+> ok 38 Pinning succeeded as expected
+> # [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+> ok 39 # SKIP need more free huge pages
+> # [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+> ok 40 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd
+> ok 41 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with tmpfile
+> ok 42 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with local tmpfile
+> ok 43 Pinning failed as expected
+> # [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+> ok 44 # SKIP need more free huge pages
+> # [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+> ok 45 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd
+> ok 46 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with tmpfile
+> ok 47 Pinning succeeded as expected
+> # [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with local tmpfile
+> not ok 48 Pinning failed as expected
+> # [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+> ok 49 # SKIP need more free huge pages
+> # [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+> ok 50 Pinning succeeded as expected
+> Bail out! 1 out of 50 tests failed
+> # Totals: pass:39 fail:1 xfail:0 xpass:0 skip:10 error:0
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
 
