@@ -1,189 +1,136 @@
-Return-Path: <bpf+bounces-82-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-83-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834F96F7BC8
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 06:13:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0B86F7BE7
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 06:33:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D601C215CF
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:13:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3E81C216E1
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5A81C05;
-	Fri,  5 May 2023 04:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D23186F;
+	Fri,  5 May 2023 04:33:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7001B1854
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 04:12:54 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9556412092
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 21:12:52 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-957dbae98b4so196244166b.1
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 21:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683259971; x=1685851971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=flAExmZz0rzVc3H+kjEgOlxwKnPtUvTbTTd2tnirBD8=;
-        b=VBgl9AZ6YAAfa8QrP5H9bSaisZX28FLV1OZxUmMDlgZSM2B3iDUNqpM/M0zX0PoqB+
-         ZtBh3voZNS4Gmpsw7ZbWx1QfjACIHtLmLNcvHZSF/k1BbIxpADrVSmcoxVV1PlaJOJxZ
-         SeO7k0TsRjgi6XbwtbQnMSw6Maz/8mWtWMVBwNKJSlyqDbcUeGfElf9KrOWArFc6L6sw
-         ihalYjjOsQx4yWnT1JYfhajnl4Kz7yu9TmVM/U/K9E3ZeexHKPARb/OQFa7S5OODsk9X
-         b8cX8EKO13QDBX44XspibnHFZbQ1g659Qs4iPiymIEJu2y0ApqxkK1LVvpMsSe7eAwHB
-         Npxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683259971; x=1685851971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=flAExmZz0rzVc3H+kjEgOlxwKnPtUvTbTTd2tnirBD8=;
-        b=flAX2mfAlvkpXUzC3g5ymXQ2bDhPauh7/oVrCvkuYkX3N24SYVdo4rhvMzsdwXMb9j
-         WXC44r1irgAj/QOwC3PpJzpu2MUBPTKSDznuFDQDG9fOD9QA6hdnp23I3eKDmz2vkZsj
-         ewBur7zO6rYePTfqqDVOSPQYnNazwy1NbhU4g2ctqLtfzJc+QVCKLDKzm82duXy+4WOH
-         r25x+sE6ufETE5Hx0gtLM6qoyud53ru0zfNzfGJkpVMBanuRhOnyCF7+givTSs4r7Cu2
-         BB8HTlIfY1kfwfOeQYAALpsIVe4e2CASQocp8T7Oe+eBAO1hpPGMuL5jnM7heXwsK0I5
-         RGnA==
-X-Gm-Message-State: AC+VfDz+y/huSiKPWtT2Wbp7ggKQbowmn/H5BZg7n15C27HJ6dRKFoFM
-	bXE7fjSjbBzwlxY2Yl1JyGTFXtQYMCHeAUtMhSw66vXG4Cc=
-X-Google-Smtp-Source: ACHHUZ583i2N5tS3V/rj29cl5xG7R3zp3/WGfDA4svdBO2bqoKoDRuZ6qar9gyN2bRqovXc8Es2aQ15d0wYfVxtYX+8=
-X-Received: by 2002:a17:907:1c18:b0:959:b745:d16f with SMTP id
- nc24-20020a1709071c1800b00959b745d16fmr1004734ejc.51.1683259970841; Thu, 04
- May 2023 21:12:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583FE156C1
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 04:33:34 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA740AD20
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 21:33:32 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3452YqZO004494
+	for <bpf@vger.kernel.org>; Thu, 4 May 2023 21:33:32 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qcs450j9y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Thu, 04 May 2023 21:33:32 -0700
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 4 May 2023 21:33:31 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 4BA333006D6B5; Thu,  4 May 2023 21:33:18 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 00/10] Add precision propagation for subprogs and callbacks
+Date: Thu, 4 May 2023 21:33:07 -0700
+Message-ID: <20230505043317.3629845-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADxym3ax73kYEyJMZwN+bTwmX9VhZ3WJe+wC9RGGwpfdjLdf3g@mail.gmail.com>
- <d79d6281-845f-c395-79eb-5963389971d3@meta.com> <CADxym3bb6wxF-aRRJBYrfiwMRU8=JjYn69YffSwtKphj7Cetbg@mail.gmail.com>
-In-Reply-To: <CADxym3bb6wxF-aRRJBYrfiwMRU8=JjYn69YffSwtKphj7Cetbg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 May 2023 21:12:39 -0700
-Message-ID: <CAEf4BzaF4F1rKH=VYVRj0Qapwze-Fj519eoAz+Qq6cHH=52arw@mail.gmail.com>
-Subject: Re: bpf: add support to check kernel features in BPF program
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Yonghong Song <yhs@meta.com>, Alan Maguire <alan.maguire@oracle.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: XcJVNGZKZb5mLm5wRTpwMGBz2esZYogy
+X-Proofpoint-ORIG-GUID: XcJVNGZKZb5mLm5wRTpwMGBz2esZYogy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-04_15,2023-05-04_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 4, 2023 at 7:42=E2=80=AFPM Menglong Dong <menglong8.dong@gmail.=
-com> wrote:
->
-> On Fri, May 5, 2023 at 12:53=E2=80=AFAM Yonghong Song <yhs@meta.com> wrot=
-e:
-> >
-> >
-> >
-> > On 5/4/23 4:09 AM, Menglong Dong wrote:
-> > > Hello,
-> > >
-> > > I find that it's not supported yet to check if the bpf features are
-> > > supported by the target kernel in the BPF program, which makes
-> > > it hard to keep the BPF program compatible with different kernel
-> > > versions.
-> > >
-> > > For example, I want to use the helper bpf_jiffies64(), but I am not
-> > > sure if it is supported by the target, as my program can run in
-> > > kernel 5.4 or kernel 5.10. Therefore, I have to compile two versions
-> > > BPF elf and load one of them according to the current kernel version.
-> > > The part of BPF program can be this:
-> > >
-> > > #ifdef BPF_FEATS_JIFFIES64
-> > >    jiffies =3D bpf_jiffies64();
-> > > #else
-> > >    jiffies =3D 0;
-> > > #endif
-> > >
-> > > And I will generate xxx_no_jiffies.skel.h and xxx_jiffies.skel.h
-> > > with -DBPF_FEATS_JIFFIES64 or not.
-> > >
-> > > This method is too silly, as I have to compile 8(2*2*2) versions of
-> > > the BPF program if I am not sure if 3 bpf helpers are supported by th=
-e
-> > > target kernel.
-> > >
-> > > Therefore, I think it may be helpful if we can check if the helpers
-> > > are support like this:
-> > >
-> > > if (bpf_core_helper_exist(bpf_jiffies64))
-> > >    jiffies =3D bpf_jiffies64();
-> > > else
-> > >    jiffies =3D 0;
-> > >
-> > > And bpf_core_helper_exist() can be defined like this:
-> > >
-> > > #define bpf_core_helper_exist(helper)                        \
-> > >      __builtin_preserve_helper_info(helper, BPF_HELPER_EXISTS)
-> > >
-> > > Besides, in order to prevent the verifier from checking the helper
-> > > that is not supported, we need to remove the dead code in libbpf.
-> > > As the kernel already has the ability to remove dead and nop insn,
-> > > we can just make the dead insn to nop.
-> > >
-> > > Another option is to make the BPF program support "const value".
-> > > Such const values can be rewrite before load, the dead code can
-> > > be removed. For example:
-> > >
-> > > #define bpf_const_value __attribute__((preserve_const_value))
-> > >
-> > > bpf_const_value bool is_bpf_jiffies64_supported =3D 0;
-> > >
-> > > if (is_bpf_jiffies64_supported)
-> > >    jiffies =3D bpf_jiffies64();
-> > > else
-> > >    jiffies =3D 0;
-> > >
-> > > The 'is_bpf_jiffies64_supported' will be compiled to an imm, and
-> > > can be rewrite and relocated through libbpf by the user. Then, we
-> > > can make the dead insn 'nop'.
-> >
-> > A variant of the second approach should already work.
-> > You can do,
-> >
-> > volatile const is_bpf_jiffies64_supported;
-> >
-> > ...
-> >
-> > if (is_bpf_jiffies64_supported)
+As more and more real-world BPF programs become more complex
+and increasingly use subprograms (both static and global), scalar precisi=
+on
+tracking and its (previously weak) support for BPF subprograms (and callb=
+acks
+as a special case of that) is becoming more and more of an issue and
+limitation. Couple that with increasing reliance on state equivalence (BP=
+F
+open-coded iterators have a hard requirement for state equivalence to con=
+verge
+and successfully validate loops), and it becomes pretty critical to addre=
+ss
+this limitation and make precision tracking universally supported for BPF
+programs of any complexity and composition.
 
-you don't even have to use global variable to detect helper support, you ca=
-n do:
+This patch set teaches BPF verifier to support SCALAR precision
+backpropagation across multiple frames (for subprogram calls and callback
+simulations) and addresses most practical situations (SCALAR stack
+loads/stores using registers other than r10 being the last remaining
+limitation, though thankfully rarely used in practice).
 
-if (bpf_core_enum_value_exists(enum bpf_func_id, BPF_FUNC_jiffies64))
-    jiffies =3D bpf_jiffies64();
-else
-    jiffies =3D 0;
+Main logic is explained in details in patch #8. The rest are preliminary
+preparations, refactorings, clean ups, and fixes. See respective patches =
+for
+details.
 
-> >      jiffies =3D bpf_jiffies64();
-> > else
-> >      jiffies =3D 0;
-> >
-> >
-> > After skeleton is openned but before prog load, you can do
-> > a probe into the kernel to find whether the helper is supported
-> > or not, and set is_bpf_jiffies64_supported accordingly.
-> >
-> > After loading the program, is_bpf_jiffies64_supported will be
-> > changed to 0/1, verifier will do dead code elimination properly.
-> >
->
-> Great, that works! Thanks~
->
-> > >
-> > > What do you think? I'm not sure if these methods work and want
-> > > to get some advice before coding.
-> > >
-> > > Thanks!
-> > > Menglong Dong
+Patch #8 has also veristat comparison of results for selftests, Cilium, a=
+nd
+some of Meta production BPF programs before and after these changes.
+
+v2->v3:
+  - drop bitcnt and ifs from bt_xxx() helpers (Alexei);
+v1->v2:
+  - addressed review feedback form Alexei, adjusted commit messages, comm=
+ents,
+    added verbose(), WARN_ONCE(), etc;
+  - re-ran all the tests and veristat on selftests, cilium, and meta-inte=
+rnal
+    code: no new changes and no kernel warnings.
+
+Andrii Nakryiko (10):
+  veristat: add -t flag for adding BPF_F_TEST_STATE_FREQ program flag
+  bpf: mark relevant stack slots scratched for register read
+    instructions
+  bpf: encapsulate precision backtracking bookkeeping
+  bpf: improve precision backtrack logging
+  bpf: maintain bitmasks across all active frames in
+    __mark_chain_precision
+  bpf: fix propagate_precision() logic for inner frames
+  bpf: fix mark_all_scalars_precise use in mark_chain_precision
+  bpf: support precision propagation in the presence of subprogs
+  selftests/bpf: add precision propagation tests in the presence of
+    subprogs
+  selftests/bpf: revert iter test subprog precision workaround
+
+ include/linux/bpf_verifier.h                  |  27 +-
+ kernel/bpf/verifier.c                         | 622 +++++++++++++-----
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   4 +
+ tools/testing/selftests/bpf/progs/iters.c     |  26 +-
+ .../bpf/progs/verifier_subprog_precision.c    | 536 +++++++++++++++
+ .../testing/selftests/bpf/verifier/precise.c  | 107 +--
+ tools/testing/selftests/bpf/veristat.c        |   9 +
+ 8 files changed, 1111 insertions(+), 222 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_subprog_pr=
+ecision.c
+
+--=20
+2.34.1
+
 
