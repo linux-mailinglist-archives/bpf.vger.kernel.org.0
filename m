@@ -1,135 +1,313 @@
-Return-Path: <bpf+bounces-142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 994C76F89F9
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 22:06:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17CCE6F8A1C
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 22:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443492810BE
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D3272810CB
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF48D2E8;
-	Fri,  5 May 2023 20:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A46D2FF;
+	Fri,  5 May 2023 20:21:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D204C99
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 20:05:54 +0000 (UTC)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5285A101
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 13:05:53 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f00d41df22so18209810e87.1
-        for <bpf@vger.kernel.org>; Fri, 05 May 2023 13:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683317151; x=1685909151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EvUqN7+4B5H/i6Yp7tD8ZXadcbiO6goPqSXqTxE7CN8=;
-        b=i19WE8x8LVhRb4DSOBQS48ialcaKRcmQdaBXIBXK0LuXj68Cjkrkiv92ndZzjxm1Pj
-         PC0ZTbUGwp5GK1neyAxOQT6EzxGuiJCnjItkiiJzicRRezGALRhqsBbtzAsYBcDSVV5X
-         NFTGXQ47Xyx16Q8OHs69VHBU1jPx3B+FIHgzrjcJZgnun4nt7d03ZfCt+8Q5VZu/ff+W
-         5Y2YsW3mnCOcPg3ZjO0yJl+RBWFwxyE1ZkFHelpdSKr6UFu2RIk1L3RHBl+3YBgucAt8
-         CrLEhuPn4Dare9kQ3gJxhYcuKpJcbJO25JvVzAUNIKert4CT+c2M1lND6MX9rEJga3oI
-         8jGw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6A5D2E9
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 20:21:30 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FEC44B7
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 13:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1683318087;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fsggkaMmsBvOy5xyONdITFWw/iHmRz4dl3tGfhzjtDI=;
+	b=AsFjbdPgh+Wyv+dUSCHG+cSIT9hLp+oJwF4hPJY2dVon5WDio+pwNGjk+unG7FAgvlM4IQ
+	ziM3qZQPg5Tn2FVyf044sYxkLxz7CiktUkFs1DRSRcPLwSs6xh0sihQk3diC05DRR/tFlC
+	KECQzO7obsc3ZKb/H5PrvPPlARgxFfA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-256-w_6DqoUqPpmOke3t6YBNwA-1; Fri, 05 May 2023 16:21:26 -0400
+X-MC-Unique: w_6DqoUqPpmOke3t6YBNwA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30643d4a430so790116f8f.0
+        for <bpf@vger.kernel.org>; Fri, 05 May 2023 13:21:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683317151; x=1685909151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EvUqN7+4B5H/i6Yp7tD8ZXadcbiO6goPqSXqTxE7CN8=;
-        b=UIJoXXuHlZVbKpLDj8KPcZjvmYPRolBkJQmmU/7tiZk7KFSilyPf7j0mKn/vd46LoL
-         E4/MBx1J6YkCjSMl9+hcsT2MYYCy0LdLQv9WQtuyJOemEbGOu2fggx2YjOJQUrNl2aHd
-         mtXbJIMdRpl+OIfUw4whdjhEH+nH0dDm5wCIfEhC49bJdXGe3BzEI7YVn/98r0VP0N89
-         gXy/iaqcMERa9dWtHWCVWW4WqGUo4MZK+vue1pgXBC7Wtr5eGmBs3LuZJUucpJ+Xs5F+
-         Xumw8/uq7whOAn1Y2W73v4RgqRpwNbOaN/L7GbYiv0LLWQHBNIcQCDFlCGCAQn1j3AMF
-         63Cw==
-X-Gm-Message-State: AC+VfDz0ErvqthEfuNVIfAGszmSbRsh39jpg8Utew1T46q0aH8g8Nfwt
-	uIM1/3werl1yUuUL42Qv1AROwxtNGdqru7OpJpc=
-X-Google-Smtp-Source: ACHHUZ55ZAEL6Trqo+sca4+JJ9YjhccAtqFx9lCf+Qtfdp1Au+eN0cMw6ULGZnXfUtCEeHLq+E3EzNNAES4aMf/jpRU=
-X-Received: by 2002:a05:6512:3a8d:b0:4ec:9f37:2cfb with SMTP id
- q13-20020a0565123a8d00b004ec9f372cfbmr3016581lfu.27.1683317151255; Fri, 05
- May 2023 13:05:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683318085; x=1685910085;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fsggkaMmsBvOy5xyONdITFWw/iHmRz4dl3tGfhzjtDI=;
+        b=Uy/LqtnQdXvTbsMJgRtK1v8JjEbZ6RgEzEQ2bJPMeU8N1UmUviuTB9iAFhPvniwyT/
+         YPZGlQSI4IqB6JcB5qb/s14wXChe38THnt8FwckRO7NwCgpIfJXTAwC19QL1T4cM0Aep
+         GiXOf1irO75yhL4KzQQcsJUdU2eWHmqY0IFCo7T/BjIUDJVerMwP0iVUUw/I1EJh2lBa
+         ZAbE115gae/tlua10rdefowQFIvJtKyC/sg6zZh8qIrM83O0VurwmyCGaGvSelboKcpw
+         8Y3YQOZiCMQ9OxRQb4HKRl7FJeHKvnnhKecrAK25nR7vpeYUml/lCU8+yqkdyd6HLx6w
+         6KEw==
+X-Gm-Message-State: AC+VfDy4wmx7Rs0V6kjh06LQu878OAp1Mmx66t+jzalu09jj1rUSwXDN
+	OPdkQfWt2brxDthyvmdq9iy+tNxRnvaJ9RDZKlWXuN2F5uyCLAJpZ13rWEV/ZegEXvzCuEBzgqv
+	ctifZARYrZLkA
+X-Received: by 2002:a5d:4570:0:b0:2fe:c0ea:18b5 with SMTP id a16-20020a5d4570000000b002fec0ea18b5mr2183594wrc.35.1683318085036;
+        Fri, 05 May 2023 13:21:25 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7FviCLOGbcNtThAkyINVmphT4Em0kBlGhMilbIRI+JzZwkEaqvefxxGYCQlWMeGdaho0noZA==
+X-Received: by 2002:a5d:4570:0:b0:2fe:c0ea:18b5 with SMTP id a16-20020a5d4570000000b002fec0ea18b5mr2183541wrc.35.1683318084651;
+        Fri, 05 May 2023 13:21:24 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71f:6900:2b25:fc69:599e:3986? (p200300cbc71f69002b25fc69599e3986.dip0.t-ipconnect.de. [2003:cb:c71f:6900:2b25:fc69:599e:3986])
+        by smtp.gmail.com with ESMTPSA id q18-20020a056000137200b003063176ef09sm3377323wrz.6.2023.05.05.13.21.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 May 2023 13:21:24 -0700 (PDT)
+Message-ID: <6e96358e-bcb5-cc36-18c3-ec5153867b9a@redhat.com>
+Date: Fri, 5 May 2023 22:21:21 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
- <20230503225351.3700208-7-aditi.ghag@isovalent.com> <1013e81f-5a0a-dd0b-c18d-3ee849c079ab@linux.dev>
- <45684b6f-ecfb-5f14-e5ad-386b8f611c7a@linux.dev>
-In-Reply-To: <45684b6f-ecfb-5f14-e5ad-386b8f611c7a@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 5 May 2023 13:05:39 -0700
-Message-ID: <CAADnVQ+dSt0CgTTdEKQSxS6Cy_xYyHqahVPwQtTwA7K+PF8_8A@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 06/10] bpf: Add bpf_sock_destroy kfunc
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
-	Aditi Ghag <aditi.ghag@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Content-Language: en-US
+To: Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+ Matthew Wilcox <willy@infradead.org>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Leon Romanovsky <leon@kernel.org>, Christian Benvenuti <benve@cisco.com>,
+ Nelson Escobar <neescoba@cisco.com>, Bernard Metzler <bmt@zurich.ibm.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Christian Brauner <brauner@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+ Jan Kara <jack@suse.cz>, "Kirill A . Shutemov" <kirill@shutemov.name>,
+ Pavel Begunkov <asml.silence@gmail.com>, Mika Penttila
+ <mpenttil@redhat.com>, Dave Chinner <david@fromorbit.com>,
+ Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+ Matthew Rosato <mjrosato@linux.ibm.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>
+References: <cover.1683235180.git.lstoakes@gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
+ mappings by default
+In-Reply-To: <cover.1683235180.git.lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 5, 2023 at 11:49=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On 04.05.23 23:27, Lorenzo Stoakes wrote:
+> Writing to file-backed mappings which require folio dirty tracking using
+> GUP is a fundamentally broken operation, as kernel write access to GUP
+> mappings do not adhere to the semantics expected by a file system.
+> 
+> A GUP caller uses the direct mapping to access the folio, which does not
+> cause write notify to trigger, nor does it enforce that the caller marks
+> the folio dirty.
+> 
+> The problem arises when, after an initial write to the folio, writeback
+> results in the folio being cleaned and then the caller, via the GUP
+> interface, writes to the folio again.
+> 
+> As a result of the use of this secondary, direct, mapping to the folio no
+> write notify will occur, and if the caller does mark the folio dirty, this
+> will be done so unexpectedly.
+> 
+> For example, consider the following scenario:-
+> 
+> 1. A folio is written to via GUP which write-faults the memory, notifying
+>     the file system and dirtying the folio.
+> 2. Later, writeback is triggered, resulting in the folio being cleaned and
+>     the PTE being marked read-only.
+> 3. The GUP caller writes to the folio, as it is mapped read/write via the
+>     direct mapping.
+> 4. The GUP caller, now done with the page, unpins it and sets it dirty
+>     (though it does not have to).
+> 
+> This change updates both the PUP FOLL_LONGTERM slow and fast APIs. As
+> pin_user_pages_fast_only() does not exist, we can rely on a slightly
+> imperfect whitelisting in the PUP-fast case and fall back to the slow case
+> should this fail.
+> 
 >
-> On 5/4/23 5:13 PM, Martin KaFai Lau wrote:
-> >
-> > Follow up on the v6 patch-set regarding KF_TRUSTED_ARGS.
-> > KF_TRUSTED_ARGS is needed here to avoid the cases where a PTR_TO_BTF_ID=
- sk is
-> > obtained by following another pointer. eg. getting a sk pointer (may be=
- even
-> > NULL) by following another sk pointer. The recent PTR_TRUSTED concept i=
-n the
-> > verifier can guard this. I tried and the following should do:
-> >
-> > diff --git i/net/core/filter.c w/net/core/filter.c
-> > index 68b228f3eca6..d82e038da0e3 100644
-> > --- i/net/core/filter.c
-> > +++ w/net/core/filter.c
-> > @@ -11767,7 +11767,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_co=
-mmon *sock)
-> >   __diag_pop()
-> >
-> >   BTF_SET8_START(sock_destroy_kfunc_set)
-> > -BTF_ID_FLAGS(func, bpf_sock_destroy)
-> > +BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
-> >   BTF_SET8_END(sock_destroy_kfunc_set)
-> >
-> >   static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc=
-_id)
-> > diff --git i/net/ipv4/tcp_ipv4.c w/net/ipv4/tcp_ipv4.c
-> > index 887f83a90d85..a769284e8291 100644
-> > --- i/net/ipv4/tcp_ipv4.c
-> > +++ w/net/ipv4/tcp_ipv4.c
-> > @@ -3354,7 +3354,7 @@ static struct bpf_iter_reg tcp_reg_info =3D {
-> >       .ctx_arg_info_size    =3D 1,
-> >       .ctx_arg_info        =3D {
-> >           { offsetof(struct bpf_iter__tcp, sk_common),
-> > -          PTR_TO_BTF_ID_OR_NULL },
-> > +          PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
->
-> Alexei, what do you think about having "PTR_MAYBE_NULL | PTR_TRUSTED" her=
-e?
-> The verifier side looks fine (eg. is_trusted_reg() is taking PTR_MAYBE_NU=
-LL into
-> consideration). However, it seems this will be the first "PTR_MAYBE_NULL =
-|
-> PTR_TRUSTED" use case and not sure if PTR_MAYBE_NULL may conceptually con=
-flict
-> with the PTR_TRUSTED idea (like PTR_TRUSTED should not be NULL).
 
-Conceptually it should be fine. There are no real cases of
-PTR_TRUSTED | PTR_MAYBE_NULL now, though check_reg_type() handles it.
-Proceed with care, I guess :)
+Thanks a lot, this looks pretty good to me!
+
+I started writing some selftests (assuming none would be in the works) using
+iouring and and the gup_tests interface. So far, no real surprises for the general
+GUP interaction [1].
+
+
+There are two things I noticed when registering an iouring fixed buffer (that differ
+now from generic gup_test usage):
+
+
+(1) Registering a fixed buffer targeting an unsupported MAP_SHARED FS file now fails with
+     EFAULT (from pin_user_pages()) instead of EOPNOTSUPP (from io_pin_pages()).
+
+The man page for io_uring_register documents:
+
+        EOPNOTSUPP
+               User buffers point to file-backed memory.
+
+... we'd have to do some kind of errno translation in io_pin_pages(). But the
+translation is not simple (sometimes we want to forward EOPNOTSUPP). That also
+applies once we remove that special-casing in io_uring code.
+
+... maybe we can simply update the manpage (stating that older kernels returned
+EOPNOTSUPP) and start returning EFAULT?
+
+
+(2) Registering a fixed buffer targeting a MAP_PRIVATE FS file fails with EOPNOTSUPP
+     (from io_pin_pages()). As discussed, there is nothing wrong with pinning all-anon
+     pages (resulting from breaking COW).
+
+That could be easily be handled (allow any !VM_MAYSHARE), and would automatically be
+handled once removing the iouring special-casing.
+
+
+[1]
+
+# ./pin_longterm
+# [INFO] detected hugetlb size: 2048 KiB
+# [INFO] detected hugetlb size: 1048576 KiB
+TAP version 13
+1..50
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd
+ok 1 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+ok 2 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+ok 3 Pinning failed as expected
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 4 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 5 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+ok 6 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+ok 7 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+ok 8 Pinning failed as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 9 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 10 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd
+ok 11 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+ok 12 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+ok 13 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 14 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 15 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd
+ok 16 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with tmpfile
+ok 17 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with local tmpfile
+ok 18 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 19 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 20 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+ok 21 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+ok 22 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+ok 23 Pinning succeeded as expected
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 24 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+ok 25 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+ok 26 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+ok 27 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+ok 28 Pinning succeeded as expected
+# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 29 # SKIP need more free huge pages
+# [RUN] R/W longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+ok 30 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd
+ok 31 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with tmpfile
+ok 32 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with local tmpfile
+ok 33 Pinning succeeded as expected
+# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 34 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+ok 35 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd
+ok 36 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with tmpfile
+ok 37 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with local tmpfile
+ok 38 Pinning succeeded as expected
+# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 39 # SKIP need more free huge pages
+# [RUN] R/O longterm GUP-fast pin in MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+ok 40 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd
+ok 41 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with tmpfile
+ok 42 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with local tmpfile
+ok 43 Pinning failed as expected
+# [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+ok 44 # SKIP need more free huge pages
+# [RUN] iouring fixed buffer with MAP_SHARED file mapping ... with memfd hugetlb (1048576 kB)
+ok 45 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd
+ok 46 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with tmpfile
+ok 47 Pinning succeeded as expected
+# [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with local tmpfile
+not ok 48 Pinning failed as expected
+# [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd hugetlb (2048 kB)
+ok 49 # SKIP need more free huge pages
+# [RUN] iouring fixed buffer with MAP_PRIVATE file mapping ... with memfd hugetlb (1048576 kB)
+ok 50 Pinning succeeded as expected
+Bail out! 1 out of 50 tests failed
+# Totals: pass:39 fail:1 xfail:0 xpass:0 skip:10 error:0
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
 
