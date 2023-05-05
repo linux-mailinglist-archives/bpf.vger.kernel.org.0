@@ -1,201 +1,109 @@
-Return-Path: <bpf+bounces-151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938586F8B17
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 23:33:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395556F8B1A
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 23:35:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FBA2281073
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 21:33:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823B21C21A01
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 21:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235EADF58;
-	Fri,  5 May 2023 21:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7744DF58;
+	Fri,  5 May 2023 21:35:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC78BE73
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 21:33:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74DC4C433D2;
-	Fri,  5 May 2023 21:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683322409;
-	bh=M4kahhFPmrKwLmC+dwLRPb9KCPDgd7YIFYm187tld3A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m5spICSYMMdXNA9wHyGc+FulwdcXkR8owOHc+m9ihjvpDcUM0ZP+xGyFkDCDTae+p
-	 qeg31jfxTIBoDPNErCo0O6lh81M5Y51fCeh8XMuY2YJA6g//xr1X+vI8RgTBe8Ffh3
-	 rWT8e4hMgwgyA7aaxdroUzKRpBPz6meLsKarHStHqlWKQBYmcAgd8K4y8yWBCfRjcU
-	 SqJv9W7XEu4pYQVDMTr+y1+OdQieT2eViMMSzqic7JRJwsJwSfsCE8GzTU+qNpHpgI
-	 kaYlbYox6jL/K2mpdGlPkneCGW4w15X/lWnlSFqQs7RkAgdTWrwmeSOPzatqYDU0bB
-	 7bNKd+k1o3SSw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id B359C403B5; Fri,  5 May 2023 18:33:26 -0300 (-03)
-Date: Fri, 5 May 2023 18:33:26 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ian Rogers <irogers@google.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Clark Williams <williams@redhat.com>,
-	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Changbin Du <changbin.du@huawei.com>, Hao Luo <haoluo@google.com>,
-	James Clark <james.clark@arm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Roman Lozko <lozko.roma@gmail.com>,
-	Stephane Eranian <eranian@google.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Mark Rutland <mark.rutland@arm.com>, Paul Clarke <pc@us.ibm.com>
-Subject: Re: [PATCH RFC/RFT] perf bpf skels: Stop using vmlinux.h generated
- from BTF, use subset of used structs + CO-RE. was Re: BPF skels in perf .Re:
- [GIT PULL] perf tools changes for v6.4
-Message-ID: <ZFV2JhBV6xyLm7xg@kernel.org>
-References: <ZFPw0scDq1eIzfHr@kernel.org>
- <CAEf4BzaUU9vZU6R_020ru5ct0wh-p1M3ZFet-vYqcHvb9bW1Cw@mail.gmail.com>
- <ZFQCccsx6GK+gY0j@kernel.org>
- <ZFQoQjCNtyMIulp+@kernel.org>
- <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
- <ZFQ5sjjtfEYzvHNP@krava>
- <ZFUFmxDU/6Z/JEsi@kernel.org>
- <ZFU1PJrn8YtHIqno@kernel.org>
- <CAP-5=fWfmmMCRnEmzj_CXTKacp6gjrzmR49Ge_C5XRyfTegRjg@mail.gmail.com>
- <ZFVqeKLssg7uzxzI@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1B3BE73
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 21:35:41 +0000 (UTC)
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CBFE42
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 14:35:40 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-24e205905d4so2098588a91.0
+        for <bpf@vger.kernel.org>; Fri, 05 May 2023 14:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683322540; x=1685914540;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hrgWMDjgeWFjf0m/7vTw70gyzaur2Y6/xRFZj2OFtmc=;
+        b=bTyoy0ptPE1E9uBuhjDj2xH1dQAt66BRriRhFigtrmRCB/Vopxq6+mglUYiWLtfyYg
+         HMwrLS7+5yzv6KhSc3wbzGNidEWHpLvndyXwKEIbQb+3CdC44MyGz46jb4PZFYaIjale
+         idxERn60ZecQPR5hxMxSrRV5hnqzoWIl425sb7zMgkR4q3eLEDJ8xoduXuXiwRNllaZk
+         NMGL4dZ2rXJw0pLRERrIDZ4v6qT4/Hc0jy6JgptBeIOym5EhEnI2IFZ9R4Ymi1rW5A8c
+         1IHOZ6uTj+oPXnkRDVVScudS+bUqX6/GwWzg8Mt+xpOq64zx5YyCygLbHMbznBhPnlVC
+         UR9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683322540; x=1685914540;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hrgWMDjgeWFjf0m/7vTw70gyzaur2Y6/xRFZj2OFtmc=;
+        b=bdkby4ACVejHehS6PfhVf99w+toFr08zLtEYrXWMaMwv9mrZv4tSyUVfmaN7Vbsp8A
+         PAJaSOdhVS/z3h48moSJRJfbKz4ohXdv+1IfNd9biNcVXnIZlYvTqvS7SXKfNYhfEz+w
+         TFDGvPBm4ihyXonABrg9nb9LOP8tAzVfMhH5QpySJmNtE83COjSx5A6Oxv3VSyW1cVqH
+         6dZE2FSGJGPNsj1Q55hxfYxiXdi5trc0u1651VwBFWbTMtOkwsjidDH5vWBZ0Rl6dSl9
+         J4EUXnlt9+RaEbFnrZbSv6SljSHe71S+Myt+sNDSacEdY4Usahz1ZsJXg/+smHWh88N8
+         mKEw==
+X-Gm-Message-State: AC+VfDw60qFRf3cojRUowdJRsOrHGLSS3/iU85Go+Kgo4b3aB+f6D4mW
+	7tji3856HrbCFWMbTiy5LBWBKWv+ROVuewfyMzzeXEmXZaM73lrtT1LFRbULzPAw2cJXRhjfeCn
+	jAuw4WcD4P/x6rirt50oe1wHnVZI3c14qdFHT6PuPWC7ly2umIg==
+X-Google-Smtp-Source: ACHHUZ7YzC/zOqtGRFZZotrYL7+dh8vyvetZVVbeiSf93epndNGiWAaKJCEJWteRNYuO3vojyh3yhQY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90b:93:b0:246:a74f:fd73 with SMTP id
+ bb19-20020a17090b009300b00246a74ffd73mr799363pjb.6.1683322539909; Fri, 05 May
+ 2023 14:35:39 -0700 (PDT)
+Date: Fri, 5 May 2023 14:35:38 -0700
+In-Reply-To: <CAKH8qBuDzThzDcN6WwyLmD75LSv0zrd-ZiwDMwVmJiQ82DxepQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZFVqeKLssg7uzxzI@krava>
-X-Url: http://acmel.wordpress.com
+Mime-Version: 1.0
+References: <20230505184550.1386802-1-sdf@google.com> <CAKH8qBuDzThzDcN6WwyLmD75LSv0zrd-ZiwDMwVmJiQ82DxepQ@mail.gmail.com>
+Message-ID: <ZFV2qq6UdiA6TgG1@google.com>
+Subject: Re: [PATCH bpf-next] RFC: bpf: query effective progs without cgroup_mutex
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Em Fri, May 05, 2023 at 10:43:36PM +0200, Jiri Olsa escreveu:
-> On Fri, May 05, 2023 at 10:04:47AM -0700, Ian Rogers wrote:
-> > On Fri, May 5, 2023 at 9:56 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > >
-> > > Em Fri, May 05, 2023 at 10:33:15AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Em Fri, May 05, 2023 at 01:03:14AM +0200, Jiri Olsa escreveu:
-> > > > That with the preserve_access_index isn't needed, we need just the
-> > > > fields that we access in the tools, right?
-> > >
-> > > I'm now doing build test this in many distro containers, without the two
-> > > reverts, i.e. BPF skels continue as opt-out as in my pull request, to
-> > > test build and also for the functionality tests on the tools using such
-> > > bpf skels, see below, no touching of vmlinux nor BTF data during the
-> > > build.
-> > >
-> > > - Arnaldo
-> > >
-> > > From 882adaee50bc27f85374aeb2fbaa5b76bef60d05 Mon Sep 17 00:00:00 2001
-> > > From: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > Date: Thu, 4 May 2023 19:03:51 -0300
-> > > Subject: [PATCH 1/1] perf bpf skels: Stop using vmlinux.h generated from BTF,
-> > >  use subset of used structs + CO-RE
-> > >
-> > > Linus reported a build break due to using a vmlinux without a BTF elf
-> > > section to generate the vmlinux.h header with bpftool for use in the BPF
-> > > tools in tools/perf/util/bpf_skel/*.bpf.c.
-> > >
-> > > Instead add a vmlinux.h file with the structs needed with the fields the
-> > > tools need, marking the structs with __attribute__((preserve_access_index)),
-> > > so that libbpf's CO-RE code can fixup the struct field offsets.
-> > >
-> > > In some cases the vmlinux.h file that was being generated by bpftool
-> > > from the kernel BTF information was not needed at all, just including
-> > > linux/bpf.h, sometimes linux/perf_event.h was enough as non-UAPI
-> > > types were not being used.
-> > >
-> > > To keep te patch small, include those UAPI headers from the trimmed down
-> > > vmlinux.h file, that then provides the tools with just the structs and
-> > > the subset of its fields needed for them.
-> > >
-> > > Testing it:
-> > >
-> > >   # perf lock contention -b find / > /dev/null
-> 
-> I tested perf lock con -abv -L rcu_state sleep 1
-> and needed fix below
-> 
-> jirka
+On 05/05, Stanislav Fomichev wrote:
+> On Fri, May 5, 2023 at 11:45=E2=80=AFAM Stanislav Fomichev <sdf@google.co=
+m> wrote:
+> >
+> > We're observing some stalls on the heavily loaded machines
+> > in the cgroup_bpf_prog_query path. This is likely due to
+> > being blocked on cgroup_mutex.
+> >
+> > IIUC, the cgroup_mutex is there mostly to protect the non-effective
+> > fields (cgrp->bpf.progs) which might be changed by the update path.
+> > For the BPF_F_QUERY_EFFECTIVE case, all we need is to rcu_dereference
+> > a bunch of pointers (and keep them around for consistency), so
+> > let's do it.
+> >
+> > Sending out as an RFC because it looks a bit ugly. It would also
+> > be nice to handle non-effective case locklessly as well, but it
+> > might require a larger rework.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-patch not applying trying to do it manually.
+Ah, that wont work, can't copy to user while holding rcu.
 
-- Arnaldo
- 
-> 
-> ---
-> From b12aea55f1171dc09cde2957f9019c84bda7adbb Mon Sep 17 00:00:00 2001
-> From: Jiri Olsa <jolsa@kernel.org>
-> Date: Fri, 5 May 2023 13:28:46 +0200
-> Subject: [PATCH] perf tools: Fix lock_contention bpf program
-> 
-> We need to define empty 'struct rq' so the runqueues gets
-> resolved properly:
-> 
->   # ./perf lock con -b
->   libbpf: extern (var ksym) 'runqueues': incompatible types, expected [99] fwd rq, but kernel has [19783] struct rq
->   libbpf: failed to load object 'lock_contention_bpf'
->   libbpf: failed to load BPF skeleton 'lock_contention_bpf': -22
->   Failed to load lock-contention BPF skeleton
-> 
-> Also rq__old/rq__new need additional '_' so the suffix is ignored
-> properly.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/bpf_skel/lock_contention.bpf.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> index 8911e2a077d8..c2bf24c68c14 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -416,13 +416,15 @@ int contention_end(u64 *ctx)
->  	return 0;
->  }
->  
-> +struct rq {};
-> +
->  extern struct rq runqueues __ksym;
->  
-> -struct rq__old {
-> +struct rq___old {
->  	raw_spinlock_t lock;
->  } __attribute__((preserve_access_index));
->  
-> -struct rq__new {
-> +struct rq___new {
->  	raw_spinlock_t __lock;
->  } __attribute__((preserve_access_index));
->  
-> @@ -434,8 +436,8 @@ int BPF_PROG(collect_lock_syms)
->  
->  	for (int i = 0; i < MAX_CPUS; i++) {
->  		struct rq *rq = bpf_per_cpu_ptr(&runqueues, i);
-> -		struct rq__new *rq_new = (void *)rq;
-> -		struct rq__old *rq_old = (void *)rq;
-> +		struct rq___new *rq_new = (void *)rq;
-> +		struct rq___old *rq_old = (void *)rq;
->  
->  		if (rq == NULL)
->  			break;
-> -- 
-> 2.40.1
-> 
-
--- 
-
-- Arnaldo
+Maybe we can even go as far as converting the progs list to rcu..
+This should allow as to drop mutex altogether during the query path.
+As long as we return EAGAIN on racy deatach we should be fine it seems.
+Will try to play with this idea.
 
