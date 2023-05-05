@@ -1,70 +1,74 @@
-Return-Path: <bpf+bounces-75-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-76-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A047D6F7AC3
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 03:54:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4E46F7ACF
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 313291C213C8
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 01:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76F37280F2D
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 02:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F6D1117;
-	Fri,  5 May 2023 01:54:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5111376;
+	Fri,  5 May 2023 02:17:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D1A7E
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 01:54:27 +0000 (UTC)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E276F12083
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 18:54:26 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1aaec6f189cso8299715ad.3
-        for <bpf@vger.kernel.org>; Thu, 04 May 2023 18:54:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16027E
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 02:17:12 +0000 (UTC)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B7CAD29
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 19:17:11 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1ab01bf474aso8865875ad.1
+        for <bpf@vger.kernel.org>; Thu, 04 May 2023 19:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683251666; x=1685843666;
+        d=gmail.com; s=20221208; t=1683253031; x=1685845031;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rbMizpcbuHrelx8QU8AtsSzHyvKg6nPVvQ33+1BxfBU=;
-        b=PNuN57JuV69qcO2JI9vhB7wutSRYt3beeJ39hFDCM5fiI07KCsjD+tBfRoLyn2PNmC
-         C1t+cRADfudvYh9pEYfQiysFeIW9Gcfn0ryV0HnqwP7XgeDZ+FB1+KWpXc4VCMs3jv+B
-         Bny3Z6cNLh2oO9XvWwMKBnlgSpXnU08orUd6kKXKwrFg09tLEX5ry74eG/f5Bc458HIE
-         M0a5JHM7IGuOp1lR7M0i28ZmRekh6kD7lVjofc5po9wFNG6kySjUN19OgC2BnCRD74sH
-         xghCvhiDOhZf/BV4X881cwXtIVucCnS/9oSN/cES5hfKtIELhjJuoZPgXjCuBf46GZ5e
-         lqQQ==
+        bh=GdjQk63bsT7mrU/s3aQYdftjqTnzo/MG+xXYEVsna0k=;
+        b=cNuZBwkK4yXW8K27cGJ9GnVjFtsW/hFT/cg8OBlmMmdRkpPVstXFh7Wywu0GgnT3On
+         PTNPZQhM9NMVxIMiCxjvv/PQs+kApBhlaYz6YkJAnOHoz4lxCMTCSKHXWstxJc9xrDEB
+         hS1eaiTSE2MZHSaY+2UyhVcENTX4wuTB/qPWsz5m1zr3dYYZKliX0imz5PxfVcfjCcMx
+         76+MQ0K2q47aaeqXDBKWrI7H1Gz+gR6sMPk2Z9eTacDTOXpDUwy+sF7m99hvFw1f/0e4
+         VPWszEcd+WsA1RxXNiP0X4i0+sMT/7SEUlppcVHUITeI4o78MzTYlchCeoYshWk+lhrk
+         2NSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683251666; x=1685843666;
+        d=1e100.net; s=20221208; t=1683253031; x=1685845031;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rbMizpcbuHrelx8QU8AtsSzHyvKg6nPVvQ33+1BxfBU=;
-        b=lHy/ZgMn+hxWwoc5cR5ANnnD3Fj1HNnxmgl4IIjMSI32A5SD/M/7xInOWp/JmP+h+R
-         yFBn1a75ZmXPMYjMGL8v9ioVvBX4QZCgcId+W0fFO9VvCFO90iTIsYMnCxe07e6CfMYv
-         jGEzXE/u3whPuijcvevhJ0eHFFWGzRU6Tm2RyvxUiDH/imFUr3QhzvFI15EE9/wMUqgd
-         RdPP3ID6ED4C9Y9eV0F0KrePuQIeLXDopUbMCEvoo989NV0whrYI9bEoe812lmReCqrv
-         rVNulgayU5vrt1T6nVGAYWQ9Zw7MR7T29GviEYvwfDZHPMtVS8UipvBtFRRtrAJfaoWh
-         148Q==
-X-Gm-Message-State: AC+VfDzxnMXlnW0FrVumw6A9fjvUAFSrENEZZtBzhI+ZY5IJq7QkuSm3
-	6Xl1CWbehoDfzg0/4goXFeQ=
-X-Google-Smtp-Source: ACHHUZ4xBhTlilnEZyMJjrTzi35tFMmhaBvQw43ITG2NvCGgIfgC/xMG4PS/YlM7O2Tkz956sYEQoQ==
-X-Received: by 2002:a17:902:7b87:b0:1aa:ff24:f8f0 with SMTP id w7-20020a1709027b8700b001aaff24f8f0mr4865149pll.4.1683251666088;
-        Thu, 04 May 2023 18:54:26 -0700 (PDT)
+        bh=GdjQk63bsT7mrU/s3aQYdftjqTnzo/MG+xXYEVsna0k=;
+        b=CNzVar/ABZHHMQvJJO4KL4Ky8wnmlE7akynuPRCVqorNim1/1d1vXoS4SEPEuIKFYH
+         n/JIEijauQ06Reo2mJeO+LMy7emD+YRDo8Fi3J/ny4LGw1LL1qvK2HTcYM5x0+PC2esH
+         5NYQACB6LqvAw64s5LIG+UBD0EdZhD3v0HkriksT1pE/IoA+WLCOuRONsgcS3qoFT16l
+         F4gu74C8uCM51Fpo+7nXjKzCVpKl8f+RNJbukaaRyY/p7QXcSrSe58bdeD9U4NTCuf5y
+         BOLrAkUeBCdM+V2rQfQnUgZ5HA2x/sjVZKdWzqkF/xphnuKYnjB0HwzQNaRr8ycUMRFZ
+         wYaQ==
+X-Gm-Message-State: AC+VfDzY9A7kHGltCk+zkEKk1741iJc0zd3piAna+YBkQd9LYNXSWLDU
+	swTE8iDYLskRHATdPTiSFSE=
+X-Google-Smtp-Source: ACHHUZ4vFfCm0iPSjESO2Sg7uKGvao/FXqlZd4Lny4RiG6zI6ugGgYvIghhDZLt+JZ2KSfbUxNWYZw==
+X-Received: by 2002:a17:902:b106:b0:1ab:68b:cafe with SMTP id q6-20020a170902b10600b001ab068bcafemr5840156plr.27.1683253030571;
+        Thu, 04 May 2023 19:17:10 -0700 (PDT)
 Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:cce7])
-        by smtp.gmail.com with ESMTPSA id o16-20020a170902779000b001aaec9c4f1esm269962pll.156.2023.05.04.18.54.24
+        by smtp.gmail.com with ESMTPSA id 19-20020a17090a195300b0023a84911df2sm12122141pjh.7.2023.05.04.19.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 May 2023 18:54:25 -0700 (PDT)
-Date: Thu, 4 May 2023 18:54:23 -0700
+        Thu, 04 May 2023 19:17:10 -0700 (PDT)
+Date: Thu, 4 May 2023 19:17:07 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 03/10] bpf: encapsulate precision
- backtracking bookkeeping
-Message-ID: <20230505015423.3ph2xqrlftwcfgoe@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230505000908.1265044-1-andrii@kernel.org>
- <20230505000908.1265044-4-andrii@kernel.org>
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH v1 bpf-next 6/9] bpf: Make bpf_refcount_acquire fallible
+ for non-owning refs
+Message-ID: <20230505021707.vlyiwy57vwxglbka@dhcp-172-26-102-232.dhcp.thefacebook.com>
+References: <20230504053338.1778690-1-davemarchevsky@fb.com>
+ <20230504053338.1778690-7-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,7 +77,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230505000908.1265044-4-andrii@kernel.org>
+In-Reply-To: <20230504053338.1778690-7-davemarchevsky@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -81,38 +85,30 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 04, 2023 at 05:09:01PM -0700, Andrii Nakryiko wrote:
-> +struct backtrack_state {
-> +	struct bpf_verifier_env *env;
-> +	u32 frame;
-> +	u32 bitcnt;
-> +	u32 reg_masks[MAX_CALL_FRAMES];
-> +	u64 stack_masks[MAX_CALL_FRAMES];
-> +};
-> +
-
-> +static inline u32 bt_empty(struct backtrack_state *bt)
-> +{
-> +	u64 mask = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < MAX_CALL_FRAMES; i++)
-> +		mask |= bt->reg_masks[i] | bt->stack_masks[i];
-> +
-> +	return mask == 0;
-> +}
-> +
+On Wed, May 03, 2023 at 10:33:35PM -0700, Dave Marchevsky wrote:
+> @@ -298,8 +298,11 @@ struct bpf_kfunc_call_arg_meta {
+>  	} arg_constant;
+>  	union {
+>  		struct btf_and_id arg_obj_drop;
+> -		struct btf_and_id arg_refcount_acquire;
+>  		struct btf_and_id arg_graph_node;
+> +		struct {
+> +			struct btf_and_id btf_and_id;
+> +			bool owning_ref;
+> +		} arg_refcount_acquire;
 ...
-> +static inline void bt_set_frame_reg(struct backtrack_state *bt, u32 frame, u32 reg)
-> +{
-> +	if (bt->reg_masks[frame] & (1 << reg))
-> +		return;
-> +
-> +	bt->reg_masks[frame] |= 1 << reg;
-> +	bt->bitcnt++;
-> +}
+>  
+> -			meta->arg_refcount_acquire.btf = reg->btf;
+> -			meta->arg_refcount_acquire.btf_id = reg->btf_id;
+> +			meta->arg_refcount_acquire.btf_and_id.btf = reg->btf;
+> +			meta->arg_refcount_acquire.btf_and_id.btf_id = reg->btf_id;
 
-So you went with bitcnt and bt_empty ?
-I'm confused. I thought we discussed it's one or another.
-I have slight preference towards bt_empty() as above. fwiw.
+I wasn't excited about patch 2, but this one is taking it too far.
+Let's just get rid of this union and struct btf_and_id and all arg*.
+Just add
+ struct btf *arg_btf;
+ u32 arg_btf_id;
+ bool arg_owning_ref;
+to bpf_kfunc_call_arg_meta and use them in all cases.
+arg_refcount_acquire vs arg_graph_node difference doesn't give us readability or bug-proofing.
 
