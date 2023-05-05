@@ -1,85 +1,77 @@
-Return-Path: <bpf+bounces-141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACCA6F89E4
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 21:55:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 994C76F89F9
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 22:06:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 938111C219D7
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 19:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443492810BE
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 20:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37AAD2E1;
-	Fri,  5 May 2023 19:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF48D2E8;
+	Fri,  5 May 2023 20:05:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC17C12D
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 19:55:13 +0000 (UTC)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4F826A4
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 12:55:11 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-643ac91c51fso570229b3a.1
-        for <bpf@vger.kernel.org>; Fri, 05 May 2023 12:55:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D204C99
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 20:05:54 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5285A101
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 13:05:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f00d41df22so18209810e87.1
+        for <bpf@vger.kernel.org>; Fri, 05 May 2023 13:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683316511; x=1685908511;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pnTAKnYqxnmy7lNKYOCP4yQWMDQeCQlQLzoOQ+NwcJA=;
-        b=bvRT9wgYg/Lz4je/unhsUII02k/xPFNEyV7sw9RtmpZqDv45iRhoXuAwBXU0k79BYh
-         f2Fwx0Ynu7xS2GZzWRuwNdaQLLob+N1n0qVV9sPT3u3swsBRB2kdc+JTF/91G+vOXVEY
-         9ZtZ4LYrCUxxOcK5sMQdLPzujQpqQYOfs091SU9PP7YQgDDt+Y2I5w9E61NeZyMARd6+
-         lD/uxf67x3hU4KJdWARUJs03bF/u5iqifGv6irftG2eY7TW7HrPL7FV9sg2ceuhMw5p+
-         Qk44d32zTps+So+LwAV+rZ9+61Zp6EmPuNn554yvihJacbK79paoDO/jgoRSsUGCOAvp
-         3S6g==
+        d=gmail.com; s=20221208; t=1683317151; x=1685909151;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EvUqN7+4B5H/i6Yp7tD8ZXadcbiO6goPqSXqTxE7CN8=;
+        b=i19WE8x8LVhRb4DSOBQS48ialcaKRcmQdaBXIBXK0LuXj68Cjkrkiv92ndZzjxm1Pj
+         PC0ZTbUGwp5GK1neyAxOQT6EzxGuiJCnjItkiiJzicRRezGALRhqsBbtzAsYBcDSVV5X
+         NFTGXQ47Xyx16Q8OHs69VHBU1jPx3B+FIHgzrjcJZgnun4nt7d03ZfCt+8Q5VZu/ff+W
+         5Y2YsW3mnCOcPg3ZjO0yJl+RBWFwxyE1ZkFHelpdSKr6UFu2RIk1L3RHBl+3YBgucAt8
+         CrLEhuPn4Dare9kQ3gJxhYcuKpJcbJO25JvVzAUNIKert4CT+c2M1lND6MX9rEJga3oI
+         8jGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683316511; x=1685908511;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pnTAKnYqxnmy7lNKYOCP4yQWMDQeCQlQLzoOQ+NwcJA=;
-        b=fNUavLau37KlYkfCInALhPHWEIrNGoJn2a1nfR8NonK3+Ejf47in0/fYk/HY5nO4AM
-         EQhM9sbbVEXvKwuyXjt5ZgCmNI5udRHOTOU2345BjMSGPRCf5/Ekah6PVvXsJTYmiqIM
-         NoUlsiBZSflAI+ukVuZu4SafKn6pwi/h36oS20Q3yvnhoZqDRtKkh4Htava1PklzEn4+
-         dAf2uxl7T30ocGPuKzAETE7A5Eiw1Aijlgh2oJDrWDfCMnfDwhwfiHNgTg3j00FX8c76
-         3s91zarBpo/9dBYw4h/sqEDvnaoZL2hpdCUv+I9IqzKT+oTh3UsSBRPTi0wHxXp5+/hJ
-         ts8Q==
-X-Gm-Message-State: AC+VfDyeGRdNQb9pH2UWbky0NLxOBrxDvLtrbT4RmzEtjUw9i7DxqIwm
-	mh7sNXY2xpaLoN66tNl8Uec=
-X-Google-Smtp-Source: ACHHUZ55GzKdtXvnmGdJi631OhLerIoLFv0XR/qHjgAKzvobPh0fFO7bZgobk1eAmmeqlNStsvm4vg==
-X-Received: by 2002:aa7:888c:0:b0:63b:859f:f094 with SMTP id z12-20020aa7888c000000b0063b859ff094mr3580632pfe.20.1683316510602;
-        Fri, 05 May 2023 12:55:10 -0700 (PDT)
-Received: from dhcp-172-26-102-232.dhcp.thefacebook.com ([2620:10d:c090:400::5:cce7])
-        by smtp.gmail.com with ESMTPSA id v16-20020aa78510000000b005a8de0f4c64sm1982714pfn.82.2023.05.05.12.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 12:55:10 -0700 (PDT)
-Date: Fri, 5 May 2023 12:55:07 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 10/10] bpf: consistenly use program's recorded
- capabilities in BPF verifier
-Message-ID: <20230505195507.gr4yzwco3kz5iyye@dhcp-172-26-102-232.dhcp.thefacebook.com>
-References: <20230502230619.2592406-1-andrii@kernel.org>
- <20230502230619.2592406-11-andrii@kernel.org>
- <20230504222033.gw64tn73fverqccf@dhcp-172-26-102-232.dhcp.thefacebook.com>
- <CAEf4BzbuUvJ6zLvJJpMRc6jkx0GqbWdPFKi2GJ7G1WsjXpeUog@mail.gmail.com>
- <CAEf4BzYa0A3d8rp7KqCsuhOFicW7McNcv2Oz3J3ceZ0g2LROyw@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1683317151; x=1685909151;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EvUqN7+4B5H/i6Yp7tD8ZXadcbiO6goPqSXqTxE7CN8=;
+        b=UIJoXXuHlZVbKpLDj8KPcZjvmYPRolBkJQmmU/7tiZk7KFSilyPf7j0mKn/vd46LoL
+         E4/MBx1J6YkCjSMl9+hcsT2MYYCy0LdLQv9WQtuyJOemEbGOu2fggx2YjOJQUrNl2aHd
+         mtXbJIMdRpl+OIfUw4whdjhEH+nH0dDm5wCIfEhC49bJdXGe3BzEI7YVn/98r0VP0N89
+         gXy/iaqcMERa9dWtHWCVWW4WqGUo4MZK+vue1pgXBC7Wtr5eGmBs3LuZJUucpJ+Xs5F+
+         Xumw8/uq7whOAn1Y2W73v4RgqRpwNbOaN/L7GbYiv0LLWQHBNIcQCDFlCGCAQn1j3AMF
+         63Cw==
+X-Gm-Message-State: AC+VfDz0ErvqthEfuNVIfAGszmSbRsh39jpg8Utew1T46q0aH8g8Nfwt
+	uIM1/3werl1yUuUL42Qv1AROwxtNGdqru7OpJpc=
+X-Google-Smtp-Source: ACHHUZ55ZAEL6Trqo+sca4+JJ9YjhccAtqFx9lCf+Qtfdp1Au+eN0cMw6ULGZnXfUtCEeHLq+E3EzNNAES4aMf/jpRU=
+X-Received: by 2002:a05:6512:3a8d:b0:4ec:9f37:2cfb with SMTP id
+ q13-20020a0565123a8d00b004ec9f372cfbmr3016581lfu.27.1683317151255; Fri, 05
+ May 2023 13:05:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYa0A3d8rp7KqCsuhOFicW7McNcv2Oz3J3ceZ0g2LROyw@mail.gmail.com>
+References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
+ <20230503225351.3700208-7-aditi.ghag@isovalent.com> <1013e81f-5a0a-dd0b-c18d-3ee849c079ab@linux.dev>
+ <45684b6f-ecfb-5f14-e5ad-386b8f611c7a@linux.dev>
+In-Reply-To: <45684b6f-ecfb-5f14-e5ad-386b8f611c7a@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 5 May 2023 13:05:39 -0700
+Message-ID: <CAADnVQ+dSt0CgTTdEKQSxS6Cy_xYyHqahVPwQtTwA7K+PF8_8A@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 06/10] bpf: Add bpf_sock_destroy kfunc
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
+	Aditi Ghag <aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -87,53 +79,57 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 05, 2023 at 12:08:21PM -0700, Andrii Nakryiko wrote:
-> On Thu, May 4, 2023 at 3:51 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Fri, May 5, 2023 at 11:49=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 5/4/23 5:13 PM, Martin KaFai Lau wrote:
 > >
-> > On Thu, May 4, 2023 at 3:20 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, May 02, 2023 at 04:06:19PM -0700, Andrii Nakryiko wrote:
-> > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > > index 4d057d39c286..c0d60da7e0e0 100644
-> > > > --- a/kernel/bpf/core.c
-> > > > +++ b/kernel/bpf/core.c
-> > > > @@ -661,7 +661,7 @@ static bool bpf_prog_kallsyms_candidate(const struct bpf_prog *fp)
-> > > >  void bpf_prog_kallsyms_add(struct bpf_prog *fp)
-> > > >  {
-> > > >       if (!bpf_prog_kallsyms_candidate(fp) ||
-> > > > -         !bpf_capable())
-> > > > +         !fp->aux->bpf_capable)
-> > > >               return;
-> > >
-> > > Looking at this bit made me worry about classic bpf.
-> > > bpf_prog_alloc_no_stats() zeros all fields include aux->bpf_capable.
-> > > And loading of classic progs doesn't go through bpf_check().
-> > > So fp->aux->bpf_capable will stay 'false' even when root loads cBPF.
-> > > It doesn't matter here, since bpf_prog_kallsyms_candidate() will return false
-> > > for cBPF.
-> > >
-> > > Maybe we should init aux->bpf_capable in bpf_prog_alloc_no_stats()
-> > > to stay consistent between cBPF and eBPF ?
-> 
-> I'd like to avoid doing this deep inside bpf_prog_alloc_no_stats() or
-> bpf_prog_alloc() because this decision about privileges will be later
-> based on some other factors besides CAP_BPF. So hard-coding
-> bpf_capable() here defeats the purpose.
-> 
-> I did look at classic BPF, there are three places in net/core/filter.c
-> where we allocated struct bpf_prog from  struct sock_fprog/struct
-> sock_fprog_kern: bpf_prog_create, bpf_prog_create_from_user,
-> __get_filter.
-> 
-> Would it be ok if I just hard-coded `prog->aux->bpf_capable =
-> bpf_capable();` (and same for perfmon) in those three functions? Or
-> leave them always false? Because taking a step back a bit, do we want
-> to allow privileged classic BPF programs at all? Maybe it's actually
-> good that we force those cBPF programs to be unprivileged?
+> > Follow up on the v6 patch-set regarding KF_TRUSTED_ARGS.
+> > KF_TRUSTED_ARGS is needed here to avoid the cases where a PTR_TO_BTF_ID=
+ sk is
+> > obtained by following another pointer. eg. getting a sk pointer (may be=
+ even
+> > NULL) by following another sk pointer. The recent PTR_TRUSTED concept i=
+n the
+> > verifier can guard this. I tried and the following should do:
+> >
+> > diff --git i/net/core/filter.c w/net/core/filter.c
+> > index 68b228f3eca6..d82e038da0e3 100644
+> > --- i/net/core/filter.c
+> > +++ w/net/core/filter.c
+> > @@ -11767,7 +11767,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_co=
+mmon *sock)
+> >   __diag_pop()
+> >
+> >   BTF_SET8_START(sock_destroy_kfunc_set)
+> > -BTF_ID_FLAGS(func, bpf_sock_destroy)
+> > +BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
+> >   BTF_SET8_END(sock_destroy_kfunc_set)
+> >
+> >   static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc=
+_id)
+> > diff --git i/net/ipv4/tcp_ipv4.c w/net/ipv4/tcp_ipv4.c
+> > index 887f83a90d85..a769284e8291 100644
+> > --- i/net/ipv4/tcp_ipv4.c
+> > +++ w/net/ipv4/tcp_ipv4.c
+> > @@ -3354,7 +3354,7 @@ static struct bpf_iter_reg tcp_reg_info =3D {
+> >       .ctx_arg_info_size    =3D 1,
+> >       .ctx_arg_info        =3D {
+> >           { offsetof(struct bpf_iter__tcp, sk_common),
+> > -          PTR_TO_BTF_ID_OR_NULL },
+> > +          PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+>
+> Alexei, what do you think about having "PTR_MAYBE_NULL | PTR_TRUSTED" her=
+e?
+> The verifier side looks fine (eg. is_trusted_reg() is taking PTR_MAYBE_NU=
+LL into
+> consideration). However, it seems this will be the first "PTR_MAYBE_NULL =
+|
+> PTR_TRUSTED" use case and not sure if PTR_MAYBE_NULL may conceptually con=
+flict
+> with the PTR_TRUSTED idea (like PTR_TRUSTED should not be NULL).
 
-Indeed. cBPF is always allowed for unpriv.
-In that sense the value prog->aux->bpf_capable for cBPF is meaningless.
-Let's keep the patch as-is then.
+Conceptually it should be fine. There are no real cases of
+PTR_TRUSTED | PTR_MAYBE_NULL now, though check_reg_type() handles it.
+Proceed with care, I guess :)
 
