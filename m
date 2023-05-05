@@ -1,164 +1,242 @@
-Return-Path: <bpf+bounces-69-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-70-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E8B66F7A01
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 02:12:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEC36F7A02
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 02:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 279F2280F64
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:12:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0FD61C213DE
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 00:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB5B10E9;
-	Fri,  5 May 2023 00:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06F2EDE;
+	Fri,  5 May 2023 00:13:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A697E3
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 00:12:11 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888E411D93
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 17:12:10 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344H47YH009423
-	for <bpf@vger.kernel.org>; Thu, 4 May 2023 17:12:10 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qcgs9tnwr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 04 May 2023 17:12:10 -0700
-Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 4 May 2023 17:12:09 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 3254D3002FBA5; Thu,  4 May 2023 17:09:36 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v2 bpf-next 10/10] selftests/bpf: revert iter test subprog precision workaround
-Date: Thu, 4 May 2023 17:09:08 -0700
-Message-ID: <20230505000908.1265044-11-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230505000908.1265044-1-andrii@kernel.org>
-References: <20230505000908.1265044-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8465621
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 00:13:36 +0000 (UTC)
+Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [95.215.58.53])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7380712E9B
+	for <bpf@vger.kernel.org>; Thu,  4 May 2023 17:13:34 -0700 (PDT)
+Message-ID: <1013e81f-5a0a-dd0b-c18d-3ee849c079ab@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1683245612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kmgQUgw7bDELYzuG6ChHVQgWLxBmtakYX8fodKUgyFI=;
+	b=JSK+cRQAkwuDNtatrR5bg6eaLVNhb/BNufV3haVgRJ0ycF909+il/Q36BNDurKTuqBmxLw
+	4s9SSAZpIot69our2BZIHbo2wxKmhFrORe+631ITil8P2SXcInyxz16CscN+U7kl2HukyL
+	KIMzqqEiAfEn1WdDIRDAfAlCNEKHLS4=
+Date: Thu, 4 May 2023 17:13:29 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: FfiU6M0EubL3_u5eq32QV8ui175v9n-9
-X-Proofpoint-ORIG-GUID: FfiU6M0EubL3_u5eq32QV8ui175v9n-9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-04_15,2023-05-04_01,2023-02-09_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v7 bpf-next 06/10] bpf: Add bpf_sock_destroy kfunc
+Content-Language: en-US
+To: Aditi Ghag <aditi.ghag@isovalent.com>
+Cc: sdf@google.com, bpf@vger.kernel.org
+References: <20230503225351.3700208-1-aditi.ghag@isovalent.com>
+ <20230503225351.3700208-7-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230503225351.3700208-7-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Now that precision propagation is supported fully in the presence of
-subprogs, there is no need to work around iter test. Revert original
-workaround.
+On 5/3/23 3:53 PM, Aditi Ghag wrote:
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 727c5269867d..97d70b7959a1 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -11715,3 +11715,60 @@ static int __init bpf_kfunc_init(void)
+>   	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
+>   }
+>   late_initcall(bpf_kfunc_init);
+> +
+> +/* Disables missing prototype warnings */
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +		  "Global functions as their definitions will be in vmlinux BTF");
+> +
+> +/* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
+> + *
+> + * The function expects a non-NULL pointer to a socket, and invokes the
+> + * protocol specific socket destroy handlers.
+> + *
+> + * The helper can only be called from BPF contexts that have acquired the socket
+> + * locks.
+> + *
+> + * Parameters:
+> + * @sock: Pointer to socket to be destroyed
+> + *
+> + * Return:
+> + * On error, may return EPROTONOSUPPORT, EINVAL.
+> + * EPROTONOSUPPORT if protocol specific destroy handler is not supported.
+> + * 0 otherwise
+> + */
+> +__bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
+> +{
+> +	struct sock *sk = (struct sock *)sock;
+> +
+> +	if (!sk)
 
-This reverts be7dbd275dc6 ("selftests/bpf: avoid mark_all_scalars_precise=
-() trigger in one of iter tests").
+If the kfunc has the KF_TRUSTED_ARGS flag, this NULL test is no longer needed. 
+More details below.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/progs/iters.c | 26 ++++++++++-------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+> +		return -EINVAL;
+> +
+> +	/* The locking semantics that allow for synchronous execution of the
+> +	 * destroy handlers are only supported for TCP and UDP.
+> +	 * Supporting protocols will need to acquire lock_sock in the BPF context
+> +	 * prior to invoking this kfunc.
+> +	 */
+> +	if (!sk->sk_prot->diag_destroy || (sk->sk_protocol != IPPROTO_TCP &&
+> +					   sk->sk_protocol != IPPROTO_UDP))
+> +		return -EOPNOTSUPP;
+> +
+> +	return sk->sk_prot->diag_destroy(sk, ECONNABORTED);
+> +}
+> +
+> +__diag_pop()
+> +
+> +BTF_SET8_START(sock_destroy_kfunc_set)
 
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/se=
-lftests/bpf/progs/iters.c
-index be16143ae292..6b9b3c56f009 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -651,29 +651,25 @@ int iter_stack_array_loop(const void *ctx)
- 	return sum;
- }
-=20
--#define ARR_SZ 16
--
--static __noinline void fill(struct bpf_iter_num *it, int *arr, int mul)
-+static __noinline void fill(struct bpf_iter_num *it, int *arr, __u32 n, =
-int mul)
- {
--	int *t;
--	__u64 i;
-+	int *t, i;
-=20
- 	while ((t =3D bpf_iter_num_next(it))) {
- 		i =3D *t;
--		if (i >=3D ARR_SZ)
-+		if (i >=3D n)
- 			break;
- 		arr[i] =3D  i * mul;
- 	}
- }
-=20
--static __noinline int sum(struct bpf_iter_num *it, int *arr)
-+static __noinline int sum(struct bpf_iter_num *it, int *arr, __u32 n)
- {
--	int *t, sum =3D 0;;
--	__u64 i;
-+	int *t, i, sum =3D 0;;
-=20
- 	while ((t =3D bpf_iter_num_next(it))) {
- 		i =3D *t;
--		if (i >=3D ARR_SZ)
-+		if (i >=3D n)
- 			break;
- 		sum +=3D arr[i];
- 	}
-@@ -685,7 +681,7 @@ SEC("raw_tp")
- __success
- int iter_pass_iter_ptr_to_subprog(const void *ctx)
- {
--	int arr1[ARR_SZ], arr2[ARR_SZ];
-+	int arr1[16], arr2[32];
- 	struct bpf_iter_num it;
- 	int n, sum1, sum2;
-=20
-@@ -694,25 +690,25 @@ int iter_pass_iter_ptr_to_subprog(const void *ctx)
- 	/* fill arr1 */
- 	n =3D ARRAY_SIZE(arr1);
- 	bpf_iter_num_new(&it, 0, n);
--	fill(&it, arr1, 2);
-+	fill(&it, arr1, n, 2);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* fill arr2 */
- 	n =3D ARRAY_SIZE(arr2);
- 	bpf_iter_num_new(&it, 0, n);
--	fill(&it, arr2, 10);
-+	fill(&it, arr2, n, 10);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* sum arr1 */
- 	n =3D ARRAY_SIZE(arr1);
- 	bpf_iter_num_new(&it, 0, n);
--	sum1 =3D sum(&it, arr1);
-+	sum1 =3D sum(&it, arr1, n);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* sum arr2 */
- 	n =3D ARRAY_SIZE(arr2);
- 	bpf_iter_num_new(&it, 0, n);
--	sum2 =3D sum(&it, arr2);
-+	sum2 =3D sum(&it, arr2, n);
- 	bpf_iter_num_destroy(&it);
-=20
- 	bpf_printk("sum1=3D%d, sum2=3D%d", sum1, sum2);
---=20
-2.34.1
+nit. Rename it to a more generic name for future sk_iter related kfunc.
+May be bpf_sk_iter_kfunc_set ?
+
+> +BTF_ID_FLAGS(func, bpf_sock_destroy)
+
+Follow up on the v6 patch-set regarding KF_TRUSTED_ARGS.
+KF_TRUSTED_ARGS is needed here to avoid the cases where a PTR_TO_BTF_ID sk is 
+obtained by following another pointer. eg. getting a sk pointer (may be even 
+NULL) by following another sk pointer. The recent PTR_TRUSTED concept in the 
+verifier can guard this. I tried and the following should do:
+
+diff --git i/net/core/filter.c w/net/core/filter.c
+index 68b228f3eca6..d82e038da0e3 100644
+--- i/net/core/filter.c
++++ w/net/core/filter.c
+@@ -11767,7 +11767,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
+  __diag_pop()
+
+  BTF_SET8_START(sock_destroy_kfunc_set)
+-BTF_ID_FLAGS(func, bpf_sock_destroy)
++BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
+  BTF_SET8_END(sock_destroy_kfunc_set)
+
+  static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc_id)
+diff --git i/net/ipv4/tcp_ipv4.c w/net/ipv4/tcp_ipv4.c
+index 887f83a90d85..a769284e8291 100644
+--- i/net/ipv4/tcp_ipv4.c
++++ w/net/ipv4/tcp_ipv4.c
+@@ -3354,7 +3354,7 @@ static struct bpf_iter_reg tcp_reg_info = {
+  	.ctx_arg_info_size	= 1,
+  	.ctx_arg_info		= {
+  		{ offsetof(struct bpf_iter__tcp, sk_common),
+-		  PTR_TO_BTF_ID_OR_NULL },
++		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+  	},
+  	.get_func_proto		= bpf_iter_tcp_get_func_proto,
+  	.seq_info		= &tcp_seq_info,
+diff --git i/net/ipv4/udp.c w/net/ipv4/udp.c
+index 746c85f2bb03..945b641b363b 100644
+--- i/net/ipv4/udp.c
++++ w/net/ipv4/udp.c
+@@ -3646,7 +3646,7 @@ static struct bpf_iter_reg udp_reg_info = {
+  	.ctx_arg_info_size	= 1,
+  	.ctx_arg_info		= {
+  		{ offsetof(struct bpf_iter__udp, udp_sk),
+-		  PTR_TO_BTF_ID_OR_NULL },
++		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+  	},
+  	.seq_info		= &udp_seq_info,
+  };
+
+Please take a look and run through the test_progs. If you agree on the changes, 
+this should be included in the same patch 6.
+
+> +BTF_SET8_END(sock_destroy_kfunc_set)
+> +
+> +static const struct btf_kfunc_id_set bpf_sock_destroy_kfunc_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &sock_destroy_kfunc_set,
+> +};
+> +
+> +static int init_subsystem(void)
+> +{
+> +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_sock_destroy_kfunc_set);
+> +}
+> +late_initcall(init_subsystem);
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index 288693981b00..2259b4facc2f 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -4679,8 +4679,10 @@ int tcp_abort(struct sock *sk, int err)
+>   		return 0;
+>   	}
+>   
+> -	/* Don't race with userspace socket closes such as tcp_close. */
+> -	lock_sock(sk);
+> +	/* BPF context ensures sock locking. */
+> +	if (!has_current_bpf_ctx())
+> +		/* Don't race with userspace socket closes such as tcp_close. */
+> +		lock_sock(sk);
+>   
+>   	if (sk->sk_state == TCP_LISTEN) {
+>   		tcp_set_state(sk, TCP_CLOSE);
+> @@ -4702,9 +4704,11 @@ int tcp_abort(struct sock *sk, int err)
+>   	}
+>   
+>   	bh_unlock_sock(sk);
+> +
+
+nit. unnecessary new line change.
+
+>   	local_bh_enable();
+>   	tcp_write_queue_purge(sk);
+> -	release_sock(sk);
+> +	if (!has_current_bpf_ctx())
+> +		release_sock(sk);
+>   	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(tcp_abort);
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 150551acab9d..5f48cdf82a45 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -2925,7 +2925,8 @@ EXPORT_SYMBOL(udp_poll);
+>   
+>   int udp_abort(struct sock *sk, int err)
+>   {
+> -	lock_sock(sk);
+> +	if (!has_current_bpf_ctx())
+> +		lock_sock(sk);
+>   
+>   	/* udp{v6}_destroy_sock() sets it under the sk lock, avoid racing
+>   	 * with close()
+> @@ -2938,7 +2939,8 @@ int udp_abort(struct sock *sk, int err)
+>   	__udp_disconnect(sk, 0);
+>   
+>   out:
+> -	release_sock(sk);
+> +	if (!has_current_bpf_ctx())
+> +		release_sock(sk);
+>   
+>   	return 0;
+>   }
 
 
