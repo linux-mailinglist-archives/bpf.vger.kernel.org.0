@@ -1,201 +1,216 @@
-Return-Path: <bpf+bounces-111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 941736F8095
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 12:11:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1AF06F8232
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 13:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278AB280FB5
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 10:11:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D91AA1C2181B
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 11:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5E179E6;
-	Fri,  5 May 2023 10:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D5C79FC;
+	Fri,  5 May 2023 11:42:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764F23FC7
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 10:11:31 +0000 (UTC)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A740013864
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 03:11:29 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-306f9df5269so1048315f8f.3
-        for <bpf@vger.kernel.org>; Fri, 05 May 2023 03:11:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA17156C6
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 11:42:17 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DB411607;
+	Fri,  5 May 2023 04:42:15 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3f178da21b5so11393215e9.3;
+        Fri, 05 May 2023 04:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1683281488; x=1685873488;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rizyxIXJOlFW2tozEO22jhd9OD3mttiffgTobk9xT1o=;
-        b=Du8jND/qWPzd/0/IJy0ay4son5WxE/yh+fKQjFzUZXufA9MB0hx639paeq6YU2DIe2
-         Qx3nuAMOJj0cTbs7yp38mjdI+oIpSqjIyhTpBofQ3c8UA9CbFSH2klJM9I0tN8b1zv/g
-         QWnvr1qckWTu9bEC3WcOK12hrW+oXzD8cYjyoEnSD0RsXc9Vl+spiG73vPolu+dw7LZk
-         2th2d3IulPKri4pA6hP6/uB1Nuo2r2rCur+pxRrvyUZT8NWUw1RmFLeaKHOIjkssbGfa
-         tw3oQ7dcgwEFNw8/ssLYOLy2W9lpMsSDyXFXZcJK9U/96hgYIBit9l8WzsDX0ZmAqyWv
-         WQyw==
+        d=gmail.com; s=20221208; t=1683286934; x=1685878934;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jwA4RNzHLoe51BKJcNUYfJNJRyNu9DKsCjgDMwmTA7A=;
+        b=WF62c/j6RiITYW667aRT9w0LZy3zB+wgpx/WJ54+TRNLcLn4nTSikrpYai6OPrVGkz
+         IhgIvNnPGGl2SqlqbS+XLVcmzlBBB3OIewdGD/Mc7jw1zvkSCZS0gO6g4I18UKjJpoj1
+         FO9voODgeBvwtJghqcm99OfSx20ZYAYuzHd2L/pDpWIFnzEdDA3BDtg027bp6yGvd9Dy
+         qmFj4Wp7HLufi3CpLf5X1VBmgRP2xFU6Kl41WtHiVSFzxiRuFE36kp27VfhPHPstuWxI
+         64+hwtMFhwaAojMK5K/YmDlC2xrKZsqTNtkbqts5wT+hjaUtZQ2H9I3Ym5HgEfVBlr30
+         j7CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683281488; x=1685873488;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1683286934; x=1685878934;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rizyxIXJOlFW2tozEO22jhd9OD3mttiffgTobk9xT1o=;
-        b=I6PQib0karCKYhvcRJjbre4t4I5goSRdDUTm2ZZdMam93V9F/szgaBQYUMhju2V2w1
-         qp9Z7AgE0y2XH0Ri5lD+hnHJ7ZyXYpT7GCO0yB6M3Zrv1xvcTp05pjWpPaP9vVBgUvj1
-         BPoVSMI1o6/qOGyF5pmba7QURyRUN3m+Yj10N6ExdB7BVefmfZfIheeaKsVtsJ7OGjJV
-         W9kJhtxXzRVbv86gVov0imGDGYts73qTwWFjp79g2kIyxBLBabmwbsc2aujWB2/xqRWK
-         iQNFLsiLMzc18lIfuIpLotwO0l/p1XjFB3JKhoN2z+V5WlRjfA8AMYgYYC3XjE1V8xIG
-         fBLw==
-X-Gm-Message-State: AC+VfDyZ+taS30ar5TDMX+T45POhnXhpeqTH2CWAmfTPFkOcAcaRAc9r
-	5QJVQ9rONX4cVUnNR/ZduBavnsg3AMcIALUSNJMQ9Tz4
-X-Google-Smtp-Source: ACHHUZ5+nFCYQ0mFym1WG2CR05cM9zDreWbTHOEijUPcGa4b3bFZvusskLJn1Ja9k09Cvt8p9Mq3nQ==
-X-Received: by 2002:a5d:4d89:0:b0:301:81f8:765f with SMTP id b9-20020a5d4d89000000b0030181f8765fmr994437wru.38.1683281488111;
-        Fri, 05 May 2023 03:11:28 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:247b:b092:5664:1862? ([2a02:8011:e80c:0:247b:b092:5664:1862])
-        by smtp.gmail.com with ESMTPSA id j8-20020a5d5648000000b003062cdc6ac5sm1881422wrw.89.2023.05.05.03.11.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 May 2023 03:11:27 -0700 (PDT)
-Message-ID: <2da44d24-74ae-a564-1764-afccf395eeec@isovalent.com>
-Date: Fri, 5 May 2023 11:11:26 +0100
+        bh=jwA4RNzHLoe51BKJcNUYfJNJRyNu9DKsCjgDMwmTA7A=;
+        b=e/mr5PElj8n0EMnDDEUQ19+O3x5Zdr3t8VmUh93yvsoaMFdsMogYYy15fPAxd1T3PW
+         yU4qDoIOoD2TIJktpgZzzvH6rMrGak1VW2snljc+09rvjNY64xlRx0XVDo/V+pDC039y
+         VbfULTcewhhBnp9yCtoHNjj5bqvT28oB2tRVN3i9J/4EZqfm9JTvWsdBRuyqxhQsFBpe
+         Y1g1iJWACcBPP/iTWOxSh1uSMWbCmTDXpy2g7QoTMPv7tZfPZ1YFS4AacUAI0RUmJMxI
+         geMOioyVM3+9fGX06c3YjAYHO7YQIzvtQwt3iYuaF3QgBDLizmOVwSdP5rUfi+3pkO60
+         iZng==
+X-Gm-Message-State: AC+VfDxcU7eFgZrlqZH+5Ri0VIHSVXYNdA+y78uxgbALkzaBy2uJemDW
+	HR9wKLnYWYfucxF/GroU85+2U0hCPI6OCg==
+X-Google-Smtp-Source: ACHHUZ5w3w27K7kl40zFdLW88ML+N5pSdsni2WgKoruZX/PkX3r58fPaDnqKsJGOacQJD5I58y5CNA==
+X-Received: by 2002:a7b:c8d9:0:b0:3f1:78a7:6bd2 with SMTP id f25-20020a7bc8d9000000b003f178a76bd2mr930562wml.27.1683286934055;
+        Fri, 05 May 2023 04:42:14 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 20-20020a05600c029400b003f16932fe7dsm7803364wmk.38.2023.05.05.04.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 May 2023 04:42:13 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 5 May 2023 13:42:10 +0200
+To: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Song Liu <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Clark Williams <williams@redhat.com>,
+	Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Changbin Du <changbin.du@huawei.com>, Hao Luo <haoluo@google.com>,
+	James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Roman Lozko <lozko.roma@gmail.com>,
+	Stephane Eranian <eranian@google.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: BPF skels in perf .Re: [GIT PULL] perf tools changes for v6.4
+Message-ID: <ZFTrkjccQ4cW6kYZ@krava>
+References: <ZFOSUab5XEJD0kxj@kernel.org>
+ <CAHk-=wgv1sKTdLWPC7XR1Px=pDNrDPDTKdX-T_2AQOwgkpWB2A@mail.gmail.com>
+ <ZFPw0scDq1eIzfHr@kernel.org>
+ <CAEf4BzaUU9vZU6R_020ru5ct0wh-p1M3ZFet-vYqcHvb9bW1Cw@mail.gmail.com>
+ <ZFQCccsx6GK+gY0j@kernel.org>
+ <ZFQoQjCNtyMIulp+@kernel.org>
+ <CAP-5=fU8HQorW+7O6vfEKGs1mEFkjkzXZMVPACzurtcMcRhVzQ@mail.gmail.com>
+ <ZFQ5sjjtfEYzvHNP@krava>
+ <CAP-5=fXgtNQ5KQv_M+b-mR-dm_s8AAgRkotXifFiTqBo9FHJzA@mail.gmail.com>
+ <ZFTOxBDsbboKeEr9@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH bpf-next] bpftool: Support bpffs mountpoint as pin path
- for prog loadall
-Content-Language: en-GB
-To: Pengcheng Yang <yangpc@wangsu.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org
-References: <1683197138-1894-1-git-send-email-yangpc@wangsu.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <1683197138-1894-1-git-send-email-yangpc@wangsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZFTOxBDsbboKeEr9@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-2023-05-04 18:45 UTC+0800 ~ Pengcheng Yang <yangpc@wangsu.com>
-> Currently, when using prog loadall, if the pin path is a bpffs
-> mountpoint, bpffs will be repeatedly mounted to the parent directory
-> of the bpffs mountpoint path.
+On Fri, May 05, 2023 at 11:39:19AM +0200, Jiri Olsa wrote:
+> On Thu, May 04, 2023 at 04:19:47PM -0700, Ian Rogers wrote:
+> > On Thu, May 4, 2023 at 4:03 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > >
+> > > On Thu, May 04, 2023 at 03:03:42PM -0700, Ian Rogers wrote:
+> > > > On Thu, May 4, 2023 at 2:48 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > >
+> > > > > Em Thu, May 04, 2023 at 04:07:29PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > > > Em Thu, May 04, 2023 at 11:50:07AM -0700, Andrii Nakryiko escreveu:
+> > > > > > > On Thu, May 4, 2023 at 10:52 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > > > > > Andrii, can you add some more information about the usage of vmlinux.h
+> > > > > > > > instead of using kernel headers?
+> > > > > >
+> > > > > > > I'll just say that vmlinux.h is not a hard requirement to build BPF
+> > > > > > > programs, it's more a convenience allowing easy access to definitions
+> > > > > > > of both UAPI and kernel-internal structures for tracing needs and
+> > > > > > > marking them relocatable using BPF CO-RE machinery. Lots of real-world
+> > > > > > > applications just check-in pregenerated vmlinux.h to avoid build-time
+> > > > > > > dependency on up-to-date host kernel and such.
+> > > > > >
+> > > > > > > If vmlinux.h generation and usage is causing issues, though, given
+> > > > > > > that perf's BPF programs don't seem to be using many different kernel
+> > > > > > > types, it might be a better option to just use UAPI headers for public
+> > > > > > > kernel type definitions, and just define CO-RE-relocatable minimal
+> > > > > > > definitions locally in perf's BPF code for the other types necessary.
+> > > > > > > E.g., if perf needs only pid and tgid from task_struct, this would
+> > > > > > > suffice:
+> > > > > >
+> > > > > > > struct task_struct {
+> > > > > > >     int pid;
+> > > > > > >     int tgid;
+> > > > > > > } __attribute__((preserve_access_index));
+> > > > > >
+> > > > > > Yeah, that seems like a way better approach, no vmlinux involved, libbpf
+> > > > > > CO-RE notices that task_struct changed from this two integers version
+> > > > > > (of course) and does the relocation to where it is in the running kernel
+> > > > > > by using /sys/kernel/btf/vmlinux.
+> > > > >
+> > > > > Doing it for one of the skels, build tested, runtime untested, but not
+> > > > > using any vmlinux, BTF to help, not that bad, more verbose, but at least
+> > > > > we state what are the fields we actually use, have those attribute
+> > > > > documenting that those offsets will be recorded for future use, etc.
+> > > > >
+> > > > > Namhyung, can you please check that this works?
+> > > > >
+> > > > > Thanks,
+> > > > >
+> > > > > - Arnaldo
+> > > > >
+> > > > > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > > index 6a438e0102c5a2cb..f376d162549ebd74 100644
+> > > > > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > > > > @@ -1,11 +1,40 @@
+> > > > >  // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > >  // Copyright (c) 2021 Facebook
+> > > > >  // Copyright (c) 2021 Google
+> > > > > -#include "vmlinux.h"
+> > > > > +#include <linux/types.h>
+> > > > > +#include <linux/bpf.h>
+> > > >
+> > > > Compared to vmlinux.h here be dragons. It is easy to start dragging in
+> > > > all of libc and that may not work due to missing #ifdefs, etc.. Could
+> > > > we check in a vmlinux.h like libbpf-tools does?
+> > > > https://github.com/iovisor/bcc/tree/master/libbpf-tools#vmlinuxh-generation
+> > > > https://github.com/iovisor/bcc/tree/master/libbpf-tools/arm64
+> > > >
+> > > > This would also remove some of the errors that could be introduced by
+> > > > copy+pasting enums, etc. and also highlight issues with things being
+> > > > renamed as build time rather than runtime failures.
+> > >
+> > > we already have to deal with that, right? doing checks on fields in
+> > > structs like mm_struct___old
+> > 
+> > We do, but the way I detected the problems in the first place was by
+> > building against older kernels. Now the build will always succeed but
+> > fail at runtime.
+> > 
+> > > > Could this be some shared resource for the different linux tools
+> > > > projects using a vmlinux.h? e.g. tools/lib/vmlinuxh with an
+> > > > install_headers target that builds a vmlinux.h.
+> > >
+> > > I tried to do the minimal header and it's not too big,
+> > > I pushed it in here:
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=perf/vmlinux_h
+> > >
+> > > compile tested so far
+> > >
+> > > jirka
+> > 
+> > Cool, could we just call it vmlinux.h rather than perf-defs.h?
 > 
-> For example,
->     $ bpftool prog loadall test.o /sys/fs/bpf
-> currently bpffs will be repeatedly mounted to /sys/fs.
+> right, it also makes the change smaller
 > 
-> Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
-> ---
->  tools/bpf/bpftool/common.c | 9 ++++++---
->  tools/bpf/bpftool/iter.c   | 2 +-
->  tools/bpf/bpftool/main.h   | 2 +-
->  tools/bpf/bpftool/prog.c   | 2 +-
->  4 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index 5a73ccf14332..880fcb45f89f 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -68,7 +68,7 @@ void p_info(const char *fmt, ...)
->  	va_end(ap);
->  }
->  
-> -static bool is_bpffs(char *path)
-> +static bool is_bpffs(const char *path)
->  {
->  	struct statfs st_fs;
->  
-> @@ -244,13 +244,16 @@ int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type)
->  	return fd;
->  }
->  
-> -int mount_bpffs_for_pin(const char *name)
-> +int mount_bpffs_for_pin(const char *name, bool is_dir)
->  {
->  	char err_str[ERR_MAX_LEN];
->  	char *file;
->  	char *dir;
->  	int err = 0;
->  
-> +	if (is_dir && is_bpffs(name))
-> +		return err;
-> +
->  	file = malloc(strlen(name) + 1);
->  	if (!file) {
->  		p_err("mem alloc failed");
-> @@ -286,7 +289,7 @@ int do_pin_fd(int fd, const char *name)
->  {
->  	int err;
->  
-> -	err = mount_bpffs_for_pin(name);
-> +	err = mount_bpffs_for_pin(name, false);
->  	if (err)
->  		return err;
->  
-> diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
-> index 9a1d2365a297..6b0e5202ca7a 100644
-> --- a/tools/bpf/bpftool/iter.c
-> +++ b/tools/bpf/bpftool/iter.c
-> @@ -76,7 +76,7 @@ static int do_pin(int argc, char **argv)
->  		goto close_obj;
->  	}
->  
-> -	err = mount_bpffs_for_pin(path);
-> +	err = mount_bpffs_for_pin(path, false);
->  	if (err)
->  		goto close_link;
->  
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 0ef373cef4c7..665f23f68066 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -142,7 +142,7 @@ const char *get_fd_type_name(enum bpf_obj_type type);
->  char *get_fdinfo(int fd, const char *key);
->  int open_obj_pinned(const char *path, bool quiet);
->  int open_obj_pinned_any(const char *path, enum bpf_obj_type exp_type);
-> -int mount_bpffs_for_pin(const char *name);
-> +int mount_bpffs_for_pin(const char *name, bool is_dir);
->  int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(int *, char ***));
->  int do_pin_fd(int fd, const char *name);
->  
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index afbe3ec342c8..473ec01c00d6 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-> @@ -1747,7 +1747,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
->  		goto err_close_obj;
->  	}
->  
-> -	err = mount_bpffs_for_pin(pinfile);
-> +	err = mount_bpffs_for_pin(pinfile, !first_prog_only);
->  	if (err)
->  		goto err_close_obj;
->  
+> > 
+> > I notice cgroup_subsys_id is in there which is called out in Andrii's
+> > CO-RE  guide/blog:
+> > https://nakryiko.com/posts/bpf-core-reference-guide/#relocatable-enums
+> > perhaps we can do something with names/types to make sure a helper is
+> > being used for these enum values.
 
-Thanks! Makes sense to pass down is_dir, given that the directory does
-not always exist at this stage so we can't just fstat(name) to check the
-type in mount_bpffs_for_pin().
+both bperf_cgroup and off_cpu programs use bpf_core_enum_value, so we should be fine
 
-Note that you missed an occurrence of mount_bpffs_for_pin() in
-struct_ops.c, recently added in commit 0232b7889786 ("bpftool: Register
-struct_ops with a link."), please fix it.
-
-I realise that even if we pass a directory name, we try to mount the
-bpffs on the parent directory. We should clean this up in the future and
-only mount on the provided directory in this case, but this might
-require creating the directory first (it does not always exist at this
-stage).
-
-Thanks,
-Quentin
+jirka
 
