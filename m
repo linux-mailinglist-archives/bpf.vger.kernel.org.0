@@ -1,164 +1,102 @@
-Return-Path: <bpf+bounces-92-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-95-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E743E6F7BF3
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 06:35:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B693A6F7C90
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 07:50:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A9281C216EB
-	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 04:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 652F5280F68
+	for <lists+bpf@lfdr.de>; Fri,  5 May 2023 05:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3447F4C6D;
-	Fri,  5 May 2023 04:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37B51C2B;
+	Fri,  5 May 2023 05:50:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A32156C1
-	for <bpf@vger.kernel.org>; Fri,  5 May 2023 04:33:50 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18D1AD20
-	for <bpf@vger.kernel.org>; Thu,  4 May 2023 21:33:49 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 344KBNTM024244
-	for <bpf@vger.kernel.org>; Thu, 4 May 2023 21:33:49 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qckh42hnb-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 04 May 2023 21:33:49 -0700
-Received: from twshared18891.17.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 4 May 2023 21:33:47 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 2FC213006D8DA; Thu,  4 May 2023 21:33:40 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v3 bpf-next 10/10] selftests/bpf: revert iter test subprog precision workaround
-Date: Thu, 4 May 2023 21:33:17 -0700
-Message-ID: <20230505043317.3629845-11-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230505043317.3629845-1-andrii@kernel.org>
-References: <20230505043317.3629845-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F31A156E6
+	for <bpf@vger.kernel.org>; Fri,  5 May 2023 05:50:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9AB8C4339E;
+	Fri,  5 May 2023 05:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683265822;
+	bh=QpkJMhZ3m9GSusSBrPp7eLeLROuJgsn77YyMMnU+3+o=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=WTXKiJX1OJfeDqGW/4wdn7i/hpkdFzL+raL1vWZEWRkLmoo5dISJGmi1hU2aczL93
+	 Opk/2lGZocj+DXoLAQoaHKMn3ZNzcS9x7x7l5sAF7RUfXe9bJlyrjJZCkCSBx40je9
+	 5PBmyeonVan01f0N28barSQAJSvBLnF3b7AofsRxEzgwJa8x40+IJRuxivXtqB/mO2
+	 nx8lCKAtJYgRp4ObLoztOPJivKleQqg9kNPoerzCmREH6Jappnug4ZrLzTJU7c+oz6
+	 7fFyvO2QpJnBK1htTSwc1znNDg2YlVuu5c5+qjHaXenEVasJnsxp2qxKaWU6HeA4DN
+	 ZfmpgecbN9zNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AA74EE5FFC9;
+	Fri,  5 May 2023 05:50:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 4gj1M0Gbk-fNpLTMjjeDIbuFwaUy9uub
-X-Proofpoint-GUID: 4gj1M0Gbk-fNpLTMjjeDIbuFwaUy9uub
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-04_15,2023-05-04_01,2023-02-09_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 bpf-next 00/10] Add precision propagation for subprogs and
+ callbacks
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168326582268.19364.13895089224168488627.git-patchwork-notify@kernel.org>
+Date: Fri, 05 May 2023 05:50:22 +0000
+References: <20230505043317.3629845-1-andrii@kernel.org>
+In-Reply-To: <20230505043317.3629845-1-andrii@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, kernel-team@meta.com
 
-Now that precision propagation is supported fully in the presence of
-subprogs, there is no need to work around iter test. Revert original
-workaround.
+Hello:
 
-This reverts be7dbd275dc6 ("selftests/bpf: avoid mark_all_scalars_precise=
-() trigger in one of iter tests").
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/progs/iters.c | 26 ++++++++++-------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+On Thu, 4 May 2023 21:33:07 -0700 you wrote:
+> As more and more real-world BPF programs become more complex
+> and increasingly use subprograms (both static and global), scalar precision
+> tracking and its (previously weak) support for BPF subprograms (and callbacks
+> as a special case of that) is becoming more and more of an issue and
+> limitation. Couple that with increasing reliance on state equivalence (BPF
+> open-coded iterators have a hard requirement for state equivalence to converge
+> and successfully validate loops), and it becomes pretty critical to address
+> this limitation and make precision tracking universally supported for BPF
+> programs of any complexity and composition.
+> 
+> [...]
 
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/se=
-lftests/bpf/progs/iters.c
-index be16143ae292..6b9b3c56f009 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -651,29 +651,25 @@ int iter_stack_array_loop(const void *ctx)
- 	return sum;
- }
-=20
--#define ARR_SZ 16
--
--static __noinline void fill(struct bpf_iter_num *it, int *arr, int mul)
-+static __noinline void fill(struct bpf_iter_num *it, int *arr, __u32 n, =
-int mul)
- {
--	int *t;
--	__u64 i;
-+	int *t, i;
-=20
- 	while ((t =3D bpf_iter_num_next(it))) {
- 		i =3D *t;
--		if (i >=3D ARR_SZ)
-+		if (i >=3D n)
- 			break;
- 		arr[i] =3D  i * mul;
- 	}
- }
-=20
--static __noinline int sum(struct bpf_iter_num *it, int *arr)
-+static __noinline int sum(struct bpf_iter_num *it, int *arr, __u32 n)
- {
--	int *t, sum =3D 0;;
--	__u64 i;
-+	int *t, i, sum =3D 0;;
-=20
- 	while ((t =3D bpf_iter_num_next(it))) {
- 		i =3D *t;
--		if (i >=3D ARR_SZ)
-+		if (i >=3D n)
- 			break;
- 		sum +=3D arr[i];
- 	}
-@@ -685,7 +681,7 @@ SEC("raw_tp")
- __success
- int iter_pass_iter_ptr_to_subprog(const void *ctx)
- {
--	int arr1[ARR_SZ], arr2[ARR_SZ];
-+	int arr1[16], arr2[32];
- 	struct bpf_iter_num it;
- 	int n, sum1, sum2;
-=20
-@@ -694,25 +690,25 @@ int iter_pass_iter_ptr_to_subprog(const void *ctx)
- 	/* fill arr1 */
- 	n =3D ARRAY_SIZE(arr1);
- 	bpf_iter_num_new(&it, 0, n);
--	fill(&it, arr1, 2);
-+	fill(&it, arr1, n, 2);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* fill arr2 */
- 	n =3D ARRAY_SIZE(arr2);
- 	bpf_iter_num_new(&it, 0, n);
--	fill(&it, arr2, 10);
-+	fill(&it, arr2, n, 10);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* sum arr1 */
- 	n =3D ARRAY_SIZE(arr1);
- 	bpf_iter_num_new(&it, 0, n);
--	sum1 =3D sum(&it, arr1);
-+	sum1 =3D sum(&it, arr1, n);
- 	bpf_iter_num_destroy(&it);
-=20
- 	/* sum arr2 */
- 	n =3D ARRAY_SIZE(arr2);
- 	bpf_iter_num_new(&it, 0, n);
--	sum2 =3D sum(&it, arr2);
-+	sum2 =3D sum(&it, arr2, n);
- 	bpf_iter_num_destroy(&it);
-=20
- 	bpf_printk("sum1=3D%d, sum2=3D%d", sum1, sum2);
---=20
-2.34.1
+Here is the summary with links:
+  - [v3,bpf-next,01/10] veristat: add -t flag for adding BPF_F_TEST_STATE_FREQ program flag
+    https://git.kernel.org/bpf/bpf-next/c/5956f3011604
+  - [v3,bpf-next,02/10] bpf: mark relevant stack slots scratched for register read instructions
+    https://git.kernel.org/bpf/bpf-next/c/e0bf462276b6
+  - [v3,bpf-next,03/10] bpf: encapsulate precision backtracking bookkeeping
+    https://git.kernel.org/bpf/bpf-next/c/407958a0e980
+  - [v3,bpf-next,04/10] bpf: improve precision backtrack logging
+    https://git.kernel.org/bpf/bpf-next/c/d9439c21a9e4
+  - [v3,bpf-next,05/10] bpf: maintain bitmasks across all active frames in __mark_chain_precision
+    https://git.kernel.org/bpf/bpf-next/c/1ef22b6865a7
+  - [v3,bpf-next,06/10] bpf: fix propagate_precision() logic for inner frames
+    https://git.kernel.org/bpf/bpf-next/c/f655badf2a8f
+  - [v3,bpf-next,07/10] bpf: fix mark_all_scalars_precise use in mark_chain_precision
+    https://git.kernel.org/bpf/bpf-next/c/c50c0b57a515
+  - [v3,bpf-next,08/10] bpf: support precision propagation in the presence of subprogs
+    https://git.kernel.org/bpf/bpf-next/c/fde2a3882bd0
+  - [v3,bpf-next,09/10] selftests/bpf: add precision propagation tests in the presence of subprogs
+    https://git.kernel.org/bpf/bpf-next/c/3ef3d2177b1a
+  - [v3,bpf-next,10/10] selftests/bpf: revert iter test subprog precision workaround
+    https://git.kernel.org/bpf/bpf-next/c/c91ab90cea7a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
