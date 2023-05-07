@@ -1,144 +1,148 @@
-Return-Path: <bpf+bounces-185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FCDB6F96A0
-	for <lists+bpf@lfdr.de>; Sun,  7 May 2023 04:57:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B53D6F96AD
+	for <lists+bpf@lfdr.de>; Sun,  7 May 2023 05:30:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57C822811CB
-	for <lists+bpf@lfdr.de>; Sun,  7 May 2023 02:57:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B313A1C21BF0
+	for <lists+bpf@lfdr.de>; Sun,  7 May 2023 03:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD06C15CD;
-	Sun,  7 May 2023 02:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1711A17C5;
+	Sun,  7 May 2023 03:30:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09E715BC
-	for <bpf@vger.kernel.org>; Sun,  7 May 2023 02:57:11 +0000 (UTC)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6B0100FC;
-	Sat,  6 May 2023 19:57:10 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-ba2362d4ea9so658480276.3;
-        Sat, 06 May 2023 19:57:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683428229; x=1686020229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y27uBZQDxoMMmtt5dKQE+mflLBajPhR2V/YDaYqpNNc=;
-        b=A90SH9+Br6HbaXDq8LUAqmiSeIlDsq262SOZN+mwQwpJKmeMHQrtByTfQpMc2nhdnC
-         jfAyvJzN87Y6cfhHKuZWG+26fO6jjNJu+1497FIwuL0IKiMewIQvUYSiPiqEJwx8XK6i
-         rE8vp5S3RqZ4Q2aZbnOBY9sBR2GKW37gK/q5nwoK1brYVSFiI1UvMbdJINPRjxdXw7ze
-         Iesd09+Z0Dm+6erB/0uItWl6yRuqQQzrjcCq3LfYM44iJzV+CHKyLdgMUxSmQmsWRgmY
-         Vfvc/4FX+a6jO5m5oyRJdU/1aXkrh98Dqm9/+XeUKFS9asrRlHJ4absiejtyFsIAD/fR
-         QXNw==
-X-Gm-Message-State: AC+VfDwSXVIm6nqoGl2xbQYUEXrlisoYE0nSHt0FXKPS35Qe3gsRtjhI
-	A8NNh/JBRhLn+gknh7fgjA1ZbmyS+kaAQARwRoQ=
-X-Google-Smtp-Source: ACHHUZ5KYd+Vp866GdYz32Yb8G1anYuwcXULbK3NRkDd6T9rO6BPZvKgFiMbj5mIdsFH380Y3SgiWsJzPH/v6x/8GkQ=
-X-Received: by 2002:a25:e648:0:b0:b9e:712f:4a17 with SMTP id
- d69-20020a25e648000000b00b9e712f4a17mr6602071ybh.6.1683428229058; Sat, 06 May
- 2023 19:57:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE74F15BE
+	for <bpf@vger.kernel.org>; Sun,  7 May 2023 03:30:24 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9D311607;
+	Sat,  6 May 2023 20:30:22 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QDVL11gRwz4f3nqq;
+	Sun,  7 May 2023 11:30:17 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgAHcLNHG1dkjIawIw--.21328S4;
+	Sun, 07 May 2023 11:30:16 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Yonghong Song <yhs@fb.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	houtao1@huawei.com
+Subject: [RFC PATCH bpf-next 0/4] Introduce bpf iterators for file-system
+Date: Sun,  7 May 2023 12:01:03 +0800
+Message-Id: <20230507040107.3755166-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230506021450.3499232-1-irogers@google.com>
-In-Reply-To: <20230506021450.3499232-1-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Sat, 6 May 2023 19:56:56 -0700
-Message-ID: <CAM9d7cieo+cF9uNfgQq=R1BofNN5Ae69sjz80rV8-TxXPZFasg@mail.gmail.com>
-Subject: Re: [PATCH v1] perf build: Add system include paths to BPF builds
-To: Ian Rogers <irogers@google.com>
-Cc: Song Liu <songliubraving@meta.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, bpf@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAHcLNHG1dkjIawIw--.21328S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxArykAr13CryUuFW5AFykuFg_yoW5XFW5pF
+	Z5J3yayr1xAFW7Arn3Can3u34rt3ykJFW5GasrXry5u3yYvr929w10kr15u3sxAryUAr1S
+	vr42k3s09a4kZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+	daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Ian,
+From: Hou Tao <houtao1@huawei.com>
 
-On Fri, May 5, 2023 at 7:15=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> There are insufficient headers in tools/include to satisfy building
-> BPF programs and their header dependencies. Add the system include
-> paths from the non-BPF clang compile so that these headers can be
-> found.
->
-> This code was taken from:
-> tools/testing/selftests/bpf/Makefile
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Hi,
 
-Thanks, this fixes the BPF build failure on my machine.
+The patchset is in a hurry and far from complete, but it is better to
+provide some code/demo first for disussion in LSF/MM/BPF.
 
-Tested-by: Namhyung Kim <namhyung@kernel.org>
+The patchset attempts to provide more observability for the file-system
+as proposed in [0]. Compared to drgn [1], the bpf iterator for file-system
+has fewer dependencies (e.g., no need for vmlinux) and more accurate
+results.
 
-Thanks,
-Namhyung
+Two types of file-system iterator are provided: fs_inode and fs_mnt.
+fs_inode is for a specific inode and fs_mnt is for a specifc mount. More
+type (e.g., all inodes in a file-system) could be added if in need. Both
+of these two iterators work by getting a file-description and a bpf
+program as the input. BPF iterator will pass the fd-related inode or
+mount to the bpf program, the bpf program can dump the needed
+information of the inode or mount to a seq_file owned by iterator fd
+by using all kinds of bpf helpers and the user can read the iterator fd
+to get the final information. The following is an example when trying to
+dump the detailed information of a XFS inode:
 
+  sb: bsize 4096 s_op xfs_super_operations s_type xfs_fs_type name xfs
+  ino: inode nlink 1 inum 131 size 10485760, name inode.test
+  cache: cached 2560 dirty 0 wb 0 evicted 0
+  orders:
+    page offset 0 order 2
+    page offset 4 order 2
+    page offset 8 order 2
+    page offset 12 order 2
+    page offset 16 order 4
+    page offset 32 order 4
+    page offset 48 order 4
+    page offset 64 order 5
+    page offset 96 order 4
+    page offset 112 order 4
+    page offset 128 order 5
+    page offset 160 order 4
+    page offset 176 order 0
+    ...
 
-> ---
->  tools/perf/Makefile.perf | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 61c33d100b2b..37befdfa8ac8 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -1057,7 +1057,25 @@ $(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT) =
-$(LIBPERF_OUTPUT) $(LIBSUBCMD_
->
->  ifndef NO_BPF_SKEL
->  BPFTOOL :=3D $(SKEL_TMP_OUT)/bootstrap/bpftool
-> -BPF_INCLUDE :=3D -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE)
-> +
-> +# Get Clang's default includes on this system, as opposed to those seen =
-by
-> +# '-target bpf'. This fixes "missing" files on some architectures/distro=
-s,
-> +# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
-> +#
-> +# Use '-idirafter': Don't interfere with include mechanics except where =
-the
-> +# build would have failed anyways.
-> +define get_sys_includes
-> +$(shell $(1) $(2) -v -E - </dev/null 2>&1 \
-> +       | sed -n '/<...> search starts here:/,/End of search list./{ s| \=
-(/.*\)|-idirafter \1|p }') \
-> +$(shell $(1) $(2) -dM -E - </dev/null | grep '__riscv_xlen ' | awk '{pri=
-ntf("-D__riscv_xlen=3D%d -D__BITS_PER_LONG=3D%d", $$3, $$3)}')
-> +endef
-> +
-> +ifneq ($(CROSS_COMPILE),)
-> +CLANG_TARGET_ARCH =3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
-> +endif
-> +
-> +CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG),$(CLANG_TARGET_A=
-RCH))
-> +BPF_INCLUDE :=3D -I$(SKEL_TMP_OUT)/.. -I$(LIBBPF_INCLUDE) $(CLANG_SYS_IN=
-CLUDES)
->
->  $(BPFTOOL): | $(SKEL_TMP_OUT)
->         $(Q)CFLAGS=3D $(MAKE) -C ../bpf/bpftool \
-> --
-> 2.40.1.521.gf1e218fcd8-goog
->
+More details can be found in the individual patches. And suggestions and
+comments are always welcome.
+
+[0]: https://lore.kernel.org/bpf/0a6f0513-b4b3-9349-cee5-b0ad38c81d2e@huaweicloud.com
+[1]: https://github.com/osandov/drgn
+
+Hou Tao (4):
+  bpf: Introduce bpf iterator for file-system inode
+  bpf: Add three kfunc helpers for bpf fs inode iterator
+  bpf: Introduce bpf iterator for file system mount
+  selftests/bpf: Add test cases for bpf file-system iterator
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/btf_ids.h                       |   6 +-
+ include/linux/fs.h                            |   4 +
+ include/uapi/linux/bpf.h                      |   9 +
+ include/uapi/linux/mman.h                     |   8 +
+ kernel/bpf/Makefile                           |   1 +
+ kernel/bpf/fs_iter.c                          | 216 ++++++++++++++++++
+ kernel/bpf/helpers.c                          |  26 +++
+ mm/filemap.c                                  |  77 +++++++
+ tools/include/uapi/linux/bpf.h                |   9 +
+ .../selftests/bpf/prog_tests/bpf_iter_fs.c    | 184 +++++++++++++++
+ .../testing/selftests/bpf/progs/bpf_iter_fs.c | 122 ++++++++++
+ 12 files changed, 663 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/bpf/fs_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter_fs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_fs.c
+
+-- 
+2.29.2
+
 
