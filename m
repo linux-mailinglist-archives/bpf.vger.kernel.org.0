@@ -1,160 +1,189 @@
-Return-Path: <bpf+bounces-210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2779C6FAA07
-	for <lists+bpf@lfdr.de>; Mon,  8 May 2023 12:58:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A262C6FAB0E
+	for <lists+bpf@lfdr.de>; Mon,  8 May 2023 13:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1E7F280E95
-	for <lists+bpf@lfdr.de>; Mon,  8 May 2023 10:58:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D43271C20960
+	for <lists+bpf@lfdr.de>; Mon,  8 May 2023 11:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61589168CF;
-	Mon,  8 May 2023 10:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB8B168DE;
+	Mon,  8 May 2023 11:08:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4767168C5
-	for <bpf@vger.kernel.org>; Mon,  8 May 2023 10:58:19 +0000 (UTC)
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93CA29CA1
-	for <bpf@vger.kernel.org>; Mon,  8 May 2023 03:57:54 -0700 (PDT)
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-76c27782e30so166235939f.3
-        for <bpf@vger.kernel.org>; Mon, 08 May 2023 03:57:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2738168C4
+	for <bpf@vger.kernel.org>; Mon,  8 May 2023 11:08:43 +0000 (UTC)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2D22B152
+	for <bpf@vger.kernel.org>; Mon,  8 May 2023 04:08:40 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50be17a1eceso8524249a12.2
+        for <bpf@vger.kernel.org>; Mon, 08 May 2023 04:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1683544119; x=1686136119;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gag99lpqg8ZcnlcatCi6U8igQ9sGdmGp2/O8T8Oc0uk=;
+        b=kgO/RVvHJ9jRXW6Vwh1zylU3Ua/n/uUxKFNj/F200zsq4ANfQtrTbjb1AjJlLiahH1
+         9A9ZYku0JJq3VglKj9S9pSzXV4Dg2AplcqmTMoItMztSDPKV3cdZ7sCz9UkDb0aphbu8
+         Tu1Ly99mS33O87v9Y3MRNEzX7D+O5N4L+Spto=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683543469; x=1686135469;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z4qQuGB5Gd1At6RmxvPzh/+T+MZCmyfXc4a+BLM5Q9w=;
-        b=EbejtBepPvq8wEopNzd+5BF9SuRGNZYNvTkgp7v9kUJ9w/VVMOmDrbWnosGe8OqTPs
-         Cn5UwO3S8dhs8sDLOoQYUQoqgi04Sf8roEgv9XOXBD2O9TWgu2MYLzMwtsWceTbNLqYK
-         uT/wLt6XmSLNKbfi5g87mFTsyiFMcWpynhk/sSvzAsvjUlopvpGJi81ga61vHuzO7729
-         Idclr9REUE2eSq6teqEUjBSaBR2Tz5foRf9jMazVcL282Jr85qGv53fXxeXqADDPTiIH
-         KCk/GZnJ8nfm5NTLopy53OjFTvFTDKfejI3uZihu5OZ/xu7Fh4c2gtCfpzP1StzyDE1R
-         othg==
-X-Gm-Message-State: AC+VfDyBdJyFInaS6RUwPonjgMziArVYpFvfWZCfDBnsGrrnCZHyFva/
-	Vx5HqLGtSiaoJ/TDKlGBK1gfVy4iGL2ssDSSzBvQzt9GyzXx
-X-Google-Smtp-Source: ACHHUZ7hRUvohGuXcxsd/2ky5NLQqnBo134yJZYBac/reMymj4KJ2Q+G6mM31hEWJ78rrVBaNvo2gykcXUW0yO4C6kwJ93Y7EVvB
+        d=1e100.net; s=20221208; t=1683544119; x=1686136119;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gag99lpqg8ZcnlcatCi6U8igQ9sGdmGp2/O8T8Oc0uk=;
+        b=dzq3rehyFjFpO5kK/U02yIhqCZ1zkiPv4mO4G5xGxqfTEvGG3tY3c88B9/oEbk2oOX
+         J1GwKknWwrHQN87VeVLbBu3pcB6w7VX1ysqadWiakZOd39WcVRhPDSiIVZxUs8UYyXNK
+         uIPW9/iowYPl18FBrxmbkI12AW2/zsXUkok9js9sD6IXBqLyIBhiLYT7UqtXew/3g/GV
+         Uu+WOU525R/KwW2EQPqTR22YgOu11gtLWpLpZ3gfNt0eMpSntRSI7bOh6nPYOh9/0UeE
+         42iNzM19ZMdcoqPUSkLBvelV4Zplyev3DpXj6tmi/FXJIpteNOnGzFKZ8buY7yBGpWVJ
+         lCFQ==
+X-Gm-Message-State: AC+VfDxRt/NFqfxgotvZF5TW5fTMAKl8JSkXHktDQuDQzta6rZRm31zD
+	Q3YMtsHTAPMFFrDnMJ5fRjFqaQ==
+X-Google-Smtp-Source: ACHHUZ7tJ3R5k3ObHbTqfPz0cKqzdO/aZHIkbQ+jtNXpwr15bnk+luQ9M1hWPZcXRqsyVPKki+Cn/A==
+X-Received: by 2002:aa7:c84c:0:b0:50b:fb49:39c9 with SMTP id g12-20020aa7c84c000000b0050bfb4939c9mr7007735edt.34.1683544119184;
+        Mon, 08 May 2023 04:08:39 -0700 (PDT)
+Received: from cloudflare.com (79.184.132.119.ipv4.supernova.orange.pl. [79.184.132.119])
+        by smtp.gmail.com with ESMTPSA id o7-20020a056402038700b0050bc41352d9sm5961093edv.46.2023.05.08.04.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 May 2023 04:08:38 -0700 (PDT)
+References: <20230502155159.305437-1-john.fastabend@gmail.com>
+ <20230502155159.305437-12-john.fastabend@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+ andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v7 11/13] bpf: sockmap, test shutdown() correctly
+ exits epoll and recv()=0
+Date: Mon, 08 May 2023 13:04:58 +0200
+In-reply-to: <20230502155159.305437-12-john.fastabend@gmail.com>
+Message-ID: <87jzxj3wsq.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:93c7:0:b0:414:401d:b69a with SMTP id
- z65-20020a0293c7000000b00414401db69amr5076647jah.3.1683543469395; Mon, 08 May
- 2023 03:57:49 -0700 (PDT)
-Date: Mon, 08 May 2023 03:57:49 -0700
-In-Reply-To: <0000000000002e17d105f02be919@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000751a2d05fb2c824a@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in print_tainted
-From: syzbot <syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	gregkh@linuxfoundation.org, hawk@kernel.org, john.fastabend@gmail.com, 
-	kernel@pengutronix.de, kuba@kernel.org, linux-can@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mkl@pengutronix.de, netdev@vger.kernel.org, 
-	pabeni@redhat.com, patches@lists.linux.dev, sashal@kernel.org, 
-	socketcan@hartkopp.net, stable-commits@vger.kernel.org, 
-	stable@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-syzbot has found a reproducer for the following issue on:
+On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
+> When session gracefully shutdowns epoll needs to wake up and any recv()
+> readers should return 0 not the -EAGAIN they previously returned.
+>
+> Note we use epoll instead of select to test the epoll wake on shutdown
+> event as well.
+>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 68 +++++++++++++++++++
+>  .../bpf/progs/test_sockmap_pass_prog.c        | 32 +++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index 0ce25a967481..f9f611618e45 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -2,6 +2,7 @@
+>  // Copyright (c) 2020 Cloudflare
+>  #include <error.h>
+>  #include <netinet/tcp.h>
+> +#include <sys/epoll.h>
+>  
+>  #include "test_progs.h"
+>  #include "test_skmsg_load_helpers.skel.h"
+> @@ -9,8 +10,11 @@
+>  #include "test_sockmap_invalid_update.skel.h"
+>  #include "test_sockmap_skb_verdict_attach.skel.h"
+>  #include "test_sockmap_progs_query.skel.h"
+> +#include "test_sockmap_pass_prog.skel.h"
+>  #include "bpf_iter_sockmap.skel.h"
+>  
+> +#include "sockmap_helpers.h"
+> +
+>  #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+>  
+>  #define TCP_REPAIR_ON		1
+> @@ -350,6 +354,68 @@ static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+>  	test_sockmap_progs_query__destroy(skel);
+>  }
+>  
+> +#define MAX_EVENTS 10
+> +static void test_sockmap_skb_verdict_shutdown(void)
+> +{
+> +	int n, err, map, verdict, s, c0, c1, p0, p1;
+> +	struct epoll_event ev, events[MAX_EVENTS];
+> +	struct test_sockmap_pass_prog *skel;
+> +	int epollfd;
+> +	int zero = 0;
+> +	char b;
+> +
+> +	skel = test_sockmap_pass_prog__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
+> +		return;
+> +
+> +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
+> +	map = bpf_map__fd(skel->maps.sock_map_rx);
+> +
+> +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
+> +	if (!ASSERT_OK(err, "bpf_prog_attach"))
+> +		goto out;
+> +
+> +	s = socket_loopback(AF_INET, SOCK_STREAM);
+> +	if (s < 0)
+> +		goto out;
+> +	err = create_socket_pairs(s, AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
+> +	if (err < 0)
+> +		goto out;
+> +
+> +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
+> +	if (err < 0)
+> +		goto out_close;
+> +
+> +	shutdown(c0, SHUT_RDWR);
+> +	shutdown(p1, SHUT_WR);
+> +
+> +	ev.events = EPOLLIN;
+> +	ev.data.fd = c1;
+> +
+> +	epollfd = epoll_create1(0);
+> +	if (!ASSERT_GT(epollfd, -1, "epoll_create(0)"))
+> +		goto out_close;
+> +	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, c1, &ev);
+> +	if (!ASSERT_OK(err, "epoll_ctl(EPOLL_CTL_ADD)"))
+> +		goto out_close;
+> +	err = epoll_wait(epollfd, events, MAX_EVENTS, -1);
+> +	if (!ASSERT_EQ(err, 1, "epoll_wait(fd)"))
+> +		goto out_close;
+> +
+> +	n = recv(c1, &b, 1, SOCK_NONBLOCK);
+> +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+> +	n = recv(p0, &b, 1, SOCK_NONBLOCK);
+> +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+> +
+> +out_close:
+> +	close(c0);
+> +	close(p0);
+> +	close(c1);
+> +	close(p1);
+> +out:
+> +	test_sockmap_pass_prog__destroy(skel);
+> +}
+> +
 
-HEAD commit:    457391b03803 Linux 6.3
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=118e0b90280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=385e197a58ca4afe
-dashboard link: https://syzkaller.appspot.com/bug?extid=5aed6c3aaba661f5b917
-compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178650b8280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1646075a280000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/c35b5b2731d2/non_bootable_disk-457391b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2a1bf3bafeb6/vmlinux-457391b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/21f1e3b4a5a9/zImage-457391b0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/bd66e85f728b/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5aed6c3aaba661f5b917@syzkaller.appspotmail.com
-
-EXT4-fs (loop0): 1 truncate cleaned up
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 without journal. Quota mode: writeback.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 2947 at mm/slab_common.c:935 free_large_kmalloc+0x94/0xd0 mm/slab_common.c:935
-Modules linked in:
-Kernel panic - not syncing: kernel: panic_on_warn set ...
-CPU: 0 PID: 2947 Comm: syz-executor216 Not tainted 6.3.0-syzkaller #0
-Hardware name: ARM-Versatile Express
-Backtrace: 
-[<817b2528>] (dump_backtrace) from [<817b261c>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:256)
- r7:81d81ac0 r6:82422c04 r5:60000093 r4:81d901cc
-[<817b2604>] (show_stack) from [<817cec84>] (__dump_stack lib/dump_stack.c:88 [inline])
-[<817b2604>] (show_stack) from [<817cec84>] (dump_stack_lvl+0x48/0x54 lib/dump_stack.c:106)
-[<817cec3c>] (dump_stack_lvl) from [<817ceca8>] (dump_stack+0x18/0x1c lib/dump_stack.c:113)
- r5:00000000 r4:8264dd14
-[<817cec90>] (dump_stack) from [<817b3110>] (panic+0x11c/0x36c kernel/panic.c:340)
-[<817b2ff4>] (panic) from [<802422ec>] (print_tainted+0x0/0xa0 kernel/panic.c:236)
- r3:8240c488 r2:00000001 r1:81d79fcc r0:81d81ac0
- r7:80436a2c
-[<80242268>] (check_panic_on_warn) from [<802424e0>] (__warn+0x7c/0x180 kernel/panic.c:673)
-[<80242464>] (__warn) from [<802426bc>] (warn_slowpath_fmt+0xd8/0x1d8 kernel/panic.c:697)
- r8:00000009 r7:000003a7 r6:81da3124 r5:8240c954 r4:822ab6bc
-[<802425e8>] (warn_slowpath_fmt) from [<80436a2c>] (free_large_kmalloc+0x94/0xd0 mm/slab_common.c:935)
- r10:823e75a4 r9:00000704 r8:8436d7c0 r7:825dfc70 r6:823e75a4 r5:dde49c7c
- r4:dde49c7c
-[<80436998>] (free_large_kmalloc) from [<80436bb0>] (kfree+0x148/0x14c mm/slab_common.c:1013)
- r7:8436d880 r6:804292ac r5:dde49c7c r4:823e75a4
-[<80436a68>] (kfree) from [<804292ac>] (kvfree+0x2c/0x30 mm/util.c:649)
- r7:8436d880 r6:8436d700 r5:00000400 r4:823e75a4
-[<80429280>] (kvfree) from [<80619f90>] (ext4_xattr_move_to_block fs/ext4/xattr.c:2680 [inline])
-[<80429280>] (kvfree) from [<80619f90>] (ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline])
-[<80429280>] (kvfree) from [<80619f90>] (ext4_expand_extra_isize_ea+0x558/0x808 fs/ext4/xattr.c:2835)
- r5:00000400 r4:823e75a4
-[<80619a38>] (ext4_expand_extra_isize_ea) from [<805c514c>] (__ext4_expand_extra_isize+0xdc/0x148 fs/ext4/inode.c:5960)
- r10:8455e368 r9:8455e360 r8:00000001 r7:8455e5e4 r6:823e7500 r5:8455e3e8
- r4:00000040
-[<805c5070>] (__ext4_expand_extra_isize) from [<805cc188>] (ext4_try_to_expand_extra_isize fs/ext4/inode.c:6003 [inline])
-[<805c5070>] (__ext4_expand_extra_isize) from [<805cc188>] (__ext4_mark_inode_dirty+0x158/0x270 fs/ext4/inode.c:6081)
- r8:00000040 r7:00000cb7 r6:df969df4 r5:00000001 r4:8455e3e8
-[<805cc030>] (__ext4_mark_inode_dirty) from [<805ee79c>] (__ext4_unlink+0x2e0/0x370 fs/ext4/namei.c:3255)
- r10:df969e58 r9:82c9ac50 r8:00000000 r7:836ee3c0 r6:00000001 r5:8455e3e8
- r4:8455f0a8
-[<805ee4bc>] (__ext4_unlink) from [<805ee980>] (ext4_unlink+0x154/0x1e4 fs/ext4/namei.c:3298)
- r10:82c9ac38 r9:8455f130 r8:df969f3c r7:8455f0a8 r6:82c9ac38 r5:8455e3e8
- r4:00000000
-[<805ee82c>] (ext4_unlink) from [<804cc41c>] (vfs_unlink+0x13c/0x2e0 fs/namei.c:4250)
- r7:8455f0a8 r6:8455e3e8 r5:82c9ac38 r4:00000000
-[<804cc2e0>] (vfs_unlink) from [<804d0fa8>] (do_unlinkat+0x198/0x2b4 fs/namei.c:4316)
- r9:df969f38 r8:00000003 r7:8290b000 r6:00000000 r5:8455f0a8 r4:00000000
-[<804d0e10>] (do_unlinkat) from [<804d10fc>] (__do_sys_unlinkat fs/namei.c:4359 [inline])
-[<804d0e10>] (do_unlinkat) from [<804d10fc>] (sys_unlinkat+0x38/0x5c fs/namei.c:4352)
- r10:00000148 r9:831bae00 r8:80200288 r7:00000148 r6:00000000 r5:00000000
- r4:00000003
-[<804d10c4>] (sys_unlinkat) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
-Exception stack(0xdf969fa8 to 0xdf969ff0)
-9fa0:                   00000000 00000000 00000003 20000000 00000000 00001015
-9fc0: 00000000 00000000 00000000 00000148 00000000 200002a2 20000276 00000000
-9fe0: 7ecdec50 7ecdec40 0001085c 0002bb80
- r5:00000000 r4:00000000
-Rebooting in 86400 seconds..
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+This test has me scratching my head. I don't grasp what we're testing
+with (c0, p0) socket pair, since c0 is not in any sockmap?
 
