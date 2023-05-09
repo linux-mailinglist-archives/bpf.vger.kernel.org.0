@@ -1,114 +1,270 @@
-Return-Path: <bpf+bounces-229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-230-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CB56FBC92
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 03:37:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D91696FBCA5
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 03:49:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0BD92811BE
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 01:37:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15AF01C20A9A
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 01:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765E4391;
-	Tue,  9 May 2023 01:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33396396;
+	Tue,  9 May 2023 01:49:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF947C;
-	Tue,  9 May 2023 01:36:55 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BC24215;
-	Mon,  8 May 2023 18:36:53 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64115e652eeso39002206b3a.0;
-        Mon, 08 May 2023 18:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683596213; x=1686188213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v6zAQOTkWtDOOBZdrEkoRuGqVTQxApi39/8Os2AcncY=;
-        b=jpAbZDt9KWJPk6nQW3VArhCf7JSp7ecP/vxzhAajETEIpFMXRZMLOttaTuIbZNfBAZ
-         aD4RgnKnUV3XIy0lUMsmU8SjmyduuM89IfnlPpBUgU6vCt2YLsO1zLXxlEGweA/bVq6/
-         GYarrZMWICsrDCvALlHKO49eCcwy4uB6s3rCSA89XUYjjMf0UjRIRcKUmRxo/fd3TFsL
-         R6Q4vsX9KEXdPx1nd6tCqqIqwwuDyTY4FwniIj25Uh3hdhuLSqiWUYgwmj1lL0giCPuB
-         AXG07nkM47imV/l4zId8hyepeIvt+TjRLpVb/bH95cWLsSXVIY9qRIlywrUOsEhB0siu
-         XHFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683596213; x=1686188213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v6zAQOTkWtDOOBZdrEkoRuGqVTQxApi39/8Os2AcncY=;
-        b=YxPRA1IgQd9mD8JHxdr7dVHC3TIJjv6K5onQy3SeqvO6PfpepzNLOT9DDg5iJU8PnT
-         LtIk7AvMTM0feTmW/H7aZI6tP17Nu+Mv4RN8+KHBb2tvtrCZ0jqgkngxeQvhc+1sfxqI
-         DmaYa4BiEEb4s4FIQvDlaVMHbOp2uMAgfUmqLMO11QfB2vqHe8ocpGS0ZkmlNtv9uzxF
-         qsuFJHk0fBNHWFjd/vjJgSmBK43nASJQa49JVRVhAhvcAHstSepyechUeC15tC67byVz
-         VpCvQvoDLn2XZFKWp/70BXwq8S77bknR3EfvgtCFpemDiN8JJEf6ivJB1lg7w+twpXke
-         LPJQ==
-X-Gm-Message-State: AC+VfDy6uNMgeqRK30hkVnbKuZCvGv1meUio2f/j3Hj80w2cUKwqLJje
-	UBTp0UOXQP7Qv+1YISzJXMI=
-X-Google-Smtp-Source: ACHHUZ74JrQhvq5222wSbD6o0rqwph1ZEYmf2tn0416MlkouTB3b6ddDYWMFYGdcAoSGbaJh6w/vDw==
-X-Received: by 2002:a17:903:1209:b0:1a9:7912:850e with SMTP id l9-20020a170903120900b001a97912850emr15316784plh.10.1683596213020;
-        Mon, 08 May 2023 18:36:53 -0700 (PDT)
-Received: from awk.. (arc.lsta.media.kyoto-u.ac.jp. [130.54.10.65])
-        by smtp.gmail.com with ESMTPSA id p20-20020a170902a41400b0019aaab3f9d7sm138816plq.113.2023.05.08.18.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 May 2023 18:36:52 -0700 (PDT)
-From: Taichi Nishimura <awkrail01@gmail.com>
-To: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Taichi Nishimura <awkrail01@gmail.com>
-Subject: [PATCH] add braces to rt_type == RTN_BROADCAST case
-Date: Tue,  9 May 2023 10:36:01 +0900
-Message-Id: <20230509013601.2544346-1-awkrail01@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01FE7C;
+	Tue,  9 May 2023 01:49:33 +0000 (UTC)
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3A35B83;
+	Mon,  8 May 2023 18:49:30 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vi8rSMi_1683596965;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vi8rSMi_1683596965)
+          by smtp.aliyun-inc.com;
+          Tue, 09 May 2023 09:49:26 +0800
+Message-ID: <1683596602.483001-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net v3] virtio_net: Fix error unwinding of XDP initialization
+Date: Tue, 9 May 2023 09:43:22 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Feng Liu <feliu@nvidia.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+ "Michael S . Tsirkin" <mst@redhat.com>,
+ Simon Horman <simon.horman@corigine.com>,
+ Bodong Wang <bodong@nvidia.com>,
+ William Tu <witu@nvidia.com>,
+ Parav Pandit <parav@nvidia.com>,
+ virtualization@lists.linux-foundation.org,
+ netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230503003525.48590-1-feliu@nvidia.com>
+ <1683340417.612963-3-xuanzhuo@linux.alibaba.com>
+ <559ad341-2278-5fad-6805-c7f632e9894e@nvidia.com>
+ <1683510351.569717-1-xuanzhuo@linux.alibaba.com>
+ <c2c2bfed-bdf1-f517-559c-f51c9ca1807a@nvidia.com>
+In-Reply-To: <c2c2bfed-bdf1-f517-559c-f51c9ca1807a@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-Add braces to rt->rt_type == RTN_BROADCAST to make it easier
-to grasp the if-else-if statement.
-I think that it is ok to remove braces of rt_type == RTN_MULTICAST
-because IP_UPD_PO_STATS is oneliner.
+On Mon, 8 May 2023 11:00:10 -0400, Feng Liu <feliu@nvidia.com> wrote:
+>
+>
+> On 2023-05-07 p.m.9:45, Xuan Zhuo wrote:
+> > External email: Use caution opening links or attachments
+> >
+> >
+> > On Sat, 6 May 2023 08:08:02 -0400, Feng Liu <feliu@nvidia.com> wrote:
+> >>
+> >>
+> >> On 2023-05-05 p.m.10:33, Xuan Zhuo wrote:
+> >>> External email: Use caution opening links or attachments
+> >>>
+> >>>
+> >>> On Tue, 2 May 2023 20:35:25 -0400, Feng Liu <feliu@nvidia.com> wrote:
+> >>>> When initializing XDP in virtnet_open(), some rq xdp initialization
+> >>>> may hit an error causing net device open failed. However, previous
+> >>>> rqs have already initialized XDP and enabled NAPI, which is not the
+> >>>> expected behavior. Need to roll back the previous rq initialization
+> >>>> to avoid leaks in error unwinding of init code.
+> >>>>
+> >>>> Also extract a helper function of disable queue pairs, and use newly
+> >>>> introduced helper function in error unwinding and virtnet_close;
+> >>>>
+> >>>> Issue: 3383038
+> >>>> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
+> >>>> Signed-off-by: Feng Liu <feliu@nvidia.com>
+> >>>> Reviewed-by: William Tu <witu@nvidia.com>
+> >>>> Reviewed-by: Parav Pandit <parav@nvidia.com>
+> >>>> Reviewed-by: Simon Horman <simon.horman@corigine.com>
+> >>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> >>>> Change-Id: Ib4c6a97cb7b837cfa484c593dd43a435c47ea68f
+> >>>> ---
+> >>>>    drivers/net/virtio_net.c | 30 ++++++++++++++++++++----------
+> >>>>    1 file changed, 20 insertions(+), 10 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> >>>> index 8d8038538fc4..3737cf120cb7 100644
+> >>>> --- a/drivers/net/virtio_net.c
+> >>>> +++ b/drivers/net/virtio_net.c
+> >>>> @@ -1868,6 +1868,13 @@ static int virtnet_poll(struct napi_struct *n=
+api, int budget)
+> >>>>         return received;
+> >>>>    }
+> >>>>
+> >>>> +static void virtnet_disable_qp(struct virtnet_info *vi, int qp_inde=
+x)
+> >>>> +{
+> >>>> +     virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
+> >>>> +     napi_disable(&vi->rq[qp_index].napi);
+> >>>> +     xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+> >>>> +}
+> >>>> +
+> >>>>    static int virtnet_open(struct net_device *dev)
+> >>>>    {
+> >>>>         struct virtnet_info *vi =3D netdev_priv(dev);
+> >>>> @@ -1883,20 +1890,26 @@ static int virtnet_open(struct net_device *d=
+ev)
+> >>>>
+> >>>>                 err =3D xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i,=
+ vi->rq[i].napi.napi_id);
+> >>>>                 if (err < 0)
+> >>>> -                     return err;
+> >>>> +                     goto err_xdp_info_reg;
+> >>>>
+> >>>>                 err =3D xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rx=
+q,
+> >>>>                                                  MEM_TYPE_PAGE_SHARE=
+D, NULL);
+> >>>> -             if (err < 0) {
+> >>>> -                     xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> >>>> -                     return err;
+> >>>> -             }
+> >>>> +             if (err < 0)
+> >>>> +                     goto err_xdp_reg_mem_model;
+> >>>>
+> >>>>                 virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+> >>>>                 virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].=
+napi);
+> >>>>         }
+> >>>>
+> >>>>         return 0;
+> >>>> +
+> >>>> +err_xdp_reg_mem_model:
+> >>>> +     xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> >>>> +err_xdp_info_reg:
+> >>>> +     for (i =3D i - 1; i >=3D 0; i--)
+> >>>> +             virtnet_disable_qp(vi, i);
+> >>>
+> >>>
+> >>> I would to know should we handle for these:
+> >>>
+> >>>           disable_delayed_refill(vi);
+> >>>           cancel_delayed_work_sync(&vi->refill);
+> >>>
+> >>>
+> >>> Maybe we should call virtnet_close() with "i" directly.
+> >>>
+> >>> Thanks.
+> >>>
+> >>>
+> >> Can=E2=80=99t use i directly here, because if xdp_rxq_info_reg fails, =
+napi has
+> >> not been enabled for current qp yet, I should roll back from the queue
+> >> pairs where napi was enabled before(i--), otherwise it will hang at na=
+pi
+> >> disable api
+> >
+> > This is not the point, the key is whether we should handle with:
+> >
+> >            disable_delayed_refill(vi);
+> >            cancel_delayed_work_sync(&vi->refill);
+> >
+> > Thanks.
+> >
+> >
+>
+> OK, get the point. Thanks for your careful review. And I check the code
+> again.
+>
+> There are two points that I need to explain:
+>
+> 1. All refill delay work calls(vi->refill, vi->refill_enabled) are based
+> on that the virtio interface is successfully opened, such as
+> virtnet_receive, virtnet_rx_resize, _virtnet_set_queues, etc. If there
+> is an error in the xdp reg here, it will not trigger these subsequent
+> functions. There is no need to call disable_delayed_refill() and
+> cancel_delayed_work_sync().
 
-Signed-off-by: Taichi Nishimura <awkrail01@gmail.com>
----
- net/ipv4/ip_output.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Maybe something is wrong. I think these lines may call delay work.
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 61892268e8a6..8b761e1a9e24 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -203,8 +203,9 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
- 
- 	if (rt->rt_type == RTN_MULTICAST) {
- 		IP_UPD_PO_STATS(net, IPSTATS_MIB_OUTMCAST, skb->len);
--	} else if (rt->rt_type == RTN_BROADCAST)
-+	} else if (rt->rt_type == RTN_BROADCAST) {
- 		IP_UPD_PO_STATS(net, IPSTATS_MIB_OUTBCAST, skb->len);
-+	}
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
- 		skb = skb_expand_head(skb, hh_len);
--- 
-2.39.2
+static int virtnet_open(struct net_device *dev)
+{
+	struct virtnet_info *vi =3D netdev_priv(dev);
+	int i, err;
 
+	enable_delayed_refill(vi);
+
+	for (i =3D 0; i < vi->max_queue_pairs; i++) {
+		if (i < vi->curr_queue_pairs)
+			/* Make sure we have some buffers: if oom use wq. */
+-->			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+-->				schedule_delayed_work(&vi->refill, 0);
+
+		err =3D xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_=
+id);
+		if (err < 0)
+			return err;
+
+		err =3D xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
+						 MEM_TYPE_PAGE_SHARED, NULL);
+		if (err < 0) {
+			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+			return err;
+		}
+
+		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
+	}
+
+	return 0;
+}
+
+
+And I think, if we virtnet_open() return error, then the status of virtnet
+should like the status after virtnet_close().
+
+Or someone has other opinion.
+
+Thanks.
+
+> The logic here is different from that of
+> virtnet_close. virtnet_close is based on the success of virtnet_open and
+> the tx and rx has been carried out normally. For error unwinding, only
+> disable qp is needed. Also encapuslated a helper function of disable qp,
+> which is used ing error unwinding and virtnet close
+> 2. The current error qp, which has not enabled NAPI, can only call xdp
+> unreg, and cannot call the interface of disable NAPI, otherwise the
+> kernel will be stuck. So for i-- the reason for calling disable qp on
+> the previous queue
+>
+> Thanks
+>
+> >>
+> >>>> +
+> >>>> +     return err;
+> >>>>    }
+> >>>>
+> >>>>    static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+> >>>> @@ -2305,11 +2318,8 @@ static int virtnet_close(struct net_device *d=
+ev)
+> >>>>         /* Make sure refill_work doesn't re-enable napi! */
+> >>>>         cancel_delayed_work_sync(&vi->refill);
+> >>>>
+> >>>> -     for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> >>>> -             virtnet_napi_tx_disable(&vi->sq[i].napi);
+> >>>> -             napi_disable(&vi->rq[i].napi);
+> >>>> -             xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> >>>> -     }
+> >>>> +     for (i =3D 0; i < vi->max_queue_pairs; i++)
+> >>>> +             virtnet_disable_qp(vi, i);
+> >>>>
+> >>>>         return 0;
+> >>>>    }
+> >>>> --
+> >>>> 2.37.1 (Apple Git-137.1)
+> >>>>
 
