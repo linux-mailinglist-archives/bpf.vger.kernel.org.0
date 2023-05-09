@@ -1,160 +1,142 @@
-Return-Path: <bpf+bounces-238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EA1E6FC2F5
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 11:38:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748916FC3C2
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 12:22:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 750211C20AFB
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 09:38:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18211C209FB
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 10:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC54AD44;
-	Tue,  9 May 2023 09:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF77CDDDB;
+	Tue,  9 May 2023 10:21:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1BA20F9
-	for <bpf@vger.kernel.org>; Tue,  9 May 2023 09:38:14 +0000 (UTC)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD9C1BB;
-	Tue,  9 May 2023 02:38:13 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 510B53200909;
-	Tue,  9 May 2023 05:38:09 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 09 May 2023 05:38:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1683625088; x=1683711488; bh=JI
-	GYjICWF1iIfi0CDhSvRnlPKKVSNYNlDX65zfQiumM=; b=I4f00STfLlF/8uXCTH
-	3QpblrayO3QWqay0XoJFyDhSGixH93u1NpebSFNfjNuzTOvoj8liVXfe1F94W5Rf
-	OkSrKPsHW5CuU0O1n0k6mggu+GTBSI/aou3nmMYv4bopXJdWnRpImUuuJczssOQ+
-	nlk+zQ5fWguXF4QyfgIy+yXeh/fUk1+OamDH2mE02AK2FeEVzFdjp/ZkYF3f7WIC
-	LIwJOvrGNIHyMm3GfL+mc2A3QpjuHP/knTB/o3RrDaqIa6igFFLXbN2J2tS7W0OZ
-	O9Wt51WwuNP4vEqULDQIoB4aLzCG2tEy390anoUON9826Lqxxh2mvRVv16wDWwRA
-	CvaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1683625088; x=1683711488; bh=JIGYjICWF1iIf
-	i0CDhSvRnlPKKVSNYNlDX65zfQiumM=; b=irqHQQNUKUqvUAWpf1VIoKg/G9Bt6
-	oINt/vqLIbTfVMwG9Hc5BS3wM0rbLNDlp9dyFIk+K8+Yg+w4CyaCBkMNIzxaClt2
-	5hKEmXIfTpuX0D57VxY0NRbGmHgrdfX9LgmsqsHxxYojoy6cFD/h297xpqpZ2dCm
-	lgjUpyY5EApgsYS6fgKw+ibdPJPY3SWVhfBScpbBw297KiqjtIpYFOEKWx6uVBZE
-	b0R51rMZ6QfJDFCbYlMztsHMKOUmxxlKnwnj3kyD0ejAc+LApjOXTCP8sFBPBWbp
-	FSJfhVLzSwOexCHMh/u/lmkpf2d0AvcvV0c/5voSuhOmrHueXeXY33A2Q==
-X-ME-Sender: <xms:fxRaZA_Ub9iK8xWlXqyIcc6uOkdIYRFhQ2MO1HuoJ9dmIsXEFLaf3w>
-    <xme:fxRaZIvg7GcdRQOpg1jMA0HvMPQftuRhcyc5ZSdsuVGpbWVIflp8kq4JY9m-G-ZJV
-    SnIqkn0V04I_3L7-qg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeegtddgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepheekfeduteffkeegieekvdffkedtkeeftefhfeejkeejgefhleekhfelheff
-    vdetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhouhhrtggvfigrrhgvrdhorh
-    hgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghr
-    nhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:fxRaZGDVHJPv_8wICJO5UOx_vULOMBKmGMOLmO0DbqAHdDw2Qx8Sgg>
-    <xmx:fxRaZAeGXsQCwZusXvgF1StxgPbYalneVgw_y3tnkrhLFMC_jy3rjA>
-    <xmx:fxRaZFMfYWVflVj5rOKIcutKIF5dLbPvZi1Iw7dHO-fYBDC-s9lWkg>
-    <xmx:gBRaZCcVsH6XHVXaai7iby-iCY4PxFduF5s1msWOAJRYZEdcbjifDA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 85FE3B60086; Tue,  9 May 2023 05:38:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-415-gf2b17fe6c3-fm-20230503.001-gf2b17fe6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B89AD39;
+	Tue,  9 May 2023 10:21:54 +0000 (UTC)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AED118;
+	Tue,  9 May 2023 03:21:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VaZmotxgAugRIDYUe6a86eKrSuKS6vn8vunqwzIUw6ZpkXwV4C/HYpMqRsHAS+97nMyWDx/SKs7KrksWEPxkmNq18AoS1xY8lTFrH5bYBaSZ435FWbNECFz0atSwf7aIPP1whrATohicddhNI+NRxnwt8eD5m7n70+BzfwH/lUKY75ETd0Vfny8Iip2wJ73ifUcdqWZnbxtUc4nHRXa+yRxpummWtPC08C6ThVagkBYCJm3ymrX0Y1gyoJ3Q6yysR95HRJ0eOBWIYCQ0BaZAZNxhKARqgZd5fJneCGz/LlDVLQwhBSlWtgUrHwNFysFhsnYH16yjg9TJH5NAAAdtQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ibcbBp9vrSUD6rZhVPaMCC8qLzQISxggwS9DQ+hZ4zM=;
+ b=IOzPierpbgZBV2M3KTJmSaOt++C+O8QsXk2bNkgYRhZW1ucXA6Z+c3w6dhdKJu3yjED4g6QG3+IFzvX4ZP+MFh/Lvr095OV7mdXYUoGKuZqxWKGwZQzrYLcGbeIWXZrntf7tffIbh43dJOwUtrdcwmODOHZFu+U0oAhecPCx/iTJA8248/UilEgoJ1XO7UhqVT7oTE041cJPbzgCIgjJgmCzRRACc+VBA7nJCn5ZYee8iVOM8l0MIx4/ytZIj9S8gt4WGhKI3vh8ZPRw89I+Hd78tmR1U6hmKgEteI8fuoyUb+0Dmoe9DRCx8wsC3xt0AQkjufeJQaBnLcAGrd53VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ibcbBp9vrSUD6rZhVPaMCC8qLzQISxggwS9DQ+hZ4zM=;
+ b=u2noIJ1yHwPSyyFOr04KBgCljskiKik2gTP+MW7fqU6h6fDu3lKlcDIDP0wyTbUb/l5Qp9hBlU/ZWQZTGvubNyOFkd0zWNmLpj+iIRuge4WayMUdIahrt3h1RJ+gtY6DWVxtEo+ki6vlj/+2r7c1fHFpibVnVyrKKYyOmPHkMwM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CO3PR13MB5669.namprd13.prod.outlook.com (2603:10b6:303:17f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.33; Tue, 9 May
+ 2023 10:21:50 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34%5]) with mapi id 15.20.6363.032; Tue, 9 May 2023
+ 10:21:49 +0000
+Date: Tue, 9 May 2023 12:21:41 +0200
+From: Simon Horman <simon.horman@corigine.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+	john.fastabend@gmail.com, linyunsheng@huawei.com, ast@kernel.org,
+	daniel@iogearbox.net, jbenc@redhat.com
+Subject: Re: [PATCH net-next] net: veth: make PAGE_POOL_STATS optional
+Message-ID: <ZFoetW/oIbXtSf1s@corigine.com>
+References: <c9e132c3f08c456ad0462342bb0a104f0f8c0b24.1683622992.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9e132c3f08c456ad0462342bb0a104f0f8c0b24.1683622992.git.lorenzo@kernel.org>
+X-ClientProxiedBy: AM9P250CA0013.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21c::18) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com>
-In-Reply-To: <1683615903-10862-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1683615903-10862-1-git-send-email-yangtiezhu@loongson.cn>
-Date: Tue, 09 May 2023 11:37:46 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Tiezhu Yang" <yangtiezhu@loongson.cn>
-Cc: linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-Subject: Re: [RFC PATCH] asm-generic: Unify uapi bitsperlong.h
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CO3PR13MB5669:EE_
+X-MS-Office365-Filtering-Correlation-Id: 02f1be65-1ffa-4160-f55a-08db50773344
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	1eFNMOK/pDjUWAglFjP/mIyT+kDYsGye5tcXE1z+EDopgKJY34l8dfFKPtdPTt5zQuDALm4AokAnp65WU5MeONgzgZTJuVfZjubtlS7PN7vhoCMaQh7GJWji+UButJJ7MsAdotmDYWQ5lQuo7ruFRHCg9E9p/32NBIn9yVPohyIRLQfCl+YgvVZJbw9BpTCPlpAcLHFrlJ13hORvbLhguKfTVCSAgv07rbrtUbdGm4FzjBGfhHz2AB5X8ddGtpXhB9OjPuenvQX+bzPaqYETzmB1WX2T8sk3srDlacx9OuOcMnhptk4ws6ZZ2djkgNJv8iml+yjeWNwIJWhxtAtDPQrDwZACoBc2G8isaT26m4Jog8FXvG+eUhpe9hjhB8q5fGHaGYsZZ50RfwnuVzEiQtbTGgQYKsCWkMMkTmnVZTdoBe+XhVRbT8wuwdYJ3q9np0mwCh/F8XNDZr3pBfl8/FBjBZVtWhoqkuCeGSx38soWqMi49odW9l3nEhicTTWhbOdPcdgTVU7iqRuIpMCktYqDqUWeZof8RarFLOvKKeqUDUx+yura8MwDJLKGsS6p
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(39840400004)(376002)(396003)(136003)(451199021)(6486002)(6512007)(6506007)(83380400001)(36756003)(2616005)(38100700002)(86362001)(186003)(316002)(478600001)(2906002)(66946007)(6916009)(5660300002)(66476007)(66556008)(4744005)(4326008)(8676002)(41300700001)(8936002)(7416002)(44832011)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?bFHm7NbCsFixA5hjwSeb6JPf8a/GEF+oIkBA2vzNUqf6LAqxiumctgPXYfRV?=
+ =?us-ascii?Q?1FcN1SqDzLNoyoaILkrOtbttUm2vdF4ztCVvw9EQ314e3mzgeIFBo6elKvZ5?=
+ =?us-ascii?Q?vfJ99xSGVPeiPwl8fnizHdd4HIaU8wOkHeRZjFoYYVPtqyGA4vHoGUqVAL9g?=
+ =?us-ascii?Q?n7tqllbeh/4jj5eRMshe2oOiLwa9WxSasP8wBhOF0iEkOb3ukn60+DWcdUXx?=
+ =?us-ascii?Q?sBxcJ36RE/gVROjA7vxKow77pqf/1KiR97AhVE8hqs8rGEjoQNTvkP8vX0dz?=
+ =?us-ascii?Q?1judmDbnDBHV/9XUXTzo/uDpptczUfFnauygpdF2w81L2OC0bnpJZ2cwqrkx?=
+ =?us-ascii?Q?px9eG1HNEllDLnpktvTPA2LSMH3DvslAYTYzZqEmaEQCQdtkzpbKJbT8y0vJ?=
+ =?us-ascii?Q?wvIDp+uv5Zns9RcGgjp6ixnNLjyCKAD0aIZ0b3GwF53YHY4bCIJxDUqyCCoI?=
+ =?us-ascii?Q?pZIGZrTUvNjJrhEMME60x0aeHbeQW5jLyJkTGFX3HOal/tCj+5t5y4fdC8oH?=
+ =?us-ascii?Q?XQl/S83QteTCnOrxud0ZngJueazNSonJATto4tbBfnCL2d2D+zq2+hraqjTf?=
+ =?us-ascii?Q?MuXnxndb4mM2ME+RsoHkzPDaLdpwaq3lR7t0GqBrLBXbEQG4VXXTGUFzxW2z?=
+ =?us-ascii?Q?b5dbdGAMiRavkcV/xNG/Qavzu44OvcVHaQF4Ijmw3eVxO2Fl36H8Gu37KvcX?=
+ =?us-ascii?Q?MEmoQeB3C42UwrKV5sEdA+VExgkjgpY62THCQxzVNe/I1j9XHcwU69DEkLg9?=
+ =?us-ascii?Q?L2KlAGjEhG5UJ9NyHiQefoZ7BLjheTnfpgqp/zKKb043hMG0kguJ45d9oWjR?=
+ =?us-ascii?Q?PLPxitABwWBTABE/hMdxLZOtEZV+KOKZYqjE4Fy+jYTF0DEOyW5KnEjeNq3O?=
+ =?us-ascii?Q?crflOCvWKHWsK7AVq67KDyusZuQDNkvEd9VlUn1CppW0LUwkZpoP2EbANZK5?=
+ =?us-ascii?Q?FqNbFWikGuEYdDQt3Yj9n9wmRN78J24fQ1tDmz3pCvfeJO21f7+hB7YHu9zf?=
+ =?us-ascii?Q?+YlUeRONHWf8Z6vWBYA5m/4hsMysiY7ion4Yr60dVKi3tRRGe2i2CSwOYJGf?=
+ =?us-ascii?Q?CIrMOXgO5I91ythfGgrHUo/fhlhwsYffIMf1xH1L20gfjXO1G30Rur9lYSKj?=
+ =?us-ascii?Q?eS4bc26U7gU7jH/IYYfW1M3ntVTkGcs2EQacOh0X6CPTQnGkf9CZoMsrt2jj?=
+ =?us-ascii?Q?lBHHXmpIWdVieAzHsPdVZsgo96HgLtjLruXvlSwjYKOX8iNHcwBsnhz5dElL?=
+ =?us-ascii?Q?8YczFQva9Leb5Ru+RDp7zIsmEp/pY6TJZrdEdVybWpEzI1wO/rVDpFnK1KW1?=
+ =?us-ascii?Q?/qXjAZ9Yvkaz19m7daZ4tiKgBkCtb2BNDVgtLZJ3hPUtbuj0bCMVp/wrludS?=
+ =?us-ascii?Q?T0fSITGXt2Pxe+qt1GzzrWhJQRERim9c1tH3NSwe47BuOaY1KnSnFu2JEpW3?=
+ =?us-ascii?Q?7VQWicEzMFKt08P4d8/Zehttu2CQQmhRdiedCZrutYcOsHOoaSREYcnl5nEt?=
+ =?us-ascii?Q?llRSRhHZaeAdRp8kVqvAvrsh+kRnWyWzPx2Uti7fgqSIJbeW1Y0bgMixdy9U?=
+ =?us-ascii?Q?uEKOptb63Fy+gDyjeHIuKUip0DMHtI7idluAvRSkILH3SbbSY5y1BmWaHeRA?=
+ =?us-ascii?Q?wOv8zlqQuoT4UXXpOev17MB9cW1PduaJiBjMWEuJASn+trPLewqBUusve32P?=
+ =?us-ascii?Q?gPezqg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02f1be65-1ffa-4160-f55a-08db50773344
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2023 10:21:49.7012
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FhRP4XCA5u8y8RrNVqVL8c3R+jBYQeYeSnklLQ93z260/dQxMFLrUobdn07zxtjWLfd+/RqewEkSvw86/NhG1MCQqKnfSRE8ldQjO/980dw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO3PR13MB5669
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 9, 2023, at 09:05, Tiezhu Yang wrote:
-> Now we specify the minimal version of GCC as 5.1 and Clang/LLVM as 11.0.0
-> in Documentation/process/changes.rst, __CHAR_BIT__ and __SIZEOF_LONG__ are
-> usable, just define __BITS_PER_LONG as (__CHAR_BIT__ * __SIZEOF_LONG__) in
-> asm-generic uapi bitsperlong.h, simpler, works everywhere.
->
-> Remove all the arch specific uapi bitsperlong.h which will be generated as
-> arch/*/include/generated/uapi/asm/bitsperlong.h.
->
-> Suggested-by: Xi Ruoyao <xry111@xry111.site>
-> Link: 
-> https://lore.kernel.org/all/d3e255e4746de44c9903c4433616d44ffcf18d1b.camel@xry111.site/
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On Tue, May 09, 2023 at 11:05:16AM +0200, Lorenzo Bianconi wrote:
+> Since veth is very likely to be enabled and there are some drivers
+> (e.g. mlx5) where CONFIG_PAGE_POOL_STATS is optional, make
+> CONFIG_PAGE_POOL_STATS optional for veth too in order to keep it
+> optional when required.
+> 
+> Suggested-by: Jiri Benc <jbenc@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-I originally introduced the bitsperlong.h header, and I'd love to
-see it removed if it's no longer needed. Your patch certainly
-seems like it does this well.
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-There is one minor obstacle to this, which is that the compiler
-requirements for uapi headers are not the same as for kernel
-internal code. In particular, the uapi headers may be included
-by user space code that is built with an older compiler version,
-or with a compiler that is not gcc or clang.
-
-I think we are completely safe on the architectures that were
-added since the linux-3.x days (arm64, riscv, csky, openrisc,
-loongarch, nios2, and hexagon), but for the older ones there
-is a regression risk. Especially on targets that are not that
-actively maintained (sparc, alpha, ia64, sh, ...) there is
-a good chance that users are stuck on ancient toolchains.
-
-It's probably also a safe assumption that anyone with an older
-libc version won't be using the latest kernel headers, so
-I think we can still do this across architectures if both
-glibc and musl already require a compiler that is new enough,
-or alternatively if we know that the kernel headers require
-a new compiler for other reasons and nobody has complained.
-
-For glibc, it looks the minimum compiler version was raised
-from gcc-5 to gcc-8 four years ago, so we should be fine.
-
-In musl, the documentation states that at least gcc-3.4 or
-clang-3.2 are required, which probably predate the
-__SIZEOF_LONG__ macro. On the other hand, musl was only
-released in 2011, and building musl itself explicitly
-does not require kernel uapi headers, so this may not
-be too critical.
-
-There is also uClibc, but I could not find any minimum
-supported compiler version for that. Most commonly, this
-one is used for cross-build environments, so it's also
-less likely to have libc/gcc/headers being wildly out of
-sync. Not sure.
-
-      Arnd
-
-[1] https://sourceware.org/pipermail/libc-alpha/2019-January/101010.html
 
