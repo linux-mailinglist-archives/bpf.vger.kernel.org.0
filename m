@@ -1,92 +1,114 @@
-Return-Path: <bpf+bounces-228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF466FBC44
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 03:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CB56FBC92
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 03:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6545D281171
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 01:02:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0BD92811BE
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 01:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC76389;
-	Tue,  9 May 2023 01:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765E4391;
+	Tue,  9 May 2023 01:36:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB8F7C;
-	Tue,  9 May 2023 01:01:48 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D8B171F;
-	Mon,  8 May 2023 18:01:46 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QFfwJ0ZsbzpVpN;
-	Tue,  9 May 2023 09:00:32 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 9 May
- 2023 09:01:43 +0800
-Subject: Re: [PATCH net-next] net: veth: rely on napi_build_skb in
- veth_convert_skb_to_xdp_buff
-To: Lorenzo Bianconi <lorenzo@kernel.org>, <netdev@vger.kernel.org>
-CC: <lorenzo.bianconi@redhat.com>, <bpf@vger.kernel.org>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-	<ast@kernel.org>, <daniel@iogearbox.net>
-References: <0f822c0b72f8b71555c11745cb8fb33399d02de9.1683578488.git.lorenzo@kernel.org>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <78a76439-9189-be9c-be2a-d757487f52c2@huawei.com>
-Date: Tue, 9 May 2023 09:01:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF947C;
+	Tue,  9 May 2023 01:36:55 +0000 (UTC)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BC24215;
+	Mon,  8 May 2023 18:36:53 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64115e652eeso39002206b3a.0;
+        Mon, 08 May 2023 18:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683596213; x=1686188213;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v6zAQOTkWtDOOBZdrEkoRuGqVTQxApi39/8Os2AcncY=;
+        b=jpAbZDt9KWJPk6nQW3VArhCf7JSp7ecP/vxzhAajETEIpFMXRZMLOttaTuIbZNfBAZ
+         aD4RgnKnUV3XIy0lUMsmU8SjmyduuM89IfnlPpBUgU6vCt2YLsO1zLXxlEGweA/bVq6/
+         GYarrZMWICsrDCvALlHKO49eCcwy4uB6s3rCSA89XUYjjMf0UjRIRcKUmRxo/fd3TFsL
+         R6Q4vsX9KEXdPx1nd6tCqqIqwwuDyTY4FwniIj25Uh3hdhuLSqiWUYgwmj1lL0giCPuB
+         AXG07nkM47imV/l4zId8hyepeIvt+TjRLpVb/bH95cWLsSXVIY9qRIlywrUOsEhB0siu
+         XHFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683596213; x=1686188213;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v6zAQOTkWtDOOBZdrEkoRuGqVTQxApi39/8Os2AcncY=;
+        b=YxPRA1IgQd9mD8JHxdr7dVHC3TIJjv6K5onQy3SeqvO6PfpepzNLOT9DDg5iJU8PnT
+         LtIk7AvMTM0feTmW/H7aZI6tP17Nu+Mv4RN8+KHBb2tvtrCZ0jqgkngxeQvhc+1sfxqI
+         DmaYa4BiEEb4s4FIQvDlaVMHbOp2uMAgfUmqLMO11QfB2vqHe8ocpGS0ZkmlNtv9uzxF
+         qsuFJHk0fBNHWFjd/vjJgSmBK43nASJQa49JVRVhAhvcAHstSepyechUeC15tC67byVz
+         VpCvQvoDLn2XZFKWp/70BXwq8S77bknR3EfvgtCFpemDiN8JJEf6ivJB1lg7w+twpXke
+         LPJQ==
+X-Gm-Message-State: AC+VfDy6uNMgeqRK30hkVnbKuZCvGv1meUio2f/j3Hj80w2cUKwqLJje
+	UBTp0UOXQP7Qv+1YISzJXMI=
+X-Google-Smtp-Source: ACHHUZ74JrQhvq5222wSbD6o0rqwph1ZEYmf2tn0416MlkouTB3b6ddDYWMFYGdcAoSGbaJh6w/vDw==
+X-Received: by 2002:a17:903:1209:b0:1a9:7912:850e with SMTP id l9-20020a170903120900b001a97912850emr15316784plh.10.1683596213020;
+        Mon, 08 May 2023 18:36:53 -0700 (PDT)
+Received: from awk.. (arc.lsta.media.kyoto-u.ac.jp. [130.54.10.65])
+        by smtp.gmail.com with ESMTPSA id p20-20020a170902a41400b0019aaab3f9d7sm138816plq.113.2023.05.08.18.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 May 2023 18:36:52 -0700 (PDT)
+From: Taichi Nishimura <awkrail01@gmail.com>
+To: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Taichi Nishimura <awkrail01@gmail.com>
+Subject: [PATCH] add braces to rt_type == RTN_BROADCAST case
+Date: Tue,  9 May 2023 10:36:01 +0900
+Message-Id: <20230509013601.2544346-1-awkrail01@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0f822c0b72f8b71555c11745cb8fb33399d02de9.1683578488.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/5/9 4:45, Lorenzo Bianconi wrote:
-> Since veth_convert_skb_to_xdp_buff routine runs in veth_poll() NAPI,
-> rely on napi_build_skb() instead of build_skb() to reduce skb allocation
-> cost.
+Add braces to rt->rt_type == RTN_BROADCAST to make it easier
+to grasp the if-else-if statement.
+I think that it is ok to remove braces of rt_type == RTN_MULTICAST
+because IP_UPD_PO_STATS is oneliner.
 
-LGTM.
-Reviewed-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Taichi Nishimura <awkrail01@gmail.com>
+---
+ net/ipv4/ip_output.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/veth.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index dce9f9d63e04..3ae496011640 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -747,7 +747,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->  		if (!page)
->  			goto drop;
->  
-> -		nskb = build_skb(page_address(page), PAGE_SIZE);
-> +		nskb = napi_build_skb(page_address(page), PAGE_SIZE);
->  		if (!nskb) {
->  			page_pool_put_full_page(rq->page_pool, page, true);
->  			goto drop;
-> 
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 61892268e8a6..8b761e1a9e24 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -203,8 +203,9 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+ 
+ 	if (rt->rt_type == RTN_MULTICAST) {
+ 		IP_UPD_PO_STATS(net, IPSTATS_MIB_OUTMCAST, skb->len);
+-	} else if (rt->rt_type == RTN_BROADCAST)
++	} else if (rt->rt_type == RTN_BROADCAST) {
+ 		IP_UPD_PO_STATS(net, IPSTATS_MIB_OUTBCAST, skb->len);
++	}
+ 
+ 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
+ 		skb = skb_expand_head(skb, hh_len);
+-- 
+2.39.2
+
 
