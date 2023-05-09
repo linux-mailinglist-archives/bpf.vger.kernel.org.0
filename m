@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCA986FCA00
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 17:15:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0FE6FCA01
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 17:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 144201C20BBC
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 15:15:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8691628132D
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 15:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8291800A;
-	Tue,  9 May 2023 15:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325441800E;
+	Tue,  9 May 2023 15:15:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1AF8BE2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D532E8BE2
 	for <bpf@vger.kernel.org>; Tue,  9 May 2023 15:15:27 +0000 (UTC)
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FEB468C
-	for <bpf@vger.kernel.org>; Tue,  9 May 2023 08:15:23 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-64115e652eeso43341553b3a.0
-        for <bpf@vger.kernel.org>; Tue, 09 May 2023 08:15:23 -0700 (PDT)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C600144AF
+	for <bpf@vger.kernel.org>; Tue,  9 May 2023 08:15:25 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6439df6c268so3507129b3a.0
+        for <bpf@vger.kernel.org>; Tue, 09 May 2023 08:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683645323; x=1686237323;
+        d=gmail.com; s=20221208; t=1683645325; x=1686237325;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+4qZUlY5CsYKT92Eew2Epw0Xry6nY6IQRdMJKEmH+Oo=;
-        b=Pl8RUMaRC5dUmf6hxUbl+CqO8mvYpU6IJ4ltRAd5dQHvZzGGtgs9EIhdkSRDWSakv8
-         iThPHznQlCJozhm3k87UXCaeYCFORRHEA8oJbKP+IIaH1A4FQ/bumxg5qf4gXPeOp8ii
-         G6p0kWJjHyjBmCsu+mo4XsgU5Rumc0VZI4oX8n2b61xkEskD10Xj3fKGVFDdRbEoO+HQ
-         Ds/1cqkghScjEl++PtJfrMCcgCYW1hgT7c52k7wSXyxfERt9zFrteS9wBctaI0sjvmDl
-         JdVALmlUV9rCyd1pVHG458UU8X32VU13udxNvvvbiRAfJT1neog91o7ms66AgGS7O03I
-         /odA==
+        bh=1/5w29JDTg92RC5QIzYNc+90Gl1d3HCTz77GiE2o97g=;
+        b=MC+naAcWHYH0TxRfsKSe8xbrIcKfRxO/l46Gm7gUfJynAAO2CsXa+6UOaqf80e9kA3
+         MrSir8evOqJnfTXT+92D/H4dnAUrPb8oXWdcgFxnmu65nUQSK4Sa/REBQR4MfVFaBEm4
+         Na90EIZei1g76+f7evVhFh7gvvhvEPM5bgQ+E3FKqxmqvgeltOM2tEJHzFf3Vd2/ebyu
+         ZShq70co5FqoFajtsnQ+atbZJ7M7x3ON9GpdaxqwKi22DjrvEkMkE6z1nmalPItTICG0
+         FAr8MjKu8cUefxLT9TnAqTeVgThd1SD0ROm09MUFg7GfBRvR8nxeCHQlsO+jmAtyF2nZ
+         OCeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683645323; x=1686237323;
+        d=1e100.net; s=20221208; t=1683645325; x=1686237325;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+4qZUlY5CsYKT92Eew2Epw0Xry6nY6IQRdMJKEmH+Oo=;
-        b=GXpnR8RsuCnB8ANq+JSQwmlctsft3xXKolx3S/XAtUUpkLBpDoUfo5rtpbTRLONYXm
-         WxOl4AwYF4Y/C3A4cduryb06wk/0rZnR2ya9zMA4fXL+2anc0xv1QhAK271LCIafRo4v
-         6y4Dw0rjX31Db4Nb0hA4/E8SG0ETJzQNvKQn+VpRXJZlODDKeVqpH3CwwatobnTsFPw6
-         MdLkosUSNjkAOdNEXF0egyFDgP7W+AeMOCYVbWI90ZEnz1tvLcqLvkAq7GIZLb2Ni8Ss
-         txDnFWWAVvdHkhjmpmo8Rcm7n/DNMo46Gvvp5MZZXSRs6f9mkxPXUTN2PQ83e4IKmApK
-         au/Q==
-X-Gm-Message-State: AC+VfDzKXyWt5Ih/ymkDyGUjdr09oKAEjrysFlODIRSAd1aHSRbJAm17
-	979I662sMglq2E3wAe34UY4=
-X-Google-Smtp-Source: ACHHUZ4hj6XQqff0qDQe/Z5MBU15GtXPTuUaBhcKgEvi43Gwb+ox4Uu6qOcCy84P2dR11aAfzijVXQ==
-X-Received: by 2002:a17:903:22c6:b0:1ac:939b:abdb with SMTP id y6-20020a17090322c600b001ac939babdbmr3352980plg.29.1683645323122;
-        Tue, 09 May 2023 08:15:23 -0700 (PDT)
+        bh=1/5w29JDTg92RC5QIzYNc+90Gl1d3HCTz77GiE2o97g=;
+        b=Oxs3TUywJ5h82WTbaMx1q55c638lj0wl/GYih3JSik98UypNkcB7b5qwxaY5AwU21X
+         00u4yACjrbEQ6nNzyiae2p90iYBzwmyrYkmcfftYgZDmhK3KSi/t5RD1vCXOY9EdiNd7
+         WQTTWxrQw61Sa4LRF2vtXApKUo6y5MNOoRaUToFgX+U/OfI5V5xm8ZJScn9U33llODxd
+         O0gPyZ3vzMUpySucHgAGymBcGAy39iFHVz1LBX6mZ2NuQtucILl92JxVm7/6s+sugscz
+         KlxOKLttkCex9vv4n9+JvXPr9x3mYEbYwIpsmN3YtiuGcNHXQEKDZhnCfmrNsUTXqyLS
+         HSNQ==
+X-Gm-Message-State: AC+VfDxwalr40n7LFtPao781AaDalSTMCTcp0e9O3FbXglaG9RTaCdL/
+	okjiKtt+2b67Rqb7HvKGo9A=
+X-Google-Smtp-Source: ACHHUZ4g9z93NaWG2ZQ5Yuur3DXy4+Ljhqia/Tb0IusIXrnMI2gexFr0o4/nY85mwuF2U3+MO377XQ==
+X-Received: by 2002:a17:903:41ca:b0:1a6:abac:9cc with SMTP id u10-20020a17090341ca00b001a6abac09ccmr17391496ple.66.1683645324675;
+        Tue, 09 May 2023 08:15:24 -0700 (PDT)
 Received: from vultr.guest ([149.28.193.116])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001aafc8cea5fsm1706349plo.148.2023.05.09.08.15.21
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001aafc8cea5fsm1706349plo.148.2023.05.09.08.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 08:15:22 -0700 (PDT)
+        Tue, 09 May 2023 08:15:24 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -70,9 +70,9 @@ To: ast@kernel.org,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 1/2] bpf: Fix memleak due to fentry attach failure
-Date: Tue,  9 May 2023 15:15:10 +0000
-Message-Id: <20230509151511.3937-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 2/2] bpf: Show total linked progs cnt instead of selector in trampoline ksym
+Date: Tue,  9 May 2023 15:15:11 +0000
+Message-Id: <20230509151511.3937-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230509151511.3937-1-laoar.shao@gmail.com>
 References: <20230509151511.3937-1-laoar.shao@gmail.com>
@@ -90,87 +90,70 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-If it fails to attach fentry, the allocated bpf trampoline image will be
-left in the system. That can be verified by checking /proc/kallsyms.
-
-This meamleak can be verified by a simple bpf program as follows,
-
-  SEC("fentry/trap_init")
-  int fentry_run()
-  {
-      return 0;
-  }
-
-It will fail to attach trap_init because this function is freed after
-kernel init, and then we can find the trampoline image is left in the
-system by checking /proc/kallsyms.
-  $ tail /proc/kallsyms
-  ffffffffc0613000 t bpf_trampoline_6442453466_1  [bpf]
-  ffffffffc06c3000 t bpf_trampoline_6442453466_1  [bpf]
-
-  $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep "FUNC 'trap_init'"
-  [2522] FUNC 'trap_init' type_id=119 linkage=static
-
-  $ echo $((6442453466 & 0x7fffffff))
-  2522
-
-Note that there are two left bpf trampoline images, that is because the
-libbpf will fallback to raw tracepoint if -EINVAL is returned.
+After commit e21aa341785c ("bpf: Fix fexit trampoline."), the selector
+is only used to indicate how many times the bpf trampoline image are
+updated and been displayed in the trampoline ksym name. After the
+trampoline is freed, the count will start from 0 again.
+So the count is a useless value to the user, we'd better
+show a more meaningful value like how many progs are linked to this
+trampoline. After that change, the selector can be removed eventally.
+If the user want to check whether the bpf trampoline image has been updated
+or not, the user can also compare the address. Each time the trampoline
+image is updated, the address will change consequently.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/trampoline.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ include/linux/bpf.h     | 1 -
+ kernel/bpf/trampoline.c | 7 ++-----
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 456f33b..36e4b2d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1125,7 +1125,6 @@ struct bpf_trampoline {
+ 	int progs_cnt[BPF_TRAMP_MAX];
+ 	/* Executable image of trampoline */
+ 	struct bpf_tramp_image *cur_image;
+-	u64 selector;
+ 	struct module *mod;
+ };
+ 
 diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index ac021bc..7067cdf 100644
+index 7067cdf..be37d87 100644
 --- a/kernel/bpf/trampoline.c
 +++ b/kernel/bpf/trampoline.c
-@@ -251,6 +251,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 	return tlinks;
- }
+@@ -410,11 +410,10 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+ 		err = unregister_fentry(tr, tr->cur_image->image);
+ 		bpf_tramp_image_put(tr->cur_image);
+ 		tr->cur_image = NULL;
+-		tr->selector = 0;
+ 		goto out;
+ 	}
  
-+static void bpf_tramp_image_free(struct bpf_tramp_image *im)
-+{
-+	bpf_image_ksym_del(&im->ksym);
-+	bpf_jit_free_exec(im->image);
-+	bpf_jit_uncharge_modmem(PAGE_SIZE);
-+	percpu_ref_exit(&im->pcref);
-+	kfree(im);
-+}
-+
- static void __bpf_tramp_image_put_deferred(struct work_struct *work)
- {
- 	struct bpf_tramp_image *im;
-@@ -438,7 +447,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 					  &tr->func.model, tr->flags, tlinks,
- 					  tr->func.addr);
- 	if (err < 0)
--		goto out;
-+		goto out_free;
+-	im = bpf_tramp_image_alloc(tr->key, tr->selector);
++	im = bpf_tramp_image_alloc(tr->key, total);
+ 	if (IS_ERR(im)) {
+ 		err = PTR_ERR(im);
+ 		goto out;
+@@ -451,8 +450,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
  
  	set_memory_rox((long)im->image, 1);
  
-@@ -468,7 +477,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 	}
- #endif
- 	if (err)
--		goto out;
-+		goto out_free;
- 
+-	WARN_ON(tr->cur_image && tr->selector == 0);
+-	WARN_ON(!tr->cur_image && tr->selector);
++	WARN_ON(tr->cur_image && total == 0);
+ 	if (tr->cur_image)
+ 		/* progs already running at this address */
+ 		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
+@@ -482,7 +480,6 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
  	if (tr->cur_image)
  		bpf_tramp_image_put(tr->cur_image);
-@@ -480,6 +489,10 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 		tr->flags = orig_flags;
- 	kfree(tlinks);
- 	return err;
-+
-+out_free:
-+	bpf_tramp_image_free(im);
-+	goto out;
- }
- 
- static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
+ 	tr->cur_image = im;
+-	tr->selector++;
+ out:
+ 	/* If any error happens, restore previous flags */
+ 	if (err)
 -- 
 1.8.3.1
 
