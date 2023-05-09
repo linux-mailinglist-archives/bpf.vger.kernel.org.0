@@ -1,81 +1,73 @@
-Return-Path: <bpf+bounces-244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F356FC815
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 15:38:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EC26FC88D
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 16:08:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C49F1C20B56
-	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 13:38:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FBC3280D0A
+	for <lists+bpf@lfdr.de>; Tue,  9 May 2023 14:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81994182D7;
-	Tue,  9 May 2023 13:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3EF51951D;
+	Tue,  9 May 2023 14:08:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A735DDD5
-	for <bpf@vger.kernel.org>; Tue,  9 May 2023 13:38:50 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251283A86;
-	Tue,  9 May 2023 06:38:39 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 349D9UrK018655;
-	Tue, 9 May 2023 06:37:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=6+oqOv08S6xbMUjM9FQY53ALETOW628tqr16LHvYIaw=;
- b=bhaLMzOHmyjwPw/VRMHsvlnDWJ5OKL0i1YeRhSJ4qruUvDdm+HX1cGOBvCtknlESStOg
- c6RUeADvWKkbBlJXUxwpJ+tdxtNnXjsayruHazyg2/IdiaVVjEs+pZidrHzRL2ZkgKMl
- BCIvkrV9mDn4jAg/OaK8inw2dg5qpvu/Do7BWF+HB7zmI1d1GgC9dCb/2ePIJVJJdW7P
- hZAwzaEMicf8EHJZ6CgvU4dGTCU3ksC/QXnZ7N/6nDvr+4UT841u2TJErzHHkTmzk5Ir
- +F95CkNyNUGEfTK0TYkysHmLtlSmzjBU26jW5fuiWv1WHC4M1JnOM2wNsp55aINWK/Ta Aw== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qf78d5h00-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 May 2023 06:37:52 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1F515495;
+	Tue,  9 May 2023 14:08:25 +0000 (UTC)
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2077.outbound.protection.outlook.com [40.107.92.77])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2625D40C8;
+	Tue,  9 May 2023 07:08:21 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d8VlosjdxB/4usppy43WNQ9TRrS44IR04ClGiSVmXx+R/XmxRrXcrJXR8IFOrZHHEVGqF5pmjGvNyjs2MIITPu2laN6TR0tptdnS8kvM9yPMEfvn02OppUZMyReuzFYdTVvEA87Ce+pXokO3rqcmiX4+NHLLb8fyVfR0adxJ/clVT1zb9AiFZPcZx5GbCaRZHwtgN7W+V9dnAOI3HsOGfGz19C72oPH/YaGr3MPeIco/p2kbzwAWIxARfm3vqNHzy5Xy7DeZt76ub7G6eIJuqj2nBjfH96PhDjXk3sBmP/wsIVA45KbCGVt6d07XoRaaJAh2UFtqkkuyh8GdcQgzlg==
+ b=mygzo/C1SgfAAqQVZIaBlT3Mcs0RqKLUmSRE4vgxV0HI2izBep33we5sgdYVOovef7sam/G/ugbJEn3HUS89yQfthctwPLbCb6ci6DVD52YNaDoUJCe2p4xOqMtxf6P04IW0Nhy9eOsDEpTYz7R03dtuylaSmvytmOUM0Ua4D9C1xHXYUaWZkJS53FvilmmLrsx9rlCpZRxk9YPX0QUfSILNImqWvYsQS1/chIIruq5q3BZVm89Cq9Kp4ZTWDS7+z2QIg9NTjwzE1w77ZCvhL4P4o9vE8PR+H50tKYvborvz0VkFScPJyxvTbNdDuR47GLBFaxcHPC06+mbDSgs0fw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6+oqOv08S6xbMUjM9FQY53ALETOW628tqr16LHvYIaw=;
- b=Wmj3wbnr0JX/9KWrKP+ShvUnyFR3H+QjqqLiCSSKuqjqy5QwDFBPs/wLVYte9osZRsMCm2I1U+TeOERN2MWfyRrXTITswqbaA76lnKGw8qAoVhwhku5FWMDkBUb3Dw252WyC/3lYopPARQiXlEEU2EQ3CGoszRvsCDjIhcxJHFk+XBkNWLRwy96P4wZt4+WGsGdQ9dviD84+OtAadsb33Jo8zK8CsaSXih6J3lPa0PvjAgq5Pf98uIVsgwFb8HJYWspLxzymCoFUB1sorCiHiJo6cKcl3/v2iCFgusT1Q5LXlGyawn+SyUC4c08axqHpVbhCjluRiab3lviix2dWXA==
+ bh=PS1JWJ6uyP+zkaVfokwG0FAYk7bpUkRFkP/ufeBVCk8=;
+ b=dj3pUNPslUbKctorK6VVXkQDaJSvms12Wyg4/j61htV8Lz6WjwKXuoCiGn+h62eSoTiCwKB3qNXaRe2t2iC/mQs47YohNiceBbC9SCT/fWEwZHfqRj4uEUbD/XuY4ppP5Uh3Jdf0PIyhbH7SNXR/lO5Gy6blBMGSCLefR1VmLnkJoKYLAQA4Sr+eAszYu0F2+JAwiW8g3akHtyKMzw7AqduyeKXxk788hgFPrSeSMkM23w9fMC9G8foySzGV1+P88Chby2cQkSA7zQaCIfUfeBqErplzR86qoQStm6bg30A9iS9ZLr1pcauOJ8UBBiWKGEhdN8ERwNscmF/J4wcEmA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by IA0PR15MB5571.namprd15.prod.outlook.com (2603:10b6:208:43b::20) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PS1JWJ6uyP+zkaVfokwG0FAYk7bpUkRFkP/ufeBVCk8=;
+ b=j/tmxShGpKDyMkZHSKsswIleOdPc6wa5fNZT9IbbaZaR0WiRGXkpjNQ8MGJIcohlus85NbNEmf2QIzhUJlHhxWLKukFtyCaYnLKOe/u2jip0CwaE9kPlA8m373hz078BJCB1pjlqJMeac+64gjkahcq3UDUNnWtarAdma2NLQUoV35UmEF8T/Gwfd8GFF6LflR4+YNcdOEWcFg0eFxoi0EgCLlLCiHf/+MzP9UUdshRXKpXh1Mmm6YL8q5fe6YBfRm/RvcdNBAtTnK725UdKYUlM5H42GXRBnXYAvMy+SKM3avF8365IqXTrZFlLv26iNuvX1zpjvYd2eyr0H/Fz7Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6201.namprd12.prod.outlook.com (2603:10b6:930:26::16)
+ by IA0PR12MB8746.namprd12.prod.outlook.com (2603:10b6:208:490::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.32; Tue, 9 May
- 2023 13:37:50 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6363.032; Tue, 9 May 2023
- 13:37:48 +0000
-Message-ID: <7cf68bd6-c103-6b0b-1929-86b53079db38@meta.com>
-Date: Tue, 9 May 2023 06:37:44 -0700
+ 2023 14:08:18 +0000
+Received: from CY5PR12MB6201.namprd12.prod.outlook.com
+ ([fe80::a7a3:1d9d:1fa:5136]) by CY5PR12MB6201.namprd12.prod.outlook.com
+ ([fe80::a7a3:1d9d:1fa:5136%6]) with mapi id 15.20.6363.033; Tue, 9 May 2023
+ 14:08:18 +0000
+Message-ID: <7ffb8783-a102-afb6-5f9d-a744bbfbbbe6@nvidia.com>
+Date: Tue, 9 May 2023 10:08:14 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.1
-Subject: Re: [PATCH bpf-next] arm64,bpf: Support struct arguments in the BPF
- trampoline
-Content-Language: en-US
-To: Florent Revest <revest@chromium.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, mark.rutland@arm.com, xukuohai@huaweicloud.com,
-        zlim.lnx@gmail.com
-References: <20230508164650.3217164-1-revest@chromium.org>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230508164650.3217164-1-revest@chromium.org>
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH net v4] virtio_net: Fix error unwinding of XDP
+ initialization
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Simon Horman <simon.horman@corigine.com>, Bodong Wang <bodong@nvidia.com>,
+ Jiri Pirko <jiri@nvidia.com>
+References: <20230508222708.68281-1-feliu@nvidia.com>
+ <20230509004010-mutt-send-email-mst@kernel.org>
+From: Feng Liu <feliu@nvidia.com>
+In-Reply-To: <20230509004010-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0197.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-ClientProxiedBy: SN6PR04CA0105.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::46) To CY5PR12MB6201.namprd12.prod.outlook.com
+ (2603:10b6:930:26::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,94 +75,216 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|IA0PR15MB5571:EE_
-X-MS-Office365-Filtering-Correlation-Id: c41e0bc4-b3a2-4749-4003-08db509293dc
-X-FB-Source: Internal
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6201:EE_|IA0PR12MB8746:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a29a218-198a-4961-1a34-08db5096d70b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	x7701RAauhDt8gGiDPppOyBE7Uwh5c3wSk8TNGKx5XLbhLrpdI8WARUC3Cz6/vI1KRSdMgu6Q9St7p2qChLGKhMaVXh7ivykqZsSICQutz3jb0ciYAZPOAdwApXJd9w0YmgiN/4DE1C7uFQJTSZxmEqjcBqBD92YO4Izdoo5wMnbP8CVAj2380MQg2vAKEj+PKz7V1b+80OMyBUO5Tn1PP4ndivZN2NBrA2gB8JrNFQm48D1Mz1aWx84uf6tgVLmHtrScPeSLpGte2yhpe68EKkJsWCYFRrmwMt/FnhBkcoA7k4lmCKtqdVXWULrYhtRJOhTvjaTbPBRHKUHE7tCN9IMdAktgeyzyi+qM8iIJAu9hDSMfSEXha9wRMHCikikeQ4UGyGckd1XGZ/EpUqePH+8VD+NJ4sv/e7tWs9gUHLLEVxVUjo5Rp/I5ztxbGMMIjq5gY8u1TCmTx9hjOvWY6c23kc6JuJAAsisYqac8LbQ7XEjMwDmfQ6+YwxmNSWLtzn4PP+W6VFurhuEhnTHooxvRkYpv7oDZ57gCjage04s9rMyXzm83jFiSednVmuuI0e/wNkwaCoHOgyXdW/E2kqEatyjrERFcnM+x8nBFxNh+Hktve6Fky/SSulRIASZB2Esaqd36+gL0DYvDaDogQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(366004)(396003)(346002)(39860400002)(451199021)(31686004)(6666004)(478600001)(66556008)(4326008)(6486002)(66946007)(66476007)(316002)(86362001)(36756003)(31696002)(53546011)(6506007)(6512007)(2616005)(4744005)(8936002)(8676002)(2906002)(41300700001)(7416002)(5660300002)(186003)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info:
+	GEdoBdXUmLN1eTmU4Un0y1O3uyahU6gAZi3x2tWO/fK8Dm5UatRwX85fJBvZCkDkLO61v5lkwcyBYLT6AMGEElis/mNlrM1k1XoAN/oWycj3ltyIcr+Ghx05tmn7RaA88dXSv9DcW6IV9lzbAZUivzIYX9MRVfnxeYtR+1SJC03aEs53VjNx4rSEqDEZG+aUdGlc60rdxiXnPKMNpBgEuoQy4M3tRQ47QVCt8Xf/1ZLek11utR48cRbQmJsT0E4qzksLKR9F/YEW48LeblC4IPJqyD3oqrfary29AmsgHVPe0++71XsnOmT5V94SR4ooyWuaUbEjXCHev80UU8NILH7cKgHWK2yf01CzYJ/pRQS9J8x4DGQlpal3PXehjLi4M8jYAUctNpCYE+9F2+tfmW22qTl8TcaATy3bIfbbiwlfkN+kG6idaiSPGkv73oxolb1t5NHJwNOyRvpIdU4siYs+pMJw1sYFQmZFSiIuYpIzCTn3dmkAtm8puod/l9BEDoeBFmKqAQG+oaEMS1b8Q+l8KEMcb0v4s+pu71cjGsFbM1GDILzxAZMo/7mcBCsBaaXS1olmjM9j8BRvvK83Jc/f1xBe8gQtP7AHJutmkuaoqUKZKGJrqU8WIawNKZ34oxW77c/FqEXheKJsV8y1Zg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(451199021)(31686004)(36756003)(66556008)(38100700002)(2906002)(8936002)(5660300002)(316002)(86362001)(8676002)(66946007)(4326008)(66476007)(41300700001)(6916009)(31696002)(83380400001)(186003)(107886003)(6506007)(26005)(6512007)(478600001)(6666004)(2616005)(54906003)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SG1EUkRMZDBMa3kyZmk0WFllOUo5OTFmL0o5dVN2b21ZNHJsQTJlWUFHZW9L?=
- =?utf-8?B?NHRZQ0ZjRWdNM1JaR2t1ZGxyb0tvdVhSdWMwbXFxSU9TZEp4TzVUWU9XZ1lC?=
- =?utf-8?B?UGpxam1oUUV2TldDN2QwQWRkc0dqYnBEMlZCOGUwVjQxc3FLdmg3Q2MrZXhr?=
- =?utf-8?B?ekVSM1B1TFhKOTdwdXV2YXN0YUxoVm1rdldEeEVhWXlEVHp4RitKZGtCUGs0?=
- =?utf-8?B?L2R3L1VDY1o2UW9ZdXlHcWpROG1CcnJhVFl0emVvYWdjK0l5blBJVG95eGJy?=
- =?utf-8?B?QkwxSS9lY21GSlh0L1FsWXYrLzh1MmNFMkJhdXFrL2YwT1ZnY1dsWkhJQXg4?=
- =?utf-8?B?ZXFTSTRDeHpTN3BmWjNVSVloRWx1bXNOUVhlKy9wcW13N05laHhvRnZDREky?=
- =?utf-8?B?dlp6UFJoUjRSbTNlelgycnRrOFZaME1FeFdvZHRYOGtaemU0S2FFd0QwMTdy?=
- =?utf-8?B?cEUyV1lDU0VMa2NEaStXaTgzZEErSmRBYnhQeENXUkRMdjVVVVZPZitzWTc2?=
- =?utf-8?B?Q25LSlhPTVNHMlozODdQY0dNWjk3Q3dWMktoeGlQNjVFRzhuYzhsenNIczBn?=
- =?utf-8?B?b21VTklUZzRVcUFaV2d5M2VDWTAySm1lVEgwcGc5NGdXN3VySTcvQ1NuTHVW?=
- =?utf-8?B?Z2U2OW5HNStOcy81SHVZMStBTXdNV0tOWENNemFHOG9jTVBIcE9rMWErZ3Mr?=
- =?utf-8?B?YUJuMHVmRnFwMmlVbHEyL3lTMDl6QWJSUC96VTExcDJ5TzRrMVFsS3hRbEJx?=
- =?utf-8?B?N21TMWYzSStuUlN6Tm9BNzdXS3JYTjVUYkpVVzdQVlZpS0U2R0JpUmxPMnVk?=
- =?utf-8?B?T3YyaTJXSWtaYlJxS1ZWZGZ2RitUeWp4bU80STEweVlMM2hDVEpTOGZEUTMr?=
- =?utf-8?B?RG1Eb29zZUJWUWdOeTlwZGU0bW14R05yZFdOckgyQnJwcW5PRytEQUhoKy9E?=
- =?utf-8?B?RlZjTjVRVlpTL3RHZlZTVk96TkVJMXpIekZibGNNc0IrdmxDZ29SN0U0ck5w?=
- =?utf-8?B?RVBwaWRiT0J3cTBESytKQkxYb3d1ZEt0cHZkeFVLdklsdFJGUEkwMnhhWmlX?=
- =?utf-8?B?R1JLa3pmRU9Ua1VhdE1WMk1RY20xMGJWQWVtcGNaeU1sSHFTay93SWh3SnZF?=
- =?utf-8?B?VWxPWVZtbmtveDdhL0lNaGFLQnJtSUxjdHlkNWd1MzRjMVovQnY5V1pubitn?=
- =?utf-8?B?dU5JR0cxcjU2NUJJTDA4VHFhaTlQSTNwMWowenp4OWlaYUNseCswMmg4d1Ew?=
- =?utf-8?B?NEpKQzNjek5NRW1SOHYrRXMrc2YxYUYyMTdsVWtnalhtQjlJelFDYTVLZnpu?=
- =?utf-8?B?MjR3V094eWJqT200UzFZMEg3TE9zQlJaQ0w3TDlnNlJCVGxUK0R5ZXVwRnhm?=
- =?utf-8?B?UEp1dEFNZWo3K01TMXJpT01Oc2twLy8wNGxDODdXeUdCTXV3UllRVDVPQVAy?=
- =?utf-8?B?bEtQUUd2bGZjZjBraEJsbCtGQldkbEtUSXpZNG5EbnBRK2k0cCt0cUN4V2ZU?=
- =?utf-8?B?a2NuOXFOYUlTTHA2bWN0MGxSbVFva3dmNjZVTjJCS005ZmZmYmZIZWlFenZ3?=
- =?utf-8?B?OTNLSDZ2WEFnUHBVczBaODcvODhrREdlOHVWTDZvZC9MUXdnbk8zaGdFNzNk?=
- =?utf-8?B?RFl5M0d1aG9xNHZQTEJsUVQ1NlUvUlV1M00wc0dHai85aHYycGRCOWRqUFFD?=
- =?utf-8?B?R1hYQllvbDNSenAyTkx5eFFFZVR5WE9hNUZoNm00T2xyL0lCUjVUbDhlQzgy?=
- =?utf-8?B?Y2NzZ3JUZFBFQ29VckNPbHdTWUVEZ29TUmtLSVg5eVRwOERGK0dnUEppcnY3?=
- =?utf-8?B?NEt6NDg5NERzcEcranllUUR0aFlTUGVrKzRUWE9zUVl2N3JTRGtUQnNaaG5k?=
- =?utf-8?B?SDdLSXZPM0lKdTdVNE1uZ0ZXQ3FlelRNK3ZkUHY5VC9MSTI5VExYT2xPZ0ll?=
- =?utf-8?B?dkd1UFRVaTJEVVUwUHhGMnlidktSRUcwU3pRVzdQOWtHdk9FTzNCZ3dSamht?=
- =?utf-8?B?eS94MTBWSUVXaVIwUzhpSHp5VTBsRWVCb1JiREM4cjNjT3MwemkrVVJWcWJz?=
- =?utf-8?B?Z2drZm9wN1ZjTFpzdmRXSEd5aGVHdE0xZlpXUHVKaklnY080M1Z0cHo1ZHAw?=
- =?utf-8?B?TER6SkpPZFBoeFMrS3RwZ0lZUzgydG9NTUdrZHRRb3REMC9ZdUF3eDkwa0J1?=
- =?utf-8?B?Snc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c41e0bc4-b3a2-4749-4003-08db509293dc
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SzFwVDJFV3RaR0dpZDNvWmVIbXBTdERDZmZBZStTZW80TGlyVktaRk1rZDQ5?=
+ =?utf-8?B?cmpvQUt6aFlta3FPOFlRemVCM2ZsRlhXYWtQQlIwQXFYWmMvYmtiSHZJbjVN?=
+ =?utf-8?B?MExkelhsVG95RnlNSldGQk9KdG52NnExaVhHOVl5K3o0SjlyN3d3b2E5Y2pL?=
+ =?utf-8?B?YlBZazB2WUpsUTBkNEpXUUNpZ2JqTVltdHVWK1daczJaUytaaGRKVlZDQzVW?=
+ =?utf-8?B?ODVjeEFydkV0SzMzWE1RN2FzSFA4YWU2N0R4VDl5OVJmaU1LT01RbXoxUG5Y?=
+ =?utf-8?B?WnNBcERzNDJ2WG12TUVxeFhibHVTWU5BTjdkU0RwVldqb1NHMllzLzhVYmJE?=
+ =?utf-8?B?SzJ2alNNVUluK0k3T3kxblkyazVDM0xacSsvKzhGT1BNUVJEejRsNUtCcjQ4?=
+ =?utf-8?B?K2hHMEpjbXpMczRWazRYUjVhNDk1ai90TkVCdkhmU1AwWkkvdzlVbHAxOUdS?=
+ =?utf-8?B?L2tBYWFIL0lIbElsVGRnYkxFZnRDV1Z1ODZ3SFJCOXpFQVhSRXc1RGdHbHFM?=
+ =?utf-8?B?LytmR01PUC92Vy9BV0QrbkVXTHdqV0ZFMk9tbC93QmQxOFhuaDlFanFqMVlV?=
+ =?utf-8?B?VW83dDNYT0VtQjcrNDNBdXU4aHZSS21xNElYWWtYRVZFcWJJdXZtdXU1NXFs?=
+ =?utf-8?B?ZVpLSnJlTDdGWHE4K1I4UzFNSlYvdlpWVkFUZjVGQkFDV3RvTDhiTlY1V0RP?=
+ =?utf-8?B?TDgvSE9waTRaWFVxY0ViaWJoUUZBRnhYTDZ6b1QyWVhkOHFDVE5wZkx6dU1D?=
+ =?utf-8?B?QWVnSE9tUE8yUXQ2TGZXb2JSY1lDcWd4OWJkdTl0MGIvdGNMMzh4MzJBTHBI?=
+ =?utf-8?B?OFZ0bkpTM2tFVjY5dlJ2eGhLYXFIYmYrQXA2c1lsQUJpNlUwOEQ5NjczL3h0?=
+ =?utf-8?B?Z1VpNEdxanRpMlZNcDF0eEZwMEh2dFFOQ1Y5bm9pVjJ3YUlOd3RhcUlEcmhJ?=
+ =?utf-8?B?R2ZXeXRuVUVOV3NqdFV5cnJhUEFteVRwcnFJSHZqVXgyUWdTS0xrLzdOcWhC?=
+ =?utf-8?B?eXhJMy8xQVpJaVRzbjhoL0VkckVOVnVMWVZsYzBNMjUydGlwc1BxazliaDZ3?=
+ =?utf-8?B?OUN3U2VsQWtBMjJQRXByVlpHYnBYcTNZS2FreStBeEhSdFNBcEhZYm9ra2xa?=
+ =?utf-8?B?MHBNR0g4ZDFZWlBHWkpJYURjYmZpbHJXK2JIYkZVYVFBcXYvRDcvR1YzQWkv?=
+ =?utf-8?B?TW5seFNQdVp3b0IwOWFXMU1wOTlpSFk3V3dhNUdzcFNpNjY4aVlrUHlZeTds?=
+ =?utf-8?B?UHpiYUNoQWx1Z09aajEweVp4K3ZXQW50alltcE42d3E4UTBScGdESzFhNW9Y?=
+ =?utf-8?B?V2kyWldIcXlRNlVoRW1KRWV2R09vSk1WbEhLV2t1cFZIeHRtRkJLa1dRc0xl?=
+ =?utf-8?B?UGVyK3Z0K0RxUEQ3eGRTdEx2MEw1VU9pczFhMEpEdDI2OS9tbjNjY2VFaUx0?=
+ =?utf-8?B?ODIzNGx4SnFXTW5ZSWtBY0F2MlRNZkFqdm5NT0NlaGZnV3ZKMHFTbW4wNk5n?=
+ =?utf-8?B?NXdMMk9FUWR5cUdLOFV0NEdMNHc3dWdVM1JiUFdVZThLazFWU0MrLzl6d0VL?=
+ =?utf-8?B?WE1rbzk1SHVXM3NQYzM1MGVpWUtieWdLaGpQQnNoK0RtRi9YcWlNcWdLbldp?=
+ =?utf-8?B?eEJLU0hJZHc5Yk83TzBEbkxNbndJa3RnQURCNnpoK2dpNGdaOGo0dURzeUJi?=
+ =?utf-8?B?bFFTYkIwTDUveEdqd2dkZzl2YjZreEZxRUc5dFRmbCtna2doM0o1ZGhHVjZa?=
+ =?utf-8?B?Y1FVdEtTMC9YWXJVRDZ1aGVaSEtzSlk0TW52MUdGM0daUjBRaGVNeTZqbXZh?=
+ =?utf-8?B?b0lFRFFyZlVVN2VFbTV4NTRES2tyVG1mWGdQZ1JQVG5JdmFEOUlXUDVYRUJo?=
+ =?utf-8?B?ZGJtV05PRW9hbHhjT3l3Smo3UVIvamVNb0ppdFlUbHkyQjRIc2pTd0dFczhI?=
+ =?utf-8?B?cU9ZcHRDcFgzeEVrMVgvdHA2TGU3RExCdlhGNkxUUjhyeWxSQmlWUldOM3Jq?=
+ =?utf-8?B?d3Y3Y3c5WmIwb0lrRFFEUkcwZUEyVkdVY3o1RFg5WFBHVytBUDdPblliZS9j?=
+ =?utf-8?B?Y2lZeGVCZXZwRk03T2pkcGhQZ0xwUFIxdG5RZXlaNDhNSkdXVmUxZDBMeTEv?=
+ =?utf-8?Q?nvJc/TOzzkcVgujISGwEdqcGo?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a29a218-198a-4961-1a34-08db5096d70b
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6201.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2023 13:37:48.1013
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2023 14:08:18.7763
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BHyhk1SfmYH4iz8Riw2+du9SVA0YDHKHDIRDkRzf8ERlawZwdaDjreXnpWt8ATNe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR15MB5571
-X-Proofpoint-GUID: umGC6xq7ul4xd8WBdsFeIaldebLd1GU8
-X-Proofpoint-ORIG-GUID: umGC6xq7ul4xd8WBdsFeIaldebLd1GU8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-09_08,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: X90vMWd/EyLylvMXVIuLnXGQ5a39cN7644h6ujmhtAhXuTpinZBre7yoQlU+B7Qw0jxALd/mhWzLiEH9bgC2KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8746
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 
 
-On 5/8/23 9:46 AM, Florent Revest wrote:
-> This extends the BPF trampoline JIT to support attachment to functions
-> that take small structures (up to 128bit) as argument. This is trivially
-> achieved by saving/restoring a number of "argument registers" rather
-> than a number of arguments.
+On 2023-05-09 a.m.12:42, Michael S. Tsirkin wrote:
+> External email: Use caution opening links or attachments
 > 
-> The AAPCS64 section 6.8.2 describes the parameter passing ABI.
-> "Composite types" (like C structs) below 16 bytes (as enforced by the
-> BPF verifier) are provided as part of the 8 argument registers as
-> explained in the section C.12.
 > 
-> Signed-off-by: Florent Revest <revest@chromium.org>
-LGTM. Thanks for adding support for arm64!
+> On Mon, May 08, 2023 at 06:27:08PM -0400, Feng Liu wrote:
+>> When initializing XDP in virtnet_open(), some rq xdp initialization
+>> may hit an error causing net device open failed. However, previous
+>> rqs have already initialized XDP and enabled NAPI, which is not the
+>> expected behavior. Need to roll back the previous rq initialization
+>> to avoid leaks in error unwinding of init code.
+>>
+>> Also extract helper functions of disable and enable queue pairs.
+>> Use newly introduced disable helper function in error unwinding and
+>> virtnet_close. Use enable helper function in virtnet_open.
+>>
+>> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
+>> Signed-off-by: Feng Liu <feliu@nvidia.com>
+>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+>> ---
+>>
+>> v3 -> v4
+>> feedbacks from Jiri Pirko
+>> - Add symmetric helper function virtnet_enable_qp to enable queues.
+>> - Error handle:  cleanup current queue pair in virtnet_enable_qp,
+>>    and complete the reset queue pairs cleanup in virtnet_open.
+>> - Fix coding style.
+>> feedbacks from Parav Pandit
+>> - Remove redundant debug message and white space.
+>>
+>> v2 -> v3
+>> feedbacks from Michael S. Tsirkin
+>> - Remove redundant comment.
+>>
+>> v1 -> v2
+>> feedbacks from Michael S. Tsirkin
+>> - squash two patches together.
+>>
+>> ---
+>>   drivers/net/virtio_net.c | 58 ++++++++++++++++++++++++++++------------
+>>   1 file changed, 41 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index 8d8038538fc4..df7c08048fa7 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -1868,6 +1868,38 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+>>        return received;
+>>   }
+>>
+>> +static void virtnet_disable_qp(struct virtnet_info *vi, int qp_index)
+> 
+> 
+> I am guessing _qp stands for queue pair? Let's call it
+> virtnet_disable_queue_pair please, consistently with max_queue_pairs.
+> 
+Yes, qp stands for queue pair
+will do, thanks
 
-Acked-by: Yonghong Song <yhs@fb.com>
+>> +{
+>> +     virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
+>> +     napi_disable(&vi->rq[qp_index].napi);
+>> +     xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+>> +}
+>> +
+>> +static int virtnet_enable_qp(struct virtnet_info *vi, int qp_index)
+> 
+> Similarly, virtnet_enable_queue_pair
+> 
+will do, thanks
+
+>> +{
+>> +     struct net_device *dev = vi->dev;
+>> +     int err;
+>> +
+>> +     err = xdp_rxq_info_reg(&vi->rq[qp_index].xdp_rxq, dev, qp_index,
+>> +                            vi->rq[qp_index].napi.napi_id);
+>> +     if (err < 0)
+>> +             return err;
+>> +
+>> +     err = xdp_rxq_info_reg_mem_model(&vi->rq[qp_index].xdp_rxq,
+>> +                                      MEM_TYPE_PAGE_SHARED, NULL);
+>> +     if (err < 0)
+>> +             goto err_xdp_reg_mem_model;
+>> +
+>> +     virtnet_napi_enable(vi->rq[qp_index].vq, &vi->rq[qp_index].napi);
+>> +     virtnet_napi_tx_enable(vi, vi->sq[qp_index].vq, &vi->sq[qp_index].napi);
+>> +
+>> +     return 0;
+>> +
+>> +err_xdp_reg_mem_model:
+>> +     xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+>> +     return err;
+>> +}
+>> +
+>>   static int virtnet_open(struct net_device *dev)
+>>   {
+>>        struct virtnet_info *vi = netdev_priv(dev);
+>> @@ -1881,22 +1913,17 @@ static int virtnet_open(struct net_device *dev)
+>>                        if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+>>                                schedule_delayed_work(&vi->refill, 0);
+>>
+>> -             err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
+>> +             err = virtnet_enable_qp(vi, i);
+>>                if (err < 0)
+>> -                     return err;
+>> -
+>> -             err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
+>> -                                              MEM_TYPE_PAGE_SHARED, NULL);
+>> -             if (err < 0) {
+>> -                     xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+>> -                     return err;
+>> -             }
+>> -
+>> -             virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+>> -             virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
+>> +                     goto err_enable_qp;
+>>        }
+>>
+>>        return 0;
+>> +
+>> +err_enable_qp:
+>> +     for (i--; i >= 0; i--)
+>> +             virtnet_disable_qp(vi, i);
+>> +     return err;
+>>   }
+>>
+>>   static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>> @@ -2305,11 +2332,8 @@ static int virtnet_close(struct net_device *dev)
+>>        /* Make sure refill_work doesn't re-enable napi! */
+>>        cancel_delayed_work_sync(&vi->refill);
+>>
+>> -     for (i = 0; i < vi->max_queue_pairs; i++) {
+>> -             virtnet_napi_tx_disable(&vi->sq[i].napi);
+>> -             napi_disable(&vi->rq[i].napi);
+>> -             xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+>> -     }
+>> +     for (i = 0; i < vi->max_queue_pairs; i++)
+>> +             virtnet_disable_qp(vi, i);
+>>
+>>        return 0;
+>>   }
+>> --
+>> 2.37.1 (Apple Git-137.1)
+> 
 
