@@ -1,213 +1,193 @@
-Return-Path: <bpf+bounces-309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A9CF6FE653
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 23:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E2DF6FE657
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 23:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24A392815C0
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 21:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C928C2815B0
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 21:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD7A1D2D6;
-	Wed, 10 May 2023 21:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA8A1E501;
+	Wed, 10 May 2023 21:31:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1D921CF5
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 21:31:05 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A8B2716
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 14:30:59 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34AHqOkm024239
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 14:30:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=O0a+dfk/ZqJxha0rbLp+Ih+BYX4Xe9mOTc4JUldQM/A=;
- b=LnFXymylKFKk/WhNNHxMVQjx0QfIfF6/BzF2t7eXKVZKAIxRmcMEH80UskUtmnesLl3l
- RT+LJXRY/3zMZlaeHW/lNKHH9NmZiUvG59wIua+jfUDNU+6v4pK7SU40oEWXUpLM+qW/
- cjfVWCZAVdZSm5RpKeWFPh4Cq3wolziRuqo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qgfvbhha4-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 14:30:59 -0700
-Received: from twshared31955.05.ash9.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 10 May 2023 14:30:57 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id 150901DD8F979; Wed, 10 May 2023 14:30:49 -0700 (PDT)
-From: Dave Marchevsky <davemarchevsky@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky
-	<davemarchevsky@fb.com>
-Subject: [PATCH bpf-next] bpf: Remove anonymous union in bpf_kfunc_call_arg_meta
-Date: Wed, 10 May 2023 14:30:47 -0700
-Message-ID: <20230510213047.1633612-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: A3lV0uY2OGt-PBLIqs9efVsauY9H37bn
-X-Proofpoint-ORIG-GUID: A3lV0uY2OGt-PBLIqs9efVsauY9H37bn
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812E31D2D7
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 21:31:37 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5322722
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 14:31:36 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-643846c006fso8271317b3a.0
+        for <bpf@vger.kernel.org>; Wed, 10 May 2023 14:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683754296; x=1686346296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dilDKvLCh912/JBRw2vO/HiVmrKv/M0bEgV3+XRucAc=;
+        b=CWdjuapDrxVvjL+NbU0Z7r7YLgIF/8WG4X8TGoU/rY0/jBkTpsVNpN8BuGOUwfDydi
+         /C4sQDaca9lTm7Ttwlpxhy3oiv8L86cQJ5n2s8e5XZEI8VJeiXykB6wcUDMLwC8WToUK
+         57Xwdy7G1OtX1rHqs6ynvUDGhszNOmgbxEszHbS8+DYh8lxr9iDXkbL52IDHpVVdDqbD
+         vWhS7GmUZLXfoGHkBUpYxrmqrR88fCnywib0lJs4+j2t/o4U4CGrjQr9NJSGNooy6oFj
+         BFlZhhvk4fJ+C6xOld8dFfukqDzRflnVqtuxW78TGmvpx3vbohx35h1SAV0G/yNxpb7R
+         kZxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683754296; x=1686346296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dilDKvLCh912/JBRw2vO/HiVmrKv/M0bEgV3+XRucAc=;
+        b=QCP5/6DOxge328dlP/9DFIs5MOumFDehnr4vuPieOvzRbVotck2LuAi+SRmedXdXT3
+         XWr9XJBHvKtqAw3bWetsqE3Sonb5JRZFHyLlJIe2Rqzf2kTyNJDj0j2OzZRTnKodGgJ0
+         tLY6tB+gbHAg6M56yEKGKznv6u9mmZQr0zcrkH4seKJvAdVi78DhlkksZbFt7Teyx1KN
+         XtPCBm2KN3dvd6OPipwFKxKtx4dHy1liK8R5Y7/AjuV/4CwsLaNyMK4H6kOjBCr/V1AF
+         3kz2R/K+A2v4bMEoHVndxMFO1gSpc7/5oZ85ReKv6E0qTmTXGdogjlek7kgxm+G51MGZ
+         VzSA==
+X-Gm-Message-State: AC+VfDzUY72e1yuy7/UKfHxGHUwHxqr+lJXlOa/QmZ3mRTzKfqH4tHiV
+	b/3ImmZSl3VvGK3UmGAKZKGllkgFzn4Cy+Wn5ihM1Q==
+X-Google-Smtp-Source: ACHHUZ74oA92M2oyte9ZwQqFQMLwi4FAmCL45SgTYqyIDZnMMcH93WNEj5//wMcp0Tf/bB3sl4rmpo4z3TUompF7XqU=
+X-Received: by 2002:a17:902:ba84:b0:1ab:1c09:2df8 with SMTP id
+ k4-20020a170902ba8400b001ab1c092df8mr19326387pls.50.1683754295424; Wed, 10
+ May 2023 14:31:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-10_04,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230510152216.1392682-1-aleksandr.mikhalitsyn@canonical.com>
+In-Reply-To: <20230510152216.1392682-1-aleksandr.mikhalitsyn@canonical.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Wed, 10 May 2023 14:31:24 -0700
+Message-ID: <CAKH8qBuAoobsVP2Q5KN06fZ2NM3_aMwT7Y2OoKwS4Cf=cv3ZGg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: core: add SOL_SOCKET filter for bpf
+ getsockopt hook
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: davem@davemloft.net, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Christian Brauner <brauner@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For kfuncs like bpf_obj_drop and bpf_refcount_acquire - which take
-user-defined types as input - the verifier needs to track the specific
-type passed in when checking a particular kfunc call. This requires
-tracking (btf, btf_id) tuple. In commit 7c50b1cb76ac
-("bpf: Add bpf_refcount_acquire kfunc") I added an anonymous union with
-inner structs named after the specific kfuncs tracking this information,
-with the goal of making it more obvious which kfunc this data was being
-tracked / expected to be tracked on behalf of.
+On Wed, May 10, 2023 at 8:23=E2=80=AFAM Alexander Mikhalitsyn
+<aleksandr.mikhalitsyn@canonical.com> wrote:
+>
+> We have per struct proto ->bpf_bypass_getsockopt callback
+> to filter out bpf socket cgroup getsockopt hook from being called.
+>
+> It seems worthwhile to add analogical helper for SOL_SOCKET
+> level socket options. First user will be SO_PEERPIDFD.
+>
+> This patch was born as a result of discussion around a new SCM_PIDFD inte=
+rface:
+> https://lore.kernel.org/all/20230413133355.350571-3-aleksandr.mikhalitsyn=
+@canonical.com/
+>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com=
+>
+> ---
+>  include/linux/bpf-cgroup.h | 8 +++++---
+>  include/net/sock.h         | 1 +
+>  net/core/sock.c            | 5 +++++
+>  3 files changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index 57e9e109257e..97d8a49b35bf 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -387,10 +387,12 @@ static inline bool cgroup_bpf_sock_enabled(struct s=
+ock *sk,
+>         int __ret =3D retval;                                            =
+        \
+>         if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&                     =
+      \
+>             cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))            =
+      \
+> -               if (!(sock)->sk_prot->bpf_bypass_getsockopt ||           =
+      \
+> -                   !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_get=
+sockopt, \
+> +               if (((level !=3D SOL_SOCKET) ||                          =
+        \
+> +                    !sock_bpf_bypass_getsockopt(level, optname)) &&     =
+      \
+> +                   (!(sock)->sk_prot->bpf_bypass_getsockopt ||          =
+      \
 
-In a recent series adding a new user of this tuple, Alexei mentioned
-that he didn't like this union usage as it doesn't really help with
-readability or bug-proofing ([0]). In an offline convo we agreed to
-have the tuple be fields (arg_btf, arg_btf_id), with comments in
-bpf_kfunc_call_arg_meta definition enumerating the uses of the fields by
-kfunc-specific handling logic. Such a pattern is used by struct
-bpf_reg_state without trouble.
+Any reason we are not putting this into bpf_bypass_getsockopt for
+af_unix struct proto? SO_PEERPIDFD seems relevant only for af_unix?
 
-Accordingly, this patch removes the anonymous union in favor of arg_btf
-and arg_btf_id fields and comment enumerating their current uses. The
-patch also removes struct btf_and_id, which was only being used by the
-removed union's inner structs.
-
-This is a mechanical change, existing linked_list and rbtree tests will
-validate that correct (btf, btf_id) are being passed.
-
-  [0]: https://lore.kernel.org/bpf/20230505021707.vlyiwy57vwxglbka@dhcp-172=
--26-102-232.dhcp.thefacebook.com
-
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- kernel/bpf/verifier.c | 41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 754129d41225..5c636276d907 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -279,11 +279,6 @@ struct bpf_call_arg_meta {
- 	struct btf_field *kptr_field;
- };
-=20
--struct btf_and_id {
--	struct btf *btf;
--	u32 btf_id;
--};
--
- struct bpf_kfunc_call_arg_meta {
- 	/* In parameters */
- 	struct btf *btf;
-@@ -302,10 +297,18 @@ struct bpf_kfunc_call_arg_meta {
- 		u64 value;
- 		bool found;
- 	} arg_constant;
--	union {
--		struct btf_and_id arg_obj_drop;
--		struct btf_and_id arg_refcount_acquire;
--	};
-+
-+	/* arg_btf and arg_btf_id are used by kfunc-specific handling,
-+	 * generally to pass info about user-defined local kptr types to later
-+	 * verification logic
-+	 *   bpf_obj_drop
-+	 *     Record the local kptr type to be drop'd
-+	 *   bpf_refcount_acquire (via KF_ARG_PTR_TO_REFCOUNTED_KPTR arg type)
-+	 *     Record the local kptr type to be refcount_incr'd
-+	 */
-+	struct btf *arg_btf;
-+	u32 arg_btf_id;
-+
- 	struct {
- 		struct btf_field *field;
- 	} arg_list_head;
-@@ -10680,8 +10683,8 @@ static int check_kfunc_args(struct bpf_verifier_env=
- *env, struct bpf_kfunc_call_
- 			}
- 			if (meta->btf =3D=3D btf_vmlinux &&
- 			    meta->func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]) {
--				meta->arg_obj_drop.btf =3D reg->btf;
--				meta->arg_obj_drop.btf_id =3D reg->btf_id;
-+				meta->arg_btf =3D reg->btf;
-+				meta->arg_btf_id =3D reg->btf_id;
- 			}
- 			break;
- 		case KF_ARG_PTR_TO_DYNPTR:
-@@ -10892,8 +10895,8 @@ static int check_kfunc_args(struct bpf_verifier_env=
- *env, struct bpf_kfunc_call_
- 				verbose(env, "bpf_refcount_acquire calls are disabled for now\n");
- 				return -EINVAL;
- 			}
--			meta->arg_refcount_acquire.btf =3D reg->btf;
--			meta->arg_refcount_acquire.btf_id =3D reg->btf_id;
-+			meta->arg_btf =3D reg->btf;
-+			meta->arg_btf_id =3D reg->btf_id;
- 			break;
- 		}
- 	}
-@@ -11125,12 +11128,12 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
- 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_refcount_acqui=
-re_impl]) {
- 				mark_reg_known_zero(env, regs, BPF_REG_0);
- 				regs[BPF_REG_0].type =3D PTR_TO_BTF_ID | MEM_ALLOC;
--				regs[BPF_REG_0].btf =3D meta.arg_refcount_acquire.btf;
--				regs[BPF_REG_0].btf_id =3D meta.arg_refcount_acquire.btf_id;
-+				regs[BPF_REG_0].btf =3D meta.arg_btf;
-+				regs[BPF_REG_0].btf_id =3D meta.arg_btf_id;
-=20
- 				insn_aux->kptr_struct_meta =3D
--					btf_find_struct_meta(meta.arg_refcount_acquire.btf,
--							     meta.arg_refcount_acquire.btf_id);
-+					btf_find_struct_meta(meta.arg_btf,
-+							     meta.arg_btf_id);
- 			} else if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_front=
-] ||
- 				   meta.func_id =3D=3D special_kfunc_list[KF_bpf_list_pop_back]) {
- 				struct btf_field *field =3D meta.arg_list_head.field;
-@@ -11260,8 +11263,8 @@ static int check_kfunc_call(struct bpf_verifier_env=
- *env, struct bpf_insn *insn,
- 		if (meta.btf =3D=3D btf_vmlinux && btf_id_set_contains(&special_kfunc_se=
-t, meta.func_id)) {
- 			if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_drop_impl]) {
- 				insn_aux->kptr_struct_meta =3D
--					btf_find_struct_meta(meta.arg_obj_drop.btf,
--							     meta.arg_obj_drop.btf_id);
-+					btf_find_struct_meta(meta.arg_btf,
-+							     meta.arg_btf_id);
- 			}
- 		}
- 	}
---=20
-2.34.1
-
+> +                    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_ge=
+tsockopt, \
+>                                         tcp_bpf_bypass_getsockopt,       =
+      \
+> -                                       level, optname))                 =
+      \
+> +                                       level, optname)))                =
+      \
+>                         __ret =3D __cgroup_bpf_run_filter_getsockopt(    =
+        \
+>                                 sock, level, optname, optval, optlen,    =
+      \
+>                                 max_optlen, retval);                     =
+      \
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 8b7ed7167243..530d6d22f42d 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1847,6 +1847,7 @@ int sk_getsockopt(struct sock *sk, int level, int o=
+ptname,
+>                   sockptr_t optval, sockptr_t optlen);
+>  int sock_getsockopt(struct socket *sock, int level, int op,
+>                     char __user *optval, int __user *optlen);
+> +bool sock_bpf_bypass_getsockopt(int level, int optname);
+>  int sock_gettstamp(struct socket *sock, void __user *userstamp,
+>                    bool timeval, bool time32);
+>  struct sk_buff *sock_alloc_send_pskb(struct sock *sk, unsigned long head=
+er_len,
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 5440e67bcfe3..194a423eb6e5 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1963,6 +1963,11 @@ int sock_getsockopt(struct socket *sock, int level=
+, int optname,
+>                              USER_SOCKPTR(optlen));
+>  }
+>
+> +bool sock_bpf_bypass_getsockopt(int level, int optname)
+> +{
+> +       return false;
+> +}
+> +
+>  /*
+>   * Initialize an sk_lock.
+>   *
+> --
+> 2.34.1
+>
 
