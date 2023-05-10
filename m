@@ -1,74 +1,80 @@
-Return-Path: <bpf+bounces-303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55BC26FE31F
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 19:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A02E6FE33E
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 19:28:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D55482813AB
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 17:15:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBEAF28142A
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 17:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32DE314A81;
-	Wed, 10 May 2023 17:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B326E174C7;
+	Wed, 10 May 2023 17:28:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED85E1642C
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:15:37 +0000 (UTC)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CAC59DC
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 10:15:23 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1aae5c2423dso72960215ad.3
-        for <bpf@vger.kernel.org>; Wed, 10 May 2023 10:15:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879923D60
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:28:04 +0000 (UTC)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354AF26AA;
+	Wed, 10 May 2023 10:28:02 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ab13da70a3so73109385ad.1;
+        Wed, 10 May 2023 10:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683738923; x=1686330923;
+        d=gmail.com; s=20221208; t=1683739681; x=1686331681;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IYOXJLDk4oO5B5DqTnmd/XXQFJ3wMOXEkgNVujRw7SA=;
-        b=BOfJPDuBqb8LfCw74gdO3fViG/N6ZX/TC6i2ttArpoTMPRxTTTea3CYwnKf6ShWb11
-         fRBJ9ziHDrKhsgQ+DpJ/L3sbqz9h4SMTYmOAqORcICeKtHLLxZ5yDWGEeESkWAT03qjj
-         padgEso2TfOzQrqUuqrBEW8TWhIVI1bIQ1xuFyJDXFMrEgiSDKXyynTw5kHg9dL+74bl
-         Zw5WEBvPuLQmt1tmyglzlgT7s3xc+JgjigAY4ioKnt/BUCtWN2UoUpMbGa6r7oqcaCoe
-         9hjJMJcUPw/p8hNEtwUMD7trHk4jY/8bvYSyNckF890TA6HvOSiiUA0qfAtaujAtd3mB
-         9YKg==
+        bh=14SzeB2Vs1W83Y2m7j9/1bFYAIAlXQOw2zKIeSsOFhI=;
+        b=gCRz4BqjH9pr6rwQQnegssBrq+NVmWXOyPdlPDSWAO1fygieli77caq04l3ko+fRsY
+         cFkrgyUtl5bZbcMD714N2rkMKnssMTPdUhiocjxt+zD33fEoPoks+QZkVVzn8vhcKQZR
+         rhZIWLRQ+jCBXEtuKmPPqmcbAv/OjzS/atpSXDZrGE5yWs4aOwCeR1LMShiCBiuzWk8T
+         MqExPAsUIMK7VKJtmIkeqwjeL/VRXi4VyyKmsOBgzGepAqqy7bh20RVrXoLc0QOIFksq
+         Jco099twCxKnnuxirTtloXWeUONWr46e5muncbk8sGktwURFrhECoEeBmt6V/juIrpX3
+         0jKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683738923; x=1686330923;
+        d=1e100.net; s=20221208; t=1683739681; x=1686331681;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IYOXJLDk4oO5B5DqTnmd/XXQFJ3wMOXEkgNVujRw7SA=;
-        b=N9pxjqipE8icw/Al6Gt0j05wxopJ6lmCHaGCJapW0E+abp3/88r2INiSX9v4y1QAQS
-         8kLsyE3MyoUcsaqoB6ZrgdncvPf1DPLZTDK3gYS6v9lIuxdi4rWR0lKKBf2wuyVtbA6B
-         LpOTlhdYeAXJUZbpb/4lBSTb54UUi9eonw/Aq0+pNPrlgBdd1tWVF+Oc5CyVkHQAur9U
-         Rwg0WUdzngxznZpc9mu4mzgxKk0oxOHQqpABzuUZFM2LmMd/OuY7LYwZ8fOW4mBhCoQ4
-         ziqdePgQVTaPwT1aWUTg7mc3qCcfpErIOHaMxs4m/3uDwaJQ7YxKzOOTZJzGcY2OVZJy
-         G3AQ==
-X-Gm-Message-State: AC+VfDxA1U5Qpi+Nw3hnnaGPBb/8sX8w65PdyI7z7hGiNWuzx8VTSbSJ
-	Dus17P6/LORHbTGhgVE4IGk=
-X-Google-Smtp-Source: ACHHUZ43+gQZ0U5rJWrYwv95BPpQdmUQ1ACjWyNWhrQRBn4ThhX0bsfO6BEpwzA8sC/WJxLXFnL5YA==
-X-Received: by 2002:a17:902:e842:b0:1ab:17dc:d495 with SMTP id t2-20020a170902e84200b001ab17dcd495mr24270719plg.27.1683738922710;
-        Wed, 10 May 2023 10:15:22 -0700 (PDT)
+        bh=14SzeB2Vs1W83Y2m7j9/1bFYAIAlXQOw2zKIeSsOFhI=;
+        b=Zbx5LZJQAVM2zIMNx/pUYDk+l5S9YIDMm3LCmH9AhEsxSN8FYEiqJeQtyCGVKXXtl2
+         db6WVnsYL7i4741ApTLDaDKGslxgRzJEt/8XZVu+b457IltLqWMm908wHTV7J5c3MmDj
+         78fCCoa1P6jPPeQDbPsDPEvFqTI1spxFzGmLtC1Ci4ooHIvK3F+GAym3766IuPdpTA63
+         TIDAgneK0izvixsCW+XVOrCQExVQSw0Zt/DWBVo2xBb80lXZqiMoXzjZOZNpJ1P9xVj/
+         FitMRjEDyuVAp8EhsBFpfzwtZj05EEuFtS2lJEI7quGvWilx5f0bUMyFVSnGYfTQONxG
+         Ls5w==
+X-Gm-Message-State: AC+VfDxQ3rBMFF5UqODWGm/rOct9HHt4CGlxx8Kmc7tvqN1l8ey58dan
+	veb3vKyFfsUp+520h01P8AQ=
+X-Google-Smtp-Source: ACHHUZ4R5h18ZyJbvVBpOVpl3OCG3fgMMwCyr3XVNv+VxKMCaKwGOQ5egsUGDqJxOoG2lYBAZMCPeg==
+X-Received: by 2002:a17:903:294c:b0:1ab:1b8:8a5f with SMTP id li12-20020a170903294c00b001ab01b88a5fmr18386100plb.33.1683739681391;
+        Wed, 10 May 2023 10:28:01 -0700 (PDT)
 Received: from krava ([2001:4958:15a0:30:84fc:2d48:aeac:9034])
-        by smtp.gmail.com with ESMTPSA id o23-20020a170902779700b001ac706dd98bsm4068521pll.35.2023.05.10.10.15.22
+        by smtp.gmail.com with ESMTPSA id jb4-20020a170903258400b001a04ff0e2eesm4071002plb.58.2023.05.10.10.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 May 2023 10:15:22 -0700 (PDT)
+        Wed, 10 May 2023 10:28:01 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 10 May 2023 10:15:20 -0700
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	acme@kernel.org, laoar.shao@gmail.com, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Add
- --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
- for v1.25
-Message-ID: <ZFvRKHn7I6FVRJXn@krava>
-References: <20230510130241.1696561-1-alan.maguire@oracle.com>
+Date: Wed, 10 May 2023 10:27:59 -0700
+To: Yonghong Song <yhs@meta.com>
+Cc: Ze Gao <zegao2021@gmail.com>, Song Liu <song@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>, Ze Gao <zegao@tencent.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] bpf: reject blacklisted symbols in kprobe_multi to avoid
+ recursive trap
+Message-ID: <ZFvUH+p0ebcgnwEg@krava>
+References: <20230510122045.2259-1-zegao@tencent.com>
+ <6308b8e0-8a54-e574-a312-0a97cfbf810c@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,53 +83,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230510130241.1696561-1-alan.maguire@oracle.com>
+In-Reply-To: <6308b8e0-8a54-e574-a312-0a97cfbf810c@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 10, 2023 at 02:02:41PM +0100, Alan Maguire wrote:
-> v1.25 of pahole supports filtering out functions with multiple inconsistent
-> function prototypes or optimized-out parameters from the BTF representation.
-> These present problems because there is no additional info in BTF saying which
-> inconsistent prototype matches which function instance to help guide attachment,
-> and functions with optimized-out parameters can lead to incorrect assumptions
-> about register contents.
+On Wed, May 10, 2023 at 07:13:58AM -0700, Yonghong Song wrote:
 > 
-> So for now, filter out such functions while adding BTF representations for
-> functions that have "."-suffixes (foo.isra.0) but not optimized-out parameters.
-> This patch assumes that below linked changes land in pahole for v1.25.
 > 
-> Issues with pahole filtering being too aggressive in removing functions
-> appear to be resolved now, but CI and further testing will confirm.
+> On 5/10/23 5:20 AM, Ze Gao wrote:
+> > BPF_LINK_TYPE_KPROBE_MULTI attaches kprobe programs through fprobe,
+> > however it does not takes those kprobe blacklisted into consideration,
+> > which likely introduce recursive traps and blows up stacks.
+> > 
+> > this patch adds simple check and remove those are in kprobe_blacklist
+> > from one fprobe during bpf_kprobe_multi_link_attach. And also
+> > check_kprobe_address_safe is open for more future checks.
+> > 
+> > note that ftrace provides recursion detection mechanism, but for kprobe
+> > only, we can directly reject those cases early without turning to ftrace.
+> > 
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >   kernel/trace/bpf_trace.c | 37 +++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 37 insertions(+)
+> > 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 9a050e36dc6c..44c68bc06bbd 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2764,6 +2764,37 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
+> >   	return arr.mods_cnt;
+> >   }
+> > +static inline int check_kprobe_address_safe(unsigned long addr)
+> > +{
+> > +	if (within_kprobe_blacklist(addr))
+> > +		return -EINVAL;
+> > +	else
+> > +		return 0;
+> > +}
+> > +
+> > +static int check_bpf_kprobe_addrs_safe(unsigned long *addrs, int num)
+> > +{
+> > +	int i, cnt;
+> > +	char symname[KSYM_NAME_LEN];
+> > +
+> > +	for (i = 0; i < num; ++i) {
+> > +		if (check_kprobe_address_safe((unsigned long)addrs[i])) {
+> > +			lookup_symbol_name(addrs[i], symname);
+> > +			pr_warn("bpf_kprobe: %s at %lx is blacklisted\n", symname, addrs[i]);
 > 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> So user request cannot be fulfilled and a warning is issued and some
+> of user requests are discarded and the rest is proceeded. Does not
+> sound a good idea.
+> 
+> Maybe we should do filtering in user space, e.g., in libbpf, check
+> /sys/kernel/debug/kprobes/blacklist and return error
+> earlier? bpftrace/libbpf-tools/bcc-tools all do filtering before
+> requesting kprobe in the kernel.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+also fprobe uses ftrace drectly without paths in kprobe, so I wonder
+some of the kprobe blacklisted functions are actually safe
 
 jirka
 
-> ---
->  scripts/pahole-flags.sh | 3 +++
->  1 file changed, 3 insertions(+)
 > 
-> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> index 1f1f1d397c39..728d55190d97 100755
-> --- a/scripts/pahole-flags.sh
-> +++ b/scripts/pahole-flags.sh
-> @@ -23,5 +23,8 @@ if [ "${pahole_ver}" -ge "124" ]; then
->  	# see PAHOLE_HAS_LANG_EXCLUDE
->  	extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
->  fi
-> +if [ "${pahole_ver}" -ge "125" ]; then
-> +	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-> +fi
->  
->  echo ${extra_paholeopt}
-> -- 
-> 2.31.1
-> 
+> > +			/* mark blacklisted symbol for remove */
+> > +			addrs[i] = 0;
+> > +		}
+> > +	}
+> > +
+> > +	/* remove blacklisted symbol from addrs */
+> > +	for (i = 0, cnt = 0; i < num; ++i) {
+> > +		if (addrs[i])
+> > +			addrs[cnt++]  = addrs[i];
+> > +	}
+> > +
+> > +	return cnt;
+> > +}
+> > +
+> >   int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >   {
+> >   	struct bpf_kprobe_multi_link *link = NULL;
+> > @@ -2859,6 +2890,12 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >   	else
+> >   		link->fp.entry_handler = kprobe_multi_link_handler;
+> > +	cnt = check_bpf_kprobe_addrs_safe(addrs, cnt);
+> > +	if (!cnt) {
+> > +		err = -EINVAL;
+> > +		goto error;
+> > +	}
+> > +
+> >   	link->addrs = addrs;
+> >   	link->cookies = cookies;
+> >   	link->cnt = cnt;
 
