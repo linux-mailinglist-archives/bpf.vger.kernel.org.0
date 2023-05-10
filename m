@@ -1,112 +1,132 @@
-Return-Path: <bpf+bounces-269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90E66FD3ED
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 04:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D94E16FD3F0
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 04:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62FB28131E
-	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 02:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49E96281322
+	for <lists+bpf@lfdr.de>; Wed, 10 May 2023 02:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA1B7F3;
-	Wed, 10 May 2023 02:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36806634;
+	Wed, 10 May 2023 02:56:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F05D63C;
-	Wed, 10 May 2023 02:50:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 396EEC433EF;
-	Wed, 10 May 2023 02:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683687026;
-	bh=d4WJe7aOQ/hWqiiSIGM04cTuskafOpsupvI1zO45mp4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jEQdK9ShLDcJQJzdigC5FFhCItoY0dzogQMZqV5bLGAZy/9S+2A8l5NQF2Z78akK8
-	 oZomF2subVVlzQUE+2tKULcNJ9FuIpzY0t1nZcCvOD7R4Du22qFK0+cMJQsMDAuXYw
-	 X8VDKSCwj6yrPSMHDsWAYdrquXk3xL31SVNOWseQfFxKJFkL4kzBtdn8noAf0+uvv2
-	 ewmlfF6ek7MLY7etF9u2mv6RKHPvbv55pGHqrbrvdKNJNeVH4qOJmO9XKLgLsQD8hG
-	 c16kTko/bVllAqhG7Oe0aT1sB0qbAUO4zinFiemvOz8h9xbzttQEgKNCTuNhnuHvjO
-	 MZ4iDfHNfBKwQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 22252C39562;
-	Wed, 10 May 2023 02:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B7C361
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 02:56:06 +0000 (UTC)
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A08830FB
+	for <bpf@vger.kernel.org>; Tue,  9 May 2023 19:56:02 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-61b8faaa8daso32799786d6.3
+        for <bpf@vger.kernel.org>; Tue, 09 May 2023 19:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683687361; x=1686279361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=79gxakGJCh3jYG7uTZc/fT3rB4f5EGGFQBHhIC6aUJA=;
+        b=GFRSYtHPKx/PYQMSjoTtDkuecTqRVN+j6y8Re2zPsczWqnUZsiilpuauIyE35J8Gck
+         da1dp79fPG+YdRXvSSzKoGXKpuCvFNyW3ddPm+kfPGDH4yX6SRpVPMSeooUREAKr2BSb
+         vPhcqjrfEcmVDEkH5nDh8x54CAiiTh+8xPfg02uFEZ+JbJXuarK03b0WRpPtzRQrjFjp
+         qx8Q9VVkGygLy0xpzExujkRk+1agdnA5XAgRoagd+GyI8jpHk4IOzVQUDPCU4DKnOtIj
+         Cw1+8bylbGTIlK8wHY+B/SbPoSXxrEluk6G+SKCTYI3XIRIEevMy4M/jIQdhymttFuAZ
+         qLHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683687361; x=1686279361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=79gxakGJCh3jYG7uTZc/fT3rB4f5EGGFQBHhIC6aUJA=;
+        b=FW39stzo4rBX4OmzJHaL3BNduMzGe3Pq5aYVFnj8u29IN91sgZW8ty3pZZpw3Xl41t
+         2rDKdh7qo7s+PmnhHc6+Ykgd865AacW2XR+M9jxPxBpuySycQ3A8SVI3AO2lkQ98IRju
+         am3tKgVaF/Y5CvPLYK45RXzgOh0v+iDLGz4BGYrHBe9pdz19KUatPp0O7KfsZ3H6GKOB
+         LJhx8qlkLvidEQsS53y4m7T5R7V1pyQt6+YwXZQ2FGechNQseCgE78es96Q7h9+P/7Qf
+         ha4U7P6NHQF5euln5dzce0fcwcMg/OgJmReZ/+he9mU7Ce4k0nN8LHNzW1fnRnrjc2Fe
+         WSVA==
+X-Gm-Message-State: AC+VfDyTmgasM9NSK/dn7su/Lbnds9Y4QCSWgmZ1bHOor6OHnTH2VvP8
+	tI1YQVYHDhxlC4ZUCHDAV7nmJuc2+h1CBwToE54=
+X-Google-Smtp-Source: ACHHUZ4tvlCxnmXYJdh2rzZvQnaXFxoKQr5Ic43d5U6QV7+h3uCvwO608CzbjKJ7po+CAYl6PW6LtDZxwTZa+AI8zG8=
+X-Received: by 2002:ad4:5f8e:0:b0:61a:197b:605 with SMTP id
+ jp14-20020ad45f8e000000b0061a197b0605mr24240280qvb.1.1683687361584; Tue, 09
+ May 2023 19:56:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 00/15] virtio_net: refactor xdp codes
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168368702613.23144.13458642339700236476.git-patchwork-notify@kernel.org>
-Date: Wed, 10 May 2023 02:50:26 +0000
-References: <20230508061417.65297-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20230508061417.65297-1-xuanzhuo@linux.alibaba.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, virtualization@lists.linux-foundation.org,
- bpf@vger.kernel.org
+References: <20230509151511.3937-1-laoar.shao@gmail.com> <20230509151511.3937-3-laoar.shao@gmail.com>
+ <CAPhsuW6qXXgGkp1DVvHEQCVHvM=yw8nFFhA8LLHgCazwyaoXhA@mail.gmail.com>
+In-Reply-To: <CAPhsuW6qXXgGkp1DVvHEQCVHvM=yw8nFFhA8LLHgCazwyaoXhA@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 10 May 2023 10:55:25 +0800
+Message-ID: <CALOAHbCZfCbGP-gaVKnG_9HGkbVnArCn+EcqweGtA8+wRmJDvQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Show total linked progs cnt instead of
+ selector in trampoline ksym
+To: Song Liu <song@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, 
+	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Wed, May 10, 2023 at 1:43=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, May 9, 2023 at 8:15=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+> >
+> > After commit e21aa341785c ("bpf: Fix fexit trampoline."), the selector
+> > is only used to indicate how many times the bpf trampoline image are
+> > updated and been displayed in the trampoline ksym name. After the
+> > trampoline is freed, the count will start from 0 again.
+> > So the count is a useless value to the user, we'd better
+> > show a more meaningful value like how many progs are linked to this
+> > trampoline. After that change, the selector can be removed eventally.
+> > If the user want to check whether the bpf trampoline image has been upd=
+ated
+> > or not, the user can also compare the address. Each time the trampoline
+> > image is updated, the address will change consequently.
+>
+> I wonder whether this will cause confusion to some users. Maybe the savin=
+g
+> doesn't worth the churn.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+The trampoline ksym name as such:
+ffffffffc06c3000 t bpf_trampoline_6442453466_1  [bpf]
 
-On Mon,  8 May 2023 14:14:02 +0800 you wrote:
-> Due to historical reasons, the implementation of XDP in virtio-net is relatively
-> chaotic. For example, the processing of XDP actions has two copies of similar
-> code. Such as page, xdp_page processing, etc.
-> 
-> The purpose of this patch set is to refactor these code. Reduce the difficulty
-> of subsequent maintenance. Subsequent developers will not introduce new bugs
-> because of some complex logical relationships.
-> 
-> [...]
+I don't know what the user may use the selector for. It seems that the
+selector is meaningless. While the cnt of linked progs can really help
+users, with which the user can easily figure out how many progs are
+linked to a kernel function.
 
-Here is the summary with links:
-  - [net-next,v5,01/15] virtio_net: mergeable xdp: put old page immediately
-    https://git.kernel.org/netdev/net-next/c/363d8ce4b947
-  - [net-next,v5,02/15] virtio_net: introduce mergeable_xdp_get_buf()
-    https://git.kernel.org/netdev/net-next/c/ad4858beb824
-  - [net-next,v5,03/15] virtio_net: optimize mergeable_xdp_get_buf()
-    https://git.kernel.org/netdev/net-next/c/dbe4fec2447d
-  - [net-next,v5,04/15] virtio_net: introduce virtnet_xdp_handler() to seprate the logic of run xdp
-    https://git.kernel.org/netdev/net-next/c/00765f8ed742
-  - [net-next,v5,05/15] virtio_net: separate the logic of freeing xdp shinfo
-    https://git.kernel.org/netdev/net-next/c/bb2c1e9e75be
-  - [net-next,v5,06/15] virtio_net: separate the logic of freeing the rest mergeable buf
-    https://git.kernel.org/netdev/net-next/c/80f50f918c6e
-  - [net-next,v5,07/15] virtio_net: virtnet_build_xdp_buff_mrg() auto release xdp shinfo
-    https://git.kernel.org/netdev/net-next/c/4cb00b13c064
-  - [net-next,v5,08/15] virtio_net: introduce receive_mergeable_xdp()
-    https://git.kernel.org/netdev/net-next/c/d8f2835a4746
-  - [net-next,v5,09/15] virtio_net: merge: remove skip_xdp
-    https://git.kernel.org/netdev/net-next/c/59ba3b1a88a8
-  - [net-next,v5,10/15] virtio_net: introduce receive_small_xdp()
-    https://git.kernel.org/netdev/net-next/c/c5f3e72f04c0
-  - [net-next,v5,11/15] virtio_net: small: remove the delta
-    https://git.kernel.org/netdev/net-next/c/fc8ce84b09bc
-  - [net-next,v5,12/15] virtio_net: small: avoid code duplication in xdp scenarios
-    https://git.kernel.org/netdev/net-next/c/7af70fc169bd
-  - [net-next,v5,13/15] virtio_net: small: remove skip_xdp
-    https://git.kernel.org/netdev/net-next/c/aef76506bc64
-  - [net-next,v5,14/15] virtio_net: introduce receive_small_build_xdp
-    https://git.kernel.org/netdev/net-next/c/19e8c85e336d
-  - [net-next,v5,15/15] virtio_net: introduce virtnet_build_skb()
-    https://git.kernel.org/netdev/net-next/c/21e26a71f5d3
+However the key in the ksym name really confused me before, because
+its meaning was changed.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+In the old kernel(for example, the 4.19), it is
+  bpf_trampoline_[BTF_ID]
+while in the new kernel, it is
+  bpf_trampoline_[ OBJ_ID | BTF_ID ]_[ SELECTOR ]
 
+But I think that is not a big problem, because the user tools can be
+changed to (key & 0x7fffffff) to make it backward compatible.
 
+Currently there's no document on the name, so we can choose what we
+prefer. After we doc it, we have to keep it backward compatible.
+BTW, I think we should add a document on the name, otherwise the user
+has to read the kernel code to parse it.
+
+--=20
+Regards
+Yafang
 
