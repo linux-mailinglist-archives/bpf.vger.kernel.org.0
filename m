@@ -1,68 +1,70 @@
-Return-Path: <bpf+bounces-360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992106FF843
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 19:21:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5076FF844
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 19:21:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5755E1C20FD3
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 17:21:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1EF92816A3
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 17:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AEE8F52;
-	Thu, 11 May 2023 17:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D468F63;
+	Thu, 11 May 2023 17:21:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BC82069C
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 17:20:58 +0000 (UTC)
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C47C198A
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:20:57 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-24e00b8cc73so4934459a91.0
-        for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:20:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D0E8F55
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 17:21:00 +0000 (UTC)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477CD198A
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:20:59 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-643fdfb437aso30409662b3a.0
+        for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:20:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683825657; x=1686417657;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5g1tPUSqWf1uQYXilzqCaULBE2+0aT+IWskC56EQBH8=;
-        b=5GIB56SPeRe/q9nm6+myJQJ+bHMv03bzu8jLgoIpPWxjfdQw6Ru7f0NfXOfOOo8pcu
-         +IZ0JKRL9vg+B4cS+8A8EMfjjVfkX2Cn2ih71pp8PKPTWEw8RvZjAqEZZiWYOlO05D+w
-         CQHZCQdM4KXT09bhnjSIs6d1drGo3bSZ5eJpTmC3EDnlPQ2XByVYyJbiq22zccf66Lzl
-         /ANAYpTz+4Rup7uMrKqYUs0MZvJ7AGjuNlvnVx9BiozukQGQDkG+nwaCOzHfnl6r+bnr
-         0jeW50KKLGrX1Et0C9pMXLqCbmFeeX4eo5b2xpAp/7sIEB69nagdvxGpRaW9Zd/U6fk9
-         zrqg==
+        d=google.com; s=20221208; t=1683825659; x=1686417659;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zp1waDrS2hxbI501GisptczSjMpLepW01T/hYzu1Nz0=;
+        b=LK24k0GciM2A6SKdjLfjy96vWorqMdxz8DQap6mhpdHZ0gEtRXr9QUEwQ61l7noqBh
+         nxe99onU21b9M8ejzm6gBZcw0dm1CSyptaIK+rsM7dhdvEfyV5fEAU+WBdmHrPK7y1dg
+         BbW1x19cSh9CxKw3/Bp5SQRgMk5a4WZn+v3UoTsdqkPIlT3TZ5uGBD87zWew/+SsdGqr
+         Iat2T7GRS4Z3Ms/tGAndch6208fVPfcDloclj5aM9Z1EKliU6KlSoqI4DsCh9rqLho6m
+         XqaRIEGIfKQ9D9vethObG2RAOaQxOQW0Ep2yS7Q2ezPrsx8xQ5acaGhelEwa5f5EMX6l
+         GFbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683825657; x=1686417657;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5g1tPUSqWf1uQYXilzqCaULBE2+0aT+IWskC56EQBH8=;
-        b=UysAyMalPpNqdgiVcf7qvwIDXyu3pm+wQ77BSReStRNOXXBOu0LURH9k9KgqlHJUA3
-         5fjjLBDTH87w3xzjp+QPbsMtRZOxAS58woq+vawCUWOi4qxw1+XZ+RVlaUuw5N3N7FJ5
-         UQh+F2iJ1M+CMNC1R0hDYUpRdRQ1zROoPBNnOAwTjMp2EESUYGV//zOJEbPueTOeVs06
-         jmRmB2hZBsbZAtEgcHLKB9cu6a8Odu7WLZmudGZ4fEiOY+cq2pWSxo4TAr1K33A4yLcY
-         efdrivID0H4Uou5QX+wdSEHoQrf43dysTdWWCOLUSUsRBnSOjvuicnHDdWJvx6c7hdP0
-         056Q==
-X-Gm-Message-State: AC+VfDxdFmHPpVHD1uNxjZo7Vk5GFaRf3OlrY+B7ZoJEAaHB9slwDPxa
-	s82JPAY8Goj3AeNGcmJ3fR32Nx7plZclI8I26nSoaK1TNirM6EfTcb/boJvDnUlhdJUrUdmT2jM
-	CbsfNWh9J5GtJcJ/sSj0XNyosS6itP6fuRdqLhmqf+nARRc329w==
-X-Google-Smtp-Source: ACHHUZ5ZzHX9mhPDLfn0J/uH4cYp6347V/7g3pWavXpAjcaBXECSYP9ghHs9FHJY3GwZH8gbPw6JfhY=
+        d=1e100.net; s=20221208; t=1683825659; x=1686417659;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zp1waDrS2hxbI501GisptczSjMpLepW01T/hYzu1Nz0=;
+        b=hBXMI3lo5BjW7PgMa+X/aAOloLX1ja1wgmbrvpm+Bhm+9PykRtQKXF8hxVGsOCfPWx
+         jQUyepbdULRAlvf0DzYBjjfr2hYMT1EWlFsTGImhNhIZr37sUhsGwAJcsLqc4c76G+xT
+         xJ07jPin+yMKtVpkICLyjpqlTt2h+QtmW+hh1a9uDpJhbkHAiaujUaB1kWw6Cof3CVtn
+         0t4bSyzTydMqtr7QBfbAZfceQZPhJuEr9Ytw184xEyfrGV4zPeFH/Rx5Fq95rjT5AbAE
+         rYmk5BtmkcBAFb3T27Ha8ROvxuGzV5InJB+t4tOPDvuj/8Zt9MTIHKNE/h/2JGpm5Ouo
+         gZOQ==
+X-Gm-Message-State: AC+VfDwQuxFqohk9N+P9W+zUPcRX+tPUYtELNj2HlnyFC/u2wYbInvW3
+	OqcvCAog7QLw7NAWEjRtoMAH7QLQwTP92Ll5I5plBdMH4YUbVlW/zSd+AJBD+ZT29gl4MnW63Q7
+	frhzNNslHDdMyuJ9fxR25uqa9huRcdzxiCucSviLCeXXNdXww2w==
+X-Google-Smtp-Source: ACHHUZ5YIuriG03CjX244fli52c3dLFTWJsD9qPMtbqneGFi3r8ZPHdS9a0RXWVaugXFfiwNxxWBp0o=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:ff95:b0:24e:2288:6d with SMTP id
- hf21-20020a17090aff9500b0024e2288006dmr6510372pjb.0.1683825656804; Thu, 11
- May 2023 10:20:56 -0700 (PDT)
-Date: Thu, 11 May 2023 10:20:50 -0700
+ (user=sdf job=sendgmr) by 2002:a63:2b54:0:b0:52c:c0ba:22c3 with SMTP id
+ r81-20020a632b54000000b0052cc0ba22c3mr5495277pgr.4.1683825658707; Thu, 11 May
+ 2023 10:20:58 -0700 (PDT)
+Date: Thu, 11 May 2023 10:20:51 -0700
+In-Reply-To: <20230511172054.1892665-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20230511172054.1892665-1-sdf@google.com>
 X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
-Message-ID: <20230511172054.1892665-1-sdf@google.com>
-Subject: [PATCH bpf-next 0/4] bpf: query effective progs without cgroup_mutex
+Message-ID: <20230511172054.1892665-2-sdf@google.com>
+Subject: [PATCH bpf-next 1/4] bpf: export bpf_prog_array_copy_core
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -76,36 +78,83 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-We're observing some stalls on the heavily loaded machines
-in the cgroup_bpf_prog_query path. This is likely due to
-being blocked on cgroup_mutex.
+No functional changes.
 
-IIUC, the cgroup_mutex is there mostly to protect the non-effective
-fields (cgrp->bpf.progs) which might be changed by the update path.
-For the BPF_F_QUERY_EFFECTIVE case, all we need is to rcu_dereference
-a bunch of pointers (and keep them around for consistency), so
-let's do it.
+It will be used later on to copy prog array into a temporary
+kernel buffer. I'm also changing its return type to errno
+to be consistent with the rest of the similar helpers.
 
-Since RFC, I've added handling for non-effective case as well. It's
-a bit more complicated, but converting prog hlist to rcu seems
-to be all we need (unless I'm missing something). Plus, couple
-of READ_ONCE/WRITE_ONCE for the flags to read them in a lockless
-(racy) manner.
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf.h |  2 ++
+ kernel/bpf/core.c   | 14 ++++++--------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-Stanislav Fomichev (4):
-  bpf: export bpf_prog_array_copy_core
-  rculist: add hlist_for_each_rcu
-  bpf: refactor __cgroup_bpf_query
-  bpf: query effective progs without cgroup_mutex
-
- include/linux/bpf-cgroup-defs.h |   2 +-
- include/linux/bpf-cgroup.h      |   1 +
- include/linux/bpf.h             |   2 +
- include/linux/rculist.h         |   6 ++
- kernel/bpf/cgroup.c             | 168 +++++++++++++++++++-------------
- kernel/bpf/core.c               |  14 ++-
- 6 files changed, 114 insertions(+), 79 deletions(-)
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 456f33b9d205..b5a3d95d2657 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1779,6 +1779,8 @@ void bpf_prog_array_free(struct bpf_prog_array *progs);
+ void bpf_prog_array_free_sleepable(struct bpf_prog_array *progs);
+ int bpf_prog_array_length(struct bpf_prog_array *progs);
+ bool bpf_prog_array_is_empty(struct bpf_prog_array *array);
++int bpf_prog_array_copy_core(struct bpf_prog_array *array,
++			     u32 *prog_ids, u32 request_cnt);
+ int bpf_prog_array_copy_to_user(struct bpf_prog_array *progs,
+ 				__u32 __user *prog_ids, u32 cnt);
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 7421487422d4..5793d6df30c6 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2306,9 +2306,8 @@ bool bpf_prog_array_is_empty(struct bpf_prog_array *array)
+ 	return true;
+ }
+ 
+-static bool bpf_prog_array_copy_core(struct bpf_prog_array *array,
+-				     u32 *prog_ids,
+-				     u32 request_cnt)
++int bpf_prog_array_copy_core(struct bpf_prog_array *array,
++			     u32 *prog_ids, u32 request_cnt)
+ {
+ 	struct bpf_prog_array_item *item;
+ 	int i = 0;
+@@ -2323,14 +2322,14 @@ static bool bpf_prog_array_copy_core(struct bpf_prog_array *array,
+ 		}
+ 	}
+ 
+-	return !!(item->prog);
++	return !!(item->prog) ? -ENOSPC : 0;
+ }
+ 
+ int bpf_prog_array_copy_to_user(struct bpf_prog_array *array,
+ 				__u32 __user *prog_ids, u32 cnt)
+ {
+ 	unsigned long err = 0;
+-	bool nospc;
++	int nospc;
+ 	u32 *ids;
+ 
+ 	/* users of this function are doing:
+@@ -2348,7 +2347,7 @@ int bpf_prog_array_copy_to_user(struct bpf_prog_array *array,
+ 	if (err)
+ 		return -EFAULT;
+ 	if (nospc)
+-		return -ENOSPC;
++		return nospc;
+ 	return 0;
+ }
+ 
+@@ -2506,8 +2505,7 @@ int bpf_prog_array_copy_info(struct bpf_prog_array *array,
+ 		return 0;
+ 
+ 	/* this function is called under trace/bpf_trace.c: bpf_event_mutex */
+-	return bpf_prog_array_copy_core(array, prog_ids, request_cnt) ? -ENOSPC
+-								     : 0;
++	return bpf_prog_array_copy_core(array, prog_ids, request_cnt);
+ }
+ 
+ void __bpf_free_used_maps(struct bpf_prog_aux *aux,
 -- 
 2.40.1.521.gf1e218fcd8-goog
 
