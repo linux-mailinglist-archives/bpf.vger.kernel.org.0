@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB82A6FF847
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 19:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6203F6FF84B
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 19:21:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC6A51C20FD3
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 17:21:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E7BA1C20FC0
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 17:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0802E8F6B;
-	Thu, 11 May 2023 17:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9698F74;
+	Thu, 11 May 2023 17:21:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05DF8F55
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 17:21:02 +0000 (UTC)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E1A269E
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:21:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-ba6388fb324so4818355276.0
-        for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:21:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45CCE46A2
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 17:21:04 +0000 (UTC)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE4A5FE5
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:21:02 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-517bfcfe83fso4813765a12.2
+        for <bpf@vger.kernel.org>; Thu, 11 May 2023 10:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683825660; x=1686417660;
+        d=google.com; s=20221208; t=1683825662; x=1686417662;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3bx8GPX1nLWoIzF04MYA/SB+fKjrXorgzwkWrTrBNPs=;
-        b=gmo6Y3G7D/tTmL9Zlbq/HgpIovOpPZQV9qb4zec60DtcpCnTsjZOukhdS1tGPL3wat
-         QzN+ajErTUGs1DfvpjXFi6qyZh+zPP5Pfl1YGnHjt3ffs8a4Rv5seb/j7kcvKVG94XsB
-         DAzhgamFR7R58CZDuZNr1zu2DER0nHk3u4P5UBzRui9qQ62mk0MaXgxz/BoYT73lWaca
-         2v24UdEyO+hQSAaE18N3T5UqjDb/X0A0ppesEq+O2UEjzgWcGBRrESYuh72rlOLsN3ec
-         CcYebSglMJ8X8y5+LgBFRLhGoPlbvKnDiSejYpf2miSzbzyyXWgAv4T0iAh5u5P5XZ6J
-         FdFA==
+        bh=Id/XI7HmaFujCqezw1mzUHd3n5YdL8dJKt80jI2kfyA=;
+        b=qTCUnxDkX5j7po4Q557jlcjyo1nkkYkzOuguSVcmDD+u1nWM0GgWxHHeRh9Hc3B1LO
+         wPRfaGAAuZ0FYXhX5k/5yb8hW/9F2KZF27lgHSf50cESH63PD7h1NfSvkYpwxF+53I53
+         h20FTJ7xhthibG9olZ1IRNVfHvMWk9lYbPmz1wDd4lW+QhoohgegBb4+zUYaChFoZATF
+         sp4tYc3+fGnJBabx9L/iz8UVNTaKeO8ZAjVRIc7KVFUULYkIxvGdN0xXo8tQtqqY+Zvc
+         dbC9f/sPqR0V+JhFZrioN5aKQz8iAjFfBEPv3umEbsvf3NoPK3YA5GUyfGIOc46a1SB8
+         fJXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683825660; x=1686417660;
+        d=1e100.net; s=20221208; t=1683825662; x=1686417662;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3bx8GPX1nLWoIzF04MYA/SB+fKjrXorgzwkWrTrBNPs=;
-        b=UsUo3oVxKeSsUhJ5Wd6QoxbHLO7joGXfHmS4WN7Z/SpNhBL6mhoyhnTmSsok2L00q1
-         cv/uuXAoFtz5HchD9cjhc+9gAv1TiJ1/r2NPPmi4QLOkj5etk3W1OXwdlYBHCzlCzifR
-         j5acSdMS5vNE8LDXxU3XdyxUyPKELkWqwFjikAhhddBI5UNGxTXGdVvVLPFt38eJK9WD
-         D5ASAunagiuTFPRpf+izVtw5nDWAPJrlUQRLb3Fxt47WM+peh77itu0xnAzOOQZKTt9o
-         uTCR2421uicuwoL/L/K7zpEMxKIbME0/KaOPks08nN1+2mTxvh/5awLJ2eb5pK4t4pPy
-         GFMA==
-X-Gm-Message-State: AC+VfDxLcusyKiL2NAirkfVZHk2PbeLsCs25WIit2IdnXTTqWU72rU+I
-	yyNfoWVNMhqoaSAfWRXRunsjgp6GCS/+XCQ3LekziRufDcclIFTNrcctqK/3P7lFhFtCZWWsCQL
-	zlfDAr1p+6FkQwr+0VHS2zLqHFnu52MY0LwqV0E7kAW5bPU51hg==
-X-Google-Smtp-Source: ACHHUZ6OdQRdsAKkaMmlX7aclOx9s0idEIILKCM9wElEiI4xpeOTGCUZYw+bnzZ6PufspfT0hAge53o=
+        bh=Id/XI7HmaFujCqezw1mzUHd3n5YdL8dJKt80jI2kfyA=;
+        b=gD103yJEcXhj2XVIreeG5FIvS6bMyByOl6fQoj03YbzQja8NzQMTntHAJXq3nOlxg+
+         DyHpcHKKKgUVsoKrW7fLBt5ym/PgJYpgPt8ne0HYlKk5nqFharuO5yN/XLnWXBKauwr+
+         tRrSATBASWCXrgO/zXW/68aJU6SEWWisaoG/IdPw15VjsVuppIj78vLk8sUq4p+dry1c
+         4T81XjGkAOHgcaFeZc0+/TRGjKEu/LHm4LnRWgJK8ZMZwc904zTAuSKg7bU1dBl/toxY
+         7PFCtAk7r+WBWho+N20wx+A+RN/PRFgrEQ9QqL/nRk+tVkD7ON7gDIZkAxHekfaGPaas
+         XTAQ==
+X-Gm-Message-State: AC+VfDwX7xl8v/dOiFnOitv+aTyteOajbdRI2cP3vCKEO9workKR+2x0
+	u+VY/qt2nQkerbXnt5EE9FDOScG1jlmmSK3SPv9sTf3s56aEKbnxvTAt147OjJr0RUHuDnWX/Y6
+	N+aMLSsGhUa0aasyZ+h2LAAhZ7fwQWpXYy6Js1Vdb4K2NewrNPQ==
+X-Google-Smtp-Source: ACHHUZ70P48MafN40T2/066mVDVM9Rw8mip6iTzG4ftvlUQNPRgP6MujY2jsSXNn9wmzvXH1ZXxcz44=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:5b84:0:b0:ba2:da66:3d37 with SMTP id
- p126-20020a255b84000000b00ba2da663d37mr6304491ybb.10.1683825660397; Thu, 11
- May 2023 10:21:00 -0700 (PDT)
-Date: Thu, 11 May 2023 10:20:52 -0700
+ (user=sdf job=sendgmr) by 2002:a17:902:ea11:b0:1ac:8cd4:7419 with SMTP id
+ s17-20020a170902ea1100b001ac8cd47419mr4152560plg.5.1683825662229; Thu, 11 May
+ 2023 10:21:02 -0700 (PDT)
+Date: Thu, 11 May 2023 10:20:53 -0700
 In-Reply-To: <20230511172054.1892665-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230511172054.1892665-1-sdf@google.com>
 X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
-Message-ID: <20230511172054.1892665-3-sdf@google.com>
-Subject: [PATCH bpf-next 2/4] rculist: add hlist_for_each_rcu
+Message-ID: <20230511172054.1892665-4-sdf@google.com>
+Subject: [PATCH bpf-next 3/4] bpf: refactor __cgroup_bpf_query
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -78,32 +78,105 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Same as __hlist_for_each_rcu but uses rcu_dereference_raw
-to suppress the warning from the update path (which is enforced
-by extra cond expression).
+No functional changes.
+
+This patch is here to make it easier to review the next one.
+We'll be copying buffer to the userspace from the temporary
+kernel one, so rename prog_ids to user_prog_ids and add new
+extra variable (p) to traverse it.
+
+Also, instead of decrementing total_cnt, introduce new 'remaning'
+variable to keep track of where we are. We'll need original
+total_cnt in the next patch to know how many bytes to copy back.
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/rculist.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/bpf/cgroup.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index d29740be4833..7b0a73139b21 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -690,6 +690,12 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
- 	     pos;						\
- 	     pos = rcu_dereference(hlist_next_rcu(pos)))
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index a06e118a9be5..32092c78602f 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1021,21 +1021,23 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ {
+ 	__u32 __user *prog_attach_flags = u64_to_user_ptr(attr->query.prog_attach_flags);
+ 	bool effective_query = attr->query.query_flags & BPF_F_QUERY_EFFECTIVE;
+-	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	__u32 __user *user_prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+ 	enum bpf_attach_type type = attr->query.attach_type;
+ 	enum cgroup_bpf_attach_type from_atype, to_atype;
+ 	enum cgroup_bpf_attach_type atype;
+ 	struct bpf_prog_array *effective;
+ 	int cnt, ret = 0, i;
+ 	int total_cnt = 0;
++	int remaining;
+ 	u32 flags;
++	u32 *p;
  
-+#define hlist_for_each_rcu(pos, head, cond...)			\
-+	for (__list_check_rcu(dummy, ## cond, 0),		\
-+	     pos = rcu_dereference_raw(hlist_first_rcu(head));	\
-+	     pos;						\
-+	     pos = rcu_dereference_raw(hlist_next_rcu(pos)))
-+
- /**
-  * hlist_for_each_entry_rcu - iterate over rcu list of given type
-  * @pos:	the type * to use as a loop cursor.
+ 	if (effective_query && prog_attach_flags)
+ 		return -EINVAL;
+ 
+ 	if (type == BPF_LSM_CGROUP) {
+ 		if (!effective_query && attr->query.prog_cnt &&
+-		    prog_ids && !prog_attach_flags)
++		    user_prog_ids && !prog_attach_flags)
+ 			return -EINVAL;
+ 
+ 		from_atype = CGROUP_LSM_START;
+@@ -1065,7 +1067,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 		return -EFAULT;
+ 	if (copy_to_user(&uattr->query.prog_cnt, &total_cnt, sizeof(total_cnt)))
+ 		return -EFAULT;
+-	if (attr->query.prog_cnt == 0 || !prog_ids || !total_cnt)
++	if (attr->query.prog_cnt == 0 || !user_prog_ids || !total_cnt)
+ 		/* return early if user requested only program count + flags */
+ 		return 0;
+ 
+@@ -1074,12 +1076,14 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 		ret = -ENOSPC;
+ 	}
+ 
+-	for (atype = from_atype; atype <= to_atype && total_cnt; atype++) {
++	p = user_prog_ids;
++	remaining = total_cnt;
++	for (atype = from_atype; atype <= to_atype && remaining; atype++) {
+ 		if (effective_query) {
+ 			effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+ 							      lockdep_is_held(&cgroup_mutex));
+-			cnt = min_t(int, bpf_prog_array_length(effective), total_cnt);
+-			ret = bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
++			cnt = min_t(int, bpf_prog_array_length(effective), remaining);
++			ret = bpf_prog_array_copy_to_user(effective, p, cnt);
+ 		} else {
+ 			struct hlist_head *progs;
+ 			struct bpf_prog_list *pl;
+@@ -1087,12 +1091,12 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 			u32 id;
+ 
+ 			progs = &cgrp->bpf.progs[atype];
+-			cnt = min_t(int, prog_list_length(progs), total_cnt);
++			cnt = min_t(int, prog_list_length(progs), remaining);
+ 			i = 0;
+ 			hlist_for_each_entry(pl, progs, node) {
+ 				prog = prog_list_prog(pl);
+ 				id = prog->aux->id;
+-				if (copy_to_user(prog_ids + i, &id, sizeof(id)))
++				if (copy_to_user(p + i, &id, sizeof(id)))
+ 					return -EFAULT;
+ 				if (++i == cnt)
+ 					break;
+@@ -1109,8 +1113,8 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 			}
+ 		}
+ 
+-		prog_ids += cnt;
+-		total_cnt -= cnt;
++		p += cnt;
++		remaining -= cnt;
+ 	}
+ 	return ret;
+ }
 -- 
 2.40.1.521.gf1e218fcd8-goog
 
