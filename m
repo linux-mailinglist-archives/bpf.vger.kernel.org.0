@@ -1,142 +1,171 @@
-Return-Path: <bpf+bounces-341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E4656FF44A
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 16:28:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4DB6FF5C7
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 17:22:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BC1B1C20F39
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 14:28:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6837281466
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 15:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11361D2B4;
-	Thu, 11 May 2023 14:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E34642;
+	Thu, 11 May 2023 15:21:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F52F19E77
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 14:27:15 +0000 (UTC)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81DA1991;
-	Thu, 11 May 2023 07:26:49 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-50b37f3e664so15393704a12.1;
-        Thu, 11 May 2023 07:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1683815208; x=1686407208;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y+Kdw60BIyCbfffo7kd/u9iWPAZQVDLmeaXBiKk2PEo=;
-        b=kecnT8RiVzNqYEoxVyP2/tFcSy42y33tVeA++znGsLDE/6hRWthVe0N8OL3Z8AJzHD
-         5ISXvH3iz8C9sNdGktvxgZ/XrejCEc1fImwOC+pLQtZkdEhJ8addc6P05ghIjJg9SuPw
-         8JCbe8QBpvNOpBS+rh/vn2S3DaRK6we+ByoYny6gMudmYDYKUPqt7iWI3/Rh3PbHxEtn
-         Nfset6m4eg0YGznFK4z5AmzFtE2YjQgzBi/YH6l4zPZTvY9cHycAA9PnL9hsVZl5xNTw
-         5+nxJ6ICZUxX1KiPVD72cmjYKRp4CYVw+D5yW93GPMJ5XmJKKDzsKGLQEH+FN7Q1b2V/
-         qAEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683815208; x=1686407208;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y+Kdw60BIyCbfffo7kd/u9iWPAZQVDLmeaXBiKk2PEo=;
-        b=E/XfycpjGsFL+eR6YMUXeYSdT3089sLLt5U9z6L+PeDdbGzeWC9/ghZmPotym1ePSI
-         mz2yM+9tdv3ZotD+oa2MBBYYMW+YsSeobtKcmMXrkSGIr/wi4xjN3OzwdYs/EQ01Dy4B
-         I+l83XntykUkhhHnfpE8y66ZgVhjd2ex9W7U/mH3qV8voLs4PEnT5f680KAtF9GS/Sxz
-         SRYbchbUxBRG+tuZ3Buw8g5amu+myVhePzL5AEbKuApdrdimR/0gKMrcxzOtyHHMeJpS
-         c6ydlyvQHMREAJTOw9fMHc155Rt3GbbcWZrrq1oahkEuSMASCVEI8YZ2iN6r88l2k+Rc
-         RtoQ==
-X-Gm-Message-State: AC+VfDx3bXQ3+DT2tWsOASyn+Yr4JYMyFu4JhlIa9NtzyfEsTZ9DWY9d
-	J6HkTbFPEwTEsvodYqxBTGi+EZs8rTQtkg==
-X-Google-Smtp-Source: ACHHUZ6CHMLGH40AinncmR0kLEE1N5eMJl9iZbtuHNWe5xkHVVXbDJJRstrnqymPzwHIBK+2OQeeqg==
-X-Received: by 2002:a17:906:eec9:b0:94e:46ef:1361 with SMTP id wu9-20020a170906eec900b0094e46ef1361mr18738496ejb.34.1683815208249;
-        Thu, 11 May 2023 07:26:48 -0700 (PDT)
-Received: from debianHome.localdomain (dynamic-077-008-180-228.77.8.pool.telefonica.de. [77.8.180.228])
-        by smtp.gmail.com with ESMTPSA id hf15-20020a1709072c4f00b0094f58a85bc5sm4056647ejc.180.2023.05.11.07.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 May 2023 07:26:47 -0700 (PDT)
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To: selinux@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Subject: [PATCH v4 0/9] Introduce capable_any()
-Date: Thu, 11 May 2023 16:25:33 +0200
-Message-Id: <20230511142535.732324-10-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230511142535.732324-1-cgzones@googlemail.com>
-References: <20230511142535.732324-1-cgzones@googlemail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5DE2629
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 15:21:56 +0000 (UTC)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59A0138;
+	Thu, 11 May 2023 08:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683818512; x=1715354512;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XR/zMIbG4Jcm24Yt1GRfoMUGo5dYfwoSu6slMdxjNv0=;
+  b=jlXojrXqon1WWvbp+EcLZkFcoys1+84ZnRSwfMh/R3uCSRNCo2u/Kths
+   6FQzaD7kromafBDXORasEL+sclbnkMRuBJJYPzrgKn4RGmrdK0BJHIeF5
+   z+BmkW3oHyaztnJ+6g8eN6XhvJuZwvE01tcjqESo5cuKWo6rmKljKPZpp
+   WKcmA7k0tpbWPwwgXhbulutpfH77AFa7ZB+ZZyVdxiIixMIW+n4aLJswT
+   OdWVfYk6++m7+sOUxzILk7KpuIHkdHgyTNV33woEOvCJKqrMYJycSFxUA
+   8c7aE7RoWoVwo9j6n9ot6CGrPeZpyRWyyNbuPJwf5sFof755W8gplIkQi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="352760702"
+X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
+   d="scan'208";a="352760702"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2023 08:20:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="702782185"
+X-IronPort-AV: E=Sophos;i="5.99,266,1677571200"; 
+   d="scan'208";a="702782185"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmsmga007.fm.intel.com with ESMTP; 11 May 2023 08:20:06 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 6D7EE36C0E;
+	Thu, 11 May 2023 16:20:05 +0100 (IST)
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
+	Stanislav Fomichev <sdf@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpftool: specify XDP Hints ifname when loading program
+Date: Thu, 11 May 2023 17:13:46 +0200
+Message-Id: <20230511151345.7529-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add the interfaces `capable_any()` and `ns_capable_any()` as an
-alternative to multiple `capable()`/`ns_capable()` calls, like
-`capable_any(CAP_SYS_NICE, CAP_SYS_ADMIN)` instead of
-`capable(CAP_SYS_NICE) || capable(CAP_SYS_ADMIN)`.
+Add ability to specify a network interface used to resolve
+XDP Hints kfuncs when loading program through bpftool.
 
-`capable_any()`/`ns_capable_any()` will in particular generate exactly
-one audit message, either for the left most capability in effect or, if
-the task has none, the first one.
+Usage:
+bpftool prog load <bpf_obj_path> <pin_path> dev xdpmeta <ifname>
 
-This is especially helpful with regard to SELinux, where each audit
-message about a not allowed capability request will create a denial
-message.  Using this new wrapper with the least invasive capability as
-left most argument (e.g. CAP_SYS_NICE before CAP_SYS_ADMIN) enables
-policy writers to only grant the least invasive one for the particular
-subject instead of both.
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+---
+ tools/bpf/bpftool/prog.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-v3 discussion:
-https://patchwork.kernel.org/project/selinux/patch/20220615152623.311223-8-cgzones@googlemail.com/
-
-v4:
-  - add CAP_OPT_NODENYAUDIT capable flag
-
-
-Christian Göttsche (9):
-  capability: introduce new capable flag NODENYAUDIT
-  capability: add any wrapper to test for multiple caps with exactly one
-    audit message
-  capability: use new capable_any functionality
-  block: use new capable_any functionality
-  drivers: use new capable_any functionality
-  fs: use new capable_any functionality
-  kernel: use new capable_any functionality
-  bpf: use new capable_any functionality
-  net: use new capable_any functionality
-
- block/ioprio.c                           |  9 +--
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c |  3 +-
- drivers/net/caif/caif_serial.c           |  2 +-
- drivers/s390/block/dasd_eckd.c           |  2 +-
- fs/pipe.c                                |  2 +-
- include/linux/capability.h               | 17 ++++--
- include/linux/security.h                 |  2 +
- include/net/sock.h                       |  1 +
- kernel/bpf/syscall.c                     |  2 +-
- kernel/capability.c                      | 70 ++++++++++++++++++++++++
- kernel/fork.c                            |  2 +-
- net/caif/caif_socket.c                   |  2 +-
- net/core/sock.c                          | 18 +++---
- net/ieee802154/socket.c                  |  6 +-
- net/ipv4/ip_sockglue.c                   |  4 +-
- net/ipv6/ipv6_sockglue.c                 |  3 +-
- net/unix/scm.c                           |  2 +-
- security/apparmor/capability.c           |  8 ++-
- security/selinux/hooks.c                 | 14 +++--
- 19 files changed, 123 insertions(+), 46 deletions(-)
-
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 91b6075b2db3..a9cb96d99277 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1517,12 +1517,13 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	struct bpf_program *prog = NULL, *pos;
+ 	unsigned int old_map_fds = 0;
+ 	const char *pinmaps = NULL;
++	__u32 offload_ifindex = 0;
+ 	bool auto_attach = false;
++	__u32 meta_ifindex = 0;
+ 	struct bpf_object *obj;
+ 	struct bpf_map *map;
+ 	const char *pinfile;
+ 	unsigned int i, j;
+-	__u32 ifindex = 0;
+ 	const char *file;
+ 	int idx, err;
+ 
+@@ -1614,17 +1615,25 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			map_replace[old_map_fds].fd = fd;
+ 			old_map_fds++;
+ 		} else if (is_prefix(*argv, "dev")) {
++			__u32 *cur_ifindex;
++
+ 			NEXT_ARG();
+ 
+-			if (ifindex) {
+-				p_err("offload device already specified");
++			if (offload_ifindex || meta_ifindex) {
++				p_err("device already specified");
+ 				goto err_free_reuse_maps;
+ 			}
++			if (is_prefix(*argv, "xdpmeta")) {
++				cur_ifindex = &meta_ifindex;
++				NEXT_ARG();
++			} else {
++				cur_ifindex = &offload_ifindex;
++			}
+ 			if (!REQ_ARGS(1))
+ 				goto err_free_reuse_maps;
+ 
+-			ifindex = if_nametoindex(*argv);
+-			if (!ifindex) {
++			*cur_ifindex = if_nametoindex(*argv);
++			if (!(*cur_ifindex)) {
+ 				p_err("unrecognized netdevice '%s': %s",
+ 				      *argv, strerror(errno));
+ 				goto err_free_reuse_maps;
+@@ -1671,7 +1680,12 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 				goto err_close_obj;
+ 		}
+ 
+-		bpf_program__set_ifindex(pos, ifindex);
++		if (prog_type == BPF_PROG_TYPE_XDP && meta_ifindex) {
++			bpf_program__set_flags(pos, BPF_F_XDP_DEV_BOUND_ONLY);
++			bpf_program__set_ifindex(pos, meta_ifindex);
++		} else {
++			bpf_program__set_ifindex(pos, offload_ifindex);
++		}
+ 		if (bpf_program__type(pos) != prog_type)
+ 			bpf_program__set_type(pos, prog_type);
+ 		bpf_program__set_expected_attach_type(pos, expected_attach_type);
+@@ -1709,7 +1723,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	idx = 0;
+ 	bpf_object__for_each_map(map, obj) {
+ 		if (bpf_map__type(map) != BPF_MAP_TYPE_PERF_EVENT_ARRAY)
+-			bpf_map__set_ifindex(map, ifindex);
++			bpf_map__set_ifindex(map, offload_ifindex);
+ 
+ 		if (j < old_map_fds && idx == map_replace[j].idx) {
+ 			err = bpf_map__reuse_fd(map, map_replace[j++].fd);
 -- 
-2.40.1
+2.35.3
 
 
