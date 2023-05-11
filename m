@@ -1,172 +1,333 @@
-Return-Path: <bpf+bounces-319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79546FE84C
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 02:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F22A6FE85F
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 02:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6247328159D
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 00:05:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9E0F281369
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 00:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F6136D;
-	Thu, 11 May 2023 00:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843FC39D;
+	Thu, 11 May 2023 00:13:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6AB8367
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 00:05:25 +0000 (UTC)
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4000035A6
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:05:24 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-3f396606ab0so639741cf.0
-        for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683763523; x=1686355523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m+8v3lTv3eF3gAbNNLwTPhgtj58/fhMScKy6E6vydYY=;
-        b=aMcDZUw0oCpo9YRfCyBmegSHoivLcGDyBQ95VKOwStftMp00spJ/rpKinhF0FqlPlu
-         ilR9IK1aCi9UjAsQ+Q2eWToQA6JL22VGPrw+asP9JeTMcPayE+NLAlFzMfCv6pKorG+R
-         OjaTgy3sRggnDiVxBFZ02IoPMbiQwH7gcM3wZXsMTveKTwV0H9R7Dwm86v6AgLpcg37/
-         TyIne6pn5O5VHSHbg1LMvWbgBwiPYICaiPT2N66uvCPsUyxCO7gBDGNBvk9U/FK8ADcA
-         gvkuYutnq3h3nl9G97QpvnTGJ/hRlwZWSNV+ZtvMjsIwVtioszi0AjuJAxmUn3SsrmRe
-         VXIw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5791A36D
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 00:13:56 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3548B4488
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:13:54 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-769036b47a7so526414339f.0
+        for <bpf@vger.kernel.org>; Wed, 10 May 2023 17:13:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683763523; x=1686355523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m+8v3lTv3eF3gAbNNLwTPhgtj58/fhMScKy6E6vydYY=;
-        b=VoS3accC8AzG+gzDzuvhqEF5WqnZyL93Hx9rNaRzb6Wcd2u4mCX9h4v8axlSh9xRPZ
-         8YHrysem541nB1JyU7hGadUzbv8D03YzE0ozkjT7Yt5nfROOmscqVpriJzGodd2bSJoa
-         q3A5Q+L1XiE9yvZFSLnblP5LIvY/wkkAfFwXQVBKJ1vKoT5GJoM7FA7cqXJjTbYCUXdv
-         oPY587xwcIj+2YNmM45E5gfw1mUQIg9RYq95rwE8U01qQtfGBMsmFgvLexV82eWZSCoz
-         A3nBCrEwiciox+cFG51ayWruDT7LP13ff4aPIcE/5bgAsdUwJlPlFxv/n/sHsq55a/M2
-         /rHA==
-X-Gm-Message-State: AC+VfDygJheBjHTy4ifCmidQDuKdZ4xRyA47ixLothWTXPYO/wdKbZ1o
-	HB1O/7k7OTXpkOqii/hN9bJvsQWdWGyciVKQHj7JKA==
-X-Google-Smtp-Source: ACHHUZ6NYpikewAqy/KBFgbWhK3AZyUBaYd3J3XrlZ2EqmW2eDx5O3EzAwGdaB9COrOAA1Z9CgDhjPjVb+0CFzGaNDo=
-X-Received: by 2002:ac8:5a10:0:b0:3de:1aaa:42f5 with SMTP id
- n16-20020ac85a10000000b003de1aaa42f5mr69541qta.15.1683763523237; Wed, 10 May
- 2023 17:05:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683764033; x=1686356033;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kpwYvUZfRjlIZVuVnL5DbEC1U/pIjk152uhUoDQJdOs=;
+        b=T/2XrnfNVHLpofLYWYirHm9VnZ16GjlYbTO44yEW8FAxs0+tkowGhfG43xdGNHkaYU
+         OCYJn9OaPbBMvIh3Dmen9ymTCJSGJ5a4BsOcb64zqR5Bz3ST58XrwqZXg4RsWC7C8uV9
+         XnnsgxlYpt3rnNSqHSEQqmZDOe71Op0dPA5NsPPtuHvtZc6iW/TVJdWT6nXjXxaGyEbj
+         9P6ZFnY8CPhcsdPv0B+em4nykgyos83TEdzQkOY8tlt8BzZ+TPsCVc0nrPku9u8N6TBs
+         gCnCtL+GvNbP0moS+5I5dJqTv6pTE6yog+9J8HBoKEtqLAOn1SNCZ0AwewxKTn8iLRUt
+         zLdQ==
+X-Gm-Message-State: AC+VfDycUp8eOcdp6I8Bqh3is0IIs23yKO2NIcu7pB43TLNii4tL2yhz
+	oAuDwHdXScOA2x06MkLXVM/kcsUbdiBNdCP97H3Gj77bPvyO
+X-Google-Smtp-Source: ACHHUZ4GIkLv2E5ocLzQGBrzsgDEnKV9Sw3phR0mDE2iM39WZSx7ujY+orEvwTzZkP7ctu62iHjb3vzPuphNrPu92F0IydMtBDP7
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230506021450.3499232-1-irogers@google.com> <ZFvVvp0tYqxHWFsB@kernel.org>
-In-Reply-To: <ZFvVvp0tYqxHWFsB@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 10 May 2023 17:05:09 -0700
-Message-ID: <CAP-5=fVmFRxD1=3pX5yG_T=a=_pnU-OtXbNLnwMmTxjHv2itgw@mail.gmail.com>
-Subject: Re: [PATCH v1] perf build: Add system include paths to BPF builds
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Song Liu <songliubraving@meta.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+X-Received: by 2002:a5d:8055:0:b0:76c:50ad:8d89 with SMTP id
+ b21-20020a5d8055000000b0076c50ad8d89mr4125624ior.3.1683764033463; Wed, 10 May
+ 2023 17:13:53 -0700 (PDT)
+Date: Wed, 10 May 2023 17:13:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019af1d05fb5fdd99@google.com>
+Subject: [syzbot] [bpf?] KASAN: slab-out-of-bounds Write in copy_array (2)
+From: syzbot <syzbot+d742fd7d34097f949179@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	martin.lau@linux.dev, nathan@kernel.org, ndesaulniers@google.com, 
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 10, 2023 at 10:35=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, May 05, 2023 at 07:14:50PM -0700, Ian Rogers escreveu:
-> > There are insufficient headers in tools/include to satisfy building
-> > BPF programs and their header dependencies. Add the system include
-> > paths from the non-BPF clang compile so that these headers can be
-> > found.
-> >
-> > This code was taken from:
-> > tools/testing/selftests/bpf/Makefile
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/Makefile.perf | 20 +++++++++++++++++++-
-> >  1 file changed, 19 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index 61c33d100b2b..37befdfa8ac8 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -1057,7 +1057,25 @@ $(SKEL_TMP_OUT) $(LIBAPI_OUTPUT) $(LIBBPF_OUTPUT=
-) $(LIBPERF_OUTPUT) $(LIBSUBCMD_
-> >
-> >  ifndef NO_BPF_SKEL
->
-> So this patch was done before the reverts, I adjusted it to what is
-> upstream and to another patch that makes the build use the headers from
-> the perf sources instead of the system's (linux/bpf.h and
-> linux/perf_event.h, from vmlinux.h), please take a look at the patch
-> below, I'm also trying to figure out that other problem you pointed with
-> linux/types.s :-\
->
-> What I have now in tmp.perf-tools:
->
-> =E2=AC=A2[acme@toolbox perf-tools]$ git log --oneline torvalds/master..
-> a2af0f6b8ef7ea40 (HEAD -> perf-tools) perf build: Add system include path=
-s to BPF builds
-> 5be6cecda0802f23 perf bpf skels: Make vmlinux.h use bpf.h and perf_event.=
-h in source directory
-> 7d161165d9072dcb perf parse-events: Do not break up AUX event group
-> a468085011ea8bba perf test test_intel_pt.sh: Test sample mode with event =
-with PMU name
-> 123361659fa405de perf evsel: Modify group pmu name for software events
-> 34e82891d995ab89 tools arch x86: Sync the msr-index.h copy with the kerne=
-l sources
-> 705049ca4f5b7b00 tools headers kvm: Sync uapi/{asm/linux} kvm.h headers w=
-ith the kernel sources
-> 8d6a41c8065e1120 tools include UAPI: Sync the sound/asound.h copy with th=
-e kernel sources
-> 92b8e61e88351091 tools headers UAPI: Sync the linux/const.h with the kern=
-el headers
-> e7ec3a249c38a9c9 tools headers UAPI: Sync the i915_drm.h with the kernel =
-sources
-> e6232180e524e112 tools headers UAPI: Sync the drm/drm.h with the kernel s=
-ources
-> 5d1ac59ff7445e51 tools headers UAPI: Sync the linux/in.h with the kernel =
-sources
-> b0618f38e2ab8ce3 perf build: Gracefully fail the build if BUILD_BPF_SKEL=
-=3D1 is specified and clang isn't available
-> 5f0b89e632ed81b6 perf test java symbol: Remove needless debuginfod querie=
-s
-> 327daf34554d20a6 perf parse-events: Don't reorder ungrouped events by PMU
-> ccc66c6092802d68 perf metric: JSON flag to not group events if gathering =
-a metric group
-> 1b114824106ca468 perf stat: Introduce skippable evsels
-> 2a939c8695035b11 perf metric: Change divide by zero and !support events b=
-ehavior
-> =E2=AC=A2[acme@toolbox perf-tools]$
->
-> Please help me test this,
+Hello,
 
-build-test and compiling with/without BPF skeletons looked okay in
-perf test on my Debian derived distro.
+syzbot found the following issue on:
 
-Thanks,
-Ian
+HEAD commit:    950b879b7f02 riscv: Fixup race condition on PG_dcache_clea.=
+.
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.g=
+it fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D17eaa0c6280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3Decebece1b90c034=
+2
+dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd742fd7d34097f949=
+179
+compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GN=
+U ld (GNU Binutils for Debian) 2.35.2
+userspace arch: riscv64
 
-> Regards,
->
-> - Arnaldo
->
->
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/5ab=
+53d394dbf/non_bootable_disk-950b879b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/938475579d6c/vmlinux-=
+950b879b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bcf263d8c574/Ima=
+ge-950b879b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+d742fd7d34097f949179@syzkaller.appspotmail.com
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+BUG: KASAN: slab-out-of-bounds in copy_array+0x8a/0xe8 kernel/bpf/verifier.=
+c:1072
+Write of size 80 at addr ff6000000e196e80 by task syz-executor.1/5213
+
+CPU: 1 PID: 5213 Comm: syz-executor.1 Tainted: G        W          6.2.0-rc=
+1-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Call Trace:
+[<ffffffff8000b9ea>] dump_backtrace+0x2e/0x3c arch/riscv/kernel/stacktrace.=
+c:121
+[<ffffffff83402b96>] show_stack+0x34/0x40 arch/riscv/kernel/stacktrace.c:12=
+7
+[<ffffffff83442726>] __dump_stack lib/dump_stack.c:88 [inline]
+[<ffffffff83442726>] dump_stack_lvl+0xe0/0x14c lib/dump_stack.c:106
+[<ffffffff83409674>] print_address_description mm/kasan/report.c:306 [inlin=
+e]
+[<ffffffff83409674>] print_report+0x1e4/0x4c0 mm/kasan/report.c:417
+[<ffffffff804ead14>] kasan_report+0xb8/0xe6 mm/kasan/report.c:517
+[<ffffffff804ec266>] check_region_inline mm/kasan/generic.c:173 [inline]
+[<ffffffff804ec266>] kasan_check_range+0x32/0x148 mm/kasan/generic.c:189
+[<ffffffff804ece9a>] memcpy+0x32/0x64 mm/kasan/shadow.c:66
+[<ffffffff8029a914>] copy_array+0x8a/0xe8 kernel/bpf/verifier.c:1072
+[<ffffffff8029d13e>] copy_verifier_state+0x6c/0x462 kernel/bpf/verifier.c:1=
+250
+[<ffffffff802c2eae>] pop_stack kernel/bpf/verifier.c:1314 [inline]
+[<ffffffff802c2eae>] do_check kernel/bpf/verifier.c:14031 [inline]
+[<ffffffff802c2eae>] do_check_common+0x397a/0x6608 kernel/bpf/verifier.c:16=
+289
+[<ffffffff802cb0da>] do_check_main kernel/bpf/verifier.c:16352 [inline]
+[<ffffffff802cb0da>] bpf_check+0x45b2/0x5a5a kernel/bpf/verifier.c:16936
+[<ffffffff80291fc0>] bpf_prog_load+0xc90/0x12b0 kernel/bpf/syscall.c:2619
+[<ffffffff80295a76>] __sys_bpf+0x622/0x31d2 kernel/bpf/syscall.c:4979
+[<ffffffff80298f16>] __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+[<ffffffff80298f16>] sys_bpf+0x28/0x36 kernel/bpf/syscall.c:5081
+[<ffffffff80005ff6>] ret_from_syscall+0x0/0x2
+
+Allocated by task 5213:
+ stack_trace_save+0xa6/0xd8 kernel/stacktrace.c:122
+ kasan_save_stack+0x2c/0x5a mm/kasan/common.c:45
+ kasan_set_track+0x1a/0x26 mm/kasan/common.c:52
+ kasan_save_alloc_info+0x1a/0x24 mm/kasan/generic.c:507
+ ____kasan_kmalloc mm/kasan/common.c:371 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:330 [inline]
+ __kasan_krealloc+0xfa/0x11a mm/kasan/common.c:439
+ kasan_krealloc include/linux/kasan.h:231 [inline]
+ __do_krealloc mm/slab_common.c:1361 [inline]
+ krealloc+0x82/0xae mm/slab_common.c:1398
+ push_jmp_history+0xd2/0x140 kernel/bpf/verifier.c:2592
+ is_state_visited kernel/bpf/verifier.c:13552 [inline]
+ do_check kernel/bpf/verifier.c:13752 [inline]
+ do_check_common+0x47be/0x6608 kernel/bpf/verifier.c:16289
+ do_check_main kernel/bpf/verifier.c:16352 [inline]
+ bpf_check+0x45b2/0x5a5a kernel/bpf/verifier.c:16936
+ bpf_prog_load+0xc90/0x12b0 kernel/bpf/syscall.c:2619
+ __sys_bpf+0x622/0x31d2 kernel/bpf/syscall.c:4979
+ __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+ sys_bpf+0x28/0x36 kernel/bpf/syscall.c:5081
+ ret_from_syscall+0x0/0x2
+
+The buggy address belongs to the object at ff6000000e196e80
+ which belongs to the cache kmalloc-96 of size 96
+The buggy address is located 0 bytes inside of
+ 96-byte region [ff6000000e196e80, ff6000000e196ee0)
+
+The buggy address belongs to the physical page:
+page:ff1c00000238e580 refcount:1 mapcount:0 mapping:0000000000000000 index:=
+0x0 pfn:0x8e396
+ksm flags: 0xffe000000000200(slab|node=3D0|zone=3D0|lastcpupid=3D0x7ff)
+raw: 0ffe000000000200 ff60000008201780 ff1c0000024db740 0000000000000003
+raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GF=
+P_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 2674, tgid 2674 (dhcpcd), ts 215113=
+436000, free_ts 215046751000
+ __set_page_owner+0x32/0x182 mm/page_owner.c:190
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0xf8/0x11a mm/page_alloc.c:2524
+ prep_new_page mm/page_alloc.c:2531 [inline]
+ get_page_from_freelist+0xc0e/0x1118 mm/page_alloc.c:4283
+ __alloc_pages+0x1b0/0x165a mm/page_alloc.c:5549
+ alloc_pages+0x132/0x25e mm/mempolicy.c:2286
+ alloc_slab_page mm/slub.c:1851 [inline]
+ allocate_slab mm/slub.c:1998 [inline]
+ new_slab+0x270/0x382 mm/slub.c:2051
+ ___slab_alloc+0x57e/0xaa6 mm/slub.c:3193
+ __slab_alloc.constprop.0+0x5a/0x98 mm/slub.c:3292
+ __slab_alloc_node mm/slub.c:3345 [inline]
+ slab_alloc_node mm/slub.c:3442 [inline]
+ __kmem_cache_alloc_node+0xf2/0x2e4 mm/slub.c:3491
+ __do_kmalloc_node mm/slab_common.c:967 [inline]
+ __kmalloc+0x34/0xe2 mm/slab_common.c:981
+ kmalloc include/linux/slab.h:584 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ tomoyo_get_name+0x1f0/0x2f4 security/tomoyo/memory.c:173
+ tomoyo_parse_name_union+0xfa/0x156 security/tomoyo/util.c:260
+ tomoyo_update_path_acl security/tomoyo/file.c:395 [inline]
+ tomoyo_write_file+0x3f4/0x74e security/tomoyo/file.c:1022
+ tomoyo_write_domain2+0x102/0x18c security/tomoyo/common.c:1143
+ tomoyo_add_entry security/tomoyo/common.c:2033 [inline]
+ tomoyo_supervisor+0x364/0xc08 security/tomoyo/common.c:2094
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x152/0x18e security/tomoyo/file.c:573
+page last free stack trace:
+ __reset_page_owner+0x4a/0xf8 mm/page_owner.c:148
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1446 [inline]
+ free_pcp_prepare+0x254/0x48e mm/page_alloc.c:1496
+ free_unref_page_prepare mm/page_alloc.c:3369 [inline]
+ free_unref_page+0x60/0x2ae mm/page_alloc.c:3464
+ free_the_page mm/page_alloc.c:750 [inline]
+ __free_pages+0xd6/0x106 mm/page_alloc.c:5635
+ free_pages.part.0+0xd8/0x13a mm/page_alloc.c:5646
+ free_pages+0xe/0x18 mm/page_alloc.c:5643
+ pgd_free include/asm-generic/pgalloc.h:193 [inline]
+ mm_free_pgd kernel/fork.c:737 [inline]
+ __mmdrop+0x88/0x2f0 kernel/fork.c:795
+ mmdrop include/linux/sched/mm.h:50 [inline]
+ mmdrop_sched include/linux/sched/mm.h:78 [inline]
+ finish_task_switch.isra.0+0x32e/0x426 kernel/sched/core.c:5148
+ context_switch kernel/sched/core.c:5247 [inline]
+ __schedule+0x64c/0x1274 kernel/sched/core.c:6555
+ schedule+0x7a/0x102 kernel/sched/core.c:6631
+ schedule_hrtimeout_range_clock+0x2da/0x2e2 kernel/time/hrtimer.c:2296
+ schedule_hrtimeout_range+0x28/0x36 kernel/time/hrtimer.c:2351
+ poll_schedule_timeout.constprop.0+0x84/0xde fs/select.c:244
+ do_poll fs/select.c:965 [inline]
+ do_sys_poll+0x512/0x94a fs/select.c:1015
+ __do_sys_ppoll fs/select.c:1121 [inline]
+ sys_ppoll+0x18a/0x1b0 fs/select.c:1101
+ ret_from_syscall+0x0/0x2
+
+Memory state around the buggy address:
+ ff6000000e196d80: 00 00 00 00 00 00 00 00 00 04 fc fc fc fc fc fc
+ ff6000000e196e00: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+>ff6000000e196e80: 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                         ^
+ ff6000000e196f00: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+ ff6000000e196f80: 00 00 00 00 00 00 00 00 00 00 00 06 fc fc fc fc
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+warn_alloc: 3 callbacks suppressed
+syz-executor.1: vmalloc error: size 4096, vm_struct allocation failed, mode=
+:0xcc0(GFP_KERNEL), nodemask=3D(null),cpuset=3Dsyz1,mems_allowed=3D0
+CPU: 1 PID: 5213 Comm: syz-executor.1 Tainted: G    B   W          6.2.0-rc=
+1-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Call Trace:
+[<ffffffff8000b9ea>] dump_backtrace+0x2e/0x3c arch/riscv/kernel/stacktrace.=
+c:121
+[<ffffffff83402b96>] show_stack+0x34/0x40 arch/riscv/kernel/stacktrace.c:12=
+7
+[<ffffffff83442726>] __dump_stack lib/dump_stack.c:88 [inline]
+[<ffffffff83442726>] dump_stack_lvl+0xe0/0x14c lib/dump_stack.c:106
+[<ffffffff834427ae>] dump_stack+0x1c/0x24 lib/dump_stack.c:113
+[<ffffffff80489c32>] warn_alloc+0x168/0x22c mm/page_alloc.c:4356
+[<ffffffff8047ecc4>] __vmalloc_node_range+0xb6c/0xdb4 mm/vmalloc.c:3192
+[<ffffffff8001938c>] bpf_jit_alloc_exec+0x46/0x52 arch/riscv/net/bpf_jit_co=
+re.c:190
+[<ffffffff802856ea>] bpf_jit_binary_alloc+0x96/0x13c kernel/bpf/core.c:1025
+[<ffffffff8001910a>] bpf_int_jit_compile+0x886/0xaa6 arch/riscv/net/bpf_jit=
+_core.c:112
+[<ffffffff80287586>] bpf_prog_select_runtime+0x1a2/0x22e kernel/bpf/core.c:=
+2190
+[<ffffffff80291fe4>] bpf_prog_load+0xcb4/0x12b0 kernel/bpf/syscall.c:2623
+[<ffffffff80295a76>] __sys_bpf+0x622/0x31d2 kernel/bpf/syscall.c:4979
+[<ffffffff80298f16>] __do_sys_bpf kernel/bpf/syscall.c:5083 [inline]
+[<ffffffff80298f16>] sys_bpf+0x28/0x36 kernel/bpf/syscall.c:5081
+[<ffffffff80005ff6>] ret_from_syscall+0x0/0x2
+Mem-Info:
+active_anon:26162 inactive_anon:84 isolated_anon:0
+ active_file:0 inactive_file:7832 isolated_file:0
+ unevictable:768 dirty:22 writeback:0
+ slab_reclaimable:5680 slab_unreclaimable:24335
+ mapped:8731 shmem:3924 pagetables:292
+ sec_pagetables:0 bounce:0
+ kernel_misc_reclaimable:0
+ free:231175 free_pcp:515 free_cma:4096
+Node 0 active_anon:104648kB inactive_anon:336kB active_file:0kB inactive_fi=
+le:31328kB unevictable:3072kB isolated(anon):0kB isolated(file):0kB mapped:=
+34924kB dirty:88kB writeback:0kB shmem:15696kB writeback_tmp:0kB kernel_sta=
+ck:5408kB pagetables:1168kB sec_pagetables:0kB all_unreclaimable? no
+Node 0 DMA32 free:924700kB boost:0kB min:4656kB low:6012kB high:7368kB rese=
+rved_highatomic:0KB active_anon:104648kB inactive_anon:336kB active_file:0k=
+B inactive_file:31328kB unevictable:3072kB writepending:88kB present:209510=
+4kB managed:1359004kB mlocked:0kB bounce:0kB free_pcp:2060kB local_pcp:1596=
+kB free_cma:16384kB
+lowmem_reserve[]: 0 0 0
+Node 0 DMA32: 2659*4kB (UME) 2000*8kB (UME) 981*16kB (UME) 519*32kB (UME) 1=
+86*64kB (UME) 35*128kB (UME) 7*256kB (M) 9*512kB (ME) 5*1024kB (ME) 7*2048k=
+B (MEC) 201*4096kB (MC) =3D 924476kB
+Node 0 hugepages_total=3D0 hugepages_free=3D0 hugepages_surp=3D0 hugepages_=
+size=3D1048576kB
+Node 0 hugepages_total=3D4 hugepages_free=3D4 hugepages_surp=3D0 hugepages_=
+size=3D2048kB
+11756 total pagecache pages
+0 pages in swap cache
+Free swap  =3D 0kB
+Total swap =3D 0kB
+523776 pages RAM
+0 pages HighMem/MovableOnly
+184025 pages reserved
+4096 pages cma reserved
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
