@@ -1,551 +1,224 @@
-Return-Path: <bpf+bounces-323-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-324-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 968386FE920
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 03:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5AC56FE95A
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 03:24:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E65528163C
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 01:15:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7124B2815D1
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 01:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2347F8;
-	Thu, 11 May 2023 01:14:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A97D645;
+	Thu, 11 May 2023 01:24:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3F5658;
-	Thu, 11 May 2023 01:14:57 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4854535B3;
-	Wed, 10 May 2023 18:14:53 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QGv5h6001zsRVs;
-	Thu, 11 May 2023 09:12:56 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 11 May 2023 09:14:49 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Leon Romanovsky <leonro@nvidia.com>, Simon Horman
-	<simon.horman@corigine.com>, Igor Russkikh <irusskikh@marvell.com>, Eric
- Dumazet <edumazet@google.com>, Michael Chan <michael.chan@broadcom.com>, Raju
- Rangoju <rajur@chelsio.com>, Ajit Khaparde <ajit.khaparde@broadcom.com>,
-	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>, Somnath Kotur
-	<somnath.kotur@broadcom.com>, Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Dimitris Michailidis <dmichail@fungible.com>, Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, Jason
- Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Ronak
- Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
-	<pv-drivers@vmware.com>, Wei Liu <wei.liu@kernel.org>, Paul Durrant
-	<paul@xen.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Boris Pismenny
-	<borisp@nvidia.com>, Steffen Klassert <steffen.klassert@secunet.com>, Herbert
- Xu <herbert@gondor.apana.org.au>, <linux-rdma@vger.kernel.org>,
-	<virtualization@lists.linux-foundation.org>,
-	<xen-devel@lists.xenproject.org>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next v2 1/2] net: introduce and use skb_frag_fill_page_desc()
-Date: Thu, 11 May 2023 09:12:12 +0800
-Message-ID: <20230511011213.59091-2-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230511011213.59091-1-linyunsheng@huawei.com>
-References: <20230511011213.59091-1-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41804637
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 01:24:33 +0000 (UTC)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EC32D53;
+	Wed, 10 May 2023 18:24:31 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-965cc5170bdso1169220366b.2;
+        Wed, 10 May 2023 18:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683768269; x=1686360269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VtbFuN3sw5A4xlLHEXKg8dMxvjNkGg9uDaGYFlhrrNs=;
+        b=qKeuSu2RxQdE7VjMcmlq0GQ/pw2gqcPmLE/UYZNPn+0Odr6sflDM0sSuFhvOJNDZoh
+         hj4QHy7ILYhaxgnrqLzBE8nCEjxcTe/kw87Ct1Y5PDfFNEYAgXcb0fLY+Wopza9jk3CA
+         8R073JONi5Aa+SQDP7mIOrf54ad+ntuJuPiWc061E+7eu3pb/BE2qSCK9Z3AHEFJAmU3
+         ro9Vc41AZmyZlo4K7/RcItWj/c57lwvLmqky7nJeFUFRfAnHmS4O2SkXXrTnkUdwwEZG
+         8/Rhmtn525K6gl4mabg4At8CND8u9xt6e74HD8juzKlL2Naetas/o7bfYxRjzHUzhCrR
+         lihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683768269; x=1686360269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VtbFuN3sw5A4xlLHEXKg8dMxvjNkGg9uDaGYFlhrrNs=;
+        b=KtjRbbHPAboN8YwJG2lsUE4kGSaWrYAJC8+pImx5QhMjXyXRbpkEahXUQ//Zk9io2p
+         Z7ZQtzDTMtfptfO5qDpPZ8b3BRvBweJrjns+PZtTY3edQh5V4X8atGeI7Lt7ZV/1FYdC
+         0wuHVX4TY3DsaeS8B/xMA8ihZUfIi8QN5V2NnjFPmZqo8rHUrdMhgvkp3EudDOoc5tyP
+         YIM5gJbL06jVaj6INPJhrTFifKZDfZGWHLEtkuMSE+V4rdMF5ALQb9ShwAYB0hEoGZro
+         grBMnGP+xoEBpCu8hJE9m1QpSzewQyKdK/gv+xzS3hLxFau9NcXbLVsO2rRjSaRzJ/hU
+         mtBg==
+X-Gm-Message-State: AC+VfDwiI7+rPKshGumFMb2UZpIQ+75DKHKtVJxsnOvl3I7wb+CbB7zl
+	oU8UO7cCG/Wn87Ok2ZHiQPmrmp2vFUfYVuXWk5Q=
+X-Google-Smtp-Source: ACHHUZ5SVtkBkwVTkMpRgi9RzuNlJDHLpJkVBhBmwiO5o64zcubAk4+WUX160MQZpIt2vySGn2gi2h/rt2yUUdmWM/Y=
+X-Received: by 2002:a17:907:97d2:b0:968:1102:1fb7 with SMTP id
+ js18-20020a17090797d200b0096811021fb7mr11166653ejc.6.1683768269268; Wed, 10
+ May 2023 18:24:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230510122045.2259-1-zegao@tencent.com> <6308b8e0-8a54-e574-a312-0a97cfbf810c@meta.com>
+ <ZFvUH+p0ebcgnwEg@krava> <1195c4bd-ef54-2f1d-b079-2a11af42c62f@meta.com> <89159b33-3be4-487b-7647-0cbbd20c233d@meta.com>
+In-Reply-To: <89159b33-3be4-487b-7647-0cbbd20c233d@meta.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Thu, 11 May 2023 09:24:18 +0800
+Message-ID: <CAD8CoPBzqih=0YxumRtywvSLs0aHwEbzpbehqKvpb18GzntVqA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: reject blacklisted symbols in kprobe_multi to avoid
+ recursive trap
+To: Yonghong Song <yhs@meta.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Ze Gao <zegao@tencent.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Most users use __skb_frag_set_page()/skb_frag_off_set()/
-skb_frag_size_set() to fill the page desc for a skb frag.
+Thank yonghong for your sage reviews.
+Yes, this is an option I am also considering . I will try this out
+later to see if works
 
-Introduce skb_frag_fill_page_desc() to do that.
+But like you said it's not clear whether kprobe blacklist=3D=3D fprobe blac=
+klist.
+And also there are cases I need to investigate on, like how to avoid recurs=
+ions
+when kprobes and fprobes are mixed.
 
-net/bpf/test_run.c does not call skb_frag_off_set() to
-set the offset, "copy_from_user(page_address(page), ...)"
-and 'shinfo' being part of the 'data' kzalloced in
-bpf_test_init() suggest that it is assuming offset to be
-initialized as zero, so call skb_frag_fill_page_desc()
-with offset being zero for this case.
+Rejecting symbols  kprobe_blacklisted is kinda brute-force yet a straight w=
+ay to
+avoid kernel crash AFAIK.
 
-Also, skb_frag_set_page() is not used anymore, so remove
-it.
+Ze
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
----
- .../net/ethernet/aquantia/atlantic/aq_ring.c  |  6 ++--
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  5 ++-
- drivers/net/ethernet/chelsio/cxgb3/sge.c      |  5 ++-
- drivers/net/ethernet/emulex/benet/be_main.c   | 32 ++++++++++---------
- drivers/net/ethernet/freescale/enetc/enetc.c  |  5 ++-
- .../net/ethernet/fungible/funeth/funeth_rx.c  |  5 ++-
- drivers/net/ethernet/marvell/mvneta.c         |  5 ++-
- .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  4 +--
- drivers/net/ethernet/sun/cassini.c            |  8 ++---
- drivers/net/virtio_net.c                      |  4 +--
- drivers/net/vmxnet3/vmxnet3_drv.c             |  4 +--
- drivers/net/xen-netback/netback.c             |  4 +--
- include/linux/skbuff.h                        | 27 ++++++----------
- net/bpf/test_run.c                            |  3 +-
- net/core/gro.c                                |  4 +--
- net/core/pktgen.c                             | 13 +++++---
- net/core/skbuff.c                             |  7 ++--
- net/tls/tls_device.c                          | 10 +++---
- net/xfrm/xfrm_ipcomp.c                        |  5 +--
- 19 files changed, 64 insertions(+), 92 deletions(-)
-
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index 7f933175cbda..4de22eed099a 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -532,10 +532,10 @@ static bool aq_add_rx_fragment(struct device *dev,
- 					      buff_->rxdata.pg_off,
- 					      buff_->len,
- 					      DMA_FROM_DEVICE);
--		skb_frag_off_set(frag, buff_->rxdata.pg_off);
--		skb_frag_size_set(frag, buff_->len);
- 		sinfo->xdp_frags_size += buff_->len;
--		__skb_frag_set_page(frag, buff_->rxdata.page);
-+		skb_frag_fill_page_desc(frag, buff_->rxdata.page,
-+					buff_->rxdata.pg_off,
-+					buff_->len);
- 
- 		buff_->is_cleaned = 1;
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index dcd9367f05af..efaff5018af8 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -1085,9 +1085,8 @@ static u32 __bnxt_rx_agg_pages(struct bnxt *bp,
- 			    RX_AGG_CMP_LEN) >> RX_AGG_CMP_LEN_SHIFT;
- 
- 		cons_rx_buf = &rxr->rx_agg_ring[cons];
--		skb_frag_off_set(frag, cons_rx_buf->offset);
--		skb_frag_size_set(frag, frag_len);
--		__skb_frag_set_page(frag, cons_rx_buf->page);
-+		skb_frag_fill_page_desc(frag, cons_rx_buf->page,
-+					cons_rx_buf->offset, frag_len);
- 		shinfo->nr_frags = i + 1;
- 		__clear_bit(cons, rxr->rx_agg_bmap);
- 
-diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-index efa7f401529e..2e9a74fe0970 100644
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -2184,9 +2184,8 @@ static void lro_add_page(struct adapter *adap, struct sge_qset *qs,
- 	len -= offset;
- 
- 	rx_frag += nr_frags;
--	__skb_frag_set_page(rx_frag, sd->pg_chunk.page);
--	skb_frag_off_set(rx_frag, sd->pg_chunk.offset + offset);
--	skb_frag_size_set(rx_frag, len);
-+	skb_frag_fill_page_desc(rx_frag, sd->pg_chunk.page,
-+				sd->pg_chunk.offset + offset, len);
- 
- 	skb->len += len;
- 	skb->data_len += len;
-diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
-index 7e408bcc88de..3164ed205cf7 100644
---- a/drivers/net/ethernet/emulex/benet/be_main.c
-+++ b/drivers/net/ethernet/emulex/benet/be_main.c
-@@ -2343,11 +2343,10 @@ static void skb_fill_rx_data(struct be_rx_obj *rxo, struct sk_buff *skb,
- 		hdr_len = ETH_HLEN;
- 		memcpy(skb->data, start, hdr_len);
- 		skb_shinfo(skb)->nr_frags = 1;
--		skb_frag_set_page(skb, 0, page_info->page);
--		skb_frag_off_set(&skb_shinfo(skb)->frags[0],
--				 page_info->page_offset + hdr_len);
--		skb_frag_size_set(&skb_shinfo(skb)->frags[0],
--				  curr_frag_len - hdr_len);
-+		skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[0],
-+					page_info->page,
-+					page_info->page_offset + hdr_len,
-+					curr_frag_len - hdr_len);
- 		skb->data_len = curr_frag_len - hdr_len;
- 		skb->truesize += rx_frag_size;
- 		skb->tail += hdr_len;
-@@ -2369,16 +2368,17 @@ static void skb_fill_rx_data(struct be_rx_obj *rxo, struct sk_buff *skb,
- 		if (page_info->page_offset == 0) {
- 			/* Fresh page */
- 			j++;
--			skb_frag_set_page(skb, j, page_info->page);
--			skb_frag_off_set(&skb_shinfo(skb)->frags[j],
--					 page_info->page_offset);
--			skb_frag_size_set(&skb_shinfo(skb)->frags[j], 0);
-+			skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[j],
-+						page_info->page,
-+						page_info->page_offset,
-+						curr_frag_len);
- 			skb_shinfo(skb)->nr_frags++;
- 		} else {
- 			put_page(page_info->page);
-+			skb_frag_size_add(&skb_shinfo(skb)->frags[j],
-+					  curr_frag_len);
- 		}
- 
--		skb_frag_size_add(&skb_shinfo(skb)->frags[j], curr_frag_len);
- 		skb->len += curr_frag_len;
- 		skb->data_len += curr_frag_len;
- 		skb->truesize += rx_frag_size;
-@@ -2451,14 +2451,16 @@ static void be_rx_compl_process_gro(struct be_rx_obj *rxo,
- 		if (i == 0 || page_info->page_offset == 0) {
- 			/* First frag or Fresh page */
- 			j++;
--			skb_frag_set_page(skb, j, page_info->page);
--			skb_frag_off_set(&skb_shinfo(skb)->frags[j],
--					 page_info->page_offset);
--			skb_frag_size_set(&skb_shinfo(skb)->frags[j], 0);
-+			skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[j],
-+						page_info->page,
-+						page_info->page_offset,
-+						curr_frag_len);
- 		} else {
- 			put_page(page_info->page);
-+			skb_frag_size_add(&skb_shinfo(skb)->frags[j],
-+					  curr_frag_len);
- 		}
--		skb_frag_size_add(&skb_shinfo(skb)->frags[j], curr_frag_len);
-+
- 		skb->truesize += rx_frag_size;
- 		remaining -= curr_frag_len;
- 		memset(page_info, 0, sizeof(*page_info));
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
-index 3c4fa26f0f9b..63854294ac33 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-@@ -1445,9 +1445,8 @@ static void enetc_add_rx_buff_to_xdp(struct enetc_bdr *rx_ring, int i,
- 		xdp_buff_set_frag_pfmemalloc(xdp_buff);
- 
- 	frag = &shinfo->frags[shinfo->nr_frags];
--	skb_frag_off_set(frag, rx_swbd->page_offset);
--	skb_frag_size_set(frag, size);
--	__skb_frag_set_page(frag, rx_swbd->page);
-+	skb_frag_fill_page_desc(frag, rx_swbd->page, rx_swbd->page_offset,
-+				size);
- 
- 	shinfo->nr_frags++;
- }
-diff --git a/drivers/net/ethernet/fungible/funeth/funeth_rx.c b/drivers/net/ethernet/fungible/funeth/funeth_rx.c
-index 29a6c2ede43a..7e2584895de3 100644
---- a/drivers/net/ethernet/fungible/funeth/funeth_rx.c
-+++ b/drivers/net/ethernet/fungible/funeth/funeth_rx.c
-@@ -323,9 +323,8 @@ static int fun_gather_pkt(struct funeth_rxq *q, unsigned int tot_len,
- 		if (ref_ok)
- 			ref_ok |= buf->node;
- 
--		__skb_frag_set_page(frags, buf->page);
--		skb_frag_off_set(frags, q->buf_offset);
--		skb_frag_size_set(frags++, frag_len);
-+		skb_frag_fill_page_desc(frags++, buf->page, q->buf_offset,
-+					frag_len);
- 
- 		tot_len -= frag_len;
- 		if (!tot_len)
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 2cad76d0a50e..01b0312977d6 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2369,9 +2369,8 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- 	if (data_len > 0 && sinfo->nr_frags < MAX_SKB_FRAGS) {
- 		skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags++];
- 
--		skb_frag_off_set(frag, pp->rx_offset_correction);
--		skb_frag_size_set(frag, data_len);
--		__skb_frag_set_page(frag, page);
-+		skb_frag_fill_page_desc(frag, page,
-+					pp->rx_offset_correction, data_len);
- 
- 		if (!xdp_buff_has_frags(xdp)) {
- 			sinfo->xdp_frags_size = *size;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 69634829558e..704b022cd1f0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -491,9 +491,7 @@ mlx5e_add_skb_shared_info_frag(struct mlx5e_rq *rq, struct skb_shared_info *sinf
- 	}
- 
- 	frag = &sinfo->frags[sinfo->nr_frags++];
--	__skb_frag_set_page(frag, frag_page->page);
--	skb_frag_off_set(frag, frag_offset);
--	skb_frag_size_set(frag, len);
-+	skb_frag_fill_page_desc(frag, frag_page->page, frag_offset, len);
- 
- 	if (page_is_pfmemalloc(frag_page->page))
- 		xdp_buff_set_frag_pfmemalloc(xdp);
-diff --git a/drivers/net/ethernet/sun/cassini.c b/drivers/net/ethernet/sun/cassini.c
-index 4ef05bad4613..2d52f54ebb45 100644
---- a/drivers/net/ethernet/sun/cassini.c
-+++ b/drivers/net/ethernet/sun/cassini.c
-@@ -1998,10 +1998,8 @@ static int cas_rx_process_pkt(struct cas *cp, struct cas_rx_comp *rxc,
- 		skb->truesize += hlen - swivel;
- 		skb->len      += hlen - swivel;
- 
--		__skb_frag_set_page(frag, page->buffer);
-+		skb_frag_fill_page_desc(frag, page->buffer, off, hlen - swivel);
- 		__skb_frag_ref(frag);
--		skb_frag_off_set(frag, off);
--		skb_frag_size_set(frag, hlen - swivel);
- 
- 		/* any more data? */
- 		if ((words[0] & RX_COMP1_SPLIT_PKT) && ((dlen -= hlen) > 0)) {
-@@ -2024,10 +2022,8 @@ static int cas_rx_process_pkt(struct cas *cp, struct cas_rx_comp *rxc,
- 			skb->len      += hlen;
- 			frag++;
- 
--			__skb_frag_set_page(frag, page->buffer);
-+			skb_frag_fill_page_desc(frag, page->buffer, 0, hlen);
- 			__skb_frag_ref(frag);
--			skb_frag_off_set(frag, 0);
--			skb_frag_size_set(frag, hlen);
- 			RX_USED_ADD(page, hlen + cp->crc_size);
- 		}
- 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index a12ae26db0e2..fe048d4bec39 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1153,9 +1153,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 		}
- 
- 		frag = &shinfo->frags[shinfo->nr_frags++];
--		__skb_frag_set_page(frag, page);
--		skb_frag_off_set(frag, offset);
--		skb_frag_size_set(frag, len);
-+		skb_frag_fill_page_desc(frag, page, offset, len);
- 		if (page_is_pfmemalloc(page))
- 			xdp_buff_set_frag_pfmemalloc(xdp);
- 
-diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
-index f2b76ee866a4..7fa74b8b2100 100644
---- a/drivers/net/vmxnet3/vmxnet3_drv.c
-+++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -686,9 +686,7 @@ vmxnet3_append_frag(struct sk_buff *skb, struct Vmxnet3_RxCompDesc *rcd,
- 
- 	BUG_ON(skb_shinfo(skb)->nr_frags >= MAX_SKB_FRAGS);
- 
--	__skb_frag_set_page(frag, rbi->page);
--	skb_frag_off_set(frag, 0);
--	skb_frag_size_set(frag, rcd->len);
-+	skb_frag_fill_page_desc(frag, rbi->page, 0, rcd->len);
- 	skb->data_len += rcd->len;
- 	skb->truesize += PAGE_SIZE;
- 	skb_shinfo(skb)->nr_frags++;
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index c1501f41e2d8..3d79b35eb577 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1128,9 +1128,7 @@ static int xenvif_handle_frag_list(struct xenvif_queue *queue, struct sk_buff *s
- 			BUG();
- 
- 		offset += len;
--		__skb_frag_set_page(&frags[i], page);
--		skb_frag_off_set(&frags[i], 0);
--		skb_frag_size_set(&frags[i], len);
-+		skb_frag_fill_page_desc(&frags[i], page, 0, len);
- 	}
- 
- 	/* Release all the original (foreign) frags. */
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 738776ab8838..30be21c7d05f 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2411,6 +2411,15 @@ static inline unsigned int skb_pagelen(const struct sk_buff *skb)
- 	return skb_headlen(skb) + __skb_pagelen(skb);
- }
- 
-+static inline void skb_frag_fill_page_desc(skb_frag_t *frag,
-+					   struct page *page,
-+					   int off, int size)
-+{
-+	frag->bv_page = page;
-+	frag->bv_offset = off;
-+	skb_frag_size_set(frag, size);
-+}
-+
- static inline void __skb_fill_page_desc_noacc(struct skb_shared_info *shinfo,
- 					      int i, struct page *page,
- 					      int off, int size)
-@@ -2422,9 +2431,7 @@ static inline void __skb_fill_page_desc_noacc(struct skb_shared_info *shinfo,
- 	 * that not all callers have unique ownership of the page but rely
- 	 * on page_is_pfmemalloc doing the right thing(tm).
- 	 */
--	frag->bv_page		  = page;
--	frag->bv_offset		  = off;
--	skb_frag_size_set(frag, size);
-+	skb_frag_fill_page_desc(frag, page, off, size);
- }
- 
- /**
-@@ -3496,20 +3503,6 @@ static inline void __skb_frag_set_page(skb_frag_t *frag, struct page *page)
- 	frag->bv_page = page;
- }
- 
--/**
-- * skb_frag_set_page - sets the page contained in a paged fragment of an skb
-- * @skb: the buffer
-- * @f: the fragment offset
-- * @page: the page to set
-- *
-- * Sets the @f'th fragment of @skb to contain @page.
-- */
--static inline void skb_frag_set_page(struct sk_buff *skb, int f,
--				     struct page *page)
--{
--	__skb_frag_set_page(&skb_shinfo(skb)->frags[f], page);
--}
--
- bool skb_page_frag_refill(unsigned int sz, struct page_frag *pfrag, gfp_t prio);
- 
- /**
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index e79e3a415ca9..98143b86a9dd 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -1415,11 +1415,10 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			}
- 
- 			frag = &sinfo->frags[sinfo->nr_frags++];
--			__skb_frag_set_page(frag, page);
- 
- 			data_len = min_t(u32, kattr->test.data_size_in - size,
- 					 PAGE_SIZE);
--			skb_frag_size_set(frag, data_len);
-+			skb_frag_fill_page_desc(frag, page, 0, data_len);
- 
- 			if (copy_from_user(page_address(page), data_in + size,
- 					   data_len)) {
-diff --git a/net/core/gro.c b/net/core/gro.c
-index 2d84165cb4f1..6783a47a6136 100644
---- a/net/core/gro.c
-+++ b/net/core/gro.c
-@@ -239,9 +239,7 @@ int skb_gro_receive(struct sk_buff *p, struct sk_buff *skb)
- 
- 		pinfo->nr_frags = nr_frags + 1 + skbinfo->nr_frags;
- 
--		__skb_frag_set_page(frag, page);
--		skb_frag_off_set(frag, first_offset);
--		skb_frag_size_set(frag, first_size);
-+		skb_frag_fill_page_desc(frag, page, first_offset, first_size);
- 
- 		memcpy(frag + 1, skbinfo->frags, sizeof(*frag) * skbinfo->nr_frags);
- 		/* We dont need to clear skbinfo->nr_frags here */
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index 760238196db1..f56b8d697014 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -2785,14 +2785,17 @@ static void pktgen_finalize_skb(struct pktgen_dev *pkt_dev, struct sk_buff *skb,
- 					break;
- 			}
- 			get_page(pkt_dev->page);
--			skb_frag_set_page(skb, i, pkt_dev->page);
--			skb_frag_off_set(&skb_shinfo(skb)->frags[i], 0);
-+
- 			/*last fragment, fill rest of data*/
- 			if (i == (frags - 1))
--				skb_frag_size_set(&skb_shinfo(skb)->frags[i],
--				    (datalen < PAGE_SIZE ? datalen : PAGE_SIZE));
-+				skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[i],
-+							pkt_dev->page, 0,
-+							(datalen < PAGE_SIZE ?
-+							 datalen : PAGE_SIZE));
- 			else
--				skb_frag_size_set(&skb_shinfo(skb)->frags[i], frag_len);
-+				skb_frag_fill_page_desc(&skb_shinfo(skb)->frags[i],
-+							pkt_dev->page, 0, frag_len);
-+
- 			datalen -= skb_frag_size(&skb_shinfo(skb)->frags[i]);
- 			skb->len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
- 			skb->data_len += skb_frag_size(&skb_shinfo(skb)->frags[i]);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 26a586007d8b..c0bd428df3bf 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4249,10 +4249,9 @@ static inline skb_frag_t skb_head_frag_to_page_desc(struct sk_buff *frag_skb)
- 	struct page *page;
- 
- 	page = virt_to_head_page(frag_skb->head);
--	__skb_frag_set_page(&head_frag, page);
--	skb_frag_off_set(&head_frag, frag_skb->data -
--			 (unsigned char *)page_address(page));
--	skb_frag_size_set(&head_frag, skb_headlen(frag_skb));
-+	skb_frag_fill_page_desc(&head_frag, page, frag_skb->data -
-+				(unsigned char *)page_address(page),
-+				skb_headlen(frag_skb));
- 	return head_frag;
- }
- 
-diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-index a7cc4f9faac2..daeff54bdbfa 100644
---- a/net/tls/tls_device.c
-+++ b/net/tls/tls_device.c
-@@ -268,9 +268,8 @@ static void tls_append_frag(struct tls_record_info *record,
- 		skb_frag_size_add(frag, size);
- 	} else {
- 		++frag;
--		__skb_frag_set_page(frag, pfrag->page);
--		skb_frag_off_set(frag, pfrag->offset);
--		skb_frag_size_set(frag, size);
-+		skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
-+					size);
- 		++record->num_frags;
- 		get_page(pfrag->page);
- 	}
-@@ -357,9 +356,8 @@ static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
- 		return -ENOMEM;
- 
- 	frag = &record->frags[0];
--	__skb_frag_set_page(frag, pfrag->page);
--	skb_frag_off_set(frag, pfrag->offset);
--	skb_frag_size_set(frag, prepend_size);
-+	skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
-+				prepend_size);
- 
- 	get_page(pfrag->page);
- 	pfrag->offset += prepend_size;
-diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
-index 80143360bf09..9c0fa0e1786a 100644
---- a/net/xfrm/xfrm_ipcomp.c
-+++ b/net/xfrm/xfrm_ipcomp.c
-@@ -74,14 +74,11 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
- 		if (!page)
- 			return -ENOMEM;
- 
--		__skb_frag_set_page(frag, page);
--
- 		len = PAGE_SIZE;
- 		if (dlen < len)
- 			len = dlen;
- 
--		skb_frag_off_set(frag, 0);
--		skb_frag_size_set(frag, len);
-+		skb_frag_fill_page_desc(frag, page, 0, len);
- 		memcpy(skb_frag_address(frag), scratch, len);
- 
- 		skb->truesize += len;
--- 
-2.33.0
-
+On Thu, May 11, 2023 at 7:54=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 5/10/23 1:20 PM, Yonghong Song wrote:
+> >
+> >
+> > On 5/10/23 10:27 AM, Jiri Olsa wrote:
+> >> On Wed, May 10, 2023 at 07:13:58AM -0700, Yonghong Song wrote:
+> >>>
+> >>>
+> >>> On 5/10/23 5:20 AM, Ze Gao wrote:
+> >>>> BPF_LINK_TYPE_KPROBE_MULTI attaches kprobe programs through fprobe,
+> >>>> however it does not takes those kprobe blacklisted into consideratio=
+n,
+> >>>> which likely introduce recursive traps and blows up stacks.
+> >>>>
+> >>>> this patch adds simple check and remove those are in kprobe_blacklis=
+t
+> >>>> from one fprobe during bpf_kprobe_multi_link_attach. And also
+> >>>> check_kprobe_address_safe is open for more future checks.
+> >>>>
+> >>>> note that ftrace provides recursion detection mechanism, but for kpr=
+obe
+> >>>> only, we can directly reject those cases early without turning to
+> >>>> ftrace.
+> >>>>
+> >>>> Signed-off-by: Ze Gao <zegao@tencent.com>
+> >>>> ---
+> >>>>    kernel/trace/bpf_trace.c | 37 +++++++++++++++++++++++++++++++++++=
+++
+> >>>>    1 file changed, 37 insertions(+)
+> >>>>
+> >>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >>>> index 9a050e36dc6c..44c68bc06bbd 100644
+> >>>> --- a/kernel/trace/bpf_trace.c
+> >>>> +++ b/kernel/trace/bpf_trace.c
+> >>>> @@ -2764,6 +2764,37 @@ static int get_modules_for_addrs(struct
+> >>>> module ***mods, unsigned long *addrs, u3
+> >>>>        return arr.mods_cnt;
+> >>>>    }
+> >>>> +static inline int check_kprobe_address_safe(unsigned long addr)
+> >>>> +{
+> >>>> +    if (within_kprobe_blacklist(addr))
+> >>>> +        return -EINVAL;
+> >>>> +    else
+> >>>> +        return 0;
+> >>>> +}
+> >>>> +
+> >>>> +static int check_bpf_kprobe_addrs_safe(unsigned long *addrs, int nu=
+m)
+> >>>> +{
+> >>>> +    int i, cnt;
+> >>>> +    char symname[KSYM_NAME_LEN];
+> >>>> +
+> >>>> +    for (i =3D 0; i < num; ++i) {
+> >>>> +        if (check_kprobe_address_safe((unsigned long)addrs[i])) {
+> >>>> +            lookup_symbol_name(addrs[i], symname);
+> >>>> +            pr_warn("bpf_kprobe: %s at %lx is blacklisted\n",
+> >>>> symname, addrs[i]);
+> >>>
+> >>> So user request cannot be fulfilled and a warning is issued and some
+> >>> of user requests are discarded and the rest is proceeded. Does not
+> >>> sound a good idea.
+> >>>
+> >>> Maybe we should do filtering in user space, e.g., in libbpf, check
+> >>> /sys/kernel/debug/kprobes/blacklist and return error
+> >>> earlier? bpftrace/libbpf-tools/bcc-tools all do filtering before
+> >>> requesting kprobe in the kernel.
+> >>
+> >> also fprobe uses ftrace drectly without paths in kprobe, so I wonder
+> >> some of the kprobe blacklisted functions are actually safe
+> >
+> > Could you give a pointer about 'some of the kprobe blacklisted
+> > functions are actually safe'?
+>
+> Thanks Jiri for answering my question. it is not clear whether
+> kprobe blacklist =3D=3D fprobe blacklist, probably not.
+>
+> You mentioned:
+>    note that ftrace provides recursion detection mechanism,
+>    but for kprobe only
+> Maybe the right choice is to improve ftrace to provide recursion
+> detection mechanism for fprobe as well?
+>
+> >
+> >>
+> >> jirka
+> >>
+> >>>
+> >>>> +            /* mark blacklisted symbol for remove */
+> >>>> +            addrs[i] =3D 0;
+> >>>> +        }
+> >>>> +    }
+> >>>> +
+> >>>> +    /* remove blacklisted symbol from addrs */
+> >>>> +    for (i =3D 0, cnt =3D 0; i < num; ++i) {
+> >>>> +        if (addrs[i])
+> >>>> +            addrs[cnt++]  =3D addrs[i];
+> >>>> +    }
+> >>>> +
+> >>>> +    return cnt;
+> >>>> +}
+> >>>> +
+> >>>>    int bpf_kprobe_multi_link_attach(const union bpf_attr *attr,
+> >>>> struct bpf_prog *prog)
+> >>>>    {
+> >>>>        struct bpf_kprobe_multi_link *link =3D NULL;
+> >>>> @@ -2859,6 +2890,12 @@ int bpf_kprobe_multi_link_attach(const union
+> >>>> bpf_attr *attr, struct bpf_prog *pr
+> >>>>        else
+> >>>>            link->fp.entry_handler =3D kprobe_multi_link_handler;
+> >>>> +    cnt =3D check_bpf_kprobe_addrs_safe(addrs, cnt);
+> >>>> +    if (!cnt) {
+> >>>> +        err =3D -EINVAL;
+> >>>> +        goto error;
+> >>>> +    }
+> >>>> +
+> >>>>        link->addrs =3D addrs;
+> >>>>        link->cookies =3D cookies;
+> >>>>        link->cnt =3D cnt;
 
