@@ -1,224 +1,240 @@
-Return-Path: <bpf+bounces-328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB2AB6FEAC2
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 06:38:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586F16FEBCD
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 08:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A0D01C20EF0
-	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 04:38:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 051AF28166C
+	for <lists+bpf@lfdr.de>; Thu, 11 May 2023 06:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23ECC1E51A;
-	Thu, 11 May 2023 04:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A2E2770E;
+	Thu, 11 May 2023 06:36:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9CE8F76
-	for <bpf@vger.kernel.org>; Thu, 11 May 2023 04:38:05 +0000 (UTC)
-Received: from out-25.mta0.migadu.com (out-25.mta0.migadu.com [IPv6:2001:41d0:1004:224b::19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A16E1BEC
-	for <bpf@vger.kernel.org>; Wed, 10 May 2023 21:38:03 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1683779881;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8MO4D36XPNNOaS+Vg9keCUnBHcU4M5BYCnI+b818hVM=;
-	b=AaMJxAi+t+MK6QjcsaaY0N9olefwZPzwx9O1hpbrjNNa+AadnlIYeJuftPyMTFQEH4awir
-	taU8347iTJuUG933T5r/TfVFqs7JSp+wLRCIGhz/A+T6JUYggK2RaQbyUEeEhdkWUWvRZ4
-	RJkmkHk0pD8UyfJaIPb8uIq/PCr7yeA=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@meta.com,
-	syzbot+ebe648a84e8784763f82@syzkaller.appspotmail.com
-Subject: [PATCH bpf-next] bpf: Address KCSAN report on bpf_lru_list
-Date: Wed, 10 May 2023 21:37:48 -0700
-Message-Id: <20230511043748.1384166-1-martin.lau@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CEF369
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 06:36:34 +0000 (UTC)
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8B61728
+	for <bpf@vger.kernel.org>; Wed, 10 May 2023 23:36:32 -0700 (PDT)
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com [209.85.219.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3C1653F232
+	for <bpf@vger.kernel.org>; Thu, 11 May 2023 06:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1683786990;
+	bh=XY9w/Ra5VtNNGnAwkTxPLsHPDd0g0Ln+BJiNp09GaI8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=Tx3JQ68gQyyJiecPEj22651LvG+uDvs5cvlCHPYyNZEe8O1yE+8Y+R+Qn0qqQbFCL
+	 UIhXSzmdCu5Q8XN8A2fQIxyNER1wie5WK/7MkS/IrdsDecYjMejbpv2N1aDEW9jYOR
+	 2b3og0nasy1A1i9DMcU923ce6l2YdC+ETq/uupAXTdIfLDCYvRUe1aKd3wFoX5ANwp
+	 cQu1JOIR9h82oH+8iHJ6qThsnX2YH+hYlbKwXh+qwfmAopxeSOsAbcEPcEP4XS7Gn5
+	 1ZZyaHh6mpSmOAJ7OVqjAFNIwsthohkJrdwxSLO9nTkMosAHN9nLX7XLO2EzsiZ8rM
+	 HRFdHXSf9SFEA==
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-b9a7e3fc659so18390029276.1
+        for <bpf@vger.kernel.org>; Wed, 10 May 2023 23:36:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683786989; x=1686378989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XY9w/Ra5VtNNGnAwkTxPLsHPDd0g0Ln+BJiNp09GaI8=;
+        b=kMisJ9+uaNnH0scjmA6yFaTLAaUUOo87JXzR8ME0tIJpc8gvOwjuWxUdgavo6fyjdy
+         gReaZNnTImVydFF8YccIWGHs8zftPPKfSnCc6qgreKCmzhr0QX2GwZh2gi/nR+Hf1wrd
+         c4kdgziaPxQB2q9IdoSGczLW4fe8E+JXClJEbcMaqlb/VQ3ozBYj+VQiNtRx7tnBZEPA
+         IYkFFx/Ft98zGlOwNP9YLaJUiAgUkqh9xpzd3nYr9bGNiJdxDms7mbPDWa9zn6pYfP/D
+         MjYzVB1JZG/lpHrmB3T27O4XQ+hsC0cnS82Ri8u30lN2AJCufnL8QZRS15wtDxlco245
+         xmnw==
+X-Gm-Message-State: AC+VfDwu1dxMoPg8OvG1pgPavlcgA8L+fnQ4fQA0/RRbupijuFMUXJ9m
+	a7CmOx5qHxfbWMyDVCEQVoB7vHTrkQgIJ/0bXEoo8krR7a82Oi36dSLaa+LT3ZPm2OCyh6QPY3n
+	J8xd+JJ8itJ86CHCCJsKuOMZac+qHpijGXCSWeMn6wXzMdQ==
+X-Received: by 2002:a05:6902:18cd:b0:b9a:29e5:1922 with SMTP id ck13-20020a05690218cd00b00b9a29e51922mr23466508ybb.8.1683786989298;
+        Wed, 10 May 2023 23:36:29 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4aqEPhDtnnC3jxp7GBApiXjpoGJ1ZYWQ92e1ax//bm5EDJ4xKVFAWI4h84qH1T8addxQ3Ey0LwN/+K1Ew0Kc4=
+X-Received: by 2002:a05:6902:18cd:b0:b9a:29e5:1922 with SMTP id
+ ck13-20020a05690218cd00b00b9a29e51922mr23466501ybb.8.1683786989089; Wed, 10
+ May 2023 23:36:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230510152216.1392682-1-aleksandr.mikhalitsyn@canonical.com>
+ <CAKH8qBuAoobsVP2Q5KN06fZ2NM3_aMwT7Y2OoKwS4Cf=cv3ZGg@mail.gmail.com>
+ <CAEivzxc3hzqMROfCgshD6qW3=NErpF6LWXFGjoBhPNNzEZ3kDg@mail.gmail.com> <CAKH8qBvp3iNPHrus3NpgwN1JCkSxzTTi3G3WoAR2LKwX1-QzhQ@mail.gmail.com>
+In-Reply-To: <CAKH8qBvp3iNPHrus3NpgwN1JCkSxzTTi3G3WoAR2LKwX1-QzhQ@mail.gmail.com>
+From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date: Thu, 11 May 2023 08:36:18 +0200
+Message-ID: <CAEivzxfso6dJCB31MsrCkMg4DXBszY9QxQKsX-x0oMoaUQz5Fg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: core: add SOL_SOCKET filter for bpf
+ getsockopt hook
+To: Stanislav Fomichev <sdf@google.com>
+Cc: davem@davemloft.net, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Christian Brauner <brauner@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On Wed, May 10, 2023 at 11:58=E2=80=AFPM Stanislav Fomichev <sdf@google.com=
+> wrote:
+>
+> On Wed, May 10, 2023 at 2:41=E2=80=AFPM Aleksandr Mikhalitsyn
+> <aleksandr.mikhalitsyn@canonical.com> wrote:
+> >
+> > On Wed, May 10, 2023 at 11:31=E2=80=AFPM Stanislav Fomichev <sdf@google=
+.com> wrote:
+> > >
+> > > On Wed, May 10, 2023 at 8:23=E2=80=AFAM Alexander Mikhalitsyn
+> > > <aleksandr.mikhalitsyn@canonical.com> wrote:
+> > > >
+> > > > We have per struct proto ->bpf_bypass_getsockopt callback
+> > > > to filter out bpf socket cgroup getsockopt hook from being called.
+> > > >
+> > > > It seems worthwhile to add analogical helper for SOL_SOCKET
+> > > > level socket options. First user will be SO_PEERPIDFD.
+> > > >
+> > > > This patch was born as a result of discussion around a new SCM_PIDF=
+D interface:
+> > > > https://lore.kernel.org/all/20230413133355.350571-3-aleksandr.mikha=
+litsyn@canonical.com/
+> > > >
+> > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > > Cc: Christian Brauner <brauner@kernel.org>
+> > > > Cc: Stanislav Fomichev <sdf@google.com>
+> > > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > > Cc: Eric Dumazet <edumazet@google.com>
+> > > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > > Cc: Paolo Abeni <pabeni@redhat.com>
+> > > > Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > > > Cc: linux-kernel@vger.kernel.org
+> > > > Cc: netdev@vger.kernel.org
+> > > > Cc: bpf@vger.kernel.org
+> > > > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonic=
+al.com>
+> > > > ---
+> > > >  include/linux/bpf-cgroup.h | 8 +++++---
+> > > >  include/net/sock.h         | 1 +
+> > > >  net/core/sock.c            | 5 +++++
+> > > >  3 files changed, 11 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.=
+h
+> > > > index 57e9e109257e..97d8a49b35bf 100644
+> > > > --- a/include/linux/bpf-cgroup.h
+> > > > +++ b/include/linux/bpf-cgroup.h
+> > > > @@ -387,10 +387,12 @@ static inline bool cgroup_bpf_sock_enabled(st=
+ruct sock *sk,
+> > > >         int __ret =3D retval;                                      =
+              \
+> > > >         if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&               =
+            \
+> > > >             cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))      =
+            \
+> > > > -               if (!(sock)->sk_prot->bpf_bypass_getsockopt ||     =
+            \
+> > > > -                   !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypa=
+ss_getsockopt, \
+> > > > +               if (((level !=3D SOL_SOCKET) ||                    =
+              \
+> > > > +                    !sock_bpf_bypass_getsockopt(level, optname)) &=
+&           \
+> > > > +                   (!(sock)->sk_prot->bpf_bypass_getsockopt ||    =
+            \
+> > >
+> > > Any reason we are not putting this into bpf_bypass_getsockopt for
+> > > af_unix struct proto? SO_PEERPIDFD seems relevant only for af_unix?
+> >
+> > Yes, that should work perfectly well. The reason why I'm going this
+> > way is that we are
+> > declaring all SOL_SOCKET-level options in the net/core/sock.c which is
+> > not specific to any address family.
+> > It seems reasonable to have a way to filter out getsockopt for these
+> > options too.
+> >
+> > But I'm not insisting on that way.
+>
+> Yeah, let's move it into af_unix struct proto for now. That should
+> avoid adding extra conditionals for a few places that care about
+> performance (tcp zerocopy fastpath).
+> If we'd ever need to filter out generic SOL_SOCKET level options that
+> apply for all sockets, we might put (and copy-paste) them in the
+> respective {tcp,udp,unix,etc}_bpf_bypass_getsockopt.
 
-KCSAN reported a data-race when accessing node->ref.
-Although node->ref does not have to be accurate,
-take this chance to use a more common READ_ONCE() and WRITE_ONCE()
-pattern instead of data_race().
+Will do.
 
-There is an existing bpf_lru_node_is_ref() and bpf_lru_node_set_ref().
-This patch also adds bpf_lru_node_clear_ref() to do the
-WRITE_ONCE(node->ref, 0) also.
+Thanks!
 
-==================================================================
-BUG: KCSAN: data-race in __bpf_lru_list_rotate / __htab_lru_percpu_map_update_elem
+Kind regards,
+Alex
 
-write to 0xffff888137038deb of 1 bytes by task 11240 on cpu 1:
-__bpf_lru_node_move kernel/bpf/bpf_lru_list.c:113 [inline]
-__bpf_lru_list_rotate_active kernel/bpf/bpf_lru_list.c:149 [inline]
-__bpf_lru_list_rotate+0x1bf/0x750 kernel/bpf/bpf_lru_list.c:240
-bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:329 [inline]
-bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
-bpf_lru_pop_free+0x638/0xe20 kernel/bpf/bpf_lru_list.c:499
-prealloc_lru_pop kernel/bpf/hashtab.c:290 [inline]
-__htab_lru_percpu_map_update_elem+0xe7/0x820 kernel/bpf/hashtab.c:1316
-bpf_percpu_hash_update+0x5e/0x90 kernel/bpf/hashtab.c:2313
-bpf_map_update_value+0x2a9/0x370 kernel/bpf/syscall.c:200
-generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1687
-bpf_map_do_batch+0x2d9/0x3d0 kernel/bpf/syscall.c:4534
-__sys_bpf+0x338/0x810
-__do_sys_bpf kernel/bpf/syscall.c:5096 [inline]
-__se_sys_bpf kernel/bpf/syscall.c:5094 [inline]
-__x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5094
-do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-read to 0xffff888137038deb of 1 bytes by task 11241 on cpu 0:
-bpf_lru_node_set_ref kernel/bpf/bpf_lru_list.h:70 [inline]
-__htab_lru_percpu_map_update_elem+0x2f1/0x820 kernel/bpf/hashtab.c:1332
-bpf_percpu_hash_update+0x5e/0x90 kernel/bpf/hashtab.c:2313
-bpf_map_update_value+0x2a9/0x370 kernel/bpf/syscall.c:200
-generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1687
-bpf_map_do_batch+0x2d9/0x3d0 kernel/bpf/syscall.c:4534
-__sys_bpf+0x338/0x810
-__do_sys_bpf kernel/bpf/syscall.c:5096 [inline]
-__se_sys_bpf kernel/bpf/syscall.c:5094 [inline]
-__x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5094
-do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-value changed: 0x01 -> 0x00
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 11241 Comm: syz-executor.3 Not tainted 6.3.0-rc7-syzkaller-00136-g6a66fdd29ea1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-==================================================================
-
-Reported-by: syzbot+ebe648a84e8784763f82@syzkaller.appspotmail.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- kernel/bpf/bpf_lru_list.c | 21 +++++++++++++--------
- kernel/bpf/bpf_lru_list.h |  7 ++-----
- 2 files changed, 15 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index d99e89f113c4..3dabdd137d10 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -41,7 +41,12 @@ static struct list_head *local_pending_list(struct bpf_lru_locallist *loc_l)
- /* bpf_lru_node helpers */
- static bool bpf_lru_node_is_ref(const struct bpf_lru_node *node)
- {
--	return node->ref;
-+	return READ_ONCE(node->ref);
-+}
-+
-+static void bpf_lru_node_clear_ref(struct bpf_lru_node *node)
-+{
-+	WRITE_ONCE(node->ref, 0);
- }
- 
- static void bpf_lru_list_count_inc(struct bpf_lru_list *l,
-@@ -89,7 +94,7 @@ static void __bpf_lru_node_move_in(struct bpf_lru_list *l,
- 
- 	bpf_lru_list_count_inc(l, tgt_type);
- 	node->type = tgt_type;
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 	list_move(&node->list, &l->lists[tgt_type]);
- }
- 
-@@ -110,7 +115,7 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
- 		bpf_lru_list_count_inc(l, tgt_type);
- 		node->type = tgt_type;
- 	}
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 
- 	/* If the moving node is the next_inactive_rotation candidate,
- 	 * move the next_inactive_rotation pointer also.
-@@ -353,7 +358,7 @@ static void __local_list_add_pending(struct bpf_lru *lru,
- 	*(u32 *)((void *)node + lru->hash_offset) = hash;
- 	node->cpu = cpu;
- 	node->type = BPF_LRU_LOCAL_LIST_T_PENDING;
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 	list_add(&node->list, local_pending_list(loc_l));
- }
- 
-@@ -419,7 +424,7 @@ static struct bpf_lru_node *bpf_percpu_lru_pop_free(struct bpf_lru *lru,
- 	if (!list_empty(free_list)) {
- 		node = list_first_entry(free_list, struct bpf_lru_node, list);
- 		*(u32 *)((void *)node + lru->hash_offset) = hash;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		__bpf_lru_node_move(l, node, BPF_LRU_LIST_T_INACTIVE);
- 	}
- 
-@@ -522,7 +527,7 @@ static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 		}
- 
- 		node->type = BPF_LRU_LOCAL_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_move(&node->list, local_free_list(loc_l));
- 
- 		raw_spin_unlock_irqrestore(&loc_l->lock, flags);
-@@ -568,7 +573,7 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
- 
- 		node = (struct bpf_lru_node *)(buf + node_offset);
- 		node->type = BPF_LRU_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		buf += elem_size;
- 	}
-@@ -594,7 +599,7 @@ static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
- 		node = (struct bpf_lru_node *)(buf + node_offset);
- 		node->cpu = cpu;
- 		node->type = BPF_LRU_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		i++;
- 		buf += elem_size;
-diff --git a/kernel/bpf/bpf_lru_list.h b/kernel/bpf/bpf_lru_list.h
-index 4ea227c9c1ad..8f3c8b2b4490 100644
---- a/kernel/bpf/bpf_lru_list.h
-+++ b/kernel/bpf/bpf_lru_list.h
-@@ -64,11 +64,8 @@ struct bpf_lru {
- 
- static inline void bpf_lru_node_set_ref(struct bpf_lru_node *node)
- {
--	/* ref is an approximation on access frequency.  It does not
--	 * have to be very accurate.  Hence, no protection is used.
--	 */
--	if (!node->ref)
--		node->ref = 1;
-+	if (!READ_ONCE(node->ref))
-+		WRITE_ONCE(node->ref, 1);
- }
- 
- int bpf_lru_init(struct bpf_lru *lru, bool percpu, u32 hash_offset,
--- 
-2.34.1
-
+>
+> > Kind regards,
+> > Alex
+> >
+> > >
+> > > > +                    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_byp=
+ass_getsockopt, \
+> > > >                                         tcp_bpf_bypass_getsockopt, =
+            \
+> > > > -                                       level, optname))           =
+            \
+> > > > +                                       level, optname)))          =
+            \
+> > > >                         __ret =3D __cgroup_bpf_run_filter_getsockop=
+t(            \
+> > > >                                 sock, level, optname, optval, optle=
+n,          \
+> > > >                                 max_optlen, retval);               =
+            \
+> > > > diff --git a/include/net/sock.h b/include/net/sock.h
+> > > > index 8b7ed7167243..530d6d22f42d 100644
+> > > > --- a/include/net/sock.h
+> > > > +++ b/include/net/sock.h
+> > > > @@ -1847,6 +1847,7 @@ int sk_getsockopt(struct sock *sk, int level,=
+ int optname,
+> > > >                   sockptr_t optval, sockptr_t optlen);
+> > > >  int sock_getsockopt(struct socket *sock, int level, int op,
+> > > >                     char __user *optval, int __user *optlen);
+> > > > +bool sock_bpf_bypass_getsockopt(int level, int optname);
+> > > >  int sock_gettstamp(struct socket *sock, void __user *userstamp,
+> > > >                    bool timeval, bool time32);
+> > > >  struct sk_buff *sock_alloc_send_pskb(struct sock *sk, unsigned lon=
+g header_len,
+> > > > diff --git a/net/core/sock.c b/net/core/sock.c
+> > > > index 5440e67bcfe3..194a423eb6e5 100644
+> > > > --- a/net/core/sock.c
+> > > > +++ b/net/core/sock.c
+> > > > @@ -1963,6 +1963,11 @@ int sock_getsockopt(struct socket *sock, int=
+ level, int optname,
+> > > >                              USER_SOCKPTR(optlen));
+> > > >  }
+> > > >
+> > > > +bool sock_bpf_bypass_getsockopt(int level, int optname)
+> > > > +{
+> > > > +       return false;
+> > > > +}
+> > > > +
+> > > >  /*
+> > > >   * Initialize an sk_lock.
+> > > >   *
+> > > > --
+> > > > 2.34.1
+> > > >
 
