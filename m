@@ -1,229 +1,123 @@
-Return-Path: <bpf+bounces-393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FB9D700760
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 13:58:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 576FD700778
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 14:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA0B281A3F
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 11:58:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 782401C211DE
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 12:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26B4D52A;
-	Fri, 12 May 2023 11:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5451ED530;
+	Fri, 12 May 2023 12:09:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4717F0
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 11:58:45 +0000 (UTC)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BDE1387B
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 04:58:23 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-50bc040c7b8so14932358a12.2
-        for <bpf@vger.kernel.org>; Fri, 12 May 2023 04:58:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074C27F0
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 12:09:47 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB5311B5E
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 05:09:45 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3f4ad71b00eso20423745e9.2
+        for <bpf@vger.kernel.org>; Fri, 12 May 2023 05:09:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683892702; x=1686484702;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+/kSwMo+7Cp5Lv8ExhFOieHNnTxisOO+ZhomyzvgiZA=;
-        b=GtkEme0zKuovaryGssj8tMqP+nyf8Vw3X+iZZ4vCTtoOmR3TR6+TIRzEr40AKGYpi3
-         90RA9l+bP9+orRpNX/kkNBaYB4SVEPDTZnJZKeVNlIulxteT5UAq31+V3mGkT+fhIqYI
-         P3dWSo/OAwLS8Clj7HYFMD9EHPFxntyZTKSsGsEEYHuBEBsSJUAawg63vnWEa9cI8Nqn
-         r1Hcqza/fDeULiQZAougs1xTeFqcDGoqipXymWOiilLIHtBMunk+IZsVd4urhSxDJJ/N
-         LSvHSXk6voIhTE7J2ChWu73gJciH/0fnPypGfAMjyvIAEzgw57aiNrM3xSpLiBjmVnAd
-         JAvg==
+        d=isovalent.com; s=google; t=1683893384; x=1686485384;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bR5m6+kVJzDP3tWDyiYV6KeeUfXkuj2q0OdvpS6EZ0w=;
+        b=N0Aq377gTyNjx0+RK96foxIeywDFBa6CYx4Q1Lk5LyBpgJdQOPbnOhJss0VAcxFRco
+         PDS4ETR+WKX6S46mgakTY+sEgyRfnBEzJ6PSCcl0EGY18V9OpkCUf978H/jQjC3Ia8Jl
+         FCs6UHPSGLOgfICxdrXrgISCf8iSh8RE9zDzemXC5G3AGSkES6xPtNkmFrJIu0LzOk0p
+         9WVZJdsQJ3P7LF2ggrzobhdUKGthjf2By3gyel+T8JkpvJ/BNfwf08sgCMAlItIBIDgK
+         /FPvvkySHci3tlrJ/2Z9TlXIZUCw6zRQN9M6rnw+vr3MQzMJbAlYcbGT3HvjOjbRaxzt
+         ytHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683892702; x=1686484702;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+/kSwMo+7Cp5Lv8ExhFOieHNnTxisOO+ZhomyzvgiZA=;
-        b=YIC7un7qqxE32yIYDm7A9dR4e1F+E4X2wspqJXZ/toQqfSd8QDRwpxnhZnXM0KLoSm
-         naxlnXIJXXS/RpdS3K7+AMFQRNzyZeghIkudNMtlvtq0WopP7N4omFUPYkPU86GghICD
-         kjrd7SnOPsh3ZRH8h7btJAL1vmMbHhNy/9756oO/rRv+3/mZ6lS48gCWRygjCORcXVz7
-         4OCecYOiUAia1jM7Xq7J8S8egcvd8k/Rj1m/jLHUrQbQrHzz/rYWF6hilF/bKRfO4YBd
-         n00ZpCu0bVT2UVMYkF1xvEr1qq5h/VROEKLejOdFTArsE0HqB8ujQABPFiYD0XHfDcrz
-         X0KA==
-X-Gm-Message-State: AC+VfDx2F/XgQgpjUxYr0yV/zxF32ko4+6g1mGrcj11pEb9M3DLPLViB
-	VozLZ4KEr0HtfXbTC9I/A54=
-X-Google-Smtp-Source: ACHHUZ7aKWXfMfpGDAZ0cCs52qruiFHVcsYeDwT8AScaYppop89g577DITwDvc7kogmzrVAC8yjtqQ==
-X-Received: by 2002:a17:906:9c83:b0:94f:3074:14fe with SMTP id fj3-20020a1709069c8300b0094f307414femr23932949ejc.17.1683892701271;
-        Fri, 12 May 2023 04:58:21 -0700 (PDT)
-Received: from krava (213-240-85-134.hdsl.highway.telekom.at. [213.240.85.134])
-        by smtp.gmail.com with ESMTPSA id b16-20020a170906195000b0094e96e46cc0sm5291101eje.69.2023.05.12.04.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 04:58:20 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 12 May 2023 13:58:14 +0200
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, kuba@kernel.org,
-	bpf@vger.kernel.org, Nicky Veitch <nicky.veitch@oracle.com>
-Subject: Re: [PATCH bpf] tools: bpftool: JIT limited misreported as negative
- value on aarch64
-Message-ID: <ZF4p1qAaJ1UwjInt@krava>
-References: <20230512113134.58996-1-alan.maguire@oracle.com>
+        d=1e100.net; s=20221208; t=1683893384; x=1686485384;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bR5m6+kVJzDP3tWDyiYV6KeeUfXkuj2q0OdvpS6EZ0w=;
+        b=OZk0Y91srPVEVwYYdZE4q2C+tB+aWmhZWJGEgNi+LB0ITumw92zq3lrQO7CEwK+cYy
+         yPiP+kip7Y6IjhuhoFnmW5HtYT+kUB0uNvmfxb0p60lqCMpoZav8GYN7pTh3WMFUFiTI
+         fC2WWZvrdlWmK0A8Uxlv7aAnUeaTTm/ck9oD2EUBk1C2q6AQWHWXL1vJl7KIQ0NF1X09
+         Oj6aH1Up12sFFd+lfVxJVWpscNLqFkCBsLNR8emwZ2Rh0t7/PW1ZvkCgZepYsJ718w4o
+         eaQMzNDspaN09NDQpZVOUoZh9jkL5q8wqqxK5tuHfx0V9qKPmQteM5AmLju9Y4M9FWsv
+         R9cg==
+X-Gm-Message-State: AC+VfDy6HwfxsBw2wQ8bp6dv1UToU2x7jUTKdGJbFHccNtme6v1AMF+f
+	XYKCbgQBA1lx3m8aZ6OjMaGzbQ==
+X-Google-Smtp-Source: ACHHUZ4oHgcJYc2CunmcLppTVvjV0a9AAaehcoCE/p5Tu/z7kvlal8hQL/TBsKmqWQci0uIW0f5h3g==
+X-Received: by 2002:a5d:4485:0:b0:2fe:c0ea:18b4 with SMTP id j5-20020a5d4485000000b002fec0ea18b4mr16907745wrq.24.1683893384416;
+        Fri, 12 May 2023 05:09:44 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:a162:20e4:626a:dd? ([2a02:8011:e80c:0:a162:20e4:626a:dd])
+        by smtp.gmail.com with ESMTPSA id n19-20020a1c7213000000b003f4268f51f5sm14145411wmc.0.2023.05.12.05.09.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 May 2023 05:09:44 -0700 (PDT)
+Message-ID: <294f1d94-0afa-5155-6c43-a3b1e3fd5604@isovalent.com>
+Date: Fri, 12 May 2023 13:09:43 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230512113134.58996-1-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH bpf] tools: bpftool: JIT limited misreported as negative
+ value on aarch64
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>, Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, kuba@kernel.org,
+ bpf@vger.kernel.org, Nicky Veitch <nicky.veitch@oracle.com>
+References: <20230512113134.58996-1-alan.maguire@oracle.com>
+ <ZF4p1qAaJ1UwjInt@krava>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZF4p1qAaJ1UwjInt@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 12, 2023 at 12:31:34PM +0100, Alan Maguire wrote:
-> On aarch64, "bpftool feature" reports an incorrect BPF JIT limit:
+2023-05-12 13:58 UTC+0200 ~ Jiri Olsa <olsajiri@gmail.com>
+> On Fri, May 12, 2023 at 12:31:34PM +0100, Alan Maguire wrote:
+>> On aarch64, "bpftool feature" reports an incorrect BPF JIT limit:
+>>
+>> $ sudo /sbin/bpftool feature
+>> Scanning system configuration...
+>> bpf() syscall restricted to privileged users
+>> JIT compiler is enabled
+>> JIT compiler hardening is disabled
+>> JIT compiler kallsyms exports are enabled for root
+>> skipping kernel config, can't open file: No such file or directory
+>> Global memory limit for JIT compiler for unprivileged users is -201326592 bytes
+>>
+>> This is because /proc/sys/net/core/bpf_jit_limit reports
+>>
+>> $ sudo cat /proc/sys/net/core/bpf_jit_limit
+>> 68169519595520
+>>
+>> ...and an int is assumed in read_procfs().  Change read_procfs()
+>> to return a long to avoid negative value reporting.
+>>
+>> Fixes: 7a4522bbef0c ("tools: bpftool: add probes for /proc/ eBPF parameters")
+>> Reported-by: Nicky Veitch <nicky.veitch@oracle.com>
+>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > 
-> $ sudo /sbin/bpftool feature
-> Scanning system configuration...
-> bpf() syscall restricted to privileged users
-> JIT compiler is enabled
-> JIT compiler hardening is disabled
-> JIT compiler kallsyms exports are enabled for root
-> skipping kernel config, can't open file: No such file or directory
-> Global memory limit for JIT compiler for unprivileged users is -201326592 bytes
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> This is because /proc/sys/net/core/bpf_jit_limit reports
-> 
-> $ sudo cat /proc/sys/net/core/bpf_jit_limit
-> 68169519595520
-> 
-> ...and an int is assumed in read_procfs().  Change read_procfs()
-> to return a long to avoid negative value reporting.
-> 
-> Fixes: 7a4522bbef0c ("tools: bpftool: add probes for /proc/ eBPF parameters")
-> Reported-by: Nicky Veitch <nicky.veitch@oracle.com>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> jirka
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 
-jirka
+Thanks!
 
-> ---
->  tools/bpf/bpftool/feature.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index da16e6a27ccc..0675d6a46413 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -167,12 +167,12 @@ static int get_vendor_id(int ifindex)
->  	return strtol(buf, NULL, 0);
->  }
->  
-> -static int read_procfs(const char *path)
-> +static long read_procfs(const char *path)
->  {
->  	char *endptr, *line = NULL;
->  	size_t len = 0;
->  	FILE *fd;
-> -	int res;
-> +	long res;
->  
->  	fd = fopen(path, "r");
->  	if (!fd)
-> @@ -194,7 +194,7 @@ static int read_procfs(const char *path)
->  
->  static void probe_unprivileged_disabled(void)
->  {
-> -	int res;
-> +	long res;
->  
->  	/* No support for C-style ouptut */
->  
-> @@ -216,14 +216,14 @@ static void probe_unprivileged_disabled(void)
->  			printf("Unable to retrieve required privileges for bpf() syscall\n");
->  			break;
->  		default:
-> -			printf("bpf() syscall restriction has unknown value %d\n", res);
-> +			printf("bpf() syscall restriction has unknown value %ld\n", res);
->  		}
->  	}
->  }
->  
->  static void probe_jit_enable(void)
->  {
-> -	int res;
-> +	long res;
->  
->  	/* No support for C-style ouptut */
->  
-> @@ -245,7 +245,7 @@ static void probe_jit_enable(void)
->  			printf("Unable to retrieve JIT-compiler status\n");
->  			break;
->  		default:
-> -			printf("JIT-compiler status has unknown value %d\n",
-> +			printf("JIT-compiler status has unknown value %ld\n",
->  			       res);
->  		}
->  	}
-> @@ -253,7 +253,7 @@ static void probe_jit_enable(void)
->  
->  static void probe_jit_harden(void)
->  {
-> -	int res;
-> +	long res;
->  
->  	/* No support for C-style ouptut */
->  
-> @@ -275,7 +275,7 @@ static void probe_jit_harden(void)
->  			printf("Unable to retrieve JIT hardening status\n");
->  			break;
->  		default:
-> -			printf("JIT hardening status has unknown value %d\n",
-> +			printf("JIT hardening status has unknown value %ld\n",
->  			       res);
->  		}
->  	}
-> @@ -283,7 +283,7 @@ static void probe_jit_harden(void)
->  
->  static void probe_jit_kallsyms(void)
->  {
-> -	int res;
-> +	long res;
->  
->  	/* No support for C-style ouptut */
->  
-> @@ -302,14 +302,14 @@ static void probe_jit_kallsyms(void)
->  			printf("Unable to retrieve JIT kallsyms export status\n");
->  			break;
->  		default:
-> -			printf("JIT kallsyms exports status has unknown value %d\n", res);
-> +			printf("JIT kallsyms exports status has unknown value %ld\n", res);
->  		}
->  	}
->  }
->  
->  static void probe_jit_limit(void)
->  {
-> -	int res;
-> +	long res;
->  
->  	/* No support for C-style ouptut */
->  
-> @@ -322,7 +322,7 @@ static void probe_jit_limit(void)
->  			printf("Unable to retrieve global memory limit for JIT compiler for unprivileged users\n");
->  			break;
->  		default:
-> -			printf("Global memory limit for JIT compiler for unprivileged users is %d bytes\n", res);
-> +			printf("Global memory limit for JIT compiler for unprivileged users is %ld bytes\n", res);
->  		}
->  	}
->  }
-> -- 
-> 2.31.1
-> 
 
