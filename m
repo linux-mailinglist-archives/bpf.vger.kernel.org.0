@@ -1,236 +1,148 @@
-Return-Path: <bpf+bounces-443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7C36700D23
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 18:37:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578E0700E93
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 20:20:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F7CA281CF0
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 16:37:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EF781C212F8
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 18:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06115200AB;
-	Fri, 12 May 2023 16:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C161EA64;
+	Fri, 12 May 2023 18:19:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB10114275
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 16:37:23 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDAE9ED5
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 09:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1683909440;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ryX5sovAmXV6c1qawtyVZ+Us+777l7mLCNx8VtBdO6Q=;
-	b=i6BI4hX6SCz9RHao1iXHYGwa13yR121s3JGtgz9Boicl2oZIbIORkYzAEY3VfB3CXflqy+
-	FeUqf67jKCL5U1XGcoE3kbigThrj/B2wkUJoBaEcP1L/VgMKPSZSVi4N9rI2gojiYdSjNm
-	1Vq6Szj2S2wMO8OUcK1F6aS0sbKN7VE=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-119-iD1tv6AgOkODZ25p7PDypg-1; Fri, 12 May 2023 12:37:19 -0400
-X-MC-Unique: iD1tv6AgOkODZ25p7PDypg-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-3f4f2610b20so9574401cf.2
-        for <bpf@vger.kernel.org>; Fri, 12 May 2023 09:37:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B7F200D4
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 18:19:57 +0000 (UTC)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F88109
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 11:19:55 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-643a294825dso5839359b3a.0
+        for <bpf@vger.kernel.org>; Fri, 12 May 2023 11:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683915595; x=1686507595;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Je0QZ3OEcPYIjlzwUZPK1i4M9j5mxA5BuIpDlUTvQs0=;
+        b=m7pNH+tJv1eJb1PQNpYn7KL+B8x6ruIGuglVNB8oPweOb20MnT+8J0OjNba+0GMzAK
+         i2qJQSsCLilZbh/VpSYzFhr+8TWJLN04ELWSCloAo8uOukOYPyZW2y8WCHI2gWKiGPQV
+         mrdpFmtHsu5KgALTxLapvn6bfo9H/5o0X4lIsxV8DrTfvLPVA+RJ+JLrS8SyutdKHk91
+         ZZOOJNOsgnh7HNk/c9g6OpoP2ftc70yyq7mybLStwyewVu3ewf9Fk314s4R2f5cbmvbp
+         1CR/ln9gWb+p/8b1nsfv1vw52Mmb4WkjQI0lXCU+fYFEL2vb9AAks2Y6sdhizLX3G56c
+         UgGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683909438; x=1686501438;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ryX5sovAmXV6c1qawtyVZ+Us+777l7mLCNx8VtBdO6Q=;
-        b=Hz7zqfkPLt0+EzFX1b/IrkZOPi2JCLL2rLYAnXcVvS5FQcfHBabvJmQOQlEHRATXUu
-         of7uoXrDpN8NwL9EZH2br7s74gApNmxZmJlLrss31OAJKsMdV4ww3wK2hDfLPt9tkXf5
-         KuFKLNWPwgfMvg9mYtOKSjOfL4HHSjJpAwIWl09aGKv+9cvXDEQwIctgbcmLinSikGnx
-         LjfG4RC3QMTX/SbIiOWXrix0YauXIDIWc1vEEadHHQFm9cJ/wvfjm6nxTSb/x8N+qGWx
-         vhKH+ZYPN9pfA25bIfB5Y6msKka0Z6UuZ6PjhmmeQJKQB4mCIe4lDxRnCwM2K5MLPPj1
-         PlaA==
-X-Gm-Message-State: AC+VfDzIw51zpeyCpriSR6M8IpLoaEcwPuyglYQoLeOimX9klWaIzE2k
-	Ou3ulc52kd+43hffhhmZZWYyUTChb2FecvIiDgTeRc2CE7CEkHJNUCW9vnUiI8q5yNYqv3c7chF
-	wIVvXfnGb5C/j
-X-Received: by 2002:a05:622a:1441:b0:3e6:4b7b:250 with SMTP id v1-20020a05622a144100b003e64b7b0250mr38562982qtx.25.1683909438720;
-        Fri, 12 May 2023 09:37:18 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6o892SUq2q7IoDztPxxSs8dPIhgSg2bX0bcnDACuZVhTgium0mRlZboNQGlt/vZAlhkyMFew==
-X-Received: by 2002:a05:622a:1441:b0:3e6:4b7b:250 with SMTP id v1-20020a05622a144100b003e64b7b0250mr38562954qtx.25.1683909438451;
-        Fri, 12 May 2023 09:37:18 -0700 (PDT)
-Received: from redhat.com ([37.19.196.5])
-        by smtp.gmail.com with ESMTPSA id l12-20020ac8078c000000b003e9c6a4a381sm3184802qth.54.2023.05.12.09.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 09:37:18 -0700 (PDT)
-Date: Fri, 12 May 2023 12:37:12 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Feng Liu <feliu@nvidia.com>
-Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	William Tu <witu@nvidia.com>
-Subject: Re: [PATCH net v6] virtio_net: Fix error unwinding of XDP
- initialization
-Message-ID: <20230512123705-mutt-send-email-mst@kernel.org>
-References: <20230512151812.1806-1-feliu@nvidia.com>
+        d=1e100.net; s=20221208; t=1683915595; x=1686507595;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Je0QZ3OEcPYIjlzwUZPK1i4M9j5mxA5BuIpDlUTvQs0=;
+        b=jY9G/heAnQQpJaCXP1xNrB68HPB92Zq+Y3V9kX21VLvKn4HPP492JQSE+4G8z3d9DP
+         K4c8SmyYqLRsropR13u4pEebgimEGsdk1TYJm7vGmQeVI0pudILwxvXfgVKdrbhlN3Zi
+         yRYFdbayMESSKcIaSmR1p8eyGD00miOWMCa3TM4ud4Py/wtL3z0OJhZtqv7JW4zR0sK8
+         ti+ajvtTMuhW0ogAjWQI0oZDhZid5mUyPZKcZnit8t2rpk3Z8XCwINGClPaMXzRTHyEN
+         h6upDfZf3xuCt5sIJOhoO4hx3MEsEkCMfdtPAfG0ZZ7s6fKQKOGHMDCourEiqlKxFL9E
+         koBQ==
+X-Gm-Message-State: AC+VfDwJGAUY5s4besilBP+6yfV6DvhQCVSXlsTb5zpK9UYS2pTW2Oov
+	q+01YhbCLcJCeILZWKMKf3Qa2O4=
+X-Google-Smtp-Source: ACHHUZ4ijGlK7Lm+EEX2bsGa22HNJnpvzQmaM/g3aYsO0WEKo4uUmlXchpuaAJE65klqvjmYPTAzyvA=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:be7:b0:641:31b1:e781 with SMTP id
+ x39-20020a056a000be700b0064131b1e781mr7072190pfu.5.1683915595291; Fri, 12 May
+ 2023 11:19:55 -0700 (PDT)
+Date: Fri, 12 May 2023 11:19:53 -0700
+In-Reply-To: <20230512152607.992209-7-larysa.zaremba@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230512151812.1806-1-feliu@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Mime-Version: 1.0
+References: <20230512152607.992209-1-larysa.zaremba@intel.com> <20230512152607.992209-7-larysa.zaremba@intel.com>
+Message-ID: <ZF6DHOtnr/AfYxML@google.com>
+Subject: Re: [PATCH RESEND bpf-next 06/15] ice: Support HW timestamp hint
+From: Stanislav Fomichev <sdf@google.com>
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Jiri Olsa <jolsa@kernel.org>, Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Anatoly Burakov <anatoly.burakov@intel.com>, 
+	Jesper Dangaard Brouer <brouer@redhat.com>, Alexander Lobakin <alexandr.lobakin@intel.com>, 
+	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>, 
+	xdp-hints@xdp-project.net, netdev@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 12, 2023 at 11:18:12AM -0400, Feng Liu wrote:
-> When initializing XDP in virtnet_open(), some rq xdp initialization
-> may hit an error causing net device open failed. However, previous
-> rqs have already initialized XDP and enabled NAPI, which is not the
-> expected behavior. Need to roll back the previous rq initialization
-> to avoid leaks in error unwinding of init code.
+On 05/12, Larysa Zaremba wrote:
+> Use previously refactored code and create a function
+> that allows XDP code to read HW timestamp.
 > 
-> Also extract helper functions of disable and enable queue pairs.
-> Use newly introduced disable helper function in error unwinding and
-> virtnet_close. Use enable helper function in virtnet_open.
+> HW timestamp is the first supported hint in the driver,
+> so also add xdp_metadata_ops.
 > 
-> Fixes: 754b8a21a96d ("virtio_net: setup xdp_rxq_info")
-> Signed-off-by: Feng Liu <feliu@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Reviewed-by: William Tu <witu@nvidia.com>
-
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
+> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 > ---
-> v5 -> v6
-> feedbacks from Xuan Zhuo
-> - add disable_delayed_refill and cancel_delayed_work_sync
+>  drivers/net/ethernet/intel/ice/ice.h          |  2 ++
+>  drivers/net/ethernet/intel/ice/ice_main.c     |  1 +
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 22 +++++++++++++++++++
+>  3 files changed, 25 insertions(+)
 > 
-> v4 -> v5
-> feedbacks from Michael S. Tsirkin
-> - rename helper as virtnet_disable_queue_pair
-> - rename helper as virtnet_enable_queue_pair
-> 
-> v3 -> v4
-> feedbacks from Jiri Pirko
-> - Add symmetric helper function virtnet_enable_qp to enable queues.
-> - Error handle:  cleanup current queue pair in virtnet_enable_qp,
->   and complete the reset queue pairs cleanup in virtnet_open.
-> - Fix coding style.
-> feedbacks from Parav Pandit
-> - Remove redundant debug message and white space.
-> 
-> v2 -> v3
-> feedbacks from Michael S. Tsirkin
-> - Remove redundant comment.
-> 
-> v1 -> v2
-> feedbacks from Michael S. Tsirkin
-> - squash two patches together.
-> 
-> ---
->  drivers/net/virtio_net.c | 61 +++++++++++++++++++++++++++++-----------
->  1 file changed, 44 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index a12ae26db0e2..56ca1d270304 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1868,6 +1868,38 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
->  	return received;
+> diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> index aa32111afd6e..ba1bb8392db1 100644
+> --- a/drivers/net/ethernet/intel/ice/ice.h
+> +++ b/drivers/net/ethernet/intel/ice/ice.h
+> @@ -962,4 +962,6 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+>  	set_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags);
+>  	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
 >  }
+> +
+> +extern const struct xdp_metadata_ops ice_xdp_md_ops;
+>  #endif /* _ICE_H_ */
+> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+> index a1f7c8edc22f..cda6c4a80737 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> @@ -3378,6 +3378,7 @@ static void ice_set_ops(struct ice_vsi *vsi)
 >  
-> +static void virtnet_disable_queue_pair(struct virtnet_info *vi, int qp_index)
-> +{
-> +	virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
-> +	napi_disable(&vi->rq[qp_index].napi);
-> +	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
-> +}
-> +
-> +static int virtnet_enable_queue_pair(struct virtnet_info *vi, int qp_index)
-> +{
-> +	struct net_device *dev = vi->dev;
-> +	int err;
-> +
-> +	err = xdp_rxq_info_reg(&vi->rq[qp_index].xdp_rxq, dev, qp_index,
-> +			       vi->rq[qp_index].napi.napi_id);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	err = xdp_rxq_info_reg_mem_model(&vi->rq[qp_index].xdp_rxq,
-> +					 MEM_TYPE_PAGE_SHARED, NULL);
-> +	if (err < 0)
-> +		goto err_xdp_reg_mem_model;
-> +
-> +	virtnet_napi_enable(vi->rq[qp_index].vq, &vi->rq[qp_index].napi);
-> +	virtnet_napi_tx_enable(vi, vi->sq[qp_index].vq, &vi->sq[qp_index].napi);
-> +
-> +	return 0;
-> +
-> +err_xdp_reg_mem_model:
-> +	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
-> +	return err;
-> +}
-> +
->  static int virtnet_open(struct net_device *dev)
->  {
->  	struct virtnet_info *vi = netdev_priv(dev);
-> @@ -1881,22 +1913,20 @@ static int virtnet_open(struct net_device *dev)
->  			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
->  				schedule_delayed_work(&vi->refill, 0);
+>  	netdev->netdev_ops = &ice_netdev_ops;
+>  	netdev->udp_tunnel_nic_info = &pf->hw.udp_tunnel_nic;
+> +	netdev->xdp_metadata_ops = &ice_xdp_md_ops;
+>  	ice_set_ethtool_ops(netdev);
 >  
-> -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
-> +		err = virtnet_enable_queue_pair(vi, i);
->  		if (err < 0)
-> -			return err;
-> -
-> -		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
-> -						 MEM_TYPE_PAGE_SHARED, NULL);
-> -		if (err < 0) {
-> -			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> -			return err;
-> -		}
-> -
-> -		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
-> -		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
-> +			goto err_enable_qp;
+>  	if (vsi->type != ICE_VSI_PF)
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> index 2515f5f7a2b6..e9589cadf811 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> @@ -537,3 +537,25 @@ void ice_finalize_xdp_rx(struct ice_tx_ring *xdp_ring, unsigned int xdp_res,
+>  			spin_unlock(&xdp_ring->tx_lock);
 >  	}
->  
->  	return 0;
-> +
-> +err_enable_qp:
-> +	disable_delayed_refill(vi);
-> +	cancel_delayed_work_sync(&vi->refill);
-> +
-> +	for (i--; i >= 0; i--)
-> +		virtnet_disable_queue_pair(vi, i);
-> +	return err;
 >  }
->  
->  static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-> @@ -2305,11 +2335,8 @@ static int virtnet_close(struct net_device *dev)
->  	/* Make sure refill_work doesn't re-enable napi! */
->  	cancel_delayed_work_sync(&vi->refill);
->  
-> -	for (i = 0; i < vi->max_queue_pairs; i++) {
-> -		virtnet_napi_tx_disable(&vi->sq[i].napi);
-> -		napi_disable(&vi->rq[i].napi);
-> -		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> -	}
-> +	for (i = 0; i < vi->max_queue_pairs; i++)
-> +		virtnet_disable_queue_pair(vi, i);
->  
->  	return 0;
->  }
-> -- 
-> 2.37.1 (Apple Git-137.1)
+> +
+> +/**
+> + * ice_xdp_rx_hw_ts - HW timestamp XDP hint handler
+> + * @ctx: XDP buff pointer
+> + * @ts_ns: destination address
+> + *
+> + * Copy HW timestamp (if available) to the destination address.
+> + */
+> +static int ice_xdp_rx_hw_ts(const struct xdp_md *ctx, u64 *ts_ns)
+> +{
+> +	const struct ice_xdp_buff *xdp_ext = (void *)ctx;
+> +
+> +	if (!ice_ptp_copy_rx_hwts_from_desc(xdp_ext->rx_ring,
+> +					    xdp_ext->eop_desc, ts_ns))
+> +		return -EOPNOTSUPP;
 
+Per Jesper's recent update, should this be ENODATA?
 
