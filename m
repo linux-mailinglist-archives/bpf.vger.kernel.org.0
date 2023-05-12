@@ -1,264 +1,214 @@
-Return-Path: <bpf+bounces-385-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-386-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F31E7003B7
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 11:26:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB24700523
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 12:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB0DB281614
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 09:26:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C60ED1C20B6C
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 10:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D4910798;
-	Fri, 12 May 2023 09:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D36DD30E;
+	Fri, 12 May 2023 10:23:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913281078F;
-	Fri, 12 May 2023 09:21:46 +0000 (UTC)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B793D2DC;
-	Fri, 12 May 2023 02:21:44 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3079b59230eso773849f8f.1;
-        Fri, 12 May 2023 02:21:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BD48F6E
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 10:23:08 +0000 (UTC)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDDF1FDE
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 03:23:03 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-30639daee76so6360290f8f.1
+        for <bpf@vger.kernel.org>; Fri, 12 May 2023 03:23:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683883303; x=1686475303;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qpLGphmtmYp9llVxEEqTu82YRnVZuRWAB3QJZbit1Qc=;
-        b=BwOPQaqtK++Bjf2wHsZ1C5USn2Sedsrvc33RvjLrLGvenLi/vL29N/4DDoMlx/uJXJ
-         RbcPEZYlX0fbrfiKpGHnNHQKBySa/7ICeqM8QcEwHioEc5AEP/ETTm6uWshwLqoKHBmT
-         xq0H0FXLP+9l0lU9454DBK47W3FWjk2DqMmxgzzY9sEBb44HWRjYdtB1WvJQ2ZuXucDu
-         +6Iizb7onz7suTvzjCa0dVXgqoSV8K82HjIbZsA5SXedzP7qRAg/UcwIpKHX/PlLC9za
-         1RertRzuryjqwTzAbp/rfI5oQTXY7+CZ46K93e6kolekwjyaoweM+Wu+wxh/RTmZz4L1
-         KOHQ==
+        d=isovalent.com; s=google; t=1683886981; x=1686478981;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2+Wf8mVZDbx31shCs97RQqyKh5s1MqwXoRc+dmnhzU4=;
+        b=Ij9QKWpIoMZsXOQZ5zF+5uXiCfMBJ1ntLurb/gL5AOk3hPXrAjZOLK/aOnzYMkhpN0
+         mkHUUoUPwadC8WJE+yBPzRFO1HynAAwLHK6+RkXi/KlsDXq8STd54YL89WXRUSOafSa0
+         LbXzOe6Kj2bCrZRYNuj+gfFOsDl27rNLmIDAUTCIIL32qNe8aBu/CSVP0FffwVRXUk/n
+         gXyXiq91G6P11C73oEp2Wz9X5vYuc+/zv0FFq23ah1VS928QgBnityP3Cl7gBEsEEFyN
+         js7o3eNeAGRZOMMSyBGdiE5Y6PKoKKI9HTcZxgU7zz/KGa1pmzgJFWE9tZ4pXo/R2s2d
+         9c2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683883303; x=1686475303;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qpLGphmtmYp9llVxEEqTu82YRnVZuRWAB3QJZbit1Qc=;
-        b=O8ng9sE4v/h4M4EsTSwXzeZ9aYBKQCB68GdfincU0qNJuliyNzct9uKQnrBPiNx6UI
-         rxPSm2rLyJSeWkofuoqAb/a+pccCDT3UjwkB1SZkM3NMosa7DQZ9KpAohtcGYFeptZGV
-         qzU7kMd2E2T95hQE5nxqQxQMpviYoGZCOL4WvvLv2cO3SjwDOJ3UhQdh3RuQFL7bmkvX
-         NwyebhiGkpSCoE7eLeWStxbTh3UtQloS3dpD2eskSzC6PeuWhV9/0Gids/COlJRo54/0
-         7i149+NlEIjGdkMmQQKqKXtwZets33OKaf+MhIlC0/PrSxoWZVA1m4F0/mKE2ACw9tJw
-         vOIQ==
-X-Gm-Message-State: AC+VfDyFp4/ONa0+HycZ/LAU3iqyREu305KwJsx6VRtGPCf4Meb2gcYb
-	xYJQzCIsHVn+wFRreqAsN0M=
-X-Google-Smtp-Source: ACHHUZ4OK1wc6emfq/bAQf3P68miw8neouIkojzOsNGV8AiKfKzSggVSM78pPugK2dgouJs0kbwdGw==
-X-Received: by 2002:a5d:5641:0:b0:305:f3c1:184e with SMTP id j1-20020a5d5641000000b00305f3c1184emr15710811wrw.3.1683883302709;
-        Fri, 12 May 2023 02:21:42 -0700 (PDT)
-Received: from localhost.localdomain (h-176-10-144-222.NA.cust.bahnhof.se. [176.10.144.222])
-        by smtp.gmail.com with ESMTPSA id i14-20020a5d558e000000b003079f2c2de7sm11467789wrv.112.2023.05.12.02.21.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 May 2023 02:21:42 -0700 (PDT)
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-To: magnus.karlsson@intel.com,
-	bjorn@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	netdev@vger.kernel.org,
-	maciej.fijalkowski@intel.com,
-	bpf@vger.kernel.org,
-	yhs@fb.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tirthendu.sarkar@intel.com
-Subject: [PATCH bpf-next 10/10] selftests/xsk: adjust packet pacing for multi-buffer support
-Date: Fri, 12 May 2023 11:20:43 +0200
-Message-Id: <20230512092043.3028-11-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230512092043.3028-1-magnus.karlsson@gmail.com>
-References: <20230512092043.3028-1-magnus.karlsson@gmail.com>
+        d=1e100.net; s=20221208; t=1683886981; x=1686478981;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2+Wf8mVZDbx31shCs97RQqyKh5s1MqwXoRc+dmnhzU4=;
+        b=YR10XT+0dyoSQYP+MGjYadOfLvtd4PPq+TE/M6mwo4htqyN19M3nOZztqa49tktyIf
+         vLlqFNXmqo2geXHE6Bw92DWFIPYgljhrSZR1QF6xwXKzOoj7GSoQ7WQ6qRSBe/FB7Sl6
+         /NrNZ5xL/P917Mx24zd99Nzmzr8oEDT8mk9pt38EggTm7qvM2ggM7oGzYxzWyfIKwnvC
+         QrJsXEUei2IyzbzfeFIFZy5kSdnxoLE03yJmYtjj0+p8AHe6SBexp4jVCPWvdMHTt/ma
+         iqcgJ6IZwQ3FqL6SCKWRV38G6033dyewabUFCw7ORQgNIpuQ1uBn1l1oIalcwIG+opks
+         eJXA==
+X-Gm-Message-State: AC+VfDz5xGsoP/S5kleUz+y89hxIpoSRz1bj33UKPsBhGdjJO2pi3bYj
+	cN+MT05DS3UlaopSPufc9QR96Q==
+X-Google-Smtp-Source: ACHHUZ6eFgiIinI+xrrQTlKNRhpy1XQdvL75E0orbqUI1w21D4W374Pc4XROzGpwYNO1E9giUFs5vg==
+X-Received: by 2002:adf:dbc8:0:b0:307:8b3e:2858 with SMTP id e8-20020adfdbc8000000b003078b3e2858mr13745375wrj.45.1683886981570;
+        Fri, 12 May 2023 03:23:01 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:a162:20e4:626a:dd? ([2a02:8011:e80c:0:a162:20e4:626a:dd])
+        by smtp.gmail.com with ESMTPSA id k9-20020a05600c1c8900b003f4283f5c1bsm16930478wms.2.2023.05.12.03.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 May 2023 03:23:01 -0700 (PDT)
+Message-ID: <dd7a4bec-c0d0-4ffe-3bb8-e4d7ab4a01b8@isovalent.com>
+Date: Fri, 12 May 2023 11:23:00 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH bpf-next] bpftool: specify XDP Hints ifname when loading
+ program
+Content-Language: en-GB
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: Stanislav Fomichev <sdf@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@corigine.com>
+References: <20230511151345.7529-1-larysa.zaremba@intel.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230511151345.7529-1-larysa.zaremba@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+2023-05-11 17:13 UTC+0200 ~ Larysa Zaremba <larysa.zaremba@intel.com>
+> Add ability to specify a network interface used to resolve
+> XDP Hints kfuncs when loading program through bpftool.
+> 
+> Usage:
+> bpftool prog load <bpf_obj_path> <pin_path> dev xdpmeta <ifname>
 
-Modify the packet pacing algorithm so that it works with multi-buffer
-packets. This algorithm makes sure we do not send too many buffers to
-the receiving thread so that packets have to be dropped. The previous
-algorithm made the assumption that each packet only consumes one
-buffer, but that is not true anymore when multi-buffer support gets
-added. Instead, we find out what the largest packet size is in the
-packet stream and assume that each packet will consume this many
-buffers. This is conservative and overly cautious as there might be
-smaller packets in the stream that need fewer buffers per packet. But
-it keeps the algorithm simple.
+Thanks for this patch!
 
-Also simplify it by removing the pthread conditional and just test if
-there is enough space in the Rx thread before trying to send one more
-batch. Also makes the tests run faster.
+Regarding the command-line syntax, I'm not a big fan of the optional
+sub-keyword for the device for XDP hints. I must admit I had not
+anticipated other another use for the "dev" keyword. Instead, have you
+considered one of the following:
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 48 ++++++++++++++----------
- tools/testing/selftests/bpf/xskxceiver.h |  2 +-
- 2 files changed, 30 insertions(+), 20 deletions(-)
+1) Adding a different keyword ("xdpmeta_dev"?) and making it
+incompatible with "dev"
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index c21c57a1f6e9..1986fb9fe797 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -555,6 +555,11 @@ static void pkt_set(struct xsk_umem_info *umem, struct pkt *pkt, int offset, u32
- 		pkt->valid = true;
- }
- 
-+static u32 pkt_get_buffer_len(struct xsk_umem_info *umem, u32 len)
-+{
-+	return ceil_u32(len, umem->frame_size) * umem->frame_size;
-+}
-+
- static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb_pkts, u32 pkt_len)
- {
- 	struct pkt_stream *pkt_stream;
-@@ -564,6 +569,8 @@ static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb
- 	if (!pkt_stream)
- 		exit_with_error(ENOMEM);
- 
-+	pkt_stream->nb_pkts = nb_pkts;
-+	pkt_stream->max_pkt_len = pkt_len;
- 	for (i = 0; i < nb_pkts; i++) {
- 		struct pkt *pkt = &pkt_stream->pkts[i];
- 
-@@ -661,10 +668,14 @@ static void __pkt_stream_generate_custom(struct ifobject *ifobj,
- 		exit_with_error(ENOMEM);
- 
- 	for (i = 0; i < nb_pkts; i++) {
--		pkt_stream->pkts[i].offset = pkts[i].offset;
--		pkt_stream->pkts[i].len = pkts[i].len;
--		pkt_stream->pkts[i].pkt_nb = i;
--		pkt_stream->pkts[i].valid = pkts[i].valid;
-+		struct pkt *pkt = &pkt_stream->pkts[i];
-+
-+		pkt->offset = pkts[i].offset;
-+		pkt->len = pkts[i].len;
-+		pkt->pkt_nb = i;
-+		pkt->valid = pkts[i].valid;
-+		if (pkt->len > pkt_stream->max_pkt_len)
-+			pkt_stream->max_pkt_len = pkt->len;
- 	}
- 
- 	ifobj->pkt_stream = pkt_stream;
-@@ -926,8 +937,6 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
- 
- 		pthread_mutex_lock(&pacing_mutex);
- 		pkts_in_flight -= pkts_sent;
--		if (pkts_in_flight < umem->num_frames)
--			pthread_cond_signal(&pacing_cond);
- 		pthread_mutex_unlock(&pacing_mutex);
- 		pkts_sent = 0;
- 	}
-@@ -938,10 +947,18 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
- static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeout)
- {
- 	struct xsk_socket_info *xsk = ifobject->xsk;
-+	struct xsk_umem_info *umem = ifobject->umem;
-+	u32 i, idx = 0, valid_pkts = 0, buffer_len;
- 	bool use_poll = ifobject->use_poll;
--	u32 i, idx = 0, valid_pkts = 0;
- 	int ret;
- 
-+	buffer_len = pkt_get_buffer_len(umem, ifobject->pkt_stream->max_pkt_len);
-+	/* pkts_in_flight might be negative if many invalid packets are sent */
-+	if (pkts_in_flight >= (int)((umem_size(umem) - BATCH_SIZE * buffer_len) / buffer_len)) {
-+		kick_tx(xsk);
-+		return TEST_CONTINUE;
-+	}
-+
- 	while (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) < BATCH_SIZE) {
- 		if (use_poll) {
- 			ret = poll(fds, 1, POLL_TMOUT);
-@@ -972,7 +989,7 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
- 		if (!pkt)
- 			break;
- 
--		tx_desc->addr = pkt_get_addr(pkt, ifobject->umem);
-+		tx_desc->addr = pkt_get_addr(pkt, umem);
- 		tx_desc->len = pkt->len;
- 		if (pkt->valid) {
- 			valid_pkts++;
-@@ -982,11 +999,6 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
- 
- 	pthread_mutex_lock(&pacing_mutex);
- 	pkts_in_flight += valid_pkts;
--	/* pkts_in_flight might be negative if many invalid packets are sent */
--	if (pkts_in_flight >= (int)(ifobject->umem->num_frames - BATCH_SIZE)) {
--		kick_tx(xsk);
--		pthread_cond_wait(&pacing_cond, &pacing_mutex);
--	}
- 	pthread_mutex_unlock(&pacing_mutex);
- 
- 	xsk_ring_prod__submit(&xsk->tx, i);
-@@ -1032,9 +1044,11 @@ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
- 
- 	while (pkt_stream->current_pkt_nb < pkt_stream->nb_pkts) {
- 		ret = __send_pkts(ifobject, &fds, timeout);
-+		if (ret == TEST_CONTINUE && !test->fail)
-+			continue;
- 		if ((ret || test->fail) && !timeout)
- 			return TEST_FAILURE;
--		else if (ret == TEST_PASS && timeout)
-+		if (ret == TEST_PASS && timeout)
- 			return ret;
- 	}
- 
-@@ -1319,12 +1333,8 @@ static void *worker_testapp_validate_rx(void *arg)
- 
- 	if (!err && ifobject->validation_func)
- 		err = ifobject->validation_func(ifobject);
--	if (err) {
-+	if (err)
- 		report_failure(test);
--		pthread_mutex_lock(&pacing_mutex);
--		pthread_cond_signal(&pacing_cond);
--		pthread_mutex_unlock(&pacing_mutex);
--	}
- 
- 	pthread_exit(NULL);
- }
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 00862732e751..aaf27e067640 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -121,6 +121,7 @@ struct pkt_stream {
- 	u32 nb_pkts;
- 	u32 current_pkt_nb;
- 	struct pkt *pkts;
-+	u32 max_pkt_len;
- };
- 
- struct ifobject;
-@@ -173,7 +174,6 @@ struct test_spec {
- 
- pthread_barrier_t barr;
- pthread_mutex_t pacing_mutex = PTHREAD_MUTEX_INITIALIZER;
--pthread_cond_t pacing_cond = PTHREAD_COND_INITIALIZER;
- 
- int pkts_in_flight;
- 
--- 
-2.34.1
+2) Another alternative would be adding a sub-keyword for offload too:
 
+    bpftool p l [...] dev <[offload <ifname> | xdpmeta <ifname>]>
+
+If the ifname is provided with no sub-keyword, we would consider it for
+offload for legacy support, possibly warn that the syntax is deprecated.
+
+What do you think?
+
+> 
+> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> ---
+>  tools/bpf/bpftool/prog.c | 28 +++++++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 91b6075b2db3..a9cb96d99277 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1517,12 +1517,13 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  	struct bpf_program *prog = NULL, *pos;
+>  	unsigned int old_map_fds = 0;
+>  	const char *pinmaps = NULL;
+> +	__u32 offload_ifindex = 0;
+>  	bool auto_attach = false;
+> +	__u32 meta_ifindex = 0;
+>  	struct bpf_object *obj;
+>  	struct bpf_map *map;
+>  	const char *pinfile;
+>  	unsigned int i, j;
+> -	__u32 ifindex = 0;
+>  	const char *file;
+>  	int idx, err;
+>  
+> @@ -1614,17 +1615,25 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  			map_replace[old_map_fds].fd = fd;
+>  			old_map_fds++;
+>  		} else if (is_prefix(*argv, "dev")) {
+> +			__u32 *cur_ifindex;
+> +
+>  			NEXT_ARG();
+>  
+> -			if (ifindex) {
+> -				p_err("offload device already specified");
+> +			if (offload_ifindex || meta_ifindex) {
+> +				p_err("device already specified");
+
+I'd add a note to tell somehow that offload and XDP hints are mutually
+exclusive. I suspect not all users understand these well.
+
+>  				goto err_free_reuse_maps;
+>  			}
+> +			if (is_prefix(*argv, "xdpmeta")) {
+> +				cur_ifindex = &meta_ifindex;
+> +				NEXT_ARG();
+> +			} else {
+> +				cur_ifindex = &offload_ifindex;
+> +			}
+>  			if (!REQ_ARGS(1))
+>  				goto err_free_reuse_maps;
+>  
+> -			ifindex = if_nametoindex(*argv);
+> -			if (!ifindex) {
+> +			*cur_ifindex = if_nametoindex(*argv);
+> +			if (!(*cur_ifindex)) {
+>  				p_err("unrecognized netdevice '%s': %s",
+>  				      *argv, strerror(errno));
+>  				goto err_free_reuse_maps;
+> @@ -1671,7 +1680,12 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  				goto err_close_obj;
+>  		}
+>  
+> -		bpf_program__set_ifindex(pos, ifindex);
+> +		if (prog_type == BPF_PROG_TYPE_XDP && meta_ifindex) {
+> +			bpf_program__set_flags(pos, BPF_F_XDP_DEV_BOUND_ONLY);
+> +			bpf_program__set_ifindex(pos, meta_ifindex);
+> +		} else {
+> +			bpf_program__set_ifindex(pos, offload_ifindex);
+> +		}
+>  		if (bpf_program__type(pos) != prog_type)
+>  			bpf_program__set_type(pos, prog_type);
+>  		bpf_program__set_expected_attach_type(pos, expected_attach_type);
+> @@ -1709,7 +1723,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  	idx = 0;
+>  	bpf_object__for_each_map(map, obj) {
+>  		if (bpf_map__type(map) != BPF_MAP_TYPE_PERF_EVENT_ARRAY)
+> -			bpf_map__set_ifindex(map, ifindex);
+> +			bpf_map__set_ifindex(map, offload_ifindex);
+>  
+>  		if (j < old_map_fds && idx == map_replace[j].idx) {
+>  			err = bpf_map__reuse_fd(map, map_replace[j++].fd);
+
+Could you please also update the following items:
+
+- The usage message for "bpftool prog load" near the end of prog.c
+
+- The related doc in Documentation/bpftool-prog.rst (command summary
+near the top, and detailed description later in the doc)
+
+- Bash completion (for keyword "dev", look for "_sysfs_get_netdevs" in
+bash-completion/bpftool). I'm happy to help with this one if necessary.
+
+Thanks,
+Quentin
 
