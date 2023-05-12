@@ -1,286 +1,299 @@
-Return-Path: <bpf+bounces-403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAB7700A50
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 16:30:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B67700A77
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 16:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6FF81C21230
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 14:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBAA3281B6A
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 14:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443AA1EA8B;
-	Fri, 12 May 2023 14:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE36924130;
+	Fri, 12 May 2023 14:40:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA65FA920
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 14:30:00 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAD9272D;
-	Fri, 12 May 2023 07:29:59 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34C56U4A004409;
-	Fri, 12 May 2023 07:29:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=wzH3I5Oyi8VDrQTeW4ecYYfCdXsw5E2myxayovTiTgc=;
- b=EE93GQfUIo8ZJguKs1SwpqxMlTp1zIvezRfqEQFVPlmKVC4WyzOrq32yMvYmahv+eFvx
- xn296hdHNPYmGqesrFr3Noc05NJSMC4QMVZI44p97Xo5lXDKfdm9FIdiqumzsG2edXOb
- YJJFg8V1tdYspF3qoEfP/2gqHzSdChZ3z/8IWTp5iAErM2hq9GUHEj/ZN8cOL8FD/Aec
- tRqULdpMjTOAEPANQWVMXOGmyYzuRvU3coRFCOvAhFGlhYWADp4RwyqBozONcQN9QkeW
- Y9zdUapc/ulX9eNpE7/ab3HCrAUdmUg7Jd1vfsVd+GlTVDVWcGnljprjtyXQLZwi8+Dw 9w== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qhaxb5c6e-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7F4813
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 14:40:35 +0000 (UTC)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFB41BF4
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 07:40:30 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34CEC7tV013968;
+	Fri, 12 May 2023 14:40:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=OOZzFvojWmaBs/qCggJBYDhhO9I8EUh2I2ABDZB80sE=;
+ b=OgiRWfBaIztdvNA2/sBBpymMS9IFvZRbRQ0xOAXgzfGw7O2G+/lT/wrTPm1woX3UxNkm
+ tJ2+MQ+l0U2ddlgokAISSfPulugY/1l1HVxl4+lfJ6HoT2fpgbSiaiNITqI8aclEhCrX
+ UBB2mZYD1JID9jLX9YlUeyilnxAEZNSV5wKIJVlMG8SU6MHT6CCM1rmPVdyR6/5XT0GC
+ JbvPDA0dkV0g7Qx+o2Wd8ZDUZq9kiNDC0zrFfzxZjqbGTRn2NlKax3RjgYdexQgGX+4K
+ 02/Hp4LrEeO1MT8yN6z5zHkmKeqwzX30jSWn8KIdOONxxjmH5KRlNOIr1ITL79GFJoXV qQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qhnvtkb9e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 May 2023 07:29:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mNEk63ENNrqiSkHRQ4NnVZfhXVZSWwreKtT3gK+p3X/pqKPuBMkjv1Di9cIBfmcfJYRTcUG6UqHLuOp12SV4y1ORJcTIOBC4hFoPXcCs4fOY5D2pe/2npGkG5CMtdxS8MHvJdUVnUZkNHW1I3EuR8yMwJAiZpi59w8I0EvFBNE3qiuWD1GYdRBj7H9pDiT/eBdLhBB0lZaGge+2ikhfz7S2FYVZkCSUl45GbxVxeSTtfEgS02pIM6YnIUrAGAkyg57uBGyl439Q6AvcvI1gZWtZ2sbgxVLco/MOn/CXolzdvwa6TNuLmeA8b/gGlYFXEqxRdynRvtsDE7+Uh7WslCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wzH3I5Oyi8VDrQTeW4ecYYfCdXsw5E2myxayovTiTgc=;
- b=TbjPmnzKM5ZQQGxTXFvt2FlylIrAQt2FFphi1EFBY3jXFp6peb/Uru9la8jnKXqEVom+xWTU7iXhT6MWKLAYyBW6t2GmH6imtlxI8DfvNlPh+x6p7ZVI8xbKSRsNcXPXz+BPTfWN1T0IcXkb5IN+ZbQtUnhdFrWkFrVY1QdEbvPOOo9wOjTVbXAGSZ80XHhCAkLB0o3nIvOXYx0rUwah8jI9qtDT/w2MYjl0LM2gQP//olzLuFjnI1gaVZTQqGw4WgHSyUpGHMRdmTRtwGWYU1V7WClLkRoxy1CDiCKIF5dNag3DeIKvPf/GxfyvFIBEVHUpBLq2SkxSr01Fwm6gSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH7PR15MB5667.namprd15.prod.outlook.com (2603:10b6:510:277::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.24; Fri, 12 May
- 2023 14:29:06 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::589f:9230:518:7f53%6]) with mapi id 15.20.6363.032; Fri, 12 May 2023
- 14:29:06 +0000
-Message-ID: <ee28e791-b3ab-3dfd-161b-4e7ec055c6ff@meta.com>
-Date: Fri, 12 May 2023 07:29:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.1
-Subject: Re: [PATCH] bpf: reject blacklisted symbols in kprobe_multi to avoid
- recursive trap
-Content-Language: en-US
-To: Ze Gao <zegao2021@gmail.com>, Jiri Olsa <olsajiri@gmail.com>
-Cc: Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu
- <mhiramat@kernel.org>, Ze Gao <zegao@tencent.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-References: <20230510122045.2259-1-zegao@tencent.com>
- <6308b8e0-8a54-e574-a312-0a97cfbf810c@meta.com> <ZFvUH+p0ebcgnwEg@krava>
- <CAD8CoPC_=d+Aocp8pnSi9cbU6HWBNc697bKUS1UydtB-4DFzrA@mail.gmail.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <CAD8CoPC_=d+Aocp8pnSi9cbU6HWBNc697bKUS1UydtB-4DFzrA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR02CA0047.namprd02.prod.outlook.com
- (2603:10b6:a03:54::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	Fri, 12 May 2023 14:40:24 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34CEZHeE000581;
+	Fri, 12 May 2023 14:40:23 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qhnvtkb80-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 May 2023 14:40:23 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+	by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 34CE8Taa003948;
+	Fri, 12 May 2023 14:40:20 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3qf7s8hyk9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 May 2023 14:40:20 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 34CEeI0m27197946
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 May 2023 14:40:18 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6113820063;
+	Fri, 12 May 2023 14:40:18 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E44B520040;
+	Fri, 12 May 2023 14:40:17 +0000 (GMT)
+Received: from [9.179.21.203] (unknown [9.179.21.203])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 12 May 2023 14:40:17 +0000 (GMT)
+Message-ID: <47d0a6958657890d84dbd944782603175268b340.camel@linux.ibm.com>
+Subject: Re: selftest sock_fields failed on s390x with latest llvm17
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Yonghong Song <yhs@meta.com>
+Cc: bpf <bpf@vger.kernel.org>, Kui-Feng Lee <kuifeng@meta.com>,
+        Manu
+ Bretelle <chantr4@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub
+ Sitnicki <jakub@cloudflare.com>
+Date: Fri, 12 May 2023 16:40:17 +0200
+In-Reply-To: <daf235c37af3790f7dd7c1b2089617d49fad7b6e.camel@linux.ibm.com>
+References: <e7f2c5e8-a50c-198d-8f95-388165f1e4fd@meta.com>
+	 <daf235c37af3790f7dd7c1b2089617d49fad7b6e.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: lMlnErOW_6VUaOYf-BVc4s5ud7f8XIzk
+X-Proofpoint-GUID: NHdIehYjvTu_m-yd6lR1358sulhZfZX8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH7PR15MB5667:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0cf2fe4c-042b-41e6-792b-08db52f53dda
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	gbBxRMYuSUa1XZAF5f5A1g1WbvSRuGQ1+4lhixS3mh25eV/u7ybpCAvM7VysCIV7pW1Pked5j3vGYhrb8JU6wnky3/Uv1S0ldSTI5C2T1WXrfVj9jibSAikF/tI/1y15A+s+WNQfOemhei9jbfH9q2vEps8JnrzXMMhdR5jtrtnpi/g65O6NCYQPifdH6s/YNbUAr+10b5OP+8Uv1u01jmVMy4n83JYxMev4FGV5PJzPMMmtwwLHOXZSb5UQl7SVMqnOwunj/1RjwelTclzGtbYPHyY2/Tu2vOZdeWBG8xxl1z27OH4CP6BFZdzAymaziQ9eQKDFKGXc+LH/nbZjB5Hfmdn+6xc67d7lDyc1ufoTFIv5haDEENuuBmbbMtSHvHfSMgh49OUlvIwyJyzqSBikuUq5TzMIoRjJWl9ljIwWX9ayzNH3E1nQmacOuV3+HhrzpAgvRhMFc48Qx75XcXsZwc9qaE7EmpyfbUIM4DKL0NKmlF4eKegzcI/t8fKd9brBqHZOp+FPifKEvIYPA/ULSgZS59bl+2w9EN2iGjwZ7s9yFsLbb2IZ3Wk+NJefT8zocZVkesbblmgFcliYwo7qD8uSmLpRRzmb+ARcPpsRDISkk0MQV3Inrs6nCUW69cXxnRaLQ1+5SA5ASLR4Nw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(346002)(376002)(136003)(366004)(451199021)(86362001)(36756003)(31696002)(110136005)(54906003)(316002)(66476007)(66946007)(66556008)(4326008)(478600001)(6486002)(41300700001)(8936002)(8676002)(5660300002)(6666004)(2906002)(7416002)(38100700002)(2616005)(186003)(6512007)(6506007)(53546011)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?Wm84aTBKOWlsUHpSUFl0aGtvbnBMekRRQ2pOaU43dm1yaTNqNUZBdXRtTXRS?=
- =?utf-8?B?OE10NHdRdnhub3VpeHFpRmg5UndsaFUwY0IvKzE0ZnU1TlBlMzFHV1F4dlp3?=
- =?utf-8?B?NERLaDlZMkZ0WTNxMnVTT2FhY0ZRdldkS0QzQXVETEtPQlY5bWdrekZOcUNt?=
- =?utf-8?B?M1h4VkdOQTM1ZTNmUVFEOEtyampPaU1QckZtYTBUOUFFa2ZXclBJMzU4SkZX?=
- =?utf-8?B?QkRjRVM3amVRaitiaFAxZ2NxdzlvK1Q2MXBJdVFRVS9rdUlEa3hWcGlFK3NY?=
- =?utf-8?B?aTdUaWVZS0RWMFpwTC9NTitjRUFqZ0JoUE5PbG9RdjlodXRzVmcvT3dMVWE1?=
- =?utf-8?B?R252aEJHeDNnWHVzR0ErOTBYRnBHR1pMYmNTcHE0SnJIcHdsYVFDUnBWV3Qz?=
- =?utf-8?B?SjkwQ25TblJpMFBZNGVWdVAveENudTN6RE1CUUdyU1QrcUNqd3J0Uzgvcko4?=
- =?utf-8?B?a0NGd2ZGcnVNRlFBSXRNY0UybEFhZXRoRmNOdEx2ZjNLV2orM1RFeUp3Uzd4?=
- =?utf-8?B?b0UydUJ1R3Y5djhVQnBxanNvRVFpYUVSWXNxdUdEZno4RzhwTjlVK1d4cmVX?=
- =?utf-8?B?WTRMUTRjN05ZMTM1emtWcGtiTy9KbUYvNDdGcnFwb0I3b2QwVmdXMVJPTEdj?=
- =?utf-8?B?cWFkLy9kY0FuOWdrSUFFWWpDU2owd2ZVR2M1bHllQi9sNHZDeUthZnFpNmpz?=
- =?utf-8?B?U1AwRlArSlpZcm4zZ1RXc3U2MThTQmNpazNlc0kvVmsxWmFQS1JwR2VEeVo1?=
- =?utf-8?B?U3B6Q0JnZksyVlBmWVRpUjBOQnJIZ2F5VXliMUdnMVFLaHpxUHFXRW5KK2JV?=
- =?utf-8?B?c01GMGdzODQrcUtEeUZuc3kxTDVDWittRVp4ZWZTZzdlQ3FFOVdjakh6MmFl?=
- =?utf-8?B?L1NGVjBSZ3ZtV0U4NEFuVnFaYndSbFg0L0tMUk92OW0raUVnSUxKb3ZFS3ho?=
- =?utf-8?B?UG9nZFNaWCtkUXU4S29CaHNQK0VsTVh0Z05DWVJKajBBeDkrODhyZ1F3dGs2?=
- =?utf-8?B?Q0JrNGtJbDNPRGp3KzVwcmZKQmVBLzdvOWtuck5iejc2RlJsSW5KUkQrSTEz?=
- =?utf-8?B?R3phVHRUZVEwK1c5STdlOGJyYmRWRDE2UGJaUEgxWVoyYTMzd0gvYzJpNlRu?=
- =?utf-8?B?VTVoMXlEalZkUlJITTUxTnNJUVFQWXJkeFdmYWJGMmJReW52M29wWkZ4Mmow?=
- =?utf-8?B?L3pkc1FpS3MxM0ZrMVFIc0Mreit3YjN2YmNKcm5EZCtDZEJpOTExM1FHL2do?=
- =?utf-8?B?STFuLzhLTWx5Vktkbm5DNm83RWIrK0UraW5QTnZFMDhqR2k4UlVKSmliczg2?=
- =?utf-8?B?MHB3Vm5NcDFDczlVclZQK2h1YzlhKytuM1NRbHFmV1ozNi8wK3c2VzUrdStl?=
- =?utf-8?B?YUlaR0k5NVJyRFR5M1B0SGNwcFFRYXVQa25nMzJxUFlld05McGI0REVoOUlB?=
- =?utf-8?B?b0Y1TUUzYTdDdGRmaTcxaVhJMUlTV1JUUnQ4bmxNaGNKcU5FQnh4eXVzWU52?=
- =?utf-8?B?N2lwQUJmYlNJS01OS3NxMlpMVUYwMUpnbEt1eVFTM1ppUjRJYzVUQW5TQTA2?=
- =?utf-8?B?ZU5kVmlrNk9JRmZXdzZDU1JvSjE2YmtHRSt2TEFtSS9GVUl2TUlpdVN1eEli?=
- =?utf-8?B?SXF3Z3RGbDdOVGJaSnlzbU8yRjQxRkpWNStRbmZYZXVTWFp0ZkRVbVdCY0gv?=
- =?utf-8?B?WGxoeVpCOGNPOTZXSTFsWXVzVEhUTmhXREZCUkZpeXFRblRHM0FTRUVJNFBE?=
- =?utf-8?B?b0hyMDFkUnErUHVSZWlpdk5iaUxyK3MvSkJHcURvaWNlUEQvNlZYUWh3NVpz?=
- =?utf-8?B?dzFpejl6aTgraHc3RFBVbWxPT3RaeXpOMVE1T1hMR0ZicmNBMGtobGRXL3R4?=
- =?utf-8?B?RDZ2NVNSRmU1Y3RKSW9nWU1FNFAzVDNvYisvSGNxR2F4c3RXbjFxZWpvUDRR?=
- =?utf-8?B?bzdJU1c0SjRQUk1RQU5NcXFCSURDNGxHcDI5K0srL0tGSVM5STY5cGc1KzQ5?=
- =?utf-8?B?NjdnT016VU1iaVYyZExGV0EvRjFYelozZFFnbjc4RDg1ZW8zVU9FUC9DSEZu?=
- =?utf-8?B?KzhFV0lOdDhsam5kZ2liR0FzMFh1Z1dWUXdEaXNINjdtdUxoQm1JeFdNMjJB?=
- =?utf-8?B?TnZkN1RKQ1FHTWgzRWNYNmJWV1JERnlkZXR6NUlKcFUrZE9EMXNpb0pSZkNj?=
- =?utf-8?B?M2c9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf2fe4c-042b-41e6-792b-08db52f53dda
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2023 14:29:06.3257
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UvRiSTS050HUKqMGe4OiTJ3CsWU7eoZNA9Q/sFXWLegwwkqhqP+FKnEAtXpqq6a2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5667
-X-Proofpoint-ORIG-GUID: qsMJvfu_GVrqOqEUqJoYwXQJ00Rw-7Xk
-X-Proofpoint-GUID: qsMJvfu_GVrqOqEUqJoYwXQJ00Rw-7Xk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-12_08,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 mlxscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
+ clxscore=1011 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305120122
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, 2023-05-03 at 21:46 +0200, Ilya Leoshkevich wrote:
+> On Wed, 2023-05-03 at 12:35 -0700, Yonghong Song wrote:
+> > Hi, Ilya,
+> >=20
+> > BPF CI ([1]) detected a s390x failure when bpf program is compiled
+> > with=20
+> > latest llvm17 on bpf-next branch. To reproduce the issue, just run=20
+> > normal './test_progs -j'. The failure log looks like below:
+> >=20
+> > Notice: Success: 341/3015, Skipped: 29, Failed: 1
+> > Error: #191 sock_fields
+> > =C2=A0=C2=A0 Error: #191 sock_fields
+> > =C2=A0=C2=A0 create_netns:PASS:create netns 0 nsec
+> > =C2=A0=C2=A0 create_netns:PASS:bring up lo 0 nsec
+> > =C2=A0=C2=A0 serial_test_sock_fields:PASS:test_sock_fields__open_and_lo=
+ad 0
+> > nsec
+> > =C2=A0=C2=A0
+> > serial_test_sock_fields:PASS:attach_cgroup(egress_read_sock_fields)
+> > 0
+> > nsec
+> > =C2=A0=C2=A0
+> > serial_test_sock_fields:PASS:attach_cgroup(ingress_read_sock_fields
+> > )=20
+> > 0 nsec
+> > =C2=A0=C2=A0 serial_test_sock_fields:PASS:attach_cgroup(read_sk_dst_por=
+t 0
+> > nsec
+> > =C2=A0=C2=A0 test:PASS:getsockname(listen_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:getsockname(cli_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:accept(listen_fd) 0 nsec
+> > =C2=A0=C2=A0 init_sk_storage:PASS:bpf_map_update_elem(sk_pkt_out_cnt_fd=
+) 0
+> > nsec
+> > =C2=A0=C2=A0 init_sk_storage:PASS:bpf_map_update_elem(sk_pkt_out_cnt10_=
+fd) 0
+> > nsec
+> > =C2=A0=C2=A0 test:PASS:send(accept_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:recv(cli_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:send(accept_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:recv(cli_fd) 0 nsec
+> > =C2=A0=C2=A0 test:PASS:recv(accept_fd) for fin 0 nsec
+> > =C2=A0=C2=A0 test:PASS:recv(cli_fd) for fin 0 nsec
+> > =C2=A0=C2=A0 check_sk_pkt_out_cnt:PASS:bpf_map_lookup_elem(sk_pkt_out_c=
+nt,=20
+> > &accept_fd) 0 nsec
+> > =C2=A0=C2=A0 check_sk_pkt_out_cnt:PASS:bpf_map_lookup_elem(sk_pkt_out_c=
+nt,=20
+> > &cli_fd) 0 nsec
+> > =C2=A0=C2=A0 check_result:PASS:bpf_map_lookup_elem(linum_map_fd) 0 nsec
+> > =C2=A0=C2=A0 check_result:PASS:bpf_map_lookup_elem(linum_map_fd) 0 nsec
+> > =C2=A0=C2=A0 check_result:PASS:bpf_map_lookup_elem(linum_map_fd,=20
+> > READ_SK_DST_PORT_IDX) 0 nsec
+> > =C2=A0=C2=A0 check_result:FAIL:failure in read_sk_dst_port on line unex=
+pected
+> > failure in read_sk_dst_port on line: actual 297 !=3D expected 0
+> > =C2=A0=C2=A0 listen_sk: state:10 bound_dev_if:0 family:10 type:1 protoc=
+ol:6
+> > mark:0=20
+> > priority:0 src_ip4:7f000006(127.0.0.6) src_ip6:0:0:0:1(::1)=20
+> > src_port:51966 dst_ip4:0(0.0.0.0) dst_ip6:0:0:0:0(::) dst_port:0
+> > =C2=A0=C2=A0 srv_sk: state:9 bound_dev_if:0 family:10 type:1 protocol:6
+> > mark:0=20
+> > priority:0 src_ip4:7f000006(127.0.0.6) src_ip6:0:0:0:1(::1)=20
+> > src_port:51966 dst_ip4:7f000006(127.0.0.6) dst_ip6:0:0:0:1(::1)=20
+> > dst_port:38030
+> > =C2=A0=C2=A0 cli_sk: state:5 bound_dev_if:0 family:10 type:1 protocol:6
+> > mark:0=20
+> > priority:0 src_ip4:7f000006(127.0.0.6) src_ip6:0:0:0:1(::1)=20
+> > src_port:38030 dst_ip4:0(0.0.0.0) dst_ip6:0:0:0:1(::1)
+> > dst_port:51966
+> > =C2=A0=C2=A0 listen_tp: snd_cwnd:10 srtt_us:0 rtt_min:4294967295=20
+> > snd_ssthresh:2147483647 rcv_nxt:0 snd_nxt:0 snd:una:0 mss_cache:536
+> > ecn_flags:0 rate_delivered:0 rate_interval_us:0 packets_out:0=20
+> > retrans_out:0 total_retrans:0 segs_in:0 data_segs_in:0 segs_out:0=20
+> > data_segs_out:0 lost_out:0 sacked_out:0 bytes_received:0
+> > bytes_acked:0
+> > =C2=A0=C2=A0 srv_tp: snd_cwnd:10 srtt_us:3904 rtt_min:272
+> > snd_ssthresh:2147483647=20
+> > rcv_nxt:648617715 snd_nxt:4218065810 snd:una:4218065810
+> > mss_cache:32768=20
+> > ecn_flags:0 rate_delivered:1 rate_interval_us:272 packets_out:0=20
+> > retrans_out:0 total_retrans:0 segs_in:5 data_segs_in:0 segs_out:3=20
+> > data_segs_out:2 lost_out:0 sacked_out:0 bytes_received:1
+> > bytes_acked:22
+> > =C2=A0=C2=A0 cli_tp: snd_cwnd:10 srtt_us:6035 rtt_min:730
+> > snd_ssthresh:2147483647=20
+> > rcv_nxt:4218065811 snd_nxt:648617715 snd:una:648617715
+> > mss_cache:32768=20
+> > ecn_flags:0 rate_delivered:1 rate_interval_us:925 packets_out:0=20
+> > retrans_out:0 total_retrans:0 segs_in:4 data_segs_in:2 segs_out:6=20
+> > data_segs_out:0 lost_out:0 sacked_out:0 bytes_received:23
+> > bytes_acked:2
+> > =C2=A0=C2=A0 check_result:PASS:listen_sk 0 nsec
+> > =C2=A0=C2=A0 check_result:PASS:srv_sk 0 nsec
+> > =C2=A0=C2=A0 check_result:PASS:srv_tp 0 nsec
+> >=20
+> > If bpf program is compiled with llvm16, the test passed according
+> > to
+> > a CI run.
+> >=20
+> > I don't have s390x environment to debug this. Could you help debug
+> > it?
+> >=20
+> > Thanks!
+> >=20
+> > =C2=A0=C2=A0 [1]=20
+> > https://github.com/kernel-patches/vmtest/actions/runs/4866851496/jobs/8=
+679080985?pr=3D224#step:6:7645
+>=20
+>=20
+> Hi,
+>=20
+> thank for letting me know.
+> I will look into this.
+>=20
+> Best regards,
+> Ilya
 
+In the meantime the issue was fixed by:
 
-On 5/11/23 10:53 PM, Ze Gao wrote:
-> Yes, Jiri. Thanks for pointing it out. It's true that not all probe
-> blacklisted functions should be banned from bpf_kprobe.
-> 
-> I tried some of them, and all kprobe blacklisted symbols I hooked
-> works fine except preempt_count_{sub, add}.
-> so the takeaway here is preempt_cout_{sub, add} must be rejected at
-> least for now since kprobe_multi_link_prog_run
-> ( i.e., the fprobe handler) and rethook_trampoline_handler( i.e. the
-> rethook handler) calls preempt_cout_{sub, add}.
-> 
-> I'm considering providing a general  fprobe_blacklist framework just
-> like what kprobe does to allow others to mark
-> functions used inside fprobe handler or rethook handler as NOFPROBE to
-> avoid potential stack recursion. But only after
-> I figure out how ftrace handles recursion problems currently and why
-> it fails in the case I ran into.
+commit 141be5c062ecf22bd287afffd310e8ac4711444a
+Author: Shoaib Meenai <smeenai@fb.com>
+Date:   Fri May 5 14:18:12 2023 -0700
 
-A fprobe_blacklist might make sense indeed as fprobe and kprobe are 
-quite different... Thanks for working on this.
+    Revert "Reland [Pipeline] Don't limit ArgumentPromotion to -O3"
+=20=20=20=20
+    This reverts commit 6f29d1adf29820daae9ea7a01ae2588b67735b9e.
+=20=20=20=20
+    https://reviews.llvm.org/D149768 is causing size regressions for -
+Oz
+    with FullLTO, and I'm reverting that one while investigating. This
+    commit depends on that one, so it needs to be reverted as well.
 
-> 
-> Thanks
-> Ze
-> 
-> On Thu, May 11, 2023 at 1:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>
->> On Wed, May 10, 2023 at 07:13:58AM -0700, Yonghong Song wrote:
->>>
->>>
->>> On 5/10/23 5:20 AM, Ze Gao wrote:
->>>> BPF_LINK_TYPE_KPROBE_MULTI attaches kprobe programs through fprobe,
->>>> however it does not takes those kprobe blacklisted into consideration,
->>>> which likely introduce recursive traps and blows up stacks.
->>>>
->>>> this patch adds simple check and remove those are in kprobe_blacklist
->>>> from one fprobe during bpf_kprobe_multi_link_attach. And also
->>>> check_kprobe_address_safe is open for more future checks.
->>>>
->>>> note that ftrace provides recursion detection mechanism, but for kprobe
->>>> only, we can directly reject those cases early without turning to ftrace.
->>>>
->>>> Signed-off-by: Ze Gao <zegao@tencent.com>
->>>> ---
->>>>    kernel/trace/bpf_trace.c | 37 +++++++++++++++++++++++++++++++++++++
->>>>    1 file changed, 37 insertions(+)
->>>>
->>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->>>> index 9a050e36dc6c..44c68bc06bbd 100644
->>>> --- a/kernel/trace/bpf_trace.c
->>>> +++ b/kernel/trace/bpf_trace.c
->>>> @@ -2764,6 +2764,37 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
->>>>      return arr.mods_cnt;
->>>>    }
->>>> +static inline int check_kprobe_address_safe(unsigned long addr)
->>>> +{
->>>> +   if (within_kprobe_blacklist(addr))
->>>> +           return -EINVAL;
->>>> +   else
->>>> +           return 0;
->>>> +}
->>>> +
->>>> +static int check_bpf_kprobe_addrs_safe(unsigned long *addrs, int num)
->>>> +{
->>>> +   int i, cnt;
->>>> +   char symname[KSYM_NAME_LEN];
->>>> +
->>>> +   for (i = 0; i < num; ++i) {
->>>> +           if (check_kprobe_address_safe((unsigned long)addrs[i])) {
->>>> +                   lookup_symbol_name(addrs[i], symname);
->>>> +                   pr_warn("bpf_kprobe: %s at %lx is blacklisted\n", symname, addrs[i]);
->>>
->>> So user request cannot be fulfilled and a warning is issued and some
->>> of user requests are discarded and the rest is proceeded. Does not
->>> sound a good idea.
->>>
->>> Maybe we should do filtering in user space, e.g., in libbpf, check
->>> /sys/kernel/debug/kprobes/blacklist and return error
->>> earlier? bpftrace/libbpf-tools/bcc-tools all do filtering before
->>> requesting kprobe in the kernel.
->>
->> also fprobe uses ftrace drectly without paths in kprobe, so I wonder
->> some of the kprobe blacklisted functions are actually safe
->>
->> jirka
->>
->>>
->>>> +                   /* mark blacklisted symbol for remove */
->>>> +                   addrs[i] = 0;
->>>> +           }
->>>> +   }
->>>> +
->>>> +   /* remove blacklisted symbol from addrs */
->>>> +   for (i = 0, cnt = 0; i < num; ++i) {
->>>> +           if (addrs[i])
->>>> +                   addrs[cnt++]  = addrs[i];
->>>> +   }
->>>> +
->>>> +   return cnt;
->>>> +}
->>>> +
->>>>    int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->>>>    {
->>>>      struct bpf_kprobe_multi_link *link = NULL;
->>>> @@ -2859,6 +2890,12 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
->>>>      else
->>>>              link->fp.entry_handler = kprobe_multi_link_handler;
->>>> +   cnt = check_bpf_kprobe_addrs_safe(addrs, cnt);
->>>> +   if (!cnt) {
->>>> +           err = -EINVAL;
->>>> +           goto error;
->>>> +   }
->>>> +
->>>>      link->addrs = addrs;
->>>>      link->cookies = cookies;
->>>>      link->cnt = cnt;
+But looking at the codegen differences:
+
+$ diff -u <(sed -e s/[0-9]*://g pass.s) <(sed -e s/[0-9]*://g fail.s)
+
+-pass.o:        file format elf64-bpf
++fail.o:        file format elf64-bpf
+
+-00000000000002c8 <sk_dst_port__load_half>
+-       69 11 00 30 00 00 00 00 r1 =3D *(u16 *)(r1 + 48)
++00000000000002c0 <sk_dst_port__load_half>
++       54 10 00 00 00 00 ff ff w1 &=3D 65535
+        b4 00 00 00 00 00 00 01 w0 =3D 1
+        16 10 00 01 00 00 ca fe if w1 =3D=3D 51966 goto +1 <LBB6_2>
+        b4 00 00 00 00 00 00 00 w0 =3D 0
+
+This is what ArgumentPromotion is supposed to do, so that's okay so
+far. However, further down below we have:
+
+ Disassembly of section cgroup_skb/egress:
+
+-       bf 16 00 00 00 00 00 00 r1 =3D r6
++       61 76 00 30 00 00 00 00 r7 =3D *(u32 *)(r6 + 48)
++       bc 17 00 00 00 00 00 00 w1 =3D w7
+        85 01 00 00 00 00 00 53 call sk_dst_port__load_word
+
+...
+
+-       bf 16 00 00 00 00 00 00 r1 =3D r6
++       74 70 00 00 00 00 00 10 w7 >>=3D 16
++       bc 17 00 00 00 00 00 00 w1 =3D w7
+        85 01 00 00 00 00 00 57 call sk_dst_port__load_half
+
+so there is no 16-bit load anymore, instead, the result from the
+earlier 32-bit load is reused. However, on BE these kinds of loads
+for this particular field are not consistent at the moment - see [1]
+and the previous discussions.
+
+De-facto we have the following results:
+
+- int load: 0x0000cafe
+- short load: 0xcafe
+
+On a consistent BE we should have rather had:
+
+- int load: 0x0000cafe
+- short load: 0
+
+Clang, of course, expects a consistent BE and optimizes around that.
+
+This was a conscious tradeoff Jakub and I have agreed on in order to
+keep the quirky behavior from the past. Given what's happening with
+Clang now, I wonder if it would be worth revisiting it in the name of
+consistency?
+
+[1]
+https://lore.kernel.org/bpf/20220317113920.1068535-5-jakub@cloudflare.com
 
