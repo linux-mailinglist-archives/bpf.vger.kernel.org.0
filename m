@@ -1,206 +1,149 @@
-Return-Path: <bpf+bounces-400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717FB700964
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 15:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8963700A07
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 16:15:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E48328169C
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 13:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6584A281A67
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 14:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD581E532;
-	Fri, 12 May 2023 13:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227D11EA69;
+	Fri, 12 May 2023 14:14:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C10DBE4E;
-	Fri, 12 May 2023 13:44:16 +0000 (UTC)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B63132B4;
-	Fri, 12 May 2023 06:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683899054; x=1715435054;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=8W8eOhFhk4GqsAiwN5OQtWmPnxTrR2sFNi9k/DUY1Qo=;
-  b=XbAwLnt4059FgzjXTlsTOJ4dSLOTtsoeH/DvkmgUU76BFmhtOLo4t8yj
-   82pbpx/oH0o3ijXe+9aLqM3rXEWVnbzVJg+oBSmMq24e8YJctIULniGBr
-   GO8P0U7UX0ljZEkKzO90OGcBy2KeQJnO9haP8KQOsWr9BeGr5ReHIDhjr
-   d3vUewaTbPHE/1Wy4URV2qZmIUviA5U3uhbPjpF6S2/t/52nOdUhA9/qQ
-   HnC85jXfVjJTX2mGtirFUUbSpOtriRemj86ljDuAcWA/OPHfLcZ9dD2o1
-   JiG2udlGe7JRMVQm88tPutbM37fbpsRyJUNayVyZE3HinLODIMGWm8Rjf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="378926573"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
-   d="scan'208";a="378926573"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2023 06:44:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="844421092"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
-   d="scan'208";a="844421092"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga001.fm.intel.com with ESMTP; 12 May 2023 06:44:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 12 May 2023 06:44:14 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Fri, 12 May 2023 06:44:14 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Fri, 12 May 2023 06:44:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bB8bK+fgenEvm0//G09nmfijwvrQ0J+H2OLt/sjmfeMAXI1HUmpEYZJ3bg4Ow8y8AP2C7kXdc9LblsNdq2ZhA6zEZ7yGLE8tvejdbm/TDQDQXMCR85GpMMGWOD7CCxOKLFijmFoqPakYnaPPJQOKIkUxbvPcIWm4DlAqxM5yquTwtviG4SV3ZY9zzNJKe3TDCMQYk8R6ZAT8ZeW8jhcvEO2JghtXKSF80YNd6PdBRDvIBttOa4ltSJlTxFYbgjmX9zVFOAdqJStlXawVS3BVWAyrlA8Pd39euEhFWvWEGkUp279afd/DahPepf7wkK1pPFAmqocsNVj9g6C08ocPKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QkYFcEAgXCKMqiEGtPrW3TRH7AmFfPMQndiNF/Udli8=;
- b=D47X0cf8V+1i7KBy6VpSQm0R3pzgmEhdbzTonXS+tigvONSZ7C1wVq81Adc3CYX537MYK8G7TocA3zPcvlExynTz2in3YW+tPQYjDmu+kLRgoJwspur6d56EJS1LjCT1vDBz5mDhXRXrg2C9wOARGIj1FX76cBHfqwq78HcAyh5GxTXEtRfrDGwb7l+T1OAmnEgqbCsvQ8iVCVOOBinzxXP/5DijgSQPm0oy4U8xQ6NBpShrqsITojw+JxNnJNX03BKxqXrnSKf13J8giOa5tRQhBrxfIchT5CXbI2lyYnFFCr5jgmZHKKNEzJFBAyVskf5eq9L84XNAbM4WmhMvRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by SJ0PR11MB4895.namprd11.prod.outlook.com (2603:10b6:a03:2de::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.19; Fri, 12 May
- 2023 13:44:10 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::64d9:76b5:5b43:1590]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::64d9:76b5:5b43:1590%2]) with mapi id 15.20.6387.020; Fri, 12 May 2023
- 13:44:10 +0000
-Message-ID: <c65eb429-035e-04a7-51d1-c588ac5053be@intel.com>
-Date: Fri, 12 May 2023 15:43:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint using
- half page per-buffer
-Content-Language: en-US
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-CC: <netdev@vger.kernel.org>, <lorenzo.bianconi@redhat.com>,
-	<bpf@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-	<linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F038B1DDDC;
+	Fri, 12 May 2023 14:14:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31363C433EF;
+	Fri, 12 May 2023 14:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683900892;
+	bh=I2SLq8jRsoL0+2OXWw2UIOj7p5Mdxwxb3J5ypYpoAUs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bPPD+m+P86R0YFQUyAqfdOhufE7rhuL73K31mdpfdpvyOXzO9BDpwYpeVE9TIjMrD
+	 jNudwgimrBEKeXWM0l1TQ2IDGVYvNpEqnskCNymGQC/uxmtXz8GsE3zT7Iw5oB9vWI
+	 hfkK1iQImPASzdqKQ3hlueSkpeNNFO94/P+ofmj4Ui0mu6WLdhICj4VXcNayd+/jY4
+	 zuXtAML12bkIzNx2u3dNuQc8hmAzKEVHlyXgqkF9O63x54KG4JsnzPaBAZjYLSOuuN
+	 Rr4j5Lwb9ExHdelWa53gMknazbeNBs6u/FmfPv+Rpcycu+qJQZFCCLGl1urSsdXjVR
+	 JZJBmPGs6chZw==
+Date: Fri, 12 May 2023 16:14:48 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	linyunsheng@huawei.com
+Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint
+ using half page per-buffer
+Message-ID: <ZF5J2B4gS4AE3PHS@lore-desk>
 References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0019.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:14::6) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+ <c65eb429-035e-04a7-51d1-c588ac5053be@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ0PR11MB4895:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3002466-e902-4c24-69df-08db52eef6e6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jQ45pLyZ/A4u0UiC3VJKsT6D3+mMTb4uwLfc1Bw9gYGtT6gQYGQAbl7WvxR5T+H2v4xsDdJHMBjJsZWtl3a68oSHaaiOuuqAMfm7oSUWLootxCoElx14U5U/yaF0N+2tn+YddPQTGX0NWmrU61nrqaOLmXN8Z2clGWBoz9b90e23OTY9g5wldH4rfO9vxCtO/ypayeVivcWuuCIxnofBb4H3NwNZpppj8FmjwmQyYRfnEK98/n6SQcXrd1o5cFRuY3WaiOiN5j2yvluqVyOj8P1Bofz/Jsx0/NhoWOBC3I6thMNNwgk/gYv0KAbJnB1Ya9ITHxD+hGVuEWuWNXsU5AqVLFSsvYpQhPAyXaVqdeNiienbrXez5GQMHGBXDCLZwZDny86SU7F53lEqspZf/1cPkrmf3gpWwvWLZS8k+i6A7kE+klR/8RKbxKMYOSBgaDVut4GnwFmgwMNiMUsueK/38D3GKuy2Wy9rjGTw6OZ2u4taF6HlbvwpxhqIpZtvyS56lIT4KSyzy/W+YqMx0RaYOrWTvaxxkfPh0931cIYV4RMkXDYGyWcRtHI0RxKF2U5nrKSy2T7a+NtIalE4/6iF1d7GpRNJjb3d19Efs7iA7AjoYEAbxyn6hZVKFAuhPgtCg9gHi6eZAPuFeFKbDw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(396003)(346002)(39860400002)(376002)(451199021)(38100700002)(82960400001)(31696002)(36756003)(86362001)(31686004)(8676002)(7416002)(8936002)(26005)(6506007)(478600001)(5660300002)(6486002)(2616005)(66556008)(83380400001)(2906002)(316002)(6666004)(41300700001)(66946007)(186003)(4326008)(6916009)(66476007)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHNnRkphRGRmbDBwd0VrLzk0QWFhTlozUHNXbEZnemQ2bEw0dlI0SExSMlpl?=
- =?utf-8?B?N2VHSFlDSWl5cFNDTjZ0ZVpJSk5NR3NSelZ2SVZZRjhZQVZNZkVlR0FwMFJP?=
- =?utf-8?B?SFNHTW9DTnVJZHJhTHN0TXFlcjZnTERzT0QwY0lNSjdqQTdLV2VtQm9JTWlk?=
- =?utf-8?B?K2hucnJVekkzcHRTQ3ZieTZ5Wm10ZW05SUMwYmw4RHk4ZXMrR2pBTVFHSHp2?=
- =?utf-8?B?b1JwZUNpNmRrRGUvbTNFU2RMKzgybEx3R0g4TkdTb1RROS84aW1MRDF2cHlZ?=
- =?utf-8?B?ZVVjZ3dlM2dvb3RVcGFCT1JIdVFVYk5LTmtXcDJZeW1WbTM3SUhJZ3JxdHRP?=
- =?utf-8?B?RGhqL2lwVjVHNG13ZFd1Qmd4Yzg4eldIWDE2OWV4eGZLcGRFUGNveEE2a2ds?=
- =?utf-8?B?Q3gycUhrdXpCb3RUTnBPc3A4dE83MStLMENza2hxY2RhUGN0MERzaEJPbG1Q?=
- =?utf-8?B?b1FKUVA5VmVicHN1S21TdTB4VzcyMDN5b0tmNnA2eDd5bTFXMUZBcFRqZDkr?=
- =?utf-8?B?WU1KdVJoc1dzaGNoR2dDNnZKZURXYmZMUDNNZk80NVV4ZXpHVlMyb2xPZmxB?=
- =?utf-8?B?VHlJZytqV1ZpR3JDcU9qUnlJNHphVWx0cXMraFNuQVFDTSs3UURTWStrZFh3?=
- =?utf-8?B?NzNOWVZIK3pOdGRsZ2pMOVM3WkxXOUduc0d1TGY4ejJkdHQ3SHhUWlgvNmg3?=
- =?utf-8?B?UlYvcE5ocjFvODBYcVR6Qjg0N0c1Vm1pclZXbmYwdGczZUkvZVRYK1laa0hB?=
- =?utf-8?B?dis5Qlc3WnV5d2hjY2pGcE1ETU8rWmRuTGtvSGhvakhJWWw0dnZTcDNYTjR2?=
- =?utf-8?B?SjJCdVNtaGdoTFdEM3Q5UDZXODF6ZHRVKzhCM3piNi9wMnpDcWpaL1dCU3Rs?=
- =?utf-8?B?U2tYNmk1WnVjYU00ZDFneWJpQ1NEN05UZUFUY1ZxYmVwcnlpMXR4TUtjVkRB?=
- =?utf-8?B?OXltS0tFRG9SRjI1KzhFMVZSRHZqZW1oT1R3ZVFtWkFDNlR3UlVZVWZqbXpP?=
- =?utf-8?B?aWRZRm9laDgyUUgyT1FKWEtqVyt4VTc5ZXE3SGthRkNFd3VHVS8ycUR6c3E1?=
- =?utf-8?B?SFF2RC8rWXdreUcrTytvbFVzU2VDakQxanpUY1lJMzZpaktiNUg5bXBnYWJ4?=
- =?utf-8?B?TUw3SFdkRlFOSnlKMURPbHdMTHZBdkNoVktLK1c3WnN4WlozK2g2cHhwTzZv?=
- =?utf-8?B?L3JEclMyZ0ZRdXdzd0RDci93RFBSZmdUWUFXT3VralBHQUY1Q2FkVXRadWY2?=
- =?utf-8?B?YUFEajJGYWw0eDc5NWwxbEE4cWFjVENkYi85L04yWDd3T1QwQ1dPbnNXL2Q2?=
- =?utf-8?B?b3pPbXNyamtwOXZnYlJVblVSTVd2OVhlYWVsdGoycFNzMzNSK2RMZVl2ZlRH?=
- =?utf-8?B?VkNYWExEQXBQYTlQenhZbHVaNGNscWlvN3RodFY2b1hVK3k0bTlXK0wza1hi?=
- =?utf-8?B?cmp4MTVaN0ZXdk1JWUJ4b1B5OFVtRVNDZThBOXNjQjZBNVVuS1FqN3g3NHc0?=
- =?utf-8?B?a0FpTk1qdSt1REZIYUt4cmErSEo2SjRpVm0veGI3UXN2MDVwU09lYmlTRjRC?=
- =?utf-8?B?cFhBSjVvYWNaeWxYTFhUcVluV3JKV04yTWJxOWszRnRjYUFLdDJjNEsxQk5I?=
- =?utf-8?B?bXlCQXJ6bE9HdkFzd1hlYjRnZEMvSWsvUmhDbGp3QW5LejFXTm1CaTFXOVFT?=
- =?utf-8?B?RGhCWmg2d2lqcjRjR1hKZkJUNXhMS3RJTExleFNOUHJWMXhyUnhObUwwdVVB?=
- =?utf-8?B?Z3VaZ2VGRDhjMzRLbVI1b2VYb1B4NXhIOXFUaHh1dGxzQkhUaG8za0szNnRY?=
- =?utf-8?B?LzM4QTBtcVFQRUo1VzVFWnZiOWd2TVZZeGlJMUIvaDlrMHZoSUMzYU43ck5i?=
- =?utf-8?B?ZHc0R0JpNDE1ZnR5NDMwRUlzaG5IdU5sSURRYjhkRVVydjZQZldWN3ZLMXBJ?=
- =?utf-8?B?M0wrczFkMkZPTGU4ZzFtdmVQejBjakIvZzNSS1dIaFkvaFQ5alRNWG5qTjFJ?=
- =?utf-8?B?VFdFM3ZwcTRaLzBLL2xpamJhcUpmb1ZQNnhtZjB6TERIMUFUeWNkOGZLMU9U?=
- =?utf-8?B?cEhOdEY0NWw0TTROcmZ4Vm01NXZqQVlCSlJacW15YmIwelFBUm1qbXlrSkFN?=
- =?utf-8?B?TWFyS1FCSTJ0bUpEVEpkVkQwQnh6aHRqenV6UHdUOVdzUWpCTUJjTTE4d1BP?=
- =?utf-8?B?RXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3002466-e902-4c24-69df-08db52eef6e6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2023 13:44:10.4590
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 20yFqQSodzItOlxFyvX8B1HDTCTmjcKr8tTZoYVDWQDBaltbEAYrqCW0NXcNNUbcWuXX2R0kWaA0Ib0NB1tgtvaAOW7Rt8LNvBjDJoQj/YA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4895
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pLSR8tqB7F9tZmtS"
+Content-Disposition: inline
+In-Reply-To: <c65eb429-035e-04a7-51d1-c588ac5053be@intel.com>
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Fri, 12 May 2023 15:08:13 +0200
 
-> In order to reduce page_pool memory footprint, rely on
-> page_pool_dev_alloc_frag routine and reduce buffer size
-> (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one page
-> for two 1500B frames. Reduce VETH_XDP_PACKET_HEADROOM to 192 from 256
-> (XDP_PACKET_HEADROOM) to fit max_head_size in VETH_PAGE_POOL_FRAG_SIZE.
-> Please note, using default values (CONFIG_MAX_SKB_FRAGS=17), maximum
-> supported MTU is now reduced to 36350B.
+--pLSR8tqB7F9tZmtS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I thought we're stepping away from page splitting bit by bit O_o
-Primarily for the reasons you mentioned / worked around here: it creates
-several significant limitations and at least on 64-bit systems it
-doesn't scale anymore. 192 bytes of headroom is less than what XDP
-expects (isn't it? Isn't 256 standard-standard, so that skb XDP path
-reallocates heads only to have 256+ there?), 384 bytes of shinfo can
-change anytime and even now page split simply blocks you from increasing
-MAX_SKB_FRAGS even by one. Not speaking of MTU limitations etc.
-BTW Intel drivers suffer from the very same things due solely to page
-split (and I'm almost done with converting at least some of them to Page
-Pool and 1 page per buffer model), I don't recommend deliberately
-falling into that pit =\ :D
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> Date: Fri, 12 May 2023 15:08:13 +0200
+>=20
+> > In order to reduce page_pool memory footprint, rely on
+> > page_pool_dev_alloc_frag routine and reduce buffer size
+> > (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one page
+> > for two 1500B frames. Reduce VETH_XDP_PACKET_HEADROOM to 192 from 256
+> > (XDP_PACKET_HEADROOM) to fit max_head_size in VETH_PAGE_POOL_FRAG_SIZE.
+> > Please note, using default values (CONFIG_MAX_SKB_FRAGS=3D17), maximum
+> > supported MTU is now reduced to 36350B.
+>=20
+> I thought we're stepping away from page splitting bit by bit O_o
 
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/veth.c | 39 +++++++++++++++++++++++++--------------
->  1 file changed, 25 insertions(+), 14 deletions(-)
-[...]
+do you mean to driver private page_split implementation? AFAIK we are not
+stepping away from page_pool page split implementation (or maybe I missed i=
+t :))
 
-Thanks,
-Olek
+> Primarily for the reasons you mentioned / worked around here: it creates
+> several significant limitations and at least on 64-bit systems it
+> doesn't scale anymore. 192 bytes of headroom is less than what XDP
+> expects (isn't it? Isn't 256 standard-standard, so that skb XDP path
+> reallocates heads only to have 256+ there?), 384 bytes of shinfo can
+> change anytime and even now page split simply blocks you from increasing
+> MAX_SKB_FRAGS even by one. Not speaking of MTU limitations etc.
+> BTW Intel drivers suffer from the very same things due solely to page
+> split (and I'm almost done with converting at least some of them to Page
+> Pool and 1 page per buffer model), I don't recommend deliberately
+> falling into that pit =3D\ :D
+
+I am not sure about the 192 vs 256 bytes of headroom (this is why I sent th=
+is
+patch as RFC, my main goal is to discuss about this requirement). In the
+previous discussion [0] we deferred this implementation since if we do not
+reduce requested xdp headroom, we will not be able to fit two 1500B frames
+into a single page (for skb_shared_info size [1]) and we introduce a perfor=
+mance
+penalty.
+
+Regards,
+Lorenzo
+
+[0] https://lore.kernel.org/netdev/6298f73f7cc7391c7c4a52a6a89b1ae21488bda1=
+=2E1682188837.git.lorenzo@kernel.org/
+[1] $ pahole -C skb_shared_info vmlinux.o=20
+struct skb_shared_info {
+        __u8                       flags;                /*     0     1 */
+        __u8                       meta_len;             /*     1     1 */
+        __u8                       nr_frags;             /*     2     1 */
+        __u8                       tx_flags;             /*     3     1 */
+        unsigned short             gso_size;             /*     4     2 */
+        unsigned short             gso_segs;             /*     6     2 */
+        struct sk_buff *           frag_list;            /*     8     8 */
+        struct skb_shared_hwtstamps hwtstamps;           /*    16     8 */
+        unsigned int               gso_type;             /*    24     4 */
+        u32                        tskey;                /*    28     4 */
+        atomic_t                   dataref;              /*    32     4 */
+        unsigned int               xdp_frags_size;       /*    36     4 */
+        void *                     destructor_arg;       /*    40     8 */
+        skb_frag_t                 frags[17];            /*    48   272 */
+
+        /* size: 320, cachelines: 5, members: 14 */
+};
+
+>=20
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  drivers/net/veth.c | 39 +++++++++++++++++++++++++--------------
+> >  1 file changed, 25 insertions(+), 14 deletions(-)
+> [...]
+>=20
+> Thanks,
+> Olek
+
+--pLSR8tqB7F9tZmtS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZF5J2AAKCRA6cBh0uS2t
+rCxAAQCSKLWjFxjZqsMfxfjAFqbeYwd4JydyXK1h0pDmtKOCqQD/RsjwdxwHbF7j
+/uTV1IUo47JLIqJhGSHB0lIzqD7YIww=
+=waNW
+-----END PGP SIGNATURE-----
+
+--pLSR8tqB7F9tZmtS--
 
