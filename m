@@ -1,104 +1,104 @@
-Return-Path: <bpf+bounces-399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CE1700954
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 15:39:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 717FB700964
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 15:44:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 202101C21209
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 13:39:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E48328169C
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 13:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2451E535;
-	Fri, 12 May 2023 13:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD581E532;
+	Fri, 12 May 2023 13:44:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F80BE4E
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 13:39:12 +0000 (UTC)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE93A120B5;
-	Fri, 12 May 2023 06:39:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C10DBE4E;
+	Fri, 12 May 2023 13:44:16 +0000 (UTC)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B63132B4;
+	Fri, 12 May 2023 06:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683898749; x=1715434749;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=DUD17CQvckTw0HRUKlLT4JYEgVMeSjd1gqot1VSrsjk=;
-  b=esEkpIyLbD1rScyZ1+FZAAV5QmZIR1Lfzpvhd+MD5vrLDlDMfPWvdko3
-   Ed9mN0p+O7Rb9Hwe7n9+A7Jz4kiRlD8HJJZUlY2VrkQj4yAcrZQY+9LJy
-   cPKMQE6SjX6r2sNMUPZYGttTj2afBZm1rT2cDkgkr7AGSFD/M1idIFpJi
-   XlskpzZKssJNkCqLOvogtqCSN6D5AXyZWf5h808Ra5qOF70PAJze/g7FM
-   kW+N+ldOdTaqkeaVytxhHnVxnWeuOPVxDNxkg+OxZWi5qw7XTbpArcEac
-   ToMIKoF9uA+2WNuOO8b5RwQPV1KzPk096bzhLr5IGICXYDVak1s+lVkDS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="416422552"
+  t=1683899054; x=1715435054;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8W8eOhFhk4GqsAiwN5OQtWmPnxTrR2sFNi9k/DUY1Qo=;
+  b=XbAwLnt4059FgzjXTlsTOJ4dSLOTtsoeH/DvkmgUU76BFmhtOLo4t8yj
+   82pbpx/oH0o3ijXe+9aLqM3rXEWVnbzVJg+oBSmMq24e8YJctIULniGBr
+   GO8P0U7UX0ljZEkKzO90OGcBy2KeQJnO9haP8KQOsWr9BeGr5ReHIDhjr
+   d3vUewaTbPHE/1Wy4URV2qZmIUviA5U3uhbPjpF6S2/t/52nOdUhA9/qQ
+   HnC85jXfVjJTX2mGtirFUUbSpOtriRemj86ljDuAcWA/OPHfLcZ9dD2o1
+   JiG2udlGe7JRMVQm88tPutbM37fbpsRyJUNayVyZE3HinLODIMGWm8Rjf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="378926573"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
-   d="scan'208";a="416422552"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2023 06:39:08 -0700
+   d="scan'208";a="378926573"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2023 06:44:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="1030089578"
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="844421092"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200"; 
-   d="scan'208";a="1030089578"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga005.fm.intel.com with ESMTP; 12 May 2023 06:39:08 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+   d="scan'208";a="844421092"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga001.fm.intel.com with ESMTP; 12 May 2023 06:44:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 12 May 2023 06:39:08 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ 15.1.2507.23; Fri, 12 May 2023 06:44:14 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Fri, 12 May 2023 06:39:08 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ 15.1.2507.23 via Frontend Transport; Fri, 12 May 2023 06:44:14 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Fri, 12 May 2023 06:39:06 -0700
+ 15.1.2507.23; Fri, 12 May 2023 06:44:12 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jexrNu0zmOrRXeR0zDcDaNfSzjD2YmK+jI/uBYYqAMpdaXmZSadF9MrCJIZgStlIMezVPAm4a8hP8eBAXbe8TGs3cyMOV7KwI9Cb9Wu8/xXOJ0Af9BB7s94bI6xrMsUZNzG0/znhO0N4/nvg4edO7q5NkeFRTFDlxfJIof7luRju6mtrY4wSzvwzGR3YWVNrUjSu+ba0XksVbtibN5BZFlAXM+Luvx/Amn/FQcNaGPqEv/CA2+Olm51XNOmdiksxNvnO93JbZhYTvYEjHsvbIePin7BSBUjTq7MmYaYYGJRw0TQZwxvbEqWM3bgrGWcJvGXhiqtxNaKmm9kT/Nihlg==
+ b=bB8bK+fgenEvm0//G09nmfijwvrQ0J+H2OLt/sjmfeMAXI1HUmpEYZJ3bg4Ow8y8AP2C7kXdc9LblsNdq2ZhA6zEZ7yGLE8tvejdbm/TDQDQXMCR85GpMMGWOD7CCxOKLFijmFoqPakYnaPPJQOKIkUxbvPcIWm4DlAqxM5yquTwtviG4SV3ZY9zzNJKe3TDCMQYk8R6ZAT8ZeW8jhcvEO2JghtXKSF80YNd6PdBRDvIBttOa4ltSJlTxFYbgjmX9zVFOAdqJStlXawVS3BVWAyrlA8Pd39euEhFWvWEGkUp279afd/DahPepf7wkK1pPFAmqocsNVj9g6C08ocPKw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O738ZZBa9PAsST9qyb7wNaa943/HAlLNo+P5XVV1UFU=;
- b=lLEeBnxpHn42ykW+QYQG+YHcrlZe6BR6wVkNn6qIXjAJf8Ypu3obd5PiT3Qyvkanv/63eeOm+kbjWhyjlAD3z9hGbrIH6uPkUu/gF1CCgGd+hX3hph1ECH1LW0jQB7tmhhvHpwN1gedt5RoXIzx0h/87AYrFFyfEUa46A/bRN44TDMMKAiVk1y73lkItQSfOuD5tAm9zwvD1G9McsRjWiC9LmnEEsjLGyhasxYwa0oOG+wvdlN4GST4FK0rldU3pEXemAC3/7dzlUwIxx1mcTgY34ex++Z0vJlr+D9uzcm+e0dTjQToKeoAhMmU8YVhpESmZY9Cf4VbY9kAjxGK/Tg==
+ bh=QkYFcEAgXCKMqiEGtPrW3TRH7AmFfPMQndiNF/Udli8=;
+ b=D47X0cf8V+1i7KBy6VpSQm0R3pzgmEhdbzTonXS+tigvONSZ7C1wVq81Adc3CYX537MYK8G7TocA3zPcvlExynTz2in3YW+tPQYjDmu+kLRgoJwspur6d56EJS1LjCT1vDBz5mDhXRXrg2C9wOARGIj1FX76cBHfqwq78HcAyh5GxTXEtRfrDGwb7l+T1OAmnEgqbCsvQ8iVCVOOBinzxXP/5DijgSQPm0oy4U8xQ6NBpShrqsITojw+JxNnJNX03BKxqXrnSKf13J8giOa5tRQhBrxfIchT5CXbI2lyYnFFCr5jgmZHKKNEzJFBAyVskf5eq9L84XNAbM4WmhMvRQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5471.namprd11.prod.outlook.com (2603:10b6:5:39d::10)
- by DM4PR11MB6527.namprd11.prod.outlook.com (2603:10b6:8:8e::19) with
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by SJ0PR11MB4895.namprd11.prod.outlook.com (2603:10b6:a03:2de::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.20; Fri, 12 May
- 2023 13:39:05 +0000
-Received: from DM4PR11MB5471.namprd11.prod.outlook.com
- ([fe80::907c:ffaa:352a:8913]) by DM4PR11MB5471.namprd11.prod.outlook.com
- ([fe80::907c:ffaa:352a:8913%6]) with mapi id 15.20.6387.021; Fri, 12 May 2023
- 13:39:05 +0000
-Date: Fri, 12 May 2023 15:36:47 +0200
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Quentin Monnet <quentin@isovalent.com>
-CC: Stanislav Fomichev <sdf@google.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	"Yonghong Song" <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@corigine.com>
-Subject: Re: [PATCH bpf-next] bpftool: specify XDP Hints ifname when loading
- program
-Message-ID: <ZF5A752Z4eu8FAw9@lincoln>
-References: <20230511151345.7529-1-larysa.zaremba@intel.com>
- <dd7a4bec-c0d0-4ffe-3bb8-e4d7ab4a01b8@isovalent.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <dd7a4bec-c0d0-4ffe-3bb8-e4d7ab4a01b8@isovalent.com>
-X-ClientProxiedBy: LO4P123CA0138.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:193::17) To DM4PR11MB5471.namprd11.prod.outlook.com
- (2603:10b6:5:39d::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.19; Fri, 12 May
+ 2023 13:44:10 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::64d9:76b5:5b43:1590]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::64d9:76b5:5b43:1590%2]) with mapi id 15.20.6387.020; Fri, 12 May 2023
+ 13:44:10 +0000
+Message-ID: <c65eb429-035e-04a7-51d1-c588ac5053be@intel.com>
+Date: Fri, 12 May 2023 15:43:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint using
+ half page per-buffer
+Content-Language: en-US
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+CC: <netdev@vger.kernel.org>, <lorenzo.bianconi@redhat.com>,
+	<bpf@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
+	<linyunsheng@huawei.com>
+References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0019.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::6) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,200 +106,101 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5471:EE_|DM4PR11MB6527:EE_
-X-MS-Office365-Filtering-Correlation-Id: be2c6bd2-c74a-42bb-0ef8-08db52ee412d
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ0PR11MB4895:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3002466-e902-4c24-69df-08db52eef6e6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VPSdhveyIaA+2/iaRv0BMEYLeWoefMtFeU44A1jH9fXX9Pknud23PFaRl4RZAbQJJ48BR/Rdl5ESevk8riVkGxBbqrcGPSeqBAh6jTVnSCIX38vfQ3z5yWMvhwkL+ETIqoJtuHLzPEHVSKEuF3lxZxZwVStqiWh0tgYqqZNaEAVPf24H5CDAV4UOl2cj27cSQJ27pj26M++419Ia0iYp7Q9mwKz7SWq3h+EIRLagO7G1qkZ6SPR4petGUHa+TXpTkTKDMGpgseDz/dTa7ilgb5em6fig2ldWdbJyMN3mpIWnOTmTsex/qNBcUTUvkfYPcnbTaJqHiZAdg/th4GOJmRZ+mJJ6Aek/tLN/AFTK9iukMZCTNtFCBLuu6xgjFHNewe3h1wqqmCBPFuY+aTm9r3PIcaZUvzio0h3iBCzo/Hy+LHW7wFSrWAZORx01ArhHYmMDl7e9FXUNjgijp7HgXn2ZHgeovuAImYRagwg4KQwkJnXn9AjmKLhzcbYYiwWcFpLt8d+QLWng80NVzsIo1KEplV7mOMZ30wrjLm+86KLnrbvukdknuDonLE9SWpUX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5471.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199021)(38100700002)(83380400001)(316002)(8936002)(8676002)(66946007)(54906003)(66556008)(66476007)(4326008)(6916009)(41300700001)(7416002)(44832011)(6506007)(9686003)(6512007)(186003)(26005)(478600001)(86362001)(2906002)(82960400001)(6486002)(6666004)(5660300002)(33716001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: jQ45pLyZ/A4u0UiC3VJKsT6D3+mMTb4uwLfc1Bw9gYGtT6gQYGQAbl7WvxR5T+H2v4xsDdJHMBjJsZWtl3a68oSHaaiOuuqAMfm7oSUWLootxCoElx14U5U/yaF0N+2tn+YddPQTGX0NWmrU61nrqaOLmXN8Z2clGWBoz9b90e23OTY9g5wldH4rfO9vxCtO/ypayeVivcWuuCIxnofBb4H3NwNZpppj8FmjwmQyYRfnEK98/n6SQcXrd1o5cFRuY3WaiOiN5j2yvluqVyOj8P1Bofz/Jsx0/NhoWOBC3I6thMNNwgk/gYv0KAbJnB1Ya9ITHxD+hGVuEWuWNXsU5AqVLFSsvYpQhPAyXaVqdeNiienbrXez5GQMHGBXDCLZwZDny86SU7F53lEqspZf/1cPkrmf3gpWwvWLZS8k+i6A7kE+klR/8RKbxKMYOSBgaDVut4GnwFmgwMNiMUsueK/38D3GKuy2Wy9rjGTw6OZ2u4taF6HlbvwpxhqIpZtvyS56lIT4KSyzy/W+YqMx0RaYOrWTvaxxkfPh0931cIYV4RMkXDYGyWcRtHI0RxKF2U5nrKSy2T7a+NtIalE4/6iF1d7GpRNJjb3d19Efs7iA7AjoYEAbxyn6hZVKFAuhPgtCg9gHi6eZAPuFeFKbDw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(396003)(346002)(39860400002)(376002)(451199021)(38100700002)(82960400001)(31696002)(36756003)(86362001)(31686004)(8676002)(7416002)(8936002)(26005)(6506007)(478600001)(5660300002)(6486002)(2616005)(66556008)(83380400001)(2906002)(316002)(6666004)(41300700001)(66946007)(186003)(4326008)(6916009)(66476007)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?H/AOo7aLNVq4sFb9u8Wqhde3m8DMYjkegLEhOQ5OYnEYKjhLvTAvt2ALNdGt?=
- =?us-ascii?Q?TXzLM8HxnVNUx85zwB7cZzJEBssIMJ757baJz6e4b4VSlB0Oapjvcmd7DA42?=
- =?us-ascii?Q?H0+pRrMrN7d3Ae8THeSbCrhM8edCuvDfuhfHa1WMzICrwCQ2ipV1c8CAFuBf?=
- =?us-ascii?Q?aih/kVQMflGHm16VbpX7/US2gNTgKJ21l9oqURUNIGr1/E413pkJaAryB1JE?=
- =?us-ascii?Q?v7qDYFRhf8yJG8ItMz0xuDR1dCqVggSCsofrdkj6EYZJXdPag2ierLzzA2eC?=
- =?us-ascii?Q?2r+3PdQGp9Qz/GOmmXkkKavB5N8ePncSgnEnIvNzqQSI/wAfE1I56ycLIroz?=
- =?us-ascii?Q?+Ng0+btL1U2jYDi4cmE7PMNVSOfFFmIVOjZ4T6pbd5dw6LNy0AdyxzQ/Ww/G?=
- =?us-ascii?Q?wRlh6rWM8euYmrpTB0yalxxMxFKJpMEE4OnCTqN/kkQgk50U9HaZdPh+nwCp?=
- =?us-ascii?Q?og7lPwC4A7cjC8aPh5KkHVvXA80JZ9n2dz44V91PKOse1NadgVpbxc0ELZMp?=
- =?us-ascii?Q?NJJd/q5Lf3JxBT+nyxsjV4toDT+i+QRHa1alOq+Di76+s3DiaHKf1RbMiVVa?=
- =?us-ascii?Q?qSHfAdVf00u/CGXxO8i54KzS2OvLHPTYO3yoFW75enhBFvhagZzKoLpLzdgg?=
- =?us-ascii?Q?3LSPAU75ea0757KvvxP8GNN6V8N6xZqlYEQ6ieb/mGHKif1fmqyhodnlmpfm?=
- =?us-ascii?Q?T6XegZHd3uYjB7EGk+z9Q72ROyNRnEU26RiqVwR+yiKWQwalGTUVMbtQ5rP3?=
- =?us-ascii?Q?GUVmfYmgqaSxrTx4NJN0J1wCQkFc9hHRpmfTMivgnfh+JoZh/FZR508/3yA5?=
- =?us-ascii?Q?t1OJTR/KtrxJC7a88/bDvhsVWZHkShUipmD4f5YbDuitZbuyUPp12ZLKo9wc?=
- =?us-ascii?Q?41QCJCDI4muJdp6f6hNkAwnLjMO5A6l1rWM9x0r4D11qOo5AOzBsEpnGuzfp?=
- =?us-ascii?Q?fPmy9+L0rKKoE8ZnR8p1VuJqhJhpb9HwjQdEtBhowkPpOmZHSvv4kt1o0Hms?=
- =?us-ascii?Q?JG+/JJfsdxJfypuSiaY7L/IDwOc/2+sGKzrVKyACIdAryK7M0eBDHCiHGRfR?=
- =?us-ascii?Q?Qs5n6UMMzLU25NLBWxLbbCjG7nauBSE098ql1PIjBgvVlW1U4KUEPJcA5HYU?=
- =?us-ascii?Q?imUTfXx4s1kxTrr34g6SykL9qbzKK6MG572LwNTkensVZbmWNirhLPFUo0B8?=
- =?us-ascii?Q?kh9bN7fnJEkc86XVA4kjpc2UOhjwqjvCmkr1tIo2w2GNrbdAcak2j9OgJmwW?=
- =?us-ascii?Q?7Lzz5uIYy+8p7ATEDvuDV/iswAWjZ3YI/RvUjGah02SDuZm/iKfZuTpITkza?=
- =?us-ascii?Q?EmKhoowwlCQblV7tRU0bY1O4vK/K7qczHTPhz4lYgNZICc3wmGA28kaNU+M1?=
- =?us-ascii?Q?wMOhjs074N1H9nkza7ZqGyYTtSmO0yr1bODo3+L2cOHzLRmpCycG8H/lwWeq?=
- =?us-ascii?Q?yrqG5tXDWW546UOMTyO08/U4EoCg1TME5Z/0GICK7xdL7Ebqo6+oRdQ41QRL?=
- =?us-ascii?Q?zn+q8YOoyTQbEo6pIyi8wfQncZ9ga9v0IpG1Z09oGF+O+VjJ8sjhtNcZgxOg?=
- =?us-ascii?Q?3D3yxV7NdCCyNdlIWPFhIGwpxjePcO/76rPu0/v2TjPXAcORhvT6ahrkcf2z?=
- =?us-ascii?Q?Yw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: be2c6bd2-c74a-42bb-0ef8-08db52ee412d
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5471.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHNnRkphRGRmbDBwd0VrLzk0QWFhTlozUHNXbEZnemQ2bEw0dlI0SExSMlpl?=
+ =?utf-8?B?N2VHSFlDSWl5cFNDTjZ0ZVpJSk5NR3NSelZ2SVZZRjhZQVZNZkVlR0FwMFJP?=
+ =?utf-8?B?SFNHTW9DTnVJZHJhTHN0TXFlcjZnTERzT0QwY0lNSjdqQTdLV2VtQm9JTWlk?=
+ =?utf-8?B?K2hucnJVekkzcHRTQ3ZieTZ5Wm10ZW05SUMwYmw4RHk4ZXMrR2pBTVFHSHp2?=
+ =?utf-8?B?b1JwZUNpNmRrRGUvbTNFU2RMKzgybEx3R0g4TkdTb1RROS84aW1MRDF2cHlZ?=
+ =?utf-8?B?ZVVjZ3dlM2dvb3RVcGFCT1JIdVFVYk5LTmtXcDJZeW1WbTM3SUhJZ3JxdHRP?=
+ =?utf-8?B?RGhqL2lwVjVHNG13ZFd1Qmd4Yzg4eldIWDE2OWV4eGZLcGRFUGNveEE2a2ds?=
+ =?utf-8?B?Q3gycUhrdXpCb3RUTnBPc3A4dE83MStLMENza2hxY2RhUGN0MERzaEJPbG1Q?=
+ =?utf-8?B?b1FKUVA5VmVicHN1S21TdTB4VzcyMDN5b0tmNnA2eDd5bTFXMUZBcFRqZDkr?=
+ =?utf-8?B?WU1KdVJoc1dzaGNoR2dDNnZKZURXYmZMUDNNZk80NVV4ZXpHVlMyb2xPZmxB?=
+ =?utf-8?B?VHlJZytqV1ZpR3JDcU9qUnlJNHphVWx0cXMraFNuQVFDTSs3UURTWStrZFh3?=
+ =?utf-8?B?NzNOWVZIK3pOdGRsZ2pMOVM3WkxXOUduc0d1TGY4ejJkdHQ3SHhUWlgvNmg3?=
+ =?utf-8?B?UlYvcE5ocjFvODBYcVR6Qjg0N0c1Vm1pclZXbmYwdGczZUkvZVRYK1laa0hB?=
+ =?utf-8?B?dis5Qlc3WnV5d2hjY2pGcE1ETU8rWmRuTGtvSGhvakhJWWw0dnZTcDNYTjR2?=
+ =?utf-8?B?SjJCdVNtaGdoTFdEM3Q5UDZXODF6ZHRVKzhCM3piNi9wMnpDcWpaL1dCU3Rs?=
+ =?utf-8?B?U2tYNmk1WnVjYU00ZDFneWJpQ1NEN05UZUFUY1ZxYmVwcnlpMXR4TUtjVkRB?=
+ =?utf-8?B?OXltS0tFRG9SRjI1KzhFMVZSRHZqZW1oT1R3ZVFtWkFDNlR3UlVZVWZqbXpP?=
+ =?utf-8?B?aWRZRm9laDgyUUgyT1FKWEtqVyt4VTc5ZXE3SGthRkNFd3VHVS8ycUR6c3E1?=
+ =?utf-8?B?SFF2RC8rWXdreUcrTytvbFVzU2VDakQxanpUY1lJMzZpaktiNUg5bXBnYWJ4?=
+ =?utf-8?B?TUw3SFdkRlFOSnlKMURPbHdMTHZBdkNoVktLK1c3WnN4WlozK2g2cHhwTzZv?=
+ =?utf-8?B?L3JEclMyZ0ZRdXdzd0RDci93RFBSZmdUWUFXT3VralBHQUY1Q2FkVXRadWY2?=
+ =?utf-8?B?YUFEajJGYWw0eDc5NWwxbEE4cWFjVENkYi85L04yWDd3T1QwQ1dPbnNXL2Q2?=
+ =?utf-8?B?b3pPbXNyamtwOXZnYlJVblVSTVd2OVhlYWVsdGoycFNzMzNSK2RMZVl2ZlRH?=
+ =?utf-8?B?VkNYWExEQXBQYTlQenhZbHVaNGNscWlvN3RodFY2b1hVK3k0bTlXK0wza1hi?=
+ =?utf-8?B?cmp4MTVaN0ZXdk1JWUJ4b1B5OFVtRVNDZThBOXNjQjZBNVVuS1FqN3g3NHc0?=
+ =?utf-8?B?a0FpTk1qdSt1REZIYUt4cmErSEo2SjRpVm0veGI3UXN2MDVwU09lYmlTRjRC?=
+ =?utf-8?B?cFhBSjVvYWNaeWxYTFhUcVluV3JKV04yTWJxOWszRnRjYUFLdDJjNEsxQk5I?=
+ =?utf-8?B?bXlCQXJ6bE9HdkFzd1hlYjRnZEMvSWsvUmhDbGp3QW5LejFXTm1CaTFXOVFT?=
+ =?utf-8?B?RGhCWmg2d2lqcjRjR1hKZkJUNXhMS3RJTExleFNOUHJWMXhyUnhObUwwdVVB?=
+ =?utf-8?B?Z3VaZ2VGRDhjMzRLbVI1b2VYb1B4NXhIOXFUaHh1dGxzQkhUaG8za0szNnRY?=
+ =?utf-8?B?LzM4QTBtcVFQRUo1VzVFWnZiOWd2TVZZeGlJMUIvaDlrMHZoSUMzYU43ck5i?=
+ =?utf-8?B?ZHc0R0JpNDE1ZnR5NDMwRUlzaG5IdU5sSURRYjhkRVVydjZQZldWN3ZLMXBJ?=
+ =?utf-8?B?M0wrczFkMkZPTGU4ZzFtdmVQejBjakIvZzNSS1dIaFkvaFQ5alRNWG5qTjFJ?=
+ =?utf-8?B?VFdFM3ZwcTRaLzBLL2xpamJhcUpmb1ZQNnhtZjB6TERIMUFUeWNkOGZLMU9U?=
+ =?utf-8?B?cEhOdEY0NWw0TTROcmZ4Vm01NXZqQVlCSlJacW15YmIwelFBUm1qbXlrSkFN?=
+ =?utf-8?B?TWFyS1FCSTJ0bUpEVEpkVkQwQnh6aHRqenV6UHdUOVdzUWpCTUJjTTE4d1BP?=
+ =?utf-8?B?RXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3002466-e902-4c24-69df-08db52eef6e6
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2023 13:39:05.3959
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2023 13:44:10.4590
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CN5bVGDPEsI9IqWI/9qtTCjfb9pjXlHyIEelviFfqq58poZfApcsMQc5vvEQh15t1RSjKb1Eoi4aKiC6nAyekvgzAH6UbcGayIcu9QZwmn8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6527
+X-MS-Exchange-CrossTenant-UserPrincipalName: 20yFqQSodzItOlxFyvX8B1HDTCTmjcKr8tTZoYVDWQDBaltbEAYrqCW0NXcNNUbcWuXX2R0kWaA0Ib0NB1tgtvaAOW7Rt8LNvBjDJoQj/YA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4895
 X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 12, 2023 at 11:23:00AM +0100, Quentin Monnet wrote:
-> 2023-05-11 17:13 UTC+0200 ~ Larysa Zaremba <larysa.zaremba@intel.com>
-> > Add ability to specify a network interface used to resolve
-> > XDP Hints kfuncs when loading program through bpftool.
-> > 
-> > Usage:
-> > bpftool prog load <bpf_obj_path> <pin_path> dev xdpmeta <ifname>
-> 
-> Thanks for this patch!
-> 
-> Regarding the command-line syntax, I'm not a big fan of the optional
-> sub-keyword for the device for XDP hints. I must admit I had not
-> anticipated other another use for the "dev" keyword. Instead, have you
-> considered one of the following:
-> 
-> 1) Adding a different keyword ("xdpmeta_dev"?) and making it
-> incompatible with "dev"
-> 
-> 2) Another alternative would be adding a sub-keyword for offload too:
-> 
->     bpftool p l [...] dev <[offload <ifname> | xdpmeta <ifname>]>
-> 
-> If the ifname is provided with no sub-keyword, we would consider it for
-> offload for legacy support, possibly warn that the syntax is deprecated.
-> 
-> What do you think?
-> 
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+Date: Fri, 12 May 2023 15:08:13 +0200
 
-I think first option would look a little bit nicer, but I like the idea to 
-deprecate "dev <ifname>". In my current version, forgetting to add "xdpmeta" 
-resulted in not very descriptive errors, this may confuse new users. So what 
-about:
+> In order to reduce page_pool memory footprint, rely on
+> page_pool_dev_alloc_frag routine and reduce buffer size
+> (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one page
+> for two 1500B frames. Reduce VETH_XDP_PACKET_HEADROOM to 192 from 256
+> (XDP_PACKET_HEADROOM) to fit max_head_size in VETH_PAGE_POOL_FRAG_SIZE.
+> Please note, using default values (CONFIG_MAX_SKB_FRAGS=17), maximum
+> supported MTU is now reduced to 36350B.
 
-bpftool prog load [...] xdpmeta_dev/offload_dev <ifname>
-
-"dev <ifname>" syntax would still work, but with a big warning, like this:
-
-  'bpftool prog [...] dev <ifname>' syntax is deprecated. Going further, please 
-  use 'offload_dev <ifname>' to offload program to device. For XDP hints 
-  applications, use 'xdpmeta_dev <ifname>'.
-
-> > 
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > ---
-> >  tools/bpf/bpftool/prog.c | 28 +++++++++++++++++++++-------
-> >  1 file changed, 21 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> > index 91b6075b2db3..a9cb96d99277 100644
-> > --- a/tools/bpf/bpftool/prog.c
-> > +++ b/tools/bpf/bpftool/prog.c
-> > @@ -1517,12 +1517,13 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >  	struct bpf_program *prog = NULL, *pos;
-> >  	unsigned int old_map_fds = 0;
-> >  	const char *pinmaps = NULL;
-> > +	__u32 offload_ifindex = 0;
-> >  	bool auto_attach = false;
-> > +	__u32 meta_ifindex = 0;
-> >  	struct bpf_object *obj;
-> >  	struct bpf_map *map;
-> >  	const char *pinfile;
-> >  	unsigned int i, j;
-> > -	__u32 ifindex = 0;
-> >  	const char *file;
-> >  	int idx, err;
-> >  
-> > @@ -1614,17 +1615,25 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >  			map_replace[old_map_fds].fd = fd;
-> >  			old_map_fds++;
-> >  		} else if (is_prefix(*argv, "dev")) {
-> > +			__u32 *cur_ifindex;
-> > +
-> >  			NEXT_ARG();
-> >  
-> > -			if (ifindex) {
-> > -				p_err("offload device already specified");
-> > +			if (offload_ifindex || meta_ifindex) {
-> > +				p_err("device already specified");
-> 
-> I'd add a note to tell somehow that offload and XDP hints are mutually
-> exclusive. I suspect not all users understand these well.
-
-Ok, will do.
+I thought we're stepping away from page splitting bit by bit O_o
+Primarily for the reasons you mentioned / worked around here: it creates
+several significant limitations and at least on 64-bit systems it
+doesn't scale anymore. 192 bytes of headroom is less than what XDP
+expects (isn't it? Isn't 256 standard-standard, so that skb XDP path
+reallocates heads only to have 256+ there?), 384 bytes of shinfo can
+change anytime and even now page split simply blocks you from increasing
+MAX_SKB_FRAGS even by one. Not speaking of MTU limitations etc.
+BTW Intel drivers suffer from the very same things due solely to page
+split (and I'm almost done with converting at least some of them to Page
+Pool and 1 page per buffer model), I don't recommend deliberately
+falling into that pit =\ :D
 
 > 
-> >  				goto err_free_reuse_maps;
-> >  			}
-> > +			if (is_prefix(*argv, "xdpmeta")) {
-> > +				cur_ifindex = &meta_ifindex;
-> > +				NEXT_ARG();
-> > +			} else {
-> > +				cur_ifindex = &offload_ifindex;
-> > +			}
-> >  			if (!REQ_ARGS(1))
-> >  				goto err_free_reuse_maps;
-> >  
-> > -			ifindex = if_nametoindex(*argv);
-> > -			if (!ifindex) {
-> > +			*cur_ifindex = if_nametoindex(*argv);
-> > +			if (!(*cur_ifindex)) {
-> >  				p_err("unrecognized netdevice '%s': %s",
-> >  				      *argv, strerror(errno));
-> >  				goto err_free_reuse_maps;
-> > @@ -1671,7 +1680,12 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >  				goto err_close_obj;
-> >  		}
-> >  
-> > -		bpf_program__set_ifindex(pos, ifindex);
-> > +		if (prog_type == BPF_PROG_TYPE_XDP && meta_ifindex) {
-> > +			bpf_program__set_flags(pos, BPF_F_XDP_DEV_BOUND_ONLY);
-> > +			bpf_program__set_ifindex(pos, meta_ifindex);
-> > +		} else {
-> > +			bpf_program__set_ifindex(pos, offload_ifindex);
-> > +		}
-> >  		if (bpf_program__type(pos) != prog_type)
-> >  			bpf_program__set_type(pos, prog_type);
-> >  		bpf_program__set_expected_attach_type(pos, expected_attach_type);
-> > @@ -1709,7 +1723,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
-> >  	idx = 0;
-> >  	bpf_object__for_each_map(map, obj) {
-> >  		if (bpf_map__type(map) != BPF_MAP_TYPE_PERF_EVENT_ARRAY)
-> > -			bpf_map__set_ifindex(map, ifindex);
-> > +			bpf_map__set_ifindex(map, offload_ifindex);
-> >  
-> >  		if (j < old_map_fds && idx == map_replace[j].idx) {
-> >  			err = bpf_map__reuse_fd(map, map_replace[j++].fd);
-> 
-> Could you please also update the following items:
-> 
-> - The usage message for "bpftool prog load" near the end of prog.c
-> 
-> - The related doc in Documentation/bpftool-prog.rst (command summary
-> near the top, and detailed description later in the doc)
-> 
-> - Bash completion (for keyword "dev", look for "_sysfs_get_netdevs" in
-> bash-completion/bpftool). I'm happy to help with this one if necessary.
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/veth.c | 39 +++++++++++++++++++++++++--------------
+>  1 file changed, 25 insertions(+), 14 deletions(-)
+[...]
 
-Will do all the above in v2.
-
-> 
-> Thanks,
-> Quentin
+Thanks,
+Olek
 
