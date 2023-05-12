@@ -1,84 +1,66 @@
-Return-Path: <bpf+bounces-391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB747005B5
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 12:35:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331067006E0
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 13:32:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED36F281B3B
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 10:35:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BEC21C211BF
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 11:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A95AD507;
-	Fri, 12 May 2023 10:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FAFD514;
+	Fri, 12 May 2023 11:32:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAB6AD57
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 10:34:55 +0000 (UTC)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEBD13848
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 03:34:26 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3063208beedso9313871f8f.1
-        for <bpf@vger.kernel.org>; Fri, 12 May 2023 03:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1683887649; x=1686479649;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OMbB3rUKr4BJ9Y1bRCvT0+9HIM59fAt1h5Xo/nKUPv4=;
-        b=Uj3pso/Eayo7KRB5BgEY/pQdMWehWmqU7frzwSVuYUMrofP//oKvuC5zzOh0uBxMKB
-         mBdE08WGIYHWG4NjdozigFfh64aq91VEd+nMboC13Yt87cBVJ9faurkpRG8xR+4DYk2M
-         LsycLsHCwzhQujivFZvJuOz/8OamwSEaAGaR+Z2oWlbE3e3hzTDnuuc21lkYV1XLxcW8
-         KgJr0YtzsjqMRPXdHe1yRlXNyBthedZYcDUiMUSmg48hTkC53p8s1zXvf3bPmbik39Xj
-         tV2nmCJSIhBiBYrbVF3c5QqyUBjtzb0V0Z94jjieToHo/qiLdXqmQyd9lW+7B1MClSmI
-         pNgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683887649; x=1686479649;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OMbB3rUKr4BJ9Y1bRCvT0+9HIM59fAt1h5Xo/nKUPv4=;
-        b=BbNHWicSnXrcC60pvWYKtX1FAJmRknID+u6zR2sVzLG2YX0gvBhurZRBikf2wKghyP
-         HHFVUt3bOlo1cgKBQgK5qUUlsEC/YtqCr4umCKh0SvoR1uWRqHHZATkVMRdb8nB81U0t
-         cPVJ13UbOqxdmtzZFWYycGu4nRls1+zQuiuvTXE1HxnXuf5c1Y0qX586TJ/C9VOgi2ea
-         QhjWhVfb0CPP84KAHT6AWD7X+QGdHhDPjuQ6Fo9wAf/aK3WSAZuOMZgXQAA9Uj+6LkMJ
-         LHPBzyDDF+HEvUjB5nLgPNJy2f3NtYt3uAsqR57XRjle8Vr5VGp0FnA9pJYtwQEu7svj
-         TSAw==
-X-Gm-Message-State: AC+VfDw8ukWNvV7BOzsuM9rsMhlu3xAOWx+XJW11IB98IvL5b59K/VD/
-	CVC3qUeQMn0EtQTlYRDsNrTxmw==
-X-Google-Smtp-Source: ACHHUZ6eqgFzzfyx/ebDX6KljV6e6EeFX865Nmj1frO4+NFhJumo1ClpWmA6lyn7LT36n89NnJDzmg==
-X-Received: by 2002:adf:fccb:0:b0:306:3899:ccbf with SMTP id f11-20020adffccb000000b003063899ccbfmr17483186wrs.14.1683887649515;
-        Fri, 12 May 2023 03:34:09 -0700 (PDT)
-Received: from harfang.fritz.box ([2a02:8011:e80c:0:a162:20e4:626a:dd])
-        by smtp.gmail.com with ESMTPSA id q6-20020adff946000000b003078cd719ffsm17946320wrr.95.2023.05.12.03.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 03:34:09 -0700 (PDT)
-From: Quentin Monnet <quentin@isovalent.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	Quentin Monnet <quentin@isovalent.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	=?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
-	Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH bpf-next 4/4] bpftool: use a local bpf_perf_event_value to fix accessing its fields
-Date: Fri, 12 May 2023 11:33:54 +0100
-Message-Id: <20230512103354.48374-5-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230512103354.48374-1-quentin@isovalent.com>
-References: <20230512103354.48374-1-quentin@isovalent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3349BA56
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 11:32:49 +0000 (UTC)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C358E738
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 04:32:48 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34C8i19m029950;
+	Fri, 12 May 2023 11:32:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=XSpTmG44m6Df+9MGM6DF2s7/rs/efBQAZMpER8iT6F8=;
+ b=isFGXb61r6cf4lIEnVoXuCKX+nd6tt2eDPNHvQKzNrtX1Oydc5v3Dzf/I2CYHk6V+4BM
+ WB960TZLEv9CVRgDXxlTRAfoflzxMn1dEMujujzPkXUmQwcFPwdMwBCuUZH8Y0SMsIT8
+ y1qv9pwpgJEtd3boziTVjs3J8iaxEM+5suy0TjhDCFoCRUWxYFFY0i78lEqqTgJWfOjN
+ 3mDVOz0TUN/Y9TXe56/qu7CXh4JlEu94L2AN3MRywKm8EZ8as65rygUKrgmOIBhNls/M
+ 6sXlQU0m8drBqhz8dnjzbokSq1eulAXN1pTvEWnX2FoOzjhv4cxokPOqWvOEEYix8/+s vA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qf776stgw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 May 2023 11:32:19 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34CArVfO024384;
+	Fri, 12 May 2023 11:32:19 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3qf7y80kur-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 May 2023 11:32:19 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34CBWIb1035664;
+	Fri, 12 May 2023 11:32:18 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-218-250.vpn.oracle.com [10.175.218.250])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3qf7y80kt0-1;
+	Fri, 12 May 2023 11:32:18 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: quentin@isovalent.com
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, kuba@kernel.org,
+        bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+        Nicky Veitch <nicky.veitch@oracle.com>
+Subject: [PATCH bpf] tools: bpftool: JIT limited misreported as negative value on aarch64
+Date: Fri, 12 May 2023 12:31:34 +0100
+Message-Id: <20230512113134.58996-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,138 +68,156 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-12_08,2023-05-05_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305120096
+X-Proofpoint-ORIG-GUID: SOkR_1yAyXLSqQkJdSbz5gmnOVtfNzav
+X-Proofpoint-GUID: SOkR_1yAyXLSqQkJdSbz5gmnOVtfNzav
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Alexander Lobakin <alobakin@pm.me>
+On aarch64, "bpftool feature" reports an incorrect BPF JIT limit:
 
-Fix the following error when building bpftool:
+$ sudo /sbin/bpftool feature
+Scanning system configuration...
+bpf() syscall restricted to privileged users
+JIT compiler is enabled
+JIT compiler hardening is disabled
+JIT compiler kallsyms exports are enabled for root
+skipping kernel config, can't open file: No such file or directory
+Global memory limit for JIT compiler for unprivileged users is -201326592 bytes
 
-  CLANG   profiler.bpf.o
-  CLANG   pid_iter.bpf.o
-skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an incomplete type 'struct bpf_perf_event_value'
-        __uint(value_size, sizeof(struct bpf_perf_event_value));
-                           ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
-tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helper_defs.h:7:8: note: forward declaration of 'struct bpf_perf_event_value'
-struct bpf_perf_event_value;
-       ^
+This is because /proc/sys/net/core/bpf_jit_limit reports
 
-struct bpf_perf_event_value is being used in the kernel only when
-CONFIG_BPF_EVENTS is enabled, so it misses a BTF entry then.
-Define struct bpf_perf_event_value___local with the
-`preserve_access_index` attribute inside the pid_iter BPF prog to
-allow compiling on any configs. It is a full mirror of a UAPI
-structure, so is compatible both with and w/o CO-RE.
-bpf_perf_event_read_value() requires a pointer of the original type,
-so a cast is needed.
+$ sudo cat /proc/sys/net/core/bpf_jit_limit
+68169519595520
 
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+...and an int is assumed in read_procfs().  Change read_procfs()
+to return a long to avoid negative value reporting.
+
+Fixes: 7a4522bbef0c ("tools: bpftool: add probes for /proc/ eBPF parameters")
+Reported-by: Nicky Veitch <nicky.veitch@oracle.com>
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- tools/bpf/bpftool/skeleton/profiler.bpf.c | 27 ++++++++++++++---------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ tools/bpf/bpftool/feature.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/tools/bpf/bpftool/skeleton/profiler.bpf.c b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-index ce5b65e07ab1..2f80edc682f1 100644
---- a/tools/bpf/bpftool/skeleton/profiler.bpf.c
-+++ b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-@@ -4,6 +4,12 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
-+struct bpf_perf_event_value___local {
-+	__u64 counter;
-+	__u64 enabled;
-+	__u64 running;
-+} __attribute__((preserve_access_index));
-+
- /* map of perf event fds, num_cpu * num_metric entries */
- struct {
- 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-@@ -15,14 +21,14 @@ struct {
- struct {
- 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
- 	__uint(key_size, sizeof(u32));
--	__uint(value_size, sizeof(struct bpf_perf_event_value));
-+	__uint(value_size, sizeof(struct bpf_perf_event_value___local));
- } fentry_readings SEC(".maps");
- 
- /* accumulated readings */
- struct {
- 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
- 	__uint(key_size, sizeof(u32));
--	__uint(value_size, sizeof(struct bpf_perf_event_value));
-+	__uint(value_size, sizeof(struct bpf_perf_event_value___local));
- } accum_readings SEC(".maps");
- 
- /* sample counts, one per cpu */
-@@ -39,7 +45,7 @@ const volatile __u32 num_metric = 1;
- SEC("fentry/XXX")
- int BPF_PROG(fentry_XXX)
- {
--	struct bpf_perf_event_value *ptrs[MAX_NUM_MATRICS];
-+	struct bpf_perf_event_value___local *ptrs[MAX_NUM_MATRICS];
- 	u32 key = bpf_get_smp_processor_id();
- 	u32 i;
- 
-@@ -53,10 +59,10 @@ int BPF_PROG(fentry_XXX)
- 	}
- 
- 	for (i = 0; i < num_metric && i < MAX_NUM_MATRICS; i++) {
--		struct bpf_perf_event_value reading;
-+		struct bpf_perf_event_value___local reading;
- 		int err;
- 
--		err = bpf_perf_event_read_value(&events, key, &reading,
-+		err = bpf_perf_event_read_value(&events, key, (void *)&reading,
- 						sizeof(reading));
- 		if (err)
- 			return 0;
-@@ -68,14 +74,14 @@ int BPF_PROG(fentry_XXX)
+diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+index da16e6a27ccc..0675d6a46413 100644
+--- a/tools/bpf/bpftool/feature.c
++++ b/tools/bpf/bpftool/feature.c
+@@ -167,12 +167,12 @@ static int get_vendor_id(int ifindex)
+ 	return strtol(buf, NULL, 0);
  }
  
- static inline void
--fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
-+fexit_update_maps(u32 id, struct bpf_perf_event_value___local *after)
+-static int read_procfs(const char *path)
++static long read_procfs(const char *path)
  {
--	struct bpf_perf_event_value *before, diff;
-+	struct bpf_perf_event_value___local *before, diff;
+ 	char *endptr, *line = NULL;
+ 	size_t len = 0;
+ 	FILE *fd;
+-	int res;
++	long res;
  
- 	before = bpf_map_lookup_elem(&fentry_readings, &id);
- 	/* only account samples with a valid fentry_reading */
- 	if (before && before->counter) {
--		struct bpf_perf_event_value *accum;
-+		struct bpf_perf_event_value___local *accum;
+ 	fd = fopen(path, "r");
+ 	if (!fd)
+@@ -194,7 +194,7 @@ static int read_procfs(const char *path)
  
- 		diff.counter = after->counter - before->counter;
- 		diff.enabled = after->enabled - before->enabled;
-@@ -93,7 +99,7 @@ fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
- SEC("fexit/XXX")
- int BPF_PROG(fexit_XXX)
+ static void probe_unprivileged_disabled(void)
  {
--	struct bpf_perf_event_value readings[MAX_NUM_MATRICS];
-+	struct bpf_perf_event_value___local readings[MAX_NUM_MATRICS];
- 	u32 cpu = bpf_get_smp_processor_id();
- 	u32 i, zero = 0;
- 	int err;
-@@ -102,7 +108,8 @@ int BPF_PROG(fexit_XXX)
- 	/* read all events before updating the maps, to reduce error */
- 	for (i = 0; i < num_metric && i < MAX_NUM_MATRICS; i++) {
- 		err = bpf_perf_event_read_value(&events, cpu + i * num_cpu,
--						readings + i, sizeof(*readings));
-+						(void *)(readings + i),
-+						sizeof(*readings));
- 		if (err)
- 			return 0;
+-	int res;
++	long res;
+ 
+ 	/* No support for C-style ouptut */
+ 
+@@ -216,14 +216,14 @@ static void probe_unprivileged_disabled(void)
+ 			printf("Unable to retrieve required privileges for bpf() syscall\n");
+ 			break;
+ 		default:
+-			printf("bpf() syscall restriction has unknown value %d\n", res);
++			printf("bpf() syscall restriction has unknown value %ld\n", res);
+ 		}
  	}
+ }
+ 
+ static void probe_jit_enable(void)
+ {
+-	int res;
++	long res;
+ 
+ 	/* No support for C-style ouptut */
+ 
+@@ -245,7 +245,7 @@ static void probe_jit_enable(void)
+ 			printf("Unable to retrieve JIT-compiler status\n");
+ 			break;
+ 		default:
+-			printf("JIT-compiler status has unknown value %d\n",
++			printf("JIT-compiler status has unknown value %ld\n",
+ 			       res);
+ 		}
+ 	}
+@@ -253,7 +253,7 @@ static void probe_jit_enable(void)
+ 
+ static void probe_jit_harden(void)
+ {
+-	int res;
++	long res;
+ 
+ 	/* No support for C-style ouptut */
+ 
+@@ -275,7 +275,7 @@ static void probe_jit_harden(void)
+ 			printf("Unable to retrieve JIT hardening status\n");
+ 			break;
+ 		default:
+-			printf("JIT hardening status has unknown value %d\n",
++			printf("JIT hardening status has unknown value %ld\n",
+ 			       res);
+ 		}
+ 	}
+@@ -283,7 +283,7 @@ static void probe_jit_harden(void)
+ 
+ static void probe_jit_kallsyms(void)
+ {
+-	int res;
++	long res;
+ 
+ 	/* No support for C-style ouptut */
+ 
+@@ -302,14 +302,14 @@ static void probe_jit_kallsyms(void)
+ 			printf("Unable to retrieve JIT kallsyms export status\n");
+ 			break;
+ 		default:
+-			printf("JIT kallsyms exports status has unknown value %d\n", res);
++			printf("JIT kallsyms exports status has unknown value %ld\n", res);
+ 		}
+ 	}
+ }
+ 
+ static void probe_jit_limit(void)
+ {
+-	int res;
++	long res;
+ 
+ 	/* No support for C-style ouptut */
+ 
+@@ -322,7 +322,7 @@ static void probe_jit_limit(void)
+ 			printf("Unable to retrieve global memory limit for JIT compiler for unprivileged users\n");
+ 			break;
+ 		default:
+-			printf("Global memory limit for JIT compiler for unprivileged users is %d bytes\n", res);
++			printf("Global memory limit for JIT compiler for unprivileged users is %ld bytes\n", res);
+ 		}
+ 	}
+ }
 -- 
-2.34.1
+2.31.1
 
 
