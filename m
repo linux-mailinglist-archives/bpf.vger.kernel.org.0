@@ -1,484 +1,177 @@
-Return-Path: <bpf+bounces-374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F6A700054
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 08:27:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B5C700383
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 11:21:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C111B1C21025
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 06:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFE4B1C21113
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 09:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BD62946F;
-	Fri, 12 May 2023 06:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6BDBE46;
+	Fri, 12 May 2023 09:21:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B479456;
-	Fri, 12 May 2023 06:25:05 +0000 (UTC)
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506123ABF;
-	Thu, 11 May 2023 23:25:01 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0ViNyZRq_1683872695;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0ViNyZRq_1683872695)
-          by smtp.aliyun-inc.com;
-          Fri, 12 May 2023 14:24:56 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3BC2597;
+	Fri, 12 May 2023 09:21:27 +0000 (UTC)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DFFD2DC;
+	Fri, 12 May 2023 02:21:25 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-305ec9ee502so1710477f8f.0;
+        Fri, 12 May 2023 02:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683883284; x=1686475284;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pkYL/syTf0nPUeqpR++4UlEczya8fgRVTB/figVAAso=;
+        b=TUOymGDS2ZoT5/n999Em3uwBiThjSJ+NRwb62ebFUtTKqHQQOfGW3uB09urqizLc+4
+         a4P05Br93TI50xDnMaQFIWchHXPPaI/JUa5UK6F1fXLqolH4pdOwHDYR63AwEzPokbc9
+         1Q7tXvmCP30q2tJHKfpGGXDvAPWyPnS7m93HeSuD9vgxpdsjonGoyof2WACrJ/BSQUMN
+         o2eVHFxBiTpf53b4XgK1NYGQfC3TRd9Y/twD09HY7PoOBvw9hQSZuC/HThxwZofBZCwe
+         FHFxgvJaOhEtB6fn2hsyIv7km7euwEdhUpz5LyIwg/9RMf8zVnJ+jPjX+MUal4p7TQJX
+         +rLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683883284; x=1686475284;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pkYL/syTf0nPUeqpR++4UlEczya8fgRVTB/figVAAso=;
+        b=NISjeZODxF7og5ArwjNF5wzk0py+WX3iwNha8PClG98PMXM01hCPPiA9fca82bGckr
+         NyVSZbnaQK4dZbbJPbIFOiZXaNYX+0r6/imu4DcRBIRinEKSS/722MBuCHd0tW6j3FIz
+         GnPKfq2Pxy7N144ZOQ+r8Wk0K4mTKtH8SvqN0XmtSIxekMcX7HQ7Wj/NcwRRV/98AFwj
+         HY2FI5fXYWsvFNYT5H69+Ai/yqxyj7QIwFxyyTjubB+M6YCF0w3OYOJRVMGMiR/8JWrQ
+         FBLEAb+thZTVYDMDswyQzup/d4epSfEm9ItaUGO+pLKYp3WiCdDr4rMFo+ZV9niwH+Rr
+         H4sA==
+X-Gm-Message-State: AC+VfDxKdKM9pi8NcGS/cmwk30pEEbichxG3y1xGoW3MUpqWUgzETItE
+	OLQlEH4DSHeoiqPe1SU2GuM=
+X-Google-Smtp-Source: ACHHUZ72+kfueQSPm1je5L9zSkZlIsWARVkt9XFdRAQ6Os3mQ7fOmXXieF8dQ4oPEmijR/owTu/riw==
+X-Received: by 2002:adf:f84a:0:b0:2fa:b265:a010 with SMTP id d10-20020adff84a000000b002fab265a010mr14488040wrq.7.1683883283653;
+        Fri, 12 May 2023 02:21:23 -0700 (PDT)
+Received: from localhost.localdomain (h-176-10-144-222.NA.cust.bahnhof.se. [176.10.144.222])
+        by smtp.gmail.com with ESMTPSA id i14-20020a5d558e000000b003079f2c2de7sm11467789wrv.112.2023.05.12.02.21.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 May 2023 02:21:23 -0700 (PDT)
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+To: magnus.karlsson@intel.com,
+	bjorn@kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
+	netdev@vger.kernel.org,
+	maciej.fijalkowski@intel.com,
+	bpf@vger.kernel.org,
+	yhs@fb.com,
 	andrii@kernel.org,
 	martin.lau@linux.dev,
-	pabeni@redhat.com,
 	song@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	yhs@fb.com,
-	edumazet@google.com,
 	john.fastabend@gmail.com,
 	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
 	jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next v1 5/5] bpf/selftests: add selftest for SMC bpf capability
-Date: Fri, 12 May 2023 14:24:44 +0800
-Message-Id: <1683872684-64872-6-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	tirthendu.sarkar@intel.com
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next 00/10] seltests/xsk: prepare for AF_XDP multi-buffer testing
+Date: Fri, 12 May 2023 11:20:33 +0200
+Message-Id: <20230512092043.3028-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This PATCH adds a tiny selftest for SMC bpf capability,
-making decisions on whether to use SMC by collecting
-certain information from kernel smc sock.
+Prepare the AF_XDP selftests test framework code for the upcoming
+multi-buffer support in AF_XDP. This so that the multi-buffer patch
+set does not become way too large. In that upcoming patch set, we are
+only including the multi-buffer tests together with any framework
+code that depends on the new options bit introduced in the AF_XDP
+multi-buffer implementation itself.
 
-Follow the steps below to run this test.
+Currently, the test framework is based on the premise that a packet
+consists of a single fragment and thus occupies a single buffer and a
+single descriptor. Multi-buffer breaks this assumption, as that is the
+whole purpose of it. Now, a packet can consist of multiple buffers and
+therefore consume multiple descriptors.
 
-make -C tools/testing/selftests/bpf
-cd tools/testing/selftests/bpf
-sudo ./test_progs -t smc
+The patch set starts with some clean-ups and simplifications followed
+by patches that make sure that the current code works even when a
+packet occupies multiple buffers. The actual code for sending and
+receiving multi-buffer packets will be included in the AF_XDP
+multi-buffer patch set as it depends on a new bit being used in the
+options field of the descriptor.
 
-Results shows:
-18/1    bpf_smc/load:OK
-18/2    bpf_smc/update:OK
-18/3    bpf_smc/ref:OK
-18      bpf_smc:OK
-Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+Patch set anatomy:
+1: The XDP program was unnecessarily changed many times. Fixes this.
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_smc.c | 107 +++++++++
- tools/testing/selftests/bpf/progs/bpf_smc.c      | 265 +++++++++++++++++++++++
- 2 files changed, 372 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_smc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+2: There is no reason to generate a full UDP/IPv4 packet as it is
+   never used. Simplify the code by just generating a valid Ethernet
+   frame.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_smc.c b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-new file mode 100644
-index 0000000..e668857
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_smc.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/err.h>
-+#include <netinet/tcp.h>
-+#include <test_progs.h>
-+#include "network_helpers.h"
-+#include "bpf_smc.skel.h"
-+
-+#define SOL_SMC 286
-+#define SMC_NEGOTIATOR 2
-+static const char name[] = "apps";
-+
-+void run_smc(void)
-+{
-+	int fd, err;
-+
-+	fd = socket(AF_SMC, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, 0, "create smc socket");
-+
-+	err = setsockopt(fd, SOL_SMC, SMC_NEGOTIATOR, name, sizeof(name) / sizeof(char));
-+	ASSERT_EQ(err, 0, "setsockopt");
-+
-+	close(fd);
-+}
-+
-+void test_load(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.ops);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_update(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int err;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.accept);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	run_smc();
-+	ASSERT_EQ(smc_skel->bss->accept_cnt, 1, "accept_cnt");
-+
-+	err = bpf_link__update_map(link, smc_skel->maps.drop);
-+	ASSERT_OK(err, "update_map");
-+
-+	run_smc();
-+	ASSERT_EQ(smc_skel->bss->accept_cnt, 1, "accept_cnt");
-+	ASSERT_EQ(smc_skel->bss->drop_cnt, 1, "drop_cnt");
-+
-+	bpf_link__destroy(link);
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_ref(void)
-+{
-+	struct bpf_smc *smc_skel;
-+	struct bpf_link *link;
-+	int fd = 0, err;
-+
-+	smc_skel = bpf_smc__open_and_load();
-+	if (!ASSERT_OK_PTR(smc_skel, "skel_open"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(smc_skel->maps.accept);
-+	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops"))
-+		goto error;
-+
-+	fd = socket(AF_SMC, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, 0, "create smc socket");
-+	err = setsockopt(fd, SOL_SMC, SMC_NEGOTIATOR, name, sizeof(name) / sizeof(char));
-+	ASSERT_EQ(err, 0, "setsockopt");
-+	bpf_link__destroy(link);
-+	if (fd > 0)
-+		close(fd);
-+	ASSERT_EQ(smc_skel->bss->accept_release_cnt, 1, "accept_release_cnt");
-+error:
-+	bpf_smc__destroy(smc_skel);
-+}
-+
-+void test_bpf_smc(void)
-+{
-+	if (test__start_subtest("load"))
-+		test_load();
-+	if (test__start_subtest("update"))
-+		test_update();
-+	if (test__start_subtest("ref"))
-+		test_ref();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c b/tools/testing/selftests/bpf/progs/bpf_smc.c
-new file mode 100644
-index 0000000..8ff70af
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
-@@ -0,0 +1,265 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_SMC			(43)
-+#define SMC_LISTEN		(10)
-+#define SMC_SOCK_CLOSED_TIMING	(0)
-+extern unsigned long CONFIG_HZ __kconfig;
-+#define HZ CONFIG_HZ
-+
-+char _license[] SEC("license") = "GPL";
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+static __always_inline struct smc_sock *smc_sk(struct sock *sk)
-+{
-+	return (struct smc_sock *)sk;
-+}
-+
-+struct smc_prediction {
-+	/* protection for smc_prediction */
-+	struct bpf_spin_lock lock;
-+	/* start of time slice */
-+	__u64	start_tstamp;
-+	/* delta of pacing */
-+	__u64	pacing_delta;
-+	/* N of closed connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	closed_long_cc;
-+	/* N of closed connections in this time slice */
-+	__u32	closed_total_cc;
-+	/* N of incoming connections determined as long connections
-+	 * in current time slice
-+	 */
-+	__u32	incoming_long_cc;
-+	/* last splice rate of long cc */
-+	__u32	last_rate_of_lcc;
-+};
-+
-+#define SMC_PREDICTION_MIN_PACING_DELTA                (1llu)
-+#define SMC_PREDICTION_MAX_PACING_DELTA                (HZ << 3)
-+#define SMC_PREDICTION_MAX_LONGCC_PER_SPLICE           (8)
-+#define SMC_PREDICTION_MAX_PORT                        (64)
-+#define SMC_PREDICTION_MAX_SPLICE_GAP                  (1)
-+#define SMC_PREDICTION_LONGCC_RATE_THRESHOLD           (13189)
-+#define SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD        (100)
-+#define SMC_PREDICTION_LONGCC_BYTES_THRESHOLD	\
-+		(SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD * 1024)
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, SMC_PREDICTION_MAX_PORT);
-+	__type(key, __u16);
-+	__type(value, struct smc_prediction);
-+} negotiator_map SEC(".maps");
-+
-+
-+static inline __u32 smc_prediction_calt_rate(struct smc_prediction *smc_predictor)
-+{
-+	if (!smc_predictor->closed_total_cc)
-+		return smc_predictor->last_rate_of_lcc;
-+
-+	return (smc_predictor->closed_long_cc << 14) / smc_predictor->closed_total_cc;
-+}
-+
-+static inline struct smc_prediction *smc_prediction_get(__u16 key, __u64 tstamp)
-+{
-+	struct smc_prediction zero = {}, *smc_predictor;
-+	__u32 gap;
-+	int err;
-+
-+	smc_predictor = bpf_map_lookup_elem(&negotiator_map, &key);
-+	if (!smc_predictor) {
-+		zero.start_tstamp = bpf_jiffies64();
-+		zero.pacing_delta = SMC_PREDICTION_MIN_PACING_DELTA;
-+		err = bpf_map_update_elem(&negotiator_map, &key, &zero, 0);
-+		if (err)
-+			return NULL;
-+		smc_predictor =  bpf_map_lookup_elem(&negotiator_map, &key);
-+		if (!smc_predictor)
-+			return NULL;
-+	}
-+
-+	if (tstamp) {
-+		bpf_spin_lock(&smc_predictor->lock);
-+		gap = (tstamp - smc_predictor->start_tstamp) / smc_predictor->pacing_delta;
-+		/* new splice */
-+		if (gap > 0) {
-+			smc_predictor->start_tstamp = tstamp;
-+			smc_predictor->last_rate_of_lcc =
-+				(smc_prediction_calt_rate(smc_predictor) * 7) >> (2 + gap);
-+			smc_predictor->closed_long_cc = 0;
-+			smc_predictor->closed_total_cc = 0;
-+			smc_predictor->incoming_long_cc = 0;
-+		}
-+		bpf_spin_unlock(&smc_predictor->lock);
-+	}
-+	return smc_predictor;
-+}
-+
-+int SEC("struct_ops/bpf_smc_negotiate")
-+BPF_PROG(bpf_smc_negotiate, struct sock *sk)
-+{
-+	struct smc_prediction *smc_predictor;
-+	struct smc_sock *smc = smc_sk(sk);
-+	struct tcp_sock *tp;
-+	__u32 rate = 0;
-+	__u16 key;
-+
-+	/* client side */
-+	if (smc == NULL || smc->sk.__sk_common.skc_state != SMC_LISTEN) {
-+		/* use Global smc_predictor */
-+		key = 0;
-+	} else {	/* server side */
-+		tp = bpf_skc_to_tcp_sock(sk);
-+		if (!tp)
-+			goto error;
-+		key = tp->inet_conn.icsk_inet.sk.__sk_common.skc_num;
-+	}
-+
-+	smc_predictor = smc_prediction_get(key, bpf_jiffies64());
-+	if (!smc_predictor)
-+		return SK_PASS;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+
-+	if (smc_predictor->incoming_long_cc == 0)
-+		goto out_locked_pass;
-+
-+	if (smc_predictor->incoming_long_cc > SMC_PREDICTION_MAX_LONGCC_PER_SPLICE)
-+		goto out_locked_drop;
-+
-+	rate = smc_prediction_calt_rate(smc_predictor);
-+	if (rate < SMC_PREDICTION_LONGCC_RATE_THRESHOLD)
-+		goto out_locked_drop;
-+
-+out_locked_pass:
-+	smc_predictor->incoming_long_cc++;
-+	bpf_spin_unlock(&smc_predictor->lock);
-+	return SK_PASS;
-+out_locked_drop:
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_collect_info")
-+BPF_PROG(bpf_smc_collect_info, struct sock *sk, int timing)
-+{
-+	struct smc_prediction *smc_predictor;
-+	int use_fallback, sndbuf;
-+	struct smc_sock *smc;
-+	struct tcp_sock *tp;
-+	bool match = false;
-+	__u16 wrap, count;
-+	__u16 key;
-+
-+	/* no info can collect */
-+	if (sk == NULL)
-+		return;
-+
-+	/* only fouces on closed */
-+	if (timing != SMC_SOCK_CLOSED_TIMING)
-+		return;
-+
-+	/* every full smc sock should contains a tcp sock */
-+	tp = bpf_skc_to_tcp_sock(sk);
-+	if (!tp)
-+		return;
-+
-+	smc = smc_sk(sk);
-+	if (smc->use_fallback) {
-+		use_fallback = 1;
-+		match = tp->delivered > SMC_PREDICTION_LONGCC_PACKETS_THRESHOLD;
-+	} else {
-+		wrap = smc->conn.tx_curs_sent.wrap;
-+		count = smc->conn.tx_curs_sent.count;
-+		sndbuf = tp->inet_conn.icsk_inet.sk.sk_sndbuf;
-+		match = (count + wrap * sndbuf) > SMC_PREDICTION_LONGCC_BYTES_THRESHOLD;
-+	}
-+
-+	key = tp->inet_conn.icsk_inet.sk.__sk_common.skc_num;
-+
-+	smc_predictor = smc_prediction_get(key, 0);
-+	if (!smc_predictor)
-+		goto error;
-+
-+	bpf_spin_lock(&smc_predictor->lock);
-+	smc_predictor->closed_total_cc++;
-+	if (match) {
-+		/* increase stats */
-+		smc_predictor->closed_long_cc++;
-+		/* try more aggressive */
-+		if (smc_predictor->pacing_delta > SMC_PREDICTION_MIN_PACING_DELTA) {
-+			if (use_fallback) {
-+				smc_predictor->pacing_delta = max(SMC_PREDICTION_MIN_PACING_DELTA,
-+						(smc_predictor->pacing_delta * 3) >> 2);
-+			}
-+		}
-+	} else if (!use_fallback) {
-+		smc_predictor->pacing_delta <<= 1;
-+	}
-+	bpf_spin_unlock(&smc_predictor->lock);
-+error:
-+	return;
-+}
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops ops = {
-+	.name = "apps",
-+	.negotiate	= (void *)bpf_smc_negotiate,
-+	.collect_info	= (void *)bpf_smc_collect_info,
-+};
-+
-+int accept_cnt = 0;
-+int drop_cnt = 0;
-+int accept_release_cnt = 0;
-+
-+int SEC("struct_ops/bpf_smc_accept")
-+BPF_PROG(bpf_smc_accept, struct sock *sk)
-+{
-+	return SK_PASS;
-+}
-+
-+void SEC("struct_ops/bpf_smc_accept_init")
-+BPF_PROG(bpf_smc_accept_init, struct sock *sk)
-+{
-+	accept_cnt++;
-+}
-+
-+void SEC("struct_ops/bpf_smc_accept_release")
-+BPF_PROG(bpf_smc_accept_release, struct sock *sk)
-+{
-+	accept_release_cnt++;
-+}
-+
-+int SEC("struct_ops/bpf_smc_drop")
-+BPF_PROG(bpf_smc_drop, struct sock *sk)
-+{
-+	return SK_DROP;
-+}
-+
-+void SEC("struct_ops/bpf_smc_drop_init")
-+BPF_PROG(bpf_smc_drop_init, struct sock *sk)
-+{
-+	drop_cnt++;
-+}
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops accept = {
-+	.name = "apps",
-+	.init = (void *) bpf_smc_accept_init,
-+	.release = (void *) bpf_smc_accept_release,
-+	.negotiate = (void *) bpf_smc_accept,
-+};
-+
-+SEC(".struct_ops.link")
-+struct smc_sock_negotiator_ops drop = {
-+	.name = "apps",
-+	.init = (void *) bpf_smc_drop_init,
-+	.negotiate = (void *) bpf_smc_drop,
-+};
--- 
-1.8.3.1
+3: Introduce a more complicated payload pattern that can detect
+   fragments out of bounds in a multi-buffer packet and other errors
+   found in single-fragment packets.
 
+4: As a convenience, dump the content of the faulty packet at error.
+
+5: To simplify the code, make the usage of the packet stream for Tx
+   and Rx more similar.
+
+6: Store the offset of the packet in the buffer in the struct pkt
+   definition instead of the address in the umem itself and introduce
+   a simple buffer allocator. The address only made sense when all
+   packets consumed a single buffer. Now, we do not know beforehand
+   how many buffers a packet will consume, so we instead just allocate
+   a buffer from the allocator and specify the offset within that
+   buffer.
+
+7: Test for huge pages only once instead of before each test that needs it.
+
+8: Populate the fill ring based on how many frags are needed for each
+   packet.
+
+9: Change the data generation code so it can generate data for
+   multi-buffer packets too.
+
+10: Adjust the packet pacing algorithm so that it can cope with
+    multi-buffer packets. The pacing algorithm is present so that Tx
+    does not send too many packets/frames to Rx that it starts to drop
+    packets. That would ruin the tests.
+
+Thanks: Magnus
+
+Magnus Karlsson (10):
+  selftests/xsk: do not change XDP program when not necessary
+  selftests/xsk: generate simpler packets with variable length
+  selftests/xsk: add varying payload pattern within packet
+  selftests/xsk: dump packet at error
+  selftests/xsk: add packet iterator for tx to packet stream
+  selftests/xsk: store offset in pkt instead of addr
+  selftests/xsx: test for huge pages only once
+  selftests/xsk: populate fill ring based on frags needed
+  selftests/xsk: generate data for multi-buffer packets
+  selftests/xsk: adjust packet pacing for multi-buffer support
+
+ tools/testing/selftests/bpf/test_xsk.sh  |  10 +-
+ tools/testing/selftests/bpf/xsk.h        |   5 +
+ tools/testing/selftests/bpf/xskxceiver.c | 771 +++++++++++------------
+ tools/testing/selftests/bpf/xskxceiver.h |  31 +-
+ 4 files changed, 379 insertions(+), 438 deletions(-)
+
+
+base-commit: 6e61c5fa4d43d4c3f780f74ba6b08dba80bd653a
+--
+2.34.1
 
