@@ -1,96 +1,74 @@
-Return-Path: <bpf+bounces-456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C899C7011A5
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 23:54:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BD32701218
+	for <lists+bpf@lfdr.de>; Sat, 13 May 2023 00:16:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00061C21259
-	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 21:54:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93E181C212D4
+	for <lists+bpf@lfdr.de>; Fri, 12 May 2023 22:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B1763C0;
-	Fri, 12 May 2023 21:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2760363C0;
+	Fri, 12 May 2023 22:16:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3028261E8
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 21:54:33 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF67A80
-	for <bpf@vger.kernel.org>; Fri, 12 May 2023 14:54:29 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-965fc25f009so1624958966b.3
-        for <bpf@vger.kernel.org>; Fri, 12 May 2023 14:54:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABCE261E8
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 22:16:16 +0000 (UTC)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5595F1985
+	for <bpf@vger.kernel.org>; Fri, 12 May 2023 15:16:15 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-50bd37ca954so93556252a12.0
+        for <bpf@vger.kernel.org>; Fri, 12 May 2023 15:16:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683928467; x=1686520467;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=quxrjhEWRaKzl9G0M7wT5jkcm7qYKvcRrjLXT2xdmlQ=;
-        b=Y4nOgITkPpJWk4ThcJpOSNanmVsblf4voBtWo0hjJm0uJDD7M6EAaVuq9RsUMbzH7D
-         uKr+rZGqddc9+Fh5z/Bz/uZnpuea8mdLfd0GDc6lWq4nlf0YVRnpc1HGrRja1uc/UzOE
-         L6Zoj1Ua5tNkWdw7kJzB1iUU9zyDP59aJbhJfquAXdYEuh/regPE2PLDR4cdSBMQZ5Gb
-         nPaV2x6JEaCr3Cqx9geBH6bxRmngTzFkyFfxevQN/68EV6EfTHEPb0HuR7Y9hoEdPlfk
-         s4YwOzUtQO0J++46VgKSMXt1FFmud/BByeSDE0HHR4XklQUWU4/eUyeNSds6xrx86GCl
-         njTQ==
+        d=gmail.com; s=20221208; t=1683929774; x=1686521774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gboKqT7DKoC+0s9mP+hZB7TU0Gq5bAtx5NydTVc50kg=;
+        b=L2HoSWCgW0z/yww2MLSo4Zdiuhbcno5YSv5xnbzGabyVTu2Y93FIqcexXmgEn414KW
+         LVts+5IypaEXgj/NkJX6iKiGogvNtOm7i8Hc58HB0TTzJuBQAqXki/yDQctIzCQv5X5v
+         gYgNubdmcfrJai4yP0smaGXeZ/T1qwcNOVoTA+zEJ+gB+IMc/EJsFGcgr0V8OWfbPun7
+         8g25fzYOCd34sZviyk5Qvr+A4oo0AFKY561arorVPArMyEQ7pMYQ7QjPR9vaMNA2UKrv
+         NhkY4t4XZx2LyyY3BS1QpC9tFy1xNpeQ1zn1lgucbo9jbcVo3Ftj5wY0HBRoEDVy/tc4
+         ccJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683928467; x=1686520467;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=quxrjhEWRaKzl9G0M7wT5jkcm7qYKvcRrjLXT2xdmlQ=;
-        b=ZfkI9HGNI0zNIiuc0BvPZlql2it02WKRsMqVp/QNWPWyefV2ILIV9GFhp93FBBYdlH
-         x3QT/Gmok5+NuwW5ypBrBDd1udZrxwogf/bT7aMwS39I+mQlME0EPjgt+Jq8YPxWP6Hc
-         cDeufD31j8N43MrZ5Hnl0hhHWzL4laTA/2bcZOwagR8HNUFMhC82GsrENn3KXTg/TXYq
-         lirEIfuHuyb5UTl134njih5W4pkXzU7xVWCgvvcXrx81/znnSc9d4/Q93ODyTW/HKf7S
-         YsojP0KqtJYwTLyM8Z31IWI3ntDweocf/43HHzKlmDI7fKMQDp+10obqzbZdl/EEEKzX
-         7tTA==
-X-Gm-Message-State: AC+VfDxldr7O6X0jWxOASrL/xC2LC/BgtE04yLwZ5h7gp4oTymEkH/ln
-	oAItiwbtZPVGJsNOyBgxSvU=
-X-Google-Smtp-Source: ACHHUZ4dsNZ990cYWIFvsZ0iNDAMOAn1TIZfwzVhQhISsPeHscFhz0Ux5XsCthRM2Lng5o3lAAqYOA==
-X-Received: by 2002:a17:907:6e03:b0:96a:440b:d5dc with SMTP id sd3-20020a1709076e0300b0096a440bd5dcmr9465376ejc.54.1683928467159;
-        Fri, 12 May 2023 14:54:27 -0700 (PDT)
-Received: from krava (213-240-85-134.hdsl.highway.telekom.at. [213.240.85.134])
-        by smtp.gmail.com with ESMTPSA id ci18-20020a170907267200b00959c6cb82basm5909890ejc.105.2023.05.12.14.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 14:54:26 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 12 May 2023 23:54:23 +0200
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Lorenz Bauer <lmb@isovalent.com>, Timo Beckers <timo@incline.eu>
-Subject: Re: [PATCH bpf-next] bpf: Add
- --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
- for v1.25
-Message-ID: <ZF61j8WJls25BYTl@krava>
-References: <20230510130241.1696561-1-alan.maguire@oracle.com>
- <CALOAHbDeK4SkP7pXdBWJ6Omwq2NyxJrYn6wZTX=z1-VkDtWwMQ@mail.gmail.com>
- <6b15f6ff-8b66-3a78-2df6-5def5cf77203@oracle.com>
- <CAADnVQKDO8_Hnotf40iHLD-GRmJZpz_ygpkYZGRvey0ENJOc0g@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1683929774; x=1686521774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gboKqT7DKoC+0s9mP+hZB7TU0Gq5bAtx5NydTVc50kg=;
+        b=ICJZ8JGF8Vb4Gdzn1QE2vdNYwseu/UyMOyZflbTDZqNL3mBj2gU8ugda/B7ZPRe8R2
+         KUN2V9FXmYWJRPQykrerqsl9eFAqOq347KzTCdnb9pHDtvaVNMif/sFkZSmiM6kZPD99
+         W/ELHoSDIS2Sbx2IwfUvjobjfjnrmv9cjYeYQj71aT+A/sN6+K6qy0SZwdVwL7tUwmSy
+         qNerExibF8OC7RLGQvJb4ErRqFRo8HvH/wLLfM2mT9An52luin1JLL0y4AAP7xKm06q8
+         KSQADtRWxTdoV3E37i+LB/CqZQRkyJcKBA5epb8Ec62iwIjIz+/7OpqPPDrPoBD5BU9m
+         Snqg==
+X-Gm-Message-State: AC+VfDwxrBdMfJBJT/Zt/w5LDMJuMRSmNk/rqYMZcKQQHLkZ1Hy0rxg+
+	wDbyWQLJHIyLqhkU41NnNrT+hl1Huk98ojknuSd1hH+YiFE=
+X-Google-Smtp-Source: ACHHUZ7oyh7HeX7XD6vPLvn0jdqFC1Cd3t1lz42Jw22fBaCMv3jXS8IXM8G6oUWBXMckCLM2TE4kw7SUE2YCCrntAyM=
+X-Received: by 2002:a17:907:160a:b0:96a:1348:94fb with SMTP id
+ hb10-20020a170907160a00b0096a134894fbmr11028677ejc.28.1683929773531; Fri, 12
+ May 2023 15:16:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKDO8_Hnotf40iHLD-GRmJZpz_ygpkYZGRvey0ENJOc0g@mail.gmail.com>
+References: <CAADnVQKs-0C_VLBZi9F68WgoNeDy_UOJ2QY5O+xcPr1u3sX8+w@mail.gmail.com>
+In-Reply-To: <CAADnVQKs-0C_VLBZi9F68WgoNeDy_UOJ2QY5O+xcPr1u3sX8+w@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 12 May 2023 15:16:01 -0700
+Message-ID: <CAEf4BzY9gD5Pb2yQZn1pfg8T3r6izp3LnoBpisArdfu=X-8O2g@mail.gmail.com>
+Subject: Re: verifier backtracking bug
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -98,154 +76,66 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 12, 2023 at 11:59:34AM -0700, Alexei Starovoitov wrote:
-> On Fri, May 12, 2023 at 9:04 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > On 12/05/2023 03:51, Yafang Shao wrote:
-> > > On Wed, May 10, 2023 at 9:03 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > >>
-> > >> v1.25 of pahole supports filtering out functions with multiple inconsistent
-> > >> function prototypes or optimized-out parameters from the BTF representation.
-> > >> These present problems because there is no additional info in BTF saying which
-> > >> inconsistent prototype matches which function instance to help guide attachment,
-> > >> and functions with optimized-out parameters can lead to incorrect assumptions
-> > >> about register contents.
-> > >>
-> > >> So for now, filter out such functions while adding BTF representations for
-> > >> functions that have "."-suffixes (foo.isra.0) but not optimized-out parameters.
-> > >> This patch assumes that below linked changes land in pahole for v1.25.
-> > >>
-> > >> Issues with pahole filtering being too aggressive in removing functions
-> > >> appear to be resolved now, but CI and further testing will confirm.
-> > >>
-> > >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > >> ---
-> > >>  scripts/pahole-flags.sh | 3 +++
-> > >>  1 file changed, 3 insertions(+)
-> > >>
-> > >> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> > >> index 1f1f1d397c39..728d55190d97 100755
-> > >> --- a/scripts/pahole-flags.sh
-> > >> +++ b/scripts/pahole-flags.sh
-> > >> @@ -23,5 +23,8 @@ if [ "${pahole_ver}" -ge "124" ]; then
-> > >>         # see PAHOLE_HAS_LANG_EXCLUDE
-> > >>         extra_paholeopt="${extra_paholeopt} --lang_exclude=rust"
-> > >>  fi
-> > >> +if [ "${pahole_ver}" -ge "125" ]; then
-> > >> +       extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-> > >> +fi
-> > >>
-> > >>  echo ${extra_paholeopt}
-> > >> --
-> > >> 2.31.1
-> > >>
-> > >
-> > > That change looks like a workaround to me.
-> > > There may be multiple functions that have the same proto, e.g.:
-> > >
-> > >   $ grep -r "bpf_iter_detach_map(struct bpf_iter_aux_info \*aux)"
-> > > kernel/bpf/ net/core/
-> > >   kernel/bpf/map_iter.c:static void bpf_iter_detach_map(struct
-> > > bpf_iter_aux_info *aux)
-> > >   net/core/bpf_sk_storage.c:static void bpf_iter_detach_map(struct
-> > > bpf_iter_aux_info *aux)
-> > >
-> > >   $ bpftool btf dump file /sys/kernel/btf/vmlinux   |  grep -B 2
-> > > bpf_iter_detach_map
-> > >   [34691] FUNC_PROTO '(anon)' ret_type_id=0 vlen=1
-> > >   'aux' type_id=2638
-> > >   [34692] FUNC 'bpf_iter_detach_map' type_id=34691 linkage=static
-> > >
-> > > We don't know which one it is in the BTF.
-> > > However, I'm not against this change, as it can avoid some issues.
-> > >
-> >
-> > In the above case, the BTF representation is consistent though.
-> > That is, if I attach fentry progs to either of these functions
-> > based on that BTF representation, nothing will crash.
-> >
-> > That's ultimately what those changes are about; ensuring
-> > consistency in BTF representation, so when a function is in
-> > BTF we can know the signature of the function can be safely
-> > used by fentry for example.
-> >
-> > The question of being able to identify functions (as opposed
-> > to having a consistent representation) is the next step.
-> > Finding a way to link between kallsyms and BTF would allow us to
-> > have multiple inconsistent functions in BTF, since we could map
-> > from BTF -> kallsyms safely. So two functions called "foo"
-> > with different function signatures would be okay, because
-> > we'd know which was which in kallsyms and could attach
-> > safely. Something like a BTF tag for the function that could
-> > clarify that mapping - but just for cases where it would
-> > otherwise be ambiguous - is probably the way forward
-> > longer term.
-> >
-> > Jiri's talking about this topic at LSF/MM/BPF this week I believe.
-> 
-> Jiri presented a few ideas during LSFMMBPF.
-> 
-> I feel the best approach is to add a set of addr-s to BTF
-> via a special decl_tag.
-> We can also consider extending KIND_FUNC.
-> The advantage that every BTF func will have one or more addrs
-> associated with it and bpf prog loading logic wouldn't need to do
-> fragile name comparison between btf and kallsyms.
-> pahole can take addrs from dwarf and optionally double check with kallsyms.
+On Fri, May 12, 2023 at 11:55=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Andrii,
+>
+> Here is what I see on the latest bpf-next:
+>
+>  ./test_progs -t global_funcs
+> [    7.969549] bpf_testmod: loading out-of-tree module taints kernel.
+> [    7.979444] ------------[ cut here ]------------
+> [    7.979812] verifier backtracking bug
+> [    7.979828] WARNING: CPU: 1 PID: 2026 at kernel/bpf/verifier.c:3500
+> __mark_chain_precision+0xd8d/0xda0
+> [    7.980818] Modules linked in: bpf_testmod(O)
+> [    7.981161] CPU: 1 PID: 2026 Comm: test_progs Tainted: G
+> O       6.3.0-07968-g7b99f75942da #4614
+> [    7.981876] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [    7.982732] RIP: 0010:__mark_chain_precision+0xd8d/0xda0
+> [    7.983140] Code: ff e9 fb f4 ff ff 80 3d e2 c5 50 02 00 0f 85 15
+> fd ff ff 48 c7 c7 fe 5b 5c 82 4c 89 0c 24 c6 05 ca c5 50 02 01 e8 b3
+> ed e8 ff <0f> 0b 4c 8b 0c 24 e9 f3 fc ff ff 0f4
+> [    7.984523] RSP: 0018:ffffc90002bb78f0 EFLAGS: 00010282
+> [    7.984918] RAX: 0000000000000019 RBX: ffff88810137c000 RCX: 000000000=
+0000002
+> [    7.985467] RDX: 0000000080000002 RSI: ffffffff825bda2c RDI: 00000000f=
+fffffff
+> [    7.986011] RBP: 00000000ffffffff R08: 0000000000000000 R09: c0000000f=
+ffeffff
+> [    7.986553] R10: 0000000000000001 R11: ffffc90002bb77a8 R12: 000000000=
+000001b
+> [    7.987093] R13: 0000000000000002 R14: 0000000000000010 R15: 000000000=
+000001c
+> [    7.987641] FS:  00007f7bd27d7400(0000) GS:ffff888237a40000(0000)
+> knlGS:0000000000000000
+> [    7.988254] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.988687] CR2: 000000000511e078 CR3: 000000010512f005 CR4: 000000000=
+03706e0
+> [    7.989228] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000=
+0000000
+> [    7.989765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000000=
+0000400
+> [    7.990306] Call Trace:
+> [    7.990500]  <TASK>
+> [    7.990668]  ? check_helper_mem_access+0xf9/0x2a0
+> [    7.991035]  ? btf_type_name+0x20/0x20
+> [    7.991329]  ? find_kfunc_desc_btf.part.106+0x210/0x210
+> [    7.991723]  check_stack_write_fixed_off+0x437/0x610
+> [    7.992113]  ? lock_acquire+0x15c/0x290
+> [    7.992416]  ? adjust_reg_min_max_vals+0xdf/0x1070
+> [    7.992778]  ? __kmem_cache_alloc_node+0x41/0x530
+> [    7.993140]  ? check_ptr_alignment+0x7d/0x210
+> [    7.993479]  ? lock_release+0x1b7/0x250
+> [    7.993774]  check_mem_access+0x8fc/0x1750
+>
+> Looks like my earlier suggestion to do:
+> WARN_ONCE(idx + 1 !=3D subseq_idx, "verifier backtracking bug");
+>
+> is tripping on something.
 
-Yonghong summed it up in another email discussion, pasting it in here:
-
-  So overall we have three options as kallsyms representation now:
-    (a) "addr module:foo:dir_a/dir_b/core.c"
-    (b) "addr module:foo"
-    (c) "addr module:foo:btf_id"
-
-  option (a):
-    'dir_a/dir_b/core.c' needs to be encoded in BTF.
-    user space either check file path or func signature
-    to find attach_btf_id and pass to the kernel.
-    kernel can find file path in BTF and then lookup
-    kallsyms to find addr.
-
-  option (b):
-    "addr" needs to be encoded in BTF.
-    user space checks func signature to find
-    attach_btf_id and pass to the kernel.
-    kernel can find addr in BTF and use it.
-
-  option (c):
-    if user can decide which function to attach, e.g.,
-    through func signature, then no BTF encoding
-    is necessary. attach_btf_id is passed to the
-    kernel and search kallsyms to find the matching
-    btf_id and 'addr' will be available then.
-
-  For option (b) and (c), user space needs to check
-  func signature to find which btf_id to use. If
-  same-name static functions having the identical
-  signatures, then user space would have a hard time
-  to differentiate. I think it should be very
-  rare same-name static functions in the kernel will have
-  identical signatures. But if we want 100% correctness,
-  we may need file path in which case option (a)
-  is preferable.
-
-  Current option (a) kallsyms format is under review.
-  option (c) also needs kallsyms change...
-
-
-my thoughts so far is that I like the idea of storing functions address
-in BTF (option b), because it's the easiest way
-
-on the other hand, user would need debug info to find address for the function
-to trace.. but still just for small subset of functions that share same name
-
-also I like Lorenz's idea of storing BTF ID in kalsyms and verifier being
-able to lookup address based on BTF ID.. seems like easier kallsyms change,
-but it would still require storing objects paths in BTF to pick up the
-correct one
-
-cc-ing other folks
-
-jirka
+Interesting... I did check dmesg after adding this check, strange.
+I'll try to repro later today and see what's up, thanks for heads up!
 
