@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05132701DC7
-	for <lists+bpf@lfdr.de>; Sun, 14 May 2023 16:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94EAC701DC9
+	for <lists+bpf@lfdr.de>; Sun, 14 May 2023 16:12:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 113371C209A1
-	for <lists+bpf@lfdr.de>; Sun, 14 May 2023 14:12:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0C9F1C209AD
+	for <lists+bpf@lfdr.de>; Sun, 14 May 2023 14:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD45F6FBA;
-	Sun, 14 May 2023 14:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BB06FB3;
+	Sun, 14 May 2023 14:12:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1783D6FA0
-	for <bpf@vger.kernel.org>; Sun, 14 May 2023 14:12:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A80DC433D2;
-	Sun, 14 May 2023 14:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37DF6FA0
+	for <bpf@vger.kernel.org>; Sun, 14 May 2023 14:12:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 663DDC433D2;
+	Sun, 14 May 2023 14:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684073544;
-	bh=OKUnKdRvROotMDLCf6/t6LOk2Tn2CfQqMYH/rcIxcYQ=;
+	s=k20201202; t=1684073554;
+	bh=6vun2L7Gqdjfz6gS8Y5EPS6ytnutljhikv/zk9HDEk8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KrHvy62d1LVb+sz4T++Ai2VIcKqqvahj1kDOUbePpKktXY5pfgimOs5NGZlQwY1pl
-	 yqgqU7VVDn++80WVPS+p3ftWuHbDCdTeAgrCXuC5rPn1LvSVkHIVkdh8cRHtpcI/ff
-	 hAQTaW/R/GGI5vc0BKSj6FgrGd6DIPrCElS26H6ggVxQsecE57Tm7P287fhqOUxMqx
-	 7ILx9GOaJKZPz8YNjXwkOs48taMGPUCHl8xiYc9ScvjrTFOjXg6L0ycHvXejfAzpZX
-	 hvMyZGviHXMHeAiG99RcluMGBR/CKHDtBZh5Z0XFkvDV6nZ1FTLPHP0Hz651nfaiCb
-	 mnS7vT48ZrszQ==
+	b=U2A0/tg7UR5PjecdTpJdXLR/4eX/kds+Ulme99N76Bp8VPKEkKa87H6Saz8hmRCd+
+	 OvNQN070cuRP4htsbvgp3OdVtZpeihFQAN6nO+TPfv8S0QpIMC/CXZV7C8+wHJS6tk
+	 701VgjQ03tobkyC21dNZ1rimnk6C+OfXL3onUZ2R8nuVOXKOzBooJ7VDuwJ3iCEtvv
+	 Q/FN2Hvw+81Sz/1Uolom9XsrTYxi27F3+JImpjR2yDxfSzyM9jfWNqJFHPRAqfdpzs
+	 rEheDZaFltahzLd+vIbf/zL7mHk0nebcut94Sl4xWDz3osHpmzcJ8e2eptuvlwaHKq
+	 4y9tIe2eEW4Yg==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH v10 08/11] tracing/probes: Add BTF retval type support
-Date: Sun, 14 May 2023 23:12:21 +0900
-Message-ID:  <168407354133.941486.6800155215635065527.stgit@mhiramat.roam.corp.google.com>
+Subject: [PATCH v10 09/11] selftests/ftrace: Add tracepoint probe test case
+Date: Sun, 14 May 2023 23:12:30 +0900
+Message-ID:  <168407355022.941486.7431028073622858704.stgit@mhiramat.roam.corp.google.com>
 X-Mailer: git-send-email 2.40.1.606.ga4b1b128d6-goog
 In-Reply-To:  <168407346448.941486.15681419068846125595.stgit@mhiramat.roam.corp.google.com>
 References:  <168407346448.941486.15681419068846125595.stgit@mhiramat.roam.corp.google.com>
@@ -59,157 +59,136 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Check the target function has non-void retval type and set the correct
-fetch type if user doesn't specify it.
-If the function returns void, $retval is rejected as below;
-
- # echo 'f unregister_kprobes%return $retval' >> dynamic_events
-sh: write error: No such file or directory
- # cat error_log
-[   37.488397] trace_fprobe: error: This function returns 'void' type
-  Command: f unregister_kprobes%return $retval
-                                       ^
+Add test cases for tracepoint probe events.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
-Changes in v8:
- - Fix wrong indentation.
-Changes in v7:
- - Introduce this as a new patch.
----
- kernel/trace/trace_probe.c |   65 +++++++++++++++++++++++++++++++++++++++++---
- kernel/trace/trace_probe.h |    1 +
- 2 files changed, 61 insertions(+), 5 deletions(-)
+ .../ftrace/test.d/dynevent/add_remove_tprobe.tc    |   27 +++++++
+ .../ftrace/test.d/dynevent/tprobe_syntax_errors.tc |   82 ++++++++++++++++++++
+ 2 files changed, 109 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
 
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index ef9866dcae1f..e70b3265c425 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -371,13 +371,13 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
- 	return NULL;
- }
- 
--static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
-+static const struct btf_type *find_btf_func_proto(const char *funcname)
- {
- 	struct btf *btf = traceprobe_get_btf();
- 	const struct btf_type *t;
- 	s32 id;
- 
--	if (!btf || !funcname || !nr)
-+	if (!btf || !funcname)
- 		return ERR_PTR(-EINVAL);
- 
- 	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-@@ -394,6 +394,20 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 	if (!btf_type_is_func_proto(t))
- 		return ERR_PTR(-ENOENT);
- 
-+	return t;
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
+new file mode 100644
+index 000000000000..afc8412fde6b
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_tprobe.tc
+@@ -0,0 +1,27 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Generic dynamic event - add/remove tracepoint probe events
++# requires: dynamic_events "t[:[<group>/][<event>]] <tracepoint> [<args>]": README
++
++echo 0 > events/enable
++echo > dynamic_events
++
++TRACEPOINT1=kmem_cache_alloc
++TRACEPOINT2=kmem_cache_free
++
++echo "t:myevent1 $TRACEPOINT1" >> dynamic_events
++echo "t:myevent2 $TRACEPOINT2" >> dynamic_events
++
++grep -q myevent1 dynamic_events
++grep -q myevent2 dynamic_events
++test -d events/tracepoints/myevent1
++test -d events/tracepoints/myevent2
++
++echo "-:myevent2" >> dynamic_events
++
++grep -q myevent1 dynamic_events
++! grep -q myevent2 dynamic_events
++
++echo > dynamic_events
++
++clear_trace
+diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
+new file mode 100644
+index 000000000000..c8dac5c1cfa8
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/dynevent/tprobe_syntax_errors.tc
+@@ -0,0 +1,82 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Tracepoint probe event parser error log check
++# requires: dynamic_events "t[:[<group>/][<event>]] <tracepoint> [<args>]": README
++
++check_error() { # command-with-error-pos-by-^
++    ftrace_errlog_check 'trace_fprobe' "$1" 'dynamic_events'
 +}
 +
-+static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr)
-+{
-+	const struct btf_type *t;
++check_error 't^100 kfree'		# BAD_MAXACT_TYPE
 +
-+	if (!funcname || !nr)
-+		return ERR_PTR(-EINVAL);
++check_error 't ^non_exist_tracepoint'	# NO_TRACEPOINT
++check_error 't:^/bar kfree'		# NO_GROUP_NAME
++check_error 't:^12345678901234567890123456789012345678901234567890123456789012345/bar kfree'	# GROUP_TOO_LONG
 +
-+	t = find_btf_func_proto(funcname);
-+	if (IS_ERR(t))
-+		return (const struct btf_param *)t;
++check_error 't:^foo.1/bar kfree'	# BAD_GROUP_NAME
++check_error 't:^ kfree'			# NO_EVENT_NAME
++check_error 't:foo/^12345678901234567890123456789012345678901234567890123456789012345 kfree'	# EVENT_TOO_LONG
++check_error 't:foo/^bar.1 kfree'	# BAD_EVENT_NAME
 +
- 	*nr = btf_type_vlen(t);
- 
- 	if (*nr)
-@@ -452,6 +466,32 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
- 	return find_fetch_type(typestr, ctx->flags);
- }
- 
-+static const struct fetch_type *parse_btf_retval_type(
-+					struct traceprobe_parse_context *ctx)
-+{
-+	struct btf *btf = traceprobe_get_btf();
-+	const char *typestr = NULL;
-+	const struct btf_type *t;
++check_error 't kfree ^$retval'		# RETVAL_ON_PROBE
++check_error 't kfree ^$stack10000'	# BAD_STACK_NUM
 +
-+	if (btf && ctx->funcname) {
-+		t = find_btf_func_proto(ctx->funcname);
-+		if (!IS_ERR(t))
-+			typestr = type_from_btf_id(btf, t->type);
-+	}
++check_error 't kfree ^$arg10000'	# BAD_ARG_NUM
 +
-+	return find_fetch_type(typestr, ctx->flags);
-+}
++check_error 't kfree ^$none_var'	# BAD_VAR
++check_error 't kfree ^%rax'		# BAD_VAR
 +
-+static bool is_btf_retval_void(const char *funcname)
-+{
-+	const struct btf_type *t;
++check_error 't kfree ^@12345678abcde'	# BAD_MEM_ADDR
++check_error 't kfree ^@+10'		# FILE_ON_KPROBE
 +
-+	t = find_btf_func_proto(funcname);
-+	if (IS_ERR(t))
-+		return false;
++grep -q "imm-value" README && \
++check_error 't kfree arg1=\^x'	# BAD_IMM
++grep -q "imm-string" README && \
++check_error 't kfree arg1=\"abcd^'	# IMMSTR_NO_CLOSE
 +
-+	return t->type == 0;
-+}
- #else
- static struct btf *traceprobe_get_btf(void)
- {
-@@ -469,8 +509,15 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
- 	trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
- 	return -EOPNOTSUPP;
- }
++check_error 't kfree ^+0@0)'		# DEREF_NEED_BRACE
++check_error 't kfree ^+0ab1(@0)'	# BAD_DEREF_OFFS
++check_error 't kfree +0(+0(@0^)'	# DEREF_OPEN_BRACE
 +
- #define parse_btf_arg_type(idx, ctx)		\
- 	find_fetch_type(NULL, ctx->flags)
++if grep -A1 "fetcharg:" README | grep -q '\$comm' ; then
++check_error 't kfree +0(^$comm)'	# COMM_CANT_DEREF
++fi
 +
-+#define parse_btf_retval_type(ctx)		\
-+	find_fetch_type(NULL, ctx->flags)
++check_error 't kfree ^&1'		# BAD_FETCH_ARG
 +
-+#define is_btf_retval_void(funcname)	(false)
 +
- #endif
- 
- #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
-@@ -501,6 +548,11 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
- 
- 	if (strcmp(arg, "retval") == 0) {
- 		if (ctx->flags & TPARG_FL_RETURN) {
-+			if ((ctx->flags & TPARG_FL_KERNEL) &&
-+			    is_btf_retval_void(ctx->funcname)) {
-+				err = TP_ERR_NO_RETVAL;
-+				goto inval;
-+			}
- 			code->op = FETCH_OP_RETVAL;
- 			return 0;
- 		}
-@@ -906,9 +958,12 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 		goto fail;
- 
- 	/* Update storing type if BTF is available */
--	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
--	    !t && code->op == FETCH_OP_ARG)
--		parg->type = parse_btf_arg_type(code->param, ctx);
-+	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
-+		if (code->op == FETCH_OP_ARG)
-+			parg->type = parse_btf_arg_type(code->param, ctx);
-+		else if (code->op == FETCH_OP_RETVAL)
-+			parg->type = parse_btf_retval_type(ctx);
-+	}
- 
- 	ret = -EINVAL;
- 	/* Store operation */
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index da91ce4b8a40..aa48d334c29b 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -444,6 +444,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
- 	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
- 	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
- 	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
-+	C(NO_RETVAL,		"This function returns 'void' type"),	\
- 	C(BAD_STACK_NUM,	"Invalid stack number"),		\
- 	C(BAD_ARG_NUM,		"Invalid argument number"),		\
- 	C(BAD_VAR,		"Invalid $-valiable specified"),	\
++# We've introduced this limitation with array support
++if grep -q ' <type>\\\[<array-size>\\\]' README; then
++check_error 't kfree +0(^+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(+0(@0))))))))))))))'	# TOO_MANY_OPS?
++check_error 't kfree +0(@11):u8[10^'		# ARRAY_NO_CLOSE
++check_error 't kfree +0(@11):u8[10]^a'		# BAD_ARRAY_SUFFIX
++check_error 't kfree +0(@11):u8[^10a]'		# BAD_ARRAY_NUM
++check_error 't kfree +0(@11):u8[^256]'		# ARRAY_TOO_BIG
++fi
++
++check_error 't kfree @11:^unknown_type'		# BAD_TYPE
++check_error 't kfree $stack0:^string'		# BAD_STRING
++check_error 't kfree @11:^b10@a/16'		# BAD_BITFIELD
++
++check_error 't kfree ^arg123456789012345678901234567890=@11'	# ARG_NAME_TOO_LOG
++check_error 't kfree ^=@11'			# NO_ARG_NAME
++check_error 't kfree ^var.1=@11'		# BAD_ARG_NAME
++check_error 't kfree var1=@11 ^var1=@12'	# USED_ARG_NAME
++check_error 't kfree ^+1234567(+1234567(+1234567(+1234567(+1234567(+1234567(@1234))))))'	# ARG_TOO_LONG
++check_error 't kfree arg1=^'			# NO_ARG_BODY
++
++
++# multiprobe errors
++if grep -q "Create/append/" README && grep -q "imm-value" README; then
++echo "t:tracepoint/testevent kfree" > dynamic_events
++check_error '^f:tracepoint/testevent kfree'	# DIFF_PROBE_TYPE
++
++# Explicitly use printf "%s" to not interpret \1
++printf "%s" "t:tracepoints/testevent kfree abcd=\\1" > dynamic_events
++check_error "t:tracepoints/testevent kfree ^bcd=\\1"	# DIFF_ARG_TYPE
++check_error "t:tracepoints/testevent kfree ^abcd=\\1:u8"	# DIFF_ARG_TYPE
++check_error "t:tracepoints/testevent kfree ^abcd=\\\"foo\"" # DIFF_ARG_TYPE
++check_error "^t:tracepoints/testevent kfree abcd=\\1"	# SAME_PROBE
++fi
++
++exit 0
 
 
