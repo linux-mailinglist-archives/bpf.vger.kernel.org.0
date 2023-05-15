@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D06E703D5A
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 21:10:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190CA703D9A
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 21:20:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD53B2813EA
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 19:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6492810A5
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 19:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B7418C38;
-	Mon, 15 May 2023 19:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E8A1950B;
+	Mon, 15 May 2023 19:20:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928F118C18
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 19:10:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 549EFC433EF;
-	Mon, 15 May 2023 19:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9B9FBF9
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 19:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ED4E7C433EF;
+	Mon, 15 May 2023 19:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684177819;
-	bh=SlEwJNrzW4LBUMaa7nAb9tSaJ/5R4QMO5KZEAy3iggI=;
+	s=k20201202; t=1684178420;
+	bh=vKsm3KJE4Pc8bAPjGw9JQkvMfeeC1QWklL9aVzWSRhM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Kv+4iBsI4VIEXWYeeWKkhqbaJTlAV7GU1wd09FPYuIJJgb3mgdwlQQrPOvl3lsSdi
-	 7Dl/nuMdXnC/9F2fny/aYkFtr8+XOCsazWuLB2ackvOEVWifWsc8nYpJRr5ATsX7XV
-	 oNuOSi9uVNDrulbLEJ/ywaDQllRKfPjUBxsbDvpuVgMLbzbDl/NzvvXtYaIBH7is4M
-	 vdWkhZE4vJqS2x6cPBo2FBDR7xgA25q2conzFmX3fB/3C23z/PWJRerULah7Iv8g1W
-	 SbIKU5PBUSqC0x45kBrnDT6tGbIVVVHG4zOD/YTaViKb737kNDw+LbUJ/vzaP1alMG
-	 JXtsWh7aWP76g==
+	b=HxkBd4d6XV1sJM65dJkULvL2hARpkx1xSH+3zXM2ySTGtpgAdeXU7U3xLJe/lP3I7
+	 d5vRbaRmBXGsebR1i2Wbmrtj5li6UUQ/PgjtIZNr87NlEDuu0AasPH3VLzMCa73IJb
+	 UtUBOO/UV06+DnECFZWETdClhx2qpHSzHyEckf5ZqUq6V1fzdYpLbDW6MKDoq2kE6n
+	 btj/c7AdPTLUp3PwDGpovS2wU/fy9FgTFBDPwy7f2X8IqpysQcaKCuJOdnb/OCKfUD
+	 tCsfAUTjd+vlWUiyRY2Et4iHR97Bvsr0fUeQBw59N6j2ymifdbTOT+dnI6TEZm0rmD
+	 oRjI8jQ62M99g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 338BDE49FAA;
-	Mon, 15 May 2023 19:10:19 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D00EBE5421D;
+	Mon, 15 May 2023 19:20:19 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -41,39 +41,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: fix calculation of subseq_idx during precision
- backtracking
+Subject: Re: [PATCH bpf] tools: bpftool: JIT limited misreported as negative value
+ on aarch64
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <168417781920.28646.15216696634083551111.git-patchwork-notify@kernel.org>
-Date: Mon, 15 May 2023 19:10:19 +0000
-References: <20230515180710.1535018-1-andrii@kernel.org>
-In-Reply-To: <20230515180710.1535018-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+ <168417841984.1340.3668794611019645770.git-patchwork-notify@kernel.org>
+Date: Mon, 15 May 2023 19:20:19 +0000
+References: <20230512113134.58996-1-alan.maguire@oracle.com>
+In-Reply-To: <20230512113134.58996-1-alan.maguire@oracle.com>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, bpf@vger.kernel.org,
+ nicky.veitch@oracle.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Mon, 15 May 2023 11:07:10 -0700 you wrote:
-> Subsequent instruction index (subseq_idx) is an index of an instruction
-> that was verified/executed by verifier after the currently processed
-> instruction. It is maintained during precision backtracking processing
-> and is used to detect various subprog calling conditions.
+On Fri, 12 May 2023 12:31:34 +0100 you wrote:
+> On aarch64, "bpftool feature" reports an incorrect BPF JIT limit:
 > 
-> This patch fixes the bug with incorrectly resetting subseq_idx to -1
-> when going from child state to parent state during backtracking. If we
-> don't maintain correct subseq_idx we can misidentify subprog calls
-> leading to precision tracking bugs.
+> $ sudo /sbin/bpftool feature
+> Scanning system configuration...
+> bpf() syscall restricted to privileged users
+> JIT compiler is enabled
+> JIT compiler hardening is disabled
+> JIT compiler kallsyms exports are enabled for root
+> skipping kernel config, can't open file: No such file or directory
+> Global memory limit for JIT compiler for unprivileged users is -201326592 bytes
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] bpf: fix calculation of subseq_idx during precision backtracking
-    https://git.kernel.org/bpf/bpf-next/c/d84b1a6708ee
+  - [bpf] tools: bpftool: JIT limited misreported as negative value on aarch64
+    https://git.kernel.org/bpf/bpf-next/c/04cb8453a91c
 
 You are awesome, thank you!
 -- 
