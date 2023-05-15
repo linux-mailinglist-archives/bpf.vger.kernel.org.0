@@ -1,215 +1,322 @@
-Return-Path: <bpf+bounces-561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A78C9703BE3
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 20:08:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39306703CB5
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 20:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 060572813F9
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 18:08:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1391C20C2C
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 18:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8897117742;
-	Mon, 15 May 2023 18:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8802182C5;
+	Mon, 15 May 2023 18:33:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7AE17730
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 18:07:54 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFF320938
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 11:07:28 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34FFnKbC006717
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 11:07:26 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qj8cvdee6-20
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 11:07:25 -0700
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 15 May 2023 11:07:25 -0700
-Received: from twshared7331.15.prn3.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 15 May 2023 11:07:24 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 5FD3130BA5615; Mon, 15 May 2023 11:07:12 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next] bpf: fix calculation of subseq_idx during precision backtracking
-Date: Mon, 15 May 2023 11:07:10 -0700
-Message-ID: <20230515180710.1535018-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACE7846E
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 18:33:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29B2CC433EF;
+	Mon, 15 May 2023 18:33:07 +0000 (UTC)
+Date: Mon, 15 May 2023 14:33:05 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Beau Belgrave <beaub@linux.microsoft.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ linux-trace-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, David Vernet
+ <void@manifault.com>, Linus Torvalds <torvalds@linux-foundation.org>,
+ dthaler@microsoft.com, brauner@kernel.org, hch@infradead.org
+Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
+Message-ID: <20230515143305.4f731fa9@gandalf.local.home>
+In-Reply-To: <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
+References: <20230508163751.841-1-beaub@linux.microsoft.com>
+	<CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
+	<20230509130111.62d587f1@rorschach.local.home>
+	<20230509163050.127d5123@rorschach.local.home>
+	<20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Gg4n7U2DzvOkZZ7eDhxTsjd8heK49XRv
-X-Proofpoint-ORIG-GUID: Gg4n7U2DzvOkZZ7eDhxTsjd8heK49XRv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-15_16,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Subsequent instruction index (subseq_idx) is an index of an instruction
-that was verified/executed by verifier after the currently processed
-instruction. It is maintained during precision backtracking processing
-and is used to detect various subprog calling conditions.
+On Mon, 15 May 2023 09:57:07 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-This patch fixes the bug with incorrectly resetting subseq_idx to -1
-when going from child state to parent state during backtracking. If we
-don't maintain correct subseq_idx we can misidentify subprog calls
-leading to precision tracking bugs.
+> Thank you for these details. Answer below...
 
-One such case was triggered by test_global_funcs/global_func9 test where
-global subprog call happened to be the very last instruction in parent
-state, leading to subseq_idx=3D=3D-1, triggering WARN_ONCE:
+Thanks for this well thought out reply!
 
-  [   36.045754] verifier backtracking bug
-  [   36.045764] WARNING: CPU: 13 PID: 2073 at kernel/bpf/verifier.c:3503=
- __mark_chain_precision+0xcc6/0xde0
-  [   36.046819] Modules linked in: aesni_intel(E) crypto_simd(E) cryptd(=
-E) kvm_intel(E) kvm(E) irqbypass(E) i2c_piix4(E) serio_raw(E) i2c_core(E)=
- crc32c_intel)
-  [   36.048040] CPU: 13 PID: 2073 Comm: test_progs Tainted: G        W  =
-OE      6.3.0-07976-g4d585f48ee6b-dirty #972
-  [   36.048783] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-  [   36.049648] RIP: 0010:__mark_chain_precision+0xcc6/0xde0
-  [   36.050038] Code: 3d 82 c6 05 bb 35 32 02 01 e8 66 21 ec ff 0f 0b b8=
- f2 ff ff ff e9 30 f5 ff ff 48 c7 c7 f3 61 3d 82 4c 89 0c 24 e8 4a 21 ec =
-ff <0f> 0b 4c0
 
-With the fix precision tracking across multiple states works correctly no=
-w:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/trace_events_user.c#n451
+> > 
+> > user_event_enabler_update() {
+> > 	[..]
+> > 	user_event_enabler_write(mm, enabler, true, &attempt);  
+> 
+> Which will do
+> rcu_read_lock()
+> and then call user_event_enabler_write() under lock...
+> 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/trace_events_user.c#n385
+> > 
+> > static int user_event_enabler_write(struct user_event_mm *mm,
+> > 				    struct user_event_enabler *enabler,
+> > 				    bool fixup_fault, int *attempt)
+> > {
+> > 	unsigned long uaddr = enabler->addr;
+> > 	unsigned long *ptr;
+> > 	struct page *page;
+> > 	void *kaddr;
+> > 	int ret;
+> > 
+> > 	lockdep_assert_held(&event_mutex);
+> > 	mmap_assert_locked(mm->mm);
+> > 
+> > 	*attempt += 1;
+> > 
+> > 	/* Ensure MM has tasks, cannot use after exit_mm() */
+> > 	if (refcount_read(&mm->tasks) == 0)
+> > 		return -ENOENT;
+> > 
+> > 	if (unlikely(test_bit(ENABLE_VAL_FAULTING_BIT, ENABLE_BITOPS(enabler)) ||
+> > 		     test_bit(ENABLE_VAL_FREEING_BIT, ENABLE_BITOPS(enabler))))
+> > 		return -EBUSY;
+> > 
+> > 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
+> > 				    &page, NULL, NULL);  
+> 
+> ... which will call pin_user_pages_remote() in RCU CS.
+> This looks buggy, since pin_user_pages_remote() may schedule.
 
-mark_precise: frame0: last_idx 45 first_idx 38 subseq_idx -1
-mark_precise: frame0: regs=3Dr8 stack=3D before 44: (61) r7 =3D *(u32 *)(=
-r10 -4)
-mark_precise: frame0: regs=3Dr8 stack=3D before 43: (85) call pc+41
-mark_precise: frame0: regs=3Dr8 stack=3D before 42: (07) r1 +=3D -48
-mark_precise: frame0: regs=3Dr8 stack=3D before 41: (bf) r1 =3D r10
-mark_precise: frame0: regs=3Dr8 stack=3D before 40: (63) *(u32 *)(r10 -48=
-) =3D r1
-mark_precise: frame0: regs=3Dr8 stack=3D before 39: (b4) w1 =3D 0
-mark_precise: frame0: regs=3Dr8 stack=3D before 38: (85) call pc+38
-mark_precise: frame0: parent state regs=3Dr8 stack=3D:  R0_w=3Dscalar() R=
-1_w=3Dmap_value(off=3D4,ks=3D4,vs=3D8,imm=3D0) R6=3D1 R7_w=3Dscalar() R8_=
-r=3DP0 R10=3Dfpm
-mark_precise: frame0: last_idx 36 first_idx 28 subseq_idx 38
-mark_precise: frame0: regs=3Dr8 stack=3D before 36: (18) r1 =3D 0xffff888=
-104f2ed14
-mark_precise: frame0: regs=3Dr8 stack=3D before 35: (85) call pc+33
-mark_precise: frame0: regs=3Dr8 stack=3D before 33: (18) r1 =3D 0xffff888=
-104f2ed10
-mark_precise: frame0: regs=3Dr8 stack=3D before 32: (85) call pc+36
-mark_precise: frame0: regs=3Dr8 stack=3D before 31: (07) r1 +=3D -4
-mark_precise: frame0: regs=3Dr8 stack=3D before 30: (bf) r1 =3D r10
-mark_precise: frame0: regs=3Dr8 stack=3D before 29: (63) *(u32 *)(r10 -4)=
- =3D r7
-mark_precise: frame0: regs=3Dr8 stack=3D before 28: (4c) w7 |=3D w0
-mark_precise: frame0: parent state regs=3Dr8 stack=3D:  R0_rw=3Dscalar() =
-R6=3D1 R7_rw=3Dscalar() R8_rw=3DP0 R10=3Dfp0 fp-48_r=3Dmmmmmmmm
-mark_precise: frame0: last_idx 27 first_idx 16 subseq_idx 28
-mark_precise: frame0: regs=3Dr8 stack=3D before 27: (85) call pc+31
-mark_precise: frame0: regs=3Dr8 stack=3D before 26: (b7) r1 =3D 0
-mark_precise: frame0: regs=3Dr8 stack=3D before 25: (b7) r8 =3D 0
 
-Note how subseq_idx starts out as -1, then is preserved as 38 and then 28=
- as we
-go up the parent state chain.
+Hmm, if that's the case, we should add might_sleep() to that call.
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: fde2a3882bd0 ("bpf: support precision propagation in the presence =
-of subprogs")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/verifier.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> > 	if (unlikely(ret <= 0)) {
+> > 		if (!fixup_fault)
+> > 			return -EFAULT;
+> > 
+> > 		if (!user_event_enabler_queue_fault(mm, enabler, *attempt))
+> > 			pr_warn("user_events: Unable to queue fault handler\n");  
+> 
+> This part looks questionable.
+> 
+> The only users of fixup_user_fault() were futex and KVM.
+> Now user_events are calling it too from user_event_mm_fault_in() where
+> "bool unlocked;" is uninitialized and state of this flag is not checked
+> after fixup_user_fault() call.
+> Not an MM expert, but this is suspicious.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5c636276d907..f597491259ab 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3864,10 +3864,11 @@ static int __mark_chain_precision(struct bpf_veri=
-fier_env *env, int regno)
- 	struct bpf_verifier_state *st =3D env->cur_state;
- 	int first_idx =3D st->first_insn_idx;
- 	int last_idx =3D env->insn_idx;
-+	int subseq_idx =3D -1;
- 	struct bpf_func_state *func;
- 	struct bpf_reg_state *reg;
- 	bool skip_first =3D true;
--	int i, prev_i, fr, err;
-+	int i, fr, err;
-=20
- 	if (!env->bpf_capable)
- 		return 0;
-@@ -3897,8 +3898,8 @@ static int __mark_chain_precision(struct bpf_verifi=
-er_env *env, int regno)
- 		u32 history =3D st->jmp_history_cnt;
-=20
- 		if (env->log.level & BPF_LOG_LEVEL2) {
--			verbose(env, "mark_precise: frame%d: last_idx %d first_idx %d\n",
--				bt->frame, last_idx, first_idx);
-+			verbose(env, "mark_precise: frame%d: last_idx %d first_idx %d subseq_=
-idx %d \n",
-+				bt->frame, last_idx, first_idx, subseq_idx);
- 		}
-=20
- 		if (last_idx < 0) {
-@@ -3930,12 +3931,12 @@ static int __mark_chain_precision(struct bpf_veri=
-fier_env *env, int regno)
- 			return -EFAULT;
- 		}
-=20
--		for (i =3D last_idx, prev_i =3D -1;;) {
-+		for (i =3D last_idx;;) {
- 			if (skip_first) {
- 				err =3D 0;
- 				skip_first =3D false;
- 			} else {
--				err =3D backtrack_insn(env, i, prev_i, bt);
-+				err =3D backtrack_insn(env, i, subseq_idx, bt);
- 			}
- 			if (err =3D=3D -ENOTSUPP) {
- 				mark_all_scalars_precise(env, env->cur_state);
-@@ -3952,7 +3953,7 @@ static int __mark_chain_precision(struct bpf_verifi=
-er_env *env, int regno)
- 				return 0;
- 			if (i =3D=3D first_idx)
- 				break;
--			prev_i =3D i;
-+			subseq_idx =3D i;
- 			i =3D get_prev_insn_idx(st, i, &history);
- 			if (i >=3D env->prog->len) {
- 				/* This can happen if backtracking reached insn 0
-@@ -4031,6 +4032,7 @@ static int __mark_chain_precision(struct bpf_verifi=
-er_env *env, int regno)
- 		if (bt_empty(bt))
- 			return 0;
-=20
-+		subseq_idx =3D first_idx;
- 		last_idx =3D st->last_insn_idx;
- 		first_idx =3D st->first_insn_idx;
- 	}
---=20
-2.34.1
+Hmm, yeah, this should be:
+
+static int user_event_mm_fault_in()
+{
+	bool unlocked = false;
+
+	[..]
+
+out:
+	if (!unlocked)
+		mmap_read_unlock(mm->mm);
+}
+
+Good catch!
+
+> 
+> > 
+> > 		return -EFAULT;
+> > 	}
+> > 
+> > 	kaddr = kmap_local_page(page);
+> > 	ptr = kaddr + (uaddr & ~PAGE_MASK);
+> > 
+> > 	/* Update bit atomically, user tracers must be atomic as well */
+> > 	if (enabler->event && enabler->event->status)
+> > 		set_bit(enabler->values & ENABLE_VAL_BIT_MASK, ptr);
+> > 	else
+> > 		clear_bit(enabler->values & ENABLE_VAL_BIT_MASK, ptr);  
+> 
+> Furthermore.
+> Here the kernel writes bits in user pages.
+> It's missing user_access_begin/end.
+> Early on there was an access_ok() check during user_event registration,
+> but it's not enough.
+> I believe user_access_begin() has to be done before the actual access,
+> since it does __uaccess_begin_nospec().
+
+But it actually mapped the address to kernel. The ptr is pointing to a
+kernel page, not the user space page, but the memory is shared between both.
+
+> 
+> Another issue is that the user space could have supplied any address as
+> enabler->addr including addr in a huge page or a file backed mmaped address.
+> I don't know whether above code can handle it.
+> 
+> I'm not a GUP expert either, but direct use of pin_user_pages_remote() looks
+> suspicious too.
+> I think ptrace_may_access() is missing.
+> I guess it has to be a root user to do 
+> echo 1 > /sys/kernel/tracing/user_events/test/enable
+> 
+> to trigger the kernel writes into various MM of user processes, but still.
+> There are security/LSM checks in many paths that accesses user memory.
+> These checks are bypassed here.
+
+I'm happy to audit this further. I'll just have to add that to my TODO list
+  :-p
+
+> 
+> > 	kunmap_local(kaddr);
+> > 	unpin_user_pages_dirty_lock(&page, 1, true);
+> > 
+> > 	return 0;
+> > }
+> > 
+> > The above maps the user space address and then sets the bit that was
+> > registered.
+> > 
+> > That is, it changes "enabled" to true, and the if statement:
+> > 
+> > 	if (enabled) {  
+> 
+> and not just 'volatile' is missing, but this is buggy in general.
+> The kernel only wrote one bit into 'enabled' variable.
+> The user space should be checking that one bit only.
+> Since samples/user_events/example.c registering with reg.enable_bit = 31;
+> it probably should be
+>   if (READ_ONCE(enabled) & (1u << 31))
+
+The other bits are actually for other tracers. Yeah, it's missing the
+de-multiplexing below, and the comment should mention that.
+
+That is, what we decided was to have the API keep bit 31 for the kernel,
+but other tracers could map other bits, and we would have the tracing logic
+in a place that would allow something like LTTng hook into it and call its
+code. Say LTTng is bit 1, then it would set it when it wants a trace.
+
+The if statement is still correct, but the calling into the kernel should
+only be done if bit 31 is set.
+
+> 
+> > 		/* Yep, trace out our data */
+> > 		writev(data_fd, (const struct iovec *)io, 2);
+> > 
+> > 		/* Increase the count */
+> > 		count++;
+> > 
+> > 		printf("Something was attached, wrote data\n");  
+> 
+> Another misleading example. The writev() could have failed,
+> but the message will say "success".
+> And it's easy to make mistake here.
+> The iovec[0] should be write_index that was received by user space
+> after registration via ioctl.
+
+Yeah, that should be cleaned up.
+
+> 
+> If my understanding of user_events design is correct, various user
+> process (all running as root) will open /sys/kernel/tracing/user_events_data
+
+Actually, we can change the permissions of user_events_data to allow any
+task. Or set the group permission and only allow certain groups access.
+tracefs allows changing of ownerships of the files.
+
+> then will do multiple ioctl(fd, DIAG_IOCSREG) for various events and
+> remember write_index-es and enabled's addresses.
+> Then in various places in the code they will do
+> if (READ_ONCE(enabled_X) & (1u << correct_bit)) {
+>     io[0].iov_base = &write_index_X;
+>     io[1].iov_base = data_to_send_to_kernel;
+> 
+> and write_index has to match with the format of data.
+> During the writev() the kernel will validate user_event_validate(),
+> but this is expensive.
+> The design of user events looks fragile to me. One user process can write
+> into user_event of another process by supplying wrong 'write_index' and the
+> kernel won't catch it if data formats are compatible.
+
+But the kernel tracing also includes the pid, so filtering or analysis
+could catch that as well.
+
+> 
+> All such processes have to be root to access /sys/kernel/tracing/user_events_data,
+> so not a security issue, but use cases for user_events seems to be very limited.
+> During LSFMMBPF, Steven, you've mentioned that you want to use user_event in chrome.
+> I think you didn't imply that chrome browser will be running as root.
+> You probably meant something else.
+
+Again, it is easy to change ownership permissions of that file. We can make
+allow the chrome group to have write access to it, and everything still
+"just works".
+
+> 
+> Now as far as this particular patch.
+> 
+> s/perf_trace_buf_submit/perf_trace_run_bpf_submit/
+> 
+> may look trivial, but there is a lot to unpack here.
+> 
+> How bpf prog was attached to user event?
+> What is the life time of bpf prog?
+> What happens when user process crashes?
+> What happens when user event is unregistered ?
+> What is bpf prog context? Like, what helpers are allowed to be called?
+> Does libbpf need updating?
+> etc etc
+> 
+> No selftests were provided with this patch, so impossible to answer.
+> 
+> In general we don't want bpf to be called in various parts of the kernel
+> just because bpf was used in similar parts elsewhere.
+> bpf needs to provide real value for a particular kernel subsystem.
+> 
+> For user events it's still not clear to me what bpf can bring to the table.
+> 
+> The commit log of this proposed patch says:
+> "When BPF programs are attached to tracepoints created by user_events
+> the BPF programs do not get run even though the attach succeeds."
+> 
+> It looks to me that it's a bug in attaching.
+> The kernel shouldn't have allowed attaching bpf prog to user events,
+> since they cannot be run.
+> 
+> Then the commit log says:
+> "This keeps user_events consistent
+> with how other kernel, modules, and probes expose tracepoint data to allow
+> attachment of a BPF program."
+> 
+> "keep consistent" is not a reason to use bpf with user_events.
+
+Thank you Alexei for asking these. The above are all valid concerns.
+
+-- Steve
+
+> 
+> Beau,
+> please provide a detailed explanation of your use case and how bpf helps.
+> 
+> Also please explain why uprobe/USDT and bpf don't achieve your goals.
+> Various user space applications have USDTs in them.
+> This is an existing mechanism that was proven to be useful to many projects
+> including glibc, python, mysql.
+> 
+> Comparing to user_events the USDTs work fine in unprivileged applications
+> and have zero overhead when not turned on. USDT is a single 'nop' instruction
+> while user events need if(enabled & bit) check plus iov prep and write.
+> 
+> When enabled the write() is probably faster than USDT trap, but all the extra
+> overhead in tracepoint and user_event_validate() probably makes it the same speed.
+> So why not USDT ?
 
 
