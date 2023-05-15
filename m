@@ -1,85 +1,70 @@
-Return-Path: <bpf+bounces-499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B97A7702665
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 09:50:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4FE0702678
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 09:55:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 006AC1C20A88
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 07:50:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E9B02810E7
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 07:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657598827;
-	Mon, 15 May 2023 07:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F282848C;
+	Mon, 15 May 2023 07:55:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222578469;
-	Mon, 15 May 2023 07:50:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D611EC4339B;
-	Mon, 15 May 2023 07:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5EA1FB1
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 07:55:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C4D3C433D2;
+	Mon, 15 May 2023 07:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684137019;
-	bh=GNWCcuczZlCdf5xkDE12wCv0ynHcKr9sQgZDRwQdZ1I=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qnnV2NVPRlT72CCYkq6PqlsuZuFC5XyS1mKMpcQJ/SoAe1lL1MJ6tSjlzpJPtWa9W
-	 yPsLDH8Uh7zA39ihnBFD+DEMvt3rK/7nBJX34+eM5QZ4pxEgjekFlbLALgwfAqZf5p
-	 Fw0MVrS3oThPvROkkr3ggpXiDcbCnwKTBnAVGpIMjZPYonRwpsN7BbkDv2NYv7MeEt
-	 aWjlTQGQQM4puMynqIiYIHXlmZeqxr6MAjmMwrSmN70mc7O5qAxwyBrwOeCtEgQjIQ
-	 ViRKwMwRUdJUjqHLRsnYsJtMf4HbSyu7m8ij+B8+pp0iCVQRw9iyQ+DhTpNXgk5JZq
-	 MWwU5s0sT427A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C009EC41672;
-	Mon, 15 May 2023 07:50:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1684137305;
+	bh=GGdXABU/W294z2dz02XJk9M2U2KkDKc5eHvI9rMuB34=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IicAj9RdI3pzCJbc+9esIPILMu3vFaLdLbJ3i4KInRUfgshHs1466v4vgWYlmxQ1e
+	 DZu2ksv86KSQAOtGc7wUsjeZUd7ktER7/alCxD49YRLFIyNA2UWoxFru+KrgZQuayG
+	 MZGqQFUC9ku81RPTauWqA2iZpvwd5DvvuTEEvDCsyxfBBFVq7TlWDJ2Hkdc7qw3tJG
+	 W/yd6nbF9CLO9Df9i5lw1plJuRqQynvNJI7K3+yZ67vDo0O4NX22MXbAQGbR7hQOo4
+	 lF0DYoVPDuGH+R6e2SVtr91laXvyZKBYUs5fGdaM4xln7vy5bUZLwnMOrrOC+pSlhr
+	 lAaDMBNuD02mw==
+Date: Mon, 15 May 2023 09:54:53 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Christian =?utf-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>
+Cc: selinux@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrei Vagin <avagin@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v4 7/9] kernel: use new capable_any functionality
+Message-ID: <20230515-anhalten-begleichen-b85fa6b38195@brauner>
+References: <20230511142535.732324-1-cgzones@googlemail.com>
+ <20230511142535.732324-7-cgzones@googlemail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v6] virtio_net: Fix error unwinding of XDP initialization
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168413701978.26935.8394779439623011528.git-patchwork-notify@kernel.org>
-Date: Mon, 15 May 2023 07:50:19 +0000
-References: <20230512151812.1806-1-feliu@nvidia.com>
-In-Reply-To: <20230512151812.1806-1-feliu@nvidia.com>
-To: Feng Liu <feliu@nvidia.com>
-Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, jasowang@redhat.com,
- mst@redhat.com, xuanzhuo@linux.alibaba.com, simon.horman@corigine.com,
- bodong@nvidia.com, jiri@nvidia.com, witu@nvidia.com
+In-Reply-To: <20230511142535.732324-7-cgzones@googlemail.com>
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 12 May 2023 11:18:12 -0400 you wrote:
-> When initializing XDP in virtnet_open(), some rq xdp initialization
-> may hit an error causing net device open failed. However, previous
-> rqs have already initialized XDP and enabled NAPI, which is not the
-> expected behavior. Need to roll back the previous rq initialization
-> to avoid leaks in error unwinding of init code.
+On Thu, May 11, 2023 at 04:25:30PM +0200, Christian Göttsche wrote:
+> Use the new added capable_any function in appropriate cases, where a
+> task is required to have any of two capabilities.
 > 
-> Also extract helper functions of disable and enable queue pairs.
-> Use newly introduced disable helper function in error unwinding and
-> virtnet_close. Use enable helper function in virtnet_open.
-> 
-> [...]
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> ---
 
-Here is the summary with links:
-  - [net,v6] virtio_net: Fix error unwinding of XDP initialization
-    https://git.kernel.org/netdev/net/c/5306623a9826
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Looks good to me,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
