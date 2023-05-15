@@ -1,120 +1,85 @@
-Return-Path: <bpf+bounces-513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60A7B702D95
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:08:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 657A5702D9A
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:09:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE3E280E3E
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 13:08:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18FCF1C20A3D
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 13:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E682C8EC;
-	Mon, 15 May 2023 13:08:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EF4C8EA;
+	Mon, 15 May 2023 13:09:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A867C8E2;
-	Mon, 15 May 2023 13:08:31 +0000 (UTC)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E64926B0;
-	Mon, 15 May 2023 06:08:00 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3075e802738so11694985f8f.1;
-        Mon, 15 May 2023 06:08:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9195B79D4
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 13:09:23 +0000 (UTC)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C702D60
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 06:09:02 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1addac3de73so29144515ad.1
+        for <bpf@vger.kernel.org>; Mon, 15 May 2023 06:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684156079; x=1686748079;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2gFAV1Bt11rr0HeGWTCJG9IDGxOMnHQHXHHbOCPYDo=;
-        b=Fb4+g02YBBu38SltuhS+IwpYVzoxe80rT1yHPlTht9o95uLaKhQM6L02U8FIQSzG0u
-         F74fhxfxj9aXytF3FtFdEEivo2st0IMgxLRibmpbYacA0zZWuO4fj3Y/9A2Tn78oIvY0
-         C18Ml0c4V5ahXxqIhkCUiPcNutxniHakG8FQrBJdJLkk/GUk7OPBmr0muET13IO4vKdc
-         v2E4936Adb3bkr5bfETRmIsjKU+IeoFpOqtNr3sLG0IJtBNMYIXtbopzPX+x1mhNuV0l
-         7s9GaeOiQuSZ54g+KUPd/b3efDKiKbFOuOxbTCZbYbh4sbs0SxUN3ALJYt6u0HfENSCo
-         XHXw==
+        d=gmail.com; s=20221208; t=1684156139; x=1686748139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sb72djRxUVLreFcMC0IPWwh0eEe6IWnt64V/dstWQOg=;
+        b=ifmh6FqBPOPePRThUvfEyj/oB9gfzfk/ReSI17ZVqAA7ewAJUqd64tLEIhfpHFImyS
+         gUpa3TmCpsUtHxEjUMbKwudR9WzHvsx5LglB4NuBZ5jXj58sViSXCxgoeO4Fp1cqJnUs
+         kIYnQA2DWcT2OU7LpCZfxo4xHRZ5EXPnEANTbyJBwWQcIQFjSTkDdE0aNzIE0Y5fP/k5
+         wrkNbPQDo4er7C8sTPhk0Nsku4LbUuzQrXefMaUK/zY5e0k6tCIuTO3J45TDlsZEUt65
+         eGhiNaMdOBXp+Bxoqs/LTtHAhZt0RVH2biG2tdr6HSQQqAHtDbsQk+lDuWJrNuAwgSxA
+         RR3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684156079; x=1686748079;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I2gFAV1Bt11rr0HeGWTCJG9IDGxOMnHQHXHHbOCPYDo=;
-        b=e3FGC8kMaDzgy3p9yWvJFuQPqCrkBzTk77qhtRMz7/AcEzselnEB//cYVFmk3hBbil
-         TL//2nbcZzr1h3hldwaEGoOonTuDQ1jyIXIW5nGaV/uthTgcM38xqwD8ouitC/QPS58J
-         7weJo8DMx20GFiQiOmIJ4Uh4P8rTWIVqiIVrx3cl6uAafgMYH74lq5+Us2cmrR79FmCA
-         DVwewb8q1BF0vmZ64Mq88UNSaKGd/SqBT9bzFwxfn4Dhp+ZXDgEpPOEhVJ6K9DK8TSpc
-         hVc6Ebhu2WZEoWAcXQ85jdrXuIyo0ZSyY9Qf2r5IliksGNWRGXYsY7hSEVFJ0cJ7/3Ba
-         HzLA==
-X-Gm-Message-State: AC+VfDyDTcKuNNHCGqlAyjOi54doki9HD4X/kBjCUlWZ+L8gMsxqKQQT
-	vwFEsQTJVRf2k9O9PzH8vUc=
-X-Google-Smtp-Source: ACHHUZ65cUXTV46JE+DSVeEZihKZOp7o4pCuhzCZeDl0jKBfbZDdPGdAnhGyJWS4kVWmFwZtM8978g==
-X-Received: by 2002:adf:cc90:0:b0:307:8718:7891 with SMTP id p16-20020adfcc90000000b0030787187891mr25640550wrj.54.1684156078532;
-        Mon, 15 May 2023 06:07:58 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id e12-20020adfe7cc000000b002c54c9bd71fsm32604261wrn.93.2023.05.15.06.07.57
+        d=1e100.net; s=20221208; t=1684156139; x=1686748139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sb72djRxUVLreFcMC0IPWwh0eEe6IWnt64V/dstWQOg=;
+        b=GYim+AMtlTieQorSLhPGeBZG0p+JQQIECQvpSDIhKXqHnj++qk3KqFM1+IG+tMhaZO
+         +PG0N3o+LsbJFKvBkGTkMBDjmdHrHSDbZRbLXv/dlp5eU+xy9ZxYa5EnluOvaK2bgC8V
+         Jhixz4YR+KfQGVn46Pep3WpRcI22v/qGY/MD62m5OsGrN+nKelhLBXo9PQ5N2gjKHjQu
+         Ae5mfBcVAqm8kQDvYu4Dr0lwOvWy+mvc7ZXON31x3rFaRABG0CA5CD62D9IFAF2osP0e
+         Xk2Dn9lGhkBnQeyIuIQnUeXq33/2pniC54f5zUBsBlKkmnYxzZXBBro7GbjhNb3tERew
+         P+BA==
+X-Gm-Message-State: AC+VfDxVTJPQgOSCUIdIK3RgrcyHeO8FxOwIm6HgzzJIpVhG9r9wwYCh
+	MqiQ/S5o0EjYb/ua/uKI0uE=
+X-Google-Smtp-Source: ACHHUZ6Zmu8g1v8XX1vcRiyLrm748RqctyrzbUsxbpZD8z4vgE9jQdoaPsUvNR5g0kB+FI03uOys4w==
+X-Received: by 2002:a17:902:e810:b0:1a6:7ed0:147e with SMTP id u16-20020a170902e81000b001a67ed0147emr46633924plg.33.1684156138613;
+        Mon, 15 May 2023 06:08:58 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac01:991:5400:4ff:fe70:1e06])
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902748500b001ac2a73dbf2sm13458723pll.291.2023.05.15.06.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 May 2023 06:07:57 -0700 (PDT)
-Date: Mon, 15 May 2023 14:07:57 +0100
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: "Kirill A . Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	Oleg Nesterov <oleg@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-	Jan Kara <jack@suse.cz>, Pavel Begunkov <asml.silence@gmail.com>,
-	Mika Penttila <mpenttil@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
-	Peter Xu <peterx@redhat.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>
-Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
- mappings by default
-Message-ID: <ad0053a4-fa34-4b95-a262-d27942b168fd@lucifer.local>
-References: <cover.1683235180.git.lstoakes@gmail.com>
- <20230515110315.uqifqgqkzcrrrubv@box.shutemov.name>
- <7f6dbe36-88f2-468e-83c1-c97e666d8317@lucifer.local>
- <ZGIhwZl2FbLodLrc@nvidia.com>
+        Mon, 15 May 2023 06:08:57 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	kafai@fb.com,
+	songliubraving@fb.com,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v2 0/3] bpf: bpf trampoline improvements 
+Date: Mon, 15 May 2023 13:08:46 +0000
+Message-Id: <20230515130849.57502-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZGIhwZl2FbLodLrc@nvidia.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -122,51 +87,38 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, May 15, 2023 at 09:12:49AM -0300, Jason Gunthorpe wrote:
-> On Mon, May 15, 2023 at 12:16:21PM +0100, Lorenzo Stoakes wrote:
-> > > One thing that came to mind is KVM with "qemu -object memory-backend-file,share=on..."
-> > > It is mostly used for pmem emulation.
-> > >
-> > > Do we have plan B?
-> >
-> > Yes, we can make it opt-in or opt-out via a FOLL_FLAG. This would be easy
-> > to implement in the event of any issues arising.
->
-> I'm becoming less keen on the idea of a per-subsystem opt out. I think
-> we should make a kernel wide opt out. I like the idea of using lower
-> lockdown levels. Lots of things become unavaiable in the uAPI when the
-> lockdown level increases already.
+When we run fexit bpf programs (e.g. attaching tcp_recvmsg) on our servers
+which were running old kernels, some of these servers crashed. Finally we
+figured out that it was caused by the same issue resolved by
+commit e21aa341785c ("bpf: Fix fexit trampoline."). After we backported
+that commit, the crash disappears. However new issues are introduced by
+that commit. This patchset fixes them.
 
-This would be the 'safest' in the sense that a user can't be surprised by
-higher lockdown = access modes disallowed, however we'd _definitely_ need
-to have an opt-in in that instance so io_uring can make use of this
-regardless. That's easy to add however.
+PATCH #1: Fix a memory leak found on our server
+PATCH #2: Remove bpf trampoline selector and also fix the issue in perf
+          caused by the name change in bpf trampoline
+PATCH #3: Show target_{obj,btf}_id when link to a bpf trampoline
 
-If we do go down that road, we can be even stricter/vary what we do at
-different levels right?
+v1->v2:
+- Reuse the common code between __bpf_tramp_image_put_deferred and
+  bpf_tramp_image_free (Song)
+- Add fixes tag in patch #1 (Song)
+- Restore the old bpf trampoline name format (Song)
+- Jiri pointed out a issue in perf
+- Show btf information in the tracing link info
 
->
-> > Jason will have some thoughts on this I'm sure. I guess the key question
-> > here is - is it actually feasible for this to work at all? Once we
-> > establish that, the rest are details :)
->
-> Surely it is, but like Ted said, the FS folks are not interested and
-> they are at least half the solution..
+Yafang Shao (3):
+  bpf: Fix memleak due to fentry attach failure
+  bpf: Remove bpf trampoline selector
+  bpf: Show target_{obj,btf}_id in tracing link info
 
-:'(
+ include/linux/bpf.h      |  1 -
+ kernel/bpf/syscall.c     | 12 ++++++++++--
+ kernel/bpf/trampoline.c  | 32 +++++++++++++++++++-------------
+ tools/bpf/bpftool/link.c |  4 ++++
+ 4 files changed, 33 insertions(+), 16 deletions(-)
 
->
-> The FS also has to actively not write out the page while it cannot be
-> write protected unless it copies the data to a stable page. The block
-> stack needs the source data to be stable to do checksum/parity/etc
-> stuff. It is a complicated subject.
+-- 
+1.8.3.1
 
-Yes my sense was that being able to write arbitrarily to these pages _at
-all_ was a big issue, not only the dirty tracking aspect.
-
-I guess at some level letting filesystems have such total flexibility as to
-how they implement things leaves us in a difficult position.
-
->
-> Jason
 
