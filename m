@@ -1,132 +1,94 @@
-Return-Path: <bpf+bounces-570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E81AE703DC7
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 21:35:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A646703E11
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 22:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB4C21C20C05
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 19:35:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F83B281340
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 20:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933D819525;
-	Mon, 15 May 2023 19:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D7619536;
+	Mon, 15 May 2023 20:02:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E843D2E4
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 19:35:42 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 139D226AC;
-	Mon, 15 May 2023 12:35:41 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 42A012044710;
-	Mon, 15 May 2023 12:35:40 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 42A012044710
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684179340;
-	bh=PcFG+iIa/PA7p0IIgskPb1ruV+sX7mzcczF0a582zuI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dZC0Y1cjSTLSoaHgLlbLJz9qTrQZ3hbcf9ZlQOPGYVMVbbgOQUi309o/v++fIOct8
-	 LHS6+lCLPr2yc32sNNHeyQ5P/wGZYLepluAC+iqSDagyJ+z/heZVKg/h/vy+tMLiRH
-	 PuNPVhL0D1XkdrY1gEUA1LyM//Mw+1f+cCn7ln4U=
-Date: Mon, 15 May 2023 12:35:32 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	dthaler@microsoft.com, brauner@kernel.org, hch@infradead.org
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230515193532.GA153@W11-BEAU-MD.localdomain>
-References: <20230508163751.841-1-beaub@linux.microsoft.com>
- <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
- <20230509130111.62d587f1@rorschach.local.home>
- <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515143305.4f731fa9@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5458D2E4
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 20:02:19 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7634FE707
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 13:02:18 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34FJxTgQ032442
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 13:02:17 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qj830e3xt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 13:02:17 -0700
+Received: from twshared18891.17.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 15 May 2023 13:02:16 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 110CB30BBEB1F; Mon, 15 May 2023 13:02:08 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf] samples/bpf: use canonical fallthrough pseudo-keyword in hbm.c
+Date: Mon, 15 May 2023 13:02:07 -0700
+Message-ID: <20230515200207.2541162-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: Q51JeJDRpnNSlFF2Ce13vaIzmCSCoeqU
+X-Proofpoint-ORIG-GUID: Q51JeJDRpnNSlFF2Ce13vaIzmCSCoeqU
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230515143305.4f731fa9@gandalf.local.home>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-15_18,2023-05-05_01,2023-02-09_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, May 15, 2023 at 02:33:05PM -0400, Steven Rostedt wrote:
-> On Mon, 15 May 2023 09:57:07 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > Thank you for these details. Answer below...
-> 
-> Thanks for this well thought out reply!
-> 
-> 
+Rename now unsupported __fallthrough into fallthrough ([0]) in
+samples/bpf/hbm.c to fix samples/bpf compilation.
 
-[...]
+  [0] https://www.kernel.org/doc/html/latest/process/deprecated.html?highli=
+ght=3Dfallthrough#implicit-switch-case-fall-through
 
-> > 
-> > > 	if (unlikely(ret <= 0)) {
-> > > 		if (!fixup_fault)
-> > > 			return -EFAULT;
-> > > 
-> > > 		if (!user_event_enabler_queue_fault(mm, enabler, *attempt))
-> > > 			pr_warn("user_events: Unable to queue fault handler\n");  
-> > 
-> > This part looks questionable.
-> > 
-> > The only users of fixup_user_fault() were futex and KVM.
-> > Now user_events are calling it too from user_event_mm_fault_in() where
-> > "bool unlocked;" is uninitialized and state of this flag is not checked
-> > after fixup_user_fault() call.
-> > Not an MM expert, but this is suspicious.
-> 
-> Hmm, yeah, this should be:
-> 
-> static int user_event_mm_fault_in()
-> {
-> 	bool unlocked = false;
-> 
-> 	[..]
-> 
-> out:
-> 	if (!unlocked)
-> 		mmap_read_unlock(mm->mm);
-> }
-> 
-> Good catch!
-> 
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ samples/bpf/hbm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't believe that's correct. fixup_user_fault() re-acquires the
-mmap lock, and when it does, it lets you know via unlocked getting set
-to true. IE: Something COULD have changed in the mmap during this call,
-but the lock is still held.
+diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
+index 6448b7826107..7ddf25e9d098 100644
+--- a/samples/bpf/hbm.c
++++ b/samples/bpf/hbm.c
+@@ -498,7 +498,7 @@ int main(int argc, char **argv)
+ 					"Option -%c requires an argument.\n\n",
+ 					optopt);
+ 		case 'h':
+-			__fallthrough;
++			fallthrough;
+ 		default:
+ 			Usage();
+ 			return 0;
+--=20
+2.34.1
 
-See comments here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/gup.c#n1287
-
-Thanks,
--Beau
-
-> 
-> Thank you Alexei for asking these. The above are all valid concerns.
-> 
-> -- Steve
-> 
 
