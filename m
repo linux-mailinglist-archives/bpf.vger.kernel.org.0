@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37AF97031E5
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 17:52:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B237031E8
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 17:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86572281376
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:52:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96B361C20C00
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7CCE567;
-	Mon, 15 May 2023 15:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D39E568;
+	Mon, 15 May 2023 15:54:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849F7C8FC
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:52:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FDC5C433A0
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8921C8FC
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:53:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DA79C4339C
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684165946;
-	bh=7O/7NYamSvGoG1QVJZAFoDXYRSQzNZIa299RguuTcC0=;
+	s=k20201202; t=1684166038;
+	bh=eXMzcC8E9qEH4tWfW/3/rvdN3Rqr/x5ZfGqubG0TEmw=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=E/cmQ4w8Ba157Y35QANYhUxnhvDRDn2z5D7M/rA9vIc0aMLpHA0ydryc+GUe3Asux
-	 0x0gKJYsr7FACgi1dDXt+ubZ1M9n/A2us94L+IIZPp20c7WI/SZQNevU+Z5WYV8Ht2
-	 cHFm6ltJq4w0hWlRBFAOzsE5W5G8ajHOmZBbw3E/jVnoUPzxm+vxEDquV7nGlhLv97
-	 WIMSwM1rZ7LEc7tTRUm/nkQN+Eiuen74rApis0wjvPX5uZTawKHfWD98xiXBDrt5fj
-	 Z9E9p5iQb8jJFXwtA8jEe20eoAizELFhrfUUuQJqRfzcjlUanelB993A9uXsQx0sFs
-	 XAMLqDcv7BekQ==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4f14468ef54so15032536e87.0
-        for <bpf@vger.kernel.org>; Mon, 15 May 2023 08:52:26 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwdp7gKaDFVMvzH6zW2gbGSlhG7DEV/YYcB/jq0ZyUNrBwZcag0
-	UgVlFpgW35oIoUjI5D3SR+kOmr8M/XXiur8Bzm8=
-X-Google-Smtp-Source: ACHHUZ4pcb/NRKQfkvWUptFkG5mIfQLHU517cDTM+SSVKs4+7fGsLSuA6hCXIN616l1w+lnF2BF62acY/tPTonYCzhE=
-X-Received: by 2002:ac2:411a:0:b0:4ef:f01d:5a96 with SMTP id
- b26-20020ac2411a000000b004eff01d5a96mr5391541lfi.21.1684165944260; Mon, 15
- May 2023 08:52:24 -0700 (PDT)
+	b=Faithih8kaeTHTpFMzDI/81x/CTI/xN09OnBWZYvcZvM3Ol2CHDJXcpyUAjUtwv9k
+	 uKSHhAc92Yea3ZpBC92ce/TxB/vFfIu+7JlV0ezIGXNPo/NzlFgd+YlM2lrLf6Fo2s
+	 SCzsHFxzZAiX5+Oghz49T3Rw4WPPHlo8RGqzcu+i3ug+ActHaw1zA0aEIyot8Cys52
+	 tmP8fa0gQYMxRvRsVsB1PIerI8O463HXssHDSASOyOAuJbCg87vOzJfsoZK/f8+Qgn
+	 uGwWCWkUuXa5ali1awE5uNACuNeCtQu+h7FNGl2/1c3MikqxK+XsCvWy1OgR3Cv2Ab
+	 DMNr16GaCeYCQ==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4f004cc54f4so14948472e87.3
+        for <bpf@vger.kernel.org>; Mon, 15 May 2023 08:53:58 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwSUbTixGTag68XvL4BmNjw9bVUzfOtFDu04tRD+X/6SLh0yKLX
+	2FSOWjfjBTDnQhpOmWrFOk4N5FgnS8qx7I3ZjKo=
+X-Google-Smtp-Source: ACHHUZ5dP2zPGAzTkuHZqEw98AApUamXbvm6D8jq1F2a9uRkPcNgCJ3U5DDEFcLQORoL03s5cTLtrK6rsCB8NNuOHGA=
+X-Received: by 2002:ac2:4f8e:0:b0:4f1:3eea:eaf9 with SMTP id
+ z14-20020ac24f8e000000b004f13eeaeaf9mr6757897lfs.24.1684166036404; Mon, 15
+ May 2023 08:53:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230515130849.57502-1-laoar.shao@gmail.com> <20230515130849.57502-2-laoar.shao@gmail.com>
-In-Reply-To: <20230515130849.57502-2-laoar.shao@gmail.com>
+References: <20230515130849.57502-1-laoar.shao@gmail.com> <20230515130849.57502-3-laoar.shao@gmail.com>
+In-Reply-To: <20230515130849.57502-3-laoar.shao@gmail.com>
 From: Song Liu <song@kernel.org>
-Date: Mon, 15 May 2023 08:52:10 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4_wBBKDfmCos+rXvYoT3H9=0W3EEzAWhS79i4-oHHYnA@mail.gmail.com>
-Message-ID: <CAPhsuW4_wBBKDfmCos+rXvYoT3H9=0W3EEzAWhS79i4-oHHYnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Fix memleak due to fentry attach failure
+Date: Mon, 15 May 2023 08:53:44 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW545Lf=q91+L_o-ZRwpWs2xUbmoWU9CK4zNae=Dy=kSWg@mail.gmail.com>
+Message-ID: <CAPhsuW545Lf=q91+L_o-ZRwpWs2xUbmoWU9CK4zNae=Dy=kSWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: Remove bpf trampoline selector
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com, 
 	songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, 
@@ -62,33 +62,18 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, May 15, 2023 at 6:09=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
 wrote:
 >
-> If it fails to attach fentry, the allocated bpf trampoline image will be
-> left in the system. That can be verified by checking /proc/kallsyms.
+> After commit e21aa341785c ("bpf: Fix fexit trampoline."), the selector
+> is only used to indicate how many times the bpf trampoline image are
+> updated and been displayed in the trampoline ksym name. After the
+> trampoline is freed, the selector will start from 0 again. So the
+> selector is a useless value to the user. We can remove it.
+> If the user want to check whether the bpf trampoline image has been updat=
+ed
+> or not, the user can compare the address. Each time the trampoline image
+> is updated, the address will change consequently.
 >
-> This meamleak can be verified by a simple bpf program as follows,
->
->   SEC("fentry/trap_init")
->   int fentry_run()
->   {
->       return 0;
->   }
->
-> It will fail to attach trap_init because this function is freed after
-> kernel init, and then we can find the trampoline image is left in the
-> system by checking /proc/kallsyms.
->   $ tail /proc/kallsyms
->   ffffffffc0613000 t bpf_trampoline_6442453466_1  [bpf]
->   ffffffffc06c3000 t bpf_trampoline_6442453466_1  [bpf]
->
->   $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep "FUNC 'trap_init=
-'"
->   [2522] FUNC 'trap_init' type_id=3D119 linkage=3Dstatic
->
->   $ echo $((6442453466 & 0x7fffffff))
->   2522
->
-> Note that there are two left bpf trampoline images, that is because the
-> libbpf will fallback to raw tracepoint if -EINVAL is returned.
+> Jiri pointed out antoher issue that perf is still using the old name
+> "bpf_trampoline_%lu", so this change can fix the issue in perf.
 >
 > Fixes: e21aa341785c ("bpf: Fix fexit trampoline.")
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
