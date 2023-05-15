@@ -1,93 +1,61 @@
-Return-Path: <bpf+bounces-489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1185F7020EF
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 03:07:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 320BE702136
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 03:41:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0D9281061
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 01:07:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39F5B1C20981
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 01:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114C91118;
-	Mon, 15 May 2023 01:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC96A15A6;
+	Mon, 15 May 2023 01:40:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06CD10EA
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 01:06:58 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BE010C1
-	for <bpf@vger.kernel.org>; Sun, 14 May 2023 18:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1684112816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+GShV9rQVPoiBC3aZLWHV81IRxeBh9KQe/grJK0OSZg=;
-	b=ev9SzvEhpHTPrYn8c6TIUyk5DUV2unRoYwlGrYTK653O+04V93u9/G2nMVu2bezpBcNri0
-	XRhBx6/nlP69MQcqb7B19Nx+5jr+e8fFdVbTU0wP7iZmsML5QVPLDAO7r+IwreUE8EO8tp
-	9jFTljBzI9f92V6FwBD8K9fwKiu9OwQ=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-456-ezsYkRAbOvyvDfifFUasEw-1; Sun, 14 May 2023 21:06:54 -0400
-X-MC-Unique: ezsYkRAbOvyvDfifFUasEw-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4edc7406cb5so7191124e87.3
-        for <bpf@vger.kernel.org>; Sun, 14 May 2023 18:06:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684112813; x=1686704813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+GShV9rQVPoiBC3aZLWHV81IRxeBh9KQe/grJK0OSZg=;
-        b=dpyBOwVjZTyPPrdlEeXpv7PrMr7Xy5+doRsW8LWHysZXE4i/+6H35hWiy6VRgjpUBt
-         +7TnT343Q5S4bRv1jdhqvDYptaYsbf9gJvdKnPkOdHdk0H1jYp3yqdm1tOJSAjmljoOx
-         87AWOGJ6cARo6CNi2Z1rf7U5dMk6dgjlVJv7/gpAm9U7zDloFxaJHXbFWTyJ9dYnHAjV
-         x9D+zB4wpzfeWoa7uTaLXWIHqC8hDKKJUOjVzUfQqdKrLnvVw4kGHoyw6sfzhmSJesv9
-         qdkRe0tx6KlItC9bVRQhBW0DwsSz6BVlCxFh6x33uo0B9ch63Z8tOBVFbCNPBpf6b+R+
-         v8jQ==
-X-Gm-Message-State: AC+VfDyDHaB8GMLCtIMxEqYehpS4MA8LNQCNmZPDmU/BlsD5531ziX39
-	JRjcAXcPy4uw3bWbm75QWfqnNS7wEg8NVogJlB9jcM0kl7biQei1BDugHzdi+Kr/WoF2X+QajIf
-	ESY1eykzpQTPYcQhoX8r8KsZpFPp1
-X-Received: by 2002:ac2:55a6:0:b0:4ee:d8f3:1398 with SMTP id y6-20020ac255a6000000b004eed8f31398mr5934364lfg.68.1684112813220;
-        Sun, 14 May 2023 18:06:53 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ45LxbE+gq1RPYwef6WE67FgUUzSqPe9cPjccRfp9vTAvE7LGqJ2vn8M657T3NlXAupmgs40Ezr6Ol6Lylly1U=
-X-Received: by 2002:ac2:55a6:0:b0:4ee:d8f3:1398 with SMTP id
- y6-20020ac255a6000000b004eed8f31398mr5934353lfg.68.1684112813027; Sun, 14 May
- 2023 18:06:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752881360;
+	Mon, 15 May 2023 01:40:49 +0000 (UTC)
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59591E5B;
+	Sun, 14 May 2023 18:40:45 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0ViYo7ai_1684114841;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0ViYo7ai_1684114841)
+          by smtp.aliyun-inc.com;
+          Mon, 15 May 2023 09:40:42 +0800
+Message-ID: <1684114830.5565894-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net v6] virtio_net: Fix error unwinding of XDP initialization
+Date: Mon, 15 May 2023 09:40:30 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Feng Liu <feliu@nvidia.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+ "Michael S . Tsirkin" <mst@redhat.com>,
+ Simon Horman <simon.horman@corigine.com>,
+ Bodong Wang <bodong@nvidia.com>,
+ Feng Liu <feliu@nvidia.com>,
+ Jiri Pirko <jiri@nvidia.com>,
+ William Tu <witu@nvidia.com>,
+ <virtualization@lists.linux-foundation.org>,
+ <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>,
+ <bpf@vger.kernel.org>
+References: <20230512151812.1806-1-feliu@nvidia.com>
+In-Reply-To: <20230512151812.1806-1-feliu@nvidia.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230512151812.1806-1-feliu@nvidia.com>
-In-Reply-To: <20230512151812.1806-1-feliu@nvidia.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 15 May 2023 09:06:41 +0800
-Message-ID: <CACGkMEvMDWZg56TfMX0XV86ANet01WU1Mr+ZCQa_Xphem42ydw@mail.gmail.com>
-Subject: Re: [PATCH net v6] virtio_net: Fix error unwinding of XDP initialization
-To: Feng Liu <feliu@nvidia.com>
-Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	"Michael S . Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Simon Horman <simon.horman@corigine.com>, Bodong Wang <bodong@nvidia.com>, 
-	Jiri Pirko <jiri@nvidia.com>, William Tu <witu@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Fri, May 12, 2023 at 11:18=E2=80=AFPM Feng Liu <feliu@nvidia.com> wrote:
->
+On Fri, 12 May 2023 11:18:12 -0400, Feng Liu <feliu@nvidia.com> wrote:
 > When initializing XDP in virtnet_open(), some rq xdp initialization
 > may hit an error causing net device open failed. However, previous
 > rqs have already initialized XDP and enabled NAPI, which is not the
@@ -103,9 +71,9 @@ On Fri, May 12, 2023 at 11:18=E2=80=AFPM Feng Liu <feliu@nvidia.com> wrote:
 > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 > Reviewed-by: William Tu <witu@nvidia.com>
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Thanks
+Thanks.
 
 > ---
 > v5 -> v6
@@ -142,102 +110,93 @@ Thanks
 > index a12ae26db0e2..56ca1d270304 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -1868,6 +1868,38 @@ static int virtnet_poll(struct napi_struct *napi, =
-int budget)
->         return received;
+> @@ -1868,6 +1868,38 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+>  	return received;
 >  }
 >
-> +static void virtnet_disable_queue_pair(struct virtnet_info *vi, int qp_i=
-ndex)
+> +static void virtnet_disable_queue_pair(struct virtnet_info *vi, int qp_index)
 > +{
-> +       virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
-> +       napi_disable(&vi->rq[qp_index].napi);
-> +       xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+> +	virtnet_napi_tx_disable(&vi->sq[qp_index].napi);
+> +	napi_disable(&vi->rq[qp_index].napi);
+> +	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
 > +}
 > +
-> +static int virtnet_enable_queue_pair(struct virtnet_info *vi, int qp_ind=
-ex)
+> +static int virtnet_enable_queue_pair(struct virtnet_info *vi, int qp_index)
 > +{
-> +       struct net_device *dev =3D vi->dev;
-> +       int err;
+> +	struct net_device *dev = vi->dev;
+> +	int err;
 > +
-> +       err =3D xdp_rxq_info_reg(&vi->rq[qp_index].xdp_rxq, dev, qp_index=
-,
-> +                              vi->rq[qp_index].napi.napi_id);
-> +       if (err < 0)
-> +               return err;
+> +	err = xdp_rxq_info_reg(&vi->rq[qp_index].xdp_rxq, dev, qp_index,
+> +			       vi->rq[qp_index].napi.napi_id);
+> +	if (err < 0)
+> +		return err;
 > +
-> +       err =3D xdp_rxq_info_reg_mem_model(&vi->rq[qp_index].xdp_rxq,
-> +                                        MEM_TYPE_PAGE_SHARED, NULL);
-> +       if (err < 0)
-> +               goto err_xdp_reg_mem_model;
+> +	err = xdp_rxq_info_reg_mem_model(&vi->rq[qp_index].xdp_rxq,
+> +					 MEM_TYPE_PAGE_SHARED, NULL);
+> +	if (err < 0)
+> +		goto err_xdp_reg_mem_model;
 > +
-> +       virtnet_napi_enable(vi->rq[qp_index].vq, &vi->rq[qp_index].napi);
-> +       virtnet_napi_tx_enable(vi, vi->sq[qp_index].vq, &vi->sq[qp_index]=
-.napi);
+> +	virtnet_napi_enable(vi->rq[qp_index].vq, &vi->rq[qp_index].napi);
+> +	virtnet_napi_tx_enable(vi, vi->sq[qp_index].vq, &vi->sq[qp_index].napi);
 > +
-> +       return 0;
+> +	return 0;
 > +
 > +err_xdp_reg_mem_model:
-> +       xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
-> +       return err;
+> +	xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+> +	return err;
 > +}
 > +
 >  static int virtnet_open(struct net_device *dev)
 >  {
->         struct virtnet_info *vi =3D netdev_priv(dev);
+>  	struct virtnet_info *vi = netdev_priv(dev);
 > @@ -1881,22 +1913,20 @@ static int virtnet_open(struct net_device *dev)
->                         if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
->                                 schedule_delayed_work(&vi->refill, 0);
+>  			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+>  				schedule_delayed_work(&vi->refill, 0);
 >
-> -               err =3D xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->=
-rq[i].napi.napi_id);
-> +               err =3D virtnet_enable_queue_pair(vi, i);
->                 if (err < 0)
-> -                       return err;
+> -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
+> +		err = virtnet_enable_queue_pair(vi, i);
+>  		if (err < 0)
+> -			return err;
 > -
-> -               err =3D xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
-> -                                                MEM_TYPE_PAGE_SHARED, NU=
-LL);
-> -               if (err < 0) {
-> -                       xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> -                       return err;
-> -               }
+> -		err = xdp_rxq_info_reg_mem_model(&vi->rq[i].xdp_rxq,
+> -						 MEM_TYPE_PAGE_SHARED, NULL);
+> -		if (err < 0) {
+> -			xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> -			return err;
+> -		}
 > -
-> -               virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
-> -               virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi)=
-;
-> +                       goto err_enable_qp;
->         }
+> -		virtnet_napi_enable(vi->rq[i].vq, &vi->rq[i].napi);
+> -		virtnet_napi_tx_enable(vi, vi->sq[i].vq, &vi->sq[i].napi);
+> +			goto err_enable_qp;
+>  	}
 >
->         return 0;
+>  	return 0;
 > +
 > +err_enable_qp:
-> +       disable_delayed_refill(vi);
-> +       cancel_delayed_work_sync(&vi->refill);
+> +	disable_delayed_refill(vi);
+> +	cancel_delayed_work_sync(&vi->refill);
 > +
-> +       for (i--; i >=3D 0; i--)
-> +               virtnet_disable_queue_pair(vi, i);
-> +       return err;
+> +	for (i--; i >= 0; i--)
+> +		virtnet_disable_queue_pair(vi, i);
+> +	return err;
 >  }
 >
 >  static int virtnet_poll_tx(struct napi_struct *napi, int budget)
 > @@ -2305,11 +2335,8 @@ static int virtnet_close(struct net_device *dev)
->         /* Make sure refill_work doesn't re-enable napi! */
->         cancel_delayed_work_sync(&vi->refill);
+>  	/* Make sure refill_work doesn't re-enable napi! */
+>  	cancel_delayed_work_sync(&vi->refill);
 >
-> -       for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> -               virtnet_napi_tx_disable(&vi->sq[i].napi);
-> -               napi_disable(&vi->rq[i].napi);
-> -               xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
-> -       }
-> +       for (i =3D 0; i < vi->max_queue_pairs; i++)
-> +               virtnet_disable_queue_pair(vi, i);
+> -	for (i = 0; i < vi->max_queue_pairs; i++) {
+> -		virtnet_napi_tx_disable(&vi->sq[i].napi);
+> -		napi_disable(&vi->rq[i].napi);
+> -		xdp_rxq_info_unreg(&vi->rq[i].xdp_rxq);
+> -	}
+> +	for (i = 0; i < vi->max_queue_pairs; i++)
+> +		virtnet_disable_queue_pair(vi, i);
 >
->         return 0;
+>  	return 0;
 >  }
 > --
 > 2.37.1 (Apple Git-137.1)
 >
-
 
