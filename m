@@ -1,127 +1,131 @@
-Return-Path: <bpf+bounces-541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A798703102
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 17:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B8370312C
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 17:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A89A51C20BFB
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:07:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE4F11C20C0F
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 15:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F451D536;
-	Mon, 15 May 2023 15:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD79D539;
+	Mon, 15 May 2023 15:11:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D62CC8E5
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:07:34 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D726D10F5
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 08:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1684163244;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jqAunJggVfMk8DVsWWYkCIQsfbXlahXMSDO8JBjiKzE=;
-	b=Zi9DuDTK3IWxZkz/e1Z0PoUqAD1uhk3XV38pmJfo8OBhWZYEWl2v+K//+/Jl/I9jEQqub3
-	Z2NXOFbbxIYypsk0Jm+r0l+8aH7ies82I+gBAWUQ0wNWdnGevcMQijJ8vCVI+NFIKxvhDP
-	5vojDwo/ZKX522huBiOE7cA3VY1Hq0c=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-68_nLZjCPR-2PBqqACGTMA-1; Mon, 15 May 2023 11:07:23 -0400
-X-MC-Unique: 68_nLZjCPR-2PBqqACGTMA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-96640336558so1237485466b.2
-        for <bpf@vger.kernel.org>; Mon, 15 May 2023 08:07:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684163242; x=1686755242;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:subject:cc:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jqAunJggVfMk8DVsWWYkCIQsfbXlahXMSDO8JBjiKzE=;
-        b=Ce7SSJWbBhuTrsfHwmSYg/OWR3UTZngRSKQcu5ixuRWPLGzRx25DMo5MP+6V5dkoMH
-         eRQEUsr1UYeAikbUgUwD5D8SJgZhTSJfrI90paO8rXLI+Lo1Sn/v1adl+QtIxASix/LX
-         MOqww4Jm64s7XtXrTRQBvbSvGwchKdShg1Om3/gsLmGDfbnPHzVAI6qR1NN+oYBqga+/
-         vNwrvzFk13+AkTpEA6NXAZOFlhAdHq/geZTrH1TSyKyeVhYALJzEDV2CLM+RL8ew7TSt
-         xJnR0tNJBTVz+tN/Dvkhfc9zCzYCQ3a6gJbenJbhdnXDvlE3oh2oZSgea+PSs/Y8ImeT
-         /reA==
-X-Gm-Message-State: AC+VfDw5sHOm57ylKgubeC+3upg3pG0VRfjFweBgPbnzx1T503M5NuZC
-	SsvtIJPXY1ECCex9kgvpcZxGk91zaOokZEq34kgCDbqddV4NkwGGgBgdIbGXJ0ON8p4kbkzp6/y
-	4rhwoktN9Ekmr
-X-Received: by 2002:a17:907:d91:b0:933:4d37:82b2 with SMTP id go17-20020a1709070d9100b009334d3782b2mr31485012ejc.57.1684163242593;
-        Mon, 15 May 2023 08:07:22 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4KJfmiDaL9BJh3jJxYB1OG8NuTPCjYqSvJHsOpWGNg4A0jTsW7kReLmT9LoGqXUg8hKEYa+Q==
-X-Received: by 2002:a17:907:d91:b0:933:4d37:82b2 with SMTP id go17-20020a1709070d9100b009334d3782b2mr31484980ejc.57.1684163242248;
-        Mon, 15 May 2023 08:07:22 -0700 (PDT)
-Received: from [192.168.41.200] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170907915100b0095004c87676sm9682583ejs.199.2023.05.15.08.07.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 May 2023 08:07:21 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <e4a9fa43-06f7-5271-effc-20cac59b0e64@redhat.com>
-Date: Mon, 15 May 2023 17:07:19 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A2DC2FD
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 15:11:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A98AC433EF;
+	Mon, 15 May 2023 15:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684163501;
+	bh=69oUJQL5OUtRdb5coch/yX/TGFy0xmcGPw/50IS/q1c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=hhXZz4pIDvUIX/NSgfMd1CuV/QZJUYHRLL32FVmdZ3JKb75V9iBbskZt+LneBd6RP
+	 K+bZHkFCP11dGlXqzSK0p5UilgF0J9zkNrq07Ogu6CTAf8R6IHXKtUGW+MjMQRBx2G
+	 yV+GelPNkVimnWy+q7HB2Kgasa+8vLlIgIt9RWURzRRnjOYq06PE4i2IbF0CjGWyAd
+	 4+yrswtL4jYIgiUura7Pzpat+MDIaohrdG0QCbYKbXJd2Ji/BuaYQWfPQgS6NcIK17
+	 fh+TbitzqGWfZ5bf+JZwb8gWblS8r6bcFTbLxvel7+40W1LjbDguVApGCBC7wXRuoF
+	 ipO+UcoDx5QBg==
+Date: Tue, 16 May 2023 00:11:37 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Florent Revest <revest@chromium.org>, Mark Rutland <mark.rutland@arm.com>,
+ Will Deacon <will@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH v10 07/11] tracing/probes: Add $args meta argument for
+ all function args
+Message-Id: <20230516001137.d5c2f16b89c26bfce31f1c2b@kernel.org>
+In-Reply-To: <20230515075701.6f49b3e7@gandalf.local.home>
+References: <168407346448.941486.15681419068846125595.stgit@mhiramat.roam.corp.google.com>
+	<168407353144.941486.592643565749157905.stgit@mhiramat.roam.corp.google.com>
+	<20230515075701.6f49b3e7@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc: brouer@redhat.com, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Anatoly Burakov <anatoly.burakov@intel.com>,
- Alexander Lobakin <alexandr.lobakin@intel.com>,
- Magnus Karlsson <magnus.karlsson@gmail.com>,
- Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
- netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND bpf-next 10/15] ice: Implement VLAN tag hint
-To: Larysa Zaremba <larysa.zaremba@intel.com>,
- Stanislav Fomichev <sdf@google.com>
-References: <20230512152607.992209-1-larysa.zaremba@intel.com>
- <20230512152607.992209-11-larysa.zaremba@intel.com>
- <ZF6F+UQlXA9REqag@google.com> <ZGI2oDcWX+o9Ea0T@lincoln>
-Content-Language: en-US
-In-Reply-To: <ZGI2oDcWX+o9Ea0T@lincoln>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
+On Mon, 15 May 2023 07:57:01 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-
-On 15/05/2023 15.41, Larysa Zaremba wrote:
->>> +	*vlan_tag = ice_get_vlan_tag_from_rx_desc(xdp_ext->eop_desc);
->> Should we also do the following:
->>
->> if (!*vlan_tag)
->> 	return -ENODATA;
->>
->> ?
-> Oh, returning VLAN tag with zero value really made sense to me at the beginning,
-> but after playing with different kinds of packets, I think returning error makes
-> more sense. Will change.
+> On Sun, 14 May 2023 23:12:11 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Add the '$args' meta fetch argument for function-entry probe events. This
+> > will be expanded to the all arguments of the function and the tracepoint
+> > using BTF function argument information.
+> > 
+> > e.g.
+> >  #  echo 'p vfs_read $args' >> dynamic_events
+> >  #  echo 'f vfs_write $args' >> dynamic_events
+> >  #  echo 't sched_overutilized_tp $args' >> dynamic_events
+> >  # cat dynamic_events
+> > p:kprobes/p_vfs_read_0 vfs_read file=file buf=buf count=count pos=pos
+> > f:fprobes/vfs_write__entry vfs_write file=file buf=buf count=count pos=pos
+> > t:tracepoints/sched_overutilized_tp sched_overutilized_tp rd=rd overutilized=overutilized
+> > 
+> > NOTE: This is not like other $-vars, you can not use this $args as a
+> > part of fetch args, e.g. specifying name "foo=$args" and using it in
+> > dereferences "+0($args)" will lead a parse error.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> > Changes in v10:
+> >  - Change $$args to $args so that user can use $$ for current task's pid.
+> 
+> I hate coming up with new apis, because you never know if what you pick is
+> correct ;-) And then you are stuck with whatever you decided on. :-/
+> 
+> I know I suggested $args, but since it is special, should we call it
+>  "$arg*" ?
+> 
+> That way it follows bash wildcard semantics?
+> 
+>  #  echo 'p vfs_read $arg*' >> dynamic_events
+> 
+> I think that is more along the lines of what people would expect.
+> 
+> What do you think?
 
-IIRC then VLAN tag zero is also a valid id, right?
+Good idea!
 
---Jesper
+BTW, user will expect that $arg* will be expanded to available "$argN".
+But this $args does different thing at this point, it is expanded
+to something equivalent to "<BTF-name>=$argN:<BTF-type>".
+So, to give more consistency, I need one more step: when user gives
+only "$argN" on BTF supported kernel, it will be translated to
+"<BTF-name>=$argN:<BTF-type>". Then, I think it is natural to use '$arg*'.
 
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> > Changes in v6:
+> >  - update patch description.
+> > ---
+> >  kernel/trace/trace_fprobe.c |   21 ++++++++-
+> >  kernel/trace/trace_kprobe.c |   23 ++++++++--
+> >  kernel/trace/trace_probe.c  |   98 +++++++++++++++++++++++++++++++++++++++++++
+> >  kernel/trace/trace_probe.h  |   10 ++++
+> >  4 files changed, 144 insertions(+), 8 deletions(-)
+> > 
+> >
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
