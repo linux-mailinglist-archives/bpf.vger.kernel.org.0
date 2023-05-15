@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D7D702205
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 05:13:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5949702229
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 05:27:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 342F7280F91
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 03:13:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 651E1280FC8
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 03:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDCF1FAD;
-	Mon, 15 May 2023 03:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49731FAE;
+	Mon, 15 May 2023 03:27:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89ACEA0
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 03:13:39 +0000 (UTC)
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943B310F8
-	for <bpf@vger.kernel.org>; Sun, 14 May 2023 20:13:37 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-528cdc9576cso8371593a12.0
-        for <bpf@vger.kernel.org>; Sun, 14 May 2023 20:13:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672CC1C26
+	for <bpf@vger.kernel.org>; Mon, 15 May 2023 03:27:04 +0000 (UTC)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6E71985
+	for <bpf@vger.kernel.org>; Sun, 14 May 2023 20:27:01 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-64ab2a37812so16611222b3a.1
+        for <bpf@vger.kernel.org>; Sun, 14 May 2023 20:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684120417; x=1686712417;
+        d=gmail.com; s=20221208; t=1684121221; x=1686713221;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=lxpFGoxleToaQwkHibZ+pniT5a0w07wmiTEGO0b16Vo=;
-        b=aSCO1ZUHRnLT0HbSwrWiP7TCHqlmHQdUDduIsVKHGoUaY6ROnA8cP5+RczTadKuocY
-         sLMNEMpTCzItVU6bBBNwPIRNLJumVtiSPafhhhkJfCilQ5U7Qpu2I4Vml+BGcoHJ5KfL
-         dWTTAq0Bb2x+jTp92UjXF3FfIHfAd2HpjVjKgtAyVwA5h7kGB+0FjgNSQLHuYat8Z0Al
-         fmuvZFXdJcpIZR4jgmQc8/eFd6PftjcIFBqFpTLQpsgBAL4kbaNJ9h/hNouQ9EaSyabV
-         dmuM1n+VfEkkX29aeVZYacIxt2BHDSXUkFiy1wP8lzq6V7alRLEtIK69mGZWTspgr2YO
-         LFgQ==
+        b=RXLKAJ/1U46dq8Z3jYevW7FyFgaJHrH6h+f4l7Z23udardeEEmPLF29sOJIenjFlpX
+         iUCZ82c69aQ/kHKrEPv6osXLO+lcxGAYxQlFvE1g6lC5PNCZU+X1WrG6RdWHm1Ftwoic
+         +QcGiTan0bn+GARa28yM/tpgPwZSbY/tmQzH+/ytoBESl/Nw4yQbdP2mYhmCknJkvPkD
+         kPPTBEOmOaR/kllcBb4ZDqZG2qx3zLtNzJix8s9+9sKgOrnB/U5ABIGhG2q4uIwTToqv
+         CgOaKitfmq1jAkGNcvAISsHmxRi5rQp6TYWgWqno/1GqSESQO0ldWLfmVnY4JYQcKsPe
+         krEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684120417; x=1686712417;
+        d=1e100.net; s=20221208; t=1684121221; x=1686713221;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=lxpFGoxleToaQwkHibZ+pniT5a0w07wmiTEGO0b16Vo=;
-        b=LiOMz3tfAiDssuYUxs3cSpvoHz25e0Tolz3N/RE2ZsimMaMoPKQ6XR0Dl5Y+vICyj7
-         W77y9i22Tw8c0P5mjc0d5Q3DEUdJbncs32Tp5oK8p9aeK3kmbhCETeO0tcGJmUWlmEc3
-         ZxI5bFDtDP7E3QVB8rs2gTdtiiwSDAWAhnGyH+6ONzPUbhvnrLaBICZczPL9FZhXqczL
-         B/Tof298M96QM79IBg8EpbSwn+JBKwd0zyHv0bvQi0XTJFjJKvQut1995IjmiTYPUQ/a
-         Ce8oXoPm+ISNCfAFQM3zmtgFsLSLohVcrPV4wCUkzxxVbVVPLIDA7/z5zj9eyiz8lmPo
-         +KNQ==
-X-Gm-Message-State: AC+VfDyLao22oiuWjeSq7I1LdnE35FTfIWxd5csw4vps1a/pmBj3Uq5g
-	qzMrg1TmowhVH90eff9+4WI=
-X-Google-Smtp-Source: ACHHUZ7bom1WsQSB9N7JbS2hNeG7BAQVaheeDyi1N5Vs6lkfmNmaRmJdqhiEQg2hZDvBtME2yZj8YQ==
-X-Received: by 2002:a17:90a:760c:b0:24e:5ed7:2e3f with SMTP id s12-20020a17090a760c00b0024e5ed72e3fmr33118826pjk.13.1684120416916;
-        Sun, 14 May 2023 20:13:36 -0700 (PDT)
+        b=P2jTh4z502Zk4UV/xbE2Q4i+OaBjYXQOUPsMx7g01gakTWzDGMa620YDw4HjN6LABc
+         oAOYhD0Uff4z8maXs20u4Fi0/p2ufwyNIi8RRCork/ACFU/4kqvSG0A9/GXjhAWBOn55
+         fHhuRaqFUX6k2P4j6R6HpYrbLdD2GsXdUZkzDYPrF3hxZzwiroISN8TPQQJr7TKbz5v9
+         0BXPqZwMx1Ya7A4e1XzIqmXQKFcdyt7KG5r2x46iREuwo8/BIk0w0VHNELrgrLZLQszF
+         5aOA5EwQDb1INMIhjJlWLbzNf2pfEm/US52/w/98xVxOpDzmSXJuiUHB+eixmN7cTtO1
+         hu9A==
+X-Gm-Message-State: AC+VfDzXe7/PEAyImV6OA6Q+pWowXVeFjxxl9QgxvG00dILlgDzABKBk
+	7mO/eP2zePdY3HENd/8BHnE=
+X-Google-Smtp-Source: ACHHUZ5CZvq/ZNB+dhb9E8mW7QD/q/8BxVsr4z8WJoa5ghfNctN2tu7hgon9WWSXy/bs/7m1zfExcw==
+X-Received: by 2002:a05:6a20:1613:b0:106:5dff:5db5 with SMTP id l19-20020a056a20161300b001065dff5db5mr564864pzj.1.1684121220867;
+        Sun, 14 May 2023 20:27:00 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.42])
-        by smtp.googlemail.com with ESMTPSA id o4-20020a17090a744400b00252b3328ad8sm4943577pjk.0.2023.05.14.20.13.34
+        by smtp.googlemail.com with ESMTPSA id s6-20020a632146000000b0051416609fb7sm10363825pgm.61.2023.05.14.20.26.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 May 2023 20:13:36 -0700 (PDT)
+        Sun, 14 May 2023 20:27:00 -0700 (PDT)
 From: Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
@@ -64,8 +64,8 @@ Cc: Ze Gao <zegao@tencent.com>,
 	linux-riscv@lists.infradead.org,
 	bpf@vger.kernel.org
 Subject: [PATCH 0/4] Make fpobe + rethook immune to recursion
-Date: Mon, 15 May 2023 11:13:09 +0800
-Message-Id: <20230515031314.7836-1-zegao@tencent.com>
+Date: Mon, 15 May 2023 11:26:37 +0800
+Message-Id: <cover.1684120990.git.zegao@tencent.com>
 X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -85,7 +85,7 @@ Current fprobe and rethook has some pitfalls and may introduce kernel stack recu
 massive tracing scenario.
 
 For example, if (DEBUG_PREEMPT | TRACE_PREEMPT_TOGGLE) , preempt_count_{add, sub} can be traced via
-ftrace, if we happens to use fprobe + rethook based on ftrace to hook on those functions, 
+ftrace, if we happens to use fprobe + rethook based on ftrace to hook on those functions,
 recursion is introduced in functions like rethook_trampoline_handler and leads to kernel crash
 because of stack overflow.
 
@@ -181,7 +181,7 @@ Discussion of this bug can be found here:
 
 This patch series fix this problem by adding more recursion detection in each possible entry
 functions, and also mark these specific to fprobe or rethook which are beyond the recusion-free
-guarded region notrace. 
+guarded region notrace.
 
 
 Ze Gao (4):
