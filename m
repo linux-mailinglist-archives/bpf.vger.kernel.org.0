@@ -1,174 +1,85 @@
-Return-Path: <bpf+bounces-504-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-505-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01095702B06
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 13:03:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E3D702B29
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 13:11:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1679280CDC
-	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 11:03:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 411EB281254
+	for <lists+bpf@lfdr.de>; Mon, 15 May 2023 11:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1833BE6C;
-	Mon, 15 May 2023 11:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2E7C137;
+	Mon, 15 May 2023 11:11:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC02D8BFC;
-	Mon, 15 May 2023 11:03:26 +0000 (UTC)
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C1593;
-	Mon, 15 May 2023 04:03:25 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailnew.west.internal (Postfix) with ESMTP id BF1CA2B05E55;
-	Mon, 15 May 2023 07:03:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 15 May 2023 07:03:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm2; t=1684148600; x=
-	1684155800; bh=a/Iydw3E9XYq6OMWXW3TvDHCSGXOvuQLC/4M2+8UgSg=; b=b
-	eqhaz6+aC9XTJDJe/wr3N36+Tj3flpCfHvlOf9y8lXsK+262zaCij702Mejo2+QE
-	Fd2xpeGSZ+xZXcy4D/O2ys6/yeyG+eg9pe7ttAK7rJ4flep8j0NnEuUu/JpgQ2zq
-	+sQYGICk0DOSR7KXB1FGzWMBThhFGROaza2HF5WZTMoyXCpSoGrgyUpv2AwTVyoh
-	MPRAEKadMnnI/sj+LbQEWvTyhwhvfq0KMSmbFHooxdpg4bZ6fN05mjKqs5p5+gMe
-	sDKrBEwm+QstfKvMpg7xfToq9y+QHBotkJ9i3CoJB7tGWQC23VldSFyJYd2XEL4U
-	Gl+2fihoHMbSTuxjVue1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1684148600; x=1684155800; bh=a/Iydw3E9XYq6
-	OMWXW3TvDHCSGXOvuQLC/4M2+8UgSg=; b=HCOKyUCGguRFf1xsGM0olaZPpyE83
-	QUFg57fXwoOwyQLXQfBrzuMoGa6jxavNDy4hgO/KieahDInTa0sH3/uTA04n9PBd
-	pOkNlIQsSrzizEIjBJ9OClefL/E9/wJWOs6W/BHwQZEkVPX/yhJWt9zeo1XJL8yO
-	Dm7ChPssB/erg2Ti3ewsAZ+Qt8Pig5D5DcQN2IwE1zz0yI1+ld7eJeDoy/HbjJp8
-	Fwwn6gnv5N4GzwOjiaZb1+aSt2I9N4jbT6NnDxfZPC4PkwlZwKP41PP0oJSiwruW
-	x9dW25YtqwNwMjBly/giIjtuqcpmWp+sz3+M1OpAnT7+WPfc354OTJLVA==
-X-ME-Sender: <xms:dhFiZEQbnWm3lInkgea7I7q1loI6EFTX6nzXoxo3EDKGBC7aVf78JQ>
-    <xme:dhFiZBzQCYHtsXc_PNzioGz_LirMx3rzOlJKv2j3XQvwtfi9xBh9nIt-NSbn91mDy
-    GGmyxgBoYxOaSQmTHg>
-X-ME-Received: <xmr:dhFiZB0cV9suhDUtQEAuyjbHbnx9BgFWQsl2ctv7O5xUxZYuVwDGbzehTtid6zfg5GjMnQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeehjedgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdttddttddtvdenucfhrhhomhepfdfmihhr
-    ihhllhcutecurdcuufhhuhhtvghmohhvfdcuoehkihhrihhllhesshhhuhhtvghmohhvrd
-    hnrghmvgeqnecuggftrfgrthhtvghrnhepgfdtveeugeethfffffeklefgkeelgfekfedt
-    heeileetuefhkeefleduvddtkeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdrnhgrmhgv
-X-ME-Proxy: <xmx:dhFiZIBy-PxGx3tPTgENuB_FWVbnaUYJARgJaIETejlMMBmS1qqMqg>
-    <xmx:dhFiZNiE67YhRxNXKSa-apUdVunXaJs_KQHgaZXyYup4bktoBVqs2w>
-    <xmx:dhFiZEo8qMND9yszOfCAsL6QVxCoJx9tsBa5wX9U-MgZ4JdFPa9D8Q>
-    <xmx:eBFiZLGG797U78ccFpNj3KjzIqU78oAjziYTSAnozz3GqFRyt5wx050guAM>
-Feedback-ID: ie3994620:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 May 2023 07:03:17 -0400 (EDT)
-Received: by box.shutemov.name (Postfix, from userid 1000)
-	id 55AD0103956; Mon, 15 May 2023 14:03:15 +0300 (+03)
-Date: Mon, 15 May 2023 14:03:15 +0300
-From: "Kirill A . Shutemov" <kirill@shutemov.name>
-To: Lorenzo Stoakes <lstoakes@gmail.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Leon Romanovsky <leon@kernel.org>,	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Peter Zijlstra <peterz@infradead.org>,	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,	Adrian Hunter <adrian.hunter@intel.com>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,	Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,	Christian Brauner <brauner@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,	linux-fsdevel@vger.kernel.org,
- linux-perf-users@vger.kernel.org,	netdev@vger.kernel.org,
- bpf@vger.kernel.org,	Oleg Nesterov <oleg@redhat.com>,
- Jason Gunthorpe <jgg@nvidia.com>,	John Hubbard <jhubbard@nvidia.com>,
- Jan Kara <jack@suse.cz>,	Pavel Begunkov <asml.silence@gmail.com>,
-	Mika Penttila <mpenttil@redhat.com>,
-	David Hildenbrand <david@redhat.com>,	Dave Chinner <david@fromorbit.com>,
- Theodore Ts'o <tytso@mit.edu>,	Peter Xu <peterx@redhat.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>
-Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
- mappings by default
-Message-ID: <20230515110315.uqifqgqkzcrrrubv@box.shutemov.name>
-References: <cover.1683235180.git.lstoakes@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B404279D7;
+	Mon, 15 May 2023 11:11:16 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38C81FC9;
+	Mon, 15 May 2023 04:10:55 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QKc7D2lSVzsRb1;
+	Mon, 15 May 2023 19:08:40 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 15 May
+ 2023 19:10:38 +0800
+Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint using
+ half page per-buffer
+To: Lorenzo Bianconi <lorenzo@kernel.org>, <netdev@vger.kernel.org>
+CC: <lorenzo.bianconi@redhat.com>, <bpf@vger.kernel.org>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<hawk@kernel.org>, <john.fastabend@gmail.com>
+References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <62654fa5-d3a2-4b81-af70-59c9e90db842@huawei.com>
+Date: Mon, 15 May 2023 19:10:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1683235180.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+In-Reply-To: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 04, 2023 at 10:27:50PM +0100, Lorenzo Stoakes wrote:
-> Writing to file-backed mappings which require folio dirty tracking using
-> GUP is a fundamentally broken operation, as kernel write access to GUP
-> mappings do not adhere to the semantics expected by a file system.
-> 
-> A GUP caller uses the direct mapping to access the folio, which does not
-> cause write notify to trigger, nor does it enforce that the caller marks
-> the folio dirty.
+On 2023/5/12 21:08, Lorenzo Bianconi wrote:
+> In order to reduce page_pool memory footprint, rely on
+> page_pool_dev_alloc_frag routine and reduce buffer size
+> (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one page
 
-Okay, problem is clear and the patchset look good to me. But I'm worried
-breaking existing users.
+Is there any performance improvement beside the memory saving? As it
+should reduce TLB miss, I wonder if the TLB miss reducing can even
+out the cost of the extra frag reference count handling for the
+frag support?
 
-Do we expect the change to be visible to real world users? If yes, are we
-okay to break them?
+> for two 1500B frames. Reduce VETH_XDP_PACKET_HEADROOM to 192 from 256
+> (XDP_PACKET_HEADROOM) to fit max_head_size in VETH_PAGE_POOL_FRAG_SIZE.
+> Please note, using default values (CONFIG_MAX_SKB_FRAGS=17), maximum
+> supported MTU is now reduced to 36350B.
 
-One thing that came to mind is KVM with "qemu -object memory-backend-file,share=on..."
-It is mostly used for pmem emulation.
+Maybe we don't need to limit the frag size to VETH_PAGE_POOL_FRAG_SIZE,
+and use different frag size depending on the mtu or packet size?
 
-Do we have plan B?
-
-Just a random/crazy/broken idea:
-
- - Allow folio_mkclean() (and folio_clear_dirty_for_io()) to fail,
-   indicating that the page cannot be cleared because it is pinned;
-
- - Introduce a new vm_operations_struct::mkclean() that would be called by
-   page_vma_mkclean_one() before clearing the range and can fail;
-
- - On GUP, create an in-kernel fake VMA that represents the file, but with
-   custom vm_ops. The VMA registered in rmap to get notified on
-   folio_mkclean() and fail it because of GUP.
-
- - folio_clear_dirty_for_io() callers will handle the new failure as
-   indication that the page can be written back but will stay dirty and
-   fs-specific data that is associated with the page writeback cannot be
-   freed.
-
-I'm sure the idea is broken on many levels (I have never looked closely at
-the writeback path). But maybe it is good enough as conversation started?
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Perhaps the page_pool_dev_alloc_frag() can be improved to return non-frag
+page if the requested frag size is larger than a specified size too.
+I will try to implement it if the above idea makes sense.
 
