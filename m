@@ -1,147 +1,165 @@
-Return-Path: <bpf+bounces-680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39271705A90
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 00:28:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BA26705ACB
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 00:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA86281378
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 22:28:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C46902813AC
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 22:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE3D2720F;
-	Tue, 16 May 2023 22:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27426C8E3;
+	Tue, 16 May 2023 22:52:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE6B101C0
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 22:28:08 +0000 (UTC)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8135BBE
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 15:28:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-510b56724caso4039971a12.1
-        for <bpf@vger.kernel.org>; Tue, 16 May 2023 15:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684276085; x=1686868085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mk1czeaCkGbD+IrEe/YkKcbhx9f+njqF0DzONApq5LI=;
-        b=ZqCS5KedQ/646bzFZtNeCdZbSYBGfxw1AQhV2o5XgmdblPOnciHTZaPSekpAMheLuv
-         1FVFOYsI08jQWZdsmeLuQ/2dsKi5Dtgpxz7dLNyJk9LlFRek2X+MBGFcHFoF0udKLFF8
-         b56uzcMBgRPXLCEEGhSESJLjk0vuTQSil8jQUYSCpDKoPTjiwEAs75fime75XhkdR6gJ
-         OpFu6ReSCuhfTB2M8UIxdO9XHbiRmk5YaxYpfVTkqONoQBCHrepgtm2G1wHGiYlpSoKt
-         kZZ+jJTXZDLNvCQn1dxj/2jtHABnZM8GczfcP+PZXF4+0dI+ougvjdacf6KTcHyJf8m7
-         ehug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684276085; x=1686868085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mk1czeaCkGbD+IrEe/YkKcbhx9f+njqF0DzONApq5LI=;
-        b=J6KgIcBwrBBgn24jcjmu7oTc4pYovFv0YOXCwJkYm9MrV0rFs3s5/26gChvjDFi+sf
-         UDMgPtwIHCU8UCyU7Lja/B+geI/5MSVFAWPUlIf+bBeVEr1nS4L/JCHr4sJFwwzY5zT+
-         QwU6vu0jtLSCSnR7TkdXYsMVDFIXDliiCZ+MeVB/XNmAvcgZKJtlytfcIJPmUOwsNRcA
-         I4+luPjVHO+lRG+GmpcjBX4J4HnzzgH7xhsBXvJPzmgLo3A4GiiyhlVc44hiWKkA/1ZF
-         6OKcvXIA1B0icz9phEHToXiIjeqc4YD0CJMYTrTyErgY5oAAEOrnro3YT9RPlpktXEAm
-         wVAg==
-X-Gm-Message-State: AC+VfDwQAXHR3FWSJsA3jyQdwsNRsVEgwBS9NK98S2pGEiG6rteMpWKm
-	eMS7p9ZtiPBTd4X3GpaZvsaHRKLBLze9StL0GVs=
-X-Google-Smtp-Source: ACHHUZ7WENMpBPGgZYNf8W9uMPa0PasZ23HixLD5AAZqh+LJmGnvK7ettqqvae9Q+P87pmGybTDKgva6VdSaZApwTn8=
-X-Received: by 2002:a17:907:d24:b0:94a:4e86:31bc with SMTP id
- gn36-20020a1709070d2400b0094a4e8631bcmr281598ejc.13.1684276085108; Tue, 16
- May 2023 15:28:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02250290F6;
+	Tue, 16 May 2023 22:52:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA1BC433D2;
+	Tue, 16 May 2023 22:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684277549;
+	bh=HZB52PUbkAvfzfgUWO5ycLGEg/guGyaTy/BQOMoX51U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u+oC3pSm+o+ET19yz6Yl4/80GRbHqM6r4LoXh2Jvo7fW09z0HcRVQlI2XieiqgbB6
+	 6jvkMj2HYvn9E9AlG9zxEiAblRJhuyVjAEWPG80zz9vWxy6DYzs8SSbrWcHv8IGxD5
+	 md3LbM76jLwvvnrM+ec+Kcm71y2c4/ezKuwHb2u4BSz4t359P0dldlR4RzPgNSwmvH
+	 E6na6p7QwLXy3nGpm1+zCrcgLLaS02Farg5TKuJK8mx9YNRhW7c1XLhqk3uQC6g5wd
+	 m95JYsUGbajK6yQU02vv90NXQV1pfCmqh8XWE9BLaaHj3XyH+ghLK3QgfCnhEVnduT
+	 1hk8KZf6rQl3A==
+Date: Wed, 17 May 2023 00:52:25 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
+Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint
+ using half page per-buffer
+Message-ID: <ZGQJKRfuf4+av/MD@lore-desk>
+References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+ <62654fa5-d3a2-4b81-af70-59c9e90db842@huawei.com>
+ <ZGIWZHNRvq5DSmeA@lore-desk>
+ <ZGIvbfPd46EIVZf/@boxer>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516123926.57623-1-laoar.shao@gmail.com> <20230516123926.57623-2-laoar.shao@gmail.com>
-In-Reply-To: <20230516123926.57623-2-laoar.shao@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 16 May 2023 15:27:53 -0700
-Message-ID: <CAEf4Bza=ujh+HzoT4V3bc7gjAH92veg0Ez_vBqszm7qETk6SMw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Show target_{obj,btf}_id in tracing
- link fdinfo
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: song@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	kafai@fb.com, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u1hCd42MhueKAEAX"
+Content-Disposition: inline
+In-Reply-To: <ZGIvbfPd46EIVZf/@boxer>
+
+
+--u1hCd42MhueKAEAX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Tue, May 16, 2023 at 5:39=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> The target_btf_id can help us understand which kernel function is
-> linked by a tracing prog. The target_btf_id and target_obj_id have
-> already been exposed to userspace, so we just need to show them.
->
-> The result as follows,
->
-> $ cat /proc/10673/fdinfo/10
-> pos:    0
-> flags:  02000000
-> mnt_id: 15
-> ino:    2094
-> link_type:      tracing
-> link_id:        2
-> prog_tag:       a04f5eef06a7f555
-> prog_id:        13
-> attach_type:    24
-> target_obj_id:  1
-> target_btf_id:  13964
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: Song Liu <song@kernel.org>
-> ---
->  kernel/bpf/syscall.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 909c112..870395a 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2968,10 +2968,18 @@ static void bpf_tracing_link_show_fdinfo(const st=
-ruct bpf_link *link,
->  {
->         struct bpf_tracing_link *tr_link =3D
->                 container_of(link, struct bpf_tracing_link, link.link);
-> +       u32 target_btf_id;
-> +       u32 target_obj_id;
+> On Mon, May 15, 2023 at 01:24:20PM +0200, Lorenzo Bianconi wrote:
+> > > On 2023/5/12 21:08, Lorenzo Bianconi wrote:
+> > > > In order to reduce page_pool memory footprint, rely on
+> > > > page_pool_dev_alloc_frag routine and reduce buffer size
+> > > > (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one=
+ page
+> > >=20
+> > > Is there any performance improvement beside the memory saving? As it
+> > > should reduce TLB miss, I wonder if the TLB miss reducing can even
+> > > out the cost of the extra frag reference count handling for the
+> > > frag support?
+> >=20
+> > reducing the requested headroom to 192 (from 256) we have a nice improv=
+ement in
+> > the 1500B frame case while it is mostly the same in the case of paged s=
+kb
+> > (e.g. MTU 8000B).
+>=20
+> Can you define 'nice improvement' ? ;)
+> Show us numbers or improvement in %.
 
-nit: combine on a single line?
+I am testing this RFC patch in the scenario reported below:
 
->
-> +       bpf_trampoline_unpack_key(tr_link->trampoline->key,
-> +                                                         &target_obj_id,=
- &target_btf_id);
+iperf tcp tx --> veth0 --> veth1 (xdp_pass) --> iperf tcp rx
 
-formatting seems odd?...
+- 6.4.0-rc1 net-next:
+  MTU 1500B: ~ 7.07 Gbps
+  MTU 8000B: ~ 14.7 Gbps
 
+- 6.4.0-rc1 net-next + page_pool frag support in veth:
+  MTU 1500B: ~ 8.57 Gbps
+  MTU 8000B: ~ 14.5 Gbps
 
->         seq_printf(seq,
-> -                  "attach_type:\t%d\n",
-> -                  tr_link->attach_type);
-> +                  "attach_type:\t%d\n"
-> +                  "target_obj_id:\t%u\n"
-> +                  "target_btf_id:\t%u\n",
-> +                  tr_link->attach_type,
-> +                  target_obj_id,
-> +                  target_btf_id);
->  }
->
->  static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
-> --
-> 1.8.3.1
->
+side note: it seems there is a regression between 6.2.15 and 6.4.0-rc1 net-=
+next
+(even without latest veth page_pool patches) in the throughput I can get in=
+ the
+scenario above, but I have not looked into it yet.
+
+- 6.2.15:
+  MTU 1500B: ~ 7.91 Gbps
+  MTU 8000B: ~ 14.1 Gbps
+
+- 6.4.0-rc1 net-next w/o commits [0],[1],[2]
+  MTU 1500B: ~ 6.38 Gbps
+  MTU 8000B: ~ 13.2 Gbps
+
+Regards,
+Lorenzo
+
+[0] 0ebab78cbcbf  net: veth: add page_pool for page recycling
+[1] 4fc418053ec7  net: veth: add page_pool stats
+[2] 9d142ed484a3  net: veth: rely on napi_build_skb in veth_convert_skb_to_=
+xdp_buff
+
+>=20
+> >=20
+> > >=20
+> > > > for two 1500B frames. Reduce VETH_XDP_PACKET_HEADROOM to 192 from 2=
+56
+> > > > (XDP_PACKET_HEADROOM) to fit max_head_size in VETH_PAGE_POOL_FRAG_S=
+IZE.
+> > > > Please note, using default values (CONFIG_MAX_SKB_FRAGS=3D17), maxi=
+mum
+> > > > supported MTU is now reduced to 36350B.
+> > >=20
+> > > Maybe we don't need to limit the frag size to VETH_PAGE_POOL_FRAG_SIZ=
+E,
+> > > and use different frag size depending on the mtu or packet size?
+> > >=20
+> > > Perhaps the page_pool_dev_alloc_frag() can be improved to return non-=
+frag
+> > > page if the requested frag size is larger than a specified size too.
+> > > I will try to implement it if the above idea makes sense.
+> > >=20
+> >=20
+> > since there are no significant differences between full page and fragme=
+nted page
+> > implementation if the MTU is over the page boundary, does it worth to d=
+o so?
+> > (at least for the veth use-case).
+> >=20
+> > Regards,
+> > Lorenzo
+> >=20
+>=20
+>=20
+
+--u1hCd42MhueKAEAX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZGQJKQAKCRA6cBh0uS2t
+rFsSAQCJzJptVc6NYGr+nCWLhmtt+F8l/Y2BbbWIv8HUjcq2ggEAjkJxwKY+CsCU
+K1rM8WxWYSkUqnJkDC0whsA2VUCZ8AI=
+=GYin
+-----END PGP SIGNATURE-----
+
+--u1hCd42MhueKAEAX--
 
