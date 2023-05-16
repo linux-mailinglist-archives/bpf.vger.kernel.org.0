@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A867705599
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 20:03:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68DAF70559A
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 20:03:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5668C1C20EDB
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 18:03:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 210DF281782
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 18:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACA120998;
-	Tue, 16 May 2023 18:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C04209A7;
+	Tue, 16 May 2023 18:03:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BDC101CF
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 18:02:58 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABCB59FB
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 11:02:55 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-510b56724caso2204818a12.1
-        for <bpf@vger.kernel.org>; Tue, 16 May 2023 11:02:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DBF101CF
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 18:03:12 +0000 (UTC)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154D1E0
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 11:03:10 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-965a68abfd4so2746744466b.2
+        for <bpf@vger.kernel.org>; Tue, 16 May 2023 11:03:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684260174; x=1686852174;
+        d=gmail.com; s=20221208; t=1684260188; x=1686852188;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a4peAVBcL5i5doSRvVv+WdPIVZ1MSX5m0hQglQHGBRA=;
-        b=EOlGfNHuA334mUm/YEBsSzYNejtysCo7s868coKjhpjUpYVgTcAHPG5706hCUp/dne
-         fBAiDUyLm0mbticOJt/kl5tQxN1qrtS3X1QxwOVBUNGi1zqENnCgXzdMKAqV73balCCi
-         bE4joT+1Ny2p3KHo7+DB5hefKBlyUOQ2VHe5mZKS3CjTpo+qZjYIguRRlc6hmpabyc4M
-         UE0OdS49TQhJO2gTCNj0Kcl7s2By9aiwcli8VPsuZAxdFF4DPlJG0uNJCwHCdt2sr0kY
-         oRTjqMw4paYball8bs+fJJiwhUUI8zSb8VV8xifI3NHTgxSl21YjJqjS5ezTStr8TJW3
-         9wnw==
+        bh=f9VUNW+oZlO1nDPY10jKxCAsAFdy5XtW+dISPI0ctvI=;
+        b=Cq7DiaIRjhL0HGEkD6RM/Ik1EBW2WgNkWkBIJzSoOawEhb6uB5Q5RA3ZRBD7c1WcUX
+         ATMOpVp6wOqy1lsWotlIwRcVRDxY0DC+1/1yhRIGAmfqwSeT5lzom27dobou3mwsTVrm
+         hK74u6XVVAK5UY74RKbAxEobcsNrK+2+CHQFowl7lx3P7sz5AeC2/9pZloMJ5I0zot+C
+         rN9AvsnP/2Y9ZNQXCOW1tB3fckPAgXY9G2IoiuC8zHf7F+qOPBcS7culfXI0/cRblbUc
+         lU6k1M2UVKwsL0Wgq5d4v2zxVS8dfWkiSR/rlKc1xT5lfr9aCbTXA1VSNzXn7qEhaUuu
+         DLEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684260174; x=1686852174;
+        d=1e100.net; s=20221208; t=1684260188; x=1686852188;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a4peAVBcL5i5doSRvVv+WdPIVZ1MSX5m0hQglQHGBRA=;
-        b=lalzNwOWaAf4gePor2jcK5OVQJ/G5oLFRSzyOAC5DuiTZFBZDjnk2iQiTg1FEwdz95
-         rdDGSDdWMxFAmPs0T/5t1KSqTKHLWriRcyPyCk3WzQ50EupOksXvDvAGTZR5JVvuEepP
-         t/usp3oci+wYRq1fpX2TGPepN3xXiwSauKi1tRioCoxqPt8tbDTNw6QXwgWUwOJ/Y7+q
-         JDMxwfzGsQxV3ngw9ukz4/uNh0EyijQrC7YD2YuWkVPIRRJ+cj6WTgJjU3VDMNHhSvq6
-         bjl16iCyzAhN94OGSQtuG7azoaUgLiouVYWgiujaWBYp6B3LjvyXGeW5yy2s4NfESFKF
-         +grQ==
-X-Gm-Message-State: AC+VfDzzINJauMBwtjsgisBNK6DNluYqg/7SF61i7mkQWYlritlGkWsd
-	JhV8bN5x4c09whCJgW6sykqgl8+5/F5ZXI8Q7gGJyhJ22seY9A==
-X-Google-Smtp-Source: ACHHUZ67CAuWPIONMWv/f6uG9S0rFft6iOW0k/3jYC0ImWIMXmdRnuMCoUMJAdZWjTeOIW23LYBqxV2VZBJrTnl0n78=
-X-Received: by 2002:a17:907:7d88:b0:967:2595:b099 with SMTP id
- oz8-20020a1709077d8800b009672595b099mr24299962ejc.28.1684260174119; Tue, 16
- May 2023 11:02:54 -0700 (PDT)
+        bh=f9VUNW+oZlO1nDPY10jKxCAsAFdy5XtW+dISPI0ctvI=;
+        b=SpeZ/FGIjX1lwKzV3jynZdvNsFzmX4zkuGJokKqgMPkgLLFVH+nQNYZAlUq9ikMn1N
+         TrgwDIGozxWV44a1fPnF53bNP3d084BFpwb0SBWkXIu9wcV3Be+zrQDQTAR+lWMxdcVs
+         YWHSnr2ge0MasUHMQBxVwYxzlXNIEQKS/ZiSCN7IOXf0azabKviWvxayjwQ3yYPPJl6S
+         auVEZqJNVYzsNyrPTIHxFcwNxhx9dfVK/BT+xUfVngXwkHGZjoDxK0W9Z2oLPB5AgcQ3
+         Xcg+gO6Zu71HaRj1mVZtABoTKBJli/Bd4UaZj9DhBLhq3KPBNmXz/eAAMWuDTo3Je6WP
+         guEw==
+X-Gm-Message-State: AC+VfDw+FtVk87qib1vqrfYkzztRju1cFt411ukGZ2epImiNZiirx2c5
+	k/+qGh47seLTQZxo5mowxgsOrWglOcLaFKw+l/I=
+X-Google-Smtp-Source: ACHHUZ4CODB1d03SPwNdeMv7rtiSUnvQgYqtGzg3meZxbFQgcWWDSD/mRApRxWj2e2WNIbeXvubv6ry4gbqRGCAuTh4=
+X-Received: by 2002:a17:907:7f19:b0:947:335f:5a0d with SMTP id
+ qf25-20020a1709077f1900b00947335f5a0dmr43167396ejc.62.1684260188348; Tue, 16
+ May 2023 11:03:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,17 +60,17 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230516001348.286414-1-andrii@kernel.org> <20230516001348.286414-2-andrii@kernel.org>
- <20230516-briefe-blutzellen-0432957bdd15@brauner>
-In-Reply-To: <20230516-briefe-blutzellen-0432957bdd15@brauner>
+ <ZGNERLZH65QgGGEE@krava>
+In-Reply-To: <ZGNERLZH65QgGGEE@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 16 May 2023 11:02:42 -0700
-Message-ID: <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
+Date: Tue, 16 May 2023 11:02:56 -0700
+Message-ID: <CAEf4BzbG3fKBxEsA96u33tSNsNe3iOihs5WOkhp9wSc1fN90sA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN and
  BPF_OBJ_GET commands
-To: Christian Brauner <brauner@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, martin.lau@kernel.org, cyphar@cyphar.com, 
-	lennart@poettering.net
+	brauner@kernel.org, lennart@poettering.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,8 +80,8 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 16, 2023 at 2:07=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
+On Tue, May 16, 2023 at 1:52=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
 > On Mon, May 15, 2023 at 05:13:46PM -0700, Andrii Nakryiko wrote:
 > > Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() syscall
@@ -95,9 +95,6 @@ rg> wrote:
 > > was that inability to use purely FD-based location specification was an
 > > unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GET
 > > commands. This patch closes this oversight, adding path_fd field to
->
-> Cool!
->
 > > BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established by
 > > *at() syscalls for dirfd + pathname combinations.
 > >
@@ -155,28 +152,35 @@ ntics;
 > > +              * zero path_fd implies AT_FDCWD behavior
 > > +              */
 > > +             __u32           path_fd;
+>
+> I'd probably call it dir_fd to emphasize the similarity,
+> but I don't mind path_fd as well
+
+I considered that, but it's really not necessarily a directory, it
+could be a specific file location (with O_PATH), so I felt like a more
+generic "path_fd" would be better (plus we have *path*name to combine
+with). It's minor, I can be convinced if others feel strongly about
+this.
+
+
+>
+> I have a note that you suggested to introduce this for uprobe
+> multi link as well, so I'll do something similar
+>
+> lgtm
+>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+>
+> jirka
+>
 > >       };
->
-> So 0 is a valid file descriptor and can trivially be created and made to
-> refer to any file. Is this a conscious decision to have a zero value
-> imply AT_FDCWD and have you done this somewhere else in bpf already?
-> Because that's contrary to how any file descriptor based apis work.
->
-> How this is usually solved for extensible structs is to have a flag
-> field that raises a flag to indicate that the fd fiel is set and thus 0
-> can be used as a valid value.
->
-> The way you're doing it right now is very counterintuitive to userspace
-> and pretty much guaranteed to cause subtle bugs.
+> >
+> >       struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH comma=
+nds */
+> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> > index 9948b542a470..13bb54f6bd17 100644
+> > --- a/kernel/bpf/inode.c
+> > +++ b/kernel/bpf/inode.c
 
-Yes, it's a very bpf()-specific convention we've settled on a while
-ago. It allows a cleaner and simpler backwards compatibility story
-without having to introduce new flags every single time. Most of BPF
-UAPI by now dictates that (otherwise valid) FD 0 can't be used to pass
-it to bpf() syscall. Most of the time users will be blissfully unaware
-because libbpf and other BPF libraries are checking for fd =3D=3D 0 and
-dup()'ing them to avoid ever returning FD 0 to the user.
-
-tl;dr, a conscious decision consistent with the rest of BPF UAPI. It
-is a bpf() peculiarity, yes.
+[...]
 
