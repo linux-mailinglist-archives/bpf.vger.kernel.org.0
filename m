@@ -1,198 +1,83 @@
-Return-Path: <bpf+bounces-648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E975B704F99
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 15:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C0F6705071
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 16:20:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5E88281608
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 13:43:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCA18281665
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 14:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5683327734;
-	Tue, 16 May 2023 13:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAD828C15;
+	Tue, 16 May 2023 14:20:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CF52771C
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 13:43:06 +0000 (UTC)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181ED5264
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:43:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-50bc5197d33so25768595a12.1
-        for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1684244581; x=1686836581;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=C0P39mzUO2QQd9I7m+mbY3qo2mtwxHhH4Qn6TiIjRFw=;
-        b=W3e2J2vAhbJSvjaNTzjuSvBvcx77wDxS0eOUKaA06GYytOANBYQWppUuemRXZYLs8q
-         LIpXQSKZzLihAj9dpGofHIIT+74dz3Jko8QjV8TCWp1kyWXCTJrbRMtB6Yt6SHzez8XW
-         m57zs7pUKAW+eqVWYBiE1MgMiptKhiEIe928g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684244581; x=1686836581;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C0P39mzUO2QQd9I7m+mbY3qo2mtwxHhH4Qn6TiIjRFw=;
-        b=HgZIqQcIrsJZgPA8tRtZCM9jaF1ov6WEbGenWnoHOV7NbhgItIhNLsgAEbx3jfjN0X
-         aLy/iBgZRmZZ9YP8opBdt804tA/8+0TokmyoMLNK73wUvt04bKBDAm2/atK9AfeI6M2I
-         WDBxUrXuTa5oR+EiyjtVp7x/FvgbH9LjBuXFRcuSboKrTQotHl7VHlhzw09hb1I77P9T
-         bYTodZ6QkZN5qQzBgkKon6hatuk51nTi2pwzas/3GDC0PRdWLh0Dj5Z81NkENj6W0/TM
-         tCIxjrN6pVEEl3wnQ2FzYidKNlMFoJXpQMjKxhmyGXJ8iHOjr2b9+SB0zGsKdeRyRMwk
-         XR9Q==
-X-Gm-Message-State: AC+VfDwLaaa2D8eO4+nYfriUugopSDYnN9WtLFYwXmppReo8bOtfIVcj
-	FLjbDYomLYyeCDowu4Ss7oGkvQ==
-X-Google-Smtp-Source: ACHHUZ7bP7KP2hZ82TI2FalqntKUS3O96HdIhta8RFFYz11Kpn+0YqpGj6bMeDS9O4GHPcVXc0djBA==
-X-Received: by 2002:aa7:ccc8:0:b0:508:3f06:8fd1 with SMTP id y8-20020aa7ccc8000000b005083f068fd1mr31711515edt.29.1684244581447;
-        Tue, 16 May 2023 06:43:01 -0700 (PDT)
-Received: from cloudflare.com (79.184.126.163.ipv4.supernova.orange.pl. [79.184.126.163])
-        by smtp.gmail.com with ESMTPSA id g8-20020aa7d1c8000000b00501d73cfc86sm8255599edp.9.2023.05.16.06.43.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 06:43:00 -0700 (PDT)
-References: <20230502155159.305437-1-john.fastabend@gmail.com>
- <20230502155159.305437-12-john.fastabend@gmail.com>
- <87jzxj3wsq.fsf@cloudflare.com> <6462e1986fb64_250b4208ac@john.notmuch>
-User-agent: mu4e 1.6.10; emacs 28.2
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
- bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- andrii@kernel.org, will@isovalent.com
-Subject: Re: [PATCH bpf v7 11/13] bpf: sockmap, test shutdown() correctly
- exits epoll and recv()=0
-Date: Tue, 16 May 2023 15:41:05 +0200
-In-reply-to: <6462e1986fb64_250b4208ac@john.notmuch>
-Message-ID: <87h6scfl3w.fsf@cloudflare.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD9928C08
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:20:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FB3AC433EF;
+	Tue, 16 May 2023 14:20:07 +0000 (UTC)
+Date: Tue, 16 May 2023 10:20:06 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ze Gao <zegao2021@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Albert Ou
+ <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Heiko Carstens <hca@linux.ibm.com>, "H.
+ Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vasily Gorbik <gor@linux.ibm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Conor Dooley <conor@kernel.org>, Jiri Olsa
+ <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, Ze Gao <zegao@tencent.com>
+Subject: Re: [PATCH v2 4/4] rehook, fprobe: do not trace rethook related
+ functions
+Message-ID: <20230516102006.76dfd68a@gandalf.local.home>
+In-Reply-To: <20230516071830.8190-5-zegao@tencent.com>
+References: <20230516071830.8190-1-zegao@tencent.com>
+	<20230516071830.8190-5-zegao@tencent.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, May 15, 2023 at 06:51 PM -07, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
->> > When session gracefully shutdowns epoll needs to wake up and any recv()
->> > readers should return 0 not the -EAGAIN they previously returned.
->> >
->> > Note we use epoll instead of select to test the epoll wake on shutdown
->> > event as well.
->> >
->> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
->> > ---
->> >  .../selftests/bpf/prog_tests/sockmap_basic.c  | 68 +++++++++++++++++++
->> >  .../bpf/progs/test_sockmap_pass_prog.c        | 32 +++++++++
->> >  2 files changed, 100 insertions(+)
->> >  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
->> >
->> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
->> > index 0ce25a967481..f9f611618e45 100644
->> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
->> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
->> > @@ -2,6 +2,7 @@
->> >  // Copyright (c) 2020 Cloudflare
->> >  #include <error.h>
->> >  #include <netinet/tcp.h>
->> > +#include <sys/epoll.h>
->> >  
->> >  #include "test_progs.h"
->> >  #include "test_skmsg_load_helpers.skel.h"
->> > @@ -9,8 +10,11 @@
->> >  #include "test_sockmap_invalid_update.skel.h"
->> >  #include "test_sockmap_skb_verdict_attach.skel.h"
->> >  #include "test_sockmap_progs_query.skel.h"
->> > +#include "test_sockmap_pass_prog.skel.h"
->> >  #include "bpf_iter_sockmap.skel.h"
->> >  
->> > +#include "sockmap_helpers.h"
->> > +
->> >  #define TCP_REPAIR		19	/* TCP sock is under repair right now */
->> >  
->> >  #define TCP_REPAIR_ON		1
->> > @@ -350,6 +354,68 @@ static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
->> >  	test_sockmap_progs_query__destroy(skel);
->> >  }
->> >  
->> > +#define MAX_EVENTS 10
->> > +static void test_sockmap_skb_verdict_shutdown(void)
->> > +{
->> > +	int n, err, map, verdict, s, c0, c1, p0, p1;
->> > +	struct epoll_event ev, events[MAX_EVENTS];
->> > +	struct test_sockmap_pass_prog *skel;
->> > +	int epollfd;
->> > +	int zero = 0;
->> > +	char b;
->> > +
->> > +	skel = test_sockmap_pass_prog__open_and_load();
->> > +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
->> > +		return;
->> > +
->> > +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
->> > +	map = bpf_map__fd(skel->maps.sock_map_rx);
->> > +
->> > +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
->> > +	if (!ASSERT_OK(err, "bpf_prog_attach"))
->> > +		goto out;
->> > +
->> > +	s = socket_loopback(AF_INET, SOCK_STREAM);
->> > +	if (s < 0)
->> > +		goto out;
->> > +	err = create_socket_pairs(s, AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
->> > +	if (err < 0)
->> > +		goto out;
->> > +
->> > +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
->> > +	if (err < 0)
->> > +		goto out_close;
->> > +
->> > +	shutdown(c0, SHUT_RDWR);
->> > +	shutdown(p1, SHUT_WR);
->> > +
->> > +	ev.events = EPOLLIN;
->> > +	ev.data.fd = c1;
->> > +
->> > +	epollfd = epoll_create1(0);
->> > +	if (!ASSERT_GT(epollfd, -1, "epoll_create(0)"))
->> > +		goto out_close;
->> > +	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, c1, &ev);
->> > +	if (!ASSERT_OK(err, "epoll_ctl(EPOLL_CTL_ADD)"))
->> > +		goto out_close;
->> > +	err = epoll_wait(epollfd, events, MAX_EVENTS, -1);
->> > +	if (!ASSERT_EQ(err, 1, "epoll_wait(fd)"))
->> > +		goto out_close;
->> > +
->> > +	n = recv(c1, &b, 1, SOCK_NONBLOCK);
->> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
->> > +	n = recv(p0, &b, 1, SOCK_NONBLOCK);
->> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
->> > +
->> > +out_close:
->> > +	close(c0);
->> > +	close(p0);
->> > +	close(c1);
->> > +	close(p1);
->> > +out:
->> > +	test_sockmap_pass_prog__destroy(skel);
->> > +}
->> > +
->> 
->> This test has me scratching my head. I don't grasp what we're testing
->> with (c0, p0) socket pair, since c0 is not in any sockmap?
->
-> Yeah the test is on (c1,p1) I was just lazy and using the API as is
-> I can fix the API to allow single set c1,p1.
+On Tue, 16 May 2023 15:18:30 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-It's not an issue that one pair is unused, IMO. I was just surprised
-that you operated on (c0, p0) rather than closing them immediately.
+>  CFLAGS_REMOVE_early.o		= $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_rethook.o		= $(CC_FLAGS_FTRACE)
+>  
+>  endif
+>  
+> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> index dd61752f4c96..4070a01c11b7 100644
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -17,6 +17,7 @@ CFLAGS_REMOVE_ftrace.o = -pg
+>  CFLAGS_REMOVE_early_printk.o = -pg
+>  CFLAGS_REMOVE_head64.o = -pg
+>  CFLAGS_REMOVE_sev.o = -pg
+> +CFLAGS_REMOVE_rethook.o = -pg
+
+Unrelated to this patch, but someday we need to change the -pg above to
+$(CC_FLAGS_FTRACE).
+
+-- Steve
+
+
+>  endif
+>  
+>  KASAN_SANITIZE_head$(BITS).o				:= n
+> -- 
 
