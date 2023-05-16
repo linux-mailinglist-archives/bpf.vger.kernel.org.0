@@ -1,196 +1,154 @@
-Return-Path: <bpf+bounces-678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFAA7059C9
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 23:50:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCBD705A61
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 00:03:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7013D1C20C14
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 21:50:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3A201C20C20
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 22:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D237327201;
-	Tue, 16 May 2023 21:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FDD927205;
+	Tue, 16 May 2023 22:02:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958A4271EF
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 21:50:01 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE28359C4
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:49:59 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34GFmIKM027451
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:49:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=4O8nLtf+HS1vJDi5ZpSboz0JQwdabMX1aUGwg2P97Zs=;
- b=UpV5EkCAta+25SSNC1QZm5Yt5vLGXbVxNL4bm1+uMObawIjn8N45+I9Lzb0saVnlauB5
- IE5OiRoW7VskvdlMxpAsKxL1AXHpDDlE81HnTsibPS9QhHrnKuR17n+KCIM6g0AZQeNS
- FDtnHlzp9VoeWBracAS5VuPXsJyki8q+9z0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qm2wv6pg6-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:49:59 -0700
-Received: from twshared11183.02.ash8.facebook.com (2620:10d:c0a8:1b::2d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Tue, 16 May 2023 14:49:56 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id EFAD31FB1C2EA; Tue, 16 May 2023 14:49:45 -0700 (PDT)
-From: Yonghong Song <yhs@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai
- Lau <martin.lau@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix s390 sock_field test failure
-Date: Tue, 16 May 2023 14:49:45 -0700
-Message-ID: <20230516214945.1013578-1-yhs@fb.com>
-X-Mailer: git-send-email 2.34.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 6dJSvUxLqEil-0EmxpdeBEbR3bo-DMfb
-X-Proofpoint-ORIG-GUID: 6dJSvUxLqEil-0EmxpdeBEbR3bo-DMfb
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE36101C0
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 22:02:57 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1759EB4
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 15:02:51 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-510b56724caso3904846a12.1
+        for <bpf@vger.kernel.org>; Tue, 16 May 2023 15:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684274569; x=1686866569;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HdOlwwskTorsyHY2wnNiHH+8QOFeFZ2fH5kaqtBChDU=;
+        b=LMBmaCS94YMnOJLn8Lnm2pAwJ/nbyw7b8B+RIOjY6PQq1VpvJFf0xtHnKgt/eqZOUI
+         Z+ECS2b30u4Q6uxQJ/ITuGNaYyW5vrPaV4V1Olrt9e4YXM8+zZu8/mgLkx2iaueKOZ0Q
+         1jYd5Tr3xj4JwhqJ8McfyWPfBing9s2nvbRCNA190PvRegeui8mfHLwU0G5pXBDyTYg0
+         HRn/chFjUFBGGwR89VBNfAROaUMT+tTEwkaPdGsGFQCPijbia+0IRbJIVHI5x0RsGGMk
+         5vUy2BS3EpWiCkrpfsakWQmM2X8wv03g9RY2rRojUlDP3X/Vvk0ggNKFejNjR3wj7o3a
+         nNpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684274569; x=1686866569;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HdOlwwskTorsyHY2wnNiHH+8QOFeFZ2fH5kaqtBChDU=;
+        b=UqgM1Ei3HMY3DG7Z3XJ2eu9LjoC+yBq9IjhZ1f36eUXVtsncRwBDpQKbBjcBLCmBjk
+         neQZ1uHeMpUtkxjVWq1X+cGUrWCoAZsS7XTUveBIy5nAzmp2ATX1i4nNjsB/0EHKFXVE
+         t3wyVLg33omWgdGCD8oLc0yk+IGxCAfG71eOs2zSgU2NxRqfAC0bxp4pDcvRNYvQCOvV
+         oSz651Oeg9DedSkDSoKuQbzl9RN76SupLtXxIrFjojkm/eoL7zScpdwYu15n73U8HPe5
+         fXHI0tTS1xNdxtTnG+Ru1DuORV5nj1c787e60ZtGNKrCOBdD973IXfLZ/fZAWu9ZHk6D
+         mXAw==
+X-Gm-Message-State: AC+VfDx/ZmNK7d8JEosxv2NuLy7bOKTYAoYL44N9oukAQJYiOlX/EQsS
+	eC47tQjcnhwrGWYl6YPdAb/mFo8SYz8KRr53c/g=
+X-Google-Smtp-Source: ACHHUZ5kHqGH54tuKG6PxW3SaDTPlO2BxLOYBVHZATGbIu6hLkXx/69sjzvhLWGw+dSG7G/972aoSB6g/RSuPsQV8FI=
+X-Received: by 2002:aa7:c6c4:0:b0:50d:9058:733 with SMTP id
+ b4-20020aa7c6c4000000b0050d90580733mr47122eds.18.1684274569295; Tue, 16 May
+ 2023 15:02:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-16_12,2023-05-16_01,2023-02-09_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230511172054.1892665-1-sdf@google.com> <20230511172054.1892665-5-sdf@google.com>
+In-Reply-To: <20230511172054.1892665-5-sdf@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 16 May 2023 15:02:36 -0700
+Message-ID: <CAEf4Bzam+Cy+qmf5dH5=_36QuOd94_EmqnUW6nkxo0Y_EmirOA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] bpf: query effective progs without cgroup_mutex
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-llvm patch [1] enabled cross-function optimization for func arguments
-(ArgumentPromotion) at -O2 level. And this caused s390 sock_fields
-test failure ([2]). The failure is gone right now as patch [1] was
-reverted in [3]. But it is possible that patch [3] will be reverted
-again and then the test failure in [2] will show up again. So it is
-desirable to fix the failure regardless.
+On Thu, May 11, 2023 at 10:21=E2=80=AFAM Stanislav Fomichev <sdf@google.com=
+> wrote:
+>
+> When querying bpf prog list, we don't really need to hold
+> cgroup_mutex. There is only one caller of cgroup_bpf_query
+> (cgroup_bpf_prog_query) and it does cgroup_get/put, so we're
+> safe WRT cgroup going way. However, we if we stop grabbing
+> cgroup_mutex, we risk racing with the prog attach/detach path
+> to the same cgroup, so here is how to work it around.
+>
+> We have two case:
+> 1. querying effective array
+> 2. querying non-effective list
+>
+> (1) is easy because it's already a RCU-managed array, so all we
+> need is to make a copy of that array (under rcu read lock)
+> into a temporary buffer and copy that temporary buffer back
+> to userspace.
+>
+> (2) is more involved because we keep the list of progs and it's
+> not managed by RCU. However, it seems relatively simple to
+> convert that hlist to the RCU-managed one: convert the readers
+> to use hlist_xxx_rcu and replace kfree with kfree_rcu. One
+> other notable place is cgroup_bpf_release where we replace
+> hlist_for_each_entry_safe with hlist_for_each_entry_rcu. This
+> should be safe because hlist_del_rcu does not remove/poison
+> forward pointer of the list entry, so it's safe to remove
+> the elements while iterating (without specially flavored
+> for_each_safe wrapper).
+>
+> For (2), we also need to take care of flags. I added a bunch
+> of READ_ONCE/WRITE_ONCE to annotate lockless access. And I
+> also moved flag update path to happen before adding prog
+> to the list to make sure readers observe correct flags.
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/bpf-cgroup-defs.h |   2 +-
+>  include/linux/bpf-cgroup.h      |   1 +
+>  kernel/bpf/cgroup.c             | 152 ++++++++++++++++++--------------
+>  3 files changed, 90 insertions(+), 65 deletions(-)
+>
 
-The following is an analysis why sock_field test fails with
-llvm patch [1].
+Few reservations from my side:
 
-The main problem is in
-  static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
-  {
-        __u32 *word =3D (__u32 *)&sk->dst_port;
-        return word[0] =3D=3D bpf_htons(0xcafe);
-  }
-  static __noinline bool sk_dst_port__load_half(struct bpf_sock *sk)
-  {
-        __u16 *half =3D (__u16 *)&sk->dst_port;
-        return half[0] =3D=3D bpf_htons(0xcafe);
-  }
-  ...
-  int read_sk_dst_port(struct __sk_buff *skb)
-  {
-	...
-        sk =3D skb->sk;
-	...
-        if (!sk_dst_port__load_word(sk))
-                RET_LOG();
-        if (!sk_dst_port__load_half(sk))
-                RET_LOG();
-	...
-  }
+1. You are adding 16 bytes to bpf_prog_list, of which there could be
+*tons* copies of. It might be ok, but slightly speeding up something
+that's not even considered to be a performance-critical operation
+(prog query) at the expense of more memory usage feels a bit odd.
 
-Through some cross-function optimization by ArgumentPromotion
-optimization, the compiler does:
-  static __noinline bool sk_dst_port__load_word(__u32 word_val)
-  {
-        return word_val =3D=3D bpf_htons(0xcafe);
-  }
-  static __noinline bool sk_dst_port__load_half(__u16 half_val)
-  {
-        return half_val =3D=3D bpf_htons(0xcafe);
-  }
-  ...
-  int read_sk_dst_port(struct __sk_buff *skb)
-  {
-        ...
-        sk =3D skb->sk;
-        ...
-        __u32 *word =3D (__u32 *)&sk->dst_port;
-        __u32 word_val =3D word[0];
-        ...
-        if (!sk_dst_port__load_word(word_val))
-                RET_LOG();
+2. This code is already pretty tricky, and that's under the
+simplifying conditions of cgroup_mutex being held. We are now making
+it even more complicated without locks being held.
 
-        __u16 half_val =3D word_val >> 16;
-        if (!sk_dst_port__load_half(half_val))
-                RET_LOG();
-        ...
-  }
+3. This code is probably going to be changed again once Daniel's
+multi-prog API lands, so we are going to do this exercise again
+afterwards?
 
-In current uapi bpf.h, we have
-  struct bpf_sock {
-	...
-        __be16 dst_port;        /* network byte order */
-        __u16 :16;              /* zero padding */
-	...
-  };
-But the old kernel (e.g., 5.6) we have
-  struct bpf_sock {
-	...
-	__u32 dst_port;         /* network byte order */
-	...
-  };
+So taking a bit of a step back. In cover letter you mentioned:
 
-So for backward compatability reason, 4-byte load of
-dst_port is converted to 2-byte load internally.
-Specifically, 'word_val =3D word[0]' is replaced by 2-byte load
-by the verifier and this caused the trouble for later
-sk_dst_port__load_half() where half_val becomes 0.
+  > We're observing some stalls on the heavily loaded machines
+  > in the cgroup_bpf_prog_query path. This is likely due to
+  > being blocked on cgroup_mutex.
 
-Typical usr program won't have such a code pattern tiggering
-the above bug, so let us fix the test failure with source
-code change. Adding an empty asm volatile statement seems
-enough to prevent undesired transformation.
+Is that likely an unconfirmed suspicion or you did see that
+cgroup_mutex lock is causing stalls?
 
-  [1] https://reviews.llvm.org/D148269
-  [2] https://lore.kernel.org/bpf/e7f2c5e8-a50c-198d-8f95-388165f1e4fd@meta=
-.com/
-  [3] https://reviews.llvm.org/rG141be5c062ecf22bd287afffd310e8ac4711444a
+Also, I wonder if you tried using BPF program or cgroup iterators to
+get all this information from BPF side? I wonder if that's feasible?
 
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/test_sock_fields.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sock_fields.c b/tools/t=
-esting/selftests/bpf/progs/test_sock_fields.c
-index bbad3c2d9aa5..f75e531bf36f 100644
---- a/tools/testing/selftests/bpf/progs/test_sock_fields.c
-+++ b/tools/testing/selftests/bpf/progs/test_sock_fields.c
-@@ -265,7 +265,10 @@ static __noinline bool sk_dst_port__load_word(struct b=
-pf_sock *sk)
-=20
- static __noinline bool sk_dst_port__load_half(struct bpf_sock *sk)
- {
--	__u16 *half =3D (__u16 *)&sk->dst_port;
-+	__u16 *half;
-+
-+	asm volatile ("");
-+	half =3D (__u16 *)&sk->dst_port;
- 	return half[0] =3D=3D bpf_htons(0xcafe);
- }
-=20
---=20
-2.34.1
-
+[...]
 
