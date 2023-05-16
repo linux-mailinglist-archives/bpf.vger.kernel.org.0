@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5DA704627
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 09:19:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3D70462A
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 09:19:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F0651C208E5
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 07:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3269D281579
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 07:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159DB1D2CA;
-	Tue, 16 May 2023 07:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84121D2CA;
+	Tue, 16 May 2023 07:19:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2EB623D6
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 07:19:04 +0000 (UTC)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1421F10D7;
-	Tue, 16 May 2023 00:19:02 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-64389a44895so10880056b3a.1;
-        Tue, 16 May 2023 00:19:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC7823D6
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 07:19:17 +0000 (UTC)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2689F46AD;
+	Tue, 16 May 2023 00:19:14 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5304913530fso7345378a12.0;
+        Tue, 16 May 2023 00:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684221541; x=1686813541;
+        d=gmail.com; s=20221208; t=1684221553; x=1686813553;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Od08TnngvcBflncwckirl6kWgx6glKrr7yMRy+3aZSY=;
-        b=CAJyKRIESx3DfkZiuoGMR4C2xu1LepvOjbj6Zf2LgOQd1bzGTAjhH4yPeI3lg7tDaH
-         w0yUUTLG1/8KEf/itsWApFOTAJ1oU7cARMd5yqayzEAi2Vkwyo3yYlUMRBcv5y0xIw7Q
-         hhWKGL62YQI23mtOfagnADtYQEzNXSLjoNn3X1v31IVS1Iy4f63BBSTK9iaopbhcJvjn
-         OniRvKfVVXe1LcYkBrXdP9fjYD3IgAW8igRwMTFSKHeGCpz1zahdxk9mnkIJqi5ZDd5i
-         iCErNFvyRYDpVPPKSgHXQ1VJpZp3BkG35TDTLQyzUYbYE/MKcj27OAPYONJ5FxnOe70T
-         MTEw==
+        bh=jr5NPUEwkf/u+a01SSpONco/9bXEcFxv1oXkCOl3FZE=;
+        b=EETW6bHqHomRMsgD7YwoEi5wGWOvuvUQPS5Ju99GCoG1L2KVXB02G3RhY7foR5wcxT
+         9qk2729vqdHUBs/pd2pWIDxJQ41HkdsgjKd/SkBEF3N5nQkqWYHNMhL/Acajd5GJBRGN
+         Ghq0SqII6TJVkjpQH3NQOcHU8INAKaI6o0N7NPDp3ItBsuJOavR8tQtyLVyQpkYcovQe
+         YZuH5S/jLE9FPzRN5NQwbaHKMJ8KfENjGGKqF9yZk5RxPhjFfZRxnu+CRh4xIA450mDK
+         yx3mN/9CHAvrI7fY45zdVHWZcsvNx7rGyQiP7NBrqlFlf8g/w5bATrXflh9PrNZ6n4cy
+         NdPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684221541; x=1686813541;
+        d=1e100.net; s=20221208; t=1684221553; x=1686813553;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Od08TnngvcBflncwckirl6kWgx6glKrr7yMRy+3aZSY=;
-        b=HyHhHRd9CjdbCgNXa7njBBN7zmTmjSLxYMIGuvapiox9pfz5FiD3u5dDJ7GW+lCohi
-         n1L1AKL8wXv3w7dYyXh+Y/aRsRlE5qg36Py0Dv68TzXYGDBn67dDVv3raof6uVcfL4Lg
-         6M9ZqjEpBc8T2EhNMRJ/oRMvbAZV9G06anRvA4fgNpqxMywF7jK/dCWG6PdZzZrghGDR
-         KV+ZDYhqU8arMdEIpx5VbKqnOrlup/ILOLsb/EdLDb6D8INYYbULeB6VAv3NdbcUEuQN
-         ikj3Ex9mL1LFnMqYRx1sutLOla+p6z/MOQGY0X9YEXbWoGCKD2nRGSoh08OuJjf9HO1o
-         s1RA==
-X-Gm-Message-State: AC+VfDzEIsU7wJEUA8FGYZe+4eOKahWR2YdNhpZAosefKkEiLkWbczy1
-	VYlYXhN7fqoh5jhGMencWNE=
-X-Google-Smtp-Source: ACHHUZ5AkOuj7oHM//GSH6XREd6vp5E5lGilnWXlY/BIudf1XEHGTKjV4eeZLBZZGIOSbXLwRuYEyA==
-X-Received: by 2002:a05:6a00:10d3:b0:641:3ca2:1aec with SMTP id d19-20020a056a0010d300b006413ca21aecmr47315732pfu.27.1684221541531;
-        Tue, 16 May 2023 00:19:01 -0700 (PDT)
+        bh=jr5NPUEwkf/u+a01SSpONco/9bXEcFxv1oXkCOl3FZE=;
+        b=Gh6JluKcZjkiXjM4gwvn7pqGPzcUS0MaU1hgof+eKQvWDHfImnbyuzfWmkdvuP7j49
+         kgJ/BqzXQBi+CZzF44i/7AGMkPP9fL20Y+8Bo6eI4ASeLjoAwQLTnSSwiArwDwNi06TI
+         0bzvYCji8lUINqQvfZwLlwhyLZyj70UG1DeBHddHWPgc83fSuSI9/EI5nvEQAmkETYv5
+         bCxkd0hgUOGEkmEaupYvXnI9Lx/w+UZ6aMJGvIpcPweJDSMVi2tbB+DyTyiaKEm+NDIn
+         wI10po+RklkVOCndQjGLSBGmscIGrTs0cEbnwTRwE1TRTozxY7u+VIyO1YvZRvE3ygs0
+         sYoQ==
+X-Gm-Message-State: AC+VfDzPK0Wmcf9ys+zGFMTcq7wAoaeqh2Cmmce62w1/TOxddxrCDWxM
+	ZDwLl2SEXVslftf1PQ2ciDE=
+X-Google-Smtp-Source: ACHHUZ4Dc8GN0ScaYumqglWnIGdVbNPTRaxTAFIL1qdwTFP4Pvli4wXAG4X9k3dkvEhAaUizWxQ2eQ==
+X-Received: by 2002:a05:6a21:6da3:b0:101:438d:2567 with SMTP id wl35-20020a056a216da300b00101438d2567mr31331268pzb.31.1684221553498;
+        Tue, 16 May 2023 00:19:13 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.15])
-        by smtp.googlemail.com with ESMTPSA id 17-20020aa79251000000b006468222af91sm12849830pfp.48.2023.05.16.00.18.55
+        by smtp.googlemail.com with ESMTPSA id 17-20020aa79251000000b006468222af91sm12849830pfp.48.2023.05.16.00.19.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 00:19:01 -0700 (PDT)
+        Tue, 16 May 2023 00:19:13 -0700 (PDT)
 From: Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
@@ -83,11 +83,10 @@ Cc: Albert Ou <aou@eecs.berkeley.edu>,
 	Conor Dooley <conor@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Yonghong Song <yhs@fb.com>,
-	Ze Gao <zegao@tencent.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 1/4] rethook: use preempt_{disable, enable}_notrace in rethook_trampoline_handler
-Date: Tue, 16 May 2023 15:18:27 +0800
-Message-Id: <20230516071830.8190-2-zegao@tencent.com>
+	Ze Gao <zegao@tencent.com>
+Subject: [PATCH v2 2/4] fprobe: make fprobe_kprobe_handler recursion free
+Date: Tue, 16 May 2023 15:18:28 +0800
+Message-Id: <20230516071830.8190-3-zegao@tencent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230516071830.8190-1-zegao@tencent.com>
 References: <20230516071830.8190-1-zegao@tencent.com>
@@ -105,41 +104,123 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch replaces preempt_{disable, enable} with its corresponding
-notrace version in rethook_trampoline_handler so no worries about stack
-recursion or overflow introduced by preempt_count_{add, sub} under
-fprobe + rethook context.
+Current implementation calls kprobe related functions before doing
+ftrace recursion check in fprobe_kprobe_handler, which opens door
+to kernel crash due to stack recursion if preempt_count_{add, sub}
+is traceable.
 
-Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+Refactor the common part out of fprobe_kprobe_handler and fprobe_
+handler and call ftrace recursion detection at the very beginning,
+so that the whole fprobe_kprobe_handler is free from recursion.
+
 Signed-off-by: Ze Gao <zegao@tencent.com>
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: <stable@vger.kernel.org>
 ---
- kernel/trace/rethook.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 44 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-index 32c3dfdb4d6a..60f6cb2b486b 100644
---- a/kernel/trace/rethook.c
-+++ b/kernel/trace/rethook.c
-@@ -288,7 +288,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
- 	 * These loops must be protected from rethook_free_rcu() because those
- 	 * are accessing 'rhn->rethook'.
- 	 */
--	preempt_disable();
-+	preempt_disable_notrace();
+diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+index 9abb3905bc8e..097c740799ba 100644
+--- a/kernel/trace/fprobe.c
++++ b/kernel/trace/fprobe.c
+@@ -20,30 +20,22 @@ struct fprobe_rethook_node {
+ 	char data[];
+ };
  
- 	/*
- 	 * Run the handler on the shadow stack. Do not unlink the list here because
-@@ -321,7 +321,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
- 		first = first->next;
- 		rethook_recycle(rhn);
+-static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+-			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
++static inline void __fprobe_handler(unsigned long ip, unsigned long
++		parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+ 	struct fprobe_rethook_node *fpr;
+ 	struct rethook_node *rh = NULL;
+ 	struct fprobe *fp;
+ 	void *entry_data = NULL;
+-	int bit, ret;
++	int ret;
+ 
+ 	fp = container_of(ops, struct fprobe, ops);
+-	if (fprobe_disabled(fp))
+-		return;
+-
+-	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+-	if (bit < 0) {
+-		fp->nmissed++;
+-		return;
+-	}
+ 
+ 	if (fp->exit_handler) {
+ 		rh = rethook_try_get(fp->rethook);
+ 		if (!rh) {
+ 			fp->nmissed++;
+-			goto out;
++			return;
+ 		}
+ 		fpr = container_of(rh, struct fprobe_rethook_node, node);
+ 		fpr->entry_ip = ip;
+@@ -61,23 +53,60 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+ 		else
+ 			rethook_hook(rh, ftrace_get_regs(fregs), true);
  	}
--	preempt_enable();
-+	preempt_enable_notrace();
- 
- 	return correct_ret_addr;
+-out:
++}
++
++static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
++		struct ftrace_ops *ops, struct ftrace_regs *fregs)
++{
++	struct fprobe *fp;
++	int bit;
++
++	fp = container_of(ops, struct fprobe, ops);
++	if (fprobe_disabled(fp))
++		return;
++
++	/* recursion detection has to go before any traceable function and
++	 * all functions before this point should be marked as notrace
++	 */
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	if (bit < 0) {
++		fp->nmissed++;
++		return;
++	}
++	__fprobe_handler(ip, parent_ip, ops, fregs);
+ 	ftrace_test_recursion_unlock(bit);
++
  }
+ NOKPROBE_SYMBOL(fprobe_handler);
+ 
+ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
+ 				  struct ftrace_ops *ops, struct ftrace_regs *fregs)
+ {
+-	struct fprobe *fp = container_of(ops, struct fprobe, ops);
++	struct fprobe *fp;
++	int bit;
++
++	fp = container_of(ops, struct fprobe, ops);
++	if (fprobe_disabled(fp))
++		return;
++
++	/* recursion detection has to go before any traceable function and
++	 * all functions called before this point should be marked as notrace
++	 */
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	if (bit < 0) {
++		fp->nmissed++;
++		return;
++	}
+ 
+ 	if (unlikely(kprobe_running())) {
+ 		fp->nmissed++;
+ 		return;
+ 	}
++
+ 	kprobe_busy_begin();
+-	fprobe_handler(ip, parent_ip, ops, fregs);
++	__fprobe_handler(ip, parent_ip, ops, fregs);
+ 	kprobe_busy_end();
++	ftrace_test_recursion_unlock(bit);
+ }
+ 
+ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
 -- 
 2.40.1
 
