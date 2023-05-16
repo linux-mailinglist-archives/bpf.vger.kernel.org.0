@@ -1,95 +1,205 @@
-Return-Path: <bpf+bounces-590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1775704235
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 02:17:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C7FB704320
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 03:51:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69ABB28147D
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 00:17:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE951C20CD8
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 01:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50EA917D4;
-	Tue, 16 May 2023 00:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A15D23A8;
+	Tue, 16 May 2023 01:51:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D283C19C
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 00:17:37 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690807289
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 17:17:36 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 34FMkskJ005546
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 17:17:35 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3qj62a8b88-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 15 May 2023 17:17:35 -0700
-Received: from twshared35445.38.frc1.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 15 May 2023 17:17:34 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 9FC3830BF0BEA; Mon, 15 May 2023 17:17:20 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v2 bpf] samples/bpf: drop unnecessary fallthrough
-Date: Mon, 15 May 2023 17:17:18 -0700
-Message-ID: <20230516001718.317177-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Eoz6CBVnqRiaCYJYV9L1hnuulfuJxST6
-X-Proofpoint-ORIG-GUID: Eoz6CBVnqRiaCYJYV9L1hnuulfuJxST6
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F6A1FB0;
+	Tue, 16 May 2023 01:51:25 +0000 (UTC)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9BEDC;
+	Mon, 15 May 2023 18:51:23 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6439f186366so8660518b3a.2;
+        Mon, 15 May 2023 18:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684201883; x=1686793883;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IaREDRWAbcl36mTiSxnebwhOm44d1Ztth6M8Asrwng8=;
+        b=PwZRQctnLsWiagh6gh2eubJn7Jo1HUXnP1igjQdzgzPg0hDYubL6WUt9wlZ1nGKahi
+         CFZuYCjK48f+AggK+7kZWKRUliPHzeXRyVl4fXIWjryR4nnMkX0lKweMLEDZ037aJuLX
+         e/088Nvs3GSn5O4B4nLmPzApnDnoZ4DaSlTg7U44FFu2MKGDYiCev6AoMCrEIhGoeWkz
+         TTz1jICOo2URrIM6t/WcbqgJSK8yRziukbg9XrPjrwMAFEvW5sRiUh5vqcyTdlE6JMCV
+         cBj1pDAfDPhxAgSYMWcUL4kmyP4FcFYK/HSURrM0RFzL199gfcQ0wBtX+Z2cogz0nKHL
+         8EoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684201883; x=1686793883;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IaREDRWAbcl36mTiSxnebwhOm44d1Ztth6M8Asrwng8=;
+        b=l+TA3VIzo0t2wjIlzAeFxMaGPI0d0HkJOjSzXIGYVk+3EZQs8sEHj6kh5qkcJWLyKC
+         fS1X2OP7ID92uPl1tK0JYn0J0iQLVY7KmM5Rx1mxm9uO3nQ3h5lTenxrsuP4L7sf4fj5
+         4QabFoQy0KvHHXif9VUtZiKr+vPk5QhcvEl3Ckey/XE0VLsclWwSaFReL31z674wLAFE
+         +zU69NiP7DCLNZ5XH/Kwrg1QGEaNonwjYGwb7wa3Nsb7lhDUGc7fjWbHYX2abh48SGhz
+         RaUtxX4n88IIdJfCInBSNgl431D7FU7hadGGe23cVw/npcu0XaCbDNwf4u94IKo0XJF0
+         273g==
+X-Gm-Message-State: AC+VfDw6eScxKZx7jvxOtB4W10xHiF2pHkgOEZifXwLh2NOdSEqWNzor
+	pDMkhDBOyaLe44/hWhpewK8=
+X-Google-Smtp-Source: ACHHUZ7ifOvTRGfTXKjTKYgEcotKV3c62Y9zCkJuF0U/Gii3bHkd+B2WO/G2yxzIuc7y/o+9V7TZBQ==
+X-Received: by 2002:a05:6a00:2d0e:b0:63d:2680:94dd with SMTP id fa14-20020a056a002d0e00b0063d268094ddmr50143968pfb.6.1684201882982;
+        Mon, 15 May 2023 18:51:22 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:3424:f8d7:c03b:2a7a])
+        by smtp.gmail.com with ESMTPSA id j18-20020a62b612000000b0063f534f0937sm12320899pff.46.2023.05.15.18.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 May 2023 18:51:22 -0700 (PDT)
+Date: Mon, 15 May 2023 18:51:20 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: daniel@iogearbox.net, 
+ lmb@isovalent.com, 
+ edumazet@google.com, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ ast@kernel.org, 
+ andrii@kernel.org, 
+ will@isovalent.com
+Message-ID: <6462e1986fb64_250b4208ac@john.notmuch>
+In-Reply-To: <87jzxj3wsq.fsf@cloudflare.com>
+References: <20230502155159.305437-1-john.fastabend@gmail.com>
+ <20230502155159.305437-12-john.fastabend@gmail.com>
+ <87jzxj3wsq.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf v7 11/13] bpf: sockmap, test shutdown() correctly
+ exits epoll and recv()=0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-15_21,2023-05-05_01,2023-02-09_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-__fallthrough is now not supported. Instead of renaming it to
-now-canonical ([0]) fallthrough pseudo-keyword, just get rid of it and
-equate 'h' case to default case, as both emit usage information and
-succeed.
+Jakub Sitnicki wrote:
+> On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
+> > When session gracefully shutdowns epoll needs to wake up and any recv()
+> > readers should return 0 not the -EAGAIN they previously returned.
+> >
+> > Note we use epoll instead of select to test the epoll wake on shutdown
+> > event as well.
+> >
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/sockmap_basic.c  | 68 +++++++++++++++++++
+> >  .../bpf/progs/test_sockmap_pass_prog.c        | 32 +++++++++
+> >  2 files changed, 100 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > index 0ce25a967481..f9f611618e45 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > @@ -2,6 +2,7 @@
+> >  // Copyright (c) 2020 Cloudflare
+> >  #include <error.h>
+> >  #include <netinet/tcp.h>
+> > +#include <sys/epoll.h>
+> >  
+> >  #include "test_progs.h"
+> >  #include "test_skmsg_load_helpers.skel.h"
+> > @@ -9,8 +10,11 @@
+> >  #include "test_sockmap_invalid_update.skel.h"
+> >  #include "test_sockmap_skb_verdict_attach.skel.h"
+> >  #include "test_sockmap_progs_query.skel.h"
+> > +#include "test_sockmap_pass_prog.skel.h"
+> >  #include "bpf_iter_sockmap.skel.h"
+> >  
+> > +#include "sockmap_helpers.h"
+> > +
+> >  #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+> >  
+> >  #define TCP_REPAIR_ON		1
+> > @@ -350,6 +354,68 @@ static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+> >  	test_sockmap_progs_query__destroy(skel);
+> >  }
+> >  
+> > +#define MAX_EVENTS 10
+> > +static void test_sockmap_skb_verdict_shutdown(void)
+> > +{
+> > +	int n, err, map, verdict, s, c0, c1, p0, p1;
+> > +	struct epoll_event ev, events[MAX_EVENTS];
+> > +	struct test_sockmap_pass_prog *skel;
+> > +	int epollfd;
+> > +	int zero = 0;
+> > +	char b;
+> > +
+> > +	skel = test_sockmap_pass_prog__open_and_load();
+> > +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
+> > +		return;
+> > +
+> > +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
+> > +	map = bpf_map__fd(skel->maps.sock_map_rx);
+> > +
+> > +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
+> > +	if (!ASSERT_OK(err, "bpf_prog_attach"))
+> > +		goto out;
+> > +
+> > +	s = socket_loopback(AF_INET, SOCK_STREAM);
+> > +	if (s < 0)
+> > +		goto out;
+> > +	err = create_socket_pairs(s, AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
+> > +	if (err < 0)
+> > +		goto out;
+> > +
+> > +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
+> > +	if (err < 0)
+> > +		goto out_close;
+> > +
+> > +	shutdown(c0, SHUT_RDWR);
+> > +	shutdown(p1, SHUT_WR);
+> > +
+> > +	ev.events = EPOLLIN;
+> > +	ev.data.fd = c1;
+> > +
+> > +	epollfd = epoll_create1(0);
+> > +	if (!ASSERT_GT(epollfd, -1, "epoll_create(0)"))
+> > +		goto out_close;
+> > +	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, c1, &ev);
+> > +	if (!ASSERT_OK(err, "epoll_ctl(EPOLL_CTL_ADD)"))
+> > +		goto out_close;
+> > +	err = epoll_wait(epollfd, events, MAX_EVENTS, -1);
+> > +	if (!ASSERT_EQ(err, 1, "epoll_wait(fd)"))
+> > +		goto out_close;
+> > +
+> > +	n = recv(c1, &b, 1, SOCK_NONBLOCK);
+> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+> > +	n = recv(p0, &b, 1, SOCK_NONBLOCK);
+> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+> > +
+> > +out_close:
+> > +	close(c0);
+> > +	close(p0);
+> > +	close(c1);
+> > +	close(p1);
+> > +out:
+> > +	test_sockmap_pass_prog__destroy(skel);
+> > +}
+> > +
+> 
+> This test has me scratching my head. I don't grasp what we're testing
+> with (c0, p0) socket pair, since c0 is not in any sockmap?
 
-  [0] https://www.kernel.org/doc/html/latest/process/deprecated.html?highli=
-ght=3Dfallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- samples/bpf/hbm.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
-index 6448b7826107..bf66277115e2 100644
---- a/samples/bpf/hbm.c
-+++ b/samples/bpf/hbm.c
-@@ -498,7 +498,6 @@ int main(int argc, char **argv)
- 					"Option -%c requires an argument.\n\n",
- 					optopt);
- 		case 'h':
--			__fallthrough;
- 		default:
- 			Usage();
- 			return 0;
---=20
-2.34.1
-
+Yeah the test is on (c1,p1) I was just lazy and using the API as is
+I can fix the API to allow single set c1,p1.
 
