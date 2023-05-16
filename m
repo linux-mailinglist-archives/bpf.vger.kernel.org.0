@@ -1,80 +1,73 @@
-Return-Path: <bpf+bounces-672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2927058AB
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 22:21:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B876370594E
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 23:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 040C528133E
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 20:21:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D105B281375
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 21:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9260271EA;
-	Tue, 16 May 2023 20:21:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B51271F1;
+	Tue, 16 May 2023 21:11:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F6D1D2C6
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 20:21:47 +0000 (UTC)
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA4B76BE;
-	Tue, 16 May 2023 13:21:32 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-44f98c344d3so36870e0c.1;
-        Tue, 16 May 2023 13:21:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71176290EA
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 21:11:12 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5617E729B
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:11:10 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-50bceaf07b8so26656360a12.3
+        for <bpf@vger.kernel.org>; Tue, 16 May 2023 14:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684268491; x=1686860491;
+        d=gmail.com; s=20221208; t=1684271469; x=1686863469;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0vuRMkHo9VzGxNh45a0eb6OVj7N+H3/Q5hAL0JLBu9o=;
-        b=OYr5qKaMhs2v+KE9qt0tcH/jMzxgxUlfWbO5w1I3YaCuhdvJrOFRoJ7Me7ek3jq/KX
-         dFlExgmkDKzI5pMihDl1uh1DTS1VQfDnkJHnwVqtjjdXWZEXK/xshEQDa8OkQw3mNIjS
-         HsogFXHHn3OBXo2fQiO8QVTOjzqHZ0tzO2tFLIj7zs8aLPywUixaSGrbsDz0fcAPxh5f
-         C7Pkwi/YSwrLtiDOc3q/319GVDG5xLkAOKj8Elr37lg9BENmt6T0urLTAGYvCW/l4B2k
-         1WvF36gnmMIDJU9TKEHCIcLi9o70wxA4RUNtub6BhPeL189U3+M7P+A37NJsbK38nEfK
-         BSvA==
+        bh=7lUwP4KNi2lnkmyVmTJSGSMuxvN/4wZ7KQNu1zmymoc=;
+        b=EigBFzZCrTqqJr085Q3FIxch/LgB19Basg+q5zwU1gSTUTiPQigkyFWhDOtMOGFCo3
+         lyUiyowGGR+8+2sJJqnzbVxaj7a3jkgl5CPVqv8sBb5kg49eug8A3sQX3sUNvu0u8juz
+         m3YR4e+WxZk/7f3ZWOvjmf+sDRVlYHrSJnjlXtXbiXbHWPpQTwVTyCNEgCFmqPoC1PN9
+         Po4L5SPvP+pkALSahRcPSRYP5A3VugulKtY9ClyjQiOv8V5BKQu7eJRyqegydUJZIMsV
+         q0wV3jC+OvL58XfylWjexAkb4FHCLEfQFa9wYFOdMfG5kMCxJ7uxx6XMdqfmbarYcCDV
+         ldwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684268491; x=1686860491;
+        d=1e100.net; s=20221208; t=1684271469; x=1686863469;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0vuRMkHo9VzGxNh45a0eb6OVj7N+H3/Q5hAL0JLBu9o=;
-        b=hEyyg+zcwuQ1ZQQvT8caHybEyw+jwrW6cx56ZFbkAzZnFUbqolNbb1ktwC/o9duTPx
-         7IedW1gn9I3+QJ7hLPo5YzPV0Z/nGDViyllPQi5VpJ5DAAKpmWkFB9yFJ8EYcZbzm3B2
-         WYnnRFb4IyqZ/rhchdgA3rCEKnZ9X7JnjR1vXqOOAe5e1oEqIfNtMH8VSWQt+8pXp+Ml
-         throaBu9Csb3Ux7ryANdCeMCvzoNvGp4L44deVQDJtdv4nuiQHCviZhQjP5rbh/Ge5QB
-         N6jwNZZtnpADCPoyP/z/s+mBNsxkTWixr73CyRAH4aNBNXjpfmjrrjELpJ9GuN6P8oLN
-         q8Nw==
-X-Gm-Message-State: AC+VfDxXHBX3PGrKEl3tWx5/lmNkJlG1V7P34nsdA35vG9i2p8vz/zDW
-	xud5RghOLDFyR52J7L36MYfMG1JSl1TBKC10hRk=
-X-Google-Smtp-Source: ACHHUZ6wbraww5r68QV9w/sRokQQroSqwHaqoh7iCJutwL3bPI8jhnZAgyINu8uOqAHptYn/8S9An2F4zcWvrgRWl5Q=
-X-Received: by 2002:a05:6102:382:b0:436:160e:9d56 with SMTP id
- m2-20020a056102038200b00436160e9d56mr12501091vsq.10.1684268491328; Tue, 16
- May 2023 13:21:31 -0700 (PDT)
+        bh=7lUwP4KNi2lnkmyVmTJSGSMuxvN/4wZ7KQNu1zmymoc=;
+        b=aIPN0hJH/xeMCu0NXOy/uABoCajFIYWo2E/Em2luoUQjzKc9YzTY3XRETCH4BnAGwN
+         /tHEs3tAMtj46c3uD3yyMvNYMVAdMsPNUSPTQgaGqHcm/gY9ka3+7w1DcNEm7nBfaqAl
+         X/plfUi4Dd894Zawu+03nIzsyVMJe9RTVdl7Kyb4oeToHfE2xtlwYrF8+RyVj4Y7oRv6
+         U7Z6Lopr2xE9RuAlMs2KDPSd9rWpocU+uQSGhkhlp7gFn5EDGMqBio6xaYCVbUG1U1tL
+         qdstLKuolQ5yT9Pi8vAv85h0xkeN9ZAbm/zvDxvmh0wz4rIOQ61BQVNe0hLWwndFAZy8
+         MgJQ==
+X-Gm-Message-State: AC+VfDzfDoHpkrzkxHLIJWBfNDHpYeD+Z9NZgatnkzSevFvQFEnvX1uz
+	LrKPQDxRVPUqGYpeZzjKOka7U6iplL9J8F26LK0=
+X-Google-Smtp-Source: ACHHUZ6N9ScXlMxwC2+ufQ2VT8Ibi6maTn2C69XqTIwXht4mV8RvQ76mjBDiIVmND2KMuwptGR4mrxwEoB5NU+sQZPo=
+X-Received: by 2002:a17:907:70a:b0:953:9024:1b50 with SMTP id
+ xb10-20020a170907070a00b0095390241b50mr33257371ejb.74.1684271468334; Tue, 16
+ May 2023 14:11:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230418014037.2412394-1-drosen@google.com> <20230418014037.2412394-18-drosen@google.com>
-In-Reply-To: <20230418014037.2412394-18-drosen@google.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 16 May 2023 23:21:20 +0300
-Message-ID: <CAOQ4uxjsTjMtOdQQrZOyv+ZcvFy1CJoB9Ot9jcGwguCBLMZQnA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 17/37] fuse-bpf: Add support for read/write iter
-To: Daniel Rosenberg <drosen@google.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
+References: <20230510223342.12886-1-inwardvessel@gmail.com> <20230510223342.12886-2-inwardvessel@gmail.com>
+In-Reply-To: <20230510223342.12886-2-inwardvessel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 16 May 2023 14:10:56 -0700
+Message-ID: <CAEf4BzZbTYLMPNdXWL4i6Wn1qk+hxgcMFuG=1THwz2mPiC7HJg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] libbpf: add capability for resizing
+ datasec maps
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,399 +77,296 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Apr 18, 2023 at 4:41=E2=80=AFAM Daniel Rosenberg <drosen@google.com=
-> wrote:
+On Wed, May 10, 2023 at 3:33=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com> =
+wrote:
 >
-> Adds backing support for FUSE_READ and FUSE_WRITE
+> This patch updates bpf_map__set_value_size() so that if the given map is
+> memory mapped, it will attempt to resize the mapped region. Initial
+> contents of the mapped region are preserved. BTF is not required, but
+> after the mapping is resized an attempt is made to adjust the associated
+> BTF information if the following criteria is met:
+>  - BTF info is present
+>  - the map is a datasec
+>  - the final variable in the datasec is an array
 >
-> This includes adjustments from Amir Goldstein's patch to FUSE
-> Passthrough
+> ... the resulting BTF info will be updated so that the final array
+> variable is associated with a new BTF array type sized to cover the
+> requested size.
 >
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> Signed-off-by: Paul Lawrence <paullawrence@google.com>
+> Note that the initial resizing of the memory mapped region can succeed
+> while the subsequent BTF adjustment can fail. In this case, BTF info is
+> dropped from the map by clearing the key and value type.
+>
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 > ---
->  fs/fuse/backing.c         | 371 ++++++++++++++++++++++++++++++++++++++
->  fs/fuse/control.c         |   2 +-
->  fs/fuse/file.c            |   8 +
->  fs/fuse/fuse_i.h          |  19 +-
->  fs/fuse/inode.c           |  13 ++
->  include/uapi/linux/fuse.h |  10 +
->  6 files changed, 421 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
-> index c6ef10aeec15..c7709a880e9c 100644
-> --- a/fs/fuse/backing.c
-> +++ b/fs/fuse/backing.c
-> @@ -11,6 +11,7 @@
->  #include <linux/file.h>
->  #include <linux/fs_stack.h>
->  #include <linux/namei.h>
-> +#include <linux/uio.h>
->
->  /*
->   * expression statement to wrap the backing filter logic
-> @@ -76,6 +77,89 @@
->         handled;                                                        \
->  })
->
-> +#define FUSE_BPF_IOCB_MASK (IOCB_APPEND | IOCB_DSYNC | IOCB_HIPRI | IOCB=
-_NOWAIT | IOCB_SYNC)
-> +
-> +struct fuse_bpf_aio_req {
-> +       struct kiocb iocb;
-> +       refcount_t ref;
-> +       struct kiocb *iocb_orig;
-> +       struct timespec64 pre_atime;
-> +};
-> +
-> +static struct kmem_cache *fuse_bpf_aio_request_cachep;
-> +
-> +static void fuse_file_accessed(struct file *dst_file, struct file *src_f=
-ile)
-> +{
-> +       struct inode *dst_inode;
-> +       struct inode *src_inode;
-> +
-> +       if (dst_file->f_flags & O_NOATIME)
-> +               return;
-> +
-> +       dst_inode =3D file_inode(dst_file);
-> +       src_inode =3D file_inode(src_file);
-> +
-> +       if ((!timespec64_equal(&dst_inode->i_mtime, &src_inode->i_mtime) =
-||
-> +            !timespec64_equal(&dst_inode->i_ctime, &src_inode->i_ctime))=
-) {
-> +               dst_inode->i_mtime =3D src_inode->i_mtime;
-> +               dst_inode->i_ctime =3D src_inode->i_ctime;
-> +       }
-> +
-> +       touch_atime(&dst_file->f_path);
-> +}
-> +
-> +static void fuse_copyattr(struct file *dst_file, struct file *src_file)
-> +{
-> +       struct inode *dst =3D file_inode(dst_file);
-> +       struct inode *src =3D file_inode(src_file);
-> +
-> +       dst->i_atime =3D src->i_atime;
-> +       dst->i_mtime =3D src->i_mtime;
-> +       dst->i_ctime =3D src->i_ctime;
-> +       i_size_write(dst, i_size_read(src));
-> +       fuse_invalidate_attr(dst);
-> +}
-> +
-> +static void fuse_file_start_write(struct file *fuse_file, struct file *b=
-acking_file,
-> +                                 loff_t pos, size_t count)
-> +{
-> +       struct inode *inode =3D file_inode(fuse_file);
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       if (inode->i_size < pos + count)
-> +               set_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
-> +
-> +       file_start_write(backing_file);
-> +}
-> +
-> +static void fuse_file_end_write(struct file *fuse_file, struct file *bac=
-king_file,
-> +                               loff_t pos, size_t res)
-> +{
-> +       struct inode *inode =3D file_inode(fuse_file);
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       file_end_write(backing_file);
-> +
-> +       if (res > 0)
-> +               fuse_write_update_attr(inode, pos, res);
-> +
-> +       clear_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
-> +       fuse_invalidate_attr(inode);
 
-This part is a bit out-of-date (was taken from my old branch)
-FWIW, I pushed a more recent version of these patches to:
-https://github.com/amir73il/linux/commits/fuse-passthrough-fd
-(only compile tested)
+It's coming along pretty nicely, still few bugs and unnecessary
+complications, but easy to fix.
 
-> +}
-> +
-> +static void fuse_file_start_read(struct file *backing_file, struct times=
-pec64 *pre_atime)
-> +{
-> +       *pre_atime =3D file_inode(backing_file)->i_atime;
-> +}
-> +
-> +static void fuse_file_end_read(struct file *fuse_file, struct file *back=
-ing_file,
-> +                         struct timespec64 *pre_atime)
-> +{
-> +       /* Mimic atime update policy of passthrough inode, not the value =
-*/
-> +       if (!timespec64_equal(&file_inode(backing_file)->i_atime, pre_ati=
-me))
-> +               fuse_invalidate_atime(file_inode(fuse_file));
-> +}
-> +
->  static void fuse_get_backing_path(struct file *file, struct path *path)
->  {
->         path_get(&file->f_path);
-> @@ -664,6 +748,277 @@ int fuse_bpf_lseek(loff_t *out, struct inode *inode=
-, struct file *file, loff_t o
->                                 file, offset, whence);
+Can you please also add a doc-comment in libbpf.h for
+bpf_map__set_value_size() describing what this API is doing and
+explicitly point out that once mmap-able BPF map is resized, all
+previous pointers returned from bpf_map__initial_value() and BPF
+skeleton pointers for corresponding data section will be invalidated
+and have to be re-initialized. This is an important and subtle point,
+best to call it out very explicitly.
+
+
+>  tools/lib/bpf/libbpf.c | 158 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 157 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1cbacf9e71f3..50cfe2bd4ba0 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1510,6 +1510,39 @@ static size_t bpf_map_mmap_sz(const struct bpf_map=
+ *map)
+>         return map_sz;
 >  }
 >
-> +static inline void fuse_bpf_aio_put(struct fuse_bpf_aio_req *aio_req)
+> +static int bpf_map_mmap_resize(struct bpf_map *map, size_t old_sz, size_=
+t new_sz)
 > +{
-> +       if (refcount_dec_and_test(&aio_req->ref))
-> +               kmem_cache_free(fuse_bpf_aio_request_cachep, aio_req);
-> +}
+> +       void *mmaped;
 > +
-> +static void fuse_bpf_aio_cleanup_handler(struct fuse_bpf_aio_req *aio_re=
-q, long res)
-> +{
-> +       struct kiocb *iocb =3D &aio_req->iocb;
-> +       struct kiocb *iocb_orig =3D aio_req->iocb_orig;
-> +       struct file *filp =3D iocb->ki_filp;
-> +       struct file *fuse_filp =3D iocb_orig->ki_filp;
-> +
-> +       if (iocb->ki_flags & IOCB_WRITE) {
-> +               __sb_writers_acquired(file_inode(iocb->ki_filp)->i_sb,
-> +                                     SB_FREEZE_WRITE);
-> +               fuse_file_end_write(iocb_orig->ki_filp, iocb->ki_filp, io=
-cb->ki_pos, res);
-> +       } else {
-> +               fuse_file_end_read(fuse_filp, filp, &aio_req->pre_atime);
-> +       }
-> +       iocb_orig->ki_pos =3D iocb->ki_pos;
-> +       fuse_bpf_aio_put(aio_req);
-> +}
-> +
-> +static void fuse_bpf_aio_rw_complete(struct kiocb *iocb, long res)
-> +{
-> +       struct fuse_bpf_aio_req *aio_req =3D
-> +               container_of(iocb, struct fuse_bpf_aio_req, iocb);
-> +       struct kiocb *iocb_orig =3D aio_req->iocb_orig;
-> +
-> +       fuse_bpf_aio_cleanup_handler(aio_req, res);
-> +       iocb_orig->ki_complete(iocb_orig, res);
-> +}
-> +
-> +struct fuse_file_read_iter_args {
-> +       struct fuse_read_in in;
-> +       struct fuse_read_iter_out out;
-> +};
-> +
-> +static int fuse_file_read_iter_initialize_in(struct bpf_fuse_args *fa, s=
-truct fuse_file_read_iter_args *args,
-> +                                            struct kiocb *iocb, struct i=
-ov_iter *to)
-> +{
-> +       struct file *file =3D iocb->ki_filp;
-> +       struct fuse_file *ff =3D file->private_data;
-> +
-> +       args->in =3D (struct fuse_read_in) {
-> +               .fh =3D ff->fh,
-> +               .offset =3D iocb->ki_pos,
-> +               .size =3D to->count,
-> +       };
-> +
-> +       /* TODO we can't assume 'to' is a kvec */
-> +       /* TODO we also can't assume the vector has only one component */
-> +       *fa =3D (struct bpf_fuse_args) {
-> +               .info =3D (struct bpf_fuse_meta_info) {
-> +                       .opcode =3D FUSE_READ,
-> +                       .nodeid =3D ff->nodeid,
-> +               },              .in_numargs =3D 1,
-> +               .in_args[0].size =3D sizeof(args->in),
-> +               .in_args[0].value =3D &args->in,
-> +               /*
-> +                * TODO Design this properly.
-> +                * Possible approach: do not pass buf to bpf
-> +                * If going to userland, do a deep copy
-> +                * For extra credit, do that to/from the vector, rather t=
-han
-> +                * making an extra copy in the kernel
-> +                */
-> +       };
-> +
-> +       return 0;
-> +}
-> +
-> +static int fuse_file_read_iter_initialize_out(struct bpf_fuse_args *fa, =
-struct fuse_file_read_iter_args *args,
-> +                                             struct kiocb *iocb, struct =
-iov_iter *to)
-> +{
-> +       args->out =3D (struct fuse_read_iter_out) {
-> +               .ret =3D args->in.size,
-> +       };
-> +
-> +       fa->out_numargs =3D 1;
-> +       fa->out_args[0].size =3D sizeof(args->out);
-> +       fa->out_args[0].value =3D &args->out;
-> +
-> +       return 0;
-> +}
-> +
-> +static int fuse_file_read_iter_backing(struct bpf_fuse_args *fa, ssize_t=
- *out,
-> +                                      struct kiocb *iocb, struct iov_ite=
-r *to)
-> +{
-> +       struct fuse_read_iter_out *frio =3D fa->out_args[0].value;
-> +       struct file *file =3D iocb->ki_filp;
-> +       struct fuse_file *ff =3D file->private_data;
-> +
-> +       if (!iov_iter_count(to))
-> +               return 0;
-> +
-> +       if ((iocb->ki_flags & IOCB_DIRECT) &&
-> +           (!ff->backing_file->f_mapping->a_ops ||
-> +            !ff->backing_file->f_mapping->a_ops->direct_IO))
+> +       if (!map->mmaped)
 > +               return -EINVAL;
 > +
-> +       /* TODO This just plain ignores any change to fuse_read_in */
-> +       if (is_sync_kiocb(iocb)) {
-> +               struct timespec64 pre_atime;
-> +
-> +               fuse_file_start_read(ff->backing_file, &pre_atime);
-> +               *out =3D vfs_iter_read(ff->backing_file, to, &iocb->ki_po=
-s,
-> +                               iocb_to_rw_flags(iocb->ki_flags, FUSE_BPF=
-_IOCB_MASK));
-> +               fuse_file_end_read(file, ff->backing_file, &pre_atime);
-> +       } else {
-> +               struct fuse_bpf_aio_req *aio_req;
-> +
-> +               *out =3D -ENOMEM;
-> +               aio_req =3D kmem_cache_zalloc(fuse_bpf_aio_request_cachep=
-, GFP_KERNEL);
-> +               if (!aio_req)
-> +                       goto out;
-> +
-> +               aio_req->iocb_orig =3D iocb;
-> +               fuse_file_start_read(ff->backing_file, &aio_req->pre_atim=
-e);
-> +               kiocb_clone(&aio_req->iocb, iocb, ff->backing_file);
-> +               aio_req->iocb.ki_complete =3D fuse_bpf_aio_rw_complete;
-> +               refcount_set(&aio_req->ref, 2);
-> +               *out =3D vfs_iocb_iter_read(ff->backing_file, &aio_req->i=
-ocb, to);
-> +               fuse_bpf_aio_put(aio_req);
-> +               if (*out !=3D -EIOCBQUEUED)
-> +                       fuse_bpf_aio_cleanup_handler(aio_req, *out);
-> +       }
-> +
-> +       frio->ret =3D *out;
-> +
-> +       /* TODO Need to point value at the buffer for post-modification *=
-/
-> +
-> +out:
-> +       fuse_file_accessed(file, ff->backing_file);
-
-fuse_file_accessed() looks redundant and less subtle what
-fuse_file_end_read() already does.
-
-> +
-> +       return *out;
-> +}
-> +
-> +static int fuse_file_read_iter_finalize(struct bpf_fuse_args *fa, ssize_=
-t *out,
-> +                                       struct kiocb *iocb, struct iov_it=
-er *to)
-> +{
-> +       struct fuse_read_iter_out *frio =3D fa->out_args[0].value;
-> +
-> +       *out =3D frio->ret;
-> +
-> +       return 0;
-> +}
-> +
-> +int fuse_bpf_file_read_iter(ssize_t *out, struct inode *inode, struct ki=
-ocb *iocb, struct iov_iter *to)
-> +{
-> +       return bpf_fuse_backing(inode, struct fuse_file_read_iter_args, o=
-ut,
-> +                               fuse_file_read_iter_initialize_in,
-> +                               fuse_file_read_iter_initialize_out,
-> +                               fuse_file_read_iter_backing,
-> +                               fuse_file_read_iter_finalize,
-> +                               iocb, to);
-> +}
-> +
-> +struct fuse_file_write_iter_args {
-> +       struct fuse_write_in in;
-> +       struct fuse_write_iter_out out;
-> +};
-> +
-> +static int fuse_file_write_iter_initialize_in(struct bpf_fuse_args *fa,
-> +                                             struct fuse_file_write_iter=
-_args *args,
-> +                                             struct kiocb *iocb, struct =
-iov_iter *from)
-> +{
-> +       struct file *file =3D iocb->ki_filp;
-> +       struct fuse_file *ff =3D file->private_data;
-> +
-> +       *args =3D (struct fuse_file_write_iter_args) {
-> +               .in.fh =3D ff->fh,
-> +               .in.offset =3D iocb->ki_pos,
-> +               .in.size =3D from->count,
-> +       };
-> +
-> +       /* TODO we can't assume 'from' is a kvec */
-> +       *fa =3D (struct bpf_fuse_args) {
-> +               .info =3D (struct bpf_fuse_meta_info) {
-> +                       .opcode =3D FUSE_WRITE,
-> +                       .nodeid =3D ff->nodeid,
-> +               },
-> +               .in_numargs =3D 1,
-> +               .in_args[0].size =3D sizeof(args->in),
-> +               .in_args[0].value =3D &args->in,
-> +       };
-> +
-> +       return 0;
-> +}
-> +
-> +static int fuse_file_write_iter_initialize_out(struct bpf_fuse_args *fa,
-> +                                              struct fuse_file_write_ite=
-r_args *args,
-> +                                              struct kiocb *iocb, struct=
- iov_iter *from)
-> +{
-> +       /* TODO we can't assume 'from' is a kvec */
-> +       fa->out_numargs =3D 1;
-> +       fa->out_args[0].size =3D sizeof(args->out);
-> +       fa->out_args[0].value =3D &args->out;
-> +
-> +       return 0;
-> +}
-> +
-> +static int fuse_file_write_iter_backing(struct bpf_fuse_args *fa, ssize_=
-t *out,
-> +                                       struct kiocb *iocb, struct iov_it=
-er *from)
-> +{
-> +       struct file *file =3D iocb->ki_filp;
-> +       struct fuse_file *ff =3D file->private_data;
-> +       struct fuse_write_iter_out *fwio =3D fa->out_args[0].value;
-> +       ssize_t count =3D iov_iter_count(from);
-> +
-> +       if (!count)
+> +       if (old_sz =3D=3D new_sz)
 > +               return 0;
 > +
-> +       /* TODO This just plain ignores any change to fuse_write_in */
-> +       /* TODO uint32_t seems smaller than ssize_t.... right? */
-> +       inode_lock(file_inode(file));
+> +       mmaped =3D mmap(NULL, new_sz, PROT_READ | PROT_WRITE,
+> +                       MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+> +       if (mmaped =3D=3D MAP_FAILED)
+> +               return libbpf_err(-errno);
+
+no need to use libbpf_err() here, it's internal function
+
 > +
-> +       fuse_copyattr(file, ff->backing_file);
+> +       /* copy pre-existing contents to new region,
+> +        * using the minimum of old/new size
+> +        */
+> +       memcpy(mmaped, map->mmaped, min(old_sz, new_sz));
+> +
+> +       if (munmap(map->mmaped, old_sz)) {
+> +               pr_warn("map '%s': failed to unmap\n", bpf_map__name(map)=
+);
+> +               if (munmap(mmaped, new_sz))
+> +                       pr_warn("map '%s': failed to unmap temp region\n"=
+,
+> +                                       bpf_map__name(map));
+> +               return libbpf_err(-errno);
+> +       }
 
-fuse_copyattr() looks redundant and less subtle than what
-fuse_file_end_write() already does.
+this seems a bit too paranoid. Let's just unconditionally
+`munmap(map->mmaped, old_sz);` and that's it. Don't add warning and
+definitely don't try to unmap newly mapped region. As is this code
+could lead to double-free, effectively.
 
-Thanks,
-Amir.
+> +
+> +       map->mmaped =3D mmaped;
+> +
+> +       return 0;
+> +}
+> +
+>  static char *internal_map_name(struct bpf_object *obj, const char *real_=
+name)
+>  {
+>         char map_name[BPF_OBJ_NAME_LEN], *p;
+> @@ -9412,12 +9445,135 @@ __u32 bpf_map__value_size(const struct bpf_map *=
+map)
+>         return map->def.value_size;
+>  }
+>
+> +static int map_btf_datasec_resize(struct bpf_map *map, __u32 size)
+> +{
+> +       int err;
+> +       int i, vlen;
+> +       struct btf *btf;
+> +       const struct btf_type *array_type, *array_element_type;
+> +       struct btf_type *datasec_type, *var_type;
+> +       struct btf_var_secinfo *var;
+> +       const struct btf_array *array;
+> +       __u32 offset, nr_elements, new_array_id;
+> +
+> +       /* check btf existence */
+> +       btf =3D bpf_object__btf(map->obj);
+> +       if (!btf)
+> +               return -ENOENT;
+> +
+> +       /* verify map is datasec */
+> +       datasec_type =3D btf_type_by_id(btf, bpf_map__btf_value_type_id(m=
+ap));
+> +       if (!btf_is_datasec(datasec_type)) {
+> +               pr_warn("map '%s': attempted to resize but map is not a d=
+atasec\n",
+
+"map value type is not a datasec". map is not a datasec, it's value type is
+
+> +                               bpf_map__name(map));
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* verify datasec has at least one var */
+> +       vlen =3D btf_vlen(datasec_type);
+> +       if (vlen =3D=3D 0) {
+> +               pr_warn("map '%s': attempted to resize but map vlen =3D=
+=3D 0\n",
+
+maybe "map value datasec is empty"? "vlen" is not necessarily
+something that users will easily recognize and understand
+
+> +                               bpf_map__name(map));
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* walk to the last var in the datasec,
+> +        * increasing the offset as we pass each var
+> +        */
+> +       var =3D btf_var_secinfos(datasec_type);
+> +       offset =3D 0;
+> +       for (i =3D 0; i < vlen - 1; i++) {
+> +               offset +=3D var->size;
+> +               var++;
+> +       }
+
+it's both incorrect and overcomplicated. Just:
+
+var =3D btf_var_secinfos(datasec_type)[vlen - 1];
+offset =3D var->offset;
+
+> +
+> +       /* verify last var in the datasec is an array */
+> +       var_type =3D btf_type_by_id(btf, var->type);
+> +       array_type =3D skip_mods_and_typedefs(btf, var_type->type, NULL);
+> +       if (!btf_is_array(array_type)) {
+> +               pr_warn("map '%s': cannot be resized last var must be arr=
+ay\n",
+
+"cannot be resized, last var must be an array"?
+
+> +                               bpf_map__name(map));
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* verify request size aligns with array */
+> +       array =3D btf_array(array_type);
+> +       array_element_type =3D btf_type_by_id(btf, array->type);
+
+not enough, need to skip_mods_and_typedefs() first, etc. But probably
+simpler to just use btf__resolve_size(array->type)? And don't forget
+to check that we get > 0 result, otherwise we run a risk of division
+by zero below
+
+> +       if ((size - offset) % array_element_type->size !=3D 0) {
+> +               pr_warn("map '%s': attempted to resize but requested size=
+ does not align\n",
+> +                               bpf_map__name(map));
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* create a new array based on the existing array,
+> +        * but with new length
+> +        */
+> +       nr_elements =3D (size - offset) / array_element_type->size;
+> +       new_array_id =3D btf__add_array(btf, array->index_type, array->ty=
+pe,
+> +                       nr_elements);
+> +       if (new_array_id < 0) {
+> +               pr_warn("map '%s': failed to create new array\n",
+
+this is a very unlikely error to happen, unless there is some bug (the
+only legitimate reason is -ENOMEM, which we generally don't log
+everywhere). So let's drop unnecessary pr_warn() here.
+
+> +                               bpf_map__name(map));
+> +               err =3D new_array_id;
+> +               return err;
+> +       }
+> +
+> +       /* adding a new btf type invalidates existing pointers to btf obj=
+ects,
+> +        * so refresh pointers before proceeding
+> +        */
+> +       datasec_type =3D btf_type_by_id(btf, map->btf_value_type_id);
+> +       var =3D btf_var_secinfos(datasec_type);
+> +       for (i =3D 0; i < vlen - 1; i++)
+> +               var++;
+
+as I showed above, btf_var_secinfos(datasec_type)[vlen - 1], no need
+for linear search
+
+> +       var_type =3D btf_type_by_id(btf, var->type);
+> +
+> +       /* finally update btf info */
+> +       datasec_type->size =3D size;
+> +       var->size =3D size - offset;
+> +       var_type->type =3D new_array_id;
+> +
+> +       return 0;
+> +}
+> +
+>  int bpf_map__set_value_size(struct bpf_map *map, __u32 size)
+>  {
+> +       int err;
+> +       __u32 old_size;
+> +
+>         if (map->fd >=3D 0)
+>                 return libbpf_err(-EBUSY);
+> -       map->def.value_size =3D size;
+> +
+> +       old_size =3D map->def.value_size;
+> +
+> +       if (map->mmaped) {
+> +               size_t mmap_old_sz, mmap_new_sz;
+> +
+> +               mmap_old_sz =3D bpf_map_mmap_sz(map);
+> +               map->def.value_size =3D size;
+> +               mmap_new_sz =3D bpf_map_mmap_sz(map);
+
+it's ugly that we need to modify map->def.value_size just to calculate
+mmap region size. Let's add a helper that would take value_size and
+max_entries explicitly and return mmap size? This will make this
+function simpler as well as map->def.value_size will be updated once
+at the very end, regardless of map->mmaped or not.
+
+> +
+> +               err =3D bpf_map_mmap_resize(map, mmap_old_sz, mmap_new_sz=
+);
+> +               if (err) {
+> +                       pr_warn("map '%s': failed to resize memory mapped=
+ region\n",
+> +                                       bpf_map__name(map));
+> +                       goto err_out;
+> +               }
+> +               err =3D map_btf_datasec_resize(map, size);
+> +               if (err && err !=3D -ENOENT) {
+> +                       pr_warn("map '%s': failed to adjust btf for resiz=
+ed map. dropping btf info\n",
+
+nit, either capitalize "Dropping", or (preferably) turn it into a
+single sentence: "failed to adjust BTF for resized map, clearing BTF
+key/value type info\n". Dropping is ambiguous and sounds more
+dangerous than it really is
+
+
+> +                                       bpf_map__name(map));
+> +                       map->btf_value_type_id =3D 0;
+> +                       map->btf_key_type_id =3D 0;
+> +               }
+> +       } else {
+> +               map->def.value_size =3D size;
+> +       }
+> +
+>         return 0;
+> +
+> +err_out:
+> +       map->def.value_size =3D old_size;
+> +       return libbpf_err(err);
+>  }
+>
+>  __u32 bpf_map__btf_key_type_id(const struct bpf_map *map)
+> --
+> 2.40.0
+>
 
