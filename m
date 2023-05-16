@@ -1,160 +1,198 @@
-Return-Path: <bpf+bounces-647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F20704F1F
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 15:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E975B704F99
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 15:43:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8288928159D
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 13:21:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5E88281608
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 13:43:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0842771C;
-	Tue, 16 May 2023 13:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5683327734;
+	Tue, 16 May 2023 13:43:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4351C34CD9
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 13:21:37 +0000 (UTC)
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A541BCA
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:21:35 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-62381fe42b3so1224586d6.0
-        for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:21:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CF52771C
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 13:43:06 +0000 (UTC)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181ED5264
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:43:03 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-50bc5197d33so25768595a12.1
+        for <bpf@vger.kernel.org>; Tue, 16 May 2023 06:43:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684243295; x=1686835295;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a5MRVuNhjrTFM/Vn11DKj7v8DjEacpDvNiY1lWriP3s=;
-        b=VedwXgVZ77sATDzMr0OPuWWCb175n2aYWN8A31KsQatDCPFqxehGSd0LbZ9woZ7vfi
-         nIA/5I7Ngu12fOieta1kzJlN/0YrsJOW479J9b1o5q9npFXge80M0nRq4VY5dMkg675j
-         q/H6a6xghLt+7sI8XDodTPNbtIdpYFbzK5ueoxMZwbI8i+sMLuPf/wRzGxOz1gO4mg1j
-         ZFOlHX8FJ41dr/8AiqMI59SzBIgsbtnSBYEGQlPyae1JLdgf7YehTge5JI+oVzSO2KYS
-         Pmae834SS8YHXvP75/j0lfFyAJQy0oBTufZLmZWLp83h+UxlBn4/9M/4XRfZmRPRf2S5
-         p93A==
+        d=cloudflare.com; s=google; t=1684244581; x=1686836581;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=C0P39mzUO2QQd9I7m+mbY3qo2mtwxHhH4Qn6TiIjRFw=;
+        b=W3e2J2vAhbJSvjaNTzjuSvBvcx77wDxS0eOUKaA06GYytOANBYQWppUuemRXZYLs8q
+         LIpXQSKZzLihAj9dpGofHIIT+74dz3Jko8QjV8TCWp1kyWXCTJrbRMtB6Yt6SHzez8XW
+         m57zs7pUKAW+eqVWYBiE1MgMiptKhiEIe928g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684243295; x=1686835295;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a5MRVuNhjrTFM/Vn11DKj7v8DjEacpDvNiY1lWriP3s=;
-        b=IvwhHJK0vH+Gh+FYOzsNLEpbDX7z480sn5ruyZP23WslAQrOLjzDmICeovs+Nqc2lb
-         7+QXLyqa25zA284qZYoIv4hSUv8uCqfF0RYkOIg93NZ5TzTDDCa+qeluRSJmU/Ug3HU7
-         kZo1a+9DHCM9pbZSbzp1o1d0Ktk8yh0n3ys4MAk+1p8UK+N/bxnvBOjHvXli3vnG+YGa
-         p4vvZLJlYngH6khKwZhe1/lArO6G6i2vHRkQISAZgdRNbcdYfKBX13s580SkIh+gSlA2
-         m/RvYu8sXfD/FUYzSlVog5jFhcjnqHif1dBZf+/Pclorwcke5mdkapdaFu1K4yqUV3Mo
-         c/JQ==
-X-Gm-Message-State: AC+VfDydgufCbO5GsbQ2OflXxUo9l7nQgw6JEU6uR76HVHqHW4etRGRM
-	T9hoTFqyzXB77EZvWtiZ0rJuBQz+mzqbjGy+Sb745cfJDDnBPNvE
-X-Google-Smtp-Source: ACHHUZ7jWXVu6VtFgpHbBuK+5xOBXGopEigcdlu41GXRZhSrrdXyLOKv/mAmMYYlJ4aVzHYr3EmAu7G4s4/oXVp07kY=
-X-Received: by 2002:ad4:5aa5:0:b0:616:4c4b:c9b9 with SMTP id
- u5-20020ad45aa5000000b006164c4bc9b9mr65423733qvg.37.1684243294954; Tue, 16
- May 2023 06:21:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684244581; x=1686836581;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C0P39mzUO2QQd9I7m+mbY3qo2mtwxHhH4Qn6TiIjRFw=;
+        b=HgZIqQcIrsJZgPA8tRtZCM9jaF1ov6WEbGenWnoHOV7NbhgItIhNLsgAEbx3jfjN0X
+         aLy/iBgZRmZZ9YP8opBdt804tA/8+0TokmyoMLNK73wUvt04bKBDAm2/atK9AfeI6M2I
+         WDBxUrXuTa5oR+EiyjtVp7x/FvgbH9LjBuXFRcuSboKrTQotHl7VHlhzw09hb1I77P9T
+         bYTodZ6QkZN5qQzBgkKon6hatuk51nTi2pwzas/3GDC0PRdWLh0Dj5Z81NkENj6W0/TM
+         tCIxjrN6pVEEl3wnQ2FzYidKNlMFoJXpQMjKxhmyGXJ8iHOjr2b9+SB0zGsKdeRyRMwk
+         XR9Q==
+X-Gm-Message-State: AC+VfDwLaaa2D8eO4+nYfriUugopSDYnN9WtLFYwXmppReo8bOtfIVcj
+	FLjbDYomLYyeCDowu4Ss7oGkvQ==
+X-Google-Smtp-Source: ACHHUZ7bP7KP2hZ82TI2FalqntKUS3O96HdIhta8RFFYz11Kpn+0YqpGj6bMeDS9O4GHPcVXc0djBA==
+X-Received: by 2002:aa7:ccc8:0:b0:508:3f06:8fd1 with SMTP id y8-20020aa7ccc8000000b005083f068fd1mr31711515edt.29.1684244581447;
+        Tue, 16 May 2023 06:43:01 -0700 (PDT)
+Received: from cloudflare.com (79.184.126.163.ipv4.supernova.orange.pl. [79.184.126.163])
+        by smtp.gmail.com with ESMTPSA id g8-20020aa7d1c8000000b00501d73cfc86sm8255599edp.9.2023.05.16.06.43.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 May 2023 06:43:00 -0700 (PDT)
+References: <20230502155159.305437-1-john.fastabend@gmail.com>
+ <20230502155159.305437-12-john.fastabend@gmail.com>
+ <87jzxj3wsq.fsf@cloudflare.com> <6462e1986fb64_250b4208ac@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: daniel@iogearbox.net, lmb@isovalent.com, edumazet@google.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+ andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v7 11/13] bpf: sockmap, test shutdown() correctly
+ exits epoll and recv()=0
+Date: Tue, 16 May 2023 15:41:05 +0200
+In-reply-to: <6462e1986fb64_250b4208ac@john.notmuch>
+Message-ID: <87h6scfl3w.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516123926.57623-1-laoar.shao@gmail.com> <20230516123926.57623-3-laoar.shao@gmail.com>
- <5c8e5c0e-02a6-f043-7c22-add9d2996eec@isovalent.com> <CALOAHbD8jHVwC=oFPiEXQXO9Xzs_eF2+s=EbMxqBqVYEnQag2w@mail.gmail.com>
- <d3b7480c-9d0f-04d1-85ad-d22fa064f259@isovalent.com>
-In-Reply-To: <d3b7480c-9d0f-04d1-85ad-d22fa064f259@isovalent.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 16 May 2023 21:20:58 +0800
-Message-ID: <CALOAHbBK9vbMNDXoWFgm-+3B3_YOMBPXZqa24EpaUsd9=k9-Qg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpftool: Show target_{obj,btf}_id in tracing
- link info
-To: Quentin Monnet <quentin@isovalent.com>
-Cc: song@kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	kafai@fb.com, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 16, 2023 at 9:19=E2=80=AFPM Quentin Monnet <quentin@isovalent.c=
-om> wrote:
+On Mon, May 15, 2023 at 06:51 PM -07, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Tue, May 02, 2023 at 08:51 AM -07, John Fastabend wrote:
+>> > When session gracefully shutdowns epoll needs to wake up and any recv()
+>> > readers should return 0 not the -EAGAIN they previously returned.
+>> >
+>> > Note we use epoll instead of select to test the epoll wake on shutdown
+>> > event as well.
+>> >
+>> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > ---
+>> >  .../selftests/bpf/prog_tests/sockmap_basic.c  | 68 +++++++++++++++++++
+>> >  .../bpf/progs/test_sockmap_pass_prog.c        | 32 +++++++++
+>> >  2 files changed, 100 insertions(+)
+>> >  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+>> >
+>> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+>> > index 0ce25a967481..f9f611618e45 100644
+>> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+>> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+>> > @@ -2,6 +2,7 @@
+>> >  // Copyright (c) 2020 Cloudflare
+>> >  #include <error.h>
+>> >  #include <netinet/tcp.h>
+>> > +#include <sys/epoll.h>
+>> >  
+>> >  #include "test_progs.h"
+>> >  #include "test_skmsg_load_helpers.skel.h"
+>> > @@ -9,8 +10,11 @@
+>> >  #include "test_sockmap_invalid_update.skel.h"
+>> >  #include "test_sockmap_skb_verdict_attach.skel.h"
+>> >  #include "test_sockmap_progs_query.skel.h"
+>> > +#include "test_sockmap_pass_prog.skel.h"
+>> >  #include "bpf_iter_sockmap.skel.h"
+>> >  
+>> > +#include "sockmap_helpers.h"
+>> > +
+>> >  #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+>> >  
+>> >  #define TCP_REPAIR_ON		1
+>> > @@ -350,6 +354,68 @@ static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+>> >  	test_sockmap_progs_query__destroy(skel);
+>> >  }
+>> >  
+>> > +#define MAX_EVENTS 10
+>> > +static void test_sockmap_skb_verdict_shutdown(void)
+>> > +{
+>> > +	int n, err, map, verdict, s, c0, c1, p0, p1;
+>> > +	struct epoll_event ev, events[MAX_EVENTS];
+>> > +	struct test_sockmap_pass_prog *skel;
+>> > +	int epollfd;
+>> > +	int zero = 0;
+>> > +	char b;
+>> > +
+>> > +	skel = test_sockmap_pass_prog__open_and_load();
+>> > +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
+>> > +		return;
+>> > +
+>> > +	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
+>> > +	map = bpf_map__fd(skel->maps.sock_map_rx);
+>> > +
+>> > +	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
+>> > +	if (!ASSERT_OK(err, "bpf_prog_attach"))
+>> > +		goto out;
+>> > +
+>> > +	s = socket_loopback(AF_INET, SOCK_STREAM);
+>> > +	if (s < 0)
+>> > +		goto out;
+>> > +	err = create_socket_pairs(s, AF_INET, SOCK_STREAM, &c0, &c1, &p0, &p1);
+>> > +	if (err < 0)
+>> > +		goto out;
+>> > +
+>> > +	err = bpf_map_update_elem(map, &zero, &c1, BPF_NOEXIST);
+>> > +	if (err < 0)
+>> > +		goto out_close;
+>> > +
+>> > +	shutdown(c0, SHUT_RDWR);
+>> > +	shutdown(p1, SHUT_WR);
+>> > +
+>> > +	ev.events = EPOLLIN;
+>> > +	ev.data.fd = c1;
+>> > +
+>> > +	epollfd = epoll_create1(0);
+>> > +	if (!ASSERT_GT(epollfd, -1, "epoll_create(0)"))
+>> > +		goto out_close;
+>> > +	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, c1, &ev);
+>> > +	if (!ASSERT_OK(err, "epoll_ctl(EPOLL_CTL_ADD)"))
+>> > +		goto out_close;
+>> > +	err = epoll_wait(epollfd, events, MAX_EVENTS, -1);
+>> > +	if (!ASSERT_EQ(err, 1, "epoll_wait(fd)"))
+>> > +		goto out_close;
+>> > +
+>> > +	n = recv(c1, &b, 1, SOCK_NONBLOCK);
+>> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+>> > +	n = recv(p0, &b, 1, SOCK_NONBLOCK);
+>> > +	ASSERT_EQ(n, 0, "recv_timeout(fin)");
+>> > +
+>> > +out_close:
+>> > +	close(c0);
+>> > +	close(p0);
+>> > +	close(c1);
+>> > +	close(p1);
+>> > +out:
+>> > +	test_sockmap_pass_prog__destroy(skel);
+>> > +}
+>> > +
+>> 
+>> This test has me scratching my head. I don't grasp what we're testing
+>> with (c0, p0) socket pair, since c0 is not in any sockmap?
 >
-> 2023-05-16 21:09 UTC+0800 ~ Yafang Shao <laoar.shao@gmail.com>
-> > On Tue, May 16, 2023 at 9:01=E2=80=AFPM Quentin Monnet <quentin@isovale=
-nt.com> wrote:
-> >>
-> >> 2023-05-16 12:39 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
-> >>> The target_btf_id can help us understand which kernel function is
-> >>> linked by a tracing prog. The target_btf_id and target_obj_id have
-> >>> already been exposed to userspace, so we just need to show them.
-> >>>
-> >>> The result as follows,
-> >>>
-> >>> $ tools/bpf/bpftool/bpftool link show
-> >>> 2: tracing  prog 13
-> >>>         prog_type tracing  attach_type trace_fentry
-> >>>         target_obj_id 1  target_btf_id 13964
-> >>>         pids trace(10673)
-> >>>
-> >>> $ tools/bpf/bpftool/bpftool link show -j
-> >>> [{"id":2,"type":"tracing","prog_id":13,"prog_type":"tracing","attach_=
-type":"trace_fentry","target_obj_id":1,"target_btf_id":13964,"pids":[{"pid"=
-:10673,"comm":"trace"}]}]
-> >>>
-> >>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> >>> Acked-by: Song Liu <song@kernel.org>
-> >>> ---
-> >>>  tools/bpf/bpftool/link.c | 4 ++++
-> >>>  1 file changed, 4 insertions(+)
-> >>>
-> >>> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> >>> index 243b74e..cfe896f 100644
-> >>> --- a/tools/bpf/bpftool/link.c
-> >>> +++ b/tools/bpf/bpftool/link.c
-> >>> @@ -195,6 +195,8 @@ static int show_link_close_json(int fd, struct bp=
-f_link_info *info)
-> >>>
-> >>>               show_link_attach_type_json(info->tracing.attach_type,
-> >>>                                          json_wtr);
-> >>> +             jsonw_uint_field(json_wtr, "target_obj_id", info->traci=
-ng.target_obj_id);
-> >>> +             jsonw_uint_field(json_wtr, "target_btf_id", info->traci=
-ng.target_btf_id);
-> >>>               break;
-> >>>       case BPF_LINK_TYPE_CGROUP:
-> >>>               jsonw_lluint_field(json_wtr, "cgroup_id",
-> >>> @@ -375,6 +377,8 @@ static int show_link_close_plain(int fd, struct b=
-pf_link_info *info)
-> >>>                       printf("\n\tprog_type %u  ", prog_info.type);
-> >>>
-> >>>               show_link_attach_type_plain(info->tracing.attach_type);
-> >>> +             printf("\n\ttarget_obj_id %u  target_btf_id %u  ",
-> >>> +                        info->tracing.target_obj_id, info->tracing.t=
-arget_btf_id);
-> >>
-> >> Older kernels won't share this info, so maybe we can skip this printf(=
-)
-> >> in plain output if the target object and BTF ids are 0?
-> >>
-> >
-> > Good suggestion. Will change it in the next version.
-> > BTW, shouldn't we skip it in the json output as well ?
->
-> I'd keep it in JSON. Plain output is for reading in the console, we want
-> to make it easy for users to find the relevant info. JSON is for machine
-> consumption, it's OK to be more exhaustive and to leave it to the
-> consuming program to decide what's relevant and what's not.
->
+> Yeah the test is on (c1,p1) I was just lazy and using the API as is
+> I can fix the API to allow single set c1,p1.
 
-Got it. Thanks for the explanation.
-
-
---=20
-Regards
-Yafang
+It's not an issue that one pair is unused, IMO. I was just surprised
+that you operated on (c0, p0) rather than closing them immediately.
 
