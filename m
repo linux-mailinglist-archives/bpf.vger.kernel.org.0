@@ -1,124 +1,180 @@
-Return-Path: <bpf+bounces-618-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522FA7049B7
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 11:52:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C0B9704A98
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 12:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA2C52815A6
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 09:52:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A11A1C20E4E
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 10:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059B1182D0;
-	Tue, 16 May 2023 09:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AD21DDD2;
+	Tue, 16 May 2023 10:31:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB954156E1
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 09:51:53 +0000 (UTC)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958891FEC;
-	Tue, 16 May 2023 02:51:47 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-50bc2feb320so21212147a12.3;
-        Tue, 16 May 2023 02:51:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D9B1EA6D;
+	Tue, 16 May 2023 10:31:42 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDE33A8D;
+	Tue, 16 May 2023 03:31:19 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3f4289f7c1cso15319795e9.0;
+        Tue, 16 May 2023 03:31:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684230706; x=1686822706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UGRnr0pf14CHov8UGeE0opuOVSemy26gQSSgqCQ8OBg=;
-        b=TyARuFrePmLKzB8Y4APhEC1j3pOxio/NqSOHioZ3lmLXGK4vgLurB9WR8Xw8wEjvuO
-         /yfg1Da7tiI8dzFEUflqoVQzHmxBBnpuU71cWAw50ixw7Ka9TRejd+rX7vG2S8Ne48r8
-         f6V9/YrBojQxHWio238iQe75dZ7bcWtO3IaVZ/5wDp3yAOdqaQmnJ/2ySO3Mq2qUVvQd
-         sOJNoY85jjHhy8Sw0/IFm+REkH+A+srv4nBaS6drUg95ae6FuXM8X11uuk9yj2B4Sc3d
-         zdhE+SFulVdAWHIKroDxhu/T9R6ja8UPKEziJmYYS0WRcA9mExznmwHyM0kf+vRWl9LQ
-         4FpA==
+        d=gmail.com; s=20221208; t=1684233077; x=1686825077;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PyY8nLdMshgu/nIKvOC/QhwDoVecThGCck/NdAtV7tY=;
+        b=QiEsM2fiwNRpg+gq6MmcJ3DXba42wk5N5HVN24IvmAAsV20Mfxp5Jd87DO0dpXzy+6
+         uOhBqbS1q3AiW7m8+sveW3n/28KxMMyYIBK3Lss6jdA76TWgvKvsj3d2TwT2SCgOV6Iq
+         tObbLiAMX8E3OYgvcs60YeavxnbdvPODQZkTYKkkJuCFlPd+c9GwiepxllW3UfPwd4l8
+         EDWnyUYCEJZNJQgeILUd3nAeONa9y7pmKPBcEvMEHwSXsGnYs2L88cIu6nNzvPIh7M3S
+         E8EP/sclSjgBgpQAIwIUgOCDPN3pSojVWCBDf0YobBWxA+g5em1n5NE6/3D0KDaex5I+
+         X7Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684230706; x=1686822706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UGRnr0pf14CHov8UGeE0opuOVSemy26gQSSgqCQ8OBg=;
-        b=kIZmlY8kMDJ0LUfG2AvAztI6zBG8cRTa5pldp2q7I98Lf8K7PFKk+61vt5QMas1kst
-         qmZGNy8dzVavSCw48wfykvy8Q0y/hjVqD+CYCtcMppds7l4NPJo8fkKFJed3wASioxHn
-         NEiThRh7uaDNvlm8pxwKe/MZylR18k4eo8i2tGcwqOGKf2lAtBljVta02jbt7Z+h8GK7
-         KM4RMv+BzKPU57q4dTR33mhUwp+VlEH8BE+OqPxMkZ5n/8Pen4Jc5pzfJoGC6A1LzruT
-         73CzXRcHyoiezmI2zstWw9uAVCugjyXJr7c43BebaYLdRjKuic4IPDRcSoHt574Su1XW
-         nDCg==
-X-Gm-Message-State: AC+VfDwcRNIoSUAgFZRygGidtDTIRrpcPnUhw1ZuA76G5bB3OZoSD0VP
-	QsF4xV649h/77Pt0nVJPrYnYOhNV8VXbOyOnrMc=
-X-Google-Smtp-Source: ACHHUZ5xpt1T33EGstq2xec0xYohfOgkI64LW6Py10ItFNbeyutFXIVDZoxai5C+HNRhgxKoCsdtIb8OrXa0qnnf6os=
-X-Received: by 2002:a05:6402:482:b0:50c:52d:7197 with SMTP id
- k2-20020a056402048200b0050c052d7197mr25360576edv.2.1684230705817; Tue, 16 May
- 2023 02:51:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684233077; x=1686825077;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PyY8nLdMshgu/nIKvOC/QhwDoVecThGCck/NdAtV7tY=;
+        b=bFKrcFsnjOt9Kr2L+N0lIaDbPzwOJzZuzDZI5pJw+vFqvOv6PWI4gY6MGAsbGxy6UN
+         ywY4R6DNt4CWh+EjY+YqY6T3WzLj47HgmkfngD9yAjwiN7munEmTHTq0vGlPOBA5IcL7
+         o3Wqc32I1w+MCUzwsSCd9LhGrIqz/PyoGkBdw/+n9+LMVvtdT8pPINtbxQ4R+7eUhS4c
+         b7CEELKUSmU+TV2kKRQswhdnSwQ1qfuASArVGUr2MgCdUTXhhziWiRyIig6M2wGPdS4F
+         sEa/w7g9AlQjT7D+qBAFzphTYuLB1FxOdndbT8bc4aZmM/W6KFZI7dcQpXkZ7ng3W+y2
+         mOGw==
+X-Gm-Message-State: AC+VfDy9xRP8S5V1fTJCFJPKD0/O3XZJI8P+9h4lfkVsg4CsTeLYFCsZ
+	kewERf7LwdfPJcdjbyur9mM=
+X-Google-Smtp-Source: ACHHUZ6IDGxuwCz6UoHkj+8Iwgm2KoMirXTd5C9mgcSNLCtsmL8j/hoUFAQ1pX0tQkyJoU8FIvAQww==
+X-Received: by 2002:a05:600c:3ba1:b0:3f4:f204:4968 with SMTP id n33-20020a05600c3ba100b003f4f2044968mr1882667wms.1.1684233077112;
+        Tue, 16 May 2023 03:31:17 -0700 (PDT)
+Received: from localhost.localdomain (h-176-10-144-222.NA.cust.bahnhof.se. [176.10.144.222])
+        by smtp.gmail.com with ESMTPSA id u25-20020a7bc059000000b003f32f013c3csm1888402wmc.6.2023.05.16.03.31.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 May 2023 03:31:16 -0700 (PDT)
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+To: magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	netdev@vger.kernel.org,
+	maciej.fijalkowski@intel.com,
+	bpf@vger.kernel.org,
+	yhs@fb.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tirthendu.sarkar@intel.com
+Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next v2 00/10] seltests/xsk: prepare for AF_XDP multi-buffer testing
+Date: Tue, 16 May 2023 12:30:59 +0200
+Message-Id: <20230516103109.3066-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516071830.8190-1-zegao@tencent.com> <20230516071830.8190-3-zegao@tencent.com>
- <20230516091820.GB2587705@hirez.programming.kicks-ass.net> <CAD8CoPDFp2_+D6nykj6mu_Pr57iN+8jO-kgA_FRrcxD8C7YU+Q@mail.gmail.com>
-In-Reply-To: <CAD8CoPDFp2_+D6nykj6mu_Pr57iN+8jO-kgA_FRrcxD8C7YU+Q@mail.gmail.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Tue, 16 May 2023 17:51:34 +0800
-Message-ID: <CAD8CoPDu=u4vxEYiaZfne92yZ=uTcAEPzWPbdjncyfbSyuCpfg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] fprobe: make fprobe_kprobe_handler recursion free
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vasily Gorbik <gor@linux.ibm.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Conor Dooley <conor@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Sorry for paste the wrong link, it's this one instead:
-  Link: https://lore.kernel.org/bpf/20230513001757.75ae0d1b@rorschach.local=
-.home/
+Prepare the AF_XDP selftests test framework code for the upcoming
+multi-buffer support in AF_XDP. This so that the multi-buffer patch
+set does not become way too large. In that upcoming patch set, we are
+only including the multi-buffer tests together with any framework
+code that depends on the new options bit introduced in the AF_XDP
+multi-buffer implementation itself.
 
-It's the original discussions of this problem.
+Currently, the test framework is based on the premise that a packet
+consists of a single fragment and thus occupies a single buffer and a
+single descriptor. Multi-buffer breaks this assumption, as that is the
+whole purpose of it. Now, a packet can consist of multiple buffers and
+therefore consume multiple descriptors.
 
-Regards,
-Ze
+The patch set starts with some clean-ups and simplifications followed
+by patches that make sure that the current code works even when a
+packet occupies multiple buffers. The actual code for sending and
+receiving multi-buffer packets will be included in the AF_XDP
+multi-buffer patch set as it depends on a new bit being used in the
+options field of the descriptor.
 
-On Tue, May 16, 2023 at 5:47=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
->
-> Precisely, these that are called within kprobe_busy_{begin, end},
-> which the previous patch does not resolve.
-> I will refine the commit message to make it clear.
->
-> FYI, details can checked out here:
->     Link: https://lore.kernel.org/linux-trace-kernel/20230516132516.c902e=
-dcf21028874a74fb868@kernel.org/
->
-> Regards,
-> Ze
->
-> On Tue, May 16, 2023 at 5:18=E2=80=AFPM Peter Zijlstra <peterz@infradead.=
-org> wrote:
-> >
-> > On Tue, May 16, 2023 at 03:18:28PM +0800, Ze Gao wrote:
-> > > Current implementation calls kprobe related functions before doing
-> > > ftrace recursion check in fprobe_kprobe_handler, which opens door
-> > > to kernel crash due to stack recursion if preempt_count_{add, sub}
-> > > is traceable.
-> >
-> > Which preempt_count*() are you referring to? The ones you just made
-> > _notrace in the previous patch?
+Patch set anatomy:
+1: The XDP program was unnecessarily changed many times. Fixes this.
+
+2: There is no reason to generate a full UDP/IPv4 packet as it is
+   never used. Simplify the code by just generating a valid Ethernet
+   frame.
+
+3: Introduce a more complicated payload pattern that can detect
+   fragments out of bounds in a multi-buffer packet and other errors
+   found in single-fragment packets.
+
+4: As a convenience, dump the content of the faulty packet at error.
+
+5: To simplify the code, make the usage of the packet stream for Tx
+   and Rx more similar.
+
+6: Store the offset of the packet in the buffer in the struct pkt
+   definition instead of the address in the umem itself and introduce
+   a simple buffer allocator. The address only made sense when all
+   packets consumed a single buffer. Now, we do not know beforehand
+   how many buffers a packet will consume, so we instead just allocate
+   a buffer from the allocator and specify the offset within that
+   buffer.
+
+7: Test for huge pages only once instead of before each test that needs it.
+
+8: Populate the fill ring based on how many frags are needed for each
+   packet.
+
+9: Change the data generation code so it can generate data for
+   multi-buffer packets too.
+
+10: Adjust the packet pacing algorithm so that it can cope with
+    multi-buffer packets. The pacing algorithm is present so that Tx
+    does not send too many packets/frames to Rx that it starts to drop
+    packets. That would ruin the tests.
+
+v1 -> v2:
+* Fixed spelling error in patch #6 [Simon]
+* Fixed compilation error with llvm in patch #7 [Daniel]
+
+Thanks: Magnus
+
+Magnus Karlsson (10):
+  selftests/xsk: do not change XDP program when not necessary
+  selftests/xsk: generate simpler packets with variable length
+  selftests/xsk: add varying payload pattern within packet
+  selftests/xsk: dump packet at error
+  selftests/xsk: add packet iterator for tx to packet stream
+  selftests/xsk: store offset in pkt instead of addr
+  selftests/xsx: test for huge pages only once
+  selftests/xsk: populate fill ring based on frags needed
+  selftests/xsk: generate data for multi-buffer packets
+  selftests/xsk: adjust packet pacing for multi-buffer support
+
+ tools/testing/selftests/bpf/test_xsk.sh  |  10 +-
+ tools/testing/selftests/bpf/xsk.h        |   5 +
+ tools/testing/selftests/bpf/xskxceiver.c | 771 +++++++++++------------
+ tools/testing/selftests/bpf/xskxceiver.h |  31 +-
+ 4 files changed, 379 insertions(+), 438 deletions(-)
+
+
+base-commit: 108598c39eefbedc9882273ac0df96127a629220
+--
+2.34.1
 
