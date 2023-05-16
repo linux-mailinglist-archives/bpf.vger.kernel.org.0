@@ -1,155 +1,171 @@
-Return-Path: <bpf+bounces-608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AA2370462F
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 09:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 190807046CB
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 09:45:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DDD51C20D7F
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 07:19:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3C761C20D3F
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 07:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789151D2D0;
-	Tue, 16 May 2023 07:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92431DDDB;
+	Tue, 16 May 2023 07:45:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36BB423D6
-	for <bpf@vger.kernel.org>; Tue, 16 May 2023 07:19:43 +0000 (UTC)
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85254C0A;
-	Tue, 16 May 2023 00:19:36 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-643b7b8f8ceso7937981b3a.1;
-        Tue, 16 May 2023 00:19:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9159E1DDC0;
+	Tue, 16 May 2023 07:45:37 +0000 (UTC)
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269AA1BF0;
+	Tue, 16 May 2023 00:45:36 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-b8f46ca241bso2256787276.1;
+        Tue, 16 May 2023 00:45:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684221576; x=1686813576;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6U/vkmAUFZZcdBk+KokFbNf1ZvkKNw6bCUwh7L5Br9E=;
-        b=MFxu44NHbkQCaNnciSPrfna7rqyLC2dxpiPT8iIxN4YMSmvNT5WNxmBHJuu8yUW1J5
-         EynI7VMJwAZLG3DgUCgj7G+xrxpokr5IS3ZRrGAJGBkw+eW2iHCYr1OVfGHC2+2dVCeC
-         7t2aGksNm18G+S2p1Kymzqk15eMpkxaiyb0tE34Y+/zfabMobsqav4iB5A1iXlLrKhDK
-         lEZMaL3xbrp8jePUEgNVtpLBTg/oRqWZojM+xWwnnz4TUFn3Lq/fkYXul2S9MFpzPdEN
-         BPO4ZOcnazHWeen45gEA8Cdk2tUC2dGTEKbnZkzL+XRjjJnaFOo+R/RMKJjlV4ho0L/6
-         Nv4w==
+        d=gmail.com; s=20221208; t=1684223135; x=1686815135;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOxPv9nPBMO3v5ymnEoGctbo7W28IsAWHhOyGgOsfAo=;
+        b=rn8r3uk514tGfZzxcoqhVSweRfgsRBfDsNKddNMquvveoh25KJ3Mgrb5YIun9dnf6P
+         xq4wPBSiPFBumuBDLrGBsSqlQr9MTmjVSIgIFujpu4flTasDk4Vxp29BSXWE6IiUhgUx
+         4owZF74YRt1u2K5AoKkVKWYhBsCVKoLqMqv6d464COGq+D3tmXsNiWn/+ax4O/uuagbO
+         prN2Xj8WVRdle6TYQmVMna/R4Q2JH+RVKLYfnBTdIyIgllIGgDMzeW2T6uOuf6kOIAro
+         YtlqIpRfWoSoTOW4pKjczEpzhr8EOnRPgb4P3K6mOhe1FgU/M3n0962Loz1z90VG6l4o
+         6ODA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684221576; x=1686813576;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6U/vkmAUFZZcdBk+KokFbNf1ZvkKNw6bCUwh7L5Br9E=;
-        b=HyIsLtuvUWgtq0+8nHvr71xltk9UpBFwBbCg+KcEMKFMJ+6VmJumYW4ambOnlwOWUm
-         86PljMJjXM5ispv66pdSn9ASMpd+6RtU2K86Cu68HmAOUxQj5FYRdx4TOOTVTGnUbCvM
-         yMiu3Z+V1vIAfI813iLFqiKI+K9UjzFbgnlVZpImIhX3R9FIC7Ebd8K/4IC+o3KQJQds
-         jnPRHBFu6ZyNOVt/bInLA6Hps+mFWMfkD/P3tcFf0jit0jhJzLY4MFqNxm9ghZB2ZyGE
-         B5y0vhu5+fhihcRDTB251fsyzpcKFD3t3iw8aF59LYdOWQSUBC1EkP74jp3ecYPZIa9P
-         UcVQ==
-X-Gm-Message-State: AC+VfDxwi9529cQCRBqw6WEeJSNFidVBigeAd7OdkRu+A0g9XfTBmPeb
-	tAmyE2GSGzjZ8rvjviIELqI=
-X-Google-Smtp-Source: ACHHUZ4nXjQYnByDI6oida9jX5iVkTZZXuNHP++wV9HBdBJ3e54nyEcPN/xLIHFq7HmESmFZpkuHGw==
-X-Received: by 2002:aa7:88c8:0:b0:64a:2dd6:4f18 with SMTP id k8-20020aa788c8000000b0064a2dd64f18mr23142160pff.13.1684221575773;
-        Tue, 16 May 2023 00:19:35 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.15])
-        by smtp.googlemail.com with ESMTPSA id 17-20020aa79251000000b006468222af91sm12849830pfp.48.2023.05.16.00.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 00:19:35 -0700 (PDT)
-From: Ze Gao <zegao2021@gmail.com>
-X-Google-Original-From: Ze Gao <zegao@tencent.com>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Conor Dooley <conor@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	Ze Gao <zegao@tencent.com>
-Subject: [PATCH v2 4/4] rehook, fprobe: do not trace rethook related functions
-Date: Tue, 16 May 2023 15:18:30 +0800
-Message-Id: <20230516071830.8190-5-zegao@tencent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230516071830.8190-1-zegao@tencent.com>
-References: <20230516071830.8190-1-zegao@tencent.com>
+        d=1e100.net; s=20221208; t=1684223135; x=1686815135;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qOxPv9nPBMO3v5ymnEoGctbo7W28IsAWHhOyGgOsfAo=;
+        b=DNtJ04M562VZc4lZzv1itAcwZVi/dUf0C//ZKq9GBUhoJKLj072Zy2qBy8bWdcCbfi
+         m9Er4K8WYU042ebd9EXqc2si3gfzRT32EXjZb2hlRXixhBqYhmWMDjF72gLcOZK9A7Zi
+         eJwyAwG24hgJxycGBPXGvYF0+3CdCmERQzoa+5u2VjBBrSSBDU8Xicuvlf8OpBw3pbxJ
+         STjb5sdVmWf3p5uxqir3X08Zb4jM/UbamBdJ5PuhvmX0pf3DOuXkFk3R2RZrEnqZ/Q1l
+         MUjRGIqEEmMIUKLcQi0RKMwLtiWtRcD1D3jAjhvA9JjvS05a6EwI+6rVLL2l4JWiNa5n
+         zIPg==
+X-Gm-Message-State: AC+VfDwd8onmdLh/8Wr88TnsUor56q5SH6Dbi6CKA5GbPCgpOmO1VsZm
+	qRTCqmraWN4ISO8yontKfbWS5tIfv6vcGpBAjOo=
+X-Google-Smtp-Source: ACHHUZ4OR+YiLhv43Pg/guNmEoGZROCAfsAlIJ6/pG9z+2LJBQ9Hgoc2Yk/aBST6KVFbW504Ww/ksaHd44302ZZstIA=
+X-Received: by 2002:a25:aa8e:0:b0:ba7:498a:46f with SMTP id
+ t14-20020a25aa8e000000b00ba7498a046fmr1551395ybi.2.1684223135132; Tue, 16 May
+ 2023 00:45:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230512092043.3028-1-magnus.karlsson@gmail.com> <9e553914-3703-8f10-b3b8-7d7e90462417@iogearbox.net>
+In-Reply-To: <9e553914-3703-8f10-b3b8-7d7e90462417@iogearbox.net>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 16 May 2023 09:45:24 +0200
+Message-ID: <CAJ8uoz3jf2xdmaDYiBZ3jcM4G1-9h5ngXXEpmnU8iwKwp9PZdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/10] seltests/xsk: prepare for AF_XDP
+ multi-buffer testing
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org, 
+	netdev@vger.kernel.org, maciej.fijalkowski@intel.com, bpf@vger.kernel.org, 
+	yhs@fb.com, andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, tirthendu.sarkar@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-These functions are already marked as NOKPROBE to prevent recursion and
-we have the same reason to blacklist them if rethook is used with fprobe,
-since they are beyond the recursion-free region ftrace can guard.
+On Mon, 15 May 2023 at 23:12, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Hi Magnus,
+>
+> On 5/12/23 11:20 AM, Magnus Karlsson wrote:
+> >
+> > Prepare the AF_XDP selftests test framework code for the upcoming
+> > multi-buffer support in AF_XDP. This so that the multi-buffer patch
+> > set does not become way too large. In that upcoming patch set, we are
+> > only including the multi-buffer tests together with any framework
+> > code that depends on the new options bit introduced in the AF_XDP
+> > multi-buffer implementation itself.
+> >
+> > Currently, the test framework is based on the premise that a packet
+> > consists of a single fragment and thus occupies a single buffer and a
+> > single descriptor. Multi-buffer breaks this assumption, as that is the
+> > whole purpose of it. Now, a packet can consist of multiple buffers and
+> > therefore consume multiple descriptors.
+> >
+> > The patch set starts with some clean-ups and simplifications followed
+> > by patches that make sure that the current code works even when a
+> > packet occupies multiple buffers. The actual code for sending and
+> > receiving multi-buffer packets will be included in the AF_XDP
+> > multi-buffer patch set as it depends on a new bit being used in the
+> > options field of the descriptor.
+> >
+> > Patch set anatomy:
+> > 1: The XDP program was unnecessarily changed many times. Fixes this.
+> >
+> > 2: There is no reason to generate a full UDP/IPv4 packet as it is
+> >     never used. Simplify the code by just generating a valid Ethernet
+> >     frame.
+> >
+> > 3: Introduce a more complicated payload pattern that can detect
+> >     fragments out of bounds in a multi-buffer packet and other errors
+> >     found in single-fragment packets.
+> >
+> > 4: As a convenience, dump the content of the faulty packet at error.
+> >
+> > 5: To simplify the code, make the usage of the packet stream for Tx
+> >     and Rx more similar.
+> >
+> > 6: Store the offset of the packet in the buffer in the struct pkt
+> >     definition instead of the address in the umem itself and introduce
+> >     a simple buffer allocator. The address only made sense when all
+> >     packets consumed a single buffer. Now, we do not know beforehand
+> >     how many buffers a packet will consume, so we instead just allocate
+> >     a buffer from the allocator and specify the offset within that
+> >     buffer.
+> >
+> > 7: Test for huge pages only once instead of before each test that needs it.
+> >
+> > 8: Populate the fill ring based on how many frags are needed for each
+> >     packet.
+> >
+> > 9: Change the data generation code so it can generate data for
+> >     multi-buffer packets too.
+> >
+> > 10: Adjust the packet pacing algorithm so that it can cope with
+> >      multi-buffer packets. The pacing algorithm is present so that Tx
+> >      does not send too many packets/frames to Rx that it starts to drop
+> >      packets. That would ruin the tests.
+>
+> This triggers build error in BPF CI:
 
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
- arch/riscv/kernel/probes/Makefile | 2 ++
- arch/s390/kernel/Makefile         | 1 +
- arch/x86/kernel/Makefile          | 1 +
- 3 files changed, 4 insertions(+)
+Thanks Daniel. Will fix.
 
-diff --git a/arch/riscv/kernel/probes/Makefile b/arch/riscv/kernel/probes/Makefile
-index c40139e9ca47..8265ff497977 100644
---- a/arch/riscv/kernel/probes/Makefile
-+++ b/arch/riscv/kernel/probes/Makefile
-@@ -4,3 +4,5 @@ obj-$(CONFIG_RETHOOK)		+= rethook.o rethook_trampoline.o
- obj-$(CONFIG_KPROBES_ON_FTRACE)	+= ftrace.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o simulate-insn.o
- CFLAGS_REMOVE_simulate-insn.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_rethook.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_rethook_trampoline.o = $(CC_FLAGS_FTRACE)
-diff --git a/arch/s390/kernel/Makefile b/arch/s390/kernel/Makefile
-index 8983837b3565..6b2a051e1f8a 100644
---- a/arch/s390/kernel/Makefile
-+++ b/arch/s390/kernel/Makefile
-@@ -10,6 +10,7 @@ CFLAGS_REMOVE_ftrace.o		= $(CC_FLAGS_FTRACE)
- 
- # Do not trace early setup code
- CFLAGS_REMOVE_early.o		= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_rethook.o		= $(CC_FLAGS_FTRACE)
- 
- endif
- 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index dd61752f4c96..4070a01c11b7 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -17,6 +17,7 @@ CFLAGS_REMOVE_ftrace.o = -pg
- CFLAGS_REMOVE_early_printk.o = -pg
- CFLAGS_REMOVE_head64.o = -pg
- CFLAGS_REMOVE_sev.o = -pg
-+CFLAGS_REMOVE_rethook.o = -pg
- endif
- 
- KASAN_SANITIZE_head$(BITS).o				:= n
--- 
-2.40.1
-
+>    https://github.com/kernel-patches/bpf/actions/runs/4984982413/jobs/8924047266
+>
+>    [...]
+>    xskxceiver.c:1881:2: error: variable 'ret' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>            default:
+>            ^~~~~~~
+>    xskxceiver.c:1885:6: note: uninitialized use occurs here
+>            if (ret == TEST_PASS)
+>                ^~~
+>    xskxceiver.c:1779:9: note: initialize the variable 'ret' to silence this warning
+>      GEN-SKEL [test_progs] test_subskeleton.skel.h
+>      GEN-SKEL [test_progs] test_subskeleton_lib.skel.h
+>            int ret;
+>                   ^
+>                    = 0
+>    1 error generated.
+>    make: *** [Makefile:617: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/xskxceiver] Error 1
+>    make: *** Waiting for unfinished jobs....
+>      GEN-SKEL [test_progs] test_usdt.skel.h
+>    make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
+>
+> Pls fix and respin, thanks.
 
