@@ -1,138 +1,99 @@
-Return-Path: <bpf+bounces-634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00745704C2B
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 13:19:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A502704DD6
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 14:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA4CA281018
-	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 11:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5B81C20E44
+	for <lists+bpf@lfdr.de>; Tue, 16 May 2023 12:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AEB1773A;
-	Tue, 16 May 2023 11:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0972C19BD1;
+	Tue, 16 May 2023 12:32:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C9171BF;
-	Tue, 16 May 2023 11:19:02 +0000 (UTC)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC255BBF;
-	Tue, 16 May 2023 04:18:32 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ab1ce53ca6so99879295ad.0;
-        Tue, 16 May 2023 04:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684235911; x=1686827911;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPg0ep6G8/5e19PZD/WE6OkgyECU4hB9NkOdRxOFcvg=;
-        b=B9yH26LwTE3zxqdgFANeBqWDb7Z3umtlY8ntgnC9EqhKQ2qR+dlh39USmAbpW2lWOA
-         jHnG52/gUYbddZEWI9zcb553NxTFiWz0Fs228ASt3/2hNuoShjYdtCY1UYAd67j7ainK
-         VorhP+3T2fx//k3Tb8PhvoGwioPAaw1LyAOOtnPU72MbiBlwBcy1FfalirROQlyUjbCG
-         6Chw5z9HcA8boJzajPS4wf1I7L7qB6OXHmspq/twUlCml0/cPL9TDGISnYNpKtsGqBqk
-         h0T2fLATtD4ZL+B+OUhj+ctQOGQqukIVX3Q4FO5w58Vtz6ShDrLd6SJ0RvfNHemXsGAF
-         2AOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684235911; x=1686827911;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mPg0ep6G8/5e19PZD/WE6OkgyECU4hB9NkOdRxOFcvg=;
-        b=itv1vWdLiaQgXWbxIP3nH+/SS/0iR6Ce3xmM611PMuTLJDtaMrWVKcMbIVdVb9oMkI
-         POIXnnFCLzkoPsk+71XZO30XEWUxsOXfTlnrqhmC3m3D78i16BkuKcwJCqz9+u69rIv7
-         s5zM4D+CjNDAPb7k/Hqsay2vWmDYcvUC0sQXCauFdCWO3KTEpCmdjN1alXASwfuwyifV
-         Yv4u4lIAOyyQMVCGCnseH0dtTedIQarZr1rC0V/V3lLbBVgNVTt+81KDG5GUQ9DHNCSz
-         vR0gspjoXMp43cAs47qjaPc44ZgOJCdmlXD6N+zPNBEYUjvdopgQeCrQJw+8BckaWO1o
-         +owQ==
-X-Gm-Message-State: AC+VfDyoUPI6bYL8j3khbiHQRzhLOLtsOIbVgwb0aqE/svy4I3bBAAyJ
-	U9M2pWtxb29EAzXvVs59Png=
-X-Google-Smtp-Source: ACHHUZ6IdEkzdFsx2MXAlbq7sWRdsYHgB4BklRNwbqrrX/U7FV/xiwpCz6FdE6Zv26rppBqWSgR8Nw==
-X-Received: by 2002:a17:902:bf0b:b0:1ac:3780:3a76 with SMTP id bi11-20020a170902bf0b00b001ac37803a76mr32015321plb.4.1684235910863;
-        Tue, 16 May 2023 04:18:30 -0700 (PDT)
-Received: from localhost.localdomain ([106.39.42.1])
-        by smtp.gmail.com with ESMTPSA id f10-20020a17090274ca00b001ab28f620d0sm15207821plt.290.2023.05.16.04.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 04:18:30 -0700 (PDT)
-From: starmiku1207184332@gmail.com
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Teng Qi <starmiku1207184332@gmail.com>
-Subject: [bug] kernel: bpf: syscall: a possible sleep-in-atomic bug in __bpf_prog_put()
-Date: Tue, 16 May 2023 11:18:23 +0000
-Message-Id: <20230516111823.2103536-1-starmiku1207184332@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868E42770B
+	for <bpf@vger.kernel.org>; Tue, 16 May 2023 12:32:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B05BBC433D2;
+	Tue, 16 May 2023 12:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684240328;
+	bh=5maVUb07MOPzI7fH1YK4LLKkRTaKZEtXvS/UR5ZRwW4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=HhA2I+MV7c9Xe/O2JFZUptT3YXLa8o9q4RdunpnRAa8afSK40C2Oa/iCDVe7KRxkm
+	 GeVk/2TWh8PCaX67QOToFkCyS97BkvA8/WvqUW6U7WX1SlK4yGi9PDjWBVNTs0avZ+
+	 Nra1iN6P+21PN3mrhEK6cxoBgExJQ4ZW0E7cv69O4FlbyZLMwkKSSgJonuQ76SMkhY
+	 hZ1IGNarwECDzxojSWmQefcABDLmkHLzvYJd9O8cO2L1mK1z6nOrI7HYVw5QfOzUBC
+	 dV52zlm7FS4D0pCwQp0J4DqBpQd8VB0utIWdUlc5TSjtPiDVBFSnrhdQQRQoK+IOaf
+	 3ACa5RMq/hD7Q==
+Date: Tue, 16 May 2023 14:32:03 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: syzbot <syzbot+c84b326736ee471158dc@syzkaller.appspotmail.com>,
+	syzbot <syzbot+729f1325904c82acd601@syzkaller.appspotmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [kernel?] Internal error in should_fail_ex
+Message-ID: <20230516-saftig-einbog-ef2981f0dec2@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000bff72505fbcd1f74@google.com>
+ <000000000000bc152005fbcd1fa2@google.com>
 
-From: Teng Qi <starmiku1207184332@gmail.com>
+On Tue, May 16, 2023 at 03:35:03AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    457391b03803 Linux 6.3
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15671fa2280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=385e197a58ca4afe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c84b326736ee471158dc
+> compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> userspace arch: arm
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/c35b5b2731d2/non_bootable_disk-457391b0.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/2a1bf3bafeb6/vmlinux-457391b0.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/21f1e3b4a5a9/zImage-457391b0.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c84b326736ee471158dc@syzkaller.appspotmail.com
 
-Hi, bpf developers,
+On Tue, May 16, 2023 at 03:35:02AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    457391b03803 Linux 6.3
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=134e0b01280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=385e197a58ca4afe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=729f1325904c82acd601
+> compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> userspace arch: arm
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118f964e280000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f6e776280000
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/c35b5b2731d2/non_bootable_disk-457391b0.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/2a1bf3bafeb6/vmlinux-457391b0.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/21f1e3b4a5a9/zImage-457391b0.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+729f1325904c82acd601@syzkaller.appspotmail.com
 
-We are developing a static tool to check the matching between helpers and the
-context of hooks. During our analysis, we have discovered some important
-findings that we would like to report.
-
-‘kernel/bpf/syscall.c: 2097 __bpf_prog_put()’ shows that function
-bpf_prog_put_deferred() won`t be called in the condition of
-‘in_irq() || irqs_disabled()’.
-if (in_irq() || irqs_disabled()) {
-    INIT_WORK(&aux->work, bpf_prog_put_deferred);
-    schedule_work(&aux->work);
-} else {
-
-    bpf_prog_put_deferred(&aux->work);
-}
-
-We suspect this condition exists because there might be sleepable operations
-in the callees of the bpf_prog_put_deferred() function:
-kernel/bpf/syscall.c: 2097 __bpf_prog_put()
-kernel/bpf/syscall.c: 2084 bpf_prog_put_deferred()
-kernel/bpf/syscall.c: 2063 __bpf_prog_put_noref()
-kvfree(prog->aux->jited_linfo);
-kvfree(prog->aux->linfo);
-
-Additionally, we found that array prog->aux->jited_linfo is initialized in
-‘kernel/bpf/core.c: 157 bpf_prog_alloc_jited_linfo()’:
-prog->aux->jited_linfo = kvcalloc(prog->aux->nr_linfo,
-  sizeof(*prog->aux->jited_linfo), bpf_memcg_flags(GFP_KERNEL | __GFP_NOWARN));
-
-Our question is whether the condition 'in_irq() || irqs_disabled() == false' is
-sufficient for calling 'kvfree'. We are aware that calling 'kvfree' within the
-context of a spin lock or an RCU lock is unsafe.
-
-Therefore, we propose modifying the condition to include in_atomic(). Could we
-update the condition as follows: "in_irq() || irqs_disabled() || in_atomic()"?
-
-Thank you! We look forward to your feedback.
-
-Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+Not complaining but why am I blessed with an explicit Cc on this?
 
