@@ -1,146 +1,155 @@
-Return-Path: <bpf+bounces-797-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-798-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55662706E99
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:50:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C33706EAF
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:51:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACCD1C20EB5
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:50:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 908F128176F
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0EE209BE;
-	Wed, 17 May 2023 16:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028B52C724;
+	Wed, 17 May 2023 16:51:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91C0442F
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 16:50:38 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E109420B;
-	Wed, 17 May 2023 09:50:37 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3515720F2699;
-	Wed, 17 May 2023 09:50:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3515720F2699
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684342236;
-	bh=fj5KKO+rRLmhCSwZFf6yIt3piXlGYxI9+4eHY07uVyE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VuxkY8BiPsTcAMUQhyaeb3RhZpN5d5IO4NfYAdpy8mk4npZ5DQ8f3cxv/xPs6l7Qa
-	 C1/PUMfetPzFbFgveIVQnMzf4KmDbfGpfX/a108nY2E/tdd2G0ZR3qK4Pp49J5yOIW
-	 dSYyF5+Dvir9NG2q1kGSkUyfKnRnqlBfoLxEiy2g=
-Date: Wed, 17 May 2023 09:50:28 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	dthaler@microsoft.com, brauner@kernel.org, hch@infradead.org
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230517165028.GA71@W11-BEAU-MD.localdomain>
-References: <20230508163751.841-1-beaub@linux.microsoft.com>
- <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
- <20230509130111.62d587f1@rorschach.local.home>
- <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3509156DD
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 16:51:18 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E6C59E2
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:51:14 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-96649b412easo158964666b.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684342273; x=1686934273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S0ALMoC2+4GM+zYvrEbSCHn25i4A+ScOGsLlztBZO6U=;
+        b=FYndv425krTUmipXP38e199SiUy+8FbEdkHExW2w+zR+obuE0ZpEwtWSpxdD9BKN48
+         qbr8jrkXvSqmmdXD0j9jtqdNuA64C9ZWsxX/GoNVNmnzkfTb4o4+m/6LMzjJT4/L8+9v
+         smOB1H/RS64WrDmKzzhlkXDivS6yPvDqjuHrcwmr40nLwP+q3q3G4YC5ZEuxl/GLLTae
+         MQ+4rJOT/SozCqGqursnVGC2XZvkCyXCSTdLrK5Zn2NwlvJTNoSnjLbITVJlCT/iMxZV
+         zg35AUarry3SIok6nNgm+ZINQuTSZN2XXwOwPyVLXOMq+BY+XagMoyW8/M0DAy4uvnE2
+         EzMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684342273; x=1686934273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S0ALMoC2+4GM+zYvrEbSCHn25i4A+ScOGsLlztBZO6U=;
+        b=ADpqdkTg2+kvRtdNrmRdgrixTVrqUmzS9txGlK+FCw0KLJ5yQ5naLgb9QVmm2LvMpE
+         0fO3ySoz2UIJtUmdrHrrCY01FYnWekwEEQPuR2SVmY2MuTVAaf9caqICePKncY8pNbat
+         Uu/QmWA8RgwVMvQam0uH+iBRf1CSRZ/a5q5Vr8tdYAkD0LhSN3TTprdxrRPHHhm1Fe4C
+         VQlV/7mJQkEjymuDaAHSSCTwNfy+47S4UxR9VYfyPRaJl9WzsClEwCURv2wAr3kiCsid
+         roNwMQsd6ksAEtfWyQt+Jj6wY0Iu7MXTFzh3p4c98HnVZcoXErzVGXHeAwkvR4G64MCP
+         KIuQ==
+X-Gm-Message-State: AC+VfDwz9yohJ8D4vZDOj+W8ZZXNIFqNaz86fVxCAYoHX2jDMyDkTXC8
+	kcjQ5aKAtuB3tNcK40B4/l1TuKtxAO9MQV9lU/+ftk2au/I=
+X-Google-Smtp-Source: ACHHUZ6oBsm4GRhPkHFAKIESsivPYyvzMTFMGkCehoKPIlIpKQBCHFR57KJXnDYHNGXAqJ5N7KJHLN785ZjQaZmkERc=
+X-Received: by 2002:a17:907:9348:b0:966:19f8:e919 with SMTP id
+ bv8-20020a170907934800b0096619f8e919mr33074276ejc.70.1684342273006; Wed, 17
+ May 2023 09:51:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230516212658.2f5cc2c6@gandalf.local.home>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230515133756.1658301-1-jolsa@kernel.org> <20230515133756.1658301-9-jolsa@kernel.org>
+ <CAEf4BzaLAZX_xVyRkavFiz+yLR057TuERcmsOc_amtjQCbHVoA@mail.gmail.com> <387a14cc12e30d713d388a23bb6d986bb16330ae.camel@gmail.com>
+In-Reply-To: <387a14cc12e30d713d388a23bb6d986bb16330ae.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 17 May 2023 09:51:00 -0700
+Message-ID: <CAEf4BzbgP_MbRYiWt0QByoOLd65sxYfv_1sgTb=D=q7+L8-iKw@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 08/10] selftests/bpf: Allow to use kfunc from
+ testmod.ko in test_verifier
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	David Vernet <void@manifault.com>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 16, 2023 at 09:26:58PM -0400, Steven Rostedt wrote:
-> On Tue, 16 May 2023 17:36:28 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> 
-> > "
-> > The user that will generate events must have x access to the tracing directory, e.g. chmod a+x /sys/kernel/tracing
-> > The user that will generate events must have rw access to the tracing/user_events_data file, e.g. chmod a+rw /sys/kernel/tracing/user_events_data
-> > "
-> > So any unpriv user can create and operate user events.
-> > Including seeing and enabling other user's user_events with 'ls/echo/cat' in tracefs.
-> 
-> It can see user_events_data, but x only gives you access into the directory.
-> It does not get you the contents of the files within the directory. The
-> above only gives access to the user_events_data. Which is to create events.
-> 
-> I recommended using groups and not giving access to all tasks.
-> 
-> > 
-> > Looks like user events were designed with intention to be unprivileged.
-> > When I looked at kernel/trace/trace_events_user.c I assumed root.
-> > I doubt other people reviewed it from security perspective.
-> > 
-> > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" doesn't sound like a good idea.
-> > 
-> > For example, I think the following is possible:
-> > fd = open("/sys/kernel/tracing/user_events_data")
-> > ioclt(fd, DIAG_IOCSDEL)
-> >   user_events_ioctl_del
-> >      delete_user_event(info->group, name);
-> > 
-> > 'info' is different for every FD, but info->group is the same for all users/processes/fds,
-> > because only one global init_group is created.
-> > So one user can unregister other user event by knowing 'name'.
-> > A security hole, no?
-> > 
-> > > and libside [2] will also help here.  
-> > 
-> > > [2] https://github.com/compudj/libside  
-> > 
-> > That's an interesting project. It doesn't do any user_events access afaict,
-> 
-> I'll let Beau answer the rest.
-> 
-> -- Steve
+On Wed, May 17, 2023 at 7:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Tue, 2023-05-16 at 14:45 -0700, Andrii Nakryiko wrote:
+> > On Mon, May 15, 2023 at 6:39=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
+ote:
+> > >
+> > > Currently the test_verifier allows test to specify kfunc symbol
+> > > and search for it in the kernel BTF.
+> > >
+> > > Adding the possibility to search for kfunc also in bpf_testmod
+> > > module when it's not found in kernel BTF.
+> > >
+> > > To find bpf_testmod btf we need to get back SYS_ADMIN cap.
+> > >
+> > > Acked-by: David Vernet <void@manifault.com>
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/testing/selftests/bpf/test_verifier.c | 161 +++++++++++++++++-=
+--
+> > >  1 file changed, 139 insertions(+), 22 deletions(-)
+> > >
+> >
+> > Eduard is working on migrating most (if not all) test_verifier tests
+> > into test_progs where we can use libbpf declarative functionality for
+> > things like this.
+> >
+> > Eduard, can you please review this part? Would it make sense to just
+> > wait for the migration? If not, will there be anything involved to
+> > support something like this for the future migration?
+>
+> Hi Andrii,
+>
+> I'm not working on migrating remaining test_verifier tests
+> to test_progs/inline assembly at the moment.
+>
+> Regarding this specific change, as far as I understand it is
+> necessary for the following tests:
+> - verifier/calls.c
+> - verifier/map_kptr.c
+> Both files can't be migrated at the moment.
+> I spent some time today debugging, but the reasons are
+> obscure and require further investigation.
+>
+> As to this particular patch itself, I tested it locally and
+> it seems to work fine. None of the changes prohibit future
+> migration to inline assembly, should such migration happen.
+>
 
-Mathieu and I have talked for the last year to align user_events with
-the ability to also run user-space tracers together. I've sent a patch
-out to Mathieu to add user_events to libside and was the main reason why
-the ABI moved toward remote writes of bits.
+Great, thanks for checking!
 
-Libside uses a binary description of event data that the kernel cannot
-handle (yet). We talk about this almost each tracefs meeting, libside
-can be used with user_events, however, the kernel side decoding is hard
-to describe at the moment. We are working on a way to tell the kernel
-about events via a binary format to achieve this.
-
-Regarding deleting events, only users that are given access can delete
-events. They must know the event name, just like users with access to
-delete files must know a path (and have access to it). Since the
-write_index and other details are per-process, unless the user has
-access to either /sys/kernel/tracing/events/user_events/* or
-/sys/kernel/tracing/user_events_status, they do not know which names are
-being used.
-
-If that is not enough, we could require CAP_SYSADMIN to be able to
-delete events even when they have access to the file. Users can also
-apply SELinux policies per-file to achieve further isolation, if
-required.
-
-Thanks,
--Beau
+> Thanks,
+> Eduard
+>
+> >
+> >
+> > > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/test=
+ing/selftests/bpf/test_verifier.c
+> > > index 285ea4aba194..71704a38cac3 100644
+> > > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > > @@ -874,8 +874,140 @@ static int create_map_kptr(void)
+> > >         return fd;
+> > >  }
+> > >
+> >
+> > [...]
+>
 
