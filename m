@@ -1,116 +1,181 @@
-Return-Path: <bpf+bounces-825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4542707370
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 23:00:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BCCB7073A5
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 23:14:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AD991C20FF4
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:00:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9B881C20F91
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B680D101FF;
-	Wed, 17 May 2023 21:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D7410791;
+	Wed, 17 May 2023 21:14:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7578633F6
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 21:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D294AD28
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 21:14:23 +0000 (UTC)
 Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FCF421A
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:00:39 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828F061B9
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:14:21 -0700 (PDT)
 Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 8F6FFC151B10
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:00:39 -0700 (PDT)
+	by ietfa.amsl.com (Postfix) with ESMTP id 469E2C151544
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1684357239; bh=yHsdLFtqjCeOsJ3UiN2iQM2u3rkNVZ/PaGnewtILPnM=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=qYJ3nWaXKucSVlJRtQtzO8naDPmTbi1MXXnqN59KS78U6fGL23Z++WxTgVnSDrnny
-	 aaBJTW6Ddeao/PLbc8PRVQBgfTQfozyXsXaNyZ1yX37roou3pW8YiSxpg/NBllBua3
-	 3W/zc6Ky1t2AsoVocUmZ4J+wrlu3FHdbi9khpmKw=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Wed May 17 14:00:39 2023
+	t=1684358061; bh=3zYS9Bx3LwuqvonnZnrVxAwsQfEyvjp16MkCZ4CZbDg=;
+	h=To:CC:Date:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=No6TJCNgxS2HvlrTlZjHF+Rdg1M5A0prWbfYID0Y+J411WdDZrUfB6BXWn95uc6jd
+	 y44fP7OWkbWIzDmf/y43xyowrvk8GnflBvQDowV2TeG6tHpS5FCwoeERsK1ocA7NQV
+	 zcILQeWLcKUQDDrLh7fJ8FBU7exXAMIckacCo9kk=
 Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 3E9A2C151084;
-	Wed, 17 May 2023 14:00:39 -0700 (PDT)
+ by ietfa.amsl.com (Postfix) with ESMTP id 20EE8C15108B;
+ Wed, 17 May 2023 14:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1684357239; bh=yHsdLFtqjCeOsJ3UiN2iQM2u3rkNVZ/PaGnewtILPnM=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=qYJ3nWaXKucSVlJRtQtzO8naDPmTbi1MXXnqN59KS78U6fGL23Z++WxTgVnSDrnny
-	 aaBJTW6Ddeao/PLbc8PRVQBgfTQfozyXsXaNyZ1yX37roou3pW8YiSxpg/NBllBua3
-	 3W/zc6Ky1t2AsoVocUmZ4J+wrlu3FHdbi9khpmKw=
+ t=1684358061; bh=3zYS9Bx3LwuqvonnZnrVxAwsQfEyvjp16MkCZ4CZbDg=;
+ h=From:To:CC:Date:References:In-Reply-To:Subject:List-Id:
+ List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+ b=wKe2RdhCsnveU6u8a2ZzECl95ZBcAvTBViG8GZzAq5FfHc9Svj8tk9CUTISKauwuS
+ 6mSC0TqtwC/Yvuzr9aUp0l5+L9ZZYcWyWYkfEwKekyRGM9WKCfaXQlbz1nNFcltg/g
+ Hlex9kBM9MPhEQQRRsRhC/eqwnbSTUvwydKd9HVU=
 X-Original-To: bpf@ietfa.amsl.com
 Delivered-To: bpf@ietfa.amsl.com
 Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 98901C151084
- for <bpf@ietfa.amsl.com>; Wed, 17 May 2023 14:00:38 -0700 (PDT)
+ by ietfa.amsl.com (Postfix) with ESMTP id E0DE2C151086
+ for <bpf@ietfa.amsl.com>; Wed, 17 May 2023 14:14:19 -0700 (PDT)
 X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.55
+X-Spam-Score: -7.102
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
 Received: from mail.ietf.org ([50.223.129.194])
  by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id aYWPwiDyvzlj for <bpf@ietfa.amsl.com>;
- Wed, 17 May 2023 14:00:34 -0700 (PDT)
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com
- [209.85.222.182])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ with ESMTP id 5UWWbcsK0fwB for <bpf@ietfa.amsl.com>;
+ Wed, 17 May 2023 14:14:17 -0700 (PDT)
+Received: from BN6PR00CU002.outbound.protection.outlook.com
+ (mail-eastus2azon11021017.outbound.protection.outlook.com [52.101.57.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 4E9FAC14CE2C
- for <bpf@ietf.org>; Wed, 17 May 2023 14:00:34 -0700 (PDT)
-Received: by mail-qk1-f182.google.com with SMTP id
- af79cd13be357-75774360e46so72756785a.2
- for <bpf@ietf.org>; Wed, 17 May 2023 14:00:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1684357233; x=1686949233;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=RjZCh3jOx6/vUU+IuShYs27mdSTdTlaUCtc19uXHsyE=;
- b=ZzgdBZecia8P5IhnFFO/KSzgBkgXJveqAWGUOeuzDZF4Lp4UiOMh1A6A7nC8vxqJy+
- Vzgn5AAh/8xYEumCipaz9Zm7XT+QKkUHrfZIWGg/2DNQWYlIcKlGXnsiUervJmxU++eW
- AyAJrwFUEgtn0AtUcDUuL0VvRz/7hX7mdALk0sPoBqDAtzXUYuzR4UzJQyfH4+g8vUR1
- WK9Jfdpy0CStUTfHGzcJBQAFN+yRqb0hEhJ5nb9pm//ypUCKnN316nYJtwzP8CuvwXCy
- 4pKnbLam819QzYmI4ktoh4m+RZkV9oWGbnH8dX2FbV7+FG/TcCcpXl9YSB8YX6pPv24Q
- ESiA==
-X-Gm-Message-State: AC+VfDwS3dfAD7A0Z4Q84J6Q1kfflqTka5BDSinY3WOez+d7s07PKXU3
- 9xXvQj5uY5wUGUB4kRXJokrMHnzZuGfrxQ==
-X-Google-Smtp-Source: ACHHUZ7wgIByK3036ylRbIh/8lpA2EVuIGG7JoP2J92QwSpyy2/Kh2EEK52yQNSHdOqTOPUV81Nb0w==
-X-Received: by 2002:a05:6214:401d:b0:623:8ce1:6ccd with SMTP id
- kd29-20020a056214401d00b006238ce16ccdmr1647859qvb.14.1684357232413; 
- Wed, 17 May 2023 14:00:32 -0700 (PDT)
-Received: from maniforge ([24.1.27.177]) by smtp.gmail.com with ESMTPSA id
- dp8-20020a05621409c800b005ef42af7eb7sm26461qvb.25.2023.05.17.14.00.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 17 May 2023 14:00:31 -0700 (PDT)
-Date: Wed, 17 May 2023 16:00:29 -0500
-From: David Vernet <void@manifault.com>
-To: Dave Thaler <dthaler@microsoft.com>
-Cc: "Jose E. Marchesi" <jemarch@gnu.org>,
- Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>,
- "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <20230517210029.GB123984@maniforge>
+ by ietfa.amsl.com (Postfix) with ESMTPS id 743B2C15108D
+ for <bpf@ietf.org>; Wed, 17 May 2023 14:14:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jc5tMckmIJxNCJuM7lt5BvM6Bmc8PskT8++b/DK23ozhXggQcn8Kp3FPVeV+0BNbISS0tjRldaQe6h7OM6GXLER4LhQ0Zwmg1bSEN/JWfozLPRJMjv1nluf2OF8VaTgZ62WU6bNdoQFHlXE5a/N8iCfbGt2kAu5BujEero/IsR/oN8Bp3YxzZAX0dhoT9LK915yOO3oA4CuSXkaUTSkbJkZbFRFJe1OYMbA/A29ixKoIf9fq6xgTeWp0KC/3VcllcKHUa2gtIAZHvysxkba+FyfNaScOEHk7sjEGDV/7X2PQx6UNR8vWdUFpHeaoNQt1jCV889xsTObme7lV1asLlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pp9h1tYJ/zrVS0+EE36XYI2ra51MlPxfFOguWjmcfI0=;
+ b=llsQbkGBS0X0P4TUqyJ0kPA3M9MuBeGLBA7vXR/HCmQbbVU/uQCOUj6+e6v6GsoSXfIN9g74cOVztnDYMaqyw66mVRtWYLMZ5NMm27KSENpKg1VkdfxC4oGm0UvwM6aLWZATbiTrAx3PHU029yumo2MwbzLSgGRb8nAI9o6Idcp01wkkqj+g/5VbmOxIEqnltSnHRx1PUywbAaEShFJ0nxrPKzPc1YUS29HIOZyJlYIl2fqjT8JqNaAzItBWVe/SIoESJhgAXaHQ2Ri+EItePJ5aGOgMLCQfER82bZUG+XVHcJBF9+jATbFZiVhb7oJEF3gIue3KlrZrhUWL6nkVsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pp9h1tYJ/zrVS0+EE36XYI2ra51MlPxfFOguWjmcfI0=;
+ b=jJwfarddjAFFcHc5N4HqQI3ZiKbdZ2wrz6BnFJUHxvdD+sS4RBLNtS6bBEXbupmpQ/AnmNX0yVNMc3Vs/6PmMGApGPY6j7T45VG6MzA3TZhb4CpY86ztYEExNWAXBwGWeLBEAGeTKq7nR9BQKNwnKZ2USQgcQBOlA1nuQVaKROU=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by DS7PR21MB3668.namprd21.prod.outlook.com (2603:10b6:8:93::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.4; Wed, 17 May
+ 2023 21:13:59 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ebee:52ea:94c9:4e43]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ebee:52ea:94c9:4e43%7]) with mapi id 15.20.6433.000; Wed, 17 May 2023
+ 21:13:59 +0000
+To: David Vernet <void@manifault.com>
+CC: "Jose E. Marchesi" <jemarch@gnu.org>, Dave Thaler
+ <dthaler=40microsoft.com@dmarc.ietf.org>, "bpf@ietf.org" <bpf@ietf.org>, bpf
+ <bpf@vger.kernel.org>
+Thread-Topic: [Bpf] IETF BPF working group draft charter
+Thread-Index: AdmIWSmp8uIYgrASRIKQXfLbLZQgdgAeO2knAAYWUOAABgrygAAAOCrQ
+Date: Wed, 17 May 2023 21:13:59 +0000
+Message-ID: <PH7PR21MB3878D0643BEE59DEDAC0886FA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
 References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
  <87v8grkn67.fsf@gnu.org>
  <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230517210029.GB123984@maniforge>
+In-Reply-To: <20230517210029.GB123984@maniforge>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=892be498-6033-48e2-b590-e56b06f1e31a;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-17T21:06:45Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|DS7PR21MB3668:EE_
+x-ms-office365-filtering-correlation-id: 6cf81c75-9744-4c5a-f03d-08db571ba1a6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4iYT3tbTA8ZYt+VfjLVLk4U8HrM6S8Qv5uFqEWNclq12Lqqd1PKNSxWSGPKCuKuiNKU4TNRVHCblz1MkzTlgblNMFdSLeYmP+2bn+PFLW6i8n7leqdsNmqDCqKAxGC6QkSkgznwLDGthDbs4Q5PHOaEkXTcZJVeWo7IgLY9J3BFkkz6pdUWlmJoFv9xRtEFqnglaaqx8YNMBhvxuXc7Id/YoAP2HFgoEKTea9LB3gSphkYk0PFkN1QoXaMeULon25XyW+bpmWa3l4ANMiLzwfinzZ+UeZ/+cXDR8YIGl5AEiusFZgJJA7x7OikeMPI9NfBVdZGWGynpMD3P80rgqhqBQkFxUpC4YNT6eoFoD+7W0A52QP0P7/4rB6iQQE6foVrYkjFSxk8MOCcDiUlZYz9cWrygOGpcTiuiaoJnbxXh1aNpcxILIYq6rbgmSFRFfFyM3aVvo0ejR9rILJTMXr27k39YgWGcWl2eD0E0eFkUKRm2EqYh/fqa2jLXyhU/jASTjn/vMSUy2L7OTyVt31jX9O1JYliz8R4wDF2km2TIiL6/gmK16X1n20MHS6LJk4zIYA2+V5+t1D6Ona6Ftuk/nJsDtPer8yumh15XpByH5lHg5fbmkq4yhtqr68m3MaixBMu1o92G2UepAjVsd7Y0465WiSIdJK+rPpquv7Nw=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:PH7PR21MB3878.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(13230028)(4636009)(346002)(366004)(39860400002)(376002)(396003)(136003)(451199021)(38100700002)(38070700005)(86362001)(122000001)(82960400001)(33656002)(82950400001)(41300700001)(83380400001)(55016003)(186003)(71200400001)(6506007)(316002)(5660300002)(786003)(8936002)(8676002)(9686003)(52536014)(6916009)(4326008)(54906003)(53546011)(8990500004)(76116006)(64756008)(66556008)(966005)(66946007)(66446008)(2906002)(10290500003)(478600001)(30864003)(66476007)(7696005);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uASNpYN7fF9T8zABFJh80PoV2XuF0+85J7GAcTQczR7y7A+Fr/zetQKaiPQM?=
+ =?us-ascii?Q?rAa4ngIONRkEQn/yC2x1Mtv39hWKY8/VJRyesQK1jZCnISTOW9nSd09c3fxJ?=
+ =?us-ascii?Q?+zxGksY6nG8/I2JTyKHKkuKxIrV1uG3wkCrp41N45wmzf5jNyJdTY/0XHpkd?=
+ =?us-ascii?Q?3kqahUurc1a/mKO4FHocF2fnqfw0Lpy1U6F6+i2po3Fe2FLvn6opwkJxV4T2?=
+ =?us-ascii?Q?nB49QDaxh3wBiNqqIIQuB2lPdPq4X4Jb0MJChklYuf00R5Av5CAwk7O7a6l9?=
+ =?us-ascii?Q?i5bA4uMSowU8xoBxxvogI51sfryX3mdRSqLXd2H2Iy0Sf4gve6T4XdFSa04k?=
+ =?us-ascii?Q?/OT8D1MYTkqZYmdwbRq+iQG+1EvFV0NaSA02wEkMMk3uBuLtgfA2Dz9mmXzS?=
+ =?us-ascii?Q?bgTZ/1gHpHJuP47lBaua1z8N9q8nZTN+ZxEO1w7MwfcewyV0WYF+tASrDglA?=
+ =?us-ascii?Q?1OtyVHTlMXgwTqFY7HUSc/Hh5fNY4XoVq/Pq6d6NPqv9LgYh/pmhBJOqrwS8?=
+ =?us-ascii?Q?p8XFbWg+4SeZi+oMdWBeg/f96nn1OrW8TmHxrEuxTcvpJNHXruwroYli5UrY?=
+ =?us-ascii?Q?1kQRi7bGBq8jhfQsBh6pR/dJ62Ou1xWANV+eNvescU1c8TumFFDLeQkiUze3?=
+ =?us-ascii?Q?zl0Dj0By/XDooq24N21qvSV9aujjkQx71nNj2SnRAKL9D0ZwGk+/BlkRkCMJ?=
+ =?us-ascii?Q?RkM6I0GrREmaGj7L0LswpfzldhJErIELUQz2IrPcaGl6u0H2nO3b8xB5ZG3e?=
+ =?us-ascii?Q?VCi+sPNz7e/iS9vnHP2avSBGEujHGuhr0jzi/mdyyTpeCgJN7vmLXvqjvTPW?=
+ =?us-ascii?Q?oyGUu2rE7psrlsVfbEbR9z+iegF6sf//C4A0T5xPjBId8FXU85M1gfOzccKM?=
+ =?us-ascii?Q?H/3dH3/OFaiaY44crNHAOe53m4AkmsukB4pQeqgiH/ScyfHPvTJYUeR4smNX?=
+ =?us-ascii?Q?6powwxjXnhDnrrr4k5mioH2Y5wVbd7WN8XS+eXWiMlgoJTqXx60cv8+B7JWb?=
+ =?us-ascii?Q?2gQFPhc5jehGsXdxWnTvJqXZkUbVK1MaxN47Ohy8cqNgRt2q6eaJQY/LNaku?=
+ =?us-ascii?Q?C8/ra8aHrftJp9NJKejNaaZaiLY+wKXh/c9mcJ/xy8eRARSClrmDgCpLtATd?=
+ =?us-ascii?Q?TuUund4tAV/qymoORPlM2hzTmOQUQDk9cxS0czrm0rgbEw2wSK4KytczkzyA?=
+ =?us-ascii?Q?cAyQWG3G6D8yu4BVWb2E+G4/MdMRndSnCWdcRWiWU4tjLm+tVMLBjc8ZatXW?=
+ =?us-ascii?Q?H6U7tKaLgzcPBdKql8zaMoDMrt8A5ApZ6vSxgnSJ9eUw1AxxrR88kA7TqTBq?=
+ =?us-ascii?Q?dhsgwf0Q3WuXnIBInm2hhSXjGNbi2DBl3MztRdDTKxafHKJ4wJPRLd/8PulP?=
+ =?us-ascii?Q?UELsGtdAQGCYTA1KObrDUKS2CvooUqpcdWnb/SDhbpC/F8eozoKQscdQgeQS?=
+ =?us-ascii?Q?8idK8UIHnQwiBFtIUSu+pHfXz5NWClUIAS36Kimrf8ueTmx/8n02BxZwPgBS?=
+ =?us-ascii?Q?+JvcoqxjOAUO9wAP1jY5fhOFGWJel1Bq2OazghTadX/lbE1dFhNdn6jfwuMM?=
+ =?us-ascii?Q?7TDAXnTnxiyM30fvGc13tTegcUkkhhLdZwT4l6aPEpOXTF4EZVKxciIPMJoF?=
+ =?us-ascii?Q?+lHMT/TV1FN4EivsCo1lNKuQ0bR5Wd/kp+nxWxHGLLileh8mimGSOCUoTc9z?=
+ =?us-ascii?Q?T414bA=3D=3D?=
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/nqMhhQ8ecYN_eA3y-qAul4NsMZs>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cf81c75-9744-4c5a-f03d-08db571ba1a6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2023 21:13:59.0455 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cN3GREqLRpHA2+3sz6Sj0BQzdOBfzskUEUtMrD2bANDCbGyOPXRzhHgJRmaoOF3mRId3S0YnM98UByuh1qBSpXHPn0YkAaAb5S2tOihC2nU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3668
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/j_dmCHB7qiqOqq97XuAfInqnvLk>
 Subject: Re: [Bpf] IETF BPF working group draft charter
 X-BeenThere: bpf@ietf.org
 X-Mailman-Version: 2.1.39
@@ -128,191 +193,248 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: bpf-bounces@ietf.org
 Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: Dave Thaler <dthaler@microsoft.com>
+From: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 06:19:42PM +0000, Dave Thaler wrote:
-> Jose E. Marchesi wrote:
-> > As I mentioned during your talk at LSF/MM/BPF, I think that two items may be
-> > a bit confusing, and worth to clarify:
-> >
-> >   * the eBPF bindings for the ELF executable file format,
-> >
-> > What does "eBPF bindings" mean in this context?  I think there are at least two
-> > possible interpretations:
-> >
-> > 1) The way BPF uses ELF, not impacting internal ELF structures.  For
-> >    example the special section names that a conformant BPF loader
-> >    expects and understands, such as ".probes", or rules on how to use
-> >    the symbols visibility, or how notes are used (if they are used) etc
-> >
-> > 2) The ELF extensions that BPF introduces (and may introduce at some
-> >    point) as an architecture, such as machine number, section types,
-> >    special section indices, segment types, relocation types, symbol
-> >    types, symbol bindings, additional section and segment flags, file
-> >    flags, and perhaps structures of the contents of some special
-> >    sections.
+> -----Original Message-----
+> From: David Vernet <void@manifault.com>
+> Sent: Wednesday, May 17, 2023 2:00 PM
+> To: Dave Thaler <dthaler@microsoft.com>
+> Cc: Jose E. Marchesi <jemarch@gnu.org>; Dave Thaler
+> <dthaler=40microsoft.com@dmarc.ietf.org>; bpf@ietf.org; bpf
+> <bpf@vger.kernel.org>
+> Subject: Re: [Bpf] IETF BPF working group draft charter
 > 
-> See https://www.ietf.org/archive/id/draft-thaler-bpf-elf-00.html
-> It includes the values used in the ELF header, section naming,
-> use of the "license" and "version" sections, meaning of "maps" and
-> ".maps" sections, etc.
-
-I have what may be a silly question: The document you linked specifies,
-
-"This specification is a [sic] extension to the ELF file format as
-specified in Chapter 4 of the System V Application Binary Interface
-[ELF]."
-
-What does it mean exactly for an IETF-published BPF ELF extension to be
-an extension of a specification from a totally separate standards body
-(in this case, the System V release 4 ABI / Tool Interface Standard
-(TIS))? In other words, is it normal for extensions to be specified in
-external / separate standards bodies from where the original
-specification is defined? It seems like that could potentially result in
-a confusing outcome if the original standards body could itself
-eventually choose to publish its own extension which conflicts with the
-IETF. That won't happen for Sys V of course, but in general it seems odd
-for us to publish an extension for a specification that was defined in
-the System V ABI instead of the IETF, and it seems like a situation for
-which following the existing contours for x86_64, ARM, etc might make
-sense.
-
-> > If the intended meaning of that point in the draft is 1), then I would suggest to
-> > change the wording to something like:
+> On Wed, May 17, 2023 at 06:19:42PM +0000, Dave Thaler wrote:
+> > Jose E. Marchesi wrote:
+> > > As I mentioned during your talk at LSF/MM/BPF, I think that two
+> > > items may be a bit confusing, and worth to clarify:
+> > >
+> > >   * the eBPF bindings for the ELF executable file format,
+> > >
+> > > What does "eBPF bindings" mean in this context?  I think there are
+> > > at least two possible interpretations:
+> > >
+> > > 1) The way BPF uses ELF, not impacting internal ELF structures.  For
+> > >    example the special section names that a conformant BPF loader
+> > >    expects and understands, such as ".probes", or rules on how to use
+> > >    the symbols visibility, or how notes are used (if they are used)
+> > > etc
+> > >
+> > > 2) The ELF extensions that BPF introduces (and may introduce at some
+> > >    point) as an architecture, such as machine number, section types,
+> > >    special section indices, segment types, relocation types, symbol
+> > >    types, symbol bindings, additional section and segment flags, file
+> > >    flags, and perhaps structures of the contents of some special
+> > >    sections.
 > >
-> > * the requirements and expectations that ELF files shall fulfill so they
-> >   can be handled by conformant eBPF implementations.
+> > See
+> >
+> https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.
+> > ietf.org%2Farchive%2Fid%2Fdraft-thaler-bpf-elf-
+> 00.html&data=05%7C01%7C
+> >
+> dthaler%40microsoft.com%7Cddd426f86cb4489c17d108db5719c1cc%7C72f9
+> 88bf8
+> >
+> 6f141af91ab2d7cd011db47%7C1%7C0%7C638199540383552382%7CUnkno
+> wn%7CTWFpb
+> >
+> GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+> Mn0
+> >
+> %3D%7C3000%7C%7C%7C&sdata=hM81uNUjJP2J46eSs6tLPi7B82Z7EhlJrGUS
+> 2YNo9Bk%
+> > 3D&reserved=0 It includes the values used in the ELF header, section
+> > naming, use of the "license" and "version" sections, meaning of "maps"
+> > and ".maps" sections, etc.
 > 
-> My own opinion is to leave the more detailed definition of what belongs
-> in the ELF spec vs another document up to the WG to define rather than
-> baking it into the charter.
+> I have what may be a silly question: The document you linked specifies,
+> 
+> "This specification is a [sic] extension to the ELF file format as specified in
+> Chapter 4 of the System V Application Binary Interface [ELF]."
+> 
+> What does it mean exactly for an IETF-published BPF ELF extension to be an
+> extension of a specification from a totally separate standards body (in this case,
+> the System V release 4 ABI / Tool Interface Standard (TIS))? 
 
-I tend to agree, but that seems to suggest that we should remove this
-line from the charter, and instead leave it up to the WG to determine if
-it should be included:
+Perhaps "extension" is not the correct word.   At least that word is not in the
+draft charter.  If the document is changed to say "bindings" then it would be
+consistent with the draft charter, but there may be a better term.
 
-* the eBPF bindings for the ELF executable file format,
+As Alexei explained at LSF/MM/BPF last week, this isn't a change to the ELF
+spec, and my understanding is that it needn't be done by the ELF standards body,
+but I am not the expert there.
 
-Or is your point rather that the line in the charter as it exists now is
-really saying that discussing ELF *in general* is in scope for the
-working group, but that we may or may not end up actually producing a
-document for it depending on how discussions go in the WG, and that if
-we did produce a document, the scope would be decided by the WG?
-
-More broadly, would you mind please clarifying exactly what this section
-will imply for the WG (see below for more details on my question):
-
-> The working group will produce one or more documents on the following
-> work item topics:
->
-> * The eBPF instruction set architecture (ISA) that defines the
->   instructions and low-level virtual machine for eBPF programs,
->
-> * Verifier expectations and building blocks for allowing safe execution
->   of untrusted eBPF programs,
->
-> * the BPF Type Format (BTF) that defines debug information and
->   introspection capabilities for eBPF programs,
->
+> In other words, is it
+> normal for extensions to be specified in external / separate standards bodies
+> from where the original specification is defined? It seems like that could
+> potentially result in a confusing outcome if the original standards body could
+> itself eventually choose to publish its own extension which conflicts with the
+> IETF. That won't happen for Sys V of course, but in general it seems odd for us
+> to publish an extension for a specification that was defined in the System V ABI
+> instead of the IETF, and it seems like a situation for which following the existing
+> contours for x86_64, ARM, etc might make sense.
+> 
+> > > If the intended meaning of that point in the draft is 1), then I
+> > > would suggest to change the wording to something like:
+> > >
+> > > * the requirements and expectations that ELF files shall fulfill so they
+> > >   can be handled by conformant eBPF implementations.
+> >
+> > My own opinion is to leave the more detailed definition of what
+> > belongs in the ELF spec vs another document up to the WG to define
+> > rather than baking it into the charter.
+> 
+> I tend to agree, but that seems to suggest that we should remove this line from
+> the charter, and instead leave it up to the WG to determine if it should be
+> included:
+> 
 > * the eBPF bindings for the ELF executable file format,
->
-> * the platform support ABI, including calling convention, linker
->   requirements, and relocations,
->
-> * Cross-platform map types allowing native data structure access from
->   eBPF programs,
->
-> * Cross-platform helper functions, such as for manipulation of maps,
->
-> * Cross-platform eBPF program types that define the higher level
->   execution environment for eBPF programs,
->
-> * and an architecture and framework informational document.
 
-As far as I understand, if a topic is missing from this section, it
-doesn't automatically mean that it's out of scope for the WG to produce
-a document for it. If that's the case, and part of the job of the WG
-will be to specify what is actually in scope regardless of what's
-enumerated here, I'm not quite following why this section is necessary
-beyond providing the reader with some informal context on what BPF is in
-general.
+Removing it would be problematic in my view (unless we remove a phrase
+Warren commented on) since the draft charter says:
+> The working group shall not adopt new work until these
+> documents have progressed to working group last call.
 
-Thanks in advance for explaining these concepts to an IETF noobie.
+So if the WG does need to do it, it couldn't adopt it without keeping this bullet.
 
-> > Otherwise, if the intended meaning in the draft charter is to cover 2), I would
-> > like to note that, usually and conventionally ELF extensions introduced by
-> > architectures (and operating systems in the ELF sense)
-> > are:
-> >
-> > - Part of the psABI (chapter Object Files).
-> >
-> > - Not standards, in the sense that these are not handled by
-> >   standardization bodies.
-> >
-> > - Maintained by corporations, associations, and/or community groups, and
-> >   published in one form or another.  A few examples of both arch and os
-> >   extensions:
-> >
-> >   + The x86_64 psABI, including the ELF bits, is maintained by Intel
-> >     (mainly by HJ Lu, a toolchain hacker) and available in a git repo in
-> >     gitlab [1].
-> >
-> >   + The risc-v psABI, including the ELF bits, is maintained by I believe
-> >     RISC-V International and the community, and is available in a git
-> >     repo in github [2].
-> >
-> >   + The GNU extensions to the gABI, including the ELF bits, is
-> >     maintained by GNU hackers and available in a git repo in sourceware
-> >     [3].
-> >
-> >   + The llvm extensions to ELF, which in this case take the form of an
-> >     "os" in the ELF sense even if it is not an operating system, are
-> >     maintained by the LLVM project and available in the
-> >     docs/Extensions.rst file in the llvm source distribution.
-> >
-> >   Note that more often than not this is kept quite informally, without
-> >   the need of much bureocratic overhead.  A git repo in github or the
-> >   like, maintained by the eBPF foundation or similar, would be more than
-> >   enough IMO.
+> Or is your point rather that the line in the charter as it exists now is really
+> saying that discussing ELF *in general* is in scope for the working group, but
+> that we may or may not end up actually producing a document for it depending
+> on how discussions go in the WG, and that if we did produce a document, the
+> scope would be decided by the WG?
+
+Yes, that would be another valid interpretation.  My opinion is that the IETF
+should produce a document.
+
+> More broadly, would you mind please clarifying exactly what this section will
+> imply for the WG (see below for more details on my question):
 > 
-> To ensure interoperability, I'd want a slightly more formal specification.
-
-I understand the desire and need for ensuring interoperability, but if
-specifying a BPF ELF extension would be the exception to the rule for
-the entirety of the rest of the industry when it comes to ELF, I think
-we should consider also being explicit about what's different for BPF.
-
-> > - Open to suggestions and contributions from the community, vendors,
-> >   implementors, etc.  This usually involves having a mailing list where
-> >   such suggestions can be sent an discussed.  Almost always very little
-> >   discussion is required, if any, because the proposed extension has
-> >   already been agreed and worked on by the involved parties: toolchains,
-> >   consumers, etc.
+> > The working group will produce one or more documents on the following
+> > work item topics:
 > >
-> > - Continuously evolving.
+> > * The eBPF instruction set architecture (ISA) that defines the
+> >   instructions and low-level virtual machine for eBPF programs,
 > >
-> > So, would the IETF working group be able to accomodate something like the
-> > above?  For example, once a document is officially published by the working
-> > group, how easy is it to modify it and make a new version to incorporate
-> > something new, like a new relocation type for example?
-> > (Apologies for my total ignorance of IETF business :/)
+> > * Verifier expectations and building blocks for allowing safe execution
+> >   of untrusted eBPF programs,
+> >
+> > * the BPF Type Format (BTF) that defines debug information and
+> >   introspection capabilities for eBPF programs,
+> >
+> > * the eBPF bindings for the ELF executable file format,
+> >
+> > * the platform support ABI, including calling convention, linker
+> >   requirements, and relocations,
+> >
+> > * Cross-platform map types allowing native data structure access from
+> >   eBPF programs,
+> >
+> > * Cross-platform helper functions, such as for manipulation of maps,
+> >
+> > * Cross-platform eBPF program types that define the higher level
+> >   execution environment for eBPF programs,
+> >
+> > * and an architecture and framework informational document.
 > 
-> There's 3 ways:
-> 1) The IETF can publish an extension spec with additional optional features.
-> 2) The IETF can publish a replacement to the original (not usually desirable)
-> 3) The IETF can define a process for other organizations or vendors to create
-> their own extensions, and some mechanism for ensuring that two such
-> extensions don't collide using the same codepoint.  This is what the charter
-> implies the WG should do.
+> As far as I understand, if a topic is missing from this section, it doesn't
+> automatically mean that it's out of scope for the WG to produce a document
+> for it. If that's the case, and part of the job of the WG will be to specify what is
+> actually in scope regardless of what's enumerated here, I'm not quite following
+> why this section is necessary beyond providing the reader with some informal
+> context on what BPF is in general.
 
-This certainly seems useful, but it also feels like ELF is kind of a
-special case here given that it was originally published as part of Sys
-V, and there are no formally specified extensions for other much larger
-architectures. I may be missing a lot of context here, so thanks in
-advance again for filling in any gaps.
+The above section is typical in IETF WG charters.  And the bit I quoted earlier
+about not doing additional things as work items until this list is done, is also
+somewhat typical.
+ 
+> Thanks in advance for explaining these concepts to an IETF noobie.
+> 
+> > > Otherwise, if the intended meaning in the draft charter is to cover
+> > > 2), I would like to note that, usually and conventionally ELF
+> > > extensions introduced by architectures (and operating systems in the
+> > > ELF sense)
+> > > are:
+> > >
+> > > - Part of the psABI (chapter Object Files).
+> > >
+> > > - Not standards, in the sense that these are not handled by
+> > >   standardization bodies.
+> > >
+> > > - Maintained by corporations, associations, and/or community groups, and
+> > >   published in one form or another.  A few examples of both arch and os
+> > >   extensions:
+> > >
+> > >   + The x86_64 psABI, including the ELF bits, is maintained by Intel
+> > >     (mainly by HJ Lu, a toolchain hacker) and available in a git repo in
+> > >     gitlab [1].
+> > >
+> > >   + The risc-v psABI, including the ELF bits, is maintained by I believe
+> > >     RISC-V International and the community, and is available in a git
+> > >     repo in github [2].
+> > >
+> > >   + The GNU extensions to the gABI, including the ELF bits, is
+> > >     maintained by GNU hackers and available in a git repo in sourceware
+> > >     [3].
+> > >
+> > >   + The llvm extensions to ELF, which in this case take the form of an
+> > >     "os" in the ELF sense even if it is not an operating system, are
+> > >     maintained by the LLVM project and available in the
+> > >     docs/Extensions.rst file in the llvm source distribution.
+> > >
+> > >   Note that more often than not this is kept quite informally, without
+> > >   the need of much bureocratic overhead.  A git repo in github or the
+> > >   like, maintained by the eBPF foundation or similar, would be more than
+> > >   enough IMO.
+> >
+> > To ensure interoperability, I'd want a slightly more formal specification.
+> 
+> I understand the desire and need for ensuring interoperability, but if specifying
+> a BPF ELF extension would be the exception to the rule for the entirety of the
+> rest of the industry when it comes to ELF, I think we should consider also being
+> explicit about what's different for BPF.
 
-- David
+Others probably understand ELF processes better than I do.  But I think
+the belief is that it's not an extension.  If there is, and there's another place
+it needs to be done, then acknowledging that in terms of who the WG will
+interact with might be helpful.
+
+> > > - Open to suggestions and contributions from the community, vendors,
+> > >   implementors, etc.  This usually involves having a mailing list where
+> > >   such suggestions can be sent an discussed.  Almost always very little
+> > >   discussion is required, if any, because the proposed extension has
+> > >   already been agreed and worked on by the involved parties: toolchains,
+> > >   consumers, etc.
+> > >
+> > > - Continuously evolving.
+> > >
+> > > So, would the IETF working group be able to accomodate something
+> > > like the above?  For example, once a document is officially
+> > > published by the working group, how easy is it to modify it and make
+> > > a new version to incorporate something new, like a new relocation type for
+> example?
+> > > (Apologies for my total ignorance of IETF business :/)
+> >
+> > There's 3 ways:
+> > 1) The IETF can publish an extension spec with additional optional features.
+> > 2) The IETF can publish a replacement to the original (not usually
+> > desirable)
+> > 3) The IETF can define a process for other organizations or vendors to
+> > create their own extensions, and some mechanism for ensuring that two
+> > such extensions don't collide using the same codepoint.  This is what
+> > the charter implies the WG should do.
+> 
+> This certainly seems useful, but it also feels like ELF is kind of a special case
+> here given that it was originally published as part of Sys V, and there are no
+> formally specified extensions for other much larger architectures. I may be
+> missing a lot of context here, so thanks in advance again for filling in any gaps.
+> 
+> - David
+
+Dave
 
 -- 
 Bpf mailing list
