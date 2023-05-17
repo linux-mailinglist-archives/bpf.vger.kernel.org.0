@@ -1,311 +1,160 @@
-Return-Path: <bpf+bounces-765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D1F7066D4
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 13:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF977066FB
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 13:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F15928120D
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EFB72810CC
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CF32C74C;
-	Wed, 17 May 2023 11:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1FA2C745;
+	Wed, 17 May 2023 11:42:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B229A211C
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:34:31 +0000 (UTC)
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D16A4EFF
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 04:34:24 -0700 (PDT)
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E383C3F555
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1684323262;
-	bh=OF0SbgroQXegOKfgupip9FcKY0xyGooQ7mZBIpRXr2I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version;
-	b=btiiQf3VeTcvM7Oxna8mTH9DPK362+SQveBrNGqvuk/UPPPWgBWxfjYuLqcZbNGBs
-	 wyaErld5EydO6S1nSaFWHqSvgwNtEQ/HkWoTPomYGsATBLM2EuYBaYt4SYUvImxedd
-	 SmCx9MaJtKrHviWLxox3qzJzCuDJn/aNvSr+NGx6mdzR1ZDnt4YrNxFviR5Uoxs1dO
-	 gcrR9ZqpOa2ODRRgu6UvWeC/nythot+vUw/nGm4EW8J/9FzSLYErdjFeoqOFPscx2D
-	 Rj0ecqJMEGwo+ZsFPWJhLjcV8n2MCRDfIDqIcV243ZoRIDWjAao++H+B8+tvW4RE9E
-	 25fVJrVMIDIIQ==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a341ee4fcso93230266b.0
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 04:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684323262; x=1686915262;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OF0SbgroQXegOKfgupip9FcKY0xyGooQ7mZBIpRXr2I=;
-        b=ABNZGVvvjKSJe5U2CrACm3WjazmRLB6wpTfJUMLUxbclDL1J8WTKd9AyCawlEuHg3y
-         89bSnclg2ajAYAUN4Cr5XxMd2VkG/4gfT5/O+Yy+Zz+ncXEJh37mmARkoKpCPLJxfuez
-         3NMlm3VtA6eSguvaMDx11+8ucKPwyhcKp547bewF72GrbaQhrn+ZF9f64C3zuR8un6nV
-         aAcO1ZljXpTsK3dK61UHosIUYJfDPgh0pQUWHNej6BveRmoKcWKjFNfq66UjmMEiCq2i
-         WxqHHbAWTxDOLjSvCS5h4ZZiq7T3HJF2XPcXtjN1SHvcHvRQHgS+xP5xZIgzYMKzJff0
-         n/7g==
-X-Gm-Message-State: AC+VfDyuasZM5C4/PmNQ0a51T4OXlJRY/XneitVq+5Ex+V2S7QJIBG9H
-	9AC+YxmXrEeoHwXf2QB6bGhCdCFnKksSxPnHAo8i/XMwNAwHm8XUZSkfjyO07KB6KSAmV0ylFCw
-	Hj33JzFkASFXUECTlgVsz96EYHa1KsQ==
-X-Received: by 2002:a17:906:fe0c:b0:961:78c2:1d27 with SMTP id wy12-20020a170906fe0c00b0096178c21d27mr37193286ejb.19.1684323262509;
-        Wed, 17 May 2023 04:34:22 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5oaroDw85VzG/pU4SUbjJEcgfdT/j5LQHlcj2YN8ZfOrg6vuuELp+7nKe+6/jTWxHXiSs1Jw==
-X-Received: by 2002:a17:906:fe0c:b0:961:78c2:1d27 with SMTP id wy12-20020a170906fe0c00b0096178c21d27mr37193272ejb.19.1684323262253;
-        Wed, 17 May 2023 04:34:22 -0700 (PDT)
-Received: from amikhalitsyn.local (dslb-088-074-206-207.088.074.pools.vodafone-ip.de. [88.74.206.207])
-        by smtp.gmail.com with ESMTPSA id p1-20020a170906838100b009662b4230cesm12404387ejx.148.2023.05.17.04.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 04:34:21 -0700 (PDT)
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	David Ahern <dsahern@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Lennart Poettering <mzxreary@0pointer.de>,
-	Luca Boccassi <bluca@debian.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Stanislav Fomichev <sdf@google.com>,
-	bpf@vger.kernel.org,
-	linux-arch@vger.kernel.org
-Subject: [PATCH net-next v5 2/3] net: core: add getsockopt SO_PEERPIDFD
-Date: Wed, 17 May 2023 13:33:50 +0200
-Message-Id: <20230517113351.308771-3-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230517113351.308771-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20230517113351.308771-1-aleksandr.mikhalitsyn@canonical.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9C2211C
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:42:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E92BC433EF;
+	Wed, 17 May 2023 11:42:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684323763;
+	bh=gZs8PTPaOModQRmxiev/yHAiJdEHjNnngGNAI1ylIV4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b/3r14rFZqH/pXFAXD7yN1fUGpho601/AbF5SCUVKAY7mqrUjDZO7Rixiz4k6K5x0
+	 5q09YQPLznIfUq4yn68RWcj3BGQQ3aKnDl3WYcNOGi/KnuoxI1obWx9g6baBPRC8hQ
+	 DPJ1pg6mhBVu4bmIqVmp7NVDSQHYU9z1z/L1Pfx5fdDZo10PVer0ENUX2qSrWJey20
+	 bTU0BrjRBfbX7dQrwZj50fYI9xjlXnWbSGbHvh+cTmdq+GyPhyKGVzyQf3AwVfmXEH
+	 jBoY5OKrX9VIjyXOQUq5bBISYZopB+wmnIcTPubjjaUAbZk92IXmEWbTKZp2qjQ3Zl
+	 Ft/OepS5JIE1Q==
+Date: Wed, 17 May 2023 20:42:36 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Ze Gao <zegao2021@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Borislav
+ Petkov <bp@alien8.de>, Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Heiko Carstens
+ <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar
+ <mingo@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ x86@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
+ Yonghong Song <yhs@fb.com>, Ze Gao <zegao@tencent.com>
+Subject: Re: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion
+ free
+Message-Id: <20230517204236.e0f579399e5a69505a4ec7ef@kernel.org>
+In-Reply-To: <ZGSwzuM8oHgKaaga@krava>
+References: <20230517034510.15639-1-zegao@tencent.com>
+	<20230517034510.15639-3-zegao@tencent.com>
+	<ZGSwzuM8oHgKaaga@krava>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Add SO_PEERPIDFD which allows to get pidfd of peer socket holder pidfd.
-This thing is direct analog of SO_PEERCRED which allows to get plain PID.
+On Wed, 17 May 2023 12:47:42 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Lennart Poettering <mzxreary@0pointer.de>
-Cc: Luca Boccassi <bluca@debian.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-arch@vger.kernel.org
-Tested-by: Luca Boccassi <bluca@debian.org>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
-v5:
-	- started using (struct proto)->bpf_bypass_getsockopt hook
-v4:
-	- return -ESRCH if sk->sk_peer_pid is NULL from getsockopt() syscall
-	- return errors from pidfd_prepare() as it is from getsockopt() syscall
-v3:
-	- fixed possible fd leak (thanks to Christian Brauner)
-v2:
-	According to review comments from Kuniyuki Iwashima and Christian Brauner:
-	- use pidfd_create(..) retval as a result
-	- whitespace change
----
- arch/alpha/include/uapi/asm/socket.h    |  1 +
- arch/mips/include/uapi/asm/socket.h     |  1 +
- arch/parisc/include/uapi/asm/socket.h   |  1 +
- arch/sparc/include/uapi/asm/socket.h    |  1 +
- include/uapi/asm-generic/socket.h       |  1 +
- net/core/sock.c                         | 33 +++++++++++++++++++++++++
- net/unix/af_unix.c                      | 16 ++++++++++++
- tools/include/uapi/asm-generic/socket.h |  1 +
- 8 files changed, 55 insertions(+)
+> On Wed, May 17, 2023 at 11:45:07AM +0800, Ze Gao wrote:
+> > Current implementation calls kprobe related functions before doing
+> > ftrace recursion check in fprobe_kprobe_handler, which opens door
+> > to kernel crash due to stack recursion if preempt_count_{add, sub}
+> > is traceable in kprobe_busy_{begin, end}.
+> > 
+> > Things goes like this without this patch quoted from Steven:
+> > "
+> > fprobe_kprobe_handler() {
+> >    kprobe_busy_begin() {
+> >       preempt_disable() {
+> >          preempt_count_add() {  <-- trace
+> >             fprobe_kprobe_handler() {
+> > 		[ wash, rinse, repeat, CRASH!!! ]
+> > "
+> > 
+> > By refactoring the common part out of fprobe_kprobe_handler and
+> > fprobe_handler and call ftrace recursion detection at the very beginning,
+> > the whole fprobe_kprobe_handler is free from recursion.
+> > 
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-zegao@tencent.com
+> > ---
+> >  kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
+> >  1 file changed, 44 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> > index 9abb3905bc8e..097c740799ba 100644
+> > --- a/kernel/trace/fprobe.c
+> > +++ b/kernel/trace/fprobe.c
+> > @@ -20,30 +20,22 @@ struct fprobe_rethook_node {
+> >  	char data[];
+> >  };
+> >  
+> > -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> > -			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> > +static inline void __fprobe_handler(unsigned long ip, unsigned long
+> > +		parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> >  {
+> >  	struct fprobe_rethook_node *fpr;
+> >  	struct rethook_node *rh = NULL;
+> >  	struct fprobe *fp;
+> >  	void *entry_data = NULL;
+> > -	int bit, ret;
+> > +	int ret;
+> >  
+> 
+> this change uncovered bug for me introduced by [1]
+> 
+> the bpf's kprobe multi uses either fprobe's entry_handler or exit_handler,
+> so the 'ret' value is undefined for return probe path and occasionally we
+> won't setup rethook and miss the return probe
 
-diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-index ff310613ae64..e94f621903fe 100644
---- a/arch/alpha/include/uapi/asm/socket.h
-+++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -138,6 +138,7 @@
- #define SO_RCVMARK		75
- 
- #define SO_PASSPIDFD		76
-+#define SO_PEERPIDFD		77
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-index 762dcb80e4ec..60ebaed28a4c 100644
---- a/arch/mips/include/uapi/asm/socket.h
-+++ b/arch/mips/include/uapi/asm/socket.h
-@@ -149,6 +149,7 @@
- #define SO_RCVMARK		75
- 
- #define SO_PASSPIDFD		76
-+#define SO_PEERPIDFD		77
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-index df16a3e16d64..be264c2b1a11 100644
---- a/arch/parisc/include/uapi/asm/socket.h
-+++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -130,6 +130,7 @@
- #define SO_RCVMARK		0x4049
- 
- #define SO_PASSPIDFD		0x404A
-+#define SO_PEERPIDFD		0x404B
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-index 6e2847804fea..682da3714686 100644
---- a/arch/sparc/include/uapi/asm/socket.h
-+++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -131,6 +131,7 @@
- #define SO_RCVMARK               0x0054
- 
- #define SO_PASSPIDFD             0x0055
-+#define SO_PEERPIDFD             0x0056
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index b76169fdb80b..8ce8a39a1e5f 100644
---- a/include/uapi/asm-generic/socket.h
-+++ b/include/uapi/asm-generic/socket.h
-@@ -133,6 +133,7 @@
- #define SO_RCVMARK		75
- 
- #define SO_PASSPIDFD		76
-+#define SO_PEERPIDFD		77
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index bb1e3f7dba79..3d3f30436dbf 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1758,6 +1758,39 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
- 		goto lenout;
- 	}
- 
-+	case SO_PEERPIDFD:
-+	{
-+		struct pid *peer_pid;
-+		struct file *pidfd_file = NULL;
-+		int pidfd;
-+
-+		if (len > sizeof(pidfd))
-+			len = sizeof(pidfd);
-+
-+		spin_lock(&sk->sk_peer_lock);
-+		peer_pid = get_pid(sk->sk_peer_pid);
-+		spin_unlock(&sk->sk_peer_lock);
-+
-+		if (!peer_pid)
-+			return -ESRCH;
-+
-+		pidfd = pidfd_prepare(peer_pid, 0, &pidfd_file);
-+		put_pid(peer_pid);
-+		if (pidfd < 0)
-+			return pidfd;
-+
-+		if (copy_to_sockptr(optval, &pidfd, len) ||
-+		    copy_to_sockptr(optlen, &len, sizeof(int))) {
-+			put_unused_fd(pidfd);
-+			fput(pidfd_file);
-+
-+			return -EFAULT;
-+		}
-+
-+		fd_install(pidfd, pidfd_file);
-+		return 0;
-+	}
-+
- 	case SO_PEERGROUPS:
- 	{
- 		const struct cred *cred;
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index aac40106d036..ea24843fb017 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -921,11 +921,26 @@ static void unix_unhash(struct sock *sk)
- 	 */
- }
- 
-+static bool unix_bpf_bypass_getsockopt(int level, int optname)
-+{
-+	if (level == SOL_SOCKET) {
-+		switch (optname) {
-+		case SO_PEERPIDFD:
-+			return true;
-+		default:
-+			return false;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- struct proto unix_dgram_proto = {
- 	.name			= "UNIX",
- 	.owner			= THIS_MODULE,
- 	.obj_size		= sizeof(struct unix_sock),
- 	.close			= unix_close,
-+	.bpf_bypass_getsockopt	= unix_bpf_bypass_getsockopt,
- #ifdef CONFIG_BPF_SYSCALL
- 	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
- #endif
-@@ -937,6 +952,7 @@ struct proto unix_stream_proto = {
- 	.obj_size		= sizeof(struct unix_sock),
- 	.close			= unix_close,
- 	.unhash			= unix_unhash,
-+	.bpf_bypass_getsockopt	= unix_bpf_bypass_getsockopt,
- #ifdef CONFIG_BPF_SYSCALL
- 	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
- #endif
-diff --git a/tools/include/uapi/asm-generic/socket.h b/tools/include/uapi/asm-generic/socket.h
-index fbbc4bf53ee3..54d9c8bf7c55 100644
---- a/tools/include/uapi/asm-generic/socket.h
-+++ b/tools/include/uapi/asm-generic/socket.h
-@@ -122,6 +122,7 @@
- #define SO_RCVMARK		75
- 
- #define SO_PASSPIDFD		76
-+#define SO_PEERPIDFD		77
- 
- #if !defined(__KERNEL__)
- 
+Oops, I missed to push my fix.
+
+https://lore.kernel.org/all/168100731160.79534.374827110083836722.stgit@devnote2/
+
+> 
+> we can either squash this change into your patch or I can make separate
+> patch for that.. but given that [1] is quite recent we could just silently
+> fix that ;-)
+
+Jiri, I think the above will fix the issue, right?
+
+> 
+> jirka
+> 
+> 
+> [1] 39d954200bf6 fprobe: Skip exit_handler if entry_handler returns !0
+> 
+> ---
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 9abb3905bc8e..293184227394 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -27,7 +27,7 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  	struct rethook_node *rh = NULL;
+>  	struct fprobe *fp;
+>  	void *entry_data = NULL;
+> -	int bit, ret;
+> +	int bit, ret = 0;
+>  
+>  	fp = container_of(ops, struct fprobe, ops);
+>  	if (fprobe_disabled(fp))
+> 
+> 
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
