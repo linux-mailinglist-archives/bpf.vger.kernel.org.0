@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 996DD705E4A
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 05:45:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD19705E4C
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 05:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 943C71C20AF0
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 03:45:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B327280C7F
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 03:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAF33C04;
-	Wed, 17 May 2023 03:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E828123CC;
+	Wed, 17 May 2023 03:45:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4FC2100
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:45:34 +0000 (UTC)
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4EA46AE;
-	Tue, 16 May 2023 20:45:32 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1ae3ed1b08eso4283735ad.0;
-        Tue, 16 May 2023 20:45:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B0317E0
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:45:45 +0000 (UTC)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC804ECF;
+	Tue, 16 May 2023 20:45:38 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ae3fe67980so4102875ad.3;
+        Tue, 16 May 2023 20:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684295132; x=1686887132;
+        d=gmail.com; s=20221208; t=1684295138; x=1686887138;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qGFBel0XWHMPBOQVpTEFEgbDNqzL0utWuk4Q5TTOH0I=;
-        b=mnJfkgKpTPVHwlmswT6XPsXRmkE2FWCwvioj+muJ+uq/kD9S+KoY7Oqkt6AmGwLc/z
-         XybyjbtWhNsEukNAJTd2qEGYk9Q5aG8qQhF8Z4c8fxEuhIHJSB7pGjzeyBHZ7eLCJ0ws
-         Hu70LM7ImU/s5A9/ULM7FjA2T3Cgn6aORaqGmDC7TbFFn0Bjdn8aMd7V1ebFyyUDDS+/
-         ijzbOIGTn234aKxai/0GSHN1oxWvmXwJgoQ3LE8py0PO78r1+r5FrFv/U8FACfsqgf2s
-         1dsyFbjtjgmr6jCqTC1Vroc6QGGr3250tlPm4Rp5GQjBasJ1Y6NSlI+mvnKXJhm6Sq/g
-         MJ0Q==
+        bh=TpQR3cccQnkFxa/VBlSDTBSv5SyL5gibvWrL1LrLMho=;
+        b=UERCSL4JnKxWSII93BWPVPBBwK6uL6PmIwlr8ZXOKLlNtpxo5SuSIG9NCdRoUWZOoZ
+         +hYxmrQqH/Q8Nn729aEESqAHFErEnG5gxcYEkikRN8HovztUkVCPnfidYHdjmfJn+l6e
+         gPuj5+IyFNkSWsVE10FucW4qXqClKG6/w9Wcd6mq92qXTmFiEFyl9MK0fjfWsOjlNaiE
+         QByDM+aLJ9R3qtw1YAJQhEHVvBAURJgNELbn6b65JIvslmWs6VSBHTubnpB57vEVbPCm
+         +o0szfsEnOcquAkSel2xOZHbDEFVqFPW+K6B6MfoBO6zQxqzqLXJyy1b1eY7ngteuAgP
+         EiJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684295132; x=1686887132;
+        d=1e100.net; s=20221208; t=1684295138; x=1686887138;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qGFBel0XWHMPBOQVpTEFEgbDNqzL0utWuk4Q5TTOH0I=;
-        b=i/7IHYjqFFrgqfnXsIpp8niZUr9k0YacnK+jL/ifglWQRtJ5hYNGKPlNj/pchbf7kG
-         GLFNF71CO+mwzeSnKayBqJEKIs7q/id4s9IpjHQCeop+lqqEMwrkzFD3TXwey8nqKPhT
-         zN95yPmFa1mM1qXrDylaF7sX3JBBo4MPH4FXVSJBEKfHfUzLdBqZ8oc2BY3dWqAPNWf3
-         XngveA4HvSp6YqToaoD1vLbAcAxuSejr6DOuB9pkj+h0rnskDlqWHv96b7hWVU5PA3ag
-         yNzO9S5TTJ/tOoi0ig9EMJqmzzR+D2SXJSwkLQFXuNUHVRW9ZCcr4gWs2EsAAMtM6uph
-         SX6g==
-X-Gm-Message-State: AC+VfDxVg2Jyt6KfTI9mSUP+x4ZffeLEPT2TPzjq+yDeW49LLTmTK84F
-	5+YoqYnDHV5UnUp00hJnlgI=
-X-Google-Smtp-Source: ACHHUZ5LPHotl0fJ/O3KGBLfATUmV2Ofpz6WW1a3qNWCMnkfgz1soa2zRJ+uMCkiFPlag6APwqkb4A==
-X-Received: by 2002:a17:902:d507:b0:1ac:310d:872d with SMTP id b7-20020a170902d50700b001ac310d872dmr52041365plg.52.1684295132086;
-        Tue, 16 May 2023 20:45:32 -0700 (PDT)
+        bh=TpQR3cccQnkFxa/VBlSDTBSv5SyL5gibvWrL1LrLMho=;
+        b=RKdobhXpfuoQxTdnrJmdVxhPJ5Dnkh+KCUsJx/VqgEgSySy9ABMHXM8j8mhkkD86Go
+         5baR2bC9Wb4rPYXMhs5ow9mNWZvArVb+Z+/RV57UL7X0SZuae3ksSzMwhze7m0cgzXdC
+         nfJbN2exVCNCXSgPYI8cdO/OSNRX9XO2C7u2T/bQ1w/5ZNVJR3YN595/dTbImC+9f/XA
+         7dZg7AcYENfDT3h1JYUWp1oq+FOjHrf1oofDu9rjUTWsE51+ejzQvmiHXrKKZFZvO8QQ
+         zdqdYXDAlIOt8he4OSXhKRce58sm12cbzUJxkKs/B80WsxsehK9NNB3dOYEte3RbU5M7
+         s8UA==
+X-Gm-Message-State: AC+VfDx6Jx39R1Cu8ClguI54YsgEJJQX6HALFPazakLttX7p5B3uXQFb
+	bP9uZinnmhyyl2qVWN4bHpI=
+X-Google-Smtp-Source: ACHHUZ72TBl2qjdRobeJYwihGY/op1xZOYs590vrrpWwxotkrQx2nlDtr1JT0DXq9EF6bOCOpjSqyw==
+X-Received: by 2002:a17:902:9897:b0:1ab:253e:6906 with SMTP id s23-20020a170902989700b001ab253e6906mr37006175plp.67.1684295138247;
+        Tue, 16 May 2023 20:45:38 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.83])
-        by smtp.googlemail.com with ESMTPSA id t2-20020a170902e84200b001a19196af48sm16336746plg.64.2023.05.16.20.45.26
+        by smtp.googlemail.com with ESMTPSA id t2-20020a170902e84200b001a19196af48sm16336746plg.64.2023.05.16.20.45.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 20:45:31 -0700 (PDT)
+        Tue, 16 May 2023 20:45:37 -0700 (PDT)
 From: Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
@@ -83,10 +83,11 @@ Cc: Albert Ou <aou@eecs.berkeley.edu>,
 	Conor Dooley <conor@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Yonghong Song <yhs@fb.com>,
-	Ze Gao <zegao@tencent.com>
-Subject: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion free
-Date: Wed, 17 May 2023 11:45:07 +0800
-Message-Id: <20230517034510.15639-3-zegao@tencent.com>
+	Ze Gao <zegao@tencent.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v3 3/4] fprobe: add recursion detection in fprobe_exit_handler
+Date: Wed, 17 May 2023 11:45:08 +0800
+Message-Id: <20230517034510.15639-4-zegao@tencent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230517034510.15639-1-zegao@tencent.com>
 References: <20230517034510.15639-1-zegao@tencent.com>
@@ -104,135 +105,72 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Current implementation calls kprobe related functions before doing
-ftrace recursion check in fprobe_kprobe_handler, which opens door
-to kernel crash due to stack recursion if preempt_count_{add, sub}
-is traceable in kprobe_busy_{begin, end}.
+fprobe_hander and fprobe_kprobe_handler has guarded ftrace recursion
+detection but fprobe_exit_handler has not, which possibly introduce
+recursive calls if the fprobe exit callback calls any traceable
+functions. Checking in fprobe_hander or fprobe_kprobe_handler
+is not enough and misses this case.
 
-Things goes like this without this patch quoted from Steven:
-"
-fprobe_kprobe_handler() {
-   kprobe_busy_begin() {
-      preempt_disable() {
-         preempt_count_add() {  <-- trace
-            fprobe_kprobe_handler() {
-		[ wash, rinse, repeat, CRASH!!! ]
-"
+So add recursion free guard the same way as fprobe_hander. Since
+ftrace recursion check does not employ ip(s), so here use entry_ip and
+entry_parent_ip the same as fprobe_handler.
 
-By refactoring the common part out of fprobe_kprobe_handler and
-fprobe_handler and call ftrace recursion detection at the very beginning,
-the whole fprobe_kprobe_handler is free from recursion.
-
+Fixes: 5b0ab78998e3 ("fprobe: Add exit_handler support")
 Signed-off-by: Ze Gao <zegao@tencent.com>
+Cc: stable@vger.kernel.org
 Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-zegao@tencent.com
+Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-4-zegao@tencent.com
 ---
- kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 15 deletions(-)
+ kernel/trace/fprobe.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 9abb3905bc8e..097c740799ba 100644
+index 097c740799ba..281b58c7dd14 100644
 --- a/kernel/trace/fprobe.c
 +++ b/kernel/trace/fprobe.c
-@@ -20,30 +20,22 @@ struct fprobe_rethook_node {
+@@ -17,6 +17,7 @@
+ struct fprobe_rethook_node {
+ 	struct rethook_node node;
+ 	unsigned long entry_ip;
++	unsigned long entry_parent_ip;
  	char data[];
  };
  
--static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
--			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
-+static inline void __fprobe_handler(unsigned long ip, unsigned long
-+		parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fregs)
- {
- 	struct fprobe_rethook_node *fpr;
- 	struct rethook_node *rh = NULL;
- 	struct fprobe *fp;
- 	void *entry_data = NULL;
--	int bit, ret;
-+	int ret;
- 
- 	fp = container_of(ops, struct fprobe, ops);
--	if (fprobe_disabled(fp))
--		return;
--
--	bit = ftrace_test_recursion_trylock(ip, parent_ip);
--	if (bit < 0) {
--		fp->nmissed++;
--		return;
--	}
- 
- 	if (fp->exit_handler) {
- 		rh = rethook_try_get(fp->rethook);
- 		if (!rh) {
- 			fp->nmissed++;
--			goto out;
-+			return;
+@@ -39,6 +40,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long
  		}
  		fpr = container_of(rh, struct fprobe_rethook_node, node);
  		fpr->entry_ip = ip;
-@@ -61,23 +53,60 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
- 		else
- 			rethook_hook(rh, ftrace_get_regs(fregs), true);
++		fpr->entry_parent_ip = parent_ip;
+ 		if (fp->entry_data_size)
+ 			entry_data = fpr->data;
  	}
--out:
-+}
-+
-+static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-+		struct ftrace_ops *ops, struct ftrace_regs *fregs)
-+{
-+	struct fprobe *fp;
-+	int bit;
-+
-+	fp = container_of(ops, struct fprobe, ops);
-+	if (fprobe_disabled(fp))
-+		return;
-+
-+	/* recursion detection has to go before any traceable function and
-+	 * all functions before this point should be marked as notrace
-+	 */
-+	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-+	if (bit < 0) {
-+		fp->nmissed++;
-+		return;
-+	}
-+	__fprobe_handler(ip, parent_ip, ops, fregs);
- 	ftrace_test_recursion_unlock(bit);
-+
- }
- NOKPROBE_SYMBOL(fprobe_handler);
- 
- static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
- 				  struct ftrace_ops *ops, struct ftrace_regs *fregs)
+@@ -114,14 +116,26 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
  {
--	struct fprobe *fp = container_of(ops, struct fprobe, ops);
-+	struct fprobe *fp;
+ 	struct fprobe *fp = (struct fprobe *)data;
+ 	struct fprobe_rethook_node *fpr;
 +	int bit;
-+
-+	fp = container_of(ops, struct fprobe, ops);
-+	if (fprobe_disabled(fp))
-+		return;
-+
-+	/* recursion detection has to go before any traceable function and
-+	 * all functions called before this point should be marked as notrace
+ 
+ 	if (!fp || fprobe_disabled(fp))
+ 		return;
+ 
+ 	fpr = container_of(rh, struct fprobe_rethook_node, node);
+ 
++	/*
++	 * we need to assure no calls to traceable functions in-between the
++	 * end of fprobe_handler and the beginning of fprobe_exit_handler.
 +	 */
-+	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	bit = ftrace_test_recursion_trylock(fpr->entry_ip, fpr->entry_parent_ip);
 +	if (bit < 0) {
 +		fp->nmissed++;
 +		return;
 +	}
- 
- 	if (unlikely(kprobe_running())) {
- 		fp->nmissed++;
- 		return;
- 	}
 +
- 	kprobe_busy_begin();
--	fprobe_handler(ip, parent_ip, ops, fregs);
-+	__fprobe_handler(ip, parent_ip, ops, fregs);
- 	kprobe_busy_end();
+ 	fp->exit_handler(fp, fpr->entry_ip, regs,
+ 			 fp->entry_data_size ? (void *)fpr->data : NULL);
 +	ftrace_test_recursion_unlock(bit);
  }
+ NOKPROBE_SYMBOL(fprobe_exit_handler);
  
- static void fprobe_exit_handler(struct rethook_node *rh, void *data,
 -- 
 2.40.1
 
