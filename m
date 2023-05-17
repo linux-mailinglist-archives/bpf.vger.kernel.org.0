@@ -1,188 +1,102 @@
-Return-Path: <bpf+bounces-741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF417062C7
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 10:27:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C6D70637C
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:01:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D01642815DF
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 08:27:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E161C20E71
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F042154BC;
-	Wed, 17 May 2023 08:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BBF79D5;
+	Wed, 17 May 2023 09:01:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604D3AD2E
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 08:27:04 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C534EC9
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 01:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1684312022;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BhjK5yazou5RvTWn30tpmSdINFxSKMIDQ661jcxLjOE=;
-	b=Hdfs3ZyuzW17C5O28jpqFd56YDik0Ryg9x3VOJymCYphVmj3AduM7G5Os37yWIF7bkea9q
-	0nwj2utkmc0Q3PyObVwlECLImOOW63eShhFmoNj3mGxB2bqqkafNS/ZvzOOAw+j9fPgoG5
-	KMVzOQJSfUse2PNxPWvD2Cxow3OWDsA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-344-TPlkf5u7Poa_do7f9lAg4w-1; Wed, 17 May 2023 04:27:00 -0400
-X-MC-Unique: TPlkf5u7Poa_do7f9lAg4w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso2053055e9.2
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 01:27:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3B93D62
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:01:42 +0000 (UTC)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C325FD0
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:01:25 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-510bcd2d6b8so4664405a12.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1684314081; x=1686906081;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8BFnzpFnEWHgBCYzwUlEu4io3XMBxiABg4u5t/U4XNM=;
+        b=aQ35lN37DYUOGChsdqb0kqQN4HJT38nERHgvEjALuQ7BO+TAECKaybq6G/dAuMj6yq
+         4hpn6i6zz4t1w2OsZKeN0ula9iZBr4x1Ai+ZD6WDHES5gfFjtfcFLmG40IkB903jVn7t
+         IH8FOPBAudvgqXWRUc76iovKokS1OWF2iFFXtg+BOjLEFFBS9aWUj19ovGyM/Qc+QyFG
+         mwAhDMpHLxDfuOE7s57Ph1ANVdGyBIU4yUABXC6NXn7mKmClX/e9egc0J3R8/uVZo5X3
+         J/CJMZiyuVFxOEItgq4jUIvxnxFxHuNstZmOLGwz6bb1f73MqJCo4tNCGQGD7Gb7BRJl
+         iU1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684312019; x=1686904019;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BhjK5yazou5RvTWn30tpmSdINFxSKMIDQ661jcxLjOE=;
-        b=fygtLHmS2t5UX7M4acNlW4e81iCqrtdtGKEexSaX/cGu+FobxhhStj2dCurY/YBTqv
-         ug855vxcnWFKFl1sPbX9N9/fV7zNv7dCnIlSHNBJWyfE4J6+xImuB40B4v65UJY3VwV7
-         qcdPecL5pOMwB4GrEKxQfpLtZ3/w5R7IrA3TLFZxR2McbjTfIviF/yRfVBzpXxfaGUhN
-         NDLeTmgqryEsV1YjLuij17SZo7ENbt9LKraLiuCzOEApW+T6z+a2tElY4X1dO3HpIlW5
-         R6G8oysbwQxRkM/gBnp88OixjiL3w9ElNnp+INUy4nyEj09llq8po+JNUQspVOzv6W/H
-         dTSw==
-X-Gm-Message-State: AC+VfDzNGfcn/TyfrmoJlev44Sn2OChxrYz42ZFbGaidSGYW09a/FwN4
-	6fov8+CMS55LepcontHyKHcuXNvexSn2a1hlEZ5hfcbwPXjOGoXBRThseesEY9tyR/exF2eTPFK
-	fuzJCWvJzpIho
-X-Received: by 2002:a05:600c:2141:b0:3f4:fd67:6d7c with SMTP id v1-20020a05600c214100b003f4fd676d7cmr9063722wml.40.1684312019280;
-        Wed, 17 May 2023 01:26:59 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5xa065nZ/uQiaIJKC7O793u58obHvly4Gk+TYkCEFKD9upiESKtIAlN64oMtp1eokU88QqYA==
-X-Received: by 2002:a05:600c:2141:b0:3f4:fd67:6d7c with SMTP id v1-20020a05600c214100b003f4fd676d7cmr9063676wml.40.1684312018895;
-        Wed, 17 May 2023 01:26:58 -0700 (PDT)
-Received: from [192.168.3.108] (p4ff23b51.dip0.t-ipconnect.de. [79.242.59.81])
-        by smtp.gmail.com with ESMTPSA id a3-20020a05600c224300b003f17848673fsm1416580wmm.27.2023.05.17.01.26.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 01:26:58 -0700 (PDT)
-Message-ID: <3c11455b-3af4-eeaa-9f43-49d4d70348fd@redhat.com>
-Date: Wed, 17 May 2023 10:26:56 +0200
+        d=1e100.net; s=20221208; t=1684314081; x=1686906081;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8BFnzpFnEWHgBCYzwUlEu4io3XMBxiABg4u5t/U4XNM=;
+        b=Picm1qB3pxUueHfJk+35z0VxXZWbPlfroKaQVI/Z75eYf0pjewzmcT/oiZcxBbsm1n
+         teLf+B+WmPmNR23f6QLRyacFwQnHFD1k2n+pm5o79jLJAEp2RSgTUYKHgNiFPN6RjFRX
+         iH3YGrHRcQYdxm/D5SxBdtvu1VVwrAZXdlY6mf8x5EQJc4A8YW7pk3KMFhnQ+ozjxGor
+         hIomc+SS/xT/K8ksJN/G7GryAsUcQMpXHhi90i8lnTFH+jiSiwSu70jnaOIBIMqSCzVn
+         9pF6kRQ5BmamQh6GcxjKHNo+bHEOuX5kT3X0+PkoefBi3rGn+URkZChARkeTJaCZnGcw
+         hBCQ==
+X-Gm-Message-State: AC+VfDyp6pM1egXIoPimr24YBnm+xwNA6EsmthNgABpmSH5OG90SHLy4
+	WmrL5fA4KPHpefarhK3RayV3Y+XRMd1gKp6S8TNAbg==
+X-Google-Smtp-Source: ACHHUZ5P75xcx+CWtz+lJaC31PQ4IxYJSQC9FYvo3svbCkpxO/YbHVL4pxqH9BUbLvt4AL2mmI+w2gTcjJsFJ28Ci9I=
+X-Received: by 2002:a17:907:a407:b0:965:6a32:451f with SMTP id
+ sg7-20020a170907a40700b009656a32451fmr1326875ejc.6.1684314080855; Wed, 17 May
+ 2023 02:01:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Content-Language: en-US
-To: Lorenzo Stoakes <lstoakes@gmail.com>,
- Christoph Hellwig <hch@infradead.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- Leon Romanovsky <leon@kernel.org>, Christian Benvenuti <benve@cisco.com>,
- Nelson Escobar <neescoba@cisco.com>, Bernard Metzler <bmt@zurich.ibm.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Christian Brauner <brauner@kernel.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
- Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
- Jan Kara <jack@suse.cz>, "Kirill A . Shutemov" <kirill@shutemov.name>,
- Pavel Begunkov <asml.silence@gmail.com>, Mika Penttila
- <mpenttil@redhat.com>, Dave Chinner <david@fromorbit.com>,
- Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
- Matthew Rosato <mjrosato@linux.ibm.com>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Christian Borntraeger <borntraeger@linux.ibm.com>
-References: <cover.1683235180.git.lstoakes@gmail.com>
- <0eb31f6f-a122-4a5b-a959-03ed4dee1f3c@lucifer.local>
- <ZGG/xkIUYK2QMPSv@infradead.org>
- <59c47ed5-a565-4220-823c-a278130092d5@lucifer.local>
-From: David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
- mappings by default
-In-Reply-To: <59c47ed5-a565-4220-823c-a278130092d5@lucifer.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+References: <20230515121521.30569-1-lmb@isovalent.com> <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
+In-Reply-To: <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 17 May 2023 10:01:09 +0100
+Message-ID: <CAN+4W8hixyHYOwYRh-3WedS-a0KTQk8VQ4JxqM8y-DQY-yjsNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: btf: restore resolve_mode when popping the
+ resolve stack
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 15.05.23 13:31, Lorenzo Stoakes wrote:
-> On Sun, May 14, 2023 at 10:14:46PM -0700, Christoph Hellwig wrote:
->> On Sun, May 14, 2023 at 08:20:04PM +0100, Lorenzo Stoakes wrote:
->>> As discussed at LSF/MM, on the flight over I wrote a little repro [0] which
->>> reliably triggers the ext4 warning by recreating the scenario described
->>> above, using a small userland program and kernel module.
->>>
->>> This code is not perfect (plane code :) but does seem to do the job
->>> adequately, also obviously this should only be run in a VM environment
->>> where data loss is acceptable (in my case a small qemu instance).
->>
->> It would be really awesome if you could wire it up with and submit it
->> to xfstests.
-> 
-> Sure am happy to take a look at that! Also happy if David finds it useful in any
-> way for this unit tests.
+On Wed, May 17, 2023 at 7:26=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 5/15/23 5:15 AM, Lorenz Bauer wrote:
+> > In commit 9b459804ff99 ("btf: fix resolving BTF_KIND_VAR after ARRAY, S=
+TRUCT, UNION, PTR")
+> > I fixed a bug that occurred during resolving of a DATASEC by strategica=
+lly resetting
+> > resolve_mode. This fixes the immediate bug but leaves us open to future=
+ bugs where
+> > nested types have to be resolved.
+>
+> hmm... future bugs like when adding new BTF_KIND in the future?
 
-I played with a simple selftest that would reuse the existing gup_test 
-infrastructure (adding PIN_LONGTERM_TEST_WRITE), and try reproducing an 
-actual data corruption.
-
-So far, I was not able to reproduce any corruption easily without your 
-patches, because d824ec2a1546 ("mm: do not reclaim private data from 
-pinned page") seems to mitigate most of it.
-
-So ... before my patches (adding PIN_LONGTERM_TEST_WRITE) I cannot test 
-it from a selftest, with d824ec2a1546 ("mm: do not reclaim private data 
-from pinned page") I cannot reproduce and with your patches long-term 
-pinning just fails.
-
-Long story short: I'll most probably not add such a test but instead 
-keep testing that long-term pinning works/fails now as expected, based 
-on the FS type.
-
-> 
-> The kernel module interface is a bit sketchy (it takes a user address which it
-> blindly pins for you) so it's not something that should be run in any unsafe
-> environment but as long as we are ok with that :)
-
-I can submit the PIN_LONGTERM_TEST_WRITE extension, that would allow to 
-test with a stock kernel that has the module compiled in. It won't allow 
-!longterm, though (it would be kind-of hacky to have !longterm 
-controlled by user space, even if it's a GUP test module).
-
-Finding an actual reproducer using existing pinning functionality would 
-be preferred. For example, using O_DIRECT (should be possible even 
-before it starts using FOLL_PIN instead of FOLL_GET). That would be 
-highly racy then, but most probably not impossible.
-
-Such (racy) tests are not a good fit for selftests.
-
-Maybe I'll have a try later to reproduce with O_DIRECT.
-
--- 
-Thanks,
-
-David / dhildenb
-
+It could just be refactoring of the codebase? What is the downside of
+restoring the mode when popping the item? It also makes push and pop
+symmetrical. Feel free to NACK if you don't want this change, not
+going to push for it.
 
