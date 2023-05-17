@@ -1,231 +1,350 @@
-Return-Path: <bpf+bounces-817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86880707180
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:08:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B344C707215
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B2251C20F42
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:08:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC51281795
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF5131F10;
-	Wed, 17 May 2023 19:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13ACB34CF3;
+	Wed, 17 May 2023 19:26:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31B7111AD
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 19:08:00 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27D581FF7;
-	Wed, 17 May 2023 12:07:59 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3B6D020F26B9;
-	Wed, 17 May 2023 12:07:58 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3B6D020F26B9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684350478;
-	bh=WaJOQ9NdVPK9G+noT++BF6bTs8xagsFisu0TbP9AX+M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P2N7DiAKSItQlAiFfJ6er1Fdeu4g8LFOpR8t6qy3tKt6i/MJFzpz9hK43iwK1dmep
-	 HJl1XgRo0gzKCkRmE5CWXKebVIzpxrPl13LQo1A9jjC/JSdnploZXdsf2jyTY1vZFA
-	 COUujXfzx+dAz3IVIHL+m91v0Azjs/ZYBbZVkA+o=
-Date: Wed, 17 May 2023 12:07:50 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA9223D59;
+	Wed, 17 May 2023 19:26:10 +0000 (UTC)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79708A5D3;
+	Wed, 17 May 2023 12:25:52 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3f450815d0bso11907835e9.0;
+        Wed, 17 May 2023 12:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684351549; x=1686943549;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aITIhEgQhOCGEYk6Vp/fZNHOQL457RQtUqwWkpxEXBw=;
+        b=MvsWmjCaNu8eL0xRTmAMzlqLtTWX+wxZX9RFpUjZz79foqQP8CndrImJ0ZFlQA1NkX
+         4urTvyrIEdZy7jwf/D0gaY7BYxFbfWneo4kedH6X7p36EpIokbTjMYg3ajRy6cq2LP0p
+         ZO9FlTqiBXoUM3fIlpuf98gqlRu0Kxxbwjf/Ax2huSGExG1MCuL9a0vKGAmFAzZsTyHy
+         I27LMsy2m6gZPbHWRo9TCYVlkybLeg6dW0Ri3egq0K7kjAsUfUcKLURvCg4RvlKRxSnj
+         r31dJ/LjWH0fYt00dqn9R5+iZVXsZaYmSo57DkWt2/0EzWbSDT2ApAeEB6bW0aP88G2Z
+         HZmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684351549; x=1686943549;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aITIhEgQhOCGEYk6Vp/fZNHOQL457RQtUqwWkpxEXBw=;
+        b=d3w1a37s4E7NJqnnQ3SKJP5aM4+XzkVQmZw1ZNZOEc+SLUt7jpIa3zCUDxyeQzbyAN
+         NR1xHtvhT9nSfDAMIROsE2ntkmSvOgWzCSebCmuTBCzDcW2zPN8X1a5ufGxrQvIYHvIZ
+         Kg4Imti4SZtsg12MbBElY10amBHMRBufIwkI500TxTzOLB5DdrNZeMv3jYE8TUwm74ts
+         LePfwjLmYGjUsxYpuM4FedvTK29Lk3WiF5wHWEb3J/w8qKc1xWI8n67tSgAfKxFJTDyL
+         c8EVP0Img6PwWwfLy3h4FbBqScfx5aAoSP8T46k0k5C5IBQZnyE+1KQz5sx7uevCZWdv
+         ArmQ==
+X-Gm-Message-State: AC+VfDwrqFOiTEa1qwOT4NKFTz2nLqiuOo5H1pFdfGLFuvdqN883H2r2
+	zKYbg2fDb4KmpW4lavr3X+w=
+X-Google-Smtp-Source: ACHHUZ4vj59CpEBUh+LCGakc9pc+qc/ayE4H4Tx2vR6aYGp/AvSAnn5rVqIlkYwGRVJwjsSCJX9GYA==
+X-Received: by 2002:a7b:c4c3:0:b0:3f3:1cb7:b2a6 with SMTP id g3-20020a7bc4c3000000b003f31cb7b2a6mr29514427wmk.6.1684351548372;
+        Wed, 17 May 2023 12:25:48 -0700 (PDT)
+Received: from lucifer.home (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
+        by smtp.googlemail.com with ESMTPSA id r2-20020a5d4982000000b00306415ac69asm3770139wrq.15.2023.05.17.12.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 May 2023 12:25:47 -0700 (PDT)
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Christian Benvenuti <benve@cisco.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	"Michael S . Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>, dthaler@microsoft.com,
-	brauner@kernel.org, hch@infradead.org
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230517190750.GA366@W11-BEAU-MD.localdomain>
-References: <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <CAHk-=whBKoovtifU2eCeyuBBee-QMcbxdXDLv0mu0k2DgxiaOw@mail.gmail.com>
- <CAHk-=wj1hh=ZUriY9pVFvD1MjqbRuzHc4yz=S2PCW7u3W0-_BQ@mail.gmail.com>
- <20230516222919.79bba667@rorschach.local.home>
- <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
- <20230517172243.GA152@W11-BEAU-MD.localdomain>
- <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-rdma@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	kvm@vger.kernel.org,
+	netdev@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	bpf@vger.kernel.org,
+	John Hubbard <jhubbard@nvidia.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: [PATCH v6 5/6] mm/gup: remove vmas parameter from pin_user_pages()
+Date: Wed, 17 May 2023 20:25:45 +0100
+Message-Id: <195a99ae949c9f5cb589d2222b736ced96ec199a.1684350871.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <cover.1684350871.git.lstoakes@gmail.com>
+References: <cover.1684350871.git.lstoakes@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 11:15:14AM -0700, Linus Torvalds wrote:
-> On Wed, May 17, 2023 at 10:22 AM Beau Belgrave
-> <beaub@linux.microsoft.com> wrote:
-> >
-> > On Tue, May 16, 2023 at 08:03:09PM -0700, Linus Torvalds wrote:
-> > > So what is it that could even race and change the list that is the
-> > > cause of that rcu-ness?
-> >
-> > Processes that fork() with previous user_events need to be duplicated.
-> 
-> BS.
-> 
-> Really. Stop making stuff up.
-> 
-> The above statement is clearly not true - just LOOK AT THE CODE.
-> 
+We are now in a position where no caller of pin_user_pages() requires the
+vmas parameter at all, so eliminate this parameter from the function and
+all callers.
 
-user_event_mm_dup() puts a new mm into the global list before the
-enablers list is fully populated. As it stands now, since it's in the
-global list, it can get enumerated in a small timing window via the
-tracing subsystem register callbacks when someone enables the event via
-ftrace/perf.
+This clears the way to removing the vmas parameter from GUP altogether.
 
-> Here's the loop in question:
-> 
->                 list_for_each_entry_rcu(enabler, &mm->enablers, link) {
->                         if (enabler->event == user) {
->                                 attempt = 0;
->                                 user_event_enabler_write(mm, enabler,
-> true, &attempt);
->                         }
->                 }
-> 
-> and AT THE VERY TOP OF user_event_enabler_write() we have this:
-> 
->         lockdep_assert_held(&event_mutex);
-> 
-> so either nobody has ever tested this code with lockdep enabled, or we
-> hold that lock.
-> 
-> And if nobody has ever tested the code, then it's broken anyway. That
-> code N#EEDS the mutex lock. It needs to stop thinking it's RCU-safe,
-> when it clearly isn't.
-> 
-> So I ask again: why is that code using RCU list traversal, when it
-> already holds the lock that makes the RCU'ness COMPLETELY POINTLESS.
-> 
-> And again, that pointless RCU locking around this all seems to be the
-> *only* reason for all these issues with pin_user_pages_remote().
-> 
-> So I claim that this code is garbage.  Somebody didn't think about locking.
-> 
-> Now, it's true that during fork, we have *another* RCU loop, but that
-> one is harmless: that's not the one that does all this page pinning.
-> 
-> Now, that one *does* do
-> 
->         list_add_rcu(&enabler->link, &mm->enablers);
-> 
-> without actually holding any locks, but in this case 'mm' is a newly
-> allocated private thing of a task that hasn't even been exposed to the
-> world yet, so nobody should be able to even see it. So that code lacks
-> the proper locking for the new list, but it does so because there is
-> nothing that can race with the new list (and the old list is
-> read-only, so RCU traversal of the old list works).
-> 
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com> (for qib)
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com> (for drivers/media)
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+---
+ arch/powerpc/mm/book3s64/iommu_api.c       | 2 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c | 2 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c   | 2 +-
+ drivers/infiniband/sw/siw/siw_mem.c        | 2 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c  | 2 +-
+ drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
+ drivers/vhost/vdpa.c                       | 2 +-
+ include/linux/mm.h                         | 3 +--
+ io_uring/rsrc.c                            | 2 +-
+ mm/gup.c                                   | 9 +++------
+ mm/gup_test.c                              | 9 ++++-----
+ net/xdp/xdp_umem.c                         | 2 +-
+ 12 files changed, 17 insertions(+), 22 deletions(-)
 
-Well, that's the problem I was trying to point out. The fork path calls
-user_event_mm_dup() -> user_event_mm_create(), which DO expose this to
-the trace world. I definitely need to fix that, then I can drop these RCU
-paths in the enablers. It has been exposed out to the tracing tracepoint
-paths, but it has yet to be exposed out to the newly forked process that
-could cause data writes, add new events, disable them, etc.
+diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
+index 81d7185e2ae8..d19fb1f3007d 100644
+--- a/arch/powerpc/mm/book3s64/iommu_api.c
++++ b/arch/powerpc/mm/book3s64/iommu_api.c
+@@ -105,7 +105,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
+ 
+ 		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
+ 				FOLL_WRITE | FOLL_LONGTERM,
+-				mem->hpages + entry, NULL);
++				mem->hpages + entry);
+ 		if (ret == n) {
+ 			pinned += n;
+ 			continue;
+diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
+index f693bc753b6b..1bb7507325bc 100644
+--- a/drivers/infiniband/hw/qib/qib_user_pages.c
++++ b/drivers/infiniband/hw/qib/qib_user_pages.c
+@@ -111,7 +111,7 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
+ 		ret = pin_user_pages(start_page + got * PAGE_SIZE,
+ 				     num_pages - got,
+ 				     FOLL_LONGTERM | FOLL_WRITE,
+-				     p + got, NULL);
++				     p + got);
+ 		if (ret < 0) {
+ 			mmap_read_unlock(current->mm);
+ 			goto bail_release;
+diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+index 2a5cac2658ec..84e0f41e7dfa 100644
+--- a/drivers/infiniband/hw/usnic/usnic_uiom.c
++++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+@@ -140,7 +140,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
+ 		ret = pin_user_pages(cur_base,
+ 				     min_t(unsigned long, npages,
+ 				     PAGE_SIZE / sizeof(struct page *)),
+-				     gup_flags, page_list, NULL);
++				     gup_flags, page_list);
+ 
+ 		if (ret < 0)
+ 			goto out;
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index f51ab2ccf151..e6e25f15567d 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -422,7 +422,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 		umem->page_chunk[i].plist = plist;
+ 		while (nents) {
+ 			rv = pin_user_pages(first_page_va, nents, foll_flags,
+-					    plist, NULL);
++					    plist);
+ 			if (rv < 0)
+ 				goto out_sem_up;
+ 
+diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+index 53001532e8e3..405b89ea1054 100644
+--- a/drivers/media/v4l2-core/videobuf-dma-sg.c
++++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+@@ -180,7 +180,7 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
+ 		data, size, dma->nr_pages);
+ 
+ 	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
+-			     dma->pages, NULL);
++			     dma->pages);
+ 
+ 	if (err != dma->nr_pages) {
+ 		dma->nr_pages = (err >= 0) ? err : 0;
+diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+index de97e38c3b82..4d4405f058e8 100644
+--- a/drivers/vdpa/vdpa_user/vduse_dev.c
++++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+@@ -1052,7 +1052,7 @@ static int vduse_dev_reg_umem(struct vduse_dev *dev,
+ 		goto out;
+ 
+ 	pinned = pin_user_pages(uaddr, npages, FOLL_LONGTERM | FOLL_WRITE,
+-				page_list, NULL);
++				page_list);
+ 	if (pinned != npages) {
+ 		ret = pinned < 0 ? pinned : -ENOMEM;
+ 		goto out;
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 8c1aefc865f0..61223fcbe82b 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -983,7 +983,7 @@ static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
+ 	while (npages) {
+ 		sz2pin = min_t(unsigned long, npages, list_size);
+ 		pinned = pin_user_pages(cur_base, sz2pin,
+-					gup_flags, page_list, NULL);
++					gup_flags, page_list);
+ 		if (sz2pin != pinned) {
+ 			if (pinned < 0) {
+ 				ret = pinned;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 679b41ef7a6d..db09c7062965 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2412,8 +2412,7 @@ static inline struct page *get_user_page_vma_remote(struct mm_struct *mm,
+ long get_user_pages(unsigned long start, unsigned long nr_pages,
+ 		    unsigned int gup_flags, struct page **pages);
+ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+-		    unsigned int gup_flags, struct page **pages,
+-		    struct vm_area_struct **vmas);
++		    unsigned int gup_flags, struct page **pages);
+ long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+ 		    struct page **pages, unsigned int gup_flags);
+ long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
+diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
+index b6451f8bc5d5..b56bda46a9eb 100644
+--- a/io_uring/rsrc.c
++++ b/io_uring/rsrc.c
+@@ -1044,7 +1044,7 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
+ 	ret = 0;
+ 	mmap_read_lock(current->mm);
+ 	pret = pin_user_pages(ubuf, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
+-			      pages, NULL);
++			      pages);
+ 	if (pret == nr_pages)
+ 		*npages = nr_pages;
+ 	else
+diff --git a/mm/gup.c b/mm/gup.c
+index 1493cc8dd526..36701b5f0123 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -3274,8 +3274,6 @@ EXPORT_SYMBOL(pin_user_pages_remote);
+  * @gup_flags:	flags modifying lookup behaviour
+  * @pages:	array that receives pointers to the pages pinned.
+  *		Should be at least nr_pages long.
+- * @vmas:	array of pointers to vmas corresponding to each page.
+- *		Or NULL if the caller does not require them.
+  *
+  * Nearly the same as get_user_pages(), except that FOLL_TOUCH is not set, and
+  * FOLL_PIN is set.
+@@ -3284,15 +3282,14 @@ EXPORT_SYMBOL(pin_user_pages_remote);
+  * see Documentation/core-api/pin_user_pages.rst for details.
+  */
+ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+-		    unsigned int gup_flags, struct page **pages,
+-		    struct vm_area_struct **vmas)
++		    unsigned int gup_flags, struct page **pages)
+ {
+ 	int locked = 1;
+ 
+-	if (!is_valid_gup_args(pages, vmas, NULL, &gup_flags, FOLL_PIN))
++	if (!is_valid_gup_args(pages, NULL, NULL, &gup_flags, FOLL_PIN))
+ 		return 0;
+ 	return __gup_longterm_locked(current->mm, start, nr_pages,
+-				     pages, vmas, &locked, gup_flags);
++				     pages, NULL, &locked, gup_flags);
+ }
+ EXPORT_SYMBOL(pin_user_pages);
+ 
+diff --git a/mm/gup_test.c b/mm/gup_test.c
+index 9ba8ea23f84e..1668ce0e0783 100644
+--- a/mm/gup_test.c
++++ b/mm/gup_test.c
+@@ -146,18 +146,17 @@ static int __gup_test_ioctl(unsigned int cmd,
+ 						 pages + i);
+ 			break;
+ 		case PIN_BASIC_TEST:
+-			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i,
+-					    NULL);
++			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i);
+ 			break;
+ 		case PIN_LONGTERM_BENCHMARK:
+ 			nr = pin_user_pages(addr, nr,
+ 					    gup->gup_flags | FOLL_LONGTERM,
+-					    pages + i, NULL);
++					    pages + i);
+ 			break;
+ 		case DUMP_USER_PAGES_TEST:
+ 			if (gup->test_flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN)
+ 				nr = pin_user_pages(addr, nr, gup->gup_flags,
+-						    pages + i, NULL);
++						    pages + i);
+ 			else
+ 				nr = get_user_pages(addr, nr, gup->gup_flags,
+ 						    pages + i);
+@@ -270,7 +269,7 @@ static inline int pin_longterm_test_start(unsigned long arg)
+ 							gup_flags, pages);
+ 		else
+ 			cur_pages = pin_user_pages(addr, remaining_pages,
+-						   gup_flags, pages, NULL);
++						   gup_flags, pages);
+ 		if (cur_pages < 0) {
+ 			pin_longterm_test_stop();
+ 			ret = cur_pages;
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 02207e852d79..06cead2b8e34 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -103,7 +103,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
+ 
+ 	mmap_read_lock(current->mm);
+ 	npgs = pin_user_pages(address, umem->npgs,
+-			      gup_flags | FOLL_LONGTERM, &umem->pgs[0], NULL);
++			      gup_flags | FOLL_LONGTERM, &umem->pgs[0]);
+ 	mmap_read_unlock(current->mm);
+ 
+ 	if (npgs != umem->npgs) {
+-- 
+2.40.1
 
-> So that "list_add_rcu()" there could probably be just a "list_add()",
-> with a comment saying "this is new, nobody can see it".
-> 
-
-Yes, after I fix the ordering of the mm add to the tracing global list.
-That is clearly something I should have done originally and caused
-confusion and extra RCU usage that is unneeded.
-
-> And if something *can* race it it and can see the new list, then it
-> had damn well needs that mutex lock anyway, because that "something"
-> could be actually modifying it. But that's separate from the page
-> pinning situation.
-> 
-> So again, I claim that the RCU'ness of the pin_user_pages part is
-> broken and should simply not exist.
-> 
-> > > Other code in that file happily just does
-> > >
-> > >         mutex_lock(&event_mutex);
-> > >
-> > >         list_for_each_entry_safe(enabler, next, &mm->enablers, link)
-> > >
-> > > with no RCU anywhere. Why does user_event_enabler_update() not do that?
-> >
-> > This is due to the fork() case above without taking the event_mutex.
-> 
-> See above. Your thinking is confused, and the code is broken.
-> 
-> If somebody can see the new list while it is created during fork(),
-> then you need the event_mutex to protect the creation of it.
-> 
-> And if nobody can see it, then you don't need any RCU protection against it.
-> 
-> Those are the two choices. You can't have it both ways.
-> 
-> > > Oh, and even those other loops are a bit strange. Why do they use the
-> > > "_safe" variant, even when they just traverse the list without
-> > > changing it? Look at user_event_enabler_exists(), for example.
-> >
-> > The other places in the code that do this either will remove the event
-> > depending on the situation during the for_each, or they only hold the
-> > register lock and don't hold the event_mutex.
-> 
-> So?
-> 
-> That "safe" variant doesn't imply any locking. It does *not* protect
-> against events being removed. It *purely* protects against the loop
-> itself removing entries.
-> 
-> So this code:
-> 
->         list_for_each_entry_safe(enabler, next, &mm->enablers, link) {
->                 if (enabler->addr == uaddr &&
->                     (enabler->values & ENABLE_VAL_BIT_MASK) == bit)
->                         return true;
->         }
-> 
-> is simply nonsensical. There is no reason for the "safe". It does not
-> make anything safer.
-> 
-> The above loop is only safe under the mutex (it would need to be the
-> "rcu" variant to be safe to traverse without locking), and since it
-> isn't modifying the list, there's no reason for the safe.
-> 
-> End result: the "safe" part is simply wrong.
-> 
-
-Got it, I was confused.
-
-> If the intention is "rcu" because of lack of locking, then the code needs to
->  (a) get the rcu read lock
->  (b) use the _rcu variant of the list traversal
-> 
-> And if the intention is that it's done under the proper 'event_mutex'
-> lock, then the "safe" part should simply be dropped.
-> 
->                Linus
-
-Thanks,
--Beau
 
