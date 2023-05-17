@@ -1,269 +1,153 @@
-Return-Path: <bpf+bounces-779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4DE2706AE9
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:18:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56CC0706B0E
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:27:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4AB1C20F30
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:18:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D8A71C20EE5
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:27:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440323113F;
-	Wed, 17 May 2023 14:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487DD31135;
+	Wed, 17 May 2023 14:27:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1737323D59
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:18:11 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD6818C
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1684333086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ioWVxI0IhvogYDfX7ey3FCLR56UxerMQXuLkBllxahs=;
-	b=Ag7/lQ0sx3I6IvfrGY/27y63xh3/XaBzfenYa36XEO746evrWV2Mwo7Z33Fkax/Fp1hUe4
-	/zYMfzFDVektcQCq5cW15ol9rpQxRf6op+C3PppGRotO88OBsBYG+/Hp2Qc1+cACkWHrtP
-	SZXRsxdsSVJhW44VXdYqIkNyz4i2C10=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-32-vtnLKq0_MEi4ZYZPdgZPwA-1; Wed, 17 May 2023 10:18:03 -0400
-X-MC-Unique: vtnLKq0_MEi4ZYZPdgZPwA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f42b36733aso3418965e9.3
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:18:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F7731128
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:27:47 +0000 (UTC)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6C768A
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:27:45 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-309438004a6so426124f8f.2
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684333664; x=1686925664;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FvGN9GGSeHWc0U3WJN4kyeHpvQipVEQ+CKfroAq5qK0=;
+        b=SZNdHklFePdxgUpmgwG+U9ZFXAIqh2r7t3MZqPluJUkqtkBOvPhoT0DJJy+sUE4oxF
+         oblxgq60YZvcjzep0aZXAgl97k/zrBamh3RWFn26Brm202PlzedZttP+qfuit3bGbGGD
+         mQCza6a1M1q8ew7pzmdwTGeWPpd4hjvpz+pzE4DfLKOsGEzGMW3yNNh0VRwJ26zE10ZP
+         3SbJYZU/ShkGXyMnJgPvguhVSzIitFcJKHx66jddj1mRDo2VOluEerb+bBalnZ7UajK1
+         aZx28kYVZmPYsAT7+PYF1HSJ0sVMncwKQDfOPHgsRdnu3UNqeG39pJoO2D5kSgyGfn2Y
+         cVfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684333081; x=1686925081;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ioWVxI0IhvogYDfX7ey3FCLR56UxerMQXuLkBllxahs=;
-        b=FxRC2l9J2bGuBBbCmwIgyJV2rqlDns5syQAvvujc29Bh8Lmd+j5GZDL44wDZjbW59b
-         NOSpiDdPKTNNCvawX+Q+SQZPskoi2gDeK1XyIytwYDyE/mz0vnYLvk+AClLVRE8QISN6
-         AfoMsGam+GPBHXXllhPovDxzFn2ejJGaMkomUD/wWDNm9CoyGlj3ZOFrlHLUk7YIV97c
-         ujKUIst8FyY+skX0reCmFAaYr2xflVgT6rd7dVRVxtVWf+ajaPirK6S/dOS5iYhhZ8Tx
-         08FzV7l6d/gAEJ/V+fohWvRERlKRADmDmAOnuvLacuKAGpd42IUSdaTWpFYdsYQe8XwX
-         Kpvw==
-X-Gm-Message-State: AC+VfDwXNErTevZkDd6DHe9Te2Ir+RDxQmx48yBAHpajwSmijQ4qMkP0
-	eMlkMJFOR04oi/UvHUyu4ss1XzYdJ+LEQbiDDij22Ty4EeByVRisYy77e1wvFTNPgR6Dq1/s5Sn
-	RcVFY5wz/qKRt
-X-Received: by 2002:a1c:6a0d:0:b0:3f4:23d4:e48 with SMTP id f13-20020a1c6a0d000000b003f423d40e48mr24238464wmc.23.1684333081618;
-        Wed, 17 May 2023 07:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ75qo8BdcqXdxo15sDlxFUJpgmybshio61afdZvp0npjows/dgUMrhfRqB4N5ATx0DaUrybCA==
-X-Received: by 2002:a1c:6a0d:0:b0:3f4:23d4:e48 with SMTP id f13-20020a1c6a0d000000b003f423d40e48mr24238448wmc.23.1684333081207;
-        Wed, 17 May 2023 07:18:01 -0700 (PDT)
-Received: from localhost (net-130-25-106-149.cust.vodafonedsl.it. [130.25.106.149])
-        by smtp.gmail.com with ESMTPSA id 13-20020a05600c024d00b003f42813b315sm2359342wmj.32.2023.05.17.07.18.00
+        d=1e100.net; s=20221208; t=1684333664; x=1686925664;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FvGN9GGSeHWc0U3WJN4kyeHpvQipVEQ+CKfroAq5qK0=;
+        b=LCPGzYKrworZey+aThzmgfJaKZ4RtJLltvqqsq7m0+VV6GY8ULauhBefF3cAZNhNkn
+         1c8exT9PwwwBKlWLBmRd+cutSHYBwKBXfBAkLTDrDi8HXevPN4Eyx/5PRK8GrS5Hl463
+         7JOmyCpiU3IXCaXMFD1cYG6DSHc+fn4aoPHDBL669kv2PPeEc3ziwOqQM/bY4D4s/iLu
+         VmBbJs1s0JBlzfk5xlYe7jmrPLCd7nBu0/mIm5NAs5qP4HZpsn51w7c16sTgmwIvF/E9
+         IYM9eiQ61i4DZnor9hXHP+ufJxFoCNhP4OgbPR6wC81H8yz8H4lJ4D00HsMgKutpy5qX
+         a/AQ==
+X-Gm-Message-State: AC+VfDx21YRKde5ufgPwk4LKN5GizxYqNqs+XbRPQGr3RF82ABLXQVUZ
+	la/HCZd7O/bj2XM20uVYLBQ=
+X-Google-Smtp-Source: ACHHUZ62fljMbfPGQibBT2G3ptNUGP0adgcBpMixR41XpiSu1EFKiW3bOYefl+33zsMc8ld21BT3nA==
+X-Received: by 2002:adf:eac6:0:b0:307:9d2a:fd35 with SMTP id o6-20020adfeac6000000b003079d2afd35mr973755wrn.53.1684333663838;
+        Wed, 17 May 2023 07:27:43 -0700 (PDT)
+Received: from [192.168.1.95] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id j9-20020a5d4489000000b00301a351a8d6sm3038534wrq.84.2023.05.17.07.27.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 07:18:00 -0700 (PDT)
-Date: Wed, 17 May 2023 16:17:59 +0200
-From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com
-Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint
- using half page per-buffer
-Message-ID: <ZGTiF+B46FA3TOj6@lore-desk>
-References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
- <62654fa5-d3a2-4b81-af70-59c9e90db842@huawei.com>
- <ZGIWZHNRvq5DSmeA@lore-desk>
- <ZGIvbfPd46EIVZf/@boxer>
- <ZGQJKRfuf4+av/MD@lore-desk>
- <d6348bf0-0da8-c0ae-ce78-7f4620837f66@huawei.com>
+        Wed, 17 May 2023 07:27:43 -0700 (PDT)
+Message-ID: <387a14cc12e30d713d388a23bb6d986bb16330ae.camel@gmail.com>
+Subject: Re: [PATCHv4 bpf-next 08/10] selftests/bpf: Allow to use kfunc from
+ testmod.ko in test_verifier
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, David Vernet
+ <void@manifault.com>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,  John
+ Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>, Kumar
+ Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 17 May 2023 17:27:41 +0300
+In-Reply-To: <CAEf4BzaLAZX_xVyRkavFiz+yLR057TuERcmsOc_amtjQCbHVoA@mail.gmail.com>
+References: <20230515133756.1658301-1-jolsa@kernel.org>
+	 <20230515133756.1658301-9-jolsa@kernel.org>
+	 <CAEf4BzaLAZX_xVyRkavFiz+yLR057TuERcmsOc_amtjQCbHVoA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="izBUiPk0NpMgOihH"
-Content-Disposition: inline
-In-Reply-To: <d6348bf0-0da8-c0ae-ce78-7f4620837f66@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
---izBUiPk0NpMgOihH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On 2023/5/17 6:52, Lorenzo Bianconi wrote:
-> >> On Mon, May 15, 2023 at 01:24:20PM +0200, Lorenzo Bianconi wrote:
-> >>>> On 2023/5/12 21:08, Lorenzo Bianconi wrote:
-> >>>>> In order to reduce page_pool memory footprint, rely on
-> >>>>> page_pool_dev_alloc_frag routine and reduce buffer size
-> >>>>> (VETH_PAGE_POOL_FRAG_SIZE) to PAGE_SIZE / 2 in order to consume one=
- page
-> >>>>
-> >>>> Is there any performance improvement beside the memory saving? As it
-> >>>> should reduce TLB miss, I wonder if the TLB miss reducing can even
-> >>>> out the cost of the extra frag reference count handling for the
-> >>>> frag support?
-> >>>
-> >>> reducing the requested headroom to 192 (from 256) we have a nice impr=
-ovement in
-> >>> the 1500B frame case while it is mostly the same in the case of paged=
- skb
-> >>> (e.g. MTU 8000B).
-> >>
-> >> Can you define 'nice improvement' ? ;)
-> >> Show us numbers or improvement in %.
+On Tue, 2023-05-16 at 14:45 -0700, Andrii Nakryiko wrote:
+> On Mon, May 15, 2023 at 6:39=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrot=
+e:
 > >=20
-> > I am testing this RFC patch in the scenario reported below:
+> > Currently the test_verifier allows test to specify kfunc symbol
+> > and search for it in the kernel BTF.
 > >=20
-> > iperf tcp tx --> veth0 --> veth1 (xdp_pass) --> iperf tcp rx
+> > Adding the possibility to search for kfunc also in bpf_testmod
+> > module when it's not found in kernel BTF.
 > >=20
-> > - 6.4.0-rc1 net-next:
-> >   MTU 1500B: ~ 7.07 Gbps
-> >   MTU 8000B: ~ 14.7 Gbps
+> > To find bpf_testmod btf we need to get back SYS_ADMIN cap.
 > >=20
-> > - 6.4.0-rc1 net-next + page_pool frag support in veth:
-> >   MTU 1500B: ~ 8.57 Gbps
-> >   MTU 8000B: ~ 14.5 Gbps
+> > Acked-by: David Vernet <void@manifault.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/test_verifier.c | 161 +++++++++++++++++---
+> >  1 file changed, 139 insertions(+), 22 deletions(-)
 > >=20
 >=20
-> Thanks for sharing the data.
-> Maybe using the new frag interface introduced in [1] bring
-> back the performance for the MTU 8000B case.
+> Eduard is working on migrating most (if not all) test_verifier tests
+> into test_progs where we can use libbpf declarative functionality for
+> things like this.
 >=20
-> 1. https://patchwork.kernel.org/project/netdevbpf/cover/20230516124801.24=
-65-1-linyunsheng@huawei.com/
->=20
->=20
-> I drafted a patch for veth to use the new frag interface, maybe that
-> will show how veth can make use of it. Would you give it a try to see
-> if there is any performance improvment for MTU 8000B case? Thanks.
->=20
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -737,8 +737,8 @@ static int veth_convert_skb_to_xdp_buff(struct veth_r=
-q *rq,
->             skb_shinfo(skb)->nr_frags ||
->             skb_headroom(skb) < XDP_PACKET_HEADROOM) {
->                 u32 size, len, max_head_size, off;
-> +               struct page_pool_frag *pp_frag;
->                 struct sk_buff *nskb;
-> -               struct page *page;
->                 int i, head_off;
->=20
->                 /* We need a private copy of the skb and data buffers sin=
-ce
-> @@ -752,14 +752,20 @@ static int veth_convert_skb_to_xdp_buff(struct veth=
-_rq *rq,
->                 if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_size)
->                         goto drop;
->=20
-> +               size =3D min_t(u32, skb->len, max_head_size);
-> +               size +=3D VETH_XDP_HEADROOM;
-> +               size +=3D SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +
->                 /* Allocate skb head */
-> -               page =3D page_pool_dev_alloc_pages(rq->page_pool);
-> -               if (!page)
-> +               pp_frag =3D page_pool_dev_alloc_frag(rq->page_pool, size);
-> +               if (!pp_frag)
->                         goto drop;
->=20
-> -               nskb =3D napi_build_skb(page_address(page), PAGE_SIZE);
-> +               nskb =3D napi_build_skb(page_address(pp_frag->page) + pp_=
-frag->offset,
-> +                                     pp_frag->truesize);
->                 if (!nskb) {
-> -                       page_pool_put_full_page(rq->page_pool, page, true=
-);
-> +                       page_pool_put_full_page(rq->page_pool, pp_frag->p=
-age,
-> +                                               true);
->                         goto drop;
->                 }
->=20
-> @@ -782,16 +788,18 @@ static int veth_convert_skb_to_xdp_buff(struct veth=
-_rq *rq,
->                 len =3D skb->len - off;
->=20
->                 for (i =3D 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
-> -                       page =3D page_pool_dev_alloc_pages(rq->page_pool);
-> -                       if (!page) {
-> +                       size =3D min_t(u32, len, PAGE_SIZE);
-> +
-> +                       pp_frag =3D page_pool_dev_alloc_frag(rq->page_poo=
-l, size);
-> +                       if (!pp_frag) {
->                                 consume_skb(nskb);
->                                 goto drop;
->                         }
->=20
-> -                       size =3D min_t(u32, len, PAGE_SIZE);
-> -                       skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SIZE=
-);
-> -                       if (skb_copy_bits(skb, off, page_address(page),
-> -                                         size)) {
-> +                       skb_add_rx_frag(nskb, i, pp_frag->page, pp_frag->=
-offset,
-> +                                       size, pp_frag->truesize);
-> +                       if (skb_copy_bits(skb, off, page_address(pp_frag-=
->page) +
-> +                                         pp_frag->offset, size)) {
->                                 consume_skb(nskb);
->                                 goto drop;
->                         }
-> @@ -1047,6 +1055,8 @@ static int veth_create_page_pool(struct veth_rq *rq)
->                 return err;
->         }
+> Eduard, can you please review this part? Would it make sense to just
+> wait for the migration? If not, will there be anything involved to
+> support something like this for the future migration?
 
-IIUC the code here we are using a variable length for linear part (at most =
-one page)
-while we will always use a full page (exept for the last fragment) for the =
-paged
-area, correct? I have not tested it yet but I do not think we will get a si=
-gnificant
-improvement since if we set MTU to 8000B in my tests we get mostly the same=
- throughput
-(14.5 Gbps vs 14.7 Gbps) if we use page_pool fragment or page_pool full pag=
-e.
-Am I missing something?
-What we are discussing with Jesper is try to allocate a order 3 page from t=
-he pool and
-rely page_pool fragment, similar to page_frag_cache is doing. I will look i=
-nto it if
-there are no strong 'red flags'.
+Hi Andrii,
 
-Regards,
-Lorenzo
+I'm not working on migrating remaining test_verifier tests
+to test_progs/inline assembly at the moment.
+
+Regarding this specific change, as far as I understand it is
+necessary for the following tests:
+- verifier/calls.c
+- verifier/map_kptr.c
+Both files can't be migrated at the moment.
+I spent some time today debugging, but the reasons are
+obscure and require further investigation.
+
+As to this particular patch itself, I tested it locally and
+it seems to work fine. None of the changes prohibit future
+migration to inline assembly, should such migration happen.
+
+Thanks,
+Eduard
 
 >=20
-> +       page_pool_set_max_frag_size(rq->page_pool, PAGE_SIZE / 2);
-> +
->         return 0;
->  }
 >=20
-
---izBUiPk0NpMgOihH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZGTiFgAKCRA6cBh0uS2t
-rIYXAQDC1p5J2e/oUAWCH/jUJ7eWYR4MYfi1yoeuVh2Ez13k/QEAl19w3AO1FWmQ
-fAhzwXqmg4cV/roSBYKY+62rlK78DQs=
-=t0oa
------END PGP SIGNATURE-----
-
---izBUiPk0NpMgOihH--
+> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
+g/selftests/bpf/test_verifier.c
+> > index 285ea4aba194..71704a38cac3 100644
+> > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > @@ -874,8 +874,140 @@ static int create_map_kptr(void)
+> >         return fd;
+> >  }
+> >=20
+>=20
+> [...]
 
 
