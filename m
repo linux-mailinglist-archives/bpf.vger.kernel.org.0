@@ -1,199 +1,166 @@
-Return-Path: <bpf+bounces-732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E45E7060F9
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:19:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 370B1706122
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:29:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16EE01C20AE6
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 07:19:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E546E28103C
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 07:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1248492;
-	Wed, 17 May 2023 07:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07207A938;
+	Wed, 17 May 2023 07:29:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4A28478
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:19:40 +0000 (UTC)
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54301E1;
-	Wed, 17 May 2023 00:19:37 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Vireqb9_1684307968;
-Received: from 30.97.48.190(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vireqb9_1684307968)
-          by smtp.aliyun-inc.com;
-          Wed, 17 May 2023 15:19:32 +0800
-Message-ID: <caea44dd-10a8-accb-7dec-868fb8f2f061@linux.alibaba.com>
-Date: Wed, 17 May 2023 15:19:28 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE7E1FDF
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:29:24 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5436B1726;
+	Wed, 17 May 2023 00:29:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EF577204F8;
+	Wed, 17 May 2023 07:29:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1684308561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eii5ss2ocLxG8N7/nX823yY9WNM71xoVrkq3X6PC3iI=;
+	b=hQvUWIwV6dCGwuy3cNq5IQT6P4+C/VAVmwLb4GtYKRRH2ugi1jPXhCde+huPj1CQ4BTIvb
+	Mq7gF5pblxgfVMZ0MzePq08W3e416/qsT2eooe28/Ge9FinmDOZxJd/ttsaYqUU6FtLcXy
+	3WifwYteFwOXitONZ5p8n1bpd6ozBMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1684308561;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eii5ss2ocLxG8N7/nX823yY9WNM71xoVrkq3X6PC3iI=;
+	b=6b8pr7AgWnQi46BzKh0rbfqRBGeaL4LkESIM594OVIo6t6RKDV5ot9JIBptg6ZdgmCqX7G
+	5J23DXq7PolfGmDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8A75139F5;
+	Wed, 17 May 2023 07:29:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id q0FVNFCCZGSmDQAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 17 May 2023 07:29:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 24F03A0735; Wed, 17 May 2023 09:29:20 +0200 (CEST)
+Date: Wed, 17 May 2023 09:29:20 +0200
+From: Jan Kara <jack@suse.cz>
+To: Lorenzo Stoakes <lstoakes@gmail.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Christian Benvenuti <benve@cisco.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-fsdevel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Oleg Nesterov <oleg@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
+	Jan Kara <jack@suse.cz>, Pavel Begunkov <asml.silence@gmail.com>,
+	Mika Penttila <mpenttil@redhat.com>,
+	David Hildenbrand <david@redhat.com>,
+	Dave Chinner <david@fromorbit.com>, Theodore Ts'o <tytso@mit.edu>,
+	Peter Xu <peterx@redhat.com>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>
+Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
+ mappings by default
+Message-ID: <20230517072920.bfs7gfo4whdmi6ay@quack3>
+References: <cover.1683235180.git.lstoakes@gmail.com>
+ <20230515110315.uqifqgqkzcrrrubv@box.shutemov.name>
+ <7f6dbe36-88f2-468e-83c1-c97e666d8317@lucifer.local>
+ <ZGIhwZl2FbLodLrc@nvidia.com>
+ <ad0053a4-fa34-4b95-a262-d27942b168fd@lucifer.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC PATCH bpf-next v3 00/37] FUSE BPF: A Stacked Filesystem
- Extension for FUSE
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Daniel Rosenberg <drosen@google.com>, Miklos Szeredi <miklos@szeredi.hu>,
- bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-unionfs@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Joanne Koong <joannelkoong@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
-References: <20230418014037.2412394-1-drosen@google.com>
- <CAJfpegtuNgbZfLiKnpzdEP0sNtCt=83NjGtBnmtvMaon2avv2w@mail.gmail.com>
- <CA+PiJmTMs2u=J6ANYqHdGww5SoE_focZGjMRZk5WgoH8fVuCsA@mail.gmail.com>
- <93e0e991-147f-0021-d635-95e615057273@linux.alibaba.com>
- <CAOQ4uxjCebxGxkguAh9s4_Vg7QHM=oBoV0LUPZpb+0pcm3z1bw@mail.gmail.com>
- <7386e858-1026-2924-9df9-22350b1e33a7@linux.alibaba.com>
-In-Reply-To: <7386e858-1026-2924-9df9-22350b1e33a7@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.6 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad0053a4-fa34-4b95-a262-d27942b168fd@lucifer.local>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Mon 15-05-23 14:07:57, Lorenzo Stoakes wrote:
+> On Mon, May 15, 2023 at 09:12:49AM -0300, Jason Gunthorpe wrote:
+> > On Mon, May 15, 2023 at 12:16:21PM +0100, Lorenzo Stoakes wrote:
+> > > Jason will have some thoughts on this I'm sure. I guess the key question
+> > > here is - is it actually feasible for this to work at all? Once we
+> > > establish that, the rest are details :)
+> >
+> > Surely it is, but like Ted said, the FS folks are not interested and
+> > they are at least half the solution..
+> 
+> :'(
 
+Well, I'd phrase this a bit differently - it is a difficult sell to fs
+maintainers that they should significantly complicate writeback code / VFS
+with bounce page handling etc. for a thing that is not much used corner
+case. So if we can get away with forbiding long-term pins, then that's the
+easiest solution. Dealing with short-term pins is easier as we can just
+wait for unpinning which is implementable in a localized manner.
 
-On 2023/5/17 00:05, Gao Xiang wrote:
-> Hi Amir,
+> > The FS also has to actively not write out the page while it cannot be
+> > write protected unless it copies the data to a stable page. The block
+> > stack needs the source data to be stable to do checksum/parity/etc
+> > stuff. It is a complicated subject.
 > 
-> On 2023/5/17 23:51, Amir Goldstein wrote:
->> On Wed, May 17, 2023 at 5:50 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
->>>
->>>
->>>
->>> On 2023/5/2 17:07, Daniel Rosenberg wrote:
->>>> On Mon, Apr 24, 2023 at 8:32 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->>>>>
->>>>>
->>>>> The security model needs to be thought about and documented.  Think
->>>>> about this: the fuse server now delegates operations it would itself
->>>>> perform to the passthrough code in fuse.  The permissions that would
->>>>> have been checked in the context of the fuse server are now checked in
->>>>> the context of the task performing the operation.  The server may be
->>>>> able to bypass seccomp restrictions.  Files that are open on the
->>>>> backing filesystem are now hidden (e.g. lsof won't find these), which
->>>>> allows the server to obfuscate accesses to backing files.  Etc.
->>>>>
->>>>> These are not particularly worrying if the server is privileged, but
->>>>> fuse comes with the history of supporting unprivileged servers, so we
->>>>> should look at supporting passthrough with unprivileged servers as
->>>>> well.
->>>>>
->>>>
->>>> This is on my todo list. My current plan is to grab the creds that the
->>>> daemon uses to respond to FUSE_INIT. That should keep behavior fairly
->>>> similar. I'm not sure if there are cases where the fuse server is
->>>> operating under multiple contexts.
->>>> I don't currently have a plan for exposing open files via lsof. Every
->>>> such file should relate to one that will show up though. I haven't dug
->>>> into how that's set up, but I'm open to suggestions.
->>>>
->>>>> My other generic comment is that you should add justification for
->>>>> doing this in the first place.  I guess it's mainly performance.  So
->>>>> how performance can be won in real life cases?   It would also be good
->>>>> to measure the contribution of individual ops to that win.   Is there
->>>>> another reason for this besides performance?
->>>>>
->>>>> Thanks,
->>>>> Miklos
->>>>
->>>> Our main concern with it is performance. We have some preliminary
->>>> numbers looking at the pure passthrough case. We've been testing using
->>>> a ramdrive on a somewhat slow machine, as that should highlight
->>>> differences more. We ran fio for sequential reads, and random
->>>> read/write. For sequential reads, we were seeing libfuse's
->>>> passthrough_hp take about a 50% hit, with fuse-bpf not being
->>>> detectably slower. For random read/write, we were seeing a roughly 90%
->>>> drop in performance from passthrough_hp, while fuse-bpf has about a 7%
->>>> drop in read and write speed. When we use a bpf that traces every
->>>> opcode, that performance hit increases to a roughly 1% drop in
->>>> sequential read performance, and a 20% drop in both read and write
->>>> performance for random read/write. We plan to make more complex bpf
->>>> examples, with fuse daemon equivalents to compare against.
->>>>
->>>> We have not looked closely at the impact of individual opcodes yet.
->>>>
->>>> There's also a potential ease of use for fuse-bpf. If you're
->>>> implementing a fuse daemon that is largely mirroring a backing
->>>> filesystem, you only need to write code for the differences in
->>>> behavior. For instance, say you want to remove image metadata like
->>>> location. You could give bpf information on what range of data is
->>>> metadata, and zero out that section without having to handle any other
->>>> operations.
->>>
->>> A bit out of topic (although I'm not quite look into FUSE BPF internals)
->>> After roughly listening to this topic in FS track last week, I'm not
->>> quite sure (at least in the long term) if it might be better if
->>> ebpf-related filter/redirect stuffs could be landed in vfs or in a
->>> somewhat stackable fs so that we could redirect/filter any sub-fstree
->>> in principle?    It's just an open question and I have no real tendency
->>> of this but do we really need a BPF-filter functionality for each
->>> individual fs?
->>
->> I think that is a valid question, but the answer is that even if it makes sense,
->> doing something like this in vfs would be a much bigger project with larger
->> consequences on performance and security and whatnot, so even if
->> (and a very big if) this ever happens, using FUSE-BPF as a playground for
->> this sort of stuff would be a good idea.
-> 
-> My current observation is that the total Fuse-BPF LoC is already beyond the
+> Yes my sense was that being able to write arbitrarily to these pages _at
+> all_ was a big issue, not only the dirty tracking aspect.
 
+Yes.
 
-                          ^ sorry I double-checked now I was wrong, forget about it.
+> I guess at some level letting filesystems have such total flexibility as to
+> how they implement things leaves us in a difficult position.
 
-> whole FUSE itself.  In addition, it almost hooks all fs operations which
-> impacts something to me.
-> 
->>
->> This reminds me of union mounts - it made sense to have union mount
->> functionality in vfs, but after a long winding road, a stacked fs (overlayfs)
->> turned out to be a much more practical solution.
-> 
-> Yeah, I agree.  So it was just a pure hint on my side.
-> 
->>
->>>
->>> It sounds much like
->>> https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-filter-drivers
->>>
->>
->> Nice reference.
->> I must admit that I found it hard to understand what Windows filter drivers
->> can do compared to FUSE-BPF design.
->> It'd be nice to get some comparison from what is planned for FUSE-BPF.
-> 
-> At least some investigation/analysis first might be better in the long
-> term development.
-> 
->>
->> Interesting to note that there is a "legacy" Windows filter driver API,
->> so Windows didn't get everything right for the first API - that is especially
->> interesting to look at as repeating other people's mistakes would be a shame.
-> 
-> I'm not familiar with that details as well, yet I saw that they have a
-> filesystem filter subsystem, so I mentioned it here.
-> 
-> Thanks,
-> Gao Xiang
-> 
->>
->> Thanks,
->> Amir.
+I'm not sure what you mean by "total flexibility" here. In my opinion it is
+also about how HW performs checksumming etc.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
