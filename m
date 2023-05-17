@@ -1,63 +1,64 @@
-Return-Path: <bpf+bounces-822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AEFD707253
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:38:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC987072BD
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 22:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1026E1C20F7D
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:38:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABAB28127F
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 20:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB65B34CF6;
-	Wed, 17 May 2023 19:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC0F9449A7;
+	Wed, 17 May 2023 20:09:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915AC111AD
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 19:38:00 +0000 (UTC)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E36EE67
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:33 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-510d9218506so760579a12.1
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E9B111AD
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 20:09:21 +0000 (UTC)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B489E6A62
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 13:09:18 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-96a2b6de3cbso189810166b.1
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 13:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1684352250; x=1686944250;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EGKI6H/r7fSXnuBx9f0+4FVv9qKurvHdpDRXkzgKVVE=;
-        b=dST0i2fL5crJmyksJX0862DQUmET9sHJlkPm04jxbIwsJnbNUW7+0b9DaPO9SxViNp
-         8CzG00bl4e2iNhYUUIqZpckBCyAUm20fVCmG2RA76lWUFaM4nC8fP1fK2o1BbU/ipu7m
-         Bu3FNI0mAQY4PxO8q5NtnD+m9tmxVXzdQOtzY=
+        d=linux-foundation.org; s=google; t=1684354157; x=1686946157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qUJuL+2WvYBnwuI2AxMqbxeUZxgtHjH0G/Zm8si7raQ=;
+        b=FswP8g2FI3659/s/93gVCGsv3xZZtGIZfyfW2LeNfXS8vk7ZVBjKBV5EubqxsPWC4B
+         DTiSzYAVTqlLfpqatXRUYC2ud7ZZO/vsf5e6eQGX32M+kzCJw+W5bHv1BObk06wK2Nh+
+         YyCLeqhvFzPSmMK/EQYkoCJ95VGK9AkRl/KJw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684352250; x=1686944250;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EGKI6H/r7fSXnuBx9f0+4FVv9qKurvHdpDRXkzgKVVE=;
-        b=LjC4shQ5tTybdNTeebqT8zI4flbZZ6URYgW8bIFxlkkGDQ9faTJKkcmRExw9ltD7Zq
-         xQU6zS3rDmzdNYUNFTOJcpJd8sqPsJosmEbqj7AvaBoU2pctAOLvtuZYfmRKDh4dV4AE
-         8tZQIeJnMWKBdM6gCPr/psm+S6N3KaypARW3YyKDhI6Zq9+cg+VUcqM8tjYhPTP2NLmh
-         /wRD+YJtnu8wTdti194snQlQWEAV2A03KbOoT0hFlD1SoapekqYiTKxTdmb9Exlfr9+1
-         sbh8aFTD+2TmtPZOfaizrLuqsuwQ05kYfNsp6KurcDIdV3JqLw8wA66cnIfZBY30h6dW
-         +s2Q==
-X-Gm-Message-State: AC+VfDypZQBAv5J1QERM+AaB/i2J871b8sUNmciwPb9lTG4N/BgdPUO4
-	Cz3evS09Iij5MJ1sBg4RRAJ6DR+HepGFZB3asMteW3Xm
-X-Google-Smtp-Source: ACHHUZ7zbE/s16RtftFbff1RFLUqp2/PsnPtec1Z3qsdv7peAlBeu22nrwCp6PDR1yfXj3l+rPvMDw==
-X-Received: by 2002:aa7:ca59:0:b0:50c:804:20bb with SMTP id j25-20020aa7ca59000000b0050c080420bbmr3459741edt.16.1684352249794;
-        Wed, 17 May 2023 12:37:29 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id l9-20020a056402124900b005067d6b06efsm9666019edw.17.2023.05.17.12.37.28
+        d=1e100.net; s=20221208; t=1684354157; x=1686946157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qUJuL+2WvYBnwuI2AxMqbxeUZxgtHjH0G/Zm8si7raQ=;
+        b=W0v0zgjLS74jfMBFj2/ewZIv4o8WjPiNf8RoIzxD2wdu1MLc7Sgm4nvhZhBQkVHc5A
+         pmZ5fnywfzkcVFDwioqfdE21BZnMltyqDrRFuqrFB2Wgndhs35qs7EERKH05MvPC6p3R
+         S0km2ga3554gzfTNdkZaZTMdxCZ1e5eb86e1/MsKtSbqL9f84NnasYbMKUwXQQKeOgzx
+         yBOoo+iHQ20LmvzTOruRI0EcMq4SNPHoCGXeLVfdnPskpH1VnCeOgap5PP51BJ80ozfF
+         bzsAnNKcVZ61xcLqEJQg+5yeW0V2SXayaj1qwCK0TPlKJy35iwls/b4ozHb98bwtoNOP
+         EC0A==
+X-Gm-Message-State: AC+VfDxkmqiS6UUJYnnqyoYguPRoc1MUIL+SJETVB369ZtPD0xGc63Fu
+	iBPRsTArLWmxHr4pDHylhy/dsaC2vWJlpuywIUlPkRFF
+X-Google-Smtp-Source: ACHHUZ6WX+4lp4pWvIt4hOORZYn0icLYnMlqOZJOrFhgmcvei4tkLGQOTdqYwVNaLHQvz/bzpvjhIQ==
+X-Received: by 2002:a17:907:1c23:b0:966:2984:3da0 with SMTP id nc35-20020a1709071c2300b0096629843da0mr38882879ejc.63.1684354156861;
+        Wed, 17 May 2023 13:09:16 -0700 (PDT)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id n1-20020a170906378100b0096a74be3dd4sm9210478ejc.60.2023.05.17.13.09.16
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 12:37:29 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-95fde138693so80366566b.0
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:28 -0700 (PDT)
-X-Received: by 2002:a17:907:3f9e:b0:96a:2b4:eb69 with SMTP id
- hr30-20020a1709073f9e00b0096a02b4eb69mr3422885ejc.31.1684352248662; Wed, 17
- May 2023 12:37:28 -0700 (PDT)
+        Wed, 17 May 2023 13:09:16 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-96a2b6de3cbso189806066b.1
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 13:09:16 -0700 (PDT)
+X-Received: by 2002:a17:907:7291:b0:96a:717:d452 with SMTP id
+ dt17-20020a170907729100b0096a0717d452mr29868922ejc.19.1684354155799; Wed, 17
+ May 2023 13:09:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,9 +75,9 @@ References: <20230509163050.127d5123@rorschach.local.home> <20230515165707.hv65e
  <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
 In-Reply-To: <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 17 May 2023 12:37:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiiBfT4zNS29jA0XEsy8EmbqTH1hAPdRJCDAJMD8Gxt5A@mail.gmail.com>
-Message-ID: <CAHk-=wiiBfT4zNS29jA0XEsy8EmbqTH1hAPdRJCDAJMD8Gxt5A@mail.gmail.com>
+Date: Wed, 17 May 2023 13:08:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wicngggxVpbnrYHjRTwGE0WYscPRM+L2HO2BF8ia1EXgQ@mail.gmail.com>
+Message-ID: <CAHk-=wicngggxVpbnrYHjRTwGE0WYscPRM+L2HO2BF8ia1EXgQ@mail.gmail.com>
 Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
 To: Beau Belgrave <beaub@linux.microsoft.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
@@ -85,7 +86,8 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	David Vernet <void@manifault.com>, dthaler@microsoft.com, brauner@kernel.org, 
 	hch@infradead.org
-Content-Type: multipart/mixed; boundary="000000000000759fcb05fbe8d165"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -93,49 +95,65 @@ X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
---000000000000759fcb05fbe8d165
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
 On Wed, May 17, 2023 at 12:36=E2=80=AFPM Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
 > .. this is the patch that I think should go on top of it to fix the
 > misleading "safe" and the incorrect RCU walk.
+>
+> NOTE! This adds that
+>
+>         lockdep_assert_held(&event_mutex);
+>
+> to user_event_enabler_update() too.
 
-Let's actually attach the patch too. Duh.
+One more note: I think it would be really good to use different names
+for the "links".
 
-               Linus
+We have "mm->link", that is the list of mm's on the 'user_event_mms'
+list, protected by the 'user_event_mms_lock' and RCU-walked.
 
---000000000000759fcb05fbe8d165
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lhs3trhk0>
-X-Attachment-Id: f_lhs3trhk0
+And then we have 'enabler->link', which is the list of enables on the
+'user_mm->enablers' list, protected by event_mutex, and _also_
+occasionally RCU-walked.
 
-IGtlcm5lbC90cmFjZS90cmFjZV9ldmVudHNfdXNlci5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNo
-YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9rZXJu
-ZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYyBiL2tlcm5lbC90cmFjZS90cmFjZV9ldmVudHNf
-dXNlci5jCmluZGV4IGIyYWVjYmZiYmQyNC4uMDU0ZTI4Y2M1YWQ0IDEwMDY0NAotLS0gYS9rZXJu
-ZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYworKysgYi9rZXJuZWwvdHJhY2UvdHJhY2VfZXZl
-bnRzX3VzZXIuYwpAQCAtNDM5LDcgKzQzOSw3IEBAIHN0YXRpYyBib29sIHVzZXJfZXZlbnRfZW5h
-Ymxlcl9leGlzdHMoc3RydWN0IHVzZXJfZXZlbnRfbW0gKm1tLAogCXN0cnVjdCB1c2VyX2V2ZW50
-X2VuYWJsZXIgKmVuYWJsZXI7CiAJc3RydWN0IHVzZXJfZXZlbnRfZW5hYmxlciAqbmV4dDsKIAot
-CWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShlbmFibGVyLCBuZXh0LCAmbW0tPmVuYWJsZXJzLCBs
-aW5rKSB7CisJbGlzdF9mb3JfZWFjaF9lbnRyeShlbmFibGVyLCBuZXh0LCAmbW0tPmVuYWJsZXJz
-LCBsaW5rKSB7CiAJCWlmIChlbmFibGVyLT5hZGRyID09IHVhZGRyICYmCiAJCSAgICAoZW5hYmxl
-ci0+dmFsdWVzICYgRU5BQkxFX1ZBTF9CSVRfTUFTSykgPT0gYml0KQogCQkJcmV0dXJuIHRydWU7
-CkBAIC00NTUsMTkgKzQ1NSwxOSBAQCBzdGF0aWMgdm9pZCB1c2VyX2V2ZW50X2VuYWJsZXJfdXBk
-YXRlKHN0cnVjdCB1c2VyX2V2ZW50ICp1c2VyKQogCXN0cnVjdCB1c2VyX2V2ZW50X21tICpuZXh0
-OwogCWludCBhdHRlbXB0OwogCisJbG9ja2RlcF9hc3NlcnRfaGVsZCgmZXZlbnRfbXV0ZXgpOwor
-CiAJd2hpbGUgKG1tKSB7CiAJCW5leHQgPSBtbS0+bmV4dDsKIAkJbW1hcF9yZWFkX2xvY2sobW0t
-Pm1tKTsKLQkJcmN1X3JlYWRfbG9jaygpOwogCi0JCWxpc3RfZm9yX2VhY2hfZW50cnlfcmN1KGVu
-YWJsZXIsICZtbS0+ZW5hYmxlcnMsIGxpbmspIHsKKwkJbGlzdF9mb3JfZWFjaF9lbnRyeShlbmFi
-bGVyLCAmbW0tPmVuYWJsZXJzLCBsaW5rKSB7CiAJCQlpZiAoZW5hYmxlci0+ZXZlbnQgPT0gdXNl
-cikgewogCQkJCWF0dGVtcHQgPSAwOwogCQkJCXVzZXJfZXZlbnRfZW5hYmxlcl93cml0ZShtbSwg
-ZW5hYmxlciwgdHJ1ZSwgJmF0dGVtcHQpOwogCQkJfQogCQl9CiAKLQkJcmN1X3JlYWRfdW5sb2Nr
-KCk7CiAJCW1tYXBfcmVhZF91bmxvY2sobW0tPm1tKTsKIAkJdXNlcl9ldmVudF9tbV9wdXQobW0p
-OwogCQltbSA9IG5leHQ7Cg==
---000000000000759fcb05fbe8d165--
+And then we have 'validator->link', which isn't RCU-walked, and seems
+to also be protected by the event_mutex (?).
+
+This is all very confusing when looking at it as an outsider.
+Particularly when you sometimes just see
+
+        list_del_rcu(&mm->link);
+
+and you have to figure "which 'link' are we talking about again?".
+
+Also, I have to say, I found "mm->next" *really* confusing at first.
+
+It turns out that "mm->next" is this list that is dynamically built up
+by user_event_mm_get_all(), and is only a one-shot list that is valid
+only as long as 'event_mutex' is held. But the only lock the code
+*talks* about is the RCU lock, which does *not* protect that list, and
+only exists as a way to walk that user_event_mms list without taking
+any locks.
+
+So user_event_enabler_update() actually relies on that 'event_mutex'
+lock in another way than the obvious one that is about the
+mm->enablers list that it *also* walks.
+
+Again, that all seems to work, but it's *really* confusing how
+"mm->next" always exists as a field, but is only usable and valid
+while you hold that event_mutex and have called
+user_event_mm_get_all() to gather the list.
+
+I think both user_event_enabler_update() and user_event_mm_get_all()
+should have a mention of how they require event_mutex and how that
+->next list works.
+
+Anyway, I still *think* the two patches I sent out are right, but I'm
+just mentioning this confusion I had to deal with when trying to
+decode what the rules were. Maybe all the above is obvious to
+everybody else, but it took me a while to decipher (and maybe I
+misread something).
+
+             Linus
 
