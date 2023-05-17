@@ -1,226 +1,291 @@
-Return-Path: <bpf+bounces-814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2735270708C
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 20:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A110707092
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 20:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 011EB1C20EFA
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:15:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DEAE1C20F38
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E7231F01;
-	Wed, 17 May 2023 18:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBEB31F02;
+	Wed, 17 May 2023 18:19:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DAD10966
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 18:15:38 +0000 (UTC)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1E883F3
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:15:35 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-50bc570b4a3so2020208a12.1
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1684347333; x=1686939333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=glKf7NIJxMjvHArJbyFniLngVqkquHliX4T2ECqtZCU=;
-        b=cYfzgsSW1eAL0mcxFzcFEGVKiKhkmtJW2V5Bn8D9TKCTdWnP8YMHoqvHHyUmLhNLZQ
-         qjqngIFqiAXhlgkoJqdb5JkZr6fW7vDx8Jt32RAYmGXcCUaLzFcRx66QXuHZMv1B/NGS
-         z0NFZBSQMtvdSXWji9N4a3iDY8hTZ6unme+Gs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684347333; x=1686939333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=glKf7NIJxMjvHArJbyFniLngVqkquHliX4T2ECqtZCU=;
-        b=j976biu/V34oHXRieIdziQoZ/v/aYPGhkqdpq0cyjhYv9B+gjpsiV8gHWSCD5u7x5a
-         i6Va2VCg/zX12enSM9dkTGOosU9bd+SiWyFh+XKyuudr1+PfNvJO0FZ/euvfD29J1k9f
-         S2KqW4hrrYlHS1KFWMo5tDGSQqhE2yJHPUWuZXcn3XrLGxIyU0M2vr2b2ZB62072tB6x
-         e3TWPEui/dpkVsSARqupXEBMULXpNXQ6PIdWP5voptYPFrQqxeKOeLCQ+Wrt/E09HsZt
-         j3Ss9pDaUimxDA4IGTV3CmSAux6XdNuRJ4wSdCQI0mV6/9d7omx2SiFo9220ndxKN4aB
-         NFkQ==
-X-Gm-Message-State: AC+VfDxIA+ao/VJ+SxwqsTvry5c+7CPNseSL1wPWyjcU2BqomCP21k63
-	Clww49PRABDqautklJLWjNBQ7JSAr6dDX4HB+xsifb4b
-X-Google-Smtp-Source: ACHHUZ6d5ovz5zY+rzKfaAwGSUoVgp25Vz78aB1+dWqfOzK0aY9817aJxrkqeWVC9VLMZBsxLec3kA==
-X-Received: by 2002:a50:ef04:0:b0:510:47a3:e775 with SMTP id m4-20020a50ef04000000b0051047a3e775mr2883439eds.41.1684347333648;
-        Wed, 17 May 2023 11:15:33 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id y15-20020a50e60f000000b0050bc27a4967sm9536634edm.21.2023.05.17.11.15.32
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 11:15:32 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-510b7b6ef59so2004046a12.3
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:15:32 -0700 (PDT)
-X-Received: by 2002:a17:906:dacb:b0:966:53b1:b32a with SMTP id
- xi11-20020a170906dacb00b0096653b1b32amr31032871ejb.53.1684347331694; Wed, 17
- May 2023 11:15:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3372210966
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 18:19:48 +0000 (UTC)
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021027.outbound.protection.outlook.com [52.101.57.27])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDCA1739
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:19:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xyd1ruhWekuhtNx9mGAidh3CLn+FRyt1eX6aXQ+qfaJ/TPD79vDVojUII2/ifbxFIO+iBH5RdJSWxUeDSN916+CiYa/lewVIPQLHUR2SrjkxkoOGPxsjeiVIsxT0jn4OHxnJ2UA0/zLcJ5V+m/0HD6GaeK+WGkSv5AVacjRry9H3L1rpC0sgFFuebCiqkT7OFsaACNqNb5BvZgYSpmxFOedxqY6CM6sv5G1fmjeWKhX1uO70GxTQzvH0TYqtiqwiu3lITDiq3EkoU49vN7kMwFuld+XLIaK/k9qdQQ4GYgcIiEGDR+tK4XQedPZk1QHTj+N70hM0SM7H8B++0av1CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H3tVUJMthccBIK4FF+nxmOCfJP7Jr5v2zVrgKHKadLI=;
+ b=dCfGSnUSsDjMx7Nr5du261x2I5YiqcVKF5mHSwtiAR5u655ahxZXq8ZFqJ2oDkTPDrlqjPpB4lta/t8Xps5I+gJEWIwbft8IkZOR043XSWqvT0tIUAz6o2TQvHK4RcjHW0D1sqOPWWx2CHm2yoHB7wISUpP6u8d18R9wEHyxStajZwBzEILccuHLuBy3ymj1GU8qTsDafn7Rv4+cLvjPxyrVXW3k1XCBV5UjQicCB02a15U8DwipQpWh1qhIPhcUsZKZyrJx8r+cBTNP23GwoTFbpOyW9EeRYZsdTI0bCSZPn+YE2dV/pGajfcENcDwfLosRMWphK4l58U4cbAKHuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H3tVUJMthccBIK4FF+nxmOCfJP7Jr5v2zVrgKHKadLI=;
+ b=ChJxu096xb8tPSyr9RBnytcsPzhVFAAlsEQ3+DAlQjr4tSDFLFyg8a+V9v0Za8KHRkS1yyNiozbSfSFcGxi1hUt3v1IrAKG5/LxRvq+d6OyGmFHEiganyfvc3H1yIZv1BTHstj9t5lknjaQbrtr30ENNFZCqFdcDBXSG0jl2WCI=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by MWH0PFED0FAB2BB.namprd21.prod.outlook.com (2603:10b6:30f:fff1:0:1:0:15)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.6; Wed, 17 May
+ 2023 18:19:42 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ebee:52ea:94c9:4e43]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::ebee:52ea:94c9:4e43%7]) with mapi id 15.20.6433.000; Wed, 17 May 2023
+ 18:19:42 +0000
+From: Dave Thaler <dthaler@microsoft.com>
+To: "Jose E. Marchesi" <jemarch@gnu.org>, Dave Thaler
+	<dthaler=40microsoft.com@dmarc.ietf.org>
+CC: "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Subject: RE: [Bpf] IETF BPF working group draft charter
+Thread-Topic: [Bpf] IETF BPF working group draft charter
+Thread-Index: AdmIWSmp8uIYgrASRIKQXfLbLZQgdgAeO2knAAYWUOA=
+Date: Wed, 17 May 2023 18:19:42 +0000
+Message-ID:
+ <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+References:
+ <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <87v8grkn67.fsf@gnu.org>
+In-Reply-To: <87v8grkn67.fsf@gnu.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=56c6f184-81ad-48e6-9cc2-0f9ceded326e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-17T18:07:27Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|MWH0PFED0FAB2BB:EE_
+x-ms-office365-filtering-correlation-id: 722724af-1c2d-4f56-50b3-08db57034916
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ aTwACfqEt7BWYV0bljjgT/kuZEycbFgLsQdXJGq9YXcN8q2wnhcS55fkVA9FJ3xD/HSdr301aNwBX8LFtDdCckMsK3KSiZ+1Wxf6+v5HAuXktQxvs1nJuFGgzSb769SNoHLq2qgD2KPEDRkmhKAGsXMDSUFZlrsxazOSCS2loc2MlYxRWje5RsWJ7peti5Sv4fsivn5guxw8XvlKBp4QWA+k6ff81nso7oz3qygoa93f3dBf/7I/0PZ7apK6I2iNv6gfYFbw4E8grDEOrqUrdCLBo6nu/38rDKHTw3AwhK4ReEpLZZYvFDUz4LDboYTyOQaod6X105KyUIZPKVMnWp84lPfu+mVNQe3qV8Xsdve/ainiWCWNlOC3FF8FNsLuoqKRZA+DsV7xbb2FeGYSOBf7T0Q5dTBYyJNArUs3sEedJ80akfUDtfY/X0V49mfO4x7k2aT6nQew3OmEy/eoxE21o/ZMhN8gC5KFf0hKHjJGFA1BCML41FPjN7rLF9Im2ti/H2VMKzl2f12kmtWJPWIRwokYa5j/o4x5iDkyLdVwycrWevpm1Y/0U9bQU1WKvqNCwhO1tVQBjvYbww+AsEETnJth5xJzSSsuaGooIfKFQv6KjKNqiuBq/mBRce1NNr94qy4H9xc1igaEDYcsAA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(366004)(396003)(376002)(451199021)(66476007)(8990500004)(71200400001)(2906002)(5660300002)(52536014)(41300700001)(4326008)(76116006)(66446008)(66946007)(110136005)(64756008)(66556008)(54906003)(478600001)(786003)(8936002)(8676002)(316002)(10290500003)(83380400001)(38100700002)(33656002)(966005)(7696005)(9686003)(82960400001)(82950400001)(186003)(6506007)(38070700005)(55016003)(122000001)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?mp3X3sisS9fBPL2xx12Ht2ZEuDZCmIHcXu29efpq5sZfKHumEdS61CyCmFnx?=
+ =?us-ascii?Q?jsX3OsHN8MaZWCE+8L98Z3l9VU5WCPHE1x49cfXg0kzZTzBdhrPNP2i2yNtI?=
+ =?us-ascii?Q?i0nk//tdrlRvGjF9qUcMg1HDutf8lIudwIQt206PnrsMRLt4G/MEH+fNkxdM?=
+ =?us-ascii?Q?RXKsu2XDrLI4XkzbynJEb6URdhY3PxxlJR3jZi9lxRofd3DLxbIYXQWLgcOK?=
+ =?us-ascii?Q?4LEifD4WGDU/I/o9rg4J9S95IJYFlDxWqvdoSmebyhPdTEqe3W3LBd9xkqzt?=
+ =?us-ascii?Q?Y9pIDg9RGTnELp99eIjWPnKEppqJ+mB+Mma8R1qvqyIuaxJzkpfjXVeLkour?=
+ =?us-ascii?Q?kZBv25zUBDcvFFHAgYlHjupLjG2TUMLeWDx60Pco1jG0TlexkrLxA4tKpq8S?=
+ =?us-ascii?Q?mS8QHSbprPHvLafB0ZBGIbv9yzP9TLqABDsPEV84CmyzjCD/MEepUihowLfO?=
+ =?us-ascii?Q?hYAt7Y2tbxMDsoCTuOpEBK+IsELjZfacj58gd9yJ3MJXhQQdffRxNY0sYGdN?=
+ =?us-ascii?Q?SntLlUVQrPt/j8B2NmmE3dzy4S4oBo8ucPs1iYSbcMV+rc9xGwPLeMs+huAX?=
+ =?us-ascii?Q?njVOcOqo3An0FUqc3KHiLFTksYgC6VFezP/LCyTw/fqmkjdgMNd2urKTcGWE?=
+ =?us-ascii?Q?/jF7rzpfl/sTYu6RJhTJnr6mVM/322wKuS3uRsPAeagSCXe4u/p5faXjhLhG?=
+ =?us-ascii?Q?Lhzw00XyBYI8c2woUKqbWdZgmVE/rKPtbeB7b3z0zUhaIPfKdufc6kLhOijh?=
+ =?us-ascii?Q?tPvlJxAqgnaD7FsABgfrtNo5WutcQ9SJ1uHlvfDSBx1ohUZhjv70FJRK6EQX?=
+ =?us-ascii?Q?AZEnC6TWMQv7f+YMbTvDoaufwCpZ9/hsrF+nmb7zo69GbHQ3yeXXWAEkB+Ub?=
+ =?us-ascii?Q?thMekIpW0JS2m7XDy9HansXvJikNDKjH0XovF8CpkM5SRSeYgIhJTtPTsqAd?=
+ =?us-ascii?Q?1zeiv5F+8ZxqE3jS66ZwFjFkJLqWFVFRpfFTI+5ptzfE/YWhFjJvqnf+rfK6?=
+ =?us-ascii?Q?ZabnZ5W6QSuSI69F6AppPHZZDoi0/UCmBBcXk8M8P1wR8wxjAdhSWZuaJ4l8?=
+ =?us-ascii?Q?zGrwBBSCAgj22NbdoMAnLWZhr6prQAMDXlcO7+X1VL/fgGME/IMyqp1klOCk?=
+ =?us-ascii?Q?4CumnQ2RFrmhNn0hWRecykOcNQFMvVQBgSlEUzLPu8y6L4n+qglBIi8kjbpD?=
+ =?us-ascii?Q?TYNGO1hbOmceXQyPhOBNo+byF1+97NumrEC9iG6iji1PII4+soWsXZqIV1Wm?=
+ =?us-ascii?Q?ZbKwN/Pvevt+EQfpEU0xeToF8vsBKRhVLkLCWjv1FMrMKyCnI6+R2a4m+BLA?=
+ =?us-ascii?Q?HhZL86vYFKi4ZkU6aeQAMtgEzmQJ6FmZjc+f5PTOx8CqnpG/54UKcyP0s44q?=
+ =?us-ascii?Q?SBo1X4ZHUIH68WekTvOBPqDHP1EnHE3qVz5R9KWR59liFaoi2zMhhNFffj6C?=
+ =?us-ascii?Q?LuSzjJLYaSD+hpnfsR7GP05J0Ug6rs4+p/q/kSe5/TNWL00h8VSH5mvY9FtN?=
+ =?us-ascii?Q?IODqm9eVFBd+I56lfdOCoapp0q16MzPszC0AtfauGniTW9jHNyThhP8O/taU?=
+ =?us-ascii?Q?Kz1pYzmqC7UiUhaJpza00l1yWnXqNk8Vc/MPT9ej1BkXHv86PgzlNat3YpM8?=
+ =?us-ascii?Q?7EkvNbk1hLWg2VIMkEh2E17a8avC9SpM8EVQS7/09RSMXK51r7lx7tMZJqb9?=
+ =?us-ascii?Q?MV/f0g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
- <20230509130111.62d587f1@rorschach.local.home> <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local> <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local> <CAHk-=whBKoovtifU2eCeyuBBee-QMcbxdXDLv0mu0k2DgxiaOw@mail.gmail.com>
- <CAHk-=wj1hh=ZUriY9pVFvD1MjqbRuzHc4yz=S2PCW7u3W0-_BQ@mail.gmail.com>
- <20230516222919.79bba667@rorschach.local.home> <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
- <20230517172243.GA152@W11-BEAU-MD.localdomain>
-In-Reply-To: <20230517172243.GA152@W11-BEAU-MD.localdomain>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 17 May 2023 11:15:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
-Message-ID: <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	David Vernet <void@manifault.com>, dthaler@microsoft.com, brauner@kernel.org, 
-	hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 722724af-1c2d-4f56-50b3-08db57034916
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2023 18:19:42.5392
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FVABKFs/EIp7NIdlJyNUQOkuWIxjaXi2XV/8NieRavVT9EKjztEt87/Ct//daGA4BWPfJmVMjVzHqe9HXaXuKwHuG57ugLgTqGfod+fmiCI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWH0PFED0FAB2BB
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 10:22=E2=80=AFAM Beau Belgrave
-<beaub@linux.microsoft.com> wrote:
+Jose E. Marchesi wrote:
+> As I mentioned during your talk at LSF/MM/BPF, I think that two items may=
+ be
+> a bit confusing, and worth to clarify:
 >
-> On Tue, May 16, 2023 at 08:03:09PM -0700, Linus Torvalds wrote:
-> > So what is it that could even race and change the list that is the
-> > cause of that rcu-ness?
+>   * the eBPF bindings for the ELF executable file format,
 >
-> Processes that fork() with previous user_events need to be duplicated.
-
-BS.
-
-Really. Stop making stuff up.
-
-The above statement is clearly not true - just LOOK AT THE CODE.
-
-Here's the loop in question:
-
-                list_for_each_entry_rcu(enabler, &mm->enablers, link) {
-                        if (enabler->event =3D=3D user) {
-                                attempt =3D 0;
-                                user_event_enabler_write(mm, enabler,
-true, &attempt);
-                        }
-                }
-
-and AT THE VERY TOP OF user_event_enabler_write() we have this:
-
-        lockdep_assert_held(&event_mutex);
-
-so either nobody has ever tested this code with lockdep enabled, or we
-hold that lock.
-
-And if nobody has ever tested the code, then it's broken anyway. That
-code N#EEDS the mutex lock. It needs to stop thinking it's RCU-safe,
-when it clearly isn't.
-
-So I ask again: why is that code using RCU list traversal, when it
-already holds the lock that makes the RCU'ness COMPLETELY POINTLESS.
-
-And again, that pointless RCU locking around this all seems to be the
-*only* reason for all these issues with pin_user_pages_remote().
-
-So I claim that this code is garbage.  Somebody didn't think about locking.
-
-Now, it's true that during fork, we have *another* RCU loop, but that
-one is harmless: that's not the one that does all this page pinning.
-
-Now, that one *does* do
-
-        list_add_rcu(&enabler->link, &mm->enablers);
-
-without actually holding any locks, but in this case 'mm' is a newly
-allocated private thing of a task that hasn't even been exposed to the
-world yet, so nobody should be able to even see it. So that code lacks
-the proper locking for the new list, but it does so because there is
-nothing that can race with the new list (and the old list is
-read-only, so RCU traversal of the old list works).
-
-So that "list_add_rcu()" there could probably be just a "list_add()",
-with a comment saying "this is new, nobody can see it".
-
-And if something *can* race it it and can see the new list, then it
-had damn well needs that mutex lock anyway, because that "something"
-could be actually modifying it. But that's separate from the page
-pinning situation.
-
-So again, I claim that the RCU'ness of the pin_user_pages part is
-broken and should simply not exist.
-
-> > Other code in that file happily just does
-> >
-> >         mutex_lock(&event_mutex);
-> >
-> >         list_for_each_entry_safe(enabler, next, &mm->enablers, link)
-> >
-> > with no RCU anywhere. Why does user_event_enabler_update() not do that?
+> What does "eBPF bindings" mean in this context?  I think there are at lea=
+st two
+> possible interpretations:
 >
-> This is due to the fork() case above without taking the event_mutex.
+> 1) The way BPF uses ELF, not impacting internal ELF structures.  For
+>    example the special section names that a conformant BPF loader
+>    expects and understands, such as ".probes", or rules on how to use
+>    the symbols visibility, or how notes are used (if they are used) etc
+>
+> 2) The ELF extensions that BPF introduces (and may introduce at some
+>    point) as an architecture, such as machine number, section types,
+>    special section indices, segment types, relocation types, symbol
+>    types, symbol bindings, additional section and segment flags, file
+>    flags, and perhaps structures of the contents of some special
+>    sections.
 
-See above. Your thinking is confused, and the code is broken.
+See https://www.ietf.org/archive/id/draft-thaler-bpf-elf-00.html
+It includes the values used in the ELF header, section naming,
+use of the "license" and "version" sections, meaning of "maps" and
+".maps" sections, etc.
 
-If somebody can see the new list while it is created during fork(),
-then you need the event_mutex to protect the creation of it.
+> If the intended meaning of that point in the draft is 1), then I would su=
+ggest to
+> change the wording to something like:
+>
+> * the requirements and expectations that ELF files shall fulfill so they
+>   can be handled by conformant eBPF implementations.
 
-And if nobody can see it, then you don't need any RCU protection against it=
+My own opinion is to leave the more detailed definition of what belongs
+in the ELF spec vs another document up to the WG to define rather than
+baking it into the charter.
+
+> Otherwise, if the intended meaning in the draft charter is to cover 2), I=
+ would
+> like to note that, usually and conventionally ELF extensions introduced b=
+y
+> architectures (and operating systems in the ELF sense)
+> are:
+>
+> - Part of the psABI (chapter Object Files).
+>
+> - Not standards, in the sense that these are not handled by
+>   standardization bodies.
+>
+> - Maintained by corporations, associations, and/or community groups, and
+>   published in one form or another.  A few examples of both arch and os
+>   extensions:
+>
+>   + The x86_64 psABI, including the ELF bits, is maintained by Intel
+>     (mainly by HJ Lu, a toolchain hacker) and available in a git repo in
+>     gitlab [1].
+>
+>   + The risc-v psABI, including the ELF bits, is maintained by I believe
+>     RISC-V International and the community, and is available in a git
+>     repo in github [2].
+>
+>   + The GNU extensions to the gABI, including the ELF bits, is
+>     maintained by GNU hackers and available in a git repo in sourceware
+>     [3].
+>
+>   + The llvm extensions to ELF, which in this case take the form of an
+>     "os" in the ELF sense even if it is not an operating system, are
+>     maintained by the LLVM project and available in the
+>     docs/Extensions.rst file in the llvm source distribution.
+>
+>   Note that more often than not this is kept quite informally, without
+>   the need of much bureocratic overhead.  A git repo in github or the
+>   like, maintained by the eBPF foundation or similar, would be more than
+>   enough IMO.
+
+To ensure interoperability, I'd want a slightly more formal specification.
+
+> - Open to suggestions and contributions from the community, vendors,
+>   implementors, etc.  This usually involves having a mailing list where
+>   such suggestions can be sent an discussed.  Almost always very little
+>   discussion is required, if any, because the proposed extension has
+>   already been agreed and worked on by the involved parties: toolchains,
+>   consumers, etc.
+>
+> - Continuously evolving.
+>
+> So, would the IETF working group be able to accomodate something like the
+> above?  For example, once a document is officially published by the worki=
+ng
+> group, how easy is it to modify it and make a new version to incorporate
+> something new, like a new relocation type for example?
+> (Apologies for my total ignorance of IETF business :/)
+
+There's 3 ways:
+1) The IETF can publish an extension spec with additional optional features=
 .
+2) The IETF can publish a replacement to the original (not usually desirabl=
+e)
+3) The IETF can define a process for other organizations or vendors to crea=
+te
+their own extensions, and some mechanism for ensuring that two such
+extensions don't collide using the same codepoint.  This is what the charte=
+r
+implies the WG should do.
 
-Those are the two choices. You can't have it both ways.
+Dave
 
-> > Oh, and even those other loops are a bit strange. Why do they use the
-> > "_safe" variant, even when they just traverse the list without
-> > changing it? Look at user_event_enabler_exists(), for example.
+> Likewise, of the following item:
 >
-> The other places in the code that do this either will remove the event
-> depending on the situation during the for_each, or they only hold the
-> register lock and don't hold the event_mutex.
-
-So?
-
-That "safe" variant doesn't imply any locking. It does *not* protect
-against events being removed. It *purely* protects against the loop
-itself removing entries.
-
-So this code:
-
-        list_for_each_entry_safe(enabler, next, &mm->enablers, link) {
-                if (enabler->addr =3D=3D uaddr &&
-                    (enabler->values & ENABLE_VAL_BIT_MASK) =3D=3D bit)
-                        return true;
-        }
-
-is simply nonsensical. There is no reason for the "safe". It does not
-make anything safer.
-
-The above loop is only safe under the mutex (it would need to be the
-"rcu" variant to be safe to traverse without locking), and since it
-isn't modifying the list, there's no reason for the safe.
-
-End result: the "safe" part is simply wrong.
-
-If the intention is "rcu" because of lack of locking, then the code needs t=
-o
- (a) get the rcu read lock
- (b) use the _rcu variant of the list traversal
-
-And if the intention is that it's done under the proper 'event_mutex'
-lock, then the "safe" part should simply be dropped.
-
-               Linus
+>   * the platform support ABI, including calling convention, linker
+>     requirements, and relocations,
+>
+> The calling convention and relocations are part of the psABI and usually
+> handled like described above.
+>
+> PS: BPF is obviously not a SysV system, but when it comes to document
+>     the ABI, including the ELF bits, I think it would be a good idea to
+>     use the same document structure conventionally used by psABI, as
+>     Alexei already suggested some time ago.  This would be most familiar
+>     to people.
+>
+> [1]
+> https://gitlab/.
+> com%2Fx86-psABIs%2Fx86-64-
+> ABI&data=3D05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f514d
+> 08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6381
+> 99331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
+> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sd
+> ata=3DSaprU2J9WsyJ5qhcxIGKO2F06YtO%2Bm1Gpjb2SIOApLA%3D&reserved=3D0
+> [2]
+> https://github/
+> .com%2Friscv-non-isa%2Friscv-elf-psabi-
+> doc%2Freleases%2Fdownload%2Fv1.0%2Friscv-
+> abi.pdf&data=3D05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f5
+> 14d08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6
+> 38199331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMD
+> AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C
+> &sdata=3DuKqnU93kcu8rZ9Y0gzWdmuHnK9ySPM847%2FDMm6vJNwQ%3D&res
+> erved=3D0
+> [3] git://sourceware.org/git/gnu-gabi.git
+>
+> --
+> Bpf mailing list
+> Bpf@ietf.org
+> https://www.i/
+> etf.org%2Fmailman%2Flistinfo%2Fbpf&data=3D05%7C01%7Cdthaler%40microso
+> ft.com%7Cd4f2ef78d9e0475f514d08db56e91312%7C72f988bf86f141af91ab2
+> d7cd011db47%7C1%7C0%7C638199331900533629%7CUnknown%7CTWFpb
+> GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+> Mn0%3D%7C2000%7C%7C%7C&sdata=3DW9FXcUwb181VQ6ksF2guASQ5FGtTE
+> KZuE0Yb8cHR9vI%3D&reserved=3D0
 
