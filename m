@@ -1,350 +1,189 @@
-Return-Path: <bpf+bounces-818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B344C707215
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73124707224
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:27:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC51281795
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FE422817BA
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13ACB34CF3;
-	Wed, 17 May 2023 19:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2D734CED;
+	Wed, 17 May 2023 19:27:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA9223D59;
-	Wed, 17 May 2023 19:26:10 +0000 (UTC)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79708A5D3;
-	Wed, 17 May 2023 12:25:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3f450815d0bso11907835e9.0;
-        Wed, 17 May 2023 12:25:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E99111AD
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 19:27:33 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF052698
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:27:08 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-96649b412easo185697766b.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684351549; x=1686943549;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aITIhEgQhOCGEYk6Vp/fZNHOQL457RQtUqwWkpxEXBw=;
-        b=MvsWmjCaNu8eL0xRTmAMzlqLtTWX+wxZX9RFpUjZz79foqQP8CndrImJ0ZFlQA1NkX
-         4urTvyrIEdZy7jwf/D0gaY7BYxFbfWneo4kedH6X7p36EpIokbTjMYg3ajRy6cq2LP0p
-         ZO9FlTqiBXoUM3fIlpuf98gqlRu0Kxxbwjf/Ax2huSGExG1MCuL9a0vKGAmFAzZsTyHy
-         I27LMsy2m6gZPbHWRo9TCYVlkybLeg6dW0Ri3egq0K7kjAsUfUcKLURvCg4RvlKRxSnj
-         r31dJ/LjWH0fYt00dqn9R5+iZVXsZaYmSo57DkWt2/0EzWbSDT2ApAeEB6bW0aP88G2Z
-         HZmw==
+        d=linux-foundation.org; s=google; t=1684351625; x=1686943625;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WBSaYe/tGc9yPiLd8UilCx8N10jcny5QbPvRBer8Htw=;
+        b=HBKWQFa2DPuj10BEKCtwv9YqZn8eBlRBDdJcmGxpxHSnoWtAtw1CLdBOvdjGsImt8W
+         3o8o/2/sH+g+2v1pUbcZpmcpZQU0oQAY9v33YPR0JJk1aZfxpwQjsRZgvvoqdeA0h7Ba
+         VVyDKj3O0rxroNIUQI90EXatNrBQofxO4GsDU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684351549; x=1686943549;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aITIhEgQhOCGEYk6Vp/fZNHOQL457RQtUqwWkpxEXBw=;
-        b=d3w1a37s4E7NJqnnQ3SKJP5aM4+XzkVQmZw1ZNZOEc+SLUt7jpIa3zCUDxyeQzbyAN
-         NR1xHtvhT9nSfDAMIROsE2ntkmSvOgWzCSebCmuTBCzDcW2zPN8X1a5ufGxrQvIYHvIZ
-         Kg4Imti4SZtsg12MbBElY10amBHMRBufIwkI500TxTzOLB5DdrNZeMv3jYE8TUwm74ts
-         LePfwjLmYGjUsxYpuM4FedvTK29Lk3WiF5wHWEb3J/w8qKc1xWI8n67tSgAfKxFJTDyL
-         c8EVP0Img6PwWwfLy3h4FbBqScfx5aAoSP8T46k0k5C5IBQZnyE+1KQz5sx7uevCZWdv
-         ArmQ==
-X-Gm-Message-State: AC+VfDwrqFOiTEa1qwOT4NKFTz2nLqiuOo5H1pFdfGLFuvdqN883H2r2
-	zKYbg2fDb4KmpW4lavr3X+w=
-X-Google-Smtp-Source: ACHHUZ4vj59CpEBUh+LCGakc9pc+qc/ayE4H4Tx2vR6aYGp/AvSAnn5rVqIlkYwGRVJwjsSCJX9GYA==
-X-Received: by 2002:a7b:c4c3:0:b0:3f3:1cb7:b2a6 with SMTP id g3-20020a7bc4c3000000b003f31cb7b2a6mr29514427wmk.6.1684351548372;
-        Wed, 17 May 2023 12:25:48 -0700 (PDT)
-Received: from lucifer.home (host86-156-84-164.range86-156.btcentralplus.com. [86.156.84.164])
-        by smtp.googlemail.com with ESMTPSA id r2-20020a5d4982000000b00306415ac69asm3770139wrq.15.2023.05.17.12.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 12:25:47 -0700 (PDT)
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"Michael S . Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-rdma@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	kvm@vger.kernel.org,
-	netdev@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	bpf@vger.kernel.org,
-	John Hubbard <jhubbard@nvidia.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: [PATCH v6 5/6] mm/gup: remove vmas parameter from pin_user_pages()
-Date: Wed, 17 May 2023 20:25:45 +0100
-Message-Id: <195a99ae949c9f5cb589d2222b736ced96ec199a.1684350871.git.lstoakes@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1684350871.git.lstoakes@gmail.com>
-References: <cover.1684350871.git.lstoakes@gmail.com>
+        d=1e100.net; s=20221208; t=1684351625; x=1686943625;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WBSaYe/tGc9yPiLd8UilCx8N10jcny5QbPvRBer8Htw=;
+        b=RVvKt2PhUsmx1ACvO8bWWqJ9KSo5mKcJnrHOGnvEHLJbyfVSAXnr5RW6FChxIghhNk
+         8p8sFrt6p0tXtJwou9w8/lNpXrMKmOGJFgMZ4QB9bYE+C0YYCdxPgqjK5u0Z6aaNOB5K
+         fTjOQmQCNCIWjq3Mr6Pov3PEYRAI4zqDnOl+cogVozqZHJglMTAVacUUKCOyuWxkTciu
+         pbWNj9iUlL4ajKcL0RYJDK2HZubx8REM+j8wEQ6/PVUBgJ783d38b9s5Enk5ivWb0Mt5
+         ayh9sS4aNKvxLXl/5NHPygcvwCWfC5zj7LhnzeQmaLEiQkHoETZJ+MZLhstsDC6GJ0wv
+         0UMg==
+X-Gm-Message-State: AC+VfDwIwa1M0tiVoY6w795dkB7KHxCOCsh+36HoTBiPIt1zYr2GKwnx
+	2UvHZqtlHjMSyxqRP+STPsLZXWSZo+Od2T81vTL+uwb3
+X-Google-Smtp-Source: ACHHUZ5ZEkRC/asw9jxu5s8oQuzFdngeUb3JCpuXmMeYaSTy/uZrAgvzJjbOB/hCRYbZtcDpDalgSg==
+X-Received: by 2002:a17:906:99c1:b0:947:ebd5:c798 with SMTP id s1-20020a17090699c100b00947ebd5c798mr42441735ejn.54.1684351624648;
+        Wed, 17 May 2023 12:27:04 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id w7-20020a170906b18700b0096f03770be2sm1124173ejy.52.2023.05.17.12.27.02
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 May 2023 12:27:02 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-96649b412easo185689566b.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:27:02 -0700 (PDT)
+X-Received: by 2002:a17:907:9603:b0:960:ce5:20c0 with SMTP id
+ gb3-20020a170907960300b009600ce520c0mr30090557ejc.20.1684351622229; Wed, 17
+ May 2023 12:27:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230509163050.127d5123@rorschach.local.home> <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
+ <20230515192407.GA85@W11-BEAU-MD.localdomain> <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
+ <CAHk-=whBKoovtifU2eCeyuBBee-QMcbxdXDLv0mu0k2DgxiaOw@mail.gmail.com>
+ <CAHk-=wj1hh=ZUriY9pVFvD1MjqbRuzHc4yz=S2PCW7u3W0-_BQ@mail.gmail.com>
+ <20230516222919.79bba667@rorschach.local.home> <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
+ <20230517172243.GA152@W11-BEAU-MD.localdomain> <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
+ <20230517190750.GA366@W11-BEAU-MD.localdomain>
+In-Reply-To: <20230517190750.GA366@W11-BEAU-MD.localdomain>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 17 May 2023 12:26:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whTBvXJuoi_kACo3qi5WZUmRrhyA-_=rRFsycTytmB6qw@mail.gmail.com>
+Message-ID: <CAHk-=whTBvXJuoi_kACo3qi5WZUmRrhyA-_=rRFsycTytmB6qw@mail.gmail.com>
+Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
+To: Beau Belgrave <beaub@linux.microsoft.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	David Vernet <void@manifault.com>, dthaler@microsoft.com, brauner@kernel.org, 
+	hch@infradead.org
+Content-Type: multipart/mixed; boundary="0000000000001f8c7105fbe8ac17"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-We are now in a position where no caller of pin_user_pages() requires the
-vmas parameter at all, so eliminate this parameter from the function and
-all callers.
+--0000000000001f8c7105fbe8ac17
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This clears the way to removing the vmas parameter from GUP altogether.
+On Wed, May 17, 2023 at 12:08=E2=80=AFPM Beau Belgrave
+<beaub@linux.microsoft.com> wrote:
+>
+> user_event_mm_dup() puts a new mm into the global list before the
+> enablers list is fully populated.
 
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com> (for qib)
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com> (for drivers/media)
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- arch/powerpc/mm/book3s64/iommu_api.c       | 2 +-
- drivers/infiniband/hw/qib/qib_user_pages.c | 2 +-
- drivers/infiniband/hw/usnic/usnic_uiom.c   | 2 +-
- drivers/infiniband/sw/siw/siw_mem.c        | 2 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c  | 2 +-
- drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
- drivers/vhost/vdpa.c                       | 2 +-
- include/linux/mm.h                         | 3 +--
- io_uring/rsrc.c                            | 2 +-
- mm/gup.c                                   | 9 +++------
- mm/gup_test.c                              | 9 ++++-----
- net/xdp/xdp_umem.c                         | 2 +-
- 12 files changed, 17 insertions(+), 22 deletions(-)
+Then that simply needs to be fixed.
 
-diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
-index 81d7185e2ae8..d19fb1f3007d 100644
---- a/arch/powerpc/mm/book3s64/iommu_api.c
-+++ b/arch/powerpc/mm/book3s64/iommu_api.c
-@@ -105,7 +105,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
- 
- 		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
- 				FOLL_WRITE | FOLL_LONGTERM,
--				mem->hpages + entry, NULL);
-+				mem->hpages + entry);
- 		if (ret == n) {
- 			pinned += n;
- 			continue;
-diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
-index f693bc753b6b..1bb7507325bc 100644
---- a/drivers/infiniband/hw/qib/qib_user_pages.c
-+++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-@@ -111,7 +111,7 @@ int qib_get_user_pages(unsigned long start_page, size_t num_pages,
- 		ret = pin_user_pages(start_page + got * PAGE_SIZE,
- 				     num_pages - got,
- 				     FOLL_LONGTERM | FOLL_WRITE,
--				     p + got, NULL);
-+				     p + got);
- 		if (ret < 0) {
- 			mmap_read_unlock(current->mm);
- 			goto bail_release;
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-index 2a5cac2658ec..84e0f41e7dfa 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -140,7 +140,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 		ret = pin_user_pages(cur_base,
- 				     min_t(unsigned long, npages,
- 				     PAGE_SIZE / sizeof(struct page *)),
--				     gup_flags, page_list, NULL);
-+				     gup_flags, page_list);
- 
- 		if (ret < 0)
- 			goto out;
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index f51ab2ccf151..e6e25f15567d 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -422,7 +422,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
- 		umem->page_chunk[i].plist = plist;
- 		while (nents) {
- 			rv = pin_user_pages(first_page_va, nents, foll_flags,
--					    plist, NULL);
-+					    plist);
- 			if (rv < 0)
- 				goto out_sem_up;
- 
-diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-index 53001532e8e3..405b89ea1054 100644
---- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-+++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-@@ -180,7 +180,7 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 		data, size, dma->nr_pages);
- 
- 	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
--			     dma->pages, NULL);
-+			     dma->pages);
- 
- 	if (err != dma->nr_pages) {
- 		dma->nr_pages = (err >= 0) ? err : 0;
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index de97e38c3b82..4d4405f058e8 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1052,7 +1052,7 @@ static int vduse_dev_reg_umem(struct vduse_dev *dev,
- 		goto out;
- 
- 	pinned = pin_user_pages(uaddr, npages, FOLL_LONGTERM | FOLL_WRITE,
--				page_list, NULL);
-+				page_list);
- 	if (pinned != npages) {
- 		ret = pinned < 0 ? pinned : -ENOMEM;
- 		goto out;
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 8c1aefc865f0..61223fcbe82b 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -983,7 +983,7 @@ static int vhost_vdpa_pa_map(struct vhost_vdpa *v,
- 	while (npages) {
- 		sz2pin = min_t(unsigned long, npages, list_size);
- 		pinned = pin_user_pages(cur_base, sz2pin,
--					gup_flags, page_list, NULL);
-+					gup_flags, page_list);
- 		if (sz2pin != pinned) {
- 			if (pinned < 0) {
- 				ret = pinned;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 679b41ef7a6d..db09c7062965 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2412,8 +2412,7 @@ static inline struct page *get_user_page_vma_remote(struct mm_struct *mm,
- long get_user_pages(unsigned long start, unsigned long nr_pages,
- 		    unsigned int gup_flags, struct page **pages);
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
--		    unsigned int gup_flags, struct page **pages,
--		    struct vm_area_struct **vmas);
-+		    unsigned int gup_flags, struct page **pages);
- long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
- 		    struct page **pages, unsigned int gup_flags);
- long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-diff --git a/io_uring/rsrc.c b/io_uring/rsrc.c
-index b6451f8bc5d5..b56bda46a9eb 100644
---- a/io_uring/rsrc.c
-+++ b/io_uring/rsrc.c
-@@ -1044,7 +1044,7 @@ struct page **io_pin_pages(unsigned long ubuf, unsigned long len, int *npages)
- 	ret = 0;
- 	mmap_read_lock(current->mm);
- 	pret = pin_user_pages(ubuf, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
--			      pages, NULL);
-+			      pages);
- 	if (pret == nr_pages)
- 		*npages = nr_pages;
- 	else
-diff --git a/mm/gup.c b/mm/gup.c
-index 1493cc8dd526..36701b5f0123 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -3274,8 +3274,6 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  * @gup_flags:	flags modifying lookup behaviour
-  * @pages:	array that receives pointers to the pages pinned.
-  *		Should be at least nr_pages long.
-- * @vmas:	array of pointers to vmas corresponding to each page.
-- *		Or NULL if the caller does not require them.
-  *
-  * Nearly the same as get_user_pages(), except that FOLL_TOUCH is not set, and
-  * FOLL_PIN is set.
-@@ -3284,15 +3282,14 @@ EXPORT_SYMBOL(pin_user_pages_remote);
-  * see Documentation/core-api/pin_user_pages.rst for details.
-  */
- long pin_user_pages(unsigned long start, unsigned long nr_pages,
--		    unsigned int gup_flags, struct page **pages,
--		    struct vm_area_struct **vmas)
-+		    unsigned int gup_flags, struct page **pages)
- {
- 	int locked = 1;
- 
--	if (!is_valid_gup_args(pages, vmas, NULL, &gup_flags, FOLL_PIN))
-+	if (!is_valid_gup_args(pages, NULL, NULL, &gup_flags, FOLL_PIN))
- 		return 0;
- 	return __gup_longterm_locked(current->mm, start, nr_pages,
--				     pages, vmas, &locked, gup_flags);
-+				     pages, NULL, &locked, gup_flags);
- }
- EXPORT_SYMBOL(pin_user_pages);
- 
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index 9ba8ea23f84e..1668ce0e0783 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -146,18 +146,17 @@ static int __gup_test_ioctl(unsigned int cmd,
- 						 pages + i);
- 			break;
- 		case PIN_BASIC_TEST:
--			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i,
--					    NULL);
-+			nr = pin_user_pages(addr, nr, gup->gup_flags, pages + i);
- 			break;
- 		case PIN_LONGTERM_BENCHMARK:
- 			nr = pin_user_pages(addr, nr,
- 					    gup->gup_flags | FOLL_LONGTERM,
--					    pages + i, NULL);
-+					    pages + i);
- 			break;
- 		case DUMP_USER_PAGES_TEST:
- 			if (gup->test_flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN)
- 				nr = pin_user_pages(addr, nr, gup->gup_flags,
--						    pages + i, NULL);
-+						    pages + i);
- 			else
- 				nr = get_user_pages(addr, nr, gup->gup_flags,
- 						    pages + i);
-@@ -270,7 +269,7 @@ static inline int pin_longterm_test_start(unsigned long arg)
- 							gup_flags, pages);
- 		else
- 			cur_pages = pin_user_pages(addr, remaining_pages,
--						   gup_flags, pages, NULL);
-+						   gup_flags, pages);
- 		if (cur_pages < 0) {
- 			pin_longterm_test_stop();
- 			ret = cur_pages;
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index 02207e852d79..06cead2b8e34 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -103,7 +103,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
- 
- 	mmap_read_lock(current->mm);
- 	npgs = pin_user_pages(address, umem->npgs,
--			      gup_flags | FOLL_LONGTERM, &umem->pgs[0], NULL);
-+			      gup_flags | FOLL_LONGTERM, &umem->pgs[0]);
- 	mmap_read_unlock(current->mm);
- 
- 	if (npgs != umem->npgs) {
--- 
-2.40.1
+user_event_mm_dup() should not madd the mm into the global list until
+it is *done*.
 
+Because if it makes that list visible to others in a half-way state,
+then it needs to use the proper locking and use event_mutex.
+
+You can't say "this is so critical that we can't take a lock" and then
+use that as an excuse to simply do buggy code.
+
+Either take the lock in user_event_mm_dup(), or make sure that the
+data structures are all completely local so that no lock is necessary.
+
+Here's a COMPLETELY UNTESTED patch that just separates out the notion
+of "allocate" and "attach".
+
+NOTE NOTE NOTE! I am *not* claiming this patch works. It builds for
+me. It looks right. It seems like it's the right thing to do. But it
+might have some issues.
+
+With this, the newly dup'ed list is attached to the process once after
+it is done, so nobody can see the list being built up.
+
+Also note that this does NOT fix the incorrect RCU walks.
+
+           Linus
+
+--0000000000001f8c7105fbe8ac17
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lhs3gera0>
+X-Attachment-Id: f_lhs3gera0
+
+IGtlcm5lbC90cmFjZS90cmFjZV9ldmVudHNfdXNlci5jIHwgMjkgKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAxMSBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9rZXJuZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYyBiL2tl
+cm5lbC90cmFjZS90cmFjZV9ldmVudHNfdXNlci5jCmluZGV4IGIxZWNkNzY3NzY0Mi4uYjJhZWNi
+ZmJiZDI0IDEwMDY0NAotLS0gYS9rZXJuZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYworKysg
+Yi9rZXJuZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYwpAQCAtNTM4LDEwICs1MzgsOSBAQCBz
+dGF0aWMgc3RydWN0IHVzZXJfZXZlbnRfbW0gKnVzZXJfZXZlbnRfbW1fZ2V0X2FsbChzdHJ1Y3Qg
+dXNlcl9ldmVudCAqdXNlcikKIAlyZXR1cm4gZm91bmQ7CiB9CiAKLXN0YXRpYyBzdHJ1Y3QgdXNl
+cl9ldmVudF9tbSAqdXNlcl9ldmVudF9tbV9jcmVhdGUoc3RydWN0IHRhc2tfc3RydWN0ICp0KQor
+c3RhdGljIHN0cnVjdCB1c2VyX2V2ZW50X21tICp1c2VyX2V2ZW50X21tX2FsbG9jKHN0cnVjdCB0
+YXNrX3N0cnVjdCAqdCkKIHsKIAlzdHJ1Y3QgdXNlcl9ldmVudF9tbSAqdXNlcl9tbTsKLQl1bnNp
+Z25lZCBsb25nIGZsYWdzOwogCiAJdXNlcl9tbSA9IGt6YWxsb2Moc2l6ZW9mKCp1c2VyX21tKSwg
+R0ZQX0tFUk5FTF9BQ0NPVU5UKTsKIApAQCAtNTUzLDEyICs1NTIsNiBAQCBzdGF0aWMgc3RydWN0
+IHVzZXJfZXZlbnRfbW0gKnVzZXJfZXZlbnRfbW1fY3JlYXRlKHN0cnVjdCB0YXNrX3N0cnVjdCAq
+dCkKIAlyZWZjb3VudF9zZXQoJnVzZXJfbW0tPnJlZmNudCwgMSk7CiAJcmVmY291bnRfc2V0KCZ1
+c2VyX21tLT50YXNrcywgMSk7CiAKLQlzcGluX2xvY2tfaXJxc2F2ZSgmdXNlcl9ldmVudF9tbXNf
+bG9jaywgZmxhZ3MpOwotCWxpc3RfYWRkX3JjdSgmdXNlcl9tbS0+bGluaywgJnVzZXJfZXZlbnRf
+bW1zKTsKLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZ1c2VyX2V2ZW50X21tc19sb2NrLCBmbGFn
+cyk7Ci0KLQl0LT51c2VyX2V2ZW50X21tID0gdXNlcl9tbTsKLQogCS8qCiAJICogVGhlIGxpZmV0
+aW1lIG9mIHRoZSBtZW1vcnkgZGVzY3JpcHRvciBjYW4gc2xpZ2h0bHkgb3V0bGFzdAogCSAqIHRo
+ZSB0YXNrIGxpZmV0aW1lIGlmIGEgcmVmIHRvIHRoZSB1c2VyX2V2ZW50X21tIGlzIHRha2VuCkBA
+IC01NzIsNiArNTY1LDE3IEBAIHN0YXRpYyBzdHJ1Y3QgdXNlcl9ldmVudF9tbSAqdXNlcl9ldmVu
+dF9tbV9jcmVhdGUoc3RydWN0IHRhc2tfc3RydWN0ICp0KQogCXJldHVybiB1c2VyX21tOwogfQog
+CitzdGF0aWMgdm9pZCB1c2VyX2V2ZW50X21tX2F0dGFjaChzdHJ1Y3QgdXNlcl9ldmVudF9tbSAq
+dXNlcl9tbSwgc3RydWN0IHRhc2tfc3RydWN0ICp0KQoreworCXVuc2lnbmVkIGxvbmcgZmxhZ3M7
+CisKKwlzcGluX2xvY2tfaXJxc2F2ZSgmdXNlcl9ldmVudF9tbXNfbG9jaywgZmxhZ3MpOworCWxp
+c3RfYWRkX3JjdSgmdXNlcl9tbS0+bGluaywgJnVzZXJfZXZlbnRfbW1zKTsKKwlzcGluX3VubG9j
+a19pcnFyZXN0b3JlKCZ1c2VyX2V2ZW50X21tc19sb2NrLCBmbGFncyk7CisKKwl0LT51c2VyX2V2
+ZW50X21tID0gdXNlcl9tbTsKK30KKwogc3RhdGljIHN0cnVjdCB1c2VyX2V2ZW50X21tICpjdXJy
+ZW50X3VzZXJfZXZlbnRfbW0odm9pZCkKIHsKIAlzdHJ1Y3QgdXNlcl9ldmVudF9tbSAqdXNlcl9t
+bSA9IGN1cnJlbnQtPnVzZXJfZXZlbnRfbW07CkBAIC01NzksMTAgKzU4MywxMiBAQCBzdGF0aWMg
+c3RydWN0IHVzZXJfZXZlbnRfbW0gKmN1cnJlbnRfdXNlcl9ldmVudF9tbSh2b2lkKQogCWlmICh1
+c2VyX21tKQogCQlnb3RvIGluYzsKIAotCXVzZXJfbW0gPSB1c2VyX2V2ZW50X21tX2NyZWF0ZShj
+dXJyZW50KTsKKwl1c2VyX21tID0gdXNlcl9ldmVudF9tbV9hbGxvYyhjdXJyZW50KTsKIAogCWlm
+ICghdXNlcl9tbSkKIAkJZ290byBlcnJvcjsKKworCXVzZXJfZXZlbnRfbW1fYXR0YWNoKHVzZXJf
+bW0sIGN1cnJlbnQpOwogaW5jOgogCXJlZmNvdW50X2luYygmdXNlcl9tbS0+cmVmY250KTsKIGVy
+cm9yOgpAQCAtNjcwLDcgKzY3Niw3IEBAIHZvaWQgdXNlcl9ldmVudF9tbV9yZW1vdmUoc3RydWN0
+IHRhc2tfc3RydWN0ICp0KQogCiB2b2lkIHVzZXJfZXZlbnRfbW1fZHVwKHN0cnVjdCB0YXNrX3N0
+cnVjdCAqdCwgc3RydWN0IHVzZXJfZXZlbnRfbW0gKm9sZF9tbSkKIHsKLQlzdHJ1Y3QgdXNlcl9l
+dmVudF9tbSAqbW0gPSB1c2VyX2V2ZW50X21tX2NyZWF0ZSh0KTsKKwlzdHJ1Y3QgdXNlcl9ldmVu
+dF9tbSAqbW0gPSB1c2VyX2V2ZW50X21tX2FsbG9jKHQpOwogCXN0cnVjdCB1c2VyX2V2ZW50X2Vu
+YWJsZXIgKmVuYWJsZXI7CiAKIAlpZiAoIW1tKQpAQCAtNjg0LDEwICs2OTAsMTEgQEAgdm9pZCB1
+c2VyX2V2ZW50X21tX2R1cChzdHJ1Y3QgdGFza19zdHJ1Y3QgKnQsIHN0cnVjdCB1c2VyX2V2ZW50
+X21tICpvbGRfbW0pCiAKIAlyY3VfcmVhZF91bmxvY2soKTsKIAorCXVzZXJfZXZlbnRfbW1fYXR0
+YWNoKG1tLCB0KTsKIAlyZXR1cm47CiBlcnJvcjoKIAlyY3VfcmVhZF91bmxvY2soKTsKLQl1c2Vy
+X2V2ZW50X21tX3JlbW92ZSh0KTsKKwl1c2VyX2V2ZW50X21tX2Rlc3Ryb3kobW0pOwogfQogCiBz
+dGF0aWMgYm9vbCBjdXJyZW50X3VzZXJfZXZlbnRfZW5hYmxlcl9leGlzdHModW5zaWduZWQgbG9u
+ZyB1YWRkciwK
+--0000000000001f8c7105fbe8ac17--
 
