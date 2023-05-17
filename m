@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DA6D7060D3
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:09:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E45E7060F9
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78E2C1C20DD4
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 07:09:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16EE01C20AE6
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 07:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817FC8BFA;
-	Wed, 17 May 2023 07:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1248492;
+	Wed, 17 May 2023 07:19:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512BD8835;
-	Wed, 17 May 2023 07:08:36 +0000 (UTC)
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5D41AD;
-	Wed, 17 May 2023 00:08:32 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0VirhhGk_1684307306;
-Received: from 30.221.150.40(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VirhhGk_1684307306)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4A28478
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:19:40 +0000 (UTC)
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54301E1;
+	Wed, 17 May 2023 00:19:37 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Vireqb9_1684307968;
+Received: from 30.97.48.190(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vireqb9_1684307968)
           by smtp.aliyun-inc.com;
-          Wed, 17 May 2023 15:08:27 +0800
-Message-ID: <beed306a-9f5a-c05b-6f0a-ee28e17f8100@linux.alibaba.com>
-Date: Wed, 17 May 2023 15:08:24 +0800
+          Wed, 17 May 2023 15:19:32 +0800
+Message-ID: <caea44dd-10a8-accb-7dec-868fb8f2f061@linux.alibaba.com>
+Date: Wed, 17 May 2023 15:19:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -34,23 +34,30 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.1
-Subject: Re: [PATCH bpf-next v1 2/5] net/smc: allow smc to negotiate protocols
- on policies
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
- song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
- edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- jolsa@kernel.org, guwen@linux.alibaba.com
-References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
- <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
- <0e1656dc-b67c-ec65-83a4-6709fb186061@linux.dev>
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <0e1656dc-b67c-ec65-83a4-6709fb186061@linux.dev>
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [RFC PATCH bpf-next v3 00/37] FUSE BPF: A Stacked Filesystem
+ Extension for FUSE
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Daniel Rosenberg <drosen@google.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Joanne Koong <joannelkoong@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
+References: <20230418014037.2412394-1-drosen@google.com>
+ <CAJfpegtuNgbZfLiKnpzdEP0sNtCt=83NjGtBnmtvMaon2avv2w@mail.gmail.com>
+ <CA+PiJmTMs2u=J6ANYqHdGww5SoE_focZGjMRZk5WgoH8fVuCsA@mail.gmail.com>
+ <93e0e991-147f-0021-d635-95e615057273@linux.alibaba.com>
+ <CAOQ4uxjCebxGxkguAh9s4_Vg7QHM=oBoV0LUPZpb+0pcm3z1bw@mail.gmail.com>
+ <7386e858-1026-2924-9df9-22350b1e33a7@linux.alibaba.com>
+In-Reply-To: <7386e858-1026-2924-9df9-22350b1e33a7@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-12.6 required=5.0 tests=BAYES_00,
@@ -63,358 +70,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 5/16/23 6:52 AM, Martin KaFai Lau wrote:
-> On 5/11/23 11:24 PM, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On 2023/5/17 00:05, Gao Xiang wrote:
+> Hi Amir,
+> 
+> On 2023/5/17 23:51, Amir Goldstein wrote:
+>> On Wed, May 17, 2023 at 5:50 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+>>>
+>>>
+>>>
+>>> On 2023/5/2 17:07, Daniel Rosenberg wrote:
+>>>> On Mon, Apr 24, 2023 at 8:32 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>>>>>
+>>>>>
+>>>>> The security model needs to be thought about and documented.  Think
+>>>>> about this: the fuse server now delegates operations it would itself
+>>>>> perform to the passthrough code in fuse.  The permissions that would
+>>>>> have been checked in the context of the fuse server are now checked in
+>>>>> the context of the task performing the operation.  The server may be
+>>>>> able to bypass seccomp restrictions.  Files that are open on the
+>>>>> backing filesystem are now hidden (e.g. lsof won't find these), which
+>>>>> allows the server to obfuscate accesses to backing files.  Etc.
+>>>>>
+>>>>> These are not particularly worrying if the server is privileged, but
+>>>>> fuse comes with the history of supporting unprivileged servers, so we
+>>>>> should look at supporting passthrough with unprivileged servers as
+>>>>> well.
+>>>>>
+>>>>
+>>>> This is on my todo list. My current plan is to grab the creds that the
+>>>> daemon uses to respond to FUSE_INIT. That should keep behavior fairly
+>>>> similar. I'm not sure if there are cases where the fuse server is
+>>>> operating under multiple contexts.
+>>>> I don't currently have a plan for exposing open files via lsof. Every
+>>>> such file should relate to one that will show up though. I haven't dug
+>>>> into how that's set up, but I'm open to suggestions.
+>>>>
+>>>>> My other generic comment is that you should add justification for
+>>>>> doing this in the first place.  I guess it's mainly performance.  So
+>>>>> how performance can be won in real life cases?   It would also be good
+>>>>> to measure the contribution of individual ops to that win.   Is there
+>>>>> another reason for this besides performance?
+>>>>>
+>>>>> Thanks,
+>>>>> Miklos
+>>>>
+>>>> Our main concern with it is performance. We have some preliminary
+>>>> numbers looking at the pure passthrough case. We've been testing using
+>>>> a ramdrive on a somewhat slow machine, as that should highlight
+>>>> differences more. We ran fio for sequential reads, and random
+>>>> read/write. For sequential reads, we were seeing libfuse's
+>>>> passthrough_hp take about a 50% hit, with fuse-bpf not being
+>>>> detectably slower. For random read/write, we were seeing a roughly 90%
+>>>> drop in performance from passthrough_hp, while fuse-bpf has about a 7%
+>>>> drop in read and write speed. When we use a bpf that traces every
+>>>> opcode, that performance hit increases to a roughly 1% drop in
+>>>> sequential read performance, and a 20% drop in both read and write
+>>>> performance for random read/write. We plan to make more complex bpf
+>>>> examples, with fuse daemon equivalents to compare against.
+>>>>
+>>>> We have not looked closely at the impact of individual opcodes yet.
+>>>>
+>>>> There's also a potential ease of use for fuse-bpf. If you're
+>>>> implementing a fuse daemon that is largely mirroring a backing
+>>>> filesystem, you only need to write code for the differences in
+>>>> behavior. For instance, say you want to remove image metadata like
+>>>> location. You could give bpf information on what range of data is
+>>>> metadata, and zero out that section without having to handle any other
+>>>> operations.
+>>>
+>>> A bit out of topic (although I'm not quite look into FUSE BPF internals)
+>>> After roughly listening to this topic in FS track last week, I'm not
+>>> quite sure (at least in the long term) if it might be better if
+>>> ebpf-related filter/redirect stuffs could be landed in vfs or in a
+>>> somewhat stackable fs so that we could redirect/filter any sub-fstree
+>>> in principle?    It's just an open question and I have no real tendency
+>>> of this but do we really need a BPF-filter functionality for each
+>>> individual fs?
 >>
->> As we all know, the SMC protocol is not suitable for all scenarios,
->> especially for short-lived. However, for most applications, they cannot
->> guarantee that there are no such scenarios at all. Therefore, apps
->> may need some specific strategies to decide shall we need to use SMC
->> or not.
+>> I think that is a valid question, but the answer is that even if it makes sense,
+>> doing something like this in vfs would be a much bigger project with larger
+>> consequences on performance and security and whatnot, so even if
+>> (and a very big if) this ever happens, using FUSE-BPF as a playground for
+>> this sort of stuff would be a good idea.
+> 
+> My current observation is that the total Fuse-BPF LoC is already beyond the
+
+
+                          ^ sorry I double-checked now I was wrong, forget about it.
+
+> whole FUSE itself.  In addition, it almost hooks all fs operations which
+> impacts something to me.
+> 
 >>
->> Just like the congestion control implementation in TCP, this patch
->> provides a generic negotiator implementation. If necessary,
->> we can provide different protocol negotiation strategies for
->> apps based on this implementation.
+>> This reminds me of union mounts - it made sense to have union mount
+>> functionality in vfs, but after a long winding road, a stacked fs (overlayfs)
+>> turned out to be a much more practical solution.
+> 
+> Yeah, I agree.  So it was just a pure hint on my side.
+> 
 >>
->> But most importantly, this patch provides the possibility of
->> eBPF injection, allowing users to implement their own protocol
->> negotiation policy in userspace.
+>>>
+>>> It sounds much like
+>>> https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-filter-drivers
+>>>
 >>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   include/net/smc.h        |  32 +++++++++++
->>   net/Makefile             |   1 +
->>   net/smc/Kconfig          |  11 ++++
->>   net/smc/af_smc.c         | 134 
->> ++++++++++++++++++++++++++++++++++++++++++++++-
->>   net/smc/smc_negotiator.c | 119 
->> +++++++++++++++++++++++++++++++++++++++++
->>   net/smc/smc_negotiator.h | 116 
->> ++++++++++++++++++++++++++++++++++++++++
->>   6 files changed, 412 insertions(+), 1 deletion(-)
->>   create mode 100644 net/smc/smc_negotiator.c
->>   create mode 100644 net/smc/smc_negotiator.h
+>> Nice reference.
+>> I must admit that I found it hard to understand what Windows filter drivers
+>> can do compared to FUSE-BPF design.
+>> It'd be nice to get some comparison from what is planned for FUSE-BPF.
+> 
+> At least some investigation/analysis first might be better in the long
+> term development.
+> 
 >>
->> diff --git a/include/net/smc.h b/include/net/smc.h
->> index 6d076f5..191061c 100644
->> --- a/include/net/smc.h
->> +++ b/include/net/smc.h
->> @@ -296,6 +296,8 @@ struct smc_sock {                /* smc sock 
->> container */
->>       atomic_t                queued_smc_hs;  /* queued smc 
->> handshakes */
->>       struct inet_connection_sock_af_ops        af_ops;
->>       const struct inet_connection_sock_af_ops    *ori_af_ops;
->> +    /* protocol negotiator ops */
->> +    const struct smc_sock_negotiator_ops *negotiator_ops;
->>                           /* original af ops */
->>       int            sockopt_defer_accept;
->>                           /* sockopt TCP_DEFER_ACCEPT
->> @@ -316,4 +318,34 @@ struct smc_sock {                /* smc sock 
->> container */
->>                            */
->>   };
->>   +#ifdef CONFIG_SMC_BPF
->> +/* BPF struct ops for smc protocol negotiator */
->> +struct smc_sock_negotiator_ops {
->> +
->> +    struct list_head    list;
->> +
->> +    /* ops name */
->> +    char        name[16];
->> +    /* key for name */
->> +    u32            key;
->> +
->> +    /* init with sk */
->> +    void (*init)(struct sock *sk);
->> +
->> +    /* release with sk */
->> +    void (*release)(struct sock *sk);
->> +
->> +    /* advice for negotiate */
->> +    int (*negotiate)(struct sock *sk);
->> +
->> +    /* info gathering timing */
->> +    void (*collect_info)(struct sock *sk, int timing);
->> +
->> +    /* module owner */
->> +    struct module *owner;
->> +};
->> +#else
->> +struct smc_sock_negotiator_ops {};
->> +#endif
->> +
->>   #endif    /* _SMC_H */
->> diff --git a/net/Makefile b/net/Makefile
->> index 4c4dc53..222916a 100644
->> --- a/net/Makefile
->> +++ b/net/Makefile
->> @@ -52,6 +52,7 @@ obj-$(CONFIG_TIPC)        += tipc/
->>   obj-$(CONFIG_NETLABEL)        += netlabel/
->>   obj-$(CONFIG_IUCV)        += iucv/
->>   obj-$(CONFIG_SMC)        += smc/
->> +obj-$(CONFIG_SMC_BPF)        += smc/smc_negotiator.o > 
->> obj-$(CONFIG_RFKILL)        += rfkill/
->>   obj-$(CONFIG_NET_9P)        += 9p/
->>   obj-$(CONFIG_CAIF)        += caif/
->> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
->> index 1ab3c5a..bdcc9f1 100644
->> --- a/net/smc/Kconfig
->> +++ b/net/smc/Kconfig
->> @@ -19,3 +19,14 @@ config SMC_DIAG
->>         smcss.
->>           if unsure, say Y.
->> +
->> +config SMC_BPF
->> +    bool "SMC: support eBPF" if SMC
->
->
-> so smc_negotiator will always be in the kernel image even af_smc is 
-> compiled as a module? If the SMC_BPF needs to support af_smc as a 
-> module, proper implementation needs to be added to bpf_struct_ops to 
-> support module first. It is work-in-progress.
->
-
-smc_negotiator will not no in the kernel image when af_smc is compiled 
-as a module,
-it's requires config SMC_BPF also sets to be Y,  while it's default to 
-be N. That's is,
-even if af_smc is compiled as a module but with no SMC_BPF set, 
-smc_negotiator
-doesn't exist anywhere.
-
->> +    depends on BPF_SYSCALL
->> +    default n
->> +    help
->> +      Supports eBPF to allows user mode participation in SMC's 
->> protocol process
->> +      via ebpf programs. Alternatively, obtain information about the 
->> SMC socks
->> +      through the ebpf program.
->> +
->> +      If unsure, say N.
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 50c38b6..7406fd4 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -52,6 +52,7 @@
->>   #include "smc_close.h"
->>   #include "smc_stats.h"
->>   #include "smc_tracepoint.h"
->> +#include "smc_negotiator.h"
->>   #include "smc_sysctl.h"
->>     static DEFINE_MUTEX(smc_server_lgr_pending);    /* serialize link 
->> group
->> @@ -68,6 +69,119 @@
->>   static void smc_tcp_listen_work(struct work_struct *);
->>   static void smc_connect_work(struct work_struct *);
->>   +#ifdef CONFIG_SMC_BPF
->> +
->> +/* Check if sock should use smc */
->> +int smc_sock_should_select_smc(const struct smc_sock *smc)
->> +{
->> +    const struct smc_sock_negotiator_ops *ops;
->> +    int ret;
->> +
->> +    rcu_read_lock();
->> +    ops = READ_ONCE(smc->negotiator_ops);
->> +
->> +    /* No negotiator_ops supply or no negotiate func set,
->> +     * always pass it.
->> +     */
->> +    if (!ops || !ops->negotiate) {
->
-> A smc_sock_negotiator_ops without ->negotiate? Is it useful at all to 
-> allow the register in the first place?
->
-
-You are right, this can be avoid before registration. I'll fix it.
-
->> +        rcu_read_unlock();
->> +        return SK_PASS;
->> +    }
->> +
->> +    ret = ops->negotiate((struct sock *)&smc->sk);
->> +    rcu_read_unlock();
->> +    return ret;
->> +}
->> +
->> +void smc_sock_perform_collecting_info(const struct smc_sock *smc, 
->> int timing)
->> +{
->> +    const struct smc_sock_negotiator_ops *ops;
->> +
->> +    rcu_read_lock();
->> +    ops = READ_ONCE(smc->negotiator_ops);
->> +
->> +    if (!ops || !ops->collect_info) {
->> +        rcu_read_unlock();
->> +        return;
->> +    }
->> +
->> +    ops->collect_info((struct sock *)&smc->sk, timing);
->> +    rcu_read_unlock();
->> +}
->> +
->> +int smc_sock_assign_negotiator_ops(struct smc_sock *smc, const char 
->> *name)
->> +{
->> +    struct smc_sock_negotiator_ops *ops;
->> +    int ret = -EINVAL;
->> +
->> +    /* already set */
->> +    if (READ_ONCE(smc->negotiator_ops))
->> +        smc_sock_cleanup_negotiator_ops(smc, /* might be still 
->> referenced */ false);
->> +
->> +    /* Just for clear negotiator_ops */
->> +    if (!name || !strlen(name))
->> +        return 0;
->> +
->> +    rcu_read_lock();
->> +    ops = smc_negotiator_ops_get_by_name(name);
->> +    if (likely(ops)) {
->> +        if (unlikely(!bpf_try_module_get(ops, ops->owner))) {
->> +            ret = -EACCES;
->> +        } else {
->> +            WRITE_ONCE(smc->negotiator_ops, ops);
->> +            /* make sure ops can be seen */
->> +            smp_wmb();
->
-> This rcu_read_lock(), WRITE_ONCE, and smp_wmb() combo looks very 
-> suspicious. smc->negotiator_ops is protected by rcu (+refcnt) or 
-> lock_sock()?
->
-
-All access to ops is protected by RCU, and there are no lock_sock. 
-WRITE_ONCE() and smp_wmb() do
-not participate in any guarantee of the availability of ops,  The 
-purpose to using them is just wish the latest values
-can be read as soon as possible , In fact, even if old value is read, 
-there will be no problem in logic because all updates
-will do synchronize_rcu() and all access to ops is under in rcu_read_lock().
-
-> I am going to stop reviewing here.
->
-
-Hoping my explanation can answer your questions and still looking forward to
-your more feedback 😁.
-
-Best wishes.
-D. Wythe
-
->> +            if (ops->init)
->> +                ops->init(&smc->sk);
->> +            ret = 0;
->> +        }
->> +    }
->> +    rcu_read_unlock();
->> +    return ret;
->> +}
->> +
->> +void smc_sock_cleanup_negotiator_ops(struct smc_sock *smc, bool 
->> no_more)
->> +{
->> +    const struct smc_sock_negotiator_ops *ops;
->> +
->> +    ops = READ_ONCE(smc->negotiator_ops);
->> +
->> +    /* not all smc sock has negotiator_ops */
->> +    if (!ops)
->> +        return;
->> +
->> +    might_sleep();
->> +
->> +    /* Just ensure data integrity */
->> +    WRITE_ONCE(smc->negotiator_ops, NULL);
->> +    /* make sure NULL can be seen */
->> +    smp_wmb();
->> +    /* if the socks may have references to the negotiator ops to be 
->> removed.
->> +     * it means that we might need to wait for the readers of ops
->> +     * to complete. It's slow though.
->> +     */
->> +    if (unlikely(!no_more))
->> +        synchronize_rcu();
->> +    if (ops->release)
->> +        ops->release(&smc->sk);
->> +    bpf_module_put(ops, ops->owner);
->> +}
->> +
->> +void smc_sock_clone_negotiator_ops(struct sock *parent, struct sock 
->> *child)
->> +{
->> +    const struct smc_sock_negotiator_ops *ops;
->> +
->> +    rcu_read_lock();
->> +    ops = READ_ONCE(smc_sk(parent)->negotiator_ops);
->> +    if (ops && bpf_try_module_get(ops, ops->owner)) {
->> +        smc_sk(child)->negotiator_ops = ops;
->> +        if (ops->init)
->> +            ops->init(child);
->> +    }
->> +    rcu_read_unlock();
->> +}
->> +#endif
->> +
->>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct 
->> netlink_callback *cb)
->>   {
->>       struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
->> @@ -166,6 +280,9 @@ static bool smc_hs_congested(const struct sock *sk)
->>       if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->>           return true;
->>   +    if (!smc_sock_should_select_smc(smc))
->> +        return true;
->> +
->>       return false;
->>   }
->>   @@ -320,6 +437,9 @@ static int smc_release(struct socket *sock)
->>       sock_hold(sk); /* sock_put below */
->>       smc = smc_sk(sk);
->>   +    /* trigger info gathering if needed.*/
->> +    smc_sock_perform_collecting_info(smc, SMC_SOCK_CLOSED_TIMING);
->> +
->>       old_state = sk->sk_state;
->>         /* cleanup for a dangling non-blocking connect */
->> @@ -356,6 +476,9 @@ static int smc_release(struct socket *sock)
->>     static void smc_destruct(struct sock *sk)
->>   {
->> +    /* cleanup negotiator_ops if set */
->> +    smc_sock_cleanup_negotiator_ops(smc_sk(sk), /* no longer used */ 
->> true);
->> +
->>       if (sk->sk_state != SMC_CLOSED)
->>           return;
->>       if (!sock_flag(sk, SOCK_DEAD))
->> @@ -1627,7 +1750,14 @@ static int smc_connect(struct socket *sock, 
->> struct sockaddr *addr,
->>       }
->>         smc_copy_sock_settings_to_clc(smc);
->> -    tcp_sk(smc->clcsock->sk)->syn_smc = 1;
->> +    /* accept out connection as SMC connection */
->> +    if (smc_sock_should_select_smc(smc) == SK_PASS) {
->> +        tcp_sk(smc->clcsock->sk)->syn_smc = 1;
->> +    } else {
->> +        tcp_sk(smc->clcsock->sk)->syn_smc = 0;
->> +        smc_switch_to_fallback(smc, /* active fallback */ 0);
->> +    }
->> +
->>       if (smc->connect_nonblock) {
->>           rc = -EALREADY;
->>           goto out;
->> @@ -1679,6 +1809,8 @@ static int smc_clcsock_accept(struct smc_sock 
->> *lsmc, struct smc_sock **new_smc)
->>       }
->>       *new_smc = smc_sk(new_sk);
->>   +    smc_sock_clone_negotiator_ops(lsk, new_sk);
->> +
->>       mutex_lock(&lsmc->clcsock_release_lock);
->>       if (lsmc->clcsock)
->>           rc = kernel_accept(lsmc->clcsock, &new_clcsock, 
->> SOCK_NONBLOCK);
->
-
+>> Interesting to note that there is a "legacy" Windows filter driver API,
+>> so Windows didn't get everything right for the first API - that is especially
+>> interesting to look at as repeating other people's mistakes would be a shame.
+> 
+> I'm not familiar with that details as well, yet I saw that they have a
+> filesystem filter subsystem, so I mentioned it here.
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> Thanks,
+>> Amir.
 
