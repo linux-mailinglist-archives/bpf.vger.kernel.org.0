@@ -1,102 +1,181 @@
-Return-Path: <bpf+bounces-742-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-743-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87C6D70637C
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:01:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DE487063A7
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:11:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E161C20E71
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:01:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA2E28158F
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 09:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BBF79D5;
-	Wed, 17 May 2023 09:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5342AD3B;
+	Wed, 17 May 2023 09:11:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3B93D62
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:01:42 +0000 (UTC)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C325FD0
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:01:25 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-510bcd2d6b8so4664405a12.0
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1684314081; x=1686906081;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8BFnzpFnEWHgBCYzwUlEu4io3XMBxiABg4u5t/U4XNM=;
-        b=aQ35lN37DYUOGChsdqb0kqQN4HJT38nERHgvEjALuQ7BO+TAECKaybq6G/dAuMj6yq
-         4hpn6i6zz4t1w2OsZKeN0ula9iZBr4x1Ai+ZD6WDHES5gfFjtfcFLmG40IkB903jVn7t
-         IH8FOPBAudvgqXWRUc76iovKokS1OWF2iFFXtg+BOjLEFFBS9aWUj19ovGyM/Qc+QyFG
-         mwAhDMpHLxDfuOE7s57Ph1ANVdGyBIU4yUABXC6NXn7mKmClX/e9egc0J3R8/uVZo5X3
-         J/CJMZiyuVFxOEItgq4jUIvxnxFxHuNstZmOLGwz6bb1f73MqJCo4tNCGQGD7Gb7BRJl
-         iU1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684314081; x=1686906081;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8BFnzpFnEWHgBCYzwUlEu4io3XMBxiABg4u5t/U4XNM=;
-        b=Picm1qB3pxUueHfJk+35z0VxXZWbPlfroKaQVI/Z75eYf0pjewzmcT/oiZcxBbsm1n
-         teLf+B+WmPmNR23f6QLRyacFwQnHFD1k2n+pm5o79jLJAEp2RSgTUYKHgNiFPN6RjFRX
-         iH3YGrHRcQYdxm/D5SxBdtvu1VVwrAZXdlY6mf8x5EQJc4A8YW7pk3KMFhnQ+ozjxGor
-         hIomc+SS/xT/K8ksJN/G7GryAsUcQMpXHhi90i8lnTFH+jiSiwSu70jnaOIBIMqSCzVn
-         9pF6kRQ5BmamQh6GcxjKHNo+bHEOuX5kT3X0+PkoefBi3rGn+URkZChARkeTJaCZnGcw
-         hBCQ==
-X-Gm-Message-State: AC+VfDyp6pM1egXIoPimr24YBnm+xwNA6EsmthNgABpmSH5OG90SHLy4
-	WmrL5fA4KPHpefarhK3RayV3Y+XRMd1gKp6S8TNAbg==
-X-Google-Smtp-Source: ACHHUZ5P75xcx+CWtz+lJaC31PQ4IxYJSQC9FYvo3svbCkpxO/YbHVL4pxqH9BUbLvt4AL2mmI+w2gTcjJsFJ28Ci9I=
-X-Received: by 2002:a17:907:a407:b0:965:6a32:451f with SMTP id
- sg7-20020a170907a40700b009656a32451fmr1326875ejc.6.1684314080855; Wed, 17 May
- 2023 02:01:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F8F5249
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:11:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29101C433EF;
+	Wed, 17 May 2023 09:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684314690;
+	bh=xT4zU3jH2jelP24jCUJi2iX6shHo2mZAKa/XoyVDquI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BsS4ucaV8pB5HoWbtlvYULgqgbkrB1jsNCwlCaIVA0LZyVx+OtDz/AmDRivah1/QJ
+	 fMIjtr3OsJZCuRbVebTvLtQrhPyqCP5uL3h3xSQ4loS3KhVyg9p9nPW9jCtfx3aE4w
+	 twwFXhAPurGQTOyNf2wszjFAzJAHE5VfngFpGsFFda7tlrZcZbZFjgNFonSgOAL0I3
+	 N9BxAlybLvVXaVJVdKpZ/myr7vN6ALMDiNuPa0/B/m86/EkIF12NsHfnyF4xSDA4Ow
+	 HR5nPV4yloQ0LjiUpO7QE8pipJzksjXUOH2s7DFRJ3c6Dz8N8udKjISRITgc1+LIcK
+	 fExB0TQB/VIRw==
+Date: Wed, 17 May 2023 11:11:24 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+	cyphar@cyphar.com, lennart@poettering.net,
+	linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Al Viro <viro@zeniv.linux.org.uk>
+Subject: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
+Message-ID: <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
+References: <20230516001348.286414-1-andrii@kernel.org>
+ <20230516001348.286414-2-andrii@kernel.org>
+ <20230516-briefe-blutzellen-0432957bdd15@brauner>
+ <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230515121521.30569-1-lmb@isovalent.com> <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
-In-Reply-To: <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 17 May 2023 10:01:09 +0100
-Message-ID: <CAN+4W8hixyHYOwYRh-3WedS-a0KTQk8VQ4JxqM8y-DQY-yjsNA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: btf: restore resolve_mode when popping the
- resolve stack
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
 
-On Wed, May 17, 2023 at 7:26=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
->
-> On 5/15/23 5:15 AM, Lorenz Bauer wrote:
-> > In commit 9b459804ff99 ("btf: fix resolving BTF_KIND_VAR after ARRAY, S=
-TRUCT, UNION, PTR")
-> > I fixed a bug that occurred during resolving of a DATASEC by strategica=
-lly resetting
-> > resolve_mode. This fixes the immediate bug but leaves us open to future=
- bugs where
-> > nested types have to be resolved.
->
-> hmm... future bugs like when adding new BTF_KIND in the future?
+On Tue, May 16, 2023 at 11:02:42AM -0700, Andrii Nakryiko wrote:
+> On Tue, May 16, 2023 at 2:07 AM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Mon, May 15, 2023 at 05:13:46PM -0700, Andrii Nakryiko wrote:
+> > > Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() syscall
+> > > forces users to specify pinning location as a string-based absolute or
+> > > relative (to current working directory) path. This has various
+> > > implications related to security (e.g., symlink-based attacks), forces
+> > > BPF FS to be exposed in the file system, which can cause races with
+> > > other applications.
+> > >
+> > > One of the feedbacks we got from folks working with containers heavily
+> > > was that inability to use purely FD-based location specification was an
+> > > unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GET
+> > > commands. This patch closes this oversight, adding path_fd field to
+> >
+> > Cool!
+> >
+> > > BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established by
+> > > *at() syscalls for dirfd + pathname combinations.
+> > >
+> > > This now allows interesting possibilities like working with detached BPF
+> > > FS mount (e.g., to perform multiple pinnings without running a risk of
+> > > someone interfering with them), and generally making pinning/getting
+> > > more secure and not prone to any races and/or security attacks.
+> > >
+> > > This is demonstrated by a selftest added in subsequent patch that takes
+> > > advantage of new mount APIs (fsopen, fsconfig, fsmount) to demonstrate
+> > > creating detached BPF FS mount, pinning, and then getting BPF map out of
+> > > it, all while never exposing this private instance of BPF FS to outside
+> > > worlds.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h            |  4 ++--
+> > >  include/uapi/linux/bpf.h       |  5 +++++
+> > >  kernel/bpf/inode.c             | 16 ++++++++--------
+> > >  kernel/bpf/syscall.c           |  8 +++++---
+> > >  tools/include/uapi/linux/bpf.h |  5 +++++
+> > >  5 files changed, 25 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 36e4b2d8cca2..f58895830ada 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -2077,8 +2077,8 @@ struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
+> > >  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+> > >  struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
+> > >
+> > > -int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+> > > -int bpf_obj_get_user(const char __user *pathname, int flags);
+> > > +int bpf_obj_pin_user(u32 ufd, int path_fd, const char __user *pathname);
+> > > +int bpf_obj_get_user(int path_fd, const char __user *pathname, int flags);
+> > >
+> > >  #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
+> > >  #define DEFINE_BPF_ITER_FUNC(target, args...)                        \
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 1bb11a6ee667..db2870a52ce0 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -1420,6 +1420,11 @@ union bpf_attr {
+> > >               __aligned_u64   pathname;
+> > >               __u32           bpf_fd;
+> > >               __u32           file_flags;
+> > > +             /* same as dirfd in openat() syscall; see openat(2)
+> > > +              * manpage for details of dirfd/path_fd and pathname semantics;
+> > > +              * zero path_fd implies AT_FDCWD behavior
+> > > +              */
+> > > +             __u32           path_fd;
+> > >       };
+> >
+> > So 0 is a valid file descriptor and can trivially be created and made to
+> > refer to any file. Is this a conscious decision to have a zero value
+> > imply AT_FDCWD and have you done this somewhere else in bpf already?
+> > Because that's contrary to how any file descriptor based apis work.
+> >
+> > How this is usually solved for extensible structs is to have a flag
+> > field that raises a flag to indicate that the fd fiel is set and thus 0
+> > can be used as a valid value.
+> >
+> > The way you're doing it right now is very counterintuitive to userspace
+> > and pretty much guaranteed to cause subtle bugs.
+> 
+> Yes, it's a very bpf()-specific convention we've settled on a while
+> ago. It allows a cleaner and simpler backwards compatibility story
+> without having to introduce new flags every single time. Most of BPF
+> UAPI by now dictates that (otherwise valid) FD 0 can't be used to pass
+> it to bpf() syscall. Most of the time users will be blissfully unaware
+> because libbpf and other BPF libraries are checking for fd == 0 and
+> dup()'ing them to avoid ever returning FD 0 to the user.
+> 
+> tl;dr, a conscious decision consistent with the rest of BPF UAPI. It
+> is a bpf() peculiarity, yes.
 
-It could just be refactoring of the codebase? What is the downside of
-restoring the mode when popping the item? It also makes push and pop
-symmetrical. Feel free to NACK if you don't want this change, not
-going to push for it.
+Adding fsdevel so we're aware of this quirk.
+
+So I'm not sure whether this was ever discussed on fsdevel when you took
+the decision to treat fd 0 as AT_FDCWD or in general treat fd 0 as an
+invalid value.
+
+If it was discussed then great but if not then I would like to make it
+very clear that if in the future you decide to introduce custom
+semantics for vfs provided infrastructure - especially when exposed to
+userspace - that you please Cc us.
+
+You often make it very clear on the list that you don't like it when
+anything that touches bpf code doesn't end up getting sent to the bpf
+mailing list. It is exactly the same for us.
+
+This is not a rant I'm really just trying to make sure that we agree on
+common ground when it comes to touching each others code or semantic
+assumptions.
+
+I personally find this extremely weird to treat fd 0 as anything other
+than a random fd number as it goes against any userspace assumptions and
+drastically deviates from basically every file descriptor interface we
+have. I mean, you're not just saying fd 0 is invalid you're even saying
+it means AT_FDCWD.
+
+For every other interface, including those that pass fds in structs
+whose extensibility is premised on unknown fields being set to zero,
+have ways to make fd 0 work just fine. You could've done that to without
+inventing custom fd semantics.
 
