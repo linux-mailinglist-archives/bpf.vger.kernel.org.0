@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-698-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-699-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE54705E44
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 05:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6CA705E48
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 05:45:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 634BE1C20C3F
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 03:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169C51C20B0E
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 03:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAC62116;
-	Wed, 17 May 2023 03:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2515623D8;
+	Wed, 17 May 2023 03:45:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF0817E0
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:45:21 +0000 (UTC)
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7750730E8;
-	Tue, 16 May 2023 20:45:20 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-53202149ae2so134187a12.3;
-        Tue, 16 May 2023 20:45:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74BA2100
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:45:27 +0000 (UTC)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9920430E8;
+	Tue, 16 May 2023 20:45:26 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1ae454844edso2995535ad.1;
+        Tue, 16 May 2023 20:45:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684295120; x=1686887120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n0fdPmeINo3M3GEcsjn+DqgIArQ+TF8t88l9Aksr7VQ=;
-        b=Dy5EDllK8uVJFjPdvz1RUbi2yk4rgd1PjqZJX+ibJORvvteuhARUVlChiDWi2GdYyj
-         ornOQnlZWAccsQTsX9fLi2XGvQ4x2OgrV6l+T2ZMZvd75JIePFW+SoFmsNoYqlf4tmj6
-         mu8MFImYX/tmrIswvc9vSL7jdvTVtA3XMoOw2H5DMKVzaHKqWcXvCHVJhmLlIYe3M0zg
-         DYvxBvbgYH6iW3+axk10pT1phM6PW493USZleI0YoHLDNsChz3x3uojs4ai7zGPrwo1S
-         IyPBHmYqqM0fciz6V34Z9NRne8SpZebj4C4tOarrPY2uQ/ucSWcFEYkSxS9uD+fy6URe
-         cVdQ==
+        d=gmail.com; s=20221208; t=1684295126; x=1686887126;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2uMSZdlVzbxeM11qsVcr0sdcteuxEXHjRqP1IVvopNU=;
+        b=NaiABcWCkvK2DCfRgsRBZ/BumHoPpPMfbt+vLGTc6mJZBbSsqJ0Qfs1mqA7kr8myUo
+         s7kSI/PYlCeuqR4ZbKL9S1vhuAY+ZO32SdCRVFiTtC3/xKk1CUQDuNXIMAh3wyt3/G64
+         rQWz6cmVHkWp9jnZhxAKMfX2GMLup8u+aKqErt2ZO3RuFuVlpDjKXH4tL2d1zxJYDeRP
+         ECA8Kbi6BULm0yKVVaAKuR3xEaYyCpEWicvFRD1kFGuO1KsnamVYvfWDtne7SmUss8Bi
+         uvPjR3V/VweHcFPDZkGddzvzmyH6a+8PLhXzZqGWD0Fq589AY6UlUaV1QRpGrKEEYisb
+         4R5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684295120; x=1686887120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n0fdPmeINo3M3GEcsjn+DqgIArQ+TF8t88l9Aksr7VQ=;
-        b=l0ksyFCRoVbMcBPmlWi6PK9EeCg7RZBTX08SVqJn2wRD7oqD0FqHMRv+13bREZ6NJO
-         8KI7e2gbgWLm02wYBaMd389o/UcMDzSci6yEdk0M9BFnWNMEydtVdWWoR3EgFo92bZNC
-         /gtZtydupaC0Vk/2oLLAd/yWgv0l19zC+4xWwR0DWQcDmknLPzNU/B3UMTAh1xgalzYa
-         ri9b7rjawpMozv/CEIa/mewKQ2fC4CtwyroQ1bSMu0p2fbe+wTpsPLY3PAi0pAuGWCea
-         BIHEQqdZ+LbabjQFDhsEm4dmkrCE6N5eA3MjEYp/dvPWNi4nPOPyVLTCcH/WV4XmAA70
-         EEFg==
-X-Gm-Message-State: AC+VfDxvMh/x76YgZmG+c7gIxnNWJP8uuR6L2adgGKyMMz7p99FkhQrw
-	vLExXrQc46eykkQMW9Rg6z8=
-X-Google-Smtp-Source: ACHHUZ4ZIj8959vfQi1i7G2NHQaO5ugC9tIBfRlSHL/tUdJglqovvvIgcNxw0ueQxt1v5RcuroWL7A==
-X-Received: by 2002:a17:903:110f:b0:1a2:8c7e:f310 with SMTP id n15-20020a170903110f00b001a28c7ef310mr48043595plh.35.1684295119892;
-        Tue, 16 May 2023 20:45:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684295126; x=1686887126;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2uMSZdlVzbxeM11qsVcr0sdcteuxEXHjRqP1IVvopNU=;
+        b=J4BMx1ya4BmdmL60ryHoZmFvThJnrJXVEsA4vdF+wvjX71fsKpl64LeKeqnxFlOyVq
+         QEUQOs0rJDItpbkNRvO+3x0+tWwkz/AQwIQDnRGtJ9ui79RLcyIG6vN20E7FiaN1sP7T
+         5SrOkl+Zz7d6If6NC1Vbnc4kBMmQF27lwNUtHit1JJL187YnhZWUoKwF1Edz/yeos7P6
+         myzJKHEae5nFuj9f7REe7tTz9POnjw031fjJjoj11L+O2oaAuetDEnWmy9jV4U8O8g6u
+         ACC0fT7y76A52gcmAdI5MZCnQoRu5Cgcszo9AXpOxjkUOWURQ1QPXI4MsILLiSqPV7rn
+         gfAg==
+X-Gm-Message-State: AC+VfDyjoN6lbjda/o5PRHkG9YQOxIoPx17PieAjPcXwOqyS+OrOcx1u
+	fVN1woXYoNTgCG1Q9EEA3kA=
+X-Google-Smtp-Source: ACHHUZ4VwlgfLZwJWUKsSA1KMAjkQD96iP+U3wN3PhFLqe4E4WOUqEU/zeGOhl4OyE2MLWqyzdNQQQ==
+X-Received: by 2002:a17:903:32c5:b0:1aa:e5cd:647a with SMTP id i5-20020a17090332c500b001aae5cd647amr54727835plr.23.1684295126019;
+        Tue, 16 May 2023 20:45:26 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.83])
-        by smtp.googlemail.com with ESMTPSA id t2-20020a170902e84200b001a19196af48sm16336746plg.64.2023.05.16.20.45.14
+        by smtp.googlemail.com with ESMTPSA id t2-20020a170902e84200b001a19196af48sm16336746plg.64.2023.05.16.20.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 May 2023 20:45:19 -0700 (PDT)
+        Tue, 16 May 2023 20:45:25 -0700 (PDT)
 From: Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
@@ -82,11 +83,14 @@ Cc: Albert Ou <aou@eecs.berkeley.edu>,
 	Conor Dooley <conor@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Yonghong Song <yhs@fb.com>,
-	Ze Gao <zegao@tencent.com>
-Subject: [PATCH v3 0/3] Make fprobe + rethook immune to recursion
-Date: Wed, 17 May 2023 11:45:05 +0800
-Message-Id: <20230517034510.15639-1-zegao@tencent.com>
+	Ze Gao <zegao@tencent.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v3 1/4] rethook: use preempt_{disable, enable}_notrace in rethook_trampoline_handler
+Date: Wed, 17 May 2023 11:45:06 +0800
+Message-Id: <20230517034510.15639-2-zegao@tencent.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230517034510.15639-1-zegao@tencent.com>
+References: <20230517034510.15639-1-zegao@tencent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,34 +105,42 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi all,
+This patch replaces preempt_{disable, enable} with its corresponding
+notrace version in rethook_trampoline_handler so no worries about stack
+recursion or overflow introduced by preempt_count_{add, sub} under
+fprobe + rethook context.
 
-This is the 3rd version of patch series that fix the ftrace rethook recursion problem.
+Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+Signed-off-by: Ze Gao <zegao@tencent.com>
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-2-zegao@tencent.com
+---
+ kernel/trace/rethook.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes since v2:
-- refine commit message of [PATCH v2 2/4] fprobe: make fprobe_kprobe_handler recursion free
-
-v1: https://lore.kernel.org/linux-trace-kernel/cover.1684120990.git.zegao@tencent.com/T/
-v2: https://lore.kernel.org/linux-trace-kernel/ZGP4ypidaxQGdp7Y@krava/T/#mb9e74fe74d5800ee424234b26c6def9d5135237b
-
-The original discussions of this bug can be checked out here:
-
-https://lore.kernel.org/bpf/CAD8CoPCfPmqZH6BJCk3Y1-02BLVVsbQ6OeaNOhcfGWmdF0oX8A@mail.gmail.com/T/#t
-
-Ze Gao (4):
-  rethook: use preempt_{disable, enable}_notrace in
-    rethook_trampoline_handler
-  fprobe: make fprobe_kprobe_handler recursion free
-  fprobe: add recursion detection in fprobe_exit_handler
-  rethook, fprobe: do not trace rethook related functions
-
- arch/riscv/kernel/probes/Makefile |  2 +
- arch/s390/kernel/Makefile         |  1 +
- arch/x86/kernel/Makefile          |  1 +
- kernel/trace/fprobe.c             | 73 ++++++++++++++++++++++++-------
- kernel/trace/rethook.c            |  4 +-
- 5 files changed, 64 insertions(+), 17 deletions(-)
-
+diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+index 32c3dfdb4d6a..60f6cb2b486b 100644
+--- a/kernel/trace/rethook.c
++++ b/kernel/trace/rethook.c
+@@ -288,7 +288,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+ 	 * These loops must be protected from rethook_free_rcu() because those
+ 	 * are accessing 'rhn->rethook'.
+ 	 */
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	/*
+ 	 * Run the handler on the shadow stack. Do not unlink the list here because
+@@ -321,7 +321,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+ 		first = first->next;
+ 		rethook_recycle(rhn);
+ 	}
+-	preempt_enable();
++	preempt_enable_notrace();
+ 
+ 	return correct_ret_addr;
+ }
 -- 
 2.40.1
 
