@@ -1,153 +1,211 @@
-Return-Path: <bpf+bounces-780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CC0706B0E
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:27:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759AA706B13
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D8A71C20EE5
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:27:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BA691C20F69
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487DD31135;
-	Wed, 17 May 2023 14:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC3B31137;
+	Wed, 17 May 2023 14:27:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F7731128
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:27:47 +0000 (UTC)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C6C768A
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:27:45 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-309438004a6so426124f8f.2
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 07:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684333664; x=1686925664;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FvGN9GGSeHWc0U3WJN4kyeHpvQipVEQ+CKfroAq5qK0=;
-        b=SZNdHklFePdxgUpmgwG+U9ZFXAIqh2r7t3MZqPluJUkqtkBOvPhoT0DJJy+sUE4oxF
-         oblxgq60YZvcjzep0aZXAgl97k/zrBamh3RWFn26Brm202PlzedZttP+qfuit3bGbGGD
-         mQCza6a1M1q8ew7pzmdwTGeWPpd4hjvpz+pzE4DfLKOsGEzGMW3yNNh0VRwJ26zE10ZP
-         3SbJYZU/ShkGXyMnJgPvguhVSzIitFcJKHx66jddj1mRDo2VOluEerb+bBalnZ7UajK1
-         aZx28kYVZmPYsAT7+PYF1HSJ0sVMncwKQDfOPHgsRdnu3UNqeG39pJoO2D5kSgyGfn2Y
-         cVfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684333664; x=1686925664;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FvGN9GGSeHWc0U3WJN4kyeHpvQipVEQ+CKfroAq5qK0=;
-        b=LCPGzYKrworZey+aThzmgfJaKZ4RtJLltvqqsq7m0+VV6GY8ULauhBefF3cAZNhNkn
-         1c8exT9PwwwBKlWLBmRd+cutSHYBwKBXfBAkLTDrDi8HXevPN4Eyx/5PRK8GrS5Hl463
-         7JOmyCpiU3IXCaXMFD1cYG6DSHc+fn4aoPHDBL669kv2PPeEc3ziwOqQM/bY4D4s/iLu
-         VmBbJs1s0JBlzfk5xlYe7jmrPLCd7nBu0/mIm5NAs5qP4HZpsn51w7c16sTgmwIvF/E9
-         IYM9eiQ61i4DZnor9hXHP+ufJxFoCNhP4OgbPR6wC81H8yz8H4lJ4D00HsMgKutpy5qX
-         a/AQ==
-X-Gm-Message-State: AC+VfDx21YRKde5ufgPwk4LKN5GizxYqNqs+XbRPQGr3RF82ABLXQVUZ
-	la/HCZd7O/bj2XM20uVYLBQ=
-X-Google-Smtp-Source: ACHHUZ62fljMbfPGQibBT2G3ptNUGP0adgcBpMixR41XpiSu1EFKiW3bOYefl+33zsMc8ld21BT3nA==
-X-Received: by 2002:adf:eac6:0:b0:307:9d2a:fd35 with SMTP id o6-20020adfeac6000000b003079d2afd35mr973755wrn.53.1684333663838;
-        Wed, 17 May 2023 07:27:43 -0700 (PDT)
-Received: from [192.168.1.95] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id j9-20020a5d4489000000b00301a351a8d6sm3038534wrq.84.2023.05.17.07.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 07:27:43 -0700 (PDT)
-Message-ID: <387a14cc12e30d713d388a23bb6d986bb16330ae.camel@gmail.com>
-Subject: Re: [PATCHv4 bpf-next 08/10] selftests/bpf: Allow to use kfunc from
- testmod.ko in test_verifier
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, David Vernet
- <void@manifault.com>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,  John
- Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
- Stanislav Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>, Kumar
- Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 17 May 2023 17:27:41 +0300
-In-Reply-To: <CAEf4BzaLAZX_xVyRkavFiz+yLR057TuERcmsOc_amtjQCbHVoA@mail.gmail.com>
-References: <20230515133756.1658301-1-jolsa@kernel.org>
-	 <20230515133756.1658301-9-jolsa@kernel.org>
-	 <CAEf4BzaLAZX_xVyRkavFiz+yLR057TuERcmsOc_amtjQCbHVoA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5037231128
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 14:27:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8431DC433EF;
+	Wed, 17 May 2023 14:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684333678;
+	bh=AoRYpT1YLThZVxUKY9ePgVwDgIFfFF9PtIMUgbNxJyM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WUNzXiJRJbiyKq9aqV065F7GO6DlSJst8wqq9ksE45jev/z5BNZjACDIsU+CKWd2p
+	 YgjGdckmgkxBOYGmqbO/Q7DmiNaGJvtGLhQQtz66t4NP/id+Uo0xu+RUnqZF6ypu4X
+	 FFZtvKjWpBheV7AQNhVpo1Hp4lfMZ0AfY5VaaItM8xbTSl5SojwEZIseT1QiWOyUeJ
+	 LeYUIrL2ez1oYq8e4XSBAeTn2ReJaBV8RZFEYpvmNI4OQI6b//O81nIMFwAGKKM2qy
+	 d5iS608w4+1IOEz2k6JrXrTWYbS3l4RsjV0WCQ9ODtU1E64QoYkryjNgQo+2XTUAyC
+	 R+33bZ4yB6rVg==
+Date: Wed, 17 May 2023 23:27:51 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Ze Gao <zegao2021@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>, Alexei Starovoitov
+ <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Heiko Carstens <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo
+ Molnar <mingo@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ x86@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, Ze Gao
+ <zegao@tencent.com>
+Subject: Re: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion
+ free
+Message-Id: <20230517232751.09126a6cec8786a954e54bcf@kernel.org>
+In-Reply-To: <20230517034510.15639-3-zegao@tencent.com>
+References: <20230517034510.15639-1-zegao@tencent.com>
+	<20230517034510.15639-3-zegao@tencent.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2023-05-16 at 14:45 -0700, Andrii Nakryiko wrote:
-> On Mon, May 15, 2023 at 6:39=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrot=
-e:
-> >=20
-> > Currently the test_verifier allows test to specify kfunc symbol
-> > and search for it in the kernel BTF.
-> >=20
-> > Adding the possibility to search for kfunc also in bpf_testmod
-> > module when it's not found in kernel BTF.
-> >=20
-> > To find bpf_testmod btf we need to get back SYS_ADMIN cap.
-> >=20
-> > Acked-by: David Vernet <void@manifault.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/test_verifier.c | 161 +++++++++++++++++---
-> >  1 file changed, 139 insertions(+), 22 deletions(-)
-> >=20
->=20
-> Eduard is working on migrating most (if not all) test_verifier tests
-> into test_progs where we can use libbpf declarative functionality for
-> things like this.
->=20
-> Eduard, can you please review this part? Would it make sense to just
-> wait for the migration? If not, will there be anything involved to
-> support something like this for the future migration?
+On Wed, 17 May 2023 11:45:07 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-Hi Andrii,
+> Current implementation calls kprobe related functions before doing
+> ftrace recursion check in fprobe_kprobe_handler, which opens door
+> to kernel crash due to stack recursion if preempt_count_{add, sub}
+> is traceable in kprobe_busy_{begin, end}.
+> 
+> Things goes like this without this patch quoted from Steven:
+> "
+> fprobe_kprobe_handler() {
+>    kprobe_busy_begin() {
+>       preempt_disable() {
+>          preempt_count_add() {  <-- trace
+>             fprobe_kprobe_handler() {
+> 		[ wash, rinse, repeat, CRASH!!! ]
+> "
+> 
+> By refactoring the common part out of fprobe_kprobe_handler and
+> fprobe_handler and call ftrace recursion detection at the very beginning,
+> the whole fprobe_kprobe_handler is free from recursion.
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-zegao@tencent.com
+> ---
+>  kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 44 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 9abb3905bc8e..097c740799ba 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -20,30 +20,22 @@ struct fprobe_rethook_node {
+>  	char data[];
+>  };
+>  
+> -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> -			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> +static inline void __fprobe_handler(unsigned long ip, unsigned long
+> +		parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fregs)
 
-I'm not working on migrating remaining test_verifier tests
-to test_progs/inline assembly at the moment.
+OK, I picked up this series to probes/fixes. Note that I fixed this line 
+because the "unsigned long parent_ip" was split into 2 lines.
 
-Regarding this specific change, as far as I understand it is
-necessary for the following tests:
-- verifier/calls.c
-- verifier/map_kptr.c
-Both files can't be migrated at the moment.
-I spent some time today debugging, but the reasons are
-obscure and require further investigation.
+Thank you,
 
-As to this particular patch itself, I tested it locally and
-it seems to work fine. None of the changes prohibit future
-migration to inline assembly, should such migration happen.
 
-Thanks,
-Eduard
+>  {
+>  	struct fprobe_rethook_node *fpr;
+>  	struct rethook_node *rh = NULL;
+>  	struct fprobe *fp;
+>  	void *entry_data = NULL;
+> -	int bit, ret;
+> +	int ret;
+>  
+>  	fp = container_of(ops, struct fprobe, ops);
+> -	if (fprobe_disabled(fp))
+> -		return;
+> -
+> -	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+> -	if (bit < 0) {
+> -		fp->nmissed++;
+> -		return;
+> -	}
+>  
+>  	if (fp->exit_handler) {
+>  		rh = rethook_try_get(fp->rethook);
+>  		if (!rh) {
+>  			fp->nmissed++;
+> -			goto out;
+> +			return;
+>  		}
+>  		fpr = container_of(rh, struct fprobe_rethook_node, node);
+>  		fpr->entry_ip = ip;
+> @@ -61,23 +53,60 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  		else
+>  			rethook_hook(rh, ftrace_get_regs(fregs), true);
+>  	}
+> -out:
+> +}
+> +
+> +static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> +		struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> +{
+> +	struct fprobe *fp;
+> +	int bit;
+> +
+> +	fp = container_of(ops, struct fprobe, ops);
+> +	if (fprobe_disabled(fp))
+> +		return;
+> +
+> +	/* recursion detection has to go before any traceable function and
+> +	 * all functions before this point should be marked as notrace
+> +	 */
+> +	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+> +	if (bit < 0) {
+> +		fp->nmissed++;
+> +		return;
+> +	}
+> +	__fprobe_handler(ip, parent_ip, ops, fregs);
+>  	ftrace_test_recursion_unlock(bit);
+> +
+>  }
+>  NOKPROBE_SYMBOL(fprobe_handler);
+>  
+>  static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  				  struct ftrace_ops *ops, struct ftrace_regs *fregs)
+>  {
+> -	struct fprobe *fp = container_of(ops, struct fprobe, ops);
+> +	struct fprobe *fp;
+> +	int bit;
+> +
+> +	fp = container_of(ops, struct fprobe, ops);
+> +	if (fprobe_disabled(fp))
+> +		return;
+> +
+> +	/* recursion detection has to go before any traceable function and
+> +	 * all functions called before this point should be marked as notrace
+> +	 */
+> +	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+> +	if (bit < 0) {
+> +		fp->nmissed++;
+> +		return;
+> +	}
+>  
+>  	if (unlikely(kprobe_running())) {
+>  		fp->nmissed++;
+>  		return;
+>  	}
+> +
+>  	kprobe_busy_begin();
+> -	fprobe_handler(ip, parent_ip, ops, fregs);
+> +	__fprobe_handler(ip, parent_ip, ops, fregs);
+>  	kprobe_busy_end();
+> +	ftrace_test_recursion_unlock(bit);
+>  }
+>  
+>  static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+> -- 
+> 2.40.1
+> 
 
->=20
->=20
-> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
-g/selftests/bpf/test_verifier.c
-> > index 285ea4aba194..71704a38cac3 100644
-> > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > @@ -874,8 +874,140 @@ static int create_map_kptr(void)
-> >         return fd;
-> >  }
-> >=20
->=20
-> [...]
 
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
