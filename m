@@ -1,72 +1,68 @@
-Return-Path: <bpf+bounces-801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D5F706F40
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:23:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F537707000
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:52:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD4E1C20F6F
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 17:23:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B492815AB
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 17:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50D731135;
-	Wed, 17 May 2023 17:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4BB31EED;
+	Wed, 17 May 2023 17:51:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB085442F
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 17:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0A92106B
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 17:51:51 +0000 (UTC)
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F86965B9;
-	Wed, 17 May 2023 10:22:52 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29A4544AB;
+	Wed, 17 May 2023 10:51:29 -0700 (PDT)
 Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3982120F2693;
-	Wed, 17 May 2023 10:22:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3982120F2693
+	by linux.microsoft.com (Postfix) with ESMTPSA id 3DF0D20F26A4;
+	Wed, 17 May 2023 10:51:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3DF0D20F26A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684344171;
-	bh=B0oIcaJ7eKE8RVMGKo2gtY9gzbix+usqvgrS1+i9Jas=;
+	s=default; t=1684345888;
+	bh=qpe8jAdw/uTx0WBX7F2OU2VfCTXiTsm/V82/ZFGMen0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g6fifcHIW6sisuL0qqYxgYpP6X1RTbYeicwpLCvLbO3XEB5Lrxs5WPRfNSPUt6J0g
-	 HICQ49ZBIKMT+Fk1oUF84zrIpFsCFMHMAqEnV2k3UeNBGcs49PcI28Xs9UUXYwpDu7
-	 HXd+3UAhDg9ryFEFalPHO+V1L1VkaUq2mMooAF2E=
-Date: Wed, 17 May 2023 10:22:43 -0700
+	b=MiC4f/ygA75UgAvtPkYRmlbjAm7/lP4XmodFNURRXYZpXK8o+biLnVoXSHPqFH2AU
+	 sb1nu3zsVJEhyPCeJFr/9SuB2ZsiOiAD4ctbky6yWgmVmNwo+1h9OhRY+mqtMFcIhA
+	 cNr5Og8uycMMz8xQiAWhin7wo22poEJH8qLO3ew4=
+Date: Wed, 17 May 2023 10:51:21 -0700
 From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-trace-kernel@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>, dthaler@microsoft.com,
-	brauner@kernel.org, hch@infradead.org
+	David Vernet <void@manifault.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	dthaler@microsoft.com, brauner@kernel.org, hch@infradead.org
 Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230517172243.GA152@W11-BEAU-MD.localdomain>
-References: <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
+Message-ID: <20230517175121.GA200@W11-BEAU-MD.localdomain>
+References: <20230508163751.841-1-beaub@linux.microsoft.com>
+ <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
  <20230509130111.62d587f1@rorschach.local.home>
  <20230509163050.127d5123@rorschach.local.home>
  <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
  <20230515192407.GA85@W11-BEAU-MD.localdomain>
  <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <CAHk-=whBKoovtifU2eCeyuBBee-QMcbxdXDLv0mu0k2DgxiaOw@mail.gmail.com>
- <CAHk-=wj1hh=ZUriY9pVFvD1MjqbRuzHc4yz=S2PCW7u3W0-_BQ@mail.gmail.com>
- <20230516222919.79bba667@rorschach.local.home>
- <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
+In-Reply-To: <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
 	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
@@ -74,85 +70,192 @@ X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 16, 2023 at 08:03:09PM -0700, Linus Torvalds wrote:
-> On Tue, May 16, 2023 at 7:29 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > So this code path is very much in user context (called directly by a
-> > write system call). The issue that Alexei had was that it's also in an
-> > rcu_read_lock() section.
-> >
-> > I wonder if this all goes away if we switch to SRCU?
+On Tue, May 16, 2023 at 05:36:28PM -0700, Alexei Starovoitov wrote:
+> On Mon, May 15, 2023 at 12:24:07PM -0700, Beau Belgrave wrote:
+> > > > 
+> > > > 	ret = pin_user_pages_remote(mm->mm, uaddr, 1, FOLL_WRITE | FOLL_NOFAULT,
+> > > > 				    &page, NULL, NULL);
+> > > 
+> > > ... which will call pin_user_pages_remote() in RCU CS.
+> > > This looks buggy, since pin_user_pages_remote() may schedule.
+> > > 
+> > 
+> > If it's possible to schedule, I can change this to cache the probe
+> > callbacks under RCU then drop it. However, when would
+> > pin_user_pages_remote() schedule with FOLL_NOFAULT? 
 > 
-> Yes, SRCU context would work.
+> Are you saying that passing FOLL_NOFAULT makes it work in atomic context?
+> Is this documented anywhere?
 > 
-> That said, how critical is this code? Because honestly, the *sanest*
-> thing to do is to just hold the lock that actually protects the list,
-> not try to walk the list in any RCU mode.
+> > I couldn't pick up
+> > where it might schedule?
 > 
-> And as far as I can tell, that's the 'event_mutex', which is already held.
+> I think I see plenty of rw_semaphore access in the guts of GUP.
 > 
-> RCU walking of a list is only meaningful when the walk doesn't need
-> the lock that guarantees the list integrity.
-> 
-> But *modification* of a RCU-protected list still requires locking, and
-> from a very cursory look, it really looks like 'event_mutex' is
-> already the lock that protects the list.
-> 
-> So the whole use of RCU during the list walking there in
-> user_event_enabler_update() _seems_ pointless. You hold event_mutex -
-> user_event_enabler_write() that is called in the loop already has a
-> lockdep assert to that effect.
-> 
-> So what is it that could even race and change the list that is the
-> cause of that rcu-ness?
+> Have you tested user events with CONFIG_DEBUG_ATOMIC_SLEEP?
 > 
 
-Processes that fork() with previous user_events need to be duplicated.
+This pops on ATOMIC_SLEEP, thanks for pointing this out. I missed that
+the gup retry statement is a fallthrough. PROVE_RCU/LOCKING didn't catch
+this, lesson learned.
 
-The fork() paths do not acquire the event_mutex. In the middle of a fork
-an event could become enabled/disabled, which would call this part of
-the code, at that time the list is actively being appended to when we
-try to update the bits.
+[...]
 
-> Other code in that file happily just does
+> > 
+> > I thought it being a GPL export symbol that this kind of stuff would be
+> > documented somewhere if there are requirements to use the method. As it
 > 
->         mutex_lock(&event_mutex);
-> 
->         list_for_each_entry_safe(enabler, next, &mm->enablers, link)
-> 
-> with no RCU anywhere. Why does user_event_enabler_update() not do that?
-> 
-
-This is due to the fork() case above without taking the event_mutex. I
-really tried to not cause fork() to stall if a process uses user_events.
-This required using RCU, maybe there is a simpler approach:
-
-One approach I can think of is that during fork() we don't add the newly
-created mm to the global list until we copy all the enablers. The COW
-pages should reflect the bits if a timing window occurs there, since I
-believe it's impossible for the newly forked() mm to cause a COW during
-that time. Then I can drop this RCU on the enablers.
-
-> Oh, and even those other loops are a bit strange. Why do they use the
-> "_safe" variant, even when they just traverse the list without
-> changing it? Look at user_event_enabler_exists(), for example.
+> EXPORT_SYMBOL_GPL(perf_trace_run_bpf_submit);
+> does not mean that any arbitrary code in the kernel or GPL-ed module
+> is free to call it whichever way they like.
+> It's an export symbol only because modules expose tracepoints.
+> It's an implementation detail of DECLARE_EVENT_CLASS macro and
+> can change at any time including removal of export symbol.
 > 
 
-The other places in the code that do this either will remove the event
-depending on the situation during the for_each, or they only hold the
-register lock and don't hold the event_mutex. So the disabler could get
-removed out from under it.
+Ok, guess I'm looking for what best to do here that is least likely to
+break and also allows potentially the BPF program to grab further user
+memory within it (I guess this means using sleepable BPF, should I
+follow what uprobes did?).
 
-IE: user_events_ioctl_reg() -> current_user_event_enabler_exists()
-
-This is a place where we could just simply change to grab the
-event_mutex, it's pretty isolated and we take the lock anyway further
-down the path.
-
-> I must really be missing something. That code is confusing. Or I am
-> very confused.
+> > stands in the patch, the data that is sent to BPF is from the buffer
+> > returned from perf_trace_buf_alloc() after it has been copied from the
+> > user process.
+> > 
+> > If the process crashes, that shouldn't affect the actual data. The
+> > tracepoint remains even upon a crash. If you try to unregister the
+> > tracepoint while BPF is attached, it is prevented, as the tracepoints
+> > are ref-counted and cannot be unregistered if anything is using it
+> > (user processes, ftrace, perf/bpf).
+> > 
+> > We have been using libbpf to attach and monitor user_events with this
+> > patch and haven't hit issues for what we plan to use it for (decode
+> > the payload, aggregate, and track what's happening per-TID/PID). The
+> > data we care about is already in kernel memory via the perf trace
+> > buffer.
 > 
->             Linus
+> What bpf prog type do you use? How does libbpf attach it?
+> You have to provide a patch for selftest/bpf/ for us to meaningfully review it.
+> 
+
+This is how I wired up libbpf via libbpf-bootstrap for the sample that's
+checked in:
+struct example {
+    unsigned long long unused;
+    int count;
+};
+
+SEC("tp/user_events/test")
+int handle_tp(struct example *ctx)
+{
+        int pid = bpf_get_current_pid_tgid() >> 32;
+
+        bpf_printk("BPF triggered from PID %d, count=%d.\n", pid, ctx->count);
+
+        return 0;
+}
+
+I'm not sure if tp is referencing traditional tracepoint or not
+(guessing it is).
+
+> > 
+> > > In general we don't want bpf to be called in various parts of the kernel
+> > > just because bpf was used in similar parts elsewhere.
+> > > bpf needs to provide real value for a particular kernel subsystem.
+> > > 
+> > 
+> > For sure. I've had a lot of requests within Microsoft to wire up BPF to
+> > user_events which prompted this patch. I've been in a few conversations
+> > where we start talking about perf_event buffers and teams stop and ask
+> > why it cannot go to BPF directly.
+> 
+> So you need perf_event buffers or ftrace ring buffer (aka trace_pipe) ?
+> Which one do you want to use ?
+> 
+
+We use both, depending on the situation. Local debugging we typically
+use ftrace since it's quite easy to use. In production we use perf_event
+buffers mainly.
+
+> > Yeah, keep consistent was more about using the GPL export symbol, which
+> > the kernel tracepoints currently utilize. I wanted to avoid any special
+> > casing BPF needed to add for user_events, and I also expect users would
+> > like one way to write a BPF program for tracepoints/trace_events even
+> > if they are from user processes vs kernel.
+> 
+> BPF progs have three ways to access kernel tracepoints:
+> 1. traditional tracepoint
+> 2. raw tracepoint
+> 3. raw tracepoint with BTF
+> 
+> 1 was added first and now rarely used (only by old tools), since it's slow.
+> 2 was added later to address performance concerns.
+> 3 was added after BTF was introduced to provide accurate types.
+> 
+> 3 is the only one that bpf community recommends and is the one that is used most often.
+> 
+> As far as I know trace_events were never connected to bpf.
+> Unless somebody sneaked the code in without us seeing it.
+> 
+> I think you're trying to model user_events+bpf as 1.
+> Which means that you'll be repeating the same mistakes.
+> 
+
+See above, asking for guidance.
+
+> > 
+> > > Beau,
+> > > please provide a detailed explanation of your use case and how bpf helps.
+> > > 
+> > 
+> > There are teams that have existing BPF programs that want to also pull
+> > in data from user processes in addition to the data they already collect
+> > from the kernel.
+> > 
+> > We are also seeing a trend of teams wanting to drop buffering approaches
+> > and move into non-buffered analysis of problems. An example is as soon
+> > as a fault happens in a user-process, they would like the ability to see
+> > what that thread has done, what the kernel did a bit before the error
+> > (or other processes that have swapped in, etc).
+> 
+> Sounds like bpf prog would need to access user memory.
+> What we've learned the hard way that you cannot do it cleanly from the kernel
+> tracepoint/trace_event/perf_event (and user_event in your case).
+> The only clean way to do it is from uprobe where it's user context and it is
+> sleepable and fault-able. That's why we've added 'sleepable bpf uprobes'.
+> 
+> Just going with perf_trace_run_bpf_submit() you'll only have 'best effort' access
+> to user data. Not recommended.
+> 
+
+Good to know, do you recommend then how uprobes did this? These are in
+user context via write()/writev(). I don't see why I wouldn't pick
+sleepable / faultable if it offers better options to folks.
+
+[...]
+
+> > We've used branch + syscall approaches in Windows for a long time and
+> > have found them to work well in these locked down environments as well
+> > as for JIT'd languages like C#.
+> 
+> Ok. Looks like we've got to the main reason for user_events.
+> Re-phrasing above statement. User_events-like facility existed in Windows
+> and we've decided to implement the same in Linux to have common framework
+> to monitor applications in both OSes.
+> Are you planning to extend bpf-for-windows to attach to window's equivalent
+> of user_events ?
+> If so, we can allow bpf progs to be attached to user_events in Linux.
+> Please send a proper patch with [PATCH bpf-next] subject targeting bpf-next
+> with selftest and clear explanation of the true reason.
+> 
+
+Happy to.
+
+> Also think hard whether repeating our prior tracepoint+bpf mistakes is
+> really want you want to do with user_events+bpf.
+
+It sounds like I should look into sleepable BPF, which I will do, but
+I'll wait to get you advice on this before sending a patch, etc.
 
 Thanks,
 -Beau
