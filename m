@@ -1,316 +1,188 @@
-Return-Path: <bpf+bounces-740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E792670627E
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 10:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF417062C7
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 10:27:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2724D280F50
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 08:14:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D01642815DF
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 08:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230F3154A2;
-	Wed, 17 May 2023 08:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F042154BC;
+	Wed, 17 May 2023 08:27:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09EB5254
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 08:14:26 +0000 (UTC)
-Received: from out-2.mta1.migadu.com (out-2.mta1.migadu.com [IPv6:2001:41d0:203:375::2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B526710C3
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 01:14:24 -0700 (PDT)
-Message-ID: <b6b0a3ad-af30-371b-f46f-eb9524c7730d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1684311261;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604D3AD2E
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 08:27:04 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C534EC9
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 01:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1684312022;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U9RWU5du+4wKRasNfrMihyqwJ8yd3h31Dt6fxCtLe4M=;
-	b=aONVDfrg2N47JooHBhu3b3TD379u6f0w2XnXCGXiwynXTmMketjjY2rMXNWuDhAEvxWHNl
-	CSvB/sRqnlHQP0xaMja7zoaCmYyRuoBIeaLWRR38qqUywME8aq1vWc3e2DYzbpBOAO8auS
-	x2S9kfE6GEm4CBo379HQmnj/J9q6LxY=
-Date: Wed, 17 May 2023 01:14:13 -0700
+	bh=BhjK5yazou5RvTWn30tpmSdINFxSKMIDQ661jcxLjOE=;
+	b=Hdfs3ZyuzW17C5O28jpqFd56YDik0Ryg9x3VOJymCYphVmj3AduM7G5Os37yWIF7bkea9q
+	0nwj2utkmc0Q3PyObVwlECLImOOW63eShhFmoNj3mGxB2bqqkafNS/ZvzOOAw+j9fPgoG5
+	KMVzOQJSfUse2PNxPWvD2Cxow3OWDsA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-344-TPlkf5u7Poa_do7f9lAg4w-1; Wed, 17 May 2023 04:27:00 -0400
+X-MC-Unique: TPlkf5u7Poa_do7f9lAg4w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso2053055e9.2
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 01:27:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684312019; x=1686904019;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BhjK5yazou5RvTWn30tpmSdINFxSKMIDQ661jcxLjOE=;
+        b=fygtLHmS2t5UX7M4acNlW4e81iCqrtdtGKEexSaX/cGu+FobxhhStj2dCurY/YBTqv
+         ug855vxcnWFKFl1sPbX9N9/fV7zNv7dCnIlSHNBJWyfE4J6+xImuB40B4v65UJY3VwV7
+         qcdPecL5pOMwB4GrEKxQfpLtZ3/w5R7IrA3TLFZxR2McbjTfIviF/yRfVBzpXxfaGUhN
+         NDLeTmgqryEsV1YjLuij17SZo7ENbt9LKraLiuCzOEApW+T6z+a2tElY4X1dO3HpIlW5
+         R6G8oysbwQxRkM/gBnp88OixjiL3w9ElNnp+INUy4nyEj09llq8po+JNUQspVOzv6W/H
+         dTSw==
+X-Gm-Message-State: AC+VfDzNGfcn/TyfrmoJlev44Sn2OChxrYz42ZFbGaidSGYW09a/FwN4
+	6fov8+CMS55LepcontHyKHcuXNvexSn2a1hlEZ5hfcbwPXjOGoXBRThseesEY9tyR/exF2eTPFK
+	fuzJCWvJzpIho
+X-Received: by 2002:a05:600c:2141:b0:3f4:fd67:6d7c with SMTP id v1-20020a05600c214100b003f4fd676d7cmr9063722wml.40.1684312019280;
+        Wed, 17 May 2023 01:26:59 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5xa065nZ/uQiaIJKC7O793u58obHvly4Gk+TYkCEFKD9upiESKtIAlN64oMtp1eokU88QqYA==
+X-Received: by 2002:a05:600c:2141:b0:3f4:fd67:6d7c with SMTP id v1-20020a05600c214100b003f4fd676d7cmr9063676wml.40.1684312018895;
+        Wed, 17 May 2023 01:26:58 -0700 (PDT)
+Received: from [192.168.3.108] (p4ff23b51.dip0.t-ipconnect.de. [79.242.59.81])
+        by smtp.gmail.com with ESMTPSA id a3-20020a05600c224300b003f17848673fsm1416580wmm.27.2023.05.17.01.26.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 May 2023 01:26:58 -0700 (PDT)
+Message-ID: <3c11455b-3af4-eeaa-9f43-49d4d70348fd@redhat.com>
+Date: Wed, 17 May 2023 10:26:56 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 2/5] net/smc: allow smc to negotiate protocols
- on policies
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
 Content-Language: en-US
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
- song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
- edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- jolsa@kernel.org, guwen@linux.alibaba.com
-References: <1683872684-64872-1-git-send-email-alibuda@linux.alibaba.com>
- <1683872684-64872-3-git-send-email-alibuda@linux.alibaba.com>
- <0e1656dc-b67c-ec65-83a4-6709fb186061@linux.dev>
- <beed306a-9f5a-c05b-6f0a-ee28e17f8100@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <beed306a-9f5a-c05b-6f0a-ee28e17f8100@linux.alibaba.com>
+To: Lorenzo Stoakes <lstoakes@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Leon Romanovsky <leon@kernel.org>, Christian Benvenuti <benve@cisco.com>,
+ Nelson Escobar <neescoba@cisco.com>, Bernard Metzler <bmt@zurich.ibm.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Christian Brauner <brauner@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+ Jan Kara <jack@suse.cz>, "Kirill A . Shutemov" <kirill@shutemov.name>,
+ Pavel Begunkov <asml.silence@gmail.com>, Mika Penttila
+ <mpenttil@redhat.com>, Dave Chinner <david@fromorbit.com>,
+ Theodore Ts'o <tytso@mit.edu>, Peter Xu <peterx@redhat.com>,
+ Matthew Rosato <mjrosato@linux.ibm.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>
+References: <cover.1683235180.git.lstoakes@gmail.com>
+ <0eb31f6f-a122-4a5b-a959-03ed4dee1f3c@lucifer.local>
+ <ZGG/xkIUYK2QMPSv@infradead.org>
+ <59c47ed5-a565-4220-823c-a278130092d5@lucifer.local>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v9 0/3] mm/gup: disallow GUP writing to file-backed
+ mappings by default
+In-Reply-To: <59c47ed5-a565-4220-823c-a278130092d5@lucifer.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/17/23 12:08 AM, D. Wythe wrote:
-> 
-> 
-> On 5/16/23 6:52 AM, Martin KaFai Lau wrote:
->> On 5/11/23 11:24 PM, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On 15.05.23 13:31, Lorenzo Stoakes wrote:
+> On Sun, May 14, 2023 at 10:14:46PM -0700, Christoph Hellwig wrote:
+>> On Sun, May 14, 2023 at 08:20:04PM +0100, Lorenzo Stoakes wrote:
+>>> As discussed at LSF/MM, on the flight over I wrote a little repro [0] which
+>>> reliably triggers the ext4 warning by recreating the scenario described
+>>> above, using a small userland program and kernel module.
 >>>
->>> As we all know, the SMC protocol is not suitable for all scenarios,
->>> especially for short-lived. However, for most applications, they cannot
->>> guarantee that there are no such scenarios at all. Therefore, apps
->>> may need some specific strategies to decide shall we need to use SMC
->>> or not.
->>>
->>> Just like the congestion control implementation in TCP, this patch
->>> provides a generic negotiator implementation. If necessary,
->>> we can provide different protocol negotiation strategies for
->>> apps based on this implementation.
->>>
->>> But most importantly, this patch provides the possibility of
->>> eBPF injection, allowing users to implement their own protocol
->>> negotiation policy in userspace.
->>>
->>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>> ---
->>>   include/net/smc.h        |  32 +++++++++++
->>>   net/Makefile             |   1 +
->>>   net/smc/Kconfig          |  11 ++++
->>>   net/smc/af_smc.c         | 134 ++++++++++++++++++++++++++++++++++++++++++++++-
->>>   net/smc/smc_negotiator.c | 119 +++++++++++++++++++++++++++++++++++++++++
->>>   net/smc/smc_negotiator.h | 116 ++++++++++++++++++++++++++++++++++++++++
->>>   6 files changed, 412 insertions(+), 1 deletion(-)
->>>   create mode 100644 net/smc/smc_negotiator.c
->>>   create mode 100644 net/smc/smc_negotiator.h
->>>
->>> diff --git a/include/net/smc.h b/include/net/smc.h
->>> index 6d076f5..191061c 100644
->>> --- a/include/net/smc.h
->>> +++ b/include/net/smc.h
->>> @@ -296,6 +296,8 @@ struct smc_sock {                /* smc sock container */
->>>       atomic_t                queued_smc_hs;  /* queued smc handshakes */
->>>       struct inet_connection_sock_af_ops        af_ops;
->>>       const struct inet_connection_sock_af_ops    *ori_af_ops;
->>> +    /* protocol negotiator ops */
->>> +    const struct smc_sock_negotiator_ops *negotiator_ops;
->>>                           /* original af ops */
->>>       int            sockopt_defer_accept;
->>>                           /* sockopt TCP_DEFER_ACCEPT
->>> @@ -316,4 +318,34 @@ struct smc_sock {                /* smc sock container */
->>>                            */
->>>   };
->>>   +#ifdef CONFIG_SMC_BPF
->>> +/* BPF struct ops for smc protocol negotiator */
->>> +struct smc_sock_negotiator_ops {
->>> +
->>> +    struct list_head    list;
->>> +
->>> +    /* ops name */
->>> +    char        name[16];
->>> +    /* key for name */
->>> +    u32            key;
->>> +
->>> +    /* init with sk */
->>> +    void (*init)(struct sock *sk);
->>> +
->>> +    /* release with sk */
->>> +    void (*release)(struct sock *sk);
->>> +
->>> +    /* advice for negotiate */
->>> +    int (*negotiate)(struct sock *sk);
->>> +
->>> +    /* info gathering timing */
->>> +    void (*collect_info)(struct sock *sk, int timing);
->>> +
->>> +    /* module owner */
->>> +    struct module *owner;
->>> +};
->>> +#else
->>> +struct smc_sock_negotiator_ops {};
->>> +#endif
->>> +
->>>   #endif    /* _SMC_H */
->>> diff --git a/net/Makefile b/net/Makefile
->>> index 4c4dc53..222916a 100644
->>> --- a/net/Makefile
->>> +++ b/net/Makefile
->>> @@ -52,6 +52,7 @@ obj-$(CONFIG_TIPC)        += tipc/
->>>   obj-$(CONFIG_NETLABEL)        += netlabel/
->>>   obj-$(CONFIG_IUCV)        += iucv/
->>>   obj-$(CONFIG_SMC)        += smc/
->>> +obj-$(CONFIG_SMC_BPF)        += smc/smc_negotiator.o > 
->>> obj-$(CONFIG_RFKILL)        += rfkill/
->>>   obj-$(CONFIG_NET_9P)        += 9p/
->>>   obj-$(CONFIG_CAIF)        += caif/
->>> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
->>> index 1ab3c5a..bdcc9f1 100644
->>> --- a/net/smc/Kconfig
->>> +++ b/net/smc/Kconfig
->>> @@ -19,3 +19,14 @@ config SMC_DIAG
->>>         smcss.
->>>           if unsure, say Y.
->>> +
->>> +config SMC_BPF
->>> +    bool "SMC: support eBPF" if SMC
+>>> This code is not perfect (plane code :) but does seem to do the job
+>>> adequately, also obviously this should only be run in a VM environment
+>>> where data loss is acceptable (in my case a small qemu instance).
 >>
->>
->> so smc_negotiator will always be in the kernel image even af_smc is compiled 
->> as a module? If the SMC_BPF needs to support af_smc as a module, proper 
->> implementation needs to be added to bpf_struct_ops to support module first. It 
->> is work-in-progress.
->>
+>> It would be really awesome if you could wire it up with and submit it
+>> to xfstests.
 > 
-> smc_negotiator will not no in the kernel image when af_smc is compiled as a module,
-> it's requires config SMC_BPF also sets to be Y,  while it's default to be N. 
-> That's is,
-> even if af_smc is compiled as a module but with no SMC_BPF set, smc_negotiator
-> doesn't exist anywhere.
+> Sure am happy to take a look at that! Also happy if David finds it useful in any
+> way for this unit tests.
 
-CONFIG_SMC_BPF could be "y" while CONFIG_SMC is "m", no?
+I played with a simple selftest that would reuse the existing gup_test 
+infrastructure (adding PIN_LONGTERM_TEST_WRITE), and try reproducing an 
+actual data corruption.
 
-Anyway, there is a build error when CONFIG_SMC is "m" :(
+So far, I was not able to reproduce any corruption easily without your 
+patches, because d824ec2a1546 ("mm: do not reclaim private data from 
+pinned page") seems to mitigate most of it.
+
+So ... before my patches (adding PIN_LONGTERM_TEST_WRITE) I cannot test 
+it from a selftest, with d824ec2a1546 ("mm: do not reclaim private data 
+from pinned page") I cannot reproduce and with your patches long-term 
+pinning just fails.
+
+Long story short: I'll most probably not add such a test but instead 
+keep testing that long-term pinning works/fails now as expected, based 
+on the FS type.
 
 > 
->>> +    depends on BPF_SYSCALL
->>> +    default n
->>> +    help
->>> +      Supports eBPF to allows user mode participation in SMC's protocol process
->>> +      via ebpf programs. Alternatively, obtain information about the SMC socks
->>> +      through the ebpf program.
->>> +
->>> +      If unsure, say N.
->>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->>> index 50c38b6..7406fd4 100644
->>> --- a/net/smc/af_smc.c
->>> +++ b/net/smc/af_smc.c
->>> @@ -52,6 +52,7 @@
->>>   #include "smc_close.h"
->>>   #include "smc_stats.h"
->>>   #include "smc_tracepoint.h"
->>> +#include "smc_negotiator.h"
->>>   #include "smc_sysctl.h"
->>>     static DEFINE_MUTEX(smc_server_lgr_pending);    /* serialize link group
->>> @@ -68,6 +69,119 @@
->>>   static void smc_tcp_listen_work(struct work_struct *);
->>>   static void smc_connect_work(struct work_struct *);
->>>   +#ifdef CONFIG_SMC_BPF
->>> +
->>> +/* Check if sock should use smc */
->>> +int smc_sock_should_select_smc(const struct smc_sock *smc)
->>> +{
->>> +    const struct smc_sock_negotiator_ops *ops;
->>> +    int ret;
->>> +
->>> +    rcu_read_lock();
->>> +    ops = READ_ONCE(smc->negotiator_ops);
->>> +
->>> +    /* No negotiator_ops supply or no negotiate func set,
->>> +     * always pass it.
->>> +     */
->>> +    if (!ops || !ops->negotiate) {
->>
->> A smc_sock_negotiator_ops without ->negotiate? Is it useful at all to allow 
->> the register in the first place?
->>
-> 
-> You are right, this can be avoid before registration. I'll fix it.
-> 
->>> +        rcu_read_unlock();
->>> +        return SK_PASS;
->>> +    }
->>> +
->>> +    ret = ops->negotiate((struct sock *)&smc->sk);
->>> +    rcu_read_unlock();
->>> +    return ret;
->>> +}
->>> +
->>> +void smc_sock_perform_collecting_info(const struct smc_sock *smc, int timing)
->>> +{
->>> +    const struct smc_sock_negotiator_ops *ops;
->>> +
->>> +    rcu_read_lock();
->>> +    ops = READ_ONCE(smc->negotiator_ops);
->>> +
->>> +    if (!ops || !ops->collect_info) {
->>> +        rcu_read_unlock();
->>> +        return;
->>> +    }
->>> +
->>> +    ops->collect_info((struct sock *)&smc->sk, timing);
->>> +    rcu_read_unlock();
->>> +}
->>> +
->>> +int smc_sock_assign_negotiator_ops(struct smc_sock *smc, const char *name)
->>> +{
->>> +    struct smc_sock_negotiator_ops *ops;
->>> +    int ret = -EINVAL;
->>> +
->>> +    /* already set */
->>> +    if (READ_ONCE(smc->negotiator_ops))
->>> +        smc_sock_cleanup_negotiator_ops(smc, /* might be still referenced */ 
->>> false);
->>> +
->>> +    /* Just for clear negotiator_ops */
->>> +    if (!name || !strlen(name))
->>> +        return 0;
->>> +
->>> +    rcu_read_lock();
->>> +    ops = smc_negotiator_ops_get_by_name(name);
->>> +    if (likely(ops)) {
->>> +        if (unlikely(!bpf_try_module_get(ops, ops->owner))) {
->>> +            ret = -EACCES;
->>> +        } else {
->>> +            WRITE_ONCE(smc->negotiator_ops, ops);
->>> +            /* make sure ops can be seen */
->>> +            smp_wmb();
->>
->> This rcu_read_lock(), WRITE_ONCE, and smp_wmb() combo looks very suspicious. 
->> smc->negotiator_ops is protected by rcu (+refcnt) or lock_sock()?
->>
-> 
-> All access to ops is protected by RCU, and there are no lock_sock. WRITE_ONCE() 
-> and smp_wmb() do
-> not participate in any guarantee of the availability of ops,  The purpose to 
-> using them is just wish the latest values
-> can be read as soon as possible , In fact, even if old value is read, there will 
-> be no problem in logic because all updates
-> will do synchronize_rcu() and all access to ops is under in rcu_read_lock().
+> The kernel module interface is a bit sketchy (it takes a user address which it
+> blindly pins for you) so it's not something that should be run in any unsafe
+> environment but as long as we are ok with that :)
 
-The explanation is not encouraging. No clear benefit while having this kind of 
-complexity here. Switching tcp congestion ops also does not require this. Some 
-of the new codes is in af_smc but bpf is the primary user. It is not something 
-that I would like to maintain and then need to reason about this unusual pattern 
-a year later. Beside, this negotiator_ops assignment must be done under a 
-lock_sock(). The same probably is true for calling ops->negotiate() where the 
-bpf prog may be looking at the sk and calling bpf_setsockopt.
+I can submit the PIN_LONGTERM_TEST_WRITE extension, that would allow to 
+test with a stock kernel that has the module compiled in. It won't allow 
+!longterm, though (it would be kind-of hacky to have !longterm 
+controlled by user space, even if it's a GUP test module).
 
-> 
->> I am going to stop reviewing here.
->>
-> 
-> Hoping my explanation can answer your questions and still looking forward to
-> your more feedback 😁.
+Finding an actual reproducer using existing pinning functionality would 
+be preferred. For example, using O_DIRECT (should be possible even 
+before it starts using FOLL_PIN instead of FOLL_GET). That would be 
+highly racy then, but most probably not impossible.
 
-Sorry, based on the review so far (there was some RFC before), it is not 
-something that I want to continue to review and maintain a bpf hook for it. You 
-have to solicit other known community members for review and sponsor this set 
-from now on.
+Such (racy) tests are not a good fit for selftests.
+
+Maybe I'll have a try later to reproduce with O_DIRECT.
+
+-- 
+Thanks,
+
+David / dhildenb
+
 
