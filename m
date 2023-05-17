@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7332706549
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 12:32:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B8D70654A
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 12:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5821C20F27
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 10:31:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CF901C20F17
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 10:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A8B168AA;
-	Wed, 17 May 2023 10:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41946156DF;
+	Wed, 17 May 2023 10:31:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDAF168C5
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 10:31:40 +0000 (UTC)
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46AA524C
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:31:32 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4361225a745so149752137.2
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:31:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2F0168D9
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 10:31:41 +0000 (UTC)
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC89F59D5
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:31:33 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-783fc329e7eso43239241.2
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 03:31:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684319491; x=1686911491;
+        d=gmail.com; s=20221208; t=1684319493; x=1686911493;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O0SCSj3nmzeRLmTAaSPOQONEtSITFN21WiSekl/6TEk=;
-        b=Jz2OFZyvvnYn6d4MRKIMxY6353p17B6AObu1h/+wLxT3Gzo9ktuKE1i2DF77KZf15C
-         D0PRzwTQlHuaff1QYh2V2R0snT5tovQWcUDyiPzhaemKhs0S90BqOxpmdIFJqOhMxEdJ
-         fzvBAmmq7AaJP7ziWxWPAG2djn1f936ZEIVwYj9O+p7BCBCnuWlLd7BWkDf8G4x7MVm7
-         Li37tlbJHBfyOstQhJJm14fa/Go5GjOLNA1h573VetEqWTHLooT2Eils4EZ+R6MzXdnZ
-         +0sKePzA2vw2n7L9r74H2n26Q80VwQcz1Bqd4i9zGmBCxWtLLaYLjo9PrYupfskEfGkx
-         6dpA==
+        bh=gG/g++T4hxHkCbdshIsCuyl8j+Kw5aES49DKS4s5BfQ=;
+        b=JEwe1GJ+ZGtw9xcKONuXW+8d0SWHEv4uashUVYZWD2dDsC7qBreow5jriFfvFecmYz
+         QDwTOT6ZA8SAioBOA1EU4eKiR3dJTLIw0Du/SX4ixJD6iyzi5Vne2ORbJteyEHQ3fG2J
+         SSsPg6gJHW/XydP/L5SlPu6gmT+thUV+8vknIPuOp6861iMcsFiUIHMJGYRrNs9VwPaW
+         3wPmSoIwFOrFR5QMUSZVvZnNFArFykNfgpnXBZagK62IHSuSDmtmnLsO0vOumRudMmw5
+         HO5LMuGDDCppQIrrAEoK7XbeODmv9F+C0bodCGXPjxrw+n3P7RYCHp4CX/ptYaA7/tju
+         rwHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684319491; x=1686911491;
+        d=1e100.net; s=20221208; t=1684319493; x=1686911493;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O0SCSj3nmzeRLmTAaSPOQONEtSITFN21WiSekl/6TEk=;
-        b=GXtVQirWtv45VbXDF+yUTpqRWq/zDX1XmusqzMDbs3nLXlYFS6hoB4iqd+8k/oEWwj
-         8JVQNqxs8B+sP/mpF1+P0/M/2LNR0IcXwRBWFTPnPY4ettZKnzjldgSmcyld1xJdUu8r
-         ThrMAq/3xMvy7WOS3WKpO7OEyFQgIuhqYlXU7ZEA5wv8deC7w67sgMcKX3gheL+yKcLZ
-         WvM8HsakcHrm8T9tNIrBJgqD0jDCPChYmVhw4nPAAKkQQ98CtwKMLDLbkpd0q4OvjOEu
-         583VIzvlpE8uJg0ce5GlCzVLZ2I/Dw9CuvI8d2z0fZnzVvImDkGY5vrXtR0kZqzGFZ1H
-         DziA==
-X-Gm-Message-State: AC+VfDyzNNXzya8o6x2ScUcC9uFdbm4ECxCTehIVpzyYW0qfGGdBxEtf
-	3gGSMY934GiNAwNmQJ1iFYg=
-X-Google-Smtp-Source: ACHHUZ4IYA/abYPTgiSDk7hNfPRtTXIboKuXCw+YJ/BGyxXJG/G0ge+9QZKnf2aFSQRmbrPIp0vb0w==
-X-Received: by 2002:a05:6102:e52:b0:425:e0ab:6fc with SMTP id p18-20020a0561020e5200b00425e0ab06fcmr15247931vst.35.1684319491686;
-        Wed, 17 May 2023 03:31:31 -0700 (PDT)
+        bh=gG/g++T4hxHkCbdshIsCuyl8j+Kw5aES49DKS4s5BfQ=;
+        b=kisLwEMdLusqHK+hMFk3ZT2dDlSeSzuyyN7Nzs29E/1GCPc0MP18RbBzM8vcJYt6z0
+         uGiJG2tzVsQp8rejIE99lgskvnDdI1j4o+qshn2tMb+RaaSUMbE9hGI05SyCxJdMl5Yv
+         HGNt5jRIwitRBEWwlSqKgCEmlA8nRjlHQx8DVZk5yDmi+kCQSJo64X8ReifxAcZ90Xdj
+         hC7IBU/ZQC0s8qpFOQu57f+XNlFpeye8qiAWtZ63LgXv/1gXT0SB31eJpvsaGf5bHSJ7
+         81EyOo6omK53HJUvFX2JkN0CYUU1B9Ewz7T6kr+ZGTelaE9BuUS8eimNGruswa9x2WHP
+         DG3g==
+X-Gm-Message-State: AC+VfDzKfDr6COapohFakt1dItyWiRciwADAjm+q0RcJUWZ4uJ0lc3YJ
+	/BpnA5NM635l/7ZB8NCt6j0=
+X-Google-Smtp-Source: ACHHUZ5dz+7d6xDdv1pLeeKdZ3Wev76Vy+QRvYdDUrT1E/ojDyubLhPxVxooh4fQbJ1a9jZqg8Wjsw==
+X-Received: by 2002:a67:f9c7:0:b0:42f:f1ce:c469 with SMTP id c7-20020a67f9c7000000b0042ff1cec469mr15584069vsq.33.1684319492734;
+        Wed, 17 May 2023 03:31:32 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:9002:140f:5400:4ff:fe70:c0fd])
-        by smtp.gmail.com with ESMTPSA id t25-20020a9f3899000000b0076d52359f2asm5343651uaf.31.2023.05.17.03.31.30
+        by smtp.gmail.com with ESMTPSA id t25-20020a9f3899000000b0076d52359f2asm5343651uaf.31.2023.05.17.03.31.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 03:31:31 -0700 (PDT)
+        Wed, 17 May 2023 03:31:32 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: quentin@isovalent.com,
 	ast@kernel.org,
@@ -71,9 +71,9 @@ To: quentin@isovalent.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v2 1/2] bpf: Show target_{obj,btf}_id in tracing link fdinfo
-Date: Wed, 17 May 2023 10:31:25 +0000
-Message-Id: <20230517103126.68372-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v2 2/2] bpftool: Show target_{obj,btf}_id in tracing link info
+Date: Wed, 17 May 2023 10:31:26 +0000
+Message-Id: <20230517103126.68372-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230517103126.68372-1-laoar.shao@gmail.com>
 References: <20230517103126.68372-1-laoar.shao@gmail.com>
@@ -97,49 +97,45 @@ already been exposed to userspace, so we just need to show them.
 
 The result as follows,
 
-$ cat /proc/10673/fdinfo/10
-pos:    0
-flags:  02000000
-mnt_id: 15
-ino:    2094
-link_type:      tracing
-link_id:        2
-prog_tag:       a04f5eef06a7f555
-prog_id:        13
-attach_type:    24
-target_obj_id:  1
-target_btf_id:  13964
+$ tools/bpf/bpftool/bpftool link show
+2: tracing  prog 13
+        prog_type tracing  attach_type trace_fentry
+        target_obj_id 1  target_btf_id 13964
+        pids trace(10673)
+
+$ tools/bpf/bpftool/bpftool link show -j
+[{"id":2,"type":"tracing","prog_id":13,"prog_type":"tracing","attach_type":"trace_fentry","target_obj_id":1,"target_btf_id":13964,"pids":[{"pid":10673,"comm":"trace"}]}]
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Acked-by: Song Liu <song@kernel.org>
 ---
- kernel/bpf/syscall.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ tools/bpf/bpftool/link.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 909c112..b262108 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2968,10 +2968,17 @@ static void bpf_tracing_link_show_fdinfo(const struct bpf_link *link,
- {
- 	struct bpf_tracing_link *tr_link =
- 		container_of(link, struct bpf_tracing_link, link.link);
-+	u32 target_btf_id, target_obj_id;
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 243b74e..2d78607 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -195,6 +195,8 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
  
-+	bpf_trampoline_unpack_key(tr_link->trampoline->key,
-+				  &target_obj_id, &target_btf_id);
- 	seq_printf(seq,
--		   "attach_type:\t%d\n",
--		   tr_link->attach_type);
-+		   "attach_type:\t%d\n"
-+		   "target_obj_id:\t%u\n"
-+		   "target_btf_id:\t%u\n",
-+		   tr_link->attach_type,
-+		   target_obj_id,
-+		   target_btf_id);
- }
+ 		show_link_attach_type_json(info->tracing.attach_type,
+ 					   json_wtr);
++		jsonw_uint_field(json_wtr, "target_obj_id", info->tracing.target_obj_id);
++		jsonw_uint_field(json_wtr, "target_btf_id", info->tracing.target_btf_id);
+ 		break;
+ 	case BPF_LINK_TYPE_CGROUP:
+ 		jsonw_lluint_field(json_wtr, "cgroup_id",
+@@ -375,6 +377,10 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ 			printf("\n\tprog_type %u  ", prog_info.type);
  
- static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
+ 		show_link_attach_type_plain(info->tracing.attach_type);
++		if (info->tracing.target_obj_id || info->tracing.target_btf_id)
++			printf("\n\ttarget_obj_id %u  target_btf_id %u  ",
++			       info->tracing.target_obj_id,
++			       info->tracing.target_btf_id);
+ 		break;
+ 	case BPF_LINK_TYPE_CGROUP:
+ 		printf("\n\tcgroup_id %zu  ", (size_t)info->cgroup.cgroup_id);
 -- 
 1.8.3.1
 
