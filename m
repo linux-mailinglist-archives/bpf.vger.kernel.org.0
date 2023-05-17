@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27152706DFD
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:20:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3443706DFF
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 18:20:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D1E11C20F69
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A3F628176F
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC381E534;
-	Wed, 17 May 2023 16:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6E91EA8E;
+	Wed, 17 May 2023 16:20:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECA9111A1
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 16:20:16 +0000 (UTC)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0270EAD06
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:19:56 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34HE4fOI014562;
-	Wed, 17 May 2023 16:19:10 GMT
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C418A111A1
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 16:20:33 +0000 (UTC)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274F5DDAE
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 09:20:11 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34HE4G4N002745;
+	Wed, 17 May 2023 16:19:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2023-03-30;
- bh=Ok/jTZ28bJIDEBmPGvuLW6lTF3q+W0lit58wvIROumw=;
- b=moQM+jEeCKKZNwb1tBpZsbBsEo4o8adkvO6r/NuPyqYJZy2h/jbVg0n3k9m5l72hmYhx
- EnQJyCCjiPrG8FBDjEBwjYNLqMFBTPyAhf/z7fshgC3vd50S27cxkLHntAN5XcZaEIm7
- pJkexkyadIieDaAr5oMih84kdi5a3kc2SBv+AT+wJLydc4x3bGaX5m6qbi/kDjdjFP+Q
- EIswZ0172v4fXg1U3v7lMo2xKsPrU/eIx6OVj7XWRG6kBeSH7XxpVf4lMyd8pJ+pC/Wq
- TLI8IjxiXN4jMhhEUnXZa09FWLHRN0uayMy2R2nWGYxYQhoOyU90Qm9ozY3zGTgbgxTk yw== 
+ bh=65/ojX8W20BsEMJPLMxOCt3jn0zOEtP1h6ILbVKL14Y=;
+ b=PUssdrRTQ9Ovc7hnSkgGMMdPX5N4tQDJbMM+f+x3+PrLogmBWjhjjJXnMPHp7u0+xlUd
+ MoapLyjh1r1wkYN8gez0ZrBLgtzrlsQffQ1H+bPcESZ9EcJJ1a/e9/oWUMFDSXHBVaeX
+ j3CB5icTZT8f/mJNEutyc4Qc9uCnTm7vrk9aloP0wyEREgs5TifAOOmKsEOZihOjtgmw
+ ceGZj/NWiXSPk2VpFsmy8qTKzccnuYZydwkdPWcrm7tLlFJ+sVUZc4wpqdxkycy4t6Jo
+ 9g4COZSQq2zyFSD842o5fbZQ9iYhILJo97CF/5g5PEiuMpqvnp6pPWIw6D/efczrJQVS yw== 
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qmx8j0pve-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qj0ye5xum-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 May 2023 16:19:09 +0000
+	Wed, 17 May 2023 16:19:13 +0000
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34HFJdGT004207;
-	Wed, 17 May 2023 16:19:08 GMT
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34HFKNsM004223;
+	Wed, 17 May 2023 16:19:12 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3qj10bx0v3-1
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3qj10bx0yx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 May 2023 16:19:07 +0000
+	Wed, 17 May 2023 16:19:12 +0000
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34HGHdXF034295;
-	Wed, 17 May 2023 16:19:06 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34HGHdXH034295;
+	Wed, 17 May 2023 16:19:11 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-213-201.vpn.oracle.com [10.175.213.201])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3qj10bwyb5-5;
-	Wed, 17 May 2023 16:19:06 +0000
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3qj10bwyb5-6;
+	Wed, 17 May 2023 16:19:11 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: acme@kernel.org, ast@kernel.org, jolsa@kernel.org, yhs@fb.com,
         andrii@kernel.org
@@ -57,9 +57,9 @@ Cc: daniel@iogearbox.net, laoar.shao@gmail.com, martin.lau@linux.dev,
         song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
         sdf@google.com, haoluo@google.com, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC dwarves 4/6] btf_encoder: add "addr=0x<addr>" function declaration tag if --btf_gen_func_addr specified
-Date: Wed, 17 May 2023 17:16:46 +0100
-Message-Id: <20230517161648.17582-5-alan.maguire@oracle.com>
+Subject: [RFC dwarves 5/6] btf_encoder: store ELF function representations sorted by name _and_ address
+Date: Wed, 17 May 2023 17:16:47 +0100
+Message-Id: <20230517161648.17582-6-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20230517161648.17582-1-alan.maguire@oracle.com>
 References: <20230517161648.17582-1-alan.maguire@oracle.com>
@@ -77,213 +77,204 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 sp
  mlxlogscore=999 malwarescore=0 bulkscore=0 adultscore=0 phishscore=0
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2304280000 definitions=main-2305170133
-X-Proofpoint-GUID: ir9bFULzs6p7pj5Yvc5qfd46s1ehVO7I
-X-Proofpoint-ORIG-GUID: ir9bFULzs6p7pj5Yvc5qfd46s1ehVO7I
+X-Proofpoint-ORIG-GUID: 10Zt7O1QTFJP2y_cDPSHHWt1QY78yZA7
+X-Proofpoint-GUID: 10Zt7O1QTFJP2y_cDPSHHWt1QY78yZA7
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Now that we have address information, use BTF declaration tag
-of form
+By making sorting function for our ELF function list match on
+both name and function, we ensure that the set of ELF functions
+includes multiple copies for functions which have multiple instances
+across CUs.  For example, cpumask_weight has 22 instances in
+System.map/kallsyms:
 
-[105031] DECL_TAG 'address=0xffffffff81777410' type_id=105030 component_idx=-1
+ffffffff8103b530 t cpumask_weight
+ffffffff8103e300 t cpumask_weight
+ffffffff81040d30 t cpumask_weight
+ffffffff8104fa00 t cpumask_weight
+ffffffff81064300 t cpumask_weight
+ffffffff81082ba0 t cpumask_weight
+ffffffff81084f50 t cpumask_weight
+ffffffff810a4ad0 t cpumask_weight
+ffffffff810bb740 t cpumask_weight
+ffffffff8110a6c0 t cpumask_weight
+ffffffff81118ab0 t cpumask_weight
+ffffffff81129b50 t cpumask_weight
+ffffffff81137dc0 t cpumask_weight
+ffffffff811aead0 t cpumask_weight
+ffffffff811d6800 t cpumask_weight
+ffffffff811e1370 t cpumask_weight
+ffffffff812fae80 t cpumask_weight
+ffffffff81375c50 t cpumask_weight
+ffffffff81634b60 t cpumask_weight
+ffffffff817ba540 t cpumask_weight
+ffffffff819abf30 t cpumask_weight
+ffffffff81a7cb60 t cpumask_weight
 
-...which points at the function in question.
+With ELF representations for each address, and DWARF info about
+addresses (low_pc) we can match DWARF with ELF accurately.
+The result for the BTF representation is that we end up with
+a single de-duped function:
+
+[9287] FUNC 'cpumask_weight' type_id=9286 linkage=static
+
+...and 22 DECL_TAGs for each address that point at it:
+
+9288] DECL_TAG 'address=0xffffffff8103b530' type_id=9287 component_idx=-1
+[9623] DECL_TAG 'address=0xffffffff8103e300' type_id=9287 component_idx=-1
+[9829] DECL_TAG 'address=0xffffffff81040d30' type_id=9287 component_idx=-1
+[11609] DECL_TAG 'address=0xffffffff8104fa00' type_id=9287 component_idx=-1
+[13299] DECL_TAG 'address=0xffffffff81064300' type_id=9287 component_idx=-1
+[15704] DECL_TAG 'address=0xffffffff81082ba0' type_id=9287 component_idx=-1
+[15731] DECL_TAG 'address=0xffffffff81084f50' type_id=9287 component_idx=-1
+[18582] DECL_TAG 'address=0xffffffff810a4ad0' type_id=9287 component_idx=-1
+[20234] DECL_TAG 'address=0xffffffff810bb740' type_id=9287 component_idx=-1
+[25384] DECL_TAG 'address=0xffffffff8110a6c0' type_id=9287 component_idx=-1
+[25798] DECL_TAG 'address=0xffffffff81118ab0' type_id=9287 component_idx=-1
+[26285] DECL_TAG 'address=0xffffffff81129b50' type_id=9287 component_idx=-1
+[27040] DECL_TAG 'address=0xffffffff81137dc0' type_id=9287 component_idx=-1
+[32900] DECL_TAG 'address=0xffffffff811aead0' type_id=9287 component_idx=-1
+[35059] DECL_TAG 'address=0xffffffff811d6800' type_id=9287 component_idx=-1
+[35353] DECL_TAG 'address=0xffffffff811e1370' type_id=9287 component_idx=-1
+[48934] DECL_TAG 'address=0xffffffff812fae80' type_id=9287 component_idx=-1
+[54476] DECL_TAG 'address=0xffffffff81375c50' type_id=9287 component_idx=-1
+[87772] DECL_TAG 'address=0xffffffff81634b60' type_id=9287 component_idx=-1
+[108841] DECL_TAG 'address=0xffffffff817ba540' type_id=9287 component_idx=-1
+[132557] DECL_TAG 'address=0xffffffff819abf30' type_id=9287 component_idx=-1
+[143689] DECL_TAG 'address=0xffffffff81a7cb60' type_id=9287 component_idx=-1
+
+Consider another case where the same name - wakeup_show() - is
+used for two different function signatures:
+
+From kernel/irq/irqdesc.c
+
+static ssize_t wakeup_show(struct kobject *kobj,
+ 			   struct kobj_attribute *attr, char *buf)
+
+...and from drivers/base/power/sysfs.c
+
+static ssize_t wakeup_show(struct device *dev, struct device_attribute *attr,
+                           char *buf);
+
+We see both defined in BTF, along with the addresses that
+tell us which is which:
+
+[28472] FUNC 'wakeup_show' type_id=11214 linkage=static
+
+specifies
+
+[11214] FUNC_PROTO '(anon)' ret_type_id=76 vlen=3
+        'kobj' type_id=877
+        'attr' type_id=11200
+        'buf' type_id=56
+
+...and has declaration tag
+
+[28473] DECL_TAG 'address=0xffffffff8115eab0' type_id=28472 component_idx=-1
+
+which identifies
+
+ffffffff8115eab0 t wakeup_show
+
+...as the function with the first signature.
+
+Similarly,
+
+[114375] FUNC 'wakeup_show' type_id=4750 linkage=static
+
+[4750] FUNC_PROTO '(anon)' ret_type_id=76 vlen=3
+        'dev' type_id=1488
+        'attr' type_id=3909
+        'buf' type_id=56
+...and
+
+[114376] DECL_TAG 'address=0xffffffff8181eac0' type_id=114375 component_idx=-1
+
+...tell us that
+
+ffffffff8181eac0 t wakeup_show
+
+...has the second signature.  So we can accommodate multiple
+functions with conflicting signatures in BTF, since we have
+added extra info to map from function description in BTF
+to address.
+
+In total for vmlinux 52006 DECL_TAGs are added, and these add
+2MB to the BTF representation.
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- btf_encoder.c | 34 +++++++++++++++++++++++++---------
- btf_encoder.h |  4 ++--
- dwarves.h     |  1 +
- pahole.c      | 12 ++++++++++--
- 4 files changed, 38 insertions(+), 13 deletions(-)
+ btf_encoder.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
 diff --git a/btf_encoder.c b/btf_encoder.c
-index edf72e6..3bd0fe0 100644
+index 3bd0fe0..315053d 100644
 --- a/btf_encoder.c
 +++ b/btf_encoder.c
-@@ -99,7 +99,7 @@ struct btf_encoder {
- static LIST_HEAD(encoders);
- static pthread_mutex_t encoders__lock = PTHREAD_MUTEX_INITIALIZER;
- 
--static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder);
-+static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder, struct conf_load *conf_load);
- 
- /* mutex only needed for add/delete, as this can happen in multiple encoding
-  * threads.  Traversal of the list is currently confined to thread collection.
-@@ -710,7 +710,7 @@ static int32_t btf_encoder__add_var_secinfo(struct btf_encoder *encoder, uint32_
- 	return gobuffer__add(&encoder->percpu_secinfo, &si, sizeof(si));
- }
- 
--int32_t btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder *other)
-+int32_t btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder *other, struct conf_load *conf_load)
+@@ -988,13 +988,25 @@ static int functions_cmp(const void *_a, const void *_b)
  {
- 	struct gobuffer *var_secinfo_buf = &other->percpu_secinfo;
- 	size_t sz = gobuffer__size(var_secinfo_buf);
-@@ -723,7 +723,7 @@ int32_t btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder
- 	if (encoder == other)
- 		return 0;
+ 	const struct elf_function *a = _a;
+ 	const struct elf_function *b = _b;
++	int ret;
  
--	btf_encoder__add_saved_funcs(other);
-+	btf_encoder__add_saved_funcs(other, conf_load);
- 
- 	for (i = 0; i < nr_var_secinfo; i++) {
- 		vsi = (struct btf_var_secinfo *)var_secinfo_buf->entries + i;
-@@ -881,7 +881,7 @@ static int32_t btf_encoder__save_func(struct btf_encoder *encoder, struct functi
- 	return 0;
- }
- 
--static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct function *fn)
-+static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct function *fn, struct conf_load *conf_load)
- {
- 	int btf_fnproto_id, btf_fn_id, tag_type_id;
- 	struct llvm_annotation *annot;
-@@ -903,10 +903,26 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder, struct functio
- 			return -1;
- 		}
- 	}
-+	if (conf_load->btf_gen_func_addr) {
-+		if (fn->low_pc) {
-+			char addr_tag[64];
+ 	/* if search key allows prefix match, verify target has matching
+ 	 * prefix len and prefix matches.
+ 	 */
+ 	if (a->prefixlen && a->prefixlen == b->prefixlen)
+-		return strncmp(a->name, b->name, b->prefixlen);
+-	return strcmp(a->name, b->name);
++		ret = strncmp(a->name, b->name, b->prefixlen);
++	else
++		ret = strcmp(a->name, b->name);
 +
-+			snprintf(addr_tag, sizeof(addr_tag), "address=0x%lx", fn->low_pc);
-+			tag_type_id = btf_encoder__add_decl_tag(encoder, addr_tag, btf_fn_id, -1);
-+			if (tag_type_id < 0) {
-+				fprintf(stderr, "error: failed to encode tag '%s' to func %s\n",
-+					addr_tag, name);
-+				return -1;
-+			}
-+		} else {
-+			if (encoder->verbose)
-+				printf("no addr info for func '%s'\n", name);
-+		}
-+	}
- 	return 0;
++	if (ret || !b->addr)
++		return ret;
++
++	/* secondarily sort/search by address. */
++	if (a->addr < b->addr)
++		return -1;
++	if (a->addr > b->addr)
++		return 1;
++	return 0;
  }
  
--static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder)
-+static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder, struct conf_load *conf_load)
- {
- 	int i;
- 
-@@ -956,7 +972,7 @@ static void btf_encoder__add_saved_funcs(struct btf_encoder *encoder)
- 			}
- 		} else {
- 			encoder->type_id_off = func->state.type_id_off;
--			btf_encoder__add_func(encoder, fn);
-+			btf_encoder__add_func(encoder, fn, conf_load);
- 		}
- 		fn->proto.processed = 1;
- 	}
-@@ -1356,12 +1372,12 @@ out:
- 	return err;
+ #ifndef max
+@@ -1044,9 +1056,11 @@ static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *
  }
  
--int btf_encoder__encode(struct btf_encoder *encoder)
-+int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf_load)
+ static struct elf_function *btf_encoder__find_function(const struct btf_encoder *encoder,
+-						       const char *name, size_t prefixlen)
++						       struct function *fn, size_t prefixlen)
  {
- 	int err;
+-	struct elf_function key = { .name = name, .prefixlen = prefixlen };
++	struct elf_function key = { .name = function__name(fn),
++				    .addr = fn->low_pc,
++				    .prefixlen = prefixlen };
  
- 	/* for single-threaded case, saved funcs are added here */
--	btf_encoder__add_saved_funcs(encoder);
-+	btf_encoder__add_saved_funcs(encoder, conf_load);
+ 	return bsearch(&key, encoder->functions.entries, encoder->functions.cnt, sizeof(key), functions_cmp);
+ }
+@@ -1846,7 +1860,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+ 				continue;
  
- 	if (gobuffer__size(&encoder->percpu_secinfo) != 0)
- 		btf_encoder__add_datasec(encoder, PERCPU_SECTION);
-@@ -1871,7 +1887,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
- 		if (save)
- 			err = btf_encoder__save_func(encoder, fn, func);
- 		else
--			err = btf_encoder__add_func(encoder, fn);
-+			err = btf_encoder__add_func(encoder, fn, conf_load);
- 		if (err)
- 			goto out;
- 	}
-diff --git a/btf_encoder.h b/btf_encoder.h
-index 34516bb..b5440cd 100644
---- a/btf_encoder.h
-+++ b/btf_encoder.h
-@@ -19,12 +19,12 @@ struct list_head;
- struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filename, struct btf *base_btf, bool skip_encoding_vars, bool force, bool gen_floats, bool verbose);
- void btf_encoder__delete(struct btf_encoder *encoder);
- 
--int btf_encoder__encode(struct btf_encoder *encoder);
-+int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf_load);
- 
- int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct conf_load *conf_load);
- 
- struct btf *btf_encoder__btf(struct btf_encoder *encoder);
- 
--int btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder *other);
-+int btf_encoder__add_encoder(struct btf_encoder *encoder, struct btf_encoder *other, struct conf_load *conf_load);
- 
- #endif /* _BTF_ENCODER_H_ */
-diff --git a/dwarves.h b/dwarves.h
-index 9cf13dd..8486cfc 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -68,6 +68,7 @@ struct conf_load {
- 	bool			skip_encoding_btf_enum64;
- 	bool			btf_gen_optimized;
- 	bool			skip_encoding_btf_inconsistent_proto;
-+	bool			btf_gen_func_addr;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-diff --git a/pahole.c b/pahole.c
-index 6fc4ed6..b799ea6 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -1232,6 +1232,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARGP_skip_emitting_atomic_typedefs 338
- #define ARGP_btf_gen_optimized  339
- #define ARGP_skip_encoding_btf_inconsistent_proto 340
-+#define ARGP_btf_gen_func_addr 341
- 
- static const struct argp_option pahole__options[] = {
- 	{
-@@ -1654,6 +1655,11 @@ static const struct argp_option pahole__options[] = {
- 		.key = ARGP_skip_encoding_btf_inconsistent_proto,
- 		.doc = "Skip functions that have multiple inconsistent function prototypes sharing the same name, or that use unexpected registers for parameter values."
- 	},
-+	{
-+		.name = "btf_gen_func_addr",
-+		.key = ARGP_btf_gen_func_addr,
-+		.doc = "Encode function addresses as a BTF declaration tag pointing at the function; this allows easier matching of BTF function descriptions to kernel function addresses."
-+	},
- 	{
- 		.name = NULL,
- 	}
-@@ -1829,6 +1835,8 @@ static error_t pahole__options_parser(int key, char *arg,
- 		conf_load.btf_gen_optimized = true;		break;
- 	case ARGP_skip_encoding_btf_inconsistent_proto:
- 		conf_load.skip_encoding_btf_inconsistent_proto = true; break;
-+	case ARGP_btf_gen_func_addr:
-+		conf_load.btf_gen_func_addr = true;		break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -3009,7 +3017,7 @@ static int pahole_threads_collect(struct conf_load *conf, int nr_threads, void *
-                 */
- 		if (!threads[i]->btf)
- 			continue;
--		err = btf_encoder__add_encoder(btf_encoder, threads[i]->encoder);
-+		err = btf_encoder__add_encoder(btf_encoder, threads[i]->encoder, conf);
- 		if (err < 0)
- 			goto out;
- 	}
-@@ -3567,7 +3575,7 @@ try_sole_arg_as_class_names:
- 	header = NULL;
- 
- 	if (btf_encode && btf_encoder) { // maybe all CUs were filtered out and thus we don't have an encoder?
--		err = btf_encoder__encode(btf_encoder);
-+		err = btf_encoder__encode(btf_encoder, &conf_load);
- 		if (err) {
- 			fputs("Failed to encode BTF\n", stderr);
- 			goto out_cus_delete;
+ 			/* prefer exact function name match... */
+-			func = btf_encoder__find_function(encoder, name, 0);
++			func = btf_encoder__find_function(encoder, fn, 0);
+ 			if (func) {
+ 				if (func->generated)
+ 					continue;
+@@ -1863,7 +1877,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
+ 				 * it does not have optimized-out parameters
+ 				 * in any cu.
+ 				 */
+-				func = btf_encoder__find_function(encoder, name,
++				func = btf_encoder__find_function(encoder, fn,
+ 								  strlen(name));
+ 				if (func) {
+ 					save = true;
 -- 
 2.31.1
 
