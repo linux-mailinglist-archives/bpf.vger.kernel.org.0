@@ -1,147 +1,136 @@
-Return-Path: <bpf+bounces-690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E24705D76
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 04:51:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30A39705D85
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 04:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F9AD2813A0
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 02:51:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1254280FD2
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 02:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6988717ED;
-	Wed, 17 May 2023 02:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B893317ED;
+	Wed, 17 May 2023 02:54:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E3617D0
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:50:57 +0000 (UTC)
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3492F103;
-	Tue, 16 May 2023 19:50:55 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0ViqnrSZ_1684291846;
-Received: from 30.97.48.190(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0ViqnrSZ_1684291846)
-          by smtp.aliyun-inc.com;
-          Wed, 17 May 2023 10:50:50 +0800
-Message-ID: <93e0e991-147f-0021-d635-95e615057273@linux.alibaba.com>
-Date: Wed, 17 May 2023 10:50:45 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A1D17D0
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 02:54:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81329C433EF;
+	Wed, 17 May 2023 02:54:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684292078;
+	bh=sFe/hVwr1RlqKJNFm/E/CQUy8RQP2QPCq5ps+biUM9c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=g+5EQcDL1aJVnKUa9P7oA57b/J0fhJzeYfjHTKmU/TRp0LWprYJG7s3i3FWeWbRbR
+	 X9bJ2KLuZB6L62KxGGDwk739uH0Oh9865Gapt7hV+NuajubaQCh6YPj9tbebJHDEDM
+	 m4WRnqNvcl5a8uF/AJsgrjlgrsp316p+SBDagEbisG/VbjrjDb5BpoisrcGEw9u51G
+	 c0DhunDC++nODeOS0aUyO8UbMBnjA5G21/4mLTf1ex2oAI9Chbs6Sa/GrxQfBk2sDt
+	 jDGp9OjmVhTV+sjsYTUpARxL546bJitU/aBLs7h9L9thv4XQsaKVUXYpHn+8/AZZoU
+	 ZMmYifuUoeDag==
+Date: Wed, 17 May 2023 11:54:32 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Ze Gao <zegao2021@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Borislav
+ Petkov <bp@alien8.de>, Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Heiko Carstens
+ <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar
+ <mingo@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Conor Dooley
+ <conor@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Yonghong Song
+ <yhs@fb.com>, Ze Gao <zegao@tencent.com>
+Subject: Re: [PATCH v2 2/4] fprobe: make fprobe_kprobe_handler recursion
+ free
+Message-Id: <20230517115432.94a65364e53cbd5b40c54e82@kernel.org>
+In-Reply-To: <CAD8CoPAw_nKsm4vUJ_=aSwzLc5zo8D5pY6A7-grXENxpMYz9og@mail.gmail.com>
+References: <20230516071830.8190-1-zegao@tencent.com>
+	<20230516071830.8190-3-zegao@tencent.com>
+	<20230516091820.GB2587705@hirez.programming.kicks-ass.net>
+	<CAD8CoPDFp2_+D6nykj6mu_Pr57iN+8jO-kgA_FRrcxD8C7YU+Q@mail.gmail.com>
+	<20230517010311.f46db3f78b11cf9d92193527@kernel.org>
+	<CAD8CoPAw_nKsm4vUJ_=aSwzLc5zo8D5pY6A7-grXENxpMYz9og@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [RFC PATCH bpf-next v3 00/37] FUSE BPF: A Stacked Filesystem
- Extension for FUSE
-To: Daniel Rosenberg <drosen@google.com>, Miklos Szeredi <miklos@szeredi.hu>,
- Amir Goldstein <amir73il@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-unionfs@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Joanne Koong <joannelkoong@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, kernel-team@android.com
-References: <20230418014037.2412394-1-drosen@google.com>
- <CAJfpegtuNgbZfLiKnpzdEP0sNtCt=83NjGtBnmtvMaon2avv2w@mail.gmail.com>
- <CA+PiJmTMs2u=J6ANYqHdGww5SoE_focZGjMRZk5WgoH8fVuCsA@mail.gmail.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <CA+PiJmTMs2u=J6ANYqHdGww5SoE_focZGjMRZk5WgoH8fVuCsA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.6 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
+On Wed, 17 May 2023 09:54:53 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-
-On 2023/5/2 17:07, Daniel Rosenberg wrote:
-> On Mon, Apr 24, 2023 at 8:32 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->>
->>
->> The security model needs to be thought about and documented.  Think
->> about this: the fuse server now delegates operations it would itself
->> perform to the passthrough code in fuse.  The permissions that would
->> have been checked in the context of the fuse server are now checked in
->> the context of the task performing the operation.  The server may be
->> able to bypass seccomp restrictions.  Files that are open on the
->> backing filesystem are now hidden (e.g. lsof won't find these), which
->> allows the server to obfuscate accesses to backing files.  Etc.
->>
->> These are not particularly worrying if the server is privileged, but
->> fuse comes with the history of supporting unprivileged servers, so we
->> should look at supporting passthrough with unprivileged servers as
->> well.
->>
+> Oops, I misunderstood your comments before.
 > 
-> This is on my todo list. My current plan is to grab the creds that the
-> daemon uses to respond to FUSE_INIT. That should keep behavior fairly
-> similar. I'm not sure if there are cases where the fuse server is
-> operating under multiple contexts.
-> I don't currently have a plan for exposing open files via lsof. Every
-> such file should relate to one that will show up though. I haven't dug
-> into how that's set up, but I'm open to suggestions.
-> 
->> My other generic comment is that you should add justification for
->> doing this in the first place.  I guess it's mainly performance.  So
->> how performance can be won in real life cases?   It would also be good
->> to measure the contribution of individual ops to that win.   Is there
->> another reason for this besides performance?
->>
->> Thanks,
->> Miklos
-> 
-> Our main concern with it is performance. We have some preliminary
-> numbers looking at the pure passthrough case. We've been testing using
-> a ramdrive on a somewhat slow machine, as that should highlight
-> differences more. We ran fio for sequential reads, and random
-> read/write. For sequential reads, we were seeing libfuse's
-> passthrough_hp take about a 50% hit, with fuse-bpf not being
-> detectably slower. For random read/write, we were seeing a roughly 90%
-> drop in performance from passthrough_hp, while fuse-bpf has about a 7%
-> drop in read and write speed. When we use a bpf that traces every
-> opcode, that performance hit increases to a roughly 1% drop in
-> sequential read performance, and a 20% drop in both read and write
-> performance for random read/write. We plan to make more complex bpf
-> examples, with fuse daemon equivalents to compare against.
-> 
-> We have not looked closely at the impact of individual opcodes yet.
-> 
-> There's also a potential ease of use for fuse-bpf. If you're
-> implementing a fuse daemon that is largely mirroring a backing
-> filesystem, you only need to write code for the differences in
-> behavior. For instance, say you want to remove image metadata like
-> location. You could give bpf information on what range of data is
-> metadata, and zero out that section without having to handle any other
-> operations.
+> Yes, it's not necessary to do this reordering as regards to kprobe.
 
-A bit out of topic (although I'm not quite look into FUSE BPF internals)
-After roughly listening to this topic in FS track last week, I'm not
-quite sure (at least in the long term) if it might be better if
-ebpf-related filter/redirect stuffs could be landed in vfs or in a
-somewhat stackable fs so that we could redirect/filter any sub-fstree
-in principle?    It's just an open question and I have no real tendency
-of this but do we really need a BPF-filter functionality for each
-individual fs?
+Let me confirm, I meant that your current patch is correct. I just mentioned
+that kprobe_busy_{begin,end} will continue use standard version because
+kprobe itself handles that. Please update only the patch description and
+add my ack.
 
-It sounds much like
-https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-filter-drivers
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Thanks,
-Gao Xiang
+If you add Steve's call graph for the explanation, it will help us to
+understand what will be fixed.
+
+Thank you,
 
 > 
->   -Daniel
+> Thanks for your review.
+> 
+> I'll rebase onto the latest tree and send v3 ASAP.
+> 
+> Regards,
+> Ze
+> 
+> On Wed, May 17, 2023 at 12:03 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Tue, 16 May 2023 17:47:52 +0800
+> > Ze Gao <zegao2021@gmail.com> wrote:
+> >
+> > > Precisely, these that are called within kprobe_busy_{begin, end},
+> > > which the previous patch does not resolve.
+> >
+> > Note that kprobe_busy_{begin,end} don't need to use notrace version
+> > because kprobe itself prohibits probing on preempt_count_{add,sub}.
+> >
+> > Thank you,
+> >
+> > > I will refine the commit message to make it clear.
+> > >
+> > > FYI, details can checked out here:
+> > >     Link: https://lore.kernel.org/linux-trace-kernel/20230516132516.c902edcf21028874a74fb868@kernel.org/
+> > >
+> > > Regards,
+> > > Ze
+> > >
+> > > On Tue, May 16, 2023 at 5:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > On Tue, May 16, 2023 at 03:18:28PM +0800, Ze Gao wrote:
+> > > > > Current implementation calls kprobe related functions before doing
+> > > > > ftrace recursion check in fprobe_kprobe_handler, which opens door
+> > > > > to kernel crash due to stack recursion if preempt_count_{add, sub}
+> > > > > is traceable.
+> > > >
+> > > > Which preempt_count*() are you referring to? The ones you just made
+> > > > _notrace in the previous patch?
+> >
+> >
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
