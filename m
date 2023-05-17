@@ -1,286 +1,311 @@
-Return-Path: <bpf+bounces-764-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-765-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 395BE7065F7
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 13:01:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D1F7066D4
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 13:35:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4C90281074
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F15928120D
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED76171B7;
-	Wed, 17 May 2023 11:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CF32C74C;
+	Wed, 17 May 2023 11:34:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607B7DDBA
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:00:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E832C433EF;
-	Wed, 17 May 2023 11:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684321233;
-	bh=Opru+2p0wZnGgR0lKafejqzhmXs4W7N/0un87eck92Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=swrGUpKIyz9hMhmeLtjkuDuOMvjy+IBiLWBSX23BViCmgmDFu31HiBtTvW4+ngtBn
-	 Cex4BkhGAHVVzK4RgXhyd7d3ooLfGbVn6phxSMiYY4VaLfaYEdHzvLTFXfU+TWCNps
-	 QHmqX5Ke9OPHmhHYsPXIoumBaEWXI5p24tipj06V/A+eEFrA15a8oKLvE1od0m98HM
-	 33cFJLDsMrprT37/kte9nWIgom+60u2umyx7pkttJDEBoA/Cz9Jpe4koZ+nyN1GioC
-	 8uK7jm25S+8KoAkVlr1+L1Gk/Qi/AG4OzFfXnl20kI4h8Wic9z6TYJRE7Hset6HC96
-	 iUMHgoeE8Axfg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: linux-trace-kernel@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B229A211C
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:34:31 +0000 (UTC)
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D16A4EFF
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 04:34:24 -0700 (PDT)
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E383C3F555
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1684323262;
+	bh=OF0SbgroQXegOKfgupip9FcKY0xyGooQ7mZBIpRXr2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version;
+	b=btiiQf3VeTcvM7Oxna8mTH9DPK362+SQveBrNGqvuk/UPPPWgBWxfjYuLqcZbNGBs
+	 wyaErld5EydO6S1nSaFWHqSvgwNtEQ/HkWoTPomYGsATBLM2EuYBaYt4SYUvImxedd
+	 SmCx9MaJtKrHviWLxox3qzJzCuDJn/aNvSr+NGx6mdzR1ZDnt4YrNxFviR5Uoxs1dO
+	 gcrR9ZqpOa2ODRRgu6UvWeC/nythot+vUw/nGm4EW8J/9FzSLYErdjFeoqOFPscx2D
+	 Rj0ecqJMEGwo+ZsFPWJhLjcV8n2MCRDfIDqIcV243ZoRIDWjAao++H+B8+tvW4RE9E
+	 25fVJrVMIDIIQ==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a341ee4fcso93230266b.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 04:34:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684323262; x=1686915262;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OF0SbgroQXegOKfgupip9FcKY0xyGooQ7mZBIpRXr2I=;
+        b=ABNZGVvvjKSJe5U2CrACm3WjazmRLB6wpTfJUMLUxbclDL1J8WTKd9AyCawlEuHg3y
+         89bSnclg2ajAYAUN4Cr5XxMd2VkG/4gfT5/O+Yy+Zz+ncXEJh37mmARkoKpCPLJxfuez
+         3NMlm3VtA6eSguvaMDx11+8ucKPwyhcKp547bewF72GrbaQhrn+ZF9f64C3zuR8un6nV
+         aAcO1ZljXpTsK3dK61UHosIUYJfDPgh0pQUWHNej6BveRmoKcWKjFNfq66UjmMEiCq2i
+         WxqHHbAWTxDOLjSvCS5h4ZZiq7T3HJF2XPcXtjN1SHvcHvRQHgS+xP5xZIgzYMKzJff0
+         n/7g==
+X-Gm-Message-State: AC+VfDyuasZM5C4/PmNQ0a51T4OXlJRY/XneitVq+5Ex+V2S7QJIBG9H
+	9AC+YxmXrEeoHwXf2QB6bGhCdCFnKksSxPnHAo8i/XMwNAwHm8XUZSkfjyO07KB6KSAmV0ylFCw
+	Hj33JzFkASFXUECTlgVsz96EYHa1KsQ==
+X-Received: by 2002:a17:906:fe0c:b0:961:78c2:1d27 with SMTP id wy12-20020a170906fe0c00b0096178c21d27mr37193286ejb.19.1684323262509;
+        Wed, 17 May 2023 04:34:22 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5oaroDw85VzG/pU4SUbjJEcgfdT/j5LQHlcj2YN8ZfOrg6vuuELp+7nKe+6/jTWxHXiSs1Jw==
+X-Received: by 2002:a17:906:fe0c:b0:961:78c2:1d27 with SMTP id wy12-20020a170906fe0c00b0096178c21d27mr37193272ejb.19.1684323262253;
+        Wed, 17 May 2023 04:34:22 -0700 (PDT)
+Received: from amikhalitsyn.local (dslb-088-074-206-207.088.074.pools.vodafone-ip.de. [88.74.206.207])
+        by smtp.gmail.com with ESMTPSA id p1-20020a170906838100b009662b4230cesm12404387ejx.148.2023.05.17.04.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 May 2023 04:34:21 -0700 (PDT)
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: davem@davemloft.net
 Cc: linux-kernel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	mhiramat@kernel.org,
-	Florent Revest <revest@chromium.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH v11 11/11] Documentation: tracing/probes: Add fprobe event tracing document
-Date: Wed, 17 May 2023 20:00:29 +0900
-Message-ID:  <168432122914.1351929.944185321099763072.stgit@mhiramat.roam.corp.google.com>
-X-Mailer: git-send-email 2.40.1.606.ga4b1b128d6-goog
-In-Reply-To:  <168432112492.1351929.9265172785506392923.stgit@mhiramat.roam.corp.google.com>
-References:  <168432112492.1351929.9265172785506392923.stgit@mhiramat.roam.corp.google.com>
-User-Agent: StGit/0.19
+	netdev@vger.kernel.org,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	David Ahern <dsahern@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Kees Cook <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Lennart Poettering <mzxreary@0pointer.de>,
+	Luca Boccassi <bluca@debian.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Stanislav Fomichev <sdf@google.com>,
+	bpf@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: [PATCH net-next v5 2/3] net: core: add getsockopt SO_PEERPIDFD
+Date: Wed, 17 May 2023 13:33:50 +0200
+Message-Id: <20230517113351.308771-3-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230517113351.308771-1-aleksandr.mikhalitsyn@canonical.com>
+References: <20230517113351.308771-1-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Add SO_PEERPIDFD which allows to get pidfd of peer socket holder pidfd.
+This thing is direct analog of SO_PEERCRED which allows to get plain PID.
 
-Add a documentation about fprobe event tracing including
-tracepoint probe event and BTF argument.
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Lennart Poettering <mzxreary@0pointer.de>
+Cc: Luca Boccassi <bluca@debian.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Tested-by: Luca Boccassi <bluca@debian.org>
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 ---
-Changes in v11:
- - Fix $$args to $arg*.
- - Update the document.
-Changes in v10:
- - Fix space before tab.
-Changes in v7:
- - Update about BTF auto type casting for $retval.
+v5:
+	- started using (struct proto)->bpf_bypass_getsockopt hook
+v4:
+	- return -ESRCH if sk->sk_peer_pid is NULL from getsockopt() syscall
+	- return errors from pidfd_prepare() as it is from getsockopt() syscall
+v3:
+	- fixed possible fd leak (thanks to Christian Brauner)
+v2:
+	According to review comments from Kuniyuki Iwashima and Christian Brauner:
+	- use pidfd_create(..) retval as a result
+	- whitespace change
 ---
- Documentation/trace/fprobetrace.rst |  187 +++++++++++++++++++++++++++++++++++
- Documentation/trace/index.rst       |    1 
- 2 files changed, 188 insertions(+)
- create mode 100644 Documentation/trace/fprobetrace.rst
+ arch/alpha/include/uapi/asm/socket.h    |  1 +
+ arch/mips/include/uapi/asm/socket.h     |  1 +
+ arch/parisc/include/uapi/asm/socket.h   |  1 +
+ arch/sparc/include/uapi/asm/socket.h    |  1 +
+ include/uapi/asm-generic/socket.h       |  1 +
+ net/core/sock.c                         | 33 +++++++++++++++++++++++++
+ net/unix/af_unix.c                      | 16 ++++++++++++
+ tools/include/uapi/asm-generic/socket.h |  1 +
+ 8 files changed, 55 insertions(+)
 
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-new file mode 100644
-index 000000000000..eca64ad7216a
---- /dev/null
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -0,0 +1,187 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
+index ff310613ae64..e94f621903fe 100644
+--- a/arch/alpha/include/uapi/asm/socket.h
++++ b/arch/alpha/include/uapi/asm/socket.h
+@@ -138,6 +138,7 @@
+ #define SO_RCVMARK		75
+ 
+ #define SO_PASSPIDFD		76
++#define SO_PEERPIDFD		77
+ 
+ #if !defined(__KERNEL__)
+ 
+diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
+index 762dcb80e4ec..60ebaed28a4c 100644
+--- a/arch/mips/include/uapi/asm/socket.h
++++ b/arch/mips/include/uapi/asm/socket.h
+@@ -149,6 +149,7 @@
+ #define SO_RCVMARK		75
+ 
+ #define SO_PASSPIDFD		76
++#define SO_PEERPIDFD		77
+ 
+ #if !defined(__KERNEL__)
+ 
+diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
+index df16a3e16d64..be264c2b1a11 100644
+--- a/arch/parisc/include/uapi/asm/socket.h
++++ b/arch/parisc/include/uapi/asm/socket.h
+@@ -130,6 +130,7 @@
+ #define SO_RCVMARK		0x4049
+ 
+ #define SO_PASSPIDFD		0x404A
++#define SO_PEERPIDFD		0x404B
+ 
+ #if !defined(__KERNEL__)
+ 
+diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
+index 6e2847804fea..682da3714686 100644
+--- a/arch/sparc/include/uapi/asm/socket.h
++++ b/arch/sparc/include/uapi/asm/socket.h
+@@ -131,6 +131,7 @@
+ #define SO_RCVMARK               0x0054
+ 
+ #define SO_PASSPIDFD             0x0055
++#define SO_PEERPIDFD             0x0056
+ 
+ #if !defined(__KERNEL__)
+ 
+diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
+index b76169fdb80b..8ce8a39a1e5f 100644
+--- a/include/uapi/asm-generic/socket.h
++++ b/include/uapi/asm-generic/socket.h
+@@ -133,6 +133,7 @@
+ #define SO_RCVMARK		75
+ 
+ #define SO_PASSPIDFD		76
++#define SO_PEERPIDFD		77
+ 
+ #if !defined(__KERNEL__)
+ 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index bb1e3f7dba79..3d3f30436dbf 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1758,6 +1758,39 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
+ 		goto lenout;
+ 	}
+ 
++	case SO_PEERPIDFD:
++	{
++		struct pid *peer_pid;
++		struct file *pidfd_file = NULL;
++		int pidfd;
 +
-+==========================
-+Fprobe-based Event Tracing
-+==========================
++		if (len > sizeof(pidfd))
++			len = sizeof(pidfd);
 +
-+.. Author: Masami Hiramatsu <mhiramat@kernel.org>
++		spin_lock(&sk->sk_peer_lock);
++		peer_pid = get_pid(sk->sk_peer_pid);
++		spin_unlock(&sk->sk_peer_lock);
 +
-+Overview
-+--------
++		if (!peer_pid)
++			return -ESRCH;
 +
-+Fprobe event is similar to the kprobe event, but limited to probe on
-+the function entry and exit only. It is good enough for many use cases
-+which only traces some specific functions.
++		pidfd = pidfd_prepare(peer_pid, 0, &pidfd_file);
++		put_pid(peer_pid);
++		if (pidfd < 0)
++			return pidfd;
 +
-+This document also covers tracepoint probe events (tprobe) since this
-+is also works only on the tracepoint entry. User can trace a part of
-+tracepoint argument, or the tracepoint without trace-event, which is
-+not exposed on tracefs.
++		if (copy_to_sockptr(optval, &pidfd, len) ||
++		    copy_to_sockptr(optlen, &len, sizeof(int))) {
++			put_unused_fd(pidfd);
++			fput(pidfd_file);
 +
-+As same as other dynamic events, fprobe events and tracepoint probe
-+events are defined via `dynamic_events` interface file on tracefs.
++			return -EFAULT;
++		}
 +
-+Synopsis of fprobe-events
-+-------------------------
-+::
++		fd_install(pidfd, pidfd_file);
++		return 0;
++	}
 +
-+  f[:[GRP1/][EVENT1]] SYM [FETCHARGS]                       : Probe on function entry
-+  f[MAXACTIVE][:[GRP1/][EVENT1]] SYM%return [FETCHARGS]     : Probe on function exit
-+  t[:[GRP2/][EVENT2]] TRACEPOINT [FETCHARGS]                : Probe on tracepoint
+ 	case SO_PEERGROUPS:
+ 	{
+ 		const struct cred *cred;
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index aac40106d036..ea24843fb017 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -921,11 +921,26 @@ static void unix_unhash(struct sock *sk)
+ 	 */
+ }
+ 
++static bool unix_bpf_bypass_getsockopt(int level, int optname)
++{
++	if (level == SOL_SOCKET) {
++		switch (optname) {
++		case SO_PEERPIDFD:
++			return true;
++		default:
++			return false;
++		}
++	}
 +
-+ GRP1           : Group name for fprobe. If omitted, use "fprobes" for it.
-+ GRP2           : Group name for tprobe. If omitted, use "tracepoints" for it.
-+ EVENT1         : Event name for fprobe. If omitted, the event name is
-+                  "SYM__entry" or "SYM__exit".
-+ EVENT2         : Event name for tprobe. If omitted, the event name is
-+                  the same as "TRACEPOINT", but if the "TRACEPOINT" starts
-+                  with a digit character, "_TRACEPOINT" is used.
-+ MAXACTIVE      : Maximum number of instances of the specified function that
-+                  can be probed simultaneously, or 0 for the default value
-+                  as defined in Documentation/trace/fprobes.rst
++	return false;
++}
 +
-+ FETCHARGS      : Arguments. Each probe can have up to 128 args.
-+  ARG           : Fetch "ARG" function argument using BTF (only for function
-+                  entry or tracepoint.) (\*1)
-+  @ADDR         : Fetch memory at ADDR (ADDR should be in kernel)
-+  @SYM[+|-offs] : Fetch memory at SYM +|- offs (SYM should be a data symbol)
-+  $stackN       : Fetch Nth entry of stack (N >= 0)
-+  $stack        : Fetch stack address.
-+  $argN         : Fetch the Nth function argument. (N >= 1) (\*2)
-+  $retval       : Fetch return value.(\*3)
-+  $comm         : Fetch current task comm.
-+  +|-[u]OFFS(FETCHARG) : Fetch memory at FETCHARG +|- OFFS address.(\*4)(\*5)
-+  \IMM          : Store an immediate value to the argument.
-+  NAME=FETCHARG : Set NAME as the argument name of FETCHARG.
-+  FETCHARG:TYPE : Set TYPE as the type of FETCHARG. Currently, basic types
-+                  (u8/u16/u32/u64/s8/s16/s32/s64), hexadecimal types
-+                  (x8/x16/x32/x64), "char", "string", "ustring", "symbol", "symstr"
-+                  and bitfield are supported.
-+
-+  (\*1) This is available only when BTF is enabled.
-+  (\*2) only for the probe on function entry (offs == 0).
-+  (\*3) only for return probe.
-+  (\*4) this is useful for fetching a field of data structures.
-+  (\*5) "u" means user-space dereference.
-+
-+For the details of TYPE, see :file:`Documentation/trace/kprobetrace.rst`.
-+
-+BTF arguments
-+-------------
-+BTF (BPF Type Format) argument allows user to trace function and tracepoint
-+parameters by its name instead of `$argN`. This feature is available if the
-+kernel is configured with CONFIG_BPF_SYSCALL and CONFIG_DEBUG_INFO_BTF.
-+If user only specify the BTF argument, the event's argument name is also
-+automatically set by the given name. ::
-+
-+ # echo 'f:myprobe vfs_read count pos' >> dynamic_events
-+ # cat dynamic_events
-+ f:fprobes/myprobe vfs_read count=count pos=pos
-+
-+It also chooses the fetch type from BTF information. For example, in the above
-+example, the `count` is unsigned long, and the `pos` is a pointer. Thus, both
-+are converted to 64bit unsigned long, but only `pos` has `%Lx` print-format ::
-+
-+ # cat events/fprobes/myprobe/format
-+ name: myprobe
-+ ID: 1313
-+ format:
-+	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-+	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-+	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-+	field:int common_pid;	offset:4;	size:4;	signed:1;
-+
-+	field:unsigned long __probe_ip;	offset:8;	size:8;	signed:0;
-+	field:u64 count;	offset:16;	size:8;	signed:0;
-+	field:u64 pos;	offset:24;	size:8;	signed:0;
-+
-+ print fmt: "(%lx) count=%Lu pos=0x%Lx", REC->__probe_ip, REC->count, REC->pos
-+
-+If user unsures the name of arguments, `$arg*` will be helpful. The `$arg*`
-+is expanded to all function arguments of the function or the tracepoint. ::
-+
-+ # echo 'f:myprobe vfs_read $arg*' >> dynamic_events
-+ # cat dynamic_events
-+ f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
-+
-+BTF also affects the $retval. If user doesn't set any type, the retval type is
-+automatically picked from the BTF. If the function returns 'void', $retval is
-+rejected.
-+
-+Usage examples
-+--------------
-+Here is an example to add fprobe events on `vfs_read()` function entry
-+and exit, with BTF arguments.
-+::
-+
-+  # echo 'f vfs_read $arg*' >> dynamic_events
-+  # echo 'f vfs_read%return $retval' >> dynamic_events
-+  # cat dynamic_events
-+ f:fprobes/vfs_read__entry vfs_read file=file buf=buf count=count pos=pos
-+ f:fprobes/vfs_read__exit vfs_read%return arg1=$retval
-+  # echo 1 > events/fprobes/enable
-+  # head -n 20 trace | tail
-+ #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-+ #              | |         |   |||||     |         |
-+               sh-70      [000] ...1.   335.883195: vfs_read__entry: (vfs_read+0x4/0x340) file=0xffff888005cf9a80 buf=0x7ffef36c6879 count=1 pos=0xffffc900005aff08
-+               sh-70      [000] .....   335.883208: vfs_read__exit: (ksys_read+0x75/0x100 <- vfs_read) arg1=1
-+               sh-70      [000] ...1.   335.883220: vfs_read__entry: (vfs_read+0x4/0x340) file=0xffff888005cf9a80 buf=0x7ffef36c6879 count=1 pos=0xffffc900005aff08
-+               sh-70      [000] .....   335.883224: vfs_read__exit: (ksys_read+0x75/0x100 <- vfs_read) arg1=1
-+               sh-70      [000] ...1.   335.883232: vfs_read__entry: (vfs_read+0x4/0x340) file=0xffff888005cf9a80 buf=0x7ffef36c687a count=1 pos=0xffffc900005aff08
-+               sh-70      [000] .....   335.883237: vfs_read__exit: (ksys_read+0x75/0x100 <- vfs_read) arg1=1
-+               sh-70      [000] ...1.   336.050329: vfs_read__entry: (vfs_read+0x4/0x340) file=0xffff888005cf9a80 buf=0x7ffef36c6879 count=1 pos=0xffffc900005aff08
-+               sh-70      [000] .....   336.050343: vfs_read__exit: (ksys_read+0x75/0x100 <- vfs_read) arg1=1
-+
-+You can see all function arguments and return values are recorded as signed int.
-+
-+Also, here is an example of tracepoint events on `sched_switch` tracepoint.
-+To compare the result, this also enables the `sched_switch` traceevent too.
-+::
-+
-+  # echo 't sched_switch $arg*' >> dynamic_events
-+  # echo 1 > events/sched/sched_switch/enable
-+  # echo 1 > events/tracepoints/sched_switch/enable
-+  # echo > trace
-+  # head -n 20 trace | tail
-+ #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-+ #              | |         |   |||||     |         |
-+               sh-70      [000] d..2.  3912.083993: sched_switch: prev_comm=sh prev_pid=70 prev_prio=120 prev_state=S ==> next_comm=swapper/0 next_pid=0 next_prio=120
-+               sh-70      [000] d..3.  3912.083995: sched_switch: (__probestub_sched_switch+0x4/0x10) preempt=0 prev=0xffff88800664e100 next=0xffffffff828229c0 prev_state=1
-+           <idle>-0       [000] d..2.  3912.084183: sched_switch: prev_comm=swapper/0 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=rcu_preempt next_pid=16 next_prio=120
-+           <idle>-0       [000] d..3.  3912.084184: sched_switch: (__probestub_sched_switch+0x4/0x10) preempt=0 prev=0xffffffff828229c0 next=0xffff888004208000 prev_state=0
-+      rcu_preempt-16      [000] d..2.  3912.084196: sched_switch: prev_comm=rcu_preempt prev_pid=16 prev_prio=120 prev_state=I ==> next_comm=swapper/0 next_pid=0 next_prio=120
-+      rcu_preempt-16      [000] d..3.  3912.084196: sched_switch: (__probestub_sched_switch+0x4/0x10) preempt=0 prev=0xffff888004208000 next=0xffffffff828229c0 prev_state=1026
-+           <idle>-0       [000] d..2.  3912.085191: sched_switch: prev_comm=swapper/0 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=rcu_preempt next_pid=16 next_prio=120
-+           <idle>-0       [000] d..3.  3912.085191: sched_switch: (__probestub_sched_switch+0x4/0x10) preempt=0 prev=0xffffffff828229c0 next=0xffff888004208000 prev_state=0
-+
-+As you can see, the `sched_switch` trace-event shows *cooked* parameters, on
-+the other hand, the `sched_switch` tracepoint probe event shows *raw*
-+parameters. This means you can access any field values in the task
-+structure pointed by the `prev` and `next` arguments.
-+
-+For example, usually `task_struct::start_time` is not traced, but with this
-+traceprobe event, you can trace it as below.
-+::
-+
-+  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
-+  # head -n 20 trace | tail
-+ #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-+ #              | |         |   |||||     |         |
-+               sh-70      [000] d..3.  5606.686577: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="rcu_preempt" usage=1 start_time=245000000
-+      rcu_preempt-16      [000] d..3.  5606.686602: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="sh" usage=1 start_time=1596095526
-+               sh-70      [000] d..3.  5606.686637: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
-+           <idle>-0       [000] d..3.  5606.687190: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="rcu_preempt" usage=1 start_time=245000000
-+      rcu_preempt-16      [000] d..3.  5606.687202: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
-+           <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
-+      kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
-+           <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
-+
-+Currently, to find the offset of a specific field in the data structure,
-+you need to build kernel with debuginfo and run `perf probe` command with
-+`-D` option. e.g.
-+::
-+
-+ # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
-+ p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
-+
-+And replace the `%cx` with the `next`.
-diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-index ea25a9220f92..5092d6c13af5 100644
---- a/Documentation/trace/index.rst
-+++ b/Documentation/trace/index.rst
-@@ -13,6 +13,7 @@ Linux Tracing Technologies
-    kprobes
-    kprobetrace
-    uprobetracer
-+   fprobetrace
-    tracepoints
-    events
-    events-kmem
+ struct proto unix_dgram_proto = {
+ 	.name			= "UNIX",
+ 	.owner			= THIS_MODULE,
+ 	.obj_size		= sizeof(struct unix_sock),
+ 	.close			= unix_close,
++	.bpf_bypass_getsockopt	= unix_bpf_bypass_getsockopt,
+ #ifdef CONFIG_BPF_SYSCALL
+ 	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
+ #endif
+@@ -937,6 +952,7 @@ struct proto unix_stream_proto = {
+ 	.obj_size		= sizeof(struct unix_sock),
+ 	.close			= unix_close,
+ 	.unhash			= unix_unhash,
++	.bpf_bypass_getsockopt	= unix_bpf_bypass_getsockopt,
+ #ifdef CONFIG_BPF_SYSCALL
+ 	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
+ #endif
+diff --git a/tools/include/uapi/asm-generic/socket.h b/tools/include/uapi/asm-generic/socket.h
+index fbbc4bf53ee3..54d9c8bf7c55 100644
+--- a/tools/include/uapi/asm-generic/socket.h
++++ b/tools/include/uapi/asm-generic/socket.h
+@@ -122,6 +122,7 @@
+ #define SO_RCVMARK		75
+ 
+ #define SO_PASSPIDFD		76
++#define SO_PEERPIDFD		77
+ 
+ #if !defined(__KERNEL__)
+ 
+-- 
+2.34.1
 
 
