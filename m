@@ -1,64 +1,63 @@
-Return-Path: <bpf+bounces-821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 375D9707250
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:37:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AEFD707253
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 21:38:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6BA42816F8
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:37:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1026E1C20F7D
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 19:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2703E34CF3;
-	Wed, 17 May 2023 19:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB65B34CF6;
+	Wed, 17 May 2023 19:38:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FAC111AD
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 19:37:18 +0000 (UTC)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF818A255
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:36:55 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-966287b0f72so211876566b.0
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:36:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915AC111AD
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 19:38:00 +0000 (UTC)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E36EE67
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:33 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-510d9218506so760579a12.1
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1684352214; x=1686944214;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8DJujWcgKFUPe2mSgSbivOepwby+XZ0SdDGpw6KOt6U=;
-        b=JI8P++Ejpwah/9ujZLGzlcbeX6IiN9KXWwGGtrkllxq2cwtPfXM/Lg1gSDrOQCtSRF
-         ItsLIL8wBg/HFszijwE0LNEONV6N8NHHqFOsEpfMKtc9ejev02a2B80w94ZQZABPUnJR
-         T2qDnFjDZPfvcBMFLZ2So/CyHnCFxeyh4zMJA=
+        d=linux-foundation.org; s=google; t=1684352250; x=1686944250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EGKI6H/r7fSXnuBx9f0+4FVv9qKurvHdpDRXkzgKVVE=;
+        b=dST0i2fL5crJmyksJX0862DQUmET9sHJlkPm04jxbIwsJnbNUW7+0b9DaPO9SxViNp
+         8CzG00bl4e2iNhYUUIqZpckBCyAUm20fVCmG2RA76lWUFaM4nC8fP1fK2o1BbU/ipu7m
+         Bu3FNI0mAQY4PxO8q5NtnD+m9tmxVXzdQOtzY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684352214; x=1686944214;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8DJujWcgKFUPe2mSgSbivOepwby+XZ0SdDGpw6KOt6U=;
-        b=OWi0th7dOfBwcoFMGl8DzmvqAQUopDtgXaqBigvNFwqmnAM3YBtkIPoXQlih1DYG+r
-         6DRlBJL988j2Zlm6qyFIe6GOpFoavNLYcWk9o6zXx1kaB5smyDdn1w1VgazAlzztFl/7
-         NzEYuuI8AaqmvMhAS8KR1A9XHRDcoaiXLbE7+CmQtSsbF3zTifAV8UUZ71I3gjeuZKz/
-         ACC+BcZKr/uTXcrlLHcy6YJNu2syVZ8h5Z4R5XX/AuwDsMciGDjz/J9C5TUKecVZNPxj
-         AT0zsExQIZWuZvqKuJ44ScMTXPz8dePThZjf25tKJ9w8GcEbZ+AFQvQGD/b+8I1uWgYz
-         L+/A==
-X-Gm-Message-State: AC+VfDwFd6YEc5yiQ2REb/2ZmWBKdc5eC6oJlKQ2hzFdSQuHLzShDIMU
-	fVaJBYzGE6ArnNVA7zpwaggj2LtK7hG5Iei90OrXGeWD
-X-Google-Smtp-Source: ACHHUZ5zBNK+kA8ERY2NX4PvxYLxg0Zt3hLo+2XlOd+rDq5DYzAxAldIK8GsLmKJu/GKh0Y1OR0xvQ==
-X-Received: by 2002:a17:907:9454:b0:953:291a:6705 with SMTP id dl20-20020a170907945400b00953291a6705mr39003388ejc.17.1684352214170;
-        Wed, 17 May 2023 12:36:54 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id hg8-20020a1709072cc800b00932fa67b48fsm12618795ejc.183.2023.05.17.12.36.53
+        d=1e100.net; s=20221208; t=1684352250; x=1686944250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EGKI6H/r7fSXnuBx9f0+4FVv9qKurvHdpDRXkzgKVVE=;
+        b=LjC4shQ5tTybdNTeebqT8zI4flbZZ6URYgW8bIFxlkkGDQ9faTJKkcmRExw9ltD7Zq
+         xQU6zS3rDmzdNYUNFTOJcpJd8sqPsJosmEbqj7AvaBoU2pctAOLvtuZYfmRKDh4dV4AE
+         8tZQIeJnMWKBdM6gCPr/psm+S6N3KaypARW3YyKDhI6Zq9+cg+VUcqM8tjYhPTP2NLmh
+         /wRD+YJtnu8wTdti194snQlQWEAV2A03KbOoT0hFlD1SoapekqYiTKxTdmb9Exlfr9+1
+         sbh8aFTD+2TmtPZOfaizrLuqsuwQ05kYfNsp6KurcDIdV3JqLw8wA66cnIfZBY30h6dW
+         +s2Q==
+X-Gm-Message-State: AC+VfDypZQBAv5J1QERM+AaB/i2J871b8sUNmciwPb9lTG4N/BgdPUO4
+	Cz3evS09Iij5MJ1sBg4RRAJ6DR+HepGFZB3asMteW3Xm
+X-Google-Smtp-Source: ACHHUZ7zbE/s16RtftFbff1RFLUqp2/PsnPtec1Z3qsdv7peAlBeu22nrwCp6PDR1yfXj3l+rPvMDw==
+X-Received: by 2002:aa7:ca59:0:b0:50c:804:20bb with SMTP id j25-20020aa7ca59000000b0050c080420bbmr3459741edt.16.1684352249794;
+        Wed, 17 May 2023 12:37:29 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id l9-20020a056402124900b005067d6b06efsm9666019edw.17.2023.05.17.12.37.28
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 12:36:53 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-965e4be7541so209742466b.1
-        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:36:53 -0700 (PDT)
-X-Received: by 2002:a17:907:628c:b0:94f:2a13:4e01 with SMTP id
- nd12-20020a170907628c00b0094f2a134e01mr38924382ejc.74.1684352212926; Wed, 17
- May 2023 12:36:52 -0700 (PDT)
+        Wed, 17 May 2023 12:37:29 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-95fde138693so80366566b.0
+        for <bpf@vger.kernel.org>; Wed, 17 May 2023 12:37:28 -0700 (PDT)
+X-Received: by 2002:a17:907:3f9e:b0:96a:2b4:eb69 with SMTP id
+ hr30-20020a1709073f9e00b0096a02b4eb69mr3422885ejc.31.1684352248662; Wed, 17
+ May 2023 12:37:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,11 +71,12 @@ References: <20230509163050.127d5123@rorschach.local.home> <20230515165707.hv65e
  <20230516222919.79bba667@rorschach.local.home> <CAHk-=wh_GEr4ehJKwMM3UA0-7CfNpVH7v_T-=1u+gq9VZD70mw@mail.gmail.com>
  <20230517172243.GA152@W11-BEAU-MD.localdomain> <CAHk-=whzzuNEW8UcV2_8OyuKcXPrk7-j_8GzOoroxz9JiZiD3w@mail.gmail.com>
  <20230517190750.GA366@W11-BEAU-MD.localdomain> <CAHk-=whTBvXJuoi_kACo3qi5WZUmRrhyA-_=rRFsycTytmB6qw@mail.gmail.com>
-In-Reply-To: <CAHk-=whTBvXJuoi_kACo3qi5WZUmRrhyA-_=rRFsycTytmB6qw@mail.gmail.com>
+ <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
+In-Reply-To: <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 17 May 2023 12:36:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
-Message-ID: <CAHk-=wi4w9bPKFFGwLULjJf9hnkL941+c4HbeEVKNzqH04wqDA@mail.gmail.com>
+Date: Wed, 17 May 2023 12:37:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiiBfT4zNS29jA0XEsy8EmbqTH1hAPdRJCDAJMD8Gxt5A@mail.gmail.com>
+Message-ID: <CAHk-=wiiBfT4zNS29jA0XEsy8EmbqTH1hAPdRJCDAJMD8Gxt5A@mail.gmail.com>
 Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
 To: Beau Belgrave <beaub@linux.microsoft.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
@@ -85,8 +85,7 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	David Vernet <void@manifault.com>, dthaler@microsoft.com, brauner@kernel.org, 
 	hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="000000000000759fcb05fbe8d165"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -94,33 +93,49 @@ X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 12:26=E2=80=AFPM Linus Torvalds
+--000000000000759fcb05fbe8d165
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, May 17, 2023 at 12:36=E2=80=AFPM Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
-> Also note that this does NOT fix the incorrect RCU walks.
+> .. this is the patch that I think should go on top of it to fix the
+> misleading "safe" and the incorrect RCU walk.
 
-.. this is the patch that I think should go on top of it to fix the
-misleading "safe" and the incorrect RCU walk.
+Let's actually attach the patch too. Duh.
 
-NOTE! This adds that
+               Linus
 
-        lockdep_assert_held(&event_mutex);
+--000000000000759fcb05fbe8d165
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lhs3trhk0>
+X-Attachment-Id: f_lhs3trhk0
 
-to user_event_enabler_update() too. It's already there in
-user_event_enabler_write(), but I'm not actually convinced this has
-gotten enough coverage checking, so I also did it in that caller.
-
-Some callers obviously hold that mutex. Others are much less obvious,
-eg that user_event_reg() -> update_enable_bit_for() chain. I *assume*
-all the 'class->reg()' callers get the event mutex, but I did not in
-any way check that it is true.
-
-So that lockdep annotation should be actually *tested* with lockdep
-enabled and somebody doing all these operations.
-
-Final note: I do not know this code *AT*ALL*. I'm literally just going
-by "this is the only correct coding pattern to use", not by some
-deeper understanding of what the code actually wants to do.
-
-                   Linus
+IGtlcm5lbC90cmFjZS90cmFjZV9ldmVudHNfdXNlci5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNo
+YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9rZXJu
+ZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYyBiL2tlcm5lbC90cmFjZS90cmFjZV9ldmVudHNf
+dXNlci5jCmluZGV4IGIyYWVjYmZiYmQyNC4uMDU0ZTI4Y2M1YWQ0IDEwMDY0NAotLS0gYS9rZXJu
+ZWwvdHJhY2UvdHJhY2VfZXZlbnRzX3VzZXIuYworKysgYi9rZXJuZWwvdHJhY2UvdHJhY2VfZXZl
+bnRzX3VzZXIuYwpAQCAtNDM5LDcgKzQzOSw3IEBAIHN0YXRpYyBib29sIHVzZXJfZXZlbnRfZW5h
+Ymxlcl9leGlzdHMoc3RydWN0IHVzZXJfZXZlbnRfbW0gKm1tLAogCXN0cnVjdCB1c2VyX2V2ZW50
+X2VuYWJsZXIgKmVuYWJsZXI7CiAJc3RydWN0IHVzZXJfZXZlbnRfZW5hYmxlciAqbmV4dDsKIAot
+CWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShlbmFibGVyLCBuZXh0LCAmbW0tPmVuYWJsZXJzLCBs
+aW5rKSB7CisJbGlzdF9mb3JfZWFjaF9lbnRyeShlbmFibGVyLCBuZXh0LCAmbW0tPmVuYWJsZXJz
+LCBsaW5rKSB7CiAJCWlmIChlbmFibGVyLT5hZGRyID09IHVhZGRyICYmCiAJCSAgICAoZW5hYmxl
+ci0+dmFsdWVzICYgRU5BQkxFX1ZBTF9CSVRfTUFTSykgPT0gYml0KQogCQkJcmV0dXJuIHRydWU7
+CkBAIC00NTUsMTkgKzQ1NSwxOSBAQCBzdGF0aWMgdm9pZCB1c2VyX2V2ZW50X2VuYWJsZXJfdXBk
+YXRlKHN0cnVjdCB1c2VyX2V2ZW50ICp1c2VyKQogCXN0cnVjdCB1c2VyX2V2ZW50X21tICpuZXh0
+OwogCWludCBhdHRlbXB0OwogCisJbG9ja2RlcF9hc3NlcnRfaGVsZCgmZXZlbnRfbXV0ZXgpOwor
+CiAJd2hpbGUgKG1tKSB7CiAJCW5leHQgPSBtbS0+bmV4dDsKIAkJbW1hcF9yZWFkX2xvY2sobW0t
+Pm1tKTsKLQkJcmN1X3JlYWRfbG9jaygpOwogCi0JCWxpc3RfZm9yX2VhY2hfZW50cnlfcmN1KGVu
+YWJsZXIsICZtbS0+ZW5hYmxlcnMsIGxpbmspIHsKKwkJbGlzdF9mb3JfZWFjaF9lbnRyeShlbmFi
+bGVyLCAmbW0tPmVuYWJsZXJzLCBsaW5rKSB7CiAJCQlpZiAoZW5hYmxlci0+ZXZlbnQgPT0gdXNl
+cikgewogCQkJCWF0dGVtcHQgPSAwOwogCQkJCXVzZXJfZXZlbnRfZW5hYmxlcl93cml0ZShtbSwg
+ZW5hYmxlciwgdHJ1ZSwgJmF0dGVtcHQpOwogCQkJfQogCQl9CiAKLQkJcmN1X3JlYWRfdW5sb2Nr
+KCk7CiAJCW1tYXBfcmVhZF91bmxvY2sobW0tPm1tKTsKIAkJdXNlcl9ldmVudF9tbV9wdXQobW0p
+OwogCQltbSA9IG5leHQ7Cg==
+--000000000000759fcb05fbe8d165--
 
