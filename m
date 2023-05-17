@@ -1,87 +1,88 @@
-Return-Path: <bpf+bounces-785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09CC4706BE7
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 16:59:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D33C706BF7
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 17:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 008FD1C20E41
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:59:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE96E2816DC
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 15:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6785CB0;
-	Wed, 17 May 2023 14:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DF8566A;
+	Wed, 17 May 2023 15:00:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AF328FC;
-	Wed, 17 May 2023 14:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F0FCC43326;
-	Wed, 17 May 2023 14:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D07379D9
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 15:00:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FB31C4339B;
+	Wed, 17 May 2023 15:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684335531;
-	bh=kIz5xBLEXhifyZ8N2dcqqiMB6KkgKiXZDcg0Thxukbs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Y8bEvVr9TOEYWKn3dRGMIkaww+aDG+iIH/5UHJxfgMA/FNG7t5qvnwsfJNYTck1QO
-	 Fw+RdSmYqGD05qZ+8Z8w9iyS2KWgkXhw9kml6Aeyg6Jy66sJsKRuUJTENAPY1fWP6q
-	 83CPQIxjt3iMZBfCRcp/ekJey0p1ZeH7gNUzAdgar+cAOWmWCffxGDicBjuoQA24IE
-	 vtRxIpqdU0WYjqyx6q02MfydQiHP+zPaRAUOiaqmuIH3ad7hoQZ6j542Rx5fFdadx7
-	 TDoqt2p3UmOWX6f3WiiREycHDemtODkHZEbhwa44goIrbmlXGPDxJfkxQB1bLiFyvJ
-	 tBzYmBIQrv09w==
-Date: Wed, 17 May 2023 07:58:49 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Lorenzo Bianconi
- <lorenzo.bianconi@redhat.com>, Yunsheng Lin <linyunsheng@huawei.com>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
-Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint
- using half page per-buffer
-Message-ID: <20230517075849.2af98d72@kernel.org>
-In-Reply-To: <ZGQJKRfuf4+av/MD@lore-desk>
-References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
-	<62654fa5-d3a2-4b81-af70-59c9e90db842@huawei.com>
-	<ZGIWZHNRvq5DSmeA@lore-desk>
-	<ZGIvbfPd46EIVZf/@boxer>
-	<ZGQJKRfuf4+av/MD@lore-desk>
+	s=k20201202; t=1684335621;
+	bh=EBtFhKzCPTg2KWNx11ir0NOfmYiThSGnN1Onpu9bBNU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Oxy90T56ncpDMIzp6cOTXwd5G8anbS1KuZvTf5Fk2z4CTJij2n53EIjcDNJrsigxW
+	 eMKvvySeZ6W8LgwLOTs/27PjTax3YF9caAUCK8Hj+Jt8anrMX06XblNKI8aWW3Yn1i
+	 4ddROUlOAEzEGohCz6ppn6zbhjFa1ZBGyA4ZsK3K6ntfOcfahHHKTy5UTlOqhAm8gl
+	 XQ8y1AmrHDmtGrQJMI33StQSWQJwK927Hs+2kn+rb7WcU1o+30MXSDs6zhFhPAhIcv
+	 WNEGQ+TLFDNrtLtIIBz9P2DrMqJeFDmUkDTqyMtTTk6ZSizgLDGPazBMXKGXrF7ML3
+	 uQsHWM0wInssA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03232E5421C;
+	Wed, 17 May 2023 15:00:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Fix dynptr/test_dynptr_is_null
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168433562100.7780.1861233631430475137.git-patchwork-notify@kernel.org>
+Date: Wed, 17 May 2023 15:00:21 +0000
+References: <20230517040404.4023912-1-yhs@fb.com>
+In-Reply-To: <20230517040404.4023912-1-yhs@fb.com>
+To: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
 
-On Wed, 17 May 2023 00:52:25 +0200 Lorenzo Bianconi wrote:
-> I am testing this RFC patch in the scenario reported below:
-> 
-> iperf tcp tx --> veth0 --> veth1 (xdp_pass) --> iperf tcp rx
-> 
-> - 6.4.0-rc1 net-next:
->   MTU 1500B: ~ 7.07 Gbps
->   MTU 8000B: ~ 14.7 Gbps
-> 
-> - 6.4.0-rc1 net-next + page_pool frag support in veth:
->   MTU 1500B: ~ 8.57 Gbps
->   MTU 8000B: ~ 14.5 Gbps
-> 
-> side note: it seems there is a regression between 6.2.15 and 6.4.0-rc1 net-next
-> (even without latest veth page_pool patches) in the throughput I can get in the
-> scenario above, but I have not looked into it yet.
-> 
-> - 6.2.15:
->   MTU 1500B: ~ 7.91 Gbps
->   MTU 8000B: ~ 14.1 Gbps
-> 
-> - 6.4.0-rc1 net-next w/o commits [0],[1],[2]
->   MTU 1500B: ~ 6.38 Gbps
->   MTU 8000B: ~ 13.2 Gbps
+Hello:
 
-If the benchmark is iperf, wouldn't working towards preserving GSO
-status across XDP (assuming prog is multi-buf-capable) be the most
-beneficial optimization?
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Tue, 16 May 2023 21:04:04 -0700 you wrote:
+> With latest llvm17, dynptr/test_dynptr_is_null subtest failed in my
+> testing VM. The failure log looks like below:
+>   All error logs:
+>   tester_init:PASS:tester_log_buf 0 nsec
+>   process_subtest:PASS:obj_open_mem 0 nsec
+>   process_subtest:PASS:Can't alloc specs array 0 nsec
+>   verify_success:PASS:dynptr_success__open 0 nsec
+>   verify_success:PASS:bpf_object__find_program_by_name 0 nsec
+>   verify_success:PASS:dynptr_success__load 0 nsec
+>   verify_success:PASS:bpf_program__attach 0 nsec
+>   verify_success:FAIL:err unexpected err: actual 4 != expected 0
+>   #65/9    dynptr/test_dynptr_is_null:FAIL
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,1/2] selftests/bpf: Fix dynptr/test_dynptr_is_null
+    https://git.kernel.org/bpf/bpf-next/c/12852f8e0f70
+  - [bpf-next,2/2] selftests/bpf: Make bpf_dynptr_is_rdonly() prototyype consistent with kernel
+    https://git.kernel.org/bpf/bpf-next/c/effcf6241624
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
