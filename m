@@ -1,58 +1,57 @@
-Return-Path: <bpf+bounces-766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF977066FB
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 13:42:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F3F706754
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 14:00:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EFB72810CC
-	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 11:42:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0D01C20C13
+	for <lists+bpf@lfdr.de>; Wed, 17 May 2023 12:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1FA2C745;
-	Wed, 17 May 2023 11:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127FA2C74B;
+	Wed, 17 May 2023 11:59:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9C2211C
-	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:42:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E92BC433EF;
-	Wed, 17 May 2023 11:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB74211C
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 11:59:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E8FEC4339B;
+	Wed, 17 May 2023 11:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684323763;
-	bh=gZs8PTPaOModQRmxiev/yHAiJdEHjNnngGNAI1ylIV4=;
+	s=k20201202; t=1684324794;
+	bh=+KJCyW8UcBpWC8n/rNnAChXGAO9waLTlJQG8Dp7ZVa0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=b/3r14rFZqH/pXFAXD7yN1fUGpho601/AbF5SCUVKAY7mqrUjDZO7Rixiz4k6K5x0
-	 5q09YQPLznIfUq4yn68RWcj3BGQQ3aKnDl3WYcNOGi/KnuoxI1obWx9g6baBPRC8hQ
-	 DPJ1pg6mhBVu4bmIqVmp7NVDSQHYU9z1z/L1Pfx5fdDZo10PVer0ENUX2qSrWJey20
-	 bTU0BrjRBfbX7dQrwZj50fYI9xjlXnWbSGbHvh+cTmdq+GyPhyKGVzyQf3AwVfmXEH
-	 jBoY5OKrX9VIjyXOQUq5bBISYZopB+wmnIcTPubjjaUAbZk92IXmEWbTKZp2qjQ3Zl
-	 Ft/OepS5JIE1Q==
-Date: Wed, 17 May 2023 20:42:36 +0900
+	b=A3wxgK//Fl+HRbw82WER6yeLjIrBy7NjkG7nKzaC9v+P1fj78NXLtyfTUYg6p8RW3
+	 bcAK0NdVb6cmJkcuG45bfXlMqsGuVB3TLoZ9orpTFPY1byepkeSx7xQjtgNU8zrKKD
+	 wTdJxIXAMwBx6Iy/a0uF9S1BYxfeG0GyYWMfIWmHRxsQhRcHkH1v9LzjA+kNLKpqv7
+	 e8r084YNf5nre8CudRHdqPB1LnJmYIUgarQqld+w/Od+y+7vBvaKV14OCnreYJC/FG
+	 6y/C9GMB3OgNGppJUtg0r4xA4tjwSUsps1xz2PWr2TMPKYhtqmtc7D/8CKGwlHTkOb
+	 B2qnlglxsW41Q==
+Date: Wed, 17 May 2023 20:59:47 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ze Gao <zegao2021@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Borislav
- Petkov <bp@alien8.de>, Christian Borntraeger <borntraeger@linux.ibm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, Heiko Carstens
- <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar
- <mingo@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas
- Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+To: Ze Gao <zegao2021@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>, Alexei Starovoitov
+ <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Heiko Carstens <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo
+ Molnar <mingo@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
  x86@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
- Yonghong Song <yhs@fb.com>, Ze Gao <zegao@tencent.com>
-Subject: Re: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion
- free
-Message-Id: <20230517204236.e0f579399e5a69505a4ec7ef@kernel.org>
-In-Reply-To: <ZGSwzuM8oHgKaaga@krava>
+ linux-trace-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, Ze Gao
+ <zegao@tencent.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] rethook: use preempt_{disable, enable}_notrace
+ in rethook_trampoline_handler
+Message-Id: <20230517205947.c1710ed175519b59f56e09b1@kernel.org>
+In-Reply-To: <20230517034510.15639-2-zegao@tencent.com>
 References: <20230517034510.15639-1-zegao@tencent.com>
-	<20230517034510.15639-3-zegao@tencent.com>
-	<ZGSwzuM8oHgKaaga@krava>
+	<20230517034510.15639-2-zegao@tencent.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,95 +62,55 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 17 May 2023 12:47:42 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+Hi Ze Gao,
 
-> On Wed, May 17, 2023 at 11:45:07AM +0800, Ze Gao wrote:
-> > Current implementation calls kprobe related functions before doing
-> > ftrace recursion check in fprobe_kprobe_handler, which opens door
-> > to kernel crash due to stack recursion if preempt_count_{add, sub}
-> > is traceable in kprobe_busy_{begin, end}.
-> > 
-> > Things goes like this without this patch quoted from Steven:
-> > "
-> > fprobe_kprobe_handler() {
-> >    kprobe_busy_begin() {
-> >       preempt_disable() {
-> >          preempt_count_add() {  <-- trace
-> >             fprobe_kprobe_handler() {
-> > 		[ wash, rinse, repeat, CRASH!!! ]
-> > "
-> > 
-> > By refactoring the common part out of fprobe_kprobe_handler and
-> > fprobe_handler and call ftrace recursion detection at the very beginning,
-> > the whole fprobe_kprobe_handler is free from recursion.
-> > 
-> > Signed-off-by: Ze Gao <zegao@tencent.com>
-> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-zegao@tencent.com
-> > ---
-> >  kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 44 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> > index 9abb3905bc8e..097c740799ba 100644
-> > --- a/kernel/trace/fprobe.c
-> > +++ b/kernel/trace/fprobe.c
-> > @@ -20,30 +20,22 @@ struct fprobe_rethook_node {
-> >  	char data[];
-> >  };
-> >  
-> > -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> > -			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> > +static inline void __fprobe_handler(unsigned long ip, unsigned long
-> > +		parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> >  {
-> >  	struct fprobe_rethook_node *fpr;
-> >  	struct rethook_node *rh = NULL;
-> >  	struct fprobe *fp;
-> >  	void *entry_data = NULL;
-> > -	int bit, ret;
-> > +	int ret;
-> >  
-> 
-> this change uncovered bug for me introduced by [1]
-> 
-> the bpf's kprobe multi uses either fprobe's entry_handler or exit_handler,
-> so the 'ret' value is undefined for return probe path and occasionally we
-> won't setup rethook and miss the return probe
+On Wed, 17 May 2023 11:45:06 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-Oops, I missed to push my fix.
+> This patch replaces preempt_{disable, enable} with its corresponding
+> notrace version in rethook_trampoline_handler so no worries about stack
+> recursion or overflow introduced by preempt_count_{add, sub} under
+> fprobe + rethook context.
+> 
+> Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-2-zegao@tencent.com
 
-https://lore.kernel.org/all/168100731160.79534.374827110083836722.stgit@devnote2/
+Note that you don't need to add Link tag of the previous version for each patch.
+I'll add it when I pick it :)
 
-> 
-> we can either squash this change into your patch or I can make separate
-> patch for that.. but given that [1] is quite recent we could just silently
-> fix that ;-)
+Thank you,
 
-Jiri, I think the above will fix the issue, right?
-
-> 
-> jirka
-> 
-> 
-> [1] 39d954200bf6 fprobe: Skip exit_handler if entry_handler returns !0
-> 
 > ---
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 9abb3905bc8e..293184227394 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -27,7 +27,7 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
->  	struct rethook_node *rh = NULL;
->  	struct fprobe *fp;
->  	void *entry_data = NULL;
-> -	int bit, ret;
-> +	int bit, ret = 0;
->  
->  	fp = container_of(ops, struct fprobe, ops);
->  	if (fprobe_disabled(fp))
+>  kernel/trace/rethook.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
+> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> index 32c3dfdb4d6a..60f6cb2b486b 100644
+> --- a/kernel/trace/rethook.c
+> +++ b/kernel/trace/rethook.c
+> @@ -288,7 +288,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+>  	 * These loops must be protected from rethook_free_rcu() because those
+>  	 * are accessing 'rhn->rethook'.
+>  	 */
+> -	preempt_disable();
+> +	preempt_disable_notrace();
+>  
+>  	/*
+>  	 * Run the handler on the shadow stack. Do not unlink the list here because
+> @@ -321,7 +321,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+>  		first = first->next;
+>  		rethook_recycle(rhn);
+>  	}
+> -	preempt_enable();
+> +	preempt_enable_notrace();
+>  
+>  	return correct_ret_addr;
+>  }
+> -- 
+> 2.40.1
 > 
 
 
