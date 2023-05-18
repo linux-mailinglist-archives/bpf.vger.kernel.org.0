@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E44E707FCC
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 13:40:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9538F70823D
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 15:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F060E1C2105D
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 11:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50FDC2811F3
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 13:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E295209AB;
-	Thu, 18 May 2023 11:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ACF20987;
+	Thu, 18 May 2023 13:08:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5B520998
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 11:35:37 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB31B4
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 04:35:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D56020981
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 13:08:05 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16F4173A
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 06:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1684409735;
+	s=mimecast20190719; t=1684415279;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
 	bh=2EXLlBUI8HMrlq1LdzuePmnE9vo0jChMg019VHUJEgs=;
-	b=DYJ0F0318vxinLKQHG42fEOhxjoJT7btWNwwGpydD+n4iKoOSqDTcsIRmJ85IUkuYbjMpx
-	fHSY48aRfZNUviBvm7jmt1OigGxDr1MNLkaCV1ZngJiH4FUxmipNTPsxNtYXOV0tFhd4GM
-	GsgaApuqVOA4BSgqPEsQzltItbfH73I=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+	b=CTAgHn0MOZ6054fWhWBRJJFJ36g40W497WRIRIAC/52kfaid/MrC/5RhXRbUPcLSkXdXQx
+	8ZWB7Y1+dTS5AyCEo3s2S3KRaGJeFgGR5eqadOeSjzQy9MyDpXO0b3yjw/6gLjj92LUvOW
+	qIbVVPCw60KtS2r2M2hpidTkbKXVM2Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-84-Mvf0PKrvOkyxjyMevBqNLQ-1; Thu, 18 May 2023 07:35:29 -0400
-X-MC-Unique: Mvf0PKrvOkyxjyMevBqNLQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+ us-mta-209-s4xticGiMR-62gp7XbuBGA-1; Thu, 18 May 2023 09:07:52 -0400
+X-MC-Unique: s4xticGiMR-62gp7XbuBGA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C1BF83C10221;
-	Thu, 18 May 2023 11:35:28 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 38B6985C07A;
+	Thu, 18 May 2023 13:07:48 +0000 (UTC)
 Received: from warthog.procyon.org.uk (unknown [10.42.28.221])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 27987492B01;
-	Thu, 18 May 2023 11:35:26 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 155802026D25;
+	Thu, 18 May 2023 13:07:43 +0000 (UTC)
 From: David Howells <dhowells@redhat.com>
 To: netdev@vger.kernel.org
 Cc: David Howells <dhowells@redhat.com>,
@@ -67,11 +67,11 @@ Cc: David Howells <dhowells@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Jakub Sitnicki <jakub@cloudflare.com>,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v8 06/16] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
-Date: Thu, 18 May 2023 12:34:43 +0100
-Message-Id: <20230518113453.1350757-7-dhowells@redhat.com>
-In-Reply-To: <20230518113453.1350757-1-dhowells@redhat.com>
-References: <20230518113453.1350757-1-dhowells@redhat.com>
+Subject: [PATCH net-next v9 06/16] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
+Date: Thu, 18 May 2023 14:07:03 +0100
+Message-Id: <20230518130713.1515729-7-dhowells@redhat.com>
+In-Reply-To: <20230518130713.1515729-1-dhowells@redhat.com>
+References: <20230518130713.1515729-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,11 +79,11 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
