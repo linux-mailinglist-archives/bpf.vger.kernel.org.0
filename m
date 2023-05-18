@@ -1,120 +1,260 @@
-Return-Path: <bpf+bounces-883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-884-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E006708703
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:34:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BBB708705
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF3D2818C7
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:34:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821F61C2117B
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54342720D;
-	Thu, 18 May 2023 17:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F9B27213;
+	Thu, 18 May 2023 17:34:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A68182B8
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:34:11 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F78E46
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:50 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9661047f8b8so420932566b.0
-        for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1684431228; x=1687023228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5k9EtuLI3tDPxkuM6Z7FYpLe7g8cI0Dfathe8uxGMFM=;
-        b=YG3B7R+TIVc9Pe4YejC48O3tk83Vr02YXah6CemPod4zJJDfq8lSd8fulPt+1V2AUB
-         ELmGsKz7TrFlZ7AuP669UtV4F6Gqc0f5axPu/EMofiQOslneYDaL2yL2AAHcepOC/AbK
-         yoEAe/ZZdtP1GaSRY4AKpT5E4Odx+AZJNZOSQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684431228; x=1687023228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5k9EtuLI3tDPxkuM6Z7FYpLe7g8cI0Dfathe8uxGMFM=;
-        b=GhZl8WhgTBFqJtPPk1GP0GJotML85f7Pd6E0Ere1QqxkxHAExyuY++EQvwLuPh3HRy
-         vEHrwIsle/ZSJDA1RNKOpnmVqEZW4OcZmw0/a4Eghwjx4oguFqJVtFTwIza+0dPhgfCG
-         AidOhMKrG3KIHqC9E8vwQ2BH6cVunIs5O8acxZxrX+YXYuZBvp0b4i7CN5OwjzWcVxVm
-         ADM5e8SAsGMZikbTI/sF0+OtdcxdrXliLcOvr0x6WajnHxeBF9P3aATJmV7izXXIdTbG
-         BPzU1zIYzsWqBrieJtNKFjlEDplkaysJvrDucxuE7RSF9OxWRe+NPJN2iNzD1umER7Mp
-         dHeg==
-X-Gm-Message-State: AC+VfDzpCXeVPnAQvRngUooQdXHXriZl+zOn64C65WkCg8828gfT4vmw
-	EvzEqzvd4NVIbS13OO6VjAKeXlD4STtMqzCDyiq1bIBf
-X-Google-Smtp-Source: ACHHUZ4sZVVf6QWDf/Gx/yyFEwPal5wiRXqRIihKC6CiQuz25nM+CEwzXA88y5QVWU4hvXkvPtENxg==
-X-Received: by 2002:a17:907:928e:b0:96f:32ae:a7e1 with SMTP id bw14-20020a170907928e00b0096f32aea7e1mr2336491ejc.63.1684431228529;
-        Thu, 18 May 2023 10:33:48 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id og44-20020a1709071dec00b0096f503ae4b0sm303504ejc.26.2023.05.18.10.33.47
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 May 2023 10:33:47 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9661047f8b8so420927866b.0
-        for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:47 -0700 (PDT)
-X-Received: by 2002:a17:906:da86:b0:960:ddba:e5c3 with SMTP id
- xh6-20020a170906da8600b00960ddbae5c3mr36488408ejb.32.1684431227176; Thu, 18
- May 2023 10:33:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ED9182B8
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:34:27 +0000 (UTC)
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F3810F5
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:34:06 -0700 (PDT)
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <jemarch@gnu.org>)
+	id 1pzhVr-0005R2-Ma; Thu, 18 May 2023 13:34:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+	From; bh=dsmDeFV9e//yAJc7sqUeuxxVSa10ea9R08z+fNh3wQY=; b=hX42UAmF+EOo1hVZjytG
+	IctNkZmNGMZNEFL34AZO/iSdOU/8c2jmbENKP5uT+VfcS8DhK4hKVI96/ks0d7+WH7HpEFQoPa5+y
+	Fl83w0LvGdGxxZKY36//qX9a/P3tZflFuh1l9ujTe8+xW4eYPQeFnWCurftLUxmSc6pavAPV135qH
+	oknCSO1qe46XMIrv0Qobf0t4mCkzypx8Jf3HOpoSfcN+1qsGtfra3NTeSEvy9Tpi2QGBVimIE7UnI
+	qkuS074WIw+P6TYty2cDVeRccdGOxSuqVvBoJoalGiulu4AbeAnm5lZBvzmRovQcyxgw5Rl+8U8Zd
+	j8DMGrL6GqToeg==;
+Received: from [141.143.193.68] (helo=termi)
+	by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <jemarch@gnu.org>)
+	id 1pzhVj-0007tv-1f; Thu, 18 May 2023 13:34:03 -0400
+From: "Jose E. Marchesi" <jemarch@gnu.org>
+To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
+Cc: "bpf@ietf.org" <bpf@ietf.org>,  bpf <bpf@vger.kernel.org>
+Subject: Re: [Bpf] IETF BPF working group draft charter
+In-Reply-To: <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+	(Dave Thaler's message of "Wed, 17 May 2023 18:19:42 +0000")
+References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+	<87v8grkn67.fsf@gnu.org>
+	<PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+Date: Thu, 18 May 2023 19:33:35 +0200
+Message-ID: <87r0rdy26o.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516001348.286414-1-andrii@kernel.org> <20230516001348.286414-2-andrii@kernel.org>
- <20230516-briefe-blutzellen-0432957bdd15@brauner> <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
- <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner> <20230517120528.GA17087@lst.de>
- <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
- <20230518-erdkugel-komprimieren-16548ca2a39c@brauner> <20230518162508.odupqkndqmpdfqnr@MacBook-Pro-8.local>
- <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
-In-Reply-To: <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 18 May 2023 10:33:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgmRTogGmR8E_SYOiHFpz8cY+0xj7nBpv9UwGU6k-UPAA@mail.gmail.com>
-Message-ID: <CAHk-=wgmRTogGmR8E_SYOiHFpz8cY+0xj7nBpv9UwGU6k-UPAA@mail.gmail.com>
-Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
-To: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christoph Hellwig <hch@lst.de>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Aleksa Sarai <cyphar@cyphar.com>, 
-	Lennart Poettering <lennart@poettering.net>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 18, 2023 at 10:20=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
+
+Hi Dave.
+
+> Jose E. Marchesi wrote:
+>> As I mentioned during your talk at LSF/MM/BPF, I think that two items may be
+>> a bit confusing, and worth to clarify:
+>>
+>>   * the eBPF bindings for the ELF executable file format,
+>>
+>> What does "eBPF bindings" mean in this context?  I think there are at least two
+>> possible interpretations:
+>>
+>> 1) The way BPF uses ELF, not impacting internal ELF structures.  For
+>>    example the special section names that a conformant BPF loader
+>>    expects and understands, such as ".probes", or rules on how to use
+>>    the symbols visibility, or how notes are used (if they are used) etc
+>>
+>> 2) The ELF extensions that BPF introduces (and may introduce at some
+>>    point) as an architecture, such as machine number, section types,
+>>    special section indices, segment types, relocation types, symbol
+>>    types, symbol bindings, additional section and segment flags, file
+>>    flags, and perhaps structures of the contents of some special
+>>    sections.
 >
-> That's just completely weird. We can see what Linus thinks but I think
-> that's a somewhat outlandish proposal that I wouldn't support.
+> See https://www.ietf.org/archive/id/draft-thaler-bpf-elf-00.html
+> It includes the values used in the ELF header, section naming,
+> use of the "license" and "version" sections, meaning of "maps" and
+> ".maps" sections, etc.
 
-I have no idea of the background here.
+Right, so it is 2).  You intend to actually standardize the ELF
+extensions.
 
-But fd 0 is in absolutely no way special. Anything that thinks that a
-zero fd is invalid or in any way different from (say) fd 5 is
-completely and utterly buggy by definition.
+>> If the intended meaning of that point in the draft is 1), then I would suggest to
+>> change the wording to something like:
+>>
+>> * the requirements and expectations that ELF files shall fulfill so they
+>>   can be handled by conformant eBPF implementations.
+>
+> My own opinion is to leave the more detailed definition of what belongs
+> in the ELF spec vs another document up to the WG to define rather than
+> baking it into the charter.
 
-Now, fd 0 can obviously be invalid in the sense that it may not be
-open, exactly the same way fd 100 may not be open. So in *that* sense
-we can have an invalid fd 0, and system calls might return EBADF for
-trying to access it if somebody has closed it.
+Sure, that suggestion was provided in case your intention was 1), not 2)
+:)
 
-If bpf thinks that 0 is not a file descriptor, then bpf is simply
-wrong. No ifs, buts or maybes about it. It's like saying "1 is not a
-number". It's nonsensical garbage.
+>> Otherwise, if the intended meaning in the draft charter is to cover 2), I would
+>> like to note that, usually and conventionally ELF extensions introduced by
+>> architectures (and operating systems in the ELF sense)
+>> are:
+>>
+>> - Part of the psABI (chapter Object Files).
+>>
+>> - Not standards, in the sense that these are not handled by
+>>   standardization bodies.
+>>
+>> - Maintained by corporations, associations, and/or community groups, and
+>>   published in one form or another.  A few examples of both arch and os
+>>   extensions:
+>>
+>>   + The x86_64 psABI, including the ELF bits, is maintained by Intel
+>>     (mainly by HJ Lu, a toolchain hacker) and available in a git repo in
+>>     gitlab [1].
+>>
+>>   + The risc-v psABI, including the ELF bits, is maintained by I believe
+>>     RISC-V International and the community, and is available in a git
+>>     repo in github [2].
+>>
+>>   + The GNU extensions to the gABI, including the ELF bits, is
+>>     maintained by GNU hackers and available in a git repo in sourceware
+>>     [3].
+>>
+>>   + The llvm extensions to ELF, which in this case take the form of an
+>>     "os" in the ELF sense even if it is not an operating system, are
+>>     maintained by the LLVM project and available in the
+>>     docs/Extensions.rst file in the llvm source distribution.
+>>
+>>   Note that more often than not this is kept quite informally, without
+>>   the need of much bureocratic overhead.  A git repo in github or the
+>>   like, maintained by the eBPF foundation or similar, would be more than
+>>   enough IMO.
+>
+> To ensure interoperability, I'd want a slightly more formal specification.
 
-But maybe I misunderstand the issue.
+I would think that the way the x86_64, aarch64, risc-v, sparc, mips,
+powerpc architectures, along with their variants, handle their ELF
+extensions and psABI, ensures interoperability good enough for the
+problem at hand, but ok.  I'm definitely not an expert in these matters.
 
-              Linus
+>> - Open to suggestions and contributions from the community, vendors,
+>>   implementors, etc.  This usually involves having a mailing list where
+>>   such suggestions can be sent an discussed.  Almost always very little
+>>   discussion is required, if any, because the proposed extension has
+>>   already been agreed and worked on by the involved parties: toolchains,
+>>   consumers, etc.
+>>
+>> - Continuously evolving.
+>>
+>> So, would the IETF working group be able to accomodate something like the
+>> above?  For example, once a document is officially published by the working
+>> group, how easy is it to modify it and make a new version to incorporate
+>> something new, like a new relocation type for example?
+>> (Apologies for my total ignorance of IETF business :/)
+>
+> There's 3 ways:
+> 1) The IETF can publish an extension spec with additional optional
+> features.
+
+I don't think adding new relocation type, as an example of the kind of
+changes that ABIs regularly are subjected to, qualify as "additional
+optional features".
+
+> 2) The IETF can publish a replacement to the original (not usually
+> desirable)
+
+You _will_ need to update that particular document, and probably quite
+often.
+
+  jemarch@termi:~/gnu/src/x86-64-ABI$ git log --oneline --since="May 18 2022"
+  b96eaf2 (HEAD -> master, origin/master, origin/HEAD) Remove MPX support
+  ab1bd26 _BitInt: Update alignment of _BitInt(N) for N > 64
+  43453ea Clarify R_X86_64_REX_GOTPCRELX transformation
+  e2387f1 Add link to download latest PDF
+  b5443bf Fix typo in footnote stating incorrect register range for AVX512
+  8195730 Add optional __bf16 support
+  6c2ac6c ABI: Fix typos
+  8ca4539 Add _BitInt(N) from ISO/IEC WG14 N2763
+
+That is for a very well consolidated and stable architecture such as
+x86_64.  Now imagine what will happen with something like BPF that is
+still in the process of figuring out its own ABI and the way it gets
+compiled.
+
+Being very optimistic, would it be OK for IETF and the WG to release,
+say ten new versions of the "original" per year?
+
+> 3) The IETF can define a process for other organizations or vendors to
+> create their own extensions, and some mechanism for ensuring that two
+> such extensions don't collide using the same codepoint.  This is what
+> the charter implies the WG should do.
+
+What is the precise license under which the document describing the ELF
+extensions and the ABI will be distributed?
+
+In particular, does it allow distributing modified versions?
+Thanks for the info!
+
+> Dave
+>
+>> Likewise, of the following item:
+>>
+>>   * the platform support ABI, including calling convention, linker
+>>     requirements, and relocations,
+>>
+>> The calling convention and relocations are part of the psABI and usually
+>> handled like described above.
+>>
+>> PS: BPF is obviously not a SysV system, but when it comes to document
+>>     the ABI, including the ELF bits, I think it would be a good idea to
+>>     use the same document structure conventionally used by psABI, as
+>>     Alexei already suggested some time ago.  This would be most familiar
+>>     to people.
+>>
+>> [1]
+>> https://gitlab/.
+>> com%2Fx86-psABIs%2Fx86-64-
+>> ABI&data=05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f514d
+>> 08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6381
+>> 99331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
+>> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sd
+>> ata=SaprU2J9WsyJ5qhcxIGKO2F06YtO%2Bm1Gpjb2SIOApLA%3D&reserved=0
+>> [2]
+>> https://github/
+>> .com%2Friscv-non-isa%2Friscv-elf-psabi-
+>> doc%2Freleases%2Fdownload%2Fv1.0%2Friscv-
+>> abi.pdf&data=05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f5
+>> 14d08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6
+>> 38199331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMD
+>> AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C
+>> &sdata=uKqnU93kcu8rZ9Y0gzWdmuHnK9ySPM847%2FDMm6vJNwQ%3D&res
+>> erved=0
+>> [3] git://sourceware.org/git/gnu-gabi.git
+>>
+>> --
+>> Bpf mailing list
+>> Bpf@ietf.org
+>> https://www.i/
+>> etf.org%2Fmailman%2Flistinfo%2Fbpf&data=05%7C01%7Cdthaler%40microso
+>> ft.com%7Cd4f2ef78d9e0475f514d08db56e91312%7C72f988bf86f141af91ab2
+>> d7cd011db47%7C1%7C0%7C638199331900533629%7CUnknown%7CTWFpb
+>> GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+>> Mn0%3D%7C2000%7C%7C%7C&sdata=W9FXcUwb181VQ6ksF2guASQ5FGtTE
+>> KZuE0Yb8cHR9vI%3D&reserved=0
 
