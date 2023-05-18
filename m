@@ -1,77 +1,72 @@
-Return-Path: <bpf+bounces-922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0541E708AD8
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 23:56:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF80708B4C
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 00:08:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D95141C2114F
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 21:56:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A1471C21150
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 22:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA6023C9A;
-	Thu, 18 May 2023 21:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1D824127;
+	Thu, 18 May 2023 22:08:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56327134C8
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 21:56:23 +0000 (UTC)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812A118F;
-	Thu, 18 May 2023 14:56:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-965ddb2093bso411927966b.2;
-        Thu, 18 May 2023 14:56:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261203D38F
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 22:08:44 +0000 (UTC)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4909BE7
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 15:08:42 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-510d6e1f1abso4199472a12.2
+        for <bpf@vger.kernel.org>; Thu, 18 May 2023 15:08:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684446980; x=1687038980;
+        d=gmail.com; s=20221208; t=1684447721; x=1687039721;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q4PaaD3J5ioNYOH+7Gy4E8NmlgV45J9uQ6WnKhEJswY=;
-        b=DHNeSY73iRZYV3gWrBRkAwkUJufIG0PI+Mf5njLXH4HV9bFoBhVgZTeJus/oLbeZw4
-         I3+F2iZWVKEpaQ7rvePtGtDx1UVNEBRFc3GppIo5mAD79Sv4biOyETHj/eL1JXyI1uPn
-         mkfW4doy0BT5ILOb7wUPqAhPpKfpdsGbHj0Hk6RURT4UklpUcwyVKyop6tlgf9mSDkSm
-         Pk8Fwze0jf94HZI/ma5MQsOdEAl5TqnOTVQJTIakQ30+5PmZ8ogGKIKufNkGyyCFe5mE
-         GXiQyLW5VFUTvXyz5d8FdtteodiwxYzQROjFSGPDreGmYr0R8FKCwBXD4sSvzRh/aehB
-         8D/A==
+        bh=AFmcxY0ZBscVylzHSm+szVQWxkHnBuajV1K/abarRag=;
+        b=q+S/jlu51zCEuoehvBs2pGlJTXwcEA+P9zJfWLoXhbfwrU4iB2DN6VjMQN7Ydq+TB3
+         OTptPzFKV+3OS9f+JoJQ3quljk8FrA6cmDtPQZje336yUA9xRJkEmRDBA2OVd/+AyzXe
+         Cks6e1N97pb/y3zPNw0dgQTD8ROlar+xCQW7yAOAdFBOU6XCjUakFDwubLRV2gvTwb+E
+         9QoUnp34pmhkjum4sUIJlVmyv731gAWEdHYRNOVRQkyj1sikKPicSXMVjxoaZFd+VaQ/
+         aAIyY+LIl+7ALmC7eeMnnTvLxGZzgc1JqX1gF5K4pSpeS3UiI2WJmaNqJtLby9e8NUnV
+         uoCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684446980; x=1687038980;
+        d=1e100.net; s=20221208; t=1684447721; x=1687039721;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q4PaaD3J5ioNYOH+7Gy4E8NmlgV45J9uQ6WnKhEJswY=;
-        b=AzvBNWojF7mTnPIexylNofTu8FQxhdyQo5ylgkyELtg3GhGUYfmKUkkn1PsZKrRm7Y
-         y3lO8xDwuwsr7lLqUV0I224JzVbbn1MiX5idvrNRLjtfYShoXG7xQt5l7fMK4rhCeIja
-         gcCW4gbqdwkoEa5ovtTal8uMi5iEfInRdTfHkyc0oQwOMe5fP8h+le0AmmP6TLroIODf
-         bFkn6AAMt1+kwqJ9BG36716BFE0QxnT305eiXLptGPLRlJE+fR7DGgGDrM4Rit3B7jfa
-         PjlJNY58MWkl0IQ7p/28LRdPFc/Vb4MF1DC6PefLSBOUeaSVnl4xGQbaI4DndA0lbYGE
-         9usw==
-X-Gm-Message-State: AC+VfDwS/sQZiYNRJ0uR5prR1c0riCik7cGpA3LaXbvWUGsZlI+/yCGn
-	Vvej6DFEIwYr1g8BhP2JIlzarHX1irs6Mflgtj4=
-X-Google-Smtp-Source: ACHHUZ6d0qDNnRMtPOKLiUg0AfEnZzBmy0sP8Nxs9L7cWt+RvH8bjauxbJxKjsGf9BaAp8yitQ2SfAktFiTj2HdowUU=
-X-Received: by 2002:a17:906:6a10:b0:96f:504b:4672 with SMTP id
- qw16-20020a1709066a1000b0096f504b4672mr585480ejc.13.1684446979672; Thu, 18
- May 2023 14:56:19 -0700 (PDT)
+        bh=AFmcxY0ZBscVylzHSm+szVQWxkHnBuajV1K/abarRag=;
+        b=FwGqtUvMZoz+YT7dT9hFstKTQgJqpNCisk8mvhelfc2f/xSJLPE9QQQRRTvamw31Cu
+         3j86N+H0EnyrpjLthI1hQGXktgi3N39dff7UUGVQxZ7Mo3l5Au1tk035yO6MM6k6BHLi
+         qA06lTIPXjc2Y9tE/Tsz4OadYElW27VK8qdG+UGgqVCurP+kHfT4X8418tmrwsrXWiwI
+         +CHS8+FH0FBEoGOKoovuZPRieRWGika8PMWNJLGp/qjprVzgQxxSRLfVGmptO4KvTZ/V
+         AC+wySNY5zgcV9prcBptWagXeiPjxlXUPZnu9Q95MKfcF0OENBLdp1aAoyoBfV2nptMc
+         qqLw==
+X-Gm-Message-State: AC+VfDwT1B+vpAAocFVQx189PUg1uiAny7ecr8LK6EnLe0KxIk6o9gR5
+	JoEeCJM0kMzfsfR1jiIGA5WkWEtz8YkOWSiIhutMZm4Kv+I=
+X-Google-Smtp-Source: ACHHUZ7qVwTiMLeGjONBKkWuVQN1D0C2sGSGPz847vc2Ym91JRegJWasHNQMhjvHotO1BaQVFjPiUuvoM6E1XMWf/4I=
+X-Received: by 2002:a05:6402:1b0c:b0:50b:c72a:2b1b with SMTP id
+ by12-20020a0564021b0c00b0050bc72a2b1bmr7615025edb.19.1684447720327; Thu, 18
+ May 2023 15:08:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516001348.286414-1-andrii@kernel.org> <20230516001348.286414-2-andrii@kernel.org>
- <20230516-briefe-blutzellen-0432957bdd15@brauner> <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
- <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
-In-Reply-To: <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
+References: <704ea11a.31aa.1882d4a9b2c.Coremail.jiangyingfeng163@163.com>
+In-Reply-To: <704ea11a.31aa.1882d4a9b2c.Coremail.jiangyingfeng163@163.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 May 2023 14:56:07 -0700
-Message-ID: <CAEf4BzYW2_P8FQEkOZ6-O1OBuLFXtDoE=x-g_TieUC54wbgGXg@mail.gmail.com>
-Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, cyphar@cyphar.com, 
-	lennart@poettering.net, linux-fsdevel@vger.kernel.org, 
-	Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>
+Date: Thu, 18 May 2023 15:08:27 -0700
+Message-ID: <CAEf4Bzbw6gpdHgw4eSPFBQ2EBJEr0XJxOOoM=TU45-Jks50LCw@mail.gmail.com>
+Subject: Re: libbpf: bpf_prog_load failed, invalid argument
+To: =?UTF-8?B?6JKL5bqU6ZSL?= <jiangyingfeng163@163.com>
+Cc: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,169 +76,126 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 2:11=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
+On Wed, May 17, 2023 at 10:17=E2=80=AFPM =E8=92=8B=E5=BA=94=E9=94=8B <jiang=
+yingfeng163@163.com> wrote:
 >
-> On Tue, May 16, 2023 at 11:02:42AM -0700, Andrii Nakryiko wrote:
-> > On Tue, May 16, 2023 at 2:07=E2=80=AFAM Christian Brauner <brauner@kern=
-el.org> wrote:
-> > >
-> > > On Mon, May 15, 2023 at 05:13:46PM -0700, Andrii Nakryiko wrote:
-> > > > Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() sysca=
-ll
-> > > > forces users to specify pinning location as a string-based absolute=
- or
-> > > > relative (to current working directory) path. This has various
-> > > > implications related to security (e.g., symlink-based attacks), for=
-ces
-> > > > BPF FS to be exposed in the file system, which can cause races with
-> > > > other applications.
-> > > >
-> > > > One of the feedbacks we got from folks working with containers heav=
-ily
-> > > > was that inability to use purely FD-based location specification wa=
-s an
-> > > > unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GE=
-T
-> > > > commands. This patch closes this oversight, adding path_fd field to
-> > >
-> > > Cool!
-> > >
-> > > > BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established=
- by
-> > > > *at() syscalls for dirfd + pathname combinations.
-> > > >
-> > > > This now allows interesting possibilities like working with detache=
-d BPF
-> > > > FS mount (e.g., to perform multiple pinnings without running a risk=
- of
-> > > > someone interfering with them), and generally making pinning/gettin=
-g
-> > > > more secure and not prone to any races and/or security attacks.
-> > > >
-> > > > This is demonstrated by a selftest added in subsequent patch that t=
-akes
-> > > > advantage of new mount APIs (fsopen, fsconfig, fsmount) to demonstr=
-ate
-> > > > creating detached BPF FS mount, pinning, and then getting BPF map o=
-ut of
-> > > > it, all while never exposing this private instance of BPF FS to out=
-side
-> > > > worlds.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  include/linux/bpf.h            |  4 ++--
-> > > >  include/uapi/linux/bpf.h       |  5 +++++
-> > > >  kernel/bpf/inode.c             | 16 ++++++++--------
-> > > >  kernel/bpf/syscall.c           |  8 +++++---
-> > > >  tools/include/uapi/linux/bpf.h |  5 +++++
-> > > >  5 files changed, 25 insertions(+), 13 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 36e4b2d8cca2..f58895830ada 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -2077,8 +2077,8 @@ struct file *bpf_link_new_file(struct bpf_lin=
-k *link, int *reserved_fd);
-> > > >  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
-> > > >  struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
-> > > >
-> > > > -int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
-> > > > -int bpf_obj_get_user(const char __user *pathname, int flags);
-> > > > +int bpf_obj_pin_user(u32 ufd, int path_fd, const char __user *path=
-name);
-> > > > +int bpf_obj_get_user(int path_fd, const char __user *pathname, int=
- flags);
-> > > >
-> > > >  #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
-> > > >  #define DEFINE_BPF_ITER_FUNC(target, args...)                     =
-   \
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 1bb11a6ee667..db2870a52ce0 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -1420,6 +1420,11 @@ union bpf_attr {
-> > > >               __aligned_u64   pathname;
-> > > >               __u32           bpf_fd;
-> > > >               __u32           file_flags;
-> > > > +             /* same as dirfd in openat() syscall; see openat(2)
-> > > > +              * manpage for details of dirfd/path_fd and pathname =
-semantics;
-> > > > +              * zero path_fd implies AT_FDCWD behavior
-> > > > +              */
-> > > > +             __u32           path_fd;
-> > > >       };
-> > >
-> > > So 0 is a valid file descriptor and can trivially be created and made=
- to
-> > > refer to any file. Is this a conscious decision to have a zero value
-> > > imply AT_FDCWD and have you done this somewhere else in bpf already?
-> > > Because that's contrary to how any file descriptor based apis work.
-> > >
-> > > How this is usually solved for extensible structs is to have a flag
-> > > field that raises a flag to indicate that the fd fiel is set and thus=
- 0
-> > > can be used as a valid value.
-> > >
-> > > The way you're doing it right now is very counterintuitive to userspa=
-ce
-> > > and pretty much guaranteed to cause subtle bugs.
-> >
-> > Yes, it's a very bpf()-specific convention we've settled on a while
-> > ago. It allows a cleaner and simpler backwards compatibility story
-> > without having to introduce new flags every single time. Most of BPF
-> > UAPI by now dictates that (otherwise valid) FD 0 can't be used to pass
-> > it to bpf() syscall. Most of the time users will be blissfully unaware
-> > because libbpf and other BPF libraries are checking for fd =3D=3D 0 and
-> > dup()'ing them to avoid ever returning FD 0 to the user.
-> >
-> > tl;dr, a conscious decision consistent with the rest of BPF UAPI. It
-> > is a bpf() peculiarity, yes.
 >
-> Adding fsdevel so we're aware of this quirk.
 >
-> So I'm not sure whether this was ever discussed on fsdevel when you took
-> the decision to treat fd 0 as AT_FDCWD or in general treat fd 0 as an
-> invalid value.
 >
-> If it was discussed then great but if not then I would like to make it
-> very clear that if in the future you decide to introduce custom
-> semantics for vfs provided infrastructure - especially when exposed to
-> userspace - that you please Cc us.
+>
+> when i test libbpf-bootstrap examples=EF=BC=8Cbpf syscall failed, errno i=
+s 22, strace log as below:
+>
 
-Yep, I'll remember to cc linux-fsdevel@vger.kernel.org for future
-patches touching on vfs-related concepts, no problem. I wasn't trying
-to sneak it in or anything, it just never occurred to me, sorry about
-that.
+What does libbpf debug log say?
+
 
 >
-> You often make it very clear on the list that you don't like it when
-> anything that touches bpf code doesn't end up getting sent to the bpf
-> mailing list. It is exactly the same for us.
-
-That's a fair request, ack.
-
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_SOCKET_FILTER, insn_c=
+nt=3D2, insns=3D0x7fffe7489940, license=3D"GPL", log_level=3D0, log_size=3D=
+0, log_buf=3DNULL, kern_version=3DKERNEL_VERSION(0, 0, 0), prog_flags=3D0, =
+prog_name=3D"", prog_ifindex=3D0, expected_attach_type=3DBPF_CGROUP_INET_IN=
+GRESS}, 116) =3D -1 EINVAL (Invalid argument)
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_SOCKET_FILTER, insn_c=
+nt=3D2, insns=3D0x7fffe7489ae0, license=3D"GPL", log_level=3D0, log_size=3D=
+0, log_buf=3DNULL, kern_version=3DKERNEL_VERSION(0, 0, 0), prog_flags=3D0, =
+prog_name=3D"", prog_ifindex=3D0, expected_attach_type=3DBPF_CGROUP_INET_IN=
+GRESS}, 128) =3D 3
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898e0, 28) =3D 3
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898c0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898b0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898e0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898c0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898c0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898c0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898e0, 28) =3D -1 EINVAL (Invalid argume=
+nt)
+> 24400 bpf(BPF_BTF_LOAD, 0x7fffe74898f0, 28) =3D 3
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_SOCKET_FILTER, insn_c=
+nt=3D2, insns=3D0x7fffe7489850, license=3D"GPL", log_level=3D0, log_size=3D=
+0, log_buf=3DNULL, kern_version=3DKERNEL_VERSION(0, 0, 0), prog_flags=3D0, =
+prog_name=3D"libbpf_nametest"}, 64) =3D 4
+> 24400 bpf(BPF_MAP_CREATE, {map_type=3DBPF_MAP_TYPE_ARRAY, key_size=3D4, v=
+alue_size=3D4, max_entries=3D1, map_flags=3D0x400 /* BPF_F_??? */, inner_ma=
+p_fd=3D0, map_name=3D"libbpf_mmap", map_ifindex=3D0}, 72) =3D -1 EINVAL (In=
+valid argument)
+> 24400 bpf(BPF_MAP_CREATE, {map_type=3DBPF_MAP_TYPE_ARRAY, key_size=3D4, v=
+alue_size=3D32, max_entries=3D1, map_flags=3D0, inner_map_fd=3D0, map_name=
+=3D"libbpf_global", map_ifindex=3D0}, 72) =3D 4
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_SOCKET_FILTER, insn_c=
+nt=3D5, insns=3D0x7fffe7489820, license=3D"GPL", log_level=3D0, log_size=3D=
+0, log_buf=3DNULL, kern_version=3DKERNEL_VERSION(0, 0, 0), prog_flags=3D0, =
+prog_name=3D"", prog_ifindex=3D0, expected_attach_type=3DBPF_CGROUP_INET_IN=
+GRESS}, 128) =3D -1 EINVAL (Invalid argument)
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_TRACEPOINT, insn_cnt=
+=3D6, insns=3D0x7fffe74890d0, license=3D"GPL", log_level=3D0, log_size=3D0,=
+ log_buf=3DNULL, kern_version=3DKERNEL_VERSION(0, 0, 0), prog_flags=3D0, pr=
+og_name=3D"", prog_ifindex=3D0, expected_attach_type=3DBPF_CGROUP_INET_INGR=
+ESS}, 128) =3D -1 EINVAL (Invalid argument)
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_KPROBE, insn_cnt=3D18=
+, insns=3D0x1b7b580, license=3D"Dual BSD/GPL", log_level=3D0, log_size=3D0,=
+ log_buf=3DNULL, kern_version=3DKERNEL_VERSION(4, 19, 0), prog_flags=3D0, p=
+rog_name=3D"do_unlinkat", prog_ifindex=3D0, expected_attach_type=3DBPF_CGRO=
+UP_INET_INGRESS}, 128) =3D -1 EINVAL (Invalid argument)
+> 24400 bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_KPROBE, insn_cnt=3D18=
+, insns=3D0x1b7b580, license=3D"Dual BSD/GPL", log_level=3D1, log_size=3D16=
+777215, log_buf=3D"", kern_version=3DKERNEL_VERSION(4, 19, 0), prog_flags=
+=3D0, prog_name=3D"do_unlinkat", prog_ifindex=3D0, expected_attach_type=3DB=
+PF_CGROUP_INET_INGRESS}, 128) =3D -1 EINVAL (Invalid argument)
+> 24400 +++ exited with 22 +++
 >
-> This is not a rant I'm really just trying to make sure that we agree on
-> common ground when it comes to touching each others code or semantic
-> assumptions.
 >
-> I personally find this extremely weird to treat fd 0 as anything other
-> than a random fd number as it goes against any userspace assumptions and
-> drastically deviates from basically every file descriptor interface we
-> have. I mean, you're not just saying fd 0 is invalid you're even saying
-> it means AT_FDCWD.
-
-Agreed, I can see how this could have undesirable (not just
-surprising) implications if, say, open(O_PATH) returned fd=3D0. I just
-sent a v2 with a new flag that needs to be specified to be able to use
-path FD (and falling back to backwards-compatible AT_FDCWD behavior
-otherwise).
-
+> kernel information is "Linux admin-PC 4.19.0-amd64-desktop #5404 SMP Fri =
+Dec 23 17:25:30 CST 2022 x86_64 GNU/Linux"
+> ebpf source code:
+> ```c
 >
-> For every other interface, including those that pass fds in structs
-> whose extensibility is premised on unknown fields being set to zero,
-> have ways to make fd 0 work just fine. You could've done that to without
-> inventing custom fd semantics.
+> // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> /* Copyright (c) 2021 Sartura */
+> #define BPF_NO_GLOBAL_DATA
+> #define BPF_NO_PRESERVE_ACCESS_INDEX
+> #include "vmlinux.h"
+> #include <bpf/bpf_helpers.h>
+> #include <bpf/bpf_tracing.h>
+> #include <bpf/bpf_core_read.h>
+>
+>
+> char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+>
+>
+> SEC("kprobe/do_unlinkat")
+> int BPF_KPROBE(do_unlinkat, int dfd, struct filename *name)
+> {
+>         pid_t pid;
+>         const char *filename;
+>
+>
+>         pid =3D bpf_get_current_pid_tgid() >> 32;
+>         filename =3D BPF_CORE_READ(name, name);
+>         bpf_trace_printk("KPROBE ENTRY pid =3D %d, filename =3D %s\n", pi=
+d, filename);
+>         return 0;
+> }
+>
+>
+> SEC("kretprobe/do_unlinkat")
+> int BPF_KRETPROBE(do_unlinkat_exit, long ret)
+> {
+>         pid_t pid;
+>
+>
+>         pid =3D bpf_get_current_pid_tgid() >> 32;
+>         bpf_trace_printk("KPROBE EXIT: pid =3D %d, ret =3D %ld\n", pid, r=
+et);
+>         return 0;
+> }
+>
+>
+> ```
 
