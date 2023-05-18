@@ -1,126 +1,117 @@
-Return-Path: <bpf+bounces-868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FE77082DD
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 15:36:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 493EA7083F0
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 16:31:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18EC61C210AE
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 13:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2757A1C2112C
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 14:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DFF125A0;
-	Thu, 18 May 2023 13:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE991993D;
+	Thu, 18 May 2023 14:31:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9947F23C7E
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 13:36:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39973C433EF;
-	Thu, 18 May 2023 13:36:02 +0000 (UTC)
-Date: Thu, 18 May 2023 09:36:00 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Beau Belgrave <beaub@linux.microsoft.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-trace-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, David Vernet
- <void@manifault.com>, Linus Torvalds <torvalds@linux-foundation.org>, Dave
- Thaler <dthaler@microsoft.com>, Christian Brauner <brauner@kernel.org>,
- Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230518093600.3f119d68@rorschach.local.home>
-In-Reply-To: <CAADnVQLtTOjHG=k5uwP_zrM_af4RdS8d5zgmLnVFSmq_=5m0Cg@mail.gmail.com>
-References: <20230509130111.62d587f1@rorschach.local.home>
-	<20230509163050.127d5123@rorschach.local.home>
-	<20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
-	<20230515192407.GA85@W11-BEAU-MD.localdomain>
-	<20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
-	<20230516212658.2f5cc2c6@gandalf.local.home>
-	<20230517165028.GA71@W11-BEAU-MD.localdomain>
-	<CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
-	<20230518001916.GB254@W11-BEAU-MD.localdomain>
-	<CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
-	<20230518011814.GA294@W11-BEAU-MD.localdomain>
-	<20230517220800.3d4cbad2@gandalf.local.home>
-	<CAADnVQLtTOjHG=k5uwP_zrM_af4RdS8d5zgmLnVFSmq_=5m0Cg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3923821069
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 14:31:07 +0000 (UTC)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB6A10D8
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 07:31:02 -0700 (PDT)
+Received: from letrec.thunk.org (c-73-152-158-129.hsd1.va.comcast.net [73.152.158.129])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34IEUG4a016584
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 May 2023 10:30:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1684420220; bh=bn+QWVSe+9nTmAaBzja76pERh2P2tN8H0UdBFjfKOEU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=G/QR5cGU53Jh92OhSLCsidEmAju7KVs5J0ndqhRggP5N3v1/IEl/Mu0H8qjgRfaWn
+	 do1UxsFE8xBd30DpAED9ld+3XvL3h93ftUWqm32fj6DLYYEUhhzRaWZdqFVwboviNH
+	 YFUihowT6ejy4A2Xxf6y2TaLwfHehtTLJSw5bx5f9FuQqUl3AAwpKG7e7TXFrGi8A1
+	 DcnelyioMuvXI6OaUQYQS9Vdfzx3W2X9Xult+fboEXR2AiFyFx2ESKHBBEHPRPwLve
+	 5NIpyvl/fexZNi/glnGQeeM+RlhJvxMdFtp4ftoj5GUc6sLCh+u/H3foLqYY//+D9f
+	 aq9/QZza99Zdw==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+	id 912288C0244; Thu, 18 May 2023 10:30:16 -0400 (EDT)
+Date: Thu, 18 May 2023 10:30:16 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
+Message-ID: <ZGY2eICf8Ndr3Xg5@mit.edu>
+References: <20230516001348.286414-1-andrii@kernel.org>
+ <20230516001348.286414-2-andrii@kernel.org>
+ <20230516-briefe-blutzellen-0432957bdd15@brauner>
+ <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
+ <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
+ <20230517120528.GA17087@lst.de>
+ <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
+ <20230518-erdkugel-komprimieren-16548ca2a39c@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230518-erdkugel-komprimieren-16548ca2a39c@brauner>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 17 May 2023 20:14:31 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+The other thing to note is that while the *convention* may be that 0,
+1, and 2 are for stdin, stdout, and stderr, this is a *userspae*
+convention.  After all, system daemons like getty, gnome-terminal,
+et. al, need to be able to open file descriptors for stdin, stdout,
+and stderr, and it would be.....highly undesirable for the kernel to
+have to special case those processes from being able to open those
+file descriptors.  So in the eyes of Kernel to Userspace API's we
+should not specially privilege the meaning of file descriptors 0, 1,
+and 2.
 
-> On Wed, May 17, 2023 at 7:08=E2=80=AFPM Steven Rostedt <rostedt@goodmis.o=
-rg> wrote:
+Besides, we have a perfectly good way of expressing "not a FD" and
+that is negative values!  File descriptors, after all, are signed
+integers.
 
-> > The delete IOCTL is different than reg/unreg. I don't see a problem with
-> > adding a CAP_SYSADMIN check on the delete IOCTL (and other delete paths)
-> > to prevent this. It shouldn't affect anything we are doing to add this
-> > and it makes it so non-admins cannot delete any events if they are given
-> > write access to the user_events_data file. =20
->=20
-> sysadmin for delete is a pointless.
-> user_events_ioctl_reg() has the same issue.
-> Two different processes using you fancy TRACELOGGING_DEFINE_PROVIDER()
-> macro and picking the same name will race.
->=20
-> TRACELOGGING_DEFINE_PROVIDER( // defines the MyProvider symbol
->     MyProvider, // Name of the provider symbol to define
->     "MyCompany_MyComponent_MyProvider", // Human-readable provider
-> name, no ' ' or ':' chars.
->     // {d5b90669-1aad-5db8-16c9-6286a7fcfe33} // Provider guid
-> (ignored on Linux)
->     (0xd5b90669,0x1aad,0x5db8,0x16,0xc9,0x62,0x86,0xa7,0xfc,0xfe,0x33));
->=20
-> I totally get it that Beau is copy pasting these ideas from windows,
-> but windows is likely similarly broken if it's registering names
-> globally.
->=20
-> FD should be the isolation boundary.
-> fd =3D open("/sys/kernel/tracing/user_event")
-> and make sure all events are bound to that file.
-> when file is closed the events _should be auto deleted_.
->=20
-> That's another issue I just spotted.
-> Looks like user_events_release() is leaking memory.
-> user_event_refs are just lost.
->=20
-> tbh the more I look into the code the more I want to suggest to mark it
-> depends on BROKEN
-> and go back to redesign.
+Finally, by having some kernel subsystem have a different meaning for
+fd 0 means that there are potential security vulernabilities.  It may
+be the case that userspace *SHOULD* not use fd 0 for anythingn other
+than stdin, and that should be something which should be handed to it
+by its parent process.
 
-I don't think these changes require a redesign. I do like the idea that
-the events live with the fd. That is, when the fd dies, so does the event.
+However, consider what might happen if a malicious program where to
+exec a process, perhaps a setuid process, with fd 0 closed.  Now the
+first file opened by that program will be assigned fd 0, and if that
+gets passed to BPF, something surprising and wonderous --- but
+hopefully not something that can be leveraged to be a high severity
+security vulnerability --- may very well happen.
 
-Although, we may keep it around for a bit (no new events, but being
-able to parse it. That is, the event itself isn't deleted until the fd
-is closed, and so is the tracing files being read are closed.
+So if there is anyway to that we can change the BPF API's to change to
+use negative values for special case meanings, we should do it.
+Certainly for any new API's, and even for old API's, Linus has always
+said that there are some special case times when we can break the
+userspace ABI --- and security vulnerabilites are certainly one of
+them.
 
-Beau,
+Best regards,
 
-How hard is it to give the event an owner, but not for task or user,
-but with the fd. That way you don't need to worry about other tasks
-deleting the event. And it also automatically cleans itself up. If we
-leave it to the sysadmin to clean up, it's going to cause leaks,
-because it's not something the sysadmin will want to do, as they will
-need to keep track of what events are created.
-
--- Steve
-
-PS. I missed my connection due to unseasonal freezing temperatures, and
-my little airport didn't have a driver for the deicer, making my flight
-2 hours delayed (had to wait for the sun to come up and deice the
-plane!). Thus, instead of enjoying myself by the pool, I'm in an
-airport lounge without much to do.
-
+					- Ted
 
