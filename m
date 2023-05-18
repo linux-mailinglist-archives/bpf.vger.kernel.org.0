@@ -1,96 +1,137 @@
-Return-Path: <bpf+bounces-877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39AFE708657
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49E2E708686
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C352819E8
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:03:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06E4E281A29
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEF624E8F;
-	Thu, 18 May 2023 17:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB9D27204;
+	Thu, 18 May 2023 17:14:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC50119E5B
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:03:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D3E1C4339B;
-	Thu, 18 May 2023 17:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684429382;
-	bh=VCCeLI373vWJ8f/V7BOKXbKqCsAysHhGwbaiZFbiJmk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EueXkezxKj8nsJY6EorpUBrXyGljC2oM1QZ+ceid8fG1IVIYkpXDLZkMjfRN5QDB2
-	 Z150nRe+/hVcuOORPtXaJpq4vHrFh8+lRXxhG/NhNmUcALYlk8/5i6PNh4+43oSnVT
-	 4LI0+bZ40SX2fM6qVvrG0jDp5dQs+XT/WTGa2QkUUaLUvwBpF5wuoZ9PSErDbJN6cc
-	 JizqUfJeuDqzlpg2rmHRyHJcq256RFrmrFcK1qdYxA3QbC0y+2vZZzwQ7TNEfbXvgs
-	 oMjAOzZmPeCxnng3UUPTAvmK0inbvh5x+G0+ctVTPM+n0HmhH10s8Y0aZynM8QFKsz
-	 mpq6yWqZTxQhg==
-Date: Thu, 18 May 2023 13:03:01 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-kernel@vger.kernel.org,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-	Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	"paulburton@kernel.org" <paulburton@kernel.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.3 08/59] bpf, mips: Implement DADDI workarounds
- for JIT
-Message-ID: <ZGZaRfsA/FTvZcsX@sashalap>
-References: <20230504194142.3805425-1-sashal@kernel.org>
- <20230504194142.3805425-8-sashal@kernel.org>
- <50FCC591-D86A-46A3-AF4A-DD68D2FACC78@flygoat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED1723C90;
+	Thu, 18 May 2023 17:14:05 +0000 (UTC)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3169F10DF;
+	Thu, 18 May 2023 10:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684430040; x=1715966040;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Dm4y/HBaQn/foBIkRcBHkgloeLcQLm7b/RjanG2KOLw=;
+  b=HaQvdOHLc2H+g/kQPlYArv7Bw6jTz4eFgLAS08harTArUBMfRJzjq/t2
+   PZBws/+CP9fl4Ghl0oaB9jd+Op9BzYZxG8luyAMU+rYwYkVmyqLDosrnf
+   wz+IBHlLo0uYamGxG6XC0PTs9VBSbtCSCU3WRSfTj0XlfcLi66QfUBPIC
+   h7Z2t749qKzDU+HB3MGQlzSIDoa8RDhleLE81DC92TIzuX8lO0x2A1MqP
+   uDWJjp17vxHxxTJ4aSmbiy1+gz1SRQU9/JtmCi8UsmMZWrd/ilSt+9qEe
+   IdQdacaxieoY+NLMk9UI6AABTuXOJYDzBZP9WmaAjKL1c/awQLoaZ7QYR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="354468734"
+X-IronPort-AV: E=Sophos;i="6.00,174,1681196400"; 
+   d="scan'208";a="354468734"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2023 10:13:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="702207870"
+X-IronPort-AV: E=Sophos;i="6.00,174,1681196400"; 
+   d="scan'208";a="702207870"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orsmga002.jf.intel.com with ESMTP; 18 May 2023 10:13:29 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org
+Cc: Kurt Kanzenbach <kurt@linutronix.de>,
+	anthony.l.nguyen@intel.com,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	sasha.neftin@intel.com,
+	Naama Meir <naamax.meir@linux.intel.com>
+Subject: [PATCH net-next 1/3] igc: Avoid transmit queue timeout for XDP
+Date: Thu, 18 May 2023 10:09:40 -0700
+Message-Id: <20230518170942.418109-2-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20230518170942.418109-1-anthony.l.nguyen@intel.com>
+References: <20230518170942.418109-1-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <50FCC591-D86A-46A3-AF4A-DD68D2FACC78@flygoat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, May 05, 2023 at 01:04:14PM +0100, Jiaxun Yang wrote:
->
->
->> 2023年5月4日 20:40，Sasha Levin <sashal@kernel.org> 写道：
->>
->> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
->>
->> [ Upstream commit bbefef2f07080cd502a93cb1c529e1c8a6c4ac8e ]
->>
->> For DADDI errata we just workaround by disable immediate operation
->> for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
->>
->> All other use cases in JIT won't cause overflow thus they are all safe.
->>
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
->> Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
->> Link: https://lore.kernel.org/bpf/20230228113305.83751-2-jiaxun.yang@flygoat.com
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Hi Sasha,
->
->I think this patch should count as a functional improvement instead of regression fix.
->
->Please drop it from stable queue.
+From: Kurt Kanzenbach <kurt@linutronix.de>
 
-Dropped, thanks!
+High XDP load triggers the netdev watchdog:
 
+|NETDEV WATCHDOG: enp3s0 (igc): transmit queue 2 timed out
+
+The reason is the Tx queue transmission start (txq->trans_start) is not updated
+in XDP code path. Therefore, add it for all XDP transmission functions.
+
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 38d113b48111..c5ef1edcf548 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2411,6 +2411,8 @@ static int igc_xdp_xmit_back(struct igc_adapter *adapter, struct xdp_buff *xdp)
+ 	nq = txring_txq(ring);
+ 
+ 	__netif_tx_lock(nq, cpu);
++	/* Avoid transmit queue timeout since we share it with the slow path */
++	txq_trans_cond_update(nq);
+ 	res = igc_xdp_init_tx_descriptor(ring, xdpf);
+ 	__netif_tx_unlock(nq);
+ 	return res;
+@@ -2829,6 +2831,9 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 
++	/* Avoid transmit queue timeout since we share it with the slow path */
++	txq_trans_cond_update(nq);
++
+ 	budget = igc_desc_unused(ring);
+ 
+ 	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
+@@ -6354,6 +6359,9 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 
++	/* Avoid transmit queue timeout since we share it with the slow path */
++	txq_trans_cond_update(nq);
++
+ 	drops = 0;
+ 	for (i = 0; i < num_frames; i++) {
+ 		int err;
 -- 
-Thanks,
-Sasha
+2.38.1
+
 
