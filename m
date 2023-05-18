@@ -1,173 +1,98 @@
-Return-Path: <bpf+bounces-841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35993707759
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 03:18:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F07BD707782
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 03:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 295BB1C2100C
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 01:18:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4300281750
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 01:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ADD8383;
-	Thu, 18 May 2023 01:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B91389;
+	Thu, 18 May 2023 01:42:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127117E
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:18:22 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7454E359D;
-	Wed, 17 May 2023 18:18:21 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 885B120F32CC;
-	Wed, 17 May 2023 18:18:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 885B120F32CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684372700;
-	bh=81K2zFI29GmLblWkf3Bk8py8o8c8dK06HRiAskbTDO0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ogygos9xC6TT8V6lfbkWYc++EuHALPVh0L8O7UcfRo/qx2FE+nmTlo8Ph4mJoe42+
-	 05oD8t7DmFYXewZZeaK8tR/O76zTzRePDNiX9noLNNMq+cfPzidDoJGA/xulRBZM4c
-	 DKqleDnl6BOqLFCP6TpwT8m5VxoR4hGMh9SC5c7I=
-Date: Wed, 17 May 2023 18:18:14 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Thaler <dthaler@microsoft.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230518011814.GA294@W11-BEAU-MD.localdomain>
-References: <20230509130111.62d587f1@rorschach.local.home>
- <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain>
- <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230518001916.GB254@W11-BEAU-MD.localdomain>
- <CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E3F7E
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:42:16 +0000 (UTC)
+Received: from out-45.mta1.migadu.com (out-45.mta1.migadu.com [IPv6:2001:41d0:203:375::2d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104F8212F
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 18:42:13 -0700 (PDT)
+Message-ID: <a453c3d4-5615-f445-17a8-92a1dc4282e6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1684374130;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n3gOJF+MXOBVq1iRu2W9W0FS9rlAZbKgdHYpF5mdLYw=;
+	b=RwU0TiOxw2327F+kMmXihTAd02Cf701OOjP6FIfyfSwLCMe+5ycqEHxO7MkapmNHhUgOod
+	AcQ0y+gwx7ckF42fBknrcDX8s3rp+wiyro0mZdGDtyrqe2EtxncGed5ryW6E2oxtBs5VDX
+	j2+9myDtAVqH1UktlLEJFbwifSlgY7E=
+Date: Wed, 17 May 2023 18:42:06 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next] bpf: btf: restore resolve_mode when popping the
+ resolve stack
+Content-Language: en-US
+To: Lorenz Bauer <lmb@isovalent.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20230515121521.30569-1-lmb@isovalent.com>
+ <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
+ <CAN+4W8hixyHYOwYRh-3WedS-a0KTQk8VQ4JxqM8y-DQY-yjsNA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAN+4W8hixyHYOwYRh-3WedS-a0KTQk8VQ4JxqM8y-DQY-yjsNA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 05:56:34PM -0700, Alexei Starovoitov wrote:
-> On Wed, May 17, 2023 at 5:19 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> >
-> > On Wed, May 17, 2023 at 05:10:47PM -0700, Alexei Starovoitov wrote:
-> > > On Wed, May 17, 2023 at 9:50 AM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > > >
-> > > > > >
-> > > > > > Looks like user events were designed with intention to be unprivileged.
-> > > > > > When I looked at kernel/trace/trace_events_user.c I assumed root.
-> > > > > > I doubt other people reviewed it from security perspective.
-> > > > > >
-> > > > > > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" doesn't sound like a good idea.
-> > > > > >
-> > > > > > For example, I think the following is possible:
-> > > > > > fd = open("/sys/kernel/tracing/user_events_data")
-> > > > > > ioclt(fd, DIAG_IOCSDEL)
-> > > > > >   user_events_ioctl_del
-> > > > > >      delete_user_event(info->group, name);
-> > > > > >
-> > > > > > 'info' is different for every FD, but info->group is the same for all users/processes/fds,
-> > > > > > because only one global init_group is created.
-> > > > > > So one user can unregister other user event by knowing 'name'.
-> > > > > > A security hole, no?
-> > >
-> > > ...
-> > >
-> > > > Regarding deleting events, only users that are given access can delete
-> > > > events. They must know the event name, just like users with access to
-> > > > delete files must know a path (and have access to it). Since the
-> > > > write_index and other details are per-process, unless the user has
-> > > > access to either /sys/kernel/tracing/events/user_events/* or
-> > > > /sys/kernel/tracing/user_events_status, they do not know which names are
-> > > > being used.
-> > > >
-> > > > If that is not enough, we could require CAP_SYSADMIN to be able to
-> > > > delete events even when they have access to the file. Users can also
-> > > > apply SELinux policies per-file to achieve further isolation, if
-> > > > required.
-> > >
-> > > Whether /sys/kernel/tracing/user_events_status gets g+rw
-> > > or it gets a+rw (as your documentation recommends)
-> > > it is still a security issue.
-> > > The "event name" is trivial to find out by looking at the source code
-> > > of the target process or just "string target_binary".
-> >
-> > I guess, if they have access to the binary, etc.
-> > So they need both access to the binary and to the tracefs directory.
-> > We would not give them access like this in any normal setup other than a
-> > developer environment.
-> >
-> > > Restricting to cap_sysadmin is not the answer, since you want unpriv.
-> >
-> > We do not need unpriv to delete events, only to write and create events.
-> >
-> > We allow unregistering call-sites, which would still work unpriv with
-> > this requirement.
-> >
-> > > SElinux is not the answer either.
-> > > Since it's unpriv, different processes should not be able to mess with
-> > > user events of other processes.
-> >
-> > How is this different than uprobes if we give a user access to
-> > /sys/kernel/tracing/dynamic_events? Users can delete those as well. I
-> > don't see a difference here.
+On 5/17/23 2:01 AM, Lorenz Bauer wrote:
+> On Wed, May 17, 2023 at 7:26 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 5/15/23 5:15 AM, Lorenz Bauer wrote:
+>>> In commit 9b459804ff99 ("btf: fix resolving BTF_KIND_VAR after ARRAY, STRUCT, UNION, PTR")
+>>> I fixed a bug that occurred during resolving of a DATASEC by strategically resetting
+>>> resolve_mode. This fixes the immediate bug but leaves us open to future bugs where
+>>> nested types have to be resolved.
+>>
+>> hmm... future bugs like when adding new BTF_KIND in the future?
 > 
-> Because kprobe/uprobe are root only.
-> No sane person will do chmod a+rw /sys/kernel/tracing/uprobe_events.
-> It's just like chmod a+rw /etc/passwd
-> 
-> Whereas this is your recommended approach for user_events.
-> 
+> It could just be refactoring of the codebase? What is the downside of
+> restoring the mode when popping the item? It also makes push and pop
+> symmetrical.
 
-I believe those instructions are for development only. I'll get them
-changed to a more secure approach. We don't want to folks leaving it
-wide open.
+I can see your point to refactor it to make it work for all different BTF_KIND.
 
-We should tell folks to use a group and give access to the group like
-Steven said earlier.
+Other than BTF_KIND_DATASEC, env->resolve_mode stays the same for all other 
+kinds once it is decided. It is why resolve_mode is in the "env" instead of "v". 
+My concern is this will hide some bugs (existing or future) that accidentally 
+changed the resolve_mode in the middle. If there is another legit case that 
+could be found other than BTF_KIND_DATASEC, that will be a better time to do 
+this refactoring with a proper test case considering most bpf progs need btf to 
+load nowadays and probably need to veristat test also. If it came to that, might 
+as well consider moving resolve_mode from "env" to "v".
 
-> > In our production environments we are not giving out wide security to
-> > this file.
-> 
-> Fine by me. Keep it insecure and broken. Do not send bpf patches then.
-> I refuse to have bpf callable from such subsystems.
-> Somebody will inevitably blame bpf for the insecurity of user_events.
-
-The delete IOCTL is different than reg/unreg. I don't see a problem with
-adding a CAP_SYSADMIN check on the delete IOCTL (and other delete paths)
-to prevent this. It shouldn't affect anything we are doing to add this
-and it makes it so non-admins cannot delete any events if they are given
-write access to the user_events_data file.
-
-Thanks,
--Beau
+btf_datasec_resolve() is acting as a very top level resolver like btf_resolve(), 
+so it reset env->resolve_mode before resolving its var member like how 
+btf_resolve() does. imo, together with env->resolve_mode stays the same for 
+others, it is more straight forward to reason. I understand that it is personal 
+preference and could argue either way.
 
