@@ -1,306 +1,121 @@
-Return-Path: <bpf+bounces-862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3075D707C40
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 10:39:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDEE707C4C
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 10:42:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E573D28181E
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 08:39:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45FAC2814C2
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 08:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B53438BEA;
-	Thu, 18 May 2023 08:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC43AD38;
+	Thu, 18 May 2023 08:42:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A222A9D4
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 08:39:38 +0000 (UTC)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F982102
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:39:23 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3093a7b71fbso1644428f8f.2
-        for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:39:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D056D2A9E9
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 08:42:42 +0000 (UTC)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0768410CA
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:42:41 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-50bcb00a4c2so2627560a12.1
+        for <bpf@vger.kernel.org>; Thu, 18 May 2023 01:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684399162; x=1686991162;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=56mGsm1XHgPkxQbRb15mbR+hb+u+NHIuybwu5uaNASg=;
-        b=Yqxq8ycyGFHpVWwKBVCKpDmKYNPRpglWIdSdckGQELOZwjxArzdovRIgGU9d1WM7x5
-         vCo2rxwSS0Y9C/XfKrEgTEz5SscmrVJ0jrC1DXRIPedjoScmdTreZN7wkt+C8WkMIzEd
-         1E4XkYgDfcSPggqRshzGHnH41pkTyJzX05f4s8ybAqITgVg5H5PQLTFA9tZ1YEOCtrNj
-         w5/VriKXtLcwPiMNAdpJEqdpkyHAv7hefsKA4AgFkIaVcRtU3pX46mAZDp0X0BlT4ZZH
-         lZh+RfhWl/vAzI+nG8tu3Nk0u37fCrwTtdrxrgpCYhi+9zkZHjfG3Ml+uYAdk/Y+pijz
-         hrgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684399162; x=1686991162;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=isovalent.com; s=google; t=1684399359; x=1686991359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=56mGsm1XHgPkxQbRb15mbR+hb+u+NHIuybwu5uaNASg=;
-        b=XrRY2j43Sn84OGNWE3wvwgcBpUrzqQIK3g6pJKwe3J/d/vi9Z00ubXBnnqeQDhsAIS
-         i/vWvFcRYHZk/5+/1Ky7VkzopMuwSQJObjWBliPnnd9Uyp+QVL4ET16KjWS/7KbSM2aI
-         2XkevY77JxKEuvjkEONMrxFYu4bHQjWo26sxJNIwC0MT1oV1jvi05svlTKd2a+RCrnKP
-         pELMdzQuKtIAhGXcA+bTyxEPMozkw2z8w3nZoRZFX/b/Tfx8vBAaiJ0HqdJpzR1S4N7S
-         qm2SzcEQ2jdGTO6CbkaODGPaj3JEHFAC5YI13+zerae8KEMgg6K/I7pKPBK0TWvK8Q/R
-         Xj9g==
-X-Gm-Message-State: AC+VfDwAer4qf3vSKDKeudWTte7JK4YUfPy7uoxk16ZlXS8QvINMXfax
-	79E0UTbNsWA3uVzK0CgDq2WMyfPUt2q1uw==
-X-Google-Smtp-Source: ACHHUZ7nTidVG7YDhPZxprQyNsVYrdkybPsfb8CV3NrTyniXBmdIfz3p4y6wRw1xMl9Z+uIhksOfSw==
-X-Received: by 2002:a5d:4cc4:0:b0:307:a5d1:dbae with SMTP id c4-20020a5d4cc4000000b00307a5d1dbaemr950930wrt.71.1684399161852;
-        Thu, 18 May 2023 01:39:21 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-8b88-53b7-c55c-8535.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:8b88:53b7:c55c:8535])
-        by smtp.gmail.com with ESMTPSA id x15-20020adfec0f000000b002cea9d931e6sm1394497wrn.78.2023.05.18.01.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 May 2023 01:39:21 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 18 May 2023 10:39:19 +0200
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, ast@kernel.org, yhs@fb.com, andrii@kernel.org,
-	daniel@iogearbox.net, laoar.shao@gmail.com, martin.lau@linux.dev,
-	song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, bpf@vger.kernel.org
-Subject: Re: [RFC dwarves 5/6] btf_encoder: store ELF function
- representations sorted by name _and_ address
-Message-ID: <ZGXkN2TeEJZHMSG8@krava>
-References: <20230517161648.17582-1-alan.maguire@oracle.com>
- <20230517161648.17582-6-alan.maguire@oracle.com>
+        bh=eyiZQgT36LsZr8g4X4z/pK8Lc4mslR2lhG8l35ElJJs=;
+        b=jX6ZMr1gj6JTheUW2U82Au/CqQ2LMduUavE0++1b0iZFUl+GxiQawna6AP/el6Bp/q
+         8n1RP8rl6Woc1M4igGN7Uiir+TMJa2x8ldZiaMZxNceM4oED/iTznplNsPYXiMY6Md4l
+         VgtQuYkytnxOUqRrkOB9GuZbHrdNvxeOH30Mz1w+pP8dpymVCe54gAW04ErXWnu11nUq
+         OgoEevEPfauSZfKxFxB5AS93/g2OONXtDU28QvURhlee/OKt/fEGrF2TrMOnvxff5Czs
+         Yf/PnDPMBKTsGX0BbhnNEx3Lla8HsC8SMZaXC5ohiXtaA9V4RWR0d9HPQF8kscTqsL7M
+         8MyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684399359; x=1686991359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eyiZQgT36LsZr8g4X4z/pK8Lc4mslR2lhG8l35ElJJs=;
+        b=ZWLDPRlqqmYOBD3uDpH02xwKX4wPhryY3KkTpZAoyKiNwDSv+hKVg1RhHKpZHvA6PO
+         2TuP9M3fGJDzu6TVQGOmrgwJ9uBNO8mBgnJPyd7P+DzXSdlI/CI4rJcr4c7H8Fc9DpCQ
+         koUVubtcXmkM1nCApmDFYCj1HY7Tpt85onhYeudwuxBY4MAUw3IHFmo8q2re2Ul9TEfP
+         hT9yjOJXCgPGRdQEN9U37tydUq8U825fjkAAP9Vh9IUnBeF98+derUDi2qR7N2mtbJyX
+         ATbnjtvZLxq6FW4BL3pUBXCF7vLY+uyMD5Dbhv++D9n/XnQYvwgn0F8cokU38/UaFL4f
+         zRag==
+X-Gm-Message-State: AC+VfDyLLGwIkAOS37/9DIUsmxi+Y/EuT7Bqwj4S6lfqX8OGfUUZg6WO
+	8RquKo3nH5MdKBqkmrFg3mVK2LDKI/ketUo3b+EcnA==
+X-Google-Smtp-Source: ACHHUZ5lVM3rBQYMsSwl1ZV4Nb1nlmzzwn8SEosCeirRzNgYGUo1cUR9zwyGTnuxyAJUwIadfPrUyeHsbLc8/xIjXqw=
+X-Received: by 2002:a17:907:168d:b0:969:f677:11b9 with SMTP id
+ hc13-20020a170907168d00b00969f67711b9mr35672579ejc.54.1684399359308; Thu, 18
+ May 2023 01:42:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230517161648.17582-6-alan.maguire@oracle.com>
+References: <20230515121521.30569-1-lmb@isovalent.com> <a29c604e-5a68-eed2-b581-0ad4687fda10@linux.dev>
+ <CAN+4W8hixyHYOwYRh-3WedS-a0KTQk8VQ4JxqM8y-DQY-yjsNA@mail.gmail.com> <a453c3d4-5615-f445-17a8-92a1dc4282e6@linux.dev>
+In-Reply-To: <a453c3d4-5615-f445-17a8-92a1dc4282e6@linux.dev>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Thu, 18 May 2023 09:42:28 +0100
+Message-ID: <CAN+4W8iDy8w=aVErrSKA1OqJ7Onv3eszYOKHLr+zucfHRuHsVg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: btf: restore resolve_mode when popping the
+ resolve stack
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 05:16:47PM +0100, Alan Maguire wrote:
-> By making sorting function for our ELF function list match on
-> both name and function, we ensure that the set of ELF functions
-> includes multiple copies for functions which have multiple instances
-> across CUs.  For example, cpumask_weight has 22 instances in
-> System.map/kallsyms:
-> 
-> ffffffff8103b530 t cpumask_weight
-> ffffffff8103e300 t cpumask_weight
-> ffffffff81040d30 t cpumask_weight
-> ffffffff8104fa00 t cpumask_weight
-> ffffffff81064300 t cpumask_weight
-> ffffffff81082ba0 t cpumask_weight
-> ffffffff81084f50 t cpumask_weight
-> ffffffff810a4ad0 t cpumask_weight
-> ffffffff810bb740 t cpumask_weight
-> ffffffff8110a6c0 t cpumask_weight
-> ffffffff81118ab0 t cpumask_weight
-> ffffffff81129b50 t cpumask_weight
-> ffffffff81137dc0 t cpumask_weight
-> ffffffff811aead0 t cpumask_weight
-> ffffffff811d6800 t cpumask_weight
-> ffffffff811e1370 t cpumask_weight
-> ffffffff812fae80 t cpumask_weight
-> ffffffff81375c50 t cpumask_weight
-> ffffffff81634b60 t cpumask_weight
-> ffffffff817ba540 t cpumask_weight
-> ffffffff819abf30 t cpumask_weight
-> ffffffff81a7cb60 t cpumask_weight
-> 
-> With ELF representations for each address, and DWARF info about
-> addresses (low_pc) we can match DWARF with ELF accurately.
-> The result for the BTF representation is that we end up with
-> a single de-duped function:
-> 
-> [9287] FUNC 'cpumask_weight' type_id=9286 linkage=static
-> 
-> ...and 22 DECL_TAGs for each address that point at it:
-> 
-> 9288] DECL_TAG 'address=0xffffffff8103b530' type_id=9287 component_idx=-1
-> [9623] DECL_TAG 'address=0xffffffff8103e300' type_id=9287 component_idx=-1
-> [9829] DECL_TAG 'address=0xffffffff81040d30' type_id=9287 component_idx=-1
-> [11609] DECL_TAG 'address=0xffffffff8104fa00' type_id=9287 component_idx=-1
-> [13299] DECL_TAG 'address=0xffffffff81064300' type_id=9287 component_idx=-1
-> [15704] DECL_TAG 'address=0xffffffff81082ba0' type_id=9287 component_idx=-1
-> [15731] DECL_TAG 'address=0xffffffff81084f50' type_id=9287 component_idx=-1
-> [18582] DECL_TAG 'address=0xffffffff810a4ad0' type_id=9287 component_idx=-1
-> [20234] DECL_TAG 'address=0xffffffff810bb740' type_id=9287 component_idx=-1
-> [25384] DECL_TAG 'address=0xffffffff8110a6c0' type_id=9287 component_idx=-1
-> [25798] DECL_TAG 'address=0xffffffff81118ab0' type_id=9287 component_idx=-1
-> [26285] DECL_TAG 'address=0xffffffff81129b50' type_id=9287 component_idx=-1
-> [27040] DECL_TAG 'address=0xffffffff81137dc0' type_id=9287 component_idx=-1
-> [32900] DECL_TAG 'address=0xffffffff811aead0' type_id=9287 component_idx=-1
-> [35059] DECL_TAG 'address=0xffffffff811d6800' type_id=9287 component_idx=-1
-> [35353] DECL_TAG 'address=0xffffffff811e1370' type_id=9287 component_idx=-1
-> [48934] DECL_TAG 'address=0xffffffff812fae80' type_id=9287 component_idx=-1
-> [54476] DECL_TAG 'address=0xffffffff81375c50' type_id=9287 component_idx=-1
-> [87772] DECL_TAG 'address=0xffffffff81634b60' type_id=9287 component_idx=-1
-> [108841] DECL_TAG 'address=0xffffffff817ba540' type_id=9287 component_idx=-1
-> [132557] DECL_TAG 'address=0xffffffff819abf30' type_id=9287 component_idx=-1
-> [143689] DECL_TAG 'address=0xffffffff81a7cb60' type_id=9287 component_idx=-1
+On Thu, May 18, 2023 at 2:42=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 5/17/23 2:01 AM, Lorenz Bauer wrote:
+> > On Wed, May 17, 2023 at 7:26=E2=80=AFAM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+>
+> I can see your point to refactor it to make it work for all different BTF=
+_KIND.
+>
+> Other than BTF_KIND_DATASEC, env->resolve_mode stays the same for all oth=
+er
+> kinds once it is decided. It is why resolve_mode is in the "env" instead =
+of "v".
+> My concern is this will hide some bugs (existing or future) that accident=
+ally
+> changed the resolve_mode in the middle. If there is another legit case th=
+at
+> could be found other than BTF_KIND_DATASEC, that will be a better time to=
+ do
+> this refactoring with a proper test case considering most bpf progs need =
+btf to
+> load nowadays and probably need to veristat test also. If it came to that=
+, might
+> as well consider moving resolve_mode from "env" to "v".
+>
+> btf_datasec_resolve() is acting as a very top level resolver like btf_res=
+olve(),
+> so it reset env->resolve_mode before resolving its var member like how
+> btf_resolve() does. imo, together with env->resolve_mode stays the same f=
+or
+> others, it is more straight forward to reason. I understand that it is pe=
+rsonal
+> preference and could argue either way.
 
-right, Yonghong pointed this out in:
-  https://lore.kernel.org/bpf/49e4fee2-8be0-325f-3372-c79d96b686e9@meta.com/
-
-it's problem, because we pass btf id as attach id during bpf program load,
-and kernel does not have a way to figure out which address from the associated
-DECL_TAGs to use
-
-if we could change dedup algo to take the function address into account and
-make it not de-duplicate equal functions with different addresses, then we
-could:
-
-  - find btf id that properly and uniquely identifies the function we
-    want to trace
-
-  - store the vmlinux base address and treat stored function addresses as
-    offsets, so the verifier can get proper address even if the kernel
-    is relocated
-
-    or
-
-  - add support for kernel's kallsyms to return address for given btf id,
-    I plan to check on this one
-
-jirka
-
-> 
-> Consider another case where the same name - wakeup_show() - is
-> used for two different function signatures:
-> 
-> From kernel/irq/irqdesc.c
-> 
-> static ssize_t wakeup_show(struct kobject *kobj,
->  			   struct kobj_attribute *attr, char *buf)
-> 
-> ...and from drivers/base/power/sysfs.c
-> 
-> static ssize_t wakeup_show(struct device *dev, struct device_attribute *attr,
->                            char *buf);
-> 
-> We see both defined in BTF, along with the addresses that
-> tell us which is which:
-> 
-> [28472] FUNC 'wakeup_show' type_id=11214 linkage=static
-> 
-> specifies
-> 
-> [11214] FUNC_PROTO '(anon)' ret_type_id=76 vlen=3
->         'kobj' type_id=877
->         'attr' type_id=11200
->         'buf' type_id=56
-> 
-> ...and has declaration tag
-> 
-> [28473] DECL_TAG 'address=0xffffffff8115eab0' type_id=28472 component_idx=-1
-> 
-> which identifies
-> 
-> ffffffff8115eab0 t wakeup_show
-> 
-> ...as the function with the first signature.
-> 
-> Similarly,
-> 
-> [114375] FUNC 'wakeup_show' type_id=4750 linkage=static
-> 
-> [4750] FUNC_PROTO '(anon)' ret_type_id=76 vlen=3
->         'dev' type_id=1488
->         'attr' type_id=3909
->         'buf' type_id=56
-> ...and
-> 
-> [114376] DECL_TAG 'address=0xffffffff8181eac0' type_id=114375 component_idx=-1
-> 
-> ...tell us that
-> 
-> ffffffff8181eac0 t wakeup_show
-> 
-> ...has the second signature.  So we can accommodate multiple
-> functions with conflicting signatures in BTF, since we have
-> added extra info to map from function description in BTF
-> to address.
-> 
-> In total for vmlinux 52006 DECL_TAGs are added, and these add
-> 2MB to the BTF representation.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  btf_encoder.c | 26 ++++++++++++++++++++------
->  1 file changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 3bd0fe0..315053d 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -988,13 +988,25 @@ static int functions_cmp(const void *_a, const void *_b)
->  {
->  	const struct elf_function *a = _a;
->  	const struct elf_function *b = _b;
-> +	int ret;
->  
->  	/* if search key allows prefix match, verify target has matching
->  	 * prefix len and prefix matches.
->  	 */
->  	if (a->prefixlen && a->prefixlen == b->prefixlen)
-> -		return strncmp(a->name, b->name, b->prefixlen);
-> -	return strcmp(a->name, b->name);
-> +		ret = strncmp(a->name, b->name, b->prefixlen);
-> +	else
-> +		ret = strcmp(a->name, b->name);
-> +
-> +	if (ret || !b->addr)
-> +		return ret;
-> +
-> +	/* secondarily sort/search by address. */
-> +	if (a->addr < b->addr)
-> +		return -1;
-> +	if (a->addr > b->addr)
-> +		return 1;
-> +	return 0;
->  }
->  
->  #ifndef max
-> @@ -1044,9 +1056,11 @@ static int btf_encoder__collect_function(struct btf_encoder *encoder, GElf_Sym *
->  }
->  
->  static struct elf_function *btf_encoder__find_function(const struct btf_encoder *encoder,
-> -						       const char *name, size_t prefixlen)
-> +						       struct function *fn, size_t prefixlen)
->  {
-> -	struct elf_function key = { .name = name, .prefixlen = prefixlen };
-> +	struct elf_function key = { .name = function__name(fn),
-> +				    .addr = fn->low_pc,
-> +				    .prefixlen = prefixlen };
->  
->  	return bsearch(&key, encoder->functions.entries, encoder->functions.cnt, sizeof(key), functions_cmp);
->  }
-> @@ -1846,7 +1860,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  				continue;
->  
->  			/* prefer exact function name match... */
-> -			func = btf_encoder__find_function(encoder, name, 0);
-> +			func = btf_encoder__find_function(encoder, fn, 0);
->  			if (func) {
->  				if (func->generated)
->  					continue;
-> @@ -1863,7 +1877,7 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, struct co
->  				 * it does not have optimized-out parameters
->  				 * in any cu.
->  				 */
-> -				func = btf_encoder__find_function(encoder, name,
-> +				func = btf_encoder__find_function(encoder, fn,
->  								  strlen(name));
->  				if (func) {
->  					save = true;
-> -- 
-> 2.31.1
-> 
+ Okay, let's drop it then :)
 
