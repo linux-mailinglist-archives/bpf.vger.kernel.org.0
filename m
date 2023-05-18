@@ -1,144 +1,136 @@
-Return-Path: <bpf+bounces-846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A591707856
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 05:14:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E17707979
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 07:17:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB624280DB6
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 03:14:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4053A2817ED
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 05:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465AF396;
-	Thu, 18 May 2023 03:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074FE138C;
+	Thu, 18 May 2023 05:17:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D823D391
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 03:14:46 +0000 (UTC)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232DB2D4C;
-	Wed, 17 May 2023 20:14:45 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4eed764a10cso1883477e87.0;
-        Wed, 17 May 2023 20:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684379683; x=1686971683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+m6r5KOgtp+lWQnV5oKIW5XgjK3Hvy6Rsikt8ZrXkvI=;
-        b=XbB1zc3tsIWE6i4QEMLnmu1l5tAMTDLjWRJBLfC/XpoKJHwSQG/b/Dc5z17SLHGKMF
-         2arjbOcYeSGy0PqnUf8sAgO839giXbyrJ+0Pp5JPPPXsjAk0AbtwKACAOAmDRjWM5zPJ
-         Flr5L/Gas/zNg72tqKBgIoc2QmZZn7iN3L2mjtNJS7RX9GDllSOQ/eb3ajjMLYObGKUr
-         +IgjzEg+B4lpBtgM0hdcRffXO8N4AoWB9KExZVR00OwqRFWCuzxNaPcMee9kjxYqpnK3
-         ypQZ95HPHTSFJ8LrAMRECqs8iyThWadCUGorAjuiu4RQIP8jRdrgf21C4oL6JVc4XGlA
-         i1zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684379683; x=1686971683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+m6r5KOgtp+lWQnV5oKIW5XgjK3Hvy6Rsikt8ZrXkvI=;
-        b=kNusrr/VpbXf0HsDrx/xolG+Lg6kdbv3zKGOdKdhbWOsNngfQDnzFo6zXvaTfWPw0p
-         WJJn4OZmYAChmy9GPCDjILZMUsQbSd0TGaUE2VqgOGi+cb9DECxyWsQF4Q4LODC/WBG2
-         a0lpO5BP51C+47C4/VD2deCQaGo4YENzmu0ciZTSuvJwbMfrseBHABGyJS/N9pGdkXye
-         ohSefTvyEg0IjB8karwpgWJapTl9ve6DebHumdRcNVPUCrqsb0RJTYzn0L6x0JZV2HoI
-         +nvk9/AR6GRN+XGLreZ9wKwW7tqO9HRCwLR6eFHzwfC/cLhD5dQpEki12B7lOCq9H5ya
-         gx3g==
-X-Gm-Message-State: AC+VfDyTMNuQVs0H6lpRouTghOCA/2anIrq3gyt25eEyT9L4nfBfmbk/
-	NQ9I5qPyWkZ/tAgFyoRl5yEEC6VUhoMwGV5VbRAunEEVuGw=
-X-Google-Smtp-Source: ACHHUZ79Bd0JCp/wqhDU9AQbtm81IjsmPQ+nG4B5LiYFUCyo6QoQRDDsdnGW49pLAatjSDK10Oxs92EELd7cd1TjQdo=
-X-Received: by 2002:ac2:42ce:0:b0:4f2:5e4b:3e3f with SMTP id
- n14-20020ac242ce000000b004f25e4b3e3fmr717210lfl.61.1684379682997; Wed, 17 May
- 2023 20:14:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF298649
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 05:17:29 +0000 (UTC)
+Received: from m13112.mail.163.com (m13112.mail.163.com [220.181.13.112])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32D472D63
+	for <bpf@vger.kernel.org>; Wed, 17 May 2023 22:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=5q8EJBtwp90mX5Vvr028ZDMqLV5Gk/BSsNMJmbybpmo=; b=C
+	FuIxwZoE9IWP9UooebLh6owXa5+pqI1B5vnjZXfatGBqRnEnQNV8TfFsLRKrGbmh
+	QN+6FihvkGMw12cUiv/KqAJmSRhi7I51aukHy9iiX0jnATmDWiKYD/T3zEDpTLkc
+	Q4/kNwSC2S9/Aqwdd7OUs04gz8aBQ6ENNP0ugLPoZ8=
+Received: from jiangyingfeng163$163.com ( [111.198.29.41] ) by
+ ajax-webmail-wmsvr112 (Coremail) ; Thu, 18 May 2023 13:17:24 +0800 (CST)
+X-Originating-IP: [111.198.29.41]
+Date: Thu, 18 May 2023 13:17:24 +0800 (CST)
+From: =?GBK?B?va/Tprfm?= <jiangyingfeng163@163.com>
+To: bpf@vger.kernel.org
+Subject: libbpf: bpf_prog_load failed, invalid argument
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+X-NTES-SC: AL_QuyTBv+TuEgv4iGbbekXn0cRg+44UcuyvPQn34ZXPZ00pivI5AYEW0NYJX/3wcG/FyWNjCSTchRo+NhVQqdfZ5g5AGTr1ylnAysdoBPzu3qc
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230509130111.62d587f1@rorschach.local.home> <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local> <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local> <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain> <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230518001916.GB254@W11-BEAU-MD.localdomain> <CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
- <20230518011814.GA294@W11-BEAU-MD.localdomain> <20230517220800.3d4cbad2@gandalf.local.home>
-In-Reply-To: <20230517220800.3d4cbad2@gandalf.local.home>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 17 May 2023 20:14:31 -0700
-Message-ID: <CAADnVQLtTOjHG=k5uwP_zrM_af4RdS8d5zgmLnVFSmq_=5m0Cg@mail.gmail.com>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Beau Belgrave <beaub@linux.microsoft.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	David Vernet <void@manifault.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Dave Thaler <dthaler@microsoft.com>, Christian Brauner <brauner@kernel.org>, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Message-ID: <704ea11a.31aa.1882d4a9b2c.Coremail.jiangyingfeng163@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cMGowAC3E8zktGVkiY4XAA--.63487W
+X-CM-SenderInfo: xmld0wp1lqwwphqjilqt6rljoofrz/xtbBcgNzmFetilJMwgABs3
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 7:08=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Wed, 17 May 2023 18:18:14 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
->
-> > We should tell folks to use a group and give access to the group like
-> > Steven said earlier.
->
-> Could we possibly add an "owner" attribute to the event. That is, the
-> creator of the event is the only one that can write to that event. Or at
-> least by the user that created it (not actually the process).
->
-> So if the user "rostedt" creates an event, only "rostedt" can write to or
-> delete the event.
-
-That can work, but why name is global in the first place?
-Just make everything per-fd.
-
-> The delete IOCTL is different than reg/unreg. I don't see a problem with
-> adding a CAP_SYSADMIN check on the delete IOCTL (and other delete paths)
-> to prevent this. It shouldn't affect anything we are doing to add this
-> and it makes it so non-admins cannot delete any events if they are given
-> write access to the user_events_data file.
-
-sysadmin for delete is a pointless.
-user_events_ioctl_reg() has the same issue.
-Two different processes using you fancy TRACELOGGING_DEFINE_PROVIDER()
-macro and picking the same name will race.
-
-TRACELOGGING_DEFINE_PROVIDER( // defines the MyProvider symbol
-    MyProvider, // Name of the provider symbol to define
-    "MyCompany_MyComponent_MyProvider", // Human-readable provider
-name, no ' ' or ':' chars.
-    // {d5b90669-1aad-5db8-16c9-6286a7fcfe33} // Provider guid
-(ignored on Linux)
-    (0xd5b90669,0x1aad,0x5db8,0x16,0xc9,0x62,0x86,0xa7,0xfc,0xfe,0x33));
-
-I totally get it that Beau is copy pasting these ideas from windows,
-but windows is likely similarly broken if it's registering names
-globally.
-
-FD should be the isolation boundary.
-fd =3D open("/sys/kernel/tracing/user_event")
-and make sure all events are bound to that file.
-when file is closed the events _should be auto deleted_.
-
-That's another issue I just spotted.
-Looks like user_events_release() is leaking memory.
-user_event_refs are just lost.
-
-tbh the more I look into the code the more I want to suggest to mark it
-depends on BROKEN
-and go back to redesign.
+CgoKCndoZW4gaSB0ZXN0IGxpYmJwZi1ib290c3RyYXAgZXhhbXBsZXOjrGJwZiBzeXNjYWxsIGZh
+aWxlZCwgZXJybm8gaXMgMjIsIHN0cmFjZSBsb2cgYXMgYmVsb3c6CgoKMjQ0MDAgYnBmKEJQRl9Q
+Uk9HX0xPQUQsIHtwcm9nX3R5cGU9QlBGX1BST0dfVFlQRV9TT0NLRVRfRklMVEVSLCBpbnNuX2Nu
+dD0yLCBpbnNucz0weDdmZmZlNzQ4OTk0MCwgbGljZW5zZT0iR1BMIiwgbG9nX2xldmVsPTAsIGxv
+Z19zaXplPTAsIGxvZ19idWY9TlVMTCwga2Vybl92ZXJzaW9uPUtFUk5FTF9WRVJTSU9OKDAsIDAs
+IDApLCBwcm9nX2ZsYWdzPTAsIHByb2dfbmFtZT0iIiwgcHJvZ19pZmluZGV4PTAsIGV4cGVjdGVk
+X2F0dGFjaF90eXBlPUJQRl9DR1JPVVBfSU5FVF9JTkdSRVNTfSwgMTE2KSA9IC0xIEVJTlZBTCAo
+SW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9QUk9HX0xPQUQsIHtwcm9nX3R5cGU9QlBG
+X1BST0dfVFlQRV9TT0NLRVRfRklMVEVSLCBpbnNuX2NudD0yLCBpbnNucz0weDdmZmZlNzQ4OWFl
+MCwgbGljZW5zZT0iR1BMIiwgbG9nX2xldmVsPTAsIGxvZ19zaXplPTAsIGxvZ19idWY9TlVMTCwg
+a2Vybl92ZXJzaW9uPUtFUk5FTF9WRVJTSU9OKDAsIDAsIDApLCBwcm9nX2ZsYWdzPTAsIHByb2df
+bmFtZT0iIiwgcHJvZ19pZmluZGV4PTAsIGV4cGVjdGVkX2F0dGFjaF90eXBlPUJQRl9DR1JPVVBf
+SU5FVF9JTkdSRVNTfSwgMTI4KSA9IDMKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0
+ODk4ZTAsIDI4KSA9IDMKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0ODk4YzAsIDI4
+KSA9IC0xIEVJTlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwg
+MHg3ZmZmZTc0ODk4YjAsIDI4KSA9IC0xIEVJTlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAg
+YnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0ODk4ZTAsIDI4KSA9IC0xIEVJTlZBTCAoSW52YWxp
+ZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0ODk4YzAsIDI4KSA9
+IC0xIEVJTlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3
+ZmZmZTc0ODk4YzAsIDI4KSA9IC0xIEVJTlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBm
+KEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0ODk4YzAsIDI4KSA9IC0xIEVJTlZBTCAoSW52YWxpZCBh
+cmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZmZTc0ODk4ZTAsIDI4KSA9IC0x
+IEVJTlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9CVEZfTE9BRCwgMHg3ZmZm
+ZTc0ODk4ZjAsIDI4KSA9IDMKMjQ0MDAgYnBmKEJQRl9QUk9HX0xPQUQsIHtwcm9nX3R5cGU9QlBG
+X1BST0dfVFlQRV9TT0NLRVRfRklMVEVSLCBpbnNuX2NudD0yLCBpbnNucz0weDdmZmZlNzQ4OTg1
+MCwgbGljZW5zZT0iR1BMIiwgbG9nX2xldmVsPTAsIGxvZ19zaXplPTAsIGxvZ19idWY9TlVMTCwg
+a2Vybl92ZXJzaW9uPUtFUk5FTF9WRVJTSU9OKDAsIDAsIDApLCBwcm9nX2ZsYWdzPTAsIHByb2df
+bmFtZT0ibGliYnBmX25hbWV0ZXN0In0sIDY0KSA9IDQKMjQ0MDAgYnBmKEJQRl9NQVBfQ1JFQVRF
+LCB7bWFwX3R5cGU9QlBGX01BUF9UWVBFX0FSUkFZLCBrZXlfc2l6ZT00LCB2YWx1ZV9zaXplPTQs
+IG1heF9lbnRyaWVzPTEsIG1hcF9mbGFncz0weDQwMCAvKiBCUEZfRl8/Pz8gKi8sIGlubmVyX21h
+cF9mZD0wLCBtYXBfbmFtZT0ibGliYnBmX21tYXAiLCBtYXBfaWZpbmRleD0wfSwgNzIpID0gLTEg
+RUlOVkFMIChJbnZhbGlkIGFyZ3VtZW50KQoyNDQwMCBicGYoQlBGX01BUF9DUkVBVEUsIHttYXBf
+dHlwZT1CUEZfTUFQX1RZUEVfQVJSQVksIGtleV9zaXplPTQsIHZhbHVlX3NpemU9MzIsIG1heF9l
+bnRyaWVzPTEsIG1hcF9mbGFncz0wLCBpbm5lcl9tYXBfZmQ9MCwgbWFwX25hbWU9ImxpYmJwZl9n
+bG9iYWwiLCBtYXBfaWZpbmRleD0wfSwgNzIpID0gNAoyNDQwMCBicGYoQlBGX1BST0dfTE9BRCwg
+e3Byb2dfdHlwZT1CUEZfUFJPR19UWVBFX1NPQ0tFVF9GSUxURVIsIGluc25fY250PTUsIGluc25z
+PTB4N2ZmZmU3NDg5ODIwLCBsaWNlbnNlPSJHUEwiLCBsb2dfbGV2ZWw9MCwgbG9nX3NpemU9MCwg
+bG9nX2J1Zj1OVUxMLCBrZXJuX3ZlcnNpb249S0VSTkVMX1ZFUlNJT04oMCwgMCwgMCksIHByb2df
+ZmxhZ3M9MCwgcHJvZ19uYW1lPSIiLCBwcm9nX2lmaW5kZXg9MCwgZXhwZWN0ZWRfYXR0YWNoX3R5
+cGU9QlBGX0NHUk9VUF9JTkVUX0lOR1JFU1N9LCAxMjgpID0gLTEgRUlOVkFMIChJbnZhbGlkIGFy
+Z3VtZW50KQoyNDQwMCBicGYoQlBGX1BST0dfTE9BRCwge3Byb2dfdHlwZT1CUEZfUFJPR19UWVBF
+X1RSQUNFUE9JTlQsIGluc25fY250PTYsIGluc25zPTB4N2ZmZmU3NDg5MGQwLCBsaWNlbnNlPSJH
+UEwiLCBsb2dfbGV2ZWw9MCwgbG9nX3NpemU9MCwgbG9nX2J1Zj1OVUxMLCBrZXJuX3ZlcnNpb249
+S0VSTkVMX1ZFUlNJT04oMCwgMCwgMCksIHByb2dfZmxhZ3M9MCwgcHJvZ19uYW1lPSIiLCBwcm9n
+X2lmaW5kZXg9MCwgZXhwZWN0ZWRfYXR0YWNoX3R5cGU9QlBGX0NHUk9VUF9JTkVUX0lOR1JFU1N9
+LCAxMjgpID0gLTEgRUlOVkFMIChJbnZhbGlkIGFyZ3VtZW50KQoyNDQwMCBicGYoQlBGX1BST0df
+TE9BRCwge3Byb2dfdHlwZT1CUEZfUFJPR19UWVBFX0tQUk9CRSwgaW5zbl9jbnQ9MTgsIGluc25z
+PTB4MWI3YjU4MCwgbGljZW5zZT0iRHVhbCBCU0QvR1BMIiwgbG9nX2xldmVsPTAsIGxvZ19zaXpl
+PTAsIGxvZ19idWY9TlVMTCwga2Vybl92ZXJzaW9uPUtFUk5FTF9WRVJTSU9OKDQsIDE5LCAwKSwg
+cHJvZ19mbGFncz0wLCBwcm9nX25hbWU9ImRvX3VubGlua2F0IiwgcHJvZ19pZmluZGV4PTAsIGV4
+cGVjdGVkX2F0dGFjaF90eXBlPUJQRl9DR1JPVVBfSU5FVF9JTkdSRVNTfSwgMTI4KSA9IC0xIEVJ
+TlZBTCAoSW52YWxpZCBhcmd1bWVudCkKMjQ0MDAgYnBmKEJQRl9QUk9HX0xPQUQsIHtwcm9nX3R5
+cGU9QlBGX1BST0dfVFlQRV9LUFJPQkUsIGluc25fY250PTE4LCBpbnNucz0weDFiN2I1ODAsIGxp
+Y2Vuc2U9IkR1YWwgQlNEL0dQTCIsIGxvZ19sZXZlbD0xLCBsb2dfc2l6ZT0xNjc3NzIxNSwgbG9n
+X2J1Zj0iIiwga2Vybl92ZXJzaW9uPUtFUk5FTF9WRVJTSU9OKDQsIDE5LCAwKSwgcHJvZ19mbGFn
+cz0wLCBwcm9nX25hbWU9ImRvX3VubGlua2F0IiwgcHJvZ19pZmluZGV4PTAsIGV4cGVjdGVkX2F0
+dGFjaF90eXBlPUJQRl9DR1JPVVBfSU5FVF9JTkdSRVNTfSwgMTI4KSA9IC0xIEVJTlZBTCAoSW52
+YWxpZCBhcmd1bWVudCkKMjQ0MDAgKysrIGV4aXRlZCB3aXRoIDIyICsrKwoKCmtlcm5lbCBpbmZv
+cm1hdGlvbiBpcyAiTGludXggYWRtaW4tUEMgNC4xOS4wLWFtZDY0LWRlc2t0b3AgIzU0MDQgU01Q
+IEZyaSBEZWMgMjMgMTc6MjU6MzAgQ1NUIDIwMjIgeDg2XzY0IEdOVS9MaW51eCIKZWJwZiBzb3Vy
+Y2UgY29kZToKYGBgYwoKLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgT1IgQlNE
+LTMtQ2xhdXNlCi8qIENvcHlyaWdodCAoYykgMjAyMSBTYXJ0dXJhICovCiNkZWZpbmUgQlBGX05P
+X0dMT0JBTF9EQVRBCiNkZWZpbmUgQlBGX05PX1BSRVNFUlZFX0FDQ0VTU19JTkRFWAojaW5jbHVk
+ZSAidm1saW51eC5oIgojaW5jbHVkZSA8YnBmL2JwZl9oZWxwZXJzLmg+CiNpbmNsdWRlIDxicGYv
+YnBmX3RyYWNpbmcuaD4KI2luY2x1ZGUgPGJwZi9icGZfY29yZV9yZWFkLmg+CgoKY2hhciBMSUNF
+TlNFW10gU0VDKCJsaWNlbnNlIikgPSAiRHVhbCBCU0QvR1BMIjsKCgpTRUMoImtwcm9iZS9kb191
+bmxpbmthdCIpCmludCBCUEZfS1BST0JFKGRvX3VubGlua2F0LCBpbnQgZGZkLCBzdHJ1Y3QgZmls
+ZW5hbWUgKm5hbWUpCnsKCXBpZF90IHBpZDsKCWNvbnN0IGNoYXIgKmZpbGVuYW1lOwoKCglwaWQg
+PSBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQoKSA+PiAzMjsKCWZpbGVuYW1lID0gQlBGX0NPUkVf
+UkVBRChuYW1lLCBuYW1lKTsKCWJwZl90cmFjZV9wcmludGsoIktQUk9CRSBFTlRSWSBwaWQgPSAl
+ZCwgZmlsZW5hbWUgPSAlc1xuIiwgcGlkLCBmaWxlbmFtZSk7CglyZXR1cm4gMDsKfQoKClNFQygi
+a3JldHByb2JlL2RvX3VubGlua2F0IikKaW50IEJQRl9LUkVUUFJPQkUoZG9fdW5saW5rYXRfZXhp
+dCwgbG9uZyByZXQpCnsKCXBpZF90IHBpZDsKCgoJcGlkID0gYnBmX2dldF9jdXJyZW50X3BpZF90
+Z2lkKCkgPj4gMzI7CglicGZfdHJhY2VfcHJpbnRrKCJLUFJPQkUgRVhJVDogcGlkID0gJWQsIHJl
+dCA9ICVsZFxuIiwgcGlkLCByZXQpOwoJcmV0dXJuIDA7Cn0KCgpgYGA=
 
