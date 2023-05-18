@@ -1,162 +1,120 @@
-Return-Path: <bpf+bounces-882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FF8E7086C7
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:28:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E006708703
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:34:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C47562818FC
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:28:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF3D2818C7
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B908F27204;
-	Thu, 18 May 2023 17:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54342720D;
+	Thu, 18 May 2023 17:34:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB5818C15
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:28:10 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA276E46;
-	Thu, 18 May 2023 10:28:08 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id CB99A20FB193;
-	Thu, 18 May 2023 10:28:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB99A20FB193
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1684430888;
-	bh=Z+BpnlCktMUYP6DQ/MtmLt1ScIRlrfnbfip3prrS7PM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DLHhwpYSirb2eD7DNpwsVlAn2BQVhRLG+MIjzJpEeSXJ2XbORdIPcoJUw3TNNxqN9
-	 acvSEFaQQdorx3Fdp85Ifvuo3cjVkimxp8nkRY8IqrsKLX+Njat1z+/c7tsUcHQoNw
-	 I4grDO3ClzegD+ry3i5gENKby74D1fS4gx2zQ02Q=
-Date: Thu, 18 May 2023 10:28:02 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Thaler <dthaler@microsoft.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230518172802.GA71@W11-BEAU-MD.localdomain>
-References: <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain>
- <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230518001916.GB254@W11-BEAU-MD.localdomain>
- <CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
- <20230518011814.GA294@W11-BEAU-MD.localdomain>
- <20230517220800.3d4cbad2@gandalf.local.home>
- <CAADnVQLtTOjHG=k5uwP_zrM_af4RdS8d5zgmLnVFSmq_=5m0Cg@mail.gmail.com>
- <20230518093600.3f119d68@rorschach.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A68182B8
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:34:11 +0000 (UTC)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F78E46
+	for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:50 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9661047f8b8so420932566b.0
+        for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1684431228; x=1687023228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5k9EtuLI3tDPxkuM6Z7FYpLe7g8cI0Dfathe8uxGMFM=;
+        b=YG3B7R+TIVc9Pe4YejC48O3tk83Vr02YXah6CemPod4zJJDfq8lSd8fulPt+1V2AUB
+         ELmGsKz7TrFlZ7AuP669UtV4F6Gqc0f5axPu/EMofiQOslneYDaL2yL2AAHcepOC/AbK
+         yoEAe/ZZdtP1GaSRY4AKpT5E4Odx+AZJNZOSQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684431228; x=1687023228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5k9EtuLI3tDPxkuM6Z7FYpLe7g8cI0Dfathe8uxGMFM=;
+        b=GhZl8WhgTBFqJtPPk1GP0GJotML85f7Pd6E0Ere1QqxkxHAExyuY++EQvwLuPh3HRy
+         vEHrwIsle/ZSJDA1RNKOpnmVqEZW4OcZmw0/a4Eghwjx4oguFqJVtFTwIza+0dPhgfCG
+         AidOhMKrG3KIHqC9E8vwQ2BH6cVunIs5O8acxZxrX+YXYuZBvp0b4i7CN5OwjzWcVxVm
+         ADM5e8SAsGMZikbTI/sF0+OtdcxdrXliLcOvr0x6WajnHxeBF9P3aATJmV7izXXIdTbG
+         BPzU1zIYzsWqBrieJtNKFjlEDplkaysJvrDucxuE7RSF9OxWRe+NPJN2iNzD1umER7Mp
+         dHeg==
+X-Gm-Message-State: AC+VfDzpCXeVPnAQvRngUooQdXHXriZl+zOn64C65WkCg8828gfT4vmw
+	EvzEqzvd4NVIbS13OO6VjAKeXlD4STtMqzCDyiq1bIBf
+X-Google-Smtp-Source: ACHHUZ4sZVVf6QWDf/Gx/yyFEwPal5wiRXqRIihKC6CiQuz25nM+CEwzXA88y5QVWU4hvXkvPtENxg==
+X-Received: by 2002:a17:907:928e:b0:96f:32ae:a7e1 with SMTP id bw14-20020a170907928e00b0096f32aea7e1mr2336491ejc.63.1684431228529;
+        Thu, 18 May 2023 10:33:48 -0700 (PDT)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id og44-20020a1709071dec00b0096f503ae4b0sm303504ejc.26.2023.05.18.10.33.47
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 May 2023 10:33:47 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9661047f8b8so420927866b.0
+        for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:33:47 -0700 (PDT)
+X-Received: by 2002:a17:906:da86:b0:960:ddba:e5c3 with SMTP id
+ xh6-20020a170906da8600b00960ddbae5c3mr36488408ejb.32.1684431227176; Thu, 18
+ May 2023 10:33:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230518093600.3f119d68@rorschach.local.home>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230516001348.286414-1-andrii@kernel.org> <20230516001348.286414-2-andrii@kernel.org>
+ <20230516-briefe-blutzellen-0432957bdd15@brauner> <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
+ <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner> <20230517120528.GA17087@lst.de>
+ <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
+ <20230518-erdkugel-komprimieren-16548ca2a39c@brauner> <20230518162508.odupqkndqmpdfqnr@MacBook-Pro-8.local>
+ <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
+In-Reply-To: <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 18 May 2023 10:33:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmRTogGmR8E_SYOiHFpz8cY+0xj7nBpv9UwGU6k-UPAA@mail.gmail.com>
+Message-ID: <CAHk-=wgmRTogGmR8E_SYOiHFpz8cY+0xj7nBpv9UwGU6k-UPAA@mail.gmail.com>
+Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christoph Hellwig <hch@lst.de>, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Aleksa Sarai <cyphar@cyphar.com>, 
+	Lennart Poettering <lennart@poettering.net>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 18, 2023 at 09:36:00AM -0400, Steven Rostedt wrote:
-> On Wed, 17 May 2023 20:14:31 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > On Wed, May 17, 2023 at 7:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > > The delete IOCTL is different than reg/unreg. I don't see a problem with
-> > > adding a CAP_SYSADMIN check on the delete IOCTL (and other delete paths)
-> > > to prevent this. It shouldn't affect anything we are doing to add this
-> > > and it makes it so non-admins cannot delete any events if they are given
-> > > write access to the user_events_data file.  
-> > 
-> > sysadmin for delete is a pointless.
-> > user_events_ioctl_reg() has the same issue.
-> > Two different processes using you fancy TRACELOGGING_DEFINE_PROVIDER()
-> > macro and picking the same name will race.
-> > 
-> > TRACELOGGING_DEFINE_PROVIDER( // defines the MyProvider symbol
-> >     MyProvider, // Name of the provider symbol to define
-> >     "MyCompany_MyComponent_MyProvider", // Human-readable provider
-> > name, no ' ' or ':' chars.
-> >     // {d5b90669-1aad-5db8-16c9-6286a7fcfe33} // Provider guid
-> > (ignored on Linux)
-> >     (0xd5b90669,0x1aad,0x5db8,0x16,0xc9,0x62,0x86,0xa7,0xfc,0xfe,0x33));
-> > 
-> > I totally get it that Beau is copy pasting these ideas from windows,
-> > but windows is likely similarly broken if it's registering names
-> > globally.
-> > 
-> > FD should be the isolation boundary.
-> > fd = open("/sys/kernel/tracing/user_event")
-> > and make sure all events are bound to that file.
-> > when file is closed the events _should be auto deleted_.
-> > 
-> > That's another issue I just spotted.
-> > Looks like user_events_release() is leaking memory.
-> > user_event_refs are just lost.
-> > 
-> > tbh the more I look into the code the more I want to suggest to mark it
-> > depends on BROKEN
-> > and go back to redesign.
-> 
-> I don't think these changes require a redesign. I do like the idea that
-> the events live with the fd. That is, when the fd dies, so does the event.
-> 
-> Although, we may keep it around for a bit (no new events, but being
-> able to parse it. That is, the event itself isn't deleted until the fd
-> is closed, and so is the tracing files being read are closed.
-> 
-> Beau,
-> 
-> How hard is it to give the event an owner, but not for task or user,
-> but with the fd. That way you don't need to worry about other tasks
-> deleting the event. And it also automatically cleans itself up. If we
-> leave it to the sysadmin to clean up, it's going to cause leaks,
-> because it's not something the sysadmin will want to do, as they will
-> need to keep track of what events are created.
-> 
+On Thu, May 18, 2023 at 10:20=E2=80=AFAM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> That's just completely weird. We can see what Linus thinks but I think
+> that's a somewhat outlandish proposal that I wouldn't support.
 
-We need to ensure that multiple processes can use the same event name:
-Example we have shared libraries that processes use to publish events.
+I have no idea of the background here.
 
-We need to ensure that if the original FD closes and other processes/FDs
-are using it, those don't get ripped out from underneath it:
-Example we have perf attached and then the process exits.
+But fd 0 is in absolutely no way special. Anything that thinks that a
+zero fd is invalid or in any way different from (say) fd 5 is
+completely and utterly buggy by definition.
 
-I think we can accomodate that all neatly if we just make the event
-self-delete upon the last ref-count decrement. That way no one needs
-the delete IOCTL and we can prevent things piling up.
+Now, fd 0 can obviously be invalid in the sense that it may not be
+open, exactly the same way fd 100 may not be open. So in *that* sense
+we can have an invalid fd 0, and system calls might return EBADF for
+trying to access it if somebody has closed it.
 
-We have flags in the struct, so we could either make this optional or
-default. I like this approach Steven.
+If bpf thinks that 0 is not a file descriptor, then bpf is simply
+wrong. No ifs, buts or maybes about it. It's like saying "1 is not a
+number". It's nonsensical garbage.
 
-Thanks,
--Beau
+But maybe I misunderstand the issue.
 
-> -- Steve
-> 
-> PS. I missed my connection due to unseasonal freezing temperatures, and
-> my little airport didn't have a driver for the deicer, making my flight
-> 2 hours delayed (had to wait for the sun to come up and deice the
-> plane!). Thus, instead of enjoying myself by the pool, I'm in an
-> airport lounge without much to do.
+              Linus
 
