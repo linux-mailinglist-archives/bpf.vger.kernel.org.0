@@ -1,319 +1,165 @@
-Return-Path: <bpf+bounces-885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2668B708706
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:34:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B3E70872D
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:47:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D32BB281A2F
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4177B2819FB
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4212721A;
-	Thu, 18 May 2023 17:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E5B27717;
+	Thu, 18 May 2023 17:47:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF26D27210
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:34:33 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA69010F4
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:34:12 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 97EC4C151717
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 10:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1684431252; bh=B3mMo3spOxTtgJjyGARaCwkhKxkjvk8m/Pqpwpl/lNQ=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=M70X3P3KWkS8eaO/Dy/U0NDNwILSvYAmQQkkdpxhCwt/HWNRlOSGkNC1EiHiquktF
-	 mv5bPzwtPBJE30S4L4vpsRAEc5VKcU7HxROgC29fQdt5NPEhqDU94zTZLnvrUhdkuP
-	 iJRczc064fU3nsjv5IrXq0+8qjhgoSoRjiv8WdvU=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Thu May 18 10:34:12 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 76AE0C151531;
-	Thu, 18 May 2023 10:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1684431252; bh=B3mMo3spOxTtgJjyGARaCwkhKxkjvk8m/Pqpwpl/lNQ=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=M70X3P3KWkS8eaO/Dy/U0NDNwILSvYAmQQkkdpxhCwt/HWNRlOSGkNC1EiHiquktF
-	 mv5bPzwtPBJE30S4L4vpsRAEc5VKcU7HxROgC29fQdt5NPEhqDU94zTZLnvrUhdkuP
-	 iJRczc064fU3nsjv5IrXq0+8qjhgoSoRjiv8WdvU=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 29CE5C151531;
- Thu, 18 May 2023 10:34:11 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.098
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gnu.org
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id ssu3aT2-_EeS; Thu, 18 May 2023 10:34:07 -0700 (PDT)
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 13CDAC14CE42;
- Thu, 18 May 2023 10:34:06 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
- by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.90_1) (envelope-from <jemarch@gnu.org>)
- id 1pzhVr-0005R2-Ma; Thu, 18 May 2023 13:34:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
- s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
- From; bh=dsmDeFV9e//yAJc7sqUeuxxVSa10ea9R08z+fNh3wQY=; b=hX42UAmF+EOo1hVZjytG
- IctNkZmNGMZNEFL34AZO/iSdOU/8c2jmbENKP5uT+VfcS8DhK4hKVI96/ks0d7+WH7HpEFQoPa5+y
- Fl83w0LvGdGxxZKY36//qX9a/P3tZflFuh1l9ujTe8+xW4eYPQeFnWCurftLUxmSc6pavAPV135qH
- oknCSO1qe46XMIrv0Qobf0t4mCkzypx8Jf3HOpoSfcN+1qsGtfra3NTeSEvy9Tpi2QGBVimIE7UnI
- qkuS074WIw+P6TYty2cDVeRccdGOxSuqVvBoJoalGiulu4AbeAnm5lZBvzmRovQcyxgw5Rl+8U8Zd
- j8DMGrL6GqToeg==;
-Received: from [141.143.193.68] (helo=termi)
- by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.90_1) (envelope-from <jemarch@gnu.org>)
- id 1pzhVj-0007tv-1f; Thu, 18 May 2023 13:34:03 -0400
-From: "Jose E. Marchesi" <jemarch@gnu.org>
-To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
-Cc: "bpf@ietf.org" <bpf@ietf.org>,  bpf <bpf@vger.kernel.org>
-In-Reply-To: <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
- (Dave Thaler's message of "Wed, 17 May 2023 18:19:42 +0000")
-References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
- <87v8grkn67.fsf@gnu.org>
- <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-Date: Thu, 18 May 2023 19:33:35 +0200
-Message-ID: <87r0rdy26o.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C7D182B8;
+	Thu, 18 May 2023 17:47:18 +0000 (UTC)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2138.outbound.protection.outlook.com [40.107.244.138])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3673E10C1;
+	Thu, 18 May 2023 10:47:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lWq3DTmMixnWXR7DXGhv+gU/ndRrbzSBqMHuoveQRe2cvWsFu89cizmOJFI+SvmhcSXddXgCoNy1TkR5rP9IVzzWEcfLoHrCs4OklIm2P9bOQ8T4QsyvPAkamqkqWu37ijrKg903fSxO8BoYDPH81UcGiAtQoXiCe2s6aXE0h087iOyw5+OI2d3H7e2fTS0sV4Q5RPRVSzUgEfVFqeMPxUKgVNEU/ZeVpEAsPfbhwZVSMQjGR1HDR1gxIuF4gVvRwCqTgOTcRo06/6ysMm6PIV0kCdiRFdtxPRr2ldwdXCoVF20hBhSmk4aUAidAleqcfGXb+zR4aB0iREfhsCGpRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ionh9n9SdqJHPhwGCN6eSqa6e/QqYYGrgK+/5CABsr0=;
+ b=EXuwTHKLf/zjrpttTdDPq5nPTqmorJyFCensqF0VdM1jUYrZHrkQXXNJNqk+UBqQqRIj3nX8rVBY/m9lT4KhYizgWsyYbjVHfZbf0xfrkpv/pqfqEaH4C+cIEFApCXs2VK2b2hiV14wyW66Lm/BCVnTdH3oVLc7kvNPv1LtcgXenfDIN25Ro8n64yDfs1j22LHPjWn2bOffRl91vMoreHFJPKqvhFJ8ska5erS5asrfNA2sCV7aWDXT1O++1gxxpf+b5Uvk6DIFMp/aor896MVizV8DSTBck50rIwderkUrffak9Wu6HawCQHIFDOzA5JX0yCPV5uoAnfmKAW6syrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ionh9n9SdqJHPhwGCN6eSqa6e/QqYYGrgK+/5CABsr0=;
+ b=qqX5C2FzjnQfgA1GL/B19pUNqRvLY4WalERCVZX3icuv1TwfbVgSN/T1i3Po2mwRMwSns+FdzT47ciU7/S3TzWRsY4GboVoZC4tC5Q49bTc0y0OnMXkmGaEaT4ZA3vd75yP9uKGFMvYRSnczFoXMgldLQLUCNTlbYcn19BqNCeA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BY5PR13MB3811.namprd13.prod.outlook.com (2603:10b6:a03:22e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.17; Thu, 18 May
+ 2023 17:47:14 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::f416:544d:18b7:bb34%5]) with mapi id 15.20.6411.019; Thu, 18 May 2023
+ 17:47:13 +0000
+Date: Thu, 18 May 2023 19:47:06 +0200
+From: Simon Horman <simon.horman@corigine.com>
+To: wei.fang@nxp.com
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+	hawk@kernel.org, john.fastabend@gmail.com, shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-imx@nxp.com, Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: Re: [PATCH net-next] net: fec: turn on XDP features
+Message-ID: <ZGZkmvX0OLI+4fqY@corigine.com>
+References: <20230518143236.1638914-1-wei.fang@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230518143236.1638914-1-wei.fang@nxp.com>
+X-ClientProxiedBy: AM0PR05CA0082.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::22) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/M-BbxFQ7izqL1aNIsXaudbnHZUk>
-Subject: Re: [Bpf] IETF BPF working group draft charter
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BY5PR13MB3811:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a0ceb0e-d66b-4a0d-fc58-08db57c7e9ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hJf9knSS3DAJ0vXa7HSKA++OSm4LWENdNCAZSMBbs8b79NKBxP0jUHUi1mR+lF726yttA3a2hOmIwf97AMUlJ1V/1keGKJCS5khQPSJdQpQs9mFGwznYCgdqcq28UWjmbManOOUiKyG3WbeSh6TKP5tlqsX+64WqASaE5TgHVqHnMlLHqQ/zfU12tV/X/XbvIWbqxD7cCzoAT1QA36njm27enYhosNIbZUCroIexAmt5JajoJibVysUYGkcsNCT6pIyJ6unR/oOMiyzY8+MEZzgfDblO9j/gYAyPeTfxyW46Qi5Cuyoc0DHowoXmDvCp8jJ+Se1x/CMp71Bohc9GM46/rc9QFxkG1TMByPkyx1DcpnXxIMTu3b+HZcFT5dA7XnE+DRBPbCvDMxyHslEgyxPqaULQEtQ/4ECaIcfCAcu8DaZVLI5wzJHfKdAl1xKCYQM+DWYyOhIjQl+BR0qpCb9WnXleMK4Fr/ppEiedPhnoT8U6aFvZpWpJcg4gsQoFK5xyUzAc+go7kcWIRAqtIHgjIwz2/5Mk+sUW76LnLuP0VuW66Hlnm4H7UDECuHbuKDVEfzEf/dsWvW5JbaZEzV1GpS9RvuKjviGyj6PEREw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(136003)(396003)(346002)(39830400003)(451199021)(44832011)(186003)(2616005)(478600001)(6666004)(6486002)(6512007)(6506007)(8936002)(8676002)(5660300002)(36756003)(7416002)(38100700002)(6916009)(41300700001)(66556008)(66946007)(66476007)(2906002)(4326008)(316002)(86362001)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?933zFM+SRVMFLOQrEKrVKc6V9U6JtTGNpORBlP0rMeoyejCbPKQ7FvHU4YE4?=
+ =?us-ascii?Q?Bb7RpANcjNRIDvY9guawyvc4XkhLowFXxEU5LYd/FhDBIig8dfDDQmDBW3Sw?=
+ =?us-ascii?Q?N2GhpJW/4lSQwy1fm9LxzOTz9CjNmMM+j/BSgKB0jloR1DdCBX9iL+5e2rFG?=
+ =?us-ascii?Q?Lj5mp96I8ijhL6ZvGLM/9CNaDSHWVbSkgzYrHrkFgR9D2s9gBz4y1Cjen6W9?=
+ =?us-ascii?Q?PlJ4AGxOhWsrFCyPnd7WL2awNvfIVjXJDSNwXQl4+haQWQJGctmjB3eFiTbv?=
+ =?us-ascii?Q?G53FnOIsqQ7SFZeJcOT6pyXu8Vv2SaYhONCezrfvMxANjePQmGD30PC+N9NG?=
+ =?us-ascii?Q?evwtj+b2CdAI0rYgkscRwQI7LOY2OCLQFyj3712aCE7ZpiOo1E4pxUZlRop7?=
+ =?us-ascii?Q?d9Duw3jYHn2GiIX7dlBsFavfq+BEIiKouIbmdNjKYYIG0Ir99/unTr5Am8Pe?=
+ =?us-ascii?Q?fT+/MbRH0Y7t5etZIGvloJnpAHs5n5U1uZ0bRRIBXhhnYbYvPQDJmTlweF0E?=
+ =?us-ascii?Q?xFU1C2HKbyxu9bNvbCXj4qRhTB9pUnm2NyTPPl6Gr/WMv6+mj8ucklOU5OwZ?=
+ =?us-ascii?Q?EgC4LBVO0WDNpQCowPZlz+MdQkepNKTHjsrdUAHUr5hDazWYWiyLmy83c8nS?=
+ =?us-ascii?Q?pCdP41BzQ7yv5twNi/lUZ0JWot4mu4aEjdxeZ2aQ1ROIPmz0BCnA7D+oAXV5?=
+ =?us-ascii?Q?dj1APbDJKlNDuqHYss+rWxqqoL+s4TIFoC6guReoO+CfbY3c4dh+GPlD24q+?=
+ =?us-ascii?Q?b+LyZ+IIkVCvJfy2e51aXFoRtx+jhuI1YKtbG1zesHMuFLTHXEsmwfqbJ4lX?=
+ =?us-ascii?Q?rqcrxFfD//ZkC/l5NK/TLGPEgXhNNyCErXB3HDRWUyIZ4n8uPayeqoHBWNfQ?=
+ =?us-ascii?Q?2jI2xFPLzgqrjTLTmTnRqvBW2JFYAM1zI9cdKEa40XSivtxblkaRxirfvm4s?=
+ =?us-ascii?Q?GCDn3cl7jaJvxsIdsbwZtaBwqohGsLguoLv0da2R3lQKAZEaTRATtiRCFWqd?=
+ =?us-ascii?Q?fLIA5+DA8GTLvtjfKIQ3AGKOghW087ZYBd/8zo+YU49OVKA/k/TcVMVlaVyR?=
+ =?us-ascii?Q?nG17siXbrlCQoKUQzsUpnKXIxXJR67LUhFqxFoai9u5Ox93eq4aJLxm1rsPO?=
+ =?us-ascii?Q?RY28WY0A8Y0pW1HBadBmOqzfQzriiNI4MNQI2c1tP0YW3VqU9oHmBNKW+qBh?=
+ =?us-ascii?Q?CAzU6tOU6SHA0jpWw7J4/kbesvBCBbJwzgNehIJZV77d8frWr2mWbrOnEg0m?=
+ =?us-ascii?Q?mbLjJT9oKS/gM5mcZNE8vV1RXurgVBal/t6ikxu30pZZXg0qu0QCRlKKyhfi?=
+ =?us-ascii?Q?V1j8vInMogByUawrb+idt7jipBXfr0p7IwVcqoEuJom+PHEJbL9obeWdDQCt?=
+ =?us-ascii?Q?fobrzhVlURas+oMz0roPRv6Di6QQH1KuzqxZQOC20ABd1tpNpvzlZtw9lZG6?=
+ =?us-ascii?Q?IZK47/qpZOWVAM175SqDvo4hokxE+CH81lx+h8Rbq9U8//StxVVOu0PHx2WF?=
+ =?us-ascii?Q?ZA988TjWBSbWrVbQ5Ry4F+5Qu0rgMNcOjqDTQtjy9LM3OorFMmqEeCOcyxUF?=
+ =?us-ascii?Q?ap7m6/IzHBYespvhmhxZF58sVWo/0FB2arsZ+qnD0csHs1MNLLj1a7byk8X1?=
+ =?us-ascii?Q?/v18++HSccv7TGhvkWDl9mlP7B9o0uGsUx6ulw4Mn2H92v+XhsCJeyE1veQ4?=
+ =?us-ascii?Q?8TdlBg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0ceb0e-d66b-4a0d-fc58-08db57c7e9ce
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2023 17:47:13.7880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WA762I8edhcwx/mXohgpiSAjdftgc/MIu9YOMoxG7uFPxddMRwOCG5D+VtPLLn9Mw5WadB/I4+1SjkstYRL22DneGr2QY+5vrdewGvGEEPo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB3811
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
++Lorenzo
 
-Hi Dave.
-
-> Jose E. Marchesi wrote:
->> As I mentioned during your talk at LSF/MM/BPF, I think that two items may be
->> a bit confusing, and worth to clarify:
->>
->>   * the eBPF bindings for the ELF executable file format,
->>
->> What does "eBPF bindings" mean in this context?  I think there are at least two
->> possible interpretations:
->>
->> 1) The way BPF uses ELF, not impacting internal ELF structures.  For
->>    example the special section names that a conformant BPF loader
->>    expects and understands, such as ".probes", or rules on how to use
->>    the symbols visibility, or how notes are used (if they are used) etc
->>
->> 2) The ELF extensions that BPF introduces (and may introduce at some
->>    point) as an architecture, such as machine number, section types,
->>    special section indices, segment types, relocation types, symbol
->>    types, symbol bindings, additional section and segment flags, file
->>    flags, and perhaps structures of the contents of some special
->>    sections.
->
-> See https://www.ietf.org/archive/id/draft-thaler-bpf-elf-00.html
-> It includes the values used in the ELF header, section naming,
-> use of the "license" and "version" sections, meaning of "maps" and
-> ".maps" sections, etc.
-
-Right, so it is 2).  You intend to actually standardize the ELF
-extensions.
-
->> If the intended meaning of that point in the draft is 1), then I would suggest to
->> change the wording to something like:
->>
->> * the requirements and expectations that ELF files shall fulfill so they
->>   can be handled by conformant eBPF implementations.
->
-> My own opinion is to leave the more detailed definition of what belongs
-> in the ELF spec vs another document up to the WG to define rather than
-> baking it into the charter.
-
-Sure, that suggestion was provided in case your intention was 1), not 2)
-:)
-
->> Otherwise, if the intended meaning in the draft charter is to cover 2), I would
->> like to note that, usually and conventionally ELF extensions introduced by
->> architectures (and operating systems in the ELF sense)
->> are:
->>
->> - Part of the psABI (chapter Object Files).
->>
->> - Not standards, in the sense that these are not handled by
->>   standardization bodies.
->>
->> - Maintained by corporations, associations, and/or community groups, and
->>   published in one form or another.  A few examples of both arch and os
->>   extensions:
->>
->>   + The x86_64 psABI, including the ELF bits, is maintained by Intel
->>     (mainly by HJ Lu, a toolchain hacker) and available in a git repo in
->>     gitlab [1].
->>
->>   + The risc-v psABI, including the ELF bits, is maintained by I believe
->>     RISC-V International and the community, and is available in a git
->>     repo in github [2].
->>
->>   + The GNU extensions to the gABI, including the ELF bits, is
->>     maintained by GNU hackers and available in a git repo in sourceware
->>     [3].
->>
->>   + The llvm extensions to ELF, which in this case take the form of an
->>     "os" in the ELF sense even if it is not an operating system, are
->>     maintained by the LLVM project and available in the
->>     docs/Extensions.rst file in the llvm source distribution.
->>
->>   Note that more often than not this is kept quite informally, without
->>   the need of much bureocratic overhead.  A git repo in github or the
->>   like, maintained by the eBPF foundation or similar, would be more than
->>   enough IMO.
->
-> To ensure interoperability, I'd want a slightly more formal specification.
-
-I would think that the way the x86_64, aarch64, risc-v, sparc, mips,
-powerpc architectures, along with their variants, handle their ELF
-extensions and psABI, ensures interoperability good enough for the
-problem at hand, but ok.  I'm definitely not an expert in these matters.
-
->> - Open to suggestions and contributions from the community, vendors,
->>   implementors, etc.  This usually involves having a mailing list where
->>   such suggestions can be sent an discussed.  Almost always very little
->>   discussion is required, if any, because the proposed extension has
->>   already been agreed and worked on by the involved parties: toolchains,
->>   consumers, etc.
->>
->> - Continuously evolving.
->>
->> So, would the IETF working group be able to accomodate something like the
->> above?  For example, once a document is officially published by the working
->> group, how easy is it to modify it and make a new version to incorporate
->> something new, like a new relocation type for example?
->> (Apologies for my total ignorance of IETF business :/)
->
-> There's 3 ways:
-> 1) The IETF can publish an extension spec with additional optional
-> features.
-
-I don't think adding new relocation type, as an example of the kind of
-changes that ABIs regularly are subjected to, qualify as "additional
-optional features".
-
-> 2) The IETF can publish a replacement to the original (not usually
-> desirable)
-
-You _will_ need to update that particular document, and probably quite
-often.
-
-  jemarch@termi:~/gnu/src/x86-64-ABI$ git log --oneline --since="May 18 2022"
-  b96eaf2 (HEAD -> master, origin/master, origin/HEAD) Remove MPX support
-  ab1bd26 _BitInt: Update alignment of _BitInt(N) for N > 64
-  43453ea Clarify R_X86_64_REX_GOTPCRELX transformation
-  e2387f1 Add link to download latest PDF
-  b5443bf Fix typo in footnote stating incorrect register range for AVX512
-  8195730 Add optional __bf16 support
-  6c2ac6c ABI: Fix typos
-  8ca4539 Add _BitInt(N) from ISO/IEC WG14 N2763
-
-That is for a very well consolidated and stable architecture such as
-x86_64.  Now imagine what will happen with something like BPF that is
-still in the process of figuring out its own ABI and the way it gets
-compiled.
-
-Being very optimistic, would it be OK for IETF and the WG to release,
-say ten new versions of the "original" per year?
-
-> 3) The IETF can define a process for other organizations or vendors to
-> create their own extensions, and some mechanism for ensuring that two
-> such extensions don't collide using the same codepoint.  This is what
-> the charter implies the WG should do.
-
-What is the precise license under which the document describing the ELF
-extensions and the ABI will be distributed?
-
-In particular, does it allow distributing modified versions?
-Thanks for the info!
-
-> Dave
->
->> Likewise, of the following item:
->>
->>   * the platform support ABI, including calling convention, linker
->>     requirements, and relocations,
->>
->> The calling convention and relocations are part of the psABI and usually
->> handled like described above.
->>
->> PS: BPF is obviously not a SysV system, but when it comes to document
->>     the ABI, including the ELF bits, I think it would be a good idea to
->>     use the same document structure conventionally used by psABI, as
->>     Alexei already suggested some time ago.  This would be most familiar
->>     to people.
->>
->> [1]
->> https://gitlab/.
->> com%2Fx86-psABIs%2Fx86-64-
->> ABI&data=05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f514d
->> 08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6381
->> 99331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
->> CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sd
->> ata=SaprU2J9WsyJ5qhcxIGKO2F06YtO%2Bm1Gpjb2SIOApLA%3D&reserved=0
->> [2]
->> https://github/
->> .com%2Friscv-non-isa%2Friscv-elf-psabi-
->> doc%2Freleases%2Fdownload%2Fv1.0%2Friscv-
->> abi.pdf&data=05%7C01%7Cdthaler%40microsoft.com%7Cd4f2ef78d9e0475f5
->> 14d08db56e91312%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6
->> 38199331900533629%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMD
->> AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C
->> &sdata=uKqnU93kcu8rZ9Y0gzWdmuHnK9ySPM847%2FDMm6vJNwQ%3D&res
->> erved=0
->> [3] git://sourceware.org/git/gnu-gabi.git
->>
->> --
->> Bpf mailing list
->> Bpf@ietf.org
->> https://www.i/
->> etf.org%2Fmailman%2Flistinfo%2Fbpf&data=05%7C01%7Cdthaler%40microso
->> ft.com%7Cd4f2ef78d9e0475f514d08db56e91312%7C72f988bf86f141af91ab2
->> d7cd011db47%7C1%7C0%7C638199331900533629%7CUnknown%7CTWFpb
->> GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
->> Mn0%3D%7C2000%7C%7C%7C&sdata=W9FXcUwb181VQ6ksF2guASQ5FGtTE
->> KZuE0Yb8cHR9vI%3D&reserved=0
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+On Thu, May 18, 2023 at 10:32:36PM +0800, wei.fang@nxp.com wrote:
+> From: Wei Fang <wei.fang@nxp.com>
+> 
+> The XDP features are supported since the commit 66c0e13ad236
+> ("drivers: net: turn on XDP features"). Currently, the fec
+> driver supports NETDEV_XDP_ACT_BASIC, NETDEV_XDP_ACT_REDIRECT
+> and NETDEV_XDP_ACT_NDO_XMIT. So turn on these XDP features
+> for fec driver.
+> 
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> ---
+>  drivers/net/ethernet/freescale/fec_main.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index cd215ab20ff9..577affda6efa 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -4030,6 +4030,8 @@ static int fec_enet_init(struct net_device *ndev)
+>  	}
+>  
+>  	ndev->hw_features = ndev->features;
+> +	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
+> +			     NETDEV_XDP_ACT_NDO_XMIT;
+>  
+>  	fec_restart(ndev);
+>  
+> -- 
+> 2.25.1
+> 
+> 
 
