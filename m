@@ -1,174 +1,182 @@
-Return-Path: <bpf+bounces-839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C30D707718
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 02:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A575707753
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 03:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 276BE1C2101B
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 00:56:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D34C1C20FDF
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 01:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B67D381;
-	Thu, 18 May 2023 00:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1FD38A;
+	Thu, 18 May 2023 01:16:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B907E
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 00:56:50 +0000 (UTC)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57031F9;
-	Wed, 17 May 2023 17:56:48 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f24ddf514eso1821920e87.0;
-        Wed, 17 May 2023 17:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684371406; x=1686963406;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yYAbLlj9K3DHlnQr4F5J3fhYMxtcKiAU3j+LJPZgTsc=;
-        b=HjnRBOmBniA5ZroFiH7G5ei82jsFBH8zuXNukbcW3ykgw5HCBtWFvs05a/wBoDaQ9C
-         jSIPI9xuK49Nz8JNbZMWTKU2HyZxpP80ianyObRISb8Cb2Vm6V7u0+oUw6WzNFFW1kRU
-         Udsvcu/mQVD48FkUMLHqAbsynYDPHRTb3k8vFlaJ38gd1GH/QvYpeI94YnFXvp0gUK40
-         AEgwGlLY098gkuLReCxo9k6AzU445WrhZ6KpzA76T6+DzntDgDjpuQA5e0PQfXVH9xPW
-         J+UlhrBJUVMR/ivzesVq5viG92tTMC2gaAPQ1a48xPHgVgYfF4OI8r0rsMlgZ2mqdi9p
-         34uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684371406; x=1686963406;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yYAbLlj9K3DHlnQr4F5J3fhYMxtcKiAU3j+LJPZgTsc=;
-        b=MGfjDRejrQJek90+dmBbr5HVWMDq13ch7n+JBw79+sYVLJDQBk+uBGgorOcklhn8hc
-         AE0BZLMA9NNG9KvqLnXRVEVMHHuOnYKEDUmRZDCguBIla1jL+iE1TPwr0ZBZhmE6CaDw
-         t49Ou3BnttT5KOT2j+xn3n90iBaN3o+VwLuupuFy1Wfrqfw1eRbliZ2dPQa1PNL0Qck0
-         HMadiJXXZD+hh3gDrRrDlGCIsGjo5ms+2ihbZmRwdm9NWu3BoNVzduhmEyuT+jfBD8Kz
-         +VHdkg836quE/8VUSFfOkJulWh5dr/rj1LxnUAYyQ87UtKCqq5Ja9o0KcEhontZJiLse
-         ktNA==
-X-Gm-Message-State: AC+VfDwz+UhOsZVoXgUYK/G9OQboj7H5/j0GIv12IZDmzMeQ2rbYJlYS
-	uL7xf95ihJwlaCcQx39jy8yEsvqI1hH1udLvgIo=
-X-Google-Smtp-Source: ACHHUZ6AclExJ4QITzvbvQkT4xYvBg/dOVirxtBe/EOeFTUpReY/OGf1jnxLWp+LyiwIpJhe9wLuAaiKk2HU45CoM9g=
-X-Received: by 2002:ac2:558c:0:b0:4d1:3d1d:4914 with SMTP id
- v12-20020ac2558c000000b004d13d1d4914mr843380lfg.33.1684371406052; Wed, 17 May
- 2023 17:56:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525397E;
+	Thu, 18 May 2023 01:16:17 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E7E4224;
+	Wed, 17 May 2023 18:16:15 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QMBkg44V3zTktP;
+	Thu, 18 May 2023 09:11:23 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 18 May
+ 2023 09:16:12 +0800
+Subject: Re: [RFC net-next] net: veth: reduce page_pool memory footprint using
+ half page per-buffer
+To: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+CC: Lorenzo Bianconi <lorenzo@kernel.org>, Maciej Fijalkowski
+	<maciej.fijalkowski@intel.com>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>
+References: <d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org>
+ <62654fa5-d3a2-4b81-af70-59c9e90db842@huawei.com>
+ <ZGIWZHNRvq5DSmeA@lore-desk> <ZGIvbfPd46EIVZf/@boxer>
+ <ZGQJKRfuf4+av/MD@lore-desk>
+ <d6348bf0-0da8-c0ae-ce78-7f4620837f66@huawei.com>
+ <ZGTiF+B46FA3TOj6@lore-desk>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <4e5fbf6c-135b-3a14-fa9b-1437eeae41ac@huawei.com>
+Date: Thu, 18 May 2023 09:16:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230508163751.841-1-beaub@linux.microsoft.com>
- <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
- <20230509130111.62d587f1@rorschach.local.home> <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local> <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local> <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain> <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230518001916.GB254@W11-BEAU-MD.localdomain>
-In-Reply-To: <20230518001916.GB254@W11-BEAU-MD.localdomain>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 17 May 2023 17:56:34 -0700
-Message-ID: <CAADnVQJwK3p1QyYEvAn9B86M4nkX69kuUvx2W0Yqwy0e=RSPPg@mail.gmail.com>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	David Vernet <void@manifault.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Dave Thaler <dthaler@microsoft.com>, Christian Brauner <brauner@kernel.org>, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZGTiF+B46FA3TOj6@lore-desk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 5:19=E2=80=AFPM Beau Belgrave <beaub@linux.microsof=
-t.com> wrote:
->
-> On Wed, May 17, 2023 at 05:10:47PM -0700, Alexei Starovoitov wrote:
-> > On Wed, May 17, 2023 at 9:50=E2=80=AFAM Beau Belgrave <beaub@linux.micr=
-osoft.com> wrote:
-> > > >
-> > > > >
-> > > > > Looks like user events were designed with intention to be unprivi=
-leged.
-> > > > > When I looked at kernel/trace/trace_events_user.c I assumed root.
-> > > > > I doubt other people reviewed it from security perspective.
-> > > > >
-> > > > > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" do=
-esn't sound like a good idea.
-> > > > >
-> > > > > For example, I think the following is possible:
-> > > > > fd =3D open("/sys/kernel/tracing/user_events_data")
-> > > > > ioclt(fd, DIAG_IOCSDEL)
-> > > > >   user_events_ioctl_del
-> > > > >      delete_user_event(info->group, name);
-> > > > >
-> > > > > 'info' is different for every FD, but info->group is the same for=
- all users/processes/fds,
-> > > > > because only one global init_group is created.
-> > > > > So one user can unregister other user event by knowing 'name'.
-> > > > > A security hole, no?
-> >
-> > ...
-> >
-> > > Regarding deleting events, only users that are given access can delet=
-e
-> > > events. They must know the event name, just like users with access to
-> > > delete files must know a path (and have access to it). Since the
-> > > write_index and other details are per-process, unless the user has
-> > > access to either /sys/kernel/tracing/events/user_events/* or
-> > > /sys/kernel/tracing/user_events_status, they do not know which names =
-are
-> > > being used.
-> > >
-> > > If that is not enough, we could require CAP_SYSADMIN to be able to
-> > > delete events even when they have access to the file. Users can also
-> > > apply SELinux policies per-file to achieve further isolation, if
-> > > required.
-> >
-> > Whether /sys/kernel/tracing/user_events_status gets g+rw
-> > or it gets a+rw (as your documentation recommends)
-> > it is still a security issue.
-> > The "event name" is trivial to find out by looking at the source code
-> > of the target process or just "string target_binary".
->
-> I guess, if they have access to the binary, etc.
-> So they need both access to the binary and to the tracefs directory.
-> We would not give them access like this in any normal setup other than a
-> developer environment.
->
-> > Restricting to cap_sysadmin is not the answer, since you want unpriv.
->
-> We do not need unpriv to delete events, only to write and create events.
->
-> We allow unregistering call-sites, which would still work unpriv with
-> this requirement.
->
-> > SElinux is not the answer either.
-> > Since it's unpriv, different processes should not be able to mess with
-> > user events of other processes.
->
-> How is this different than uprobes if we give a user access to
-> /sys/kernel/tracing/dynamic_events? Users can delete those as well. I
-> don't see a difference here.
+On 2023/5/17 22:17, Lorenzo Bianconi wrote:
+>> Maybe using the new frag interface introduced in [1] bring
+>> back the performance for the MTU 8000B case.
+>>
+>> 1. https://patchwork.kernel.org/project/netdevbpf/cover/20230516124801.2465-1-linyunsheng@huawei.com/
+>>
+>>
+>> I drafted a patch for veth to use the new frag interface, maybe that
+>> will show how veth can make use of it. Would you give it a try to see
+>> if there is any performance improvment for MTU 8000B case? Thanks.
+>>
+>> --- a/drivers/net/veth.c
+>> +++ b/drivers/net/veth.c
+>> @@ -737,8 +737,8 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>>             skb_shinfo(skb)->nr_frags ||
+>>             skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+>>                 u32 size, len, max_head_size, off;
+>> +               struct page_pool_frag *pp_frag;
+>>                 struct sk_buff *nskb;
+>> -               struct page *page;
+>>                 int i, head_off;
+>>
+>>                 /* We need a private copy of the skb and data buffers since
+>> @@ -752,14 +752,20 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>>                 if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_size)
+>>                         goto drop;
+>>
+>> +               size = min_t(u32, skb->len, max_head_size);
+>> +               size += VETH_XDP_HEADROOM;
+>> +               size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>> +
+>>                 /* Allocate skb head */
+>> -               page = page_pool_dev_alloc_pages(rq->page_pool);
+>> -               if (!page)
+>> +               pp_frag = page_pool_dev_alloc_frag(rq->page_pool, size);
+>> +               if (!pp_frag)
+>>                         goto drop;
+>>
+>> -               nskb = napi_build_skb(page_address(page), PAGE_SIZE);
+>> +               nskb = napi_build_skb(page_address(pp_frag->page) + pp_frag->offset,
+>> +                                     pp_frag->truesize);
+>>                 if (!nskb) {
+>> -                       page_pool_put_full_page(rq->page_pool, page, true);
+>> +                       page_pool_put_full_page(rq->page_pool, pp_frag->page,
+>> +                                               true);
+>>                         goto drop;
+>>                 }
+>>
+>> @@ -782,16 +788,18 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
+>>                 len = skb->len - off;
+>>
+>>                 for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
+>> -                       page = page_pool_dev_alloc_pages(rq->page_pool);
+>> -                       if (!page) {
+>> +                       size = min_t(u32, len, PAGE_SIZE);
+>> +
+>> +                       pp_frag = page_pool_dev_alloc_frag(rq->page_pool, size);
+>> +                       if (!pp_frag) {
+>>                                 consume_skb(nskb);
+>>                                 goto drop;
+>>                         }
+>>
+>> -                       size = min_t(u32, len, PAGE_SIZE);
+>> -                       skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SIZE);
+>> -                       if (skb_copy_bits(skb, off, page_address(page),
+>> -                                         size)) {
+>> +                       skb_add_rx_frag(nskb, i, pp_frag->page, pp_frag->offset,
+>> +                                       size, pp_frag->truesize);
+>> +                       if (skb_copy_bits(skb, off, page_address(pp_frag->page) +
+>> +                                         pp_frag->offset, size)) {
+>>                                 consume_skb(nskb);
+>>                                 goto drop;
+>>                         }
+>> @@ -1047,6 +1055,8 @@ static int veth_create_page_pool(struct veth_rq *rq)
+>>                 return err;
+>>         }
+> 
+> IIUC the code here we are using a variable length for linear part (at most one page)
+> while we will always use a full page (exept for the last fragment) for the paged
 
-Because kprobe/uprobe are root only.
-No sane person will do chmod a+rw /sys/kernel/tracing/uprobe_events.
-It's just like chmod a+rw /etc/passwd
+More correctly, it does not care if the data is in linear part or in paged area.
+We copy the data to new skb using least possible fragment and most memory saving
+depending on head/tail room size and the page size/order, as skb_copy_bits() hides
+the date layout differenence for it's caller.
 
-Whereas this is your recommended approach for user_events.
+> area, correct? I have not tested it yet but I do not think we will get a significant
+> improvement since if we set MTU to 8000B in my tests we get mostly the same throughput
+> (14.5 Gbps vs 14.7 Gbps) if we use page_pool fragment or page_pool full page.
+> Am I missing something?
 
-> In our production environments we are not giving out wide security to
-> this file.
+I don't expect significant improvement too, but I do expect a 'nice improvement' for
+performance and memory saving depending on how you view 'nice improvement':)
 
-Fine by me. Keep it insecure and broken. Do not send bpf patches then.
-I refuse to have bpf callable from such subsystems.
-Somebody will inevitably blame bpf for the insecurity of user_events.
+> What we are discussing with Jesper is try to allocate a order 3 page from the pool and
+> rely page_pool fragment, similar to page_frag_cache is doing. I will look into it if
+> there are no strong 'red flags'.
+
+Thanks.
+Yes, if we do not really care about memory usage, using order 3 page should give more
+performance improvement.
+As my understanding, improvement mentioned above is also applied to order 3 page.
+
+> 
+> Regards,
+> Lorenzo
+> 
+>>
+>> +       page_pool_set_max_frag_size(rq->page_pool, PAGE_SIZE / 2);
+>> +
+>>         return 0;
+>>  }
+>>
 
