@@ -1,99 +1,82 @@
-Return-Path: <bpf+bounces-880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87C527086B3
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:23:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304E27086BE
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 19:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 436572819CF
-	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:23:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D8191C21154
+	for <lists+bpf@lfdr.de>; Thu, 18 May 2023 17:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FAB8271FB;
-	Thu, 18 May 2023 17:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DDD27204;
+	Thu, 18 May 2023 17:25:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669B718C15
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:22:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1EF1C433EF;
-	Thu, 18 May 2023 17:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6088718C15;
+	Thu, 18 May 2023 17:25:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB0CC433D2;
+	Thu, 18 May 2023 17:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684430570;
-	bh=qL332bAyOJ/QGUfgQtAjGCo1WVWAnNLS4FtrMe1O/9k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GGgFAoqzW8fECni4rQkheWj2C0RdrCB8TcX3cRjE163mk5IycQbMicfLEUAetkZ94
-	 icxvdrp2KVLw+FQMQ7UXnLEHbkFt0lnG4micsrQBsldL6L6nn5u7Wm6q+xKhvfpxJ/
-	 EI25k4q58RwJMzXqhzl/BBQPCLKpIwDT/9qWHtCcdAHpEpWw35k5uqokmYuY+MVQYY
-	 kk9FCYJjfUeaC7amo0JaNyxvJN+Z/yb+uAJ1hlrBWhgjYDz++fe8DLJAe+GK27a11B
-	 6+vS7QwnIx2ITFSidKYVukFcHxo/9fV4vlaYL4R6BiCqxD691tfLnaWAbnkNC4jDEy
-	 KGwciYgYG20Jg==
-Date: Thu, 18 May 2023 19:22:43 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+	s=k20201202; t=1684430706;
+	bh=1xXEc3Q960cFBOJsgYU1M/OH6jSEXjQSfflTdxhXDZA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=hG1yEhY2MjQ8nGW7uNJwo2jReDLQmXM9P6n4qGRX/XhGMlh75vk9U5iV671U1JarL
+	 FSTamFfSa3agJDtP9Gp31gfATJJpgDZgD6PR/SKOmwzgerS8M4HbO1QYq1JN3a2phj
+	 FO+INUF9rGLs8NmyxwoPIXGjjgu1LoipOZS34Kp0ePV9JPRD0f+QOvNV1CU15iVgP0
+	 ixL50LLLd+tcTf2/lQNt7hUkm14xDKEih4OX7CHlape1n6/PBanN3rOlxr39V2LzXx
+	 kRkPQZauZgYqJVXvDsIljvWaLk/KfZPQH+xP5OdF+RXbdvXNDTxdELJFoGszHD4YsD
+	 vLcKn+Htfmqfg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9ED4ECE0CC3; Thu, 18 May 2023 10:25:05 -0700 (PDT)
+Date: Thu, 18 May 2023 10:25:05 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Lennart Poettering <lennart@poettering.net>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
-Message-ID: <20230518-beben-komitee-bc23b650f852@brauner>
-References: <20230516001348.286414-1-andrii@kernel.org>
- <20230516001348.286414-2-andrii@kernel.org>
- <20230516-briefe-blutzellen-0432957bdd15@brauner>
- <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
- <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
- <20230517120528.GA17087@lst.de>
- <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
- <20230518-erdkugel-komprimieren-16548ca2a39c@brauner>
- <20230518162508.odupqkndqmpdfqnr@MacBook-Pro-8.local>
- <ZGZTXAdS7roSg3WE@casper.infradead.org>
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf] Use call_rcu_hurry() with synchronize_rcu_mult()
+Message-ID: <2cc44c11-bcdc-4ae4-a42d-d6d46cf1da6e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <358bde93-4933-4305-ac42-4d6f10c97c08@paulmck-laptop>
+ <b18fdfc3-987d-9351-ca6c-5d4cb2d71af1@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZGZTXAdS7roSg3WE@casper.infradead.org>
+In-Reply-To: <b18fdfc3-987d-9351-ca6c-5d4cb2d71af1@linux.dev>
 
-On Thu, May 18, 2023 at 05:33:32PM +0100, Matthew Wilcox wrote:
-> On Thu, May 18, 2023 at 09:25:08AM -0700, Alexei Starovoitov wrote:
-> > We're still talking past each other.
-> > 0 is an invalid bpf object. Not file.
-> > There is a difference.
-> > The kernel is breaking user space by returning non-file FDs in 0,1,2.
-> > Especially as fd = 1 and 2.
-> > ensure_good_fd() in libbpf is a library workaround to make sure bpf objects
-> > are not the reason for user app brekage.
-> > I firmly believe that making kernel return socket FDs and other special FDs with fd >=3
-> > (under new sysctl, for example) will prevent user space breakage.
+On Thu, May 18, 2023 at 09:51:39AM -0700, Martin KaFai Lau wrote:
+> On 5/18/23 7:47 AM, Paul E. McKenney wrote:
+> > The bpf_struct_ops_map_free() function must wait for both an RCU grace
+> > period and an RCU Tasks grace period, and so it passes call_rcu() and
+> > call_rcu_tasks() to synchronize_rcu_mult().  This works, but on ChromeOS
+> > and Android platforms call_rcu() can have lazy semantics, resulting in
+> > multi-second delays between call_rcu() invocation and invocation of the
+> > corresponding callback.
+> > 
+> > Therefore, substitute call_rcu_hurry() for call_rcu().
 > 
-> Wait, why are socket FDs special?  I shouldn't be able to have anything
-> but chardev fds, pipes and regular files as fd 0,1,2?  I agree that having
-> directory fds and blockdev fds as fd 0,1,2 are confusing and pointless,
-> but I see the value in having a TCP socket as stdin/stdout/stderr.
+> My understanding on the net-effect is to free up the struct_ops resources faster.
 > 
-> If a fd shouldn't be used for stdio, having an ioctl to enable it
-> and read/write return errors until/unless it's enabled makes sense.
-> But now we have to label each fd as safe/not-safe for stdio, which we
-> can as easily do by setting up our fops appropriately.  So I'm not sure
-> what you're trying to accomplish here.
+> I believe call_rcu() should be fine. struct_ops freeing should not happen
+> very often. For example, when a bpf written tcp congestion control
+> (struct_ops) is registered, it will stay in the kernel for a long time. A
+> couple seconds delay in releasing the struct_ops should be acceptable.
 
-Yeah, I don't think we want weird ioctl()s to restrict file descriptor
-ranges in any way. This all sounds pretty weird to me and I don't even
-want to imagine the semantical oddness of suddenly restricting the
-kernels ability to return some fds.
+Very good, and sorry for the noise!
 
-Honestly, most of the time sysctls such as this are the equivalent of
-throwing the hands up in the air and leaving the room.
+							Thanx, Paul
 
