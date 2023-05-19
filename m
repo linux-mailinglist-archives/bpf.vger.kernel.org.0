@@ -1,446 +1,380 @@
-Return-Path: <bpf+bounces-961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44879709A9E
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 16:55:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12910709AF1
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 17:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 203F71C212BF
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 14:55:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C717D281D55
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 15:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89AB10966;
-	Fri, 19 May 2023 14:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8451096E;
+	Fri, 19 May 2023 15:10:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1C310950
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 14:55:36 +0000 (UTC)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205F7A1
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 07:55:34 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ae4e49727eso33625135ad.1
-        for <bpf@vger.kernel.org>; Fri, 19 May 2023 07:55:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA6F5670
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 15:10:47 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CFE1AD
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 08:10:41 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34JEOQhi005379;
+	Fri, 19 May 2023 15:09:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=YGhnX1KnaECHxO/9Z0MSc0Hy4qHXOa3bZrFldSdPIw4=;
+ b=2I8+zH98by8bC60e2fTRZfzJU280aK3MKjIpITGHVp7F2LNh4U4tUB+/a91mgOu8LyxW
+ uDrK6n8lvcLUMN1fdWiZmRRV5naZNHOSLMkRSFTRTVYkUD/OkP8ICeErWeh67fJJAxJH
+ FXVqIlu96G0dFMDZu+VGTLd7o0Upa4zS2FpaWygB1INp1Gdtq6V2voFNtP5YIgEr0YoA
+ z13eKp6oNkYB4WY+ngVxCfRjbhP4MzuyfU1J3ulNc+UgwHiZU488NnfpNrQpF8aq63Yb
+ 7fp7rAi6NzpJXgnnrQleyUxqpiphNwfVZ/ya/ZnSQzX91T/4aXFXsOU27W0jki3XlCRl vA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qmx8j57j0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 May 2023 15:09:49 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34JEXnMo025031;
+	Fri, 19 May 2023 15:09:49 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2045.outbound.protection.outlook.com [104.47.56.45])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3qj1086vp7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 May 2023 15:09:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LmgYJYP/uiM+pGlaqlnHpKe+KrsKuO5AF8V6W5DtMaSF33iu8UuOQN2OW0Lpif8Np0vId4km9nL+QWrFem3AHdHhgk6qWMCu9444IDyntD6cDd2l4zd5NgwJNuLHy1dMBmqH/sreMbTVRBgQH02bn0lk6T5P99CVcyTwqIRSHV78Obu7p62/dgIO9UtfrBgcIBMYDDV+180p099+VERW/iQpJsQrMtOhZH+TP1sFWKG0qKWW45o5aofAwWTJJL+2RX1XAWiiVczFEAWZo10geW5G625/vt2oIoPFOZ2198jSxcBNU2+IgUprRTpWMkjYBIehCL4JfHgVIMYG8Ju6Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YGhnX1KnaECHxO/9Z0MSc0Hy4qHXOa3bZrFldSdPIw4=;
+ b=cpxVTrt+M2NS/Dm2pmbr0OIh3/vep32kpgvmy/+7CwhALP1CRo/IHxYqoOcDcg6shoQ6HRDA4elpjBGyB9ZdUNaIq3m43SZyulQDFTzvOX4Y1HPju6ObdT5uIDlr5zzj4uyluxOxmgX81KfpgIKqpckjq1am0ldBggy7XMJKh9uHTeJa3Ca40A3RfjMv0RObf4QogKHHmaMlHVEXKvE4TgMQ3mwPT0dw9dtHDBtG1wq0gP6zYXhRdct/GYLrU1gOFtLz2C+AAii9eDQOSP3I7SxYM0hJJCsVCgz1IpanaLBszjuVU1ic8zcf8gS0LaTp+Ib8PK9XOFQ4ayuI9/3InA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1684508133; x=1687100133;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ibewauVdYXgRLHVWFy2ho8QdFZEfA+DLRUSnXqflrog=;
-        b=IkjOjnpYrBjGZd8vWzePHFVzUoIP3qC2TDC/RV4o/y08lIkP2FFg0Nq5R5qStDctlq
-         06eVqafkFjjA/2139WXPJgukQL3BS4uOnWHQObsCbAbkaf84w3a+/GIABlHFZyDL1DHP
-         EBubo/dGAKyZvIeBrmLV8h7kby0Mq90cPaT4uP2Y5fH1Toqa2O11uMM7zqb36gdwbTs8
-         gyvqvZpcSJzcNIjbs5ahFSKfM0sa36VJW4Pxav6sITqlNwN9r9LoGnOWJU9gzgn22uv4
-         oWEzCiSNTBYXWy3XU+t943Scr1D/cslSvevaQyqLnwkmC4fzm4FVZ0TXcrF8322ue4fi
-         0PVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684508133; x=1687100133;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ibewauVdYXgRLHVWFy2ho8QdFZEfA+DLRUSnXqflrog=;
-        b=CWB+tVSqtXvjy8RxI5DkUBPZsVoGSbVUJxg2hhjoXR4mGQPgJyLlK4LAtpybLdaF6l
-         gU6mLBh8/BZH6r6ERZ6HLkyUgEYCXwv3HktsVgItYIGNjhwYBuo1oaJOri955ayQArRt
-         iwwqXW3+y0BxsQf5dfv49y4UnKmnku9XAMOPQkB0V3YcA7qbkl9hOyx0dXibbp/7HbuH
-         cnhvktf2K1AYYTjsKtK562dzTQf/2QMmeS7jZtbH6GUtl5eLTKYzD3ImxATaW3GNRVfb
-         hWQ06JVdLyXrYvOgNynEmW6tW2soWeS8O0Ja2VHAOdi1o88lnNucoeJjxgediwFQ18je
-         04Gw==
-X-Gm-Message-State: AC+VfDwJZRq/AA1IpfADprWl/+JCNtbsIKVMqJS9lLHLmLmtH3cLUpBS
-	zDnHMh4XqmdZ0ZyZbeOMGSdavfLIVcdL2dHNuVw=
-X-Google-Smtp-Source: ACHHUZ4LJH238SfjE2oBD35Gsh3RqI8YVRw3NQyEaw5EgZWQRa0rLeFk5+KH4HfaxfyfbcAEcSezVQ==
-X-Received: by 2002:a17:902:c642:b0:1ae:56ff:75d with SMTP id s2-20020a170902c64200b001ae56ff075dmr2680509pls.1.1684508133278;
-        Fri, 19 May 2023 07:55:33 -0700 (PDT)
-Received: from ?IPv6:2601:647:4900:1fbb:1403:cc18:50b2:683a? ([2601:647:4900:1fbb:1403:cc18:50b2:683a])
-        by smtp.gmail.com with ESMTPSA id v5-20020a170902b7c500b001ae48d441desm3548331plz.148.2023.05.19.07.55.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 May 2023 07:55:32 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YGhnX1KnaECHxO/9Z0MSc0Hy4qHXOa3bZrFldSdPIw4=;
+ b=kbsgRQ1Tz1euGd92DoakCJdUVhxZOeOTbWGxwc7HFW4NzcXejBjEolwQQJ4Phr1nDaCjck9AmbJpuTsNoiuYhUEO8aEeuJduqqitLGImKxgazDz2Rr3PYGX6Jz2tQI/SRhiZjrjMmsYINzyObMFdknFoRvmDaeeH81dSk1k+CM8=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by BLAPR10MB4978.namprd10.prod.outlook.com (2603:10b6:208:30e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.21; Fri, 19 May
+ 2023 15:09:46 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::90e:32fb:4292:1ace]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::90e:32fb:4292:1ace%6]) with mapi id 15.20.6411.021; Fri, 19 May 2023
+ 15:09:46 +0000
+Message-ID: <c455f7a2-85c7-fdb0-509c-9c259894a3b3@oracle.com>
+Date: Fri, 19 May 2023 16:08:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC dwarves 0/6] Encoding function addresses using DECL_TAGs
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: acme@kernel.org, ast@kernel.org, jolsa@kernel.org, yhs@fb.com,
+        andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, bpf@vger.kernel.org
+References: <20230517161648.17582-1-alan.maguire@oracle.com>
+ <CALOAHbCXC5Qvn80HxVGAFLiVE17zOCyHg12X=vXJvcZCU6_gKg@mail.gmail.com>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <CALOAHbCXC5Qvn80HxVGAFLiVE17zOCyHg12X=vXJvcZCU6_gKg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2PR01CA0003.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::16) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH v8 bpf-next 01/10] bpf: tcp: Avoid taking fast sock lock
- in iterator
-From: Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <2fb9b408-0791-4a33-bd0f-298703c740c5@meta.com>
-Date: Fri, 19 May 2023 07:55:31 -0700
-Cc: bpf@vger.kernel.org,
- kafai@fb.com,
- sdf@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9C2CEA58-12CE-4B30-982E-043F37B1BEAA@isovalent.com>
-References: <20230517175458.527970-1-aditi.ghag@isovalent.com>
- <66d39520-d85c-834b-22b3-0cf7a1a45aaf@meta.com>
- <CC590F34-1A80-41D2-87BA-9247910D0434@isovalent.com>
- <2fb9b408-0791-4a33-bd0f-298703c740c5@meta.com>
-To: Yonghong Song <yhs@meta.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|BLAPR10MB4978:EE_
+X-MS-Office365-Filtering-Correlation-Id: c39df269-477b-4f09-f0aa-08db587b152d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	3fULIMy8KZxzZ1s4uDSSOpvW+9SmfWUUqmhmNjfgCLPXEuhRsPQk8ls0+JH9DD+8iBNXF3bJcVJslOSWzrxS/eqVu3fEIPOnEsUXy5ozFf+qEmvnoJmV2/Xpi4S9pgzj0lavwV81LhEollriyT30Ly9THpwUGQ8YWkDC4Pm7P3Ej0hW7gfcWrukds4tGVJ7ynTTo4wmLulSp+9MRFWJ17MtmrUSe/UWsTbfx+yrYVyPmmmMUyAU2HQYxoJZDuk3bMWmvUrS9tjeH0eyS1xEuhMehOWTVkgCzBaKqgnUjqPWaXUwaP+E2McE7bMgPbEGmcKlnDZrp+kCyRnuE/EszvkzwxDE9wu5vBJN36XmkbfkrAgebvAIBZe8HZJOq0AH153fPOCLdcmRJdLwqCobjHcK3ZN4n62ytXcYsyHc3j8msn99gMhJ2UA5uBneEBVyIjFD2361XMHqrR0cnOD/Mw89YwEH97ByU8JZfZHZ/9DqrDZeHrcxfqqUd1auAU6vJgmYUwYgxvDmDoQ6Ahna4eHbzufItdkpp2fRkvuxWmJDquDjMFSN0KiURpHhGEf81JhqWPxZ+xkRRFAMCbOcmPiTGQ+ZVHO35a2lbUzzXDQs6qr2b6YnqedVI6i79keglwhotS5vEzG5bRQlK59Xw1g==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(346002)(136003)(396003)(39860400002)(376002)(451199021)(8936002)(8676002)(7416002)(86362001)(44832011)(31686004)(2906002)(66946007)(66556008)(66476007)(4326008)(316002)(6916009)(478600001)(5660300002)(31696002)(41300700001)(38100700002)(966005)(6486002)(2616005)(53546011)(6512007)(6506007)(186003)(36756003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?eDE0bDk1R1VmaEM5QTJ3NllGTEhSLzQ5M01LUmtETjMvd0tIaHBvQXVPYzVL?=
+ =?utf-8?B?NjhZYVhJbUJ5R3o0MWZUditFS3pMeXdEMWgwNFRKWVVoTm1jckd2bU9uYXdI?=
+ =?utf-8?B?SDdKUHdrcWo5R1JDdFNaQUtVTlNjbjRONlc4WGZwQUZaSmMrd3ZGRXkvUnlC?=
+ =?utf-8?B?V01reUp0MGFqZUlXTUoycUxUOGoxWjRnMmRISzcwOHhmNUpyYnFQaFlqeXB0?=
+ =?utf-8?B?ZnE0R003R3VSZWtpd0xhbHV5Qm94cWRPY3VOb00yWmU5cG1LRGtkQURrYkVK?=
+ =?utf-8?B?c1prdE00SlV5ZWhxVFlTT0ZkVG1nbWVBRDBZZnRwUmpkZEFvajM0dWJQdGJF?=
+ =?utf-8?B?TFR6bVZpMnNWVzVFVXVaM1pLVVVpSDVrcEtjV3FNWXVCTkFsb2E2VGt1SHZ0?=
+ =?utf-8?B?OVkrdGM0M3FtUVZudzJzUmp4UXNUZWVVNFB2cFVjbC9HdjVIZVJ4U3paQyt5?=
+ =?utf-8?B?MTNlYnNOSWY2TlpkTW5rVzNJVUZOSlczTUNVYXRsNnBoQi9aQUxrbnpPUGc2?=
+ =?utf-8?B?azNXeU8xQUZzSjcxRmhKdTBWZW5aV04wV2QwL2JiZ0tsTTF3MlhtaFMwYVR2?=
+ =?utf-8?B?WUw4SGtRQkxZZzBTSUZlakNxWGtZZTRqcElrdUpxbDc5VmZoZ3hSWnZZQUVT?=
+ =?utf-8?B?eitrcW5wRTdUazlOa1lpZit2bExSQmZCUXBITHJoRWg1bHBQTHdkUXpHaDB4?=
+ =?utf-8?B?Z3Z0d1BKSmhZc0NnUUV0T1ZkcllkNXJOTkdCcmpkSm4xcHpYa2FFKzZWYjNY?=
+ =?utf-8?B?ZHl1aG85ZVhaVUp4cCtNT1kveVBOZTd4WEVFN0xQT1dnRi9FcS9hNUJyWm9x?=
+ =?utf-8?B?WjAxM0FQenZoNjhmd3FCWm0wQldVSnJLTkVRaldSQmpxcGpleWYrNUN2dmln?=
+ =?utf-8?B?Q2xOVG1PMWs2MlFYN1FCOWgvQVFubmNDbE1xNFo4ZlNLQjRJdm81VmRaNEdt?=
+ =?utf-8?B?THpiSzZXY3lmcG5XVUVWbWlwR2lFeTR1UGUya2FDQ1JvUlU4dW16THlmekVo?=
+ =?utf-8?B?d1gwcmlrRFkzbkZFdmZnd01iaWEvcmUybUlLYS9qdzR6VGkxcXRFcFVFV01R?=
+ =?utf-8?B?UUtzY0ZhSjJKR1ppQnpaTUlqUkswcFJNbExNOGt6QWs1TVFpbDF0eVZ1cUY4?=
+ =?utf-8?B?d0pmWmszY1pwbEltcGgyeG9uRllQK3BWTEJnTmF4WWVBVDM0U2gzaVZpUkNP?=
+ =?utf-8?B?RDlacTNNeWhZVi9CdEp3RHlNeHFmVk9wQmE4NEc0dS8wT05DZlpXU1ljYlJ4?=
+ =?utf-8?B?S1FlazdYRkNJTjRFVmtYNGorbnYwWW01Y1JmSnJFYWQ0bWxKV3BqMVE4WXBl?=
+ =?utf-8?B?NnAxbWpUWVRodDBhUTVQRjdzSlB4bVp4aU1kVFNLRlk0azQrTjM1cE1CME5Y?=
+ =?utf-8?B?MUxHL0prREtuVjRETlU0L0V2SERJM1NWZHhnblpXQW5UNGdRUndWdzdyTjNl?=
+ =?utf-8?B?VFBobGlUcDgwdWFpTXpTVis5L2x2Z0dIdHZaS3JLZFBaZ28xRm5lTVB0dEtQ?=
+ =?utf-8?B?L20wMHpCcUJCT0lieEl6dDIyenRZQWJWM2wydjREMU5OcVQ1bm9NaTg0a0xI?=
+ =?utf-8?B?Y2I1NXRhZHE2SlRwSWJBTWR3ZmVBL3d6elRkR1ZEamJpT0h6ZzJIZU9ZMGda?=
+ =?utf-8?B?Y2k0OHJKdmFmQ2ZZMG1aZjlYNGg0K3E5a0xPR2JmRE9Rc0FlTHU0WFp4aU9F?=
+ =?utf-8?B?ejlWWnRXYmNuWERuOUxzNDRBcWpUS3JPMEJyeXJoYWw0RFc3NnhPOFBjRWVt?=
+ =?utf-8?B?M0htV3dDM2paZEZxZHZsWjRZZjNaRnBlWUZRb2psOHB5ciswKzdzL2xYQlBz?=
+ =?utf-8?B?NnBnUTNSc21mdVJRVzBkZyt4Ri9pdm5Sc3c3Q09pZmlYZWVMU3FEQnF0WkxP?=
+ =?utf-8?B?S2lSQjNxRGxYaTBWUFZDM3JIUXdkS2lVcDlhTzBUampHVGFlM25rMmJ5K1ZN?=
+ =?utf-8?B?Q0VGNzAyRXp4czRxUVI1ekgwR0hKem10YjY3ZFdzdUZwaW9RSWMrQTM4Q0tD?=
+ =?utf-8?B?bWdtVUhuUVByMVJMUG9vWTMySmo5YlBNdEI3U2U5UDNYYVlIQjBHOEp6SFJ0?=
+ =?utf-8?B?aU5vMjkrY1lIM2JTVlZIWDEvQ3ZRN1dDdkhrSzJBV05QUUdwODRZdy9hRkxL?=
+ =?utf-8?B?Y3Z1c1ZENHkxQ0E5bnVpcEhEeVFVMHR6Z3JLUlY0OWZ0Z1prM05YVnZWQUk0?=
+ =?utf-8?Q?sceG3iK5FINUDChLj6cOXP4=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	=?utf-8?B?azVXU2pNMmpYcVo0Wkk1cyt4Sy9FdU9kcjFJOU91a1BnRWkvNW9uS0xKS0Yy?=
+ =?utf-8?B?QUJHMG84NnFPRSt4bnUrWW84L3hrU3pEUWpUVHdNT0xrdWJNTTQ3ZjRueW00?=
+ =?utf-8?B?T0lJSVRWOXdlWkMwdHdUOEpLbmVCS0JtMVJacUZiQjZDOG1nR2NYUUxvTHc4?=
+ =?utf-8?B?bEtnNXhsTjljRG44cjRMS01CYlJ6aURjdkhCbWF0Tmw5YTFSc1REK1NBZUhk?=
+ =?utf-8?B?dWQyRWwxK1dkVi82ODRCMW8yWXR2RzRKazZoc01Cd1FtOHpYblhJNG5pVEM1?=
+ =?utf-8?B?L05vcXF6UUpUeVA4YkhKdXJaVWo2b1dTK2I3WEpIYjVGOWhzbHoxazM1NzFq?=
+ =?utf-8?B?SW1pdGsrNC9IUDBuRWx3eXYzaUtLcUp3TEdWWXd6YUhWcWM2aHlpN2VFMGV3?=
+ =?utf-8?B?Rk5KT2tzVitOemt1TXlQMlcrOHZ4UGtacVhvdUV0WVhmK2Npd0M3YmkvYWNz?=
+ =?utf-8?B?UTRwcStrc0hTeWQwWEVGVERaU1Rsc095dzFZOTY2NTZYNkpNUEJzYlVsZjJT?=
+ =?utf-8?B?R3gvWnE5bGNJRW85UzhncCtMMW02eFZsYUpzS1NDcUNsS2xyblpramlqN0Iw?=
+ =?utf-8?B?eVJRQ2oxSGJtUGx1N25PMEdEd05TcjhSOFVFS3M4ZjZFenYydlpFeEZJb3V6?=
+ =?utf-8?B?cndkREFCOHord2lFV3Y3TTZpYWdJYjNRTm5BTGtBTUF5R0daVkx5dVdZT0pu?=
+ =?utf-8?B?NnZQSThER0FKbERMTmFGQnE3L2FGM25MNjJtYkI0emhLL3pUVG44ZU9VdEpT?=
+ =?utf-8?B?cGJDRnR4T01oZWJBUFNYcXBWSlpyOTNYN3NzY1lPZjEya3hwWXNtMElSc0tw?=
+ =?utf-8?B?a0JrNkI1ZWpSclFJQitMc0hrZXRpNjlaZDdSRFBGSHZ1QXJwVkVHdnBCc25N?=
+ =?utf-8?B?UmI4ZUM1WnNwMlRRYVkwUnN5RFBoQlA3M000am92cUFTMEoyb2h0MFpzZE9r?=
+ =?utf-8?B?TEVsTVRrSUlGUE5kWGY1cmhSMjFoNkx3N2dHYXBpaXpBQWhrQmlLWGs4RnpC?=
+ =?utf-8?B?VmZQcURDQjJSTjUzd3Q1WGVPenNqODZJSDBFTEl1eFFWU3VMcG1lR0dTeXd0?=
+ =?utf-8?B?cW1Hc2xlNDRRWStRMHludmVjbXJyelFKVzExNG4zbkR0cHVRRXNqQ2k1eDl5?=
+ =?utf-8?B?dGhpVUdiUndLQVhrYUE2T0FHLy9LK3l6VDNYZnZrOXZibDZkWXEzL01TclNB?=
+ =?utf-8?B?dzRuQ1VIdmlJWEluV3NLbjFoOFF6Rk95ckFmVlhXYmtIRnNGZHRDN2JCQ3ZJ?=
+ =?utf-8?Q?baKwMkn/zNaHiko?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c39df269-477b-4f09-f0aa-08db587b152d
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 15:09:46.5501
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qyy0mBp6SsC+cSWxFxjgNXOvJ6oa7cv7N8rvm1s25Tl0i+47WciemIdfZuEnYOPPwYBXTQWXQmL0UfCsXJm3SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4978
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-19_10,2023-05-17_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2304280000
+ definitions=main-2305190128
+X-Proofpoint-GUID: 7ybqN5UP9X0n55KTdkXUfii3z_fAiTN1
+X-Proofpoint-ORIG-GUID: 7ybqN5UP9X0n55KTdkXUfii3z_fAiTN1
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On 19/05/2023 10:44, Yafang Shao wrote:
+> On Thu, May 18, 2023 at 12:18 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>
+>> As a means to continue the discussion in [1], which is
+>> concerned with finding the best long-term solution to
+>> having a BPF Type Format (BTF) representation of
+>> functions that is usable for tracing of edge cases, this
+>> proof-of-concept series is intended to explore one approach
+>> to adding information to help make tracing more accurate.
+>>
+>> A key problem today is that there is no matching from function
+>> description to the actual instances of a function.
+>>
+>> When that function only has one description, that is
+>> not an issue, but if we have multiple inconsistent
+>> static functions in different CUs such as
+>>
+>> From kernel/irq/irqdesc.c
+>>
+>>     static ssize_t wakeup_show(struct kobject *kobj,
+>>                                struct kobj_attribute *attr, char *buf)
+>>
+>> ...and from drivers/base/power/sysfs.c
+>>
+>>     static ssize_t wakeup_show(struct device *dev, struct device_attribute *attr,
+>>                                char *buf);
+>>
+>> ...this becomes a problem.  If I am attaching,
+>> which do I want?  And even if I know which one
+>> I want, which instance in kallsyms is which?
+>>
+> 
+> As you described in the above example,  it is natural to attach a
+> *function* defined in a specific *file_path*.  So why not encoding the
+> file path instead ? What's the problem in it?
+> 
+> If we expose the addr and let the user select which address to attach,
+> it will be a trouble to deploy a bpf program across multiple kernels.
+> While the file path will have a lower chance to be conflict between
+> different kernel versions. So I think it would be better if we use the
+> file path instead and let the kernel find the address automatically.
+> In the old days, when we wanted to deploy a kprobe kernel module or a
+> systemtap script across multiple kernels, we had to use if-else in the
+> code, which was really troublesome as it is not scalable. I don't
+> think we want to do it the same way in the bpf program.
+> 
+
+I think it's important to distinguish between what we do
+in libbpf/kernel to ensure safe attach and what sorts
+of tracing capabilities a tracer supports. For example,
+a tracer (or indeed libbpf) can take the set of different
+instances of cpumask_weight() and because they all have the
+same BTF description, can attach to all instances. What we
+lose though by not having address-level accuracy is the
+ability to do more precise tracing.
+
+I also don't think matching addresses -> BTF ids stops us
+having file information in the mix; a "struct btf_func"
+could potentially contain a name offset to a string
+specifying the file too. My concern though is that
+relying on _just_ the file/line will not be enough
+in some cases. There are some weird edge cases in the
+kernel. I'll give an example where file/line isn't
+enough to figure out the mapping.
+
+Consider 'struct elf_note_info'; there are two copies
+of this in the vmlinux BTF:
+
+[16819] STRUCT 'elf_note_info' size=248 vlen=8
+        'thread' type_id=16817 bits_offset=0
+        'psinfo' type_id=16815 bits_offset=64
+        'signote' type_id=16815 bits_offset=256
+        'auxv' type_id=16815 bits_offset=448
+        'files' type_id=16815 bits_offset=640
+        'csigdata' type_id=6083 bits_offset=832
+        'size' type_id=74 bits_offset=1856
+        'thread_notes' type_id=21 bits_offset=1920
 
 
-> On May 18, 2023, at 10:45 PM, Yonghong Song <yhs@meta.com> wrote:
->=20
->=20
->=20
-> On 5/18/23 4:04 PM, Aditi Ghag wrote:
->>> On May 18, 2023, at 11:57 AM, Yonghong Song <yhs@meta.com> wrote:
->>>=20
->>>=20
->>>=20
->>> On 5/17/23 10:54 AM, Aditi Ghag wrote:
->>>> This is a preparatory commit to replace `lock_sock_fast` with
->>>> `lock_sock`, and faciliate BPF programs executed from the iterator =
-to be
->>>=20
->>> facilitate
->> Yikes! I'll fix the typos.
->>>=20
->>>> able to destroy TCP listening sockets using the bpf_sock_destroy =
-kfunc
->>>> (implemened in follow-up commits).  Previously, BPF TCP iterator =
-was
->>>=20
->>> implemented
->>>=20
->>>> acquiring the sock lock with BH disabled. This led to scenarios =
-where
->>>> the sockets hash table bucket lock can be acquired with BH enabled =
-in
->>>> some context versus disabled in other, and  caused a
->>>> <softirq-safe> -> <softirq-unsafe> dependency with the sock lock.
->>>=20
->>> For 'and caused a <softirq-safe> -> <softirq-unsafe> dependency with
->>> the sock lock', maybe can be rephrased like below:
->>>=20
->>> In such situation, kernel issued an warning since it thinks that
->>> in the BH enabled path the same bucket lock *might* be acquired =
-again
->>> in the softirq context (BH disabled), which will lead to a potential
->>> dead lock.
->> Hi Yonghong, I thought about this a bit more before posting the patch =
-series. My reading of the splat was that the deadlock scenario that was =
-specifically highlighted was with respect to the pair of bucket and sock =
-locks.
->> As for the bucket lock, there might a deadlock scenario with a set of =
-events such as:
->>  1) Bucket lock is acquired with BH enabled in a process context  =
-(e.g., __inet_hash below called from process context)
->>  2) the process context was interrupted before the lock was released =
-by...
->>  3) Another context with BH disabled (e.g., sock_destroy called for =
-listening socket from iterator) tries to acquire the same lock again
->> contd...
->>>=20
->>> Note that in this particular triggering, the local_bh_disable()
->>> happens in process context, so the warning is a false alarm.
->> Right, the sock_destroy program is run from the iterator as opposed =
-to BPF programs being executed on kernel events. However, my =
-understanding is that because local_bh_disable is called, the lock dep =
-validator treats it as an irq-safe context.
->> Based on my reading of the documentation [1], there can be a deadlock =
-issue with the bucket lock by itself (ref: Single-lock state rules), or =
-deadlock issue with the pair of bucket and sock locks that the splat =
-highlights (ref: Multi-lock dependency rules).
->> Let me know if this makes sense, or I'm missing something.
->> [1] =
-https://www.kernel.org/doc/Documentation/locking/lockdep-design.rst
->> -------- Posting a snippet of the splat again just for reference  =
---------
->> [    1.544410] which would create a new lock dependency:
->> [    1.544797]  (slock-AF_INET6){+.-.}-{2:2} -> =
-(&h->lhash2[i].lock){+.+.}-{2:2}
->> [    1.545361]
->> [    1.545361] but this new dependency connects a SOFTIRQ-irq-safe =
-lock:
->> [    1.545961]  (slock-AF_INET6){+.-.}-{2:2}
->> [    1.545963]
->> [    1.545963] ... which became SOFTIRQ-irq-safe at:
->> [    1.546745]   lock_acquire+0xcd/0x330
->> [    1.547033]   _raw_spin_lock+0x33/0x40
->> [    1.547325]   sk_clone_lock+0x146/0x520
->> [    1.547623]   inet_csk_clone_lock+0x1b/0x110
->> [    1.547960]   tcp_create_openreq_child+0x22/0x3f0
->> [    1.548327]   tcp_v6_syn_recv_sock+0x96/0x940
->> [    1.548672]   tcp_check_req+0x13f/0x640
->> [    1.548977]   tcp_v6_rcv+0xa62/0xe80
->> [    1.549258]   ip6_protocol_deliver_rcu+0x78/0x590
->> [    1.549621]   ip6_input_finish+0x72/0x140
->> [    1.549931]   __netif_receive_skb_one_core+0x63/0xa0
->> [    1.550313]   process_backlog+0x79/0x260
->> [    1.550619]   __napi_poll.constprop.0+0x27/0x170
->> [    1.550976]   net_rx_action+0x14a/0x2a0
->> [    1.551272]   __do_softirq+0x165/0x510
->> [    1.551563]   do_softirq+0xcd/0x100
->> [    1.551836]   __local_bh_enable_ip+0xcc/0xf0
->> [    1.552168]   ip6_finish_output2+0x27c/0xb10
->> [    1.552500]   ip6_finish_output+0x274/0x510
->> [    1.552823]   ip6_xmit+0x319/0x9b0
->> [    1.553095]   inet6_csk_xmit+0x12b/0x2b0
->> [    1.553398]   __tcp_transmit_skb+0x543/0xc30
->> [    1.553731]   tcp_rcv_state_process+0x362/0x1180
->> [    1.554088]   tcp_v6_do_rcv+0x10f/0x540
->> [    1.554387]   __release_sock+0x6a/0xe0
->> [    1.554679]   release_sock+0x2f/0xb0
->> [    1.554957]   __inet_stream_connect+0x1ac/0x3a0
->> [    1.555308]   inet_stream_connect+0x3b/0x60
->> [    1.555632]   __sys_connect+0xa3/0xd0
->> [    1.555915]   __x64_sys_connect+0x18/0x20
->> [    1.556222]   do_syscall_64+0x3c/0x90
->> [    1.556510]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->> [    1.556909]
->> [    1.556909] to a SOFTIRQ-irq-unsafe lock:
->> [    1.557326]  (&h->lhash2[i].lock){+.+.}-{2:2}
->> [    1.557329]
->> [    1.557329] ... which became SOFTIRQ-irq-unsafe at:
->> [    1.558148] ...
->> [    1.558149]   lock_acquire+0xcd/0x330
->> [    1.558579]   _raw_spin_lock+0x33/0x40
->> [    1.558874]   __inet_hash+0x4b/0x210
->> [    1.559154]   inet_csk_listen_start+0xe6/0x100
->> [    1.559503]   inet_listen+0x95/0x1d0
->> [    1.559782]   __sys_listen+0x69/0xb0
->> [    1.560063]   __x64_sys_listen+0x14/0x20
->> [    1.560365]   do_syscall_64+0x3c/0x90
->> [    1.560652]   entry_SYSCALL_64_after_hwframe+0x72/0xdc
->> [    1.561052] other info that might help us debug this:
->> [    1.561052]
->> [    1.561658]  Possible interrupt unsafe locking scenario:
->> [    1.561658]
->> [    1.562171]        CPU0                    CPU1
->> [    1.562521]        ----                    ----
->> [    1.562870]   lock(&h->lhash2[i].lock);
->> [    1.563167]                                local_irq_disable();
->> [    1.563618]                                lock(slock-AF_INET6);
->> [    1.564076]                                =
-lock(&h->lhash2[i].lock);
->> [    1.564558]   <Interrupt>
->> [    1.564763]     lock(slock-AF_INET6);
->> [    1.565053]
->> [    1.565053]  *** DEADLOCK ***
->>>=20
->>>> Here is a snippet of annotated stack trace that motivated this =
-change:
->>>> ```
->>>> Possible interrupt unsafe locking scenario:
->>>>       CPU0                    CPU1
->>>>       ----                    ----
->>>>  lock(&h->lhash2[i].lock);
->>>>                               local_irq_disable();
->>>>                               lock(slock-AF_INET6);
->>>>                               lock(&h->lhash2[i].lock);
->>>=20
->>>                                 local_bh_disable();
->>>                                 lock(&h->lhash2[i].lock);
->>>=20
->>>>  <Interrupt>
->>>>    lock(slock-AF_INET6);
->>>> *** DEADLOCK ***
->>> Replace the above with below:
->>>=20
->>> kernel imagined possible scenario:
->>>    local_bh_disable();  /* Possible softirq */
->>>    lock(&h->lhash2[i].lock);
->>> *** Potential Deadlock ***
->=20
-> I applied the whole patch set (v8) locally except Patch 1, running
-> selftest and hit a different warning:
->=20
->  ...
->  [  168.780736] watchdog: BUG: soft lockup - CPU#0 stuck for 86s! =
-[test_progs:2331]
->  [  168.781385] Modules linked in: bpf_testmod(OE)
->  [  168.781751] CPU: 0 PID: 2331 Comm: test_progs Tainted: G OEL     =
-6.4.0-rc1-00336-g2fa1ad98e6e8-dirty #258
->  [  168.782570] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
-BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->  [  168.783457] RIP: 0010:queued_spin_lock_slowpath+0xd8/0x500
->  [  168.783904] Code: 00 ff ff 44 23 33 45 09 fe 48 8d 7c 24 04 e8 0f =
-54 ca fe 44 89 74 24 04 41 81 fe 00 01 00 00 73 28 45 85 f6 75 04 eb 0f =
-f3 90 <48> 89 df e8 d0 51 ca fe 80 3b 00 6
->  [  168.785503] RSP: 0018:ffff888114557c00 EFLAGS: 00000202
->  [  168.785964] RAX: 0000000000000000 RBX: ffff888113fd0a98 RCX: =
-ffffffff827c84a0
->  [  168.786576] RDX: dffffc0000000000 RSI: dffffc0000000000 RDI: =
-ffff888113fd0a98
->  [  168.787192] RBP: 0000000000000000 R08: dffffc0000000000 R09: =
-ffffed10227fa154
->  [  168.787837] R10: 0000000000000000 R11: dffffc0000000001 R12: =
-ffff888113fd0a98
->  [  168.788505] R13: 0000000000000002 R14: 0000000000000001 R15: =
-0000000000000000
->  [  168.789119] FS:  00007fc34f075500(0000) GS:ffff8881f7400000(0000) =
-knlGS:0000000000000000
->  [  168.789804] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  [  168.790306] CR2: 0000559382dd9057 CR3: 0000000102ab8004 CR4: =
-0000000000370ef0
->  [  168.790976] Call Trace:
->  [  168.791218]  <TASK>
->  [  168.791434]  _raw_spin_lock+0x84/0x90
->  [  168.791785]  tcp_abort+0x13c/0x1f0
->  [  168.792125]  bpf_prog_88539c5453a9dd47_iter_tcp6_client+0x82/0x89
->  [  168.792701]  bpf_iter_run_prog+0x1aa/0x2c0
->  [  168.793098]  ? preempt_count_sub+0x1c/0xd0
->  [  168.793488]  ? from_kuid_munged+0x1c8/0x210
->  [  168.793886]  bpf_iter_tcp_seq_show+0x14e/0x1b0
->  [  168.794326]  bpf_seq_read+0x36c/0x6a0
->  [  168.794686]  vfs_read+0x11b/0x440
->  [  168.795024]  ksys_read+0x81/0xe0
->  [  168.795341]  do_syscall_64+0x41/0x90
->  [  168.795689]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->  [  168.796172] RIP: 0033:0x7fc34f25479c
->  [  168.796514] Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 =
-e8 c9 fc ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 =
-0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 8
->  [  168.798197] RSP: 002b:00007fffc299b5a0 EFLAGS: 00000246 ORIG_RAX: =
-0000000000000000
->  [  168.798891] RAX: ffffffffffffffda RBX: 0000559382dc77f0 RCX: =
-00007fc34f25479c
->  [  168.799552] RDX: 0000000000000032 RSI: 00007fffc299b640 RDI: =
-0000000000000019
->  [  168.800213] RBP: 00007fffc299b690 R08: 0000000000000000 R09: =
-00007fffc299b4a7
->  [  168.800868] R10: 0000000000000000 R11: 0000000000000246 R12: =
-0000559382b2bf70
->  [  168.801530] R13: 0000000000000000 R14: 0000000000000000 R15: =
-0000000000000000
->  [  168.802196]  </TASK>
-> The lockup seems true since no further progress of selftest since the =
-above error/warning. So we hit a real deadlock here.
->=20
-> I did some analysis, the following is what could be happened:
->   bpf_iter_tcp_seq_show
->     lock_sock_fast
->       __lock_sock_fast
->         spin_lock_bh(&sk->sk_lock.slock);
->   ...
->   tcp_abort
->     local_bh_disable();
->     spin_lock(&((sk)->sk_lock.slock)); // from bh_lock_sock(sk)
->=20
-> So we have deadlock here for the sock.
-> With Patch 1, we use 'lock_sock', sock lock is not held, so there is =
-no dead lock.
-> static inline void lock_sock(struct sock *sk)
-> {
->        lock_sock_nested(sk, 0);
-> }
-> void lock_sock_nested(struct sock *sk, int subclass)
-> {
->        /* The sk_lock has mutex_lock() semantics here. */
->        mutex_acquire(&sk->sk_lock.dep_map, subclass, 0, _RET_IP_);
->=20
->        might_sleep();
->        spin_lock_bh(&sk->sk_lock.slock);
->        if (sock_owned_by_user_nocheck(sk))
->                __lock_sock(sk);
->        sk->sk_lock.owned =3D 1;
->        spin_unlock_bh(&sk->sk_lock.slock);
-> }
-> EXPORT_SYMBOL(lock_sock_nested);
-> void __lock_sock(struct sock *sk)
->        __releases(&sk->sk_lock.slock)
->        __acquires(&sk->sk_lock.slock)
-> {
->        DEFINE_WAIT(wait);
->        for (;;) {
->                prepare_to_wait_exclusive(&sk->sk_lock.wq, &wait,
->                                        TASK_UNINTERRUPTIBLE);
->                spin_unlock_bh(&sk->sk_lock.slock);
->                schedule();
->                spin_lock_bh(&sk->sk_lock.slock);
->                if (!sock_owned_by_user(sk))
->                        break;
->        }
->        finish_wait(&sk->sk_lock.wq, &wait);
-> }
->=20
-> The current stack trace and analysis likely from some of
-> previous versions of patch.
->=20
+[16851] STRUCT 'elf_note_info' size=248 vlen=8
+        'thread' type_id=16850 bits_offset=0
+        'psinfo' type_id=16815 bits_offset=64
+        'signote' type_id=16815 bits_offset=256
+        'auxv' type_id=16815 bits_offset=448
+        'files' type_id=16815 bits_offset=640
+        'csigdata' type_id=6507 bits_offset=832
+        'size' type_id=74 bits_offset=1856
+        'thread_notes' type_id=21 bits_offset=1920
 
-The current stack trace is for the iter_tcp6_server test specifically. =
-As the commit message suggests, the potential deadlock warning was =
-triggered for the case when TCP listening sockets are getting destroyed, =
-which is what the test involves. You should see the current stack trace =
-when running only that particular test without patch 1 (which is how I =
-encountered the issue when I introduced that test in one of the middle =
-versions of the patch series).=20
-Thanks for the additional pair of eyes on the stack trace analysis!=20
 
-So looks like this patch ended up resolving the real deadlock issue as =
-well.=20
+...and here's the structure itself:
 
-> I suggest to rerun based on the latest patch set, collect
-> the warning message and resubmit Patch 1.
->=20
->>>> process context:
->>>> lock_acquire+0xcd/0x330
->>>> _raw_spin_lock+0x33/0x40
->>>> ------> Acquire (bucket) lhash2.lock with BH enabled
->>>> __inet_hash+0x4b/0x210
->>>> inet_csk_listen_start+0xe6/0x100
->>>> inet_listen+0x95/0x1d0
->>>> __sys_listen+0x69/0xb0
->>>> __x64_sys_listen+0x14/0x20
->>>> do_syscall_64+0x3c/0x90
->>>> entry_SYSCALL_64_after_hwframe+0x72/0xdc
->>>> bpf_sock_destroy run from iterator in interrupt context:
->>>> lock_acquire+0xcd/0x330
->>>> _raw_spin_lock+0x33/0x40
->>>> ------> Acquire (bucket) lhash2.lock with BH disabled
->>>> inet_unhash+0x9a/0x110
->>>> tcp_set_state+0x6a/0x210
->>>> tcp_abort+0x10d/0x200
->>>> bpf_prog_6793c5ca50c43c0d_iter_tcp6_server+0xa4/0xa9
->>>> bpf_iter_run_prog+0x1ff/0x340
->>>> ------> lock_sock_fast that acquires sock lock with BH disabled
->>>> bpf_iter_tcp_seq_show+0xca/0x190
->>>> bpf_seq_read+0x177/0x450
->>>> ```
->>>> Acked-by: Yonghong Song <yhs@meta.com>
->>>> Acked-by: Stanislav Fomichev <sdf@google.com>
->>>> Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
->>>> ---
->>>>  net/ipv4/tcp_ipv4.c | 5 ++---
->>>>  1 file changed, 2 insertions(+), 3 deletions(-)
->>>> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
->>>> index ea370afa70ed..f2d370a9450f 100644
->>>> --- a/net/ipv4/tcp_ipv4.c
->>>> +++ b/net/ipv4/tcp_ipv4.c
->>>> @@ -2962,7 +2962,6 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->>>>  	struct bpf_iter_meta meta;
->>>>  	struct bpf_prog *prog;
->>>>  	struct sock *sk =3D v;
->>>> -	bool slow;
->>>>  	uid_t uid;
->>>>  	int ret;
->>>>  @@ -2970,7 +2969,7 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->>>>  		return 0;
->>>>    	if (sk_fullsock(sk))
->>>> -		slow =3D lock_sock_fast(sk);
->>>> +		lock_sock(sk);
->>>>    	if (unlikely(sk_unhashed(sk))) {
->>>>  		ret =3D SEQ_SKIP;
->>>> @@ -2994,7 +2993,7 @@ static int bpf_iter_tcp_seq_show(struct =
-seq_file *seq, void *v)
->>>>    unlock:
->>>>  	if (sk_fullsock(sk))
->>>> -		unlock_sock_fast(sk, slow);
->>>> +		release_sock(sk);
->>>>  	return ret;
->>>>    }
+struct elf_note_info {
+ 	struct elf_thread_core_info *thread;
+ 	struct memelfnote psinfo;
+ 	struct memelfnote signote;
+ 	struct memelfnote auxv;
+ 	struct memelfnote files;
+ 	user_siginfo_t csigdata;
+ 	size_t size;
+ 	int thread_notes;
+};
 
+The reason there are two copies is not a dedup failure;
+in the first case user_siginfo_t is defined as
+
+[6083] TYPEDEF 'siginfo_t' type_id=6082
+
+while in the second case it gets defined as
+
+[6507] TYPEDEF 'compat_siginfo_t' type_id=6506
+
+The reason is include/linux/compat.h was included
+in one place when fs/binfmt_elf.c was built and not
+in another when fs/binfmt_elf.c was built the
+second time.
+
+Because the object was built into the kernel twice,
+as well as having two different instances of BTF descriptions
+for the same structure, we also have multiple different BTF
+function descriptions for functions that use a
+"struct elf_note_info *", and we need to figure out which
+maps to which kallsyms instance of the functions like
+this:
+
+ffffffff81489380 t fill_thread_core_info
+ffffffff8148ca90 t fill_thread_core_info
+
+Now, which BTF description goes with which instance?
+The file/line number is identical for each BTF description,
+but the BTF is (correctly) different because the object has
+been built into the kernel twice and is slightly different
+in each case. The difference isn't significant in practice here,
+but that doesn't mean it couldn't be in other cases. Imagine a
+case where one instance of the structure contained a field and
+the other didn't; we'd be interpreting the tracing data
+incorrectly.
+
+I realize it's a weird edge case, but that's just one
+I found from digging a bit. My worry is if we go with
+the file/line as a way of identifying the function,
+these sorts of edge cases will pile up and we'll need
+to go more fine-grained and use addresses in the end
+anyway. Again, that doesn't stop us applying higher-level
+semantics at a tracer level, but we need to build those on
+solid foundations.
+
+Alan
+
+>> This series is a proof-of-concept that supports encoding
+>> function addresses and associating them with BTF FUNC
+>> descriptions using BTF declaration tags.
+>>
+>> More work would need to be done on the kernel side
+>> to _use_ this representation, but hopefully having a
+>> rough approach outlined will help make that more feasible.
+>>
+>> [1] https://lore.kernel.org/bpf/ZF61j8WJls25BYTl@krava/
+>>
+>> Alan Maguire (6):
+>>   btf_encoder: record function address and if it is local
+>>   dwarf_loader: store address in function low_pc if available
+>>   dwarf_loader: transfer low_pc info from subtroutine to its abstract
+>>     origin
+>>   btf_encoder: add "addr=0x<addr>" function declaration tag if
+>>     --btf_gen_func_addr specified
+>>   btf_encoder: store ELF function representations sorted by name _and_
+>>     address
+>>   pahole: document --btf_gen_func_addr
+>>
+>>  btf_encoder.c      | 64 +++++++++++++++++++++++++++++++++++-----------
+>>  btf_encoder.h      |  4 +--
+>>  dwarf_loader.c     | 16 +++++++++---
+>>  dwarves.h          |  3 +++
+>>  man-pages/pahole.1 |  8 ++++++
+>>  pahole.c           | 12 +++++++--
+>>  6 files changed, 85 insertions(+), 22 deletions(-)
+>>
+>> --
+>> 2.31.1
+>>
+> 
+> 
 
