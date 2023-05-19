@@ -1,140 +1,106 @@
-Return-Path: <bpf+bounces-950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2AFC709177
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 10:13:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E3E70919D
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 10:26:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7BB71C21224
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 08:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DA031C21253
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 08:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8913D99;
-	Fri, 19 May 2023 08:13:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C465671;
+	Fri, 19 May 2023 08:25:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7FA2105
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 08:13:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B9ADC433EF;
-	Fri, 19 May 2023 08:13:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684483996;
-	bh=GFGdu0qCsxNJA7YGcWMDGA08p14uwMhdk+l7huHcUYs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fK1K/YABQqibBY2HrPkYnGYX4KvFqaf+G58ZvoVRpTVwbfaJ/M8nXHOTNp+d/Aa1V
-	 kGAV6Y2dW4WOI5wYJx8wzIn1ExpN2+Wa86UFAvID62vqob3D0EVet9urP2775XqT3T
-	 KB9yfJkXWHO/5K15Hij2eoyS2lnjB4k9zYySxUD+mcOcXFuNJ6ixwrAGgDAMDz9Jmn
-	 lXdosdgOAHqMqZkJdR6W2vG8uBe4iWcGkjbAdwYLk8I7NzlzhtBNCVOhKE9hYZOWKm
-	 uQ4cm7JEuNhki+2A/xnn/ygJWlR9HB8i9GS75AjjgjAX9r0bQPOYBPy+VwYTuVGqhe
-	 BPNP6HtLcvTWg==
-Date: Fri, 19 May 2023 10:13:09 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Aleksa Sarai <cyphar@cyphar.com>,
-	Lennart Poettering <lennart@poettering.net>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
-Message-ID: <20230519-betiteln-fluor-6c0417842143@brauner>
-References: <CAEf4BzafCCeRm9M8pPzpwexadKy5OAEmrYcnVpKmqNJ2tnSVuw@mail.gmail.com>
- <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
- <20230517120528.GA17087@lst.de>
- <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
- <20230518-erdkugel-komprimieren-16548ca2a39c@brauner>
- <20230518162508.odupqkndqmpdfqnr@MacBook-Pro-8.local>
- <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
- <20230518182635.na7vgyysd7fk7eu4@MacBook-Pro-8.local>
- <CAHk-=whg-ygwrxm3GZ_aNXO=srH9sZ3NmFqu0KkyWw+wgEsi6g@mail.gmail.com>
- <20230519044433.2chdcze3qg2eho77@MacBook-Pro-8.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E866920F7
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 08:25:56 +0000 (UTC)
+Received: from out-31.mta0.migadu.com (out-31.mta0.migadu.com [91.218.175.31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A076BE52
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 01:25:54 -0700 (PDT)
+Message-ID: <93530368-5ef2-4f88-3ed2-ceb88b23935d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1684484752;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CSPuftV+do2EwYEGH8UH/yiiczhQgd8YeISgTkSNgsU=;
+	b=PidDfXdHhNf6A3tcMUyIJ+3LFFtOlchN7bVFPPH2ML+UOgl/brWLUxmC3HQmuIrjvwSepk
+	eDSRMVXb55K4tQ8/P99pSRYVqaCiEHIDCFFuwBTPfgW7xqjaFPiKO4/UqBoM8lGLWQnpB1
+	XtHeX2eOOqGQEtwewLEkmPY56cFBnBg=
+Date: Fri, 19 May 2023 01:25:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230519044433.2chdcze3qg2eho77@MacBook-Pro-8.local>
+Subject: Re: [PATCH v8 bpf-next 09/10] bpf: Add kfunc filter function to
+ 'struct btf_kfunc_id_set'
+Content-Language: en-US
+To: Aditi Ghag <aditi.ghag@isovalent.com>
+Cc: sdf@google.com, void@manifault.com,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf@vger.kernel.org
+References: <20230517175942.528375-1-aditi.ghag@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230517175942.528375-1-aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, May 18, 2023 at 09:44:33PM -0700, Alexei Starovoitov wrote:
-> On Thu, May 18, 2023 at 11:57:14AM -0700, Linus Torvalds wrote:
-> > That is nobody's fault but your own, and you should just admit it rather
-> > than trying to double down on being wrong.
-> 
-> You're correct. I was indeed doubling down on that.
-> Thanks for putting it straight like that.
-> 
-> > The 0/1/2 file descriptors are not at all special. They are a shell
-> > pipeline default, nothing more. They are not the argument your think they
-> > are, and you should stop trying to make them an argument.
-> 
-> I'm well aware that any file type is allowed to be in FDs 0,1,2 and
-> some user space is using it that way, like old inetd:
-> https://github.com/guillemj/inetutils/blob/master/src/inetd.c#L428
-> That puts the same socket into 0,1,2 before exec-ing new process.
-> 
-> My point that the kernel has to assist user space instead of
-> stubbornly sticking to POSIX and saying all FDs are equal.
-> 
-> Most user space developers know that care should be taken with FDs 0,1,2,
-> but it's still easy to make a mistake.
-> 
-> To explain the motivation a bit of background:
-> "folly" is a core C++ library for fb apps. Like libstdc++ and a lot more.
-> Until this commit in 2021:
-> https://github.com/facebook/folly/commit/cc9032a0e41a0cba9aa93240c483cfceb0ff44ea
-> the user could launch a new process with flag "folly::Subprocess::CLOSE".
-> It's useful for the cases when child doesn't want to inherit stdin/out/err.
-> There is also GLOG. google's logging library that can be configured to log to stderr.
-> Both libraries are well written with the high code quality.
-> In a big app multiple people use different pieces and may not be aware
-> how all pieces are put together. You can guess the rest...
-> Important service used a library that used another library that started a
-> process with folly::Subprocess::CLOSE. That process opened network connections
-> and used glog. It was "working" for some time, because sys_write() to a socket
-> is a valid command, but when TCP buffers got full synchronous innocuous logging
-> prevented parent from making progress.
-> 
-> That footgun was removed from folly in 2021, but we still see this issue from time to time.
-> My point that the kernel can help here.
-> Since folks don't like sysctl to control FD assignment how about something like this:
-> 
-> diff --git a/fs/file.c b/fs/file.c
-> index 7893ea161d77..896e79433f61 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -554,9 +554,15 @@ static int alloc_fd(unsigned start, unsigned end, unsigned flags)
->         return error;
->  }
-> 
-> +__weak noinline u32 get_start_fd(void)
-> +{
-> +       return 0;
-> +}
-> +/* mark it as BPF_MODIFY_RETURN to let bpf progs adjust return value */
+On 5/17/23 10:59 AM, Aditi Ghag wrote:
+>   static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+> -				  struct btf_id_set8 *add_set)
+> +				  const struct btf_kfunc_id_set *kset)
+>   {
+> +	struct btf_kfunc_hook_filter *hook_filter;
+> +	struct btf_id_set8 *add_set = kset->set;
+>   	bool vmlinux_set = !btf_is_module(btf);
+> +	bool add_filter = !!kset->filter;
+>   	struct btf_kfunc_set_tab *tab;
+>   	struct btf_id_set8 *set;
+>   	u32 set_cnt;
+> @@ -7737,6 +7747,20 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+>   		return 0;
+>   
+>   	tab = btf->kfunc_set_tab;
 > +
->  int __get_unused_fd_flags(unsigned flags, unsigned long nofile)
->  {
-> -       return alloc_fd(0, nofile, flags);
-> +       return alloc_fd(get_start_fd(), nofile, flags);
+> +	if (tab && add_filter) {
+> +		int i;
+> +
+> +		hook_filter = &tab->hook_filters[hook];
+> +		for (i = 0; i < hook_filter->nr_filters; i++) {
+> +			if (hook_filter->filters[i] == kset->filter)
+> +				add_filter = false;
 
-I'm sorry but I really don't think this is a good idea. We're not going
-to run BPF programs in core file code. That stuff is sensitive and
-complex enough as it is without having to take into account that a bpf
-program can modify behavior. It's also completely unclear whether that's
-safe to do as this would allow to change fd allocation across the whole
-kernel.
+Just noticed that this missed a "break;" that can save some unnecessary loops.
 
-This idea that fd 0, 1, and 2 or any other fd deserve special treatment
-by the kernel needs to die; and quickly at that.
+It seems it needs to respin one more time to clarify the patch 1 commit message. 
+Please also move patch 9 before patch 6 adding the 'bpf: Add bpf_sock_destroy 
+kfunc'. Patch 6 requires patch 9 to be safe. Then the patch 10 selftests can be 
+combined with patch 8 selftests as the last patch of the set.
+
+Others lgtm.
+
+> +		}
+> +
+> +		if (add_filter && hook_filter->nr_filters == BTF_KFUNC_FILTER_MAX_CNT)
+> +			return -E2BIG;
+> +	}
+> +
+>   	if (!tab) {
+>   		tab = kzalloc(sizeof(*tab), GFP_KERNEL | __GFP_NOWARN);
+>   		if (!tab)
+
 
