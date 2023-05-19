@@ -1,137 +1,173 @@
-Return-Path: <bpf+bounces-928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A39708CE2
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 02:27:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAAC4708D1B
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 02:54:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7826281ABB
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 00:27:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22DD52819D4
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 00:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BC9362;
-	Fri, 19 May 2023 00:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DDF385;
+	Fri, 19 May 2023 00:54:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFC67C
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 00:27:13 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD7210F4
-	for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:26:43 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f3a166f8e9so332525e87.0
-        for <bpf@vger.kernel.org>; Thu, 18 May 2023 17:26:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F35362
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 00:54:35 +0000 (UTC)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307A5199F;
+	Thu, 18 May 2023 17:54:08 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f24d4900bbso3090689e87.3;
+        Thu, 18 May 2023 17:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684456001; x=1687048001;
+        d=gmail.com; s=20221208; t=1684457627; x=1687049627;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eMiihLBJVrhHZP4pWLVWa9QPrNMaGF29hhd3EjtqMr8=;
-        b=m+aOUWyCOjsSoUa8VYD84YbCp+g8y9ZnMw8Z1k7eT3HKvnJVakBFTyT/TwvELF7bEa
-         ablXHqNAhNgOrSjh9pNkjQlyM/+LYaMRR3kyOBnTajFlDasDL4AvnbFccUTFiEfPTpps
-         DkaQ2+Am/LweHoFt/B0PzZyvG8rJa6MNtaRPtfeKtqCPZMxDSdIUGVbnmwSy+hux7Gpw
-         DOVfL9+Ga+AnUgyvXlbT5ulaOpIa5YNRWvQmLAQICWWWDZzbVU/jqrccTLD5voFZS1Ka
-         BeXPtzfu+tQhJZIa3fXLs3qALBmXZkOLDJMRvWb6YcnJos11sMeLmr8fpVkcCe49/VDX
-         MZzA==
+        bh=sivbYrV1bwadAn0fltPP6rK4i4zR+Og2lN0Gw2Oc6Vo=;
+        b=fV+U0lRFgOUrBk2S15+f6+JYfPBvpTkpMx8KtdzflaHNzL2S2y9Eli5t8RLxJu6Ide
+         6ySt/2IknEJMCbGc0fZ/gUFSrMgJNGlnFgcBNq0eOaYloOYj5bh0m+J5miz0romABUM1
+         fU72IZRjd7GBaD8J12mIiEYI5Lxsd6uZvErlWwjlga2C94GyF4E/T93K8v1DCFx312ii
+         7/NG22ru5of/LDh4OJiwer85D5JHYS7DIyYmS65A+NVAAzjw3UvQ/E7eA2m7lvqAkigX
+         t0CbXhKVxQc7y0CS9odK9PwBo5KOuGcBs62BjbhuED3oZl+W/HO54IOTiDxpWX+ZgDsL
+         qpdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684456001; x=1687048001;
+        d=1e100.net; s=20221208; t=1684457627; x=1687049627;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eMiihLBJVrhHZP4pWLVWa9QPrNMaGF29hhd3EjtqMr8=;
-        b=Z93g4owqMCEFp74IBSr5T9fXtTXJ3hqMNlZzoNcq8lVDrZk292NFGklKQNnD1YsLYI
-         i5/3jMx+DBWYSQl4j87SiEkTaGrWWvGyhWVILErXyRIBrTgXes6nkLSZNiScRu1/44xu
-         qbQfXPeg+U29uldgdbdd6bA0zLirMheM4UuZylpNZuuUwq0FiAU90NU1JWaBdorfmGPK
-         YyAY/DnqEuWX4V/y4CfAajJPv3ygtkXJTYrL2vOiwDisWFFbUwnH0GG3/rVzDRKNo8DL
-         y9RBk6x4MxnT7zy6DT9lKDkWEKQoEdzxyBWV2/BSuBEXqyMTQmDnhE52GsEl50ohRZNR
-         ISFg==
-X-Gm-Message-State: AC+VfDwFKFQ0IwyJ2gR0gvMuicoNA47GnW3aK3YfAFz2JG+xHueaNUzr
-	vs7OAqgDSrEBTKd4jnOCFgtEDkNyA+Ko6rSrnk0=
-X-Google-Smtp-Source: ACHHUZ5hRUydHTniW3MSMILptZtfQN7UE+lyXVBXE3hg9wD3Xi2uZE8RW0LdTiGlB1U7UIKkGG+Doa78Ypez0N35OkY=
-X-Received: by 2002:ac2:55a5:0:b0:4f0:1a45:2b10 with SMTP id
- y5-20020ac255a5000000b004f01a452b10mr219111lfg.10.1684456001231; Thu, 18 May
- 2023 17:26:41 -0700 (PDT)
+        bh=sivbYrV1bwadAn0fltPP6rK4i4zR+Og2lN0Gw2Oc6Vo=;
+        b=c05h/BMdhFuKr3OdcEE5yLyWane0Pi/v/5/kqaE6yCwlvksTW2pDIJBtZpZJhImVYv
+         CPKSgkmYA1aj0kyGGxA5ZIeaJhcdSFt0fNBKl7lXiQBEbfT4kIrwAHxVW1z7gHwlJNyc
+         rdk/uMji/BYmCgrola87fBEQO84PNNBtQiXA8/2fBVkh9V+4MUcMlzXY2uoUEAv/1M9h
+         YZzgr1Aoztfh1TjIDD57jSipZfWn+QQbqMzub/dDXMg4v54lcIbs0D/Fj/es6m2eLBGs
+         Rh1J7gME9QDX5vfAg7/VgSA6bIEGTxiWi4zn9qyDmKoY24/usIS7BrpkIJ9NAhn9hOpE
+         Pslw==
+X-Gm-Message-State: AC+VfDzomJM16O48WRYg1nJ/7WipioRS5vDJaZ9y9MfREU3kBPoJykaM
+	QHPxMATyjlr96y7oNL/cCE65NzuMM+5FcPMRYzI=
+X-Google-Smtp-Source: ACHHUZ69uBBZgn6f6vUX8sQygzgcHzJYsGHym+7MIAzeaKrUWk1qJvA5wNnrk3YM1RC+LLKe8LJ88BQl+X8zF0LsGsQ=
+X-Received: by 2002:ac2:5939:0:b0:4f3:8823:ebe9 with SMTP id
+ v25-20020ac25939000000b004f38823ebe9mr245681lfi.22.1684457627157; Thu, 18 May
+ 2023 17:53:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230517161648.17582-1-alan.maguire@oracle.com>
- <20230517161648.17582-6-alan.maguire@oracle.com> <ZGXkN2TeEJZHMSG8@krava>
- <35213852-1d29-e21f-e3f8-d3f164e97294@oracle.com> <ZGZQuqVD7gNjia7Z@krava> <ee0a24c9-1106-c847-2c91-0d828ec7fba3@meta.com>
-In-Reply-To: <ee0a24c9-1106-c847-2c91-0d828ec7fba3@meta.com>
+References: <20230518215444.1418789-2-andrii@kernel.org> <202305190724.nnh1ZV2F-lkp@intel.com>
+ <CAEf4BzYW_OXeF=5L1XU5025-VbWN3M-wOSszXqMD6c5E9bEO9w@mail.gmail.com>
+In-Reply-To: <CAEf4BzYW_OXeF=5L1XU5025-VbWN3M-wOSszXqMD6c5E9bEO9w@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 18 May 2023 17:26:29 -0700
-Message-ID: <CAADnVQ+xJVVbP8GC_iT3NgYhhyUxEWkT-kvNgRfDVyv4eyAgHA@mail.gmail.com>
-Subject: Re: [RFC dwarves 5/6] btf_encoder: store ELF function representations
- sorted by name _and_ address
-To: Yonghong Song <yhs@meta.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Yafang Shao <laoar.shao@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>
+Date: Thu, 18 May 2023 17:53:35 -0700
+Message-ID: <CAADnVQJL3ZAxXrR6nkk=pYbuVS8NhGX19UJpsvSrH4VbPAayhg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
+ and BPF_OBJ_GET commands
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: kernel test robot <lkp@intel.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, oe-kbuild-all@lists.linux.dev, 
+	Aleksa Sarai <cyphar@cyphar.com>, Christian Brauner <brauner@kernel.org>, 
+	Lennart Poettering <lennart@poettering.net>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 18, 2023 at 11:26=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote=
-:
-> > I wonder now when the address will be stored as number (not string) we
-> > could somehow generate relocation records and have the module loader
-> > do the relocation automatically
-> >
-> > not sure how that works for vmlinux when it's loaded/relocated on boot
+On Thu, May 18, 2023 at 5:19=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Right, actual module address will mostly not match the one in dwarf.
-> Some during module btf load, we should modify btf address as well
-> for later use? Yes, may need to reuse some routines used in initial
-> module relocation.
+> On Thu, May 18, 2023 at 4:59=E2=80=AFPM kernel test robot <lkp@intel.com>=
+ wrote:
+> >
+> > Hi Andrii,
+> >
+> > kernel test robot noticed the following build warnings:
+> >
+> > [auto build test WARNING on bpf-next/master]
+> >
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/=
+bpf-support-O_PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-060=
+110
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.gi=
+t master
+> > patch link:    https://lore.kernel.org/r/20230518215444.1418789-2-andri=
+i%40kernel.org
+> > patch subject: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_O=
+BJ_PIN and BPF_OBJ_GET commands
+> > config: m68k-allyesconfig
+> > compiler: m68k-linux-gcc (GCC) 12.1.0
+> > reproduce (this is a W=3D1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/intel-lab-lkp/linux/commit/74f08e59c3fccac=
+04b3c080831615209e11be4fb
+> >         git remote add linux-review https://github.com/intel-lab-lkp/li=
+nux
+> >         git fetch --no-tags linux-review Andrii-Nakryiko/bpf-support-O_=
+PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-060110
+> >         git checkout 74f08e59c3fccac04b3c080831615209e11be4fb
+> >         # save the config file
+> >         mkdir build_dir && cp config build_dir/.config
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make.c=
+ross W=3D1 O=3Dbuild_dir ARCH=3Dm68k olddefconfig
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make.c=
+ross W=3D1 O=3Dbuild_dir ARCH=3Dm68k SHELL=3D/bin/bash kernel/
+> >
+> > If you fix the issue, kindly add following tag where applicable
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202305190724.nnh1ZV2F-l=
+kp@intel.com/
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    kernel/bpf/syscall.c: In function 'bpf_obj_get':
+> > >> kernel/bpf/syscall.c:2720:13: warning: variable 'path_fd' set but no=
+t used [-Wunused-but-set-variable]
+> >     2720 |         int path_fd;
+> >          |             ^~~~~~~
+> >
+> >
+> > vim +/path_fd +2720 kernel/bpf/syscall.c
+> >
+> >   2717
+> >   2718  static int bpf_obj_get(const union bpf_attr *attr)
+> >   2719  {
+> > > 2720          int path_fd;
+> >   2721
+> >   2722          if (CHECK_ATTR(BPF_OBJ) || attr->bpf_fd !=3D 0 ||
+> >   2723              attr->file_flags & ~(BPF_OBJ_FLAG_MASK | BPF_F_PATH=
+_FD))
+> >   2724                  return -EINVAL;
+> >   2725
+> >   2726          /* path_fd has to be accompanied by BPF_F_PATH_FD flag =
+*/
+> >   2727          if (!(attr->file_flags & BPF_F_PATH_FD) && attr->path_f=
+d)
+> >   2728                  return -EINVAL;
+> >   2729
+> >   2730          path_fd =3D attr->file_flags & BPF_F_PATH_FD ? attr->pa=
+th_fd : AT_FDCWD;
+> >   2731          return bpf_obj_get_user(attr->path_fd, u64_to_user_ptr(=
+attr->pathname),
+>
+> argh.... s/attr->path_fd/path_fd/ here, but it's curious how tests
+> didn't catch this because we always provide absolute path in
+> attr->pathname, and from openat() man page:
+>
+>   If pathname is absolute, then dirfd is ignored.
+>
+> So whatever garbage FD is passed in (in this case 0), the kernel won't
+> complain. Interesting. I'll send v3 with a fix.
 
-
-Few thoughts:
-
-Initially I felt that single FUNC with multiple DECL_TAG(addr)
-is better, since BTF for all funcs is the same and it's likely
-one static inline function that the compiler decided not to inline
-(like cpumask_weight), so when libbpf wants to attach prog to it
-the kernel should automatically attach in all places.
-But then noticed that actually different functions with
-the same name and proto will be deduplicated into one.
-Their bodies at different locations will be different.
-Example: seq_show.
-In this case it's better to let libbpf pick the exact one to attach.
-Then realized that even the same function like cpumask_weight()
-might have different body at different locations due to optimizations.
-I don't think dwarf contains enough info to distinguish all the combination=
-s.
-
-Considering all that it's better to keep one BTF kind_func -> one addr.
-If it's extended the way Alan is proposing with kind_flag
-the dedup logic will not combine them due to different addresses.
-
-Also turned out that the kernel doesn't validate decl_tag string.
-The following code loads without error:
-__attribute__((btf_decl_tag("\x10\xf0")));
-
-I'm not sure whether we want to tighten decl_tag validation and how.
-If we keep it as-is we can use func+decl_tag approach
-to add 4 bytes of addr in the binary format (if 1st byte is not zero).
-But it feels like a hack, since the kernel needs to be changed
-anyway to adjust the addresses after module loading and kernel relocation.
-So func with kind_flag seems like the best approach.
-
-Regarding relocation of address in the kernel and modules...
-We just need to add base_addr to all addrs-es recorded in BTF.
-Both for kernel and for module BTFs.
-Shouldn't be too complicated.
+because other tests have an absolute path to bpf objs?
 
