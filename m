@@ -1,166 +1,156 @@
-Return-Path: <bpf+bounces-954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0001F7093ED
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 11:45:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1376070940E
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 11:50:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B08B3281BCE
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 09:45:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0A5C281BB6
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 09:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811326AA0;
-	Fri, 19 May 2023 09:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417AC6AA1;
+	Fri, 19 May 2023 09:49:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1E56108
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 09:45:22 +0000 (UTC)
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EE81BEF
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 02:44:53 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-757742c2e5fso275222785a.1
-        for <bpf@vger.kernel.org>; Fri, 19 May 2023 02:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684489492; x=1687081492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=emD7EgBYrHRBu3RrOJg8hVUQZh6epP+8yZN6KaWcKPs=;
-        b=RgOLcHL+unIghxd2Mg5LGuRyEGFz3A6SqC0PU9OH7ny331rlXsO7thRt28BmkzIm0U
-         05H8JSiikVt+vb9bwZHaJciVAgSlK4Qn3LE5fDXBqWh0cHm3DpsKfKG08hv3Aersndox
-         cUSAiVTv8hVr2cK4+X+XvuuONAxzK6Zq5nAUXN+H4AXvG6RlBeZSX8z5OU13L/mHWnjs
-         5yDFgZW84AetDAw4CW941GLFQhCta09ukB9qN0dhWdgZqU/t4/EVH83QL0WuzE9IvNTs
-         BPLuIqrAGNOjVdsKR7uJddvD0S/pJ9qwKnD6uqSDTNaGa7y0TCSwwval3LUVyU29xAM1
-         pKgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684489492; x=1687081492;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=emD7EgBYrHRBu3RrOJg8hVUQZh6epP+8yZN6KaWcKPs=;
-        b=i9i8rRFijyXeI4TPh0cDyEAyFozgMZwbyFz1YywtN+gb8ti9Ijc/+HwFmpXFamsO8k
-         yxTghLh/K0E+rnkjbgrGpRxljZEN/TIFRtP+gSoAruNvCpJ9SDE/SvqcD62Vq0iKBnoK
-         KAIZluIWJJ02iOcQNpQAZUB8hDsw05YSXiBmgGlfZ7O7TqfHjIsQkbdLML60A2h8Mp7s
-         Uom8KjYTizO+6478ksPTCrT9LLhxl811boUkcGUDoCtphQvwlAkRmhhrLnDVIk8N8LMC
-         Qhgru9OomJXVFE+xX0KwyCYv2cLOmhEOQxVfbbisOOL6OcVCA3NP1EqFQfWd/TXZm70B
-         McxQ==
-X-Gm-Message-State: AC+VfDx8J7VChSf7kifUFuhSyu5vQfgE1Maf+qRblTw82Ne0QTx9IraY
-	ZpSk+sbgBR+y35lUa7TAPu/MPwDqRuXsXNIKjfM=
-X-Google-Smtp-Source: ACHHUZ4ukc+IWvCYYBA7NXpkAUnojdPdRJqCo+wsb3WV4TCJrmchnpUKRsr85VqvPS8hOFMlSZpuxDEuVRrQdqc3zxc=
-X-Received: by 2002:a05:6214:5003:b0:61b:7e5a:ec00 with SMTP id
- jo3-20020a056214500300b0061b7e5aec00mr3341894qvb.37.1684489491965; Fri, 19
- May 2023 02:44:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27F06108
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 09:49:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CBD6C4339B;
+	Fri, 19 May 2023 09:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684489790;
+	bh=uLp1Xa/PTrZuf7Qm5PZyBRk42+cw5Hq+Y9ckTvf3Mf0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AdLiw5zgrgLh1u0IJQpgiqcEgeMMuwuY3RQ7O2jUtpzs9SflantracsJcw3EVyIIc
+	 JnuZeOFY49CnnaRgZjJAUT0a8whi2Tt8ATGxXFxanBNWy75pf6j3Vf63GUm6REKfO7
+	 aWNJFi3jCNpw89lWooypWbpsIKAfRy1RID/3r97/9xwBFPvgXiMi1/41gStviyNgnA
+	 JYuhzAFpyqLU6CC0mmhslCXxIM0mceOwYSG2zgVCfZgIxrgb+5TyI4tLLG69SVjUXp
+	 didJJdPQuUSGWRyaeVE3Wgf/Y90Ura5lfqRhZzloHJuuit7IwMZ7iM51dYfAm2bJ0N
+	 aiUCrkQ4wBrdg==
+Date: Fri, 19 May 2023 11:49:45 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, cyphar@cyphar.com, lennart@poettering.net,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
+ and BPF_OBJ_GET commands
+Message-ID: <20230519-eiswasser-leibarzt-ed7e52934486@brauner>
+References: <20230518215444.1418789-1-andrii@kernel.org>
+ <20230518215444.1418789-2-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230517161648.17582-1-alan.maguire@oracle.com>
-In-Reply-To: <20230517161648.17582-1-alan.maguire@oracle.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 19 May 2023 17:44:16 +0800
-Message-ID: <CALOAHbCXC5Qvn80HxVGAFLiVE17zOCyHg12X=vXJvcZCU6_gKg@mail.gmail.com>
-Subject: Re: [RFC dwarves 0/6] Encoding function addresses using DECL_TAGs
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, ast@kernel.org, jolsa@kernel.org, yhs@fb.com, 
-	andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230518215444.1418789-2-andrii@kernel.org>
 
-On Thu, May 18, 2023 at 12:18=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
-com> wrote:
->
-> As a means to continue the discussion in [1], which is
-> concerned with finding the best long-term solution to
-> having a BPF Type Format (BTF) representation of
-> functions that is usable for tracing of edge cases, this
-> proof-of-concept series is intended to explore one approach
-> to adding information to help make tracing more accurate.
->
-> A key problem today is that there is no matching from function
-> description to the actual instances of a function.
->
-> When that function only has one description, that is
-> not an issue, but if we have multiple inconsistent
-> static functions in different CUs such as
->
-> From kernel/irq/irqdesc.c
->
->     static ssize_t wakeup_show(struct kobject *kobj,
->                                struct kobj_attribute *attr, char *buf)
->
-> ...and from drivers/base/power/sysfs.c
->
->     static ssize_t wakeup_show(struct device *dev, struct device_attribut=
-e *attr,
->                                char *buf);
->
-> ...this becomes a problem.  If I am attaching,
-> which do I want?  And even if I know which one
-> I want, which instance in kallsyms is which?
->
+On Thu, May 18, 2023 at 02:54:42PM -0700, Andrii Nakryiko wrote:
+> Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() syscall
+> forces users to specify pinning location as a string-based absolute or
+> relative (to current working directory) path. This has various
+> implications related to security (e.g., symlink-based attacks), forces
+> BPF FS to be exposed in the file system, which can cause races with
+> other applications.
+> 
+> One of the feedbacks we got from folks working with containers heavily
+> was that inability to use purely FD-based location specification was an
+> unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GET
+> commands. This patch closes this oversight, adding path_fd field to
+> BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established by
+> *at() syscalls for dirfd + pathname combinations.
+> 
+> This now allows interesting possibilities like working with detached BPF
+> FS mount (e.g., to perform multiple pinnings without running a risk of
+> someone interfering with them), and generally making pinning/getting
+> more secure and not prone to any races and/or security attacks.
+> 
+> This is demonstrated by a selftest added in subsequent patch that takes
+> advantage of new mount APIs (fsopen, fsconfig, fsmount) to demonstrate
+> creating detached BPF FS mount, pinning, and then getting BPF map out of
+> it, all while never exposing this private instance of BPF FS to outside
+> worlds.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/bpf.h            |  4 ++--
+>  include/uapi/linux/bpf.h       | 10 ++++++++++
+>  kernel/bpf/inode.c             | 16 ++++++++--------
+>  kernel/bpf/syscall.c           | 25 ++++++++++++++++++++-----
+>  tools/include/uapi/linux/bpf.h | 10 ++++++++++
+>  5 files changed, 50 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 36e4b2d8cca2..f58895830ada 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2077,8 +2077,8 @@ struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
+>  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+>  struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
+>  
+> -int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+> -int bpf_obj_get_user(const char __user *pathname, int flags);
+> +int bpf_obj_pin_user(u32 ufd, int path_fd, const char __user *pathname);
+> +int bpf_obj_get_user(int path_fd, const char __user *pathname, int flags);
+>  
+>  #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
+>  #define DEFINE_BPF_ITER_FUNC(target, args...)			\
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 1bb11a6ee667..3731284671e4 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1272,6 +1272,9 @@ enum {
+>  
+>  /* Create a map that will be registered/unregesitered by the backed bpf_link */
+>  	BPF_F_LINK		= (1U << 13),
+> +
+> +/* Get path from provided FD in BPF_OBJ_PIN/BPF_OBJ_GET commands */
+> +	BPF_F_PATH_FD		= (1U << 14),
+>  };
+>  
+>  /* Flags for BPF_PROG_QUERY. */
+> @@ -1420,6 +1423,13 @@ union bpf_attr {
+>  		__aligned_u64	pathname;
+>  		__u32		bpf_fd;
+>  		__u32		file_flags;
+> +		/* Same as dirfd in openat() syscall; see openat(2)
+> +		 * manpage for details of path FD and pathname semantics;
+> +		 * path_fd should accompanied by BPF_F_PATH_FD flag set in
+> +		 * file_flags field, otherwise it should be set to zero;
+> +		 * if BPF_F_PATH_FD flag is not set, AT_FDCWD is assumed.
+> +		 */
+> +		__u32		path_fd;
+>  	};
 
-As you described in the above example,  it is natural to attach a
-*function* defined in a specific *file_path*.  So why not encoding the
-file path instead ? What's the problem in it?
+Thanks for changing that.
 
-If we expose the addr and let the user select which address to attach,
-it will be a trouble to deploy a bpf program across multiple kernels.
-While the file path will have a lower chance to be conflict between
-different kernel versions. So I think it would be better if we use the
-file path instead and let the kernel find the address automatically.
-In the old days, when we wanted to deploy a kprobe kernel module or a
-systemtap script across multiple kernels, we had to use if-else in the
-code, which was really troublesome as it is not scalable. I don't
-think we want to do it the same way in the bpf program.
+This is still odd though because you prevent users from specifying
+AT_FDCWD explicitly. They should be allowed to do that plus file
+descriptors are signed integers so please s/__u32/__s32/. AT_FDCWD
+should be passable anywhere where we have at* semantics. Plus, if in the
+vfs we ever add
+#define AT_ROOT -200
+or something you can't use without coming up with your own custom flags.
+If you just follow what everyone else does and use __s32 then you're
+good.
 
-> This series is a proof-of-concept that supports encoding
-> function addresses and associating them with BTF FUNC
-> descriptions using BTF declaration tags.
->
-> More work would need to be done on the kernel side
-> to _use_ this representation, but hopefully having a
-> rough approach outlined will help make that more feasible.
->
-> [1] https://lore.kernel.org/bpf/ZF61j8WJls25BYTl@krava/
->
-> Alan Maguire (6):
->   btf_encoder: record function address and if it is local
->   dwarf_loader: store address in function low_pc if available
->   dwarf_loader: transfer low_pc info from subtroutine to its abstract
->     origin
->   btf_encoder: add "addr=3D0x<addr>" function declaration tag if
->     --btf_gen_func_addr specified
->   btf_encoder: store ELF function representations sorted by name _and_
->     address
->   pahole: document --btf_gen_func_addr
->
->  btf_encoder.c      | 64 +++++++++++++++++++++++++++++++++++-----------
->  btf_encoder.h      |  4 +--
->  dwarf_loader.c     | 16 +++++++++---
->  dwarves.h          |  3 +++
->  man-pages/pahole.1 |  8 ++++++
->  pahole.c           | 12 +++++++--
->  6 files changed, 85 insertions(+), 22 deletions(-)
->
-> --
-> 2.31.1
->
+File descriptors really need to be signed. There's no way around that.
+See io_uring as a good example
 
+io_uring_sqe {
+          __u8    opcode;         /* type of operation for this sqe */
+          __u8    flags;          /* IOSQE_ flags */
+          __u16   ioprio;         /* ioprio for the request */
+          __s32   fd;             /* file descriptor to do IO on */
+}
 
---=20
-Regards
-Yafang
+where the __s32 fd is used in all fd based requests including
+io_openat*() (See io_uring/openclose.c) which are effectively the
+semantics you want to emulate here.
 
