@@ -1,174 +1,179 @@
-Return-Path: <bpf+bounces-931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C6E708D8C
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 03:53:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A00F708DFA
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 04:43:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 745E9281AF9
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 01:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706021C211FF
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 02:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61476397;
-	Fri, 19 May 2023 01:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7DA62E;
+	Fri, 19 May 2023 02:43:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D70362;
-	Fri, 19 May 2023 01:53:11 +0000 (UTC)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2062.outbound.protection.outlook.com [40.107.105.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03EE010F4;
-	Thu, 18 May 2023 18:53:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Avhzmh3zGyeIzmdwacRh8CC8mHnbtmuMi+hRBa/r3FGMzTnOKC0qpWMf8gb7zqKwVBbu+94gDjXUGmvNNA+LuJrYYbgu3/8eeGjiaH2mvlIApH0iHSpJcYHcgRDRkuXyJAG2L8TmbyqJg94YobPTvX1RlyXmMTFhhvLA6w7sE1JvC8gqK9Em14tXalnovEp+DEZ8zu2LeK22/o8e+RxADNGoKuag+OEmkKWU7jSFXcrLLv1rlr/BoPEmDSrMubKAfF9T0GBitPEep7D/UOhe7rNwLcfXbuuun/S/TXoPL8vYDmQT+WLeVb+krZkNm1VgjSf2czj6IEpS1Or+xPcyKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lfLyk3ljl1W2mwxZANOkwsxQFfXAcWFZduwf354sSfM=;
- b=Omtxxx0NPK+NxCIJLFH2jVjm7d3luSprhsOVRc/nrcJMfjnc8OeqWdcmpjEPfERnKRou/wX6FSNpLf+UnUeQhk/7mZfnMcCjMWph+6AWnNR1JCsTEBpY1Z3oxUAAdunKP5OAvs11mEfrZGw8aM7ingC7dShkfCenSiNowPHv4AUIcahqKmkUAQh58jzqMQj819NGT3cWu27+T4cJbzalxi9YU/5UjMGuzakqghLK+ky3vIrwLm2oQNW4FEUlQFiFCXj9yDoKncHsQd7S2lju+B89uWnPH0w2mA8VH6Eno0E8jr2I0TYlfKCRwDwlGlGPKtLtD2RCeTATh+Qm7mIteg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lfLyk3ljl1W2mwxZANOkwsxQFfXAcWFZduwf354sSfM=;
- b=U96iONrEDda2h54KRE2IXJgCjaOLDceALP8bFu8U8eie3WAP8dp4nPpckNcPWTKHEDo1wAsma/qK4tDeZQmwUe2iQ8S96dLi11IcnB7XUKzwSGiE8EFQ6eaKPSD3EV7YeCmHgnwoM5E8Q2aYLFt1d7q/tF+bbUohClLVj0h7x58=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by PAXPR04MB9350.eurprd04.prod.outlook.com (2603:10a6:102:2b7::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.19; Fri, 19 May
- 2023 01:52:58 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::682b:185:581f:7ea2]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::682b:185:581f:7ea2%4]) with mapi id 15.20.6411.021; Fri, 19 May 2023
- 01:52:58 +0000
-From: wei.fang@nxp.com
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com,
-	simon.horman@corigine.com,
-	lorenzo.bianconi@redhat.com,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-imx@nxp.com
-Subject: [PATCH V2 net-next] net: fec: turn on XDP features
-Date: Fri, 19 May 2023 09:48:25 +0800
-Message-Id: <20230519014825.1659331-1-wei.fang@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0033.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::14) To AM5PR04MB3139.eurprd04.prod.outlook.com
- (2603:10a6:206:8::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A28375
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 02:43:16 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66B6E4E;
+	Thu, 18 May 2023 19:43:14 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-96f40c19477so206553766b.1;
+        Thu, 18 May 2023 19:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684464193; x=1687056193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AqoVCRBHAsCkh7/H8NehRsiMX5fMyD5zSUScfa5DQRE=;
+        b=bLBbamHR8gyk2G3fXirgAdUSHO0UwDucN+gS+zXCxT1ifdERuPR2RVbR5FFgas+qgY
+         Ucu3c5r6R8zr4BrKiAeiZ9QeSdLB7WGQ6abf2c8b9VV9mtOFkcL5DNzKyXBCt0w6pLWz
+         g6il4YFFUdrXQOY0hTkRio7OVmNwQVCTxyQDgrYcBq/oPVDFGNu4FHQhSxbZ73H5JukX
+         p2VbM207wN6GeO01wsO15x6TfVBLBWHFGelW4y4jdnNRCcR3sAqPAhhdf1FTGbqVuHfG
+         RH1k8V0VwKQOfZsXTQFvWJBLYkaeA9oMCdn9QAhb0Eb+LA5psyuoEzni9k1b0hQp2F/S
+         /FdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684464193; x=1687056193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AqoVCRBHAsCkh7/H8NehRsiMX5fMyD5zSUScfa5DQRE=;
+        b=YsgtYXCP/YfvOGW7Wr8Byro/jpFwl2tU0PYsZ5qes8hIwWaksaXt9seVvpb9fBBCB3
+         GbBjBoT07U0xWyjQ+JenRzqw5WNSGmGxIyKfkujLemCVrHU+6USB70b6vPbx0H0DwEcv
+         SsPulVQ5B6bA97auFVHmKET/bkCf2IdAwz0MMbRM2RIdn6iVbt1I+jiMYcdOoz7/ar2a
+         Ybrs147fEAhy+DCWWqjgv3tyyjQL2oRtYTi1REbaeS2xycMS1fF9SMz5FS0BLymQoCeo
+         69za63WWpEQQzt8UZDCZtV/DJnB0kQ4Eu4iJO1wDI2iLHo3cRvjhDjRCS3zw9yn7hf9n
+         h31Q==
+X-Gm-Message-State: AC+VfDxnc2FSFuNmHXRpl5/DRnerK1oXqIJITXqnWsklYBkxUjslhzyx
+	G9DCWM55KGhkYrOejtqJBYI/Cw8QRhOTAD+tYP80uScvBC8=
+X-Google-Smtp-Source: ACHHUZ7z1o1C64DaoCO9ITXhrawbHTDPEMEebA5juOKf4HC5e+P7KmYihzYzfl+ercLyku7s6gGsyMQ7qCHBcwqGxWU=
+X-Received: by 2002:a17:906:9c82:b0:96a:3e7:b592 with SMTP id
+ fj2-20020a1709069c8200b0096a03e7b592mr194315ejc.25.1684464192922; Thu, 18 May
+ 2023 19:43:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|PAXPR04MB9350:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68c0a23e-8b20-458b-a90a-08db580bc530
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	05gtidu9rO1+ywxlB41ltrWuaWeBQQ4SrkmEtx0NT8VSfufTy2U2OYBikVBFDrXo3zh0wIxfR+rDrU1STtFbjKXxd2UsvrRz6s5OZopKAWEfdHIGB+utkhO2PhXaObaPfn9fWQFbnrYOzENR/TmLLUmuFeKAbUw6ZmMG/uAwcd7sibKOYBly590mf/a0nEK1kgZFApiD4wzIU2sl5FILBjfjLeI1iDksKNPucb3WrpMCXkuaYQjOBvBnNNQLslSLHcnGaGBsRq9XzBXyTqWHRf9kmVUc62yPW80+FDq6KuU2EpJm9RAJc5zNTOVaGDekE4uWOaE95yzSOZRF9O1PoX5LNJzECbpaM26bp0QYzJ7JgK6tKrKCq9ySifGaTgeqibboJbupyjDhL6fnVu4QjXCazzAvl3ul3vUcV41uHF7+kXb8VMIE2UgHtxg/X1EamaolIin7uUGNq2DJq9OxigNXMzWvWU6NNvapPLYXNaz22f7OJVrRkyLX6BV18MDwr9Gx157ttcv5dA5o+O/odrvje+l5Ud77xAuBgyES2zReONIwJqBsPTjhIdUCowJd7jhFdKQQvrGVlwUB5EpeJ4g0LzFxkYQSOV8ou8GgtYCgB57W5MHEyinOpYvwTGBsjJlcDBQuep2si9nsZzUNwA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(451199021)(6506007)(6512007)(6666004)(26005)(1076003)(52116002)(6486002)(8676002)(921005)(36756003)(316002)(478600001)(38350700002)(4326008)(186003)(2616005)(5660300002)(66476007)(86362001)(7416002)(66946007)(66556008)(38100700002)(9686003)(41300700001)(2906002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mOg/WDQ8tw0rm6anBSQw0wHOUOfvYAsmNPrTQMn5bNGuz5pJ9OREzxevLD4v?=
- =?us-ascii?Q?V1A9BcqKYdgHd7/aIQOC4+E3ZLUbE62hCRKx3QsIXLzOzoZXiRtKSaypxGMd?=
- =?us-ascii?Q?jl6+wedBo04XWoYqwpwrWiPVDL7zeaOGKYc8/ICc9JyE12DkSaY9gk2Y+PZw?=
- =?us-ascii?Q?rbG4Jupt15dPfDfl3c0TvBPBgqf0+ch8RNUgFKdTjhlRE/NQMBrMoFiXroUN?=
- =?us-ascii?Q?+bNmk+zJIzf8NfchjJCAfEDEUVW46wIkADaajhdUR6SMr5fTDjEC9L/yaGBT?=
- =?us-ascii?Q?x5tj5LRyhk1/7WrBQM4drFPml15AVKWM92wfi+PX/itkXAnJwjvgOUgaiz3H?=
- =?us-ascii?Q?Hdti8RCoiTfYnBjYHsnviN4Zyovq4OI0asR2ecNJ7xR8Hf9yDz1i5x69/+i1?=
- =?us-ascii?Q?9cAFY9tbDHIliaLs9xO7pkb4JCvVPj4fCH2FnKpYHNBYZW9S4e5gxrkPYGom?=
- =?us-ascii?Q?yCy4BBADwzyN5lV6+oOh8k3grvM90z8E/+p3DdtgYF8OAuSY/FEwhS94ji3S?=
- =?us-ascii?Q?NZQm+4EGwUsGINr+ociPcTTDZ2RMltV97g56FqlpXyWNhUVNahEVcunUweRL?=
- =?us-ascii?Q?xr7khrY6wDDQ/XaqGiE34R2iI8n/WefTqKvAlNla3i6NnvUEnv66MorxmAhs?=
- =?us-ascii?Q?oi2S4qhW2yvZxb1fA1Cv+n7Iq2gq5Caqi2bCUkSzLw1KoCLZP4f/OGKlSDM5?=
- =?us-ascii?Q?FaKwi+lKCB0nBakhKriHFvvi2R3D/FGJNqt6IQKK7BFeo4wzFbmYJWdg5qZ2?=
- =?us-ascii?Q?S+W0izON6UmOtXYfSCb6U9CUJSXt+t3jkvnZ1nDB8WvduSQKdk9kodUwNzkz?=
- =?us-ascii?Q?AhgtECRE/q/PNTFDlEFDYR8WrrboFxGEc++cHLmv2GlwfklZDRsbsfRuUyDN?=
- =?us-ascii?Q?DnsU/6wWmkvdF4Oz6sETSK1MFFiABzIpSuB9cx8xFHrHbS9fcIgyOObgybo9?=
- =?us-ascii?Q?ioTMsEAPy4CsITt62hxpcoi6sT1bGRz9lc7d/ZbA51XZFrKx+v/muSH8Rwdn?=
- =?us-ascii?Q?bp1INrbKgaXEYFw9Bt8SAiKvnu+6HLRu54kKhrRq84uInA4Ybl0EiZBGef1t?=
- =?us-ascii?Q?Zjw11m7WczPuvf1eGsEPqu5DUJxAjJnE376X2NrH6yUkxtnGuzyiMS7G82Bk?=
- =?us-ascii?Q?a2dwYeXAYyfLqBqjaoNJFqzaz8+fQf9G5ptkIMpao1KFUiVxGcNGl99e0HkH?=
- =?us-ascii?Q?HxxaNygGh/h7YzzITvOwMRjU2ThThrR0Iv4pbNux3Q6ozDTEYVj8R0dOd4nY?=
- =?us-ascii?Q?PVyohaDqlHrdHqncmV1N4zWPvVvGrp+tRcIM+qrLHNEm5s50aNyl2L5ONn02?=
- =?us-ascii?Q?gIh/4Rh2qXUvGVQ5OQ4qjxm47r73JQx9RwuNB7dJgdMjHSlFfC3WkwOXyZFJ?=
- =?us-ascii?Q?OTg2FP1QU+r9HMx98IN/1qq6lpfm8Tpyt+MKa9FkUUrfsIuCIOolv+UiUdwW?=
- =?us-ascii?Q?35q09jAgOFq3T0tbv5mPoTU5ZlWTnwloiEnmY6MSbT3PFp1cY7Sv7UtcN91d?=
- =?us-ascii?Q?7kD19HZ8LkhsjkVJ22gYl67GkLrtWzqM2DVAxDIBeBBVZt898ASJeFbB14Aj?=
- =?us-ascii?Q?/YnYzo6gowsa9Md0FQrgXxxqprmkzdQ0Tgu01O9W?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68c0a23e-8b20-458b-a90a-08db580bc530
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2023 01:52:58.2501
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t6p9+0FTNtR2S59medoB9ct9LtIwCH/feu1A4GBrjGR+ctwSjv0L7zRTkzW+uB3tnTNv5u8JqtecZQEYojZ4qQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9350
+References: <20230518215444.1418789-2-andrii@kernel.org> <202305190724.nnh1ZV2F-lkp@intel.com>
+ <CAEf4BzYW_OXeF=5L1XU5025-VbWN3M-wOSszXqMD6c5E9bEO9w@mail.gmail.com> <CAADnVQJL3ZAxXrR6nkk=pYbuVS8NhGX19UJpsvSrH4VbPAayhg@mail.gmail.com>
+In-Reply-To: <CAADnVQJL3ZAxXrR6nkk=pYbuVS8NhGX19UJpsvSrH4VbPAayhg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 18 May 2023 19:42:59 -0700
+Message-ID: <CAEf4BzZ0bsG4JcecNupSc5Srzg9CO4mfX2W6q8XUfGwebdBk3g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
+ and BPF_OBJ_GET commands
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: kernel test robot <lkp@intel.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, oe-kbuild-all@lists.linux.dev, 
+	Aleksa Sarai <cyphar@cyphar.com>, Christian Brauner <brauner@kernel.org>, 
+	Lennart Poettering <lennart@poettering.net>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Wei Fang <wei.fang@nxp.com>
+On Thu, May 18, 2023 at 5:53=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, May 18, 2023 at 5:19=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, May 18, 2023 at 4:59=E2=80=AFPM kernel test robot <lkp@intel.co=
+m> wrote:
+> > >
+> > > Hi Andrii,
+> > >
+> > > kernel test robot noticed the following build warnings:
+> > >
+> > > [auto build test WARNING on bpf-next/master]
+> > >
+> > > url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryik=
+o/bpf-support-O_PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-0=
+60110
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.=
+git master
+> > > patch link:    https://lore.kernel.org/r/20230518215444.1418789-2-and=
+rii%40kernel.org
+> > > patch subject: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF=
+_OBJ_PIN and BPF_OBJ_GET commands
+> > > config: m68k-allyesconfig
+> > > compiler: m68k-linux-gcc (GCC) 12.1.0
+> > > reproduce (this is a W=3D1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master=
+/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://github.com/intel-lab-lkp/linux/commit/74f08e59c3fcc=
+ac04b3c080831615209e11be4fb
+> > >         git remote add linux-review https://github.com/intel-lab-lkp/=
+linux
+> > >         git fetch --no-tags linux-review Andrii-Nakryiko/bpf-support-=
+O_PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-060110
+> > >         git checkout 74f08e59c3fccac04b3c080831615209e11be4fb
+> > >         # save the config file
+> > >         mkdir build_dir && cp config build_dir/.config
+> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make=
+.cross W=3D1 O=3Dbuild_dir ARCH=3Dm68k olddefconfig
+> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make=
+.cross W=3D1 O=3Dbuild_dir ARCH=3Dm68k SHELL=3D/bin/bash kernel/
+> > >
+> > > If you fix the issue, kindly add following tag where applicable
+> > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202305190724.nnh1ZV2F=
+-lkp@intel.com/
+> > >
+> > > All warnings (new ones prefixed by >>):
+> > >
+> > >    kernel/bpf/syscall.c: In function 'bpf_obj_get':
+> > > >> kernel/bpf/syscall.c:2720:13: warning: variable 'path_fd' set but =
+not used [-Wunused-but-set-variable]
+> > >     2720 |         int path_fd;
+> > >          |             ^~~~~~~
+> > >
+> > >
+> > > vim +/path_fd +2720 kernel/bpf/syscall.c
+> > >
+> > >   2717
+> > >   2718  static int bpf_obj_get(const union bpf_attr *attr)
+> > >   2719  {
+> > > > 2720          int path_fd;
+> > >   2721
+> > >   2722          if (CHECK_ATTR(BPF_OBJ) || attr->bpf_fd !=3D 0 ||
+> > >   2723              attr->file_flags & ~(BPF_OBJ_FLAG_MASK | BPF_F_PA=
+TH_FD))
+> > >   2724                  return -EINVAL;
+> > >   2725
+> > >   2726          /* path_fd has to be accompanied by BPF_F_PATH_FD fla=
+g */
+> > >   2727          if (!(attr->file_flags & BPF_F_PATH_FD) && attr->path=
+_fd)
+> > >   2728                  return -EINVAL;
+> > >   2729
+> > >   2730          path_fd =3D attr->file_flags & BPF_F_PATH_FD ? attr->=
+path_fd : AT_FDCWD;
+> > >   2731          return bpf_obj_get_user(attr->path_fd, u64_to_user_pt=
+r(attr->pathname),
+> >
+> > argh.... s/attr->path_fd/path_fd/ here, but it's curious how tests
+> > didn't catch this because we always provide absolute path in
+> > attr->pathname, and from openat() man page:
+> >
+> >   If pathname is absolute, then dirfd is ignored.
+> >
+> > So whatever garbage FD is passed in (in this case 0), the kernel won't
+> > complain. Interesting. I'll send v3 with a fix.
+>
+> because other tests have an absolute path to bpf objs?
 
-The XDP features are supported since the commit 66c0e13ad236
-("drivers: net: turn on XDP features"). Currently, the fec
-driver supports NETDEV_XDP_ACT_BASIC, NETDEV_XDP_ACT_REDIRECT
-and NETDEV_XDP_ACT_NDO_XMIT. So turn on these XDP features
-for fec driver.
-
-Signed-off-by: Wei Fang <wei.fang@nxp.com>
----
-V2 change:
-fec with FEC_QUIRK_SWAP_FRAME quirk does not support XDP, so
-check this condition before turn on XDP features.
----
- drivers/net/ethernet/freescale/fec_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index cd215ab20ff9..10cb5ad2d758 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -4031,6 +4031,11 @@ static int fec_enet_init(struct net_device *ndev)
- 
- 	ndev->hw_features = ndev->features;
- 
-+	if (!(fep->quirks & FEC_QUIRK_SWAP_FRAME))
-+		ndev->xdp_features = NETDEV_XDP_ACT_BASIC |
-+				     NETDEV_XDP_ACT_REDIRECT |
-+				     NETDEV_XDP_ACT_NDO_XMIT;
-+
- 	fec_restart(ndev);
- 
- 	if (fep->quirks & FEC_QUIRK_MIB_CLEAR)
--- 
-2.25.1
-
+right, I think we always test with absolute path. I'll add more tests
+around pinning to catch something like this in the future.
 
