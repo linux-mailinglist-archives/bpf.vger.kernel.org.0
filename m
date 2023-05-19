@@ -1,179 +1,189 @@
-Return-Path: <bpf+bounces-932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A00F708DFA
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 04:43:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C1F708E8B
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 06:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706021C211FF
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 02:43:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C51281B33
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 04:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7DA62E;
-	Fri, 19 May 2023 02:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B8C64E;
+	Fri, 19 May 2023 04:07:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A28375
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 02:43:16 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66B6E4E;
-	Thu, 18 May 2023 19:43:14 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-96f40c19477so206553766b.1;
-        Thu, 18 May 2023 19:43:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10889633;
+	Fri, 19 May 2023 04:07:04 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB4E10CF;
+	Thu, 18 May 2023 21:07:03 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64d2a613ec4so694280b3a.1;
+        Thu, 18 May 2023 21:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684464193; x=1687056193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AqoVCRBHAsCkh7/H8NehRsiMX5fMyD5zSUScfa5DQRE=;
-        b=bLBbamHR8gyk2G3fXirgAdUSHO0UwDucN+gS+zXCxT1ifdERuPR2RVbR5FFgas+qgY
-         Ucu3c5r6R8zr4BrKiAeiZ9QeSdLB7WGQ6abf2c8b9VV9mtOFkcL5DNzKyXBCt0w6pLWz
-         g6il4YFFUdrXQOY0hTkRio7OVmNwQVCTxyQDgrYcBq/oPVDFGNu4FHQhSxbZ73H5JukX
-         p2VbM207wN6GeO01wsO15x6TfVBLBWHFGelW4y4jdnNRCcR3sAqPAhhdf1FTGbqVuHfG
-         RH1k8V0VwKQOfZsXTQFvWJBLYkaeA9oMCdn9QAhb0Eb+LA5psyuoEzni9k1b0hQp2F/S
-         /FdA==
+        d=gmail.com; s=20221208; t=1684469223; x=1687061223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Re4+GROEMOOBGWemxWaQLdyEbL6oJm1334MkHSEPjG4=;
+        b=MWkk/VzNUYO2HDUm4PrEL0309HwmB484A0xi/efpDEAYE1II7DYr9j/pPz3+irqQTu
+         8oR0ZXVndEbrUDeI2FYzQbyMx7hft3+bEqQFve5bDo2fgAmy8qFcVbd/ecwb/q8MYhjJ
+         AmCAxeQACSmkHSIx8FdmLP5/6m5FlVriTO/NHmNCXwE7VeCcO9bEu7v/nCqitV7CM4Vp
+         6m4i9gm4jVG2mXi47gA5M2a6ekWJppzAiTgEeEanjj0FI9uQWcKmhUXKlfisvLkmB+sl
+         0kiBqgLInAMNhHBUcgRCAlA0gG4NC74eOsc/A0Dm2Nj2rELcrBPpig9THUR/y9n4KQV6
+         sccQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684464193; x=1687056193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AqoVCRBHAsCkh7/H8NehRsiMX5fMyD5zSUScfa5DQRE=;
-        b=YsgtYXCP/YfvOGW7Wr8Byro/jpFwl2tU0PYsZ5qes8hIwWaksaXt9seVvpb9fBBCB3
-         GbBjBoT07U0xWyjQ+JenRzqw5WNSGmGxIyKfkujLemCVrHU+6USB70b6vPbx0H0DwEcv
-         SsPulVQ5B6bA97auFVHmKET/bkCf2IdAwz0MMbRM2RIdn6iVbt1I+jiMYcdOoz7/ar2a
-         Ybrs147fEAhy+DCWWqjgv3tyyjQL2oRtYTi1REbaeS2xycMS1fF9SMz5FS0BLymQoCeo
-         69za63WWpEQQzt8UZDCZtV/DJnB0kQ4Eu4iJO1wDI2iLHo3cRvjhDjRCS3zw9yn7hf9n
-         h31Q==
-X-Gm-Message-State: AC+VfDxnc2FSFuNmHXRpl5/DRnerK1oXqIJITXqnWsklYBkxUjslhzyx
-	G9DCWM55KGhkYrOejtqJBYI/Cw8QRhOTAD+tYP80uScvBC8=
-X-Google-Smtp-Source: ACHHUZ7z1o1C64DaoCO9ITXhrawbHTDPEMEebA5juOKf4HC5e+P7KmYihzYzfl+ercLyku7s6gGsyMQ7qCHBcwqGxWU=
-X-Received: by 2002:a17:906:9c82:b0:96a:3e7:b592 with SMTP id
- fj2-20020a1709069c8200b0096a03e7b592mr194315ejc.25.1684464192922; Thu, 18 May
- 2023 19:43:12 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684469223; x=1687061223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Re4+GROEMOOBGWemxWaQLdyEbL6oJm1334MkHSEPjG4=;
+        b=MlHAz16YuGWFFCDcnLTKTZYzeh/Tm0CmQl/6/yjm727JBVGaSgJkUzvUecv0lCCOyg
+         VWtvUnnLC7sorTPQpO+riecYyl7htFB4G5DarnxIHQHtIw0qnixwxK4JUIhgCO+Sldrp
+         /VGFMPYPL9OPMO5eWmcxuPd1uCHYmFYJlzehc3L01WJr9AO9/+QSIflm4ka6kHBf7eoS
+         OnbVV4J0enhfHiuRCVfBXI2rqI2j+UxDldhe+vRr0oeUUUKCpVqeww4FFKROonhIMTK7
+         fa5LH8UQTrQF3HsgrDDWsIuM75vE2nFdFv2QOCNsIux4SlMKJSyXZi0Riq820YLHDB0u
+         1WHA==
+X-Gm-Message-State: AC+VfDzbcN1sbhZ9XpYqYAY+p2Al7MbFoDjux5k1MM1FBEJPx2OpyR1w
+	8iP9VT257+iwB3LIl3H7KDc=
+X-Google-Smtp-Source: ACHHUZ5qEbtFVUyuMhwQ/jO/+5oz7ZEY/rWcWGi0CPiZvcZFV4gOOBslZXdJGGRZzmxeD3f9BjJ1zA==
+X-Received: by 2002:a05:6a20:a591:b0:104:98ea:48d5 with SMTP id bc17-20020a056a20a59100b0010498ea48d5mr762179pzb.36.1684469222419;
+        Thu, 18 May 2023 21:07:02 -0700 (PDT)
+Received: from john.lan ([2605:59c8:148:ba10:706:628a:e6ce:c8a9])
+        by smtp.gmail.com with ESMTPSA id x11-20020aa784cb000000b00625d84a0194sm434833pfn.107.2023.05.18.21.07.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 May 2023 21:07:01 -0700 (PDT)
+From: John Fastabend <john.fastabend@gmail.com>
+To: jakub@cloudflare.com,
+	daniel@iogearbox.net
+Cc: john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	edumazet@google.com,
+	ast@kernel.org,
+	andrii@kernel.org,
+	will@isovalent.com
+Subject: [PATCH bpf v9 00/14] bpf sockmap fixes
+Date: Thu, 18 May 2023 21:06:45 -0700
+Message-Id: <20230519040659.670644-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230518215444.1418789-2-andrii@kernel.org> <202305190724.nnh1ZV2F-lkp@intel.com>
- <CAEf4BzYW_OXeF=5L1XU5025-VbWN3M-wOSszXqMD6c5E9bEO9w@mail.gmail.com> <CAADnVQJL3ZAxXrR6nkk=pYbuVS8NhGX19UJpsvSrH4VbPAayhg@mail.gmail.com>
-In-Reply-To: <CAADnVQJL3ZAxXrR6nkk=pYbuVS8NhGX19UJpsvSrH4VbPAayhg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 May 2023 19:42:59 -0700
-Message-ID: <CAEf4BzZ0bsG4JcecNupSc5Srzg9CO4mfX2W6q8XUfGwebdBk3g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
- and BPF_OBJ_GET commands
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kernel test robot <lkp@intel.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, oe-kbuild-all@lists.linux.dev, 
-	Aleksa Sarai <cyphar@cyphar.com>, Christian Brauner <brauner@kernel.org>, 
-	Lennart Poettering <lennart@poettering.net>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 18, 2023 at 5:53=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, May 18, 2023 at 5:19=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, May 18, 2023 at 4:59=E2=80=AFPM kernel test robot <lkp@intel.co=
-m> wrote:
-> > >
-> > > Hi Andrii,
-> > >
-> > > kernel test robot noticed the following build warnings:
-> > >
-> > > [auto build test WARNING on bpf-next/master]
-> > >
-> > > url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryik=
-o/bpf-support-O_PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-0=
-60110
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.=
-git master
-> > > patch link:    https://lore.kernel.org/r/20230518215444.1418789-2-and=
-rii%40kernel.org
-> > > patch subject: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF=
-_OBJ_PIN and BPF_OBJ_GET commands
-> > > config: m68k-allyesconfig
-> > > compiler: m68k-linux-gcc (GCC) 12.1.0
-> > > reproduce (this is a W=3D1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master=
-/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://github.com/intel-lab-lkp/linux/commit/74f08e59c3fcc=
-ac04b3c080831615209e11be4fb
-> > >         git remote add linux-review https://github.com/intel-lab-lkp/=
-linux
-> > >         git fetch --no-tags linux-review Andrii-Nakryiko/bpf-support-=
-O_PATH-FDs-in-BPF_OBJ_PIN-and-BPF_OBJ_GET-commands/20230519-060110
-> > >         git checkout 74f08e59c3fccac04b3c080831615209e11be4fb
-> > >         # save the config file
-> > >         mkdir build_dir && cp config build_dir/.config
-> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make=
-.cross W=3D1 O=3Dbuild_dir ARCH=3Dm68k olddefconfig
-> > >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-12.1.0 make=
-.cross W=3D1 O=3Dbuild_dir ARCH=3Dm68k SHELL=3D/bin/bash kernel/
-> > >
-> > > If you fix the issue, kindly add following tag where applicable
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202305190724.nnh1ZV2F=
--lkp@intel.com/
-> > >
-> > > All warnings (new ones prefixed by >>):
-> > >
-> > >    kernel/bpf/syscall.c: In function 'bpf_obj_get':
-> > > >> kernel/bpf/syscall.c:2720:13: warning: variable 'path_fd' set but =
-not used [-Wunused-but-set-variable]
-> > >     2720 |         int path_fd;
-> > >          |             ^~~~~~~
-> > >
-> > >
-> > > vim +/path_fd +2720 kernel/bpf/syscall.c
-> > >
-> > >   2717
-> > >   2718  static int bpf_obj_get(const union bpf_attr *attr)
-> > >   2719  {
-> > > > 2720          int path_fd;
-> > >   2721
-> > >   2722          if (CHECK_ATTR(BPF_OBJ) || attr->bpf_fd !=3D 0 ||
-> > >   2723              attr->file_flags & ~(BPF_OBJ_FLAG_MASK | BPF_F_PA=
-TH_FD))
-> > >   2724                  return -EINVAL;
-> > >   2725
-> > >   2726          /* path_fd has to be accompanied by BPF_F_PATH_FD fla=
-g */
-> > >   2727          if (!(attr->file_flags & BPF_F_PATH_FD) && attr->path=
-_fd)
-> > >   2728                  return -EINVAL;
-> > >   2729
-> > >   2730          path_fd =3D attr->file_flags & BPF_F_PATH_FD ? attr->=
-path_fd : AT_FDCWD;
-> > >   2731          return bpf_obj_get_user(attr->path_fd, u64_to_user_pt=
-r(attr->pathname),
-> >
-> > argh.... s/attr->path_fd/path_fd/ here, but it's curious how tests
-> > didn't catch this because we always provide absolute path in
-> > attr->pathname, and from openat() man page:
-> >
-> >   If pathname is absolute, then dirfd is ignored.
-> >
-> > So whatever garbage FD is passed in (in this case 0), the kernel won't
-> > complain. Interesting. I'll send v3 with a fix.
->
-> because other tests have an absolute path to bpf objs?
+v9, rebased which resulted in two additions needed. Patch 14
+to resolve an introduced verifier error. I'll try to dig into
+exactly what happened but the fix was easy to get test_sockmap
+running again. And then in vsock needed similar fix to the
+the protocols so I folded that into the first patch.
 
-right, I think we always test with absolute path. I'll add more tests
-around pinning to catch something like this in the future.
+Fixes for sockmap running against NGINX TCP tests and also on an
+underprovisioned VM so that we hit error (ENOMEM) cases regularly.
+
+The first 3 patches fix cases related to ENOMEM that were either
+causing splats or data hangs.
+
+Then 4-7 resolved cases found when running NGINX with its sockets
+assigned to sockmap. These mostly have to do with handling fin/shutdown
+incorrectly and ensuring epoll_wait works as expected.
+
+Patches 8 and 9 extract some of the logic used for sockmap_listen tests
+so that we can use it in other tests because it didn't make much
+sense to me to add tests to the sockmap_listen cases when here we
+are testing send/recv *basic* cases.
+
+Finally patches 10, 11 and 12 add the new tests to ensure we handle
+ioctl(FIONREAD) and shutdown correctly.
+
+To test the series I ran the NGINX compliance tests and the sockmap
+selftests. For now our compliance test just runs with SK_PASS.
+
+There are some more things to be done here, but these 11 patches
+stand on their own in my opionion and fix issues we are having in
+CI now. For bpf-next we can fixup/improve selftests to use the
+ASSERT_* in sockmap_helpers, streamline some of the testing, and
+add more tests. We also still are debugging a few additional flakes
+patches coming soon.
+
+v2: use skb_queue_empty instead of *_empty_lockless (Eric)
+    oops incorrectly updated copied_seq on DROP case (Eric)
+    added test for drop case copied_seq update
+
+v3: Fix up comment to use /**/ formatting and update commit
+    message to capture discussion about previous fix attempt
+    for hanging backlog being imcomplete.
+
+v4: build error sockmap things are behind NET_SKMSG not in
+    BPF_SYSCALL otherwise you can build the .c file but not
+    have correct headers.
+
+v5: typo with mispelled SOCKMAP_HELPERS
+
+v6: fix to build without INET enabled for the other sockmap
+    types e.g. af_unix.
+
+v7: We can not protect backlog queue with a mutex because in
+    some cases we call this with sock lock held. Instead do
+    as Jakub suggested and peek the queue and only pop the
+    skb when its been correctly processed.
+
+v8: Only schedule backlog when still enabled and cleanup test
+    to not create unused sockets.
+
+v9: rebase and fixup test_sockmap verifier error and vsock
+    that was introduced recently.
+
+
+John Fastabend (14):
+  bpf: sockmap, pass skb ownership through read_skb
+  bpf: sockmap, convert schedule_work into delayed_work
+  bpf: sockmap, reschedule is now done through backlog
+  bpf: sockmap, improved check for empty queue
+  bpf: sockmap, handle fin correctly
+  bpf: sockmap, TCP data stall on recv before accept
+  bpf: sockmap, wake up polling after data copy
+  bpf: sockmap, incorrectly handling copied_seq
+  bpf: sockmap, pull socket helpers out of listen test for general use
+  bpf: sockmap, build helper to create connected socket pair
+  bpf: sockmap, test shutdown() correctly exits epoll and recv()=0
+  bpf: sockmap, test FIONREAD returns correct bytes in rx buffer
+  bpf: sockmap, test FIONREAD returns correct bytes in rx buffer with
+    drops
+  bpf: sockmap, test progs verifier error with latest clang
+
+ include/linux/skmsg.h                         |   3 +-
+ include/net/tcp.h                             |  10 +
+ net/core/skmsg.c                              |  81 ++--
+ net/core/sock_map.c                           |   3 +-
+ net/ipv4/tcp.c                                |  11 +-
+ net/ipv4/tcp_bpf.c                            |  79 +++-
+ net/ipv4/udp.c                                |   7 +-
+ net/unix/af_unix.c                            |   7 +-
+ net/vmw_vsock/virtio_transport_common.c       |   5 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 131 ++++++
+ .../bpf/prog_tests/sockmap_helpers.h          | 385 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 365 +----------------
+ .../bpf/progs/test_sockmap_drop_prog.c        |  32 ++
+ .../selftests/bpf/progs/test_sockmap_kern.h   |  12 +-
+ .../bpf/progs/test_sockmap_pass_prog.c        |  32 ++
+ 15 files changed, 726 insertions(+), 437 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
+
+-- 
+2.33.0
+
 
