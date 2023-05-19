@@ -1,162 +1,134 @@
-Return-Path: <bpf+bounces-958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F1670974D
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA257099A4
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 16:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82456281C8D
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 12:37:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B23281CEF
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 14:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6564F6AA8;
-	Fri, 19 May 2023 12:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA7210968;
+	Fri, 19 May 2023 14:27:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9260A7C
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 12:37:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A689C433D2;
-	Fri, 19 May 2023 12:37:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684499860;
-	bh=R4EVhjhpgezvGhcJ1rV29LbGDOpa0u2W5P9ZfvrYWlA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R8xBBpYyQRaIs0yTaNAnSLlS2fixkSTPPROhZIgMGu+sIJGJ5evQ48Os4Bdev/9dM
-	 Uk9UU30352149DwKwJ03G6i/TaBI/ocOr3PJ4UmdW2RjA+8gFm/sBbwxI/2aWPBSwy
-	 p88pcpuqzNuJJvN1W7FvANVOrYnrwXloFuocTIaHNjtTG24zWcgWV+ZMbR3Nq/TPDO
-	 pBKqIfQ2H5Fsx8ubVHvKOc85j4d7sakKAxRv6Ce2C058LmANm/1NdNwZCA7NEWYPJ0
-	 mXLz+Ts/QuoUdGZdet1gzb+SuyPynmyD2xqE1deZqAihEWNlbEKGrbksmcYYUoH5AY
-	 JEBPucONB0KLQ==
-Date: Fri, 19 May 2023 14:37:35 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, cyphar@cyphar.com, lennart@poettering.net,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
- and BPF_OBJ_GET commands
-Message-ID: <20230519-ratschlag-gockel-c27d5fdfb72d@brauner>
-References: <20230518215444.1418789-1-andrii@kernel.org>
- <20230518215444.1418789-2-andrii@kernel.org>
- <20230519-eiswasser-leibarzt-ed7e52934486@brauner>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53CC6C2F6
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 14:27:52 +0000 (UTC)
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC02116
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 07:27:50 -0700 (PDT)
+Received: from letrec.thunk.org (c-73-212-78-46.hsd1.md.comcast.net [73.212.78.46])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 34JER2M1026820
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 May 2023 10:27:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1684506426; bh=gRhknx204/04plo5YxlLLBmQajZd/f4TJcHaesam/oU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Btr4tl09YPwR8JYPaeuwimZ7SNzMtlaD4xnNue2ndEF/4k07p6wnvX8b28WIRaTuB
+	 IG0ir8rQyFmydj830OaYMbPhppg8PuSaq/GiQYrdqVY0oDjGV16TBal6Od8bSA1wqv
+	 mNW+T35r7o0d4TJKlX6eINTvTLTDGXBZwwga6XhMQtRnYj3huGuJJZ1jADeafTZcYv
+	 U5A8tb6b3jC1h2Ahzz58gluuHJ/lNi655rHsLn0fpRlMThcTcHsEGfThWoyBBz27nT
+	 IYfwpyX3KL25woYCW9OOKwlTohhhq4W/yJzn2zLTtXdYjTru8DXiIjHcp5H0pe1LQQ
+	 AQgZdHJAmgjnw==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+	id 341428C03FE; Fri, 19 May 2023 10:27:02 -0400 (EDT)
+Date: Fri, 19 May 2023 10:27:02 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: fd == 0 means AT_FDCWD BPF_OBJ_GET commands
+Message-ID: <ZGeHNsKxea5UK+Ai@mit.edu>
+References: <20230517-allabendlich-umgekehrt-8cc81f8313ac@brauner>
+ <20230517120528.GA17087@lst.de>
+ <CAADnVQLitLUc1SozzKjBgq6HGTchE1cO+e4j8eDgtE0zFn5VEw@mail.gmail.com>
+ <20230518-erdkugel-komprimieren-16548ca2a39c@brauner>
+ <20230518162508.odupqkndqmpdfqnr@MacBook-Pro-8.local>
+ <20230518-tierzucht-modewelt-eb6aaf60037e@brauner>
+ <20230518182635.na7vgyysd7fk7eu4@MacBook-Pro-8.local>
+ <CAHk-=whg-ygwrxm3GZ_aNXO=srH9sZ3NmFqu0KkyWw+wgEsi6g@mail.gmail.com>
+ <20230519044433.2chdcze3qg2eho77@MacBook-Pro-8.local>
+ <20230519-betiteln-fluor-6c0417842143@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230519-eiswasser-leibarzt-ed7e52934486@brauner>
+In-Reply-To: <20230519-betiteln-fluor-6c0417842143@brauner>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, May 19, 2023 at 11:49:50AM +0200, Christian Brauner wrote:
-> On Thu, May 18, 2023 at 02:54:42PM -0700, Andrii Nakryiko wrote:
-> > Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() syscall
-> > forces users to specify pinning location as a string-based absolute or
-> > relative (to current working directory) path. This has various
-> > implications related to security (e.g., symlink-based attacks), forces
-> > BPF FS to be exposed in the file system, which can cause races with
-> > other applications.
-> > 
-> > One of the feedbacks we got from folks working with containers heavily
-> > was that inability to use purely FD-based location specification was an
-> > unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GET
-> > commands. This patch closes this oversight, adding path_fd field to
-> > BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established by
-> > *at() syscalls for dirfd + pathname combinations.
-> > 
-> > This now allows interesting possibilities like working with detached BPF
-> > FS mount (e.g., to perform multiple pinnings without running a risk of
-> > someone interfering with them), and generally making pinning/getting
-> > more secure and not prone to any races and/or security attacks.
-> > 
-> > This is demonstrated by a selftest added in subsequent patch that takes
-> > advantage of new mount APIs (fsopen, fsconfig, fsmount) to demonstrate
-> > creating detached BPF FS mount, pinning, and then getting BPF map out of
-> > it, all while never exposing this private instance of BPF FS to outside
-> > worlds.
-> > 
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  include/linux/bpf.h            |  4 ++--
-> >  include/uapi/linux/bpf.h       | 10 ++++++++++
-> >  kernel/bpf/inode.c             | 16 ++++++++--------
-> >  kernel/bpf/syscall.c           | 25 ++++++++++++++++++++-----
-> >  tools/include/uapi/linux/bpf.h | 10 ++++++++++
-> >  5 files changed, 50 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 36e4b2d8cca2..f58895830ada 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2077,8 +2077,8 @@ struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
-> >  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
-> >  struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
-> >  
-> > -int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
-> > -int bpf_obj_get_user(const char __user *pathname, int flags);
-> > +int bpf_obj_pin_user(u32 ufd, int path_fd, const char __user *pathname);
-> > +int bpf_obj_get_user(int path_fd, const char __user *pathname, int flags);
-> >  
-> >  #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
-> >  #define DEFINE_BPF_ITER_FUNC(target, args...)			\
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 1bb11a6ee667..3731284671e4 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1272,6 +1272,9 @@ enum {
-> >  
-> >  /* Create a map that will be registered/unregesitered by the backed bpf_link */
-> >  	BPF_F_LINK		= (1U << 13),
-> > +
-> > +/* Get path from provided FD in BPF_OBJ_PIN/BPF_OBJ_GET commands */
-> > +	BPF_F_PATH_FD		= (1U << 14),
-> >  };
-> >  
-> >  /* Flags for BPF_PROG_QUERY. */
-> > @@ -1420,6 +1423,13 @@ union bpf_attr {
-> >  		__aligned_u64	pathname;
-> >  		__u32		bpf_fd;
-> >  		__u32		file_flags;
-> > +		/* Same as dirfd in openat() syscall; see openat(2)
-> > +		 * manpage for details of path FD and pathname semantics;
-> > +		 * path_fd should accompanied by BPF_F_PATH_FD flag set in
-> > +		 * file_flags field, otherwise it should be set to zero;
-> > +		 * if BPF_F_PATH_FD flag is not set, AT_FDCWD is assumed.
-> > +		 */
-> > +		__u32		path_fd;
-> >  	};
-> 
-> Thanks for changing that.
-> 
-> This is still odd though because you prevent users from specifying
-> AT_FDCWD explicitly. They should be allowed to do that plus file
-> descriptors are signed integers so please s/__u32/__s32/. AT_FDCWD
-> should be passable anywhere where we have at* semantics. Plus, if in the
-> vfs we ever add
-> #define AT_ROOT -200
-> or something you can't use without coming up with your own custom flags.
-> If you just follow what everyone else does and use __s32 then you're
-> good.
-> 
-> File descriptors really need to be signed. There's no way around that.
-> See io_uring as a good example
-> 
-> io_uring_sqe {
->           __u8    opcode;         /* type of operation for this sqe */
->           __u8    flags;          /* IOSQE_ flags */
->           __u16   ioprio;         /* ioprio for the request */
->           __s32   fd;             /* file descriptor to do IO on */
-> }
-> 
-> where the __s32 fd is used in all fd based requests including
-> io_openat*() (See io_uring/openclose.c) which are effectively the
-> semantics you want to emulate here.
+On Fri, May 19, 2023 at 10:13:09AM +0200, Christian Brauner wrote:
+> > I'm well aware that any file type is allowed to be in FDs 0,1,2 and
+> > some user space is using it that way, like old inetd:
+> > https://github.com/guillemj/inetutils/blob/master/src/inetd.c#L428
+> > That puts the same socket into 0,1,2 before exec-ing new process.
 
-I should clarify that this is mainly for apis that return fds or that
-provide at* semantics. We certainly do use unsigned in cases where the
-system call operates directly on an fd without any lookup semantics.
+This is a *feature*.  I've seen, and actually written shell scripts
+which have been wired into /etc/inetd.conf. amd so the fact that shell
+script can send stdout out to a incoming TCP connection.  It should be
+possible to implement the finger protocol (RFC 1288) as a shell or
+python script, *precisely* because having inetd connect a socket to
+FDs 0, 1, and 2 is a good and useful thing to do.
+
+> > My point that the kernel has to assist user space instead of
+> > stubbornly sticking to POSIX and saying all FDs are equal.
+
+This is not a matter of adhering to Posix.  It's about the fundamental
+Unix philosophy.  Not everything needs to be implemented in a
+complicated C++ program....
+
+
+> > To explain the motivation a bit of background:
+> > "folly" is a core C++ library for fb apps. Like libstdc++ and a lot more.
+> > Until this commit in 2021:
+> > https://github.com/facebook/folly/commit/cc9032a0e41a0cba9aa93240c483cfceb0ff44ea
+> > the user could launch a new process with flag "folly::Subprocess::CLOSE".
+> > It's useful for the cases when child doesn't want to inherit stdin/out/err.
+
+Yeah, sorry, that's just simple bug in the Folly library (which I
+guess was well named).  Closing all of the file descriptors and then
+opening 0, 1, and 2 using /dev/null is a pretty basic.  In fact,
+there's a convenient daemon(3) will do this for you.  No muss, no
+fuss, no dirty dishes.
+
+> I'm sorry but I really don't think this is a good idea. We're not going
+> to run BPF programs in core file code. That stuff is sensitive and
+> complex enough as it is without having to take into account that a bpf
+> program can modify behavior. It's also completely unclear whether that's
+> safe to do as this would allow to change fd allocation across the whole
+> kernel.
+> 
+> This idea that fd 0, 1, and 2 or any other fd deserve special treatment
+> by the kernel needs to die; and quickly at that.
+
++1.
+
+Making fundamentally violent changes to core Unix design and
+philosophy just to accomodate incompetent user space programmers is
+IMHO a really bad idea.
+
+						- Ted
 
