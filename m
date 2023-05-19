@@ -1,70 +1,69 @@
-Return-Path: <bpf+bounces-975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2563970A2EA
-	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 00:52:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7358670A2EB
+	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 00:52:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A166281C23
-	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 22:52:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB921C211F6
+	for <lists+bpf@lfdr.de>; Fri, 19 May 2023 22:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DADE5678;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA88567F;
 	Fri, 19 May 2023 22:52:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329302117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4E0211A
 	for <bpf@vger.kernel.org>; Fri, 19 May 2023 22:52:07 +0000 (UTC)
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D96E42
-	for <bpf@vger.kernel.org>; Fri, 19 May 2023 15:52:04 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1ae408f4d1aso30268415ad.0
-        for <bpf@vger.kernel.org>; Fri, 19 May 2023 15:52:04 -0700 (PDT)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471B71B3
+	for <bpf@vger.kernel.org>; Fri, 19 May 2023 15:52:05 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-64d2981e3abso1581048b3a.1
+        for <bpf@vger.kernel.org>; Fri, 19 May 2023 15:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1684536723; x=1687128723;
+        d=isovalent.com; s=google; t=1684536724; x=1687128724;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TJM8QhKG/f3glJKTGPhCANIBEGsuWrMFo08EisNEWt0=;
-        b=Pq0ZLvaUqaaU95+QD9cG/2KQpCgcYwcrW3RLe6sg0lwuYd/T6i8w07EapD2t2YYiC1
-         UpNNMXFc8kzkO6wslwxNWAY3c+TcMU3nhPEW7BtztRhd0o4DJjiFWPYUYpWrK7YKotqQ
-         QRh7Vo0VhAgEsYj4o+A86WKX22+j3sj1Oaz5qVR3aPCywG5yi8Sf7XZQJE/e6tUKT42f
-         P+ppOkwIUNfoH/xqvkypmtNZpOf/3Ai3EwE5r9PZLINQ/5faoUup5b9xzGxEb2m05Czb
-         StJUAU7DEYz60DTU3OKZaIWyWLd88ncwuqkgnvNvYeRvAa/G0dhYUOrpG5AMdwEXjRut
-         3meg==
+        bh=qwmHpgDmVlTo8Kp5M3jmfH1KC96jBeC1s7SoCPSCjuo=;
+        b=LYSiA2S3kunWusplK+mfGdkFGhwsM89VInsdYTaz1T/i4ByR6AF8Xr6mKWFeiuWsCH
+         3XRZiomEXuqT9gRNaeHviyS9AxiKjotFmy7+jVsvLO7m1ON4mQbpbWUEYhvl45Vq3qbV
+         2LQoey6wW+zubX2SVDU+GzwhasVZhENHAHuU+UK9SD8xcrU4IiS0pPdfEJPuN+ncXQRu
+         aMlhh20l/imqB/p6pHs2g+r/k1pegVWo0ZetUMYpplzTed1jsF/SrgSxeIupVKv/EAQL
+         JCX13UDnMbHThfOaDV8KEcqkfnkSuoCNxllfb6lwHV895XGn7N9jzxI0QmQ68avx5fjP
+         1mxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684536723; x=1687128723;
+        d=1e100.net; s=20221208; t=1684536724; x=1687128724;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TJM8QhKG/f3glJKTGPhCANIBEGsuWrMFo08EisNEWt0=;
-        b=TCHCwPEyEAHqZ6q4UnO7LgciixhdFfoz+nCqItiiEi0vxJ6KWBYMZOXeWl60a1gkhn
-         gmGKq9g9kASChwbZc0DvkZzvZfytWd5etkOaNJ7p6+OCwO2XJmHvW3VpO3AmQj4c9nAi
-         xlMt4Vw9nxyHrwSySoeh+00767p1Hf8TkPzXitHaJI2jHcK3I0LTZwJl2NRFje3bMwZM
-         RB0R82/gH1Ncr0OTfkr06Q8ts/MYjcie8GE7jq3r13TPoxH/wPcjer4CuvQ4oHQOKA/N
-         h16v72nRc7h7Yet+HKxq2C7onlZ+DRAuTuHQFhjq/OFmRwPNJJ/yCNUOCn0fsyR2QqmW
-         D6qQ==
-X-Gm-Message-State: AC+VfDzplC2GVeBXRHRc38D8Py2L8elkMo8+SXPpFQyjyN75u3ZoBPEC
-	QTHd3YLsCcVYnUE/hOXLfuWWqc7RDbScJhr9Dn4=
-X-Google-Smtp-Source: ACHHUZ55DXzq5Ju4hRHYP8irkIbCyBaz2OscasQvMSiF6lG4ZKGNmBNBbOzI0Dpc8ixfY709Ei2Q0g==
-X-Received: by 2002:a17:902:e889:b0:1aa:e30e:29d3 with SMTP id w9-20020a170902e88900b001aae30e29d3mr5224152plg.29.1684536723568;
-        Fri, 19 May 2023 15:52:03 -0700 (PDT)
+        bh=qwmHpgDmVlTo8Kp5M3jmfH1KC96jBeC1s7SoCPSCjuo=;
+        b=SXoqDJHsFWpYzsiFZOH2/rhYk90gHRtD4LX+GYkmVfdmQjgab14Xn0oVlGiK+zRxtd
+         USIvrdzuwLW2uCJzEH8FRpvS0C759RM48y/ksB1Y7BlWLFIIltfJj3tKQOOrbxatkkQK
+         PBlYkmUyRX3oRsz7hBqHzQ0JFfsPBr8vt0TmRND2Pm5QzSsU4ooV62khJsBoM6RetAZg
+         Ef+vqDuy6YMpOA5BJv093C71QrRhaH1J+BmcD6IwMvikawHX/4e4N9bXSt/6nv9ZLYwg
+         tO6Gu7oQ0y9sVrcYdi4xIUKk6vwu61Z06L01Ki3UcRdZUJ+AxSPj/lvDwQvqIQPQgKFy
+         adHg==
+X-Gm-Message-State: AC+VfDw7sKdkAO3+zMnvwxteNegvu08lZlBRcy24uYJWW8EHaWDpA81o
+	Oig6GCCkF6L1J0aQhTk5g+ETemTFVmJ6XE/B6yw=
+X-Google-Smtp-Source: ACHHUZ70yiPcw9CECQHrMsaJZgFSNdGHU9WQrYpfT1yO2zYugqxqJkVE9FnODZ4hBcU4G2hCEP3T0w==
+X-Received: by 2002:a17:902:7289:b0:1ac:6084:1f4 with SMTP id d9-20020a170902728900b001ac608401f4mr3943384pll.27.1684536724489;
+        Fri, 19 May 2023 15:52:04 -0700 (PDT)
 Received: from localhost.localdomain ([2604:1380:4611:8100::1])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170902c08400b001a6ed2d0ef8sm117880pld.273.2023.05.19.15.52.02
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c08400b001a6ed2d0ef8sm117880pld.273.2023.05.19.15.52.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 19 May 2023 15:52:03 -0700 (PDT)
 From: Aditi Ghag <aditi.ghag@isovalent.com>
 To: bpf@vger.kernel.org
 Cc: kafai@fb.com,
 	sdf@google.com,
-	aditi.ghag@isovalent.com,
-	Yonghong Song <yhs@meta.com>
-Subject: [PATCH v9 bpf-next 1/9] bpf: tcp: Avoid taking fast sock lock in iterator
-Date: Fri, 19 May 2023 22:51:49 +0000
-Message-Id: <20230519225157.760788-2-aditi.ghag@isovalent.com>
+	aditi.ghag@isovalent.com
+Subject: [PATCH v9 bpf-next 2/9] udp: seq_file: Helper function to match socket attributes
+Date: Fri, 19 May 2023 22:51:50 +0000
+Message-Id: <20230519225157.760788-3-aditi.ghag@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230519225157.760788-1-aditi.ghag@isovalent.com>
 References: <20230519225157.760788-1-aditi.ghag@isovalent.com>
@@ -82,145 +81,81 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This is a preparatory commit to replace `lock_sock_fast` with
-`lock_sock`,and facilitate BPF programs executed from the TCP sockets
-iterator to be able to destroy TCP sockets using the bpf_sock_destroy
-kfunc (implemented in follow-up commits).
+This is a preparatory commit to refactor code that matches socket
+attributes in iterators to a helper function, and use it in the
+proc fs iterator.
 
-Previously, BPF TCP iterator was acquiring the sock lock with BH
-disabled. This led to scenarios where the sockets hash table bucket lock
-can be acquired with BH enabled in some path versus disabled in other.
-In such situation, kernel issued a warning since it thinks that in the
-BH enabled path the same bucket lock *might* be acquired again in the
-softirq context (BH disabled), which will lead to a potential dead lock.
-Since bpf_sock_destroy also happens in a process context, the potential
-deadlock warning is likely a false alarm.
-
-Here is a snippet of annotated stack trace that motivated this change:
-
-```
-
-Possible interrupt unsafe locking scenario:
-
-      CPU0                    CPU1
-      ----                    ----
- lock(&h->lhash2[i].lock);
-                              local_bh_disable();
-                              lock(&h->lhash2[i].lock);
-kernel imagined possible scenario:
-  local_bh_disable();  /* Possible softirq */
-  lock(&h->lhash2[i].lock);
-*** Potential Deadlock ***
-
-process context:
-
-lock_acquire+0xcd/0x330
-_raw_spin_lock+0x33/0x40
-------> Acquire (bucket) lhash2.lock with BH enabled
-__inet_hash+0x4b/0x210
-inet_csk_listen_start+0xe6/0x100
-inet_listen+0x95/0x1d0
-__sys_listen+0x69/0xb0
-__x64_sys_listen+0x14/0x20
-do_syscall_64+0x3c/0x90
-entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-
-bpf_sock_destroy run from iterator:
-
-lock_acquire+0xcd/0x330
-_raw_spin_lock+0x33/0x40
-------> Acquire (bucket) lhash2.lock with BH disabled
-inet_unhash+0x9a/0x110
-tcp_set_state+0x6a/0x210
-tcp_abort+0x10d/0x200
-bpf_prog_6793c5ca50c43c0d_iter_tcp6_server+0xa4/0xa9
-bpf_iter_run_prog+0x1ff/0x340
-------> lock_sock_fast that acquires sock lock with BH disabled
-bpf_iter_tcp_seq_show+0xca/0x190
-bpf_seq_read+0x177/0x450
-
-```
-
-Also, Yonghong reported a deadlock for non-listening TCP sockets that
-this change resolves. Previously, `lock_sock_fast` held the sock spin
-lock with BH which was again being acquired in `tcp_abort`:
-
-```
-watchdog: BUG: soft lockup - CPU#0 stuck for 86s! [test_progs:2331]
-RIP: 0010:queued_spin_lock_slowpath+0xd8/0x500
-Call Trace:
- <TASK>
- _raw_spin_lock+0x84/0x90
- tcp_abort+0x13c/0x1f0
- bpf_prog_88539c5453a9dd47_iter_tcp6_client+0x82/0x89
- bpf_iter_run_prog+0x1aa/0x2c0
- ? preempt_count_sub+0x1c/0xd0
- ? from_kuid_munged+0x1c8/0x210
- bpf_iter_tcp_seq_show+0x14e/0x1b0
- bpf_seq_read+0x36c/0x6a0
-
-
-bpf_iter_tcp_seq_show
-   lock_sock_fast
-     __lock_sock_fast
-       spin_lock_bh(&sk->sk_lock.slock);
-	/* * Fast path return with bottom halves disabled and * sock::sk_lock.slock held.* */
-
- ...
- tcp_abort
-   local_bh_disable();
-   spin_lock(&((sk)->sk_lock.slock)); // from bh_lock_sock(sk)
-
-```
-
-With the switch to `lock_sock`, it calls `spin_unlock_bh` before returning:
-
-```
-lock_sock
-    lock_sock_nested
-       spin_lock_bh(&sk->sk_lock.slock);
-       :
-       spin_unlock_bh(&sk->sk_lock.slock);
-```
-
-Acked-by: Yonghong Song <yhs@meta.com>
-Acked-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Aditi Ghag <aditi.ghag@isovalent.com>
 ---
- net/ipv4/tcp_ipv4.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/ipv4/udp.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index ea370afa70ed..f2d370a9450f 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2962,7 +2962,6 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
- 	struct bpf_iter_meta meta;
- 	struct bpf_prog *prog;
- 	struct sock *sk = v;
--	bool slow;
- 	uid_t uid;
- 	int ret;
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index c605d171eb2d..71e3fef44fd5 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -2983,6 +2983,16 @@ EXPORT_SYMBOL(udp_prot);
+ /* ------------------------------------------------------------------------ */
+ #ifdef CONFIG_PROC_FS
  
-@@ -2970,7 +2969,7 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
- 		return 0;
++static unsigned short seq_file_family(const struct seq_file *seq);
++static bool seq_sk_match(struct seq_file *seq, const struct sock *sk)
++{
++	unsigned short family = seq_file_family(seq);
++
++	/* AF_UNSPEC is used as a match all */
++	return ((family == AF_UNSPEC || family == sk->sk_family) &&
++		net_eq(sock_net(sk), seq_file_net(seq)));
++}
++
+ static struct udp_table *udp_get_table_afinfo(struct udp_seq_afinfo *afinfo,
+ 					      struct net *net)
+ {
+@@ -3013,10 +3023,7 @@ static struct sock *udp_get_first(struct seq_file *seq, int start)
  
- 	if (sk_fullsock(sk))
--		slow = lock_sock_fast(sk);
-+		lock_sock(sk);
+ 		spin_lock_bh(&hslot->lock);
+ 		sk_for_each(sk, &hslot->head) {
+-			if (!net_eq(sock_net(sk), net))
+-				continue;
+-			if (afinfo->family == AF_UNSPEC ||
+-			    sk->sk_family == afinfo->family)
++			if (seq_sk_match(seq, sk))
+ 				goto found;
+ 		}
+ 		spin_unlock_bh(&hslot->lock);
+@@ -3040,9 +3047,7 @@ static struct sock *udp_get_next(struct seq_file *seq, struct sock *sk)
  
- 	if (unlikely(sk_unhashed(sk))) {
- 		ret = SEQ_SKIP;
-@@ -2994,7 +2993,7 @@ static int bpf_iter_tcp_seq_show(struct seq_file *seq, void *v)
+ 	do {
+ 		sk = sk_next(sk);
+-	} while (sk && (!net_eq(sock_net(sk), net) ||
+-			(afinfo->family != AF_UNSPEC &&
+-			 sk->sk_family != afinfo->family)));
++	} while (sk && !seq_sk_match(seq, sk));
  
- unlock:
- 	if (sk_fullsock(sk))
--		unlock_sock_fast(sk, slow);
-+		release_sock(sk);
- 	return ret;
+ 	if (!sk) {
+ 		udptable = udp_get_table_afinfo(afinfo, net);
+@@ -3205,6 +3210,21 @@ static const struct seq_operations bpf_iter_udp_seq_ops = {
+ };
+ #endif
  
- }
++static unsigned short seq_file_family(const struct seq_file *seq)
++{
++	const struct udp_seq_afinfo *afinfo;
++
++#ifdef CONFIG_BPF_SYSCALL
++	/* BPF iterator: bpf programs to filter sockets. */
++	if (seq->op == &bpf_iter_udp_seq_ops)
++		return AF_UNSPEC;
++#endif
++
++	/* Proc fs iterator */
++	afinfo = pde_data(file_inode(seq->file));
++	return afinfo->family;
++}
++
+ const struct seq_operations udp_seq_ops = {
+ 	.start		= udp_seq_start,
+ 	.next		= udp_seq_next,
 -- 
 2.34.1
 
