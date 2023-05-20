@@ -1,221 +1,273 @@
-Return-Path: <bpf+bounces-989-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-990-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B103870A85E
-	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 15:39:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B939C70AB8D
+	for <lists+bpf@lfdr.de>; Sun, 21 May 2023 00:14:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3652812F7
-	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 13:39:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7977F281055
+	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 22:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272C563B4;
-	Sat, 20 May 2023 13:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E0D9463;
+	Sat, 20 May 2023 22:14:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0933D399
-	for <bpf@vger.kernel.org>; Sat, 20 May 2023 13:39:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E732C433EF;
-	Sat, 20 May 2023 13:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684589974;
-	bh=glzFq73gXQMBmUnvxbN6Wy1bn8Z4/NqLPw/GH8Fo26E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ENOSH9qXsw1lt31foxErJCzJQwGgKIUgHVxJkRnepJLl5NiuhUmo79IfwhorTJzjB
-	 hkTWB4eVl++eqXSGFItUhOdnFJkhkXRW6qrFTe/iytZfkuxyJit808xvC0alZ8tUoQ
-	 DmSGvoCsMHS57Y3a94wh2lIblqVRCENQ/OnaHuYH5wigdCL96RumkFt0QrexPXBpJE
-	 4kws2kspcEGfbZdidoJGc/yyQmnBBFewSpe8za3SRjFMBwyPffCn1KpQAs4JFjaQ0F
-	 tHaEgN+ZDNth1KkYWag1x2InODCWHtFJ8dNnRzq9InckaDOqvQYcFBD1cY9lDly5zE
-	 iW8CEEXc79QBA==
-Date: Sat, 20 May 2023 15:39:28 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-	cyphar@cyphar.com, lennart@poettering.net,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: support O_PATH FDs in BPF_OBJ_PIN
- and BPF_OBJ_GET commands
-Message-ID: <20230520-ozonkonzentration-gebacken-8aa9230bad17@brauner>
-References: <20230518215444.1418789-1-andrii@kernel.org>
- <20230518215444.1418789-2-andrii@kernel.org>
- <20230519-eiswasser-leibarzt-ed7e52934486@brauner>
- <CAEf4BzY_kJZiWe804-DOzfNJNKVSQCct8_gNta7jFyruFDw6zA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A88C8F7D
+	for <bpf@vger.kernel.org>; Sat, 20 May 2023 22:14:03 +0000 (UTC)
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E231413E
+	for <bpf@vger.kernel.org>; Sat, 20 May 2023 15:14:00 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-76c56492fa0so171466339f.2
+        for <bpf@vger.kernel.org>; Sat, 20 May 2023 15:14:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684620840; x=1687212840;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=phVjbSew9ZM8CBTOL6mgsk8hmTvWd23s0NrgeLLExb8=;
+        b=kGiQeseMBuTQQt1SkDdV3D0OdgYvwyGIm9B1vxzMJIdLlB14bUFeHeU9MU8StZQjLY
+         g/P9cS9Wh3a1XiBh948hmBXNHmGJtU9PJyFQ8dfGP5Ys7rlxNVGWoGupsNcytzc0f3t5
+         XLsn7XVCOCiTJ/lhxEiAYddh6RqECtG3GkuKHRca8NEoysxw/DgAOpUgOzVR0VIX5fU/
+         P20D14kVH/FltiE4buUF0BBU5S8nVZPDN9ugYWTi/3hQcz3+313KR7kDdz4Zh83gmbRw
+         JpxpDNCv+wz9tXArE4xiLwIe4ggQutBCJeKBFWeDbrkRCqsLqFwQsGF8rTZN+ex9biAg
+         oqcg==
+X-Gm-Message-State: AC+VfDw4jtREry2mfYQW4uCMPsbZ3SnD8cywDV3hi8VEejGG9tabu1vh
+	JPmAu/o+xg5g/a301QSFoP1K0A6sAs8iqmetZrpRckAePfix
+X-Google-Smtp-Source: ACHHUZ79g/TnEGwpYJweg5O7XU1BAFLyCZYzIqHpEWbn3eLfpK0OSceFGzLQU4dwafL9XnPrzN5jtTskVctvMoj6qwD6CTWIMwKj
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzY_kJZiWe804-DOzfNJNKVSQCct8_gNta7jFyruFDw6zA@mail.gmail.com>
+X-Received: by 2002:a02:9643:0:b0:41a:dd1b:23ca with SMTP id
+ c61-20020a029643000000b0041add1b23camr255641jai.4.1684620839674; Sat, 20 May
+ 2023 15:13:59 -0700 (PDT)
+Date: Sat, 20 May 2023 15:13:59 -0700
+In-Reply-To: <0000000000004f938b05fad48ee6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000baea9905fc275a49@google.com>
+Subject: Re: [syzbot] [fs?] INFO: task hung in synchronize_rcu (4)
+From: syzbot <syzbot+222aa26d0a5dbc2e84fe@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	davem@davemloft.net, edumazet@google.com, hdanton@sina.com, jack@suse.cz, 
+	kafai@fb.com, kuba@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org, 
+	willemdebruijn.kernel@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, May 19, 2023 at 09:01:53AM -0700, Andrii Nakryiko wrote:
-> On Fri, May 19, 2023 at 2:49 AM Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > On Thu, May 18, 2023 at 02:54:42PM -0700, Andrii Nakryiko wrote:
-> > > Current UAPI of BPF_OBJ_PIN and BPF_OBJ_GET commands of bpf() syscall
-> > > forces users to specify pinning location as a string-based absolute or
-> > > relative (to current working directory) path. This has various
-> > > implications related to security (e.g., symlink-based attacks), forces
-> > > BPF FS to be exposed in the file system, which can cause races with
-> > > other applications.
-> > >
-> > > One of the feedbacks we got from folks working with containers heavily
-> > > was that inability to use purely FD-based location specification was an
-> > > unfortunate limitation and hindrance for BPF_OBJ_PIN and BPF_OBJ_GET
-> > > commands. This patch closes this oversight, adding path_fd field to
-> > > BPF_OBJ_PIN and BPF_OBJ_GET UAPI, following conventions established by
-> > > *at() syscalls for dirfd + pathname combinations.
-> > >
-> > > This now allows interesting possibilities like working with detached BPF
-> > > FS mount (e.g., to perform multiple pinnings without running a risk of
-> > > someone interfering with them), and generally making pinning/getting
-> > > more secure and not prone to any races and/or security attacks.
-> > >
-> > > This is demonstrated by a selftest added in subsequent patch that takes
-> > > advantage of new mount APIs (fsopen, fsconfig, fsmount) to demonstrate
-> > > creating detached BPF FS mount, pinning, and then getting BPF map out of
-> > > it, all while never exposing this private instance of BPF FS to outside
-> > > worlds.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h            |  4 ++--
-> > >  include/uapi/linux/bpf.h       | 10 ++++++++++
-> > >  kernel/bpf/inode.c             | 16 ++++++++--------
-> > >  kernel/bpf/syscall.c           | 25 ++++++++++++++++++++-----
-> > >  tools/include/uapi/linux/bpf.h | 10 ++++++++++
-> > >  5 files changed, 50 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 36e4b2d8cca2..f58895830ada 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -2077,8 +2077,8 @@ struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
-> > >  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
-> > >  struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
-> > >
-> > > -int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
-> > > -int bpf_obj_get_user(const char __user *pathname, int flags);
-> > > +int bpf_obj_pin_user(u32 ufd, int path_fd, const char __user *pathname);
-> > > +int bpf_obj_get_user(int path_fd, const char __user *pathname, int flags);
-> > >
-> > >  #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
-> > >  #define DEFINE_BPF_ITER_FUNC(target, args...)                        \
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 1bb11a6ee667..3731284671e4 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -1272,6 +1272,9 @@ enum {
-> > >
-> > >  /* Create a map that will be registered/unregesitered by the backed bpf_link */
-> > >       BPF_F_LINK              = (1U << 13),
-> > > +
-> > > +/* Get path from provided FD in BPF_OBJ_PIN/BPF_OBJ_GET commands */
-> > > +     BPF_F_PATH_FD           = (1U << 14),
-> > >  };
-> > >
-> > >  /* Flags for BPF_PROG_QUERY. */
-> > > @@ -1420,6 +1423,13 @@ union bpf_attr {
-> > >               __aligned_u64   pathname;
-> > >               __u32           bpf_fd;
-> > >               __u32           file_flags;
-> > > +             /* Same as dirfd in openat() syscall; see openat(2)
-> > > +              * manpage for details of path FD and pathname semantics;
-> > > +              * path_fd should accompanied by BPF_F_PATH_FD flag set in
-> > > +              * file_flags field, otherwise it should be set to zero;
-> > > +              * if BPF_F_PATH_FD flag is not set, AT_FDCWD is assumed.
-> > > +              */
-> > > +             __u32           path_fd;
-> > >       };
-> >
-> > Thanks for changing that.
-> >
-> > This is still odd though because you prevent users from specifying
-> > AT_FDCWD explicitly. They should be allowed to do that plus file
-> > descriptors are signed integers so please s/__u32/__s32/. AT_FDCWD
-> > should be passable anywhere where we have at* semantics. Plus, if in the
-> > vfs we ever add
-> > #define AT_ROOT -200
-> > or something you can't use without coming up with your own custom flags.
-> > If you just follow what everyone else does and use __s32 then you're
-> > good.
-> 
-> It's just an oversight, I'll change to __s32, good point. I intended
-> AT_FDCWD to be passable explicitly and it will work because we just
-> interpret that path_fd as int internally, but you are of course right
-> that API should make it clear that this is signed value.
-> 
-> >
-> > File descriptors really need to be signed. There's no way around that.
-> > See io_uring as a good example
-> >
-> > io_uring_sqe {
-> >           __u8    opcode;         /* type of operation for this sqe */
-> >           __u8    flags;          /* IOSQE_ flags */
-> >           __u16   ioprio;         /* ioprio for the request */
-> >           __s32   fd;             /* file descriptor to do IO on */
-> > }
-> >
-> > where the __s32 fd is used in all fd based requests including
-> > io_openat*() (See io_uring/openclose.c) which are effectively the
-> > semantics you want to emulate here.
-> 
-> Agreed. Please bear in mind that it's the first time we are dealing
-> with these path FDs in bpf() subsystem, so all these silly mistakes
-> are just coming from being exposed into unfamiliar "territory". Will
-> fix in v3, along with adding explicit tests for AT_FWCWD.
+syzbot has found a reproducer for the following issue on:
 
-I really don't expect this to be perfect right off the bat and it's
-perfectly understandable to not get all the details right if you haven't
-been exposed to the customs of a specific subsystems. So no worries
-there and I'm well aware of that. I probably couldn't tell head from toe
-in some parts of bpf.
+HEAD commit:    dcbe4ea1985d Merge branch '1GbE' of git://git.kernel.org/p..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=123ebd91280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f20b05fe035db814
+dashboard link: https://syzkaller.appspot.com/bug?extid=222aa26d0a5dbc2e84fe
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1495596a280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1529326a280000
 
-For bpf pinning things are a little simpler because it really is just an
-exclusive file create/file mknodat with preset mode so you don't really
-have to worry about general lookup like e.g., io_uring does. So we
-should've reached peak complexity for you in supporting basic *at()
-functionality.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/41b9dda0e686/disk-dcbe4ea1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/64d9bece8f89/vmlinux-dcbe4ea1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/42429896dca0/bzImage-dcbe4ea1.xz
 
-Btw, looking at bpf_obj_do_pin() you call security_path_mknod() before
-you verify that you're dealing with a bpf file. Might be simpler to
-check that this is a bpf file first and don't trigger an LSM check on
-something that you don't own:
+The issue was bisected to:
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 9948b542a470..329f27d5cacf 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -448,18 +448,17 @@ static int bpf_obj_do_pin(const char __user *pathname, void *raw,
-        if (IS_ERR(dentry))
-                return PTR_ERR(dentry);
+commit 3b5d4ddf8fe1f60082513f94bae586ac80188a03
+Author: Martin KaFai Lau <kafai@fb.com>
+Date:   Wed Mar 9 09:04:50 2022 +0000
 
--       mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
--
--       ret = security_path_mknod(&path, dentry, mode, 0);
--       if (ret)
--               goto out;
--
-        dir = d_inode(path.dentry);
-        if (dir->i_op != &bpf_dir_iops) {
-                ret = -EPERM;
-                goto out;
-        }
+    bpf: net: Remove TC_AT_INGRESS_OFFSET and SKB_MONO_DELIVERY_TIME_OFFSET macro
 
-+       mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
-+       ret = security_path_mknod(&path, dentry, mode, 0);
-+       if (ret)
-+               goto out;
-+
-        switch (type) {
-        case BPF_TYPE_PROG:
-                ret = vfs_mkobj(dentry, mode, bpf_mkprog, raw);
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=153459d7c80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=173459d7c80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=133459d7c80000
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+222aa26d0a5dbc2e84fe@syzkaller.appspotmail.com
+Fixes: 3b5d4ddf8fe1 ("bpf: net: Remove TC_AT_INGRESS_OFFSET and SKB_MONO_DELIVERY_TIME_OFFSET macro")
+
+INFO: task dhcpcd:10860 blocked for more than 143 seconds.
+      Not tainted 6.4.0-rc2-syzkaller-00481-gdcbe4ea1985d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:dhcpcd          state:D stack:29024 pid:10860 ppid:4670   flags:0x00000002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0xc9a/0x5880 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ exp_funnel_lock kernel/rcu/tree_exp.h:316 [inline]
+ synchronize_rcu_expedited+0x6f8/0x770 kernel/rcu/tree_exp.h:992
+ synchronize_rcu+0x2f1/0x3a0 kernel/rcu/tree.c:3499
+ synchronize_net+0x4e/0x60 net/core/dev.c:10791
+ __unregister_prot_hook+0x4b3/0x5c0 net/packet/af_packet.c:380
+ packet_do_bind+0x93f/0xe30 net/packet/af_packet.c:3235
+ packet_bind+0x15f/0x1c0 net/packet/af_packet.c:3319
+ __sys_bind+0x1ed/0x260 net/socket.c:1803
+ __do_sys_bind net/socket.c:1814 [inline]
+ __se_sys_bind net/socket.c:1812 [inline]
+ __x64_sys_bind+0x73/0xb0 net/socket.c:1812
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f522deb3677
+RSP: 002b:00007ffec7fc94f8 EFLAGS: 00000217 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 000055e71e865ca3 RCX: 00007f522deb3677
+RDX: 0000000000000014 RSI: 00007ffec7fc9508 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 000055e7200048a0 R09: 0000000000000004
+R10: 000000000000006d R11: 0000000000000217 R12: 000055e71ffff250
+R13: 000055e720004788 R14: 00007ffec7fe9dec R15: 000055e720004754
+ </TASK>
+INFO: task dhcpcd:10906 blocked for more than 145 seconds.
+      Not tainted 6.4.0-rc2-syzkaller-00481-gdcbe4ea1985d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:dhcpcd          state:D stack:28864 pid:10906 ppid:4670   flags:0x00000002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0xc9a/0x5880 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ exp_funnel_lock kernel/rcu/tree_exp.h:316 [inline]
+ synchronize_rcu_expedited+0x6f8/0x770 kernel/rcu/tree_exp.h:992
+ synchronize_rcu+0x2f1/0x3a0 kernel/rcu/tree.c:3499
+ synchronize_net+0x4e/0x60 net/core/dev.c:10791
+ __unregister_prot_hook+0x4b3/0x5c0 net/packet/af_packet.c:380
+ packet_do_bind+0x93f/0xe30 net/packet/af_packet.c:3235
+ packet_bind+0x15f/0x1c0 net/packet/af_packet.c:3319
+ __sys_bind+0x1ed/0x260 net/socket.c:1803
+ __do_sys_bind net/socket.c:1814 [inline]
+ __se_sys_bind net/socket.c:1812 [inline]
+ __x64_sys_bind+0x73/0xb0 net/socket.c:1812
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f522deb3677
+RSP: 002b:00007ffec7fc94f8 EFLAGS: 00000217 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 000055e71e865ca3 RCX: 00007f522deb3677
+RDX: 0000000000000014 RSI: 00007ffec7fc9508 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 000055e720004a20 R09: 0000000000000004
+R10: 000000000000006d R11: 0000000000000217 R12: 000055e71ffff250
+R13: 000055e720004908 R14: 00007ffec7fe9dec R15: 000055e7200048d4
+ </TASK>
+INFO: task dhcpcd:11298 blocked for more than 147 seconds.
+      Not tainted 6.4.0-rc2-syzkaller-00481-gdcbe4ea1985d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:dhcpcd          state:D stack:29008 pid:11298 ppid:4670   flags:0x00000002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0xc9a/0x5880 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ exp_funnel_lock kernel/rcu/tree_exp.h:316 [inline]
+ synchronize_rcu_expedited+0x6f8/0x770 kernel/rcu/tree_exp.h:992
+ synchronize_rcu+0x2f1/0x3a0 kernel/rcu/tree.c:3499
+ synchronize_net+0x4e/0x60 net/core/dev.c:10791
+ __unregister_prot_hook+0x4b3/0x5c0 net/packet/af_packet.c:380
+ packet_do_bind+0x93f/0xe30 net/packet/af_packet.c:3235
+ packet_bind+0x15f/0x1c0 net/packet/af_packet.c:3319
+ __sys_bind+0x1ed/0x260 net/socket.c:1803
+ __do_sys_bind net/socket.c:1814 [inline]
+ __se_sys_bind net/socket.c:1812 [inline]
+ __x64_sys_bind+0x73/0xb0 net/socket.c:1812
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f522deb3677
+RSP: 002b:00007ffec7fc94f8 EFLAGS: 00000217
+ ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 000055e71e865ca3 RCX: 00007f522deb3677
+RDX: 0000000000000014 RSI: 00007ffec7fc9508 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 000055e720004420 R09: 0000000000000004
+R10: 000000000000006d R11: 0000000000000217 R12: 000055e71ffff250
+R13: 000055e720004a88 R14: 00007ffec7fe9dec R15: 000055e720004a54
+ </TASK>
+INFO: task dhcpcd:11328 blocked for more than 149 seconds.
+      Not tainted 6.4.0-rc2-syzkaller-00481-gdcbe4ea1985d #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:dhcpcd          state:D stack:28320 pid:11328 ppid:4670   flags:0x00000002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5343 [inline]
+ __schedule+0xc9a/0x5880 kernel/sched/core.c:6669
+ schedule+0xde/0x1a0 kernel/sched/core.c:6745
+ exp_funnel_lock kernel/rcu/tree_exp.h:316 [inline]
+ synchronize_rcu_expedited+0x6f8/0x770 kernel/rcu/tree_exp.h:992
+ synchronize_rcu+0x2f1/0x3a0 kernel/rcu/tree.c:3499
+ synchronize_net+0x4e/0x60 net/core/dev.c:10791
+ __unregister_prot_hook+0x4b3/0x5c0 net/packet/af_packet.c:380
+ packet_do_bind+0x93f/0xe30 net/packet/af_packet.c:3235
+ packet_bind+0x15f/0x1c0 net/packet/af_packet.c:3319
+ __sys_bind+0x1ed/0x260 net/socket.c:1803
+ __do_sys_bind net/socket.c:1814 [inline]
+ __se_sys_bind net/socket.c:1812 [inline]
+ __x64_sys_bind+0x73/0xb0 net/socket.c:1812
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f522deb3677
+RSP: 002b:00007ffec7fc94f8 EFLAGS: 00000217 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 000055e71e865ca3 RCX: 00007f522deb3677
+RDX: 0000000000000014 RSI: 00007ffec7fc9508 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 000055e720004420 R09: 0000000000000004
+R10: 000000000000006d R11: 0000000000000217 R12: 000055e71ffff250
+R13: 000055e720004c08 R14: 00007ffec7fe9dec R15: 000055e720004bd4
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8c798430 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x31/0xd80 kernel/rcu/tasks.h:518
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8c798130 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x31/0xd80 kernel/rcu/tasks.h:518
+1 lock held by khungtaskd/28:
+ #0: ffffffff8c799040 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6545
+1 lock held by kswapd0/84:
+2 locks held by kswapd1/85:
+3 locks held by kworker/0:2/760:
+3 locks held by kworker/1:2/1126:
+1 lock held by syslogd/4438:
+2 locks held by klogd/4445:
+1 lock held by dhcpcd/4669:
+2 locks held by getty/4756:
+ #0: ffff8880286bf098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x26/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015902f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xef4/0x13e0 drivers/tty/n_tty.c:2176
+2 locks held by sshd/5018:
+2 locks held by syz-executor300/5025:
+2 locks held by dhcpcd/10797:
+ #0: ffff8880734ebe10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:775 [inline]
+ #0: ffff8880734ebe10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x290 net/socket.c:652
+ #1: ffffffff8c7a44b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:325 [inline]
+ #1: ffffffff8c7a44b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3e8/0x770 kernel/rcu/tree_exp.h:992
+2 locks held by dhcpcd/10818:
+ #0: ffff8880217f2130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1697 [inline]
+ #0: ffff8880217f2130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2f/0xe30 net/packet/af_packet.c:3202
+ #1: ffffffff8c7a44b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:325 [inline]
+ #1: ffffffff8c7a44b8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3e8/0x770 kernel/rcu/tree_exp.h:992
+1 lock held by dhcpcd/10860:
+ #0: ffff88807b95c130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1697 [inline]
+ #0: ffff88807b95c130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2f/0xe30 net/packet/af_packet.c:3202
+1 lock held by dhcpcd/10906:
+ #0: ffff888076080130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1697 [inline]
+ #0: ffff888076080130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2f/0xe30 net/packet/af_packet.c:3202
+1 lock held by dhcpcd/11298:
+ #0: ffff888027a66130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1697 [inline]
+ #0: ffff888027a66130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x2f/0xe30 net/packet/af_packet.c:3202
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
