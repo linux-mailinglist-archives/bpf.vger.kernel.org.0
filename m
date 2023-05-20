@@ -1,73 +1,91 @@
-Return-Path: <bpf+bounces-987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFD2F70A671
-	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 10:41:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5956F70A6FD
+	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 11:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5D471C20A68
-	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 08:41:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DDF5281A69
+	for <lists+bpf@lfdr.de>; Sat, 20 May 2023 09:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DAF20E0;
-	Sat, 20 May 2023 08:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42EC3D9F;
+	Sat, 20 May 2023 09:56:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC60372
-	for <bpf@vger.kernel.org>; Sat, 20 May 2023 08:41:42 +0000 (UTC)
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CF61BB;
-	Sat, 20 May 2023 01:41:40 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5289cf35eeaso1192199a12.1;
-        Sat, 20 May 2023 01:41:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDF1624;
+	Sat, 20 May 2023 09:56:53 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219B2B8;
+	Sat, 20 May 2023 02:56:52 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-64d3fbb8c1cso1209468b3a.3;
+        Sat, 20 May 2023 02:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684572100; x=1687164100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vzxA/hUX8foGgVXJvxnvVqkQ7/8Ii0zngzDlNRrcVao=;
-        b=osT526hGGFNfKga9XAnWB+RDp+UhUagqtAwio/C3iMrelWVrgJXT8tcECs0j58hc9r
-         eHOcf0fdKdjp9mCUCLlor+yreygqZEDV+w9MDCikIWCT6t4VsPakWKG6IEc+MBUZEjH9
-         79NkwpUdViEUpZX8ypoemxgt4bVRp7rp7Tim+ixB2AiSX7T3QxkVoFuU40GT3m3gt7d3
-         VKFenLKZeV3n8mot8juuGmpC55fdhHi74uDGIz7GlbO9VRvDRXUd+V/x5BeGzHcM9M9w
-         LChOcWa4BaRYfqBSJDb1KSSSq0ZYxfRB+4kKYZXUrl+LejEfByoDNhwxfukVEGKF8HBN
-         IacA==
+        d=gmail.com; s=20221208; t=1684576611; x=1687168611;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4nvQucCrYnD9qDZgDIXzYYSTjdKfzVHDZRdsJ/zonNo=;
+        b=m6QzIjMyqr2ArCl+HPojqTYwNMmfA6u7dUniZztX6LJ7kURSDjb2d0gmzZUVu6y1ah
+         3Y3on1FvvA+kIC/WJ123bZzdVy+PoJDKxUu/BUSiaBBxWUKswWFgIPusmg0oVf2SeDZE
+         TsOxkq6ho4OES5ELwOvhA367mZYYex+o6v+vKr7KwQlzJL242EwV9iN40AZEj+W9VOb4
+         Wrmwv3od43MPMkXiQcHZ1LhD8HwI3hgtpklNakKnX5Hfi8wCb8pYRl8xXY0sAD5uETxq
+         l8G10vOoaHFw/c9yXUSehbFSdJbmgb/qGYfYljbBW8xzA82OKwpwA5SP6L3Bu4iX3a2q
+         4eJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684572100; x=1687164100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vzxA/hUX8foGgVXJvxnvVqkQ7/8Ii0zngzDlNRrcVao=;
-        b=bvbbOQr5KAs4FQCAg1si03sPa6RCaQASB3Vi6kwqMJTaOZdxwCaq5QVYRI51UiLUa0
-         54rCqNVAQkj2uQaj79D9l1yv0uqIJ/gBSo3eiG4GJ0Rf1ipzvihHHb50EI6Nj9hnizPO
-         eB1yqeQMNXdHJrXkE1gzc8UO6byWU77pHkhierWO4OpGFygS1ahwDhv6ybpIN+gXLU9n
-         zUbYHZOkHOKK0TiLVN0ci3gvMfVF/wKZL6M6oRepn4njQHF0RTrTI4IiG6zEStGzeyiV
-         oA1/hoSIaNJIYQPpvo4UzSqCCOUjXSsgS8hzBDH5GZYyw+mi0pAVSP3qI8MbaG1VHKrw
-         aG1w==
-X-Gm-Message-State: AC+VfDy0c1XsOFKCpMX4SBiHyvb1kYKge/m7En5mzxRLzAh0K35LvWec
-	BP6HZ6HIN3a9TJyjNGPzl5PP35Ohx10RSg==
-X-Google-Smtp-Source: ACHHUZ4STBzVjUEyLV4bd91LOoHt7wSc+I3MFY6emKyPItNgIZ+xPE+O862akqN5mtxn1XnQqCFwBw==
-X-Received: by 2002:a17:90b:f84:b0:247:14ac:4d3a with SMTP id ft4-20020a17090b0f8400b0024714ac4d3amr5385444pjb.20.1684572099886;
-        Sat, 20 May 2023 01:41:39 -0700 (PDT)
-Received: from localhost.localdomain ([43.132.141.9])
-        by smtp.gmail.com with ESMTPSA id d61-20020a17090a6f4300b0024dfbac9e2fsm2810726pjk.21.2023.05.20.01.41.37
+        d=1e100.net; s=20221208; t=1684576611; x=1687168611;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4nvQucCrYnD9qDZgDIXzYYSTjdKfzVHDZRdsJ/zonNo=;
+        b=EwWLTVGEeJIv199TbONWgydaPu1jsoONor20P5MeIQxuG4xg3f1gx6f4ZDPRQBAfcp
+         m7m0QbvU1e7Vb43wRH1ltSNrALpYLNIajGPaNd3mK8CEInEfWOHZ5iIOmAaKWITSDD6s
+         s9ius0dM4Sc7sW0/vm7i8i+PBIdKmbIStUu277rYvr56DaQekKzkcJ7OnEO9BHzmzbtx
+         SugsLw9eozi9Q2Ek7um0d+S5M4lriTzafeV4r42EhaXjV1E9Qs3hYndslXvTe5dTrO+m
+         Ed/cDdNKD8mCWU6mAL5BOY6y25qkQmDz+x9dC5YRQeu7Iq7OtmJ10NHWh9dPa1R8Vin+
+         sV5Q==
+X-Gm-Message-State: AC+VfDxi2UnatTIaeE8TllQvC0G/YevNWF0CVT1i1DmVzGUt/fL9xvva
+	jEqHrvkvs8abmJp7/Xeq/Vs=
+X-Google-Smtp-Source: ACHHUZ68FRvELNasJW+XPAaN83BXINRQEvnpbspnmfbuSYFZBKx83WNNydh2f217lJQCJX4xYWv8iw==
+X-Received: by 2002:a05:6a00:a21:b0:64d:2da5:4d2d with SMTP id p33-20020a056a000a2100b0064d2da54d2dmr6609122pfh.25.1684576611243;
+        Sat, 20 May 2023 02:56:51 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.98.101])
+        by smtp.googlemail.com with ESMTPSA id x22-20020aa793b6000000b006439df7ed5fsm981255pff.6.2023.05.20.02.56.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 May 2023 01:41:39 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: linux-block@vger.kernel.org
-Cc: axboe@kernel.dk,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
+        Sat, 20 May 2023 02:56:50 -0700 (PDT)
+From: Ze Gao <zegao2021@gmail.com>
+X-Google-Original-From: Ze Gao <zegao@tencent.com>
+To: jolsa@kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Hao Luo <haoluo@google.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Yonghong Song <yhs@fb.com>,
 	bpf@vger.kernel.org,
-	yhs@meta.com,
-	hengqi.chen@gmail.com,
-	Francis Laniel <flaniel@linux.microsoft.com>
-Subject: [PATCH] block: introduce block_io_start/block_io_done tracepoints
-Date: Sat, 20 May 2023 08:40:57 +0000
-Message-Id: <20230520084057.1467003-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.31.1
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	kafai@fb.com,
+	kpsingh@chromium.org,
+	netdev@vger.kernel.org,
+	paulmck@kernel.org,
+	songliubraving@fb.com,
+	Ze Gao <zegao@tencent.com>
+Subject: 
+Date: Sat, 20 May 2023 17:47:24 +0800
+Message-Id: <20230520094722.5393-1-zegao@tencent.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20220515203653.4039075-1-jolsa@kernel.org>
+References: <20220515203653.4039075-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,90 +93,58 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, several BCC ([0]) tools (biosnoop/biostacks/biotop) use
-kprobes to blk_account_io_start/blk_account_io_done to implement
-their functionalities. This is fragile because the target kernel
-functions may be renamed ([1]) or inlined ([2]). So introduces two
-new tracepoints for such use cases.
 
-  [0]: https://github.com/iovisor/bcc
-  [1]: https://github.com/iovisor/bcc/issues/3954
-  [2]: https://github.com/iovisor/bcc/issues/4261
+Hi Jiri,
 
-Tested-by: Francis Laniel <flaniel@linux.microsoft.com>
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+Would you like to consider to add rcu_is_watching check in
+to solve this from the viewpoint of kprobe_multi_link_prog_run
+itself? And accounting of missed runs can be added as well
+to imporve observability.
+
+Regards,
+Ze
+
+
+-----------------
+From 29fd3cd713e65461325c2703cf5246a6fae5d4fe Mon Sep 17 00:00:00 2001
+From: Ze Gao <zegao@tencent.com>
+Date: Sat, 20 May 2023 17:32:05 +0800
+Subject: [PATCH] bpf: kprobe_multi runs bpf progs only when rcu_is_watching
+
+From the perspective of kprobe_multi_link_prog_run, any traceable
+functions can be attached while bpf progs need specical care and
+ought to be under rcu protection. To solve the likely rcu lockdep
+warns once for good, when (future) functions in idle path were
+attached accidentally, we better paying some cost to check at least
+in kernel-side, and return when rcu is not watching, which helps
+to avoid any unpredictable results.
+
+Signed-off-by: Ze Gao <zegao@tencent.com>
 ---
- block/blk-mq.c               |  4 ++++
- include/trace/events/block.h | 26 ++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index f6dad0886a2f..faa1c7992876 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -957,6 +957,8 @@ EXPORT_SYMBOL_GPL(blk_update_request);
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 9a050e36dc6c..3e6ea7274765 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2622,7 +2622,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	int err;
  
- static inline void blk_account_io_done(struct request *req, u64 now)
- {
-+	trace_block_io_done(req);
-+
- 	/*
- 	 * Account IO completion.  flush_rq isn't accounted as a
- 	 * normal IO on queueing nor completion.  Accounting the
-@@ -976,6 +978,8 @@ static inline void blk_account_io_done(struct request *req, u64 now)
- 
- static inline void blk_account_io_start(struct request *req)
- {
-+	trace_block_io_start(req);
-+
- 	if (blk_do_io_stat(req)) {
- 		/*
- 		 * All non-passthrough requests are created from a bio with one
-diff --git a/include/trace/events/block.h b/include/trace/events/block.h
-index 7f4dfbdf12a6..40e60c33cc6f 100644
---- a/include/trace/events/block.h
-+++ b/include/trace/events/block.h
-@@ -245,6 +245,32 @@ DEFINE_EVENT(block_rq, block_rq_merge,
- 	TP_ARGS(rq)
- );
- 
-+/**
-+ * block_io_start - insert a request for execution
-+ * @rq: block IO operation request
-+ *
-+ * Called when block operation request @rq is queued for execution
-+ */
-+DEFINE_EVENT(block_rq, block_io_start,
-+
-+	TP_PROTO(struct request *rq),
-+
-+	TP_ARGS(rq)
-+);
-+
-+/**
-+ * block_io_done - block IO operation request completed
-+ * @rq: block IO operation request
-+ *
-+ * Called when block operation request @rq is completed
-+ */
-+DEFINE_EVENT(block_rq, block_io_done,
-+
-+	TP_PROTO(struct request *rq),
-+
-+	TP_ARGS(rq)
-+);
-+
- /**
-  * block_bio_complete - completed all work on the block operation
-  * @q: queue holding the block operation
+-	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
++	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1 || !rcu_is_watching())) {
+ 		err = 0;
+ 		goto out;
+ 	}
 -- 
-2.34.1
+2.40.1
 
 
