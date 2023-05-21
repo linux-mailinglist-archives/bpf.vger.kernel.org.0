@@ -1,90 +1,75 @@
-Return-Path: <bpf+bounces-997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694EA70ACF1
-	for <lists+bpf@lfdr.de>; Sun, 21 May 2023 10:09:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E030370ACFA
+	for <lists+bpf@lfdr.de>; Sun, 21 May 2023 10:28:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1AB2281071
-	for <lists+bpf@lfdr.de>; Sun, 21 May 2023 08:09:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96E8328108F
+	for <lists+bpf@lfdr.de>; Sun, 21 May 2023 08:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329A310E8;
-	Sun, 21 May 2023 08:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5681EEDF;
+	Sun, 21 May 2023 08:28:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A819FEA3;
-	Sun, 21 May 2023 08:08:53 +0000 (UTC)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B9D4FE;
-	Sun, 21 May 2023 01:08:52 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-510ea8d0bb5so4942550a12.0;
-        Sun, 21 May 2023 01:08:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E838DEA3
+	for <bpf@vger.kernel.org>; Sun, 21 May 2023 08:28:09 +0000 (UTC)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C7EEA;
+	Sun, 21 May 2023 01:28:07 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so4353770a12.1;
+        Sun, 21 May 2023 01:28:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684656531; x=1687248531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RPjmHku2tRjtFMFQ0VjYD/cqFGXrpt1kb3JxP1rwY4o=;
-        b=TaAB2s+rAIf0e7ZEN0HPfsDv183v6EQEAU/OBXmfNmn1OR9LaFAVlVMktEDKn17r4+
-         jl0SIHvraXvVGpaf3uLE9+rfQ5P9EcqDB5wNoJAg04fsBeRXa2tN6sopZdu83A2ZZkwT
-         nRC0oolJNF75DU6hOOkwc9GMUjGRkbLOc6E+McvJFj/cdeY2edAAzQS3q0D2Jt2Cx9C2
-         X3Zkd/ngS/C1/MltWiCnEs8f9qcDjqCZY1LOCFTZtfU5dBe4GsbCeTQVbN6LDueIHw8D
-         Abo7IHCansw5Ng793aF1pBM/7dSRR9Y5uVpckZmj9joOXbU5syCkahG868Ph2cRLK/tG
-         dMkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684656531; x=1687248531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1684657687; x=1687249687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RPjmHku2tRjtFMFQ0VjYD/cqFGXrpt1kb3JxP1rwY4o=;
-        b=Q/JtxsitwBy7er7t0DlZXLhN9gJOFwUrpps4kw4ivmRP7amCZhxkHv7A4r82GWMWtk
-         SlVvOK1iZJCHGHnnqB/y0iTjfSk3vF8ZY9ACznOFYFhE6+29NgMWLtmblv59Nl5qBH56
-         wGvhW9sMyDyWQIy2b46dU9v4IjQJnHkZJ54q38tn6blDc/xWJko7chYsx39YiiK7wNcU
-         Y4ptuB+/19G6pKVi/+qMCn51qujJCciYjVfEz/tXSKtYAW5CRNXBGJfjzhFXzymKHsb9
-         y+B+gtPfyjYytzKMO5CqeJK8rSDapid6d48Cnq7yN74Zkb5ZgKwx9Avbbr41sNIo1aV5
-         rX6w==
-X-Gm-Message-State: AC+VfDzbfFubRM8jZIr7ym0JPIlWEmzQVryhDCDPoTkXknZ4lwbrkJ7N
-	y1VjH2XXlGbUvJzBuW6StqY=
-X-Google-Smtp-Source: ACHHUZ7sMC1jICnKE6CiK42E6KdCejLh/wDV4CapwptXihZa6QWWijVRU/9eOMOAdE4aHPGnb1r6Cg==
-X-Received: by 2002:a17:907:7f8c:b0:96a:5e38:ba49 with SMTP id qk12-20020a1709077f8c00b0096a5e38ba49mr7916436ejc.2.1684656530364;
-        Sun, 21 May 2023 01:08:50 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id a13-20020a17090640cd00b00965a52d2bf6sm1599244ejk.88.2023.05.21.01.08.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 May 2023 01:08:49 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 21 May 2023 10:08:46 +0200
-To: Ze Gao <zegao2021@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Masami Hiramatsu <mhiramat@kernel.org>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Yonghong Song <yhs@fb.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, kafai@fb.com,
-	kpsingh@chromium.org, netdev@vger.kernel.org, paulmck@kernel.org,
-	songliubraving@fb.com, Ze Gao <zegao@tencent.com>
-Subject: Re:
-Message-ID: <ZGnRjkjxWrK8HzNm@krava>
-References: <20220515203653.4039075-1-jolsa@kernel.org>
- <20230520094722.5393-1-zegao@tencent.com>
+        bh=hrdKLIRM4AS0rC58VKVCcGhDZRDgFeoEK6NEHLR6op0=;
+        b=qqC0baMBH4MOm64Rby4dE76gGcOhRia0P2eyBq4PunGsQDGqGGSRd6yOfvY0cbvKwS
+         eKBUSpdbZyWn3yS40uqyIflux1jmoqei0cGD4T0MEOSz2y4FbTt3AC4J+otJH9iz/26f
+         Pr9Ubw5cL5OZZTe4aQFzqvf4OZavlglzcbji8G0RNyLrbBOZ0slqd00kvjKWlyU3rNOM
+         qFaS/DZ6LkHjG3aFoTZsQ0Qau9z1Y1525tSTzwkr2HZ2pT6lNLNwfKcqHGY9s73g/K49
+         /7+AbLsitzfYABv0ToXjtVbroJcijvdrJ0ufT49b+8KQUOwVNu0MRlnuiFvIFq208RHs
+         OiPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684657687; x=1687249687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hrdKLIRM4AS0rC58VKVCcGhDZRDgFeoEK6NEHLR6op0=;
+        b=MBd9bBaTxUbroIMeuc6UlJyb/VhhdB2i35/czNIJSh4yvfIVlPylxGk94CWckSb1dx
+         rmOmbpArvpZOWzFf0qqMu+7UknRQui1GqEUV+Q38JoNBZLA9c2HPYyZyNqIGIWP8Wcr1
+         ZFuy/uub3jZ/YZj6at+82pZuAnJcG3J/vsOE+GmL/3sRblS/Bu4RL7uvyZLkgqDtmnjJ
+         uxq+LOQSK+0AB7L2wdYbtK0oag0KFNAw5OBhuiTwgsyVkg5nZ6FXQy+ck491ZhHC2Bgy
+         8S9ezjTsTHNf/TLWG52CybfXPfVXHEXvod9bYHld0UbbQElOx2udGQg7m6M7zH3yj48b
+         TXow==
+X-Gm-Message-State: AC+VfDzE3c+Hr+TYRW4c+1JONCeVaIqij9GZXtKuLEAbTVxFsNf6EDbk
+	ZFgHhu08zDLWpPL0B+FLvV9ZoRK1gktlsaplf1dU3sF2jCM=
+X-Google-Smtp-Source: ACHHUZ7Ht6R7hueGf2ArlKoIFWu4icp/ARlnPjRpDO3unaiFqt5ZFSUx5b50QvcBG6Yd70xZhjcqZIXBcWrEH78fakY=
+X-Received: by 2002:a17:902:e80b:b0:1a1:f5dd:2dce with SMTP id
+ u11-20020a170902e80b00b001a1f5dd2dcemr9325538plg.6.1684657687149; Sun, 21 May
+ 2023 01:28:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230520094722.5393-1-zegao@tencent.com>
+References: <CAABZP2wiPdij+q_Nms08e8KbT9+CgXuoU+MO3dyoujG_1PPHAQ@mail.gmail.com>
+ <073cf884-e191-e323-1445-b79c86759557@linux.dev> <CAABZP2yjONcZNVKT88JXq_QyVzuDnu12nD8APT0XJ45dOtSFrQ@mail.gmail.com>
+In-Reply-To: <CAABZP2yjONcZNVKT88JXq_QyVzuDnu12nD8APT0XJ45dOtSFrQ@mail.gmail.com>
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date: Sun, 21 May 2023 16:27:56 +0800
+Message-ID: <CAABZP2zvn_rfC=E9FF-7Hmruq69gEnZJ5aW8mSbOPQijveeKcA@mail.gmail.com>
+Subject: Re: a small question about bpftool struct_ops
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -92,71 +77,61 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, May 20, 2023 at 05:47:24PM +0800, Ze Gao wrote:
-> 
-> Hi Jiri,
-> 
-> Would you like to consider to add rcu_is_watching check in
-> to solve this from the viewpoint of kprobe_multi_link_prog_run
+Hi
 
-I think this was discussed in here:
-  https://lore.kernel.org/bpf/20230321020103.13494-1-laoar.shao@gmail.com/
+On Sat, May 20, 2023 at 7:37=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.com> =
+wrote:
+>
+> Thank you for responding so quickly ;-)
+>
+> On Sat, May 20, 2023 at 3:01=E2=80=AFAM Martin KaFai Lau <martin.lau@linu=
+x.dev> wrote:
+> >
+> > On 5/19/23 5:07 AM, Zhouyi Zhou wrote:
+> > > Dear developers:
+> > > I compiled bpftool and bpf tests in mainline (2d1bcbc6cd70),
+> > > but when I invoke:
+> > > bpftool struct_ops register bpf_cubic.bpf.o
+> > >
+> > > the command line fail with:
+> > > libbpf: struct_ops init_kern: struct tcp_congestion_ops data is not
+> > > found in struct bpf_struct_ops_tcp_congestion_ops
+> >
+> > At the machine trying to register the bpf_cubic, please dump the vmlinu=
+x btf and
+> > search for bpf_struct_ops_tcp_congestion_ops and paste it here:
+> >
+> > For example:
+> > #> bpftool btf dump file /sys/kernel/btf/vmlinux
+> >
+> > ...
+> >
+> > [74578] STRUCT 'bpf_struct_ops_tcp_congestion_ops' size=3D256 vlen=3D3
+> >          'refcnt' type_id=3D145 bits_offset=3D0
+> >          'state' type_id=3D74569 bits_offset=3D32
+> >          'data' type_id=3D6241 bits_offset=3D512
+> OK
+> [214398] STRUCT 'bpf_struct_ops_tcp_congestion_ops' size=3D256 vlen=3D3
+>         'refcnt' type_id=3D298 bits_offset=3D0
+>         'state' type_id=3D214224 bits_offset=3D32
+>         'data' type_id=3D213704 bits_offset=3D512
+>
+> Please tell me if I could provide any further information.
+>
+> You are of great help
+>
+> Thank you very much
+> Zhouyi
+Thanks for your help
 
-and was considered a bug, there's fix mentioned later in the thread
+Or, can you teach me how to prepare an environment that can run
+"bpftool struct_ops register xxx.o" ;-)
+(A few words of description of OS version (Ubuntu/CentOS/Suse for etc)
+and example kernel .config is enough)
 
-there's also this recent patchset:
-  https://lore.kernel.org/bpf/20230517034510.15639-3-zegao@tencent.com/
+I am an enthusiastic learner ;-)
 
-that solves related problems
-
-> itself? And accounting of missed runs can be added as well
-> to imporve observability.
-
-right, we count fprobe->nmissed but it's not exposed, we should allow
-to get 'missed' stats from both fprobe and kprobe_multi later, which
-is missing now, will check
-
-thanks,
-jirka
-
-> 
-> Regards,
-> Ze
-> 
-> 
-> -----------------
-> From 29fd3cd713e65461325c2703cf5246a6fae5d4fe Mon Sep 17 00:00:00 2001
-> From: Ze Gao <zegao@tencent.com>
-> Date: Sat, 20 May 2023 17:32:05 +0800
-> Subject: [PATCH] bpf: kprobe_multi runs bpf progs only when rcu_is_watching
-> 
-> From the perspective of kprobe_multi_link_prog_run, any traceable
-> functions can be attached while bpf progs need specical care and
-> ought to be under rcu protection. To solve the likely rcu lockdep
-> warns once for good, when (future) functions in idle path were
-> attached accidentally, we better paying some cost to check at least
-> in kernel-side, and return when rcu is not watching, which helps
-> to avoid any unpredictable results.
-> 
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> ---
->  kernel/trace/bpf_trace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 9a050e36dc6c..3e6ea7274765 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2622,7 +2622,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
->  	struct bpf_run_ctx *old_run_ctx;
->  	int err;
->  
-> -	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-> +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1 || !rcu_is_watching())) {
->  		err = 0;
->  		goto out;
->  	}
-> -- 
-> 2.40.1
-> 
+Thanks in advance
+Zhouyi
+> >
 
