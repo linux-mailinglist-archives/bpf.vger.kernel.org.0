@@ -1,132 +1,157 @@
-Return-Path: <bpf+bounces-1017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475A070C10E
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 16:27:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D0E70C188
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 16:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBD051C20AA0
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 14:27:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED8C280291
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 14:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8121814287;
-	Mon, 22 May 2023 14:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1BA14A84;
+	Mon, 22 May 2023 14:53:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526A014266
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 14:27:21 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0860E7A;
-	Mon, 22 May 2023 07:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=rNjaU9cgFCRClTkTmVi7MpCda9Uzhq6n29hmf53/eBQ=; b=TghWKnQt4J6SmA/Auua1W7jkSw
-	mkEF8oOpUoC36dbYdD81JaJR1LjRoC/QBEOeD7/aHHxCYvLbrUehiKxmE4ejimsE297o8B8LS8zuO
-	Lxbr0waJViAjnIVUqWUD+8V47GZ3MdK3U59BbqmPaNyaUr2CpVYeruPGoQnMDZOrBHBZYgXebBFps
-	Li5ZAUZw/IVraXhKOHs1d7cysHI4rtN4mkgQqDW88qx+syq4teAicUwXwhjVOh9S4BBBrjQrTOvqL
-	CW3cWYfLUhsPx0MPNxWFwi9Lj0/db9WRpUIOvWCZNtbP5aumvAdyWZjUVzROcpzMPedzFR5dz4CsE
-	sX7wo0Ng==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q16Ue-000KQq-BJ; Mon, 22 May 2023 16:26:36 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q16Ud-000Qea-Dh; Mon, 22 May 2023 16:26:35 +0200
-Subject: Re: [PATCH 1/2] bpf: hide unused bpf_patch_call_args
-To: Arnd Bergmann <arnd@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, John Fastabend <john.fastabend@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>, Delyan Kratunov
- <delyank@fb.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
- Menglong Dong <imagedong@tencent.com>, Yafang Shao <laoar.shao@gmail.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230517125617.931437-1-arnd@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b5eefaaa-0566-a545-ffbe-e23c51397126@iogearbox.net>
-Date: Mon, 22 May 2023 16:26:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF8A14278;
+	Mon, 22 May 2023 14:53:28 +0000 (UTC)
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F47ABB;
+	Mon, 22 May 2023 07:53:27 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-4572fc781daso601219e0c.2;
+        Mon, 22 May 2023 07:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684767206; x=1687359206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9odVnjjoR+4AuNw6ksnagpqi3r+RrcYNLrZWenZLiqg=;
+        b=BmDabCZP63yATPO3XTiegoftHUu9QDq5tUiWk9D2y5meNYS71L2+1QqBnzNqGAW0Kv
+         1a3mvYpDCSEQeZOhOynLeIHLkpkoNMgcNPBA/0kb6ZJ82jRLgvXYDfPvU1QJ9hlXfVej
+         EIV2LHLSbXfJIcp6rmNKIjLR+21txsxlBNLBZ8SaSbNMwI5Q7xzu7RVBd32UZoNHcQnA
+         mCzpFCYnkbnwxLv0fP+4KZeTfiDQAMwjLgb5qaw1/r3fE9UOGIMKrQotlQ5iXSVZN/rw
+         +cHtNUQtGBzbT6+VKET+/tqfJbXmhb/hv/ckaKtSMSHwX5u0hnPZWf5ejpHH4phQXn/v
+         +ZVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684767206; x=1687359206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9odVnjjoR+4AuNw6ksnagpqi3r+RrcYNLrZWenZLiqg=;
+        b=Y7zZMtqnvS3MngCmJ3ChUQ1q0q3AFYVokGTT0BgNFQagVGiRAhqd8lczVWEuP5C+BK
+         420B99i+FoSUQF+V1Xp85tgvOfn/teeB35DH6QSVzGPMtuKZpDaIrXLrdqXECDszquZ9
+         jaXkF5m6pSZinra3TZjInFsaCJ/LeoqyRtln3sxcI5ZRC158fNvI/ps2XWfdJDzl9DwG
+         XwhtL3JjXQdA+ALKGHCPX4JaZFs9naJpXWgI3LFcIV5EvdHSptWS6zB+vTvNQDsShgS8
+         cYKW6uDn82sg5czWUj/iW637cJr3ZAvAJsqtoDdLAtsg2S/Hi2fS2gE2ve1RuqcrvFRo
+         Y6Kg==
+X-Gm-Message-State: AC+VfDwfcUmmWJfkKawoRHBVoUwKJ/Nl0Og/3Z04f5FwociC/IAN+9SL
+	Sul+LVbrtnC2k6Y2GUEXDRZBCG2oEtqQ1ihLlOQ=
+X-Google-Smtp-Source: ACHHUZ5YGXAvxeJfZofHQqhHemSuYJRUrF5dA75oZkpfK7uqtzBcrKqf4fZ0R1FfwZPq2zhdo+nmrksQb6SqxEWqbDY=
+X-Received: by 2002:a1f:3f88:0:b0:457:1a8:9ea4 with SMTP id
+ m130-20020a1f3f88000000b0045701a89ea4mr3819909vka.3.1684767206566; Mon, 22
+ May 2023 07:53:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230517125617.931437-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26915/Mon May 22 09:23:18 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <00000000000037341d05fc460fa6@google.com>
+In-Reply-To: <00000000000037341d05fc460fa6@google.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Mon, 22 May 2023 10:52:49 -0400
+Message-ID: <CAF=yD-JpUc3SLtd7MtULmKOcERf6EJZ0rPc7WmJB2nUNUQRBjA@mail.gmail.com>
+Subject: Re: [syzbot] [net?] KASAN: invalid-access Read in __packet_get_status
+To: syzbot <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com>
+Cc: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/17/23 2:56 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This function has no callers and no declaration when CONFIG_BPF_JIT_ALWAYS_ON
-> is enabled:
-> 
-> kernel/bpf/core.c:2075:6: error: no previous prototype for 'bpf_patch_call_args' [-Werror=missing-prototypes]
-> 
-> Hide the definition as well.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   kernel/bpf/core.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 7421487422d4..6f5ede31e471 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2064,7 +2064,7 @@ EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
->   };
->   #undef PROG_NAME_LIST
->   #define PROG_NAME_LIST(stack_size) PROG_NAME_ARGS(stack_size),
-> -static u64 (*interpreters_args[])(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5,
-> +static __maybe_unused u64 (*interpreters_args[])(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5,
->   				  const struct bpf_insn *insn) = {
+On Mon, May 22, 2023 at 6:51=E2=80=AFAM syzbot
+<syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    2d1bcbc6cd70 Merge tag 'probes-fixes-v6.4-rc1' of git://g=
+i..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D154b8fa128000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D51dd28037b2a5=
+5f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D64b0f633159fde0=
+8e1f1
+> compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, =
+GNU ld (GNU Binutils for Debian) 2.35.2
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12b6382e280=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17fd0aee28000=
+0
+>
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/3=
+84ffdcca292/non_bootable_disk-2d1bcbc6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/d2e21a43e11e/vmlinu=
+x-2d1bcbc6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/49e0b029f9af/I=
+mage-2d1bcbc6.gz.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: invalid-access in __packet_get_status+0x70/0xe0 net/packet/af=
+_packet.c:438
 
-Patch 2 lgtm, small nit above: could you fix up indent?
+The offending line is the last one in
 
->   EVAL6(PROG_NAME_LIST, 32, 64, 96, 128, 160, 192)
->   EVAL6(PROG_NAME_LIST, 224, 256, 288, 320, 352, 384)
-> @@ -2072,6 +2072,7 @@ EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
->   };
->   #undef PROG_NAME_LIST
->   
-> +#ifdef CONFIG_BPF_SYSCALL
->   void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
->   {
->   	stack_depth = max_t(u32, stack_depth, 1);
-> @@ -2080,6 +2081,7 @@ void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
->   		__bpf_call_base_args;
->   	insn->code = BPF_JMP | BPF_CALL_ARGS;
->   }
-> +#endif
->   
->   #else
->   static unsigned int __bpf_prog_ret0_warn(const void *ctx,
+"
+static int __packet_get_status(const struct packet_sock *po, void *frame)
+{
+        union tpacket_uhdr h;
 
-Thanks,
-Daniel
+        smp_rmb();
+
+        h.raw =3D frame;
+        switch (po->tp_version) {
+        case TPACKET_V1:
+                flush_dcache_page(pgv_to_page(&h.h1->tp_status));
+                return h.h1->tp_status;
+        case TPACKET_V2:
+                flush_dcache_page(pgv_to_page(&h.h2->tp_status));
+"
+
+The reproducer is very small:
+
+"
+// socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL);
+r0 =3D socket$packet(0x11, 0x2, 0x300)
+
+// setsockopt PACKET_RX_RING with same block and frame sizes and counts
+setsockopt$packet_rx_ring(r0, 0x107, 0x5,
+&(0x7f0000000040)=3D@req3=3D{0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+
+// excessive length, too many bits in prot, MAP_SHARED | MAP_ANONYMOUS
+mmap(&(0x7f0000568000/0x2000)=3Dnil, 0x1000000, 0x20567fff, 0x11, r0, 0x0)
+"
+
+What is odd here is that the program never sets packet version
+explicitly, and the default is TPACKET_V1.
 
