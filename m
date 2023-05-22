@@ -1,123 +1,204 @@
-Return-Path: <bpf+bounces-1005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06C570B3CD
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 05:32:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1493F70B4AE
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 07:51:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4441C20970
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 03:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B883C280E75
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 05:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D22EB8;
-	Mon, 22 May 2023 03:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1462D10FD;
+	Mon, 22 May 2023 05:51:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4E8A5C
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 03:32:45 +0000 (UTC)
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292B790;
-	Sun, 21 May 2023 20:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1684726358;
-	bh=FvsG6zOPtvIvHZ5Zye5fMsBrNoweYDB083Dy7y0Xqrs=;
-	h=From:To:Cc:Subject:Date;
-	b=qcMBZeAZieLL5Yj7kdY/CdWBFtlxdm9nTVsX2pJ8YPXxG9qFS9RUW91pAJrm603Ko
-	 /s633NQ6yLUUPepmiKaoNhbq6KLf+mTN4HCYyRdRTlq8avwqM98/PKR38r25zs1H3J
-	 sd/qGUjTaGxr4L6TaCWqwOwUKgkEkWrg93Odbfik=
-Received: from localhost.localdomain ([39.156.73.12])
-	by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
-	id 5060064F; Mon, 22 May 2023 11:20:06 +0800
-X-QQ-mid: xmsmtpt1684725606thdrdrro9
-Message-ID: <tencent_C11060D6C765B08AC1ABE2A801228381B206@qq.com>
-X-QQ-XMAILINFO: NY3HYYTs4gYS7ayxzI94vsOM+ZPCRxB8U/TquQOXf2ycGLo9n9lDXzYX/TzUgz
-	 02EERgYO4w/XLqL983HMHc6kfuSc0emfhjg+0kiz/iW6g2wXs404i1hvk34r5yDIb9oW+wFhAq9J
-	 npR2gTjuiJYDfj/CtKoCDs3dYWKY7y1hWpc8FkkRU+V8dHNs3jjZ45wkOvDZAm4bJpwEwiUS6ch4
-	 rTRl+f8aawVlrtc/5LrIRCbjji0Jz4JkRQk1NNnoQpoZ+hPwVerrBKVvndaV+TMVeRQj6mdZgJRY
-	 D8waZ7+gB42cIYPxjIbyFGh1qpgh1JJUOjO7kwB7TrwIMk0/B1mUG8BjIh1qjAt6I/9BMw5HsR2d
-	 kcb2zLqnl0xLDbHTuKBzHZmx+0yx8puc3yq7+wDIlFnm3LKhFOLZnah9ikIY2ABtxQl/ahiyhYs+
-	 3E7sKYUGKxJHwAS2dwP+6WeNm1pJjg4bFg38mzGlShEIV+P3MoLt2KKMiUuNL+5ErnMdcqWPjHGm
-	 bVGSFELLgf12x9JhL/pe/Dcyb/hig0yGxvWiO/Tk6yivvkPH+rVAeoWjxgoxchMoVJza1/i7DPYh
-	 R8TotPX0NqSldQWiQzxI3zwJAuMAGKwWgwiTncC8qWZfYE6YW5vnJZsIh4vP4BgPe0TeLn65nFRO
-	 pdr+jLxfGr+YVbroibRlylcN/80GTtS5NT/DSFRPz94JKRxh6OhKzytaqX9J8urtS1j+INNIHJC/
-	 0W1qwaBCGGZYl+ExupGgntmXZJQw2fdaAFpJju3awBRCARhIrlWyKLq+LNqqHtAzLvWgwxrCRqmK
-	 Y6sCmgL0rd+oFH2/Rg2KcCCCZpdw8ZZbIA70OyLx9+E6V4uuHapMWJA++l88fA6DuubTZdFY29Os
-	 Ipu6KfsJ4ltM9ItHMSYVA7hdJcv8xfStHCPq/BmU+MyCBiT49cxQRRB1VwLLtWXSc49n9TAgu7ZC
-	 AtUqy9J16bnQxW8s+dxw==
-From: Rong Tao <rtoax@foxmail.com>
-To: ast@kernel.org
-Cc: Rong Tao <rongtao@cestc.cn>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] samples/bpf: hbm: Fix compile error about fallthrough marking
-Date: Mon, 22 May 2023 11:20:03 +0800
-X-OQ-MSGID: <20230522032003.79769-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E8AA4C
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 05:51:05 +0000 (UTC)
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D61CE
+	for <bpf@vger.kernel.org>; Sun, 21 May 2023 22:51:03 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7636c775952so208215339f.2
+        for <bpf@vger.kernel.org>; Sun, 21 May 2023 22:51:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684734662; x=1687326662;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jcItWuF4TzojUJ61RDIldf8/3Np1PuVWvxI7VRWSNfw=;
+        b=UvX7BEQWu9RhO0qTrOgKYQRbeYimMMAkD1UeneSik9bDKDDMhk7sKj/S8SZRdQo6e8
+         XXmDdKRRs74/h7cAbZHrBWvZj+P4bSGBdtUSmjevwSCWE20c/5R9Pj+7mfkVG34ftsg/
+         nMJS5Oj24UUSpTo+CrEGgWde7VLjixEor5M8LXG97MRLpER7iAkTopgs2Afs4nHCCVZm
+         o4buPR+l9KRD1miOMeWxc/VEq4GWYXXNwZRS5hPYHD4TWpD5xkjofi1N40FjUgNYBdRv
+         tJ0XCAZ1nmQ0FeBXpnV21ak3HDqXIPd0Spgu/Bpbs/z300X2HuonX+WgxLll456ISaXN
+         2Nww==
+X-Gm-Message-State: AC+VfDz2gGNmnWrI9z8Y1ro/GSn+8EFTlp6VPzZai4R2CF/VcyOv61KM
+	pfkywDIM84sG/fgW5Tg3XFRwEIWmOfIQD73dg2DeLXMX+LsBmWPgiQ==
+X-Google-Smtp-Source: ACHHUZ5J5/EC4XXQVWXvae2F7MpylTNwjG8kKtUj7JU0y3CoYqTEP0MBKs5bH1IIdAMpcWCcYOx1TzVJ9Sh4rV0iH2yUgsLC1KNJ
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Received: by 2002:a05:6638:10c5:b0:416:7e77:bb5f with SMTP id
+ q5-20020a05663810c500b004167e77bb5fmr4964715jad.0.1684734662419; Sun, 21 May
+ 2023 22:51:02 -0700 (PDT)
+Date: Sun, 21 May 2023 22:51:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000182b5f05fc41db4a@google.com>
+Subject: [syzbot] [net?] general protection fault in __sk_mem_raise_allocated
+From: syzbot <syzbot+444ca0907e96f7c5e48b@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org, 
+	edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	willemdebruijn.kernel@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Rong Tao <rongtao@cestc.cn>
+Hello,
 
-commit f7a858bffcdd("tools: Rename __fallthrough to fallthrough") rename
-macro __fallthrough to fallthrough, commit 4b7ef71ac977("bpftool: Replace
-"__fallthrough" by a comment to address merge conflict") use comments to
-replace __fallthrough, here we can use fallthrough directly.
+syzbot found the following issue on:
 
-Compiling samples/bpf hits an error related to fallthrough marking:
-    ...
-    CC  samples/bpf/hbm.o
-    linux/samples/bpf/hbm.c: In function ‘main’:
-    linux/samples/bpf/hbm.c:501:25: error: ‘__fallthrough’ undeclared
-    (first use in this function); did you mean ‘fallthrough’?
-    501 |                         __fallthrough;
-        |                         ^~~~~~~~~~~~~
-        |                         fallthrough
+HEAD commit:    f1fcbaa18b28 Linux 6.4-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1216efba280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ac0db1213414a978
+dashboard link: https://syzkaller.appspot.com/bug?extid=444ca0907e96f7c5e48b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ea7e2a44b1f9/disk-f1fcbaa1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f4e3201419a9/vmlinux-f1fcbaa1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c2cd3eb9954b/bzImage-f1fcbaa1.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+444ca0907e96f7c5e48b@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 6829 Comm: syz-executor.1 Not tainted 6.4.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
+RIP: 0010:sk_get_rmem0 include/net/sock.h:2907 [inline]
+RIP: 0010:__sk_mem_raise_allocated+0x806/0x17a0 net/core/sock.c:3006
+Code: c1 ea 03 80 3c 02 00 0f 85 23 0f 00 00 48 8b 44 24 08 48 8b 98 38 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 0f 8d 6f 0a 00 00 8b
+RSP: 0018:ffffc90005d7f450 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004d92000
+RDX: 0000000000000000 RSI: ffffffff88066482 RDI: ffffffff8e2ccbb8
+RBP: ffff8880173f7000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000030000
+R13: 0000000000000001 R14: 0000000000000340 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0063) knlGS:00000000f7f1cb40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000002e82f000 CR3: 0000000034ff0000 CR4: 00000000003506f0
+Call Trace:
+ <TASK>
+ __sk_mem_schedule+0x6c/0xe0 net/core/sock.c:3077
+ udp_rmem_schedule net/ipv4/udp.c:1539 [inline]
+ __udp_enqueue_schedule_skb+0x776/0xb30 net/ipv4/udp.c:1581
+ __udpv6_queue_rcv_skb net/ipv6/udp.c:666 [inline]
+ udpv6_queue_rcv_one_skb+0xc39/0x16c0 net/ipv6/udp.c:775
+ udpv6_queue_rcv_skb+0x194/0xa10 net/ipv6/udp.c:793
+ __udp6_lib_mcast_deliver net/ipv6/udp.c:906 [inline]
+ __udp6_lib_rcv+0x1bda/0x2bd0 net/ipv6/udp.c:1013
+ ip6_protocol_deliver_rcu+0x2e7/0x1250 net/ipv6/ip6_input.c:437
+ ip6_input_finish+0x150/0x2f0 net/ipv6/ip6_input.c:482
+ NF_HOOK include/linux/netfilter.h:303 [inline]
+ NF_HOOK include/linux/netfilter.h:297 [inline]
+ ip6_input+0xa0/0xd0 net/ipv6/ip6_input.c:491
+ ip6_mc_input+0x40b/0xf50 net/ipv6/ip6_input.c:585
+ dst_input include/net/dst.h:468 [inline]
+ ip6_rcv_finish net/ipv6/ip6_input.c:79 [inline]
+ NF_HOOK include/linux/netfilter.h:303 [inline]
+ NF_HOOK include/linux/netfilter.h:297 [inline]
+ ipv6_rcv+0x250/0x380 net/ipv6/ip6_input.c:309
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5491
+ __netif_receive_skb+0x1f/0x1c0 net/core/dev.c:5605
+ netif_receive_skb_internal net/core/dev.c:5691 [inline]
+ netif_receive_skb+0x133/0x7a0 net/core/dev.c:5750
+ tun_rx_batched+0x4b3/0x7a0 drivers/net/tun.c:1553
+ tun_get_user+0x2452/0x39c0 drivers/net/tun.c:1989
+ tun_chr_write_iter+0xdf/0x200 drivers/net/tun.c:2035
+ call_write_iter include/linux/fs.h:1868 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x945/0xd50 fs/read_write.c:584
+ ksys_write+0x12b/0x250 fs/read_write.c:637
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7f21579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7f1c590 EFLAGS: 00000282 ORIG_RAX: 0000000000000004
+RAX: ffffffffffffffda RBX: 00000000000000c8 RCX: 0000000020000040
+RDX: 0000000000000083 RSI: 00000000f734e000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:sk_get_rmem0 include/net/sock.h:2907 [inline]
+RIP: 0010:__sk_mem_raise_allocated+0x806/0x17a0 net/core/sock.c:3006
+Code: c1 ea 03 80 3c 02 00 0f 85 23 0f 00 00 48 8b 44 24 08 48 8b 98 38 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 0f 8d 6f 0a 00 00 8b
+RSP: 0018:ffffc90005d7f450 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004d92000
+RDX: 0000000000000000 RSI: ffffffff88066482 RDI: ffffffff8e2ccbb8
+RBP: ffff8880173f7000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000030000
+R13: 0000000000000001 R14: 0000000000000340 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0063) knlGS:00000000f7f1cb40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000002e82f000 CR3: 0000000034ff0000 CR4: 00000000003506f0
+----------------
+Code disassembly (best guess):
+   0:	c1 ea 03             	shr    $0x3,%edx
+   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   7:	0f 85 23 0f 00 00    	jne    0xf30
+   d:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+  12:	48 8b 98 38 01 00 00 	mov    0x138(%rax),%rbx
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 da             	mov    %rbx,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
+  2e:	48 89 d8             	mov    %rbx,%rax
+  31:	83 e0 07             	and    $0x7,%eax
+  34:	83 c0 03             	add    $0x3,%eax
+  37:	38 d0                	cmp    %dl,%al
+  39:	0f 8d 6f 0a 00 00    	jge    0xaae
+  3f:	8b                   	.byte 0x8b
+
+
 ---
- samples/bpf/hbm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
-index 6448b7826107..7ddf25e9d098 100644
---- a/samples/bpf/hbm.c
-+++ b/samples/bpf/hbm.c
-@@ -498,7 +498,7 @@ int main(int argc, char **argv)
- 					"Option -%c requires an argument.\n\n",
- 					optopt);
- 		case 'h':
--			__fallthrough;
-+			fallthrough;
- 		default:
- 			Usage();
- 			return 0;
--- 
-2.39.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
