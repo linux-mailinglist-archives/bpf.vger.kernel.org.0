@@ -1,204 +1,260 @@
-Return-Path: <bpf+bounces-1006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1493F70B4AE
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 07:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D7E70B7D5
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 10:38:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B883C280E75
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 05:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EAEC280F0E
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 08:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1462D10FD;
-	Mon, 22 May 2023 05:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD5879F0;
+	Mon, 22 May 2023 08:37:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E8AA4C
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 05:51:05 +0000 (UTC)
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D61CE
-	for <bpf@vger.kernel.org>; Sun, 21 May 2023 22:51:03 -0700 (PDT)
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7636c775952so208215339f.2
-        for <bpf@vger.kernel.org>; Sun, 21 May 2023 22:51:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA26579E2
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 08:37:41 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA99B7
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 01:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1684744658;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ULe3QhngoAVvRa/b5eatSIbIrZ5mn5rlreUM83YWtHk=;
+	b=HaB5L/qUP6qSN+ugxrICARoTuDqDDEbnA2V0MxnCFz4oHwYjjY8pzUXRvS5tmVU034qRwX
+	30922clIm+OfLNXmL0NwA6lCJS43rDI+yUSfAZkiJJodjSkKYVU6frAhE0/hgPp5FK0UHh
+	mIAn0FkFnOpdkFLukSv3d0HVT/IjmH0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-567-nSaPo87qO5Sxj6tUSWAhYw-1; Mon, 22 May 2023 04:37:36 -0400
+X-MC-Unique: nSaPo87qO5Sxj6tUSWAhYw-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-50bcd245040so6767177a12.0
+        for <bpf@vger.kernel.org>; Mon, 22 May 2023 01:37:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684734662; x=1687326662;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jcItWuF4TzojUJ61RDIldf8/3Np1PuVWvxI7VRWSNfw=;
-        b=UvX7BEQWu9RhO0qTrOgKYQRbeYimMMAkD1UeneSik9bDKDDMhk7sKj/S8SZRdQo6e8
-         XXmDdKRRs74/h7cAbZHrBWvZj+P4bSGBdtUSmjevwSCWE20c/5R9Pj+7mfkVG34ftsg/
-         nMJS5Oj24UUSpTo+CrEGgWde7VLjixEor5M8LXG97MRLpER7iAkTopgs2Afs4nHCCVZm
-         o4buPR+l9KRD1miOMeWxc/VEq4GWYXXNwZRS5hPYHD4TWpD5xkjofi1N40FjUgNYBdRv
-         tJ0XCAZ1nmQ0FeBXpnV21ak3HDqXIPd0Spgu/Bpbs/z300X2HuonX+WgxLll456ISaXN
-         2Nww==
-X-Gm-Message-State: AC+VfDz2gGNmnWrI9z8Y1ro/GSn+8EFTlp6VPzZai4R2CF/VcyOv61KM
-	pfkywDIM84sG/fgW5Tg3XFRwEIWmOfIQD73dg2DeLXMX+LsBmWPgiQ==
-X-Google-Smtp-Source: ACHHUZ5J5/EC4XXQVWXvae2F7MpylTNwjG8kKtUj7JU0y3CoYqTEP0MBKs5bH1IIdAMpcWCcYOx1TzVJ9Sh4rV0iH2yUgsLC1KNJ
+        d=1e100.net; s=20221208; t=1684744655; x=1687336655;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:subject:cc:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ULe3QhngoAVvRa/b5eatSIbIrZ5mn5rlreUM83YWtHk=;
+        b=TaSAkJk+SLmm5jmbXGilHYShHbjNaVvYalDOWA2yXcuZBczSncxV1vA9rsqGrS4aoz
+         Ot3uFxbp9EUgo54ex0EOWjPaD1e05eckznUPFl75BNeUnFOQgBuKo6QRDhWUK8fxoX2a
+         FeDDtREPlqHCZ2R0BnWeOWO0dOvvwEd3yEztwKAPIjRtz796MuMeGyFpZ/33RSkUOZM1
+         7A/z9rtTptdTgAAQll+YTBfjiJ8OzBR45usZwYc7lCs7IaGG4B7xsIl8cw4e33pj9UaH
+         cECuQAkRzEFLl+QQBewezDQwCTklHRODV/JvSJl+kvkZj9+Nqh+aoTC05GgZtWCyOAdZ
+         J6ww==
+X-Gm-Message-State: AC+VfDyxlSSwan4QE5JDxILKnCUSH/61VM7u92PALiWebufAI7zfqpJS
+	lns5OfYwaTJVZ+6M3Q3p/NGUihH6g8gqKyZRrIENgBA3yC7D4JpqC7cCd78zPi89xbS9TovMTAQ
+	/ZwD6QkAoMpiU
+X-Received: by 2002:aa7:d38c:0:b0:510:d6b3:a1ac with SMTP id x12-20020aa7d38c000000b00510d6b3a1acmr8453270edq.13.1684744655569;
+        Mon, 22 May 2023 01:37:35 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ5f18cr/MklnXamgE+eoXJg4tSU/Wtu6RdKgmQLwi6TTslgyXXsqPjGkEeqNYYjBLm9MG4X9A==
+X-Received: by 2002:aa7:d38c:0:b0:510:d6b3:a1ac with SMTP id x12-20020aa7d38c000000b00510d6b3a1acmr8453239edq.13.1684744655189;
+        Mon, 22 May 2023 01:37:35 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id d24-20020aa7d698000000b005067d089aafsm2716077edr.11.2023.05.22.01.37.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 May 2023 01:37:34 -0700 (PDT)
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <094f3178-2797-e297-64f8-aa0f7ef16b5f@redhat.com>
+Date: Mon, 22 May 2023 10:37:33 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:10c5:b0:416:7e77:bb5f with SMTP id
- q5-20020a05663810c500b004167e77bb5fmr4964715jad.0.1684734662419; Sun, 21 May
- 2023 22:51:02 -0700 (PDT)
-Date: Sun, 21 May 2023 22:51:02 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000182b5f05fc41db4a@google.com>
-Subject: [syzbot] [net?] general protection fault in __sk_mem_raise_allocated
-From: syzbot <syzbot+444ca0907e96f7c5e48b@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	willemdebruijn.kernel@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Cc: brouer@redhat.com, bpf@vger.kernel.org,
+ Stanislav Fomichev <sdf@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Anatoly Burakov <anatoly.burakov@intel.com>,
+ Alexander Lobakin <alexandr.lobakin@intel.com>,
+ Magnus Karlsson <magnus.karlsson@gmail.com>,
+ Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+ netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND bpf-next 09/15] xdp: Add VLAN tag hint
+To: Larysa Zaremba <larysa.zaremba@intel.com>,
+ Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <20230512152607.992209-1-larysa.zaremba@intel.com>
+ <20230512152607.992209-10-larysa.zaremba@intel.com>
+ <b0694577-e2b3-f6de-cf85-aed99fdf2496@redhat.com> <ZGJZU89AK/3mFZXW@lincoln>
+Content-Language: en-US
+In-Reply-To: <ZGJZU89AK/3mFZXW@lincoln>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    f1fcbaa18b28 Linux 6.4-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1216efba280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac0db1213414a978
-dashboard link: https://syzkaller.appspot.com/bug?extid=444ca0907e96f7c5e48b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ea7e2a44b1f9/disk-f1fcbaa1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f4e3201419a9/vmlinux-f1fcbaa1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c2cd3eb9954b/bzImage-f1fcbaa1.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+444ca0907e96f7c5e48b@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 6829 Comm: syz-executor.1 Not tainted 6.4.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
-RIP: 0010:sk_get_rmem0 include/net/sock.h:2907 [inline]
-RIP: 0010:__sk_mem_raise_allocated+0x806/0x17a0 net/core/sock.c:3006
-Code: c1 ea 03 80 3c 02 00 0f 85 23 0f 00 00 48 8b 44 24 08 48 8b 98 38 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 0f 8d 6f 0a 00 00 8b
-RSP: 0018:ffffc90005d7f450 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004d92000
-RDX: 0000000000000000 RSI: ffffffff88066482 RDI: ffffffff8e2ccbb8
-RBP: ffff8880173f7000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000030000
-R13: 0000000000000001 R14: 0000000000000340 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0063) knlGS:00000000f7f1cb40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002e82f000 CR3: 0000000034ff0000 CR4: 00000000003506f0
-Call Trace:
- <TASK>
- __sk_mem_schedule+0x6c/0xe0 net/core/sock.c:3077
- udp_rmem_schedule net/ipv4/udp.c:1539 [inline]
- __udp_enqueue_schedule_skb+0x776/0xb30 net/ipv4/udp.c:1581
- __udpv6_queue_rcv_skb net/ipv6/udp.c:666 [inline]
- udpv6_queue_rcv_one_skb+0xc39/0x16c0 net/ipv6/udp.c:775
- udpv6_queue_rcv_skb+0x194/0xa10 net/ipv6/udp.c:793
- __udp6_lib_mcast_deliver net/ipv6/udp.c:906 [inline]
- __udp6_lib_rcv+0x1bda/0x2bd0 net/ipv6/udp.c:1013
- ip6_protocol_deliver_rcu+0x2e7/0x1250 net/ipv6/ip6_input.c:437
- ip6_input_finish+0x150/0x2f0 net/ipv6/ip6_input.c:482
- NF_HOOK include/linux/netfilter.h:303 [inline]
- NF_HOOK include/linux/netfilter.h:297 [inline]
- ip6_input+0xa0/0xd0 net/ipv6/ip6_input.c:491
- ip6_mc_input+0x40b/0xf50 net/ipv6/ip6_input.c:585
- dst_input include/net/dst.h:468 [inline]
- ip6_rcv_finish net/ipv6/ip6_input.c:79 [inline]
- NF_HOOK include/linux/netfilter.h:303 [inline]
- NF_HOOK include/linux/netfilter.h:297 [inline]
- ipv6_rcv+0x250/0x380 net/ipv6/ip6_input.c:309
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5491
- __netif_receive_skb+0x1f/0x1c0 net/core/dev.c:5605
- netif_receive_skb_internal net/core/dev.c:5691 [inline]
- netif_receive_skb+0x133/0x7a0 net/core/dev.c:5750
- tun_rx_batched+0x4b3/0x7a0 drivers/net/tun.c:1553
- tun_get_user+0x2452/0x39c0 drivers/net/tun.c:1989
- tun_chr_write_iter+0xdf/0x200 drivers/net/tun.c:2035
- call_write_iter include/linux/fs.h:1868 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x945/0xd50 fs/read_write.c:584
- ksys_write+0x12b/0x250 fs/read_write.c:637
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-RIP: 0023:0xf7f21579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f7f1c590 EFLAGS: 00000282 ORIG_RAX: 0000000000000004
-RAX: ffffffffffffffda RBX: 00000000000000c8 RCX: 0000000020000040
-RDX: 0000000000000083 RSI: 00000000f734e000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:sk_get_rmem0 include/net/sock.h:2907 [inline]
-RIP: 0010:__sk_mem_raise_allocated+0x806/0x17a0 net/core/sock.c:3006
-Code: c1 ea 03 80 3c 02 00 0f 85 23 0f 00 00 48 8b 44 24 08 48 8b 98 38 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 0f 8d 6f 0a 00 00 8b
-RSP: 0018:ffffc90005d7f450 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90004d92000
-RDX: 0000000000000000 RSI: ffffffff88066482 RDI: ffffffff8e2ccbb8
-RBP: ffff8880173f7000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000030000
-R13: 0000000000000001 R14: 0000000000000340 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0063) knlGS:00000000f7f1cb40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002e82f000 CR3: 0000000034ff0000 CR4: 00000000003506f0
-----------------
-Code disassembly (best guess):
-   0:	c1 ea 03             	shr    $0x3,%edx
-   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   7:	0f 85 23 0f 00 00    	jne    0xf30
-   d:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-  12:	48 8b 98 38 01 00 00 	mov    0x138(%rax),%rbx
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 da             	mov    %rbx,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2e:	48 89 d8             	mov    %rbx,%rax
-  31:	83 e0 07             	and    $0x7,%eax
-  34:	83 c0 03             	add    $0x3,%eax
-  37:	38 d0                	cmp    %dl,%al
-  39:	0f 8d 6f 0a 00 00    	jge    0xaae
-  3f:	8b                   	.byte 0x8b
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 15/05/2023 18.09, Larysa Zaremba wrote:
+> On Mon, May 15, 2023 at 05:36:12PM +0200, Jesper Dangaard Brouer wrote:
+>>
+>>
+>> On 12/05/2023 17.26, Larysa Zaremba wrote:
+>>> Implement functionality that enables drivers to expose VLAN tag
+>>> to XDP code.
+>>>
+>>> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+>>> ---
+>> [...]
+>>
+>>> diff --git a/net/core/xdp.c b/net/core/xdp.c
+>>> index 41e5ca8643ec..eff21501609f 100644
+>>> --- a/net/core/xdp.c
+>>> +++ b/net/core/xdp.c
+>>> @@ -738,6 +738,30 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash,
+>>>    	return -EOPNOTSUPP;
+>>>    }
+>>
+>> Remember below becomes part of main documentation on HW metadata hints:
+>>   - https://kernel.org/doc/html/latest/networking/xdp-rx-metadata.html
+>>
+>> Hint compiling locally I use:
+>>   make SPHINXDIRS="networking" htmldocs
+>>
+>>> +/**
+>>> + * bpf_xdp_metadata_rx_ctag - Read XDP packet inner vlan tag.
+>>
+>> Is bpf_xdp_metadata_rx_ctag a good function name for the inner vlan tag?
+>> Like wise below "stag".
+>>
+>> I cannot remember if the C-tag or S-tag is the inner or outer vlan tag.
+>>
+>> When reading BPF code that use these function names, then I would have
+>> to ask Google for help, or find-and-read this doc.
+>>
+>> Can we come-up with a more intuitive name, that e.g. helps when reading
+>> the BPF-prog code?
+> 
+> Well, my reasoning for such naming is that if someone can configure s-tag
+> stripping in ethtool with 'rx-vlan-stag-hw-parse', they shouldn't have any
+> problem with understanding those function names.
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Naming is hard.  My perspective is conveying the meaning without having
+to be knowledgeable about ethtool VLAN commands.  My perspective is a
+casual BPF-programmer that reads "bpf_xdp_metadata_rx_stag()".
+Hopefully we can choose a name that says "vlan" somewhere, such that the
+person reading this doesn't have to lookup and find the documentation to
+deduct this code is related to VLANs.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> One possible improvement that comes to mind is maybe (similarly ethtool) calling
+> c-tag just 'tag' and letting s-tag stay 'stag'. Because c-tag is this default
+> 802.1q tag, which is supported by various hardware, while s-tag is significantly
+> less widespread.
+> 
+> But there are many options, really.
+> 
+> What are your suggestions?
+>
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+One suggestion is (the symmetrical):
+  * bpf_xdp_metadata_rx_vlan_inner_tag
+  * bpf_xdp_metadata_rx_vlan_outer_tag
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+As you say above the first "inner" VLAN tag is just the regular 802.1Q
+VLAN tag.  The concept of C-tag and S-tag is from 802.1ad that
+introduced the concept of double tagging.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Thus one could argue for shorter names like:
+  * bpf_xdp_metadata_rx_vlan_tag
+  * bpf_xdp_metadata_rx_vlan_outer_tag
+
+
+>>
+>>> + * @ctx: XDP context pointer.
+>>> + * @vlan_tag: Return value pointer.
+>>> + *
+>>
+>> IMHO right here, there should be a description.
+>>
+>> E.g. for what a VLAN "tag" means.  I assume a "tag" isn't the VLAN id,
+>> but the raw VLAN tag that also contains the prio numbers etc.
+>>
+>> It this VLAN tag expected to be in network-byte-order ?
+>> IMHO this doc should define what is expected (and driver devel must
+>> follow this).
+> 
+> Will specify that.
+> 
+>>
+>>> + * Returns 0 on success or ``-errno`` on error.
+>>> + */
+>>> +__bpf_kfunc int bpf_xdp_metadata_rx_ctag(const struct xdp_md *ctx, u16 *vlan_tag)
+>>> +{
+>>> +	return -EOPNOTSUPP;
+>>> +}
+>>> +
+>>> +/**
+>>> + * bpf_xdp_metadata_rx_stag - Read XDP packet outer vlan tag.
+>>> + * @ctx: XDP context pointer.
+>>> + * @vlan_tag: Return value pointer.
+>>> + *
+
+(p.s. Googling I find multiple definitions of what the "S" in S-tag
+means. The most reliable or statistically consistent seems to be
+"Service tag", or "Service provider tag".)
+
+The description for the renamed "bpf_xdp_metadata_rx_vlan_outer_tag"
+should IMHO explain that the outer VLAN tag is often refered to as the 
+S-tag (or Service-tag) in Q-in-Q (802.1ad) terminology.  Perhaps we can 
+even spell out that some hardware support (and must be configured via 
+ethtool) to extract this stag.
+
+A dump of the tool rx-vlan related commands:
+
+   $ ethtool -k i40e2 | grep rx-vlan
+   rx-vlan-offload: on
+   rx-vlan-filter: on [fixed]
+   rx-vlan-stag-hw-parse: off [fixed]
+   rx-vlan-stag-filter: off [fixed]
+
+
+
+
+>>> + * Returns 0 on success or ``-errno`` on error.
+>>
+>> IMHO we should provide more guidance to expected return codes, and what
+>> they mean.  IMHO driver developers must only return codes that are
+>> described here, and if they invent a new, add it as part of their patch.
+> 
+> That's a good suggestion, I will expand the comment to describe error codes used
+> so far.
+> 
+>>
+>> See, formatting in bpf_xdp_metadata_rx_hash and check how this gets
+>> compiled into HTML.
+>>
+>>
+>>> + */
+>>> +__bpf_kfunc int bpf_xdp_metadata_rx_stag(const struct xdp_md *ctx, u16 *vlan_tag)
+>>> +{
+>>> +	return -EOPNOTSUPP;
+>>> +}
+>>> +
+>>
+> 
+
 
