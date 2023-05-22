@@ -1,116 +1,185 @@
-Return-Path: <bpf+bounces-1046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4885970CB64
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 22:42:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C83F70CC6C
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 23:31:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24EE81C20BA7
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 20:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FC62810B9
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 21:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78BA4174E4;
-	Mon, 22 May 2023 20:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476B7174E0;
+	Mon, 22 May 2023 21:31:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5D31642B
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 20:41:35 +0000 (UTC)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BA9BB
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 13:41:33 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5653213f5c0so8014907b3.1
-        for <bpf@vger.kernel.org>; Mon, 22 May 2023 13:41:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E3D174D7
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 21:31:16 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A3F9D
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 14:31:15 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-96f850b32caso677781566b.3
+        for <bpf@vger.kernel.org>; Mon, 22 May 2023 14:31:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684788092; x=1687380092;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EDof+QoJIpcW+bcC8mIq1dIhSy6Tx4m7myi7gPf3qCM=;
-        b=hL4XZqmAmsZBqISb5cs2SY76dW2m/n3/dRqTTMYPVdlAsjXvYxhCKl/wYIuYN5dH1y
-         M/Zgkcj29Ps7yZkdxvqlqLB071q0vvvwDPGSr8posF4+n+m/gUhclexIkD3Olk2KeqQV
-         pTVYcM1HHnrL4uS435VahAb4o4/PTyTyKImzzctxQZvjJGnw4XTMrdTRjjKdnyjt0ZLi
-         TIAogLgYmgvk031sY5cMg+7HCGNuWb8K3lzAN+pNqd33I//tCNpkQTjvyPsw67LorTaF
-         hdFLUxCf9oAxG+uLPCDIzzVkbJwxtYLshP/HM2YZJzL+KgSUM1yh/o0jmt3XpS5ll4w6
-         ztZg==
+        d=gmail.com; s=20221208; t=1684791074; x=1687383074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WipZ8PQyK4AQGRff5+7xr9p8DZQdoGZ7btQ8zI4SpIQ=;
+        b=U5BQ5cYP2NrOSfOerf+URg+C68bkdaBosxTWcMxORRQkfGI0mD8WPOLbogfwh2bYWE
+         g+jOSwIp3C5UCQcV3/jTK95BboNXovRbnaXpfzl0Vs5dw/h7pUN8KtvPeM4fsPw08a56
+         kZZitjLQ5HXq0wrdfb6dj09WHK6AVHx14N44X//HgAe40uZFOrHakUepIXrfpjVFC49/
+         rnPSAMn2oYUZX/5LIXVAdNTtXsTYq7Fw65ouC5qnlVLJs1r25XJuZ84tGoa34BIgBAy7
+         rH8+mNlDQ9OL9QEZKSRRB4qX/mvLxWJC3xTedlE71QuPLvdyy283CO57CXXT1EomR0rA
+         ud2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684788092; x=1687380092;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDof+QoJIpcW+bcC8mIq1dIhSy6Tx4m7myi7gPf3qCM=;
-        b=T58160VSXnhAwyq5pW28C+6fmBO2WWJjTjkaq+FTfaXf5dhXARXYKZH20PLdcTPgxT
-         6LYD5VRFFQHRXnQbC8Q+QLCYvN2+NIsvbnsuWdD526QbY4PlmN1MEUG+Nuc/MvSkTlPW
-         SL6wd9fupMEr3W2axe+IMvNeKXreLRl5ixisncYSBURbD+SgpujJfh2TNDaCqPhSHQT0
-         4vojKVmzz6SIOxmD6Tb49R5b3lGrQK8iILlJHKiFF6HdYQaPDtiXJ3BzG4mLAKc3JoKJ
-         rb9+Nqqs99SJuUDgKpAITJ6Wt3Px0bd2V/Jn6U63Ut3QRL0hyqfrps4rrHi3a9nhq2BD
-         KghQ==
-X-Gm-Message-State: AC+VfDyrNHIsLPhkMEyuRAKhsH2bZpPUSeqEFmeTVzstLLOnoKIEhTZC
-	6ysucDYlFUDVJY98kIzk9Zrb+JwGLdJ5
-X-Google-Smtp-Source: ACHHUZ6Ij6MmJUxaDx9xqk58WsfpUW60Sf6BCP5q+Vjx4RkK5eARDpLpq/+ExNmPLc2gquPDbKFREdVnHLrA
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:33a6:6e42:aa97:9ab4])
- (user=irogers job=sendgmr) by 2002:a81:ad09:0:b0:559:e97a:cb21 with SMTP id
- l9-20020a81ad09000000b00559e97acb21mr7115495ywh.9.1684788092608; Mon, 22 May
- 2023 13:41:32 -0700 (PDT)
-Date: Mon, 22 May 2023 13:40:47 -0700
-In-Reply-To: <20230522204047.800543-1-irogers@google.com>
-Message-Id: <20230522204047.800543-4-irogers@google.com>
+        d=1e100.net; s=20221208; t=1684791074; x=1687383074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WipZ8PQyK4AQGRff5+7xr9p8DZQdoGZ7btQ8zI4SpIQ=;
+        b=N4KqcVG6hfR76YSmMGUJ37xaWH1qSjCzGAJHEH7g8HNFKpN/oWdu4Q/0dmwPmb/FqB
+         uqV7jDQ4B6FCx7igSL3D4mKJKRXxzfDd4Wx5xapwY0qDJNDRACiKYADufRZCVlCw/vL/
+         tC/i2252T1rVE8+RuO67ERCQqQOXjNTBr9Q1ghE3Ma/UAvNQFiIaGvB02mZ5db8zI/f8
+         jVUp0KJ2VYKSX5bgfA4kucC5nvQrK9esH6oUL+MIEMy0sO0YfIOeNKFf3PasDxqKlRcL
+         55YOXIw6m7cCh40q6kQt7cAW0GZCvtSaQ7tnwpPS5lOrsZDcHmkJaS7/2/GdYPFt5Jzd
+         dX4A==
+X-Gm-Message-State: AC+VfDzWeEaJeMbL1OuTOBqilszp6XH3Nq9/H946NpzaeQ+S9ymiaPxk
+	PpDZEG9E3/jfOVBhKDfL77UECVq5khsdgOxTDiU=
+X-Google-Smtp-Source: ACHHUZ7/rtQB9yNHLXgFXNTd9uPH5QCkRJ2pBxju77Ml3sU8lEEO8F3BkJftA2SGIeOWiHx54Yv8+Piayw35bcLpL7A=
+X-Received: by 2002:a17:907:846:b0:96f:4db5:df69 with SMTP id
+ ww6-20020a170907084600b0096f4db5df69mr10564413ejb.23.1684791073451; Mon, 22
+ May 2023 14:31:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230522204047.800543-1-irogers@google.com>
-X-Mailer: git-send-email 2.40.1.698.g37aff9b760-goog
-Subject: [PATCH v1 3/3] perf test: Add build tests for BUILD_BPF_SKEL
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+MIME-Version: 1.0
+References: <20230517161648.17582-1-alan.maguire@oracle.com>
+ <20230517161648.17582-6-alan.maguire@oracle.com> <ZGXkN2TeEJZHMSG8@krava>
+ <35213852-1d29-e21f-e3f8-d3f164e97294@oracle.com> <ZGZQuqVD7gNjia7Z@krava>
+ <ee0a24c9-1106-c847-2c91-0d828ec7fba3@meta.com> <CAADnVQ+xJVVbP8GC_iT3NgYhhyUxEWkT-kvNgRfDVyv4eyAgHA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+xJVVbP8GC_iT3NgYhhyUxEWkT-kvNgRfDVyv4eyAgHA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 22 May 2023 14:31:01 -0700
+Message-ID: <CAEf4BzZZ1yP1_2zkGQnp_Zusn_z702eSi8h8ExEkTS8sfmk8_Q@mail.gmail.com>
+Subject: Re: [RFC dwarves 5/6] btf_encoder: store ELF function representations
+ sorted by name _and_ address
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yhs@meta.com>, Jiri Olsa <olsajiri@gmail.com>, 
+	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Yafang Shao <laoar.shao@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add tests with and without generating vmlinux.h.
+On Thu, May 18, 2023 at 5:26=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, May 18, 2023 at 11:26=E2=80=AFAM Yonghong Song <yhs@meta.com> wro=
+te:
+> > > I wonder now when the address will be stored as number (not string) w=
+e
+> > > could somehow generate relocation records and have the module loader
+> > > do the relocation automatically
+> > >
+> > > not sure how that works for vmlinux when it's loaded/relocated on boo=
+t
+> >
+> > Right, actual module address will mostly not match the one in dwarf.
+> > Some during module btf load, we should modify btf address as well
+> > for later use? Yes, may need to reuse some routines used in initial
+> > module relocation.
+>
+>
+> Few thoughts:
+>
+> Initially I felt that single FUNC with multiple DECL_TAG(addr)
+> is better, since BTF for all funcs is the same and it's likely
+> one static inline function that the compiler decided not to inline
+> (like cpumask_weight), so when libbpf wants to attach prog to it
+> the kernel should automatically attach in all places.
+> But then noticed that actually different functions with
+> the same name and proto will be deduplicated into one.
+> Their bodies at different locations will be different.
+> Example: seq_show.
+> In this case it's better to let libbpf pick the exact one to attach.
+> Then realized that even the same function like cpumask_weight()
+> might have different body at different locations due to optimizations.
+> I don't think dwarf contains enough info to distinguish all the combinati=
+ons.
+>
+> Considering all that it's better to keep one BTF kind_func -> one addr.
+> If it's extended the way Alan is proposing with kind_flag
+> the dedup logic will not combine them due to different addresses.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/make | 4 ++++
- 1 file changed, 4 insertions(+)
+I've discussed this w/ Alexei and Yonghong offline, so will summarize
+what I said here. I don't think that we should go the route of adding
+kflag to BTF_KIND_FUNC. As Yonghong pointed out, previously only vlen
+and kind determined byte size of the type, and so adding a third
+variable (kflag), which would apply only to BTF_KIND_FUNC, seems like
+an unnecessary new complication.
 
-diff --git a/tools/perf/tests/make b/tools/perf/tests/make
-index 8dd3f8090352..775f374d9345 100644
---- a/tools/perf/tests/make
-+++ b/tools/perf/tests/make
-@@ -69,6 +69,8 @@ make_clean_all      := clean all
- make_python_perf_so := $(python_perf_so)
- make_debug          := DEBUG=1
- make_nondistro      := BUILD_NONDISTRO=1
-+make_bpf_skel       := BUILD_BPF_SKEL=1
-+make_gen_vmlinux_h  := BUILD_BPF_SKEL=1 GEN_VMLINUX_H=1
- make_no_libperl     := NO_LIBPERL=1
- make_no_libpython   := NO_LIBPYTHON=1
- make_no_scripts     := NO_LIBPYTHON=1 NO_LIBPERL=1
-@@ -136,6 +138,8 @@ endif
- run += make_python_perf_so
- run += make_debug
- run += make_nondistro
-+run += make_build_bpf_skel
-+run += make_gen_vmlinux_h
- run += make_no_libperl
- run += make_no_libpython
- run += make_no_scripts
--- 
-2.40.1.698.g37aff9b760-goog
+I propose to go with an entirely new kind instead, we have plenty of
+them left. This new kind will be pretty kernel-specific, so could be
+targeted for kernel use cases better without adding unnecessary
+complications to Clang. BTF_KIND_FUNCs generated by Clang for .bpf.o
+files don't need addr, they are meaningless and Clang doesn't know
+anything about addresses anyways. So we can keep Clang unchanged and
+more backwards compatible.
 
+But now that this new kind (BTF_KIND_KERNEL_FUNC? KFUNC would be
+misleading, unfortunately) is kernel-specific and generated by pahole
+only, besides addr we can add some flags field and use them to mark
+function as defined as kfunc or not, or (as a hypothetical example)
+traceable or not, or maybe we even have inline flag some day, etc.
+Something that makes sense mostly for kernel functions.
+
+Having said all that, given we are going to break all existing
+BTF-aware tools again with a new kind, we should really couple all
+this work with making BTF self-describing as discussed in [0], so that
+future changes like this won't break older bpftool and other similar
+tools, unnecessarily.
+
+Which, btw, is another reason to not use kflag to determine the size
+of btf_type. Proposed solution in [0] assumes that kind + vlen defines
+the size. We should probably have dedicated discussion for
+self-describing BTF, but I think both changes have to be done in the
+same release window.
+
+  [0] https://lore.kernel.org/bpf/CAEf4BzYjWHRdNNw4B=3DeOXOs_ONrDwrgX4bn=3D=
+Nuc1g8JPFC34MA@mail.gmail.com/#t
+
+>
+> Also turned out that the kernel doesn't validate decl_tag string.
+> The following code loads without error:
+> __attribute__((btf_decl_tag("\x10\xf0")));
+>
+> I'm not sure whether we want to tighten decl_tag validation and how.
+> If we keep it as-is we can use func+decl_tag approach
+> to add 4 bytes of addr in the binary format (if 1st byte is not zero).
+> But it feels like a hack, since the kernel needs to be changed
+> anyway to adjust the addresses after module loading and kernel relocation=
+.
+> So func with kind_flag seems like the best approach.
+>
+> Regarding relocation of address in the kernel and modules...
+> We just need to add base_addr to all addrs-es recorded in BTF.
+> Both for kernel and for module BTFs.
+> Shouldn't be too complicated.
+
+yep, KASLR seems simple enough to handle by the kernel itself at boot time.
 
