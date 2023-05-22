@@ -1,140 +1,170 @@
-Return-Path: <bpf+bounces-1028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853FD70C310
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 18:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5651C70C32A
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 18:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598AF1C20B3E
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 16:12:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A84C1C20B19
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 16:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190FC16402;
-	Mon, 22 May 2023 16:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94CF16410;
+	Mon, 22 May 2023 16:20:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A5A154A9
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 16:12:51 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B13EED
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 09:12:50 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3f607e60902so5295745e9.2
-        for <bpf@vger.kernel.org>; Mon, 22 May 2023 09:12:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A8716401;
+	Mon, 22 May 2023 16:20:20 +0000 (UTC)
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE975F4;
+	Mon, 22 May 2023 09:20:18 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-783fc329e72so1594190241.3;
+        Mon, 22 May 2023 09:20:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1684771969; x=1687363969;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ze7SiVr+/WpvbvKSsv/T7r7gNdpq9Dap2Pb1JAqNCO0=;
-        b=P3eJSj6Uo0XgF8ApFBKGAh0N/7YZN5xIPn1msZF0batDDiY1ytksOrPZkyYKMGhOkw
-         ygED7Jx7/EC40absRo921WCzlyAvweoMqQVBZLuD1i4IZajxOaffhrMUeenIqlwx4VBF
-         g+s5R0FyUlBHOuu1GjSfGMhlIPJ7U7pvZpvPUp1xmvnGPHqhQNeZ+KasV1vmPV+So1I8
-         O86damHbB6JQBozlWOUdIe4HZ/DerNrx8Jw54dv1esrd34nTo0LsOFkMJHrAVZlULtZx
-         guhMT/slSsqRAGLKO8ZKbmlxD+ASFcQAuns+hnMcuOCR6qLPnos4OLwdkfVQi6EccfsZ
-         O64A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684771969; x=1687363969;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1684772418; x=1687364418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ze7SiVr+/WpvbvKSsv/T7r7gNdpq9Dap2Pb1JAqNCO0=;
-        b=UU6/VdqNStSxcVWQkW+9RE1SAgK4f5OfIDLVmiV7RN4Gfo0nWvQbeP0XHcP6N0HnXK
-         ziAHruZSOYuBzDPcaOsVo8UbiJoFeCbH7/sMfGAfieGrpbzth3n2KqK3x4x5PXrRSLPg
-         xExRqa0Q0dNYUauPL7+XJMI6XdBLm2JBGhmn77OJ5bSIOovylbS4dtXzRpXvuXZDIO/L
-         DIWU3mzB6lLCZiAqg6SGN49mWsM+4d1ipQ5SRXfhzFhqWn/bk4qdoV7cYAvrwcmdUuWc
-         0856CQO7tWizhXaZ43rAF4FikYU1hJjpgJY671WZU8doT03HCKETeQxjV/NO5FV4igQ7
-         GW5g==
-X-Gm-Message-State: AC+VfDwEb4IVkrbB1TuQ1KonE/Lim6TnFLDYYt44Xle5f8LGjBcXrRkb
-	emDLy+AEvG/9g01qw5Eg7adM4e8S9gXzhWZRZ/SuSw==
-X-Google-Smtp-Source: ACHHUZ7dW3A3RZIwlFK40XhBqEH7dzvx+lsn812JCL4yb/FYwRw0ThlXb+an/zQVbMX4d4LQvntyrQ==
-X-Received: by 2002:a05:600c:294b:b0:3f4:2d22:536a with SMTP id n11-20020a05600c294b00b003f42d22536amr7871977wmd.19.1684771968760;
-        Mon, 22 May 2023 09:12:48 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id c5-20020a7bc845000000b003f604793989sm3554531wml.18.2023.05.22.09.12.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 May 2023 09:12:48 -0700 (PDT)
-Date: Mon, 22 May 2023 16:12:58 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>
-Subject: Re: [PATCH bpf] bpf: fix a memory leak in the LRU and LRU_PERCPU
- hash maps
-Message-ID: <ZGuUii1nfyvXzX4g@zh-lab-node-5>
-References: <20230522154558.2166815-1-aspsk@isovalent.com>
+        bh=YQZuFyKz5hTVe5q8CSWku/WlIYzI4Py/CmBN1bqXtzg=;
+        b=J+xPpPSx24may27+92v9OqamVaSStyTOu6LyM2wso5WIClB/9DSicR3Q8Zuv2mJIwp
+         FlI9G2svxo/LeNXYOfa/B7ys3CqU3MKiRsARzUYJpies4X7BeGbq8gMCTQEm8lkWQbhJ
+         OrDqO2ME5WzjA/9Q7SmAf2BHe/zJ5IgItO3FuIc/dYRvUFo50N5noNl10ChEpAr6kVAw
+         yFcn22/8M7Gq/FcxaE06h3/dP61SHAiTThUS4QCQrpSgVF46AZU3nRch5WN/xMb03LNO
+         zHKatI7xjRVVol36sHd4T3HAlq4CZRexfRoE0ZyyJOYGyxrrJ4L9uQOpNx6tlNqR9nyF
+         Wpgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684772418; x=1687364418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YQZuFyKz5hTVe5q8CSWku/WlIYzI4Py/CmBN1bqXtzg=;
+        b=l1mtnX8hVzc+Ntm350BvIfchsIbGKcB6TDtebTYCA4GtnfHuD2ZaJbO874v2baphJ4
+         PG80IPdxPtZBkl3KhGjxbrwH6oEuJOdjkqEYTLWsScIS18qIJ4A3DSL5nB5jtAmzVd1n
+         IJd8YtuZgWYmC2Ni14IkeFHMhe54/9CfDiOPXWkvXXXdTLPN2s0wkvBFDkdWlwL9/+xr
+         Zrs6B32jkhw/Pk3OIyQ6U0E+7Zf7CNtKWKFWBpKAkaawlqDWK6qmZUN1xvgukGnkPavj
+         RaJrDdYbhTY7vnXhjc/GQqRPboyqr7rcEHRUwKQ+A08zywTvMZ8NEDa0hOvigDgBC6BI
+         gZkQ==
+X-Gm-Message-State: AC+VfDzhfWe9hzAcBiwhucS9wb1bM/26LVX037/nSKh/tmuR/Guf7K0I
+	vN4/Et/kAqBbIccIv343BuJhzj69LhzdYDYATTo=
+X-Google-Smtp-Source: ACHHUZ5f/fyUoakvYwpH0GFFUbcPicCt3clTUFeKQ4jSnmEhQcCSeE/YSAqooi5VfkqmGC4STzDNFoSVKCJ2QDadl4E=
+X-Received: by 2002:a05:6102:7a8:b0:438:d4bd:f1f2 with SMTP id
+ x8-20020a05610207a800b00438d4bdf1f2mr2911145vsg.22.1684772417822; Mon, 22 May
+ 2023 09:20:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230522154558.2166815-1-aspsk@isovalent.com>
+References: <00000000000037341d05fc460fa6@google.com> <CAF=yD-JpUc3SLtd7MtULmKOcERf6EJZ0rPc7WmJB2nUNUQRBjA@mail.gmail.com>
+In-Reply-To: <CAF=yD-JpUc3SLtd7MtULmKOcERf6EJZ0rPc7WmJB2nUNUQRBjA@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Mon, 22 May 2023 12:19:41 -0400
+Message-ID: <CAF=yD-+MxyoD1Mbekf93-XhAA2urAf5audD8HefmF8bfsu51iQ@mail.gmail.com>
+Subject: Re: [syzbot] [net?] KASAN: invalid-access Read in __packet_get_status
+To: syzbot <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com>
+Cc: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, May 22, 2023 at 03:45:58PM +0000, Anton Protopopov wrote:
-> The LRU and LRU_PERCPU maps allocate a new element on update before locking the
-> target hash table bucket. Right after that the maps try to lock the bucket.
-> If this fails, then maps return -EBUSY to the caller without releasing the
-> allocated element. This makes the element untracked: it doesn't belong to
-> either of free lists, and it doesn't belong to the hash table, so can't be
-> re-used; this eventually leads to the permanent -ENOMEM on LRU map updates,
-> which is unexpected. Fix this by returning the element to the local free list
-> if bucket locking fails.
+On Mon, May 22, 2023 at 10:52=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> On Mon, May 22, 2023 at 6:51=E2=80=AFAM syzbot
+> <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    2d1bcbc6cd70 Merge tag 'probes-fixes-v6.4-rc1' of git:/=
+/gi..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D154b8fa1280=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D51dd28037b2=
+a55f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D64b0f633159fd=
+e08e1f1
+> > compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110=
+, GNU ld (GNU Binutils for Debian) 2.35.2
+> > userspace arch: arm64
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12b6382e2=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17fd0aee280=
+000
+> >
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
+/384ffdcca292/non_bootable_disk-2d1bcbc6.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/d2e21a43e11e/vmli=
+nux-2d1bcbc6.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/49e0b029f9af=
+/Image-2d1bcbc6.gz.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: invalid-access in __packet_get_status+0x70/0xe0 net/packet/=
+af_packet.c:438
+>
+> The offending line is the last one in
+>
+> "
+> static int __packet_get_status(const struct packet_sock *po, void *frame)
+> {
+>         union tpacket_uhdr h;
+>
+>         smp_rmb();
+>
+>         h.raw =3D frame;
+>         switch (po->tp_version) {
+>         case TPACKET_V1:
+>                 flush_dcache_page(pgv_to_page(&h.h1->tp_status));
+>                 return h.h1->tp_status;
+>         case TPACKET_V2:
+>                 flush_dcache_page(pgv_to_page(&h.h2->tp_status));
+> "
+>
+> The reproducer is very small:
+>
+> "
+> // socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL);
+> r0 =3D socket$packet(0x11, 0x2, 0x300)
+>
+> // setsockopt PACKET_RX_RING with same block and frame sizes and counts
+> setsockopt$packet_rx_ring(r0, 0x107, 0x5,
+> &(0x7f0000000040)=3D@req3=3D{0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+>
+> // excessive length, too many bits in prot, MAP_SHARED | MAP_ANONYMOUS
+> mmap(&(0x7f0000568000/0x2000)=3Dnil, 0x1000000, 0x20567fff, 0x11, r0, 0x0=
+)
+> "
+>
+> What is odd here is that the program never sets packet version
+> explicitly, and the default is TPACKET_V1.
 
-Fixes: 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked")
+The test is marked as repeat.
 
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->  kernel/bpf/hashtab.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 00c253b84bf5..9901efee4339 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1215,7 +1215,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
-> 
->  	ret = htab_lock_bucket(htab, b, hash, &flags);
->  	if (ret)
-> -		return ret;
-> +		goto err_lock_bucket;
->  
->  	l_old = lookup_elem_raw(head, hash, key, key_size);
->  
-> @@ -1236,6 +1236,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
->  err:
->  	htab_unlock_bucket(htab, b, hash, flags);
->  
-> +err_lock_bucket:
->  	if (ret)
->  		htab_lru_push_free(htab, l_new);
->  	else if (l_old)
-> @@ -1338,7 +1339,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
->  
->  	ret = htab_lock_bucket(htab, b, hash, &flags);
->  	if (ret)
-> -		return ret;
-> +		goto err_lock_bucket;
->  
->  	l_old = lookup_elem_raw(head, hash, key, key_size);
->  
-> @@ -1361,6 +1362,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
->  	ret = 0;
->  err:
->  	htab_unlock_bucket(htab, b, hash, flags);
-> +err_lock_bucket:
->  	if (l_new)
->  		bpf_lru_push_free(&htab->lru, &l_new->lru_node);
->  	return ret;
-> -- 
-> 2.34.1
-> 
+One possibility is that there is a race between packet arrival calling
+flush_dcache_page and user mmap setup/teardown. That would exhibit as
+flakiness.
+
+ARM flush_dcache_page is quite outside my networking comfort zone.
 
