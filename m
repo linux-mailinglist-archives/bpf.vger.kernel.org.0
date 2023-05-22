@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-1035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3AF70CB29
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 22:34:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C56370CB2B
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 22:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 573FA280A6A
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 20:34:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36790280A6A
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 20:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D95F174C0;
-	Mon, 22 May 2023 20:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB3F171AE;
+	Mon, 22 May 2023 20:34:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB021154AF
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 20:34:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E84C7C4339B;
-	Mon, 22 May 2023 20:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18089154AF
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 20:34:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC11C433EF;
+	Mon, 22 May 2023 20:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684787657;
-	bh=CR+uhegPGZnQF02rO5sFeA05nPiC/9Ec9ZWdVQpJmlw=;
+	s=k20201202; t=1684787669;
+	bh=wU2N1BOhyNmMdvHXU/2VocFu1lHdohwPll/T20B+ryE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NjQ3hoh4ha/iUxGPxWNu2SKDmxUuYh2SJImlsMDK6q4UgG9rUr+NvWycE7mmGS+KS
-	 F49spCPs8lRMeEvjtQGnrxGDpIMA4mmy+4c/Yg4284v9IcvjYfPYh+M9h96WncZQJs
-	 J5l2z2jI58XzRx3J0RgJri5RQAXsIZHp/5O/KsrTXuQ5fkLZQMvqP8JevAS4dla65V
-	 5dl3ag7vA6cV+5QG9PKivZlH5/OQ1KdF7T7TADHIxMPD/llQrpdeUTAbTQNaXJBEMw
-	 8ECIdVo8BFvcMeU2CVqzlkY0Wq7rQXbFb4CBCMVEJSxra1PpTKb4BpN26ERuKR2Uim
-	 RMy642v/iMArg==
+	b=bvAxYlu5Q0RwXXod4VhvsywM0NXgCR44VayRB0M1gpt3A6LERtbk3mFI5hhO3w5PU
+	 flixUhFphzdspyyEVMn0I6QHJ696bgaToVc3xyjcC4kmOK9yvhx3PqOBOWA2D2aFkF
+	 8ytcYLfMLqqvfYUe4OuFiCPd4TynSPkMxnhswgkE7/niNtDl6mjYCUg7Tp5pLMp9wx
+	 UR9zQpkB09m2STIPWImCiraooij2D52CkbHBJKcF5Wq/XBD+Bzjk1kgP+fFDtHXApH
+	 7dD5myzKXsO7i9upbNvWN9nIuc1lzWAAriVD10AT8/69YaNunqgauei0EcVnj1MFuc
+	 sfIWwB+xT/mNQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	x86@kernel.org,
+Cc: Andrii Nakryiko <andriin@fb.com>,
 	linux-mm@kvack.org,
 	bpf@vger.kernel.org,
+	x86@kernel.org,
 	linux-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
 	Tsahee Zidenberg <tsahee@annapurnalabs.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Christoph Hellwig <hch@lst.de>,
@@ -45,9 +45,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	=?UTF-8?q?Mah=C3=A9=20Tardy?= <mahe.tardy@isovalent.com>,
 	linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH stable 5.4 1/8] uaccess: Add strict non-pagefault kernel-space read function
-Date: Mon, 22 May 2023 22:33:45 +0200
-Message-Id: <20230522203352.738576-2-jolsa@kernel.org>
+Subject: [RFC PATCH stable 5.4 2/8] bpf: Add probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers
+Date: Mon, 22 May 2023 22:33:46 +0200
+Message-Id: <20230522203352.738576-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230522203352.738576-1-jolsa@kernel.org>
 References: <20230522203352.738576-1-jolsa@kernel.org>
@@ -61,184 +61,191 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 75a1a607bb7e6d918be3aca11ec2214a275392f4 upstream.
+commit 6ae08ae3dea2cfa03dd3665a3c8475c2d429ef47 upstream.
 
-Add two new probe_kernel_read_strict() and strncpy_from_unsafe_strict()
-helpers which by default alias to the __probe_kernel_read() and the
-__strncpy_from_unsafe(), respectively, but can be overridden by archs
-which have non-overlapping address ranges for kernel space and user
-space in order to bail out with -EFAULT when attempting to probe user
-memory including non-canonical user access addresses [0]:
+[Taking only hunks that are related to probe_read and probe_read_str
+helpers, which we want to fix. Taking this patch/hunks as a base
+for following changes and ommiting the new helpers and uapi changes.]
 
-  4-level page tables:
-    user-space mem: 0x0000000000000000 - 0x00007fffffffffff
-    non-canonical:  0x0000800000000000 - 0xffff7fffffffffff
+The current bpf_probe_read() and bpf_probe_read_str() helpers are broken
+in that they assume they can be used for probing memory access for kernel
+space addresses /as well as/ user space addresses.
 
-  5-level page tables:
-    user-space mem: 0x0000000000000000 - 0x00ffffffffffffff
-    non-canonical:  0x0100000000000000 - 0xfeffffffffffffff
+However, plain use of probe_kernel_read() for both cases will attempt to
+always access kernel space address space given access is performed under
+KERNEL_DS and some archs in-fact have overlapping address spaces where a
+kernel pointer and user pointer would have the /same/ address value and
+therefore accessing application memory via bpf_probe_read{,_str}() would
+read garbage values.
 
-The idea is that these helpers are complementary to the probe_user_read()
-and strncpy_from_unsafe_user() which probe user-only memory. Both added
-helpers here do the same, but for kernel-only addresses.
+Lets fix BPF side by making use of recently added 3d7081822f7f ("uaccess:
+Add non-pagefault user-space read functions"). Unfortunately, the only way
+to fix this status quo is to add dedicated bpf_probe_read_{user,kernel}()
+and bpf_probe_read_{user,kernel}_str() helpers. The bpf_probe_read{,_str}()
+helpers are kept as-is to retain their current behavior.
 
-Both set of helpers are going to be used for BPF tracing. They also
-explicitly avoid throwing the splat for non-canonical user addresses from
-00c42373d397 ("x86-64: add warning for non-canonical user access address
-dereferences").
+The two *_user() variants attempt the access always under USER_DS set, the
+two *_kernel() variants will -EFAULT when accessing user memory if the
+underlying architecture has non-overlapping address ranges, also avoiding
+throwing the kernel warning via 00c42373d397 ("x86-64: add warning for
+non-canonical user access address dereferences").
 
-For compat, the current probe_kernel_read() and strncpy_from_unsafe() are
-left as-is.
-
-  [0] Documentation/x86/x86_64/mm.txt
-
+Fixes: a5e8c07059d0 ("bpf: add bpf_probe_read_str helper")
+Fixes: 2541517c32be ("tracing, perf: Implement BPF programs attached to kprobes")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: x86@kernel.org
-Link: https://lore.kernel.org/bpf/eefeefd769aa5a013531f491a71f0936779e916b.1572649915.git.daniel@iogearbox.net
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/796ee46e948bc808d54891a1108435f8652c6ca4.1572649915.git.daniel@iogearbox.net
 ---
- arch/x86/mm/Makefile    |  2 +-
- arch/x86/mm/maccess.c   | 43 +++++++++++++++++++++++++++++++++++++++++
- include/linux/uaccess.h |  4 ++++
- mm/maccess.c            | 25 +++++++++++++++++++++++-
- 4 files changed, 72 insertions(+), 2 deletions(-)
- create mode 100644 arch/x86/mm/maccess.c
+ kernel/trace/bpf_trace.c | 103 ++++++++++++++++++++++-----------------
+ 1 file changed, 57 insertions(+), 46 deletions(-)
 
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index 84373dc9b341..bbc68a54795e 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -13,7 +13,7 @@ CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
- endif
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 1e1345cd21b4..9ac27d48cc8e 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -138,24 +138,70 @@ static const struct bpf_func_proto bpf_override_return_proto = {
+ };
+ #endif
  
- obj-y	:=  init.o init_$(BITS).o fault.o ioremap.o extable.o pageattr.o mmap.o \
--	    pat.o pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o
-+	    pat.o pgtable.o physaddr.o setup_nx.o tlb.o cpu_entry_area.o maccess.o
+-BPF_CALL_3(bpf_probe_read, void *, dst, u32, size, const void *, unsafe_ptr)
++static __always_inline int
++bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr,
++			     const bool compat)
+ {
+-	int ret;
++	int ret = security_locked_down(LOCKDOWN_BPF_READ);
  
- # Make sure __phys_addr has no stackprotector
- nostackp := $(call cc-option, -fno-stack-protector)
-diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
-new file mode 100644
-index 000000000000..f5b85bdc0535
---- /dev/null
-+++ b/arch/x86/mm/maccess.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/uaccess.h>
-+#include <linux/kernel.h>
-+
-+#ifdef CONFIG_X86_64
-+static __always_inline u64 canonical_address(u64 vaddr, u8 vaddr_bits)
-+{
-+	return ((s64)vaddr << (64 - vaddr_bits)) >> (64 - vaddr_bits);
+-	ret = security_locked_down(LOCKDOWN_BPF_READ);
+-	if (ret < 0)
++	if (unlikely(ret < 0))
+ 		goto out;
+-
+-	ret = probe_kernel_read(dst, unsafe_ptr, size);
++	ret = compat ? probe_kernel_read(dst, unsafe_ptr, size) :
++	      probe_kernel_read_strict(dst, unsafe_ptr, size);
+ 	if (unlikely(ret < 0))
+ out:
+ 		memset(dst, 0, size);
++	return ret;
 +}
 +
-+static __always_inline bool invalid_probe_range(u64 vaddr)
++BPF_CALL_3(bpf_probe_read_compat, void *, dst, u32, size,
++	   const void *, unsafe_ptr)
 +{
++	return bpf_probe_read_kernel_common(dst, size, unsafe_ptr, true);
++}
++
++static const struct bpf_func_proto bpf_probe_read_compat_proto = {
++	.func		= bpf_probe_read_compat,
++	.gpl_only	= true,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
++	.arg3_type	= ARG_ANYTHING,
++};
+ 
++static __always_inline int
++bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr,
++				 const bool compat)
++{
++	int ret = security_locked_down(LOCKDOWN_BPF_READ);
++
++	if (unlikely(ret < 0))
++		goto out;
 +	/*
-+	 * Range covering the highest possible canonical userspace address
-+	 * as well as non-canonical address range. For the canonical range
-+	 * we also need to include the userspace guard page.
++	 * The strncpy_from_unsafe_*() call will likely not fill the entire
++	 * buffer, but that's okay in this circumstance as we're probing
++	 * arbitrary memory anyway similar to bpf_probe_read_*() and might
++	 * as well probe the stack. Thus, memory is explicitly cleared
++	 * only in error case, so that improper users ignoring return
++	 * code altogether don't copy garbage; otherwise length of string
++	 * is returned that can be used for bpf_perf_event_output() et al.
 +	 */
-+	return vaddr < TASK_SIZE_MAX + PAGE_SIZE ||
-+	       canonical_address(vaddr, boot_cpu_data.x86_virt_bits) != vaddr;
-+}
-+#else
-+static __always_inline bool invalid_probe_range(u64 vaddr)
++	ret = compat ? strncpy_from_unsafe(dst, unsafe_ptr, size) :
++	      strncpy_from_unsafe_strict(dst, unsafe_ptr, size);
++	if (unlikely(ret < 0))
++out:
++		memset(dst, 0, size);
+ 	return ret;
+ }
+ 
+-static const struct bpf_func_proto bpf_probe_read_proto = {
+-	.func		= bpf_probe_read,
++BPF_CALL_3(bpf_probe_read_compat_str, void *, dst, u32, size,
++	   const void *, unsafe_ptr)
 +{
-+	return vaddr < TASK_SIZE_MAX;
-+}
-+#endif
-+
-+long probe_kernel_read_strict(void *dst, const void *src, size_t size)
-+{
-+	if (unlikely(invalid_probe_range((unsigned long)src)))
-+		return -EFAULT;
-+
-+	return __probe_kernel_read(dst, src, size);
++	return bpf_probe_read_kernel_str_common(dst, size, unsafe_ptr, true);
 +}
 +
-+long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr, long count)
-+{
-+	if (unlikely(invalid_probe_range((unsigned long)unsafe_addr)))
-+		return -EFAULT;
-+
-+	return __strncpy_from_unsafe(dst, unsafe_addr, count);
-+}
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 70941f49d66e..25ae650dcb1a 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -315,6 +315,7 @@ copy_struct_from_user(void *dst, size_t ksize, const void __user *src,
-  * happens, handle that and return -EFAULT.
-  */
- extern long probe_kernel_read(void *dst, const void *src, size_t size);
-+extern long probe_kernel_read_strict(void *dst, const void *src, size_t size);
- extern long __probe_kernel_read(void *dst, const void *src, size_t size);
++static const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
++	.func		= bpf_probe_read_compat_str,
+ 	.gpl_only	= true,
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
+@@ -583,41 +629,6 @@ static const struct bpf_func_proto bpf_current_task_under_cgroup_proto = {
+ 	.arg2_type      = ARG_ANYTHING,
+ };
  
- /*
-@@ -354,6 +355,9 @@ extern long notrace probe_user_write(void __user *dst, const void *src, size_t s
- extern long notrace __probe_user_write(void __user *dst, const void *src, size_t size);
- 
- extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
-+extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-+				       long count);
-+extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
- extern long strncpy_from_unsafe_user(char *dst, const void __user *unsafe_addr,
- 				     long count);
- extern long strnlen_unsafe_user(const void __user *unsafe_addr, long count);
-diff --git a/mm/maccess.c b/mm/maccess.c
-index 2d3c3d01064c..3ca8d97e5010 100644
---- a/mm/maccess.c
-+++ b/mm/maccess.c
-@@ -43,11 +43,20 @@ probe_write_common(void __user *dst, const void *src, size_t size)
-  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
-  * probe_kernel_read() suitable for use within regions where the caller
-  * already holds mmap_sem, or other locks which nest inside mmap_sem.
-+ *
-+ * probe_kernel_read_strict() is the same as probe_kernel_read() except for
-+ * the case where architectures have non-overlapping user and kernel address
-+ * ranges: probe_kernel_read_strict() will additionally return -EFAULT for
-+ * probing memory on a user address range where probe_user_read() is supposed
-+ * to be used instead.
-  */
- 
- long __weak probe_kernel_read(void *dst, const void *src, size_t size)
-     __attribute__((alias("__probe_kernel_read")));
- 
-+long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
-+    __attribute__((alias("__probe_kernel_read")));
-+
- long __probe_kernel_read(void *dst, const void *src, size_t size)
- {
- 	long ret;
-@@ -157,8 +166,22 @@ EXPORT_SYMBOL_GPL(probe_user_write);
-  *
-  * If @count is smaller than the length of the string, copies @count-1 bytes,
-  * sets the last byte of @dst buffer to NUL and returns @count.
-+ *
-+ * strncpy_from_unsafe_strict() is the same as strncpy_from_unsafe() except
-+ * for the case where architectures have non-overlapping user and kernel address
-+ * ranges: strncpy_from_unsafe_strict() will additionally return -EFAULT for
-+ * probing memory on a user address range where strncpy_from_unsafe_user() is
-+ * supposed to be used instead.
-  */
--long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-+
-+long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-+    __attribute__((alias("__strncpy_from_unsafe")));
-+
-+long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
-+				       long count)
-+    __attribute__((alias("__strncpy_from_unsafe")));
-+
-+long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
- {
- 	mm_segment_t old_fs = get_fs();
- 	const void *src = unsafe_addr;
+-BPF_CALL_3(bpf_probe_read_str, void *, dst, u32, size,
+-	   const void *, unsafe_ptr)
+-{
+-	int ret;
+-
+-	ret = security_locked_down(LOCKDOWN_BPF_READ);
+-	if (ret < 0)
+-		goto out;
+-
+-	/*
+-	 * The strncpy_from_unsafe() call will likely not fill the entire
+-	 * buffer, but that's okay in this circumstance as we're probing
+-	 * arbitrary memory anyway similar to bpf_probe_read() and might
+-	 * as well probe the stack. Thus, memory is explicitly cleared
+-	 * only in error case, so that improper users ignoring return
+-	 * code altogether don't copy garbage; otherwise length of string
+-	 * is returned that can be used for bpf_perf_event_output() et al.
+-	 */
+-	ret = strncpy_from_unsafe(dst, unsafe_ptr, size);
+-	if (unlikely(ret < 0))
+-out:
+-		memset(dst, 0, size);
+-
+-	return ret;
+-}
+-
+-static const struct bpf_func_proto bpf_probe_read_str_proto = {
+-	.func		= bpf_probe_read_str,
+-	.gpl_only	= true,
+-	.ret_type	= RET_INTEGER,
+-	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
+-	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
+-	.arg3_type	= ARG_ANYTHING,
+-};
+-
+ struct send_signal_irq_work {
+ 	struct irq_work irq_work;
+ 	struct task_struct *task;
+@@ -700,8 +711,6 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_map_pop_elem_proto;
+ 	case BPF_FUNC_map_peek_elem:
+ 		return &bpf_map_peek_elem_proto;
+-	case BPF_FUNC_probe_read:
+-		return &bpf_probe_read_proto;
+ 	case BPF_FUNC_ktime_get_ns:
+ 		return &bpf_ktime_get_ns_proto;
+ 	case BPF_FUNC_tail_call:
+@@ -728,8 +737,10 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_current_task_under_cgroup_proto;
+ 	case BPF_FUNC_get_prandom_u32:
+ 		return &bpf_get_prandom_u32_proto;
++	case BPF_FUNC_probe_read:
++		return &bpf_probe_read_compat_proto;
+ 	case BPF_FUNC_probe_read_str:
+-		return &bpf_probe_read_str_proto;
++		return &bpf_probe_read_compat_str_proto;
+ #ifdef CONFIG_CGROUPS
+ 	case BPF_FUNC_get_current_cgroup_id:
+ 		return &bpf_get_current_cgroup_id_proto;
 -- 
 2.40.1
 
