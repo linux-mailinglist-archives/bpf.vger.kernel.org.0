@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-1038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA32E70CB2F
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 22:35:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C1CA70CB36
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 22:35:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D65C1C20BFD
-	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 20:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF8781C20C02
+	for <lists+bpf@lfdr.de>; Mon, 22 May 2023 20:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFB6174C8;
-	Mon, 22 May 2023 20:34:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1B8171D7;
+	Mon, 22 May 2023 20:35:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDE3154AF
-	for <bpf@vger.kernel.org>; Mon, 22 May 2023 20:34:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E043C4339C;
-	Mon, 22 May 2023 20:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C87154AF
+	for <bpf@vger.kernel.org>; Mon, 22 May 2023 20:35:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A771C4339B;
+	Mon, 22 May 2023 20:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684787695;
-	bh=XIX2yDn63uQ9xxgBYNjPu4x/2B0UpeRMuNabTt6UxWo=;
+	s=k20201202; t=1684787713;
+	bh=eHFLwkwnqJLV1skqiSQb1kO36BXLt5pZkTr7pZXoGQ8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I2rAgK7xltyoIWKVyVkj6rwC5zqUbLDvW5Rq9rbpA8rTmzVfu5aNbZ1Ge4E3dW7xd
-	 wPuDx9IGe7R/m/hwaRUlNIR6ZLSSOJt1DW68fT7ppAeZo00YdTnTNFWpnzYapX64dR
-	 mApCcZpG+GnWsKaSaIDTYq2+X5u7fNghE2GoFwfC9ihE7Q7iGC+asOT7M57iXsMze/
-	 DCtwgF6Rb1yYhr7qruSP2JpqhOCh4wH6lxnZEB1PqUEFqw2URi9dmRCQeO8wy75w0I
-	 gJn82MRQXTiHUFBsMXtqpCwKQ5b/sf8D1y0CMz1MDJofx6Dn6jH2SYWTuTYJ/KnpFM
-	 QwLIQw3Wxm1nQ==
+	b=ZIotzxhO3HwG38hcM6aijGpyjjnPs6cQsHkoiUDuxBLolfFQK75I5fpMs/cB2wf6V
+	 mR28ahuPQ/KT51PcT/869TcBM4E13dtkg3oN4VqdX5vLB1tTSzCswlUWwoW0mG/Nk9
+	 unbDxoFcjbze+24r3T8thJEGfCNznl3ceEouvKiqvESC0RkGfcvdzjJdkqd17+YN8+
+	 ewzuQBUBiMKT3knw5DWvLs+LUTtQ4INx5qw1R5jX86s12NeJgwmfyzJT7vPao72NWZ
+	 9cyMZflIK3W6SdeIKtGaRSmhUVl67wYenrT+LW5Mw1ZSktfTIWARdzWVH3DENzNnMG
+	 TkYl06+GRoHFw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: stable@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -47,9 +47,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Christoph Hellwig <hch@lst.de>,
 	=?UTF-8?q?Mah=C3=A9=20Tardy?= <mahe.tardy@isovalent.com>,
 	linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH stable 5.4 4/8] maccess: clarify kerneldoc comments
-Date: Mon, 22 May 2023 22:33:48 +0200
-Message-Id: <20230522203352.738576-5-jolsa@kernel.org>
+Subject: [RFC PATCH stable 5.4 5/8] maccess: rename strncpy_from_unsafe_user to strncpy_from_user_nofault
+Date: Mon, 22 May 2023 22:33:49 +0200
+Message-Id: <20230522203352.738576-6-jolsa@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230522203352.738576-1-jolsa@kernel.org>
 References: <20230522203352.738576-1-jolsa@kernel.org>
@@ -63,11 +63,12 @@ Content-Transfer-Encoding: 8bit
 
 From: Christoph Hellwig <hch@lst.de>
 
-commit 4f6de12b375c37ba51f9412be7ed6ab44a7f71d8 upstream.
+commit bd88bb5d4007949be7154deae7cef7173c751a95 upstream.
 
-Add proper kerneldoc comments for probe_kernel_read_strict and
-probe_kernel_read strncpy_from_unsafe_strict and explain the different
-versus the non-strict version.
+[Missing bpf_trace.c hunk due to not backported changes]
+
+This matches the naming of strncpy_from_user, and also makes it more
+clear what the function is supposed to do.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -77,106 +78,64 @@ Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Ingo Molnar <mingo@elte.hu>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lkml.kernel.org/r/20200521152301.2587579-5-hch@lst.de
+Link: http://lkml.kernel.org/r/20200521152301.2587579-7-hch@lst.de
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- mm/maccess.c | 60 +++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 43 insertions(+), 17 deletions(-)
+ include/linux/uaccess.h     | 4 ++--
+ kernel/trace/trace_kprobe.c | 2 +-
+ mm/maccess.c                | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index 25ae650dcb1a..23bda5df4c08 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -358,8 +358,8 @@ extern long strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+ extern long strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
+ 				       long count);
+ extern long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count);
+-extern long strncpy_from_unsafe_user(char *dst, const void __user *unsafe_addr,
+-				     long count);
++long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
++		long count);
+ extern long strnlen_unsafe_user(const void __user *unsafe_addr, long count);
+ 
+ /**
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index a422cf6a0358..d6ba4f6bed73 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1111,7 +1111,7 @@ fetch_store_string_user(unsigned long addr, void *dest, void *base)
+ 
+ 	__dest = get_loc_data(dest, base);
+ 
+-	ret = strncpy_from_unsafe_user(__dest, uaddr, maxlen);
++	ret = strncpy_from_user_nofault(__dest, uaddr, maxlen);
+ 	if (ret >= 0)
+ 		*(u32 *)dest = make_data_loc(ret, __dest - base);
+ 
 diff --git a/mm/maccess.c b/mm/maccess.c
-index 3ca8d97e5010..d263c7b5e4eb 100644
+index d263c7b5e4eb..8e4d564b6c25 100644
 --- a/mm/maccess.c
 +++ b/mm/maccess.c
-@@ -31,29 +31,36 @@ probe_write_common(void __user *dst, const void *src, size_t size)
+@@ -231,7 +231,7 @@ long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
  }
  
  /**
-- * probe_kernel_read(): safely attempt to read from a kernel-space location
-+ * probe_kernel_read(): safely attempt to read from any location
-  * @dst: pointer to the buffer that shall take the data
-  * @src: address to read from
-  * @size: size of the data chunk
-  *
-- * Safely read from address @src to the buffer at @dst.  If a kernel fault
-- * happens, handle that and return -EFAULT.
-+ * Same as probe_kernel_read_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
-+ */
-+long __weak probe_kernel_read(void *dst, const void *src, size_t size)
-+    __attribute__((alias("__probe_kernel_read")));
-+
-+/**
-+ * probe_kernel_read_strict(): safely attempt to read from kernel-space
-+ * @dst: pointer to the buffer that shall take the data
-+ * @src: address to read from
-+ * @size: size of the data chunk
-+ *
-+ * Safely read from kernel address @src to the buffer at @dst.  If a kernel
-+ * fault happens, handle that and return -EFAULT.
-  *
-  * We ensure that the copy_from_user is executed in atomic context so that
-  * do_page_fault() doesn't attempt to take mmap_sem.  This makes
-  * probe_kernel_read() suitable for use within regions where the caller
-  * already holds mmap_sem, or other locks which nest inside mmap_sem.
-- *
-- * probe_kernel_read_strict() is the same as probe_kernel_read() except for
-- * the case where architectures have non-overlapping user and kernel address
-- * ranges: probe_kernel_read_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where probe_user_read() is supposed
-- * to be used instead.
-  */
- 
--long __weak probe_kernel_read(void *dst, const void *src, size_t size)
--    __attribute__((alias("__probe_kernel_read")));
--
- long __weak probe_kernel_read_strict(void *dst, const void *src, size_t size)
-     __attribute__((alias("__probe_kernel_read")));
- 
-@@ -167,16 +174,35 @@ EXPORT_SYMBOL_GPL(probe_user_write);
+- * strncpy_from_unsafe_user: - Copy a NUL terminated string from unsafe user
++ * strncpy_from_user_nofault: - Copy a NUL terminated string from unsafe user
+  *				address.
+  * @dst:   Destination address, in kernel space.  This buffer must be at
+  *         least @count bytes long.
+@@ -248,7 +248,7 @@ long __strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
   * If @count is smaller than the length of the string, copies @count-1 bytes,
   * sets the last byte of @dst buffer to NUL and returns @count.
-  *
-- * strncpy_from_unsafe_strict() is the same as strncpy_from_unsafe() except
-- * for the case where architectures have non-overlapping user and kernel address
-- * ranges: strncpy_from_unsafe_strict() will additionally return -EFAULT for
-- * probing memory on a user address range where strncpy_from_unsafe_user() is
-- * supposed to be used instead.
-+ * Same as strncpy_from_unsafe_strict() except that for architectures with
-+ * not fully separated user and kernel address spaces this function also works
-+ * for user address tanges.
-+ *
-+ * DO NOT USE THIS FUNCTION - it is broken on architectures with entirely
-+ * separate kernel and user address spaces, and also a bad idea otherwise.
   */
- 
- long __weak strncpy_from_unsafe(char *dst, const void *unsafe_addr, long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
- 
-+/**
-+ * strncpy_from_unsafe_strict: - Copy a NUL terminated string from unsafe
-+ *				 address.
-+ * @dst:   Destination address, in kernel space.  This buffer must be at
-+ *         least @count bytes long.
-+ * @unsafe_addr: Unsafe address.
-+ * @count: Maximum number of bytes to copy, including the trailing NUL.
-+ *
-+ * Copies a NUL-terminated string from unsafe address to kernel buffer.
-+ *
-+ * On success, returns the length of the string INCLUDING the trailing NUL.
-+ *
-+ * If access fails, returns -EFAULT (some data may have been copied
-+ * and the trailing NUL added).
-+ *
-+ * If @count is smaller than the length of the string, copies @count-1 bytes,
-+ * sets the last byte of @dst buffer to NUL and returns @count.
-+ */
- long __weak strncpy_from_unsafe_strict(char *dst, const void *unsafe_addr,
- 				       long count)
-     __attribute__((alias("__strncpy_from_unsafe")));
+-long strncpy_from_unsafe_user(char *dst, const void __user *unsafe_addr,
++long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
+ 			      long count)
+ {
+ 	mm_segment_t old_fs = get_fs();
 -- 
 2.40.1
 
