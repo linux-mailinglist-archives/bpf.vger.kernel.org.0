@@ -1,132 +1,116 @@
-Return-Path: <bpf+bounces-1077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F270370D473
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 08:59:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14A6270D53B
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 09:37:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32D0E2812BF
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 06:59:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEFB9280FB2
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 07:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFC91D2A9;
-	Tue, 23 May 2023 06:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BC51D2DF;
+	Tue, 23 May 2023 07:36:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5A21641D;
-	Tue, 23 May 2023 06:59:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23271C433D2;
-	Tue, 23 May 2023 06:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684825171;
-	bh=8bCyd/iyRVecAb/iC58YqCmI1gFlhQUVWms6GTv8yuU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ODbLFCMWK19Cvwzcmi4OfzXBWpT33XKeSb8OVFEKYmrXDyxzB+3sRqq1FJC57OOLY
-	 b6c3/cab8+Ps2E+WntAoBMOl6uV3gBHNC4lu+5UQ8/ndytTzQRF8zWy1z7uKoRJUoh
-	 j9vdOStNIh7635iVk6ZZO5wRazE0wwNwah/LLUgPIfhTKjKWUMpp3BKHfktDlnkvDf
-	 JpcaCHvV9IO7HKoWYc3U5QaR9un379nIRXyP91omWgZWPofxPyWgLGOoTw8eSPmrBn
-	 BdytxxWX3akeKVonuEihGcqcYsvKO4Irj8OVa3NE4QYodgdP1/DWdkYWeWioHBLH5d
-	 QT6h81EEXeBuQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D4E7ECE1C03; Mon, 22 May 2023 23:59:28 -0700 (PDT)
-Date: Mon, 22 May 2023 23:59:28 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Ze Gao <zegao2021@gmail.com>, Jiri Olsa <olsajiri@gmail.com>,
-	Yonghong Song <yhs@meta.com>, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Yonghong Song <yhs@fb.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, kafai@fb.com,
-	kpsingh@chromium.org, netdev@vger.kernel.org, songliubraving@fb.com,
-	Ze Gao <zegao@tencent.com>
-Subject: Re: 
-Message-ID: <9dc981d5-e385-4468-9b51-64a10476c86d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20220515203653.4039075-1-jolsa@kernel.org>
- <20230520094722.5393-1-zegao@tencent.com>
- <b4f66729-90ab-080a-51ec-bf435ad6199d@meta.com>
- <CAD8CoPAXse1GKAb15O5tZJwBqMt1N_btH+qRe7c_a-ryUMjx7A@mail.gmail.com>
- <ZGp+fW855gmWuh9W@krava>
- <CAD8CoPDASe7hpkFbK+UzJats7j4sbgsCh_P4zaQYVuKD7jWu2w@mail.gmail.com>
- <20230523133019.ce19932f89585eb10d092896@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E8A1D2D9
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 07:36:57 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55929133
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 00:36:56 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-96f7377c86aso795326166b.1
+        for <bpf@vger.kernel.org>; Tue, 23 May 2023 00:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1684827415; x=1687419415;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=t59b5dObDa+SJIKgajgep5LVPEaYQ+q4ZH79RVF4PVM=;
+        b=DLXJl66VC1/9BLZlVa1h7s99aBB4anQSbKyZ7VTzFsrTOtBGIHRLRuV+OcVOlkrJhm
+         E0qGscSIVZjFwDD/YbPE9C6cQfyzuggRgXtYM8FIl5TG2EGq2bQhBSS404htbAX8MIC4
+         PQvxl6Y1OVJB2mNGAuyb63/vK/NYHnFNTeMFE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684827415; x=1687419415;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t59b5dObDa+SJIKgajgep5LVPEaYQ+q4ZH79RVF4PVM=;
+        b=DqxsYZai6yi561yp7PAkh4oeYVb7b+nmxvPidQ13+WTJll4B/dXmlQ3d6PU/cuVHdd
+         9N48NuWokjqVG1j7yKHVfi+N+YFYGPUnPu6VN77ZdfwBbdVHGqgtMLI22kurXMSUSfcF
+         ZMvw6N1oXqzVibbiUwAxYFAcpLYJGayKfIlrwx7gpbppROjBrywDaFwKTFL3Zm/K3VGI
+         jXUGyTbiN3XNUYL02ryvccY63eIVyyA3yXdxmBUmZfVQKdZjEU/O6XZ+zGJzuPrA9UE7
+         WioCJ+UITK7j+Kt8fJRbpWHG810TI2nRwGWzT2qu/rWcF4NmlDJVLBHo2U0U4vUndFwE
+         UkJQ==
+X-Gm-Message-State: AC+VfDzcTHrMPf0awVu0HqtjHvQ+QIxHMK4836mjVYRnR013VXu3SaGl
+	nzSnoJs1kTqOKVAy7wk0EG2+mQ==
+X-Google-Smtp-Source: ACHHUZ6/lWowG6QRPF8M+CFtCnOmr1Od3qg12tfnXsmc9bIeXWRqYUtdJ7HahEkF69ndmNBW8iPumQ==
+X-Received: by 2002:a17:907:3ea5:b0:950:e44:47ae with SMTP id hs37-20020a1709073ea500b009500e4447aemr14264658ejc.40.1684827414748;
+        Tue, 23 May 2023 00:36:54 -0700 (PDT)
+Received: from cloudflare.com (79.184.126.163.ipv4.supernova.orange.pl. [79.184.126.163])
+        by smtp.gmail.com with ESMTPSA id gv18-20020a170906f11200b00965a4350411sm4008921ejb.9.2023.05.23.00.36.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 May 2023 00:36:54 -0700 (PDT)
+References: <20230523025618.113937-1-john.fastabend@gmail.com>
+ <20230523025618.113937-5-john.fastabend@gmail.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ edumazet@google.com, ast@kernel.org, andrii@kernel.org, will@isovalent.com
+Subject: Re: [PATCH bpf v10 04/14] bpf: sockmap, improved check for empty queue
+Date: Tue, 23 May 2023 09:35:42 +0200
+In-reply-to: <20230523025618.113937-5-john.fastabend@gmail.com>
+Message-ID: <87h6s37b3f.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230523133019.ce19932f89585eb10d092896@kernel.org>
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, May 23, 2023 at 01:30:19PM +0800, Masami Hiramatsu wrote:
-> On Mon, 22 May 2023 10:07:42 +0800
-> Ze Gao <zegao2021@gmail.com> wrote:
-> 
-> > Oops, I missed that. Thanks for pointing that out, which I thought is
-> > conditional use of rcu_is_watching before.
-> > 
-> > One last point, I think we should double check on this
-> >      "fentry does not filter with !rcu_is_watching"
-> > as quoted from Yonghong and argue whether it needs
-> > the same check for fentry as well.
-> 
-> rcu_is_watching() comment says;
-> 
->  * if the current CPU is not in its idle loop or is in an interrupt or
->  * NMI handler, return true.
-> 
-> Thus it returns *fault* if the current CPU is in the idle loop and not
-> any interrupt(including NMI) context. This means if any tracable function
-> is called from idle loop, it can be !rcu_is_watching(). I meant, this is
-> 'context' based check, thus fentry can not filter out that some commonly
-> used functions is called from that context but it can be detected.
+On Mon, May 22, 2023 at 07:56 PM -07, John Fastabend wrote:
+> We noticed some rare sk_buffs were stepping past the queue when system was
+> under memory pressure. The general theory is to skip enqueueing
+> sk_buffs when its not necessary which is the normal case with a system
+> that is properly provisioned for the task, no memory pressure and enough
+> cpu assigned.
+>
+> But, if we can't allocate memory due to an ENOMEM error when enqueueing
+> the sk_buff into the sockmap receive queue we push it onto a delayed
+> workqueue to retry later. When a new sk_buff is received we then check
+> if that queue is empty. However, there is a problem with simply checking
+> the queue length. When a sk_buff is being processed from the ingress queue
+> but not yet on the sockmap msg receive queue its possible to also recv
+> a sk_buff through normal path. It will check the ingress queue which is
+> zero and then skip ahead of the pkt being processed.
+>
+> Previously we used sock lock from both contexts which made the problem
+> harder to hit, but not impossible.
+>
+> To fix instead of popping the skb from the queue entirely we peek the
+> skb from the queue and do the copy there. This ensures checks to the
+> queue length are non-zero while skb is being processed. Then finally
+> when the entire skb has been copied to user space queue or another
+> socket we pop it off the queue. This way the queue length check allows
+> bypassing the queue only after the list has been completely processed.
+>
+> To reproduce issue we run NGINX compliance test with sockmap running and
+> observe some flakes in our testing that we attributed to this issue.
+>
+> Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
+> Tested-by: William Findlay <will@isovalent.com>
+> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
 
-It really does return false (rather than faulting?) if the current CPU
-is deep within the idle loop.
-
-In addition, the recent x86/entry rework (thank you Peter and
-Thomas!) mean that the "idle loop" is quite restricted, as can be
-seen by the invocations of ct_cpuidle_enter() and ct_cpuidle_exit().
-For example, in default_idle_call(), these are immediately before and
-after the call to arch_cpu_idle().
-
-Would the following help?  Or am I missing your point?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 1449cb69a0e0..fae9b4e29c93 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
- /**
-  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
-  *
-- * Return true if RCU is watching the running CPU, which means that this
-- * CPU can safely enter RCU read-side critical sections.  In other words,
-- * if the current CPU is not in its idle loop or is in an interrupt or
-- * NMI handler, return true.
-+ * Return @true if RCU is watching the running CPU and @false otherwise.
-+ * An @true return means that this CPU can safely enter RCU read-side
-+ * critical sections.
-+ *
-+ * More specifically, if the current CPU is not deep within its idle
-+ * loop, return @true.  Note that rcu_is_watching() will return @true if
-+ * invoked from an interrupt or NMI handler, even if that interrupt or
-+ * NMI interrupted the CPU while it was deep within its idle loop.
-  *
-  * Make notrace because it can be called by the internal functions of
-  * ftrace, and making this notrace removes unnecessary recursion calls.
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
