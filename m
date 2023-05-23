@@ -1,55 +1,58 @@
-Return-Path: <bpf+bounces-1093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C500170DF46
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:32:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F68170DF76
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:38:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 755B42813BC
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:32:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B4FC1C20E04
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C9F28C3F;
-	Tue, 23 May 2023 14:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D301F17A;
+	Tue, 23 May 2023 14:38:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EB228C32;
-	Tue, 23 May 2023 14:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F564C7B
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 14:38:04 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A815FA;
-	Tue, 23 May 2023 07:31:33 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063B7E0;
+	Tue, 23 May 2023 07:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=PgTAlk789B2je/R+T+tN93jTtxuoHPYsG6W9waWQK2A=; b=jSTrr/U4wdQ/2VFvQhy8KOq4F1
-	BoALMZKdtPDm9a3YktBMuNezLuZhob602iZf4foYSuf6ih7k4JpZ/m+M2XoBs0Y1ZCsnW9v1Za6qU
-	AZN2i3oNrCD9RZ8qO3m+3TYwkVmeio/D2osNRALEl6EVDUHLWaJC3uDznzWF8Zwj007OYWAxyRnPd
-	U+BLE0tlLFz9fphQEMZCyTXmBne+snsQKKqUOh+thWIXHofKqIfdRiqjCKEIOvhJQQmBUMrWbv4mU
-	GamlabBDaE/3gCRPLiuDic6C7qiUciRQxXENElhFUC65icCg3cVTdN0sd/5Q8jlTU14sJk395l4US
-	p5fEJJhw==;
+	bh=lVxc8nMPNGIm5J+njIEIPXXeD353Vh5ymn5V4/A0dvg=; b=mzQt2SkOgl1mdg+WuY9fkhOPAh
+	mIWKLljybsKGp2mvuu/30+CBsasAfF9CXUnTTqc//ujHs2ytgT/oipLbS834fclgBUA5UIqLd9FRu
+	GrKfkM6y9ooDGoZWMs/hupyL3NL2EfbEBtCMXHWTxM9hpFTX3m48zTWydMtOMxsiR9WjgY12lPqaa
+	rXYIjhKq+zriDr2lNGMaSakwWuYOuiR/RbqyRTtsOI8ftthlAAkJt6hmFq3BgY+h5LGMiPUb9TFsl
+	oi9TpHBDrrDw110TF/lOeRJYoxLSgMiYpdP3rGlwgv07fxxxHrp+3bIjBc9FP8ln56CPvyW0zyubi
+	ff7FC8tA==;
 Received: from sslproxy03.your-server.de ([88.198.220.132])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1q1T2w-000IHA-Vq; Tue, 23 May 2023 16:31:30 +0200
+	id 1q1T9F-000Iy2-BU; Tue, 23 May 2023 16:38:01 +0200
 Received: from [85.1.206.226] (helo=linux.home)
 	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1q1T2w-000T3T-GM; Tue, 23 May 2023 16:31:30 +0200
-Subject: Re: [PATCH bpf v10 00/14] bpf sockmap fixes
-To: John Fastabend <john.fastabend@gmail.com>, jakub@cloudflare.com
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com,
- ast@kernel.org, andrii@kernel.org, will@isovalent.com
-References: <20230523025618.113937-1-john.fastabend@gmail.com>
+	id 1q1T9E-000C87-Qg; Tue, 23 May 2023 16:38:00 +0200
+Subject: Re: [PATCH v3 bpf-next 3/4] libbpf: add opts-based bpf_obj_pin() API
+ and add support for path_fd
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@kernel.org
+Cc: cyphar@cyphar.com, brauner@kernel.org, lennart@poettering.net,
+ linux-fsdevel@vger.kernel.org
+References: <20230522232917.2454595-1-andrii@kernel.org>
+ <20230522232917.2454595-4-andrii@kernel.org>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <27cabfca-33e9-8883-ad9c-7a7731c82b0b@iogearbox.net>
-Date: Tue, 23 May 2023 16:31:30 +0200
+Message-ID: <383289fa-1036-b569-1ebf-5da8ba41c58d@iogearbox.net>
+Date: Tue, 23 May 2023 16:38:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -58,7 +61,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230523025618.113937-1-john.fastabend@gmail.com>
+In-Reply-To: <20230522232917.2454595-4-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,8 +74,25 @@ X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/23/23 4:56 AM, John Fastabend wrote:
-> v10, CI noticed build error with old headers.
+On 5/23/23 1:29 AM, Andrii Nakryiko wrote:
+[...]
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index a5aa3a383d69..7a4fe80da360 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -389,5 +389,6 @@ LIBBPF_1.2.0 {
+>   		bpf_link__update_map;
+>   		bpf_link_get_info_by_fd;
+>   		bpf_map_get_info_by_fd;
+> +		bpf_obj_pin_opts;
 
-Applied, thanks everyone!
+Given 1.2.0 went out [0], shouldn't this go into a new LIBBPF_1.3.0 section?
+
+>   		bpf_prog_get_info_by_fd;
+>   } LIBBPF_1.1.0;
+
+Thanks,
+Daniel
+
+   [0] https://lore.kernel.org/bpf/CAEf4BzYJhzEDHarRGvidhPd-DRtu4VXxnQ=HhOG-LZjkbK-MwQ@mail.gmail.com/
 
