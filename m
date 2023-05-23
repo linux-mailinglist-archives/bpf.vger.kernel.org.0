@@ -1,98 +1,134 @@
-Return-Path: <bpf+bounces-1094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F68170DF76
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:38:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 849DC70DFB5
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B4FC1C20E04
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:38:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3931A2813C3
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D301F17A;
-	Tue, 23 May 2023 14:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92221F92C;
+	Tue, 23 May 2023 14:52:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F564C7B
-	for <bpf@vger.kernel.org>; Tue, 23 May 2023 14:38:04 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063B7E0;
-	Tue, 23 May 2023 07:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=lVxc8nMPNGIm5J+njIEIPXXeD353Vh5ymn5V4/A0dvg=; b=mzQt2SkOgl1mdg+WuY9fkhOPAh
-	mIWKLljybsKGp2mvuu/30+CBsasAfF9CXUnTTqc//ujHs2ytgT/oipLbS834fclgBUA5UIqLd9FRu
-	GrKfkM6y9ooDGoZWMs/hupyL3NL2EfbEBtCMXHWTxM9hpFTX3m48zTWydMtOMxsiR9WjgY12lPqaa
-	rXYIjhKq+zriDr2lNGMaSakwWuYOuiR/RbqyRTtsOI8ftthlAAkJt6hmFq3BgY+h5LGMiPUb9TFsl
-	oi9TpHBDrrDw110TF/lOeRJYoxLSgMiYpdP3rGlwgv07fxxxHrp+3bIjBc9FP8ln56CPvyW0zyubi
-	ff7FC8tA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q1T9F-000Iy2-BU; Tue, 23 May 2023 16:38:01 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q1T9E-000C87-Qg; Tue, 23 May 2023 16:38:00 +0200
-Subject: Re: [PATCH v3 bpf-next 3/4] libbpf: add opts-based bpf_obj_pin() API
- and add support for path_fd
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@kernel.org
-Cc: cyphar@cyphar.com, brauner@kernel.org, lennart@poettering.net,
- linux-fsdevel@vger.kernel.org
-References: <20230522232917.2454595-1-andrii@kernel.org>
- <20230522232917.2454595-4-andrii@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <383289fa-1036-b569-1ebf-5da8ba41c58d@iogearbox.net>
-Date: Tue, 23 May 2023 16:38:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC191F17A
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 14:52:58 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1AECD
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 07:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1684853576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KHDYxPG+OnNKEEbmravfdg4Ujk0LU1sywu09RiZg4i4=;
+	b=fT2VkzmvYzoB6RWYbKNBqy7lTogkkglTqAYeVEPp0Si0EiiH/NQAoVMnAmmYadycaxvSRe
+	RoKItZt5Dc2zKYS3YlQyihTv9uvPl9I3fLVcpzXx1u/bDaMwVQZIc/mE2Ab1owMJlISu05
+	yWHK6JKqq6mna/VnCzvXYyUWnIO90OA=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-450-gQyoRNafPJqNEodLpHa1nw-1; Tue, 23 May 2023 10:52:50 -0400
+X-MC-Unique: gQyoRNafPJqNEodLpHa1nw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 063B929AA3B0;
+	Tue, 23 May 2023 14:52:50 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.23])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 620A11121314;
+	Tue, 23 May 2023 14:52:49 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+	by firesoul.localdomain (Postfix) with ESMTP id 3A424307372E8;
+	Tue, 23 May 2023 16:52:48 +0200 (CEST)
+Subject: [PATCH RFC net-next/mm V4 0/2] page_pool: new approach for leak
+ detection and shutdown phase
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>, netdev@vger.kernel.org,
+ Eric Dumazet <eric.dumazet@gmail.com>, linux-mm@kvack.org,
+ Mel Gorman <mgorman@techsingularity.net>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>, lorenzo@kernel.org,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ linyunsheng@huawei.com, bpf@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ willy@infradead.org
+Date: Tue, 23 May 2023 16:52:48 +0200
+Message-ID: <168485351546.2849279.13771638045665633339.stgit@firesoul>
+User-Agent: StGit/1.4
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230522232917.2454595-4-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26916/Tue May 23 09:22:39 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/23/23 1:29 AM, Andrii Nakryiko wrote:
-[...]
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index a5aa3a383d69..7a4fe80da360 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -389,5 +389,6 @@ LIBBPF_1.2.0 {
->   		bpf_link__update_map;
->   		bpf_link_get_info_by_fd;
->   		bpf_map_get_info_by_fd;
-> +		bpf_obj_pin_opts;
+Patchset change summary:
+ - Remove PP workqueue and inflight warnings, instead rely on inflight
+   pages to trigger cleanup
+ - Moves leak detection to the MM-layer page allocator when combined
+   with CONFIG_DEBUG_VM.
 
-Given 1.2.0 went out [0], shouldn't this go into a new LIBBPF_1.3.0 section?
+The page_pool (PP) workqueue calling page_pool_release_retry generate
+too many false-positive reports. Further more, these reports of
+page_pool shutdown still having inflight packets are not very helpful
+to track down the root-cause.
 
->   		bpf_prog_get_info_by_fd;
->   } LIBBPF_1.1.0;
+In the past these reports have helped us catch driver bugs, that
+leaked pages by invoking put_page directly, often in code paths
+handling error cases. PP pages had a shorter lifespan (within driver
+and XDP code paths). Since PP pages got a recycle return path for
+SKBs, the lifespan for a PP page can be much longer. Thus, it is time
+to revisit periodic release retry mechanism. The default 60 sec
+lifespan assumption is obviously wrong/obsolete, as things like TCP
+sockets can keep SKBs around for much longer (e.g. retransmits,
+timeouts, NAPI defer schemes etc).
 
-Thanks,
-Daniel
+The inflight reports, means one of two things: (1) API user is still
+holding on, or (2) page got leaked and will never be returned to PP.
+The PP need to accept it have no control over (1) how long outstanding
+PP pages are kept by the API users. What we really want to is to catch
+are(2) pages that "leak". Meaning they didn't get proper returned via
+PP APIs.
 
-   [0] https://lore.kernel.org/bpf/CAEf4BzYJhzEDHarRGvidhPd-DRtu4VXxnQ=HhOG-LZjkbK-MwQ@mail.gmail.com/
+Leaked PP pages result in these issues: (A) We can never release
+page_pool memory structs, which (B) holds on to a refcnt on struct
+device for DMA mapping, and (C) leaking DMA-mappings that (D) means a
+hardware device can potentially write into a page returned to the page
+allocator.
+
+V4: Use RCU sync method to resolve races
+
+V3: Fix races found Toke
+
+V2: Fix race found by Yunsheng Lin <linyunsheng@huawei.com>
+
+---
+
+Jesper Dangaard Brouer (2):
+      mm/page_pool: catch page_pool memory leaks
+      page_pool: Remove workqueue in new shutdown scheme
+
+
+ include/net/page_pool.h |  10 +--
+ mm/page_alloc.c         |   7 ++
+ net/core/page_pool.c    | 138 ++++++++++++++++++++++++++++------------
+ 3 files changed, 111 insertions(+), 44 deletions(-)
+
+--
+
 
