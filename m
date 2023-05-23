@@ -1,82 +1,86 @@
-Return-Path: <bpf+bounces-1055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D272970D00D
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 03:05:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B5970D060
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 03:19:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1AD21C20C0A
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 01:05:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 127CF280ED3
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 01:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3B81860;
-	Tue, 23 May 2023 01:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862E71876;
+	Tue, 23 May 2023 01:19:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8971847
-	for <bpf@vger.kernel.org>; Tue, 23 May 2023 01:05:30 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5921918E;
-	Mon, 22 May 2023 18:05:28 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f3baf04f0cso2701098e87.1;
-        Mon, 22 May 2023 18:05:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC4C1847;
+	Tue, 23 May 2023 01:19:39 +0000 (UTC)
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799FF92;
+	Mon, 22 May 2023 18:19:36 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-253e0f1e514so2288736a91.1;
+        Mon, 22 May 2023 18:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684803926; x=1687395926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1684804776; x=1687396776;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+cPEvgakMKy8aZ6tk74VpcoeTVjWwOIUcBBI8spB66g=;
-        b=Z/NGPFUGaecALydozi/TCKrIYcXcYTVX90l5U9oYzOU924lK3YAa5dgFpxjm8W7qV3
-         j8Is69+TGKclTLvyKdbchf1VgCqt5v32vSZgaGXH//7R/hGJXGBeaP38OC7VAA+13S2/
-         O2oZLOdb8MbSC38s/tnv2GwmrxCEvWvDhMOfVClYaHgJqkzyU93odXSLp/V0m8jEKahD
-         /6b4Wk7DbcrTOOc5bMijNuLCp9Yx++ZGdVnMwp7Ogzij1QedjCOPll7ki8KJR0qNRXAR
-         YN4oBLtm2lNos8/dnlm7AOQt+XdXaBMSE5fehJRRaG3tuSNFx/0oVDIydAxIgqdYdiDA
-         S8Fw==
+        bh=qnTORRvOFq+sivOwL+B1qEmMhdymNJCC9ta7K6PY5OA=;
+        b=EudPK8xEqqtrDRS5A2DPD8O9S+WK+I/qYtrXeOGuoiIVEfm1wunt+0spc6Fwhx84Om
+         ZfbVJsMoLCpBeOe+LqoEkth3nUgkwkL+TwWvqexicgvruJXLp/KWtfzOnF8I5VXsCskI
+         i6htg0uBzmTFAKiV+/TVH9ozn8dnpWSSN+2tzzNUmlFINxgjI3KnoYprDfcH1CN+38KR
+         KKzIqt4FjgmyV2qaUfH63FtOA8XoriKiCzUehkqLDz47T1i6lGxKaD4FgIHCPA1t07ru
+         rMD1ZfOjUNE3r0PlvKeT5Nexu/ZWDPqAaYq7nr6PGZLfqB7rk5B0xl5RR8ssjinY4UlQ
+         K/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684803926; x=1687395926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+cPEvgakMKy8aZ6tk74VpcoeTVjWwOIUcBBI8spB66g=;
-        b=Yz0oG+BQyJF7qmlALTKJjxoKgsvvlmCbh7gvIp2XVNtB5lwUAcOUTOUyMX7/CpW3wm
-         X+LPs/d3vy/MEn/HFnzITPUD3Yarc2h7vECH2UwjQTU504c8WKzeRHx9DL143x6F4t/T
-         xdmyi9xwLAdEaKVcNfh8kFe7oaIe1opej1ABeHzF0ieF6rVe1YvazGRirgwTviZ0XVBC
-         g3UXssiPadMGae5yIsHjTwWUOwB76C2fqbIUnf1x9aSF0uvoep8CHjLtSAA2/jrpNJhi
-         /uY2DMc1I/DlU3kkjpQAwvxu3cWgpVpSsbI20+UDWSiDUavtMLxjBoqIo3LngRcITKKP
-         m82A==
-X-Gm-Message-State: AC+VfDxOB3QYer9bLxomQ0QmI6AMBuZ7MIIJcwD5cxrGR69LN5Q/ADpT
-	7teZjeBXCLiyqltaxpOHU55/3fbmbuK8LwwMd9c=
-X-Google-Smtp-Source: ACHHUZ6mQJBgPkb3HqOabQYA1hSLgNPEVq7wPHABwM8ZXFt/fEN3HAKp24zyl96sBhqnI2ns5XA75ApWDn48oFqddPE=
-X-Received: by 2002:a19:a402:0:b0:4f4:ba0d:3bbf with SMTP id
- q2-20020a19a402000000b004f4ba0d3bbfmr280781lfc.60.1684803926066; Mon, 22 May
- 2023 18:05:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684804776; x=1687396776;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qnTORRvOFq+sivOwL+B1qEmMhdymNJCC9ta7K6PY5OA=;
+        b=APG+P6t3kFhHx5gyd1+wuYleQUE0hTRMZnozQF08hzR6oq0SVoMzhgG8SA42Bk1/15
+         e2Bztbo96gj7QhWblJFLQ1Btoh8hwvXWBqHAzXViD4uWlmXrtaUL55K6Ehbnty2nPn8w
+         5PtmerhJaoldsTFDd27GzRYQE9lE0W73wHr+eOwIkeepBN5c3dCIbmRsj9F3L+hNe1Ra
+         Cpfptpb92QHckjIZWf2qnkIGZLB/2pranKPGEyxkbOYx9DSiSI2zOhS09U9+y/jPk2Z2
+         HzP/PcTX5bEZaPWmOOZcD5rurbAP9LLnAdGe9P6JLSzunHTfW7p29e5ocw8fDPFfKwYm
+         TaYA==
+X-Gm-Message-State: AC+VfDzMJY6c72YnBm+tmpZyrBEpikeqHovOwfiuHbY+kyCUGz22HUin
+	89cnTsHzlobYwb2NCrdDZoU6vUnpYgQ=
+X-Google-Smtp-Source: ACHHUZ6kHYl5wwSKwjC4x0juWspfzQyRaohwF3p706NiCkulAgkbJjDiOnhBRp172fzZkUDsZzIqSQ==
+X-Received: by 2002:a17:903:443:b0:1ae:403f:d838 with SMTP id iw3-20020a170903044300b001ae403fd838mr11798254plb.27.1684804775836;
+        Mon, 22 May 2023 18:19:35 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:82a6:5b19:9c99:3aad])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170902744800b001ab0d815dbbsm5406546plt.23.2023.05.22.18.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 May 2023 18:19:35 -0700 (PDT)
+Date: Mon, 22 May 2023 18:19:33 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>, 
+ jakub@cloudflare.com, 
+ daniel@iogearbox.net
+Cc: john.fastabend@gmail.com, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ edumazet@google.com, 
+ ast@kernel.org, 
+ andrii@kernel.org, 
+ will@isovalent.com
+Message-ID: <646c14a5bd4f8_260e20865@john.notmuch>
+In-Reply-To: <20230519040659.670644-1-john.fastabend@gmail.com>
+References: <20230519040659.670644-1-john.fastabend@gmail.com>
+Subject: RE: [PATCH bpf v9 00/14] bpf sockmap fixes
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230517125617.931437-1-arnd@kernel.org> <20230517125617.931437-2-arnd@kernel.org>
-In-Reply-To: <20230517125617.931437-2-arnd@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 22 May 2023 18:05:14 -0700
-Message-ID: <CAADnVQL+K22KEMu8fkQbsdmDAMcws1Cja3iM=E9zPLhDfDWmqw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] bpf: add bpf_probe_read_kernel declaration
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Delyan Kratunov <delyank@fb.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Menglong Dong <imagedong@tencent.com>, 
-	Yafang Shao <laoar.shao@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,59 +88,26 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 17, 2023 at 5:56=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> bpf_probe_read_kernel() has a __weak definition in core.c and another
-> definition with an incompatible prototype in kernel/trace/bpf_trace.c,
-> when CONFIG_BPF_EVENTS is enabled.
->
-> Since the two are incompatible, there cannot be a shared declaration
-> in a header file, but the lack of a prototype causes a W=3D1 warning:
->
-> kernel/bpf/core.c:1638:12: error: no previous prototype for 'bpf_probe_re=
-ad_kernel' [-Werror=3Dmissing-prototypes]
->
-> Add a prototype directly in front of the function instead to shut
-> up the warning. Also, to avoid having an incompatible function override
-> the __weak definition, use an #ifdef to ensure that only one of the
-> two is ever defined.
->
-> I'm not sure what can be done to make the two prototypes match.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/bpf/core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 6f5ede31e471..38762a784b86 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1635,11 +1635,14 @@ bool bpf_opcode_in_insntable(u8 code)
->  }
->
->  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
-> -u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe=
-_ptr)
-> +u64 bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr);
-> +#ifndef CONFIG_BPF_EVENTS
-> +u64 bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
->  {
->         memset(dst, 0, size);
->         return -EFAULT;
->  }
+John Fastabend wrote:
+> v9, rebased which resulted in two additions needed. Patch 14
+> to resolve an introduced verifier error. I'll try to dig into
+> exactly what happened but the fix was easy to get test_sockmap
+> running again. And then in vsock needed similar fix to the
+> the protocols so I folded that into the first patch.
 
-This is not right, but you've spotted a bug.
-bpf_probe_read_kernel
-It should be BPF_CALL_3(bpf_probe_read_kernel, void *, dst, u32, size,
-           const void *, unsafe_ptr)
-here in kernel/bpf/core.c as well otherwise bpf prog won't
-pass the arguments correctly on 32-bit arches.
-The kconfig without CONFIG_BPF_EVENTS and with BPF_SYSCALL is very odd.
-I suspect the progs will likely refuse to load,
-but still worth fixing it correctly at least to document the calling conven=
-tion.
+[...]
+
+Guess we need yet another build CI seems to be upset building
+this.
+
+2023-05-22T17:37:37.7500703Z In file included from /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:17:
+2023-05-22T17:37:37.7501506Z /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h:240:18: error: use of undeclared identifier 'VMADDR_CID_LOCAL'
+2023-05-22T17:37:37.7501950Z         addr->svm_cid = VMADDR_CID_LOCAL;
+2023-05-22T17:37:37.7503213Z                   
+
+Interestingly clang version (latest) here is fine with it. Anyways
+will fix we should put define near where its used. :/
+
+Thanks,
+John
 
