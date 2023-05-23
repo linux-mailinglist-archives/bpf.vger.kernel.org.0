@@ -1,88 +1,87 @@
-Return-Path: <bpf+bounces-1098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E72670DFD0
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 17:00:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F264170DFD2
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 17:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584E31C20C85
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 15:00:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE5F52812EA
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 15:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D5B1F92B;
-	Tue, 23 May 2023 15:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A92C1F92E;
+	Tue, 23 May 2023 15:00:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8B91E524
-	for <bpf@vger.kernel.org>; Tue, 23 May 2023 15:00:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 808B5C4339C;
-	Tue, 23 May 2023 15:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684854020;
-	bh=mRwXoyY9oWP89l1e78Jo5a0ZJ7zR47R7VPH9XIMjDtk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OXkWGWY/AqYHwyl3DI5zlhtNT1XmoN0zBkZI4tyOu755n2YPefLqpWe06PmRJthHb
-	 LyuOkT0qUJ65VZhVSR3OX+e9OfXRMAuebDcq8EY7uCKTJ/YB609JrvrQJroIHAA9fe
-	 h4R9PwvEhmzxLeMj50XJAJJSI2Ha6vPH54M7QmHto6b/BX9nOoIZaj3zv6TPBJ3FZv
-	 BzuFXg9fkDj1JCB27v3lDFFYGv2ivqMG2tyV1vTumE8BJ1CaJQE6JItdok+Xagdd34
-	 CUaunPwvoOlSQQfrEF+evhx3Eyb8h8xv1KZljqX+rakaGBplwCOmWjIItIlf4ShytV
-	 ez59b4omiJcIw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67670E21ECE;
-	Tue, 23 May 2023 15:00:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99AD1E524
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 15:00:52 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B9411A;
+	Tue, 23 May 2023 08:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=8PeugkYtHQ0nMIBn48nsUlBDK7PMlRi6cAWFzaT+HTE=; b=FYXvaYk58FQZ4AbATcPnnzEr9i
+	fZ4S8jkvXZ5Sg6qJhGWVtk0yWLxy5otN+6uwQwVTqKMOFDO/iOV01F0iUljVpeClnw4P9JY5pjy6n
+	MUUFuDqYVxIx4hfoMzPJWBBrMx6XKP6P2DusmXSzu2Ejj54ERUU/3jlR0ENi0LoKvc2JRrr0J66Hr
+	RA7q0F+0jdO/cE/jiIMO+VKJnjv5ybe+aEzyyhHc9kbH1uuh9z1gHBaAU/XU1wbRwj2xggI52MzNr
+	/zllegpFzPMWwjOe5iaXa+JzsVVsr/u8HKzLyo59P083o0ZtxJ2JnE1V+o4WSVCC4dApW9vW/OOqQ
+	CXQEXqRw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q1TVJ-000LWq-4S; Tue, 23 May 2023 17:00:48 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q1TVI-000Evj-JX; Tue, 23 May 2023 17:00:48 +0200
+Subject: Re: [PATCH v3 bpf-next 1/4] bpf: validate BPF object in BPF_OBJ_PIN
+ before calling LSM
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@kernel.org
+Cc: cyphar@cyphar.com, brauner@kernel.org, lennart@poettering.net,
+ linux-fsdevel@vger.kernel.org
+References: <20230522232917.2454595-1-andrii@kernel.org>
+ <20230522232917.2454595-2-andrii@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <342f13a8-e973-cc60-b63d-defb195cb0f1@iogearbox.net>
+Date: Tue, 23 May 2023 17:00:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] bpftool: specify XDP Hints ifname when loading
- program
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168485402041.5478.8959103942618026686.git-patchwork-notify@kernel.org>
-Date: Tue, 23 May 2023 15:00:20 +0000
-References: <20230517160103.1088185-1-larysa.zaremba@intel.com>
-In-Reply-To: <20230517160103.1088185-1-larysa.zaremba@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: quentin@isovalent.com, sdf@google.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, niklas.soderlund@corigine.com
+In-Reply-To: <20230522232917.2454595-2-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26916/Tue May 23 09:22:39 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 17 May 2023 18:01:04 +0200 you wrote:
-> Add ability to specify a network interface used to resolve
-> XDP Hints kfuncs when loading program through bpftool.
+On 5/23/23 1:29 AM, Andrii Nakryiko wrote:
+> Do a sanity check whether provided file-to-be-pinned is actually a BPF
+> object (prog, map, btf) before calling security_path_mknod LSM hook. If
+> it's not, LSM hook doesn't have to be triggered, as the operation has no
+> chance of succeeding anyways.
 > 
-> Usage:
->   bpftool prog load [...] xdpmeta_dev <ifname>
-> 
-> Writing just 'dev <ifname>' instead of 'xdpmeta_dev' is a very probable
-> mistake that results in not very descriptive errors,
-> so 'bpftool prog load [...] dev <ifname>' syntax becomes deprecated,
-> followed by 'bpftool map create [...] dev <ifname>' for consistency.
-> 
-> [...]
+> Suggested-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Here is the summary with links:
-  - [bpf-next,v2] bpftool: specify XDP Hints ifname when loading program
-    https://git.kernel.org/bpf/bpf-next/c/f46392ee3dec
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+(I took this one already in, thanks!)
 
