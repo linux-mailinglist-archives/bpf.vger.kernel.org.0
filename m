@@ -1,98 +1,80 @@
-Return-Path: <bpf+bounces-1091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D2470DF08
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:17:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A7470DF3C
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 16:31:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BBF31C20BB6
-	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:17:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DD12813AC
+	for <lists+bpf@lfdr.de>; Tue, 23 May 2023 14:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B1A1F182;
-	Tue, 23 May 2023 14:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A93200D6;
+	Tue, 23 May 2023 14:30:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3391F177;
-	Tue, 23 May 2023 14:17:35 +0000 (UTC)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCC0E9;
-	Tue, 23 May 2023 07:17:34 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2af2c35fb85so44291051fa.3;
-        Tue, 23 May 2023 07:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684851393; x=1687443393;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2x0J40jVoPlEDJ92hmP4ooz3zQmmJDfgf/IWZhxOlAo=;
-        b=CrJyFN7Yh/XNTnmJ9jt4hYCmkhJJmHtn1cLqv380B97qIFUkcb4gchhaA9g0ddBREx
-         JwdxstRDIgJ+5u/OtZLgO1ziFmRiQWbro1LXn+6+NXyjwR1wcuacduc4en6EkGuTtDBq
-         lSD+OCfTlJbhDLZD25orC7raqICKbIf69mg4wS9tJ+YL19HNZTfUBoMUtfABmKYfspg3
-         KafBgbpROfAbLPSmr6nXgmU57n0u5T02DSpIUXTlcioIoh0h8ZCYDqJxJTiKqj22zbTq
-         zNM5BScTAGzoAA25GkmYuZOs0/Kiw8a7I2QiMpaK7EtPsTWGHzIm35emu99IsZZJCALJ
-         Pziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684851393; x=1687443393;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2x0J40jVoPlEDJ92hmP4ooz3zQmmJDfgf/IWZhxOlAo=;
-        b=UIsY1arsYjdLN7Zx+Dn6O3++QbOQ/+3B431GVlNVId0F2jglJoB7HHpRYoKDKq2j72
-         t5dk1OYKGOp0VaKlWP910sZxD/wND+ARhcdZzEFuI+J7pg9jtsq/d9pECl9Jj6HkXiFx
-         QN7IhBBLsln2usRUAx/S71IjBafVmvbe0LuUpEnQTYW+kW3Xz1weFyYG5SsuTXYTRqfx
-         Bj1kM66JY3hki27RX+vaysL+jhsgOqhJnZP4orI4iev1nCmLzfLJTuwYQKxA57yf+S5w
-         Hw3P9V7EknRbcPsOC1mGmgQ7XemkzVifsQKtybYlIuI3xUWhy+n4pdwbZESpgDtCCX8s
-         yc8A==
-X-Gm-Message-State: AC+VfDye7SNPQH54irf1VDxVqBu0CgP7ZBLL0r9rrJuGB0MNBFsvfkOb
-	kGSP1cATOImjQhD0cuYJ5fuXivSs5BN6D9I=
-X-Google-Smtp-Source: ACHHUZ6o4GiojOXqr8dHeQxFcIzAfgPIuVh2dfEfZqOu+9qH8T1DcnqB4JnNPrMzPTP0ia2JA/NRbg==
-X-Received: by 2002:a2e:a40d:0:b0:2a7:7055:97f5 with SMTP id p13-20020a2ea40d000000b002a7705597f5mr5210441ljn.0.1684851392444;
-        Tue, 23 May 2023 07:16:32 -0700 (PDT)
-Received: from ?IPV6:2001:14bb:112:9108:f097:2b17:be35:a808? (dyfllccjtw81vssv11yfy-4.rev.dnainternet.fi. [2001:14bb:112:9108:f097:2b17:be35:a808])
-        by smtp.gmail.com with ESMTPSA id a6-20020a2e8606000000b002ac7c9d2806sm1646357lji.50.2023.05.23.07.16.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 May 2023 07:16:31 -0700 (PDT)
-Message-ID: <740999b7-1995-384c-41af-866df05c4a2a@gmail.com>
-Date: Tue, 23 May 2023 17:16:30 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3653A1F947;
+	Tue, 23 May 2023 14:30:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D7BC4C433EF;
+	Tue, 23 May 2023 14:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684852220;
+	bh=vXFdN959RvQ01QCvlVjdEiC3BdOulxgNIUJnLoiE/LI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=K9CI3eRNX876tqBz809GxGrGW2pqpWzZRFwZXP55OSS8dKIINOeztPCp/lq0ijptN
+	 FmRfcCsqFhmtm+D0UlmcxeeLeNU2lW2g1qYGRPUfA7rWgON3lJX7OqDgfCXsyNmf56
+	 jNP4BpYR6pLPlXl1dxcg+jM4TQJyOVBAYd8Sc2noH0/WRwRf5rWh3uXVrppfAKQxKz
+	 SVjHKInziSvMLKFh1yDmFJMi1oHyNbnEvBduMnXizdH1ogzNTwtMMRsdizLwOn8Q57
+	 pYYAVTQXJ9/SDKPOroxQ6B7SC+deKSmFFb0b7S8mMtOTo9HHbFxiPr/1C3M2D3pA6/
+	 VSPbt9BiX5+3A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BB645C04E32;
+	Tue, 23 May 2023 14:30:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next] selftests/bpf: add xdp_feature selftest for bond
  device
-Content-Language: en-US
-To: Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc: lorenzo.bianconi@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168485222076.20577.8992171669768953308.git-patchwork-notify@kernel.org>
+Date: Tue, 23 May 2023 14:30:20 +0000
 References: <64cb8f20e6491f5b971f8d3129335093c359aad7.1684329998.git.lorenzo@kernel.org>
-From: Jussi Maki <joamaki@gmail.com>
 In-Reply-To: <64cb8f20e6491f5b971f8d3129335093c359aad7.1684329998.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: bpf@vger.kernel.org, lorenzo.bianconi@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org
 
+Hello:
 
-On 17/05/2023 16:41, Lorenzo Bianconi wrote:
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed, 17 May 2023 15:41:33 +0200 you wrote:
 > Introduce selftests to check xdp_feature support for bond driver.
->
+> 
 > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > ---
->   .../selftests/bpf/prog_tests/xdp_bonding.c    | 121 ++++++++++++++++++
->   1 file changed, 121 insertions(+)
+>  .../selftests/bpf/prog_tests/xdp_bonding.c    | 121 ++++++++++++++++++
+>  1 file changed, 121 insertions(+)
 
-Reviewed-by: Jussi Maki <joamaki@gmail.com>
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: add xdp_feature selftest for bond device
+    https://git.kernel.org/bpf/bpf-next/c/6cc385d2cdb4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
