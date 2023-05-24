@@ -1,1233 +1,254 @@
-Return-Path: <bpf+bounces-1189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F1370FF98
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 23:03:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C0B7112BC
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 19:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2496281440
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 21:03:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EAC028156A
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 17:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E782262E;
-	Wed, 24 May 2023 21:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3EC1F172;
+	Thu, 25 May 2023 17:44:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6238D182A2
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 21:03:10 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5D6C1
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 14:03:05 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 34OHhskq013226
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 14:03:05 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3qs8emy3t9-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 14:03:04 -0700
-Received: from twshared40933.03.prn6.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 24 May 2023 14:03:02 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 7E04331486DAE; Wed, 24 May 2023 14:02:51 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH RFC bpf-next 3/3] libbpf: use new bpf_xxx_attr structs for bpf() commands
-Date: Wed, 24 May 2023 14:02:43 -0700
-Message-ID: <20230524210243.605832-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230524210243.605832-1-andrii@kernel.org>
-References: <20230524210243.605832-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9501DDC0
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 17:44:52 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944AC10C1
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 10:44:23 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id D6564C16B5BD
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 10:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1685036619; bh=4i8qnzb50aqMT6pHEDC5KJcn/VKPs/VVdq3LOISfHgA=;
+	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=tz3nNhJBe+LD8gTr4GT7Zdjewy5fLfKAFQDjxuMU6/sRDr9c34ybOtuzHycKXfcY0
+	 n9uiMJEYlOOIuSAsU0ktmRb89L9EapcGwLqDUErvwhE8lo07ByWp45eQMZr8hjths/
+	 dGO2GGRaPFHDSA0N8JNz6S79C7PWuyiRUtUp9tMQ=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Thu May 25 10:43:39 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 8CDEAC13739E;
+	Thu, 25 May 2023 10:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1685036619; bh=4i8qnzb50aqMT6pHEDC5KJcn/VKPs/VVdq3LOISfHgA=;
+	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=tz3nNhJBe+LD8gTr4GT7Zdjewy5fLfKAFQDjxuMU6/sRDr9c34ybOtuzHycKXfcY0
+	 n9uiMJEYlOOIuSAsU0ktmRb89L9EapcGwLqDUErvwhE8lo07ByWp45eQMZr8hjths/
+	 dGO2GGRaPFHDSA0N8JNz6S79C7PWuyiRUtUp9tMQ=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D81ECC1519B8
+ for <bpf@ietfa.amsl.com>; Wed, 24 May 2023 14:06:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -4.399
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gnu.org
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id ALfTHleBxUpf for <bpf@ietfa.amsl.com>;
+ Wed, 24 May 2023 14:06:33 -0700 (PDT)
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id D84F7C15199B
+ for <bpf@ietf.org>; Wed, 24 May 2023 14:06:33 -0700 (PDT)
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+ by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.90_1) (envelope-from <jemarch@gnu.org>)
+ id 1q1vgk-0000Tf-3O; Wed, 24 May 2023 17:06:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+ s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+ From; bh=KckZTmo9Gc7wmnUqu5f/ww3uf3YmM1kpN4TCRRyqEOY=; b=Gcb3/Hc5igTEL+rpd29U
+ Xbs6MS002bwiHmoIl/95jpHSlySpcbkjGn33002bm1DpZYwMbXD+CI4Q3/FGhLtLANkB2AmR4chjo
+ JurOkdCIKnhBDIca7Y6jJmGVwUBBILD8TeL7POlXHDRjk2rBaYz3FAslJZIS+NmVrF1OjMprNLo9y
+ 2HZAf17leaPlcJ8S7YJ7PYuNUmHufogR6urZw3e/w9knyJwfxUbzOT2qe0dAh5+1G5fF9VV+AfQje
+ /92XC8FuqKPPfoTnhh91uTghtVX9/3ybqBsJKh3dzugYW5C510T4N13czx95LC2Vrn/NZ4uGi+TfK
+ Wn/BmGmU5CXe+w==;
+Received: from dynamic-077-015-107-011.77.15.pool.telefonica.de
+ ([77.15.107.11] helo=termi)
+ by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.90_1) (envelope-from <jemarch@gnu.org>)
+ id 1q1vgj-0000lh-KZ; Wed, 24 May 2023 17:06:29 -0400
+From: "Jose E. Marchesi" <jemarch@gnu.org>
+To: Suresh Krishnan <suresh.krishnan@gmail.com>
+Cc: David Vernet <void@manifault.com>,  Michael Richardson
+ <mcr+ietf@sandelman.ca>,  "bpf@ietf.org" <bpf@ietf.org>,  bpf
+ <bpf@vger.kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Erik Kline
+ <ek.ietf@gmail.com>,  "Suresh Krishnan (sureshk)" <sureshk@cisco.com>,
+ Christoph Hellwig <hch@infradead.org>,  Dave Thaler <dthaler@microsoft.com>
+In-Reply-To: <8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com> (Suresh
+ Krishnan's message of "Wed, 24 May 2023 16:38:12 -0400")
+References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <87v8grkn67.fsf@gnu.org>
+ <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <87r0rdy26o.fsf@gnu.org>
+ <PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
+ <20230523202827.GA33347@maniforge>
+ <8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com>
+Date: Wed, 24 May 2023 23:06:23 +0200
+Message-ID: <87a5xto2wg.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Zd2_JkbaIENDB9hmUaUMEAViGQ82UarU
-X-Proofpoint-GUID: Zd2_JkbaIENDB9hmUaUMEAViGQ82UarU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-05-24_15,2023-05-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/d8b7yYlWlh_ownv02j7DabTBW00>
+X-Mailman-Approved-At: Thu, 25 May 2023 10:43:38 -0700
+Subject: Re: [Bpf] IETF BPF working group draft charter
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Adapt libbpf code to new named bpf_attr substructs. The only exception
-is skel_internal.h which is left as is to not harm users that might have
-old system-wide bpf.h UAPI headers installed.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/bpf.c             | 355 ++++++++++++++++----------------
- tools/lib/bpf/gen_loader.c      |  78 +++----
- tools/lib/bpf/libbpf.c          |   4 +-
- tools/lib/bpf/libbpf_internal.h |   2 +-
- 4 files changed, 219 insertions(+), 220 deletions(-)
-
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index ed86b37d8024..ab69fb2a4b24 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -69,13 +69,13 @@ static inline __u64 ptr_to_u64(const void *ptr)
- 	return (__u64) (unsigned long) ptr;
- }
-=20
--static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
-+static inline int sys_bpf(enum bpf_cmd cmd, void *attr,
- 			  unsigned int size)
- {
- 	return syscall(__NR_bpf, cmd, attr, size);
- }
-=20
--static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
-+static inline int sys_bpf_fd(enum bpf_cmd cmd, void *attr,
- 			     unsigned int size)
- {
- 	int fd;
-@@ -84,7 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bp=
-f_attr *attr,
- 	return ensure_good_fd(fd);
- }
-=20
--int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attem=
-pts)
-+int sys_bpf_prog_load(struct bpf_prog_load_attr *attr, unsigned int size=
-, int attempts)
- {
- 	int fd;
-=20
-@@ -105,13 +105,13 @@ int sys_bpf_prog_load(union bpf_attr *attr, unsigne=
-d int size, int attempts)
-  */
- int probe_memcg_account(void)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, attach_btf_obj_fd)=
-;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_load_attr, attach_=
-btf_obj_fd);
- 	struct bpf_insn insns[] =3D {
- 		BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
- 		BPF_EXIT_INSN(),
- 	};
- 	size_t insn_cnt =3D ARRAY_SIZE(insns);
--	union bpf_attr attr;
-+	struct bpf_prog_load_attr attr;
- 	int prog_fd;
-=20
- 	/* attempt loading freplace trying to use custom BTF */
-@@ -169,17 +169,16 @@ int bpf_map_create(enum bpf_map_type map_type,
- 		   __u32 max_entries,
- 		   const struct bpf_map_create_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, map_extra);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_create_attr, map_ex=
-tra);
-+	struct bpf_map_create_attr attr;
- 	int fd;
-=20
--	bump_rlimit_memlock();
--
--	memset(&attr, 0, attr_sz);
--
- 	if (!OPTS_VALID(opts, bpf_map_create_opts))
- 		return libbpf_err(-EINVAL);
-=20
-+	bump_rlimit_memlock();
-+
-+	memset(&attr, 0, attr_sz);
- 	attr.map_type =3D map_type;
- 	if (map_name && kernel_supports(NULL, FEAT_PROG_NAME))
- 		libbpf_strlcpy(attr.map_name, map_name, sizeof(attr.map_name));
-@@ -232,20 +231,20 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- 		  const struct bpf_insn *insns, size_t insn_cnt,
- 		  struct bpf_prog_load_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, log_true_size);
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_load_attr, log_tru=
-e_size);
- 	void *finfo =3D NULL, *linfo =3D NULL;
- 	const char *func_info, *line_info;
- 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
- 	__u32 func_info_rec_size, line_info_rec_size;
- 	int fd, attempts;
--	union bpf_attr attr;
-+	struct bpf_prog_load_attr attr;
- 	char *log_buf;
-=20
--	bump_rlimit_memlock();
--
- 	if (!OPTS_VALID(opts, bpf_prog_load_opts))
- 		return libbpf_err(-EINVAL);
-=20
-+	bump_rlimit_memlock();
-+
- 	attempts =3D OPTS_GET(opts, attempts, 0);
- 	if (attempts < 0)
- 		return libbpf_err(-EINVAL);
-@@ -380,8 +379,8 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- int bpf_map_update_elem(int fd, const void *key, const void *value,
- 			__u64 flags)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -396,8 +395,8 @@ int bpf_map_update_elem(int fd, const void *key, cons=
-t void *value,
-=20
- int bpf_map_lookup_elem(int fd, const void *key, void *value)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -411,8 +410,8 @@ int bpf_map_lookup_elem(int fd, const void *key, void=
- *value)
-=20
- int bpf_map_lookup_elem_flags(int fd, const void *key, void *value, __u6=
-4 flags)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -427,8 +426,8 @@ int bpf_map_lookup_elem_flags(int fd, const void *key=
-, void *value, __u64 flags)
-=20
- int bpf_map_lookup_and_delete_elem(int fd, const void *key, void *value)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -442,8 +441,8 @@ int bpf_map_lookup_and_delete_elem(int fd, const void=
- *key, void *value)
-=20
- int bpf_map_lookup_and_delete_elem_flags(int fd, const void *key, void *=
-value, __u64 flags)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -458,8 +457,8 @@ int bpf_map_lookup_and_delete_elem_flags(int fd, cons=
-t void *key, void *value, _
-=20
- int bpf_map_delete_elem(int fd, const void *key)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -472,8 +471,8 @@ int bpf_map_delete_elem(int fd, const void *key)
-=20
- int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_elem_attr, flags);
-+	struct bpf_map_elem_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -487,8 +486,8 @@ int bpf_map_delete_elem_flags(int fd, const void *key=
-, __u64 flags)
-=20
- int bpf_map_get_next_key(int fd, const void *key, void *next_key)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, next_key);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_next_key_attr, next=
-_key);
-+	struct bpf_map_next_key_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -502,8 +501,8 @@ int bpf_map_get_next_key(int fd, const void *key, voi=
-d *next_key)
-=20
- int bpf_map_freeze(int fd)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, map_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_freeze_attr, map_fd=
-);
-+	struct bpf_map_freeze_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -518,25 +517,25 @@ static int bpf_map_batch_common(int cmd, int fd, vo=
-id  *in_batch,
- 				__u32 *count,
- 				const struct bpf_map_batch_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, batch);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_map_batch_attr, flags);
-+	struct bpf_map_batch_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_map_batch_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.batch.map_fd =3D fd;
--	attr.batch.in_batch =3D ptr_to_u64(in_batch);
--	attr.batch.out_batch =3D ptr_to_u64(out_batch);
--	attr.batch.keys =3D ptr_to_u64(keys);
--	attr.batch.values =3D ptr_to_u64(values);
--	attr.batch.count =3D *count;
--	attr.batch.elem_flags  =3D OPTS_GET(opts, elem_flags, 0);
--	attr.batch.flags =3D OPTS_GET(opts, flags, 0);
-+	attr.map_fd =3D fd;
-+	attr.in_batch =3D ptr_to_u64(in_batch);
-+	attr.out_batch =3D ptr_to_u64(out_batch);
-+	attr.keys =3D ptr_to_u64(keys);
-+	attr.values =3D ptr_to_u64(values);
-+	attr.count =3D *count;
-+	attr.elem_flags  =3D OPTS_GET(opts, elem_flags, 0);
-+	attr.flags =3D OPTS_GET(opts, flags, 0);
-=20
- 	ret =3D sys_bpf(cmd, &attr, attr_sz);
--	*count =3D attr.batch.count;
-+	*count =3D attr.count;
-=20
- 	return libbpf_err_errno(ret);
- }
-@@ -574,8 +573,8 @@ int bpf_map_update_batch(int fd, const void *keys, co=
-nst void *values, __u32 *co
-=20
- int bpf_obj_pin_opts(int fd, const char *pathname, const struct bpf_obj_=
-pin_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, path_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_pin_attr, path_fd);
-+	struct bpf_obj_pin_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_obj_pin_opts))
-@@ -584,7 +583,7 @@ int bpf_obj_pin_opts(int fd, const char *pathname, co=
-nst struct bpf_obj_pin_opts
- 	memset(&attr, 0, attr_sz);
- 	attr.path_fd =3D OPTS_GET(opts, path_fd, 0);
- 	attr.pathname =3D ptr_to_u64((void *)pathname);
--	attr.file_flags =3D OPTS_GET(opts, file_flags, 0);
-+	attr.flags =3D OPTS_GET(opts, file_flags, 0);
- 	attr.bpf_fd =3D fd;
-=20
- 	ret =3D sys_bpf(BPF_OBJ_PIN, &attr, attr_sz);
-@@ -603,8 +602,8 @@ int bpf_obj_get(const char *pathname)
-=20
- int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts=
- *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, path_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_get_attr, path_fd);
-+	struct bpf_obj_get_attr attr;
- 	int fd;
-=20
- 	if (!OPTS_VALID(opts, bpf_obj_get_opts))
-@@ -613,7 +612,7 @@ int bpf_obj_get_opts(const char *pathname, const stru=
-ct bpf_obj_get_opts *opts)
- 	memset(&attr, 0, attr_sz);
- 	attr.path_fd =3D OPTS_GET(opts, path_fd, 0);
- 	attr.pathname =3D ptr_to_u64((void *)pathname);
--	attr.file_flags =3D OPTS_GET(opts, file_flags, 0);
-+	attr.flags =3D OPTS_GET(opts, file_flags, 0);
-=20
- 	fd =3D sys_bpf_fd(BPF_OBJ_GET, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -633,8 +632,8 @@ int bpf_prog_attach_opts(int prog_fd, int target_fd,
- 			  enum bpf_attach_type type,
- 			  const struct bpf_prog_attach_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, replace_bpf_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_attach_attr, repla=
-ce_bpf_fd);
-+	struct bpf_prog_attach_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_prog_attach_opts))
-@@ -653,8 +652,8 @@ int bpf_prog_attach_opts(int prog_fd, int target_fd,
-=20
- int bpf_prog_detach(int target_fd, enum bpf_attach_type type)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, replace_bpf_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_detach_attr, attac=
-h_type);
-+	struct bpf_prog_detach_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -667,13 +666,13 @@ int bpf_prog_detach(int target_fd, enum bpf_attach_=
-type type)
-=20
- int bpf_prog_detach2(int prog_fd, int target_fd, enum bpf_attach_type ty=
-pe)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, replace_bpf_fd);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_detach_attr, attac=
-h_type);
-+	struct bpf_prog_detach_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.target_fd	 =3D target_fd;
--	attr.attach_bpf_fd =3D prog_fd;
-+	attr.target_fd  =3D target_fd;
-+	attr.prog_fd =3D prog_fd;
- 	attr.attach_type =3D type;
-=20
- 	ret =3D sys_bpf(BPF_PROG_DETACH, &attr, attr_sz);
-@@ -684,9 +683,9 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		    enum bpf_attach_type attach_type,
- 		    const struct bpf_link_create_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, link_create);
-+	const size_t attr_sz =3D sizeof(struct bpf_link_create_attr);
- 	__u32 target_btf_id, iter_info_len;
--	union bpf_attr attr;
-+	struct bpf_link_create_attr attr;
- 	int fd, err;
-=20
- 	if (!OPTS_VALID(opts, bpf_link_create_opts))
-@@ -704,32 +703,32 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	}
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.link_create.prog_fd =3D prog_fd;
--	attr.link_create.target_fd =3D target_fd;
--	attr.link_create.attach_type =3D attach_type;
--	attr.link_create.flags =3D OPTS_GET(opts, flags, 0);
-+	attr.prog_fd =3D prog_fd;
-+	attr.target_fd =3D target_fd;
-+	attr.attach_type =3D attach_type;
-+	attr.flags =3D OPTS_GET(opts, flags, 0);
-=20
- 	if (target_btf_id) {
--		attr.link_create.target_btf_id =3D target_btf_id;
-+		attr.target_btf_id =3D target_btf_id;
- 		goto proceed;
- 	}
-=20
- 	switch (attach_type) {
- 	case BPF_TRACE_ITER:
--		attr.link_create.iter_info =3D ptr_to_u64(OPTS_GET(opts, iter_info, (v=
-oid *)0));
--		attr.link_create.iter_info_len =3D iter_info_len;
-+		attr.iter_info =3D ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
-+		attr.iter_info_len =3D iter_info_len;
- 		break;
- 	case BPF_PERF_EVENT:
--		attr.link_create.perf_event.bpf_cookie =3D OPTS_GET(opts, perf_event.b=
-pf_cookie, 0);
-+		attr.perf_event.bpf_cookie =3D OPTS_GET(opts, perf_event.bpf_cookie, 0=
-);
- 		if (!OPTS_ZEROED(opts, perf_event))
- 			return libbpf_err(-EINVAL);
- 		break;
- 	case BPF_TRACE_KPROBE_MULTI:
--		attr.link_create.kprobe_multi.flags =3D OPTS_GET(opts, kprobe_multi.fl=
-ags, 0);
--		attr.link_create.kprobe_multi.cnt =3D OPTS_GET(opts, kprobe_multi.cnt,=
- 0);
--		attr.link_create.kprobe_multi.syms =3D ptr_to_u64(OPTS_GET(opts, kprob=
-e_multi.syms, 0));
--		attr.link_create.kprobe_multi.addrs =3D ptr_to_u64(OPTS_GET(opts, kpro=
-be_multi.addrs, 0));
--		attr.link_create.kprobe_multi.cookies =3D ptr_to_u64(OPTS_GET(opts, kp=
-robe_multi.cookies, 0));
-+		attr.kprobe_multi.flags =3D OPTS_GET(opts, kprobe_multi.flags, 0);
-+		attr.kprobe_multi.cnt =3D OPTS_GET(opts, kprobe_multi.cnt, 0);
-+		attr.kprobe_multi.syms =3D ptr_to_u64(OPTS_GET(opts, kprobe_multi.syms=
-, 0));
-+		attr.kprobe_multi.addrs =3D ptr_to_u64(OPTS_GET(opts, kprobe_multi.add=
-rs, 0));
-+		attr.kprobe_multi.cookies =3D ptr_to_u64(OPTS_GET(opts, kprobe_multi.c=
-ookies, 0));
- 		if (!OPTS_ZEROED(opts, kprobe_multi))
- 			return libbpf_err(-EINVAL);
- 		break;
-@@ -737,7 +736,7 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	case BPF_TRACE_FEXIT:
- 	case BPF_MODIFY_RETURN:
- 	case BPF_LSM_MAC:
--		attr.link_create.tracing.cookie =3D OPTS_GET(opts, tracing.cookie, 0);
-+		attr.tracing.cookie =3D OPTS_GET(opts, tracing.cookie, 0);
- 		if (!OPTS_ZEROED(opts, tracing))
- 			return libbpf_err(-EINVAL);
- 		break;
-@@ -760,7 +759,7 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	/* if user used features not supported by
- 	 * BPF_RAW_TRACEPOINT_OPEN command, then just give up immediately
- 	 */
--	if (attr.link_create.target_fd || attr.link_create.target_btf_id)
-+	if (attr.target_fd || attr.target_btf_id)
- 		return libbpf_err(err);
- 	if (!OPTS_ZEROED(opts, sz))
- 		return libbpf_err(err);
-@@ -783,12 +782,12 @@ int bpf_link_create(int prog_fd, int target_fd,
-=20
- int bpf_link_detach(int link_fd)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, link_detach);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_link_detach_attr, link_=
-fd);
-+	struct bpf_link_detach_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.link_detach.link_fd =3D link_fd;
-+	attr.link_fd =3D link_fd;
-=20
- 	ret =3D sys_bpf(BPF_LINK_DETACH, &attr, attr_sz);
- 	return libbpf_err_errno(ret);
-@@ -797,8 +796,8 @@ int bpf_link_detach(int link_fd)
- int bpf_link_update(int link_fd, int new_prog_fd,
- 		    const struct bpf_link_update_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, link_update);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_link_update_attr, old_p=
-rog_fd);
-+	struct bpf_link_update_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_link_update_opts))
-@@ -808,13 +807,13 @@ int bpf_link_update(int link_fd, int new_prog_fd,
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.link_update.link_fd =3D link_fd;
--	attr.link_update.new_prog_fd =3D new_prog_fd;
--	attr.link_update.flags =3D OPTS_GET(opts, flags, 0);
-+	attr.link_fd =3D link_fd;
-+	attr.new_prog_fd =3D new_prog_fd;
-+	attr.flags =3D OPTS_GET(opts, flags, 0);
- 	if (OPTS_GET(opts, old_prog_fd, 0))
--		attr.link_update.old_prog_fd =3D OPTS_GET(opts, old_prog_fd, 0);
-+		attr.old_prog_fd =3D OPTS_GET(opts, old_prog_fd, 0);
- 	else if (OPTS_GET(opts, old_map_fd, 0))
--		attr.link_update.old_map_fd =3D OPTS_GET(opts, old_map_fd, 0);
-+		attr.old_map_fd =3D OPTS_GET(opts, old_map_fd, 0);
-=20
- 	ret =3D sys_bpf(BPF_LINK_UPDATE, &attr, attr_sz);
- 	return libbpf_err_errno(ret);
-@@ -822,12 +821,12 @@ int bpf_link_update(int link_fd, int new_prog_fd,
-=20
- int bpf_iter_create(int link_fd)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, iter_create);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_iter_create_attr, flags=
-);
-+	struct bpf_iter_create_attr attr;
- 	int fd;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.iter_create.link_fd =3D link_fd;
-+	attr.link_fd =3D link_fd;
-=20
- 	fd =3D sys_bpf_fd(BPF_ITER_CREATE, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -837,8 +836,8 @@ int bpf_prog_query_opts(int target_fd,
- 			enum bpf_attach_type type,
- 			struct bpf_prog_query_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, query);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_query_attr, prog_a=
-ttach_flags);
-+	struct bpf_prog_query_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_prog_query_opts))
-@@ -846,17 +845,17 @@ int bpf_prog_query_opts(int target_fd,
-=20
- 	memset(&attr, 0, attr_sz);
-=20
--	attr.query.target_fd	=3D target_fd;
--	attr.query.attach_type	=3D type;
--	attr.query.query_flags	=3D OPTS_GET(opts, query_flags, 0);
--	attr.query.prog_cnt	=3D OPTS_GET(opts, prog_cnt, 0);
--	attr.query.prog_ids	=3D ptr_to_u64(OPTS_GET(opts, prog_ids, NULL));
--	attr.query.prog_attach_flags =3D ptr_to_u64(OPTS_GET(opts, prog_attach_=
-flags, NULL));
-+	attr.target_fd	=3D target_fd;
-+	attr.attach_type	=3D type;
-+	attr.query_flags	=3D OPTS_GET(opts, query_flags, 0);
-+	attr.prog_cnt	=3D OPTS_GET(opts, prog_cnt, 0);
-+	attr.prog_ids	=3D ptr_to_u64(OPTS_GET(opts, prog_ids, NULL));
-+	attr.prog_attach_flags =3D ptr_to_u64(OPTS_GET(opts, prog_attach_flags,=
- NULL));
-=20
- 	ret =3D sys_bpf(BPF_PROG_QUERY, &attr, attr_sz);
-=20
--	OPTS_SET(opts, attach_flags, attr.query.attach_flags);
--	OPTS_SET(opts, prog_cnt, attr.query.prog_cnt);
-+	OPTS_SET(opts, attach_flags, attr.attach_flags);
-+	OPTS_SET(opts, prog_cnt, attr.prog_cnt);
-=20
- 	return libbpf_err_errno(ret);
- }
-@@ -882,43 +881,43 @@ int bpf_prog_query(int target_fd, enum bpf_attach_t=
-ype type, __u32 query_flags,
-=20
- int bpf_prog_test_run_opts(int prog_fd, struct bpf_test_run_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, test);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_run_attr, batch_si=
-ze);
-+	struct bpf_prog_run_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_test_run_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.test.prog_fd =3D prog_fd;
--	attr.test.batch_size =3D OPTS_GET(opts, batch_size, 0);
--	attr.test.cpu =3D OPTS_GET(opts, cpu, 0);
--	attr.test.flags =3D OPTS_GET(opts, flags, 0);
--	attr.test.repeat =3D OPTS_GET(opts, repeat, 0);
--	attr.test.duration =3D OPTS_GET(opts, duration, 0);
--	attr.test.ctx_size_in =3D OPTS_GET(opts, ctx_size_in, 0);
--	attr.test.ctx_size_out =3D OPTS_GET(opts, ctx_size_out, 0);
--	attr.test.data_size_in =3D OPTS_GET(opts, data_size_in, 0);
--	attr.test.data_size_out =3D OPTS_GET(opts, data_size_out, 0);
--	attr.test.ctx_in =3D ptr_to_u64(OPTS_GET(opts, ctx_in, NULL));
--	attr.test.ctx_out =3D ptr_to_u64(OPTS_GET(opts, ctx_out, NULL));
--	attr.test.data_in =3D ptr_to_u64(OPTS_GET(opts, data_in, NULL));
--	attr.test.data_out =3D ptr_to_u64(OPTS_GET(opts, data_out, NULL));
-+	attr.prog_fd =3D prog_fd;
-+	attr.batch_size =3D OPTS_GET(opts, batch_size, 0);
-+	attr.cpu =3D OPTS_GET(opts, cpu, 0);
-+	attr.flags =3D OPTS_GET(opts, flags, 0);
-+	attr.repeat =3D OPTS_GET(opts, repeat, 0);
-+	attr.duration =3D OPTS_GET(opts, duration, 0);
-+	attr.ctx_size_in =3D OPTS_GET(opts, ctx_size_in, 0);
-+	attr.ctx_size_out =3D OPTS_GET(opts, ctx_size_out, 0);
-+	attr.data_size_in =3D OPTS_GET(opts, data_size_in, 0);
-+	attr.data_size_out =3D OPTS_GET(opts, data_size_out, 0);
-+	attr.ctx_in =3D ptr_to_u64(OPTS_GET(opts, ctx_in, NULL));
-+	attr.ctx_out =3D ptr_to_u64(OPTS_GET(opts, ctx_out, NULL));
-+	attr.data_in =3D ptr_to_u64(OPTS_GET(opts, data_in, NULL));
-+	attr.data_out =3D ptr_to_u64(OPTS_GET(opts, data_out, NULL));
-=20
- 	ret =3D sys_bpf(BPF_PROG_TEST_RUN, &attr, attr_sz);
-=20
--	OPTS_SET(opts, data_size_out, attr.test.data_size_out);
--	OPTS_SET(opts, ctx_size_out, attr.test.ctx_size_out);
--	OPTS_SET(opts, duration, attr.test.duration);
--	OPTS_SET(opts, retval, attr.test.retval);
-+	OPTS_SET(opts, data_size_out, attr.data_size_out);
-+	OPTS_SET(opts, ctx_size_out, attr.ctx_size_out);
-+	OPTS_SET(opts, duration, attr.duration);
-+	OPTS_SET(opts, retval, attr.retval);
-=20
- 	return libbpf_err_errno(ret);
- }
-=20
- static int bpf_obj_get_next_id(__u32 start_id, __u32 *next_id, int cmd)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, open_flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_next_id_attr, next_=
-id);
-+	struct bpf_obj_next_id_attr attr;
- 	int err;
-=20
- 	memset(&attr, 0, attr_sz);
-@@ -954,16 +953,16 @@ int bpf_link_get_next_id(__u32 start_id, __u32 *nex=
-t_id)
- int bpf_prog_get_fd_by_id_opts(__u32 id,
- 			       const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, open_flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_fd_by_id_attr, flag=
-s);
-+	struct bpf_obj_fd_by_id_attr attr;
- 	int fd;
-=20
- 	if (!OPTS_VALID(opts, bpf_get_fd_by_id_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.prog_id =3D id;
--	attr.open_flags =3D OPTS_GET(opts, open_flags, 0);
-+	attr.obj_id =3D id;
-+	attr.flags =3D OPTS_GET(opts, open_flags, 0);
-=20
- 	fd =3D sys_bpf_fd(BPF_PROG_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -977,16 +976,16 @@ int bpf_prog_get_fd_by_id(__u32 id)
- int bpf_map_get_fd_by_id_opts(__u32 id,
- 			      const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, open_flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_fd_by_id_attr, flag=
-s);
-+	struct bpf_obj_fd_by_id_attr attr;
- 	int fd;
-=20
- 	if (!OPTS_VALID(opts, bpf_get_fd_by_id_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.map_id =3D id;
--	attr.open_flags =3D OPTS_GET(opts, open_flags, 0);
-+	attr.obj_id =3D id;
-+	attr.flags =3D OPTS_GET(opts, open_flags, 0);
-=20
- 	fd =3D sys_bpf_fd(BPF_MAP_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -1000,16 +999,16 @@ int bpf_map_get_fd_by_id(__u32 id)
- int bpf_btf_get_fd_by_id_opts(__u32 id,
- 			      const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, open_flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_fd_by_id_attr, flag=
-s);
-+	struct bpf_obj_fd_by_id_attr attr;
- 	int fd;
-=20
- 	if (!OPTS_VALID(opts, bpf_get_fd_by_id_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.btf_id =3D id;
--	attr.open_flags =3D OPTS_GET(opts, open_flags, 0);
-+	attr.obj_id =3D id;
-+	attr.flags =3D OPTS_GET(opts, open_flags, 0);
-=20
- 	fd =3D sys_bpf_fd(BPF_BTF_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -1023,16 +1022,16 @@ int bpf_btf_get_fd_by_id(__u32 id)
- int bpf_link_get_fd_by_id_opts(__u32 id,
- 			       const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, open_flags);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_fd_by_id_attr, flag=
-s);
-+	struct bpf_obj_fd_by_id_attr attr;
- 	int fd;
-=20
- 	if (!OPTS_VALID(opts, bpf_get_fd_by_id_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.link_id =3D id;
--	attr.open_flags =3D OPTS_GET(opts, open_flags, 0);
-+	attr.obj_id =3D id;
-+	attr.flags =3D OPTS_GET(opts, open_flags, 0);
-=20
- 	fd =3D sys_bpf_fd(BPF_LINK_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -1045,18 +1044,18 @@ int bpf_link_get_fd_by_id(__u32 id)
-=20
- int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, info);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_obj_info_by_fd_attr, in=
-fo);
-+	struct bpf_obj_info_by_fd_attr attr;
- 	int err;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.info.bpf_fd =3D bpf_fd;
--	attr.info.info_len =3D *info_len;
--	attr.info.info =3D ptr_to_u64(info);
-+	attr.bpf_fd =3D bpf_fd;
-+	attr.info_len =3D *info_len;
-+	attr.info =3D ptr_to_u64(info);
-=20
- 	err =3D sys_bpf(BPF_OBJ_GET_INFO_BY_FD, &attr, attr_sz);
- 	if (!err)
--		*info_len =3D attr.info.info_len;
-+		*info_len =3D attr.info_len;
- 	return libbpf_err_errno(err);
- }
-=20
-@@ -1082,13 +1081,13 @@ int bpf_link_get_info_by_fd(int link_fd, struct b=
-pf_link_info *info, __u32 *info
-=20
- int bpf_raw_tracepoint_open(const char *name, int prog_fd)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, raw_tracepoint);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_raw_tp_open_attr, prog_=
-fd);
-+	struct bpf_raw_tp_open_attr attr;
- 	int fd;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.raw_tracepoint.name =3D ptr_to_u64(name);
--	attr.raw_tracepoint.prog_fd =3D prog_fd;
-+	attr.name =3D ptr_to_u64(name);
-+	attr.prog_fd =3D prog_fd;
-=20
- 	fd =3D sys_bpf_fd(BPF_RAW_TRACEPOINT_OPEN, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -1096,20 +1095,20 @@ int bpf_raw_tracepoint_open(const char *name, int=
- prog_fd)
-=20
- int bpf_btf_load(const void *btf_data, size_t btf_size, struct bpf_btf_l=
-oad_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, btf_log_true_size)=
-;
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_btf_load_attr, log_true=
-_size);
-+	struct bpf_btf_load_attr attr;
- 	char *log_buf;
- 	size_t log_size;
- 	__u32 log_level;
- 	int fd;
-=20
-+	if (!OPTS_VALID(opts, bpf_btf_load_opts))
-+		return libbpf_err(-EINVAL);
-+
- 	bump_rlimit_memlock();
-=20
- 	memset(&attr, 0, attr_sz);
-=20
--	if (!OPTS_VALID(opts, bpf_btf_load_opts))
--		return libbpf_err(-EINVAL);
--
- 	log_buf =3D OPTS_GET(opts, log_buf, NULL);
- 	log_size =3D OPTS_GET(opts, log_size, 0);
- 	log_level =3D OPTS_GET(opts, log_level, 0);
-@@ -1127,20 +1126,20 @@ int bpf_btf_load(const void *btf_data, size_t btf=
-_size, struct bpf_btf_load_opts
- 	 * APIs within libbpf and provides a sensible behavior in practice
- 	 */
- 	if (log_level) {
--		attr.btf_log_buf =3D ptr_to_u64(log_buf);
--		attr.btf_log_size =3D (__u32)log_size;
--		attr.btf_log_level =3D log_level;
-+		attr.log_buf =3D ptr_to_u64(log_buf);
-+		attr.log_size =3D (__u32)log_size;
-+		attr.log_level =3D log_level;
- 	}
-=20
- 	fd =3D sys_bpf_fd(BPF_BTF_LOAD, &attr, attr_sz);
- 	if (fd < 0 && log_buf && log_level =3D=3D 0) {
--		attr.btf_log_buf =3D ptr_to_u64(log_buf);
--		attr.btf_log_size =3D (__u32)log_size;
--		attr.btf_log_level =3D 1;
-+		attr.log_buf =3D ptr_to_u64(log_buf);
-+		attr.log_size =3D (__u32)log_size;
-+		attr.log_level =3D 1;
- 		fd =3D sys_bpf_fd(BPF_BTF_LOAD, &attr, attr_sz);
- 	}
-=20
--	OPTS_SET(opts, log_true_size, attr.btf_log_true_size);
-+	OPTS_SET(opts, log_true_size, attr.log_true_size);
- 	return libbpf_err_errno(fd);
- }
-=20
-@@ -1148,36 +1147,36 @@ int bpf_task_fd_query(int pid, int fd, __u32 flag=
-s, char *buf, __u32 *buf_len,
- 		      __u32 *prog_id, __u32 *fd_type, __u64 *probe_offset,
- 		      __u64 *probe_addr)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, task_fd_query);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_task_fd_query_attr, pro=
-be_addr);
-+	struct bpf_task_fd_query_attr attr;
- 	int err;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.task_fd_query.pid =3D pid;
--	attr.task_fd_query.fd =3D fd;
--	attr.task_fd_query.flags =3D flags;
--	attr.task_fd_query.buf =3D ptr_to_u64(buf);
--	attr.task_fd_query.buf_len =3D *buf_len;
-+	attr.pid =3D pid;
-+	attr.fd =3D fd;
-+	attr.flags =3D flags;
-+	attr.buf =3D ptr_to_u64(buf);
-+	attr.buf_len =3D *buf_len;
-=20
- 	err =3D sys_bpf(BPF_TASK_FD_QUERY, &attr, attr_sz);
-=20
--	*buf_len =3D attr.task_fd_query.buf_len;
--	*prog_id =3D attr.task_fd_query.prog_id;
--	*fd_type =3D attr.task_fd_query.fd_type;
--	*probe_offset =3D attr.task_fd_query.probe_offset;
--	*probe_addr =3D attr.task_fd_query.probe_addr;
-+	*buf_len =3D attr.buf_len;
-+	*prog_id =3D attr.prog_id;
-+	*fd_type =3D attr.fd_type;
-+	*probe_offset =3D attr.probe_offset;
-+	*probe_addr =3D attr.probe_addr;
-=20
- 	return libbpf_err_errno(err);
- }
-=20
- int bpf_enable_stats(enum bpf_stats_type type)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, enable_stats);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_enable_stats_attr, type=
-);
-+	struct bpf_enable_stats_attr attr;
- 	int fd;
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.enable_stats.type =3D type;
-+	attr.type =3D type;
-=20
- 	fd =3D sys_bpf_fd(BPF_ENABLE_STATS, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-@@ -1186,17 +1185,17 @@ int bpf_enable_stats(enum bpf_stats_type type)
- int bpf_prog_bind_map(int prog_fd, int map_fd,
- 		      const struct bpf_prog_bind_opts *opts)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, prog_bind_map);
--	union bpf_attr attr;
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_bind_map_attr, fla=
-gs);
-+	struct bpf_prog_bind_map_attr attr;
- 	int ret;
-=20
- 	if (!OPTS_VALID(opts, bpf_prog_bind_opts))
- 		return libbpf_err(-EINVAL);
-=20
- 	memset(&attr, 0, attr_sz);
--	attr.prog_bind_map.prog_fd =3D prog_fd;
--	attr.prog_bind_map.map_fd =3D map_fd;
--	attr.prog_bind_map.flags =3D OPTS_GET(opts, flags, 0);
-+	attr.prog_fd =3D prog_fd;
-+	attr.map_fd =3D map_fd;
-+	attr.flags =3D OPTS_GET(opts, flags, 0);
-=20
- 	ret =3D sys_bpf(BPF_PROG_BIND_MAP, &attr, attr_sz);
- 	return libbpf_err_errno(ret);
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index cf3323fd47b8..f6c540fb6250 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -417,9 +417,9 @@ void bpf_gen__free(struct bpf_gen *gen)
- void bpf_gen__load_btf(struct bpf_gen *gen, const void *btf_raw_data,
- 		       __u32 btf_raw_size)
- {
--	int attr_size =3D offsetofend(union bpf_attr, btf_log_level);
-+	int attr_size =3D offsetofend(struct bpf_btf_load_attr, log_level);
- 	int btf_data, btf_load_attr;
--	union bpf_attr attr;
-+	struct bpf_btf_load_attr attr;
-=20
- 	memset(&attr, 0, attr_size);
- 	pr_debug("gen: load_btf: size %d\n", btf_raw_size);
-@@ -429,14 +429,14 @@ void bpf_gen__load_btf(struct bpf_gen *gen, const v=
-oid *btf_raw_data,
- 	btf_load_attr =3D add_data(gen, &attr, attr_size);
-=20
- 	/* populate union bpf_attr with user provided log details */
--	move_ctx2blob(gen, attr_field(btf_load_attr, btf_log_level), 4,
-+	move_ctx2blob(gen, attr_field(btf_load_attr, btf_load.log_level), 4,
- 		      offsetof(struct bpf_loader_ctx, log_level), false);
--	move_ctx2blob(gen, attr_field(btf_load_attr, btf_log_size), 4,
-+	move_ctx2blob(gen, attr_field(btf_load_attr, btf_load.log_size), 4,
- 		      offsetof(struct bpf_loader_ctx, log_size), false);
--	move_ctx2blob(gen, attr_field(btf_load_attr, btf_log_buf), 8,
-+	move_ctx2blob(gen, attr_field(btf_load_attr, btf_load.log_buf), 8,
- 		      offsetof(struct bpf_loader_ctx, log_buf), false);
- 	/* populate union bpf_attr with a pointer to the BTF data */
--	emit_rel_store(gen, attr_field(btf_load_attr, btf), btf_data);
-+	emit_rel_store(gen, attr_field(btf_load_attr, btf_load.btf), btf_data);
- 	/* emit BTF_LOAD command */
- 	emit_sys_bpf(gen, BPF_BTF_LOAD, btf_load_attr, attr_size);
- 	debug_ret(gen, "btf_load size %d", btf_raw_size);
-@@ -451,10 +451,10 @@ void bpf_gen__map_create(struct bpf_gen *gen,
- 			 __u32 key_size, __u32 value_size, __u32 max_entries,
- 			 struct bpf_map_create_opts *map_attr, int map_idx)
- {
--	int attr_size =3D offsetofend(union bpf_attr, map_extra);
-+	int attr_size =3D offsetofend(struct bpf_map_create_attr, map_extra);
- 	bool close_inner_map_fd =3D false;
- 	int map_create_attr, idx;
--	union bpf_attr attr;
-+	struct bpf_map_create_attr attr;
-=20
- 	memset(&attr, 0, attr_size);
- 	attr.map_type =3D map_type;
-@@ -476,12 +476,12 @@ void bpf_gen__map_create(struct bpf_gen *gen,
- 	map_create_attr =3D add_data(gen, &attr, attr_size);
- 	if (attr.btf_value_type_id)
- 		/* populate union bpf_attr with btf_fd saved in the stack earlier */
--		move_stack2blob(gen, attr_field(map_create_attr, btf_fd), 4,
-+		move_stack2blob(gen, attr_field(map_create_attr, map_create.btf_fd), 4=
-,
- 				stack_off(btf_fd));
- 	switch (attr.map_type) {
- 	case BPF_MAP_TYPE_ARRAY_OF_MAPS:
- 	case BPF_MAP_TYPE_HASH_OF_MAPS:
--		move_stack2blob(gen, attr_field(map_create_attr, inner_map_fd), 4,
-+		move_stack2blob(gen, attr_field(map_create_attr, map_create.inner_map_=
-fd), 4,
- 				stack_off(inner_map_fd));
- 		close_inner_map_fd =3D true;
- 		break;
-@@ -490,7 +490,7 @@ void bpf_gen__map_create(struct bpf_gen *gen,
- 	}
- 	/* conditionally update max_entries */
- 	if (map_idx >=3D 0)
--		move_ctx2blob(gen, attr_field(map_create_attr, max_entries), 4,
-+		move_ctx2blob(gen, attr_field(map_create_attr, map_create.max_entries)=
-, 4,
- 			      sizeof(struct bpf_loader_ctx) +
- 			      sizeof(struct bpf_map_desc) * map_idx +
- 			      offsetof(struct bpf_map_desc, max_entries),
-@@ -937,8 +937,8 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 			struct bpf_prog_load_opts *load_attr, int prog_idx)
- {
- 	int prog_load_attr, license_off, insns_off, func_info, line_info, core_=
-relos;
--	int attr_size =3D offsetofend(union bpf_attr, core_relo_rec_size);
--	union bpf_attr attr;
-+	int attr_size =3D offsetofend(struct bpf_prog_load_attr, core_relo_rec_=
-size);
-+	struct bpf_prog_load_attr attr;
-=20
- 	memset(&attr, 0, attr_size);
- 	pr_debug("gen: prog_load: type %d insns_cnt %zd progi_idx %d\n",
-@@ -975,32 +975,32 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 	prog_load_attr =3D add_data(gen, &attr, attr_size);
-=20
- 	/* populate union bpf_attr with a pointer to license */
--	emit_rel_store(gen, attr_field(prog_load_attr, license), license_off);
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.license), lice=
-nse_off);
-=20
- 	/* populate union bpf_attr with a pointer to instructions */
--	emit_rel_store(gen, attr_field(prog_load_attr, insns), insns_off);
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.insns), insns_=
-off);
-=20
- 	/* populate union bpf_attr with a pointer to func_info */
--	emit_rel_store(gen, attr_field(prog_load_attr, func_info), func_info);
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.func_info), fu=
-nc_info);
-=20
- 	/* populate union bpf_attr with a pointer to line_info */
--	emit_rel_store(gen, attr_field(prog_load_attr, line_info), line_info);
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.line_info), li=
-ne_info);
-=20
- 	/* populate union bpf_attr with a pointer to core_relos */
--	emit_rel_store(gen, attr_field(prog_load_attr, core_relos), core_relos)=
-;
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.core_relos), c=
-ore_relos);
-=20
- 	/* populate union bpf_attr fd_array with a pointer to data where map_fd=
-s are saved */
--	emit_rel_store(gen, attr_field(prog_load_attr, fd_array), gen->fd_array=
-);
-+	emit_rel_store(gen, attr_field(prog_load_attr, prog_load.fd_array), gen=
-->fd_array);
-=20
- 	/* populate union bpf_attr with user provided log details */
--	move_ctx2blob(gen, attr_field(prog_load_attr, log_level), 4,
-+	move_ctx2blob(gen, attr_field(prog_load_attr, prog_load.log_level), 4,
- 		      offsetof(struct bpf_loader_ctx, log_level), false);
--	move_ctx2blob(gen, attr_field(prog_load_attr, log_size), 4,
-+	move_ctx2blob(gen, attr_field(prog_load_attr, prog_load.log_size), 4,
- 		      offsetof(struct bpf_loader_ctx, log_size), false);
--	move_ctx2blob(gen, attr_field(prog_load_attr, log_buf), 8,
-+	move_ctx2blob(gen, attr_field(prog_load_attr, prog_load.log_buf), 8,
- 		      offsetof(struct bpf_loader_ctx, log_buf), false);
- 	/* populate union bpf_attr with btf_fd saved in the stack earlier */
--	move_stack2blob(gen, attr_field(prog_load_attr, prog_btf_fd), 4,
-+	move_stack2blob(gen, attr_field(prog_load_attr, prog_load.prog_btf_fd),=
- 4,
- 			stack_off(btf_fd));
- 	if (gen->attach_kind) {
- 		emit_find_attach_target(gen);
-@@ -1008,10 +1008,10 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 		emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_0, BPF_PSEUDO_MAP_IDX_VALUE,
- 						 0, 0, 0, prog_load_attr));
- 		emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_0, BPF_REG_7,
--				      offsetof(union bpf_attr, attach_btf_id)));
-+				      offsetof(union bpf_attr, prog_load.attach_btf_id)));
- 		emit(gen, BPF_ALU64_IMM(BPF_RSH, BPF_REG_7, 32));
- 		emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_0, BPF_REG_7,
--				      offsetof(union bpf_attr, attach_btf_obj_fd)));
-+				      offsetof(union bpf_attr, prog_load.attach_btf_obj_fd)));
- 	}
- 	emit_relos(gen, insns_off);
- 	/* emit PROG_LOAD command */
-@@ -1021,7 +1021,7 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- 	cleanup_relos(gen, insns_off);
- 	if (gen->attach_kind) {
- 		emit_sys_close_blob(gen,
--				    attr_field(prog_load_attr, attach_btf_obj_fd));
-+				    attr_field(prog_load_attr, prog_load.attach_btf_obj_fd));
- 		gen->attach_kind =3D 0;
- 	}
- 	emit_check_err(gen);
-@@ -1034,9 +1034,9 @@ void bpf_gen__prog_load(struct bpf_gen *gen,
- void bpf_gen__map_update_elem(struct bpf_gen *gen, int map_idx, void *pv=
-alue,
- 			      __u32 value_size)
- {
--	int attr_size =3D offsetofend(union bpf_attr, flags);
-+	int attr_size =3D offsetofend(struct bpf_map_elem_attr, flags);
- 	int map_update_attr, value, key;
--	union bpf_attr attr;
-+	struct bpf_map_elem_attr attr;
- 	int zero =3D 0;
-=20
- 	memset(&attr, 0, attr_size);
-@@ -1068,10 +1068,10 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen=
-, int map_idx, void *pvalue,
- 	emit(gen, BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel));
-=20
- 	map_update_attr =3D add_data(gen, &attr, attr_size);
--	move_blob2blob(gen, attr_field(map_update_attr, map_fd), 4,
-+	move_blob2blob(gen, attr_field(map_update_attr, map_elem.map_fd), 4,
- 		       blob_fd_array_off(gen, map_idx));
--	emit_rel_store(gen, attr_field(map_update_attr, key), key);
--	emit_rel_store(gen, attr_field(map_update_attr, value), value);
-+	emit_rel_store(gen, attr_field(map_update_attr, map_elem.key), key);
-+	emit_rel_store(gen, attr_field(map_update_attr, map_elem.value), value)=
-;
- 	/* emit MAP_UPDATE_ELEM command */
- 	emit_sys_bpf(gen, BPF_MAP_UPDATE_ELEM, map_update_attr, attr_size);
- 	debug_ret(gen, "update_elem idx %d value_size %d", map_idx, value_size)=
-;
-@@ -1081,9 +1081,9 @@ void bpf_gen__map_update_elem(struct bpf_gen *gen, =
-int map_idx, void *pvalue,
- void bpf_gen__populate_outer_map(struct bpf_gen *gen, int outer_map_idx,=
- int slot,
- 				 int inner_map_idx)
- {
--	int attr_size =3D offsetofend(union bpf_attr, flags);
-+	int attr_size =3D offsetofend(struct bpf_map_elem_attr, flags);
- 	int map_update_attr, key;
--	union bpf_attr attr;
-+	struct bpf_map_elem_attr attr;
-=20
- 	memset(&attr, 0, attr_size);
- 	pr_debug("gen: populate_outer_map: outer %d key %d inner %d\n",
-@@ -1092,10 +1092,10 @@ void bpf_gen__populate_outer_map(struct bpf_gen *=
-gen, int outer_map_idx, int slo
- 	key =3D add_data(gen, &slot, sizeof(slot));
-=20
- 	map_update_attr =3D add_data(gen, &attr, attr_size);
--	move_blob2blob(gen, attr_field(map_update_attr, map_fd), 4,
-+	move_blob2blob(gen, attr_field(map_update_attr, map_elem.map_fd), 4,
- 		       blob_fd_array_off(gen, outer_map_idx));
--	emit_rel_store(gen, attr_field(map_update_attr, key), key);
--	emit_rel_store(gen, attr_field(map_update_attr, value),
-+	emit_rel_store(gen, attr_field(map_update_attr, map_elem.key), key);
-+	emit_rel_store(gen, attr_field(map_update_attr, map_elem.value),
- 		       blob_fd_array_off(gen, inner_map_idx));
-=20
- 	/* emit MAP_UPDATE_ELEM command */
-@@ -1107,14 +1107,14 @@ void bpf_gen__populate_outer_map(struct bpf_gen *=
-gen, int outer_map_idx, int slo
-=20
- void bpf_gen__map_freeze(struct bpf_gen *gen, int map_idx)
- {
--	int attr_size =3D offsetofend(union bpf_attr, map_fd);
-+	int attr_size =3D offsetofend(struct bpf_map_freeze_attr, map_fd);
- 	int map_freeze_attr;
--	union bpf_attr attr;
-+	struct bpf_map_freeze_attr attr;
-=20
- 	memset(&attr, 0, attr_size);
- 	pr_debug("gen: map_freeze: idx %d\n", map_idx);
- 	map_freeze_attr =3D add_data(gen, &attr, attr_size);
--	move_blob2blob(gen, attr_field(map_freeze_attr, map_fd), 4,
-+	move_blob2blob(gen, attr_field(map_freeze_attr, map_freeze.map_fd), 4,
- 		       blob_fd_array_off(gen, map_idx));
- 	/* emit MAP_FREEZE command */
- 	emit_sys_bpf(gen, BPF_MAP_FREEZE, map_freeze_attr, attr_size);
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5cca00979aae..113dbe9cb240 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4525,12 +4525,12 @@ static int probe_fd(int fd)
-=20
- static int probe_kern_prog_name(void)
- {
--	const size_t attr_sz =3D offsetofend(union bpf_attr, prog_name);
-+	const size_t attr_sz =3D offsetofend(struct bpf_prog_load_attr, prog_na=
-me);
- 	struct bpf_insn insns[] =3D {
- 		BPF_MOV64_IMM(BPF_REG_0, 0),
- 		BPF_EXIT_INSN(),
- 	};
--	union bpf_attr attr;
-+	struct bpf_prog_load_attr attr;
- 	int ret;
-=20
- 	memset(&attr, 0, attr_sz);
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-index e4d05662a96c..9a809c610f36 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -575,6 +575,6 @@ static inline bool is_pow_of_2(size_t x)
- }
-=20
- #define PROG_LOAD_ATTEMPTS 5
--int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attem=
-pts);
-+int sys_bpf_prog_load(struct bpf_prog_load_attr *attr, unsigned int size=
-, int attempts);
-=20
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
---=20
-2.34.1
-
+Cj4gSGkgRGF2aWQsCj4gICBJIGp1c3Qgd2FudCB0byBwcm92aWRlIGEgcXVpY2sgY2xhcmlmaWNh
+dGlvbiBmcm9tIHRoZSBJRVRGIHNpZGUKPiByZWdhcmRpbmcgY2F0ZWdvcmllcyBvZiBSRkNzLiBO
+b3QgYWxsIHRoZSBSRkNzIHdlIHByb2R1Y2UgYXJlCj4gc3RhbmRhcmRzLiBPbiBhIGJyb2FkIGxl
+dmVsIHdlIGhhdmUgc3RhbmRhcmRzIHRyYWNrIGFuZCBpbmZvcm1hdGlvbmFsCj4gZG9jdW1lbnRz
+IChhbW9uZyBvdGhlcnM7IG1vcmUgZGV0YWlscyBpbiBSRkMyMDI2KS4gSSBkbyBiZWxpZXZlIHRo
+ZXJlCj4gaXMgdmFsdWUgaW4gKmRvY3VtZW50aW5nKiBzb21lIG9mIHRoZSBpdGVtcyB0aGF0IGJl
+bG9uZyBpbiBhbiBBQkkgc3VjaAo+IGFzIHRoZSBjYWxsaW5nIGNvbnZlbnRpb24gKHNpbWlsYXIg
+dG8gd2hhdCBpcyBpbiBTZWN0aW9uIDIgb2YgdGhlIElTQQo+IGRyYWZ0KS4gU2ltaWxhcmx5LCB0
+aGVyZSBpcyB2YWx1ZSBpbiBkb2N1bWVudGluZyBjb252ZW50aW9ucyBhbmQKPiBndWlkZWxpbmVz
+IGZvciBjcmVhdGluZyBwb3J0YWJsZSBiaW5hcmllcyBpZiB3ZSBiZWxpZXZlIHRoYXQgaXMgYQo+
+IHVzZWZ1bCBnb2FsLCBldmVuIHRob3VnaCB0aGVyZSB3aWxsIGJlIGEgbG90IG9mIHByb2dyYW1z
+IHRoYXQgd2lsbCBub3QKPiBiZSBwb3J0YWJsZSAoZS5nLiB1c2luZyBjZ3JvdXBzKS4gSSB3b3Vs
+ZCBub3QgZXhwZWN0IHRoZXNlIHRvIGJlCj4gU3RhbmRhcmRzIHRyYWNrIGRvY3VtZW50cyBidXQg
+cmF0aGVyIEluZm9ybWF0aW9uYWwgc3BlY2lmaWNhdGlvbnMgdG8KPiBoZWxwIGltcGxlbWVudGVy
+cy4gSWYgdGhhdCBzb3VuZHMgcmVhc29uYWJsZSB3ZSBjYW4ga2VlcCB0aGUgdGV4dCBpbgo+IHRo
+ZSBjaGFydGVyICh3aXRoIHNvbWUgbWlub3IgcmV3b3JkaW5nKSBhbmQgd29yayBvbiBjYXRlZ29y
+aXppbmcKPiBwb3RlbnRpYWwgZGVsaXZlcmFibGVzIGJ5IERvY3VtZW50IFN0YXR1cyAoYXMgd291
+bGQgYW55d2F5IGJlCj4gbmVjZXNzaXRhdGVkIGJ5IMOJcmljIFZ5bmNrZeKAmXMgQkxPQ0spLgoK
+SSB3b25kZXIuICBMZXRzIHN1cHBvc2UgdGhlIEFCSSBhbmQgRUxGIGV4dGVuc2lvbnMgYXJlIG1h
+aW50YWluZWQgYW5kCmV2b2x2ZWQgaW4gdGhlIHVzdWFsIHdheSBpdCBpcyBkb25lIGZvciBhbGwg
+b3RoZXIgYXJjaGl0ZWN0dXJlcywgaS5lLgppbiB0aGUga2VybmVsIGdpdCByZXBvc2l0b3J5IG9y
+IGEgZGVkaWNhdGQgcHVibGljIG9uZSwgaW4gdGV4dHVhbCBmb3JtLAp1bmRlciBhIGZyZWUgc29m
+dHdhcmUgbGljZW5zZSwgbm90IHJlcXVpcmluZyBjb3B5cmlnaHQgYXNzaWdubWVudHMgbm9yCmJ1
+cmVvY3JhdGljIHByb2Nlc3NlcyB0byBiZSB1cGRhdGVkLCBldGMuICBDb3VsZCB0aGVuIHRoZSBX
+RyBlZGl0IGFuZApwdWJsaXNoICJzbmFwc2hvdHMiIHdoZW5ldmVyIGNvbnNpZGVyZWQgYXBwcm9w
+cmlhdGUsIGFuZCByZWxlYXNlIHRoZW0gYXMKc3Vic2VxdWVudCB2ZXJzaW9ucyBvZiBhbiBJRVRG
+IEluZm9ybWF0aW9uYWwgc3BlY2lmaWNhdGlvbiwgb3Igc29tZQpvdGhlciBzdWl0YWJsZSBraW5k
+IG9mIElFVEYgZG9jdW1lbnQ/CgpJZiBzb21ldGhpbmcgbGlrZSB0aGF0IHdvdWxkIGJlIGRvYWJs
+ZSwgbWF5YmUgd2UgY291bGQgY29uY2lsZSB0aGUKcHJhY3RpY2FsaXR5IG9mIHRoZSB1c3VhbCBh
+cHByb2FjaCB3aXRoIHRoZSBtb3JlIGZvcm1hbCBjaGFyYWN0ZXIgb2YgYW4KSUVURiBkb2N1bWVu
+dD8KCj4gUmVnYXJkcwo+IFN1cmVzaAo+Cj4+IE9uIE1heSAyMywgMjAyMywgYXQgNDoyOCBQTSwg
+RGF2aWQgVmVybmV0IDx2b2lkQG1hbmlmYXVsdC5jb20+IHdyb3RlOgo+PiAKPj4gT24gVHVlLCBN
+YXkgMjMsIDIwMjMgYXQgMDE6NTg6MThQTSAtMDQwMCwgTWljaGFlbCBSaWNoYXJkc29uIHdyb3Rl
+Ogo+Pj4gCj4+PiBEYXZpZCBWZXJuZXQgPHZvaWRAbWFuaWZhdWx0LmNvbSA8bWFpbHRvOnZvaWRA
+bWFuaWZhdWx0LmNvbT4+IHdyb3RlOgo+Pj4+IEFzIGZhciBhcyBJIGtub3cgKHBsZWFzZSBjb3Jy
+ZWN0IG1lIGlmIEknbSB3cm9uZyksIHRoZXJlIGlzbid0IHJlYWxseSBhCj4+Pj4gcHJlY2VkZW5j
+ZSBmb3Igc3RhbmRhcmRpemluZyBBQklzIGxpa2UgdGhpcy4gRm9yIGV4YW1wbGUsIHg4NiBjYWxs
+aW5nCj4+PiAKPj4+IEFsbCBvZiB0aGUgZUJQRiB3b3JrIHNlZW1zIHVucHJlY2VkZW50ZWQuCj4+
+PiBJIGRvbid0IHNlZSBoYXZpbmcgdGhpcyBpbiB0aGUgY2hhcnRlciBpcyBhIHByb2JsZW0uCj4+
+PiAKPj4+IFdlIG1heSBmYWlsIHRvIGdldCBjb25zZW5zdXMgb24gaXQsIGFuZCBub3QgbWFrZSBh
+IG1pbGVzdG9uZSwgYnV0IEkgZG9uJ3Qgc2VlCj4+PiBhIHJlYXNvbiBub3QgdG8gYmUgYWxsb3dl
+ZCB0byB0YWxrIGFib3V0IHRoaXMuCj4+PiAoYW5kIG1heWJlIGluIHRoZSBlbmQsIGl0J3MgYSBu
+by1vcCkKPj4gCj4+IEhpIE1pY2hhZWwsCj4+IAo+PiBTbyBhcG9sb2dpZXMgaW4gYWR2YW5jZSBp
+ZiBteSBsYWNrIG9mIGV4cGVyaWVuY2Ugd2l0aCBJRVRGIHByb2NlZWRpbmdzCj4+IGlzIGdsYXJp
+bmdseSBvYnZpb3VzLCBhbmQgSSdkIGFwcHJlY2lhdGUgY2xhcmlmaWNhdGlvbiBpbiBhbnkgc2l0
+dWF0aW9uCj4+IGluIHdoaWNoIEknbSBtaXN0YWtlbi4KPj4gCj4+IE15IHVuZGVyc3RhbmRpbmcg
+YmFzZWQgb24gdGhlIGNvbnZlcnNhdGlvbnMgdGhhdCBJJ3ZlIGhhZCB0aHVzIGZhciBpcwo+PiB0
+aGF0IHBhcnQgb2YgdGhlIGdvYWwgb2YgYXJyaXZpbmcgYXQgdGhlIGZpbmFsaXplZCBXRyBjaGFy
+dGVyIGlzIHRvCj4+IGRldGVybWluZSB3aGF0J3MgaW4gc2NvcGUgYW5kIG91dCBvZiBzY29wZS4g
+SXQncyBhIGJpdCBvZiBhIG11cmt5Cj4+IHByb3Bvc2l0aW9uIGJlY2F1c2Ugc29tZSB0aGluZ3Mg
+dGhhdCB3ZSB0aGluayBfY291bGRfIGJlIGluIHNjb3BlLCBzdWNoCj4+IGFzIGluIHRoaXMgY2Fz
+ZSB0b3BpY3MgcmVsYXRlZCB0byBwc0FCSSwgbWF5IG5vdCBlbmQgdXAgaGF2aW5nIGEKPj4gZG9j
+dW1lbnQgaWYgd2UgY2FuJ3QgZ2V0IGNvbnNlbnN1cy4gSW4gb3RoZXIgd29yZHMsIGJlaW5nIGlu
+IHRoZSBXRwo+PiBjaGFydGVyIGRvZXNuJ3QgaW1wbHkgdGhhdCBzb21ldGhpbmcgaXMgaW4tc2Nv
+cGUgYW5kIHdpbGwgaGF2ZSBhCj4+IGRvY3VtZW50IHdyaXR0ZW4sIGJ1dCBfbm90XyBiZWluZyBp
+biB0aGUgY2hhcnRlciBkb2VzIHByZWNsdWRlIGl0IGZyb20KPj4gYmVpbmcgZGlzY3Vzc2VkIGlu
+IHRoaXMgaXRlcmF0aW9uIG9mIHRoZSBXRyBiZWNhdXNlIG9mIHRoaXMgbGluZToKPj4gCj4+PiBU
+aGUgd29ya2luZyBncm91cCBzaGFsbCBub3QgYWRvcHQgbmV3IHdvcmsgdW50aWwgdGhlc2UKPj4+
+IGRvY3VtZW50cyBoYXZlIHByb2dyZXNzZWQgdG8gd29ya2luZyBncm91cCBsYXN0IGNhbGwuCj4+
+IAo+PiBUaGUgaW1wbGljYXRpb24gb2YgdGhpcyBpcyB0aGF0IGl0J3Mgbm90IG5lY2Vzc2FyaWx5
+IGEgcHJvYmxlbSB0byBoYXZlCj4+IHNvbWUgZmFsc2UtcG9zaXRpdmVzIGluIHRlcm1zIG9mIHdo
+YXQgd2UgY292ZXIsIGJ1dCBpdCBjYW4gYmUKPj4gcHJvYmxlbWF0aWMgaWYgd2UgbGVhdmUgb3V0
+IHNvbWV0aGluZyBpbXBvcnRhbnQgYmVjYXVzZSB3ZSdsbCBoYXZlIHRvCj4+IGNvdmVyIGFsbCBv
+ZiB0aGUgb3RoZXIgdG9waWNzIGZpcnN0LiBJJ2QgaW1hZ2luZSB0aGlzIHdvdWxkIHRlbmQgdG8g
+bWFrZQo+PiB0aGUgZGVmYXVsdCBiZWhhdmlvciBmb3IgZGVjaWRpbmcgc2NvcGUgaW4gV0cgY2hh
+cnRlcnMgdG8gYmUgcGVybWlzc2l2ZQo+PiByYXRoZXIgdGhhbiBkaXNzbWl2ZSwgd2hpY2ggbWFr
+ZXMgc2Vuc2UgdG8gbWUuCj4+IAo+PiBBc3N1bWluZyBJIGhhdmVuJ3QgYWxyZWFkeSBnb25lIG9m
+ZiB0aGUgcmFpbHMgaW4gdGVybXMgb2YgbXkKPj4gdW5kZXJzdGFuZGluZywgbGV0IG1lIHRyeSB0
+byBjbGFyaWZ5IHdoeSBkZXNwaXRlIGFsbCB0aGF0LCBJIHN0aWxsIHRoaW5rCj4+IGl0J3Mgd2Fy
+cmFudGVkIGZvciB1cyB0byByZW1vdmUgcHNBQkkgYXMgcGFydCBvZiB0aGUgc2NvcGUgb2YgdGhl
+IFdHLgo+PiBUaGVyZSBhcmUgcmVhbGx5IHR3byBtYWluIHJlYXNvbnM6Cj4+IAo+PiAxLiBBcyBp
+cyBob3BlZnVsbHkgY2xlYXIgYXQgdGhpcyBwb2ludCwgdGhlcmUgaXMgYSB3aWRlIGFuZCBoaXN0
+b3JpY2FsCj4+ICAgaW5kdXN0cnkgcHJlY2VkZW5jZSBmb3Igbm90IHN0YW5kYXJkaXppbmcgb24g
+cHNBQkkuIEZvciBleGFtcGxlLCB0bwo+PiAgIG15IGtub3dsZWRnZSwgUklTQy1WIFswXSBkZXZl
+bG9wcyBhbmQgcmF0aWZpZXMgdGhlIFJJU0MtViBJU0EgdGhyb3VnaAo+PiAgIHRoZSBSSVNDLVYg
+SW50ZXJuYXRpb25hbCBUZWNobmljYWwgV29ya2luZyBHcm91cHMsIGJ1dCB0aGVyZSBpcyBubwo+
+PiAgIHN1Y2ggcmF0aWZpZWQgc3RhbmRhcmQgb3Igc3BlY2lmaWNhdGlvbiBmb3IgUklTQy1WIGNh
+bGxpbmcKPj4gICBjb252ZW50aW9ucyAodGhlIG9wZXJhdGl2ZSB3b3JkIG9mIGNvdXJzZSBiZWlu
+ZyAiY29udmVudGlvbiIpLiBUaGUKPj4gICBzYW1lIGlzIHRydWUgKHRvIG15IGtub3dsZWRnZSkg
+b2YgX2FsbF8gcHNBQkkgRUxGIGV4dGVuc2lvbnMsIGFzIEpvc2UKPj4gICBwb2ludGVkIG91dCBl
+YXJsaWVyIGluIHRoZSBjb252ZXJzYXRpb24uCj4+IAo+PiBbMF06IGh0dHBzOi8vcmlzY3Yub3Jn
+L3RlY2huaWNhbC9zcGVjaWZpY2F0aW9ucy8gPGh0dHBzOi8vcmlzY3Yub3JnL3RlY2huaWNhbC9z
+cGVjaWZpY2F0aW9ucy8+Cj4+IAo+PiAgIFdpdGggYWxsIHRoYXQgc2FpZCwgdW5sZXNzIHRoZXJl
+J3MgbW9yZSBjb250ZXh0IGJlaGluZCB3aHkgd2UgdGhpbmsgd2UKPj4gICBuZWVkIHRvIHN0YW5k
+YXJkaXplIHBzQUJJIHdoaWNoIGhhc24ndCB5ZXQgYmVlbiBicm91Z2h0IGZvcndhcmQsIEkKPj4g
+ICBkb24ndCBzZWUgYW55IHdheSB3ZSdkIGFjaGlldmUgY29uc2Vuc3VzIHdoZW4gd2UgZGlzY3Vz
+cyBpdCBpbiB0aGUKPj4gICBXRy4gQW5kIHRoZSByZWFzb24gSSBzcGVjaWZpY2FsbHkgdGhpbmsg
+dGhhdCdzIHRoZSBjYXNlIGZvciBBQkkgKEVMRgo+PiAgIG9yIG90aGVyd2lzZSkgaXMgdGhhdCB0
+aGVyZSdzIHN1Y2ggYSB3ZWxsLWVzdGFibGlzaGVkIHByZWNlZGVuY2UKPj4gICBhbHJlYWR5IGZv
+ciBub3Qgc3RhbmRhcmRpemluZyBpdC4gSSBndWVzcyBpdCdzIHRydWUgdGhhdCB0aGVyZSdzIG5v
+Cj4+ICAgaGFybSBpbiBpbmNsdWRpbmcgaXQgYW5kIGRpc2N1c3NpbmcgaXQsIGJ1dCBhcyB0aGlu
+Z3MgY3VycmVudGx5Cj4+ICAgc3RhbmQsIGl0IGFsc28gZG9lc24ndCBzZWVtIHZlcnkgcHJvZHVj
+dGl2ZSB0byBpbmNsdWRlIGl0IGlmIHRoZXJlJ3MKPj4gICBhbHJlYWR5IChJTUhPKSByZWFzb25h
+Ymx5IGNsZWFyIGV2aWRlbmNlIHRoYXQgaXQncyBvdXQgb2Ygc2NvcGUuIFRvCj4+ICAgZ28gYmFj
+ayB0byBteSBjbGFpbSBtYWRlIGluIGFub3RoZXIgZW1haWwsIEkgdGhpbmsgdGhlIG9udXMgaXMg
+b24gdGhlCj4+ICAgZm9sa3Mgd2hvIHRoaW5rIGl0J3MgaW4gc2NvcGUgdG8gZXhwbGFpbiB3aHks
+IHJhdGhlciB0aGFuIHRoZSBmb2xrcwo+PiAgIHdobyB0aGluayB3ZSBzaG91bGQgZm9sbG93IGlu
+ZHVzdHJ5IHByZWNlZGVuY2UgdG8ganVzdGlmeSB0aGF0Lgo+PiAKPj4gMi4gQXNzdW1pbmcgdGhh
+dCBJJ20gd3JvbmcsIGFuZCBBQkkgLyBFTEYgYXJlIGluIHNjb3BlIGZvcgo+PiAgIHN0YW5kYXJk
+aXphdGlvbiwgd2Ugd291bGQgc3RpbGwgaGF2ZSB0byBkbyBhIGxvdCBvZiBwcmVtbGltaW5hcnkK
+Pj4gICB3b3JrIHRvIGRldGVybWluZSB0aGF0LiBGb3IgZXhhbXBsZSwgd2UgbWF5IGVuZCB1cCB3
+YW50aW5nIHRvCj4+ICAgc3RhbmRhcmRpemUgdGhhdCBtYXBzIGFyZSBwdXQgaW50byAubWFwcyBz
+ZWN0aW9ucyBpbiBhbiBFTEYgZmlsZSwgYnV0Cj4+ICAgdGhhdCB3b3VsZCBvbmx5IG1ha2Ugc2Vu
+c2UgaWYgd2UgY3JlYXRlZCBhIGRvY3VtZW50IHN0YW5kYXJkaXppbmcKPj4gICBjcm9zcy1wbGF0
+Zm9ybSBtYXAgdHlwZXMuIFRoZSBzYW1lIGhvbGRzIHRydWUgZm9yIGNyb3NzLXBsYXRmb3JtCj4+
+ICAgcHJvZ3JhbSB0eXBlcywgZXRjLiBUaGUgZGVwZW5kZW5jeSBEQUcgZm9yIGRpc2N1c3Npbmcg
+RUxGIGhhcyBhIGRlcHRoCj4+ICAgb2YgYXQgbGVhc3QgMiwgYW5kIGdpdmVuIHRoYXQgaXQncyBh
+cy15ZXQgdW5jbGVhciB3aGV0aGVyIEVMRiAvIHBzQUJJCj4+ICAgaXMgYW4gYXBwcm9wcmlhdGUg
+dG9waWMgZm9yIHN0YW5kYXJkaXphdGlvbiBpbiB0aGUgZmlyc3QgcGxhY2UsIGl0Cj4+ICAgcmVh
+bGx5IGZlZWxzIHRvIG1lIGxpa2UgbGVhdmluZyBpdCBvdXQgb2YgdGhlIFdHIGlzIHRoZSByaWdo
+dCBtb3ZlLgo+PiAKPj4gVGhhbmtzLAo+PiBEYXZpZAo+PiAKPj4+IAo+Pj4gLS0KPj4+IE1pY2hh
+ZWwgUmljaGFyZHNvbiA8bWNyK0lFVEZAc2FuZGVsbWFuLmNhPiAgIC4gbyBPICggSVB2NiBJw7hU
+IGNvbnN1bHRpbmcgKQo+Pj4gICAgICAgICAgIFNhbmRlbG1hbiBTb2Z0d2FyZSBXb3JrcyBJbmMs
+IE90dGF3YSBhbmQgV29ybGR3aWRlCj4+PiAKPj4+IAo+Pj4gCj4+PiAKPj4gCj4+IAo+PiAKPj4+
+IC0tIAo+Pj4gQnBmIG1haWxpbmcgbGlzdAo+Pj4gQnBmQGlldGYub3JnCj4+PiBodHRwczovL3d3
+dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2JwZgo+PiAKPj4gLS0gCj4+IEJwZiBtYWlsaW5n
+IGxpc3QKPj4gQnBmQGlldGYub3JnIDxtYWlsdG86QnBmQGlldGYub3JnPgo+PiBodHRwczovL3d3
+dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2JwZiA8aHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFp
+bG1hbi9saXN0aW5mby9icGY+CgotLSAKQnBmIG1haWxpbmcgbGlzdApCcGZAaWV0Zi5vcmcKaHR0
+cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby9icGYK
 
