@@ -1,144 +1,202 @@
-Return-Path: <bpf+bounces-1167-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1168-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95FDE70F797
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 15:29:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C38E770F863
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 16:12:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC371C20D52
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 13:29:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87EEB28134A
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 14:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A599F182B4;
-	Wed, 24 May 2023 13:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC0118C02;
+	Wed, 24 May 2023 14:12:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C7160868
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 13:29:11 +0000 (UTC)
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E8AA;
-	Wed, 24 May 2023 06:29:09 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.west.internal (Postfix) with ESMTP id 829EF2B063E5;
-	Wed, 24 May 2023 09:29:07 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 24 May 2023 09:29:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1684934947; x=1684942147; bh=Gi
-	PY4yhJsIKIhF61iNGa8GklXontEhtTLZkU/4WyhdM=; b=AfqXSSE02JYMjhCrPB
-	IhnSrYEDfNwp6ZTKQCC0WNafkyLTSrRneXdUTQoCXb4Dq0tqDV3cY9uX96ygbjJy
-	/X7/7YYLVmYz2hZWLrw1Wy+M3GY7uwPZF5xscl7z2BxfXiTYXdtEGvGh6zzI8JBk
-	epnaKDNI20xppUukZSTlfG1r+r1rfzAfMAmtgZC3S4pBZomPQyi0y0sV1YUxYnwa
-	/rfWBBe0tG193m9QXCYrZA9oBLiCVKCnFMwigkDYXWHQ2iY9JxT0sir4hyo1zaLr
-	kviH19unfm9qo8foDKhunIAafN/eo8NFu+oGDzJnboI0U11yw16I5HU2kVV/larp
-	dAag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1684934947; x=1684942147; bh=GiPY4yhJsIKIh
-	F61iNGa8GklXontEhtTLZkU/4WyhdM=; b=BkwU785lTFysm6mx9P6nPMhnybzBy
-	9lyDJSpU86Ex/R68NDtd2SsGHr/JomzKeXEyqSfVYOUFRowmbmYIg9pOdUdaD+eg
-	Xre9jwdleD5xEGZXMXyuiGnfxwDYQxy2/HBspZx8VFkLszACjjKDBO9MktMqelZv
-	a/rfINW3Nb08xZ8y6YHFdYGBNaowwBPXSR7vNvnDvzN1CBX9xt6wT85X9BG7BLnX
-	PUOBfiiFGn/jfe9HmduyyK3RbjLK+4yL2ENhgtmSBYqcqCB+W34vcUJNMnE+kG5q
-	Tu0SAOo+52BmyWpGa1LjyEFPbgajJEN9STmyh1DsRBUFw56iav2F+FGng==
-X-ME-Sender: <xms:IhFuZBXskF8N8-5mWKU054mddUznMPRzG4myU7IB_2p9eIYBtPqb7w>
-    <xme:IhFuZBl_IQba2T8NBi8rPJOH1MLZP3KBKsQiFs29TFus_yYCL0d20BEhIDkt3pYCk
-    jp_GSDYeporFxG4HPQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejhedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:IhFuZNbr34T7IAWCWG9NmJvAKlqnv4a-4KYDcMPqKMElUV3efnr-hw>
-    <xmx:IhFuZEUaZQNcQy43x-fhRAuUTHIvxyCMA8KibM9aXxkODyXbXntUoQ>
-    <xmx:IhFuZLnxhZEEnQFLWYSfWJ35uMbXVx89E7OjoK1GtgK5zcbNC9fO4g>
-    <xmx:IxFuZNsLaiXKgJ3Yn3H3_u6S7-38UjRvb5bCDuDuV2rW5gD8FjeUYnAkTCU>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BFF1AB60086; Wed, 24 May 2023 09:29:06 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-441-ga3ab13cd6d-fm-20230517.001-ga3ab13cd
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BD8A955;
+	Wed, 24 May 2023 14:12:43 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D72132;
+	Wed, 24 May 2023 07:12:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2af2db78b38so13283271fa.3;
+        Wed, 24 May 2023 07:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684937559; x=1687529559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zxdZqkghugmvEgabqpcrCX2hZgP/Izy7qx2ozu1an0o=;
+        b=T6FMbg1D3XGCIeAalO6WtYFOwcMHHu5hXL1jkgfQmOrk+jwlIls/z4f5N7A9vGd7Ps
+         33IWs43b3zeyycmycUBqTPk2KYifqA++CpefHLM+H9uNr8o7ufayowPmDeQ42pyT4cIe
+         YMOJxb5xp5NTvRfW1iXn6mSVpcTED8pmho4qS7zobdaMd6iaXbNzDz9sF7U+fZn4P3R4
+         W7LYwCwgOKazNb3GZnjwSMpXq8DKycnENB7he7u+u2HhEMQzOh3vpIm/chpUS4h4Fba6
+         Fls4VOgH5ahMcK3poo/4bd44M50iV23CDzEYjK+Y8DF5Hrt/AJBXpwqZdicIcj+45HXJ
+         akpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684937559; x=1687529559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zxdZqkghugmvEgabqpcrCX2hZgP/Izy7qx2ozu1an0o=;
+        b=CnwM3hFA4BZz92cZeyHymE1pgYMIE9qwl53NJYHFi0oCtGPeGobuAFCg+DHT4ab/Iu
+         9sxAys3MPA8/QC+k4y9NcAxesQY0buVz8gQJhXqz1cn6qPHczpUmca03pq23imVWNHMf
+         ZGpUi7cSLkclvDL9ySaCOl2DdjN0zSZgbXTs46as4ybvv0okzXgJOugmU7XkbM5GTOqs
+         74SgMmL35Ix7x92G+Scuf1caheU1nmQnPqmSA2wOwLyEmnBVLydaqb31kF13sWIZN/pP
+         nhuo4vwMlvJ0xnmsWNLpZz/bOIdystWCH4ZTqSPq+lpx1pVxyie0DJK5ilIjOBQqiuNM
+         cAuA==
+X-Gm-Message-State: AC+VfDySuNZkhHa4yQbwu8Z5PPkQzuFKDahK/v8U1nNZsfsKDN2BVX5B
+	U1Ul9OxZ/fVGioa8N7K/IZqZxTxMD6nMHgvwe80=
+X-Google-Smtp-Source: ACHHUZ4qtA9cVLlvjeimyfTbPuY9KBtYMozj61VhTqp5I+/cnVfYagje79+tYAFt2iBi16UupOISe2wJZ8W52AYw6D0=
+X-Received: by 2002:a05:651c:14b:b0:2ac:8c95:d42b with SMTP id
+ c11-20020a05651c014b00b002ac8c95d42bmr6128695ljd.4.1684937559179; Wed, 24 May
+ 2023 07:12:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <a63a344c-e64e-4f2a-9082-f970ae9f963a@app.fastmail.com>
-In-Reply-To: <3c029fae-cb42-5a75-2858-7b8fc56a8769@meta.com>
-References: <20230523194930.2116181-1-arnd@kernel.org>
- <20230523194930.2116181-2-arnd@kernel.org>
- <3c029fae-cb42-5a75-2858-7b8fc56a8769@meta.com>
-Date: Wed, 24 May 2023 15:28:46 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Yonghong Song" <yhs@meta.com>, "Arnd Bergmann" <arnd@kernel.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Song Liu" <song@kernel.org>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>
-Cc: stable@vger.kernel.org, "Martin KaFai Lau" <martin.lau@linux.dev>,
- "Yonghong Song" <yhs@fb.com>, "John Fastabend" <john.fastabend@gmail.com>,
- "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
- "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
- "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
- "Dave Marchevsky" <davemarchevsky@fb.com>,
- "Joanne Koong" <joannelkoong@gmail.com>, "Delyan Kratunov" <delyank@fb.com>,
- "Peter Zijlstra" <peterz@infradead.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] [v2] bpf: fix bpf_probe_read_kernel prototype mismatch
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+MIME-Version: 1.0
+References: <20230518180545.159100-1-maciej.fijalkowski@intel.com>
+ <20230518180545.159100-2-maciej.fijalkowski@intel.com> <ZGZ66D8x5Nbp2iYO@google.com>
+ <CAADnVQJN6Wt2uiNu+wbmh-MPjxnYneA5gcRXF7Jg+3siACA9aA@mail.gmail.com>
+ <SN7PR11MB66554BA6BE57F4CBB407B88290419@SN7PR11MB6655.namprd11.prod.outlook.com>
+ <ZG3mkn3gvLmXDUZE@boxer>
+In-Reply-To: <ZG3mkn3gvLmXDUZE@boxer>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 24 May 2023 07:12:27 -0700
+Message-ID: <CAADnVQK4sRi3stAv31TB3iRZ=_096WUwW49Z49Zh8tNp2fmx0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_desc for
+ multi-buffer use
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>, Stanislav Fomichev <sdf@google.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 24, 2023, at 05:12, Yonghong Song wrote:
-> On 5/23/23 12:43 PM, Arnd Bergmann wrote:
-
->> Aside from the warning, this addresses a bug on 32-bit architectures
->> from incorrect argument passing with the mismatched prototype.
+On Wed, May 24, 2023 at 3:27=E2=80=AFAM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
 >
-> Could you explain what is this '32-bit architectures ... incorrect 
-> argument passing' thing?
-
-I've expanded that paragraph now:
-
-| Aside from the warning, this addresses a bug on 32-bit architectures
-| from incorrect argument passing with the mismatched prototype:
-| BPF_CALL_x() functions use 64-bit arguments that are passed in
-| pairs of register or on the stack on 32-bit architectures, while the
-| normal function uses one register per argument.
-
-Let me know if you think I should put more details in there.
-
->> @@ -1635,11 +1636,13 @@ bool bpf_opcode_in_insntable(u8 code)
->>   }
->>   
->>   #ifndef CONFIG_BPF_JIT_ALWAYS_ON
->> -u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
->> +#ifndef CONFIG_BPF_EVENTS
->> +int bpf_probe_read_kernel_common(void * dst, u32 size, const void *unsafe_ptr)
+> On Wed, May 24, 2023 at 10:56:21AM +0200, Sarkar, Tirthendu wrote:
+> > > -----Original Message-----
+> > > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > > Sent: Friday, May 19, 2023 10:44 PM
+> > > To: Stanislav Fomichev <sdf@google.com>
+> > > Cc: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>; bpf
+> > > <bpf@vger.kernel.org>; Alexei Starovoitov <ast@kernel.org>; Daniel
+> > > Borkmann <daniel@iogearbox.net>; Andrii Nakryiko <andrii@kernel.org>;
+> > > Network Development <netdev@vger.kernel.org>; Karlsson, Magnus
+> > > <magnus.karlsson@intel.com>; Sarkar, Tirthendu
+> > > <tirthendu.sarkar@intel.com>; Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org=
 >
-> void * dst => void *dst
+> > > Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_des=
+c for
+> > > multi-buffer use
+> > >
+> > > On Thu, May 18, 2023 at 12:22=E2=80=AFPM Stanislav Fomichev <sdf@goog=
+le.com>
+> > > wrote:
+> > > >
+> > > > On 05/18, Maciej Fijalkowski wrote:
+> > > > > From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > > > >
+> > > > > Use the 'options' field in xdp_desc as a packet continuity marker=
+. Since
+> > > > > 'options' field was unused till now and was expected to be set to=
+ 0, the
+> > > > > 'eop' descriptor will have it set to 0, while the non-eop descrip=
+tors
+> > > > > will have to set it to 1. This ensures legacy applications contin=
+ue to
+> > > > > work without needing any change for single-buffer packets.
+> > > > >
+> > > > > Add helper functions and extend xskq_prod_reserve_desc() to use t=
+he
+> > > > > 'options' field.
+> > > > >
+> > > > > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > > > > ---
+> > > > >  include/uapi/linux/if_xdp.h | 16 ++++++++++++++++
+> > > > >  net/xdp/xsk.c               |  8 ++++----
+> > > > >  net/xdp/xsk_queue.h         | 12 +++++++++---
+> > > > >  3 files changed, 29 insertions(+), 7 deletions(-)
+> > > > >
+> > > > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_=
+xdp.h
+> > > > > index a78a8096f4ce..4acc3a9430f3 100644
+> > > > > --- a/include/uapi/linux/if_xdp.h
+> > > > > +++ b/include/uapi/linux/if_xdp.h
+> > > > > @@ -108,4 +108,20 @@ struct xdp_desc {
+> > > > >
+> > > > >  /* UMEM descriptor is __u64 */
+> > > > >
+> > > > > +/* Flag indicating that the packet continues with the buffer poi=
+nted out
+> > > by the
+> > > > > + * next frame in the ring. The end of the packet is signalled by=
+ setting
+> > > this
+> > > > > + * bit to zero. For single buffer packets, every descriptor has =
+'options'
+> > > set
+> > > > > + * to 0 and this maintains backward compatibility.
+> > > > > + */
+> > > > > +#define XDP_PKT_CONTD (1 << 0)
+> > > > > +
+> > > > > +/* Maximum number of descriptors supported as frags for a packet=
+. So
+> > > the total
+> > > > > + * number of descriptors supported for a packet is
+> > > XSK_DESC_MAX_FRAGS + 1. The
+> > > > > + * max frags supported by skb is 16 for page sizes greater than =
+4K and 17
+> > > or
+> > > >
+> > > > This is now a config option CONFIG_MAX_SKB_FRAGS. Can we use it
+> > > > directly?
+> > >
+> > > Also it doesn't look right to expose kernel internal config in uapi
+> > > especially since XSK_DESC_MAX_FRAGS is not guaranteed to be 16.
+> >
+> > Ok, we have couple of options here:
+> >
+> > Option 1:  We will define XSK_DESC_MAX_FRAGS to 17 now. This will ensur=
+e AF_XDP
+> >  applications will work on any system without any change since the MAX_=
+SKB_FRAGS
+> >  is guaranteed to be at least 17.
+> >
+> > Option 2: Instead of defining a new macro, we say max frags supported i=
+s same as
+> >  MAX_SKB_FRAGS as configured in your system. So use 17 or less frags if=
+ you want
+> >  your app to work everywhere but you can go larger if you control the s=
+ystem.
+> >
+> > Any suggestions ?
+> >
+> > Also Alexei could you please clarify what you meant by ".. since XSK_DE=
+SC_MAX_FRAGS
+> >  is not guaranteed to be 16." ?
 >
+> Maybe it would be better to put this define onto patch 08 so people would
+> see how it is used and get a feeling of it? Although it has a description
+> nothing says about it in commit message.
+>
+> FWIW i'm voting for option 2, but also Alexei's comment is a bit unclear
+> to me, would be nice to hear more about it.
 
-Fixed now.
-
-Thanks,
-
-     Arnd
+Meaning that uapi can only have fixed constants.
+We cannot put *_MAX_FRAGS there, since it's config dependent.
 
