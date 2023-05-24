@@ -1,91 +1,213 @@
-Return-Path: <bpf+bounces-1172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEB6570FB4B
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 18:04:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF69570FB8F
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 18:20:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 954291C20E55
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 16:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78C312810E6
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 16:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C4F19E4B;
-	Wed, 24 May 2023 16:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD9819E62;
+	Wed, 24 May 2023 16:20:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C411951F
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 16:04:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4FE9C4339B;
-	Wed, 24 May 2023 16:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1684944242;
-	bh=AvLEpqq/Dfm1IZH9Fj2SEDUypWc1N9U5UTURKsOgFXA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nlzXFI5cSYkrBMMbmjohePIfZJEJ1wyXXh8nVwQWYHkk8no4B3DZgv+dD2ve05da8
-	 pekgyIFhR2BvsiTbttuSUbf8SlIpeOJURyDpYVVmKCeDTjGGj1QtMuuAiz4KNIBzI1
-	 smXEPshQji5C5rb14OqzMaF7TjOIJRvLXVEh+RS0=
-Date: Wed, 24 May 2023 17:03:59 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Lorenz Bauer <lmb@isovalent.com>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Martin KaFai Lau <martin.lau@kernel.org>,
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	shuah@kernel.org, yhs@fb.com, eddyz87@gmail.com, sdf@google.com,
-	error27@gmail.com, iii@linux.ibm.com, memxor@gmail.com,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.2 08/30] selftests/bpf: check that modifier
- resolves after pointer
-Message-ID: <2023052435-xbox-dislike-0ab2@gregkh>
-References: <20230320005258.1428043-1-sashal@kernel.org>
- <20230320005258.1428043-8-sashal@kernel.org>
- <CAN+4W8g6AcQQWe7rrBVOFYoqeQA-1VbUP_W7DPS3q0k-czOLfg@mail.gmail.com>
- <ZBiAPngOtzSwDhFz@kroah.com>
- <CAN+4W8jAyJTdFL=tgp3wCpYAjGOs5ggo6vyOg8PbaW+tJP8TKA@mail.gmail.com>
- <CAN+4W8j5qe6p3YV90g-E0VhV7AmYyAvt0z50dfDSombbGghkww@mail.gmail.com>
- <2023041100-oblong-enamel-5893@gregkh>
- <CAN+4W8hmSgbb-wO4da4A=6B4y0oSjvUTTVia_0PpUXShP4NX4Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8655B19E56
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 16:20:18 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A8A12E
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 09:20:16 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ae454844edso3444555ad.1
+        for <bpf@vger.kernel.org>; Wed, 24 May 2023 09:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1684945216; x=1687537216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t4KLpXvkvORyHDLUiO5GMhdvg0JeB/9+Ln5TwWcdc8A=;
+        b=gMEwYf4946R1PInCu41Xhn5fHAMOGnMmRYO0+02FBBtDC892M3rIaxxSrz23yHC03L
+         S6Az+rkQ3WZVzyMhiB8xj1Y5ezmhu21KQXcD+j95bei8QsU0jq8VxsWBQWlDndv2fE8m
+         h34EX6NNMNloT+hjBZlXaCyA/mnA5pcmueFtJpXCwFpNUQIzzG7XH8O5P469dlxEdH+I
+         xPxBUmKaaj89p/bVTSZsZ1k3LLw2BJ+Ah4Ke8vdvAQHQT4RsN3GachuOYqYVe2E1BUp9
+         pO9M2NLX8F1m6kAI8DY2peKuwM7h4Aq5COUOe8nSgVa+hoVNMusz1j/ZsYOZwn8NsvwU
+         AVNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684945216; x=1687537216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t4KLpXvkvORyHDLUiO5GMhdvg0JeB/9+Ln5TwWcdc8A=;
+        b=Ux7ggBJllIMdLH+e/z6SB4Zi264t6n6347WP4qHAB89WYntBczwHKnmu8BThvcg3fZ
+         xCaHren/cDSiaogNEUYKclNVgLFC5dPIuqP5ciNFco7JoFVfVKimXjWMk6iPRHkVp+67
+         GOmzBQmucCTVPyKHTpurAQTNtUuleO1sb1ejjJ359B7xJZKNCnLo0dYi0jMjD4U2HRcG
+         a0qOnXHSBBlqHRinmlNUWPJKSeiEevU45v2bHByWBxnAHPzM0hLHhSGrfZxVDTnyMrgf
+         htvwU8ZZSl+1ZI2/ZbbJ9HrDwSzF9rcyXAvlAK/C5mxU4v0usfEav2MOQgkjJXv+4sjA
+         XemA==
+X-Gm-Message-State: AC+VfDycgcIywoKNGFUd5MiMuaperDCx6iKqO0L9ad6MEfTQF24Wbitl
+	HY94a98LYJRbPXESuHVZLGC6nRQheINGSMIM6shV4A==
+X-Google-Smtp-Source: ACHHUZ47o8I/TIGFj7w9CmWlxnC04ddhiSDHflL6uTJWBDrXeL6wKPMEFLgsBc8JwVO8NKheMDnFew/ztlYi1HQQfZM=
+X-Received: by 2002:a17:902:ba8b:b0:1ae:5f7e:c127 with SMTP id
+ k11-20020a170902ba8b00b001ae5f7ec127mr16319360pls.40.1684945215952; Wed, 24
+ May 2023 09:20:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN+4W8hmSgbb-wO4da4A=6B4y0oSjvUTTVia_0PpUXShP4NX4Q@mail.gmail.com>
+References: <20230518180545.159100-1-maciej.fijalkowski@intel.com>
+ <20230518180545.159100-2-maciej.fijalkowski@intel.com> <ZGZ66D8x5Nbp2iYO@google.com>
+ <CAADnVQJN6Wt2uiNu+wbmh-MPjxnYneA5gcRXF7Jg+3siACA9aA@mail.gmail.com>
+ <SN7PR11MB66554BA6BE57F4CBB407B88290419@SN7PR11MB6655.namprd11.prod.outlook.com>
+ <ZG3mkn3gvLmXDUZE@boxer> <CAADnVQK4sRi3stAv31TB3iRZ=_096WUwW49Z49Zh8tNp2fmx0A@mail.gmail.com>
+In-Reply-To: <CAADnVQK4sRi3stAv31TB3iRZ=_096WUwW49Z49Zh8tNp2fmx0A@mail.gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Wed, 24 May 2023 09:20:05 -0700
+Message-ID: <CAKH8qBsKxAzP+sU5diPjtmhsJG2zCYPy4URZJKU3XaV9jjiDHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_desc for
+ multi-buffer use
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+	"Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, May 24, 2023 at 12:03:43PM +0100, Lorenz Bauer wrote:
-> On Tue, Apr 11, 2023 at 4:14 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Wed, May 24, 2023 at 7:12=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, May 24, 2023 at 3:27=E2=80=AFAM Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
 > >
-> > I didn't see anything to do here.
+> > On Wed, May 24, 2023 at 10:56:21AM +0200, Sarkar, Tirthendu wrote:
+> > > > -----Original Message-----
+> > > > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > > > Sent: Friday, May 19, 2023 10:44 PM
+> > > > To: Stanislav Fomichev <sdf@google.com>
+> > > > Cc: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>; bpf
+> > > > <bpf@vger.kernel.org>; Alexei Starovoitov <ast@kernel.org>; Daniel
+> > > > Borkmann <daniel@iogearbox.net>; Andrii Nakryiko <andrii@kernel.org=
+>;
+> > > > Network Development <netdev@vger.kernel.org>; Karlsson, Magnus
+> > > > <magnus.karlsson@intel.com>; Sarkar, Tirthendu
+> > > > <tirthendu.sarkar@intel.com>; Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.o=
+rg>
+> > > > Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_d=
+esc for
+> > > > multi-buffer use
+> > > >
+> > > > On Thu, May 18, 2023 at 12:22=E2=80=AFPM Stanislav Fomichev <sdf@go=
+ogle.com>
+> > > > wrote:
+> > > > >
+> > > > > On 05/18, Maciej Fijalkowski wrote:
+> > > > > > From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > > > > >
+> > > > > > Use the 'options' field in xdp_desc as a packet continuity mark=
+er. Since
+> > > > > > 'options' field was unused till now and was expected to be set =
+to 0, the
+> > > > > > 'eop' descriptor will have it set to 0, while the non-eop descr=
+iptors
+> > > > > > will have to set it to 1. This ensures legacy applications cont=
+inue to
+> > > > > > work without needing any change for single-buffer packets.
+> > > > > >
+> > > > > > Add helper functions and extend xskq_prod_reserve_desc() to use=
+ the
+> > > > > > 'options' field.
+> > > > > >
+> > > > > > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> > > > > > ---
+> > > > > >  include/uapi/linux/if_xdp.h | 16 ++++++++++++++++
+> > > > > >  net/xdp/xsk.c               |  8 ++++----
+> > > > > >  net/xdp/xsk_queue.h         | 12 +++++++++---
+> > > > > >  3 files changed, 29 insertions(+), 7 deletions(-)
+> > > > > >
+> > > > > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/i=
+f_xdp.h
+> > > > > > index a78a8096f4ce..4acc3a9430f3 100644
+> > > > > > --- a/include/uapi/linux/if_xdp.h
+> > > > > > +++ b/include/uapi/linux/if_xdp.h
+> > > > > > @@ -108,4 +108,20 @@ struct xdp_desc {
+> > > > > >
+> > > > > >  /* UMEM descriptor is __u64 */
+> > > > > >
+> > > > > > +/* Flag indicating that the packet continues with the buffer p=
+ointed out
+> > > > by the
+> > > > > > + * next frame in the ring. The end of the packet is signalled =
+by setting
+> > > > this
+> > > > > > + * bit to zero. For single buffer packets, every descriptor ha=
+s 'options'
+> > > > set
+> > > > > > + * to 0 and this maintains backward compatibility.
+> > > > > > + */
+> > > > > > +#define XDP_PKT_CONTD (1 << 0)
+> > > > > > +
+> > > > > > +/* Maximum number of descriptors supported as frags for a pack=
+et. So
+> > > > the total
+> > > > > > + * number of descriptors supported for a packet is
+> > > > XSK_DESC_MAX_FRAGS + 1. The
+> > > > > > + * max frags supported by skb is 16 for page sizes greater tha=
+n 4K and 17
+> > > > or
+> > > > >
+> > > > > This is now a config option CONFIG_MAX_SKB_FRAGS. Can we use it
+> > > > > directly?
+> > > >
+> > > > Also it doesn't look right to expose kernel internal config in uapi
+> > > > especially since XSK_DESC_MAX_FRAGS is not guaranteed to be 16.
+> > >
+> > > Ok, we have couple of options here:
+> > >
+> > > Option 1:  We will define XSK_DESC_MAX_FRAGS to 17 now. This will ens=
+ure AF_XDP
+> > >  applications will work on any system without any change since the MA=
+X_SKB_FRAGS
+> > >  is guaranteed to be at least 17.
+> > >
+> > > Option 2: Instead of defining a new macro, we say max frags supported=
+ is same as
+> > >  MAX_SKB_FRAGS as configured in your system. So use 17 or less frags =
+if you want
+> > >  your app to work everywhere but you can go larger if you control the=
+ system.
+> > >
+> > > Any suggestions ?
+> > >
+> > > Also Alexei could you please clarify what you meant by ".. since XSK_=
+DESC_MAX_FRAGS
+> > >  is not guaranteed to be 16." ?
 > >
-> > And selftests should NOT be broken on stable releases, if so, something
-> > is wrong as no other subsystem has that happen.
-> 
-> Sorry for the long delay in replying, I update the kernels we use for
-> CI only infrequently. Here is an example of the build failure I'm
-> seeing, from kernel.org 5.10 LTS:
-> 
-> In file included from
-> /work/build/5.10.180/tools/testing/selftests/bpf/verifier/tests.h:59,
->                  from test_verifier.c:355:
-> /work/build/5.10.180/tools/testing/selftests/bpf/verifier/ref_tracking.c:935:3:
-> error: 'struct bpf_test' has no member named 'fixup_map_ringbuf'; did
-> you mean 'fixup_map_in_map'?
->   935 |  .fixup_map_ringbuf = { 11 },
->       |   ^~~~~~~~~~~~~~~~~
->       |   fixup_map_in_map
-> 
-> This is just doing make -C tools/testing/selftests/bpf after compiling a kernel.
+> > Maybe it would be better to put this define onto patch 08 so people wou=
+ld
+> > see how it is used and get a feeling of it? Although it has a descripti=
+on
+> > nothing says about it in commit message.
+> >
+> > FWIW i'm voting for option 2, but also Alexei's comment is a bit unclea=
+r
+> > to me, would be nice to hear more about it.
+>
+> Meaning that uapi can only have fixed constants.
+> We cannot put *_MAX_FRAGS there, since it's config dependent.
 
-Great, any specific commits that fix this issue would be appreciated to
-be pointed at so we can apply them.
-
-thanks,
-
-greg k-h
+Same here, would prefer option 2. And don't put it in the uapi. That's
+something the users can try to probe maybe?
 
