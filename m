@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-1166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 423E170F786
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 15:24:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FDE70F797
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 15:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFB4D281358
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 13:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC371C20D52
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 13:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4971775C;
-	Wed, 24 May 2023 13:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A599F182B4;
+	Wed, 24 May 2023 13:29:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7244E6087B
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 13:23:51 +0000 (UTC)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DBAE9;
-	Wed, 24 May 2023 06:23:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C7160868
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 13:29:11 +0000 (UTC)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E8AA;
+	Wed, 24 May 2023 06:29:09 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id B89263200201;
-	Wed, 24 May 2023 09:23:45 -0400 (EDT)
+	by mailnew.west.internal (Postfix) with ESMTP id 829EF2B063E5;
+	Wed, 24 May 2023 09:29:07 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 24 May 2023 09:23:46 -0400
+  by compute6.internal (MEProxy); Wed, 24 May 2023 09:29:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
 	:cc:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1684934625; x=1685021025; bh=ra
-	B7OJ7UdVre69aPRy4rO+ZRGCd+zuLQcF+Qv/YoZG8=; b=KeN+SZ3c314DpYLTMq
-	MBBXznHtrN2C+qFdeSIJq3xOBZ0k29HIC+Xtw6daL+hf9K5z8EyWyGcHGyo5bmux
-	Ade06pXwCVbRZWyrqwUq5i0SeM2ZORXKbW6F4p1ybuaWErf4zIxhdFC1nm0s74Kj
-	MvDP4siVQQD9P2pBX3hkTL76qx5cTU8LMrn2s+69+M+NEFuK03eSspFgs/6LjBz5
-	19WiTORXXhHSrwaT2puNtkAdy1QUAINDeyCu7skj3fk5mwwxbiqrxAYR+B2WqYv8
-	+xBr1qCJgSrnU+YINARYe94FeBkRVNkPyeoFXqAj9fgf757atGqCTiBDlzoDVQ2r
-	mjhg==
+	:subject:subject:to:to; s=fm3; t=1684934947; x=1684942147; bh=Gi
+	PY4yhJsIKIhF61iNGa8GklXontEhtTLZkU/4WyhdM=; b=AfqXSSE02JYMjhCrPB
+	IhnSrYEDfNwp6ZTKQCC0WNafkyLTSrRneXdUTQoCXb4Dq0tqDV3cY9uX96ygbjJy
+	/X7/7YYLVmYz2hZWLrw1Wy+M3GY7uwPZF5xscl7z2BxfXiTYXdtEGvGh6zzI8JBk
+	epnaKDNI20xppUukZSTlfG1r+r1rfzAfMAmtgZC3S4pBZomPQyi0y0sV1YUxYnwa
+	/rfWBBe0tG193m9QXCYrZA9oBLiCVKCnFMwigkDYXWHQ2iY9JxT0sir4hyo1zaLr
+	kviH19unfm9qo8foDKhunIAafN/eo8NFu+oGDzJnboI0U11yw16I5HU2kVV/larp
+	dAag==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:sender:subject
 	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1684934625; x=1685021025; bh=raB7OJ7UdVre6
-	9aPRy4rO+ZRGCd+zuLQcF+Qv/YoZG8=; b=E6pqQAcWCmgAa1czwjMCpTyu9whwy
-	2M4I2KVD0Gae7jhhVOV6WiZr5W18owt4YYHKsYbM2Gwxp0y6qo2/61S5ZSkNQEss
-	mt8SOKFwkTygqSrZfXDHt43AyQ+YrVTxCd5xjVJ6jQKE5I0IGTtEUJUWUjshUnkP
-	/J2PJB20kSXTbytywZ1xdNLIHQH2wkmOLFllRXlfxDu1pWMQKGywc5Gsw8SDjInE
-	B7A7N6TAS8nE0msYcUYN3UKjqZFTMkdcpJ8WMsEivMAw4tZ+KdMx6PIXkQQIq/cO
-	bttJROhbaE9nn8auKbIakqIJWmvFZIK5mH3K0sQdSP1P+y0m+tm+GzD2g==
-X-ME-Sender: <xms:4A9uZBj9YgkKdHnHldzzQBzhuuOyvnCUj80QVD00mQyxlkwPtGJrQg>
-    <xme:4A9uZGBvn1h9bFnLU5nNwSGC3x3KZZrjVdrU7f7mp36-uj8zCpq1EMhmpwECsSytj
-    yQkLXJeKsMfu4YiA5I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejhedgiedvucetufdoteggodetrfdotf
+	:x-sasl-enc; s=fm1; t=1684934947; x=1684942147; bh=GiPY4yhJsIKIh
+	F61iNGa8GklXontEhtTLZkU/4WyhdM=; b=BkwU785lTFysm6mx9P6nPMhnybzBy
+	9lyDJSpU86Ex/R68NDtd2SsGHr/JomzKeXEyqSfVYOUFRowmbmYIg9pOdUdaD+eg
+	Xre9jwdleD5xEGZXMXyuiGnfxwDYQxy2/HBspZx8VFkLszACjjKDBO9MktMqelZv
+	a/rfINW3Nb08xZ8y6YHFdYGBNaowwBPXSR7vNvnDvzN1CBX9xt6wT85X9BG7BLnX
+	PUOBfiiFGn/jfe9HmduyyK3RbjLK+4yL2ENhgtmSBYqcqCB+W34vcUJNMnE+kG5q
+	Tu0SAOo+52BmyWpGa1LjyEFPbgajJEN9STmyh1DsRBUFw56iav2F+FGng==
+X-ME-Sender: <xms:IhFuZBXskF8N8-5mWKU054mddUznMPRzG4myU7IB_2p9eIYBtPqb7w>
+    <xme:IhFuZBl_IQba2T8NBi8rPJOH1MLZP3KBKsQiFs29TFus_yYCL0d20BEhIDkt3pYCk
+    jp_GSDYeporFxG4HPQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejhedgieefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
@@ -60,13 +60,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejhedgiedvucetufdoteggod
     htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
     teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
     hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:4A9uZBEE092hwupMxH4S4SHtrfsXDcp7cZkbOc90SrYhpBO9CmBjrA>
-    <xmx:4A9uZGRtD8vPxhudzeLLaSn0ZisnDtqqV0bRSA705F-1DunwVgFrIA>
-    <xmx:4A9uZOwvTR6oTTCkL_MlLzb5pl6KhTP4jvOvg8pPcofLxU00w6ekag>
-    <xmx:4Q9uZCjQXpAkyjuLARR3j-0yMheIgCCw0SkzJBcsCeQPV2VAwlXf0A>
+X-ME-Proxy: <xmx:IhFuZNbr34T7IAWCWG9NmJvAKlqnv4a-4KYDcMPqKMElUV3efnr-hw>
+    <xmx:IhFuZEUaZQNcQy43x-fhRAuUTHIvxyCMA8KibM9aXxkODyXbXntUoQ>
+    <xmx:IhFuZLnxhZEEnQFLWYSfWJ35uMbXVx89E7OjoK1GtgK5zcbNC9fO4g>
+    <xmx:IxFuZNsLaiXKgJ3Yn3H3_u6S7-38UjRvb5bCDuDuV2rW5gD8FjeUYnAkTCU>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C5888B60086; Wed, 24 May 2023 09:23:44 -0400 (EDT)
+	id BFF1AB60086; Wed, 24 May 2023 09:29:06 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-441-ga3ab13cd6d-fm-20230517.001-ga3ab13cd
 Precedence: bulk
@@ -75,57 +75,70 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Message-Id: <e23c5155-477b-465e-a811-61945d68fde7@app.fastmail.com>
-In-Reply-To: <f7b6f68e-f218-9d7f-22dc-3e4bac70051a@meta.com>
+Message-Id: <a63a344c-e64e-4f2a-9082-f970ae9f963a@app.fastmail.com>
+In-Reply-To: <3c029fae-cb42-5a75-2858-7b8fc56a8769@meta.com>
 References: <20230523194930.2116181-1-arnd@kernel.org>
- <f7b6f68e-f218-9d7f-22dc-3e4bac70051a@meta.com>
-Date: Wed, 24 May 2023 15:23:24 +0200
+ <20230523194930.2116181-2-arnd@kernel.org>
+ <3c029fae-cb42-5a75-2858-7b8fc56a8769@meta.com>
+Date: Wed, 24 May 2023 15:28:46 +0200
 From: "Arnd Bergmann" <arnd@arndb.de>
 To: "Yonghong Song" <yhs@meta.com>, "Arnd Bergmann" <arnd@kernel.org>,
  "Alexei Starovoitov" <ast@kernel.org>,
  "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>
-Cc: "John Fastabend" <john.fastabend@gmail.com>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yhs@fb.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@google.com>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Jason A . Donenfeld" <Jason@zx2c4.com>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] [v2] bpf: hide unused bpf_patch_call_args
+ "Andrii Nakryiko" <andrii@kernel.org>, "Song Liu" <song@kernel.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>
+Cc: stable@vger.kernel.org, "Martin KaFai Lau" <martin.lau@linux.dev>,
+ "Yonghong Song" <yhs@fb.com>, "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
+ "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+ "Dave Marchevsky" <davemarchevsky@fb.com>,
+ "Joanne Koong" <joannelkoong@gmail.com>, "Delyan Kratunov" <delyank@fb.com>,
+ "Peter Zijlstra" <peterz@infradead.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] [v2] bpf: fix bpf_probe_read_kernel prototype mismatch
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 24, 2023, at 05:05, Yonghong Song wrote:
+On Wed, May 24, 2023, at 05:12, Yonghong Song wrote:
 > On 5/23/23 12:43 PM, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> This function has no callers and no declaration when CONFIG_BPF_JIT_ALWAYS_ON
->> is enabled:
->> 
->> kernel/bpf/core.c:2075:6: error: no previous prototype for 'bpf_patch_call_args' [-Werror=missing-prototypes]
+
+>> Aside from the warning, this addresses a bug on 32-bit architectures
+>> from incorrect argument passing with the mismatched prototype.
 >
-> If CONFIG_BPF_JIT_ALWAYS_ON is enabled, the definition of
-> bpf_patch_call_args should be invisible. Maybe I missed something.
-> Could you list *ALL& bpf related config options in your setup
-> so people can reproduce you above error messages?
+> Could you explain what is this '32-bit architectures ... incorrect 
+> argument passing' thing?
 
-Sorry, my mistake. I've reworded the changelog now to fix this:
+I've expanded that paragraph now:
 
-| This function is only used when CONFIG_BPF_JIT_ALWAYS_ON is disabled,
-| but CONFIG_BPF_SYSCALL is enabled. When both are turned off, the
-| prototype is missing but the unused function is still compiled,
-| as seen from this W=1 warning:
-| 
-| kernel/bpf/core.c:2075:6: error: no previous prototype for 'bpf_patch_call_args' [-Werror=missing-prototypes]
-| 
-| Add a matching #ifdef for the definition to leave it out.
+| Aside from the warning, this addresses a bug on 32-bit architectures
+| from incorrect argument passing with the mismatched prototype:
+| BPF_CALL_x() functions use 64-bit arguments that are passed in
+| pairs of register or on the stack on 32-bit architectures, while the
+| normal function uses one register per argument.
 
-If this makes sense now, I'll send out a v3.
+Let me know if you think I should put more details in there.
 
-      Arnd
+>> @@ -1635,11 +1636,13 @@ bool bpf_opcode_in_insntable(u8 code)
+>>   }
+>>   
+>>   #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+>> -u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+>> +#ifndef CONFIG_BPF_EVENTS
+>> +int bpf_probe_read_kernel_common(void * dst, u32 size, const void *unsafe_ptr)
+>
+> void * dst => void *dst
+>
+
+Fixed now.
+
+Thanks,
+
+     Arnd
 
