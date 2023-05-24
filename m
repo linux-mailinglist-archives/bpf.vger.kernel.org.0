@@ -1,39 +1,39 @@
-Return-Path: <bpf+bounces-1144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 455D670EA8F
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 03:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D8AF70EAAD
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 03:20:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC8491C20A08
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 01:09:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27C391C20899
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 01:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792461365;
-	Wed, 24 May 2023 01:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5361F139B;
+	Wed, 24 May 2023 01:19:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCE91118
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 01:09:22 +0000 (UTC)
-X-Greylist: delayed 323 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 May 2023 18:09:20 PDT
-Received: from out-7.mta0.migadu.com (out-7.mta0.migadu.com [IPv6:2001:41d0:1004:224b::7])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0287D90
-	for <bpf@vger.kernel.org>; Tue, 23 May 2023 18:09:19 -0700 (PDT)
-Message-ID: <f3b21f27-a284-a42c-8636-181e24c325fd@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2732EED5
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 01:19:59 +0000 (UTC)
+X-Greylist: delayed 960 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 May 2023 18:19:57 PDT
+Received: from out-8.mta0.migadu.com (out-8.mta0.migadu.com [91.218.175.8])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D748E5
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 18:19:57 -0700 (PDT)
+Message-ID: <eab45de6-f5cd-c500-e6b7-940540fa047a@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1684890233;
+	t=1684891195;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jh7iBS5FHLBGopmkuw15BWqC3kdUoGkTqYatZ49q0Ds=;
-	b=t6NwXSr1AKcmm9VqFGAOaj10q/l0YGQsh+jQCugxcGk+hRMvmZannWy83Ez1k3nYld3okS
-	pdfwpK7iMsBHa7EdolYt+mOHCL3GVzfgaaZ4k7s2Uk4cjGIo8ifu5HNZ5+wFG/wmX916NO
-	EM2Vfytbilx1j2t8tcnfBA/QOhzRcxA=
-Date: Wed, 24 May 2023 09:03:44 +0800
+	bh=IS/zW0r6ACecKkKrWyNGXHTONB4RNXz9dm+4kul1Kyc=;
+	b=JUtd5l8pR2Y5g7KQ0lSz1e9haNWxFhDklOP1E4K3/aZPUULF/JcmaYe0FicX2qdB3ZNxeV
+	/8HSqcQn+N93ytxEEjlNnA/Q6T0BhEGF1Kj47cDZbiAXYcfuYnwBqzeb0PrjVVLMB88u5V
+	Ah2IayKs4BPMhB0S2vcdlW6YExo2j0I=
+Date: Wed, 24 May 2023 09:19:48 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,10 +47,10 @@ To: Jiri Olsa <olsajiri@gmail.com>
 Cc: andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
  bpf@vger.kernel.org, liuyun01@kylinos.cn
 References: <20230523132547.94384-1-liu.yun@linux.dev>
- <ZGznHMU1uhdPnE/F@krava>
+ <ZGznHMU1uhdPnE/F@krava> <f3b21f27-a284-a42c-8636-181e24c325fd@linux.dev>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Jackie Liu <liu.yun@linux.dev>
-In-Reply-To: <ZGznHMU1uhdPnE/F@krava>
+In-Reply-To: <f3b21f27-a284-a42c-8636-181e24c325fd@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -63,126 +63,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 Hi Jiri.
 
-在 2023/5/24 00:17, Jiri Olsa 写道:
-> On Tue, May 23, 2023 at 09:25:47PM +0800, Jackie Liu wrote:
->> From: Jackie Liu <liuyun01@kylinos.cn>
->>
->> When using regular expression matching with "kprobe multi", it scans all
->> the functions under "/proc/kallsyms" that can be matched. However, not all
->> of them can be traced by kprobe.multi. If any one of the functions fails
->> to be traced, it will result in the failure of all functions. The best
->> approach is to filter out the functions that cannot be traced to ensure
->> proper tracking of the functions.
->>
->> But, the addition of these checks will frequently probe whether a function
->> complies with "available_filter_functions" and ensure that it has not been
->> filtered by kprobe's blacklist. As a result, it may take a longer time
->> during startup. The function implementation is referenced from BCC's
->> "kprobe_exists()"
->>
->> Here is the test eBPF program [1].
->> [1] https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b8b3eadde97f7a4535e867
->>
->> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
->> ---
->>   tools/lib/bpf/libbpf.c | 47 ++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 47 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index ad1ec893b41b..6a201267fa08 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -10421,6 +10421,50 @@ struct kprobe_multi_resolve {
->>   	size_t cnt;
->>   };
->>   
->> +static bool filter_available_function(const char *name)
->> +{
->> +	char addr_range[256];
->> +	char sym_name[256];
->> +	FILE *f;
->> +	int ret;
->> +
->> +	f = fopen("/sys/kernel/debug/kprobes/blacklist", "r");
->> +	if (!f)
->> +		goto avail_filter;
->> +
->> +	while (true) {
->> +		ret = fscanf(f, "%s %s%*[^\n]\n", addr_range, sym_name);
->> +		if (ret == EOF && feof(f))
->> +			break;
->> +		if (ret != 2)
->> +			break;
->> +		if (!strcmp(name, sym_name)) {
->> +			fclose(f);
->> +			return false;
->> +		}
->> +	}
->> +	fclose(f);
+在 2023/5/24 09:03, Jackie Liu 写道:
+> Hi Jiri.
 > 
-> so available_filter_functions already contains all traceable symbols
-> for kprobe_multi/fprobe
+> 在 2023/5/24 00:17, Jiri Olsa 写道:
+>> On Tue, May 23, 2023 at 09:25:47PM +0800, Jackie Liu wrote:
+>>> From: Jackie Liu <liuyun01@kylinos.cn>
+>>>
+>>> When using regular expression matching with "kprobe multi", it scans all
+>>> the functions under "/proc/kallsyms" that can be matched. However, 
+>>> not all
+>>> of them can be traced by kprobe.multi. If any one of the functions fails
+>>> to be traced, it will result in the failure of all functions. The best
+>>> approach is to filter out the functions that cannot be traced to ensure
+>>> proper tracking of the functions.
+>>>
+>>> But, the addition of these checks will frequently probe whether a 
+>>> function
+>>> complies with "available_filter_functions" and ensure that it has not 
+>>> been
+>>> filtered by kprobe's blacklist. As a result, it may take a longer time
+>>> during startup. The function implementation is referenced from BCC's
+>>> "kprobe_exists()"
+>>>
+>>> Here is the test eBPF program [1].
+>>> [1] 
+>>> https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b8b3eadde97f7a4535e867
+>>>
+>>> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+>>> ---
+>>>   tools/lib/bpf/libbpf.c | 47 ++++++++++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 47 insertions(+)
+>>>
+>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>> index ad1ec893b41b..6a201267fa08 100644
+>>> --- a/tools/lib/bpf/libbpf.c
+>>> +++ b/tools/lib/bpf/libbpf.c
+>>> @@ -10421,6 +10421,50 @@ struct kprobe_multi_resolve {
+>>>       size_t cnt;
+>>>   };
+>>> +static bool filter_available_function(const char *name)
+>>> +{
+>>> +    char addr_range[256];
+>>> +    char sym_name[256];
+>>> +    FILE *f;
+>>> +    int ret;
+>>> +
+>>> +    f = fopen("/sys/kernel/debug/kprobes/blacklist", "r");
+>>> +    if (!f)
+>>> +        goto avail_filter;
+>>> +
+>>> +    while (true) {
+>>> +        ret = fscanf(f, "%s %s%*[^\n]\n", addr_range, sym_name);
+>>> +        if (ret == EOF && feof(f))
+>>> +            break;
+>>> +        if (ret != 2)
+>>> +            break;
+>>> +        if (!strcmp(name, sym_name)) {
+>>> +            fclose(f);
+>>> +            return false;
+>>> +        }
+>>> +    }
+>>> +    fclose(f);
+>>
+>> so available_filter_functions already contains all traceable symbols
+>> for kprobe_multi/fprobe
+>>
+>> kprobes/blacklist is kprobe specific and does not apply to fprobe,
+>> is there a crash when attaching function from kprobes/blacklist ?
 > 
-> kprobes/blacklist is kprobe specific and does not apply to fprobe,
-> is there a crash when attaching function from kprobes/blacklist ?
+> No, I haven't got crash before, Simply because BCC's kprobe_exists has
+> implemented it so I added this, Yes, I also don't think 
+> kprobes/blacklist will affect FPROBE, so I will remove it.
+> 
+>>
+>>> +
+>>> +avail_filter:
+>>> +    f = 
+>>> fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
+>>> +    if (!f)
+>>> +        return true;
+>>> +
+>>> +    while (true) {
+>>> +        ret = fscanf(f, "%s%*[^\n]\n", sym_name);
+>>> +        if (ret == EOF && feof(f))
+>>> +            break;
+>>> +        if (ret != 1)
+>>> +            break;
+>>> +        if (!strcmp(name, sym_name)) {
+>>> +            fclose(f);
+>>> +            return true;
+>>> +        }
+>>> +    }
+>>> +    fclose(f);
+>>> +    return false;
+>>> +}
+>>> +
+>>>   static int
+>>>   resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>>>               const char *sym_name, void *ctx)
+>>> @@ -10431,6 +10475,9 @@ resolve_kprobe_multi_cb(unsigned long long 
+>>> sym_addr, char sym_type,
+>>>       if (!glob_match(sym_name, res->pattern))
+>>>           return 0;
+>>> +    if (!filter_available_function(sym_name))
+>>> +        return 0;
+>>
+>> I think it'd be better to parse available_filter_functions directly
+>> for kprobe_multi instead of filtering out kallsyms entries
+>>
+>> we could add libbpf_available_filter_functions_parse function with
+>> similar callback to go over available_filter_functions file
+>>
+> 
+> Sure, if available_filter_functions not found, fallback to /proc/kallsyms.
+> 
 
-No, I haven't got crash before, Simply because BCC's kprobe_exists has
-implemented it so I added this, Yes, I also don't think 
-kprobes/blacklist will affect FPROBE, so I will remove it.
+Um.
 
-> 
->> +
->> +avail_filter:
->> +	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
->> +	if (!f)
->> +		return true;
->> +
->> +	while (true) {
->> +		ret = fscanf(f, "%s%*[^\n]\n", sym_name);
->> +		if (ret == EOF && feof(f))
->> +			break;
->> +		if (ret != 1)
->> +			break;
->> +		if (!strcmp(name, sym_name)) {
->> +			fclose(f);
->> +			return true;
->> +		}
->> +	}
->> +	fclose(f);
->> +	return false;
->> +}
->> +
->>   static int
->>   resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
->>   			const char *sym_name, void *ctx)
->> @@ -10431,6 +10475,9 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
->>   	if (!glob_match(sym_name, res->pattern))
->>   		return 0;
->>   
->> +	if (!filter_available_function(sym_name))
->> +		return 0;
-> 
-> I think it'd be better to parse available_filter_functions directly
-> for kprobe_multi instead of filtering out kallsyms entries
-> 
-> we could add libbpf_available_filter_functions_parse function with
-> similar callback to go over available_filter_functions file
-> 
+It is difficult to judge available_filter_functions directly, because we
+not only need the function name, but also obtain its address and other
+information, but we can indeed obtain the function set from
+available_filter_functions first, and then obtain the function address
+from /proc/kallsyms. which will be slightly faster than reading
+available_filter_functions later, because if this function does not
+exist in available_filter_functions, it will take a long time to read
+the entire file.
 
-Sure, if available_filter_functions not found, fallback to /proc/kallsyms.
+Of course, it would be better if the kernel directly provided an
+available_filter_functions -like file containing function address
+information.
 
 -- 
-BR, Jackie Liu
-
-> 
-> jirka
-> 
->> +
->>   	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
->>   				res->cnt + 1);
->>   	if (err)
->> -- 
->> 2.25.1
->>
->>
+Jackie Liu
 
