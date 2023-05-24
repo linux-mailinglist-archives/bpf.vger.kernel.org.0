@@ -1,202 +1,109 @@
-Return-Path: <bpf+bounces-1168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C38E770F863
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 16:12:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82E3A70F86C
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 16:16:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87EEB28134A
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 14:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495DB1C20849
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 14:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC0118C02;
-	Wed, 24 May 2023 14:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D70718C06;
+	Wed, 24 May 2023 14:16:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BD8A955;
-	Wed, 24 May 2023 14:12:43 +0000 (UTC)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D72132;
-	Wed, 24 May 2023 07:12:41 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2af2db78b38so13283271fa.3;
-        Wed, 24 May 2023 07:12:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D411918B0A
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 14:16:17 +0000 (UTC)
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD706119
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 07:16:16 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7748ca56133so4714739f.0
+        for <bpf@vger.kernel.org>; Wed, 24 May 2023 07:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684937559; x=1687529559;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1684937776; x=1687529776;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zxdZqkghugmvEgabqpcrCX2hZgP/Izy7qx2ozu1an0o=;
-        b=T6FMbg1D3XGCIeAalO6WtYFOwcMHHu5hXL1jkgfQmOrk+jwlIls/z4f5N7A9vGd7Ps
-         33IWs43b3zeyycmycUBqTPk2KYifqA++CpefHLM+H9uNr8o7ufayowPmDeQ42pyT4cIe
-         YMOJxb5xp5NTvRfW1iXn6mSVpcTED8pmho4qS7zobdaMd6iaXbNzDz9sF7U+fZn4P3R4
-         W7LYwCwgOKazNb3GZnjwSMpXq8DKycnENB7he7u+u2HhEMQzOh3vpIm/chpUS4h4Fba6
-         Fls4VOgH5ahMcK3poo/4bd44M50iV23CDzEYjK+Y8DF5Hrt/AJBXpwqZdicIcj+45HXJ
-         akpA==
+        bh=uiOLRIi3DHfMDnXvxWOJoB40jJavD8Yydt2FXOwoBZU=;
+        b=e2DKdPlooJHrLrUxwNjplTsZN6eiBscHOUxA7JOdrqIcKIDUT9VeoqzPO+QP0HPGOy
+         BWsNw6abVGVIDqoHPIo+nONiMbUGW9of3+8al9q6OR+jpuTk9E0y6vUI2C5kMzijiuOn
+         lfo3/swYsXRKJfsoE3TQkA6orMYgDAS9YL1T18bF9i2VXhQ7sEWakkPPyv6bxz767uo4
+         hJo5YfEWUICWt2QyVqVegDSssRRTlv53Po8UqgOqgeNNVIcU+Z2Lol4HszqsvQ5Jhw4f
+         OvuRuhHrCtah/TDofElxtUBE+KWrQoFJrqjHHW1533sh23Gp2mq/HaOa1hqRhmXQyO1M
+         SgLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684937559; x=1687529559;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1684937776; x=1687529776;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zxdZqkghugmvEgabqpcrCX2hZgP/Izy7qx2ozu1an0o=;
-        b=CnwM3hFA4BZz92cZeyHymE1pgYMIE9qwl53NJYHFi0oCtGPeGobuAFCg+DHT4ab/Iu
-         9sxAys3MPA8/QC+k4y9NcAxesQY0buVz8gQJhXqz1cn6qPHczpUmca03pq23imVWNHMf
-         ZGpUi7cSLkclvDL9ySaCOl2DdjN0zSZgbXTs46as4ybvv0okzXgJOugmU7XkbM5GTOqs
-         74SgMmL35Ix7x92G+Scuf1caheU1nmQnPqmSA2wOwLyEmnBVLydaqb31kF13sWIZN/pP
-         nhuo4vwMlvJ0xnmsWNLpZz/bOIdystWCH4ZTqSPq+lpx1pVxyie0DJK5ilIjOBQqiuNM
-         cAuA==
-X-Gm-Message-State: AC+VfDySuNZkhHa4yQbwu8Z5PPkQzuFKDahK/v8U1nNZsfsKDN2BVX5B
-	U1Ul9OxZ/fVGioa8N7K/IZqZxTxMD6nMHgvwe80=
-X-Google-Smtp-Source: ACHHUZ4qtA9cVLlvjeimyfTbPuY9KBtYMozj61VhTqp5I+/cnVfYagje79+tYAFt2iBi16UupOISe2wJZ8W52AYw6D0=
-X-Received: by 2002:a05:651c:14b:b0:2ac:8c95:d42b with SMTP id
- c11-20020a05651c014b00b002ac8c95d42bmr6128695ljd.4.1684937559179; Wed, 24 May
- 2023 07:12:39 -0700 (PDT)
+        bh=uiOLRIi3DHfMDnXvxWOJoB40jJavD8Yydt2FXOwoBZU=;
+        b=knWO2gNfB0RLSHeVYkZH1R2V3rQMb5XpHRYxPrBtmBuqpOQe/fB+A03pGEKsrP0/Ol
+         jFf/UtLWEYhktiLCU+EZKbeJBZg8acbkFqKYfTR40lmEKkOL7sZpmEKnG2saeuvtToXS
+         dWDV2hN2DTfNehZ2j+AlNqSeE8FM/Vsk4b2J1sTim0+0XSTJZgSwBP4CL5YZaGO0D2PM
+         fMFHKsk0KihlKDd4WsOo2CO3ea+O/DIGlBicrpJYn98ibFKU+9YdyFyjQ2fpt+jaki6B
+         LrhZXgA+8eOwk9rJAzMYlzITMrA7ARGMwCnXNyHR6JelMuUlr3UgBt7y493nlpB1NmgE
+         2xZg==
+X-Gm-Message-State: AC+VfDxEvG2K1RupCc+DHFLMlRaj10SOsWWo1VYRp5iAUHdrk9aBxmQS
+	SpUBVChVMRNdnpDKoX68GjfrZg==
+X-Google-Smtp-Source: ACHHUZ66QYZkD5ylIRgxYXw/SO2wyAzNV5OzKckqd/kMSgpVwCT6QKbIA50/dE+PvcxRh7gDiqgAXg==
+X-Received: by 2002:a6b:3b85:0:b0:774:8d63:449c with SMTP id i127-20020a6b3b85000000b007748d63449cmr1945566ioa.0.1684937776029;
+        Wed, 24 May 2023 07:16:16 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id k6-20020a02a706000000b0041cd0951a93sm16376jam.8.2023.05.24.07.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 May 2023 07:16:15 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-block@vger.kernel.org, Hengqi Chen <hengqi.chen@gmail.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+ yhs@meta.com, Francis Laniel <flaniel@linux.microsoft.com>
+In-Reply-To: <20230520084057.1467003-1-hengqi.chen@gmail.com>
+References: <20230520084057.1467003-1-hengqi.chen@gmail.com>
+Subject: Re: [PATCH] block: introduce block_io_start/block_io_done
+ tracepoints
+Message-Id: <168493777523.545508.7296231125702799266.b4-ty@kernel.dk>
+Date: Wed, 24 May 2023 08:16:15 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230518180545.159100-1-maciej.fijalkowski@intel.com>
- <20230518180545.159100-2-maciej.fijalkowski@intel.com> <ZGZ66D8x5Nbp2iYO@google.com>
- <CAADnVQJN6Wt2uiNu+wbmh-MPjxnYneA5gcRXF7Jg+3siACA9aA@mail.gmail.com>
- <SN7PR11MB66554BA6BE57F4CBB407B88290419@SN7PR11MB6655.namprd11.prod.outlook.com>
- <ZG3mkn3gvLmXDUZE@boxer>
-In-Reply-To: <ZG3mkn3gvLmXDUZE@boxer>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 24 May 2023 07:12:27 -0700
-Message-ID: <CAADnVQK4sRi3stAv31TB3iRZ=_096WUwW49Z49Zh8tNp2fmx0A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_desc for
- multi-buffer use
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>, Stanislav Fomichev <sdf@google.com>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-00303
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 24, 2023 at 3:27=E2=80=AFAM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Wed, May 24, 2023 at 10:56:21AM +0200, Sarkar, Tirthendu wrote:
-> > > -----Original Message-----
-> > > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > > Sent: Friday, May 19, 2023 10:44 PM
-> > > To: Stanislav Fomichev <sdf@google.com>
-> > > Cc: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>; bpf
-> > > <bpf@vger.kernel.org>; Alexei Starovoitov <ast@kernel.org>; Daniel
-> > > Borkmann <daniel@iogearbox.net>; Andrii Nakryiko <andrii@kernel.org>;
-> > > Network Development <netdev@vger.kernel.org>; Karlsson, Magnus
-> > > <magnus.karlsson@intel.com>; Sarkar, Tirthendu
-> > > <tirthendu.sarkar@intel.com>; Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org=
->
-> > > Subject: Re: [PATCH bpf-next 01/21] xsk: prepare 'options' in xdp_des=
-c for
-> > > multi-buffer use
-> > >
-> > > On Thu, May 18, 2023 at 12:22=E2=80=AFPM Stanislav Fomichev <sdf@goog=
-le.com>
-> > > wrote:
-> > > >
-> > > > On 05/18, Maciej Fijalkowski wrote:
-> > > > > From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> > > > >
-> > > > > Use the 'options' field in xdp_desc as a packet continuity marker=
-. Since
-> > > > > 'options' field was unused till now and was expected to be set to=
- 0, the
-> > > > > 'eop' descriptor will have it set to 0, while the non-eop descrip=
-tors
-> > > > > will have to set it to 1. This ensures legacy applications contin=
-ue to
-> > > > > work without needing any change for single-buffer packets.
-> > > > >
-> > > > > Add helper functions and extend xskq_prod_reserve_desc() to use t=
-he
-> > > > > 'options' field.
-> > > > >
-> > > > > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> > > > > ---
-> > > > >  include/uapi/linux/if_xdp.h | 16 ++++++++++++++++
-> > > > >  net/xdp/xsk.c               |  8 ++++----
-> > > > >  net/xdp/xsk_queue.h         | 12 +++++++++---
-> > > > >  3 files changed, 29 insertions(+), 7 deletions(-)
-> > > > >
-> > > > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_=
-xdp.h
-> > > > > index a78a8096f4ce..4acc3a9430f3 100644
-> > > > > --- a/include/uapi/linux/if_xdp.h
-> > > > > +++ b/include/uapi/linux/if_xdp.h
-> > > > > @@ -108,4 +108,20 @@ struct xdp_desc {
-> > > > >
-> > > > >  /* UMEM descriptor is __u64 */
-> > > > >
-> > > > > +/* Flag indicating that the packet continues with the buffer poi=
-nted out
-> > > by the
-> > > > > + * next frame in the ring. The end of the packet is signalled by=
- setting
-> > > this
-> > > > > + * bit to zero. For single buffer packets, every descriptor has =
-'options'
-> > > set
-> > > > > + * to 0 and this maintains backward compatibility.
-> > > > > + */
-> > > > > +#define XDP_PKT_CONTD (1 << 0)
-> > > > > +
-> > > > > +/* Maximum number of descriptors supported as frags for a packet=
-. So
-> > > the total
-> > > > > + * number of descriptors supported for a packet is
-> > > XSK_DESC_MAX_FRAGS + 1. The
-> > > > > + * max frags supported by skb is 16 for page sizes greater than =
-4K and 17
-> > > or
-> > > >
-> > > > This is now a config option CONFIG_MAX_SKB_FRAGS. Can we use it
-> > > > directly?
-> > >
-> > > Also it doesn't look right to expose kernel internal config in uapi
-> > > especially since XSK_DESC_MAX_FRAGS is not guaranteed to be 16.
-> >
-> > Ok, we have couple of options here:
-> >
-> > Option 1:  We will define XSK_DESC_MAX_FRAGS to 17 now. This will ensur=
-e AF_XDP
-> >  applications will work on any system without any change since the MAX_=
-SKB_FRAGS
-> >  is guaranteed to be at least 17.
-> >
-> > Option 2: Instead of defining a new macro, we say max frags supported i=
-s same as
-> >  MAX_SKB_FRAGS as configured in your system. So use 17 or less frags if=
- you want
-> >  your app to work everywhere but you can go larger if you control the s=
-ystem.
-> >
-> > Any suggestions ?
-> >
-> > Also Alexei could you please clarify what you meant by ".. since XSK_DE=
-SC_MAX_FRAGS
-> >  is not guaranteed to be 16." ?
->
-> Maybe it would be better to put this define onto patch 08 so people would
-> see how it is used and get a feeling of it? Although it has a description
-> nothing says about it in commit message.
->
-> FWIW i'm voting for option 2, but also Alexei's comment is a bit unclear
-> to me, would be nice to hear more about it.
 
-Meaning that uapi can only have fixed constants.
-We cannot put *_MAX_FRAGS there, since it's config dependent.
+On Sat, 20 May 2023 08:40:57 +0000, Hengqi Chen wrote:
+> Currently, several BCC ([0]) tools (biosnoop/biostacks/biotop) use
+> kprobes to blk_account_io_start/blk_account_io_done to implement
+> their functionalities. This is fragile because the target kernel
+> functions may be renamed ([1]) or inlined ([2]). So introduces two
+> new tracepoints for such use cases.
+> 
+>   [0]: https://github.com/iovisor/bcc
+>   [1]: https://github.com/iovisor/bcc/issues/3954
+>   [2]: https://github.com/iovisor/bcc/issues/4261
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] block: introduce block_io_start/block_io_done tracepoints
+      commit: 03fcc599757cd74dbcf1a5977f9c6497a6798587
+
+Best regards,
+-- 
+Jens Axboe
+
+
+
 
