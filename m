@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-1142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29BE70EA6C
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 02:46:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D115970EA6D
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 02:46:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8461B28105D
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 00:46:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DBB11C20A3F
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 00:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399AC15A3;
-	Wed, 24 May 2023 00:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE3315AD;
+	Wed, 24 May 2023 00:45:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF33D1380
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 00:45:50 +0000 (UTC)
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FED8CD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ACE15A9
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 00:45:52 +0000 (UTC)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F244BC2
 	for <bpf@vger.kernel.org>; Tue, 23 May 2023 17:45:49 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-64d2b42a8f9so135161b3a.3
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1ae875bf125so2308895ad.1
         for <bpf@vger.kernel.org>; Tue, 23 May 2023 17:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684889148; x=1687481148;
+        d=gmail.com; s=20221208; t=1684889149; x=1687481149;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ry/uH/EREVSo10di6T/Feeqcr6T7kTp7Sm3zbdct/g=;
-        b=VS9Z5N6fQ68qJb2Hgx3p4E4oa7I0XuTHwapN3NukgYmFcPOrS3ymD6Nd5R4qV7TZ+N
-         JvY/MKtag+AGwhiZlOdo+IpOWmZDukI4QLOivZk6X635cXWr1jTTkXDhogFQqvCnaAc3
-         Z+6qL++UlyVcHpf1D/+MZJHPzESaHLkz2puoaxAJDxrg5VyWic2MnUOXj5tPTVDxpm+E
-         YrD+ueLQz1XXCJm0/NA14JX0A+VH6MMEBzfZB5ETxtlxDM7TKcOqfWU/1i4MuM2jnOt1
-         q0uBjRzGeELKrsHZdMLRidPdEKKQupI6qqCaoZwuSTKIUFL+xWWINx1jbJDWPp7w4Hw2
-         OPVA==
+        bh=pkB7NMn7+G6/Bx7vVcPjh+4kdCysWSTZ0CvFjJTTf7M=;
+        b=jw6nE5EWqrtv7ZLvnRjLghUmeXmxBZo5F9ThpUcnkQbYG8fCm2Fgm5vuTLIb+XXjf0
+         VSCA6mr5FBGNGPsKT9hA449fdBuC1Ym3XLBpCsC3V4YuwJmYIqzhZ439gC+NbEg/IHew
+         VMRB67SI7vQOP3MDu2CIH9lYTQP3XNX8iYXrAMllvUknNvAee3sX1Vb8tSTu9XMoZrW3
+         pjBvm8UxgPfwNztF89v6dwUMr/LoVsp+QaskLmJyg1VBV1eL4J5zf6vV+9BH4uvrqZRU
+         kQQ1dp9Sw1PDWbcD3hlG9bRSTmnvPD9KVAJ6zMiYFmDbpFc9uKd5ageH91paRezcz6/4
+         ZdbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684889148; x=1687481148;
+        d=1e100.net; s=20221208; t=1684889149; x=1687481149;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8ry/uH/EREVSo10di6T/Feeqcr6T7kTp7Sm3zbdct/g=;
-        b=AchwIs7DlSYcCf8WJb7OIiKqZUDVPYmcYos2QovRt/D/Ik4mwb+v0gz4o3LV+Lgarf
-         debBhmVw5MhohBRhj1piWkJV2HXLk1crgwJHsc8GRFxNtgjDRyUilkRAlZ0Xqk5qsOhn
-         awK2thtSyC4lmVqFkuclh0Ao7iNEpCxqEUuhtR1NpluJLfRxg9yhaSaboGeV4iusJ/PR
-         VUCmxw0ZysMipq+xO+VLhtS1wH5JRwyHINkb2wzsZ56J65mjgYWM09zJnFGI8YIbkbPr
-         JAe/PJvliJLjyL6gMea0/E6JKXFsVIaJTPLK8+mDZS25zCsTR2oqIg1tnR+KIWzX19Qn
-         m6Ew==
-X-Gm-Message-State: AC+VfDxYTDneagmPLSel+kExYuDIKtPusJjMwH6qXUvVKHJ1jU2DEHFP
-	+xK0txR2HXf8FTfIznYHiHsNNfET9wgMgg==
-X-Google-Smtp-Source: ACHHUZ4QwN0t6heUhJyIQ+rtJalo/l5SWwEBrRgmT2TerkovCL5zMkm2ulodXCwWj7jbPeSW8E2nqw==
-X-Received: by 2002:a17:902:a589:b0:1ad:dd21:2691 with SMTP id az9-20020a170902a58900b001addd212691mr17180985plb.10.1684889148471;
-        Tue, 23 May 2023 17:45:48 -0700 (PDT)
+        bh=pkB7NMn7+G6/Bx7vVcPjh+4kdCysWSTZ0CvFjJTTf7M=;
+        b=Y2AMEL6f/hndWIndCwPooYAN+wa/+5fvdzmdiKasmjBkqSqVs8dVTf10pekryoWmbY
+         +ib54R+oAGtc+KYC2cX3alg0L25XUjC1Xo62xsxMuVY1uoI4RVKp9WEyjRDrpucAjJjk
+         muH6/iPGwSDphlR18+v1KBq9oyikPWil+qcCLzgXdN5OdCVwRAPzh8dKefFbkAI3PWJt
+         v5FAkV0bAH80ZxVrcMfO7LIjIUlLhXI6xd7eoeQ78VBMqKzJlD/grDxZebTLTmweUrwb
+         Jz6CZo97v7+ElZAdoR5of+YOSPEFXUUnKO0SFkrUOsbpRU+GW/t80SCc/WydPZAKuH+C
+         GAxQ==
+X-Gm-Message-State: AC+VfDyVM6vzU7ANz2nsXjgaCFGp3ff7Y8iYk6U3DutiPQDedHHRGfq/
+	S2YfIg8MHF7itIdXU3d1n4ZPzi3GLg+EnA==
+X-Google-Smtp-Source: ACHHUZ5GmcXAdX3LWeFBhvLiHACZSjGnWXD79urw/Z60l2Fs/3Rc6WPvVHK/th5xEjgybpshv3yrjw==
+X-Received: by 2002:a17:902:d504:b0:1af:d19a:a67b with SMTP id b4-20020a170902d50400b001afd19aa67bmr2742314plg.33.1684889149425;
+        Tue, 23 May 2023 17:45:49 -0700 (PDT)
 Received: from toolbox.. ([98.42.24.125])
-        by smtp.gmail.com with ESMTPSA id l15-20020a170902f68f00b001a673210cf4sm7399292plg.74.2023.05.23.17.45.47
+        by smtp.gmail.com with ESMTPSA id l15-20020a170902f68f00b001a673210cf4sm7399292plg.74.2023.05.23.17.45.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 23 May 2023 17:45:48 -0700 (PDT)
 From: JP Kobryn <inwardvessel@gmail.com>
@@ -62,9 +62,9 @@ To: bpf@vger.kernel.org,
 Cc: kernel-team@meta.com,
 	inwardvessel@gmail.com,
 	Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH v3 bpf-next 1/2] libbpf: add capability for resizing datasec maps
-Date: Tue, 23 May 2023 17:45:36 -0700
-Message-Id: <20230524004537.18614-2-inwardvessel@gmail.com>
+Subject: [PATCH v3 bpf-next 2/2] libbpf: selftests for resizing datasec maps
+Date: Tue, 23 May 2023 17:45:37 -0700
+Message-Id: <20230524004537.18614-3-inwardvessel@gmail.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230524004537.18614-1-inwardvessel@gmail.com>
 References: <20230524004537.18614-1-inwardvessel@gmail.com>
@@ -82,211 +82,330 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch updates bpf_map__set_value_size() so that if the given map is
-memory mapped, it will attempt to resize the mapped region. Initial
-contents of the mapped region are preserved. BTF is not required, but
-after the mapping is resized an attempt is made to adjust the associated
-BTF information if the following criteria is met:
- - BTF info is present
- - the map is a datasec
- - the final variable in the datasec is an array
-
-... the resulting BTF info will be updated so that the final array
-variable is associated with a new BTF array type sized to cover the
-requested size.
-
-Note that the initial resizing of the memory mapped region can succeed
-while the subsequent BTF adjustment can fail. In this case, BTF info is
-dropped from the map by clearing the key and value type.
+This patch adds test coverage for resizing datasec maps. The first two
+subtests resize the bss and custom data sections. In both cases, an
+initial array (of length one) has its element set to one. After resizing
+the rest of the array is filled with ones as well. A BPF program is then
+run to sum the respective arrays and back on the userspace side the sum
+is checked to be equal to the number of elements.
+The third subtest attempts to perform resizing under conditions that
+will result in either the resize failing or the BTF info being cleared.
 
 Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 Acked-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/lib/bpf/libbpf.c | 130 +++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h |  17 +++++-
- 2 files changed, 146 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/global_map_resize.c        | 236 ++++++++++++++++++
+ .../bpf/progs/test_global_map_resize.c        |  58 +++++
+ 2 files changed, 294 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_map_resize.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ad1ec893b41b..0bd0419e9f56 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1510,6 +1510,37 @@ static size_t bpf_map_mmap_sz(const struct bpf_map *map)
- 	return map_sz;
- }
- 
-+static size_t __bpf_map_mmap_sz(unsigned int value_sz, unsigned int max_entries)
-+{
-+	const long page_sz = sysconf(_SC_PAGE_SIZE);
-+	size_t map_sz;
+diff --git a/tools/testing/selftests/bpf/prog_tests/global_map_resize.c b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+new file mode 100644
+index 000000000000..58961789d0b3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+@@ -0,0 +1,236 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++#include <errno.h>
++#include <sys/syscall.h>
++#include <unistd.h>
 +
-+	map_sz = (size_t)roundup(value_sz, 8) * max_entries;
-+	map_sz = roundup(map_sz, page_sz);
-+	return map_sz;
++#include "test_global_map_resize.skel.h"
++#include "test_progs.h"
++
++static void run_prog_bss_array_sum(void)
++{
++	(void)syscall(__NR_getpid);
 +}
 +
-+static int bpf_map_mmap_resize(struct bpf_map *map, size_t old_sz, size_t new_sz)
++static void run_prog_data_array_sum(void)
 +{
-+	void *mmaped;
++	(void)syscall(__NR_getuid);
++}
 +
-+	if (!map->mmaped)
-+		return -EINVAL;
++static void global_map_resize_bss_subtest(void)
++{
++	int err;
++	struct test_global_map_resize *skel;
++	struct bpf_map *map;
++	const __u32 desired_sz = sizeof(skel->bss->sum) + (__u32)sysconf(_SC_PAGE_SIZE) * 2;
++	size_t array_len, actual_sz;
 +
-+	if (old_sz == new_sz)
++	skel = test_global_map_resize__open();
++	if (!ASSERT_OK_PTR(skel, "test_global_map_resize__open"))
++		goto teardown;
++
++	/* set some initial value before resizing.
++	 * it is expected this non-zero value will be preserved
++	 * while resizing.
++	 */
++	skel->bss->array[0] = 1;
++
++	/* resize map value and verify the new size */
++	map = skel->maps.bss;
++	err = bpf_map__set_value_size(map, desired_sz);
++	if (!ASSERT_OK(err, "bpf_map__set_value_size"))
++		goto teardown;
++	if (!ASSERT_EQ(bpf_map__value_size(map), desired_sz, "resize"))
++		goto teardown;
++
++	/* set the expected number of elements based on the resized array */
++	array_len = (desired_sz - sizeof(skel->bss->sum)) /
++		(__u32)sizeof(skel->bss->array[0]);
++	if (!ASSERT_GT(array_len, 1, "array_len"))
++		goto teardown;
++
++	skel->bss =
++		(struct test_global_map_resize__bss *)bpf_map__initial_value(
++				skel->maps.bss, &actual_sz);
++	if (!ASSERT_OK_PTR(skel->bss, "bpf_map__initial_value (ptr)"))
++		goto teardown;
++	if (!ASSERT_EQ(actual_sz, desired_sz, "bpf_map__initial_value (size)"))
++		goto teardown;
++
++	/* fill the newly resized array with ones,
++	 * skipping the first element which was previously set
++	 */
++	for (int i = 1; i < array_len; i++)
++		skel->bss->array[i] = 1;
++
++	/* set global const values before loading */
++	skel->rodata->pid = getpid();
++	skel->rodata->bss_array_len = array_len;
++	skel->rodata->data_array_len = 1;
++
++	err = test_global_map_resize__load(skel);
++	if (!ASSERT_OK(err, "test_global_map_resize__load"))
++		goto teardown;
++	err = test_global_map_resize__attach(skel);
++	if (!ASSERT_OK(err, "test_global_map_resize__attach"))
++		goto teardown;
++
++	/* run the bpf program which will sum the contents of the array.
++	 * since the array was filled with ones,verify the sum equals array_len
++	 */
++	run_prog_bss_array_sum();
++	if (!ASSERT_EQ(skel->bss->sum, array_len, "sum"))
++		goto teardown;
++
++teardown:
++	test_global_map_resize__destroy(skel);
++}
++
++static void global_map_resize_data_subtest(void)
++{
++	int err;
++	struct test_global_map_resize *skel;
++	struct bpf_map *map;
++	const __u32 desired_sz = (__u32)sysconf(_SC_PAGE_SIZE) * 2;
++	size_t array_len, actual_sz;
++
++	skel = test_global_map_resize__open();
++	if (!ASSERT_OK_PTR(skel, "test_global_map_resize__open"))
++		goto teardown;
++
++	/* set some initial value before resizing.
++	 * it is expected this non-zero value will be preserved
++	 * while resizing.
++	 */
++	skel->data_custom->my_array[0] = 1;
++
++	/* resize map value and verify the new size */
++	map = skel->maps.data_custom;
++	err = bpf_map__set_value_size(map, desired_sz);
++	if (!ASSERT_OK(err, "bpf_map__set_value_size"))
++		goto teardown;
++	if (!ASSERT_EQ(bpf_map__value_size(map), desired_sz, "resize"))
++		goto teardown;
++
++	/* set the expected number of elements based on the resized array */
++	array_len = (desired_sz - sizeof(skel->bss->sum)) /
++		(__u32)sizeof(skel->data_custom->my_array[0]);
++	if (!ASSERT_GT(array_len, 1, "array_len"))
++		goto teardown;
++
++	skel->data_custom =
++		(struct test_global_map_resize__data_custom *)bpf_map__initial_value(
++				skel->maps.data_custom, &actual_sz);
++	if (!ASSERT_OK_PTR(skel->data_custom, "bpf_map__initial_value (ptr)"))
++		goto teardown;
++	if (!ASSERT_EQ(actual_sz, desired_sz, "bpf_map__initial_value (size)"))
++		goto teardown;
++
++	/* fill the newly resized array with ones,
++	 * skipping the first element which was previously set
++	 */
++	for (int i = 1; i < array_len; i++)
++		skel->data_custom->my_array[i] = 1;
++
++	/* set global const values before loading */
++	skel->rodata->pid = getpid();
++	skel->rodata->bss_array_len = 1;
++	skel->rodata->data_array_len = array_len;
++
++	err = test_global_map_resize__load(skel);
++	if (!ASSERT_OK(err, "test_global_map_resize__load"))
++		goto teardown;
++	err = test_global_map_resize__attach(skel);
++	if (!ASSERT_OK(err, "test_global_map_resize__attach"))
++		goto teardown;
++
++	/* run the bpf program which will sum the contents of the array.
++	 * since the array was filled with ones,verify the sum equals array_len
++	 */
++	run_prog_data_array_sum();
++	if (!ASSERT_EQ(skel->bss->sum, array_len, "sum"))
++		goto teardown;
++
++teardown:
++	test_global_map_resize__destroy(skel);
++}
++
++static void global_map_resize_invalid_subtest(void)
++{
++	int err;
++	struct test_global_map_resize *skel;
++	struct bpf_map *map;
++	__u32 element_sz, desired_sz;
++
++	skel = test_global_map_resize__open();
++	if (!ASSERT_OK_PTR(skel, "test_global_map_resize__open"))
++		return;
++
++	 /* attempt to resize a global datasec map to size
++	  * which does NOT align with array
++	  */
++	map = skel->maps.data_custom;
++	if (!ASSERT_NEQ(bpf_map__btf_value_type_id(map), 0, ".data.custom initial btf"))
++		goto teardown;
++	/* set desired size a fraction of element size beyond an aligned size */
++	element_sz = (__u32)sizeof(skel->data_custom->my_array[0]);
++	desired_sz = element_sz + element_sz / 2;
++	/* confirm desired size does NOT align with array */
++	if (!ASSERT_NEQ(desired_sz % element_sz, 0, "my_array alignment"))
++		goto teardown;
++	err = bpf_map__set_value_size(map, desired_sz);
++	/* confirm resize is OK but BTF info is cleared */
++	if (!ASSERT_OK(err, ".data.custom bpf_map__set_value_size") ||
++		!ASSERT_EQ(bpf_map__btf_key_type_id(map), 0, ".data.custom clear btf key") ||
++		!ASSERT_EQ(bpf_map__btf_value_type_id(map), 0, ".data.custom clear btf val"))
++		goto teardown;
++
++	/* attempt to resize a global datasec map
++	 * whose only var is NOT an array
++	 */
++	map = skel->maps.data_non_array;
++	if (!ASSERT_NEQ(bpf_map__btf_value_type_id(map), 0, ".data.non_array initial btf"))
++		goto teardown;
++	/* set desired size to arbitrary value */
++	desired_sz = 1024;
++	err = bpf_map__set_value_size(map, desired_sz);
++	/* confirm resize is OK but BTF info is cleared */
++	if (!ASSERT_OK(err, ".data.non_array bpf_map__set_value_size") ||
++		!ASSERT_EQ(bpf_map__btf_key_type_id(map), 0, ".data.non_array clear btf key") ||
++		!ASSERT_EQ(bpf_map__btf_value_type_id(map), 0, ".data.non_array clear btf val"))
++		goto teardown;
++
++	/* attempt to resize a global datasec map
++	 * whose last var is NOT an array
++	 */
++	map = skel->maps.data_array_not_last;
++	if (!ASSERT_NEQ(bpf_map__btf_value_type_id(map), 0, ".data.array_not_last initial btf"))
++		goto teardown;
++	/* set desired size to a multiple of element size */
++	element_sz = (__u32)sizeof(skel->data_array_not_last->my_array_first[0]);
++	desired_sz = element_sz * 8;
++	/* confirm desired size aligns with array */
++	if (!ASSERT_EQ(desired_sz % element_sz, 0, "my_array_first alignment"))
++		goto teardown;
++	err = bpf_map__set_value_size(map, desired_sz);
++	/* confirm resize is OK but BTF info is cleared */
++	if (!ASSERT_OK(err, ".data.array_not_last bpf_map__set_value_size") ||
++		!ASSERT_EQ(bpf_map__btf_key_type_id(map), 0, ".data.array_not_last clear btf key") ||
++		!ASSERT_EQ(bpf_map__btf_value_type_id(map), 0, ".data.array_not_last clear btf val"))
++		goto teardown;
++
++teardown:
++	test_global_map_resize__destroy(skel);
++}
++
++void test_global_map_resize(void)
++{
++	if (test__start_subtest("global_map_resize_bss"))
++		global_map_resize_bss_subtest();
++
++	if (test__start_subtest("global_map_resize_data"))
++		global_map_resize_data_subtest();
++
++	if (test__start_subtest("global_map_resize_invalid"))
++		global_map_resize_invalid_subtest();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_global_map_resize.c b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+new file mode 100644
+index 000000000000..2588f2384246
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_global_map_resize.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") = "GPL";
++
++/* rodata section */
++const volatile pid_t pid;
++const volatile size_t bss_array_len;
++const volatile size_t data_array_len;
++
++/* bss section */
++int sum = 0;
++int array[1];
++
++/* custom data secton */
++int my_array[1] SEC(".data.custom");
++
++/* custom data section which should NOT be resizable,
++ * since it contains a single var which is not an array
++ */
++int my_int SEC(".data.non_array");
++
++/* custom data section which should NOT be resizable,
++ * since its last var is not an array
++ */
++int my_array_first[1] SEC(".data.array_not_last");
++int my_int_last SEC(".data.array_not_last");
++
++SEC("tp/syscalls/sys_enter_getpid")
++int bss_array_sum(void *ctx)
++{
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
 +		return 0;
 +
-+	mmaped = mmap(NULL, new_sz, PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+	if (mmaped == MAP_FAILED)
-+		return -errno;
++	sum = 0;
 +
-+	memcpy(mmaped, map->mmaped, min(old_sz, new_sz));
-+	munmap(map->mmaped, old_sz);
-+	map->mmaped = mmaped;
++	for (size_t i = 0; i < bss_array_len; ++i)
++		sum += array[i];
++
 +	return 0;
 +}
 +
- static char *internal_map_name(struct bpf_object *obj, const char *real_name)
- {
- 	char map_name[BPF_OBJ_NAME_LEN], *p;
-@@ -9412,10 +9443,109 @@ __u32 bpf_map__value_size(const struct bpf_map *map)
- 	return map->def.value_size;
- }
- 
-+static int map_btf_datasec_resize(struct bpf_map *map, __u32 size)
++SEC("tp/syscalls/sys_enter_getuid")
++int data_array_sum(void *ctx)
 +{
-+	struct btf *btf;
-+	struct btf_type *datasec_type, *var_type;
-+	struct btf_var_secinfo *var;
-+	const struct btf_type *array_type;
-+	const struct btf_array *array;
-+	int vlen;
-+	__u32 nr_elements, new_array_id;
-+	__s64 element_sz;
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
 +
-+	/* check btf existence */
-+	btf = bpf_object__btf(map->obj);
-+	if (!btf)
-+		return -ENOENT;
++	sum = 0;
 +
-+	/* verify map is datasec */
-+	datasec_type = btf_type_by_id(btf, bpf_map__btf_value_type_id(map));
-+	if (!btf_is_datasec(datasec_type)) {
-+		pr_warn("map '%s': cannot be resized, map value type is not a datasec\n",
-+				bpf_map__name(map));
-+		return -EINVAL;
-+	}
-+
-+	/* verify datasec has at least one var */
-+	vlen = btf_vlen(datasec_type);
-+	if (vlen == 0) {
-+		pr_warn("map '%s': cannot be resized, map value datasec is empty\n",
-+				bpf_map__name(map));
-+		return -EINVAL;
-+	}
-+
-+	/* verify last var in the datasec is an array */
-+	var = &btf_var_secinfos(datasec_type)[vlen - 1];
-+	var_type = btf_type_by_id(btf, var->type);
-+	array_type = skip_mods_and_typedefs(btf, var_type->type, NULL);
-+	if (!btf_is_array(array_type)) {
-+		pr_warn("map '%s': cannot be resized, last var must be array\n",
-+				bpf_map__name(map));
-+		return -EINVAL;
-+	}
-+
-+	/* verify request size aligns with array */
-+	array = btf_array(array_type);
-+	element_sz = btf__resolve_size(btf, array->type);
-+	if (element_sz == 0)
-+		return -EINVAL;
-+	if ((size - var->offset) % element_sz != 0) {
-+		pr_warn("map '%s': cannot be resized, requested size does not align\n",
-+				bpf_map__name(map));
-+		return -EINVAL;
-+	}
-+
-+	/* create a new array based on the existing array,
-+	 * but with new length
-+	 */
-+	nr_elements = (size - var->offset) / element_sz;
-+	new_array_id = btf__add_array(btf, array->index_type, array->type,
-+			nr_elements);
-+	if (new_array_id < 0)
-+		return new_array_id;
-+
-+	/* adding a new btf type invalidates existing pointers to btf objects,
-+	 * so refresh pointers before proceeding
-+	 */
-+	datasec_type = btf_type_by_id(btf, map->btf_value_type_id);
-+	var = &btf_var_secinfos(datasec_type)[vlen - 1];
-+	var_type = btf_type_by_id(btf, var->type);
-+
-+	/* finally update btf info */
-+	datasec_type->size = size;
-+	var->size = size - var->offset;
-+	var_type->type = new_array_id;
++	for (size_t i = 0; i < data_array_len; ++i)
++		sum += my_array[i];
 +
 +	return 0;
 +}
-+
- int bpf_map__set_value_size(struct bpf_map *map, __u32 size)
- {
- 	if (map->fd >= 0)
- 		return libbpf_err(-EBUSY);
-+
-+	if (map->mmaped) {
-+		int err;
-+		size_t mmap_old_sz, mmap_new_sz;
-+
-+		mmap_old_sz = bpf_map_mmap_sz(map);
-+		mmap_new_sz = __bpf_map_mmap_sz(size, map->def.max_entries);
-+		err = bpf_map_mmap_resize(map, mmap_old_sz, mmap_new_sz);
-+		if (err) {
-+			pr_warn("map '%s': failed to resize memory mapped region\n",
-+					bpf_map__name(map));
-+			return err;
-+		}
-+		err = map_btf_datasec_resize(map, size);
-+		if (err && err != -ENOENT) {
-+			pr_warn("map '%s': failed to adjust btf for resized map, clearing btf key/value type info\n",
-+					bpf_map__name(map));
-+			map->btf_value_type_id = 0;
-+			map->btf_key_type_id = 0;
-+		}
-+	}
-+
- 	map->def.value_size = size;
- 	return 0;
- }
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 0b7362397ea3..137459803803 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -869,8 +869,23 @@ LIBBPF_API int bpf_map__set_numa_node(struct bpf_map *map, __u32 numa_node);
- /* get/set map key size */
- LIBBPF_API __u32 bpf_map__key_size(const struct bpf_map *map);
- LIBBPF_API int bpf_map__set_key_size(struct bpf_map *map, __u32 size);
--/* get/set map value size */
-+/* get map value size */
- LIBBPF_API __u32 bpf_map__value_size(const struct bpf_map *map);
-+/**
-+ * @brief **bpf_map__set_value_size()** sets map value size.
-+ *
-+ * There is a special case for maps with associated memory-mapped regions, like
-+ * the global data section maps (bss, data, rodata). When this function is used
-+ * on such a map, the mapped region is resized. Afterward, an attempt is made to
-+ * adjust the corresponding BTF info. This attempt is best-effort and can only
-+ * succeed if the last variable of the data section map is an array. The array
-+ * BTF type is replaced by a new BTF array type with a different length.
-+ * Because BTF info is modified to do this, pointer invalidation occurs. Any
-+ * previously existing pointers returned from bpf_map__initial_value() or
-+ * skeleton pointers must be reinitialized.
-+ * @param map the BPF map instance
-+ * @return 0, on success; negative error, otherwise
-+ */
- LIBBPF_API int bpf_map__set_value_size(struct bpf_map *map, __u32 size);
- /* get map key/value BTF type IDs */
- LIBBPF_API __u32 bpf_map__btf_key_type_id(const struct bpf_map *map);
 -- 
 2.40.0
 
