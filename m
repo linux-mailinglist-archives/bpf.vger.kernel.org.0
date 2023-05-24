@@ -1,80 +1,69 @@
-Return-Path: <bpf+bounces-1140-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1141-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD06870EA2E
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 02:20:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F0870EA6B
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 02:45:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9780D281147
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 00:20:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D0101C20901
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 00:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3945115B4;
-	Wed, 24 May 2023 00:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66CE1363;
+	Wed, 24 May 2023 00:45:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0590915AD
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 00:19:13 +0000 (UTC)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC3BB5;
-	Tue, 23 May 2023 17:19:12 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4f3a99b9177so158674e87.1;
-        Tue, 23 May 2023 17:19:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D5FED8
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 00:45:49 +0000 (UTC)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147A7C2
+	for <bpf@vger.kernel.org>; Tue, 23 May 2023 17:45:48 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-64d5f65a2f7so131646b3a.1
+        for <bpf@vger.kernel.org>; Tue, 23 May 2023 17:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684887550; x=1687479550;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bX78X+TocVn/zKt9C0hLkh5a3KlpHhV1wjnJY0oQNcU=;
-        b=VcMTV56TxhaDiAy+XfQOVGaVC2ecPB089tEVv5Webj7fvrCQdLf1WX2+taZx0GDYDO
-         5D/EDZ5kzRM/fqbl4pkO3mkedsvzYNa9JLrOxKMzsV/DkHq1whsgyYdsSnrpdmojJEH0
-         mJJAo/QV/yvLdZD1tR0p6TyF28+dLV4VvsLbiFzaulc6I+BKAR8tDQ+k6/lyfDXrbrru
-         5a8zXRASziyBiXUf7IjwKe3BZmZk96/mgLVDiKSM1G19uOgYmz1bn0j6nRpFJ7efRXYx
-         T23P80mebfcz62vUMvVDy1XG9K/EoPo9m/9WR4OvIRaW4MMc/HoN94SPR0QOLCqposXv
-         X2Kw==
+        d=gmail.com; s=20221208; t=1684889147; x=1687481147;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U5Z5TeaJU93XHJ6xe6i4wvrNfi1dcH/yZx90Tdl1QF0=;
+        b=fXWnCCk7Yv7i6iqPEhLz9BC6cJPlfp3F9nZzxTWG6SxkLuxf34E9Yk9qXjVVREKW8u
+         cYVyOu1iSL9jmjQp56P6udpfJmnbRAF0pHbbVlfaN2kYbmORZwSHQdv+4xx1CSgkzYrk
+         wBKYuteA5acT7FkdHnlF5jek7yxY5S5HlPnv5rJ5MIHU2dgRV07V2mcb3747jhw06wU1
+         gHBm2j/duhvb1LWoiCZAv202gtriEZxRmm9hWzaEM2Y4xHjjmCq0LGC0YIuXu3ZdhIvP
+         Tm0plqWYTWgZDYlDKx73/XOnfQXR9Zsw9wgiYe8p0uW4D0aOiEHkW/D1p+aIzRJuHf13
+         cC/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684887550; x=1687479550;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bX78X+TocVn/zKt9C0hLkh5a3KlpHhV1wjnJY0oQNcU=;
-        b=MCG5s5UCHizdsVmSryyW7T+c2Q9BmdVjELt95C5LJS/SfXb9WRdIhbKi4eM2KHSZrr
-         DitvTF8nUgh1W4Dppru/H/JHC3m8ZkO30EtiXe3iMlGqK6Jeb1uBwsJtIpkMuxUExj26
-         N/AlD2ETwN4dPugn6GjqslMw1WxhwFw1r7kCyC/29i8/6v5G7WSEfR/xdQwWxWbZ+DOY
-         +3HTVWDaWsuK6LQHsnMExXXZHLq4PWTlxvi3RkX0ib7Tp5tw6rwo2mlFMm6JoGgdGkns
-         oqG6CkfCtnz5i+uKv0emstDOB3nHD2gHkqMinWXXd6awQ94hliYW7EqzM/gpIOoly6Da
-         RfIg==
-X-Gm-Message-State: AC+VfDxL0nx0vqii7i3CYhoMJ1EglmB5180ZPKUjCSkOJ1kDrfScoQlk
-	D/K7/SzU6VVgZ/R1lGHRWO07vRFyN/4P8A==
-X-Google-Smtp-Source: ACHHUZ6LuhtMEw/3uPPEIKlbWU4HOVK9LhHK8L1EbRnC5vt5v0bDC2nF2DtLG9o+A9kghwkFbfkMyA==
-X-Received: by 2002:a05:6512:3902:b0:4ef:ef11:e29d with SMTP id a2-20020a056512390200b004efef11e29dmr4226394lfu.68.1684887550051;
-        Tue, 23 May 2023 17:19:10 -0700 (PDT)
-Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id w7-20020a19c507000000b004f138ab93c7sm1487305lfe.264.2023.05.23.17.19.08
+        d=1e100.net; s=20221208; t=1684889147; x=1687481147;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U5Z5TeaJU93XHJ6xe6i4wvrNfi1dcH/yZx90Tdl1QF0=;
+        b=HtdPbBCj7deuBrpEkxMx+yMPlWYBfJwSZaYcc+2CZ5CELl5mpcNYxFLkMD2cY6W9YQ
+         ndnf5vKilm63pbtaaZ6P0zxxO1Sea/mwWXeyD77NP61mucmbvcF8gEWORI9H4cUC//Yt
+         xi3kdBiGLb9glvGXuMYS5ChP0pPKO4cSvp21ufGEIvqCSNrU0GtLQ48530Db1EpuW7GE
+         +HzL2qL8nEn3YcAOADLXaxkDCtkJsuPwtOIv8d31sl55Z/8SprJ758haYNWS6Veu5M7I
+         z24h5J5Q0iYjyEVmXRZ6dLjgGuF3Mz210IcgDLU1KexGrehA+4JPyvfwYXLoNzGWw/+/
+         8YfA==
+X-Gm-Message-State: AC+VfDxhedZcJYWIOBU79CsoyNAmCtdIyUoTTTyZlvjWnUy5+9/zNPTz
+	uFBm4jgjM9+ptQVRC0uI9ukR+iCjqrHk+Q==
+X-Google-Smtp-Source: ACHHUZ5h6k9A+gkZyKYlIfx9qaTOUTYNKV4ovdDC/m+tSJVmgYmUbryDFlQnSlUTxw3d64Hob39msg==
+X-Received: by 2002:a17:902:d2ca:b0:1ac:5717:fd2 with SMTP id n10-20020a170902d2ca00b001ac57170fd2mr18223784plc.47.1684889147460;
+        Tue, 23 May 2023 17:45:47 -0700 (PDT)
+Received: from toolbox.. ([98.42.24.125])
+        by smtp.gmail.com with ESMTPSA id l15-20020a170902f68f00b001a673210cf4sm7399292plg.74.2023.05.23.17.45.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 17:19:09 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: dwarves@vger.kernel.org,
-	arnaldo.melo@gmail.com
-Cc: bpf@vger.kernel.org,
-	kernel-team@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	yhs@fb.com,
-	jemarch@gnu.org,
-	david.faust@oracle.com,
-	mykolal@fb.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH v3 dwarves 6/6] btf_encoder: skip type tags for VAR entry types
-Date: Wed, 24 May 2023 03:18:25 +0300
-Message-Id: <20230524001825.2688661-7-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230524001825.2688661-1-eddyz87@gmail.com>
-References: <20230524001825.2688661-1-eddyz87@gmail.com>
+        Tue, 23 May 2023 17:45:46 -0700 (PDT)
+From: JP Kobryn <inwardvessel@gmail.com>
+To: bpf@vger.kernel.org,
+	andrii@kernel.org
+Cc: kernel-team@meta.com,
+	inwardvessel@gmail.com
+Subject: [PATCH v3 bpf-next 0/2] libbpf: capability for resizing datasec maps
+Date: Tue, 23 May 2023 17:45:35 -0700
+Message-Id: <20230524004537.18614-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.40.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,83 +71,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Kernel does not expect VAR entries to have types starting from
-BTF_TYPE_TAG. Specifically, the code like below will be rejected:
+Due to the way the datasec maps like bss, data, rodata are memory
+mapped, they cannot be resized with bpf_map__set_value_size() like
+non-datasec maps can. This series offers a way to allow the resizing of
+datasec maps, by having the mapped regions resized as needed and also
+adjusting associated BTF info if possible.
 
-  struct rq __percpu runqueues;
-  ...
-  rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-  ... rq->cpu ...     // rq type is now PTR_TO_BTF_ID
+The thought behind this is to allow for use cases where a given datasec
+needs to scale to for example the number of CPU's present. A bpf program
+can have a global array in a data section with an initial length and
+before loading the bpf program, the array length could be extended to
+match the CPU count. The selftests included in this series perform this
+scaling to an arbitrary value to demonstrate how it can work.
 
-The access to 'rq->cpu' would be checked by a call to
-kernel/bpf/btf.c:btf_struct_access() which invokes btf_struct_walk(),
-using rq's type as a starting point. The btf_struct_walk() wants the
-first type in a chain to be STRUCT or UNION and does not skip modifiers.
+JP Kobryn (2):
+  add capability for resizing datasec maps
+  selftests for resizing datasec maps
 
-Before introduction of support for 'btf:type_tag' such situations were
-not possible, as TYPE_TAG entries were always preceded by PTR entries.
+ tools/lib/bpf/libbpf.c                        | 130 ++++++++++
+ tools/lib/bpf/libbpf.h                        |  17 +-
+ .../bpf/prog_tests/global_map_resize.c        | 236 ++++++++++++++++++
+ .../bpf/progs/test_global_map_resize.c        |  58 +++++
+ 4 files changed, 440 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/global_map_resize.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_map_resize.c
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- btf_encoder.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 65f6e71..300d9c2 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -1498,6 +1498,19 @@ static bool ftype__has_arg_names(const struct ftype *ftype)
- 	return true;
- }
- 
-+static type_id_t skip_btf_type_tags(struct cu *cu, type_id_t id)
-+{
-+	for (;;) {
-+		struct tag *tag = cu__type(cu, id);
-+
-+		if (tag == NULL || tag->tag != DW_TAG_LLVM_annotation)
-+			break;
-+		id = tag->type;
-+	}
-+
-+	return id;
-+}
-+
- static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
- {
- 	struct cu *cu = encoder->cu;
-@@ -1583,7 +1596,22 @@ static int btf_encoder__encode_cu_variables(struct btf_encoder *encoder)
- 			continue;
- 		}
- 
--		type = var->ip.tag.type + encoder->type_id_off;
-+		/* Kernel does not expect VAR entries to have types starting from BTF_TYPE_TAG.
-+		 * Specifically, the code like below will be rejected:
-+		 *
-+		 *   struct rq __percpu runqueues;
-+		 *   ...
-+		 *   rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-+		 *   ... rq->cpu ...     // rq type is now PTR_TO_BTF_ID
-+		 *
-+		 * The access to 'rq->cpu' would be checked by a call to
-+		 * kernel/bpf/btf.c:btf_struct_access() which invokes btf_struct_walk(),
-+		 * using rq's type as a starting point. The btf_struct_walk() wants the
-+		 * first type in a chain to be STRUCT or UNION and does not skip modifiers.
-+		 *
-+		 * Thus, call skip_btf_type_tags() here.
-+		 */
-+		type = skip_btf_type_tags(cu, var->ip.tag.type) + encoder->type_id_off;
- 		linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED : BTF_VAR_STATIC;
- 
- 		if (encoder->verbose) {
 -- 
-2.40.1
+2.40.0
 
 
