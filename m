@@ -1,106 +1,175 @@
-Return-Path: <bpf+bounces-1176-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1177-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF12870FC29
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 19:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87DE770FC34
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 19:09:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 797C62813EC
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 17:05:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 398CD280CD8
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 17:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8476F19E72;
-	Wed, 24 May 2023 17:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB381B8F5;
+	Wed, 24 May 2023 17:08:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514F56087C
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 17:04:57 +0000 (UTC)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05A5FC
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 10:04:55 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-513fd8cc029so2536715a12.3
-        for <bpf@vger.kernel.org>; Wed, 24 May 2023 10:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1684947894; x=1687539894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OX7TwOTtxI9078iXGRe1v6WXZvE2EIyaYMEVVHOjuhQ=;
-        b=QB74L0/jxXd7y6nW3o9xkHAJIGRnmghtu93J4jDvwNvITeAIoQ1Kd1rRdiYr0EsKlO
-         +aIzASoolJ7V5hvYVZHGh+d1/19LfKg+NewxKOmVGDjN3vIpHFdFVLQt1Qluu2Rpm/3+
-         aK0A+P4xTNZfXzKSq4eTMQ/cB3Tjxhif9bPIY00bqC8CLJS6c8BmMFPgpsLjOCk6gm3S
-         YbtFgwOiKDh7RgQ5jbPAbs1P6nZNf4zntXtiORXMtYxAbsEKieiIoAZibgKcmbS2wjv1
-         4zhipa+jS2pTh/jdOn/KCsGN/3lPwStUz3dDOJwPkipAeFah+0fTPiKkrFDGPvm/BHyl
-         7Zsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684947894; x=1687539894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OX7TwOTtxI9078iXGRe1v6WXZvE2EIyaYMEVVHOjuhQ=;
-        b=Ldq5PoJ1Mo8dGqm4t4ODpGb5LNfkE+3tiQgc5Ix7AcnI+m+Whoi8ax1mD9Zt9PP0aM
-         cUCEKklZGZG19B46cT4vgZmB6PSnMgI3K/5ygvUFUW+UlN5+F8qnLB/9wl8y9mCFWJ5Z
-         hB3qBKGsWUQ86uCm8NVqOIxgMYacQ/5OJkBoWdl8PIUMqEPqQaylV9+Te77NVd4sZ3Qf
-         WgUeqWl1dQtD2VLuGte4auzbQoUSHuIMCBXnN7e4Ax6QqQLvMey5NBnHFubT9E/Pp4kG
-         tA8AQZP9T24Nks6axh8ob7FxLawEjzN0lBiAmra1xLlga2o2oBUUraY5/yxeBax/t9pS
-         Ioug==
-X-Gm-Message-State: AC+VfDz1sd+Pnybq5txbop64b04BcUBqD5gahmgDWY/3k7KQg4PQU6nO
-	RNIMMfV0vInE+xp4OantRe+6/kCKcQHFmleArO2GGQ==
-X-Google-Smtp-Source: ACHHUZ4aecbcum+oSXCnZ+4TJGsowymNKbx5UWCjquYoSEqmkz10v6iOSfhb3hZe59JPC3irVPSk8/T05oYKdYrnw0g=
-X-Received: by 2002:a17:907:8a10:b0:96a:d916:cb2f with SMTP id
- sc16-20020a1709078a1000b0096ad916cb2fmr19835435ejc.36.1684947894084; Wed, 24
- May 2023 10:04:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AC31B8E2;
+	Wed, 24 May 2023 17:08:50 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F190912B;
+	Wed, 24 May 2023 10:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=D4cj4ZZdyOT5S3r7/Z3040XTriwjqTJ7Iz/MbCrv6KY=; b=kEyS4GQ5EB02BilRFh5sYkfo9G
+	nUc+0/nkt8AGMdZxzRFR+Hh9aBSvcgaXWNmcRH3Soxef4Bmsee5/5Kwb/iNpaSRuUnBgjKYHShW6o
+	I1VIosvWffSCs9DCVqd5bF5Kpco9jEnQs/9QhZ0maKM4AlRx+oeBbcqPCO1qK7tubLXGguHTeJXiA
+	tZdkBSbcSK8uu4lVeL+RETTro/mJSwLrZ+plYr1E70HRWMCsm7pNixgofJHkkNcQOsaT/PB9Zokur
+	jFt+NAHswMcMty9qb6tcFPt3ccwj6SsIA+uTbKitB3E5TeSEG389URJfZO3/9GyHgFl3N5P/pW4eP
+	zpqlnWkg==;
+Received: from 28.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.28] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q1rya-000D5M-Ei; Wed, 24 May 2023 19:08:40 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2023-05-24
+Date: Wed, 24 May 2023 19:08:39 +0200
+Message-Id: <20230524170839.13905-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230320005258.1428043-1-sashal@kernel.org> <20230320005258.1428043-8-sashal@kernel.org>
- <CAN+4W8g6AcQQWe7rrBVOFYoqeQA-1VbUP_W7DPS3q0k-czOLfg@mail.gmail.com>
- <ZBiAPngOtzSwDhFz@kroah.com> <CAN+4W8jAyJTdFL=tgp3wCpYAjGOs5ggo6vyOg8PbaW+tJP8TKA@mail.gmail.com>
- <CAN+4W8j5qe6p3YV90g-E0VhV7AmYyAvt0z50dfDSombbGghkww@mail.gmail.com>
- <2023041100-oblong-enamel-5893@gregkh> <CAN+4W8hmSgbb-wO4da4A=6B4y0oSjvUTTVia_0PpUXShP4NX4Q@mail.gmail.com>
- <2023052435-xbox-dislike-0ab2@gregkh>
-In-Reply-To: <2023052435-xbox-dislike-0ab2@gregkh>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 24 May 2023 18:04:43 +0100
-Message-ID: <CAN+4W8iMcwwVjmSekZ9txzZNxOZ0x98nBXo4cEoTU9G2zLe8HA@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.2 08/30] selftests/bpf: check that modifier
- resolves after pointer
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Martin KaFai Lau <martin.lau@kernel.org>, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, shuah@kernel.org, yhs@fb.com, eddyz87@gmail.com, 
-	sdf@google.com, error27@gmail.com, iii@linux.ibm.com, memxor@gmail.com, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26917/Wed May 24 09:28:43 2023)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 24, 2023 at 5:04=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> Great, any specific commits that fix this issue would be appreciated to
-> be pointed at so we can apply them.
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-The problem was introduced by commit f4b8c0710ab6 ("selftests/bpf: Add
-verifier test for release_reference()") in your tree. Seems like
-fixup_map_ringbuf was introduced in upstream commit 4237e9f4a962
-("selftests/bpf: Add verifier test for PTR_TO_MEM spill") but that
-wasn't backported.
+The following pull-request contains BPF updates for your *net* tree.
 
-To restate my original question: how can we avoid breaking BPF
-selftests? From personal experience this happens somewhat regularly.
+We've added 19 non-merge commits during the last 10 day(s) which contain
+a total of 20 files changed, 738 insertions(+), 448 deletions(-).
 
-Best
-Lorenz
+The main changes are:
+
+1) Batch of BPF sockmap fixes found when running against NGINX TCP tests, from John Fastabend.
+
+2) Fix a memleak in the LRU{,_PERCPU} hash map when bucket locking fails, from Anton Protopopov.
+
+3) Init the BPF offload table earlier than just late_initcall, from Jakub Kicinski.
+
+4) Fix ctx access mask generation for 32-bit narrow loads of 64-bit fields, from Will Deacon.
+
+5) Remove a now unsupported __fallthrough in BPF samples, from Andrii Nakryiko.
+
+6) Fix a typo in pkg-config call for building sign-file, from Jeremy Sowden.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Jakub Sitnicki, Roberto Sassu, Stanislav Fomichev, William Findlay, 
+Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit b41caaded077aa8e7617c15e87d0503df8e7739e:
+
+  Merge branch 'hns3-fixes' (2023-05-13 17:12:24 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to f726e03564ef4e754dd93beb54303e2e1671049e:
+
+  bpf, sockmap: Test progs verifier error with latest clang (2023-05-23 16:11:27 +0200)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      samples/bpf: Drop unnecessary fallthrough
+
+Anton Protopopov (1):
+      bpf: fix a memory leak in the LRU and LRU_PERCPU hash maps
+
+Jakub Kicinski (1):
+      bpf: netdev: init the offload table earlier
+
+Jeremy Sowden (1):
+      selftests/bpf: Fix pkg-config call building sign-file
+
+John Fastabend (14):
+      bpf, sockmap: Pass skb ownership through read_skb
+      bpf, sockmap: Convert schedule_work into delayed_work
+      bpf, sockmap: Reschedule is now done through backlog
+      bpf, sockmap: Improved check for empty queue
+      bpf, sockmap: Handle fin correctly
+      bpf, sockmap: TCP data stall on recv before accept
+      bpf, sockmap: Wake up polling after data copy
+      bpf, sockmap: Incorrectly handling copied_seq
+      bpf, sockmap: Pull socket helpers out of listen test for general use
+      bpf, sockmap: Build helper to create connected socket pair
+      bpf, sockmap: Test shutdown() correctly exits epoll and recv()=0
+      bpf, sockmap: Test FIONREAD returns correct bytes in rx buffer
+      bpf, sockmap: Test FIONREAD returns correct bytes in rx buffer with drops
+      bpf, sockmap: Test progs verifier error with latest clang
+
+Will Deacon (1):
+      bpf: Fix mask generation for 32-bit narrow loads of 64-bit fields
+
+ include/linux/skmsg.h                              |   3 +-
+ include/net/tcp.h                                  |  10 +
+ kernel/bpf/hashtab.c                               |   6 +-
+ kernel/bpf/offload.c                               |   2 +-
+ kernel/bpf/verifier.c                              |   2 +-
+ net/core/skmsg.c                                   |  81 ++---
+ net/core/sock_map.c                                |   3 +-
+ net/ipv4/tcp.c                                     |  11 +-
+ net/ipv4/tcp_bpf.c                                 |  79 ++++-
+ net/ipv4/udp.c                                     |   7 +-
+ net/unix/af_unix.c                                 |   7 +-
+ net/vmw_vsock/virtio_transport_common.c            |   5 +-
+ samples/bpf/hbm.c                                  |   1 -
+ tools/testing/selftests/bpf/Makefile               |   2 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c       | 131 +++++++
+ .../selftests/bpf/prog_tests/sockmap_helpers.h     | 390 +++++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 370 +------------------
+ .../selftests/bpf/progs/test_sockmap_drop_prog.c   |  32 ++
+ .../selftests/bpf/progs/test_sockmap_kern.h        |  12 +-
+ .../selftests/bpf/progs/test_sockmap_pass_prog.c   |  32 ++
+ 20 files changed, 738 insertions(+), 448 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_drop_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_pass_prog.c
 
