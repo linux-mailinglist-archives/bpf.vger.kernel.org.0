@@ -1,221 +1,254 @@
-Return-Path: <bpf+bounces-1190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC2A70FFA6
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 23:06:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FBB470FFF3
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 23:23:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E63F281298
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 21:06:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E62DC1C20D15
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 21:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB87D2262C;
-	Wed, 24 May 2023 21:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493F022637;
+	Wed, 24 May 2023 21:23:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5BB22627
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 21:06:49 +0000 (UTC)
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2912E6
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 14:06:32 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1q1vgk-0000Tf-3O; Wed, 24 May 2023 17:06:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=KckZTmo9Gc7wmnUqu5f/ww3uf3YmM1kpN4TCRRyqEOY=; b=Gcb3/Hc5igTEL+rpd29U
-	Xbs6MS002bwiHmoIl/95jpHSlySpcbkjGn33002bm1DpZYwMbXD+CI4Q3/FGhLtLANkB2AmR4chjo
-	JurOkdCIKnhBDIca7Y6jJmGVwUBBILD8TeL7POlXHDRjk2rBaYz3FAslJZIS+NmVrF1OjMprNLo9y
-	2HZAf17leaPlcJ8S7YJ7PYuNUmHufogR6urZw3e/w9knyJwfxUbzOT2qe0dAh5+1G5fF9VV+AfQje
-	/92XC8FuqKPPfoTnhh91uTghtVX9/3ybqBsJKh3dzugYW5C510T4N13czx95LC2Vrn/NZ4uGi+TfK
-	Wn/BmGmU5CXe+w==;
-Received: from dynamic-077-015-107-011.77.15.pool.telefonica.de ([77.15.107.11] helo=termi)
-	by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1q1vgj-0000lh-KZ; Wed, 24 May 2023 17:06:29 -0400
-From: "Jose E. Marchesi" <jemarch@gnu.org>
-To: Suresh Krishnan <suresh.krishnan@gmail.com>
-Cc: David Vernet <void@manifault.com>,  Michael Richardson
- <mcr+ietf@sandelman.ca>,  "bpf@ietf.org" <bpf@ietf.org>,  bpf
- <bpf@vger.kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Erik Kline
- <ek.ietf@gmail.com>,  "Suresh Krishnan (sureshk)" <sureshk@cisco.com>,
-  Christoph Hellwig <hch@infradead.org>,  Dave Thaler
- <dthaler@microsoft.com>
-Subject: Re: [Bpf] IETF BPF working group draft charter
-In-Reply-To: <8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com> (Suresh
-	Krishnan's message of "Wed, 24 May 2023 16:38:12 -0400")
-References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<87v8grkn67.fsf@gnu.org>
-	<PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<87r0rdy26o.fsf@gnu.org>
-	<PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
-	<20230523202827.GA33347@maniforge>
-	<8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com>
-Date: Wed, 24 May 2023 23:06:23 +0200
-Message-ID: <87a5xto2wg.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE68200B0;
+	Wed, 24 May 2023 21:23:21 +0000 (UTC)
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020016.outbound.protection.outlook.com [52.101.61.16])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2138A1A1;
+	Wed, 24 May 2023 14:23:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tf1hayWDjbjF60GVI6qFm9CGEb3pVXFfKPmftZTZQkwccbrD2t4OT/PF2HnERIY8s7SpT5H39dWEF1E8Xzsoc0s3y8i3+zfsssjP0APMTGVtFlbYkpZksonPGZT7Lwup9GNwB1D9WRTQ3iwCFQ8a14AElosGMz91sSZFPhtc8kLh2Ta73XcOraZJguxyzxrkHF/VzbT7pIArTwM+tiTUAJubutKAG4oYhII/zFehvW9/HZWC68cUrAUTTI/3ssQgiuQfTEwkwfttwb34o8OaDk4ygDO/MBeAmfA+qOt6xWviEP7OoxlsEXKfi96xEhmbWwkD+SYfuKrOP6J+oXppnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MQUXBrJuL2icVYk256lcv+PFN07oTOo1dWrKmdJPeeo=;
+ b=d3DqcbSLTENfeBXG5+I4PSAIsOtdjtav4Bc3+8AZWFGFnlElYhzwHchohAwbY46psY9wo67DSRw/5PuVrJRM3Co2H/8Abd7vErFQb15GJEb42Ha9ocpVrf+nvmIY9MHohFsSRHYiMMvlmc4Y5z8IvsfEAzSvgqfpYXrVphdc7WMdF0Q07m6A9Ahpuro1pXcbo/60Q/s5DGokRCjDPTlVlnEbAo98e+FSAXFofELOw7bKS3eDw/Y9Ac7c7xQWAFwHA2y6UtOS/acOqKhQSrOiY8RbS56v3GID5HmgdomRG8j1gsueXlG9/Lxn2IunYGTZaW5irDxoy+oIksoyUAurbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MQUXBrJuL2icVYk256lcv+PFN07oTOo1dWrKmdJPeeo=;
+ b=h8K1cknG6gp7mxJ6ZA4gCvxfIMRTzG7lECExSrjuJvKCKFRw22tydTGgQ0zjhUG4TFeSvzNe2ITMLix+oHvbGhUauehLWCpWyGyMuHl+3Ur6EZzjWzVkSaeEuiEvHmwKhebN2GTcOpx/UzZNRespNnu74gVBLYwiMXGBwHtKaN0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by LV2PR21MB3372.namprd21.prod.outlook.com (2603:10b6:408:14e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.7; Wed, 24 May
+ 2023 21:23:15 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::9d99:e955:81ed:40e0]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::9d99:e955:81ed:40e0%3]) with mapi id 15.20.6455.004; Wed, 24 May 2023
+ 21:23:15 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: haiyangz@microsoft.com,
+	decui@microsoft.com,
+	kys@microsoft.com,
+	paulros@microsoft.com,
+	olaf@aepfle.de,
+	vkuznets@redhat.com,
+	davem@davemloft.net,
+	wei.liu@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	longli@microsoft.com,
+	ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	ast@kernel.org,
+	sharmaajay@microsoft.com,
+	hawk@kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH net] net: mana: Fix perf regression: remove rx_cqes, tx_cqes counters
+Date: Wed, 24 May 2023 14:22:00 -0700
+Message-Id: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0153.namprd03.prod.outlook.com
+ (2603:10b6:303:8d::8) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|LV2PR21MB3372:EE_
+X-MS-Office365-Filtering-Correlation-Id: 58fe12df-51d2-40fd-6156-08db5c9d15fb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6DTNh3rn4VEKn8NTdnElaeK4A+sOnlvk+NsankMbwR/OXn3V/+j+kDS1QhGS0FVUK2/lOqGlQhsuE5ypk6kC044fzNqdQ2RTcLP+wxRX9L5JWXgVpjiRImyYBOTsAXQKcBufMqt31m8O1HHCbKj9dWvQMUBmwbvfRMjnwCp6XP58g3rYGxzTwrMZOnCiq7Jr+c6ITp+Te1yNuMv5/XRGm0RVTQfsAALRZe1LSn1ZorQLA0DVcJnLYptVMSuMs8BXKF54cN9uhklXW7zLsemIcTNI1AyMmPAsJUN9dWtHqpGbmQiWjFwUyY2esCRXr+IhhXfnJJQVM2uFKwDWiAr5zafIvIv/YswIPK2XnBdkOIZ08CCNyYs/7s5KyX4SJzU0T9I9IEMYKNNFhryWnlehx7ZTjARqRk0e2aOXOh4F20usMIZt3tybZwXr/cDY27inuxYGxnEDrQ89kYJMLgqsKmxz5bAm8AeGJRQ4zRfM8bXk1nf/LmhacjptpEkc13u2eYx2S8nRzXv/013H2/bPpPAACeem6aCgDaEwbnxsJV5wChMJzxXQSJNgcxUhH9Nl/FdHhIosgyDUDS9z2CoJnZUKOKA5dUZBiSVSI3GIJ/mYglNBv/C6nLstWeyzfMaSoc9XSCrZOuZY1ekFYy0WCNB/D6xFAKP+YezCleLRyKU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(366004)(396003)(346002)(451199021)(36756003)(316002)(8676002)(786003)(82960400001)(82950400001)(7416002)(38350700002)(8936002)(38100700002)(41300700001)(66476007)(66556008)(10290500003)(66946007)(52116002)(4326008)(83380400001)(2906002)(478600001)(6486002)(186003)(5660300002)(6666004)(6506007)(6512007)(7846003)(2616005)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pSGGD9UfmTCRHd6ZhU0o+23sU9O4ksuKmO5VFvm+EPBaL6zHuZSB8gKRfWQL?=
+ =?us-ascii?Q?GKkHsrC/K0SAg3YfIpZOh1+mPkZMDCV6+XDxJtVJX+wFLE7Qnhpsfe7wzhSh?=
+ =?us-ascii?Q?y9ZfX8vAWV7eaiqs2yR2G7T/qRQc7l/6FoswsnnGylHlD2IhP9Z9eTyLqhOV?=
+ =?us-ascii?Q?fIbgre30lxqftQSDcvlPrNn4r7PLoBopklrfVNpEOqYYOmY7W/Q9HCwObLat?=
+ =?us-ascii?Q?AJlRmYncZOTPow3CrGeEHUZFoijyv6yMM0bthLd8wkpMpLg1vOVkSBud/hul?=
+ =?us-ascii?Q?/XQXz0Ok0rKMsS39xHaHyu5QY3CKgHdFJ27YNxkgw3eMoHuPLWap4946Y1s9?=
+ =?us-ascii?Q?srFiAo++d+WDAaixeYbmiR5dESaF70CUJDugMivvt8SeNWstvSpuP5qQ8vB7?=
+ =?us-ascii?Q?SHZv5OIQGsHx3za4+zj1my6b2KBsAT6cWtIYQ1KY4ofZg1dH3UEAk8ZGULfY?=
+ =?us-ascii?Q?8Xpr/epnsErNhIG7oLUC7R14isWGyMuoH9iMVaSBwcWfk7BagDFKXV6wCU9w?=
+ =?us-ascii?Q?mCnagJuhUB8J8D8OC8uhG0Rl69kafuqkazqamWuf78A1qnoL4v298dXSfe11?=
+ =?us-ascii?Q?SFRx2TxsC7JVMq/b6WVOgP7CTv6XqmMGGyjN8QsuAWthPeSngrTFqj80IVVN?=
+ =?us-ascii?Q?6JNwpfBSAb9WVPue3jU1iM76KPc9S94CSmNUs+mbq/a7TRucDWq+hCa2o2yi?=
+ =?us-ascii?Q?pbkyWxFwXbSfANUZCGmtuHQKrNWm+SdOcaHuMn8vhPOvCpShJDBDYOxyh5Kz?=
+ =?us-ascii?Q?yzMty//N8zrSwIrCfL0uwCA7BPYMmdKdDTAZF4jw9nyOUSypgFZklK9Njoji?=
+ =?us-ascii?Q?VqWcVQydBBtw77crg4rerJSppKeNw1/hOXTlalAgSzZjNERH1JggLStAVO5/?=
+ =?us-ascii?Q?+XmOHPmj06wUHS115ZFv/9gPv0qVZhswfHg3tT3YcHZ21XSNFDd1VHM7H+2y?=
+ =?us-ascii?Q?kACR8tjKVGLCf/rGJVw3Fjo2Aj4v3FPt5eolJac2JpjQQJuP9x2AtWjGuLTs?=
+ =?us-ascii?Q?dVDabQI9gO40Nc7jB9Xsv7ZE4oBwXBzCB/HYCBa+R8tcWINdCo8Tj1bguTGA?=
+ =?us-ascii?Q?D6ziAJL+QI1G8Bs78QnfXreDwRtwQHoxGOY5ZbJi8dqsauaF8xtxezYjOGvI?=
+ =?us-ascii?Q?1Pv7LMywnSQL2cdDWqblNAOJ3iR/uGXIvXz3OltDnpIJTAvjarSmV61yuL6t?=
+ =?us-ascii?Q?rVtfj92d4jUbmo/gaP9LXF2zFWYrNu49qltlHiylRZNf6pjZamXsz8VF5heN?=
+ =?us-ascii?Q?egn2Nz/2drTLKMpS40eq1tqwMyDQiLC6Dk2XmtFo5Tq4q+ZQRqLhqFic0j0B?=
+ =?us-ascii?Q?f1g+L39ykdXLwT2/e25eBLmYoaA2bz6/UYZzlNXsuPYnGfnIh46//EABZvw7?=
+ =?us-ascii?Q?QV6CjGIS9e8Rbv3Crz/Bn3Pks8NetlwQ1m//WICt20e1uxVWRuHxdsI52Mb0?=
+ =?us-ascii?Q?Z189k3yxk0H5zja4odqiwBvo56wOtS+iKxKz4Lc7dbWhe8jj9xogDG0DUsNi?=
+ =?us-ascii?Q?cSdptG7aaXmt8YLFUG9TbBZiCoqrYLw72RMkN0de+UiYO8NsQx3O8t2u0M4o?=
+ =?us-ascii?Q?c4UfmMnhxaY5HrqzeiF4wxCp2nl9DUWbhme0TVtR?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58fe12df-51d2-40fd-6156-08db5c9d15fb
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2023 21:23:15.4233
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: akulSX95wjKMst2Bow0OxO7UTLpLsW4qNrAxbDkfAjQfw54ZtZYuuCgoxvWK5RHHafef+oY31+732KOeAIbjzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR21MB3372
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+frequent and parallel code path of all queues. So, r/w into this
+single shared variable by many threads on different CPUs creates a
+lot caching and memory overhead, hence perf regression. And, it's
+not accurate due to the high volume concurrent r/w.
 
-> Hi David,
->   I just want to provide a quick clarification from the IETF side
-> regarding categories of RFCs. Not all the RFCs we produce are
-> standards. On a broad level we have standards track and informational
-> documents (among others; more details in RFC2026). I do believe there
-> is value in *documenting* some of the items that belong in an ABI such
-> as the calling convention (similar to what is in Section 2 of the ISA
-> draft). Similarly, there is value in documenting conventions and
-> guidelines for creating portable binaries if we believe that is a
-> useful goal, even though there will be a lot of programs that will not
-> be portable (e.g. using cgroups). I would not expect these to be
-> Standards track documents but rather Informational specifications to
-> help implementers. If that sounds reasonable we can keep the text in
-> the charter (with some minor rewording) and work on categorizing
-> potential deliverables by Document Status (as would anyway be
-> necessitated by =C3=89ric Vyncke=E2=80=99s BLOCK).
+Since the error path of mana_poll_rx_cq() already has warnings, so
+keeping the counter and convert it to a per-queue variable is not
+necessary. So, just remove this counter from this high frequency
+code path.
 
-I wonder.  Lets suppose the ABI and ELF extensions are maintained and
-evolved in the usual way it is done for all other architectures, i.e.
-in the kernel git repository or a dedicatd public one, in textual form,
-under a free software license, not requiring copyright assignments nor
-bureocratic processes to be updated, etc.  Could then the WG edit and
-publish "snapshots" whenever considered appropriate, and release them as
-subsequent versions of an IETF Informational specification, or some
-other suitable kind of IETF document?
+Also, remove the tx_cqes counter for the same reason. We have
+warnings & other counters for errors on that path, and don't need
+to count every normal cqe processing.
 
-If something like that would be doable, maybe we could concile the
-practicality of the usual approach with the more formal character of an
-IETF document?
+Cc: stable@vger.kernel.org
+Fixes: bd7fc6e1957c ("net: mana: Add new MANA VF performance counters for easier troubleshooting")
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c      | 10 ----------
+ drivers/net/ethernet/microsoft/mana/mana_ethtool.c |  2 --
+ include/net/mana/mana.h                            |  2 --
+ 3 files changed, 14 deletions(-)
 
-> Regards
-> Suresh
->
->> On May 23, 2023, at 4:28 PM, David Vernet <void@manifault.com> wrote:
->>=20
->> On Tue, May 23, 2023 at 01:58:18PM -0400, Michael Richardson wrote:
->>>=20
->>> David Vernet <void@manifault.com <mailto:void@manifault.com>> wrote:
->>>> As far as I know (please correct me if I'm wrong), there isn't really a
->>>> precedence for standardizing ABIs like this. For example, x86 calling
->>>=20
->>> All of the eBPF work seems unprecedented.
->>> I don't see having this in the charter is a problem.
->>>=20
->>> We may fail to get consensus on it, and not make a milestone, but I don=
-'t see
->>> a reason not to be allowed to talk about this.
->>> (and maybe in the end, it's a no-op)
->>=20
->> Hi Michael,
->>=20
->> So apologies in advance if my lack of experience with IETF proceedings
->> is glaringly obvious, and I'd appreciate clarification in any situation
->> in which I'm mistaken.
->>=20
->> My understanding based on the conversations that I've had thus far is
->> that part of the goal of arriving at the finalized WG charter is to
->> determine what's in scope and out of scope. It's a bit of a murky
->> proposition because some things that we think _could_ be in scope, such
->> as in this case topics related to psABI, may not end up having a
->> document if we can't get consensus. In other words, being in the WG
->> charter doesn't imply that something is in-scope and will have a
->> document written, but _not_ being in the charter does preclude it from
->> being discussed in this iteration of the WG because of this line:
->>=20
->>> The working group shall not adopt new work until these
->>> documents have progressed to working group last call.
->>=20
->> The implication of this is that it's not necessarily a problem to have
->> some false-positives in terms of what we cover, but it can be
->> problematic if we leave out something important because we'll have to
->> cover all of the other topics first. I'd imagine this would tend to make
->> the default behavior for deciding scope in WG charters to be permissive
->> rather than dissmive, which makes sense to me.
->>=20
->> Assuming I haven't already gone off the rails in terms of my
->> understanding, let me try to clarify why despite all that, I still think
->> it's warranted for us to remove psABI as part of the scope of the WG.
->> There are really two main reasons:
->>=20
->> 1. As is hopefully clear at this point, there is a wide and historical
->>   industry precedence for not standardizing on psABI. For example, to
->>   my knowledge, RISC-V [0] develops and ratifies the RISC-V ISA through
->>   the RISC-V International Technical Working Groups, but there is no
->>   such ratified standard or specification for RISC-V calling
->>   conventions (the operative word of course being "convention"). The
->>   same is true (to my knowledge) of _all_ psABI ELF extensions, as Jose
->>   pointed out earlier in the conversation.
->>=20
->> [0]: https://riscv.org/technical/specifications/ <https://riscv.org/tech=
-nical/specifications/>
->>=20
->>   With all that said, unless there's more context behind why we think we
->>   need to standardize psABI which hasn't yet been brought forward, I
->>   don't see any way we'd achieve consensus when we discuss it in the
->>   WG. And the reason I specifically think that's the case for ABI (ELF
->>   or otherwise) is that there's such a well-established precedence
->>   already for not standardizing it. I guess it's true that there's no
->>   harm in including it and discussing it, but as things currently
->>   stand, it also doesn't seem very productive to include it if there's
->>   already (IMHO) reasonably clear evidence that it's out of scope. To
->>   go back to my claim made in another email, I think the onus is on the
->>   folks who think it's in scope to explain why, rather than the folks
->>   who think we should follow industry precedence to justify that.
->>=20
->> 2. Assuming that I'm wrong, and ABI / ELF are in scope for
->>   standardization, we would still have to do a lot of premliminary
->>   work to determine that. For example, we may end up wanting to
->>   standardize that maps are put into .maps sections in an ELF file, but
->>   that would only make sense if we created a document standardizing
->>   cross-platform map types. The same holds true for cross-platform
->>   program types, etc. The dependency DAG for discussing ELF has a depth
->>   of at least 2, and given that it's as-yet unclear whether ELF / psABI
->>   is an appropriate topic for standardization in the first place, it
->>   really feels to me like leaving it out of the WG is the right move.
->>=20
->> Thanks,
->> David
->>=20
->>>=20
->>> --
->>> Michael Richardson <mcr+IETF@sandelman.ca>   . o O ( IPv6 I=C3=B8T cons=
-ulting )
->>>           Sandelman Software Works Inc, Ottawa and Worldwide
->>>=20
->>>=20
->>>=20
->>>=20
->>=20
->>=20
->>=20
->>> --=20
->>> Bpf mailing list
->>> Bpf@ietf.org
->>> https://www.ietf.org/mailman/listinfo/bpf
->>=20
->> --=20
->> Bpf mailing list
->> Bpf@ietf.org <mailto:Bpf@ietf.org>
->> https://www.ietf.org/mailman/listinfo/bpf <https://www.ietf.org/mailman/=
-listinfo/bpf>
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 06d6292e09b3..d907727c7b7a 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1279,8 +1279,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 	if (comp_read < 1)
+ 		return;
+ 
+-	apc->eth_stats.tx_cqes = comp_read;
+-
+ 	for (i = 0; i < comp_read; i++) {
+ 		struct mana_tx_comp_oob *cqe_oob;
+ 
+@@ -1363,8 +1361,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+ 		WARN_ON_ONCE(1);
+ 
+ 	cq->work_done = pkt_transmitted;
+-
+-	apc->eth_stats.tx_cqes -= pkt_transmitted;
+ }
+ 
+ static void mana_post_pkt_rxq(struct mana_rxq *rxq)
+@@ -1626,15 +1622,11 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+ {
+ 	struct gdma_comp *comp = cq->gdma_comp_buf;
+ 	struct mana_rxq *rxq = cq->rxq;
+-	struct mana_port_context *apc;
+ 	int comp_read, i;
+ 
+-	apc = netdev_priv(rxq->ndev);
+-
+ 	comp_read = mana_gd_poll_cq(cq->gdma_cq, comp, CQE_POLLING_BUFFER);
+ 	WARN_ON_ONCE(comp_read > CQE_POLLING_BUFFER);
+ 
+-	apc->eth_stats.rx_cqes = comp_read;
+ 	rxq->xdp_flush = false;
+ 
+ 	for (i = 0; i < comp_read; i++) {
+@@ -1646,8 +1638,6 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+ 			return;
+ 
+ 		mana_process_rx_cqe(rxq, cq, &comp[i]);
+-
+-		apc->eth_stats.rx_cqes--;
+ 	}
+ 
+ 	if (rxq->xdp_flush)
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index a64c81410dc1..0dc78679f620 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -13,11 +13,9 @@ static const struct {
+ } mana_eth_stats[] = {
+ 	{"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+ 	{"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
+-	{"tx_cqes", offsetof(struct mana_ethtool_stats, tx_cqes)},
+ 	{"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
+ 	{"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+ 					tx_cqe_unknown_type)},
+-	{"rx_cqes", offsetof(struct mana_ethtool_stats, rx_cqes)},
+ 	{"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
+ 					rx_coalesced_err)},
+ 	{"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index cd386aa7c7cc..9eef19972845 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -347,10 +347,8 @@ struct mana_tx_qp {
+ struct mana_ethtool_stats {
+ 	u64 stop_queue;
+ 	u64 wake_queue;
+-	u64 tx_cqes;
+ 	u64 tx_cqe_err;
+ 	u64 tx_cqe_unknown_type;
+-	u64 rx_cqes;
+ 	u64 rx_coalesced_err;
+ 	u64 rx_cqe_unknown_type;
+ };
+-- 
+2.25.1
+
 
