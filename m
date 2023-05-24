@@ -1,235 +1,125 @@
-Return-Path: <bpf+bounces-1148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68ED70EBFE
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 05:44:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17CBA70EC22
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 05:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91129280EEA
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 03:44:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D56491C20B19
+	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 03:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E91D15B8;
-	Wed, 24 May 2023 03:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17DEB15C2;
+	Wed, 24 May 2023 03:52:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A339EC2
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 03:44:33 +0000 (UTC)
-X-Greylist: delayed 51504 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 May 2023 20:44:30 PDT
-Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [95.215.58.53])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B172C1
-	for <bpf@vger.kernel.org>; Tue, 23 May 2023 20:44:30 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1684899868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7ZFRBivtXFIWlkQZPP3SmEdFDvp05e98JHCCJQN0X2s=;
-	b=YST34r5An3nH5w6tAUzkTQdYSdZ4HjnGkE1b5/eyWDf1/yqMlblYag7Ob84vqntRGo+dA/
-	/Rgs8rjE7PMTRclNat9Ht+hhaYe+5+JeOexM6KhGA2sPXc3vvaxETWQi5sN0Vj6tytKvRn
-	9Fh/7jT6q7WfA6pRuwFr8Mpg4URM02A=
-From: Jackie Liu <liu.yun@linux.dev>
-To: olsajiri@gmail.com,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	bpf@vger.kernel.org,
-	liuyun01@kylinos.cn
-Subject: [PATCH v2] libbpf: kprobe.multi: Filter with available_filter_functions
-Date: Wed, 24 May 2023 11:44:19 +0800
-Message-Id: <20230524034419.1811561-1-liu.yun@linux.dev>
-In-Reply-To: <ZGznHMU1uhdPnE/F@krava>
-References: <ZGznHMU1uhdPnE/F@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB68BEC2;
+	Wed, 24 May 2023 03:52:13 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC13C1;
+	Tue, 23 May 2023 20:52:12 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-510ea8d0bb5so948158a12.0;
+        Tue, 23 May 2023 20:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684900330; x=1687492330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PIplVH84mQzYA92Hw7xyqoi7EjdVHd4BsS3gkqLQQZk=;
+        b=TBfSbXLJmCCNrWLz0DQ3lWQZTgzmLHDVqbff5CzHHTeayTSAofA0cIRgRSTzP5t8xM
+         r0mDziKrlLeyb0G0ILOj6BmWCzNUImSkR3LPI6ylI7Y36SaHhr5VQnOZzgyqZrqaxq6d
+         i/StgdEy4BNKyaHWQL89/YIhZuyK8DtwHnfoKVoj8FEGbGTn67ffjUA/BIiUge9xiduJ
+         ZgKUub24uTk3bO5IyWCooJjv3tthXMZv2cfo20ZOZtxFXX+dYvS1nX8mierZNLuNlf5x
+         3lv2spmlOoDVkvnUbVXlevqhK4vmJPSRODPGmByXtwDykUx33aRuIcUj8kp5et6mN8Gj
+         hPEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684900330; x=1687492330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PIplVH84mQzYA92Hw7xyqoi7EjdVHd4BsS3gkqLQQZk=;
+        b=IkucrMOgfXfuvQAJARTtZzsIw/1q2B8WzwekuqIS5iSzye9Gb3+4HWNpxOZ4y6zQX/
+         ttldwsjtccqBi8XFPOrhLITY9ySoulzgMmbji2dfQWPRazp90uY5TFYjVug2zajrp55w
+         Tq7q8LHl+XJVT2Zw3yYrSzyX3ZhCmjKdiaEKV9Dvfapn7mXR8USvIyMSXpkd8ugGXfha
+         42GkXgVHMBE0h+FSkkF3Wu2BNIA+0smJ/0jd/kqNrs/FkP9HYiySiv3hv/Zzle1AjbqH
+         kgUIlJIWLGZ0EAKrhsHlE7mNk4MJcbdR0mosbsWwGlB1F99bbhvf8NAgGJfaC9F6HbBS
+         EHLw==
+X-Gm-Message-State: AC+VfDyeW43fZjgMi8g9pVfjw0RbWD0lbHjpfgBNtcIejJE5dsRpY1Ql
+	xCl1WAP0TnsdXJGkMJMnmABzzN2qJCo/FSMiH0M=
+X-Google-Smtp-Source: ACHHUZ6o2RJCD20bEVdQypVWzIEQEchtzyPWUv7LpdCIUlnwbBJvIbiQgM+DVQFKu7YuYOi5+Fgc15NV6gQiWSBwTzk=
+X-Received: by 2002:aa7:dd10:0:b0:510:a5a1:b36d with SMTP id
+ i16-20020aa7dd10000000b00510a5a1b36dmr901501edv.33.1684900330454; Tue, 23 May
+ 2023 20:52:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+References: <20220515203653.4039075-1-jolsa@kernel.org> <20230520094722.5393-1-zegao@tencent.com>
+ <b4f66729-90ab-080a-51ec-bf435ad6199d@meta.com> <CAD8CoPAXse1GKAb15O5tZJwBqMt1N_btH+qRe7c_a-ryUMjx7A@mail.gmail.com>
+ <ZGp+fW855gmWuh9W@krava> <CAD8CoPDASe7hpkFbK+UzJats7j4sbgsCh_P4zaQYVuKD7jWu2w@mail.gmail.com>
+ <20230523101041.23ca7cc8@rorschach.local.home>
+In-Reply-To: <20230523101041.23ca7cc8@rorschach.local.home>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Wed, 24 May 2023 11:51:58 +0800
+Message-ID: <CAD8CoPCHnTMOzqxJT+9Bg7aP=y8Jt4VUV1=xpBopNZv7VkBU8w@mail.gmail.com>
+Subject: Re: kprobes and rcu_is_watching()
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Yonghong Song <yhs@meta.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>, Song Liu <song@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	kafai@fb.com, kpsingh@chromium.org, netdev@vger.kernel.org, 
+	paulmck@kernel.org, songliubraving@fb.com, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+Thanks Steven, I think we've come to a consensus on this.
 
-When using regular expression matching with "kprobe multi", it scans all
-the functions under "/proc/kallsyms" that can be matched. However, not all
-of them can be traced by kprobe.multi. If any one of the functions fails
-to be traced, it will result in the failure of all functions. The best
-approach is to filter out the functions that cannot be traced to ensure
-proper tracking of the functions.
+The question here is whether bpf tracing fentry i.e.,
+__bpf_prog_enter{_sleepable}
+needs to check rcu_is_watching as well before using rcu related
+calls. And Yonghong suggested making a change when there is
+indeed some bad case occurring since it's rare the tracee is in the idle pa=
+th.
 
-Check available_filter_functions first, speed up for function check than
-/proc/kallsyms. since each function needs to check kallsyms and
-available_filter_functions, its startup time will increase. The function
-implementation is referenced from BCC's kprobe_exists().
 
-Here is the test eBPF program [1].
-[1] https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b8b3eadde97f7a4535e867
+Regards,
+Ze
 
-Suggested-by: Jiri Olsa <olsajiri@gmail.com>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
----
- v1->v2: speed up startup time.
-	 Before: 0.27s user 5.09s system 99% cpu 5.392 total
-	 After : 0.37s user 1.54s system 98% cpu 1.947 total
-
- tools/lib/bpf/libbpf.c          | 100 +++++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf_internal.h |   4 +-
- 2 files changed, 100 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ad1ec893b41b..0380d171c1cd 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10422,8 +10422,8 @@ struct kprobe_multi_resolve {
- };
- 
- static int
--resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
--			const char *sym_name, void *ctx)
-+kallsyms_resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
-+				 const char *sym_name, void *ctx)
- {
- 	struct kprobe_multi_resolve *res = ctx;
- 	int err;
-@@ -10440,6 +10440,99 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
- 	return 0;
- }
- 
-+static int
-+resolve_function_addrs(const char *name, unsigned long long *sym_addr)
-+{
-+	char sym_name[500];
-+	int ret, err = 0;
-+	FILE *f;
-+
-+	f = fopen("/proc/kallsyms", "r");
-+	if (!f) {
-+		err = -errno;
-+		pr_warn("failed to open /proc/kallsyms: %d\n", err);
-+		return err;
-+	}
-+
-+	while (true) {
-+		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n",
-+			     sym_addr, sym_name);
-+		if (ret == EOF && feof(f)) {
-+			pr_warn("not found syms in /proc/kallsyms\n");
-+			err = -ENOENT;
-+			break;
-+		}
-+		if (ret != 2) {
-+			pr_warn("failed to read kallsyms entry: %d\n", ret);
-+			err = -EINVAL;
-+			break;
-+		}
-+
-+		if (strcmp(name, sym_name) == 0)
-+			return 0;
-+	}
-+
-+	return err;
-+}
-+
-+static int resolve_kprobe_multi_cb(const char *sym_name, void *ctx)
-+{
-+	unsigned long long sym_addr;
-+	struct kprobe_multi_resolve *res = ctx;
-+	int err;
-+
-+	if (!glob_match(sym_name, res->pattern))
-+		return 0;
-+
-+	err = resolve_function_addrs(sym_name, &sym_addr);
-+	if (err)
-+		return err;
-+
-+	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
-+				res->cnt + 1);
-+	if (err)
-+		return err;
-+
-+	res->addrs[res->cnt++] = (unsigned long) sym_addr;
-+	return 0;
-+}
-+
-+int libbpf_available_filter_functions_parse(available_filter_functions_cb_t cb,
-+					    void *ctx)
-+{
-+	char sym_name[256];
-+	FILE *f;
-+	int ret, err = 0;
-+
-+	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-+	if (!f) {
-+		pr_warn("failed to open /sys/kernel/debug/tracing/available_filter_functions, ");
-+		pr_warn("fallback to /proc/kallsyms.\n");
-+		goto fallback;
-+	}
-+
-+	while (true) {
-+		ret = fscanf(f, "%s%*[^\n]\n", sym_name);
-+		if (ret == EOF && feof(f))
-+			break;
-+		if (ret != 1) {
-+			pr_warn("failed to read available_filter_functions entry: %d\n",
-+				ret);
-+			break;
-+		}
-+
-+		err = cb(sym_name, ctx);
-+		if (err)
-+			return err;
-+	}
-+
-+	fclose(f);
-+	return err;
-+
-+fallback:
-+	return libbpf_kallsyms_parse(kallsyms_resolve_kprobe_multi_cb, ctx);
-+}
-+
- struct bpf_link *
- bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 				      const char *pattern,
-@@ -10476,7 +10569,8 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 		return libbpf_err_ptr(-EINVAL);
- 
- 	if (pattern) {
--		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
-+		err = libbpf_available_filter_functions_parse(resolve_kprobe_multi_cb,
-+							      &res);
- 		if (err)
- 			goto error;
- 		if (!res.cnt) {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index e4d05662a96c..fdf6b464481f 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -481,8 +481,10 @@ __s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
- 
- typedef int (*kallsyms_cb_t)(unsigned long long sym_addr, char sym_type,
- 			     const char *sym_name, void *ctx);
--
- int libbpf_kallsyms_parse(kallsyms_cb_t cb, void *arg);
-+typedef int (*available_filter_functions_cb_t)(const char *sym_name, void *ctx);
-+int libbpf_available_filter_functions_parse(available_filter_functions_cb_t cb,
-+					    void *arg);
- 
- /* handle direct returned errors */
- static inline int libbpf_err(int ret)
--- 
-2.25.1
-
+On Tue, May 23, 2023 at 10:10=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+>
+> [ Added a subject, as I always want to delete these emails as spam! ]
+>
+> On Mon, 22 May 2023 10:07:42 +0800
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > Oops, I missed that. Thanks for pointing that out, which I thought is
+> > conditional use of rcu_is_watching before.
+> >
+> > One last point, I think we should double check on this
+> >      "fentry does not filter with !rcu_is_watching"
+> > as quoted from Yonghong and argue whether it needs
+> > the same check for fentry as well.
+> >
+>
+> Note that trace_test_and_set_recursion() (which is used by
+> ftrace_test_recursion_trylock()) checks for rcu_is_watching() and
+> returns false if it isn't (and the trylock will fail).
+>
+> -- Steve
 
