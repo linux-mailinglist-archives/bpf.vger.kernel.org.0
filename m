@@ -1,249 +1,150 @@
-Return-Path: <bpf+bounces-1251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278F17118C4
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 23:06:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF8E71198E
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 23:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A58B1C20F29
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 21:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D28BA1C20897
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 21:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9699124EA1;
-	Thu, 25 May 2023 21:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386E224EB2;
+	Thu, 25 May 2023 21:51:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40451FC16;
-	Thu, 25 May 2023 21:06:11 +0000 (UTC)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6FF195;
-	Thu, 25 May 2023 14:06:09 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-96f7377c86aso200324866b.1;
-        Thu, 25 May 2023 14:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685048768; x=1687640768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GMZ9C6ORzYk7XDZjlM2KmTPndlXbai+95ZyPDyvJIN8=;
-        b=Yj3p0F4LD5wccerjU74CUdBg/NvEeJ5eRjpkgJe2qPWlwghc00iPYdTMTlcwWX9SaT
-         fj83vCf7efPUs7uaJkbHX/LkAN8uCP+p/BQHa2TiE+XwaJUUttCMgH4H+f12xN2vExeI
-         VrJ5XXk4sH1djkWRslrfa1rceNAYoVX3a1J0pTgv2P7DQGZjIw2sL1QlU1MpC6+xIyoO
-         YyfZrhUlJ7AQ+45bIM+2XPNkhd7MLxUvd17a8EdkCYqHiLN+Iw6UEyJigJ+PMK/AuuT6
-         AC4PaJEGRSlWn+IYxdBonPemSZ8yl5fdUx0PMcnj+daRyprTsIJi9cf4s3aTsiMM4fth
-         Sy8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685048768; x=1687640768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GMZ9C6ORzYk7XDZjlM2KmTPndlXbai+95ZyPDyvJIN8=;
-        b=WHMyfHRHCdl9uYn2mpGXYPnjjbFw11eaKkZ4j0jp/rf3geecbJcl+X6vxkaj+BfUKD
-         aJWqRZcSyo92IEdxpBYcEt5DJAGjqHn9hEK/68921aStcd3hzwBwpzbw72X1xfQZ7k0p
-         jg2f6NiBA8b3vOaXku9nyvp3uN75ikFnMlWzlbkJIj1Er8xzf2jgykGdHSZAJM+7gG1e
-         hJTdgG+Psh5fO6nXnrRZRJ423y43hStkXl4+bIqpp+yriwj4oOdW1hjvsuep634dfre1
-         NhyZ6BEXAe80v0Vzxq6MWkIGo+3Un1R3vwivpDxaLKu0Wjt1LQS1CQmcOH8dL4YiIixS
-         5RQw==
-X-Gm-Message-State: AC+VfDz9m4ZzFILFFFM421KwYJqMwXSGHH3Qy4xuWo3ksSb/zo+0U7vY
-	pq6gOsE3CK+N5vMn64P+fFVUxQfckhUPfDtemkU=
-X-Google-Smtp-Source: ACHHUZ6tg6hLpuFmSvTUnowWR4fD9nxwZ8KxG8/sUkzP1cEMFSVaI5oEKvd0joRXwlGUCedQZnUT3Ef/Xu2Z4YZKnSw=
-X-Received: by 2002:a17:907:9289:b0:973:8198:bbfb with SMTP id
- bw9-20020a170907928900b009738198bbfbmr58388ejc.31.1685048767687; Thu, 25 May
- 2023 14:06:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E857220982
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 21:51:48 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F011E4F
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 14:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=dECQ+RJTBkkcbsjpB8UkTwJE0MU4h4v5Loc8Or2lkr4=; b=RSax9on9clSidZmvYuL4qAj5tP
+	2MEp01SFKD5BAypLxvYWyupzxXOn9XHSxjuP8RfKyeSOLitISe3F6nCY6JCtmE+za73IIPNMxT8lg
+	zR8TprfxP5LYPzV9KqRALvH1Nc4dN/RL3EibCNE8Rz9Y8+QHqE9tdHf1kt6gIN8uNukdqaUZ6u5f8
+	stWZ0ekiYKTFvCAUPuA0TR26QAzgiV8qq5dumiLfJAbzqQ40e8EzsNXCRR9ChQCn3SYVF7FYZpPNw
+	mrDqlT2Eue9dVzHQ6fdQN+eKyct+VFO0wuwlvkQpBUeOINaqLHxmjtkQ/y/TfBZuWeLYWjEc3DBhr
+	gX4rFUYQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q2Ire-000BjZ-0c; Thu, 25 May 2023 23:51:17 +0200
+Received: from [178.197.248.42] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q2Ird-000Gbp-EB; Thu, 25 May 2023 23:51:17 +0200
+Subject: Re: [PATCH RFC bpf-next 1/3] bpf: revamp bpf_attr and name each
+ command's field and substruct
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@kernel.org, kernel-team@meta.com
+References: <20230524210243.605832-1-andrii@kernel.org>
+ <20230524210243.605832-2-andrii@kernel.org>
+ <20230525031810.g42tmdk7ykjrkrcr@MacBook-Pro-8.local>
+ <CAEf4Bzbe-D1PwWB7T4SCzNG3RKTMko_0h1TOiEmUrR22NPjfXg@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <528341ba-45dd-7708-ae00-4f2d6551baa9@iogearbox.net>
+Date: Thu, 25 May 2023 23:51:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230525110100.8212-1-fw@strlen.de> <20230525110100.8212-3-fw@strlen.de>
-In-Reply-To: <20230525110100.8212-3-fw@strlen.de>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 25 May 2023 14:05:55 -0700
-Message-ID: <CAEf4Bza+4GMiP-bOGq5WvZGv2hbVNJqhc2bxgpWsbaRXak0WSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add bpf_program__attach_netfilter_opts
- helper test
-To: Florian Westphal <fw@strlen.de>
-Cc: bpf@vger.kernel.org, ast@kernel.org, netdev@vger.kernel.org, dxu@dxuuu.xyz, 
-	qde@naccy.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=ANY_BOUNCE_MESSAGE,BAYES_00,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	VBOUNCE_MESSAGE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4Bzbe-D1PwWB7T4SCzNG3RKTMko_0h1TOiEmUrR22NPjfXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26918/Thu May 25 09:25:14 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 25, 2023 at 4:01=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
-te:
->
-> Call bpf_program__attach_netfilter_opts() with different
-> protocol/hook/priority combinations.
->
-> Test fails if supposedly-illegal attachments work
-> (e.g., bogus protocol family, illegal priority and so on)
-> or if a should-work attachment fails.
->
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  .../bpf/prog_tests/netfilter_basic.c          | 87 +++++++++++++++++++
->  .../bpf/progs/test_netfilter_link_attach.c    | 14 +++
->  2 files changed, 101 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_basi=
-c.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link=
-_attach.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_basic.c b/t=
-ools/testing/selftests/bpf/prog_tests/netfilter_basic.c
-> new file mode 100644
-> index 000000000000..a64b5feaaca4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/netfilter_basic.c
-> @@ -0,0 +1,87 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#include <netinet/in.h>
-> +#include <linux/netfilter.h>
-> +
-> +#include "test_progs.h"
-> +#include "test_netfilter_link_attach.skel.h"
-> +
-> +struct nf_hook_options {
-> +       __u32 pf;
-> +       __u32 hooknum;
-> +       __s32 priority;
-> +       __u32 flags;
-> +
-> +       bool expect_success;
-> +};
-> +
-> +struct nf_hook_options nf_hook_attach_tests[] =3D {
-> +       {  },
-> +       { .pf =3D NFPROTO_NUMPROTO, },
-> +       { .pf =3D NFPROTO_IPV4, .hooknum =3D 42, },
-> +       { .pf =3D NFPROTO_IPV4, .priority =3D INT_MIN },
-> +       { .pf =3D NFPROTO_IPV4, .priority =3D INT_MAX },
-> +       { .pf =3D NFPROTO_IPV4, .flags =3D UINT_MAX },
-> +
-> +       { .pf =3D NFPROTO_INET, .priority =3D 1, },
-> +
-> +       { .pf =3D NFPROTO_IPV4, .priority =3D -10000, .expect_success =3D=
- true },
-> +       { .pf =3D NFPROTO_IPV6, .priority =3D 10001, .expect_success =3D =
-true },
-> +};
-> +
-> +static void __test_netfilter_link_attach(struct bpf_program *prog)
-> +{
-> +       LIBBPF_OPTS(bpf_netfilter_opts, opts);
-> +       int i;
-> +
-> +       for (i =3D 0; i < ARRAY_SIZE(nf_hook_attach_tests); i++) {
-> +               struct bpf_link *link;
-> +
-> +#define X(opts, m, i)  opts.m =3D nf_hook_attach_tests[(i)].m
-> +               X(opts, pf, i);
-> +               X(opts, hooknum, i);
-> +               X(opts, priority, i);
-> +               X(opts, flags, i);
-> +#undef X
-> +               link =3D bpf_program__attach_netfilter_opts(prog, &opts);
-> +               if (nf_hook_attach_tests[i].expect_success) {
-> +                       struct bpf_link *link2;
-> +
-> +                       if (!ASSERT_OK_PTR(link, "program attach successf=
-ul"))
-> +                               continue;
-> +
-> +                       link2 =3D bpf_program__attach_netfilter_opts(prog=
-, &opts);
-> +                       ASSERT_NULL(link2, "attach program with same pf/h=
-ook/priority");
+On 5/25/23 7:19 PM, Andrii Nakryiko wrote:
+> On Wed, May 24, 2023 at 8:18 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Wed, May 24, 2023 at 02:02:41PM -0700, Andrii Nakryiko wrote:
+>>>
+>>> And there were a bunch of other similar changes. Please take a thorough
+>>> look and suggest more changes or which changes to drop. I'm not married
+>>> to any of them, it just felt like a good improvement.
+>>
+>> Agree that current layout sucks, but ...
+>>
+>>>   include/uapi/linux/bpf.h       | 235 +++++++++++++++++++++++++++------
+>>>   kernel/bpf/syscall.c           |  40 +++---
+>>>   tools/include/uapi/linux/bpf.h | 235 +++++++++++++++++++++++++++------
+>>>   3 files changed, 405 insertions(+), 105 deletions(-)
+>>
+>> ... the diff makes it worse. The diffstat for "nop" change is a red flag.
+> 
+> Only 100 lines are a real "nop" change to copy/paste existing fields
+> that are in unnamed fields. The rest is a value add.
+> 
+> I don't think the deal is in stats, though, right?
+> 
+>>> +     /*
+>>> +      * LEGACY anonymous substructs, for backwards compatibility.
+>>> +      * Each of the below anonymous substructs are ABI compatible with one
+>>> +      * of the above named substructs. Please use named substructs.
+>>> +      */
+>>
+>> All of them cannot be removed. This bagage will be a forever eyesore.
+>> Currently it's not pretty. The diffs make uapi file just ugly.
+>> Especially considering how 'named' and 'legacy' will start diverging.
+> 
+> We have to allow "divergence" (only in the sense that new fields only
+> go into named substructs, but the existing fields stay fixed, of
+> course), to avoid more naming conflicts. If that wasn't the case,
+> using struct_group() macro could have been used to avoid a copy/paste
+> of those anonymous field/struct copies.
+> 
+> So I'm not happy about those 100 lines copy paste of fixed fields
+> either, but at least that would get us out of the current global
+> naming namespace for PROG_LOAD, MAP_CREATE, BTF_LOAD, etc.
+> 
+>> New commands are thankfully named. We've learned the lesson,
+> 
+> Unfortunately, the problem is that unnamed commands are the ones that
+> are most likely to keep evolving.
+> 
+>> but prior mistake is unfixable. We have to live with it.
+> 
+> Ok, too bad, but it's fine. It was worth a try.
+> 
+> I tried to come up with something like struct_group() approach to
+> minimize code changes in UAPI header, but we have a more complicated
+> situation where part of struct has to be both anonymous and named,
+> while another part (newly added fields) should go only to named parts.
+> And that doesn't seem to be possible to support with a macro,
+> unfortunately.
 
-we have ASSERT_ERR_PTR(), which semantically is a bit more explicit,
-let's use it here and below for !expect_success case
+Nice idea on the struct_group()-like approach, but agree that this is
+going to be tough given we need to divert anonymous and named parts as
+you mention. One other wild thought ... we remove the bpf_attr entirely
+from the uapi header, and have a kernel/bpf/bpf.cmd description and
+generate the bpf_attr into a uapi header via script which the main header
+can include. Kind of similar to the suggestion, but more flexible than
+macro magic. We also have things like syscall table header generated via
+script.. so it wouldn't be first. Still doesn't remove the eyesore, just
+packages it differently. ;/
 
-> +
-> +                       if (!ASSERT_EQ(bpf_link__destroy(link), 0, "link =
-destroy"))
-
-ASSERT_OK()
-
-> +                               break;
-> +
-> +                       link2 =3D bpf_program__attach_netfilter_opts(prog=
-, &opts);
-> +                       if (!ASSERT_OK_PTR(link2, "program reattach succe=
-ssful"))
-> +                               continue;
-> +                       if (!ASSERT_EQ(bpf_link__destroy(link2), 0, "link=
- destroy"))
-
-same, ASSERT_OK()
-
-> +                               break;
-> +               } else {
-> +                       ASSERT_NULL(link, "program load failure");
-> +               }
-> +       }
-> +}
-> +
-> +static void test_netfilter_link_attach(void)
-> +{
-> +       struct test_netfilter_link_attach *skel;
-> +
-> +       skel =3D test_netfilter_link_attach__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "test_netfilter_link_attach__open_and_lo=
-ad"))
-> +               goto out;
-> +
-> +       __test_netfilter_link_attach(skel->progs.nf_link_attach_test);
-
-nit: I'd just inline that function here instead of having
-double-underscored helper function
-
-> +out:
-> +       test_netfilter_link_attach__destroy(skel);
-> +}
-> +
-> +void test_netfilter_basic(void)
-> +{
-> +       if (test__start_subtest("netfilter link attach"))
-> +               test_netfilter_link_attach();
-
-Do you plan to add more subtests? If not, then this should be just a
-test. Single subtest per test doesn't make much sense. Alternatively
-(and perhaps better) is to treat each combination in
-nf_hook_attach_tests as its own subtest.
-
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_attach=
-.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_attach.c
-> new file mode 100644
-> index 000000000000..03a475160abe
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_attach.c
-> @@ -0,0 +1,14 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#define NF_ACCEPT 1
-> +
-> +SEC("netfilter")
-> +int nf_link_attach_test(struct bpf_nf_ctx *ctx)
-> +{
-> +       return NF_ACCEPT;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.39.3
->
+Thanks,
+Daniel
 
