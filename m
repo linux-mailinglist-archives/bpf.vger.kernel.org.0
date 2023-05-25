@@ -1,123 +1,143 @@
-Return-Path: <bpf+bounces-1196-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D0C7101E0
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 02:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321A87101EB
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 02:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10A0A1C20E10
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 00:03:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94851C20DAE
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 00:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B1919C;
-	Thu, 25 May 2023 00:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEF81381;
+	Thu, 25 May 2023 00:13:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A2D468A
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 00:03:13 +0000 (UTC)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6195199;
-	Wed, 24 May 2023 17:03:12 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-64d41763796so1151293b3a.2;
-        Wed, 24 May 2023 17:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684972992; x=1687564992;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/sfaSxrjpDVpW6nx9Gv6nwA0nMjU7/ydrxlKetNdAs=;
-        b=LJE1lyDS4tz8fl5KK7DnLYDf6ibmmArWDPYukL3kmmDJKmSbSPBU6oC4kbecjg8NPa
-         Af8rVyeur9e5XJbLTI36UvqhvINzz0EWOK0fjr4W70XXKiLzK+njPsbYeVCA42fZWN+W
-         bQVbZdz+HKzgMqunb2NDd0A2O8fxr4z1cu19NNvgfDWSrljotg4+0LSxVgIP4ppeMlwD
-         afQEWxMzBqqyCJEGhZ+h5kDZ5JVysrtCZlIzmJCoEoyK2AVHEKRuxu9a+MUrC6pfd+Jo
-         KXBeAMp234fJe17M/dUH/Sy1OQX9Hj5kj9kzuN2fvAIZqD9KFY5GIN0Ty816WtIl3L1I
-         rUNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684972992; x=1687564992;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P/sfaSxrjpDVpW6nx9Gv6nwA0nMjU7/ydrxlKetNdAs=;
-        b=SJbcwM1kbyugrDYGqLKnIphyDGBMD8uHsfDkPU1RSR+DMlLdX5wLIXrlvyToRWqIHg
-         kRNdzlOQilsS4qKcGckjrqlRCuMObzdqVKYAyrovIRL6WEfdxMVeOdg58UwKMoM/HUgu
-         rfBUT1n9kw8BYnhBm7FZ6scIqC7WanMnHvBs6X16Ur6mN2nAW1u99+urmlMmyI0AAfUW
-         UcubEPEr1azBuDbrPb2XrgAzSxw8eL5xJ6dBi+1zT+JY+OcJUjzBEl9USAPcp1v5tVns
-         HHkO/31hFIdQDHVI06MM8LCMQ4rIs0PwfrRkA2s5OKZKUXxSAF9z0jTJJIadd48jCgGL
-         spUg==
-X-Gm-Message-State: AC+VfDw6nTXdm0xfGid0fkn1nYMVOrQR29YmVuxV+we2MzcZFlgjHzmy
-	O/GHBUdIi9ljpqX1P8ptwKw=
-X-Google-Smtp-Source: ACHHUZ5jvp151opjVnOUx9o1pqEdym6iwvISEVh98WTz1GiRxLPg7DqkyxKMOdNUkD4mOTcQKpKfBg==
-X-Received: by 2002:a05:6a00:1a53:b0:63d:260d:f9dd with SMTP id h19-20020a056a001a5300b0063d260df9ddmr6068460pfv.33.1684972991630;
-        Wed, 24 May 2023 17:03:11 -0700 (PDT)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:121:f908:b42d:c399])
-        by smtp.gmail.com with ESMTPSA id u17-20020aa78491000000b0064cca73d911sm22276pfn.103.2023.05.24.17.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 May 2023 17:03:10 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH] perf bpf filter: Fix a broken perf sample data naming in BPF
-Date: Wed, 24 May 2023 17:03:07 -0700
-Message-ID: <20230525000307.3202449-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9C518E;
+	Thu, 25 May 2023 00:13:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A514CC433EF;
+	Thu, 25 May 2023 00:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684973606;
+	bh=+sO/602AFB9zwrX7ybT2/4+Yeh6TWX6oBP4DUinmm54=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Py9qIiJzIpSMi4z4T9kyJPBchACoaSp3A7iYr1VpVzwqexoMOOdxYJ5zL5OeHBBrh
+	 JVYdNd2LlDfnVEOz+yR57rv1siSYYZknxy22r88FLLkcgMBn0rEJjkAM5AlenUyY9n
+	 YSpq5vCayYJ/0IQwEkZXafQkhLjDa0blKzDdRxBSfGwbZIc84fEYyDSmphBVwmUFGT
+	 +y5NOqyQwe3zB0EgVVKwN7jPInjmlyEVw5ydeTGxS3+CI96EtESizgB+hgSY8JQHtW
+	 zPTA2C8zsTuXitNWWQuW8MUze0j3t+GebrL5qJQEGqbtJabRmlA6V9aAHxlojW8k9R
+	 GI54H+pI+M0Zg==
+Date: Thu, 25 May 2023 08:13:18 +0800
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: paulmck@kernel.org
+Cc: Ze Gao <zegao2021@gmail.com>, Jiri Olsa <olsajiri@gmail.com>, Yonghong
+ Song <yhs@meta.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Hao Luo
+ <haoluo@google.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+ <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ kafai@fb.com, kpsingh@chromium.org, netdev@vger.kernel.org,
+ songliubraving@fb.com, Ze Gao <zegao@tencent.com>
+Subject: Re:
+Message-Id: <20230525081318.b4984f7d5f3e89f70368fe71@kernel.org>
+In-Reply-To: <9dc981d5-e385-4468-9b51-64a10476c86d@paulmck-laptop>
+References: <20220515203653.4039075-1-jolsa@kernel.org>
+	<20230520094722.5393-1-zegao@tencent.com>
+	<b4f66729-90ab-080a-51ec-bf435ad6199d@meta.com>
+	<CAD8CoPAXse1GKAb15O5tZJwBqMt1N_btH+qRe7c_a-ryUMjx7A@mail.gmail.com>
+	<ZGp+fW855gmWuh9W@krava>
+	<CAD8CoPDASe7hpkFbK+UzJats7j4sbgsCh_P4zaQYVuKD7jWu2w@mail.gmail.com>
+	<20230523133019.ce19932f89585eb10d092896@kernel.org>
+	<9dc981d5-e385-4468-9b51-64a10476c86d@paulmck-laptop>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-BPF CO-RE requires 3 underscores for the ignored suffix rule but it
-mistakenly used only 2.  Let's fix it.
+On Mon, 22 May 2023 23:59:28 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Fixes: 3a8b8fc31748 ("perf bpf filter: Support pre-5.16 kernels where 'mem_hops' isn't in 'union perf_mem_data_src'")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_skel/sample_filter.bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Tue, May 23, 2023 at 01:30:19PM +0800, Masami Hiramatsu wrote:
+> > On Mon, 22 May 2023 10:07:42 +0800
+> > Ze Gao <zegao2021@gmail.com> wrote:
+> > 
+> > > Oops, I missed that. Thanks for pointing that out, which I thought is
+> > > conditional use of rcu_is_watching before.
+> > > 
+> > > One last point, I think we should double check on this
+> > >      "fentry does not filter with !rcu_is_watching"
+> > > as quoted from Yonghong and argue whether it needs
+> > > the same check for fentry as well.
+> > 
+> > rcu_is_watching() comment says;
+> > 
+> >  * if the current CPU is not in its idle loop or is in an interrupt or
+> >  * NMI handler, return true.
+> > 
+> > Thus it returns *fault* if the current CPU is in the idle loop and not
+> > any interrupt(including NMI) context. This means if any tracable function
+> > is called from idle loop, it can be !rcu_is_watching(). I meant, this is
+> > 'context' based check, thus fentry can not filter out that some commonly
+> > used functions is called from that context but it can be detected.
+> 
+> It really does return false (rather than faulting?) if the current CPU
+> is deep within the idle loop.
+> 
+> In addition, the recent x86/entry rework (thank you Peter and
+> Thomas!) mean that the "idle loop" is quite restricted, as can be
+> seen by the invocations of ct_cpuidle_enter() and ct_cpuidle_exit().
+> For example, in default_idle_call(), these are immediately before and
+> after the call to arch_cpu_idle().
 
-diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-index cffe493af1ed..fb94f5280626 100644
---- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
-+++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
-@@ -25,7 +25,7 @@ struct perf_sample_data___new {
- } __attribute__((preserve_access_index));
- 
- /* new kernel perf_mem_data_src definition */
--union perf_mem_data_src__new {
-+union perf_mem_data_src___new {
- 	__u64 val;
- 	struct {
- 		__u64   mem_op:5,	/* type of opcode */
-@@ -108,7 +108,7 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
- 		if (entry->part == 7)
- 			return kctx->data->data_src.mem_blk;
- 		if (entry->part == 8) {
--			union perf_mem_data_src__new *data = (void *)&kctx->data->data_src;
-+			union perf_mem_data_src___new *data = (void *)&kctx->data->data_src;
- 
- 			if (bpf_core_field_exists(data->mem_hops))
- 				return data->mem_hops;
+Thanks! I also found that the default_idle_call() is enough small and
+it seems not happening on fentry because there are no commonly used
+functions on that path.
+
+> 
+> Would the following help?  Or am I missing your point?
+
+Yes, thank you for the update!
+
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..fae9b4e29c93 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+>  /**
+>   * rcu_is_watching - see if RCU thinks that the current CPU is not idle
+>   *
+> - * Return true if RCU is watching the running CPU, which means that this
+> - * CPU can safely enter RCU read-side critical sections.  In other words,
+> - * if the current CPU is not in its idle loop or is in an interrupt or
+> - * NMI handler, return true.
+> + * Return @true if RCU is watching the running CPU and @false otherwise.
+> + * An @true return means that this CPU can safely enter RCU read-side
+> + * critical sections.
+> + *
+> + * More specifically, if the current CPU is not deep within its idle
+> + * loop, return @true.  Note that rcu_is_watching() will return @true if
+> + * invoked from an interrupt or NMI handler, even if that interrupt or
+> + * NMI interrupted the CPU while it was deep within its idle loop.
+>   *
+>   * Make notrace because it can be called by the internal functions of
+>   * ftrace, and making this notrace removes unnecessary recursion calls.
+
+
 -- 
-2.41.0.rc0.172.g3f132b7071-goog
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
