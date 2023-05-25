@@ -1,106 +1,123 @@
-Return-Path: <bpf+bounces-1193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C24E6710129
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 00:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D0C7101E0
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 02:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637971C20D3A
-	for <lists+bpf@lfdr.de>; Wed, 24 May 2023 22:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10A0A1C20E10
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 00:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3437881F;
-	Wed, 24 May 2023 22:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B1919C;
+	Thu, 25 May 2023 00:03:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7200F8498
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 22:55:24 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BF990
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 15:55:22 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34OHRoZu029231
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 15:55:21 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qsde0e538-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 24 May 2023 15:55:21 -0700
-Received: from twshared35445.38.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 24 May 2023 15:55:19 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id B666F3149A89F; Wed, 24 May 2023 15:55:06 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 3/3] bpf: don't require bpf_capable() for GET_INFO_BY_FD
-Date: Wed, 24 May 2023 15:54:21 -0700
-Message-ID: <20230524225421.1587859-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230524225421.1587859-1-andrii@kernel.org>
-References: <20230524225421.1587859-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A2D468A
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 00:03:13 +0000 (UTC)
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6195199;
+	Wed, 24 May 2023 17:03:12 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-64d41763796so1151293b3a.2;
+        Wed, 24 May 2023 17:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684972992; x=1687564992;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=P/sfaSxrjpDVpW6nx9Gv6nwA0nMjU7/ydrxlKetNdAs=;
+        b=LJE1lyDS4tz8fl5KK7DnLYDf6ibmmArWDPYukL3kmmDJKmSbSPBU6oC4kbecjg8NPa
+         Af8rVyeur9e5XJbLTI36UvqhvINzz0EWOK0fjr4W70XXKiLzK+njPsbYeVCA42fZWN+W
+         bQVbZdz+HKzgMqunb2NDd0A2O8fxr4z1cu19NNvgfDWSrljotg4+0LSxVgIP4ppeMlwD
+         afQEWxMzBqqyCJEGhZ+h5kDZ5JVysrtCZlIzmJCoEoyK2AVHEKRuxu9a+MUrC6pfd+Jo
+         KXBeAMp234fJe17M/dUH/Sy1OQX9Hj5kj9kzuN2fvAIZqD9KFY5GIN0Ty816WtIl3L1I
+         rUNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684972992; x=1687564992;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P/sfaSxrjpDVpW6nx9Gv6nwA0nMjU7/ydrxlKetNdAs=;
+        b=SJbcwM1kbyugrDYGqLKnIphyDGBMD8uHsfDkPU1RSR+DMlLdX5wLIXrlvyToRWqIHg
+         kRNdzlOQilsS4qKcGckjrqlRCuMObzdqVKYAyrovIRL6WEfdxMVeOdg58UwKMoM/HUgu
+         rfBUT1n9kw8BYnhBm7FZ6scIqC7WanMnHvBs6X16Ur6mN2nAW1u99+urmlMmyI0AAfUW
+         UcubEPEr1azBuDbrPb2XrgAzSxw8eL5xJ6dBi+1zT+JY+OcJUjzBEl9USAPcp1v5tVns
+         HHkO/31hFIdQDHVI06MM8LCMQ4rIs0PwfrRkA2s5OKZKUXxSAF9z0jTJJIadd48jCgGL
+         spUg==
+X-Gm-Message-State: AC+VfDw6nTXdm0xfGid0fkn1nYMVOrQR29YmVuxV+we2MzcZFlgjHzmy
+	O/GHBUdIi9ljpqX1P8ptwKw=
+X-Google-Smtp-Source: ACHHUZ5jvp151opjVnOUx9o1pqEdym6iwvISEVh98WTz1GiRxLPg7DqkyxKMOdNUkD4mOTcQKpKfBg==
+X-Received: by 2002:a05:6a00:1a53:b0:63d:260d:f9dd with SMTP id h19-20020a056a001a5300b0063d260df9ddmr6068460pfv.33.1684972991630;
+        Wed, 24 May 2023 17:03:11 -0700 (PDT)
+Received: from moohyul.svl.corp.google.com ([2620:15c:2d4:203:121:f908:b42d:c399])
+        by smtp.gmail.com with ESMTPSA id u17-20020aa78491000000b0064cca73d911sm22276pfn.103.2023.05.24.17.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 May 2023 17:03:10 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH] perf bpf filter: Fix a broken perf sample data naming in BPF
+Date: Wed, 24 May 2023 17:03:07 -0700
+Message-ID: <20230525000307.3202449-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: BMI3raIbAdjf7lOOj7w9druVNdTmyLLu
-X-Proofpoint-ORIG-GUID: BMI3raIbAdjf7lOOj7w9druVNdTmyLLu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-05-24_15,2023-05-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The rest of BPF subsystem follows the rule that if process managed to
-get BPF object FD, then it has an ownership of this object, and thus can
-query any information about it, or update it. Doing something special in
-GET_INFO_BY_FD operation based on bpf_capable() goes against that
-philosophy, so drop the check and unify the approach with the rest of
-bpf() syscall.
+BPF CO-RE requires 3 underscores for the ignored suffix rule but it
+mistakenly used only 2.  Let's fix it.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 3a8b8fc31748 ("perf bpf filter: Support pre-5.16 kernels where 'mem_hops' isn't in 'union perf_mem_data_src'")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- kernel/bpf/syscall.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ tools/perf/util/bpf_skel/sample_filter.bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 1d74c0a8d903..b07453ce10e7 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -4022,17 +4022,6 @@ static int bpf_prog_get_info_by_fd(struct file *fi=
-le,
-=20
- 	info.verified_insns =3D prog->aux->verified_insns;
-=20
--	if (!bpf_capable()) {
--		info.jited_prog_len =3D 0;
--		info.xlated_prog_len =3D 0;
--		info.nr_jited_ksyms =3D 0;
--		info.nr_jited_func_lens =3D 0;
--		info.nr_func_info =3D 0;
--		info.nr_line_info =3D 0;
--		info.nr_jited_line_info =3D 0;
--		goto done;
--	}
--
- 	ulen =3D info.xlated_prog_len;
- 	info.xlated_prog_len =3D bpf_prog_insn_size(prog);
- 	if (info.xlated_prog_len && ulen) {
---=20
-2.34.1
+diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+index cffe493af1ed..fb94f5280626 100644
+--- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
++++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+@@ -25,7 +25,7 @@ struct perf_sample_data___new {
+ } __attribute__((preserve_access_index));
+ 
+ /* new kernel perf_mem_data_src definition */
+-union perf_mem_data_src__new {
++union perf_mem_data_src___new {
+ 	__u64 val;
+ 	struct {
+ 		__u64   mem_op:5,	/* type of opcode */
+@@ -108,7 +108,7 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
+ 		if (entry->part == 7)
+ 			return kctx->data->data_src.mem_blk;
+ 		if (entry->part == 8) {
+-			union perf_mem_data_src__new *data = (void *)&kctx->data->data_src;
++			union perf_mem_data_src___new *data = (void *)&kctx->data->data_src;
+ 
+ 			if (bpf_core_field_exists(data->mem_hops))
+ 				return data->mem_hops;
+-- 
+2.41.0.rc0.172.g3f132b7071-goog
 
 
