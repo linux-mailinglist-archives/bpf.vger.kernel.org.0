@@ -1,197 +1,154 @@
-Return-Path: <bpf+bounces-1223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2D7710D2E
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 15:25:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6337F710E1F
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 16:18:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBE801C20EA5
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 13:25:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15B6A1C20ECD
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 14:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111F710946;
-	Thu, 25 May 2023 13:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E682311CB8;
+	Thu, 25 May 2023 14:18:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8535107B0
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 13:24:36 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CD613A
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 06:24:33 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f6a6b9bebdso70245e9.0
-        for <bpf@vger.kernel.org>; Thu, 25 May 2023 06:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685021072; x=1687613072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cJE2Y+9lHKdGfQARiSKxGndvrD8wTcpfzxVhMA8TopU=;
-        b=YiF+QeExMQxuNZllkEbjao6wMWMhEVzx3YUS3ZCR+T5Z2ViGeXLDrlgSwESrKLz4XQ
-         aHC36izj9qACsxIgCo1nJDvqof44tKuHXIkY4kMj3RL7juxIvC7mFQrH6i1cUU7b8BrD
-         Io4wq4+XN+bmjjD0soDHYJ9NIDAYY3aUCLSrnFNj4uMSnImFW/vOejV5JXLMM/pp7EJp
-         sYWnIaQW3BDRzeONo50RoHpiggh6qlgQNYUcj5w+dS4gssm5oB7LTIUIZhfDspsPxQ5c
-         arukdP3Z6mDo9glEQxRMdshI8016mULKUSggLbucCMYpclqFvItsXNBoomXocgU7GeYp
-         Q3nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685021072; x=1687613072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cJE2Y+9lHKdGfQARiSKxGndvrD8wTcpfzxVhMA8TopU=;
-        b=fHq5aIti6KzKubeF5NAtJAb2zMw3I7t5WeOJfaB/6RWiR+8U/m8lqEZRgbOO+0JLjy
-         vhqNtRik0Pop9NHESu03+0oGnseB4beje17pjLQVARC/o9Bw6pv6A18IDBXjZij9Lijz
-         fVo4M08QMuEFq8sboHDSlkZ8nheCwQ2UG/WxpJx8eZQJF5UDiw6DmQtktBfEJ1S30wtf
-         IQUfrT4/CuCZNVaDwDt5RdFFbxb1h1NGLQt2rbDsORGedDGSQ4og5LH9X1A3KVEpxwMY
-         /ILLfajpG5F9X8/v7c2LH1QPRexh/aO7kB81otcYNSLRjj+XK5rGOO3xAVhctXwiPXCP
-         sUKA==
-X-Gm-Message-State: AC+VfDxCzaZpsm/is8t1r7POqxUCAxFY00FuW+H7gxMYUr531yuYAUHj
-	0uIAAkdCCrg3dvjw46cPB2IUPuRDILeWB+swsO6XKg==
-X-Google-Smtp-Source: ACHHUZ4Z0j2Nxi6xWsZl7nLei6HQfuzqIW/xvulwwCVcsoBQeSDRrx4VHDdQSD2O4FHODE6va2MYGq8ssJeMeT0CGbQ=
-X-Received: by 2002:a05:600c:1c1b:b0:3f6:f4b:d4a6 with SMTP id
- j27-20020a05600c1c1b00b003f60f4bd4a6mr134629wms.7.1685021072117; Thu, 25 May
- 2023 06:24:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8762101E4
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 14:18:18 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C563191
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 07:18:17 -0700 (PDT)
+Date: Thu, 25 May 2023 16:18:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1685024295;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IlEzqf8v5LIHFpTK6bS8f7bh0N8Q4MKhEvHKfwTR7Lo=;
+	b=qegWGBFjYZT8xoJu79oaHox4b1lJTsoBfa5uidlT67FSTd5pV25Wrbyadzz9TevEvP9Acw
+	C2j2+Js1a1/72+yZZNZGIDh34rkf5dlt7IWXziBOwY8z0QxktMbfRRHLS+3gZlPg2j1ULb
+	aCZaOP9HrBo6102nloLeXWm0AWdu0XrGgyxZ7Aua92dOsPTrysE/1srBqpprpSAmWoFS3N
+	rFTsR6HlZ3FKqFi0JEt1dCW4eT7bSoOdZTDo9FbsQPlH0C4vJpHpG4CpOmSbCS+bAEiFoG
+	vP4O8pzVTJxgXCS7+1CDRHG00S0FykJcXcYUF/cW/lUTGKVF+KK6tLSl6Xgoyw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1685024295;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IlEzqf8v5LIHFpTK6bS8f7bh0N8Q4MKhEvHKfwTR7Lo=;
+	b=dTjZTP92nujluv04YY4Dty5AQxOEelsKuUrwlvzKZbl+/YbCwS5hOm+9wqZuYgLiCw6qB0
+	Bxli6zoXMSxiGUAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2] bpf: Remove in_atomic() from bpf_link_put().
+Message-ID: <20230525141813.TFZLWM4M@linutronix.de>
+References: <20230509132433.2FSY_6t7@linutronix.de>
+ <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
+ <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
+ <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230525081923.8596-1-lmb@isovalent.com>
-In-Reply-To: <20230525081923.8596-1-lmb@isovalent.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 25 May 2023 15:24:20 +0200
-Message-ID: <CANn89iJx74gR7Xuahd0S3pLXYC8EX6+JRkbt6T_bemMX-8zyig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
-To: Lorenz Bauer <lmb@isovalent.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	David Ahern <dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Joe Stringer <joe@wand.net.nz>, Joe Stringer <joe@cilium.io>, Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 25, 2023 at 10:19=E2=80=AFAM Lorenz Bauer <lmb@isovalent.com> w=
-rote:
->
-> Currently the bpf_sk_assign helper in tc BPF context refuses SO_REUSEPORT
-> sockets. This means we can't use the helper to steer traffic to Envoy, wh=
-ich
-> configures SO_REUSEPORT on its sockets. In turn, we're blocked from remov=
-ing
-> TPROXY from our setup.
->
-> The reason that bpf_sk_assign refuses such sockets is that the bpf_sk_loo=
-kup
-> helpers don't execute SK_REUSEPORT programs. Instead, one of the
-> reuseport sockets is selected by hash. This could cause dispatch to the
-> "wrong" socket:
->
->     sk =3D bpf_sk_lookup_tcp(...) // select SO_REUSEPORT by hash
->     bpf_sk_assign(skb, sk) // SK_REUSEPORT wasn't executed
->
-> Fixing this isn't as simple as invoking SK_REUSEPORT from the lookup
-> helpers unfortunately. In the tc context, L2 headers are at the start
-> of the skb, while SK_REUSEPORT expects L3 headers instead.
->
-> Instead, we execute the SK_REUSEPORT program when the assigned socket
-> is pulled out of the skb, further up the stack. This creates some
-> trickiness with regards to refcounting as bpf_sk_assign will put both
-> refcounted and RCU freed sockets in skb->sk. reuseport sockets are RCU
-> freed. We can infer that the sk_assigned socket is RCU freed if the
-> reuseport lookup succeeds, but convincing yourself of this fact isn't
-> straight forward. Therefore we defensively check refcounting on the
-> sk_assign sock even though it's probably not required in practice.
->
-> Fixes: 8e368dc ("bpf: Fix use of sk->sk_reuseport from sk_assign")
-> Fixes: cf7fbe6 ("bpf: Add socket assign support")
-> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> Cc: Joe Stringer <joe@cilium.io>
-> Link: https://lore.kernel.org/bpf/CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBN=
-ROnfWMZxUWeA@mail.gmail.com/
-> ---
->  include/net/inet6_hashtables.h | 36 +++++++++++++++++++++++++++++-----
->  include/net/inet_hashtables.h  | 27 +++++++++++++++++++++++--
->  include/net/sock.h             |  7 +++++--
->  include/uapi/linux/bpf.h       |  3 ---
->  net/core/filter.c              |  2 --
->  net/ipv4/inet_hashtables.c     | 15 +++++++-------
->  net/ipv4/udp.c                 | 23 +++++++++++++++++++---
->  net/ipv6/inet6_hashtables.c    | 19 +++++++++---------
->  net/ipv6/udp.c                 | 23 +++++++++++++++++++---
->  tools/include/uapi/linux/bpf.h |  3 ---
->  10 files changed, 119 insertions(+), 39 deletions(-)
+bpf_free_inode() is invoked as a RCU callback. Usually RCU callbacks are
+invoked within softirq context. By setting rcutree.use_softirq=3D0 boot
+option the RCU callbacks will be invoked in a per-CPU kthread with
+bottom halves disabled which implies a RCU read section.
 
+On PREEMPT_RT the context remains fully preemptible. The RCU read
+section however does not allow schedule() invocation. The latter happens
+in mutex_lock() performed by bpf_trampoline_unlink_prog() originated
+=66rom bpf_link_put().
 
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index e7391bf310a7..920131e4a65d 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -332,10 +332,10 @@ static inline int compute_score(struct sock *sk, st=
-ruct net *net,
->         return score;
->  }
->
-> -static inline struct sock *lookup_reuseport(struct net *net, struct sock=
- *sk,
-> -                                           struct sk_buff *skb, int doff=
-,
-> -                                           __be32 saddr, __be16 sport,
-> -                                           __be32 daddr, unsigned short =
-hnum)
-> +struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
-> +                                  struct sk_buff *skb, int doff,
-> +                                  __be32 saddr, __be16 sport,
-> +                                  __be32 daddr, unsigned short hnum)
->  {
->         struct sock *reuse_sk =3D NULL;
->         u32 phash;
-> @@ -346,6 +346,7 @@ static inline struct sock *lookup_reuseport(struct ne=
-t *net, struct sock *sk,
->         }
->         return reuse_sk;
->  }
-> +EXPORT_SYMBOL_GPL(inet_lookup_reuseport);
->
->  /*
->   * Here are some nice properties to exploit here. The BSD API
-> @@ -369,8 +370,8 @@ static struct sock *inet_lhash2_lookup(struct net *ne=
-t,
->         sk_nulls_for_each_rcu(sk, node, &ilb2->nulls_head) {
->                 score =3D compute_score(sk, net, hnum, daddr, dif, sdif);
->                 if (score > hiscore) {
-> -                       result =3D lookup_reuseport(net, sk, skb, doff,
-> -                                                 saddr, sport, daddr, hn=
-um);
-> +                       result =3D inet_lookup_reuseport(net, sk, skb, do=
-ff,
-> +                                                      saddr, sport, dadd=
-r, hnum);
->                         if (result)
->                                 return result;
->
+It was pointed out that the bpf_link_put() invocation should not be
+delayed if originated from close().
 
-Please split in a series.
+Remove the context checks and use the workqueue unconditionally. For the
+close() callback add bpf_link_put_direct() which invokes free function
+directly.
 
-First a patch renaming lookup_reuseport() to inet_lookup_reuseport()
-and inet6_lookup_reuseport()
-(cleanup, no change in behavior)
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
 
-This would ease review and future bug hunting quite a bit.
+v1=E2=80=A6v2:
+   - Add bpf_link_put_direct() to be used from bpf_link_release() as
+     suggested.
+
+On 2023-05-17 09:26:19 [-0700], Andrii Nakryiko wrote:
+> Is struct file_operations.release() callback guaranteed to be called
+> from user context? If yes, then perhaps the most straightforward way
+> to guarantee synchronous bpf_link cleanup on close(link_fd) is to have
+> a bpf_link_put() variant that will be only called from user-context
+> and will just do bpf_link_free(link) directly, without checking
+> in_atomic().
+
+Yes. __fput() has a might_sleep() and it invokes
+file_operations::release.
+
+ kernel/bpf/syscall.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573ee..85159428e5fee 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2785,20 +2785,23 @@ void bpf_link_put(struct bpf_link *link)
+ 	if (!atomic64_dec_and_test(&link->refcnt))
+ 		return;
+=20
+-	if (in_atomic()) {
+-		INIT_WORK(&link->work, bpf_link_put_deferred);
+-		schedule_work(&link->work);
+-	} else {
+-		bpf_link_free(link);
+-	}
++	INIT_WORK(&link->work, bpf_link_put_deferred);
++	schedule_work(&link->work);
+ }
+ EXPORT_SYMBOL(bpf_link_put);
+=20
++static void bpf_link_put_direct(struct bpf_link *link)
++{
++	if (!atomic64_dec_and_test(&link->refcnt))
++		return;
++	bpf_link_free(link);
++}
++
+ static int bpf_link_release(struct inode *inode, struct file *filp)
+ {
+ 	struct bpf_link *link =3D filp->private_data;
+=20
+-	bpf_link_put(link);
++	bpf_link_put_direct(link);
+ 	return 0;
+ }
+=20
+--=20
+2.40.1
+
 
