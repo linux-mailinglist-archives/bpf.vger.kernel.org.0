@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-1204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6353671054B
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 07:27:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 992BE710550
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 07:29:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305561C20E25
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 05:27:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DA071C20E88
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 05:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F4B849C;
-	Thu, 25 May 2023 05:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009A98485;
+	Thu, 25 May 2023 05:29:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D72B199;
-	Thu, 25 May 2023 05:26:48 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B1997;
-	Wed, 24 May 2023 22:26:46 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34ONabua002556;
-	Wed, 24 May 2023 22:26:38 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A4B199
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 05:29:17 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7558097
+	for <bpf@vger.kernel.org>; Wed, 24 May 2023 22:29:16 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 34ONaOpG023238;
+	Wed, 24 May 2023 22:29:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
+ subject : to : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=SZI2zY855EC3k4KM8ft0/FSmCJ/ACu6163H81bk5lLk=;
- b=W38qm2Dg1GX7L42adYd2WQtLHogvViCcirsLYMCqXa8Jd3h/jVC7i30lI8gK7ZM8TGhB
- 5Zt+wlt8PSboNCG0A0fnms88QYMADUZZvD2zw8vK8LoeEiotesW9j7jPAJaIZJvFYX6f
- 8h6UPAhn9zQKKTtVV77eGdq7odYlx+4K/cyevBYs7x+/Meh3yqq+h1T6KX7tUoCB0nkh
- kdk6P2sUwiCxUOAmV7VGJ2qdjh+v3uFtZNJFeIjTMahKBjYqhIFeJUeKl9A4dU1g/0WI
- 5Q25GGjtw6RFOuMBEthE6vlNemM0uf5km3Zw9NJL/gMcy68F72kYGYLU/W6Ub6JJmPaR Pg== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qscws01u9-1
+ bh=avTDbePANQtADeMC0X4Ngq+mObMFLZLrCOeLzA0cUXM=;
+ b=IjmlnAY4UwK/aZoZJMZrHAvLiSeoD+iIglunOySWv7mmSMPpYY4/8hlve4wre0qsvILX
+ LitNj1nCTCseq/GwiBiyX5095UKKDyyYFPNbHZMeRLO73ob5Cr6nTHgfpDLe/vgI94J1
+ GFw7E2/zhJifB6MI5HckDXC7Ta/mFYCHvUWKZayp91pV9i/uFSYRvxeH59Ri99FuExI8
+ WPI8AKI+GBGl+lvxAOe3BvFmQyRVz9RQUEMDkXmZ6DYpeviLDsNTBR1k3Z7M3lq6Etd0
+ gr5JdntEn6yo4HLeXRN/YINPcLn+hUoH+l4eRGoQ74Wtj93uC6Re6Hyrwsv4ocMky5Gb TA== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
+	by m0001303.ppops.net (PPS) with ESMTPS id 3qs8en1hd0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 May 2023 22:26:38 -0700
+	Wed, 24 May 2023 22:29:12 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DBnZGm92O7B7OPVHHzRzZ9qrFFfhxC1z8y0VQkAacaE3254EvHlDs5WS45ecKCdNNgSy3kvvYJQzTo+jyhmb2xj9Nj7AQHZbRV2rSW3FyOQnkhVwmfoGiaUqlGQH70ZdIxiQu1Gl4z2e2u5/9zO/4//ntutmP+1e1V98Ym8U0D8aFBoGEc2NvXBWqcb4ZnohjW2tHkPOTxJg44FlFS1tfDhekG7iSs9brbaErN9Yn8OMu5hBXi/YIpUHA9jGBXESHh+iQYG6McQXhBTciQlTbm1UGNXulOpEC1/sH/tvPGJDxRoQlNCLxr2qVrWwdCVzVhn3ohMTPZHUB6iNt/xV/Q==
+ b=eKZEX1WGCZioULhMffYTj10h5jL9K3mOelBUZzw7ZTSKdHgRt4ziH2kdsyEBDGJnzw+/FWvP9bsKpbsHYxX5xBFR0ybhhhDitFT3E+VR7ry+9p+2dwxne35Omrg3LXLGDyBaBzzXgh1G+hawyt+uuV2QHc1wc2j7H4CNVD1tz+eldJt3Udxm25xPSMJYOPt891EefAcMokTzexxVBuSgjmqGBQQWkLlMDeso0szEWVZtKLrlnQUeIyVJFyZjlr5/QZbPWBUsDUH2sZvv4BWIOacsBYxeBjLabWUTPM0yoKUkRq/Bc93Ohpn3QWENgrx5BHQ9PPpTWeQ3EeijkPPkug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SZI2zY855EC3k4KM8ft0/FSmCJ/ACu6163H81bk5lLk=;
- b=H+Dnvkg5gtlsZo1JOc2cWVoL8puXQ/+ToQcYR1TNzxRsCwaieJWAkm4ZenRrCqJDHJ47qUPhT+BW9vM8KxsP2Vp/MisTwa3vtCFJrQONYBjSqMRrq4uCidYIMwijyidTlS9y0l6MtsgUIu0xZo6ewNxyt8ZUmQUM7BTCwDPy4O9EfsRJ1BfKDC2GnWZt4j8oZ5RcDdxtvScYnCfUnCLOAV0dNC2OJbd0Z9D9RsFPnp2M3ak1NnEZek/YqE1JMmnRK6Hxd3yx0ZC0QfKkwLpNYZM/f1Nabk+Kgy9+3PeyeLyIZrkiIzh1EWpb9s0N8haZEyygNstHmqwL/5eRnvgGUg==
+ bh=avTDbePANQtADeMC0X4Ngq+mObMFLZLrCOeLzA0cUXM=;
+ b=RPf6zexp/dclU8prezN3JAiC7KF/yfuAVqTZS1codUiFiceMTMbh6aumD+cfWK2fTCQuwoxsNce+wO81F2dRW9rmp25LUfUizbGvz+BjI4zTXegQObscDT3D2lQXiSFVM/uEAexYaSydAohdV/vitj8YzLQ/jhSmqqmkDXMWp24REXZtSTOG+6HRDdnATZwgkTIYzpcJWTck1rI9d6msuV+HKLpdIuuxTbfpciHxUbGcqQyylUcZW8Of3F28sjNAp7MP2XtB5G3pEzC3bLqAr88lXey80Uzjrgta2vI6pNiGwPMKuAPXzTCFVHBtVrzBFrgyX94hnrEPtf0LFa13dg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
@@ -51,30 +51,26 @@ Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
  by SA0PR15MB4030.namprd15.prod.outlook.com (2603:10b6:806:88::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.28; Thu, 25 May
- 2023 05:26:35 +0000
+ 2023 05:29:09 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::bf7d:a453:b8d9:cf0%5]) with mapi id 15.20.6433.016; Thu, 25 May 2023
- 05:26:35 +0000
-Message-ID: <26c90595-f45e-a813-d538-0892c3ef2424@meta.com>
-Date: Wed, 24 May 2023 22:26:32 -0700
+ 05:29:09 +0000
+Message-ID: <56827417-9376-68bf-c33b-49761424a2cd@meta.com>
+Date: Wed, 24 May 2023 22:29:06 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.11.0
-Subject: Re: [PATCH bpf-next] bpf: Export rx queue info for reuseport ebpf
- prog
+Subject: Re: [PATCH bpf-next] libbpf: change var type in datasec resize func
 Content-Language: en-US
-To: Joe Damato <jdamato@fastly.com>, bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        edumazet@google.com, martin.lau@linux.dev, song@kernel.org,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, haoluo@google.com
-References: <20230525033757.47483-1-jdamato@fastly.com>
+To: JP Kobryn <inwardvessel@gmail.com>, bpf@vger.kernel.org, andrii@kernel.org
+References: <20230525001323.8554-1-inwardvessel@gmail.com>
 From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230525033757.47483-1-jdamato@fastly.com>
+In-Reply-To: <20230525001323.8554-1-inwardvessel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR01CA0071.prod.exchangelabs.com (2603:10b6:a03:94::48)
- To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+X-ClientProxiedBy: BY3PR10CA0026.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::31) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,67 +79,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA0PR15MB4030:EE_
-X-MS-Office365-Filtering-Correlation-Id: 339db506-e3c5-4c16-ef29-08db5ce09b60
+X-MS-Office365-Filtering-Correlation-Id: 8a5a432d-7e99-4ae6-4eb6-08db5ce0f706
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	0o9GY5XJRjRvHOseQgynJMcX4H0nhyzNdba/reiN8r4adSFZjqUuENexXpCbbh8repRQc075irDG1bV8QMYhgaBX7z2FG3kCFq/3TCEl+y/RORFDJT2ng1Wue+92udCmUMdpyXC9LN0igkSC0PJ2p+hToEDLXF7bBR/VPF4oP+k9c67/dvUf1dk59E+oT9mQhS1uEYDpNzmcJ6avQDlafSj3r6vl89ROogKhwXGFf2D9c7f8HP1Xu5qW5zvVYqaysN+f+yxCqwd80U4OB4y/Vrx7nRwl72Z+2GimOp4/eDcXLzKNLjfsSlyfZt6qfnV6c9qAaLVN0B3Q9s2tUxoElXSv82pc+R1TKMpJiguoOgbQ7DW4D6bUvCl3VKDLHHsEfPKXH0d565g83kowRsvJdPaazZCzTcT7oYekjzYEF2k4ePLWJDN3kLm8glyRcOlhWu2pffeZ5rEUPpBglHNshW8K9mecLcOlD5EZDryZUs3w7tzw13HzMMg7zrtSt9xHZssKCYJlGlPghMd9Eu3DKKu8zIGZE3srY+5ZaqmIeKJX4gUnE2aZ+YUhCsz00fAcv+7gC2buUGHvxHseqT9CHfKzm+2NFfqNViuZbP5vTGtaIxsghRTuAAwgezUlSY/XYlu1e7gdQt65jdUObT67mQ==
+	xQ4X60l47O4Pr0sMH7ZCIhynbLiYYRGAIvcQi8/Fz/oYSBANsBquU68TwwOl1CHepfkJBkxCPEIrvc7zHQ6ic6BddVMine36RHEe3BAaPaTVbk9v5EYLmMH8NZO62ZrO/BxXGdwPwx2J83R7YKdi+zDy3TL5sSlkKTdfdR37SQ8QuH1XnB8h54SLA3bUf9sYNFxsTB8Pvr1cClgRblS+dzXAeq6TyCLg9JGufNJlqDdjVY2p/r9yxP96I1PwhRAFuBU79e1Bz4t57ka/Deyf0UqTckkp96kXzyJsuOcSGoRSwZnnWztVbXOx22jw26hdzXefre+YDLX7KUgCSuAvPF+vfKV2pKfpxnt/G6qGeApXSAsvZsO69Qq8wybxSlICO0QPoTiFI307nwusPUHhzGohxVBsaDtH+8Kla5y1hnIYmtz/PZP64Z6Hp7UOWAN19qDFdHnbpYtGL16EyNIwd8taftk47MK3zBf5vF9dwKpwhaRpL7xutUmmUW0eCHFo1LNmKxZVexlOp/S+z/4RocGwia7sxHBHiKmG4jyiqDQVdABCwPFR+pPZSD9PUpqOlMzJyVbj4j1M5HrS6jlS5HhQxhJzKOrDbaXxKweJa7gcCqs4rrqMD7v2u1NWj8w4PA/XR0EAXfWxQEDxMy4Tng==
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(451199021)(2906002)(2616005)(83380400001)(186003)(36756003)(31696002)(86362001)(38100700002)(6666004)(316002)(6486002)(41300700001)(8936002)(7416002)(8676002)(5660300002)(478600001)(31686004)(66556008)(66476007)(66946007)(4326008)(6512007)(53546011)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(451199021)(2906002)(2616005)(186003)(36756003)(558084003)(31696002)(86362001)(38100700002)(6666004)(316002)(6486002)(41300700001)(8936002)(8676002)(5660300002)(478600001)(31686004)(66556008)(66476007)(66946007)(6512007)(53546011)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?dkNVSm9sWFdwcHBaYkRTdmVKRENvbnNBcW1URDRmU2hwNXFDRTFwVEdxU1Y3?=
- =?utf-8?B?Z3VRdDA1cWR4VXp2M3pDcC9PdVlPdlg4Z0NHN1U4TGpiMGh6NE1EdkwwSEpp?=
- =?utf-8?B?VWxvTy9PS2gzOC91S0ZFOG9oaDhlbmY4Nmp6cTI5cUdkYkMycGRTVWFIb3Jo?=
- =?utf-8?B?d2FKMUJNZFRNYm9uekcyUTRmS2NVRmpWb0hETWpBQm9HK3ZPVDRSRWN0WDFr?=
- =?utf-8?B?QlVHbzNjVjRBUlQ3SnNpcXpEK29JWUliQ1NFbDJpb2E5eGtscDlTWXl4Ni9I?=
- =?utf-8?B?TnlvQkxRK3Bna2RjdDdRb1FqVVFmOURMVUszYkphazYvNXdTcjZSN2dlVk1p?=
- =?utf-8?B?eUtwNDZhcVZYa2h3aGVUODhUa1BoZGsvOG5JV1drYjNHQitSdzZaSFRnVWtI?=
- =?utf-8?B?M2twYVVKWDYwMWo5OVYzbkdTem80U1h5TjJSZmVYaysvR0doYUFpeTdYRE9H?=
- =?utf-8?B?aDVrMi9xckJlQUxzSEU2aXV5SExMOXJHbTVEeWVXSmRPeUpDei9RcmwwQnhn?=
- =?utf-8?B?eDdTTTN5ZHRLd0svNVRYcFJmeHJBbUl5bElNOXBDOGVDNzhFbDlvaUFINXdi?=
- =?utf-8?B?ZjJzc0QxbzhvOGdQNm1nb0w3dWFKOFJZZXJabHNCNGRBdDJpUHNYc1lJZDA5?=
- =?utf-8?B?SzFacW9ONTlWb1FWdmE2V2xSRjdIWi9XK21nMEtDRHV4dlVsR0tSK1BBcHI4?=
- =?utf-8?B?bUdiaG9JejhOM3cvWVUyRXRIYmhZVjBiTVlwUzRMQ3dlOVV5NnhuM0RkbHM4?=
- =?utf-8?B?NEt2OGlpWGtQLzQ1V3d5S2hKK2RhTGtGTXVoN1FQZVRkdHE1T1YzQVd0UHZT?=
- =?utf-8?B?VXljRnZkT1hXb3F6bWgxTkhUVUYzbEpCNjRjL1JXUkE3RDI5ZnpyUUtpUzBI?=
- =?utf-8?B?blEzTjNPTGpwNmVENXM1bXB0NXR2K3lKWG82VzQ2S1Rmb3NsWWwvQ1NUSjJC?=
- =?utf-8?B?ZHVZc2pWU0dhTjdMblRzMmtWU1pMUnpoNkN6aWZoYjJQcjV4blRkZVQ4aVdF?=
- =?utf-8?B?TlFQb01ONUhlUllEZHNPdlE3NHJFTldYZHBDQkI4eGxraGpUTWp5QzduN3Ni?=
- =?utf-8?B?bk4rMmFwZnZYcGZ1N2hUTWtIeHEwTjBDSnVqUFJVanREYmhKMHFtYTArdy9p?=
- =?utf-8?B?Tkhiam0wKzlDYnBUM2VCcFBLL3hXSFhuS2p6UjlETCtSczdla1Z4ZnpuQjN4?=
- =?utf-8?B?Qkd5TSsxai96ckxzL3krOGc0Z3hOS1Vza0ZpRi9XcWhkRVZPT0c4SjNxeFhG?=
- =?utf-8?B?ZTVLVVRzUTV5K2JydGZTWERFL0hFUW55MnNxUGVmQmszVDh6NmxaL1h6aDkr?=
- =?utf-8?B?a2RnZzFjdVJ3dkxrSzdWL3ZJV0Zxc2ZBbXFWR2sxc2dIWmovVXNvRlVFamNh?=
- =?utf-8?B?cU1KOWtaSUtlRHJtTXJZSkVwQm5SSGtoMXBXNVV2dFJjQ29tUDRXUjNtUWhS?=
- =?utf-8?B?Q2FGamlTdVVXV3h4cnp4NjVQUVVkTzJweUMyN1FQU3ppWm1Pb2dYZG1UNFE0?=
- =?utf-8?B?MEJwNEw0YTF5UW4vVDBjaDFWeWxzL0VDaUdTRUxadldRY2dYOTZDZ1luQzB2?=
- =?utf-8?B?ZDFhRVR4Y0FNV0I0clNHSzd5NXBCMHBzdGFoa2NpcDVKUlI5dmVVQXFBSEIz?=
- =?utf-8?B?QXdJU2cwVWRueGYwMThQeFRoV0l4TmVPUFViSFF5V25GZmRHN1NCNjZtZWUy?=
- =?utf-8?B?OXJQVytLQWt2Q3JlQjJPVkFaL2lUQkhuU1RScVgvRVRtVWtYNXVnTEF2VEpR?=
- =?utf-8?B?Q0RRQ3Y2Y2kwRi81QVJrNlRiNnNWUmJubU9DV2Uvbnp6TVU1bUVhMFpPRlRs?=
- =?utf-8?B?bUkwNk0vWGZ0T3Z3ckd6dUVoOVozaWpPbjdkOU81aGdxMGFCenplVzVuKzhW?=
- =?utf-8?B?NE5oT2xiYkh6RjhMVnQyanV1Q25KeHdvcEYrajNabE1TcE5OTmR2WE5BT0FD?=
- =?utf-8?B?VzF2dkdwcFdrc2dkY0JlUlZyZnpCMmFFaGlScHhqYitoWGdjcEtHQnRkZUJR?=
- =?utf-8?B?R3NrbjM0MXB4MDVBNXlmb21vVzl6MnFYZ3ZheG11QXlURlBzVGhpSWVEYy9h?=
- =?utf-8?B?ZkhBUWR3ZTBBRzNEL0VRMVArbWhFSnErQTg4NUVkVkhEMjJiY1pxRGxHVkRs?=
- =?utf-8?B?eTRZQTlBSFRiNEpGZHRBZVBBRnpOMHRPY3ZhcWhoV21RQUNCNWF5cmJXMi94?=
- =?utf-8?B?R0E9PQ==?=
+	=?utf-8?B?UTNkTzRNWW9aQ1hYOUVObk92bnVQMGNsR0JnSjRRenpRTkhjcXFJOGcwem44?=
+ =?utf-8?B?SXAyU1Z6VlhnOVA5cm9xMnRkTlRoUnpkaG55TFc0MFJHNTZCUmNuM3B5RWFi?=
+ =?utf-8?B?V2V1ZHhocW9acHA0T1NLNFhXdkNhOXV5WEM2YWQ1YURZcThZMnE5bEZzN2Vv?=
+ =?utf-8?B?YU1zTTJSTmMrdm4vbzBOcXBQd094Rjkxc0FNeWlpQUE1TjhEeHJuSGd0WEIr?=
+ =?utf-8?B?eVByVkRvUzdYbS95aGZDc2dWRzFSNkpvN21mZVFDUHlMRDExYTVrSWl0MDJR?=
+ =?utf-8?B?SlpMeGNNMDduR2N0K3QvelpxWjM1NER0R0Z2VmxLa3d0WHRSa3NsbmRQeUtQ?=
+ =?utf-8?B?VkhkbitkNUhLdHBmYnJxTXl6MmRWaHJLcVNUOG5TV25RQTd3cGQ4L0JQaC9i?=
+ =?utf-8?B?VjFlV25NN1Zmb2M0Y0ZVaUxxUkg0VjNLWnlaOHZTRy82S05yMklHMTMwY1lE?=
+ =?utf-8?B?eWp2cUFvdkRFcFVDbktpSHJlNGYrTFI2MEFaM01pV2xVOFFjODQrOEFpczlq?=
+ =?utf-8?B?QnByNy9WSjZhSE13U1lQL3Z2YmdHeWFEQmIvWGNZd2kyeENjWml6Vm50QWdF?=
+ =?utf-8?B?VDc4R0ZxeGo5bVRzSFNoZ0dqMlpQeFpacFh1UWhJUytiSFlNUWJNQzhQeHJT?=
+ =?utf-8?B?OFI4WGN2emdOems1YllMQkR6UkdLZjJzcHZrcDRHcXUvbEg5RFAzbG9xblZu?=
+ =?utf-8?B?Y1VBc2RSTDg3Uk9vK0laelNkT2IvNGNmNklwSG5sdFV2MzhrVDNMTFBGdDh2?=
+ =?utf-8?B?TnBhVUkxNHdwYmpkNnBZd1FqMTBteStMUjhCNkhoNnJjTlNkTXU0a3RkNTk0?=
+ =?utf-8?B?M1g4emgzS2ZHOGFsWWRSQmV2ZFZ2L3hGTnUralFBeC93VkFlakpHUlFGS0Y1?=
+ =?utf-8?B?NE11MVFQbjNDcUJHYWs2bzc5NGxCeWJBanV0RFprZFgxODJmMGJPTkZzMTFP?=
+ =?utf-8?B?Z1EwZzRpeitjSnBSeFlNREdtUkZvRys4T1JrUmNxQSs5YlhiUEtaaDE5dUE5?=
+ =?utf-8?B?RzF1MWdTMngxN05XT3l0OTFVUk9yNGFUVVZiMjVKZVIzdkZvMUJzZCt0WkJv?=
+ =?utf-8?B?M2tpY3JZUXhNeTA4dGhDMGZacFQ4SlVnU0trajRDZE02S0tYcUY3cW9tVkFw?=
+ =?utf-8?B?d1AzdysrZ29MQWVFTVNMOUJESGFhcThENFArL0krNjJGanEzc2N2RURKTk03?=
+ =?utf-8?B?bGp6ZXRzeDUzQ0ZQdWgwNnlTK2JUV1d4cVhLOGRONFROYmZQMVVRdGNXb1ZM?=
+ =?utf-8?B?YTJsVmp4UUpTSHZ6TFZiUTNhN214Zm1OMUVsbTlUR21CR3JwTXhVOTd4VEhO?=
+ =?utf-8?B?TVJYU0ZmajYxaUJUQjZudmFJcVJiekZaVWRyN1dJVnRjNHNldmVyc0RrMmk2?=
+ =?utf-8?B?QWJiQ3NCelZLNUE5dUVLY0p6QjVwWEtoODZReFl6cTN1ZE40N0hxUmZ4U21u?=
+ =?utf-8?B?bkc1MVhKakJSLzRsQVNtSlJsWW0zdHBaQWFmYWN4a2RiNWZQWHppVHRBdFA4?=
+ =?utf-8?B?cGQyc3k1S2dBZ3czcnhGQk04Mnk0aEF5WDVDRWZJMWFsRDlnM3NkNVFWMEQ2?=
+ =?utf-8?B?WTJVeFRBcHo1NmRkeU9FdXNMOEN6QW5qWVhLKytNTnRkQytzdkhuZDBDR20r?=
+ =?utf-8?B?bDd6STJUVWJOd01xaVlxUXlZc1dhMkZ3RXM4cUpYa1p0cmpSVzM2TjYxbStS?=
+ =?utf-8?B?NGJJc2lBZTRCRUFwRUlsVU5mMW1HYUlGSDBGOEZXSXEvZkpjWUNEd0M1aE5q?=
+ =?utf-8?B?cXlrK2V0Y29YOXlJOUJWVmc2Ynh3M3BEMm9OUDRsWnZpZ3ZNQ2l4UEdtM09H?=
+ =?utf-8?B?SGpKU2xDdDJRa3J2aDhJdHJYeGNMSW5xL3pOc1p3anNtU2kvOGVCN1k2ZUpx?=
+ =?utf-8?B?czI1dFZacGdEWDJ2dkVEKzVpYzQ5Y1BzUm84ZnNKRmF0RUVLQjQzZWV1cVI3?=
+ =?utf-8?B?QzQ5dC9aRjh0cytIcGpyZzhyZEpqZGRJYUJJNHVTeVZiQ0FtR3piSk9zWDhQ?=
+ =?utf-8?B?bGhVZ0llTGc1aFl5M3RndjNtRDErRU1LUm9zY0pnei9iTC9vcjRaTjBYdGR3?=
+ =?utf-8?B?Y3hwQXpFU2V3ZFRFNld2K2NtRm9TMVRVSlJGNTJzcndnNkZrT0p3SDFRdlov?=
+ =?utf-8?B?b2NVMFhsdGdMRkxVVnUzMGwxQk5PcHkxb1AzbTZtVFFWS2NxUHJTRlBhTTNT?=
+ =?utf-8?B?eXc9PQ==?=
 X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 339db506-e3c5-4c16-ef29-08db5ce09b60
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a5a432d-7e99-4ae6-4eb6-08db5ce0f706
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2023 05:26:35.3893
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2023 05:29:09.1660
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 20ixFqtgCwynoN4a2VbznZc4nzrijoM0yaBNQ8xM29x29vW5bQ+BmwiUk6hWKetF
+X-MS-Exchange-CrossTenant-UserPrincipalName: pQr8fl+jJD/A6o1MnXt18bRI6MUX76BILeD8MDNsLphk4X8Ue9fVYWESYxIO33yX
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4030
-X-Proofpoint-GUID: 75UubAPUV-fP-WX3uUPGDXUQ8s6jC3s5
-X-Proofpoint-ORIG-GUID: 75UubAPUV-fP-WX3uUPGDXUQ8s6jC3s5
+X-Proofpoint-ORIG-GUID: hVq9SQ1rLYQQ7NenxSoYve2Qc6YGRB9m
+X-Proofpoint-GUID: hVq9SQ1rLYQQ7NenxSoYve2Qc6YGRB9m
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
  definitions=2023-05-25_02,2023-05-24_01,2023-05-22_02
@@ -157,97 +153,11 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 5/24/23 8:37 PM, Joe Damato wrote:
-> BPF_PROG_TYPE_SK_REUSEPORT / sk_reuseport ebpf programs do not have
-> access to the queue_mapping or napi_id of the incoming skb. Having
-> this information can help ebpf progs determine which listen socket to
-> select.
+On 5/24/23 5:13 PM, JP Kobryn wrote:
+> This changes a local variable type that stores a new array id to match
+> the return type of btf__add_array().
 > 
-> This patch exposes both queue_mapping and napi_id so that
-> sk_reuseport ebpf programs can use this information to direct incoming
-> connections to the correct listen socket in the SOCKMAP.
-> 
-> For example:
-> 
-> A multi-threaded userland program with several threads accepting client
-> connections via a reuseport listen socket group might want to direct
-> incoming connections from specific receive queues (or NAPI IDs) to specific
-> listen sockets to maximize locality or for use with epoll busy-poll.
-> 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->   include/uapi/linux/bpf.h |  2 ++
->   net/core/filter.c        | 10 ++++++++++
->   2 files changed, 12 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 9273c654743c..31560b506535 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6286,6 +6286,8 @@ struct sk_reuseport_md {
->   	 */
->   	__u32 eth_protocol;
->   	__u32 ip_protocol;	/* IP protocol. e.g. IPPROTO_TCP, IPPROTO_UDP */
-> +	__u32 rx_queue_mapping; /* Rx queue associated with the skb */
-> +	__u32 napi_id;          /* napi id associated with the skb */
->   	__u32 bind_inany;	/* Is sock bound to an INANY address? */
->   	__u32 hash;		/* A hash of the packet 4 tuples */
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 
-This won't work. You will need to append to the end of data structure
-to keep it backward compatibility.
-
-Also, recent kernel has a kfunc bpf_cast_to_kern_ctx() which converts
-a ctx to a kernel ctx and you can then use tracing-coding-style to
-access those fields. In this particular case, you can do
-
-    struct sk_reuseport_kern *kctx = bpf_cast_to_kern_ctx(ctx);
-
-We have
-
-struct sk_reuseport_kern {
-         struct sk_buff *skb;
-         struct sock *sk;
-         struct sock *selected_sk;
-         struct sock *migrating_sk;
-         void *data_end;
-         u32 hash;
-         u32 reuseport_id;
-         bool bind_inany;
-};
-
-through sk and skb pointer, you should be access the fields presented in
-this patch. You can access more fields too.
-
-So using bpf_cast_to_kern_ctx(), there is no need for more uapi changes.
-Please give a try.
-
->   	/* When reuse->migrating_sk is NULL, it is selecting a sk for the
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 968139f4a1ac..71826e1ef7dc 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -11134,6 +11134,8 @@ sk_reuseport_is_valid_access(int off, int size,
->   	case bpf_ctx_range(struct sk_reuseport_md, ip_protocol):
->   	case bpf_ctx_range(struct sk_reuseport_md, bind_inany):
->   	case bpf_ctx_range(struct sk_reuseport_md, len):
-> +	case bpf_ctx_range(struct sk_reuseport_md, rx_queue_mapping):
-> +	case bpf_ctx_range(struct sk_reuseport_md, napi_id):
->   		bpf_ctx_record_field_size(info, size_default);
->   		return bpf_ctx_narrow_access_ok(off, size, size_default);
->   
-> @@ -11183,6 +11185,14 @@ static u32 sk_reuseport_convert_ctx_access(enum bpf_access_type type,
->   		SK_REUSEPORT_LOAD_SKB_FIELD(protocol);
->   		break;
->   
-> +	case offsetof(struct sk_reuseport_md, rx_queue_mapping):
-> +		SK_REUSEPORT_LOAD_SKB_FIELD(queue_mapping);
-> +		break;
-> +
-> +	case offsetof(struct sk_reuseport_md, napi_id):
-> +		SK_REUSEPORT_LOAD_SKB_FIELD(napi_id);
-> +		break;
-> +
->   	case offsetof(struct sk_reuseport_md, ip_protocol):
->   		SK_REUSEPORT_LOAD_SK_FIELD(sk_protocol);
->   		break;
+Acked-by: Yonghong Song <yhs@fb.com>
 
