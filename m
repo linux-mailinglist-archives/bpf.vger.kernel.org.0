@@ -1,242 +1,202 @@
-Return-Path: <bpf+bounces-1206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8091071055E
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 07:38:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 364527105CD
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 08:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 434E71C20E76
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 05:38:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8011C20E8A
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 06:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41613882B;
-	Thu, 25 May 2023 05:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41D1AA95A;
+	Thu, 25 May 2023 06:48:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC32E6FBF;
-	Thu, 25 May 2023 05:37:54 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7C6D8;
-	Wed, 24 May 2023 22:37:52 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34P3S3BT026206;
-	Wed, 24 May 2023 22:37:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=SLhUrRatyzmJDBMG4fyWFhqyWzIqbULwv2mAXqpfuzw=;
- b=arrfskI7wFATRZmNuKigz2Rb6jY/GIzUJU3MF/mb6Cqb45cejhLpaQKHILmGvKkZ/6rw
- LAGjV3DaCOWYJNesoHn9uIZzqGZMONZ5kxh4mA/etC1uIazJNPN3AxZbhrV1IafSY3tK
- DE668tMxX8EztTnfxYlFWqlKf29rxJEhZBC99GqJY2Mk4c8zNiVTvLu9Iz55SJHOHahm
- j4pMqL5C67gTC4nmqTfT8Tz1wVyIHh2uSL4JBwoYOZw39KcZjdVvEPpwk2DAwk4AGjrE
- Hb2GIp3WjlNNio9wg+f5TFnLZvTCcj4sM3KvWLEV9GhFOGqaN3FASQR8Fb5p8S+f7Mla yA== 
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2170.outbound.protection.outlook.com [104.47.73.170])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qsystrjsh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 May 2023 22:37:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KXaGIVGHbbZL4OnT+FPZXHI5RHWgnqmbsKp8xEK9Rbt1xYBfJogr4fDbcYBzVbTZUHmSIqRVxwKyIYFm2wCl8+mpKhfDx9XXKAimDIng5TakLGMZOToRzAXwRmmZ9fcgBStsSAQIdCrk0zGJcdupddzp7RRlBpdk+HYzZOVNxwpfxLENKvG48Pze63xGpcJegVRBADiX9BBLdxl8OIJyJc9IysDrnfwxbbug6HfbhIv4DeqnskjgiyUXuzZ6EXT+2RWHFOGlGiAfyVpIMf3MP+0a/cTMurJM/uJIrGgVtvUQ4Da4drKLwT8bHXQXVJXC80klQxaQyCV+a8gChSocxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SLhUrRatyzmJDBMG4fyWFhqyWzIqbULwv2mAXqpfuzw=;
- b=nem75E3XbVjGgMHwlAXeIS8Jrp2tp6W6dm3CPgBFwlmJRUnh5HTqu7afLZLOQMgDNg8cMKL0IIh4P8Mpp9f/54K/0Ron/1XDo8jsj4+A8cf6Krm7u9mWfRz0srDF/vLhQZsHWM0zpezqvUd3tl7VkoBWBYtFkksfFsHmDhdRFr5t4gGJV9Baj5/dkhydsX6fL1vL7/z0TkbqmgYThri19k0DA90cC8PC6A2e7ozydiv7rIem4J1QEmwuOFBHv3iy2B/DgfFEoHDT8rKcbnlOqcnBZ+hzEFSiNwT7wX2TRyCr8OMDGwIeK6jM1PjNHUNmoyNoimDH5U4KyVnwN6gqbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN7PR15MB5755.namprd15.prod.outlook.com (2603:10b6:806:349::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.28; Thu, 25 May
- 2023 05:37:30 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::bf7d:a453:b8d9:cf0%5]) with mapi id 15.20.6433.016; Thu, 25 May 2023
- 05:37:29 +0000
-Message-ID: <14c985d9-f5eb-e62d-e1a2-9d4c2b651151@meta.com>
-Date: Wed, 24 May 2023 22:37:25 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.0
-Subject: Re: [bug] kernel: bpf: syscall: a possible sleep-in-atomic bug in
- __bpf_prog_put()
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Teng Qi <starmiku1207184332@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <20230516111823.2103536-1-starmiku1207184332@gmail.com>
- <e37c0a65-a3f6-e2e6-c2ad-367db20253a0@meta.com>
- <CALyQVax8X63qekZVhvRTmZFFs+ucPKRkBB7UnRZk6Hu3ggi7Og@mail.gmail.com>
- <57dc6a0e-6ba9-e77c-80ac-6bb0a6e2650a@meta.com>
- <CALyQVazb=D1ejapiFdTnan6JbjFJA2q9ifhSsmF4OC9MDz3oAw@mail.gmail.com>
- <d027cb6b-e32c-36ad-3aba-9a7b1177f89f@meta.com>
- <CALyQVayW7e4FPbaMNNuOmYGYt5pcd47zsx2xVkrekEDaVm7H2g@mail.gmail.com>
- <113dc8c1-0840-9ee3-2840-28246731604c@meta.com>
- <CAADnVQ+5GXu8Q1_awiHExhBB9_LmGrcPTvjQEjQU58pzX3WbQQ@mail.gmail.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <CAADnVQ+5GXu8Q1_awiHExhBB9_LmGrcPTvjQEjQU58pzX3WbQQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY3PR05CA0056.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::31) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACB75240;
+	Thu, 25 May 2023 06:48:53 +0000 (UTC)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2737AC0;
+	Wed, 24 May 2023 23:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1684997332; x=1716533332;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fXnFdHMpIBK0pbiO2rn3en44HrYigxb3fY8Niaa5yX8=;
+  b=gaqRJqJTVwTZ9Q2sq2+MxiQYDoGTNdwWs5dCwDSnOQ37z1c24DanVuOB
+   QmOaBYGWaHwxuCoyvprdSUnZ98iK04gkrqXOYdh1qfJIrfxJqkFlVLGHk
+   /dW66xFx5gJVKCFIzrlS/jtK55m1UMY+lueQqsCD9jm+Y6/ORwGE2Jw/l
+   gz6zeQXICUsOyVT/KrZa7KP3Bgj8Dp9h6CeoyYACshDM1jm4qPR1CYZ43
+   onBFZaaAp+JPtGS7eXAlCRNzZW5vYeQw1+DmowmkndksqDz2rpmZqeHYN
+   HufSDN+4u87xwlpQ4luS5SUhzT/6TLm26a0779pt84G6kq+lELj9W7nA7
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.00,190,1681196400"; 
+   d="scan'208";a="217198440"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 May 2023 23:48:50 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 24 May 2023 23:48:50 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 24 May 2023 23:48:50 -0700
+Date: Thu, 25 May 2023 08:48:49 +0200
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+CC: <linux-hyperv@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<decui@microsoft.com>, <kys@microsoft.com>, <paulros@microsoft.com>,
+	<olaf@aepfle.de>, <vkuznets@redhat.com>, <davem@davemloft.net>,
+	<wei.liu@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <leon@kernel.org>, <longli@microsoft.com>,
+	<ssengar@linux.microsoft.com>, <linux-rdma@vger.kernel.org>,
+	<daniel@iogearbox.net>, <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
+	<ast@kernel.org>, <sharmaajay@microsoft.com>, <hawk@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Message-ID: <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+References: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SN7PR15MB5755:EE_
-X-MS-Office365-Filtering-Correlation-Id: f132175e-4c13-4e28-8118-08db5ce2215d
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	H6E7p9lcSedJFXuADkjKVynIGzdilpepya+hwvsWPykVRlo5XW6jnwfMaQdgYAD7zyjKKmu1etN1sPOc/UGV/0DhFQ+cYcpjHj9btW8Ng9SvCFp8y40fzSiasn7hPBh3uupwxuOVFJ9wO3HNf9XK0ZmTnfV6FIPjNQhbaRCy40XPaHtSyWTUTrVIbg7H/rkfwkS3zXgvAH739Xl0dJ+ORUG4VZ8/gDjdLquPOriuNy177bwO2gjTr49A2yMTSxzt8RMF+/vew61jEUV8+rYukfzbS3cHp5CydlbN0CkCi/N4eBivoUlrUDyBSbXYpbEZ7Mqi2huu/W4Vgd9wjoj5iBf1tzsdM1gZctfLL8bb5eVC6QxpwZm3PUMOBPCMQVcgbbB/3OVrV6iTorD+swoZq0hHt5t0pLusm1tT9ZK/ePZUL0xfVPYHyiwernHnSrxthAR1sy4IsrI1BT9cpTPnl37Mu4vNO3m35nC69hUbuT4PXXZzN2RTHCuIeeLcb65ULRp1l3cbRQAhPr+ILKtvireKOLZoXjZQboqrDsdgPG2XJcJHp+ctLmdnjpTL95fuEwLFKuK3bP3+44KhaIPZm+cbaoK1y7YRul8yAPyUAt47xhAgRBkkSANBKK6WPCbw28lbSrn+kdKCyRVRSFocGA==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(39860400002)(376002)(366004)(451199021)(6666004)(478600001)(2616005)(83380400001)(86362001)(31696002)(38100700002)(6486002)(6506007)(36756003)(6512007)(186003)(53546011)(41300700001)(8936002)(316002)(8676002)(7416002)(31686004)(5660300002)(2906002)(54906003)(66946007)(66556008)(66476007)(4326008)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?YjNVNEN6MjJwM1RxbjhPTkRxSlFmdWJNazFFTHJpb3B6TktyUzdhd1VLTXFR?=
- =?utf-8?B?YnJWZXJhV3pBMWxFUUhiZVo0UHA0L2tIQXc3cTFHd3BGQjU2ZUIxMVlRajUv?=
- =?utf-8?B?RmJ5OHNHM3IxdGJwRkt3RVVjYWdxaVltOFo2TFNZRU1XaEx2QUVBZlB4eVRK?=
- =?utf-8?B?MUcrbEZPRUMxbDl4bXZjTHBWTFBYK0ZRampBSW9PdkRXelJKVWxqZE9WVFhY?=
- =?utf-8?B?Uy91T2FRcU9xRDczL2JKT21FbnVYRDVsUXBlNGpHaG44NkcrYmNoZWhEb3dS?=
- =?utf-8?B?d2ViakNqSTVTT2VnckFiYURnRE0zYzBzaWhKQXFsNWdGK3dHMjZQcGNJMStt?=
- =?utf-8?B?Z0hLMEZQZ1hvaFdSZjU5MnJic3ZQekpXZHFqc1NiMno2K1Q0UnVJWWNMaWI1?=
- =?utf-8?B?UmdvMSthWGhTdjlPZlFqSUpvelN4UGRtT3h0T1ZlKzNHeUViN21JNVc5Y1JR?=
- =?utf-8?B?Qmwxclg0ZzhiRzVSRXJsbGxNNXZFRWcrb0JNVXlVbE9GUkdTU090WnA3VVpm?=
- =?utf-8?B?VE0rL1BmZEhoWTMwK3ZxbmNodVBlb1k1Z21GY1RFOThnMW5ybGc4QXFwVzFG?=
- =?utf-8?B?WHo1U0pxQkF4a0piZjJPdFhwWUFEcHE4dEt0bERpMENBZWltNjd2OXNlcm9z?=
- =?utf-8?B?ZDZ4TjRhTzBad2lXRnhQZG9rYkVUOTQ2M01lTjFlc1oybm04RkJOL0JmQWo5?=
- =?utf-8?B?V2VkZFJxU0JqNjcyaWM3MGpCVlV4K2c2Yktibmx0T3R1MFhCRmxOandnSU8v?=
- =?utf-8?B?ZERibzVOcmN2amtlVVZMQTNGVHF6ZWdQQ1hIWjZiUnl1MWYreU9GNkdmaUhD?=
- =?utf-8?B?YVJadEFzNndJU3pOZlZ6ME90dWZFNWpJZlJsK1laeDFXVzNUYnRnUXhSdXU4?=
- =?utf-8?B?Q2ZEOVE3M2h4Y0dKSXU4T2loVG43Y1djdjBEWTRpc3dMQmgvd2hXR0NPQkFP?=
- =?utf-8?B?Q1JnaiszalQ1THZPTTk2aTQ1VVk2cmlLSWFjT2I5aUtvLzg5RHp4RlZhMzZa?=
- =?utf-8?B?eitrb0I5WWJBSUNiNitZWmhsSG1qYkxGQW9VU1prckJaNWkyYlMrbnRFbVJn?=
- =?utf-8?B?S2JEOG56dCs4ZVZROGhCK2w3ampHTS9xZHZvZTdDcUZsRTVoM1oxdXVYYWhO?=
- =?utf-8?B?ZGtDb1lmaHV5bnlLdGRjdTg1R2kySDVSV0hQcE5BaHNsUzRydGJ4cUdWOFps?=
- =?utf-8?B?YzJWZVN0SHhwOTJFZ3ppSjFDY2ErMDM2NUR4UkNNdlhpa2Z3TkVyY1lhVkdm?=
- =?utf-8?B?aEJGZVJNMFYvbERUYzhlR3IyWW5FWVlqSUNwcjMxbktmb2hLVHRuQUEyRjdM?=
- =?utf-8?B?Sm9jakZxeTQySEF2T3BmL2tvN2tLRldSNncrQWZZRURkTEU1MmVIUzBkVEp0?=
- =?utf-8?B?WFdwMlpZcXhOaUJ2ZTBpSEtJWlYwQkgyWTJIMVRHSzVwTHZZV2xVRFd0dWhr?=
- =?utf-8?B?ZnpOTWRGTzJ5Y2Y3amFFVEdzeCswZHBoblFNY0NtU3d6dkFzT2s0dFJHZk5M?=
- =?utf-8?B?TngwKytJL0tNNHJMQTVDMkRsMjBORVdtQ21uZlhSZFBZcXYzM0EzQUhCODFq?=
- =?utf-8?B?QVZlS0pSRDdMTTlQZjhPK2t3MitGWnJ0S21UTzdBcWFEWEZiQ3JDWnRsV2N6?=
- =?utf-8?B?SHRoSkE1bmEyc3pITlRjSFBSNWxFbkplLytDNmxDOUg1aGhpWVFIZlp1YmtC?=
- =?utf-8?B?a0V0QkV5QlA4N0syWlRjdEZuZGtYTC9YY01wdzhzWjF5Q3I1Z0c5alZSa1Vp?=
- =?utf-8?B?SkI5eFFuYjBXWHJreEJISDRGYWhXYVN4aFkvLzFpd3FrMFlJYmZYWWJId0hu?=
- =?utf-8?B?bXJ6L0pYbVNwWXN3cUpBNCtpYmNhbTJlR2pHT1l4RC9ma3dQSy8remRFK2Q5?=
- =?utf-8?B?MmNOYjVXVmpDNXMwVlVicE1DMzhOOTA5R1FWL1FweFpMQ3cxMG54bDdmWlRu?=
- =?utf-8?B?R2JGUjhBaEpXTTFnSzg2a2E4d0prbjFRUE9hTXg2ZUNoR2g0dVdsSEZqOGh4?=
- =?utf-8?B?bUVaWEtaYTFtZ3U1YTJhTlBkSFB0OHFSYjdWNVZ6dmtHVkpIb2l4WUxIRGx5?=
- =?utf-8?B?MDlvL044MlhjUW5VMUNEWWdlU1Rtb1NYeTN1R0JYYzc4cG9UbFBNRmZLL0dO?=
- =?utf-8?B?b08rakJuOUFtOGpCbGlTVktsUHQzdXFaOTEwVWFGUlE2bkx4US84MlIzblNF?=
- =?utf-8?B?VWc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f132175e-4c13-4e28-8118-08db5ce2215d
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2023 05:37:29.6528
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6bxR//YtOjljW074qAo80KAtZqQO1XBkIVDMuTK0LEsS/Oft2Br7zBiFrHJmW86+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB5755
-X-Proofpoint-ORIG-GUID: zaeTx5SstPERQN6PRwZJJxy_0rZ0PMx0
-X-Proofpoint-GUID: zaeTx5SstPERQN6PRwZJJxy_0rZ0PMx0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-05-25_02,2023-05-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+The 05/24/2023 14:22, Haiyang Zhang wrote:
 
-
-On 5/24/23 12:44 PM, Alexei Starovoitov wrote:
-> On Wed, May 24, 2023 at 12:34 PM Yonghong Song <yhs@meta.com> wrote:
->>
->>
->>
->> On 5/24/23 5:42 AM, Teng Qi wrote:
->>> Thank you.
->>>
->>>> We cannot use rcu_read_lock_held() in the 'if' statement. The return
->>>> value rcu_read_lock_held() could be 1 for some configurations regardless
->>>> whether rcu_read_lock() is really held or not. In most cases,
->>>> rcu_read_lock_held() is used in issuing potential warnings.
->>>> Maybe there are other ways to record whether rcu_read_lock() is held or not?
->>>
->>> Sorry. I was not aware of the dependency of configurations of
->>> rcu_read_lock_held().
->>>
->>>> If we cannot resolve rcu_read_lock() presence issue, maybe the condition
->>>> can be !in_interrupt(), so any process-context will go to a workqueue.
->>>
->>> I agree that using !in_interrupt() as a condition is an acceptable solution.
->>
->> This should work although it could be conservative.
->>
->>>
->>>> Alternatively, we could have another solution. We could add another
->>>> function e.g., bpf_prog_put_rcu(), which indicates that bpf_prog_put()
->>>> will be done in rcu context.
->>>
->>> Implementing a new function like bpf_prog_put_rcu() is a solution that involves
->>> more significant changes.
->>
->> Maybe we can change signature of bpf_prog_put instead? Like
->>      void bpf_prog_put(struct bpf_prog *prog, bool in_rcu)
->> and inside bpf_prog_put we can add
->>      WARN_ON_ONCE(in_rcu && !bpf_rcu_lock_held());
-> 
-> bpf_rcu_lock_held() is used for different cases.
-
-Sorry, I actually mean rcu_read_lock_held() ...
+Hi Haiyang,
 
 > 
-> Here s/in_irq/in_interrupt/ inside bpf_prog_put() is enough
-> to address this theoretical issue.
+> The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+> frequent and parallel code path of all queues. So, r/w into this
+> single shared variable by many threads on different CPUs creates a
+> lot caching and memory overhead, hence perf regression. And, it's
+> not accurate due to the high volume concurrent r/w.
 
-Maybe
+Do you have any numbers to show the improvement of this change?
 
-                 if (!in_interrupt()) {
-                         INIT_WORK(&aux->work, bpf_prog_put_deferred);
-                         schedule_work(&aux->work);
-                 } else {
-                         bpf_prog_put_deferred(&aux->work);
-                 }
-?
+> 
+> Since the error path of mana_poll_rx_cq() already has warnings, so
+> keeping the counter and convert it to a per-queue variable is not
+> necessary. So, just remove this counter from this high frequency
+> code path.
+> 
+> Also, remove the tx_cqes counter for the same reason. We have
+> warnings & other counters for errors on that path, and don't need
+> to count every normal cqe processing.
 
-Basically for any process context, use a work queue since
-we have no idea whether rcu_read_lock() is held or not.
-In process context, is_atmoc() and irqs_disabled() should
-already use the work queue.
-As we discussed in the above, if in_interrupt() is true,
-kvfree seems okay, so can directly call
-bpf_prog_put_deferred().
-Does this sound reasonable?
+Will you not have problems with the counter 'apc->eth_stats.tx_cqe_err'?
+It is not in the hot path but you will have concurrent access to it.
+
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: bd7fc6e1957c ("net: mana: Add new MANA VF performance counters for easier troubleshooting")
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c      | 10 ----------
+>  drivers/net/ethernet/microsoft/mana/mana_ethtool.c |  2 --
+>  include/net/mana/mana.h                            |  2 --
+>  3 files changed, 14 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 06d6292e09b3..d907727c7b7a 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -1279,8 +1279,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+>         if (comp_read < 1)
+>                 return;
+> 
+> -       apc->eth_stats.tx_cqes = comp_read;
+> -
+>         for (i = 0; i < comp_read; i++) {
+>                 struct mana_tx_comp_oob *cqe_oob;
+> 
+> @@ -1363,8 +1361,6 @@ static void mana_poll_tx_cq(struct mana_cq *cq)
+>                 WARN_ON_ONCE(1);
+> 
+>         cq->work_done = pkt_transmitted;
+> -
+> -       apc->eth_stats.tx_cqes -= pkt_transmitted;
+>  }
+> 
+>  static void mana_post_pkt_rxq(struct mana_rxq *rxq)
+> @@ -1626,15 +1622,11 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+>  {
+>         struct gdma_comp *comp = cq->gdma_comp_buf;
+>         struct mana_rxq *rxq = cq->rxq;
+> -       struct mana_port_context *apc;
+>         int comp_read, i;
+> 
+> -       apc = netdev_priv(rxq->ndev);
+> -
+>         comp_read = mana_gd_poll_cq(cq->gdma_cq, comp, CQE_POLLING_BUFFER);
+>         WARN_ON_ONCE(comp_read > CQE_POLLING_BUFFER);
+> 
+> -       apc->eth_stats.rx_cqes = comp_read;
+>         rxq->xdp_flush = false;
+> 
+>         for (i = 0; i < comp_read; i++) {
+> @@ -1646,8 +1638,6 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
+>                         return;
+> 
+>                 mana_process_rx_cqe(rxq, cq, &comp[i]);
+> -
+> -               apc->eth_stats.rx_cqes--;
+>         }
+> 
+>         if (rxq->xdp_flush)
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index a64c81410dc1..0dc78679f620 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -13,11 +13,9 @@ static const struct {
+>  } mana_eth_stats[] = {
+>         {"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+>         {"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
+> -       {"tx_cqes", offsetof(struct mana_ethtool_stats, tx_cqes)},
+>         {"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
+>         {"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+>                                         tx_cqe_unknown_type)},
+> -       {"rx_cqes", offsetof(struct mana_ethtool_stats, rx_cqes)},
+>         {"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
+>                                         rx_coalesced_err)},
+>         {"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index cd386aa7c7cc..9eef19972845 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -347,10 +347,8 @@ struct mana_tx_qp {
+>  struct mana_ethtool_stats {
+>         u64 stop_queue;
+>         u64 wake_queue;
+> -       u64 tx_cqes;
+>         u64 tx_cqe_err;
+>         u64 tx_cqe_unknown_type;
+> -       u64 rx_cqes;
+>         u64 rx_coalesced_err;
+>         u64 rx_cqe_unknown_type;
+>  };
+> --
+> 2.25.1
+> 
+> 
+
+-- 
+/Horatiu
 
