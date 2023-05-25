@@ -1,154 +1,141 @@
-Return-Path: <bpf+bounces-1224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6337F710E1F
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60BA9710E53
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 16:28:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15B6A1C20ECD
-	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 14:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 211251C20EB6
+	for <lists+bpf@lfdr.de>; Thu, 25 May 2023 14:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E682311CB8;
-	Thu, 25 May 2023 14:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2FC156D8;
+	Thu, 25 May 2023 14:28:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8762101E4
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 14:18:18 +0000 (UTC)
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C563191
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 07:18:17 -0700 (PDT)
-Date: Thu, 25 May 2023 16:18:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1685024295;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IlEzqf8v5LIHFpTK6bS8f7bh0N8Q4MKhEvHKfwTR7Lo=;
-	b=qegWGBFjYZT8xoJu79oaHox4b1lJTsoBfa5uidlT67FSTd5pV25Wrbyadzz9TevEvP9Acw
-	C2j2+Js1a1/72+yZZNZGIDh34rkf5dlt7IWXziBOwY8z0QxktMbfRRHLS+3gZlPg2j1ULb
-	aCZaOP9HrBo6102nloLeXWm0AWdu0XrGgyxZ7Aua92dOsPTrysE/1srBqpprpSAmWoFS3N
-	rFTsR6HlZ3FKqFi0JEt1dCW4eT7bSoOdZTDo9FbsQPlH0C4vJpHpG4CpOmSbCS+bAEiFoG
-	vP4O8pzVTJxgXCS7+1CDRHG00S0FykJcXcYUF/cW/lUTGKVF+KK6tLSl6Xgoyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1685024295;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IlEzqf8v5LIHFpTK6bS8f7bh0N8Q4MKhEvHKfwTR7Lo=;
-	b=dTjZTP92nujluv04YY4Dty5AQxOEelsKuUrwlvzKZbl+/YbCwS5hOm+9wqZuYgLiCw6qB0
-	Bxli6zoXMSxiGUAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2] bpf: Remove in_atomic() from bpf_link_put().
-Message-ID: <20230525141813.TFZLWM4M@linutronix.de>
-References: <20230509132433.2FSY_6t7@linutronix.de>
- <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
- <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
- <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3882D512;
+	Thu, 25 May 2023 14:28:05 +0000 (UTC)
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2760E189;
+	Thu, 25 May 2023 07:28:04 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-75b0f2ce4b7so53392985a.2;
+        Thu, 25 May 2023 07:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685024883; x=1687616883;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jne64K9Gy2C9dAFtlMtkjmLtZ1d50tnHNJuf743mfXA=;
+        b=X1k2VFciEC+7UnEJw9BdieHOpB9YeNtKvQDJo74quhLg63MEyFF0nOZwzp1cuOYTHY
+         OuSBx5c42Y/sXWBzJcdmEscdofg6Qny38235Oe/6q1z7xH+sEwihVNjOUHTiTetlnH0P
+         KCBRnWn71bgf21iUll6TkbiuhInHBGbVngIMwhRRzyS3cxPBsAsa/bwQg0gYOsOtS13+
+         uAPXWXqjE0YcGxI3u+BhcpsAGFwmRKPi//7LeFfUMk4Wgh0urkk63LeKOnuN7hjXmyVM
+         WRRwoPdsULmVeuumZXWfX0hqaLQPChmkJkzh+zSAJzvw6M/gUYhe+DX2RQOhHcveITR6
+         5CbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685024883; x=1687616883;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jne64K9Gy2C9dAFtlMtkjmLtZ1d50tnHNJuf743mfXA=;
+        b=IdiVsC01GcjYRsQY91+ick0Q5ObogFPtDY+8hCeTLV6lOxlb95l7uF+6LKUNzRD0rr
+         Pgag4KELlCl/dLrMFXZN4QDRCBOjJjnoNqal0chEfrIOBo4QLSvpzaVz6qZBD6tHPadu
+         7SAc/lbVx6FM8jv2BASN42S4z7SZaF1IGOCKQiRnoiUyVNvwrM+uVrYKWqgoO1oQal1+
+         bN7kh9up42toGlRUK0WKa2LQDUZGZ6MX1+gdH1NGH210debqR8M/+iWY5q6mIjLKt8YV
+         BSOsBnbl0WTNLyKT2HRquYn0Z8WMPgvta2ipCOBkINkAIJyzy3T5k2CLgP4CVFTpwlTR
+         RtSw==
+X-Gm-Message-State: AC+VfDz0SyJvRiWq9+NC64rEOifg/57tLm+JyrOtJd3HMNjvCqaVhnv/
+	cysuU2lisNnFeEmImIoVDeFbKDxyT8A=
+X-Google-Smtp-Source: ACHHUZ6HMh7p94BI9Qc8NJIJDdD8bHTj27DCRDbIuCG/l/XItZuTwMHZz03EtjdVx372eT2tz/XbOg==
+X-Received: by 2002:a05:620a:a1a:b0:75b:23a0:d9d1 with SMTP id i26-20020a05620a0a1a00b0075b23a0d9d1mr9964449qka.39.1685024883258;
+        Thu, 25 May 2023 07:28:03 -0700 (PDT)
+Received: from localhost (ool-944b8b4f.dyn.optonline.net. [148.75.139.79])
+        by smtp.gmail.com with ESMTPSA id a13-20020a05620a124d00b0075936b3026fsm429398qkl.38.2023.05.25.07.28.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 May 2023 07:28:02 -0700 (PDT)
+From: Louis DeLosSantos <louis.delos.devel@gmail.com>
+Subject: [PATCH 0/2] bpf: utilize table ID in bpf_fib_lookup helper
+Date: Thu, 25 May 2023 10:27:58 -0400
+Message-Id: <20230505-bpf-add-tbid-fib-lookup-v1-0-fd99f7162e76@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG5wb2QC/x2N0QrCMAwAf2Xk2UDd3FB/RfaQrKkLalvSKcLYv
+ 9v5eBzHrVDEVApcmxVMPlo0xQrHQwPTTPEuqL4ytK7tXO965ByQvMeF1WNQxmdKj3dGotMQyF3
+ Og+ug1kxFkI3iNO/9i8oitotsEvT7X97GbfsBlLhLYIIAAAA=
+To: bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
+ Stanislav Fomichev <sdf@google.com>, razor@blackwall.org, 
+ Louis DeLosSantos <louis.delos.devel@gmail.com>
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-bpf_free_inode() is invoked as a RCU callback. Usually RCU callbacks are
-invoked within softirq context. By setting rcutree.use_softirq=3D0 boot
-option the RCU callbacks will be invoked in a per-CPU kthread with
-bottom halves disabled which implies a RCU read section.
+This patchset adds the ability to specify a table ID to the
+`bpf_fib_lookup` BPF helper. 
 
-On PREEMPT_RT the context remains fully preemptible. The RCU read
-section however does not allow schedule() invocation. The latter happens
-in mutex_lock() performed by bpf_trampoline_unlink_prog() originated
-=66rom bpf_link_put().
+A new `tbid` field is added to `struct fib_bpf_lookup`.
+When the `fib_bpf_lookup` helper is called with the
+`BPF_FIB_LOOKUP_DIRECT` flag and the `tbid` is set to an integer greater
+then 0, the `tbid` field will be interpreted as the table ID to use for
+the fib lookup.
 
-It was pointed out that the bpf_link_put() invocation should not be
-delayed if originated from close().
+If the `tbid` specifies a table that does not exist the lookup fails
+with `BPF_FIB_LKUP_RET_NOT_FWDED`
 
-Remove the context checks and use the workqueue unconditionally. For the
-close() callback add bpf_link_put_direct() which invokes free function
-directly.
+This functionality is useful in containerized environments. 
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+For instance, if a CNI wants to dictate the next-hop for traffic leaving
+a container it can create a container-specific routing table and perform
+a fib lookup against this table in a "host-net-namespace-side" TC program.
+
+This functionality also allows `ip rule` like functionality at the TC
+layer, allowing an eBPF program to pick a routing table based on some
+aspect of the sk_buff.
+
+As a concrete use case, this feature will be used in Cilium's SRv6 L3VPN
+datapath. 
+When egress traffic leaves a Pod an eBPF program attached by Cilium will
+determine which VRF the egress traffic should target, and then perform a
+FIB lookup in a specific table representing this VRF's FIB.
+
+The existing `fib_lookup.c` bpf selftest was appended several test cases
+to ensure this feature works as expected. 
+
+```
+$ sudo ./test_progs -a "*fib*"
+
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+```
+
+Signed-off-by: Louis DeLosSantos <louis.delos.devel@gmail.com>
 ---
+Louis DeLosSantos (2):
+      bpf: add table ID to bpf_fib_lookup BPF helper
+      bpf: test table ID fib lookup BPF helper
 
-v1=E2=80=A6v2:
-   - Add bpf_link_put_direct() to be used from bpf_link_release() as
-     suggested.
+ include/uapi/linux/bpf.h                           | 17 +++++--
+ net/core/filter.c                                  | 12 +++++
+ tools/include/uapi/linux/bpf.h                     | 17 +++++--
+ .../testing/selftests/bpf/prog_tests/fib_lookup.c  | 58 +++++++++++++++++++---
+ 4 files changed, 90 insertions(+), 14 deletions(-)
+---
+base-commit: fbc0b0253001c397a481d258a88ce5f08996574f
+change-id: 20230505-bpf-add-tbid-fib-lookup-aa46fa098603
 
-On 2023-05-17 09:26:19 [-0700], Andrii Nakryiko wrote:
-> Is struct file_operations.release() callback guaranteed to be called
-> from user context? If yes, then perhaps the most straightforward way
-> to guarantee synchronous bpf_link cleanup on close(link_fd) is to have
-> a bpf_link_put() variant that will be only called from user-context
-> and will just do bpf_link_free(link) directly, without checking
-> in_atomic().
-
-Yes. __fput() has a might_sleep() and it invokes
-file_operations::release.
-
- kernel/bpf/syscall.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 14f39c1e573ee..85159428e5fee 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2785,20 +2785,23 @@ void bpf_link_put(struct bpf_link *link)
- 	if (!atomic64_dec_and_test(&link->refcnt))
- 		return;
-=20
--	if (in_atomic()) {
--		INIT_WORK(&link->work, bpf_link_put_deferred);
--		schedule_work(&link->work);
--	} else {
--		bpf_link_free(link);
--	}
-+	INIT_WORK(&link->work, bpf_link_put_deferred);
-+	schedule_work(&link->work);
- }
- EXPORT_SYMBOL(bpf_link_put);
-=20
-+static void bpf_link_put_direct(struct bpf_link *link)
-+{
-+	if (!atomic64_dec_and_test(&link->refcnt))
-+		return;
-+	bpf_link_free(link);
-+}
-+
- static int bpf_link_release(struct inode *inode, struct file *filp)
- {
- 	struct bpf_link *link =3D filp->private_data;
-=20
--	bpf_link_put(link);
-+	bpf_link_put_direct(link);
- 	return 0;
- }
-=20
---=20
-2.40.1
+Best regards,
+-- 
+Louis DeLosSantos <louis.delos.devel@gmail.com>
 
 
