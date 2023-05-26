@@ -1,155 +1,272 @@
-Return-Path: <bpf+bounces-1342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10453713040
-	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 01:11:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59E91713093
+	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 01:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE72628121C
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 23:11:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD8E2819F9
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 23:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146862D254;
-	Fri, 26 May 2023 23:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4FD2D25E;
+	Fri, 26 May 2023 23:46:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C556815B7
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 23:10:55 +0000 (UTC)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B529D3;
-	Fri, 26 May 2023 16:10:54 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b00ecabdf2so12527675ad.2;
-        Fri, 26 May 2023 16:10:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685142654; x=1687734654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YzzwX4jI8qfzX9UxemVFwpvHZe0mlondIIclMNme04k=;
-        b=kOmmndwQp9sckObT8PMVXR0Jua13g0JMjsVP11/n53DvSbyiVl07xv7ErsjTN3+ljb
-         pgwYyLArOIMtt6VCBijW02qFExxJhQ+BC8K+NRokMemDTCbWp1Px8LmvnX92jYWgfY5E
-         +4FByQgOzkGVTRBRFvj6Jg8PklCII0pibxyUkOFxZ73yLColAp9C3lW4Sw5Vg1eDmTu5
-         Pgc7gbcSe/gwsEGuuc5IeNM44r8M054Jo8ONmDpeAzivOlI9NWf4YgNAwJ/v24tPpKYS
-         02WsVHpxzFl1xzzYvgsF2xMcxgnihqwXeIxpIwnSwEiY89hK5GcSEQbUKrqb6FPgX11t
-         FqYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685142654; x=1687734654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YzzwX4jI8qfzX9UxemVFwpvHZe0mlondIIclMNme04k=;
-        b=fORfJG9SdKlbPRASJHkeibxvo1MIHP0Cb8MR8U92CmYe7X6vN556W/XuccdZ+6EGwJ
-         QtO7PDmERvlGXGEeRq1sWqgX2ILxeTAxaLJY3rM3j7jxZILEn6sGA+tLueCA5mxxq5Vi
-         UCa5Si/7uwHSM40Nd0VI0jXXdus5LWOrnEHSCiUdW9bCcsR9ID2XLPo3Hz6yTZtd1d4K
-         qVXtHC7mYlcG3UPBcrnIBzIo6GRSfXwVAw0lnCh4xyVkjxlZJIElZ++9mBVHvJd/UgJt
-         H+fkJKm5i57daLRIRCqKHzEDEW7HxtAPc4mT424QqGrGUPShS1qj/o6SxWo9TavGRjFe
-         duNw==
-X-Gm-Message-State: AC+VfDzi+YRSm5poJPZiUrF5Y5ytsm4ekZvmEfJwZpH/WrCqrhgqF9wq
-	N0MH7YpHWZMxAYKrRpFdazeDvpMZFGxpPkkI+N8=
-X-Google-Smtp-Source: ACHHUZ6MiW4pJpPHAIm0mqK+fGib0HKPAj0qOwudKcdK4zhv1ijzVmDGDJBagMj42DB0v6hJPLQeSL4Rrgi948iHNUc=
-X-Received: by 2002:a17:903:22c3:b0:1b0:122f:672b with SMTP id
- y3-20020a17090322c300b001b0122f672bmr4172388plg.47.1685142653765; Fri, 26 May
- 2023 16:10:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5BB2A9EF
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 23:46:11 +0000 (UTC)
+X-Greylist: delayed 363 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 May 2023 16:45:52 PDT
+Received: from out-52.mta1.migadu.com (out-52.mta1.migadu.com [IPv6:2001:41d0:203:375::34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45581E50
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 16:45:52 -0700 (PDT)
+Date: Fri, 26 May 2023 19:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685144385;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+pmmu2l8SGWACfif5XIKHsHxMzv+ce/4e1/BfTEw4BM=;
+	b=ukQmXpei8AxbBkklcOc7JJjEsmeitSCac4BJKuAMh8TeKC2hAS47SrZ0PL71rpMf4M7DLZ
+	iIWCyVyoZHJIFRzS2PMOmMv1aFkeoqw7JLIQRVWjKWMPpGqmW3/8pDXH4lnJNZuFXZ1wnw
+	qxS/DXuyGMhBP/f+4NahZunW2ipB3oc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Song Liu <song@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org,
+	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
+	rppt@kernel.org
+Subject: Re: [PATCH 1/3] module: Introduce module_alloc_type
+Message-ID: <ZHFDO/95KMXRdOWI@moria.home.lan>
+References: <20230526051529.3387103-1-song@kernel.org>
+ <20230526051529.3387103-2-song@kernel.org>
+ <ZHEy5SkFwI+dZjOC@moria.home.lan>
+ <CAPhsuW5nbXozvBs1X7q_u=eTY0U=Ep32n1bM8bxR6h9UEU3AxQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAABZP2wiPdij+q_Nms08e8KbT9+CgXuoU+MO3dyoujG_1PPHAQ@mail.gmail.com>
- <073cf884-e191-e323-1445-b79c86759557@linux.dev> <CAABZP2yjONcZNVKT88JXq_QyVzuDnu12nD8APT0XJ45dOtSFrQ@mail.gmail.com>
- <CAABZP2zvn_rfC=E9FF-7Hmruq69gEnZJ5aW8mSbOPQijveeKcA@mail.gmail.com>
-In-Reply-To: <CAABZP2zvn_rfC=E9FF-7Hmruq69gEnZJ5aW8mSbOPQijveeKcA@mail.gmail.com>
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date: Sat, 27 May 2023 07:10:42 +0800
-Message-ID: <CAABZP2wBSjevevALA_VF-fTirp-bB42XouKRTuq=RR=60xL=EQ@mail.gmail.com>
-Subject: Re: a small question about bpftool struct_ops
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5nbXozvBs1X7q_u=eTY0U=Ep32n1bM8bxR6h9UEU3AxQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi
+On Fri, May 26, 2023 at 04:09:01PM -0700, Song Liu wrote:
+> On Fri, May 26, 2023 at 3:30 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Thu, May 25, 2023 at 10:15:27PM -0700, Song Liu wrote:
+> > > Introduce memory type aware module_alloc_type, which provides a unified
+> > > allocator for all different archs. This work was discussed in [1].
+> > >
+> > > Each arch can configure the allocator to do the following:
+> > >
+> > >    1. Specify module_vaddr and module_end
+> > >    2. Random module start address for KASLR
+> > >    3. kasan_alloc_module_shadow()
+> > >    4. kasan_reset_tag()
+> > >    5. Preferred and secondary module address ranges
+> > >
+> > > enum mod_alloc_params_flags are used to control the behavior of
+> > > module_alloc_type. Specifically: MOD_ALLOC_FALLBACK let module_alloc_type
+> > > fallback to existing module_alloc. MOD_ALLOC_SET_MEMORY let
+> > > module_alloc_type to protect the memory before returning to the user.
+> > >
+> > > module_allocator_init() call is added to start_kernel() to initialize
+> > > module_alloc_type.
+> > >
+> >
+> > ...
+> >
+> > > +/**
+> > > + * struct vmalloc_params - Parameters to call __vmalloc_node_range()
+> > > + * @start:          Address space range start
+> > > + * @end:            Address space range end
+> > > + * @gfp_mask:       The gfp_t mask used for this range
+> > > + * @pgprot:         The page protection for this range
+> > > + * @vm_flags        The vm_flag used for this range
+> > > + */
+> > > +struct vmalloc_params {
+> > > +     unsigned long   start;
+> > > +     unsigned long   end;
+> > > +     gfp_t           gfp_mask;
+> > > +     pgprot_t        pgprot;
+> > > +     unsigned long   vm_flags;
+> > > +};
+> > > +
+> > > +/**
+> > > + * struct mod_alloc_params - Parameters for module allocation type
+> > > + * @flags:          Properties in mod_alloc_params_flags
+> > > + * @granularity:    The allocation granularity (PAGE/PMD) in bytes
+> > > + * @alignment:      The allocation alignment requirement
+> > > + * @vmp:            Parameters used to call vmalloc
+> > > + * @fill:           Function to fill allocated space. If NULL, use memcpy()
+> > > + * @invalidate:     Function to invalidate memory space.
+> > > + *
+> > > + * If @granularity > @alignment the allocation can reuse free space in
+> > > + * previously allocated pages. If they are the same, then fresh pages
+> > > + * have to be allocated.
+> > > + */
+> > > +struct mod_alloc_params {
+> > > +     unsigned int            flags;
+> > > +     unsigned int            granularity;
+> > > +     unsigned int            alignment;
+> > > +     struct vmalloc_params   vmp[MOD_MAX_ADDR_SPACES];
+> > > +     void *                  (*fill)(void *dst, const void *src, size_t len);
+> > > +     void *                  (*invalidate)(void *ptr, size_t len);
+> > > +};
+> > > +
+> > > +struct mod_type_allocator {
+> > > +     struct mod_alloc_params params;
+> > > +};
+> > > +
+> > > +struct mod_allocators {
+> > > +     struct mod_type_allocator *types[MOD_MEM_NUM_TYPES];
+> > > +};
+> > > +
+> > > +void *module_alloc_type(size_t size, enum mod_mem_type type);
+> > > +void module_memfree_type(void *ptr, enum mod_mem_type type);
+> > > +void module_memory_fill_type(void *dst, void *src, size_t len, enum mod_mem_type type);
+> > > +void module_memory_invalidate_type(void *ptr, size_t len, enum mod_mem_type type);
+> > > +void module_memory_protect(void *ptr, size_t len, enum mod_mem_type type);
+> > > +void module_memory_unprotect(void *ptr, size_t len, enum mod_mem_type type);
+> > > +void module_memory_force_protect(void *ptr, size_t len, enum mod_mem_type type);
+> > > +void module_memory_force_unprotect(void *ptr, size_t len, enum mod_mem_type type);
+> > > +void module_alloc_type_init(struct mod_allocators *allocators);
+> >
+> > This is a pretty big and complicated interface, and I haven't been able
+> > to find any reasoning or justification for why it's needed.
+> >
+> > Why is this going in module.h? Don't do that, this is supposed to be a
+> > general purpose allocator for executable memory so start a new file.
+> 
+> The goal of this work is to build a memory allocator for modules, text,
+> rw data, and ro data. So it is not the same as execmem_alloc or jitalloc.
+> 
+> >
+> > What is vmalloc_params doing here? Why is it needed? Can we just get rid
+> > of it?
+> 
+> We need it to have an interface for all archs. They are all using different
+> variations of vmalloc for module_alloc.
 
-On Sun, May 21, 2023 at 4:27=E2=80=AFPM Zhouyi Zhou <zhouzhouyi@gmail.com> =
-wrote:
->
-> Hi
->
-> On Sat, May 20, 2023 at 7:37=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.com=
-> wrote:
-> >
-> > Thank you for responding so quickly ;-)
-> >
-> > On Sat, May 20, 2023 at 3:01=E2=80=AFAM Martin KaFai Lau <martin.lau@li=
-nux.dev> wrote:
-> > >
-> > > On 5/19/23 5:07 AM, Zhouyi Zhou wrote:
-> > > > Dear developers:
-> > > > I compiled bpftool and bpf tests in mainline (2d1bcbc6cd70),
-> > > > but when I invoke:
-> > > > bpftool struct_ops register bpf_cubic.bpf.o
-> > > >
-> > > > the command line fail with:
-> > > > libbpf: struct_ops init_kern: struct tcp_congestion_ops data is not
-> > > > found in struct bpf_struct_ops_tcp_congestion_ops
-> > >
-> > > At the machine trying to register the bpf_cubic, please dump the vmli=
-nux btf and
-> > > search for bpf_struct_ops_tcp_congestion_ops and paste it here:
-> > >
-> > > For example:
-> > > #> bpftool btf dump file /sys/kernel/btf/vmlinux
-> > >
-> > > ...
-> > >
-> > > [74578] STRUCT 'bpf_struct_ops_tcp_congestion_ops' size=3D256 vlen=3D=
-3
-> > >          'refcnt' type_id=3D145 bits_offset=3D0
-> > >          'state' type_id=3D74569 bits_offset=3D32
-> > >          'data' type_id=3D6241 bits_offset=3D512
-> > OK
-> > [214398] STRUCT 'bpf_struct_ops_tcp_congestion_ops' size=3D256 vlen=3D3
-> >         'refcnt' type_id=3D298 bits_offset=3D0
-> >         'state' type_id=3D214224 bits_offset=3D32
-> >         'data' type_id=3D213704 bits_offset=3D512
-> >
-> > Please tell me if I could provide any further information.
-> >
-> > You are of great help
-> >
-> > Thank you very much
-> > Zhouyi
-> Thanks for your help
->
-> Or, can you teach me how to prepare an environment that can run
-> "bpftool struct_ops register xxx.o" ;-)
-> (A few words of description of OS version (Ubuntu/CentOS/Suse for etc)
-> and example kernel .config is enough)
-I invoke following commands, and it works:
-cd tools/testing/selftests/bpf
-find . -name vmlinux.h|xargs rm
-make -j 20
+But it should be an internal implementation detail, I don't think we
+want the external interface tied to vmalloc - 
 
-put bpf_cubic.bpf.o to my virtual machine, and it works!
-I don't know why
+> These two APIs allow the core code work with all archs. They won't break
+> sub-page allocations. (not all archs will have sub-page allocations)
 
-Thank you all!
-Best Regards
-Zhouyi
->
-> I am an enthusiastic learner ;-)
->
-> Thanks in advance
-> Zhouyi
-> > >
+So yes, text_poke() doesn't work on all architectures, and we need a
+fallback.
+
+But if the fallback needs to go the unprotect/protect route, I think we
+need to put that in the helper, and not expose it. Part of what people
+are wanting is to limit or eliminate pages that are RWX, so we
+definitely shouldn't be creating new interfaces to flipping page
+permissions: that should be pushed down to as low a level as possible.
+
+E.g., with my jitalloc_update(), a more complete version would look like
+
+void jitalloc_update(void *dst, void *src, size_t len)
+{
+	if (text_poke_available) {
+		text_poke(...);
+	} else {
+		unprotect();
+		memcpy();
+		protect();
+	}
+}
+
+See? We provide a simpler, safer interface, and this also lets us handle
+multiple threads racing to update/flip permissions on the same page in a
+single place (e.g. with sticking a lock somewhere in the jitalloc
+structures).
+
+Or ideally, we'd have a kmap_local() variant that actually creates a new
+mapping on all architectures, and we'd just use that to do the update
+without any arch-dependent code - if we get that, having this helper
+means we'll only have to change a single place later.
+
+> 
+> OTOH, the "force" version of the two APIs should be removed later. In this
+> set, we only need them for arch_prepare_bpf_trampoline(). I plan to remove
+> this limitation for x86 soon.
+> 
+> >
+> > The text_poke() abstraction works; the exposed interface should look
+> > like that.
+> >
+> > Please kill MOD_ALLOC_SET_MEMORY, and _only_ return memory that is
+> > read-only. You should be able to kill mod_alloc_params entirely.
+> >
+> > Our other memory allocators don't expose kasan - why does this one?
+> > Again, that looks wrong.
+> >
+> > I would like to see something much simpler (that doesn't encode awkward
+> > assumptions from module and bpf!): please look at the code I sketched
+> > out below and tell me why this interface won't work - or if it can, go
+> > with _that_.
+> 
+> I think we need to align the goal here. PS: we did align the goal about
+> 6 months ago when I proposed the execmem_alloc() set.
+
+Yeah, I know what it feels like to get yanked around by different
+reviewers who see and join in the discussion at different times. Sorry :)
+
+Having a rational/design doc in the header file would help a _lot_. 
+
+> My current goal is to build an allocator for all the use cases of modules,
+> text, data, rodata, etc. Then the same allocator can be used by other
+> dynamic kernel text: bpf, ftrace, kprobe, bcachefs, etc.
+
+This must have been part of the previous discussion since you started
+with execmem_alloc(), but I did scan through that and I'm still not
+seeing the justification for why this needs to handle non-text
+allocations.
+
+If I had to hazard a guess it would be because of tglx wanting to solve
+tlb fragmentation for modules, but to me that doesn't sound like a good
+enough reason and it looks like we're ending up with a messy "try to be
+all things to all people" interface as a result :/
+
+Do we _really_ need that?
+
+Mike was just saying at LSF that direct map fragmentation turned out to
+be a non issue for performance for non-text, so maybe we don't.
+
+Also - module_memory_fill_type(), module_memory_invalidate_type() - I
+know these are for BPF, but could you explain why we need them in the
+external interface here? Could they perhaps be small helpers in the bpf
+code that use something like jitalloc_update()?
+
+> OTOH, jit_alloc (as-is) solves a subset of the problem (only the text).
+> We can probably use it (with some updates) instead of the vmap_area
+> based allocator. But I guess we need to align the direction first.
+
+Let's see if we can get tglx to chime in again, since he was pretty
+vocal in the last discussion.
+
+It's also good practice to try to summarize all the relevant "whys" from
+the discussion that went into a feature and put that in at least the
+commit message - or even better, header file comments.
+
+Also, organization: the module code is a huge mess, let's _please_ do
+split this out and think about organization a bit more, not add to the
+mess :)
+
+Cheers,
+Kent
 
