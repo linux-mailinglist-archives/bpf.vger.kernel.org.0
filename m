@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-1307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699F1712805
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 16:07:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27323712815
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 16:12:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 252DA28185F
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 14:07:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1A682818A6
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 14:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D6924E96;
-	Fri, 26 May 2023 14:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10A0A24E9E;
+	Fri, 26 May 2023 14:11:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F921EA9D;
-	Fri, 26 May 2023 14:07:07 +0000 (UTC)
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26285DF;
-	Fri, 26 May 2023 07:07:06 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-3f6a3a76665so11076591cf.1;
-        Fri, 26 May 2023 07:07:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA22B171A7;
+	Fri, 26 May 2023 14:11:47 +0000 (UTC)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492A1DF;
+	Fri, 26 May 2023 07:11:46 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-3f4eb166122so3013001cf.3;
+        Fri, 26 May 2023 07:11:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685110025; x=1687702025;
+        d=gmail.com; s=20221208; t=1685110305; x=1687702305;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mpK9X8nhccAYYTxDVOlUGiQW5MD1MybeGcuhmmUxbrw=;
-        b=C235mJrz9ECdSMETjNOFNPzkF3k7s8BYqCBixlj5iGCV7/17qaGsv+PJqQpu1oDPe8
-         klmtmqFtCVMomSFScw6IxfsPrGru8iHa1qN/MTadbGZFM9JZ2JLDeRyrv8As/dcM+EsO
-         oXb33TEWrHeCu4YWOqVZyhIGJdFgpQCOoSnS+rGpnpeIJcUBfU6cW7mPucAy9/+KZKmz
-         Cxym2426r5iPTFPhAHz3NzIjpUsklBFoNtCx7ontpHX27egHe9PQhxAruMvmzXnXk6yW
-         pOIQnZpd4a4jbY6B+h5pX+97/5WPUnJgz5dbeGgVGzPkqo+186DgNAAG86gjOFfCXZ/6
-         y6Tg==
+        bh=OhUjCk3Hqq2xEyvW93scwqw3dxIwOYejK8Ot6yaK520=;
+        b=jWKuPmEl+xceHRiTsjMb1ueK7WhI0eGaA0bbzv+vidk4DdyQcxfteXwEHYcgrwiUvJ
+         SXdoQNxFkFlC5IVXInnpUASdHtnG4FjBeXXTvfK8w5b3fYLm1BUdxeNImimAlgQDWf1S
+         RXWO6icH7HoyGLATnKpq46s26gmbFAxtbiGsWWTk3/r1+BQQW87LHF4ITg052dR0Y5bN
+         dNP6U8DzFeq6ITWy8V6/vNHOxP0XmX0vfT0yv6sUVtPSC92v+jNmx/oQcC6VrRjVCjvc
+         hEJusuo7EJgdzqkrvVKnkX4eAzq8S/BvLOcecWxgDL9T44wkeDQMjXRODKm8C+2yo2Ls
+         kbeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685110025; x=1687702025;
+        d=1e100.net; s=20221208; t=1685110305; x=1687702305;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mpK9X8nhccAYYTxDVOlUGiQW5MD1MybeGcuhmmUxbrw=;
-        b=N63SfW1m2JibuAdVOYzJEqvQPljoxBonN7diq2ZG9NG51bt//Hw2hlercG5VbwHX/p
-         R8Vzr3guSqQTlwu8Nh6C9WuqLV1x71MDsQD20CwGVjf/mBI8h3MzMjblRhnlsS30s4o1
-         fNPSmbWHYBUD5ONHp/9agmTnxMyaeiT0wN08qiWKIlKa2vnrNwoMxR5f4Q4MTAf2rIUj
-         R9MvcM0EKpi8UR2kPjrDTw3Yqs7ItiAZabSB4L/OWJnEv998OzLpwH2Hzg8KSuH5BFrp
-         85/KyZ4qEKRosl3ZNLQ7P0+DGAej+9/EI+0duCVrlJ4y4uPfwzXhU/2NuG51yq3pClxV
-         9ByA==
-X-Gm-Message-State: AC+VfDxEJum1ASfEYqPlTANHG8U6+pDySjcyBJDLuwVm7Qgv5yD9sbBI
-	CdMjpTrNFFm4cwXtS4/EljY=
-X-Google-Smtp-Source: ACHHUZ7/8WyLCJiuWZU7NE7r4499LIvt6vjxd/kfiAK3HYySQ4ZF8SmMEdkp4FNjp90TnM36LaXRmw==
-X-Received: by 2002:a05:622a:1649:b0:3f5:1861:abe1 with SMTP id y9-20020a05622a164900b003f51861abe1mr1770282qtj.14.1685110025084;
-        Fri, 26 May 2023 07:07:05 -0700 (PDT)
+        bh=OhUjCk3Hqq2xEyvW93scwqw3dxIwOYejK8Ot6yaK520=;
+        b=AQl+INpZabXnJop4cZ+p78nj+AANQZtQF2NCqZlaSQP7H4UJEdek498LKJlFziOdU7
+         DwQp48a8uf4u0ksJjUPwvRp/ORyBmk950pDQRblKEBmkH6gbkFeoUUmwfPEVIA4OMehV
+         ulS/SFG6YoVjXNYV6QFHY7oHcKHPd1o1NIW8cqLHG4OydO2f4Yj13JjxMrHUkLXC1wSp
+         4H+MZcyMtyMN9/y9bDQfZ/iIQ7tY2hNIA09pHBAYVIUyja27c0ukr1A9EEctwZD2dgAh
+         DoxdICVQfRKxQGDRhTAHar2z5L/Ri5wFI6cn1i35KeUHvahvuB2fk9REV4uEF0uFiZ+E
+         fadg==
+X-Gm-Message-State: AC+VfDyiXS6Acvi3swjTT0v/KrxLvMtkJvVXe6stYDuot8s+Ih6U/y9n
+	xEx4drN+7APypcWgEjrcIVA=
+X-Google-Smtp-Source: ACHHUZ4r03gEO++bq51Ot6Yf5jHXiIl7SM4Zqj5kGEkbCOI5dYaH/H1Ex9e4QbMXs5n/2Vp94X8msQ==
+X-Received: by 2002:a05:622a:1b86:b0:3f1:381d:1067 with SMTP id bp6-20020a05622a1b8600b003f1381d1067mr1857546qtb.42.1685110305297;
+        Fri, 26 May 2023 07:11:45 -0700 (PDT)
 Received: from localhost (ool-944b8b4f.dyn.optonline.net. [148.75.139.79])
-        by smtp.gmail.com with ESMTPSA id f25-20020ac84659000000b003ee4b5a2dd3sm1269047qto.21.2023.05.26.07.07.04
+        by smtp.gmail.com with ESMTPSA id f2-20020ac87f02000000b003f6b0f4126fsm1284234qtk.8.2023.05.26.07.11.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 May 2023 07:07:04 -0700 (PDT)
-Date: Fri, 26 May 2023 10:07:03 -0400
+        Fri, 26 May 2023 07:11:44 -0700 (PDT)
+Date: Fri, 26 May 2023 10:11:43 -0400
 From: Louis DeLosSantos <louis.delos.devel@gmail.com>
-To: John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+To: Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Stanislav Fomichev <sdf@google.com>, razor@blackwall.org
 Subject: Re: [PATCH 1/2] bpf: add table ID to bpf_fib_lookup BPF helper
-Message-ID: <ZHC9BzCv6KiAUpbj@fedora>
+Message-ID: <ZHC+H7ZBzCN4kPc/@fedora>
 References: <20230505-bpf-add-tbid-fib-lookup-v1-0-fd99f7162e76@gmail.com>
  <20230505-bpf-add-tbid-fib-lookup-v1-1-fd99f7162e76@gmail.com>
- <6470562cac756_2023020893@john.notmuch>
+ <cc91d53d-0a73-cf30-bd7f-b22db8228842@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6470562cac756_2023020893@john.notmuch>
+In-Reply-To: <cc91d53d-0a73-cf30-bd7f-b22db8228842@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -82,8 +82,10 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, May 25, 2023 at 11:48:12PM -0700, John Fastabend wrote:
-> Louis DeLosSantos wrote:
+On Thu, May 25, 2023 at 11:01:34PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 5/25/23 7:27 AM, Louis DeLosSantos wrote:
 > > Add ability to specify routing table ID to the `bpf_fib_lookup` BPF
 > > helper.
 > > 
@@ -93,6 +95,12 @@ On Thu, May 25, 2023 at 11:48:12PM -0700, John Fastabend wrote:
 > > When the helper is called with the `BPF_FIB_LOOKUP_DIRECT` flag and the
 > > `tbid` field in `struct bpf_fib_lookup` is greater then 0, the `tbid`
 > > field will be used as the table ID for the fib lookup.
+> 
+> I think table id 0 is legal in the kernel, right?
+> It is probably okay to consider table id 0 not supported to
+> simplify the user interface. But it would be great to
+> add some explanations in the commit message.
+> 
 > > 
 > > If the `tbid` does not exist the fib lookup will fail with
 > > `BPF_FIB_LKUP_RET_NOT_FWDED`.
@@ -119,68 +127,122 @@ On Thu, May 25, 2023 at 11:48:12PM -0700, John Fastabend wrote:
 > > 
 > > Signed-off-by: Louis DeLosSantos <louis.delos.devel@gmail.com>
 > > ---
-> >  include/uapi/linux/bpf.h       | 17 ++++++++++++++---
-> >  net/core/filter.c              | 12 ++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 17 ++++++++++++++---
-> >  3 files changed, 40 insertions(+), 6 deletions(-)
+> >   include/uapi/linux/bpf.h       | 17 ++++++++++++++---
+> >   net/core/filter.c              | 12 ++++++++++++
+> >   tools/include/uapi/linux/bpf.h | 17 ++++++++++++++---
+> >   3 files changed, 40 insertions(+), 6 deletions(-)
 > > 
-> 
-> Looks good one question. Should we hide tbid behind a flag we have
-> lots of room. Is there any concern a user could feed a bpf_fib_lookup
-> into the helper without clearing the vlan fields? Perhaps by
-> pulling the struct from a map or something where it had been
-> previously used.
-> 
-> Thanks,
-> John
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 1bb11a6ee6676..2096fbb328a9b 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3167,6 +3167,8 @@ union bpf_attr {
+> >    *		**BPF_FIB_LOOKUP_DIRECT**
+> >    *			Do a direct table lookup vs full lookup using FIB
+> >    *			rules.
+> > + *			If *params*->tbid is non-zero, this value designates
+> > + *			a routing table ID to perform the lookup against.
+> >    *		**BPF_FIB_LOOKUP_OUTPUT**
+> >    *			Perform lookup from an egress perspective (default is
+> >    *			ingress).
+> > @@ -6881,9 +6883,18 @@ struct bpf_fib_lookup {
+> >   		__u32		ipv6_dst[4];  /* in6_addr; network order */
+> >   	};
+> > -	/* output */
+> > -	__be16	h_vlan_proto;
+> > -	__be16	h_vlan_TCI;
+> > +	union {
+> > +		struct {
+> > +			/* output */
+> > +			__be16	h_vlan_proto;
+> > +			__be16	h_vlan_TCI;
+> > +		};
+> > +		/* input: when accompanied with the 'BPF_FIB_LOOKUP_DIRECT` flag, a
+> > +		 * specific routing table to use for the fib lookup.
+> > +		 */
+> > +		__u32	tbid;
+> > +	};
+> > +
+> >   	__u8	smac[6];     /* ETH_ALEN */
+> >   	__u8	dmac[6];     /* ETH_ALEN */
+> >   };
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 451b0ec7f2421..6f710aa0a54b3 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -5803,6 +5803,12 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+> >   		u32 tbid = l3mdev_fib_table_rcu(dev) ? : RT_TABLE_MAIN;
+> >   		struct fib_table *tb;
+> > +		if (params->tbid) {
+> > +			tbid = params->tbid;
+> > +			/* zero out for vlan output */
+> > +			params->tbid = 0;
+> > +		}
+> > +
+> >   		tb = fib_get_table(net, tbid);
+> >   		if (unlikely(!tb))
+> >   			return BPF_FIB_LKUP_RET_NOT_FWDED;
+> > @@ -5936,6 +5942,12 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+> >   		u32 tbid = l3mdev_fib_table_rcu(dev) ? : RT_TABLE_MAIN;
+> >   		struct fib6_table *tb;
+> > +		if (params->tbid) {
+> > +			tbid = params->tbid;
+> > +			/* zero out for vlan output */
+> > +			params->tbid = 0;
+> > +		}
+> > +
+> >   		tb = ipv6_stub->fib6_get_table(net, tbid);
+> >   		if (unlikely(!tb))
+> >   			return BPF_FIB_LKUP_RET_NOT_FWDED;
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 1bb11a6ee6676..2096fbb328a9b 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -3167,6 +3167,8 @@ union bpf_attr {
+> >    *		**BPF_FIB_LOOKUP_DIRECT**
+> >    *			Do a direct table lookup vs full lookup using FIB
+> >    *			rules.
+> > + *			If *params*->tbid is non-zero, this value designates
+> > + *			a routing table ID to perform the lookup against.
+> >    *		**BPF_FIB_LOOKUP_OUTPUT**
+> >    *			Perform lookup from an egress perspective (default is
+> >    *			ingress).
+> > @@ -6881,9 +6883,18 @@ struct bpf_fib_lookup {
+> >   		__u32		ipv6_dst[4];  /* in6_addr; network order */
+> >   	};
+> > -	/* output */
+> > -	__be16	h_vlan_proto;
+> > -	__be16	h_vlan_TCI;
+> > +	union {
+> > +		struct {
+> > +			/* output */
+> > +			__be16	h_vlan_proto;
+> > +			__be16	h_vlan_TCI;
+> > +		};
+> > +		/* input: when accompanied with the 'BPF_FIB_LOOKUP_DIRECT` flag, a
+> > +		 * specific routing table to use for the fib lookup.
+> > +		 */
+> > +		__u32	tbid;
+> > +	};
+> > +
+> >   	__u8	smac[6];     /* ETH_ALEN */
+> >   	__u8	dmac[6];     /* ETH_ALEN */
+> >   };
+> > 
 
-This is a fair point. 
+> I think table id 0 is legal in the kernel, right?
+> It is probably okay to consider table id 0 not supported to
+> simplify the user interface. But it would be great to
+> add some explanations in the commit message.
 
-I could imagine a scenario where an individual is caching bpf_fib_lookup structs,
-pulls in a kernel with this change, and is now accidentally feeding the stale vlan
-fields as table ID's, since their code is using `BPF_FIB_LOOKUP_DIRECT` with
-the old semantics. 
+Agreed. 
 
-Guarding with a new flag like this (just a quick example, not a full diff)...
+My initial feelings were there is no real use case to query against the Kernel's
+`all` table. 
 
-```
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 2096fbb328a9b..22095ccaaa64d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -6823,6 +6823,7 @@ enum {
-        BPF_FIB_LOOKUP_DIRECT  = (1U << 0),
-        BPF_FIB_LOOKUP_OUTPUT  = (1U << 1),
-        BPF_FIB_LOOKUP_SKIP_NEIGH = (1U << 2),
-+       BPF_FIB_LOOKUP_TBID    = (1U << 3),
- };
- 
- enum {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6f710aa0a54b3..9b78460e39af2 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5803,7 +5803,7 @@ static int bpf_ipv4_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
-                u32 tbid = l3mdev_fib_table_rcu(dev) ? : RT_TABLE_MAIN;
-                struct fib_table *tb;
- 
--               if (params->tbid) {
-+               if (flags & BPF_FIB_LOOKUP_TBID) {
-                        tbid = params->tbid;
-                        /* zero out for vlan output */
-                        params->tbid = 0;
-```
+The response from John will dictate if this remains the case, as the suggestion
+of using a new flag bit will nullify this issue, I think.
 
-Maybe a bit safer, you're right. 
-
-In this case the semantics around `BPF_FIB_LOOKUP_DIRECT` remain exactly the same,
-and if we do `flags = BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_TBID`, only then will
-the `tbid` field in the incoming params wil be considered. 
-
-If I squint at this, it technically also allows us to consider `tbid=0` as a 
-valid table id, since the caller now explicitly opts into it, where previously
-table id 0 was not selectable, tho I don't know if there's a *real* use case 
-for selecting the `all` table. 
-
-I'm happy to make this change, what are your thoughts? 
+If it stays tho, I will def add details in the commit message around this on next
+rev.
 
