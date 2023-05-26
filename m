@@ -1,63 +1,58 @@
-Return-Path: <bpf+bounces-1261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0140711B05
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 02:07:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29EA711CCE
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 03:38:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D2EC1C20ECA
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 00:07:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DF27281661
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 01:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1932815BD;
-	Fri, 26 May 2023 00:07:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1301E17D2;
+	Fri, 26 May 2023 01:38:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E059115A7
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 00:07:09 +0000 (UTC)
-Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7862E7A
-	for <bpf@vger.kernel.org>; Thu, 25 May 2023 17:06:35 -0700 (PDT)
-Message-ID: <8f2d47dc-b19c-eb83-c390-885b4f9980a0@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E3317C9
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 01:38:26 +0000 (UTC)
+Received: from out-15.mta1.migadu.com (out-15.mta1.migadu.com [95.215.58.15])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0565E2
+	for <bpf@vger.kernel.org>; Thu, 25 May 2023 18:38:24 -0700 (PDT)
+Message-ID: <b2273217-5adb-8ec6-288b-4f8703a56386@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685059593;
+	t=1685065103;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BIeHNJ1XVcZV8vmS7jmkvR/TSg5peYc2pW5NNIH/+uI=;
-	b=KzKq7EJNna0q87U7tFoSD/MrnkRd9LS9mA90ZrzPsxhl6h7rkCrXnSWi1X+oDmabRnQRkx
-	vt3kE4WV+2N8waAhGtUZ504oPn6vcxaaBt2e7g+7GA7aautQjMnsJIKMTD0PcwE4sWQTPe
-	X5ga8rAmChHS329qha/QtUxxOkNEcOk=
-Date: Thu, 25 May 2023 17:06:29 -0700
+	bh=oG/RYM8g4+pEHLxNZ8jZM0xxpqykkuHY9laGQxTR+Ms=;
+	b=G2L8yrLI5sf+NTUv9HGuEjktA6DYt36Jrkb+wdtuo288wmi/Len+mVHZoEw3K4SmrbPV4A
+	tVJYVJhRZ+j2e4hMN7ChxpugcgJUUgvP7I7k4K5gOIzUgBRpNqw1FCLzhYbHb3GcyCv6M0
+	VZgdaNwBjCxzSUdWja8sUgNFKQxCbRE=
+Date: Fri, 26 May 2023 09:38:15 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test that SO_REUSEPORT can be
- used with sk_assign helper
+Subject: Re: [PATCH v4] libbpf: kprobe.multi: Filter with
+ available_filter_functions
 Content-Language: en-US
-To: Lorenz Bauer <lmb@isovalent.com>
-Cc: Joe Stringer <joe@cilium.io>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-References: <20230525081923.8596-1-lmb@isovalent.com>
- <20230525081923.8596-2-lmb@isovalent.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: olsajiri@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, bpf@vger.kernel.org, liuyun01@kylinos.cn
+References: <ZG8f7ffghG7mLUhR@krava>
+ <20230525102747.68708-1-liu.yun@linux.dev>
+ <CAEf4Bzae7mdpCDBEafG-NUCPRohWkC8EBs0+twE2hUbB8LqWJA@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230525081923.8596-2-lmb@isovalent.com>
+From: Jackie Liu <liu.yun@linux.dev>
+In-Reply-To: <CAEf4Bzae7mdpCDBEafG-NUCPRohWkC8EBs0+twE2hUbB8LqWJA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
@@ -66,266 +61,239 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/25/23 1:19 AM, Lorenz Bauer wrote:
-> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-> index a105c0cd008a..8a33bcea97de 100644
-> --- a/tools/testing/selftests/bpf/network_helpers.c
-> +++ b/tools/testing/selftests/bpf/network_helpers.c
-> @@ -423,6 +423,9 @@ struct nstoken *open_netns(const char *name)
->   
->   void close_netns(struct nstoken *token)
->   {
-> +	if (!token)
-> +		return;
+Hi Andrii.
 
-+1. :)
+在 2023/5/26 04:43, Andrii Nakryiko 写道:
+> On Thu, May 25, 2023 at 3:28 AM Jackie Liu <liu.yun@linux.dev> wrote:
+>>
+>> From: Jackie Liu <liuyun01@kylinos.cn>
+>>
+>> When using regular expression matching with "kprobe multi", it scans all
+>> the functions under "/proc/kallsyms" that can be matched. However, not all
+>> of them can be traced by kprobe.multi. If any one of the functions fails
+>> to be traced, it will result in the failure of all functions. The best
+>> approach is to filter out the functions that cannot be traced to ensure
+>> proper tracking of the functions.
+>>
+>> Use available_filter_functions check first, if failed, fallback to
+>> kallsyms.
+>>
+>> Here is the test eBPF program [1].
+>> [1] https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b8b3eadde97f7a4535e867
+>>
+>> Suggested-by: Jiri Olsa <olsajiri@gmail.com>
+>> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 92 +++++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 83 insertions(+), 9 deletions(-)
+>>
+> 
+> Question to you and Jiri: what happens when multi-kprobe's syms has
+> duplicates? Will the program be attached multiple times? If yes, then
+> it sounds like a problem? Both available_filters and kallsyms can have
+> duplicate function names in them, right?
 
-> +
->   	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET), "setns");
->   	close(token->orig_netns_fd);
->   	free(token);
-> diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-> new file mode 100644
-> index 000000000000..2cb9bb591e71
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-> @@ -0,0 +1,280 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Isovalent */
-> +#include <uapi/linux/if_link.h>
-> +#include <test_progs.h>
-> +
-> +#include <netinet/tcp.h>
-> +#include <netinet/udp.h>
-> +
-> +#include "network_helpers.h"
-> +#include "test_assign_reuse.skel.h"
-> +
-> +#define NS_TEST "assign_reuse"
-> +#define LOOPBACK 1
-> +#define PORT 4443
-> +
-> +static int attach_reuseport(int sock_fd, int prog_fd)
-> +{
-> +	return setsockopt(sock_fd, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
-> +			  &prog_fd, sizeof(prog_fd));
-> +}
-> +
-> +static socklen_t inetaddr_len(const struct sockaddr_storage *addr)
-> +{
-> +	return addr->ss_family == AF_INET  ? sizeof(struct sockaddr_in) :
-> +	       addr->ss_family == AF_INET6 ? sizeof(struct sockaddr_in6) :
-> +					     0;
-> +}
-> +
-> +static bool is_ipv6(const char *ip)
-> +{
-> +	return !!strchr(ip, ':');
-> +}
-> +
-> +static int make_socket(int sotype, const char *ip, int port,
-> +		       struct sockaddr_storage *addr)
-> +{
-> +	struct timeval timeo = { .tv_usec = 500000 /* 500 ms */ };
-> +	int family = is_ipv6(ip) ? AF_INET6 : AF_INET;
-> +	int ret, fd;
-> +
-> +	ret = make_sockaddr(family, ip, port, addr, NULL);
-> +	if (!ASSERT_OK(ret, "make_sockaddr"))
-> +		return -1;
-> +	fd = socket(addr->ss_family, sotype, 0);
-> +	if (!ASSERT_GE(fd, 0, "socket"))
-> +		return -1;
-> +	ret = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
-> +	if (!ASSERT_OK(ret, "sndtimeo")) {
-> +		close(fd);
-> +		return -1;
-> +	}
-> +	ret = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
-> +	if (!ASSERT_OK(ret, "rcvtimeo")) {
-> +		close(fd);
-> +		return -1;
-> +	}
-> +	return fd;
-> +}
-> +
-> +static int create_server(int sotype, const char *ip, int port, int prog_fd)
-> +{
-> +	struct sockaddr_storage addr = {};
-> +	const int one = 1;
-> +	int ret, fd;
-> +
-> +	fd = make_socket(sotype, ip, port, &addr);
-> +	if (fd < 0)
-> +		return -1;
-> +	if (sotype == SOCK_STREAM) {
-> +		ret = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &one,
-> +				 sizeof(one));
-> +		if (!ASSERT_OK(ret, "reuseaddr"))
-> +			goto cleanup;
-> +	}
-> +	if (prog_fd >= 0) {
-> +		ret = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &one,
-> +				 sizeof(one));
-> +		if (!ASSERT_OK(ret, "reuseport"))
-> +			goto cleanup;
-> +		ret = attach_reuseport(fd, prog_fd);
-> +		if (!ASSERT_OK(ret, "attach_reuseport"))
-> +			goto cleanup;
-> +	}
-> +	ret = bind(fd, (void *)&addr, inetaddr_len(&addr));
-> +	if (!ASSERT_OK(ret, "bind"))
-> +		goto cleanup;
-> +	if (sotype == SOCK_STREAM) {
-> +		ret = listen(fd, SOMAXCONN);
-> +		if (!ASSERT_OK(ret, "listen"))
-> +			goto cleanup;
-> +	}
-> +	return fd;
-> +cleanup:
-> +	close(fd);
-> +	return -1;
-> +}
-> +
-> +static int create_client(int sotype, const char *ip, int port)
-> +{
-> +	struct sockaddr_storage addr = {};
-> +	int ret, fd;
-> +
-> +	fd = make_socket(sotype, ip, port, &addr);
-> +	if (fd < 0)
-> +		return -1;
-> +	ret = connect(fd, (void *)&addr, inetaddr_len(&addr));
-> +	if (ret)
-> +		goto cleanup;
-> +	return fd;
-> +cleanup:
-> +	close(fd);
-> +	return -1;
-> +}
+If I understand correctly, there should be no problem with repeated
+function registration, because the bottom layer is done through fprobe
+registration addrs, kprobe.multi itself does not do this work, but
+fprobe is based on ftrace, it will register addr by makes a hash,
+that is, if it is the same address, it should be filtered out.
 
-I believe a lot of the above can be done by start_reuseport_server() and 
-connect_to_fd() from network_helpers.c.
+The main problem here is not the problem of repeated registration of
+functions, but some functions are not allowed to hook. For example, when
+I track vfs_*, vfs_set_acl_prepare_kgid and vfs_set_acl_prepare_kuid are
+not allowed to hook. These exist under kallsyms, but
+available_filter_functions does not, I have observed for a while,
+matching through available_filter_functions can effectively prevent this
+from happening.
 
-[ ... ]
+> 
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index ad1ec893b41b..3dd72d69cdf7 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -10417,13 +10417,14 @@ static bool glob_match(const char *str, const char *pat)
+>>   struct kprobe_multi_resolve {
+>>          const char *pattern;
+>>          unsigned long *addrs;
+>> +       const char **syms;
+>>          size_t cap;
+>>          size_t cnt;
+>>   };
+>>
+>>   static int
+>> -resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>> -                       const char *sym_name, void *ctx)
+>> +kallsyms_resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>> +                                const char *sym_name, void *ctx)
+>>   {
+>>          struct kprobe_multi_resolve *res = ctx;
+>>          int err;
+>> @@ -10431,8 +10432,8 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>>          if (!glob_match(sym_name, res->pattern))
+>>                  return 0;
+>>
+>> -       err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
+>> -                               res->cnt + 1);
+>> +       err = libbpf_ensure_mem((void **) &res->addrs, &res->cap,
+>> +                               sizeof(unsigned long), res->cnt + 1);
+>>          if (err)
+>>                  return err;
+>>
+>> @@ -10440,6 +10441,73 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>>          return 0;
+>>   }
+>>
+>> +static int ftrace_resolve_kprobe_multi_cb(const char *sym_name, void *ctx)
+>> +{
+>> +       struct kprobe_multi_resolve *res = ctx;
+>> +       int err;
+>> +       char *name;
+>> +
+>> +       if (!glob_match(sym_name, res->pattern))
+>> +               return 0;
+>> +
+>> +       err = libbpf_ensure_mem((void **) &res->syms, &res->cap,
+>> +                               sizeof(const char *), res->cnt + 1);
+>> +       if (err)
+>> +               return err;
+>> +
+>> +       name = strdup(sym_name);
+>> +       if (!name)
+>> +               return errno;
+> 
+> -errno
+> 
+>> +
+>> +       res->syms[res->cnt++] = name;
+>> +       return 0;
+>> +}
+>> +
+>> +typedef int (*available_filter_functions_cb_t)(const char *sym_name, void *ctx);
+> 
+> quite mouthful, maybe just "available_kprobe_cb_t"? "filters"
+> terminology isn't common within libbpf and BPF tracing in general
+> 
+>> +
+>> +static int
+>> +libbpf_ftrace_parse(available_filter_functions_cb_t cb, void *ctx)
+> 
+> let's call it "libbpf_available_kprobes_parse" ?
+> 
+>> +{
+>> +       char sym_name[256];
+>> +       FILE *f;
+>> +       int ret, err = 0;
+>> +
+>> +       f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
+> 
+> we need to check between DEBUGFS and TRACEFS, let's do something like
+> tracefs_kprobe_events()
 
-> +void serial_test_assign_reuse(void)
+Got.
 
-Remove "serial_" .
+> 
+>> +       if (!f) {
+>> +               pr_warn("failed to open available_filter_functions, fallback to /proc/kallsyms.\n");
+>> +               return -EINVAL;
+> 
+> preserve errno, just like libbpf_kallsyms_parse
+> 
+>> +       }
+>> +
+>> +       while (true) {
+>> +               ret = fscanf(f, "%s%*[^\n]\n", sym_name);
+> 
+> %255s, similar to libbpf_kallsyms_probe. You have precedent code that
+> does parsing like this, please stick to the same approaches
+> 
+>> +               if (ret == EOF && feof(f))
+>> +                       break;
+>> +               if (ret != 1) {
+>> +                       pr_warn("failed to read available_filter_functions entry: %d\n",
+> 
+> s/available_filter_functions/kprobe/
+> 
+>> +                               ret);
+> 
+> err = -EINVAL
+> 
+>> +                       break;
+>> +               }
+>> +
+>> +               err = cb(sym_name, ctx);
+>> +               if (err)
+>> +                       break;
+>> +       }
+>> +
+>> +       fclose(f);
+>> +       return err;
+>> +}
+>> +
+>> +static void kprobe_multi_resolve_free(struct kprobe_multi_resolve *res)
+>> +{
+>> +       if (res->syms) {
+>> +               while (res->cnt)
+>> +                       free((char *)res->syms[--res->cnt]);
+>> +               free(res->syms);
+>> +       } else {
+>> +               free(res->addrs);
+> 
+> there is no need to assume that res->addrs will be null, let's free it
+> unconditionally. free() handles NULL just fine
 
+Yes.
 
-> +{
-> +	struct nstoken *tok = NULL;
-> +
-> +	SYS(out, "ip netns add %s", NS_TEST);
-> +	SYS(cleanup, "ip -net %s link set dev lo up", NS_TEST);
-> +
-> +	tok = open_netns(NS_TEST);
-> +	if (!ASSERT_OK_PTR(tok, "netns token"))
-> +		return;
-> +
-> +	if (test__start_subtest("tcpv4"))
-> +		run_assign_reuse(SOCK_STREAM, "127.0.0.1", PORT);
-> +	if (test__start_subtest("tcpv6"))
-> +		run_assign_reuse(SOCK_STREAM, "::1", PORT);
-> +	if (test__start_subtest("udpv4"))
-> +		run_assign_reuse(SOCK_DGRAM, "127.0.0.1", PORT);
-> +	if (test__start_subtest("udpv6"))
-> +		run_assign_reuse(SOCK_DGRAM, "::1", PORT);
-> +
-> +cleanup:
-> +	close_netns(tok);
-> +	SYS_NOFAIL("ip netns delete %s", NS_TEST);
-> +out:
-> +	return;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_assign_reuse.c b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-> new file mode 100644
-> index 000000000000..c83e870b2612
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Isovalent */
-> +#include <stdbool.h>
-> +#include <linux/bpf.h>
-> +#include <linux/if_ether.h>
-> +#include <linux/in.h>
-> +#include <linux/ip.h>
-> +#include <linux/ipv6.h>
-> +#include <linux/tcp.h>
-> +#include <linux/udp.h>
-> +#include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <linux/pkt_cls.h>
-> +
-> +char LICENSE[] SEC("license") = "GPL";
-> +
-> +__u64 sk_cookie_seen;
-> +__u64 reuseport_executed;
-> +union {
-> +	struct tcphdr tcp;
-> +	struct udphdr udp;
-> +} headers;
-> +
-> +const volatile __u16 dest_port;
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-> +	__uint(max_entries, 1);
-> +	__type(key, __u32);
-> +	__type(value, __u64);
-> +} sk_map SEC(".maps");
-> +
-> +SEC("sk_reuseport")
-> +int reuse_accept(struct sk_reuseport_md *ctx)
-> +{
-> +	reuseport_executed++;
-> +
-> +	if (ctx->ip_protocol == IPPROTO_TCP) {
-> +		if (ctx->data + sizeof(headers.tcp) > ctx->data_end)
-> +			return SK_DROP;
-> +
-> +		if (__builtin_memcmp(&headers.tcp, ctx->data, sizeof(headers.tcp)) != 0)
-> +			return SK_DROP;
-> +	} else if (ctx->ip_protocol == IPPROTO_UDP) {
-> +		if (ctx->data + sizeof(headers.udp) > ctx->data_end)
-> +			return SK_DROP;
-> +
-> +		if (__builtin_memcmp(&headers.udp, ctx->data, sizeof(headers.udp)) != 0)
-> +			return SK_DROP;
-> +	} else {
-> +		return SK_DROP;
-> +	}
-> +
-> +	sk_cookie_seen = bpf_get_socket_cookie(ctx->sk);
-> +	return SK_PASS;
-> +}
-> +
-> +SEC("sk_reuseport")
-> +int reuse_drop(struct sk_reuseport_md *ctx)
-> +{
-> +	reuseport_executed++;
-> +	sk_cookie_seen = 0;
-> +	return SK_DROP;
-> +}
-> +
-> +static inline int
+-- 
+Jackie Liu
 
-nit. inline is no longer a must. Same for a few functions below.
-
-> +assign_sk(struct __sk_buff *skb)
-> +{
-> +	int zero = 0, ret = 0;
-> +	struct bpf_sock *sk;
-> +
-> +	sk = bpf_map_lookup_elem(&sk_map, &zero);
-> +	if (!sk)
-> +		return TC_ACT_SHOT;
-> +	ret = bpf_sk_assign(skb, sk, 0);
-> +	bpf_sk_release(sk);
-> +	return ret ? TC_ACT_SHOT : TC_ACT_OK;
-> +}
-> +
-
+> 
+>> +       }
+>> +}
+>> +
+>>   struct bpf_link *
+>>   bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>                                        const char *pattern,
+>> @@ -10476,13 +10544,19 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>                  return libbpf_err_ptr(-EINVAL);
+>>
+>>          if (pattern) {
+>> -               err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+>> -               if (err)
+>> -                       goto error;
+>> +               err = libbpf_ftrace_parse(ftrace_resolve_kprobe_multi_cb, &res);
+>> +               if (err) {
+>> +                       /* fallback to kallsyms */
+>> +                       err = libbpf_kallsyms_parse(kallsyms_resolve_kprobe_multi_cb,
+>> +                                                   &res);
+>> +                       if (err)
+>> +                               goto error;
+>> +               }
+>>                  if (!res.cnt) {
+>>                          err = -ENOENT;
+>>                          goto error;
+>>                  }
+>> +               syms = res.syms;
+>>                  addrs = res.addrs;
+>>                  cnt = res.cnt;
+>>          }
+>> @@ -10511,12 +10585,12 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>                  goto error;
+>>          }
+>>          link->fd = link_fd;
+>> -       free(res.addrs);
+>> +       kprobe_multi_resolve_free(&res);
+>>          return link;
+>>
+>>   error:
+>>          free(link);
+>> -       free(res.addrs);
+>> +       kprobe_multi_resolve_free(&res);
+>>          return libbpf_err_ptr(err);
+>>   }
+>>
+>> --
+>> 2.25.1
+>>
+>>
 
