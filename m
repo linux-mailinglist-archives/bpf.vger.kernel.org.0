@@ -1,117 +1,91 @@
-Return-Path: <bpf+bounces-1295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69A6712349
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 11:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADCF9712396
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 11:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 817DB1C210F5
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 09:19:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68B201C2119E
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 09:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F3011184;
-	Fri, 26 May 2023 09:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413AE111B0;
+	Fri, 26 May 2023 09:28:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC05D10954
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 09:19:27 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD77195
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 02:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=7GoWo1uU+m7K1+vBK5OZ2og5KP9fUN2kD+E5MOF3A2A=; b=HUtAmZID+oPknDt7Qa2+GsJ95Q
-	YqgnCosfGBfRQjIoKBEpFw4eAiVszwbGB4z6UMd8KJ7WIdK1aQwqKISReREPch+/AaM6amVuEMT6f
-	VCBOkpkrT2hhsenRKv/DuaWZs9EW3QhnUVb72siUr6KpjW8sfoIvR5FEusIAzEGboMZjVQgELK41U
-	dhZpAO9jtypMhYVQj2A/91fZF8tYVyz2YfwEujj/+K7FzjwGAYsGeNY06yE7LJ+Fme3TIoWbIiu82
-	V1zlsGClSh66eZqFtPm9Yw+1IhT8SbfBI2WtyNVBNfKO8m3KnNvSdQHRnk4tYyCquWcQVLa5lq7cr
-	UrOniG1w==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q2TbP-000JTN-L6; Fri, 26 May 2023 11:19:15 +0200
-Received: from [178.197.248.12] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q2TbP-000Irg-5p; Fri, 26 May 2023 11:19:15 +0200
-Subject: Re: [PATCH bpf-next 1/2] libbpf: ensure libbpf always opens files
- with O_CLOEXEC
-To: Lennart Poettering <lennart@poettering.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@kernel.org
-References: <20230525221311.2136408-1-andrii@kernel.org>
- <ZHBrjg4xCNl0Z6KY@gardel-login>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ffd45013-4910-09e3-6bc8-2ef865a2a155@iogearbox.net>
-Date: Fri, 26 May 2023 11:19:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196C5AD48;
+	Fri, 26 May 2023 09:28:27 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02819194;
+	Fri, 26 May 2023 02:28:17 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QSKH33ftzzqTPD;
+	Fri, 26 May 2023 17:23:43 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 26 May 2023 17:28:15 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next 0/2] support non-frag page for page_pool_alloc_frag()
+Date: Fri, 26 May 2023 17:26:13 +0800
+Message-ID: <20230526092616.40355-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZHBrjg4xCNl0Z6KY@gardel-login>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26919/Fri May 26 09:23:54 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 5/26/23 10:19 AM, Lennart Poettering wrote:
-> On Do, 25.05.23 15:13, Andrii Nakryiko (andrii@kernel.org) wrote:
-> 
->> Make sure that libbpf code always gets FD with O_CLOEXEC flag set,
->> regardless if file is open through open() or fopen(). For the latter
->> this means to add "e" to mode string, which is supported since pretty
->> ancient glibc v2.7.
->>
->> I also dropped outdated TODO comment in usdt.c, which was already completed.
->>
->> Suggested-by: Lennart Poettering <lennart@poettering.net>
->> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->> ---
->>   tools/lib/bpf/btf.c           | 2 +-
->>   tools/lib/bpf/libbpf.c        | 6 +++---
->>   tools/lib/bpf/libbpf_probes.c | 2 +-
->>   tools/lib/bpf/usdt.c          | 5 ++---
->>   4 files changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index 0a2c079244b6..8484b563b53d 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -1064,7 +1064,7 @@ static struct btf *btf_parse_raw(const char *path, struct btf *base_btf)
->>   	int err = 0;
->>   	long sz;
->>
->> -	f = fopen(path, "rb");
->> +	f = fopen(path, "rbe");
-> 
-> You might as well drop the "b". That's a thing only on non-POSIX
-> systems. So unless you want to support windows with this, you can drop
-> it with zero effect.
+In [1], there is a use case to use frag support in page
+pool to reduce memory usage, and it may request different
+frag size depending on the head/tail room space for
+xdp_frame/shinfo and mtu/packet size. When the requested
+frag size is large enough that a single page can not be
+split into more than one frag, using frag support only
+have performance penalty because of the extra frag count
+handling for frag support.
 
-Iiuc, the library is also imported by the 'ebpf for windows' project [0],
-so we might need to keep the 'b' intact in that case.
+So this patchset provides a way for user to fail back to
+non-frag page when a page is not able to hold two frags.
 
-Thanks,
-Daniel
+PP_FLAG_PAGE_FRAG may be removed after this patchset, and
+the extra benefit is that driver does not need to handle
+the case for arch with PAGE_POOL_DMA_USE_PP_FRAG_COUNT when
+using page_pool_alloc_frag() API.
 
-   [0] https://github.com/microsoft/ebpf-for-windows/#architectural-overview
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+
+V1: Drop RFC tag and page_pool_frag patch
+
+Yunsheng Lin (2):
+  page_pool: unify frag page and non-frag page handling
+  page_pool: support non-frag page for page_pool_alloc_frag()
+
+ include/net/page_pool.h | 38 ++++++++++++++++++++++++++------
+ net/core/page_pool.c    | 48 +++++++++++++++++++++++++----------------
+ 2 files changed, 61 insertions(+), 25 deletions(-)
+
+-- 
+2.33.0
+
 
