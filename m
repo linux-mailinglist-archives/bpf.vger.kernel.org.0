@@ -1,91 +1,159 @@
-Return-Path: <bpf+bounces-1288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99475711FA0
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:07:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D297571206A
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30DC6281673
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:07:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ECA51C20F62
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1EC5243;
-	Fri, 26 May 2023 06:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504305669;
+	Fri, 26 May 2023 06:45:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AAE3D8C
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 06:07:34 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BEA125;
-	Thu, 25 May 2023 23:07:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=YeHMLKYZLktUZXoDtbAI9yhcE3xWnVS3PncgW4EqLBk=; b=tp+xdtdyNF52jXyBTcVwA1UTER
-	ZuU7JzwtKRd6UMNN3BdJWzAfzZqtz6GRytU0kpiOcqNNLK2rCmWCn9w+qXB3n9UOtLLZqCaQv8fle
-	tBBwVRhJ2MOcTef6ttqqlWJmkY+vCfYImEz/OjOmME1PSJyjkVOLiUpFQ8eQupVwFZv/0oU3hlz6h
-	QBtuLCIU+Lsta0ApEeb4HVGYUIanGdPiT1w00CMZOA0D05bRF2sm50VrJRbiTzuhZXxW7kae1ARb9
-	VP0fc5eiUj1I2Jg9N0S2oz8kbSy5vIOczWoVOWVr+SOuO3EpnBtmHFppW6QamVJd39TuiQmLXwYLE
-	Pjsy6i8Q==;
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2Qbr-001CCa-0O;
-	Fri, 26 May 2023 06:07:31 +0000
-Message-ID: <b6c6eab1-9e81-4247-ee92-4684dae78c15@infradead.org>
-Date: Thu, 25 May 2023 23:07:30 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1771720E6;
+	Fri, 26 May 2023 06:45:36 +0000 (UTC)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F7DBC;
+	Thu, 25 May 2023 23:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1685083534; x=1716619534;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IJu7yRqmaECoG+aUqI9gqOkbcGWsi1NNfVI1riIMsLk=;
+  b=jnvGkXV2jj7ELXJylaWO2oE/vW6V8LmVSo/Bs39Vj2SR/Dsxfp+E/lED
+   e+8GHyzXw/PrTx7iXpKtYuUA43VzCG3u7op8Pd1ZMoe7xuPXfiNZ1ktMG
+   x0XvZOwlkCkRImqxxTYAe3GC4+8GkrwWvMcQ3HkBl1wZmXUrBYR6DrjVq
+   5thcfyCW3jCkHMb2k7Sm80tKGZUv2++x26E+54HnN6+Co7yBw+2JKzrVJ
+   HW0ytnoCF/fKbuI908kxFwXSjCVFGc22yMdBmbBliDUVHrZYfyfijTwm5
+   p5p8jfLTDGmWdcrLk7J6Y5uKJEJRTG2yGZ+I5a96nqkXyVCq9JrCOzBel
+   A==;
+X-IronPort-AV: E=Sophos;i="6.00,193,1681196400"; 
+   d="scan'208";a="217418416"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 May 2023 23:45:33 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 25 May 2023 23:45:32 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Thu, 25 May 2023 23:45:32 -0700
+Date: Fri, 26 May 2023 08:45:31 +0200
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Dexuan Cui
+	<decui@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Paul Rosswurm
+	<paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org"
+	<leon@kernel.org>, Long Li <longli@microsoft.com>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
+	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>, Ajay Sharma <sharmaajay@microsoft.com>,
+	"hawk@kernel.org" <hawk@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
+	<stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Message-ID: <20230526064531.zohcgjbaraq7c2ui@soft-dev3-1>
+References: <1684963320-25282-1-git-send-email-haiyangz@microsoft.com>
+ <20230525064849.ca5p6npej7p2luw2@soft-dev3-1>
+ <PH7PR21MB31161F3291FF951877355DA9CA46A@PH7PR21MB3116.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 1/3] module: Introduce module_alloc_type
-Content-Language: en-US
-To: Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org
-Cc: bpf@vger.kernel.org, mcgrof@kernel.org, peterz@infradead.org,
- tglx@linutronix.de, x86@kernel.org, rppt@kernel.org,
- kent.overstreet@linux.dev
-References: <20230526051529.3387103-1-song@kernel.org>
- <20230526051529.3387103-2-song@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230526051529.3387103-2-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <PH7PR21MB31161F3291FF951877355DA9CA46A@PH7PR21MB3116.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi--
+The 05/25/2023 14:34, Haiyang Zhang wrote:
+> 
+> > -----Original Message-----
+> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > Sent: Thursday, May 25, 2023 2:49 AM
+> > To: Haiyang Zhang <haiyangz@microsoft.com>
+> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> > <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
+> > <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
+> > davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
+> > kuba@kernel.org; pabeni@redhat.com; leon@kernel.org; Long Li
+> > <longli@microsoft.com>; ssengar@linux.microsoft.com; linux-
+> > rdma@vger.kernel.org; daniel@iogearbox.net; john.fastabend@gmail.com;
+> > bpf@vger.kernel.org; ast@kernel.org; Ajay Sharma
+> > <sharmaajay@microsoft.com>; hawk@kernel.org; linux-
+> > kernel@vger.kernel.org; stable@vger.kernel.org
+> > Subject: Re: [PATCH net] net: mana: Fix perf regression: remove rx_cqes,
+> > tx_cqes counters
+> >
+> > [Some people who received this message don't often get email from
+> > horatiu.vultur@microchip.com. Learn why this is important at
+> > https://aka.ms/LearnAboutSenderIdentification ]
+> >
+> > The 05/24/2023 14:22, Haiyang Zhang wrote:
+> >
+> > Hi Haiyang,
+> >
+> > >
+> > > The apc->eth_stats.rx_cqes is one per NIC (vport), and it's on the
+> > > frequent and parallel code path of all queues. So, r/w into this
+> > > single shared variable by many threads on different CPUs creates a
+> > > lot caching and memory overhead, hence perf regression. And, it's
+> > > not accurate due to the high volume concurrent r/w.
+> >
+> > Do you have any numbers to show the improvement of this change?
+> 
+> The numbers are not published. The perf regression of the previous
+> patch is very significant, and this patch eliminates the regression.
+> 
+> >
+> > >
+> > > Since the error path of mana_poll_rx_cq() already has warnings, so
+> > > keeping the counter and convert it to a per-queue variable is not
+> > > necessary. So, just remove this counter from this high frequency
+> > > code path.
+> > >
+> > > Also, remove the tx_cqes counter for the same reason. We have
+> > > warnings & other counters for errors on that path, and don't need
+> > > to count every normal cqe processing.
+> >
+> > Will you not have problems with the counter 'apc->eth_stats.tx_cqe_err'?
+> > It is not in the hot path but you will have concurrent access to it.
+> 
+> Yes, but that error happens rarely, so a shared variable is good enough. So, I
+> don't change it in this patch.
 
-On 5/25/23 22:15, Song Liu wrote:
-> +/**
-> + * struct vmalloc_params - Parameters to call __vmalloc_node_range()
-> + * @start:          Address space range start
-> + * @end:            Address space range end
-> + * @gfp_mask:       The gfp_t mask used for this range
-> + * @pgprot:         The page protection for this range
-> + * @vm_flags        The vm_flag used for this range
+OK, I understand.
+Maybe this can be fixed in a different patch at a later point. Thanks.
 
-    * @vm_flags:
+Reviwed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-> + */
-> +struct vmalloc_params {
-> +	unsigned long	start;
-> +	unsigned long	end;
-> +	gfp_t		gfp_mask;
-> +	pgprot_t	pgprot;
-> +	unsigned long	vm_flags;
-> +};
+> 
+> Thanks,
+> - Haiyang
+> 
 
 -- 
-~Randy
+/Horatiu
 
