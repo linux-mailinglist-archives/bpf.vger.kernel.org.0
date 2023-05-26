@@ -1,86 +1,79 @@
-Return-Path: <bpf+bounces-1291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058C1712074
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:51:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADED71207C
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:53:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B293E2812A7
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:51:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C280281674
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EED55662;
-	Fri, 26 May 2023 06:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293275669;
+	Fri, 26 May 2023 06:53:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CA420E6
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 06:51:03 +0000 (UTC)
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181C2BC;
-	Thu, 25 May 2023 23:51:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2537a79b9acso420824a91.3;
-        Thu, 25 May 2023 23:51:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058CB53A0
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 06:53:12 +0000 (UTC)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDA7AD;
+	Thu, 25 May 2023 23:53:11 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b011cffe7fso1710555ad.1;
+        Thu, 25 May 2023 23:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685083860; x=1687675860;
+        d=gmail.com; s=20221208; t=1685083991; x=1687675991;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lGACEaIrD4zSU2aeog6vBy9O4EkGvsfRbD7VCzWE690=;
-        b=QquRqePAsyWnNBwrIyycy3XucFj/jFX/3GNN6UTB+K06ZMnraSlxYSIsUJqKy5XMUd
-         J5hOsxE7YqPwO/xalKKueQzNJuGql8Dnq0oTSb5kpGDmzLN50pDNm8spjEBA39Rb4tV6
-         JysGZTJZGJLKv1k83I5Z2XD6Mp8pmbkBeYdOd6/cqm/YK+ZCD9B4BBFfo/41ud7N66Bu
-         Py5RuCd9N/g4jlFQlHmQrdMX2ROZx7oJSjagyDR919/H/oAnOriRT9RwDoGIBOW6aarB
-         iHQxxWIbd21jAePa+Fjsn1j6IfFK+31c77Bo/ViYDVBnwAQcOGQPVMXe/kp32aJJESla
-         OrHg==
+        bh=FhgPHBRfrFbllTEWP/7rhf7JubE15swpXRJxG4NX2SU=;
+        b=otEd7naekpqQVL9gmTAOKnw+M+aU6LJr6kClb8Rj0Pp7ZIa7kW1godawweZf7p+2m+
+         ijg95ghhXeOYmndR3a+ssJ7iQApQP0C6XlBlNWcOFiY7QbUmmbrCVwQb2wNqFBr8L+U8
+         0r/4pICSVvVgQoIzfPC9o/VSZirDhTLh4iQl2jMHNzEvdtWX66sK6gpOdztUycGdVVjQ
+         GwT45dPdCkEoiKrYhy2eQEVMV2/vDvsmCutLabOU/CnNqlMJ6DrIg2pdfJ9qk4EGf5fT
+         ojRbMmq8PhoM12Gk3dypemdft6YzBKaQvgJvFkHPiNSk8CQ6q9aGlDItXNQPAUnr13QU
+         tMLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685083860; x=1687675860;
+        d=1e100.net; s=20221208; t=1685083991; x=1687675991;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=lGACEaIrD4zSU2aeog6vBy9O4EkGvsfRbD7VCzWE690=;
-        b=cF6qhKmm/odQAjhq/QyjVBMgZUh27y7xt5JJ4v1DekToF4pC9BDSxiG2Jo+o+R9IdN
-         gbrepgE5UV/mtkYnwcBmb6nK2XnOwHJbi8E+fmVjhQ0tu1M40VsjvoOQJFNEdxzhZ5LF
-         C962txf+gYWxUalsfluvz5Fd4Ge4WtwFlblI4XV0L9f/zH0rldqXhNl5kT+H6W2Rv+u1
-         UlcQJlFCx+ZADhb5GfUny7FX7oVwISebgq3KSTPObLeS2rTIpL7hh5GGy4AlHSD8HYxm
-         aCD39wQaq5aDo/L62AOQ3DNk6zO9aCEEXtDafTVep2orHfc758z0lIxidoAPkLnqaZI5
-         aE6A==
-X-Gm-Message-State: AC+VfDxJ7jH0xsMl0rmrimh8mI1qgaqA4jzWLuQh/W/8YZMRwWif/L9q
-	dh57CGoyy/u2wr/JdJ1HdKc=
-X-Google-Smtp-Source: ACHHUZ4DEG7JENscgMVffBweyP9OhNGu3BglBG5gmEAogCCfXi1Wr8JvIrH889GSyjko8GKa8lgjYA==
-X-Received: by 2002:a17:90a:7106:b0:255:dd84:8643 with SMTP id h6-20020a17090a710600b00255dd848643mr1810477pjk.8.1685083860490;
-        Thu, 25 May 2023 23:51:00 -0700 (PDT)
+        bh=FhgPHBRfrFbllTEWP/7rhf7JubE15swpXRJxG4NX2SU=;
+        b=YryVCjFtO3nVlf2hjLIhQT/M0HwPWVSsfJojMuNQI+UmEZm1NkbzCdvuNUcu45Uko5
+         ZrbxNC2jwP1Ji7xKfSWZxGJYtLR+UfprnHS6/g/KSNro8wnOIX7BfSJfKuqR0xwD6JMo
+         b/yTdW/er5Y+MY+XbtbXzPMn3sxHlsnOeJxRloOGtMce43o/Aoc4BHkev/ToEkwRSmD+
+         TCaGjH+pltGs98GT6FtSQyInkyspJitFnhhFLbZl1Yg2pdAIozLZjdtRkZLTPAn7AIyJ
+         BePAayYVXXS1rljNQMer7EE4/Lp4V4Nuj/6KQXZvu4NRrIsIWng8El7pzT/Q1CwJCPuu
+         4Vlw==
+X-Gm-Message-State: AC+VfDzNfUC1Uggoa5vcVPoKTE8vACR4Qb5BM/jTzT48pL8ur3SW5bTh
+	+qDT+DsKhFDaZEZy7Iwm5Xc=
+X-Google-Smtp-Source: ACHHUZ5FxN4/aChKs2p3DpXwSW/h5KMNhBNs+G6GphMNltwiFt7kwu/SsnxF23ODS2XueD3eZ32MCA==
+X-Received: by 2002:a17:903:2092:b0:1ab:1a6:34bc with SMTP id d18-20020a170903209200b001ab01a634bcmr1133666plc.9.1685083990657;
+        Thu, 25 May 2023 23:53:10 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:17de:b2c5:b0ad:62a7])
-        by smtp.gmail.com with ESMTPSA id o2-20020a17090a3d4200b0024e227828a9sm4259536pjf.24.2023.05.25.23.50.59
+        by smtp.gmail.com with ESMTPSA id g4-20020a170902740400b001b01448ba72sm450174pll.215.2023.05.25.23.53.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 23:51:00 -0700 (PDT)
-Date: Thu, 25 May 2023 23:50:58 -0700
+        Thu, 25 May 2023 23:53:10 -0700 (PDT)
+Date: Thu, 25 May 2023 23:53:09 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: kongweibin <kongweibin2@huawei.com>, 
- daniel@iogearbox.net
-Cc: andrii@kernel.org, 
- ast@kernel.org, 
- bpf@vger.kernel.org, 
- davem@davemloft.net, 
- edumazet@google.com, 
- hsinweih@uci.edu, 
- jakub@cloudflare.com, 
- john.fastabend@gmail.com, 
- kuba@kernel.org, 
- linux-kernel@vger.kernel.org, 
- liuxin350@huawei.com, 
- yanan@huawei.com, 
- wuchangye@huawei.com, 
- xiesongyang@huawei.com, 
- kongweibin2@huawei.com, 
- zhangmingyi5@huawei.com
-Message-ID: <647056d28d59a_2023020887@john.notmuch>
-In-Reply-To: <20230525143814.361127-1-kongweibin2@huawei.com>
-References: <20230525143814.361127-1-kongweibin2@huawei.com>
-Subject: RE: [bpf?] [net?] Questions about the impact of ebpf
- sockmap/redirection on socket performance improvement
+To: Namhyung Kim <namhyung@kernel.org>, 
+ Arnaldo Carvalho de Melo <acme@kernel.org>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, 
+ Adrian Hunter <adrian.hunter@intel.com>, 
+ Peter Zijlstra <peterz@infradead.org>, 
+ Ingo Molnar <mingo@kernel.org>, 
+ LKML <linux-kernel@vger.kernel.org>, 
+ linux-perf-users@vger.kernel.org, 
+ Song Liu <song@kernel.org>, 
+ bpf@vger.kernel.org
+Message-ID: <64705755d6ae_2023020859@john.notmuch>
+In-Reply-To: <20230525000307.3202449-1-namhyung@kernel.org>
+References: <20230525000307.3202449-1-namhyung@kernel.org>
+Subject: RE: [PATCH] perf bpf filter: Fix a broken perf sample data naming in
+ BPF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,17 +90,42 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-kongweibin wrote:
-> I'm using ebpf sockmap/redirection to bypass the TCP/IP stack to improve
-> socket communication performance (throughput, latency) between different
-> PODs on the same machine. As concurrent connections or payloads increase,
-> there may be unconspicuous performance improvement or even performance
-> degradation compared to the TCP/IP stack. I have retrieved some performance
-> data, but it does not seem to involve high concurrency and high payloads,
-> I would like to know if community have conducted relevant tests on these
-> scenarios and have any opinions on the poor performance improvement in these
-> scenarios.
+Namhyung Kim wrote:
+> BPF CO-RE requires 3 underscores for the ignored suffix rule but it
+> mistakenly used only 2.  Let's fix it.
+> 
+> Fixes: 3a8b8fc31748 ("perf bpf filter: Support pre-5.16 kernels where 'mem_hops' isn't in 'union perf_mem_data_src'")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf_skel/sample_filter.bpf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> index cffe493af1ed..fb94f5280626 100644
+> --- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> @@ -25,7 +25,7 @@ struct perf_sample_data___new {
+>  } __attribute__((preserve_access_index));
+>  
+>  /* new kernel perf_mem_data_src definition */
+> -union perf_mem_data_src__new {
+> +union perf_mem_data_src___new {
+>  	__u64 val;
+>  	struct {
+>  		__u64   mem_op:5,	/* type of opcode */
+> @@ -108,7 +108,7 @@ static inline __u64 perf_get_sample(struct bpf_perf_event_data_kern *kctx,
+>  		if (entry->part == 7)
+>  			return kctx->data->data_src.mem_blk;
+>  		if (entry->part == 8) {
+> -			union perf_mem_data_src__new *data = (void *)&kctx->data->data_src;
+> +			union perf_mem_data_src___new *data = (void *)&kctx->data->data_src;
+>  
+>  			if (bpf_core_field_exists(data->mem_hops))
+>  				return data->mem_hops;
+> -- 
+> 2.41.0.rc0.172.g3f132b7071-goog
+> 
+> 
 
-Not fully following above, what is your performance test/tools and what
-were the numbers?
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
