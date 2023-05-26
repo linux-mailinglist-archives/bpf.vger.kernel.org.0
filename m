@@ -1,130 +1,168 @@
-Return-Path: <bpf+bounces-1303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3344A712650
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 14:12:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4A3712671
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 14:19:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E30A6281571
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 12:12:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322B21C21072
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 12:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C782171BC;
-	Fri, 26 May 2023 12:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191EE171BC;
+	Fri, 26 May 2023 12:18:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37115742DE;
-	Fri, 26 May 2023 12:11:47 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6884C116;
-	Fri, 26 May 2023 05:11:42 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1q2WIF-0006AJ-PB; Fri, 26 May 2023 14:11:39 +0200
-From: Florian Westphal <fw@strlen.de>
-To: <bpf@vger.kernel.org>
-Cc: <netdev@vger.kernel.org>,
-	ast@kernel.org,
-	Florian Westphal <fw@strlen.de>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf] bpf: netfilter: add BPF_NETFILTER bpf_attach_type
-Date: Fri, 26 May 2023 14:11:24 +0200
-Message-Id: <20230526121124.3915-1-fw@strlen.de>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com>
-References: <CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB423742D5
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 12:18:58 +0000 (UTC)
+Received: from out-29.mta1.migadu.com (out-29.mta1.migadu.com [95.215.58.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D785195
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 05:18:56 -0700 (PDT)
+Message-ID: <4365dadc-05f3-c0ea-3318-3c55cef177be@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685103534;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+1O94xTqJWYAGB+q9RdqebVuhnUTDFy1EyCCAi+GAN4=;
+	b=U54bwkHChglSvXvUnOuOn1UI1/2PAVLD9hTRJuQLrsPByj1wkINNoA1ygosLNJMgUcvdF/
+	YAYyJmLVFaEujXhHW/kyIwbIUk41STeKFdI3oSU9mUf8+g9D7n3yQgWuzG1bteI6sSlUV6
+	XpY53fQrgqHCfJW+cQTNKYIbBSqDpns=
+Date: Fri, 26 May 2023 20:18:45 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v5] libbpf: kprobe.multi: Filter with
+ available_filter_functions
+Content-Language: en-US
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ bpf@vger.kernel.org, liuyun01@kylinos.cn
+References: <CAEf4Bzae7mdpCDBEafG-NUCPRohWkC8EBs0+twE2hUbB8LqWJA@mail.gmail.com>
+ <20230526021047.368833-1-liu.yun@linux.dev> <ZHCBfW6AAxCO53mC@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Jackie Liu <liu.yun@linux.dev>
+In-Reply-To: <ZHCBfW6AAxCO53mC@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Andrii Nakryiko writes:
 
- And we currently don't have an attach type for NETLINK BPF link.
- Thankfully it's not too late to add it. I see that link_create() in
- kernel/bpf/syscall.c just bypasses attach_type check. We shouldn't
- have done that. Instead we need to add BPF_NETLINK attach type to enum
- bpf_attach_type. And wire all that properly throughout the kernel and
- libbpf itself.
 
-This adds BPF_NETFILTER and uses it.  This breaks uabi but this
-wasn't in any non-rc release yet, so it should be fine.
+在 2023/5/26 17:53, Jiri Olsa 写道:
+> On Fri, May 26, 2023 at 10:10:47AM +0800, Jackie Liu wrote:
+> 
+> SNIP
+> 
+>> -resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>> -			const char *sym_name, void *ctx)
+>> +kallsyms_resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>> +				 const char *sym_name, void *ctx)
+>>   {
+>>   	struct kprobe_multi_resolve *res = ctx;
+>>   	int err;
+>> @@ -10431,8 +10438,8 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>>   	if (!glob_match(sym_name, res->pattern))
+>>   		return 0;
+>>   
+>> -	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
+>> -				res->cnt + 1);
+>> +	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap,
+>> +				sizeof(unsigned long), res->cnt + 1);
+> 
+> hum, looks like this is just formatting change, AFAICS we don't need that
+> 
+>>   	if (err)
+>>   		return err;
+>>   
+>> @@ -10440,6 +10447,75 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+>>   	return 0;
+>>   }
+>>   
+> 
+> SNIP
+> 
+>> +
+>> +static void kprobe_multi_resolve_free(struct kprobe_multi_resolve *res)
+>> +{
+>> +	while (res->syms && res->cnt)
+>> +		free((char *)res->syms[--res->cnt]);
+>> +
+>> +	free(res->syms);
+>> +	free(res->addrs);
+> 
+> we should set cnt and cap to zero for the fallback sake
 
-Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- include/uapi/linux/bpf.h       | 1 +
- kernel/bpf/syscall.c           | 4 ++++
- tools/include/uapi/linux/bpf.h | 1 +
- tools/lib/bpf/libbpf.c         | 2 +-
- 4 files changed, 7 insertions(+), 1 deletion(-)
+It is necessary to set cap to 0, cnt is already 0, if syms exists.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 1bb11a6ee667..c994ff5b157c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
- 	BPF_STRUCT_OPS,
-+	BPF_NETFILTER,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 14f39c1e573e..cc1fc2404406 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2433,6 +2433,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 		default:
- 			return -EINVAL;
- 		}
-+	case BPF_PROG_TYPE_NETFILTER:
-+		if (expected_attach_type == BPF_NETFILTER)
-+			return 0;
-+		return -EINVAL;
- 	case BPF_PROG_TYPE_SYSCALL:
- 	case BPF_PROG_TYPE_EXT:
- 		if (expected_attach_type)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 1bb11a6ee667..c994ff5b157c 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
- 	BPF_STRUCT_OPS,
-+	BPF_NETFILTER,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ad1ec893b41b..532a97cf1cc1 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8712,7 +8712,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
- 	SEC_DEF("struct_ops.s+",	STRUCT_OPS, 0, SEC_SLEEPABLE),
- 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
--	SEC_DEF("netfilter",		NETFILTER, 0, SEC_NONE),
-+	SEC_DEF("netfilter",		NETFILTER, BPF_NETFILTER, SEC_NONE),
- };
- 
- static size_t custom_sec_def_cnt;
--- 
-2.39.3
+> 
+>> +}
+>> +
+>>   struct bpf_link *
+>>   bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>   				      const char *pattern,
+>> @@ -10476,13 +10552,20 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>   		return libbpf_err_ptr(-EINVAL);
+>>   
+>>   	if (pattern) {
+>> -		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+>> -		if (err)
+>> -			goto error;
+>> +		err = libbpf_available_kprobes_parse(ftrace_resolve_kprobe_multi_cb,
+>> +						     &res);
+>> +		if (err) {
+>> +			/* fallback to kallsyms */
+> 
+> we need to call kprobe_multi_resolve_free in here and set
+> cnt/cap to zero in kprobe_multi_resolve_free
 
+Yes.
+
+> 
+> jirka
+> 
+>> +			err = libbpf_kallsyms_parse(kallsyms_resolve_kprobe_multi_cb,
+>> +						    &res);
+>> +			if (err)
+>> +				goto error;
+>> +		}
+>>   		if (!res.cnt) {
+>>   			err = -ENOENT;
+>>   			goto error;
+>>   		}
+>> +		syms = res.syms;
+>>   		addrs = res.addrs;
+>>   		cnt = res.cnt;
+>>   	}
+>> @@ -10511,12 +10594,12 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>>   		goto error;
+>>   	}
+>>   	link->fd = link_fd;
+>> -	free(res.addrs);
+>> +	kprobe_multi_resolve_free(&res);
+>>   	return link;
+>>   
+>>   error:
+>>   	free(link);
+>> -	free(res.addrs);
+>> +	kprobe_multi_resolve_free(&res);
+>>   	return libbpf_err_ptr(err);
+>>   }
+>>   
+>> -- 
+>> 2.25.1
+>>
 
