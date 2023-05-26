@@ -1,212 +1,186 @@
-Return-Path: <bpf+bounces-1326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF9B7712BB4
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 19:25:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E873712BC8
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 19:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 676101C21089
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 17:25:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88121C21031
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 17:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE9328C28;
-	Fri, 26 May 2023 17:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C276728C34;
+	Fri, 26 May 2023 17:30:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82977271F6
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 17:25:32 +0000 (UTC)
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA61A1AC
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 10:25:28 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1q2bBt-00083y-Du; Fri, 26 May 2023 13:25:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=HuW/R6IXedz7Sh0fnYj2KaW+G+r0Nn5MKUUor+E3Onk=; b=iE2mpqEtmXowfHG8D0ID
-	XYequGFhaCOtLzFAMADhsWxCZT2QKXuY94meqptvsGnxp8cdmF1lT9Fng9cVHXBVDprhDRwmD979t
-	VjR3FF23kxRTvXKQK7KAsYABRQCaa5ejEIbmR9MxDmBCAHrd+yvL8GxLtuEBKYtS3itJVGwqFCfZ4
-	jgeSaI9nODXREY4Vaw4qchhZ2/QSLYmPcWc8o2nY5UXqjc49xJMnF5wGmFRuZn0hdUN2FFkaFFsTM
-	vxdzqvjjB2ekWtcnF4DRZgULMqXjq7JoXNfgpatb6rm4hCkw7S/afleZg14Gxaai4ocT3iohtH/Di
-	MlbW9OyhhHKRBQ==;
-Received: from [141.143.193.71] (helo=termi)
-	by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1q2bBp-0000mo-L5; Fri, 26 May 2023 13:25:23 -0400
-From: "Jose E. Marchesi" <jemarch@gnu.org>
-To: Dave Thaler <dthaler@microsoft.com>
-Cc: Suresh Krishnan <suresh.krishnan@gmail.com>,  David Vernet
- <void@manifault.com>,  Michael Richardson <mcr+ietf@sandelman.ca>,
-  "bpf@ietf.org" <bpf@ietf.org>,  bpf <bpf@vger.kernel.org>,  Alexei
- Starovoitov <ast@kernel.org>,  Erik Kline <ek.ietf@gmail.com>,  "Suresh
- Krishnan (sureshk)" <sureshk@cisco.com>,  Christoph Hellwig
- <hch@infradead.org>
-Subject: Re: [Bpf] IETF BPF working group draft charter
-In-Reply-To: <PH7PR21MB3878F7518729EB48F116978EA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
-	(Dave Thaler's message of "Fri, 26 May 2023 16:05:44 +0000")
-References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<87v8grkn67.fsf@gnu.org>
-	<PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<87r0rdy26o.fsf@gnu.org>
-	<PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
-	<20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
-	<20230523202827.GA33347@maniforge>
-	<8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com>
-	<87a5xto2wg.fsf@gnu.org>
-	<PH7PR21MB3878F7518729EB48F116978EA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
-Date: Fri, 26 May 2023 19:25:11 +0200
-Message-ID: <874jnzgg3s.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98208271F6
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 17:30:17 +0000 (UTC)
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020014.outbound.protection.outlook.com [52.101.61.14])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF6C1BB
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 10:30:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wx/3slaPebXztPZ4aQNzxJH6ljNOTYb4vV+I7JwtxZTrzOB3t6sD6eyqEeJSSkpE9z4ATdR9+/Np/fzoG1LqkRpPNmyRNxjdGa/vppyu/kI+wXHwLVS34CwDulWxlePF2v3p4BCj6dfySS2rFbyGVphYPKgom5aueL6e9sasbU4/AAWHNelED1mGBm0Vkxt88XgWCd8N2ZPgGUteYKgtMaOaARNWiyHlaruLxUPBSUaf/rVkywGZqwHNy7G6Yn0Gct++Bjh115IHmI+Fzht0rKl2fghp5x13670nZ44Uo0ALYm90Z52TZVCX1v95pKH5sgTS2ftxNSJWksRS+Kew/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UvPclQpyoZYXW9VcV1m+cC17DEK+4mwi8j/MvDnaks4=;
+ b=Xad0sAU6Tqyhn4JXb6PBJsNYV4s1BVGGqNQgiivhUaV7B6uHuoxLbwlxXFuTsJkCfPtxIq7QxGJneQeoHJqkiIEnJXe6ka0S4WH60pDP6FOVVrNxbiRyT+spkAIO+2LllxVnKSYqFVjE2fTFLiY4qZ9iPcxO66zmqpAYpBGw5fjjv2DvCOaP0XfWydwe9rvRLUpBq4HUrEgpQixlXLKwkVGdmdYpUHPOMVFdWABluVc7JwDT1JZbkuVpvOj6wgp37tC+jnVsHfqukxb68phSj+merbzO0BPt2lrO+Z4yfCvTddVq8iwWSasoqlgKkahGF8dzU1rx+8mtR/g0gXyWiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UvPclQpyoZYXW9VcV1m+cC17DEK+4mwi8j/MvDnaks4=;
+ b=FmJj7KVfnsL4ylroF4Vm6PmRDVIjvzihjYY1Hgzgqy6vDaVrzPe4ahHs0Fz4lSLH++tDnt00DdQ6PkwY0wuLafxIvNUr4R/biDMaHXeu7hcJig4n0C8mWHPvyCX6C2OEopchAoBaKhydQFGFCdPSlZdPTgpdDiOgO2uAQ91RWiE=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by BYAPR21MB1334.namprd21.prod.outlook.com (2603:10b6:a03:115::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.12; Fri, 26 May
+ 2023 17:30:12 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::b892:e1d5:71ec:8149]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::b892:e1d5:71ec:8149%4]) with mapi id 15.20.6433.013; Fri, 26 May 2023
+ 17:30:11 +0000
+From: Dave Thaler <dthaler@microsoft.com>
+To: David Vernet <void@manifault.com>
+CC: "Jose E. Marchesi" <jemarch@gnu.org>, Christoph Hellwig
+	<hch@infradead.org>, Michael Richardson <mcr+ietf@sandelman.ca>,
+	"bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Erik Kline <ek.ietf@gmail.com>, "Suresh Krishnan (sureshk)"
+	<sureshk@cisco.com>, Lorenz Bauer <oss@lmb.io>
+Subject: RE: [Bpf] IETF BPF working group draft charter
+Thread-Topic: [Bpf] IETF BPF working group draft charter
+Thread-Index:
+ AdmIWSmp8uIYgrASRIKQXfLbLZQgdgAeO2knAAYWUOAAMSGf+AAD196wAPVwpgAAAwOVAAAFPnKAAEnmqgAABUBbrgA+cTCgAAHU2oAAABSogAAAxJqAAABQzoA=
+Date: Fri, 26 May 2023 17:30:11 +0000
+Message-ID:
+ <PH7PR21MB3878E4B002049F825DDCD52BA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
+References: <87r0rdy26o.fsf@gnu.org>
+ <PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
+ <20230523202827.GA33347@maniforge> <ZG8R3JgOPHo7xn61@infradead.org>
+ <87y1lclnui.fsf@gnu.org>
+ <PH7PR21MB38781A9FBC44A275FDF3D5F6A347A@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230526165511.GA1209625@maniforge>
+ <PH7PR21MB3878E80B01C2AA8273131D7CA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230526171929.GB1209625@maniforge>
+In-Reply-To: <20230526171929.GB1209625@maniforge>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=48d35aeb-32a7-4693-9cfb-28ddefc37aed;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-26T17:28:31Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|BYAPR21MB1334:EE_
+x-ms-office365-filtering-correlation-id: 631a664a-3f97-4f8e-a0c9-08db5e0edc19
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ jo905AOL93974Vv72llN4A3jaBi2n6+kx2CuFTSkMUY7N6qnVf4vcTkWDmXe4OIeQ90upx1dkbFp5p6ohQZvK3mAzczvfuTqCnndZgq64XWUVoKpw9fqp7Yb4qGo2Tku+nPPUcYl4GnnTflXLHCpnaheTVJWmik3t6tOZlGxVxl/rr8bFj7GKcYnZcLlXUVKbE6zaa2oQOBkb8hFJwP8c5LfRPSL+PtVXBuplBhTA1f7qXrCt0a2p7Xn7t2howCMTNsGqEAjvBJqot7eWMr80w2XgIeBXg93uSJCKXWuAjBaW5jlZ5gr5jI95QK87okNaVYrzdlIYR0uTas+Q5vTSxHaph2Cc5Bp/+C7t6tH+dpxlUl59kQNo12iB8UrV95aYI0hxlWW/oBlV+nXz1t1al95fqzcRHpbUfoKliZghdMaBjwRxtq40eZdg9WGHk+n6qtUxuUHQ6KOLBRBvmyC9EKZuj3fnd42p3xJYoyyWcffeYABkj/mT2BQXPkTERx5GRVOGdMdS2QEYzKFp1UmyEvwyb/ncjVO25c3bz2dPl+BAS4EqHZrDYQMB4Hr+bO8CEacAOnvmMg3RMI3e2Ac3ZvEp8hppf9evsS6OpFgg+pVh/BErM14uw4Thc39Se0ZRe2newJV7Ga14JhaqwK/8Q==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(376002)(136003)(39860400002)(346002)(451199021)(54906003)(2906002)(86362001)(33656002)(186003)(6506007)(10290500003)(9686003)(8990500004)(7416002)(76116006)(64756008)(66446008)(66556008)(66476007)(38070700005)(52536014)(5660300002)(66946007)(6916009)(4326008)(8676002)(8936002)(66899021)(38100700002)(82950400001)(82960400001)(122000001)(55016003)(26005)(786003)(316002)(71200400001)(41300700001)(478600001)(966005)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?I1A/YVTLKM7gfs2i3RlZD7xKlvcGeeoVhbScctocG38KROMilYJ5dUMrWirp?=
+ =?us-ascii?Q?Rlao54/M5e0kXrIPue+3M3t0tm84hUWzTuluvOxkqGkfe4ndUX8JS/ThrseX?=
+ =?us-ascii?Q?S+gK0LYWPp+YT76Z5rXRH4lBStgPOeq7WxaoZRLXtSwPN6ZisM3mpfDXzyCL?=
+ =?us-ascii?Q?nNTBtWkhqceg3SQNPQJAOZ82Mmlnx7yQNqLlDsChem6dGbibfIn2S/pv+w7Z?=
+ =?us-ascii?Q?6jTNB5BDpyYrJ2iXnt+gCr/i5zODluBxbniuIHe4y+38lLPYkAVMxFeXoh6K?=
+ =?us-ascii?Q?D/Otow7qeoeg8RYhocNnBQ2vc4OK1eDH5W/2c4sx3Ek8J0/tIEiCw4QzGMWu?=
+ =?us-ascii?Q?sXXLBFYVB96qTWUagvkI30Cd5cKiC62fiChPRyRAVNubigJEM59VMFz+Pnj0?=
+ =?us-ascii?Q?kVd3rohQN7/TBvWfuJaEv9l3TvPayNUJ4cbumsjJlFYz4BKbxlBCVD+PSKpb?=
+ =?us-ascii?Q?9RbbGxg/Vo3XhU+SbHiN4wSEhOWBKh0PQ7rpvZ3Y9nY/FPe1vUVSvBWRZzbH?=
+ =?us-ascii?Q?GqJkJ7Yh7M8Tl+UvfhuyS8q1NsCKv7HuR6kWVD8DlBmJ20bZ9SW0lTShB81Z?=
+ =?us-ascii?Q?OxSHAgB+EoM9dc3ZAHljXf2iWPRiPOUflx+rweb/z1JhXAsuY/C6IFjemUYt?=
+ =?us-ascii?Q?qWjrKyzetg/G4A2zRBABBEL7IlsiThOZzv8IaWhGJvzCMPoLhG2lyYSnbG+A?=
+ =?us-ascii?Q?g1VhCrzc+OiAh9uViR1HagIytlg8xshMCR/vSIHf1IYYqNX3uzmhboyvXRtj?=
+ =?us-ascii?Q?sX61Sfm6TXcZB3YYoUygiROeukDBOfs/tlieY2j6sQ2HJedefG3cEAp+k5cr?=
+ =?us-ascii?Q?6t1h5UsuTgBr23uRN71O/ttwPRHTa5OXJFTu23qBVBXdK/aGmaGU+6ofcAf8?=
+ =?us-ascii?Q?vj7CHr7vQpVafCguzzjlcQynmG4OAo3xJfAFZ5l6YIX9PYtBgfj7Ko0lIQA3?=
+ =?us-ascii?Q?XWUBKROLE889h3bS0+IO6ySs9sfGgcTuvdLO3Co8CoANcGIy5l6c+GsT9qGC?=
+ =?us-ascii?Q?b+MqHy3yP/0KkFNliDr26saQTXa4abe4zxmOhJntkAoDl/dU3xAcBVeJ3JH4?=
+ =?us-ascii?Q?mxg4eRot6f9p9LQNr1JtbEcxSd3lQOJMA/P6i0z3iC03mnEXpSq7glfuTQTN?=
+ =?us-ascii?Q?gvAOy1QT/MYxMxR1ITAYmXALUZESu4A8HSICANPIQq/2JCUsjKCmvY/8zQ7u?=
+ =?us-ascii?Q?A0KWWMleK69nDPkxfbY0L832geE2WvjvAnWmTUAuPiwLqkzuKN79f6g6LtBR?=
+ =?us-ascii?Q?JV45py7Wnlrx8kNz4JQOZ+G+fcwFvP64vjwgFBaqf4pM8a+5cNmQqoEYhCsM?=
+ =?us-ascii?Q?v4ig3v1mI+plMcwpRKMLTuNLwMYw7KqZQvqI0b0ooxkp+15u7QBR99J5XUwQ?=
+ =?us-ascii?Q?gZ6zKYBWUldpqPqTfT6JwPmarY9uWfypBFwCSpU3QNM0jyEllyt7s38kc5QC?=
+ =?us-ascii?Q?yrtqzP4AwrSQzLMCFzxKoll4aI7d4TkYZbvjXEtSz8BdH4u7a8bHBBl6J7Mk?=
+ =?us-ascii?Q?7KpfeawMhhVFaeCxQPDuG6GVREddCTCyKK0i5P8o8u0g7dmYWn1qVqPVeTGl?=
+ =?us-ascii?Q?/hQneKrDTc+eLf2LRJlcq3CzlA7NNDDV1zsHoJDV59xb24QmmCJxY4MencLn?=
+ =?us-ascii?Q?2Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 631a664a-3f97-4f8e-a0c9-08db5e0edc19
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2023 17:30:11.7952
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RBTj3hIFtfikOzcEJMvEl49qifNgi5KbTzwuClQFI+7hLQD1cDFPRqyY+/cZau7vmzKTsM2wIqzh4vYE1qBMAokh7UayaAapUI/VbN4BYKs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1334
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+David Vernet <void@manifault.com> writes:=20
+> Thanks for clarifying. Erik, Suresh and I met yesterday to try and find a=
+ middle
+> ground that addresses everyone's concerns, and we came up with [0].
+>=20
+> [0]:
+>=20
+https://github.com/ekline/bpf/blob/ekline-patch-1/charter-ietf-bpf.txt#L31=
+=20
+>=20
+> Does that sound reasonable to you?
 
-> Jose E. Marchesi <jemarch@gnu.org> writes: 
-> [...]
->> I wonder.  Lets suppose the ABI and ELF extensions are maintained and evolved
->> in the usual way it is done for all other architectures, i.e.
->> in the kernel git repository or a dedicatd public one, in textual form, under a
->> free software license, not requiring copyright assignments nor bureocratic
->> processes to be updated, etc.
->
-> Let's not confuse code and documentation.  Here we are discussing documentation
-> not code.
+Yes, other than some punctuation nits (https://github.com/ekline/bpf/pull/7=
+).
 
-Hm.  I don't think anyone is confusing code and documentation here.
+Dave
 
-> For documentation, see the RISC-V standard in my previous email.  The
-> calling convention document isn't part of a kernel git repository,
-> it's part of a standards group that is specific to RISC-V.  That's
-> what we're talking about here.
-
-The PDF you sent is an (outdated) fragment of the specification of the
-ISA and some official ISA extensions, that just happens to contain a two
-pages providing a very general indications on the calling conventions.
-That is _not_ the ABI.
-
-The official RISC-V psABI is maintained in [1], which is a git
-repository, it is distributed under a creative-commons license CC-BY, is
-updated, and it is open to external contributions via pull requests.
-
-And yes, it happens that particular psABI is maintained by RISC-V via a
-TG (Task Group) with a chair and a co-chair, and there is a well defined
-process, documented in the policy.md file in that git repo.  All the
-bells and whistles.  Sure.
-
-In a similar way than the x86_64 psABI is maintained by Intel via HJ Lu
-in another git repo, distributed under a creative-commons license CC-BY,
-updated often, and open to external contributions via pull requests or
-patches.  Less bells and whistles (as far as I know HJ is no chair of
-anything, gotta ask him) but a similar implementation.
-
-I am attaching the RISC-V ABI policy at the end of this email.
-Can IETF implement a similar process?
-
-In particular:
-
-1) Maintaining the ABI in a public git repository.
-
-   Like the RISC-V Foundation does.
-
-2) Releasing the files in that repo under a free software license like
-   dual GPL/BSD, or a suitable Creative Commons like CC-BY.
-
-   Like the RISC-V Foundation does.
-
-3) Allowing third-party like particulars and corporations to contribute
-   to the ABI (via patches to mailing list or pull requests) without the
-   need of a copyright assignment?
-
-   Like the RISC-V Foundation does.
-
-4) Explicitly referring implementors to the git repo as the latest and
-   authoritative version of the document.
-
-   Like the RISC-V Foundation does.
-
-If the answer is yes, then I will shut up, apologize for the noise, and
-be as happy as a clam.
-
-If the answer is no, well, I think I will still shut up, because I'm
-getting a bit tired of always being the party pooper around here, and
-the point has been made for your consideration, so more I cannot do.
-
-[1] https://github.com/riscv-non-isa/riscv-elf-psabi-doc
-
----
-policy.md
-
-# Policy for Merging Pull Requests
-
-Each type of modification has a different policy, based on the following rules:
-
-- Changes requiring linker changes
-  - Require an open source PoC implementation for binutils or LLD, either as a
-    patch on the mailing list/Phabricator as appropriate or in a GitHub fork
-  - Require at least one binutils developer **_AND_** one LLD developer to
-    approve
-
-- Changes requiring compiler changes
-  - Require an open source PoC implementation for GCC or LLVM, either as a
-    patch on the mailing list/Phabricator as appropriate or in a GitHub fork
-  - Require at least one GCC developer **_AND_** one LLVM developer to approve
-
-- Clarifications for currently-implemented behaviour
-  - Require approval from a developer of the corresponding component
-    (binutils/LLD or GCC/LLVM)
-
-- General improvements and clarification
-  - One of the psABI TG chair or co-chair.
-
-- Do **_NOT_** make incompatible changes
-  - Changes that break compatibility are generally not acceptable
-  - In the rare case there is a bug in the ABI that needs fixing and that
-    cannot be done in a backwards-compatible way, or possibly for some
-    edge-case behaviour that is not currently relied upon, breaking the ABI can
-    be considered, but will require both the psABI TG chair and co-chair to
-    approve, and is subject to the above requirements as appropriate
-
-# FAQ
-
-- Can I leave a comment, LGTM or approve the PR even if I am not a toolchain
-  developer or chair/co-chair?
-  - Don't hesitate to leave your comment, we encourage anyone who intends
-    to contribute to the RISC-V community to participate in discussion.
-
-- When do I need to modify the compiler and/or linker?
-  - Changes and additions to the ELF format itself generally require linker
-    changes, e.g. new relocation types, new flags in the `e_flags` field, new
-    sections and new symbol flags.
-  - Changes and additions to calling conventions and code models generally
-    require compiler changes.
-
-- Who are the psABI TG chair and co-chair?
-  - The current chair is Kito Cheng ([@kito-cheng]) and the current co-chair is
-    Jessica Clarke ([@jrtc27]).
-
-- Where can I find a RISC-V GCC/LLVM/binutils/LLD developer to review my PR?
-  - The psABI TG chair or co-chair will generally contact the right people as
-    needed for reviews, but in case you want to reach out yourself you can find
-    an incomplete list from [RISC-V International's wiki page].
-
-[@kito-cheng]: https://github.com/kito-cheng
-[@jrtc27]: https://github.com/jrtc27
-[RISC-V International's wiki page]: https://wiki.riscv.org/display/TECH/Toolchain+Projects
+> I must admit that I feel quite strongly that a Proposed Standard is not t=
+he right
+> move for now. Many of the existing ABI conventions that exist today are s=
+imply
+> artifacts of somewhat arbitrary choices that were made early-on in libbpf=
+. I say
+> "arbitrary" here not to imply that they weren't well thought out, but rat=
+her just
+> to say that like many other decisions in software projects, they were mad=
+e
+> somewhat organically and without the benefit of hindsight and a larger co=
+rpus
+> of participants.
+>=20
+> > As an implementer, I would want to make sure that ebpf-for-windows,
+> > PREVAIL, and uBPF all do the same thing, ideally matching Linux for
+> > everything the former projects support, to allow using consistent tooli=
+ng.
+>=20
+> I completely understand the motivation. Hopefully an Information document
+> will address those concerns? Let me know what you think.
+>=20
+> - David
 
