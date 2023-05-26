@@ -1,75 +1,86 @@
-Return-Path: <bpf+bounces-1290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85996712071
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 058C1712074
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 08:51:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40502281661
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:48:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B293E2812A7
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 06:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A60566A;
-	Fri, 26 May 2023 06:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EED55662;
+	Fri, 26 May 2023 06:51:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDD020E6;
-	Fri, 26 May 2023 06:48:16 +0000 (UTC)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10758125;
-	Thu, 25 May 2023 23:48:15 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2535edae73cso547565a91.2;
-        Thu, 25 May 2023 23:48:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CA420E6
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 06:51:03 +0000 (UTC)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181C2BC;
+	Thu, 25 May 2023 23:51:01 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2537a79b9acso420824a91.3;
+        Thu, 25 May 2023 23:51:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685083694; x=1687675694;
+        d=gmail.com; s=20221208; t=1685083860; x=1687675860;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sXMDaU9rZq6MJiyUvYrQQfTTjdS1c/VwlqVbFDmnFHw=;
-        b=pPsoAJfp42YmeqcWPOvA19YhVI3la6Zanvh4UKdHzedmBAGaPa1xi455B6Ku8pfEdc
-         refljePnvLJAeKvp215TiVemtPIFFwgBQWLMK80W+Ms/lVQT7fzdt/CdYuAF0L8UZowt
-         9bAF4DIKWkebfD9C4Fj9VgcIRkRRr5XH6uAf1twAx9URwwp16ZQSNKNops69hMSJrhmc
-         jXNnwVvDzeILzV90pyp1tsPuAewHdoXsghabQLPlPYpB5ufG5yKtztBIM8fTSZ83pG+z
-         iIwv7vLcY7W/0Qx/Mtl6UugIzNISZlPv/1f+EXORUKqohOe8Q6MxSOpf7UfLL1ZhPnPB
-         0iCw==
+        bh=lGACEaIrD4zSU2aeog6vBy9O4EkGvsfRbD7VCzWE690=;
+        b=QquRqePAsyWnNBwrIyycy3XucFj/jFX/3GNN6UTB+K06ZMnraSlxYSIsUJqKy5XMUd
+         J5hOsxE7YqPwO/xalKKueQzNJuGql8Dnq0oTSb5kpGDmzLN50pDNm8spjEBA39Rb4tV6
+         JysGZTJZGJLKv1k83I5Z2XD6Mp8pmbkBeYdOd6/cqm/YK+ZCD9B4BBFfo/41ud7N66Bu
+         Py5RuCd9N/g4jlFQlHmQrdMX2ROZx7oJSjagyDR919/H/oAnOriRT9RwDoGIBOW6aarB
+         iHQxxWIbd21jAePa+Fjsn1j6IfFK+31c77Bo/ViYDVBnwAQcOGQPVMXe/kp32aJJESla
+         OrHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685083694; x=1687675694;
+        d=1e100.net; s=20221208; t=1685083860; x=1687675860;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=sXMDaU9rZq6MJiyUvYrQQfTTjdS1c/VwlqVbFDmnFHw=;
-        b=PncN0T/OQo/H2MmdhvdY0+bKV75hFj4tixSZIq1Vy/ywJQBPnWEwQZLB08CoZ+n2cG
-         bnp8M4DS3Mf1JXjr5et24qyvhtFvNkcWsNOILQwPMD472Yu74+IuqkibeoZ/YZN1dwCg
-         EDMWPtiM7PxxTxmT7RQx+f9KwYk6/9hiTqpGfYmMDhyKJxmvAieg4cMax/b9xN9qECB6
-         YF4eYhCf7F7D0qPhaD+dpAeCpark81TfKITaEABdURChD1xhUERATUqUiFUtxXLnjo5E
-         2WWtB7AClTEZVk82vDTDi/rSeHVDow7S2jq5UbcuMSb9alFiFCkv9cedSUBGo1NFAi77
-         44Rw==
-X-Gm-Message-State: AC+VfDwmaXqOjPpttL4PJtoJ1PwE/7Mfsaf+cEpziNAwwKPPKi+dUISG
-	fSJpIa2Pqwty54Dv/uhcKX4=
-X-Google-Smtp-Source: ACHHUZ6r85pJJu9IiHTvnDIDwfFxLWGAl926CckF3Z2Xb+cCJJV1hCmWOdnYJdULJyOAMeyDNFAiSg==
-X-Received: by 2002:a17:90b:2344:b0:255:7a60:bce6 with SMTP id ms4-20020a17090b234400b002557a60bce6mr1224656pjb.40.1685083694418;
-        Thu, 25 May 2023 23:48:14 -0700 (PDT)
+        bh=lGACEaIrD4zSU2aeog6vBy9O4EkGvsfRbD7VCzWE690=;
+        b=cF6qhKmm/odQAjhq/QyjVBMgZUh27y7xt5JJ4v1DekToF4pC9BDSxiG2Jo+o+R9IdN
+         gbrepgE5UV/mtkYnwcBmb6nK2XnOwHJbi8E+fmVjhQ0tu1M40VsjvoOQJFNEdxzhZ5LF
+         C962txf+gYWxUalsfluvz5Fd4Ge4WtwFlblI4XV0L9f/zH0rldqXhNl5kT+H6W2Rv+u1
+         UlcQJlFCx+ZADhb5GfUny7FX7oVwISebgq3KSTPObLeS2rTIpL7hh5GGy4AlHSD8HYxm
+         aCD39wQaq5aDo/L62AOQ3DNk6zO9aCEEXtDafTVep2orHfc758z0lIxidoAPkLnqaZI5
+         aE6A==
+X-Gm-Message-State: AC+VfDxJ7jH0xsMl0rmrimh8mI1qgaqA4jzWLuQh/W/8YZMRwWif/L9q
+	dh57CGoyy/u2wr/JdJ1HdKc=
+X-Google-Smtp-Source: ACHHUZ4DEG7JENscgMVffBweyP9OhNGu3BglBG5gmEAogCCfXi1Wr8JvIrH889GSyjko8GKa8lgjYA==
+X-Received: by 2002:a17:90a:7106:b0:255:dd84:8643 with SMTP id h6-20020a17090a710600b00255dd848643mr1810477pjk.8.1685083860490;
+        Thu, 25 May 2023 23:51:00 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:17de:b2c5:b0ad:62a7])
-        by smtp.gmail.com with ESMTPSA id cx18-20020a17090afd9200b002555689006esm3980915pjb.47.2023.05.25.23.48.13
+        by smtp.gmail.com with ESMTPSA id o2-20020a17090a3d4200b0024e227828a9sm4259536pjf.24.2023.05.25.23.50.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 23:48:13 -0700 (PDT)
-Date: Thu, 25 May 2023 23:48:12 -0700
+        Thu, 25 May 2023 23:51:00 -0700 (PDT)
+Date: Thu, 25 May 2023 23:50:58 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Louis DeLosSantos <louis.delos.devel@gmail.com>, 
+To: kongweibin <kongweibin2@huawei.com>, 
+ daniel@iogearbox.net
+Cc: andrii@kernel.org, 
+ ast@kernel.org, 
  bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
- Stanislav Fomichev <sdf@google.com>, 
- razor@blackwall.org, 
- Louis DeLosSantos <louis.delos.devel@gmail.com>
-Message-ID: <6470562cac756_2023020893@john.notmuch>
-In-Reply-To: <20230505-bpf-add-tbid-fib-lookup-v1-1-fd99f7162e76@gmail.com>
-References: <20230505-bpf-add-tbid-fib-lookup-v1-0-fd99f7162e76@gmail.com>
- <20230505-bpf-add-tbid-fib-lookup-v1-1-fd99f7162e76@gmail.com>
-Subject: RE: [PATCH 1/2] bpf: add table ID to bpf_fib_lookup BPF helper
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ hsinweih@uci.edu, 
+ jakub@cloudflare.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ liuxin350@huawei.com, 
+ yanan@huawei.com, 
+ wuchangye@huawei.com, 
+ xiesongyang@huawei.com, 
+ kongweibin2@huawei.com, 
+ zhangmingyi5@huawei.com
+Message-ID: <647056d28d59a_2023020887@john.notmuch>
+In-Reply-To: <20230525143814.361127-1-kongweibin2@huawei.com>
+References: <20230525143814.361127-1-kongweibin2@huawei.com>
+Subject: RE: [bpf?] [net?] Questions about the impact of ebpf
+ sockmap/redirection on socket performance improvement
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,54 +97,17 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Louis DeLosSantos wrote:
-> Add ability to specify routing table ID to the `bpf_fib_lookup` BPF
-> helper.
-> 
-> A new field `tbid` is added to `struct bpf_fib_lookup` used as
-> parameters to the `bpf_fib_lookup` BPF helper.
-> 
-> When the helper is called with the `BPF_FIB_LOOKUP_DIRECT` flag and the
-> `tbid` field in `struct bpf_fib_lookup` is greater then 0, the `tbid`
-> field will be used as the table ID for the fib lookup.
-> 
-> If the `tbid` does not exist the fib lookup will fail with
-> `BPF_FIB_LKUP_RET_NOT_FWDED`.
-> 
-> The `tbid` field becomes a union over the vlan related output fields in
-> `struct bpf_fib_lookup` and will be zeroed immediately after usage.
-> 
-> This functionality is useful in containerized environments.
-> 
-> For instance, if a CNI wants to dictate the next-hop for traffic leaving
-> a container it can create a container-specific routing table and perform
-> a fib lookup against this table in a "host-net-namespace-side" TC program.
-> 
-> This functionality also allows `ip rule` like functionality at the TC
-> layer, allowing an eBPF program to pick a routing table based on some
-> aspect of the sk_buff.
-> 
-> As a concrete use case, this feature will be used in Cilium's SRv6 L3VPN
-> datapath.
-> 
-> When egress traffic leaves a Pod an eBPF program attached by Cilium will
-> determine which VRF the egress traffic should target, and then perform a
-> FIB lookup in a specific table representing this VRF's FIB.
-> 
-> Signed-off-by: Louis DeLosSantos <louis.delos.devel@gmail.com>
-> ---
->  include/uapi/linux/bpf.h       | 17 ++++++++++++++---
->  net/core/filter.c              | 12 ++++++++++++
->  tools/include/uapi/linux/bpf.h | 17 ++++++++++++++---
->  3 files changed, 40 insertions(+), 6 deletions(-)
-> 
+kongweibin wrote:
+> I'm using ebpf sockmap/redirection to bypass the TCP/IP stack to improve
+> socket communication performance (throughput, latency) between different
+> PODs on the same machine. As concurrent connections or payloads increase,
+> there may be unconspicuous performance improvement or even performance
+> degradation compared to the TCP/IP stack. I have retrieved some performance
+> data, but it does not seem to involve high concurrency and high payloads,
+> I would like to know if community have conducted relevant tests on these
+> scenarios and have any opinions on the poor performance improvement in these
+> scenarios.
 
-Looks good one question. Should we hide tbid behind a flag we have
-lots of room. Is there any concern a user could feed a bpf_fib_lookup
-into the helper without clearing the vlan fields? Perhaps by
-pulling the struct from a map or something where it had been
-previously used.
-
-Thanks,
-John
+Not fully following above, what is your performance test/tools and what
+were the numbers?
 
