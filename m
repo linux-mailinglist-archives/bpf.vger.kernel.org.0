@@ -1,75 +1,29 @@
-Return-Path: <bpf+bounces-1318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81ED0712A87
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 18:22:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B71A8712A2A
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 18:06:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395A81C20FF5
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 16:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5FC2818C1
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 16:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872882772D;
-	Fri, 26 May 2023 16:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B803A2770D;
+	Fri, 26 May 2023 16:05:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48FAC27727
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 16:22:12 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0F199
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 09:22:10 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 5D744C151B37
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 09:22:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1685118130; bh=U0MmGvk3lC+nzOmuR4mZQYGVIzp2YRchzBeMY7Xk50k=;
-	h=To:CC:Date:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=K/sRgvn8iky5LJqARtab3VJwXZ4UfuvapJ7+bvWDZYKAkwSJHWkArVOREZMNufNEd
-	 iOJG2OoYjpUel6u9HOGsT3BgNZO1MWJsNtcH9VrsvbLR/k05RrV4H6Vrlp+Dv7vM+u
-	 RIB2aZiM5wPokIn8Wxz0O2eRm196OhqXJKqCONKg=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id 3FF45C151530;
- Fri, 26 May 2023 09:22:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1685118130; bh=U0MmGvk3lC+nzOmuR4mZQYGVIzp2YRchzBeMY7Xk50k=;
- h=From:To:CC:Date:References:In-Reply-To:Subject:List-Id:
- List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
- b=NtDLNJZRvihpwMuilInWRKVUgHI0N8vuvcU7ErsOfGNhQucRlGnwE21tj63QU4+vj
- JNvruLQm35UBjJ7EK7kN1oQpC2oezeayY6e9cG3sL1FyN+0cIkqNlsSDVFJ84bTMmo
- vswB9GwpjMxQJly2bqe9KYYBJXLmbT/v2JpDynOo=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id A470DC151071
- for <bpf@ietfa.amsl.com>; Fri, 26 May 2023 09:06:07 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.102
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=microsoft.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id xJcoyIFf3DAt for <bpf@ietfa.amsl.com>;
- Fri, 26 May 2023 09:06:03 -0700 (PDT)
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com
- (mail-centralusazon11020018.outbound.protection.outlook.com [52.101.61.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 2496FC14EB19
- for <bpf@ietf.org>; Fri, 26 May 2023 09:06:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908F4742EE
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 16:05:51 +0000 (UTC)
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020021.outbound.protection.outlook.com [52.101.61.21])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC2CF7
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 09:05:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
  b=ElOta5dB/wGTPp89PR3ef/tWvtqjS2CzejBiMEC3v5HV7u/t2otejd2Ze2iAHiNz/D9GMzeNuNkQznnIjDYDKWyz977dvqvtuXCK4swMVHXsmWI6mxqe8vHB23XW5yqs56ovPOQBGEiPnpUz6NjIs4HbmRZa33u+ljFS8/kjmwtO9IrEPClX1ZIKq3ttw+JOjfozz/PkOIysTzNFprB0fukjLU1UoyGDGRR+PFDyGhwa1DmP6+OumN6ZqOEus4lqAnsgZKBGBWFz8qY7apnyyx2z3GOpwSLASXFcIiUie1zDsLTC8BuJZTvS3kNSZUQ1ySgmYvUap7Tk+iXF1xRXgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
  bh=0W2XIHBGMYC3eM4jXqaShShoEyarhN3EoXVjfOtyfxE=;
@@ -83,45 +37,45 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  bh=0W2XIHBGMYC3eM4jXqaShShoEyarhN3EoXVjfOtyfxE=;
  b=QoVDN1ykKn95Lstp+y9sf5GOH3njqJ758fwFhR7C2dH+VALgqplIfwRteUR10CsARsQgTCRSU27T+sE2YDdZRU+iVeiH7haLLbFBgQms/zb+XujU92rOCoaQCuqOO+emHmtPay6YvtNn5N/dPqxkMUqKnv8kzqQzqK+vxOeST7g=
 Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
- by PH8PR21MB3873.namprd21.prod.outlook.com (2603:10b6:510:25b::19)
- with Microsoft SMTP Server (version=TLS1_2,
+ by PH8PR21MB3873.namprd21.prod.outlook.com (2603:10b6:510:25b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.12; Fri, 26 May
  2023 16:05:46 +0000
 Received: from PH7PR21MB3878.namprd21.prod.outlook.com
  ([fe80::b892:e1d5:71ec:8149]) by PH7PR21MB3878.namprd21.prod.outlook.com
  ([fe80::b892:e1d5:71ec:8149%4]) with mapi id 15.20.6433.013; Fri, 26 May 2023
  16:05:44 +0000
+From: Dave Thaler <dthaler@microsoft.com>
 To: "Jose E. Marchesi" <jemarch@gnu.org>, Suresh Krishnan
- <suresh.krishnan@gmail.com>
+	<suresh.krishnan@gmail.com>
 CC: David Vernet <void@manifault.com>, Michael Richardson
- <mcr+ietf@sandelman.ca>, "bpf@ietf.org" <bpf@ietf.org>, bpf
- <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Erik Kline
- <ek.ietf@gmail.com>, "Suresh Krishnan (sureshk)" <sureshk@cisco.com>,
- Christoph Hellwig <hch@infradead.org>
+	<mcr+ietf@sandelman.ca>, "bpf@ietf.org" <bpf@ietf.org>, bpf
+	<bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Erik Kline
+	<ek.ietf@gmail.com>, "Suresh Krishnan (sureshk)" <sureshk@cisco.com>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: RE: [Bpf] IETF BPF working group draft charter
 Thread-Topic: [Bpf] IETF BPF working group draft charter
-Thread-Index: AdmIWSmp8uIYgrASRIKQXfLbLZQgdgAeO2knAAYWUOAAMSGf+AAD196wAPVwpgAAAwOVAAAFPnKAADKhxgAAAP4sJgBZ/HaA
+Thread-Index:
+ AdmIWSmp8uIYgrASRIKQXfLbLZQgdgAeO2knAAYWUOAAMSGf+AAD196wAPVwpgAAAwOVAAAFPnKAADKhxgAAAP4sJgBZ/HaA
 Date: Fri, 26 May 2023 16:05:44 +0000
-Message-ID: <PH7PR21MB3878F7518729EB48F116978EA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
-References: <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
- <87v8grkn67.fsf@gnu.org>
- <PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
- <87r0rdy26o.fsf@gnu.org>
- <PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
- <20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
- <20230523202827.GA33347@maniforge>
- <8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com> <87a5xto2wg.fsf@gnu.org>
+Message-ID:
+ <PH7PR21MB3878F7518729EB48F116978EA347A@PH7PR21MB3878.namprd21.prod.outlook.com>
+References:
+ <PH7PR21MB38780769D482CC5F83768D3CA37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+	<87v8grkn67.fsf@gnu.org>
+	<PH7PR21MB3878BCFA99C1585203982670A37E9@PH7PR21MB3878.namprd21.prod.outlook.com>
+	<87r0rdy26o.fsf@gnu.org>
+	<PH7PR21MB3878B869D69FD35FA718AF5DA37FA@PH7PR21MB3878.namprd21.prod.outlook.com>
+	<20230523163200.GD20100@maniforge> <18272.1684864698@localhost>
+	<20230523202827.GA33347@maniforge>
+	<8FA12EFB-DB5A-4C6B-83BC-A3CBBE44F80B@gmail.com> <87a5xto2wg.fsf@gnu.org>
 In-Reply-To: <87a5xto2wg.fsf@gnu.org>
 Accept-Language: en-US
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ba679a4c-094f-4dc0-9aba-2fd047330bf4;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-26T16:03:12Z; 
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ba679a4c-094f-4dc0-9aba-2fd047330bf4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-05-26T16:03:12Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
@@ -130,14 +84,13 @@ x-ms-office365-filtering-correlation-id: 1216cab7-f2b7-4b1c-6597-08db5e030fa2
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PqzpTcx32fDnIDzU0wejkQvptAew6GezZJ7iKd3i1cS7bQYjvprloSPDCMSPkMgjDKdTe5Ie9xBl/jmdoqACNcf+ffbwz3Sd1YDhVZoos5dGgtty4qXagrq6DSRGT1ARwn7DdGcOlIi+pCRBs4yImhRl/Av54LB7FJRWjkKBMjUr2Fm+OWRgO48w0lhyENr7UOzDsPWZcwwXzJL5o3fDkZo0pOfyJed433ubOU1QD6q3zlFkDfeoHnaeKWUE1ETMNjnNJ3IkSCUEcx4PQpvQ8mjJEjzoq6pzH5fjmB5BCcmdrd5NmG3eGIXA1kGTehVO6qs4P/6RAtzWxFer/xZRG0MHeuEdozHAHGfk4g4hDTd+1tTuuokj1YKyne7pNfG0Hw/kyMGJITX18jouFoculAxeIo3+hQZXKLrEUhJPEIFH5UMw3MsKV2xpcMu0x31dvUUf6rXjiMpscS6N1/w4Wd+TGXZn6gilVy+0wAgfGNCviP+tHYkdo0pDZ9bLbFyu0a5vFhTaKe/s+YAc+ILHf/rhRFsEi/cD8Yz8tfKRZGgic/C0hVSYXBxbKdE9IWx35yxaZfZawQdve+z9kXLzrCjjtTc1k/EH/rwCIZDGlLc+jcYgpE06c55bs3nAK34tJs92c03o+XXHaAyDmGPQyOplElhnhiWzhOwaYQ3P3cSLwCtw1At7KPAxWdyQubPv
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
- IPV:NLI; SFV:NSPM;
- H:PH7PR21MB3878.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
- SFS:(13230028)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(451199021)(76116006)(66946007)(64756008)(66446008)(66476007)(4326008)(66556008)(7416002)(8936002)(8676002)(5660300002)(52536014)(478600001)(71200400001)(316002)(786003)(10290500003)(54906003)(110136005)(41300700001)(7696005)(122000001)(55016003)(82960400001)(38100700002)(82950400001)(9686003)(4744005)(186003)(2906002)(83380400001)(8990500004)(26005)(6506007)(38070700005)(33656002)(86362001)(2004002);
- DIR:OUT; SFP:1102; 
+x-microsoft-antispam-message-info:
+ PqzpTcx32fDnIDzU0wejkQvptAew6GezZJ7iKd3i1cS7bQYjvprloSPDCMSPkMgjDKdTe5Ie9xBl/jmdoqACNcf+ffbwz3Sd1YDhVZoos5dGgtty4qXagrq6DSRGT1ARwn7DdGcOlIi+pCRBs4yImhRl/Av54LB7FJRWjkKBMjUr2Fm+OWRgO48w0lhyENr7UOzDsPWZcwwXzJL5o3fDkZo0pOfyJed433ubOU1QD6q3zlFkDfeoHnaeKWUE1ETMNjnNJ3IkSCUEcx4PQpvQ8mjJEjzoq6pzH5fjmB5BCcmdrd5NmG3eGIXA1kGTehVO6qs4P/6RAtzWxFer/xZRG0MHeuEdozHAHGfk4g4hDTd+1tTuuokj1YKyne7pNfG0Hw/kyMGJITX18jouFoculAxeIo3+hQZXKLrEUhJPEIFH5UMw3MsKV2xpcMu0x31dvUUf6rXjiMpscS6N1/w4Wd+TGXZn6gilVy+0wAgfGNCviP+tHYkdo0pDZ9bLbFyu0a5vFhTaKe/s+YAc+ILHf/rhRFsEi/cD8Yz8tfKRZGgic/C0hVSYXBxbKdE9IWx35yxaZfZawQdve+z9kXLzrCjjtTc1k/EH/rwCIZDGlLc+jcYgpE06c55bs3nAK34tJs92c03o+XXHaAyDmGPQyOplElhnhiWzhOwaYQ3P3cSLwCtw1At7KPAxWdyQubPv
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(451199021)(76116006)(66946007)(64756008)(66446008)(66476007)(4326008)(66556008)(7416002)(8936002)(8676002)(5660300002)(52536014)(478600001)(71200400001)(316002)(786003)(10290500003)(54906003)(110136005)(41300700001)(7696005)(122000001)(55016003)(82960400001)(38100700002)(82950400001)(9686003)(4744005)(186003)(2906002)(83380400001)(8990500004)(26005)(6506007)(38070700005)(33656002)(86362001)(2004002);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U8E3HKnjA2U90EFhzgoZoLYN7pQ77+1rbIM/+jlxEjCtuB1CCgPsTeplfgew?=
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?U8E3HKnjA2U90EFhzgoZoLYN7pQ77+1rbIM/+jlxEjCtuB1CCgPsTeplfgew?=
  =?us-ascii?Q?aTkWXho+Ofgbcb7wOIzTKKVs8NPvGzkwmC511G2F/NX4z7A6qmvau2fULWgA?=
  =?us-ascii?Q?6bakJQVpGJ5aASun5nRV1nykiFSVTqe45PrZY5/cGLcDZ/dvb7p7uGuDG1un?=
  =?us-ascii?Q?uzQaFmlamrWrIFh2KbOugtbK7kHAVT6XPz+h2E3hjIvME0ywJ+PD9khkGVCn?=
@@ -165,6 +118,8 @@ x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U8E3HKnjA2U90EFhzgoZoLYN7pQ77
  =?us-ascii?Q?pYlEEn/9aF07a/iO3D6BCr9Rg4wk3LmowxPqom7Ai2sEP61YzcsxrZFkOdJT?=
  =?us-ascii?Q?lyXe49HalhjomlVsYgEdTFhOh6/8OVUz33dWXdI3mr6FMFxlD4B7zFJkzKxH?=
  =?us-ascii?Q?MQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -175,53 +130,39 @@ X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 1216cab7-f2b7-4b1c-6597-08db5e030fa2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2023 16:05:44.3222 (UTC)
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2023 16:05:44.3222
+ (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: 920CdT2cVN1KiXmE5U2PzcXW5YV/HHV0WdzpzrrYPBqADnA3VzBjw2dILv+Ul+I5MseS0DerQKTmVRK7uBo0sc56gY5LgwQvIS93faXnAjE=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR21MB3873
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/I32QBB6MowEw114ufSSSl4PKyFg>
-X-Mailman-Approved-At: Fri, 26 May 2023 09:22:08 -0700
-Subject: Re: [Bpf] IETF BPF working group draft charter
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Dave Thaler <dthaler@microsoft.com>
-From: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Jose E. Marchesi <jemarch@gnu.org> writes: 
+Jose E. Marchesi <jemarch@gnu.org> writes:=20
 [...]
-> I wonder.  Lets suppose the ABI and ELF extensions are maintained and evolved
+> I wonder.  Lets suppose the ABI and ELF extensions are maintained and evo=
+lved
 > in the usual way it is done for all other architectures, i.e.
-> in the kernel git repository or a dedicatd public one, in textual form, under a
-> free software license, not requiring copyright assignments nor bureocratic
+> in the kernel git repository or a dedicatd public one, in textual form, u=
+nder a
+> free software license, not requiring copyright assignments nor bureocrati=
+c
 > processes to be updated, etc.
 
-Let's not confuse code and documentation.  Here we are discussing documentation
-not code.   For documentation, see the RISC-V standard in my previous email.
-The calling convention document isn't part of a kernel git repository, it's part
-of a standards group that is specific to RISC-V.  That's what we're talking about here.
+Let's not confuse code and documentation.  Here we are discussing documenta=
+tion
+not code.   For documentation, see the RISC-V standard in my previous email=
+.
+The calling convention document isn't part of a kernel git repository, it's=
+ part
+of a standards group that is specific to RISC-V.  That's what we're talking=
+ about here.
 
 Dave
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
