@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-1332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC36F712CAB
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 20:42:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398E2712CAC
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 20:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 250A61C2112B
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 18:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4B091C210C0
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 18:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9510127205;
-	Fri, 26 May 2023 18:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747F127722;
+	Fri, 26 May 2023 18:42:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6047D18B0D
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 18:42:11 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F24E42
-	for <bpf@vger.kernel.org>; Fri, 26 May 2023 11:41:47 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f4bd608cf4so1221923e87.1
-        for <bpf@vger.kernel.org>; Fri, 26 May 2023 11:41:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467D618B0D
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 18:42:16 +0000 (UTC)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631511B1
+	for <bpf@vger.kernel.org>; Fri, 26 May 2023 11:41:51 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4f13d8f74abso1157355e87.0
+        for <bpf@vger.kernel.org>; Fri, 26 May 2023 11:41:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685126498; x=1687718498;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vAKOTAyhD0TnNbivgOsSZqPuLgX+ojQaeOdc/rxb/wE=;
-        b=Ekusghw9ajijIbIfIYD1zFbTGIszGrbBzhEgB6pzxpkvMWBX2xm4Wg3Wi3Yg89fKBu
-         9rqJ/LSrvxTbKBa2LPs3Xf96RueJxzdjs0nNTk/Ri7AFxM4NRKwB6R+GOfBfvLNlFXAj
-         H0ZskkG3DnX6khzRZHxukuC4saiP6QU5cgewZEwCO+qUkR67IpavDlHA++JqvhgDCqCb
-         OO9PMQKhlbwxKNaqbFGOYARq/9PsDmDP/EWbGbO4SV9Ri5bKnzbiSgfxBQpRPWhQefQO
-         HYwNNZPsjxS1S/KoU0nTvAA5KvoSF4yRo0vFfYLb22B1pyaahtUU1TCaBe5U0WMU6O02
-         hGVg==
+        d=gmail.com; s=20221208; t=1685126499; x=1687718499;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MgB4/yqrcnRs3g67JcbLOGDczqccKnRLWG2kwpPPWhg=;
+        b=rU+ebHPyJsyaDyKwLHHhD+h2mp/WhTfdn5aKi2Ur4tt65kG+f/kz2V/h+64Owrwa4D
+         F9IPGghnqJyhuFfUWDRXzXO41Pa9nvWB76Ft0okzyC71D+4XxGuX7KdBSewF4NE1GZe4
+         Ym9CJHD0m3Pwg3o0E/XkNVebTyausm2jMIvREY1U4b3mRgjXeVZmtAuRoX8007DiPppg
+         +7hROgDj5Odz2BO3ZXTAKI2946/yfqxWfSV0P3zBK6ldBZavpgW9TR0YB8LIPcvsXUGZ
+         8UnsPG785psHVcp8sCaCsUr3+ovW0miAqFAnjstPwCI1kPQ2UENy58k/yANRYwZCHNq4
+         7XzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685126498; x=1687718498;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vAKOTAyhD0TnNbivgOsSZqPuLgX+ojQaeOdc/rxb/wE=;
-        b=DJ38ui893MktycARawUv6eeuGfEUYBZxwEw4gH+XEv4gFQoi813Q+zlWrwBjN8ZbQS
-         +bxLYnDGnkIr6MgaactCTyl8LMb4mC3VtJBtm7zDqSDMfqfpn1tZIzO9lR7n//v0hTQI
-         EnX4tBVuLjk5m3g6uhfjCDpt1zwnyVVIxbP/ZArQ78V0YwfADipyktv4Opy3FeLH6HgA
-         4nh74wlLwyR8eAtrsg7ZX/T8H3I/fKbupCj5ibxOfqjb7uSB1Ry+jG01B04gwKFmgeh3
-         4lzLnZjquVUWFSbSXK37TaTuorsIJsK0+4jU8QgiBVSdlAC0EQzGMfB3CcJD45//esdk
-         vW1A==
-X-Gm-Message-State: AC+VfDxS+Vwq1Ek3/GtfSfkyTuqpyUa9JsyB2+ZGPHe8TlGLeREk01xO
-	ZNi1utHqP/N7i42q0QkhVGNJ6I/9rj30bw==
-X-Google-Smtp-Source: ACHHUZ483jYpVhdlcnqKJVJ4Iicx+YErp7UpsB4sTQH/o5mMHgxW/F3pMSntsFqD0rATkwm9+U4e7A==
-X-Received: by 2002:a05:6512:248:b0:4f2:34f1:cf24 with SMTP id b8-20020a056512024800b004f234f1cf24mr1015155lfo.22.1685126497353;
-        Fri, 26 May 2023 11:41:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1685126499; x=1687718499;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MgB4/yqrcnRs3g67JcbLOGDczqccKnRLWG2kwpPPWhg=;
+        b=VtZsUGZU9rw0WID0QLYAjl5nhO+Le//l+blnh8hcRk70h9brKWtlDD6pWOLPOHR5Uo
+         gXvkOyiWmNsOzmqA8+fnQbkhyLUl2HH0DwGNzgmi3m4dNlRwzsYGVDj44UsTNOaLTVbU
+         S2mDrsyNIOpg8Xzt0AjDDmACAYpgAxV29q3gZBKIDe16Rc161FhfuBx/spDT2G8Ii1+K
+         J54liP89HKygY8XKk3FMESNWnStcCbslMprtsly0i00+ovnAJgC0y1WJwskf8sgG95fA
+         Stz6Nx5AUL34+lZDIwvwfNqJcYDkiqbq21AoNgznEjlUMjAhdWk8KooQPxC0DfJ6ZkSD
+         Cvxw==
+X-Gm-Message-State: AC+VfDzKU66HK6CL4xWlh59F6q0nG7rR0Bcvj4N2zK7m1XYzyHSB8ymM
+	qyQ2JBR8ys0Ol0gqkhbRtvgNKhBp4tETGA==
+X-Google-Smtp-Source: ACHHUZ73Yf3093yIvdYGE0T94VqykNykrFudj0Qi8DeKzxyA72RfxruFLbLf+9JDoDlTduwb5tNtmw==
+X-Received: by 2002:ac2:47eb:0:b0:4f3:7c24:1029 with SMTP id b11-20020ac247eb000000b004f37c241029mr677887lfp.60.1685126498553;
+        Fri, 26 May 2023 11:41:38 -0700 (PDT)
 Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id x7-20020ac25dc7000000b004f155762085sm735767lfq.122.2023.05.26.11.41.36
+        by smtp.gmail.com with ESMTPSA id x7-20020ac25dc7000000b004f155762085sm735767lfq.122.2023.05.26.11.41.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 May 2023 11:41:36 -0700 (PDT)
+        Fri, 26 May 2023 11:41:38 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -64,10 +65,12 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yhs@fb.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 0/2] bpf: verify scalar ids mapping in regsafe()
-Date: Fri, 26 May 2023 21:41:24 +0300
-Message-Id: <20230526184126.3104040-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 1/2] bpf: verify scalar ids mapping in regsafe() using check_ids()
+Date: Fri, 26 May 2023 21:41:25 +0300
+Message-Id: <20230526184126.3104040-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230526184126.3104040-1-eddyz87@gmail.com>
+References: <20230526184126.3104040-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,61 +86,100 @@ X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Update regsafe() to use check_ids() for scalar values.
-Otherwise the following unsafe pattern is accepted by verifier:
+Make sure that the following unsafe example is rejected by verifier:
 
-  1: r9 = ... some pointer with range X ...
-  2: r6 = ... unbound scalar ID=a ...
-  3: r7 = ... unbound scalar ID=b ...
-  4: if (r6 > r7) goto +1
-  5: r6 = r7
-  6: if (r6 > X) goto ...
-  --- checkpoint ---
-  7: r9 += r7
-  8: *(u64 *)r9 = Y
+1: r9 = ... some pointer with range X ...
+2: r6 = ... unbound scalar ID=a ...
+3: r7 = ... unbound scalar ID=b ...
+4: if (r6 > r7) goto +1
+5: r6 = r7
+6: if (r6 > X) goto ...
+--- checkpoint ---
+7: r9 += r7
+8: *(u64 *)r9 = Y
 
-See patch #1 for detailed description.
+This example is unsafe because not all execution paths verify r7 range.
+Because of the jump at (4) the verifier would arrive at (6) in two states:
+I.  r6{.id=b}, r7{.id=b} via path 1-6;
+II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
 
-The change has limited impact on verification performance.
-Here is veristat log comparing this patch with current master on a set
-of selftest binaries listed in tools/testing/selftests/bpf/veristat.cfg
-and cilium BPF binaries (see [1]):
+Currently regsafe() does not call check_ids() for scalar registers,
+thus from POV of regsafe() states (I) and (II) are identical. If the
+path 1-6 is taken by verifier first, and checkpoint is created at (6)
+the path [1-4, 6] would be considered safe.
 
-$ ./veristat -e file,prog,states -f 'insns_pct>1' -C master-baseline.log current.log
-File                      Program                         States (A)  States (B)  States   (DIFF)
-------------------------  ------------------------------  ----------  ----------  ---------------
-bpf_xdp.o                 tail_handle_nat_fwd_ipv6               648         660     +12 (+1.85%)
-bpf_xdp.o                 tail_nodeport_nat_ingress_ipv4         375         455    +80 (+21.33%)
-bpf_xdp.o                 tail_rev_nodeport_lb4                  398         472    +74 (+18.59%)
-pyperf600_nounroll.bpf.o  on_event                             34169       39465  +5296 (+15.50%)
-test_verif_scale1.bpf.o   balancer_ingress                      8636        8942    +306 (+3.54%)
-test_verif_scale2.bpf.o   balancer_ingress                      3048        3149    +101 (+3.31%)
-test_verif_scale3.bpf.o   balancer_ingress                      8636        8942    +306 (+3.54%)
+This commit updates regsafe() to call check_ids() for scalar registers.
 
-This was previously posted as an RFC [2].
+The change in check_alu_op() to avoid assigning scalar id to constants
+is performance optimization. W/o it the regsafe() change becomes
+costly for some programs, e.g. for
+tools/testing/selftests/bpf/progs/pyperf600.c the difference is:
 
-Changelog:
-- RFC -> V1:
-  - Function verifier.c:mark_equal_scalars_as_read() is dropped,
-    as it was an incorrect fix for problem solved by commit [3].
-  - check_ids() is called only for precise scalar values.
-  - Test case updated to use inline assembly.
+File             Program   States (A)  States (B)  States    (DIFF)
+---------------  --------  ----------  ----------  ----------------
+pyperf600.bpf.o  on_event       22200       37060  +14860 (+66.94%)
 
-[1] git@github.com:anakryiko/cilium.git
-[2] https://lore.kernel.org/bpf/20221128163442.280187-1-eddyz87@gmail.com/
-[3] commit 71f656a50176 ("bpf: Fix to preserve reg parent/live fields when copying range info")
+Where A -- this patch,
+      B -- this patch but w/o check_alu_op() changes.
 
-Eduard Zingerman (2):
-  bpf: verify scalar ids mapping in regsafe() using check_ids()
-  selftests/bpf: verify that check_ids() is used for scalars in
-    regsafe()
+Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assignments.")
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
- kernel/bpf/verifier.c                         | 31 +++++++++-
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_scalar_ids.c | 59 +++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index af70dad655ab..624556eda430 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12806,10 +12806,12 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 				/* case: R1 = R2
+ 				 * copy register state to dest reg
+ 				 */
+-				if (src_reg->type == SCALAR_VALUE && !src_reg->id)
++				if (src_reg->type == SCALAR_VALUE && !src_reg->id &&
++				    !tnum_is_const(src_reg->var_off))
+ 					/* Assign src and dst registers the same ID
+ 					 * that will be used by find_equal_scalars()
+ 					 * to propagate min/max range.
++					 * Skip constants to avoid allocation of useless ID.
+ 					 */
+ 					src_reg->id = ++env->id_gen;
+ 				copy_register_state(dst_reg, src_reg);
+@@ -15151,6 +15153,33 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
+ 
+ 	switch (base_type(rold->type)) {
+ 	case SCALAR_VALUE:
++		/* Why check_ids() for precise registers?
++		 *
++		 * Consider the following BPF code:
++		 *   1: r6 = ... unbound scalar, ID=a ...
++		 *   2: r7 = ... unbound scalar, ID=b ...
++		 *   3: if (r6 > r7) goto +1
++		 *   4: r6 = r7
++		 *   5: if (r6 > X) goto ...
++		 *   6: ... memory operation using r7 ...
++		 *
++		 * First verification path is [1-6]:
++		 * - at (4) same bpf_reg_state::id (b) would be assigned to r6 and r7;
++		 * - at (5) r6 would be marked <= X, find_equal_scalars() would also mark
++		 *   r7 <= X, because r6 and r7 share same id.
++		 *
++		 * Next verification path would start from (5), because of the jump at (3).
++		 * The only state difference between first and second visits of (5) is
++		 * bpf_reg_state::id assignments for r6 and r7: (b, b) vs (a, b).
++		 * Thus, use check_ids() to distinguish these states.
++		 *
++		 * The `rold->precise` check is a performance optimization. If `rold->id`
++		 * was ever used to access memory / predict jump, the `rold` or any
++		 * register used in `rold = r?` / `r? = rold` operations would be marked
++		 * as precise, otherwise it's ID is not really interesting.
++		 */
++		if (rold->precise && rold->id && !check_ids(rold->id, rcur->id, idmap))
++			return false;
+ 		if (regs_exact(rold, rcur, idmap))
+ 			return true;
+ 		if (env->explore_alu_limits)
 -- 
 2.40.1
 
