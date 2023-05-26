@@ -1,145 +1,71 @@
-Return-Path: <bpf+bounces-1265-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1266-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF70711E24
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 04:50:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2149711E6F
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 05:26:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 492CA1C209FD
-	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 02:50:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52DEB28164E
+	for <lists+bpf@lfdr.de>; Fri, 26 May 2023 03:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E3A20E6;
-	Fri, 26 May 2023 02:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D850C1FDF;
+	Fri, 26 May 2023 03:26:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0851FCF;
-	Fri, 26 May 2023 02:50:03 +0000 (UTC)
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276FD9C;
-	Thu, 25 May 2023 19:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1685069401; x=1716605401;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2k6LATmSEjQ87/ONfQdITiWFK2HdYH+jsh6Z7mJU0RU=;
-  b=rqVSCh5RFLYceZrZi13CA08HAcoo16Ikn7eOGBuR8DwrXCScPNYCxMZg
-   9nehmqWDYwj1uWkvqbEyZtfGEfLzEfFznDs2YfBUD9sCrNwtrfcy9gkIG
-   TuYMzFPZXuMHVHjDa8sGpv/1/sR1kQWa+Q8WYhH5sYp9CCnttZVq6YtyS
-   k=;
-X-IronPort-AV: E=Sophos;i="6.00,192,1681171200"; 
-   d="scan'208";a="287490348"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2023 02:49:53 +0000
-Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-	by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id 7B9408064D;
-	Fri, 26 May 2023 02:49:50 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 26 May 2023 02:49:45 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.106.100.20) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 26 May 2023 02:49:40 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <kuniyu@amazon.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <joe@cilium.io>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kafai@fb.com>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lmb@isovalent.com>, <martin.lau@linux.dev>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<song@kernel.org>, <willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
-Date: Thu, 25 May 2023 19:49:31 -0700
-Message-ID: <20230526024931.88117-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230526014317.80715-1-kuniyu@amazon.com>
-References: <20230526014317.80715-1-kuniyu@amazon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6804717F3;
+	Fri, 26 May 2023 03:25:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F170C433EF;
+	Fri, 26 May 2023 03:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685071559;
+	bh=BTIaAcxw6JMw/kBG+7/ytX8/qt2HopHJ9Nqlbp6SrPU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eIztQ0pfSz7V7fBvUzeog84FT45VkAZ2Lae27wsJjMo2fG1neQr92ibbIFgGHsQ2d
+	 r4JJTPcmgjMJnT+uzL6zfSlfkfBY8dFo++z67mnF7wrr/9P/KiWD0ShmXwko8V+SIE
+	 zoqSY3IREiAbPn2Znwq2kn2tRNNV2Ly7FViIEibdDkP7RxB1FMhHu22yVTGyQYbsN2
+	 OX4koaThdA9hIKe7/x64Ho3jdyINstDb+ujciIDpcmybpuL5c2X9JGIqtJNRCxc5Ni
+	 jKHY5EnBMTUPsHPsGt8BBA+PoBgarYho9GcKQlrbQUIpEZqkQSQWDIuFJen+j5HryZ
+	 CMMU/YZeGrRJQ==
+Date: Thu, 25 May 2023 20:25:57 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+ wei.liu@kernel.org, edumazet@google.com, pabeni@redhat.com,
+ leon@kernel.org, longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+ hawk@kernel.org, tglx@linutronix.de, shradhagupta@linux.microsoft.com,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH V2,net] net: mana: Fix perf regression: remove rx_cqes,
+ tx_cqes counters
+Message-ID: <20230525202557.5a5f020b@kernel.org>
+In-Reply-To: <1685025990-14598-1-git-send-email-haiyangz@microsoft.com>
+References: <1685025990-14598-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.106.100.20]
-X-ClientProxiedBy: EX19D032UWA004.ant.amazon.com (10.13.139.56) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date: Thu, 25 May 2023 18:43:17 -0700
-> From: Martin KaFai Lau <martin.lau@linux.dev>
-> Date: Thu, 25 May 2023 16:42:46 -0700
-> > On 5/25/23 1:19 AM, Lorenz Bauer wrote:
-> > > diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> > > index 56f1286583d3..3ba4dc2703da 100644
-> > > --- a/include/net/inet6_hashtables.h
-> > > +++ b/include/net/inet6_hashtables.h
-> > > @@ -48,6 +48,13 @@ struct sock *__inet6_lookup_established(struct net *net,
-> > >   					const u16 hnum, const int dif,
-> > >   					const int sdif);
-> > >   
-> > > +struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
-> > > +				    struct sk_buff *skb, int doff,
-> > > +				    const struct in6_addr *saddr,
-> > > +				    __be16 sport,
-> > > +				    const struct in6_addr *daddr,
-> > > +				    unsigned short hnum);
-> > > +
-> > >   struct sock *inet6_lookup_listener(struct net *net,
-> > >   				   struct inet_hashinfo *hashinfo,
-> > >   				   struct sk_buff *skb, int doff,
-> > > @@ -85,14 +92,33 @@ static inline struct sock *__inet6_lookup_skb(struct inet_hashinfo *hashinfo,
-> > >   					      int iif, int sdif,
-> > >   					      bool *refcounted)
-> > >   {
-> > > -	struct sock *sk = skb_steal_sock(skb, refcounted);
-> > > -
-> > > +	bool prefetched;
-> > > +	struct sock *sk = skb_steal_sock(skb, refcounted, &prefetched);
-> > > +	struct net *net = dev_net(skb_dst(skb)->dev);
-> > > +	const struct ipv6hdr *ip6h = ipv6_hdr(skb);
-> > > +
-> > > +	if (prefetched) {
-> > > +		struct sock *reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> > 
-> > If sk is TCP_ESTABLISHED, I suspect sk->sk_reuseport is 1 (from sk_clone)?
-> 
-> Exactly, it will cause null-ptr-deref in reuseport_select_sock().
+On Thu, 25 May 2023 07:46:30 -0700 Haiyang Zhang wrote:
+> lot caching and memory overhead, hence perf regression.
 
-Sorry, this doesn't occur.  reuseport_select_sock() has null check.
+Horatiu's ask for more details was perfectly reasonable.
+Provide more details to give the distros and users an
+idea of the order of magnitude of the problem. Example
+workload and relative perf hit, anything.
 
-
-> We may want to use rcu_access_pointer(sk->sk_reuseport_cb) in
-> each lookup_reuseport() instead of adding sk_state check ?
-
-And if someone has a weird program that creates multiple listeners and
-disable SO_REUSEPORT for a listener that hits first in lhash2, checking
-sk_reuseport_cb might not work ?  I hope no one does such though, checking
-sk_reuseport and sk_state could be better.
-
-> 
-> 
-> > 
-> > If it is, it should still work other than an extra inet6_ehashfn. Does it worth 
-> > an extra sk->sk_state check or it is overkill?
-> > 
-> > 
-> > > +							       &ip6h->saddr, sport,
-> > > +							       &ip6h->daddr, ntohs(dport));
+Please do not repost within 24 hours:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+-- 
+pw-bot: cr
 
