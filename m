@@ -1,180 +1,185 @@
-Return-Path: <bpf+bounces-1353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D10527134B4
-	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 14:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4886371366D
+	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 22:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599B71C20F90
-	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 12:30:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C4A41C20A8E
+	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 20:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19A111C9C;
-	Sat, 27 May 2023 12:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DED171B1;
+	Sat, 27 May 2023 20:33:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F9FD52C
-	for <bpf@vger.kernel.org>; Sat, 27 May 2023 12:29:58 +0000 (UTC)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB1210A
-	for <bpf@vger.kernel.org>; Sat, 27 May 2023 05:29:56 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4f3b5881734so1901635e87.0
-        for <bpf@vger.kernel.org>; Sat, 27 May 2023 05:29:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED6A2C9E;
+	Sat, 27 May 2023 20:33:10 +0000 (UTC)
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE30B1;
+	Sat, 27 May 2023 13:33:08 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4397b040c8fso1121258137.0;
+        Sat, 27 May 2023 13:33:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685190595; x=1687782595;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=M+kwVZO6Xk9nR1jfdMicGRfrp8fhGb6XfuE7a8jLcxw=;
-        b=fI8AtENYY02wKlV6cxS3g/U94FcyrlY105xgU1Sjdnl0+PDgDNUGMSm/U8Lgsg00MM
-         NkHDEIiDSGECNoEZE64YyR7ocGnxCNJwFrHlpNdMgEossPAFx5EGOKlmUcYaQt+wlKuk
-         N6eU9WjW4v62GP7NhB5k+UBjYPa3jkZQ9K+oZ0II68xW1rjA0x0hro787rGzW/sYET0d
-         FeSiy4qk3ZHUkLMVCXmioN/uZxUfrdm1PuGVEzXYFqzL84BGLXNALG7wdQePoGcWrzYZ
-         re8dGZn3BTo9cPPhR8VfF0/M2GaZNdsCYnZkHrDdO7iQbxeuXdTz4JdnrUJSg1FeDd8o
-         X1aA==
+        d=gmail.com; s=20221208; t=1685219588; x=1687811588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DphEniiV7+L9T07hsrZpWRu6Se0vRycld7BbJ4F2i5s=;
+        b=O7rUqk+3zdR02SJ3nc0i0gjUm5pD7ypN8bPLk+lpEOfkSamIjLqdcIOrFJnJlbSCTA
+         RDiaBSqFchS1EXo3a2H1RpsvowA5BEvvQUiucW7pqm+MyTXfNMeAeho2hu3j8ny+MhP7
+         zIICmLCp61XHa++z3WCZL/IQkYbS4nyTO8RFLhoMwv3DKxiJ7eWTQAKT4VupGNr4s/XI
+         OEWXm7aJb1rRiWY2XHan2WrpxzNO4M6L36E1adarpiQu0vyMAFQ0nffznAAwvDY2iP1m
+         ylTtFUjLLvtF2YJTUojoiiX2SrwnPPNzXRpZjyAf+w476QE3yeFuYxckR/0CTE4gkle9
+         NbAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685190595; x=1687782595;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M+kwVZO6Xk9nR1jfdMicGRfrp8fhGb6XfuE7a8jLcxw=;
-        b=hmlLxRzgwy/v+MOwmkt4CoIxILMI2rW9+IC0i23VwpZiHk0QrviEcL6zBJlhCsR27T
-         sxwcg6pkK4x2BCnBKJzij67qDxg+sVrxmemRq1CQ0nmRoQ7bGgfJ5yPMu79nzrlcAINN
-         eqPdaNMOYul3X9MaJm/oJeJE5rv37Eil9yYGvH5RiAEnWx4psh53CCA0ehvdFub6BuRi
-         V2nVwmRQoqWLsF0DGCRjO5QwWqXbW/0p71qb6gcHMCLjn+QddITgo86snLFptqQq16iZ
-         8NH2+D0ZtP5pr3a4eB9KM8LH+G4kCdSBxtT0N32KKooepjWO1UNUU328hv+/NV6irpVg
-         jDwQ==
-X-Gm-Message-State: AC+VfDyanDlxSz6C+AkkUv1rqpLKiVSWMNdnGhBI/MQAJGrpAbxvdTCF
-	69a6wyN2hexWWxdAg+V5Vbo=
-X-Google-Smtp-Source: ACHHUZ4z3fYaKhEnE3JIbyKTsQpbKw0rPQ/VqniI5r8IddgkewmJ2Tl5D+KQaMGyx87d3IjrMrn5Mw==
-X-Received: by 2002:ac2:4959:0:b0:4eb:3b4c:50ac with SMTP id o25-20020ac24959000000b004eb3b4c50acmr1666533lfi.65.1685190594572;
-        Sat, 27 May 2023 05:29:54 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id i18-20020ac25d32000000b004eae73a0530sm1108241lfb.39.2023.05.27.05.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 May 2023 05:29:54 -0700 (PDT)
-Message-ID: <eef495be92934cab0b6ee60a71a22a9b755d1777.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yhs@fb.com
-Date: Sat, 27 May 2023 15:29:53 +0300
-In-Reply-To: <0900f41a57683ce0f55ee46435bf393f36ea24cd.camel@gmail.com>
-References: <20230526184126.3104040-1-eddyz87@gmail.com>
-	 <20230526184126.3104040-2-eddyz87@gmail.com>
-	 <ecc663f1-d8c1-0ccd-a226-00888aeee83b@meta.com>
-	 <0900f41a57683ce0f55ee46435bf393f36ea24cd.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1685219588; x=1687811588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DphEniiV7+L9T07hsrZpWRu6Se0vRycld7BbJ4F2i5s=;
+        b=l8FPo3Kid4r7EFOVute5tEA/DPPTpLGAm/6AMPbudV/q6WKTj6mEL7prvI5yyXTQz+
+         lk0+gaugzsrDNXSxI09HCHsmQarb0pK/kIwNn2I0h9S7bFxW+CQTbbKvza1NvdTVIBgP
+         fia5jI5WPqZD1szA1R1sw9hpxcXLdfT31DdlPh2bSz56KGu/RtPfyVeMB8uXR3nvmGkV
+         pHFmTe4u3OpzzZXyZuFRSGlKHw5FR7LGdnhmCcaa9PFSqZw8g0XL1m+BnrA4c7RHPlLr
+         c0IW4NoLUcymjOO+XJMEXTNKIar08KB2FmOFU5CwrWM7LBTvZSvalK7rsITg8Uw2R0SY
+         NC8A==
+X-Gm-Message-State: AC+VfDwSIEi/p8CMV8NBfL5SUrGygiMHBwuHfy47Qc79wglFO7u3HdO7
+	+9n6hs5ksy11HJKgNm/LfIaEC4Qau/kMYkyZE5k=
+X-Google-Smtp-Source: ACHHUZ7j1USGL3o1axHHccs3q8ZcTSSYWRerLMuMhHfd26USaqLqm73fyuhAS9F7rRZjTkKazWJv909u45/+K0wqiV8=
+X-Received: by 2002:a67:f2c9:0:b0:42c:543a:ab2a with SMTP id
+ a9-20020a67f2c9000000b0042c543aab2amr1973157vsn.35.1685219587791; Sat, 27 May
+ 2023 13:33:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000037341d05fc460fa6@google.com> <CAF=yD-JpUc3SLtd7MtULmKOcERf6EJZ0rPc7WmJB2nUNUQRBjA@mail.gmail.com>
+ <CAF=yD-+MxyoD1Mbekf93-XhAA2urAf5audD8HefmF8bfsu51iQ@mail.gmail.com>
+In-Reply-To: <CAF=yD-+MxyoD1Mbekf93-XhAA2urAf5audD8HefmF8bfsu51iQ@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Sat, 27 May 2023 16:32:31 -0400
+Message-ID: <CAF=yD-Ln94Nim0GkpLhZ7p7qQFUDE4Z-adrjRMRSh2y3iBmb+w@mail.gmail.com>
+Subject: Re: [syzbot] [net?] KASAN: invalid-access Read in __packet_get_status
+To: syzbot <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com>
+Cc: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, 2023-05-27 at 15:21 +0300, Eduard Zingerman wrote:
-[...]
-> > > @@ -15151,6 +15153,33 @@ static bool regsafe(struct bpf_verifier_env =
-*env, struct bpf_reg_state *rold,
-> > >  =20
-> > >   	switch (base_type(rold->type)) {
-> > >   	case SCALAR_VALUE:
-> > > +		/* Why check_ids() for precise registers?
-> > > +		 *
-> > > +		 * Consider the following BPF code:
-> > > +		 *   1: r6 =3D ... unbound scalar, ID=3Da ...
-> > > +		 *   2: r7 =3D ... unbound scalar, ID=3Db ...
-> > > +		 *   3: if (r6 > r7) goto +1
-> > > +		 *   4: r6 =3D r7
-> > > +		 *   5: if (r6 > X) goto ...
-> > > +		 *   6: ... memory operation using r7 ...
-> > > +		 *
-> > > +		 * First verification path is [1-6]:
-> > > +		 * - at (4) same bpf_reg_state::id (b) would be assigned to r6 and=
- r7;
-> > > +		 * - at (5) r6 would be marked <=3D X, find_equal_scalars() would =
-also mark
-> > > +		 *   r7 <=3D X, because r6 and r7 share same id.
-> > > +		 *
-> > > +		 * Next verification path would start from (5), because of the jum=
-p at (3).
-> > > +		 * The only state difference between first and second visits of (5=
-) is
-> > > +		 * bpf_reg_state::id assignments for r6 and r7: (b, b) vs (a, b).
-> > > +		 * Thus, use check_ids() to distinguish these states.
-> > > +		 *
-> > > +		 * The `rold->precise` check is a performance optimization. If `ro=
-ld->id`
-> > > +		 * was ever used to access memory / predict jump, the `rold` or an=
-y
-> > > +		 * register used in `rold =3D r?` / `r? =3D rold` operations would=
- be marked
-> > > +		 * as precise, otherwise it's ID is not really interesting.
-> > > +		 */
-> > > +		if (rold->precise && rold->id && !check_ids(rold->id, rcur->id, id=
-map))
-> >=20
-> > Do we need rold->id checking in the above? check_ids should have=20
-> > rold->id =3D 0 properly. Or this is just an optimization?
->=20
-> You are correct, the check_ids() handles this case and it should be inlin=
-ed,
-> so there is no need to check rold->id in this 'if' branch.
-> =20
-> > regs_exact() has check_ids as well. Not sure whether it makes sense to
-> > create a function regs_exact_scalar() just for scalar and include the
-> > above code. Otherwise, it is strange we do check_ids in different
-> > places.
->=20
-> I'm not sure how to best re-organize code here, regs_exact() is a nice
-> compartmentalized abstraction. It is possible to merge my additional
-> check_ids() call with the main 'precise' processing part as below:
->=20
-> @@ -15152,21 +15154,22 @@ static bool regsafe(struct bpf_verifier_env *en=
-v, struct bpf_reg_state *rold,
->         switch (base_type(rold->type)) {
->         case SCALAR_VALUE:
->                 if (regs_exact(rold, rcur, idmap))
->                         return true;
->                 if (env->explore_alu_limits)
->                         return false;
->                 if (!rold->precise)
->                         return true;
->                 /* new val must satisfy old val knowledge */
->                 return range_within(rold, rcur) &&
-> -                      tnum_in(rold->var_off, rcur->var_off);
-> +                      tnum_in(rold->var_off, rcur->var_off) &&
-> +                      check_ids(rold->id, rcur->id, idmap);
->=20
-> I'd say that extending /* new val must satisfy ... */ comment to
-> explain why check_ids() is needed should be sufficient, but I'm open
-> for suggestions.
+On Mon, May 22, 2023 at 12:19=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> On Mon, May 22, 2023 at 10:52=E2=80=AFAM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > On Mon, May 22, 2023 at 6:51=E2=80=AFAM syzbot
+> > <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    2d1bcbc6cd70 Merge tag 'probes-fixes-v6.4-rc1' of git=
+://gi..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D154b8fa12=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D51dd28037=
+b2a55f
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D64b0f633159=
+fde08e1f1
+> > > compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 202101=
+10, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > userspace arch: arm64
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12b6382=
+e280000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17fd0aee2=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image (non-bootable): https://storage.googleapis.com/syzbot-asse=
+ts/384ffdcca292/non_bootable_disk-2d1bcbc6.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/d2e21a43e11e/vm=
+linux-2d1bcbc6.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/49e0b029f9=
+af/Image-2d1bcbc6.gz.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > BUG: KASAN: invalid-access in __packet_get_status+0x70/0xe0 net/packe=
+t/af_packet.c:438
+> >
+> > The offending line is the last one in
+> >
+> > "
+> > static int __packet_get_status(const struct packet_sock *po, void *fram=
+e)
+> > {
+> >         union tpacket_uhdr h;
+> >
+> >         smp_rmb();
+> >
+> >         h.raw =3D frame;
+> >         switch (po->tp_version) {
+> >         case TPACKET_V1:
+> >                 flush_dcache_page(pgv_to_page(&h.h1->tp_status));
+> >                 return h.h1->tp_status;
+> >         case TPACKET_V2:
+> >                 flush_dcache_page(pgv_to_page(&h.h2->tp_status));
+> > "
+> >
+> > The reproducer is very small:
+> >
+> > "
+> > // socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL);
+> > r0 =3D socket$packet(0x11, 0x2, 0x300)
+> >
+> > // setsockopt PACKET_RX_RING with same block and frame sizes and counts
+> > setsockopt$packet_rx_ring(r0, 0x107, 0x5,
+> > &(0x7f0000000040)=3D@req3=3D{0x8000, 0x200, 0x80, 0x20000}, 0x1c)
+> >
+> > // excessive length, too many bits in prot, MAP_SHARED | MAP_ANONYMOUS
+> > mmap(&(0x7f0000568000/0x2000)=3Dnil, 0x1000000, 0x20567fff, 0x11, r0, 0=
+x0)
+> > "
+> >
+> > What is odd here is that the program never sets packet version
+> > explicitly, and the default is TPACKET_V1.
+>
+> The test is marked as repeat.
+>
+> One possibility is that there is a race between packet arrival calling
+> flush_dcache_page and user mmap setup/teardown. That would exhibit as
+> flakiness.
+>
+> ARM flush_dcache_page is quite outside my networking comfort zone.
 
-On the other hand, I wanted to have a separate 'if' branch like:
+The accessed memory is using ARM MTE tags. It appears that the memory
+is accessed with the wrong tag:
 
-  if (rold->precise && !check_ids(rold->id, rcur->id, idmap))
- =20
-Specifically to explain that 'rold->precise' part is an optimization.
-
->=20
-> >=20
-> > > +			return false;
-> > >   		if (regs_exact(rold, rcur, idmap))
-> > >   			return true;
-> > >   		if (env->explore_alu_limits)
->=20
-
+ do_tag_check_fault+0x78/0x8c arch/arm64/mm/fault.c:791
+ do_mem_abort+0x44/0x94 arch/arm64/mm/fault.c:867
+ el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:367
+ el1h_64_sync_handler+0xd8/0xe4 arch/arm64/kernel/entry-common.c:427
+ el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:586
+ __packet_get_status+0x70/0xe0 net/packet/af_packet.c:438
 
