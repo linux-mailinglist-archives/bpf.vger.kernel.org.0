@@ -1,185 +1,166 @@
-Return-Path: <bpf+bounces-1354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4886371366D
-	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 22:33:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69EB4713705
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 00:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C4A41C20A8E
-	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 20:33:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 009E21C20972
+	for <lists+bpf@lfdr.de>; Sat, 27 May 2023 22:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DED171B1;
-	Sat, 27 May 2023 20:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AB21950F;
+	Sat, 27 May 2023 22:31:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED6A2C9E;
-	Sat, 27 May 2023 20:33:10 +0000 (UTC)
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE30B1;
-	Sat, 27 May 2023 13:33:08 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4397b040c8fso1121258137.0;
-        Sat, 27 May 2023 13:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685219588; x=1687811588;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DphEniiV7+L9T07hsrZpWRu6Se0vRycld7BbJ4F2i5s=;
-        b=O7rUqk+3zdR02SJ3nc0i0gjUm5pD7ypN8bPLk+lpEOfkSamIjLqdcIOrFJnJlbSCTA
-         RDiaBSqFchS1EXo3a2H1RpsvowA5BEvvQUiucW7pqm+MyTXfNMeAeho2hu3j8ny+MhP7
-         zIICmLCp61XHa++z3WCZL/IQkYbS4nyTO8RFLhoMwv3DKxiJ7eWTQAKT4VupGNr4s/XI
-         OEWXm7aJb1rRiWY2XHan2WrpxzNO4M6L36E1adarpiQu0vyMAFQ0nffznAAwvDY2iP1m
-         ylTtFUjLLvtF2YJTUojoiiX2SrwnPPNzXRpZjyAf+w476QE3yeFuYxckR/0CTE4gkle9
-         NbAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685219588; x=1687811588;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DphEniiV7+L9T07hsrZpWRu6Se0vRycld7BbJ4F2i5s=;
-        b=l8FPo3Kid4r7EFOVute5tEA/DPPTpLGAm/6AMPbudV/q6WKTj6mEL7prvI5yyXTQz+
-         lk0+gaugzsrDNXSxI09HCHsmQarb0pK/kIwNn2I0h9S7bFxW+CQTbbKvza1NvdTVIBgP
-         fia5jI5WPqZD1szA1R1sw9hpxcXLdfT31DdlPh2bSz56KGu/RtPfyVeMB8uXR3nvmGkV
-         pHFmTe4u3OpzzZXyZuFRSGlKHw5FR7LGdnhmCcaa9PFSqZw8g0XL1m+BnrA4c7RHPlLr
-         c0IW4NoLUcymjOO+XJMEXTNKIar08KB2FmOFU5CwrWM7LBTvZSvalK7rsITg8Uw2R0SY
-         NC8A==
-X-Gm-Message-State: AC+VfDwSIEi/p8CMV8NBfL5SUrGygiMHBwuHfy47Qc79wglFO7u3HdO7
-	+9n6hs5ksy11HJKgNm/LfIaEC4Qau/kMYkyZE5k=
-X-Google-Smtp-Source: ACHHUZ7j1USGL3o1axHHccs3q8ZcTSSYWRerLMuMhHfd26USaqLqm73fyuhAS9F7rRZjTkKazWJv909u45/+K0wqiV8=
-X-Received: by 2002:a67:f2c9:0:b0:42c:543a:ab2a with SMTP id
- a9-20020a67f2c9000000b0042c543aab2amr1973157vsn.35.1685219587791; Sat, 27 May
- 2023 13:33:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3829E9461
+	for <bpf@vger.kernel.org>; Sat, 27 May 2023 22:31:53 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC966AD
+	for <bpf@vger.kernel.org>; Sat, 27 May 2023 15:31:50 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 34RLpfIw021540
+	for <bpf@vger.kernel.org>; Sat, 27 May 2023 15:31:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=1qrbeJ2GL7XL/nULCOKYhA2QYagKiO03oh+rYV9guk4=;
+ b=m5VKI08FB7j0DEoqpD2gh0dsRZIDJWHamXglEXPQvAhOm+jYzbpPKwLeThxKptP8vO7o
+ m3ADDncJ6u7mCISr1Lg1XlchjAKneuGYiSGPnJAT1XyrlBslIVcH2MMevSDhrAtjIWWU
+ MA6Z4N0PYmjMqnoSvPygLjEUuZlSUrSWbjU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3qudca35y4-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Sat, 27 May 2023 15:31:49 -0700
+Received: from twshared52232.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Sat, 27 May 2023 15:31:47 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id AEDD4205845FC; Sat, 27 May 2023 15:31:32 -0700 (PDT)
+From: Yonghong Song <yhs@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai
+ Lau <martin.lau@kernel.org>,
+        <syzbot+958967f249155967d42a@syzkaller.appspotmail.com>
+Subject: [PATCH bpf-next 1/2] bpf: Silence a warning in btf_type_id_size()
+Date: Sat, 27 May 2023 15:31:32 -0700
+Message-ID: <20230527223132.1580338-1-yhs@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: eDkDGaMBqjnex4fjpineTjgLb43Vc-WK
+X-Proofpoint-ORIG-GUID: eDkDGaMBqjnex4fjpineTjgLb43Vc-WK
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000037341d05fc460fa6@google.com> <CAF=yD-JpUc3SLtd7MtULmKOcERf6EJZ0rPc7WmJB2nUNUQRBjA@mail.gmail.com>
- <CAF=yD-+MxyoD1Mbekf93-XhAA2urAf5audD8HefmF8bfsu51iQ@mail.gmail.com>
-In-Reply-To: <CAF=yD-+MxyoD1Mbekf93-XhAA2urAf5audD8HefmF8bfsu51iQ@mail.gmail.com>
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Sat, 27 May 2023 16:32:31 -0400
-Message-ID: <CAF=yD-Ln94Nim0GkpLhZ7p7qQFUDE4Z-adrjRMRSh2y3iBmb+w@mail.gmail.com>
-Subject: Re: [syzbot] [net?] KASAN: invalid-access Read in __packet_get_status
-To: syzbot <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com>
-Cc: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-27_16,2023-05-25_03,2023-05-22_02
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, May 22, 2023 at 12:19=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> On Mon, May 22, 2023 at 10:52=E2=80=AFAM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > On Mon, May 22, 2023 at 6:51=E2=80=AFAM syzbot
-> > <syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    2d1bcbc6cd70 Merge tag 'probes-fixes-v6.4-rc1' of git=
-://gi..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D154b8fa12=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D51dd28037=
-b2a55f
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D64b0f633159=
-fde08e1f1
-> > > compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 202101=
-10, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > userspace arch: arm64
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12b6382=
-e280000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17fd0aee2=
-80000
-> > >
-> > > Downloadable assets:
-> > > disk image (non-bootable): https://storage.googleapis.com/syzbot-asse=
-ts/384ffdcca292/non_bootable_disk-2d1bcbc6.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/d2e21a43e11e/vm=
-linux-2d1bcbc6.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/49e0b029f9=
-af/Image-2d1bcbc6.gz.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> > > Reported-by: syzbot+64b0f633159fde08e1f1@syzkaller.appspotmail.com
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > BUG: KASAN: invalid-access in __packet_get_status+0x70/0xe0 net/packe=
-t/af_packet.c:438
-> >
-> > The offending line is the last one in
-> >
-> > "
-> > static int __packet_get_status(const struct packet_sock *po, void *fram=
-e)
-> > {
-> >         union tpacket_uhdr h;
-> >
-> >         smp_rmb();
-> >
-> >         h.raw =3D frame;
-> >         switch (po->tp_version) {
-> >         case TPACKET_V1:
-> >                 flush_dcache_page(pgv_to_page(&h.h1->tp_status));
-> >                 return h.h1->tp_status;
-> >         case TPACKET_V2:
-> >                 flush_dcache_page(pgv_to_page(&h.h2->tp_status));
-> > "
-> >
-> > The reproducer is very small:
-> >
-> > "
-> > // socket(PF_PACKET, SOCK_DGRAM, htons(ETH_P_ALL);
-> > r0 =3D socket$packet(0x11, 0x2, 0x300)
-> >
-> > // setsockopt PACKET_RX_RING with same block and frame sizes and counts
-> > setsockopt$packet_rx_ring(r0, 0x107, 0x5,
-> > &(0x7f0000000040)=3D@req3=3D{0x8000, 0x200, 0x80, 0x20000}, 0x1c)
-> >
-> > // excessive length, too many bits in prot, MAP_SHARED | MAP_ANONYMOUS
-> > mmap(&(0x7f0000568000/0x2000)=3Dnil, 0x1000000, 0x20567fff, 0x11, r0, 0=
-x0)
-> > "
-> >
-> > What is odd here is that the program never sets packet version
-> > explicitly, and the default is TPACKET_V1.
->
-> The test is marked as repeat.
->
-> One possibility is that there is a race between packet arrival calling
-> flush_dcache_page and user mmap setup/teardown. That would exhibit as
-> flakiness.
->
-> ARM flush_dcache_page is quite outside my networking comfort zone.
+syzbot reported a warning in [1] with the following stacktrace:
+  WARNING: CPU: 0 PID: 5005 at kernel/bpf/btf.c:1988 btf_type_id_size+0x2d9=
+/0x9d0 kernel/bpf/btf.c:1988
+  ...
+  RIP: 0010:btf_type_id_size+0x2d9/0x9d0 kernel/bpf/btf.c:1988
+  ...
+  Call Trace:
+   <TASK>
+   map_check_btf kernel/bpf/syscall.c:1024 [inline]
+   map_create+0x1157/0x1860 kernel/bpf/syscall.c:1198
+   __sys_bpf+0x127f/0x5420 kernel/bpf/syscall.c:5040
+   __do_sys_bpf kernel/bpf/syscall.c:5162 [inline]
+   __se_sys_bpf kernel/bpf/syscall.c:5160 [inline]
+   __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5160
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-The accessed memory is using ARM MTE tags. It appears that the memory
-is accessed with the wrong tag:
+With the following btf
+  [1] DECL_TAG 'a' type_id=3D4 component_idx=3D-1
+  [2] PTR '(anon)' type_id=3D0
+  [3] TYPE_TAG 'a' type_id=3D2
+  [4] VAR 'a' type_id=3D3, linkage=3Dstatic
+and when the bpf_attr.btf_key_type_id =3D 1 (DECL_TAG),
+the following WARN_ON_ONCE in btf_type_id_size() is triggered:
+  if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+                   !btf_type_is_var(size_type)))
+          return NULL;
 
- do_tag_check_fault+0x78/0x8c arch/arm64/mm/fault.c:791
- do_mem_abort+0x44/0x94 arch/arm64/mm/fault.c:867
- el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:367
- el1h_64_sync_handler+0xd8/0xe4 arch/arm64/kernel/entry-common.c:427
- el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:586
- __packet_get_status+0x70/0xe0 net/packet/af_packet.c:438
+Note that 'return NULL' is the correct behavior as we don't want
+a DECL_TAG type to be used as a btf_{key,value}_type_id even
+for the case like 'DECL_TAG -> STRUCT'. So there
+is no correctness issue here, we just want to silence warning.
+
+To silence the warning, I added DECL_TAG as one of kinds in
+btf_type_nosize() which will cause btf_type_id_size() returning
+NULL earlier without the warning.
+
+  [1] https://lore.kernel.org/bpf/000000000000e0df8d05fc75ba86@google.com/
+
+Reported-by: syzbot+958967f249155967d42a@syzkaller.appspotmail.com
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 947f0b83bfad..bd2cac057928 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -492,25 +492,26 @@ static bool btf_type_is_fwd(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_FWD;
+ }
+=20
+-static bool btf_type_nosize(const struct btf_type *t)
++static bool btf_type_is_datasec(const struct btf_type *t)
+ {
+-	return btf_type_is_void(t) || btf_type_is_fwd(t) ||
+-	       btf_type_is_func(t) || btf_type_is_func_proto(t);
++	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DATASEC;
+ }
+=20
+-static bool btf_type_nosize_or_null(const struct btf_type *t)
++static bool btf_type_is_decl_tag(const struct btf_type *t)
+ {
+-	return !t || btf_type_nosize(t);
++	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DECL_TAG;
+ }
+=20
+-static bool btf_type_is_datasec(const struct btf_type *t)
++static bool btf_type_nosize(const struct btf_type *t)
+ {
+-	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DATASEC;
++	return btf_type_is_void(t) || btf_type_is_fwd(t) ||
++	       btf_type_is_func(t) || btf_type_is_func_proto(t) ||
++	       btf_type_is_decl_tag(t);
+ }
+=20
+-static bool btf_type_is_decl_tag(const struct btf_type *t)
++static bool btf_type_nosize_or_null(const struct btf_type *t)
+ {
+-	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DECL_TAG;
++	return !t || btf_type_nosize(t);
+ }
+=20
+ static bool btf_type_is_decl_tag_target(const struct btf_type *t)
+--=20
+2.34.1
+
 
