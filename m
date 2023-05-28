@@ -1,118 +1,125 @@
-Return-Path: <bpf+bounces-1358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3637137EB
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 07:59:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517A47139FD
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 16:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0746F1C20986
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 05:58:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09076280E65
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 14:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E24565C;
-	Sun, 28 May 2023 05:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45033D70;
+	Sun, 28 May 2023 14:20:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9803A366
-	for <bpf@vger.kernel.org>; Sun, 28 May 2023 05:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B94AC4339B;
-	Sun, 28 May 2023 05:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685253531;
-	bh=snJsYpgUWy+sW/MbYC1vdikaXeWm4JXAeQnv2EYir60=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PgPrso6v1AymYqAgyx8vsn1/v0QsnJ+kVXmB4yzU6zM+T/WWplSqvn77YDV+2R9m1
-	 yTD+YOjAuBIma9KFBAnM+CSBoNvkct9KH1dmN2OpJNHMdiHEzrV1I3Gu6l73HTfYRQ
-	 0HNAFCx0mrkIEk0WQ4qSDEp8diYSviG5paZPV31fdY4ghSm+Pjz9qpNYbkjEkpOd6G
-	 lk3/W0oj8WQruZtuVsU2EtvR0avI02ICKl18HJ9qwnzDPLFaeuQn6GiKe8Z6K5SRQF
-	 pNJR1hl7PcusXG+ElM+hlYGmlaSqWqC5suCrhfWzi39yeYjM1mYZabjCHleWuHrJZ4
-	 GDwd62o7rNGxA==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2afb2875491so21969761fa.1;
-        Sat, 27 May 2023 22:58:51 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwi7ookzPHKVu/NYAmKlMzVgAeWW/Mu6KrV4snw+tpzy4OwjzBc
-	7xEAtyeNPAuca6Z5SLTLKkoCUqfAWLG+2Zg6B88=
-X-Google-Smtp-Source: ACHHUZ6192jMD4FnYS34nSBiVK97qgvQVlW1504l/mTQVh87LljXufB6WCelbGrM7nCseDzv0m9iOhwWdhz82buYz14=
-X-Received: by 2002:a2e:808c:0:b0:2ad:92b9:83b4 with SMTP id
- i12-20020a2e808c000000b002ad92b983b4mr3208515ljg.5.1685253529235; Sat, 27 May
- 2023 22:58:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE4F211A
+	for <bpf@vger.kernel.org>; Sun, 28 May 2023 14:20:37 +0000 (UTC)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B43B8
+	for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-62621035d15so1476076d6.2
+        for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685283635; x=1687875635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QYH6SaKI31o/TThgabNBnvtMc6+xP1AGFlQTqwj5pzU=;
+        b=CKrPhKgVxnOvtXh5gW3BBkYynaMR2fEgPHk99yb0a1aTGgfqUApwavrz69zHvY5jbq
+         cVBRU2F1GwPrCEu1qw5ula17lW6kBhUa6ykrIaA1CsuMZs/gLKlkX9BnRU4vhKmgaW+O
+         Rn7JLAp6o56Qt2AP8i3RxdKNyIIAkBuJXbHsThpkWhdNzfpwEhdnlRCuwnQhunD2Mzdg
+         tNiGb/WtOYwH+NlSHrlmwgiI1Iv/K8SyJXzk/eOp9TqRehglROeJmfIDEYMyD8bUNcAi
+         o67y1ETAnnxC8KRomVCS0MC49drFCWLpsrJjfR0fXsMNaFA6aNnUMFISyGg/vptfbp1U
+         fo9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685283635; x=1687875635;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QYH6SaKI31o/TThgabNBnvtMc6+xP1AGFlQTqwj5pzU=;
+        b=UB9B5ETHIZtQ+L7FinMGdsnVTf2Blm85FpyA0FOEVN5jgMIT8C+wgQQXFeJOQA2jiW
+         Bu5ReEGPfQrpYWyUGH/Kw+GAce9YxiTHAF1CYmEhzQcjJRSCfkSvl+HlkHu0oc2Qwcbr
+         kq3kKHawX3O6p/FoORmsr4jPNZcfzcZRYDWE52G9hnNFWb/2R3kKNnZI3v7CfOOOcKDf
+         aFQ9rXILWiGTkgD9FZZCQ6wRmQjSThMukR+pxjGUc/6SqBwb6FanMJb4zkOxvwH+grNh
+         hcvNDpkzkxUlxEGLgwhXvsgM7Qe4af3bGjq6RdNLzBMWeCDmgaX5UqTchgsIyiMYQBdf
+         iPbg==
+X-Gm-Message-State: AC+VfDwDnaGU/g3f0M4I+q7Zx4sg47ZNzevEDQESGvwCuZ85LvmQjY53
+	lMCOm7W8v3HQPe1ydDgupdM=
+X-Google-Smtp-Source: ACHHUZ76EWy08VhQsfkJQzxh/u4fL/Og8Cfd65Yd1TURfl6X4ET1ydrVvHFN/wPIgjFyTO3q0xbP+w==
+X-Received: by 2002:a05:6214:29ea:b0:625:aa49:c342 with SMTP id jv10-20020a05621429ea00b00625aa49c342mr8024357qvb.54.1685283634708;
+        Sun, 28 May 2023 07:20:34 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:5:38f3:5400:4ff:fe74:5668])
+        by smtp.gmail.com with ESMTPSA id l11-20020a0cc20b000000b006238dc71f5csm10qvh.144.2023.05.28.07.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 May 2023 07:20:34 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	quentin@isovalent.com
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 0/8] bpf: Support ->show_fdinfo and ->fill_link_info for kprobe prog
+Date: Sun, 28 May 2023 14:20:19 +0000
+Message-Id: <20230528142027.5585-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230526051529.3387103-1-song@kernel.org> <ZHGrjJ8PqAGN9OZK@moria.home.lan>
-In-Reply-To: <ZHGrjJ8PqAGN9OZK@moria.home.lan>
-From: Song Liu <song@kernel.org>
-Date: Sat, 27 May 2023 22:58:37 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
-Message-ID: <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Type aware module allocator
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org, 
-	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org, rppt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Sat, May 27, 2023 at 12:04=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, May 25, 2023 at 10:15:26PM -0700, Song Liu wrote:
-> > This set implements the second part of module type aware allocator
-> > (module_alloc_type), which was discussed in [1]. This part contains the
-> > interface of the new allocator, as well as changes in x86 code to use t=
-he
-> > new allocator (modules, BPF, ftrace, kprobe).
-> >
-> > The set does not contain a binpack allocator to enable sharing huge pag=
-es
-> > among different allocations. But this set defines the interface used by
-> > the binpack allocator. [2] has some discussion on different options of =
-the
-> > binpack allocator.
->
-> I'm afraid the more I look at this patchset the more it appears to be
-> complete nonsense.
+Currently, it is not easy to determine which functions are probed by a
+kprobe_multi program. This patchset supports ->show_fdinfo and
+->fill_link_info for it, allowing the user to easily obtain the probed
+functions.
 
-I don't think it is nonsense, as you clearly got most of the points here. :=
-)
+Although the user can retrieve the functions probed by a perf_event
+program using `bpftool perf show`, it would be beneficial to also support
+->show_fdinfo and ->fill_link_info. This way, the user can obtain it in the
+same manner as other bpf links.
 
->
-> The exposed interface appears to be both for specifying architecture
-> dependent options (which should be hidden inside the allocator
-> internals!) _and_ a general purpose interface for module/bpf/kprobes -
-> but it's not very clear, and the rational appears to be completely
-> missing.
+It would be preferable to expose the address directly rather than the symbol
+name, as multiple functions may share the same name.
 
-The rationale is to have something to replace module_alloc(). Therefore,
-it needs to handle architecture specific requirements, and provide
-interface to all current users of module_alloc(). It may look a little weir=
-d
-at the moment, because the actual allocator logic is very thin. But that's
-where we will plug in the next step of the work.
+Yafang Shao (8):
+  bpf: Support ->show_fdinfo for kprobe_multi
+  bpf: Support ->fill_link_info for kprobe_multi
+  bpftool: Show probed function in kprobe_multi link info
+  bpf: Always expose the probed address
+  bpf: Support ->show_fdinfo for perf_event
+  bpf: Add a common helper bpf_copy_to_user()
+  bpf: Support ->fill_link_info for perf_event
+  bpftool: Show probed function in perf_event link info
 
->
-> I think this needs to back to the drawing board and we need something
-> simpler just targeted at executable memory; architecture specific
-> options should definitely _not_ be part of the exposed interface.
+ include/uapi/linux/bpf.h       |  10 ++++
+ kernel/bpf/syscall.c           | 107 +++++++++++++++++++++++++++++++++++------
+ kernel/trace/bpf_trace.c       |  48 ++++++++++++++++++
+ kernel/trace/trace_kprobe.c    |   2 +-
+ tools/bpf/bpftool/link.c       |  71 ++++++++++++++++++++++++++-
+ tools/include/uapi/linux/bpf.h |  10 ++++
+ 6 files changed, 232 insertions(+), 16 deletions(-)
 
-I don't think we are exposing architecture specific options to users.
-Some layer need to handle arch specifics. If the new allocator is
-built on top of module_alloc, module_alloc is handling that. If the new
-allocator is to replace module_alloc, it needs to handle arch specifics.
+-- 
+1.8.3.1
 
->
-> The memory protection interface also needs to go, we've got a better
-> interface to model after (text_poke(), although that code needs work
-> too!). And the instruction fill features need a thorough justification
-> if they're to be included.
-
-I guess the first step to use text_poke() is to make it available on all
-archs? That doesn't seem easy to me.
-
-Thanks,
-Song
 
