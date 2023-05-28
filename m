@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-1363-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1364-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0D8713A01
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 16:21:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81E39713A08
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 16:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16231C2095F
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 14:21:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A64280E5F
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 14:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65AE95681;
-	Sun, 28 May 2023 14:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C625689;
+	Sun, 28 May 2023 14:20:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C09566E
-	for <bpf@vger.kernel.org>; Sun, 28 May 2023 14:20:40 +0000 (UTC)
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109D6BE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A194C566E
+	for <bpf@vger.kernel.org>; Sun, 28 May 2023 14:20:41 +0000 (UTC)
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF501B8
 	for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:39 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-75cbbb10c69so223635385a.2
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-3f6a3a76665so19225241cf.1
         for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685283638; x=1687875638;
+        d=gmail.com; s=20221208; t=1685283639; x=1687875639;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QuzOX4XFKmJOiLjt9d1z+UYL8/sI/TO2hkUeE9dOaVY=;
-        b=pIgpfthuhb6Mnhw56ecRXBRcJW7j7c+VluFti7CCeBBkPQnolVzro99n2d2k3q9wVh
-         tyfN1xiO5jfi+d+tlbW3+NWekJ7h8Y6xRnAwHEsGPihhN8+9XmYAdNUD/Lt+Aw64Q1so
-         rjNhogHoiwaNmmGqUjafIirLMVrYkAdGdG9y2S995F56f+MgPuiIjVSiPa0zR1CBvYQi
-         h1ya5fEltpM9yRVCQC88u54zZFmLl9mxKSP2ZNRbZVeASAcsNEUeDX2kfFgFDXGJGEE8
-         2bnEv8X+tDuc33kDx/H6paD4ZujvpsnDdLDFm9uFLhSm+o5eqNhewYr3+b9deOA21wki
-         AH0w==
+        bh=ODhBZoAYfxi0mcbicAztGxp9Mvcqb5LLQ3RqkHtqQYg=;
+        b=I9ZmF+wzWUPhDuN2zSxdiCKsckosQPRetOGdeUYNHgBsSyYsB+jLHF6fYGzmjU3pgm
+         yTk7fVuE8e+7OJPiygxXZIz4G7oiQKS29vhoRGpPogfKa3v9k6Td3F3dLw4VB7IwfX+d
+         qqNDVbzZcsHvmEOKQxhvZGR83+r2XEfDo4WayjtEFKKD8vKXuyC5dtKuKjSfdCQI4gp/
+         DWfSY8Ly4YbvW9l2XIn2IyghFojrMhUnG5NvCSdnVpmEnH4QmiDSQfrHBYBIRIOqVnL4
+         invJu/u7RkTdpw9rIyvkEf2yt1X3h900rOzJQTroEIVUFbicKbJvTmrpspzi60nGOv0J
+         5xyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685283638; x=1687875638;
+        d=1e100.net; s=20221208; t=1685283639; x=1687875639;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QuzOX4XFKmJOiLjt9d1z+UYL8/sI/TO2hkUeE9dOaVY=;
-        b=SUdK064vgcLu1EmWVoFFdsgOy5Wtqj+NEfhUueLFGYScI5wJbGpYTHVWADSqSmIRd3
-         t8GH4U/8AFJlApG7zpKt+yrIp3bCIArQFtICdx+UCYu7GwSfeOLW9od2dWVgA3JljjT2
-         8z8xxmArGEZr4M9jlTI1UhJv/xa0WOSQel0S6FX7W60dgBV8gfYlmNBZwSRCbWgFgYzA
-         TNoCs0k06u63xeNnhLKWh10U2MW0DJVa6ffSW3zULNNjK2DZATneGe9Qw/urbMT0Fi5d
-         7zB0+aIb/nltHGwgbV5mfbRyEqT4BAPGseGcL5PMvHrm6UqKdj9GltavFFgh/ZyR4H8c
-         39fw==
-X-Gm-Message-State: AC+VfDzq5NjPKpv4k8TtWKLCu/17ujVJD1EE2nHVLY3aEUd5cxgiBL4C
-	+0cBoY3DSGB1EG2vhCRrWTs=
-X-Google-Smtp-Source: ACHHUZ57oNNg1hSza9KcPDdCpPFY57VKUIzi+oKQ2Q1nc1sxswNBL2+BbgUC1D47dho3Y4wzplVlfg==
-X-Received: by 2002:a05:6214:1c48:b0:619:ca55:9709 with SMTP id if8-20020a0562141c4800b00619ca559709mr8789386qvb.21.1685283638186;
+        bh=ODhBZoAYfxi0mcbicAztGxp9Mvcqb5LLQ3RqkHtqQYg=;
+        b=JSMZnBwGVXcsDqX2ERgDNReUJKRL40HEfNsH/Vi8uJJActiImo9mQv6k0NpKZtG642
+         sN5QUnT+QCvHnBf9hZJZ+5HBoWS2jyNaqDNcbKtDcxtuhfnJNfPy/b5QqfR0qHyRghHt
+         4SRrFzmMCm37TvRR0QPQgo/+bYrytLv36tu4LAjRWfrlpGjTnMsmBOxR5awprKV7kzcQ
+         fw09kpWCC3K2+JboXr3Y0n6h+T3gw8aXYVJFoVJIoxOmtNy7HQiauP4KlGpP3SfLq5h5
+         qhnnPqHFxnHCVsBF9IRJ6ccHVhplnjScY5+ZLiXxGBAWH8xCo3c8SNTU7K67xOb0guQa
+         q+2A==
+X-Gm-Message-State: AC+VfDxueM3EYkWjA/UScEurV79gFQ2ZmPBTLxgR5TCRQXW+n1Aqf8fC
+	TX6mP1Oml7qLfu0QxO1zlqs=
+X-Google-Smtp-Source: ACHHUZ57HJVGSogcsFD2ZVInOh2ZubtsJ6ZbdjVqg3+mARP5OCFEDBcKd5Kk31nhcGxPsQbLibbQ3Q==
+X-Received: by 2002:a05:6214:4015:b0:616:859a:471a with SMTP id kd21-20020a056214401500b00616859a471amr4814126qvb.17.1685283638991;
         Sun, 28 May 2023 07:20:38 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:5:38f3:5400:4ff:fe74:5668])
-        by smtp.gmail.com with ESMTPSA id l11-20020a0cc20b000000b006238dc71f5csm10qvh.144.2023.05.28.07.20.37
+        by smtp.gmail.com with ESMTPSA id l11-20020a0cc20b000000b006238dc71f5csm10qvh.144.2023.05.28.07.20.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 May 2023 07:20:37 -0700 (PDT)
+        Sun, 28 May 2023 07:20:38 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -71,9 +71,9 @@ To: ast@kernel.org,
 	quentin@isovalent.com
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 4/8] bpf: Always expose the probed address
-Date: Sun, 28 May 2023 14:20:23 +0000
-Message-Id: <20230528142027.5585-5-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 5/8] bpf: Support ->show_fdinfo for perf_event
+Date: Sun, 28 May 2023 14:20:24 +0000
+Message-Id: <20230528142027.5585-6-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230528142027.5585-1-laoar.shao@gmail.com>
 References: <20230528142027.5585-1-laoar.shao@gmail.com>
@@ -91,28 +91,69 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Since different symbols can share the same name, it is insufficient to only
-expose the symbol name. It is essential to also expose the symbol address
-so that users can accurately identify which one is being probed.
+By adding support for ->show_fdinfo to the perf_event link, users will be
+able to examine it through the task's fdinfo. The expected result is as
+follows:
+
+$ cat /proc/9637/fdinfo/11
+pos:    0
+flags:  02000000
+mnt_id: 15
+ino:    2094
+link_type:      perf
+link_id:        1
+prog_tag:       a04f5eef06a7f555
+prog_id:        5
+func:   kernel_clone
+addr:   ffffffff8d0bc310
+offset: 0
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/trace/trace_kprobe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/syscall.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 59cda19..a7a905a 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1547,7 +1547,7 @@ int bpf_get_kprobe_info(const struct perf_event *event, u32 *fd_type,
- 	if (tk->symbol) {
- 		*symbol = tk->symbol;
- 		*probe_offset = tk->rp.kp.offset;
--		*probe_addr = 0;
-+		*probe_addr = (unsigned long)tk->rp.kp.addr;
- 	} else {
- 		*symbol = NULL;
- 		*probe_offset = 0;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 92a57ef..e6b5127 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3297,9 +3297,36 @@ static void bpf_perf_link_dealloc(struct bpf_link *link)
+ 	kfree(perf_link);
+ }
+ 
++static void bpf_perf_link_show_fdinfo(const struct bpf_link *link,
++				      struct seq_file *seq)
++{
++	struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
++	const struct perf_event *event;
++	u64 probe_offset, probe_addr;
++	u32 prog_id, fd_type;
++	const char *buf;
++	int err;
++
++	event = perf_get_event(perf_link->perf_file);
++	if (IS_ERR(event))
++		return;
++
++	err = bpf_get_perf_event_info(event, &prog_id, &fd_type,
++				      &buf, &probe_offset,
++				      &probe_addr);
++	if (err)
++		return;
++
++	if (buf)
++		seq_printf(seq, "func:\t%s\n", buf);
++	seq_printf(seq, "addr:\t%llx\n", probe_addr);
++	seq_printf(seq, "offset:\t%llu\n", probe_offset);
++}
++
+ static const struct bpf_link_ops bpf_perf_link_lops = {
+ 	.release = bpf_perf_link_release,
+ 	.dealloc = bpf_perf_link_dealloc,
++	.show_fdinfo = bpf_perf_link_show_fdinfo,
+ };
+ 
+ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
 -- 
 1.8.3.1
 
