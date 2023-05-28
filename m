@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-1366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB7F713A0D
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 16:21:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6CA5713A0E
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 16:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18C4F1C20975
-	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 14:21:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39E0C280E6C
+	for <lists+bpf@lfdr.de>; Sun, 28 May 2023 14:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B0C5693;
-	Sun, 28 May 2023 14:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4816A5698;
+	Sun, 28 May 2023 14:20:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567F6566E
-	for <bpf@vger.kernel.org>; Sun, 28 May 2023 14:20:43 +0000 (UTC)
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB51C7
-	for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:41 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6260a9ef126so10476476d6.2
-        for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 250F7566E
+	for <bpf@vger.kernel.org>; Sun, 28 May 2023 14:20:44 +0000 (UTC)
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB660B8
+	for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:42 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-75b1219506fso151517885a.1
+        for <bpf@vger.kernel.org>; Sun, 28 May 2023 07:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685283641; x=1687875641;
+        d=gmail.com; s=20221208; t=1685283642; x=1687875642;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0BZgF3NwqqEP5WsJnEoKQ69scbxD7d0B2xVAyMAX9Is=;
-        b=pZQBuvwNcT9NGwDibmjUsvSU6I5Q97XBJ8BrLAV+z3dYjbMQJksiVDHGKzHs2Rn2pu
-         uUGNMWuM9SEnrz+hsqNF/8z643Ds0p5IdjVxqHOTPIcmJp6LQ7g8eqm2LQeatnEOx27s
-         MMZzj6KvhAk6GJlRYqjAS9uWbEHyWHqcbDx7iHl84RSp4wluZxqkixjRVpS8VX3kepr6
-         BF5anr21B8RHBo8TgjgzAbbi4afQ+BEqrI6tVj80la/b+KEQv7UiRbBZGCZXMIUAaXfz
-         nKqVZCuiADE84GHHqS5xopGWdsTzr+SMs1Q+S5SvP2YPjaOoZG5tOGJW2K/co0102qoy
-         Z39A==
+        bh=s+1lG7fYk1KAlA2kK4vySeVdKUS0VEfV5ykRXmC3a24=;
+        b=HUpk4I9OrwvuC8v9ZP4Rv82epTrtAr30LRiDyxDIRW300E3ox/idingYq/v+vp0Ueo
+         2ZCxm+SV2pcstVALLEIqCz9nioW4qrAoCQtzfacdOMO/WpiXH1IALKUjL2FRrehvELIQ
+         g9f+70M1g95xGRXTn3RRHgT8sBRx2WHR+CWmqY9e4H432wZXK5mvUBnhIprx6sas4cv4
+         txWj7Fxrg5weWk5telO6T/oIsIrsnjna7ZParcYTUiOOLu3Clmn1ExxMWstdnwXB6Nkg
+         6xzTSpd0XJwWo7XkDDO0iPS+aTeiuq3pmtn4oUuSUqN1nZL1KD/TNW3CV3eF3O/woGXx
+         qHdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685283641; x=1687875641;
+        d=1e100.net; s=20221208; t=1685283642; x=1687875642;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0BZgF3NwqqEP5WsJnEoKQ69scbxD7d0B2xVAyMAX9Is=;
-        b=LtO3Sn4p9FrY4ItPt9nsclSpyL3b+Ti9lPBDXMiVKtsd0IEbWQs8A+uGiCpQsMEGU8
-         h9vFyVnotVzjuO0QpcITt+tAYUhvqxcAVQD30sLV9AHgeqb/t9i/j7J0bSZo/4Pq8RLI
-         gb85uJ9osV7icZnAzvzU5HRL21I9S+Eeu8jtKoqZRAGH7xDWG4emEfuL9cXW2jPj5WKG
-         vfpYWiNz3RLKdKZEXM0aW3MVYzDiQSAmoJ+XXq09sGdUHBfmlA36JPS4aDqTiBiML8h1
-         R10fQYMDpHSKu8izk38dwm/2RTsuElcsH8FfDrs7f5e+MVd/t5LHMwsE62GeQHJDJMvh
-         +Zbg==
-X-Gm-Message-State: AC+VfDz2SrtN1fP8NN5B4q38IpfrSSaYXsARFq1J4r8OmfcnmBYygtGS
-	LXYDhC74WB/dIwJ7HLpIfEfPfjxervllX6Y9uoI=
-X-Google-Smtp-Source: ACHHUZ6vXe5ADKAAPgI0St1FUXlr36q3Sg/gipHwN4cs9eykV4DOgz+ondpbWcMsOjyr3ZYNm1Fmxw==
-X-Received: by 2002:a05:6214:1ccd:b0:623:9126:8d7b with SMTP id g13-20020a0562141ccd00b0062391268d7bmr6316616qvd.28.1685283640818;
-        Sun, 28 May 2023 07:20:40 -0700 (PDT)
+        bh=s+1lG7fYk1KAlA2kK4vySeVdKUS0VEfV5ykRXmC3a24=;
+        b=IA9ILlirqpMK28cG3A7p+2WNgT6Ro9Hivb774FRqBetHPyYgC5qjhKRZXk7kO1o0Gz
+         RGdzv3ulxa7fy0Qq++UqUUbo2jdv+Pki9HU24jx4Yighd/wRtc7bvA1ZVueUpk/d13lB
+         1dwX+/HyCMfLitlXqrT2xbzo95eliLUUl90rOiPSyl6wGDx6ebziymcVNc6XAOfaWjZe
+         rhKNhcp+L1E9RYMo/uMEVmsNXHXOZG4J9GyJ5yq97u1kHxeGtlBUEw+KO0N0fzNLMypZ
+         KTmK4+ZndsXHVHZVDM6ENgDAzDyTMHGDOFE3nHKidbsfe4GLlnsffkrdbyoi5W91F540
+         EKpQ==
+X-Gm-Message-State: AC+VfDwXwDSH9BkMJObZWgdFO95dB+CMcIRTojBFWqnnfjdt1eTaIiOI
+	S+cJIyJW84NfBMwQkjPjBOw=
+X-Google-Smtp-Source: ACHHUZ6LH3V0exew9UYl+eJEX93578UmtTeeTsy+3Yo732HahjTXiDl7zBelrH8NK197ygj1oKE37g==
+X-Received: by 2002:ad4:5be9:0:b0:625:d55:eaab with SMTP id k9-20020ad45be9000000b006250d55eaabmr6991697qvc.9.1685283641695;
+        Sun, 28 May 2023 07:20:41 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:5:38f3:5400:4ff:fe74:5668])
-        by smtp.gmail.com with ESMTPSA id l11-20020a0cc20b000000b006238dc71f5csm10qvh.144.2023.05.28.07.20.39
+        by smtp.gmail.com with ESMTPSA id l11-20020a0cc20b000000b006238dc71f5csm10qvh.144.2023.05.28.07.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 May 2023 07:20:40 -0700 (PDT)
+        Sun, 28 May 2023 07:20:41 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -71,9 +71,9 @@ To: ast@kernel.org,
 	quentin@isovalent.com
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 7/8] bpf: Support ->fill_link_info for perf_event
-Date: Sun, 28 May 2023 14:20:26 +0000
-Message-Id: <20230528142027.5585-8-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 8/8] bpftool: Show probed function in perf_event link info
+Date: Sun, 28 May 2023 14:20:27 +0000
+Message-Id: <20230528142027.5585-9-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230528142027.5585-1-laoar.shao@gmail.com>
 References: <20230528142027.5585-1-laoar.shao@gmail.com>
@@ -91,113 +91,81 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-By adding support for ->fill_link_info to the perf_event link, users will
-be able to inspect it using `bpftool link show`. While users can currently
-access this information via `bpftool perf show`, consolidating the link
-information for all link types in one place would be more convenient.
+Show the exposed perf_event link info in bpftool. The result as follows,
+
+$ bpftool link show
+1: perf_event  prog 5
+        func kernel_clone  addr ffffffffb40bc310  offset 0
+        bpf_cookie 0
+        pids trace(9726)
+$ bpftool link show -j
+[{"id":1,"type":"perf_event","prog_id":5,"func":"kernel_clone","addr":18446744072435254032,"offset":0,"bpf_cookie":0,"pids":[{"pid":9726,"comm":"trace"}]}]
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/uapi/linux/bpf.h       |  6 ++++++
- kernel/bpf/syscall.c           | 46 ++++++++++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  6 ++++++
- 3 files changed, 58 insertions(+)
+ tools/bpf/bpftool/link.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 6be9b1d..1f2be1d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -6438,6 +6438,12 @@ struct bpf_link_info {
- 			__aligned_u64 addrs;
- 			__u32 count;
- 		} kprobe_multi;
-+		struct {
-+			__aligned_u64 name;
-+			__aligned_u64 addr;
-+			__u32 name_len;
-+			__u32 offset;
-+		} perf_event;
- 	};
- } __attribute__((aligned(8)));
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 76f1bb2..8493a05 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -232,6 +232,12 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
+ 			jsonw_lluint(json_wtr, addrs[i]);
+ 		jsonw_end_array(json_wtr);
+ 		break;
++	case BPF_LINK_TYPE_PERF_EVENT:
++		jsonw_string_field(json_wtr, "func",
++				   u64_to_ptr(info->perf_event.name));
++		jsonw_uint_field(json_wtr, "addr", info->perf_event.addr);
++		jsonw_uint_field(json_wtr, "offset", info->perf_event.offset);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -368,7 +374,7 @@ void netfilter_dump_plain(const struct bpf_link_info *info)
+ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ {
+ 	struct bpf_prog_info prog_info;
+-	const char *prog_type_str;
++	const char *prog_type_str, *buf;
+ 	int err;
  
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 33a72ec..b12707e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3329,10 +3329,56 @@ static void bpf_perf_link_show_fdinfo(const struct bpf_link *link,
- 	seq_printf(seq, "offset:\t%llu\n", probe_offset);
- }
+ 	show_link_header_plain(info);
+@@ -428,6 +434,12 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ 			printf(" %0*llx", 16, addrs[i]);
+ 		}
+ 		break;
++	case BPF_LINK_TYPE_PERF_EVENT:
++		buf = (const char *)u64_to_ptr(info->perf_event.name);
++		if (buf[0] != '\0' || info->perf_event.addr)
++			printf("\n\tfunc %s  addr %llx  offset %d  ", buf,
++			       info->perf_event.addr, info->perf_event.offset);
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -454,6 +466,7 @@ static int do_show_link(int fd)
+ 	int count;
+ 	int err;
  
-+static int bpf_perf_link_fill_link_info(const struct bpf_link *link,
-+					struct bpf_link_info *info)
-+{
-+	struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
-+	char __user *ubuf = u64_to_user_ptr(info->perf_event.name);
-+	u32 ulen = info->perf_event.name_len;
-+	const struct perf_event *event;
-+	u64 probe_offset, probe_addr;
-+	u32 prog_id, fd_type;
-+	const char *buf;
-+	size_t len;
-+	int err;
-+
-+	if (!ulen ^ !ubuf)
-+		return -EINVAL;
-+	if (!ubuf)
-+		return 0;
-+
-+	event = perf_get_event(perf_link->perf_file);
-+	if (IS_ERR(event))
-+		return PTR_ERR(event);
-+
-+	err = bpf_get_perf_event_info(event, &prog_id, &fd_type,
-+				      &buf, &probe_offset,
-+				      &probe_addr);
-+	if (err)
-+		return err;
-+
-+	len = strlen(buf);
-+	info->perf_event.name_len = len + 1;
-+	if (buf) {
-+		err = bpf_copy_to_user(ubuf, buf, ulen, len);
-+		if (err)
-+			return err;
-+	} else {
-+		char zero = '\0';
-+
-+		if (put_user(zero, ubuf))
-+			return -EFAULT;
++	buf[0] = '\0';
+ 	memset(&info, 0, sizeof(info));
+ again:
+ 	err = bpf_link_get_info_by_fd(fd, &info, &len);
+@@ -489,6 +502,12 @@ static int do_show_link(int fd)
+ 			goto again;
+ 		}
+ 	}
++	if (info.type == BPF_LINK_TYPE_PERF_EVENT &&
++	    !info.perf_event.name) {
++		info.perf_event.name = (unsigned long)&buf;
++		info.perf_event.name_len = sizeof(buf);
++		goto again;
 +	}
-+	info->perf_event.addr = probe_addr;
-+	info->perf_event.offset = probe_offset;
-+	return 0;
-+}
-+
- static const struct bpf_link_ops bpf_perf_link_lops = {
- 	.release = bpf_perf_link_release,
- 	.dealloc = bpf_perf_link_dealloc,
- 	.show_fdinfo = bpf_perf_link_show_fdinfo,
-+	.fill_link_info = bpf_perf_link_fill_link_info,
- };
  
- static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 6be9b1d..1f2be1d 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -6438,6 +6438,12 @@ struct bpf_link_info {
- 			__aligned_u64 addrs;
- 			__u32 count;
- 		} kprobe_multi;
-+		struct {
-+			__aligned_u64 name;
-+			__aligned_u64 addr;
-+			__u32 name_len;
-+			__u32 offset;
-+		} perf_event;
- 	};
- } __attribute__((aligned(8)));
- 
+ 	if (json_output)
+ 		show_link_close_json(fd, &info);
 -- 
 1.8.3.1
 
