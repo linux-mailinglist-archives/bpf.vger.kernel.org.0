@@ -1,308 +1,478 @@
-Return-Path: <bpf+bounces-1369-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1370-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7219A714170
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 02:59:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D25C271423E
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 05:16:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEDBC280DCD
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 00:59:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A7771C20978
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 03:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCEE627;
-	Mon, 29 May 2023 00:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B99647;
+	Mon, 29 May 2023 03:16:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4D37C
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 00:59:40 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3467ABB
-	for <bpf@vger.kernel.org>; Sun, 28 May 2023 17:59:38 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2afb2874e83so28920391fa.0
-        for <bpf@vger.kernel.org>; Sun, 28 May 2023 17:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685321976; x=1687913976;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aW5PIz1OQIsqy+vxPfknWC3w+3Ulq7yGZfrBoWe2HV8=;
-        b=m1/B1APfYcN1gQXvfov91AVPKhT5SK7CJ/sPh6/TBm+akFaqdbHd7FPvBwCZ1xC6V/
-         cyVa3xhm32vBxof7NdISvETxRgXpAm1dZRxNW5ChKD0MI9F8d5Pcnxl/GEOC0lC7JFu7
-         lT8RBdWEMjipGivg0sWkSfVyE3daoUrLLtWd5UU2s8WXBGx7glX5EPhH0M0tK88y9rOB
-         e5WUmbQ9Kqd8/lRDushA87/nHwIEZReCO1RTntJ/7Y1mEWxRGInkld9SshVYwnBJYtth
-         YmWJYu2FqZLHkTNnTaudoXFVP2yC7JixE8RhW8fpRqLFn7u3Jby5ohcxQ8Q+CQLSRYAV
-         q/ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685321976; x=1687913976;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aW5PIz1OQIsqy+vxPfknWC3w+3Ulq7yGZfrBoWe2HV8=;
-        b=Je6ncSVR/rlvlGa3Az6T+1AeZifcK2hs32ids3oO9l/Z+uMG/hppaVHnH1YAziVcAv
-         G7hXcBAl/UyvzjM3c91TjGwCaVWRdmN+0svm1LtNkakLmkZuaimpNmKbDuBRNJnQkhl5
-         ou83dpNvUn+eeKjm7FVCEbW1lF5w7gyfS/Au/HWE0ickPDyacUrnShfz/38ZEjRHuo5Z
-         0iHCpyp1EaKcybmSlpDr/WF96Gj4Txfa8u6OGIUlSrfXKOjbx6VkYDsExoeYZr6VRboA
-         LwqofOC/mHSNeZ01CxYdMLxeDXRWHeoToBJfgUhP3k0vS+UPhpneWfYR5yjst+pN1qd2
-         aNrg==
-X-Gm-Message-State: AC+VfDygu3fS81wNBXw8cJ18HTKbFYM4Cq9mVu+0rg95JcCq2Eim2Pjv
-	qjZ0isN7WkXz8N4ZLIlC/pg=
-X-Google-Smtp-Source: ACHHUZ5hrzW0QkKmpGDZQMIVtgSrZI8ZYU0cY1zjfNz0uvTiylkUkWio5is9TyWYUH2snPzEdHLRPA==
-X-Received: by 2002:a2e:9115:0:b0:2a8:b27f:b721 with SMTP id m21-20020a2e9115000000b002a8b27fb721mr3225659ljg.29.1685321975994;
-        Sun, 28 May 2023 17:59:35 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id z4-20020a05651c022400b002aa3cff0529sm2213867ljn.74.2023.05.28.17.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 May 2023 17:59:35 -0700 (PDT)
-Message-ID: <7c3381a3dbff95232e8cdf796990e9e43cc489fd.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yhs@meta.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yhs@fb.com
-Date: Mon, 29 May 2023 03:59:33 +0300
-In-Reply-To: <9fe005ca-ee56-f852-33fe-24381da8bc04@meta.com>
-References: <20230526184126.3104040-1-eddyz87@gmail.com>
-	 <20230526184126.3104040-2-eddyz87@gmail.com>
-	 <ecc663f1-d8c1-0ccd-a226-00888aeee83b@meta.com>
-	 <0900f41a57683ce0f55ee46435bf393f36ea24cd.camel@gmail.com>
-	 <eef495be92934cab0b6ee60a71a22a9b755d1777.camel@gmail.com>
-	 <9fe005ca-ee56-f852-33fe-24381da8bc04@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD4262D
+	for <bpf@vger.kernel.org>; Mon, 29 May 2023 03:16:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37735C433EF;
+	Mon, 29 May 2023 03:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685330202;
+	bh=SuwHK+3uvnhmr7CGQ1Uh5iGkHRJq+JULE8llPZ/Laq8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PKz0TDcEzwaZcSqsXJsYOIBjL8QpVfPVFouOafv2xxKU6fm76PRcsY6l2kiP8DBCd
+	 48htF2muGltMOdpYpANp+Y+EyPNOJtrs8bCNEcNQ+gGdeEwk86aAjnhnDdHN/HEZzn
+	 2RePuI7cPBCjuUTz9qrhIy+ACPkMlrpskbJAdJSe3xwGHJG98rZGMscP4n1bjH2aB6
+	 3XGyuEkk3LFFt3xZ/mFo8AB/Mff6tZUhCaeLWymU3Tbl092VUUFncycFpMFBkGn3TX
+	 StcMa0/9paxbpDcI2APSaX8jgVvQqtPDFHOtj5+KwK2h5b1OPJtdrOUbPgeQ+ndysB
+	 HlwsUL+K4W2Xg==
+Date: Mon, 29 May 2023 12:16:38 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Steven
+ Rostedt <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, Will
+ Deacon <will@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Re: [PATCH v13 03/12] tracing/probes: Add fprobe events for tracing
+ function entry and exit.
+Message-Id: <20230529121638.74b94a2d85eb384d9b02c719@kernel.org>
+In-Reply-To: <CABRcYm+esb8J2O1v6=C+h+HSa5NxraPUgo63w7-iZj0CXbpusg@mail.gmail.com>
+References: <168507466597.913472.10572827237387849017.stgit@mhiramat.roam.corp.google.com>
+	<168507469754.913472.6112857614708350210.stgit@mhiramat.roam.corp.google.com>
+	<CABRcYm+esb8J2O1v6=C+h+HSa5NxraPUgo63w7-iZj0CXbpusg@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2023-05-27 at 16:43 -0700, Yonghong Song wrote:
->=20
-> On 5/27/23 5:29 AM, Eduard Zingerman wrote:
-> > On Sat, 2023-05-27 at 15:21 +0300, Eduard Zingerman wrote:
-> > [...]
-> > > > > @@ -15151,6 +15153,33 @@ static bool regsafe(struct bpf_verifier_=
-env *env, struct bpf_reg_state *rold,
-> > > > >   =20
-> > > > >    	switch (base_type(rold->type)) {
-> > > > >    	case SCALAR_VALUE:
-> > > > > +		/* Why check_ids() for precise registers?
-> > > > > +		 *
-> > > > > +		 * Consider the following BPF code:
-> > > > > +		 *   1: r6 =3D ... unbound scalar, ID=3Da ...
-> > > > > +		 *   2: r7 =3D ... unbound scalar, ID=3Db ...
-> > > > > +		 *   3: if (r6 > r7) goto +1
-> > > > > +		 *   4: r6 =3D r7
-> > > > > +		 *   5: if (r6 > X) goto ...
-> > > > > +		 *   6: ... memory operation using r7 ...
-> > > > > +		 *
-> > > > > +		 * First verification path is [1-6]:
-> > > > > +		 * - at (4) same bpf_reg_state::id (b) would be assigned to r6=
- and r7;
-> > > > > +		 * - at (5) r6 would be marked <=3D X, find_equal_scalars() wo=
-uld also mark
-> > > > > +		 *   r7 <=3D X, because r6 and r7 share same id.
-> > > > > +		 *
-> > > > > +		 * Next verification path would start from (5), because of the=
- jump at (3).
-> > > > > +		 * The only state difference between first and second visits o=
-f (5) is
-> > > > > +		 * bpf_reg_state::id assignments for r6 and r7: (b, b) vs (a, =
-b).
-> > > > > +		 * Thus, use check_ids() to distinguish these states.
-> > > > > +		 *
-> > > > > +		 * The `rold->precise` check is a performance optimization. If=
- `rold->id`
-> > > > > +		 * was ever used to access memory / predict jump, the `rold` o=
-r any
-> > > > > +		 * register used in `rold =3D r?` / `r? =3D rold` operations w=
-ould be marked
-> > > > > +		 * as precise, otherwise it's ID is not really interesting.
-> > > > > +		 */
-> > > > > +		if (rold->precise && rold->id && !check_ids(rold->id, rcur->id=
-, idmap))
-> > > >=20
-> > > > Do we need rold->id checking in the above? check_ids should have
-> > > > rold->id =3D 0 properly. Or this is just an optimization?
-> > >=20
-> > > You are correct, the check_ids() handles this case and it should be i=
-nlined,
-> > > so there is no need to check rold->id in this 'if' branch.
-> > >  =20
-> > > > regs_exact() has check_ids as well. Not sure whether it makes sense=
- to
-> > > > create a function regs_exact_scalar() just for scalar and include t=
-he
-> > > > above code. Otherwise, it is strange we do check_ids in different
-> > > > places.
-> > >=20
-> > > I'm not sure how to best re-organize code here, regs_exact() is a nic=
-e
-> > > compartmentalized abstraction. It is possible to merge my additional
-> > > check_ids() call with the main 'precise' processing part as below:
-> > >=20
-> > > @@ -15152,21 +15154,22 @@ static bool regsafe(struct bpf_verifier_env=
- *env, struct bpf_reg_state *rold,
-> > >          switch (base_type(rold->type)) {
-> > >          case SCALAR_VALUE:
-> > >                  if (regs_exact(rold, rcur, idmap))
-> > >                          return true;
-> > >                  if (env->explore_alu_limits)
-> > >                          return false;
-> > >                  if (!rold->precise)
-> > >                          return true;
-> > >                  /* new val must satisfy old val knowledge */
-> > >                  return range_within(rold, rcur) &&
-> > > -                      tnum_in(rold->var_off, rcur->var_off);
-> > > +                      tnum_in(rold->var_off, rcur->var_off) &&
-> > > +                      check_ids(rold->id, rcur->id, idmap);
-> > >=20
-> > > I'd say that extending /* new val must satisfy ... */ comment to
-> > > explain why check_ids() is needed should be sufficient, but I'm open
-> > > for suggestions.
-> >=20
-> > On the other hand, I wanted to have a separate 'if' branch like:
-> >=20
-> >    if (rold->precise && !check_ids(rold->id, rcur->id, idmap))
-> >   =20
-> > Specifically to explain that 'rold->precise' part is an optimization.
->=20
-> Okay, I think you could keep your original implementation. I do think
-> checking rold->ref_obj_id in regs_exact is not needed for
-> SCALAR_VALUE but it may not be that important. The check_ids
-> checking in reg_exact (for SCALAR_VALUE) can also be skipped
-> if !rold->precise as an optimization. That is why I mention
-> to 'inline' regs_exact and re-arrange the codes. You can still
-> mention that optimization w.r.t. rold->precise. Overall if the code
-> is more complex, I am okay with your current change.
+On Fri, 26 May 2023 21:38:44 +0200
+Florent Revest <revest@chromium.org> wrote:
 
-I thought a bit more about this and came up with example that doesn't
-work with 'rold->precise' case:
+> On Fri, May 26, 2023 at 6:18 AM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > [...] Since
+> > CONFIG_KPROBES_ON_FTRACE requires the CONFIG_DYNAMIC_FTRACE_WITH_REGS,
+> > it is not available if the architecture only supports
+> > CONFIG_DYNAMIC_FTRACE_WITH_ARGS. And that means kprobe events can not
+> > probe function entry/exit effectively on such architecture.
+> > But this can be solved if the dynamic events supports fprobe events.
+> 
+> Currently CONFIG_FPROBE also requires CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> so iiuc this will only be true when we'll have migrated fprobe to use
+> ftrace_regs instead of pt_regs right ?
 
-        /* Bump allocated stack */
- 1:     r1 =3D 0;
-        *(u64*)(r10 - 8) =3D r1;
-        /* r9 =3D pointer to stack */
- 2:     r9 =3D r10;
- 3:     r9 +=3D -8;
-        /* r8 =3D ktime_get_ns() */
- 4:     call %[bpf_ktime_get_ns];
- 5:     r8 =3D r0;
-        /* r7 =3D ktime_get_ns() */
- 6:     call %[bpf_ktime_get_ns];
- 7:     r7 =3D r0;
-        /* r6 =3D ktime_get_ns() */
- 8:     call %[bpf_ktime_get_ns];
- 9:     r6 =3D r0;
-        /* scratch .id from r0 */
- 10:    r0 =3D 0;
-        /* if r6 > r7 is an unpredictable jump */
- 11:    if r6 > r7 goto l1;
-        /* tie r6 and r7 .id */
- 12:    r6 =3D r7;
-    l0:
-        /* if r7 > 4 exit(0) */
- 13:    if r7 > 4 goto l2;
-        /* access memory at r9[r6] */
- 14:    r9 +=3D r6;
- 15:    r0 =3D *(u8*)(r9 + 0);
-    l2:
- 16:    r0 =3D 0;
- 17:    exit;
-    l1:
-        /* tie r6 and r8 .id */
- 18:    r6 =3D r8;
- 19:    goto l0;
-   =20
-This example is marked as safe, however it isn't.
-What happens:
-(a) path 1-17 is verified first, it is marked safe
-  - when 14 is processed mark_chain_precision() is called with regno set to=
- r6;
-  - moving backwards mark_chain_precision() does *not* mark r7 as precise a=
-t 13
-    because mark_chain_precision() does not track register ids;
-  - thus, for checkpiont at 13 only r6 is marked as precise.
-(b) path 1-11, 18-19, 13-17 is verified next:
-  - when insn 13 is processed the saved checkpiont is examined,
-    the only precise register is r6, so check_ids() is called only
-    for r6 and it returns true =3D> checkpiont is considered safe.
+Sorry for confusion, yes, that's right. Currently does, but I will remove
+that.
 
-However, in reality register ID assignments differ between (a) and (b) at i=
-nsn 13:
-(a) r6{id=3DA}, r7{id=3DA}, r8{id=3DB}
-(b) r6{id=3DB}, r7{id=3DA}, r8{id=3DB}
-   =20
-So, simplest and safest change is as follows:
+> 
+> We discussed having fprobe use ftrace_regs instead of pt_regs in the
+> past and I even had a proof of concept branch at one point but this
+> patch seems to make this transition quite a bit harder. Have you tried
+> to make fprobe work on ftrace_regs on top of this patch ?
 
-  @@ -15152,4 +15154,6 @@ static bool regsafe(struct bpf_verifier_env *env,=
- struct bpf_reg_state *rold,
-          switch (base_type(rold->type)) {
-          case SCALAR_VALUE:
-  +               if (!check_ids(rold->id, rcur->id, idmap))
-  +                       return false;
-                  if (regs_exact(rold, rcur, idmap))
-                          return true;
+No, not yet, but taht should not be so hard. Let me try.
 
-Here regsafe() does not care about rold->precise marks,
-thus differences between (a) and (b) would be detected by check_ids,
-as all three registers r{6,7,8} would be fed to it.
+Thank you!
 
-However, it is also costly (note the filter by 40% processed states increas=
-e or more):
+> 
+> > diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> > new file mode 100644
+> > index 000000000000..48dbbc72b7dd
+> > --- /dev/null
+> > +++ b/kernel/trace/trace_fprobe.c
+> > @@ -0,0 +1,1053 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Fprobe-based tracing events
+> > + * Copyright (C) 2022 Google LLC.
+> > + */
+> > +#define pr_fmt(fmt)    "trace_fprobe: " fmt
+> > +
+> > +#include <linux/fprobe.h>
+> > +#include <linux/module.h>
+> > +#include <linux/rculist.h>
+> > +#include <linux/security.h>
+> > +#include <linux/uaccess.h>
+> > +
+> > +#include "trace_dynevent.h"
+> > +#include "trace_probe.h"
+> > +#include "trace_probe_kernel.h"
+> > +#include "trace_probe_tmpl.h"
+> > +
+> > +#define FPROBE_EVENT_SYSTEM "fprobes"
+> > +#define RETHOOK_MAXACTIVE_MAX 4096
+> > +
+> > +static int trace_fprobe_create(const char *raw_command);
+> > +static int trace_fprobe_show(struct seq_file *m, struct dyn_event *ev);
+> > +static int trace_fprobe_release(struct dyn_event *ev);
+> > +static bool trace_fprobe_is_busy(struct dyn_event *ev);
+> > +static bool trace_fprobe_match(const char *system, const char *event,
+> > +                       int argc, const char **argv, struct dyn_event *ev);
+> > +
+> > +static struct dyn_event_operations trace_fprobe_ops = {
+> > +       .create = trace_fprobe_create,
+> > +       .show = trace_fprobe_show,
+> > +       .is_busy = trace_fprobe_is_busy,
+> > +       .free = trace_fprobe_release,
+> > +       .match = trace_fprobe_match,
+> > +};
+> > +
+> > +/*
+> > + * Fprobe event core functions
+> > + */
+> > +struct trace_fprobe {
+> > +       struct dyn_event        devent;
+> > +       struct fprobe           fp;
+> > +       const char              *symbol;
+> > +       struct trace_probe      tp;
+> > +};
+> > +
+> > +static bool is_trace_fprobe(struct dyn_event *ev)
+> > +{
+> > +       return ev->ops == &trace_fprobe_ops;
+> > +}
+> > +
+> > +static struct trace_fprobe *to_trace_fprobe(struct dyn_event *ev)
+> > +{
+> > +       return container_of(ev, struct trace_fprobe, devent);
+> > +}
+> > +
+> > +/**
+> > + * for_each_trace_fprobe - iterate over the trace_fprobe list
+> > + * @pos:       the struct trace_fprobe * for each entry
+> > + * @dpos:      the struct dyn_event * to use as a loop cursor
+> > + */
+> > +#define for_each_trace_fprobe(pos, dpos)       \
+> > +       for_each_dyn_event(dpos)                \
+> > +               if (is_trace_fprobe(dpos) && (pos = to_trace_fprobe(dpos)))
+> > +
+> > +static bool trace_fprobe_is_return(struct trace_fprobe *tf)
+> > +{
+> > +       return tf->fp.exit_handler != NULL;
+> > +}
+> > +
+> > +static const char *trace_fprobe_symbol(struct trace_fprobe *tf)
+> > +{
+> > +       return tf->symbol ? tf->symbol : "unknown";
+> > +}
+> > +
+> > +static bool trace_fprobe_is_busy(struct dyn_event *ev)
+> > +{
+> > +       struct trace_fprobe *tf = to_trace_fprobe(ev);
+> > +
+> > +       return trace_probe_is_enabled(&tf->tp);
+> > +}
+> > +
+> > +static bool trace_fprobe_match_command_head(struct trace_fprobe *tf,
+> > +                                           int argc, const char **argv)
+> > +{
+> > +       char buf[MAX_ARGSTR_LEN + 1];
+> > +
+> > +       if (!argc)
+> > +               return true;
+> > +
+> > +       snprintf(buf, sizeof(buf), "%s", trace_fprobe_symbol(tf));
+> > +       if (strcmp(buf, argv[0]))
+> > +               return false;
+> > +       argc--; argv++;
+> > +
+> > +       return trace_probe_match_command_args(&tf->tp, argc, argv);
+> > +}
+> > +
+> > +static bool trace_fprobe_match(const char *system, const char *event,
+> > +                       int argc, const char **argv, struct dyn_event *ev)
+> > +{
+> > +       struct trace_fprobe *tf = to_trace_fprobe(ev);
+> > +
+> > +       if (event[0] != '\0' && strcmp(trace_probe_name(&tf->tp), event))
+> > +               return false;
+> > +
+> > +       if (system && strcmp(trace_probe_group_name(&tf->tp), system))
+> > +               return false;
+> > +
+> > +       return trace_fprobe_match_command_head(tf, argc, argv);
+> > +}
+> > +
+> > +static bool trace_fprobe_is_registered(struct trace_fprobe *tf)
+> > +{
+> > +       return fprobe_is_registered(&tf->fp);
+> > +}
+> > +
+> > +/*
+> > + * Note that we don't verify the fetch_insn code, since it does not come
+> > + * from user space.
+> > + */
+> > +static int
+> > +process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
+> > +                  void *base)
+> > +{
+> > +       struct pt_regs *regs = rec;
+> 
+> I gave it a try this week and it was mostly a matter of replacing
+> pt_regs with ftrace_regs in this file. Like here for example. Not too
+> bad so far.
+> 
+> > +       unsigned long val;
+> > +       int ret;
+> > +
+> > +retry:
+> > +       /* 1st stage: get value from context */
+> > +       switch (code->op) {
+> > +       case FETCH_OP_STACK:
+> > +               val = regs_get_kernel_stack_nth(regs, code->param);
+> 
+> This does not have a ftrace_regs equivalent at the moment. I suppose
+> we could introduce one without too much effort so that's probably ok.
+> 
+> > +               break;
+> > +       case FETCH_OP_STACKP:
+> > +               val = kernel_stack_pointer(regs);
+> > +               break;
+> > +       case FETCH_OP_RETVAL:
+> > +               val = regs_return_value(regs);
+> > +               break;
+> > +#ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
+> > +       case FETCH_OP_ARG:
+> > +               val = regs_get_kernel_argument(regs, code->param);
+> > +               break;
+> > +#endif
+> > +       case FETCH_NOP_SYMBOL:  /* Ignore a place holder */
+> > +               code++;
+> > +               goto retry;
+> > +       default:
+> > +               ret = process_common_fetch_insn(code, &val);
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +       }
+> > +       code++;
+> > +
+> > +       return process_fetch_insn_bottom(code, val, dest, base);
+> > +}
+> > +NOKPROBE_SYMBOL(process_fetch_insn)
+> > +
+> > +/* function entry handler */
+> > +static nokprobe_inline void
+> > +__fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +                   struct pt_regs *regs,
+> > +                   struct trace_event_file *trace_file)
+> > +{
+> > +       struct fentry_trace_entry_head *entry;
+> > +       struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +       struct trace_event_buffer fbuffer;
+> > +       int dsize;
+> > +
+> > +       if (WARN_ON_ONCE(call != trace_file->event_call))
+> > +               return;
+> > +
+> > +       if (trace_trigger_soft_disabled(trace_file))
+> > +               return;
+> > +
+> > +       dsize = __get_data_size(&tf->tp, regs);
+> > +
+> > +       entry = trace_event_buffer_reserve(&fbuffer, trace_file,
+> > +                                          sizeof(*entry) + tf->tp.size + dsize);
+> > +       if (!entry)
+> > +               return;
+> > +
+> > +       fbuffer.regs = regs;
+> > +       entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
+> > +       entry->ip = entry_ip;
+> > +       store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > +
+> > +       trace_event_buffer_commit(&fbuffer);
+> > +}
+> > +
+> > +static void
+> > +fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +                 struct pt_regs *regs)
+> > +{
+> > +       struct event_file_link *link;
+> > +
+> > +       trace_probe_for_each_link_rcu(link, &tf->tp)
+> > +               __fentry_trace_func(tf, entry_ip, regs, link->file);
+> > +}
+> > +NOKPROBE_SYMBOL(fentry_trace_func);
+> > +
+> > +/* Kretprobe handler */
+> > +static nokprobe_inline void
+> > +__fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +                  unsigned long ret_ip, struct pt_regs *regs,
+> > +                  struct trace_event_file *trace_file)
+> > +{
+> > +       struct fexit_trace_entry_head *entry;
+> > +       struct trace_event_buffer fbuffer;
+> > +       struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +       int dsize;
+> > +
+> > +       if (WARN_ON_ONCE(call != trace_file->event_call))
+> > +               return;
+> > +
+> > +       if (trace_trigger_soft_disabled(trace_file))
+> > +               return;
+> > +
+> > +       dsize = __get_data_size(&tf->tp, regs);
+> > +
+> > +       entry = trace_event_buffer_reserve(&fbuffer, trace_file,
+> > +                                          sizeof(*entry) + tf->tp.size + dsize);
+> > +       if (!entry)
+> > +               return;
+> > +
+> > +       fbuffer.regs = regs;
+> > +       entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
+> > +       entry->func = entry_ip;
+> > +       entry->ret_ip = ret_ip;
+> > +       store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > +
+> > +       trace_event_buffer_commit(&fbuffer);
+> > +}
+> > +
+> > +static void
+> > +fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +                unsigned long ret_ip, struct pt_regs *regs)
+> > +{
+> > +       struct event_file_link *link;
+> > +
+> > +       trace_probe_for_each_link_rcu(link, &tf->tp)
+> > +               __fexit_trace_func(tf, entry_ip, ret_ip, regs, link->file);
+> > +}
+> > +NOKPROBE_SYMBOL(fexit_trace_func);
+> > +
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +
+> > +static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +                           struct pt_regs *regs)
+> > +{
+> > +       struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +       struct fentry_trace_entry_head *entry;
+> > +       struct hlist_head *head;
+> > +       int size, __size, dsize;
+> > +       int rctx;
+> > +
+> > +       head = this_cpu_ptr(call->perf_events);
+> > +       if (hlist_empty(head))
+> > +               return 0;
+> > +
+> > +       dsize = __get_data_size(&tf->tp, regs);
+> > +       __size = sizeof(*entry) + tf->tp.size + dsize;
+> > +       size = ALIGN(__size + sizeof(u32), sizeof(u64));
+> > +       size -= sizeof(u32);
+> > +
+> > +       entry = perf_trace_buf_alloc(size, NULL, &rctx);
+> > +       if (!entry)
+> > +               return 0;
+> > +
+> > +       entry->ip = entry_ip;
+> > +       memset(&entry[1], 0, dsize);
+> > +       store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > +       perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+> 
+> However, that call concerns me. Perf requires a pt_regs pointer here
+> and it expects certain specific fields of that pt_regs to be set (the
+> exact requirements don't seem to be explicitly stated anywhere).
+> 
+> For example, on arm64 (the architecture without
+> CONFIG_DYNAMIC_FTRACE_WITH_REGS on which I'd like to have fprobe...
+> :)) perf calls the user_mode(regs) macro which expects the pstate
+> register to be set in pt_regs. However, pstate is invalid outside of
+> an exception entry so ftrace_regs on arm64 does not have a pstate
+> field at all.
+> 
+> If we migrate fprobe to ftrace_regs and try to construct a sparse
+> pt_regs out of a ftrace_regs here, it wouldn't be enough to just copy
+> all the registers we know from ftrace_regs into the pt_regs: we would
+> also need to make up the pstate register with the knowledge that it
+> has to be set in certain way specifically to please perf... Arch code
+> wouldn't only have to provide a
+> "expand_ftrace_regs_into_sparse_pt_regs" macro but also a
+> "invent_registers_for_perf" similar to the current
+> perf_arch_fetch_caller_regs macro. This seems rough...
+> 
+> It sounds to me like we should have avoided the use of sparse and
+> "made up" pt_regs a long time back and the more users of fprobe that
+> expect pt_regs we add, the more difficult we make it to make fprobe
+> work on CONFIG_DYNAMIC_FTRACE_WITH_ARGS.
+> 
+> > +                             head, NULL);
+> > +       return 0;
+> > +}
+> > +NOKPROBE_SYMBOL(fentry_perf_func);
+> > +
+> > +static void
+> > +fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+> > +               unsigned long ret_ip, struct pt_regs *regs)
+> > +{
+> > +       struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+> > +       struct fexit_trace_entry_head *entry;
+> > +       struct hlist_head *head;
+> > +       int size, __size, dsize;
+> > +       int rctx;
+> > +
+> > +       head = this_cpu_ptr(call->perf_events);
+> > +       if (hlist_empty(head))
+> > +               return;
+> > +
+> > +       dsize = __get_data_size(&tf->tp, regs);
+> > +       __size = sizeof(*entry) + tf->tp.size + dsize;
+> > +       size = ALIGN(__size + sizeof(u32), sizeof(u64));
+> > +       size -= sizeof(u32);
+> > +
+> > +       entry = perf_trace_buf_alloc(size, NULL, &rctx);
+> > +       if (!entry)
+> > +               return;
+> > +
+> > +       entry->func = entry_ip;
+> > +       entry->ret_ip = ret_ip;
+> > +       store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
+> > +       perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+> > +                             head, NULL);
+> > +}
+> > +NOKPROBE_SYMBOL(fexit_perf_func);
+> > +#endif /* CONFIG_PERF_EVENTS */
+> > +
+> > +static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+> > +                            unsigned long ret_ip, struct pt_regs *regs,
+> > +                            void *entry_data)
+> > +{
+> > +       struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+> > +       int ret = 0;
+> > +
+> > +       if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+> > +               fentry_trace_func(tf, entry_ip, regs);
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +       if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
+> > +               ret = fentry_perf_func(tf, entry_ip, regs);
+> > +#endif
+> > +       return ret;
+> > +}
+> > +NOKPROBE_SYMBOL(fentry_dispatcher);
+> > +
+> > +static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+> > +                            unsigned long ret_ip, struct pt_regs *regs,
+> > +                            void *entry_data)
+> > +{
+> > +       struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+> > +
+> > +       if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+> > +               fexit_trace_func(tf, entry_ip, ret_ip, regs);
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +       if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
+> > +               fexit_perf_func(tf, entry_ip, ret_ip, regs);
+> > +#endif
+> > +}
+> > +NOKPROBE_SYMBOL(fexit_dispatcher);
 
-$ ./veristat -e file,prog,states -f 'states_pct>40' -C master-baseline.log =
-current.log=20
-File         Program                        States (A)  States (B)  States =
- (DIFF)
------------  -----------------------------  ----------  ----------  -------=
--------
-bpf_host.o   cil_from_host                          37          52   +15 (+=
-40.54%)
-bpf_host.o   cil_from_netdev                        28          46   +18 (+=
-64.29%)
-bpf_host.o   tail_handle_ipv4_from_host            225         350  +125 (+=
-55.56%)
-bpf_host.o   tail_handle_ipv4_from_netdev          109         173   +64 (+=
-58.72%)
-bpf_host.o   tail_handle_ipv6_from_host            250         387  +137 (+=
-54.80%)
-bpf_host.o   tail_handle_ipv6_from_netdev          132         194   +62 (+=
-46.97%)
-bpf_host.o   tail_ipv4_host_policy_ingress         103         167   +64 (+=
-62.14%)
-bpf_host.o   tail_ipv6_host_policy_ingress          98         160   +62 (+=
-63.27%)
-bpf_xdp.o    __send_drop_notify                      8          14    +6 (+=
-75.00%)
-bpf_xdp.o    tail_handle_nat_fwd_ipv6              648         971  +323 (+=
-49.85%)
-loop6.bpf.o  trace_virtqueue_add_sgs               226         357  +131 (+=
-57.96%)
 
-I'll modify mark_chain_precision() to mark registers precise taking
-into account scalar IDs, when comparisons are processed.
-Will report on Monday.
-
->=20
-> >=20
-> > >=20
-> > > >=20
-> > > > > + return false; > > > > if (regs_exact(rold, rcur, idmap)) >
-> > > > return true; > > > > if (env->explore_alu_limits)
-> > >=20
-> >=20
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
