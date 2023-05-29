@@ -1,98 +1,103 @@
-Return-Path: <bpf+bounces-1372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56F9C71465B
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 10:37:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0CC7714719
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 11:30:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1BAD1C209C0
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 08:37:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84B79280E81
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 09:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FB520E1;
-	Mon, 29 May 2023 08:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417AB5686;
+	Mon, 29 May 2023 09:30:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321607C
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 08:37:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70462C433EF;
-	Mon, 29 May 2023 08:37:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1685349448;
-	bh=CCUPziSkCzOqPqywzNs2qZ9qhrttdWy8eSJClG82XbI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NH/TNk+FaUKdryMnaUVwo560jZ2kmTBlw4OUah1VnPKtBqjxmavJqh7kjdIAkHuU5
-	 dA2fN0+JEwl1NvmDMjm87muL9Ya/wsgdzCT1oV6+nwCzz5Os5pezyf1tRDi7uTpzP3
-	 A/+DX+3mYdjq91TkjDPKjk7Z+6Umu/808sLJZkoo=
-Date: Mon, 29 May 2023 09:37:26 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: stable@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	=?iso-8859-1?Q?Mah=E9?= Tardy <mahe.tardy@isovalent.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH stable 5.4 0/8] bpf: Fix
- bpf_probe_read/bpf_probe_read_str helpers
-Message-ID: <2023052947-jubilance-driven-31d8@gregkh>
-References: <20230522203352.738576-1-jolsa@kernel.org>
- <2023052646-magnetize-equate-2b24@gregkh>
- <ZHOzaStC0WmTvwL9@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C8D7C;
+	Mon, 29 May 2023 09:30:41 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94A29E;
+	Mon, 29 May 2023 02:30:39 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QV9DC1bRBzLqB7;
+	Mon, 29 May 2023 17:27:39 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Mon, 29 May 2023 17:30:37 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v2 0/3] support non-frag page for page_pool_alloc_frag()
+Date: Mon, 29 May 2023 17:28:37 +0800
+Message-ID: <20230529092840.40413-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZHOzaStC0WmTvwL9@krava>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Sun, May 28, 2023 at 10:02:49PM +0200, Jiri Olsa wrote:
-> On Fri, May 26, 2023 at 07:54:17PM +0100, Greg KH wrote:
-> > On Mon, May 22, 2023 at 10:33:44PM +0200, Jiri Olsa wrote:
-> > > hi,
-> > > we see broken access to user space with bpf_probe_read/bpf_probe_read_str
-> > > helpers on arm64 with 5.4 kernel. The problem is that both helpers try to
-> > > read user memory by calling probe_kernel_read, which seems to work on x86
-> > > but fails on arm64.
-> > 
-> > Has this ever worked on arm64 for the 5.4 kernel tree?  If not, it's not
-> > really a regression, and so, why not use a newer kernel that has this
-> > new feature added to it there?
-> > 
-> > In other words, what requires you to use the 5.4.y tree and requires
-> > feature parity across architectures?
-> 
-> we have a customer running ok on x86 v5.4, but arm64 is broken with
-> the same bpf/user space code
+In [1] & [2], there are usecases for veth and virtio_net to
+use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
-Again why can they not use a newer kernel version?  What forces this
-customer to be stuck with a specific kernel version that spans different
-processor types?
+So this patchset provides a way for user to fail back to non
+frag page when a page is not able to hold two frags.
 
-> upgrade is an option of course, but it's not a big change and we can
-> have 5.4 working on arm64 as well
+And PP_FLAG_PAGE_FRAG can be removed now, the extra benefit is
+that driver does not need to handle the case for arch with
+PAGE_POOL_DMA_USE_PP_FRAG_COUNT when using page_pool_alloc_frag()
+API.
 
-For loads of other reasons, I'd recommend 5.15 or newer for arm64, so
-why not use that?
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
 
-> I can send out the change that will be closer to upstream changes,
-> if that's a concern.. with adding the new probe helpers, which I
-> guess is not a problem, because it does not change current API
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+V1: Drop RFC tag and page_pool_frag patch
 
-You are trying to add features to a stable kernel that are not
-regression fixes, which is something that we generally do not accept
-into stable kernels.
+Yunsheng Lin (3):
+  page_pool: unify frag page and non-frag page handling
+  page_pool: support non-frag page for page_pool_alloc_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG flag
 
-thnaks,
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  3 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |  2 +-
+ include/net/page_pool.h                       | 42 +++++++++++----
+ net/core/page_pool.c                          | 52 +++++++++++--------
+ net/core/skbuff.c                             |  2 +-
+ 7 files changed, 67 insertions(+), 38 deletions(-)
 
-greg k-h
+-- 
+2.33.0
+
 
