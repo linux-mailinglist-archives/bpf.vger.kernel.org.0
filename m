@@ -1,90 +1,123 @@
-Return-Path: <bpf+bounces-1410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3645E714F5D
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 20:25:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24F7371518A
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 00:10:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F18EC280F38
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 18:25:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4391C20AC8
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 22:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31493C8F8;
-	Mon, 29 May 2023 18:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3AD11189;
+	Mon, 29 May 2023 22:10:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41A479F0
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 18:25:18 +0000 (UTC)
-Received: from out-24.mta0.migadu.com (out-24.mta0.migadu.com [91.218.175.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22379C4
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 11:25:17 -0700 (PDT)
-Date: Mon, 29 May 2023 14:25:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685384715;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Dcw0wi1IKmWoL1+2Aech130Jerxslz1zIA7wJ3PVaaE=;
-	b=hvyv6MMtqup1fC317UHrZ0xYxTWI1yPtQXSD9f4elllGt7Xgm7MqPJilWH25onE5HEZvqk
-	4yMVcoSREt2QbHkEhCzPwLZsVf8WF36+fMAbB6bHkk92EfO+O72ca32VR3jDQwkUOA4Znj
-	ADEM3xGH2low/mLNfirkjQEnNn5kTzA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Song Liu <song@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org,
-	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
-	rppt@kernel.org
-Subject: Re: [PATCH 0/3] Type aware module allocator
-Message-ID: <ZHTuBdlhSI0mmQGE@moria.home.lan>
-References: <20230526051529.3387103-1-song@kernel.org>
- <ZHGrjJ8PqAGN9OZK@moria.home.lan>
- <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E617C;
+	Mon, 29 May 2023 22:10:14 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33A910D;
+	Mon, 29 May 2023 15:10:09 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4QVV7x3Xhfz4x4N;
+	Tue, 30 May 2023 08:10:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1685398208;
+	bh=jnSw0ODgyVXJWgbnYlhovVm+7UrKxuhbifjsvrqqRu0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=MdOjP9A2bCMv9oc14uTKIGGy32x31TbZhMiPdEHr450Fa0Q9h2XRRrX+EoG86Y/cx
+	 X0/DqwxHy6AMAmE5y4CaUerxek9Kdvzdc4pokJv9g7OLwzbLVMQuInRhqWSmHu8bkZ
+	 sOz74Wp+Tty5GsCgOzLstBhRBb+KOSB981tXKOFnJBSkiTBaGE+gCMCENo98zj7e41
+	 Q28SgaPf6vJG2rNoI4xC9nzZDXoZ/boOJIOXBp1LoaF4aNLde3HeAeg2JEKFuBKLv/
+	 YbfQhBm4eolE4QuqkrCKMTPU6jiRk/jmnGnBKw9GbHQDdIhxonwi14jd5Wo7HoP27r
+	 PocoDundSht8Q==
+Date: Tue, 30 May 2023 08:10:03 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Miller <davem@davemloft.net>
+Cc: Chuck Lever <chuck.lever@oracle.com>, Jakub Kicinski <kuba@kernel.org>,
+ Networking <netdev@vger.kernel.org>, Kalle Valo <kvalo@kernel.org>,
+ Johannes Berg <johannes@sipsolutions.net>, Wireless
+ <linux-wireless@vger.kernel.org>, Simon Horman <horms@verge.net.au>,
+ Steffen Klassert <steffen.klassert@secunet.com>, Daniel Borkmann
+ <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the net-next tree
+Message-ID: <20230530081003.2ce3874c@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/sPCZ4fQZk9ECnJ4hW/N4=0+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
-> I don't think we are exposing architecture specific options to users.
-> Some layer need to handle arch specifics. If the new allocator is
-> built on top of module_alloc, module_alloc is handling that. If the new
-> allocator is to replace module_alloc, it needs to handle arch specifics.
+--Sig_/sPCZ4fQZk9ECnJ4hW/N4=0+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ok, I went back and read more thoroughly, I got this part wrong. The
-actual interface is the mod_mem_type enum, not mod_alloc_params or
-vmalloc_params.
+Hi all,
 
-So this was my main complaint, but this actually looks ok now.
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-It would be better to have those structs in a .c file, not the header
-file - it looks like those are the public interface the way you have it.
+  eefca7ec5142 ("net/handshake: Enable the SNI extension to work properly")
+  f921bd41001c ("net/handshake: Unpin sock->file if a handshake is cancelle=
+d")
+  e36a93e1723e ("net/handshake: handshake_genl_notify() shouldn't ignore @f=
+lags")
+  7301034026d0 ("net/handshake: Fix uninitialized local variable")
+  2200c1a87074 ("net/handshake: Fix handshake_dup() ref counting")
+  b16d76fe9a27 ("net/handshake: Remove unneeded check from handshake_dup()")
 
-> > The memory protection interface also needs to go, we've got a better
-> > interface to model after (text_poke(), although that code needs work
-> > too!). And the instruction fill features need a thorough justification
-> > if they're to be included.
-> 
-> I guess the first step to use text_poke() is to make it available on all
-> archs? That doesn't seem easy to me.
+These are commits
 
-We just need a helper that either calls text_poke() or does the page
-permission dance in a single place.
+  26fb5480a27d ("net/handshake: Enable the SNI extension to work properly")
+  1ce77c998f04 ("net/handshake: Unpin sock->file if a handshake is cancelle=
+d")
+  fc490880e39d ("net/handshake: handshake_genl_notify() shouldn't ignore @f=
+lags")
+  7afc6d0a107f ("net/handshake: Fix uninitialized local variable")
+  7ea9c1ec66bc ("net/handshake: Fix handshake_dup() ref counting")
+  a095326e2c0f ("net/handshake: Remove unneeded check from handshake_dup()")
 
-If we do the same thing for other mod_mem_types, we could potentially
-allow them to be shared on hugepages too.
+in Linus' tree.
+
+The net-next commits are also in the bpf-next, ipsec-next, ipvs-next
+and wireless-next trees.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/sPCZ4fQZk9ECnJ4hW/N4=0+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmR1IrwACgkQAVBC80lX
+0Gz0cgf9GDPAu5D1dVA2u7gbJkGr5RK6ySooae74nwoPT854/YKNydVk0jR30Fsm
+p5EA/vpRzTFoH59Osj5kLV6sOrI1Zt1m+7G5ai1TT6sjkd7lLogplkOUHCnGeIQ+
+4SbGWi3Syl/vPtCox4gA2Wz7k97Qzteba5KFaoV+006ycCFhIMumvREwkfuhMCD0
+Pjiyv2avGgFYSHidb7m2DSySY8uKvAQ7GkxqmNJ88UGhCfp4Y9utgh1asRchJgWc
+fdqnq/TJw833EgaDcrM67e5Mab8Bc+W88ciBNXGoq2kKqV1FxRA+YTDv2MacXGD+
+ow9URg0hJWRROtjKfXMRdTZPVnBOZA==
+=RKdx
+-----END PGP SIGNATURE-----
+
+--Sig_/sPCZ4fQZk9ECnJ4hW/N4=0+--
 
