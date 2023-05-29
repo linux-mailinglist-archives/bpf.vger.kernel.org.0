@@ -1,147 +1,143 @@
-Return-Path: <bpf+bounces-1407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B136714DB6
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 18:01:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CD0714DBD
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 18:02:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 415241C20AA3
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 16:01:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66994280EC0
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 16:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DE717AA7;
-	Mon, 29 May 2023 15:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAACAD35;
+	Mon, 29 May 2023 15:53:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1308174FB;
-	Mon, 29 May 2023 15:51:22 +0000 (UTC)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B70A3;
-	Mon, 29 May 2023 08:51:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685375481; x=1716911481;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gSB+hgR2vfbiw29TZSXitUEJtG7n/EKVboWM74wIYpY=;
-  b=Xv8r6h4eDeKa3SgZCwyBhNCGkNsgO0jsXivf50OC787RySwMq9xXS7xY
-   JyqiHCWvYaiOx+pj5O2Mc4hXHgUN36Zuf9qhADZbR+zymNhSiAl3IqVRl
-   lp9y12Bs80QhHfs046R8G6oLUuQajo3cZw0qGKxavaA5vfvlWOGO9HPSG
-   gXfONAtexwyZ8FPY8ANH0/+mj1g7bDSKNOJlvAunrBzma5yz1DbA3b2c8
-   Hk9eneATfrE7vo/mVTaDo6llWzgw886hpE+2/jALTzFNXYx52DxYSFiUZ
-   B3Vhib8MBNccslTakGVT2op1wmeah7ZrpaBL7fQ1zTKJyrQr3biXt6gIT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="344229111"
-X-IronPort-AV: E=Sophos;i="6.00,201,1681196400"; 
-   d="scan'208";a="344229111"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2023 08:51:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="880441287"
-X-IronPort-AV: E=Sophos;i="6.00,201,1681196400"; 
-   d="scan'208";a="880441287"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga005.jf.intel.com with ESMTP; 29 May 2023 08:51:19 -0700
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5508C0A;
+	Mon, 29 May 2023 15:53:38 +0000 (UTC)
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F8E3;
+	Mon, 29 May 2023 08:53:34 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-51b33c72686so2083145a12.1;
+        Mon, 29 May 2023 08:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685375613; x=1687967613;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8VEFwDtQU82btVgiD97z0QaW4mks5wNV7R/9ROe3xg=;
+        b=Ilf3JtvBOcaMTx3ALyYXeD3ZaP+rFn00xE21zth3J8qIu5N0qH/SyrqgWCmyLsvUXO
+         uY29vo4FIgYu7lIZvUwf0AldZqBcjaLuYNDERewC5YfRPqRCImFAXKheryjf4fqtFajz
+         2fOkGMBKQIKof8LrHx7ZSYb6b+hAC0K2GIEtZmYG5e9oc9w3Xmx2mHwZts/2WPuC0NaQ
+         6KoK4d3Zkw0+2+ctt0LSZpHUZ1wFTyug52DMRakdtVGufI8qWAkliOIXqgCPX/b+iu7i
+         h403y0y639q+UhSkmV9M+oDZQvXN93V5j4NGBC2YWk7yloEEfq++GPTNm+Jeql+24qgN
+         KNyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685375613; x=1687967613;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U8VEFwDtQU82btVgiD97z0QaW4mks5wNV7R/9ROe3xg=;
+        b=Y6UsY7M92leOHKOJDSFRQViD+kk0MZb85WMYC74i4VdkKHdQG7HjxUc7IzxTpG400Z
+         Im6lIq3hZTXxl+NDVlc+ESeEuWEunyN4U681ITehLLSKjyxwf3QkKVyaS32UU/sdQ7sn
+         Pyd4B+OaOeK9WheJYb6nnZp0N9o38ho0E0TQsrhEYiRx4wYhZBCDMbhG9/Psf2Uo1ET3
+         XU4T6ppMzWzqWKUSNf4RAumYq6hfXZ8aldw/obUYtFwVHd8QwSUlCihpHR816yJqgxG7
+         BM7m1hGUV7tuip2WS+6HFg5FcNHG2nl72+snwyohVUUXtEE0xqp4Lt+y4No9haWqRXXM
+         OG1w==
+X-Gm-Message-State: AC+VfDx6cDtWzIzL6IakySSQ6/D4BwUqXeZJAbvFdQil7lBKVIQesLId
+	Tn4+GhoD0PNwMH8Kupykkps=
+X-Google-Smtp-Source: ACHHUZ425HDF1Fkt8Mb/897HW29FEIqk9THo4pO73YQ128h/h2QHkHH+2IZfZBAaOD71/V52jmWLBg==
+X-Received: by 2002:a17:903:2285:b0:1af:ccc3:25d1 with SMTP id b5-20020a170903228500b001afccc325d1mr14158246plh.62.1685375613601;
+        Mon, 29 May 2023 08:53:33 -0700 (PDT)
+Received: from localhost.localdomain ([106.39.42.38])
+        by smtp.gmail.com with ESMTPSA id q12-20020a170902a3cc00b001a64851087bsm6565807plb.272.2023.05.29.08.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 May 2023 08:53:33 -0700 (PDT)
+From: starmiku1207184332@gmail.com
+To: ast@kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	bjorn@kernel.org,
-	tirthendu.sarkar@intel.com,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v2 bpf-next 22/22] selftests/xsk: reset NIC settings to default after running test suite
-Date: Mon, 29 May 2023 17:50:24 +0200
-Message-Id: <20230529155024.222213-23-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230529155024.222213-1-maciej.fijalkowski@intel.com>
-References: <20230529155024.222213-1-maciej.fijalkowski@intel.com>
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Teng Qi <starmiku1207184332@gmail.com>
+Subject: [PATCH] kernel: bpf: syscall: fix a possible sleep-in-atomic bug in __bpf_prog_put()
+Date: Mon, 29 May 2023 15:53:27 +0000
+Message-Id: <20230529155327.585056-1-starmiku1207184332@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, when running ZC test suite, after finishing first run of test
-suite and then switching to busy-poll tests within xskxceiver, such
-errors are observed:
+From: Teng Qi <starmiku1207184332@gmail.com>
 
-libbpf: Kernel error message: ice: MTU is too large for linear frames and XDP prog does not support frags
-1..26
-libbpf: Kernel error message: Native and generic XDP can't be active at the same time
-Error attaching XDP program
-not ok 1 [xskxceiver.c:xsk_reattach_xdp:1568]: ERROR: 17/"File exists"
+__bpf_prog_put() indirectly calls kvfree() through bpf_prog_put_deferred()
+which is unsafe under atomic context. The current
+condition ‘in_irq() || irqs_disabled()’ in __bpf_prog_put() to ensure safety
+does not cover cases involving the spin lock region and rcu read lock region.
+Since __bpf_prog_put() is called by various callers in kernel/, net/ and
+drivers/, and potentially more in future, it is necessary to handle those
+cases as well.
 
-this is because test suite ends with 9k MTU and native xdp program being
-loaded. Busy-poll tests start non-multi-buffer tests for generic mode.
-To fix this, let us introduce bash function that will reset NIC settings
-to default (e.g. 1500 MTU and no xdp progs loaded) so that test suite
-can continue without interrupts. It also means that after busy-poll
-tests NIC will have those default settings, whereas right now it is left
-with 9k MTU and xdp prog loaded in native mode.
+Although we haven`t found a proper way to identify the rcu read lock region,
+we have noticed that vfree() calls vfree_atomic() with the
+condition 'in_interrupt()' to ensure safety.
 
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To make __bpf_prog_put() safe in practice, we propose calling
+bpf_prog_put_deferred() with the condition 'in_interrupt()' and
+using the work queue for any other context.
+
+We also added a comment to indicate that the safety of  __bpf_prog_put()
+relies implicitly on the implementation of vfree().
+
+Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
 ---
- tools/testing/selftests/bpf/test_xsk.sh    | 5 +++++
- tools/testing/selftests/bpf/xsk_prereqs.sh | 7 +++++++
- 2 files changed, 12 insertions(+)
+ kernel/bpf/syscall.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index c2ad50f26b63..2aa5a3445056 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -171,7 +171,10 @@ exec_xskxceiver
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573e..48ff5d2e163a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2099,10 +2099,12 @@ static void __bpf_prog_put(struct bpf_prog *prog)
+ 	struct bpf_prog_aux *aux = prog->aux;
  
- if [ -z $ETH ]; then
- 	cleanup_exit ${VETH0} ${VETH1}
-+else
-+	cleanup_iface ${ETH} ${MTU}
- fi
-+
- TEST_NAME="XSK_SELFTESTS_${VETH0}_BUSY_POLL"
- busy_poll=1
- 
-@@ -184,6 +187,8 @@ exec_xskxceiver
- 
- if [ -z $ETH ]; then
- 	cleanup_exit ${VETH0} ${VETH1}
-+else
-+	cleanup_iface ${ETH} ${MTU}
- fi
- 
- failures=0
-diff --git a/tools/testing/selftests/bpf/xsk_prereqs.sh b/tools/testing/selftests/bpf/xsk_prereqs.sh
-index ae697a10a056..29175682c44d 100755
---- a/tools/testing/selftests/bpf/xsk_prereqs.sh
-+++ b/tools/testing/selftests/bpf/xsk_prereqs.sh
-@@ -53,6 +53,13 @@ test_exit()
- 	exit 1
- }
- 
-+cleanup_iface()
-+{
-+	ip link set $1 mtu $2
-+	ip link set $1 xdp off
-+	ip link set $1 xdpgeneric off
-+}
-+
- clear_configs()
- {
- 	[ $(ip link show $1 &>/dev/null; echo $?;) == 0 ] &&
+ 	if (atomic64_dec_and_test(&aux->refcnt)) {
+-		if (in_irq() || irqs_disabled()) {
++		if (!in_interrupt()) {
++			// safely calling vfree() under any context
+ 			INIT_WORK(&aux->work, bpf_prog_put_deferred);
+ 			schedule_work(&aux->work);
+ 		} else {
++			// depending on the vfree_atomic() branch in vfree()
+ 			bpf_prog_put_deferred(&aux->work);
+ 		}
+ 	}
 -- 
-2.35.3
+2.25.1
 
 
