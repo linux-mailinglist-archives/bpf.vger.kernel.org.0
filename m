@@ -1,103 +1,84 @@
-Return-Path: <bpf+bounces-1373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0CC7714719
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 11:30:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3E471482A
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 12:46:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84B79280E81
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 09:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58FA8280E3C
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 10:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417AB5686;
-	Mon, 29 May 2023 09:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644BB3D72;
+	Mon, 29 May 2023 10:45:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C8D7C;
-	Mon, 29 May 2023 09:30:41 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94A29E;
-	Mon, 29 May 2023 02:30:39 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QV9DC1bRBzLqB7;
-	Mon, 29 May 2023 17:27:39 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 29 May 2023 17:30:37 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH net-next v2 0/3] support non-frag page for page_pool_alloc_frag()
-Date: Mon, 29 May 2023 17:28:37 +0800
-Message-ID: <20230529092840.40413-1-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01740A53
+	for <bpf@vger.kernel.org>; Mon, 29 May 2023 10:45:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18C9C433D2;
+	Mon, 29 May 2023 10:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685357155;
+	bh=YyZhd7+u4rnN68BcvCm78mN9H7X5EQow465eMlMwb4A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GAGhpNbneXKu5Fu+MvG/WOrAYFJa/OhdGymyw5GN6sYkdBGsPBX1UbwYq+xtmcXiS
+	 GSc+hMQ6MFpNsY/QCqnjbpL3JYYbKuBmhGnnK90BnWJ/iAeKv8t0h0YWHQBJxbGRix
+	 D9+ULVYtggHIYgYaJVL+vNY2pQ/zg/RSfKPoc496Obts+VgzMbbu0zTBkxOg5mLiBE
+	 ustXpn3uJ8ZNVVgx0FEQrvLk0lK9smLr3YNL84eyEuIYQYVUlrD5Z/0k3p4m8NZ9h8
+	 vdCA4pucvoTL+6/eumOu/74mhwYt6AT9O/ZrxY/R9l16QWvX67qjTfueFzHgiQZaxq
+	 eCrLxfGUvno7A==
+Date: Mon, 29 May 2023 13:45:30 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	mcgrof@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+	x86@kernel.org
+Subject: Re: [PATCH 0/3] Type aware module allocator
+Message-ID: <20230529104530.GL4967@kernel.org>
+References: <20230526051529.3387103-1-song@kernel.org>
+ <ZHGrjJ8PqAGN9OZK@moria.home.lan>
+ <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
 
-In [1] & [2], there are usecases for veth and virtio_net to
-use frag support in page pool to reduce memory usage, and it
-may request different frag size depending on the head/tail
-room space for xdp_frame/shinfo and mtu/packet size. When the
-requested frag size is large enough that a single page can not
-be split into more than one frag, using frag support only have
-performance penalty because of the extra frag count handling
-for frag support.
+On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
+> On Sat, May 27, 2023 at 12:04 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > I think this needs to back to the drawing board and we need something
+> > simpler just targeted at executable memory; architecture specific
+> > options should definitely _not_ be part of the exposed interface.
+> 
+> I don't think we are exposing architecture specific options to users.
+> Some layer need to handle arch specifics. If the new allocator is
+> built on top of module_alloc, module_alloc is handling that. If the new
+> allocator is to replace module_alloc, it needs to handle arch specifics.
+ 
+I'm for creating a new allocator that will replace module_alloc(). This
+will give us a clean abstraction that modules and all the rest will use and
+it will make easier to plug binpack or another allocator instead of
+vmalloc.
+Another point is with a new allocator we won't have weird dependencies on
+CONFIG_MODULE in e.g. bpf and kprobes.
 
-So this patchset provides a way for user to fail back to non
-frag page when a page is not able to hold two frags.
+I'll have something ready to post as an RFC in a few days.
 
-And PP_FLAG_PAGE_FRAG can be removed now, the extra benefit is
-that driver does not need to handle the case for arch with
-PAGE_POOL_DMA_USE_PP_FRAG_COUNT when using page_pool_alloc_frag()
-API.
-
-1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
-2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
-
-V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
-    virtio_net usecase in the cover letter.
-V1: Drop RFC tag and page_pool_frag patch
-
-Yunsheng Lin (3):
-  page_pool: unify frag page and non-frag page handling
-  page_pool: support non-frag page for page_pool_alloc_frag()
-  page_pool: remove PP_FLAG_PAGE_FRAG flag
-
- .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  3 +-
- .../marvell/octeontx2/nic/otx2_common.c       |  2 +-
- .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 +-
- drivers/net/wireless/mediatek/mt76/mac80211.c |  2 +-
- include/net/page_pool.h                       | 42 +++++++++++----
- net/core/page_pool.c                          | 52 +++++++++++--------
- net/core/skbuff.c                             |  2 +-
- 7 files changed, 67 insertions(+), 38 deletions(-)
+> Thanks,
+> Song
 
 -- 
-2.33.0
-
+Sincerely yours,
+Mike.
 
