@@ -1,82 +1,90 @@
-Return-Path: <bpf+bounces-1383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D6AB714CDB
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 17:18:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57806714D5C
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 17:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED641C20A1A
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 15:18:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10DBD280F0D
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 15:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1CE8C16;
-	Mon, 29 May 2023 15:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB208F70;
+	Mon, 29 May 2023 15:49:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BB23FD4
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 15:17:59 +0000 (UTC)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D08BC9
-	for <bpf@vger.kernel.org>; Mon, 29 May 2023 08:17:58 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so3610728e87.2
-        for <bpf@vger.kernel.org>; Mon, 29 May 2023 08:17:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222628C1F;
+	Mon, 29 May 2023 15:49:21 +0000 (UTC)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6376CC7;
+	Mon, 29 May 2023 08:49:16 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2566ed9328eso1283177a91.2;
+        Mon, 29 May 2023 08:49:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685373476; x=1687965476;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OcJ10Ol9YzJ3MPpTcuK2Z7/RH+Sb1+08bnP+P/MjD0A=;
-        b=fnDCIfdx1fbTwjYCng/jnaUBzL0Sjzvd8v4mxEw5TbvQDIeM8+Me6aEvG2Caps5a6W
-         D0l51GkspsKvWVrkjJM1aIcZLYvH7dJIIgeIdowt3bHKamyQDSc2wQ9y2TWipmKz81rt
-         oCj4wOW0g0px3Q8dCwrYVMV/YiGX8E9baABHoPoGJfabtPxCMJMS/eeppTF2o+QjRYeI
-         afz9i9UAvRkrxN93W8ojRUlOaSIXKb4pXg1hnvfq0ip1QYd8q7gb9uZxwRYqZM8pjuxE
-         N7XBASDXGebxVDA6/dDzsH1RKRZ2ezJUUN22hn0IutITkKCNkUpA8H1uMZ5S/ySILL/d
-         qPvA==
+        d=gmail.com; s=20221208; t=1685375356; x=1687967356;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Tvy4LC5km0zgmb9Tfu+uBN8Z3LNjnPdumUgMICLrwQ=;
+        b=JnC7FAf0AvDM8j4e+SvZ5JIRqbKo7QY2mR4jSdUXyvsY0mWPCDASHyYk5OfQFl+P5r
+         Qxmbde5rj7t+bqEQJehC2ZZAoau7TyFZfugqUjiiPYDJh4WSC87d/ceqThG3cMI4VFQo
+         JLOpXAvOWBEvEv7JGF4j2ZzAIAwQ3kl4UGAmXoO8BODUTor1br1CdpYBVkf9CPJrMhWW
+         sMSgJmrAZib2GqhVOdHgiVNrKO+MPbSWllhzHqrId2I40k1+msTmoTmVM3zK/VhNmYQa
+         rq9jXcmswS/UlqzgXH93dZQXahZ+pteEkZgHig2hAjDrloELoF+8qjPrCA6YFO+jL7nB
+         Ycig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685373476; x=1687965476;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OcJ10Ol9YzJ3MPpTcuK2Z7/RH+Sb1+08bnP+P/MjD0A=;
-        b=QwUMEmHX/8r9HivevagcSumtpa6bBqUZJdrJRE0Z4mJfoO7UnW/yMMeYe6LCRrO8w6
-         gR4bvB/xvE3EounnxsgURSG/ExqAqDQY+cgVkuhnE8FJPYYJEmsMj0o6jtdc+RhYLnWl
-         6HghevpRv8X5N/2mPKR8hJ+loGA6/iYt8wLNLrynC08PJTzUM0AFRjzx61pQUPEJFqx9
-         f+/l/RJRusljAaqJy8xCMaSzPUB64IzifRYxkFONyx5FA7efjkxh8WxZKVfKvDG4eJKd
-         JDJWcCYPjRQKepdLsHHEeTsuilLip4s7AwzF7OZyhZs7WTZJTE0qWgKrj2OSab78bT9o
-         UjAw==
-X-Gm-Message-State: AC+VfDxGczg2lTHEfTGi/Oj4caEN8c0VpAQpbsAP908c0Crw0jgHAGsO
-	TI6XCrqRL/8ttciM9ZzWhTvOZwMtqPs=
-X-Google-Smtp-Source: ACHHUZ6UmGut6VU0kD6wFryM+NOGpvh2hMP3bNzAGuV1VNsZveb+cwyEC4UlrO/YNV1p2HOdwWU3yQ==
-X-Received: by 2002:ac2:4425:0:b0:4f3:b61a:a94b with SMTP id w5-20020ac24425000000b004f3b61aa94bmr3595389lfl.53.1685373476315;
-        Mon, 29 May 2023 08:17:56 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id l3-20020ac24a83000000b004db3900da02sm27768lfp.73.2023.05.29.08.17.54
+        d=1e100.net; s=20221208; t=1685375356; x=1687967356;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9Tvy4LC5km0zgmb9Tfu+uBN8Z3LNjnPdumUgMICLrwQ=;
+        b=i/TB6F4xhXg0KfN9ww8xwjG6TbNVN9JkNLM/6AE9dXrPHL8wwCt1Gv+CfIGDbSZNPL
+         VrZEG7Q5i0scpYzj7D/D+1043fyaj/wQJddLbMITNDFrUvmy0QP98hkf/9JdrJkDCG4M
+         +w0KL4gZOWB5WiE7c5wyjJug9eYevc57a+mbO2ffjlaYFqILLZDhgMy4IjamOkW8zVX/
+         Y1fO6LXGg74uJDZ7FamlT9zD4zAnkSn1goJnBjUqGiKtqHTQN+CN6/cFgz8uUp/B5VaG
+         8QVFMCt6nPIqUj1vUQEEWh2kXIAytVXxxftvAyLsSVAitf1ld1mYnJzQS1sByWEb/pGO
+         QQqw==
+X-Gm-Message-State: AC+VfDwjzoKYhKLv68x9ZpBwFrteTksjHIk2VwvxuqbhIrE2j0iwFWoe
+	Z+xLCTETXBJgjdHxENTuU5A=
+X-Google-Smtp-Source: ACHHUZ6hlI/duiNqbAFJIBc+TMmkxccm5bn4NseHDohtfYHgalx3c5p9DPkJbi3hT/9HCnTCeouXVw==
+X-Received: by 2002:a17:903:22c2:b0:1b0:5304:5b4e with SMTP id y2-20020a17090322c200b001b053045b4emr692277plg.43.1685375355748;
+        Mon, 29 May 2023 08:49:15 -0700 (PDT)
+Received: from localhost.localdomain ([106.39.42.38])
+        by smtp.gmail.com with ESMTPSA id w12-20020a170902a70c00b001ac381f1ce9sm8425499plq.185.2023.05.29.08.49.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 May 2023 08:17:55 -0700 (PDT)
-Message-ID: <607940d5dd7515f65d24cd631e3946f50c573645.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add a test where map
- key_type_id with decl_tag type
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-Date: Mon, 29 May 2023 18:17:53 +0300
-In-Reply-To: <20230527223137.1580717-1-yhs@fb.com>
-References: <20230527223132.1580338-1-yhs@fb.com>
-	 <20230527223137.1580717-1-yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Mon, 29 May 2023 08:49:15 -0700 (PDT)
+From: starmiku1207184332@gmail.com
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Teng Qi <starmiku1207184332@gmail.com>
+Subject: [PATCH] kernel: bpf: syscall: fix a possible sleep-in-atomic bug in __bpf_prog_put()
+Date: Mon, 29 May 2023 15:48:52 +0000
+Message-Id: <20230529154852.584377-1-starmiku1207184332@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
 	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -84,58 +92,43 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, 2023-05-27 at 15:31 -0700, Yonghong Song wrote:
-> Add a selftest where map creation key type_id is a decl_tag
-> pointing to a struct. Without previous patch, a kernel warning will
-> appear similar to the one in the previous patch. With the previous
-> patch, the kernel warning is silenced.
+From: Teng Qi <starmiku1207184332@gmail.com>
 
-Looks good to me with a nitpick:
-commit message says "map creation key type_id is a decl_tag",
-but test case uses ".key_type_id =3D 1" which is INT
-and ".value_type_id =3D 3" which is DECL_TAG.
+Although we haven`t found a proper way to identify the rcu read lock region,
+we have noticed that vfree() calls vfree_atomic() with the
+condition 'in_interrupt()' to ensure safety.
 
-syscall.c:map_check_btf.c applies the same check both for key and value,
-maybe make two tests?
+To make __bpf_prog_put() safe in practice, we propose calling
+bpf_prog_put_deferred() with the condition 'in_interrupt()' and
+using the work queue for any other context.
 
->=20
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/btf.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing=
-/selftests/bpf/prog_tests/btf.c
-> index 210d643fda6c..69521e1dc330 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> @@ -3990,6 +3990,26 @@ static struct btf_raw_test raw_tests[] =3D {
->  	.btf_load_err =3D true,
->  	.err_str =3D "Invalid arg#1",
->  },
-> +{
-> +	.descr =3D "decl_tag test #18, struct member, decl_tag as the value typ=
-e",
-> +	.raw_types =3D {
-> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
-> +		BTF_STRUCT_ENC(0, 2, 8),			/* [2] */
-> +		BTF_MEMBER_ENC(NAME_TBD, 1, 0),
-> +		BTF_MEMBER_ENC(NAME_TBD, 1, 32),
-> +		BTF_DECL_TAG_ENC(NAME_TBD, 2, -1),		/* [3] */
-> +		BTF_END_RAW,
-> +	},
-> +	BTF_STR_SEC("\0m1\0m2\0tag"),
-> +	.map_type =3D BPF_MAP_TYPE_ARRAY,
-> +	.map_name =3D "tag_type_check_btf",
-> +	.key_size =3D sizeof(int),
-> +	.value_size =3D 8,
-> +	.key_type_id =3D 1,
-> +	.value_type_id =3D 3,
-> +	.max_entries =3D 1,
-> +	.map_create_err =3D true,
-> +},
->  {
->  	.descr =3D "type_tag test #1",
->  	.raw_types =3D {
+We also added a comment to indicate that the safety of  __bpf_prog_put()
+relies implicitly on the implementation of vfree().
+
+Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+---
+ kernel/bpf/syscall.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573e..48ff5d2e163a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2099,10 +2099,12 @@ static void __bpf_prog_put(struct bpf_prog *prog)
+ 	struct bpf_prog_aux *aux = prog->aux;
+ 
+ 	if (atomic64_dec_and_test(&aux->refcnt)) {
+-		if (in_irq() || irqs_disabled()) {
++		if (!in_interrupt()) {
++			// safely calling vfree() under any context
+ 			INIT_WORK(&aux->work, bpf_prog_put_deferred);
+ 			schedule_work(&aux->work);
+ 		} else {
++			// depending on the vfree_atomic() branch in vfree()
+ 			bpf_prog_put_deferred(&aux->work);
+ 		}
+ 	}
+-- 
+2.25.1
 
 
