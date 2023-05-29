@@ -1,225 +1,216 @@
-Return-Path: <bpf+bounces-1377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31AA3714851
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 13:08:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E4871490C
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 14:05:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF9B4280E4C
-	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 11:08:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8971C209C9
+	for <lists+bpf@lfdr.de>; Mon, 29 May 2023 12:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EC56FC3;
-	Mon, 29 May 2023 11:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962E76FD2;
+	Mon, 29 May 2023 12:05:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A54A6FAA;
-	Mon, 29 May 2023 11:07:05 +0000 (UTC)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9887CCD;
-	Mon, 29 May 2023 04:07:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S2rPOxKP/1zvy1Nqn6Mi0GCXMlxrrKbmSoWpg1SLqPiPUFi8/r0Z/cNFz8h2u0rhtjP5gfiLR2kdkh6gA2qLRQH2FwHUNt6h6ZEOcRyjOuYxnGRcpDm5RqFJ3RwIZ8+LD7qGDErXop1qsKLXzLwtLLUsWWrnK7bMukviQZ9kvFVbBkcW3yccjhq3AD2LQV77bcw9SV+KEFbfHqviJMJi7fOZ4vk7itVmrwp3kNMKLVVhf20gum2cf5uaR0+gfs12CBfzCmCm/vOzC3Qe6mSpMvyY47t+geEFRecBknAn5+XS+POcfw7/naTMb/sKAkwjjMe9MjY4KLyfQE4Njb8Hrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PmR4uOOcYTjS2mseZe13g+DKAkcYDOI+Tz0W46e7FVo=;
- b=g+hkMtUMFejCcb0jwIUJtNkWWEvY0kvSoC8erDWcXMzdSVyer6IQcKwQxFT+CboywavEgRROygTHNhavLXJ0qz6XO94KdvFIlQm+FdmIrYdsKwO/LN6Wi1ZGG5BoV+MeY02hXJGqR2Fn0VVGp5wJ8ncqh/nPOrZJp3WVVQdYkkXyUaI1aB/+AwMs4kpHVrclu7CnAYb7CMxS0V91oCTKXpjh1z10TmsCr/4I6/yOnlNJDyCv28j7WCtH22vNRlq5QyQKcpYTIRysX7eb264w9nPuWy+DScJv/NscFL8zj0YlqFqnY9nyScsA7qcKUVv0jt7K+Z8BTW8oFBaluFL90A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PmR4uOOcYTjS2mseZe13g+DKAkcYDOI+Tz0W46e7FVo=;
- b=REuEHllmysHLG/89trJ4QllhZr+Jttp4wEVHSB48EI3u5AXpY19pBk3v+LWKoDgC9Kh5s34SHrJV58l4DmkMzCxpBbXNYoSf+Z8tuAsVx7jQv0Hzq8OA/9xpoz/VTnvikTxkueQGfWjeIt9TuCXbU47+6iflcdGm2lwNeXlf9h1vFZnNeLWZi4frfmMvx49SEdAPgvmGtdqUVTj7rX+x4XgHTikHue+fxeXJcouCzApRmAh+vRFZiSSbapM+Mp8QLDXgfGw1UOMn+Blx3Yl02QJL49FRk9P+KdQLPKz20QqOJrtEsDLuB7FO5CtPANuJR6UF3nbe/u/H+c/9wakxLQ==
-Received: from BYAPR21CA0007.namprd21.prod.outlook.com (2603:10b6:a03:114::17)
- by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.22; Mon, 29 May
- 2023 11:07:00 +0000
-Received: from DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:a03:114:cafe::c) by BYAPR21CA0007.outlook.office365.com
- (2603:10b6:a03:114::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.5 via Frontend
- Transport; Mon, 29 May 2023 11:07:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DM6NAM11FT039.mail.protection.outlook.com (10.13.172.83) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6455.21 via Frontend Transport; Mon, 29 May 2023 11:07:00 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 29 May 2023
- 04:06:46 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 29 May
- 2023 04:06:45 -0700
-Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Mon, 29 May
- 2023 04:06:42 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Alexei Starovoitov <ast@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, Jakub Kicinski <kuba@kernel.org>
-CC: Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
-	<hawk@kernel.org>, <bpf@vger.kernel.org>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	<netdev@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Nimrod Oren
-	<noren@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH bpf-next 2/2] samples/bpf: fixup xdp_redirect_map tool to be able to support xdp multibuffer
-Date: Mon, 29 May 2023 14:06:08 +0300
-Message-ID: <20230529110608.597534-3-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230529110608.597534-1-tariqt@nvidia.com>
-References: <20230529110608.597534-1-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3400A6AB6;
+	Mon, 29 May 2023 12:05:15 +0000 (UTC)
+X-Greylist: delayed 1081 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 29 May 2023 05:05:13 PDT
+Received: from mx6.didiglobal.com (mx6.didiglobal.com [111.202.70.123])
+	by lindbergh.monkeyblade.net (Postfix) with SMTP id 82764C7;
+	Mon, 29 May 2023 05:05:12 -0700 (PDT)
+Received: from mail.didiglobal.com (unknown [10.79.65.12])
+	by mx6.didiglobal.com (Maildata Gateway V2.8) with ESMTPS id C8E571100AD03B;
+	Mon, 29 May 2023 19:38:50 +0800 (CST)
+Received: from didi-ThinkCentre-M920t-N000 (10.79.64.101) by
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 29 May 2023 19:38:50 +0800
+Date: Mon, 29 May 2023 19:38:42 +0800
+X-MD-Sfrom: fuyuanli@didiglobal.com
+X-MD-SrcIP: 10.79.65.12
+From: fuyuanli <fuyuanli@didiglobal.com>
+To: Eric Dumazet <edumazet@google.com>, "David S. Miller"
+	<davem@davemloft.net>, David Ahern <dsahern@kernel.org>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Neal Cardwell
+	<ncardwell@google.com>
+CC: <netdev@vger.kernel.org>, Jason Xing <kerneljasonxing@gmail.com>,
+	zhangweiping <zhangweiping@didiglobal.com>, tiozhang
+	<tiozhang@didiglobal.com>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH net] tcp: introduce a compack timer handler in sack
+ compression
+Message-ID: <20230529113804.GA20300@didi-ThinkCentre-M920t-N000>
+Mail-Followup-To: Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Neal Cardwell <ncardwell@google.com>, netdev@vger.kernel.org,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	zhangweiping <zhangweiping@didiglobal.com>,
+	tiozhang <tiozhang@didiglobal.com>, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT039:EE_|DS0PR12MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: cec20769-928f-4ce8-a73a-08db6034d351
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4UlLwjZJqVDdKO6Bl7q9i50QpDn6tdXQhiBbE9G+J6NuBB3PEByWtIe2ptm/1I5/1SGMlsVrpplLe6+x/fcZSDSosLmmPHN5UTxTkq8MP+rPI0I6FCKNG8ZavKh96IUsi/kll+eeGPKY2sWGEqXwmawQZqRcS97FdPFbLb3BLnP/QiAFi8LVtQP8DCeuBhYdryh5Ulu8bn3D80xSl67/722rgOR39qvwFz7N9oTBNWiSXKyZ1FC0xETscsAaXmyibkQoo8VkS1VzOsf3hD7xmfNtzZvHzPIr2JT0kG6Rp5qFJPrIftQ8R2aIaaCHu+ljcpIF0PMy7u1nyImOsCuVWhdF6J9HMYaDZVb/bZK/uWB+VzDbz3RTAPSmr2Yqz+FGhuCrG2smKeiJSC6rwDh8lnSsqUrx9o4ppe6GMZk8TJyRyDl8CzHhcLchmhaqN1v7q6JHC8pCKzdjxJ5ApMrEPa1fuRpHqpAHA3jRGghmn4yKqSqJttvKw3bxpk/Wek9CZECEUm1g6FpemFlO1YQjy40Cts4os7CroxdG6HmIc92QXOArv7dsZfW7QR63HYqDndMsdxQSpHtMRqbP84M1Emz4qCVXbzfy2kdhB0JbvZlQyAf3/igNg8elwnWyoXWgKIT04W5od/MpVzTbiZcSzOycxM4ieGzLeh8tAdjOX0wRcDWaJxtzceizJXkdsZrQyN+8wfU7u/sYYx1SGgNWezbIQsVs+BrIwi0KJwcw9E0Hsnncw++5MOrvGcLs2R/r
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(396003)(136003)(376002)(451199021)(46966006)(40470700004)(36840700001)(54906003)(478600001)(110136005)(40460700003)(8936002)(8676002)(5660300002)(36756003)(2906002)(86362001)(82310400005)(82740400003)(70206006)(70586007)(4326008)(316002)(7636003)(356005)(40480700001)(41300700001)(2616005)(426003)(336012)(107886003)(186003)(26005)(1076003)(47076005)(36860700001)(6666004)(7696005)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2023 11:07:00.1560
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cec20769-928f-4ce8-a73a-08db6034d351
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.79.64.101]
+X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Nimrod Oren <noren@nvidia.com>
+We've got some issues when sending a compressed ack is deferred to
+release phrase due to the socket owned by another user:
+1. a compressed ack would not be sent because of lack of ICSK_ACK_TIMER
+flag.
+2. the tp->compressed_ack counter should be decremented by 1.
+3. we cannot pass timeout check and reset the delack timer in
+tcp_delack_timer_handler().
+4. we are not supposed to increment the LINUX_MIB_DELAYEDACKS counter.
+...
 
-Expand the xdp multi-buffer support to xdp_redirect_map tool.
-Similar to what's done in commit
-772251742262 ("samples/bpf: fixup some tools to be able to support xdp multibuffer")
-and its fix commit
-7a698edf954c ("samples/bpf: Fix MAC address swapping in xdp2_kern").
+The reason why it could happen is that we previously reuse the delayed
+ack logic when handling the sack compression. With this patch applied,
+the sack compression logic would go into the same function
+(tcp_compack_timer_handler()) whether we defer sending ack or not.
+Therefore, those two issued could be easily solved.
 
-Signed-off-by: Nimrod Oren <noren@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Here are more details in the old logic:
+When sack compression is triggered in the tcp_compressed_ack_kick(),
+if the sock is owned by user, it will set TCP_DELACK_TIMER_DEFERRED and
+then defer to the release cb phrase. Later once user releases the sock,
+tcp_delack_timer_handler() should send a ack as expected, which, however,
+cannot happen due to lack of ICSK_ACK_TIMER flag. Therefore, the receiver
+would not sent an ack until the sender's retransmission timeout. It
+definitely increases unnecessary latency.
+
+This issue happens rarely in the production environment. I used kprobe
+to hook some key functions like tcp_compressed_ack_kick, tcp_release_cb,
+tcp_delack_timer_handler and then found that when tcp_delack_timer_handler
+was called, value of icsk_ack.pending was 1, which means we only had
+flag ICSK_ACK_SCHED set, not including ICSK_ACK_TIMER. It was against
+our expectations.
+
+In conclusion, we chose to separate the sack compression from delayed
+ack logic to solve issues only happening when the process is deferred.
+
+Fixes: 5d9f4262b7ea ("tcp: add SACK compression")
+Signed-off-by: fuyuanli <fuyuanli@didiglobal.com>
+Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 ---
- samples/bpf/xdp_redirect_map.bpf.c | 31 ++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ include/linux/tcp.h   |  2 ++
+ include/net/tcp.h     |  1 +
+ net/ipv4/tcp_output.c |  4 ++++
+ net/ipv4/tcp_timer.c  | 28 +++++++++++++++++++---------
+ 4 files changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/samples/bpf/xdp_redirect_map.bpf.c b/samples/bpf/xdp_redirect_map.bpf.c
-index 8557c278df77..dd034fdff1a9 100644
---- a/samples/bpf/xdp_redirect_map.bpf.c
-+++ b/samples/bpf/xdp_redirect_map.bpf.c
-@@ -35,15 +35,20 @@ struct {
- /* store egress interface mac address */
- const volatile __u8 tx_mac_addr[ETH_ALEN];
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index b4c08ac86983..cd15a9972c48 100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -461,6 +461,7 @@ enum tsq_enum {
+ 	TCP_MTU_REDUCED_DEFERRED,  /* tcp_v{4|6}_err() could not call
+ 				    * tcp_v{4|6}_mtu_reduced()
+ 				    */
++	TCP_COMPACK_TIMER_DEFERRED, /* tcp_compressed_ack_kick() found socket was owned */
+ };
  
-+#define XDPBUFSIZE	64
- static __always_inline int xdp_redirect_map(struct xdp_md *ctx, void *redirect_map)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
-+	__u8 pkt[XDPBUFSIZE] = {};
-+	void *data_end = &pkt[XDPBUFSIZE-1];
-+	void *data = pkt;
- 	u32 key = bpf_get_smp_processor_id();
- 	struct ethhdr *eth = data;
- 	struct datarec *rec;
- 	u64 nh_off;
+ enum tsq_flags {
+@@ -470,6 +471,7 @@ enum tsq_flags {
+ 	TCPF_WRITE_TIMER_DEFERRED	= (1UL << TCP_WRITE_TIMER_DEFERRED),
+ 	TCPF_DELACK_TIMER_DEFERRED	= (1UL << TCP_DELACK_TIMER_DEFERRED),
+ 	TCPF_MTU_REDUCED_DEFERRED	= (1UL << TCP_MTU_REDUCED_DEFERRED),
++	TCPF_COMPACK_TIMER_DEFERRED     = (1UL << TCP_DELACK_TIMER_DEFERRED),
+ };
  
-+	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return XDP_DROP;
-+
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
- 		return XDP_DROP;
-@@ -53,30 +58,37 @@ static __always_inline int xdp_redirect_map(struct xdp_md *ctx, void *redirect_m
- 		return XDP_PASS;
- 	NO_TEAR_INC(rec->processed);
- 	swap_src_dst_mac(data);
-+	if (bpf_xdp_store_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return XDP_DROP;
-+
- 	return bpf_redirect_map(redirect_map, 0, 0);
+ #define tcp_sk(ptr) container_of_const(ptr, struct tcp_sock, inet_conn.icsk_inet.sk)
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 18a038d16434..e310d7bf400c 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -342,6 +342,7 @@ void tcp_release_cb(struct sock *sk);
+ void tcp_wfree(struct sk_buff *skb);
+ void tcp_write_timer_handler(struct sock *sk);
+ void tcp_delack_timer_handler(struct sock *sk);
++void tcp_compack_timer_handler(struct sock *sk);
+ int tcp_ioctl(struct sock *sk, int cmd, unsigned long arg);
+ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb);
+ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb);
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index cfe128b81a01..1703caab6632 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -1110,6 +1110,10 @@ void tcp_release_cb(struct sock *sk)
+ 		tcp_delack_timer_handler(sk);
+ 		__sock_put(sk);
+ 	}
++	if (flags & TCPF_COMPACK_TIMER_DEFERRED) {
++		tcp_compack_timer_handler(sk);
++		__sock_put(sk);
++	}
+ 	if (flags & TCPF_MTU_REDUCED_DEFERRED) {
+ 		inet_csk(sk)->icsk_af_ops->mtu_reduced(sk);
+ 		__sock_put(sk);
+diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+index b839c2f91292..069f6442069b 100644
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -318,6 +318,23 @@ void tcp_delack_timer_handler(struct sock *sk)
+ 	}
  }
  
--SEC("xdp")
-+SEC("xdp.frags")
- int xdp_redirect_map_general(struct xdp_md *ctx)
- {
- 	return xdp_redirect_map(ctx, &tx_port_general);
- }
- 
--SEC("xdp")
-+SEC("xdp.frags")
- int xdp_redirect_map_native(struct xdp_md *ctx)
- {
- 	return xdp_redirect_map(ctx, &tx_port_native);
- }
- 
--SEC("xdp/devmap")
-+SEC("xdp.frags/devmap")
- int xdp_redirect_map_egress(struct xdp_md *ctx)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
-+	__u8 pkt[XDPBUFSIZE] = {};
-+	void *data_end = &pkt[XDPBUFSIZE-1];
-+	void *data = pkt;
- 	u8 *mac_addr = (u8 *) tx_mac_addr;
- 	struct ethhdr *eth = data;
- 	u64 nh_off;
- 
-+	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return XDP_DROP;
++/* Called with BH disabled */
++void tcp_compack_timer_handler(struct sock *sk)
++{
++	struct tcp_sock *tp = tcp_sk(sk);
 +
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
- 		return XDP_DROP;
-@@ -84,11 +96,14 @@ int xdp_redirect_map_egress(struct xdp_md *ctx)
- 	barrier_var(mac_addr); /* prevent optimizing out memcpy */
- 	__builtin_memcpy(eth->h_source, mac_addr, ETH_ALEN);
- 
-+	if (bpf_xdp_store_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return XDP_DROP;
++	if (((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN)))
++		return;
 +
- 	return XDP_PASS;
- }
++	if (tp->compressed_ack) {
++		/* Since we have to send one ack finally,
++		 * subtract one from tp->compressed_ack to keep
++		 * LINUX_MIB_TCPACKCOMPRESSED accurate.
++		 */
++		tp->compressed_ack--;
++		tcp_send_ack(sk);
++	}
++}
  
- /* Redirect require an XDP bpf_prog loaded on the TX device */
--SEC("xdp")
-+SEC("xdp.frags")
- int xdp_redirect_dummy_prog(struct xdp_md *ctx)
- {
- 	return XDP_PASS;
+ /**
+  *  tcp_delack_timer() - The TCP delayed ACK timeout handler
+@@ -757,16 +774,9 @@ static enum hrtimer_restart tcp_compressed_ack_kick(struct hrtimer *timer)
+ 
+ 	bh_lock_sock(sk);
+ 	if (!sock_owned_by_user(sk)) {
+-		if (tp->compressed_ack) {
+-			/* Since we have to send one ack finally,
+-			 * subtract one from tp->compressed_ack to keep
+-			 * LINUX_MIB_TCPACKCOMPRESSED accurate.
+-			 */
+-			tp->compressed_ack--;
+-			tcp_send_ack(sk);
+-		}
++		tcp_compack_timer_handler(sk);
+ 	} else {
+-		if (!test_and_set_bit(TCP_DELACK_TIMER_DEFERRED,
++		if (!test_and_set_bit(TCP_COMPACK_TIMER_DEFERRED,
+ 				      &sk->sk_tsq_flags))
+ 			sock_hold(sk);
+ 	}
 -- 
-2.34.1
+2.17.1
 
 
