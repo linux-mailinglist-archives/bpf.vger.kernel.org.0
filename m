@@ -1,126 +1,180 @@
-Return-Path: <bpf+bounces-1445-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1446-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF35F716834
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 17:57:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06DA9716A86
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 19:11:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DAD31C20C75
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 15:57:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8701128128E
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 17:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2A027215;
-	Tue, 30 May 2023 15:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5244C200C0;
+	Tue, 30 May 2023 17:11:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA87917AD4
-	for <bpf@vger.kernel.org>; Tue, 30 May 2023 15:57:10 +0000 (UTC)
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3767B11A;
-	Tue, 30 May 2023 08:57:04 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7770c1570a6so97069639f.2;
-        Tue, 30 May 2023 08:57:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168AD1F93B;
+	Tue, 30 May 2023 17:11:33 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9082FF;
+	Tue, 30 May 2023 10:11:00 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9700219be87so862527066b.1;
+        Tue, 30 May 2023 10:11:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685462223; x=1688054223;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y+5ml+n3HD2eDlctb1SV+3KPtVS8DVTaTN+Q4XblTLM=;
-        b=BbIhlwc5JmmbjB4ooGvpeucoVtRlFL7RpqDk/j5+Od+D1jrYEYDUGraUWFS2hrK2df
-         jFvfYOlR4sjnzGEli6sasc/nPq7h09b61muTsjSK8KL7MQPGPYUisGXgFQy9OvfSOIyw
-         s524kuij6XYWggPDS3PkNyZk8yB3s8Lu+08/jSQQJCCb90hpRkV6qL5BqR2sEaaf6hoU
-         TURXOMbpwsBuGhHhprcQiK6AnIHWuUfFX1EaQeZDtJMno9GU/4RvltUT9OiPHrcPT2n3
-         LDm2HOJfau9+3PVqeo/8qVzOJsxd1CeKMqFkrmagQrKBPZAWH/BfDRuqJGgt8zFfMz1Q
-         pNMw==
+        d=gmail.com; s=20221208; t=1685466659; x=1688058659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A5nsi/XodGLWHCeElEU7rHxUb0yXLA6W6QP2vM/fOto=;
+        b=YveCMHoAQuzG8pj7x3yIEXvIg1y3FP22gPWcqUl2a/p0glE8cMGUNNJD57UtEscrAZ
+         MjobJ3FFme4aFHRONWeTSk994npeG0Zp1MtdQxcDfTBIyC/jG+M/QLraH1k8hcNhUb+t
+         1ckwfybWxJrPtcTc92gqtKiMSJUs3lP/5voA6D46eeIP0Jy5AvWiNTrahDCzWbC389GV
+         0kYVjB4aSfBqswnp0bO/7oixLKLpdaOpsgHccLL7q/Iiep9Oqh8fU8V7s1+vj9GLSIlu
+         pnozubr1SJNLM0ftSsOy+tr9woHeUId1TMHBhXe68za187YKfsYIBAT3tAI1LgQ51cJW
+         y/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685462223; x=1688054223;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y+5ml+n3HD2eDlctb1SV+3KPtVS8DVTaTN+Q4XblTLM=;
-        b=M1kcLz8kvdVilXMxq8FL2w+dKiGuERJvgzdk4IcDnAz0tloT5IG7CP1RbA6MXNfLEL
-         uX73MH94Uo3UvevKUNRdT4iTvr7PxVV+u+3l7PAl+Dfm8582nMeFE9PuaD8Lc2TGGks1
-         Px1868SH6A4/KsnA7e19vBvuDrI+Ca3fT6K+GINbstf/r/dqf+PX4HK/065J0B2L+Jx3
-         A3oyIs84YLR5xZYoM7+/edopA7JRo+nMeb2iSZPBR1Cr4SkJbLtvavlEJOeeSyhMuXb0
-         wqBMuw9q0p+LPcqHTHE6ODoyvY78GyZeRKm9tUVtdFKIQnhXM2yPERl4yVLJn4OzpVSy
-         5/8A==
-X-Gm-Message-State: AC+VfDyeeEi0o9zPVl0EYVcXgRIZ4yLg8lif5nt9uHQvzHzRWS2MBKpg
-	MPf1SKY5+kkX1op7AXzLU8o=
-X-Google-Smtp-Source: ACHHUZ5QBWFzG3pzBNh8KYhdRtFNAjoXECGEfJVp83VzQNC6surICk6GmZRNMR8Pxw408LDeq+FChQ==
-X-Received: by 2002:a6b:fe0a:0:b0:76c:8674:81e7 with SMTP id x10-20020a6bfe0a000000b0076c867481e7mr1407579ioh.21.1685462223458;
-        Tue, 30 May 2023 08:57:03 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (54.70.188.35.bc.googleusercontent.com. [35.188.70.54])
-        by smtp.gmail.com with ESMTPSA id 22-20020a5ea516000000b0076c569c7a48sm700293iog.39.2023.05.30.08.57.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 08:57:03 -0700 (PDT)
-From: Azeem Shaikh <azeemshaikh38@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-hardening@vger.kernel.org,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH] bpf: Replace all non-returning strlcpy with strscpy
-Date: Tue, 30 May 2023 15:56:59 +0000
-Message-ID: <20230530155659.309657-1-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+        d=1e100.net; s=20221208; t=1685466659; x=1688058659;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A5nsi/XodGLWHCeElEU7rHxUb0yXLA6W6QP2vM/fOto=;
+        b=c7atOsaJ9U1iTSRuA2NB95/oi67Nm/tpc6tZbiA/Ff5JU19Gk2MySb4OzTCBdWzcCa
+         hRXvr0qMsiXyqmLwmUC6vdAKGzPmdrbNwcNUtyytpRBoie79JCbPmcnBsZ7uvAr4GYAJ
+         XW011eBktyoiPrqPfPrK5uvkK9FMA5UV+BoVhuFdGnk4ie5oUyXE4qWdw9zChQkTxRQ/
+         DN5EHsvN9xRPr7xNstlRP8msvN6uBzihw+KOPvMj1cXyMirtYdnuIV+HgnCCsRpW2W96
+         FQuIm67j+ohgkudZE5RE5qB1Co3T9UVPCIR9+h+4K0vhznwEt8/mjIQXIPMTtVwQ/IHE
+         qZLA==
+X-Gm-Message-State: AC+VfDzjmZMCk90lDqPl/fEhDIaJnd7mFNP4AODOsN+uYdr4aN4PNkI0
+	UYEp7R3hdn6sgWfRzSUpL165lmfAvQn/LLqZ6CgWUdNfO09CSA==
+X-Google-Smtp-Source: ACHHUZ58EyaAC1yGjTxb2F4IkDgzg8ZRj1IGSaSEXrlKUnKADty4/UAxZnJPK4pITMddrVboyHBHd9sg5eWEJGtDV6Q=
+X-Received: by 2002:a17:907:9811:b0:970:2e4d:61ac with SMTP id
+ ji17-20020a170907981100b009702e4d61acmr3101715ejc.76.1685466658876; Tue, 30
+ May 2023 10:10:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com>
+ <20230526121124.3915-1-fw@strlen.de>
+In-Reply-To: <20230526121124.3915-1-fw@strlen.de>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 30 May 2023 10:10:45 -0700
+Message-ID: <CAEf4BzYt-gFs3cWfcAsMz9kie_pZNnsCdzXCy0NscK0wU1fCtg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: netfilter: add BPF_NETFILTER bpf_attach_type
+To: Florian Westphal <fw@strlen.de>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
-No return values were used, so direct replacement is safe.
+On Fri, May 26, 2023 at 5:11=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
+te:
+>
+> Andrii Nakryiko writes:
+>
+>  And we currently don't have an attach type for NETLINK BPF link.
+>  Thankfully it's not too late to add it. I see that link_create() in
+>  kernel/bpf/syscall.c just bypasses attach_type check. We shouldn't
+>  have done that. Instead we need to add BPF_NETLINK attach type to enum
+>  bpf_attach_type. And wire all that properly throughout the kernel and
+>  libbpf itself.
+>
+> This adds BPF_NETFILTER and uses it.  This breaks uabi but this
+> wasn't in any non-rc release yet, so it should be fine.
+>
+> Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER program=
+s")
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopa=
+JJVGFD5=3Dd5Vg@mail.gmail.com/
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  include/uapi/linux/bpf.h       | 1 +
+>  kernel/bpf/syscall.c           | 4 ++++
+>  tools/include/uapi/linux/bpf.h | 1 +
+>  tools/lib/bpf/libbpf.c         | 2 +-
+>  4 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 1bb11a6ee667..c994ff5b157c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+>         BPF_TRACE_KPROBE_MULTI,
+>         BPF_LSM_CGROUP,
+>         BPF_STRUCT_OPS,
+> +       BPF_NETFILTER,
+>         __MAX_BPF_ATTACH_TYPE
+>  };
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 14f39c1e573e..cc1fc2404406 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2433,6 +2433,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog=
+_type,
+>                 default:
+>                         return -EINVAL;
+>                 }
+> +       case BPF_PROG_TYPE_NETFILTER:
+> +               if (expected_attach_type =3D=3D BPF_NETFILTER)
+> +                       return 0;
+> +               return -EINVAL;
+>         case BPF_PROG_TYPE_SYSCALL:
+>         case BPF_PROG_TYPE_EXT:
+>                 if (expected_attach_type)
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
+You've missed updating link_create() as well, there is a
 
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
----
- kernel/bpf/preload/bpf_preload_kern.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+case BPF_PROG_TYPE_NETFILTER:
+    break;
 
-diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-index b56f9f3314fd..0c63bc2cd895 100644
---- a/kernel/bpf/preload/bpf_preload_kern.c
-+++ b/kernel/bpf/preload/bpf_preload_kern.c
-@@ -23,9 +23,9 @@ static void free_links_and_skel(void)
- 
- static int preload(struct bpf_preload_info *obj)
- {
--	strlcpy(obj[0].link_name, "maps.debug", sizeof(obj[0].link_name));
-+	strscpy(obj[0].link_name, "maps.debug", sizeof(obj[0].link_name));
- 	obj[0].link = maps_link;
--	strlcpy(obj[1].link_name, "progs.debug", sizeof(obj[1].link_name));
-+	strscpy(obj[1].link_name, "progs.debug", sizeof(obj[1].link_name));
- 	obj[1].link = progs_link;
- 	return 0;
- }
+switch case, which should validate that attr->link_create.attach_type
+is BPF_NETFILTER
 
+
+Other than that, it looks good to me, thanks!
+
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 1bb11a6ee667..c994ff5b157c 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+>         BPF_TRACE_KPROBE_MULTI,
+>         BPF_LSM_CGROUP,
+>         BPF_STRUCT_OPS,
+> +       BPF_NETFILTER,
+>         __MAX_BPF_ATTACH_TYPE
+>  };
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ad1ec893b41b..532a97cf1cc1 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8712,7 +8712,7 @@ static const struct bpf_sec_def section_defs[] =3D =
+{
+>         SEC_DEF("struct_ops+",          STRUCT_OPS, 0, SEC_NONE),
+>         SEC_DEF("struct_ops.s+",        STRUCT_OPS, 0, SEC_SLEEPABLE),
+>         SEC_DEF("sk_lookup",            SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATT=
+ACHABLE),
+> -       SEC_DEF("netfilter",            NETFILTER, 0, SEC_NONE),
+> +       SEC_DEF("netfilter",            NETFILTER, BPF_NETFILTER, SEC_NON=
+E),
+>  };
+>
+>  static size_t custom_sec_def_cnt;
+> --
+> 2.39.3
+>
 
