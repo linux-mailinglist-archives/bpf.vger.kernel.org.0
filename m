@@ -1,91 +1,76 @@
-Return-Path: <bpf+bounces-1465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C45716F51
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 23:01:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F52A716FD5
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 23:37:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B62A11C20D62
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 21:01:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE3F1C20D4F
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 21:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90062A9D7;
-	Tue, 30 May 2023 21:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3937F31F04;
+	Tue, 30 May 2023 21:37:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C85221CE0;
-	Tue, 30 May 2023 21:01:29 +0000 (UTC)
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFB2100;
-	Tue, 30 May 2023 14:01:27 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2566f66190dso2651138a91.1;
-        Tue, 30 May 2023 14:01:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3B3200BC
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 21:37:23 +0000 (UTC)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC48107
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 14:37:18 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-96fbe7fbdd4so902780166b.3
+        for <bpf@vger.kernel.org>; Tue, 30 May 2023 14:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685480487; x=1688072487;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1685482636; x=1688074636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lVfqXAluQ8L6Q43FfKn6T9fOnZOaZK4ZfTTWre2cHNk=;
-        b=O3rF9iz5CM0XQzZ9UtLfTPc51lpqndrCguHtCc4rV7hGVKmFeyZN3peLWbkU0Vl13S
-         K7VIN+CI/WcXxS3m0Q2jxzuIBxR6BKOTSUl140Lj1+QDUBcGvyrqJRD5EJsAvoD+hq3q
-         J4XSLBJ77gfUGyKgdtgyATMWqeJN5GPpEmSwk+OSuXUGzBl4LzIqtbm/LYWVEqaev/Wo
-         G63oRcagHtaEd7gEkxDWewQSJSKfwO75Nybg90BYiuNrjxRZWghU6K/wOEIOcG/NBg5/
-         dpZ5u3Xl3hyXzBHi2Z+ZQVopNqdfQBeuNxLqw+5pQQHxDYfhC4myPYMZa4neHFRHa5xO
-         c+XQ==
+        bh=VEMPTEyi0YeLFGj0h/eOWrcbnUXFkk0SIIhLBvreOsM=;
+        b=HMsrWJF9KPy8Y2weHFwgyRZwRAK+3N0gKKl5hXiMBlWQJgy5sfzd3iA3Yn41UUVqaK
+         jyCxRa6xwZ+rZdqcqJCFiCFdMXVU2ph0QFHlTtGKicXBt3aOKC2WSy8PXK6R3HYfgitk
+         FHeCPTwl8MQKUnkF1OIGSU/8jJpxBmncoQ2oaqSIREYhZkmbC+TRiwj/YvdrsUNTkfk2
+         fT6sj6lKOGUBjcj+4pCvzRZC8NFVN64gjc8SK8ivBaNOibr39AvC1lHN5q0rT4LFTrPf
+         QLMbbF+Kc6p9VQhw1XHNqiy1/6E9IkruIz7Qm7FfU35vF3d6CMus5sw99/HJoafga1dE
+         w8xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685480487; x=1688072487;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lVfqXAluQ8L6Q43FfKn6T9fOnZOaZK4ZfTTWre2cHNk=;
-        b=KmSmZ7PwUiyOwiiPYM67Pc8uVTNyVrz52uZvaAM5+7xr6YKhMb8DOpAK3/Xlykb4Sh
-         NG21ttsK+mNfI1fwPDypEyUINLNFAe0t9x98+KteGnr47rJcB2OzBQ70ZpQs+hyPrzvp
-         RB1VbF/jmUkBdfKjZyX+gK+fPbf/Gn4YE3GQnEd4Qx0Dg1rHyOGhaxv+tDYuR8GR/EwT
-         DE/bU5UOgKfR9nJsSvEaFDj2AzxgeRmgWWnKgQqQQXBYvQ9VWNuXBt8jwf60gW0I3oU5
-         n8zAv7SOaEYg1hQbLDyWffxRaKjkjXU7910mFBJxuvhLpYq0k20GNMi8uHwgdU0/lDrE
-         QJew==
-X-Gm-Message-State: AC+VfDzvMysIsEpKNF/MeF76cj7V95/8c8Xn3FgVS+vKmQYrrcQRANX8
-	m/WrKqAFR6Lu03+4mkdRwuA=
-X-Google-Smtp-Source: ACHHUZ5SrmZ6ttWlf4D2kJpi9oCUgEN3EAPxfdhmqLSiUIdq7ewpswWnILG8UAwcR2CXCL4ibSgAcQ==
-X-Received: by 2002:a17:902:e80e:b0:1af:d00c:7f04 with SMTP id u14-20020a170902e80e00b001afd00c7f04mr3922322plg.12.1685480486706;
-        Tue, 30 May 2023 14:01:26 -0700 (PDT)
-Received: from localhost ([2605:59c8:148:ba10:88bf:3da6:e71a:c5dc])
-        by smtp.gmail.com with ESMTPSA id 9-20020a170902c10900b001a5fccab02dsm10750947pli.177.2023.05.30.14.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 14:01:26 -0700 (PDT)
-Date: Tue, 30 May 2023 14:01:20 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Eric Dumazet <edumazet@google.com>, 
- "David S . Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>
-Cc: netdev@vger.kernel.org, 
- bpf@vger.kernel.org, 
- eric.dumazet@gmail.com, 
- Eric Dumazet <edumazet@google.com>, 
- syzbot <syzkaller@googlegroups.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Message-ID: <647664201d3ce_16adb2085c@john.notmuch>
-In-Reply-To: <20230530195149.68145-1-edumazet@google.com>
-References: <20230530195149.68145-1-edumazet@google.com>
-Subject: RE: [PATCH net] bpf, sockmap: avoid potential NULL dereference in
- sk_psock_verdict_data_ready()
+        d=1e100.net; s=20221208; t=1685482636; x=1688074636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VEMPTEyi0YeLFGj0h/eOWrcbnUXFkk0SIIhLBvreOsM=;
+        b=AZ+Q0YH3sAIb0SvOs5ctnp3a3qPTKgSTBzNhOzmwQl5MuwHclqC/ICcbIffxF4zfGO
+         dYkJKeBtg7mTuJS8z7dgTZ4UqbL9MNztGCwqdUS9BihlXtiSsq6oeYGU8yRnfvwzk2wO
+         uGweO13+1iSZjnEGqmrJpCGrnNDo917l8y/y1mBponuM/Orfge7M5DG0TlwR1zKishn+
+         15HyY37nihgnwUpqOkJuP4dH7BzDqnmtJG02KPESyQ8iPRyuAiygbZovrlEIIhzCEKue
+         nzDhvnmjTMMuU1h8lZT6sTn42CB5kfv/C/fsTOcw093zVKvVRR+mZFuTLiHD7vsaPwEN
+         /IWA==
+X-Gm-Message-State: AC+VfDx6DvNJb3Lhy3195rvqvaRDHDE0+VN1nAiciVh5BtqbOuPCm4qE
+	RwAehNZ42gBF/Xan18yUw/f54r2H8GbDq5bQdE0=
+X-Google-Smtp-Source: ACHHUZ4CA49REG9unjvei+IJezyMDYWAEQHEjH+Knpu4689YDWJ61wEkmGG/MUDyTFqqCAVGBa1CayH6MUWyaN2diIc=
+X-Received: by 2002:a17:907:7293:b0:966:1984:9d21 with SMTP id
+ dt19-20020a170907729300b0096619849d21mr3554567ejc.9.1685482636236; Tue, 30
+ May 2023 14:37:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20230530172739.447290-1-eddyz87@gmail.com> <20230530172739.447290-2-eddyz87@gmail.com>
+In-Reply-To: <20230530172739.447290-2-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 30 May 2023 14:37:04 -0700
+Message-ID: <CAEf4BzYJbzR0f5HyjLMJEmBdHkydQiOjdkk=K4AkXWTwnXsWEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: verify scalar ids mapping in
+ regsafe() using check_ids()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -93,71 +78,129 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Eric Dumazet wrote:
-> syzbot found sk_psock(sk) could return NULL when called
-> from sk_psock_verdict_data_ready().
-> 
-> Just make sure to handle this case.
-> 
-> [1]
-> general protection fault, probably for non-canonical address 0xdffffc000000005c: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x00000000000002e0-0x00000000000002e7]
-> CPU: 0 PID: 15 Comm: ksoftirqd/0 Not tainted 6.4.0-rc3-syzkaller-00588-g4781e965e655 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/16/2023
-> RIP: 0010:sk_psock_verdict_data_ready+0x19f/0x3c0 net/core/skmsg.c:1213
-> Code: 4c 89 e6 e8 63 70 5e f9 4d 85 e4 75 75 e8 19 74 5e f9 48 8d bb e0 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 07 02 00 00 48 89 ef ff 93 e0 02 00 00 e8 29 fd
-> RSP: 0018:ffffc90000147688 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
-> RDX: 000000000000005c RSI: ffffffff8825ceb7 RDI: 00000000000002e0
-> RBP: ffff888076518c40 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000008000 R15: ffff888076518c40
-> FS: 0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f901375bab0 CR3: 000000004bf26000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
-> <TASK>
-> tcp_data_ready+0x10a/0x520 net/ipv4/tcp_input.c:5006
-> tcp_data_queue+0x25d3/0x4c50 net/ipv4/tcp_input.c:5080
-> tcp_rcv_established+0x829/0x1f90 net/ipv4/tcp_input.c:6019
-> tcp_v4_do_rcv+0x65a/0x9c0 net/ipv4/tcp_ipv4.c:1726
-> tcp_v4_rcv+0x2cbf/0x3340 net/ipv4/tcp_ipv4.c:2148
-> ip_protocol_deliver_rcu+0x9f/0x480 net/ipv4/ip_input.c:205
-> ip_local_deliver_finish+0x2ec/0x520 net/ipv4/ip_input.c:233
-> NF_HOOK include/linux/netfilter.h:303 [inline]
-> NF_HOOK include/linux/netfilter.h:297 [inline]
-> ip_local_deliver+0x1ae/0x200 net/ipv4/ip_input.c:254
-> dst_input include/net/dst.h:468 [inline]
-> ip_rcv_finish+0x1cf/0x2f0 net/ipv4/ip_input.c:449
-> NF_HOOK include/linux/netfilter.h:303 [inline]
-> NF_HOOK include/linux/netfilter.h:297 [inline]
-> ip_rcv+0xae/0xd0 net/ipv4/ip_input.c:569
-> __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5491
-> __netif_receive_skb+0x1f/0x1c0 net/core/dev.c:5605
-> process_backlog+0x101/0x670 net/core/dev.c:5933
-> __napi_poll+0xb7/0x6f0 net/core/dev.c:6499
-> napi_poll net/core/dev.c:6566 [inline]
-> net_rx_action+0x8a9/0xcb0 net/core/dev.c:6699
-> __do_softirq+0x1d4/0x905 kernel/softirq.c:571
-> run_ksoftirqd kernel/softirq.c:939 [inline]
-> run_ksoftirqd+0x31/0x60 kernel/softirq.c:931
-> smpboot_thread_fn+0x659/0x9e0 kernel/smpboot.c:164
-> kthread+0x344/0x440 kernel/kthread.c:379
-> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-> </TASK>
-> 
-> Fixes: 6df7f764cd3c ("bpf, sockmap: Wake up polling after data copy")
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+On Tue, May 30, 2023 at 10:27=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> Make sure that the following unsafe example is rejected by verifier:
+>
+> 1: r9 =3D ... some pointer with range X ...
+> 2: r6 =3D ... unbound scalar ID=3Da ...
+> 3: r7 =3D ... unbound scalar ID=3Db ...
+> 4: if (r6 > r7) goto +1
+> 5: r6 =3D r7
+> 6: if (r6 > X) goto ...
+> --- checkpoint ---
+> 7: r9 +=3D r7
+> 8: *(u64 *)r9 =3D Y
+>
+> This example is unsafe because not all execution paths verify r7 range.
+> Because of the jump at (4) the verifier would arrive at (6) in two states=
+:
+> I.  r6{.id=3Db}, r7{.id=3Db} via path 1-6;
+> II. r6{.id=3Da}, r7{.id=3Db} via path 1-4, 6.
+>
+> Currently regsafe() does not call check_ids() for scalar registers,
+> thus from POV of regsafe() states (I) and (II) are identical. If the
+> path 1-6 is taken by verifier first, and checkpoint is created at (6)
+> the path [1-4, 6] would be considered safe.
+>
+> This commit updates regsafe() to call check_ids() for scalar registers.
+>
+> This change is costly in terms of verification performance.
+> Using veristat to compare number of processed states for selftests
+> object files listed in tools/testing/selftests/bpf/veristat.cfg and
+> Cilium object files from [1] gives the following statistics:
+>
+>   Filter        | Number of programs
+>   ----------------------------------
+>   states_pct>10 | 40
+>   states_pct>20 | 20
+>   states_pct>30 | 15
+>   states_pct>40 | 11
+>
+> (Out of total 177 programs)
+>
+> In fact, impact is so bad that in no-alu32 mode the following
+> test_progs tests no longer pass verifiction:
+> - verif_scale2: maximal number of instructions exceeded
+> - verif_scale3: maximal number of instructions exceeded
+> - verif_scale_pyperf600: maximal number of instructions exceeded
+>
+> Additionally:
+> - verifier_search_pruning/allocated_stack: expected prunning does not
+>   happen because of differences in register id allocation.
+>
+> Followup patch would address these issues.
+>
+> [1] git@github.com:anakryiko/cilium.git
+>
+> Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assig=
+nments.")
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
+>  kernel/bpf/verifier.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index af70dad655ab..9c10f2619c4f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -15151,6 +15151,28 @@ static bool regsafe(struct bpf_verifier_env *env=
+, struct bpf_reg_state *rold,
+>
+>         switch (base_type(rold->type)) {
+>         case SCALAR_VALUE:
+> +               /* Why check_ids() for scalar registers?
+> +                *
+> +                * Consider the following BPF code:
+> +                *   1: r6 =3D ... unbound scalar, ID=3Da ...
+> +                *   2: r7 =3D ... unbound scalar, ID=3Db ...
+> +                *   3: if (r6 > r7) goto +1
+> +                *   4: r6 =3D r7
+> +                *   5: if (r6 > X) goto ...
+> +                *   6: ... memory operation using r7 ...
+> +                *
+> +                * First verification path is [1-6]:
+> +                * - at (4) same bpf_reg_state::id (b) would be assigned =
+to r6 and r7;
+> +                * - at (5) r6 would be marked <=3D X, find_equal_scalars=
+() would also mark
+> +                *   r7 <=3D X, because r6 and r7 share same id.
+> +                *
+> +                * Next verification path would start from (5), because o=
+f the jump at (3).
+> +                * The only state difference between first and second vis=
+its of (5) is
+> +                * bpf_reg_state::id assignments for r6 and r7: (b, b) vs=
+ (a, b).
+> +                * Thus, use check_ids() to distinguish these states.
+> +                */
+> +               if (!check_ids(rold->id, rcur->id, idmap))
+> +                       return false;
 
+does this check_ids() have to be performed before regs_exact (which
+also checks IDs, btw) *and* before rold->precise check?
 
-Seems syzbot is getting good at finding misuse of psock.
+Intuitively, it feels like `rold->precise =3D false` case shouldn't care
+about IDs in rcur, as any value should be safe. But I haven't spent
+much time thinking about this, so there might be some corner case I'm
+missing.
 
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+I wonder if moving this check after we handled imprecise rold case would he=
+lp.
+
+Also, it might make sense to drop SCALAR register IDs as soon as we
+have only one instance of it left (e.g., if "paired" register was
+overwritten already). I.e., aggressively drop IDs when they become
+useless. WDYT?
+
+The u32_hashset.... Have you also measured verification time
+regression with this? I wonder how much impact that change has?
+
+>                 if (regs_exact(rold, rcur, idmap))
+>                         return true;
+>                 if (env->explore_alu_limits)
+> --
+> 2.40.1
+>
 
