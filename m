@@ -1,180 +1,92 @@
-Return-Path: <bpf+bounces-1446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06DA9716A86
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 19:11:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3BDD716AE7
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 19:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8701128128E
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 17:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63B51281264
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 17:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5244C200C0;
-	Tue, 30 May 2023 17:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5811200DC;
+	Tue, 30 May 2023 17:27:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168AD1F93B;
-	Tue, 30 May 2023 17:11:33 +0000 (UTC)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9082FF;
-	Tue, 30 May 2023 10:11:00 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9700219be87so862527066b.1;
-        Tue, 30 May 2023 10:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685466659; x=1688058659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A5nsi/XodGLWHCeElEU7rHxUb0yXLA6W6QP2vM/fOto=;
-        b=YveCMHoAQuzG8pj7x3yIEXvIg1y3FP22gPWcqUl2a/p0glE8cMGUNNJD57UtEscrAZ
-         MjobJ3FFme4aFHRONWeTSk994npeG0Zp1MtdQxcDfTBIyC/jG+M/QLraH1k8hcNhUb+t
-         1ckwfybWxJrPtcTc92gqtKiMSJUs3lP/5voA6D46eeIP0Jy5AvWiNTrahDCzWbC389GV
-         0kYVjB4aSfBqswnp0bO/7oixLKLpdaOpsgHccLL7q/Iiep9Oqh8fU8V7s1+vj9GLSIlu
-         pnozubr1SJNLM0ftSsOy+tr9woHeUId1TMHBhXe68za187YKfsYIBAT3tAI1LgQ51cJW
-         y/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685466659; x=1688058659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A5nsi/XodGLWHCeElEU7rHxUb0yXLA6W6QP2vM/fOto=;
-        b=c7atOsaJ9U1iTSRuA2NB95/oi67Nm/tpc6tZbiA/Ff5JU19Gk2MySb4OzTCBdWzcCa
-         hRXvr0qMsiXyqmLwmUC6vdAKGzPmdrbNwcNUtyytpRBoie79JCbPmcnBsZ7uvAr4GYAJ
-         XW011eBktyoiPrqPfPrK5uvkK9FMA5UV+BoVhuFdGnk4ie5oUyXE4qWdw9zChQkTxRQ/
-         DN5EHsvN9xRPr7xNstlRP8msvN6uBzihw+KOPvMj1cXyMirtYdnuIV+HgnCCsRpW2W96
-         FQuIm67j+ohgkudZE5RE5qB1Co3T9UVPCIR9+h+4K0vhznwEt8/mjIQXIPMTtVwQ/IHE
-         qZLA==
-X-Gm-Message-State: AC+VfDzjmZMCk90lDqPl/fEhDIaJnd7mFNP4AODOsN+uYdr4aN4PNkI0
-	UYEp7R3hdn6sgWfRzSUpL165lmfAvQn/LLqZ6CgWUdNfO09CSA==
-X-Google-Smtp-Source: ACHHUZ58EyaAC1yGjTxb2F4IkDgzg8ZRj1IGSaSEXrlKUnKADty4/UAxZnJPK4pITMddrVboyHBHd9sg5eWEJGtDV6Q=
-X-Received: by 2002:a17:907:9811:b0:970:2e4d:61ac with SMTP id
- ji17-20020a170907981100b009702e4d61acmr3101715ejc.76.1685466658876; Tue, 30
- May 2023 10:10:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB491F179
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 17:27:45 +0000 (UTC)
+Received: from out-42.mta1.migadu.com (out-42.mta1.migadu.com [IPv6:2001:41d0:203:375::2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A926819D
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 10:27:24 -0700 (PDT)
+Message-ID: <cf3903b0-9258-d000-c8b4-1f196ea726c5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685467337;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vCpNn1zuOOOB1U1un5lu/DMODvqsYcaAOG8UvzGY5Ls=;
+	b=q7ZEJAVS8OUjYkF4ejz/ybet42V2MnQlddCR6uDxQ5iX6CHj7CmsWISL2ia07tQolKbaYi
+	0mFW8hLVzNXKlICVv/worZ1NuAR9Kd+7JxNXvZ3LhEB/aOv3nIYOCOqkK4BE1LtwyYO8X3
+	i1vsL/FEYwboUlbi/gNx+I0/VUrhYXE=
+Date: Tue, 30 May 2023 10:22:11 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com>
- <20230526121124.3915-1-fw@strlen.de>
-In-Reply-To: <20230526121124.3915-1-fw@strlen.de>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 30 May 2023 10:10:45 -0700
-Message-ID: <CAEf4BzYt-gFs3cWfcAsMz9kie_pZNnsCdzXCy0NscK0wU1fCtg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: netfilter: add BPF_NETFILTER bpf_attach_type
-To: Florian Westphal <fw@strlen.de>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 1/2] samples/bpf: fixup xdp_redirect tool to be
+ able to support xdp multibuffer
+Content-Language: en-US
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: brouer@redhat.com, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ netdev@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+ Nimrod Oren <noren@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Lorenzo Bianconi <lorenzo.bianconi@redhat.com>, drosen@google.com,
+ Joanne Koong <joannelkoong@gmail.com>, henning.fehrmann@aei.mpg.de,
+ oliver.behnke@aei.mpg.de, Jesper Dangaard Brouer <jbrouer@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Jakub Kicinski <kuba@kernel.org>
+References: <20230529110608.597534-1-tariqt@nvidia.com>
+ <20230529110608.597534-2-tariqt@nvidia.com>
+ <63d91da7-4040-a766-dcd7-bccbb4c02ef4@redhat.com>
+ <4ceac69b-d2ae-91b5-1b24-b02c8faa902b@gmail.com>
+ <3168b14c-c9c1-b11b-2500-2ff2451eb81c@redhat.com>
+ <dc19366d-8516-9f2a-b6ed-d9323e9250c9@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <dc19366d-8516-9f2a-b6ed-d9323e9250c9@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, May 26, 2023 at 5:11=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
-te:
->
-> Andrii Nakryiko writes:
->
->  And we currently don't have an attach type for NETLINK BPF link.
->  Thankfully it's not too late to add it. I see that link_create() in
->  kernel/bpf/syscall.c just bypasses attach_type check. We shouldn't
->  have done that. Instead we need to add BPF_NETLINK attach type to enum
->  bpf_attach_type. And wire all that properly throughout the kernel and
->  libbpf itself.
->
-> This adds BPF_NETFILTER and uses it.  This breaks uabi but this
-> wasn't in any non-rc release yet, so it should be fine.
->
-> Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER program=
-s")
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopa=
-JJVGFD5=3Dd5Vg@mail.gmail.com/
-> Signed-off-by: Florian Westphal <fw@strlen.de>
-> ---
->  include/uapi/linux/bpf.h       | 1 +
->  kernel/bpf/syscall.c           | 4 ++++
->  tools/include/uapi/linux/bpf.h | 1 +
->  tools/lib/bpf/libbpf.c         | 2 +-
->  4 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 1bb11a6ee667..c994ff5b157c 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
->         BPF_TRACE_KPROBE_MULTI,
->         BPF_LSM_CGROUP,
->         BPF_STRUCT_OPS,
-> +       BPF_NETFILTER,
->         __MAX_BPF_ATTACH_TYPE
->  };
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 14f39c1e573e..cc1fc2404406 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2433,6 +2433,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog=
-_type,
->                 default:
->                         return -EINVAL;
->                 }
-> +       case BPF_PROG_TYPE_NETFILTER:
-> +               if (expected_attach_type =3D=3D BPF_NETFILTER)
-> +                       return 0;
-> +               return -EINVAL;
->         case BPF_PROG_TYPE_SYSCALL:
->         case BPF_PROG_TYPE_EXT:
->                 if (expected_attach_type)
+On 5/30/23 6:40 AM, Tariq Toukan wrote:
+>>> I initiated a discussion on this topic a few months ago. dynptr was accepted 
+>>> since then, but I'm not aware of any in-progress followup work that addresses 
+>>> this.
+>>>
+>>
+>> Are you saying some more work is needed on dynptr?
+>>
+> 
+> AFAIU yes.
+> But I might be wrong... I need to revisit this.
+> Do you think/know that dynptr can be used immediately?
 
-You've missed updating link_create() as well, there is a
+Not sure if you are aware of the bpf_dynptr_slice[_rdwr]() which could be useful 
+here. It only does a copy when the requested slice is across different frags:
+https://lore.kernel.org/all/20230301154953.641654-10-joannelkoong@gmail.com/
 
-case BPF_PROG_TYPE_NETFILTER:
-    break;
-
-switch case, which should validate that attr->link_create.attach_type
-is BPF_NETFILTER
-
-
-Other than that, it looks good to me, thanks!
-
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 1bb11a6ee667..c994ff5b157c 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1035,6 +1035,7 @@ enum bpf_attach_type {
->         BPF_TRACE_KPROBE_MULTI,
->         BPF_LSM_CGROUP,
->         BPF_STRUCT_OPS,
-> +       BPF_NETFILTER,
->         __MAX_BPF_ATTACH_TYPE
->  };
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ad1ec893b41b..532a97cf1cc1 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8712,7 +8712,7 @@ static const struct bpf_sec_def section_defs[] =3D =
-{
->         SEC_DEF("struct_ops+",          STRUCT_OPS, 0, SEC_NONE),
->         SEC_DEF("struct_ops.s+",        STRUCT_OPS, 0, SEC_SLEEPABLE),
->         SEC_DEF("sk_lookup",            SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATT=
-ACHABLE),
-> -       SEC_DEF("netfilter",            NETFILTER, 0, SEC_NONE),
-> +       SEC_DEF("netfilter",            NETFILTER, BPF_NETFILTER, SEC_NON=
-E),
->  };
->
->  static size_t custom_sec_def_cnt;
-> --
-> 2.39.3
->
 
