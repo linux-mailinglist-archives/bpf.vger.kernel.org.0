@@ -1,168 +1,166 @@
-Return-Path: <bpf+bounces-1462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3FC4716E39
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 21:57:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03CB1716F16
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 22:51:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7CCE28132A
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 19:57:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A121C1C20B99
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 20:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB7A31EED;
-	Tue, 30 May 2023 19:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCB5206AC;
+	Tue, 30 May 2023 20:51:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4024E17FE5;
-	Tue, 30 May 2023 19:57:23 +0000 (UTC)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A9FE8;
-	Tue, 30 May 2023 12:57:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VPr6d469x9TyFMAIIxz3Ot57C1ARPIG0jcglZcpIAOtE5al2F84XUha88mLRmuILSL91a0ktgGRo5LILIx7DJyIapW3rlWEBNVHzt7KIUtlzdwg/insZL8PCp4vTg8yTpuQx85VHPd0njrxb+AvhH3RUMAwa2oT3P2ubOuFtI1JWW09dnVSKn9oWRpjEM+g3kgu7u8xY2Tu8+VmXRcFHZvUOF5seWf8vleL4ymCpcVcKPp4fqHfjhUnWHz6iinMKuwjY2wNZXNAcr5cQlezFWoxkeJQtJDAu9ccZ8QLuG2TeHVHg8sMuIc8wc0g0U/KEb00LKig3JPpTA+zPaiD+/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dqjl0lDnTlFvG+HPBFEWc2VkR8nthr5Z1F8d/jdNxC4=;
- b=VTlsE4F9UHNHxzZtygvXzkXI/qtsEXSlrgOuKH0mFM0OxG/o2KQGqu4WUV0RPMVmvwwhycWsR74wkSaS7AaheYnYeZcYi6d0jLpkUDQyepD/ukhsKb4ORc8IrEqo54iWGbiM4FEKfvA0TepqVamFki/woz8EDXAYxGa8zbgpO+7fVr1e5GNZuNsLNKgvqrr5HiJVuqGSysJpTKBqWEYvZZK5Lm63+U7miIS6O48AgLnxHuo8KvXyXVztbJpBbghi/2cZRDXd7ZrelpgPNPaJ8BPa/evpjukc3WwFz4a1qSGZHikmLfarEopL+9hITXWQnSk5RR/M/QdLO8r+m0lnoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dqjl0lDnTlFvG+HPBFEWc2VkR8nthr5Z1F8d/jdNxC4=;
- b=MxGgmZrmfm3ojcs/VxjY5Fi/LF80INde7RqtzpeoDC9jQgeA8CCeSsK51EWMUBDzzD8hCLD5kun0+wi9AnrrJMSEUbstTbGImGGCAy2q209PsVNPMCSBCJ+RFV5zecgXzlN0G8CYsRMDlVhybIF4dBO+wwZupYlFIdlclEkYQss=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by LV3PR13MB6335.namprd13.prod.outlook.com (2603:10b6:408:1a6::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.21; Tue, 30 May
- 2023 19:57:19 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::5e55:9a39:751f:55f6]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::5e55:9a39:751f:55f6%3]) with mapi id 15.20.6433.022; Tue, 30 May 2023
- 19:57:19 +0000
-Date: Tue, 30 May 2023 21:57:13 +0200
-From: Simon Horman <simon.horman@corigine.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, bjorn@kernel.org,
-	tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v2 bpf-next 13/22] xsk: report ZC multi-buffer capability
- via xdp_features
-Message-ID: <ZHZVGUJ3ROybmBJj@corigine.com>
-References: <20230529155024.222213-1-maciej.fijalkowski@intel.com>
- <20230529155024.222213-14-maciej.fijalkowski@intel.com>
- <ZHXkQX0uSh8tDFTO@corigine.com>
- <ZHXsmDhfw9hxjUCe@boxer>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZHXsmDhfw9hxjUCe@boxer>
-X-ClientProxiedBy: AM4PR0202CA0007.eurprd02.prod.outlook.com
- (2603:10a6:200:89::17) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681667E
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 20:51:10 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9D2102
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 13:50:37 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34UGYR9i012188
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 13:50:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=1qrbeJ2GL7XL/nULCOKYhA2QYagKiO03oh+rYV9guk4=;
+ b=KcwSolGkq3NlqwKig+QllpvwB/T/PJGj6sk4/YJSKPaNvqltdQEI+dTCzH9N5mUObyom
+ 3ZNVDQ6PMfXYscDCni7V27mvoARQ2zos9SAEMyPsATklHqK/Y93tA8VT0NopSobBKfIF
+ Sx81XumARb6PawdLMV+XI8aC8YxbtUk4JzE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qwgxdc4uw-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 13:50:36 -0700
+Received: from twshared8528.02.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 30 May 2023 13:50:35 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id D5CC0208149FA; Tue, 30 May 2023 13:50:29 -0700 (PDT)
+From: Yonghong Song <yhs@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Martin KaFai
+ Lau <martin.lau@kernel.org>,
+        <syzbot+958967f249155967d42a@syzkaller.appspotmail.com>
+Subject: [PATCH bpf-next v2 1/2] bpf: Silence a warning in btf_type_id_size()
+Date: Tue, 30 May 2023 13:50:29 -0700
+Message-ID: <20230530205029.264910-1-yhs@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 1C0DD6_uGWZBtFIceNW4WaAMuqrvOnRy
+X-Proofpoint-ORIG-GUID: 1C0DD6_uGWZBtFIceNW4WaAMuqrvOnRy
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|LV3PR13MB6335:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3978d25-2347-430c-d14f-08db6148136a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ddbSc+8Lb9OzZXyC81Mpw6ZS48qCPucLISGWfCB2oq512Sw9w8qp/37crPPNMdllalRfN63RKwf5AEGWLwmTNT9lg7pvxTylYCDAF+pMdSpaH4RWPDPDJ96FLf5Fnzj2RFH4LEMcMHi1WI26KBzbNHrOhoUyLBNSs0Ax38ub8b8jUe7LZYxRIZ9lCrOeWapEmDOqJYL4sIwdPAqsgwjtvUbWQ31Eq8wx9zixjQkTa62zoJBnT+U4+YLMy7Xjt0XwZbFO0LhSuV6nbjpqNpb0GiMfL8VWj67OP1kV6ap1dGAkIh6Jf97A56EIPlcw99kKaP6htO1zmb/vfHqTsQivO87J/Yfcd0aUKnlkxrzSv6pgPbitXSR067jOnCoFDaEeM2G1Mm7hNbel8Lpo2hdIdNw6WJ4Bty4y0jL30u3kFML+8wyCDprVqTqtt8r7aj+zpz4OAOWXb0ugJ1yTtFNWXiwbdMQ9EtpD4Dm2cMxLTC20vlP+Avwl030smw7+axVDUUfawxUXwQmM2/hahr8q88IDs6kglKHn5y71x8D3yrf3hNCl69RYNom2FMG3cRcRcJUf3ARAKzCvdzFRtpyJiUPxve+gpsoKKwOW7h09geE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39840400004)(346002)(366004)(136003)(396003)(451199021)(6486002)(41300700001)(6666004)(316002)(83380400001)(86362001)(186003)(36756003)(2906002)(6512007)(6506007)(44832011)(8676002)(5660300002)(8936002)(2616005)(478600001)(38100700002)(6916009)(4326008)(66946007)(66556008)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?k7zxZV7INlOV6W64S7PBiwA9rRi2rGlMscoKCzxhbLSw2CpoHj1v6i7y27ws?=
- =?us-ascii?Q?NP8X6TvMHBK1wOTmcOWyqlGv/82UHL+OjSSjXEMhYDgnjmnZ5b10KxBD3pKs?=
- =?us-ascii?Q?8kisIUGFzEGRCcMtvDO4awF5vTCgnpoZtVNYlVnWSZP8nQY7EF19Y49jFYyQ?=
- =?us-ascii?Q?vUTFQwWkjNfes4M8RPlG3WyIcq+304gGlZZMl7GvsEPsyfCwZW1uJyvFNext?=
- =?us-ascii?Q?GCMGAn8fjCuh7YX2gh17cgSy9UrOhm02tuLNUrWmxO+pKDw5XN+pkzht6j/P?=
- =?us-ascii?Q?1vPJo5COBSUQteosyBoqkxXZSiY8R+33wXZHNl0ygLhMCx079XOjDW3lqtjG?=
- =?us-ascii?Q?2MgiHKDAh8hNKXhYQ8HkWpuaaL4yTM6UOmGP4OhGYzKat6Kd/Djcyti3sbnY?=
- =?us-ascii?Q?lZ/X8Jdd469z/GKnE2yVLDczCSBTJbD6myEZCpUw73N+TbLKa2rNNfY7aOJ0?=
- =?us-ascii?Q?+uCW16KPgCq8BYYVc64FwTgG4SmjlD/1ZDXm6K+NMVcPrpFjrPCq+j3LShGW?=
- =?us-ascii?Q?Abgdu8rJ0ZWrWYZZIBjy8kF9TdNO+Maczq87x0gJ6aJWFJhAD4lGkuptee1d?=
- =?us-ascii?Q?eJnOh8QdNljrq0eN5ZyXxisNYsc0EnS0J3QcuPBKKWZk59HMwwmRa1fIqeJ/?=
- =?us-ascii?Q?rcT14T+jP8kMI2wdoWO/YqpRRQxyj7D0w6bUCUlgeKA5wQUNg6i2EHQVahre?=
- =?us-ascii?Q?zrBdD8dzWSIpKXyjxGq5ApB5ygDwJM6/yBsWGxwu6q7Qwhc1gqjciWAFqIeu?=
- =?us-ascii?Q?8CQ99v14zwdSYJrPF4G9XUaxXy/WZzxiyGQywr79OKLOGSxC3F0yAyOPQLdd?=
- =?us-ascii?Q?qIjPhsULdnokezzrHVOyFUunSVa3wy48eYbiZI6bFHkUv/tdRCt78/kxubN6?=
- =?us-ascii?Q?YMh6oWoBipuEC/mf0Z0s4MwqezziptpkZb2DzoodaLDhiPJOn5b1LTfd7kdb?=
- =?us-ascii?Q?NpVVaOAY/ijBU075rHlrzipOY7Sywxnzyjr8bOvrf95E1tL1Iabu7S0Yxwgy?=
- =?us-ascii?Q?J1pNgVYoxOwOCcvKczgsMoYkN+uPM+JoXNnJyA+7ORj50m1mQzarThZf2yf1?=
- =?us-ascii?Q?KG1is6NPr2DlVRyiqnm/Mpqon1LDcqL+weszZQfO5xZ4aP2OCgWRB/sELehe?=
- =?us-ascii?Q?niRmtVtEguxnCkX7wTZRz/JOuftKYZRsHTtaEesOe2e6IO20dnNzM/ArpdGU?=
- =?us-ascii?Q?KhXf+K+2oPc0jj5ooyxlhoIEzJLL/w5L8lhpVussBRrVYJ/3WcPU6x167xTx?=
- =?us-ascii?Q?WCvWdVqFY6vCik+aBLHXGQXx3qfaHGgWWMab6ChIc9V60rkH5wPvxRrWOHq+?=
- =?us-ascii?Q?oec9C28vG3UI0ra20ZHoM0puDM8IUBVja5pnsxo8EAS54xnps1oeMp0d4bux?=
- =?us-ascii?Q?2+5Jlr8OFa8neqwKD8Qh4vJMvzyoxB+nsJ2UEjzAX9Mqs+w2hgmyN0ARSFPY?=
- =?us-ascii?Q?G9oYnwNAjFBAXkT7ioxWBRBU83/G58abJraq+0G56zlC7TsSXI/RRuTJVAvV?=
- =?us-ascii?Q?nm9mtDGRb04ZjJqFdIWUexwtOuWFMS/yh8N1n65OgEoVYlBLBBMWCRlGaS1F?=
- =?us-ascii?Q?4uPRM9bqKc2dyvCDk5wfBsbRPRnfAPQbWqqxBFTbGjlN0Z4wHn9wJFNnX0S6?=
- =?us-ascii?Q?GhKlK7o/F4zHrD8CF7JhkNXs0UzMpBMgJX1rrtdn+l8xffNvavhTFoUh2v11?=
- =?us-ascii?Q?6oU9Fw=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3978d25-2347-430c-d14f-08db6148136a
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 May 2023 19:57:19.6311
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vr6j51PnOWMydt8uvOeLOz+LVZIc7B5XZPCcWqd4fvW2j4iPR79Lc7oCov/Uk93nQvu9PYPcYsGItj0Z6OrmSxQgTaYPsjRWfXN5mx3EL5c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR13MB6335
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-30_16,2023-05-30_01,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 30, 2023 at 02:31:20PM +0200, Maciej Fijalkowski wrote:
-> On Tue, May 30, 2023 at 01:55:45PM +0200, Simon Horman wrote:
-> > On Mon, May 29, 2023 at 05:50:15PM +0200, Maciej Fijalkowski wrote:
-> > > Introduce new xdp_feature NETDEV_XDP_ACT_NDO_ZC_SG that will be used to
-> > > find out if user space that wants to do ZC multi-buffer will be able to
-> > > do so against underlying ZC driver.
-> > > 
-> > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > ---
-> > >  include/uapi/linux/netdev.h | 4 ++--
-> > >  net/xdp/xsk_buff_pool.c     | 6 ++++++
-> > >  2 files changed, 8 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
-> > > index 639524b59930..bfca07224f7b 100644
-> > > --- a/include/uapi/linux/netdev.h
-> > > +++ b/include/uapi/linux/netdev.h
-> > > @@ -33,8 +33,8 @@ enum netdev_xdp_act {
-> > >  	NETDEV_XDP_ACT_HW_OFFLOAD = 16,
-> > >  	NETDEV_XDP_ACT_RX_SG = 32,
-> > >  	NETDEV_XDP_ACT_NDO_XMIT_SG = 64,
-> > > -
-> > > -	NETDEV_XDP_ACT_MASK = 127,
-> > > +	NETDEV_XDP_ACT_NDO_ZC_SG = 128,
-> > 
-> > Hi Maciej,
-> > 
-> > Please consider adding NETDEV_XDP_ACT_NDO_ZC_SG to the Kernel doc
-> > a just above netdev_xdp_act.
-> 
-> right, my bad. i'll do this in next rev but i'd like to gather more
-> feedback from people. thanks once again for spotting an issue.
+syzbot reported a warning in [1] with the following stacktrace:
+  WARNING: CPU: 0 PID: 5005 at kernel/bpf/btf.c:1988 btf_type_id_size+0x2d9=
+/0x9d0 kernel/bpf/btf.c:1988
+  ...
+  RIP: 0010:btf_type_id_size+0x2d9/0x9d0 kernel/bpf/btf.c:1988
+  ...
+  Call Trace:
+   <TASK>
+   map_check_btf kernel/bpf/syscall.c:1024 [inline]
+   map_create+0x1157/0x1860 kernel/bpf/syscall.c:1198
+   __sys_bpf+0x127f/0x5420 kernel/bpf/syscall.c:5040
+   __do_sys_bpf kernel/bpf/syscall.c:5162 [inline]
+   __se_sys_bpf kernel/bpf/syscall.c:5160 [inline]
+   __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5160
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Thanks, good plan.
+With the following btf
+  [1] DECL_TAG 'a' type_id=3D4 component_idx=3D-1
+  [2] PTR '(anon)' type_id=3D0
+  [3] TYPE_TAG 'a' type_id=3D2
+  [4] VAR 'a' type_id=3D3, linkage=3Dstatic
+and when the bpf_attr.btf_key_type_id =3D 1 (DECL_TAG),
+the following WARN_ON_ONCE in btf_type_id_size() is triggered:
+  if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+                   !btf_type_is_var(size_type)))
+          return NULL;
+
+Note that 'return NULL' is the correct behavior as we don't want
+a DECL_TAG type to be used as a btf_{key,value}_type_id even
+for the case like 'DECL_TAG -> STRUCT'. So there
+is no correctness issue here, we just want to silence warning.
+
+To silence the warning, I added DECL_TAG as one of kinds in
+btf_type_nosize() which will cause btf_type_id_size() returning
+NULL earlier without the warning.
+
+  [1] https://lore.kernel.org/bpf/000000000000e0df8d05fc75ba86@google.com/
+
+Reported-by: syzbot+958967f249155967d42a@syzkaller.appspotmail.com
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 947f0b83bfad..bd2cac057928 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -492,25 +492,26 @@ static bool btf_type_is_fwd(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_FWD;
+ }
+=20
+-static bool btf_type_nosize(const struct btf_type *t)
++static bool btf_type_is_datasec(const struct btf_type *t)
+ {
+-	return btf_type_is_void(t) || btf_type_is_fwd(t) ||
+-	       btf_type_is_func(t) || btf_type_is_func_proto(t);
++	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DATASEC;
+ }
+=20
+-static bool btf_type_nosize_or_null(const struct btf_type *t)
++static bool btf_type_is_decl_tag(const struct btf_type *t)
+ {
+-	return !t || btf_type_nosize(t);
++	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DECL_TAG;
+ }
+=20
+-static bool btf_type_is_datasec(const struct btf_type *t)
++static bool btf_type_nosize(const struct btf_type *t)
+ {
+-	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DATASEC;
++	return btf_type_is_void(t) || btf_type_is_fwd(t) ||
++	       btf_type_is_func(t) || btf_type_is_func_proto(t) ||
++	       btf_type_is_decl_tag(t);
+ }
+=20
+-static bool btf_type_is_decl_tag(const struct btf_type *t)
++static bool btf_type_nosize_or_null(const struct btf_type *t)
+ {
+-	return BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_DECL_TAG;
++	return !t || btf_type_nosize(t);
+ }
+=20
+ static bool btf_type_is_decl_tag_target(const struct btf_type *t)
+--=20
+2.34.1
+
 
