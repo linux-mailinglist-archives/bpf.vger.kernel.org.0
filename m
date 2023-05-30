@@ -1,93 +1,111 @@
-Return-Path: <bpf+bounces-1468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 624927170DA
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 00:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D785F7170F7
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 00:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1FCB1C20DB3
-	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 22:40:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 766A91C20D7C
+	for <lists+bpf@lfdr.de>; Tue, 30 May 2023 22:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E992D259;
-	Tue, 30 May 2023 22:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7399034CC4;
+	Tue, 30 May 2023 22:49:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7CBA948
-	for <bpf@vger.kernel.org>; Tue, 30 May 2023 22:40:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FBF9C433D2;
-	Tue, 30 May 2023 22:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E64228C1D
+	for <bpf@vger.kernel.org>; Tue, 30 May 2023 22:49:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B243FC43445;
+	Tue, 30 May 2023 22:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685486420;
-	bh=IbfJ4mCBTG/vGKhMNMzJU8QML5/lXc88LBmkV+oS08Y=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tKCtyet9GDCQPTv4WWO2es1TveUpAEHjFhYa2nGreEe2gZxouGht1LsSBBf2aPbNi
-	 g0LNml/XwkQKKbX33faDJh0S9lDslBsBofpZWWl6rgHbUqQmXqYSTPvUH3qQlicPE5
-	 M/PBFXY6clrapKxPX29jYnXG1akGgZBaVRe2uZDzJrySWHRqaxa5xJU7h0aGHdF++w
-	 1UzKxhzbhtHNhwNSCWlAsnCvRCo99ucyXnhCLM9pSkQmXhJeT5/LgBDtZBJO/i9pGl
-	 0E02QOUGsUI64AnaXPaDUxlDPiCOj3JW4g3Pb2bUuKFHvD+WBBOB0z01NvYCz28h7V
-	 EnrElBeoEU3Dg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03838E52C0F;
-	Tue, 30 May 2023 22:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1685486945;
+	bh=0IuCc4ZXrqDomHpXWfXNUBxYgu4rnYtwWDypsa5wpHU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ToGdzQYh7c7TbK+h9+ubtH9qr/elwlZQG/3NYRfX082sGoMBsCwx23XrscWImkWox
+	 0H3+IA1U/mz/QipP+b7iDaz+bjF8tvdVSOtqy4gO1r6QLVQDpGrcV95+DyHGp8KCR+
+	 g7FE4W91vlKlO4n59v/McfXuWiG71ZnV4kqdB0bDVHX4RU0JMtRJe2oJIejvFszrcB
+	 ysymo8H4CDRWrYY0H4O7bbz0PYQaJDwjz0LYpTwXLZLzBTubECx0b1qd1Go65KPzOe
+	 QFBWt4tMZACr6TZXIvGAEM4DUkfhTnMtrPIpk8hpsFb216y3P4eKfrcKowMz1HSAOQ
+	 5jGbba+laAHOQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4f3a873476bso5674739e87.1;
+        Tue, 30 May 2023 15:49:05 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwpoJGOdxTZ8XA8vlVzBQfijEJ9VNCptQXUCE6jrejVCzNpDoaQ
+	h134rD0dAKXwn7A6qMP0dlOnBbBfKIh1jgzQeQQ=
+X-Google-Smtp-Source: ACHHUZ4bS0pN0vhbRQKYMialN1rGp+sHGugH3oihIijRD7zIcsyEyoMPZ5BwCJlvbUjzUrKdEXQxN6fKuKVldz1ZhpA=
+X-Received: by 2002:ac2:46d8:0:b0:4ea:fabb:4db1 with SMTP id
+ p24-20020ac246d8000000b004eafabb4db1mr1442400lfo.1.1685486943732; Tue, 30 May
+ 2023 15:49:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Silence a warning in btf_type_id_size()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168548642000.11166.404309143613379286.git-patchwork-notify@kernel.org>
-Date: Tue, 30 May 2023 22:40:20 +0000
-References: <20230530205029.264910-1-yhs@fb.com>
-In-Reply-To: <20230530205029.264910-1-yhs@fb.com>
-To: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
- syzbot+958967f249155967d42a@syzkaller.appspotmail.com
+References: <20230526051529.3387103-1-song@kernel.org> <ZHGrjJ8PqAGN9OZK@moria.home.lan>
+ <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com> <ZHTuBdlhSI0mmQGE@moria.home.lan>
+In-Reply-To: <ZHTuBdlhSI0mmQGE@moria.home.lan>
+From: Song Liu <song@kernel.org>
+Date: Tue, 30 May 2023 15:48:51 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
+Message-ID: <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Type aware module allocator
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org, 
+	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org, rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, May 29, 2023 at 11:25=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
+> > I don't think we are exposing architecture specific options to users.
+> > Some layer need to handle arch specifics. If the new allocator is
+> > built on top of module_alloc, module_alloc is handling that. If the new
+> > allocator is to replace module_alloc, it needs to handle arch specifics=
+.
+>
+> Ok, I went back and read more thoroughly, I got this part wrong. The
+> actual interface is the mod_mem_type enum, not mod_alloc_params or
+> vmalloc_params.
+>
+> So this was my main complaint, but this actually looks ok now.
+>
+> It would be better to have those structs in a .c file, not the header
+> file - it looks like those are the public interface the way you have it.
 
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Thanks for this suggestion. It makes a lot of sense. But I am not quite
+sure how we can avoid putting it in the header yet. I will take a closer
+look. OTOH, if we plan to use Mike's new allocator to replace vmalloc,
+we probably don't need this part.
 
-On Tue, 30 May 2023 13:50:29 -0700 you wrote:
-> syzbot reported a warning in [1] with the following stacktrace:
->   WARNING: CPU: 0 PID: 5005 at kernel/bpf/btf.c:1988 btf_type_id_size+0x2d9/0x9d0 kernel/bpf/btf.c:1988
->   ...
->   RIP: 0010:btf_type_id_size+0x2d9/0x9d0 kernel/bpf/btf.c:1988
->   ...
->   Call Trace:
->    <TASK>
->    map_check_btf kernel/bpf/syscall.c:1024 [inline]
->    map_create+0x1157/0x1860 kernel/bpf/syscall.c:1198
->    __sys_bpf+0x127f/0x5420 kernel/bpf/syscall.c:5040
->    __do_sys_bpf kernel/bpf/syscall.c:5162 [inline]
->    __se_sys_bpf kernel/bpf/syscall.c:5160 [inline]
->    __x64_sys_bpf+0x79/0xc0 kernel/bpf/syscall.c:5160
->    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->    do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> [...]
+>
+> > > The memory protection interface also needs to go, we've got a better
+> > > interface to model after (text_poke(), although that code needs work
+> > > too!). And the instruction fill features need a thorough justificatio=
+n
+> > > if they're to be included.
+> >
+> > I guess the first step to use text_poke() is to make it available on al=
+l
+> > archs? That doesn't seem easy to me.
+>
+> We just need a helper that either calls text_poke() or does the page
+> permission dance in a single place.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: Silence a warning in btf_type_id_size()
-    https://git.kernel.org/bpf/bpf-next/c/e6c2f594ed96
-  - [bpf-next,v2,2/2] selftests/bpf: Add a test where map key_type_id with decl_tag type
-    https://git.kernel.org/bpf/bpf-next/c/e38096d95f4d
+AFAICT, we don't have a global text_poke() API yet. I can take a look
+into it (if it makes sense).
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+> If we do the same thing for other mod_mem_types, we could potentially
+> allow them to be shared on hugepages too.
 
+Yeah, that's part of the goal to extend the scope from executable to all
+types.
 
+Thanks,
+Song
 
