@@ -1,106 +1,121 @@
-Return-Path: <bpf+bounces-1535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A124718A94
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 21:54:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B71718A98
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 21:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FAFC1C20AD3
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 19:54:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 335B92815E4
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 19:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458663C09D;
-	Wed, 31 May 2023 19:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449FB3C0A0;
+	Wed, 31 May 2023 19:55:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D8419E61
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 19:54:02 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA36B9D
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 12:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Y1k/P7rHRI/uST6OUcO3Wa1vgIm+WpfRF3zuose9b3o=; b=UXuwdfvEPEEQ7NU2BVNk1AtT7V
-	Ku2bZHdm1nJnGEZya9lP5h+VfOrgRRYVDx1NRO01Zz0jbbx/wzmhYOMABHvaEUD13zgRn1VuWDHtf
-	d2Y+heMSefFPp8ZRGFeGeb0itzTQFNzp1cdMmOpVPxTFRsDsYT7Bf66SYEEx/VcvdDdZk/vUHdMLO
-	bSPSvgT0WT1S0dbNpJgdMX7sC+enEaxo6NFsnqomfYPPjl0SW+TcqMzbOta2sgQDrt0W1AJZJAMf5
-	6+C1IQouTTe6ESd43T7de7LnV5BeaDZ8XlIKg0UHvH31EvBPP/n2MDPvR5sOdc7orBVZJhqif9qYr
-	1wX8gj+Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q4RtO-0003j6-8D; Wed, 31 May 2023 21:53:58 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q4RtN-000J2U-Sw; Wed, 31 May 2023 21:53:57 +0200
-Subject: Re: [PATCH bpf-next] bpf, vmtest: Build test_progs and friends as
- statically linked
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, bpf@vger.kernel.org
-References: <05b5dd79465be41ff8cf8b56b694118a0aa7ae12.1685140942.git.daniel@iogearbox.net>
- <CAEf4BzYZBC_518wLTEXVo4+QyJ=Lsx0BYuVsL38xYdPfGOKHEg@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8005de2d-5e10-9eef-2a0d-6f15aa681c05@iogearbox.net>
-Date: Wed, 31 May 2023 21:53:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4DE19E61
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 19:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A45A3C433EF;
+	Wed, 31 May 2023 19:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685562926;
+	bh=K6BiB4d4pwh5l5fEvqg5HdsW+2/SZ5ha4oA58FNbVQ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JuSCt7/41WoHCLlFavs2RXRxmldBL7Ykn9PLKEI5mTlSq8J8r3pTx9GA6RlHeXPHs
+	 Bs7j3d47LzA6lzpLmKw49dzEsf0GHytMnrsv6BBfUSM0ou+i6s3zAz7/bUEIKf+edU
+	 9ETJeJF8nBvARAe8pp4O9agqKhDGNPCh3pBNUzDIkPWSWgKa8CdBsMHBH3BNV/fMWG
+	 v8iuohJNe6KusvYI9dmcvVVyTq7z+fjUFHwk+26RGP41wNFB2J7hcZRPiokWcBTYS2
+	 JHgziIzlZDrcsqgATpaEjbzvteIxpIDZ7bWbH8O+yYHtPFGuqU1Td4rWl8EfQHGRHy
+	 vxeSinydRSACg==
+Date: Wed, 31 May 2023 22:54:54 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	mcgrof@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+	x86@kernel.org
+Subject: Re: [PATCH 0/3] Type aware module allocator
+Message-ID: <20230531195454.GB395338@kernel.org>
+References: <20230526051529.3387103-1-song@kernel.org>
+ <ZHGrjJ8PqAGN9OZK@moria.home.lan>
+ <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
+ <20230529104530.GL4967@kernel.org>
+ <CAPhsuW6g98Wz9Oj1NiwwZ1OkSVNXX10USByY0b9tEfzOt8SVQg@mail.gmail.com>
+ <20230531135120.GA395338@kernel.org>
+ <CAPhsuW6r=0r0dKfKxwPp9KXqLSKWw4x6RrbNBnS=1M1Y1sh5Ag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYZBC_518wLTEXVo4+QyJ=Lsx0BYuVsL38xYdPfGOKHEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26924/Wed May 31 09:24:56 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <CAPhsuW6r=0r0dKfKxwPp9KXqLSKWw4x6RrbNBnS=1M1Y1sh5Ag@mail.gmail.com>
 
-On 5/31/23 9:02 PM, Andrii Nakryiko wrote:
-> On Fri, May 26, 2023 at 3:47 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Small fix for vmtest.sh that I've been carrying locally for quite a while
->> now in order to work around the following linker issue:
->>
->>    # ./vmtest.sh -- ./test_progs -t lsm
->>    [...]
->>    + ip link set lo up
->>    + [ -x /etc/rcS.d/S50-startup ]
->>    + /etc/rcS.d/S50-startup
->>    ./test_progs -t lsm
->>    ./test_progs: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./test_progs)
->>    ./test_progs: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./test_progs)
->>    [    1.356497] ACPI: PM: Preparing to enter system sleep state S5
->>    [    1.358950] reboot: Power down
->>    [...]
->>
->> With the specified TRUNNER_LDFLAGS out of vmtest to force static linking
->> runners like test_progs/test_maps/etc work just fine.
+On Wed, May 31, 2023 at 10:03:58AM -0700, Song Liu wrote:
+> On Wed, May 31, 2023 at 6:51 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Tue, May 30, 2023 at 03:37:24PM -0700, Song Liu wrote:
+> > > On Mon, May 29, 2023 at 3:45 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > > > On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
+> > > > > On Sat, May 27, 2023 at 12:04 AM Kent Overstreet
+> > > > > <kent.overstreet@linux.dev> wrote:
+> > > > > >
+> > > > > > I think this needs to back to the drawing board and we need something
+> > > > > > simpler just targeted at executable memory; architecture specific
+> > > > > > options should definitely _not_ be part of the exposed interface.
+> > > > >
+> > > > > I don't think we are exposing architecture specific options to users.
+> > > > > Some layer need to handle arch specifics. If the new allocator is
+> > > > > built on top of module_alloc, module_alloc is handling that. If the new
+> > > > > allocator is to replace module_alloc, it needs to handle arch specifics.
+> > > >
+> > > > I'm for creating a new allocator that will replace module_alloc(). This
+> > > > will give us a clean abstraction that modules and all the rest will use and
+> > > > it will make easier to plug binpack or another allocator instead of
+> > > > vmalloc.
+> > > >
+> > > > Another point is with a new allocator we won't have weird dependencies on
+> > > > CONFIG_MODULE in e.g. bpf and kprobes.
+> > > >
+> > > > I'll have something ready to post as an RFC in a few days.
+> > >
+> > > I guess this RFC is similar to unmapped_alloc()? If it replaces
+> > > vmalloc, we can probably trim this set down a bit (remove
+> > > mod_alloc_params and vmalloc_params, etc.).
+> >
+> > No, it's not a new allocator. I'm trying to create an API for code
+> > allocations that can accommodate all the architectures and it won't be a
+> > part of modules code. The modules will use the new API just like every
+> > other subsystem that needs to allocate code.
+> >
+> > I've got a core part of it here:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=jitalloc/v1
 > 
-> Should we make this a command line option to the vmtest.sh script
-> instead? I, for one, can't even successfully build on my machine with
-> this, probably due to missing some -static library package (though I
-> did install libzstd-static). I'm getting:
+> This branch looks like the same scope as this set (but with different
+> implementation). So it will still use vmalloc, right?
 
-Interesting, in my case it's the other way round, but yeah that could work
-as well.
+Yes, it still uses vmalloc. The idea is to decouple code allocations from
+modules from one side and make it handle all the variants expected by the
+architectures based on a set of parameters each architecture provides.
 
-Thanks,
-Daniel
+The first few commits essentially shuffle the code around and replace
+arch::module_alloc() with arch::jit_alloc_params.
+
+The commits on top enable some bits that are not available today, like ROX
+executable memory and DYNAMIC_FTRACE without modules for x86.
+ 
+> Thanks,
+> Song
+
+-- 
+Sincerely yours,
+Mike.
 
