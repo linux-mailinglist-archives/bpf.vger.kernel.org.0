@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-1546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A581718B0F
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 22:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B731718B10
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 22:23:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E87251C20F1B
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 20:22:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05BE41C20EF2
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 20:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C223D398;
-	Wed, 31 May 2023 20:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633553D39B;
+	Wed, 31 May 2023 20:22:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2480D34CE2
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 20:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC0034CE2
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 20:22:03 +0000 (UTC)
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E493D134
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 13:21:52 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34VK2Omj027743;
-	Wed, 31 May 2023 20:21:08 GMT
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FF412C
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 13:21:59 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34VKD3IW016261;
+	Wed, 31 May 2023 20:21:11 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2023-03-30;
- bh=Ol19eRQkoVVrpX2aGsZ286OEGEfhsIKyIEy7NBNLfw4=;
- b=zrkl/DY/EZ1xi7gYyp69IaISbSt+53ET8hfvUopt39mo5aRhOMBXsDmCsXe7IuZ5d5xz
- 8cSWHFL7miOLAUtHpHYSwoRQ+phyPQLDnNGK/v2eAzRQ64zgSh4mI1j7DdA52RPQhwn8
- +v+nQlyr+ooCpz9fsUAGr91p/07DG/biokW1hejTyiTORHMjYO42UIHVBIqDWvykp2pK
- tSWCFTWa/j/kZ3Ch78YTnxzmcwJpKu8Fl+SuSLys1gPgUTw08B1IP6Tl8BxyUCcHcjs4
- +vBv9E93cUP/4HXJooowSa2NgofepR47AqnzogEkTXmiKxsmZ1myrnTxZvC7cc+RdPSu Sw== 
+ bh=hwXmierehEslNjthUkN9zGuafnuA9WBpaZA6VilAp00=;
+ b=kLs23nhquP8STz8GrCAzESgTopPYV246XPlXfcx87L42GiunEFJBEhRo2W2Xg9n6m5xz
+ C+oDiCRyqezvarZd4/cUz/6FhgUkcw71hiQmlCnFzFsFvXIsxTudb2nlc6eTwiP/P6PR
+ c8B600hTxnGcBPRA8D0LRIoRdcjnfvCzVNESCKVYMV4TC232CMP0EthkWBVj0C4nfOXS
+ Q0MMGraM8svNgzMazOHise9RTCM6Dm49PLIz+JFphkGPG8x8K8Y1YSlumk/RWGLE9ZzC
+ sbmI2lSa7WTwnU788Rdl6FTH0LmPu6Qh/P7J1emiN4BvAYGgZbmfe+anj5hxWXMdPwXy kg== 
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qvhwweucy-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3qvhmepwy6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 31 May 2023 20:21:07 +0000
+	Wed, 31 May 2023 20:21:11 +0000
 Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34VKHccB019873;
-	Wed, 31 May 2023 20:21:06 GMT
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 34VJPuoM019721;
+	Wed, 31 May 2023 20:21:10 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3qu8a6dk17-1
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3qu8a6dk3v-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 31 May 2023 20:21:06 +0000
+	Wed, 31 May 2023 20:21:10 +0000
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34VKKaEZ000653;
-	Wed, 31 May 2023 20:21:06 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34VKKaEb000653;
+	Wed, 31 May 2023 20:21:10 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-201-40.vpn.oracle.com [10.175.201.40])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3qu8a6djab-8;
-	Wed, 31 May 2023 20:21:05 +0000
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3qu8a6djab-9;
+	Wed, 31 May 2023 20:21:09 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, acme@kernel.org
 Cc: martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -57,9 +57,9 @@ Cc: martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com,
         mykolal@fb.com, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [RFC bpf-next 7/8] bpftool: add BTF dump "format meta" to dump header/metadata
-Date: Wed, 31 May 2023 21:19:34 +0100
-Message-Id: <20230531201936.1992188-8-alan.maguire@oracle.com>
+Subject: [RFC bpf-next 8/8] selftests/bpf: test kind encoding/decoding
+Date: Wed, 31 May 2023 21:19:35 +0100
+Message-Id: <20230531201936.1992188-9-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230531201936.1992188-1-alan.maguire@oracle.com>
 References: <20230531201936.1992188-1-alan.maguire@oracle.com>
@@ -77,8 +77,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwa
  bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2304280000
  definitions=main-2305310172
-X-Proofpoint-ORIG-GUID: NNUG5CoxLXm4xruWdAmFYHv9_8a44jVQ
-X-Proofpoint-GUID: NNUG5CoxLXm4xruWdAmFYHv9_8a44jVQ
+X-Proofpoint-ORIG-GUID: kjB7IP50Drzt7RP2rbJvYgxyYuYK-3Nn
+X-Proofpoint-GUID: kjB7IP50Drzt7RP2rbJvYgxyYuYK-3Nn
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
 	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -86,122 +86,161 @@ X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Provide a way to dump BTF header and metadata info via
-bpftool; for example
-
-$ bpftool btf dump file vmliux format meta
-BTF: data size 4963656
-Header: magic 0xeb9f, version 1, flags 0x0, hdr_len 32
-Types: len 2927556, offset 0
-Strings: len 2035881, offset 2927556
-Metadata header found: len 184, offset 4963440, flags 0x1
-Description: 'generated by dwarves v1.25'
-CRC 0x6da2a930 ; base CRC 0x0
-Kind metadata for 20 kinds:
-       BTF_KIND_UNKN[ 0] flags 0x0    info_sz  0 elem_sz  0
-        BTF_KIND_INT[ 1] flags 0x0    info_sz  4 elem_sz  0
-        BTF_KIND_PTR[ 2] flags 0x0    info_sz  0 elem_sz  0
-      BTF_KIND_ARRAY[ 3] flags 0x0    info_sz 12 elem_sz  0
-     BTF_KIND_STRUCT[ 4] flags 0x0    info_sz  0 elem_sz 12
-      BTF_KIND_UNION[ 5] flags 0x0    info_sz  0 elem_sz 12
-       BTF_KIND_ENUM[ 6] flags 0x0    info_sz  0 elem_sz  8
-        BTF_KIND_FWD[ 7] flags 0x0    info_sz  0 elem_sz  0
-    BTF_KIND_TYPEDEF[ 8] flags 0x0    info_sz  0 elem_sz  0
-   BTF_KIND_VOLATILE[ 9] flags 0x0    info_sz  0 elem_sz  0
-      BTF_KIND_CONST[10] flags 0x0    info_sz  0 elem_sz  0
-   BTF_KIND_RESTRICT[11] flags 0x0    info_sz  0 elem_sz  0
-       BTF_KIND_FUNC[12] flags 0x0    info_sz  0 elem_sz  0
- BTF_KIND_FUNC_PROTO[13] flags 0x0    info_sz  0 elem_sz  8
-        BTF_KIND_VAR[14] flags 0x0    info_sz  4 elem_sz  0
-    BTF_KIND_DATASEC[15] flags 0x0    info_sz  0 elem_sz 12
-      BTF_KIND_FLOAT[16] flags 0x0    info_sz  0 elem_sz  0
-   BTF_KIND_DECL_TAG[17] flags 0x1    info_sz  4 elem_sz  0
-   BTF_KIND_TYPE_TAG[18] flags 0x1    info_sz  0 elem_sz  0
-     BTF_KIND_ENUM64[19] flags 0x0    info_sz  0 elem_sz 12
+verify btf__add_kinds() adds kind encodings for all kinds supported,
+and after adding kind-related types for an unknown kind, ensure that
+parsing uses this info when that kind is encountered rather than
+giving up.
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- tools/bpf/bpftool/btf.c | 46 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ .../selftests/bpf/prog_tests/btf_kind.c       | 138 ++++++++++++++++++
+ 1 file changed, 138 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_kind.c
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 91fcb75babe3..da4257e00ba8 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -504,6 +504,47 @@ static int dump_btf_c(const struct btf *btf,
- 	return err;
- }
- 
-+static int dump_btf_meta(const struct btf *btf)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_kind.c b/tools/testing/selftests/bpf/prog_tests/btf_kind.c
+new file mode 100644
+index 000000000000..a928415c60ff
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/btf_kind.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023, Oracle and/or its affiliates. */
++
++#include <test_progs.h>
++#include <bpf/btf.h>
++#include <bpf/libbpf.h>
++
++/* verify kind encoding exists for each kind */
++void test_btf_kind_encoding(struct btf *btf, char *description)
 +{
 +	const struct btf_header *hdr;
-+	const struct btf_metadata *m;
-+	const void *data;
-+	__u32 data_sz;
-+	__u8 i;
++	const struct btf_metadata *meta;
++	const void *raw_btf;
++	__u32 raw_size;
++	__u16 i;
 +
-+	data = btf__raw_data(btf, &data_sz);
-+	if (!data)
-+		return -ENOMEM;
-+	hdr = data;
-+	printf("BTF: data size %u\n", data_sz);
-+	printf("Header: magic 0x%x, version %d, flags 0x%x, hdr_len %u\n",
-+	       hdr->magic, hdr->version, hdr->flags, hdr->hdr_len);
-+	printf("Types: len %u, offset %u\n", hdr->type_len, hdr->type_off);
-+	printf("Strings: len %u, offset %u\n", hdr->str_len, hdr->str_off);
++	raw_btf = btf__raw_data(btf, &raw_size);
++	if (!ASSERT_OK_PTR(raw_btf, "btf__raw_data"))
++		return;
 +
-+	if (hdr->hdr_len < sizeof(struct btf_header) ||
-+	    hdr->meta_header.meta_len == 0 ||
-+	    hdr->meta_header.meta_off == 0)
-+		return 0;
++	hdr = raw_btf;
++	meta = raw_btf + hdr->hdr_len + hdr->meta_header.meta_off;
 +
-+	m = (void *)hdr + hdr->hdr_len + hdr->meta_header.meta_off;
++	if (!ASSERT_EQ(meta->kind_meta_cnt, NR_BTF_KINDS, "unexpected kind_meta_cnt"))
++		return;
 +
-+	printf("Metadata header found: len %u, offset %u, flags 0x%x\n",
-+	       hdr->meta_header.meta_len, hdr->meta_header.meta_off, m->flags);
-+	if (m->description_off)
-+		printf("Description: '%s'\n", btf__name_by_offset(btf, m->description_off));
-+	printf("CRC 0x%x ; base CRC 0x%x\n", m->crc, m->base_crc);
-+	printf("Kind metadata for %d kinds:\n", m->kind_meta_cnt);
-+	for (i = 0; i < m->kind_meta_cnt; i++) {
-+		printf("%20s[%2d] flags 0x%-4x info_sz %2d elem_sz %2d\n",
-+		       btf__name_by_offset(btf, m->kind_meta[i].name_off),
-+		       i, m->kind_meta[i].flags, m->kind_meta[i].info_sz,
-+		       m->kind_meta[i].elem_sz);
++	if (!ASSERT_EQ(strcmp(description, btf__name_by_offset(btf, meta->description_off)),
++		       0, "check meta description"))
++		return;
++
++	for (i = 0; i <= BTF_KIND_MAX; i++) {
++		const struct btf_kind_meta *k = &meta->kind_meta[i];
++
++		if (ASSERT_OK_PTR(btf__name_by_offset(btf, k->name_off), "kind_name_valid"))
++			return;
 +	}
-+
-+	return 0;
 +}
 +
- static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
- 
- static struct btf *get_vmlinux_btf_from_sysfs(void)
-@@ -553,6 +594,7 @@ static int do_dump(int argc, char **argv)
- 	__u32 root_type_ids[2];
- 	int root_type_cnt = 0;
- 	bool dump_c = false;
-+	bool dump_meta = false;
- 	__u32 btf_id = -1;
- 	const char *src;
- 	int fd = -1;
-@@ -654,6 +696,8 @@ static int do_dump(int argc, char **argv)
- 			}
- 			if (strcmp(*argv, "c") == 0) {
- 				dump_c = true;
-+			} else if (strcmp(*argv, "meta") == 0) {
-+				dump_meta = true;
- 			} else if (strcmp(*argv, "raw") == 0) {
- 				dump_c = false;
- 			} else {
-@@ -692,6 +736,8 @@ static int do_dump(int argc, char **argv)
- 			goto done;
- 		}
- 		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
-+	} else if (dump_meta) {
-+		err = dump_btf_meta(btf);
- 	} else {
- 		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
- 	}
++/* fabricate an unrecognized kind at BTF_KIND_MAX + 1, and after adding
++ * the appropriate struct/typedefs to the BTF such that it recognizes
++ * this kind, ensure that parsing of BTF containing the unrecognized kind
++ * can succeed.
++ */
++void test_btf_kind_decoding(struct btf *btf)
++{
++	__s32 int_id, unrec_id, id;
++	struct btf_type *t;
++	char btf_path[64];
++	const void *raw_btf;
++	void *new_raw_btf;
++	struct btf *new_btf;
++	struct btf_header *hdr;
++	struct btf_metadata *meta;
++	struct btf_kind_meta *k;
++	__u32 raw_size;
++	int fd;
++
++	int_id = btf__add_int(btf, "test_char", 1, BTF_INT_CHAR);
++	if (!ASSERT_GT(int_id, 0, "add_int_id"))
++		return;
++
++	/* now create our type with unrecognized kind by adding a typedef kind
++	 * we will overwrite it with our unrecognized kind value.
++	 */
++	unrec_id = btf__add_typedef(btf, "unrec_kind", int_id);
++	if (!ASSERT_GT(unrec_id, 0, "add_unrec_id"))
++		return;
++
++	/* add an id after it that we will look up to verify we can parse
++	 * beyond unrecognized kinds.
++	 */
++	id = btf__add_typedef(btf, "test_lookup", int_id);
++	if (!ASSERT_GT(id, 0, "add_test_lookup_id"))
++		return;
++
++	raw_btf = (void *)btf__raw_data(btf, &raw_size);
++	if (!ASSERT_OK_PTR(raw_btf, "btf__raw_data"))
++		return;
++
++	new_raw_btf = calloc(1, raw_size + sizeof(*k));
++	memcpy(new_raw_btf, raw_btf, raw_size);
++
++	/* add new metadata description */
++	hdr = new_raw_btf;
++	hdr->meta_header.meta_len += sizeof(*k);
++	meta = new_raw_btf + hdr->hdr_len + hdr->meta_header.meta_off;
++	meta->kind_meta_cnt += 1;
++	/* we will call our kinds UNKN, re-using the string offsets from BTF_KIND_UNKN */
++	k = &meta->kind_meta[NR_BTF_KINDS];
++	k->name_off = meta->kind_meta[0].name_off + strlen("BTF_KIND_");
++	k->flags = BTF_KIND_META_OPTIONAL;
++	k->info_sz = 0;
++	k->elem_sz = 0;
++
++	/* now modify our typedef added above to be an unrecognized kind. */
++	t = (void *)hdr + hdr->hdr_len + hdr->type_off + sizeof(struct btf_type) +
++		sizeof(__u32);
++	t->info = (NR_BTF_KINDS << 24);
++
++	/* now write our BTF to a raw file, ready for parsing. */
++	snprintf(btf_path, sizeof(btf_path), "/tmp/btf_kind.%d", getpid());
++	fd = open(btf_path, O_WRONLY | O_CREAT);
++	write(fd, new_raw_btf, raw_size + sizeof(*k));
++	close(fd);
++
++	/* verify parsing succeeds, and that we can read type info past
++	 * the unrecognized kind.
++	 */
++	new_btf = btf__parse_raw(btf_path);
++	if (ASSERT_OK_PTR(new_btf, "btf__parse_raw")) {
++		ASSERT_EQ(btf__find_by_name_kind(new_btf, "test_lookup",
++						 BTF_KIND_TYPEDEF), id,
++			  "verify_id_lookup");
++		/* verify the kernel can handle unrecognized kinds. */
++		ASSERT_EQ(btf__load_into_kernel(new_btf), 0, "btf_load_into_kernel");
++	}
++	unlink(btf_path);
++}
++
++void test_btf_kind(void)
++{
++	LIBBPF_OPTS(btf_new_opts, opts);
++	char *description = "testing metadata!";
++
++	opts.add_meta = true;
++	opts.description = description;
++
++	struct btf *btf = btf__new_empty_opts(&opts);
++
++	if (!ASSERT_OK_PTR(btf, "btf_new"))
++		return;
++
++	if (test__start_subtest("btf_kind_encoding"))
++		test_btf_kind_encoding(btf, description);
++	if (test__start_subtest("btf_kind_decoding"))
++		test_btf_kind_decoding(btf);
++	btf__free(btf);
++}
 -- 
 2.31.1
 
