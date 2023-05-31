@@ -1,233 +1,184 @@
-Return-Path: <bpf+bounces-1494-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1495-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70353717A26
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 10:35:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095B3717A98
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 10:48:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29206281451
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 08:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F2C280CDB
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 08:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18EDA46AD;
-	Wed, 31 May 2023 08:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D44BE5A;
+	Wed, 31 May 2023 08:48:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA787E1
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 08:34:52 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C73107
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 01:34:50 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-96f9cfa7eddso933460366b.2
-        for <bpf@vger.kernel.org>; Wed, 31 May 2023 01:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685522088; x=1688114088;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4B5ipqjtU8mGgDCcsLLVQBin26t+C2NjH8eRNM7qLE=;
-        b=ZeqX7QQGrcGh61XUQe3kZVDoc6xvNHqxSoczUP3XYa7xd4IsQj3yuqVPU7bGv1EgKE
-         Inxq4ANZMkyzOV2NPDrUSvxU/juYiFnzLX+SbYuAMkQu2JX5aMNerM/Wy5gPcR3M82Oy
-         PnbQVYFJVCq/dM7MHTR7VrKfmg30z4Kxw1hQuLDfkNJG2++l2/npYf2ARVyWeh+ds+Np
-         /1Owinw/MftBoBWaxFrC3qiOOT3sp5FLSupyvxBpEyOoKIMiG7tBUpLY2XXYVWWAjsrt
-         /aWG7BM4ajYcsXAky/IrgDpqHD87KJ2CG06RP4LtbuDC0GKe1KcdHp8nvIp/N1g/BU+q
-         lgrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685522088; x=1688114088;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i4B5ipqjtU8mGgDCcsLLVQBin26t+C2NjH8eRNM7qLE=;
-        b=Rgk9I4SMhAZr8RlFEKbjTq9uJI2tPMb4+FuvaevS11cRGvR7aTsuHWBk4oP6TxXbYr
-         5H601l2MZxccXLuMARKDDbGIPvJn66x6MKjVv5C/gMrGDgablr7QUZaCHfChzj2dt1ek
-         r6gRLYv6dVHbwqVthsp1RZKHMcgzWvwuQi7+jfCfNs2nf/hIxkZbzLO+eJ5TxGqplQ8f
-         S0Df6tW5vkg+eAY+ggdxAU/HkeGDhL9SaFzwxHWG/E71MPzjpm6MIlKTyMUgP5kn9m+L
-         m667GfhrUfVkV9h6p+dVN7YUN0L1Mp7OKwFe9TGseV4fqVu1MHBvMGUtRAhOq6bWV0By
-         j0aQ==
-X-Gm-Message-State: AC+VfDychtxI0fq6pwm5w8oqSev+iCKUOvXJIW8e9U2aNBHzSqlKPUKF
-	RiSrp4eTAuRlYn+ECa4d5Dg=
-X-Google-Smtp-Source: ACHHUZ5kUgxfDXhGdTTNiKBJo2KiPTfdD1mXMRQFoLtwDwA0PGZnEONfFWi9NzXNGNnJzJW9zZrH+Q==
-X-Received: by 2002:a17:907:c0c:b0:93b:5f2:36c with SMTP id ga12-20020a1709070c0c00b0093b05f2036cmr5166864ejc.61.1685522088163;
-        Wed, 31 May 2023 01:34:48 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170906494700b0095807ab4b57sm8733691ejt.178.2023.05.31.01.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 May 2023 01:34:47 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 31 May 2023 10:34:45 +0200
-To: Viktor Malik <vmalik@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>,
-	Shen Jiamin <shen_jiamin@comp.nus.edu.sg>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix setting HOSTCFLAGS
-Message-ID: <ZHcGpUbEX5vBFrON@krava>
-References: <20230530123352.1308488-1-vmalik@redhat.com>
- <ZHX6SuWQHkm3hJl+@krava>
- <d565f28f-dbb3-f9bf-8635-c57a2a218b88@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF3F139F
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 08:48:29 +0000 (UTC)
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9815A122
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 01:48:25 -0700 (PDT)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230531084821epoutp04dff754429acf2bc12a865e342d2d182f~kLiX1K2KR3232332323epoutp04k
+	for <bpf@vger.kernel.org>; Wed, 31 May 2023 08:48:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230531084821epoutp04dff754429acf2bc12a865e342d2d182f~kLiX1K2KR3232332323epoutp04k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1685522901;
+	bh=baxG0r+ENYpq+lI/FYBiiMgnvFDrHXtZq7+5iYd8pQA=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=dQiR9FnQ6W+elEKOya0d4D5rWQ8y2UVrjrskw9f36r/PkSkjB2EQWnfbilQkP7ykG
+	 BY5NtLuYjAVb522SDZFQg/wbLO/6GbCsPyrTtRO1lPP8aPTNI4+g+J715GISjfdbSA
+	 qmYsp2IM4NtpQLPAPEIaZHfQasx0a9WjcBeHwSuI=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20230531084820epcas5p1d2dece3895cef198664d199ceef27cb2~kLiW_u3dk0967909679epcas5p1_;
+	Wed, 31 May 2023 08:48:20 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A3.E4.44881.4D907746; Wed, 31 May 2023 17:48:20 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+	20230531084800epcas5p1c02d5a7ffcef2bb7cf626bf52beb0eee~kLiFCk88D0492504925epcas5p16;
+	Wed, 31 May 2023 08:48:00 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20230531084800epsmtrp1fdad5e72796891bef08c9f54f5f6e3cd~kLiFAGqYa1155311553epsmtrp1y;
+	Wed, 31 May 2023 08:48:00 +0000 (GMT)
+X-AuditID: b6c32a4a-c47ff7000001af51-33-647709d4ec87
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+	7A.37.28392.0C907746; Wed, 31 May 2023 17:48:00 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.44]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20230531084755epsmtip1167910a1f8408e3d75b735c30e9abd8b~kLiAQ9o2Z2274722747epsmtip1J;
+	Wed, 31 May 2023 08:47:55 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+	thunder.leizhen@huawei.com, mcgrof@kernel.org, boqun.feng@gmail.com,
+	vincenzopalazzodev@gmail.com, ojeda@kernel.org, jgross@suse.com,
+	brauner@kernel.org, michael.christie@oracle.com, samitolvanen@google.com,
+	glider@google.com, peterz@infradead.org, keescook@chromium.org,
+	stephen.s.brennan@oracle.com, alan.maguire@oracle.com, pmladek@suse.com
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Maninder Singh
+	<maninder1.s@samsung.com>, Onkarnath <onkarnath.1@samsung.com>
+Subject: [PATCH v2 1/2] bpf: make defination of bpf_dump_raw_ok based on
+ CONFIG_KALLSYMS
+Date: Wed, 31 May 2023 14:17:44 +0530
+Message-Id: <20230531084745.877337-1-maninder1.s@samsung.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d565f28f-dbb3-f9bf-8635-c57a2a218b88@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1CTdRzH+z7Ps2c/avGI3vUVC7x1HOeKIVr2vSvCuwgfuSs6u6uL8Grn
+	Hn5cbK5NROmqDdaGGAQemtsItogYxIlOyDnZcGM1QQxleAJdSjE1JD1hCJgisT3j8r/X5/N5
+	v7/v7+d7Xx4e20jG8QoVexiVQlokIgXEz70bkpKH+SWyjZMaEo14tQSaf2DG0ez937movVOL
+	oZDPT6Kp3hmAmqxzODJMu3Dk9fdwUf3oJlTmsGHIV2fC0cBBObrprsJQwFlPot5GPYHaD7Ry
+	0EjNdYAWD41wUGtjC0C2r+9ykL/qLIaWJu5xULPtNgcNLUwRyN+ySKJFnwdDwX9nSFR9YQf6
+	+4ejYGs8bdZcIuja8jtc+rTpDy5tsRfTOt9tDn3SJqYrR4Zw2t52gKStmsM4PX19jKCrO9sA
+	3dF5maBD9vh3hDmC12RMUeFeRpXy+seCAl3TAlC6hPsqzn5LaoD1yUrA50HqJWgpm8XDHEud
+	AbDVH18JBMs8A+D4mJZgixCA7l+0nBVHm3+awzqcABpO7GdFswAeM96PDEhKAtuc3RH3GspB
+	wIsnxrFwgVN6AM0NHiKsWk3lwIkefSScoBKh9585bpiFVBq8OujB2bgEaByaj/ZXwT5jMOLF
+	l/vlXWY8fCikWvjwpv3HqCED6hvqCJZXw1v+Ti7LcXDyG/0y85a5BHbVfMl6dQD21NeRrCYd
+	Bi9ZOWENTm2AHc4Utv0cPNx/DGNzn4ZVD4IY2xdCR8MKJ0Ld6PHoE62Doenp6BVoGGpqjz7X
+	Thh0zZM1IMH02Dqmx9Yx/Z9sAXgbWMso1fJ8Rv2ycpOCKZGopXJ1sSJfsmu33A4if1ic5QB/
+	jt+VeAHGA14AebhojTBNqpbFCmXS/aWMavdHquIiRu0F63iE6BlhUlrfrlgqX7qH+YRhlIxq
+	ZYrx+HEabGtfxYvKmEGl9Yg45dzAaFeCR61dJX54Uued1KQ3b48prt5i1IjWfyXfXPpFxatl
+	eZ+mpzyPXHU3lizn+8nBM/JsFe+UZVt2bukbOecyZ56If7dBkOluRoKDR9uXFIfeHk4cuzcV
+	s+XqI4v7lcvvy7O6a2+FFNmytaK5oItfZbgBU6843H/9+jBoaCjo23fx2b0B4WbznQHPepf1
+	Pa9ampNRP9pa6LLNncJ/+1AWeKouQ1PrPHLlO3DB6rtWnjz8VhzXss3mGcoOCLoCx2cncnMz
+	C2Mebax9Ifk8NJUYcz/3ZSyd7i4wmL9P1e0syzLnSZLy3rw2UP1Zx46FD/prHYk/iQh1gTRV
+	jKvU0v8A+j2A0jIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Rf0yMcRzH+z7Pc889xdnTYR5lF2c22jpFs6+RheEhomxW+iPHPUp153ZP
+	KfmxSkqlk0R1l+mUXXdrk+uy63eucgyli+2S/JhC5Uc/FKU7VGz+e31e7/dnnz8+BMpvxdyI
+	Y7JYRiETxwhxF+xus1Dg1eQcL/FuLRJBmzkZg99/qlH4baKbC8uNyQgcbbHgcLB5BMASzTgK
+	04frUWi2NHJhUdcamGIqQ2BLngqFj7Ok8ENDNgI7a4pw2HwjDYPlGToOtOX0AWjPtXGg7oYW
+	wLKLQxxoyW5C4K93Yxx4q+wzB1p/DGLQorXj0N5yD4G9kyM4VD4Jhh9LC4C/gFYndWD05XNf
+	uHS1qodLFxvi6NSWzxy6ssyTzrRZUdqgz8BpTdJVlB7ue4HRSqMe0LeNzzF61CDYxzvoslHC
+	xBw7wShWbzrkEpla8gPI63kJF5ry8SSgmZMJnAmK9KX0lmHONPNJE6AmO+JnvTs14fiKzfJ8
+	Suf4wJ3tjACqTrd0mnFSROlr6v50XIgF5EuMaui/w50eUDITUG/fl89szCdDqIvaTmSaMXIF
+	Zf40PuN5pB/1qv0eOnvBgyq0fv/rXamHhb0zl9E//lyVGs0B81T/Rar/omKA6MFiRs5KI6Ss
+	j3yNjIkXsWIpGyeLEB05LjWAmU97eppAnX5IZAYIAcyAIlDhAp6fmJXweRLxyURGcTxcERfD
+	sGbgTmDCRbynmQ/D+WSEOJaJZhg5o/iXIoSzWxKyJHpl7fbEDbU30yLD5hkdzGHNMutQ2ph3
+	4OaxTbkSrTK/o21Kd7+G7CvtDmUPXN9zaqf7fkNQ/9quPl82Vxmu13VPqrPPxvJrU+xR96nY
+	Z4LTb9AKXJaFVa7yf1tKPKutruh1ei+fzKvIja9+cPdl1Y7qttNng323pXVZg6SvjY9Kh3ne
+	oYd7dqqrtr56wwycd/IIPnW0EzfkuJoaFaMBX5vzEjKm0gPc0B4jwSkaX1eQHrY88gzbfk2n
+	8obi3dn8vZ09UfYOv8aKAqVbnMChidi3cL2tLiOs5op/oFdjg8BJckl2qX5uiCPQuD7kXf+o
+	tnKs5Kg9IHXLwGuT6y4hxkaKfTxRBSv+DblvRytYAwAA
+X-CMS-MailID: 20230531084800epcas5p1c02d5a7ffcef2bb7cf626bf52beb0eee
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20230531084800epcas5p1c02d5a7ffcef2bb7cf626bf52beb0eee
+References: <CGME20230531084800epcas5p1c02d5a7ffcef2bb7cf626bf52beb0eee@epcas5p1.samsung.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 31, 2023 at 09:20:44AM +0200, Viktor Malik wrote:
-> On 5/30/23 15:29, Jiri Olsa wrote:
-> > On Tue, May 30, 2023 at 02:33:52PM +0200, Viktor Malik wrote:
-> >> Building BPF selftests with custom HOSTCFLAGS yields an error:
-> >>
-> >>     # make HOSTCFLAGS="-O2"
-> >>     [...]
-> >>       HOSTCC  ./tools/testing/selftests/bpf/tools/build/resolve_btfids/main.o
-> >>     main.c:73:10: fatal error: linux/rbtree.h: No such file or directory
-> >>        73 | #include <linux/rbtree.h>
-> >>           |          ^~~~~~~~~~~~~~~~
-> >>
-> >> The reason is that tools/bpf/resolve_btfids/Makefile passes header
-> >> include paths by extending HOSTCFLAGS which is overridden by setting
-> >> HOSTCFLAGS in the make command (because of Makefile rules [1]).
-> >>
-> >> This patch fixes the above problem by passing the include paths via
-> >> `HOSTCFLAGS_resolve_btfids` which is used by tools/build/Build.include
-> >> and can be combined with overridding HOSTCFLAGS.
-> >>
-> >> [1] https://www.gnu.org/software/make/manual/html_node/Overriding.html
-> >>
-> >> Fixes: 56a2df7615fa ("tools/resolve_btfids: Compile resolve_btfids as host program")
-> >> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> >> ---
-> >>  tools/bpf/resolve_btfids/Makefile | 4 ++--
-> >>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> >> index ac548a7baa73..4b8079f294f6 100644
-> >> --- a/tools/bpf/resolve_btfids/Makefile
-> >> +++ b/tools/bpf/resolve_btfids/Makefile
-> >> @@ -67,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
-> >>  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> >>  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-> >>  
-> >> -HOSTCFLAGS += -g \
-> >> +HOSTCFLAGS_resolve_btfids += -g \
-> >>            -I$(srctree)/tools/include \
-> >>            -I$(srctree)/tools/include/uapi \
-> >>            -I$(LIBBPF_INCLUDE) \
-> >> @@ -76,7 +76,7 @@ HOSTCFLAGS += -g \
-> >>  
-> >>  LIBS = $(LIBELF_LIBS) -lz
-> >>  
-> >> -export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> >> +export srctree OUTPUT HOSTCFLAGS_resolve_btfids Q HOSTCC HOSTLD HOSTAR
-> > 
-> > hum, AFAICS this way the spacified HOSTCFLAGS="-O2" won't be pushed
-> > to the libbpf and libsubcmd dependencies, right?
-> 
-> IIUC, it will, b/c we're doing:
-> 
->     HOST_OVERRIDES := ... EXTRA_CFLAGS="$(HOSTCFLAGS)"
-> 
-> and then pass HOST_OVERRIDES to libbpf and libsubcmd builds, which will
-> then pick EXTRA_CFLAGS as a part of their build.
-> 
-> Confirmed for libsubcmd:
-> 
->     $ make HOSTCFLAGS="-O2" V=1 | grep libsubcmd | grep O2 | wc -l
->     14
->     $ make V=1 | grep libsubcmd | grep O2 | wc -l
->     0
-> 
-> Interestingly, I couldn't do the same for libbpf. It looks like libbpf
-> is not rebuilt for resolve_btfids b/c resolve_btfids/Makefile uses
-> $(BPFOBJ) as the libbpf target and selftests/bpf/Makefile passes
-> BPFOBJ=$(HOST_BPFOBJ) to the resolve_btfids build. So, an already built
-> libbpf is reused and that one hasn't picked HOSTCFLAGS.
-> 
-> > how about we add the EXTRA_CFLAGS variable like we do in libbpf,
-> > libsubcmd or perf
-> > 
-> > with the change below you'd need to run:
-> > 
-> >   $ make EXTRA_CFLAGS="-O2"
-> > 
-> 
-> I'd like to avoid that b/c then, we would need to issue a different make
-> command for the BPF selftests than for the rest of the kernel to pass
-> custom flags to host-built programs.
+No functional change with this commit.
 
-ok
+As of now bpf_dump_raw_ok() is dependent on kallsyms_show_value().
+Rearranging the code to return false directly in defination of
+bpf_dump_raw_ok() based on CONFIG_KALLSYMS.
 
-> 
-> > I'll dig up the cross build scenarious we broke last time we
-> > touched this stuff, perhaps Ian might remember as well ;-)
-> 
-> That will be useful, thanks :-)
+@reason: next patch will make kallsyms_show_value() defination
+generic and bpf_dump_raw_ok() will return true otherwise.
 
-there's test described by Nathan in here:
+Thus make decision based on CONFIG rather than kallsyms_show_value(),
+as bpf functionality is heavily dependent on KALLSYMS.
 
-https://lore.kernel.org/bpf/Y9mFVNEi5wAINARY@dev-arch.thelio-3990X/
+Co-developed-by: Onkarnath <onkarnath.1@samsung.com>
+Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+v1 -> v2 : made separate patches for kallsyms and bpf
 
-jirka
+ include/linux/filter.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-> 
-> Viktor
-> 
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> > index ac548a7baa73..58cfedc9c2db 100644
-> > --- a/tools/bpf/resolve_btfids/Makefile
-> > +++ b/tools/bpf/resolve_btfids/Makefile
-> > @@ -18,8 +18,8 @@ else
-> >  endif
-> >  
-> >  # Overrides for the prepare step libraries.
-> > -HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)" \
-> > -		  CROSS_COMPILE="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
-> > +HOST_OVERRIDES = AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)" \
-> > +		  CROSS_COMPILE=""
-> >  
-> >  RM      ?= rm
-> >  HOSTCC  ?= gcc
-> > @@ -67,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
-> >  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-> >  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-> >  
-> > -HOSTCFLAGS += -g \
-> > +HOSTCFLAGS += $(EXTRA_CFLAGS) -g \
-> >            -I$(srctree)/tools/include \
-> >            -I$(srctree)/tools/include/uapi \
-> >            -I$(LIBBPF_INCLUDE) \
-> > @@ -76,7 +76,7 @@ HOSTCFLAGS += -g \
-> >  
-> >  LIBS = $(LIBELF_LIBS) -lz
-> >  
-> > -export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> > +export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR EXTRA_CFLAGS
-> >  include $(srctree)/tools/build/Makefile.include
-> >  
-> >  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-> > 
-> 
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index bbce89937fde..1f237a3bb11a 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -923,13 +923,21 @@ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_jit_supports_far_kfunc_call(void);
+ bool bpf_helper_changes_pkt_data(void *func);
+ 
++/*
++ * Reconstruction of call-sites is dependent on kallsyms,
++ * thus make dump the same restriction.
++ */
++#ifdef CONFIG_KALLSYMS
+ static inline bool bpf_dump_raw_ok(const struct cred *cred)
+ {
+-	/* Reconstruction of call-sites is dependent on kallsyms,
+-	 * thus make dump the same restriction.
+-	 */
+ 	return kallsyms_show_value(cred);
+ }
++#else
++static inline bool bpf_dump_raw_ok(const struct cred *cred)
++{
++	return false;
++}
++#endif
+ 
+ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+ 				       const struct bpf_insn *patch, u32 len);
+-- 
+2.17.1
+
 
