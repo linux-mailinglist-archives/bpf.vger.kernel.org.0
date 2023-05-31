@@ -1,137 +1,153 @@
-Return-Path: <bpf+bounces-1515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A070F718559
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 16:52:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10ECE718699
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 17:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5867F2810DE
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 14:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFD1C20E9D
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 15:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A34A16419;
-	Wed, 31 May 2023 14:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DCF174DC;
+	Wed, 31 May 2023 15:43:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66877C8E6
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 14:52:41 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B797C5
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 07:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1685544758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Lghs6j2iL3h/kh8yLidsa6G+fvLplrWudkyLTE3LDVk=;
-	b=O06DLCO70uiFujaP/MtGO/1K9S/Bnvzj3TJIc8toyJ9yux/qYQ6wiy/n7VUKaWRLEdguzT
-	J2xKUgxohmyvpCwXyeXydVby5Ecwv+m+HFqgjUNc12FEG43ZBIA9ZpiAVn4sB75HwGGnZE
-	HSCRtJAnP/fowkm5HqfIlXu6lf8YMjQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-652-A4Oy1bqLN8mJM4oL6uyAtg-1; Wed, 31 May 2023 10:52:35 -0400
-X-MC-Unique: A4Oy1bqLN8mJM4oL6uyAtg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DCC578032E4;
-	Wed, 31 May 2023 14:52:34 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.45.242.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 867B8140E962;
-	Wed, 31 May 2023 14:52:34 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-	by firesoul.localdomain (Postfix) with ESMTP id C06E4307372E8;
-	Wed, 31 May 2023 16:52:33 +0200 (CEST)
-Subject: [PATCH bpf-next] bpf/xdp: optimize bpf_xdp_pointer to avoid reading
- sinfo
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-To: Tariq Toukan <ttoukan.linux@gmail.com>,
- Daniel Borkmann <borkmann@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>,
- Tariq Toukan <tariqt@nvidia.com>, gal@nvidia.com, lorenzo@kernel.org,
- netdev@vger.kernel.org, echaudro@redhat.com, andrew.gospodarek@broadcom.com
-Date: Wed, 31 May 2023 16:52:33 +0200
-Message-ID: <168554475365.3262482.9868965521545045945.stgit@firesoul>
-User-Agent: StGit/1.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B747914289;
+	Wed, 31 May 2023 15:43:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB03C433D2;
+	Wed, 31 May 2023 15:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685547825;
+	bh=ESS78bXnXhVjtfsUYy6p4W39tAYJRUUHJ5splXBwcp4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kB8rKYO7anvEjQHoA/ZmTHSzVYwLTIaD4++nFJYQjtbwqM509tW1SeUWH9gHwm5nR
+	 gqfzUQ3Gpm3Njrig9l+Q6mDN97YDocfwUK/TCLMXgQE+IDrRoYrVNa5O9ZvSGnSlGw
+	 Kve4j/HU6m9qczQaybj94YFAUF37IcSm6gJC2bmgA3ukCRYNvG4yVIgPcRmevh6jLm
+	 BpIWCH6CDGqU/OYQkrskL9xWnqu60mAnYxfXloyK+5ywOrBHlfEJWhnVwjU1Fa2v+6
+	 a4SHYEcEw56kCRIHmcqx1rJcHyFy+sch7AUa5EocbVsMjyC6l+cskPdSGSIqOMgBm4
+	 JiXJaYC5O1JkQ==
+Date: Wed, 31 May 2023 17:43:41 +0200
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>,
+	Daniel Borkmann <borkmann@iogearbox.net>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+	Tariq Toukan <tariqt@nvidia.com>, gal@nvidia.com,
+	netdev@vger.kernel.org, echaudro@redhat.com,
+	andrew.gospodarek@broadcom.com
+Subject: Re: [PATCH bpf-next] bpf/xdp: optimize bpf_xdp_pointer to avoid
+ reading sinfo
+Message-ID: <ZHdrLSDC7UfLKKfp@lore-desk>
+References: <168554475365.3262482.9868965521545045945.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
-
-Currently we observed a significant performance degradation in
-samples/bpf xdp1 and xdp2, due XDP multibuffer "xdp.frags" handling,
-added in commit 772251742262 ("samples/bpf: fixup some tools to be able
-to support xdp multibuffer").
-
-This patch reduce the overhead by avoiding to read/load shared_info
-(sinfo) memory area, when XDP packet don't have any frags. This improves
-performance because sinfo is located in another cacheline.
-
-Function bpf_xdp_pointer() is used by BPF helpers bpf_xdp_load_bytes()
-and bpf_xdp_store_bytes(). As a help to reviewers, xdp_get_buff_len() can
-potentially access sinfo.
-
-Perf report show bpf_xdp_pointer() percentage utilization being reduced
-from 4,19% to 3,37% (on CPU E5-1650 @3.60GHz).
-
-The BPF kfunc bpf_dynptr_slice() also use bpf_xdp_pointer(). Thus, it
-should also take effect for that.
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- net/core/filter.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 968139f4a1ac..a635f537d499 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3948,20 +3948,24 @@ void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
- 
- void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
- {
--	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
- 	u32 size = xdp->data_end - xdp->data;
-+	struct skb_shared_info *sinfo;
- 	void *addr = xdp->data;
- 	int i;
- 
- 	if (unlikely(offset > 0xffff || len > 0xffff))
- 		return ERR_PTR(-EFAULT);
- 
--	if (offset + len > xdp_get_buff_len(xdp))
--		return ERR_PTR(-EINVAL);
-+	if (likely((offset < size))) /* linear area */
-+		goto out;
- 
--	if (offset < size) /* linear area */
-+	if (likely(!xdp_buff_has_frags(xdp)))
- 		goto out;
- 
-+	if (offset + len > xdp_get_buff_len(xdp))
-+		return ERR_PTR(-EINVAL);
-+
-+	sinfo = xdp_get_shared_info_from_buff(xdp);
- 	offset -= size;
- 	for (i = 0; i < sinfo->nr_frags; i++) { /* paged area */
- 		u32 frag_size = skb_frag_size(&sinfo->frags[i]);
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vDYsJJfcttrwy4LX"
+Content-Disposition: inline
+In-Reply-To: <168554475365.3262482.9868965521545045945.stgit@firesoul>
 
 
+--vDYsJJfcttrwy4LX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> Currently we observed a significant performance degradation in
+> samples/bpf xdp1 and xdp2, due XDP multibuffer "xdp.frags" handling,
+> added in commit 772251742262 ("samples/bpf: fixup some tools to be able
+> to support xdp multibuffer").
+>=20
+> This patch reduce the overhead by avoiding to read/load shared_info
+> (sinfo) memory area, when XDP packet don't have any frags. This improves
+> performance because sinfo is located in another cacheline.
+>=20
+> Function bpf_xdp_pointer() is used by BPF helpers bpf_xdp_load_bytes()
+> and bpf_xdp_store_bytes(). As a help to reviewers, xdp_get_buff_len() can
+> potentially access sinfo.
+>=20
+> Perf report show bpf_xdp_pointer() percentage utilization being reduced
+> from 4,19% to 3,37% (on CPU E5-1650 @3.60GHz).
+>=20
+> The BPF kfunc bpf_dynptr_slice() also use bpf_xdp_pointer(). Thus, it
+> should also take effect for that.
+>=20
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  net/core/filter.c |   12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 968139f4a1ac..a635f537d499 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3948,20 +3948,24 @@ void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsig=
+ned long off,
+> =20
+>  void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
+>  {
+> -	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_buff(xdp);
+>  	u32 size =3D xdp->data_end - xdp->data;
+> +	struct skb_shared_info *sinfo;
+>  	void *addr =3D xdp->data;
+>  	int i;
+> =20
+>  	if (unlikely(offset > 0xffff || len > 0xffff))
+>  		return ERR_PTR(-EFAULT);
+> =20
+> -	if (offset + len > xdp_get_buff_len(xdp))
+> -		return ERR_PTR(-EINVAL);
+> +	if (likely((offset < size))) /* linear area */
+> +		goto out;
+
+Hi Jesper,
+
+please correct me if I am wrong but looking at the code, in this way
+bpf_xdp_pointer() will return NULL (and not ERR_PTR(-EINVAL)) if:
+- offset < size
+- offset + len > xdp_get_buff_len()
+
+doing so I would say bpf_xdp_copy_buf() will copy the full packet starting =
+=66rom
+offset leaving some part of the auxiliary buffer possible uninitialized.
+Do you think it is an issue?
+
+Regards,
+Lorenzo
+
+> =20
+> -	if (offset < size) /* linear area */
+> +	if (likely(!xdp_buff_has_frags(xdp)))
+>  		goto out;
+> =20
+> +	if (offset + len > xdp_get_buff_len(xdp))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	sinfo =3D xdp_get_shared_info_from_buff(xdp);
+>  	offset -=3D size;
+>  	for (i =3D 0; i < sinfo->nr_frags; i++) { /* paged area */
+>  		u32 frag_size =3D skb_frag_size(&sinfo->frags[i]);
+>=20
+>=20
+
+--vDYsJJfcttrwy4LX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZHdrLQAKCRA6cBh0uS2t
+rJyeAQDbw9DItb89PwRH7tQ18ohtXQmCryTtwWLF0pcPBjTc+AEA497f4P0xfiHk
+cQNJhpnCwV4kdArXmzgYItAXdom+bAw=
+=Wlur
+-----END PGP SIGNATURE-----
+
+--vDYsJJfcttrwy4LX--
 
