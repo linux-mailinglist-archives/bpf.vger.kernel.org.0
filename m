@@ -1,197 +1,221 @@
-Return-Path: <bpf+bounces-1511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E543718125
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 15:11:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511FF718148
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 15:20:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D41651C20E4C
-	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 13:11:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9787A1C20CE5
+	for <lists+bpf@lfdr.de>; Wed, 31 May 2023 13:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0C414A85;
-	Wed, 31 May 2023 13:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A26A14A8B;
+	Wed, 31 May 2023 13:20:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF6912B8C;
-	Wed, 31 May 2023 13:11:05 +0000 (UTC)
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA92D9;
-	Wed, 31 May 2023 06:11:04 -0700 (PDT)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-565aa2cc428so48690577b3.1;
-        Wed, 31 May 2023 06:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685538663; x=1688130663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YMHNxtLliZ2AvZ7BdWhgd9VB7EbsZ/iFVPRdfnAvAIs=;
-        b=FErNm+WvV6cZHL75kBQyo2UBm9dre99Bc4zbXu1EsL86LWG/M1G9jhs49GXQorpayQ
-         LEbTVwOGVskxVKJjr6KqoqEXkxC+gCWd2VpGLyIxS/t7VYWRW6Q/B0ElLGT2H+STbq8H
-         6YMUDb333LuJKwLV9PfjlomlcZ7bns6zPqXhjzXZT20v9ZzAqczpbOnPsk8VCsFuX+IO
-         cQmrtCQW6c4TBX3ms+ZY/Cqv8IV21/q08GvuMot/9UJgleQaeupdYAj+Y5YbBvXwhG8d
-         ZuGDTYC9JtpUe4g08lfSvENlyoDbvilNr602dLEtXm4wihlhJl+oCa4Zmt22LcLspH/c
-         e7Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685538663; x=1688130663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YMHNxtLliZ2AvZ7BdWhgd9VB7EbsZ/iFVPRdfnAvAIs=;
-        b=IW443/tYyzKYrwYJGaUnOj5weyYbXo8BlGM+mII02Lk4h45cGQg2WBAObnUAWrguU0
-         5QcQ83H8nmaLolDQfksvjPYwTZUPvJmUfcdjs+ypA26U4NnZi8IwRicSu4tcoeTIxgBd
-         ZJ7rkiXhbcYeEf2I8Zax1alaf29q8hExgHmdJfYin3sU1cyC3faZ0wQ6WjnuSij5iT9U
-         4yfTdyfYo0R9y/CDDP4olp2JrjxRZD86izUdi6LE4BTXsIfHqjfxOHNlVpuIF41DgIaK
-         7I/Z2v93Sn96gj3MEGbctvxvAG2MmSG9fZQ59fT6oYENEoIF/A1T6MLn7tQ5GEuFToN3
-         01Tw==
-X-Gm-Message-State: AC+VfDzN9fNjyCFJRjahUWF0kVHznSbK8MxpS/LoHSAyzVztQgaeEbeH
-	Hk7Wemsx6XnKX6Gc2D+LUjmbktnzth+GlPtRaRY=
-X-Google-Smtp-Source: ACHHUZ5QdMRj9Z/EbvvuGzuIS47cw5z10AgGLopA2qlZgNO3cBUb8yYvOMdlQnABnmxTs2+jGbu1jfk/BE0kwkrQnAY=
-X-Received: by 2002:a25:ca86:0:b0:bb1:38a:f0b with SMTP id a128-20020a25ca86000000b00bb1038a0f0bmr5282809ybg.65.1685538663191;
- Wed, 31 May 2023 06:11:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8B612B8C;
+	Wed, 31 May 2023 13:20:22 +0000 (UTC)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECFB98;
+	Wed, 31 May 2023 06:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685539220; x=1717075220;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=66lkD6M4iWaaTy8nTphoZP8Un/mePP/5eW6PvgdmBhQ=;
+  b=m3fFAhASHI/ostOyyXA/z8NA8HTPuhLiFiavfUS96wEOdFPm9sXhvMsz
+   /A5lC+4Y5PmdCqwFGuYHfjZtuCjP788xeHb1FPuN5083FbZDSs/8M3QTU
+   tlg1mw9OEOROUZSAkdEr2nxuuBrEf4Y3izAksgL60XUPa2TdQl0T3qpoM
+   zehZlNidHZ+bZBWd1BQl6laT9p5f7wyLkHWTj5Ku+71VE6+VGGDpFaVCM
+   K+rMj3CTkAoWxvxg1gu78eBuAL9bHtdOip/8RbtbzDbVbVFq6QE7P+g5c
+   /HzXvPFaZcjV3F9q7s5KGwy252iYO0t//z8/h3GtoSoBy26TFhQD8tdnP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10727"; a="421000425"
+X-IronPort-AV: E=Sophos;i="6.00,207,1681196400"; 
+   d="scan'208";a="421000425"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2023 06:20:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10727"; a="953635601"
+X-IronPort-AV: E=Sophos;i="6.00,207,1681196400"; 
+   d="scan'208";a="953635601"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga006.fm.intel.com with ESMTP; 31 May 2023 06:20:19 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 31 May 2023 06:20:19 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 31 May 2023 06:20:18 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Wed, 31 May 2023 06:20:18 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Wed, 31 May 2023 06:20:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kgJDcAkzK8lBAULsQbDeCVHx4WBZFsF3P9i/Dl4uB286PWQNxYkaO3s2Uusqz7GA28jUEnehW9zlD7wDF/Ltoxrq1g1sdYXcAjMeN5fw4FYtDDA3Kmnig+W1FJNzG97GNDyX+sxMNq5n7Hp1v6Y9NRhB7PkcnpvAK3tpM1Cq1GkzXJ+zLP+sY+slb59BSoQNXyZTomaW1W0dWdAR+zwWwK1EiyhNqepz+ZlrP5sN/msonqekXRvycaHjdehOEvgO2xjg0es1JkQh7a40Taengacxny1/OZ35MXP0xCqIZuRcqQWS8GWoK/61ULEBbButfsr2Appkzth9/n+Xok79LQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HKhBleVxQnCpKpKmXuWM5XimVfoAylJgtMdhm/J7fb8=;
+ b=I5h0MQFfhRkZjdq8YD6Rv+8/aLJdbVynnTl6KndAU3PS7yBDHDOQ5/OH7a8IE25BhrrisKU4mhNa4TN1WSWdWYOq/3LNWx0PciQ410SIEc/b6WIfnikOYiFvuSYFTkAf7XwfxuVlzslZdf0jhAJeyLoDCduj66FE9f8RGXBBh5S643HGLVYbUSmltaAC9VQKXFS0pn6XPTYYhKn6YLApnF8cmEeU9BYsggrnhREn4NkjsezTXoW+n/u/KrNq9fb7UPqCw0ZBvkSRUSiMoAgwEmrBHrKujjQiH7P5FFozmWV1rx2YNf/iUTp/3GpvQcbeqZLr8wZYLkHS1cCyDiUyKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ CH0PR11MB5267.namprd11.prod.outlook.com (2603:10b6:610:e2::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6433.23; Wed, 31 May 2023 13:20:16 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809%2]) with mapi id 15.20.6433.024; Wed, 31 May 2023
+ 13:20:16 +0000
+Date: Wed, 31 May 2023 15:20:09 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+	<bjorn@kernel.org>, <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH v2 bpf-next 13/22] xsk: report ZC multi-buffer capability
+ via xdp_features
+Message-ID: <ZHdJiRDMLxpesOLA@boxer>
+References: <20230529155024.222213-1-maciej.fijalkowski@intel.com>
+ <20230529155024.222213-14-maciej.fijalkowski@intel.com>
+ <CAJ8uoz1qa-XgntqSUtwjU_vCajDAbZqYgEVSajZxidmpG0cOFQ@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz1qa-XgntqSUtwjU_vCajDAbZqYgEVSajZxidmpG0cOFQ@mail.gmail.com>
+X-ClientProxiedBy: FR3P281CA0118.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230530044423.3897681-1-imagedong@tencent.com>
- <ZHb+ypjE4Ybg3O18@krava> <CADxym3biE8WcMxWf1wok+s4pBYEi6+fYQAbZJVxm7eBfzWLjLQ@mail.gmail.com>
- <34fb3a9841bf4977413be799f7cbef78560aaa20.camel@gmail.com>
-In-Reply-To: <34fb3a9841bf4977413be799f7cbef78560aaa20.camel@gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 31 May 2023 21:10:51 +0800
-Message-ID: <CADxym3YuGnoPpxUx92ZZqhi4z8t-hHQaKfah=9k6L-YiTg+Jjw@mail.gmail.com>
-Subject: Re: [PATCH] bpf, x86: allow function arguments up to 12 for TRACING
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, dsahern@kernel.org, andrii@kernel.org, 
-	davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
-	hpa@zytor.com, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CH0PR11MB5267:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa4eb2b9-02a7-44d0-bd85-08db61d9c5c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FbDd7bsrMv/b9WxQd1VRbrBF2NwqugKnnKpjeS47/leyTG2cj7uy3D0J7LCOF78a+Ce1eiRR/0cRYv3DDe2E8HaXHsqgyYFolYjjCig565phT0s28ai0JHrPBKq7B0KSZ5WCnVjGULoHoC60EQW25mWxB/mxPXYZX2lQooYe0EyklPxL2xbRXQLwEqDU8S7H3ocWp0oSqUhSCnVlVDZNfw3bSEbGHs0ve4eetb9uP06VnXLPp8QocvwOa9oPYTuXyf6pfDYD5cJIUnnx0kx6OK3kYzTf+TXWgOVHrJUTeE5wIgApOvc9EiZdWygD1SbMMEsBzUUO6gRfibTDQKOEu6sbkPUI7KI5wG4DzFmyfg9ZHM1e04JMrkCgqinXebHqOqzt4ntVAV4g/+iN8jx+Zm5WTwlmdYciNvxQ+YYvlNNZV5iuPT42MJDk8bGzb56h9zU9+RdluuwjIcO97h/vkm/GVZsnxihdSvsWn+5CPKZ333lTkTrGEPMvfpAVpqlbOGm9YR6rZcGGR39ELcUjhmB9t97Il1RsvW4LQsbRYHSSO7CoOaNleRwfQPzcPyHK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(136003)(396003)(366004)(376002)(346002)(39860400002)(451199021)(83380400001)(316002)(66946007)(66476007)(66556008)(5660300002)(6666004)(4326008)(6916009)(107886003)(82960400001)(38100700002)(33716001)(8676002)(41300700001)(8936002)(6486002)(86362001)(6512007)(2906002)(44832011)(9686003)(6506007)(186003)(478600001)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U2Nanjlu9jzg2anKkgN8BoPxMwaZ864kXgiM3EO2JGZV+VRPn/miYJwfHnca?=
+ =?us-ascii?Q?MFA8cRF8kU6XZXvJONOOfwQymYWt/uEAuZ1267ZUROoJyFe/5PuFTA5kaEkU?=
+ =?us-ascii?Q?L0QV6KyrHZ7mLFNIjyrHgpv9SUaN9L4MKZ7dXCzHbmqCgLIrKck0vFVfCP3g?=
+ =?us-ascii?Q?hREUi+/nWPsLXxxprf6Bvnb8jqy+/9F4CPbidAmK4eWhNNoskSOVUhA/jAtJ?=
+ =?us-ascii?Q?I7Dup462DrpNRMHOXOzEfqoZy71W3p5Is0iuJYwA4Bmd1sAulBTbji1fH4r0?=
+ =?us-ascii?Q?oHdaYTtIcAJ70Ep0o6A4zjXBu4a9z1Wv/kot/Zesu1FbLH7mhxqo2JGb0rPu?=
+ =?us-ascii?Q?4jD0MasrnDIj2rsrEPxRETUB0A/nZ88ELUJkknLI4bztpR75SzccOpmQhS/U?=
+ =?us-ascii?Q?ugxk9SdjOwdVHz3MsSwEXnOWORsK9N09ZbOwlxMhGmoPOuR3Ve4p++03RiCS?=
+ =?us-ascii?Q?g1SHqrhikcZkaeZaTr0YIAgEh9+5yh7CiHpPNzM/QVfPP2JHBNeYtMOBYVe0?=
+ =?us-ascii?Q?S9AuCWKGvdfuCOb8eaSewrrosxGhyjJFVHfZw0V40rtxNs08gZJ+Ab9I7GGk?=
+ =?us-ascii?Q?xeNnqOEAeBXN6jrkPuuudeLHMsP4hKF9zhcSTFgzxZWpypeJYfz5ZjjLUwKU?=
+ =?us-ascii?Q?1PdBSLhA+UdF+GA0Y4Y5+53dP5IxCMGA5aIyLK/LoKMXcbss2kDyfIWaXwM7?=
+ =?us-ascii?Q?P4vKa33p+jXLrLcgoa49ZxI5VkBqYzLTl98mBRYPW28sk3f2piLAX2S4tvM9?=
+ =?us-ascii?Q?jvtNAaX8GzOapsccb4Ths9YOqR/gwWP5Q15F+QIth1mTK+OKvqMBtvq8BsqL?=
+ =?us-ascii?Q?+RZNaqS/MBFucym3U4GVY1xTFOINbBu4ID6QpEDMPv9R/wDy15FZ6teZ/FkN?=
+ =?us-ascii?Q?g4f8V3/doPGviO4l7CL0C9cBvBXOn23bznLDxjdmfUow+2fEVs4lA0IwzpmK?=
+ =?us-ascii?Q?6aGJK70vXVGlf0NeoaXAJYWTQlfjacbc46qznlW0Gs4Vt7z3JWW/YKQM0+Wc?=
+ =?us-ascii?Q?f8RFjrUHE4JwyZV+1RbYDoLfVPoUxaYR0pYx+gr/559OiEf+hQYVSGspp0w9?=
+ =?us-ascii?Q?JZHk6mTh8F9YODPfU8AtUrsdxDs8ukh+Tu2GyQKkcbJ0H2ruup02cZ7qG59G?=
+ =?us-ascii?Q?u2zmRX6b9jEom4sZ6EyfiAVxShpG/TSv77acVR/awuJBm0QOGDmAJwD5Y4co?=
+ =?us-ascii?Q?amSyeqmWwNf5C6GIfilVJiBw4Uvy60fKT6LLAQOfDSWrlZJQ0I2gWgti4bUl?=
+ =?us-ascii?Q?Clp7FVKj4kmeo7E4CmVy+jlUa2JWX4FQK2aCECBDEF0dHPcAEwv+E5CUN+yJ?=
+ =?us-ascii?Q?Od9mXjYTT+L7o/yJT5OpdUnN1ZBBhrg+luyV4q5HNVhhPegCe9HrvP4eck2o?=
+ =?us-ascii?Q?m1F/YWIxjazhRRcR9Titbgl4veUh0yVvmN2wjMXXAOxRqAZM5iqRzLRWuoXW?=
+ =?us-ascii?Q?8hsN6f57MPSByNNI5nTLiGBgs57SlUIn+dR6h0Ga+YrahsDfgSXKv9uGydsu?=
+ =?us-ascii?Q?fzBoTz83QiqHMQkzg7Q2kAUZ5Pr9pMDQW4S2C/bPGo75bT+mk+CV0q8Jhm2Q?=
+ =?us-ascii?Q?BoEzT3vhnLAiW+NkQ+LA4vO4L4PuS0wMa92xfjaOGrHkj3Ru7oB21s3EJJ8f?=
+ =?us-ascii?Q?ww=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa4eb2b9-02a7-44d0-bd85-08db61d9c5c0
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2023 13:20:15.8431
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mRQLipFj6YNwdnFy+AcBRdFfS2vmV9q8SSQTKVj6VOkyjg2xstqi2PLC2mAwjDhJLdfmnWoFYBXI+VmEApGKkB9mVcUb46o+79J9V40UXRg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5267
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 31, 2023 at 8:02=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2023-05-31 at 17:03 +0800, Menglong Dong wrote:
-> > On Wed, May 31, 2023 at 4:01=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> =
-wrote:
-> > >
-> > > On Tue, May 30, 2023 at 12:44:23PM +0800, menglong8.dong@gmail.com wr=
-ote:
-> > > > From: Menglong Dong <imagedong@tencent.com>
-> > > >
-> > > > For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be =
-used
-> > > > on the kernel functions whose arguments count less than 6. This is =
-not
-> > > > friendly at all, as too many functions have arguments count more th=
-an 6.
-> > > >
-> > > > Therefore, let's enhance it by increasing the function arguments co=
-unt
-> > > > allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
-> > > >
-> > > > For the case that we don't need to call origin function, which mean=
-s
-> > > > without BPF_TRAMP_F_CALL_ORIG, we need only copy the function argum=
-ents
-> > > > that stored in the frame of the caller to current frame. The argume=
-nts
-> > > > of arg6-argN are stored in "$rbp + 0x18", we need copy them to
-> > > > "$rbp - regs_off + (6 * 8)".
-> > > >
-> > > > For the case with BPF_TRAMP_F_CALL_ORIG, we need prepare the argume=
-nts
-> > > > in stack before call origin function, which means we need alloc ext=
-ra
-> > > > "8 * (arg_count - 6)" memory in the top of the stack. Note, there s=
-hould
-> > > > not be any data be pushed to the stack before call the origin funct=
-ion.
-> > > > Then, we have to store rbx with 'mov' instead of 'push'.
-> > > >
-> > > > It works well for the FENTRY and FEXIT, I'm not sure if there are o=
-ther
-> > > > complicated cases.
-> > > >
-> > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > > > ---
-> > > >  arch/x86/net/bpf_jit_comp.c | 88 ++++++++++++++++++++++++++++++++-=
-----
-> > >
-> > > please add selftests for this.. I had to add one to be able to check
-> > > the generated trampoline
-> > >
+On Wed, May 31, 2023 at 12:16:13PM +0200, Magnus Karlsson wrote:
+> On Mon, 29 May 2023 at 17:57, Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
 > >
-> > Okay!
+> > Introduce new xdp_feature NETDEV_XDP_ACT_NDO_ZC_SG that will be used to
+> > find out if user space that wants to do ZC multi-buffer will be able to
+> > do so against underlying ZC driver.
 > >
-> > BTW, I failed to compile the latest selftests/bpf with
-> > the following errors:
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+> >  include/uapi/linux/netdev.h | 4 ++--
+> >  net/xdp/xsk_buff_pool.c     | 6 ++++++
+> >  2 files changed, 8 insertions(+), 2 deletions(-)
 > >
-> > progs/verifier_and.c:58:16: error: invalid operand for instruction
-> >         asm volatile ("                                 \
-> >
->
-> These tests were moved to use inline assembly recently (2 month ago).
-> Discussion at the time was whether to use \n\ or \ terminators at the
-> end of each line. People opted for \ as easier to read.
-> Replacing \ with \n\ and compiling this test using clang 14 shows
-> more informative error message:
->
-> $ make -j14 `pwd`/verifier_and.bpf.o
->   CLNG-BPF [test_maps] verifier_and.bpf.o
-> progs/verifier_and.c:68:1: error: invalid operand for instruction
->         w1 %%=3D 2;                                       \n\
-> ^
-> <inline asm>:11:5: note: instantiated into assembly here
->         w1 %=3D 2;
->
-> My guess is that clang 14 does not know how to handle operations on
-> 32-bit sub-registers w[0-9].
->
-> But using clang 14 I get some errors not related to inline assembly as we=
-ll.
-> Also, I recall that there were runtime issues with clang 14 and
-> tests using enum64.
->
-> All-in-all, you need newer version of clang for tests nowadays,
-> sorry for inconvenience.
+> > diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
+> > index 639524b59930..bfca07224f7b 100644
+> > --- a/include/uapi/linux/netdev.h
+> > +++ b/include/uapi/linux/netdev.h
+> > @@ -33,8 +33,8 @@ enum netdev_xdp_act {
+> >         NETDEV_XDP_ACT_HW_OFFLOAD = 16,
+> >         NETDEV_XDP_ACT_RX_SG = 32,
+> >         NETDEV_XDP_ACT_NDO_XMIT_SG = 64,
+> > -
+> > -       NETDEV_XDP_ACT_MASK = 127,
+> > +       NETDEV_XDP_ACT_NDO_ZC_SG = 128,
+> 
+> Since this flag has nothing to do with an NDO, I would prefer the
+> simpler NETDEV_XDP_ACT_ZC_SG. What do you think?
 
-Thanks for your explanation! It works well after I
-update my clang to a newer version.
++1, brain fart with that "NDO" on my side.
 
-Menglong Dong
->
-> > The version of clang I used is:
+> 
+> > +       NETDEV_XDP_ACT_MASK = 255,
+> >  };
 > >
-> > clang --version
-> > Debian clang version 14.0.6
-> > Target: x86_64-pc-linux-gnu
-> > Thread model: posix
-> > InstalledDir: /usr/bin
+> >  enum {
+> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> > index 0a9f8ea68de3..43cca5fa90cf 100644
+> > --- a/net/xdp/xsk_buff_pool.c
+> > +++ b/net/xdp/xsk_buff_pool.c
+> > @@ -189,6 +189,12 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+> >                 goto err_unreg_pool;
+> >         }
 > >
-> > Does anyone know the reason?
+> > +       if (!(netdev->xdp_features & NETDEV_XDP_ACT_NDO_ZC_SG) &&
+> > +           flags & XDP_USE_SG) {
+> > +               err = -EOPNOTSUPP;
+> > +               goto err_unreg_pool;
+> > +       }
+> > +
+> >         bpf.command = XDP_SETUP_XSK_POOL;
+> >         bpf.xsk.pool = pool;
+> >         bpf.xsk.queue_id = queue_id;
+> > --
+> > 2.35.3
 > >
-> > Thanks!
-> > Menglong Dong
 > >
-> > > jirka
-> > >
-> > >
-> >
->
+> 
 
