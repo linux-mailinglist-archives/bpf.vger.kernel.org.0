@@ -1,224 +1,113 @@
-Return-Path: <bpf+bounces-1592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F173B71EE5E
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:12:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EF471EE98
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E3F81C20AB5
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:12:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F5F281668
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C189B40794;
-	Thu,  1 Jun 2023 16:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D0A42513;
+	Thu,  1 Jun 2023 16:18:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBBCBA2F;
-	Thu,  1 Jun 2023 16:12:16 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50B4C18F;
-	Thu,  1 Jun 2023 09:12:13 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 525171063;
-	Thu,  1 Jun 2023 09:12:58 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.140])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C47623F663;
-	Thu,  1 Jun 2023 09:12:06 -0700 (PDT)
-Date: Thu, 1 Jun 2023 17:12:03 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-Message-ID: <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230601101257.530867-1-rppt@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B7E22D77
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:18:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C07C4339C
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685636314;
+	bh=5JFRDAGHyLTDyHyT/r5fwG60Rmyvqw3Xizu4Rql+pGI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XUKw5jgXkvHHLBJ+O2+rTyazm/uPOYIn2u0zjdZv6wh6/epi4gIFeaFV506Ch9ZYy
+	 V4oni6lQTyaxhMXbF/UgX4vcBblzDF/rdrNGy4XUwaZ+sOyA9gh41ENbG+SjfcRRYR
+	 bya1T0Gg/WoV4QLP+ecTpz/tIUfYCiDRmc9b0XBH+D92h8r2V4EBbpEzD9m8gOoetd
+	 0x73A5Ldbb6OgB17hPisOCC/55zYWoBaeIssKJZlkmyZurXVL77GbjV/E7E2Q4/RYC
+	 SdEmz74DzIdwqnWgrvHni8eBLLwefGJjUqATzDeJcStPOQ8cKV7RDZd7eZQfr3tbPk
+	 NixnSKWecXVvw==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2af177f12d1so15388461fa.0
+        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 09:18:34 -0700 (PDT)
+X-Gm-Message-State: AC+VfDw7jiEsYOOFZq88oeMmophP9U4xqcTu5B9sif3UtyAT/7tfPshF
+	UTzIcujiZPzNztPRVWnDCd9DNoDpXoN5j1l2Kp8=
+X-Google-Smtp-Source: ACHHUZ7Jf0NEOanNDNsRthX3LYhe8GIn5iRs5Rxcq/IllC1DMDhvtqS6h7S00BEq5liYKh3bqct6WkdZ8ET7nifKTIk=
+X-Received: by 2002:a2e:9e47:0:b0:2ab:145e:c04a with SMTP id
+ g7-20020a2e9e47000000b002ab145ec04amr5430692ljk.17.1685636312291; Thu, 01 Jun
+ 2023 09:18:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230601101257.530867-1-rppt@kernel.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+References: <20230601122622.513140-1-kpsingh@kernel.org>
+In-Reply-To: <20230601122622.513140-1-kpsingh@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Thu, 1 Jun 2023 09:18:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
+Message-ID: <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix UAF in task local storage
+To: KP Singh <kpsingh@kernel.org>
+Cc: bpf@vger.kernel.org, kafai@fb.com, ast@kernel.org, songliubraving@fb.com, 
+	andrii@kernel.org, daniel@iogearbox.net, Kuba Piecuch <jpiecuch@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mike,
+On Thu, Jun 1, 2023 at 5:26=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote:
+>
+> When the the task local storage was generalized for tracing programs, the
+> bpf_task_local_storage callback was moved from a BPF LSM hook callback
+> for security_task_free LSM hook to it's own callback. But a failure case
+> in bad_fork_cleanup_security was missed which, when triggered, led to a d=
+angling
+> task owner pointer and a subsequent use-after-free.
+>
+> This issue was noticed when a BPF LSM program was attached to the
+> task_alloc hook on a kernel with KASAN enabled. The program used
+> bpf_task_storage_get to copy the task local storage from the current
+> task to the new task being created.
 
-On Thu, Jun 01, 2023 at 01:12:44PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> module_alloc() is used everywhere as a mean to allocate memory for code.
-> 
-> Beside being semantically wrong, this unnecessarily ties all subsystmes
-> that need to allocate code, such as ftrace, kprobes and BPF to modules
-> and puts the burden of code allocation to the modules code.
+This is pretty tricky. Let's add a selftest for this.
 
-I agree this is a problem, and one key issue here is that these can have
-different requirements. For example, on arm64 we need modules to be placed
-within a 128M or 2G window containing the kernel, whereas it would be safe for
-the kprobes XOL area to be placed arbitrarily far from the kernel image (since
-we don't allow PC-relative insns to be stepped out-of-line). Likewise arm64
-doesn't have ftrace trampolines, and DIRECT_CALL trampolines can safely be
-placed arbitarily far from the kernel image.
+>
+> Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs=
+")
+> Reported-by: Kuba Piecuch <jpiecuch@google.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>
+> This fixes the regression from the LSM blob based implementation, we can
+> still have UAFs, if bpf_task_storage_get is invoked after bpf_task_storag=
+e_free
+> in the cleanup path.
 
-For a while I have wanted to give kprobes its own allocator so that it can work
-even with CONFIG_MODULES=n, and so that it doesn't have to waste VA space in
-the modules area.
-
-Given that, I think these should have their own allocator functions that can be
-provided independently, even if those happen to use common infrastructure.
-
-> Several architectures override module_alloc() because of various
-> constraints where the executable memory can be located and this causes
-> additional obstacles for improvements of code allocation.
-> 
-> This set splits code allocation from modules by introducing
-> jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces call
-> sites of module_alloc() and module_memfree() with the new APIs and
-> implements core text and related allocation in a central place.
-> 
-> Instead of architecture specific overrides for module_alloc(), the
-> architectures that require non-default behaviour for text allocation must
-> fill jit_alloc_params structure and implement jit_alloc_arch_params() that
-> returns a pointer to that structure. If an architecture does not implement
-> jit_alloc_arch_params(), the defaults compatible with the current
-> modules::module_alloc() are used.
-
-As above, I suspect that each of the callsites should probably be using common
-infrastructure, but I don't think that a single jit_alloc_arch_params() makes
-sense, since the parameters for each case may need to be distinct.
-
-> The new jitalloc infrastructure allows decoupling of kprobes and ftrace
-> from modules, and most importantly it enables ROX allocations for
-> executable memory.
-> 
-> A centralized infrastructure for code allocation allows future
-> optimizations for allocations of executable memory, caching large pages for
-> better iTLB performance and providing sub-page allocations for users that
-> only need small jit code snippets.
-
-This sounds interesting, but I think this can be achieved without requiring a
-single jit_alloc_arch_params() shared by all users?
+Can we fix this by calling bpf_task_storage_free() from free_task()?
 
 Thanks,
-Mark.
+Song
 
-> 
-> patches 1-5: split out the code allocation from modules and arch
-> patch 6: add dedicated API for data allocations with constraints similar to
-> code allocations
-> patches 7-9: decouple dynamic ftrace and kprobes form CONFIG_MODULES
-> patches 10-13: enable ROX allocations for executable memory on x86
-> 
-> Mike Rapoport (IBM) (11):
->   nios2: define virtual address space for modules
->   mm: introduce jit_text_alloc() and use it instead of module_alloc()
->   mm/jitalloc, arch: convert simple overrides of module_alloc to jitalloc
->   mm/jitalloc, arch: convert remaining overrides of module_alloc to jitalloc
->   module, jitalloc: drop module_alloc
->   mm/jitalloc: introduce jit_data_alloc()
->   x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
->   arch: make jitalloc setup available regardless of CONFIG_MODULES
->   kprobes: remove dependcy on CONFIG_MODULES
->   modules, jitalloc: prepare to allocate executable memory as ROX
->   x86/jitalloc: make memory allocated for code ROX
-> 
-> Song Liu (2):
->   ftrace: Add swap_func to ftrace_process_locs()
->   x86/jitalloc: prepare to allocate exectuatble memory as ROX
-> 
->  arch/Kconfig                     |   5 +-
->  arch/arm/kernel/module.c         |  32 ------
->  arch/arm/mm/init.c               |  35 ++++++
->  arch/arm64/kernel/module.c       |  47 --------
->  arch/arm64/mm/init.c             |  42 +++++++
->  arch/loongarch/kernel/module.c   |   6 -
->  arch/loongarch/mm/init.c         |  16 +++
->  arch/mips/kernel/module.c        |   9 --
->  arch/mips/mm/init.c              |  19 ++++
->  arch/nios2/include/asm/pgtable.h |   5 +-
->  arch/nios2/kernel/module.c       |  24 ++--
->  arch/parisc/kernel/module.c      |  11 --
->  arch/parisc/mm/init.c            |  21 +++-
->  arch/powerpc/kernel/kprobes.c    |   4 +-
->  arch/powerpc/kernel/module.c     |  37 -------
->  arch/powerpc/mm/mem.c            |  41 +++++++
->  arch/riscv/kernel/module.c       |  10 --
->  arch/riscv/mm/init.c             |  18 +++
->  arch/s390/kernel/ftrace.c        |   4 +-
->  arch/s390/kernel/kprobes.c       |   4 +-
->  arch/s390/kernel/module.c        |  46 +-------
->  arch/s390/mm/init.c              |  35 ++++++
->  arch/sparc/kernel/module.c       |  34 +-----
->  arch/sparc/mm/Makefile           |   2 +
->  arch/sparc/mm/jitalloc.c         |  21 ++++
->  arch/sparc/net/bpf_jit_comp_32.c |   8 +-
->  arch/x86/Kconfig                 |   2 +
->  arch/x86/kernel/alternative.c    |  43 ++++---
->  arch/x86/kernel/ftrace.c         |  59 +++++-----
->  arch/x86/kernel/kprobes/core.c   |   4 +-
->  arch/x86/kernel/module.c         |  75 +------------
->  arch/x86/kernel/static_call.c    |  10 +-
->  arch/x86/kernel/unwind_orc.c     |  13 ++-
->  arch/x86/mm/init.c               |  52 +++++++++
->  arch/x86/net/bpf_jit_comp.c      |  22 +++-
->  include/linux/ftrace.h           |   2 +
->  include/linux/jitalloc.h         |  69 ++++++++++++
->  include/linux/moduleloader.h     |  15 ---
->  kernel/bpf/core.c                |  14 +--
->  kernel/kprobes.c                 |  51 +++++----
->  kernel/module/Kconfig            |   1 +
->  kernel/module/main.c             |  56 ++++------
->  kernel/trace/ftrace.c            |  13 ++-
->  kernel/trace/trace_kprobe.c      |  11 ++
->  mm/Kconfig                       |   3 +
->  mm/Makefile                      |   1 +
->  mm/jitalloc.c                    | 185 +++++++++++++++++++++++++++++++
->  mm/mm_init.c                     |   2 +
->  48 files changed, 777 insertions(+), 462 deletions(-)
->  create mode 100644 arch/sparc/mm/jitalloc.c
->  create mode 100644 include/linux/jitalloc.h
->  create mode 100644 mm/jitalloc.c
-> 
-> 
-> base-commit: 44c026a73be8038f03dbdeef028b642880cf1511
-> -- 
-> 2.35.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
+>  kernel/fork.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index ed4e01daccaa..112d85091ae6 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2781,6 +2781,7 @@ __latent_entropy struct task_struct *copy_process(
+>         exit_sem(p);
+>  bad_fork_cleanup_security:
+>         security_task_free(p);
+> +       bpf_task_storage_free(p);
+>  bad_fork_cleanup_audit:
+>         audit_free(p);
+>  bad_fork_cleanup_perf:
+> --
+> 2.41.0.rc0.172.g3f132b7071-goog
+>
+>
 
