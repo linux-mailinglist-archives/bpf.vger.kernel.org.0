@@ -1,102 +1,133 @@
-Return-Path: <bpf+bounces-1608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1610-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88F1B71F0F4
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 19:40:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E50071F112
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 19:47:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36F5C281777
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 17:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31F251C210DF
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 17:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6130E4701B;
-	Thu,  1 Jun 2023 17:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA4948227;
+	Thu,  1 Jun 2023 17:47:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3580F42501
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 17:40:10 +0000 (UTC)
-Received: from relay.sandelman.ca (relay.cooperix.net [176.58.120.209])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C836C1B4
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 10:40:07 -0700 (PDT)
-Received: from dyas.sandelman.ca (unknown [142.169.16.93])
-	by relay.sandelman.ca (Postfix) with ESMTPS id 318AF209C2;
-	Thu,  1 Jun 2023 17:40:06 +0000 (UTC)
-Received: by dyas.sandelman.ca (Postfix, from userid 1000)
-	id DA5D7A63A4; Thu,  1 Jun 2023 13:40:04 -0400 (EDT)
-Received: from dyas (localhost [127.0.0.1])
-	by dyas.sandelman.ca (Postfix) with ESMTP id D76DCA6377;
-	Thu,  1 Jun 2023 13:40:04 -0400 (EDT)
-From: Michael Richardson <mcr+ietf@sandelman.ca>
-To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
-cc: "bpf\@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [Bpf] IETF BPF working group draft charter
-In-reply-to: <PH7PR21MB3878F9FEAF8DAD233E2505B4A348A@PH7PR21MB3878.namprd21.prod.outlook.com>
-References: <20230523163200.GD20100@maniforge> <18272.1684864698@localhost> <20230523202827.GA33347@maniforge> <ZG8R3JgOPHo7xn61@infradead.org> <87y1lclnui.fsf@gnu.org> <PH7PR21MB38781A9FBC44A275FDF3D5F6A347A@PH7PR21MB3878.namprd21.prod.outlook.com> <20230526165511.GA1209625@maniforge> <PH7PR21MB3878E80B01C2AA8273131D7CA347A@PH7PR21MB3878.namprd21.prod.outlook.com> <20230526171929.GB1209625@maniforge> <PH7PR21MB3878E4B002049F825DDCD52BA347A@PH7PR21MB3878.namprd21.prod.outlook.com> <ZHbDekB0KderhSTl@infradead.org> <9539.1685561890@dyas> <PH7PR21MB3878F9FEAF8DAD233E2505B4A348A@PH7PR21MB3878.namprd21.prod.outlook.com>
-Comments: In-reply-to Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
-   message dated "Wed, 31 May 2023 19:44:46 -0000."
-X-Mailer: MH-E 8.6+git; nmh 1.7+dev; GNU Emacs 26.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B9E42501
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 17:47:07 +0000 (UTC)
+Received: from out-50.mta0.migadu.com (out-50.mta0.migadu.com [IPv6:2001:41d0:1004:224b::32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2CA13E
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 10:47:05 -0700 (PDT)
+Message-ID: <7e09f647-da79-4088-4579-1520e3fd8427@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685641623;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k3LY1ZYjFBTj7xg00T1VOeO53CX7VMzfrAWCy8Z4DGs=;
+	b=j/SIUv/+xYCC9hOV0WOdofKeu3vx6E6+DhXDkUAUVO7Tt5W4txiLtca6KjlrdqLX7VADPL
+	aZ0tP+ASptP+H2/lbT1rbtExfJp1mNP4OWu0/l/qL5qbPfzusJSw9HoGzh0chnAu85G5zZ
+	2jd4PohftOCKez2KaojRejtJMbfRQbc=
+Date: Thu, 1 Jun 2023 10:47:00 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Thu, 01 Jun 2023 13:40:04 -0400
-Message-ID: <18718.1685641204@dyas>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Subject: Re: [PATCH bpf] bpf: Fix UAF in task local storage
+Content-Language: en-US
+To: Song Liu <songliubraving@meta.com>, KP Singh <kpsingh@kernel.org>
+Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Martin Lau <kafai@meta.com>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ Kuba Piecuch <jpiecuch@google.com>
+References: <20230601122622.513140-1-kpsingh@kernel.org>
+ <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
+ <CACYkzJ7S7JwX77NSSurr1wWYnFQs0TZwUKcwW5Zmva3CkkAx5w@mail.gmail.com>
+ <5486EA34-136F-45EA-BD9B-EA54EC436CA1@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <5486EA34-136F-45EA-BD9B-EA54EC436CA1@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
---=-=-=
-Content-Type: text/plain
+On 6/1/23 9:54 AM, Song Liu wrote:
+> 
+> 
+>> On Jun 1, 2023, at 9:27 AM, KP Singh <kpsingh@kernel.org> wrote:
+>>
+>> On Thu, Jun 1, 2023 at 6:18 PM Song Liu <song@kernel.org> wrote:
+>>>
+>>> On Thu, Jun 1, 2023 at 5:26 AM KP Singh <kpsingh@kernel.org> wrote:
+>>>>
+>>>> When the the task local storage was generalized for tracing programs, the
+>>>> bpf_task_local_storage callback was moved from a BPF LSM hook callback
+>>>> for security_task_free LSM hook to it's own callback. But a failure case
+>>>> in bad_fork_cleanup_security was missed which, when triggered, led to a dangling
+>>>> task owner pointer and a subsequent use-after-free.
+>>>>
+>>>> This issue was noticed when a BPF LSM program was attached to the
+>>>> task_alloc hook on a kernel with KASAN enabled. The program used
+>>>> bpf_task_storage_get to copy the task local storage from the current
+>>>> task to the new task being created.
+>>>
+>>> This is pretty tricky. Let's add a selftest for this.
+>>
+>> I don't have an easy repro for this (the UAF does not trigger
+>> immediately), Also I am not sure how one would test a UAF in a
+>> selftest. What actually happens is:
+>>
+>> * We have a dangling task pointer in local storage.
+>> * This is used sometime later which then leads to weird memory
+>> corruption errors.
+> 
+> I think we will see it easily with KASAN, no?
+> 
+>>
+>>>
+>>>>
+>>>> Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
+>>>> Reported-by: Kuba Piecuch <jpiecuch@google.com>
+>>>> Signed-off-by: KP Singh <kpsingh@kernel.org>
+>>>> ---
+>>>>
+>>>> This fixes the regression from the LSM blob based implementation, we can
+>>>> still have UAFs, if bpf_task_storage_get is invoked after bpf_task_storage_free
+>>>> in the cleanup path.
+>>>
+>>> Can we fix this by calling bpf_task_storage_free() from free_task()?
+>>
+>> I think we can yeah. But, this is yet another deviation from how the
+>> security blob is managed (security_task_free) frees the blob that we
+>> were previously using.
 
+Does it mean doing bpf_task_storage_free() in free_task() will break some use 
+cases? Could you explain?
+Doing bpf_task_storage_free() in free_task() seems to be more straight forward.
 
-Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org> wrote:
-    >> I assume that one use cases is where a VM (windows or Linux inside)
-    >> does a eBPF (XDP) load into a virtual network interface, and the
-    >> hypervisor manages to push that down to some engine in a physical
-    >> card.
-    >>
-    >> In that case, we might have mixes of Windows, Linux and network card
-    >> implementations of eBPF on the same "transaction" path.
+> 
+> Yeah, this will make the code even more tricky.
+> 
+> Another idea I had is to filter on task->__state in the helper. IOW,
+> task local storage does not work on starting or died tasks. But I am
+> not sure whether this will make BPF_LSM less effective (not covering
+> certain tasks).
+> 
+> Thanks,
+> Song
+> 
+> 
 
-    > Yes, exactly right.
-
-Okay, I'm unclear if that implies that we need all the discussed ELF and ABI issues
-to be compatible all the way down.  Or if each layer can do it's adaptation
-in incompatible ways, and that's okay.
-
-
---
-Michael Richardson <mcr+IETF@sandelman.ca>, Sandelman Software Works
- -= IPv6 IoT consulting =-                      *I*LIKE*TRAINS*
-
-
-
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEow/1qDVgAbWL2zxYcAKuwszYgEMFAmR41/QACgkQcAKuwszY
-gENPPgv/dk7grtwsVPOkgTru+Q3eL8ms9Rf7bQDr5A5HOIDDQ7RPw08McEOTMz7E
-Quqkf1py7mP2Ct0RRzRyStjj4gXGX98IXUopxb4ICYHzl4FtYgkiDhU+8hszZPDe
-VCHPcW6TJF+pwxDFwvtLRGT5AX1K82mNM0RqG/KNPhcXth/q9GKA6GoPO3UA4Iwl
-0CzfPKEbKLKG/MXtfeIr0cw7jxpoMsQ5IpXGNXk+MsSJzUp1SdGA73SMTafDjdTX
-2ipYV8qoitfQS1vZgWyaeZTrGsgxZzs4FlEotCchSw1NoTPBTGsfIZXWU9Q49Fs2
-n6eM7e86Vlc5Cvaqarnyrvj5OArjuL1rmWJUVsxB8kWTGY9vk9NAWcdq66gkiGGY
-8K/n6wwUdeSvtFdoTCCzZbV0dKHFG9cGti2csrQ+6xNG2tAodmYSOtf5fuUU7Yyf
-Z9LsyqlFjsviauSX0CiFlOUCSM5Eh0E+SK8aIu3lgfwW58oryzNi1pRcYdH0nXhi
-NKUQEKw4
-=GjDw
------END PGP SIGNATURE-----
---=-=-=--
 
