@@ -1,183 +1,159 @@
-Return-Path: <bpf+bounces-1556-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAFD718F7C
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 02:24:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA757718F86
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 02:29:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4C91C20F8F
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 00:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FEF81C20FC0
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 00:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2F310E9;
-	Thu,  1 Jun 2023 00:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2554EEDE;
+	Thu,  1 Jun 2023 00:29:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5C4EA1
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 00:23:52 +0000 (UTC)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843EE11F
-	for <bpf@vger.kernel.org>; Wed, 31 May 2023 17:23:50 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2af225e5b4bso2567521fa.3
-        for <bpf@vger.kernel.org>; Wed, 31 May 2023 17:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685579029; x=1688171029;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GG1RjFwW4DWNdYD1UKHtP2oDV1lQL/iFPhMLiiwkw9Y=;
-        b=MIvW0DH5bvZRuBHDWco42KXDknPWpRLAcngL4zx3jnqKDFytzWVRTAd9bHEyrSGd/6
-         dAOZLloJU7klm0GxJ9iyuPHrAQK1Az4Zhc5apaiw4PyTDczxRBWgNtOVSe54l8S6kwXT
-         joW3aZin5wi/n4Of/ryB42RK8t1IXjbJF1XURn2n1ilH7noegu5YH2773wg8z3tMEMDU
-         prDRcJ/CdF/OAN0MH4+/odlL36bx9Sir4L1bnRmb/cgMiO5hIwQcAgGgYKYqFVgBqFx7
-         6qL4UsBg1dJGuNxPMy+u9sLBSkKclFvTEingJF1dM5WJ5PRAjzUy6jmOzk3csFj1EyOX
-         hJ8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685579029; x=1688171029;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GG1RjFwW4DWNdYD1UKHtP2oDV1lQL/iFPhMLiiwkw9Y=;
-        b=UfMM7n2t4BREvOxvhyqRofQWrlVDkHDMFNh3BafDDDkRf4+drNQiCti6Ksh6yQpIk/
-         WQVd9MVVJdHAHAYjodFcCityoKFMSpF9orVsSH788sjJykhNNxqq1sMd6vExuK+jAYOX
-         WIKe+iFbAjz43Ds/QEL0Nc7ow3gCKRNxQCSMAWAjLVd8/B/6wptLd38jnOnDzlFak4FH
-         IVWRxCss5oeMMvGx7dFdIv3xslyW3d0ZUEoDh3QVPsO2SYHqZ22PRwz9HjEm0cMWGq31
-         UItWapE2jekk18mcwb9pJFiA3sziUqgOTJRYNJA0+L0SPIO6wYWKLo9vS0OUNzOQhfbx
-         Uxfg==
-X-Gm-Message-State: AC+VfDwtAwrpWPhjbOCmA3Csvs2ofiMCYsNhqpGnXL9DxBcL9MwnCy/g
-	705GO/jy75VbJORohgcGOgytJOz9e7sxADCB7v0=
-X-Google-Smtp-Source: ACHHUZ7wOA856AsSArGuBvOjniyAL6OfUlV7CddjjyHm4yMrSaZ8RiUImDS4UlG9PMur3S9ox0eK0EsdM3CKsf0aNWA=
-X-Received: by 2002:a05:651c:112:b0:2ad:92b9:83b4 with SMTP id
- a18-20020a05651c011200b002ad92b983b4mr3313793ljb.5.1685579028381; Wed, 31 May
- 2023 17:23:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C3EA55
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 00:29:25 +0000 (UTC)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17C22124;
+	Wed, 31 May 2023 17:29:24 -0700 (PDT)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4232520FC4D7;
+	Wed, 31 May 2023 17:29:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4232520FC4D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1685579363;
+	bh=Z1v23pKuDidufXUFzDrQNxKmqMUYtqq8BJ7JNDupZo4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qmYGJlSoh7f0xBpo5W3+HkiMx/HVXZWbN4pUegNCqMEK11HYXZgDC7HVEmqmPsjr7
+	 xyyg+bFpoSa6kk3bscIa7QVMDSVKydbvV6rnGr90w6Kt1G1YfkCVmrhlpsUReHZ9OZ
+	 sSer5LjpQbfPzKKgIMCWbSnYqzenSWiCWRGMX8xQ=
+Date: Wed, 31 May 2023 17:29:17 -0700
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, ast@kernel.org,
+	dcook@linux.microsoft.com, brauner@kernel.org,
+	dthaler@microsoft.com, bpf@vger.kernel.org
+Subject: Re: [PATCH 0/5] tracing/user_events: Add auto-del flag for events
+Message-ID: <20230601002917.GA25634@W11-BEAU-MD.localdomain>
+References: <20230530235304.2726-1-beaub@linux.microsoft.com>
+ <20230531214444.5dqcbclgycfk3q77@MacBook-Pro-8.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230530172739.447290-1-eddyz87@gmail.com> <20230530172739.447290-2-eddyz87@gmail.com>
- <CAEf4BzYJbzR0f5HyjLMJEmBdHkydQiOjdkk=K4AkXWTwnXsWEg@mail.gmail.com>
- <f2abf39bcd4de841a89bb248de9e242a880aaa93.camel@gmail.com>
- <CAEf4BzYjvjbm9g1N9Z04kXV1N3+KH+dZ_sq_0NWuhyuJ+A18UQ@mail.gmail.com>
- <a13ee48ac037d0dbb6796c7ea5965140ec7ef726.camel@gmail.com>
- <CAEf4BzYE_7m3FNc6dtZeKb6tNbW4xkhz6SVdV6KetD5reSer6A@mail.gmail.com>
- <aa64ee05281ec952df41b7a7842ed2836ae79762.camel@gmail.com>
- <CAEf4BzZVd2=QnXe-A_n9zBYKcsY=DiHhH3EG8yB9Cq5+8D5jcQ@mail.gmail.com>
- <eaa12a66fa3e06e24232507359fa0a07f43d514d.camel@gmail.com>
- <CAEf4Bza+60Wjbk=Hww1joxoykx+HeyP_Nv5igP7V0RZi=-3OVg@mail.gmail.com> <12d9acab03e76491a34318dc2973b60f10712239.camel@gmail.com>
-In-Reply-To: <12d9acab03e76491a34318dc2973b60f10712239.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 31 May 2023 17:23:36 -0700
-Message-ID: <CAEf4BzZNJmfNWTdkoGE__-G_1GMC4S2=xStpS92NtJts3PVWTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230531214444.5dqcbclgycfk3q77@MacBook-Pro-8.local>
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, May 31, 2023 at 4:42=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2023-05-31 at 15:54 -0700, Andrii Nakryiko wrote:
-> > [...]
+On Wed, May 31, 2023 at 02:44:44PM -0700, Alexei Starovoitov wrote:
+> On Tue, May 30, 2023 at 04:52:59PM -0700, Beau Belgrave wrote:
+> > As part of the discussions for user_events aligning to be used with eBPF
+> > it became clear [1] we needed a way to delete events without having to rely
+> > upon the delete IOCTL. Steven suggested that we simply have an owner
+> 
+> This patch set is not addressing the issues I pointed out earlier.
+> It adds a new flag and new api. It's not a fix.
+> 
+
+Can you point out the scenario you are worried about?
+
+For example, if anything is using a per-FD event, it cannot be deleted,
+it will return -EBUSY. If perf, ftrace, or any user-process still has a
+reference to the event, the delete will not go through (even without
+these changes).
+
+I read your previous issues as, we cannot let anyone delete events while
+others are using them. And I also heard Steven state, we need to not let
+things pile up, since manual deletes are unlikely.
+
+> > for the event, however, the event can be held by more than just the
+> > first register FD, such as perf/ftrace or additional registers. In order
+> > to handle all those cases, we must only delete after all references are
+> > gone from both user and kernel space.
+> > 
+> > This series adds a new register flag, USER_EVENT_REG_AUTO_DEL, which
+> > causes the event to delete itself upon the last put reference. We cannot
+> 
+> Do not introduce a new flag. Make this default.
+> 
+
+If this is to be default, then I would have to have a flag for
+persistent events, which seems reasonable.
+
+> > fully drop the delete IOCTL, since we still want to enable events to be
+> > registered early via dynamic_events and persist. If the auto delete flag
+> > was used during dynamic_events, the event would delete immediately.
+> 
+> You have to delete this broken "delete via ioctl" api.
+> For persistent events you need a different api in its own name scope,
+> so it doesn't conflict with per-fd events.
+> 
+
+We have certain events we want persistent, that don't go away if the
+process crashes, etc. and we don't yet have a ring buffer up via
+perf_events.
+
+In these cases, we want the name to be the same for all processes, since
+it's a common event. An example is a common library that emits out
+assert messages. We want to watch for any asserts on the system,
+regardless of which process emits them.
+
+I'm not sure I understand how you think they would conflict?
+
+Another process cannot come in and register the same event name while
+it's in use. They can only do so once everything has been closed down.
+
+If another process uses the same name for an event, it must match the
+previous events arguments, and is treated as the same event. If they
+don't match then the register fails. The only way to get a conflict is
+to delete the event and then create a new one, but that only works if
+no one is still using it at all.
+
+Thanks,
+-Beau
+
+> > We have a few key events that we enable immediately after boot and are
+> > monitored in our environments. Today this is done via dynamic events,
+> > however, it could also be done directly via the ABI by not passing the
+> > auto delete flag.
 > >
-> > well, what can I say... force all imprecise logic isn't that
-> > straightforward either, but so far it still holds. And the big idea
-> > here is similar: whatever happens between two checkpoints doesn't
-> > matter if its effect is not visible at the end of the checkpoint.
-> >
-> > So I guess the intent of my proposal is correct: every time we mark r6
-> > as precise, we should mark r7 as well in each state in which they are
-> > still linked. Which necessitates to do this on each walk up the state
-> > chain.
-> >
-> > At least let's give it a try and see how it holds up against existing
-> > tests and whatever test you can come up with?..
->
-> I'll try this thing, thanks a lot for all the input!
-> Hopefully will get back tomorrow.
-
-Great, let's see how it goes.
-
->
-> > [...]
-> >
-> > BTW, I did contemplate extending jmp_history to contain extra flags
-> > about "interesting" instructions, though. Specifically, last
-> > unsupported case for precision backtracking is when register other
-> > than r10 is used for stack access (which can happen when one passes a
-> > pointer to a SCALAR to parent function's stack), for which having a
-> > bit next to such instruction saying "this is really a stack access"
-> > would help cover the last class of unsupported situations.
->
-> Yes, it would have required some kind of redesign for this case as
-> well. My expectation is that only a few registers get range on each
-> find_equal_scalars() call, so storing big masks for all frame levels
-> is very sub-optimal.
->
-> > But this is a pretty significant complication. And to make it really
-> > practical, we'd need to think very hard on how to implement
-> > jmp_history more efficiently, without constant reallocations. I have a
-> > hunch that jmp_history should be one large resizable array that all
-> > states share and just point into different parts of it. When state is
-> > pushed to the stack, we just remember at which index it starts. When a
-> > state is finalized, its jump history segment shouldn't be needed by
-> > that state and can be reused by its siblings and parent states.
-> > Ultimately, we only have a linear chain of actively worked-on states
-> > which do use jmp_history, and all others either don't need it
-> > *anymore* (verified states) or don't need it *yet* (enqueued states).
-> >
-> > This would allow us to even have an exact "log of execution" with
-> > insn_idx and associated extra information, but it will be code path
-> > dependent, unlike bpf_insn_aux. And the best property is that it will
-> > never grow beyond 1 million instructions deep (absolute worst case).
->
-> I'm not sure I understand why is it bounded.
-> Conditionals and loops potentially give big number of possible
-> execution paths over a small number of instructions.
-> So, keeping per-path / per-instruction still is going to blow up in
-> terms of memory use. To keep it bounded (?) something smart needs to
-> know which visited states could never be visited again.
-
-#define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
-
-that's the bound, you can't go above that
-
->
-> > We might not even need backtracking in its current form if we just
-> > proactively maintain involved registers information (something that we
-> > currently derive during instruction interpretation in backtrack_insn).
->
-> Well, precision marks still have to be propagated backwards, so some
-> form of "backward movement" within a state will have to happen anyway.
-> Like, we have a combination of forward and backward analyses in any case.
-> Sounds a bit like you want to converge the design to some kind of a
-> classical data flow analysis, but have states instead of basic blocks.
-
-It's just an idea. And yes, there will still be backtracking, just
-less of "let's try to understand what's going on based on instruction
-itself". So instead of deriving that we are exiting from subprog, we
-can have a flag that says "this instruction is exit from subprog". The
-advantage would be an overall simplification and keeping instruction
-interpretation in one place.
-
-But this is offtopic, we can talk about this separately. It's not
-urgent and not even imminent change.
-
->
-> > So at some point I'd like to get to thinking and implementing this,
-> > but it isn't the most pressing need right now, of course.
-> > [...]
+> > NOTE: I'll need to merge this work once we take these [2] [3] patches
+> > into for-next. I'm happy to do so once they land there.
+> > 
+> > 1: https://lore.kernel.org/linux-trace-kernel/20230518093600.3f119d68@rorschach.local.home/
+> > 2: https://lore.kernel.org/linux-trace-kernel/20230529032100.286534-1-sunliming@kylinos.cn/
+> > 3: https://lore.kernel.org/linux-trace-kernel/20230519230741.669-1-beaub@linux.microsoft.com/
+> > 
+> > Beau Belgrave (5):
+> >   tracing/user_events: Store register flags on events
+> >   tracing/user_events: Track refcount consistently via put/get
+> >   tracing/user_events: Add flag to auto-delete events
+> >   tracing/user_events: Add self-test for auto-del flag
+> >   tracing/user_events: Add auto-del flag documentation
+> > 
+> >  Documentation/trace/user_events.rst           |  21 +-
+> >  include/uapi/linux/user_events.h              |  10 +-
+> >  kernel/trace/trace_events_user.c              | 183 ++++++++++++++----
+> >  .../testing/selftests/user_events/abi_test.c  | 115 ++++++++++-
+> >  4 files changed, 278 insertions(+), 51 deletions(-)
+> > 
+> > 
+> > base-commit: 3862f86c1529fa0016de6344eb974877b4cd3838
+> > -- 
+> > 2.25.1
+> > 
 
