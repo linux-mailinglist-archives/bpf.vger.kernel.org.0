@@ -1,139 +1,92 @@
-Return-Path: <bpf+bounces-1585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66717719A89
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 13:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 172F8719C14
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 14:26:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22497281717
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 11:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C51012816ED
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 12:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D74C127;
-	Thu,  1 Jun 2023 11:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2509BA2F;
+	Thu,  1 Jun 2023 12:26:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C8423404;
-	Thu,  1 Jun 2023 11:07:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A781FC433D2;
-	Thu,  1 Jun 2023 11:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698C123404
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 12:26:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F74FC4339C;
+	Thu,  1 Jun 2023 12:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685617670;
-	bh=+Yjm8puKI4qcOhrAjHQoPXnOlN6+/fj9nQ2KMrVKq+A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RhP2k+/FQSvli7tGw2eOKlboTIMhAX1rWIMmQojkSItsf7Pbu27Voz4XKQfKsJMv+
-	 yk64a7+GnLa0AXm5NTg7oxgCbiU/vvM5YtvO42iXWm3c1dvWeuqaT9QYECD04AjLI8
-	 +kurm3Gcj765DCLAHDCbNzTJmkHWERuX8j+NWUQrH79TGx2XeQSd0dO1NOebia9EMt
-	 dJu6ZE7ylH9284d9jqvK6St/2YUkHNw8jD2OIGo2TbwtTLSoShdT9QABDGhevJVWTD
-	 pUczYlcvfwWLpOJgcn012xrthp2r+mfy68euX8CFvo6UC393XjO1m9JQnHYF6C6kEn
-	 C9f6ivmZ7x+Ew==
-Date: Thu, 1 Jun 2023 14:07:13 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 12/13] x86/jitalloc: prepare to allocate exectuatble
- memory as ROX
-Message-ID: <20230601110713.GE395338@kernel.org>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <20230601101257.530867-13-rppt@kernel.org>
- <20230601103050.GT4253@hirez.programming.kicks-ass.net>
+	s=k20201202; t=1685622396;
+	bh=QqQzQ7NZnj7EXE4Ap4NPU/RPq4MNdjLXz0fnp5miIKU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qsNBGFLvMEDNTIOhw/vuLdAXTEJA5VyLw/QHUReyPrXw+nTcfp/kQvP4TjegXlceK
+	 bAMOo82/o9gcfWVn4b4P9uo2UotN814i+Hw4c/c8HMmjgH8a56fCAvjy4HTVvqIPh8
+	 iBm26/UQPJgx1Y0Gjj4GbthS8O0Cy0kpTy0DLhujt4m/lTGtTr6xja8f/xrDP1vJmX
+	 yLng75tpNl4NVJsut4nK+g1Xgn3hxhy0Xwvs14xvYXjtAclKMSPKzzfVxfcWZ6f4WZ
+	 HqArpd79T5sTLEHGN2efI6ED+TS7xY6+EiRiKkaGM5CUVjOEmqpN9XpvKGan4oBFUJ
+	 FANYt4HPosy5Q==
+From: KP Singh <kpsingh@kernel.org>
+To: bpf@vger.kernel.org
+Cc: kafai@fb.com,
+	ast@kernel.org,
+	songliubraving@fb.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	Kuba Piecuch <jpiecuch@google.com>,
+	KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf] bpf: Fix UAF in task local storage
+Date: Thu,  1 Jun 2023 14:26:22 +0200
+Message-ID: <20230601122622.513140-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230601103050.GT4253@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 01, 2023 at 12:30:50PM +0200, Peter Zijlstra wrote:
-> On Thu, Jun 01, 2023 at 01:12:56PM +0300, Mike Rapoport wrote:
-> 
-> > +static void __init_or_module do_text_poke(void *addr, const void *opcode, size_t len)
-> > +{
-> > +	if (system_state < SYSTEM_RUNNING) {
-> > +		text_poke_early(addr, opcode, len);
-> > +	} else {
-> > +		mutex_lock(&text_mutex);
-> > +		text_poke(addr, opcode, len);
-> > +		mutex_unlock(&text_mutex);
-> > +	}
-> > +}
-> 
-> So I don't much like do_text_poke(); why?
+When the the task local storage was generalized for tracing programs, the
+bpf_task_local_storage callback was moved from a BPF LSM hook callback
+for security_task_free LSM hook to it's own callback. But a failure case
+in bad_fork_cleanup_security was missed which, when triggered, led to a dangling
+task owner pointer and a subsequent use-after-free.
 
-I believe the idea was to keep memcpy for early boot before the kernel
-image is protected without going and adding if (is_module_text_address())
-all over the place.
+This issue was noticed when a BPF LSM program was attached to the
+task_alloc hook on a kernel with KASAN enabled. The program used
+bpf_task_storage_get to copy the task local storage from the current
+task to the new task being created.
 
-I think this can be used instead without updating all the call sites of
-text_poke_early():
+Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
+Reported-by: Kuba Piecuch <jpiecuch@google.com>
+Signed-off-by: KP Singh <kpsingh@kernel.org>
+---
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 91057de8e6bc..f994e63e9903 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1458,7 +1458,7 @@ void __init_or_module text_poke_early(void *addr, const void *opcode,
- 		 * code cannot be running and speculative code-fetches are
- 		 * prevented. Just change the code.
- 		 */
--		memcpy(addr, opcode, len);
-+		text_poke_copy(addr, opcode, len);
- 	} else {
- 		local_irq_save(flags);
- 		memcpy(addr, opcode, len);
- 
-> > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> > index aa99536b824c..d50595f2c1a6 100644
-> > --- a/arch/x86/kernel/ftrace.c
-> > +++ b/arch/x86/kernel/ftrace.c
-> > @@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
-> >  		return ret;
-> >  
-> >  	/* replace the text with the new text */
-> > -	if (ftrace_poke_late)
-> > +	if (ftrace_poke_late) {
-> >  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
-> > -	else
-> > -		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> > +	} else {
-> > +		mutex_lock(&text_mutex);
-> > +		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> > +		mutex_unlock(&text_mutex);
-> > +	}
-> >  	return 0;
-> >  }
-> 
-> And in the above case it's actively wrong for loosing the _queue()
-> thing.
+This fixes the regression from the LSM blob based implementation, we can
+still have UAFs, if bpf_task_storage_get is invoked after bpf_task_storage_free
+in the cleanup path.
 
+ kernel/fork.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index ed4e01daccaa..112d85091ae6 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2781,6 +2781,7 @@ __latent_entropy struct task_struct *copy_process(
+ 	exit_sem(p);
+ bad_fork_cleanup_security:
+ 	security_task_free(p);
++	bpf_task_storage_free(p);
+ bad_fork_cleanup_audit:
+ 	audit_free(p);
+ bad_fork_cleanup_perf:
 -- 
-Sincerely yours,
-Mike.
+2.41.0.rc0.172.g3f132b7071-goog
+
 
