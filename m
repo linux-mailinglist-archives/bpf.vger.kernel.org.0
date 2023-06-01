@@ -1,113 +1,135 @@
-Return-Path: <bpf+bounces-1593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8EF471EE98
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:19:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F2871EEAE
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:22:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F5F281668
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:19:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 386771C20ECE
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D0A42513;
-	Thu,  1 Jun 2023 16:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29F44250E;
+	Thu,  1 Jun 2023 16:22:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B7E22D77
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:18:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C07C4339C
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685636314;
-	bh=5JFRDAGHyLTDyHyT/r5fwG60Rmyvqw3Xizu4Rql+pGI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XUKw5jgXkvHHLBJ+O2+rTyazm/uPOYIn2u0zjdZv6wh6/epi4gIFeaFV506Ch9ZYy
-	 V4oni6lQTyaxhMXbF/UgX4vcBblzDF/rdrNGy4XUwaZ+sOyA9gh41ENbG+SjfcRRYR
-	 bya1T0Gg/WoV4QLP+ecTpz/tIUfYCiDRmc9b0XBH+D92h8r2V4EBbpEzD9m8gOoetd
-	 0x73A5Ldbb6OgB17hPisOCC/55zYWoBaeIssKJZlkmyZurXVL77GbjV/E7E2Q4/RYC
-	 SdEmz74DzIdwqnWgrvHni8eBLLwefGJjUqATzDeJcStPOQ8cKV7RDZd7eZQfr3tbPk
-	 NixnSKWecXVvw==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2af177f12d1so15388461fa.0
-        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 09:18:34 -0700 (PDT)
-X-Gm-Message-State: AC+VfDw7jiEsYOOFZq88oeMmophP9U4xqcTu5B9sif3UtyAT/7tfPshF
-	UTzIcujiZPzNztPRVWnDCd9DNoDpXoN5j1l2Kp8=
-X-Google-Smtp-Source: ACHHUZ7Jf0NEOanNDNsRthX3LYhe8GIn5iRs5Rxcq/IllC1DMDhvtqS6h7S00BEq5liYKh3bqct6WkdZ8ET7nifKTIk=
-X-Received: by 2002:a2e:9e47:0:b0:2ab:145e:c04a with SMTP id
- g7-20020a2e9e47000000b002ab145ec04amr5430692ljk.17.1685636312291; Thu, 01 Jun
- 2023 09:18:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736F422D6B
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:22:11 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C352137
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 09:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1685636528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OEv0joFCDuHbuGt/Asb4AZElQyo2ctgPqP8Gt2HoqV8=;
+	b=dyUv/2+1/iKjYM/ba5aHCI1wovu39/XLMbEb4tPJ3ksoVAnCGVfDAYAuzpPXthg7dv75Ld
+	sBrc5eKB/R30VSf+7HLFDDtWPqVguF3Bqe45LephdAKstsMe91jsSsaxshasoo2W+K7qRk
+	HSDaXOXjtkgIK1fylp0nV5WH77czRkU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-55-BC_obQn7OWOoJhdNPx9a_g-1; Thu, 01 Jun 2023 12:21:57 -0400
+X-MC-Unique: BC_obQn7OWOoJhdNPx9a_g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 932D4802355;
+	Thu,  1 Jun 2023 16:21:56 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.45.242.21])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5C1492B0B;
+	Thu,  1 Jun 2023 16:21:56 +0000 (UTC)
+Received: from [10.1.1.1] (localhost [IPv6:::1])
+	by firesoul.localdomain (Postfix) with ESMTP id 7F3D2307372E8;
+	Thu,  1 Jun 2023 18:21:54 +0200 (CEST)
+Subject: [PATCH bpf-next V2] bpf/xdp: optimize bpf_xdp_pointer to avoid
+ reading sinfo
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+To: Tariq Toukan <ttoukan.linux@gmail.com>,
+ Daniel Borkmann <borkmann@iogearbox.net>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>,
+ Tariq Toukan <tariqt@nvidia.com>, gal@nvidia.com, lorenzo@kernel.org,
+ netdev@vger.kernel.org, echaudro@redhat.com, andrew.gospodarek@broadcom.com
+Date: Thu, 01 Jun 2023 18:21:54 +0200
+Message-ID: <168563651438.3436004.17735707525651776648.stgit@firesoul>
+User-Agent: StGit/1.4
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230601122622.513140-1-kpsingh@kernel.org>
-In-Reply-To: <20230601122622.513140-1-kpsingh@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Thu, 1 Jun 2023 09:18:19 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
-Message-ID: <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix UAF in task local storage
-To: KP Singh <kpsingh@kernel.org>
-Cc: bpf@vger.kernel.org, kafai@fb.com, ast@kernel.org, songliubraving@fb.com, 
-	andrii@kernel.org, daniel@iogearbox.net, Kuba Piecuch <jpiecuch@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Jun 1, 2023 at 5:26=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrote:
->
-> When the the task local storage was generalized for tracing programs, the
-> bpf_task_local_storage callback was moved from a BPF LSM hook callback
-> for security_task_free LSM hook to it's own callback. But a failure case
-> in bad_fork_cleanup_security was missed which, when triggered, led to a d=
-angling
-> task owner pointer and a subsequent use-after-free.
->
-> This issue was noticed when a BPF LSM program was attached to the
-> task_alloc hook on a kernel with KASAN enabled. The program used
-> bpf_task_storage_get to copy the task local storage from the current
-> task to the new task being created.
+Currently we observed a significant performance degradation in
+samples/bpf xdp1 and xdp2, due XDP multibuffer "xdp.frags" handling,
+added in commit 772251742262 ("samples/bpf: fixup some tools to be able
+to support xdp multibuffer").
 
-This is pretty tricky. Let's add a selftest for this.
+This patch reduce the overhead by avoiding to read/load shared_info
+(sinfo) memory area, when XDP packet don't have any frags. This improves
+performance because sinfo is located in another cacheline.
 
->
-> Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs=
-")
-> Reported-by: Kuba Piecuch <jpiecuch@google.com>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->
-> This fixes the regression from the LSM blob based implementation, we can
-> still have UAFs, if bpf_task_storage_get is invoked after bpf_task_storag=
-e_free
-> in the cleanup path.
+Function bpf_xdp_pointer() is used by BPF helpers bpf_xdp_load_bytes()
+and bpf_xdp_store_bytes(). As a help to reviewers, xdp_get_buff_len() can
+potentially access sinfo, but it uses xdp_buff_has_frags() flags bit check
+to avoid accessing sinfo in no-frags case.
 
-Can we fix this by calling bpf_task_storage_free() from free_task()?
+The likely/unlikely instrumentation lays out asm code such that sinfo
+access isn't interleaved with no-frags case (checked on GCC 12.2.1-4).
+The generated asm code is more compact towards the no-frags case.
 
-Thanks,
-Song
+The BPF kfunc bpf_dynptr_slice() also use bpf_xdp_pointer(). Thus, it
+should also take effect for that.
 
->
->  kernel/fork.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index ed4e01daccaa..112d85091ae6 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2781,6 +2781,7 @@ __latent_entropy struct task_struct *copy_process(
->         exit_sem(p);
->  bad_fork_cleanup_security:
->         security_task_free(p);
-> +       bpf_task_storage_free(p);
->  bad_fork_cleanup_audit:
->         audit_free(p);
->  bad_fork_cleanup_perf:
-> --
-> 2.41.0.rc0.172.g3f132b7071-goog
->
->
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ net/core/filter.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 968139f4a1ac..961db5bd2f94 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3948,20 +3948,21 @@ void bpf_xdp_copy_buf(struct xdp_buff *xdp, unsigned long off,
+ 
+ void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
+ {
+-	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+ 	u32 size = xdp->data_end - xdp->data;
++	struct skb_shared_info *sinfo;
+ 	void *addr = xdp->data;
+ 	int i;
+ 
+ 	if (unlikely(offset > 0xffff || len > 0xffff))
+ 		return ERR_PTR(-EFAULT);
+ 
+-	if (offset + len > xdp_get_buff_len(xdp))
++	if (unlikely(offset + len > xdp_get_buff_len(xdp)))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	if (offset < size) /* linear area */
++	if (likely((offset < size))) /* linear area */
+ 		goto out;
+ 
++	sinfo = xdp_get_shared_info_from_buff(xdp);
+ 	offset -= size;
+ 	for (i = 0; i < sinfo->nr_frags; i++) { /* paged area */
+ 		u32 frag_size = skb_frag_size(&sinfo->frags[i]);
+
+
 
