@@ -1,286 +1,236 @@
-Return-Path: <bpf+bounces-1597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9518D71EEFA
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:29:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 536ED71EF27
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F2ED2817D8
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:29:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3421C2111B
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EF542520;
-	Thu,  1 Jun 2023 16:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEFF171D6;
+	Thu,  1 Jun 2023 16:34:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B194522D6B
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:29:31 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0D39D1;
-	Thu,  1 Jun 2023 09:29:29 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B6E2320FC4F8;
-	Thu,  1 Jun 2023 09:29:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B6E2320FC4F8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1685636969;
-	bh=K5r8biMkMJQp8II7WHMUcApzE1tfTjVhtEnUwd0nbFY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dg7MSPLasm5oCVR/X2ohrOsbOrP37vjxIuwkD0EBqkAjpTxupxFgArCGy0nzMp1jz
-	 loE9EXa2IDcx0gwbj6DUNJ2UGgACf8dGgJBJ5dZq+zWtNsmnNo/7lTt6arF08ciRNY
-	 INQonioVc0pAfiBcd2tmKUHnfvRgT1tjd5XhmDes=
-Date: Thu, 1 Jun 2023 09:29:21 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Thaler <dthaler@microsoft.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230601162921.GA152@W11-BEAU-MD.localdomain>
-References: <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain>
- <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230601-urenkel-holzofen-cd9403b9cadd@brauner>
- <20230601152414.GA71@W11-BEAU-MD.localdomain>
- <20230601-legten-festplatten-fe053c6f16a4@brauner>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F45D533
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:34:22 +0000 (UTC)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D97CE48
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 09:34:03 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-30c4775d05bso607226f8f.2
+        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 09:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1685637241; x=1688229241;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gtX9jxjoU/mKddkOk7C3zYkrnNJRUUYjKjwxt36RXfs=;
+        b=ZIGJEkcIUVDc49RQuj4svTXbJEafO0ocLCQgecd9rrKU93Py5Hs3lCugscP21a2gf2
+         KhJIG21naMu7TZ/0VfcbfNl9Hj7iqBN4Hw8idk/v7sb5Ct+JAoYzU5TKQKptsFTMMPBf
+         ck4ThPbbQyYpjbKPKG8q34fI1mEenfRwgDkmDKJpR0NOwReHqe1oBqMAymuJvi49hE6P
+         oxRdn2oB6ZHYzAzX/n4nRzJsI18Kbud2eqEHEX1puygWqd980HzcngLEmgh8m4+haiVQ
+         niSRtCjFWWVg5vUxl+d45ilMlMl7IMfCOTjPRpzIQeRsidl6kgV2C4CUo2fqStOPTBTO
+         0grw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685637241; x=1688229241;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gtX9jxjoU/mKddkOk7C3zYkrnNJRUUYjKjwxt36RXfs=;
+        b=OLOpPc454d5iHASmfDRbxl4kYUD2hVYhkdzrRA8hIzyfibhmgSP+F8JHUvoQ+C7mc2
+         0iB+5nRRYgxSozEvRM4kFC6xZuFCiJfmIvpoD7JuV+EtwO+eGqNB5IES1oBgmpue2Mvn
+         hGbsNlqSocWbQ5M0c8tAjaH+x2HHDaHDA2rwUxuCW0ZxLOKwIfJ+LetiV7fRSc2KLTiy
+         SFPc6FD8FWRWY19XjnZytZEXKq3jjA5lBMfzPVR8h2KQqopHPeP78GLzO0eJy+XgFjX9
+         MfMpJAWrFO9o+v4YQS976smbmpaxirX4RHyAkTv3k1RGmihdEuvL+QeFDnnDQXmi+5Vh
+         ruCw==
+X-Gm-Message-State: AC+VfDxIe+ZJw1BwOv0HxgWhHLhgjPc3ANAHJgFElOoqMAKgsj3GW2Cx
+	U90gdc+1qCdTL5HefXOA1AEaqA==
+X-Google-Smtp-Source: ACHHUZ6Yiu9HvWtogcJgEZR8D6CWO10AOPyosTPtE3xdn7rLsBbx44To+4CcbW82s/QxvHszMBflfw==
+X-Received: by 2002:a5d:4707:0:b0:307:9d1f:ad11 with SMTP id y7-20020a5d4707000000b003079d1fad11mr2188843wrq.56.1685637241055;
+        Thu, 01 Jun 2023 09:34:01 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:2802:66d1:c817:5d8b? ([2a02:8011:e80c:0:2802:66d1:c817:5d8b])
+        by smtp.gmail.com with ESMTPSA id l3-20020a5d4103000000b003047d5b8817sm10742935wrp.80.2023.06.01.09.34.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jun 2023 09:34:00 -0700 (PDT)
+Message-ID: <7c8ecb4f-9db0-cbae-77ca-aea5d51196de@isovalent.com>
+Date: Thu, 1 Jun 2023 17:33:59 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230601-legten-festplatten-fe053c6f16a4@brauner>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [RFC bpf-next 7/8] bpftool: add BTF dump "format meta" to dump
+ header/metadata
+Content-Language: en-GB
+To: Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, acme@kernel.org
+Cc: martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org
+References: <20230531201936.1992188-1-alan.maguire@oracle.com>
+ <20230531201936.1992188-8-alan.maguire@oracle.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230531201936.1992188-8-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 05:57:22PM +0200, Christian Brauner wrote:
-> On Thu, Jun 01, 2023 at 08:24:14AM -0700, Beau Belgrave wrote:
-> > On Thu, Jun 01, 2023 at 11:46:13AM +0200, Christian Brauner wrote:
-> > > On Wed, May 17, 2023 at 05:10:47PM -0700, Alexei Starovoitov wrote:
-> > > > On Wed, May 17, 2023 at 9:50 AM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > > > >
-> > > > > > >
-> > > > > > > Looks like user events were designed with intention to be unprivileged.
-> > > > > > > When I looked at kernel/trace/trace_events_user.c I assumed root.
-> > > > > > > I doubt other people reviewed it from security perspective.
-> > > > > > >
-> > > > > > > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" doesn't sound like a good idea.
-> > > > > > >
-> > > > > > > For example, I think the following is possible:
-> > > > > > > fd = open("/sys/kernel/tracing/user_events_data")
-> > > > > > > ioclt(fd, DIAG_IOCSDEL)
-> > > > > > >   user_events_ioctl_del
-> > > > > > >      delete_user_event(info->group, name);
-> > > > > > >
-> > > > > > > 'info' is different for every FD, but info->group is the same for all users/processes/fds,
-> > > > > > > because only one global init_group is created.
-> > > > > > > So one user can unregister other user event by knowing 'name'.
-> > > > > > > A security hole, no?
-> > > > 
-> > > > ...
-> > > > 
-> > > > > Regarding deleting events, only users that are given access can delete
-> > > > > events. They must know the event name, just like users with access to
-> > > > > delete files must know a path (and have access to it). Since the
-> > > > > write_index and other details are per-process, unless the user has
-> > > > > access to either /sys/kernel/tracing/events/user_events/* or
-> > > > > /sys/kernel/tracing/user_events_status, they do not know which names are
-> > > > > being used.
-> > > > >
-> > > > > If that is not enough, we could require CAP_SYSADMIN to be able to
-> > > > > delete events even when they have access to the file. Users can also
-> > > > > apply SELinux policies per-file to achieve further isolation, if
-> > > > > required.
-> > > > 
-> > > > Whether /sys/kernel/tracing/user_events_status gets g+rw
-> > > > or it gets a+rw (as your documentation recommends)
-> > > > it is still a security issue.
-> > > > The "event name" is trivial to find out by looking at the source code
-> > > > of the target process or just "string target_binary".
-> > > > Restricting to cap_sysadmin is not the answer, since you want unpriv.
-> > > > SElinux is not the answer either.
-> > > > Since it's unpriv, different processes should not be able to mess with
-> > > > user events of other processes.
-> > > > It's a fundamental requirement of any kernel api.
-> > > > This has to be fixed before any bpf discussion.
-> > > > If it means that you need to redesign user_events do it now and
-> > > > excuses like "it's uapi now, so we cannot fix it" are not going to fly.
-> > > 
-> > > Looking at this a little because I have a few minutes.
-> > > What's all this unused code?
-> > > 
-> > 
-> > These are stubs to integrate namespace support. I've been working on a
-> > series that adds a tracing namespace support similiar to the IMA
-> > namespace work [1]. That series is ending up taking more time than I
+2023-05-31 21:19 UTC+0100 ~ Alan Maguire <alan.maguire@oracle.com>
+> Provide a way to dump BTF header and metadata info via
+> bpftool; for example
 > 
-> Look, this is all well and nice but you've integrated user events with
-> tracefs. This is currently a single-instance global filesystem. So what
-> you're effectively implying is that you're namespacing tracefs by
-> hanging it off of struct user namespace making it mountable by
-> unprivileged users. Or what's the plan?
+> $ bpftool btf dump file vmliux format meta
+
+Typo: vmliux
+
+> BTF: data size 4963656
+> Header: magic 0xeb9f, version 1, flags 0x0, hdr_len 32
+> Types: len 2927556, offset 0
+> Strings: len 2035881, offset 2927556
+> Metadata header found: len 184, offset 4963440, flags 0x1
+> Description: 'generated by dwarves v1.25'
+> CRC 0x6da2a930 ; base CRC 0x0
+> Kind metadata for 20 kinds:
+>        BTF_KIND_UNKN[ 0] flags 0x0    info_sz  0 elem_sz  0
+>         BTF_KIND_INT[ 1] flags 0x0    info_sz  4 elem_sz  0
+>         BTF_KIND_PTR[ 2] flags 0x0    info_sz  0 elem_sz  0
+>       BTF_KIND_ARRAY[ 3] flags 0x0    info_sz 12 elem_sz  0
+>      BTF_KIND_STRUCT[ 4] flags 0x0    info_sz  0 elem_sz 12
+>       BTF_KIND_UNION[ 5] flags 0x0    info_sz  0 elem_sz 12
+>        BTF_KIND_ENUM[ 6] flags 0x0    info_sz  0 elem_sz  8
+>         BTF_KIND_FWD[ 7] flags 0x0    info_sz  0 elem_sz  0
+>     BTF_KIND_TYPEDEF[ 8] flags 0x0    info_sz  0 elem_sz  0
+>    BTF_KIND_VOLATILE[ 9] flags 0x0    info_sz  0 elem_sz  0
+>       BTF_KIND_CONST[10] flags 0x0    info_sz  0 elem_sz  0
+>    BTF_KIND_RESTRICT[11] flags 0x0    info_sz  0 elem_sz  0
+>        BTF_KIND_FUNC[12] flags 0x0    info_sz  0 elem_sz  0
+>  BTF_KIND_FUNC_PROTO[13] flags 0x0    info_sz  0 elem_sz  8
+>         BTF_KIND_VAR[14] flags 0x0    info_sz  4 elem_sz  0
+>     BTF_KIND_DATASEC[15] flags 0x0    info_sz  0 elem_sz 12
+>       BTF_KIND_FLOAT[16] flags 0x0    info_sz  0 elem_sz  0
+>    BTF_KIND_DECL_TAG[17] flags 0x1    info_sz  4 elem_sz  0
+>    BTF_KIND_TYPE_TAG[18] flags 0x1    info_sz  0 elem_sz  0
+>      BTF_KIND_ENUM64[19] flags 0x0    info_sz  0 elem_sz 12
 > 
 
-We don't have plans for unprivileged users currently. I think that is a
-great goal and requires a proper tracing namespace, which we currently
-don't have. I've done some thinking on this, but I would like to hear
-your thoughts and others on how to do this properly. We do talk about
-this in the tracefs meetings (those might be out of your time zone
-unfortunately).
+Thanks for this! For the non-RFC, can you please add the following:
 
-> That alone is massive work with _wild_ security implications. My
-> appetite for exposing more stuff under user namespaces is very low given
-> the amount of CVEs we've had over the years.
+- JSON output
+- btf.c's do_help() update
+- Documentation/bpftool-btf.rst update (cmd summary, and description)
+- bash-completion/bpftool update (should be straightforward, we just
+need to offer "metadata" after "format", like we already offer "c" and
+"raw".
+
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  tools/bpf/bpftool/btf.c | 46 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
 > 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 91fcb75babe3..da4257e00ba8 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -504,6 +504,47 @@ static int dump_btf_c(const struct btf *btf,
+>  	return err;
+>  }
+>  
+> +static int dump_btf_meta(const struct btf *btf)
+> +{
+> +	const struct btf_header *hdr;
+> +	const struct btf_metadata *m;
+> +	const void *data;
+> +	__u32 data_sz;
+> +	__u8 i;
+> +
+> +	data = btf__raw_data(btf, &data_sz);
+> +	if (!data)
+> +		return -ENOMEM;
+> +	hdr = data;
+> +	printf("BTF: data size %u\n", data_sz);
+> +	printf("Header: magic 0x%x, version %d, flags 0x%x, hdr_len %u\n",
+> +	       hdr->magic, hdr->version, hdr->flags, hdr->hdr_len);
 
-Ok, I based that approach on the feedback given in LPC 2022 - Containers
-and Checkpoint/Retore MC [1]. I believe you gave feedback to use user
-namespaces to provide the encapsulation that was required :)
+Nit: bpftool's output fields don't usually start with a capital letter
+(save for acronyms, obviously). I don't mind much, though.
 
-> > anticipated.
-> 
-> Yet you were confident enough to leave the namespacing stubs for this
-> functionality in the code. ;)
-> 
-> What is the overall goal here? Letting arbitrary unprivileged containers
-> define their own custom user event type by mounting tracefs inside
-> unprivileged containers? If so, what security story is going to
-> guarantee that writing arbitrary tracepoints from random unprivileged
-> containers is safe?
-> 
+> +	printf("Types: len %u, offset %u\n", hdr->type_len, hdr->type_off);
+> +	printf("Strings: len %u, offset %u\n", hdr->str_len, hdr->str_off);
+> +
+> +	if (hdr->hdr_len < sizeof(struct btf_header) ||
+> +	    hdr->meta_header.meta_len == 0 ||
+> +	    hdr->meta_header.meta_off == 0)
+> +		return 0;
+> +
+> +	m = (void *)hdr + hdr->hdr_len + hdr->meta_header.meta_off;
+> +
+> +	printf("Metadata header found: len %u, offset %u, flags 0x%x\n",
+> +	       hdr->meta_header.meta_len, hdr->meta_header.meta_off, m->flags);
+> +	if (m->description_off)
+> +		printf("Description: '%s'\n", btf__name_by_offset(btf, m->description_off));
+> +	printf("CRC 0x%x ; base CRC 0x%x\n", m->crc, m->base_crc);
+> +	printf("Kind metadata for %d kinds:\n", m->kind_meta_cnt);
+> +	for (i = 0; i < m->kind_meta_cnt; i++) {
+> +		printf("%20s[%2d] flags 0x%-4x info_sz %2d elem_sz %2d\n",
+> +		       btf__name_by_offset(btf, m->kind_meta[i].name_off),
+> +		       i, m->kind_meta[i].flags, m->kind_meta[i].info_sz,
+> +		       m->kind_meta[i].elem_sz);
 
-Unprivileged containers is not a goal, however, having a per-pod
-user_event system name, such as user_event_<pod_name>, would be ideal
-for certain diagnostic scenarios, such as monitoring the entire pod.
+Nit: I would maybe add a double space for separating the different
+field, especially because we have some left padding for values < 10 in
+your example and it looks strange to have numbers closer to the next
+field name (on their right) rather than their own (on their left).
 
-When you have a lot of containers, you also want to limit how many
-tracepoints each container can create, even if they are given access to
-the tracefs file. The per-group can limit how many events/tracepoints
-that container can go create, since we currently only have 16-bit
-identifiers for trace_event's we need to be cautious we don't run out.
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
+>  
+>  static struct btf *get_vmlinux_btf_from_sysfs(void)
+> @@ -553,6 +594,7 @@ static int do_dump(int argc, char **argv)
+>  	__u32 root_type_ids[2];
+>  	int root_type_cnt = 0;
+>  	bool dump_c = false;
+> +	bool dump_meta = false;
+>  	__u32 btf_id = -1;
+>  	const char *src;
+>  	int fd = -1;
+> @@ -654,6 +696,8 @@ static int do_dump(int argc, char **argv)
+>  			}
+>  			if (strcmp(*argv, "c") == 0) {
+>  				dump_c = true;
+> +			} else if (strcmp(*argv, "meta") == 0) {
+> +				dump_meta = true;
 
-user_events in general has tracepoint validators to ensure the payloads
-coming in are "safe" from what the kernel might do with them, such as
-filtering out data.
+We could use is_prefix() instead of strcmp() (same for "raw" below, by
+the way), to make it possible to pass the keyword by prefix (as in
+"bpftool b d f vmlinux f m".
 
-> > 
-> > > static inline struct user_event_group
-> > > *user_event_group_from_user_ns(struct user_namespace *user_ns)
-> > > {
-> > >         if (user_ns == &init_user_ns)
-> > >                 return init_group;
-> > > 
-> > >         return NULL;
-> > > }
-> > > 
-> > > static struct user_event_group *current_user_event_group(void)
-> > > {
-> > >         struct user_namespace *user_ns = current_user_ns();
-> > >         struct user_event_group *group = NULL;
-> > > 
-> > >         while (user_ns) {
-> > >                 group = user_event_group_from_user_ns(user_ns);
-> > > 
-> > >                 if (group)
-> > >                         break;
-> > > 
-> > >                 user_ns = user_ns->parent;
-> > >         }
-> > > 
-> > >         return group;
-> > > }
-> > > 
-> > > User namespaces form strict hierarchies so you always end up at
-> > > init_user_ns no matter where you start from in the hierarchy. Return the
-> > > init_group and delete that code above.
-> > > 
-> > 
-> > This is a good point, I'll delete this code and bring it back as part of
-> > the namespace support patch series when appropriate.
-> > 
-> > > static char *user_event_group_system_name(struct user_namespace *user_ns)
-> > > {
-> > >         char *system_name;
-> > >         int len = sizeof(USER_EVENTS_SYSTEM) + 1;
-> > > 
-> > >         if (user_ns != &init_user_ns) {
-> > >                 /*
-> > >                  * Unexpected at this point:
-> > >                  * We only currently support init_user_ns.
-> > >                  * When we enable more, this will trigger a failure so log.
-> > >                  */
-> > >                 pr_warn("user_events: Namespace other than init_user_ns!\n");
-> > >                 return NULL;
-> > >         }
-> > > 
-> > > Your delegation model is premised on file permissions of a single file
-> > > in global tracefs. It won't work with user namespaces so let's not give
-> > > the false impression that this is on the table.
-> > > 
-> > 
-> > Users that are given access to the single file still should be able to
-> > be isolated for each other. The series I'm working on does this by
-> 
-> How? You currently have a single file that will have to be shared across
-> all unprivileged containers which ultimately can only mean that you need
-> to either bind-mount tracefs or bind-mount the single file into each
-> container. If you have 1000 containers each with isolated idmaps from
-> each other you're going to have a lot of fun trying to ensure that each
-> container has access rights to that file.
-> 
+>  			} else if (strcmp(*argv, "raw") == 0) {
+>  				dump_c = false;
+>  			} else {
+> @@ -692,6 +736,8 @@ static int do_dump(int argc, char **argv)
+>  			goto done;
+>  		}
+>  		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
+> +	} else if (dump_meta) {
+> +		err = dump_btf_meta(btf);
+>  	} else {
+>  		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+>  	}
 
-I followed the patch I already stated, there would be a new tracefs file
-that only admins have access to. Admins can then create groups, assign
-limits, then finally attach them user namespaces once they have been
-configured.
-
-I'm sure there are other approaches, see [1] where another approach was
-proposed by Mathieu, but then feedback in the crowd was to use user
-namespaces instead.
-
-> > changing the system name of user_events on a per-namespace basis.
-> 
-> What is the "system name" and how does it protect against namespaces
-> messing with each other?
-
-trace_events in the tracing facility require both a system name and an
-event name. IE: sched/sched_waking, sched is the system name,
-sched_waking is the event name. For user_events in the root group, the
-system name is "user_events". When groups are introduced, the system
-name can be "user_events_<GUID>" for example.
-
-The user_events ABI never lets anyone dictate the system name to allow
-for this isolation. IE: user_events/myevent vs
-user_events<GUID>/myevent are entirely different trace_events on the
-system. This is called out as a note in the user_events documentation
-today that the system name can and will change to allow for isolation in
-the future.
-
-Thanks,
--Beau
-
-1. https://www.youtube.com/watch?v=zai3gvpuEHc&t=4403s
 
