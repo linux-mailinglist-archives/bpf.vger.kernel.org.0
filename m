@@ -1,125 +1,81 @@
-Return-Path: <bpf+bounces-1613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F75F71F148
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:00:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A1971F15F
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D36B81C210AD
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:00:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A954C281831
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451FA48243;
-	Thu,  1 Jun 2023 18:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC1E48242;
+	Thu,  1 Jun 2023 18:08:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2C4823F
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 18:00:26 +0000 (UTC)
-Received: from out-5.mta1.migadu.com (out-5.mta1.migadu.com [IPv6:2001:41d0:203:375::5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8047D8E
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 11:00:25 -0700 (PDT)
-Date: Thu, 1 Jun 2023 14:00:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685642421;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rikKWdy6FkJZ7TxOeuVv2no4Uvw2FbvFXrknlku2Lr0=;
-	b=atiaOaKv+uGgVWrIBgEc7yMVho95zk+yXn7HmIb/JWzdFNNRD8GsFkaCojYLUmxdGEZj8D
-	7Ioc6S8oiCxOeWCOlyVYprsSznLfrTEBk/hh6wsG3yyt6B+kTftpXgtdtqd4vLEbQHfUux
-	KWvBLALHSXDpFUTZKzUX7J9eP0pgECQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rppt@kernel.org" <rppt@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mcgrof@kernel.org" <mcgrof@kernel.org>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"dinguyen@kernel.org" <dinguyen@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH 12/13] x86/jitalloc: prepare to allocate exectuatble
- memory as ROX
-Message-ID: <ZHjcr26YskTm+0EF@moria.home.lan>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <20230601101257.530867-13-rppt@kernel.org>
- <0f50ac52a5280d924beeb131e6e4717b6ad9fdf7.camel@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C6D4701B;
+	Thu,  1 Jun 2023 18:08:04 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F8D123;
+	Thu,  1 Jun 2023 11:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=515CNbKAiQFmrnoi+myJfxe8Z6RUoGqdRGLDXXV+zjk=; b=NPKM62b9Wnxzwu4Fno7Ngf0s7L
+	ZZGS35QM7+74hD0/FOEegZ/g9WKZaMRyJF0eB2BPfQkCqgSf2HbERWv/JcmNtkLban31CMH3qhI/J
+	MPZ77m+OK2PojuRuWgBukXgMN5ziuNrD6nw8H1gV71rKysLJ0FkvwiUn+AdiVxPKUu5dMoNmwjQLZ
+	ZMqgCP9Cztt2CoiN87wh3scbFgsmM4vClvKTJmW8Ef73TvHHo+jlFiinxirJTLW9yph2cambSBK/K
+	gwdn4le/OgujYxOlTQ8/Jhpt8Bh/NJUfKMAjKKdEC4xzPAhqF6ufWW3k0dFvAp+wgWItasuNC3FYQ
+	6sJitrjA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q4miN-000PSI-2H; Thu, 01 Jun 2023 20:07:58 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q4miM-0002in-J8; Thu, 01 Jun 2023 20:07:58 +0200
+Subject: Re: [PATCH v2 0/2] bpf: utilize table ID in bpf_fib_lookup helper
+To: Louis DeLosSantos <louis.delos.devel@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Stanislav Fomichev <sdf@google.com>, razor@blackwall.org,
+ John Fastabend <john.fastabend@gmail.com>, Yonghong Song <yhs@meta.com>
+References: <20230505-bpf-add-tbid-fib-lookup-v2-0-0a31c22c748c@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c86e21df-2856-8b11-f8ce-b23769e3b877@iogearbox.net>
+Date: Thu, 1 Jun 2023 20:07:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f50ac52a5280d924beeb131e6e4717b6ad9fdf7.camel@intel.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+In-Reply-To: <20230505-bpf-add-tbid-fib-lookup-v2-0-0a31c22c748c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26925/Thu Jun  1 09:27:46 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 04:54:27PM +0000, Edgecombe, Rick P wrote:
-> It is just a local flush, but I wonder how much text_poke()ing is too
-> much. A lot of the are even inside loops. Can't it do the batch version
-> at least?
-> 
-> The other thing, and maybe this is in paranoia category, but it's
-> probably at least worth noting. Before the modules were not made
-> executable until all of the code was finalized. Now they are made
-> executable in an intermediate state and then patched later. It might
-> weaken the CFI stuff, but also it just kind of seems a bit unbounded
-> for dealing with executable code.
+On 5/31/23 9:38 PM, Louis DeLosSantos wrote:
+> This patchset adds the ability to specify a table ID to the
+> `bpf_fib_lookup` BPF helper.
 
-I believe bpf starts out by initializing new executable memory with
-illegal opcodes, maybe we should steal that and make it standard.
-
-> Preparing the modules in a separate RW mapping, and then text_poke()ing
-> the whole thing in when you are done would resolve both of these.
-
-text_poke() _does_ create a separate RW mapping.
-
-The thing that sucks about text_poke() is that it always does a full TLB
-flush, and AFAICT that's not remotely needed. What it really wants to be
-doing is conceptually just
-
-kmap_local()
-mempcy()
-kunmap_loca()
-flush_icache();
-
-...except that kmap_local() won't actually create a new mapping on
-non-highmem architectures, so text_poke() open codes it.
+LGTM, and this is a very useful extension, applied thanks!
 
