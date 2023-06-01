@@ -1,92 +1,85 @@
-Return-Path: <bpf+bounces-1586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 172F8719C14
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 14:26:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB05B71A023
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:34:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C51012816ED
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 12:26:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3739A1C2107B
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 14:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2509BA2F;
-	Thu,  1 Jun 2023 12:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A58E101D6;
+	Thu,  1 Jun 2023 14:34:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698C123404
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 12:26:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F74FC4339C;
-	Thu,  1 Jun 2023 12:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685622396;
-	bh=QqQzQ7NZnj7EXE4Ap4NPU/RPq4MNdjLXz0fnp5miIKU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qsNBGFLvMEDNTIOhw/vuLdAXTEJA5VyLw/QHUReyPrXw+nTcfp/kQvP4TjegXlceK
-	 bAMOo82/o9gcfWVn4b4P9uo2UotN814i+Hw4c/c8HMmjgH8a56fCAvjy4HTVvqIPh8
-	 iBm26/UQPJgx1Y0Gjj4GbthS8O0Cy0kpTy0DLhujt4m/lTGtTr6xja8f/xrDP1vJmX
-	 yLng75tpNl4NVJsut4nK+g1Xgn3hxhy0Xwvs14xvYXjtAclKMSPKzzfVxfcWZ6f4WZ
-	 HqArpd79T5sTLEHGN2efI6ED+TS7xY6+EiRiKkaGM5CUVjOEmqpN9XpvKGan4oBFUJ
-	 FANYt4HPosy5Q==
-From: KP Singh <kpsingh@kernel.org>
-To: bpf@vger.kernel.org
-Cc: kafai@fb.com,
-	ast@kernel.org,
-	songliubraving@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	Kuba Piecuch <jpiecuch@google.com>,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf] bpf: Fix UAF in task local storage
-Date: Thu,  1 Jun 2023 14:26:22 +0200
-Message-ID: <20230601122622.513140-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C0F23D7;
+	Thu,  1 Jun 2023 14:34:08 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AA4132;
+	Thu,  1 Jun 2023 07:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=MWJtZj0Bpj3Pq6TDmueRGH0j6tzTZD1Xncj+xQHm8EA=; b=hqEdim2p/+8tyODB2E8AnJkmTv
+	FdsA862hCwoOSdmFuqEkBHRS1MLlAx2LyN0vY99TLusl588BHd/teL4BjqtW0fOtqfX/27iLK2VmN
+	DQZydjWoD5isP5ar7TSfIVsmRMK9WfwKYKAPjUHBfcZXL/xegMm1B6viBayRU7S1Xv/CjEjRHuQU+
+	iEFb6T2L8fVcvTc+aPAUa/AljAG8Sb95nu84mcawwp8J9e/k+MANR/4gvS3ZPwTu/OnF62fqubpv/
+	OspnNmbvRnoMedZ2WCBhi3o+Bz6JAy9j7wU7zn+xQvdK0WYhY5nnJP7gbiiHDnwSbWXU2tF+HXBU6
+	U1rntztQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q4jN8-000BGz-Qe; Thu, 01 Jun 2023 16:33:50 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q4jN8-0003wa-6b; Thu, 01 Jun 2023 16:33:50 +0200
+Subject: Re: [PATCH net] bpf, sockmap: avoid potential NULL dereference in
+ sk_psock_verdict_data_ready()
+To: Eric Dumazet <edumazet@google.com>, "David S . Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, eric.dumazet@gmail.com,
+ syzbot <syzkaller@googlegroups.com>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>
+References: <20230530195149.68145-1-edumazet@google.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2c46e753-e287-dd38-8ade-0655a7a43987@iogearbox.net>
+Date: Thu, 1 Jun 2023 16:33:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230530195149.68145-1-edumazet@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26925/Thu Jun  1 09:27:46 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-When the the task local storage was generalized for tracing programs, the
-bpf_task_local_storage callback was moved from a BPF LSM hook callback
-for security_task_free LSM hook to it's own callback. But a failure case
-in bad_fork_cleanup_security was missed which, when triggered, led to a dangling
-task owner pointer and a subsequent use-after-free.
+On 5/30/23 9:51 PM, Eric Dumazet wrote:
+> syzbot found sk_psock(sk) could return NULL when called
+> from sk_psock_verdict_data_ready().
 
-This issue was noticed when a BPF LSM program was attached to the
-task_alloc hook on a kernel with KASAN enabled. The program used
-bpf_task_storage_get to copy the task local storage from the current
-task to the new task being created.
-
-Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
-Reported-by: Kuba Piecuch <jpiecuch@google.com>
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
-
-This fixes the regression from the LSM blob based implementation, we can
-still have UAFs, if bpf_task_storage_get is invoked after bpf_task_storage_free
-in the cleanup path.
-
- kernel/fork.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index ed4e01daccaa..112d85091ae6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2781,6 +2781,7 @@ __latent_entropy struct task_struct *copy_process(
- 	exit_sem(p);
- bad_fork_cleanup_security:
- 	security_task_free(p);
-+	bpf_task_storage_free(p);
- bad_fork_cleanup_audit:
- 	audit_free(p);
- bad_fork_cleanup_perf:
--- 
-2.41.0.rc0.172.g3f132b7071-goog
-
+Looks like patchbot didn't answer. Applied, thanks Eric!
 
