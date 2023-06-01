@@ -1,177 +1,197 @@
-Return-Path: <bpf+bounces-1568-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1569-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CC0F71977F
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 11:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 006897198B4
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 12:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC13A2816FF
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 09:46:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37012281566
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 10:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEB3200B5;
-	Thu,  1 Jun 2023 09:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C43020681;
+	Thu,  1 Jun 2023 10:13:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C941F949
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 09:46:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B577C433EF;
-	Thu,  1 Jun 2023 09:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6944200BA;
+	Thu,  1 Jun 2023 10:13:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BB9EC433EF;
+	Thu,  1 Jun 2023 10:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685612780;
-	bh=Gg96iZLMK8kzUxxht+t3UCZqIJdqGyKJzoxElzCHMTw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G41V2nFtvaFiwye0ois2vOYZ7ldqNDE+p9UzFe0Yk5SdBPDyZTZmJ4y7DYc/ijJUR
-	 4OWaxzb1EsWig0l391kuS0m1m5i+kJ4lb2uO2YE1qE1znilIS1Iucyvs34i8H5NGOk
-	 bZQRNxOPiwPopXLjSUsXh/Mtf7IrBB87RkWsjll1uHeXcT+5F5BmVTwCBDBTDhR/MP
-	 KXK/LC9VvseIWD6nAmkcof7+j+CrvBH1UGzjnh5b3/WVnHrGOV4xuz9SK6eQTlCpT3
-	 no61vbYDc29I07HzzxUqml0X76CbqGSH3yCJl0yC+x5RvKqM2rtapFx4twx0u/j4t5
-	 AagXuirb/O0SA==
-Date: Thu, 1 Jun 2023 11:46:13 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
+	s=k20201202; t=1685614396;
+	bh=AFUoVH57IicSC1SUB3rNbSa55KIIf5fvCH3QgG43svk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mW6qnl+Iscw1AVEmuh/+zsjQC3Skvf6tgVrd8H0mW7nk/Q4kR8aZiIus1dGIFP0tu
+	 g3rQeS6P4z2sg2eRb4NVK2fSVZyk7O67J0bqoAY5zsHBwd4m5pGbhDwVNj62iw489S
+	 WwJRyB2rENdRnYC5sKzXzzMfTG9/RUH5Fq0wJ8oT8tMyy9YYy4BnDsnxhAjT9MeepB
+	 H1tV4aCIaB0/6raud9FT8L5dMFEDagbhbs3liHazB+zv7gap/xaJMb6C7mJsHMki13
+	 b3RfbDTWSX2rQpcBObYqwwehSGuzsUPwmJr6dpDHZ0JMs7xXA+oJ8tyL/OL1vetfWT
+	 OQoViqeiM1NHQ==
+From: Mike Rapoport <rppt@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Mike Rapoport <rppt@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Thaler <dthaler@microsoft.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230601-urenkel-holzofen-cd9403b9cadd@brauner>
-References: <20230508163751.841-1-beaub@linux.microsoft.com>
- <CAADnVQLYL-ZaP_2vViaktw0G4UKkmpOK2q4ZXBa+f=M7cC25Rg@mail.gmail.com>
- <20230509130111.62d587f1@rorschach.local.home>
- <20230509163050.127d5123@rorschach.local.home>
- <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
- <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain>
- <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH 00/13] mm: jit/text allocator
+Date: Thu,  1 Jun 2023 13:12:44 +0300
+Message-Id: <20230601101257.530867-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.35.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
 
-On Wed, May 17, 2023 at 05:10:47PM -0700, Alexei Starovoitov wrote:
-> On Wed, May 17, 2023 at 9:50 AM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > >
-> > > >
-> > > > Looks like user events were designed with intention to be unprivileged.
-> > > > When I looked at kernel/trace/trace_events_user.c I assumed root.
-> > > > I doubt other people reviewed it from security perspective.
-> > > >
-> > > > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" doesn't sound like a good idea.
-> > > >
-> > > > For example, I think the following is possible:
-> > > > fd = open("/sys/kernel/tracing/user_events_data")
-> > > > ioclt(fd, DIAG_IOCSDEL)
-> > > >   user_events_ioctl_del
-> > > >      delete_user_event(info->group, name);
-> > > >
-> > > > 'info' is different for every FD, but info->group is the same for all users/processes/fds,
-> > > > because only one global init_group is created.
-> > > > So one user can unregister other user event by knowing 'name'.
-> > > > A security hole, no?
-> 
-> ...
-> 
-> > Regarding deleting events, only users that are given access can delete
-> > events. They must know the event name, just like users with access to
-> > delete files must know a path (and have access to it). Since the
-> > write_index and other details are per-process, unless the user has
-> > access to either /sys/kernel/tracing/events/user_events/* or
-> > /sys/kernel/tracing/user_events_status, they do not know which names are
-> > being used.
-> >
-> > If that is not enough, we could require CAP_SYSADMIN to be able to
-> > delete events even when they have access to the file. Users can also
-> > apply SELinux policies per-file to achieve further isolation, if
-> > required.
-> 
-> Whether /sys/kernel/tracing/user_events_status gets g+rw
-> or it gets a+rw (as your documentation recommends)
-> it is still a security issue.
-> The "event name" is trivial to find out by looking at the source code
-> of the target process or just "string target_binary".
-> Restricting to cap_sysadmin is not the answer, since you want unpriv.
-> SElinux is not the answer either.
-> Since it's unpriv, different processes should not be able to mess with
-> user events of other processes.
-> It's a fundamental requirement of any kernel api.
-> This has to be fixed before any bpf discussion.
-> If it means that you need to redesign user_events do it now and
-> excuses like "it's uapi now, so we cannot fix it" are not going to fly.
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-Looking at this a little because I have a few minutes.
-What's all this unused code?
+Hi,
 
-static inline struct user_event_group
-*user_event_group_from_user_ns(struct user_namespace *user_ns)
-{
-        if (user_ns == &init_user_ns)
-                return init_group;
+module_alloc() is used everywhere as a mean to allocate memory for code.
 
-        return NULL;
-}
+Beside being semantically wrong, this unnecessarily ties all subsystmes
+that need to allocate code, such as ftrace, kprobes and BPF to modules
+and puts the burden of code allocation to the modules code.
 
-static struct user_event_group *current_user_event_group(void)
-{
-        struct user_namespace *user_ns = current_user_ns();
-        struct user_event_group *group = NULL;
+Several architectures override module_alloc() because of various
+constraints where the executable memory can be located and this causes
+additional obstacles for improvements of code allocation.
 
-        while (user_ns) {
-                group = user_event_group_from_user_ns(user_ns);
+This set splits code allocation from modules by introducing
+jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces call
+sites of module_alloc() and module_memfree() with the new APIs and
+implements core text and related allocation in a central place.
 
-                if (group)
-                        break;
+Instead of architecture specific overrides for module_alloc(), the
+architectures that require non-default behaviour for text allocation must
+fill jit_alloc_params structure and implement jit_alloc_arch_params() that
+returns a pointer to that structure. If an architecture does not implement
+jit_alloc_arch_params(), the defaults compatible with the current
+modules::module_alloc() are used.
 
-                user_ns = user_ns->parent;
-        }
+The new jitalloc infrastructure allows decoupling of kprobes and ftrace
+from modules, and most importantly it enables ROX allocations for
+executable memory.
 
-        return group;
-}
+A centralized infrastructure for code allocation allows future
+optimizations for allocations of executable memory, caching large pages for
+better iTLB performance and providing sub-page allocations for users that
+only need small jit code snippets.
 
-User namespaces form strict hierarchies so you always end up at
-init_user_ns no matter where you start from in the hierarchy. Return the
-init_group and delete that code above.
+patches 1-5: split out the code allocation from modules and arch
+patch 6: add dedicated API for data allocations with constraints similar to
+code allocations
+patches 7-9: decouple dynamic ftrace and kprobes form CONFIG_MODULES
+patches 10-13: enable ROX allocations for executable memory on x86
 
-static char *user_event_group_system_name(struct user_namespace *user_ns)
-{
-        char *system_name;
-        int len = sizeof(USER_EVENTS_SYSTEM) + 1;
+Mike Rapoport (IBM) (11):
+  nios2: define virtual address space for modules
+  mm: introduce jit_text_alloc() and use it instead of module_alloc()
+  mm/jitalloc, arch: convert simple overrides of module_alloc to jitalloc
+  mm/jitalloc, arch: convert remaining overrides of module_alloc to jitalloc
+  module, jitalloc: drop module_alloc
+  mm/jitalloc: introduce jit_data_alloc()
+  x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
+  arch: make jitalloc setup available regardless of CONFIG_MODULES
+  kprobes: remove dependcy on CONFIG_MODULES
+  modules, jitalloc: prepare to allocate executable memory as ROX
+  x86/jitalloc: make memory allocated for code ROX
 
-        if (user_ns != &init_user_ns) {
-                /*
-                 * Unexpected at this point:
-                 * We only currently support init_user_ns.
-                 * When we enable more, this will trigger a failure so log.
-                 */
-                pr_warn("user_events: Namespace other than init_user_ns!\n");
-                return NULL;
-        }
+Song Liu (2):
+  ftrace: Add swap_func to ftrace_process_locs()
+  x86/jitalloc: prepare to allocate exectuatble memory as ROX
 
-Your delegation model is premised on file permissions of a single file
-in global tracefs. It won't work with user namespaces so let's not give
-the false impression that this is on the table.
+ arch/Kconfig                     |   5 +-
+ arch/arm/kernel/module.c         |  32 ------
+ arch/arm/mm/init.c               |  35 ++++++
+ arch/arm64/kernel/module.c       |  47 --------
+ arch/arm64/mm/init.c             |  42 +++++++
+ arch/loongarch/kernel/module.c   |   6 -
+ arch/loongarch/mm/init.c         |  16 +++
+ arch/mips/kernel/module.c        |   9 --
+ arch/mips/mm/init.c              |  19 ++++
+ arch/nios2/include/asm/pgtable.h |   5 +-
+ arch/nios2/kernel/module.c       |  24 ++--
+ arch/parisc/kernel/module.c      |  11 --
+ arch/parisc/mm/init.c            |  21 +++-
+ arch/powerpc/kernel/kprobes.c    |   4 +-
+ arch/powerpc/kernel/module.c     |  37 -------
+ arch/powerpc/mm/mem.c            |  41 +++++++
+ arch/riscv/kernel/module.c       |  10 --
+ arch/riscv/mm/init.c             |  18 +++
+ arch/s390/kernel/ftrace.c        |   4 +-
+ arch/s390/kernel/kprobes.c       |   4 +-
+ arch/s390/kernel/module.c        |  46 +-------
+ arch/s390/mm/init.c              |  35 ++++++
+ arch/sparc/kernel/module.c       |  34 +-----
+ arch/sparc/mm/Makefile           |   2 +
+ arch/sparc/mm/jitalloc.c         |  21 ++++
+ arch/sparc/net/bpf_jit_comp_32.c |   8 +-
+ arch/x86/Kconfig                 |   2 +
+ arch/x86/kernel/alternative.c    |  43 ++++---
+ arch/x86/kernel/ftrace.c         |  59 +++++-----
+ arch/x86/kernel/kprobes/core.c   |   4 +-
+ arch/x86/kernel/module.c         |  75 +------------
+ arch/x86/kernel/static_call.c    |  10 +-
+ arch/x86/kernel/unwind_orc.c     |  13 ++-
+ arch/x86/mm/init.c               |  52 +++++++++
+ arch/x86/net/bpf_jit_comp.c      |  22 +++-
+ include/linux/ftrace.h           |   2 +
+ include/linux/jitalloc.h         |  69 ++++++++++++
+ include/linux/moduleloader.h     |  15 ---
+ kernel/bpf/core.c                |  14 +--
+ kernel/kprobes.c                 |  51 +++++----
+ kernel/module/Kconfig            |   1 +
+ kernel/module/main.c             |  56 ++++------
+ kernel/trace/ftrace.c            |  13 ++-
+ kernel/trace/trace_kprobe.c      |  11 ++
+ mm/Kconfig                       |   3 +
+ mm/Makefile                      |   1 +
+ mm/jitalloc.c                    | 185 +++++++++++++++++++++++++++++++
+ mm/mm_init.c                     |   2 +
+ 48 files changed, 777 insertions(+), 462 deletions(-)
+ create mode 100644 arch/sparc/mm/jitalloc.c
+ create mode 100644 include/linux/jitalloc.h
+ create mode 100644 mm/jitalloc.c
 
-Plus, all of this is also called in a single place during
-trace_events_user_init() which is called from fs_initcall() so you
-couldn't even pass a different user namespace if you wanted to because
-only init_user_ns exists.
+
+base-commit: 44c026a73be8038f03dbdeef028b642880cf1511
+-- 
+2.35.1
+
 
