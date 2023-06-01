@@ -1,77 +1,60 @@
-Return-Path: <bpf+bounces-1611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5AA271F120
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 19:52:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C5871F122
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 19:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A9F2281834
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 17:52:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7700E1C210DD
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 17:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD4E4822E;
-	Thu,  1 Jun 2023 17:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8604822F;
+	Thu,  1 Jun 2023 17:53:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4B142501
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 17:52:28 +0000 (UTC)
-Received: from out-49.mta1.migadu.com (out-49.mta1.migadu.com [IPv6:2001:41d0:203:375::31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ECF13D
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 10:52:26 -0700 (PDT)
-Date: Thu, 1 Jun 2023 13:52:16 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C10142501
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 17:53:13 +0000 (UTC)
+Received: from out-63.mta1.migadu.com (out-63.mta1.migadu.com [IPv6:2001:41d0:203:375::3f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45289123
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 10:53:12 -0700 (PDT)
+Date: Thu, 1 Jun 2023 13:53:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685641944;
+	t=1685641990;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BvZu7pDDYmXHwMSg7hGT8OPLPljqdX2QIVSOdmRwors=;
-	b=k8LvZJyewntoq7paLcCZpalnhHsRbUTumu8US7zZhvmAtwIA8z8+IsCufYQ/Tfop+aJHfp
-	JDXGWHiSFWvBQlhh+XiaTuIo+kCh2q14Mo2ssoFXXboOjAjKsrwIOIU6mWE0ZqDl9fVgiu
-	BwgDA6fuXqCDnNW3Qwm2url7MLeBoW8=
+	bh=7gLsPpU09ZX1oPA5PFz5u/WQswLV/fVWR9RT9czI1/8=;
+	b=otDvWmsVMNh/LcZg1i8pBTm80teDhhYpay+emHGlZNdXYjInOAyG/6aqM/EmTgw+/2nn/J
+	qqn0XbzbQqp9jxBteAPeeODAmRERpmBSukfT2OjeINaCtgN+4bDT8XKl4xhFvIHexRpXSY
+	tXiy23crK9BdqQtA4wJfHbbwRkhhmcM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 12/13] x86/jitalloc: prepare to allocate exectuatble
- memory as ROX
-Message-ID: <ZHja0HOUabUxD5YS@moria.home.lan>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <20230601101257.530867-13-rppt@kernel.org>
- <20230601103050.GT4253@hirez.programming.kicks-ass.net>
+To: Song Liu <song@kernel.org>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org,
+	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
+	rppt@kernel.org
+Subject: Re: [PATCH 0/3] Type aware module allocator
+Message-ID: <ZHjbBAnpkfw2oBCr@moria.home.lan>
+References: <20230526051529.3387103-1-song@kernel.org>
+ <ZHGrjJ8PqAGN9OZK@moria.home.lan>
+ <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
+ <ZHTuBdlhSI0mmQGE@moria.home.lan>
+ <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230601103050.GT4253@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
@@ -79,24 +62,45 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 12:30:50PM +0200, Peter Zijlstra wrote:
-> On Thu, Jun 01, 2023 at 01:12:56PM +0300, Mike Rapoport wrote:
+On Tue, May 30, 2023 at 03:48:51PM -0700, Song Liu wrote:
+> On Mon, May 29, 2023 at 11:25 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
+> > > I don't think we are exposing architecture specific options to users.
+> > > Some layer need to handle arch specifics. If the new allocator is
+> > > built on top of module_alloc, module_alloc is handling that. If the new
+> > > allocator is to replace module_alloc, it needs to handle arch specifics.
+> >
+> > Ok, I went back and read more thoroughly, I got this part wrong. The
+> > actual interface is the mod_mem_type enum, not mod_alloc_params or
+> > vmalloc_params.
+> >
+> > So this was my main complaint, but this actually looks ok now.
+> >
+> > It would be better to have those structs in a .c file, not the header
+> > file - it looks like those are the public interface the way you have it.
 > 
-> > +static void __init_or_module do_text_poke(void *addr, const void *opcode, size_t len)
-> > +{
-> > +	if (system_state < SYSTEM_RUNNING) {
-> > +		text_poke_early(addr, opcode, len);
-> > +	} else {
-> > +		mutex_lock(&text_mutex);
-> > +		text_poke(addr, opcode, len);
-> > +		mutex_unlock(&text_mutex);
-> > +	}
-> > +}
-> 
-> So I don't much like do_text_poke(); why?
+> Thanks for this suggestion. It makes a lot of sense. But I am not quite
+> sure how we can avoid putting it in the header yet. I will take a closer
+> look. OTOH, if we plan to use Mike's new allocator to replace vmalloc,
+> we probably don't need this part.
 
-Could you share why?
+The architectures previously exported constants that were used by
+module_alloc(), why not stick with that?
 
-I think the impementation sucks but conceptually it's the right idea -
-create a new temporary mapping to avoid the need for RWX mappings.
+> AFAICT, we don't have a global text_poke() API yet. I can take a look
+> into it (if it makes sense).
+
+Great
+
+> Yeah, that's part of the goal to extend the scope from executable to all
+> types.
+
+Yeah it took me a bit to wrap my head around how this all makes sense -
+it started out as just a better module_alloc(), then there was lots of
+talk about hugepages.
+
+I like it more now, looking forward to see how it fits together with
+Mike's work :)
 
