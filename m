@@ -1,134 +1,278 @@
-Return-Path: <bpf+bounces-1595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5212871EEEA
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F2071EEF5
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D97CC1C20ACD
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:27:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 562021C208D9
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF524251D;
-	Thu,  1 Jun 2023 16:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99B44251F;
+	Thu,  1 Jun 2023 16:28:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6811722D6B
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:27:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D83DEC4339E
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685636865;
-	bh=QE0XSagsa2DQLg9IscaA8maH28AaIQ/fD6jN5dA8Z+s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=i8zamJm98zIuJj2clV+U+VOx5XWBeR8BQt5cf6mzzNlU/gHnnKl3sYA+fIveLJVQ6
-	 UlfSGNTy387R7KbeHlQxXToTcYXlrwCOqPmzpcQGim8g2UCiNAWCkI+wsFq0fjKTB/
-	 fKi8NYio+q0U1MnUdNbpqs9PZeT0f1ckiwE9peDksXFLz3G1y/mZ+QZWUc6cXj04Cp
-	 JgQ+6oiZc/CZ7jr3h+q3ODr28CaTEHTJjDrfaKY6HiPg11hzJ7ZhyvwwpGoEfGc8ON
-	 3OcLcylZhOrD1eCNuFETWKlmrlzMD2b0YGaRTXdzxkN5IflslVTE/FkGvC+987cEz5
-	 Xq0573BLelM0A==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5147e441c33so2456617a12.0
-        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 09:27:45 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwv0GE0sXRBeBzxLpE/LkmXDnNaZREKJkU2bYc612VLvdzfnkRB
-	U5Q71ExGcULRXsuBJMZqfmGzsaU3aRFWp9tmH8hpRg==
-X-Google-Smtp-Source: ACHHUZ7HhpdqOisBzUSlFXCyc3z3wx+lp46dTGnKF9EKUmtlrcgWpd4vg2fi/F5k2e/yqpce25LMN4g7SFl+4zyJx24=
-X-Received: by 2002:a05:6402:2551:b0:514:a21b:f137 with SMTP id
- l17-20020a056402255100b00514a21bf137mr485952edb.6.1685636863988; Thu, 01 Jun
- 2023 09:27:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F98C22D6B
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:28:44 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B313D;
+	Thu,  1 Jun 2023 09:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=wS5z5XZ3GwNBhgY0jkt2hM/yAdpoSIWainSnIml/Rz4=; b=dYw32r9m48hdVLk/6D2V2fbqUP
+	p2KufS/wPNdPzllKZPB1OM37qvcHOj+7y+mluZrTD9YmqsljOYZC0dPJBcH1Pl8QZn5JTH9gAW/N1
+	+OscDg1XJ2Bze+lT7Y1a9eVUuXepOqkGXvO+2PJmlPEPiCyadjyad5w1cIoYBNG3j/dc87nbjeXBg
+	sJsVfI63fE2fMqg+27klri3ElflTyYm3Pm6iOrYp0aHG3GyijuFiQ0Ua35xkybNXGWuw1dZvfOdXC
+	oAk5xYQCnyQ1B/ft0/UfN/66jLEs3qekhReMHXPZ9blydffBwSU5L6lrMUtgInNRJLvvSB2CIi4RS
+	GXx0hFQQ==;
+Received: from [2601:1c2:980:9ec0::2764]
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1q4lAH-004FYf-0I;
+	Thu, 01 Jun 2023 16:28:41 +0000
+Message-ID: <3c6d7ab9-dac5-6950-db8d-3119e4529eb7@infradead.org>
+Date: Thu, 1 Jun 2023 09:28:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230601122622.513140-1-kpsingh@kernel.org> <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
-In-Reply-To: <CAPhsuW45Sb0TeOYouTvaVDhOGfz+2nBht0AmGyF4=yq15HE8AA@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 1 Jun 2023 18:27:33 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7S7JwX77NSSurr1wWYnFQs0TZwUKcwW5Zmva3CkkAx5w@mail.gmail.com>
-Message-ID: <CACYkzJ7S7JwX77NSSurr1wWYnFQs0TZwUKcwW5Zmva3CkkAx5w@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix UAF in task local storage
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, kafai@fb.com, ast@kernel.org, songliubraving@fb.com, 
-	andrii@kernel.org, daniel@iogearbox.net, Kuba Piecuch <jpiecuch@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
+ subsystems
+Content-Language: en-US
+To: Costa Shulyupin <costa.shul@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: open list <linux-kernel@vger.kernel.org>,
+ "open list:BPF [MISC]" <bpf@vger.kernel.org>
+References: <ZHgM0qKWP3OusjUW@debian.me>
+ <20230601145556.3927838-1-costa.shul@redhat.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230601145556.3927838-1-costa.shul@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Jun 1, 2023 at 6:18=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Jun 1, 2023 at 5:26=E2=80=AFAM KP Singh <kpsingh@kernel.org> wrot=
-e:
-> >
-> > When the the task local storage was generalized for tracing programs, t=
-he
-> > bpf_task_local_storage callback was moved from a BPF LSM hook callback
-> > for security_task_free LSM hook to it's own callback. But a failure cas=
-e
-> > in bad_fork_cleanup_security was missed which, when triggered, led to a=
- dangling
-> > task owner pointer and a subsequent use-after-free.
-> >
-> > This issue was noticed when a BPF LSM program was attached to the
-> > task_alloc hook on a kernel with KASAN enabled. The program used
-> > bpf_task_storage_get to copy the task local storage from the current
-> > task to the new task being created.
->
-> This is pretty tricky. Let's add a selftest for this.
+Hi--
 
-I don't have an easy repro for this (the UAF does not trigger
-immediately), Also I am not sure how one would test a UAF in a
-selftest. What actually happens is:
+On 6/1/23 07:55, Costa Shulyupin wrote:
+> From: Bagas Sanjaya <bagasdotme@gmail.com>
+> 
+> Add classes:
+> * Core subsystems
+> * Storage
+> * Networking
+> * Peripherals and devices
+> * Embedded systems
+> * Integrity
+> * Virtualization
+> * Miscellaneous
+> 
+> There is a FIXME that says to organize subsystems listed in
+> subsystem-apis.rst. Fulfill it by categorize remaining subsytems
+> by purpose/themes, while sorting entries in each category.
+> 
+> HID devices are already categorized in 3c591cc954d56e ("docs:
+> consolidate human interface subsystems").
+> 
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
-* We have a dangling task pointer in local storage.
-* This is used sometime later which then leads to weird memory
-corruption errors.
+This is a worthy goal, I am sure, but I am also sure that there is
+a lot of bikeshedding that can go on here.
+(examples below)
 
->
-> >
-> > Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing progra=
-ms")
-> > Reported-by: Kuba Piecuch <jpiecuch@google.com>
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
-> >
-> > This fixes the regression from the LSM blob based implementation, we ca=
-n
-> > still have UAFs, if bpf_task_storage_get is invoked after bpf_task_stor=
-age_free
-> > in the cleanup path.
->
-> Can we fix this by calling bpf_task_storage_free() from free_task()?
+> 
+> ---
+> 
+> Changes:
+> v3: add Integrity, Virtualization and Miscellaneous per Bagas Sanjaya
+> v2: add Core subsystems, Networking, Peripherals and Embedded
+> v1: add Storgre category
 
-I think we can yeah. But, this is yet another deviation from how the
-security blob is managed (security_task_free) frees the blob that we
-were previously using.
+          Storage
 
->
-> Thanks,
-> Song
->
-> >
-> >  kernel/fork.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/kernel/fork.c b/kernel/fork.c
-> > index ed4e01daccaa..112d85091ae6 100644
-> > --- a/kernel/fork.c
-> > +++ b/kernel/fork.c
-> > @@ -2781,6 +2781,7 @@ __latent_entropy struct task_struct *copy_process=
-(
-> >         exit_sem(p);
-> >  bad_fork_cleanup_security:
-> >         security_task_free(p);
-> > +       bpf_task_storage_free(p);
-> >  bad_fork_cleanup_audit:
-> >         audit_free(p);
-> >  bad_fork_cleanup_perf:
-> > --
-> > 2.41.0.rc0.172.g3f132b7071-goog
-> >
-> >
+> ---
+>  Documentation/subsystem-apis.rst | 119 ++++++++++++++++++++++---------
+>  1 file changed, 86 insertions(+), 33 deletions(-)
+> 
+> diff --git a/Documentation/subsystem-apis.rst b/Documentation/subsystem-apis.rst
+> index 55c90d5383ef..2c0b18a66e4e 100644
+> --- a/Documentation/subsystem-apis.rst
+> +++ b/Documentation/subsystem-apis.rst
+> @@ -10,58 +10,111 @@ is taken directly from the kernel source, with supplemental material added
+>  as needed (or at least as we managed to add it — probably *not* all that is
+>  needed).
+>  
+> +Core subsystems
+> +---------------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   core-api/index
+> +   cpu-freq/index
+> +   driver-api/index
+> +   locking/index
+> +   mm/index
+> +   power/index
+> +   scheduler/index
+> +   timers/index
+> +   wmi/index
+> +
+>  Human interfaces
+>  ----------------
+>  
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   input/index
+> +   fb/index
+> +   gpu/index
+>     hid/index
+> +   input/index
+>     sound/index
+> -   gpu/index
+> -   fb/index
+>  
+> -**Fixme**: much more organizational work is needed here.
+> +Storage
+> +-------
+>  
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   driver-api/index
+> -   core-api/index
+> -   locking/index
+> -   accounting/index
+>     block/index
+>     cdrom/index
+> -   cpu-freq/index
+> -   fpga/index
+> -   i2c/index
+> -   iio/index
+> -   isdn/index
+> +   filesystems/index
+> +   pcmcia/index
+
+Why is pcmcia in the storage category?
+It's just an interface (or a bus).
+
+> +   scsi/index
+
+SCSI is also just a bus, but most (all?) of our drivers
+are for storage controllers AFAIK, although I have seen
+SCSI printer drivers, maybe even a SCSI toaster driver. :)
+
+> +   target/index
+> +
+> +
+> +Networking
+> +----------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   bpf/index
+>     infiniband/index
+> -   leds/index
+> +   isdn/index
+> +   mhi/index
+>     netlabel/index
+>     networking/index
+> -   pcmcia/index
+> -   power/index
+> -   target/index
+> -   timers/index
+> +
+> +
+> +Peripherals and devices
+> +-----------------------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   PCI/index
+> +   hwmon/index
+> +   leds/index
+> +   misc-devices/index
+> +   usb/index
+> +
+> +
+> +Embedded systems
+> +----------------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   fpga/index
+> +   i2c/index
+
+I2C is just a bus IMO.
+Same with SPI and W1.
+Should we have a "Bus Interfaces" category?
+
+> +   iio/index
+> +   peci/index
+>     spi/index
+>     w1/index
+> -   watchdog/index
+> +
+> +Integrity
+> +---------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   crypto/index
+> +   security/index
+> +
+> +Virtualization
+> +--------------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+>     virt/index
+> -   hwmon/index
+> +
+> +Miscellaneous
+> +-------------
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+>     accel/index
+> -   security/index
+> -   crypto/index
+> -   filesystems/index
+> -   mm/index
+> -   bpf/index
+> -   usb/index
+> -   PCI/index
+> -   scsi/index
+> -   misc-devices/index
+> -   scheduler/index
+> -   mhi/index
+> -   peci/index
+> -   wmi/index
+> +   accounting/index
+> +   watchdog/index
+
+Thanks.
+-- 
+~Randy
 
