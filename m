@@ -1,278 +1,286 @@
-Return-Path: <bpf+bounces-1596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1F2071EEF5
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:28:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9518D71EEFA
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 562021C208D9
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F2ED2817D8
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 16:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99B44251F;
-	Thu,  1 Jun 2023 16:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EF542520;
+	Thu,  1 Jun 2023 16:29:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F98C22D6B
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:28:44 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737B313D;
-	Thu,  1 Jun 2023 09:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=wS5z5XZ3GwNBhgY0jkt2hM/yAdpoSIWainSnIml/Rz4=; b=dYw32r9m48hdVLk/6D2V2fbqUP
-	p2KufS/wPNdPzllKZPB1OM37qvcHOj+7y+mluZrTD9YmqsljOYZC0dPJBcH1Pl8QZn5JTH9gAW/N1
-	+OscDg1XJ2Bze+lT7Y1a9eVUuXepOqkGXvO+2PJmlPEPiCyadjyad5w1cIoYBNG3j/dc87nbjeXBg
-	sJsVfI63fE2fMqg+27klri3ElflTyYm3Pm6iOrYp0aHG3GyijuFiQ0Ua35xkybNXGWuw1dZvfOdXC
-	oAk5xYQCnyQ1B/ft0/UfN/66jLEs3qekhReMHXPZ9blydffBwSU5L6lrMUtgInNRJLvvSB2CIi4RS
-	GXx0hFQQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4lAH-004FYf-0I;
-	Thu, 01 Jun 2023 16:28:41 +0000
-Message-ID: <3c6d7ab9-dac5-6950-db8d-3119e4529eb7@infradead.org>
-Date: Thu, 1 Jun 2023 09:28:39 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B194522D6B
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 16:29:31 +0000 (UTC)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0D39D1;
+	Thu,  1 Jun 2023 09:29:29 -0700 (PDT)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
+	by linux.microsoft.com (Postfix) with ESMTPSA id B6E2320FC4F8;
+	Thu,  1 Jun 2023 09:29:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B6E2320FC4F8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1685636969;
+	bh=K5r8biMkMJQp8II7WHMUcApzE1tfTjVhtEnUwd0nbFY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dg7MSPLasm5oCVR/X2ohrOsbOrP37vjxIuwkD0EBqkAjpTxupxFgArCGy0nzMp1jz
+	 loE9EXa2IDcx0gwbj6DUNJ2UGgACf8dGgJBJ5dZq+zWtNsmnNo/7lTt6arF08ciRNY
+	 INQonioVc0pAfiBcd2tmKUHnfvRgT1tjd5XhmDes=
+Date: Thu, 1 Jun 2023 09:29:21 -0700
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	David Vernet <void@manifault.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Dave Thaler <dthaler@microsoft.com>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
+Message-ID: <20230601162921.GA152@W11-BEAU-MD.localdomain>
+References: <20230509163050.127d5123@rorschach.local.home>
+ <20230515165707.hv65ekwp2djkjj5i@MacBook-Pro-8.local>
+ <20230515192407.GA85@W11-BEAU-MD.localdomain>
+ <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
+ <20230516212658.2f5cc2c6@gandalf.local.home>
+ <20230517165028.GA71@W11-BEAU-MD.localdomain>
+ <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
+ <20230601-urenkel-holzofen-cd9403b9cadd@brauner>
+ <20230601152414.GA71@W11-BEAU-MD.localdomain>
+ <20230601-legten-festplatten-fe053c6f16a4@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
- subsystems
-Content-Language: en-US
-To: Costa Shulyupin <costa.shul@redhat.com>, Jonathan Corbet
- <corbet@lwn.net>, linux-doc@vger.kernel.org,
- Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: open list <linux-kernel@vger.kernel.org>,
- "open list:BPF [MISC]" <bpf@vger.kernel.org>
-References: <ZHgM0qKWP3OusjUW@debian.me>
- <20230601145556.3927838-1-costa.shul@redhat.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230601145556.3927838-1-costa.shul@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <20230601-legten-festplatten-fe053c6f16a4@brauner>
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi--
-
-On 6/1/23 07:55, Costa Shulyupin wrote:
-> From: Bagas Sanjaya <bagasdotme@gmail.com>
+On Thu, Jun 01, 2023 at 05:57:22PM +0200, Christian Brauner wrote:
+> On Thu, Jun 01, 2023 at 08:24:14AM -0700, Beau Belgrave wrote:
+> > On Thu, Jun 01, 2023 at 11:46:13AM +0200, Christian Brauner wrote:
+> > > On Wed, May 17, 2023 at 05:10:47PM -0700, Alexei Starovoitov wrote:
+> > > > On Wed, May 17, 2023 at 9:50 AM Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > > > > >
+> > > > > > >
+> > > > > > > Looks like user events were designed with intention to be unprivileged.
+> > > > > > > When I looked at kernel/trace/trace_events_user.c I assumed root.
+> > > > > > > I doubt other people reviewed it from security perspective.
+> > > > > > >
+> > > > > > > Recommending "chmod a+rw /sys/kernel/tracing/user_events_data" doesn't sound like a good idea.
+> > > > > > >
+> > > > > > > For example, I think the following is possible:
+> > > > > > > fd = open("/sys/kernel/tracing/user_events_data")
+> > > > > > > ioclt(fd, DIAG_IOCSDEL)
+> > > > > > >   user_events_ioctl_del
+> > > > > > >      delete_user_event(info->group, name);
+> > > > > > >
+> > > > > > > 'info' is different for every FD, but info->group is the same for all users/processes/fds,
+> > > > > > > because only one global init_group is created.
+> > > > > > > So one user can unregister other user event by knowing 'name'.
+> > > > > > > A security hole, no?
+> > > > 
+> > > > ...
+> > > > 
+> > > > > Regarding deleting events, only users that are given access can delete
+> > > > > events. They must know the event name, just like users with access to
+> > > > > delete files must know a path (and have access to it). Since the
+> > > > > write_index and other details are per-process, unless the user has
+> > > > > access to either /sys/kernel/tracing/events/user_events/* or
+> > > > > /sys/kernel/tracing/user_events_status, they do not know which names are
+> > > > > being used.
+> > > > >
+> > > > > If that is not enough, we could require CAP_SYSADMIN to be able to
+> > > > > delete events even when they have access to the file. Users can also
+> > > > > apply SELinux policies per-file to achieve further isolation, if
+> > > > > required.
+> > > > 
+> > > > Whether /sys/kernel/tracing/user_events_status gets g+rw
+> > > > or it gets a+rw (as your documentation recommends)
+> > > > it is still a security issue.
+> > > > The "event name" is trivial to find out by looking at the source code
+> > > > of the target process or just "string target_binary".
+> > > > Restricting to cap_sysadmin is not the answer, since you want unpriv.
+> > > > SElinux is not the answer either.
+> > > > Since it's unpriv, different processes should not be able to mess with
+> > > > user events of other processes.
+> > > > It's a fundamental requirement of any kernel api.
+> > > > This has to be fixed before any bpf discussion.
+> > > > If it means that you need to redesign user_events do it now and
+> > > > excuses like "it's uapi now, so we cannot fix it" are not going to fly.
+> > > 
+> > > Looking at this a little because I have a few minutes.
+> > > What's all this unused code?
+> > > 
+> > 
+> > These are stubs to integrate namespace support. I've been working on a
+> > series that adds a tracing namespace support similiar to the IMA
+> > namespace work [1]. That series is ending up taking more time than I
 > 
-> Add classes:
-> * Core subsystems
-> * Storage
-> * Networking
-> * Peripherals and devices
-> * Embedded systems
-> * Integrity
-> * Virtualization
-> * Miscellaneous
+> Look, this is all well and nice but you've integrated user events with
+> tracefs. This is currently a single-instance global filesystem. So what
+> you're effectively implying is that you're namespacing tracefs by
+> hanging it off of struct user namespace making it mountable by
+> unprivileged users. Or what's the plan?
 > 
-> There is a FIXME that says to organize subsystems listed in
-> subsystem-apis.rst. Fulfill it by categorize remaining subsytems
-> by purpose/themes, while sorting entries in each category.
+
+We don't have plans for unprivileged users currently. I think that is a
+great goal and requires a proper tracing namespace, which we currently
+don't have. I've done some thinking on this, but I would like to hear
+your thoughts and others on how to do this properly. We do talk about
+this in the tracefs meetings (those might be out of your time zone
+unfortunately).
+
+> That alone is massive work with _wild_ security implications. My
+> appetite for exposing more stuff under user namespaces is very low given
+> the amount of CVEs we've had over the years.
 > 
-> HID devices are already categorized in 3c591cc954d56e ("docs:
-> consolidate human interface subsystems").
+
+Ok, I based that approach on the feedback given in LPC 2022 - Containers
+and Checkpoint/Retore MC [1]. I believe you gave feedback to use user
+namespaces to provide the encapsulation that was required :)
+
+> > anticipated.
 > 
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-
-This is a worthy goal, I am sure, but I am also sure that there is
-a lot of bikeshedding that can go on here.
-(examples below)
-
+> Yet you were confident enough to leave the namespacing stubs for this
+> functionality in the code. ;)
 > 
-> ---
+> What is the overall goal here? Letting arbitrary unprivileged containers
+> define their own custom user event type by mounting tracefs inside
+> unprivileged containers? If so, what security story is going to
+> guarantee that writing arbitrary tracepoints from random unprivileged
+> containers is safe?
 > 
-> Changes:
-> v3: add Integrity, Virtualization and Miscellaneous per Bagas Sanjaya
-> v2: add Core subsystems, Networking, Peripherals and Embedded
-> v1: add Storgre category
 
-          Storage
+Unprivileged containers is not a goal, however, having a per-pod
+user_event system name, such as user_event_<pod_name>, would be ideal
+for certain diagnostic scenarios, such as monitoring the entire pod.
 
-> ---
->  Documentation/subsystem-apis.rst | 119 ++++++++++++++++++++++---------
->  1 file changed, 86 insertions(+), 33 deletions(-)
+When you have a lot of containers, you also want to limit how many
+tracepoints each container can create, even if they are given access to
+the tracefs file. The per-group can limit how many events/tracepoints
+that container can go create, since we currently only have 16-bit
+identifiers for trace_event's we need to be cautious we don't run out.
+
+user_events in general has tracepoint validators to ensure the payloads
+coming in are "safe" from what the kernel might do with them, such as
+filtering out data.
+
+> > 
+> > > static inline struct user_event_group
+> > > *user_event_group_from_user_ns(struct user_namespace *user_ns)
+> > > {
+> > >         if (user_ns == &init_user_ns)
+> > >                 return init_group;
+> > > 
+> > >         return NULL;
+> > > }
+> > > 
+> > > static struct user_event_group *current_user_event_group(void)
+> > > {
+> > >         struct user_namespace *user_ns = current_user_ns();
+> > >         struct user_event_group *group = NULL;
+> > > 
+> > >         while (user_ns) {
+> > >                 group = user_event_group_from_user_ns(user_ns);
+> > > 
+> > >                 if (group)
+> > >                         break;
+> > > 
+> > >                 user_ns = user_ns->parent;
+> > >         }
+> > > 
+> > >         return group;
+> > > }
+> > > 
+> > > User namespaces form strict hierarchies so you always end up at
+> > > init_user_ns no matter where you start from in the hierarchy. Return the
+> > > init_group and delete that code above.
+> > > 
+> > 
+> > This is a good point, I'll delete this code and bring it back as part of
+> > the namespace support patch series when appropriate.
+> > 
+> > > static char *user_event_group_system_name(struct user_namespace *user_ns)
+> > > {
+> > >         char *system_name;
+> > >         int len = sizeof(USER_EVENTS_SYSTEM) + 1;
+> > > 
+> > >         if (user_ns != &init_user_ns) {
+> > >                 /*
+> > >                  * Unexpected at this point:
+> > >                  * We only currently support init_user_ns.
+> > >                  * When we enable more, this will trigger a failure so log.
+> > >                  */
+> > >                 pr_warn("user_events: Namespace other than init_user_ns!\n");
+> > >                 return NULL;
+> > >         }
+> > > 
+> > > Your delegation model is premised on file permissions of a single file
+> > > in global tracefs. It won't work with user namespaces so let's not give
+> > > the false impression that this is on the table.
+> > > 
+> > 
+> > Users that are given access to the single file still should be able to
+> > be isolated for each other. The series I'm working on does this by
 > 
-> diff --git a/Documentation/subsystem-apis.rst b/Documentation/subsystem-apis.rst
-> index 55c90d5383ef..2c0b18a66e4e 100644
-> --- a/Documentation/subsystem-apis.rst
-> +++ b/Documentation/subsystem-apis.rst
-> @@ -10,58 +10,111 @@ is taken directly from the kernel source, with supplemental material added
->  as needed (or at least as we managed to add it — probably *not* all that is
->  needed).
->  
-> +Core subsystems
-> +---------------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   core-api/index
-> +   cpu-freq/index
-> +   driver-api/index
-> +   locking/index
-> +   mm/index
-> +   power/index
-> +   scheduler/index
-> +   timers/index
-> +   wmi/index
-> +
->  Human interfaces
->  ----------------
->  
->  .. toctree::
->     :maxdepth: 1
->  
-> -   input/index
-> +   fb/index
-> +   gpu/index
->     hid/index
-> +   input/index
->     sound/index
-> -   gpu/index
-> -   fb/index
->  
-> -**Fixme**: much more organizational work is needed here.
-> +Storage
-> +-------
->  
->  .. toctree::
->     :maxdepth: 1
->  
-> -   driver-api/index
-> -   core-api/index
-> -   locking/index
-> -   accounting/index
->     block/index
->     cdrom/index
-> -   cpu-freq/index
-> -   fpga/index
-> -   i2c/index
-> -   iio/index
-> -   isdn/index
-> +   filesystems/index
-> +   pcmcia/index
+> How? You currently have a single file that will have to be shared across
+> all unprivileged containers which ultimately can only mean that you need
+> to either bind-mount tracefs or bind-mount the single file into each
+> container. If you have 1000 containers each with isolated idmaps from
+> each other you're going to have a lot of fun trying to ensure that each
+> container has access rights to that file.
+> 
 
-Why is pcmcia in the storage category?
-It's just an interface (or a bus).
+I followed the patch I already stated, there would be a new tracefs file
+that only admins have access to. Admins can then create groups, assign
+limits, then finally attach them user namespaces once they have been
+configured.
 
-> +   scsi/index
+I'm sure there are other approaches, see [1] where another approach was
+proposed by Mathieu, but then feedback in the crowd was to use user
+namespaces instead.
 
-SCSI is also just a bus, but most (all?) of our drivers
-are for storage controllers AFAIK, although I have seen
-SCSI printer drivers, maybe even a SCSI toaster driver. :)
+> > changing the system name of user_events on a per-namespace basis.
+> 
+> What is the "system name" and how does it protect against namespaces
+> messing with each other?
 
-> +   target/index
-> +
-> +
-> +Networking
-> +----------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   bpf/index
->     infiniband/index
-> -   leds/index
-> +   isdn/index
-> +   mhi/index
->     netlabel/index
->     networking/index
-> -   pcmcia/index
-> -   power/index
-> -   target/index
-> -   timers/index
-> +
-> +
-> +Peripherals and devices
-> +-----------------------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   PCI/index
-> +   hwmon/index
-> +   leds/index
-> +   misc-devices/index
-> +   usb/index
-> +
-> +
-> +Embedded systems
-> +----------------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   fpga/index
-> +   i2c/index
+trace_events in the tracing facility require both a system name and an
+event name. IE: sched/sched_waking, sched is the system name,
+sched_waking is the event name. For user_events in the root group, the
+system name is "user_events". When groups are introduced, the system
+name can be "user_events_<GUID>" for example.
 
-I2C is just a bus IMO.
-Same with SPI and W1.
-Should we have a "Bus Interfaces" category?
+The user_events ABI never lets anyone dictate the system name to allow
+for this isolation. IE: user_events/myevent vs
+user_events<GUID>/myevent are entirely different trace_events on the
+system. This is called out as a note in the user_events documentation
+today that the system name can and will change to allow for isolation in
+the future.
 
-> +   iio/index
-> +   peci/index
->     spi/index
->     w1/index
-> -   watchdog/index
-> +
-> +Integrity
-> +---------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
-> +   crypto/index
-> +   security/index
-> +
-> +Virtualization
-> +--------------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
->     virt/index
-> -   hwmon/index
-> +
-> +Miscellaneous
-> +-------------
-> +
-> +.. toctree::
-> +   :maxdepth: 1
-> +
->     accel/index
-> -   security/index
-> -   crypto/index
-> -   filesystems/index
-> -   mm/index
-> -   bpf/index
-> -   usb/index
-> -   PCI/index
-> -   scsi/index
-> -   misc-devices/index
-> -   scheduler/index
-> -   mhi/index
-> -   peci/index
-> -   wmi/index
-> +   accounting/index
-> +   watchdog/index
+Thanks,
+-Beau
 
-Thanks.
--- 
-~Randy
+1. https://www.youtube.com/watch?v=zai3gvpuEHc&t=4403s
 
