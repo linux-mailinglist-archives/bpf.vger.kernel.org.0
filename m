@@ -1,81 +1,83 @@
-Return-Path: <bpf+bounces-1614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A1971F15F
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:08:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F5E71F164
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A954C281831
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:08:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CDD82818D2
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC1E48242;
-	Thu,  1 Jun 2023 18:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2ACE48248;
+	Thu,  1 Jun 2023 18:10:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C6D4701B;
-	Thu,  1 Jun 2023 18:08:04 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F8D123;
-	Thu,  1 Jun 2023 11:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=515CNbKAiQFmrnoi+myJfxe8Z6RUoGqdRGLDXXV+zjk=; b=NPKM62b9Wnxzwu4Fno7Ngf0s7L
-	ZZGS35QM7+74hD0/FOEegZ/g9WKZaMRyJF0eB2BPfQkCqgSf2HbERWv/JcmNtkLban31CMH3qhI/J
-	MPZ77m+OK2PojuRuWgBukXgMN5ziuNrD6nw8H1gV71rKysLJ0FkvwiUn+AdiVxPKUu5dMoNmwjQLZ
-	ZMqgCP9Cztt2CoiN87wh3scbFgsmM4vClvKTJmW8Ef73TvHHo+jlFiinxirJTLW9yph2cambSBK/K
-	gwdn4le/OgujYxOlTQ8/Jhpt8Bh/NJUfKMAjKKdEC4xzPAhqF6ufWW3k0dFvAp+wgWItasuNC3FYQ
-	6sJitrjA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q4miN-000PSI-2H; Thu, 01 Jun 2023 20:07:58 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q4miM-0002in-J8; Thu, 01 Jun 2023 20:07:58 +0200
-Subject: Re: [PATCH v2 0/2] bpf: utilize table ID in bpf_fib_lookup helper
-To: Louis DeLosSantos <louis.delos.devel@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Stanislav Fomichev <sdf@google.com>, razor@blackwall.org,
- John Fastabend <john.fastabend@gmail.com>, Yonghong Song <yhs@meta.com>
-References: <20230505-bpf-add-tbid-fib-lookup-v2-0-0a31c22c748c@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c86e21df-2856-8b11-f8ce-b23769e3b877@iogearbox.net>
-Date: Thu, 1 Jun 2023 20:07:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA904701B;
+	Thu,  1 Jun 2023 18:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3FA60C4339B;
+	Thu,  1 Jun 2023 18:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685643019;
+	bh=qTadY3CaPJvGosINz+a2ijav8RAh4WpyvhuAH3AUEWI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ahotBD8/OeJ/+cxDdxp/7P/GSBR8BQb9pCxZgfwjhbi4rGjXG0sJQOq9YVgotcrHf
+	 dlNX1kdBQWiVVzBqOtDrBtVz48DIyCjGO9cNTvGxP5VQf2fOUrq5qTv4WpcGLxmadi
+	 Iz+Wf+fRv/zPwjbUpGNzBDrNtTh+ZUMEhCNByNm+UUOej4CoS1qfxndb7OZ44NE88r
+	 Cg+leYBpw4SODVWaVvcGa1Q5b+UbkYCWLuglcTsBgjfWzf/AqUhcoxUFgDK+uA7A3q
+	 MIAaJL3SjIeJwoMiiaqI5K74GWiDLHKq7W2w9ULuv4NE9IQA7/ht7vfjeac82edB9z
+	 SlqmK87R3YSFg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 20BD2C395E5;
+	Thu,  1 Jun 2023 18:10:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/2] bpf: utilize table ID in bpf_fib_lookup helper
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168564301912.9357.10823753179270700264.git-patchwork-notify@kernel.org>
+Date: Thu, 01 Jun 2023 18:10:19 +0000
+References: <20230505-bpf-add-tbid-fib-lookup-v2-0-0a31c22c748c@gmail.com>
 In-Reply-To: <20230505-bpf-add-tbid-fib-lookup-v2-0-0a31c22c748c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26925/Thu Jun  1 09:27:46 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+To: Louis DeLosSantos <louis.delos.devel@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, martin.lau@linux.dev,
+ sdf@google.com, razor@blackwall.org, john.fastabend@gmail.com, yhs@meta.com
 
-On 5/31/23 9:38 PM, Louis DeLosSantos wrote:
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed, 31 May 2023 15:38:47 -0400 you wrote:
 > This patchset adds the ability to specify a table ID to the
 > `bpf_fib_lookup` BPF helper.
+> 
+> A new `tbid` field is added to `struct fib_bpf_lookup`.
+> When the `fib_bpf_lookup` helper is called with the `BPF_FIB_LOOKUP_DIRECT` and
+> `BPF_FIB_LOOKUP_TBID' flag the `tbid` field will be interpreted as the table ID
+> to use for the fib lookup.
+> 
+> [...]
 
-LGTM, and this is a very useful extension, applied thanks!
+Here is the summary with links:
+  - [v2,1/2] bpf: add table ID to bpf_fib_lookup BPF helper
+    https://git.kernel.org/bpf/bpf-next/c/8ad77e72caae
+  - [v2,2/2] selftests/bpf: test table ID fib lookup BPF helper
+    https://git.kernel.org/bpf/bpf-next/c/d4ae3e587ece
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
