@@ -1,127 +1,191 @@
-Return-Path: <bpf+bounces-1566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 503D37194B7
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 09:49:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D419F71953E
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 10:18:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA30281666
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 07:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 448702816B8
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 08:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD5DD2E3;
-	Thu,  1 Jun 2023 07:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8F113AF6;
+	Thu,  1 Jun 2023 08:17:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F20C12F
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 07:49:04 +0000 (UTC)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F40E19D
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 00:49:02 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3f6e13940daso5941305e9.0
-        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 00:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1685605741; x=1688197741;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IixDW4hFtKMF6IQay/0w4OvSqO+8DXedjJMSkTKUjc0=;
-        b=WjUm7g3pyU60Dt4Hc9O7DdT2wbbdmlgpp1mSPNzvpoQzUdWuFZvS1wL2d60AOrseSr
-         IlHjbn+EmMZ5eawu9ZrjbWfwrA7Rgex2Ap89WnY5+hOr1N8lHDW9OqS3AgpV5ESej95B
-         1uw9Lvky7Lwk3gxZAN+7eMelewBbCnwudy3FWaiaoIYgDd875yLbgRj5ESZBZR0ZRZIE
-         tSxTOtNlLymDY3Xum+puki34c2qs8YOY6JYTwAi/uqcXjSecy19l36gk/t38RS10m/87
-         J6ahjkmx+Y/jxkM5IYxGneI0hGEnRbfZa04K/lnxlFPIOGy7unkRItQo+NMdFdny8aRV
-         uMqQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B56813AED
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 08:17:54 +0000 (UTC)
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D90107
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 01:17:48 -0700 (PDT)
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7748054f861so165086139f.0
+        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 01:17:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685605741; x=1688197741;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IixDW4hFtKMF6IQay/0w4OvSqO+8DXedjJMSkTKUjc0=;
-        b=gyMHZ58XGxZotk2pZJmk2zIjwJPcRCNfxdG2Frhxt7ZfK7XqpzUp3OEqxk0eCkxOEz
-         d9ETQVW5G5PUfSPkEp0g5iRxH/OCk/OQitI/nW4jjpMkxGRuzkWGUKMBTTzeQA5D1yLO
-         rpz78+VF1UPQB1ovGa3bskiJSqAt+9KnxepXiJ10VALzZNcBMFwqrhG8zGQvAOWiN0e4
-         cXlxDJ7VQcOZD4e1ubTEAP0I+pcPSrKdywxN1OISmeLU8T/ggFVaIdscPy+TQL6d45jy
-         WpvdB0QOg5leS1tiF4FIj4RQQW9ui8QJlYfQTsil7GP9PvwG2C63PZ99dSc/EJdSwGdD
-         Jzgw==
-X-Gm-Message-State: AC+VfDyTAIF/ymqN6OA4gkAPbbYMAWzVxgO5zQElLuIjCDeh1iCojhDF
-	6QYB1ABti0HTi6zApcAqMBd83PrpGJPZGJKrTYn58uVt
-X-Google-Smtp-Source: ACHHUZ4u9EZl8Pd8vKLMeCSbWA2CcpZihnV/qHgS/CsZo50iWGqlUeaZQJWNaBFDlmJeugwDoqGJ/A==
-X-Received: by 2002:a05:600c:3645:b0:3f4:ef34:fbc2 with SMTP id y5-20020a05600c364500b003f4ef34fbc2mr1652163wmq.24.1685605740996;
-        Thu, 01 Jun 2023 00:49:00 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4850000000b0030632833e74sm9301244wrs.11.2023.06.01.00.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jun 2023 00:49:00 -0700 (PDT)
-Date: Thu, 1 Jun 2023 07:50:00 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: kernel test robot <lkp@intel.com>
-Cc: bpf@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-	Joe Stringer <joe@isovalent.com>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add new map ops ->map_pressure
-Message-ID: <ZHhNqDi7+k5VzofY@zh-lab-node-5>
-References: <20230531110511.64612-2-aspsk@isovalent.com>
- <202306010837.mGhA199K-lkp@intel.com>
+        d=1e100.net; s=20221208; t=1685607467; x=1688199467;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b3edtjvnj88PndoVpUzOMvroFERuTIEvu1uDTqw3VI4=;
+        b=gig96enhyhrcFVccm5lR37rj9Qff53HUJLPD9/4gT2aANjT7KDrBe/HTYMeIxeA0y9
+         jTmHJ6gGvBNdY3I4bN/vqalg8j6UM3OtrShRbjJKbhRRNXCNVTOfO4Bmxw+SKeLptxj4
+         vHUg0QQsKXgoePdSTZ3LosP+O6Xnwt83XAOArUczQnVr5cXp5c+Uwu7qXB2gMf1WYN6d
+         caE+5a9fyQgSqW6JSAjntD//waTfFq15qlNtRNVHUNu0R4DGpuIwJ+XpTXCzKYpdAPji
+         E9/oAeMfeJkiTV60u4oVCO9aVfdSt5qkdnFqcnizQti7CotJlcwiSv7TOOV0QWim8aCr
+         IR5A==
+X-Gm-Message-State: AC+VfDx8h+XNbYBPy6q+KnJGq4c0AZ5wuFmTtFhnICXt13eiC6aSyJnA
+	N5NNs0XrTp1H9Qdl9R4KIOqaokrpK36/3wthL7FxJM5kRMjb
+X-Google-Smtp-Source: ACHHUZ5jvU5W7NceH/iaowoBjYeMRtnXvxExH2I6rRvZ8cupRZ55oFVxQGVJXOnAIHX+Y64w9OZm44Rvy/Aq20MNg3T9H8zHudbA
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202306010837.mGhA199K-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a02:2283:0:b0:40f:8f07:e28e with SMTP id
+ o125-20020a022283000000b0040f8f07e28emr526717jao.1.1685607467279; Thu, 01 Jun
+ 2023 01:17:47 -0700 (PDT)
+Date: Thu, 01 Jun 2023 01:17:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000516d5905fd0d12ec@google.com>
+Subject: [syzbot] [net?] [bpf?] general protection fault in sk_psock_verdict_data_ready
+From: syzbot <syzbot+8252ac3e16614ea0ea04@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 08:44:24AM +0800, kernel test robot wrote:
-> Hi Anton,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [...]
-> 
-> If you fix the issue, kindly add following tag where applicable
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202306010837.mGhA199K-lkp@intel.com/
+Hello,
 
-How does this apply to patches? If I send a v2, should I include these tags
-there? If this patch gets rejected, is there need to do anything to close the
-robot's ticket?
+syzbot found the following issue on:
 
-> All errors (new ones prefixed by >>):
-> 
->    kernel/bpf/hashtab.c: In function 'htab_map_pressure':
-> >> kernel/bpf/hashtab.c:189:24: error: implicit declaration of function '__percpu_counter_sum'; did you mean 'percpu_counter_sum'? [-Werror=implicit-function-declaration]
->      189 |                 return __percpu_counter_sum(&htab->pcount);
->          |                        ^~~~~~~~~~~~~~~~~~~~
->          |                        percpu_counter_sum
->    cc1: some warnings being treated as errors
-> 
-> 
-> vim +189 kernel/bpf/hashtab.c
-> 
->    183	
->    184	static u32 htab_map_pressure(const struct bpf_map *map)
->    185	{
->    186		struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
->    187	
->    188		if (htab->use_percpu_counter)
->  > 189			return __percpu_counter_sum(&htab->pcount);
->    190		return atomic_read(&htab->count);
->    191	}
->    192	
+HEAD commit:    4781e965e655 net: phy: broadcom: Register dummy IRQ handler
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=117277de280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5335204dcdecfda
+dashboard link: https://syzkaller.appspot.com/bug?extid=8252ac3e16614ea0ea04
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-(This bug happens for !SMP case.)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7a839a1e1e20/disk-4781e965.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ceb0a7674b18/vmlinux-4781e965.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f3e82748f103/bzImage-4781e965.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8252ac3e16614ea0ea04@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc000000005c: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000002e0-0x00000000000002e7]
+CPU: 0 PID: 15 Comm: ksoftirqd/0 Not tainted 6.4.0-rc3-syzkaller-00588-g4781e965e655 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/16/2023
+RIP: 0010:sk_psock_verdict_data_ready+0x19f/0x3c0 net/core/skmsg.c:1213
+Code: 4c 89 e6 e8 63 70 5e f9 4d 85 e4 75 75 e8 19 74 5e f9 48 8d bb e0 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 07 02 00 00 48 89 ef ff 93 e0 02 00 00 e8 29 fd
+RSP: 0018:ffffc90000147688 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
+RDX: 000000000000005c RSI: ffffffff8825ceb7 RDI: 00000000000002e0
+RBP: ffff888076518c40 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000008000 R15: ffff888076518c40
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f901375bab0 CR3: 000000004bf26000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ tcp_data_ready+0x10a/0x520 net/ipv4/tcp_input.c:5006
+ tcp_data_queue+0x25d3/0x4c50 net/ipv4/tcp_input.c:5080
+ tcp_rcv_established+0x829/0x1f90 net/ipv4/tcp_input.c:6019
+ tcp_v4_do_rcv+0x65a/0x9c0 net/ipv4/tcp_ipv4.c:1726
+ tcp_v4_rcv+0x2cbf/0x3340 net/ipv4/tcp_ipv4.c:2148
+ ip_protocol_deliver_rcu+0x9f/0x480 net/ipv4/ip_input.c:205
+ ip_local_deliver_finish+0x2ec/0x520 net/ipv4/ip_input.c:233
+ NF_HOOK include/linux/netfilter.h:303 [inline]
+ NF_HOOK include/linux/netfilter.h:297 [inline]
+ ip_local_deliver+0x1ae/0x200 net/ipv4/ip_input.c:254
+ dst_input include/net/dst.h:468 [inline]
+ ip_rcv_finish+0x1cf/0x2f0 net/ipv4/ip_input.c:449
+ NF_HOOK include/linux/netfilter.h:303 [inline]
+ NF_HOOK include/linux/netfilter.h:297 [inline]
+ ip_rcv+0xae/0xd0 net/ipv4/ip_input.c:569
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5491
+ __netif_receive_skb+0x1f/0x1c0 net/core/dev.c:5605
+ process_backlog+0x101/0x670 net/core/dev.c:5933
+ __napi_poll+0xb7/0x6f0 net/core/dev.c:6499
+ napi_poll net/core/dev.c:6566 [inline]
+ net_rx_action+0x8a9/0xcb0 net/core/dev.c:6699
+ __do_softirq+0x1d4/0x905 kernel/softirq.c:571
+ run_ksoftirqd kernel/softirq.c:939 [inline]
+ run_ksoftirqd+0x31/0x60 kernel/softirq.c:931
+ smpboot_thread_fn+0x659/0x9e0 kernel/smpboot.c:164
+ kthread+0x344/0x440 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:sk_psock_verdict_data_ready+0x19f/0x3c0 net/core/skmsg.c:1213
+Code: 4c 89 e6 e8 63 70 5e f9 4d 85 e4 75 75 e8 19 74 5e f9 48 8d bb e0 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 07 02 00 00 48 89 ef ff 93 e0 02 00 00 e8 29 fd
+RSP: 0018:ffffc90000147688 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
+RDX: 000000000000005c RSI: ffffffff8825ceb7 RDI: 00000000000002e0
+RBP: ffff888076518c40 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000008000 R15: ffff888076518c40
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f901375bab0 CR3: 000000004bf26000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	4c 89 e6             	mov    %r12,%rsi
+   3:	e8 63 70 5e f9       	callq  0xf95e706b
+   8:	4d 85 e4             	test   %r12,%r12
+   b:	75 75                	jne    0x82
+   d:	e8 19 74 5e f9       	callq  0xf95e742b
+  12:	48 8d bb e0 02 00 00 	lea    0x2e0(%rbx),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 07 02 00 00    	jne    0x23b
+  34:	48 89 ef             	mov    %rbp,%rdi
+  37:	ff 93 e0 02 00 00    	callq  *0x2e0(%rbx)
+  3d:	e8                   	.byte 0xe8
+  3e:	29 fd                	sub    %edi,%ebp
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
