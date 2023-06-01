@@ -1,117 +1,114 @@
-Return-Path: <bpf+bounces-1619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38BF071F1B3
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:22:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F37E71F1B7
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 20:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C09781C2114A
-	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEAFB2817BB
+	for <lists+bpf@lfdr.de>; Thu,  1 Jun 2023 18:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AA04825E;
-	Thu,  1 Jun 2023 18:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF32D4825F;
+	Thu,  1 Jun 2023 18:24:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBDB47017
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 18:22:04 +0000 (UTC)
-Received: from out-18.mta0.migadu.com (out-18.mta0.migadu.com [IPv6:2001:41d0:1004:224b::12])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F28E43
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 11:21:50 -0700 (PDT)
-Date: Thu, 1 Jun 2023 14:21:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685643709;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lV/kdXWE3mwa89LRMU8NbMIgC5c+9XhyT8WKnG1GotI=;
-	b=AbLlQIWPMr44JyBzx4sIbbmdtCKCP3b4mh6SPLFOGzIk6pxCvYuSanrFH1//ElKbLxFOCn
-	E+zWvDRyOyoPxX0BsIpS8RFQWmcqMB7zr4fdxxSGKTMOgbSWWQE7HnGYOgVOGLNKUX+p47
-	xd287yXu0nEy1xv0dh6tK8a2I23BFxU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Song Liu <song@kernel.org>
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mcgrof@kernel.org,
-	peterz@infradead.org, tglx@linutronix.de, x86@kernel.org,
-	rppt@kernel.org
-Subject: Re: [PATCH 0/3] Type aware module allocator
-Message-ID: <ZHjhuju75wGR/AT2@moria.home.lan>
-References: <20230526051529.3387103-1-song@kernel.org>
- <ZHGrjJ8PqAGN9OZK@moria.home.lan>
- <CAPhsuW4DAwx=7Nta5HGiPTJ1LQJCGJGY3FrsdKi62f_zJbsRFQ@mail.gmail.com>
- <ZHTuBdlhSI0mmQGE@moria.home.lan>
- <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD5747017
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 18:24:35 +0000 (UTC)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6EE97
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 11:24:33 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2af1c884b08so16102781fa.1
+        for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 11:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685643871; x=1688235871;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xw3tRvPDviTdajF1F9XTNueWeJzXALpsHKgUAVuY/84=;
+        b=FSLuf4FQ1jdLZG2gdm3l1UQENhjz68x/CrhI+W60Hl9pcQ9wwCxK17m86OxfM+4Vc3
+         r0mDCTyDW+dyUem1ANItxdhsyD1kujE84ILNojPGQ/fyztL1nIRK3bIxyGM5TYa0A/Mg
+         qa4tKSYsvUE80QiLlGrSTh5CRnS16Ws1pgcYuDkaj02B1iLmkwPZsnDiCu9gZ11Y8Mm0
+         oB69g+ywatZgQpJspnEcOkb4LZ2puYx9A+D3ugEfEITWYfMKtQBhHMnrMm8R55M+OoCB
+         +ra9iC+JBEn3sLlPZUWxH4UmuA4g02mrIrOfQEtIPNY5huB/15gY3v+bJaFHwSL5cDaJ
+         PwFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685643871; x=1688235871;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xw3tRvPDviTdajF1F9XTNueWeJzXALpsHKgUAVuY/84=;
+        b=Eyzfnqo3bNx3rJzcWVFuKTgDpRkpmvKPs0vmHZVM892yWqtgy42QYyxE2RzxxOcrX7
+         X+Dx7wrHoYhQAb1M0r+VQLtG9ixDUFnU7iyWEkm4et6ptmVUiYBH8/MDWQRurImSgjCB
+         v6pXAON2PQ9lhPrDQwiLbFOl01X/CsY+haOnZX29+hDAY83PuIs/f6ogscutDlh7lbXZ
+         QNqzdDs4KHot0Y2mpxEH0IaFoBVqHJBm2oEEsKxhiR14BxSUf2d1COCjqUWNSBvchwUx
+         uihe3XllIBp6O/CwoVvLvObiD8K7PS/PKGH7w6zCZsoVJ6Wij5Vj8WOqMhb4+7YG2h0W
+         SfyA==
+X-Gm-Message-State: AC+VfDxSSfqdamwY722Ott/7KUj/KZdPt9ojxvZtybF5/uAByi5wE2NC
+	mUOv1xrBIyqOqtlqEahhahyN2F0DwZc3BUU2R5I=
+X-Google-Smtp-Source: ACHHUZ5H5K95Kpk87TRkjWo9WIpc6Adgwd3yWRrHTf5xZs1SG7TlATjyOQcw/4vg3MeewhisURNxtHpexbwus+MDKnI=
+X-Received: by 2002:a2e:aa26:0:b0:2af:1d0f:4957 with SMTP id
+ bf38-20020a2eaa26000000b002af1d0f4957mr34844ljb.5.1685643871289; Thu, 01 Jun
+ 2023 11:24:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6hqzLuNhvkHFOmKTJdQm8A0JdUna=1iFdRC0y+kKmF4Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20230531110511.64612-1-aspsk@isovalent.com> <20230531110511.64612-2-aspsk@isovalent.com>
+ <20230531182429.wb5kti4fvze34qiz@MacBook-Pro-8.local> <ZHhJUN7kQuScZW2e@zh-lab-node-5>
+ <CAADnVQ+67FF=JsxTDxoo2XL8zSh5Y3xptGee8vBj8OwP3b=aew@mail.gmail.com> <ZHjhBFLLnUcSy9Tt@zh-lab-node-5>
+In-Reply-To: <ZHjhBFLLnUcSy9Tt@zh-lab-node-5>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 1 Jun 2023 11:24:20 -0700
+Message-ID: <CAADnVQLXFyhACfZP3bze8PUa43Fnc-Nn_PDGYX2vOq3i8FqKbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: add new map ops ->map_pressure
+To: Anton Protopopov <aspsk@isovalent.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Joe Stringer <joe@isovalent.com>, 
+	John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 30, 2023 at 03:48:51PM -0700, Song Liu wrote:
-> On Mon, May 29, 2023 at 11:25 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
+On Thu, Jun 1, 2023 at 11:17=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
+om> wrote:
 > >
-> > On Sat, May 27, 2023 at 10:58:37PM -0700, Song Liu wrote:
-> > > I don't think we are exposing architecture specific options to users.
-> > > Some layer need to handle arch specifics. If the new allocator is
-> > > built on top of module_alloc, module_alloc is handling that. If the new
-> > > allocator is to replace module_alloc, it needs to handle arch specifics.
-> >
-> > Ok, I went back and read more thoroughly, I got this part wrong. The
-> > actual interface is the mod_mem_type enum, not mod_alloc_params or
-> > vmalloc_params.
-> >
-> > So this was my main complaint, but this actually looks ok now.
-> >
-> > It would be better to have those structs in a .c file, not the header
-> > file - it looks like those are the public interface the way you have it.
-> 
-> Thanks for this suggestion. It makes a lot of sense. But I am not quite
-> sure how we can avoid putting it in the header yet. I will take a closer
-> look. OTOH, if we plan to use Mike's new allocator to replace vmalloc,
-> we probably don't need this part.
+> > LRU logic doesn't kick in until the map is full.
+>
+> In fact, it can: a reproducable example is in the self-test from this pat=
+ch
+> series. In the test N threads try to insert random values for keys 1..300=
+0
+> simultaneously. As the result, the map may contain any number of elements=
+,
+> typically 100 to 1000 (never full 3000, which is also less than the map s=
+ize).
+> So a user can't really even closely estimate the number of elements in th=
+e LRU
+> map based on the number of updates (with unique keys). A per-cpu counter
+> inc/dec'ed from the kernel side would solve this.
 
-Well, right now module_alloc() uses arch-exported constants, we could
-keep doing that if it makes sense.
+That's odd and unexpected.
+Definitely something to investigate and fix in the LRU map.
 
-Or the structs could go in a separate header file that better indicates
-what they're for. The main point is just that - when we're writing new
-code and creating a new interface, it's very helpful if we can have the
-header file basically be the documentation for what the external
-interface is. Put your big kernel doc "what is this thing about" comment
-in that file, too :)
+Pls cc Martin in the future.
 
-> > We just need a helper that either calls text_poke() or does the page
-> > permission dance in a single place.
-> 
-> AFAICT, we don't have a global text_poke() API yet. I can take a look
-> into it (if it makes sense).
-
-I don't think anyone's working on this yet, so if you're interested I
-think it might be helpful.
-
-> > If we do the same thing for other mod_mem_types, we could potentially
-> > allow them to be shared on hugepages too.
-> 
-> Yeah, that's part of the goal to extend the scope from executable to all
-> types.
-
-Yeah, I think the "enumerate types of allocations that want similar page
-permission handling" is a good thing to focus on.
+> > If your LRU map is not full you shouldn't be using LRU in the first pla=
+ce.
+>
+> This makes sense, yes, especially that LRU evictions may happen randomly,
+> without a map being full. I will step back with this patch until we inves=
+tigate
+> if we can replace LRUs with hashes.
+>
+> Thanks for the comments!
 
