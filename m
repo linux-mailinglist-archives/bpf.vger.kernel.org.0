@@ -1,77 +1,81 @@
-Return-Path: <bpf+bounces-1712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04A4972077D
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:24:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC27720785
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8688A1C210C5
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 16:24:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C471C21184
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 16:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121D11D2A1;
-	Fri,  2 Jun 2023 16:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA191D2AC;
+	Fri,  2 Jun 2023 16:25:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B231C750
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 16:23:26 +0000 (UTC)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26200B4
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 09:23:25 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2af2c35fb85so31143331fa.3
-        for <bpf@vger.kernel.org>; Fri, 02 Jun 2023 09:23:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0817219BA0
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 16:25:49 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D41BC;
+	Fri,  2 Jun 2023 09:25:48 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b1b30445cfso8488621fa.1;
+        Fri, 02 Jun 2023 09:25:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685723003; x=1688315003;
+        d=gmail.com; s=20221208; t=1685723146; x=1688315146;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oVjukxXXRKShARj0zI7CQA/GP7CSQ+0VqGswmRXM5os=;
-        b=gjsRknwyPaV+FS+WRK2i/aWzthHR9a45Zk2PiI8RgPEB+NLrgaHkEb1ck2OC86GmZc
-         vQ8eVfcx7VrMC+8+9AGV3PnUZ08ikf7L6rkMAhDEsFh2N7TRTZk2hkdnq6xB0xp9Dpg+
-         hw03GHhuHlraClTP/EjBRmjEVP9B3l8lYydm/WkAk1B4igRlRL0Ew1gbnwalsiFcKrHv
-         OBaChiEAGH8rWtZXpTQFFhVaQOjrBttGycP/m3XCT9noZcFwThPfBdxyC/ZYQqyjgoPh
-         FBSkD1UxqHp4q12lpWsIXiNeTEYM36X2gnzDfYE1on2uAGzNasKNa0LAOSIV30qbSUUK
-         LaVA==
+        bh=COBcCF+iqFLg2ELZjta/++J+eLYWdmq7Z9BVQrIYE4o=;
+        b=D7Lt4N312/TcGxi+DsfkgPg2xTpBlvD/Cr7ORXYKo9MsA3eNR+4wTwWXhcjxvP0amD
+         I4c9/I6U7BrpHxJvKkiHvN8L1awEAHXqV5wZ86PP4Z+FM+o11vVeNUvJ9GhvTThudWfv
+         pBAtoeoMnBY0Txwwol9bPd5iLchVN5y1JK0r44WqENbJfiV1nyfEMeo686JRKPabbXjs
+         5PrqYAeTEy/o5s3A+3QmfcqsHCQK+HxsCIOuD9cU0mKswxdB2TMvRrWL8i+A12sc8ubk
+         hqCtcAIv6lYgiozN5oq6AhqJXoTFBfbd0fZXuDQfJYIYZ6Z5Zg781PCJKPFs4ZkZjClq
+         5ThA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685723003; x=1688315003;
+        d=1e100.net; s=20221208; t=1685723146; x=1688315146;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oVjukxXXRKShARj0zI7CQA/GP7CSQ+0VqGswmRXM5os=;
-        b=XeZZHkkEEOWtzdKDgH19L0u2uC/XihqDo7I8Rv94EkBP5h7IIJ9H5fl5xjQbsPXUpW
-         XVQFH89fSBJcvz9GfT3FOjpM4lzNQ1OVtJt8rkYDECHB1bokvYTwlZ/AvS8VuWsCWOuP
-         7wSBOtz7+AExSNd0matDsC/8i+bImaYK96BvCuzh848h7eKMN9HYOU8TytNt4E23999/
-         SSS3KlJ/yTSQ9Pqo8Aoq6S0Bb0m4x2LUoWmbxK8VIp2buDbu1Agtcs5kNMyNuNoneK3F
-         TekaGwzSwHxsvFQHR5DUeTMb/It+d41asGSmGJNC7UChiTaLzKm/avAcjz00n/ZTsdP3
-         ifIg==
-X-Gm-Message-State: AC+VfDxmWY4G1nvKdlxvfyVPpX7elpudj+edXMBJRiG8fLwxKIJdLR0b
-	5yrRGKFIvHm7ZPPUt31n6fmt80yoXa/IyZCzVYsNYp/DmK8=
-X-Google-Smtp-Source: ACHHUZ6oxTIeXGUxNisI9NPglMANcttAXhZ2hU4QryTsrhDLrZJNMVzJCXosw2Vl6UiHWsQVpF5+qAZC0v8BqOefpW0=
-X-Received: by 2002:a2e:9f12:0:b0:2a7:a5f7:9651 with SMTP id
- u18-20020a2e9f12000000b002a7a5f79651mr318702ljk.23.1685723002763; Fri, 02 Jun
- 2023 09:23:22 -0700 (PDT)
+        bh=COBcCF+iqFLg2ELZjta/++J+eLYWdmq7Z9BVQrIYE4o=;
+        b=et0Z2Pgop8r3NCr79vcGho/tL8m79lX+7qwKUoP+m/srXUwbcmR2qKccud2uWHQEes
+         nMnr6l1Zoy1i+QOV2gUuaekUCoLEY/cwiX9MAQXt/Xn8o7W13kPqOK33Rows3NgkBIzl
+         0RugPp0euVaUnoeEQOcoEFsfQI3BK41YBGUh8NVVxCIZ65NF9Pq5NV/oC8NTvOz2CGx/
+         Voadx9FhHwhRzqUcradWKQHFidGhdtYu513KxnGsp5i9r5QNXAYqKySggy1GHFV55qAk
+         OWFHNKYPfHrX7NuIoYz/+7ivWvQFKtSEZqXficIvvoIrz7gMk9qepyOo7uV2iMDTyBsU
+         SxlA==
+X-Gm-Message-State: AC+VfDwIrR+79IyeFwPefrFoLqQkOCVPOUcWoGH0YF0fXwzACv7mroCA
+	DANzNPSa/BcTfQP6VBAf4oYt9su5eNTrzPDGM/auXQ90
+X-Google-Smtp-Source: ACHHUZ5r/bT7KN+XOUb8Wor8y3IRxoWnVJd1hO5DC29K7adR9PhcU6suO2pETn4esvEsBoLpxSzcHbnwD/+o35d6jds=
+X-Received: by 2002:a2e:7407:0:b0:2af:2441:f709 with SMTP id
+ p7-20020a2e7407000000b002af2441f709mr318465ljc.29.1685723146010; Fri, 02 Jun
+ 2023 09:25:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230531110511.64612-1-aspsk@isovalent.com> <20230531110511.64612-2-aspsk@isovalent.com>
- <20230531182429.wb5kti4fvze34qiz@MacBook-Pro-8.local> <ZHhJUN7kQuScZW2e@zh-lab-node-5>
- <CAADnVQ+67FF=JsxTDxoo2XL8zSh5Y3xptGee8vBj8OwP3b=aew@mail.gmail.com>
- <ZHjhBFLLnUcSy9Tt@zh-lab-node-5> <CAADnVQLXFyhACfZP3bze8PUa43Fnc-Nn_PDGYX2vOq3i8FqKbA@mail.gmail.com>
- <CAADnVQ+FzCiQLbFaJihr8tuJXxjFNZqYs75cyhSDjds8nYBj4A@mail.gmail.com> <ZHn64W6ggfTyzW/U@zh-lab-node-5>
-In-Reply-To: <ZHn64W6ggfTyzW/U@zh-lab-node-5>
+References: <20230429101215.111262-1-houtao@huaweicloud.com>
+ <20230429101215.111262-4-houtao@huaweicloud.com> <20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local>
+ <986216a3-437a-5219-fd9a-341786e9264b@huaweicloud.com> <20230504020051.xga5y5dj3rxobmea@dhcp-172-26-102-232.dhcp.thefacebook.com>
+ <d3169329-1453-e87a-fbb0-e1435f0741dc@huaweicloud.com> <CAADnVQ+yK700YFHBQx5-UpxkqhgK-SyL=b=vCXJb448WvSHkEQ@mail.gmail.com>
+ <1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com>
+In-Reply-To: <1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 2 Jun 2023 09:23:11 -0700
-Message-ID: <CAADnVQLn2hxXPXbmPXMn4G6=jCBd6Xmty7RO2bY+S-GiS8NJ6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add new map ops ->map_pressure
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Joe Stringer <joe@isovalent.com>, John Fastabend <john.fastabend@gmail.com>
+Date: Fri, 2 Jun 2023 09:25:34 -0700
+Message-ID: <CAADnVQJ8N=LScYNDqKCYbFdq4R_YSVkrrvUG1nqGhaqYy+mdMg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3 3/6] bpf: Introduce BPF_MA_REUSE_AFTER_RCU_GP
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
+	Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,95 +85,105 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 2, 2023 at 7:20=E2=80=AFAM Anton Protopopov <aspsk@isovalent.co=
-m> wrote:
+On Thu, Jun 1, 2023 at 7:40=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
 >
-> On Thu, Jun 01, 2023 at 05:40:10PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Jun 1, 2023 at 11:24=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jun 1, 2023 at 11:17=E2=80=AFAM Anton Protopopov <aspsk@isova=
-lent.com> wrote:
-> > > > >
-> > > > > LRU logic doesn't kick in until the map is full.
-> > > >
-> > > > In fact, it can: a reproducable example is in the self-test from th=
-is patch
-> > > > series. In the test N threads try to insert random values for keys =
-1..3000
-> > > > simultaneously. As the result, the map may contain any number of el=
-ements,
-> > > > typically 100 to 1000 (never full 3000, which is also less than the=
- map size).
-> > > > So a user can't really even closely estimate the number of elements=
- in the LRU
-> > > > map based on the number of updates (with unique keys). A per-cpu co=
-unter
-> > > > inc/dec'ed from the kernel side would solve this.
-> > >
-> > > That's odd and unexpected.
-> > > Definitely something to investigate and fix in the LRU map.
-> > >
-> > > Pls cc Martin in the future.
-> > >
-> > > > > If your LRU map is not full you shouldn't be using LRU in the fir=
-st place.
-> > > >
-> > > > This makes sense, yes, especially that LRU evictions may happen ran=
-domly,
-> > > > without a map being full. I will step back with this patch until we=
- investigate
-> > > > if we can replace LRUs with hashes.
-> > > >
-> > > > Thanks for the comments!
+> Hi,
+>
+> On 6/2/2023 1:36 AM, Alexei Starovoitov wrote:
+> > On Wed, May 3, 2023 at 7:30=E2=80=AFPM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >>> Construct the patch series as:
+> >>> - prep patches
+> >>> - benchmark
+> >>> - unconditional convert of bpf_ma to REUSE_AFTER_rcu_GP_and_free_afte=
+r_rcu_tasks_trace
+> >>>   with numbers from bench(s) before and after this patch.
+> >> Thanks again for the suggestion. Will do in v4.
 > >
-> > Thinking about it more...
-> > since you're proposing to use percpu counter unconditionally for preall=
-oc
-> > and percpu_counter_add_batch() logic is batched,
-> > it could actually be acceptable if it's paired with non-api access.
-> > Like another patch can add generic kfunc to do __percpu_counter_sum()
-> > and in the 3rd patch kernel/bpf/preload/iterators/iterators.bpf.c
-> > for maps can be extended to print the element count, so the user can ha=
-ve
-> > convenient 'cat /sys/fs/bpf/maps.debug' way to debug maps.
+> > It's been a month. Any update?
 > >
-> > But additional logic of percpu_counter_add_batch() might get in the way
-> > of debugging eventually.
-> > If we want to have stats then we can have normal per-cpu u32 in basic
-> > struct bpf_map that most maps, except array, will inc/dec on update/del=
-ete.
-> > kfunc to iterate over percpu is still necessary.
-> > This way we will be able to see not only number of elements, but detect
-> > bad usage when one cpu is only adding and another cpu is deleting eleme=
-nts.
-> > And other cpu misbalance.
+> > Should we take over this work if you're busy?
+> Sorry for the delay. I should post some progress information about the
+> patch set early. The patch set is simpler compared with v3, I had
+> implemented v4 about two weeks ago. The problem is v4 don't work as
+> expected: its memory usage is huge compared with v3. The following is
+> the output from htab-mem benchmark:
 >
-> This looks for me like two different things: one is a kfunc to get the cu=
-rrent
-> counter (e.g., bpf_map_elements_count), the other is a kfunc to dump some=
- more
-> detailed stats (e.g., per-cpu values or more).
+> overwrite:
+> Summary: loop   11.07 =C2=B1    1.25k/s, memory usage  995.08 =C2=B1  680=
+.87MiB,
+> peak memory usage 2183.38MiB
+> batch_add_batch_del:
+> Summary: loop   11.48 =C2=B1    1.24k/s, memory usage 1393.36 =C2=B1  780=
+.41MiB,
+> peak memory usage 2836.68MiB
+> add_del_on_diff_cpu:
+> Summary: loop    6.07 =C2=B1    0.69k/s, memory usage   14.44 =C2=B1    2=
+.34MiB,
+> peak memory usage   20.30MiB
 >
-> My patch, slightly modified, addresses the first goal: most maps of inter=
-est
-> already have a counter in some form (sometimes just atomic_t or u64+lock)=
-. If
-> we add a percpu (non-batch) counter for pre-allocated hashmaps, then it's=
- done:
-> the new kfunc can get the counter based on the map type.
+> The direct reason for the huge memory usage is slower RCU grace period.
+> The RCU grace period used for reuse is much longer compared with v3 and
+> it is about 100ms or more (e.g, 2.6s). I am still trying to find out the
+> root cause of the slow RCU grace period. The first guest is the running
+> time of bpf program attached to getpgid() is longer, so the context
+> switch in bench is slowed down. The hist-diagram of getpgid() latency in
+> v4 indeed manifests a lot of abnormal tail latencies compared with v3 as
+> shown below.
 >
-> If/when there's need to provide per-cpu statistics of elements or some mo=
-re
-> sophisticated statistics, this can be done without changing the api of th=
-e
-> bpf_map_elements_count() kfunc.
+> v3 getpid() latency during overwrite benchmark:
+> @hist_ms:
+> [0]               193451
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [1]                  767
+> |                                                    |
+> [2, 4)                75
+> |                                                    |
+> [4, 8)                 1
+> |                                                    |
 >
-> Would this work?
+> v4 getpid() latency during overwrite benchmark:
+> @hist_ms:
+> [0]                86270
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+> [1]                31252
+> |@@@@@@@@@@@@@@@@@@                                  |
+> [2, 4)                 1
+> |                                                    |
+> [4, 8)                 0
+> |                                                    |
+> [8, 16)                0
+> |                                                    |
+> [16, 32)               0
+> |                                                    |
+> [32, 64)               0
+> |                                                    |
+> [64, 128)              0
+> |                                                    |
+> [128, 256)             3
+> |                                                    |
+> [256, 512)             2
+> |                                                    |
+> [512, 1K)              1
+> |                                                    |
+> [1K, 2K)               2
+> |                                                    |
+> [2K, 4K)               1
+> |                                                    |
+>
+> I think the newly-added global spin-lock in memory allocator and
+> irq-work running under the context of free procedure may lead to
+> abnormal tail latency and I am trying to demonstrate that by using
+> fine-grain locks and kworker (just temporarily). But on the other side,
+> considering the number of abnormal tail latency is much smaller compared
+> with the total number of getpgid() syscall, so I think maybe there is
+> still other causes for the slow RCU GP.
+>
+> Because the progress of v4 is delayed, so how about I post v4 as soon as
+> possible for discussion (maybe I did it wrong) and at the same time I
+> continue to investigate the slow RCU grace period problem (I will try to
+> get some help from RCU community) ?
 
-No, because bpf_map_elements_count() as a building block is too big
-and too specific. Nothing else can be made out of it, but counting
-elements.
-"for_each_cpu in per-cpu variable" would be generic that is usable beyond
-this particular use case of stats collection.
+Yes. Please send v4. Let's investigate huge memory consumption together.
 
