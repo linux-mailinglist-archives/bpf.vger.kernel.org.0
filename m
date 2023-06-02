@@ -1,159 +1,376 @@
-Return-Path: <bpf+bounces-1726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18830720907
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:21:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F15AD72092D
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AFA11C210DC
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:21:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7176281A99
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4B81DDCD;
-	Fri,  2 Jun 2023 18:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A481DDEF;
+	Fri,  2 Jun 2023 18:31:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C01819E47;
-	Fri,  2 Jun 2023 18:21:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C87DC433AA;
-	Fri,  2 Jun 2023 18:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685730074;
-	bh=X+6D25ac/ynfkYhL6CVIatM+QSgTz3ZdfLV95/xOw/s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=m8QqKBlwUZ1OdVsi3iL4i/wpx/dFY6BbtHjhKMAoPALO9d9S1Of5z7SZF4QL6sTbP
-	 1AkumCJkUSaKm4k7dCVk+lOGEFZdfq22cqjqj27S/pPlmB3p+6xXv2CNvliSMKoASM
-	 /hdXoCMRwv6EJy8J6GYtUkCvLB9u0rcyusLTXlpDOf8Lr4f24TWYjjjFg1gay1e8Ak
-	 p/JJ9xBOtMt5dIZYwKQ9oFJD8MWj9f1lt6ZhCj0XTqBGpkRKgNx/tS3niGcx/Matut
-	 0hwyzJfj74d+iBjmUiHb0LPXzSLbkWfgBPmkBtc2NCOoUpEnhn1N5112VQidBofQtB
-	 l46PC2/nl/Dww==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2af189d323fso46352391fa.1;
-        Fri, 02 Jun 2023 11:21:14 -0700 (PDT)
-X-Gm-Message-State: AC+VfDy6tUtSTkY4WimD0ve8ZiSIIh10ZMJfMY+q87EfuCPbr3gZqly6
-	Qk5lO3wACNYGAPPmYAAU39rdvk/Wpx+a3HieDNM=
-X-Google-Smtp-Source: ACHHUZ7u+3QRkPB700ZRWSkZS34WuzRLSBXiPs+mDMX8Rtj0TALCowhBg47HVf6nzRS8a/FS2UP95/Ck0Au4nvQTBcE=
-X-Received: by 2002:a2e:b55a:0:b0:2b0:59c3:29c9 with SMTP id
- a26-20020a2eb55a000000b002b059c329c9mr217540ljn.6.1685730071990; Fri, 02 Jun
- 2023 11:21:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16BD1DDEE;
+	Fri,  2 Jun 2023 18:31:45 +0000 (UTC)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F49123;
+	Fri,  2 Jun 2023 11:31:43 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b1aecef94fso12015801fa.3;
+        Fri, 02 Jun 2023 11:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685730701; x=1688322701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yryUSzMpCjv7oiXgUyjh3zoqcatLObYtWeq34KPcoKY=;
+        b=WeklrsmD+a8TlB/ZPfCsOYvTlTmOitymRxaJhOj3uQ8rMJ6ZA6ZzZNl++BUSHgXNHy
+         9Ic1IESXi/Hot+RZqf9w/QCfXzuZUOw/9liz6FqiCK9VcM3Q9iLMbFhMgENuPA87Y3vg
+         8TthaTqDVvp+kbyub4FjvSuM2qrav97cPGMZdMb4r8rDFzTCL76N5rcHlnaKj28fuPAK
+         Tg7cx5hgeHX+fwTMS1xHSh1KQaNMQ5VAPSVVM10hFVXxaXenKJJMJ4oR91Lg5bAie62o
+         LOZhmR0xjolYlmFO6jlSKh9b7RuuSBXTn1ubVTLEIXuVWfvAluWq859bnL2eUjNmBaAN
+         AIcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685730701; x=1688322701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yryUSzMpCjv7oiXgUyjh3zoqcatLObYtWeq34KPcoKY=;
+        b=Y98FRj6WOvAck7DfHUSTQlAHh/NWdW/zPfkPhW+2VaRjCj1gfH7j6lxx91fPOMxLik
+         ytVAo6thhm4LkkGguh1NPJWq9W3RFaB1g8ssIkiVwlgfgIfhIznan9Xwhw8QZtqYfkwD
+         Y5HowSgw5/hxpQ2pj1E1BKaMu8AE6SpZUFOxQP8lZAxoucBrkyy+p+ISU+czD3URcZKk
+         AkhUAZe3BksIiRHC7aWSNiqtkxmdJUhGNdOTnY/00JiB8FgLPRxCMRSQRmVQtEdtrtDb
+         DjNDfiuAE/EZKA3Qi1oykc0mpxpcxAgq5YIV1EypTeXESJojS0a9mc8JxoxRzfoldkKM
+         SAFA==
+X-Gm-Message-State: AC+VfDzzbScKib1ARy6lzds1sJ3fcHv9ooHKRkV9weYMlFAPb+OCtw1W
+	srOFIh9KRkhjM26mxebZx4MNfWUi1mXDEvXQpJM=
+X-Google-Smtp-Source: ACHHUZ6zOAsn3i5yZDjsPKcKoEh+DfjPB23i0uECZxExwwZh7CCA8nQPzLKotfRQ+UsLRpDX1Yy6OWUgf/3UXHrT9Us=
+X-Received: by 2002:a2e:3816:0:b0:2ad:98a6:4af0 with SMTP id
+ f22-20020a2e3816000000b002ad98a64af0mr484777lja.23.1685730700651; Fri, 02 Jun
+ 2023 11:31:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230601101257.530867-1-rppt@kernel.org> <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
- <ZHjgIH3aX9dCvVZc@moria.home.lan> <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
-In-Reply-To: <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
-From: Song Liu <song@kernel.org>
-Date: Fri, 2 Jun 2023 11:20:58 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7Euczff_KB70nuH=Hhf2EYHAf=xiQR7mFqVfByhD34XA@mail.gmail.com>
-Message-ID: <CAPhsuW7Euczff_KB70nuH=Hhf2EYHAf=xiQR7mFqVfByhD34XA@mail.gmail.com>
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Mike Rapoport <rppt@kernel.org>, 
-	linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Russell King <linux@armlinux.org.uk>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, 
-	Puranjay Mohan <puranjay12@gmail.com>
+References: <20230602065958.2869555-1-imagedong@tencent.com> <20230602065958.2869555-3-imagedong@tencent.com>
+In-Reply-To: <20230602065958.2869555-3-imagedong@tencent.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 2 Jun 2023 11:31:29 -0700
+Message-ID: <CAADnVQ+fr_rpiO+P8Xi8Fiw+i8+hoLY6u7qixcCc9AizHT-BXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/5] bpf, x86: allow function arguments up to
+ 14 for TRACING
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	benbjiang@tencent.com, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	Menglong Dong <imagedong@tencent.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Manu Bretelle <chantr4@gmail.com>, Ross Zwisler <zwisler@google.com>, Eddy Z <eddyz87@gmail.com>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Jun 2, 2023 at 2:35=E2=80=AFAM Mark Rutland <mark.rutland@arm.com> =
-wrote:
+On Fri, Jun 2, 2023 at 12:01=E2=80=AFAM <menglong8.dong@gmail.com> wrote:
 >
-> On Thu, Jun 01, 2023 at 02:14:56PM -0400, Kent Overstreet wrote:
-> > On Thu, Jun 01, 2023 at 05:12:03PM +0100, Mark Rutland wrote:
-> > > For a while I have wanted to give kprobes its own allocator so that i=
-t can work
-> > > even with CONFIG_MODULES=3Dn, and so that it doesn't have to waste VA=
- space in
-> > > the modules area.
-> > >
-> > > Given that, I think these should have their own allocator functions t=
-hat can be
-> > > provided independently, even if those happen to use common infrastruc=
-ture.
-> >
-> > How much memory can kprobes conceivably use? I think we also want to tr=
-y
-> > to push back on combinatorial new allocators, if we can.
->
-> That depends on who's using it, and how (e.g. via BPF).
->
-> To be clear, I'm not necessarily asking for entirely different allocators=
-, but
-> I do thinkg that we want wrappers that can at least pass distinct start+e=
-nd
-> parameters to a common allocator, and for arm64's modules code I'd expect=
- that
-> we'd keep the range falblack logic out of the common allcoator, and just =
-call
-> it twice.
->
-> > > > Several architectures override module_alloc() because of various
-> > > > constraints where the executable memory can be located and this cau=
-ses
-> > > > additional obstacles for improvements of code allocation.
-> > > >
-> > > > This set splits code allocation from modules by introducing
-> > > > jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces ca=
-ll
-> > > > sites of module_alloc() and module_memfree() with the new APIs and
-> > > > implements core text and related allocation in a central place.
-> > > >
-> > > > Instead of architecture specific overrides for module_alloc(), the
-> > > > architectures that require non-default behaviour for text allocatio=
-n must
-> > > > fill jit_alloc_params structure and implement jit_alloc_arch_params=
-() that
-> > > > returns a pointer to that structure. If an architecture does not im=
-plement
-> > > > jit_alloc_arch_params(), the defaults compatible with the current
-> > > > modules::module_alloc() are used.
-> > >
-> > > As above, I suspect that each of the callsites should probably be usi=
-ng common
-> > > infrastructure, but I don't think that a single jit_alloc_arch_params=
-() makes
-> > > sense, since the parameters for each case may need to be distinct.
-> >
-> > I don't see how that follows. The whole point of function parameters is
-> > that they may be different :)
->
-> What I mean is that jit_alloc_arch_params() tries to aggregate common
-> parameters, but they aren't actually common (e.g. the actual start+end ra=
-nge
-> for allocation).
->
-> > Can you give more detail on what parameters you need? If the only extra
-> > parameter is just "does this allocation need to live close to kernel
-> > text", that's not that big of a deal.
->
-> My thinking was that we at least need the start + end for each caller. Th=
-at
-> might be it, tbh.
+> From: Menglong Dong <imagedong@tencent.com>
 
-IIUC, arm64 uses VMALLOC address space for BPF programs. The reason
-is each BPF program uses at least 64kB (one page) out of the 128MB
-address space. Puranjay Mohan (CC'ed) is working on enabling
-bpf_prog_pack for arm64. Once this work is done, multiple BPF programs
-will be able to share a page. Will this improvement remove the need to
-specify a different address range for BPF programs?
+Please trim your cc when you respin. It's unnecessary huge.
 
-Thanks,
-Song
+> For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+> on the kernel functions whose arguments count less than 6. This is not
+> friendly at all, as too many functions have arguments count more than 6.
+>
+> Therefore, let's enhance it by increasing the function arguments count
+> allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+>
+> For the case that we don't need to call origin function, which means
+> without BPF_TRAMP_F_CALL_ORIG, we need only copy the function arguments
+> that stored in the frame of the caller to current frame. The arguments
+> of arg6-argN are stored in "$rbp + 0x18", we need copy them to
+> "$rbp - regs_off + (6 * 8)".
+>
+> For the case with BPF_TRAMP_F_CALL_ORIG, we need prepare the arguments
+> in stack before call origin function, which means we need alloc extra
+> "8 * (arg_count - 6)" memory in the top of the stack. Note, there should
+> not be any data be pushed to the stack before call the origin function.
+> Then, we have to store rbx with 'mov' instead of 'push'.
+>
+> It works well for the FENTRY and FEXIT, I'm not sure if there are other
+> complicated cases.
+>
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+> v2:
+> - instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+> - make MAX_BPF_FUNC_ARGS as the maximum argument count
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 96 +++++++++++++++++++++++++++++++------
+>  1 file changed, 81 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 1056bbf55b17..0e247bb7d6f6 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1868,7 +1868,7 @@ static void save_regs(const struct btf_func_model *=
+m, u8 **prog, int nr_regs,
+>          * mov QWORD PTR [rbp-0x10],rdi
+>          * mov QWORD PTR [rbp-0x8],rsi
+>          */
+> -       for (i =3D 0, j =3D 0; i < min(nr_regs, 6); i++) {
+> +       for (i =3D 0, j =3D 0; i < min(nr_regs, MAX_BPF_FUNC_ARGS); i++) =
+{
+>                 /* The arg_size is at most 16 bytes, enforced by the veri=
+fier. */
+>                 arg_size =3D m->arg_size[j];
+>                 if (arg_size > 8) {
+> @@ -1876,10 +1876,22 @@ static void save_regs(const struct btf_func_model=
+ *m, u8 **prog, int nr_regs,
+>                         next_same_struct =3D !next_same_struct;
+>                 }
+>
+> -               emit_stx(prog, bytes_to_bpf_size(arg_size),
+> -                        BPF_REG_FP,
+> -                        i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> -                        -(stack_size - i * 8));
+> +               if (i <=3D 5) {
+> +                       /* store function arguments in regs */
+
+The comment is confusing.
+It's not storing arguments in regs.
+It copies them from regs into stack.
+
+> +                       emit_stx(prog, bytes_to_bpf_size(arg_size),
+> +                                BPF_REG_FP,
+> +                                i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> +                                -(stack_size - i * 8));
+> +               } else {
+> +                       /* store function arguments in stack */
+> +                       emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> +                                BPF_REG_0, BPF_REG_FP,
+> +                                (i - 6) * 8 + 0x18);
+> +                       emit_stx(prog, bytes_to_bpf_size(arg_size),
+
+and we will have garbage values in upper bytes.
+Probably should fix both here and in regular copy from reg.
+
+> +                                BPF_REG_FP,
+> +                                BPF_REG_0,
+> +                                -(stack_size - i * 8));
+> +               }
+>
+>                 j =3D next_same_struct ? j : j + 1;
+>         }
+> @@ -1913,6 +1925,41 @@ static void restore_regs(const struct btf_func_mod=
+el *m, u8 **prog, int nr_regs,
+>         }
+>  }
+>
+> +static void prepare_origin_stack(const struct btf_func_model *m, u8 **pr=
+og,
+> +                                int nr_regs, int stack_size)
+> +{
+> +       int i, j, arg_size;
+> +       bool next_same_struct =3D false;
+> +
+> +       if (nr_regs <=3D 6)
+> +               return;
+> +
+> +       /* Prepare the function arguments in stack before call origin
+> +        * function. These arguments must be stored in the top of the
+> +        * stack.
+> +        */
+> +       for (i =3D 0, j =3D 0; i < min(nr_regs, MAX_BPF_FUNC_ARGS); i++) =
+{
+> +               /* The arg_size is at most 16 bytes, enforced by the veri=
+fier. */
+> +               arg_size =3D m->arg_size[j];
+> +               if (arg_size > 8) {
+> +                       arg_size =3D 8;
+> +                       next_same_struct =3D !next_same_struct;
+> +               }
+> +
+> +               if (i > 5) {
+> +                       emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> +                                BPF_REG_0, BPF_REG_FP,
+> +                                (i - 6) * 8 + 0x18);
+> +                       emit_stx(prog, bytes_to_bpf_size(arg_size),
+> +                                BPF_REG_FP,
+> +                                BPF_REG_0,
+> +                                -(stack_size - (i - 6) * 8));
+> +               }
+> +
+> +               j =3D next_same_struct ? j : j + 1;
+> +       }
+> +}
+> +
+>  static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>                            struct bpf_tramp_link *l, int stack_size,
+>                            int run_ctx_off, bool save_ret)
+> @@ -1938,7 +1985,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
+del *m, u8 **pprog,
+>         /* arg1: mov rdi, progs[i] */
+>         emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+>         /* arg2: lea rsi, [rbp - ctx_cookie_off] */
+> -       EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
+> +       EMIT3_off32(0x48, 0x8D, 0xB5, -run_ctx_off);
+>
+>         if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
+>                 return -EINVAL;
+> @@ -1954,7 +2001,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
+del *m, u8 **pprog,
+>         emit_nops(&prog, 2);
+>
+>         /* arg1: lea rdi, [rbp - stack_size] */
+> -       EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+> +       EMIT3_off32(0x48, 0x8D, 0xBD, -stack_size);
+>         /* arg2: progs[i]->insnsi for interpreter */
+>         if (!p->jited)
+>                 emit_mov_imm64(&prog, BPF_REG_2,
+> @@ -1984,7 +2031,7 @@ static int invoke_bpf_prog(const struct btf_func_mo=
+del *m, u8 **pprog,
+>         /* arg2: mov rsi, rbx <- start time in nsec */
+>         emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+>         /* arg3: lea rdx, [rbp - run_ctx_off] */
+> -       EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
+> +       EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
+>         if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
+>                 return -EINVAL;
+>
+> @@ -2136,7 +2183,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_im=
+age *im, void *image, void *i
+>                                 void *func_addr)
+>  {
+>         int i, ret, nr_regs =3D m->nr_args, stack_size =3D 0;
+> -       int regs_off, nregs_off, ip_off, run_ctx_off;
+> +       int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_=
+off;
+>         struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
+>         struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
+>         struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RET=
+URN];
+> @@ -2150,8 +2197,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_i=
+mage *im, void *image, void *i
+>                 if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+>                         nr_regs +=3D (m->arg_size[i] + 7) / 8 - 1;
+>
+> -       /* x86-64 supports up to 6 arguments. 7+ can be added in the futu=
+re */
+> -       if (nr_regs > 6)
+> +       /* x86-64 supports up to MAX_BPF_FUNC_ARGS arguments. 1-6
+> +        * are passed through regs, the remains are through stack.
+> +        */
+> +       if (nr_regs > MAX_BPF_FUNC_ARGS)
+>                 return -ENOTSUPP;
+>
+>         /* Generated trampoline stack layout:
+> @@ -2170,7 +2219,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_i=
+mage *im, void *image, void *i
+>          *
+>          * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
+>          *
+> +        * RBP - rbx_off   [ rbx value       ]  always
+> +        *
+
+That is the case already and we just didn't document it, right?
+
+>          * RBP - run_ctx_off [ bpf_tramp_run_ctx ]
+> +        *
+> +        *                     [ stack_argN ]  BPF_TRAMP_F_CALL_ORIG
+> +        *                     [ ...        ]
+> +        *                     [ stack_arg2 ]
+> +        * RBP - arg_stack_off [ stack_arg1 ]
+>          */
+>
+>         /* room for return value of orig_call or fentry prog */
+> @@ -2190,9 +2246,17 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_i=
+mage *im, void *image, void *i
+>
+>         ip_off =3D stack_size;
+>
+> +       stack_size +=3D 8;
+> +       rbx_off =3D stack_size;
+> +
+>         stack_size +=3D (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
+>         run_ctx_off =3D stack_size;
+>
+> +       if (nr_regs > 6 && (flags & BPF_TRAMP_F_CALL_ORIG))
+> +               stack_size +=3D (nr_regs - 6) * 8;
+> +
+> +       arg_stack_off =3D stack_size;
+> +
+>         if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+>                 /* skip patched call instruction and point orig_call to a=
+ctual
+>                  * body of the kernel function.
+> @@ -2212,8 +2276,9 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_im=
+age *im, void *image, void *i
+>         x86_call_depth_emit_accounting(&prog, NULL);
+>         EMIT1(0x55);             /* push rbp */
+>         EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+> -       EMIT4(0x48, 0x83, 0xEC, stack_size); /* sub rsp, stack_size */
+> -       EMIT1(0x53);             /* push rbx */
+> +       EMIT3_off32(0x48, 0x81, 0xEC, stack_size); /* sub rsp, stack_size=
+ */
+> +       /* mov QWORD PTR [rbp - rbx_off], rbx */
+> +       emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+>
+>         /* Store number of argument registers of the traced function:
+>          *   mov rax, nr_regs
+> @@ -2262,6 +2327,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_im=
+age *im, void *image, void *i
+>
+>         if (flags & BPF_TRAMP_F_CALL_ORIG) {
+>                 restore_regs(m, &prog, nr_regs, regs_off);
+> +               prepare_origin_stack(m, &prog, nr_regs, arg_stack_off);
+>
+>                 if (flags & BPF_TRAMP_F_ORIG_STACK) {
+>                         emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8)=
+;
+> @@ -2321,14 +2387,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_=
+image *im, void *image, void *i
+>         if (save_ret)
+>                 emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+>
+> -       EMIT1(0x5B); /* pop rbx */
+> +       emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
+
+It can stay as 'pop', no?
+
+>         EMIT1(0xC9); /* leave */
+>         if (flags & BPF_TRAMP_F_SKIP_FRAME)
+>                 /* skip our return address and return to parent */
+>                 EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
+>         emit_return(&prog, prog);
+>         /* Make sure the trampoline generation logic doesn't overflow */
+> -       if (WARN_ON_ONCE(prog > (u8 *)image_end - BPF_INSN_SAFETY)) {
+> +       if (prog > (u8 *)image_end - BPF_INSN_SAFETY) {
+>                 ret =3D -EFAULT;
+>                 goto cleanup;
+>         }
+> --
+> 2.40.1
+>
 
