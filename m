@@ -1,132 +1,127 @@
-Return-Path: <bpf+bounces-1676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FC4671FE01
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 11:35:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801E971FE2C
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 11:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09CDE28171F
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 09:35:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E9871C20B7B
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 09:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A9917ACF;
-	Fri,  2 Jun 2023 09:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDB217FE0;
+	Fri,  2 Jun 2023 09:45:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2B217ABA;
-	Fri,  2 Jun 2023 09:35:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A00EF99;
-	Fri,  2 Jun 2023 02:35:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2ACE41063;
-	Fri,  2 Jun 2023 02:36:05 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.24.167])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF4863F7BD;
-	Fri,  2 Jun 2023 02:35:14 -0700 (PDT)
-Date: Fri, 2 Jun 2023 10:35:09 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-Message-ID: <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
- <ZHjgIH3aX9dCvVZc@moria.home.lan>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DDD817AA2;
+	Fri,  2 Jun 2023 09:45:09 +0000 (UTC)
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DE4134;
+	Fri,  2 Jun 2023 02:45:08 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id 3f1490d57ef6-bacf5b89da7so1993280276.2;
+        Fri, 02 Jun 2023 02:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685699108; x=1688291108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sO9CYKq3zsyFP6OrznRGehjIWLTIrAXykOQSpEJEjfc=;
+        b=c6IdsA3jP2haZ6HorJDy1WTeD7Ii7Z2qg/GiS0h1mQjOI3zcuhZvcZ78Gjmvgeir3o
+         FvpdyAt1cx8GTHk3QFDFIRe3jq0AaJnFDVUtfmoH0LbI8uKuSrKo+MKiDBotn1trb2tR
+         tgGYnNihC3nr/sgM6EyaKSdD6pzJkt7Ttx4nIYf0o5pavjZzRrYwLgeAtysz62QHhVLm
+         6H94i+p4AE0eSwHnY/abShLK6E3JeGf+rOQHOBG7g/WFtro49tzCtsKmZ1ocmIcAGm3d
+         K5U12MsezDSY5rVrdbv5ppdhccK6Yyj5PKUByZpeM/6LtfP3ssFvTRKgGU638nI3Xytb
+         +Tog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685699108; x=1688291108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sO9CYKq3zsyFP6OrznRGehjIWLTIrAXykOQSpEJEjfc=;
+        b=Vyj/ahWEkr22k+ptLgKQi/8pmC3y8PVZvQZLKYl42NG1GKz3hEpnKfEQkKmdw3fpEx
+         x3JaRWhQ4uIqmN2rKYRPhOuQV6VG9hFh8cLJrgKJZbP7rkN2WKIaDIesJoRti5yQs3M0
+         +c15+jdQN4GBUhHR6LerTjX5W/Lie01Ko+qI8k0sLHl26p+lKA+l2AOPbtpp/S3zvspK
+         d1rBw6LCQHPqXAf31dQ9jOnnY4+6zHUFtNwkaOYSAy8h/jNHCLsmbqzFunedNDr28vpX
+         MySZCjsdw3oAmGfcDRa9Keb4DCWxkhz3T5ZtgsomSC9M0XP/zYPixHS3/LiS7iCUCUl2
+         emPA==
+X-Gm-Message-State: AC+VfDzF/1VtAV5VElnDgDwmjWRMLl1PjkXzeAhVW4jvBPQABP32FP1V
+	cPHPZ1zCZTylu8Eq0jWNJroIU5qBG+V9fWXVO/E=
+X-Google-Smtp-Source: ACHHUZ7K2EOgjVq4WoCi44uJ9i/tvSnqHqw52MlY2vtO1cg3EMJxhBOLXPIBd6eWR9XrxZj65pTK1oOmh5KREk2hdV4=
+X-Received: by 2002:a25:9d89:0:b0:ba8:620b:38a7 with SMTP id
+ v9-20020a259d89000000b00ba8620b38a7mr2334349ybp.53.1685699107625; Fri, 02 Jun
+ 2023 02:45:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZHjgIH3aX9dCvVZc@moria.home.lan>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230602065958.2869555-1-imagedong@tencent.com> <20230602065958.2869555-5-imagedong@tencent.com>
+In-Reply-To: <20230602065958.2869555-5-imagedong@tencent.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Fri, 2 Jun 2023 17:44:56 +0800
+Message-ID: <CADxym3ZTEvh2nrdY2PXhuApuU8=6MjNF71R_VSd4VDxp3URe8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/5] selftests/bpf: rename bpf_fentry_test{7,8,9}
+ to bpf_fentry_test_ptr*
+To: olsajiri@gmail.com
+Cc: davem@davemloft.net, dsahern@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	mykolal@fb.com, shuah@kernel.org, benbjiang@tencent.com, iii@linux.ibm.com, 
+	imagedong@tencent.com, xukuohai@huawei.com, chantr4@gmail.com, 
+	zwisler@google.com, eddyz87@gmail.com, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 02:14:56PM -0400, Kent Overstreet wrote:
-> On Thu, Jun 01, 2023 at 05:12:03PM +0100, Mark Rutland wrote:
-> > For a while I have wanted to give kprobes its own allocator so that it can work
-> > even with CONFIG_MODULES=n, and so that it doesn't have to waste VA space in
-> > the modules area.
-> > 
-> > Given that, I think these should have their own allocator functions that can be
-> > provided independently, even if those happen to use common infrastructure.
-> 
-> How much memory can kprobes conceivably use? I think we also want to try
-> to push back on combinatorial new allocators, if we can.
+On Fri, Jun 2, 2023 at 3:03=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> To make it more clear, let's make the N in bpf_fentry_testN as the count
+> of target function arguments. Therefore, let's rename
+> bpf_fentry_test{7,8,9} to bpf_fentry_test_ptr{1,2,3}.
+>
+> Meanwhile, to stop the checkpatch complaining, move the "noinline" ahead
+> of "int".
+>
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+>  net/bpf/test_run.c                            | 12 +++++-----
+>  .../selftests/bpf/prog_tests/bpf_cookie.c     | 24 +++++++++----------
+>  .../bpf/prog_tests/kprobe_multi_test.c        | 16 ++++++-------
+>  .../testing/selftests/bpf/progs/fentry_test.c | 16 ++++++-------
+>  .../testing/selftests/bpf/progs/fexit_test.c  | 16 ++++++-------
+>  .../selftests/bpf/progs/get_func_ip_test.c    |  2 +-
+>  .../selftests/bpf/progs/kprobe_multi.c        | 12 +++++-----
+>  .../bpf/progs/verifier_btf_ctx_access.c       |  2 +-
+>  .../selftests/bpf/verifier/atomic_fetch_add.c |  4 ++--
+>  9 files changed, 52 insertions(+), 52 deletions(-)
+>
 
-That depends on who's using it, and how (e.g. via BPF).
+Sadly, this patch breaks the "bpf_fentry_test?" pattern in
+kprobe_multi.c and kprobe_multi_test.c.
 
-To be clear, I'm not necessarily asking for entirely different allocators, but
-I do thinkg that we want wrappers that can at least pass distinct start+end
-parameters to a common allocator, and for arm64's modules code I'd expect that
-we'd keep the range falblack logic out of the common allcoator, and just call
-it twice.
+I'm considering changing the "bpf_fentry_test?" to
+"bpf_fentry_test*" to solve this problem.
 
-> > > Several architectures override module_alloc() because of various
-> > > constraints where the executable memory can be located and this causes
-> > > additional obstacles for improvements of code allocation.
-> > > 
-> > > This set splits code allocation from modules by introducing
-> > > jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces call
-> > > sites of module_alloc() and module_memfree() with the new APIs and
-> > > implements core text and related allocation in a central place.
-> > > 
-> > > Instead of architecture specific overrides for module_alloc(), the
-> > > architectures that require non-default behaviour for text allocation must
-> > > fill jit_alloc_params structure and implement jit_alloc_arch_params() that
-> > > returns a pointer to that structure. If an architecture does not implement
-> > > jit_alloc_arch_params(), the defaults compatible with the current
-> > > modules::module_alloc() are used.
-> > 
-> > As above, I suspect that each of the callsites should probably be using common
-> > infrastructure, but I don't think that a single jit_alloc_arch_params() makes
-> > sense, since the parameters for each case may need to be distinct.
-> 
-> I don't see how that follows. The whole point of function parameters is
-> that they may be different :)
+Another option, we can remove kretprobe_test7_result
+and kretprobe_test8_result and only check
+bpf_fentry_test1~6 in kprobe_multi_check.
 
-What I mean is that jit_alloc_arch_params() tries to aggregate common
-parameters, but they aren't actually common (e.g. the actual start+end range
-for allocation).
-
-> Can you give more detail on what parameters you need? If the only extra
-> parameter is just "does this allocation need to live close to kernel
-> text", that's not that big of a deal.
-
-My thinking was that we at least need the start + end for each caller. That
-might be it, tbh.
-
-Thanks,
-Mark.
+Or......maybe I shouldn't rename them?
 
