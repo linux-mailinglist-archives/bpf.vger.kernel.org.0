@@ -1,324 +1,134 @@
-Return-Path: <bpf+bounces-1680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B12072008E
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 13:41:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D1672021B
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 14:33:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A32FC28180E
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 11:41:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57DE81C20F84
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 12:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB5418C09;
-	Fri,  2 Jun 2023 11:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC00101DA;
+	Fri,  2 Jun 2023 12:33:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDAD18B09
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 11:40:56 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756E119A
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 04:40:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1685706053;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VxnskxVO8AXS1VjjPX0Qehr8afrCv+Lu5/PB3QTgDqI=;
-	b=YLVcfy46i1j3Uf5FPOWDTklHTCzy5OSNxmH5XgBnS/UyyhIYNLbR8lEJVPKMPXvYmgFsND
-	gUrlSLqZXOBG9YdI8S7kAK1/2PHyB/W9UP2xHhhvz+J8wFGt130j8id2y5BZbpoolzJ7Fk
-	vALoiMJ9j2GGcmuMAUFIwi0+U9dqiNs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-52-PIPlXZxxNhGNTOMSPvc_4Q-1; Fri, 02 Jun 2023 07:40:52 -0400
-X-MC-Unique: PIPlXZxxNhGNTOMSPvc_4Q-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f604260ef3so32585585e9.3
-        for <bpf@vger.kernel.org>; Fri, 02 Jun 2023 04:40:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE2533F5
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 12:33:49 +0000 (UTC)
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E2B180;
+	Fri,  2 Jun 2023 05:33:47 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-64d18d772bdso2322279b3a.3;
+        Fri, 02 Jun 2023 05:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685709227; x=1688301227;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MEa4HtLCvaR58X6qDLIInuWWrd49EKwYFvmbNgQxP+Y=;
+        b=hPya3AXoo2gk76iraAbuEMCLTv7EJfS+R9Vww94gkSTVHG/8AvYKcRkQuMMs65OJz9
+         6eDmn+mMH5qZdxcCxqGxRP+YHToOoxYzbIhFej/97J3X47KnEQlC2DFx+KYEMNtlhl36
+         tAEkDz7hu5q4wHDBhnPfwE2kYsiyuiy3h4dC3PtL8fmHiGrU8gRjk2xfSF1IxJlIDb0W
+         Bg68vUGheQZ37mILcP96Q53rng5EEnMIq9EVeBWcLK15vECN6tUxP/gZardPvM8CXgWs
+         gV03cNwlkru8QYO9Zvuf7usR+L80Oaf8h/nDnuVqCKCUpOUPlNq7yJsodQ5MD2RqeNvv
+         CUSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685706051; x=1688298051;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VxnskxVO8AXS1VjjPX0Qehr8afrCv+Lu5/PB3QTgDqI=;
-        b=e6U3+BzaafyOuslV2yiriku72AszDv7Tg9MnXdYKXxoY14c3LSTrtYpj8SALuCQiTq
-         fea2Hz3A9GRjYdozCcgQ+a05avC952Hp6xQop97wlKXx5pEZhMAWSDogMo5njapEEf22
-         BKLwpPhG244zsjOXpdoFxY39hCAcTTAHKrz+va/dT4KkjGFEU3TLTnzJElGVk2/5+yRr
-         U2IkN5bUPUkAA5tvt1FNbPGiMFGov7tyAajxjtQTMS8qLAy6WMKVBL2bXi9qStxg3QRl
-         Z/DunxAK/1QKwfTiJ/9kaJe9VJhQA9jK2zi6v/0l7oDpHoyWY6wNuR3IotdTUInwsWFT
-         qoXQ==
-X-Gm-Message-State: AC+VfDy8GMsGHmIM+YyqdFSyupjx694TXA6LNu3rW6uywN/rVjdrTacW
-	yP1jVkgflUQnT/xsErf58t3uXy2F1xgC2UO7+vCcxhl0t61J79Ti0iR3RXnRWZ2twnIYNZf/QF7
-	QzeUqLS7oZDJV
-X-Received: by 2002:a7b:c40e:0:b0:3f6:692:5607 with SMTP id k14-20020a7bc40e000000b003f606925607mr1576911wmi.40.1685706051319;
-        Fri, 02 Jun 2023 04:40:51 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ5kq+QX6iZImB+mIj7tvU+uwhorlCzeq6kS3V5YFUILtTH1qTcWoVOSLmlm1M3rGXDIz4wULg==
-X-Received: by 2002:a7b:c40e:0:b0:3f6:692:5607 with SMTP id k14-20020a7bc40e000000b003f606925607mr1576894wmi.40.1685706050946;
-        Fri, 02 Jun 2023 04:40:50 -0700 (PDT)
-Received: from redhat.com ([2.55.4.169])
-        by smtp.gmail.com with ESMTPSA id u8-20020a7bc048000000b003f4b6bcbd8bsm1688452wmc.31.2023.06.02.04.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 04:40:50 -0700 (PDT)
-Date: Fri, 2 Jun 2023 07:40:46 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org,
-	Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH vhost v10 06/10] virtio_ring: packed-detach: support
- return dma info to driver
-Message-ID: <20230602073827-mutt-send-email-mst@kernel.org>
-References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
- <20230602092206.50108-7-xuanzhuo@linux.alibaba.com>
+        d=1e100.net; s=20221208; t=1685709227; x=1688301227;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MEa4HtLCvaR58X6qDLIInuWWrd49EKwYFvmbNgQxP+Y=;
+        b=UqoGYl80SEKkegMma8Bxun0wqQ7NA6UD2GEZn4tWF4UV7VxCKvrdCiuPrpCfqLeqeQ
+         qyd1iMBk40EY4Q5eKrxbSY+k1rCjuZKggt1wpAS1Etx8ijLFo0l7ZWZy/SAqtK4kbIo0
+         MLteaO8hmmHA+BQC3jYt3ZVWPc4qrIAk92qVIfvE1CnfLtphjyJg650W95OnhOwMBECX
+         Uri0UD6BBLOerAogFdLlCsnUZTiHKW5YzTFWLsoc0PieC95lGDtHe5V2QlA15ARlHSLx
+         yLZoedoJxj0c1lfVv9Fo41LtaUAEDCUHyF1zTZfJ1AyvOfQZAbFRFRlZ4hBvdwIBpcV6
+         H3YQ==
+X-Gm-Message-State: AC+VfDzuSIa6hdW8kK15Vz+qjkWSoRdSqqXP+fQO/KpWGSs77ETJVefP
+	nkEKTa890R/q7947IBn17KA=
+X-Google-Smtp-Source: ACHHUZ7chbBawGs+gJXSh0pchi5h/0LICNEsARTw9zPK6gBA/gL7y1Ko0aQFguAtK1BUAXUfVit0gg==
+X-Received: by 2002:a05:6a00:a8f:b0:64d:2ea4:937a with SMTP id b15-20020a056a000a8f00b0064d2ea4937amr17109892pfl.7.1685709226632;
+        Fri, 02 Jun 2023 05:33:46 -0700 (PDT)
+Received: from [192.168.43.80] (subs03-180-214-233-67.three.co.id. [180.214.233.67])
+        by smtp.gmail.com with ESMTPSA id i8-20020aa78b48000000b0063b6cccd5dfsm903574pfd.195.2023.06.02.05.33.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jun 2023 05:33:46 -0700 (PDT)
+Message-ID: <1f66d945-4f3f-6f8e-2d14-38167c0a0759@gmail.com>
+Date: Fri, 2 Jun 2023 19:33:42 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230602092206.50108-7-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
+ subsystems
+To: Jonathan Corbet <corbet@lwn.net>, Costa Shulyupin
+ <costa.shul@redhat.com>, linux-doc@vger.kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux BPF <bpf@vger.kernel.org>
+References: <ZHgM0qKWP3OusjUW@debian.me>
+ <20230601145556.3927838-1-costa.shul@redhat.com> <ZHm_s7kQP6kilBtO@debian.me>
+ <87ilc6yxnl.fsf@meer.lwn.net>
+Content-Language: en-US
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <87ilc6yxnl.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 02, 2023 at 05:22:02PM +0800, Xuan Zhuo wrote:
-> Under the premapped mode, the driver needs to unmap the DMA address
-> after receiving the buffer. The virtio core records the DMA address,
-> so the driver needs a way to get the dma info from the virtio core.
+On 6/2/23 17:19, Jonathan Corbet wrote:
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
 > 
-> A straightforward approach is to pass an array to the virtio core when
-> calling virtqueue_get_buf(). However, it is not feasible when there are
-> multiple DMA addresses in the descriptor chain, and the array size is
-> unknown.
+>> As you're still newbie here, I'd recommend you to try contributing to
+>> drivers/staging/ first in order to gain experience on kernel developement
+>> workflow. Also, you use your RedHat address, so I expect you have been
+>> given kernel development training from your company (and doesn't make
+>> trivial errors like these ones).
 > 
-> To solve this problem, a helper be introduced. After calling
-> virtqueue_get_buf(), the driver can call the helper to
-> retrieve a dma info. If the helper function returns -EAGAIN, it means
-> that there are more DMA addresses to be processed, and the driver should
-> call the helper function again.
+> Bagas, please.  I'll ask you directly: please don't go telling
+> documentation contributors how to comport themselves; you have plenty
+> enough to learn yourself on that front.  It's hard enough to get
+> contributors to the documentation as it is without random people showing
+> up and giving orders.
+> 
 
+Hi jon, thanks for another tip. I also learn contributing patches the
+hard way by being rejected (honestly sometimes I learn, sometimes I
+don't).
 
-Please, keep error codes for when an actual error occurs.
-A common pattern would be:
-	<0 - error
-	0 - success, done
-	>0 - success, more to do
+Let me clarify the situation. Previously in v2, I reviewed Costa's patch
+by replying with proposing my own version, keeping patch author intact.
+There, I categorized a few more items while sorting all of them. I
+treated it as minor fixup that was attributed by brackets in the
+SoB area (I could also use Co-developed-by: for this purpose too).
+Then, Costa rerolled v3 using my version, but the From: address
+in the patch message is mine without corresponding SoB, hence when you
+apply his v3, there would be author mismatch (commit author is me
+yet different SoB from him). I expected that my proposal in v2 is
+carried by him (and also have SoB from both me and him as the sender
+who carried my patch).
 
+> I have distractions that are increasing my (already less than stellar)
+> latency, but I'll get to this stuff.
+> 
 
-> To keep track of the current position in
-> the chain, a cursor must be passed to the helper function, which is
-> initialized by virtqueue_get_buf().
-> 
-> Some processes are done inside this helper, so this helper MUST be
-> called under the premapped mode.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/virtio/virtio_ring.c | 105 ++++++++++++++++++++++++++++++++---
->  include/linux/virtio.h       |   9 ++-
->  2 files changed, 103 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index cdc4349f6066..cbc22daae7e1 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -1695,8 +1695,85 @@ static bool virtqueue_kick_prepare_packed(struct virtqueue *_vq)
->  	return needs_kick;
->  }
->  
-> +static void detach_cursor_init_packed(struct vring_virtqueue *vq,
-> +				      struct virtqueue_detach_cursor *cursor, u16 id)
-> +{
-> +	struct vring_desc_state_packed *state = NULL;
-> +	u32 len;
-> +
-> +	state = &vq->packed.desc_state[id];
-> +
-> +	/* Clear data ptr. */
-> +	state->data = NULL;
-> +
-> +	vq->packed.desc_extra[state->last].next = vq->free_head;
-> +	vq->free_head = id;
-> +	vq->vq.num_free += state->num;
-> +
-> +	/* init cursor */
-> +	cursor->curr = id;
-> +	cursor->done = 0;
-> +	cursor->pos = 0;
-> +
-> +	if (vq->packed.desc_extra[id].flags & VRING_DESC_F_INDIRECT) {
-> +		len = vq->split.desc_extra[id].len;
-> +
-> +		cursor->num = len / sizeof(struct vring_packed_desc);
-> +		cursor->indirect = true;
-> +
-> +		vring_unmap_extra_packed(vq, &vq->packed.desc_extra[id]);
-> +	} else {
-> +		cursor->num = state->num;
-> +		cursor->indirect = false;
-> +	}
-> +}
-> +
-> +static int virtqueue_detach_packed(struct virtqueue *_vq, struct virtqueue_detach_cursor *cursor,
-> +				   dma_addr_t *addr, u32 *len, enum dma_data_direction *dir)
-> +{
-> +	struct vring_virtqueue *vq = to_vvq(_vq);
-> +
-> +	if (unlikely(cursor->done))
-> +		return -EINVAL;
-> +
-> +	if (!cursor->indirect) {
-> +		struct vring_desc_extra *extra;
-> +
-> +		extra = &vq->packed.desc_extra[cursor->curr];
-> +		cursor->curr = extra->next;
-> +
-> +		*addr = extra->addr;
-> +		*len = extra->len;
-> +		*dir = (extra->flags & VRING_DESC_F_WRITE) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-> +
-> +		if (++cursor->pos == cursor->num) {
-> +			cursor->done = true;
-> +			return 0;
-> +		}
-> +	} else {
-> +		struct vring_packed_desc *indir_desc, *desc;
-> +		u16 flags;
-> +
-> +		indir_desc = vq->packed.desc_state[cursor->curr].indir_desc;
-> +		desc = &indir_desc[cursor->pos];
-> +
-> +		flags = le16_to_cpu(desc->flags);
-> +		*addr = le64_to_cpu(desc->addr);
-> +		*len = le32_to_cpu(desc->len);
-> +		*dir = (flags & VRING_DESC_F_WRITE) ?  DMA_FROM_DEVICE : DMA_TO_DEVICE;
-> +
-> +		if (++cursor->pos == cursor->num) {
-> +			kfree(indir_desc);
-> +			cursor->done = true;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return -EAGAIN;
-> +}
-> +
->  static void detach_buf_packed(struct vring_virtqueue *vq,
-> -			      unsigned int id, void **ctx)
-> +			      unsigned int id)
->  {
->  	struct vring_desc_state_packed *state = NULL;
->  	struct vring_packed_desc *desc;
-> @@ -1736,8 +1813,6 @@ static void detach_buf_packed(struct vring_virtqueue *vq,
->  		}
->  		kfree(desc);
->  		state->indir_desc = NULL;
-> -	} else if (ctx) {
-> -		*ctx = state->indir_desc;
->  	}
->  }
->  
-> @@ -1768,7 +1843,8 @@ static bool more_used_packed(const struct vring_virtqueue *vq)
->  
->  static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
->  					  unsigned int *len,
-> -					  void **ctx)
-> +					  void **ctx,
-> +					  struct virtqueue_detach_cursor *cursor)
->  {
->  	struct vring_virtqueue *vq = to_vvq(_vq);
->  	u16 last_used, id, last_used_idx;
-> @@ -1808,7 +1884,14 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
->  
->  	/* detach_buf_packed clears data, so grab it now. */
->  	ret = vq->packed.desc_state[id].data;
-> -	detach_buf_packed(vq, id, ctx);
-> +
-> +	if (!vq->indirect && ctx)
-> +		*ctx = vq->packed.desc_state[id].indir_desc;
-> +
-> +	if (vq->premapped)
-> +		detach_cursor_init_packed(vq, cursor, id);
-> +	else
-> +		detach_buf_packed(vq, id);
->  
->  	last_used += vq->packed.desc_state[id].num;
->  	if (unlikely(last_used >= vq->packed.vring.num)) {
-> @@ -1960,7 +2043,8 @@ static bool virtqueue_enable_cb_delayed_packed(struct virtqueue *_vq)
->  	return true;
->  }
->  
-> -static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq)
-> +static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq,
-> +						struct virtqueue_detach_cursor *cursor)
->  {
->  	struct vring_virtqueue *vq = to_vvq(_vq);
->  	unsigned int i;
-> @@ -1973,7 +2057,10 @@ static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq)
->  			continue;
->  		/* detach_buf clears data, so grab it now. */
->  		buf = vq->packed.desc_state[i].data;
-> -		detach_buf_packed(vq, i, NULL);
-> +		if (vq->premapped)
-> +			detach_cursor_init_packed(vq, cursor, i);
-> +		else
-> +			detach_buf_packed(vq, i);
->  		END_USE(vq);
->  		return buf;
->  	}
-> @@ -2458,7 +2545,7 @@ void *virtqueue_get_buf_ctx(struct virtqueue *_vq, unsigned int *len,
->  {
->  	struct vring_virtqueue *vq = to_vvq(_vq);
->  
-> -	return vq->packed_ring ? virtqueue_get_buf_ctx_packed(_vq, len, ctx) :
-> +	return vq->packed_ring ? virtqueue_get_buf_ctx_packed(_vq, len, ctx, NULL) :
->  				 virtqueue_get_buf_ctx_split(_vq, len, ctx, NULL);
->  }
->  EXPORT_SYMBOL_GPL(virtqueue_get_buf_ctx);
-> @@ -2590,7 +2677,7 @@ void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
->  {
->  	struct vring_virtqueue *vq = to_vvq(_vq);
->  
-> -	return vq->packed_ring ? virtqueue_detach_unused_buf_packed(_vq) :
-> +	return vq->packed_ring ? virtqueue_detach_unused_buf_packed(_vq, NULL) :
->  				 virtqueue_detach_unused_buf_split(_vq, NULL);
->  }
->  EXPORT_SYMBOL_GPL(virtqueue_detach_unused_buf);
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index eb4a4e4329aa..7f137c7a9034 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -43,8 +43,13 @@ struct virtqueue_detach_cursor {
->  	unsigned done:1;
->  	unsigned hole:14;
->  
-> -	/* for split head */
-> -	unsigned head:16;
-> +	union {
-> +		/* for split head */
-> +		unsigned head:16;
-> +
-> +		/* for packed id */
-> +		unsigned curr:16;
-> +	};
->  	unsigned num:16;
->  	unsigned pos:16;
->  };
-> -- 
-> 2.32.0.3.g01195cf9f
+I'm too, because I'm AuDHD and I can (and do) easily distracted; living
+in a paradox between routine fixation and desire for quick action :).
+
+Thanks.
+
+-- 
+An old man doll... just what I always wanted! - Clara
 
 
