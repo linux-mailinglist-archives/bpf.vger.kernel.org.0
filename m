@@ -1,127 +1,153 @@
-Return-Path: <bpf+bounces-1677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801E971FE2C
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 11:45:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7E871FE9C
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 12:09:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E9871C20B7B
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 09:45:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EAD51C20AEB
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 10:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDB217FE0;
-	Fri,  2 Jun 2023 09:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79561182BA;
+	Fri,  2 Jun 2023 10:09:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DDD817AA2;
-	Fri,  2 Jun 2023 09:45:09 +0000 (UTC)
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DE4134;
-	Fri,  2 Jun 2023 02:45:08 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id 3f1490d57ef6-bacf5b89da7so1993280276.2;
-        Fri, 02 Jun 2023 02:45:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2135E5687
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 10:09:00 +0000 (UTC)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63F81B6;
+	Fri,  2 Jun 2023 03:08:55 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-256712d65ceso869457a91.1;
+        Fri, 02 Jun 2023 03:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685699108; x=1688291108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sO9CYKq3zsyFP6OrznRGehjIWLTIrAXykOQSpEJEjfc=;
-        b=c6IdsA3jP2haZ6HorJDy1WTeD7Ii7Z2qg/GiS0h1mQjOI3zcuhZvcZ78Gjmvgeir3o
-         FvpdyAt1cx8GTHk3QFDFIRe3jq0AaJnFDVUtfmoH0LbI8uKuSrKo+MKiDBotn1trb2tR
-         tgGYnNihC3nr/sgM6EyaKSdD6pzJkt7Ttx4nIYf0o5pavjZzRrYwLgeAtysz62QHhVLm
-         6H94i+p4AE0eSwHnY/abShLK6E3JeGf+rOQHOBG7g/WFtro49tzCtsKmZ1ocmIcAGm3d
-         K5U12MsezDSY5rVrdbv5ppdhccK6Yyj5PKUByZpeM/6LtfP3ssFvTRKgGU638nI3Xytb
-         +Tog==
+        d=gmail.com; s=20221208; t=1685700535; x=1688292535;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KJXA2dF12j4Fb3Ta+K6rkvK8zj4+C8MbngTwWrfwo10=;
+        b=pKozTKg8bkqoQRAw4Or1/2O3jhNTORXzV0T2l2OubLw3KGl5/I6zCtOTsidD9yC5ZN
+         kynmkimoC6akMvLQ7qppsxXl9hUbACdXysk4pUXwE8mvIMLOefP7b6G/w1eY5dgCXSJ9
+         gOzN/3y8qFFgzT5xx3v8Zkm1YN5YqH5s2OEPxQuBYFrwsXb8lzoEeEeO6Hou7xwCYYAh
+         JrilTMh66/iRuPtRJIWL0+X/jZmsUtj8muQHWh5m4rrBLE0TU8UMRAFifbNXJVdx+mjp
+         EJyYdBASIrnkttxOgDlgjYSJWsEYyEgLFx+M8XYPxai2fAKsIonHyE9TOkvPxAAb11pQ
+         nxeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685699108; x=1688291108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sO9CYKq3zsyFP6OrznRGehjIWLTIrAXykOQSpEJEjfc=;
-        b=Vyj/ahWEkr22k+ptLgKQi/8pmC3y8PVZvQZLKYl42NG1GKz3hEpnKfEQkKmdw3fpEx
-         x3JaRWhQ4uIqmN2rKYRPhOuQV6VG9hFh8cLJrgKJZbP7rkN2WKIaDIesJoRti5yQs3M0
-         +c15+jdQN4GBUhHR6LerTjX5W/Lie01Ko+qI8k0sLHl26p+lKA+l2AOPbtpp/S3zvspK
-         d1rBw6LCQHPqXAf31dQ9jOnnY4+6zHUFtNwkaOYSAy8h/jNHCLsmbqzFunedNDr28vpX
-         MySZCjsdw3oAmGfcDRa9Keb4DCWxkhz3T5ZtgsomSC9M0XP/zYPixHS3/LiS7iCUCUl2
-         emPA==
-X-Gm-Message-State: AC+VfDzF/1VtAV5VElnDgDwmjWRMLl1PjkXzeAhVW4jvBPQABP32FP1V
-	cPHPZ1zCZTylu8Eq0jWNJroIU5qBG+V9fWXVO/E=
-X-Google-Smtp-Source: ACHHUZ7K2EOgjVq4WoCi44uJ9i/tvSnqHqw52MlY2vtO1cg3EMJxhBOLXPIBd6eWR9XrxZj65pTK1oOmh5KREk2hdV4=
-X-Received: by 2002:a25:9d89:0:b0:ba8:620b:38a7 with SMTP id
- v9-20020a259d89000000b00ba8620b38a7mr2334349ybp.53.1685699107625; Fri, 02 Jun
- 2023 02:45:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1685700535; x=1688292535;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KJXA2dF12j4Fb3Ta+K6rkvK8zj4+C8MbngTwWrfwo10=;
+        b=aOLFrn0YoMWAGf1HJMCXjpCBUf8e5cehsNPotgQ/d1tILgv0VPwOrVlhncPh4+j/6H
+         MF3V5fdIxkizLJQ2z/hlnwLHboZG4+9qjjVKULYiDmbgmiBfVVh+CULny/dVFKEUB7JS
+         ifVjh3Sbb5QnCrSKRHZSINZ3LzhtisCJ8cja+63rmM0wKWTkPNJT2WMtZpBxfBgZfW6S
+         1xxZ94f8RHfIEOVWNDpsIUout1hk5u4Ol8kCSfwEisvA69V1SAWPvo4DlvluZVB+yAc3
+         yzrshaJZE+nNC7DfavDCh/WeHyC/wbTiURz8CgNQ9n/tLmeHYFStMFPTbiJbUkjhi+MI
+         2ajQ==
+X-Gm-Message-State: AC+VfDxjYQYcovHbhR81ZF3EubXVmrKUIcTdPSD+RalcAjMLmeXVshVr
+	9yU7hpsYHhL7HJ7oXG9QexVtaGxNtmU=
+X-Google-Smtp-Source: ACHHUZ5NMghrvOYiQcrgDDURUUe2m+/zTpIzGsO5lBtXx5es280eqgOGpqaD3QSBm4mosQoHfp0YSg==
+X-Received: by 2002:a17:902:bb10:b0:1ab:63e:67b0 with SMTP id im16-20020a170902bb1000b001ab063e67b0mr899784plb.54.1685700534901;
+        Fri, 02 Jun 2023 03:08:54 -0700 (PDT)
+Received: from debian.me (subs02-180-214-232-3.three.co.id. [180.214.232.3])
+        by smtp.gmail.com with ESMTPSA id ik29-20020a170902ab1d00b001b19d14a3d5sm992095plb.68.2023.06.02.03.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 03:08:54 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+	id 93BBC106A05; Fri,  2 Jun 2023 17:08:51 +0700 (WIB)
+Date: Fri, 2 Jun 2023 17:08:51 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Costa Shulyupin <costa.shul@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux BPF <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
+ subsystems
+Message-ID: <ZHm_s7kQP6kilBtO@debian.me>
+References: <ZHgM0qKWP3OusjUW@debian.me>
+ <20230601145556.3927838-1-costa.shul@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230602065958.2869555-1-imagedong@tencent.com> <20230602065958.2869555-5-imagedong@tencent.com>
-In-Reply-To: <20230602065958.2869555-5-imagedong@tencent.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Fri, 2 Jun 2023 17:44:56 +0800
-Message-ID: <CADxym3ZTEvh2nrdY2PXhuApuU8=6MjNF71R_VSd4VDxp3URe8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] selftests/bpf: rename bpf_fentry_test{7,8,9}
- to bpf_fentry_test_ptr*
-To: olsajiri@gmail.com
-Cc: davem@davemloft.net, dsahern@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
-	hpa@zytor.com, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	mykolal@fb.com, shuah@kernel.org, benbjiang@tencent.com, iii@linux.ibm.com, 
-	imagedong@tencent.com, xukuohai@huawei.com, chantr4@gmail.com, 
-	zwisler@google.com, eddyz87@gmail.com, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rQ+siVK50HQ8TR+2"
+Content-Disposition: inline
+In-Reply-To: <20230601145556.3927838-1-costa.shul@redhat.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 2, 2023 at 3:03=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
->
-> From: Menglong Dong <imagedong@tencent.com>
->
-> To make it more clear, let's make the N in bpf_fentry_testN as the count
-> of target function arguments. Therefore, let's rename
-> bpf_fentry_test{7,8,9} to bpf_fentry_test_ptr{1,2,3}.
->
-> Meanwhile, to stop the checkpatch complaining, move the "noinline" ahead
-> of "int".
->
-> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
->  net/bpf/test_run.c                            | 12 +++++-----
->  .../selftests/bpf/prog_tests/bpf_cookie.c     | 24 +++++++++----------
->  .../bpf/prog_tests/kprobe_multi_test.c        | 16 ++++++-------
->  .../testing/selftests/bpf/progs/fentry_test.c | 16 ++++++-------
->  .../testing/selftests/bpf/progs/fexit_test.c  | 16 ++++++-------
->  .../selftests/bpf/progs/get_func_ip_test.c    |  2 +-
->  .../selftests/bpf/progs/kprobe_multi.c        | 12 +++++-----
->  .../bpf/progs/verifier_btf_ctx_access.c       |  2 +-
->  .../selftests/bpf/verifier/atomic_fetch_add.c |  4 ++--
->  9 files changed, 52 insertions(+), 52 deletions(-)
->
 
-Sadly, this patch breaks the "bpf_fentry_test?" pattern in
-kprobe_multi.c and kprobe_multi_test.c.
+--rQ+siVK50HQ8TR+2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm considering changing the "bpf_fentry_test?" to
-"bpf_fentry_test*" to solve this problem.
+On Thu, Jun 01, 2023 at 05:55:55PM +0300, Costa Shulyupin wrote:
+> From: Bagas Sanjaya <bagasdotme@gmail.com>
+>=20
+> Add classes:
+> * Core subsystems
+> * Storage
+> * Networking
+> * Peripherals and devices
+> * Embedded systems
+> * Integrity
+> * Virtualization
+> * Miscellaneous
 
-Another option, we can remove kretprobe_test7_result
-and kretprobe_test8_result and only check
-bpf_fentry_test1~6 in kprobe_multi_check.
+Above list is unnecessary, because the diff should clearly show those
+categories.
 
-Or......maybe I shouldn't rename them?
+>=20
+> There is a FIXME that says to organize subsystems listed in
+> subsystem-apis.rst. Fulfill it by categorize remaining subsytems
+> by purpose/themes, while sorting entries in each category.
+>=20
+> HID devices are already categorized in 3c591cc954d56e ("docs:
+> consolidate human interface subsystems").
+>=20
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+
+Thanks for picking my version from v2 [1]. However, From: address in the
+patch message doesn't match one from message header nor your Signed-off-by
+address. Conversely, if you handle someone else's patch (in this case mine),
+you need to also add SoB from him/her.
+
+As you're still newbie here, I'd recommend you to try contributing to
+drivers/staging/ first in order to gain experience on kernel developement
+workflow. Also, you use your RedHat address, so I expect you have been
+given kernel development training from your company (and doesn't make
+trivial errors like these ones).
+
+Anyway, I'd like to send my own version instead (incorporating feedback
+=66rom this version) if you still reroll with trivial sending mistakes.
+
+Thanks.
+
+[1]: https://lore.kernel.org/linux-doc/ZHgM0qKWP3OusjUW@debian.me/
+=20
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--rQ+siVK50HQ8TR+2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZHm/rwAKCRD2uYlJVVFO
+o/ZUAQCtuYTGyPA8AC22WDnO5aWuZ+KGuo0KtrmJ+gIcaexwRgD9HOoqQ0SMGUaV
+mZzZ+Di26FcMIUJgp8EMYc0VwvrZXw4=
+=vBk8
+-----END PGP SIGNATURE-----
+
+--rQ+siVK50HQ8TR+2--
 
