@@ -1,277 +1,293 @@
-Return-Path: <bpf+bounces-1723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149A47208D5
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:09:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784607208D7
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:12:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86F3D1C2120B
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD9C71C21177
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7905E1D2D1;
-	Fri,  2 Jun 2023 18:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED221D2BA;
+	Fri,  2 Jun 2023 18:12:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540101D2C7
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 18:08:58 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB31D123;
-	Fri,  2 Jun 2023 11:08:55 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2af29b37bd7so33193311fa.1;
-        Fri, 02 Jun 2023 11:08:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89882332EE
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 18:12:11 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C90D18D
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 11:12:09 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b1a6777dd8so26823451fa.2
+        for <bpf@vger.kernel.org>; Fri, 02 Jun 2023 11:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685729334; x=1688321334;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GcSDtlGqxHecpP64RzCzjyCFpGIvS7MomuU0OixZLsU=;
-        b=p/uWWe8W9SCIY7ZkjVE6CZQ0izmOb5oH5NPNOsqUNzJB5/gMEcSEhoyMwiuEVVC71o
-         fjFNbG40MGgwsfs4rdoRhumNaiR7lxxJSNjRzZbWheiMaiNJdWbe4DnG6F05STo+2bQa
-         SCQT4DtowC7kfuGxotSBf9xDinBPflMf/nqM0mcd9iqeRfmMAVbom3QInpOGosfLLh4J
-         IAng76yN6cfOOEEE3iXwsiJRrLytbvh57o13f10eH97Qf9WjwME+TfNvcEdrM1cpZsdP
-         5S7tU7rFISLvG0fM1m6LaIB7SqdxNzwcdsc7eBRATCyCRAzr6hvYOounKtXO3ZTqdZEb
-         aweA==
+        d=gmail.com; s=20221208; t=1685729527; x=1688321527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YoejIfOGweKp8qMrP/2XKRhH+esqsfRXw57cauftHDo=;
+        b=IdLGskHFcCI2HKGveazkgKUccvnxUdpBzeXekeKsdjbP54+mVhq2p7TV6BUsr5PCcR
+         O+p9E3NK8FJhBFZxCMUQ6JVDI3g47x77NKxDz6BaS0qAb1QhRpY+oLK8ozOZd/3+h53Y
+         rWX1q75bNPFDfdWUMml58+q3QY7fnFYFNksWgdRa5H7lEORPLqO7WzqG8rSC4A0KCjsh
+         19eNAxPK6Y9laqleDviJhjH8p4/YI1Wk73AhxAP6BwdvTDX/dHJvKOUc0VxHxGXKjHOy
+         8CA63cGEWv4evtxnnkf3EVYRjZTCOnPQgHgiT8yb9NxA5Vml+Oj8LIpol7CZfgpIkdWV
+         +9Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685729334; x=1688321334;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GcSDtlGqxHecpP64RzCzjyCFpGIvS7MomuU0OixZLsU=;
-        b=ANVq7Z09xyzsJJn0FPyfZ65kDru8n+QS0m3cLiI33MqMNuNFdBkxrTi9hSlT0AmsLq
-         e6zjFGljKMX3gdndfNXrFH7RF7bEiN+iqqywdz8laLaPy7mgGH+FNc8Y2H3uGVNAAzDY
-         YMMmZntbLCvouKm9tl087z/IolKD76TGXmhTER5ZDRP3FYTIh9zUFUGttaX4N10IfCMg
-         lueLSUaSt+jRg5mniSbSo3Lb5hzrMJCvnQrwJl0ELf6QLDnTz+SgH8pfNaVKxgiPC3vW
-         h1iNmgqFp6RDKtMaBhhLFOgeSXEV0mdPfcuBooLh3x3Xpp81zxjCLtxXCVY4FkApX7Pf
-         iNsA==
-X-Gm-Message-State: AC+VfDyS2oNFRib8qqR0mLKxX07+6Xn03/lUZ9u6dcU9rX+k0SBTYwvn
-	dwJC4/D9gfn/y5tYE+31/W0=
-X-Google-Smtp-Source: ACHHUZ7I9fbYIDJANtsS81TCWybmCPxxQk68dkX89VVAOw67Pe8t4y0mozOYgsdrwB3pMA1utK44jw==
-X-Received: by 2002:a2e:894e:0:b0:2b1:a872:ed17 with SMTP id b14-20020a2e894e000000b002b1a872ed17mr528883ljk.5.1685729333596;
-        Fri, 02 Jun 2023 11:08:53 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q7-20020a2e9147000000b002aa42d728d9sm300379ljg.36.2023.06.02.11.08.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 11:08:53 -0700 (PDT)
-Message-ID: <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
-Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
- two rb trees
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com, 
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
- mykolal@fb.com
-Date: Fri, 02 Jun 2023 21:08:51 +0300
-In-Reply-To: <ZHovRW1G0QZwBSOW@kernel.org>
-References: <20230525235949.2978377-1-eddyz87@gmail.com>
-	 <ZHnxsyjDaPQ7gGUP@kernel.org>
-	 <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
-	 <ZHovRW1G0QZwBSOW@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1685729527; x=1688321527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YoejIfOGweKp8qMrP/2XKRhH+esqsfRXw57cauftHDo=;
+        b=ML9s2IX8MxPoDMk8DATK/OCEVD1Y4CHxfWqYlUsUhHN+o2LZdb7hIzvkrImkLNmmjS
+         tLqCHH9qm+fYG6AE4y/HvKfuhQVM1bx5YGIwk95OlRyqU2VNVC2ukdqojtKiurVOAUSo
+         GHbiqbfIB2cEtywYP7YOluWJhNfSZXKfkPsJvaYhwi1dAaEt0DZiRQSx/niphFuxYmZH
+         UClpwlTB1//L+ZI34Sl7HUHnsi9hfTSD+k1rjyMkqiEjW8aODhjLriMCPcigClKS56PJ
+         f9H+vqQmDVr4RCi1Kg8hSDqYj3hq9YwFTTVkvtZ/z5OqEQrbk16Q0TXOJmoYGCIUIPi/
+         mA7A==
+X-Gm-Message-State: AC+VfDwdv2P9B+udMd5P4zWnTr0+UM2llEFwksQ/LRf2smpW4mggKZwd
+	WQmyiMoVTESOewUjpp4341NNu+eLLq/UPg31hWI=
+X-Google-Smtp-Source: ACHHUZ4XCl52V3SJK0t0B83JtZsLtdkZVxgnVTdKsy/PrlER4RKTBeAuAmLoT+7JxZzfxDc4Bzv5CMJpxU/vcqdVzRI=
+X-Received: by 2002:a2e:98c3:0:b0:2ad:bedc:9961 with SMTP id
+ s3-20020a2e98c3000000b002adbedc9961mr484315ljj.24.1685729526773; Fri, 02 Jun
+ 2023 11:12:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230531201936.1992188-1-alan.maguire@oracle.com>
+ <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
+ <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
+ <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
+In-Reply-To: <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 2 Jun 2023 11:11:55 -0700
+Message-ID: <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escreveu:
-> > On Fri, 2023-06-02 at 10:42 -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Fri, May 26, 2023 at 02:59:49AM +0300, Eduard Zingerman escreveu:
-> > > > When pahole is executed in '-F dwarf --sort' mode there are two pla=
-ces
-> > > > where 'struct structure' instance could be added to the rb_tree:
-> > > >=20
-> > > > The first is triggered from the following call stack:
-> > > >=20
-> > > >   print_classes()
-> > > >     structures__add()
-> > > >       __structures__add()
-> > > >         (adds to global pahole.c:structures__tree)
-> > > >=20
-> > > > The second is triggered from the following call stack:
-> > > >=20
-> > > >   print_ordered_classes()
-> > > >     resort_classes()
-> > > >       resort_add()
-> > > >         (adds to local rb_tree instance)
-> > > >=20
-> > > > Both places use the same 'struct structure::rb_node' field, so if b=
-oth
-> > > > code pathes are executed the final state of the 'structures__tree'
-> > > > might be inconsistent.
-> > > >=20
-> > > > For example, this could be observed when DEBUG_CHECK_LEAKS build fl=
-ag
-> > > > is set. Here is the command line snippet that eventually leads to a
-> > > > segfault:
-> > > >=20
-> > > >   $ for i in $(seq 1 100); do \
-> > > >       echo $i; \
-> > > >       pahole -F dwarf --flat_arrays --sort --jobs vmlinux > /dev/nu=
-ll \
-> > > >              || break; \
-> > > >     done
-> > > >=20
-> > > > GDB shows the following stack trace:
-> > > >=20
-> > > >   Thread 1 "pahole" received signal SIGSEGV, Segmentation fault.
-> > > >   0x00007ffff7f819ad in __rb_erase_color (node=3D0x7fffd4045830, pa=
-rent=3D0x0, root=3D0x5555555672d8 <structures.tree>) at /home/eddy/work/dwa=
-rves-fork/rbtree.c:134
-> > > >   134			if (parent->rb_left =3D=3D node)
-> > > >   (gdb) bt
-> > > >   #0  0x00007ffff7f819ad in __rb_erase_color (node=3D0x7fffd4045830=
-, parent=3D0x0, root=3D0x5555555672d8 <structures.tree>) at /home/eddy/work=
-/dwarves-fork/rbtree.c:134
-> > > >   #1  0x00007ffff7f82014 in rb_erase (node=3D0x7fff21ae5b80, root=
-=3D0x5555555672d8 <structures.tree>) at /home/eddy/work/dwarves-fork/rbtree=
-.c:275
-> > > >   #2  0x0000555555559c3d in __structures__delete () at /home/eddy/w=
-ork/dwarves-fork/pahole.c:440
-> > > >   #3  0x0000555555559c70 in structures__delete () at /home/eddy/wor=
-k/dwarves-fork/pahole.c:448
-> > > >   #4  0x0000555555560bb6 in main (argc=3D13, argv=3D0x7fffffffdcd8)=
- at /home/eddy/work/dwarves-fork/pahole.c:3584
-> > > >=20
-> > > > This commit modifies resort_classes() to re-use 'structures__tree' =
-and
-> > > > to reset 'rb_node' fields before adding structure instances to the
-> > > > tree for a second time.
-> > > >=20
-> > > > Lock/unlock structures_lock to be consistent with structures_add() =
-and
-> > > > structures__delete() code.
-> > > >=20
-> > > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > > ---
-> > > >  pahole.c | 41 ++++++++++++++++++++++++++++-------------
-> > > >  1 file changed, 28 insertions(+), 13 deletions(-)
-> > > >=20
-> > > > diff --git a/pahole.c b/pahole.c
-> > > > index 6fc4ed6..576733f 100644
-> > > > --- a/pahole.c
-> > > > +++ b/pahole.c
-> > > > @@ -621,9 +621,9 @@ static void print_classes(struct cu *cu)
-> > > >  	}
-> > > >  }
-> > > > =20
-> > > > -static void __print_ordered_classes(struct rb_root *root)
-> > > > +static void __print_ordered_classes(void)
-> > > >  {
-> > > > -	struct rb_node *next =3D rb_first(root);
-> > > > +	struct rb_node *next =3D rb_first(&structures__tree);
-> > > > =20
-> > > >  	while (next) {
-> > > >  		struct structure *st =3D rb_entry(next, struct structure, rb_nod=
-e);
-> > > > @@ -660,24 +660,39 @@ static void resort_add(struct rb_root *resort=
-ed, struct structure *str)
-> > > >  	rb_insert_color(&str->rb_node, resorted);
-> > > >  }
-> > > > =20
-> > > > -static void resort_classes(struct rb_root *resorted, struct list_h=
-ead *head)
-> > > > +static void resort_classes(void)
-> > > >  {
-> > > >  	struct structure *str;
-> > > > =20
-> > > > -	list_for_each_entry(str, head, node)
-> > > > -		resort_add(resorted, str);
-> > > > +	pthread_mutex_lock(&structures_lock);
-> > > > +
-> > > > +	/* The need_resort flag is set by type__compare_members()
-> > > > +	 * within the following call stack:
-> > > > +	 *
-> > > > +	 *   print_classes()
-> > > > +	 *     structures__add()
-> > > > +	 *       __structures__add()
-> > > > +	 *         type__compare()
-> > > > +	 *
-> > > > +	 * The call to structures__add() registers 'struct structures'
-> > > > +	 * instances in both 'structures__tree' and 'structures__list'.
-> > > > +	 * In order to avoid adding same node to the tree twice reset
-> > > > +	 * both the 'structures__tree' and 'str->rb_node'.
-> > > > +	 */
-> > > > +	structures__tree =3D RB_ROOT;
-> > > > +	list_for_each_entry(str, &structures__list, node) {
-> > > > +		bzero(&str->rb_node, sizeof(str->rb_node));
-> > >=20
-> > > Why is this bzero needed?
-> > >=20
-> > > > +		resort_add(&structures__tree, str);
-> > >=20
-> > > resort_add will call rb_link_node(&str->rb_node, parent, p); and it, =
-in
-> > > turn:
-> > >=20
-> > > static inline void rb_link_node(struct rb_node * node, struct rb_node=
- * parent,
-> > >                                 struct rb_node ** rb_link)
-> > > {
-> > >         node->rb_parent_color =3D (unsigned long )parent;
-> > >         node->rb_left =3D node->rb_right =3D NULL;
-> > >=20
-> > >         *rb_link =3D node;
-> > > }
-> > >=20
-> > > And:
-> > >=20
-> > > struct rb_node
-> > > {
-> > >         unsigned long  rb_parent_color;
-> > > #define RB_RED          0
-> > > #define RB_BLACK        1
-> > >         struct rb_node *rb_right;
-> > >         struct rb_node *rb_left;
-> > > } __attribute__((aligned(sizeof(long))))
-> > >=20
-> > > So all the fields are being initialized in the operation right after =
-the
-> > > bzero(), no?
-> >=20
-> > Right, you are correct.
-> > The 'structures__tree =3D RB_ROOT' part is still necessary, though.
-> > If you are ok with overall structure of the patch I can resend it w/o b=
-zero().
->=20
-> Humm, so basically this boils down to the following patch?
->=20
-> - Arnaldo
->=20
-> diff --git a/pahole.c b/pahole.c
-> index 6fc4ed6a721b97ab..7f7aa0a5db05837d 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
->  		__print_ordered_classes(&structures__tree);
->  	} else {
->  		struct rb_root resorted =3D RB_ROOT;
-> -
-> +#ifdef DEBUG_CHECK_LEAKS
-> +		// We'll delete structures from structures__tree, since we're
-> +		// adding them to ther resorted list, better not keep
-> +		// references there.
-> +		structures__tree =3D RB_ROOT;
-> +#endif
+On Fri, Jun 2, 2023 at 9:32=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jun 1, 2023 at 9:54=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Jun 1, 2023 at 3:38=E2=80=AFAM Alan Maguire <alan.maguire@oracl=
+e.com> wrote:
+> > >
+> > > On 01/06/2023 04:53, Alexei Starovoitov wrote:
+> > > > On Wed, May 31, 2023 at 09:19:28PM +0100, Alan Maguire wrote:
+> > > >> BTF kind metadata provides information to parse BTF kinds.
+> > > >> By separating parsing BTF from using all the information
+> > > >> it provides, we allow BTF to encode new features even if
+> > > >> they cannot be used.  This is helpful in particular for
+> > > >> cases where newer tools for BTF generation run on an
+> > > >> older kernel; BTF kinds may be present that the kernel
+> > > >> cannot yet use, but at least it can parse the BTF
+> > > >> provided.  Meanwhile userspace tools with newer libbpf
+> > > >> may be able to use the newer information.
+> > > >>
+> > > >> The intent is to support encoding of kind metadata
+> > > >> optionally so that tools like pahole can add this
+> > > >> information.  So for each kind we record
+> > > >>
+> > > >> - a kind name string
+> > > >> - kind-related flags
+> > > >> - length of singular element following struct btf_type
+> > > >> - length of each of the btf_vlen() elements following
+> > > >>
+> > > >> In addition we make space in the metadata for
+> > > >> CRC32s computed over the BTF along with a CRC for
+> > > >> the base BTF; this allows split BTF to identify
+> > > >> a mismatch explicitly.  Finally we provide an
+> > > >> offset for an optional description string.
+> > > >>
+> > > >> The ideas here were discussed at [1] hence
+> > > >>
+> > > >> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > > >>
+> > > >> [1] https://lore.kernel.org/bpf/CAEf4BzYjWHRdNNw4B=3DeOXOs_ONrDwrg=
+X4bn=3DNuc1g8JPFC34MA@mail.gmail.com/
+> > > >> ---
+> > > >>  include/uapi/linux/btf.h       | 29 +++++++++++++++++++++++++++++
+> > > >>  tools/include/uapi/linux/btf.h | 29 +++++++++++++++++++++++++++++
+> > > >>  2 files changed, 58 insertions(+)
+> > > >>
+> > > >> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> > > >> index ec1798b6d3ff..94c1f4518249 100644
+> > > >> --- a/include/uapi/linux/btf.h
+> > > >> +++ b/include/uapi/linux/btf.h
+> > > >> @@ -8,6 +8,34 @@
+> > > >>  #define BTF_MAGIC   0xeB9F
+> > > >>  #define BTF_VERSION 1
+> > > >>
+> > > >> +/* is this information required? If so it cannot be sanitized saf=
+ely. */
+> > > >> +#define BTF_KIND_META_OPTIONAL              (1 << 0)
+>
+> Another flag I was thinking about was a flag whether struct btf_type's
+> type/size field is a type or a size (or something else). E.g., let's
+> say we haven't had btf_type_tag yet and were adding it after we had
+> this new metadata. We could say that type_tag's type/size field is
+> actually a type ID, and generic tools like bpftool could basically
+> skip type_tag and resolve to underlying type. This way, optional
+> modifier/decorator KINDs won't even have to break applications using
+> old libbpf's when it comes to calculating type sizes and resolving
+> them.
 
-But __structures__delete iterates over structures__tree,
-so it won't delete anything if code like this, right?
++1
 
->  		resort_classes(&resorted, &structures__list);
->  		__print_ordered_classes(&resorted);
->  	}
+> > > >> +
+> > > >> +struct btf_kind_meta {
+> > > >> +    __u32 name_off;         /* kind name string offset */
+>
+> I'm not sure why we'd need to record this for every KIND? The tool
+> that doesn't know about this new kind can't do much about it anyways,
+> so whether it knows that this is "KIND_NEW_FANCY" or just its ID #123
+> doesn't make much difference?
 
+The name is certainly more meaningful than 123.
+bpftool output is consumed by humans who will be able to tell the differenc=
+e.
+I'd keep the name here.
+
+> > > > and would bump the BTF_VERSION to 2 to make it a 'milestone'.
+>
+> Bumping BTF_VERSION to 2 automatically makes BTF incompatible with all
+> existing kernels (and potentially many tools that parse BTF). Given we
+> can actually extend BTF in backwards compatible way by just adding an
+> optional two fields to btf_header + extra bytes for metadata sections,
+> why making our lives harder by bumping this version?
+
+I fail to see how bumping the version makes it harder.
+libbpf needs to sanitize meta* fields in the struct btf_header on
+older kernels anway. At the same time sanitizing the version from 2 to
+1
+in the same header is one extra line of code in libbpf.
+What am I missing?
+
+>
+> > > > v2 -> self described.
+> > >
+> > > sure, sounds good. One other change perhaps worth making; currently
+> > > we assume that the kind metadata is at the end of the struct
+> > > btf_metadata, but if we ever wanted to add metadata fields in the
+> > > future, we'd want so support both the current metadata structure and
+> > > any future structure which had additional fields.
+>
+> see above, another reason to make metadata a separate section, in
+> addition to types and strings
+>
+> > >
+> > > With that in mind, it might make sense to go with something like
+> > >
+> > > struct btf_metadata {
+> > >         __u32   kind_meta_cnt;
+> > >         __u32   kind_meta_offset;       /* kind_meta_cnt instances of=
+ struct
+> > > btf_kind_meta start here */
+> > >         __u32   flags;
+> > >         __u32   description_off;        /* optional description strin=
+g*/
+> > >         __u32   crc;                    /* crc32 of BTF */
+> > >         __u32   base_crc;               /* crc32 of base BTF */
+> > > };
+> > >
+> > > For the original version, kind_meta_offset would just be
+> > > at meta_off + sizeof(struct btf_metadata), but if we had multiple
+> > > versions of the btf_metadata header to handle, they could all rely on
+> > > the kind_meta_offset being where kind metadata is stored.
+> > > For validation we'd have to make sure kind_meta_offset was within
+> > > the the metadata header range.
+> >
+> > kind_meta_offset is an ok idea, but I don't quite see why we'd have
+> > multiple 'struct btf_metadata' pointing to the same set of 'struct
+> > btf_kind_meta'.
+> >
+> > Also why do we need description_off ? Shouldn't string go into
+> > btf_header->str_off ?
+> >
+> > > >
+> > > >> +    __u32   flags;
+> > > >> +    __u32   description_off;        /* optional description strin=
+g */
+> > > >> +    __u32   crc;                    /* crc32 of BTF */
+> > > >> +    __u32   base_crc;               /* crc32 of base BTF */
+> > > >
+> > > > Hard coded CRC also gives me a pause.
+> > > > Should it be an optional KIND like btf tags?
+> > >
+> > > The goal of the CRC is really just to provide a unique identifier tha=
+t
+> > > we can use for things like checking if there's a mismatch between
+> > > base and module BTF. If we want to ever do CRC validation (not sure
+> > > if there's a case for that) we probably need to think about cases lik=
+e
+> > > BTF sanitization of BPF program BTF; this would likely only be an
+> > > issue if metadata support is added to BPF compilers.
+> > >
+> > > The problem with adding it via a kind is that if we first compute
+> > > the CRC over the entire BTF object and then add the kind, the additio=
+n
+> > > of the kind breaks the CRC; as a result I _think_ we're stuck with
+> > > having to have it in the header.
+> >
+> > Hmm. libbpf can add BTF_KIND_CRC with zero-ed u32 crc field
+> > and later fill it in.
+> > It's really not different than u32 crc field inside 'struct btf_metadat=
+a'.
+> >
+> > > That said I don't think CRC is necessarily the only identifier
+> > > we could use, and we don't even need to identify it as a
+> > > CRC in the UAPI, just as a "unique identifier"; that would deal
+> > > with issues about breaking the CRC during sanitization. All
+> > > depends on whether we ever see a need to verify BTF via CRC
+> > > really.
+> >
+> > Right. It could be sha or anything else, but user space and kernel
+> > need to agree on the math to compute it, so something got to indicate
+> > that this 32-bit is a crc.
+> > Hence KIND_CRC, KIND_SHA fit better.
+>
+> what if instead of crc and base_src fields, we have
+>
+> __u32 id_str_off;
+> __u32 base_id_str_off;
+>
+> and they are offsets into a string section. We can then define that
+> those strings have to be something like "crc:<crc-value>" or
+> "sha:<sha-value". This will be a generic ID, and extensible (and more
+> easily extensible, probably), but won't require new KIND.
+
+Encoding binary data in strings with \0 and other escape chars?
+Ouch. Please no.
+We can have variable size KIND_ID and encode crc vs sha in flags,
+but binary data better stay binary.
+
+> This also has a good property that 0 means "no ID", which helps with
+> the base BTF case. Current "__u32 crc;" doesn't have this property and
+> requires a flag.
+
+imo this crc addition is a litmus test for this self-described format.
+If we cannot encode it as a new KIND* it means this self-described
+idea is broken.
 
