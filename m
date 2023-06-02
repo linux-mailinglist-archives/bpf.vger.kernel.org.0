@@ -1,153 +1,86 @@
-Return-Path: <bpf+bounces-1678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7E871FE9C
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 12:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7AD71FED5
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 12:19:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EAD51C20AEB
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 10:09:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0EC1C20A82
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 10:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79561182BA;
-	Fri,  2 Jun 2023 10:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D2D182C4;
+	Fri,  2 Jun 2023 10:19:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2135E5687
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 10:09:00 +0000 (UTC)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63F81B6;
-	Fri,  2 Jun 2023 03:08:55 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-256712d65ceso869457a91.1;
-        Fri, 02 Jun 2023 03:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685700535; x=1688292535;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KJXA2dF12j4Fb3Ta+K6rkvK8zj4+C8MbngTwWrfwo10=;
-        b=pKozTKg8bkqoQRAw4Or1/2O3jhNTORXzV0T2l2OubLw3KGl5/I6zCtOTsidD9yC5ZN
-         kynmkimoC6akMvLQ7qppsxXl9hUbACdXysk4pUXwE8mvIMLOefP7b6G/w1eY5dgCXSJ9
-         gOzN/3y8qFFgzT5xx3v8Zkm1YN5YqH5s2OEPxQuBYFrwsXb8lzoEeEeO6Hou7xwCYYAh
-         JrilTMh66/iRuPtRJIWL0+X/jZmsUtj8muQHWh5m4rrBLE0TU8UMRAFifbNXJVdx+mjp
-         EJyYdBASIrnkttxOgDlgjYSJWsEYyEgLFx+M8XYPxai2fAKsIonHyE9TOkvPxAAb11pQ
-         nxeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685700535; x=1688292535;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJXA2dF12j4Fb3Ta+K6rkvK8zj4+C8MbngTwWrfwo10=;
-        b=aOLFrn0YoMWAGf1HJMCXjpCBUf8e5cehsNPotgQ/d1tILgv0VPwOrVlhncPh4+j/6H
-         MF3V5fdIxkizLJQ2z/hlnwLHboZG4+9qjjVKULYiDmbgmiBfVVh+CULny/dVFKEUB7JS
-         ifVjh3Sbb5QnCrSKRHZSINZ3LzhtisCJ8cja+63rmM0wKWTkPNJT2WMtZpBxfBgZfW6S
-         1xxZ94f8RHfIEOVWNDpsIUout1hk5u4Ol8kCSfwEisvA69V1SAWPvo4DlvluZVB+yAc3
-         yzrshaJZE+nNC7DfavDCh/WeHyC/wbTiURz8CgNQ9n/tLmeHYFStMFPTbiJbUkjhi+MI
-         2ajQ==
-X-Gm-Message-State: AC+VfDxjYQYcovHbhR81ZF3EubXVmrKUIcTdPSD+RalcAjMLmeXVshVr
-	9yU7hpsYHhL7HJ7oXG9QexVtaGxNtmU=
-X-Google-Smtp-Source: ACHHUZ5NMghrvOYiQcrgDDURUUe2m+/zTpIzGsO5lBtXx5es280eqgOGpqaD3QSBm4mosQoHfp0YSg==
-X-Received: by 2002:a17:902:bb10:b0:1ab:63e:67b0 with SMTP id im16-20020a170902bb1000b001ab063e67b0mr899784plb.54.1685700534901;
-        Fri, 02 Jun 2023 03:08:54 -0700 (PDT)
-Received: from debian.me (subs02-180-214-232-3.three.co.id. [180.214.232.3])
-        by smtp.gmail.com with ESMTPSA id ik29-20020a170902ab1d00b001b19d14a3d5sm992095plb.68.2023.06.02.03.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 03:08:54 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-	id 93BBC106A05; Fri,  2 Jun 2023 17:08:51 +0700 (WIB)
-Date: Fri, 2 Jun 2023 17:08:51 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Costa Shulyupin <costa.shul@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF2D18019
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 10:19:34 +0000 (UTC)
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E636F1BF;
+	Fri,  2 Jun 2023 03:19:15 -0700 (PDT)
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 1D2792B8;
+	Fri,  2 Jun 2023 10:19:13 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1D2792B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1685701155; bh=QMXbgBQiNP/xtmRJwUXLAhiAmFdwAINgR8c7SCTJZn4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=a9VxAqMWcSzE5nwi8CWXTFYo4GfHQfgD0mRZOnjY++0mhwtlzOz6e2YBCw9p/Uv7z
+	 Ht4uXJxQ0N9/OML/2ALt5UFOJorv4QiDc9f+n1kJiBj8PNO51gW64bCEGoex8Sw6cA
+	 3eOw6iUsiRPiXH5WLTXJD5DhsA5HGHSxd42gRj0frQQu2Bb7EUzcgUEvBqVuYZBFPP
+	 O2rT2osHRGjjCKhq8h2c3uGPxV5ZwKHonws4HOBHTWisi7S/o4HGLBMGoTQclVfVw+
+	 T6rxxUi7hs9qS0TgV2QTNwIdrTLRf3po+oyHZp7gtFD8oLGrR70dC8RJLiaL5/oxab
+	 qGhRuFdIl57pg==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Bagas Sanjaya <bagasdotme@gmail.com>, Costa Shulyupin
+ <costa.shul@redhat.com>, linux-doc@vger.kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux BPF
+ <bpf@vger.kernel.org>
 Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
  subsystems
-Message-ID: <ZHm_s7kQP6kilBtO@debian.me>
+In-Reply-To: <ZHm_s7kQP6kilBtO@debian.me>
 References: <ZHgM0qKWP3OusjUW@debian.me>
  <20230601145556.3927838-1-costa.shul@redhat.com>
+ <ZHm_s7kQP6kilBtO@debian.me>
+Date: Fri, 02 Jun 2023 04:19:10 -0600
+Message-ID: <87ilc6yxnl.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rQ+siVK50HQ8TR+2"
-Content-Disposition: inline
-In-Reply-To: <20230601145556.3927838-1-costa.shul@redhat.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
---rQ+siVK50HQ8TR+2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> As you're still newbie here, I'd recommend you to try contributing to
+> drivers/staging/ first in order to gain experience on kernel developement
+> workflow. Also, you use your RedHat address, so I expect you have been
+> given kernel development training from your company (and doesn't make
+> trivial errors like these ones).
 
-On Thu, Jun 01, 2023 at 05:55:55PM +0300, Costa Shulyupin wrote:
-> From: Bagas Sanjaya <bagasdotme@gmail.com>
->=20
-> Add classes:
-> * Core subsystems
-> * Storage
-> * Networking
-> * Peripherals and devices
-> * Embedded systems
-> * Integrity
-> * Virtualization
-> * Miscellaneous
+Bagas, please.  I'll ask you directly: please don't go telling
+documentation contributors how to comport themselves; you have plenty
+enough to learn yourself on that front.  It's hard enough to get
+contributors to the documentation as it is without random people showing
+up and giving orders.
 
-Above list is unnecessary, because the diff should clearly show those
-categories.
+I have distractions that are increasing my (already less than stellar)
+latency, but I'll get to this stuff.
 
->=20
-> There is a FIXME that says to organize subsystems listed in
-> subsystem-apis.rst. Fulfill it by categorize remaining subsytems
-> by purpose/themes, while sorting entries in each category.
->=20
-> HID devices are already categorized in 3c591cc954d56e ("docs:
-> consolidate human interface subsystems").
->=20
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+Thanks,
 
-Thanks for picking my version from v2 [1]. However, From: address in the
-patch message doesn't match one from message header nor your Signed-off-by
-address. Conversely, if you handle someone else's patch (in this case mine),
-you need to also add SoB from him/her.
-
-As you're still newbie here, I'd recommend you to try contributing to
-drivers/staging/ first in order to gain experience on kernel developement
-workflow. Also, you use your RedHat address, so I expect you have been
-given kernel development training from your company (and doesn't make
-trivial errors like these ones).
-
-Anyway, I'd like to send my own version instead (incorporating feedback
-=66rom this version) if you still reroll with trivial sending mistakes.
-
-Thanks.
-
-[1]: https://lore.kernel.org/linux-doc/ZHgM0qKWP3OusjUW@debian.me/
-=20
---=20
-An old man doll... just what I always wanted! - Clara
-
---rQ+siVK50HQ8TR+2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZHm/rwAKCRD2uYlJVVFO
-o/ZUAQCtuYTGyPA8AC22WDnO5aWuZ+KGuo0KtrmJ+gIcaexwRgD9HOoqQ0SMGUaV
-mZzZ+Di26FcMIUJgp8EMYc0VwvrZXw4=
-=vBk8
------END PGP SIGNATURE-----
-
---rQ+siVK50HQ8TR+2--
+jon
 
