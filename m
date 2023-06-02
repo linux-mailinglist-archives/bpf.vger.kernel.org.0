@@ -1,179 +1,265 @@
-Return-Path: <bpf+bounces-1684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D7957203C3
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 15:52:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C55E37203C6
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 15:52:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD792281882
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 13:52:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F77A1C20ECD
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 13:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F4E19523;
-	Fri,  2 Jun 2023 13:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7989419527;
+	Fri,  2 Jun 2023 13:52:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E5719509
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 13:51:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 239A4C433D2;
-	Fri,  2 Jun 2023 13:51:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685713916;
-	bh=8hDakrUZAZcYTZfGnQ3DNtCp7igSQOT1sESi2A5X7JQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iftz4zlbGT83MJweTTJpH3wQdggzYX6b+QAx9Koo1cv+16rmDoY0nvXO6m3xj06gj
-	 lFhzkTunQOpyko5GnC4nfOhIHj0SkwImYV4qStyONP6+MJKD0dulfUFetxSZe67aM7
-	 OPzMQ8lUQagZ5mhexu5mPM8oUZ4Hw5WftHXsVwsRSapgjTRKvcG0sUatLogGT9Gndk
-	 GsEKI6E55mt4WjfPQBgknPAfxt6v2njHB9PZzPFQ1nhCz+KZYC939jBFpWEAJ2q3Ib
-	 W/rzdigetrW5OnLbh9inqnOBhVFXERpFmS/veBTt+MblQ1zwbPw7WBODQVTgySSLp4
-	 LV91jautrX54g==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Yonghong Song <yhs@meta.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	stable@vger.kernel.org,
-	John Fastabend <john.fastabend@gmail.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yhs@fb.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Dave Marchevsky <davemarchevsky@fb.com>,
-	Delyan Kratunov <delyank@fb.com>,
-	Joanne Koong <joannelkoong@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH 2/2] [v3] bpf: fix bpf_probe_read_kernel prototype mismatch
-Date: Fri,  2 Jun 2023 15:50:19 +0200
-Message-Id: <20230602135128.1498362-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230602135128.1498362-1-arnd@kernel.org>
-References: <20230602135128.1498362-1-arnd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E5519509
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 13:52:47 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAA4E42;
+	Fri,  2 Jun 2023 06:52:44 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b1b084620dso7220651fa.0;
+        Fri, 02 Jun 2023 06:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685713962; x=1688305962;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TTx9pnxCGS6AhG5h6zegwWEZV0SrnyOhpPwKANTp1Gc=;
+        b=QqU4Oy3T2YzGhi54wfUJiLAtmThS8MMWdoWBDROdOz7CfWHWF3FEJnlX+gBfaPfX0R
+         7F9hSl4oIZlQYsQiu8EHfUVLu/0YF+S67ayDoeMYYM6DJ2EOYBABAHwCI45e/4laqnHe
+         zfEJDg7aVLo1czlngKCYA1PJcGV90PlQwXta6002Qgb98t+nP408vzArwzbiWUHjf+F3
+         1/jAURURIILXZir7fhvk6ESn6pQCVchIBWSWurm13zeoKvTbkS0FHi7XOhWCrIbeQo2o
+         H2WJ60wwVbFKGm2Lu82VXUZmn6vIyTE5xCc0+4zn8Re/6dgioAQ3DI1RZOpQJR2Tzx7+
+         jdOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685713962; x=1688305962;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TTx9pnxCGS6AhG5h6zegwWEZV0SrnyOhpPwKANTp1Gc=;
+        b=X0m0LOx68VLHD4Rm3aVmJzSCW3AJ640Wk/aFhs6actYFDGEKSlC8C66vD6hZhOhfSz
+         DIbcNpJ3zXOCe4XHKsxK5aKd3IvI041gd1xWKPgkRrHbiUnv1Ke52M5VSQDCRlcS3dSH
+         7cmuz300VG7J3KYSzvb19t0T+cSlgHEWez8oA5qLRVCpEXvMI/1WHVCOOkIJqwCUSHsw
+         zV7GQub02v1am1pq3BB0zqQOg6JDvKyxXR/jqBJehcy1OTl1OaWBFqq3QJnxiGdHWl75
+         wOQUCzNuAIaxHvAFaeHEib9cYsKAKNL0jLncSe+TG+Qj9MFYjYhI87TjLbNrvuoBwh4a
+         lYLQ==
+X-Gm-Message-State: AC+VfDxwOFBTow7z5G6pnGCURGF3aBYLBRNmPauGINGLxDnac7oFUOob
+	6MXWo8OhI3WXLYd81BLPbRvz6iWw6Fn4SA==
+X-Google-Smtp-Source: ACHHUZ7fNVzNGOZBgVKWsuLnvr7kDARFoGzQRES7mjUTEMM9ygs92Xhm97LV9GrTpLZUZ30VcE4+mw==
+X-Received: by 2002:a2e:7a0e:0:b0:2a7:748c:1eef with SMTP id v14-20020a2e7a0e000000b002a7748c1eefmr28727ljc.38.1685713962004;
+        Fri, 02 Jun 2023 06:52:42 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id b2-20020a2e9882000000b002ad98ec6b10sm231480ljj.52.2023.06.02.06.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 06:52:41 -0700 (PDT)
+Message-ID: <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
+Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
+ two rb trees
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com, 
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+ mykolal@fb.com
+Date: Fri, 02 Jun 2023 16:52:40 +0300
+In-Reply-To: <ZHnxsyjDaPQ7gGUP@kernel.org>
+References: <20230525235949.2978377-1-eddyz87@gmail.com>
+	 <ZHnxsyjDaPQ7gGUP@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, 2023-06-02 at 10:42 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Fri, May 26, 2023 at 02:59:49AM +0300, Eduard Zingerman escreveu:
+> > When pahole is executed in '-F dwarf --sort' mode there are two places
+> > where 'struct structure' instance could be added to the rb_tree:
+> >=20
+> > The first is triggered from the following call stack:
+> >=20
+> >   print_classes()
+> >     structures__add()
+> >       __structures__add()
+> >         (adds to global pahole.c:structures__tree)
+> >=20
+> > The second is triggered from the following call stack:
+> >=20
+> >   print_ordered_classes()
+> >     resort_classes()
+> >       resort_add()
+> >         (adds to local rb_tree instance)
+> >=20
+> > Both places use the same 'struct structure::rb_node' field, so if both
+> > code pathes are executed the final state of the 'structures__tree'
+> > might be inconsistent.
+> >=20
+> > For example, this could be observed when DEBUG_CHECK_LEAKS build flag
+> > is set. Here is the command line snippet that eventually leads to a
+> > segfault:
+> >=20
+> >   $ for i in $(seq 1 100); do \
+> >       echo $i; \
+> >       pahole -F dwarf --flat_arrays --sort --jobs vmlinux > /dev/null \
+> >              || break; \
+> >     done
+> >=20
+> > GDB shows the following stack trace:
+> >=20
+> >   Thread 1 "pahole" received signal SIGSEGV, Segmentation fault.
+> >   0x00007ffff7f819ad in __rb_erase_color (node=3D0x7fffd4045830, parent=
+=3D0x0, root=3D0x5555555672d8 <structures.tree>) at /home/eddy/work/dwarves=
+-fork/rbtree.c:134
+> >   134			if (parent->rb_left =3D=3D node)
+> >   (gdb) bt
+> >   #0  0x00007ffff7f819ad in __rb_erase_color (node=3D0x7fffd4045830, pa=
+rent=3D0x0, root=3D0x5555555672d8 <structures.tree>) at /home/eddy/work/dwa=
+rves-fork/rbtree.c:134
+> >   #1  0x00007ffff7f82014 in rb_erase (node=3D0x7fff21ae5b80, root=3D0x5=
+555555672d8 <structures.tree>) at /home/eddy/work/dwarves-fork/rbtree.c:275
+> >   #2  0x0000555555559c3d in __structures__delete () at /home/eddy/work/=
+dwarves-fork/pahole.c:440
+> >   #3  0x0000555555559c70 in structures__delete () at /home/eddy/work/dw=
+arves-fork/pahole.c:448
+> >   #4  0x0000555555560bb6 in main (argc=3D13, argv=3D0x7fffffffdcd8) at =
+/home/eddy/work/dwarves-fork/pahole.c:3584
+> >=20
+> > This commit modifies resort_classes() to re-use 'structures__tree' and
+> > to reset 'rb_node' fields before adding structure instances to the
+> > tree for a second time.
+> >=20
+> > Lock/unlock structures_lock to be consistent with structures_add() and
+> > structures__delete() code.
+> >=20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+> >  pahole.c | 41 ++++++++++++++++++++++++++++-------------
+> >  1 file changed, 28 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/pahole.c b/pahole.c
+> > index 6fc4ed6..576733f 100644
+> > --- a/pahole.c
+> > +++ b/pahole.c
+> > @@ -621,9 +621,9 @@ static void print_classes(struct cu *cu)
+> >  	}
+> >  }
+> > =20
+> > -static void __print_ordered_classes(struct rb_root *root)
+> > +static void __print_ordered_classes(void)
+> >  {
+> > -	struct rb_node *next =3D rb_first(root);
+> > +	struct rb_node *next =3D rb_first(&structures__tree);
+> > =20
+> >  	while (next) {
+> >  		struct structure *st =3D rb_entry(next, struct structure, rb_node);
+> > @@ -660,24 +660,39 @@ static void resort_add(struct rb_root *resorted, =
+struct structure *str)
+> >  	rb_insert_color(&str->rb_node, resorted);
+> >  }
+> > =20
+> > -static void resort_classes(struct rb_root *resorted, struct list_head =
+*head)
+> > +static void resort_classes(void)
+> >  {
+> >  	struct structure *str;
+> > =20
+> > -	list_for_each_entry(str, head, node)
+> > -		resort_add(resorted, str);
+> > +	pthread_mutex_lock(&structures_lock);
+> > +
+> > +	/* The need_resort flag is set by type__compare_members()
+> > +	 * within the following call stack:
+> > +	 *
+> > +	 *   print_classes()
+> > +	 *     structures__add()
+> > +	 *       __structures__add()
+> > +	 *         type__compare()
+> > +	 *
+> > +	 * The call to structures__add() registers 'struct structures'
+> > +	 * instances in both 'structures__tree' and 'structures__list'.
+> > +	 * In order to avoid adding same node to the tree twice reset
+> > +	 * both the 'structures__tree' and 'str->rb_node'.
+> > +	 */
+> > +	structures__tree =3D RB_ROOT;
+> > +	list_for_each_entry(str, &structures__list, node) {
+> > +		bzero(&str->rb_node, sizeof(str->rb_node));
+>=20
+> Why is this bzero needed?
+>=20
+> > +		resort_add(&structures__tree, str);
+>=20
+> resort_add will call rb_link_node(&str->rb_node, parent, p); and it, in
+> turn:
+>=20
+> static inline void rb_link_node(struct rb_node * node, struct rb_node * p=
+arent,
+>                                 struct rb_node ** rb_link)
+> {
+>         node->rb_parent_color =3D (unsigned long )parent;
+>         node->rb_left =3D node->rb_right =3D NULL;
+>=20
+>         *rb_link =3D node;
+> }
+>=20
+> And:
+>=20
+> struct rb_node
+> {
+>         unsigned long  rb_parent_color;
+> #define RB_RED          0
+> #define RB_BLACK        1
+>         struct rb_node *rb_right;
+>         struct rb_node *rb_left;
+> } __attribute__((aligned(sizeof(long))))
+>=20
+> So all the fields are being initialized in the operation right after the
+> bzero(), no?
 
-bpf_probe_read_kernel() has a __weak definition in core.c and another
-definition with an incompatible prototype in kernel/trace/bpf_trace.c,
-when CONFIG_BPF_EVENTS is enabled.
+Right, you are correct.
+The 'structures__tree =3D RB_ROOT' part is still necessary, though.
+If you are ok with overall structure of the patch I can resend it w/o bzero=
+().
 
-Since the two are incompatible, there cannot be a shared declaration in
-a header file, but the lack of a prototype causes a W=1 warning:
-
-kernel/bpf/core.c:1638:12: error: no previous prototype for 'bpf_probe_read_kernel' [-Werror=missing-prototypes]
-
-On 32-bit architectures, the local prototype
-
-u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-
-passes arguments in other registers as the one in bpf_trace.c
-
-BPF_CALL_3(bpf_probe_read_kernel, void *, dst, u32, size,
-            const void *, unsafe_ptr)
-
-which uses 64-bit arguments in pairs of registers.
-
-Change the core.c file to only reference the inner
-bpf_probe_read_kernel_common() helper and provide a prototype for that,
-to ensure this is compatible with both definitions.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
---
-v3: clarify changelog text further.
-v2: rewrite completely to fix the mismatch.
----
- include/linux/bpf.h      | 2 ++
- kernel/bpf/core.c        | 9 ++++++---
- kernel/trace/bpf_trace.c | 3 +--
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f58895830adae..55826398acfba 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2619,6 +2619,8 @@ static inline void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr)
- }
- #endif /* CONFIG_BPF_SYSCALL */
- 
-+int bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr);
-+
- void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
- 			  struct btf_mod_pair *used_btfs, u32 len);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 0926714641eb5..565ef6950c7a8 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -35,6 +35,7 @@
- #include <linux/bpf_verifier.h>
- #include <linux/nodemask.h>
- #include <linux/nospec.h>
-+#include <linux/bpf.h>
- #include <linux/bpf_mem_alloc.h>
- #include <linux/memcontrol.h>
- 
-@@ -1635,11 +1636,13 @@ bool bpf_opcode_in_insntable(u8 code)
- }
- 
- #ifndef CONFIG_BPF_JIT_ALWAYS_ON
--u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-+#ifndef CONFIG_BPF_EVENTS
-+int bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
- 	memset(dst, 0, size);
- 	return -EFAULT;
- }
-+#endif
- 
- /**
-  *	___bpf_prog_run - run eBPF program on a given context
-@@ -1931,8 +1934,8 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- 		DST = *(SIZE *)(unsigned long) (SRC + insn->off);	\
- 		CONT;							\
- 	LDX_PROBE_MEM_##SIZEOP:						\
--		bpf_probe_read_kernel(&DST, sizeof(SIZE),		\
--				      (const void *)(long) (SRC + insn->off));	\
-+		bpf_probe_read_kernel_common(&DST, sizeof(SIZE),	\
-+			      (const void *)(long) (SRC + insn->off));	\
- 		DST = *((SIZE *)&DST);					\
- 		CONT;
- 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2bc41e6ac9fe0..290fdce2ce535 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -223,8 +223,7 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
- 	.arg3_type	= ARG_ANYTHING,
- };
- 
--static __always_inline int
--bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
-+int bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
- 	int ret;
- 
--- 
-2.39.2
+>=20
+> - Arnaldo
+>=20
+> > +	}
+> > +
+> > +	pthread_mutex_unlock(&structures_lock);
+> >  }
+> > =20
+> >  static void print_ordered_classes(void)
+> >  {
+> > -	if (!need_resort) {
+> > -		__print_ordered_classes(&structures__tree);
+> > -	} else {
+> > -		struct rb_root resorted =3D RB_ROOT;
+> > -
+> > -		resort_classes(&resorted, &structures__list);
+> > -		__print_ordered_classes(&resorted);
+> > -	}
+> > +	if (need_resort)
+> > +		resort_classes();
+> > +	__print_ordered_classes();
+> >  }
+> > =20
+> > =20
+> > --=20
+> > 2.40.1
+> >=20
+>=20
 
 
