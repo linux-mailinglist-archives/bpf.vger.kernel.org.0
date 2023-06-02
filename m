@@ -1,76 +1,82 @@
-Return-Path: <bpf+bounces-1740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29DB0720A26
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 22:08:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8680720A2C
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 22:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC146281A4F
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D8B41C2121F
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76FAC1F17D;
-	Fri,  2 Jun 2023 20:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A15B1F188;
+	Fri,  2 Jun 2023 20:18:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9F11F175
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 20:08:12 +0000 (UTC)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A211AD;
-	Fri,  2 Jun 2023 13:08:11 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5149390b20aso3612863a12.3;
-        Fri, 02 Jun 2023 13:08:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647611F17E
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 20:18:13 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE7D1B5
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 13:18:11 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-969f90d71d4so354052366b.3
+        for <bpf@vger.kernel.org>; Fri, 02 Jun 2023 13:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685736489; x=1688328489;
+        d=gmail.com; s=20221208; t=1685737090; x=1688329090;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DZlFpNzQF3lllSw9SxuI6Yh1D0NKEdvTwNPHySVcAWI=;
-        b=FQEEDdC3x25z6kb6549RM2f4Rbwgi4CYJfrqnfw8XQBfvU3AwvuMkPbqqDBXYLfckh
-         Xsna3a7GldosnhfLA15gZbw0w0WGmITXhtNQ/F+tli4nw/lIXCJrPt2ZnVAsgLSEcq/H
-         mafxv3EYjNEnHu6ED14H0g9fT22oJFbxdpuY1cL1vnEeX/gZFiBxvq6kYRLsCE1F9k4n
-         nQ8dZke3eJPg4iAqumPPyZooFNDLTuTKLJeq9poRg5UwLEFuK1Q32pUAVCCis9XXgh8K
-         08QawiTzSAl2jwHE2jLPyxqc+bT51PM0Uti168ebyK72X8UodAnFRJCmLasXS1UfIdaN
-         /MZg==
+        bh=btERih1uFiBsUKRzvk9flvWiRItslWH2YKuCYeDuBjo=;
+        b=o4ZTMbQ6g/uf+7VE8KImeiDabE86HYBcuEh5IL3ETC3/+b8BfAPcxfw2csuyHVxooF
+         7pFHTBqrHRVyiVul593Uouw/BbmIH8qLNnHrQatdUHWN0XrVy+ZnsFBzMCUHeD2aq4wl
+         qmdazKsPRF+NmcgpHgSHp05uWKdSoxcQ0ifkLxXUkIUE1ITRujj/ekavxuymV6JBI0to
+         Q8fE2DNCqdPcdwnTB3urYthhJ97f1oJ7L16rlbaF4Xek/rNvZGnt34m2NtRdzqU+fgBB
+         CrQXNDIH8WP/Y8Hzl1h6/TOEAEHUGpZzrNN6KLFxh1UYLajx/kFE0OA6EqIs+wFjGykO
+         epFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685736489; x=1688328489;
+        d=1e100.net; s=20221208; t=1685737090; x=1688329090;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DZlFpNzQF3lllSw9SxuI6Yh1D0NKEdvTwNPHySVcAWI=;
-        b=kig6+t9oHhoy1UNAKjwKT5bUhyJ7RlBvdW9DMboZp0GWtbWnRuzz8sVrzxpyVMi6q0
-         GtYRhzrzjeTqBn5P7jjeznWlSxMDlMiS5p7Kau1aCY/cng1sZJG5BwF5c1MmJKnzeVpk
-         +DgBHSW7KFQhzllds8HtZd37r29ZOLb+IW+C6C1G8KMGIB9gER32NY9TaPG6Ejbk3Y/b
-         beP/4tiTwZDMYah+JLwiv98e9J94h2W82rOfgg+WAmhlkBOaL1Ak5o6GQ9948tYp/C/N
-         DkuJpWcmqd+r9NhPkdQniQRCPuN9IyS8E34nhmH6L3Hd5MAUFi01anBWpyvx5av2olUg
-         Q63A==
-X-Gm-Message-State: AC+VfDzufkI1m4+cZd/N607n3/uOaFklH+E+Z9h6GburAPGFW0LmkS1g
-	6blhYXJKrNVNeFZnlqGYOEDvxbALUtb+D7huQbM=
-X-Google-Smtp-Source: ACHHUZ4+fnLJdbMy/TCSRBGSTiggZuGtoZGmm03LGSptxz8dF4WNWu+fXhQRDLyDvwGecdHvYMZzsQ64mvsQk++cuHE=
-X-Received: by 2002:aa7:c44a:0:b0:514:a685:aa3b with SMTP id
- n10-20020aa7c44a000000b00514a685aa3bmr2326733edr.41.1685736489410; Fri, 02
- Jun 2023 13:08:09 -0700 (PDT)
+        bh=btERih1uFiBsUKRzvk9flvWiRItslWH2YKuCYeDuBjo=;
+        b=gwLJnRCEiilxc9RaWdIYqBPgkxRv30KRJr1hk5pWuHwDmfTs1hkpH4HekRtgw+K8An
+         8xqSXChqhamq/3iWd0fugti2XV7yO0tuc9n8uATybpxaSbkbgVri0Ktn6QAW7tCICju7
+         Smm+xR0hmh6UpByIk5kSePlTG2W6XN/AQyYJoF1mY2MF/6SnvXPhnSU+FlNXKAfDq6x4
+         LAdqStoSaCb9dBes0E6yY5aDQBzccafTxRFYrOCigcAR4/B7CY47cD/rHMzA7f+Cl3L2
+         NXfVt8N/nZ5qCLlJjoL767vR/gB9j7fEHebHdJU8V1lW0xYXwlZlroCfkDLSXUFEyq1Q
+         NxGw==
+X-Gm-Message-State: AC+VfDwCijkD7z2KQKrp7zKPQ8OX03xTfhXooBTqBb32pzyWBGFKE8lN
+	QnSOL54yfDXbUHQwXoqzrrQI5atYJtbJJcnsa2A=
+X-Google-Smtp-Source: ACHHUZ6L2p+gwTy7aO08gozAGHynMUWnIN95/UDWQn/cfwlSufdgmnZpNcO3LgNkkfLhfS9oYJgX+N8jiJYqtFTbDZE=
+X-Received: by 2002:a17:907:1624:b0:973:dd5b:4072 with SMTP id
+ hb36-20020a170907162400b00973dd5b4072mr1978826ejc.53.1685737089764; Fri, 02
+ Jun 2023 13:18:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230602150011.1657856-16-andrii@kernel.org> <202306030252.UOXkWZTK-lkp@intel.com>
-In-Reply-To: <202306030252.UOXkWZTK-lkp@intel.com>
+References: <20230530172739.447290-1-eddyz87@gmail.com> <20230530172739.447290-2-eddyz87@gmail.com>
+ <CAEf4BzYJbzR0f5HyjLMJEmBdHkydQiOjdkk=K4AkXWTwnXsWEg@mail.gmail.com>
+ <8b0da2244a328f23a78dc73306177ebc6f0eabfd.camel@gmail.com>
+ <20230601020514.vhnlnmowbo6dxwfj@MacBook-Pro-8.local> <81e2e47c71b6a0bc014c204e18c6be2736fed338.camel@gmail.com>
+ <CAADnVQJY4TR3hoDUyZwGxm10sBNvpLHTa_yW-T6BvbukvAoypg@mail.gmail.com>
+ <6a52b65c270a702f6cbd6ffcf627213af4715200.camel@gmail.com>
+ <CAEf4BzbM2bWHfdCoVYdfUmuYJRVzADBXHzbDwHkg_EX13pJ7gA@mail.gmail.com> <7f39e172d68a1ad92ffe886b4df060ef49cff047.camel@gmail.com>
+In-Reply-To: <7f39e172d68a1ad92ffe886b4df060ef49cff047.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 2 Jun 2023 13:07:57 -0700
-Message-ID: <CAEf4BzYawY7bYcQem8BVbrSAeBTXC72=Wu8jOhS4mYdi-5z0cA@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf-next 15/18] bpf: take into account BPF token
- when fetching helper protos
-To: kernel test robot <lkp@intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, oe-kbuild-all@lists.linux.dev, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	brauner@kernel.org, lennart@poettering.net, cyphar@cyphar.com, 
-	luto@kernel.org
+Date: Fri, 2 Jun 2023 13:17:57 -0700
+Message-ID: <CAEf4BzY8u_JbwBi=wYLFopj79MOfKGnyWo9O19esBqoT2zsABA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: verify scalar ids mapping in
+ regsafe() using check_ids()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,120 +86,116 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 2, 2023 at 11:48=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
+On Fri, Jun 2, 2023 at 12:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> Hi Andrii,
+> On Fri, 2023-06-02 at 11:50 -0700, Andrii Nakryiko wrote:
+> [...]
+> > > > The thread is long. Could you please describe it again in pseudo co=
+de?
+> > >
+> > > - Add a function mark_precise_scalar_ids(struct bpf_verifier_env *env=
+,
+> > >                                         struct bpf_verifier_state *st=
+)
+> > >   such that it:
+> > >   - collect PRECISE_IDS: a set of IDs of all registers marked in env-=
+>bt
+> > >   - visit all registers with ids from PRECISE_IDS and make sure
+> > >     that these registers are marked in env->bt
+> > > - Call mark_precise_scalar_ids() from __mark_chain_precision()
+> > >   for each state 'st' visited by states chain processing loop,
+> > >   so that:
+> > >   - mark_precise_scalar_ids() is called for current state when
+> > >     __mark_chain_precision() is entered, reusing id assignments in
+> > >     current state;
+> > >   - mark_precise_scalar_ids() is called for each parent state, reusin=
+g
+> > >     id assignments valid at 'last_idx' instruction of that state.
+> > >
+> > > The idea is that in situations like below:
+> > >
+> > >    4: if (r6 > r7) goto +1
+> > >    5: r7 =3D r6
+> > >    --- checkpoint #1 ---
+> > >    6: <something>
+> > >    7: if (r7 > X) goto ...
+> > >    8: r7 =3D 0
+> > >    9: r9 +=3D r6
+> > >
+> > > The mark_precise_scalar_ids() would be called at:
+> > > - (9) and current id assignments would be used.
+> > > - (6) and id assignments saved in checkpoint #1 would be used.
+> > >
+> > > If <something> is the code that modifies r6/r7 the link would be
+> > > broken and we would overestimate the set of precise registers.
+> > >
+> >
+> > To avoid this we need to recalculate these IDs on each new parent
+> > state, based on requested precision marks. If we keep a simple and
+> > small array of IDs and do a quick linear search over them for each
+> > SCALAR register, I suspect it should be very fast. I don't think in
+> > practice we'll have more than 1-2 IDs in that array, right?
 >
-> kernel test robot noticed the following build errors:
+> I'm not sure I understand, could you please describe how it should
+> work for e.g.?:
 >
-> [auto build test ERROR on bpf-next/master]
+>     3: r6 &=3D 0xf            // assume safe bound
+>     4: if (r6 > r7) goto +1
+>     5: r7 =3D r6
+>     --- checkpoint #1 ---
+>     6: r7 =3D 0
+>     7: if (r7 > 10) goto exit;
+>     8: r7 =3D 0
+>     9: r9 +=3D r6
 >
-> url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bp=
-f-introduce-BPF-token-object/20230602-230448
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
-master
-> patch link:    https://lore.kernel.org/r/20230602150011.1657856-16-andrii=
-%40kernel.org
-> patch subject: [PATCH RESEND bpf-next 15/18] bpf: take into account BPF t=
-oken when fetching helper protos
-> config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/2023=
-0603/202306030252.UOXkWZTK-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=3D1 build):
->         # https://github.com/intel-lab-lkp/linux/commit/3d830ca845b075ab4=
-132487aaaa69b70a467863c
->         git remote add linux-review https://github.com/intel-lab-lkp/linu=
-x
->         git fetch --no-tags linux-review Andrii-Nakryiko/bpf-introduce-BP=
-F-token-object/20230602-230448
->         git checkout 3d830ca845b075ab4132487aaaa69b70a467863c
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         make W=3D1 O=3Dbuild_dir ARCH=3Dum SUBARCH=3Dx86_64 olddefconfig
->         make W=3D1 O=3Dbuild_dir ARCH=3Dum SUBARCH=3Dx86_64 SHELL=3D/bin/=
-bash
->
-> If you fix the issue, kindly add following tag where applicable
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202306030252.UOXkWZTK-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->    In file included from include/linux/bpf_verifier.h:7,
->                     from net/core/filter.c:21:
->    include/linux/bpf.h: In function 'bpf_token_new_fd':
->    include/linux/bpf.h:2475:16: warning: returning 'int' from a function =
-with return type 'struct bpf_token *' makes pointer from integer without a =
-cast [-Wint-conversion]
->     2475 |         return -EOPNOTSUPP;
->          |                ^
+> __mark_chain_precision() would get to checkpoint #1 with only r6 as
+> precise, what should happen next?
 
-bad copy/paste, this function should return int. I forgot to test that
-everything compiles without CONFIG_BPF_SYSCALL.
+it should mark all SCALARs that have r6's ID in env->bt, and then
+proceed with precision propagation until next parent state? This is
+where you'll mark r7, because in parent state (checkpoint #1) r6.id =3D=3D
+r7.id.
+
+It might be easier to just discuss latest code you have, there are
+lots of intricacies, and code wins over words :)
+
+>
+> As a side note: I added several optimizations:
+> - avoid allocation of scalar ids for constants;
+> - remove sole scalar ids from cached states;
+
+so that's what I was proposing earlier, but not just from cached
+states, but from any state. As soon as we get SCALAR with some ID that
+is not shared by any other SCALAR, we should try to drop that ID. The
+question is only in how to implement this efficiently.
+
+> - do a check as follows:
+>   if (rold->precise && rold->id && !check_ids(idmap, rold, rcur))
+>     return false;
+
+Hm.. do we need extra special case here? With precision changes we are
+discussion, and this removing singular SCALAR IDs you are proposing,
+just extending existing logic to:
+
+                if (regs_exact(rold, rcur, idmap))
+                        return true;
+                if (env->explore_alu_limits)
+                        return false;
+                if (!rold->precise)
+                        return true;
+                /* new val must satisfy old val knowledge */
+                return range_within(rold, rcur) &&
+                       check_ids(rold->id, rcur->id, idmap) &&
+                       check_ids(rold->ref_obj_id, rcur->ref_obj_id, idmap)=
+ &&
+                       tnum_in(rold->var_off, rcur->var_off);
+
+wouldn't be enough?
 
 
->    net/core/filter.c: In function 'bpf_sk_base_func_proto':
-> >> net/core/filter.c:11653:14: error: implicit declaration of function 'b=
-pf_token_capable'; did you mean 'bpf_token_put'? [-Werror=3Dimplicit-functi=
-on-declaration]
->    11653 |         if (!bpf_token_capable(prog->aux->token, CAP_PERFMON))
->          |              ^~~~~~~~~~~~~~~~~
->          |              bpf_token_put
->    cc1: some warnings being treated as errors
 >
->
-
-hm.. maybe I'll just make bpf_token_capable() a static inline function
-in include/linux/bpf.h
-
-> vim +11653 net/core/filter.c
->
->  11619
->  11620  static const struct bpf_func_proto *
->  11621  bpf_sk_base_func_proto(enum bpf_func_id func_id, const struct bpf=
-_prog *prog)
->  11622  {
->  11623          const struct bpf_func_proto *func;
->  11624
->  11625          switch (func_id) {
->  11626          case BPF_FUNC_skc_to_tcp6_sock:
->  11627                  func =3D &bpf_skc_to_tcp6_sock_proto;
->  11628                  break;
->  11629          case BPF_FUNC_skc_to_tcp_sock:
->  11630                  func =3D &bpf_skc_to_tcp_sock_proto;
->  11631                  break;
->  11632          case BPF_FUNC_skc_to_tcp_timewait_sock:
->  11633                  func =3D &bpf_skc_to_tcp_timewait_sock_proto;
->  11634                  break;
->  11635          case BPF_FUNC_skc_to_tcp_request_sock:
->  11636                  func =3D &bpf_skc_to_tcp_request_sock_proto;
->  11637                  break;
->  11638          case BPF_FUNC_skc_to_udp6_sock:
->  11639                  func =3D &bpf_skc_to_udp6_sock_proto;
->  11640                  break;
->  11641          case BPF_FUNC_skc_to_unix_sock:
->  11642                  func =3D &bpf_skc_to_unix_sock_proto;
->  11643                  break;
->  11644          case BPF_FUNC_skc_to_mptcp_sock:
->  11645                  func =3D &bpf_skc_to_mptcp_sock_proto;
->  11646                  break;
->  11647          case BPF_FUNC_ktime_get_coarse_ns:
->  11648                  return &bpf_ktime_get_coarse_ns_proto;
->  11649          default:
->  11650                  return bpf_base_func_proto(func_id, prog);
->  11651          }
->  11652
->  11653          if (!bpf_token_capable(prog->aux->token, CAP_PERFMON))
->  11654                  return NULL;
->  11655
->  11656          return func;
->  11657  }
->  11658
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
->
+> And I'm seeing almost zero performance overhead now.
+> So, maybe what we figured so far is good enough.
+> Need to add more tests, though.
 
