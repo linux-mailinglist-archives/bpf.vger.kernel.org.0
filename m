@@ -1,167 +1,114 @@
-Return-Path: <bpf+bounces-1720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F3C6720886
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 19:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB03C7208BD
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 20:02:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EE1C1C21204
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 17:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57E901C2121D
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 18:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E3B156D2;
-	Fri,  2 Jun 2023 17:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F8219E47;
+	Fri,  2 Jun 2023 18:02:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99F4332EE
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 17:41:58 +0000 (UTC)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE45E4D;
-	Fri,  2 Jun 2023 10:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685727715; x=1717263715;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T2Z+PRpXdrWfJ6V1xooWewzuG3GPNhnATyZhAlZ8sMk=;
-  b=Ai4bgAhI+OpOunQxAFsSQj87zuD9DA+qTb6IvE7cp+GhARpp7JigySB5
-   iDLOz+ULws9Hy5ZEquPY8e01uXMH2dmoABphA0W3/DlCwaBK9Z8mk0ggg
-   V3plO4MtsiWjroDGYhgG72foClq43g26pU2/rj6gUB0KlOQaXkhEXoCpf
-   t7ngkpFNzHnvw3BOl5nUzEgSeuZWqirYdeKfZPsgFfMW+ns9aq27KBC6h
-   CxyFAr82sCwnb4zI/du/xsNIO7Dgco9tc2frsJHJxHslMbkPl5mXVfPV0
-   SAh5BLhocqkGTdBtKQoZw8Gw2hg7CU6OeRLXdthwsEpXbA2OeN1mdE1HG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="345504647"
-X-IronPort-AV: E=Sophos;i="6.00,213,1681196400"; 
-   d="scan'208";a="345504647"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2023 10:41:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="832051610"
-X-IronPort-AV: E=Sophos;i="6.00,213,1681196400"; 
-   d="scan'208";a="832051610"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 02 Jun 2023 10:41:52 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q58md-0000mp-1B;
-	Fri, 02 Jun 2023 17:41:51 +0000
-Date: Sat, 3 Jun 2023 01:41:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-security-module@vger.kernel.org,
-	keescook@chromium.org, brauner@kernel.org, lennart@poettering.net,
-	cyphar@cyphar.com, luto@kernel.org
-Subject: Re: [PATCH RESEND bpf-next 01/18] bpf: introduce BPF token object
-Message-ID: <202306030138.u9AeNgUk-lkp@intel.com>
-References: <20230602150011.1657856-2-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD97D332F8
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 18:02:40 +0000 (UTC)
+Received: from out-13.mta0.migadu.com (out-13.mta0.migadu.com [91.218.175.13])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC129F
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 11:02:38 -0700 (PDT)
+Message-ID: <5abdfec7-99ac-be3a-634c-3eb666538ef4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685728956;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zrGD9OMkGhJtac2x9I9En+gw++jJ6NK7d7RXEiUo6fY=;
+	b=fwlZmRSpI5V1nqE1tr6BdKMrLOOdWb0+Xni3pa7m9qvHbL5S8kTk6JyHAwnN66GheaPZxj
+	GI0H4WIE0zTLxI9u8C+pFIuuPyNbfPCdiQJsSeoWxrFPFaYRQcHOfGytMrqiEkozwe1Tbl
+	cZ4knGRJA9P2KtLhcdFTHSdivFGGYf8=
+Date: Fri, 2 Jun 2023 11:02:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230602150011.1657856-2-andrii@kernel.org>
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Subject: Re: [PATCH bpf v2] bpf: Fix UAF in task local storage
+Content-Language: en-US
+To: KP Singh <kpsingh@kernel.org>
+Cc: ast@kernel.org, songliubraving@fb.com, andrii@kernel.org,
+ daniel@iogearbox.net, Kuba Piecuch <jpiecuch@google.com>, bpf@vger.kernel.org
+References: <20230602002612.1117381-1-kpsingh@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230602002612.1117381-1-kpsingh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Andrii,
+On 6/1/23 5:26 PM, KP Singh wrote:
+> When task local storage was generalized for tracing programs, the
+> bpf_task_local_storage callback was moved from a BPF LSM hook
+> callback for security_task_free LSM hook to it's own callback. But a
+> failure case in bad_fork_cleanup_security was missed which, when
+> triggered, led to a dangling task owner pointer and a subsequent
+> use-after-free. Move the bpf_task_storage_free to the very end of
+> free_task to handle all failure cases.
+> 
+> This issue was noticed when a BPF LSM program was attached to the
+> task_alloc hook on a kernel with KASAN enabled. The program used
+> bpf_task_storage_get to copy the task local storage from the current
+> task to the new task being created.
+> 
+> Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
+> Reported-by: Kuba Piecuch <jpiecuch@google.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+> 
+> * v1 -> v2
+> 
+> Move the bpf_task_storage_free to free_task as suggested by Martin
+> 
+>   kernel/fork.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index ed4e01daccaa..cb20f9f596d3 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -627,6 +627,7 @@ void free_task(struct task_struct *tsk)
+>   	arch_release_task_struct(tsk);
+>   	if (tsk->flags & PF_KTHREAD)
+>   		free_kthread_struct(tsk);
+> +	bpf_task_storage_free(tsk);
 
-kernel test robot noticed the following build warnings:
+Applied. Thanks for the fix.
 
-[auto build test WARNING on bpf-next/master]
+A followup question, does it need a "notrace" to be added to 
+bpf_task_storage_free to ensure no task storage can be recreated?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-introduce-BPF-token-object/20230602-230448
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230602150011.1657856-2-andrii%40kernel.org
-patch subject: [PATCH RESEND bpf-next 01/18] bpf: introduce BPF token object
-config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20230603/202306030138.u9AeNgUk-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/59e6ef2000a056ce3386db8481e477e5abfbbe15
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Andrii-Nakryiko/bpf-introduce-BPF-token-object/20230602-230448
-        git checkout 59e6ef2000a056ce3386db8481e477e5abfbbe15
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 olddefconfig
-        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash kernel/ net/core/
+>   	free_task_struct(tsk);
+>   }
+>   EXPORT_SYMBOL(free_task);
+> @@ -979,7 +980,6 @@ void __put_task_struct(struct task_struct *tsk)
+>   	cgroup_free(tsk);
+>   	task_numa_free(tsk, true);
+>   	security_task_free(tsk);
+> -	bpf_task_storage_free(tsk);
+>   	exit_creds(tsk);
+>   	delayacct_tsk_free(tsk);
+>   	put_signal_struct(tsk->signal);
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306030138.u9AeNgUk-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from kernel/fork.c:98:
-   include/linux/bpf.h: In function 'bpf_token_new_fd':
->> include/linux/bpf.h:2465:16: warning: returning 'int' from a function with return type 'struct bpf_token *' makes pointer from integer without a cast [-Wint-conversion]
-    2465 |         return -EOPNOTSUPP;
-         |                ^
-   kernel/fork.c: At top level:
-   kernel/fork.c:164:13: warning: no previous prototype for 'arch_release_task_struct' [-Wmissing-prototypes]
-     164 | void __weak arch_release_task_struct(struct task_struct *tsk)
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/fork.c:991:20: warning: no previous prototype for 'arch_task_cache_init' [-Wmissing-prototypes]
-     991 | void __init __weak arch_task_cache_init(void) { }
-         |                    ^~~~~~~~~~~~~~~~~~~~
-   kernel/fork.c:1086:12: warning: no previous prototype for 'arch_dup_task_struct' [-Wmissing-prototypes]
-    1086 | int __weak arch_dup_task_struct(struct task_struct *dst,
-         |            ^~~~~~~~~~~~~~~~~~~~
---
-   In file included from include/linux/filter.h:9,
-                    from kernel/sysctl.c:35:
-   include/linux/bpf.h: In function 'bpf_token_new_fd':
->> include/linux/bpf.h:2465:16: warning: returning 'int' from a function with return type 'struct bpf_token *' makes pointer from integer without a cast [-Wint-conversion]
-    2465 |         return -EOPNOTSUPP;
-         |                ^
---
-   In file included from include/linux/filter.h:9,
-                    from kernel/kallsyms.c:25:
-   include/linux/bpf.h: In function 'bpf_token_new_fd':
->> include/linux/bpf.h:2465:16: warning: returning 'int' from a function with return type 'struct bpf_token *' makes pointer from integer without a cast [-Wint-conversion]
-    2465 |         return -EOPNOTSUPP;
-         |                ^
-   kernel/kallsyms.c: At top level:
-   kernel/kallsyms.c:662:12: warning: no previous prototype for 'arch_get_kallsym' [-Wmissing-prototypes]
-     662 | int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
-         |            ^~~~~~~~~~~~~~~~
---
-   In file included from include/linux/filter.h:9,
-                    from kernel/bpf/core.c:21:
-   include/linux/bpf.h: In function 'bpf_token_new_fd':
->> include/linux/bpf.h:2465:16: warning: returning 'int' from a function with return type 'struct bpf_token *' makes pointer from integer without a cast [-Wint-conversion]
-    2465 |         return -EOPNOTSUPP;
-         |                ^
-   kernel/bpf/core.c: At top level:
-   kernel/bpf/core.c:1638:12: warning: no previous prototype for 'bpf_probe_read_kernel' [-Wmissing-prototypes]
-    1638 | u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-         |            ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/core.c:2075:6: warning: no previous prototype for 'bpf_patch_call_args' [-Wmissing-prototypes]
-    2075 | void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
-         |      ^~~~~~~~~~~~~~~~~~~
-
-
-vim +2465 include/linux/bpf.h
-
-  2462	
-  2463	static inline struct bpf_token *bpf_token_new_fd(struct bpf_token *token)
-  2464	{
-> 2465		return -EOPNOTSUPP;
-  2466	}
-  2467	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
