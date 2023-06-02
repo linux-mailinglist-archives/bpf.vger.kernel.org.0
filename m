@@ -1,172 +1,168 @@
-Return-Path: <bpf+bounces-1664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1666-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D40571FCBF
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 10:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B69571FDA6
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 11:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D70481C20B39
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 08:53:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4461C20BE4
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 09:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03B817720;
-	Fri,  2 Jun 2023 08:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFA617AB7;
+	Fri,  2 Jun 2023 09:22:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0B246AA
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 08:52:56 +0000 (UTC)
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B331713
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 01:52:53 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-565a3cdba71so20018137b3.0
-        for <bpf@vger.kernel.org>; Fri, 02 Jun 2023 01:52:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685695973; x=1688287973;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2vC5VC4yFEIJf6awDHKSY7ygYDdMqF7ISKjmMUJqgZ8=;
-        b=p6ALRpcCoWAYSCUO0S9HG3Dx73tNS7HGqhVFtcdDozhYP6EeuGlp9Szt94Vk6l2LEl
-         OCsYJD/Y6/Ro+lNSZOrQT6M7tOhp2MU3jr5QSCBhm0OiQlFOALzJpio9ctWWJw7HWVBE
-         um1zsbxRFylGSl9WapiC2tOqv/EiavE3u2ok+QRQ69d6zNjldAawQvL0B6fwb8dO41t7
-         bn1jqrqQvVPgonGU7rUYjKl1MK3fSp8DCKDEAk8pYdXu+RO8pr65ns+O4HchJVvFqKgK
-         zVazgNWxBhRqBPH1TpRaS3o9xboRg5bHdy+wr6p89OryaD/0mhDL0M9ATYV5Xjs9Uhyl
-         3gXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685695973; x=1688287973;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2vC5VC4yFEIJf6awDHKSY7ygYDdMqF7ISKjmMUJqgZ8=;
-        b=Ybj4eYtNSCvBxwkcPaImVaDt/4C0BGlAFYSmsxlkI/tiwGW9BtMy9cARnc9TVUKR/M
-         H7JvSPyZevL0WbvBS8fOTJRXKTv37mLDjDoJ4RTo2q5lN3ROLh/I5nQMZTm7yxSfORZa
-         QGpZrsrQnrSFOq3z5sq2xTgDjaHJ2PxMUV1AM010HUFSuwZSzXoG13UmtHqMpaBixDuI
-         Vk+qfdjvJwqZ18K6CggR7UrVOdKGfA7PXt6u1UdndzBdLc4+j3fwW/9J8I6dSRwIm6/z
-         y/0joA3/kjWcaFxvmoz8j29SBbkWNSJkcb7w7UmQT8aAa22upK8vNTtKP/xFS6MUUor9
-         laoQ==
-X-Gm-Message-State: AC+VfDyYAQb8y+4cNB+mdyHYUqCiTWG/Jfstv1vuakiJbIOLSZ+ABGB+
-	hdJEsvK5VZ2EvVKhnUNHAkU=
-X-Google-Smtp-Source: ACHHUZ7SHKrekYblIQYpIcUizpGJ0YWOZqEGgflxdJKOHrZaNQSb5xeFys5KdDw3DcnNYbnh/BSAVA==
-X-Received: by 2002:a81:778b:0:b0:568:bc0b:bf92 with SMTP id s133-20020a81778b000000b00568bc0bbf92mr13348346ywc.34.1685695972769;
-        Fri, 02 Jun 2023 01:52:52 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:5401:1e90:5400:4ff:fe75:fb5d])
-        by smtp.gmail.com with ESMTPSA id b123-20020a0dd981000000b00565c29cf592sm289828ywe.10.2023.06.02.01.52.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 01:52:52 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	quentin@isovalent.com
-Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 6/6] bpftool: Show probed function in perf_event link info
-Date: Fri,  2 Jun 2023 08:52:39 +0000
-Message-Id: <20230602085239.91138-7-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230602085239.91138-1-laoar.shao@gmail.com>
-References: <20230602085239.91138-1-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3215317744;
+	Fri,  2 Jun 2023 09:22:15 +0000 (UTC)
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFCB1A8;
+	Fri,  2 Jun 2023 02:22:10 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vk9LP5-_1685697726;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vk9LP5-_1685697726)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Jun 2023 17:22:07 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: virtualization@lists.linux-foundation.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH vhost v10 00/10] virtio core prepares for AF_XDP
+Date: Fri,  2 Jun 2023 17:21:56 +0800
+Message-Id: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Git-Hash: 3bf1b1dbeb8a
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Show the exposed perf_event link info in bpftool. The result as follows,
+## About DMA APIs
 
-$ bpftool link show
-1: perf_event  prog 5
-        func kernel_clone  addr ffffffffb40bc310  offset 0
-        bpf_cookie 0
-        pids trace(9726)
-$ bpftool link show -j
-[{"id":1,"type":"perf_event","prog_id":5,"func":"kernel_clone","addr":18446744072435254032,"offset":0,"bpf_cookie":0,"pids":[{"pid":9726,"comm":"trace"}]}]
+Now, virtio may can not work with DMA APIs when virtio features do not have
+VIRTIO_F_ACCESS_PLATFORM.
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/bpf/bpftool/link.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+1. I tried to let DMA APIs return phy address by virtio-device. But DMA APIs just
+   work with the "real" devices.
+2. I tried to let xsk support callballs to get phy address from virtio-net
+   driver as the dma address. But the maintainers of xsk may want to use dma-buf
+   to replace the DMA APIs. I think that may be a larger effort. We will wait
+   too long.
 
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 3b00c07..045f59f 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -280,6 +280,12 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
- 			kernel_syms_show(addrs, info->kprobe_multi.count, 0);
- 		jsonw_end_array(json_wtr);
- 		break;
-+	case BPF_LINK_TYPE_PERF_EVENT:
-+		jsonw_string_field(json_wtr, "func",
-+				   u64_to_ptr(info->perf_event.name));
-+		jsonw_uint_field(json_wtr, "addr", info->perf_event.addr);
-+		jsonw_uint_field(json_wtr, "offset", info->perf_event.offset);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -416,7 +422,7 @@ void netfilter_dump_plain(const struct bpf_link_info *info)
- static int show_link_close_plain(int fd, struct bpf_link_info *info)
- {
- 	struct bpf_prog_info prog_info;
--	const char *prog_type_str;
-+	const char *prog_type_str, *buf;
- 	int err;
- 
- 	show_link_header_plain(info);
-@@ -472,6 +478,12 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
- 		addrs = (const __u64 *)u64_to_ptr(info->kprobe_multi.addrs);
- 		kernel_syms_show(addrs, cnt, indent);
- 		break;
-+	case BPF_LINK_TYPE_PERF_EVENT:
-+		buf = (const char *)u64_to_ptr(info->perf_event.name);
-+		if (buf[0] != '\0' || info->perf_event.addr)
-+			printf("\n\tfunc %s  addr %llx  offset %d  ", buf,
-+			       info->perf_event.addr, info->perf_event.offset);
-+		break;
- 	default:
- 		break;
- 	}
-@@ -498,6 +510,7 @@ static int do_show_link(int fd)
- 	int count;
- 	int err;
- 
-+	buf[0] = '\0';
- 	memset(&info, 0, sizeof(info));
- again:
- 	err = bpf_link_get_info_by_fd(fd, &info, &len);
-@@ -533,6 +546,12 @@ static int do_show_link(int fd)
- 			goto again;
- 		}
- 	}
-+	if (info.type == BPF_LINK_TYPE_PERF_EVENT &&
-+	    !info.perf_event.name) {
-+		info.perf_event.name = (unsigned long)&buf;
-+		info.perf_event.name_len = sizeof(buf);
-+		goto again;
-+	}
- 
- 	if (json_output)
- 		show_link_close_json(fd, &info);
--- 
-1.8.3.1
+So rethinking this, firstly, we can support premapped-dma only for devices with
+VIRTIO_F_ACCESS_PLATFORM. In the case of af-xdp, if the users want to use it,
+they have to update the device to support VIRTIO_F_RING_RESET, and they can also
+enable the device's VIRTIO_F_ACCESS_PLATFORM feature.
+
+Thanks for the help from Christoph.
+
+=================
+
+XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good.
+
+ENV: Qemu with vhost.
+
+                   vhost cpu | Guest APP CPU |Guest Softirq CPU | PPS
+-----------------------------|---------------|------------------|------------
+xmit by sockperf:     90%    |   100%        |                  |  318967
+xmit by xsk:          100%   |   30%         |   33%            | 1192064
+recv by sockperf:     100%   |   68%         |   100%           |  692288
+recv by xsk:          100%   |   33%         |   43%            |  771670
+
+Before achieving the function of Virtio-Net, we also have to let virtio core
+support these features:
+
+1. virtio core support premapped
+2. virtio core support reset per-queue
+3. introduce DMA APIs to virtio core
+
+Please review.
+
+Thanks.
+
+v10:
+ 1. support to set vq to premapped mode, then the vq just handles the premapped request.
+ 2. virtio-net support to do dma mapping in advance
+
+v9:
+ 1. use flag to distinguish the premapped operations. no do judgment by sg.
+
+v8:
+ 1. vring_sg_address: check by sg_page(sg) not dma_address. Because 0 is a valid dma address
+ 2. remove unused code from vring_map_one_sg()
+
+v7:
+ 1. virtqueue_dma_dev() return NULL when virtio is without DMA API.
+
+v6:
+ 1. change the size of the flags to u32.
+
+v5:
+ 1. fix for error handler
+ 2. add flags to record internal dma mapping
+
+v4:
+ 1. rename map_inter to dma_map_internal
+ 2. fix: Excess function parameter 'vq' description in 'virtqueue_dma_dev'
+
+v3:
+ 1. add map_inter to struct desc state to reocrd whether virtio core do dma map
+
+v2:
+ 1. based on sgs[0]->dma_address to judgment is premapped
+ 2. based on extra.addr to judgment to do unmap for no-indirect desc
+ 3. based on indir_desc to judgment to do unmap for indirect desc
+ 4. rename virtqueue_get_dma_dev to virtqueue_dma_dev
+
+v1:
+ 1. expose dma device. NO introduce the api for dma and sync
+ 2. split some commit for review.
+
+
+
+
+Xuan Zhuo (10):
+  virtio_ring: put mapping error check in vring_map_one_sg
+  virtio_ring: introduce virtqueue_set_premapped()
+  virtio_ring: split: support add premapped buf
+  virtio_ring: packed: support add premapped buf
+  virtio_ring: split-detach: support return dma info to driver
+  virtio_ring: packed-detach: support return dma info to driver
+  virtio_ring: introduce helpers for premapped
+  virtio_ring: introduce virtqueue_dma_dev()
+  virtio_ring: introduce virtqueue_add_sg()
+  virtio_net: support dma premapped
+
+ drivers/net/virtio_net.c     | 163 ++++++++++--
+ drivers/virtio/virtio_ring.c | 493 +++++++++++++++++++++++++++++++----
+ include/linux/virtio.h       |  34 +++
+ 3 files changed, 612 insertions(+), 78 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
 
 
