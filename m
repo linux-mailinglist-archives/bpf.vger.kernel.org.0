@@ -1,102 +1,132 @@
-Return-Path: <bpf+bounces-1633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D30EF71F71C
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 02:26:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB43F71F72C
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 02:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F13B2818C2
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 00:26:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EFA01C20C5F
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 00:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28475ED8;
-	Fri,  2 Jun 2023 00:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB3510FA;
+	Fri,  2 Jun 2023 00:36:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2CB816
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 00:26:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 984E0C433D2;
-	Fri,  2 Jun 2023 00:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D5CEA8;
+	Fri,  2 Jun 2023 00:36:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E5AC433A1;
+	Fri,  2 Jun 2023 00:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685665582;
-	bh=p0jJDn6spmezGwjUHtzPF+Q+lQt+kfSEdVKqrj8rSA8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=KHpp9HLYp+xLSEZIeRkpEzynpg2KqikgUefbhJ/hrONx6659ZcBkAlDC57qNyghg/
-	 BfDKGnCAGxsEEDHJRbLy8Yx4T9WLbLnIxrrP0rk5JJ7QPaKiMoZsT6vxjbaNk1mQ/Q
-	 JnAaafo2vwIhNeBPNYSRs/gkoP0Hg4amuVRSoktYxBroASvB6bR/J3fRngvZfD4Ld+
-	 /iOPcsszrdRimOzUwFq8/9o/Dch3VtfkL0f39mA2yh6oh3kbyN6Tmj3KGMSuqp8KOj
-	 0uFSKdf0ZOAyy8FNGMzTHMq/uz195aBR1oIqhkN94TaHza7Yd7Oh7W/oVNujlBclYs
-	 CFNf8CccTs0qw==
-From: KP Singh <kpsingh@kernel.org>
-To: bpf@vger.kernel.org
-Cc: kafai@fb.com,
-	ast@kernel.org,
-	songliubraving@fb.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	Kuba Piecuch <jpiecuch@google.com>,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf v2] bpf: Fix UAF in task local storage
-Date: Fri,  2 Jun 2023 02:26:12 +0200
-Message-ID: <20230602002612.1117381-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+	s=k20201202; t=1685666196;
+	bh=8680DMzx0gtVOisbuW5F5FI58VdZiV3S7sDNyC66jIs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XTmFrz6x8P+uu4p7+8CwwHHAR8ToxETybv3aokjIkUt8au2/bliIWtKwA0GAbEtXU
+	 35MXE4ZwOYCOUbquOW3LQoZZDXhPbam+LWuZhJ0mqETvOfa2/rMGWxD+GJruYpNbS6
+	 ci30bYJW5Xs8iSRMEPad+knzjZDpipv9dxPxlL70NiYXhKXJnUs1HWnqvirj5dSWAN
+	 B2cCO/rarwHERSu66gvzGkFtyDmlSmQAJPI3dJJQqihBq56qTMR5zptT8HtrJ2b10S
+	 TMFJdORTSry9D8pvsZGiWSqPLVC1lC/A7oq6hOwBZbEcU0/jUM34HuLUgEBSnU29a0
+	 P+mvZ51/iQCoA==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-4f60bc818d7so1269054e87.1;
+        Thu, 01 Jun 2023 17:36:35 -0700 (PDT)
+X-Gm-Message-State: AC+VfDz01X/xqtBxs2VBC7kbZ7774EbwDGMYrk1Mdk03I6HzRaiW0yxT
+	U5plHKTKxbuE+J/FKIt2iVbdgdr0HQJB0Rp5MwY=
+X-Google-Smtp-Source: ACHHUZ4rAYUoiHYEWWqFuntxOuL06QmDCDII8lO4o2SuljgVgQXswY+xn62uFOnPiNtfcw4WXcIV+P9v/6p/Zkld05w=
+X-Received: by 2002:ac2:44ca:0:b0:4f3:b18a:6497 with SMTP id
+ d10-20020ac244ca000000b004f3b18a6497mr927744lfm.52.1685666193979; Thu, 01 Jun
+ 2023 17:36:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230601101257.530867-1-rppt@kernel.org>
+In-Reply-To: <20230601101257.530867-1-rppt@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Thu, 1 Jun 2023 17:36:21 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5Em5Sj9uCGyfM6BheTuvA4pviavRTUK-3MbGsd9yCRbQ@mail.gmail.com>
+Message-ID: <CAPhsuW5Em5Sj9uCGyfM6BheTuvA4pviavRTUK-3MbGsd9yCRbQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] mm: jit/text allocator
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When task local storage was generalized for tracing programs, the
-bpf_task_local_storage callback was moved from a BPF LSM hook
-callback for security_task_free LSM hook to it's own callback. But a
-failure case in bad_fork_cleanup_security was missed which, when
-triggered, led to a dangling task owner pointer and a subsequent
-use-after-free. Move the bpf_task_storage_free to the very end of
-free_task to handle all failure cases.
+On Thu, Jun 1, 2023 at 3:13=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wrot=
+e:
+>
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+>
+> Hi,
+>
+> module_alloc() is used everywhere as a mean to allocate memory for code.
+>
+> Beside being semantically wrong, this unnecessarily ties all subsystmes
+> that need to allocate code, such as ftrace, kprobes and BPF to modules
+> and puts the burden of code allocation to the modules code.
+>
+> Several architectures override module_alloc() because of various
+> constraints where the executable memory can be located and this causes
+> additional obstacles for improvements of code allocation.
+>
+> This set splits code allocation from modules by introducing
+> jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces call
+> sites of module_alloc() and module_memfree() with the new APIs and
+> implements core text and related allocation in a central place.
+>
+> Instead of architecture specific overrides for module_alloc(), the
+> architectures that require non-default behaviour for text allocation must
+> fill jit_alloc_params structure and implement jit_alloc_arch_params() tha=
+t
+> returns a pointer to that structure. If an architecture does not implemen=
+t
+> jit_alloc_arch_params(), the defaults compatible with the current
+> modules::module_alloc() are used.
+>
+> The new jitalloc infrastructure allows decoupling of kprobes and ftrace
+> from modules, and most importantly it enables ROX allocations for
+> executable memory.
 
-This issue was noticed when a BPF LSM program was attached to the
-task_alloc hook on a kernel with KASAN enabled. The program used
-bpf_task_storage_get to copy the task local storage from the current
-task to the new task being created.
+This set does look cleaner than my version [1]. However, this is
+partially because this set only separates text and data; while [1]
+also separates rw data, ro data, and ro_after_init data. We need
+such separation to fully cover module usage, and to remove
+VM_FLUSH_RESET_PERMS. Once we add these logic to this
+set, the two versions will look similar.
 
-Fixes: a10787e6d58c ("bpf: Enable task local storage for tracing programs")
-Reported-by: Kuba Piecuch <jpiecuch@google.com>
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
+OTOH, I do like the fact this version enables kprobes (and
+potentially ftrace and bpf) without CONFIG_MODULES. And
+mm/ seems a better home for the logic.
 
-* v1 -> v2
+That being said, besides comments in a few patches, this
+version looks good to me. With the fix I suggested for patch
+12/13, it passed my tests on x86_64 with modules, kprobes,
+ftrace, and BPF.
 
-Move the bpf_task_storage_free to free_task as suggested by Martin
+If we decided to ship this version, I would appreciate it if I
+could get more credit for my work in [1] and research work
+before that.
 
- kernel/fork.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Song
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index ed4e01daccaa..cb20f9f596d3 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -627,6 +627,7 @@ void free_task(struct task_struct *tsk)
- 	arch_release_task_struct(tsk);
- 	if (tsk->flags & PF_KTHREAD)
- 		free_kthread_struct(tsk);
-+	bpf_task_storage_free(tsk);
- 	free_task_struct(tsk);
- }
- EXPORT_SYMBOL(free_task);
-@@ -979,7 +980,6 @@ void __put_task_struct(struct task_struct *tsk)
- 	cgroup_free(tsk);
- 	task_numa_free(tsk, true);
- 	security_task_free(tsk);
--	bpf_task_storage_free(tsk);
- 	exit_creds(tsk);
- 	delayacct_tsk_free(tsk);
- 	put_signal_struct(tsk->signal);
--- 
-2.41.0.rc0.172.g3f132b7071-goog
-
+[1] https://lore.kernel.org/lkml/20230526051529.3387103-1-song@kernel.org/
 
