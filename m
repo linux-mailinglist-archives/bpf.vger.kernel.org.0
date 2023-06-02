@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-1644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23FA471F865
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 04:28:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A851D71F868
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 04:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1BB7281972
-	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 02:28:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C884281999
+	for <lists+bpf@lfdr.de>; Fri,  2 Jun 2023 02:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF5217E5;
-	Fri,  2 Jun 2023 02:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6563A185A;
+	Fri,  2 Jun 2023 02:27:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1E315AC
-	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 02:27:12 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F42180
-	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 19:27:11 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 351Ntt2i020129
-	for <bpf@vger.kernel.org>; Thu, 1 Jun 2023 19:27:11 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3281855
+	for <bpf@vger.kernel.org>; Fri,  2 Jun 2023 02:27:16 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807A18D
+	for <bpf@vger.kernel.org>; Thu,  1 Jun 2023 19:27:14 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 351NtW3h025378
+	for <bpf@vger.kernel.org>; Thu, 1 Jun 2023 19:27:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=WnkbqwD469opZcsZwnn6tu/4uQcYVyNcJxQq+7/GH/M=;
- b=IGXS36vFb9rHdJbsK31LdSoQMztEKY5AdrC8upAbNZhAIpmF49hyQrpcI+2jBjrtg010
- WevrKyeiQzKpgEQKBgNUA619IgZBsMiJr7GgXa3gFVxsy0EU/xO/QrTdG2DuQ0yhnF8Q
- dc30ya9/XCAVlhRc8IzY+Wt5aKO4s0zkX1M= 
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=sMkWbAkq5YkcH2ZwIaxp411OtvXYjEWVas3ZsCgZ9uk=;
+ b=Yfo+rjO1rimgLh6YWrmHoRCPRKDxJmLGuyakPftrcuJhndtM9tH/sf7rrY3A4ut0iYWS
+ oNcEZPTbi1tp5F9dd/bV7dA3v81qK+CRe+MV+BZ+6a+FRtsSa231kPrHILyFeT3EElVR
+ et/R9BeGYUoLuZBkfjd6zVGSxcL+Q53o8sI= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3qxcvfhm8s-1
+	by m0089730.ppops.net (PPS) with ESMTPS id 3qxhr11bpm-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 19:27:10 -0700
-Received: from twshared9332.02.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 01 Jun 2023 19:27:13 -0700
+Received: from twshared16624.09.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Thu, 1 Jun 2023 19:27:10 -0700
+ 15.1.2507.23; Thu, 1 Jun 2023 19:27:11 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id 6D2A71EF7C8E3; Thu,  1 Jun 2023 19:26:55 -0700 (PDT)
+	id EF6781EF7C8E6; Thu,  1 Jun 2023 19:26:55 -0700 (PDT)
 From: Dave Marchevsky <davemarchevsky@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>,
@@ -52,23 +52,24 @@ CC: Alexei Starovoitov <ast@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Dave Marchevsky
 	<davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 6/9] [DONOTAPPLY] selftests/bpf: Add unsafe lock/unlock and refcount_read kfuncs to bpf_testmod
-Date: Thu, 1 Jun 2023 19:26:44 -0700
-Message-ID: <20230602022647.1571784-7-davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next 7/9] [DONOTAPPLY] selftests/bpf: Add test exercising bpf_refcount_acquire race condition
+Date: Thu, 1 Jun 2023 19:26:45 -0700
+Message-ID: <20230602022647.1571784-8-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230602022647.1571784-1-davemarchevsky@fb.com>
 References: <20230602022647.1571784-1-davemarchevsky@fb.com>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: qKfR0RjsK7BLWmqpsycC6fJlcmviZGGE
+X-Proofpoint-ORIG-GUID: qKfR0RjsK7BLWmqpsycC6fJlcmviZGGE
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: JboYpShVh5WqsSkzjhVwFeh9w_L7fZfo
-X-Proofpoint-GUID: JboYpShVh5WqsSkzjhVwFeh9w_L7fZfo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
  definitions=2023-06-01_08,2023-05-31_03,2023-05-22_02
@@ -80,131 +81,340 @@ X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-[
-RFC: This patch currently copies static inline helpers:
+The selftest added in this patch is the exact scenario described by
+Kumar in [0] and fixed by earlier patches in this series. The long
+comment added in progs/refcounted_kptr.c restates the use-after-free
+scenario.
 
-  __bpf_spin_lock
-  __bpf_spin_unlock
-  __bpf_spin_lock_irqsave
-  __bpf_spin_unlock_irqrestore
+The added test uses bpf__unsafe_spin_{lock, unlock} to force the
+specific problematic interleaving we're interested in testing, and
+bpf_refcount_read to confirm refcount incr/decr work as expected.
 
-from kernel/bpf/helpers.c . The definition of these helpers is
-config-dependant and they're not meant to be called from a module, so
-not sure how to proceed here.
-]
-
-This patch adds three unsafe kfuncs to bpf_testmod for use in
-selftests:
-
-  - bpf__unsafe_spin_lock
-  - bpf__unsafe_spin_unlock
-  - bpf_refcount_read
-
-The first two are equivalent to bpf_spin_{lock, unlock}, except without
-any special treatment from the verifier, which allows them to be used in
-tests to guarantee a specific interleaving of program execution. This
-will simplify testing race conditions in BPF programs, as demonstrated
-in further patches in the series. The kfuncs are marked KF_DESTRUCTIVE
-as they can easily cause deadlock, and are only intended to be used in
-tests.
-
-bpf_refcount_read simply reads the refcount from the uapi-opaque
-bpf_refcount struct and returns it. This allows more precise testing of
-specific bpf_refcount scenarios, also demonstrated in further patches in
-the series. Although this kfunc can't break the system as
-catastrophically as the unsafe locking kfuncs, it's also marked
-KF_DESTRUCTIVE as it relies on bpf_refcount implementation details, and
-shouldn't be used outside of tests regardless.
+  [0]: https://lore.kernel.org/bpf/atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd=
+7tnwft34e3@xktodqeqevir/
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ .../bpf/prog_tests/refcounted_kptr.c          | 104 +++++++++++-
+ .../selftests/bpf/progs/refcounted_kptr.c     | 158 ++++++++++++++++++
+ 2 files changed, 261 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index cf216041876c..abac7a212ec2 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -109,6 +109,64 @@ __bpf_kfunc void bpf_iter_testmod_seq_destroy(struct=
- bpf_iter_testmod_seq *it)
- 	it->cnt =3D 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c b/too=
+ls/testing/selftests/bpf/prog_tests/refcounted_kptr.c
+index 2ab23832062d..e7fcc1dd8864 100644
+--- a/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/refcounted_kptr.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+-
++#define _GNU_SOURCE
+ #include <test_progs.h>
+ #include <network_helpers.h>
++#include <pthread.h>
++#include <sched.h>
+=20
+ #include "refcounted_kptr.skel.h"
+ #include "refcounted_kptr_fail.skel.h"
+@@ -16,3 +18,103 @@ void test_refcounted_kptr_fail(void)
+ {
+ 	RUN_TESTS(refcounted_kptr_fail);
+ }
++
++static void force_cpu(pthread_t thread, int cpunum)
++{
++	cpu_set_t cpuset;
++	int err;
++
++	CPU_ZERO(&cpuset);
++	CPU_SET(cpunum, &cpuset);
++	err =3D pthread_setaffinity_np(thread, sizeof(cpuset), &cpuset);
++	if (!ASSERT_OK(err, "pthread_setaffinity_np"))
++		return;
++}
++
++struct refcounted_kptr *skel;
++
++static void *run_unstash_acq_ref(void *unused)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.data_in =3D &pkt_v4,
++		.data_size_in =3D sizeof(pkt_v4),
++		.repeat =3D 1,
++	);
++	long ret, unstash_acq_ref_fd;
++	force_cpu(pthread_self(), 1);
++
++	unstash_acq_ref_fd =3D bpf_program__fd(skel->progs.unstash_add_and_acquir=
+e_refcount);
++
++	ret =3D bpf_prog_test_run_opts(unstash_acq_ref_fd, &opts);
++	ASSERT_EQ(opts.retval, 0, "unstash_add_and_acquire_refcount retval");
++	ASSERT_EQ(skel->bss->ref_check_3, 2, "ref_check_3");
++	ASSERT_EQ(skel->bss->ref_check_4, 1, "ref_check_4");
++	ASSERT_EQ(skel->bss->ref_check_5, 0, "ref_check_5");
++	pthread_exit((void *)ret);
++}
++
++void test_refcounted_kptr_races(void)
++{
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.data_in =3D &pkt_v4,
++		.data_size_in =3D sizeof(pkt_v4),
++		.repeat =3D 1,
++	);
++	int ref_acq_lock_fd, ref_acq_unlock_fd, rem_node_lock_fd;
++	int add_stash_fd, remove_tree_fd;
++	pthread_t thread_id;
++	int ret;
++
++	force_cpu(pthread_self(), 0);
++	skel =3D refcounted_kptr__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "refcounted_kptr__open_and_load"))
++		return;
++
++	add_stash_fd =3D bpf_program__fd(skel->progs.add_refcounted_node_to_tree_=
+and_stash);
++	remove_tree_fd =3D bpf_program__fd(skel->progs.remove_refcounted_node_fro=
+m_tree);
++	ref_acq_lock_fd =3D bpf_program__fd(skel->progs.unsafe_ref_acq_lock);
++	ref_acq_unlock_fd =3D bpf_program__fd(skel->progs.unsafe_ref_acq_unlock);
++	rem_node_lock_fd =3D bpf_program__fd(skel->progs.unsafe_rem_node_lock);
++
++	ret =3D bpf_prog_test_run_opts(rem_node_lock_fd, &opts);
++	if (!ASSERT_OK(ret, "rem_node_lock"))
++		return;
++
++	ret =3D bpf_prog_test_run_opts(ref_acq_lock_fd, &opts);
++	if (!ASSERT_OK(ret, "ref_acq_lock"))
++		return;
++
++	ret =3D bpf_prog_test_run_opts(add_stash_fd, &opts);
++	if (!ASSERT_OK(ret, "add_stash"))
++		return;
++	if (!ASSERT_OK(opts.retval, "add_stash retval"))
++		return;
++
++	ret =3D pthread_create(&thread_id, NULL, &run_unstash_acq_ref, NULL);
++	if (!ASSERT_OK(ret, "pthread_create"))
++		goto cleanup;
++
++	force_cpu(thread_id, 1);
++
++	/* This program will execute before unstash_acq_ref's refcount_acquire, t=
+hen
++	 * unstash_acq_ref can proceed after unsafe_unlock
++	 */
++	ret =3D bpf_prog_test_run_opts(remove_tree_fd, &opts);
++	if (!ASSERT_OK(ret, "remove_tree"))
++		goto cleanup;
++
++	ret =3D bpf_prog_test_run_opts(ref_acq_unlock_fd, &opts);
++	if (!ASSERT_OK(ret, "ref_acq_unlock"))
++		goto cleanup;
++
++	ret =3D pthread_join(thread_id, NULL);
++	if (!ASSERT_OK(ret, "pthread_join"))
++		goto cleanup;
++
++	refcounted_kptr__destroy(skel);
++	return;
++cleanup:
++	bpf_prog_test_run_opts(ref_acq_unlock_fd, &opts);
++	refcounted_kptr__destroy(skel);
++	return;
++}
+diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr.c b/tools/te=
+sting/selftests/bpf/progs/refcounted_kptr.c
+index a3da610b1e6b..2951f45291c1 100644
+--- a/tools/testing/selftests/bpf/progs/refcounted_kptr.c
++++ b/tools/testing/selftests/bpf/progs/refcounted_kptr.c
+@@ -39,9 +39,20 @@ private(A) struct bpf_spin_lock lock;
+ private(A) struct bpf_rb_root root __contains(node_data, r);
+ private(A) struct bpf_list_head head __contains(node_data, l);
+=20
++private(C) struct bpf_spin_lock lock2;
++private(C) struct bpf_rb_root root2 __contains(node_data, r);
++
+ private(B) struct bpf_spin_lock alock;
+ private(B) struct bpf_rb_root aroot __contains(node_acquire, node);
+=20
++private(D) struct bpf_spin_lock ref_acq_lock;
++private(E) struct bpf_spin_lock rem_node_lock;
++
++/* Provided by bpf_testmod */
++extern void bpf__unsafe_spin_lock(void *lock__ign) __ksym;
++extern void bpf__unsafe_spin_unlock(void *lock__ign) __ksym;
++extern volatile int bpf_refcount_read(void *refcount__ign) __ksym;
++
+ static bool less(struct bpf_rb_node *node_a, const struct bpf_rb_node *nod=
+e_b)
+ {
+ 	struct node_data *a;
+@@ -405,4 +416,151 @@ long rbtree_refcounted_node_ref_escapes_owning_input(=
+void *ctx)
+ 	return 0;
  }
 =20
-+/* BEGIN copied from kernel/bpf/helpers.c */
-+static DEFINE_PER_CPU(unsigned long, irqsave_flags);
-+
-+static inline void __bpf_spin_lock(struct bpf_spin_lock *lock)
++SEC("tc")
++long unsafe_ref_acq_lock(void *ctx)
 +{
-+        arch_spinlock_t *l =3D (void *)lock;
-+        union {
-+                __u32 val;
-+                arch_spinlock_t lock;
-+        } u =3D { .lock =3D __ARCH_SPIN_LOCK_UNLOCKED };
-+
-+        compiletime_assert(u.val =3D=3D 0, "__ARCH_SPIN_LOCK_UNLOCKED no=
-t 0");
-+        BUILD_BUG_ON(sizeof(*l) !=3D sizeof(__u32));
-+        BUILD_BUG_ON(sizeof(*lock) !=3D sizeof(__u32));
-+        arch_spin_lock(l);
++	bpf__unsafe_spin_lock(&ref_acq_lock);
++	return 0;
 +}
 +
-+static inline void __bpf_spin_unlock(struct bpf_spin_lock *lock)
++SEC("tc")
++long unsafe_ref_acq_unlock(void *ctx)
 +{
-+        arch_spinlock_t *l =3D (void *)lock;
-+
-+        arch_spin_unlock(l);
++	bpf__unsafe_spin_unlock(&ref_acq_lock);
++	return 0;
 +}
 +
-+static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
++SEC("tc")
++long unsafe_rem_node_lock(void *ctx)
 +{
-+        unsigned long flags;
-+
-+        local_irq_save(flags);
-+        __bpf_spin_lock(lock);
-+        __this_cpu_write(irqsave_flags, flags);
++	bpf__unsafe_spin_lock(&rem_node_lock);
++	return 0;
 +}
 +
-+static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lo=
-ck)
++/* The following 3 progs are used in concert to test a bpf_refcount-related
++ * race. Consider the following pseudocode interleaving of rbtree operatio=
+ns:
++ *
++ * (Assumptions: n, m, o, p, q are pointers to nodes, t1 and t2 are differ=
+ent
++ * rbtrees, l1 and l2 are locks accompanying the trees, mapval is some
++ * kptr_xchg'able ptr_to_map_value. A single node is being manipulated by =
+both
++ * programs. Irrelevant error-checking and casting is omitted.)
++ *
++ *               CPU O                               CPU 1
++ *     ----------------------------------|---------------------------
++ *     n =3D bpf_obj_new  [0]              |
++ *     lock(l1)                          |
++ *     bpf_rbtree_add(t1, &n->r, less)   |
++ *     m =3D bpf_refcount_acquire(n)  [1]  |
++ *     unlock(l1)                        |
++ *     kptr_xchg(mapval, m)         [2]  |
++ *     --------------------------------------------------------------
++ *                                       |    o =3D kptr_xchg(mapval, NULL=
+)  [3]
++ *                                       |    lock(l2)
++ *                                       |    rbtree_add(t2, &o->r, less) =
+ [4]
++ *     --------------------------------------------------------------
++ *     lock(l1)                          |
++ *     p =3D rbtree_first(t1)              |
++ *     p =3D rbtree_remove(t1, p)          |
++ *     unlock(l1)                        |
++ *     if (p)                            |
++ *       bpf_obj_drop(p)  [5]            |
++ *     --------------------------------------------------------------
++ *                                       |    q =3D bpf_refcount_acquire(o=
+)  [6]
++ *                                       |    unlock(l2)
++ *
++ * If bpf_refcount_acquire can't fail, the sequence of operations on the n=
+ode's
++ * refcount is:
++ *    [0] - refcount initialized to 1
++ *    [1] - refcount bumped to 2
++ *    [2] - refcount is still 2, but m's ownership passed to mapval
++ *    [3] - refcount is still 2, mapval's ownership passed to o
++ *    [4] - refcount is decr'd to 1, rbtree_add fails, node is already in =
+t1
++ *          o is converted to non-owning reference
++ *    [5] - refcount is decr'd to 0, node free'd
++ *    [6] - refcount is incr'd to 1 from 0, ERROR
++ *
++ * To prevent [6] bpf_refcount_acquire was made failable. This interleavin=
+g is
++ * used to test failable refcount_acquire.
++ *
++ * The two halves of CPU 0's operations are implemented by
++ * add_refcounted_node_to_tree_and_stash and remove_refcounted_node_from_t=
+ree.
++ * We can't do the same for CPU 1's operations due to l2 critical section.
++ * Instead, bpf__unsafe_spin_{lock, unlock} are used to ensure the expected
++ * order of operations.
++ */
++
++SEC("tc")
++long add_refcounted_node_to_tree_and_stash(void *ctx)
 +{
-+        unsigned long flags;
++	long err;
 +
-+        flags =3D __this_cpu_read(irqsave_flags);
-+        __bpf_spin_unlock(lock);
-+        local_irq_restore(flags);
++	err =3D __stash_map_insert_tree(0, 42, &root, &lock);
++	if (err)
++		return err;
++
++	return 0;
 +}
-+/* END copied from kernel/bpf/helpers.c */
 +
-+__bpf_kfunc void bpf__unsafe_spin_lock(void *lock__ign)
++SEC("tc")
++long remove_refcounted_node_from_tree(void *ctx)
 +{
-+	__bpf_spin_lock_irqsave((struct bpf_spin_lock *)lock__ign);
++	long ret =3D 0;
++
++	/* rem_node_lock is held by another program to force race */
++	bpf__unsafe_spin_lock(&rem_node_lock);
++	ret =3D __read_from_tree(&root, &lock, true);
++	if (ret !=3D 42)
++		return ret;
++
++	bpf__unsafe_spin_unlock(&rem_node_lock);
++	return 0;
 +}
 +
-+__bpf_kfunc void bpf__unsafe_spin_unlock(void *lock__ign)
++/* ref_check_n numbers correspond to refcount operation points in comment =
+above */
++int ref_check_3, ref_check_4, ref_check_5;
++
++SEC("tc")
++long unstash_add_and_acquire_refcount(void *ctx)
 +{
-+	__bpf_spin_unlock_irqrestore((struct bpf_spin_lock *)lock__ign);
++	struct map_value *mapval;
++	struct node_data *n, *m;
++	int idx =3D 0;
++
++	mapval =3D bpf_map_lookup_elem(&stashed_nodes, &idx);
++	if (!mapval)
++		return -1;
++
++	n =3D bpf_kptr_xchg(&mapval->node, NULL);
++	if (!n)
++		return -2;
++	ref_check_3 =3D bpf_refcount_read(&n->ref);
++
++	bpf_spin_lock(&lock2);
++	bpf_rbtree_add(&root2, &n->r, less);
++	ref_check_4 =3D bpf_refcount_read(&n->ref);
++
++	/* Let CPU 0 do first->remove->drop */
++	bpf__unsafe_spin_unlock(&rem_node_lock);
++
++	/* ref_acq_lock is held by another program to force race
++	 * when this program holds the lock, remove_refcounted_node_from_tree
++	 * has finished
++	 */
++	bpf__unsafe_spin_lock(&ref_acq_lock);
++	ref_check_5 =3D bpf_refcount_read(&n->ref);
++
++	/* Error-causing use-after-free incr ([6] in long comment above) */
++	m =3D bpf_refcount_acquire(n);
++	bpf__unsafe_spin_unlock(&ref_acq_lock);
++
++	bpf_spin_unlock(&lock2);
++
++	if (m) {
++		bpf_obj_drop(m);
++		return -3;
++	}
++
++	return !!m;
 +}
 +
-+__bpf_kfunc int bpf_refcount_read(void *refcount__ign)
-+{
-+	return refcount_read((refcount_t *)refcount__ign);
-+}
-+
- struct bpf_testmod_btf_type_tag_1 {
- 	int a;
- };
-@@ -283,6 +341,9 @@ BTF_SET8_START(bpf_testmod_common_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL=
-)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf__unsafe_spin_lock, KF_DESTRUCTIVE)
-+BTF_ID_FLAGS(func, bpf__unsafe_spin_unlock, KF_DESTRUCTIVE)
-+BTF_ID_FLAGS(func, bpf_refcount_read, KF_DESTRUCTIVE)
- BTF_SET8_END(bpf_testmod_common_kfunc_ids)
-=20
- static const struct btf_kfunc_id_set bpf_testmod_common_kfunc_set =3D {
+ char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
