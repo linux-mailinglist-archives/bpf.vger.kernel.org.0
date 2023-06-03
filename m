@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-1755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2098B720E1A
-	for <lists+bpf@lfdr.de>; Sat,  3 Jun 2023 08:29:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C57720E20
+	for <lists+bpf@lfdr.de>; Sat,  3 Jun 2023 08:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67F4281B8B
-	for <lists+bpf@lfdr.de>; Sat,  3 Jun 2023 06:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C42281A98
+	for <lists+bpf@lfdr.de>; Sat,  3 Jun 2023 06:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3488832;
-	Sat,  3 Jun 2023 06:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED1D8F53;
+	Sat,  3 Jun 2023 06:31:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4B21FD5;
-	Sat,  3 Jun 2023 06:29:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AFB2C433EF;
-	Sat,  3 Jun 2023 06:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607CD1FD5;
+	Sat,  3 Jun 2023 06:31:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1B3DC433EF;
+	Sat,  3 Jun 2023 06:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685773743;
-	bh=Wiuxa1+8QYKknVhddlSm/F5Lb+9iVthbSGuYu93OxcM=;
+	s=k20201202; t=1685773914;
+	bh=J+zA804W5CIwsPp0or882YYvzsNBrtmFTxO6nzeLnX8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Yema+zUopvlkA8rR8wGx6+08RUKnlGqzwfFZHCz8QyevE954MpZopWm8BnAoPjcvW
-	 zKKjGA53k3S+7h1i0MLYb4lgHBA9d4O6ZOD/2OGAAwGjGStU4zf0RYQGKtattw03eb
-	 GrrxLozMw9Gdkv6T/nrP4dSXGAneXENYH9aonnnfsgC/HCIUSA4Pj4iOk6/f26dBzL
-	 gw0D0pkfRIs7u2ErF3RkmNyURMY2hXe5dq4fEziKkoIKCWaGJNV9+2MpwgRHcq70te
-	 ND2tnA+N/F4WiOvLAstouqhuRYNHuDF4G+4n+M7sA2/VUtY7nspF7+6RMdqGRVY65M
-	 jeypGOhx/n6Pg==
-Date: Fri, 2 Jun 2023 23:29:02 -0700
+	b=SHDkU7kq/KrmiEpWpi7l98MFYWy6DaL0yq+G2B4JGU23T+K1SXlLTl8YVCUnWo+cR
+	 PqiU4QEcgwIWKejnYe7IcIY//bVe62Vq44GTjD7A48Thl3fDfYwMsyRtj3vscbMJwi
+	 w8GiiXkHtWX4x9wo/0FwgRUBNAMcgcJktrecE8sBvdDsPXXz8i9P3iRqghIosT20Fy
+	 6dFAvjuWBgef6sVzTolUHHr5f/B6xp4e7Oon4oeUOtr3YdPDirDqUwcooJXGXnUUSF
+	 c8oUvo2iRL8VMEzen/Ek3Wq6dMCHEyTbuivndIC06sY3QHNiIco8aqwAXgqf+wQ4Ja
+	 99KOF/L+8SYzg==
+Date: Fri, 2 Jun 2023 23:31:52 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc: virtualization@lists.linux-foundation.org, "Michael S. Tsirkin"
@@ -40,10 +40,11 @@ Cc: virtualization@lists.linux-foundation.org, "Michael S. Tsirkin"
  <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
  Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
  bpf@vger.kernel.org
-Subject: Re: [PATCH vhost v10 00/10] virtio core prepares for AF_XDP
-Message-ID: <20230602232902.446e1d71@kernel.org>
-In-Reply-To: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v10 10/10] virtio_net: support dma premapped
+Message-ID: <20230602233152.4d9b9ba4@kernel.org>
+In-Reply-To: <20230602092206.50108-11-xuanzhuo@linux.alibaba.com>
 References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+	<20230602092206.50108-11-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,9 +54,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri,  2 Jun 2023 17:21:56 +0800 Xuan Zhuo wrote:
-> Thanks for the help from Christoph.
+On Fri,  2 Jun 2023 17:22:06 +0800 Xuan Zhuo wrote:
+>  drivers/net/virtio_net.c | 163 +++++++++++++++++++++++++++++++++------
 
-That said you haven't CCed him on the series, isn't the general rule to
-CC anyone who was involved in previous discussions?
+ack for this going via the vhost tree, FWIW, but you'll potentially
+need to wait for the merge window to move forward with the actual
+af xdp patches, in this case.
 
