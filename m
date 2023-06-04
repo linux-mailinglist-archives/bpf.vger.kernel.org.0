@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-1770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33059721477
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 05:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2832C721478
+	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 05:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B29B51C20A9D
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 03:24:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6491C20A92
+	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 03:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9C31C26;
-	Sun,  4 Jun 2023 03:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78951C26;
+	Sun,  4 Jun 2023 03:26:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F0B17F6
-	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 03:24:47 +0000 (UTC)
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCB8D3
-	for <bpf@vger.kernel.org>; Sat,  3 Jun 2023 20:24:46 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6262be06e41so37108336d6.0
-        for <bpf@vger.kernel.org>; Sat, 03 Jun 2023 20:24:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E1017F6
+	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 03:26:52 +0000 (UTC)
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20803D3
+	for <bpf@vger.kernel.org>; Sat,  3 Jun 2023 20:26:51 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-626157a186bso27260216d6.1
+        for <bpf@vger.kernel.org>; Sat, 03 Jun 2023 20:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685849085; x=1688441085;
+        d=gmail.com; s=20221208; t=1685849210; x=1688441210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lou1fAaObCbBalCYEzUsmfmJQBJKKKTYODkDOi2IXps=;
-        b=WtZc3RQiPLPOw4XJ9lVmB7im7a9kkmFtVJqIn/UdMcfBaCZRMSzjQZ6ra/yG3ECCOk
-         aLp6j91XzY1M6Q0yRiGyWI+92phVIfsZwjPtw8U3eVO3O/OTv7SfeCAEIiy5jZ6xZ8+2
-         WJkR9d8Z5JC1lnrgRIq5y4ki8Tbvm4XOlYItjMgntYXdjkR8LtQJHRIcKBgOEwd+az6Z
-         H62H7+fbO6nxDEZgVIbcgXs49G7EaCOg+NBrf/E1srgIY59Ai/wuJ45uBih0goFNYROR
-         1nkmiefA2uv2woixKEle3N4JcT4kngqzWUxhaHfhnNrfnYkWzKNNuTR0fwkqhuxXIFPF
-         ejHQ==
+        bh=1B0Eq5vr6kFgjFfXTPBz/vAuJS/uDyXMLmVUV+UZbQc=;
+        b=oB9zogOXwJwjJlsRg2Q8vBhY7m0hbmpuwSAnTMzlzO1mqhrFoeOf/KAQIe75+x8VTY
+         Tq4WH7bt74/W2kbafaGJA97Uc0Jc631+oiUJrTu5jUVi4IiviJyhoj+7WxvRzMcBinUB
+         I3LMOWH6/LSIoYbYuDgHeagaP09icGn2apIjDK5wTeUK0gGXgjnLetqI3DFeyfmm6Ybc
+         se7z+KxzXZKFcjUAddg+71INRAWwBOvPLU1L2XCV+Ad37lh7aZAvLc7wayWf0FYJQCH+
+         CRgF3IpOdhM3ik0+K9PSkC+TgEXTZe0o6VV0h/05n5/xW4YUxpPLG3S+ZbFzW79kjB/2
+         ukyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685849085; x=1688441085;
+        d=1e100.net; s=20221208; t=1685849210; x=1688441210;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lou1fAaObCbBalCYEzUsmfmJQBJKKKTYODkDOi2IXps=;
-        b=IGm09SgJU0eJui1kTvfz52f1pkAxZFb2bAJPcpliYpRl+SiSXUJHCFl+oskaOLgr28
-         KWAgi1Vtue5NgvEqSD3ltFii+ykE3G1dSUCACQtR6BQ1aoYVyjRkkpnLx/gicEu+AHUn
-         byzbjO5Dg9YXl+sJTgcfuGXZRuEMxz3SMvsuDK18GObcaPGXGrMPZOlwSiGY/UWodqVe
-         b4oM8Rnssl2Z9PkGgna5BLzOpOlUJ9J/V/8qyJF5bU+w32Clvv8UvzRtqBBXV0GCHT5N
-         q/d8K2ngaHFKf3jqoGGABrBE+zhlobYEMhdYkg4E+I1dyRpgtwcETcdWip/0Nn+MI448
-         E4Sg==
-X-Gm-Message-State: AC+VfDyCCXmvuBEAxX1Oyx21lDSusutwad0CT6VN8RLJOD9xY0iTng/X
-	u2W3SQFgPfcOrhSEG4b3vAxtwt3KejJJzXnxr2A=
-X-Google-Smtp-Source: ACHHUZ5Y+5BNCS0I5DHkXVivZ57xVv+s8vBCmppMDFfIBzVrFCzOaLaAugNiSZZGXhBzljhDSFkjuiUQqZP5Y9jkv6E=
-X-Received: by 2002:a05:6214:5087:b0:626:1637:f58c with SMTP id
- kk7-20020a056214508700b006261637f58cmr3104525qvb.30.1685849085457; Sat, 03
- Jun 2023 20:24:45 -0700 (PDT)
+        bh=1B0Eq5vr6kFgjFfXTPBz/vAuJS/uDyXMLmVUV+UZbQc=;
+        b=TozfbDF/WXN0AGPC0dNbK3KNFmnifFzY7srLofJpmqFWVX4lmK6b0e7gEZoy/sCrFj
+         8jZVq673WvJX/57BxSKlq+MXpQV19t/v3yU8OG24kXWmMVlS1wpw4iLMHffOofHcJ3J+
+         WsJQZhyo1VeQZA/CumgxZXTdMG0bfEgh9LtfLqB5ShP2E9bUN8xGlv9CMBsN7yCsUoOq
+         BokfBJbbybLyxCOdsSCxYUfq50RkvcKmjL4A0xgzhNIIf884SAvfJaaTEWQ1NMisNenY
+         y9tsvgWAgYEnpZsvACl2G+Emasq9Zp2h4067Efg42lsn2M8mcnYkpclUYXf2e6RIlkM/
+         W7Aw==
+X-Gm-Message-State: AC+VfDwwSw0eMWcb31HbtUz5hpL46v7RkJUXaml8jSBynX0108u9kC+8
+	+BbIiaXru4HdBOFHi4JbTtTH93FL9JSIahgCu7G2zGVLi+4=
+X-Google-Smtp-Source: ACHHUZ52k2rA2au1lPYFNMjY7ZNvpeXDRhbctJhSF/El0tSfe1GZnxBHVKWBW2pXr86U73OkooX9OJ+z0WDCKEonwhs=
+X-Received: by 2002:ad4:5ba9:0:b0:626:c17:8b55 with SMTP id
+ 9-20020ad45ba9000000b006260c178b55mr2533057qvq.25.1685849210209; Sat, 03 Jun
+ 2023 20:26:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,14 +60,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230602085239.91138-1-laoar.shao@gmail.com> <20230602085239.91138-3-laoar.shao@gmail.com>
- <20230602203659.fzmvfjysdqdf7guq@MacBook-Pro-8.local>
-In-Reply-To: <20230602203659.fzmvfjysdqdf7guq@MacBook-Pro-8.local>
+ <CAEf4BzbJCCxj-0CCy_xsiJKk1Re_iXNGH95j9ChnOwSeeLUYEQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbJCCxj-0CCy_xsiJKk1Re_iXNGH95j9ChnOwSeeLUYEQ@mail.gmail.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 4 Jun 2023 11:24:09 +0800
-Message-ID: <CALOAHbB-tAuxNJJMOz1vRCWAFfSbaf4FGrbKEcJVV+rubqtjKQ@mail.gmail.com>
+Date: Sun, 4 Jun 2023 11:26:14 +0800
+Message-ID: <CALOAHbAf=X05fqCz1ABX3pzc60QE5ax=pEfuGxhFkqJQT7Md6g@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 2/6] bpftool: Show probed function in
  kprobe_multi link info
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
 	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
@@ -81,10 +81,12 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jun 3, 2023 at 4:37=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Jun 3, 2023 at 6:16=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Jun 02, 2023 at 08:52:35AM +0000, Yafang Shao wrote:
+> On Fri, Jun 2, 2023 at 1:52=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+> >
 > > Show the already expose kprobe_multi link info in bpftool. The result a=
 s
 > > follows,
@@ -104,78 +106,11 @@ s
 72448402992,"symbol":"schedule_timeout_uninterruptible"},{"addr":1844674407=
 2448403056,"symbol":"schedule_timeout_idle"}],"pids":[{"pid":8729,"comm":"t=
 race"}]}]
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  tools/bpf/bpftool/link.c | 94 ++++++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  1 file changed, 94 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > index 2d78607..3b00c07 100644
-> > --- a/tools/bpf/bpftool/link.c
-> > +++ b/tools/bpf/bpftool/link.c
-> > @@ -166,6 +166,57 @@ static int get_prog_info(int prog_id, struct bpf_p=
-rog_info *info)
-> >       return err;
-> >  }
-> >
-> > +static int cmp_u64(const void *A, const void *B)
-> > +{
-> > +     const __u64 *a =3D A, *b =3D B;
-> > +
-> > +     return *a - *b;
-> > +}
-> > +
-> > +static void kprobe_multi_print_plain(__u64 addr, char *sym, __u32 inde=
-nt)
-> > +{
-> > +     printf("\n\t%*s  %0*llx %s", indent, "", 16, addr, sym);
-> > +}
-> > +
-> > +static void kprobe_multi_print_json(__u64 addr, char *sym)
-> > +{
-> > +     jsonw_start_object(json_wtr);
-> > +     jsonw_uint_field(json_wtr, "addr", addr);
-> > +     jsonw_string_field(json_wtr, "symbol", sym);
-> > +     jsonw_end_object(json_wtr);
-> > +}
-> > +
-> > +static void kernel_syms_show(const __u64 *addrs, __u32 cnt, __u32 inde=
-nt)
-> > +{
-> > +     char buff[256], sym[256];
-> > +     __u64 addr;
-> > +     int i =3D 0;
-> > +     FILE *fp;
-> > +
-> > +     fp =3D fopen("/proc/kallsyms", "r");
-> > +     if (!fp)
-> > +             return;
-> > +
-> > +     /* Each address is guaranteed to be unique. */
-> > +     qsort((void *)addrs, cnt, sizeof(__u64), cmp_u64);
-> > +     /* The addresses in /proc/kallsyms are already sorted. */
-> > +     while (fgets(buff, sizeof(buff), fp)) {
-> > +             if (sscanf(buff, "%llx %*c %s", &addr, sym) !=3D 2)
-> > +                     continue;
-> > +             /* The addr probed by kprobe_multi is always in
-> > +              * /proc/kallsyms, so we can ignore some edge cases.
-> > +              */
-> > +             if (addr !=3D addrs[i])
-> > +                     continue;
-> > +             if (indent)
-> > +                     kprobe_multi_print_plain(addr, sym, indent);
-> > +             else
-> > +                     kprobe_multi_print_json(addr, sym);
-> > +             i++;
-> > +     }
-> > +     fclose(fp);
 >
-> There is kernel_syms_load().
-> Let's reuse it instead of reimplementing kallsysm parsing?
+>
+> probably a good idea to also show whether it's retprobe or not?
 
-I will think about it. Thanks for your suggestion.
+Good point. Will add it.
 
 --=20
 Regards
