@@ -1,142 +1,97 @@
-Return-Path: <bpf+bounces-1774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5446172178E
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 16:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18B91721911
+	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 20:03:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD68281168
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 14:01:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C687E2810D5
+	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 18:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF83ADDA2;
-	Sun,  4 Jun 2023 14:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C346810962;
+	Sun,  4 Jun 2023 18:02:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5496923C6
-	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 14:01:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C92C433D2;
-	Sun,  4 Jun 2023 14:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685887268;
-	bh=N4OFkIofJcG4jbiBZuJM/QCykJe9kktreLtBi08BAQU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jqMaBPppWjwld7hKoaTIAQgPbMaSl19LBnAhB4B1ud4EnbyMZuzkwdsXp2HSn5+iy
-	 m/JehzdLvij9nc4i8mO1wt2oWkQrD8yFKhSfkLqxO7Qk2Of0q/Yw3lksQ0Q4V3wt0I
-	 XU8iV5jCXxSIfb5u/VfAqrF+UFDsm/n2jf6GVmOuQ8HY08ndA7Sj4X7PxTOc6KhX6m
-	 IaOF81WfYVAVyHAgOhwfhd1S8Pkb3xXYi6efQmo2EBM5FwIgOKpTyRtQT2/AWjQUUB
-	 NRZ+DVMQzlzFJlQlsi81YUcqUynSwQxbBP4cYiQDnm+udonloqkfGjSPdyC8CYcCIW
-	 Y/ZBRPjmeMh3A==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: stable@vger.kernel.org,
-	Anastasios Papagiannis <tasos.papagiannnis@gmail.com>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf] bpf: Add extra path pointer check to d_path helper
-Date: Sun,  4 Jun 2023 16:01:03 +0200
-Message-Id: <20230604140103.3542071-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09A61079C
+	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 18:02:57 +0000 (UTC)
+Received: from out-48.mta1.migadu.com (out-48.mta1.migadu.com [IPv6:2001:41d0:203:375::30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4065ED
+	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 11:02:55 -0700 (PDT)
+Date: Sun, 4 Jun 2023 14:02:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1685901772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8eVzj7/BTcLqy7wFCwl6xnZsISP/KN6jro+z/mha3Xk=;
+	b=PqQAVjJ04ndqRoRQANhzjXtWIXqTHWREPNCE9YGBCSItM5aGzg9r4emrFDvZxP/xuQ2bpU
+	DTvQnUtepgxbciT5z6M6Z+EoNGC8g2gnKTdxk1x+F2TTQDaLu6DFNHuJfLzV07K3aFkiY5
+	e/eoFzp+TyP07cOwDSzIUjGa6eo5mqQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Mike Rapoport <rppt@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org,
+	Puranjay Mohan <puranjay12@gmail.com>
+Subject: Re: [PATCH 00/13] mm: jit/text allocator
+Message-ID: <ZHzRxE5V6YzGVsHy@moria.home.lan>
+References: <20230601101257.530867-1-rppt@kernel.org>
+ <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
+ <ZHjgIH3aX9dCvVZc@moria.home.lan>
+ <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
+ <CAPhsuW7Euczff_KB70nuH=Hhf2EYHAf=xiQR7mFqVfByhD34XA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW7Euczff_KB70nuH=Hhf2EYHAf=xiQR7mFqVfByhD34XA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Anastasios reported crash on stable 5.15 kernel with following
-bpf attached to lsm hook:
+On Fri, Jun 02, 2023 at 11:20:58AM -0700, Song Liu wrote:
+> IIUC, arm64 uses VMALLOC address space for BPF programs. The reason
+> is each BPF program uses at least 64kB (one page) out of the 128MB
+> address space. Puranjay Mohan (CC'ed) is working on enabling
+> bpf_prog_pack for arm64. Once this work is done, multiple BPF programs
+> will be able to share a page. Will this improvement remove the need to
+> specify a different address range for BPF programs?
 
-  SEC("lsm.s/bprm_creds_for_exec")
-  int BPF_PROG(bprm_creds_for_exec, struct linux_binprm *bprm)
-  {
-          struct path *path = &bprm->executable->f_path;
-          char p[128] = { 0 };
-
-          bpf_d_path(path, p, 128);
-          return 0;
-  }
-
-but bprm->executable can be NULL, so bpf_d_path call will crash:
-
-  BUG: kernel NULL pointer dereference, address: 0000000000000018
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 0 P4D 0
-  Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
-  ...
-  RIP: 0010:d_path+0x22/0x280
-  ...
-  Call Trace:
-   <TASK>
-   bpf_d_path+0x21/0x60
-   bpf_prog_db9cf176e84498d9_bprm_creds_for_exec+0x94/0x99
-   bpf_trampoline_6442506293_0+0x55/0x1000
-   bpf_lsm_bprm_creds_for_exec+0x5/0x10
-   security_bprm_creds_for_exec+0x29/0x40
-   bprm_execve+0x1c1/0x900
-   do_execveat_common.isra.0+0x1af/0x260
-   __x64_sys_execve+0x32/0x40
-
-It's problem for all stable trees with bpf_d_path helper, which was
-added in 5.9.
-
-This issue is fixed in current bpf code, where we identify and mark
-trusted pointers, so the above code would fail to load.
-
-For the sake of the stable trees and to workaround potentially broken
-verifier in the future, adding the code that reads the path object from
-the passed pointer and verifies it's valid in kernel space.
-
-Cc: stable@vger.kernel.org # v5.9+
-Fixes: 6e22ab9da793 ("bpf: Add d_path helper")
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Reported-by: Anastasios Papagiannis <tasos.papagiannnis@gmail.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 9a050e36dc6c..aecd98ee73dc 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -900,12 +900,22 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
- 
- BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
- {
-+	struct path copy;
- 	long len;
- 	char *p;
- 
- 	if (!sz)
- 		return 0;
- 
-+	/*
-+	 * The path pointer is verified as trusted and safe to use,
-+	 * but let's double check it's valid anyway to workaround
-+	 * potentially broken verifier.
-+	 */
-+	len = copy_from_kernel_nofault(&copy, path, sizeof(*path));
-+	if (len < 0)
-+		return len;
-+
- 	p = d_path(path, buf, sz);
- 	if (IS_ERR(p)) {
- 		len = PTR_ERR(p);
--- 
-2.40.1
-
+Can we please stop working on BPF specific sub page allocation and focus
+on doing this in mm/? This never should have been in BPF in the first
+place.
 
