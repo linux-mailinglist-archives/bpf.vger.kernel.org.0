@@ -1,76 +1,66 @@
-Return-Path: <bpf+bounces-1805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71CC272226E
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 11:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD806722308
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 12:10:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2415628123B
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 09:45:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69D98281021
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 10:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156CC15497;
-	Mon,  5 Jun 2023 09:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BCFD156EE;
+	Mon,  5 Jun 2023 10:09:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C758D134A4
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 09:45:17 +0000 (UTC)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03FDD3
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 02:45:15 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3f6d7abe934so39517575e9.2
-        for <bpf@vger.kernel.org>; Mon, 05 Jun 2023 02:45:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685958314; x=1688550314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fw4E1hWQkfl+I5xPZeS/19do6pQ7tptDxnPkr8VM6o4=;
-        b=gOfK6b7d1twihZUHxhyxpIVLg9tUQ+YWESbMsHU6bmqdZmaTM5IQQf6A6vP3NRPO9f
-         bcOyc5xFmtlo4FVqwRZ1SMuFbZBG7QOBcsA7+e0a8zUZFyWBhNPMsn0IlqWeJyPYeFf0
-         xDX6yW3XtPWsZcdqhj1OG7nWhhHVcGQuw9iDWvSYMmFhG7DQJEvOpxgmJiBts/lHZfvZ
-         2179entPqHD3w0IktBbi7Q2PtckB2xVMb8HUIKGR8qxCeVq/3ecS3AT7f8orHGzhNIY2
-         i3Vqzm7DNCYFI9fGQqkh69ryG+9iFudzZSBR7fSCxgvm4qs5MBS1wZJE5HL3QV25YIEu
-         Qubg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685958314; x=1688550314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fw4E1hWQkfl+I5xPZeS/19do6pQ7tptDxnPkr8VM6o4=;
-        b=gUtawrxLGBHDWVZfHbz4L9ul9tpGK2ky9fhj+arlCGty/EoiaE9Y+bZkNiDR5NZWfA
-         ItGf3fqPqOeUi00fNpMl2iA+z/x7y2xV8HIP87/onBEvup/gShURmB48Awo7j/4PS7gE
-         8Xske4P1/QcPtjoj24dY6OxIumk8kKRmPo+m5s5xGvQk1hVGFcWqNzhL7AYkaZxtRbxT
-         wXatF1tDrSiUCNKqdBdxxymocqbPJIXhClEUtuRSn5cBtHw5e9IVUIuzrDYHlQjHf8/E
-         dqRvUZQL5N/Dmvg1YEJ5ZTcbDXdOPMjCN29mz6oGvNp2gA6cx0p6CQLJ/6vns+tNhAcx
-         w+YA==
-X-Gm-Message-State: AC+VfDzKxf/Hiuz8/pOZppc3Uv9mR2ZVLIeBCKdiIepdm9ymtVnki4rQ
-	TA4J0Jt3MhHZBNu5VKjYxHo=
-X-Google-Smtp-Source: ACHHUZ61odPXzOUzbBAfLIqEwPRBqyXHhW3dtT8hJlfuueiFQ7Jzg9bwN0Ye4cqXVO/tbCEEiprBgQ==
-X-Received: by 2002:a7b:c8d9:0:b0:3f7:3a16:a1b3 with SMTP id f25-20020a7bc8d9000000b003f73a16a1b3mr1962112wml.36.1685958314152;
-        Mon, 05 Jun 2023 02:45:14 -0700 (PDT)
-Received: from krava ([2a00:102a:4002:d0bd:b404:82f8:eedb:87ed])
-        by smtp.gmail.com with ESMTPSA id p5-20020a1c7405000000b003f6f6a6e769sm10214002wmc.17.2023.06.05.02.45.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 02:45:13 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 5 Jun 2023 11:45:11 +0200
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Ian Rogers <irogers@google.com>,
-	Shen Jiamin <shen_jiamin@comp.nus.edu.sg>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: fix setting HOSTCFLAGS
-Message-ID: <ZH2up0zf7TCVdbPM@krava>
-References: <20230530123352.1308488-1-vmalik@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6365684;
+	Mon,  5 Jun 2023 10:09:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDA05ED;
+	Mon,  5 Jun 2023 03:09:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B9CBD75;
+	Mon,  5 Jun 2023 03:10:28 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.24.244])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F8793F793;
+	Mon,  5 Jun 2023 03:09:37 -0700 (PDT)
+Date: Mon, 5 Jun 2023 11:09:34 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/13] mm: jit/text allocator
+Message-ID: <ZH20XkD74prrdN4u@FVFF77S0Q05N>
+References: <20230601101257.530867-1-rppt@kernel.org>
+ <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
+ <ZHjgIH3aX9dCvVZc@moria.home.lan>
+ <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
+ <20230605092040.GB3460@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,68 +69,147 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230530123352.1308488-1-vmalik@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230605092040.GB3460@kernel.org>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, May 30, 2023 at 02:33:52PM +0200, Viktor Malik wrote:
-> Building BPF selftests with custom HOSTCFLAGS yields an error:
+On Mon, Jun 05, 2023 at 12:20:40PM +0300, Mike Rapoport wrote:
+> On Fri, Jun 02, 2023 at 10:35:09AM +0100, Mark Rutland wrote:
+> > On Thu, Jun 01, 2023 at 02:14:56PM -0400, Kent Overstreet wrote:
+> > > On Thu, Jun 01, 2023 at 05:12:03PM +0100, Mark Rutland wrote:
+> > > > For a while I have wanted to give kprobes its own allocator so that it can work
+> > > > even with CONFIG_MODULES=n, and so that it doesn't have to waste VA space in
+> > > > the modules area.
+> > > > 
+> > > > Given that, I think these should have their own allocator functions that can be
+> > > > provided independently, even if those happen to use common infrastructure.
+> > > 
+> > > How much memory can kprobes conceivably use? I think we also want to try
+> > > to push back on combinatorial new allocators, if we can.
+> > 
+> > That depends on who's using it, and how (e.g. via BPF).
+> > 
+> > To be clear, I'm not necessarily asking for entirely different allocators, but
+> > I do thinkg that we want wrappers that can at least pass distinct start+end
+> > parameters to a common allocator, and for arm64's modules code I'd expect that
+> > we'd keep the range falblack logic out of the common allcoator, and just call
+> > it twice.
+> > 
+> > > > > Several architectures override module_alloc() because of various
+> > > > > constraints where the executable memory can be located and this causes
+> > > > > additional obstacles for improvements of code allocation.
+> > > > > 
+> > > > > This set splits code allocation from modules by introducing
+> > > > > jit_text_alloc(), jit_data_alloc() and jit_free() APIs, replaces call
+> > > > > sites of module_alloc() and module_memfree() with the new APIs and
+> > > > > implements core text and related allocation in a central place.
+> > > > > 
+> > > > > Instead of architecture specific overrides for module_alloc(), the
+> > > > > architectures that require non-default behaviour for text allocation must
+> > > > > fill jit_alloc_params structure and implement jit_alloc_arch_params() that
+> > > > > returns a pointer to that structure. If an architecture does not implement
+> > > > > jit_alloc_arch_params(), the defaults compatible with the current
+> > > > > modules::module_alloc() are used.
+> > > > 
+> > > > As above, I suspect that each of the callsites should probably be using common
+> > > > infrastructure, but I don't think that a single jit_alloc_arch_params() makes
+> > > > sense, since the parameters for each case may need to be distinct.
+> > > 
+> > > I don't see how that follows. The whole point of function parameters is
+> > > that they may be different :)
+> > 
+> > What I mean is that jit_alloc_arch_params() tries to aggregate common
+> > parameters, but they aren't actually common (e.g. the actual start+end range
+> > for allocation).
 > 
->     # make HOSTCFLAGS="-O2"
->     [...]
->       HOSTCC  ./tools/testing/selftests/bpf/tools/build/resolve_btfids/main.o
->     main.c:73:10: fatal error: linux/rbtree.h: No such file or directory
->        73 | #include <linux/rbtree.h>
->           |          ^~~~~~~~~~~~~~~~
+> jit_alloc_arch_params() tries to aggregate architecture constraints and
+> requirements for allocations of executable memory and this exactly what
+> the first 6 patches of this set do.
 > 
-> The reason is that tools/bpf/resolve_btfids/Makefile passes header
-> include paths by extending HOSTCFLAGS which is overridden by setting
-> HOSTCFLAGS in the make command (because of Makefile rules [1]).
+> A while ago Thomas suggested to use a structure that parametrizes
+> architecture constraints by the memory type used in modules [1] and Song
+> implemented the infrastructure for it and x86 part [2].
 > 
-> This patch fixes the above problem by passing the include paths via
-> `HOSTCFLAGS_resolve_btfids` which is used by tools/build/Build.include
-> and can be combined with overridding HOSTCFLAGS.
+> I liked the idea of defining parameters in a single structure, but I
+> thought that approaching the problem from the arch side rather than from
+> modules perspective will be better starting point, hence these patches.
 > 
-> [1] https://www.gnu.org/software/make/manual/html_node/Overriding.html
+> I don't see a fundamental reason why a single structure cannot describe
+> what is needed for different code allocation cases, be it modules, kprobes
+> or bpf. There is of course an assumption that the core allocations will be
+> the same for all the users, and it seems to me that something like 
 > 
-> Fixes: 56a2df7615fa ("tools/resolve_btfids: Compile resolve_btfids as host program")
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> * allocate physical memory if allocator caches are empty
+> * map it in vmalloc or modules address space
+> * return memory from the allocator cache to the caller
+> 
+> will work for all usecases.
+> 
+> We might need separate caches for different cases on different
+> architectures, and a way to specify what cache should be used in the
+> allocator API, but that does not contradict a single structure for arch
+> specific parameters, but only makes it more elaborate, e.g. something like
+> 
+> enum jit_type {
+> 	JIT_MODULES_TEXT,
+> 	JIT_MODULES_DATA,
+> 	JIT_KPROBES,
+> 	JIT_FTRACE,
+> 	JIT_BPF,
+> 	JIT_TYPE_MAX,
+> };
+> 
+> struct jit_alloc_params {
+> 	struct jit_range	ranges[JIT_TYPE_MAX];
+> 	/* ... */
+> };
+> 
+> > > Can you give more detail on what parameters you need? If the only extra
+> > > parameter is just "does this allocation need to live close to kernel
+> > > text", that's not that big of a deal.
+> > 
+> > My thinking was that we at least need the start + end for each caller. That
+> > might be it, tbh.
+> 
+> Do you mean that modules will have something like
+> 
+> 	jit_text_alloc(size, MODULES_START, MODULES_END);
+> 
+> and kprobes will have
+> 
+> 	jit_text_alloc(size, KPROBES_START, KPROBES_END);
+> ?
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Yes.
 
-jirka
+> It sill can be achieved with a single jit_alloc_arch_params(), just by
+> adding enum jit_type parameter to jit_text_alloc().
 
-> ---
->  tools/bpf/resolve_btfids/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+That feels backwards to me; it centralizes a bunch of information about
+distinct users to be able to shove that into a static array, when the callsites
+can pass that information. 
+
+What's *actually* common after separating out the ranges? Is it just the
+permissions?
+
+If we want this to be able to share allocations and so on, why can't we do this
+like a kmem_cache, and have the callsite pass a pointer to the allocator data?
+That would make it easy for callsites to share an allocator or use a distinct
+one.
+
+Thanks,
+Mark.
+
+> [1] https://lore.kernel.org/linux-mm/87v8mndy3y.ffs@tglx/ 
+> [2] https://lore.kernel.org/all/20230526051529.3387103-1-song@kernel.org
 > 
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index ac548a7baa73..4b8079f294f6 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -67,7 +67,7 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
->  LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
->  LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
->  
-> -HOSTCFLAGS += -g \
-> +HOSTCFLAGS_resolve_btfids += -g \
->            -I$(srctree)/tools/include \
->            -I$(srctree)/tools/include/uapi \
->            -I$(LIBBPF_INCLUDE) \
-> @@ -76,7 +76,7 @@ HOSTCFLAGS += -g \
->  
->  LIBS = $(LIBELF_LIBS) -lz
->  
-> -export srctree OUTPUT HOSTCFLAGS Q HOSTCC HOSTLD HOSTAR
-> +export srctree OUTPUT HOSTCFLAGS_resolve_btfids Q HOSTCC HOSTLD HOSTAR
->  include $(srctree)/tools/build/Makefile.include
->  
->  $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
+> > Thanks,
+> > Mark.
+> 
 > -- 
-> 2.40.1
-> 
+> Sincerely yours,
+> Mike.
 
