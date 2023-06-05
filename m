@@ -1,157 +1,146 @@
-Return-Path: <bpf+bounces-1853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AF36722ECC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 20:34:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7F6722EFA
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 20:54:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 770FF281406
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:34:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F3128106D
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CBFBE49;
-	Mon,  5 Jun 2023 18:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E29923C99;
+	Mon,  5 Jun 2023 18:54:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43AD620EA
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 18:34:06 +0000 (UTC)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80BAED;
-	Mon,  5 Jun 2023 11:34:04 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b1b92845e1so31778901fa.0;
-        Mon, 05 Jun 2023 11:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685990043; x=1688582043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nlbBib9nCyYV+iIws2sR7sUNPZc1W01Uy7DoW0E5ju0=;
-        b=cisPSQ6oJePCmzNmkFwbVOP5+wEqDWKfSGNe/yt6+9N0kdFTR0her6nqH9V/zS1MeA
-         1SvF70kUzd1JzXiC49jwRtLY/7Ycut3NqjD5jE4quqk5dsPZc6eE5iU/J53lxv7V2bfO
-         IEtIoxUQPozlbMRyOyuPaMGhkJiv+GDBy5CLGDKE3v6rFMVKwKeVDa/L1B/12iaNRFF/
-         29ithsZ9wuAP7RhSPELR2C47j8Tn5ZXDVOOUARgsYKsqC0Dr1GmHJYxGuI1T4V1mr6mN
-         Yvdd67p9P5M2/dPNnw5H3ebd8OP9v67309MgCt7j0AlR3H3w7kMsdqtcyPWN2vWoua3+
-         h6og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685990043; x=1688582043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nlbBib9nCyYV+iIws2sR7sUNPZc1W01Uy7DoW0E5ju0=;
-        b=deB5HnTm2CtTgSjBwtMzT/TDdzRMPjOwfIWymScx9iymQDkzc49bZqBTyl54+La+7u
-         rmfv3npNQPGDzLXoqNC6oFj1KuGy8W+mTRdjNXuE3X+2Tq/q2qeJnOPDCKkuop7HHVdd
-         mIGcpcFdSJBQ3zOd8XQvCBWL4bIgYeoyoB2xc+2IbiDQT4eCDmxJ56o/XvxezZBK0pg4
-         11Ket4sfhcQ5L6r8cnsY+Uot7r6He0sb5gFW1qRvvzZufeo8LhFbta2MKsQ8i0boCN2S
-         hagkpLmmaikskySbpzBAvjjTwmLE/qBMKXBsjbCtFJZDzxJ6ZesNmJD2Nrb1XZkS3jaI
-         4ukg==
-X-Gm-Message-State: AC+VfDyMdmX6qZ0weT/ZrJdJCMKrmc6ax+UvAMHZDe3cQzLhPcoTGPns
-	jD1EpnH4pRyQs2PlaCX4Rm662rrz+Cv4UQPTnnU=
-X-Google-Smtp-Source: ACHHUZ5PCYmedNWIllyP2yLrq7PD/Q4nq7rQbc5kIjfmI+yPdEQEJqphRtIaZbBMgX7YDfDNiCqcmbAMACuyfgy8+Dk=
-X-Received: by 2002:a2e:9ec3:0:b0:2b1:eae8:5e8b with SMTP id
- h3-20020a2e9ec3000000b002b1eae85e8bmr34289ljk.24.1685990042590; Mon, 05 Jun
- 2023 11:34:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB90620EA
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 18:54:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C220C433EF;
+	Mon,  5 Jun 2023 18:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685991273;
+	bh=mdiqgPX74+jDozdh4MToyKbW1D4NW8k7WAOrKXhZeeI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HMwGJE/BttY4rKr9UQgT+B5z1lRGtrRPpWoN5X4fe5muUmBmpsNJpMDoMqI96p8iE
+	 +ggdBImcVC6D3MUSI5YcC/5lp97hCYI4gMmXa9jvnmjb/rcKHliitcwD0ryCWCKxUb
+	 s/arEJVHkwvZbh3Qpo73/qqKc5HWKDZDUy+QR5JlQ1wYiGt/Fq98nAWfNNCLs2ILpr
+	 ye3irNY+m3XwgNT4t9qKtRcFrPjTeKF2TEpf6wfof3T75vo975LvqUA3KxkwWG8uCJ
+	 kE3WFPA7J2I6sQMJDe4+fkk8fXmPVCSkeokbbg1G3TX09I2uV2ahnemjxk0JAacT15
+	 N0xrcupZIS58w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 9C90140692; Mon,  5 Jun 2023 15:54:30 -0300 (-03)
+Date: Mon, 5 Jun 2023 15:54:30 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+	mykolal@fb.com
+Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
+ two rb trees
+Message-ID: <ZH4vZjaQnCGOzY/w@kernel.org>
+References: <20230525235949.2978377-1-eddyz87@gmail.com>
+ <ZHnxsyjDaPQ7gGUP@kernel.org>
+ <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
+ <ZHovRW1G0QZwBSOW@kernel.org>
+ <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
+ <ZH3nalodXmup6pEF@kernel.org>
+ <2b4372428cd1e56de3b79791160cdd3afdc7df6a.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230605074024.1055863-1-puranjay12@gmail.com>
- <20230605074024.1055863-4-puranjay12@gmail.com> <CAPhsuW4JVUUzMfNQwTE_uzp3bnO3EAYDikU1Nyx6x-6ROFDNOA@mail.gmail.com>
-In-Reply-To: <CAPhsuW4JVUUzMfNQwTE_uzp3bnO3EAYDikU1Nyx6x-6ROFDNOA@mail.gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Mon, 5 Jun 2023 20:33:51 +0200
-Message-ID: <CANk7y0jrPPW6GqPFi4SOTzgHyVPG_KY2tcrm=S0cG8P9=w0m1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] bpf, arm64: use bpf_jit_binary_pack_alloc
-To: Song Liu <song@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, catalin.marinas@arm.com, mark.rutland@arm.com, 
-	bpf@vger.kernel.org, kpsingh@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b4372428cd1e56de3b79791160cdd3afdc7df6a.camel@gmail.com>
+X-Url: http://acmel.wordpress.com
 
-Hi,
-
-On Mon, Jun 5, 2023 at 7:05=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Mon, Jun 5, 2023 at 12:40=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.=
-com> wrote:
-> >
-> > Use bpf_jit_binary_pack_alloc for memory management of JIT binaries in
-> > ARM64 BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and R=
-X
-> > buffers. The JIT writes the program into the RW buffer. When the JIT is
-> > done, the program is copied to the final ROX buffer
-> > with bpf_jit_binary_pack_finalize.
-> >
-> > Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for ARM64
-> > JIT as these functions are required by bpf_jit_binary_pack allocator.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > ---
-> >  arch/arm64/net/bpf_jit_comp.c | 119 +++++++++++++++++++++++++++++-----
-> >  1 file changed, 102 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_com=
-p.c
-> > index 145b540ec34f..ee9414cadea8 100644
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -76,6 +76,7 @@ struct jit_ctx {
-> >         int *offset;
-> >         int exentry_idx;
-> >         __le32 *image;
-> > +       __le32 *ro_image;
->
-> We are using:
-> image vs. ro_image
-> rw_header vs. header
-> rw_image_ptr vs. image_ptr
-
-Will use "rw_image" and "image" in the next version.
-
->
-> Shall we be more consistent with rw_ or ro_ prefix?
->
-> >         u32 stack_size;
-> >         int fpb_offset;
-> >  };
-> > @@ -205,6 +206,20 @@ static void jit_fill_hole(void *area, unsigned int=
- size)
-> >                 *ptr++ =3D cpu_to_le32(AARCH64_BREAK_FAULT);
+Em Mon, Jun 05, 2023 at 05:39:19PM +0300, Eduard Zingerman escreveu:
+> On Mon, 2023-06-05 at 10:47 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Jun 02, 2023 at 09:08:51PM +0300, Eduard Zingerman escreveu:
+> > > On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote:
+> > > > Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escreveu:
+> > > > > Right, you are correct.
+> > > > > The 'structures__tree = RB_ROOT' part is still necessary, though.
+> > > > > If you are ok with overall structure of the patch I can resend it w/o bzero().
+> > 
+> > > > Humm, so basically this boils down to the following patch?
+> > 
+> > > > +++ b/pahole.c
+> > > > @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
+> > > >  		__print_ordered_classes(&structures__tree);
+> > > >  	} else {
+> > > >  		struct rb_root resorted = RB_ROOT;
+> > > > -
+> > > > +#ifdef DEBUG_CHECK_LEAKS
+> > > > +		// We'll delete structures from structures__tree, since we're
+> > > > +		// adding them to ther resorted list, better not keep
+> > > > +		// references there.
+> > > > +		structures__tree = RB_ROOT;
+> > > > +#endif
+> >  
+> > > But __structures__delete iterates over structures__tree,
+> > > so it won't delete anything if code like this, right?
+> >  
+> > > >  		resort_classes(&resorted, &structures__list);
+> > > >  		__print_ordered_classes(&resorted);
+> > > >  	}
+> > 
+> > Yeah, I tried to be minimalistic, my version avoids the crash, but
+> > defeats the DEBUG_CHECK_LEAKS purpose :-\
+> > 
+> > How about:
+> > 
+> > diff --git a/pahole.c b/pahole.c
+> > index 6fc4ed6a721b97ab..e843999fde2a8a37 100644
+> > --- a/pahole.c
+> > +++ b/pahole.c
+> > @@ -673,10 +673,10 @@ static void print_ordered_classes(void)
+> >  	if (!need_resort) {
+> >  		__print_ordered_classes(&structures__tree);
+> >  	} else {
+> > -		struct rb_root resorted = RB_ROOT;
+> > +		structures__tree = RB_ROOT;
+> >  
+> > -		resort_classes(&resorted, &structures__list);
+> > -		__print_ordered_classes(&resorted);
+> > +		resort_classes(&structures__tree, &structures__list);
+> > +		__print_ordered_classes(&structures__tree);
+> >  	}
 > >  }
-> >
-> > +int bpf_arch_text_invalidate(void *dst, size_t len)
-> > +{
-> > +       __le32 *ptr;
-> > +       int ret;
-> > +
-> > +       for (ptr =3D dst; len >=3D sizeof(u32); len -=3D sizeof(u32)) {
-> > +               ret =3D aarch64_insn_patch_text_nosync(ptr++, AARCH64_B=
-REAK_FAULT);
->
-> I think one aarch64_insn_patch_text_nosync() per 4 byte is too much overh=
-ead.
-> Shall we add a helper to do this in bigger patches?
+> >  
+> 
+> That would work, but I still think that there is no need to replicate call
+> to __print_ordered_classes, as long as the same list is passed as an argument,
+> e.g.:
+> 
+> @@ -670,14 +671,11 @@ static void resort_classes(struct rb_root *resorted, struct list_head *head)
+>  
+>  static void print_ordered_classes(void)
+>  {
+> -       if (!need_resort) {
+> -               __print_ordered_classes(&structures__tree);
+> -       } else {
+> -               struct rb_root resorted = RB_ROOT;
+> -
+> -               resort_classes(&resorted, &structures__list);
+> -               __print_ordered_classes(&resorted);
+> +       if (need_resort) {
+> +               structures__tree = RB_ROOT;
+> +               resort_classes(&structures__tree, &structures__list);
+>         }
+> +       __print_ordered_classes(&structures__tree);
+>  }
 
-What would be the most efficient way to build this helper? As arm64 doesn't
-have the __text_poke() API. Calling copy_to_kernel_nofault() in a loop migh=
-t
-not be the best way. One way would be to use __put_kernel_nofault() directl=
-y.
+Right, that can be done as a follow up patch, further simplifying the
+code.
 
-Also, what should we call this helper? aarch64_insn_memset() ?
+I'm just trying to have each patch as small as possible.
 
-Thanks,
-Puranjay
+- Arnaldo
 
