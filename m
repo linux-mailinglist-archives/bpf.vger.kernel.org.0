@@ -1,143 +1,113 @@
-Return-Path: <bpf+bounces-1813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C86C722720
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 15:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80EE47227CD
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 15:47:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158781C20B12
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 13:15:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECA5D1C20B46
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 13:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E4F19E67;
-	Mon,  5 Jun 2023 13:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056391D2B3;
+	Mon,  5 Jun 2023 13:47:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC7919514;
-	Mon,  5 Jun 2023 13:15:02 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827CCA6;
-	Mon,  5 Jun 2023 06:14:59 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@breakpoint.cc>)
-	id 1q6A2y-0004MZ-Tx; Mon, 05 Jun 2023 15:14:56 +0200
-From: Florian Westphal <fw@strlen.de>
-To: <bpf@vger.kernel.org>
-Cc: netdev@vger.kernel.org,
-	ast@kernel.org,
-	Florian Westphal <fw@strlen.de>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf v2] bpf: netfilter: add BPF_NETFILTER bpf_attach_type
-Date: Mon,  5 Jun 2023 15:14:45 +0200
-Message-Id: <20230605131445.32016-1-fw@strlen.de>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F969156EB
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 13:47:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FC7EC433D2;
+	Mon,  5 Jun 2023 13:47:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685972845;
+	bh=OHXz1OKPeLqjsvKzYaWmG3JfzQJvaSjKi8PweDxzETQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IFLdiaFa6dJxabXAjCiytv0nBxnWvbaR+SfmFBkl+itxfKR10Qii37ivsTQFZCoXd
+	 DfqDLBMg16twIFpPieJu3aNZn+5MRrc5OLFUMcDFjcSSIcFulAUd0BKdIiKOhcPJmM
+	 R49TQlmdInwA6JQHNxk+FvvIRweuHmW3lRKG0v9SjMMzlaW9V3kBg5pbnlNxPfF75j
+	 owdIGTbC1ib2hJmqKWNuEz0csqyVMYghBjayulIL9qPMcj2LU8A8ihfNoT4YifWuWM
+	 Aep7EunZs6Tw8JLFIKeMzARgi5UzO6rzFy0aMdnZSFpc+uzB9wT5Wq6PE7W3/p4NQ1
+	 YJMXAo4YhBztQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 0C32940692; Mon,  5 Jun 2023 10:47:23 -0300 (-03)
+Date: Mon, 5 Jun 2023 10:47:22 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+	mykolal@fb.com
+Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
+ two rb trees
+Message-ID: <ZH3nalodXmup6pEF@kernel.org>
+References: <20230525235949.2978377-1-eddyz87@gmail.com>
+ <ZHnxsyjDaPQ7gGUP@kernel.org>
+ <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
+ <ZHovRW1G0QZwBSOW@kernel.org>
+ <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
+X-Url: http://acmel.wordpress.com
 
-Andrii Nakryiko writes:
+Em Fri, Jun 02, 2023 at 09:08:51PM +0300, Eduard Zingerman escreveu:
+> On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escreveu:
+> > > Right, you are correct.
+> > > The 'structures__tree = RB_ROOT' part is still necessary, though.
+> > > If you are ok with overall structure of the patch I can resend it w/o bzero().
 
- And we currently don't have an attach type for NETLINK BPF link.
- Thankfully it's not too late to add it. I see that link_create() in
- kernel/bpf/syscall.c just bypasses attach_type check. We shouldn't
- have done that. Instead we need to add BPF_NETLINK attach type to enum
- bpf_attach_type. And wire all that properly throughout the kernel and
- libbpf itself.
+> > Humm, so basically this boils down to the following patch?
 
-This adds BPF_NETFILTER and uses it.  This breaks uabi but this
-wasn't in any non-rc release yet, so it should be fine.
-
-v2: check link_attack prog type in link_create too
-
-Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com/
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- include/uapi/linux/bpf.h       | 1 +
- kernel/bpf/syscall.c           | 9 +++++++++
- tools/include/uapi/linux/bpf.h | 1 +
- tools/lib/bpf/libbpf.c         | 2 +-
- 4 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 1bb11a6ee667..c994ff5b157c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
- 	BPF_STRUCT_OPS,
-+	BPF_NETFILTER,
- 	__MAX_BPF_ATTACH_TYPE
- };
+> > +++ b/pahole.c
+> > @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
+> >  		__print_ordered_classes(&structures__tree);
+> >  	} else {
+> >  		struct rb_root resorted = RB_ROOT;
+> > -
+> > +#ifdef DEBUG_CHECK_LEAKS
+> > +		// We'll delete structures from structures__tree, since we're
+> > +		// adding them to ther resorted list, better not keep
+> > +		// references there.
+> > +		structures__tree = RB_ROOT;
+> > +#endif
  
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 14f39c1e573e..0c21d0d8efe4 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2433,6 +2433,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 		default:
- 			return -EINVAL;
- 		}
-+	case BPF_PROG_TYPE_NETFILTER:
-+		if (expected_attach_type == BPF_NETFILTER)
-+			return 0;
-+		return -EINVAL;
- 	case BPF_PROG_TYPE_SYSCALL:
- 	case BPF_PROG_TYPE_EXT:
- 		if (expected_attach_type)
-@@ -4590,7 +4594,12 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+> But __structures__delete iterates over structures__tree,
+> so it won't delete anything if code like this, right?
  
- 	switch (prog->type) {
- 	case BPF_PROG_TYPE_EXT:
-+		break;
- 	case BPF_PROG_TYPE_NETFILTER:
-+		if (attr->link_create.attach_type != BPF_NETFILTER) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 		break;
- 	case BPF_PROG_TYPE_PERF_EVENT:
- 	case BPF_PROG_TYPE_TRACEPOINT:
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 1bb11a6ee667..c994ff5b157c 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
- 	BPF_TRACE_KPROBE_MULTI,
- 	BPF_LSM_CGROUP,
- 	BPF_STRUCT_OPS,
-+	BPF_NETFILTER,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ad1ec893b41b..532a97cf1cc1 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8712,7 +8712,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
- 	SEC_DEF("struct_ops.s+",	STRUCT_OPS, 0, SEC_SLEEPABLE),
- 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
--	SEC_DEF("netfilter",		NETFILTER, 0, SEC_NONE),
-+	SEC_DEF("netfilter",		NETFILTER, BPF_NETFILTER, SEC_NONE),
- };
- 
- static size_t custom_sec_def_cnt;
--- 
-2.39.3
+> >  		resort_classes(&resorted, &structures__list);
+> >  		__print_ordered_classes(&resorted);
+> >  	}
 
+Yeah, I tried to be minimalistic, my version avoids the crash, but
+defeats the DEBUG_CHECK_LEAKS purpose :-\
+
+How about:
+
+diff --git a/pahole.c b/pahole.c
+index 6fc4ed6a721b97ab..e843999fde2a8a37 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -673,10 +673,10 @@ static void print_ordered_classes(void)
+ 	if (!need_resort) {
+ 		__print_ordered_classes(&structures__tree);
+ 	} else {
+-		struct rb_root resorted = RB_ROOT;
++		structures__tree = RB_ROOT;
+ 
+-		resort_classes(&resorted, &structures__list);
+-		__print_ordered_classes(&resorted);
++		resort_classes(&structures__tree, &structures__list);
++		__print_ordered_classes(&structures__tree);
+ 	}
+ }
+ 
 
