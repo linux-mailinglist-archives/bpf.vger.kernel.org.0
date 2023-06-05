@@ -1,133 +1,338 @@
-Return-Path: <bpf+bounces-1811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3E497224DD
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 13:46:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 919C472264F
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 14:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 628DA281059
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 11:46:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFF881C20C36
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 12:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CB317AC0;
-	Mon,  5 Jun 2023 11:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A7E1B916;
+	Mon,  5 Jun 2023 12:46:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB5C168CF
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 11:46:34 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7240A1;
-	Mon,  5 Jun 2023 04:46:32 -0700 (PDT)
-Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QZWwV3mSDztQTr;
-	Mon,  5 Jun 2023 19:44:10 +0800 (CST)
-Received: from [10.174.178.55] (10.174.178.55) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 5 Jun 2023 19:46:29 +0800
-Subject: Re: [PATCH v3 3/3] bpf: make bpf_dump_raw_ok() based on
- CONFIG_KALLSYMS
-To: Maninder Singh <maninder1.s@samsung.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
-	<jolsa@kernel.org>, <mcgrof@kernel.org>, <boqun.feng@gmail.com>,
-	<vincenzopalazzodev@gmail.com>, <ojeda@kernel.org>, <jgross@suse.com>,
-	<brauner@kernel.org>, <michael.christie@oracle.com>,
-	<samitolvanen@google.com>, <glider@google.com>, <peterz@infradead.org>,
-	<keescook@chromium.org>, <stephen.s.brennan@oracle.com>,
-	<alan.maguire@oracle.com>, <pmladek@suse.com>
-CC: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>, Onkarnath
-	<onkarnath.1@samsung.com>
-References: <20230605040731.13828-1-maninder1.s@samsung.com>
- <CGME20230605040801epcas5p2ca850464882841a0a5748e217542a10a@epcas5p2.samsung.com>
- <20230605040731.13828-3-maninder1.s@samsung.com>
-From: "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <131e23cc-1693-bcc7-c9e5-1d51bd8ec930@huawei.com>
-Date: Mon, 5 Jun 2023 19:46:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFEC18B10
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 12:46:39 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B6BF7
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 05:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1685969196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AoX0zr5g/7kYp0xKccyyKWT5aRpif55zj/+ZZKuK9zI=;
+	b=bFO2awlsd9+ZaMWoLlbvNeHQHqOHNw4LUZQVZNC/ezrnm2Bj6gp6XQqeBG76AzMQRfApKF
+	iZI2uRR916F1oItjvV9Sv0uz9sXg7lkGSB0uItogFSeIeDr7zwQIPeGkpSl6gRS/AqCZwX
+	dixatH4E7YKlJYhdL9GE7EOuFSXOpvc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-169-FYm9rYGUOayGBbwg_JM_LQ-1; Mon, 05 Jun 2023 08:46:33 -0400
+X-MC-Unique: FYm9rYGUOayGBbwg_JM_LQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D75DF811E92;
+	Mon,  5 Jun 2023 12:46:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.182])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 368DA4087C68;
+	Mon,  5 Jun 2023 12:46:30 +0000 (UTC)
+From: David Howells <dhowells@redhat.com>
+To: netdev@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Howells <dhowells@redhat.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Boris Pismenny <borisp@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	David Ahern <dsahern@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v4 09/11] tls/sw: Convert tls_sw_sendpage() to use MSG_SPLICE_PAGES
+Date: Mon,  5 Jun 2023 13:45:58 +0100
+Message-ID: <20230605124600.1722160-10-dhowells@redhat.com>
+In-Reply-To: <20230605124600.1722160-1-dhowells@redhat.com>
+References: <20230605124600.1722160-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230605040731.13828-3-maninder1.s@samsung.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.55]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Convert tls_sw_sendpage() and tls_sw_sendpage_locked() to use sendmsg()
+with MSG_SPLICE_PAGES rather than directly splicing in the pages itself.
 
+[!] Note that tls_sw_sendpage_locked() appears to have the wrong locking
+    upstream.  I think the caller will only hold the socket lock, but it
+    should hold tls_ctx->tx_lock too.
 
-On 2023/6/5 12:07, Maninder Singh wrote:
-> bpf_dump_raw_ok() depends on kallsyms_show_value() and we already
-> have a false definition for the !CONFIG_KALLSYMS case. But we have
-> expanded kallsyms_show_value() to work for !CONFIG_KALLSYMS case also
-> in previous patch.
-> 
-> And so to make the code easier to follow just provide a direct
-> !CONFIG_KALLSYMS definition for bpf_dump_raw_ok() as well.
-> 
-> As it is heavily dependent on KALLSYMS and checking based on
-> kallsyms_show_value() will not work now.
+This allows ->sendpage() to be replaced by something that can handle
+multiple multipage folios in a single transaction.
 
-This patch needs to be swapped with 2/3. To avoid unnecessary trouble
-for people using "git bisect", assume that they just fall back to patch 2/3.
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Chuck Lever <chuck.lever@oracle.com>
+cc: Boris Pismenny <borisp@nvidia.com>
+cc: John Fastabend <john.fastabend@gmail.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Eric Dumazet <edumazet@google.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: netdev@vger.kernel.org
+cc: bpf@vger.kernel.org
+---
+ net/tls/tls_sw.c | 173 ++++++++++-------------------------------------
+ 1 file changed, 35 insertions(+), 138 deletions(-)
 
-> 
-> Co-developed-by: Onkarnath <onkarnath.1@samsung.com>
-> Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  include/linux/filter.h | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index bbce89937fde..1f237a3bb11a 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -923,13 +923,21 @@ bool bpf_jit_supports_kfunc_call(void);
->  bool bpf_jit_supports_far_kfunc_call(void);
->  bool bpf_helper_changes_pkt_data(void *func);
->  
-> +/*
-> + * Reconstruction of call-sites is dependent on kallsyms,
-> + * thus make dump the same restriction.
-> + */
-> +#ifdef CONFIG_KALLSYMS
->  static inline bool bpf_dump_raw_ok(const struct cred *cred)
->  {
-> -	/* Reconstruction of call-sites is dependent on kallsyms,
-> -	 * thus make dump the same restriction.
-> -	 */
->  	return kallsyms_show_value(cred);
->  }
-> +#else
-> +static inline bool bpf_dump_raw_ok(const struct cred *cred)
-> +{
-> +	return false;
-> +}
-> +#endif
->  
->  struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
->  				       const struct bpf_insn *patch, u32 len);
-> 
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index b85f92be7c9d..5ffb8de862f6 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -961,7 +961,8 @@ static int tls_sw_sendmsg_splice(struct sock *sk, struct msghdr *msg,
+ 	return 0;
+ }
+ 
+-int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
++static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
++				 size_t size)
+ {
+ 	long timeo = sock_sndtimeo(sk, msg->msg_flags & MSG_DONTWAIT);
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+@@ -984,15 +985,6 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 	int ret = 0;
+ 	int pending;
+ 
+-	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+-			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES))
+-		return -EOPNOTSUPP;
+-
+-	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
+-	if (ret)
+-		return ret;
+-	lock_sock(sk);
+-
+ 	if (unlikely(msg->msg_controllen)) {
+ 		ret = tls_process_cmsg(sk, msg, &record_type);
+ 		if (ret) {
+@@ -1193,10 +1185,27 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 
+ send_end:
+ 	ret = sk_stream_error(sk, msg->msg_flags, ret);
++	return copied > 0 ? copied : ret;
++}
+ 
++int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
++{
++	struct tls_context *tls_ctx = tls_get_ctx(sk);
++	int ret;
++
++	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
++			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
++			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
++		return -EOPNOTSUPP;
++
++	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
++	if (ret)
++		return ret;
++	lock_sock(sk);
++	ret = tls_sw_sendmsg_locked(sk, msg, size);
+ 	release_sock(sk);
+ 	mutex_unlock(&tls_ctx->tx_lock);
+-	return copied > 0 ? copied : ret;
++	return ret;
+ }
+ 
+ /*
+@@ -1273,151 +1282,39 @@ void tls_sw_splice_eof(struct socket *sock)
+ 	mutex_unlock(&tls_ctx->tx_lock);
+ }
+ 
+-static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
+-			      int offset, size_t size, int flags)
+-{
+-	long timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+-	struct tls_context *tls_ctx = tls_get_ctx(sk);
+-	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+-	struct tls_prot_info *prot = &tls_ctx->prot_info;
+-	unsigned char record_type = TLS_RECORD_TYPE_DATA;
+-	struct sk_msg *msg_pl;
+-	struct tls_rec *rec;
+-	int num_async = 0;
+-	ssize_t copied = 0;
+-	bool full_record;
+-	int record_room;
+-	int ret = 0;
+-	bool eor;
+-
+-	eor = !(flags & MSG_SENDPAGE_NOTLAST);
+-	sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
+-
+-	/* Call the sk_stream functions to manage the sndbuf mem. */
+-	while (size > 0) {
+-		size_t copy, required_size;
+-
+-		if (sk->sk_err) {
+-			ret = -sk->sk_err;
+-			goto sendpage_end;
+-		}
+-
+-		if (ctx->open_rec)
+-			rec = ctx->open_rec;
+-		else
+-			rec = ctx->open_rec = tls_get_rec(sk);
+-		if (!rec) {
+-			ret = -ENOMEM;
+-			goto sendpage_end;
+-		}
+-
+-		msg_pl = &rec->msg_plaintext;
+-
+-		full_record = false;
+-		record_room = TLS_MAX_PAYLOAD_SIZE - msg_pl->sg.size;
+-		copy = size;
+-		if (copy >= record_room) {
+-			copy = record_room;
+-			full_record = true;
+-		}
+-
+-		required_size = msg_pl->sg.size + copy + prot->overhead_size;
+-
+-		if (!sk_stream_memory_free(sk))
+-			goto wait_for_sndbuf;
+-alloc_payload:
+-		ret = tls_alloc_encrypted_msg(sk, required_size);
+-		if (ret) {
+-			if (ret != -ENOSPC)
+-				goto wait_for_memory;
+-
+-			/* Adjust copy according to the amount that was
+-			 * actually allocated. The difference is due
+-			 * to max sg elements limit
+-			 */
+-			copy -= required_size - msg_pl->sg.size;
+-			full_record = true;
+-		}
+-
+-		sk_msg_page_add(msg_pl, page, copy, offset);
+-		sk_mem_charge(sk, copy);
+-
+-		offset += copy;
+-		size -= copy;
+-		copied += copy;
+-
+-		tls_ctx->pending_open_record_frags = true;
+-		if (full_record || eor || sk_msg_full(msg_pl)) {
+-			ret = bpf_exec_tx_verdict(msg_pl, sk, full_record,
+-						  record_type, &copied, flags);
+-			if (ret) {
+-				if (ret == -EINPROGRESS)
+-					num_async++;
+-				else if (ret == -ENOMEM)
+-					goto wait_for_memory;
+-				else if (ret != -EAGAIN) {
+-					if (ret == -ENOSPC)
+-						ret = 0;
+-					goto sendpage_end;
+-				}
+-			}
+-		}
+-		continue;
+-wait_for_sndbuf:
+-		set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
+-wait_for_memory:
+-		ret = sk_stream_wait_memory(sk, &timeo);
+-		if (ret) {
+-			if (ctx->open_rec)
+-				tls_trim_both_msgs(sk, msg_pl->sg.size);
+-			goto sendpage_end;
+-		}
+-
+-		if (ctx->open_rec)
+-			goto alloc_payload;
+-	}
+-
+-	if (num_async) {
+-		/* Transmit if any encryptions have completed */
+-		if (test_and_clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask)) {
+-			cancel_delayed_work(&ctx->tx_work.work);
+-			tls_tx_records(sk, flags);
+-		}
+-	}
+-sendpage_end:
+-	ret = sk_stream_error(sk, flags, ret);
+-	return copied > 0 ? copied : ret;
+-}
+-
+ int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
+ 			   int offset, size_t size, int flags)
+ {
++	struct bio_vec bvec;
++	struct msghdr msg = { .msg_flags = flags | MSG_SPLICE_PAGES, };
++
+ 	if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+ 		      MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY |
+ 		      MSG_NO_SHARED_FRAGS))
+ 		return -EOPNOTSUPP;
++	if (flags & MSG_SENDPAGE_NOTLAST)
++		msg.msg_flags |= MSG_MORE;
+ 
+-	return tls_sw_do_sendpage(sk, page, offset, size, flags);
++	bvec_set_page(&bvec, page, size, offset);
++	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
++	return tls_sw_sendmsg_locked(sk, &msg, size);
+ }
+ 
+ int tls_sw_sendpage(struct sock *sk, struct page *page,
+ 		    int offset, size_t size, int flags)
+ {
+-	struct tls_context *tls_ctx = tls_get_ctx(sk);
+-	int ret;
++	struct bio_vec bvec;
++	struct msghdr msg = { .msg_flags = flags | MSG_SPLICE_PAGES, };
+ 
+ 	if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+ 		      MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
+ 		return -EOPNOTSUPP;
++	if (flags & MSG_SENDPAGE_NOTLAST)
++		msg.msg_flags |= MSG_MORE;
+ 
+-	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
+-	if (ret)
+-		return ret;
+-	lock_sock(sk);
+-	ret = tls_sw_do_sendpage(sk, page, offset, size, flags);
+-	release_sock(sk);
+-	mutex_unlock(&tls_ctx->tx_lock);
+-	return ret;
++	bvec_set_page(&bvec, page, size, offset);
++	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
++	return tls_sw_sendmsg(sk, &msg, size);
+ }
+ 
+ static int
 
--- 
-Regards,
-  Zhen Lei
 
