@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-1796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C025721FD0
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 09:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD3C721FD1
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 09:40:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2761C20ABF
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 07:40:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA6371C20ABF
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 07:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7010F11CB6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7614811CB7;
 	Mon,  5 Jun 2023 07:40:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3990F11CA1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D03911CA4
 	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 07:40:30 +0000 (UTC)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B79DCD;
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B00D3;
 	Mon,  5 Jun 2023 00:40:28 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-30c5e5226bdso2755512f8f.2;
-        Mon, 05 Jun 2023 00:40:27 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f6da07ff00so45672305e9.3;
+        Mon, 05 Jun 2023 00:40:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685950826; x=1688542826;
+        d=gmail.com; s=20221208; t=1685950827; x=1688542827;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+pHD5vwavBvGsj8sNf9HQSglXSh8RHVyAD0WLni3C3s=;
-        b=bu/NBxKUkF9CtjVI3uj8QZ1QwcCrIKeKY/dligJ87i9pSlv0nvmonF8zPHIXLwSpEk
-         OYfpRhP0PUx2rSrf+PRN+XTnycoZzlGUkdnFDnmo90xU3LLRfp0K4AaJYxyKdiMNn51t
-         UrkosQlFVB1IhXcanqQXDBfBylBmut/9yIpxUkiHZN8d9k9tQ1/IQrqiL9Iw/Vvja9xk
-         /O/G4CBFAbkYM73sXL1ercfyUatJKHQ136/R464/dbRsHlEtIXJUiAKbtvVF3cCiW+8G
-         sEeOe+lFLwyCDqoqIscA9bo3vneH40uzwhO/f8+4CWO+q/dbx3glsY9wxzgCxtqd2QwU
-         Gqmw==
+        bh=IkzqYxL73s22EAwsna++GGXRkm1HvzsrQXeSnzKLJ6M=;
+        b=ad1sTI8nqnhQ4S/1WnIPW6zm48etDauqxoNS4yAm8F/DkP+AJY3rZU6ft/MBECBmMb
+         8F29zfFuogHVFdyX+p0h627jFsihUhI+MZrV4E4xFEuBWhoo0iFHN7HEUNxT79PjePaz
+         +OscpeOPWhNmq9mW15hMqAabb4Fm1MjCFVWwut+poRj6rFEvyyXhz9ey5BpE6FTxpnrR
+         QHqIXTmpLEefs/M+wfYU967NOJITwOMCfXsOGa+tn8EA457L1tuFaRi6+MoeqHipcZmw
+         IlKuB8RufCWHnEqiToTsqgaZzPE30xdn6xutUufEjbRcTpN07qItho2sPv/8hxbKlYxK
+         Fipg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685950826; x=1688542826;
+        d=1e100.net; s=20221208; t=1685950827; x=1688542827;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+pHD5vwavBvGsj8sNf9HQSglXSh8RHVyAD0WLni3C3s=;
-        b=Fq0O6JYRSB9hYFW7BOT0EvlCtFMJB+JeZmWl/QJEaYz8JvI2It+OWLsFq5mR9UkS/Z
-         eZ+ASH6bcq4Z0q738F4K0gtvZz2cNQQ8FbmiMQXT9zXTpkHD4Zkqs4+x8Y5PQ6sPDO4f
-         3UMdWaz8tJstv+uFLs1DwFXBukaI8rLpON91Fuwy82mFFGDUbLUk1DHykegl+z9tLNAx
-         SYJGb7SQQ4jwxGuXBlO5mjAZWlvCkdTaIBELWx1+CHhO5V/oaYBghjxmapGKbtpyVzSO
-         OtUK6RXWYy29ut11vUg7KT6CIHgG77DIyIEHLTDy/bFrKHZ95WMGTltz8oF8Na8Q9xPV
-         G0jA==
-X-Gm-Message-State: AC+VfDzA2gHWlQc+RHBQNfqr8ds3szXoPTbS5MdEDxBzcfMk5BYtrAUd
-	Vj8U1IQt27MIddrwh8ZyUP4=
-X-Google-Smtp-Source: ACHHUZ6t1xZUQz6H8XdTyrJFyOohGdCQm57CG3WkeJlZ7Wilz4FOVCI9Y6y8nAhi7n6LNBLf3p9HkQ==
-X-Received: by 2002:a05:6000:108b:b0:30a:f143:25d2 with SMTP id y11-20020a056000108b00b0030af14325d2mr4232918wrw.5.1685950826210;
+        bh=IkzqYxL73s22EAwsna++GGXRkm1HvzsrQXeSnzKLJ6M=;
+        b=ImvDZRSEIXrA/ZdqOvLVubkN7hG7Od92b+QNcatLglVqDmU+GBL3sAKS+4XXhIg9d6
+         urSUw+mfpKtcdk5QUZDC7+7SGhBaCU/z5FLTxYQSXJrbFj4NqDHYkN5Isi9JsWNFegzV
+         wiESdEWxnUTDGzm39eWLGwovy7F6Wimbodzuddw8AIoBS5un2L3qQYtlB1JafgiE11Kk
+         4NF+XcCHn6oB9vy2SLtx8EegZGI+WkrKzBxSxIwnUYsw0vuB+ZkBSyhwfPTEL3vopW53
+         PYSD7FVd9bwokk/NkRxeOTiYtwO7uRy0xgrQ3tIdAPeW/RrZF9hIt3Y5nb9BDxk6e6TV
+         XLeA==
+X-Gm-Message-State: AC+VfDz94mUR1jj0BU7Lk9CjIoxuWbTQJFJFpdj3qr5hJCBXuW+IQypc
+	DghgSHqtZM2nHgiJjqzOhVA=
+X-Google-Smtp-Source: ACHHUZ7Ls9cXd9bOy8NVrhksZPkskca3CwSJJZLtxIsyFgHq0GzJNJ2CJ6bYNnwlMBoG7rmQWQMQgg==
+X-Received: by 2002:a7b:ca46:0:b0:3f1:789d:ad32 with SMTP id m6-20020a7bca46000000b003f1789dad32mr8195807wml.11.1685950826769;
         Mon, 05 Jun 2023 00:40:26 -0700 (PDT)
 Received: from ip-172-31-22-112.eu-west-1.compute.internal (ec2-34-244-49-215.eu-west-1.compute.amazonaws.com. [34.244.49.215])
-        by smtp.gmail.com with ESMTPSA id c18-20020adfed92000000b0030ae499da59sm8882103wro.111.2023.06.05.00.40.25
+        by smtp.gmail.com with ESMTPSA id c18-20020adfed92000000b0030ae499da59sm8882103wro.111.2023.06.05.00.40.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 05 Jun 2023 00:40:26 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
@@ -69,9 +69,9 @@ To: ast@kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next 1/3] bpf: make bpf_prog_pack allocator portable
-Date: Mon,  5 Jun 2023 07:40:22 +0000
-Message-Id: <20230605074024.1055863-2-puranjay12@gmail.com>
+Subject: [PATCH bpf-next 2/3] arm64: patching: Add aarch64_insn_copy()
+Date: Mon,  5 Jun 2023 07:40:23 +0000
+Message-Id: <20230605074024.1055863-3-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230605074024.1055863-1-puranjay12@gmail.com>
 References: <20230605074024.1055863-1-puranjay12@gmail.com>
@@ -89,60 +89,82 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The bpf_prog_pack allocator currently uses module_alloc() and
-module_memfree() to allocate and free memory. This is not portable
-because different architectures use different methods for allocating
-memory for BPF programs. Like ARM64 uses vmalloc()/vfree().
+This will be used by BPF JIT compiler to dump JITed binary to a RX huge
+page, and thus allow multiple BPF programs sharing the a huge (2MB)
+page.
 
-Use bpf_jit_alloc_exec() and bpf_jit_free_exec() for memory management
-in bpf_prog_pack allocator. Other architectures can override these with
-their implementation and will be able to use bpf_prog_pack directly.
+The bpf_prog_pack allocator that implements the above feature allocates
+a RX/RW buffer pair. The JITed code is written to the RW buffer and then
+this function will be used to copy the code from RW to RX buffer.
 
 Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- kernel/bpf/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/patching.h |  1 +
+ arch/arm64/kernel/patching.c      | 39 +++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7421487422d4..2bc9092bf9be 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -860,7 +860,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
--	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
-+	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
- 	if (!pack->ptr) {
- 		kfree(pack);
- 		return NULL;
-@@ -884,7 +884,7 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
- 	mutex_lock(&pack_mutex);
- 	if (size > BPF_PROG_PACK_SIZE) {
- 		size = round_up(size, PAGE_SIZE);
--		ptr = module_alloc(size);
-+		ptr = bpf_jit_alloc_exec(size);
- 		if (ptr) {
- 			bpf_fill_ill_insns(ptr, size);
- 			set_vm_flush_reset_perms(ptr);
-@@ -922,7 +922,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/patching.h
+index 68908b82b168..dba9eb392bf1 100644
+--- a/arch/arm64/include/asm/patching.h
++++ b/arch/arm64/include/asm/patching.h
+@@ -8,6 +8,7 @@ int aarch64_insn_read(void *addr, u32 *insnp);
+ int aarch64_insn_write(void *addr, u32 insn);
  
- 	mutex_lock(&pack_mutex);
- 	if (hdr->size > BPF_PROG_PACK_SIZE) {
--		module_memfree(hdr);
-+		bpf_jit_free_exec(hdr);
- 		goto out;
- 	}
+ int aarch64_insn_write_literal_u64(void *addr, u64 val);
++void *aarch64_insn_copy(void *addr, const void *opcode, size_t len);
  
-@@ -946,7 +946,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
- 				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
- 		list_del(&pack->list);
--		module_memfree(pack->ptr);
-+		bpf_jit_free_exec(pack->ptr);
- 		kfree(pack);
- 	}
- out:
+ int aarch64_insn_patch_text_nosync(void *addr, u32 insn);
+ int aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt);
+diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+index b4835f6d594b..48c710f6a1ff 100644
+--- a/arch/arm64/kernel/patching.c
++++ b/arch/arm64/kernel/patching.c
+@@ -105,6 +105,45 @@ noinstr int aarch64_insn_write_literal_u64(void *addr, u64 val)
+ 	return ret;
+ }
+ 
++/**
++ * aarch64_insn_copy - Copy instructions into (an unused part of) RX memory
++ * @addr: address to modify
++ * @opcode: source of the copy
++ * @len: length to copy
++ *
++ * Useful for JITs to dump new code blocks into unused regions of RX memory.
++ */
++noinstr void *aarch64_insn_copy(void *addr, const void *opcode, size_t len)
++{
++	unsigned long flags;
++	size_t patched = 0;
++	size_t size;
++	void *waddr;
++	void *dst;
++	int ret;
++
++	raw_spin_lock_irqsave(&patch_lock, flags);
++
++	while (patched < len) {
++		dst = addr + patched;
++		size = min_t(size_t, PAGE_SIZE - offset_in_page(dst),
++			     len - patched);
++
++		waddr = patch_map(dst, FIX_TEXT_POKE0);
++		ret = copy_to_kernel_nofault(waddr, opcode + patched, size);
++		patch_unmap(FIX_TEXT_POKE0);
++
++		if (ret < 0) {
++			raw_spin_unlock_irqrestore(&patch_lock, flags);
++			return NULL;
++		}
++		patched += size;
++	}
++	raw_spin_unlock_irqrestore(&patch_lock, flags);
++
++	return addr;
++}
++
+ int __kprobes aarch64_insn_patch_text_nosync(void *addr, u32 insn)
+ {
+ 	u32 *tp = addr;
 -- 
 2.39.2
 
