@@ -1,96 +1,130 @@
-Return-Path: <bpf+bounces-1847-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753EB722D23
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC3E3722D3B
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 19:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCF171C20B13
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:58:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3421C20C6B
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 17:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2D0DDCF;
-	Mon,  5 Jun 2023 16:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12F6DDD0;
+	Mon,  5 Jun 2023 17:05:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2208F41;
-	Mon,  5 Jun 2023 16:58:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0656FC433EF;
-	Mon,  5 Jun 2023 16:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DD36FC3
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 17:05:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB30C4339C;
+	Mon,  5 Jun 2023 17:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685984309;
-	bh=CrY2ZiVbWL+cdb7NhSsJPRJqo31JAAEjIeVjfeRjOSU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=uz3/gsoa2JuN//yAO3fxQSyENy5z32PfIvosUKB65Eh9x29EXgX9OgK2j3UQrcR0U
-	 /fiSf8McB0fZosy8lfgw786b66ablsMI5E/F9icD0TcmTxp68Wy5IiOhszBjjS5iMM
-	 Zqc9zAYeUKq8Nnb2rrxZjbHgMfjzcamXRu1rP/7aLR8o4PutDqK88QPe/nwkbfh2IA
-	 2rH1ZSpZywRtAqCbv8b4e62ztaqYo6Ng+1okBLR9KfQru8no1qhAaorZ8pQDiQOvUP
-	 hAcSZQ6d5MjHXa83oHVkPRnm6HK/dUZuUnREZ7WTuRdeJ2KP1TsF3AhZIQ/LTbYXWv
-	 Qx1AUDBfG2t0Q==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 02161BBDAE1; Mon,  5 Jun 2023 18:58:25 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
- tirthendu.sarkar@intel.com, maciej.fijalkowski@intel.com,
- simon.horman@corigine.com
-Subject: Re: [PATCH v3 bpf-next 00/22] xsk: multi-buffer support
-In-Reply-To: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
-References: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 05 Jun 2023 18:58:25 +0200
-Message-ID: <87edmp3ky6.fsf@toke.dk>
+	s=k20201202; t=1685984714;
+	bh=yEpxiQ3fmeL0xXU4oqZwbEUseI3GKuRgp39yNbpnCQM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BolcBbiCcHlGyYY2b6/88QhsCF7i9w0kj753eMZt5nBdvBIjsHfDAPDe0Ba9pCGRf
+	 F2fUQfzLZTrKazCBgZl2t6P7GHuEqWfOtGdRZ6PJus5wvXAcRXRR0ZNw5zcmCac0mi
+	 36FHvdlJ25I5MabmuIDzog2p6NX0yyMIx45lt/nfsPWbFEPB+USg3Fcxo0IoDgQFNP
+	 oBaxagNngmnzHEW2jEIhHOn6EC/b5hTP9EqAz7/iOu33m5qoJqWoRp7LryvCNBwwkS
+	 TGJsnratZdjA1JFs4PXsywLvk+fAForUrvT9XuUpRgnNeIwnmb7gZCl/QsBVa1sE7R
+	 Upsmaghvbu2Zg==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2b1c5a6129eso22398731fa.2;
+        Mon, 05 Jun 2023 10:05:14 -0700 (PDT)
+X-Gm-Message-State: AC+VfDyQJhDpOSBVoLotrchLF9T5lUWAY1wv3FAfXlUO6DGKujvO8KO1
+	dlbSPcWVBL5SHzEjsd1ZfCGctWGLQdRm1shEmjk=
+X-Google-Smtp-Source: ACHHUZ5a4uJgqYj6XYfDGH+cbQx//PBtbULgCbjcB59kMvuL6TUIBZNr7mZHyTg0SmBldrQE5OAx+nZDYXN+zYRkeR0=
+X-Received: by 2002:a2e:8e97:0:b0:2b0:790e:95ab with SMTP id
+ z23-20020a2e8e97000000b002b0790e95abmr4837221ljk.31.1685984712145; Mon, 05
+ Jun 2023 10:05:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20230605074024.1055863-1-puranjay12@gmail.com> <20230605074024.1055863-4-puranjay12@gmail.com>
+In-Reply-To: <20230605074024.1055863-4-puranjay12@gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 5 Jun 2023 10:05:00 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4JVUUzMfNQwTE_uzp3bnO3EAYDikU1Nyx6x-6ROFDNOA@mail.gmail.com>
+Message-ID: <CAPhsuW4JVUUzMfNQwTE_uzp3bnO3EAYDikU1Nyx6x-6ROFDNOA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpf, arm64: use bpf_jit_binary_pack_alloc
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, catalin.marinas@arm.com, mark.rutland@arm.com, 
+	bpf@vger.kernel.org, kpsingh@kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Great to see this proceeding! Thought I'd weigh in on this part:
-
-> Unfortunately, we had to introduce a new bind flag (XDP_USE_SG) on the
-> AF_XDP level to enable multi-buffer support. It would be great if you
-> have ideas on how to get rid of it. The reason we need to
-> differentiate between non multi-buffer and multi-buffer is the
-> behaviour when the kernel gets a packet that is larger than the frame
-> size. Without multi-buffer, this packet is dropped and marked in the
-> stats. With multi-buffer on, we want to split it up into multiple
-> frames instead.
+On Mon, Jun 5, 2023 at 12:40=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
 >
-> At the start, we thought that riding on the .frags section name of
-> the XDP program was a good idea. You do not have to introduce yet
-> another flag and all AF_XDP users must load an XDP program anyway
-> to get any traffic up to the socket, so why not just say that the XDP
-> program decides if the AF_XDP socket should get multi-buffer packets
-> or not? The problem is that we can create an AF_XDP socket that is Tx
-> only and that works without having to load an XDP program at
-> all. Another problem is that the XDP program might change during the
-> execution, so we would have to check this for every single packet.
+> Use bpf_jit_binary_pack_alloc for memory management of JIT binaries in
+> ARM64 BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
+> buffers. The JIT writes the program into the RW buffer. When the JIT is
+> done, the program is copied to the final ROX buffer
+> with bpf_jit_binary_pack_finalize.
+>
+> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for ARM64
+> JIT as these functions are required by bpf_jit_binary_pack allocator.
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 119 +++++++++++++++++++++++++++++-----
+>  1 file changed, 102 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.=
+c
+> index 145b540ec34f..ee9414cadea8 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -76,6 +76,7 @@ struct jit_ctx {
+>         int *offset;
+>         int exentry_idx;
+>         __le32 *image;
+> +       __le32 *ro_image;
 
-I agree that it's better to tie the enabling of this to a socket flag
-instead of to the XDP program, for a couple of reasons:
+We are using:
+image vs. ro_image
+rw_header vs. header
+rw_image_ptr vs. image_ptr
 
-- The XDP program can, as you say, be changed, but it can also be shared
-  between several sockets in a single XSK, so this really needs to be
-  tied to the socket.
+Shall we be more consistent with rw_ or ro_ prefix?
 
-- The XDP program is often installed implicitly by libxdp, in which case
-  the program can't really set the flag on the program itself.
+>         u32 stack_size;
+>         int fpb_offset;
+>  };
+> @@ -205,6 +206,20 @@ static void jit_fill_hole(void *area, unsigned int s=
+ize)
+>                 *ptr++ =3D cpu_to_le32(AARCH64_BREAK_FAULT);
+>  }
+>
+> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> +{
+> +       __le32 *ptr;
+> +       int ret;
+> +
+> +       for (ptr =3D dst; len >=3D sizeof(u32); len -=3D sizeof(u32)) {
+> +               ret =3D aarch64_insn_patch_text_nosync(ptr++, AARCH64_BRE=
+AK_FAULT);
 
-There's a related question of whether the frags flag on the XDP program
-should be a prerequisite for enabling it at the socket? I think probably
-it should, right?
+I think one aarch64_insn_patch_text_nosync() per 4 byte is too much overhea=
+d.
+Shall we add a helper to do this in bigger patches?
 
-Also, related to the first point above, how does the driver respond to
-two different sockets being attached to the same device with two
-different values of the flag? (As you can probably tell I didn't look at
-the details of the implementation...)
+Thanks,
+Song
 
--Toke
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+
+[...]
 
