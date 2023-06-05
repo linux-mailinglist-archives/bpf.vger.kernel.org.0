@@ -1,266 +1,96 @@
-Return-Path: <bpf+bounces-1846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97251722CF7
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:50:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 753EB722D23
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00A8A1C20CAC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCF171C20B13
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A1DDDD0;
-	Mon,  5 Jun 2023 16:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2D0DDCF;
+	Mon,  5 Jun 2023 16:58:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB5ADDCB
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 16:50:11 +0000 (UTC)
-Received: from crane.ash.relay.mailchannels.net (crane.ash.relay.mailchannels.net [23.83.222.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B905011B
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 09:50:03 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id C88B3140B73
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 16:49:59 +0000 (UTC)
-Received: from pdx1-sub0-mail-a246.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 4DC531410C4
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 16:49:59 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1685983799; a=rsa-sha256;
-	cv=none;
-	b=VaYnmq8kghRbdfvhU6CoXyy8rjBcDVVL4OEDxvfBe1RpoZKn+5yx4/mZuhyUULSc8ISkRS
-	Z5vOo9znMk5WDqxW6gRHe6domdaLXlLp8FCERF/weCqZa5YXzw38jIo+OnH4usdRQob73q
-	Ay+bvZNY2flOXTCXarag57j7HNxQzeS1YGSqmsz4EGafdiEI+hVWqUMMGQSrRBurkqzb0I
-	MbSlNog/k+CdAvy3j4eqKqY8nW7DlljOkaqhrRk1JR+AcYKIO/KEbzOMNuQDf7rqUnXyy9
-	Dr+vygnHTth6BMV+XhCooGfPFpzh9pfeyhEgSYYwk+LEOnLQBJTFQuBJic9r4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1685983799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 dkim-signature; bh=bA9dwwrLWaPkBczdJGZf0n7gtEXmPiDCbFmELkXgQMQ=;
-	b=yESzd6E7asq8w/7CKbH4q7Hv4HH/zgQB/5QnBLiWek0cHU54dSP71CZ9spoqG2sd+tHG7A
-	u/2Sv468Dh1VdU611BpHpfp/DPnGkNQ7WEWCrd3DUWibqG9XZmxUyJ6NHe+d4hUhm02CCu
-	lPDLh4EzKAyvk9xLD9zvu5TbjPK6vENFkWFe+BUbuibIlsE690So1IDDx9dpOS3EtBqYID
-	TiE90Ya2OGL8PiUbfqfHSx2y5LPLd5tWkpI9xzUYVvGHmyIfdcHFalSOuNNsn+Z89/tPT6
-	Au71avCLuUVmlglgnv4PDZByfnWvynRwqVtXgGXfSrofd+1hAJGYmg4z+uPvYw==
-ARC-Authentication-Results: i=1;
-	rspamd-56648fb6f9-kpfxq;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Celery-Print: 185d07743ccf75c0_1685983799571_3705833669
-X-MC-Loop-Signature: 1685983799571:1920948794
-X-MC-Ingress-Time: 1685983799571
-Received: from pdx1-sub0-mail-a246.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.127.59.37 (trex/6.8.1);
-	Mon, 05 Jun 2023 16:49:59 +0000
-Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a246.dreamhost.com (Postfix) with ESMTPSA id 4QZfjL3vWLzl4
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 09:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1685983798;
-	bh=bA9dwwrLWaPkBczdJGZf0n7gtEXmPiDCbFmELkXgQMQ=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=GRh1O24h56VOD69FVspvvFrfKJDz125mN0N07VKMg7XGYe/cfg041XaIe60pBCdUq
-	 6Y4me79JxShLfWOPtV+UvBSMGH62zQS/kzw0ic+Ir5FQPqiuVOuqoC5/h8szQysweq
-	 rOun9wLRRodw/T2HjeAgqIk0/lRTPf56fQF0UA80=
-Received: from johansen (uid 1000)
-	(envelope-from kjlx@templeofstupid.com)
-	id e0044
-	by kmjvbox (DragonFly Mail Agent v0.12);
-	Mon, 05 Jun 2023 09:49:55 -0700
-Date: Mon, 5 Jun 2023 09:49:55 -0700
-From: Krister Johansen <kjlx@templeofstupid.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, llvm@lists.linux.dev,
-	stable@vger.kernel.org
-Subject: [PATCH bpf] bpf: search_bpf_extables should search subprogram
- extables
-Message-ID: <20230605164955.GA1977@templeofstupid.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2208F41;
+	Mon,  5 Jun 2023 16:58:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0656FC433EF;
+	Mon,  5 Jun 2023 16:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685984309;
+	bh=CrY2ZiVbWL+cdb7NhSsJPRJqo31JAAEjIeVjfeRjOSU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=uz3/gsoa2JuN//yAO3fxQSyENy5z32PfIvosUKB65Eh9x29EXgX9OgK2j3UQrcR0U
+	 /fiSf8McB0fZosy8lfgw786b66ablsMI5E/F9icD0TcmTxp68Wy5IiOhszBjjS5iMM
+	 Zqc9zAYeUKq8Nnb2rrxZjbHgMfjzcamXRu1rP/7aLR8o4PutDqK88QPe/nwkbfh2IA
+	 2rH1ZSpZywRtAqCbv8b4e62ztaqYo6Ng+1okBLR9KfQru8no1qhAaorZ8pQDiQOvUP
+	 hAcSZQ6d5MjHXa83oHVkPRnm6HK/dUZuUnREZ7WTuRdeJ2KP1TsF3AhZIQ/LTbYXWv
+	 Qx1AUDBfG2t0Q==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 02161BBDAE1; Mon,  5 Jun 2023 18:58:25 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
+ tirthendu.sarkar@intel.com, maciej.fijalkowski@intel.com,
+ simon.horman@corigine.com
+Subject: Re: [PATCH v3 bpf-next 00/22] xsk: multi-buffer support
+In-Reply-To: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
+References: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 05 Jun 2023 18:58:25 +0200
+Message-ID: <87edmp3ky6.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain
 
-JIT'd bpf programs that have subprograms can have a postive value for
-num_extentries but a NULL value for extable.  This is problematic if one of
-these bpf programs encounters a fault during its execution.  The fault
-handlers correctly identify that the faulting IP belongs to a bpf program.
-However, performing a search_extable call on a NULL extable leads to a
-second fault.
+Great to see this proceeding! Thought I'd weigh in on this part:
 
-Fix up by refusing to search a NULL extable, and by checking the
-subprograms' extables if the umbrella program has subprograms configured.
+> Unfortunately, we had to introduce a new bind flag (XDP_USE_SG) on the
+> AF_XDP level to enable multi-buffer support. It would be great if you
+> have ideas on how to get rid of it. The reason we need to
+> differentiate between non multi-buffer and multi-buffer is the
+> behaviour when the kernel gets a packet that is larger than the frame
+> size. Without multi-buffer, this packet is dropped and marked in the
+> stats. With multi-buffer on, we want to split it up into multiple
+> frames instead.
+>
+> At the start, we thought that riding on the .frags section name of
+> the XDP program was a good idea. You do not have to introduce yet
+> another flag and all AF_XDP users must load an XDP program anyway
+> to get any traffic up to the socket, so why not just say that the XDP
+> program decides if the AF_XDP socket should get multi-buffer packets
+> or not? The problem is that we can create an AF_XDP socket that is Tx
+> only and that works without having to load an XDP program at
+> all. Another problem is that the XDP program might change during the
+> execution, so we would have to check this for every single packet.
 
-Once I realized what was going on, I was able to use the following bpf
-program to get an oops from this failure:
+I agree that it's better to tie the enabling of this to a socket flag
+instead of to the XDP program, for a couple of reasons:
 
-   #include "vmlinux.h"
-   #include <bpf/bpf_helpers.h>
-   #include <bpf/bpf_tracing.h>
-   
-   char LICENSE[] SEC("license") = "Dual BSD/GPL";
-   
-   #define PATH_MAX 4096
-   
-   struct callback_ctx {
-           u8 match;
-   };
-   
-   struct filter_value {
-           char prefix[PATH_MAX];
-   };
-   struct {
-           __uint(type, BPF_MAP_TYPE_ARRAY);
-           __uint(max_entries, 256);
-           __type(key, int);
-           __type(value, struct filter_value);
-   } test_filter SEC(".maps");
-   
-   static __u64 test_filter_cb(struct bpf_map *map, __u32 *key,
-                               struct filter_value *val,
-                               struct callback_ctx *data)
-   {
-       return 1;
-   }
-   
-   SEC("fentry/__sys_bind")
-   int BPF_PROG(__sys_bind, int fd, struct sockaddr *umyaddr, int addrlen)
-   {
-     pid_t pid;
-   
-     struct callback_ctx cx = { .match = 0 };
-     pid = bpf_get_current_pid_tgid() >> 32;
-     bpf_for_each_map_elem(&test_filter, test_filter_cb, &cx, 0);
-     bpf_printk("fentry: pid = %d, family = %llx\n", pid, umyaddr->sa_family);
-     return 0;
-   }
+- The XDP program can, as you say, be changed, but it can also be shared
+  between several sockets in a single XSK, so this really needs to be
+  tied to the socket.
 
-And then the following code to actually trigger a failure:
+- The XDP program is often installed implicitly by libxdp, in which case
+  the program can't really set the flag on the program itself.
 
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <netinet/ip.h>
-  
-  int
-  main(int argc, char *argv[])
-  {
-    int sfd, rc;
-    struct sockaddr *sockptr = (struct sockaddr *)0x900000000000;
-  
-    sfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sfd < 0) {
-      perror("socket");
-      exit(EXIT_FAILURE);
-    }
-  
-    while (1) {
-      rc = bind(sfd, (struct sockaddr *) sockptr, sizeof(struct sockaddr_in));
-      if (rc < 0) {
-        perror("bind");
-        sleep(5);
-      } else {
-        break;
-      }
-    }
-  
-    return 0;
-  }
+There's a related question of whether the frags flag on the XDP program
+should be a prerequisite for enabling it at the socket? I think probably
+it should, right?
 
-I was able to validate that this problem does not occur when subprograms
-are not in use, or when the direct pointer accesses are replaced with
-bpf_probe_read calls.  I further validated that this did not break the
-extable handling in existing bpf programs.  The same program caused no
-failures when subprograms were removed, but the exception was still
-injected.
+Also, related to the first point above, how does the driver respond to
+two different sockets being attached to the same device with two
+different values of the flag? (As you can probably tell I didn't look at
+the details of the implementation...)
 
-Cc: stable@vger.kernel.org
-Fixes: 1c2a088a6626 ("bpf: x64: add JIT support for multi-function programs")
-Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
----
- kernel/bpf/core.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 7421487422d4..0e12238e4340 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -736,15 +736,33 @@ const struct exception_table_entry *search_bpf_extables(unsigned long addr)
- {
- 	const struct exception_table_entry *e = NULL;
- 	struct bpf_prog *prog;
-+	struct bpf_prog_aux *aux;
-+	int i;
- 
- 	rcu_read_lock();
- 	prog = bpf_prog_ksym_find(addr);
- 	if (!prog)
- 		goto out;
--	if (!prog->aux->num_exentries)
-+	aux = prog->aux;
-+	if (!aux->num_exentries)
- 		goto out;
- 
--	e = search_extable(prog->aux->extable, prog->aux->num_exentries, addr);
-+	/* prog->aux->extable can be NULL if subprograms are in use. In that
-+	 * case, check each sub-function's aux->extables to see if it has a
-+	 * matching entry.
-+	 */
-+	if (aux->extable != NULL) {
-+		e = search_extable(prog->aux->extable,
-+		    prog->aux->num_exentries, addr);
-+	} else {
-+		for (i = 0; (i < aux->func_cnt) && (e == NULL); i++) {
-+			if (!aux->func[i]->aux->num_exentries ||
-+			    aux->func[i]->aux->extable == NULL)
-+				continue;
-+			e = search_extable(aux->func[i]->aux->extable,
-+			    aux->func[i]->aux->num_exentries, addr);
-+		}
-+	}
- out:
- 	rcu_read_unlock();
- 	return e;
--- 
-2.25.1
-
+-Toke
 
