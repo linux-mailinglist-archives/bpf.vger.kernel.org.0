@@ -1,116 +1,72 @@
-Return-Path: <bpf+bounces-1778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D923721A62
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 23:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC40721BC9
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 04:00:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B78A28110F
-	for <lists+bpf@lfdr.de>; Sun,  4 Jun 2023 21:47:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCAC9281109
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 02:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB1211C9D;
-	Sun,  4 Jun 2023 21:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E088396;
+	Mon,  5 Jun 2023 02:00:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B983011C88
-	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 21:47:46 +0000 (UTC)
-Received: from out-17.mta0.migadu.com (out-17.mta0.migadu.com [IPv6:2001:41d0:1004:224b::11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C317DA
-	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 14:47:44 -0700 (PDT)
-Date: Sun, 4 Jun 2023 17:47:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1685915263;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qZfrqkmOcubtDULoEnOL869saW/gsg6Wix94q7dUars=;
-	b=YfqFINn6izWiCi8X1ga2qGkSX12jQdO6/uM5Z2MbOgTPHwdlRmHzCNo7esPnqeOqp6VsVi
-	zGRvgrd73qlFp6wgP4dPxEdd3I7LdGJRQE1vxQlzZsGHPYkQgfFzvODPb5FpeUGhLw017m
-	/XDOZCuvIcPybXEwvbQdYXtG4WGYHSo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mcgrof@kernel.org" <mcgrof@kernel.org>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-	"rppt@kernel.org" <rppt@kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"dinguyen@kernel.org" <dinguyen@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH 12/13] x86/jitalloc: prepare to allocate exectuatble
- memory as ROX
-Message-ID: <ZH0GeKreazeNYmHT@moria.home.lan>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <20230601101257.530867-13-rppt@kernel.org>
- <0f50ac52a5280d924beeb131e6e4717b6ad9fdf7.camel@intel.com>
- <ZHjcr26YskTm+0EF@moria.home.lan>
- <a51c041b61e2916d2b91c990349aabc6cb9836aa.camel@intel.com>
- <ZHjljJfQjhVV/jNS@moria.home.lan>
- <68b8160454518387c53508717ba5ed5545ff0283.camel@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E40219B;
+	Mon,  5 Jun 2023 02:00:16 +0000 (UTC)
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631849E;
+	Sun,  4 Jun 2023 19:00:14 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VkIDsbM_1685930409;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VkIDsbM_1685930409)
+          by smtp.aliyun-inc.com;
+          Mon, 05 Jun 2023 10:00:10 +0800
+Message-ID: <1685930301.215976-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v10 00/10] virtio core prepares for AF_XDP
+Date: Mon, 5 Jun 2023 09:58:21 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: virtualization@lists.linux-foundation.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John  Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+ <20230602232902.446e1d71@kernel.org>
+In-Reply-To: <20230602232902.446e1d71@kernel.org>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68b8160454518387c53508717ba5ed5545ff0283.camel@intel.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Thu, Jun 01, 2023 at 08:50:39PM +0000, Edgecombe, Rick P wrote:
-> > Ahh! Thanks for that; perhaps the comment in text_poke() about IPIs
-> > could be a bit clearer.
-> > 
-> > What is it (if anything) you don't like about text_poke() then? It
-> > looks
-> > like it's doing broadly similar things to kmap_local(), so should be
-> > in the same ballpark from a performance POV?
-> 
-> The way text_poke() is used here, it is creating a new writable alias
-> and flushing it for *each* write to the module (like for each write of
-> an individual relocation, etc). I was just thinking it might warrant
-> some batching or something.
+On Fri, 2 Jun 2023 23:29:02 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Fri,  2 Jun 2023 17:21:56 +0800 Xuan Zhuo wrote:
+> > Thanks for the help from Christoph.
+>
+> That said you haven't CCed him on the series, isn't the general rule to
+> CC anyone who was involved in previous discussions?
 
-Ah, I see. A kmap_local type interface might get us that kind of
-batching, if it supported mapping compound pages - currently kmap_local
-still only maps single pages, but with folios getting plumbed around I
-assume someone will make it handle compound pages eventually.
+
+Sorry, I forgot to add cc after git format-patch.
+
+
+Thanks.
 
