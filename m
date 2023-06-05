@@ -1,81 +1,76 @@
-Return-Path: <bpf+bounces-1895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3580B7233AE
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 01:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2497233B1
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 01:32:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D052F281402
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 23:31:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9F26281403
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 23:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB5428C16;
-	Mon,  5 Jun 2023 23:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79D828C13;
+	Mon,  5 Jun 2023 23:32:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0C728C0A;
-	Mon,  5 Jun 2023 23:30:45 +0000 (UTC)
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACB8D2;
-	Mon,  5 Jun 2023 16:30:43 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b1b6865c7cso44218241fa.3;
-        Mon, 05 Jun 2023 16:30:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF382773D
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 23:32:41 +0000 (UTC)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C698EC;
+	Mon,  5 Jun 2023 16:32:40 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51475e981f0so7931730a12.1;
+        Mon, 05 Jun 2023 16:32:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686007841; x=1688599841;
+        d=gmail.com; s=20221208; t=1686007958; x=1688599958;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DlmpFDEmcxHsnSAtrkjHRWbVNt7ra8EBiqAvJ7+G6UM=;
-        b=M9aMrRskDsFPhGK6WdTxx38xeN3fozVsmcEN4p+M/mSfcQKDicvDjSlD/Txrui2oPf
-         HDnYaCqBswhWa2BctIRcAzcB/zYAKd0NNn+RSl2MZWj1JHxoVSnB8E9GdTH9VPVpwnwI
-         XnLyWNEfKB20R+MC2rQeStvaJUQf9gPeFCzxCxUDKcdHHnDLl0mg87AHBG4e+NjtzOrp
-         XK9RrkyJUfHA5BI3xZhOoQ3NoHBW3pMjT5m3a4zPblYljagPOGXDpfxt4Zu/qxkyKRjK
-         cXyVQLZxTv0ImYIdztULa2AeozuQOXdzh8rkbmtzBWVCQ/8wCjXXUXNSQ/M2Ibgx3yBm
-         Tylg==
+        bh=7XSS7GkuxbyAJz2hpFZd1hS8+hsFiywFxc/vDR6MdZU=;
+        b=hset7a17N0jBVuymWZ7RYQaCmS4Lyd1Gd5vV3xIUSTt2NMnqTSMWS7tw9J8KxUy0TC
+         HM5vUjbFdW2Jy2KY4YbcbpzUcVFfKT30eGuG35k68Khg6HoSOHUbAByJ6NyvmkJR4eDA
+         bw9PR6Q1VfbT78MXN9dw3+pWk7NTbXEoMwxd5CQKdDwr/7I3oTrYcd1c9ah67muZG27n
+         7/pPRlhi1oNJHgXvq00lU4p0ZGRoz2drKoZxFg7zGxMkG371wvzzllGhmSE/SG5C+jWD
+         DEVVcTTiD78Y7ls24IMM3I+ovKhMJdYfsWg7Gx0fNaA0waSVd78VdaG8ID+CWu4j0B1H
+         L1/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686007841; x=1688599841;
+        d=1e100.net; s=20221208; t=1686007958; x=1688599958;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DlmpFDEmcxHsnSAtrkjHRWbVNt7ra8EBiqAvJ7+G6UM=;
-        b=LsrK3UU/zuBgjwrNzBFFy9eJ7XyBaTPuqupAXV7Z/GBGMZPuJPbudQjP2R8RYqoyWQ
-         c0Q0KCN6/mq4FywVXlSMbSlHRD9ygUXSXVnxNKu6vkmnSTEevLKUkDVyWRJ+qpThgSCf
-         b/GEHeqyMmbqCeDXU4xk8pP6wBOuQSSIRQMPlnGOf/c369mNnHr6H72gt9bPjFdcnBjG
-         OjnotwaRVhpZ0Ag79s12w7ryDMF8hvj80wHXnEyNKo3fuAeFfaiUGxdD0FoSFezb9cfl
-         5Jyi6sc0Ncn/Eg6dayQPIGwz2/SIQreGe2UO7Nq5rWqERf1UCw6t+jCYPygcSP3zyD7H
-         fhfA==
-X-Gm-Message-State: AC+VfDzEr1coI+3KyORFYKRqSnZ4isXyt7Aw/anbKYLax5tzsCxE6Kne
-	FAvVMyQ6ddKxPEGLDi7CUohIDPGO+f6d1H1mSvI=
-X-Google-Smtp-Source: ACHHUZ4sj1ih+CkariNV5M0zDhUe1cFYW5PMBvQD/6OiIGS0ztojmDNTuxZ39lQbKupwhtGzz7S79/zGfzxVm4QiD5w=
-X-Received: by 2002:a2e:380b:0:b0:2af:2231:94ba with SMTP id
- f11-20020a2e380b000000b002af223194bamr403224lja.3.1686007841409; Mon, 05 Jun
- 2023 16:30:41 -0700 (PDT)
+        bh=7XSS7GkuxbyAJz2hpFZd1hS8+hsFiywFxc/vDR6MdZU=;
+        b=QF1O7GZ56bZPce9ffSia2lGJeim0fVdweBFJCBvO0sisyQfyoZ9Dxoz6Muf1fuvwxG
+         k2RNQSn6Fa1XOp7fmteQWVVhBeKjD3jkQuy189zp7b+7gafWAmm9Nl7fRGLfbYjk8h6j
+         /f56A90a7x+S/XGOBnXoLTQVkPDqi2xzM3M+NuE5IHUem4axseaX1qQVbJTmIlB+K6lt
+         0edSuI8McM5PoW/hCIM2oUPxluyd11Z+1LEFj9FgR/xDLIHQBEbRiwaFp5dKDJCyUW8L
+         +O4hnkbpaJDr0/GJ0R9BiDiEcMMN2LYatlQwkhRiCAT2MO7CW48K2P59vS8UmlMsdxbG
+         p04Q==
+X-Gm-Message-State: AC+VfDxn31Okfh8X+bzV6sOEaZwSopJZXOijqQwUUsUtDwsumyslqVwm
+	lcdn8A7RdM8AcPzJBIv0rlNGQRUriG/TtMb9oPQ=
+X-Google-Smtp-Source: ACHHUZ6cZauFLADXENMrenKJcg0yRS4E9CptP7eO6OxudKDUQp3ThF2gh8EkWurUTnqdB4W3EQhc0/+7mFbWVXhOKrM=
+X-Received: by 2002:a05:6402:644:b0:516:436d:3f82 with SMTP id
+ u4-20020a056402064400b00516436d3f82mr373337edx.30.1686007957834; Mon, 05 Jun
+ 2023 16:32:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230605164955.GA1977@templeofstupid.com>
-In-Reply-To: <20230605164955.GA1977@templeofstupid.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 5 Jun 2023 16:30:29 -0700
-Message-ID: <CAADnVQK7PQxj5jjfUu9sO524yLMPqE6vmzcipno1WYoeu0q-Gw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: search_bpf_extables should search subprogram extables
-To: Krister Johansen <kjlx@templeofstupid.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+References: <20230602030842.279262-1-gongruiqi@huaweicloud.com> <ZHoUyDMJ8xq7ENnX@google.com>
+In-Reply-To: <ZHoUyDMJ8xq7ENnX@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 5 Jun 2023 16:32:25 -0700
+Message-ID: <CAEf4BzYS5mj+0ZBA2HKW3=kB1cjZ3wdiJZ2OP9gSLE4e7WB_wQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: cleanup unused function declaration
+To: Stanislav Fomichev <sdf@google.com>
+Cc: gongruiqi@huaweicloud.com, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, stable <stable@vger.kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Wang Weiyang <wangweiyang2@huawei.com>, 
+	Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,184 +80,43 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 5, 2023 at 9:50=E2=80=AFAM Krister Johansen <kjlx@templeofstupi=
-d.com> wrote:
+On Fri, Jun 2, 2023 at 9:12=E2=80=AFAM Stanislav Fomichev <sdf@google.com> =
+wrote:
 >
-> JIT'd bpf programs that have subprograms can have a postive value for
-> num_extentries but a NULL value for extable.  This is problematic if one =
-of
-> these bpf programs encounters a fault during its execution.  The fault
-> handlers correctly identify that the faulting IP belongs to a bpf program=
-.
-> However, performing a search_extable call on a NULL extable leads to a
-> second fault.
+> On 06/02, GONG, Ruiqi wrote:
+> > All usage and the definition of `bpf_prog_free_linfo()` has been remove=
+d
+> > in commit e16301fbe183 ("bpf: Simplify freeing logic in linfo and
+> > jited_linfo"). Clean up its declaration in the header file.
+> >
+> > Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
 >
-> Fix up by refusing to search a NULL extable, and by checking the
-> subprograms' extables if the umbrella program has subprograms configured.
->
-> Once I realized what was going on, I was able to use the following bpf
-> program to get an oops from this failure:
->
->    #include "vmlinux.h"
->    #include <bpf/bpf_helpers.h>
->    #include <bpf/bpf_tracing.h>
->
->    char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
->
->    #define PATH_MAX 4096
->
->    struct callback_ctx {
->            u8 match;
->    };
->
->    struct filter_value {
->            char prefix[PATH_MAX];
->    };
->    struct {
->            __uint(type, BPF_MAP_TYPE_ARRAY);
->            __uint(max_entries, 256);
->            __type(key, int);
->            __type(value, struct filter_value);
->    } test_filter SEC(".maps");
->
->    static __u64 test_filter_cb(struct bpf_map *map, __u32 *key,
->                                struct filter_value *val,
->                                struct callback_ctx *data)
->    {
->        return 1;
->    }
->
->    SEC("fentry/__sys_bind")
->    int BPF_PROG(__sys_bind, int fd, struct sockaddr *umyaddr, int addrlen=
-)
->    {
->      pid_t pid;
->
->      struct callback_ctx cx =3D { .match =3D 0 };
->      pid =3D bpf_get_current_pid_tgid() >> 32;
->      bpf_for_each_map_elem(&test_filter, test_filter_cb, &cx, 0);
->      bpf_printk("fentry: pid =3D %d, family =3D %llx\n", pid, umyaddr->sa=
-_family);
 
-Instead of printk please do a volatile read of umyaddr->sa_family.
-
-Please convert this commit log to a test in selftest/bpf/
-and resubmit as two patches.
-
-Also see bpf_testmod_return_ptr() and
-SEC("fexit/bpf_testmod_return_ptr") in progs/test_module_attach.c.
-
-Probably easier to tweak that test for subprogs instead
-of adding your own SEC("fentry/__sys_bind") test and triggering bind()
-from user space.
+I'm actually having trouble applying this locally. Can you please
+rebase against bpf-next/master and resend it? Also, please check
+Signed-off-by's "<first> <last> <email>" order and spelling. Should it
+be "Ruiqi Gong <...>"?
 
 
->      return 0;
->    }
+> Acked-by: Stanislav Fomichev <sdf@google.com>
 >
-> And then the following code to actually trigger a failure:
->
->   #include <stdio.h>
->   #include <stdlib.h>
->   #include <unistd.h>
->   #include <sys/socket.h>
->   #include <netinet/in.h>
->   #include <netinet/ip.h>
->
->   int
->   main(int argc, char *argv[])
->   {
->     int sfd, rc;
->     struct sockaddr *sockptr =3D (struct sockaddr *)0x900000000000;
->
->     sfd =3D socket(AF_INET, SOCK_STREAM, 0);
->     if (sfd < 0) {
->       perror("socket");
->       exit(EXIT_FAILURE);
->     }
->
->     while (1) {
->       rc =3D bind(sfd, (struct sockaddr *) sockptr, sizeof(struct sockadd=
-r_in));
->       if (rc < 0) {
->         perror("bind");
->         sleep(5);
->       } else {
->         break;
->       }
->     }
->
->     return 0;
->   }
->
-> I was able to validate that this problem does not occur when subprograms
-> are not in use, or when the direct pointer accesses are replaced with
-> bpf_probe_read calls.  I further validated that this did not break the
-> extable handling in existing bpf programs.  The same program caused no
-> failures when subprograms were removed, but the exception was still
-> injected.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 1c2a088a6626 ("bpf: x64: add JIT support for multi-function progra=
-ms")
-> Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
-> ---
->  kernel/bpf/core.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 7421487422d4..0e12238e4340 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -736,15 +736,33 @@ const struct exception_table_entry *search_bpf_exta=
-bles(unsigned long addr)
->  {
->         const struct exception_table_entry *e =3D NULL;
->         struct bpf_prog *prog;
-> +       struct bpf_prog_aux *aux;
-> +       int i;
->
->         rcu_read_lock();
->         prog =3D bpf_prog_ksym_find(addr);
->         if (!prog)
->                 goto out;
-> -       if (!prog->aux->num_exentries)
-> +       aux =3D prog->aux;
-> +       if (!aux->num_exentries)
->                 goto out;
->
-> -       e =3D search_extable(prog->aux->extable, prog->aux->num_exentries=
-, addr);
-> +       /* prog->aux->extable can be NULL if subprograms are in use. In t=
-hat
-> +        * case, check each sub-function's aux->extables to see if it has=
- a
-> +        * matching entry.
-> +        */
-> +       if (aux->extable !=3D NULL) {
-> +               e =3D search_extable(prog->aux->extable,
-> +                   prog->aux->num_exentries, addr);
-> +       } else {
-> +               for (i =3D 0; (i < aux->func_cnt) && (e =3D=3D NULL); i++=
-) {
-
-() are redundant.
-!e is preferred over e =3D=3D NULL
-
-> +                       if (!aux->func[i]->aux->num_exentries ||
-> +                           aux->func[i]->aux->extable =3D=3D NULL)
-> +                               continue;
-> +                       e =3D search_extable(aux->func[i]->aux->extable,
-> +                           aux->func[i]->aux->num_exentries, addr);
-> +               }
-> +       }
-
-something odd here.
-We do bpf_prog_kallsyms_add(func[i]); for each subprog.
-So bpf_prog_ksym_find() in search_bpf_extables()
-should be finding ksym and extable of the subprog
-and not the main prog.
-The bug is probably elsewhere.
-
-Once you respin with a selftest we can help debugging.
+> > ---
+> >  include/linux/filter.h | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index bbce89937fde..f69114083ec7 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -874,7 +874,6 @@ void bpf_prog_free(struct bpf_prog *fp);
+> >
+> >  bool bpf_opcode_in_insntable(u8 code);
+> >
+> > -void bpf_prog_free_linfo(struct bpf_prog *prog);
+> >  void bpf_prog_fill_jited_linfo(struct bpf_prog *prog,
+> >                              const u32 *insn_to_jit_off);
+> >  int bpf_prog_alloc_jited_linfo(struct bpf_prog *prog);
+> > --
+> > 2.25.1
+> >
 
