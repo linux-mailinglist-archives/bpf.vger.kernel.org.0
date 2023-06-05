@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-1791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFB4721CFC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 06:10:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ADF3721CFD
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 06:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B51B2810FE
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 04:10:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB357281130
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 04:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887A33D92;
-	Mon,  5 Jun 2023 04:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E912100;
+	Mon,  5 Jun 2023 04:10:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3962100
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 04:10:09 +0000 (UTC)
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A89BE71
-	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 21:09:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D823FE4
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 04:10:15 +0000 (UTC)
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C414019A9
+	for <bpf@vger.kernel.org>; Sun,  4 Jun 2023 21:09:49 -0700 (PDT)
 Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230605040940epoutp040e16100778b998b9523c5af4555b62a1~lp9e_j4Er0567505675epoutp04I
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 04:09:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230605040940epoutp040e16100778b998b9523c5af4555b62a1~lp9e_j4Er0567505675epoutp04I
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230605040943epoutp016a47f077acbe6e464d90cf2b7d3b0fc1~lp9h1lzkd1976619766epoutp01f
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 04:09:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230605040943epoutp016a47f077acbe6e464d90cf2b7d3b0fc1~lp9h1lzkd1976619766epoutp01f
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1685938180;
-	bh=Fi1sOsiDHHx+gfQ29iwbhaaJETQZNbqv0f9OXt08XM0=;
+	s=mail20170921; t=1685938183;
+	bh=D6BYeEFjcwK/JjVlG0GME0GZtwXFEU/rtRQJcirZLm8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Kws1VDt51X+OMNgT5OucHo30omXmqACU6T1z0ACVrKrccqazi5cJv6SSMSMsuU+pM
-	 iXjLn9iMEZQsw462WBN8MncopDbbrkGzJAxwdh9DwHmw395cUCVGHH2gkozV1m6cLO
-	 zL+F+Y3wgRSu28Yo98Ra2zAC/NWfx4YMq5HR8jJc=
+	b=f8cK3quR+2To1odFVlYZOP7kuZLWsJkXHD3qYsiEdm9mxS6boI5lk9AI0ua2kgzTh
+	 onm1WXhNidoMI673PuluvASOoAifDBNrIcE9yJRZ0kDOHmi6qmIgjU/lLbD8e2wKrO
+	 XlJ0YL8SmCTc+Nrfb+kYHT+LPetkAWaeZJkMkNgs=
 Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20230605040940epcas5p39a4865eeffa0c1cc19dce413c55ede44~lp9ee7ZCY1277312773epcas5p3W;
-	Mon,  5 Jun 2023 04:09:40 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+	20230605040942epcas5p152487d3a986533c90ab5bdeebb2e0798~lp9hFZWmR3075730757epcas5p1S;
+	Mon,  5 Jun 2023 04:09:42 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
 	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	4F.6B.04567.3006D746; Mon,  5 Jun 2023 13:09:39 +0900 (KST)
+	04.7B.04567.6006D746; Mon,  5 Jun 2023 13:09:42 +0900 (KST)
 Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
 	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20230605040753epcas5p2640ca20e5fe0f628926d5cba16d8270a~lp77NakNH0082200822epcas5p26;
-	Mon,  5 Jun 2023 04:07:53 +0000 (GMT)
+	20230605040801epcas5p2ca850464882841a0a5748e217542a10a~lp8CcrBOy0082200822epcas5p2Q;
+	Mon,  5 Jun 2023 04:08:01 +0000 (GMT)
 Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
 	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20230605040753epsmtrp2a926e61806e40e3d526676a17dc217df~lp77MT7781080610806epsmtrp2h;
-	Mon,  5 Jun 2023 04:07:53 +0000 (GMT)
-X-AuditID: b6c32a49-943ff700000011d7-e5-647d60034268
+	20230605040801epsmtrp2a79647a26428599321e6aa4393a74d5a~lp8CbUkZ41080610806epsmtrp2y;
+	Mon,  5 Jun 2023 04:08:01 +0000 (GMT)
+X-AuditID: b6c32a49-db3fe700000011d7-ec-647d60066fb5
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
 	epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-	EA.B8.28392.99F5D746; Mon,  5 Jun 2023 13:07:53 +0900 (KST)
+	D0.C8.28392.1AF5D746; Mon,  5 Jun 2023 13:08:01 +0900 (KST)
 Received: from localhost.localdomain (unknown [107.109.224.44]) by
 	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20230605040748epsmtip23403b68277135b425da66ba075a17876~lp72SWoPg3106431064epsmtip25;
-	Mon,  5 Jun 2023 04:07:48 +0000 (GMT)
+	20230605040756epsmtip287381b7bf2d8b7632331a41ebaa9cd96~lp79mtpvu0198301983epsmtip2M;
+	Mon,  5 Jun 2023 04:07:55 +0000 (GMT)
 From: Maninder Singh <maninder1.s@samsung.com>
 To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -66,10 +66,9 @@ To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
 	stephen.s.brennan@oracle.com, alan.maguire@oracle.com, pmladek@suse.com
 Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, Maninder Singh
 	<maninder1.s@samsung.com>, Onkarnath <onkarnath.1@samsung.com>
-Subject: [PATCH v3 2/3] kallsyms: make kallsyms_show_value() as generic
- function
-Date: Mon,  5 Jun 2023 09:37:30 +0530
-Message-Id: <20230605040731.13828-2-maninder1.s@samsung.com>
+Subject: [PATCH v3 3/3] bpf: make bpf_dump_raw_ok() based on CONFIG_KALLSYMS
+Date: Mon,  5 Jun 2023 09:37:31 +0530
+Message-Id: <20230605040731.13828-3-maninder1.s@samsung.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230605040731.13828-1-maninder1.s@samsung.com>
 Precedence: bulk
@@ -79,49 +78,49 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTVxjGc+5XS7Oyy8fCsUQhLIASLeCmOS4g0y3jOt1E9xGmS0Ynd8ig
-	pbYwtzlj+QgOHJQZIFJAStzkYyBQitRuymiLDUPGYFvW0hGJVmA4GFAmYCWO9krmf7/3fZ4n
-	7/ueHD7u30KJ+OmybFYhk2SGUQLiqnlL5DY85XRqzI3ml5DNlEugJXc1jhZXHDzUos/FkMti
-	pdB98wJAl+of4Ojs/HUcmaw9PFRj347yDI0YspRrcHTrnBRN3ijB0K/GGgqZ6woJ1FLURCJb
-	2T2AVs/bSNRU1wBQ41dzJLKW/Iihx3f/JdG3jTMkGlm+TyBrwyqFVi29GHI+XKBQ6eBhNPXN
-	BfDyJqZaNUwwX+fP8phrmjEeo9XlMAWWGZLpbIxiim0jOKNrLqKYelUFzszfGyWYUn0zYNr0
-	vxOMS7cpSXhEEJfKZqZ/wiqid6cIjvddXiblnQGf/uFeJFXg0bPFwIcP6RdhrfYy5mF/+nsA
-	p1Z2FQPBGi8AOH3OgnOFC8DSwbv4esLhXgFcwgjgqtqXMy0CWLbcR3gEihbDZuMPhEcIpA0E
-	/KVjHPMUOF0IYPXFXq8rgD4MnQ8HKA8TdDic7DR7FxHScXBC734yLgRWjSzxPOxDx0P77XKC
-	8/jB/iqnl/E1T35XtXdXSJt94M9n7RQXfhUOTtQCjgPgtFXP41gEXbPX1zz8NT4Ju8rOcNkC
-	AHtqyp9kE6BzuJ70eHB6C2wzRnPtjbDipysYN9cXlridGNcXQsPFdQ6HBfZ2kuNg6JqfJzhm
-	YNGVGR73XGUADnVpiTIQqnnqHs1T92j+H60FeDPYwMqV0jRWuUMeK2NPipUSqTJHliY+liXV
-	Ae+HjtpnAGPjc2ITwPjABCAfDwsUGl8/leovTJV89jmryPpAkZPJKk0gmE+EBQkj4/uP+dNp
-	kmw2g2XlrGJdxfg+IhWWL7dvHcqXDW3OmG4/o4WFmiDRnSXdrZ2jixEY/6a7fWryiNoYvdrq
-	Op1t3k1X7r9m6oukh78I2DGQ22HafOjo0Vino/+97qsfuqiItvPPTZcPp8+nCyKeD2nKEHwU
-	HP6+peaVF7BJtSwEq3hblVjZ8FvHqcIukaTHb2/gne+ifPOqVJ3qgwf+EbEbMdO22V31vNaE
-	HCc0vBZEJ8hHNuBDMVLbx2N+cyfGt28d/asujk1Wi/f8Sa+8Gf9uXsClxzm3k13ds6EDN2Ow
-	1rid+3sjU95yXYhXJOZVjo0kfzmR2P2GKjqpoiPrQMac45kHSe2hs8Hs3hMR78z8/UgeYtvj
-	YGvDCOVxSWwUrlBK/gMKVgyEPwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsWy7bCSvO7M+NoUg9eX+S1uHGpksfj+ezaz
-	xZeft9kt1mxpZLL4fOQ4m8Xrw58YLRYv/MZs0f5xL7PFoeP72S3m3DSyaNqxgsniyJRZzBZn
-	unMtnu/rZbK4vGsOm8Xh+W0sFms6V7Ja3JjwlNHi76QbrBYr5y9ntFjR84HV4njvASaL/4+/
-	slosXfGW1eLSj9csFseX/2Wz+HvkIJPFk1+f2Cz6zgZZvFgyg9FBzmN2w0UWj4nN79g9ds66
-	y+6xYFOpR8uRt6wem1doeXTduMTssWlVJ5vHwoapzB4fn95i8ejbsorRY/2WqywenzfJBfBG
-	cdmkpOZklqUW6dslcGUcXfaDtWCzcMX1319YGxj/8HcxcnJICJhI3P79kxHEFhLYwShx85kC
-	RFxa4ue/9ywQtrDEyn/P2SFqPjFKfJmvCWKzCehJrNq1B6iGi0NE4A6LxL6XG9lBHGaBLkaJ
-	h8/WgHUICwRITDveAbaBRUBV4vnmw0wgNq+AjcSzLb+ZITbIS8y89B2snlPAVuLm/SksENts
-	JHZNOckGUS8ocXLmE7A4M1B989bZzBMYBWYhSc1CklrAyLSKUTK1oDg3PbfYsMAoL7Vcrzgx
-	t7g0L10vOT93EyM4BWhp7WDcs+qD3iFGJg7GQ4wSHMxKIry7vKpThHhTEiurUovy44tKc1KL
-	DzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamAKMpybsce4yfprW3k31zXd72v+50v9
-	7cs7sv/wmoW/109i0j7Ju7jBiS8/5eq3B+b+D78XrK85WHY66tRtm5XfNCPKeXhsv6lXT0t8
-	+k71U2pshnlO4LorJsf9j9YFJUZ1Him7HMZf8MF31iPrGd8Fs+Q+1xt+/5BR/Xnay8qlZ5cs
-	TzDgEr1pmPzj/KQ5c+4f3fK65oHsTc2qye57DYznPNKTt7rC+p53ib3y3NINDCHaF2tr+fiL
-	rNzmB92PWnilnVXWerKOTkzP4ztd2/+u0OfjWhdQw7b58uVn3EfO7xZ6vfr9bo62eBXbWd8K
-	7q7cKKfX/rpwhUx0zmpPn/slaUtcztv3XbhsfNE59cQCJZbijERDLeai4kQAWyqNp3ADAAA=
-X-CMS-MailID: 20230605040753epcas5p2640ca20e5fe0f628926d5cba16d8270a
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTVxjGd+69vf0w3S6FzCM4ZgjEFCeOMecxobolc7swdLLFzY8ts5G7
+	2lgqa8HCjBtYAuOjyBhMKAyE4iiIiAy0lrnSj9DgdA7IHJRUCFTZRkChIFNER3sh87/f+77P
+	c57znhweLjpHBvPkylRGpZQqwkgBcckuFm8kD55IejW3ZyMasGURaH6hEkezD4e4qLk9C0Ne
+	h5NEE/YZgAy1D3CUO30VRzanhYuqBl9DJ01GDDlK9Ti6XpCMxn/RYajfXEUie00OgZrzGjlo
+	oPgOQIslAxzUWNMAkLHwPgc5dV0Yejo2x0FnjZMc1PfvBIGcDYskWnRYMeR5NEOiohsfoL/q
+	y8GboXRlZi9Bf6ud4tJX9G4ufaYtjc52THLon4yRdP5AH063NeWRdG1mGU5P33ERdFF7E6Av
+	tP9B0N620N3C/YLYJEYhP8aoNm07KDhcVbhAphiF6a66I5mgZFU+4PMg9TocairH8oGAJ6I6
+	AbSd7ibYYgbAiqxry4UXwHyrnVyx/Ogu4vhYRJkB7HuiZEWzANZ9/4DwDUgqCjaZf/a7gygT
+	AX+/OOIPwakcACurrX5VIJUAe/stfiaoCLjgGAU+FlKx0N19g8PGvQwr+ua5PuZTEjg4XEqw
+	mgDYU+HxM76k0XZU4r4ASFn40NV6acnMWyrehqe+kbHnBMJ/nO1cloOhd+oqyUo0sKP4a9aa
+	DaClqnR5ze3Q01vrPwanxPCCeRPbfgmWXWvB2NjnoW7Bg7F9ITRVr3AEzB5sXb5+CPROTxMs
+	0zB/VMtlX6sYwO/KrmDFYJ3+mXX0z6yj/z/6DMCbwBomRZ0sY9SbU6KVjCZKLU1WpyllUYeO
+	JrcB/3+OjDMB98j9KBvAeMAGIA8PCxKa448niYRJ0owvGdXRz1RpCkZtAyE8Imy1cL2k55CI
+	kklTmSMMk8KoVqYYjx+ciYXHrqkWBBkCFkNr0ks+/uKhZG4rp6D6rfhftxQWlwfd2jrcOWY3
+	HLiNn3w6vvbD4SFJOP+VvM07NG3HNrz3XHjeVyiGTNgxmyWuqHtsHToRtiVmoVcTkN0YvxY1
+	Wj85PRlpeUH8J9N1YMPY7ZEa53bzi6vvvXMrnDkLbx6PSd0HH3m6FbRScX7nKl4DH9U6Elvu
+	hRfNtxou39yWGxd9d2JPkMnl7NJIQuz75txyUXDuqLzz/Y8Muy4mOp+MJ6yr1/7W3+HqP7e3
+	6IfW8usjuvLEz7V3m5vF+3M+3R3Xkvr37ONBeYYxsRlmFIglKvu7e9LeIAJJ7Pzeeu16XfqU
+	THfZHRFGqA9LoyNxlVr6HzxkQNY+BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA03Se0hTURzA8c597bpaXKfYLcFoPchhS+3B+cOkB8UtIrSUKDJb7qKRm2vX
+	R28se+DyNTPUaensNYe9zMccy2wul5CUs4dZGmVqYcvU0pxp6UbQfz/O93PO+edHosIubB55
+	QJHIqhTSeBHBx2oaRfOX6aJPyAIrRnDYbjmFwdHxIhT+GHvLgxVVpxA4bLURsL9xCMCruhEU
+	nh98gEKL7SEPFr8JhqeNegRa87QofHpBDvvqMxHYZiomYGPJOQxWpJdPPZnTA+BEbjsOy0tu
+	AqjP+I5DW2YDAv90/8Thdb0Dh/Zf/Ri03Zwg4IT1EQI/OYcImNWyHX6+VgDW+jFFqa0Yo0n7
+	xmPqtJ08prQyiTljdeDMfb2YUbfbUabSkE4wutRLKDPY04ExWVUGwNypeokxw5V+YYLd/BAZ
+	G38gmVUtD93HjyvOGCeUesHhjrKDqSB3php4kDS1kr7RmYWrAZ8UUkZA9zruIO7gS49NDmDu
+	2Ysun+zjudEQoL++aHMFgpLQBpMZmw7e1DuMrv9yz6VQSg3oD70VvGnlRW2lW9seum5g1GJ6
+	3PoRTM8CKoTubGrB3V/Mpwvtoy7vQa2h37zPc3nhlDHlNRNu70k3F35ynaNTPq26CM0BlPa/
+	pP0vlQLEAOaySk4eK+eClMEKNkXCSeVckiJWEpMgrwSuFRCLjcBs+C6xAIQEFkCTqMhbYNpy
+	TCYUyKRHjrKqhGhVUjzLWYAviYnmCJ6rm6OFVKw0kT3IskpW9a8ipMe8VOTy/tsNw5co/+Sl
+	G8aEF6MCNatOHtZnh5bZtywM8457NbRp5J5XV7YZd8qQuif5r5y5xg21ibP6UgaQhNvFiyTr
+	oq+B1z98Zl60Tn59v3D28WfhP3dGmXeYIldh5/K7e31s8PEt4V1H/Vpz3VzeoT3qHF+lpjWt
+	zdknc9aWJqUEKbTBRsdRS9S2PzkpUTUwPZK/hFsxERGbL13f5Sfubi5viBiMXNBg2v5b9zZo
+	xuMmylxw4vfzzC9pBccyd9WcnRUQsGBdGHclvDqjh6TObr3suSbUf2VZwIr4esVTO6kJLwnm
+	7Srz2dvkqYoI7PAvTTizOmSjztafPOC1uU4Tmh3TIsK4OGmQGFVx0r/GbRYScQMAAA==
+X-CMS-MailID: 20230605040801epcas5p2ca850464882841a0a5748e217542a10a
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
-X-CMS-RootMailID: 20230605040753epcas5p2640ca20e5fe0f628926d5cba16d8270a
+X-CMS-RootMailID: 20230605040801epcas5p2ca850464882841a0a5748e217542a10a
 References: <20230605040731.13828-1-maninder1.s@samsung.com>
-	<CGME20230605040753epcas5p2640ca20e5fe0f628926d5cba16d8270a@epcas5p2.samsung.com>
+	<CGME20230605040801epcas5p2ca850464882841a0a5748e217542a10a@epcas5p2.samsung.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
 	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -130,87 +129,54 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This change makes function kallsyms_show_value() as
-generic function without dependency on CONFIG_KALLSYMS.
+bpf_dump_raw_ok() depends on kallsyms_show_value() and we already
+have a false definition for the !CONFIG_KALLSYMS case. But we have
+expanded kallsyms_show_value() to work for !CONFIG_KALLSYMS case also
+in previous patch.
 
-Now module address will be displayed with lsmod and /proc/modules.
+And so to make the code easier to follow just provide a direct
+!CONFIG_KALLSYMS definition for bpf_dump_raw_ok() as well.
 
-Earlier:
-=======
-/ # insmod  test.ko
-/ # lsmod
-test 12288 0 - Live 0x0000000000000000 (O)  // No Module Load address
-/ #
-
-With change:
-==========
-/ # insmod test.ko
-/ # lsmod
-test 12288 0 - Live 0xffff800000fc0000 (O)  // Module address
-/ # cat /proc/modules
-test 12288 0 - Live 0xffff800000fc0000 (O)
+As it is heavily dependent on KALLSYMS and checking based on
+kallsyms_show_value() will not work now.
 
 Co-developed-by: Onkarnath <onkarnath.1@samsung.com>
 Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
 Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- include/linux/kallsyms.h | 11 +++--------
- kernel/knosyms.c         |  2 --
- 2 files changed, 3 insertions(+), 10 deletions(-)
+ include/linux/filter.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-index 1037f4957caa..c3f075e8f60c 100644
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -65,6 +65,9 @@ static inline void *dereference_symbol_descriptor(void *ptr)
- 	return ptr;
- }
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index bbce89937fde..1f237a3bb11a 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -923,13 +923,21 @@ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_jit_supports_far_kfunc_call(void);
+ bool bpf_helper_changes_pkt_data(void *func);
  
-+/* How and when do we show kallsyms values? */
-+extern bool kallsyms_show_value(const struct cred *cred);
-+
- #ifdef CONFIG_KALLSYMS
- unsigned long kallsyms_sym_address(int idx);
- int kallsyms_on_each_symbol(int (*fn)(void *, const char *, unsigned long),
-@@ -94,9 +97,6 @@ extern int sprint_backtrace_build_id(char *buffer, unsigned long address);
- 
- int lookup_symbol_name(unsigned long addr, char *symname);
- 
--/* How and when do we show kallsyms values? */
--extern bool kallsyms_show_value(const struct cred *cred);
--
- #else /* !CONFIG_KALLSYMS */
- 
- static inline unsigned long kallsyms_lookup_name(const char *name)
-@@ -154,11 +154,6 @@ static inline int lookup_symbol_name(unsigned long addr, char *symname)
- 	return -ERANGE;
- }
- 
--static inline bool kallsyms_show_value(const struct cred *cred)
--{
--	return false;
--}
--
- static inline int kallsyms_on_each_symbol(int (*fn)(void *, const char *, unsigned long),
- 					  void *data)
++/*
++ * Reconstruction of call-sites is dependent on kallsyms,
++ * thus make dump the same restriction.
++ */
++#ifdef CONFIG_KALLSYMS
+ static inline bool bpf_dump_raw_ok(const struct cred *cred)
  {
-diff --git a/kernel/knosyms.c b/kernel/knosyms.c
-index 9e2c72a89ea5..830905b0986a 100644
---- a/kernel/knosyms.c
-+++ b/kernel/knosyms.c
-@@ -9,7 +9,6 @@
- #include <linux/kallsyms.h>
- #include <linux/security.h>
- 
--#ifdef CONFIG_KALLSYMS
- static inline int kallsyms_for_perf(void)
- {
- #ifdef CONFIG_PERF_EVENTS
-@@ -45,4 +44,3 @@ bool kallsyms_show_value(const struct cred *cred)
- 		return false;
- 	}
+-	/* Reconstruction of call-sites is dependent on kallsyms,
+-	 * thus make dump the same restriction.
+-	 */
+ 	return kallsyms_show_value(cred);
  }
--#endif
++#else
++static inline bool bpf_dump_raw_ok(const struct cred *cred)
++{
++	return false;
++}
++#endif
+ 
+ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+ 				       const struct bpf_insn *patch, u32 len);
 -- 
 2.17.1
 
