@@ -1,171 +1,345 @@
-Return-Path: <bpf+bounces-1816-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1817-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C77722902
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F13C722915
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:45:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AFBE2812BE
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 14:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E35B92812C4
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 14:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BEE134A3;
-	Mon,  5 Jun 2023 14:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012BA1D2A2;
+	Mon,  5 Jun 2023 14:44:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9AA10FB
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 14:39:25 +0000 (UTC)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D0C9E;
-	Mon,  5 Jun 2023 07:39:23 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f4c264f6c6so6247399e87.3;
-        Mon, 05 Jun 2023 07:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685975961; x=1688567961;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Hz800SSofiVXRvce9cLzbm3vIeZGwhyFOHVtLacVuZY=;
-        b=cVvD+2YsNZw+BoKnR7/9gz/TrdXUcpojSG80vE+UREHCy91mTpMks/xhZh3IWmfagQ
-         2d2WNzhDe0nnuGjaU/xq2+xqhRUBvWqGZ5dpv+n/bGAFIUCVPHFHcFe1UHmDQSPmmPD3
-         vw+ztdVb3au1xLij4R/3Zap4snjsW027RzBeBcO6JoeVIe823vaFl7wmJc6MGPebdlh9
-         anZ6NNY9Hg+2AZi5AiANB96bEU9wXwRKiWWiTCxWHD9vYCPCkCLowHQ2EOQJD9zWfcWj
-         AdfW0haTRuH/11mZpHCzfjnhNNDgaiDOBeHtxJttm7behAFB6AVKLIScFKYFgR6Ss9/+
-         bSDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685975961; x=1688567961;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hz800SSofiVXRvce9cLzbm3vIeZGwhyFOHVtLacVuZY=;
-        b=C9i6UplBoizoK4HwQBBia/hjyZqpHNziro7gZhjLcomiD1oG8XYsKs0AByKDDS0IoO
-         eOCUwuF7Pa1mugiUhhmuD+RRxe1d5PHgtaH0AMaIE3sIV/yf7iFJPjNTL+M/klSJzR6P
-         RDEQ2JOdTVntE6yoicb+wJeeg4jIwamoTHqepENgXeWprMAbPOSgPXZZXF4uARId5CfZ
-         LFE1A2q2nBxTHdzEbTHnVyRAy4QcrSD2408xd9xPw+1DXsk6VDXcA/Tae4aR8H5hFpVU
-         W53NRcKuOZnNmYuHZ+y4nM7Yl6gVEppecE8HioMtyVI+X4GAeajYRvZMQXDkDj0SoCkN
-         yXDw==
-X-Gm-Message-State: AC+VfDwyabn9ln9JXlGIUbwh/lrSfm5jKPElZBf4ag7a7VLrXPp8WNg0
-	hFYV/skes2H4wcBd+BGa/W8=
-X-Google-Smtp-Source: ACHHUZ4y1k8wH0169sXiu/C5oX8Rm/Q4loVRmNEY60RNoxodu9FqxghC9VzyFBtTQYmKD2AAlMdlSQ==
-X-Received: by 2002:ac2:4e71:0:b0:4f2:5c4b:e699 with SMTP id y17-20020ac24e71000000b004f25c4be699mr5360645lfs.24.1685975961175;
-        Mon, 05 Jun 2023 07:39:21 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id y9-20020ac255a9000000b004f5b7056455sm1145201lfg.114.2023.06.05.07.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 07:39:20 -0700 (PDT)
-Message-ID: <2b4372428cd1e56de3b79791160cdd3afdc7df6a.camel@gmail.com>
-Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
- two rb trees
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com, 
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
- mykolal@fb.com
-Date: Mon, 05 Jun 2023 17:39:19 +0300
-In-Reply-To: <ZH3nalodXmup6pEF@kernel.org>
-References: <20230525235949.2978377-1-eddyz87@gmail.com>
-	 <ZHnxsyjDaPQ7gGUP@kernel.org>
-	 <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
-	 <ZHovRW1G0QZwBSOW@kernel.org>
-	 <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
-	 <ZH3nalodXmup6pEF@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9489979D9;
+	Mon,  5 Jun 2023 14:44:58 +0000 (UTC)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82B99C;
+	Mon,  5 Jun 2023 07:44:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685976296; x=1717512296;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vTvuo3Vr308LtHxb80ThqpO6IEP50CSasI/f/BQxeU4=;
+  b=mp0zNCXLPG524cVXtueCp7wKEWsftXrUqJpd0jONJJGOG8MXV26MA6p0
+   sxYH9QjnTVodBPmRcD0hEDoEgYo4Fvc3kTVB0njR+9L57bP2ON1kJnPpH
+   E5GWRtrmyGv7O/Oc8gvBSy3o2rGS194PiSb3e73bXUrPyeRIoRIdoDzhS
+   YuQaofyYow664zsfyYjwrErOK1tShlGjGxkBSMZt2Co8wLoKTZT8TDWGL
+   ZsUZL4Y2pZ9khHCDFega9od3O6ZAYwIUt9Xn2I/vFiiqnSDYMfV861Fzm
+   63+13IvHr/51qAY7+xFtfTXDHSQGvr2KGNc2LybFGHNOiQot7vwAYHA/e
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="442757761"
+X-IronPort-AV: E=Sophos;i="6.00,217,1681196400"; 
+   d="scan'208";a="442757761"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2023 07:44:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="798463944"
+X-IronPort-AV: E=Sophos;i="6.00,217,1681196400"; 
+   d="scan'208";a="798463944"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Jun 2023 07:44:53 -0700
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	tirthendu.sarkar@intel.com,
+	maciej.fijalkowski@intel.com,
+	simon.horman@corigine.com
+Subject: [PATCH v3 bpf-next 00/22] xsk: multi-buffer support
+Date: Mon,  5 Jun 2023 16:44:11 +0200
+Message-Id: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-06-05 at 10:47 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Jun 02, 2023 at 09:08:51PM +0300, Eduard Zingerman escreveu:
-> > On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escreveu:
-> > > > Right, you are correct.
-> > > > The 'structures__tree =3D RB_ROOT' part is still necessary, though.
-> > > > If you are ok with overall structure of the patch I can resend it w=
-/o bzero().
->=20
-> > > Humm, so basically this boils down to the following patch?
->=20
-> > > +++ b/pahole.c
-> > > @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
-> > >  		__print_ordered_classes(&structures__tree);
-> > >  	} else {
-> > >  		struct rb_root resorted =3D RB_ROOT;
-> > > -
-> > > +#ifdef DEBUG_CHECK_LEAKS
-> > > +		// We'll delete structures from structures__tree, since we're
-> > > +		// adding them to ther resorted list, better not keep
-> > > +		// references there.
-> > > +		structures__tree =3D RB_ROOT;
-> > > +#endif
-> =20
-> > But __structures__delete iterates over structures__tree,
-> > so it won't delete anything if code like this, right?
-> =20
-> > >  		resort_classes(&resorted, &structures__list);
-> > >  		__print_ordered_classes(&resorted);
-> > >  	}
->=20
-> Yeah, I tried to be minimalistic, my version avoids the crash, but
-> defeats the DEBUG_CHECK_LEAKS purpose :-\
->=20
-> How about:
->=20
-> diff --git a/pahole.c b/pahole.c
-> index 6fc4ed6a721b97ab..e843999fde2a8a37 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -673,10 +673,10 @@ static void print_ordered_classes(void)
->  	if (!need_resort) {
->  		__print_ordered_classes(&structures__tree);
->  	} else {
-> -		struct rb_root resorted =3D RB_ROOT;
-> +		structures__tree =3D RB_ROOT;
-> =20
-> -		resort_classes(&resorted, &structures__list);
-> -		__print_ordered_classes(&resorted);
-> +		resort_classes(&structures__tree, &structures__list);
-> +		__print_ordered_classes(&structures__tree);
->  	}
->  }
-> =20
+v2->v3:
+- Fix issue with the next valid packet getting dropped after an invalid
+  packet with MAX_SKB_FRAGS + 1 frags [Magnus]
+- query NETDEV_XDP_ACT_ZC_SG flag within xskxceiver and act on it
+- remove redundant include in xsk.c [kernel test robot]
+- s/NETDEV_XDP_ACT_NDO_ZC_SG/NETDEV_XDP_ACT_ZC_SG + kernel doc [Magnus,
+  Simon]
 
-That would work, but I still think that there is no need to replicate call
-to __print_ordered_classes, as long as the same list is passed as an argume=
-nt,
-e.g.:
+v1->v2:
+- fix spelling issues in commit messages [Simon]
+- remove XSK_DESC_MAX_FRAGS, use MAX_SKB_FRAGS instead [Stan, Alexei]
+- add documentation patch
+- fix build error from kernel test robot on patch 10
 
-@@ -670,14 +671,11 @@ static void resort_classes(struct rb_root *resorted, =
-struct list_head *head)
-=20
- static void print_ordered_classes(void)
- {
--       if (!need_resort) {
--               __print_ordered_classes(&structures__tree);
--       } else {
--               struct rb_root resorted =3D RB_ROOT;
--
--               resort_classes(&resorted, &structures__list);
--               __print_ordered_classes(&resorted);
-+       if (need_resort) {
-+               structures__tree =3D RB_ROOT;
-+               resort_classes(&structures__tree, &structures__list);
-        }
-+       __print_ordered_classes(&structures__tree);
- }
 
+This series of patches add multi-buffer support for AF_XDP. XDP and
+various NIC drivers already have support for multi-buffer packets. With
+this patch set, programs using AF_XDP sockets can now also receive and
+transmit multi-buffer packets both in copy as well as zero-copy mode.
+ZC multi-buffer implementation is based on ice driver.
+
+Some definitions to put us all on the same page:
+
+* A packet consists of one or more frames
+
+* A descriptor in one of the AF_XDP rings always refers to a single
+  frame. In the case the packet consists of a single frame, the
+  descriptor refers to the whole packet.
+
+To represent a packet consisting of multiple frames, we introduce a
+new flag called XDP_PKT_CONTD in the options field of the Rx and Tx
+descriptors. If it is true (1) the packet continues with the next
+descriptor and if it is false (0) it means this is the last descriptor
+of the packet. Why the reverse logic of end-of-packet (eop) flag found
+in many NICs? Just to preserve compatibility with non-multi-buffer
+applications that have this bit set to false for all packets on Rx, and
+the apps set the options field to zero for Tx, as anything else will
+be treated as an invalid descriptor.
+
+These are the semantics for producing packets onto XSK Tx ring
+consisting of multiple frames:
+
+* When an invalid descriptor is found, all the other
+  descriptors/frames of this packet are marked as invalid and not
+  completed. The next descriptor is treated as the start of a new
+  packet, even if this was not the intent (because we cannot guess
+  the intent). As before, if your program is producing invalid
+  descriptors you have a bug that must be fixed.
+
+* Zero length descriptors are treated as invalid descriptors.
+
+* For copy mode, the maximum supported number of frames in a packet is
+  equal to CONFIG_MAX_SKB_FRAGS + 1. If it is exceeded, all
+  descriptors accumulated so far are dropped and treated as
+  invalid. To produce an application that will work on any system
+  regardless of this config setting, limit the number of frags to 18,
+  as the minimum value of the config is 17.
+
+* For zero-copy mode, the limit is up to what the NIC HW
+  supports. Usually at least five on the NICs we have checked. We
+  consciously chose to not enforce a rigid limit (such as
+  CONFIG_MAX_SKB_FRAGS + 1) for zero-copy mode, as it would have
+  resulted in copy actions under the hood to fit into what limit the
+  NIC supports. Kind of defeats the purpose of zero-copy mode.
+
+* ZC batch API guarantees that it will provide a batch of Tx descriptors
+  that ends with full packet at the end. If not, ZC drivers would have
+  to gather the full packet on their side. The approach we picked makes
+  ZC drivers life much easier (at least on Tx side).
+
+Here is an example Tx path pseudo-code (using libxdp interfaces for
+simplicity) ignoring that the umem is finite in size, and that we
+eventually will run out of packets to send. Also assumes pkts.addr
+points to a valid location in the umem.
+
+void tx_packets(struct xsk_socket_info *xsk, struct pkt *pkts,
+                int batch_size)
+{
+	u32 idx, i, pkt_nb = 0;
+
+	xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx);
+
+	for (i = 0; i < batch_size;) {
+		u64 addr = pkts[pkt_nb].addr;
+		u32 len = pkts[pkt_nb].size;
+
+		do {
+			struct xdp_desc *tx_desc;
+
+			tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i++);
+			tx_desc->addr = addr;
+
+			if (len > xsk_frame_size) {
+				tx_desc->len = xsk_frame_size;
+				tx_desc->options |= XDP_PKT_CONTD;
+			} else {
+				tx_desc->len = len;
+				tx_desc->options = 0;
+				pkt_nb++;
+			}
+			len -= tx_desc->len;
+			addr += xsk_frame_size;
+
+			if (i == batch_size) {
+				/* Remember len, addr, pkt_nb for next
+				 * iteration. Skipped for simplicity.
+				 */
+				break;
+			}
+		} while (len);
+	}
+
+	xsk_ring_prod__submit(&xsk->tx, i);
+}
+
+On the Rx path in copy mode, the xsk core copies the XDP data into
+multiple descriptors, if needed, and sets the XDP_PKT_CONTD flag as
+detailed before. Zero-copy mode in order to avoid the copies has to
+maintain a chain of xdp_buff_xsk structs that represent whole packet.
+This is because what actually is redirected is the xdp_buff and we
+currently have no equivalent mechanism that is used for copy mode
+(embedded skb_shared_info in xdp_buff) to carry the frags. This means
+xdp_buff_xsk grows in size but these members are at the end and should
+not be touched when data path is not dealing with fragmented packets.
+This solution kept us within assumed performance impact, hence we
+decided to proceed with it.
+
+When the application gets a descriptor with the
+XDP_PKT_CONTD flag set to one, it means that the packet consists of
+multiple buffers and it continues with the next buffer in the following
+descriptor. When a descriptor with XDP_PKT_CONTD == 0 is received, it
+means that this is the last buffer of the packet. AF_XDP guarantees that
+only a complete packet (all frames in the packet) is sent to the
+application.
+
+If application reads a batch of descriptors, using for example the libxdp
+interfaces, it is not guaranteed that the batch will end with a full
+packet. It might end in the middle of a packet and the rest of the
+buffers of that packet will arrive at the beginning of the next batch,
+since the libxdp interface does not read the whole ring (unless you
+have an enormous batch size or a very small ring size).
+
+Here is a simple Rx path pseudo-code example (using libxdp interfaces for
+simplicity). Error paths have been excluded for simplicity:
+
+void rx_packets(struct xsk_socket_info *xsk)
+{
+	static bool new_packet = true;
+	u32 idx_rx = 0, idx_fq = 0;
+	static char *pkt;
+
+	int rcvd = xsk_ring_cons__peek(&xsk->rx, opt_batch_size, &idx_rx);
+
+	xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
+
+	for (int i = 0; i < rcvd; i++) {
+		struct xdp_desc *desc = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++);
+		char *frag = xsk_umem__get_data(xsk->umem->buffer, desc->addr);
+		bool eop = !(desc->options & XDP_PKT_CONTD);
+
+		if (new_packet)
+			pkt = frag;
+		else
+			add_frag_to_pkt(pkt, frag);
+
+		if (eop)
+			process_pkt(pkt);
+
+		new_packet = eop;
+
+		*xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) = desc->addr;
+	}
+
+	xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
+	xsk_ring_cons__release(&xsk->rx, rcvd);
+}
+
+Unfortunately, we had to introduce a new bind flag (XDP_USE_SG) on the
+AF_XDP level to enable multi-buffer support. It would be great if you
+have ideas on how to get rid of it. The reason we need to
+differentiate between non multi-buffer and multi-buffer is the
+behaviour when the kernel gets a packet that is larger than the frame
+size. Without multi-buffer, this packet is dropped and marked in the
+stats. With multi-buffer on, we want to split it up into multiple
+frames instead.
+
+At the start, we thought that riding on the .frags section name of
+the XDP program was a good idea. You do not have to introduce yet
+another flag and all AF_XDP users must load an XDP program anyway
+to get any traffic up to the socket, so why not just say that the XDP
+program decides if the AF_XDP socket should get multi-buffer packets
+or not? The problem is that we can create an AF_XDP socket that is Tx
+only and that works without having to load an XDP program at
+all. Another problem is that the XDP program might change during the
+execution, so we would have to check this for every single packet.
+
+Here is the observed throughput when compared without any multi-buffer
+changes and measured with xdpsock prog for 64B packets (+ is
+improvement) is about same with a small drop for rx_drop for copy mode,
+zero-copy mode is more sensitive and as shown below rxdrop gets around
+5% performance drop. Note that this drop combines from core + driver
+support, whereas copy mode had already driver support in place.
+
+Mode       rxdrop       l2fwd     txonly
+xdp-zc      -5%         -3%         -2%
+xdp-drv     -1.2%        0%         +2%
+xdp-skb     -0.6%       -1%         +2%
+
+Thank you,
+Tirthendu, Magnus and Maciej
+
+
+Maciej Fijalkowski (8):
+  xsk: prepare both copy and zero-copy modes to co-exist
+  xsk: allow core/drivers to test EOP bit
+  xsk: support mbuf on ZC RX
+  ice: xsk: add RX multi-buffer support
+  xsk: support ZC Tx multi-buffer in batch API
+  xsk: report zero-copy multi-buffer capability via xdp_features
+  ice: xsk: Tx multi-buffer support
+  selftests/xsk: reset NIC settings to default after running test suite
+
+Magnus Karlsson (7):
+  xsk: add multi-buffer documentation
+  selftests/xsk: transmit and receive multi-buffer packets
+  selftests/xsk: add basic multi-buffer test
+  selftests/xsk: add unaligned mode test for multi-buffer
+  selftests/xsk: add invalid descriptor test for multi-buffer
+  selftests/xsk: add metadata copy test for multi-buff
+  selftests/xsk: add test for too many frags
+
+Tirthendu Sarkar (7):
+  xsk: prepare 'options' in xdp_desc for multi-buffer use
+  xsk: introduce XSK_USE_SG bind flag for xsk socket
+  xsk: move xdp_buff's data length check to xsk_rcv_check
+  xsk: add support for AF_XDP multi-buffer on Rx path
+  xsk: introduce wrappers and helpers for supporting multi-buffer in Tx
+    path
+  xsk: add support for AF_XDP multi-buffer on Tx path
+  xsk: discard zero length descriptors in Tx path
+
+ Documentation/networking/af_xdp.rst           | 177 +++++++
+ drivers/net/ethernet/intel/ice/ice_base.c     |   9 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 221 ++++++---
+ include/net/xdp_sock.h                        |   7 +
+ include/net/xdp_sock_drv.h                    |  56 +++
+ include/net/xsk_buff_pool.h                   |   7 +
+ include/uapi/linux/if_xdp.h                   |  13 +
+ include/uapi/linux/netdev.h                   |   6 +-
+ net/core/filter.c                             |   7 +-
+ net/xdp/xsk.c                                 | 360 ++++++++++----
+ net/xdp/xsk_buff_pool.c                       |   8 +
+ net/xdp/xsk_queue.h                           |  91 ++--
+ tools/include/uapi/linux/if_xdp.h             |   9 +
+ tools/include/uapi/linux/netdev.h             |   3 +-
+ .../selftests/bpf/progs/xsk_xdp_progs.c       |   6 +-
+ tools/testing/selftests/bpf/test_xsk.sh       |   5 +
+ tools/testing/selftests/bpf/xsk.c             | 136 +++++-
+ tools/testing/selftests/bpf/xsk.h             |   2 +
+ tools/testing/selftests/bpf/xsk_prereqs.sh    |   7 +
+ tools/testing/selftests/bpf/xskxceiver.c      | 447 +++++++++++++++---
+ tools/testing/selftests/bpf/xskxceiver.h      |  20 +-
+ 22 files changed, 1345 insertions(+), 254 deletions(-)
+
+-- 
+2.34.1
 
 
