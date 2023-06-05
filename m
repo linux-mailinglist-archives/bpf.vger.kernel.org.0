@@ -1,131 +1,131 @@
-Return-Path: <bpf+bounces-1843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE460722CA6
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7464722CD2
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 18:37:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 650D91C20CDC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:30:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E73E1C20CBE
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 16:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4788BF5;
-	Mon,  5 Jun 2023 16:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E6C8F5A;
+	Mon,  5 Jun 2023 16:37:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB63D22638
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 16:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A5CC433A8;
-	Mon,  5 Jun 2023 16:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685982625;
-	bh=t4IRdJhZSZ4fmGSJrKCIhBfZnp3squLwB/GdU/2Wlc8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IC/Jnt4VvgM03de+BlFN47sxt0oMyUm4kXzMUuoEOp8ouwIFtlSuRxpSRYZsKvnXL
-	 BOpw6izY+O42TAuK6Ip8xrMzjMhOn2DHYCE4NjySokLp8KzgDQ7G/YF7XfCPT9jU3R
-	 8+IprYxH0GTIWGwmuquswkiTXeifhWq5WiP81qFeMM98BemWqX+2N9Rubbc1CWP09j
-	 RhCVwKgswa3L3ng9ypTHmMrV0+VY/FcFNuPe4PWjoYkChLiOwyi8uhBw8D6Z5h3exL
-	 jQTWAmNqqfI+dRvS+YWBNf3W7ZJinUMLFLgSXOEo0Fchb7Bocsh0JlbK0zNCl2RaFa
-	 rWIklBdqpgUTQ==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2b1a6a8e851so56789131fa.2;
-        Mon, 05 Jun 2023 09:30:25 -0700 (PDT)
-X-Gm-Message-State: AC+VfDymu1eaYYPjuPmIdjIIb7pguijKeYB6wWUzD333ajSfrAQlJ41v
-	CBzAtik8CouGdcJwz2YK6XsJacg/WC6xq+C8hw4=
-X-Google-Smtp-Source: ACHHUZ6HXtb+me/VrGrWZPVbdaHJhrqHvnOuMvAl6Vnsp8Y3eZX9EhOYAyzeze1NgDnLhg//KTnUG6qnbezjBA/07EM=
-X-Received: by 2002:a2e:9989:0:b0:2b1:bd11:a71a with SMTP id
- w9-20020a2e9989000000b002b1bd11a71amr3583654lji.17.1685982622939; Mon, 05 Jun
- 2023 09:30:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043C76FC3
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 16:37:42 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D04ED;
+	Mon,  5 Jun 2023 09:37:36 -0700 (PDT)
+Date: Mon, 5 Jun 2023 18:37:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1685983055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4e85demDEm6WmdDySFiywaQz/7CD490NkhFomelOdWQ=;
+	b=Hivf6YwcDltA1JGZW0JmOcX3KwrP7sz4Mj3bYETJCYdnFhZgIYdRVI5GJvhanql0q17LVK
+	GVxnhGVh8mlVdiHAz6crJYtu/ErBoT+DynIQBg2m8ZgguitMjkf/3SjgWGVFx4DVcasTA/
+	SLz+JROh+QDOtQyQqyaxFW/8PWgPXczTpmEM4YSbS7Z60I1XBCT55JK4cUReWjuUbTZfut
+	lboDhY9SnnBaK2gtuPYBPKcxsNqAs9urCji9BTu+pECxmIFR0syc62sQdLvy1Jfo5Vaq9V
+	1FZfuRRZHqIdjakxkmmAVsgSgiuBXS7LNysC7CUDVtvCkUKAQ/2u3HmsCppeRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1685983055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4e85demDEm6WmdDySFiywaQz/7CD490NkhFomelOdWQ=;
+	b=Pyyv39RIOOIj9xgY32bW/q0b5buQWDzSDuTfjH3NeR5lxNYphX09uWw9JGbPXMNosoADX9
+	lGUDPUzl/qf1q3Cg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3] bpf: Remove in_atomic() from bpf_link_put().
+Message-ID: <20230605163733.LD-UCcso@linutronix.de>
+References: <20230509132433.2FSY_6t7@linutronix.de>
+ <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
+ <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
+ <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
+ <20230525141813.TFZLWM4M@linutronix.de>
+ <CAEf4Bzaipoo6X_2Fh5WTV-m0yjP0pvhqi7-FPFtGOrSzNpdGJQ@mail.gmail.com>
+ <20230526112356.fOlWmeOF@linutronix.de>
+ <CAEf4Bzawgrn2DhR9uvXwFFiLR9g+j4RYC6cr3n+eRD_RoKBAJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230605074024.1055863-1-puranjay12@gmail.com> <20230605074024.1055863-2-puranjay12@gmail.com>
-In-Reply-To: <20230605074024.1055863-2-puranjay12@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 5 Jun 2023 09:30:10 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5+ija4umxAhOMk5mVGGCGV=iPBNm-QbhkVz99WHzrmsQ@mail.gmail.com>
-Message-ID: <CAPhsuW5+ija4umxAhOMk5mVGGCGV=iPBNm-QbhkVz99WHzrmsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: make bpf_prog_pack allocator portable
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, catalin.marinas@arm.com, mark.rutland@arm.com, 
-	bpf@vger.kernel.org, kpsingh@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4Bzawgrn2DhR9uvXwFFiLR9g+j4RYC6cr3n+eRD_RoKBAJA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, Jun 5, 2023 at 12:40=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> The bpf_prog_pack allocator currently uses module_alloc() and
-> module_memfree() to allocate and free memory. This is not portable
-> because different architectures use different methods for allocating
-> memory for BPF programs. Like ARM64 uses vmalloc()/vfree().
->
-> Use bpf_jit_alloc_exec() and bpf_jit_free_exec() for memory management
-> in bpf_prog_pack allocator. Other architectures can override these with
-> their implementation and will be able to use bpf_prog_pack directly.
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+On 2023-05-31 12:00:56 [-0700], Andrii Nakryiko wrote:
+> > On 2023-05-25 10:51:23 [-0700], Andrii Nakryiko wrote:
+> > v2=E2=80=A6v3:
+> >   - Drop bpf_link_put_direct(). Let bpf_link_put() do the direct free
+> >     and add bpf_link_put_from_atomic() to do the delayed free via the
+> >     worker.
+>=20
+> This seems like an unsafe "default put" choice. I think it makes more
+> sense to have bpf_link_put() do a safe scheduled put, and then having
+> a separate bpf_link_put_direct() for those special cases where we care
+> the most (in kernel/bpf/inode.c and kernel/bpf/syscall.c).
 
-Acked-by: Song Liu <song@kernel.org>
+I audited them and ended up with them all being safe except for the one
+=66rom inode.c. I can reverse the logic if you want.
 
-> ---
->  kernel/bpf/core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 7421487422d4..2bc9092bf9be 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -860,7 +860,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_f=
-ill_hole_t bpf_fill_ill_ins
->                        GFP_KERNEL);
->         if (!pack)
->                 return NULL;
-> -       pack->ptr =3D module_alloc(BPF_PROG_PACK_SIZE);
-> +       pack->ptr =3D bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
->         if (!pack->ptr) {
->                 kfree(pack);
->                 return NULL;
-> @@ -884,7 +884,7 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole=
-_t bpf_fill_ill_insns)
->         mutex_lock(&pack_mutex);
->         if (size > BPF_PROG_PACK_SIZE) {
->                 size =3D round_up(size, PAGE_SIZE);
-> -               ptr =3D module_alloc(size);
-> +               ptr =3D bpf_jit_alloc_exec(size);
->                 if (ptr) {
->                         bpf_fill_ill_insns(ptr, size);
->                         set_vm_flush_reset_perms(ptr);
-> @@ -922,7 +922,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr=
-)
->
->         mutex_lock(&pack_mutex);
->         if (hdr->size > BPF_PROG_PACK_SIZE) {
-> -               module_memfree(hdr);
-> +               bpf_jit_free_exec(hdr);
->                 goto out;
->         }
->
-> @@ -946,7 +946,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr=
-)
->         if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT=
-, 0,
->                                        BPF_PROG_CHUNK_COUNT, 0) =3D=3D 0)=
- {
->                 list_del(&pack->list);
-> -               module_memfree(pack->ptr);
-> +               bpf_jit_free_exec(pack->ptr);
->                 kfree(pack);
->         }
->  out:
-> --
-> 2.39.2
->
+> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> > index 9948b542a470e..2e1e9f3c7f701 100644
+> > --- a/kernel/bpf/inode.c
+> > +++ b/kernel/bpf/inode.c
+> > @@ -59,7 +59,10 @@ static void bpf_any_put(void *raw, enum bpf_type typ=
+e)
+> >                 bpf_map_put_with_uref(raw);
+> >                 break;
+> >         case BPF_TYPE_LINK:
+> > -               bpf_link_put(raw);
+> > +               if (may_sleep)
+> > +                       bpf_link_put(raw);
+> > +               else
+> > +                       bpf_link_put_from_atomic(raw);
+>=20
+> Do we need to do this in two different ways here? The only situation
+> that has may_sleep=3Dfalse is when called from superblock->free_inode.
+> According to documentation:
+>=20
+>   Freeing memory in the callback is fine; doing
+>   more than that is possible, but requires a lot of care and is best
+>   avoided.
+>=20
+> So it feels like cleaning up link should be safe to do from this
+> context as well? I've cc'ed linux-fsdevel@, hopefully they can advise.
+
+This is invoked from the RCU callback (which is usually softirq):
+	destroy_inode()
+	 -> call_rcu(&inode->i_rcu, i_callback);
+
+Freeing memory is fine but there is a mutex that is held in the process.
+
+Sebastian
 
