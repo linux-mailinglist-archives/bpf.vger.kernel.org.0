@@ -1,184 +1,194 @@
-Return-Path: <bpf+bounces-1871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFD4E7231A5
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 22:43:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B867231A6
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 22:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EFE0281438
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 20:43:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 949A11C208E0
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 20:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9EE261DC;
-	Mon,  5 Jun 2023 20:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D746261D6;
+	Mon,  5 Jun 2023 20:44:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A7EBE59;
-	Mon,  5 Jun 2023 20:43:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0414C433D2;
-	Mon,  5 Jun 2023 20:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685997807;
-	bh=We5qywEUXFBvYr91+f59TuYCdj8cINMwKn3eQvO6qKo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I7xvXQXLM0Tk+V+96RzBdr/UoRB92a3ftHnZrilLQZvr5w3AlNjzmN9wbeCqkkbCl
-	 DDUm1W1zxfiZwe+gjXC6K0QMqz8d9USg05gKXvmHLfrAf+FqT+OTOcMK6aGFqzG1zb
-	 E86H0paXXm7ihSYO0CbgPPXfw8rIsLX4qwzhB6/StpLTRz6eVNJy8R0u2bcXb5AObl
-	 Ay16QdoRp1sSVGG9bP4FMnVsq9x+ifwOZH0isH9pe4CqYdVcIo5Tq1wLxq/sUlyaRg
-	 pXJxzrOzrppU5klX4Kcg/mPHvek90M1w/P5hCMfIv1PTbM22Z3AvfuML6Ql3ohsT7Q
-	 qhU+5loHIlZWg==
-Date: Mon, 5 Jun 2023 23:42:56 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"mcgrof@kernel.org" <mcgrof@kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"dinguyen@kernel.org" <dinguyen@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH 12/13] x86/jitalloc: prepare to allocate exectuatble
- memory as ROX
-Message-ID: <20230605204256.GA52412@kernel.org>
-References: <20230601101257.530867-13-rppt@kernel.org>
- <0f50ac52a5280d924beeb131e6e4717b6ad9fdf7.camel@intel.com>
- <ZHjcr26YskTm+0EF@moria.home.lan>
- <a51c041b61e2916d2b91c990349aabc6cb9836aa.camel@intel.com>
- <ZHjljJfQjhVV/jNS@moria.home.lan>
- <68b8160454518387c53508717ba5ed5545ff0283.camel@intel.com>
- <50D768D7-15BF-43B8-A5FD-220B25595336@gmail.com>
- <20230604225244.65be9103@rorschach.local.home>
- <20230605081143.GA3460@kernel.org>
- <88a62f834688ed77d08c778e1e427014cf7d3c1b.camel@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D29323E
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 20:44:06 +0000 (UTC)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBAAEC
+	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 13:43:57 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4f62cf9755eso1575970e87.1
+        for <bpf@vger.kernel.org>; Mon, 05 Jun 2023 13:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685997835; x=1688589835;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PWTNdBmbsJYIMVnDalArRyW5H7hE8akMEsjpCji+c8A=;
+        b=HRQh/k7CEHF4owy0UZBjBpSCaHcNe0k/yK9NPVLb2wImaasIy+bR6KdiaYHrKd1xzX
+         bOuvF4rA+g4D/Fp5yJ1Xn4JN4e5koMPSP014W1phu8giEm/F4IEwtlXKWwMk8iVoEDJu
+         KUaIjOLYbjUSG2OSIj8toYYsIVqvgPPA63fyOigJKeVn/+XdCHJkJid5pmM1BamqvEUK
+         nlOH+/FjR6VOHGgxNB+eNB/DcCxjOItQorapGmBZaaIY1mT2oGs3yACjIZ00iCxoGBTK
+         /taAnlFT1X6CpPdvkXPuLBoOsmq4qzLYtHF45CrWJbyyNBb+1nRcaK8itraa3udfcctg
+         3PHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685997835; x=1688589835;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PWTNdBmbsJYIMVnDalArRyW5H7hE8akMEsjpCji+c8A=;
+        b=Dr+FSW6+pJpDvCqwg2011CL23v35LiMnftcFTidL3js2CeICy6Fnd3qUsTP55qWLw8
+         0G3DLYkX9HRpzss7roBSkjRgp4iEypACunN1BU9p3RZs4cPQmEgq47d27wv3MxA+4fjm
+         d2tyKiF6jVXK9MGngWRUA5CWJSNL9ocmTSEsFJwMydKRZUkEP37F8ca9yJPxM4k1Xd/A
+         Qr/C/bmA5Rkflyd/P9/wACByWGDscAU0C166m8/dhplfzShQwkY3yDNx2DZgd8L+2yqs
+         hQlWgcgJWkqT8pJ10rUszpFUKFGqIP1wmrPlmDfcJ8x6oCsvlMIujo8ewb4iiiSWDJqd
+         aBEQ==
+X-Gm-Message-State: AC+VfDwpancKlJzx8yFmzHAkRg1vVz9zxvBP74dms27jgfh8ltVLq0Qt
+	e2sRU4SJ6Ajj96gSA2S/JpQsbIvaUUh2KA==
+X-Google-Smtp-Source: ACHHUZ6QfrDdBGH+Vr+SKeMxg8EeEyX2wojz/UKXoiZUmK57Cq3bjFFUsDKSrDat4bqw1wA/wKKxGQ==
+X-Received: by 2002:a05:6512:61:b0:4f6:217a:561e with SMTP id i1-20020a056512006100b004f6217a561emr53387lfo.37.1685997835264;
+        Mon, 05 Jun 2023 13:43:55 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id q1-20020ac25101000000b004f381a71f26sm1248278lfb.46.2023.06.05.13.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jun 2023 13:43:54 -0700 (PDT)
+Message-ID: <d301a15f96e3c4050a8fb3ff238705aeba0f1ce9.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] bpf: verify scalar ids mapping in
+ regsafe() using check_ids()
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
+	 <ast@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf
+ <bpf@vger.kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+ Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Date: Mon, 05 Jun 2023 23:43:53 +0300
+In-Reply-To: <db0ce896af65b729e09cb1fb0fee6aa5b5d44ce0.camel@gmail.com>
+References: <20230530172739.447290-1-eddyz87@gmail.com>
+	 <20230530172739.447290-2-eddyz87@gmail.com>
+	 <CAEf4BzYJbzR0f5HyjLMJEmBdHkydQiOjdkk=K4AkXWTwnXsWEg@mail.gmail.com>
+	 <8b0da2244a328f23a78dc73306177ebc6f0eabfd.camel@gmail.com>
+	 <20230601020514.vhnlnmowbo6dxwfj@MacBook-Pro-8.local>
+	 <81e2e47c71b6a0bc014c204e18c6be2736fed338.camel@gmail.com>
+	 <CAADnVQJY4TR3hoDUyZwGxm10sBNvpLHTa_yW-T6BvbukvAoypg@mail.gmail.com>
+	 <6a52b65c270a702f6cbd6ffcf627213af4715200.camel@gmail.com>
+	 <CAEf4BzbM2bWHfdCoVYdfUmuYJRVzADBXHzbDwHkg_EX13pJ7gA@mail.gmail.com>
+	 <7f39e172d68a1ad92ffe886b4df060ef49cff047.camel@gmail.com>
+	 <CAEf4BzY8u_JbwBi=wYLFopj79MOfKGnyWo9O19esBqoT2zsABA@mail.gmail.com>
+	 <6cbfe3170e72fb981823cb7680a204c62ab36ede.camel@gmail.com>
+	 <CAEf4BzZvBDuSdKTW+PzB9RPvi=yMNHixdDWh+6dbJcBz6nO5hQ@mail.gmail.com>
+	 <db0ce896af65b729e09cb1fb0fee6aa5b5d44ce0.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <88a62f834688ed77d08c778e1e427014cf7d3c1b.camel@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, Jun 05, 2023 at 04:10:21PM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2023-06-05 at 11:11 +0300, Mike Rapoport wrote:
-> > On Sun, Jun 04, 2023 at 10:52:44PM -0400, Steven Rostedt wrote:
-> > > On Thu, 1 Jun 2023 16:54:36 -0700
-> > > Nadav Amit <nadav.amit@gmail.com> wrote:
-> > > 
-> > > > > The way text_poke() is used here, it is creating a new writable
-> > > > > alias
-> > > > > and flushing it for *each* write to the module (like for each
-> > > > > write of
-> > > > > an individual relocation, etc). I was just thinking it might
-> > > > > warrant
-> > > > > some batching or something.  
-> > 
-> > > > I am not advocating to do so, but if you want to have many
-> > > > efficient
-> > > > writes, perhaps you can just disable CR0.WP. Just saying that if
-> > > > you
-> > > > are about to write all over the memory, text_poke() does not
-> > > > provide
-> > > > too much security for the poking thread.
-> > 
-> > Heh, this is definitely and easier hack to implement :)
-> 
-> I don't know the details, but previously there was some strong dislike
-> of CR0.WP toggling. And now there is also the problem of CET. Setting
-> CR0.WP=0 will #GP if CR4.CET is 1 (as it currently is for kernel IBT).
-> I guess you might get away with toggling them both in some controlled
-> situation, but it might be a lot easier to hack up then to be made
-> fully acceptable. It does sound much more efficient though.
- 
-I don't think we'd really want that, especially looking at 
+On Sat, 2023-06-03 at 02:20 +0300, Eduard Zingerman wrote:
+> On Fri, 2023-06-02 at 15:07 -0700, Andrii Nakryiko wrote:
+> [...]
+> > > And we don't really need to bother about unique IDs in non-cached sta=
+te
+> > > when rold->id check discussed in a sibling thread is used:
+> > >=20
+> > >                 if (rold->precise && rold->id && !check_ids(rold->id,=
+ rcur->id, idmap))
+> > >                         return false;
+> >=20
+> > It makes me worry that we are mixing no ID and ID-ed SCALARs and
+> > making them equivalent. I need to think some more about implications
+> > (and re-read what you and Alexei discussed). I don't feel good about
+> > this and suspect we'll miss some non-obvious corner case if we do
+> > this.
+>=20
+> Here is the complete argument in a single piece:
+>=20
+>   Suppose:
+>     - There is a checkpoint state 'Old' with two registers marked as:
+>       - rA=3Dprecise scalar with range A, id=3D0;
+>       - rB=3Dprecise scalar with range B, id=3D0.
+>     - 'Old' is proven to be safe.
+>     - There is a new state 'Cur' with two registers marked as:
+>       - rA=3Dscalar with range C, id=3DU;
+>       - rB=3Dscalar with range C, id=3DU;
+>         (Note: if rA.id =3D=3D rB.id the registers have identical range).
+>=20
+>   Proposition:
+>     As long as range C is a subset of both range A and range B
+>     the state 'Cur' is safe.
+>=20
+>   Proof:
+>     State 'Cur' represents a special case of state 'Old',
+>     a variant of 'Old' where rA and rB happen to have same value.
+>     Thus 'Cur' is safe because 'Old' is safe.
+>=20
 
-		WARN_ONCE(bits_missing, "CR0 WP bit went missing!?\n");
+I had a separate discussion with Andrii on this topic.
+Andrii is still concerned that the change from:
 
-at native_write_cr0().
- 
-> > > Batching does exist, which is what the text_poke_queue() thing
-> > > does.
-> > 
-> > For module loading text_poke_queue() will still be much slower than a
-> > bunch
-> > of memset()s for no good reason because we don't need all the
-> > complexity of
-> > text_poke_bp_batch() for module initialization because we are sure we
-> > are
-> > not patching live code.
-> > 
-> > What we'd need here is a new batching mode that will create a
-> > writable
-> > alias mapping at the beginning of apply_relocate_*() and
-> > module_finalize(),
-> > then it will use memcpy() to that writable alias and will tear the
-> > mapping
-> > down in the end.
-> 
-> It's probably only a tiny bit faster than keeping a separate writable
-> allocation and text_poking it in at the end.
+	if (rold->precise && !check_ids(idmap, rold, rcur))
+		return false;
+to:
 
-Right, but it still will be faster than text_poking every relocation.
- 
-> > Another option is to teach alternatives to update a writable copy
-> > rather
-> > than do in place changes like Song suggested. My feeling is that it
-> > will be
-> > more intrusive change though.
-> 
-> You mean keeping a separate RW allocation and then text_poking() the
-> whole thing in when you are done? That is what I was trying to say at
-> the beginning of this thread. The other benefit is you don't make the
-> intermediate loading states of the module, executable.
-> 
-> I tried this technique previously [0], and I thought it was not too
-> bad. In most of the callers it looks similar to what you have in
-> do_text_poke(). Sometimes less, sometimes more. It might need
-> enlightening of some of the stuff currently using text_poke() during
-> module loading, like jump labels. So that bit is more intrusive, yea.
-> But it sounds so much cleaner and well controlled. Did you have a
-> particular trouble spot in mind?
+	if (rold->precise && rold->id && !check_ids(idmap, rold, rcur))
+		return false;
 
-Nothing in particular, except the intrusive part. Except the changes in
-modules.c we'd need to teach alternatives to deal with a writable copy.
- 
-> [0]
-> https://lore.kernel.org/lkml/20201120202426.18009-5-rick.p.edgecombe@intel.com/
+Is not fully equivalent and there might be a corner case where 'Cur'
+and 'Old' don't behave in the same way. I don't have a better argument
+than the one stated above.
 
--- 
-Sincerely yours,
-Mike.
+On the other hand, this optimization is needed to mitigate relatively
+small overhead:
+
+$ ./veristat -e file,prog,states -f "states_pct>10" \
+    -C master-baseline.log current.log
+File         Program                         States  (DIFF)
+-----------  ------------------------------  --------------
+bpf_xdp.o    tail_handle_nat_fwd_ipv6        +155 (+23.92%)
+bpf_xdp.o    tail_nodeport_nat_ingress_ipv4  +102 (+27.20%)
+bpf_xdp.o    tail_rev_nodeport_lb4            +83 (+20.85%)
+loop6.bpf.o  trace_virtqueue_add_sgs          +25 (+11.06%)
+
+(there are also a few programs with overhead <1%, I don't list those
+ for brevity).
+=20
+On yet another hand:
+- this change major impact is because of elimination of unique IDs in
+  the 'Cur' state;
+- once register spill/fill code is modified to generate scalar IDs in
+  the same way as BPF_MOV code does it would be possible to drop
+  unique scalar IDs in 'Cur' and in 'Old' in is_state_visited() /
+  clean_live_states() using the same code.
+
+Having this in mind we decided to withhold this change for now.
+I will post an updated patch-set without it, Andrii will test it on
+some more internal BPF programs to see if impact is still small.
+
+> > >=20
+> > > Here, if rcur->id is unique there are two cases:
+> > > - rold->id =3D=3D 0: then rcur->id is just ignored
+> > > - rold->id !=3D 0: then rold->id/rcur->id pair would be added to idma=
+p,
+> > >                  there is some other precise old register with the
+> > >                  same id as rold->id, so eventually check_ids()
+> > >                  would make regsafe() return false.
+> > >=20
+> > > > > - do a check as follows:
+> > > > >   if (rold->precise && rold->id && !check_ids(idmap, rold, rcur))
+> > > > >     return false;
+> > > >=20
 
