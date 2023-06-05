@@ -1,72 +1,39 @@
-Return-Path: <bpf+bounces-1812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 919C472264F
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 14:49:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C86C722720
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 15:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFF881C20C36
-	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 12:48:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158781C20B12
+	for <lists+bpf@lfdr.de>; Mon,  5 Jun 2023 13:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A7E1B916;
-	Mon,  5 Jun 2023 12:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E4F19E67;
+	Mon,  5 Jun 2023 13:15:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFEC18B10
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 12:46:39 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B6BF7
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 05:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1685969196;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AoX0zr5g/7kYp0xKccyyKWT5aRpif55zj/+ZZKuK9zI=;
-	b=bFO2awlsd9+ZaMWoLlbvNeHQHqOHNw4LUZQVZNC/ezrnm2Bj6gp6XQqeBG76AzMQRfApKF
-	iZI2uRR916F1oItjvV9Sv0uz9sXg7lkGSB0uItogFSeIeDr7zwQIPeGkpSl6gRS/AqCZwX
-	dixatH4E7YKlJYhdL9GE7EOuFSXOpvc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-169-FYm9rYGUOayGBbwg_JM_LQ-1; Mon, 05 Jun 2023 08:46:33 -0400
-X-MC-Unique: FYm9rYGUOayGBbwg_JM_LQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D75DF811E92;
-	Mon,  5 Jun 2023 12:46:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.182])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 368DA4087C68;
-	Mon,  5 Jun 2023 12:46:30 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Howells <dhowells@redhat.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	David Ahern <dsahern@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v4 09/11] tls/sw: Convert tls_sw_sendpage() to use MSG_SPLICE_PAGES
-Date: Mon,  5 Jun 2023 13:45:58 +0100
-Message-ID: <20230605124600.1722160-10-dhowells@redhat.com>
-In-Reply-To: <20230605124600.1722160-1-dhowells@redhat.com>
-References: <20230605124600.1722160-1-dhowells@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC7919514;
+	Mon,  5 Jun 2023 13:15:02 +0000 (UTC)
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827CCA6;
+	Mon,  5 Jun 2023 06:14:59 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1q6A2y-0004MZ-Tx; Mon, 05 Jun 2023 15:14:56 +0200
+From: Florian Westphal <fw@strlen.de>
+To: <bpf@vger.kernel.org>
+Cc: netdev@vger.kernel.org,
+	ast@kernel.org,
+	Florian Westphal <fw@strlen.de>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH bpf v2] bpf: netfilter: add BPF_NETFILTER bpf_attach_type
+Date: Mon,  5 Jun 2023 15:14:45 +0200
+Message-Id: <20230605131445.32016-1-fw@strlen.de>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,265 +41,103 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Convert tls_sw_sendpage() and tls_sw_sendpage_locked() to use sendmsg()
-with MSG_SPLICE_PAGES rather than directly splicing in the pages itself.
+Andrii Nakryiko writes:
 
-[!] Note that tls_sw_sendpage_locked() appears to have the wrong locking
-    upstream.  I think the caller will only hold the socket lock, but it
-    should hold tls_ctx->tx_lock too.
+ And we currently don't have an attach type for NETLINK BPF link.
+ Thankfully it's not too late to add it. I see that link_create() in
+ kernel/bpf/syscall.c just bypasses attach_type check. We shouldn't
+ have done that. Instead we need to add BPF_NETLINK attach type to enum
+ bpf_attach_type. And wire all that properly throughout the kernel and
+ libbpf itself.
 
-This allows ->sendpage() to be replaced by something that can handle
-multiple multipage folios in a single transaction.
+This adds BPF_NETFILTER and uses it.  This breaks uabi but this
+wasn't in any non-rc release yet, so it should be fine.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Chuck Lever <chuck.lever@oracle.com>
-cc: Boris Pismenny <borisp@nvidia.com>
-cc: John Fastabend <john.fastabend@gmail.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Eric Dumazet <edumazet@google.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: netdev@vger.kernel.org
-cc: bpf@vger.kernel.org
+v2: check link_attack prog type in link_create too
+
+Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopaJJVGFD5=d5Vg@mail.gmail.com/
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/tls/tls_sw.c | 173 ++++++++++-------------------------------------
- 1 file changed, 35 insertions(+), 138 deletions(-)
+ include/uapi/linux/bpf.h       | 1 +
+ kernel/bpf/syscall.c           | 9 +++++++++
+ tools/include/uapi/linux/bpf.h | 1 +
+ tools/lib/bpf/libbpf.c         | 2 +-
+ 4 files changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index b85f92be7c9d..5ffb8de862f6 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -961,7 +961,8 @@ static int tls_sw_sendmsg_splice(struct sock *sk, struct msghdr *msg,
- 	return 0;
- }
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 1bb11a6ee667..c994ff5b157c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+ 	BPF_TRACE_KPROBE_MULTI,
+ 	BPF_LSM_CGROUP,
+ 	BPF_STRUCT_OPS,
++	BPF_NETFILTER,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
--int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
-+static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
-+				 size_t size)
- {
- 	long timeo = sock_sndtimeo(sk, msg->msg_flags & MSG_DONTWAIT);
- 	struct tls_context *tls_ctx = tls_get_ctx(sk);
-@@ -984,15 +985,6 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	int ret = 0;
- 	int pending;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573e..0c21d0d8efe4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2433,6 +2433,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		default:
+ 			return -EINVAL;
+ 		}
++	case BPF_PROG_TYPE_NETFILTER:
++		if (expected_attach_type == BPF_NETFILTER)
++			return 0;
++		return -EINVAL;
+ 	case BPF_PROG_TYPE_SYSCALL:
+ 	case BPF_PROG_TYPE_EXT:
+ 		if (expected_attach_type)
+@@ -4590,7 +4594,12 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
  
--	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
--			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES))
--		return -EOPNOTSUPP;
--
--	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
--	if (ret)
--		return ret;
--	lock_sock(sk);
--
- 	if (unlikely(msg->msg_controllen)) {
- 		ret = tls_process_cmsg(sk, msg, &record_type);
- 		if (ret) {
-@@ -1193,10 +1185,27 @@ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 	switch (prog->type) {
+ 	case BPF_PROG_TYPE_EXT:
++		break;
+ 	case BPF_PROG_TYPE_NETFILTER:
++		if (attr->link_create.attach_type != BPF_NETFILTER) {
++			ret = -EINVAL;
++			goto out;
++		}
+ 		break;
+ 	case BPF_PROG_TYPE_PERF_EVENT:
+ 	case BPF_PROG_TYPE_TRACEPOINT:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 1bb11a6ee667..c994ff5b157c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1035,6 +1035,7 @@ enum bpf_attach_type {
+ 	BPF_TRACE_KPROBE_MULTI,
+ 	BPF_LSM_CGROUP,
+ 	BPF_STRUCT_OPS,
++	BPF_NETFILTER,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
- send_end:
- 	ret = sk_stream_error(sk, msg->msg_flags, ret);
-+	return copied > 0 ? copied : ret;
-+}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ad1ec893b41b..532a97cf1cc1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8712,7 +8712,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
+ 	SEC_DEF("struct_ops.s+",	STRUCT_OPS, 0, SEC_SLEEPABLE),
+ 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
+-	SEC_DEF("netfilter",		NETFILTER, 0, SEC_NONE),
++	SEC_DEF("netfilter",		NETFILTER, BPF_NETFILTER, SEC_NONE),
+ };
  
-+int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
-+{
-+	struct tls_context *tls_ctx = tls_get_ctx(sk);
-+	int ret;
-+
-+	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
-+			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES |
-+			       MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
-+		return -EOPNOTSUPP;
-+
-+	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
-+	if (ret)
-+		return ret;
-+	lock_sock(sk);
-+	ret = tls_sw_sendmsg_locked(sk, msg, size);
- 	release_sock(sk);
- 	mutex_unlock(&tls_ctx->tx_lock);
--	return copied > 0 ? copied : ret;
-+	return ret;
- }
- 
- /*
-@@ -1273,151 +1282,39 @@ void tls_sw_splice_eof(struct socket *sock)
- 	mutex_unlock(&tls_ctx->tx_lock);
- }
- 
--static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
--			      int offset, size_t size, int flags)
--{
--	long timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
--	struct tls_context *tls_ctx = tls_get_ctx(sk);
--	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
--	struct tls_prot_info *prot = &tls_ctx->prot_info;
--	unsigned char record_type = TLS_RECORD_TYPE_DATA;
--	struct sk_msg *msg_pl;
--	struct tls_rec *rec;
--	int num_async = 0;
--	ssize_t copied = 0;
--	bool full_record;
--	int record_room;
--	int ret = 0;
--	bool eor;
--
--	eor = !(flags & MSG_SENDPAGE_NOTLAST);
--	sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
--
--	/* Call the sk_stream functions to manage the sndbuf mem. */
--	while (size > 0) {
--		size_t copy, required_size;
--
--		if (sk->sk_err) {
--			ret = -sk->sk_err;
--			goto sendpage_end;
--		}
--
--		if (ctx->open_rec)
--			rec = ctx->open_rec;
--		else
--			rec = ctx->open_rec = tls_get_rec(sk);
--		if (!rec) {
--			ret = -ENOMEM;
--			goto sendpage_end;
--		}
--
--		msg_pl = &rec->msg_plaintext;
--
--		full_record = false;
--		record_room = TLS_MAX_PAYLOAD_SIZE - msg_pl->sg.size;
--		copy = size;
--		if (copy >= record_room) {
--			copy = record_room;
--			full_record = true;
--		}
--
--		required_size = msg_pl->sg.size + copy + prot->overhead_size;
--
--		if (!sk_stream_memory_free(sk))
--			goto wait_for_sndbuf;
--alloc_payload:
--		ret = tls_alloc_encrypted_msg(sk, required_size);
--		if (ret) {
--			if (ret != -ENOSPC)
--				goto wait_for_memory;
--
--			/* Adjust copy according to the amount that was
--			 * actually allocated. The difference is due
--			 * to max sg elements limit
--			 */
--			copy -= required_size - msg_pl->sg.size;
--			full_record = true;
--		}
--
--		sk_msg_page_add(msg_pl, page, copy, offset);
--		sk_mem_charge(sk, copy);
--
--		offset += copy;
--		size -= copy;
--		copied += copy;
--
--		tls_ctx->pending_open_record_frags = true;
--		if (full_record || eor || sk_msg_full(msg_pl)) {
--			ret = bpf_exec_tx_verdict(msg_pl, sk, full_record,
--						  record_type, &copied, flags);
--			if (ret) {
--				if (ret == -EINPROGRESS)
--					num_async++;
--				else if (ret == -ENOMEM)
--					goto wait_for_memory;
--				else if (ret != -EAGAIN) {
--					if (ret == -ENOSPC)
--						ret = 0;
--					goto sendpage_end;
--				}
--			}
--		}
--		continue;
--wait_for_sndbuf:
--		set_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
--wait_for_memory:
--		ret = sk_stream_wait_memory(sk, &timeo);
--		if (ret) {
--			if (ctx->open_rec)
--				tls_trim_both_msgs(sk, msg_pl->sg.size);
--			goto sendpage_end;
--		}
--
--		if (ctx->open_rec)
--			goto alloc_payload;
--	}
--
--	if (num_async) {
--		/* Transmit if any encryptions have completed */
--		if (test_and_clear_bit(BIT_TX_SCHEDULED, &ctx->tx_bitmask)) {
--			cancel_delayed_work(&ctx->tx_work.work);
--			tls_tx_records(sk, flags);
--		}
--	}
--sendpage_end:
--	ret = sk_stream_error(sk, flags, ret);
--	return copied > 0 ? copied : ret;
--}
--
- int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
- 			   int offset, size_t size, int flags)
- {
-+	struct bio_vec bvec;
-+	struct msghdr msg = { .msg_flags = flags | MSG_SPLICE_PAGES, };
-+
- 	if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
- 		      MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY |
- 		      MSG_NO_SHARED_FRAGS))
- 		return -EOPNOTSUPP;
-+	if (flags & MSG_SENDPAGE_NOTLAST)
-+		msg.msg_flags |= MSG_MORE;
- 
--	return tls_sw_do_sendpage(sk, page, offset, size, flags);
-+	bvec_set_page(&bvec, page, size, offset);
-+	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+	return tls_sw_sendmsg_locked(sk, &msg, size);
- }
- 
- int tls_sw_sendpage(struct sock *sk, struct page *page,
- 		    int offset, size_t size, int flags)
- {
--	struct tls_context *tls_ctx = tls_get_ctx(sk);
--	int ret;
-+	struct bio_vec bvec;
-+	struct msghdr msg = { .msg_flags = flags | MSG_SPLICE_PAGES, };
- 
- 	if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
- 		      MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
- 		return -EOPNOTSUPP;
-+	if (flags & MSG_SENDPAGE_NOTLAST)
-+		msg.msg_flags |= MSG_MORE;
- 
--	ret = mutex_lock_interruptible(&tls_ctx->tx_lock);
--	if (ret)
--		return ret;
--	lock_sock(sk);
--	ret = tls_sw_do_sendpage(sk, page, offset, size, flags);
--	release_sock(sk);
--	mutex_unlock(&tls_ctx->tx_lock);
--	return ret;
-+	bvec_set_page(&bvec, page, size, offset);
-+	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+	return tls_sw_sendmsg(sk, &msg, size);
- }
- 
- static int
+ static size_t custom_sec_def_cnt;
+-- 
+2.39.3
 
 
