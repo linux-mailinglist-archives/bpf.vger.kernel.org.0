@@ -1,229 +1,214 @@
-Return-Path: <bpf+bounces-1955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D057724E6A
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 23:03:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A838724E70
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 23:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27451C20B85
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 21:02:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21AFE2810A5
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 21:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF15627203;
-	Tue,  6 Jun 2023 21:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3210B2721E;
+	Tue,  6 Jun 2023 21:04:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC9C3D7F
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 21:02:52 +0000 (UTC)
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED4171D
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 14:02:50 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6af8b25fc72so4943748a34.3
-        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 14:02:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF2A3D7F
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 21:04:34 +0000 (UTC)
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8198E171D;
+	Tue,  6 Jun 2023 14:04:33 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-64d44b198baso4814278b3a.0;
+        Tue, 06 Jun 2023 14:04:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686085370; x=1688677370;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uq9Pr6DWUVzSXGxbV7e8ZoB8v64gECVHajz2KbgU84M=;
-        b=nk0kQfUOYGxbA0ifjF5QUVXaAIW1vfVdix4AA/DsDLhQGISIr3M35kVaT8owahipaR
-         3m9J2cqxnwxTh9FUa8hsSrnl3w/TbwfUh+mRJyBGbzLyeAYff7NlkA8KwTK8Klz9xWt6
-         bNhZCW188kLCU7KIQK44G91iqHSL9TNfyCXMWbmZjS9csnXbTG25MLQ2mGtqxEozkY86
-         xbbBHG2t/JEnYl7K7gyQbij+7mbujoSf98exF9Mckp0YUoHK6OtKX7iBupMuijEt6Q+f
-         4IBYc9+Dqzh+n0oDt8ypG/W8nwu2afenNgRK+ACJnQ5yf7q/6NEmbCpz9rsqEA7DUh2a
-         W3Tg==
+        d=gmail.com; s=20221208; t=1686085473; x=1688677473;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z67gbpgUg4L5eXxeG6rpryziRgHhf2fUrevjsaebNpk=;
+        b=nu3hngaf5OWC71KVa1Fb3a2ZNhx+wlNgVFeY6F/vzTqSpVE958yajv4ze8c9jYbxgd
+         10hKw/wPykPCSgAKdLZ8IVAuj/CiJxWPIwxTvKgF4u7d8N2IbtXcaiAmyL1aEEWd3Ve3
+         FRKMwm62vF4JHDFCMm4Oay4zhx735g7MFvzMDQ5vrfDnduZaS1nClweCLqrXB6P5xhir
+         MYaHlffenkurVX3Yl8i5k/4r4wRH+9e/K0clEdqYMXDYxO2XZMVdxCsPAwIzkPtEewKq
+         HTbbpkcNo/fYHXcC6uTO8V0456QXVvVzKPZu+hZeCgwM+TeJrzg0e8aP4ofHhb7Aqhkv
+         21PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686085370; x=1688677370;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uq9Pr6DWUVzSXGxbV7e8ZoB8v64gECVHajz2KbgU84M=;
-        b=b/0BtxoTTWXtTqsUGdGMnIjSTQ2HfZtXeeZTUxEXupM8B7/FrJrqd7+1LtPgoU4Gz9
-         KbqKCiZ7btbMZeQGostHPoDkLsETyj0jgnoiXpIDZYuep/x3qoajjJYZE7ylXENAmpFq
-         Av+AZoSQ1XszurHwHwSWcQ6HXgI7PhcV8oU1r0U8nZ52lm5a4GdMQ6XqGi08T6JWm2DE
-         lRCuD/tWD7sSeNcF2UQpFFCIe76whWhZ2MIac6EZ/Fa+X3Mw7m3Te3vEVMVCR/VHyv8t
-         MyxhNhE40K5s8uVTFgM91/OEcKT+VMSxaspeha4THkP5QFzmsUxSEwwMaWKKVoJKdYns
-         6N+A==
-X-Gm-Message-State: AC+VfDwFyKpMox/5Eguz4ESdcBKtUWH9g8zwxJLcQ9asO94S2BS4PpXm
-	z5tvTKzmVBAxpaMVD5Y2wikg5w==
-X-Google-Smtp-Source: ACHHUZ7LYh5dG7aPOBJuFRUuEBk0WqeuseveTYM2K8wIaYAbGmx3y0eFWA1FPUJnp32LJJKABJh6Qw==
-X-Received: by 2002:a05:6358:c014:b0:129:b9f4:6d43 with SMTP id ez20-20020a056358c01400b00129b9f46d43mr773502rwb.30.1686085369822;
-        Tue, 06 Jun 2023 14:02:49 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:e8d0:a79a:be71:c670])
-        by smtp.gmail.com with ESMTPSA id m4-20020a17090a71c400b0025671de4606sm2918pjs.4.2023.06.06.14.02.48
+        d=1e100.net; s=20221208; t=1686085473; x=1688677473;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z67gbpgUg4L5eXxeG6rpryziRgHhf2fUrevjsaebNpk=;
+        b=jEo5veR70JU7K5Z/HcDuXW6r4o75qbujVTNsr6AZBakmV+9vcB1Y5fxnrep11YRJcC
+         KogJhWODKSEHUQtMrC10VEg2QaqnhHWtk+A0ZEqOXbAdlIJBJ3ivvhIFLV21TqwRxPSx
+         DsfPIUF8mPe01U8UJUF+51VAe5X1ZL5w648+YQtjBCNtESAsC+wAoiXjBoZFlS9FlJMV
+         Bf73hKrumgz2dVaLOgDfootoN01Pdfbc/YCJ9mbxQDyyMiBDo4Hl+ZJwMsDpw1Ze0tiB
+         L3CWE8yU5E+41zOoh9+SemcXboJzEvrqAYqYowLJzGgIAYWzmJ8FYNd9C/+9nnFZgQI5
+         F6Cg==
+X-Gm-Message-State: AC+VfDygElrSl3JB1Wa35aniPKTXhPKVNoDmyREXTRjCMsGtcLeR5isd
+	+epHr1a40KhdiEf7EfhHOwg=
+X-Google-Smtp-Source: ACHHUZ5iWaI7P0672a4cDvgmnE9ViccEwKzibjkIgDuXiSDmgvmthV+Nl71mcYSv5U3RYO6nRwj+qQ==
+X-Received: by 2002:a05:6a00:4403:b0:659:14c8:1f0b with SMTP id br3-20020a056a00440300b0065914c81f0bmr4213299pfb.4.1686085472653;
+        Tue, 06 Jun 2023 14:04:32 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:500::4:11fc])
+        by smtp.gmail.com with ESMTPSA id q17-20020a62ae11000000b0064f95bb8255sm7257236pff.53.2023.06.06.14.04.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 14:02:49 -0700 (PDT)
-Date: Tue, 6 Jun 2023 14:02:44 -0700
-From: Nick Desaulniers <ndesaulniers@google.com>
-To: Alexander Lobakin <alobakin@pm.me>
-Cc: Alexei Starovoitov <ast@kernel.org>,
+        Tue, 06 Jun 2023 14:04:32 -0700 (PDT)
+Date: Tue, 6 Jun 2023 14:04:29 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Song Liu <songliubraving@fb.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tpgxyz@gmail.com
-Subject: Re: [PATCH v2 bpf 03/11] bpftool: use a local bpf_perf_event_value
- to fix accessing its fields
-Message-ID: <ZH+e9IYk+DIZzUFL@google.com>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <20220421003152.339542-4-alobakin@pm.me>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	"houtao1@huawei.com" <houtao1@huawei.com>
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+Message-ID: <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220421003152.339542-4-alobakin@pm.me>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Apr 21, 2022 at 12:39:04AM +0000, Alexander Lobakin wrote:
-> Fix the following error when building bpftool:
+On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
+> Hi,
 > 
->   CLANG   profiler.bpf.o
->   CLANG   pid_iter.bpf.o
-> skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an incomplete type 'struct bpf_perf_event_value'
->         __uint(value_size, sizeof(struct bpf_perf_event_value));
->                            ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
-> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helper_defs.h:7:8: note: forward declaration of 'struct bpf_perf_event_value'
-> struct bpf_perf_event_value;
->        ^
+> On 6/6/2023 11:53 AM, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
+> >
+> > Hi,
+> >
+> > The implementation of v4 is mainly based on suggestions from Alexi [0].
+> > There are still pending problems for the current implementation as shown
+> > in the benchmark result in patch #3, but there was a long time from the
+> > posting of v3, so posting v4 here for further disscussions and more
+> > suggestions.
+> >
+> > The first problem is the huge memory usage compared with bpf memory
+> > allocator which does immediate reuse:
+> >
+> > htab-mem-benchmark (reuse-after-RCU-GP):
+> > | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> > | --                 | --        | --                  | --               |
+> > | no_op              | 1159.18   | 0.99                | 0.99             |
+> > | overwrite          | 11.00     | 2288                | 4109             |
+> > | batch_add_batch_del| 8.86      | 1558                | 2763             |
+> > | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
+> >
+> > htab-mem-benchmark (immediate-reuse):
+> > | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> > | --                 | --        | --                  | --               |
+> > | no_op              | 1160.66   | 0.99                | 1.00             |
+> > | overwrite          | 28.52     | 2.46                | 2.73             |
+> > | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
+> > | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
+> >
+> > It seems the direct reason is the slow RCU grace period. During
+> > benchmark, the elapsed time when reuse_rcu() callback is called is about
+> > 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
+> > spin-lock and the irq-work running in the contex of freeing process will
+> > increase the running overhead of bpf program, the running time of
+> > getpgid() is increased, the contex switch is slowed down and the RCU
+> > grace period increases [1], but I am still diggin into it.
+> For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
+> (namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
+> did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
 > 
-> struct bpf_perf_event_value is being used in the kernel only when
-> CONFIG_BPF_EVENTS is enabled, so it misses a BTF entry then.
-> Define struct bpf_perf_event_value___local with the
-> `preserve_access_index` attribute inside the pid_iter BPF prog to
-> allow compiling on any configs. It is a full mirror of a UAPI
-> structure, so is compatible both with and w/o CO-RE.
-> bpf_perf_event_read_value() requires a pointer of the original type,
-> so a cast is needed.
+> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> | --                 | --        | --                  | --               |
+> | no_op              | 1165.38   | 0.97                | 1.00             |
+> | overwrite          | 17.25     | 626.41              | 781.82           |
+> | batch_add_batch_del| 11.51     | 398.56              | 500.29           |
+> | add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
 > 
+> But the memory usage is still large compared with v3 and the elapsed
+> time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
+> are still two differences:
+> 1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
+> accelerate the reuse of freed objects.
+> 2) v3 uses kworker instead of irq_work for free procedure.
+> 
+> For 1), after using kmalloc() in irq_work to allocate multiple inflight
+> RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
+> but is not enough:
+> 
+> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> | --                 | --        | --                  | --               |
+> | no_op              | 1247.00   | 0.97                | 1.00             |
+> | overwrite          | 16.56     | 490.18              | 557.17           |
+> | batch_add_batch_del| 11.31     | 276.32              | 360.89           |
+> | add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
+> 
+> So it seems the large memory usage is due to irq_work (reuse_bulk) used
+> for free procedure. However after increasing the threshold for invoking
+> irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
+> big difference in the memory usage and the delayed time for RCU
+> callbacks. Perhaps the reason is that although the number of  reuse_bulk
+> irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
+> increased because there are no reusable objects.
 
-Hi Alexander,
-What's the status of this series? I wasn't able to find a v3 on lore.
+The large memory usage is because the benchmark in patch 2 is abusing it.
+It's doing one bpf_loop() over 16k elements (in case of 1 producer)
+and 16k/8 loops for --producers=8.
+That's 2k memory allocations that have to wait for RCU GP.
+Of course that's a ton of memory.
 
-We received a report that OpenMandriva is carrying around this patch.
-https://github.com/ClangBuiltLinux/linux/issues/1805.
+As far as implementation in patch 3 please respin it asap and remove *_tail optimization.
+It makes the code hard to read and doesn't buy us anything.
+Other than that the algorithm looks fine.
 
-+ Tomasz
+> > Another problem is the performance degradation compared with immediate
+> > reuse and the output from perf report shown the per-bpf-ma spin-lock is a
+> > top-one hotspot:
 
-Tomasz, do you have more info which particular configs can reproduce
-this issue? Is this patch still necessary?
+That's not what I see.
+Hot spin_lock is in generic htab code. Not it ma.
+I still believe per-bpf-ma spin-lock is fine.
+The bench in patch 2 is measuring something that no real bpf prog cares about.
 
-> Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  tools/bpf/bpftool/skeleton/profiler.bpf.c | 27 ++++++++++++++---------
->  1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/skeleton/profiler.bpf.c b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-> index ce5b65e07ab1..2f80edc682f1 100644
-> --- a/tools/bpf/bpftool/skeleton/profiler.bpf.c
-> +++ b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-> @@ -4,6 +4,12 @@
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> 
-> +struct bpf_perf_event_value___local {
-> +	__u64 counter;
-> +	__u64 enabled;
-> +	__u64 running;
-> +} __attribute__((preserve_access_index));
-> +
->  /* map of perf event fds, num_cpu * num_metric entries */
->  struct {
->  	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> @@ -15,14 +21,14 @@ struct {
->  struct {
->  	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
->  	__uint(key_size, sizeof(u32));
-> -	__uint(value_size, sizeof(struct bpf_perf_event_value));
-> +	__uint(value_size, sizeof(struct bpf_perf_event_value___local));
->  } fentry_readings SEC(".maps");
-> 
->  /* accumulated readings */
->  struct {
->  	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
->  	__uint(key_size, sizeof(u32));
-> -	__uint(value_size, sizeof(struct bpf_perf_event_value));
-> +	__uint(value_size, sizeof(struct bpf_perf_event_value___local));
->  } accum_readings SEC(".maps");
-> 
->  /* sample counts, one per cpu */
-> @@ -39,7 +45,7 @@ const volatile __u32 num_metric = 1;
->  SEC("fentry/XXX")
->  int BPF_PROG(fentry_XXX)
->  {
-> -	struct bpf_perf_event_value *ptrs[MAX_NUM_MATRICS];
-> +	struct bpf_perf_event_value___local *ptrs[MAX_NUM_MATRICS];
->  	u32 key = bpf_get_smp_processor_id();
->  	u32 i;
-> 
-> @@ -53,10 +59,10 @@ int BPF_PROG(fentry_XXX)
->  	}
-> 
->  	for (i = 0; i < num_metric && i < MAX_NUM_MATRICS; i++) {
-> -		struct bpf_perf_event_value reading;
-> +		struct bpf_perf_event_value___local reading;
->  		int err;
-> 
-> -		err = bpf_perf_event_read_value(&events, key, &reading,
-> +		err = bpf_perf_event_read_value(&events, key, (void *)&reading,
->  						sizeof(reading));
->  		if (err)
->  			return 0;
-> @@ -68,14 +74,14 @@ int BPF_PROG(fentry_XXX)
->  }
-> 
->  static inline void
-> -fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
-> +fexit_update_maps(u32 id, struct bpf_perf_event_value___local *after)
->  {
-> -	struct bpf_perf_event_value *before, diff;
-> +	struct bpf_perf_event_value___local *before, diff;
-> 
->  	before = bpf_map_lookup_elem(&fentry_readings, &id);
->  	/* only account samples with a valid fentry_reading */
->  	if (before && before->counter) {
-> -		struct bpf_perf_event_value *accum;
-> +		struct bpf_perf_event_value___local *accum;
-> 
->  		diff.counter = after->counter - before->counter;
->  		diff.enabled = after->enabled - before->enabled;
-> @@ -93,7 +99,7 @@ fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
->  SEC("fexit/XXX")
->  int BPF_PROG(fexit_XXX)
->  {
-> -	struct bpf_perf_event_value readings[MAX_NUM_MATRICS];
-> +	struct bpf_perf_event_value___local readings[MAX_NUM_MATRICS];
->  	u32 cpu = bpf_get_smp_processor_id();
->  	u32 i, zero = 0;
->  	int err;
-> @@ -102,7 +108,8 @@ int BPF_PROG(fexit_XXX)
->  	/* read all events before updating the maps, to reduce error */
->  	for (i = 0; i < num_metric && i < MAX_NUM_MATRICS; i++) {
->  		err = bpf_perf_event_read_value(&events, cpu + i * num_cpu,
-> -						readings + i, sizeof(*readings));
-> +						(void *)(readings + i),
-> +						sizeof(*readings));
->  		if (err)
->  			return 0;
->  	}
-> --
-> 2.36.0
-> 
-> 
+See how map_perf_test is doing:
+        for (i = 0; i < 10; i++) {
+                bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
+
+Even 10 map updates for the same map in a single bpf prog invocation is not realistic.
+16k/8 is beyond any normal scenario.
+There is no reason to optimize bpf_ma for the case of htab abuse.
+
+> > map_perf_test (reuse-after-RCU-GP)
+> > 0:hash_map_perf kmalloc 194677 events per sec
+> >
+> > map_perf_test (immediate reuse)
+> > 2:hash_map_perf kmalloc 384527 events per sec
+
+For some reason I cannot reproduce the slow down with map_perf_test 4 8.
+I see the same perf with/without patch 3.
+
+I've applied patch 1.
+Please respin with patch 2 doing no more than 10 map_updates under rcu lock
+and remove *_tail optimization from patch 3.
+Just do llist_for_each_safe() when you move elements from one list to another.
+And let's brainstorm further.
+Please do not delay.
 
