@@ -1,85 +1,89 @@
-Return-Path: <bpf+bounces-1906-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6DB5723570
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 04:46:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3363E723586
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 04:57:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79F752814C9
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 02:46:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3A8D2814FF
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 02:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D819E395;
-	Tue,  6 Jun 2023 02:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D5339F;
+	Tue,  6 Jun 2023 02:57:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA702361
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 02:46:49 +0000 (UTC)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BA0102
-	for <bpf@vger.kernel.org>; Mon,  5 Jun 2023 19:46:47 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b1ba018d94so36413731fa.0
-        for <bpf@vger.kernel.org>; Mon, 05 Jun 2023 19:46:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3EF361
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 02:57:15 +0000 (UTC)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D57102;
+	Mon,  5 Jun 2023 19:57:13 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-30af56f5f52so4838705f8f.1;
+        Mon, 05 Jun 2023 19:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686019606; x=1688611606;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HSQAVHhZcRm8A3p87+tVNpohfJhXuuH3b643ejk1WA4=;
-        b=DGDuXDYV4V++TDA83tXoE27VK2sfPg2r/GyqrvxLHFH6fbCgqV+RSHL4CFwv9oAxno
-         +rfncrc+2kXHx/roO3EhnqeE1cPbhiVeJ86ljIBaZwnx6r5n8T/Kp0DeWI9mvCzEVeYN
-         SBzmrHpIT0M2XLL3YQwLWBR6ERv3SJCqmfL7meRBvNsmWMYDEoQZs1eHNOWmPMtPIp+1
-         MdzFBy7b6BpPht4C01wA8tlf4+/D5x4YI8cqRhdcxScHTVjPgEYUs4HdJOAjTHNwewMT
-         qtQGM1lohRA7tYakBGnzqIGtber6eIXsySgYFc1Vaw8y2OUJ0tFCytOPMzPW+SjyILjg
-         wxPw==
+        d=gmail.com; s=20221208; t=1686020232; x=1688612232;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SrvUy89BvIUPEyxGx6YhXaN1N8mQsZqXnnNriiDSvME=;
+        b=jztOKtGtWaW4lJiqwG6Jn63CphDAucHhmfhEZVF0n7eK3l+gqdPZGYnpr829f9Xl8C
+         GR5eyaw9zjC676MPXMWww+Y66mrXEUO60Cxsd25GVH7O1lNlPuRseon6E8dWu2g+lsKe
+         aCtXZkCuNn9z6vByVQqLzBwMCl51FkDI0t6Zn/R399eR2qoNedrfYpz1Qf2oJqZq0oZA
+         0OBkAXCQYc/3/RW0j68bWeaynUII842+Z+noRXH2cEQjojHjGSshoXrz67aYEg32R0HO
+         GCzKxCtKQaFMJdbKZQdvCZ2AsKR1SOOUQaa4p5e7vBygsfONGislCbjdzOVd7cbmG83A
+         ghGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686019606; x=1688611606;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HSQAVHhZcRm8A3p87+tVNpohfJhXuuH3b643ejk1WA4=;
-        b=I54tcsAgkpVKgZ24XZwwjMznp+/9LaZsDTtOeDJstWwSK8Bmukaeo9lC+x1OeLWDjt
-         193/K0DwRl6g5z7stDC2BeLIMoFKfaP+LKNaIVM3D55V4o0vsKR6Mo3khmz+i7rdzGFL
-         dRTNzuBkz06Ov2nef2pTvEh3fZ/mhycfE0JtMM0gY9DWa5bsOVJ5zXufD66D93yFZCkr
-         6CuW1on0mJhwiIQdjnzft2fwOrZWSVxzgozogRVdeCvygTeVK2LbMibcC5p3tsOXT5s5
-         vDyp7Cs8AO2q3i40ADc1xtfuXxCGLiNqoryPyJfHyR8nnJuIFlqBRofyB9Spjt8YnErg
-         5Kcw==
-X-Gm-Message-State: AC+VfDwdkq87h5NJ3WuXD/gdY3PnMyC/D9F6xh8GCQJVnvSraybOjdQX
-	4xgJiG2mFCq0nt8X1RWo2Zh3nCiODXK8JcSj7IFuLr9bk8c=
-X-Google-Smtp-Source: ACHHUZ6deD/9hzIsv6GrUpe5dfhwjHK69rfy9k6HdLGqTmeXLhUJugbio8raxY0Sx3Rr5xufOoG0LiGCc3g85QImwsw=
-X-Received: by 2002:a2e:97d8:0:b0:2ad:87b3:7d62 with SMTP id
- m24-20020a2e97d8000000b002ad87b37d62mr501635ljj.46.1686019605418; Mon, 05 Jun
- 2023 19:46:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686020232; x=1688612232;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SrvUy89BvIUPEyxGx6YhXaN1N8mQsZqXnnNriiDSvME=;
+        b=X2S1R/hVRGHbisc0Mkp30OH5T74V2aqfRTUTc2S8jFsheu3Laf65o8FQyBnbCP8q34
+         plDy3rR1/ulJrgyZq3msvrBxu6bevGdYghGF94N+/FoFdXLPQdYy5/l6hJ/iK7qrwdtz
+         gMZv0KNtU1xt6Vq5P3EaNglRY9Fb5Z8MLlTXWEP6ab+rS8YR6OYGYEQpfE7kubnyyxKF
+         JNgkf05f//cOGKRNZQP08vDGyU1zaC1aC41Z2y9Dma/yU3JhjOWhmvD1I8VvryHj1rek
+         cuzh/qPCTq4pxz0c7A1eoER6vi0szZ0ZSZuCJJI3Zj6T3EHkZb4uQwlYKkxmVEuS5LJ2
+         RtjQ==
+X-Gm-Message-State: AC+VfDzx1+q42JZcVZmjDWRZVjfuw9Cyge3RNNZErzqcMKoK65GWUIjn
+	62ZiYsG8A6FMli2kaLH93f8=
+X-Google-Smtp-Source: ACHHUZ7nGp/lJQb6dwofZStNfHBGcrDqqlqYtXbLcL+6qXMsnTiupV4dSOZgNCAnRUQk5m/hpSfB/Q==
+X-Received: by 2002:a5d:510c:0:b0:309:3af4:8c8c with SMTP id s12-20020a5d510c000000b003093af48c8cmr539800wrt.54.1686020231479;
+        Mon, 05 Jun 2023 19:57:11 -0700 (PDT)
+Received: from krava ([80.149.170.9])
+        by smtp.gmail.com with ESMTPSA id p18-20020a05600c205200b003f427687ba7sm12383930wmg.41.2023.06.05.19.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jun 2023 19:57:11 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 6 Jun 2023 04:56:38 +0200
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@arm.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2 1/4] perf build: Add ability to build with a generated
+ vmlinux.h
+Message-ID: <ZH6gZgcwAbDrEiqX@krava>
+References: <20230605202712.1690876-1-irogers@google.com>
+ <20230605202712.1690876-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230531201936.1992188-1-alan.maguire@oracle.com>
- <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
- <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
- <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
- <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
- <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
- <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com> <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 5 Jun 2023 19:46:34 -0700
-Message-ID: <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230605202712.1690876-2-irogers@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -87,157 +91,99 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 5, 2023 at 3:38=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jun 5, 2023 at 9:15=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Jun 2, 2023 at 1:34=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > >
-> > > > > > > >> +
-> > > > > > > >> +struct btf_kind_meta {
-> > > > > > > >> +    __u32 name_off;         /* kind name string offset */
-> > > > >
-> > > > > I'm not sure why we'd need to record this for every KIND? The too=
-l
-> > > > > that doesn't know about this new kind can't do much about it anyw=
-ays,
-> > > > > so whether it knows that this is "KIND_NEW_FANCY" or just its ID =
-#123
-> > > > > doesn't make much difference?
-> > > >
-> > > > The name is certainly more meaningful than 123.
-> > > > bpftool output is consumed by humans who will be able to tell the d=
-ifference.
-> > > > I'd keep the name here.
-> > >
-> > > Ok, it's fine. When I was originally proposing this compact metadata,
-> > > I was trying to make it as minimal as possible, so adding 80 bytes
-> > > just for string offset fields (plus a bunch of strings) felt like an
-> > > unnecessary overhead. But it's not a big deal.
-> >
-> > Exactly. It's just 4 * num_kinds bytes in and ~20 * num_kinds for
-> > names, but it implements 'self description'.
-> > Otherwise the names become an external knowledge and BTF is not self de=
-scribed.
-> >
-> >
-> > > >
-> > > > > > > > and would bump the BTF_VERSION to 2 to make it a 'milestone=
-'.
-> > > > >
-> > > > > Bumping BTF_VERSION to 2 automatically makes BTF incompatible wit=
-h all
-> > > > > existing kernels (and potentially many tools that parse BTF). Giv=
-en we
-> > > > > can actually extend BTF in backwards compatible way by just addin=
-g an
-> > > > > optional two fields to btf_header + extra bytes for metadata sect=
-ions,
-> > > > > why making our lives harder by bumping this version?
-> > > >
-> > > > I fail to see how bumping the version makes it harder.
-> > > > libbpf needs to sanitize meta* fields in the struct btf_header on
-> > > > older kernels anway. At the same time sanitizing the version from 2=
- to
-> > > > 1
-> > > > in the same header is one extra line of code in libbpf.
-> > > > What am I missing?
-> > >
-> > > So I checked libbpf code, and libbpf doesn't really check the version
-> > > field. So for the most part this BTF_VERSION bump wouldn't matter for
-> > > any tool that's based on libbpf's struct btf API. But if libbpf did
-> > > check version (as it probably should have), then by upgrading to newe=
-r
-> > > Clang that would emit BTF with this metadata (but no new fancy
-> > > BTF_KIND_KERNEL_FUNC or anything like that), we automatically make
-> > > such BTF incompatible with all those tools.
-> > >
-> > > Kernel is a bit different because it's extremely strict about BTF. I'=
-m
-> > > more worried about tools like bpftool (but we don't check BTF_VERSION
-> > > there due to libbpf), llvm-objdump (when it supports BTF), etc.
-> > >
-> > > On the other hand, what do we gain by bumping this BTF_VERSION?
-> >
-> > The version bump will be an indication that
-> > v2 of BTF has enough info in the format for any tool/kernel to consume =
-it.
-> > With v2 we should make BTF_KIND_META description mandatory.
-> > If we keep it as v1 then the presence of BTF_KIND_META would be
-> > an indication of 'self described' format.
-> > Which is also ok-ish, but seems less clean.
-> > zero vs not-zero of meta_off in btf_header is pretty much v1 vs v2.
-> >
->
-> We had a long offline discussion w/ Alexei about this whole
-> self-describing BTF, and I will try to summarize it here a bit,
-> because I think we both think about "self-describing" differently, and
-> as a result few different aspects are conflated with each other (there
-> are at least 3(!) different things here).
+On Mon, Jun 05, 2023 at 01:27:09PM -0700, Ian Rogers wrote:
+> Commit a887466562b4 ("perf bpf skels: Stop using vmlinux.h generated
+> from BTF, use subset of used structs + CO-RE") made it so that
+> vmlinux.h was uncondtionally included from
+> tools/perf/util/vmlinux.h. This change reverts part of that change (so
+> that vmlinux.h is once again generated) and makes it so that the
+> vmlinux.h used at build time is selected from the VMLINUX_H
+> variable. By default the VMLINUX_H variable is set to the vmlinux.h
+> added in change a887466562b4, but if GEN_VMLINUX_H=1 is passed on the
+> build command line then the previous generation behavior kicks in.
+> 
+> The build with GEN_VMLINUX_H=1 currently fails with:
+> ```
+> util/bpf_skel/lock_contention.bpf.c:419:8: error: redefinition of 'rq'
+> struct rq {};
+>        ^
+> /tmp/perf/util/bpf_skel/.tmp/../vmlinux.h:45630:8: note: previous definition is here
+> struct rq {
+>        ^
+> 1 error generated.
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/perf/Makefile.config                       |  4 ++++
+>  tools/perf/Makefile.perf                         | 16 +++++++++++++++-
+>  tools/perf/util/bpf_skel/.gitignore              |  1 +
+>  tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h |  0
+>  4 files changed, 20 insertions(+), 1 deletion(-)
+>  rename tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h (100%)
 
-Thanks for summarizing. All correct.
+looks good, but I don't understand why you moved the vmlinux.h
 
-> From my perspective, this self-describing BTF metadata was purely
-> designed to allow tools without latest BTF knowledge to be able to
-> skip over unknown BTF_KIND_xxx, at most being able to tell whether
-> it's critical for understanding BTF (that's the OPTIONAL flag) or not.
-> I.e., with older bpftool (but the one that knows about btf_metadata,
-> of course), it would still be possible to `bpftool btf dump file
-> <file-with-newer-btf-kinds>` just fine, except for new KINDS (which
-> would be just emitted as "unknown BTF_KIND_XXX, skipping...".
->
-> I think this problem is solved with this fixed + per-vlen sz and those
-> few extra flags.
+jirka
 
-I'm fine with this approach as long as we don't fool ourselves that
-we're doing a "self described" format.
-We have a "size" field in btf_header. With this btf_metadata extension
-we're effectively adding "size" fields for each btf kind and its vlen part.
-So what Alan proposed:
-+struct btf_kind_meta {
-+       __u16 flags;            /* see BTF_KIND_META_* values above */
-+       __u8 info_sz;           /* size of singular element after btf_type =
-*/
-+       __u8 elem_sz;           /* size of each of btf_vlen(t) elements */
-+};
-
-_without_ name_off it makes the most sense.
-
-As soon as we're trying to add 'name_off' to the kind we're falling into
-the trap of thinking that we're adding "self described" format and
-btf_kind_meta needs to actually describe it for printing (with
-real name and not just integer id) and further trying to describe
-semantics of unknown kind with another flag that Andrii's proposed:
-"Another flag I was thinking about was a flag whether struct btf_type's
-type/size field is a type or a size (or something else)."
-
-imo name_off and that other flag in addition to optional_or_not flag
-are carrying the concept too far.
-
-We should just say upfront that this "struct btf_kind_meta" is to be
-able to extend BTF easier and nothing else.
-"old" bpftool will be able to skip unknown kinds, but dedup
-probably won't be able to skip much anyway.
-
-I'd also call it "struct btf_kind_description|layout|sizes"
-to narrow the scope.
-This BTF extension is not going to describe semantics of unknown kinds.
-Instead of "best effort" attempts with flags like "what type/size means"
-let's not even go there.
-
-If we go this simple route I'm fine with hard coded crc and base_crc
-fields. They probably should go to btf_header though.
-We don't need "struct btf_metadata" as well.
-It's making things sound beyond what it actually is.
-btf_header can point to an array of struct btf_kind_description.
-As simple as it can get.
-No need for json like format and key/value things either.
-We're not creating a self described BTF format.
-We're just adding a few size fields.
-The kernel/libbpf/dedup still needs to known semantics of future kinds
-to be able to print/operate on them.
+> 
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index a794d9eca93d..08d4e7eaa721 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -680,6 +680,10 @@ ifdef BUILD_BPF_SKEL
+>    CFLAGS += -DHAVE_BPF_SKEL
+>  endif
+>  
+> +ifndef GEN_VMLINUX_H
+> +  VMLINUX_H=$(src-perf)/util/bpf_skel/vmlinux/vmlinux.h
+> +endif
+> +
+>  dwarf-post-unwind := 1
+>  dwarf-post-unwind-text := BUG
+>  
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index f48794816d82..f1840af195c0 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -1080,7 +1080,21 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
+>  	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
+>  		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
+>  
+> -$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_TMP_OUT)
+> +VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+> +		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
+> +		     ../../vmlinux					\
+> +		     /sys/kernel/btf/vmlinux				\
+> +		     /boot/vmlinux-$(shell uname -r)
+> +VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+> +
+> +$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> +ifeq ($(VMLINUX_H),)
+> +	$(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
+> +else
+> +	$(Q)cp "$(VMLINUX_H)" $@
+> +endif
+> +
+> +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) $(SKEL_OUT)/vmlinux.h | $(SKEL_TMP_OUT)
+>  	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -Wall -Werror $(BPF_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
+>  	  -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@
+>  
+> diff --git a/tools/perf/util/bpf_skel/.gitignore b/tools/perf/util/bpf_skel/.gitignore
+> index 7a1c832825de..cd01455e1b53 100644
+> --- a/tools/perf/util/bpf_skel/.gitignore
+> +++ b/tools/perf/util/bpf_skel/.gitignore
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  .tmp
+>  *.skel.h
+> +vmlinux.h
+> diff --git a/tools/perf/util/bpf_skel/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> similarity index 100%
+> rename from tools/perf/util/bpf_skel/vmlinux.h
+> rename to tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> -- 
+> 2.41.0.rc0.172.g3f132b7071-goog
+> 
 
