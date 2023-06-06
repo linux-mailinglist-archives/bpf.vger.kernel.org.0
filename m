@@ -1,130 +1,237 @@
-Return-Path: <bpf+bounces-1921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB33723F18
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 12:16:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012A57240C7
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 13:24:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DB201C20F31
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 10:16:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686A01C20F43
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 11:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02EB2A71A;
-	Tue,  6 Jun 2023 10:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED1115ADA;
+	Tue,  6 Jun 2023 11:23:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDB42A6EA;
-	Tue,  6 Jun 2023 10:16:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16CCDC433EF;
-	Tue,  6 Jun 2023 10:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686046599;
-	bh=K3mQNwoT9j+uKtNH0+N5SGAruipqVMe0nyrOVYu8zmA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ex2boOSbFX9F8vILoj2ER6OMGqZieI/qXxa+Cl88F6P5WueebucHT8gXYMljU/UwF
-	 W4Vwtw16CB66Ckf8CUcEwiMgsp0Rl7Zp+sWmc7WhCTWF54CsHU5is7Yegd2qZ+FcpB
-	 7HYr90xDXGc4Q+jlXpM3iwKf1+z1TAE79jym8dBpk7/sIwryEOoaJwZE+mZ+/dgO9Q
-	 jbUZZ/yVspF9cToZ4ExktC3lUSHmqXSahqJcQT5b1PfE/IsSC9GrwIVg8JzQsfRBlA
-	 +FWytBECVY5td4H8LIUSl6ZWwnci/X0OdWg6sGet7yNw0Tt3OFZ9/6khP83arPzxeP
-	 mpCOpEPlPas8A==
-Date: Tue, 6 Jun 2023 13:16:08 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-Message-ID: <20230606101608.GC52412@kernel.org>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
- <ZHjgIH3aX9dCvVZc@moria.home.lan>
- <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
- <20230605092040.GB3460@kernel.org>
- <ZH20XkD74prrdN4u@FVFF77S0Q05N>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7201D468F
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 11:23:59 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39DEE52;
+	Tue,  6 Jun 2023 04:23:55 -0700 (PDT)
+Received: from dggpemm500006.china.huawei.com (unknown [172.30.72.56])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Qb7Ng6q2bz1c0Fy;
+	Tue,  6 Jun 2023 19:22:11 +0800 (CST)
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 6 Jun 2023 19:23:52 +0800
+Subject: Re: [PATCH v4 1/3] kallsyms: move kallsyms_show_value() out of
+ kallsyms.c
+To: Maninder Singh <maninder1.s@samsung.com>, <ast@kernel.org>,
+	<daniel@iogearbox.net>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
+	<jolsa@kernel.org>, <mcgrof@kernel.org>, <boqun.feng@gmail.com>,
+	<vincenzopalazzodev@gmail.com>, <ojeda@kernel.org>, <jgross@suse.com>,
+	<brauner@kernel.org>, <michael.christie@oracle.com>,
+	<samitolvanen@google.com>, <glider@google.com>, <peterz@infradead.org>,
+	<keescook@chromium.org>, <stephen.s.brennan@oracle.com>,
+	<alan.maguire@oracle.com>, <pmladek@suse.com>
+CC: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>, Onkarnath
+	<onkarnath.1@samsung.com>
+References: <CGME20230606042812epcas5p262df978931619b2d62e493d08147e120@epcas5p2.samsung.com>
+ <20230606042802.508954-1-maninder1.s@samsung.com>
+From: "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <df9f7a12-0542-97bb-b6c1-fdf0a21f815e@huawei.com>
+Date: Tue, 6 Jun 2023 19:23:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZH20XkD74prrdN4u@FVFF77S0Q05N>
+In-Reply-To: <20230606042802.508954-1-maninder1.s@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, Jun 05, 2023 at 11:09:34AM +0100, Mark Rutland wrote:
-> On Mon, Jun 05, 2023 at 12:20:40PM +0300, Mike Rapoport wrote:
-> > On Fri, Jun 02, 2023 at 10:35:09AM +0100, Mark Rutland wrote:
-> >
-> > It sill can be achieved with a single jit_alloc_arch_params(), just by
-> > adding enum jit_type parameter to jit_text_alloc().
+
+
+On 2023/6/6 12:28, Maninder Singh wrote:
+> function kallsyms_show_value() is used by other parts
+> like modules_open(), kprobes_read() etc. which can work in case of
+> !KALLSYMS also.
 > 
-> That feels backwards to me; it centralizes a bunch of information about
-> distinct users to be able to shove that into a static array, when the callsites
-> can pass that information. 
+> e.g. as of now lsmod do not show module address if KALLSYMS is disabled.
+> since kallsyms_show_value() defination is not present, it returns false
+> in !KALLSYMS.
+> 
+> / # lsmod
+> test 12288 0 - Live 0x0000000000000000 (O)
+> 
+> So kallsyms_show_value() can be made generic
+> without dependency on KALLSYMS.
+> 
+> Thus moving out function to a new file ksyms_common.c.
+> 
+> With this patch code is just moved to new file
+> and no functional change.
+> 
+> Co-developed-by: Onkarnath <onkarnath.1@samsung.com>
+> Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> ---
+> earlier conversations:(then it has dependancy on other change, but that
+> was stashed from linux-next, now it can be pushed)
+> https://lore.kernel.org/lkml/202205111525.92B1C597@keescook/T/
+> https://lkml.org/lkml/2022/4/13/47
+> v1 -> v2: separate out bpf and kallsyms change
+> v2 -> v3: make kallsym changes in2 patches, non functional and
+> functional change
+> v3 -> v4: patch order changed, file name changed form knosyms -> ksyms_common
+> and copyright header modified.
+> 
+>  kernel/Makefile       |  2 +-
+>  kernel/kallsyms.c     | 35 ---------------------------------
+>  kernel/ksyms_common.c | 45 +++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 46 insertions(+), 36 deletions(-)
+>  create mode 100644 kernel/ksyms_common.c
+> 
+> diff --git a/kernel/Makefile b/kernel/Makefile
+> index f9e3fd9195d9..3947122d618b 100644
+> --- a/kernel/Makefile
+> +++ b/kernel/Makefile
+> @@ -10,7 +10,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+>  	    extable.o params.o \
+>  	    kthread.o sys_ni.o nsproxy.o \
+>  	    notifier.o ksysfs.o cred.o reboot.o \
+> -	    async.o range.o smpboot.o ucount.o regset.o
+> +	    async.o range.o smpboot.o ucount.o regset.o ksyms_common.o
+>  
+>  obj-$(CONFIG_USERMODE_DRIVER) += usermode_driver.o
+>  obj-$(CONFIG_MULTIUSER) += groups.o
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 8193e947aa10..0f82c3d5a57d 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -907,41 +907,6 @@ late_initcall(bpf_ksym_iter_register);
+>  
+>  #endif /* CONFIG_BPF_SYSCALL */
+>  
+> -static inline int kallsyms_for_perf(void)
+> -{
+> -#ifdef CONFIG_PERF_EVENTS
+> -	extern int sysctl_perf_event_paranoid;
+> -	if (sysctl_perf_event_paranoid <= 1)
+> -		return 1;
+> -#endif
+> -	return 0;
+> -}
+> -
+> -/*
+> - * We show kallsyms information even to normal users if we've enabled
+> - * kernel profiling and are explicitly not paranoid (so kptr_restrict
+> - * is clear, and sysctl_perf_event_paranoid isn't set).
+> - *
+> - * Otherwise, require CAP_SYSLOG (assuming kptr_restrict isn't set to
+> - * block even that).
+> - */
+> -bool kallsyms_show_value(const struct cred *cred)
+> -{
+> -	switch (kptr_restrict) {
+> -	case 0:
+> -		if (kallsyms_for_perf())
+> -			return true;
+> -		fallthrough;
+> -	case 1:
+> -		if (security_capable(cred, &init_user_ns, CAP_SYSLOG,
+> -				     CAP_OPT_NOAUDIT) == 0)
+> -			return true;
+> -		fallthrough;
+> -	default:
+> -		return false;
+> -	}
+> -}
+> -
+>  static int kallsyms_open(struct inode *inode, struct file *file)
+>  {
+>  	/*
+> diff --git a/kernel/ksyms_common.c b/kernel/ksyms_common.c
+> new file mode 100644
+> index 000000000000..e776f12f0f5a
+> --- /dev/null
+> +++ b/kernel/ksyms_common.c
+> @@ -0,0 +1,45 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-The goal was not to shove everything into an array, but centralize
-architecture requirements for code allocations. The callsites don't have
-that information per se, they get it from the arch code, so having this
-information in a single place per arch is better than spreading
-MODULE_START, KPROBES_START etc all over.
+Keep it the same as kernel/kallsyms.c. GPL-2.0-only
 
-I'd agree though that having types for jit_text_alloc is ugly and this
-should be handled differently.
- 
-> What's *actually* common after separating out the ranges? Is it just the
-> permissions?
+Sorry, I didn't think of that last time.
+Otherwise,
 
-On x86 everything, on arm64 apparently just the permissions.
+Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-I've started to summarize what are the restrictions for code placement for
-modules, kprobes and bpf on different architectures, that's roughly what
-I've got so far:
-
-* x86 and s390 need everything within modules address space because of
-PC-relative
-* arm, arm64, loongarch, sparc64, riscv64, some of mips and
-powerpc32 configurations require a dedicated modules address space; the
-rest just use vmalloc address space
-* all architectures that support kprobes except x86 and s390 don't use
-relative jumps, so they don't care where kprobes insn_page will live
-* not sure yet about BPF. Looks like on arm and arm64 it does not use
-relative jumps, so it can be anywhere, didn't dig enough about the others.
-
-> If we want this to be able to share allocations and so on, why can't we do this
-> like a kmem_cache, and have the callsite pass a pointer to the allocator data?
-> That would make it easy for callsites to share an allocator or use a distinct
-> one.
-
-This maybe something worth exploring.
- 
-> Thanks,
-> Mark.
+> +/*
+> + * ksyms_common.c: A split of kernel/kallsyms.c
+> + * Contains a few generic function definations independent of config KALLSYMS.
+> + */
+> +#include <linux/kallsyms.h>
+> +#include <linux/security.h>
+> +
+> +#ifdef CONFIG_KALLSYMS
+> +static inline int kallsyms_for_perf(void)
+> +{
+> +#ifdef CONFIG_PERF_EVENTS
+> +	extern int sysctl_perf_event_paranoid;
+> +
+> +	if (sysctl_perf_event_paranoid <= 1)
+> +		return 1;
+> +#endif
+> +	return 0;
+> +}
+> +
+> +/*
+> + * We show kallsyms information even to normal users if we've enabled
+> + * kernel profiling and are explicitly not paranoid (so kptr_restrict
+> + * is clear, and sysctl_perf_event_paranoid isn't set).
+> + *
+> + * Otherwise, require CAP_SYSLOG (assuming kptr_restrict isn't set to
+> + * block even that).
+> + */
+> +bool kallsyms_show_value(const struct cred *cred)
+> +{
+> +	switch (kptr_restrict) {
+> +	case 0:
+> +		if (kallsyms_for_perf())
+> +			return true;
+> +		fallthrough;
+> +	case 1:
+> +		if (security_capable(cred, &init_user_ns, CAP_SYSLOG,
+> +				     CAP_OPT_NOAUDIT) == 0)
+> +			return true;
+> +		fallthrough;
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +#endif
+> 
 
 -- 
-Sincerely yours,
-Mike.
+Regards,
+  Zhen Lei
 
