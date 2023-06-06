@@ -1,227 +1,246 @@
-Return-Path: <bpf+bounces-1929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4B5724222
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 14:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0370F72431D
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 14:52:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129AA1C20FCD
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 12:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6534B1C20F00
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 12:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D8E14260;
-	Tue,  6 Jun 2023 12:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D88737B90;
+	Tue,  6 Jun 2023 12:52:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0C72A9E7
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 12:31:14 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6188110C6;
-	Tue,  6 Jun 2023 05:31:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qb8w9262tz4f41SX;
-	Tue,  6 Jun 2023 20:31:05 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgDXMBsCJ39kBDPNKQ--.34580S2;
-	Tue, 06 Jun 2023 20:31:04 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-To: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
-Date: Tue, 6 Jun 2023 20:30:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5590137B84;
+	Tue,  6 Jun 2023 12:52:25 +0000 (UTC)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C4710F4;
+	Tue,  6 Jun 2023 05:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686055909; x=1717591909;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=Qy8z0XPHcDJNHE1TavM72fNx3cteiF1xIwlPj4aic6I=;
+  b=fvkUStk0Fgy2TmFSNLe28artDHlO4WWPSwDWVvoNHguGe4Sh3p69xryk
+   5Dnfc6EtOEl5kUzv8B8eJSpISM+YIh5t1VTfsWrCdUUT4F5TEJEt99jWe
+   h4y9qp5ZPFNuQEPUW3zDd14hTIKO9z12zahCVZvWNQInrg8z4AxitAcHx
+   fwq92uqlur837UnBI8Kj5ft6uNLjScJF0hyCXBGEZaSxDZn7GzkLgCuJt
+   oyhgpx+hCirBvhomV7xz9k92/ytJ07ZnsUOfVeR1FfJtK6N2vKrMn+iY2
+   O1MXRr1vFW+8aHUJWPU/dehwV6hJPMsTh2fnIMCJsSuy4zGc6AJBiMoPG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="341298974"
+X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
+   d="scan'208";a="341298974"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2023 05:50:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="955740704"
+X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
+   d="scan'208";a="955740704"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Jun 2023 05:50:57 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 6 Jun 2023 05:50:56 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 6 Jun 2023 05:50:56 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Tue, 6 Jun 2023 05:50:56 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Tue, 6 Jun 2023 05:50:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TRDFYu+rEt4xax1UdIUEIEbTHK1INp/pGXB+ApzaWeCkOAinLC8r+bSAc22NudEo5l/uAkLx+xWfNedx+CBP62fWdRKcVVYsUPSS2RYgkoelJEIoMTPm6Oc1b8PGPGqLYsurKmKzATQSDYH11+UpBwcARAEg9VD8YkLgZTY4F8nEJiMVncNj4w3iTI10goMwNf6VJRiALfRZW4W3clGcydEEBjVchOU9dqLy1BY6mz1rlZTxbzt93LR1ETPD5IAb5QJrHR9I0xSKF+lZN960VUZ41wU/wFp77E/LRnKfyTIBi8v5yGH7+Z9OylCo+F0+/64CSsj5665rkPguyZ8oaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FaNys3HBQWYRDDh/woOPxlR+tZIKJryVmJDoqBZ4BUk=;
+ b=JYPxILxd+Fb6UVZtHuLGfW/Fr+crp3ictNqv0AIx5YhEhTl/UZa8rERbxraHbLflpkznLUrDb4DfR9bbWwVK1TwCSZZ285ToxR3H1n9Sv3pT74ET3eR97pziqmi43tWQnxPnRKVZY3L4DoLcr8I71+V7ESuvfV4aMhHgqGcM5FCBf9fQNhFF7Zo8KZBo+cvs6MiEjL0wI+7ATehSGYSq0jiUt3FVyyyo8hwvkPr9hK4cp74PnJYzmYdLrsLZ4MFj7tEmcC4FhXlecOzwppm5JBluzJ9JjEfxu/1mQbPfriEpv8GsqQ+Who3QCliteM5aEQKjEpgljvgehxijTwkleQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ PH8PR11MB6998.namprd11.prod.outlook.com (2603:10b6:510:222::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Tue, 6 Jun
+ 2023 12:50:54 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::9e4f:80cc:e0aa:6809%2]) with mapi id 15.20.6477.016; Tue, 6 Jun 2023
+ 12:50:53 +0000
+Date: Tue, 6 Jun 2023 14:50:41 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+	<bjorn@kernel.org>, <tirthendu.sarkar@intel.com>, <simon.horman@corigine.com>
+Subject: Re: [PATCH v3 bpf-next 00/22] xsk: multi-buffer support
+Message-ID: <ZH8roRaXpova3Qwy@boxer>
+References: <20230605144433.290114-1-maciej.fijalkowski@intel.com>
+ <87edmp3ky6.fsf@toke.dk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87edmp3ky6.fsf@toke.dk>
+X-ClientProxiedBy: FR3P281CA0109.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::9) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230606035310.4026145-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgDXMBsCJ39kBDPNKQ--.34580S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFyfWw4UGw43Zry7AFWrZrb_yoWxWw13pr
-	WSgw43JrnrXrnF9ws7Aw1xAa4UAws3Xr43KF1S9ryDuw15Xryxurs29F4FvFy5WrWDC3s0
-	qF4vy3y3Z3Z5C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH8PR11MB6998:EE_
+X-MS-Office365-Filtering-Correlation-Id: a473b31b-d0c6-49d4-728d-08db668caa00
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0BeBjecCDZsbO8E2H3vJu92laMZ40dLXPLpEoTgucnqSx8McXl3r43VExaGFfgQF4Fh1gWq+BDI5DfyWZbz0/1ExSc4/gnnq0Wm4SFJtYplGLCkExEpIgrUwlT3qly60r3guzdgGJsc1tNYRnj4u2J/HL132aawpSuI+u8+yRZL4v5ua0NpRRkkRWP5ut/RXsYn8nwtH23v9/neYG+rhKMwFyR3VNhRr6fRndggOD3lrc3CJS/joaUHF4XMvseImAev6/x/W5R1xJnCAL/Uizpc35Igl3cbZ28RrQdRNeAKbhckZ1M88GM/Oyjetd+8U2aw/kJtVqhR2WbYl3Pds99JV9vvZnffggyLHT5Xrac6lhw4KwJxLrosumZ9ECCdPvCvAYZF2vjC3EjfGK1h6EfbMM/SQdnd2C4mfR9qhk7miUTh5YDOHj2eF/dUyy57BEHlm58h22E6o9E+rZ2U7Wvoe9WFjdsNqH75J3cyIp/v6iEhnWwbvg/wFHU+GFKp8gv2slRdWxBBxmQYIj/5B6SfB9Nqn8Q615ASIUl+1lxa11LOzCDku7UmgCiQTtAcY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(39860400002)(396003)(376002)(366004)(346002)(136003)(451199021)(44832011)(6506007)(26005)(6512007)(9686003)(83380400001)(86362001)(33716001)(2906002)(186003)(5660300002)(82960400001)(316002)(41300700001)(8676002)(8936002)(38100700002)(6916009)(6666004)(66556008)(66946007)(66476007)(4326008)(66574015)(478600001)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?MJn/0rPwy0GN82FDOdTHpzU+2q64OI3kRqcVyBLTwUrPrEDDPA7whu2srq?=
+ =?iso-8859-1?Q?p87J8ZFkgDYbNkANvb+AUu8gxBI9FM916qUd6xdXC8MpZDMPqmi8F6INIR?=
+ =?iso-8859-1?Q?n7sED7V11AsZDylco13fTe7jLkGiLhGbVFF0WkRey59QROaC5g4nM8ky0i?=
+ =?iso-8859-1?Q?t9l8DvyAAITVkMpn2dr45JFx82f5rVVrcyuMnqLUV1vJPvwR+S13Jy5fCb?=
+ =?iso-8859-1?Q?Re8tyogEUsaFXFHlVHkMcShcw1D19/jhnDOEL5A72SGRt3sW8OQbCGRWpG?=
+ =?iso-8859-1?Q?o3BwALkR/+fDHVova+O0MZtw6fs0wSwZ7NBwPlzvuwqKVR1UFJs7SfiyAX?=
+ =?iso-8859-1?Q?CyJegAkRO7fbdaIV46owQEj78ZuFfHMmCbAfeBi2+5jId5+lVhc0Oe1zTI?=
+ =?iso-8859-1?Q?VdR1ECbdnliKPiV2XmPBJTpJ6PFqpXvGhdpWWXcb8mLnSpx93xF7WbSolD?=
+ =?iso-8859-1?Q?zIQx6210NrUOLSgWkEUWe0YtoHuU6U0F4cSD4K9MB4/5QYElgonaKFqGtu?=
+ =?iso-8859-1?Q?M5dg1GH9taP6LotuXheLlEoqLfdD6OrWI15WpXnkllfdv14aa3nKmiWTRf?=
+ =?iso-8859-1?Q?gAbRYYJRnNxcRVWkcwA/K+ohUI0GP/iZ7c1cG6BkErg+PhX39J6U8p6VMH?=
+ =?iso-8859-1?Q?ZCAKOzNMfK9bKszmKdryjmwHvZ8JPPxWFhFEAI8GUHVWGaaMFi86P53SVA?=
+ =?iso-8859-1?Q?NnnlWObVE6PTuxgDphuJUi4o2NRcYaHrMBUtWxzivl1Ioin3HuK7xumdYF?=
+ =?iso-8859-1?Q?NHJoDqZg2m8W0uOrOe4CC75n+TDeQsMTW7knLWILQ6JqL7TCBw/LL2HQZG?=
+ =?iso-8859-1?Q?BtFA/pBzknMgUdoUjUMxUPjojhOO2+woar2R3mxZDZi0sp4U/eIHsiiIWX?=
+ =?iso-8859-1?Q?fO4nmXFU2Pky6K6c0SHMvceh8mFmvi9KP6N0ufyx6OLzGGc3lI5zsk5/G9?=
+ =?iso-8859-1?Q?dG4gb0kVUVN1ttK6loPIIjw2MePuBp33j5RH2CFvT75ubij0WkN9h+oRAN?=
+ =?iso-8859-1?Q?ZxdhY5YG+sVp6n/ELoZwEFjRUaCMfd09FogBRqSZVngiM4fNKOIIxH+GtI?=
+ =?iso-8859-1?Q?4ZeuxF+9i+6LyiutZrmonut834xPcIYWMHHlyVZe5uQcUMcROcCDgB3OyR?=
+ =?iso-8859-1?Q?zINVR8Bf5xBwUxyiAemZxnYGSpyOSTs6q7r7gd2lPHYU2+k/Kp9cCGHine?=
+ =?iso-8859-1?Q?rpy2dHoKTOXtx6jMFUXbQ6km6L0AWcXMAYInK21K9CPFkunR0hZdHPA8sf?=
+ =?iso-8859-1?Q?9h447WQhgzQ/m3bgLkOOZxBvpeK3UVI0fiYSdKz4MUeBugqO0kNgZCo2ae?=
+ =?iso-8859-1?Q?WjWD+Co0ZXbCaF/T5c7UYJdU/sq3tZIwKcQUtNdgnTFvWOhrZz1vOi1UYW?=
+ =?iso-8859-1?Q?dftzaKsTt7opaDTFfGA03qqUBxbucg10KQaVnkmQfsYHPo5hWTRgqMc/r5?=
+ =?iso-8859-1?Q?6AxDS/VisDIRgIakTCxGOTxyuv2o9pBY5/wOabYIuqlKv+ZGQLqtlw/Nw+?=
+ =?iso-8859-1?Q?kbZR6caQT6S2259UtT7PcNTdpoJDstVvnFvFpTEGYufgTDxxqQn94TKGX7?=
+ =?iso-8859-1?Q?y/0NZ3wIXW0eymwhGXifhUkxd4au6Xi1DNWwkyvoYOM/GJdGLmOucXqDn4?=
+ =?iso-8859-1?Q?sCsv4XkCbe4UnA4qRl1BP1i8RUfWegLuJhG2JcBitMTbfXMm5CXWDMug?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a473b31b-d0c6-49d4-728d-08db668caa00
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2023 12:50:53.9111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jFezHiqXU82ku99QVb3QuTjI5pYnxltaaPwtaCLZr7VhPt2dDN/YcajvZamUDHLFZGkp9aHZ43UiUcJEYg4nHARtdCuRAZtmAMiDrpobGvE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6998
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Mon, Jun 05, 2023 at 06:58:25PM +0200, Toke Høiland-Jørgensen wrote:
+> Great to see this proceeding! Thought I'd weigh in on this part:
 
-On 6/6/2023 11:53 AM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Hi,
->
-> The implementation of v4 is mainly based on suggestions from Alexi [0].
-> There are still pending problems for the current implementation as shown
-> in the benchmark result in patch #3, but there was a long time from the
-> posting of v3, so posting v4 here for further disscussions and more
-> suggestions.
->
-> The first problem is the huge memory usage compared with bpf memory
-> allocator which does immediate reuse:
->
-> htab-mem-benchmark (reuse-after-RCU-GP):
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-> | --                 | --        | --                  | --               |
-> | no_op              | 1159.18   | 0.99                | 0.99             |
-> | overwrite          | 11.00     | 2288                | 4109             |
-> | batch_add_batch_del| 8.86      | 1558                | 2763             |
-> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
->
-> htab-mem-benchmark (immediate-reuse):
-> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-> | --                 | --        | --                  | --               |
-> | no_op              | 1160.66   | 0.99                | 1.00             |
-> | overwrite          | 28.52     | 2.46                | 2.73             |
-> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
-> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
->
-> It seems the direct reason is the slow RCU grace period. During
-> benchmark, the elapsed time when reuse_rcu() callback is called is about
-> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
-> spin-lock and the irq-work running in the contex of freeing process will
-> increase the running overhead of bpf program, the running time of
-> getpgid() is increased, the contex switch is slowed down and the RCU
-> grace period increases [1], but I am still diggin into it.
-For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
-(namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
-did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
+Hey Toke that is very nice to hear and thanks for chiming in:)
 
-htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 1165.38   | 0.97                | 1.00             |
-| overwrite          | 17.25     | 626.41              | 781.82           |
-| batch_add_batch_del| 11.51     | 398.56              | 500.29           |
-| add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
+> 
+> > Unfortunately, we had to introduce a new bind flag (XDP_USE_SG) on the
+> > AF_XDP level to enable multi-buffer support. It would be great if you
+> > have ideas on how to get rid of it. The reason we need to
+> > differentiate between non multi-buffer and multi-buffer is the
+> > behaviour when the kernel gets a packet that is larger than the frame
+> > size. Without multi-buffer, this packet is dropped and marked in the
+> > stats. With multi-buffer on, we want to split it up into multiple
+> > frames instead.
+> >
+> > At the start, we thought that riding on the .frags section name of
+> > the XDP program was a good idea. You do not have to introduce yet
+> > another flag and all AF_XDP users must load an XDP program anyway
+> > to get any traffic up to the socket, so why not just say that the XDP
+> > program decides if the AF_XDP socket should get multi-buffer packets
+> > or not? The problem is that we can create an AF_XDP socket that is Tx
+> > only and that works without having to load an XDP program at
+> > all. Another problem is that the XDP program might change during the
+> > execution, so we would have to check this for every single packet.
+> 
+> I agree that it's better to tie the enabling of this to a socket flag
+> instead of to the XDP program, for a couple of reasons:
+> 
+> - The XDP program can, as you say, be changed, but it can also be shared
+>   between several sockets in a single XSK, so this really needs to be
+>   tied to the socket.
 
-But the memory usage is still large compared with v3 and the elapsed
-time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
-are still two differences:
-1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
-accelerate the reuse of freed objects.
-2) v3 uses kworker instead of irq_work for free procedure.
+exactly
 
-For 1), after using kmalloc() in irq_work to allocate multiple inflight
-RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
-but is not enough:
+> 
+> - The XDP program is often installed implicitly by libxdp, in which case
+>   the program can't really set the flag on the program itself.
+> 
+> There's a related question of whether the frags flag on the XDP program
+> should be a prerequisite for enabling it at the socket? I think probably
+> it should, right?
 
-htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 1247.00   | 0.97                | 1.00             |
-| overwrite          | 16.56     | 490.18              | 557.17           |
-| batch_add_batch_del| 11.31     | 276.32              | 360.89           |
-| add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
+These are two separate events (loading XDP prog vs loading AF_XDP socket)
+which are unordered, so you can load mbuf AF_XDP socket in the first place
+and then non-mbuf XDP prog and it will still work at some circumstances -
+i will quote here commit msg from patch 02:
 
-So it seems the large memory usage is due to irq_work (reuse_bulk) used
-for free procedure. However after increasing the threshold for invoking
-irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
-big difference in the memory usage and the delayed time for RCU
-callbacks. Perhaps the reason is that although the number ofÂ  reuse_bulk
-irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
-increased because there are no reusable objects.
+<quote>
+Such capability of the application needs to be independent of the
+xdp_prog's frag support capability since there are cases where even a
+single xdp_buffer may need to be split into multiple descriptors owing to
+a smaller xsk frame size.
 
->
-> Another problem is the performance degradation compared with immediate
-> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
-> top-one hotspot:
->
-> map_perf_test (reuse-after-RCU-GP)
-> 0:hash_map_perf kmalloc 194677 events per sec
->
-> map_perf_test (immediate reuse)
-> 2:hash_map_perf kmalloc 384527 events per sec
->
-> Considering the purpose of introducing per-bpf-ma reusable list is to
-> handle the case in which the allocation and free are done on different
-> CPUs (e.g., add_del_on_diff_cpu) and a per-cpu reuse list will be enough
-> for overwrite & batch_add_batch_del cases. So maybe we could implement a
-> hybrid of global reusable list and per-cpu reusable list and switch
-> between these two kinds of list according to the history of allocation
-> and free frequency.
->
-> As ususal, suggestions and comments are always welcome.
->
-> [0]: https://lore.kernel.org/bpf/20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local
-> [1]: https://lore.kernel.org/bpf/1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com
->
-> Change Log:
-> v4:
->  * no kworker (Alexei)
->  * Use a global reusable list in bpf memory allocator (Alexei)
->  * Remove BPF_MA_FREE_AFTER_RCU_GP flag and do reuse-after-rcu-gp
->    defaultly in bpf memory allocator (Alexei)
->  * add benchmark results from map_perf_test (Alexei)
->
-> v3: https://lore.kernel.org/bpf/20230429101215.111262-1-houtao@huaweicloud.com/
->  * add BPF_MA_FREE_AFTER_RCU_GP bpf memory allocator
->  * Update htab memory benchmark
->    * move the benchmark patch to the last patch
->    * remove array and useless bpf_map_lookup_elem(&array, ...) in bpf
->      programs
->    * add synchronization between addition CPU and deletion CPU for
->      add_del_on_diff_cpu case to prevent unnecessary loop
->    * add the benchmark result for "extra call_rcu + bpf ma"
->
-> v2: https://lore.kernel.org/bpf/20230408141846.1878768-1-houtao@huaweicloud.com/
->  * add a benchmark for bpf memory allocator to compare between different
->    flavor of bpf memory allocator.
->  * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
->
-> v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
->
-> Hou Tao (3):
->   bpf: Factor out a common helper free_all()
->   selftests/bpf: Add benchmark for bpf memory allocator
->   bpf: Only reuse after one RCU GP in bpf memory allocator
->
->  include/linux/bpf_mem_alloc.h                 |   4 +
->  kernel/bpf/memalloc.c                         | 385 ++++++++++++------
->  tools/testing/selftests/bpf/Makefile          |   3 +
->  tools/testing/selftests/bpf/bench.c           |   4 +
->  .../selftests/bpf/benchs/bench_htab_mem.c     | 352 ++++++++++++++++
->  .../bpf/benchs/run_bench_htab_mem.sh          |  42 ++
->  .../selftests/bpf/progs/htab_mem_bench.c      | 135 ++++++
->  7 files changed, 809 insertions(+), 116 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
->
+For e.g., with NIC rx_buffer size set to 4kB, a 3kB packet will
+constitute of a single buffer and so will be sent as such to AF_XDP layer
+irrespective of 'xdp.frags' capability of the XDP program. Now if the xsk
+frame size is set to 2kB by the AF_XDP application, then the packet will
+need to be split into 2 descriptors if AF_XDP application can handle
+multi-buffer, else it needs to be dropped.
+</quote>
 
+> 
+> Also, related to the first point above, how does the driver respond to
+> two different sockets being attached to the same device with two
+> different values of the flag? (As you can probably tell I didn't look at
+> the details of the implementation...)
+
+If we talk about zero-copy multi-buffer enabled driver then it will
+combine all of the frags that belong to particular packet onto xdp_buff
+which then will be redirected and AF_XDP core will check XDP_USE_SG flag
+vs the length of xdp_buff - if len is bigger than a chunk size from XSK
+pool (implies mbuf) and there is no XDP_USE_SG flag on socket - packet
+will be dropped.
+
+So driver is agnostic to that. AF_XDP core handles case you brought up
+respectively.
+
+Also what we actually attach down to driver is XSK pool not XSK socket
+itself as you know. XSK pool does not carry any info regarding frags.
+
+> 
+> -Toke
 
