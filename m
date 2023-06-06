@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-1966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96A6724F8B
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 00:25:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65507724F8C
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 00:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88213280F1D
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 22:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A5B5280BDB
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 22:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46CF3447C;
-	Tue,  6 Jun 2023 22:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7907434D60;
+	Tue,  6 Jun 2023 22:24:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890F02DBA3
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 22:24:44 +0000 (UTC)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB45C1717
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 15:24:42 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f63a2e1c5fso1357921e87.2
-        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 15:24:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581122DBA3
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 22:24:45 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DE0171B
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 15:24:43 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b1c30a1653so39550551fa.2
+        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 15:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686090280; x=1688682280;
+        d=gmail.com; s=20221208; t=1686090281; x=1688682281;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FY8DHcuOI5eQFTHipjEwufiRKLKym1KP2TWMxC+LyEA=;
-        b=qRR5YK9kh6tFstiY5l23csjNesjo2MURczN2KYP43kJnxgU9IxxSo3Nw56TkJqXSYQ
-         4BFOiCFGX0BkJf1xtZnMwu03DD+qHM2XMME1FUsqKYiBSNijDU7eOJ9mGEK8NBZ5sYIX
-         opzFfMIkzbw3OYgcuThBWHC8hpBCe5NvEArU0e+Dsea3dg7jZSi/Oy7DmPHI9DiwD+fl
-         Hkqp3gDynfzBHfTLIoGcqvkxPSXXWNf9Kq29wsFA6MG92Q4d+ksDsFP31rpgussMIA7c
-         /qQxUqU0tVincpaaOkIsWurmW9Po2+45mca3Dxf+oSsc9skdhi5o77X+OHnzQ9OqG4T8
-         EHCA==
+        bh=8rlmEPPIy5bG3359MOBQccZKiIDA7URWquaR1/cjcmY=;
+        b=boPA7cBmQaOW+zujycMWBP9bSMsnyq0PCnLaKQJLdMQSYGhnxVJQWt3tB9iEe/xYkR
+         9ROaMTIepFo+kbNAce6/RyQRlqYZlhNR+8yAQJgApJBsWUkA0s0ZQ5ZL2KVISjdzHI1l
+         SGqO8bYh4y3dIG65GTIE8EuVgQDFRfOswERTI2/3LSRXKXQd1wflsJy1wzUuyGYW/VSG
+         AtUpWvhCgpC/fsY88JhcDT4T3SQG64Lds4vrC0WE0sTWwyavrEs9adVX4qkxnfX//N+f
+         7GJ5UJYC/fBISQ/mmGYJH4RXMEDrBu86wuViLReABWG+8C6H6YjnI/xaDruG9rKZhSy2
+         /n6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686090280; x=1688682280;
+        d=1e100.net; s=20221208; t=1686090281; x=1688682281;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FY8DHcuOI5eQFTHipjEwufiRKLKym1KP2TWMxC+LyEA=;
-        b=Tr2l+0+AX1XxKcNSmlH95KAwBZI2pgtxOHhYNaPNYk0DYJqhdhlmbyDjtKtnUKyGZX
-         Ps3/W3d2/0+VTzZUY0waqFyuZ0PNyODtzVxZHFzOu7W2ln9EA0N5LKmpcH2ytrV/OIKn
-         8jwRiSFXRIxurIxJJ2Aopuopgyfm+3dSvJI7vYdvJEQYYDhzEv7Lb7KJZt2rUON22w4m
-         NgEU+roKBM5IX6rpS4AZHcVH/Isez12zphTVIXgSYb+rSJBvIggo+B43qxGzrgYiU9AK
-         XJOy+17Ut8rvgmHO2Pj6NZGvi7jnSfHRgftlv13JhzLkq6cf8eN6n+qrWqSDtbxJNlbq
-         sSZA==
-X-Gm-Message-State: AC+VfDzp/pb1tyxd7BehENfheqvaHhyuWlvm+OiziqUcOSthhF+qrODm
-	+OdKsmmSb0yQx87HN8oUT3ybNWFtbyw=
-X-Google-Smtp-Source: ACHHUZ5mroYLbD5/gmnz/+QhVZviiZ6AuMM4o4M79N7uerGu05LFfhdHc7Tkern4iiB1araI4AuMLQ==
-X-Received: by 2002:ac2:55aa:0:b0:4ed:b263:5e64 with SMTP id y10-20020ac255aa000000b004edb2635e64mr1427255lfg.27.1686090280517;
-        Tue, 06 Jun 2023 15:24:40 -0700 (PDT)
+        bh=8rlmEPPIy5bG3359MOBQccZKiIDA7URWquaR1/cjcmY=;
+        b=aIUdsw5Lsxkhi/dHkyjgrOeP74YeIpM46bg1k/Tdg5zbpATec3C/d9bVNZy/ntoCum
+         TSnCubkX79ux+PtBF3Bp9XT6HM6MGzcmdRSeb/QTJ0lP7hh5c/wk74ZmGuLnE87ATGxD
+         CLVjd0T2wvtogX+xaqsWbPZMEZ8Xl/RYimcmtz76SiERR9vqTMaUl0jGXixkrAG5cCA5
+         bXbCMh27w26XI+uoxw4Y3x1uUSdbqy2EvdI70CR58V4OEifi8469GCQuwwf6zIH8oQSL
+         paMkDgSqcmh6OFYg0l9/UmZxTAIuKHinYt50A2vuCcQtEDTykoi62ClNNvknO0W1BEm7
+         VLpg==
+X-Gm-Message-State: AC+VfDzFG1D1Sfa3970MinBWLIpd0ad/WZzaaTd3ZS5KPPImKZqznyEx
+	siHYkCbv+oyqyopcyT+REk0aH+kUFTc=
+X-Google-Smtp-Source: ACHHUZ5R25mAU/BqIVt5zdTborGbhvGmo1dhgKkgpPnC6A/DkUImnGDHk9JfH4oC7Du8RQcELKG85g==
+X-Received: by 2002:a2e:b16f:0:b0:2ad:99dd:de07 with SMTP id a15-20020a2eb16f000000b002ad99ddde07mr1569695ljm.16.1686090281584;
+        Tue, 06 Jun 2023 15:24:41 -0700 (PDT)
 Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id r15-20020ac252af000000b004f3a79c9e0fsm1577487lfm.57.2023.06.06.15.24.39
+        by smtp.gmail.com with ESMTPSA id r15-20020ac252af000000b004f3a79c9e0fsm1577487lfm.57.2023.06.06.15.24.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 15:24:40 -0700 (PDT)
+        Tue, 06 Jun 2023 15:24:41 -0700 (PDT)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -65,9 +65,9 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yhs@fb.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 3/4] bpf: verify scalar ids mapping in regsafe() using check_ids()
-Date: Wed,  7 Jun 2023 01:24:10 +0300
-Message-Id: <20230606222411.1820404-4-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v3 4/4] selftests/bpf: verify that check_ids() is used for scalars in regsafe()
+Date: Wed,  7 Jun 2023 01:24:11 +0300
+Message-Id: <20230606222411.1820404-5-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230606222411.1820404-1-eddyz87@gmail.com>
 References: <20230606222411.1820404-1-eddyz87@gmail.com>
@@ -85,151 +85,218 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Make sure that the following unsafe example is rejected by verifier:
+Verify that the following example is rejected by verifier:
 
-1: r9 = ... some pointer with range X ...
-2: r6 = ... unbound scalar ID=a ...
-3: r7 = ... unbound scalar ID=b ...
-4: if (r6 > r7) goto +1
-5: r6 = r7
-6: if (r6 > X) goto ...
---- checkpoint ---
-7: r9 += r7
-8: *(u64 *)r9 = Y
+  r9 = ... some pointer with range X ...
+  r6 = ... unbound scalar ID=a ...
+  r7 = ... unbound scalar ID=b ...
+  if (r6 > r7) goto +1
+  r7 = r6
+  if (r7 > X) goto exit
+  r9 += r6
+  *(u64 *)r9 = Y
 
-This example is unsafe because not all execution paths verify r7 range.
-Because of the jump at (4) the verifier would arrive at (6) in two states:
-I.  r6{.id=b}, r7{.id=b} via path 1-6;
-II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
+Also add test cases to check that check_alu_op() for BPF_MOV instruction does
+not allocate scalar ID if source register is a constant.
 
-Currently regsafe() does not call check_ids() for scalar registers,
-thus from POV of regsafe() states (I) and (II) are identical. If the
-path 1-6 is taken by verifier first, and checkpoint is created at (6)
-the path [1-4, 6] would be considered safe.
-
-This commit updates regsafe() to call check_ids() for precise scalar
-registers.
-
-To minimize the impact on verification performance, avoid generating
-bpf_reg_state::id for constant scalar values when processing BPF_MOV
-in check_alu_op(). Scalar IDs are utilized by find_equal_scalars() to
-propagate information about value ranges for registers that hold the
-same value. However, there is no need to propagate range information
-for constants.
-
-Still, there is some performance impact because of this change.
-Using veristat to compare number of processed states for selftests
-object files listed in tools/testing/selftests/bpf/veristat.cfg and
-Cilium object files from [1] gives the following statistics:
-
-$ ./veristat -e file,prog,states -f "states_pct>10" \
-    -C master-baseline.log current.log
-File         Program                         States  (DIFF)
------------  ------------------------------  --------------
-bpf_xdp.o    tail_handle_nat_fwd_ipv6        +155 (+23.92%)
-bpf_xdp.o    tail_nodeport_nat_ingress_ipv4  +102 (+27.20%)
-bpf_xdp.o    tail_rev_nodeport_lb4            +83 (+20.85%)
-loop6.bpf.o  trace_virtqueue_add_sgs          +25 (+11.06%)
-
-Also test case verifier_search_pruning/allocated_stack has to be
-updated to avoid conflicts in register ID assignments between cached
-and new states.
-
-[1] git@github.com:anakryiko/cilium.git
-
-Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assignments.")
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c                         | 34 ++++++++++++++++---
- .../bpf/progs/verifier_search_pruning.c       |  3 +-
- 2 files changed, 32 insertions(+), 5 deletions(-)
+ .../selftests/bpf/progs/verifier_scalar_ids.c | 184 ++++++++++++++++++
+ 1 file changed, 184 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2aa60b73f1b5..175ca22b868e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12933,12 +12933,14 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 		if (BPF_SRC(insn->code) == BPF_X) {
- 			struct bpf_reg_state *src_reg = regs + insn->src_reg;
- 			struct bpf_reg_state *dst_reg = regs + insn->dst_reg;
-+			bool need_id = (src_reg->type == SCALAR_VALUE && !src_reg->id &&
-+					!tnum_is_const(src_reg->var_off));
+diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+index 0f1071847490..00d80ba525d7 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
++++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+@@ -321,4 +321,188 @@ __naked void precision_two_ids(void)
+ 	: __clobber_all);
+ }
  
- 			if (BPF_CLASS(insn->code) == BPF_ALU64) {
- 				/* case: R1 = R2
- 				 * copy register state to dest reg
- 				 */
--				if (src_reg->type == SCALAR_VALUE && !src_reg->id)
-+				if (need_id)
- 					/* Assign src and dst registers the same ID
- 					 * that will be used by find_equal_scalars()
- 					 * to propagate min/max range.
-@@ -12957,7 +12959,7 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 				} else if (src_reg->type == SCALAR_VALUE) {
- 					bool is_src_reg_u32 = src_reg->umax_value <= U32_MAX;
- 
--					if (is_src_reg_u32 && !src_reg->id)
-+					if (is_src_reg_u32 && need_id)
- 						src_reg->id = ++env->id_gen;
- 					copy_register_state(dst_reg, src_reg);
- 					/* Make sure ID is cleared if src_reg is not in u32 range otherwise
-@@ -15289,9 +15291,33 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 			return false;
- 		if (!rold->precise)
- 			return true;
--		/* new val must satisfy old val knowledge */
-+		/* Why check_ids() for scalar registers?
-+		 *
-+		 * Consider the following BPF code:
-+		 *   1: r6 = ... unbound scalar, ID=a ...
-+		 *   2: r7 = ... unbound scalar, ID=b ...
-+		 *   3: if (r6 > r7) goto +1
-+		 *   4: r6 = r7
-+		 *   5: if (r6 > X) goto ...
-+		 *   6: ... memory operation using r7 ...
-+		 *
-+		 * First verification path is [1-6]:
-+		 * - at (4) same bpf_reg_state::id (b) would be assigned to r6 and r7;
-+		 * - at (5) r6 would be marked <= X, find_equal_scalars() would also mark
-+		 *   r7 <= X, because r6 and r7 share same id.
-+		 * Next verification path is [1-4, 6].
-+		 *
-+		 * Instruction (6) would be reached in two states:
-+		 *   I.  r6{.id=b}, r7{.id=b} via path 1-6;
-+		 *   II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
-+		 *
-+		 * Use check_ids() to distinguish these states.
-+		 * ---
-+		 * Also verify that new value satisfies old value range knowledge.
-+		 */
- 		return range_within(rold, rcur) &&
--		       tnum_in(rold->var_off, rcur->var_off);
-+		       tnum_in(rold->var_off, rcur->var_off) &&
-+		       check_ids(rold->id, rcur->id, idmap);
- 	case PTR_TO_MAP_KEY:
- 	case PTR_TO_MAP_VALUE:
- 	case PTR_TO_MEM:
-diff --git a/tools/testing/selftests/bpf/progs/verifier_search_pruning.c b/tools/testing/selftests/bpf/progs/verifier_search_pruning.c
-index 5a14498d352f..bb3cd14bb3a1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_search_pruning.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_search_pruning.c
-@@ -271,7 +271,7 @@ l2_%=:	r0 = 0;						\
- 
- SEC("socket")
- __description("allocated_stack")
--__success __msg("processed 15 insns")
-+__success __msg("processed 16 insns")
- __success_unpriv __msg_unpriv("") __log_level(1) __retval(0)
- __naked void allocated_stack(void)
- {
-@@ -279,6 +279,7 @@ __naked void allocated_stack(void)
- 	r6 = r1;					\
- 	call %[bpf_get_prandom_u32];			\
- 	r7 = r0;					\
-+	call %[bpf_get_prandom_u32];			\
- 	if r0 == 0 goto l0_%=;				\
- 	r0 = 0;						\
- 	*(u64*)(r10 - 8) = r6;				\
++/* Verify that check_ids() is used by regsafe() for scalars.
++ *
++ * r9 = ... some pointer with range X ...
++ * r6 = ... unbound scalar ID=a ...
++ * r7 = ... unbound scalar ID=b ...
++ * if (r6 > r7) goto +1
++ * r6 = r7
++ * if (r6 > X) goto exit
++ * r9 += r7
++ * *(u8 *)r9 = Y
++ *
++ * The memory access is safe only if r7 is bounded,
++ * which is true for one branch and not true for another.
++ */
++SEC("socket")
++__failure __msg("register with unbounded min value")
++__flag(BPF_F_TEST_STATE_FREQ)
++__naked void check_ids_in_regsafe(void)
++{
++	asm volatile (
++	/* Bump allocated stack */
++	"r1 = 0;"
++	"*(u64*)(r10 - 8) = r1;"
++	/* r9 = pointer to stack */
++	"r9 = r10;"
++	"r9 += -8;"
++	/* r7 = ktime_get_ns() */
++	"call %[bpf_ktime_get_ns];"
++	"r7 = r0;"
++	/* r6 = ktime_get_ns() */
++	"call %[bpf_ktime_get_ns];"
++	"r6 = r0;"
++	/* if r6 > r7 is an unpredictable jump */
++	"if r6 > r7 goto l1_%=;"
++	"r7 = r6;"
++"l1_%=:"
++	/* if r6 > 4 exit(0) */
++	"if r7 > 4 goto l2_%=;"
++	/* Access memory at r9[r7] */
++	"r9 += r6;"
++	"r0 = *(u8*)(r9 + 0);"
++"l2_%=:"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
++/* Similar to check_ids_in_regsafe.
++ * The l0 could be reached in two states:
++ *
++ *   (1) r6{.id=A}, r7{.id=A}, r8{.id=B}
++ *   (2) r6{.id=B}, r7{.id=A}, r8{.id=B}
++ *
++ * Where (2) is not safe, as "r7 > 4" check won't propagate range for it.
++ * This example would be considered safe without changes to
++ * mark_chain_precision() to track scalar values with equal IDs.
++ */
++SEC("socket")
++__failure __msg("register with unbounded min value")
++__flag(BPF_F_TEST_STATE_FREQ)
++__naked void check_ids_in_regsafe_2(void)
++{
++	asm volatile (
++	/* Bump allocated stack */
++	"r1 = 0;"
++	"*(u64*)(r10 - 8) = r1;"
++	/* r9 = pointer to stack */
++	"r9 = r10;"
++	"r9 += -8;"
++	/* r8 = ktime_get_ns() */
++	"call %[bpf_ktime_get_ns];"
++	"r8 = r0;"
++	/* r7 = ktime_get_ns() */
++	"call %[bpf_ktime_get_ns];"
++	"r7 = r0;"
++	/* r6 = ktime_get_ns() */
++	"call %[bpf_ktime_get_ns];"
++	"r6 = r0;"
++	/* scratch .id from r0 */
++	"r0 = 0;"
++	/* if r6 > r7 is an unpredictable jump */
++	"if r6 > r7 goto l1_%=;"
++	/* tie r6 and r7 .id */
++	"r6 = r7;"
++"l0_%=:"
++	/* if r7 > 4 exit(0) */
++	"if r7 > 4 goto l2_%=;"
++	/* Access memory at r9[r7] */
++	"r9 += r6;"
++	"r0 = *(u8*)(r9 + 0);"
++"l2_%=:"
++	"r0 = 0;"
++	"exit;"
++"l1_%=:"
++	/* tie r6 and r8 .id */
++	"r6 = r8;"
++	"goto l0_%=;"
++	:
++	: __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
++/* Check that scalar IDs *are not* generated on register to register
++ * assignments if source register is a constant.
++ *
++ * If such IDs *are* generated the 'l1' below would be reached in
++ * two states:
++ *
++ *   (1) r1{.id=A}, r2{.id=A}
++ *   (2) r1{.id=C}, r2{.id=C}
++ *
++ * Thus forcing 'if r1 == r2' verification twice.
++ */
++SEC("socket")
++__success __log_level(2)
++__msg("11: (1d) if r3 == r4 goto pc+0")
++__msg("frame 0: propagating r3,r4")
++__msg("11: safe")
++__flag(BPF_F_TEST_STATE_FREQ)
++__naked void no_scalar_id_for_const(void)
++{
++	asm volatile (
++	"call %[bpf_ktime_get_ns];"
++	/* unpredictable jump */
++	"if r0 > 7 goto l0_%=;"
++	/* possibly generate same scalar ids for r3 and r4 */
++	"r1 = 0;"
++	"r1 = r1;"
++	"r3 = r1;"
++	"r4 = r1;"
++	"goto l1_%=;"
++"l0_%=:"
++	/* possibly generate different scalar ids for r3 and r4 */
++	"r1 = 0;"
++	"r2 = 0;"
++	"r3 = r1;"
++	"r4 = r2;"
++"l1_%=:"
++	/* predictable jump, marks r3 and r4 precise */
++	"if r3 == r4 goto +0;"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
++/* Same as no_scalar_id_for_const() but for 32-bit values */
++SEC("socket")
++__success __log_level(2)
++__msg("11: (1e) if w3 == w4 goto pc+0")
++__msg("frame 0: propagating r3,r4")
++__msg("11: safe")
++__flag(BPF_F_TEST_STATE_FREQ)
++__naked void no_scalar_id_for_const32(void)
++{
++	asm volatile (
++	"call %[bpf_ktime_get_ns];"
++	/* unpredictable jump */
++	"if r0 > 7 goto l0_%=;"
++	/* possibly generate same scalar ids for r3 and r4 */
++	"w1 = 0;"
++	"w1 = w1;"
++	"w3 = w1;"
++	"w4 = w1;"
++	"goto l1_%=;"
++"l0_%=:"
++	/* possibly generate different scalar ids for r3 and r4 */
++	"w1 = 0;"
++	"w2 = 0;"
++	"w3 = w1;"
++	"w4 = w2;"
++"l1_%=:"
++	/* predictable jump, marks r1 and r2 precise */
++	"if w3 == w4 goto +0;"
++	"r0 = 0;"
++	"exit;"
++	:
++	: __imm(bpf_ktime_get_ns)
++	: __clobber_all);
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.40.1
 
