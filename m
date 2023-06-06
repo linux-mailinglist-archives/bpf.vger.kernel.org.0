@@ -1,207 +1,282 @@
-Return-Path: <bpf+bounces-1901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1903-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94D07723486
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 03:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56AF172350E
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 04:07:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FDE41C20D95
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 01:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B22151C20DCA
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 02:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00536394;
-	Tue,  6 Jun 2023 01:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8E8634;
+	Tue,  6 Jun 2023 02:06:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F577F;
-	Tue,  6 Jun 2023 01:32:12 +0000 (UTC)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B070DC;
-	Mon,  5 Jun 2023 18:32:10 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4f624daccd1so2742078e87.0;
-        Mon, 05 Jun 2023 18:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686015129; x=1688607129;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nKXeYLBgNZsLD/+IxPwyyN63h/BVDg7LwOnNrEDBze0=;
-        b=seM8DoJuA+l2/qluDMFHOqVY2TU0LJEsce5E3zY3BfHXHqYaAoQIn0CcRJVxEiYkeX
-         ueig2x+BcON7b3hxf82SBc6l8PbMtq4dUUcKED2ECulGGEw8YTmbReZY5raJxynbLWYH
-         J9JeYjQuOEvrKBuDThQR39KCrrrmOCQSwS492duLcJ/KfwdyKnVK2MqZaLe2qCpWlreh
-         ATkJkwBLHbj51yPzGh1iKBuit1jUH4WrNFzJ8d/tHdPVOvbrSvBkuBk5fBD/5hjx7tZB
-         hvNmbxkl4kAJgOqDogjNztOz6Dw1NyYjYumFZpe26RxkMpJWsTkFj25n9Bjoa3LU72b6
-         okpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686015129; x=1688607129;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nKXeYLBgNZsLD/+IxPwyyN63h/BVDg7LwOnNrEDBze0=;
-        b=kjLxcs+WiVJ4dyorV4B7lzSHbAoY6fRqHbjjxckuXrK3oQp8eSok6pW0Uz3uGe9mtP
-         qjN5+QApp/K+6WPTbmLM7momAYHvtiKgKIfNisiZmjC3Go4BejfiBsdSeiKqV1LLULEM
-         Q0c1wzqMr+RZfFHYemargTdqZFNLjK3g8YlGrxoL+MIqTZA+9DEExhrMZicH9rcLaIi7
-         bbfd0kAAauhXG9PjKKoCO5TYEAEBTdWDDcobBOWZvkIQswzRZoyHpxc2ESKh8WHnadJ8
-         qk1JugnZyhauyKwihYzy5J14WSFmXHwB1bntLqGUJuNLn8+DXgqI9T0uM8CEQ4HrDK21
-         +cqg==
-X-Gm-Message-State: AC+VfDwj9PTr0O+75yhITU9cfaaaxNeKZUi0mmFGMsUxpdYTpN4DgCyJ
-	b8MQskKdrJx69XC502zxX+j2ROPEBbAyCip10b4=
-X-Google-Smtp-Source: ACHHUZ4CSyaN+1CA8HNujlJTstB9XfEYJXvLicNt50Ql/A2r+8dDz8Zj9rIXpCiTUQYHEpEA2sDAUBbj+rGoJvM5mI4=
-X-Received: by 2002:a2e:7219:0:b0:2b1:c389:c424 with SMTP id
- n25-20020a2e7219000000b002b1c389c424mr648772ljc.12.1686015128552; Mon, 05 Jun
- 2023 18:32:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F467F;
+	Tue,  6 Jun 2023 02:06:50 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F941BB;
+	Mon,  5 Jun 2023 19:06:38 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VkU7C4n_1686017194;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VkU7C4n_1686017194)
+          by smtp.aliyun-inc.com;
+          Tue, 06 Jun 2023 10:06:35 +0800
+Message-ID: <1686016872.3496485-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v10 07/10] virtio_ring: introduce helpers for premapped
+Date: Tue, 6 Jun 2023 10:01:12 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+ <20230602092206.50108-8-xuanzhuo@linux.alibaba.com>
+ <20230604094122-mutt-send-email-mst@kernel.org>
+ <1685930811.137484-1-xuanzhuo@linux.alibaba.com>
+ <20230605013658-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230605013658-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230605164955.GA1977@templeofstupid.com> <CAADnVQK7PQxj5jjfUu9sO524yLMPqE6vmzcipno1WYoeu0q-Gw@mail.gmail.com>
- <20230606004139.GE1977@templeofstupid.com>
-In-Reply-To: <20230606004139.GE1977@templeofstupid.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 5 Jun 2023 18:31:57 -0700
-Message-ID: <CAADnVQLhqCVRcPuJ8JEZfd5ii+-TsSs4+AsJC0sbjwPMv7LX_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: search_bpf_extables should search subprogram extables
-To: Krister Johansen <kjlx@templeofstupid.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Mon, Jun 5, 2023 at 5:46=E2=80=AFPM Krister Johansen <kjlx@templeofstupi=
-d.com> wrote:
->
-> On Mon, Jun 05, 2023 at 04:30:29PM -0700, Alexei Starovoitov wrote:
-> > On Mon, Jun 5, 2023 at 9:50=E2=80=AFAM Krister Johansen <kjlx@templeofs=
-tupid.com> wrote:
-> > > +                       if (!aux->func[i]->aux->num_exentries ||
-> > > +                           aux->func[i]->aux->extable =3D=3D NULL)
-> > > +                               continue;
-> > > +                       e =3D search_extable(aux->func[i]->aux->extab=
-le,
-> > > +                           aux->func[i]->aux->num_exentries, addr);
-> > > +               }
-> > > +       }
+On Mon, 5 Jun 2023 01:38:48 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Mon, Jun 05, 2023 at 10:06:51AM +0800, Xuan Zhuo wrote:
+> > On Sun, 4 Jun 2023 09:45:14 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > On Fri, Jun 02, 2023 at 05:22:03PM +0800, Xuan Zhuo wrote:
+> > > > This patch introduces three helpers for premapped mode.
+> > > >
+> > > > * virtqueue_get_buf_premapped
+> > > > * virtqueue_detach_unused_buf_premapped
+> > > >
+> > > > The above helpers work like the non-premapped funcs. But a cursor is
+> > > > passed.
+> > > >
+> > > > virtqueue_detach is used to get the dma info of the last buf by
+> > > >   cursor.
+> > >
+> > > This isn't very clear from the description but virtqueue_detach is
+> > > also introduced by this patch as opposed to being used.
+> > >
+> > >
+> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > ---
+> > > >  drivers/virtio/virtio_ring.c | 83 ++++++++++++++++++++++++++++++++++++
+> > > >  include/linux/virtio.h       | 10 +++++
+> > > >  2 files changed, 93 insertions(+)
+> > > >
+> > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > > index cbc22daae7e1..6771b9661798 100644
+> > > > --- a/drivers/virtio/virtio_ring.c
+> > > > +++ b/drivers/virtio/virtio_ring.c
+> > > > @@ -2555,6 +2555,66 @@ void *virtqueue_get_buf(struct virtqueue *_vq, unsigned int *len)
+> > > >  	return virtqueue_get_buf_ctx(_vq, len, NULL);
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(virtqueue_get_buf);
+> > > > +
+> > > > +/**
+> > > > + * virtqueue_get_buf_premapped - get the next used buffer
+> > > > + * @_vq: the struct virtqueue we're talking about.
+> > > > + * @len: the length written into the buffer
+> > > > + * @ctx: extra context for the token
+> > > > + * @cursor: detach cursor
+> > > > + *
+> > > > + * If the device wrote data into the buffer, @len will be set to the
+> > > > + * amount written.  This means you don't need to clear the buffer
+> > > > + * beforehand to ensure there's no data leakage in the case of short
+> > > > + * writes.
+> > > > + *
+> > > > + * Caller must ensure we don't call this with other virtqueue
+> > > > + * operations at the same time (except where noted).
+> > > > + *
+> > > > + * This is used for the premapped vq. The cursor is passed by the dirver, that
+> > > > + * is used for virtqueue_detach. That will be initialized by virtio core
+> > > > + * internally.
+> > > > + *
+> > > > + * Returns NULL if there are no used buffers, or the "data" token
+> > > > + * handed to virtqueue_add_*().
+> > > > + */
+> > > > +void *virtqueue_get_buf_premapped(struct virtqueue *_vq, unsigned int *len,
+> > > > +				  void **ctx,
+> > > > +				  struct virtqueue_detach_cursor *cursor)
+> > > > +{
+> > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > > +
+> > > > +	return vq->packed_ring ? virtqueue_get_buf_ctx_packed(_vq, len, ctx, cursor) :
+> > > > +				 virtqueue_get_buf_ctx_split(_vq, len, ctx, cursor);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(virtqueue_get_buf_premapped);
+> > > > +
+> > > > +/**
+> > > > + * virtqueue_detach - get the dma info of last buf
+> > >
+> > > detach what from what then?
+> > > I am guessing this is not the only thing this function does?
+> > > sounds like a bad name for a function.
 > >
-> > something odd here.
-> > We do bpf_prog_kallsyms_add(func[i]); for each subprog.
-> > So bpf_prog_ksym_find() in search_bpf_extables()
-> > should be finding ksym and extable of the subprog
-> > and not the main prog.
-> > The bug is probably elsewhere.
+> > Let me think of a good name
+> >
+> > >
+> > > > + * @_vq: the struct virtqueue we're talking about.
+> > > > + * @cursor: detach cursor
+> > > > + * @addr: the dma address
+> > >
+> > > what address?  it's the 1st time you mention an address ...
+> >
+> > Will fix.
+> >
+> >
+> > >
+> > > > + * @len: the length of the dma address
+> > > > + * @dir: the direction of the dma address
+> > > > + *
+> > > > + * This is used for the premapped vq. The cursor is initialized by
+> > > > + * virtqueue_get_buf_premapped or virtqueue_detach_unused_buf_premapped.
+> > > > + *
+> > > > + * Returns:
+> > > > + * -EAGAIN: there are more dma info, this function should be called more.
+> > >
+> > > here too, pls don't return -EAGAIN not in an error case.
+> > > something like "1" will do.
+> >
+> > While I agree with you, -EAGAIN seems to be a commonly used method.
 >
-> I have a kdump (or more) of this bug so if there's additional state
-> you'd like me to share, let me know.
-
-Please convert the test into selftest.
-Then everyone will be able to reproduce easily
-and it will serve us later to make sure we don't regress.
-
-> With your comments in mind, I took
-> another look at the ksym fields in the aux structs.  I have this in the
-> main program:
+> Where is it used like this? A typical use is e.g. in read(2):
 >
->   ksym =3D {
->     start =3D 18446744072638420852,
->     end =3D 18446744072638423040,
->     name =3D <...>
->     lnode =3D {
->       next =3D 0xffff88d9c1065168,
->       prev =3D 0xffff88da91609168
->     },
->     tnode =3D {
->       node =3D {{
->           __rb_parent_color =3D 18446613068361611640,
->           rb_right =3D 0xffff88da91609178,
->           rb_left =3D 0xffff88d9f0c5a578
->         }, {
->           __rb_parent_color =3D 18446613068361611664,
->           rb_right =3D 0xffff88da91609190,
->           rb_left =3D 0xffff88d9f0c5a590
->         }}
->     },
->     prog =3D true
->   },
+>       EAGAIN The file descriptor fd refers to a file other than a socket and has been marked nonblocking (O_NONBLOCK), and  the  read
+>               would block.  See open(2) for further details on the O_NONBLOCK flag.
 >
-> and this in the func[0] subprogram:
+> a better analog here is read filling up all its buffer, in which
+> case it returns the # of bytes returned.
+
+
+Rethink about this, I confused some scenarios. I should return a value to
+indicate there is more data. "1" might be a good choice
+
+Will fix.
+
+Thanks.
+
 >
->   ksym =3D {
->     start =3D 18446744072638420852,
->     end =3D 18446744072638423040,
->     name =3D <...>
->     lnode =3D {
->       next =3D 0xffff88da91609168,
->       prev =3D 0xffffffff981f8990 <bpf_kallsyms>
->     },
->     tnode =3D {
->       node =3D {{
->           __rb_parent_color =3D 18446613068361606520,
->           rb_right =3D 0x0,
->           rb_left =3D 0x0
->         }, {
->           __rb_parent_color =3D 18446613068361606544,
->           rb_right =3D 0x0,
->           rb_left =3D 0x0
->         }}
->     },
->     prog =3D true
->   },
 >
-> That sure looks like func[0] is a leaf in the rbtree and the main
-> program is an intermediate node with leaves.  If that's the case, then
-> bpf_prog_ksym_find may have found the main program instead of the
-> subprogram.  In that case, do you think it's better to skip the main
-> program's call to bpf_prog_ksym_set_addr() if it has subprograms instead
-> of searching for subprograms if the main program is found?
-
-I see.
-Looks like we're doing double bpf_prog_kallsyms_add().
-First in in jit_subprogs():
-        for (i =3D 0; i < env->subprog_cnt; i++) {
-                bpf_prog_lock_ro(func[i]);
-                bpf_prog_kallsyms_add(func[i]);
-        }
-and then again:
-bpf_prog_kallsyms_add(prog);
-in bpf_prog_load().
-
-because func[0] is the main prog.
-
-We are also doing double bpf_prog_lock_ro() for main prog,
-but that's not causing harm.
-
-The fix is probably just this:
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1e38584d497c..89266dac9c12 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -17633,7 +17633,7 @@ static int jit_subprogs(struct bpf_verifier_env *en=
-v)
-        /* finally lock prog and jit images for all functions and
-         * populate kallsysm
-         */
--       for (i =3D 0; i < env->subprog_cnt; i++) {
-+       for (i =3D 1; i < env->subprog_cnt; i++) {
-                bpf_prog_lock_ro(func[i]);
-                bpf_prog_kallsyms_add(func[i]);
-        }
+> > How about we
+> > return EAGAIN instead of -EAGAIN ?
+> >
+> > Thanks.
+> >
+> >
+> >
+> > >
+> > > > + * -EINVAL: the process is done, should not call this function
+> > > > + * 0: no more dma info
+> > > > + */
+> > > > +int virtqueue_detach(struct virtqueue *_vq, struct virtqueue_detach_cursor *cursor,
+> > > > +		     dma_addr_t *addr, u32 *len, enum dma_data_direction *dir)
+> > > > +{
+> > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > > +
+> > > > +	return vq->packed_ring ? virtqueue_detach_packed(_vq, cursor, addr, len, dir) :
+> > > > +				 virtqueue_detach_split(_vq, cursor, addr, len, dir);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(virtqueue_detach);
+> > > > +
+> > > >  /**
+> > > >   * virtqueue_disable_cb - disable callbacks
+> > > >   * @_vq: the struct virtqueue we're talking about.
+> > > > @@ -2682,6 +2742,29 @@ void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(virtqueue_detach_unused_buf);
+> > > >
+> > > > +/**
+> > > > + * virtqueue_detach_unused_buf_premapped - detach first unused buffer
+> > > > + * @_vq: the struct virtqueue we're talking about.
+> > > > + * @cursor: detach cursor
+> > > > + *
+> > > > + * This is used for the premapped vq. The cursor is passed by the dirver, that
+> > > > + * is used for virtqueue_detach. That will be initialized by virtio core
+> > > > + * internally.
+> > > > + *
+> > > > + * Returns NULL or the "data" token handed to virtqueue_add_*().
+> > > > + * This is not valid on an active queue; it is useful for device
+> > > > + * shutdown or the reset queue.
+> > > > + */
+> > > > +void *virtqueue_detach_unused_buf_premapped(struct virtqueue *_vq,
+> > > > +					    struct virtqueue_detach_cursor *cursor)
+> > > > +{
+> > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > > +
+> > > > +	return vq->packed_ring ? virtqueue_detach_unused_buf_packed(_vq, cursor) :
+> > > > +				 virtqueue_detach_unused_buf_split(_vq, cursor);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(virtqueue_detach_unused_buf_premapped);
+> > > > +
+> > > >  static inline bool more_used(const struct vring_virtqueue *vq)
+> > > >  {
+> > > >  	return vq->packed_ring ? more_used_packed(vq) : more_used_split(vq);
+> > > > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > > > index 7f137c7a9034..0a11c5b32fe5 100644
+> > > > --- a/include/linux/virtio.h
+> > > > +++ b/include/linux/virtio.h
+> > > > @@ -3,6 +3,7 @@
+> > > >  #define _LINUX_VIRTIO_H
+> > > >  /* Everything a virtio driver needs to work with any particular virtio
+> > > >   * implementation. */
+> > > > +#include <linux/dma-mapping.h>
+> > > >  #include <linux/types.h>
+> > > >  #include <linux/scatterlist.h>
+> > > >  #include <linux/spinlock.h>
+> > > > @@ -88,6 +89,10 @@ void *virtqueue_get_buf(struct virtqueue *vq, unsigned int *len);
+> > > >  void *virtqueue_get_buf_ctx(struct virtqueue *vq, unsigned int *len,
+> > > >  			    void **ctx);
+> > > >
+> > > > +void *virtqueue_get_buf_premapped(struct virtqueue *_vq, unsigned int *len,
+> > > > +				  void **ctx,
+> > > > +				  struct virtqueue_detach_cursor *cursor);
+> > > > +
+> > > >  void virtqueue_disable_cb(struct virtqueue *vq);
+> > > >
+> > > >  bool virtqueue_enable_cb(struct virtqueue *vq);
+> > > > @@ -101,6 +106,8 @@ bool virtqueue_poll(struct virtqueue *vq, unsigned);
+> > > >  bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
+> > > >
+> > > >  void *virtqueue_detach_unused_buf(struct virtqueue *vq);
+> > > > +void *virtqueue_detach_unused_buf_premapped(struct virtqueue *_vq,
+> > > > +					    struct virtqueue_detach_cursor *cursor);
+> > > >
+> > > >  unsigned int virtqueue_get_vring_size(const struct virtqueue *vq);
+> > > >
+> > > > @@ -114,6 +121,9 @@ dma_addr_t virtqueue_get_used_addr(const struct virtqueue *vq);
+> > > >  int virtqueue_resize(struct virtqueue *vq, u32 num,
+> > > >  		     void (*recycle)(struct virtqueue *vq, void *buf));
+> > > >
+> > > > +int virtqueue_detach(struct virtqueue *_vq, struct virtqueue_detach_cursor *cursor,
+> > > > +		     dma_addr_t *addr, u32 *len, enum dma_data_direction *dir);
+> > > > +
+> > > >  /**
+> > > >   * struct virtio_device - representation of a device using virtio
+> > > >   * @index: unique position on the virtio bus
+> > > > --
+> > > > 2.32.0.3.g01195cf9f
+> > >
+>
 
