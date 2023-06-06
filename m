@@ -1,137 +1,227 @@
-Return-Path: <bpf+bounces-1928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAE95724209
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 14:26:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4B5724222
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 14:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32AD41C20D60
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 12:26:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129AA1C20FCD
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 12:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8C82A9DB;
-	Tue,  6 Jun 2023 12:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D8E14260;
+	Tue,  6 Jun 2023 12:31:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFF62A9C6
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 12:26:29 +0000 (UTC)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9720710C7;
-	Tue,  6 Jun 2023 05:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686054388; x=1717590388;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rjRBgamwSeRSfHezoWT0bmvktJ8N6eyh4nvQHsFNuDQ=;
-  b=fhfvs9MEvSU7P5uTfW+4YJwKRPX73M6vMEt3T5btWxmxMl67XuA9JUoE
-   DdO77wx5r6xJuSc+W9iwPE9DkU/31o9Q3Y5N/wqA3v0ETLtQNQj3xMfgU
-   Y2Lt0LZFYfZzSyuDysTadtFOkk72TivxpIsv/6Dm0TUNR7JL+s9OBHn4n
-   7WCXb0OWxfr9gOcXC58VD0Ggcr83YePYJxqfXvGIE2tzBo4l1GTavu3R7
-   Ma2ufr3s+JHOTi3nWpahC9fxc7bZHsZ5nHchx+HcVe3WfZAPkatS1bMPA
-   sOq3IWx2DfahYuXKB7QfzJSDcyq0HZvGdsvBSAJ9V/y20Ssyyud2VVfMe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="443031643"
-X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
-   d="scan'208";a="443031643"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2023 05:26:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="883321208"
-X-IronPort-AV: E=Sophos;i="6.00,221,1681196400"; 
-   d="scan'208";a="883321208"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 06 Jun 2023 05:26:23 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q6VlW-0005Dv-21;
-	Tue, 06 Jun 2023 12:26:22 +0000
-Date: Tue, 6 Jun 2023 20:26:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@arm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 1/4] perf build: Add ability to build with a generated
- vmlinux.h
-Message-ID: <202306062005.DdBIyoSS-lkp@intel.com>
-References: <20230605202712.1690876-2-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0C72A9E7
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 12:31:14 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6188110C6;
+	Tue,  6 Jun 2023 05:31:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qb8w9262tz4f41SX;
+	Tue,  6 Jun 2023 20:31:05 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgDXMBsCJ39kBDPNKQ--.34580S2;
+	Tue, 06 Jun 2023 20:31:04 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+Date: Tue, 6 Jun 2023 20:30:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230605202712.1690876-2-irogers@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230606035310.4026145-1-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgDXMBsCJ39kBDPNKQ--.34580S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WFyfWw4UGw43Zry7AFWrZrb_yoWxWw13pr
+	WSgw43JrnrXrnF9ws7Aw1xAa4UAws3Xr43KF1S9ryDuw15Xryxurs29F4FvFy5WrWDC3s0
+	qF4vy3y3Z3Z5C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Ian,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On 6/6/2023 11:53 AM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+>
+> Hi,
+>
+> The implementation of v4 is mainly based on suggestions from Alexi [0].
+> There are still pending problems for the current implementation as shown
+> in the benchmark result in patch #3, but there was a long time from the
+> posting of v3, so posting v4 here for further disscussions and more
+> suggestions.
+>
+> The first problem is the huge memory usage compared with bpf memory
+> allocator which does immediate reuse:
+>
+> htab-mem-benchmark (reuse-after-RCU-GP):
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> | --                 | --        | --                  | --               |
+> | no_op              | 1159.18   | 0.99                | 0.99             |
+> | overwrite          | 11.00     | 2288                | 4109             |
+> | batch_add_batch_del| 8.86      | 1558                | 2763             |
+> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
+>
+> htab-mem-benchmark (immediate-reuse):
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> | --                 | --        | --                  | --               |
+> | no_op              | 1160.66   | 0.99                | 1.00             |
+> | overwrite          | 28.52     | 2.46                | 2.73             |
+> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
+> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
+>
+> It seems the direct reason is the slow RCU grace period. During
+> benchmark, the elapsed time when reuse_rcu() callback is called is about
+> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
+> spin-lock and the irq-work running in the contex of freeing process will
+> increase the running overhead of bpf program, the running time of
+> getpgid() is increased, the contex switch is slowed down and the RCU
+> grace period increases [1], but I am still diggin into it.
+For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
+(namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
+did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
 
-[auto build test WARNING on acme/perf/core]
-[also build test WARNING on tip/master tip/auto-latest linus/master v6.4-rc5 next-20230606]
-[cannot apply to tip/perf/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
+| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+| --                 | --        | --                  | --               |
+| no_op              | 1165.38   | 0.97                | 1.00             |
+| overwrite          | 17.25     | 626.41              | 781.82           |
+| batch_add_batch_del| 11.51     | 398.56              | 500.29           |
+| add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ian-Rogers/perf-build-Add-ability-to-build-with-a-generated-vmlinux-h/20230606-043106
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-patch link:    https://lore.kernel.org/r/20230605202712.1690876-2-irogers%40google.com
-patch subject: [PATCH v2 1/4] perf build: Add ability to build with a generated vmlinux.h
-config: i386-randconfig-i052-20230605 (https://download.01.org/0day-ci/archive/20230606/202306062005.DdBIyoSS-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build):
-        mkdir -p ~/bin
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        git remote add acme https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-        git fetch acme perf/core
-        git checkout acme/perf/core
-        b4 shazam https://lore.kernel.org/r/20230605202712.1690876-2-irogers@google.com
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+But the memory usage is still large compared with v3 and the elapsed
+time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
+are still two differences:
+1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
+accelerate the reuse of freed objects.
+2) v3 uses kworker instead of irq_work for free procedure.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306062005.DdBIyoSS-lkp@intel.com/
+For 1), after using kmalloc() in irq_work to allocate multiple inflight
+RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
+but is not enough:
 
-All warnings (new ones prefixed by >>):
+htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
+| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+| --                 | --        | --                  | --               |
+| no_op              | 1247.00   | 0.97                | 1.00             |
+| overwrite          | 16.56     | 490.18              | 557.17           |
+| batch_add_batch_del| 11.31     | 276.32              | 360.89           |
+| add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
 
->> tools/perf/util/bpf_skel/vmlinux/vmlinux.h: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/arm64/tags/.gitignore: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/arm64/tags/Makefile: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/arm64/tags/run_tags_test.sh: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/arm64/tags/tags_test.c: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/kvm/.gitignore: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/kvm/Makefile: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/kvm/config: warning: ignored by one of the .gitignore files
-   tools/testing/selftests/kvm/settings: warning: ignored by one of the .gitignore files
+So it seems the large memory usage is due to irq_work (reuse_bulk) used
+for free procedure. However after increasing the threshold for invoking
+irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
+big difference in the memory usage and the delayed time for RCU
+callbacks. Perhaps the reason is that although the number of  reuse_bulk
+irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
+increased because there are no reusable objects.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Another problem is the performance degradation compared with immediate
+> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
+> top-one hotspot:
+>
+> map_perf_test (reuse-after-RCU-GP)
+> 0:hash_map_perf kmalloc 194677 events per sec
+>
+> map_perf_test (immediate reuse)
+> 2:hash_map_perf kmalloc 384527 events per sec
+>
+> Considering the purpose of introducing per-bpf-ma reusable list is to
+> handle the case in which the allocation and free are done on different
+> CPUs (e.g., add_del_on_diff_cpu) and a per-cpu reuse list will be enough
+> for overwrite & batch_add_batch_del cases. So maybe we could implement a
+> hybrid of global reusable list and per-cpu reusable list and switch
+> between these two kinds of list according to the history of allocation
+> and free frequency.
+>
+> As ususal, suggestions and comments are always welcome.
+>
+> [0]: https://lore.kernel.org/bpf/20230503184841.6mmvdusr3rxiabmu@MacBook-Pro-6.local
+> [1]: https://lore.kernel.org/bpf/1b64fc4e-d92e-de2f-4895-2e0c36427425@huaweicloud.com
+>
+> Change Log:
+> v4:
+>  * no kworker (Alexei)
+>  * Use a global reusable list in bpf memory allocator (Alexei)
+>  * Remove BPF_MA_FREE_AFTER_RCU_GP flag and do reuse-after-rcu-gp
+>    defaultly in bpf memory allocator (Alexei)
+>  * add benchmark results from map_perf_test (Alexei)
+>
+> v3: https://lore.kernel.org/bpf/20230429101215.111262-1-houtao@huaweicloud.com/
+>  * add BPF_MA_FREE_AFTER_RCU_GP bpf memory allocator
+>  * Update htab memory benchmark
+>    * move the benchmark patch to the last patch
+>    * remove array and useless bpf_map_lookup_elem(&array, ...) in bpf
+>      programs
+>    * add synchronization between addition CPU and deletion CPU for
+>      add_del_on_diff_cpu case to prevent unnecessary loop
+>    * add the benchmark result for "extra call_rcu + bpf ma"
+>
+> v2: https://lore.kernel.org/bpf/20230408141846.1878768-1-houtao@huaweicloud.com/
+>  * add a benchmark for bpf memory allocator to compare between different
+>    flavor of bpf memory allocator.
+>  * implement BPF_MA_REUSE_AFTER_RCU_GP for bpf memory allocator.
+>
+> v1: https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+>
+> Hou Tao (3):
+>   bpf: Factor out a common helper free_all()
+>   selftests/bpf: Add benchmark for bpf memory allocator
+>   bpf: Only reuse after one RCU GP in bpf memory allocator
+>
+>  include/linux/bpf_mem_alloc.h                 |   4 +
+>  kernel/bpf/memalloc.c                         | 385 ++++++++++++------
+>  tools/testing/selftests/bpf/Makefile          |   3 +
+>  tools/testing/selftests/bpf/bench.c           |   4 +
+>  .../selftests/bpf/benchs/bench_htab_mem.c     | 352 ++++++++++++++++
+>  .../bpf/benchs/run_bench_htab_mem.sh          |  42 ++
+>  .../selftests/bpf/progs/htab_mem_bench.c      | 135 ++++++
+>  7 files changed, 809 insertions(+), 116 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+>  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
+>  create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
+>
+
 
