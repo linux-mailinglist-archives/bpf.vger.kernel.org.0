@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-1936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3727272474B
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 17:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09289724749
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 17:10:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A6B280FF6
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 15:10:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C771281038
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 15:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592C12DBC5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF6C2D254;
 	Tue,  6 Jun 2023 15:10:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E825823C74
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 15:10:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 78AC0C4339B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E822337B97;
+	Tue,  6 Jun 2023 15:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 88483C433EF;
 	Tue,  6 Jun 2023 15:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1686064220;
-	bh=bQr/eFi4VULMVyUdMjxoiN5haOdXvfPwHaB7Lt8UCr4=;
+	bh=S8zUBfcGXSsgf/1vq5tSuv+A3LfStY7eiIOnuijlnEs=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=h5IqtCCtOytUdbR9JJjXMWJz2mlIJwkzyrNE0HTSTYpjQ9z/VEch8Qm2FK4D1aj7A
-	 gyPHXzrj70U209T6jg0mpUMybxtkQvQLhNW6BR7MZscz6RPkMdRWFv2Ra9Lb+KrZKv
-	 Ph8p3GzKqgtQwcdJKXmVqDjCY6halmlRMXOnlhi2shOns8JHou24griY9gZHXwLs5Y
-	 Gbc1OeqArF9E+L8Adfx8WxxmOyXSBZcGoWfyACGd1CDoArbLI3NecS4Whei8SQSEhK
-	 4+/BsHD9dvdfDX4ILfu+QUwoyoxT9Kl/JtD6hYFciAwGlt2w7fabuvhv9NqS145kOi
-	 yFGEQgJGgNFZw==
+	b=FKH2w9q8koezsPRfzA9bNkj+oKTJgq+RkW6rFYFOJZdDE83Uqt63Mjnv7h2srkgMY
+	 HFwO+j/0ufq1t8n6Cea/ZXj2CNfaShOTDPbf6KLaLSg4MM7tTXI4oOAw1c7qtBJtww
+	 y2bnQwSq5BW369DxdwDvTAzEx84Q8EuIicNbkMKN9lDlEr+v9OaqkAPreN7Lgi18NO
+	 d/sOt5YJVXwfCjgXeT2pAyRB9RyqjJSzfQrKNXfPl1cksbysFYQSLPxg89OBWe62B0
+	 QOticL/RRQEgDHG7FbrU0EJbk7hIdg5WMu+1iFTNj/qXpu7rgln7tFAOTgen+p5TmL
+	 wdTv8gu+hM54Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 59F4CC4166F;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6520FE29F3B;
 	Tue,  6 Jun 2023 15:10:20 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -41,38 +41,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH RESEND] bpf: cleanup unused function declaration
+Subject: Re: [PATCH bpf-next V1] selftests/bpf: Fix check_mtu using wrong variable
+ type
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <168606422036.10567.7750110941195035658.git-patchwork-notify@kernel.org>
+ <168606422041.10567.18202804005249837982.git-patchwork-notify@kernel.org>
 Date: Tue, 06 Jun 2023 15:10:20 +0000
-References: <20230606021047.170667-1-gongruiqi@huaweicloud.com>
-In-Reply-To: <20230606021047.170667-1-gongruiqi@huaweicloud.com>
-To: Ruiqi Gong <gongruiqi@huaweicloud.com>
-Cc: andrii.nakryiko@gmail.com, sdf@google.com, ast@kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, wangweiyang2@huawei.com,
- xiujianfeng@huawei.com, gongruiqi1@huawei.com
+References: <168605104733.3636467.17945947801753092590.stgit@firesoul>
+In-Reply-To: <168605104733.3636467.17945947801753092590.stgit@firesoul>
+To: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: borkmann@iogearbox.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue,  6 Jun 2023 10:10:47 +0800 you wrote:
-> All usage and the definition of `bpf_prog_free_linfo()` has been removed
-> in commit e16301fbe183 ("bpf: Simplify freeing logic in linfo and
-> jited_linfo"). Clean up its declaration in the header file.
+On Tue, 06 Jun 2023 13:30:47 +0200 you wrote:
+> Dan Carpenter found via Smatch static checker, that unsigned
+> 'mtu_lo' is never less than zero.
 > 
-> Signed-off-by: Ruiqi Gong <gongruiqi@huaweicloud.com>
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Link: https://lore.kernel.org/all/20230602030842.279262-1-gongruiqi@huaweicloud.com/
+> Variable mtu_lo should have been an 'int', because read_mtu_device_lo()
+> uses minus as error indications.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [RESEND] bpf: cleanup unused function declaration
-    https://git.kernel.org/bpf/bpf-next/c/aa6182707a53
+  - [bpf-next,V1] selftests/bpf: Fix check_mtu using wrong variable type
+    https://git.kernel.org/bpf/bpf-next/c/095641817e1b
 
 You are awesome, thank you!
 -- 
