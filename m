@@ -1,219 +1,156 @@
-Return-Path: <bpf+bounces-1945-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1946-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 703D37249C2
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 19:06:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DC007249DE
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 19:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D54421C20B45
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 17:06:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B765E280FB2
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 17:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AC11ED48;
-	Tue,  6 Jun 2023 17:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0241ED4C;
+	Tue,  6 Jun 2023 17:09:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42DE19915
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 17:06:02 +0000 (UTC)
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A572A10C6;
-	Tue,  6 Jun 2023 10:06:00 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id BFE8820BE48E;
-	Tue,  6 Jun 2023 10:05:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BFE8820BE48E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1686071160;
-	bh=C5G5CGzQLvGwCuG7fKF39otqK61tGv1JhHkxwm7VmaE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mNt1DgjgK8pon/ox1T9IjWRTVQR+F1MiR9bl6Q/CgCyGEsBfSm7u6YD85e7xnec6q
-	 DORbyL8K0udoXc/J+rH1sa0TCIG8dJcc8c+Y72b27OJsmab8p1mVTeOeyK2mZgyCGB
-	 g0VPiRBjohNo6ZLfGFi2OrcaGWRtbKQelid/3WYw=
-Date: Tue, 6 Jun 2023 10:05:49 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	David Vernet <void@manifault.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Dave Thaler <dthaler@microsoft.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
-Message-ID: <20230606170549.GA71@W11-BEAU-MD.localdomain>
-References: <20230515192407.GA85@W11-BEAU-MD.localdomain>
- <20230517003628.aqqlvmzffj7fzzoj@MacBook-Pro-8.local>
- <20230516212658.2f5cc2c6@gandalf.local.home>
- <20230517165028.GA71@W11-BEAU-MD.localdomain>
- <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
- <20230601-urenkel-holzofen-cd9403b9cadd@brauner>
- <20230601152414.GA71@W11-BEAU-MD.localdomain>
- <20230601-legten-festplatten-fe053c6f16a4@brauner>
- <20230601162921.GA152@W11-BEAU-MD.localdomain>
- <20230606223752.65dd725c04b11346b45e0546@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6151ED33
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 17:09:12 +0000 (UTC)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BA0173E;
+	Tue,  6 Jun 2023 10:08:57 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5149aafef44so8978173a12.0;
+        Tue, 06 Jun 2023 10:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686071335; x=1688663335;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=axeQBjIk+qwJ1RO7wNCxa/rzAi/RLd5g07eZloe/TyQ=;
+        b=ZyMsjj5W6ar9PSi5kKlZg7gv5Kg4p62QVznWlIGeL1Frg2m3bG2YL6i7RubzrvObYn
+         wvJe2hRkpbdEwdZTP0nZRgGGuI8vppi3wldkPPQ71PCzbJkwa6GiDYFigVn5i4MY8yu5
+         Z2+kdcRZkz/3lk9WvUeFOuCwvTJtaE+siOzwiYma1l921EvxQ+FySrpI0dCRKRlBwLE0
+         Y2/fnUtGVI5bTkhlUE5GCbPNiJv7oHCnvLevGLkvowdvUwgik8+ZZJT0pTkcN2U/2xwT
+         FxNFvVzuNrAxVtUrjNHJMaHEdKj/IP2X6DHRcOSGxQEYFeUlpVHJvmEdsASdlB7v9uLw
+         jLtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686071335; x=1688663335;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=axeQBjIk+qwJ1RO7wNCxa/rzAi/RLd5g07eZloe/TyQ=;
+        b=aXSTmHbuAccUxPQXNZFHZ1p4ekpnmpDH7r7WZcs0Rcc7jAzk/FbXyT40aGwa6ti5vh
+         y8G56rPT7geQTcQ3+v2+TQdQwoTZKjT/yNFPy9nao6wNRQHc5+Thny8vFN4W30oqC0YL
+         +wS/PGZokxilg+it/EYFxJJiDGwMgU90MZFop6OZAZ21D2XfNo2UApkAmpA87Xue4oQD
+         uPzAMXWG2JPtA2hw78gogxc01GP6ib5k0YxZEJjdvvSpkc1jrEJV3jXvERO6eCFLD1SA
+         YJXNYKmmLu5ucFJn8EIiGv7U8ta/pGaMGkRWrQKpS+0ZMZtUP9m/K8fdNLZFu1+DWrOD
+         8ZEQ==
+X-Gm-Message-State: AC+VfDxUkdEvQ+QPTSl9U1fJZInA+VaPcA9ft3sArKf0WczPBVhJI9Mn
+	CHsJZVKWvbryaUZogtko1+Ao9dZAEVxGD+Go1Is=
+X-Google-Smtp-Source: ACHHUZ45oovp1yvRpfc3vJnMH5ivxdFeS0lWmwwGbAJ/sBmChsPEAz4fgUT5vf6rXniB1jvt8IG6Rl/6gYQgEKDXz1c=
+X-Received: by 2002:aa7:df81:0:b0:504:b228:878d with SMTP id
+ b1-20020aa7df81000000b00504b228878dmr2274485edy.25.1686071334891; Tue, 06 Jun
+ 2023 10:08:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230606223752.65dd725c04b11346b45e0546@kernel.org>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <CGME20230606042819epcas5p4f0601efb42d59007cba023c73fa0624a@epcas5p4.samsung.com>
+ <20230606042802.508954-1-maninder1.s@samsung.com> <20230606042802.508954-2-maninder1.s@samsung.com>
+In-Reply-To: <20230606042802.508954-2-maninder1.s@samsung.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 6 Jun 2023 10:08:42 -0700
+Message-ID: <CAEf4BzYavyL431eA_HZ-X8+wTeO4Cyt7tGDUbPB0yqPru=ZUSw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] bpf: make bpf_dump_raw_ok() based on CONFIG_KALLSYMS
+To: Maninder Singh <maninder1.s@samsung.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	thunder.leizhen@huawei.com, mcgrof@kernel.org, boqun.feng@gmail.com, 
+	vincenzopalazzodev@gmail.com, ojeda@kernel.org, jgross@suse.com, 
+	brauner@kernel.org, michael.christie@oracle.com, samitolvanen@google.com, 
+	glider@google.com, peterz@infradead.org, keescook@chromium.org, 
+	stephen.s.brennan@oracle.com, alan.maguire@oracle.com, pmladek@suse.com, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Onkarnath <onkarnath.1@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 06, 2023 at 10:37:52PM +0900, Masami Hiramatsu wrote:
-> Hi Beau,
-> 
-> On Thu, 1 Jun 2023 09:29:21 -0700
-> Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> 
-> > > > These are stubs to integrate namespace support. I've been working on a
-> > > > series that adds a tracing namespace support similiar to the IMA
-> > > > namespace work [1]. That series is ending up taking more time than I
-> > > 
-> > > Look, this is all well and nice but you've integrated user events with
-> > > tracefs. This is currently a single-instance global filesystem. So what
-> > > you're effectively implying is that you're namespacing tracefs by
-> > > hanging it off of struct user namespace making it mountable by
-> > > unprivileged users. Or what's the plan?
-> > > 
-> > 
-> > We don't have plans for unprivileged users currently. I think that is a
-> > great goal and requires a proper tracing namespace, which we currently
-> > don't have. I've done some thinking on this, but I would like to hear
-> > your thoughts and others on how to do this properly. We do talk about
-> > this in the tracefs meetings (those might be out of your time zone
-> > unfortunately).
-> > 
-> > > That alone is massive work with _wild_ security implications. My
-> > > appetite for exposing more stuff under user namespaces is very low given
-> > > the amount of CVEs we've had over the years.
-> > > 
-> > 
-> > Ok, I based that approach on the feedback given in LPC 2022 - Containers
-> > and Checkpoint/Retore MC [1]. I believe you gave feedback to use user
-> > namespaces to provide the encapsulation that was required :)
-> 
-> Even with the user namespace, I think we still need to provide separate
-> "eventname-space" for each application, since it may depend on the context
-> who and where it is launched. I think the easiest solution is (perhaps)
-> providing a PID-based new groups for each instance (the PID-prefix or 
-> suffix will be hidden from the application).
-> I think it may not good to allow unprivileged user processes to detect
-> the registered event name each other by default.
-> 
+On Mon, Jun 5, 2023 at 9:28=E2=80=AFPM Maninder Singh <maninder1.s@samsung.=
+com> wrote:
+>
+> bpf_dump_raw_ok() depends on kallsyms_show_value() and we already
+> have a false definition for the !CONFIG_KALLSYMS case. But we'll
+> soon expand on kallsyms_show_value() and so to make the code
+> easier to follow just provide a direct !CONFIG_KALLSYMS definition
+> for bpf_dump_raw_ok() as well.
 
-Regarding PID, are you referring the PID namespace the application
-resides within? Or the actual single PID of the process?
+I'm sorry, I'm failing to follow the exact reasoning about
+simplification. It seems simpler to have
 
-In production we monitor things in sets that encompass more than a
-single application. A requirement we need is the ability to group
-like-processes together for monitoring purposes.
+static inline bool kallsyms_show_value(const struct cred *cred)
+{
+    return false;
+}
 
-We really need a way to know these set of events are for this group, the
-easiest way to do that is by the system name provided on each event. If
-this were to be single PID (and not the PID namespace), then we wouldn't
-be able to achieve this requirement. Ideally an admin would be able to
-setup the name in some way that means something to them in user-space.
+and control it from kallsyms-related internal header, rather than
+adding CONFIG_KALLSYMS ifdef-ery to include/linux/filter.h and
+redefining that `return false` decision. What if in the future we
+decide that if !CONFIG_KALLSYMS it's ok to show raw addresses, now
+we'll have to remember to update it in two places.
 
-IE: user_events_critical as a system name, vs knowing (user_events_5
-or user_events_6 or user_events_8) are "critical".
+Unless I'm missing some other complications?
 
-Another simple example is the same "application" but it gets exec'd more
-than once. Each time it execs the system name would change if it was
-really by the actual PID vs PID namespace. This would be very hard to
-manage on a perf_event or eBPF level for us. It would also vastly
-increase the number of trace_events that would get created on the
-system.
-
-> > 
-> > > > anticipated.
-> > > 
-> > > Yet you were confident enough to leave the namespacing stubs for this
-> > > functionality in the code. ;)
-> > > 
-> > > What is the overall goal here? Letting arbitrary unprivileged containers
-> > > define their own custom user event type by mounting tracefs inside
-> > > unprivileged containers? If so, what security story is going to
-> > > guarantee that writing arbitrary tracepoints from random unprivileged
-> > > containers is safe?
-> > > 
-> > 
-> > Unprivileged containers is not a goal, however, having a per-pod
-> > user_event system name, such as user_event_<pod_name>, would be ideal
-> > for certain diagnostic scenarios, such as monitoring the entire pod.
-> 
-> That can be done in the user-space tools, not in the kernel.
-> 
-
-Right, during k8s pod creation we would create the group and name it
-something that makes sense to the operator as an example. I'm sure there
-are lots of scenarios user-space can do. However, they almost always
-involve more than 1 application together in our scenarios.
-
-> > When you have a lot of containers, you also want to limit how many
-> > tracepoints each container can create, even if they are given access to
-> > the tracefs file. The per-group can limit how many events/tracepoints
-> > that container can go create, since we currently only have 16-bit
-> > identifiers for trace_event's we need to be cautious we don't run out.
-> 
-> I agree, we need to have a knob to limit it to avoid DoS attack.
-> 
-> > user_events in general has tracepoint validators to ensure the payloads
-> > coming in are "safe" from what the kernel might do with them, such as
-> > filtering out data.
-> 
-> [...]
-> > > > changing the system name of user_events on a per-namespace basis.
-> > > 
-> > > What is the "system name" and how does it protect against namespaces
-> > > messing with each other?
-> > 
-> > trace_events in the tracing facility require both a system name and an
-> > event name. IE: sched/sched_waking, sched is the system name,
-> > sched_waking is the event name. For user_events in the root group, the
-> > system name is "user_events". When groups are introduced, the system
-> > name can be "user_events_<GUID>" for example.
-> 
-> So my suggestion is using PID in root pid namespace instead of GUID
-> by default.
-> 
-
-By default this would be fine as long as admins can change this to a larger
-group before activation for our purposes. PID however, might be a bit
-too granular of an identifier for our scenarios as I've explained above.
-
-I think these logical steps make sense:
-1. Create "event namespace" (Default system name suffix, max count)
-2. Setup "event namespace" (Change system name suffix, max count)
-3. Attach "event namespace"
-
-I'm not sure we know what to attach to in #3 yet, so far both a tracer
-namespace and user namespace have been proposed. I think we need to
-answer that. Right now everything is in the root "event namespace" and
-is simply referred to by default as "user_events" as the system name
-without a suffix, and with the boot configured max event count.
-
-Thanks,
--Beau
-
-> Thank you,
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+> Co-developed-by: Onkarnath <onkarnath.1@samsung.com>
+> Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  include/linux/filter.h | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index bbce89937fde..1f237a3bb11a 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -923,13 +923,21 @@ bool bpf_jit_supports_kfunc_call(void);
+>  bool bpf_jit_supports_far_kfunc_call(void);
+>  bool bpf_helper_changes_pkt_data(void *func);
+>
+> +/*
+> + * Reconstruction of call-sites is dependent on kallsyms,
+> + * thus make dump the same restriction.
+> + */
+> +#ifdef CONFIG_KALLSYMS
+>  static inline bool bpf_dump_raw_ok(const struct cred *cred)
+>  {
+> -       /* Reconstruction of call-sites is dependent on kallsyms,
+> -        * thus make dump the same restriction.
+> -        */
+>         return kallsyms_show_value(cred);
+>  }
+> +#else
+> +static inline bool bpf_dump_raw_ok(const struct cred *cred)
+> +{
+> +       return false;
+> +}
+> +#endif
+>
+>  struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+>                                        const struct bpf_insn *patch, u32 =
+len);
+> --
+> 2.17.1
+>
 
