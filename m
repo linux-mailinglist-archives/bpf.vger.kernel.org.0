@@ -1,303 +1,178 @@
-Return-Path: <bpf+bounces-1967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65507724F8C
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 00:25:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFFAA72501F
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 00:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A5B5280BDB
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 22:25:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AAA61C20BB0
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 22:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7907434D60;
-	Tue,  6 Jun 2023 22:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B8D28C1A;
+	Tue,  6 Jun 2023 22:47:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581122DBA3
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 22:24:45 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DE0171B
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 15:24:43 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b1c30a1653so39550551fa.2
-        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 15:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686090281; x=1688682281;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8rlmEPPIy5bG3359MOBQccZKiIDA7URWquaR1/cjcmY=;
-        b=boPA7cBmQaOW+zujycMWBP9bSMsnyq0PCnLaKQJLdMQSYGhnxVJQWt3tB9iEe/xYkR
-         9ROaMTIepFo+kbNAce6/RyQRlqYZlhNR+8yAQJgApJBsWUkA0s0ZQ5ZL2KVISjdzHI1l
-         SGqO8bYh4y3dIG65GTIE8EuVgQDFRfOswERTI2/3LSRXKXQd1wflsJy1wzUuyGYW/VSG
-         AtUpWvhCgpC/fsY88JhcDT4T3SQG64Lds4vrC0WE0sTWwyavrEs9adVX4qkxnfX//N+f
-         7GJ5UJYC/fBISQ/mmGYJH4RXMEDrBu86wuViLReABWG+8C6H6YjnI/xaDruG9rKZhSy2
-         /n6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686090281; x=1688682281;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8rlmEPPIy5bG3359MOBQccZKiIDA7URWquaR1/cjcmY=;
-        b=aIUdsw5Lsxkhi/dHkyjgrOeP74YeIpM46bg1k/Tdg5zbpATec3C/d9bVNZy/ntoCum
-         TSnCubkX79ux+PtBF3Bp9XT6HM6MGzcmdRSeb/QTJ0lP7hh5c/wk74ZmGuLnE87ATGxD
-         CLVjd0T2wvtogX+xaqsWbPZMEZ8Xl/RYimcmtz76SiERR9vqTMaUl0jGXixkrAG5cCA5
-         bXbCMh27w26XI+uoxw4Y3x1uUSdbqy2EvdI70CR58V4OEifi8469GCQuwwf6zIH8oQSL
-         paMkDgSqcmh6OFYg0l9/UmZxTAIuKHinYt50A2vuCcQtEDTykoi62ClNNvknO0W1BEm7
-         VLpg==
-X-Gm-Message-State: AC+VfDzFG1D1Sfa3970MinBWLIpd0ad/WZzaaTd3ZS5KPPImKZqznyEx
-	siHYkCbv+oyqyopcyT+REk0aH+kUFTc=
-X-Google-Smtp-Source: ACHHUZ5R25mAU/BqIVt5zdTborGbhvGmo1dhgKkgpPnC6A/DkUImnGDHk9JfH4oC7Du8RQcELKG85g==
-X-Received: by 2002:a2e:b16f:0:b0:2ad:99dd:de07 with SMTP id a15-20020a2eb16f000000b002ad99ddde07mr1569695ljm.16.1686090281584;
-        Tue, 06 Jun 2023 15:24:41 -0700 (PDT)
-Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id r15-20020ac252af000000b004f3a79c9e0fsm1577487lfm.57.2023.06.06.15.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 15:24:41 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yhs@fb.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: verify that check_ids() is used for scalars in regsafe()
-Date: Wed,  7 Jun 2023 01:24:11 +0300
-Message-Id: <20230606222411.1820404-5-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230606222411.1820404-1-eddyz87@gmail.com>
-References: <20230606222411.1820404-1-eddyz87@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19667E4
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 22:47:17 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702E39E;
+	Tue,  6 Jun 2023 15:47:16 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 356IfFbM014390;
+	Tue, 6 Jun 2023 15:46:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=6PznnTs89qsjqyfHmU2y1dTJJAnt2Fmz9QnQsI+Xg/c=;
+ b=U/WXx+z/djnHy296r8lDtkqDeY6yFydEI/6INDHlf1MZ1FvFCvRoSg7R28O0ycbufMAK
+ fMvw8uxCrrqFOIS1r89dzMlGYzCkg7oUSClX7mgOyxscxl3r6igecYUk1yTE9R0uDBkC
+ Ix0wuKMK7ndselZd0LucA+IXIWpzlrYuRY2Y7RNyJeI2jGyfLd0VfoBFmuaJsaClEKMp
+ IGNH71QfnWFkBhcbRD9F5guaYc9SpHGS/GpdoX+Vbfv8/o9lfap6ruoAMTyIB/Bus3/Q
+ 7zZnubJVjQGN1C9C5VLLk0AV9crXQGPULFr+XJw/qsiYUBZB8PoLl0L3iYSngP4cyiTG Pg== 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2048.outbound.protection.outlook.com [104.47.56.48])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r2a7shrf3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Jun 2023 15:46:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CVy6TadW1t2O5bQvrHIaMp3ULXoBDN7Zq73qW2Ml5jlkdBGClbnEHhu1QpOTbzADS4zLyzo7LRHepR7u2yhChS32xrdOxK36sFMvm23Z++u6T5OoW5YT5xuqwcx9+fkG2zcWoVQxJZQLZ6axSC5MH1r3FWr9TfFUk9OjD/C/MEc+EaywTEqLBsH83htlsmj77/2L6c5uKvzySX0UDMC09jA8Otpa1mLDGFF0ymFOHwNfRgbpKyY5IqXADihHkNookSPDFqEvvzM609r4h9x/4XdFjzw2kKgg7upiIi11noVdJfXEPmLjA1YarfHSdJ/rHMTSYCIUpOKbGgA2vMMm4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6PznnTs89qsjqyfHmU2y1dTJJAnt2Fmz9QnQsI+Xg/c=;
+ b=X1CiZdmITfCU4UwqB7JE7ChBIifg4r25icgnKNnOhJEm6gkbIlEoAZOjkYhwLYPxP2K7jy50QTa9NV5FOJ7yCGMAdNAEt6WnnjuWfmchWsEuNV4MAuUuVXwou1Y6LIzuExxFS3QYYJrcN1VXLdCYi0OKzxxGHjtNkOc4PSKrrzSTGQcYoNZe/44ijbfQdN/nSscuAG1wLPVH0zwFiCmcWQ9vVT1khk3JF0cgmYffoMw0fkpLLJKX4pRw76IQgCQ4jD4UmbmFRha97tHheDkn/nnnN265UtZkL4dFi1PJCCyUKAixxs8HjwXgRx4lnvgQjAy6KLC0qB0bI1HFL9j8Vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM4PR15MB5380.namprd15.prod.outlook.com (2603:10b6:8:63::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6455.33; Tue, 6 Jun 2023 22:46:53 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Tue, 6 Jun 2023
+ 22:46:53 +0000
+Message-ID: <b896db61-2ee1-44c8-ebb7-930e3033df42@meta.com>
+Date: Tue, 6 Jun 2023 15:46:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH 1/2] [v3] bpf: hide unused bpf_patch_call_args
+To: Arnd Bergmann <arnd@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230602135128.1498362-1-arnd@kernel.org>
+Content-Language: en-US
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230602135128.1498362-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0061.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::38) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DM4PR15MB5380:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5989c925-a04b-42fe-88fd-08db66dfec30
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	VMRBEmqqKhuGgC7/TpLVakmEMrsC0bXyv0eoyuaHz82j/5H0q2E9Z8dV7yt5GlSl74n1NLfpRPxnmq3fDR4qCuFxu+/QX6wLRWj74jVH1WH8sNw+Fo5dBTqESX26QFeSq+RoKzo6UttWaegiFsrLvULQseZhiYTs666fwR2GdULSZoQi32aZZdGNDMd7m3GGhMQ5ywKkKni3agLjRktDPTW7mgxCVMEmG2V61v3rkAPJGDz9hwZ1OApUsJwLkln04FdvS6Drjzz/NCsMXGjXrn/L+OPuKDS0oM/h5TCTG5BUXyGPvO8y/fU9aatUE3VRnkB06ZhnSRitZHL4URx2NhN3r774bbo2kS+pMrUYXbmvoSOa6mLEVMTHtlt7PNP7LvcPY0fQD6ribwGsF3LUeKCOkHQBJcdBswN5jsWxCHos5Lo9hpcUYootLDNQqwAYFSll/+EUt0OpOYgeFr8eK1wdPbWKpkzbo3CFZinEI39OOG2s17oTcd6XsZBXKFX9+/COHVPGplm5LbTMd4feriM2ZKygjomTIYeusOMFjCRtgBKuiFPxygrM2I0hGhyvzKD3IP+rLCCx19B7DYRoY4dQ/Iab2h4/M650uuBMapJIrzwEwpnKVn2hBiYlpWrzfIl46MbNYH/Wjsavz+UpWQ==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(376002)(396003)(39860400002)(451199021)(54906003)(110136005)(478600001)(66556008)(8936002)(8676002)(7416002)(2906002)(36756003)(31696002)(5660300002)(86362001)(4744005)(316002)(4326008)(66476007)(66946007)(38100700002)(6506007)(2616005)(41300700001)(53546011)(6512007)(83380400001)(186003)(6486002)(31686004)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?cGNyUE1XajIvaXBudURHQUZzYnV0cHdjc0xEeWpZZjhnbGFrUlU0dWhNQlBQ?=
+ =?utf-8?B?WjBzSHh2VkdITTA3U0xNV29KWGxudm5PUXY1bzVpR2lGKzU0NzkvQkZSNE96?=
+ =?utf-8?B?NnhVY0s1cWFPRjVaZkxENUlPbW1JbC9kWjNUN2JHQlNDTU9Xc0YxWHRHN0Vt?=
+ =?utf-8?B?N2dXdmxBNWthd3RBMlBaUVZGVVFJUEMzTHpGekdveGE0bGZjU0Z3L0ZXcW5N?=
+ =?utf-8?B?N2g3dUYxSjhpT01DTzI4ajhGNmV6cHhMM2t3YkVJNmV4b2JGaWZrNmJSRzdO?=
+ =?utf-8?B?TmlZb3k2YS90OGViWGZBSk9pS2hkckx3bmMyWWlMM2hpTXZha3VncWpkbzk3?=
+ =?utf-8?B?TWdjZHFGRjVjMWVaMTUzME5aYk84MUJNeUdPcmZISWhHazJqM1pqSy9Kd2pT?=
+ =?utf-8?B?WXVVU3REUnBaODJpTk10bWp5UVg0OEFFbmI5OVZ6Tk44V09IU3Z3bVNDU1FS?=
+ =?utf-8?B?WVdpa2FITlBJeUNoVVYraXpFNjVzd0RkK3lCL0FoRVdrSlJ2bnRGSkhLeTA1?=
+ =?utf-8?B?clVZbUljUFplSTdTaWFiWlVuWlFiWFlPNFZMWkFaUU5mY01Ba29vOGRmWE5P?=
+ =?utf-8?B?THljdHlpQWw4OXVhdUVRa25NMDhSQnVuNHMrRkV3ZG9qWmc2K1h4c3dzUGlm?=
+ =?utf-8?B?Yml2QmtCTzBweG1rY3B0SUJrWnc1UG9odXRwOGYva0ZiYi9Icmk0TGdqd0E1?=
+ =?utf-8?B?R0wvczJLak5QSXRqRERjUlJuVGJDTi92eUN3a3A5TzhGTzZkbUQ4ZDJ4L2FH?=
+ =?utf-8?B?WlBncDhJZ3lSK3M5OEY2clFjZStKNHQ3VmI1aG0rSEZKVDhsOEphdU03Wklh?=
+ =?utf-8?B?V1BQMEs5b2IrbkxCYmJUcG9rOGFZQkI5MXd2VXgwWFZwQ2E1cGRobG1yRUxk?=
+ =?utf-8?B?VnZzWmVqZ3RHdStvUk5mMlZydmNjVDVBcms2ais4Y1FXcDdJTVlHZk4ySzR4?=
+ =?utf-8?B?akdjd3lSV2huYlY1Y1JPT3YzUEFvV0RqZXJPWE5SSjY1M050Yi9wT1VFWWhq?=
+ =?utf-8?B?NHJBTnk3OXI3bXNxejE5WWRmWHlDYkpIYldVd205a3dmaFBYNlVPWTBidmp0?=
+ =?utf-8?B?bTVYVHR5ZGd6WWY2dUdNTFdSWnozZHAybmo1MHIzUWg0TEdqNkQ1QW9tSnhX?=
+ =?utf-8?B?RjBhbFdhY0hWZEFESUdveVNPbitNeVRJbUhNMWI5alFJbjhqZjRRMEYwRlk5?=
+ =?utf-8?B?N2xYV2k1eGJlbXR0TytlWWNkUkdpbVllcFlJdzlXYWJjMDg5QkhNbmlqK1By?=
+ =?utf-8?B?SnA4Nms4azdDUnIxZmhjQUNISzFJS0RSWkk0TE9Ba2Q0TlV1cWkrdy9odEl6?=
+ =?utf-8?B?WlZydzJuNm5aQkZiSm5ITUhYRng4WXd4My9yQjF2aElMdk1uczMxdC9YT2FH?=
+ =?utf-8?B?TjlZNGZEVVJZYTAraTl4bjRaUmN6ZHZwVUNvNGhBUWZFOVAxa0xRaThQaDJq?=
+ =?utf-8?B?T2FnNWwwRzFrWEloM2tJVDFqeXJSZUJSakRzVDl0dVpQMDNJQ2E0RlJsZzJk?=
+ =?utf-8?B?OWppN0VpbnoxeHkrVEx3eXJpMkpLN1RlUXJzTWdLWThIVW9XMm5qMUdPbU9X?=
+ =?utf-8?B?MUJYaThJb3NCeUQzUlpZbXZPWkV4ZTVOclA3aTRJK09DZGRleis2dmVwak5I?=
+ =?utf-8?B?b293TVR5M0dPQlZ0Nkk0RGNRYjJxcisyU3luNlNtck5qRlBvam1jVzJNUm5V?=
+ =?utf-8?B?OTQwcERLMGV4c3JOVUMyT3RxNnl3UHNML1pDT0hwZzRYRnk3bUxOUW51Rkl4?=
+ =?utf-8?B?QlVyYXFpR3BIb3VqK0s0YmRDOHBjNjVEdTBHVTFJN0dXMXhyczdDYjNPMDZI?=
+ =?utf-8?B?b0VzOVJDRnRDRGEyL2dvZ2p2bUtCQWF5Nk1yY1NONDNSV2ZZRGYrYmR4SzNU?=
+ =?utf-8?B?VEw5a0lmZ2ZpUlpwbXNtZFdTRE15cUlhTTVSR0p0ektZMnFYU01pNHlmaXR0?=
+ =?utf-8?B?UHFKdVh0NmpkMnJ2WjBsbTM2Um1nakV1d0Yzbm1HbXBZTDRKanhucHRqK01V?=
+ =?utf-8?B?UHBBTU1NaGU4VnJYRlRWTGZaUEhLMGQxYVZwY1lPTTE3RGZDUWpwZW01NlUr?=
+ =?utf-8?B?aUFFUDRQV3hSTS9LVUtTaklRUHVaY0pPSUgvaGlMazdqd1V6YmdkT0RlTWVZ?=
+ =?utf-8?B?Mld3WVQ4UDlEWFgzeE1FRkRubTY1Y1FFSG55MjVaK0x2Z2wzQU9hUXRVV092?=
+ =?utf-8?B?QlE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5989c925-a04b-42fe-88fd-08db66dfec30
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2023 22:46:53.1636
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AEoMxVetOE1XHANL8+JcYRT/gXXDzHoznoj90hMN3XWUl85ojSF/ZGv2B5L02FOi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR15MB5380
+X-Proofpoint-ORIG-GUID: QW6NU6R7Lo-NeObI6ZLk-ebOrAhoA17W
+X-Proofpoint-GUID: QW6NU6R7Lo-NeObI6ZLk-ebOrAhoA17W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-06_16,2023-06-06_02,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Verify that the following example is rejected by verifier:
 
-  r9 = ... some pointer with range X ...
-  r6 = ... unbound scalar ID=a ...
-  r7 = ... unbound scalar ID=b ...
-  if (r6 > r7) goto +1
-  r7 = r6
-  if (r7 > X) goto exit
-  r9 += r6
-  *(u64 *)r9 = Y
 
-Also add test cases to check that check_alu_op() for BPF_MOV instruction does
-not allocate scalar ID if source register is a constant.
+On 6/2/23 6:50 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This function is only used when CONFIG_BPF_JIT_ALWAYS_ON is disabled,
+> but CONFIG_BPF_SYSCALL is enabled. When both are turned off, the
+> prototype is missing but the unused function is still compiled,
+> as seen from this W=1 warning:
+> 
+> kernel/bpf/core.c:2075:6: error: no previous prototype for 'bpf_patch_call_args' [-Werror=missing-prototypes]
+> 
+> Add a matching #ifdef for the definition to leave it out.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_scalar_ids.c | 184 ++++++++++++++++++
- 1 file changed, 184 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-index 0f1071847490..00d80ba525d7 100644
---- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-@@ -321,4 +321,188 @@ __naked void precision_two_ids(void)
- 	: __clobber_all);
- }
- 
-+/* Verify that check_ids() is used by regsafe() for scalars.
-+ *
-+ * r9 = ... some pointer with range X ...
-+ * r6 = ... unbound scalar ID=a ...
-+ * r7 = ... unbound scalar ID=b ...
-+ * if (r6 > r7) goto +1
-+ * r6 = r7
-+ * if (r6 > X) goto exit
-+ * r9 += r7
-+ * *(u8 *)r9 = Y
-+ *
-+ * The memory access is safe only if r7 is bounded,
-+ * which is true for one branch and not true for another.
-+ */
-+SEC("socket")
-+__failure __msg("register with unbounded min value")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked void check_ids_in_regsafe(void)
-+{
-+	asm volatile (
-+	/* Bump allocated stack */
-+	"r1 = 0;"
-+	"*(u64*)(r10 - 8) = r1;"
-+	/* r9 = pointer to stack */
-+	"r9 = r10;"
-+	"r9 += -8;"
-+	/* r7 = ktime_get_ns() */
-+	"call %[bpf_ktime_get_ns];"
-+	"r7 = r0;"
-+	/* r6 = ktime_get_ns() */
-+	"call %[bpf_ktime_get_ns];"
-+	"r6 = r0;"
-+	/* if r6 > r7 is an unpredictable jump */
-+	"if r6 > r7 goto l1_%=;"
-+	"r7 = r6;"
-+"l1_%=:"
-+	/* if r6 > 4 exit(0) */
-+	"if r7 > 4 goto l2_%=;"
-+	/* Access memory at r9[r7] */
-+	"r9 += r6;"
-+	"r0 = *(u8*)(r9 + 0);"
-+"l2_%=:"
-+	"r0 = 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
-+/* Similar to check_ids_in_regsafe.
-+ * The l0 could be reached in two states:
-+ *
-+ *   (1) r6{.id=A}, r7{.id=A}, r8{.id=B}
-+ *   (2) r6{.id=B}, r7{.id=A}, r8{.id=B}
-+ *
-+ * Where (2) is not safe, as "r7 > 4" check won't propagate range for it.
-+ * This example would be considered safe without changes to
-+ * mark_chain_precision() to track scalar values with equal IDs.
-+ */
-+SEC("socket")
-+__failure __msg("register with unbounded min value")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked void check_ids_in_regsafe_2(void)
-+{
-+	asm volatile (
-+	/* Bump allocated stack */
-+	"r1 = 0;"
-+	"*(u64*)(r10 - 8) = r1;"
-+	/* r9 = pointer to stack */
-+	"r9 = r10;"
-+	"r9 += -8;"
-+	/* r8 = ktime_get_ns() */
-+	"call %[bpf_ktime_get_ns];"
-+	"r8 = r0;"
-+	/* r7 = ktime_get_ns() */
-+	"call %[bpf_ktime_get_ns];"
-+	"r7 = r0;"
-+	/* r6 = ktime_get_ns() */
-+	"call %[bpf_ktime_get_ns];"
-+	"r6 = r0;"
-+	/* scratch .id from r0 */
-+	"r0 = 0;"
-+	/* if r6 > r7 is an unpredictable jump */
-+	"if r6 > r7 goto l1_%=;"
-+	/* tie r6 and r7 .id */
-+	"r6 = r7;"
-+"l0_%=:"
-+	/* if r7 > 4 exit(0) */
-+	"if r7 > 4 goto l2_%=;"
-+	/* Access memory at r9[r7] */
-+	"r9 += r6;"
-+	"r0 = *(u8*)(r9 + 0);"
-+"l2_%=:"
-+	"r0 = 0;"
-+	"exit;"
-+"l1_%=:"
-+	/* tie r6 and r8 .id */
-+	"r6 = r8;"
-+	"goto l0_%=;"
-+	:
-+	: __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
-+/* Check that scalar IDs *are not* generated on register to register
-+ * assignments if source register is a constant.
-+ *
-+ * If such IDs *are* generated the 'l1' below would be reached in
-+ * two states:
-+ *
-+ *   (1) r1{.id=A}, r2{.id=A}
-+ *   (2) r1{.id=C}, r2{.id=C}
-+ *
-+ * Thus forcing 'if r1 == r2' verification twice.
-+ */
-+SEC("socket")
-+__success __log_level(2)
-+__msg("11: (1d) if r3 == r4 goto pc+0")
-+__msg("frame 0: propagating r3,r4")
-+__msg("11: safe")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked void no_scalar_id_for_const(void)
-+{
-+	asm volatile (
-+	"call %[bpf_ktime_get_ns];"
-+	/* unpredictable jump */
-+	"if r0 > 7 goto l0_%=;"
-+	/* possibly generate same scalar ids for r3 and r4 */
-+	"r1 = 0;"
-+	"r1 = r1;"
-+	"r3 = r1;"
-+	"r4 = r1;"
-+	"goto l1_%=;"
-+"l0_%=:"
-+	/* possibly generate different scalar ids for r3 and r4 */
-+	"r1 = 0;"
-+	"r2 = 0;"
-+	"r3 = r1;"
-+	"r4 = r2;"
-+"l1_%=:"
-+	/* predictable jump, marks r3 and r4 precise */
-+	"if r3 == r4 goto +0;"
-+	"r0 = 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
-+/* Same as no_scalar_id_for_const() but for 32-bit values */
-+SEC("socket")
-+__success __log_level(2)
-+__msg("11: (1e) if w3 == w4 goto pc+0")
-+__msg("frame 0: propagating r3,r4")
-+__msg("11: safe")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__naked void no_scalar_id_for_const32(void)
-+{
-+	asm volatile (
-+	"call %[bpf_ktime_get_ns];"
-+	/* unpredictable jump */
-+	"if r0 > 7 goto l0_%=;"
-+	/* possibly generate same scalar ids for r3 and r4 */
-+	"w1 = 0;"
-+	"w1 = w1;"
-+	"w3 = w1;"
-+	"w4 = w1;"
-+	"goto l1_%=;"
-+"l0_%=:"
-+	/* possibly generate different scalar ids for r3 and r4 */
-+	"w1 = 0;"
-+	"w2 = 0;"
-+	"w3 = w1;"
-+	"w4 = w2;"
-+"l1_%=:"
-+	/* predictable jump, marks r1 and r2 precise */
-+	"if w3 == w4 goto +0;"
-+	"r0 = 0;"
-+	"exit;"
-+	:
-+	: __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.40.1
-
+Acked-by: Yonghong Song <yhs@fb.com>
 
