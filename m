@@ -1,183 +1,149 @@
-Return-Path: <bpf+bounces-1948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7147C724AC8
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 20:07:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82D4724B09
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 20:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7111C20B50
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 18:06:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A23682810AD
+	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 18:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1918F22E34;
-	Tue,  6 Jun 2023 18:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B760A22E3E;
+	Tue,  6 Jun 2023 18:17:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9758619915
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 18:06:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F07CC433D2;
-	Tue,  6 Jun 2023 18:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4443719915
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 18:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27886C433EF;
+	Tue,  6 Jun 2023 18:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686074810;
-	bh=5Gv8bpl9Smv7f4Wf/gNDeL5qb+2Vhal7veaGzxxW9h4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QG+S7N4W92JgGrjQPV20tZXJwqkKGvE12l/vxcYJr5F3byHRofOt40Z0xZ4WUd7vs
-	 Ybd3CBWKXuhJL7Fk6cv8lrtyNEzc9wGBiVSV0ZEcCelCzSAftmWi0An/bWYqMQx2bZ
-	 XN14vIY7U61l3V9j1TknTIwF76tMfjHF8OFKWOxGa4yYqQNok5saFHGZWBr4A+MVd5
-	 RULiciD/ghcvvkcRhrmPyDEIT9MYIODUtIiuje/B6XgD6W+kv4L0STkSamrZZ+eyRS
-	 Z6b6yo7w5cpSS4Gj2f5n2PItG2DIciZGzDNImvCKr6nL+1QNvrGC+iLE/7XIxacoTN
-	 JbYl6CPdMFtuQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id B478440692; Tue,  6 Jun 2023 15:06:16 -0300 (-03)
-Date: Tue, 6 Jun 2023 15:06:16 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@arm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2 1/4] perf build: Add ability to build with a generated
- vmlinux.h
-Message-ID: <ZH91mGxFpDPcCFKY@kernel.org>
-References: <20230605202712.1690876-1-irogers@google.com>
- <20230605202712.1690876-2-irogers@google.com>
- <ZH6gZgcwAbDrEiqX@krava>
- <CAP-5=fWgQDrgDJ_UFuo_G5NaCzR5vWrRyvQ-_qpvFP0p0q18+w@mail.gmail.com>
+	s=k20201202; t=1686075435;
+	bh=NRAwuCnQ/k1zoOM/FoA7z14DKwkPpVT9rfhGHnp4WB4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GlzWBQuGtTIkgWxSm6conpdPlDg8lnSzJ1UeYGXhs8CP5rAaEDZT6p6HCJSEBdMds
+	 vQv1KfZ91Jf57pLZoHXJFWCnw/2zJshlFBa2E32dGBgZVZq5R5z8DYeZRWXvJiHEGx
+	 AdOPlW2YtPlukl9/M9ue/dmbKLNvWE2xajxRcBK3wcrHIaYdLFtPVkL+J2NBq7CDqC
+	 E73XUtARSL8rZZCqwDHhydkzdCgJ3outWO6SlV89GM9ezIl7Dv5mMlYR3mDcHY67wC
+	 xrfdR/DQsUAQFYAlH18mlVtSTZV3wxmPznsqHCwVEURMhKZj4WOuQlfk+NbMF5nIcQ
+	 Z7icNA5byfK+Q==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: stable@vger.kernel.org,
+	Stanislav Fomichev <sdf@google.com>,
+	Anastasios Papagiannis <tasos.papagiannnis@gmail.com>,
+	bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Hao Luo <haoluo@google.com>
+Subject: [PATCHv2 bpf] bpf: Add extra path pointer check to d_path helper
+Date: Tue,  6 Jun 2023 11:17:14 -0700
+Message-Id: <20230606181714.532998-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWgQDrgDJ_UFuo_G5NaCzR5vWrRyvQ-_qpvFP0p0q18+w@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
 
-Em Mon, Jun 05, 2023 at 09:25:54PM -0700, Ian Rogers escreveu:
-> On Mon, Jun 5, 2023 at 7:57 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Mon, Jun 05, 2023 at 01:27:09PM -0700, Ian Rogers wrote:
-> > > Commit a887466562b4 ("perf bpf skels: Stop using vmlinux.h generated
-> > > from BTF, use subset of used structs + CO-RE") made it so that
-> > > vmlinux.h was uncondtionally included from
-> > > tools/perf/util/vmlinux.h. This change reverts part of that change (so
-> > > that vmlinux.h is once again generated) and makes it so that the
-> > > vmlinux.h used at build time is selected from the VMLINUX_H
-> > > variable. By default the VMLINUX_H variable is set to the vmlinux.h
-> > > added in change a887466562b4, but if GEN_VMLINUX_H=1 is passed on the
-> > > build command line then the previous generation behavior kicks in.
-> > >
-> > > The build with GEN_VMLINUX_H=1 currently fails with:
-> > > ```
-> > > util/bpf_skel/lock_contention.bpf.c:419:8: error: redefinition of 'rq'
-> > > struct rq {};
-> > >        ^
-> > > /tmp/perf/util/bpf_skel/.tmp/../vmlinux.h:45630:8: note: previous definition is here
-> > > struct rq {
-> > >        ^
-> > > 1 error generated.
-> > > ```
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/perf/Makefile.config                       |  4 ++++
-> > >  tools/perf/Makefile.perf                         | 16 +++++++++++++++-
-> > >  tools/perf/util/bpf_skel/.gitignore              |  1 +
-> > >  tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h |  0
-> > >  4 files changed, 20 insertions(+), 1 deletion(-)
-> > >  rename tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h (100%)
-> >
-> > looks good, but I don't understand why you moved the vmlinux.h
-> >
-> > jirka
-> 
-> Dumb reason, as headers in the same directory take priority, I had to
-> move the vmlinux.h out of the directory with the C code for skeletons
-> so that it could be selected via a -I.
+Anastasios reported crash on stable 5.15 kernel with following
+bpf attached to lsm hook:
 
-Can this be in a separate patch, i.e. moving vmlinux to a separate
-directory? I was going to cherry pick the 'struct rq' fix but then it
-touches the vmlinux/vmlinux.h file that is in this first patch that has
-review comments.
+  SEC("lsm.s/bprm_creds_for_exec")
+  int BPF_PROG(bprm_creds_for_exec, struct linux_binprm *bprm)
+  {
+          struct path *path = &bprm->executable->f_path;
+          char p[128] = { 0 };
 
-- Arnaldo
+          bpf_d_path(path, p, 128);
+          return 0;
+  }
+
+but bprm->executable can be NULL, so bpf_d_path call will crash:
+
+  BUG: kernel NULL pointer dereference, address: 0000000000000018
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
+  ...
+  RIP: 0010:d_path+0x22/0x280
+  ...
+  Call Trace:
+   <TASK>
+   bpf_d_path+0x21/0x60
+   bpf_prog_db9cf176e84498d9_bprm_creds_for_exec+0x94/0x99
+   bpf_trampoline_6442506293_0+0x55/0x1000
+   bpf_lsm_bprm_creds_for_exec+0x5/0x10
+   security_bprm_creds_for_exec+0x29/0x40
+   bprm_execve+0x1c1/0x900
+   do_execveat_common.isra.0+0x1af/0x260
+   __x64_sys_execve+0x32/0x40
+
+It's problem for all stable trees with bpf_d_path helper, which was
+added in 5.9.
+
+This issue is fixed in current bpf code, where we identify and mark
+trusted pointers, so the above code would fail even to load.
+
+For the sake of the stable trees and to workaround potentially broken
+verifier in the future, adding the code that reads the path object from
+the passed pointer and verifies it's valid in kernel space.
+
+Cc: stable@vger.kernel.org # v5.9+
+Fixes: 6e22ab9da793 ("bpf: Add d_path helper")
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Anastasios Papagiannis <tasos.papagiannnis@gmail.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/trace/bpf_trace.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+v2 changes:
+  - used copied path object pointer for d_path call [Alexei]
+  - added ack [Stanislav]
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 9a050e36dc6c..1f4b07da327a 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -900,13 +900,23 @@ static const struct bpf_func_proto bpf_send_signal_thread_proto = {
  
-> Thanks,
-> Ian
-> 
-> > >
-> > > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > > index a794d9eca93d..08d4e7eaa721 100644
-> > > --- a/tools/perf/Makefile.config
-> > > +++ b/tools/perf/Makefile.config
-> > > @@ -680,6 +680,10 @@ ifdef BUILD_BPF_SKEL
-> > >    CFLAGS += -DHAVE_BPF_SKEL
-> > >  endif
-> > >
-> > > +ifndef GEN_VMLINUX_H
-> > > +  VMLINUX_H=$(src-perf)/util/bpf_skel/vmlinux/vmlinux.h
-> > > +endif
-> > > +
-> > >  dwarf-post-unwind := 1
-> > >  dwarf-post-unwind-text := BUG
-> > >
-> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > index f48794816d82..f1840af195c0 100644
-> > > --- a/tools/perf/Makefile.perf
-> > > +++ b/tools/perf/Makefile.perf
-> > > @@ -1080,7 +1080,21 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
-> > >       $(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
-> > >               OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
-> > >
-> > > -$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_TMP_OUT)
-> > > +VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                         \
-> > > +                  $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
-> > > +                  ../../vmlinux                                      \
-> > > +                  /sys/kernel/btf/vmlinux                            \
-> > > +                  /boot/vmlinux-$(shell uname -r)
-> > > +VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
-> > > +
-> > > +$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-> > > +ifeq ($(VMLINUX_H),)
-> > > +     $(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
-> > > +else
-> > > +     $(Q)cp "$(VMLINUX_H)" $@
-> > > +endif
-> > > +
-> > > +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) $(SKEL_OUT)/vmlinux.h | $(SKEL_TMP_OUT)
-> > >       $(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -Wall -Werror $(BPF_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
-> > >         -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@
-> > >
-> > > diff --git a/tools/perf/util/bpf_skel/.gitignore b/tools/perf/util/bpf_skel/.gitignore
-> > > index 7a1c832825de..cd01455e1b53 100644
-> > > --- a/tools/perf/util/bpf_skel/.gitignore
-> > > +++ b/tools/perf/util/bpf_skel/.gitignore
-> > > @@ -1,3 +1,4 @@
-> > >  # SPDX-License-Identifier: GPL-2.0-only
-> > >  .tmp
-> > >  *.skel.h
-> > > +vmlinux.h
-> > > diff --git a/tools/perf/util/bpf_skel/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > > similarity index 100%
-> > > rename from tools/perf/util/bpf_skel/vmlinux.h
-> > > rename to tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > > --
-> > > 2.41.0.rc0.172.g3f132b7071-goog
-> > >
-
+ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+ {
++	struct path copy;
+ 	long len;
+ 	char *p;
+ 
+ 	if (!sz)
+ 		return 0;
+ 
+-	p = d_path(path, buf, sz);
++	/*
++	 * The path pointer is verified as trusted and safe to use,
++	 * but let's double check it's valid anyway to workaround
++	 * potentially broken verifier.
++	 */
++	len = copy_from_kernel_nofault(&copy, path, sizeof(*path));
++	if (len < 0)
++		return len;
++
++	p = d_path(&copy, buf, sz);
+ 	if (IS_ERR(p)) {
+ 		len = PTR_ERR(p);
+ 	} else {
 -- 
+2.40.1
 
-- Arnaldo
 
