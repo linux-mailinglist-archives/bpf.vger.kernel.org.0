@@ -1,89 +1,85 @@
-Return-Path: <bpf+bounces-1993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F043B725FC9
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 14:42:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D22772602B
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 14:59:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C63B1C208EC
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 12:42:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B189280FB3
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 12:59:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC4533C8C;
-	Wed,  7 Jun 2023 12:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B518AC8EA;
+	Wed,  7 Jun 2023 12:59:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A14E1426E;
-	Wed,  7 Jun 2023 12:41:08 +0000 (UTC)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB901988;
-	Wed,  7 Jun 2023 05:40:43 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51491b87565so1475729a12.1;
-        Wed, 07 Jun 2023 05:40:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917758F57;
+	Wed,  7 Jun 2023 12:59:23 +0000 (UTC)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01980173A;
+	Wed,  7 Jun 2023 05:59:22 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-651ffcc1d3dso4220980b3a.3;
+        Wed, 07 Jun 2023 05:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686141600; x=1688733600;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pBz2MV4ztkt691mrrB3N7hlq0WVgCYoQcpwdekr5XV0=;
-        b=r2axeMD7pa5eUbn2PSOaNvou4awVkiAgtBMdK05OnUTiPTCNRzbsd93yB5KWdJAJBx
-         aiuEEXNMcyJ57TyABJqi5ZxU734RrU2egayQDci3VyFmGNurNFS1JQ7HLvZQCpU48UqE
-         Ap9kQUa1/6B6ePXRseYcrMLJ1b0vTVlLh2u7cYQFlSuTrpqW2zRceIkVkhxtt/609MxD
-         YrUZfExyl4o8aph+EGVGOEQ5BewO7xJXi6lPvKzfMxt5kZ+P3AvVHuzQ8UCCBYcVDPBC
-         /I+XnERJ3HJbel9+ZQj8JlFFpSO9vaV+pUiWtKsKg4rer9L7QV42hJ9rneqmeSOu2YaJ
-         wwjg==
+        d=gmail.com; s=20221208; t=1686142761; x=1688734761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=txvj5oWtc/P31GV0Uh1xo1g1fJq1FY4eNv//yMt29W4=;
+        b=YEmcdpxFcB9I3H+YO71oKMJvqeEPaPcKcpdXTTDvzrTc7gGD8VD4dGMLnaMfPGrlEK
+         kgd/2SmEYn0uauk1LiXglu9G5fkPmtGTQwBYi3Vh5UJHui64HY8Y7OxkJqq5NsUksjDV
+         SuNMs7eTRqhxTk47UMXzVWZPdGWghqJ9+cG21kmfzB3Exxa+3WN8XUBC/AlI7mWZWZhT
+         wifR3esCLt84eJqCP+UOTIEcd0MymXErhnLDIZOEYH0aDMMuvippZcq3LG5QtjEYl6Ag
+         +XVOgenvomX9fmzX+rjQTVMR5NbrX9UeLMe6O1O1SlEsbKMcTMsWnU620A84ovYMLUhP
+         2MvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686141600; x=1688733600;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pBz2MV4ztkt691mrrB3N7hlq0WVgCYoQcpwdekr5XV0=;
-        b=cv/gEE7hIzttfpJK+ZSzGESztde3c2/lmm1XcqO9c8BdddnbITBg9y1U7ELFlLc7tZ
-         nTNCAoDKzjM9VL+QE+WgvZaOo5ZEO5dkK2D8ltTP1kKitL7F2z9BlOIrpdjMLO/w4wnP
-         kR/pv+aEJlXY4Vaq8BOpsayFm1zEolqruTj9MBtieI6QK8aIvS9/p1g2XGHUyAmPOCDP
-         6VZO4f7a+osdZfQrAZOsVeuvBBrPuUBbJ05kBJp0J+rnePuIemcRScTdSeUYaqAqSvUi
-         cGvqI6kEPY6oLjwziogyaZiuGJgvAVEnMlGRKt/kXtGTGDK5pj0O1KmtjsOvYEVKs0Jl
-         +afA==
-X-Gm-Message-State: AC+VfDw+v9RgtmZp42lfULGoFPl3pzEAFn91rod7+mmaDQrbTCIGqleL
-	/d5t9BIFnqNGymej2JaToRxXNlgp3WXWROW/Rh8=
-X-Google-Smtp-Source: ACHHUZ6FxDnAxua6geAAvzRbOYl0As0JGMHFLUcojlHJZyN1WrWlLUBxp3/J6donrAgh3Njt7XtM1Q==
-X-Received: by 2002:aa7:c507:0:b0:50c:3dc:2262 with SMTP id o7-20020aa7c507000000b0050c03dc2262mr3653027edq.39.1686141599613;
-        Wed, 07 Jun 2023 05:39:59 -0700 (PDT)
-Received: from localhost (tor-exit-48.for-privacy.net. [185.220.101.48])
-        by smtp.gmail.com with ESMTPSA id c26-20020aa7df1a000000b0051560edc8d4sm6151436edy.45.2023.06.07.05.39.59
+        d=1e100.net; s=20221208; t=1686142761; x=1688734761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=txvj5oWtc/P31GV0Uh1xo1g1fJq1FY4eNv//yMt29W4=;
+        b=VOAWvqZmrv8J4RXRGWW2OBsUFdXKv55AK1daE/6/fayEF1Iz4DIC9ltcoGSy7Uy/uB
+         3twsOsG5OYBtO4B+GuuhTL+DV7yIXIid8+F6mR9G+RN0DdsnB66mWOFHLWq+BMrzHrAJ
+         2gw3cmDLvyJlxBuKq5Tvr9ph85tm0tOdO7UQDyAH98rB0mb2GoQktcqJZcAOz1YLj6D+
+         BXYidzSSmP29Y2VEFmNCCxzigGfzBv0kiZYft3tqbtMJLjdJphQVAdO+HGsbq14VdG/b
+         UaV25d9mJ83JBxsQO60bQ4e2y7l2I+Wh7oNBQCc17sKg2R08V3Ri9rHTdxcHvwEJ8SV9
+         WP5Q==
+X-Gm-Message-State: AC+VfDy7XqIVxM0aAhEXxVK7BB3Lb/QIo3E93SwI/To49eduWn4+8Kqc
+	d57N/aoMh0Wjw1o9M/IaoGU=
+X-Google-Smtp-Source: ACHHUZ468ZYczZiHpClqRTXLv/5ahvrbiFFb9eGS1+/PHOQ/d1103CXBz38d+Eo892TcGqARMCXQAQ==
+X-Received: by 2002:a05:6a00:14d4:b0:646:b165:1b29 with SMTP id w20-20020a056a0014d400b00646b1651b29mr4246139pfu.23.1686142761234;
+        Wed, 07 Jun 2023 05:59:21 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.83])
+        by smtp.gmail.com with ESMTPSA id p1-20020a62ab01000000b0065434edd521sm7094982pff.196.2023.06.07.05.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 05:39:59 -0700 (PDT)
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Maxim Mikityanskiy <maxim@isovalent.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: [PATCH bpf v4 2/2] selftests/bpf: Add test cases to assert proper ID tracking on spill
-Date: Wed,  7 Jun 2023 15:39:51 +0300
-Message-Id: <20230607123951.558971-3-maxtram95@gmail.com>
+        Wed, 07 Jun 2023 05:59:20 -0700 (PDT)
+From: menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To: alexei.starovoitov@gmail.com
+Cc: davem@davemloft.net,
+	dsahern@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	x86@kernel.org,
+	imagedong@tencent.com,
+	benbjiang@tencent.com,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/3] bpf, x86: allow function arguments up to 12 for TRACING
+Date: Wed,  7 Jun 2023 20:59:08 +0800
+Message-Id: <20230607125911.145345-1-imagedong@tencent.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230607123951.558971-1-maxtram95@gmail.com>
-References: <20230607123951.558971-1-maxtram95@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,114 +87,57 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Maxim Mikityanskiy <maxim@isovalent.com>
+From: Menglong Dong <imagedong@tencent.com>
 
-The previous commit fixed a verifier bypass by ensuring that ID is not
-preserved on narrowing spills. Add the test cases to check the
-problematic patterns.
+For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+on the kernel functions whose arguments count less than 6. This is not
+friendly at all, as too many functions have arguments count more than 6.
 
-Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
----
- .../selftests/bpf/progs/verifier_spill_fill.c | 79 +++++++++++++++++++
- 1 file changed, 79 insertions(+)
+Therefore, let's enhance it by increasing the function arguments count
+allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-index 136e5530b72c..6115520154e3 100644
---- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-@@ -371,4 +371,83 @@ __naked void and_then_at_fp_8(void)
- "	::: __clobber_all);
- }
- 
-+SEC("xdp")
-+__description("32-bit spill of 64-bit reg should clear ID")
-+__failure __msg("math between ctx pointer and 4294967295 is not allowed")
-+__naked void spill_32bit_of_64bit_fail(void)
-+{
-+	asm volatile ("					\
-+	r6 = r1;					\
-+	/* Roll one bit to force the verifier to track both branches. */\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0x8;					\
-+	/* Put a large number into r1. */		\
-+	r1 = 0xffffffff;				\
-+	r1 <<= 32;					\
-+	r1 += r0;					\
-+	/* Assign an ID to r1. */			\
-+	r2 = r1;					\
-+	/* 32-bit spill r1 to stack - should clear the ID! */\
-+	*(u32*)(r10 - 8) = r1;				\
-+	/* 32-bit fill r2 from stack. */		\
-+	r2 = *(u32*)(r10 - 8);				\
-+	/* Compare r2 with another register to trigger find_equal_scalars.\
-+	 * Having one random bit is important here, otherwise the verifier cuts\
-+	 * the corners. If the ID was mistakenly preserved on spill, this would\
-+	 * cause the verifier to think that r1 is also equal to zero in one of\
-+	 * the branches, and equal to eight on the other branch.\
-+	 */						\
-+	r3 = 0;						\
-+	if r2 != r3 goto l0_%=;				\
-+l0_%=:	r1 >>= 32;					\
-+	/* At this point, if the verifier thinks that r1 is 0, an out-of-bounds\
-+	 * read will happen, because it actually contains 0xffffffff.\
-+	 */						\
-+	r6 += r1;					\
-+	r0 = *(u32*)(r6 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
-+SEC("xdp")
-+__description("16-bit spill of 32-bit reg should clear ID")
-+__failure __msg("dereference of modified ctx ptr R6 off=65535 disallowed")
-+__naked void spill_16bit_of_32bit_fail(void)
-+{
-+	asm volatile ("					\
-+	r6 = r1;					\
-+	/* Roll one bit to force the verifier to track both branches. */\
-+	call %[bpf_get_prandom_u32];			\
-+	r0 &= 0x8;					\
-+	/* Put a large number into r1. */		\
-+	w1 = 0xffff0000;				\
-+	r1 += r0;					\
-+	/* Assign an ID to r1. */			\
-+	r2 = r1;					\
-+	/* 16-bit spill r1 to stack - should clear the ID! */\
-+	*(u16*)(r10 - 8) = r1;				\
-+	/* 16-bit fill r2 from stack. */		\
-+	r2 = *(u16*)(r10 - 8);				\
-+	/* Compare r2 with another register to trigger find_equal_scalars.\
-+	 * Having one random bit is important here, otherwise the verifier cuts\
-+	 * the corners. If the ID was mistakenly preserved on spill, this would\
-+	 * cause the verifier to think that r1 is also equal to zero in one of\
-+	 * the branches, and equal to eight on the other branch.\
-+	 */						\
-+	r3 = 0;						\
-+	if r2 != r3 goto l0_%=;				\
-+l0_%=:	r1 >>= 16;					\
-+	/* At this point, if the verifier thinks that r1 is 0, an out-of-bounds\
-+	 * read will happen, because it actually contains 0xffff.\
-+	 */						\
-+	r6 += r1;					\
-+	r0 = *(u32*)(r6 + 0);				\
-+	exit;						\
-+"	:
-+	: __imm(bpf_get_prandom_u32)
-+	: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
+In the 1st patch, we make arch_prepare_bpf_trampoline() support to copy
+function arguments in stack for x86 arch. Therefore, the maximum
+arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY and FEXIT.
+
+In the 2nd patch, we clean garbage value in upper bytes of the trampoline
+when we store the arguments from regs into stack.
+
+And the 3rd patches are for the testcases of the 1st patch.
+
+Changes since v2:
+- keep MAX_BPF_FUNC_ARGS still
+- clean garbage value in upper bytes in the 2nd patch
+- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+  bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
+
+Changes since v1:
+- change the maximun function arguments to 14 from 12
+- add testcases (Jiri Olsa)
+- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+
+
+Menglong Dong (3):
+  bpf, x86: allow function arguments up to 12 for TRACING
+  bpf, x86: clean garbage value in the stack of trampoline
+  selftests/bpf: add testcase for FENTRY/FEXIT with 6+ arguments
+
+ arch/x86/net/bpf_jit_comp.c                   | 105 +++++++++++++++---
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  19 +++-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   2 +
+ .../selftests/bpf/prog_tests/fexit_test.c     |   2 +
+ .../testing/selftests/bpf/progs/fentry_test.c |  21 ++++
+ .../testing/selftests/bpf/progs/fexit_test.c  |  33 ++++++
+ 7 files changed, 169 insertions(+), 17 deletions(-)
+
 -- 
 2.40.1
 
