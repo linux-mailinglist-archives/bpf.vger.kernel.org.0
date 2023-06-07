@@ -1,252 +1,183 @@
-Return-Path: <bpf+bounces-1975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26B5B725198
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF5472519E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:40:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0D41C20B98
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FC6C1C20B3A
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C8563F;
-	Wed,  7 Jun 2023 01:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F51B645;
+	Wed,  7 Jun 2023 01:40:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D557C
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 01:39:39 +0000 (UTC)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51D9199D;
-	Tue,  6 Jun 2023 18:39:36 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b1a3fa2cd2so78525261fa.1;
-        Tue, 06 Jun 2023 18:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686101975; x=1688693975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RREVzSgazm5gHGWWBCv6bqwAttkRk0fKIUglpJkCHk0=;
-        b=AsLFktq/4t7QYvK5BXPKgO3mQFiJUqhI9Z0l0VcnB2ZrJQbbLz0uf+VgUjScz9uJRl
-         VEwRuyBpV5Gh2/J8vara9CMSbbCG2u8d6ji2WAK53aHXlQEcKjHD0N8JjWgsvCz9eDVd
-         vGTsgeLIrFXTFHAUD8mclekY2MQwFFcaw3AY5lnuVz4F/OnUWuOcLVdZwWJFUvq9UoMt
-         eFgeX78VUDQviiwojSg1FPAoGOSLfPgk9QtTveQ4zkmj7K92/8UIrdicX9APLmm0Gx33
-         QQanlzpcWq5gYP0edEZToaw/owawBBfoNgpUuRHWf1ZVD05B4bTNS/vXHHS2E8iXtD8G
-         9XMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686101975; x=1688693975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RREVzSgazm5gHGWWBCv6bqwAttkRk0fKIUglpJkCHk0=;
-        b=BZKpVyd1vqham7+9xavrUK6h7dl7oD6iG0/0zJtMVMyGbXiLZaA3yDkudLL/jL9Z30
-         uaIC6sirkVDG1XjaBAY27jxpVekBt/rZF2nb8E1D8zunPDvEvCIjECIgAqhFtJEhJqMZ
-         DlxgSEmmbam0th1SG/LhRkslDG0UrQANTlZxzWdIto6k4leVsRerzg4Vd5i0l+zo4r4a
-         JDudW0AnOiAYLbfR4CrLu1U91smulN+OBSpyHCvwj0Q1mn413alnTRZYnizc8BW0WWLv
-         8SkTvIWnC5NnfxOaLOVfidomwSECGU0jBRK3AdOAW1Zx0yHROU7d1Xaop6BST/FbC4FV
-         QEYA==
-X-Gm-Message-State: AC+VfDwt9EC1cXuYneEvxjM0HNtYD4qjirjPxUqaBC04lkb7UobN7dGb
-	7y9AetiXf7HJLfvTFpn5nGNqVa9tzfiUgcc2eHjUaROb
-X-Google-Smtp-Source: ACHHUZ6RWL8EomOneQSoKd5xRmm97SuvtTHqI/r/Z3gnK0wNtk6eCANz57zd7GxGHtHv++DX7E07FPx/9YiLCfdeScw=
-X-Received: by 2002:a2e:6e10:0:b0:2af:29d2:2ffe with SMTP id
- j16-20020a2e6e10000000b002af29d22ffemr1782875ljc.15.1686101974745; Tue, 06
- Jun 2023 18:39:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055957C;
+	Wed,  7 Jun 2023 01:40:33 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1815E199D;
+	Tue,  6 Jun 2023 18:40:32 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 356IfbCx023703;
+	Tue, 6 Jun 2023 18:40:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=MzdJMzB3Z4poX+vCaBrJBBaPdS61Jr5mBMXvskl7Ijo=;
+ b=QS+ZfJe4VMERS1qWuLUL2qBvY5/DvVc7F5+GG6zkFxX0LJLQBysRgqGU+WRA2SYbpA+B
+ 1LnkoshYphH8fp10sNvJ4o8vpyHLY79Hsdw1YtbX+Ub9Wy6J9DYgYfVlH+sehHIcUvpM
+ pYbjB3bB0ZXwGbl82PxRpXOsqb1Qrugn5gnCKc94+wa968YMsTlZnnC6wzMO0FD7dEly
+ JGiAYlx+alGaHzADLqEf3wLCmKaaSBb0bWvsSSOuyGByKCiy8zzNEknPehxgZvKhwpjg
+ R7WObAISiVyEC21pmO2/cESuTLswK/8MhMISvRwmS2NaLXTUJhULKPxTxtzi20tqoKgS Kw== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r2a9bae7u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Jun 2023 18:40:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V9o7c1Y3hoOeQcl2c4JylgCoeUJGOYb8bz5PSFzuzWgKeYoJHXA+D4OsFs4vT1kblSTTsjmDNclspcC7FRuGL5obfKOoZJTxpfShIW7IlVSi2oMzqR124CEYV705YCzLxhbP8lWjJybF99VNy7jyD/EL8VHVUBvQRx5a1qHJoMz7Uc2dYqjmqNB1TGK5j736/0huVvGIJyFy5DUcaFQnRKExFS6B+d7qGu2L+vqd8NAT3I0X8i411ypeYnE4XT0wma7qfwtrlaSgYFz0Wl3ye3gLigGi5IfZgfELuJfdvkMp2yK++mC3eAdFQvrbUnBiiqsghipEe30a3dFo44WODQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MzdJMzB3Z4poX+vCaBrJBBaPdS61Jr5mBMXvskl7Ijo=;
+ b=mg/2VzCFqTZ1BAoRRYkRh+C3m3/tYLj4SwtnTkm7W1dBhE1M09iw+s97htgKRzXu0qmb8LDHNaAMnm4hSPBtw4y7/dasaXSleY6JlLggHy7kvO/EPUNcEcDO2u8hnedO3Ovw3m7GVTNKGyXmhEzSLI4FdU/LmEKKVLKYf0XlovhtEzuJhSMflVXb3jeZT3CcxCmWcFD9hVcBvXFmeY7cqpXq1GnJkmr/n60zgnVCROtn8+b9AZGJ9ajfsnn9wZAuLtygecHJsi5tNkuFdVWWe+6U8NUlgWb7OgkcT4sQIMlBLU/9Tv7szHFJ6tRkavGCbMzkdj6WyUlAyuryyRJlGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SJ0PR15MB4424.namprd15.prod.outlook.com (2603:10b6:a03:375::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Wed, 7 Jun
+ 2023 01:40:10 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
+ 01:40:09 +0000
+Message-ID: <959b03dd-6672-228d-9205-f543374977a1@meta.com>
+Date: Tue, 6 Jun 2023 18:40:05 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: Add test cases to assert proper
+ ID tracking on spill
+Content-Language: en-US
+To: Maxim Mikityanskiy <maxtram95@gmail.com>, bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman
+ <eddyz87@gmail.com>,
+        Maxim Mikityanskiy <maxim@isovalent.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20230606214246.403579-1-maxtram95@gmail.com>
+ <20230606214246.403579-3-maxtram95@gmail.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230606214246.403579-3-maxtram95@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR11CA0077.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
- <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com> <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
- <0bbf258f-668b-a691-e425-a4c1c6bfcc91@huaweicloud.com>
-In-Reply-To: <0bbf258f-668b-a691-e425-a4c1c6bfcc91@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 6 Jun 2023 18:39:23 -0700
-Message-ID: <CAADnVQL9OmzUEajiVN7DMHcpOUya6O-JvwU1zkPwxZ0D2XsPWg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory allocator
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
-	"houtao1@huawei.com" <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SJ0PR15MB4424:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2937e71-92ca-4333-71b5-08db66f82129
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	uAQkwn+33TWqQT7KuYzNmlaJMQEP0nBdVV0ZY/kUSxYJxcAcN5dh9aOH64gZ8F1JLY0k50eWSJmSa9CUvjSlz0Yk2Xiubc+r25NO7edVOTdICstZ1nRE2VrgW5O3KgxwaCTMkNi/YzPxqzi2VHtLMYsOKphgiEUfGp7ZkR1HJMbDQwGzHdzlNmErQXgbAGY3C/Jj/GNRCejhM6TFhKF9gAFrSH/N6AqzOsUk6RMY7qQLqRhzgFGZcZJP7+77VOyQyUjj4NW4+4n1EA04mRI6/mzFKsNESXwyzasjR3iTLDPiUlvaYV3tjsDl3SecfMBCW98YU5nN28PaiskFHarWPAfH4V6Ll6KgjwNubLy1mxBolts4EN8hOGiQkKISAy40Z/2/ahD20ogDkRuo125KQwrdK27HB4e3S7XJi5y6T+Zk60g04p7vPeXiPqAA8sQzMp0r2x11Nb+fTaxef8ugEr1c0Kv6yttdtbsE8O7dNFXVK/XrN1FwBhhL/Qt8egGksV8sWjIA72hYiX6CSDif6hqaLH/Ul22JvXtLxDLfhILX982LvdqKeJnpk2pqertmZZ1QSaGhh9n78IYlhxRZDzJ9t/v0edJ9+mX6qk70Rkdicfp1Am8d4x6dOxv6vmQBXkQgEuVoYS9kIxEa9YRoLw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(451199021)(6666004)(36756003)(6486002)(2616005)(31696002)(86362001)(38100700002)(6506007)(6512007)(53546011)(186003)(8936002)(5660300002)(8676002)(41300700001)(316002)(7416002)(2906002)(4744005)(31686004)(54906003)(478600001)(66946007)(4326008)(66476007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?U1ZxeFVsZG1xVFpmMlBuUElkN21ndnh5TWRtNThPb0JpMWhGQUhKZThqUUlU?=
+ =?utf-8?B?dStOLzMvaDBGMDZ2SlVqS09Td2VLUENVRTNNeWJlYTRwd3BucHZsTTNrRHBi?=
+ =?utf-8?B?RWw5NEpoekR3TmFxK3NQaTVncmJKektpOEpReWpyTWp0OXF2RVVZZW03OVFO?=
+ =?utf-8?B?UnNpOFpnMkIwK2ZlaTV6MXV4VVRpN2dET0tKT3NpQmkzc1VBb2FPckxXZ2lh?=
+ =?utf-8?B?OEdqUFA5MlFjdmhkVHIrYXBRVWpTN3VHTEg1YldjaHVPcFZPNWVocy9GazZn?=
+ =?utf-8?B?c1g1dzNSUGlNbnZIOFYxVXhQdUNiZ2g0TWtuMlZvMXJiSkw4WHU0U1dabEpr?=
+ =?utf-8?B?RXlGY05VUmtRdktnbVpnd3JzaVdFSW04RldYZnA3TkpVNzZJYWxlaC9mWDBu?=
+ =?utf-8?B?U0xLR29USUpKVDVTb0tXQnhHSExuek5WU3h4bVpTUGR6OXh5RHR5aVdHNWNO?=
+ =?utf-8?B?OUFnRU5YNEprY2Q2RldRWnRTcUlLWVNwWGV3bXpFQVllYWZIaXRiZ05Sb3VZ?=
+ =?utf-8?B?VDlhb28zL3E3bGdReURuN2dURlZ4clRCcTlsZnMvc1Y2dkd0eWJ6VDE0Q2d4?=
+ =?utf-8?B?MWFtR3djRDVhanpkdXR2VU5vK2hxLytld2wvemtPQ0tDejVmemNyeExxRHln?=
+ =?utf-8?B?M0VBWVdJbHJiR0wvVk4zcWdGYXg5RVVJbWpnRG5WTGNhS0RLK2lBZ0Z4VCtK?=
+ =?utf-8?B?TWNtWlYzUmlaTUEzbGxobTFmN1gyK2N3U3B6WkxBbjB4Wmc1VlBVaWpWQUxY?=
+ =?utf-8?B?VVhtL24vUEdjZDNFZkIyUmZtUEdUMyt2QUdOWFNmRGtiR1BsYWcrOGdyclMz?=
+ =?utf-8?B?T1BURjJHcHd6Z2RCSnRYRnFPNlFnVUVjeXgwYnIwTm9DcGlJSmgyL1BTbUpN?=
+ =?utf-8?B?b1drVU8vMWdZcDhYWmI5TGlxZnh1K1Z5MlFQeVZHN0VEUWdydTBVRHpQNmxs?=
+ =?utf-8?B?NVpJb09rWHlLRncraEhMSmFOYjlwaWx0bnM3elZ1SHdabmt4OVVLSnZFNlpo?=
+ =?utf-8?B?d1ZKVEZqcEhTeklIN2lYZjhWY3p2YWlNY1JHZ3g5czNRRWFiT1ZTRllUL0tO?=
+ =?utf-8?B?Sm83eVVNVEE5V0tBWm54bko1S3Y4bVB6cU4xc2VVSzJDb05hMW1PTEFJaFR4?=
+ =?utf-8?B?SU1Kc1pVY2V6Z0RlckVobm9PYXpJWDBoQ0szd3ZlN1NLNTFrYXY2Z3o3d1Jj?=
+ =?utf-8?B?dURrZUhlNEN5U2tHZnlBM1FQTGNTNTFJbWQ0S2lTK1JBYXNjUzBZVDBrekVI?=
+ =?utf-8?B?NUNlK1RCcXlVVEhDcjZiN2p3NEM3VXYyUWd3WVFDYXY3cVpva1RkdjRNTmIz?=
+ =?utf-8?B?b21FQThiMGd5cW5rM21DeXdHMm5jR1JsUWc5WllVQmF4cHJMc041OEJkT2dZ?=
+ =?utf-8?B?Qlhvb0J4Um5qbFU2QXNVWXVKMC9kSkxua2JkWkdiN0FXVXZEOEVPbkFRR1Fv?=
+ =?utf-8?B?ampjeml4WXQ4UVRVSitmUGtuVkc4QjBQcTNQU0ZzZ3Q3VnB3RWtDdjhFOUFL?=
+ =?utf-8?B?ZVQ0a3lMZjdJL0Nhd1djbTAzZVloTmV2VHozRU5XYlZFdjFpUHREa21tNUdR?=
+ =?utf-8?B?MWQvdEZzcGxZOXdJREtudzBOZytSY1luRmhNd2FlTVk2OGhuU3V3VHE4SEwy?=
+ =?utf-8?B?QXFSa1pTblVwUUlGTVI4eGNITkZPNVBFRFd0cU5BT2VCMUNJZUs0TXB3UXVj?=
+ =?utf-8?B?dkM1cGpVOXNScUE1Rk5jWjVNWXpSMVpwTkF6MzN2YnNJU3NTUDdSdnpPYU1s?=
+ =?utf-8?B?cHhJL1phcUp4SFdVRU0xTEpZcmR1RXBHTDBzQll3TE1UaDhYc2xUc0xiZkFP?=
+ =?utf-8?B?MGVUZG5vOGRtNlJSS3Yxck96eGxSdklibGhFSTdqTzQ2L2ZvcUxCVG51WnZl?=
+ =?utf-8?B?TWpWbVMxcjVoSjA0b2pocE5GekdPNEtZa2w3ZjUyQkR6WXQ0MHJiUTFKWW1r?=
+ =?utf-8?B?eHVHWjEvcnd3dXhFQVlkR3MxZ2RNYlZXVnkzQ3ZndEc1VGpuUFVqR3h3M3VT?=
+ =?utf-8?B?eHUrVGEreFZSNjRHZEtaMDhWQVRLZ1k4b2dmQmRncTVvbEFNc252SXh2VVlZ?=
+ =?utf-8?B?S05kTW95QmV5YW9aVTZIaE90eHU1R1N2UFgzVkNpMzlqNkZUcDhmTks2ditB?=
+ =?utf-8?B?THRpdndvSHhJUldNOXcwUTZsZE9ORzlGVnpWRVRhdk9LQWp0N3VxMTBGcUM2?=
+ =?utf-8?B?c2c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2937e71-92ca-4333-71b5-08db66f82129
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 01:40:09.8674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ltN127VpebJgmoatocCXLGgES8g3MoE7F17s9tg4XNho4IYLHRsdUOdsEeEOPnBD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4424
+X-Proofpoint-ORIG-GUID: rz1lEM1qZnxhUqofPggMfMpj_Ij-pQLO
+X-Proofpoint-GUID: rz1lEM1qZnxhUqofPggMfMpj_Ij-pQLO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-06_18,2023-06-06_02,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 6, 2023 at 6:19=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
-> > On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 6/6/2023 11:53 AM, Hou Tao wrote:
-> >>> From: Hou Tao <houtao1@huawei.com>
-> >>>
-> >>> Hi,
-> >>>
-> >>> The implementation of v4 is mainly based on suggestions from Alexi [0=
-].
-> >>> There are still pending problems for the current implementation as sh=
-own
-> >>> in the benchmark result in patch #3, but there was a long time from t=
-he
-> >>> posting of v3, so posting v4 here for further disscussions and more
-> >>> suggestions.
-> >>>
-> >>> The first problem is the huge memory usage compared with bpf memory
-> >>> allocator which does immediate reuse:
-> >>>
-> >>> htab-mem-benchmark (reuse-after-RCU-GP):
-> >>> | name               | loop (k/s)| average memory (MiB)| peak memory =
-(MiB)|
-> >>> | --                 | --        | --                  | --          =
-     |
-> >>> | no_op              | 1159.18   | 0.99                | 0.99        =
-     |
-> >>> | overwrite          | 11.00     | 2288                | 4109        =
-     |
-> >>> | batch_add_batch_del| 8.86      | 1558                | 2763        =
-     |
-> >>> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77       =
-     |
-> >>>
-> >>> htab-mem-benchmark (immediate-reuse):
-> >>> | name               | loop (k/s)| average memory (MiB)| peak memory =
-(MiB)|
-> >>> | --                 | --        | --                  | --          =
-     |
-> >>> | no_op              | 1160.66   | 0.99                | 1.00        =
-     |
-> >>> | overwrite          | 28.52     | 2.46                | 2.73        =
-     |
-> >>> | batch_add_batch_del| 11.50     | 2.69                | 2.95        =
-     |
-> >>> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24       =
-     |
-> >>>
-> >>> It seems the direct reason is the slow RCU grace period. During
-> >>> benchmark, the elapsed time when reuse_rcu() callback is called is ab=
-out
-> >>> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
-> >>> spin-lock and the irq-work running in the contex of freeing process w=
-ill
-> >>> increase the running overhead of bpf program, the running time of
-> >>> getpgid() is increased, the contex switch is slowed down and the RCU
-> >>> grace period increases [1], but I am still diggin into it.
-> >> For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
-> >> (namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
-> >> did) instead, the memory usage of htab-mem-benchmark will decrease a l=
-ot:
-> >>
-> >> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
-> >> | name               | loop (k/s)| average memory (MiB)| peak memory (=
-MiB)|
-> >> | --                 | --        | --                  | --           =
-    |
-> >> | no_op              | 1165.38   | 0.97                | 1.00         =
-    |
-> >> | overwrite          | 17.25     | 626.41              | 781.82       =
-    |
-> >> | batch_add_batch_del| 11.51     | 398.56              | 500.29       =
-    |
-> >> | add_del_on_diff_cpu| 4.21      | 31.06               | 48.84        =
-    |
-> >>
-> >> But the memory usage is still large compared with v3 and the elapsed
-> >> time of reuse_rcu() callback is about 90~200ms. Compared with v3, ther=
-e
-> >> are still two differences:
-> >> 1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
-> >> accelerate the reuse of freed objects.
-> >> 2) v3 uses kworker instead of irq_work for free procedure.
-> >>
-> >> For 1), after using kmalloc() in irq_work to allocate multiple infligh=
-t
-> >> RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
-> >> but is not enough:
-> >>
-> >> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multi=
-ple reuse_rcu() callbacks):
-> >> | name               | loop (k/s)| average memory (MiB)| peak memory (=
-MiB)|
-> >> | --                 | --        | --                  | --           =
-    |
-> >> | no_op              | 1247.00   | 0.97                | 1.00         =
-    |
-> >> | overwrite          | 16.56     | 490.18              | 557.17       =
-    |
-> >> | batch_add_batch_del| 11.31     | 276.32              | 360.89       =
-    |
-> >> | add_del_on_diff_cpu| 4.00      | 24.76               | 42.58        =
-    |
-> >>
-> >> So it seems the large memory usage is due to irq_work (reuse_bulk) use=
-d
-> >> for free procedure. However after increasing the threshold for invokin=
-g
-> >> irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is n=
-o
-> >> big difference in the memory usage and the delayed time for RCU
-> >> callbacks. Perhaps the reason is that although the number of  reuse_bu=
-lk
-> >> irq_work calls is reduced but the time of alloc_bulk() irq_work calls =
-is
-> >> increased because there are no reusable objects.
-> > The large memory usage is because the benchmark in patch 2 is abusing i=
-t.
-> > It's doing one bpf_loop() over 16k elements (in case of 1 producer)
-> > and 16k/8 loops for --producers=3D8.
-> > That's 2k memory allocations that have to wait for RCU GP.
-> > Of course that's a ton of memory.
-> I don't agree that. Because in v3, the benchmark is the same, but both
-> the performance and the memory usage are better than v4. Even compared
-> with  "htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list +
-> multiple reuse_rcu() callbacks)" above, the memory usage in v3 is still
-> much smaller as shown below. If the large memory usage is due to the
-> abuse in benchmark, how do you explain the memory usage in v3 ?
 
-There could have been implementation bugs or whatever else.
-The main point is the bench test is not realistic and should not be
-used to make design decisions.
 
-> The reason I added tail for each list is that there could be thousands
-> even ten thousands elements in these lists and there is no need to spend
-> CPU time to traversal these list one by one. It maybe a premature
-> optimization. So let me remove tails from these list first and I will
-> try to add these tails back later and check whether or not there is any
-> performance improvement.
+On 6/6/23 2:42 PM, Maxim Mikityanskiy wrote:
+> From: Maxim Mikityanskiy <maxim@isovalent.com>
+> 
+> The previous commit fixed a verifier bypass by ensuring that ID is not
+> preserved on narrowing spills. Add the test cases to check the
+> problematic patterns.
+> 
+> Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
 
-There will be thousands of elements only because the bench test is wrong.
-It's doing something no real prog would do.
-
-> I have a different view for the benchmark. Firstly htab is not the only
-> user of bpf memory allocator, secondly we can't predict the exact
-> behavior of bpf programs, so I think to stress bpf memory allocator for
-> various kinds of use case is good for its broad usage.
-
-It is not a stress test. It's an abuse.
-A stress test would be something that can happen in practice.
-Doing thousands map_updates in a forever loop is not something
-useful code would do.
-For example call_rcu_tasks_trace is not design to be called millions
-times a second. It's an anti-pattern and rcu core won't be optimized to do =
-so.
-rcu, srcu, rcu_task_trace have different usage patterns.
-The programmer has to correctly pick one depending on the use case.
-Same with bpf htab. If somebody has a real need to do thousands
-updates under rcu lock they should be using preallocated map and deal
-with immediate reuse.
+Acked-by: Yonghong Song <yhs@fb.com>
 
