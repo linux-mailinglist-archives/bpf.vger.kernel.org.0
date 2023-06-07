@@ -1,188 +1,197 @@
-Return-Path: <bpf+bounces-2044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8888727149
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 00:05:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC59727175
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 00:20:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DD322815DE
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:05:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 856121C20EE0
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEE13B8D9;
-	Wed,  7 Jun 2023 22:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D603B8D2;
+	Wed,  7 Jun 2023 22:20:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2FF3AE79
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 22:05:27 +0000 (UTC)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32981FF5
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 15:05:25 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f649db9b25so7168e87.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 15:05:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC123B8C9
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 22:20:10 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9605B271B;
+	Wed,  7 Jun 2023 15:19:36 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5149b63151aso2344463a12.3;
+        Wed, 07 Jun 2023 15:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686175524; x=1688767524;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ux5s7JB5Ti7Lf8FCOgILRP3uUqGnyveuz2AjI88L6ow=;
-        b=Ut8OyRIgTrMNBTWvpzWMXXtsM4H8YGyEujCDWr7VWIpRhWCqZLFzR9bptDxkhpUmUA
-         xpLwx0P3OgEw5ZOTHfzEWvR/9+OOWdssyoGYG90aSSJZnpDXGmwXejROB7W/MOXH1u3e
-         Nmqjzg0/x8nXuWhkB/CLLq/ZBbcrc6viqGgy+L/kKCegtvI4xqbLXRRwpMmy4mGjR7Pc
-         2aw93/h5yWT9glkKOiq5FDst+j6EAfjrPxYtr9KfdL4OHkcRa9sPJYsI7MVh2N5EjsSj
-         jnaRqZXqyuvu51N0dY40dg47LtxRT8AoY/6c6hCIzFTAw92yH0O1pixNHulBSl22qE9G
-         +Pwg==
+        d=gmail.com; s=20221208; t=1686176374; x=1688768374;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6/P6uze0Ga7vW3Z/CgXfKZmf9JEKn/Cz4dqyzssDdzw=;
+        b=d2LKoCPKdC9GPUgnkEyQfOgTjq9YeKvOaIQal6TvSmcM/EzUfv7+Wrzo9bsC+ZWQWY
+         GUs0gd7V1J1U5dPpN64S524v6Q23lN+BtByC7G6VrgB4dOmOsevqQFRUVbnQJRa3wm5P
+         NbnW78ipMAQ8UzorF1is/qmU6n39va/7M97RiTrnjINCO4vAGttx6orhq4TTUOqUtBW3
+         td2QC4t53LJF7HX9V5YjxExm2wS23waNpYDM/aA0LA/IkJ/nLbKtV3W1Ebl8evwN1/VJ
+         DX7Y4qHVTE/suYCz95FUl3TYdfoMGsE5+dgRBCPTWH4v7eniU7WMdyY6cGBtAQMHtwPz
+         qqFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686175524; x=1688767524;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ux5s7JB5Ti7Lf8FCOgILRP3uUqGnyveuz2AjI88L6ow=;
-        b=VPMRJb8ATe6vuoNPcA9F81/l5f+bPw29GEDKNbI8qfGlxPBe+EK18ufV1nBo2YmkqR
-         hoDP/VFI92XZE4/aqZMz21Hv3jtz5DhujqWNxCe3vGJT8F3KpjB4Uq7GaccZTVakOGJN
-         jXMooYwSgwmMV/cP0EdmHelaaeGB4ZolZ011jbLiHFill96uJsJSv+fX8OB1VZm8hein
-         H1uLBBmM7j/tj1ef5H69O5cdyOdsPp4UymOpobBzqnGL9MnQtsMNPFzTv1yj3uVs4ckp
-         zdbS5cCq+ZK7m7GtlAmnMP8kgrdTdL7lW4mwGgmLbtMeulDcJmaBt31L2we8pjlLwwnt
-         h/oQ==
-X-Gm-Message-State: AC+VfDxpji4PnfbjoOQQD7LCFMiK+HsAWw9UpKTYBlz/FRlruiztfsyi
-	kNVyGuEBI0Pu2p7qTbFJ7cM=
-X-Google-Smtp-Source: ACHHUZ5/BVRQaw4HiWZkhxlrlXhzMGxj/JHz7I9ou0rp8d10DaoKU2Km8AJcNo4Aa6i/4Hv5WRFcsw==
-X-Received: by 2002:ac2:46cd:0:b0:4eb:1361:895c with SMTP id p13-20020ac246cd000000b004eb1361895cmr2732420lfo.55.1686175523783;
-        Wed, 07 Jun 2023 15:05:23 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id o27-20020ac2495b000000b004f627f4a07csm1256749lfi.145.2023.06.07.15.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 15:05:23 -0700 (PDT)
-Message-ID: <24c2b0295ea9b8a3f3fc256e2d7bf004a046ebb1.camel@gmail.com>
-Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Yonghong Song <yhs@meta.com>, Toke
- =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>, Alan Maguire
- <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Quentin Monnet
- <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf
- <bpf@vger.kernel.org>
-Date: Thu, 08 Jun 2023 01:05:21 +0300
-In-Reply-To: <CAEf4BzY9_EiBqM74Gce9-Z5O+uubCY=CUejXr79hDY6SbOvTOg@mail.gmail.com>
-References: <20230531201936.1992188-1-alan.maguire@oracle.com>
-	 <20230531201936.1992188-2-alan.maguire@oracle.com>
-	 <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
-	 <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com>
-	 <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
-	 <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
-	 <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
-	 <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
-	 <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
-	 <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
-	 <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com>
-	 <878rcw3k1o.fsf@toke.dk>
-	 <35e5f70bbe0890f875e0c24aff0453c25f018ea6.camel@gmail.com>
-	 <e58d3ec4-dcac-48b8-c6c2-63d131d967d8@meta.com>
-	 <45fac5ac0874163031b46388d65de194ed6f27e6.camel@gmail.com>
-	 <CAEf4BzY9_EiBqM74Gce9-Z5O+uubCY=CUejXr79hDY6SbOvTOg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1686176374; x=1688768374;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6/P6uze0Ga7vW3Z/CgXfKZmf9JEKn/Cz4dqyzssDdzw=;
+        b=djxQOgg5m4M3H2Z6NTamPQUBoCDQJayErgFHHY023eVuZMGjqyBg84HkC2N9x9Gxd9
+         3LlU4+WiANf5a2Lyn0cNx83yYknVthM+71G5wwyVbJFOU9Ep6BTNCUA9Z4bwT/Vbn5Ad
+         CEbiOsNdv5pa/5tVhcViY3L648YL06dnivcSxFO5dOvBP7QMpppiRBlxHHHl8dE5TjtI
+         Q/wek196P7WZUdoZrmf9bHqJMEHu+C6w5GMksz5OgxzcLINEOqpuGP5Uya5NDW2jG0U6
+         bM4wdy+bDR7M+6MFH0INZXVa9aVz9+z2kdYh2v7abElRCOfs/gUYLMdmXSngbP5FfOJm
+         SrMA==
+X-Gm-Message-State: AC+VfDys4UeFRcy+XY1VhBPWkBzbB4X/i3Pl5sz10DX1d7tZCii2Joz5
+	ZeNwH4GYmMo14YMmoJ1aUZPEmzSvwWwH7qaedCI=
+X-Google-Smtp-Source: ACHHUZ5DiEil+HYJB2TZTQHyyUfsusZ+xfEe+iq311jV9v6sM01Ey6Y4QHdwUFILY/3Jpdu0OolNmjxzji2Az8saZf8=
+X-Received: by 2002:aa7:c1cd:0:b0:516:459d:d913 with SMTP id
+ d13-20020aa7c1cd000000b00516459dd913mr6646005edp.37.1686176374094; Wed, 07
+ Jun 2023 15:19:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230606042802.508954-1-maninder1.s@samsung.com>
+ <20230606042802.508954-2-maninder1.s@samsung.com> <CGME20230606042819epcas5p4f0601efb42d59007cba023c73fa0624a@epcms5p8>
+ <CAEf4BzYavyL431eA_HZ-X8+wTeO4Cyt7tGDUbPB0yqPru=ZUSw@mail.gmail.com> <20230607034028epcms5p8ed013806c42bd79b76368ac015a7b6ba@epcms5p8>
+In-Reply-To: <20230607034028epcms5p8ed013806c42bd79b76368ac015a7b6ba@epcms5p8>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 7 Jun 2023 15:19:22 -0700
+Message-ID: <CAEf4Bzb4B9FxMnf3t81D22FWkciLOvwDPLY0BbEPGGe7R5QPrg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] bpf: make bpf_dump_raw_ok() based on CONFIG_KALLSYMS
+To: maninder1.s@samsung.com
+Cc: "ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>, 
+	"kpsingh@kernel.org" <kpsingh@kernel.org>, "sdf@google.com" <sdf@google.com>, 
+	"haoluo@google.com" <haoluo@google.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
+	"thunder.leizhen@huawei.com" <thunder.leizhen@huawei.com>, "mcgrof@kernel.org" <mcgrof@kernel.org>, 
+	"boqun.feng@gmail.com" <boqun.feng@gmail.com>, 
+	"vincenzopalazzodev@gmail.com" <vincenzopalazzodev@gmail.com>, "ojeda@kernel.org" <ojeda@kernel.org>, 
+	"jgross@suse.com" <jgross@suse.com>, "brauner@kernel.org" <brauner@kernel.org>, 
+	"michael.christie@oracle.com" <michael.christie@oracle.com>, 
+	"samitolvanen@google.com" <samitolvanen@google.com>, "glider@google.com" <glider@google.com>, 
+	"peterz@infradead.org" <peterz@infradead.org>, "keescook@chromium.org" <keescook@chromium.org>, 
+	"stephen.s.brennan@oracle.com" <stephen.s.brennan@oracle.com>, 
+	"alan.maguire@oracle.com" <alan.maguire@oracle.com>, "pmladek@suse.com" <pmladek@suse.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	Onkarnath <onkarnath.1@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 2023-06-07 at 14:47 -0700, Andrii Nakryiko wrote:
-> On Wed, Jun 7, 2023 at 9:14=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Wed, 2023-06-07 at 08:29 -0700, Yonghong Song wrote:
-> > >=20
-> > > On 6/7/23 4:55 AM, Eduard Zingerman wrote:
-> > > > On Tue, 2023-06-06 at 13:30 +0200, Toke H=C3=B8iland-J=C3=B8rgensen=
- wrote:
-> > > > [...]
-> > > > >=20
-> > > > > As for bumping the version number, I don't think it's a good idea=
- to
-> > > > > deliberately break compatibility this way unless it's absolutely
-> > > > > necessary. With "absolutely necessary" meaning "things will break=
- in
-> > > > > subtle ways in any case, so it's better to make the breakage obvi=
-ous".
-> > > > > But it libbpf is not checking the version field anyway, that beco=
-mes
-> > > > > kind of a moot point, as bumping it doesn't really gain us anythi=
-ng,
-> > > > > then...
-> > > >=20
-> > > > It seems to me that in terms of backward compatibility, the ability=
- to
-> > > > specify the size for each kind entry is more valuable than the
-> > > > capability to add new BTF kinds:
-> > > > - The former allows for extending kind records in
-> > > >    a backward-compatible manner, such as adding a function address =
-to
-> > > >    BTF_KIND_FUNC.
-> > >=20
-> > > Eduard, the new proposal is to add new kind, e.g., BTF_KIND_KFUNC, wh=
-ich
-> > > will have an 'address' field. BTF_KIND_KFUNC is for kernel functions.
-> > > So we will not have size compatibility issue for BTF_KIND_FUNC.
-> >=20
-> > Well, actually this might be a way to avoid BTF_KIND_KFUNC :)
-> > What I wanted to say is that any use of this feature leads to
-> > incompatibility with current BTF parsers, as either size of existing
-> > kinds would be changed or a new kind with unknown size would be added.
-> > It seems to me that this warrants version bump (or some other way to
-> > signal existing parsers that format is incompatible).
->=20
-> It is probably too late to have existing KINDs changing their size. If
-> this layout metadata was mandatory from the very beginning, then we
-> could have relied on it for determining new extra fields for
-> BTF_KIND_FUNC.
->=20
-> As things stand right now, new BTF_KIND_KFUNC is both a signal of
-> newer format (for kernel-side BTF; nothing changes for BPF object file
-> BTFs, which is great side-effect making backwards compat pain
-> smaller), and is a simpler and safer way to add extra information.
->=20
-> >=20
-> > >=20
-> > > > - The latter is much more fragile. Types refer to each other,
-> > > >    compatibility is already lost once a new "unknown" tag is introd=
-uced
-> > > >    in a type chain.
-> > > >=20
-> > > > However, changing the size of existing BTF kinds is itself a
-> > > > backward-incompatible change. Therefore, a version bump may be
-> > > > warranted in this regard.
-> >=20
->=20
-> See above and previous emails. Not having to bump version means we can
-> start emitting this layout info from Clang and pahole with no extra
-> opt-in flags, and not worry about breaking existing tools and apps.
-> This is great, so let's not ruin that property :)
+On Tue, Jun 6, 2023 at 8:46=E2=80=AFPM Maninder Singh <maninder1.s@samsung.=
+com> wrote:
+>
+> Hi Andrii Nakryiko,
+>
+> >>
+> >> bpf_dump_raw_ok() depends on kallsyms_show_value() and we already
+> >> have a false definition for the !CONFIG_KALLSYMS case. But we'll
+> >> soon expand on kallsyms_show_value() and so to make the code
+> >> easier to follow just provide a direct !CONFIG_KALLSYMS definition
+> >> for bpf_dump_raw_ok() as well.
+> >
+> > I'm sorry, I'm failing to follow the exact reasoning about
+> > simplification. It seems simpler to have
+> >
+> > static inline bool kallsyms_show_value(const struct cred *cred)
+> > {
+> >     return false;
+> > }
+> >
+> > and control it from kallsyms-related internal header, rather than
+> > adding CONFIG_KALLSYMS ifdef-ery to include/linux/filter.h and
+> > redefining that `return false` decision. What if in the future we
+> > decide that if !CONFIG_KALLSYMS it's ok to show raw addresses, now
+> > we'll have to remember to update it in two places.
+> >
+> > Unless I'm missing some other complications?
+> >
+>
+> Patch 3/3 does the same, it extends functionality of kallsyms_show_value(=
+)
+> in case of  !CONFIG_KALLSYMS.
+>
+> All other users likes modules code, kprobe codes are using this API
+> for sanity/permission, and then prints the address like below:
+>
+> static int kprobe_blacklist_seq_show(struct seq_file *m, void *v)
+> {
+> ...
+>         if (!kallsyms_show_value(m->file->f_cred))
+>                 seq_printf(m, "0x%px-0x%px\t%ps\n", NULL, NULL,
+>                            (void *)ent->start_addr);
+>         else
+>                 seq_printf(m, "0x%px-0x%px\t%ps\n", (void *)ent->start_ad=
+dr,
+>                            (void *)ent->end_addr, (void *)ent->start_addr=
+);
+> ..
+> }
+>
+> so there will be no issues if we move kallsyms_show_value() out of KALLSY=
+MS dependency.
+> and these codes will work in case of !KALLSYMS also.
+>
+> but BPF code logic was complex and seems this API was used as checking fo=
+r whether KALLSYMS is
+> enabled or not as per comment in bpf_dump_raw_ok():
+>
+> /*
+>  * Reconstruction of call-sites is dependent on kallsyms,
+>  * thus make dump the same restriction.
+>  */
+>
+> also as per below code:
+> (we were not sure whether BPF will work or not with patch 3/3 because of =
+no expertise on BPF code,
+> so we keep the behaviour same)
 
-I'm not sure I understand how this would help:
-- If no new kinds are added, absence or presence of metadata section
-  does not matter. Old parsers would ignore it, new parsers would work
-  as old parsers, so there is no added value in generating metadata.
-- As soon as new kind is added old parsers are broken.
+I think bpf_dump_raw_ok() is purely about checking whether it's ok to
+return unobfuscated kernel addresses to user/BPF program. So it feels
+like it should be ok to just rely on kallsyms_show_value() and not
+special case here. If some of the code relies on actually having
+CONFIG_KALLSYMS and related functionality, it should be properly
+guarded already (or should enforce `SELECT KALLSYMS` in Kconfig).
 
-What am I missing?
+>
+>        if (ulen) {
+>                 if (bpf_dump_raw_ok(file->f_cred)) {
+>                         unsigned long ksym_addr;
+>                         u64 __user *user_ksyms;
+>                         u32 i;
+>
+>                         /* copy the address of the kernel symbol
+>                          * corresponding to each function
+>                          */
+>                         ulen =3D min_t(u32, info.nr_jited_ksyms, ulen);
+>                         user_ksyms =3D u64_to_user_ptr(info.jited_ksyms);
+>                         if (prog->aux->func_cnt) {
+>                                 for (i =3D 0; i < ulen; i++) {
+>    ...
+>    }
+>
+> earlier conversation for this change:
+> https://lkml.org/lkml/2022/4/13/326
+>
+> here Petr CC'ed BPF maintainers to know their opinion whether BPF code ca=
+n work with patch 3/3,
+> if not then we need this patch.
+>
+> Thanks,
+> Maninder Singh
 
