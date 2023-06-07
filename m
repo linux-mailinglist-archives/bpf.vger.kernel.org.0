@@ -1,75 +1,86 @@
-Return-Path: <bpf+bounces-2026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87E4726A72
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:10:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C3C2726A7E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:15:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 111B71C20AC7
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 20:10:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 437AE28141C
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 20:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C223925B;
-	Wed,  7 Jun 2023 20:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5403925A;
+	Wed,  7 Jun 2023 20:15:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA81010FC;
-	Wed,  7 Jun 2023 20:10:14 +0000 (UTC)
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688118F;
-	Wed,  7 Jun 2023 13:10:13 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-256422ad25dso3395804a91.0;
-        Wed, 07 Jun 2023 13:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686168612; x=1688760612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYBbVxG5qTvWtJpvG1GFdSzWMjaAkI3hKSe+dIzx3pQ=;
-        b=WtfDyXhz2c9B23otUHcznVCyEeGumOxVaBHOmoJj/VlFydX+O2M8X83iGvkqQks565
-         lOKZG2S83nN87F5KgGSaNQ1GYjtUDGSlRbGa7QGuCFnkMTjpvbCH1NSiMUIW/fek9rQ9
-         srkVO0fQH5kVuu7cBEehH3/lDd4RTMaAqeVHoSc7AHYZMZmmByicoyBaEsPqBMW98aDQ
-         HuOh9g/23bvvs+hvEQWriEeZsKKVLkaOo//HIcI5yD3lc3OVotkbxXPsqHnSNG1r4p01
-         3xDDxe2CORbxUBc8K07LsMjvXND5z7yGHW6K/DxZxS85X2H+aZjghB2x23a8KC+fKJv4
-         9Myg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60FC19BBC
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 20:15:21 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEC6125
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 13:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1686168919;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IbNJSMdQgU9VQLlBMF193RvlUeSC+D1EGbqTaY89bwo=;
+	b=TM4D1KwtDiFTi+wEc4CIe1rdS2TwONzarjWtPWerQ0m6N2xobEzeNC1tqqLD71EURFeMpd
+	exxC3X20xAGvJ3rxyi8LgGx1KR1jr/o3doFzrVbUnd/mHXn4WPCfbv8I8KG26ms6j6v3Lm
+	r7e9ulTjVz/pq9MYYBg73I37Qza4iJw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-yvRPNqtpPdiV261RGqE_gQ-1; Wed, 07 Jun 2023 16:15:18 -0400
+X-MC-Unique: yvRPNqtpPdiV261RGqE_gQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f7e64e1157so23003055e9.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 13:15:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686168612; x=1688760612;
+        d=1e100.net; s=20221208; t=1686168917; x=1688760917;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qYBbVxG5qTvWtJpvG1GFdSzWMjaAkI3hKSe+dIzx3pQ=;
-        b=XmbwPRSgoqPWSqPP55zmiAbAxnu9Zcf9Kka/ASEfXPMKPCQqO9XRxwlEtI1NaJpvQ1
-         RDcjJelsdgvsIB7gZDQkX6nFVoESFxj4mxKctFTpIFMp/ekzr9a7aDM7S1BVjFl5k9qy
-         OAJ72Mj0KuOjZJQJUdLrkYYEWYqJxOkYj+nlMPp6S5isBXMOCRq81XzNia8/JJD2nb0v
-         ns6ZeoDr0OcaMmTCZnasPI+sbBPF/E+U9NSvZ0PLB55VXnsDNdu78TitF+sbVWic/X/i
-         HJyd6QP59DrXBTVAwsWaa9s2l0sygSw4EMYfjnZ5iCbjV9cYq9FRoTeAPMXnGIZwfPki
-         OBpQ==
-X-Gm-Message-State: AC+VfDx0HA1xVhY45EPCYizDa9lie/7n8GkFDz8+5mNLiIZTqDyJCs6o
-	U8CyX8z+vRgG+YaqDyck498=
-X-Google-Smtp-Source: ACHHUZ4h4suM9rAl/2fMKAeD8dDqnHEOTIlWctoaikfJw1mjnZNBjFADfaIGHYLBECxSkDuj4AnC2Q==
-X-Received: by 2002:a17:90a:6408:b0:255:b1d9:a206 with SMTP id g8-20020a17090a640800b00255b1d9a206mr2363761pjj.22.1686168612499;
-        Wed, 07 Jun 2023 13:10:12 -0700 (PDT)
-Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::6:1c96])
-        by smtp.gmail.com with ESMTPSA id t3-20020a17090b018300b0023fcece8067sm1718674pjs.2.2023.06.07.13.10.10
+        bh=IbNJSMdQgU9VQLlBMF193RvlUeSC+D1EGbqTaY89bwo=;
+        b=jtwTGl8j63gSUZs+nQFckEVu3cKjNQUzyXRRzYlOtUMpimEoLU/7ydgtDsnMppOAB1
+         8MBgO8FuOV8Y9kYoFSiqD0CtsnoryrZ9nBT5KyUZgSLejUO4DpS4R74JHLmEwuY47lZr
+         QXDhJdqu9jICsHwKE/kaY5QGd3H4gyF+AaFrGcgDsJ/vC/0etg/YIDLuvbRPMBCklYsw
+         BNiQ0SGOoCmGckA5iGinIudyqYqDhjAZ1f+/eDD1i65jO861atiPB8qlKJtAMblmpvNh
+         KBl1VQ0qvR3h8XiZVOKq2KIF86hneyf8uyqGD6gQrtoebTd4zNdje6ciBi1mGyscGnBZ
+         RU2g==
+X-Gm-Message-State: AC+VfDyszqzk1Nc0lIAjajtIdLt2x2hXUvZk994IXJtYVkJp1pd1HYy+
+	hSk0ds+Js+eJyfEYrGT1QfEDuEILvdCAC2k6ORZvC6Nn2RCGnMvqlFP31UmdC57JOCtpRU4Urvn
+	xut2UYja5XxBR
+X-Received: by 2002:a1c:7717:0:b0:3f7:eadb:941d with SMTP id t23-20020a1c7717000000b003f7eadb941dmr7565499wmi.19.1686168917313;
+        Wed, 07 Jun 2023 13:15:17 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6BuNZENhGXmy7RykVEep93dqwtBJaN8D86qVbIP42EfYDXBC7+P61b2CTrPMue3++mbYka1g==
+X-Received: by 2002:a1c:7717:0:b0:3f7:eadb:941d with SMTP id t23-20020a1c7717000000b003f7eadb941dmr7565477wmi.19.1686168916980;
+        Wed, 07 Jun 2023 13:15:16 -0700 (PDT)
+Received: from redhat.com ([2.55.4.169])
+        by smtp.gmail.com with ESMTPSA id s17-20020a7bc391000000b003f727764b10sm3110831wmj.4.2023.06.07.13.15.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 13:10:12 -0700 (PDT)
-Date: Wed, 7 Jun 2023 13:10:08 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: menglong8.dong@gmail.com
-Cc: davem@davemloft.net, dsahern@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, x86@kernel.org,
-	imagedong@tencent.com, benbjiang@tencent.com,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: add testcase for
- FENTRY/FEXIT with 6+ arguments
-Message-ID: <20230607201008.662mecxnksxiees3@macbook-pro-8.dhcp.thefacebook.com>
-References: <20230607125911.145345-1-imagedong@tencent.com>
- <20230607125911.145345-4-imagedong@tencent.com>
+        Wed, 07 Jun 2023 13:15:16 -0700 (PDT)
+Date: Wed, 7 Jun 2023 16:15:12 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	virtualization@lists.linux-foundation.org,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH vhost v10 00/10] virtio core prepares for AF_XDP
+Message-ID: <20230607161440-mutt-send-email-mst@kernel.org>
+References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+ <20230602232902.446e1d71@kernel.org>
+ <1685930301.215976-1-xuanzhuo@linux.alibaba.com>
+ <ZICOl1hfsx5DwKff@infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,67 +89,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230607125911.145345-4-imagedong@tencent.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZICOl1hfsx5DwKff@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 07, 2023 at 08:59:11PM +0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <imagedong@tencent.com>
+On Wed, Jun 07, 2023 at 07:05:11AM -0700, Christoph Hellwig wrote:
+> On Mon, Jun 05, 2023 at 09:58:21AM +0800, Xuan Zhuo wrote:
+> > On Fri, 2 Jun 2023 23:29:02 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> > > On Fri,  2 Jun 2023 17:21:56 +0800 Xuan Zhuo wrote:
+> > > > Thanks for the help from Christoph.
+> > >
+> > > That said you haven't CCed him on the series, isn't the general rule to
+> > > CC anyone who was involved in previous discussions?
+> > 
+> > 
+> > Sorry, I forgot to add cc after git format-patch.
 > 
-> Add test9/test10 in fexit_test.c and fentry_test.c to test the fentry
-> and fexit whose target function have 7/12 arguments.
-> 
-> Correspondingly, add bpf_testmod_fentry_test7() and
-> bpf_testmod_fentry_test12() to bpf_testmod.c
-> 
-> And the testcases passed:
-> 
-> ./test_progs -t fexit
-> Summary: 5/12 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> ./test_progs -t fentry
-> Summary: 3/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
-> v3:
-> - move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
->   bpf_testmod_fentry_test{7,12} meanwhile
-> - get return value by bpf_get_func_ret() in
->   "fexit/bpf_testmod_fentry_test12", as we don't change ___bpf_ctx_cast()
->   in this version
-> ---
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 19 ++++++++++-
->  .../selftests/bpf/prog_tests/fentry_fexit.c   |  4 ++-
->  .../selftests/bpf/prog_tests/fentry_test.c    |  2 ++
->  .../selftests/bpf/prog_tests/fexit_test.c     |  2 ++
->  .../testing/selftests/bpf/progs/fentry_test.c | 21 ++++++++++++
->  .../testing/selftests/bpf/progs/fexit_test.c  | 33 +++++++++++++++++++
->  6 files changed, 79 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index cf216041876c..66615fdbe3df 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -191,6 +191,19 @@ noinline int bpf_testmod_fentry_test3(char a, int b, u64 c)
->  	return a + b + c;
->  }
->  
-> +noinline int bpf_testmod_fentry_test7(u64 a, void *b, short c, int d,
-> +				      void *e, u64 f, u64 g)
-> +{
-> +	return a + (long)b + c + d + (long)e + f + g;
-> +}
-> +
-> +noinline int bpf_testmod_fentry_test12(u64 a, void *b, short c, int d,
-> +				       void *e, u64 f, u64 g, u64 h,
-> +				       u64 i, u64 j, u64 k, u64 l)
+> So I've been looking for this series elsewhere, but it seems to include
+> neither lkml nor the iommu list, so I can't find it.  Can you please
+> repost it?
 
-Please switch args to a combination of u8,u16,u32,u64.
-u64 only args might hide bugs.
+I bounced to lkml now - does this help?
+
 
