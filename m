@@ -1,181 +1,205 @@
-Return-Path: <bpf+bounces-1980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8411672551F
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:11:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC00E7255DD
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B37F281214
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 07:11:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15ECF1C20C97
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 07:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811BA6AA1;
-	Wed,  7 Jun 2023 07:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE266FA1;
+	Wed,  7 Jun 2023 07:36:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B23817DB
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 07:11:33 +0000 (UTC)
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E8F1BEA
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 00:11:29 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-33d928a268eso90795ab.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 00:11:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C210B6AAE;
+	Wed,  7 Jun 2023 07:36:38 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D569268F;
+	Wed,  7 Jun 2023 00:36:20 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f6170b1486so374250e87.0;
+        Wed, 07 Jun 2023 00:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686121889; x=1688713889;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PGUTPYhgHVq7tjYGlPQBicKEoIBr6v5/fU5n0hbGTrI=;
-        b=OvXHLUmNzM4BI0TQ7LDb6i5kkuRVUOSUhd4VMwgVF4fy/BUvxgd1CPNFfT8ZIjTl05
-         32kZUrjfGpw8qkUWloq5scwiSkvTRE06xJXmlO5d7J5VTzHUXLGgQ192HglJaYLVLPwZ
-         6l9y4crsmvcA7tLYoIwwfjeiv7KW5AxNG8MzALmyunp8omXcMly1vinxkuNBiifMhYMK
-         ywVHFFuLdPwqSfHCs4PjZUS23EGN5Hd4t1sa1di7snzkarxYZjrSjL3IUAqskAKAwNSX
-         yXPMr626M6jSs2PWUfT6ZX+WSPDH7k3Xy4YrA+U0KzeSWW9h7chVOPbCkki3sFSw1Fsn
-         46fQ==
+        d=gmail.com; s=20221208; t=1686123378; x=1688715378;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2V3s3icJTC6LaLSn3oBF3M+3j5PZ/qbP3uDWciuJbcU=;
+        b=fn2KcYq5uY2mH+HBy/a6NAnSP+8+9rQr82d+AuBIReLJOJ3cCVmW+3wr4VfxsM87BJ
+         OMfKWaQ/mVrNrACzq5kUcPkCS/Q0xWVDHqyPJRRSmsPCAdMiPfl/Qv8hYQ84AJrRKaOe
+         YDReSxP1+MEXJ4bCT9Dqm4Yzhd1c7MX/QuXdC3HohpTyuNP68nbtUvNEUydzmAhxxULl
+         Q75bWHaJLVigND99EyKafEWnXnd5UMVjWsz+pIX2pC+S8Wqv6qCjWPcn6a/0zm0lZ3qa
+         DVNboeHMPeGP5b7KJQ4Q1c2X3HDFPEKCFiRlXmG9h8Vix1Rv+/NskHW66qCSUGIOQYnr
+         ZbTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686121889; x=1688713889;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PGUTPYhgHVq7tjYGlPQBicKEoIBr6v5/fU5n0hbGTrI=;
-        b=KFtswiOWz4tGsM/tofHXXDg8o+EMhoTgi1Y5pD3GR42aHmk9slRDWewWgEFU8FXh0G
-         V1ndqgyUb5onNN3hnFAjxFv0VyhfwNU4/geuRNAfkxmLh6rZzBVkoCXELHWfIL9WXNdt
-         bB3eq/bgwPlwVtt+aoyKdgWgzrWwoRJDyEJzNWPEPmJD8TOSugGpsYSjU+z0kiKPW2zW
-         0cKeZROGI7oGbXKFGkEvhuT84f5GWnul9+JKCwqRFW8tDm279rvEFxz8deKln9/pR7C/
-         q9u10xEqZPOGoxYeiVpUi4U2MpYxhRALsvhVgov8MRNl4GUUuIbXTjWQ8ciSGTQiVrJx
-         KVWA==
-X-Gm-Message-State: AC+VfDwIS0QlP25rBk3Ch41HYe1IC0ylZhBeYbQR7H1+HH5H5YXJjkj/
-	pEM+e3hqUQ7XEDtQWkrWHB3C59wYezEOSySKx/jLdQ==
-X-Google-Smtp-Source: ACHHUZ64HmjkncqN/Uw4dzL9OH0TZk2U52RRwNcZMU9Q2Q7FzCVbkh7mqzoadlw+Dm8EwEvusUhfelYS7RxorIT+RJ0=
-X-Received: by 2002:a05:6e02:170d:b0:32f:7715:4482 with SMTP id
- u13-20020a056e02170d00b0032f77154482mr188090ill.4.1686121888943; Wed, 07 Jun
- 2023 00:11:28 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686123378; x=1688715378;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2V3s3icJTC6LaLSn3oBF3M+3j5PZ/qbP3uDWciuJbcU=;
+        b=FJMpdptjmH3sP2FZJpj1yo6bboxJt9wdqlTk2HCW49jkB2s9I3Hsi/ugIo+x9EgWMI
+         oBAlWZuZLTSeA0RShAYe8gcZ8zJbKgt/EZ9QNbWYKqab5ebrAmUR526x/geBb7UgQ1gP
+         fEQl5SoTjHT5gH3di4lmPoEjyE+we+bhxXHhiy7TCux5NYl5Zj4mC+B7tj13KIrQUZCj
+         RBl9yd+jT0ZrkUBII6S/S7l/KyezzvcaeFXAAnRiQL1SnCU+ekn9cWCCIhcDBh6IO9Bh
+         DbYG3OHAUsmd+mpSMdWHJLYgs/iNE2eZsDmgA+yzLeQxk+2IKbzznj2HIX1gLQqHg7Yh
+         jzIw==
+X-Gm-Message-State: AC+VfDz98j5J1Fj1sp/C7NBW/eefcxlcTazVUuagsM3XmsCKCm8qk0Ak
+	nc00+zaQ35iGeJl+RSUqQBClposvnNfCZZaFb6E=
+X-Google-Smtp-Source: ACHHUZ74hYkDawUW0WJQlvYeMDw0pQKYrsLM1xjWznMqVZsLTownFItoGHR+rqczsq4O7/6SX3mgbQ==
+X-Received: by 2002:a05:6512:3f0f:b0:4f3:b324:ea8 with SMTP id y15-20020a0565123f0f00b004f3b3240ea8mr4594590lfa.19.1686123378290;
+        Wed, 07 Jun 2023 00:36:18 -0700 (PDT)
+Received: from localhost ([171.25.193.78])
+        by smtp.gmail.com with ESMTPSA id w18-20020a19c512000000b004f252f48e5fsm1731415lfe.40.2023.06.07.00.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 00:36:17 -0700 (PDT)
+Date: Wed, 7 Jun 2023 10:36:03 +0300
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Yonghong Song <yhs@meta.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Maxim Mikityanskiy <maxim@isovalent.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH bpf v3 1/2] bpf: Fix verifier tracking scalars on spill
+Message-ID: <ZIAzY8C0-X6UXjY-@mail.gmail.com>
+References: <20230606214246.403579-1-maxtram95@gmail.com>
+ <20230606214246.403579-2-maxtram95@gmail.com>
+ <11eb089f-9e71-856f-7f01-375176bd5edf@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230605202712.1690876-1-irogers@google.com> <20230605202712.1690876-5-irogers@google.com>
- <CAM9d7cj9k_FYxmAymHG5Nn6-dhjPT95wrqbHZ_YZSx=oZX7YXQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cj9k_FYxmAymHG5Nn6-dhjPT95wrqbHZ_YZSx=oZX7YXQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 7 Jun 2023 00:11:17 -0700
-Message-ID: <CAP-5=fVeehz=qyL-eFgc8aa+Q8inmN_mA7N+sGY0z4Sj6Bd9dQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] perf build: Filter out BTF sources without a .BTF section
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11eb089f-9e71-856f-7f01-375176bd5edf@meta.com>
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 5, 2023 at 4:35=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Ian,
->
-> On Mon, Jun 5, 2023 at 1:28=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > If generating vmlinux.h, make the code to generate it more tolerant by
-> > filtering out paths to kernels that lack a .BTF section.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+On Tue, 06 Jun 2023 at 18:32:37 -0700, Yonghong Song wrote:
+> 
+> 
+> On 6/6/23 2:42 PM, Maxim Mikityanskiy wrote:
+> > From: Maxim Mikityanskiy <maxim@isovalent.com>
+> > 
+> > The following scenario describes a verifier bypass in privileged mode
+> > (CAP_BPF or CAP_SYS_ADMIN):
+> > 
+> > 1. Prepare a 32-bit rogue number.
+> > 2. Put the rogue number into the upper half of a 64-bit register, and
+> >     roll a random (unknown to the verifier) bit in the lower half. The
+> >     rest of the bits should be zero (although variations are possible).
+> > 3. Assign an ID to the register by MOVing it to another arbitrary
+> >     register.
+> > 4. Perform a 32-bit spill of the register, then perform a 32-bit fill to
+> >     another register. Due to a bug in the verifier, the ID will be
+> >     preserved, although the new register will contain only the lower 32
+> >     bits, i.e. all zeros except one random bit.
+> > 
+> > At this point there are two registers with different values but the same
+> > ID, which means the integrity of the verifier state has been corrupted.
+> > Next steps show the actual bypass:
+> > 
+> > 5. Compare the new 32-bit register with 0. In the branch where it's
+> >     equal to 0, the verifier will believe that the original 64-bit
+> >     register is also 0, because it has the same ID, but its actual value
+> >     still contains the rogue number in the upper half.
+> >     Some optimizations of the verifier prevent the actual bypass, so
+> >     extra care is needed: the comparison must be between two registers,
+> >     and both branches must be reachable (this is why one random bit is
+> >     needed). Both branches are still suitable for the bypass.
+> > 6. Right shift the original register by 32 bits to pop the rogue number.
+> > 7. Use the rogue number as an offset with any pointer. The verifier will
+> >     believe that the offset is 0, while in reality it's the given number.
+> > 
+> > The fix is similar to the 32-bit BPF_MOV handling in check_alu_op for
+> > SCALAR_VALUE. If the spill is narrowing the actual register value, don't
+> > keep the ID, make sure it's reset to 0.
+> > 
+> > Fixes: 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill")
+> > Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
+> 
+> LGTM with a small nit below.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
 > > ---
-> >  tools/perf/Makefile.perf | 23 ++++++++++++++++++++---
-> >  1 file changed, 20 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index f1840af195c0..c3bb27a912b0 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -193,6 +193,7 @@ FLEX    ?=3D flex
-> >  BISON   ?=3D bison
-> >  STRIP   =3D strip
-> >  AWK     =3D awk
-> > +READELF ?=3D readelf
-> >
-> >  # include Makefile.config by default and rule out
-> >  # non-config cases
-> > @@ -1080,12 +1081,28 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
-> >         $(Q)CFLAGS=3D $(MAKE) -C ../bpf/bpftool \
-> >                 OUTPUT=3D$(SKEL_TMP_OUT)/ bootstrap
-> >
-> > -VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                        =
-   \
-> > +# Paths to search for a kernel to generate vmlinux.h from.
-> > +VMLINUX_BTF_ELF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                    =
-   \
-> >                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)   =
- \
-> >                      ../../vmlinux                                     =
- \
-> > -                    /sys/kernel/btf/vmlinux                           =
- \
-> >                      /boot/vmlinux-$(shell uname -r)
-> > -VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS)=
-)))
+> >   kernel/bpf/verifier.c | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 5871aa78d01a..7be23eced561 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3856,6 +3856,8 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+> >   	mark_stack_slot_scratched(env, spi);
+> >   	if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
+> >   	    !register_is_null(reg) && env->bpf_capable) {
+> > +		bool reg_value_fits;
 > > +
-> > +# Paths to BTF information.
-> > +VMLINUX_BTF_BTF_PATHS ?=3D /sys/kernel/btf/vmlinux
+> >   		if (dst_reg != BPF_REG_FP) {
+> >   			/* The backtracking logic can only recognize explicit
+> >   			 * stack slot address like [fp - 8]. Other spill of
+> > @@ -3867,7 +3869,12 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+> >   			if (err)
+> >   				return err;
+> >   		}
 > > +
-> > +# Filter out kernels that don't exist or without a BTF section.
-> > +VMLINUX_BTF_ELF_ABSPATHS ?=3D $(abspath $(wildcard $(VMLINUX_BTF_ELF_P=
-ATHS)))
-> > +VMLINUX_BTF_PATHS ?=3D $(shell for file in $(VMLINUX_BTF_ELF_ABSPATHS)=
-; \
-> > +                       do \
-> > +                               if [ -f $$file ] && ($(READELF) -t "$$f=
-ile" | grep .BTF); \
->
-> Wouldn't it be `readelf -S` instead?  Also I think grep needs -q to
-> suppress output.
+> > +		reg_value_fits = fls64(reg->umax_value) <= BITS_PER_BYTE * size;
+> >   		save_register_state(state, spi, reg, size);
+> > +		/* Break the relation on a narrowing spill. */
+> > +		if (!reg_value_fits)
+> > +			state->stack[spi].spilled_ptr.id = 0;
+> 
+> I think the code can be simplied like below:
+> 
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4230,6 +4230,8 @@ static int check_stack_write_fixed_off(struct
+> bpf_verifier_env *env,
+>                                 return err;
+>                 }
+>                 save_register_state(state, spi, reg, size);
+> +               if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
+> +                       state->stack[spi].spilled_ptr.id = 0;
+>         } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+>                    insn->imm != 0 && env->bpf_capable) {
+>                 struct bpf_reg_state fake_reg = {};
+> 
 
-Makes sense, I can change it in v3.
+That's true, I kept the variable to avoid churn when I send a follow-up
+improvement:
 
-> > +                               then \
-> > +                                       echo "$$file"; \
-> > +                               fi; \
-> > +                       done) \
-> > +                       $(wildcard $(VMLINUX_BTF_BTF_PATHS))
->
-> This changes the order of processing the sysfs file.
-> But I'm not sure it matters much as both /boot/vmlinux and sysfs
-> should refer to the running kernel.
++               /* Make sure that reg had an ID to build a relation on spill. */
++               if (reg_value_fits && !reg->id)
++                       reg->id = ++env->id_gen;
+                save_register_state(state, spi, reg, size);
 
-Agreed. readelf fails for /sys/kernel/btf/vmlinux as it isn't an elf
-file and I'm not sure it is worth worrying too much about the order
-here.
+But yeah, I agree, let's simplify it for now, there is no guarantee that
+the follow-up patch will be accepted as is. Thanks for the review!
 
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
->
->
-> > +
-> > +# Select the first as the source of vmlinux.h.
-> > +VMLINUX_BTF ?=3D $(firstword $(VMLINUX_BTF_PATHS))
-> >
-> >  $(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-> >  ifeq ($(VMLINUX_H),)
-> > --
-> > 2.41.0.rc0.172.g3f132b7071-goog
-> >
+> >   	} else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+> >   		   insn->imm != 0 && env->bpf_capable) {
+> >   		struct bpf_reg_state fake_reg = {};
 
