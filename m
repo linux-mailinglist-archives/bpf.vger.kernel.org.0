@@ -1,234 +1,262 @@
-Return-Path: <bpf+bounces-1972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2DB9725174
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:19:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C34972518F
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:33:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4444C28114B
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:19:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D71AF281302
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A41632;
-	Wed,  7 Jun 2023 01:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B60647;
+	Wed,  7 Jun 2023 01:33:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CACC7C
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 01:19:39 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB2AE6B;
-	Tue,  6 Jun 2023 18:19:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QbTyr2RhXz4f3tP1;
-	Wed,  7 Jun 2023 09:19:32 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgAnDgwh239kMlwUKQ--.34777S2;
-	Wed, 07 Jun 2023 09:19:33 +0800 (CST)
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
- allocator
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
- <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
- <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <0bbf258f-668b-a691-e425-a4c1c6bfcc91@huaweicloud.com>
-Date: Wed, 7 Jun 2023 09:19:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F677C;
+	Wed,  7 Jun 2023 01:33:08 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19C21984;
+	Tue,  6 Jun 2023 18:33:04 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 356IelG8032684;
+	Tue, 6 Jun 2023 18:32:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=e2EPiJ1XjgBHXfouynQzOa8jk8cBACIVK5AjH7/z+cY=;
+ b=i01kxM+iX+JheeEJXqYvYJ7d96x0xIGvG9eYdVsoSQ5MaQxlcB2SKpb52a4b9zNkOavU
+ FCS/zalESDwDHFFkPEmkXcqZXOrhU09DzmXpIBB6pWq1eDGuXzJ2KHqBFvF5LTawqlKC
+ 5mq/x7nGIGYj4DhmLmfLgkVaQ3Des6RDqsykHtYCETe8LZnhfCljyhZ/t4swpay8tkhm
+ z11jfRgsv+UlNSZFwayqPSlZ+m70JL/ZCQzl85hZbGjUsNkrwFPGk7/tRg2lQ0REBAw2
+ CJjnp8/Y/AFZRSieLp1ZJysifRhGiNbiZNeNesFF6aUuFUhMXcpQ2ltC3UVAW07JVIHd nQ== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2041.outbound.protection.outlook.com [104.47.73.41])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r2a72jmnk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Jun 2023 18:32:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HcLgy6LjAokQxccxnVGcoT4zlAtxyA3P5H9b1IINFTqfOjBHDVOq1eUqU5cY0dq3AZedY06boE6gdqr1bwxP4J3YUmCQhdMXAN95PFcDHszWFSadj+BQLFFextj2oa44Dn53v/GxaNBwCTXVsGqYa7Z5bkylIqMIfUwVD4qW0tPg92DoyConyDeddpL/PRCiz647yO/iI0EsFpzeLBBgTYKDRztJlPFIKwvpDnAJyKKSan5K/+iMifpSvDdxI3AV31ZOoi+Hyd0sOLfTA/1igVvdMDtWpVF0GKrGw3rT+O7bQf6Wa3RK19+e8Sf/s9P7LzuKLzRVo4Z186h6Ij0e/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e2EPiJ1XjgBHXfouynQzOa8jk8cBACIVK5AjH7/z+cY=;
+ b=LzAMOMVo/Om6BH3Hc8npT4tTHQYaR2agfVl8Rj4Ipx3BKIG+dwqJ1KnSHZV1abEXWjN9KgLbwCM+MiAx222Z8lkuK8whSUQ4N3o6h8C4YlPgIispBZa5DYayjqeEyLGH2/mvwwH3VAJbOtJz8la+fmXfGM6B93g/C1chulXZbRjqu4PXPI/adPkNbTQszpL9ANWAdekuePMnoFw4YeMrftXdmRJTI4aC+ZXzadIr2aWsK8HQTUXDmjXd/uSEo25H7fTeiENnOObc1XYy0cyOPjOnBUqIvXIhmYbwoULt2CmFsMksmxu+GXZveUOFvkHfwgbH9UdLTGSnId3ivPTs3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4545.namprd15.prod.outlook.com (2603:10b6:806:198::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.19; Wed, 7 Jun
+ 2023 01:32:41 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
+ 01:32:41 +0000
+Message-ID: <11eb089f-9e71-856f-7f01-375176bd5edf@meta.com>
+Date: Tue, 6 Jun 2023 18:32:37 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH bpf v3 1/2] bpf: Fix verifier tracking scalars on spill
+Content-Language: en-US
+To: Maxim Mikityanskiy <maxtram95@gmail.com>, bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman
+ <eddyz87@gmail.com>,
+        Maxim Mikityanskiy <maxim@isovalent.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20230606214246.403579-1-maxtram95@gmail.com>
+ <20230606214246.403579-2-maxtram95@gmail.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230606214246.403579-2-maxtram95@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR05CA0025.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgAnDgwh239kMlwUKQ--.34777S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF47XryDGrWxKF18Gr15Jwb_yoWxZw1rpr
-	WSgF43Jr4DAr9I9ws2vwn2q34UAws3Xr45XFyFkryDCwn8Xr9IvFZ2vFWYvFyUWryDC3yj
-	qrWkJ3yxZas5C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA1PR15MB4545:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4be64775-fff3-4278-3335-08db66f7159c
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	3zcGIccMaDU4jDAmZC26HwUuBLterHnyHA7r6Z/znN7YqmuKmtnCaUCzXZepm17CWTODdheO0zPzLUGIRvQYyYtPNHlkcNmQN6bUXiBQ/Zc7pKvTqZEEcFRt71R9SMOIIIhHkSWJbFRKVYDNJDfVCU8IDRgJTjj14flNlfoBv59K9lF9VfQJ8oyRbIehdyR3ac755bbgNNhQflu5MsxXtwYiKt3znzZQ2A33aAXFqllh5q+yMBJcjx41pKOtyDQvjWWX2cdeTVT0NZokdn9WuquP6nTkq88jwvNTirS8DW3o2ztmBS30nu0e6j7ABIVzBsHbsCo85nMDCLJn9pEXPA4V/YC36ZJHUgWR7P1v7WvHWpf14gJZOIhSciniYwdpyswRbRa+eaBrZUA/LKrWIxEtmWLGDETGCC/OtPLS+Zq8iAPodxAknvOL5x8zKLXMJuEMnjCPlPibTqQ/8/XIQlK4N59H+GKHQQeOGY6Q6ZspYORx6YjsYzM9rhdw+YEDQTCauzTdZecl1kgarAVzZhz7EjOkpz0RM+c5fGw556tcC/2EUInSKQfjwkMTNz7GM+6nXLw0GJaqdrUfk/YDKYY8k73Ggg4i54IVR0mwh2OEKHSwNNH0gQtNSd3dmb7hWU0S+YpT64EpGKsnEkiZVA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(396003)(366004)(346002)(451199021)(53546011)(6506007)(6512007)(2616005)(38100700002)(41300700001)(6666004)(83380400001)(6486002)(31686004)(186003)(478600001)(54906003)(4326008)(66556008)(316002)(66476007)(66946007)(7416002)(8676002)(5660300002)(8936002)(86362001)(2906002)(31696002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?S2l5RmRrclR2bEwweXBEeHdVRUhXZm9JSWF0QVovUjFHYU5yZklZTGcvSDJU?=
+ =?utf-8?B?bFFCbThPSHN0eHQzOGl5c2tYU09pRFBhaEllWnJmKy9lQWRaUDNjY0JhNzBR?=
+ =?utf-8?B?Y1p5bng4OFBVSC82VTdUMHJYSGsyUFhhRWN2SXR0Y2t1V0tETVozNVZ6Z2tT?=
+ =?utf-8?B?cXlHNVoxcDVEcXZiWG5oQUdaSTYrNTJ2bzZFTWFxdFJCSFZEc3IxQnptQVdO?=
+ =?utf-8?B?MTMrOXdqdmtIY1pOc1pqTi9NblFpMW11VklVRUcrMW5xay9lYUN0UVZ4WExr?=
+ =?utf-8?B?Z0dNVDhJUDZVbWQ0SWJZaDRsRWhTM3c2cEIrUlNyQ1J6bUNIVCtsakxPZ1B6?=
+ =?utf-8?B?emttV0hnSUI0N3FYeTVyNEw2ekwrY2Z3VjM4WnZlcTQwbWhKN1ZZRXNZeFpN?=
+ =?utf-8?B?YTQ3ZmZoVkdqVUdhQVhBMEpIQVdERGRyWWR2cEZrVnU4cHNmTDJyZElNRTlL?=
+ =?utf-8?B?YVVNMStEU2g0ZjI2YlpuNnVpRUcwb2F5a2xSRm9XS3huKzlqN3lPZHFoL0Nx?=
+ =?utf-8?B?cTBFdGJiRnNHQzd4dFdXRVZHMS9wdWloa0dGaWpNNk5XeVNaeTh2TjllckdG?=
+ =?utf-8?B?ZWZVMlJxbHNpQ2YveHdiaGd0VkgzR3J2VC9neDFYdUdFY2dlMVR4Z2wrdGFP?=
+ =?utf-8?B?T3lYUkpKM1VBRHpmbTZZRU5kbWdCbldFaVdsTHJ2RWREMWw2YmVQR0lZWDIv?=
+ =?utf-8?B?aWM0eG9DMkJucVMyS0k5N2dzNmcxOEhWZ3NFajl0eDFFWVoxTDRndmRiaXNN?=
+ =?utf-8?B?RW9CWVdIOU1CcU1na2wyN0JpNlYwdVpwT3UyTDk0djRSWGpaOWljZXNOWVU2?=
+ =?utf-8?B?b085Q1ZmaGoyM1NHSVptSTRHR2NlaFcrLzdTNERMb0FKS01vM2M5UGNsaUEv?=
+ =?utf-8?B?SEZoQUl3T2FvN0x2MVh1aVB0YTZmbStMTGhIMTg3S1VBekxZSzFOOWhmQWs5?=
+ =?utf-8?B?Mms2SnNxRWZXYWg2ZUMydElHS296cVY1a0E5YWVCaTk4SHV6dlYxdnV2citM?=
+ =?utf-8?B?TVJ1TW5VamJnV3h2YVVxbFZ0ajRvaEY5aXVYZ3lCV042V3pFSko0b0dsTjR5?=
+ =?utf-8?B?UkN6Slg5c2FzYVB3Y3Q0RVBjdXRHVTUxMXVLN3hxMnRLOGNPSWVkTzJtUjIz?=
+ =?utf-8?B?SFBUcWNFZ2pjTXdUK2tPMlNrSTlpbVZSZ1A3eGV4VUJHVXFSanpkUlpobWRH?=
+ =?utf-8?B?THlyV1lFOVhha2o3N0dvQ3FCa3ZBbERwSHlMSy90aFZsUE5DbzRLUXVVMXA4?=
+ =?utf-8?B?R0s0QTkzc0FEWjh4NSs5VjhIdGQ2TnZzdE05aUZ4akRCVUdkaFRXc25qUkdi?=
+ =?utf-8?B?OC9zMmxjdTFGVXZXNXljWTl6Z21oOUNsNVB1WUdhK2ZNdENva2c3cVhFUWNm?=
+ =?utf-8?B?RU5yQ1AwcklHYnRmUE1RbFh3OHBDUjJJd1FTVTZaenhsMEkvVmZEQ1FBb2dv?=
+ =?utf-8?B?UzI2a1RPNFk1NmMrQmdjOVE4N0RKL2U4UmRrZit1QXpEMTNoMUZ3dE93WjMr?=
+ =?utf-8?B?WW1abndzQzBKRFpVaWtRT0szeXN4eWtXS083Ujg0dWMwNjk2ekEyaHZtZFB6?=
+ =?utf-8?B?M1p4bjBXbWRiMkpOMS9BK0haV2RXdVR0R21IWStZV0t4QnJWVkpTVHozY3Jv?=
+ =?utf-8?B?WE5xREhpRFFMbmpVdGFCTk5ZbkUwa0NXNFZlV3JmTEZLcjdvL3c5aG1UMGhv?=
+ =?utf-8?B?UlFCa3BjcTVmZlhxeWZsaUtkbTNzejArNktaM1ZmUEQ5Sm9IaFFxc2NLQ0pO?=
+ =?utf-8?B?UExDa0FRcE1oQ1dYRnZZREJyZXB6L1JFbWNLYW9vTVJMMVdHbnQyWkEvT0FZ?=
+ =?utf-8?B?N1FoNCtQUGpuKzByK2JLaUNjYUpOcGlQcGhWK1hRSDFhZEJGTkc2bVNORmF0?=
+ =?utf-8?B?SXcyekFCYVJ4LytZVzMrU2xBZXROZzZKeEsxME5oaERxeUdyckNDeG1JUVpH?=
+ =?utf-8?B?TjFvTmp5Z3BNbXBYd2o2QklCM1lyZ3FuTExKb242dE55MjJ4c2Zsb1dPSkNH?=
+ =?utf-8?B?Wk80b3RzWTZDNkg5SXZ4MmdjVFVuWXBONG5uZ3JGYXl2M0dsb3hOeHlJOWpB?=
+ =?utf-8?B?YTdlTWJEWHE4bHdjRnRFLy93MFFXVlJvbzNLZmlDR0k5bk5NcEVIRmxQdzlT?=
+ =?utf-8?B?V1YzZFkyOUVERHMrTGdWL2JZOEVxZXdOYUY2c1JWRndTU3BjQW96clcvczVs?=
+ =?utf-8?B?SWc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4be64775-fff3-4278-3335-08db66f7159c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 01:32:41.0165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4XVraXoOzGyS1pulTNCFT2eZF596pNIbkEpkYoIQgBYqWiTlJjh60AQO1uk0drY5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4545
+X-Proofpoint-GUID: _dreRhtNCyrIcZA5pgE78x7lX1bAeMFU
+X-Proofpoint-ORIG-GUID: _dreRhtNCyrIcZA5pgE78x7lX1bAeMFU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-06_18,2023-06-06_02,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
 
-On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
-> On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 6/6/2023 11:53 AM, Hou Tao wrote:
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Hi,
->>>
->>> The implementation of v4 is mainly based on suggestions from Alexi [0].
->>> There are still pending problems for the current implementation as shown
->>> in the benchmark result in patch #3, but there was a long time from the
->>> posting of v3, so posting v4 here for further disscussions and more
->>> suggestions.
->>>
->>> The first problem is the huge memory usage compared with bpf memory
->>> allocator which does immediate reuse:
->>>
->>> htab-mem-benchmark (reuse-after-RCU-GP):
->>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>> | --                 | --        | --                  | --               |
->>> | no_op              | 1159.18   | 0.99                | 0.99             |
->>> | overwrite          | 11.00     | 2288                | 4109             |
->>> | batch_add_batch_del| 8.86      | 1558                | 2763             |
->>> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
->>>
->>> htab-mem-benchmark (immediate-reuse):
->>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>> | --                 | --        | --                  | --               |
->>> | no_op              | 1160.66   | 0.99                | 1.00             |
->>> | overwrite          | 28.52     | 2.46                | 2.73             |
->>> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
->>> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
->>>
->>> It seems the direct reason is the slow RCU grace period. During
->>> benchmark, the elapsed time when reuse_rcu() callback is called is about
->>> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
->>> spin-lock and the irq-work running in the contex of freeing process will
->>> increase the running overhead of bpf program, the running time of
->>> getpgid() is increased, the contex switch is slowed down and the RCU
->>> grace period increases [1], but I am still diggin into it.
->> For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
->> (namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
->> did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
->>
->> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
->> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->> | --                 | --        | --                  | --               |
->> | no_op              | 1165.38   | 0.97                | 1.00             |
->> | overwrite          | 17.25     | 626.41              | 781.82           |
->> | batch_add_batch_del| 11.51     | 398.56              | 500.29           |
->> | add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
->>
->> But the memory usage is still large compared with v3 and the elapsed
->> time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
->> are still two differences:
->> 1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
->> accelerate the reuse of freed objects.
->> 2) v3 uses kworker instead of irq_work for free procedure.
->>
->> For 1), after using kmalloc() in irq_work to allocate multiple inflight
->> RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
->> but is not enough:
->>
->> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
->> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->> | --                 | --        | --                  | --               |
->> | no_op              | 1247.00   | 0.97                | 1.00             |
->> | overwrite          | 16.56     | 490.18              | 557.17           |
->> | batch_add_batch_del| 11.31     | 276.32              | 360.89           |
->> | add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
->>
->> So it seems the large memory usage is due to irq_work (reuse_bulk) used
->> for free procedure. However after increasing the threshold for invoking
->> irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
->> big difference in the memory usage and the delayed time for RCU
->> callbacks. Perhaps the reason is that although the number of  reuse_bulk
->> irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
->> increased because there are no reusable objects.
-> The large memory usage is because the benchmark in patch 2 is abusing it.
-> It's doing one bpf_loop() over 16k elements (in case of 1 producer)
-> and 16k/8 loops for --producers=8.
-> That's 2k memory allocations that have to wait for RCU GP.
-> Of course that's a ton of memory.
-I don't agree that. Because in v3, the benchmark is the same, but both
-the performance and the memory usage are better than v4. Even compared
-with  "htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list +
-multiple reuse_rcu() callbacks)" above, the memory usage in v3 is still
-much smaller as shown below. If the large memory usage is due to the
-abuse in benchmark, how do you explain the memory usage in v3 ?
 
-htab-mem-benchmark (reuse-after-rcu-gp v3)
+On 6/6/23 2:42 PM, Maxim Mikityanskiy wrote:
+> From: Maxim Mikityanskiy <maxim@isovalent.com>
+> 
+> The following scenario describes a verifier bypass in privileged mode
+> (CAP_BPF or CAP_SYS_ADMIN):
+> 
+> 1. Prepare a 32-bit rogue number.
+> 2. Put the rogue number into the upper half of a 64-bit register, and
+>     roll a random (unknown to the verifier) bit in the lower half. The
+>     rest of the bits should be zero (although variations are possible).
+> 3. Assign an ID to the register by MOVing it to another arbitrary
+>     register.
+> 4. Perform a 32-bit spill of the register, then perform a 32-bit fill to
+>     another register. Due to a bug in the verifier, the ID will be
+>     preserved, although the new register will contain only the lower 32
+>     bits, i.e. all zeros except one random bit.
+> 
+> At this point there are two registers with different values but the same
+> ID, which means the integrity of the verifier state has been corrupted.
+> Next steps show the actual bypass:
+> 
+> 5. Compare the new 32-bit register with 0. In the branch where it's
+>     equal to 0, the verifier will believe that the original 64-bit
+>     register is also 0, because it has the same ID, but its actual value
+>     still contains the rogue number in the upper half.
+>     Some optimizations of the verifier prevent the actual bypass, so
+>     extra care is needed: the comparison must be between two registers,
+>     and both branches must be reachable (this is why one random bit is
+>     needed). Both branches are still suitable for the bypass.
+> 6. Right shift the original register by 32 bits to pop the rogue number.
+> 7. Use the rogue number as an offset with any pointer. The verifier will
+>     believe that the offset is 0, while in reality it's the given number.
+> 
+> The fix is similar to the 32-bit BPF_MOV handling in check_alu_op for
+> SCALAR_VALUE. If the spill is narrowing the actual register value, don't
+> keep the ID, make sure it's reset to 0.
+> 
+> Fixes: 354e8f1970f8 ("bpf: Support <8-byte scalar spill and refill")
+> Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
 
-| name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
-| --                  | --         | --                   | --                |
-| no_op               | 1199.16    | 0.97                 | 0.99              |
-| overwrite           | 16.37      | 24.01                | 31.76             |
-| batch_add_batch_del | 9.61       | 16.71                | 19.95             |
-| add_del_on_diff_cpu | 3.62       | 22.93                | 37.02             |
+LGTM with a small nit below.
 
->
-> As far as implementation in patch 3 please respin it asap and remove *_tail optimization.
-> It makes the code hard to read and doesn't buy us anything.
-The reason I added tail for each list is that there could be thousands
-even ten thousands elements in these lists and there is no need to spend
-CPU time to traversal these list one by one. It maybe a premature
-optimization. So let me remove tails from these list first and I will
-try to add these tails back later and check whether or not there is any
-performance improvement.
-> Other than that the algorithm looks fine.
->
->>> Another problem is the performance degradation compared with immediate
->>> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
->>> top-one hotspot:
-> That's not what I see.
-> Hot spin_lock is in generic htab code. Not it ma.
-> I still believe per-bpf-ma spin-lock is fine.
-> The bench in patch 2 is measuring something that no real bpf prog cares about.
->
-> See how map_perf_test is doing:
->         for (i = 0; i < 10; i++) {
->                 bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
->
-> Even 10 map updates for the same map in a single bpf prog invocation is not realistic.
-> 16k/8 is beyond any normal scenario.
-> There is no reason to optimize bpf_ma for the case of htab abuse.
-I have a different view for the benchmark. Firstly htab is not the only
-user of bpf memory allocator, secondly we can't predict the exact
-behavior of bpf programs, so I think to stress bpf memory allocator for
-various kinds of use case is good for its broad usage.
->
->>> map_perf_test (reuse-after-RCU-GP)
->>> 0:hash_map_perf kmalloc 194677 events per sec
->>>
->>> map_perf_test (immediate reuse)
->>> 2:hash_map_perf kmalloc 384527 events per sec
-> For some reason I cannot reproduce the slow down with map_perf_test 4 8.
-> I see the same perf with/without patch 3.
-I will double check my local setup and test results.
->
-> I've applied patch 1.
-> Please respin with patch 2 doing no more than 10 map_updates under rcu lock
-> and remove *_tail optimization from patch 3.
-> Just do llist_for_each_safe() when you move elements from one list to another.
-> And let's brainstorm further.
-> Please do not delay.
-> .
+Acked-by: Yonghong Song <yhs@fb.com>
 
+> ---
+>   kernel/bpf/verifier.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5871aa78d01a..7be23eced561 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3856,6 +3856,8 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+>   	mark_stack_slot_scratched(env, spi);
+>   	if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
+>   	    !register_is_null(reg) && env->bpf_capable) {
+> +		bool reg_value_fits;
+> +
+>   		if (dst_reg != BPF_REG_FP) {
+>   			/* The backtracking logic can only recognize explicit
+>   			 * stack slot address like [fp - 8]. Other spill of
+> @@ -3867,7 +3869,12 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+>   			if (err)
+>   				return err;
+>   		}
+> +
+> +		reg_value_fits = fls64(reg->umax_value) <= BITS_PER_BYTE * size;
+>   		save_register_state(state, spi, reg, size);
+> +		/* Break the relation on a narrowing spill. */
+> +		if (!reg_value_fits)
+> +			state->stack[spi].spilled_ptr.id = 0;
+
+I think the code can be simplied like below:
+
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4230,6 +4230,8 @@ static int check_stack_write_fixed_off(struct 
+bpf_verifier_env *env,
+                                 return err;
+                 }
+                 save_register_state(state, spi, reg, size);
++               if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
++                       state->stack[spi].spilled_ptr.id = 0;
+         } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+                    insn->imm != 0 && env->bpf_capable) {
+                 struct bpf_reg_state fake_reg = {};
+
+>   	} else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+>   		   insn->imm != 0 && env->bpf_capable) {
+>   		struct bpf_reg_state fake_reg = {};
 
