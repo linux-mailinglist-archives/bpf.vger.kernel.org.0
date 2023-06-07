@@ -1,90 +1,76 @@
-Return-Path: <bpf+bounces-2046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD5747271CC
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 00:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A76B17271D4
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 00:38:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F015E2815FC
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:34:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F4228160E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C77A3B3E7;
-	Wed,  7 Jun 2023 22:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EF23B3ED;
+	Wed,  7 Jun 2023 22:38:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0CD3B3E0
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 22:34:36 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260391725
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 15:34:34 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9788554a8c9so198470566b.2
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 15:34:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADAB3B3E0
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 22:38:08 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B7D9E
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 15:38:03 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5169f920a9dso98039a12.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 15:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686177272; x=1688769272;
+        d=gmail.com; s=20221208; t=1686177481; x=1688769481;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R0QDHqZ70OxcNOpfoN0j45kogAntENzMfRiu4/KklpI=;
-        b=lh3Qu6hAGLvVRMqYLJ2JT7vPSOAJej7fnNv1HsGv3sAKTaMBgQeZV4CmUHrQFopLtb
-         ZtsIuy7gXvojyn6cCYKpJh5jOyyYZm7GvXrIaoEvl57VWNIwEBnxk7165WKTwdPiTN8W
-         G0S02TDlzxw6R9v8Xv6vlyApl3ODR1TuY/bIWn+akxSzfusvZCjuAJPhKHBu4mZWNTrZ
-         F9Dr73mQzllcsQ908ZCAsfTzkX5DynGLC36Qff2vSXWc2IziQc997wgElP9nlQkSZm4i
-         JKQW9wI9WIAFECo3cO+BXTWatmwcroTrC8gzg8+XzFdEmWmYt+lekQTp15qPj368wxxR
-         TAaQ==
+        bh=BUFyqZMmusJrr0+ash9sZJH7RAq/x8BCibei5JLpKaQ=;
+        b=HlJGFyqQXr01t0DwwPqXKj0Lb6LZRckSAvV4f350RcqyCU4RWTzf8xn2pezNKrFsh2
+         Op8U4wBZcw2Dc24o9/DbZPnXQnDvRzn45RPpVDN5CQcctYV9DL4rjhIzcPX3NA5RM+6B
+         KSoRd5RwRi/V00EUgbK/duzfyEf6UjbFY4+P9Qa3kUV3H2Bv5jaA505T1H3yvpEps3Cd
+         IkKb1dH11O9iJMCPTQj9vO6vPTyKSNDmLVi0gIX5lILzmwJ7P9vrbtMTKmmvozRaWU4p
+         uPKMrj+g96fK0dAEQT1JiV/bRTP3WesgnsNiKKf0GLT3+4xIJOKCh8jrmRMD5Awzj+G0
+         2EBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686177272; x=1688769272;
+        d=1e100.net; s=20221208; t=1686177481; x=1688769481;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R0QDHqZ70OxcNOpfoN0j45kogAntENzMfRiu4/KklpI=;
-        b=Mi/cJFfw+deHlZnNwxuarXED2p7w4lml4eT1pmIOuFUZyv01WTCsojHdnBfuNyyfCt
-         OR8ZOkwhQhWZ42sZbX8LYT1vn9jfrqXzWCwar3FLaRtRP5Fy6aqS8B8NqEeG30vo12vV
-         6tUrVkwYCphS0rucmbnuYmuPn+rWkeChNyn9b62uezRFnPs6RaHlV3pJKo1FfkzeBdIb
-         Fn8dItS5+AuBk9s7QDsKy7wE/XhbxuBJ7idwq1wM+I/JHi87FIuWFFQ/JH6NBt1LNa7u
-         B/oG1yQwfvBXuAfGgA9tIUsmUgqAPiQlOy7hHEuJqvHzKdDn2tBOJ4sN1622+YHtXss0
-         L22g==
-X-Gm-Message-State: AC+VfDxma91pyBFkg1q4gxsuGH3vY2L8Qhn+7kcBAtSwEVqhEJwd3kax
-	jqEMz72YAtnSGUkj7+kMliHDh4gxXNY9pexgipk=
-X-Google-Smtp-Source: ACHHUZ7VzOAtY6MRg3cb2yXsTsVtOYAbpYlxCJuzG8OT0SYvpP37mg8OneLr0FPYpxnUb7dtFJoyCpYkKBc+oqFKM0U=
-X-Received: by 2002:a17:907:d1c:b0:978:88bc:f225 with SMTP id
- gn28-20020a1709070d1c00b0097888bcf225mr3100078ejc.2.1686177272345; Wed, 07
- Jun 2023 15:34:32 -0700 (PDT)
+        bh=BUFyqZMmusJrr0+ash9sZJH7RAq/x8BCibei5JLpKaQ=;
+        b=V/wwoz8ahswRClD+O/YZuFOm+1l+eD3zpN7WzOVL4sibKOfTMfVTMmEUSOlQ9MfENu
+         cPKu/BF5MOPIQp6iTl939BJc+n8ATSVVauPuCWH+VjXs476vZS2MmGlgk7ZIcUs06XQ6
+         snFC01vq/W77lry0tFP44qJJ/Mj+Vg2btTI60327Gb5vJq2/KiO49tdJWRGq08jHtzpm
+         8ogNU25jYAAADFl3IZWCXtnbKjCg7j5wvwvk3VP+EJshDInCU9/9IEBhwYPXKjJNxps6
+         kWUoXdlb+7FGWa5gf2pMJZWpeU1tFcjplr9XJvFq8TgdvKUWt5vP0TH6PR8ibcK7U/qv
+         8FiA==
+X-Gm-Message-State: AC+VfDxd7Zbj3NgjRyfvA263NDn2uCU37hEbgfQH3QU0aIbRWF979sUs
+	Rw1BUwC9X+EhhBzlyOyYbJ+tYcYbZbXP6T+/Vhg=
+X-Google-Smtp-Source: ACHHUZ4l4gAI0N/AXg/bQ5Yt29xIYayatU3aF9WsyWWLR+0KN57meH3is/xfLIshgS1dblhf5D7HXrV43YGO1nfIOdQ=
+X-Received: by 2002:aa7:d3c8:0:b0:50b:c456:a72a with SMTP id
+ o8-20020aa7d3c8000000b0050bc456a72amr385171edr.19.1686177481516; Wed, 07 Jun
+ 2023 15:38:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230531201936.1992188-1-alan.maguire@oracle.com>
- <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
- <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
- <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
- <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
- <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
- <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
- <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
- <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com>
- <878rcw3k1o.fsf@toke.dk> <35e5f70bbe0890f875e0c24aff0453c25f018ea6.camel@gmail.com>
- <e58d3ec4-dcac-48b8-c6c2-63d131d967d8@meta.com> <45fac5ac0874163031b46388d65de194ed6f27e6.camel@gmail.com>
- <CAEf4BzY9_EiBqM74Gce9-Z5O+uubCY=CUejXr79hDY6SbOvTOg@mail.gmail.com> <24c2b0295ea9b8a3f3fc256e2d7bf004a046ebb1.camel@gmail.com>
-In-Reply-To: <24c2b0295ea9b8a3f3fc256e2d7bf004a046ebb1.camel@gmail.com>
+References: <ZG8f7ffghG7mLUhR@krava> <20230525102747.68708-1-liu.yun@linux.dev>
+ <CAEf4Bzae7mdpCDBEafG-NUCPRohWkC8EBs0+twE2hUbB8LqWJA@mail.gmail.com>
+ <b2273217-5adb-8ec6-288b-4f8703a56386@linux.dev> <CAEf4BzbGtZJvS-8=6i3g5A9uJm9_LHVRRbye-OLTdgeWZtdrsw@mail.gmail.com>
+ <77d8aaef-5c63-641e-6019-dec1f3f078d8@linux.dev>
+In-Reply-To: <77d8aaef-5c63-641e-6019-dec1f3f078d8@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Jun 2023 15:34:19 -0700
-Message-ID: <CAEf4BzYWSmSoBBcvOaOJ2Y78ZKNEXi5MOcoGONDE5iMGG_K0FQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yhs@meta.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
+Date: Wed, 7 Jun 2023 15:37:49 -0700
+Message-ID: <CAEf4BzbxEzfO4vJn7e6xGUPCdTxpGVdwc7eXOUNpYxb9mpAjNw@mail.gmail.com>
+Subject: Re: [PATCH v4] libbpf: kprobe.multi: Filter with available_filter_functions
+To: Jackie Liu <liu.yun@linux.dev>
+Cc: Jiri Olsa <olsajiri@gmail.com>, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yhs@fb.com, bpf@vger.kernel.org, liuyun01@kylinos.cn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -94,123 +80,187 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 7, 2023 at 3:05=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Tue, Jun 6, 2023 at 11:01=E2=80=AFPM Jackie Liu <liu.yun@linux.dev> wrot=
+e:
 >
-> On Wed, 2023-06-07 at 14:47 -0700, Andrii Nakryiko wrote:
-> > On Wed, Jun 7, 2023 at 9:14=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> > >
-> > > On Wed, 2023-06-07 at 08:29 -0700, Yonghong Song wrote:
-> > > >
-> > > > On 6/7/23 4:55 AM, Eduard Zingerman wrote:
-> > > > > On Tue, 2023-06-06 at 13:30 +0200, Toke H=C3=B8iland-J=C3=B8rgens=
-en wrote:
-> > > > > [...]
-> > > > > >
-> > > > > > As for bumping the version number, I don't think it's a good id=
-ea to
-> > > > > > deliberately break compatibility this way unless it's absolutel=
-y
-> > > > > > necessary. With "absolutely necessary" meaning "things will bre=
-ak in
-> > > > > > subtle ways in any case, so it's better to make the breakage ob=
-vious".
-> > > > > > But it libbpf is not checking the version field anyway, that be=
-comes
-> > > > > > kind of a moot point, as bumping it doesn't really gain us anyt=
-hing,
-> > > > > > then...
-> > > > >
-> > > > > It seems to me that in terms of backward compatibility, the abili=
-ty to
-> > > > > specify the size for each kind entry is more valuable than the
-> > > > > capability to add new BTF kinds:
-> > > > > - The former allows for extending kind records in
-> > > > >    a backward-compatible manner, such as adding a function addres=
-s to
-> > > > >    BTF_KIND_FUNC.
-> > > >
-> > > > Eduard, the new proposal is to add new kind, e.g., BTF_KIND_KFUNC, =
-which
-> > > > will have an 'address' field. BTF_KIND_KFUNC is for kernel function=
-s.
-> > > > So we will not have size compatibility issue for BTF_KIND_FUNC.
-> > >
-> > > Well, actually this might be a way to avoid BTF_KIND_KFUNC :)
-> > > What I wanted to say is that any use of this feature leads to
-> > > incompatibility with current BTF parsers, as either size of existing
-> > > kinds would be changed or a new kind with unknown size would be added=
-.
-> > > It seems to me that this warrants version bump (or some other way to
-> > > signal existing parsers that format is incompatible).
-> >
-> > It is probably too late to have existing KINDs changing their size. If
-> > this layout metadata was mandatory from the very beginning, then we
-> > could have relied on it for determining new extra fields for
-> > BTF_KIND_FUNC.
-> >
-> > As things stand right now, new BTF_KIND_KFUNC is both a signal of
-> > newer format (for kernel-side BTF; nothing changes for BPF object file
-> > BTFs, which is great side-effect making backwards compat pain
-> > smaller), and is a simpler and safer way to add extra information.
-> >
-> > >
-> > > >
-> > > > > - The latter is much more fragile. Types refer to each other,
-> > > > >    compatibility is already lost once a new "unknown" tag is intr=
-oduced
-> > > > >    in a type chain.
-> > > > >
-> > > > > However, changing the size of existing BTF kinds is itself a
-> > > > > backward-incompatible change. Therefore, a version bump may be
-> > > > > warranted in this regard.
-> > >
-> >
-> > See above and previous emails. Not having to bump version means we can
-> > start emitting this layout info from Clang and pahole with no extra
-> > opt-in flags, and not worry about breaking existing tools and apps.
-> > This is great, so let's not ruin that property :)
+> Hi Andrii.
 >
-> I'm not sure I understand how this would help:
-> - If no new kinds are added, absence or presence of metadata section
->   does not matter. Old parsers would ignore it, new parsers would work
->   as old parsers, so there is no added value in generating metadata.
-> - As soon as new kind is added old parsers are broken.
+> =E5=9C=A8 2023/6/3 01:27, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Thu, May 25, 2023 at 6:38=E2=80=AFPM Jackie Liu <liu.yun@linux.dev> =
+wrote:
+> >>
+> >> Hi Andrii.
+> >>
+> >> =E5=9C=A8 2023/5/26 04:43, Andrii Nakryiko =E5=86=99=E9=81=93:
+> >>> On Thu, May 25, 2023 at 3:28=E2=80=AFAM Jackie Liu <liu.yun@linux.dev=
+> wrote:
+> >>>>
+> >>>> From: Jackie Liu <liuyun01@kylinos.cn>
+> >>>>
+> >>>> When using regular expression matching with "kprobe multi", it scans=
+ all
+> >>>> the functions under "/proc/kallsyms" that can be matched. However, n=
+ot all
+> >>>> of them can be traced by kprobe.multi. If any one of the functions f=
+ails
+> >>>> to be traced, it will result in the failure of all functions. The be=
+st
+> >>>> approach is to filter out the functions that cannot be traced to ens=
+ure
+> >>>> proper tracking of the functions.
+> >>>>
+> >>>> Use available_filter_functions check first, if failed, fallback to
+> >>>> kallsyms.
+> >>>>
+> >>>> Here is the test eBPF program [1].
+> >>>> [1] https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b=
+8b3eadde97f7a4535e867
+> >>>>
+> >>>> Suggested-by: Jiri Olsa <olsajiri@gmail.com>
+> >>>> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> >>>> ---
+> >>>>    tools/lib/bpf/libbpf.c | 92 +++++++++++++++++++++++++++++++++++++=
+-----
+> >>>>    1 file changed, 83 insertions(+), 9 deletions(-)
+> >>>>
+> >>>
+> >>> Question to you and Jiri: what happens when multi-kprobe's syms has
+> >>> duplicates? Will the program be attached multiple times? If yes, then
+> >>> it sounds like a problem? Both available_filters and kallsyms can hav=
+e
+> >>> duplicate function names in them, right?
 >
-> What am I missing?
+> I don't have any idea, I tested it on my own device, and they don't have
+> duplicate functions.
+>
+> =E2=95=AD=E2=94=80jackieliu@jackieliu-PC ~/gitee/ketones/src
+> =E2=95=B0=E2=94=80=E2=9E=A4 sudo cat /sys/kernel/debug/tracing/available_=
+filter_functions | awk
+> -F' ' '{print $1}' | wc -l
+>
+> 81882
+> =E2=95=AD=E2=94=80jackieliu@jackieliu-PC ~/gitee/ketones/src
+> =E2=95=B0=E2=94=80=E2=9E=A4 sudo cat /sys/kernel/debug/tracing/available_=
+filter_functions | awk
+> -F' ' '{print $1}' | uniq | wc -l
+>
+> 81882
 
-I was arguing both against changing BTF_KIND_FUNC (not adding new
-fields to id, not changing its size based on klag, etc) and against
-bumping BTF_VERSION to 2.
+hm... I'm pretty sure there are plenty:
 
-For kernel-side BTF breakage is unavoidable, unfortunately, either if
-we extend BTF_KIND_FUNC with addr or add new kind BTF_KIND_KFUNC. Any
-application that would want to open such new kernel BTF would need to
-upgrade to latest libbpf to be able to do it.
-
-What I'm trying to avoid is also breaking (unnecessarily) BPF object
-file-side BTF generated by Clang. BPF object BTF also has
-BTF_KIND_FUNC generated for each entry program and subprogram. So if
-we change anything about BTF_KIND_FUNC, we break existing tools, so we
-need to be careful about that.
-
-
-If we are talking about this btf_layout information separately from
-extending kernel-side function info. By adding just that, we can keep
-both kernel and BPF object BTFs backwards compatible with existing
-tooling (unless someone decided to be very strict about checking
-BTF_VERSION or btf_header bytes after last known field).
+$ sudo cat /sys/kernel/debug/tracing/available_filter_functions | grep
+-v __ftrace_invalid_address | sort | uniq -c | sort -nr | head -n10
+     14 type_show
+     12 init_once
+     11 modalias_show
+      8 event_show
+      7 name_show
+      6 enabled_show
+      5 version_show
+      5 size_show
+      5 offset_show
+      5 numa_node_show
 
 
-So tl;dr:
-  - btf_layout is useful and can be done in a backwards compatible
-way, if we don't bump BTF_VERSION;
-  - we can start emitting it from Clang and pahole unconditionally, if
-done this way;
-  - adding addrs to either new BTF_KIND_KFUNC or extending existing
-BTF_KIND_FUNC is separate from btf_layout (it just prompted btf_layout
-prioritization to help avoid unnecessary tooling breakages in the
-future), and I'm leaning towards new BTF_KIND_KFUNC instead of trying
-to extend existing BTF_KIND_FUNC.
+>
+> >>
+> >> If I understand correctly, there should be no problem with repeated
+> >> function registration, because the bottom layer is done through fprobe
+> >> registration addrs, kprobe.multi itself does not do this work, but
+> >> fprobe is based on ftrace, it will register addr by makes a hash,
+> >> that is, if it is the same address, it should be filtered out.
+> >>
+> >
+> > Looking at kernel code, it seems kernel will actually return error if
+> > user specifies multiple duplicated names. Because kernel will
+> > bsearch() to the first instance, and never resolve the second
+> > duplicated instance. And then will assume that not all symbols are
+> > resolved.
+>
+> I wrote a test program myself, but it cannot be attached normally, and
+> an error will be reported.
+>
+> const char *sysms[] =3D {
+>      "vfs_read",
+>      "vfs_write",
+>      "vfs_read",
+> };
+>
+> when attach_kprobe_multi, -3 returned.
+>
+> >
+> > So, it worries me that we'll switch from kallsyms to available_filters
+> > by default, because that introduces new failure modes.
+>
+> In fact, this is not a new problem introduced by switching from kallsyms
+> to available_filters. If kallsyms also has duplicate functions, then
+> this problem will also exist before.
+
+It is, because currently when we parse kallsyms we remember function
+addresses, which are unique. We don't rely on kernel string -> addr
+resolution.
+
+>
+> >
+> > Either way, let's add a selftest that uses a duplicate function name
+> > and see what happens?
+>
+> Hi Jiri, Do you mind write a self-test program for duplicate function? I
+> saw that it has been written before.
+> for some reason, I failed to compile kselftest/bpf successfully on
+> fedora38 and Ubuntu2004. :<
+>
+>
+> >
+> >> The main problem here is not the problem of repeated registration of
+> >> functions, but some functions are not allowed to hook. For example, wh=
+en
+> >> I track vfs_*, vfs_set_acl_prepare_kgid and vfs_set_acl_prepare_kuid a=
+re
+> >> not allowed to hook. These exist under kallsyms, but
+> >> available_filter_functions does not, I have observed for a while,
+> >> matching through available_filter_functions can effectively prevent th=
+is
+> >> from happening.
+> >
+> > Yeah, I understand that. My point above is that a)
+> > available_filter_functions contains duplicates and b) doesn't contain
+> > addresses. So we are forced to rely on kernel string -> addr
+> > resolution, which doesn't seem to handle duplicate entries well (let's
+> > test).
+>
+> Yes, the test for repeated functions reports errors. If there is an
+> interface similar to available_filter_functions, which contains the
+> function name and function address, and ensures that it is not
+> duplicate, then it is a good speedup for eBPF program, because using
+> 'strdup' to record the function name consumes a certain amount of
+> startup time.
+>
+> >
+> > So it's a regression to switch to that without taking any other precaut=
+ions.
+> >
+>
+> Yes, agree.
+>
+> --
+> BR, Jackie Liu
+> >>
+> >>>
+> >>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >>>> index ad1ec893b41b..3dd72d69cdf7 100644
+> >>>> --- a/tools/lib/bpf/libbpf.c
+> >>>> +++ b/tools/lib/bpf/libbpf.c
+> >>>> @@ -10417,13 +10417,14 @@ static bool glob_match(const char *str, co=
+nst char *pat)
+> >>>>    struct kprobe_multi_resolve {
+> >>>>           const char *pattern;
+> >>>>           unsigned long *addrs;
+> >>>> +       const char **syms;
+> >>>>           size_t cap;
+> >>>>           size_t cnt;
+> >>>>    };
+> >>>>
+> >
+> > [...]
 
