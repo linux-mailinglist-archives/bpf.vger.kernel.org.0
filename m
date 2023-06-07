@@ -1,128 +1,137 @@
-Return-Path: <bpf+bounces-1990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C71A725DBC
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 13:56:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9999725FBE
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 14:41:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 618E32812F0
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 11:56:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F3F11C20EA0
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 12:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CFAC31EF7;
-	Wed,  7 Jun 2023 11:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BD88BEE;
+	Wed,  7 Jun 2023 12:41:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DD128C3D
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 11:55:57 +0000 (UTC)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5681BCC
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 04:55:46 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4f62d93f38aso3879629e87.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 04:55:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105F8626;
+	Wed,  7 Jun 2023 12:41:05 +0000 (UTC)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD751BF5;
+	Wed,  7 Jun 2023 05:40:37 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-516a0546230so551959a12.3;
+        Wed, 07 Jun 2023 05:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686138945; x=1688730945;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NX7UaOO/Zy36F/I4Mlc9GyuSRdm8WjFUnFhZPx0ZM3s=;
-        b=pYPQSOC0HGiz2kQMJUrmFmrQERXjZe9Z1UV5Pz75oj1FXbGbIIotOg1YjKPlipE2Jj
-         OpfPChF6Nsh8uAeQsyEjuel0fd3QlUO3oDfNO6avIp3Nj6nwlayO520xEttlMiIljyXG
-         Jjjj5i9RwokkigCT8RNFTE+Lh0i+RVlXVSxGKAD8+JjX89UrBUMy9nlOQwpQXEghJTLI
-         3yFrzFxgKz/348eG4l3/zr2v7vx/u/gpkTZU/8DbBkBR3ty0fQwuSWFsjb5DPb2mJTdy
-         s20IQQAlWvF0RFAbKU8osV/oCuCI50edMiyl31QNaxz3tj1xAW0sw7N4H59WurVOk2br
-         dbHw==
+        d=gmail.com; s=20221208; t=1686141596; x=1688733596;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQn0uFJCpJmXCmOjjUjAo32a6wELEyxybu3QCQdKk+w=;
+        b=bv6hmv2YOewAE7kjkWMOVJmTObd3L/faqOwrXginYUwm21qYyRIJzStoFTUNs2YgoE
+         fcRDRzyCaC65CDT85Sl1sYiKHSeFvrmswE/ODpQwPGQIe952ATGdAgHgSWOZKQhGU+ir
+         GdIAKR4MqubC9TZy2Mt2UJTOJtBluVXG02bpZBQ318vY//DKo1BDvpw4Pa8m+ryCoAoj
+         OQTyvomDkiRwboC4u3m8hbiNlPrWgl2cJArQwEeX+VMlxVqMD27jLJL+39hJpw5/3xCb
+         aqjTfTQHRJYzx5eAlyKHF//hV0lLl/bG8ojCZ5B5LZvnvOktb1sE58njba3Xafan0e+i
+         Nftw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686138945; x=1688730945;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NX7UaOO/Zy36F/I4Mlc9GyuSRdm8WjFUnFhZPx0ZM3s=;
-        b=csYpxS8AMlAbLtFRP4EY2/97O+LRcre1b4fviMBzON7xVrSC6r6hdofruROFDuFfM9
-         ddgZ4rIBef2577tp2gtaGrgWCT8oHR94xPqJrYkgQF5O4crS4po9GZ525rJEwWOcv0EE
-         n8fcOWU+6Wr75UgKMmHXH+VHC/ivZnD6/LYY99Jui3JJjnu5Y2HZdNm6TICphVIrTvT0
-         kCx0Wx/zhXGceRzmDZO56Xhte4WdWhtEIKIc6urXLSA51WKd21Y/5QUbwwwI6zzLvP+h
-         tjGnXaXmiOmKflButGAsHiTIYLkU0/7s57SRyWaOPScrTLQumsp7WThRgds1P9jK0UdB
-         LNLg==
-X-Gm-Message-State: AC+VfDzQNeubiTxrH06jqEiNiRDJTSoMJjHQegHDu/sl3IdKDkISDcz0
-	q0t9+duFfy08eX7X0iJwchUujyqRj0HAng==
-X-Google-Smtp-Source: ACHHUZ4UW+T59LnuZvLXcjhMeFnHavOVLzhgov4nxCeY0HJei3o9FDILUaJqC7QbcvPFLe1XuY7Oeg==
-X-Received: by 2002:ac2:4c35:0:b0:4eb:1527:e2a7 with SMTP id u21-20020ac24c35000000b004eb1527e2a7mr1919571lfq.45.1686138944409;
-        Wed, 07 Jun 2023 04:55:44 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id l1-20020a19c201000000b004f3ab10016bsm1795898lfc.16.2023.06.07.04.55.42
+        d=1e100.net; s=20221208; t=1686141596; x=1688733596;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hQn0uFJCpJmXCmOjjUjAo32a6wELEyxybu3QCQdKk+w=;
+        b=TiyUxO1nCoCutKb1htyd5aA+rc0qNl5zZyrIG06+Ep5Z5O8QZCutKkt4/Q+bdATJEW
+         IuG85xYJWoi3gryEZLSqSsC0iYDo+zsx94hEfyvqoge0fP3ALmp4SsnDg43F2JQWlbOi
+         1OsLf3Sub7cs0hH0GV7HrOYO6T2/6G107p/4lWnAdsTauEWytMkYOffIj6dki+jfv4ki
+         VJ8ywcaXtcgEX6EtfOnXybUGq9b8gm6QX80Csp5tVJ44IMkVmuRnf/RmX3SSnkuwoIWg
+         3/n0CQlSnMIczSt2gazp5oj7OFCczmCw8MrIIjinVcmIqCNRShzVKwmdEZ8SBhF1Wrmh
+         6z3w==
+X-Gm-Message-State: AC+VfDziyAt3QlqvVOGntgpfcktJl0DIVUajETtL3Wu+c8ItDYePAUp7
+	wn5jljsdvXO8NQl3XNo+NsOiG4U8ZpC6jnVDNLY=
+X-Google-Smtp-Source: ACHHUZ5Eh44eDjG3RkZNH5AkQmsbiHi9keicnz4mxbPsfBxR7ahInzXb0pw3Ji16qhGi48b7TAM7Zg==
+X-Received: by 2002:aa7:c1c4:0:b0:514:a452:3f5 with SMTP id d4-20020aa7c1c4000000b00514a45203f5mr3944373edp.32.1686141595779;
+        Wed, 07 Jun 2023 05:39:55 -0700 (PDT)
+Received: from localhost (tor-exit-48.for-privacy.net. [185.220.101.48])
+        by smtp.gmail.com with ESMTPSA id w8-20020aa7dcc8000000b00514a6d05de9sm6126356edu.88.2023.06.07.05.39.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 04:55:43 -0700 (PDT)
-Message-ID: <35e5f70bbe0890f875e0c24aff0453c25f018ea6.camel@gmail.com>
-Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Quentin Monnet
- <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf
- <bpf@vger.kernel.org>
-Date: Wed, 07 Jun 2023 14:55:42 +0300
-In-Reply-To: <878rcw3k1o.fsf@toke.dk>
-References: <20230531201936.1992188-1-alan.maguire@oracle.com>
-	 <20230531201936.1992188-2-alan.maguire@oracle.com>
-	 <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
-	 <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com>
-	 <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
-	 <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
-	 <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
-	 <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
-	 <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
-	 <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
-	 <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com>
-	 <878rcw3k1o.fsf@toke.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Wed, 07 Jun 2023 05:39:55 -0700 (PDT)
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Maxim Mikityanskiy <maxim@isovalent.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: [PATCH bpf v4 0/2] Fix verifier id tracking of scalars on spill
+Date: Wed,  7 Jun 2023 15:39:49 +0300
+Message-Id: <20230607123951.558971-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+	FREEMAIL_FROM,RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, 2023-06-06 at 13:30 +0200, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-[...]
->=20
-> As for bumping the version number, I don't think it's a good idea to
-> deliberately break compatibility this way unless it's absolutely
-> necessary. With "absolutely necessary" meaning "things will break in
-> subtle ways in any case, so it's better to make the breakage obvious".
-> But it libbpf is not checking the version field anyway, that becomes
-> kind of a moot point, as bumping it doesn't really gain us anything,
-> then...
+From: Maxim Mikityanskiy <maxim@isovalent.com>
 
-It seems to me that in terms of backward compatibility, the ability to
-specify the size for each kind entry is more valuable than the
-capability to add new BTF kinds:
-- The former allows for extending kind records in
-  a backward-compatible manner, such as adding a function address to
-  BTF_KIND_FUNC.
-- The latter is much more fragile. Types refer to each other,
-  compatibility is already lost once a new "unknown" tag is introduced
-  in a type chain.
+See the details in the commit message (TL/DR: under CAP_BPF, the
+verifier can incorrectly conclude that a scalar is zero while in
+fact it can be crafted to a predefined number.)
 
-However, changing the size of existing BTF kinds is itself a
-backward-incompatible change. Therefore, a version bump may be
-warranted in this regard.
+v1 and v2 were sent off-list.
+
+v2 changes:
+
+Added more tests, migrated them to inline asm, started using
+bpf_get_prandom_u32, switched to a more bulletproof dead branch check
+and modified the failing spill test scenarios so that an unauthorized
+access attempt is performed in both branches.
+
+v3 changes:
+
+Dropped an improvement not necessary for the fix, changed the Fixes tag.
+
+v4 changes:
+
+Dropped supposedly redundant tests, kept the ones that result in
+different verifier verdicts. Dropped the variable that is not yet
+useful in this patch. Rephrased the commit message with Daniel's
+suggestions.
+
+Maxim Mikityanskiy (2):
+  bpf: Fix verifier id tracking of scalars on spill
+  selftests/bpf: Add test cases to assert proper ID tracking on spill
+
+ kernel/bpf/verifier.c                         |  3 +
+ .../selftests/bpf/progs/verifier_spill_fill.c | 79 +++++++++++++++++++
+ 2 files changed, 82 insertions(+)
+
+-- 
+2.40.1
+
 
