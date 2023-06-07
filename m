@@ -1,90 +1,87 @@
-Return-Path: <bpf+bounces-1998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08F37260F1
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 15:16:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02B7726218
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 16:05:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7011B28127D
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 13:16:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FF081C202F0
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 14:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A58E34D9D;
-	Wed,  7 Jun 2023 13:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8430635B5C;
+	Wed,  7 Jun 2023 14:05:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC47139F
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 13:16:48 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6221395;
-	Wed,  7 Jun 2023 06:16:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1890A139F;
+	Wed,  7 Jun 2023 14:05:31 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978471BE3;
+	Wed,  7 Jun 2023 07:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=triKty2eWmiB4fvrBy4Tj5RIpIdluVAjdkSMtzCdvzk=; b=LoUSwzlXy2VYzAne77UBvaxvcV
-	3+vDik5ef8dopUFA6r/1bTGLLVvta6aepG5CwY7J2+2Hsch7eZVFMIjYanDvBATi72t/MeovgRiks
-	aSrE5j+qIeRRi/4M18ZYnPbhDeSYaLqW36oSC08ZmTOFoUJJwjVRIuA2hlyWM4x+AhUUrJgvgel4B
-	Kgii2Kn94oFIb/zWFc5IeM2ycUo8J/BNj4NASiwfNaHbepDuCuZVsYw9260Ek2hLtPVSf2j4ZBWVo
-	bokJ09q7K9tprWrB5Qaqv2baP0IDeM3e7Lkw9p+cVsRnU2VAO3o1ysbYElh2dGb6bJjH4z/6n0L47
-	a7Ji6IEg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q6t1o-0008OA-E0; Wed, 07 Jun 2023 15:16:44 +0200
-Received: from [178.197.248.49] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q6t1n-000RWB-TX; Wed, 07 Jun 2023 15:16:43 +0200
-Subject: Re: [PATCHv2 bpf] bpf: Add extra path pointer check to d_path helper
-To: Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: stable@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
- Anastasios Papagiannis <tasos.papagiannnis@gmail.com>, bpf@vger.kernel.org,
- Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
-References: <20230606181714.532998-1-jolsa@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b311cea8-a6ee-6d4c-13ad-29bb6adcae63@iogearbox.net>
-Date: Wed, 7 Jun 2023 15:16:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Q6ZcNKaMmaLtZ2k8Pfp9W7lBG0f901s5qBQB0ForDFg=; b=LvCr+FzBfv2Ob+BZQlPqfSeKFa
+	HM4GprvasrzxHoKj4RJADj4wJMIO6MWv4EBmLt1mnjhlP8hA+dVR6Yr3wpL79IJbYDWwSeqx4FrvS
+	vCnrAs5hWh/H0qfGUkVsVwo6sH9v+pt6ri6+uaUOaug1oOjQWC3lH+S4DAEuls/wIv8Lna6x/b2jp
+	PQ4KwnNANyD/gtHw4B/Uoswx5TZ2qMkMzjQUsIzNLhP36VpnBEr07CFAp1YSThqi6MKJPwjgFK8OG
+	jxRFOvzHY5Ye+2cP+dKipV2yLMLf38X1ruXzTHeosuNN9Fd9a2FIMYzYswG8XE4USzhrsykKY1pd0
+	uG8kq5Qg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1q6tmi-006CPZ-07;
+	Wed, 07 Jun 2023 14:05:12 +0000
+Date: Wed, 7 Jun 2023 07:05:11 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	virtualization@lists.linux-foundation.org,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH vhost v10 00/10] virtio core prepares for AF_XDP
+Message-ID: <ZICOl1hfsx5DwKff@infradead.org>
+References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+ <20230602232902.446e1d71@kernel.org>
+ <1685930301.215976-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230606181714.532998-1-jolsa@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26931/Wed Jun  7 09:23:57 2023)
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_SBL_CSS,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1685930301.215976-1-xuanzhuo@linux.alibaba.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/6/23 8:17 PM, Jiri Olsa wrote:
-> Anastasios reported crash on stable 5.15 kernel with following
-> bpf attached to lsm hook:
-[...]
-> Fixes: 6e22ab9da793 ("bpf: Add d_path helper")
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Reported-by: Anastasios Papagiannis <tasos.papagiannnis@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Mon, Jun 05, 2023 at 09:58:21AM +0800, Xuan Zhuo wrote:
+> On Fri, 2 Jun 2023 23:29:02 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> > On Fri,  2 Jun 2023 17:21:56 +0800 Xuan Zhuo wrote:
+> > > Thanks for the help from Christoph.
+> >
+> > That said you haven't CCed him on the series, isn't the general rule to
+> > CC anyone who was involved in previous discussions?
+> 
+> 
+> Sorry, I forgot to add cc after git format-patch.
 
-Looks like patchbot is not replying.. applied, thanks!
+So I've been looking for this series elsewhere, but it seems to include
+neither lkml nor the iommu list, so I can't find it.  Can you please
+repost it?
 
