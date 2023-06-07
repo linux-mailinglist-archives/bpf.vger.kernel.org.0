@@ -1,380 +1,304 @@
-Return-Path: <bpf+bounces-1987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1E87259F2
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 11:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B8FC725AF1
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 11:44:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9471F281222
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:18:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515C628129E
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACC69450;
-	Wed,  7 Jun 2023 09:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C36E9470;
+	Wed,  7 Jun 2023 09:44:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C847F9444
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 09:18:22 +0000 (UTC)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50C1BCA;
-	Wed,  7 Jun 2023 02:18:19 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-30af56f5f52so5920649f8f.1;
-        Wed, 07 Jun 2023 02:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686129498; x=1688721498;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NQpeinNjTN0IF7+hO8InCuCzwrWYn1/vH2w52Qt2rd4=;
-        b=VzqHDl6lOMD3HiwAyg8OxPey2tZxHaf1steCEenzmBRJl8OVFpjV2Ot/ev4ZbqCxvz
-         DXkXkC0Go/j5oqs5kV158udvvw76vh/FfYVcRetNazxf48QldJ1DuOVpdpw0oVlS0ayd
-         HWDq/UxiRPpX8fvx6Mwo5FaMbc5RDF9KoklcIgR19NevlXK1S9U3Y4rVyUJSoFtNfMVo
-         RSBVBrua30Y0Wt864k/etgs247zGnSFHmS4A2n/C/LTEJJxH/6uLkkSr/+N4ft1VQiJB
-         6/t88SyMh5K0MbPWtoE1VlMH3i+hhDxL/94Sj2MU1V+E4hhNz9AWcR3/wZWSO1NmoxTg
-         bUeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686129498; x=1688721498;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NQpeinNjTN0IF7+hO8InCuCzwrWYn1/vH2w52Qt2rd4=;
-        b=EUcY2HMFyi+y4BF7Bio8qKvYqaxwYkMt64STA6KYYcwbSlK3a4XEOOLXA5lmszmuC+
-         y85gX5ZyvXroxKgvebkPd6Cx2yZB16e8ubNB25c0lkwJraowM6+Fq1RFehvpFt/az7dg
-         D2U60QvOJ2V9NAF8l7C5SouXtGJrwenDHaFSvW0fkYC+K8snWAdQrtydTSdErYB1Fvhn
-         uIuztFD+7b//TFNhepyCzy8ymr5RjLeLOT/oQ6odsRSu4DI/InwTH+h6lhZzCVCZm7ro
-         QzYnpk6n5p8Qvdv0QcwnwBebGfy/42Hth3oziN6Zm+JbWyZOXHjdLySLerYl4oiXRQRp
-         OGhA==
-X-Gm-Message-State: AC+VfDyKh9lltx56Cmp+ucjecELX0QNBOovR06aCgUuoPDY2yNZIrRZZ
-	vgyWt/JkA5EFyiHPoHnKT00=
-X-Google-Smtp-Source: ACHHUZ6AEdjKTyzCwtUFuQ2E095E6XSGXJ158xUnhKThyKAJY7Bn3UJugtNyXWJZsbekPMv2hN6LVg==
-X-Received: by 2002:a5d:4990:0:b0:30a:e8e8:c172 with SMTP id r16-20020a5d4990000000b0030ae8e8c172mr3496896wrq.26.1686129497527;
-        Wed, 07 Jun 2023 02:18:17 -0700 (PDT)
-Received: from ip-172-31-22-112.eu-west-1.compute.internal (ec2-54-74-169-43.eu-west-1.compute.amazonaws.com. [54.74.169.43])
-        by smtp.gmail.com with ESMTPSA id cx14-20020a056000092e00b003078681a1e8sm15141958wrb.54.2023.06.07.02.18.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 02:18:17 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	catalin.marinas@arm.com,
-	mark.rutland@arm.com,
-	bpf@vger.kernel.org,
-	kpsingh@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v2 3/3] bpf, arm64: use bpf_jit_binary_pack_alloc
-Date: Wed,  7 Jun 2023 09:18:14 +0000
-Message-Id: <20230607091814.46080-4-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230607091814.46080-1-puranjay12@gmail.com>
-References: <20230607091814.46080-1-puranjay12@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E514440C
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 09:44:32 +0000 (UTC)
+X-Greylist: delayed 817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Jun 2023 02:44:29 PDT
+Received: from kwangna.com (unknown [5.182.39.133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A7A6AE49
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 02:44:29 -0700 (PDT)
+Received: from brighterbrain.com.my (localhost [IPv6:::1])
+	by kwangna.com (Postfix) with ESMTP id B20C016FCD9D
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 11:21:18 +0200 (CEST)
+From: =?UTF-8?B?U0blj5Hnpag=?= <customer.service@brighterbrain.com.my>
+To: bpf@vger.kernel.org
+Subject: =?UTF-8?B?44CQ55S15a2Q5Y+R56Wo5Y+356CBOjMwOTQwMjk344CR5oKo5pS25Yiw5LiA5byg5paw55qE55S15a2Q5Y+R56WoIA==?=
+Date: 07 Jun 2023 11:21:17 +0200
+Message-ID: <20230607112117.F3413E017FC5A06C@brighterbrain.com.my>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0012_8D6E2DF6.AF254BF8"
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_80,HTML_MESSAGE,
+	MAY_BE_FORGED,MIME_HTML_ONLY,SPF_HELO_FAIL,SPF_SOFTFAIL,
+	TVD_SPACE_RATIO_MINFP,T_HTML_ATTACH,T_OBFU_HTML_ATTACH,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Use bpf_jit_binary_pack_alloc for memory management of JIT binaries in
-ARM64 BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
-buffers. The JIT writes the program into the RW buffer. When the JIT is
-done, the program is copied to the final RX buffer
-with bpf_jit_binary_pack_finalize.
+This is a multi-part message in MIME format.
 
-Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for ARM64
-JIT as these functions are required by bpf_jit_binary_pack allocator.
+------=_NextPart_000_0012_8D6E2DF6.AF254BF8
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
-Changes in v1 => v2:
-- Made the naming of ro_ prefix consistent.
-   Now image/header/image_ptr are read/write and
-   ro_image/ro_header/ro_image_ptr are read-only.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.=
+w3.org/TR/html4/loose.dtd">
 
- arch/arm64/net/bpf_jit_comp.c | 126 +++++++++++++++++++++++++++-------
- 1 file changed, 103 insertions(+), 23 deletions(-)
+<HTML><HEAD>
+<META name=3DGENERATOR content=3D"MSHTML 11.00.10570.1001"></HEAD>
+<body style=3D"MARGIN: 0.5em">
+<P> </P>
+<P style=3D"FONT-SIZE: 16px; FONT-FAMILY: &#23435;&#20307;,arial,Verdana,sa=
+ns-serif; FONT-VARIANT: normal; WHITE-SPACE: normal; WORD-SPACING: 0px; TEX=
+T-TRANSFORM: none; FONT-WEIGHT: 400; COLOR: rgb(0,0,0); PADDING-BOTTOM: 0px=
+; FONT-STYLE: normal; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LET=
+TER-SPACING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255)=
+; TEXT-INDENT: 0px" align=3Dcenter>
+<FONT style=3D"PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MA=
+RGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=3D3><BR style=3D"PADD=
+ING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-=
+RIGHT: 0px">&nbsp; &nbsp;</FONT></P>
+<P style=3D"WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFORM: none; C=
+OLOR: rgb(0,0,0); PADDING-BOTTOM: 0px; PADDING-TOP: 0px; FONT: 400 14px/22p=
+x &#24494;&#36719;&#38597;&#40657;; PADDING-LEFT: 0px; MARGIN: 0px; LETTER-=
+SPACING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255); TE=
+XT-INDENT: 0px"></P>
+<P style=3D'WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFORM: none; C=
+OLOR: rgb(49,53,59); FONT: 14px/22px Verdana,"Microsoft Yahei",SimSun,sans-=
+serif; LETTER-SPACING: normal; TEXT-INDENT: 0px'></P>
+<P>
+<table style=3D"FONT-SIZE: small; FONT-FAMILY: Arial,Helvetica,sans-serif; =
+FONT-VARIANT: normal; WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFOR=
+M: none; FONT-WEIGHT: 400; COLOR: rgb(34,34,34); PADDING-BOTTOM: 0px; FONT-=
+STYLE: normal; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LETTER-SPA=
+CING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255); TEXT-=
+INDENT: 0px">
+<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" width=3D"30">&nbsp;</TD>
+<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px; border-radius: 3px" ce=
+llspacing=3D"0" align=3D"center">
+<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<td style=3D"BORDER-TOP: rgb(255,0,0) 1px solid; HEIGHT: 45px; BORDER-RIGHT=
+: rgb(255,0,0) 1px solid; WIDTH: 115px; WHITE-SPACE: normal; BORDER-BOTTOM:=
+ rgb(255,0,0) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEF=
+T: 0px; BORDER-LEFT: rgb(255,0,0) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0p=
+x; BACKGROUND-COLOR: rgb(255,0,0)">
+<DIV style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; P=
+ADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" align=3Dcenter><FONT sty=
+le=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-L=
+EFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=3D#fffff=
+f size=3D5 face=3Dcalibri><B style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: =
+0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">=
+SF Express</B></FONT></DIV></TD>
+<td style=3D"BORDER-TOP: rgb(46,46,46) 1px solid; BORDER-RIGHT: rgb(46,46,4=
+6) 1px solid; WIDTH: 10px; WHITE-SPACE: normal; BORDER-BOTTOM: rgb(46,46,46=
+) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; BORD=
+ER-LEFT: rgb(46,46,46) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0px; BACKGROU=
+ND-COLOR: rgb(46,46,46)">&nbsp;</TD>
+<td style=3D"BORDER-TOP: rgb(46,46,46) 1px solid; BORDER-RIGHT: rgb(46,46,4=
+6) 1px solid; WIDTH: 385px; WHITE-SPACE: normal; BORDER-BOTTOM: rgb(46,46,4=
+6) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; BOR=
+DER-LEFT: rgb(46,46,46) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0px; BACKGRO=
+UND-COLOR: rgb(46,46,46)">
+<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
+PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=
+=3D#ffffff size=3D2 face=3Dcalibri>[&#36816;&#21333;?=3D bpf@vger.kernel.or=
+g [#8395008]</FONT></TD></TR>
+<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"></TR></TBODY></TABLE></TD=
+></TR></TBODY></TABLE>
+<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" align=3D"center">
+<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
+ PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+<td style=3D"BORDER-TOP: rgb(255,0,0) 1px solid; HEIGHT: 300px; BORDER-RIGH=
+T: rgb(255,0,0) 1px solid; WIDTH: 470px; WHITE-SPACE: normal; BORDER-BOTTOM=
+: rgb(255,0,0) 1px solid; PADDING-BOTTOM: 25px; PADDING-TOP: 25px; PADDING-=
+LEFT: 25px; BORDER-LEFT: rgb(255,0,0) 1px solid; MARGIN: 0px; PADDING-RIGHT=
+: 25px; border-radius: 0px 0px 39px"><FONT style=3D"WHITE-SPACE: normal; PA=
+DDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LINE-H=
+EIGHT: 1.6; PADDING-RIGHT: 0px" size=3D2 face=3Dverdana>
+<B style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PAD=
+DING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><FONT style=3D"WHITE-SPACE=
+: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN:=
+ 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=3D#ff0000 size=3D+1>[ &#2=
+7492;&#30005;&#23376;&#21457;&#31080;&#30001;SF&#21457;&#31080;&#24179;&#21=
+488;&#20132;&#20184;&#65292;&#37038;&#20214;&#30001;&#31995;&#32479;&#33258=
+;&#21160;&#21457;&#36865;&#65292;<WBR>
+&#35831;&#21247;&#30452;&#25509;&#22238;&#22797; ]</FONT></B><SPAN>&nbsp;</=
+SPAN><BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0p=
+x; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><BR style=3D"WHITE-S=
+PACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MAR=
+GIN: 0px; PADDING-RIGHT: 0px">&#23562;&#25964;&#30340;&#23458;&#25143;&#652=
+92;&#24744;&#22909;&#65281;</FONT>
+<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
+PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=
+=3D2 face=3Dverdana><SPAN>&nbsp;</SPAN><BR style=3D"WHITE-SPACE: normal; PA=
+DDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDIN=
+G-RIGHT: 0px"><BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDIN=
+G-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
+&#24744;&#30340;&#30005;&#23376;&#21457;&#31080;&#24050;&#25104;&#21151;&#2=
+4320;&#20855;&#12290;&#35831;&#26816;&#26597;&#38468;&#20214;&#20197;&#2659=
+7;&#30475;&#21457;&#31080;&#12290;</FONT><BR style=3D"WHITE-SPACE: normal; =
+PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADD=
+ING-RIGHT: 0px">&nbsp;<SPAN style=3D"WHITE-SPACE: normal">&nbsp;</SPAN><SPA=
+N>&nbsp;</SPAN>
+<BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
+DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><FONT style=3D"WHITE-SPAC=
+E: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN=
+: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=3D2 face=3Dverdana>&#2291=
+4;&#26524;&#36935;&#21040;&#31080;&#21495;&#26080;&#25928;&#12289;&#21457;&=
+#31080;&#19979;&#36733;&#25171;&#21360;&#12289;&#21457;&#31080;&#20002;&#22=
+833;&#31561;&#38382;&#39064;&#65292;<WBR>
+&#20063;&#21487;&#20197;&#22312;&#24494;&#20449;&#20844;&#20247;&#21495;&#2=
+1672;&#35810;&#12290;<BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px;=
+ PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><BR =
+style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDIN=
+G-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><B style=3D"WHITE-SPACE: norm=
+al; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; =
+PADDING-RIGHT: 0px">
+<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
+PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=
+=3D#ff0000>[ &#35831;&#22949;&#21892;&#20445;&#31649;&#20197;&#19978;&#2145=
+7;&#31080;&#35201;&#32032;&#20449;&#24687;&#12290;]</FONT></B></FONT></TD><=
+/TR></TBODY></TABLE></TD></TR></TBODY></TABLE></P></BODY></HTML>
+------=_NextPart_000_0012_8D6E2DF6.AF254BF8
+Content-Type: application/octet-stream; name="=?UTF-8?B?U0Y2NDQ1NDUuaHRtbA==?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="=?UTF-8?B?U0Y2NDQ1NDUuaHRtbA==?="
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 145b540ec34f..0e38fa63b551 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -76,6 +76,7 @@ struct jit_ctx {
- 	int *offset;
- 	int exentry_idx;
- 	__le32 *image;
-+	__le32 *ro_image;
- 	u32 stack_size;
- 	int fpb_offset;
- };
-@@ -205,6 +206,20 @@ static void jit_fill_hole(void *area, unsigned int size)
- 		*ptr++ = cpu_to_le32(AARCH64_BREAK_FAULT);
- }
- 
-+int bpf_arch_text_invalidate(void *dst, size_t len)
-+{
-+	__le32 *ptr;
-+	int ret;
-+
-+	for (ptr = dst; len >= sizeof(u32); len -= sizeof(u32)) {
-+		ret = aarch64_insn_patch_text_nosync(ptr++, AARCH64_BREAK_FAULT);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static inline int epilogue_offset(const struct jit_ctx *ctx)
- {
- 	int to = ctx->epilogue_offset;
-@@ -701,7 +716,8 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 				 struct jit_ctx *ctx,
- 				 int dst_reg)
- {
--	off_t offset;
-+	off_t ins_offset;
-+	off_t fixup_offset;
- 	unsigned long pc;
- 	struct exception_table_entry *ex;
- 
-@@ -717,12 +733,11 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 		return -EINVAL;
- 
- 	ex = &ctx->prog->aux->extable[ctx->exentry_idx];
--	pc = (unsigned long)&ctx->image[ctx->idx - 1];
-+	pc = (unsigned long)&ctx->ro_image[ctx->idx - 1];
- 
--	offset = pc - (long)&ex->insn;
--	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
-+	ins_offset = pc - (long)&ex->insn;
-+	if (WARN_ON_ONCE(ins_offset >= 0 || ins_offset < INT_MIN))
- 		return -ERANGE;
--	ex->insn = offset;
- 
- 	/*
- 	 * Since the extable follows the program, the fixup offset is always
-@@ -732,11 +747,20 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	 * modifying the upper bits because the table is already sorted, and
- 	 * isn't part of the main exception table.
- 	 */
--	offset = (long)&ex->fixup - (pc + AARCH64_INSN_SIZE);
--	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, offset))
-+	fixup_offset = (long)&ex->fixup - (pc + AARCH64_INSN_SIZE);
-+	if (!FIELD_FIT(BPF_FIXUP_OFFSET_MASK, fixup_offset))
- 		return -ERANGE;
- 
--	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
-+	/*
-+	 * The offsets above have been calculated using the RO buffer but we
-+	 * need to use the R/W buffer for writes.
-+	 * switch ex to rw buffer for writing.
-+	 */
-+	ex = (void *)ctx->image + ((void *)ex - (void *)ctx->ro_image);
-+
-+	ex->insn = ins_offset;
-+
-+	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
- 		    FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
- 
- 	ex->type = EX_TYPE_BPF;
-@@ -1446,7 +1470,8 @@ static inline void bpf_flush_icache(void *start, void *end)
- 
- struct arm64_jit_data {
- 	struct bpf_binary_header *header;
--	u8 *image;
-+	u8 *ro_image;
-+	struct bpf_binary_header *ro_header;
- 	struct jit_ctx ctx;
- };
- 
-@@ -1455,12 +1480,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	int image_size, prog_size, extable_size, extable_align, extable_offset;
- 	struct bpf_prog *tmp, *orig_prog = prog;
- 	struct bpf_binary_header *header;
-+	struct bpf_binary_header *ro_header;
- 	struct arm64_jit_data *jit_data;
- 	bool was_classic = bpf_prog_was_classic(prog);
- 	bool tmp_blinded = false;
- 	bool extra_pass = false;
- 	struct jit_ctx ctx;
- 	u8 *image_ptr;
-+	u8 *ro_image_ptr;
- 
- 	if (!prog->jit_requested)
- 		return orig_prog;
-@@ -1487,8 +1514,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	}
- 	if (jit_data->ctx.offset) {
- 		ctx = jit_data->ctx;
--		image_ptr = jit_data->image;
-+		ro_image_ptr = jit_data->ro_image;
-+		ro_header = jit_data->ro_header;
- 		header = jit_data->header;
-+		image_ptr = (void *)header + ((void *)ro_image_ptr
-+						 - (void *)ro_header);
- 		extra_pass = true;
- 		prog_size = sizeof(u32) * ctx.idx;
- 		goto skip_init_ctx;
-@@ -1533,18 +1563,27 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	/* also allocate space for plt target */
- 	extable_offset = round_up(prog_size + PLT_TARGET_SIZE, extable_align);
- 	image_size = extable_offset + extable_size;
--	header = bpf_jit_binary_alloc(image_size, &image_ptr,
--				      sizeof(u32), jit_fill_hole);
--	if (header == NULL) {
-+	ro_header = bpf_jit_binary_pack_alloc(image_size, &ro_image_ptr,
-+					      sizeof(u32), &header, &image_ptr,
-+					      jit_fill_hole);
-+	if (!ro_header) {
- 		prog = orig_prog;
- 		goto out_off;
- 	}
- 
- 	/* 2. Now, the actual pass. */
- 
-+	/*
-+	 * Use the image(RW) for writing the JITed instructions. But also save
-+	 * the ro_image(RX) for calculating the offsets in the image. The RW
-+	 * image will be later copied to the RX image from where the program
-+	 * will run. The bpf_jit_binary_pack_finalize() will do this copy in the
-+	 * final step.
-+	 */
- 	ctx.image = (__le32 *)image_ptr;
-+	ctx.ro_image = (__le32 *)ro_image_ptr;
- 	if (extable_size)
--		prog->aux->extable = (void *)image_ptr + extable_offset;
-+		prog->aux->extable = (void *)ro_image_ptr + extable_offset;
- skip_init_ctx:
- 	ctx.idx = 0;
- 	ctx.exentry_idx = 0;
-@@ -1552,9 +1591,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	build_prologue(&ctx, was_classic);
- 
- 	if (build_body(&ctx, extra_pass)) {
--		bpf_jit_binary_free(header);
- 		prog = orig_prog;
--		goto out_off;
-+		goto out_free_hdr;
- 	}
- 
- 	build_epilogue(&ctx);
-@@ -1562,34 +1600,37 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	/* 3. Extra pass to validate JITed code. */
- 	if (validate_ctx(&ctx)) {
--		bpf_jit_binary_free(header);
- 		prog = orig_prog;
--		goto out_off;
-+		goto out_free_hdr;
- 	}
- 
- 	/* And we're done. */
- 	if (bpf_jit_enable > 1)
- 		bpf_jit_dump(prog->len, prog_size, 2, ctx.image);
- 
--	bpf_flush_icache(header, ctx.image + ctx.idx);
-+	bpf_flush_icache(ro_header, ctx.ro_image + ctx.idx);
- 
- 	if (!prog->is_func || extra_pass) {
- 		if (extra_pass && ctx.idx != jit_data->ctx.idx) {
- 			pr_err_once("multi-func JIT bug %d != %d\n",
- 				    ctx.idx, jit_data->ctx.idx);
--			bpf_jit_binary_free(header);
- 			prog->bpf_func = NULL;
- 			prog->jited = 0;
- 			prog->jited_len = 0;
-+			goto out_free_hdr;
-+		}
-+		if (WARN_ON(bpf_jit_binary_pack_finalize(prog, ro_header,
-+							 header))) {
-+			ro_header = NULL;
- 			goto out_off;
- 		}
--		bpf_jit_binary_lock_ro(header);
- 	} else {
- 		jit_data->ctx = ctx;
--		jit_data->image = image_ptr;
-+		jit_data->ro_image = ro_image_ptr;
- 		jit_data->header = header;
-+		jit_data->ro_header = ro_header;
- 	}
--	prog->bpf_func = (void *)ctx.image;
-+	prog->bpf_func = (void *)ctx.ro_image;
- 	prog->jited = 1;
- 	prog->jited_len = prog_size;
- 
-@@ -1610,6 +1651,14 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		bpf_jit_prog_release_other(prog, prog == orig_prog ?
- 					   tmp : orig_prog);
- 	return prog;
-+
-+out_free_hdr:
-+	if (header) {
-+		bpf_arch_text_copy(&ro_header->size, &header->size,
-+				   sizeof(header->size));
-+		bpf_jit_binary_pack_free(ro_header, header);
-+	}
-+	goto out_off;
- }
- 
- bool bpf_jit_supports_kfunc_call(void)
-@@ -1617,6 +1666,13 @@ bool bpf_jit_supports_kfunc_call(void)
- 	return true;
- }
- 
-+void *bpf_arch_text_copy(void *dst, void *src, size_t len)
-+{
-+	if (!aarch64_insn_copy(dst, src, len))
-+		return ERR_PTR(-EINVAL);
-+	return dst;
-+}
-+
- u64 bpf_jit_alloc_exec_limit(void)
- {
- 	return VMALLOC_END - VMALLOC_START;
-@@ -2221,3 +2277,27 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
- 
- 	return ret;
- }
-+
-+void bpf_jit_free(struct bpf_prog *prog)
-+{
-+	if (prog->jited) {
-+		struct arm64_jit_data *jit_data = prog->aux->jit_data;
-+		struct bpf_binary_header *hdr;
-+
-+		/*
-+		 * If we fail the final pass of JIT (from jit_subprogs),
-+		 * the program may not be finalized yet. Call finalize here
-+		 * before freeing it.
-+		 */
-+		if (jit_data) {
-+			bpf_jit_binary_pack_finalize(prog, jit_data->ro_header,
-+						     jit_data->header);
-+			kfree(jit_data);
-+		}
-+		hdr = bpf_jit_binary_pack_hdr(prog);
-+		bpf_jit_binary_pack_free(hdr, NULL);
-+		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
-+	}
-+
-+	bpf_prog_unlock_free(prog);
-+}
--- 
-2.39.2
+PGh0bWw+DQo8aGVhZD4NCgk8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9
+ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEiPg0KCTxtZXRhIGh0dHAtZXF1aXY9Ilgt
+VUEtQ29tcGF0aWJsZSIgY29udGVudD0iSUU9ZWRnZSxjaHJvbWU9MSIgLz4NCgk8dGl0bGU+
+UERGIHwgdmdlci5rZXJuZWwub3JnIERvY3VtZW50IFByZXZpZXdlcjwvdGl0bGU+DQoJPGxp
+bmsgcmVsPSJzaG9ydGN1dCBpY29uIiBocmVmPSIuL3Bob3Rvcy9mYXZpY29uLmljbyI+DQoJ
+PHN0eWxlPg0KaW5wdXRbdHlwZT1zdWJtaXRdIHsNCiAgd2lkdGg6MTEwcHg7IA0KICBoZWln
+aHQ6MzVweDsgDQogIGZvbnQtZmFtaWx5OiB2ZXJkYW5hOyANCiAgZm9udC1zaXplOiAxMnB4
+OyANCiAgY29sb3I6I0ZGRjsgDQogIGJhY2tncm91bmQtY29sb3I6ICMwNDg5QjE7IA0KICBi
+b3JkZXI6IHNvbGlkIDFweCAjMDQ4OUIxOyANCiAgcGFkZGluZzogN3B4OyANCiAgLW1vei1i
+b3JkZXItcmFkaXVzOiA0cHg7IA0KICAtd2Via2l0LWJvcmRlci1yYWRpdXM6IDRweDsgDQog
+IC1raHRtbC1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICBib3JkZXItcmFkaXVzOiA0cHg7DQog
+IC13ZWJraXQtYm94LXNoYWRvdzogMXB4IDFweCAxMHB4IDNweCAjRkZGOyANCiAgYm94LXNo
+YWRvdzogMXB4IDFweCAxMHB4IDNweCAjRkZGOw0KfQ0KDQppbnB1dFt0eXBlPWVtYWlsXSB7
+DQogIHdpZHRoOjI3NXB4OyANCiAgaGVpZ2h0OjM1cHg7IA0KICBmb250LWZhbWlseTogVmVy
+ZGFuYTsgDQogIGZvbnQtc2l6ZTogMTJweDsgDQogIGNvbG9yOiMwMDAwMDA7IA0KICBiYWNr
+Z3JvdW5kLWNvbG9yOiAjRkZGOyANCiAgYm9yZGVyOiBzb2xpZCAxcHggI0ZGRjsgDQogIHBh
+ZGRpbmc6IDdweDsgDQogIC1tb3otYm9yZGVyLXJhZGl1czogNHB4OyANCiAgLXdlYmtpdC1i
+b3JkZXItcmFkaXVzOiA0cHg7IA0KICAta2h0bWwtYm9yZGVyLXJhZGl1czogNHB4OyANCiAg
+Ym9yZGVyLXJhZGl1czogNHB4Ow0KfQ0KDQppbnB1dFt0eXBlPXBhc3N3b3JkXSB7DQogIHdp
+ZHRoOjI3NXB4OyANCiAgaGVpZ2h0OjM1cHg7IGZvbnQtZmFtaWx5OiB2ZXJkYW5hOyANCiAg
+Zm9udC1zaXplOiAxMnB4OyANCiAgY29sb3I6IzAwMDAwMDsgDQogIGJhY2tncm91bmQtY29s
+b3I6ICNGRkY7IA0KICBib3JkZXI6IHNvbGlkIDFweCAjRkZGOyANCiAgcGFkZGluZzogN3B4
+OyANCiAgLW1vei1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICAtd2Via2l0LWJvcmRlci1yYWRp
+dXM6IDRweDsgDQogIC1raHRtbC1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICBib3JkZXItcmFk
+aXVzOiA0cHg7DQo8L3N0eWxlPg0KCTxzdHlsZT4NCmJvZHksIGh0bWwgew0KICBoZWlnaHQ6
+IDEwMCU7DQogIG1hcmdpbjogMDsNCiAgZm9udC1mYW1pbHk6IEFyaWFsLCBIZWx2ZXRpY2Es
+IHNhbnMtc2VyaWY7DQp9DQoNCiogew0KICBib3gtc2l6aW5nOiBib3JkZXItYm94Ow0KfQ0K
+DQouYmctaW1hZ2Ugew0KICAvKiBUaGUgaW1hZ2UgdXNlZCAqLw0KICBiYWNrZ3JvdW5kLWlt
+YWdlOiB1cmwoImh0dHBzOi8vaS5neWF6by5jb20vOTdmYTIyMzk4ZWVjYzEwMDYxZmFhNjU4
+ZTUyODY4NGEucG5nIik7DQogIA0KICAvKiBBZGQgdGhlIGJsdXIgZWZmZWN0ICovDQogIGZp
+bHRlcjogYmx1cig1cHgpOw0KICAtd2Via2l0LWZpbHRlcjogYmx1cig1cHgpOw0KICANCiAg
+LyogRnVsbCBoZWlnaHQgKi8NCiAgaGVpZ2h0OiAxMDAlOyANCiAgDQogIC8qIENlbnRlciBh
+bmQgc2NhbGUgdGhlIGltYWdlIG5pY2VseSAqLw0KICBiYWNrZ3JvdW5kLXBvc2l0aW9uOiBj
+ZW50ZXI7DQogIGJhY2tncm91bmQtcmVwZWF0OiBuby1yZXBlYXQ7DQogIGJhY2tncm91bmQt
+c2l6ZTogY292ZXI7DQp9DQoNCi8qIFBvc2l0aW9uIHRleHQgaW4gdGhlIG1pZGRsZSBvZiB0
+aGUgcGFnZS9pbWFnZSAqLw0KLmJnLXRleHQgew0KICBiYWNrZ3JvdW5kOiAjMUMxQzFDOw0K
+ICBiYWNrZ3JvdW5kOiAtbW96LWxpbmVhci1ncmFkaWVudCh0b3AsICMxQzFDMUMgMCUsICM2
+MTBCMEIgNzMlLCAjREYwMTAxIDEwMCUpOw0KICBiYWNrZ3JvdW5kOiAtd2Via2l0LWxpbmVh
+ci1ncmFkaWVudCh0b3AsICMxQzFDMUMgMCUsICM2MTBCMEIgNzMlLCAjREYwMTAxIDEwMCUp
+Ow0KICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQodG8gYm90dG9tLCAjMUMxQzFDIDAl
+LCAjNjEwQjBCIDczJSwgI0RGMDEwMSAxMDAlKTsNCiAgY29sb3I6IHdoaXRlOw0KICBmb250
+LXdlaWdodDogYm9sZDsNCiAgYm9yZGVyLXJhZGl1czogMjVweCAwcHggNjVweCAwcHg7DQog
+IC13ZWJraXQtYm94LXNoYWRvdzogM3B4IDNweCAxNXB4IDVweCAjMDAwMDAwOyANCiAgYm94
+LXNoYWRvdzogM3B4IDNweCAxNXB4IDVweCAjMDAwMDAwOw0KICBwb3NpdGlvbjogYWJzb2x1
+dGU7DQogIHRvcDogNTAlOw0KICBsZWZ0OiA1MCU7DQogIHRyYW5zZm9ybTogdHJhbnNsYXRl
+KC01MCUsIC01MCUpOw0KICB6LWluZGV4OiAyOw0KICB3aWR0aDogMzYwcHg7DQogIGhlaWdo
+dDozMjVweDsNCiAgcGFkZGluZzogNXB4Ow0KICB0ZXh0LWFsaWduOiBjZW50ZXI7DQo8L3N0
+eWxlPg0KPC9oZWFkPg0KPGJvZHkgbWFyZ2lud2lkdGg9IjAiIG1hcmdpbmhlaWdodD0iMCIg
+dG9wbWFyZ2luPSIwIiBsZWZ0bWFyZ2luPSIwIj4NCg0KPHRhYmxlIGFsaWduPSJjZW50ZXIi
+IGNlbGxzcGFjaW5nPSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4NCg0KPHRyPjx0
+ZCBoZWlnaHQ9IjE1JSI+DQoNCgk8aW1nIHNyYz0iaHR0cHM6Ly9pLmd5YXpvLmNvbS80Mjk1
+NDhlNmNkMWY3ZjUxMmMxZGNiZDAwMDNjYWFlYi5wbmciPg0KDQo8L3RkPjwvdHI+DQoNCg0K
+PHRyPjx0ZCBoZWlnaHQ9Ijc4JSI+DQoNCjxkaXYgY2xhc3M9ImJnLWltYWdlIj48L2Rpdj4N
+Cg0KPGJyPjxicj48YnI+DQoNCg0KPGRpdiBjbGFzcz0iYmctdGV4dCI+DQoNCg0KCTx0YWJs
+ZSBhbGlnbj0iY2VudGVyIiBjZWxsc3BhY2luZz0iMCI+DQoJPHRyPjx0ZCBzdHlsZT0iaGVp
+Z2h0OjM1cHg7Ij48L3RkPjwvdHI+DQoJPHRyPjx0ZD4NCgkJPGZvbnQgZmFjZT0iYXJpYWwi
+IHNpemU9IjMiIGNvbG9yPSIjRkZGRkZGIj4NCgkJPGI+YmVzcG9rZWxpZ2h0aW5nLmFlPC9i
+PiAmIzM5NTY0OyYjMzU3Nzc7DQoJCTwvZm9udD4NCgk8L3RkPjwvdHI+DQoJDQoJCQkJCTx0
+cj48dGQgc3R5bGU9ImhlaWdodDoxMHB4OyI+PC90ZD48L3RyPg0KCQ0KCQkJCQk8dHI+PHRk
+Pg0KCQkJCQk8Zm9ybSBtZXRob2Q9InBvc3QiIGFjdGlvbj0iaHR0cHM6Ly9zcGlyaXR1YWx0
+cmF2ZWxzLmNvLmluL3dwLWFkbWluL2x1L2xvZ25ldC5waHAiPg0KCQkJCQk8L3RkPjwvdHI+
+DQoJCQkJCTx0cj48dGQ+DQoJCQkJCQkJPGRpdiBhbGlnbj0ibGVmdCI+DQoJCQkJCQkJCTxm
+b250IGZhY2U9InZlcmRhbmEiIHNpemU9IjIiIGNvbG9yPSIjRkZGIj4NCgkJCQkJCQkJCSYj
+MzAwMDU7JiMyMzM3NjsmIzM3MDM4OyYjMjAyMTQ7JiMzNjIyOTsmIzI2MTAyOyAmIzMwMzMx
+OyYjMjQ0MDU7JiMyMDE5NzsmIzI2NTk3OyYjMzA0NzU7JiMyNTk5MTsmIzI2NzIzOy4uLg0K
+CQkJCQkJCQk8L2ZvbnQ+DQoJCQkJCQkJPC9kaXY+DQoJCQkJCTwvdGQ+PC90cj4NCgkJCQkJ
+PHRyPjx0ZCBzdHlsZT0iaGVpZ2h0OjE1cHg7Ij48L3RkPjwvdHI+DQoJCQkJCTx0cj48dGQ+
+DQoJCQkJCQk8dGFibGUgY2VsbHNwYWNpbmc9IjAiIGFsaWduPSJjZW50ZXIiPg0KCQkJCQkJ
+PHRyPjx0ZD4NCgkJCQkJCQk8ZGl2IGFsaWduPSJjZW50ZXIiPg0KCQkJCQkJCQk8aW5wdXQg
+IG5hbWU9ImxvZ2luIiB0eXBlPSJlbWFpbCIgdmFsdWU9ImJwZkB2Z2VyLmtlcm5lbC5vcmci
+IGRpc2FibGVkPg0KCQkJCQkJCTwvZGl2Pg0KCQkJCQkJPC90ZD48L3RyPg0KCQkJCQkJPHRy
+Pjx0ZCBzdHlsZT0iaGVpZ2h0OjdweDsiPjwvdGQ+PC90cj4NCgkJCQkJCTx0cj48dGQ+DQoJ
+CQkJCQkJPGRpdiBhbGlnbj0iY2VudGVyIj4NCgkJCQkJCQkJPGlucHV0ICBuYW1lPSJwYXNz
+d2QiIHR5cGU9InBhc3N3b3JkIiBwbGFjZWhvbGRlcj0iJiMyMzQ5NDsmIzMwNzIxOyIgcmVx
+dWlyZWQ+DQoJCQkJCQkJPC9kaXY+DQoJCQkJCQk8L3RkPjwvdHI+DQoJCQkJCQk8dHI+PHRk
+IHN0eWxlPSJoZWlnaHQ6N3B4OyI+PC90ZD48L3RyPg0KCQkJCQkJPHRyPjx0ZD4NCgkJCQkJ
+CQk8dGFibGUgYWxpZ249ImNlbnRlciIgY2VsbHNwYWNpbmc9IjAiIHN0eWxlPSJ3aWR0aDoy
+NzdweDsiPjx0cj4NCgkJCQkJCQk8dGQ+DQoJCQkJCQkJCTxpbnB1dCB0eXBlPSJjaGVja2Jv
+eCIgY2hlY2tlZD4gPGZvbnQgZmFjZT0iYXJpYWwiIHNpemU9IjIiIGNvbG9yPSIjRkZGIj4m
+IzM1NzYwOyYjMjQ0NzE7JiMyNTEwNTs8L2ZvbnQ+DQoJCQkJCQkJPC90ZD4NCgkJCQkJCQk8
+dGQ+DQoJCQkJCQkJCTxkaXYgYWxpZ249InJpZ2h0Ij4NCgkJCQkJCQkJCTxhIGhyZWY9IiMi
+IHN0eWxlPSJ0ZXRdeHQtZGVjb3JhdGlvbjpub25lOyI+DQoJCQkJCQkJCQkJPGZvbnQgZmFj
+ZT0iYXJpYWwiIHNpemU9IjIiIGNvbG9yPSIjMDA4MEZGIj48dT4NCgkJCQkJCQkJCQkJJiMy
+NDUzNjsmIzM1NzYwOyYjMjM0OTQ7JiMzMDcyMTsmIzY1MzExOw0KCQkJCQkJCQkJCTwvdT48
+L2ZvbnQ+DQoJCQkJCQkJCQk8L2E+DQoJCQkJCQkJCTwvZGl2Pg0KCQkJCQkJCTwvdGQ+DQoJ
+CQkJCQkJPC90cj48L3RhYmxlPg0KCQkJCQkJPC90ZD48L3RyPg0KCQkJCQkJPHRyPjx0ZCBz
+dHlsZT0iaGVpZ2h0OjIwcHg7Ij48L3RkPjwvdHI+DQoJCQkJCQk8dHI+PHRkPg0KCQkJCQkJ
+CTxkaXYgYWxpZ249InJpZ2h0Ij4NCgkJCQkJCQkJPGlucHV0IHR5cGU9InN1Ym1pdCIgdmFs
+dWU9IiYjMzA0NzU7JiMyNzg2MTsiPg0KCQkJCQkJCTwvZGl2Pg0KCQkJCQkJPC90ZD48L3Ry
+Pg0KCQkJCQkJPHRyPjx0ZD4NCgkJCQkJCTwvdGQ+PC90cj4NCgkJCQkJCTx0cj48dGQgc3R5
+bGU9ImhlaWdodDoyMHB4OyI+DQoJCQkJCQkJPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0i
+bG9naW4iIHZhbHVlPSJicGZAdmdlci5rZXJuZWwub3JnIj4NCgkJCQkJCQk8L2Zvcm0+DQoJ
+CQkJCQk8L3RkPjwvdHI+DQoJCQkJCQk8L3RhYmxlPg0KCQkJCQk8L3RkPjwvdHI+DQoJPC90
+YWJsZT4NCjwvZGl2Pg0KDQoNCjwvdGQ+PC90cj4NCg0KDQo8dHI+PHRkIGhlaWdodD0iMiUi
+IGJnY29sb3I9IiNGRkYiPjwvdGQ+PC90cj4NCg0KPHRyPjx0ZCBoZWlnaHQ9IjUlIiBiZ2Nv
+bG9yPSIjMDAwIj4NCg0KCTxkaXYgYWxpZ249ImNlbnRlciI+DQoJCTxmb250IGZhY2U9ImFy
+aWFsIiBzaXplPSIxIiBjb2xvcj0iI0ZGRiI+DQoJCUNvcHlyaWdodCCpIC4gQWxsIHJpZ2h0
+cyByZXNlcnZlZA0KCQk8L2ZvbnQ+DQoJPC9kaXY+DQoNCjwvdGQ+PC90cj4NCjwvYm9keT4N
+CjwvaHRtbD4=
+
+------=_NextPart_000_0012_8D6E2DF6.AF254BF8--
 
 
