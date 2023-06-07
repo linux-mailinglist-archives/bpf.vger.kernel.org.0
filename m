@@ -1,208 +1,181 @@
-Return-Path: <bpf+bounces-1979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C6F17253CF
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 08:02:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8411672551F
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:11:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83441C2084D
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 06:02:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B37F281214
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 07:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEB44693;
-	Wed,  7 Jun 2023 06:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811BA6AA1;
+	Wed,  7 Jun 2023 07:11:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C71F1845
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 06:01:58 +0000 (UTC)
-Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [91.218.175.53])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F171083
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 23:01:56 -0700 (PDT)
-Message-ID: <77d8aaef-5c63-641e-6019-dec1f3f078d8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1686117714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FJHmElMhJDI7omEzVcdVwFHfgV/eYZwC5z1Jii0KtMM=;
-	b=Pv0QXSxcRi1N+gepK4HboOCY24zW0g90r0BcA7tp+NBCTtssdZ/+kVdp7EKpTeqkvSIgDF
-	yh62bc7MC9yyVmlwfyBHBLEJmaZONex5gktq4WVYYWw3TLtbk0Y0GYNqay6/quB1ocyyVx
-	xs3OaLLWTB3WFp69D18Ss09fbZg4myE=
-Date: Wed, 7 Jun 2023 14:01:46 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B23817DB
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 07:11:33 +0000 (UTC)
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E8F1BEA
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 00:11:29 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-33d928a268eso90795ab.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 00:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686121889; x=1688713889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PGUTPYhgHVq7tjYGlPQBicKEoIBr6v5/fU5n0hbGTrI=;
+        b=OvXHLUmNzM4BI0TQ7LDb6i5kkuRVUOSUhd4VMwgVF4fy/BUvxgd1CPNFfT8ZIjTl05
+         32kZUrjfGpw8qkUWloq5scwiSkvTRE06xJXmlO5d7J5VTzHUXLGgQ192HglJaYLVLPwZ
+         6l9y4crsmvcA7tLYoIwwfjeiv7KW5AxNG8MzALmyunp8omXcMly1vinxkuNBiifMhYMK
+         ywVHFFuLdPwqSfHCs4PjZUS23EGN5Hd4t1sa1di7snzkarxYZjrSjL3IUAqskAKAwNSX
+         yXPMr626M6jSs2PWUfT6ZX+WSPDH7k3Xy4YrA+U0KzeSWW9h7chVOPbCkki3sFSw1Fsn
+         46fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686121889; x=1688713889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PGUTPYhgHVq7tjYGlPQBicKEoIBr6v5/fU5n0hbGTrI=;
+        b=KFtswiOWz4tGsM/tofHXXDg8o+EMhoTgi1Y5pD3GR42aHmk9slRDWewWgEFU8FXh0G
+         V1ndqgyUb5onNN3hnFAjxFv0VyhfwNU4/geuRNAfkxmLh6rZzBVkoCXELHWfIL9WXNdt
+         bB3eq/bgwPlwVtt+aoyKdgWgzrWwoRJDyEJzNWPEPmJD8TOSugGpsYSjU+z0kiKPW2zW
+         0cKeZROGI7oGbXKFGkEvhuT84f5GWnul9+JKCwqRFW8tDm279rvEFxz8deKln9/pR7C/
+         q9u10xEqZPOGoxYeiVpUi4U2MpYxhRALsvhVgov8MRNl4GUUuIbXTjWQ8ciSGTQiVrJx
+         KVWA==
+X-Gm-Message-State: AC+VfDwIS0QlP25rBk3Ch41HYe1IC0ylZhBeYbQR7H1+HH5H5YXJjkj/
+	pEM+e3hqUQ7XEDtQWkrWHB3C59wYezEOSySKx/jLdQ==
+X-Google-Smtp-Source: ACHHUZ64HmjkncqN/Uw4dzL9OH0TZk2U52RRwNcZMU9Q2Q7FzCVbkh7mqzoadlw+Dm8EwEvusUhfelYS7RxorIT+RJ0=
+X-Received: by 2002:a05:6e02:170d:b0:32f:7715:4482 with SMTP id
+ u13-20020a056e02170d00b0032f77154482mr188090ill.4.1686121888943; Wed, 07 Jun
+ 2023 00:11:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4] libbpf: kprobe.multi: Filter with
- available_filter_functions
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Jiri Olsa <olsajiri@gmail.com>
-Cc: andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- bpf@vger.kernel.org, liuyun01@kylinos.cn
-References: <ZG8f7ffghG7mLUhR@krava>
- <20230525102747.68708-1-liu.yun@linux.dev>
- <CAEf4Bzae7mdpCDBEafG-NUCPRohWkC8EBs0+twE2hUbB8LqWJA@mail.gmail.com>
- <b2273217-5adb-8ec6-288b-4f8703a56386@linux.dev>
- <CAEf4BzbGtZJvS-8=6i3g5A9uJm9_LHVRRbye-OLTdgeWZtdrsw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Jackie Liu <liu.yun@linux.dev>
-In-Reply-To: <CAEf4BzbGtZJvS-8=6i3g5A9uJm9_LHVRRbye-OLTdgeWZtdrsw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230605202712.1690876-1-irogers@google.com> <20230605202712.1690876-5-irogers@google.com>
+ <CAM9d7cj9k_FYxmAymHG5Nn6-dhjPT95wrqbHZ_YZSx=oZX7YXQ@mail.gmail.com>
+In-Reply-To: <CAM9d7cj9k_FYxmAymHG5Nn6-dhjPT95wrqbHZ_YZSx=oZX7YXQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 7 Jun 2023 00:11:17 -0700
+Message-ID: <CAP-5=fVeehz=qyL-eFgc8aa+Q8inmN_mA7N+sGY0z4Sj6Bd9dQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] perf build: Filter out BTF sources without a .BTF section
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>, Yang Jihong <yangjihong1@huawei.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Andrii.
+On Mon, Jun 5, 2023 at 4:35=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> Hi Ian,
+>
+> On Mon, Jun 5, 2023 at 1:28=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > If generating vmlinux.h, make the code to generate it more tolerant by
+> > filtering out paths to kernels that lack a .BTF section.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/Makefile.perf | 23 ++++++++++++++++++++---
+> >  1 file changed, 20 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> > index f1840af195c0..c3bb27a912b0 100644
+> > --- a/tools/perf/Makefile.perf
+> > +++ b/tools/perf/Makefile.perf
+> > @@ -193,6 +193,7 @@ FLEX    ?=3D flex
+> >  BISON   ?=3D bison
+> >  STRIP   =3D strip
+> >  AWK     =3D awk
+> > +READELF ?=3D readelf
+> >
+> >  # include Makefile.config by default and rule out
+> >  # non-config cases
+> > @@ -1080,12 +1081,28 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
+> >         $(Q)CFLAGS=3D $(MAKE) -C ../bpf/bpftool \
+> >                 OUTPUT=3D$(SKEL_TMP_OUT)/ bootstrap
+> >
+> > -VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                        =
+   \
+> > +# Paths to search for a kernel to generate vmlinux.h from.
+> > +VMLINUX_BTF_ELF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                    =
+   \
+> >                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)   =
+ \
+> >                      ../../vmlinux                                     =
+ \
+> > -                    /sys/kernel/btf/vmlinux                           =
+ \
+> >                      /boot/vmlinux-$(shell uname -r)
+> > -VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS)=
+)))
+> > +
+> > +# Paths to BTF information.
+> > +VMLINUX_BTF_BTF_PATHS ?=3D /sys/kernel/btf/vmlinux
+> > +
+> > +# Filter out kernels that don't exist or without a BTF section.
+> > +VMLINUX_BTF_ELF_ABSPATHS ?=3D $(abspath $(wildcard $(VMLINUX_BTF_ELF_P=
+ATHS)))
+> > +VMLINUX_BTF_PATHS ?=3D $(shell for file in $(VMLINUX_BTF_ELF_ABSPATHS)=
+; \
+> > +                       do \
+> > +                               if [ -f $$file ] && ($(READELF) -t "$$f=
+ile" | grep .BTF); \
+>
+> Wouldn't it be `readelf -S` instead?  Also I think grep needs -q to
+> suppress output.
 
-在 2023/6/3 01:27, Andrii Nakryiko 写道:
-> On Thu, May 25, 2023 at 6:38 PM Jackie Liu <liu.yun@linux.dev> wrote:
->>
->> Hi Andrii.
->>
->> 在 2023/5/26 04:43, Andrii Nakryiko 写道:
->>> On Thu, May 25, 2023 at 3:28 AM Jackie Liu <liu.yun@linux.dev> wrote:
->>>>
->>>> From: Jackie Liu <liuyun01@kylinos.cn>
->>>>
->>>> When using regular expression matching with "kprobe multi", it scans all
->>>> the functions under "/proc/kallsyms" that can be matched. However, not all
->>>> of them can be traced by kprobe.multi. If any one of the functions fails
->>>> to be traced, it will result in the failure of all functions. The best
->>>> approach is to filter out the functions that cannot be traced to ensure
->>>> proper tracking of the functions.
->>>>
->>>> Use available_filter_functions check first, if failed, fallback to
->>>> kallsyms.
->>>>
->>>> Here is the test eBPF program [1].
->>>> [1] https://github.com/JackieLiu1/ketones/commit/a9e76d1ba57390e533b8b3eadde97f7a4535e867
->>>>
->>>> Suggested-by: Jiri Olsa <olsajiri@gmail.com>
->>>> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
->>>> ---
->>>>    tools/lib/bpf/libbpf.c | 92 +++++++++++++++++++++++++++++++++++++-----
->>>>    1 file changed, 83 insertions(+), 9 deletions(-)
->>>>
->>>
->>> Question to you and Jiri: what happens when multi-kprobe's syms has
->>> duplicates? Will the program be attached multiple times? If yes, then
->>> it sounds like a problem? Both available_filters and kallsyms can have
->>> duplicate function names in them, right?
+Makes sense, I can change it in v3.
 
-I don't have any idea, I tested it on my own device, and they don't have
-duplicate functions.
+> > +                               then \
+> > +                                       echo "$$file"; \
+> > +                               fi; \
+> > +                       done) \
+> > +                       $(wildcard $(VMLINUX_BTF_BTF_PATHS))
+>
+> This changes the order of processing the sysfs file.
+> But I'm not sure it matters much as both /boot/vmlinux and sysfs
+> should refer to the running kernel.
 
-╭─jackieliu@jackieliu-PC ~/gitee/ketones/src
-╰─➤ sudo cat /sys/kernel/debug/tracing/available_filter_functions | awk 
--F' ' '{print $1}' | wc -l 
+Agreed. readelf fails for /sys/kernel/btf/vmlinux as it isn't an elf
+file and I'm not sure it is worth worrying too much about the order
+here.
 
-81882
-╭─jackieliu@jackieliu-PC ~/gitee/ketones/src
-╰─➤ sudo cat /sys/kernel/debug/tracing/available_filter_functions | awk 
--F' ' '{print $1}' | uniq | wc -l 
+Thanks,
+Ian
 
-81882
-
->>
->> If I understand correctly, there should be no problem with repeated
->> function registration, because the bottom layer is done through fprobe
->> registration addrs, kprobe.multi itself does not do this work, but
->> fprobe is based on ftrace, it will register addr by makes a hash,
->> that is, if it is the same address, it should be filtered out.
->>
-> 
-> Looking at kernel code, it seems kernel will actually return error if
-> user specifies multiple duplicated names. Because kernel will
-> bsearch() to the first instance, and never resolve the second
-> duplicated instance. And then will assume that not all symbols are
-> resolved.
-
-I wrote a test program myself, but it cannot be attached normally, and
-an error will be reported.
-
-const char *sysms[] = {
-     "vfs_read",
-     "vfs_write",
-     "vfs_read",
-};
-
-when attach_kprobe_multi, -3 returned.
-
-> 
-> So, it worries me that we'll switch from kallsyms to available_filters
-> by default, because that introduces new failure modes.
-
-In fact, this is not a new problem introduced by switching from kallsyms
-to available_filters. If kallsyms also has duplicate functions, then
-this problem will also exist before.
-
-> 
-> Either way, let's add a selftest that uses a duplicate function name
-> and see what happens?
-
-Hi Jiri, Do you mind write a self-test program for duplicate function? I
-saw that it has been written before.
-for some reason, I failed to compile kselftest/bpf successfully on
-fedora38 and Ubuntu2004. :<
-
-
-> 
->> The main problem here is not the problem of repeated registration of
->> functions, but some functions are not allowed to hook. For example, when
->> I track vfs_*, vfs_set_acl_prepare_kgid and vfs_set_acl_prepare_kuid are
->> not allowed to hook. These exist under kallsyms, but
->> available_filter_functions does not, I have observed for a while,
->> matching through available_filter_functions can effectively prevent this
->> from happening.
-> 
-> Yeah, I understand that. My point above is that a)
-> available_filter_functions contains duplicates and b) doesn't contain
-> addresses. So we are forced to rely on kernel string -> addr
-> resolution, which doesn't seem to handle duplicate entries well (let's
-> test).
-
-Yes, the test for repeated functions reports errors. If there is an
-interface similar to available_filter_functions, which contains the
-function name and function address, and ensures that it is not 
-duplicate, then it is a good speedup for eBPF program, because using
-'strdup' to record the function name consumes a certain amount of
-startup time.
-
-> 
-> So it's a regression to switch to that without taking any other precautions.
-> 
-
-Yes, agree.
-
--- 
-BR, Jackie Liu
->>
->>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index ad1ec893b41b..3dd72d69cdf7 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -10417,13 +10417,14 @@ static bool glob_match(const char *str, const char *pat)
->>>>    struct kprobe_multi_resolve {
->>>>           const char *pattern;
->>>>           unsigned long *addrs;
->>>> +       const char **syms;
->>>>           size_t cap;
->>>>           size_t cnt;
->>>>    };
->>>>
-> 
-> [...]
+> Thanks,
+> Namhyung
+>
+>
+> > +
+> > +# Select the first as the source of vmlinux.h.
+> > +VMLINUX_BTF ?=3D $(firstword $(VMLINUX_BTF_PATHS))
+> >
+> >  $(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
+> >  ifeq ($(VMLINUX_H),)
+> > --
+> > 2.41.0.rc0.172.g3f132b7071-goog
+> >
 
