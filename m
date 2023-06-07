@@ -1,71 +1,70 @@
-Return-Path: <bpf+bounces-2037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A85477270A0
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC247270A1
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60A0728159D
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 21:40:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D8228155F
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 21:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8BB3B8AF;
-	Wed,  7 Jun 2023 21:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2203D3B8B3;
+	Wed,  7 Jun 2023 21:40:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF3812B79
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 21:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6C53B8A3
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 21:40:40 +0000 (UTC)
 Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D1E2109
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 14:40:28 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-514859f3ffbso2128209a12.1
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 14:40:28 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867C8E4A
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 14:40:36 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-510d6b939bfso2487436a12.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 14:40:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686174026; x=1688766026;
+        d=gmail.com; s=20221208; t=1686174035; x=1688766035;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UoP/jWWtShP2f7OWxQBwbrE+OcK9/IhgC/Jp9jkE65A=;
-        b=eavvtwYEvuyX/+9DXUrGT/JqZfIL2+uPJR5zwNBK92oCHxo/sopZeD+A/YuUHGzQol
-         kKHGvT5YABiykDy4nreOChyaT+Ndm5U8nJANZqGoQP4ZI4fKOj1YQWkFSFPlF/9DM5ow
-         3tEMprGkLCcktpyBUOoOUuQjl9ZvmCLIOPH0z5hk/jYjo83vicOY11aGEQZRJGqZWmBV
-         Bxy2RfO26FuiDN7wHKWMDww347jTteOvf7C74BWvrQI80bSShxqC8mVybeFlK9HGDd6d
-         D6eyOgLv+Mry6uCiNbLvwByisrXmBZJ880FASYBcKw8N4jJJXhI2vYjW2vkFnQQV6gRu
-         uZzQ==
+        bh=ir1VyrmJvb10EcGCesQtctC6Aa1eLZq+7yp+jp2MJuo=;
+        b=SfuqoKsVxLUUN391yn13RuHqLaT1WA8O3UONnegxrGYhog39MwIhIMaFZGJHVwqx/a
+         TPsA5zzWe5HZvMpG//+W3mITS1BD9wMjCA2zqKoZYzqmL9Y6CzBwiIebyQvAqayPxZzb
+         QZVkuoeJC9Cdk7tG+86qofhSYNeXagDpHqObjWve/Q3OfyP3hD5dMxcSzMLgm0aYn5mm
+         UZ49SF9UY0iStaLtMKRrligSu3Wi79lHvptqSkijwDu5PE1EVLmiq6T3M0n6rzqq8f0q
+         5MWB0bEaOWSVLFbqzZp2F5TjVjnih0TF3XceP+Kq5mQLWxsKpyNlRUOlOSfL9Kf66RF7
+         S3jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686174026; x=1688766026;
+        d=1e100.net; s=20221208; t=1686174035; x=1688766035;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UoP/jWWtShP2f7OWxQBwbrE+OcK9/IhgC/Jp9jkE65A=;
-        b=FA3d7CNP4blRmRisVxJ4Y10M9hWsJdj0pXlSkgIZxb2Woy+qx21R/tHiwXz3d66pjd
-         q6zu1VviF4XnbfI52VwpWTTM7KP9CPHiR5ZAyFchET5Isvh2YaCW2xlsvM0WGxXCRsf7
-         1HxMh9AEBLwbw5vOFl07kOAqmrP8bAIPavS9+JNuNCTm9F8qXAOEIw3p2GNwBwlZ1Kbc
-         zUeCI1cwKA2gQfmV2s6ZhmK5fy74RLPYVGU2KcF3VuDaC0bD69Xgt+AARB/HtbYX3QvN
-         siqwjkdAHPKgF4BgnwOwGOdhyzFLBQyXfJ11jN9p3HW2tdjuEC/RaANfahzL+PmPcY7U
-         qAmw==
-X-Gm-Message-State: AC+VfDwNStQ/diP41XHS1z47hZfY8t81DFPBlOlPzUNhOZgI9zrcSba4
-	ZGFVrPcdSZ7YdqDj8rD6vSFEGAT+eSEtdhXZpXM=
-X-Google-Smtp-Source: ACHHUZ5sAc6dehqi1Lyzu9+2dtrFFIhMxmcKrEgh9rNBBAQDFTzx9ONTRsTR4O+ltnZEorcAHeFSuCm+ZjhH0jw8FpI=
-X-Received: by 2002:a05:6402:1a48:b0:516:a009:6fdb with SMTP id
- bf8-20020a0564021a4800b00516a0096fdbmr1908978edb.22.1686174026138; Wed, 07
- Jun 2023 14:40:26 -0700 (PDT)
+        bh=ir1VyrmJvb10EcGCesQtctC6Aa1eLZq+7yp+jp2MJuo=;
+        b=PAoM9IEXIhQvuGgGFtQP8aN9Bw+5fAkPSLJxqBq/l/uUN8K2MrKAXHQxshIZMo/6Rx
+         co8Mr/ROawDQEBdV/xxr1jkxMZwgGTy2rZq9A7JldYaA4BxexnbXM1l+vS8iZZDPxoD4
+         afptTsRGVA1baKXW5KSrNMgD4LosUpM8GElme0326auXISKBRG7N3c67OerUhPt06h+2
+         SSSSXUlLae0bItUqVCUPyrjCsihf/yn2+PTo7UeUpGlfr8mbiLn8Rc3J45iG2jnMkkMf
+         EOuzjYNAmUVtFZ+ZHNmg+sbYA9XQz+druQVYHO5SaMPM6up5td5lYDWm3rN5+XJ5RHIS
+         CL2w==
+X-Gm-Message-State: AC+VfDzhJ7D7ixMjQ4I8xhaJfzIb2CddCK+ocwTv8e9P1yDkzhQvIuri
+	HLyTqBuEojZwUVfqSfhKWMPFnSnzWj6Zg7rDhrI=
+X-Google-Smtp-Source: ACHHUZ56IK+xC5O268u9uJvkSne7RmJGqR7wv1u+NX0XpvGwm5FJ1eVSFqVUfZ9H71pE63jVMiCPrKZqPyC8NPBua1k=
+X-Received: by 2002:a50:fa91:0:b0:506:7c86:1fd with SMTP id
+ w17-20020a50fa91000000b005067c8601fdmr5683277edr.37.1686174034778; Wed, 07
+ Jun 2023 14:40:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230606222411.1820404-1-eddyz87@gmail.com> <20230606222411.1820404-5-eddyz87@gmail.com>
-In-Reply-To: <20230606222411.1820404-5-eddyz87@gmail.com>
+References: <20230606222411.1820404-1-eddyz87@gmail.com> <20230606222411.1820404-2-eddyz87@gmail.com>
+In-Reply-To: <20230606222411.1820404-2-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Jun 2023 14:40:13 -0700
-Message-ID: <CAEf4Bzaam9ayi7z6tmUjX+7JwoSySqqw29XJsHnAHEMgriuCyA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/4] selftests/bpf: verify that check_ids() is
- used for scalars in regsafe()
+Date: Wed, 7 Jun 2023 14:40:22 -0700
+Message-ID: <CAEf4BzYmi+_S79q4udJAx-9Ra4FasTHft_E9-=PeE0c3vqW2eg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/4] bpf: use scalar ids in mark_chain_precision()
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
@@ -73,162 +72,274 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 On Tue, Jun 6, 2023 at 3:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
  wrote:
 >
-> Verify that the following example is rejected by verifier:
+> Change mark_chain_precision() to track precision in situations
+> like below:
 >
->   r9 =3D ... some pointer with range X ...
->   r6 =3D ... unbound scalar ID=3Da ...
->   r7 =3D ... unbound scalar ID=3Db ...
->   if (r6 > r7) goto +1
->   r7 =3D r6
->   if (r7 > X) goto exit
->   r9 +=3D r6
->   *(u64 *)r9 =3D Y
+>     r2 =3D unknown value
+>     ...
+>   --- state #0 ---
+>     ...
+>     r1 =3D r2                 // r1 and r2 now share the same ID
+>     ...
+>   --- state #1 {r1.id =3D A, r2.id =3D A} ---
+>     ...
+>     if (r2 > 10) goto exit; // find_equal_scalars() assigns range to r1
+>     ...
+>   --- state #2 {r1.id =3D A, r2.id =3D A} ---
+>     r3 =3D r10
+>     r3 +=3D r1                // need to mark both r1 and r2
 >
-> Also add test cases to check that check_alu_op() for BPF_MOV instruction =
-does
-> not allocate scalar ID if source register is a constant.
+> At the beginning of the processing of each state, ensure that if a
+> register with a scalar ID is marked as precise, all registers sharing
+> this ID are also marked as precise.
+>
+> This property would be used by a follow-up change in regsafe().
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  .../selftests/bpf/progs/verifier_scalar_ids.c | 184 ++++++++++++++++++
->  1 file changed, 184 insertions(+)
+>  include/linux/bpf_verifier.h                  |  10 +-
+>  kernel/bpf/verifier.c                         | 114 ++++++++++++++++++
+>  .../testing/selftests/bpf/verifier/precise.c  |   8 +-
+>  3 files changed, 127 insertions(+), 5 deletions(-)
 >
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index ee4cc7471ed9..3f9856baa542 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -559,6 +559,11 @@ struct backtrack_state {
+>         u64 stack_masks[MAX_CALL_FRAMES];
+>  };
+>
+> +struct reg_id_scratch {
+> +       u32 count;
+> +       u32 ids[BPF_ID_MAP_SIZE];
+> +};
+> +
+>  /* single container for all structs
+>   * one verifier_env per bpf_check() call
+>   */
+> @@ -590,7 +595,10 @@ struct bpf_verifier_env {
+>         const struct bpf_line_info *prev_linfo;
+>         struct bpf_verifier_log log;
+>         struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 1];
+> -       struct bpf_id_pair idmap_scratch[BPF_ID_MAP_SIZE];
+> +       union {
+> +               struct bpf_id_pair idmap_scratch[BPF_ID_MAP_SIZE];
+> +               struct reg_id_scratch precise_ids_scratch;
 
-[...]
+naming nit: "ids_scratch" or "idset_scratch" to stay in line with
+"idmap_scratch"?
 
-> +/* Similar to check_ids_in_regsafe.
-> + * The l0 could be reached in two states:
-> + *
-> + *   (1) r6{.id=3DA}, r7{.id=3DA}, r8{.id=3DB}
-> + *   (2) r6{.id=3DB}, r7{.id=3DA}, r8{.id=3DB}
-> + *
-> + * Where (2) is not safe, as "r7 > 4" check won't propagate range for it=
-.
-> + * This example would be considered safe without changes to
-> + * mark_chain_precision() to track scalar values with equal IDs.
-> + */
-> +SEC("socket")
-> +__failure __msg("register with unbounded min value")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void check_ids_in_regsafe_2(void)
+> +       };
+>         struct {
+>                 int *insn_state;
+>                 int *insn_stack;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d117deb03806..2aa60b73f1b5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3779,6 +3779,96 @@ static void mark_all_scalars_imprecise(struct bpf_=
+verifier_env *env, struct bpf_
+>         }
+>  }
+>
+> +static inline bool reg_id_scratch_contains(struct reg_id_scratch *s, u32=
+ id)
 > +{
-> +       asm volatile (
-> +       /* Bump allocated stack */
-> +       "r1 =3D 0;"
-> +       "*(u64*)(r10 - 8) =3D r1;"
-> +       /* r9 =3D pointer to stack */
-> +       "r9 =3D r10;"
-> +       "r9 +=3D -8;"
-> +       /* r8 =3D ktime_get_ns() */
-> +       "call %[bpf_ktime_get_ns];"
-> +       "r8 =3D r0;"
-> +       /* r7 =3D ktime_get_ns() */
-> +       "call %[bpf_ktime_get_ns];"
-> +       "r7 =3D r0;"
-> +       /* r6 =3D ktime_get_ns() */
-> +       "call %[bpf_ktime_get_ns];"
-> +       "r6 =3D r0;"
-> +       /* scratch .id from r0 */
-> +       "r0 =3D 0;"
-> +       /* if r6 > r7 is an unpredictable jump */
-> +       "if r6 > r7 goto l1_%=3D;"
-> +       /* tie r6 and r7 .id */
-> +       "r6 =3D r7;"
-> +"l0_%=3D:"
-> +       /* if r7 > 4 exit(0) */
-> +       "if r7 > 4 goto l2_%=3D;"
-> +       /* Access memory at r9[r7] */
-> +       "r9 +=3D r6;"
-> +       "r0 =3D *(u8*)(r9 + 0);"
-> +"l2_%=3D:"
-> +       "r0 =3D 0;"
-> +       "exit;"
-> +"l1_%=3D:"
-
-complete offtopic, feel free to ignore:
-
-I must say that this "l0_%=3D" pattern is so ugly that I instead choose
-to use local labels and specify forward/backward mark:
-
-    goto 1f; /* forward */
-
-1:
-    ...
-
-    goto 1b; /* backward */
-
-I can see why _%=3D is good for the code generation approach (and even
-then it probably is not hard to determine this b/f mark during
-codegen), but for manual code I'm not convinced it's worth it :)
-
-> +       /* tie r6 and r8 .id */
-> +       "r6 =3D r8;"
-> +       "goto l0_%=3D;"
-> +       :
-> +       : __imm(bpf_ktime_get_ns)
-> +       : __clobber_all);
+> +       u32 i;
+> +
+> +       for (i =3D 0; i < s->count; ++i)
+> +               if (s->ids[i] =3D=3D id)
+> +                       return true;
+> +
+> +       return false;
 > +}
 > +
-> +/* Check that scalar IDs *are not* generated on register to register
-> + * assignments if source register is a constant.
-> + *
-> + * If such IDs *are* generated the 'l1' below would be reached in
-> + * two states:
-> + *
-> + *   (1) r1{.id=3DA}, r2{.id=3DA}
-> + *   (2) r1{.id=3DC}, r2{.id=3DC}
-> + *
-> + * Thus forcing 'if r1 =3D=3D r2' verification twice.
-> + */
-> +SEC("socket")
-> +__success __log_level(2)
-> +__msg("11: (1d) if r3 =3D=3D r4 goto pc+0")
-> +__msg("frame 0: propagating r3,r4")
-> +__msg("11: safe")
-
-would this detect that `if r1 =3D=3D r2` happens twice, if it did?
-
-maybe we should check the number of verified states instead? We
-control branching and checkpointing, so this should be stable, right?
-
-
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void no_scalar_id_for_const(void)
+> +static inline int reg_id_scratch_push(struct reg_id_scratch *s, u32 id)
 > +{
-> +       asm volatile (
-> +       "call %[bpf_ktime_get_ns];"
-> +       /* unpredictable jump */
-> +       "if r0 > 7 goto l0_%=3D;"
-> +       /* possibly generate same scalar ids for r3 and r4 */
-> +       "r1 =3D 0;"
-> +       "r1 =3D r1;"
-> +       "r3 =3D r1;"
-> +       "r4 =3D r1;"
-> +       "goto l1_%=3D;"
-> +"l0_%=3D:"
-> +       /* possibly generate different scalar ids for r3 and r4 */
-> +       "r1 =3D 0;"
-> +       "r2 =3D 0;"
-> +       "r3 =3D r1;"
-> +       "r4 =3D r2;"
-> +"l1_%=3D:"
-> +       /* predictable jump, marks r3 and r4 precise */
-> +       "if r3 =3D=3D r4 goto +0;"
-> +       "r0 =3D 0;"
-> +       "exit;"
-> +       :
-> +       : __imm(bpf_ktime_get_ns)
-> +       : __clobber_all);
+> +       if (WARN_ON_ONCE(s->count >=3D ARRAY_SIZE(s->ids)))
+> +               return -1;
+> +       s->ids[s->count++] =3D id;
+
+this will allow duplicated IDs to be added? Was it done in the name of spee=
+d?
+
+> +       WARN_ONCE(s->count > 64,
+> +                 "reg_id_scratch.count is unreasonably large (%d)", s->c=
+ount);
+
+do we need this one? Especially that it's not _ONCE variant? Maybe the
+first WARN_ON_ONCE is enough?
+
+> +       return 0;
 > +}
 > +
+> +static inline void reg_id_scratch_reset(struct reg_id_scratch *s)
 
-[...]
+we probably don't need "inline" for all these helpers?
+
+> +{
+> +       s->count =3D 0;
+> +}
+> +
+> +/* Collect a set of IDs for all registers currently marked as precise in=
+ env->bt.
+> + * Mark all registers with these IDs as precise.
+> + */
+> +static void mark_precise_scalar_ids(struct bpf_verifier_env *env, struct=
+ bpf_verifier_state *st)
+> +{
+> +       struct reg_id_scratch *precise_ids =3D &env->precise_ids_scratch;
+> +       struct backtrack_state *bt =3D &env->bt;
+> +       struct bpf_func_state *func;
+> +       struct bpf_reg_state *reg;
+> +       DECLARE_BITMAP(mask, 64);
+> +       int i, fr;
+> +
+> +       reg_id_scratch_reset(precise_ids);
+> +
+> +       for (fr =3D bt->frame; fr >=3D 0; fr--) {
+> +               func =3D st->frame[fr];
+> +
+> +               bitmap_from_u64(mask, bt_frame_reg_mask(bt, fr));
+> +               for_each_set_bit(i, mask, 32) {
+> +                       reg =3D &func->regs[i];
+> +                       if (!reg->id || reg->type !=3D SCALAR_VALUE)
+> +                               continue;
+> +                       if (reg_id_scratch_push(precise_ids, reg->id))
+> +                               return;
+> +               }
+> +
+> +               bitmap_from_u64(mask, bt_frame_stack_mask(bt, fr));
+> +               for_each_set_bit(i, mask, 64) {
+> +                       if (i >=3D func->allocated_stack / BPF_REG_SIZE)
+> +                               break;
+> +                       if (!is_spilled_scalar_reg(&func->stack[i]))
+> +                               continue;
+> +                       reg =3D &func->stack[i].spilled_ptr;
+> +                       if (!reg->id || reg->type !=3D SCALAR_VALUE)
+
+is_spilled_scalar_reg() already ensures reg->type is SCALAR_VALUE
+
+> +                               continue;
+> +                       if (reg_id_scratch_push(precise_ids, reg->id))
+> +                               return;
+
+if push fails (due to overflow of id set), shouldn't we propagate
+error back and fallback to mark_all_precise?
+
+
+> +               }
+> +       }
+> +
+> +       for (fr =3D 0; fr <=3D st->curframe; ++fr) {
+> +               func =3D st->frame[fr];
+> +
+> +               for (i =3D BPF_REG_0; i < BPF_REG_10; ++i) {
+> +                       reg =3D &func->regs[i];
+> +                       if (!reg->id)
+> +                               continue;
+> +                       if (!reg_id_scratch_contains(precise_ids, reg->id=
+))
+> +                               continue;
+> +                       bt_set_frame_reg(bt, fr, i);
+> +               }
+> +               for (i =3D 0; i < func->allocated_stack / BPF_REG_SIZE; +=
++i) {
+> +                       if (!is_spilled_scalar_reg(&func->stack[i]))
+> +                               continue;
+> +                       reg =3D &func->stack[i].spilled_ptr;
+> +                       if (!reg->id)
+> +                               continue;
+> +                       if (!reg_id_scratch_contains(precise_ids, reg->id=
+))
+> +                               continue;
+> +                       bt_set_frame_slot(bt, fr, i);
+> +               }
+> +       }
+> +}
+> +
+>  /*
+>   * __mark_chain_precision() backtracks BPF program instruction sequence =
+and
+>   * chain of verifier states making sure that register *regno* (if regno =
+>=3D 0)
+> @@ -3910,6 +4000,30 @@ static int __mark_chain_precision(struct bpf_verif=
+ier_env *env, int regno)
+>                                 bt->frame, last_idx, first_idx, subseq_id=
+x);
+>                 }
+>
+> +               /* If some register with scalar ID is marked as precise,
+> +                * make sure that all registers sharing this ID are also =
+precise.
+> +                * This is needed to estimate effect of find_equal_scalar=
+s().
+> +                * Do this at the last instruction of each state,
+> +                * bpf_reg_state::id fields are valid for these instructi=
+ons.
+> +                *
+> +                * Allows to track precision in situation like below:
+> +                *
+> +                *     r2 =3D unknown value
+> +                *     ...
+> +                *   --- state #0 ---
+> +                *     ...
+> +                *     r1 =3D r2                 // r1 and r2 now share t=
+he same ID
+> +                *     ...
+> +                *   --- state #1 {r1.id =3D A, r2.id =3D A} ---
+> +                *     ...
+> +                *     if (r2 > 10) goto exit; // find_equal_scalars() as=
+signs range to r1
+> +                *     ...
+> +                *   --- state #2 {r1.id =3D A, r2.id =3D A} ---
+> +                *     r3 =3D r10
+> +                *     r3 +=3D r1                // need to mark both r1 =
+and r2
+> +                */
+> +               mark_precise_scalar_ids(env, st);
+> +
+>                 if (last_idx < 0) {
+>                         /* we are at the entry into subprog, which
+>                          * is expected for global funcs, but only if
+> diff --git a/tools/testing/selftests/bpf/verifier/precise.c b/tools/testi=
+ng/selftests/bpf/verifier/precise.c
+> index b8c0aae8e7ec..99272bb890da 100644
+> --- a/tools/testing/selftests/bpf/verifier/precise.c
+> +++ b/tools/testing/selftests/bpf/verifier/precise.c
+> @@ -46,7 +46,7 @@
+>         mark_precise: frame0: regs=3Dr2 stack=3D before 20\
+>         mark_precise: frame0: parent state regs=3Dr2 stack=3D:\
+>         mark_precise: frame0: last_idx 19 first_idx 10\
+> -       mark_precise: frame0: regs=3Dr2 stack=3D before 19\
+> +       mark_precise: frame0: regs=3Dr2,r9 stack=3D before 19\
+>         mark_precise: frame0: regs=3Dr9 stack=3D before 18\
+>         mark_precise: frame0: regs=3Dr8,r9 stack=3D before 17\
+>         mark_precise: frame0: regs=3Dr0,r9 stack=3D before 15\
+> @@ -106,10 +106,10 @@
+>         mark_precise: frame0: regs=3Dr2 stack=3D before 22\
+>         mark_precise: frame0: parent state regs=3Dr2 stack=3D:\
+>         mark_precise: frame0: last_idx 20 first_idx 20\
+> -       mark_precise: frame0: regs=3Dr2 stack=3D before 20\
+> -       mark_precise: frame0: parent state regs=3Dr2 stack=3D:\
+> +       mark_precise: frame0: regs=3Dr2,r9 stack=3D before 20\
+> +       mark_precise: frame0: parent state regs=3Dr2,r9 stack=3D:\
+>         mark_precise: frame0: last_idx 19 first_idx 17\
+> -       mark_precise: frame0: regs=3Dr2 stack=3D before 19\
+> +       mark_precise: frame0: regs=3Dr2,r9 stack=3D before 19\
+>         mark_precise: frame0: regs=3Dr9 stack=3D before 18\
+>         mark_precise: frame0: regs=3Dr8,r9 stack=3D before 17\
+>         mark_precise: frame0: parent state regs=3D stack=3D:",
+> --
+> 2.40.1
+>
 
