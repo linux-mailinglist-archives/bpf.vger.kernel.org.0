@@ -1,211 +1,267 @@
-Return-Path: <bpf+bounces-2031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9632726DCA
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:45:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4AB9726E65
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 22:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D98321C2082F
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 20:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F3C0280D41
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 20:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E3537349;
-	Wed,  7 Jun 2023 20:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256CD3734F;
+	Wed,  7 Jun 2023 20:50:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7891D34CD3;
-	Wed,  7 Jun 2023 20:45:14 +0000 (UTC)
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021019.outbound.protection.outlook.com [52.101.57.19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B3C2116;
-	Wed,  7 Jun 2023 13:45:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W7fucvbd/j3T4LEBHblzlK3o3oRZIdjc+OFb6MeCCkO9n3bmN8e4oqXl+TRCH1DywKln49vejUMOR3RbuEGIJUpwAlq2oYEFMvYXwl1/S/4CPbh3Lq4UOWwyAXTuAxL8KEbtR0ztiYileXp+nIRVvJON1pbGYI4Xh+4nsjefHW3nRRswy22sHXOP2bsvdWFRNVLHGuUSCckjKM0u7n76/ZclUeauOWyTVUGBn3xyOnuy7ONTUM8KZqZa0T6HwCKoupIwLhoJZX31dWui8ncQBvyPcOwtcDp30H8+rqnDd1brAiES2sNKr/Za75pvdCwTQb3BLgqlUVXrp9CiEPFRiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mzCToldRm6QyJo7ttlBG0MFNm/EzB4pNXBnYKb1Yy9w=;
- b=AMMeHFDpHIzykx88cYz6WWm7WMKyLpJTHS4tbeDjvKQXqqGt26ibZtqkNUvAIocWhyoGxOCYajW+QVbNTk67nqwjam7pZ8graEaSQf/MKPGq9F3pK8uLsOBNHTY4/D3gvhgyZ8VxHP7jrCVbNZNCD57ZZ5NjPzKJ0RrG+9GM1yRjhOg1GSUh14FLabLjExStR0K7IFE44hCnToLNqLVJt+D828cTucLDJMwmC7IJAHvpzcNEG1w3pMZ6k9b8AN2bHvoSLC70/ZyGH+A3YKRZDesez8RJKbLnqHVurCfjKeiSjRPh0Ar9STu0ahX8wNKFBCsjJqDXNGscYHN/6lvolg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mzCToldRm6QyJo7ttlBG0MFNm/EzB4pNXBnYKb1Yy9w=;
- b=aIgLNC2YJxpPvNveIKFQgf8y8LBIPdr5ncrZ0Iuk+dZHnf6HT0oNkf12ctTZztFVqyXqNENypHUBw7jlCpMrv5Ubjm+XLDf/hpelg90JFECCsXOdT0ykkSYeTHGDhmjxFG+hf4TAwV4/+mAN91SGGD6uTWNfvelICEsR3pVEdKk=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by CO1PR21MB1284.namprd21.prod.outlook.com (2603:10b6:303:163::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.11; Wed, 7 Jun
- 2023 20:44:57 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::5600:ea5a:6768:1900]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::5600:ea5a:6768:1900%5]) with mapi id 15.20.6500.000; Wed, 7 Jun 2023
- 20:44:57 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC: Dexuan Cui <decui@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org"
-	<leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, Ajay Sharma <sharmaajay@microsoft.com>,
-	"hawk@kernel.org" <hawk@kernel.org>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: mana: Add support for vlan tagging
-Thread-Topic: [PATCH net-next] net: mana: Add support for vlan tagging
-Thread-Index: AQHZmW80JYA+a2crwEyPacU/TjTjWq9/ziJQ
-Date: Wed, 7 Jun 2023 20:44:57 +0000
-Message-ID:
- <PH7PR21MB31165940B8063AEE647846B6CA53A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1686163058-25469-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1686163058-25469-1-git-send-email-haiyangz@microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a85b9271-31d8-464b-b468-5299e4294a0d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-07T20:41:57Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|CO1PR21MB1284:EE_
-x-ms-office365-filtering-correlation-id: 74297469-7d45-4b9b-51be-08db67980e12
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- kli2tzzzdSFxMoDABPOGq6VMvGcH6qAdTOJc6wqHSOy+k50HcyX0zDOkF9ayuG5+/qL2LYwMnRxVg/SGkk19jNwS4iaYrrWwqH2w9tq4wTKvB+2A6b3wVQVjRlzIkKO7P0xkI4oLE5/AIlF+625jcjuDMXSvsiUH3uwuWmj3fd+2IBPAAsfgeLSOMjzKvw7BJXXbgHtPFeXG+Rmkh1ZfHLF9qbv13EQBDEevcwIJucHcFKzwzmsG7PcAi2sHTp4Bj1lqbyjCXrER8oOLC7DarL8t4HPOtygon2A0gno2vca3DWk+/Y2HdyVcmM/Y0zm051OmKBn+0bvHbKyXJSUM7uXYzh9AMzEike1CQA7wyxu8hH022hklISE5WXXXBlCB2iIqtjSwgkcXKQ86KrLKopjiKvIepfiLKHK2G4z5QkTWAxpHG5Y0GZGiDE4WQzkqsOYWHHXxdSIk02c+zMInw4TGmhTZj5uoo8JBeElGv93rr4PG5wBf/LmUAUUOgxKALLvmcX0AQHhZ0FhdXB+jt8QVrzuL79x+nLvpBmn8JemqIcdrY18ZkhRnvjAr6LmELpVGs1hcRHbSlHbFqYNKipoXES3bV0WahN+bXbEA/oJhld8vOhG4ED4egFdSScRsBOyzS1CGb/TVJhBNXhlX0b0yh7FiY1y0y6o6UMJWvmc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(136003)(346002)(376002)(39860400002)(451199021)(316002)(7696005)(41300700001)(83380400001)(8990500004)(86362001)(38070700005)(53546011)(9686003)(6506007)(7416002)(186003)(2906002)(33656002)(82950400001)(122000001)(82960400001)(38100700002)(55016003)(5660300002)(52536014)(8936002)(8676002)(76116006)(66946007)(110136005)(10290500003)(54906003)(478600001)(71200400001)(4326008)(66476007)(66446008)(66556008)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?urSG8ZAX7VMJrhwaz8+Hz3WbmdrrOvm7Kt6GM44oASPOiw9cxW2bh7dgqhMd?=
- =?us-ascii?Q?WWRnG+ofBzPe7xLMhUfxN8ytnylq0Qbrv6xUUoQ8LFhpbJNv2RGZWL2m6v9g?=
- =?us-ascii?Q?gPHqkBf1nsVGhcLxRGqZf2ufpvN+W4VPXeMOzk7VjT1IYMymhbgYHx3Cqk2q?=
- =?us-ascii?Q?7Wv/wpd7NGBOKRBHhR0vM7dkplrFJZiWsPs5uBU5sMywMspy9+PCK9XN904e?=
- =?us-ascii?Q?E8Y3x7qXPdUM7w5WPvmkoLQazIiSu827PHbEBYLXz2AX7eoADeHZRt0y4NZi?=
- =?us-ascii?Q?Jd4gspImleg6wJqRC6zcCTRK97Fx5DYYEjPmXVk8rf0foRJqymcPlUxoIxa5?=
- =?us-ascii?Q?AyJdTD9OKyeHXvLsyYflfJzu7+wHabP2XcVhWJF31UX/FhUZED+7azxzbJyt?=
- =?us-ascii?Q?hpJls4afkIosSwtZPH0/NNTzNKW9pe+6N4fJ5PgFZv8u6v9QMMzdJ/E+EwdL?=
- =?us-ascii?Q?8aG/CZs5DVIU9Pwpu5JHmc5ZHmV8qUnDkQOBpfcgFly0NF1NU1OcI+E1KSHQ?=
- =?us-ascii?Q?sfARMtfU0ldhsLZ1SNxpQJNbK9dJfgoKJAAxh7pk8Y8qAVn60GdTMVvZ2+r7?=
- =?us-ascii?Q?66sEUe9UcqV5cZGFqFPqDOM2p6phyOISDjZuzefHcfls68cDDoBY4Qbu7H8D?=
- =?us-ascii?Q?1ystruyyjdzfJ8IM8cJ9knc9V/skyIQ6kzyj9Oire7JF61ya3AEDMlGaPEVD?=
- =?us-ascii?Q?E/NiB+Eetm2thphsy/R75Ya0PpoQtxMOZf3B3K6xGm/2/M77t8R3urFsnStF?=
- =?us-ascii?Q?HyOmNIyxFWhZg8k08mwbIvTKcPGHEe0kR5/5zIDgHTW3fMhOGFLGsFovMEbx?=
- =?us-ascii?Q?ua2MHMfDwrzAPvTOLa1gmqwVlvWJfX9f9nwK7xhF7Y/Ps8NYhzFCkTRY2wNq?=
- =?us-ascii?Q?A1JtNxjSkYIYpYbN5aO2htSoI9BaAxmsK56UnB6/bJgXCYpzUQgFBqrRea0A?=
- =?us-ascii?Q?CzL+ClUyBBXQRpEVd46Slk+GQQaGlHnK3ZMMYEq5RySHmnQfLjpr02RJpDeU?=
- =?us-ascii?Q?wSaW/AWMO80Hr8qTWfecr0pFiRBObEOUJHDmvuXbo2rHhwhaW5J4JT3d/ZAX?=
- =?us-ascii?Q?G8X0nPvNEyiR6FCUlIFnsUXXJYRORbBxzhUnA685hHn+wrJP6axAyFNr4nyW?=
- =?us-ascii?Q?O3X6dfcgDY2sh1H7f5lY+zzq1pBu5AJSK14gZYv+fuvIfOlRzn+bRkQlwtsT?=
- =?us-ascii?Q?SKSyYew5nLbM8/sXlR+usrMOWKxqBz8LP2MbQUaOoiSZHkOFQkFF2zk8lq7O?=
- =?us-ascii?Q?Xj/6o+dyWdVlYGzjqq2gmON7d5FE5MXJ3Sdx/ZK0qajaBFcnJHlwuoxjJ84P?=
- =?us-ascii?Q?CwH6P2jVeAQNxRI85Oh54ATjIDoaOlsNCjCk5zMmNMeL5ahkzVXVH2TKlbTf?=
- =?us-ascii?Q?jlmbCsfD17X01gOPWl2V84A/8p+tQ2tF5vst+pYE/CmJhGU3YRz//yhiKm9c?=
- =?us-ascii?Q?CL/JE9WlGBesP1pP3qM4sYGD8ODptjO/D3YIy0ZQ5jpmSCUq3LFGPL21XDuQ?=
- =?us-ascii?Q?ZylDtVD886MFGMf2Vtay9GzfBVWxigPCUYJvLqFUboYZMwzq7Qh3sSQ9VUDC?=
- =?us-ascii?Q?xz7k+lpO2R+gckqDkvYxo4GqGG9O4nIZ0YhvobLxkf2zK9KxyUrz086BQqBc?=
- =?us-ascii?Q?EuPPFRtVCiIOeg1xb96W0u6/5/AvylfxAjqHY7L8w4S+?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0286C35B30
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 20:50:26 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830C61FEA;
+	Wed,  7 Jun 2023 13:50:19 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b1b3836392so69066951fa.0;
+        Wed, 07 Jun 2023 13:50:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686171018; x=1688763018;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=weUuKYmSwWcxsNM/CIKb+s3SATqcEOPMWtO22lxFnuQ=;
+        b=sOkkV9tx18Ge7uyxs4jllSZ8TBAl/wYynnhR295IGoTY7PnAwoCPnD0KWQfEbieFOe
+         qQIyW+ywy4l4sKQvfjkuyUD+PxLVD7rq2M7Onb7b0XtKDl51wvtR1ecosafo8+8BHMSU
+         jGZMynUcQq/OwzxIowCml4oeqzbpv2FgO/2ByJOdm+ltbIKexElJDJ+pz2zA2YDko5CP
+         FKTq6AgPVL3K69EGT3Mncjp8EyNjULldHh7C82cefdhymn2/cUzMp//WdQQlRGlUboAe
+         2PFcEgGukebatGnafojis43e4WsdCRqLVWLGYpoOsTtHEZbvb7h4ABGNuq94iZsNqmyR
+         6BOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686171018; x=1688763018;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=weUuKYmSwWcxsNM/CIKb+s3SATqcEOPMWtO22lxFnuQ=;
+        b=ZMx82Ji7BLy8yXioBwxa4qquGica+nKj3pqaupr3nk1DQBkSWGAd7bx/cHG56JjqoE
+         veD59wYEGJv3rWq6slAedJ/ojDm7ufksKwL+0mJg0Jbn2jW+ZFKyJMpd1VGQmb6qRzN/
+         4ymJRGObu/SK/cKlZX+rqwBwi/YHovKVneBUCsCy/3du5Yh+Pe9iOSgOd33kaYtszPIm
+         yB+MGFpapNmI5QZWq/BJ96bqS3HPTdJMTWqLhGbyjaCWmLx81PfNdwdREZLA4TMYr7Mi
+         M0Ge0BLHSPkheKLVdI8YpeZ3AmvCaNhFCMwuBQUMjQBQt+aAl50CeJKS/VWj1co1G1cO
+         p85A==
+X-Gm-Message-State: AC+VfDx0ZKE0Hl4unuyXq1v4hDftAxy454o59yR2kbHF/FHZdQ1ftVxs
+	kB7wdmVYCjZ0xT5a9DXPuBqBONywbkF/LKxERXs=
+X-Google-Smtp-Source: ACHHUZ6q06ZhPLd3BWOvO3msURp1IDFm8GG9eM80mVAF4s2CKqix9Q2D70oL21ofomtUqN1XMg4vvqYQSuQrZp54AWg=
+X-Received: by 2002:a05:651c:90:b0:2ac:770f:8831 with SMTP id
+ 16-20020a05651c009000b002ac770f8831mr2387676ljq.40.1686171017240; Wed, 07 Jun
+ 2023 13:50:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74297469-7d45-4b9b-51be-08db67980e12
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2023 20:44:57.1667
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: puQoMAtQwah02oyyDsMgudWb2AJ0jQWZ7PCD/anM8S1SVrZ5Y9BW2NBP4wHZEAVORuLvGvZsJzl2ucSXeFO6ZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR21MB1284
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com> <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com> <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+In-Reply-To: <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 7 Jun 2023 13:50:05 -0700
+Message-ID: <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory allocator
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
+	"houtao1@huawei.com" <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, Jun 7, 2023 at 10:52=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+> > As said in the commit message, the command line for test is
+> > "./map_perf_test 4 8 16384", because the default max_entries is 1000. I=
+f
+> > using default max_entries and the number of CPUs is greater than 15,
+> > use_percpu_counter will be false.
+>
+> Right. percpu or not depends on number of cpus.
+>
+> >
+> > I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
+> > test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
+> > there are obvious performance degradation.
+> ...
+> > [root@hello bpf]# ./map_perf_test 4 8 16384
+> > 2:hash_map_perf kmalloc 359201 events per sec
+> ..
+> > [root@hello bpf]# ./map_perf_test 4 8 16384
+> > 4:hash_map_perf kmalloc 203983 events per sec
+>
+> this is indeed a degration in a VM.
+>
+> > I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
+> > performances for "./map_perf_test 4 8" are similar, but there is obviou=
+s
+> > performance degradation for "./map_perf_test 4 8 16384"
+>
+> but... a degradation?
+>
+> > Before reuse-after-rcu-gp:
+> >
+> > [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+> > 1:hash_map_perf kmalloc 388088 events per sec
+> ...
+> > After reuse-after-rcu-gp:
+> > [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+> > 5:hash_map_perf kmalloc 655628 events per sec
+>
+> This is a big improvement :) Not a degration.
+> You always have to double check the numbers with perf report.
+>
+> > So could you please double check your setup and rerun map_perf_test ? I=
+f
+> > there is no performance degradation, could you please share your setup
+> > and your kernel configure file ?
+>
+> I'm testing on normal no-debug kernel. No kasan. No lockdep. HZ=3D1000
+> Playing with it a bit more I found something interesting:
+> map_perf_test 4 8 16348
+> before/after has too much noise to be conclusive.
+>
+> So I did
+> map_perf_test 4 8 16348 1000000
+>
+> and now I see significant degration from patch 3.
+> It drops from 800k to 200k.
+> And perf report confirms that heavy contention on sc->reuse_lock is the c=
+ulprit.
+> The following hack addresses most of the perf degradtion:
+>
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index fea1cb0c78bb..eeadc9359097 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -188,7 +188,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cac=
+he *c, int cnt)
+>         alloc =3D 0;
+>         head =3D NULL;
+>         tail =3D NULL;
+> -       raw_spin_lock_irqsave(&sc->reuse_lock, flags);
+> +       if (raw_spin_trylock_irqsave(&sc->reuse_lock, flags)) {
+>         while (alloc < cnt) {
+>                 obj =3D __llist_del_first(&sc->reuse_ready_head);
+>                 if (obj) {
+> @@ -206,6 +206,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cac=
+he *c, int cnt)
+>                 alloc++;
+>         }
+>         raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+> +       }
+>
+>         if (alloc) {
+>                 if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> @@ -334,9 +335,11 @@ static void bpf_ma_add_to_reuse_ready_or_free(struct=
+ bpf_mem_cache *c)
+>                 sc->reuse_ready_tail =3D NULL;
+>                 WARN_ON_ONCE(!llist_empty(&sc->wait_for_free));
+>                 __llist_add_batch(head, tail, &sc->wait_for_free);
+> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>                 call_rcu_tasks_trace(&sc->rcu, free_rcu);
+> +       } else {
+> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>         }
+> -       raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>  }
+>
+> It now drops from 800k to 450k.
+> And perf report shows that both reuse is happening and slab is working ha=
+rd to satisfy kmalloc/kfree.
+> So we may consider per-cpu waiting_for_rcu_gp and per-bpf-ma waiting_for_=
+rcu_task_trace_gp lists.
 
+Sorry. per-cpu waiting_for_rcu_gp is what patch 3 does already.
+I meant per-cpu reuse_ready and per-bpf-ma waiting_for_rcu_task_trace_gp.
 
-> -----Original Message-----
-> From: LKML haiyangz <lkmlhyz@microsoft.com> On Behalf Of Haiyang Zhang
-> Sent: Wednesday, June 7, 2023 2:38 PM
-> To: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>; Dexuan Cui
-> <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
-> <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
-> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
-> kuba@kernel.org; pabeni@redhat.com; leon@kernel.org; Long Li
-> <longli@microsoft.com>; ssengar@linux.microsoft.com; linux-
-> rdma@vger.kernel.org; daniel@iogearbox.net; john.fastabend@gmail.com;
-> bpf@vger.kernel.org; ast@kernel.org; Ajay Sharma
-> <sharmaajay@microsoft.com>; hawk@kernel.org; tglx@linutronix.de;
-> shradhagupta@linux.microsoft.com; linux-kernel@vger.kernel.org
-> Subject: [PATCH net-next] net: mana: Add support for vlan tagging
->=20
-> To support vlan, use MANA_LONG_PKT_FMT if vlan tag is present in TX
-> skb. Then extract the vlan tag from the skb struct or the frame, and
-> save it to tx_oob for the NIC to transmit.
->=20
-> For RX, extract the vlan tag from CQE and put it into skb.
->=20
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 36
-> +++++++++++++++++--
->  1 file changed, 34 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index d907727c7b7a..1d76ac66908c 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -179,6 +179,31 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
-> struct net_device *ndev)
->  		pkg.tx_oob.s_oob.short_vp_offset =3D txq->vp_offset;
->  	}
->=20
-> +	/* When using AF_PACKET we need to move VLAN header from
-> +	 * the frame to the SKB struct to allow the NIC to xmit
-> +	 * the 802.1Q packet.
-> +	 */
-> +	if (skb->protocol =3D=3D htons(ETH_P_8021Q)) {
-> +		u16 vlan_tci;
-> +
-> +		skb_reset_mac_header(skb);
-> +		if (eth_type_vlan(eth_hdr(skb)->h_proto)) {
-> +			if (unlikely(__skb_vlan_pop(skb, &vlan_tci)))
-> +				goto tx_drop_count;
-> +
-> +			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
-> +					       vlan_tci);
-> +		}
-> +	}
+Also noticed that the overhead of shared reuse_ready list
+comes both from the contended lock and from cache misses
+when one cpu pushes to the list after RCU GP and another
+cpu removes.
 
-Not necessary to extract inband tag, because our NIC accepts inband tags to=
-o.
-The change is in the next version.
+Also low/batch/high watermark are all wrong in patch 3.
+low=3D32 and high=3D96 makes no sense when it's not a single list.
+I'm experimenting with 32 for all three heuristics.
 
+Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
+are redundant.
+unit_free() can push into free_by_rcu directly
+then reuse_bulk() can fill it up with free_llist_extra and
+move them into waiting_for_gp.
 
+All these _tail optimizations are obscuring the code and make it hard
+to notice these issues.
+
+> For now I still prefer to see v5 with per-bpf-ma and no _tail optimizatio=
+n.
+>
+> Answering your other email:
+>
+> > I see your point. I will continue to debug the memory usage difference
+> > between v3 and v4.
+>
+> imo it's a waste of time to continue analyzing performance based on bench=
+ in patch 2.
+>
+> > I don't think so. Let's considering the per-cpu list first. Assume the
+> > normal RCU grace period is about 30ms and we are tracing the IO latency
+> > of a normal SSD. The iops is about 176K per seconds, so before one RCU
+> > GP is passed, we will need to allocate about 176 * 30 =3D 5.2K elements=
+.
+> > For the per-ma list, when the number of CPUs increased, it is easy to
+> > make the list contain thousands of elements.
+>
+> That would be true only if there were no scheduling events in all of 176K=
+ ops.
+> Which is not the case.
+> I'm not sure why you're saying that RCU GP is 30ms.
+> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+> Every sched event is sort-of implicit rcu_read_lock/unlock.
+> Network and block IO doesn't process 176K packets without resched.
+> Don't know how block does it, but in networking NAPI will process 64 pack=
+ets and will yield softirq.
+>
+> For small size buckets low_watermark=3D32 and high=3D96.
+> We typically move 32 elements at a time from one list to another.
+> A bunch of elements maybe sitting in free_by_rcu and moving them to waiti=
+ng_for_gp
+> is not instant, but once __free_rcu_tasks_trace is called we need to take
+> elements from waiting_for_gp one at a time and kfree it one at a time.
+> So optimizing the move from free_by_rcu into waiting_for_gp is not worth =
+the code complexity.
+>
+> > Before I post v5, I want to know the reason why per-bpf-ma list is
+> >introduced. Previously, I though it was used to handle the case in which
+> > allocation and freeing are done on different CPUs.
+>
+> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_ta=
+sks_trace GP.
+>
+> > And as we can see
+> > from the benchmark result above and in v3, the performance and the
+> > memory usage of v4 for add_del_on_diff_cpu is better than v3.
+>
+> bench from patch 2 is invalid. Hence no conclusion can be made.
+>
+> So far the only bench we can trust and analyze is map_perf_test.
+> Please make bench in patch 2 yield the cpu after few updates.
+> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+> 64 updates is realistic too. A thousand is not.
 
