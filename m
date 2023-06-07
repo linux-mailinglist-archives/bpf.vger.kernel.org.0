@@ -1,143 +1,234 @@
-Return-Path: <bpf+bounces-1971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3C272516C
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:16:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2DB9725174
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0781C20A2C
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4444C28114B
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE06632;
-	Wed,  7 Jun 2023 01:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A41632;
+	Wed,  7 Jun 2023 01:19:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689777C
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 01:16:16 +0000 (UTC)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C161984
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 18:16:14 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b1b06af50eso61010821fa.1
-        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 18:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686100572; x=1688692572;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HX2M4Gjc6bP98JKIfbiuj+vA/YsrjDXWkwSwi4DS4co=;
-        b=RolWz4b9aipocweGXolSj3eM5GC+wnXjitn+210TY9ohfQUoKXmBw2gJFZUeu1qeG9
-         /dG+0qU4Mv7kbCu0K0cwUzUx7rbjaodi1nxlxMvtnZWfIcAsjE4HMwLhuT8bVsfo6Bgk
-         si5uHM6D2wQvc1k6PtEqd5uJXa1yl5/Xk8dqR12mqqxqusAohT8YOUv30zGJ1tWi06ug
-         cNvRrCzvF43g8+PDMI9gjU8DXsqZHkG88R9UAnMq04RoPWUpjENFeZPEi+hin1o3w4eR
-         219hnGG16HoNGqX9JAUKYOmR8wMUrw0e84BWTcmDEtQH5FopJO/cupyodlFJdpycugEh
-         Zv2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686100572; x=1688692572;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HX2M4Gjc6bP98JKIfbiuj+vA/YsrjDXWkwSwi4DS4co=;
-        b=Vq1MO2U1WD4PcNCSNRJcupvvgO4cx36BVIyiCf+ESFA0AjaQKxst7uFF/QSI6sBpAd
-         CAv3DbLCZIc+kZ/YfIDFda58uj4rtWyWy3BjRHor5ss/cLLFUAdoE0LIxC8yk6u9z7pf
-         WI4XdoiRfzHBmPAmWbF10cGOqVMbw1oCwAenN0u1YYS0AZY9d+EwMdERSFbIHCru90dH
-         9v1xs3gLv2Bu9Ly9a2HSwPDmiJzckph9JkYsArGYZhisXa8rv61ZdKVi+bxUYDrwDk7o
-         ZBlx7o3JB0fdkBkY5OZeuWlq2QbMkDLTHaqdst2CgdiMS1R4ouxGleqM/GFuP4+KaX3Z
-         USTA==
-X-Gm-Message-State: AC+VfDz2ISRGjrGViZtY6YoJxsUppyDOalobLs2GfDmyEZeijIVev3NI
-	N0LBFwhaMP3fSB3lygz7sUR5XXvmHpLzYNUJ0Zg=
-X-Google-Smtp-Source: ACHHUZ63IOM0HN3thZfelRvNQktT1kau2zmnBhiIe1mr9EQesTIyQdib4ju2pUciAhqoo0bS1WXSWnHcYEm+AYRrV5s=
-X-Received: by 2002:a2e:97d3:0:b0:2b1:cb17:b445 with SMTP id
- m19-20020a2e97d3000000b002b1cb17b445mr1652849ljj.48.1686100571961; Tue, 06
- Jun 2023 18:16:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CACC7C
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 01:19:39 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB2AE6B;
+	Tue,  6 Jun 2023 18:19:36 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QbTyr2RhXz4f3tP1;
+	Wed,  7 Jun 2023 09:19:32 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgAnDgwh239kMlwUKQ--.34777S2;
+	Wed, 07 Jun 2023 09:19:33 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <0bbf258f-668b-a691-e425-a4c1c6bfcc91@huaweicloud.com>
+Date: Wed, 7 Jun 2023 09:19:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230531201936.1992188-1-alan.maguire@oracle.com>
- <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
- <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
- <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
- <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
- <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
- <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
- <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
- <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com> <CAEf4BzYG2FFcM_0mkiARzKnYinQYHpWE8ct35Z==-Fsefv9oQw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYG2FFcM_0mkiARzKnYinQYHpWE8ct35Z==-Fsefv9oQw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 6 Jun 2023 18:16:00 -0700
-Message-ID: <CAADnVQJ712O0FeKQwUAG1+WvFTkX1FBNTb1v+frA7vNAkXLgqg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgAnDgwh239kMlwUKQ--.34777S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF47XryDGrWxKF18Gr15Jwb_yoWxZw1rpr
+	WSgF43Jr4DAr9I9ws2vwn2q34UAws3Xr45XFyFkryDCwn8Xr9IvFZ2vFWYvFyUWryDC3yj
+	qrWkJ3yxZas5C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 6, 2023 at 9:50=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+Hi,
+
+On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
+> On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 6/6/2023 11:53 AM, Hou Tao wrote:
+>>> From: Hou Tao <houtao1@huawei.com>
+>>>
+>>> Hi,
+>>>
+>>> The implementation of v4 is mainly based on suggestions from Alexi [0].
+>>> There are still pending problems for the current implementation as shown
+>>> in the benchmark result in patch #3, but there was a long time from the
+>>> posting of v3, so posting v4 here for further disscussions and more
+>>> suggestions.
+>>>
+>>> The first problem is the huge memory usage compared with bpf memory
+>>> allocator which does immediate reuse:
+>>>
+>>> htab-mem-benchmark (reuse-after-RCU-GP):
+>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+>>> | --                 | --        | --                  | --               |
+>>> | no_op              | 1159.18   | 0.99                | 0.99             |
+>>> | overwrite          | 11.00     | 2288                | 4109             |
+>>> | batch_add_batch_del| 8.86      | 1558                | 2763             |
+>>> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
+>>>
+>>> htab-mem-benchmark (immediate-reuse):
+>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+>>> | --                 | --        | --                  | --               |
+>>> | no_op              | 1160.66   | 0.99                | 1.00             |
+>>> | overwrite          | 28.52     | 2.46                | 2.73             |
+>>> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
+>>> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
+>>>
+>>> It seems the direct reason is the slow RCU grace period. During
+>>> benchmark, the elapsed time when reuse_rcu() callback is called is about
+>>> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
+>>> spin-lock and the irq-work running in the contex of freeing process will
+>>> increase the running overhead of bpf program, the running time of
+>>> getpgid() is increased, the contex switch is slowed down and the RCU
+>>> grace period increases [1], but I am still diggin into it.
+>> For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
+>> (namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
+>> did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
+>>
+>> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
+>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+>> | --                 | --        | --                  | --               |
+>> | no_op              | 1165.38   | 0.97                | 1.00             |
+>> | overwrite          | 17.25     | 626.41              | 781.82           |
+>> | batch_add_batch_del| 11.51     | 398.56              | 500.29           |
+>> | add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
+>>
+>> But the memory usage is still large compared with v3 and the elapsed
+>> time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
+>> are still two differences:
+>> 1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
+>> accelerate the reuse of freed objects.
+>> 2) v3 uses kworker instead of irq_work for free procedure.
+>>
+>> For 1), after using kmalloc() in irq_work to allocate multiple inflight
+>> RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
+>> but is not enough:
+>>
+>> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
+>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+>> | --                 | --        | --                  | --               |
+>> | no_op              | 1247.00   | 0.97                | 1.00             |
+>> | overwrite          | 16.56     | 490.18              | 557.17           |
+>> | batch_add_batch_del| 11.31     | 276.32              | 360.89           |
+>> | add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
+>>
+>> So it seems the large memory usage is due to irq_work (reuse_bulk) used
+>> for free procedure. However after increasing the threshold for invoking
+>> irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
+>> big difference in the memory usage and the delayed time for RCU
+>> callbacks. Perhaps the reason is that although the number of  reuse_bulk
+>> irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
+>> increased because there are no reusable objects.
+> The large memory usage is because the benchmark in patch 2 is abusing it.
+> It's doing one bpf_loop() over 16k elements (in case of 1 producer)
+> and 16k/8 loops for --producers=8.
+> That's 2k memory allocations that have to wait for RCU GP.
+> Of course that's a ton of memory.
+I don't agree that. Because in v3, the benchmark is the same, but both
+the performance and the memory usage are better than v4. Even compared
+with  "htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list +
+multiple reuse_rcu() callbacks)" above, the memory usage in v3 is still
+much smaller as shown below. If the large memory usage is due to the
+abuse in benchmark, how do you explain the memory usage in v3 ?
+
+htab-mem-benchmark (reuse-after-rcu-gp v3)
+
+| name                | loop (k/s) | average memory (MiB) | peak memory (MiB) |
+| --                  | --         | --                   | --                |
+| no_op               | 1199.16    | 0.97                 | 0.99              |
+| overwrite           | 16.37      | 24.01                | 31.76             |
+| batch_add_batch_del | 9.61       | 16.71                | 19.95             |
+| add_del_on_diff_cpu | 3.62       | 22.93                | 37.02             |
+
 >
-> Agreed, I don't think we can ever make BTF dedup work reliably with
-> KINDs it doesn't understand. I wouldn't even try. I'd also say that
-> kernel should keep being strict about this (even if we add
-> "is-it-optional" field, kernel can't trust it). Libbpf and other
-> libraries will have to keep sanitizing BTF anyways.
-
-Good point. "it-is-optional" flag should be for user space only.
-
-> > If we go this simple route I'm fine with hard coded crc and base_crc
-> > fields. They probably should go to btf_header though.
+> As far as implementation in patch 3 please respin it asap and remove *_tail optimization.
+> It makes the code hard to read and doesn't buy us anything.
+The reason I added tail for each list is that there could be thousands
+even ten thousands elements in these lists and there is no need to spend
+CPU time to traversal these list one by one. It maybe a premature
+optimization. So let me remove tails from these list first and I will
+try to add these tails back later and check whether or not there is any
+performance improvement.
+> Other than that the algorithm looks fine.
 >
-> Yep, on btf_header fields. But I'd not hardcode "crc" name. If we are
-> doing them as strings (which I think we should instead of dooming them
-> to 32-bit integer crc32 value only), then can we just say generically
-> that it's either "id" or "checksum"?
+>>> Another problem is the performance degradation compared with immediate
+>>> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
+>>> top-one hotspot:
+> That's not what I see.
+> Hot spin_lock is in generic htab code. Not it ma.
+> I still believe per-bpf-ma spin-lock is fine.
+> The bench in patch 2 is measuring something that no real bpf prog cares about.
 >
-> But I guess crc32 would be fine in practice as well. So not something
-> I strongly feel about.
-
-I still fail to see how generic string "id" helps.
-We have to standardize on a way to checksum BTF-s.
-Say, we pick crc32.
-pahole/clang would have to use the same algorithm.
-Then kernel during BTF_LOAD should check that crc32 matches
-to make sure btf data didn't get corrupted between its creation
-and loading into the kernel.
-Just like btrfs uses crc32 to make sure data doesn't get corrupted by disk.
-libbpf doing sanitization would need to tweak crc32 too.
-So it's going to be hard coded semantics at every level.
-id and especially string id would be cumbersome for all these layers
-to deal with.
-
-
-> > We don't need "struct btf_metadata" as well.
-> > It's making things sound beyond what it actually is.
-> > btf_header can point to an array of struct btf_kind_description.
-> > As simple as it can get.
+> See how map_perf_test is doing:
+>         for (i = 0; i < 10; i++) {
+>                 bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
 >
-> Agreed. Still, it's a third section, and we should at least have a
-> count of those btf_kind_layout items somewhere.
+> Even 10 map updates for the same map in a single bpf prog invocation is not realistic.
+> 16k/8 is beyond any normal scenario.
+> There is no reason to optimize bpf_ma for the case of htab abuse.
+I have a different view for the benchmark. Firstly htab is not the only
+user of bpf memory allocator, secondly we can't predict the exact
+behavior of bpf programs, so I think to stress bpf memory allocator for
+various kinds of use case is good for its broad usage.
+>
+>>> map_perf_test (reuse-after-RCU-GP)
+>>> 0:hash_map_perf kmalloc 194677 events per sec
+>>>
+>>> map_perf_test (immediate reuse)
+>>> 2:hash_map_perf kmalloc 384527 events per sec
+> For some reason I cannot reproduce the slow down with map_perf_test 4 8.
+> I see the same perf with/without patch 3.
+I will double check my local setup and test results.
+>
+> I've applied patch 1.
+> Please respin with patch 2 doing no more than 10 map_updates under rcu lock
+> and remove *_tail optimization from patch 3.
+> Just do llist_for_each_safe() when you move elements from one list to another.
+> And let's brainstorm further.
+> Please do not delay.
+> .
 
-of course.
-In btf_header we have
-        __u32   type_off;       /* offset of type section       */
-        __u32   type_len;       /* length of type section       */
-I meant we add:
-        __u32   kind_layouts_off;
-        __u32   kind_layouts_len;
 
