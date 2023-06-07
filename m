@@ -1,233 +1,143 @@
-Return-Path: <bpf+bounces-1970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA017250A6
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:18:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE3C272516C
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 03:16:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C93F528101C
-	for <lists+bpf@lfdr.de>; Tue,  6 Jun 2023 23:18:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0781C20A2C
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 01:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6FF934D60;
-	Tue,  6 Jun 2023 23:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE06632;
+	Wed,  7 Jun 2023 01:16:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E547E4
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 23:18:26 +0000 (UTC)
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209C61FEF
-	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 16:18:25 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-33dea7d5424so27295ab.1
-        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 16:18:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689777C
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 01:16:16 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C161984
+	for <bpf@vger.kernel.org>; Tue,  6 Jun 2023 18:16:14 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b1b06af50eso61010821fa.1
+        for <bpf@vger.kernel.org>; Tue, 06 Jun 2023 18:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686093504; x=1688685504;
+        d=gmail.com; s=20221208; t=1686100572; x=1688692572;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LusODyImi6kShYo7SZgAczgtmkpNpRiKl/lmOqpWzfY=;
-        b=bHLLRfURdxNvPqhE2bfaZQ8ll3eh6shs0txawB+xbLvB7SA+cWOK7VhX0QUN79LyYI
-         lCnTvE7jFUQoWSifn5m0Lys+Y0Dm/RZ9FHkfeJl+BM6/6+5ayQbUXgmiqg3xQhBVEa/J
-         d0iTjx6j5/szWelj86ck4UuNSFm3gb6L9AsDhijZu7qcK84dWa0Ab2F4oTHIwI9iN2Qs
-         cGTtqyfmHiTrw87RP+8KCCyCWVQVRpK3VGKy96HHt6qMgFQd9ABAhrjTCMAUWrHtRSw0
-         FED1Gj5DnAAcqhYaqiWxyvoLJMBl4bZjrI4SY1fRdAO+QCPEfM6xrRse1TkgacsnkBMw
-         Y0/Q==
+        bh=HX2M4Gjc6bP98JKIfbiuj+vA/YsrjDXWkwSwi4DS4co=;
+        b=RolWz4b9aipocweGXolSj3eM5GC+wnXjitn+210TY9ohfQUoKXmBw2gJFZUeu1qeG9
+         /dG+0qU4Mv7kbCu0K0cwUzUx7rbjaodi1nxlxMvtnZWfIcAsjE4HMwLhuT8bVsfo6Bgk
+         si5uHM6D2wQvc1k6PtEqd5uJXa1yl5/Xk8dqR12mqqxqusAohT8YOUv30zGJ1tWi06ug
+         cNvRrCzvF43g8+PDMI9gjU8DXsqZHkG88R9UAnMq04RoPWUpjENFeZPEi+hin1o3w4eR
+         219hnGG16HoNGqX9JAUKYOmR8wMUrw0e84BWTcmDEtQH5FopJO/cupyodlFJdpycugEh
+         Zv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686093504; x=1688685504;
+        d=1e100.net; s=20221208; t=1686100572; x=1688692572;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LusODyImi6kShYo7SZgAczgtmkpNpRiKl/lmOqpWzfY=;
-        b=GV7Z/nCNWkOyZEYSoCATMTPdSpP3u+fpbcpRi8KsWIsVrgiJqj45jgOgViXuW6c7yO
-         LL9XExNcYz6YqaOoXITJsta8LknB15i3ZbGiwo/BuNSc2ocrAGBy5beKzPS9tUWc+/EI
-         GKqGhtUXXIyFhCwIzVHJQzAioTrKQR4HW5A8WjQcZImR78mI+f2dFiK60PH3p3hkq1ZW
-         wk83RPcWikXMi4MmmVBylLuM7K1eg3ezbOXItX+Af4P/06GD/oZWtLBPuWYkKhrLyKb2
-         n6J2T4hqdx4NyvbhA5FFrfj/R/bdNj4+3zMG5q4IFxGClx8qorcIm9bZPpqQyX+WB66I
-         9zBQ==
-X-Gm-Message-State: AC+VfDzL/OyDKncyS2JRzEfnd7ATnQx1qxD2teosDHGDLNbe33ngd/SB
-	xArmIPWkObmsG54VRwRVXnDczi1T6hIEyc6E/HAR1A==
-X-Google-Smtp-Source: ACHHUZ7jN0OEqtUnQoxqE/pZb1cT4FFdk/SorQIEprthyAmFz43w0VOL5ChrKbF0ApvtiecmOAmx0rjnyMt4BE2Js3E=
-X-Received: by 2002:a05:6e02:214a:b0:33b:cea:ce70 with SMTP id
- d10-20020a056e02214a00b0033b0ceace70mr26326ilv.25.1686093504340; Tue, 06 Jun
- 2023 16:18:24 -0700 (PDT)
+        bh=HX2M4Gjc6bP98JKIfbiuj+vA/YsrjDXWkwSwi4DS4co=;
+        b=Vq1MO2U1WD4PcNCSNRJcupvvgO4cx36BVIyiCf+ESFA0AjaQKxst7uFF/QSI6sBpAd
+         CAv3DbLCZIc+kZ/YfIDFda58uj4rtWyWy3BjRHor5ss/cLLFUAdoE0LIxC8yk6u9z7pf
+         WI4XdoiRfzHBmPAmWbF10cGOqVMbw1oCwAenN0u1YYS0AZY9d+EwMdERSFbIHCru90dH
+         9v1xs3gLv2Bu9Ly9a2HSwPDmiJzckph9JkYsArGYZhisXa8rv61ZdKVi+bxUYDrwDk7o
+         ZBlx7o3JB0fdkBkY5OZeuWlq2QbMkDLTHaqdst2CgdiMS1R4ouxGleqM/GFuP4+KaX3Z
+         USTA==
+X-Gm-Message-State: AC+VfDz2ISRGjrGViZtY6YoJxsUppyDOalobLs2GfDmyEZeijIVev3NI
+	N0LBFwhaMP3fSB3lygz7sUR5XXvmHpLzYNUJ0Zg=
+X-Google-Smtp-Source: ACHHUZ63IOM0HN3thZfelRvNQktT1kau2zmnBhiIe1mr9EQesTIyQdib4ju2pUciAhqoo0bS1WXSWnHcYEm+AYRrV5s=
+X-Received: by 2002:a2e:97d3:0:b0:2b1:cb17:b445 with SMTP id
+ m19-20020a2e97d3000000b002b1cb17b445mr1652849ljj.48.1686100571961; Tue, 06
+ Jun 2023 18:16:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230605202712.1690876-1-irogers@google.com> <20230605202712.1690876-2-irogers@google.com>
- <ZH6gZgcwAbDrEiqX@krava> <CAP-5=fWgQDrgDJ_UFuo_G5NaCzR5vWrRyvQ-_qpvFP0p0q18+w@mail.gmail.com>
- <ZH91mGxFpDPcCFKY@kernel.org>
-In-Reply-To: <ZH91mGxFpDPcCFKY@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 6 Jun 2023 16:18:13 -0700
-Message-ID: <CAP-5=fUscgwO-G0FSZeM6SyPZVe=Kg+t-s+2txjUrc_qbP+cDg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] perf build: Add ability to build with a generated vmlinux.h
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Yang Jihong <yangjihong1@huawei.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+References: <20230531201936.1992188-1-alan.maguire@oracle.com>
+ <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
+ <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
+ <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
+ <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
+ <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
+ <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
+ <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
+ <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com> <CAEf4BzYG2FFcM_0mkiARzKnYinQYHpWE8ct35Z==-Fsefv9oQw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYG2FFcM_0mkiARzKnYinQYHpWE8ct35Z==-Fsefv9oQw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 6 Jun 2023 18:16:00 -0700
+Message-ID: <CAADnVQJ712O0FeKQwUAG1+WvFTkX1FBNTb1v+frA7vNAkXLgqg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 6, 2023 at 11:06=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Tue, Jun 6, 2023 at 9:50=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Em Mon, Jun 05, 2023 at 09:25:54PM -0700, Ian Rogers escreveu:
-> > On Mon, Jun 5, 2023 at 7:57=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> w=
-rote:
-> > >
-> > > On Mon, Jun 05, 2023 at 01:27:09PM -0700, Ian Rogers wrote:
-> > > > Commit a887466562b4 ("perf bpf skels: Stop using vmlinux.h generate=
-d
-> > > > from BTF, use subset of used structs + CO-RE") made it so that
-> > > > vmlinux.h was uncondtionally included from
-> > > > tools/perf/util/vmlinux.h. This change reverts part of that change =
-(so
-> > > > that vmlinux.h is once again generated) and makes it so that the
-> > > > vmlinux.h used at build time is selected from the VMLINUX_H
-> > > > variable. By default the VMLINUX_H variable is set to the vmlinux.h
-> > > > added in change a887466562b4, but if GEN_VMLINUX_H=3D1 is passed on=
- the
-> > > > build command line then the previous generation behavior kicks in.
-> > > >
-> > > > The build with GEN_VMLINUX_H=3D1 currently fails with:
-> > > > ```
-> > > > util/bpf_skel/lock_contention.bpf.c:419:8: error: redefinition of '=
-rq'
-> > > > struct rq {};
-> > > >        ^
-> > > > /tmp/perf/util/bpf_skel/.tmp/../vmlinux.h:45630:8: note: previous d=
-efinition is here
-> > > > struct rq {
-> > > >        ^
-> > > > 1 error generated.
-> > > > ```
-> > > >
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  tools/perf/Makefile.config                       |  4 ++++
-> > > >  tools/perf/Makefile.perf                         | 16 ++++++++++++=
-+++-
-> > > >  tools/perf/util/bpf_skel/.gitignore              |  1 +
-> > > >  tools/perf/util/bpf_skel/{ =3D> vmlinux}/vmlinux.h |  0
-> > > >  4 files changed, 20 insertions(+), 1 deletion(-)
-> > > >  rename tools/perf/util/bpf_skel/{ =3D> vmlinux}/vmlinux.h (100%)
-> > >
-> > > looks good, but I don't understand why you moved the vmlinux.h
-> > >
-> > > jirka
-> >
-> > Dumb reason, as headers in the same directory take priority, I had to
-> > move the vmlinux.h out of the directory with the C code for skeletons
-> > so that it could be selected via a -I.
->
-> Can this be in a separate patch, i.e. moving vmlinux to a separate
-> directory? I was going to cherry pick the 'struct rq' fix but then it
-> touches the vmlinux/vmlinux.h file that is in this first patch that has
-> review comments.
+> Agreed, I don't think we can ever make BTF dedup work reliably with
+> KINDs it doesn't understand. I wouldn't even try. I'd also say that
+> kernel should keep being strict about this (even if we add
+> "is-it-optional" field, kernel can't trust it). Libbpf and other
+> libraries will have to keep sanitizing BTF anyways.
 
-I think the comments were more of a question of why the move?
-Hopefully I answered that, the move is necessary to defeat the include
-path order preferring files in the same directory. We need the move,
-we could vary the directory name.
+Good point. "it-is-optional" flag should be for user space only.
 
-Thanks,
-Ian
+> > If we go this simple route I'm fine with hard coded crc and base_crc
+> > fields. They probably should go to btf_header though.
+>
+> Yep, on btf_header fields. But I'd not hardcode "crc" name. If we are
+> doing them as strings (which I think we should instead of dooming them
+> to 32-bit integer crc32 value only), then can we just say generically
+> that it's either "id" or "checksum"?
+>
+> But I guess crc32 would be fine in practice as well. So not something
+> I strongly feel about.
 
-> - Arnaldo
+I still fail to see how generic string "id" helps.
+We have to standardize on a way to checksum BTF-s.
+Say, we pick crc32.
+pahole/clang would have to use the same algorithm.
+Then kernel during BTF_LOAD should check that crc32 matches
+to make sure btf data didn't get corrupted between its creation
+and loading into the kernel.
+Just like btrfs uses crc32 to make sure data doesn't get corrupted by disk.
+libbpf doing sanitization would need to tweak crc32 too.
+So it's going to be hard coded semantics at every level.
+id and especially string id would be cumbersome for all these layers
+to deal with.
+
+
+> > We don't need "struct btf_metadata" as well.
+> > It's making things sound beyond what it actually is.
+> > btf_header can point to an array of struct btf_kind_description.
+> > As simple as it can get.
 >
-> > Thanks,
-> > Ian
-> >
-> > > >
-> > > > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.confi=
-g
-> > > > index a794d9eca93d..08d4e7eaa721 100644
-> > > > --- a/tools/perf/Makefile.config
-> > > > +++ b/tools/perf/Makefile.config
-> > > > @@ -680,6 +680,10 @@ ifdef BUILD_BPF_SKEL
-> > > >    CFLAGS +=3D -DHAVE_BPF_SKEL
-> > > >  endif
-> > > >
-> > > > +ifndef GEN_VMLINUX_H
-> > > > +  VMLINUX_H=3D$(src-perf)/util/bpf_skel/vmlinux/vmlinux.h
-> > > > +endif
-> > > > +
-> > > >  dwarf-post-unwind :=3D 1
-> > > >  dwarf-post-unwind-text :=3D BUG
-> > > >
-> > > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > > index f48794816d82..f1840af195c0 100644
-> > > > --- a/tools/perf/Makefile.perf
-> > > > +++ b/tools/perf/Makefile.perf
-> > > > @@ -1080,7 +1080,21 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
-> > > >       $(Q)CFLAGS=3D $(MAKE) -C ../bpf/bpftool \
-> > > >               OUTPUT=3D$(SKEL_TMP_OUT)/ bootstrap
-> > > >
-> > > > -$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_=
-TMP_OUT)
-> > > > +VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)                    =
-     \
-> > > > +                  $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) =
-   \
-> > > > +                  ../../vmlinux                                   =
-   \
-> > > > +                  /sys/kernel/btf/vmlinux                         =
-   \
-> > > > +                  /boot/vmlinux-$(shell uname -r)
-> > > > +VMLINUX_BTF ?=3D $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PA=
-THS))))
-> > > > +
-> > > > +$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-> > > > +ifeq ($(VMLINUX_H),)
-> > > > +     $(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
-> > > > +else
-> > > > +     $(Q)cp "$(VMLINUX_H)" $@
-> > > > +endif
-> > > > +
-> > > > +$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) $(SKEL_OU=
-T)/vmlinux.h | $(SKEL_TMP_OUT)
-> > > >       $(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -Wall -Werror $(BPF=
-_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
-> > > >         -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@
-> > > >
-> > > > diff --git a/tools/perf/util/bpf_skel/.gitignore b/tools/perf/util/=
-bpf_skel/.gitignore
-> > > > index 7a1c832825de..cd01455e1b53 100644
-> > > > --- a/tools/perf/util/bpf_skel/.gitignore
-> > > > +++ b/tools/perf/util/bpf_skel/.gitignore
-> > > > @@ -1,3 +1,4 @@
-> > > >  # SPDX-License-Identifier: GPL-2.0-only
-> > > >  .tmp
-> > > >  *.skel.h
-> > > > +vmlinux.h
-> > > > diff --git a/tools/perf/util/bpf_skel/vmlinux.h b/tools/perf/util/b=
-pf_skel/vmlinux/vmlinux.h
-> > > > similarity index 100%
-> > > > rename from tools/perf/util/bpf_skel/vmlinux.h
-> > > > rename to tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-> > > > --
-> > > > 2.41.0.rc0.172.g3f132b7071-goog
-> > > >
->
-> --
->
-> - Arnaldo
+> Agreed. Still, it's a third section, and we should at least have a
+> count of those btf_kind_layout items somewhere.
+
+of course.
+In btf_header we have
+        __u32   type_off;       /* offset of type section       */
+        __u32   type_len;       /* length of type section       */
+I meant we add:
+        __u32   kind_layouts_off;
+        __u32   kind_layouts_len;
 
