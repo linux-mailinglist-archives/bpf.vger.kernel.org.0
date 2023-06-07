@@ -1,304 +1,149 @@
-Return-Path: <bpf+bounces-1988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8FC725AF1
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 11:44:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33570725BBB
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 12:42:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515C628129E
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:44:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BD0A1C20D70
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 10:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C36E9470;
-	Wed,  7 Jun 2023 09:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254DF7489;
+	Wed,  7 Jun 2023 10:42:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E514440C
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 09:44:32 +0000 (UTC)
-X-Greylist: delayed 817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Jun 2023 02:44:29 PDT
-Received: from kwangna.com (unknown [5.182.39.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A7A6AE49
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 02:44:29 -0700 (PDT)
-Received: from brighterbrain.com.my (localhost [IPv6:::1])
-	by kwangna.com (Postfix) with ESMTP id B20C016FCD9D
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 11:21:18 +0200 (CEST)
-From: =?UTF-8?B?U0blj5Hnpag=?= <customer.service@brighterbrain.com.my>
-To: bpf@vger.kernel.org
-Subject: =?UTF-8?B?44CQ55S15a2Q5Y+R56Wo5Y+356CBOjMwOTQwMjk344CR5oKo5pS25Yiw5LiA5byg5paw55qE55S15a2Q5Y+R56WoIA==?=
-Date: 07 Jun 2023 11:21:17 +0200
-Message-ID: <20230607112117.F3413E017FC5A06C@brighterbrain.com.my>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EF115D5
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 10:42:29 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7133D2121
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 03:42:19 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3f6ffc2b314so3474805e9.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 03:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1686134537; x=1688726537;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N7LrhNNEdA24khblC9g8MfKa4jeWvLQ+nAT4hRuOUJI=;
+        b=XIPDoVV88MC7ohXtbTc2BCAz536FGMFDcu4rdZ5ndoe8/wbuZh2LJ8yFLgMkgqX5xS
+         vuNtpp04rDMuXb+tEbdw9+7DjSfzqX0KNlkMYA4fpekCV4J/KMpN3DPo1C6Hv7TSNhMC
+         GsiaGDA1rl0Tv2jzQ7g1Ndhrq/QALkjJP+drhZaztLD/jNveiLBziLAsCrH65+ufAN3A
+         2jBNTl3WUaFnzfWdmTs2XxvEcl/tZgfYEWYbejMAJbZ3S4V6hf1xIJyZz5zSJPUoFpDv
+         /08sr83xx/vF3wFWesTcnJ9+s60XwYIm+MESMCKWGv88MeIAFjuKC+ZUAJNBPZbKu2HY
+         SCNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686134537; x=1688726537;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N7LrhNNEdA24khblC9g8MfKa4jeWvLQ+nAT4hRuOUJI=;
+        b=D3XsMVx1GhrFALHHwenI3AqwQw1Yh8xXSbFwwd8wjvIe4MLhIvP4bnHEDfr+XCoAHB
+         0RyzUSq8/3vKPwsNFxJxGRq+o+SXrN/Pdahm9QannWB+u55vlrPHKgARmZujpTbDIz6A
+         ADl1fUnlFPjKyw82sjMhxAjNirVA7OLtCGj58puopJMgy4x9q6vfrUWNa4WtPebfExx/
+         S0TmxJ61RARrggCXjHWSP5X3bK5TF/bI2m/4zvmXmIFC9nw8bqQgixdOzNoN4wgb4d6C
+         +cUnIFB0RFPsRE8aQvPhkGXpEWwXMU47/zaZJhDvl/fKq4RaC5n7/vGXV3qg6UcE9cpA
+         1rUg==
+X-Gm-Message-State: AC+VfDwate4tCIfzT5xVfjWqItex0JBK2zFCgbBo2bm2hM7RAsus+P6m
+	IAMMcxfeT45kiDxh+OU4ID6cyQ==
+X-Google-Smtp-Source: ACHHUZ4OhWn4Tb9E2A5DqtcylYLUxU5x86bnN3MT2KWvOc7EJ3AmkwX8cONOFSmSpNVgN9Yoho/ljw==
+X-Received: by 2002:a7b:c3d4:0:b0:3f4:1ce0:a606 with SMTP id t20-20020a7bc3d4000000b003f41ce0a606mr4065558wmj.1.1686134537631;
+        Wed, 07 Jun 2023 03:42:17 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:3d52:65d8:7088:94e9? ([2a02:8011:e80c:0:3d52:65d8:7088:94e9])
+        by smtp.gmail.com with ESMTPSA id h18-20020a1ccc12000000b003f74eb308fasm1648829wmb.48.2023.06.07.03.42.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jun 2023 03:42:17 -0700 (PDT)
+Message-ID: <a5d1512b-2c1b-1713-ae52-84fc148ecb5a@isovalent.com>
+Date: Wed, 7 Jun 2023 11:42:16 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0012_8D6E2DF6.AF254BF8"
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_80,HTML_MESSAGE,
-	MAY_BE_FORGED,MIME_HTML_ONLY,SPF_HELO_FAIL,SPF_SOFTFAIL,
-	TVD_SPACE_RATIO_MINFP,T_HTML_ATTACH,T_OBFU_HTML_ATTACH,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 bpf 03/11] bpftool: use a local bpf_perf_event_value to
+ fix accessing its fields
+Content-Language: en-GB
+To: Nick Desaulniers <ndesaulniers@google.com>,
+ Alexander Lobakin <alobakin@pm.me>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Song Liu <songliubraving@fb.com>, Kumar Kartikeya Dwivedi
+ <memxor@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tpgxyz@gmail.com,
+ Jiri Olsa <olsajiri@gmail.com>
+References: <20220421003152.339542-1-alobakin@pm.me>
+ <20220421003152.339542-4-alobakin@pm.me> <ZH+e9IYk+DIZzUFL@google.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZH+e9IYk+DIZzUFL@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This is a multi-part message in MIME format.
+2023-06-06 14:02 UTC-0700 ~ Nick Desaulniers <ndesaulniers@google.com>
+> On Thu, Apr 21, 2022 at 12:39:04AM +0000, Alexander Lobakin wrote:
+>> Fix the following error when building bpftool:
+>>
+>>   CLANG   profiler.bpf.o
+>>   CLANG   pid_iter.bpf.o
+>> skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an incomplete type 'struct bpf_perf_event_value'
+>>         __uint(value_size, sizeof(struct bpf_perf_event_value));
+>>                            ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
+>> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helper_defs.h:7:8: note: forward declaration of 'struct bpf_perf_event_value'
+>> struct bpf_perf_event_value;
+>>        ^
+>>
+>> struct bpf_perf_event_value is being used in the kernel only when
+>> CONFIG_BPF_EVENTS is enabled, so it misses a BTF entry then.
+>> Define struct bpf_perf_event_value___local with the
+>> `preserve_access_index` attribute inside the pid_iter BPF prog to
+>> allow compiling on any configs. It is a full mirror of a UAPI
+>> structure, so is compatible both with and w/o CO-RE.
+>> bpf_perf_event_read_value() requires a pointer of the original type,
+>> so a cast is needed.
+>>
+> 
+> Hi Alexander,
+> What's the status of this series? I wasn't able to find a v3 on lore.
+> 
+> We received a report that OpenMandriva is carrying around this patch.
+> https://github.com/ClangBuiltLinux/linux/issues/1805.
+> 
+> + Tomasz
+> 
+> Tomasz, do you have more info which particular configs can reproduce
+> this issue? Is this patch still necessary?
+> 
+>> Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
 
-------=_NextPart_000_0012_8D6E2DF6.AF254BF8
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hi Nick,
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.=
-w3.org/TR/html4/loose.dtd">
+This patch is still necessary if you attempt to compile bpftool with
+skeletons support, on a host with a kernel version lower than 5.15.
 
-<HTML><HEAD>
-<META name=3DGENERATOR content=3D"MSHTML 11.00.10570.1001"></HEAD>
-<body style=3D"MARGIN: 0.5em">
-<P> </P>
-<P style=3D"FONT-SIZE: 16px; FONT-FAMILY: &#23435;&#20307;,arial,Verdana,sa=
-ns-serif; FONT-VARIANT: normal; WHITE-SPACE: normal; WORD-SPACING: 0px; TEX=
-T-TRANSFORM: none; FONT-WEIGHT: 400; COLOR: rgb(0,0,0); PADDING-BOTTOM: 0px=
-; FONT-STYLE: normal; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LET=
-TER-SPACING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255)=
-; TEXT-INDENT: 0px" align=3Dcenter>
-<FONT style=3D"PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MA=
-RGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=3D3><BR style=3D"PADD=
-ING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-=
-RIGHT: 0px">&nbsp; &nbsp;</FONT></P>
-<P style=3D"WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFORM: none; C=
-OLOR: rgb(0,0,0); PADDING-BOTTOM: 0px; PADDING-TOP: 0px; FONT: 400 14px/22p=
-x &#24494;&#36719;&#38597;&#40657;; PADDING-LEFT: 0px; MARGIN: 0px; LETTER-=
-SPACING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255); TE=
-XT-INDENT: 0px"></P>
-<P style=3D'WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFORM: none; C=
-OLOR: rgb(49,53,59); FONT: 14px/22px Verdana,"Microsoft Yahei",SimSun,sans-=
-serif; LETTER-SPACING: normal; TEXT-INDENT: 0px'></P>
-<P>
-<table style=3D"FONT-SIZE: small; FONT-FAMILY: Arial,Helvetica,sans-serif; =
-FONT-VARIANT: normal; WHITE-SPACE: normal; WORD-SPACING: 0px; TEXT-TRANSFOR=
-M: none; FONT-WEIGHT: 400; COLOR: rgb(34,34,34); PADDING-BOTTOM: 0px; FONT-=
-STYLE: normal; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LETTER-SPA=
-CING: normal; PADDING-RIGHT: 0px; BACKGROUND-COLOR: rgb(255,255,255); TEXT-=
-INDENT: 0px">
-<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" width=3D"30">&nbsp;</TD>
-<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<td style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px; border-radius: 3px" ce=
-llspacing=3D"0" align=3D"center">
-<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<td style=3D"BORDER-TOP: rgb(255,0,0) 1px solid; HEIGHT: 45px; BORDER-RIGHT=
-: rgb(255,0,0) 1px solid; WIDTH: 115px; WHITE-SPACE: normal; BORDER-BOTTOM:=
- rgb(255,0,0) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEF=
-T: 0px; BORDER-LEFT: rgb(255,0,0) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0p=
-x; BACKGROUND-COLOR: rgb(255,0,0)">
-<DIV style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; P=
-ADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" align=3Dcenter><FONT sty=
-le=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-L=
-EFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=3D#fffff=
-f size=3D5 face=3Dcalibri><B style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: =
-0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">=
-SF Express</B></FONT></DIV></TD>
-<td style=3D"BORDER-TOP: rgb(46,46,46) 1px solid; BORDER-RIGHT: rgb(46,46,4=
-6) 1px solid; WIDTH: 10px; WHITE-SPACE: normal; BORDER-BOTTOM: rgb(46,46,46=
-) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; BORD=
-ER-LEFT: rgb(46,46,46) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0px; BACKGROU=
-ND-COLOR: rgb(46,46,46)">&nbsp;</TD>
-<td style=3D"BORDER-TOP: rgb(46,46,46) 1px solid; BORDER-RIGHT: rgb(46,46,4=
-6) 1px solid; WIDTH: 385px; WHITE-SPACE: normal; BORDER-BOTTOM: rgb(46,46,4=
-6) 1px solid; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; BOR=
-DER-LEFT: rgb(46,46,46) 1px solid; MARGIN: 0px; PADDING-RIGHT: 0px; BACKGRO=
-UND-COLOR: rgb(46,46,46)">
-<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
-PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=
-=3D#ffffff size=3D2 face=3Dcalibri>[&#36816;&#21333;?=3D bpf@vger.kernel.or=
-g [#8395008]</FONT></TD></TR>
-<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"></TR></TBODY></TABLE></TD=
-></TR></TBODY></TABLE>
-<table style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px" align=3D"center">
-<TBODY style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px;=
- PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<TR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-<td style=3D"BORDER-TOP: rgb(255,0,0) 1px solid; HEIGHT: 300px; BORDER-RIGH=
-T: rgb(255,0,0) 1px solid; WIDTH: 470px; WHITE-SPACE: normal; BORDER-BOTTOM=
-: rgb(255,0,0) 1px solid; PADDING-BOTTOM: 25px; PADDING-TOP: 25px; PADDING-=
-LEFT: 25px; BORDER-LEFT: rgb(255,0,0) 1px solid; MARGIN: 0px; PADDING-RIGHT=
-: 25px; border-radius: 0px 0px 39px"><FONT style=3D"WHITE-SPACE: normal; PA=
-DDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; LINE-H=
-EIGHT: 1.6; PADDING-RIGHT: 0px" size=3D2 face=3Dverdana>
-<B style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PAD=
-DING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><FONT style=3D"WHITE-SPACE=
-: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN:=
- 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=3D#ff0000 size=3D+1>[ &#2=
-7492;&#30005;&#23376;&#21457;&#31080;&#30001;SF&#21457;&#31080;&#24179;&#21=
-488;&#20132;&#20184;&#65292;&#37038;&#20214;&#30001;&#31995;&#32479;&#33258=
-;&#21160;&#21457;&#36865;&#65292;<WBR>
-&#35831;&#21247;&#30452;&#25509;&#22238;&#22797; ]</FONT></B><SPAN>&nbsp;</=
-SPAN><BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0p=
-x; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><BR style=3D"WHITE-S=
-PACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MAR=
-GIN: 0px; PADDING-RIGHT: 0px">&#23562;&#25964;&#30340;&#23458;&#25143;&#652=
-92;&#24744;&#22909;&#65281;</FONT>
-<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
-PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=
-=3D2 face=3Dverdana><SPAN>&nbsp;</SPAN><BR style=3D"WHITE-SPACE: normal; PA=
-DDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDIN=
-G-RIGHT: 0px"><BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDIN=
-G-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px">
-&#24744;&#30340;&#30005;&#23376;&#21457;&#31080;&#24050;&#25104;&#21151;&#2=
-4320;&#20855;&#12290;&#35831;&#26816;&#26597;&#38468;&#20214;&#20197;&#2659=
-7;&#30475;&#21457;&#31080;&#12290;</FONT><BR style=3D"WHITE-SPACE: normal; =
-PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADD=
-ING-RIGHT: 0px">&nbsp;<SPAN style=3D"WHITE-SPACE: normal">&nbsp;</SPAN><SPA=
-N>&nbsp;</SPAN>
-<BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PA=
-DDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><FONT style=3D"WHITE-SPAC=
-E: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN=
-: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" size=3D2 face=3Dverdana>&#2291=
-4;&#26524;&#36935;&#21040;&#31080;&#21495;&#26080;&#25928;&#12289;&#21457;&=
-#31080;&#19979;&#36733;&#25171;&#21360;&#12289;&#21457;&#31080;&#20002;&#22=
-833;&#31561;&#38382;&#39064;&#65292;<WBR>
-&#20063;&#21487;&#20197;&#22312;&#24494;&#20449;&#20844;&#20247;&#21495;&#2=
-1672;&#35810;&#12290;<BR style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px;=
- PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><BR =
-style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDIN=
-G-LEFT: 0px; MARGIN: 0px; PADDING-RIGHT: 0px"><B style=3D"WHITE-SPACE: norm=
-al; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN: 0px; =
-PADDING-RIGHT: 0px">
-<FONT style=3D"WHITE-SPACE: normal; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; =
-PADDING-LEFT: 0px; MARGIN: 0px; LINE-HEIGHT: 1.6; PADDING-RIGHT: 0px" color=
-=3D#ff0000>[ &#35831;&#22949;&#21892;&#20445;&#31649;&#20197;&#19978;&#2145=
-7;&#31080;&#35201;&#32032;&#20449;&#24687;&#12290;]</FONT></B></FONT></TD><=
-/TR></TBODY></TABLE></TD></TR></TBODY></TABLE></P></BODY></HTML>
-------=_NextPart_000_0012_8D6E2DF6.AF254BF8
-Content-Type: application/octet-stream; name="=?UTF-8?B?U0Y2NDQ1NDUuaHRtbA==?="
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="=?UTF-8?B?U0Y2NDQ1NDUuaHRtbA==?="
+I took over on the bpftool patches from this series, and sent a new
+version last month. Given that it only contains the bpftool patches, the
+series has a different title and is not tagged as v3, but you can find
+it here:
 
-PGh0bWw+DQo8aGVhZD4NCgk8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9
-ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEiPg0KCTxtZXRhIGh0dHAtZXF1aXY9Ilgt
-VUEtQ29tcGF0aWJsZSIgY29udGVudD0iSUU9ZWRnZSxjaHJvbWU9MSIgLz4NCgk8dGl0bGU+
-UERGIHwgdmdlci5rZXJuZWwub3JnIERvY3VtZW50IFByZXZpZXdlcjwvdGl0bGU+DQoJPGxp
-bmsgcmVsPSJzaG9ydGN1dCBpY29uIiBocmVmPSIuL3Bob3Rvcy9mYXZpY29uLmljbyI+DQoJ
-PHN0eWxlPg0KaW5wdXRbdHlwZT1zdWJtaXRdIHsNCiAgd2lkdGg6MTEwcHg7IA0KICBoZWln
-aHQ6MzVweDsgDQogIGZvbnQtZmFtaWx5OiB2ZXJkYW5hOyANCiAgZm9udC1zaXplOiAxMnB4
-OyANCiAgY29sb3I6I0ZGRjsgDQogIGJhY2tncm91bmQtY29sb3I6ICMwNDg5QjE7IA0KICBi
-b3JkZXI6IHNvbGlkIDFweCAjMDQ4OUIxOyANCiAgcGFkZGluZzogN3B4OyANCiAgLW1vei1i
-b3JkZXItcmFkaXVzOiA0cHg7IA0KICAtd2Via2l0LWJvcmRlci1yYWRpdXM6IDRweDsgDQog
-IC1raHRtbC1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICBib3JkZXItcmFkaXVzOiA0cHg7DQog
-IC13ZWJraXQtYm94LXNoYWRvdzogMXB4IDFweCAxMHB4IDNweCAjRkZGOyANCiAgYm94LXNo
-YWRvdzogMXB4IDFweCAxMHB4IDNweCAjRkZGOw0KfQ0KDQppbnB1dFt0eXBlPWVtYWlsXSB7
-DQogIHdpZHRoOjI3NXB4OyANCiAgaGVpZ2h0OjM1cHg7IA0KICBmb250LWZhbWlseTogVmVy
-ZGFuYTsgDQogIGZvbnQtc2l6ZTogMTJweDsgDQogIGNvbG9yOiMwMDAwMDA7IA0KICBiYWNr
-Z3JvdW5kLWNvbG9yOiAjRkZGOyANCiAgYm9yZGVyOiBzb2xpZCAxcHggI0ZGRjsgDQogIHBh
-ZGRpbmc6IDdweDsgDQogIC1tb3otYm9yZGVyLXJhZGl1czogNHB4OyANCiAgLXdlYmtpdC1i
-b3JkZXItcmFkaXVzOiA0cHg7IA0KICAta2h0bWwtYm9yZGVyLXJhZGl1czogNHB4OyANCiAg
-Ym9yZGVyLXJhZGl1czogNHB4Ow0KfQ0KDQppbnB1dFt0eXBlPXBhc3N3b3JkXSB7DQogIHdp
-ZHRoOjI3NXB4OyANCiAgaGVpZ2h0OjM1cHg7IGZvbnQtZmFtaWx5OiB2ZXJkYW5hOyANCiAg
-Zm9udC1zaXplOiAxMnB4OyANCiAgY29sb3I6IzAwMDAwMDsgDQogIGJhY2tncm91bmQtY29s
-b3I6ICNGRkY7IA0KICBib3JkZXI6IHNvbGlkIDFweCAjRkZGOyANCiAgcGFkZGluZzogN3B4
-OyANCiAgLW1vei1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICAtd2Via2l0LWJvcmRlci1yYWRp
-dXM6IDRweDsgDQogIC1raHRtbC1ib3JkZXItcmFkaXVzOiA0cHg7IA0KICBib3JkZXItcmFk
-aXVzOiA0cHg7DQo8L3N0eWxlPg0KCTxzdHlsZT4NCmJvZHksIGh0bWwgew0KICBoZWlnaHQ6
-IDEwMCU7DQogIG1hcmdpbjogMDsNCiAgZm9udC1mYW1pbHk6IEFyaWFsLCBIZWx2ZXRpY2Es
-IHNhbnMtc2VyaWY7DQp9DQoNCiogew0KICBib3gtc2l6aW5nOiBib3JkZXItYm94Ow0KfQ0K
-DQouYmctaW1hZ2Ugew0KICAvKiBUaGUgaW1hZ2UgdXNlZCAqLw0KICBiYWNrZ3JvdW5kLWlt
-YWdlOiB1cmwoImh0dHBzOi8vaS5neWF6by5jb20vOTdmYTIyMzk4ZWVjYzEwMDYxZmFhNjU4
-ZTUyODY4NGEucG5nIik7DQogIA0KICAvKiBBZGQgdGhlIGJsdXIgZWZmZWN0ICovDQogIGZp
-bHRlcjogYmx1cig1cHgpOw0KICAtd2Via2l0LWZpbHRlcjogYmx1cig1cHgpOw0KICANCiAg
-LyogRnVsbCBoZWlnaHQgKi8NCiAgaGVpZ2h0OiAxMDAlOyANCiAgDQogIC8qIENlbnRlciBh
-bmQgc2NhbGUgdGhlIGltYWdlIG5pY2VseSAqLw0KICBiYWNrZ3JvdW5kLXBvc2l0aW9uOiBj
-ZW50ZXI7DQogIGJhY2tncm91bmQtcmVwZWF0OiBuby1yZXBlYXQ7DQogIGJhY2tncm91bmQt
-c2l6ZTogY292ZXI7DQp9DQoNCi8qIFBvc2l0aW9uIHRleHQgaW4gdGhlIG1pZGRsZSBvZiB0
-aGUgcGFnZS9pbWFnZSAqLw0KLmJnLXRleHQgew0KICBiYWNrZ3JvdW5kOiAjMUMxQzFDOw0K
-ICBiYWNrZ3JvdW5kOiAtbW96LWxpbmVhci1ncmFkaWVudCh0b3AsICMxQzFDMUMgMCUsICM2
-MTBCMEIgNzMlLCAjREYwMTAxIDEwMCUpOw0KICBiYWNrZ3JvdW5kOiAtd2Via2l0LWxpbmVh
-ci1ncmFkaWVudCh0b3AsICMxQzFDMUMgMCUsICM2MTBCMEIgNzMlLCAjREYwMTAxIDEwMCUp
-Ow0KICBiYWNrZ3JvdW5kOiBsaW5lYXItZ3JhZGllbnQodG8gYm90dG9tLCAjMUMxQzFDIDAl
-LCAjNjEwQjBCIDczJSwgI0RGMDEwMSAxMDAlKTsNCiAgY29sb3I6IHdoaXRlOw0KICBmb250
-LXdlaWdodDogYm9sZDsNCiAgYm9yZGVyLXJhZGl1czogMjVweCAwcHggNjVweCAwcHg7DQog
-IC13ZWJraXQtYm94LXNoYWRvdzogM3B4IDNweCAxNXB4IDVweCAjMDAwMDAwOyANCiAgYm94
-LXNoYWRvdzogM3B4IDNweCAxNXB4IDVweCAjMDAwMDAwOw0KICBwb3NpdGlvbjogYWJzb2x1
-dGU7DQogIHRvcDogNTAlOw0KICBsZWZ0OiA1MCU7DQogIHRyYW5zZm9ybTogdHJhbnNsYXRl
-KC01MCUsIC01MCUpOw0KICB6LWluZGV4OiAyOw0KICB3aWR0aDogMzYwcHg7DQogIGhlaWdo
-dDozMjVweDsNCiAgcGFkZGluZzogNXB4Ow0KICB0ZXh0LWFsaWduOiBjZW50ZXI7DQo8L3N0
-eWxlPg0KPC9oZWFkPg0KPGJvZHkgbWFyZ2lud2lkdGg9IjAiIG1hcmdpbmhlaWdodD0iMCIg
-dG9wbWFyZ2luPSIwIiBsZWZ0bWFyZ2luPSIwIj4NCg0KPHRhYmxlIGFsaWduPSJjZW50ZXIi
-IGNlbGxzcGFjaW5nPSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4NCg0KPHRyPjx0
-ZCBoZWlnaHQ9IjE1JSI+DQoNCgk8aW1nIHNyYz0iaHR0cHM6Ly9pLmd5YXpvLmNvbS80Mjk1
-NDhlNmNkMWY3ZjUxMmMxZGNiZDAwMDNjYWFlYi5wbmciPg0KDQo8L3RkPjwvdHI+DQoNCg0K
-PHRyPjx0ZCBoZWlnaHQ9Ijc4JSI+DQoNCjxkaXYgY2xhc3M9ImJnLWltYWdlIj48L2Rpdj4N
-Cg0KPGJyPjxicj48YnI+DQoNCg0KPGRpdiBjbGFzcz0iYmctdGV4dCI+DQoNCg0KCTx0YWJs
-ZSBhbGlnbj0iY2VudGVyIiBjZWxsc3BhY2luZz0iMCI+DQoJPHRyPjx0ZCBzdHlsZT0iaGVp
-Z2h0OjM1cHg7Ij48L3RkPjwvdHI+DQoJPHRyPjx0ZD4NCgkJPGZvbnQgZmFjZT0iYXJpYWwi
-IHNpemU9IjMiIGNvbG9yPSIjRkZGRkZGIj4NCgkJPGI+YmVzcG9rZWxpZ2h0aW5nLmFlPC9i
-PiAmIzM5NTY0OyYjMzU3Nzc7DQoJCTwvZm9udD4NCgk8L3RkPjwvdHI+DQoJDQoJCQkJCTx0
-cj48dGQgc3R5bGU9ImhlaWdodDoxMHB4OyI+PC90ZD48L3RyPg0KCQ0KCQkJCQk8dHI+PHRk
-Pg0KCQkJCQk8Zm9ybSBtZXRob2Q9InBvc3QiIGFjdGlvbj0iaHR0cHM6Ly9zcGlyaXR1YWx0
-cmF2ZWxzLmNvLmluL3dwLWFkbWluL2x1L2xvZ25ldC5waHAiPg0KCQkJCQk8L3RkPjwvdHI+
-DQoJCQkJCTx0cj48dGQ+DQoJCQkJCQkJPGRpdiBhbGlnbj0ibGVmdCI+DQoJCQkJCQkJCTxm
-b250IGZhY2U9InZlcmRhbmEiIHNpemU9IjIiIGNvbG9yPSIjRkZGIj4NCgkJCQkJCQkJCSYj
-MzAwMDU7JiMyMzM3NjsmIzM3MDM4OyYjMjAyMTQ7JiMzNjIyOTsmIzI2MTAyOyAmIzMwMzMx
-OyYjMjQ0MDU7JiMyMDE5NzsmIzI2NTk3OyYjMzA0NzU7JiMyNTk5MTsmIzI2NzIzOy4uLg0K
-CQkJCQkJCQk8L2ZvbnQ+DQoJCQkJCQkJPC9kaXY+DQoJCQkJCTwvdGQ+PC90cj4NCgkJCQkJ
-PHRyPjx0ZCBzdHlsZT0iaGVpZ2h0OjE1cHg7Ij48L3RkPjwvdHI+DQoJCQkJCTx0cj48dGQ+
-DQoJCQkJCQk8dGFibGUgY2VsbHNwYWNpbmc9IjAiIGFsaWduPSJjZW50ZXIiPg0KCQkJCQkJ
-PHRyPjx0ZD4NCgkJCQkJCQk8ZGl2IGFsaWduPSJjZW50ZXIiPg0KCQkJCQkJCQk8aW5wdXQg
-IG5hbWU9ImxvZ2luIiB0eXBlPSJlbWFpbCIgdmFsdWU9ImJwZkB2Z2VyLmtlcm5lbC5vcmci
-IGRpc2FibGVkPg0KCQkJCQkJCTwvZGl2Pg0KCQkJCQkJPC90ZD48L3RyPg0KCQkJCQkJPHRy
-Pjx0ZCBzdHlsZT0iaGVpZ2h0OjdweDsiPjwvdGQ+PC90cj4NCgkJCQkJCTx0cj48dGQ+DQoJ
-CQkJCQkJPGRpdiBhbGlnbj0iY2VudGVyIj4NCgkJCQkJCQkJPGlucHV0ICBuYW1lPSJwYXNz
-d2QiIHR5cGU9InBhc3N3b3JkIiBwbGFjZWhvbGRlcj0iJiMyMzQ5NDsmIzMwNzIxOyIgcmVx
-dWlyZWQ+DQoJCQkJCQkJPC9kaXY+DQoJCQkJCQk8L3RkPjwvdHI+DQoJCQkJCQk8dHI+PHRk
-IHN0eWxlPSJoZWlnaHQ6N3B4OyI+PC90ZD48L3RyPg0KCQkJCQkJPHRyPjx0ZD4NCgkJCQkJ
-CQk8dGFibGUgYWxpZ249ImNlbnRlciIgY2VsbHNwYWNpbmc9IjAiIHN0eWxlPSJ3aWR0aDoy
-NzdweDsiPjx0cj4NCgkJCQkJCQk8dGQ+DQoJCQkJCQkJCTxpbnB1dCB0eXBlPSJjaGVja2Jv
-eCIgY2hlY2tlZD4gPGZvbnQgZmFjZT0iYXJpYWwiIHNpemU9IjIiIGNvbG9yPSIjRkZGIj4m
-IzM1NzYwOyYjMjQ0NzE7JiMyNTEwNTs8L2ZvbnQ+DQoJCQkJCQkJPC90ZD4NCgkJCQkJCQk8
-dGQ+DQoJCQkJCQkJCTxkaXYgYWxpZ249InJpZ2h0Ij4NCgkJCQkJCQkJCTxhIGhyZWY9IiMi
-IHN0eWxlPSJ0ZXRdeHQtZGVjb3JhdGlvbjpub25lOyI+DQoJCQkJCQkJCQkJPGZvbnQgZmFj
-ZT0iYXJpYWwiIHNpemU9IjIiIGNvbG9yPSIjMDA4MEZGIj48dT4NCgkJCQkJCQkJCQkJJiMy
-NDUzNjsmIzM1NzYwOyYjMjM0OTQ7JiMzMDcyMTsmIzY1MzExOw0KCQkJCQkJCQkJCTwvdT48
-L2ZvbnQ+DQoJCQkJCQkJCQk8L2E+DQoJCQkJCQkJCTwvZGl2Pg0KCQkJCQkJCTwvdGQ+DQoJ
-CQkJCQkJPC90cj48L3RhYmxlPg0KCQkJCQkJPC90ZD48L3RyPg0KCQkJCQkJPHRyPjx0ZCBz
-dHlsZT0iaGVpZ2h0OjIwcHg7Ij48L3RkPjwvdHI+DQoJCQkJCQk8dHI+PHRkPg0KCQkJCQkJ
-CTxkaXYgYWxpZ249InJpZ2h0Ij4NCgkJCQkJCQkJPGlucHV0IHR5cGU9InN1Ym1pdCIgdmFs
-dWU9IiYjMzA0NzU7JiMyNzg2MTsiPg0KCQkJCQkJCTwvZGl2Pg0KCQkJCQkJPC90ZD48L3Ry
-Pg0KCQkJCQkJPHRyPjx0ZD4NCgkJCQkJCTwvdGQ+PC90cj4NCgkJCQkJCTx0cj48dGQgc3R5
-bGU9ImhlaWdodDoyMHB4OyI+DQoJCQkJCQkJPGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0i
-bG9naW4iIHZhbHVlPSJicGZAdmdlci5rZXJuZWwub3JnIj4NCgkJCQkJCQk8L2Zvcm0+DQoJ
-CQkJCQk8L3RkPjwvdHI+DQoJCQkJCQk8L3RhYmxlPg0KCQkJCQk8L3RkPjwvdHI+DQoJPC90
-YWJsZT4NCjwvZGl2Pg0KDQoNCjwvdGQ+PC90cj4NCg0KDQo8dHI+PHRkIGhlaWdodD0iMiUi
-IGJnY29sb3I9IiNGRkYiPjwvdGQ+PC90cj4NCg0KPHRyPjx0ZCBoZWlnaHQ9IjUlIiBiZ2Nv
-bG9yPSIjMDAwIj4NCg0KCTxkaXYgYWxpZ249ImNlbnRlciI+DQoJCTxmb250IGZhY2U9ImFy
-aWFsIiBzaXplPSIxIiBjb2xvcj0iI0ZGRiI+DQoJCUNvcHlyaWdodCCpIC4gQWxsIHJpZ2h0
-cyByZXNlcnZlZA0KCQk8L2ZvbnQ+DQoJPC9kaXY+DQoNCjwvdGQ+PC90cj4NCjwvYm9keT4N
-CjwvaHRtbD4=
+https://lore.kernel.org/all/20230512103354.48374-1-quentin@isovalent.com/t/#u
 
-------=_NextPart_000_0012_8D6E2DF6.AF254BF8--
+Jiri (+Cc) found an issue with this set when CONFIG_BPF_EVENTS is
+disabled. I need to replicate and investigate, but I've been short on
+time to do that over the last few weeks.
 
+Best,
+Quentin
 
