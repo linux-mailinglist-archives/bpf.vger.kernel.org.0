@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-1982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-1983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB3B725698
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 09:57:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5EB272582D
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 10:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3E5E28105B
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 07:57:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510131C20E3D
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 08:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC0C747A;
-	Wed,  7 Jun 2023 07:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14368C0A;
+	Wed,  7 Jun 2023 08:42:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A251C3A
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 07:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5C479E1
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 08:42:30 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799DF10C6;
-	Wed,  7 Jun 2023 00:56:24 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C121BFF;
+	Wed,  7 Jun 2023 01:42:18 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qbfmh0SlPz4f3kp2;
-	Wed,  7 Jun 2023 15:56:20 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qbgnf6cpQz4f3jJ0;
+	Wed,  7 Jun 2023 16:42:14 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgB34iwhOIBkSMYKKg--.5055S2;
-	Wed, 07 Jun 2023 15:56:21 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgA3RebjQoBkUjkxLA--.14340S2;
+	Wed, 07 Jun 2023 16:42:15 +0800 (CST)
 Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
  allocator
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
  Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
  Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
  Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
@@ -41,11 +41,9 @@ Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
 References: <20230606035310.4026145-1-houtao@huaweicloud.com>
  <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
  <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
- <0bbf258f-668b-a691-e425-a4c1c6bfcc91@huaweicloud.com>
- <CAADnVQL9OmzUEajiVN7DMHcpOUya6O-JvwU1zkPwxZ0D2XsPWg@mail.gmail.com>
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <32ad756b-46f8-f239-bdb9-297c9de980d6@huaweicloud.com>
-Date: Wed, 7 Jun 2023 15:56:17 +0800
+Message-ID: <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+Date: Wed, 7 Jun 2023 16:42:11 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 Precedence: bulk
@@ -54,15 +52,15 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQL9OmzUEajiVN7DMHcpOUya6O-JvwU1zkPwxZ0D2XsPWg@mail.gmail.com>
+In-Reply-To: <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-CM-TRANSID:cCh0CgB34iwhOIBkSMYKKg--.5055S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WrWDCFW5tr45tr4DKF4kWFg_yoW3AF1fpr
-	WfKay3tr4kJryay392yr4Iq34jyws3Jr15WF1rCr98Cwn0qr1fuFZ2vrWY9Fy5CryDC3yj
-	qrWDJ347ZFyrua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:Syh0CgA3RebjQoBkUjkxLA--.14340S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF47XryDArWDWFyDuw1xKrg_yoWxZr47pa
+	1fAFW5Kr1Dt398ZwsIyw15WF9Fq34Sgr4DXw1Fqw45uryDZF1aqFs7WF40krn8Cr4rGF10
+	k3Zayr1fK347Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
@@ -72,9 +70,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3WrWDCFW5tr45tr4DKF4kWFg_yoW3AF1fpr
 	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
 	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
 	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -85,150 +83,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 Hi,
 
-On 6/7/2023 9:39 AM, Alexei Starovoitov wrote:
-> On Tue, Jun 6, 2023 at 6:19 PM Hou Tao <houtao@huaweicloud.com> wrote:
+On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
+> On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
 >> Hi,
 >>
->> On 6/7/2023 5:04 AM, Alexei Starovoitov wrote:
->>> On Tue, Jun 06, 2023 at 08:30:58PM +0800, Hou Tao wrote:
->>>> Hi,
->>>>
->>>> On 6/6/2023 11:53 AM, Hou Tao wrote:
->>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>
->>>>> Hi,
->>>>>
->>>>> The implementation of v4 is mainly based on suggestions from Alexi [0].
->>>>> There are still pending problems for the current implementation as shown
->>>>> in the benchmark result in patch #3, but there was a long time from the
->>>>> posting of v3, so posting v4 here for further disscussions and more
->>>>> suggestions.
->>>>>
->>>>> The first problem is the huge memory usage compared with bpf memory
->>>>> allocator which does immediate reuse:
->>>>>
->>>>> htab-mem-benchmark (reuse-after-RCU-GP):
->>>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>>>> | --                 | --        | --                  | --               |
->>>>> | no_op              | 1159.18   | 0.99                | 0.99             |
->>>>> | overwrite          | 11.00     | 2288                | 4109             |
->>>>> | batch_add_batch_del| 8.86      | 1558                | 2763             |
->>>>> | add_del_on_diff_cpu| 4.74      | 11.39               | 14.77            |
->>>>>
->>>>> htab-mem-benchmark (immediate-reuse):
->>>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>>>> | --                 | --        | --                  | --               |
->>>>> | no_op              | 1160.66   | 0.99                | 1.00             |
->>>>> | overwrite          | 28.52     | 2.46                | 2.73             |
->>>>> | batch_add_batch_del| 11.50     | 2.69                | 2.95             |
->>>>> | add_del_on_diff_cpu| 3.75      | 15.85               | 24.24            |
->>>>>
->>>>> It seems the direct reason is the slow RCU grace period. During
->>>>> benchmark, the elapsed time when reuse_rcu() callback is called is about
->>>>> 100ms or even more (e.g., 2 seconds). I suspect the global per-bpf-ma
->>>>> spin-lock and the irq-work running in the contex of freeing process will
->>>>> increase the running overhead of bpf program, the running time of
->>>>> getpgid() is increased, the contex switch is slowed down and the RCU
->>>>> grace period increases [1], but I am still diggin into it.
->>>> For reuse-after-RCU-GP flavor, by removing per-bpf-ma reusable list
->>>> (namely bpf_mem_shared_cache) and using per-cpu reusable list (like v3
->>>> did) instead, the memory usage of htab-mem-benchmark will decrease a lot:
->>>>
->>>> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list):
->>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>>> | --                 | --        | --                  | --               |
->>>> | no_op              | 1165.38   | 0.97                | 1.00             |
->>>> | overwrite          | 17.25     | 626.41              | 781.82           |
->>>> | batch_add_batch_del| 11.51     | 398.56              | 500.29           |
->>>> | add_del_on_diff_cpu| 4.21      | 31.06               | 48.84            |
->>>>
->>>> But the memory usage is still large compared with v3 and the elapsed
->>>> time of reuse_rcu() callback is about 90~200ms. Compared with v3, there
->>>> are still two differences:
->>>> 1) v3 uses kmalloc() to allocate multiple inflight RCU callbacks to
->>>> accelerate the reuse of freed objects.
->>>> 2) v3 uses kworker instead of irq_work for free procedure.
->>>>
->>>> For 1), after using kmalloc() in irq_work to allocate multiple inflight
->>>> RCU callbacks (namely reuse_rcu()), the memory usage decreases a bit,
->>>> but is not enough:
->>>>
->>>> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks):
->>>> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
->>>> | --                 | --        | --                  | --               |
->>>> | no_op              | 1247.00   | 0.97                | 1.00             |
->>>> | overwrite          | 16.56     | 490.18              | 557.17           |
->>>> | batch_add_batch_del| 11.31     | 276.32              | 360.89           |
->>>> | add_del_on_diff_cpu| 4.00      | 24.76               | 42.58            |
->>>>
->>>> So it seems the large memory usage is due to irq_work (reuse_bulk) used
->>>> for free procedure. However after increasing the threshold for invoking
->>>> irq_work reuse_bulk (e.g., use 10 * c->high_watermark), but there is no
->>>> big difference in the memory usage and the delayed time for RCU
->>>> callbacks. Perhaps the reason is that although the number of  reuse_bulk
->>>> irq_work calls is reduced but the time of alloc_bulk() irq_work calls is
->>>> increased because there are no reusable objects.
->>> The large memory usage is because the benchmark in patch 2 is abusing it.
->>> It's doing one bpf_loop() over 16k elements (in case of 1 producer)
->>> and 16k/8 loops for --producers=8.
->>> That's 2k memory allocations that have to wait for RCU GP.
->>> Of course that's a ton of memory.
->> I don't agree that. Because in v3, the benchmark is the same, but both
->> the performance and the memory usage are better than v4. Even compared
->> with  "htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list +
->> multiple reuse_rcu() callbacks)" above, the memory usage in v3 is still
->> much smaller as shown below. If the large memory usage is due to the
->> abuse in benchmark, how do you explain the memory usage in v3 ?
-> There could have been implementation bugs or whatever else.
-> The main point is the bench test is not realistic and should not be
-> used to make design decisions.
-I see your point. I will continue to debug the memory usage difference
-between v3 and v4.
+>> On 6/6/2023 11:53 AM, Hou Tao wrote:
+>>> From: Hou Tao <houtao1@huawei.com>
+>>>
+>>> Hi,
+>>>
+>>> The implementation of v4 is mainly based on suggestions from Alexi [0].
+>>> There are still pending problems for the current implementation as shown
+>>> in the benchmark result in patch #3, but there was a long time from the
+>>> posting of v3, so posting v4 here for further disscussions and more
+>>> suggestions.
+>>>
+>>> The first problem is the huge memory usage compared with bpf memory
+>>> allocator which does immediate reuse:
+SNIP
+> The large memory usage is because the benchmark in patch 2 is abusing it.
+> It's doing one bpf_loop() over 16k elements (in case of 1 producer)
+> and 16k/8 loops for --producers=8.
+> That's 2k memory allocations that have to wait for RCU GP.
+> Of course that's a ton of memory.
 >
->> The reason I added tail for each list is that there could be thousands
->> even ten thousands elements in these lists and there is no need to spend
->> CPU time to traversal these list one by one. It maybe a premature
->> optimization. So let me remove tails from these list first and I will
->> try to add these tails back later and check whether or not there is any
->> performance improvement.
-> There will be thousands of elements only because the bench test is wrong.
-> It's doing something no real prog would do.
-I don't think so. Let's considering the per-cpu list first. Assume the
-normal RCU grace period is about 30ms and we are tracing the IO latency
-of a normal SSD. The iops is about 176K per seconds, so before one RCU
-GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
-For the per-ma list, when the number of CPUs increased, it is easy to
-make the list contain thousands of elements.
+> As far as implementation in patch 3 please respin it asap and remove *_tail optimization.
+> It makes the code hard to read and doesn't buy us anything.
+> Other than that the algorithm looks fine.
 >
->> I have a different view for the benchmark. Firstly htab is not the only
->> user of bpf memory allocator, secondly we can't predict the exact
->> behavior of bpf programs, so I think to stress bpf memory allocator for
->> various kinds of use case is good for its broad usage.
-> It is not a stress test. It's an abuse.
-> A stress test would be something that can happen in practice.
-> Doing thousands map_updates in a forever loop is not something
-> useful code would do.
-> For example call_rcu_tasks_trace is not design to be called millions
-> times a second. It's an anti-pattern and rcu core won't be optimized to do so.
-> rcu, srcu, rcu_task_trace have different usage patterns.
-> The programmer has to correctly pick one depending on the use case.
-> Same with bpf htab. If somebody has a real need to do thousands
-> updates under rcu lock they should be using preallocated map and deal
-> with immediate reuse.
-Before I post v5, I want to know the reason why per-bpf-ma list is
-introduced. Previously, I though it was used to handle the case in which
-allocation and freeing are done on different CPUs. And as we can see
-from the benchmark result above and in v3, the performance and the
-memory usage of v4 for add_del_on_diff_cpu is better than v3. But now I
-am not sure, because as you mentioned above, it is used to reduce the
-calling frequency of call_rcu_task_trace(). So could you tell me the
-main reason for the per-bpf-ma list ? As shown in the above benchmark
-performance, using per-cpu-reuse-list (namely htab-mem-benchmark
-(reuse-after-RCU-GP + per-cpu reusable list)) have better performance
-and memory usage compared with per-ma-list (htab-mem-benchmark
-(reuse-after-RCU-GP)). If we just want to reduce the calling frequency
-of call_rcu_task_trace(), we could make
-bpf_mem_shared_cache->reuse_ready_head being per-cpu and leave
-wait_for_free being per-bpf-ma.
+>>> Another problem is the performance degradation compared with immediate
+>>> reuse and the output from perf report shown the per-bpf-ma spin-lock is a
+>>> top-one hotspot:
+> That's not what I see.
+> Hot spin_lock is in generic htab code. Not it ma.
+> I still believe per-bpf-ma spin-lock is fine.
+> The bench in patch 2 is measuring something that no real bpf prog cares about.
+>
+> See how map_perf_test is doing:
+>         for (i = 0; i < 10; i++) {
+>                 bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
+>
+> Even 10 map updates for the same map in a single bpf prog invocation is not realistic.
+> 16k/8 is beyond any normal scenario.
+> There is no reason to optimize bpf_ma for the case of htab abuse.
+>
+>>> map_perf_test (reuse-after-RCU-GP)
+>>> 0:hash_map_perf kmalloc 194677 events per sec
+>>>
+>>> map_perf_test (immediate reuse)
+>>> 2:hash_map_perf kmalloc 384527 events per sec
+> For some reason I cannot reproduce the slow down with map_perf_test 4 8.
+> I see the same perf with/without patch 3.
+As said in the commit message, the command line for test is
+"./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+using default max_entries and the number of CPUs is greater than 15,
+use_percpu_counter will be false.
+
+I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
+test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
+there are obvious performance degradation.
+
+Before reuse-after-rcu-gp:
+[root@hello bpf]# ./map_perf_test 4 8
+5:hash_map_perf kmalloc 358498 events per sec
+4:hash_map_perf kmalloc 306351 events per sec
+1:hash_map_perf kmalloc 299175 events per sec
+3:hash_map_perf kmalloc 297689 events per sec
+6:hash_map_perf kmalloc 299839 events per sec
+2:hash_map_perf kmalloc 292286 events per sec
+7:hash_map_perf kmalloc 278138 events per sec
+0:hash_map_perf kmalloc 265031 events per sec
+
+[root@hello bpf]# ./map_perf_test 4 8 16384
+2:hash_map_perf kmalloc 359201 events per sec
+6:hash_map_perf kmalloc 302475 events per sec
+3:hash_map_perf kmalloc 298583 events per sec
+7:hash_map_perf kmalloc 301594 events per sec
+0:hash_map_perf kmalloc 295210 events per sec
+4:hash_map_perf kmalloc 230496 events per sec
+5:hash_map_perf kmalloc 163530 events per sec
+1:hash_map_perf kmalloc 153520 events per sec
+
+After reuse-after-rcu-gp:
+[root@hello bpf]# ./map_perf_test 4 8
+1:hash_map_perf kmalloc 203252 events per sec
+2:hash_map_perf kmalloc 181777 events per sec
+6:hash_map_perf kmalloc 183467 events per sec
+4:hash_map_perf kmalloc 182590 events per sec
+0:hash_map_perf kmalloc 180840 events per sec
+3:hash_map_perf kmalloc 179875 events per sec
+5:hash_map_perf kmalloc 152250 events per sec
+7:hash_map_perf kmalloc 137500 events per sec
+
+[root@hello bpf]# ./map_perf_test 4 8 16384
+4:hash_map_perf kmalloc 203983 events per sec
+5:hash_map_perf kmalloc 197902 events per sec
+2:hash_map_perf kmalloc 184693 events per sec
+3:hash_map_perf kmalloc 185341 events per sec
+1:hash_map_perf kmalloc 183064 events per sec
+7:hash_map_perf kmalloc 181148 events per sec
+0:hash_map_perf kmalloc 178520 events per sec
+6:hash_map_perf kmalloc 179340 events per sec
+
+I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
+performances for "./map_perf_test 4 8" are similar, but there is obvious
+performance degradation for "./map_perf_test 4 8 16384"
+
+Before reuse-after-rcu-gp:
+
+[houtao@fedora bpf]$ sudo ./map_perf_test 4 8
+1:hash_map_perf kmalloc 41711 events per sec
+3:hash_map_perf kmalloc 41352 events per sec
+4:hash_map_perf kmalloc 41352 events per sec
+0:hash_map_perf kmalloc 41008 events per sec
+7:hash_map_perf kmalloc 41086 events per sec
+5:hash_map_perf kmalloc 41038 events per sec
+2:hash_map_perf kmalloc 40971 events per sec
+6:hash_map_perf kmalloc 41008 events per sec
+
+[houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+1:hash_map_perf kmalloc 388088 events per sec
+7:hash_map_perf kmalloc 391843 events per sec
+6:hash_map_perf kmalloc 387901 events per sec
+3:hash_map_perf kmalloc 356096 events per sec
+4:hash_map_perf kmalloc 356836 events per sec
+2:hash_map_perf kmalloc 349728 events per sec
+0:hash_map_perf kmalloc 345792 events per sec
+5:hash_map_perf kmalloc 346742 events per sec
+
+After reuse-after-rcu-gp:
+
+[houtao@fedora bpf]$ sudo ./map_perf_test 4 8
+4:hash_map_perf kmalloc 42667 events per sec
+1:hash_map_perf kmalloc 42206 events per sec
+5:hash_map_perf kmalloc 42264 events per sec
+6:hash_map_perf kmalloc 42196 events per sec
+7:hash_map_perf kmalloc 42142 events per sec
+2:hash_map_perf kmalloc 42028 events per sec
+0:hash_map_perf kmalloc 41933 events per sec
+3:hash_map_perf kmalloc 41986 events per sec
+
+[houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+5:hash_map_perf kmalloc 655628 events per sec
+7:hash_map_perf kmalloc 650691 events per sec
+2:hash_map_perf kmalloc 624384 events per sec
+1:hash_map_perf kmalloc 615011 events per sec
+3:hash_map_perf kmalloc 618335 events per sec
+4:hash_map_perf kmalloc 624072 events per sec
+6:hash_map_perf kmalloc 628559 events per sec
+0:hash_map_perf kmalloc 585384 events per sec
+
+So could you please double check your setup and rerun map_perf_test ? If
+there is no performance degradation, could you please share your setup
+and your kernel configure file ?
+>
+> I've applied patch 1.
+> Please respin with patch 2 doing no more than 10 map_updates under rcu lock
+> and remove *_tail optimization from patch 3.
+> Just do llist_for_each_safe() when you move elements from one list to another.
+> And let's brainstorm further.
+> Please do not delay.
 
 
