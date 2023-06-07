@@ -1,225 +1,287 @@
-Return-Path: <bpf+bounces-2012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061A472690A
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 20:38:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 225C97269B8
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 21:26:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2B522814DE
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 18:38:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4CCE2812D6
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 19:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3321ACB1;
-	Wed,  7 Jun 2023 18:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA1B3734B;
+	Wed,  7 Jun 2023 19:26:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB246118;
-	Wed,  7 Jun 2023 18:38:31 +0000 (UTC)
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020026.outbound.protection.outlook.com [52.101.61.26])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F671FE6;
-	Wed,  7 Jun 2023 11:38:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g4pgrC+itCjxe8wrylx4dxZmIhfo8YQr3Be0eosYA9drd5uiS7qU5OEfIGdyAnZrwF1pG8X6Bcpah81N2Q04SQKAVWZvVmhE44oribc7GYstN3lKpo5Zb9qCkjrVrS5v8oxTWMdl3A3TeDhjaZT4QNvh5AYBKLy44HNS9MuH65QP4NMe2f3POmA68HcK+tAUX8WTgZ4BHLUdnP1JbQu56o/ytkOF+XCzfxDf16X7aYpXk9BHV/TJsUoS4QRuGJ/pWKJ19ZqIW47c/zfm7urxRi1OPy426J1OSFTzIySKoaH8QX0byZlsAp//NZjITltPmIL/FxB4dDVzBW2yFt5LfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mmw8990CJhY0WaUzIbMhHZ0Zta1yPla0O+alsHiL0Ao=;
- b=Kh3QETH86xh/peT8VrB0X46I0FemLRQTbLBYDWOADVDj7sqmFZDfsixDa+NDuDla84kHNHCLf3I0n+U23ejQ3mZmSJsqL3EwQCE+TEm9wGYAmchEmkIoA7AoUxkEYVg6mC8+TBrYI6Xl5EE5DNTaMs0xau9X7PfG2tZ/FVBt/xN9TkBNzJei7KHZoCjj2qtcQCWGPSSY1sKVcvIkzk7+bOuXh6LrSsOTVYrX+6lmFSXwCA4q+oFq1Sg11yZBUwpgniYA9BLn65IXyex1os5xthKBYr4LLJ7kzclG5kgdiksSwUzg1ZzsC+EDWNJeaW7sE+5d97iOuRfrn1LfRnB6Qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mmw8990CJhY0WaUzIbMhHZ0Zta1yPla0O+alsHiL0Ao=;
- b=YizCf07N3anGNNnW4fxkqiDRjpYWIsJwb0atE1V5jar9d4hidu6F07sxC83W1chGhpCgAPM6OBNrNCkJYog2VPoxW66n6RyMc69PgCI/xN7EhWgC3XuJX3ozEXtugRjdxKEhiJyki50JI3lajgoamNGz/S1kBGTnfQ4kItxrINc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
- by LV2PR21MB3373.namprd21.prod.outlook.com (2603:10b6:408:14d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.7; Wed, 7 Jun
- 2023 18:38:07 +0000
-Received: from BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::4eff:a209:efda:81d4]) by BY5PR21MB1443.namprd21.prod.outlook.com
- ([fe80::4eff:a209:efda:81d4%6]) with mapi id 15.20.6500.004; Wed, 7 Jun 2023
- 18:38:07 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: haiyangz@microsoft.com,
-	decui@microsoft.com,
-	kys@microsoft.com,
-	paulros@microsoft.com,
-	olaf@aepfle.de,
-	vkuznets@redhat.com,
-	davem@davemloft.net,
-	wei.liu@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	leon@kernel.org,
-	longli@microsoft.com,
-	ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	ast@kernel.org,
-	sharmaajay@microsoft.com,
-	hawk@kernel.org,
-	tglx@linutronix.de,
-	shradhagupta@linux.microsoft.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: mana: Add support for vlan tagging
-Date: Wed,  7 Jun 2023 11:37:38 -0700
-Message-Id: <1686163058-25469-1-git-send-email-haiyangz@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0051.namprd04.prod.outlook.com
- (2603:10b6:303:6a::26) To BY5PR21MB1443.namprd21.prod.outlook.com
- (2603:10b6:a03:21f::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD796118
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 19:26:20 +0000 (UTC)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id B37801FDC;
+	Wed,  7 Jun 2023 12:26:17 -0700 (PDT)
+Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
+	by linux.microsoft.com (Postfix) with ESMTPSA id E0F3F20C1440;
+	Wed,  7 Jun 2023 12:26:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E0F3F20C1440
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1686165977;
+	bh=f1LMEbD3P/UcUgwpVy1pDfNCcNYjSOvLAPIcNYLpj5Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VuWFl3bcAqSiQg8bASdQ++6BkFmItki+WMWEN/gWWM3Lj9xRZdblFHi9vCYh8Za26
+	 OYgy3uSMgh//J0tDf/XyrsjX/gOu4I8Bx7R8Tc5Ea66GJmkuFO2S3kDP8fv64h0Ndx
+	 w7sSgpDxYSJf/sPo8NQThRGTTIeA/IHpRL0bi4XI=
+Date: Wed, 7 Jun 2023 12:26:11 -0700
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	David Vernet <void@manifault.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Dave Thaler <dthaler@microsoft.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] tracing/user_events: Run BPF program if attached
+Message-ID: <20230607192611.GA143@W11-BEAU-MD.localdomain>
+References: <20230516212658.2f5cc2c6@gandalf.local.home>
+ <20230517165028.GA71@W11-BEAU-MD.localdomain>
+ <CAADnVQK3-NBLSVRVsgArUEjqsuY2S_8mWsWmLEAtTzo+U49CKQ@mail.gmail.com>
+ <20230601-urenkel-holzofen-cd9403b9cadd@brauner>
+ <20230601152414.GA71@W11-BEAU-MD.localdomain>
+ <20230601-legten-festplatten-fe053c6f16a4@brauner>
+ <20230601162921.GA152@W11-BEAU-MD.localdomain>
+ <20230606223752.65dd725c04b11346b45e0546@kernel.org>
+ <20230606170549.GA71@W11-BEAU-MD.localdomain>
+ <20230607230702.03c6d3a213d527a221bdc533@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Sender: LKML haiyangz <lkmlhyz@microsoft.com>
-X-MS-Exchange-MessageSentRepresentingType: 2
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|LV2PR21MB3373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68115893-f600-49c9-0cfa-08db678655d5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	QztGZbFy6W/3BPy1JTRaQHA/eDlj/OZ7B/9ATexXuDk05xEsuWPozH7suZoL+k3ja+DIWnUnlhWkybnBew207le4OQarv2ijsRsgmueSrZdGePsRnR5ccuYKoVeDcF6Lk91NK1+/E3cGWG8cOvSh4iSFtBSzJu78JNFxx+yndTqtbExdjfaAKZ1DcZZCyrg7Tbxh5ohVUloLRB1VnHO/S8We/AlTaiPL4MuNuZXhY6v6Hf4iKosZ6DtQ7z4jb2ANGqVCaCB+yQlgMKoOW6G2bvD1FcZ0M1EEiaE3JCqgnN1d2NJACWi+nZWXBERHQ/jegKWkpilEZIMpY6oNofAFarqRVwM1gYdF01nmaFZEKhwuVFeBH274KdWkuAg6zKZJbiwBeUsvjP1w96ihnnHyks6T1b5HlebkRi/baOytd2NVokMb397q+bHdykQsZTBgBu37zyOuBmQ3EgrSKWx7MpmwmYAdg0iQfBvg7W6deZWweM0oEvg2wHDUHWfpOT0gNlZqmZE6GSkQuI/2/JVYV3t7fP9AZs9LQeCWSn9bGS55v/C1zKkRAQSdVaRVEzSzZqSxeTZQTA4WdXIjm9I45+l1TFziiVnCSkMB2A488gPviiephXm0Hr6XyGxZisdTslM23C/0tCcRbqCMs2/sc3h67+g9iD394HwGylFXqiA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(451199021)(8676002)(4326008)(66556008)(66476007)(8936002)(66946007)(5660300002)(7416002)(316002)(41300700001)(2906002)(10290500003)(478600001)(82960400001)(82950400001)(38100700002)(6512007)(6506007)(186003)(26005)(38350700002)(36756003)(6486002)(52116002)(7846003)(2616005)(83380400001)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?USf2LsrnZaqyCo+Cbf+lbOReK89t3jpniAQYKbCl+Jz7Q09auPWRu+VfxW8o?=
- =?us-ascii?Q?XWgSjM2AoJcpX1PCzP0+JPVO/Ep2o+Fn2G270hXfbEpeEk9lKajr8dFgu79O?=
- =?us-ascii?Q?IplwVi1ZUUFpcbW0l7UT84BKxCPXzvxV9U8ch8bUJllqCBNCO6OOxQA1ouwb?=
- =?us-ascii?Q?/mPR9qf3RxiKMHRctlsHM0Rn8mpla77IPce2im65LBv5NpoEWszf0HNfMcnS?=
- =?us-ascii?Q?QQReRhXfGSGvfqOFJOJvxfUFUS5WxrTeFmh/qBfU5GOJ6xUWnvyvVw8Qm8Bh?=
- =?us-ascii?Q?ecBbVDZpN7+/DMZuKyRlm8vMmv9FxCb+0zZwlI4Gawyr8VoeOnIjF4/mUqsC?=
- =?us-ascii?Q?IB9MDwiHmsKU0zG5UfBx/CWASprwsWPLizjNOGiQbMLqV7Ll4YCb04b+/JyP?=
- =?us-ascii?Q?zkqBJ8UJNdQJ3/68B8a0cfJrBPgShsRFT+GxC1QqbD/VplphYAs5V2VmyqT1?=
- =?us-ascii?Q?elCyk4Ptqgv+UYsZ588jKOI6QHWyL66ib3AH4ARv6YWKr3kSOnds8RVl46Dv?=
- =?us-ascii?Q?q2lVCva0tnuD3pQel0A809Pl6SgmiGi5EOrBssK7HgrU4Lq9cru4MCzCNJ3I?=
- =?us-ascii?Q?KC2GHeTAJM1lzAPkp0hSba7T3xSbOXQM3bdknA025bRUgB9oEO0l4d2LO2IT?=
- =?us-ascii?Q?h/YsclkPL43abrysDDraxuHoRBbLgQBYhSnQ3X3kYLuRYpc2PLkyhaFMPcCc?=
- =?us-ascii?Q?Zlx4x1gu4fQZA/JOQJt6Z3DUSCSCQZcy08Fot7ZiyiXaR8paFy8ngSCQc2aB?=
- =?us-ascii?Q?vxtSGZnp8P5fz6QrTc+JqpQDCVfDXrrq+j6EkHsEYBownWuXHcst4KgflG5p?=
- =?us-ascii?Q?MXDHGZYehLyZU/xVmIaT2W+UHEiQ35usgZ0YuaCGg/GbdYxkxelBfFfLynAB?=
- =?us-ascii?Q?pSwX9mszgAtH+SHknUAmLuzwty1iXWauqrIDAQcXg1g9kvMxWLVkqBPsj6AK?=
- =?us-ascii?Q?V/r4Aa/yUPFLw1RDM6/taU0eLZZ7Z4qJzl5dQ+MsbkIpbjPNFsN4QxAWoCES?=
- =?us-ascii?Q?Q8Ovkhy1lCPaIZHz3EUHtoVzxYnHP1ohN1RmmnbHeexQ1HzA4hXxr6ORzNWL?=
- =?us-ascii?Q?qKBtHaurRY0zGjlCyrr56sxxA05U0O1ZMsw9gbSWJkiKpI832WkWLKkiJ7xN?=
- =?us-ascii?Q?3RG5QGIepnndTViswgaoF62aFiwzR7CCCSy0+pC1zVFTga8B1Mhqk3MFQ3bD?=
- =?us-ascii?Q?qv1OG1C7xZLxssl/jj0M96UNIfj16vy3cdpZcpuK34ESq2ZL38PHIZEbAh76?=
- =?us-ascii?Q?1dVO17zzP8MRLa4d6fGx/HJdVT/7XohofJLdlbj9mGowWBOa7pK0GiAxExmt?=
- =?us-ascii?Q?8vVIM/WdqDhiacZajdwWRCfzihzBlBqbg5sv/M3fLQ+N6OobHkiCl5pOeH43?=
- =?us-ascii?Q?7whzCygZgl+hS+Phu6HMWjADGikqj5YE/1tApfOf7rYyUgxhoZSzbC8crqOk?=
- =?us-ascii?Q?R71pAUFE1X6kklFRz/auu+Xxsy/Dx74bq9xFiNRfRJ2I5N5WrnUXAQC13Ytx?=
- =?us-ascii?Q?jYDyF+bkohWRYl3M/niLG6OBRtLNyz3ly02/G25uhCDT+CcnmLDXNKRYdyiK?=
- =?us-ascii?Q?RJGEOn+idY84ysWMA6wUw88VOjeNZ921YBwkjyKS?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68115893-f600-49c9-0cfa-08db678655d5
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 18:38:06.9632
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nZUxHTzahHGIwuOoKPxDJU4uOK1s+Uuc/NThys6oMy7mNdol+0gei2B5NA/Ry2/xc/IbV410wyueOaQkV387bg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR21MB3373
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230607230702.03c6d3a213d527a221bdc533@kernel.org>
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-To support vlan, use MANA_LONG_PKT_FMT if vlan tag is present in TX
-skb. Then extract the vlan tag from the skb struct or the frame, and
-save it to tx_oob for the NIC to transmit.
+On Wed, Jun 07, 2023 at 11:07:02PM +0900, Masami Hiramatsu wrote:
+> On Tue, 6 Jun 2023 10:05:49 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > On Tue, Jun 06, 2023 at 10:37:52PM +0900, Masami Hiramatsu wrote:
+> > > Hi Beau,
+> > > 
+> > > On Thu, 1 Jun 2023 09:29:21 -0700
+> > > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > > 
+> > > > > > These are stubs to integrate namespace support. I've been working on a
+> > > > > > series that adds a tracing namespace support similiar to the IMA
+> > > > > > namespace work [1]. That series is ending up taking more time than I
+> > > > > 
+> > > > > Look, this is all well and nice but you've integrated user events with
+> > > > > tracefs. This is currently a single-instance global filesystem. So what
+> > > > > you're effectively implying is that you're namespacing tracefs by
+> > > > > hanging it off of struct user namespace making it mountable by
+> > > > > unprivileged users. Or what's the plan?
+> > > > > 
+> > > > 
+> > > > We don't have plans for unprivileged users currently. I think that is a
+> > > > great goal and requires a proper tracing namespace, which we currently
+> > > > don't have. I've done some thinking on this, but I would like to hear
+> > > > your thoughts and others on how to do this properly. We do talk about
+> > > > this in the tracefs meetings (those might be out of your time zone
+> > > > unfortunately).
+> > > > 
+> > > > > That alone is massive work with _wild_ security implications. My
+> > > > > appetite for exposing more stuff under user namespaces is very low given
+> > > > > the amount of CVEs we've had over the years.
+> > > > > 
+> > > > 
+> > > > Ok, I based that approach on the feedback given in LPC 2022 - Containers
+> > > > and Checkpoint/Retore MC [1]. I believe you gave feedback to use user
+> > > > namespaces to provide the encapsulation that was required :)
+> > > 
+> > > Even with the user namespace, I think we still need to provide separate
+> > > "eventname-space" for each application, since it may depend on the context
+> > > who and where it is launched. I think the easiest solution is (perhaps)
+> > > providing a PID-based new groups for each instance (the PID-prefix or 
+> > > suffix will be hidden from the application).
+> > > I think it may not good to allow unprivileged user processes to detect
+> > > the registered event name each other by default.
+> > > 
+> > 
+> > Regarding PID, are you referring the PID namespace the application
+> > resides within? Or the actual single PID of the process?
+> 
+> I meant the actual single PID of the process. That will be the safest
+> way by default.
+> 
 
-For RX, extract the vlan tag from CQE and put it into skb.
+How do you feel about instead of single PID using the effective user ID?
 
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 36 +++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+That way we wouldn't have so many events on the system, and the user is
+controlling what runs and can share events.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d907727c7b7a..1d76ac66908c 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -179,6 +179,31 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 		pkg.tx_oob.s_oob.short_vp_offset = txq->vp_offset;
- 	}
- 
-+	/* When using AF_PACKET we need to move VLAN header from
-+	 * the frame to the SKB struct to allow the NIC to xmit
-+	 * the 802.1Q packet.
-+	 */
-+	if (skb->protocol == htons(ETH_P_8021Q)) {
-+		u16 vlan_tci;
-+
-+		skb_reset_mac_header(skb);
-+		if (eth_type_vlan(eth_hdr(skb)->h_proto)) {
-+			if (unlikely(__skb_vlan_pop(skb, &vlan_tci)))
-+				goto tx_drop_count;
-+
-+			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
-+					       vlan_tci);
-+		}
-+	}
-+
-+	if (skb_vlan_tag_present(skb)) {
-+		pkt_fmt = MANA_LONG_PKT_FMT;
-+		pkg.tx_oob.l_oob.inject_vlan_pri_tag = 1;
-+		pkg.tx_oob.l_oob.pcp = skb_vlan_tag_get_prio(skb);
-+		pkg.tx_oob.l_oob.dei = skb_vlan_tag_get_cfi(skb);
-+		pkg.tx_oob.l_oob.vlan_id = skb_vlan_tag_get_id(skb);
-+	}
-+
- 	pkg.tx_oob.s_oob.pkt_fmt = pkt_fmt;
- 
- 	if (pkt_fmt == MANA_SHORT_PKT_FMT) {
-@@ -1457,6 +1482,12 @@ static void mana_rx_skb(void *buf_va, struct mana_rxcomp_oob *cqe,
- 			skb_set_hash(skb, hash_value, PKT_HASH_TYPE_L3);
- 	}
- 
-+	if (cqe->rx_vlantag_present) {
-+		u16 vlan_tci = cqe->rx_vlan_id;
-+
-+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
-+	}
-+
- 	u64_stats_update_begin(&rx_stats->syncp);
- 	rx_stats->packets++;
- 	rx_stats->bytes += pkt_len;
-@@ -2451,8 +2482,9 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	ndev->hw_features |= NETIF_F_RXCSUM;
- 	ndev->hw_features |= NETIF_F_TSO | NETIF_F_TSO6;
- 	ndev->hw_features |= NETIF_F_RXHASH;
--	ndev->features = ndev->hw_features;
--	ndev->vlan_features = 0;
-+	ndev->features = ndev->hw_features | NETIF_F_HW_VLAN_CTAG_TX |
-+			 NETIF_F_HW_VLAN_CTAG_RX;
-+	ndev->vlan_features = ndev->features;
- 	ndev->xdp_features = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
- 			     NETDEV_XDP_ACT_NDO_XMIT;
- 
--- 
-2.25.1
+I could see a way for admins to also override the user_event suffix on a
+per-user basis to allow for broader event name scopes if required (IE:
+Our k8s and production scenarios).
 
+> > 
+> > In production we monitor things in sets that encompass more than a
+> > single application. A requirement we need is the ability to group
+> > like-processes together for monitoring purposes.
+> > 
+> > We really need a way to know these set of events are for this group, the
+> > easiest way to do that is by the system name provided on each event. If
+> > this were to be single PID (and not the PID namespace), then we wouldn't
+> > be able to achieve this requirement. Ideally an admin would be able to
+> > setup the name in some way that means something to them in user-space.
+> 
+> Would you mean using the same events between several different processes?
+> I think it needs more care about security concerns. More on this later.
+> 
+> If not, I think admin has a way to identify which processes are running in
+> the same group outside of ftrace, and can set the filter correctly.
+> 
+
+Agree that's possible, but it's going to be a massive amount of events
+for both tracefs and perf_event ring buffers to handle (we need a perf
+FD per trace_event ID).
+
+> > 
+> > IE: user_events_critical as a system name, vs knowing (user_events_5
+> > or user_events_6 or user_events_8) are "critical".
+> 
+> My thought is the latter. Then the process can not access to the
+> other process's namespace each other.
+> 
+> > 
+> > Another simple example is the same "application" but it gets exec'd more
+> > than once. Each time it execs the system name would change if it was
+> > really by the actual PID vs PID namespace. This would be very hard to
+> > manage on a perf_event or eBPF level for us. It would also vastly
+> > increase the number of trace_events that would get created on the
+> > system.
+> 
+> Indeed. But fundamentally allowing user to create (register) the new 
+> event means such DoS attack can happen. That's why we have a limitation
+> of the max number of user_events. (BTW, I want to make this number
+> controllable from sysctl or tracefs. Also, we need something against the
+> event-id space contamination by this DoS attack.) 
+> I also think it would be better to have some rate-limit about registering
+> new events.
+> 
+
+Totally agree here.
+
+> > 
+> > > > 
+> > > > > > anticipated.
+> > > > > 
+> > > > > Yet you were confident enough to leave the namespacing stubs for this
+> > > > > functionality in the code. ;)
+> > > > > 
+> > > > > What is the overall goal here? Letting arbitrary unprivileged containers
+> > > > > define their own custom user event type by mounting tracefs inside
+> > > > > unprivileged containers? If so, what security story is going to
+> > > > > guarantee that writing arbitrary tracepoints from random unprivileged
+> > > > > containers is safe?
+> > > > > 
+> > > > 
+> > > > Unprivileged containers is not a goal, however, having a per-pod
+> > > > user_event system name, such as user_event_<pod_name>, would be ideal
+> > > > for certain diagnostic scenarios, such as monitoring the entire pod.
+> > > 
+> > > That can be done in the user-space tools, not in the kernel.
+> > > 
+> > 
+> > Right, during k8s pod creation we would create the group and name it
+> > something that makes sense to the operator as an example. I'm sure there
+> > are lots of scenarios user-space can do. However, they almost always
+> > involve more than 1 application together in our scenarios.
+> 
+> Yeah, if it is always used with k8s in the backend servers, it maybe OK.
+> But if it is used in more unreliable environment, we need to consider
+> about malicious normal users.
+> 
+> > 
+> > > > When you have a lot of containers, you also want to limit how many
+> > > > tracepoints each container can create, even if they are given access to
+> > > > the tracefs file. The per-group can limit how many events/tracepoints
+> > > > that container can go create, since we currently only have 16-bit
+> > > > identifiers for trace_event's we need to be cautious we don't run out.
+> > > 
+> > > I agree, we need to have a knob to limit it to avoid DoS attack.
+> > > 
+> > > > user_events in general has tracepoint validators to ensure the payloads
+> > > > coming in are "safe" from what the kernel might do with them, such as
+> > > > filtering out data.
+> > > 
+> > > [...]
+> > > > > > changing the system name of user_events on a per-namespace basis.
+> > > > > 
+> > > > > What is the "system name" and how does it protect against namespaces
+> > > > > messing with each other?
+> > > > 
+> > > > trace_events in the tracing facility require both a system name and an
+> > > > event name. IE: sched/sched_waking, sched is the system name,
+> > > > sched_waking is the event name. For user_events in the root group, the
+> > > > system name is "user_events". When groups are introduced, the system
+> > > > name can be "user_events_<GUID>" for example.
+> > > 
+> > > So my suggestion is using PID in root pid namespace instead of GUID
+> > > by default.
+> > > 
+> > 
+> > By default this would be fine as long as admins can change this to a larger
+> > group before activation for our purposes. PID however, might be a bit
+> > too granular of an identifier for our scenarios as I've explained above.
+> > 
+> > I think these logical steps make sense:
+> > 1. Create "event namespace" (Default system name suffix, max count)
+> > 2. Setup "event namespace" (Change system name suffix, max count)
+> > 3. Attach "event namespace"
+> > 
+> > I'm not sure we know what to attach to in #3 yet, so far both a tracer
+> > namespace and user namespace have been proposed. I think we need to
+> > answer that. Right now everything is in the root "event namespace" and
+> > is simply referred to by default as "user_events" as the system name
+> > without a suffix, and with the boot configured max event count.
+> 
+> OK, so I think we are on the same page :)
+> 
+> I think the user namespace is not enough for protecting events on
+> multi-user system without containers. So it has less flexibility.
+> The new tracer namespace may be OK, we still need a helper user
+> program like 'user_eventd' for managing access based on some policy.
+> If we have a way to manage it with SELinux etc. it will be the best
+> I think. (Perhaps using UNIX domain socket will give us such flexibility.)
+> 
+
+I'm adding Mathieu to CC since I think he had a few cases where a static
+namespace wasn't enough and we might need hierarchy support.
+
+If we don't need hierarchy support, I think it's a lot easier to do. I
+like the idea of a per-user event namespace vs a per-PID event namespace
+knowing what we have to do to monitor all of this via perf. Like I said
+above, that will be a huge amount of events compared to a per-user or
+namespace approach.
+
+But I do like where this is headed and glad we are having this
+conversation :)
+
+Thanks,
+-Beau
 
