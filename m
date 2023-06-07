@@ -1,257 +1,162 @@
-Return-Path: <bpf+bounces-2040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CE387270A3
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E9C7270AE
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:44:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ADE71C20EBC
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 21:41:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E54C41C20EDF
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 21:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01EC43B8BE;
-	Wed,  7 Jun 2023 21:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD963B8BD;
+	Wed,  7 Jun 2023 21:44:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73253B8A3
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 21:40:48 +0000 (UTC)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242771BF7
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 14:40:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-977d7bdde43so276966b.0
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 14:40:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E819D3AE79
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 21:43:59 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F881B0
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 14:43:58 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-977e0fbd742so568775266b.2
+        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 14:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686174045; x=1688766045;
+        d=gmail.com; s=20221208; t=1686174236; x=1688766236;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hx6ZmZ9yG8UAhPJ4Awmb7+D5yRSoZpG6TAzvfrTjS1g=;
-        b=b5Y1trrLYLg4zk85SVFSjwpMOoTSbKd/l99CWGWWH5MQxMPG1u0NFd8RvdaD7/ipw4
-         ep1MFPKWxSUZkNayMhEbzjguuySf6IOqVRbLcy4U4tlJ7pCzmTgoPYvFOd/pcZUpIXfH
-         rgjvCRjcOGxzERCHw8EGO1f0tlnJqyfI4LGU+fO11BtiYr0MfFRxxxsZQz+6hG4t6P26
-         Q4P5qyMg4k/NL5/friMSVBiQY02XaODYLiFnYtMfNR7Ey+6eU6g8iHvFwwtU+hPjWQHv
-         3WINrd7GP4GHkcCt7oFpiC1ClddgpnQB1xE87nUYhlfoD3oXwtIJth05UD1Xi0K4e05w
-         iKLw==
+        bh=MgOpriJYWCpUyTFnCc3VqHTvUy3C/4WfNeDsznwKzE0=;
+        b=XRIztGK4GLKkoL6Nj27oAw0Iy8MinLLb+WgVd2Ah6jz5ulIa/9M6w4FcQ582INURYA
+         kiFq6F7g3oAsZ3cdW13e5NiL2Ri1tZCdRmsFE/epZg1RQG2rEAFl6T+FeVG+3To0DeFq
+         O+UZ3wTBGfClJDVIbWFqYVtFIXD8+ROhJLSqVIi4Ev9ggEyM0UjtMqn1IJ43qLtfpFy1
+         9GjxGul/OyQdyGXQk7R9REdI5B0y7cDuVO8pbf0xYIMjswQhYBDVAsTunuBIrUeTX1dx
+         GaEWdTEVVAMvIcY++thN2kWQt4RYbahQx9UUXBPSM3c8/NTOjVywWD+9gmoNYf+S1aa8
+         hXFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686174045; x=1688766045;
+        d=1e100.net; s=20221208; t=1686174236; x=1688766236;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hx6ZmZ9yG8UAhPJ4Awmb7+D5yRSoZpG6TAzvfrTjS1g=;
-        b=MagiJEv5OQSfI7QKpPoAIwkpbrjvZ8sChJEDKjCGcpG2+99K/Og5pN4IkPKRbwTZhO
-         bIUO/qIPQuwZiKsQowWGsUzjaogNcgXe9zYcmUMMlmfp1BqEVCnjdf5rWv+TtiUA7ZK0
-         jhtEkVcXb4fhzMrjrQ6z7M3UO+pDyRqkh0zg8WG3s1EsuHh2NXqwsXK/yTSD5JVpVMWq
-         LN5E5QjkfYgwsZo1yzy6QN4mzlFnpNTIhOU5NJGB6nNAsAX2p5GEHcUByJfb8ZkJrrOZ
-         W0iR1omItfADsg+33G+zzt3RPu0Q07mvcPQzwDwF69QLmmNTCUKeS6KKnbIVKQ3/byxi
-         tqoA==
-X-Gm-Message-State: AC+VfDz+AVCNzvX03moOwPWwOWd4Y7PRFubQ6n/H6X/0+O2YKNfV8qIa
-	xeYaOeirqcqLKb8iHh/jRwcgAYqM1PRRkOpZB+w=
-X-Google-Smtp-Source: ACHHUZ4BaX8BTtHzeuvQ2ZKSayaZ5jWqkWsvROqzqUtuvtkRswSyl4evua13OCg9HJD7NYPi8DK4S0cNYJ3Tw7tc5jU=
-X-Received: by 2002:a17:907:970b:b0:978:8685:71d5 with SMTP id
- jg11-20020a170907970b00b00978868571d5mr241620ejc.30.1686174045540; Wed, 07
- Jun 2023 14:40:45 -0700 (PDT)
+        bh=MgOpriJYWCpUyTFnCc3VqHTvUy3C/4WfNeDsznwKzE0=;
+        b=jjbDrURDQENeDXuTn72auCREVnkdO5x2lecF+C/5lG58jtBt2UTC+xxaq4aBYaP36H
+         o/nC79zHrJ6cNNRuWa8j0/Dxr8klj94X0+Q7XY0jSG8qi4DiWxV129+TiuqkqP9dobYt
+         DC8+MM7CEpMP4nK712VX1w9NcEzieMckxsRrr601sMjZaIAVEbBd1bzKjGWfNhP/YA6b
+         HdsID3GYiWhBVUr0yoxlmMdrFr+Z0asH2EpENaB4RYpMiRMsT/DhwSX29SEmSE5Ta+uQ
+         bvbtiFWNhtBYTIt6FJ3JliTVXFVo9sT+6feMMEEoAGt5G3UebfAJv/+Xod1P9rxvE1CW
+         enUw==
+X-Gm-Message-State: AC+VfDxzks9xe84xz93AYkVbESpTEB4Da3r3HP8CizIxKYa6zVgPjOK2
+	Hj84r/9is6WTkPPDEeNGgkyQ453H6R9zR93gcD8=
+X-Google-Smtp-Source: ACHHUZ7Vfefz7JsJ6aX7D2AddfDfdgPSX9PKXzin3OgE1LdO8RvKE0gcgoSLJ5AXc2WkzY0aXkITNrf+jLV7dam4evM=
+X-Received: by 2002:a17:907:6d05:b0:969:f9e8:a77c with SMTP id
+ sa5-20020a1709076d0500b00969f9e8a77cmr7297829ejc.64.1686174236560; Wed, 07
+ Jun 2023 14:43:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230606222411.1820404-1-eddyz87@gmail.com> <20230606222411.1820404-4-eddyz87@gmail.com>
-In-Reply-To: <20230606222411.1820404-4-eddyz87@gmail.com>
+References: <20230531201936.1992188-1-alan.maguire@oracle.com>
+ <20230531201936.1992188-2-alan.maguire@oracle.com> <20230601035354.5u56fwuundu6m7v2@MacBook-Pro-8.local>
+ <89787945-c06c-1c41-655b-057c1a3d07dd@oracle.com> <CAADnVQ+2ZuX00MSxAXWcXmyc-dqYtZvGqJ9KzJpstv183nbPEA@mail.gmail.com>
+ <CAEf4BzZaUEqYnyBs6OqX2_L_X=U4zjrKF9nPeyyKp7tRNVLMww@mail.gmail.com>
+ <CAADnVQKbmAHTHk5YsH-t42BRz16MvXdRBdFmc5HFyCPijX-oNg@mail.gmail.com>
+ <CAEf4BzamU4qTjrtoC_9zwx+DHyW26yq_HrevHw2ui-nqr6UF-g@mail.gmail.com>
+ <CAADnVQ+_YeLZ0kmF+QueH_xE10=b-4m_BMh_-rct6S8TbpL0hw@mail.gmail.com>
+ <CAEf4Bzbtptc9DUJ8peBU=xyrXxJFK5=rkr3gGRh05wwtnBZ==A@mail.gmail.com>
+ <CAADnVQJAmYgR91WKJ_Jif6c3ja=OAmkMXoUO9sTnmp-xmnbVJQ@mail.gmail.com>
+ <CAEf4BzYG2FFcM_0mkiARzKnYinQYHpWE8ct35Z==-Fsefv9oQw@mail.gmail.com> <CAADnVQJ712O0FeKQwUAG1+WvFTkX1FBNTb1v+frA7vNAkXLgqg@mail.gmail.com>
+In-Reply-To: <CAADnVQJ712O0FeKQwUAG1+WvFTkX1FBNTb1v+frA7vNAkXLgqg@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Jun 2023 14:40:32 -0700
-Message-ID: <CAEf4BzbbGV6gTJ1KdBB8EwLWV3aNE-iyNtP2pC-W1=MTDNRq5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
+Date: Wed, 7 Jun 2023 14:43:44 -0700
+Message-ID: <CAEf4BzZ2x=RZUbORfUOxqC-oFPJ5EH1=uGxrzZGAa76d5saZ7w@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/8] btf: add kind metadata encoding to UAPI
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 6, 2023 at 3:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
+On Tue, Jun 6, 2023 at 6:16=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Make sure that the following unsafe example is rejected by verifier:
+> On Tue, Jun 6, 2023 at 9:50=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > Agreed, I don't think we can ever make BTF dedup work reliably with
+> > KINDs it doesn't understand. I wouldn't even try. I'd also say that
+> > kernel should keep being strict about this (even if we add
+> > "is-it-optional" field, kernel can't trust it). Libbpf and other
+> > libraries will have to keep sanitizing BTF anyways.
 >
-> 1: r9 =3D ... some pointer with range X ...
-> 2: r6 =3D ... unbound scalar ID=3Da ...
-> 3: r7 =3D ... unbound scalar ID=3Db ...
-> 4: if (r6 > r7) goto +1
-> 5: r6 =3D r7
-> 6: if (r6 > X) goto ...
-> --- checkpoint ---
-> 7: r9 +=3D r7
-> 8: *(u64 *)r9 =3D Y
+> Good point. "it-is-optional" flag should be for user space only.
 >
-> This example is unsafe because not all execution paths verify r7 range.
-> Because of the jump at (4) the verifier would arrive at (6) in two states=
-:
-> I.  r6{.id=3Db}, r7{.id=3Db} via path 1-6;
-> II. r6{.id=3Da}, r7{.id=3Db} via path 1-4, 6.
+> > > If we go this simple route I'm fine with hard coded crc and base_crc
+> > > fields. They probably should go to btf_header though.
+> >
+> > Yep, on btf_header fields. But I'd not hardcode "crc" name. If we are
+> > doing them as strings (which I think we should instead of dooming them
+> > to 32-bit integer crc32 value only), then can we just say generically
+> > that it's either "id" or "checksum"?
+> >
+> > But I guess crc32 would be fine in practice as well. So not something
+> > I strongly feel about.
 >
-> Currently regsafe() does not call check_ids() for scalar registers,
-> thus from POV of regsafe() states (I) and (II) are identical. If the
-> path 1-6 is taken by verifier first, and checkpoint is created at (6)
-> the path [1-4, 6] would be considered safe.
->
-> This commit updates regsafe() to call check_ids() for precise scalar
-> registers.
->
-> To minimize the impact on verification performance, avoid generating
-> bpf_reg_state::id for constant scalar values when processing BPF_MOV
-> in check_alu_op(). Scalar IDs are utilized by find_equal_scalars() to
-> propagate information about value ranges for registers that hold the
-> same value. However, there is no need to propagate range information
-> for constants.
->
-> Still, there is some performance impact because of this change.
-> Using veristat to compare number of processed states for selftests
-> object files listed in tools/testing/selftests/bpf/veristat.cfg and
-> Cilium object files from [1] gives the following statistics:
->
-> $ ./veristat -e file,prog,states -f "states_pct>10" \
->     -C master-baseline.log current.log
-> File         Program                         States  (DIFF)
-> -----------  ------------------------------  --------------
-> bpf_xdp.o    tail_handle_nat_fwd_ipv6        +155 (+23.92%)
-> bpf_xdp.o    tail_nodeport_nat_ingress_ipv4  +102 (+27.20%)
-> bpf_xdp.o    tail_rev_nodeport_lb4            +83 (+20.85%)
-> loop6.bpf.o  trace_virtqueue_add_sgs          +25 (+11.06%)
->
-> Also test case verifier_search_pruning/allocated_stack has to be
-> updated to avoid conflicts in register ID assignments between cached
-> and new states.
->
-> [1] git@github.com:anakryiko/cilium.git
->
-> Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assig=
-nments.")
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
+> I still fail to see how generic string "id" helps.
+> We have to standardize on a way to checksum BTF-s.
+> Say, we pick crc32.
+> pahole/clang would have to use the same algorithm.
+> Then kernel during BTF_LOAD should check that crc32 matches
+> to make sure btf data didn't get corrupted between its creation
+> and loading into the kernel.
+> Just like btrfs uses crc32 to make sure data doesn't get corrupted by dis=
+k.
+> libbpf doing sanitization would need to tweak crc32 too.
+> So it's going to be hard coded semantics at every level.
+> id and especially string id would be cumbersome for all these layers
+> to deal with.
 
-So I checked it also on our internal BPF object files, and it looks
-mostly good. Here are the only regressions:
+Ok, that's totally fine with me. For me this whole checksumming was
+less about checksum and validating content of BTF wasn't corrupted. It
+was more about making sure that split BTF matches base BTF. And for
+that readers (libbpf, tools, etc) wouldn't recalculate checksums on
+their own. They'd get those checksums/IDs and just compare them.
+Whether it's opaque string or int is absolutely irrelevant for this
+use case (which was the main one for me).
 
-Program                                   States (A)  States (B)
-States   (DIFF)
-----------------------------------------  ----------  ----------
----------------
-balancer_ingress                               29219       34531
-+5312 (+18.18%)
-syar_bind6_protect6                             3257        3599
-+342 (+10.50%)
-syar_bind4_protect4                             2590        2931
-+341 (+13.17%)
-on_alloc                                         415         526
-+111 (+26.75%)
-on_free                                          406         517
-+111 (+27.34%)
-pycallcount                                      395         506
-+111 (+28.10%)
-resume_context                                   405         516
-+111 (+27.41%)
-on_py_event                                      395         506
-+111 (+28.10%)
-on_event                                         284         394
-+110 (+38.73%)
-handle_cuda_event                                268         378
-+110 (+41.04%)
-handle_cuda_launch                               276         386
-+110 (+39.86%)
-handle_cuda_malloc_ret                           272         382
-+110 (+40.44%)
-handle_cuda_memcpy                               270         380
-+110 (+40.74%)
-handle_cuda_memcpy_async                         270         380
-+110 (+40.74%)
-handle_pytorch_allocate_ret                      271         381
-+110 (+40.59%)
-handle_pytorch_malloc_ret                        272         382
-+110 (+40.44%)
-on_event                                         284         394
-+110 (+38.73%)
-on_event                                         284         394
-+110 (+38.73%)
-syar_task_enter_execve                           309         329
-+20 (+6.47%)
-kprobe__security_inode_link                      968         986
-+18 (+1.86%)
-kprobe__security_inode_symlink                   838         854
-+16 (+1.91%)
-tw_twfw_egress                                   249         251
-+2 (+0.80%)
-tw_twfw_ingress                                  250         252
-+2 (+0.80%)
-tw_twfw_tc_eg                                    248         250
-+2 (+0.81%)
-tw_twfw_tc_in                                    250         252
-+2 (+0.80%)
-raw_tracepoint__sched_process_exec               136         139
-+3 (+2.21%)
-kprobe_ret__do_filp_open                         869         871
-+2 (+0.23%)
-read_erlang_stack                                572         573
-+1 (+0.17%)
+But as I said, I'm fine either way. Let's hard-code crc32, it's
+simpler to generate for sure.
 
-
-They are mostly on small-ish programs. The only mild concern from my
-side is balancer_ingress, which is one of Katran BPF programs. It add
-+18% of states (which translates to about 70K more instructions
-verified, up from 350K). I think we can live with this, but would be
-nice to check why it's happening.
-
-I suspect that dropping SCALAR IDs as we discussed (after fixing
-register fill/spill ID generation) might completely mitigate that.
-
-Overall, LGTM:
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  kernel/bpf/verifier.c                         | 34 ++++++++++++++++---
->  .../bpf/progs/verifier_search_pruning.c       |  3 +-
->  2 files changed, 32 insertions(+), 5 deletions(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 2aa60b73f1b5..175ca22b868e 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12933,12 +12933,14 @@ static int check_alu_op(struct bpf_verifier_env=
- *env, struct bpf_insn *insn)
->                 if (BPF_SRC(insn->code) =3D=3D BPF_X) {
->                         struct bpf_reg_state *src_reg =3D regs + insn->sr=
-c_reg;
->                         struct bpf_reg_state *dst_reg =3D regs + insn->ds=
-t_reg;
-> +                       bool need_id =3D (src_reg->type =3D=3D SCALAR_VAL=
-UE && !src_reg->id &&
-> +                                       !tnum_is_const(src_reg->var_off))=
-;
 >
+> > > We don't need "struct btf_metadata" as well.
+> > > It's making things sound beyond what it actually is.
+> > > btf_header can point to an array of struct btf_kind_description.
+> > > As simple as it can get.
+> >
+> > Agreed. Still, it's a third section, and we should at least have a
+> > count of those btf_kind_layout items somewhere.
+>
+> of course.
+> In btf_header we have
+>         __u32   type_off;       /* offset of type section       */
+>         __u32   type_len;       /* length of type section       */
+> I meant we add:
+>         __u32   kind_layouts_off;
+>         __u32   kind_layouts_len;
 
-nit: unnecessary outer ()
-
->                         if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
->                                 /* case: R1 =3D R2
->                                  * copy register state to dest reg
->                                  */
-> -                               if (src_reg->type =3D=3D SCALAR_VALUE && =
-!src_reg->id)
-> +                               if (need_id)
->                                         /* Assign src and dst registers t=
-he same ID
->                                          * that will be used by find_equa=
-l_scalars()
->                                          * to propagate min/max range.
-
-[...]
+ok, sounds good
 
