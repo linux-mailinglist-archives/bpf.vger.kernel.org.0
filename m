@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-2071-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A0972738A
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 01:57:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95855727381
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 01:56:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6B382815E2
-	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:57:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F091C1C20E44
+	for <lists+bpf@lfdr.de>; Wed,  7 Jun 2023 23:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249461DCB4;
-	Wed,  7 Jun 2023 23:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2781DCDA;
+	Wed,  7 Jun 2023 23:54:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AF83B415
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 23:57:09 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418551BDF
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 16:57:06 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 357IBrKh003979
-	for <bpf@vger.kernel.org>; Wed, 7 Jun 2023 16:57:05 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917C816434
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 23:54:33 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B66226A0
+	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 16:54:31 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 357HaRxE003687
+	for <bpf@vger.kernel.org>; Wed, 7 Jun 2023 16:54:30 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r2qbsdquy-1
+	by m0089730.ppops.net (PPS) with ESMTPS id 3r2a82txfg-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 16:57:05 -0700
-Received: from twshared2123.40.prn1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 16:54:30 -0700
+Received: from twshared44841.48.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 7 Jun 2023 16:57:04 -0700
+ 15.1.2507.23; Wed, 7 Jun 2023 16:54:19 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
 	id BCCD432857DAC; Wed,  7 Jun 2023 16:54:06 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
@@ -54,15 +54,15 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xRLnPH9oF0D2rNoha2wtKny5LlFuZJLf
-X-Proofpoint-GUID: xRLnPH9oF0D2rNoha2wtKny5LlFuZJLf
+X-Proofpoint-GUID: WYVnr00wDph2bByl-D8tYlAr8OwC2jQk
+X-Proofpoint-ORIG-GUID: WYVnr00wDph2bByl-D8tYlAr8OwC2jQk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-07_13,2023-06-07_01,2023-05-22_02
+ definitions=2023-06-07_12,2023-06-07_01,2023-05-22_02
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
 	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
