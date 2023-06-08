@@ -1,208 +1,197 @@
-Return-Path: <bpf+bounces-2090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BA667275DB
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 05:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8FF47275DF
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 05:44:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9DC2815D1
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 03:39:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 936232815D1
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 03:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0468111E;
-	Thu,  8 Jun 2023 03:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82B61C35;
+	Thu,  8 Jun 2023 03:44:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746C210EF
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 03:39:35 +0000 (UTC)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522582705
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 20:39:30 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-3f6c6020cfbso1014421cf.2
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 20:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1686195569; x=1688787569;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PvtGe+47bQaQV8brBLmNwnumVany/JnICTxUNCusye0=;
-        b=J65mhKmDzbLJbBnIRnqiuaaqadLBTovoBsSmppOCs2lltGkoL+ca38+UuosfJrHo+X
-         aum8iksSgOf9WzvZGVp5bzCBnwnYzzIuo+aTxhN+ZdlUTkOZ2JrKD8+DPFULwXEKpWkT
-         Cqjp64BwdglaVgMmKeTq2Hal8w1gpzEgW3l/GCS2GS/suK/82V1kjycHKdZR+tpgMf1a
-         s1i/+DE2ohpgAeVh/mqcAK1W9ob8CceFBtb2C1hUCvID0BOSkDIqyhgT7LJEmNxHQlzB
-         9d5T87S27x4aWfKqovv6ws+buo1N3ntSN59FwEatChjC++Su/ZMrpBNIkMaxdIlOd/9P
-         YGMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686195569; x=1688787569;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PvtGe+47bQaQV8brBLmNwnumVany/JnICTxUNCusye0=;
-        b=cTSFnX9orAWGcMKVx4V+rDsRhvXgKyRHz7xgMQgAhEsEXBinpOw8mOoB/MMJSPtHEM
-         8F83Wod4U0b/ORYNfG3+I6gG48JLkZZDAlIznRgo1zEJm7nbhvD68+GEDWL5WnjiJtTs
-         Z1oQ5MkLjChabSzfQ/zoBB641exMomQdHDFDGlMHzoDTqk9XH+++2Cr1fAeUqMj5/Wen
-         4XPbJpwEOd7MNSO8VOsnRepWgjzdvYoyucbGGXtG4d88ywiwrfzqAoZ83KUCKPiczGti
-         nUd43vFo683x9kk+fGPhMiaBC2P6mo/xhpvhUID2jzpkk7su+xGqTygnr07s/P4c+ECI
-         OYdg==
-X-Gm-Message-State: AC+VfDwCk1++Y5QOZDH//+1bO6hGnRjmSrKl4bi3G4ijD8BNnVJ1KhvR
-	ozKULv4YMb3VHecGagdzeIQ4aQ==
-X-Google-Smtp-Source: ACHHUZ7/oM6oXW9uifA0GKweKEIcqiKoiqNo1XWxhdtGPeucV6PjfQ1N+nJe2D8iucOwcT/tAcLkzQ==
-X-Received: by 2002:ac8:5a11:0:b0:3f6:e3aa:a61f with SMTP id n17-20020ac85a11000000b003f6e3aaa61fmr6035006qta.19.1686195568988;
-        Wed, 07 Jun 2023 20:39:28 -0700 (PDT)
-Received: from [10.71.57.173] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id w17-20020a170902e89100b001affb590696sm236480plg.216.2023.06.07.20.39.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jun 2023 20:39:28 -0700 (PDT)
-Message-ID: <c902419b-e265-75ff-1275-338dbfd69cda@bytedance.com>
-Date: Thu, 8 Jun 2023 11:39:21 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FDDA57
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 03:44:04 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0D626AA;
+	Wed,  7 Jun 2023 20:44:00 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qc96z2Ghkz4f3nx3;
+	Thu,  8 Jun 2023 11:43:55 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgD33gx6ToFk4dJmKQ--.44784S2;
+	Thu, 08 Jun 2023 11:43:57 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To: paulmck@kernel.org
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+ <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+ <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+ <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+ <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <f4418d9d-857b-eb96-cbec-ab1652291556@huaweicloud.com>
+Date: Thu, 8 Jun 2023 11:43:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: Re: Re: [PATCH bpf-next] bpf: getsockopt hook to get optval
- without checking kernel retval
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org
-References: <20230601024900.22902-1-zhoufeng.zf@bytedance.com>
- <5bc1ac0d-cea8-19e5-785a-cd72140d8cdb@linux.dev>
- <20881602-9afc-96b7-3d58-51c31e3f50b7@bytedance.com>
- <d7be9d22-c6aa-da2a-77fc-9638ad1e0f15@linux.dev>
- <2d138e12-9273-46e6-c219-96c665f38f0f@bytedance.com>
- <CAKH8qBtxNuwvawZ3v1-eK0RovPHu5AtYpays29TjxE2s-2RHpQ@mail.gmail.com>
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <CAKH8qBtxNuwvawZ3v1-eK0RovPHu5AtYpays29TjxE2s-2RHpQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgD33gx6ToFk4dJmKQ--.44784S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKFW3ZrWDtr1DtFWxWr1fCrg_yoW7AFy8pF
+	WfK3Z0kr4kt34fAwn2vr1xXFyYyayrG3s8XFy5try7Cr90gr1SqrWSvr4Y9FyUXrs7Cw1a
+	9F4DXry7Zw1jqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUOyCJDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-在 2023/6/7 01:04, Stanislav Fomichev 写道:
-> On Mon, Jun 5, 2023 at 8:20 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
->>
->> 在 2023/6/1 23:50, Martin KaFai Lau 写道:
->>> On 5/31/23 11:05 PM, Feng Zhou wrote:
->>>> 在 2023/6/1 13:37, Martin KaFai Lau 写道:
->>>>> On 5/31/23 7:49 PM, Feng zhou wrote:
->>>>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>>>
->>>>>> Remove the judgment on retval and pass bpf ctx by default. The
->>>>>> advantage of this is that it is more flexible. Bpf getsockopt can
->>>>>> support the new optname without using the module to call the
->>>>>> nf_register_sockopt to register.
->>>>>>
->>>>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>>> ---
->>>>>>    kernel/bpf/cgroup.c | 35 +++++++++++++----------------------
->>>>>>    1 file changed, 13 insertions(+), 22 deletions(-)
->>>>>>
->>>>>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->>>>>> index 5b2741aa0d9b..ebad5442d8bb 100644
->>>>>> --- a/kernel/bpf/cgroup.c
->>>>>> +++ b/kernel/bpf/cgroup.c
->>>>>> @@ -1896,30 +1896,21 @@ int
->>>>>> __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
->>>>>>        if (max_optlen < 0)
->>>>>>            return max_optlen;
->>>>>> -    if (!retval) {
->>>>>> -        /* If kernel getsockopt finished successfully,
->>>>>> -         * copy whatever was returned to the user back
->>>>>> -         * into our temporary buffer. Set optlen to the
->>>>>> -         * one that kernel returned as well to let
->>>>>> -         * BPF programs inspect the value.
->>>>>> -         */
->>>>>> -
->>>>>> -        if (get_user(ctx.optlen, optlen)) {
->>>>>> -            ret = -EFAULT;
->>>>>> -            goto out;
->>>>>> -        }
->>>>>> +    if (get_user(ctx.optlen, optlen)) {
->>>>>> +        ret = -EFAULT;
->>>>>> +        goto out;
->>>>>> +    }
->>>>>> -        if (ctx.optlen < 0) {
->>>>>> -            ret = -EFAULT;
->>>>>> -            goto out;
->>>>>> -        }
->>>>>> -        orig_optlen = ctx.optlen;
->>>>>> +    if (ctx.optlen < 0) {
->>>>>> +        ret = -EFAULT;
->>>>>> +        goto out;
->>>>>> +    }
->>>>>> +    orig_optlen = ctx.optlen;
->>>>>> -        if (copy_from_user(ctx.optval, optval,
->>>>>> -                   min(ctx.optlen, max_optlen)) != 0) {
->>>>>> -            ret = -EFAULT;
->>>>>> -            goto out;
->>>>>> -        }
->>>>>> +    if (copy_from_user(ctx.optval, optval,
->>>>>> +                min(ctx.optlen, max_optlen)) != 0) {
->>>>> What is in optval that is useful to copy from if the kernel didn't
->>>>> handle the optname?
->>>>
->>>> For example, if the user customizes a new optname, it will not be
->>>> processed if the kernel does not support it. Then the data stored in
->>>> optval is the data put
->>>
->>>
->>>
->>>> by the user. If this part can be seen by bpf prog, the user can
->>>> implement processing logic of the custom optname through bpf prog.
->>>
->>> This part does not make sense. It is a (get)sockopt. Why the bpf prog
->>> should expect anything useful in the original __user optval? Other than
->>> unnecessary copy for other common cases, it looks like a bad api, so
->>> consider it a NAK.
->>>
->>>>
->>>>>
->>>>> and there is no selftest also.
->>>>>
->>>>
->>>> Yes, if remove this restriction, everyone thinks it's ok, I'll add it
->>>> in the next version.
->>>>
->>>>>> +        ret = -EFAULT;
->>>>>> +        goto out;
->>>>>>        }
->>>>>>        lock_sock(sk);
->>>>>
->>>>
->>>
->>
->> According to my understanding, users will have such requirements,
->> customize an optname, which is not available in the kernel. All logic is
->> completed in bpf prog, and bpf prog needs to obtain the user data passed
->> in by the system call, and then return the data required by the user
->> according to this data.
->>
->> For optname not in the kernel, the error code is
->> #define ENOPROTOOPT 92/* Protocol not available */
->> Whether to consider the way of judging with error codes,
->> If (! retval | | retval == -ENOPROTOOPT)
-> 
-> I'm also failing to see what you're trying to do here. You can already
-> implement custom optnames via getsockopt, so what's missing?
-> If you need to pass some data from the userspace to the hook, then
-> setsockopt hook will serve you better.
-> getsockopt is about reading something from the kernel/bpf; ignoring
-> initial user buffer value is somewhat implied here.
+Hi Paul,
 
-Thanks, you reminded me that can pass data to bpf prog by setsockopt.
+On 6/8/2023 10:55 AM, Paul E. McKenney wrote:
+> On Thu, Jun 08, 2023 at 09:51:27AM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
+>>> On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+>>>>> As said in the commit message, the command line for test is
+>>>>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+>>>>> using default max_entries and the number of CPUs is greater than 15,
+>>>>> use_percpu_counter will be false.
+>>>> Right. percpu or not depends on number of cpus.
+SNIP
+>>>>  known, because I had just proposed it in the email yesterday.
+>>> Also noticed that the overhead of shared reuse_ready list
+>>> comes both from the contended lock and from cache misses
+>>> when one cpu pushes to the list after RCU GP and another
+>>> cpu removes.
+>>>
+>>> Also low/batch/high watermark are all wrong in patch 3.
+>>> low=32 and high=96 makes no sense when it's not a single list.
+>>> I'm experimenting with 32 for all three heuristics.
+>>>
+>>> Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
+>>> are redundant.
+>>> unit_free() can push into free_by_rcu directly
+>>> then reuse_bulk() can fill it up with free_llist_extra and
+>>> move them into waiting_for_gp.
+>> Yes. Indeed missing that.
+>>> All these _tail optimizations are obscuring the code and make it hard
+>>> to notice these issues.
+>>>
+>>>> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
+>>>>
+>>>> Answering your other email:
+>>>>
+>>>>> I see your point. I will continue to debug the memory usage difference
+>>>>> between v3 and v4.
+>>>> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
+>> Don't agree with that. I still think the potential memory usage of v4 is
+>> a problem and the difference memory usage between v3 and v4 reveals that
+>> there is some peculiarity in RCU subsystem, because the difference comes
+>> from the duration of RCU grace period. We need to find out why and fix
+>> or workaround that.
+> A tight loop in the kernel can extend RCU grace periods, especially
+> for kernels built with CONFIG_PREEPTION=n.  Placing things like
+> cond_resched() in such loops can help.  Of course, if you are in an
+> RCU read-side critical section (or holding a spinlock), you will need
+> to exit, cond_resched(), then re-enter.  Taking care to ensure that the
+> state upon re-entry is valid.  After all, having exited either type of
+> critical section, anything might happen.
 
+As said in the help-wanted email just send out, it was weird that the
+RCU grace period was extended a lot, up to ~150ms or more. But queue a
+dummy kworker periodically which does nothing will help to reduce the
+grace period to ~10ms. I have explained the context of the problem in
+that email. And hope that we could get some help from you and the RCU
+experts in the community.
+
+Regards,
+Tao
+>
+> 							Thanx, Paul
+>
+>>>>> I don't think so. Let's considering the per-cpu list first. Assume the
+>>>>> normal RCU grace period is about 30ms and we are tracing the IO latency
+>>>>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
+>>>>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
+>>>>> For the per-ma list, when the number of CPUs increased, it is easy to
+>>>>> make the list contain thousands of elements.
+>>>> That would be true only if there were no scheduling events in all of 176K ops.
+>>>> Which is not the case.
+>>>> I'm not sure why you're saying that RCU GP is 30ms.
+>> Because these freed elements will be freed after one RCU GP and in v4
+>> there is only one RCU callback per-cpu, so before one RCU GP is expired,
+>> these freed elements will be accumulated on the list.
+>>>> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+>>>> Every sched event is sort-of implicit rcu_read_lock/unlock.
+>>>> Network and block IO doesn't process 176K packets without resched.
+>>>> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
+>>>>
+>>>> For small size buckets low_watermark=32 and high=96.
+>>>> We typically move 32 elements at a time from one list to another.
+>>>> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
+>>>> is not instant, but once __free_rcu_tasks_trace is called we need to take
+>>>> elements from waiting_for_gp one at a time and kfree it one at a time.
+>>>> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
+>>>>
+>>>>> Before I post v5, I want to know the reason why per-bpf-ma list is
+>>>>> introduced. Previously, I though it was used to handle the case in which
+>>>>> allocation and freeing are done on different CPUs.
+>>>> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
+>>>>
+>>>>> And as we can see
+>>>>> from the benchmark result above and in v3, the performance and the
+>>>>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
+>>>> bench from patch 2 is invalid. Hence no conclusion can be made.
+>>>>
+>>>> So far the only bench we can trust and analyze is map_perf_test.
+>>>> Please make bench in patch 2 yield the cpu after few updates.
+>>>> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+>>>> 64 updates is realistic too. A thousand is not.
+>> Will do that.
+>>
 
 
