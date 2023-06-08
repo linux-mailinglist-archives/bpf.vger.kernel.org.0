@@ -1,341 +1,1113 @@
-Return-Path: <bpf+bounces-2131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C66972863C
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:22:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79247728640
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:24:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DB5E28163D
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 17:22:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00B91C20F05
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 17:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B7B19935;
-	Thu,  8 Jun 2023 17:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92951DCA2;
+	Thu,  8 Jun 2023 17:24:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC06719922
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:22:22 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E026A1BFF
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 10:21:55 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-977c89c47bdso159775266b.2
-        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 10:21:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1AC1990A
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:24:07 +0000 (UTC)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636642D47
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 10:24:02 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53f6e194e7bso642097a12.1
+        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 10:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686244914; x=1688836914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tl3pjUEIeqQyRBeOSjpJ7sWyO31DJERu00mMr9UruXA=;
-        b=qggtQ2KLYjcHObGm4dtMhAQH03Brq4kvS/VxM88CYEWgrt8zPTjbLSz07jbdqSMgM/
-         arfN5MhP0hpe6D3P9UJc3AfcW91DPHDgkdNi0u9eYComEV+kYw+J0u43f33U00beWDN3
-         5EilLMUktuXG/nPJrlNK105X3bN2gKtFeZNoUsiwvXKNyCQSrO2ccmuaH4SBJ5FqcIN4
-         tkxQHNPH6iAYWTp+y53P+X9AuwFFF9TKyzwVkfWOaMSYxgBA8qXVAWTPGCkAeiOFmTwE
-         cvN91Xt+4grfJJcE77BRv4CQ/nok4FRD7Mt1BvS1s1+iEgCJJCeUswI1Jb83Ah0lSFrW
-         masg==
+        d=google.com; s=20221208; t=1686245042; x=1688837042;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jM+prdx+FqUuxV0QwSaQztLjuLHXcG8jiQSKLwXQIeo=;
+        b=og3bzgoP72xMu4VhmDWkXBusaYF+ODBoz61cBfluFP/EYXyysfu23dfvtL+oSelbZ5
+         dAoVRHf/LOEqR/87h+OEEM7QEaEU5FTnmjPUhcU/rqaAm8gg3xkRtNVl62PScznQXfDw
+         H7PBfF0LHO2iNU4weTsnqczcGRUHLVHshYiq7z6UkD6pFj9QDFMbRF++ERpVsZemEYO/
+         3WCnalo822IwxS6Be4EpV9u71I9xFE9Ig6QZe5n+8syiiJpIIE2GAAEDhjltu7d9SBaq
+         3BkM5qEF90qXUKxpWxNWINDjEQQd+rRuDlvUiQbAHGxGosirs5AyyU2w4AtSKLGcf4nS
+         KYHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686244914; x=1688836914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tl3pjUEIeqQyRBeOSjpJ7sWyO31DJERu00mMr9UruXA=;
-        b=R/iHSRLKGLTOQ3VF72ujHopM/MwHXIeXYoVmLKzPgS7PAh+t02XHoBX4vymt6xMSjS
-         99ht69DzHL1r1Y7oLwsFXq+tE/KS+SL+Q0fz5a6cyP0v0M4wYdwoGGkTyqWYMTLzj444
-         5ZJNbdb64ZnEZTISH81Vvo/REySEUtbOtE80VSatF6DRIFpaUYvOGUaCCUUZP0UTQd7s
-         n8IRl4HrBTIyw+S/oFFL/zA8nCJXy1rShcAd4MnH1U7qBbkuTbtCyYXzL1pRj/s3Mr9v
-         /O+DQHbLZogornRejnUgHEXeBZwh0XT02rB57iRzd1EfMl4osWjcuSnl0LYRlxTUJytw
-         qo5w==
-X-Gm-Message-State: AC+VfDxwzgkkCvjGkJRlf1E/J/btvLHRBUupb6ToGjt94ekqoqwZ8FnZ
-	0lx4trviM4WM4L2IOqQSSrowYmzcMDIpuMyOjCY=
-X-Google-Smtp-Source: ACHHUZ4kK5R6e6gtykfIHJ0JGO/ps21TgM/mD7/kNjvBxwiGg92cr6ACVl3T7T6TAC3tM4AkJe50yRWnzDFUozgZsSY=
-X-Received: by 2002:a17:907:804:b0:96f:5cb3:df66 with SMTP id
- wv4-20020a170907080400b0096f5cb3df66mr390243ejb.18.1686244914032; Thu, 08 Jun
- 2023 10:21:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686245042; x=1688837042;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jM+prdx+FqUuxV0QwSaQztLjuLHXcG8jiQSKLwXQIeo=;
+        b=XXpIMaINrl+9sa827hze8e5B8bYkxwKkYn7h3HhmuyBxDdCEJrwP/6O+ZXpGi/zNXI
+         +/qoMAltW3q11Ek40A/xIO9AY66Dsd6mk6rfbImVH/CWN0XHAM56OpvmOcICF0rNmcYO
+         FUwynY0GaBTOaI1NlQYYJ/4NilpNGjaKw7ZTd+ou44qyN312TCNxQT9KVRx/hSCGcglR
+         pzo5t9auuuN2t8I1yyTi93ARdfE4BAzkWVigistbOxpr6TIR+tjtWB/+7khP8ktEFt2O
+         x2FpQljFTH5NAubgitLgFtow7jCzaTYDEpbG+jUGIA8IZ1tRH1SPYdAxoS8DmEsEJJvp
+         2W3g==
+X-Gm-Message-State: AC+VfDwZrUXE3CA/uWJdhZBdEM9AjAKp+URS98kQ0c7fch96dJoZzCng
+	BTWpeDypTFf2qkA/mF9nk5Tn/GQ=
+X-Google-Smtp-Source: ACHHUZ7vN9JNknY+a/jsZk8WKQGiGdzU9eU51SdN5Ki+ApAVIuTGcMT9Svt4FyQABcG62d6zwcGLyCY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:d113:0:b0:53f:2d21:5a16 with SMTP id
+ k19-20020a63d113000000b0053f2d215a16mr28429pgg.10.1686245041718; Thu, 08 Jun
+ 2023 10:24:01 -0700 (PDT)
+Date: Thu, 8 Jun 2023 10:23:59 -0700
+In-Reply-To: <20230607192625.22641-2-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230606222411.1820404-1-eddyz87@gmail.com> <20230606222411.1820404-4-eddyz87@gmail.com>
- <CAEf4BzbbGV6gTJ1KdBB8EwLWV3aNE-iyNtP2pC-W1=MTDNRq5Q@mail.gmail.com> <cc31b95783afa7dc8fb806c973f8420d22a49e58.camel@gmail.com>
-In-Reply-To: <cc31b95783afa7dc8fb806c973f8420d22a49e58.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Jun 2023 10:21:42 -0700
-Message-ID: <CAEf4Bzaj6K4UuLQU-eRPWQt+nnyXwj_-yf9NAyqMkW-fc1m0OA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Mime-Version: 1.0
+References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-2-daniel@iogearbox.net>
+Message-ID: <ZIIOr1zvdRNTFKR7@google.com>
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API
+ for multi-progs
+From: Stanislav Fomichev <sdf@google.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
+	razor@blackwall.org, john.fastabend@gmail.com, kuba@kernel.org, dxu@dxuuu.xyz, 
+	joe@cilium.io, toke@kernel.org, davem@davemloft.net, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 7, 2023 at 6:26=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Wed, 2023-06-07 at 14:40 -0700, Andrii Nakryiko wrote:
-> > On Tue, Jun 6, 2023 at 3:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> > >
-> > > Make sure that the following unsafe example is rejected by verifier:
-> > >
-> > > 1: r9 =3D ... some pointer with range X ...
-> > > 2: r6 =3D ... unbound scalar ID=3Da ...
-> > > 3: r7 =3D ... unbound scalar ID=3Db ...
-> > > 4: if (r6 > r7) goto +1
-> > > 5: r6 =3D r7
-> > > 6: if (r6 > X) goto ...
-> > > --- checkpoint ---
-> > > 7: r9 +=3D r7
-> > > 8: *(u64 *)r9 =3D Y
-> > >
-> > > This example is unsafe because not all execution paths verify r7 rang=
-e.
-> > > Because of the jump at (4) the verifier would arrive at (6) in two st=
-ates:
-> > > I.  r6{.id=3Db}, r7{.id=3Db} via path 1-6;
-> > > II. r6{.id=3Da}, r7{.id=3Db} via path 1-4, 6.
-> > >
-> > > Currently regsafe() does not call check_ids() for scalar registers,
-> > > thus from POV of regsafe() states (I) and (II) are identical. If the
-> > > path 1-6 is taken by verifier first, and checkpoint is created at (6)
-> > > the path [1-4, 6] would be considered safe.
-> > >
-> > > This commit updates regsafe() to call check_ids() for precise scalar
-> > > registers.
-> > >
-> > > To minimize the impact on verification performance, avoid generating
-> > > bpf_reg_state::id for constant scalar values when processing BPF_MOV
-> > > in check_alu_op(). Scalar IDs are utilized by find_equal_scalars() to
-> > > propagate information about value ranges for registers that hold the
-> > > same value. However, there is no need to propagate range information
-> > > for constants.
-> > >
-> > > Still, there is some performance impact because of this change.
-> > > Using veristat to compare number of processed states for selftests
-> > > object files listed in tools/testing/selftests/bpf/veristat.cfg and
-> > > Cilium object files from [1] gives the following statistics:
-> > >
-> > > $ ./veristat -e file,prog,states -f "states_pct>10" \
-> > >     -C master-baseline.log current.log
-> > > File         Program                         States  (DIFF)
-> > > -----------  ------------------------------  --------------
-> > > bpf_xdp.o    tail_handle_nat_fwd_ipv6        +155 (+23.92%)
-> > > bpf_xdp.o    tail_nodeport_nat_ingress_ipv4  +102 (+27.20%)
-> > > bpf_xdp.o    tail_rev_nodeport_lb4            +83 (+20.85%)
-> > > loop6.bpf.o  trace_virtqueue_add_sgs          +25 (+11.06%)
-> > >
-> > > Also test case verifier_search_pruning/allocated_stack has to be
-> > > updated to avoid conflicts in register ID assignments between cached
-> > > and new states.
-> > >
-> > > [1] git@github.com:anakryiko/cilium.git
-> > >
-> > > Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register a=
-ssignments.")
-> > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > ---
-> >
-> > So I checked it also on our internal BPF object files, and it looks
-> > mostly good. Here are the only regressions:
-> >
-> > Program                                   States (A)  States (B)
-> > States   (DIFF)
-> > ----------------------------------------  ----------  ----------
-> > ---------------
-> > balancer_ingress                               29219       34531
-> > +5312 (+18.18%)
-> > syar_bind6_protect6                             3257        3599
-> > +342 (+10.50%)
-> > syar_bind4_protect4                             2590        2931
-> > +341 (+13.17%)
-> > on_alloc                                         415         526
-> > +111 (+26.75%)
-> > on_free                                          406         517
-> > +111 (+27.34%)
-> > pycallcount                                      395         506
-> > +111 (+28.10%)
-> > resume_context                                   405         516
-> > +111 (+27.41%)
-> > on_py_event                                      395         506
-> > +111 (+28.10%)
-> > on_event                                         284         394
-> > +110 (+38.73%)
-> > handle_cuda_event                                268         378
-> > +110 (+41.04%)
-> > handle_cuda_launch                               276         386
-> > +110 (+39.86%)
-> > handle_cuda_malloc_ret                           272         382
-> > +110 (+40.44%)
-> > handle_cuda_memcpy                               270         380
-> > +110 (+40.74%)
-> > handle_cuda_memcpy_async                         270         380
-> > +110 (+40.74%)
-> > handle_pytorch_allocate_ret                      271         381
-> > +110 (+40.59%)
-> > handle_pytorch_malloc_ret                        272         382
-> > +110 (+40.44%)
-> > on_event                                         284         394
-> > +110 (+38.73%)
-> > on_event                                         284         394
-> > +110 (+38.73%)
-> > syar_task_enter_execve                           309         329
-> > +20 (+6.47%)
-> > kprobe__security_inode_link                      968         986
-> > +18 (+1.86%)
-> > kprobe__security_inode_symlink                   838         854
-> > +16 (+1.91%)
-> > tw_twfw_egress                                   249         251
-> > +2 (+0.80%)
-> > tw_twfw_ingress                                  250         252
-> > +2 (+0.80%)
-> > tw_twfw_tc_eg                                    248         250
-> > +2 (+0.81%)
-> > tw_twfw_tc_in                                    250         252
-> > +2 (+0.80%)
-> > raw_tracepoint__sched_process_exec               136         139
-> > +3 (+2.21%)
-> > kprobe_ret__do_filp_open                         869         871
-> > +2 (+0.23%)
-> > read_erlang_stack                                572         573
-> > +1 (+0.17%)
-> >
-> >
-> > They are mostly on small-ish programs. The only mild concern from my
-> > side is balancer_ingress, which is one of Katran BPF programs. It add
-> > +18% of states (which translates to about 70K more instructions
-> > verified, up from 350K). I think we can live with this, but would be
-> > nice to check why it's happening.
->
-> Thank you for reviewing this series.
->
-> I looked at the logs that you've shared, the difference is indeed
-> caused by some scalar registers having a unique ID in cached state and
-> no ID in current state or vice versa. The !rold->id trick that we
-> discussed for V2 helps :)
->
-> What do you think about an alternative way to exclude unique scalars
-> as in the patch below? (on top of this patch-set):
->
-> --- 8< -------------------------
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 235d7eded565..ece9722dff3b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -15149,6 +15149,13 @@ static bool check_ids(u32 old_id, u32 cur_id, st=
-ruct bpf_id_pair *idmap)
->         return false;
->  }
->
-> +static bool check_scalar_ids(u32 old_id, u32 cur_id, struct bpf_verifier=
-_env *env)
+On 06/07, Daniel Borkmann wrote:
+> This adds a generic layer called bpf_mprog which can be reused by different
+> attachment layers to enable multi-program attachment and dependency resolution.
+> In-kernel users of the bpf_mprog don't need to care about the dependency
+> resolution internals, they can just consume it with few API calls.
+> 
+> The initial idea of having a generic API sparked out of discussion [0] from an
+> earlier revision of this work where tc's priority was reused and exposed via
+> BPF uapi as a way to coordinate dependencies among tc BPF programs, similar
+> as-is for classic tc BPF. The feedback was that priority provides a bad user
+> experience and is hard to use [1], e.g.:
+> 
+>   I cannot help but feel that priority logic copy-paste from old tc, netfilter
+>   and friends is done because "that's how things were done in the past". [...]
+>   Priority gets exposed everywhere in uapi all the way to bpftool when it's
+>   right there for users to understand. And that's the main problem with it.
+> 
+>   The user don't want to and don't need to be aware of it, but uapi forces them
+>   to pick the priority. [...] Your cover letter [0] example proves that in
+>   real life different service pick the same priority. They simply don't know
+>   any better. Priority is an unnecessary magic that apps _have_ to pick, so
+>   they just copy-paste and everyone ends up using the same.
+> 
+> The course of the discussion showed more and more the need for a generic,
+> reusable API where the "same look and feel" can be applied for various other
+> program types beyond just tc BPF, for example XDP today does not have multi-
+> program support in kernel, but also there was interest around this API for
+> improving management of cgroup program types. Such common multi-program
+> management concept is useful for BPF management daemons or user space BPF
+> applications coordinating about their attachments.
+> 
+> Both from Cilium and Meta side [2], we've collected the following requirements
+> for a generic attach/detach/query API for multi-progs which has been implemented
+> as part of this work:
+> 
+>   - Support prog-based attach/detach and link API
+>   - Dependency directives (can also be combined):
+>     - BPF_F_{BEFORE,AFTER} with relative_{fd,id} which can be {prog,link,none}
+>       - BPF_F_ID flag as {fd,id} toggle
+>       - BPF_F_LINK flag as {prog,link} toggle
+>       - If relative_{fd,id} is none, then BPF_F_BEFORE will just prepend, and
+>         BPF_F_AFTER will just append for the case of attaching
+>       - Enforced only at attach time
+>     - BPF_F_{FIRST,LAST}
+>       - Enforced throughout the bpf_mprog state's lifetime
+>       - Admin override possible (e.g. link detach, prog-based BPF_F_REPLACE)
+>   - Internal revision counter and optionally being able to pass expected_revision
+>   - User space daemon can query current state with revision, and pass it along
+>     for attachment to assert current state before doing updates
+>   - Query also gets extension for link_ids array and link_attach_flags:
+>     - prog_ids are always filled with program IDs
+>     - link_ids are filled with link IDs when link was used, otherwise 0
+>     - {prog,link}_attach_flags for holding {prog,link}-specific flags
+>   - Must be easy to integrate/reuse for in-kernel users
+> 
+> The uapi-side changes needed for supporting bpf_mprog are rather minimal,
+> consisting of the additions of the attachment flags, revision counter, and
+> expanding existing union with relative_{fd,id} member.
+> 
+> The bpf_mprog framework consists of an bpf_mprog_entry object which holds
+> an array of bpf_mprog_fp (fast-path structure) and bpf_mprog_cp (control-path
+> structure). Both have been separated, so that fast-path gets efficient packing
+> of bpf_prog pointers for maximum cache efficieny. Also, array has been chosen
+> instead of linked list or other structures to remove unnecessary indirections
+> for a fast point-to-entry in tc for BPF. The bpf_mprog_entry comes as a pair
+> via bpf_mprog_bundle so that in case of updates the peer bpf_mprog_entry
+> is populated and then just swapped which avoids additional allocations that
+> could otherwise fail, for example, in detach case. bpf_mprog_{fp,cp} arrays are
+> currently static, but they could be converted to dynamic allocation if necessary
+> at a point in future. Locking is deferred to the in-kernel user of bpf_mprog,
+> for example, in case of tcx which uses this API in the next patch, it piggy-
+> backs on rtnl. The nitty-gritty details are in the bpf_mprog_{replace,head_tail,
+> add,del} implementation and an extensive test suite for checking all aspects
+> of this API for prog-based attach/detach and link API as BPF selftests in
+> this series.
+> 
+> Kudos also to Andrii Nakryiko for API discussions wrt Meta's BPF management daemon.
+> 
+>   [0] https://lore.kernel.org/bpf/20221004231143.19190-1-daniel@iogearbox.net/
+>   [1] https://lore.kernel.org/bpf/CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com
+>   [2] http://vger.kernel.org/bpfconf2023_material/tcx_meta_netdev_borkmann.pdf
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  MAINTAINERS                    |   1 +
+>  include/linux/bpf_mprog.h      | 245 +++++++++++++++++
+>  include/uapi/linux/bpf.h       |  37 ++-
+>  kernel/bpf/Makefile            |   2 +-
+>  kernel/bpf/mprog.c             | 476 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  37 ++-
+>  6 files changed, 781 insertions(+), 17 deletions(-)
+>  create mode 100644 include/linux/bpf_mprog.h
+>  create mode 100644 kernel/bpf/mprog.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c904dba1733b..754a9eeca0a1 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3733,6 +3733,7 @@ F:	include/linux/filter.h
+>  F:	include/linux/tnum.h
+>  F:	kernel/bpf/core.c
+>  F:	kernel/bpf/dispatcher.c
+> +F:	kernel/bpf/mprog.c
+>  F:	kernel/bpf/syscall.c
+>  F:	kernel/bpf/tnum.c
+>  F:	kernel/bpf/trampoline.c
+> diff --git a/include/linux/bpf_mprog.h b/include/linux/bpf_mprog.h
+> new file mode 100644
+> index 000000000000..7399181d8e6c
+> --- /dev/null
+> +++ b/include/linux/bpf_mprog.h
+> @@ -0,0 +1,245 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2023 Isovalent */
+> +#ifndef __BPF_MPROG_H
+> +#define __BPF_MPROG_H
+> +
+> +#include <linux/bpf.h>
+> +
+> +#define BPF_MPROG_MAX	64
+> +#define BPF_MPROG_SWAP	1
+> +#define BPF_MPROG_FREE	2
+> +
+> +struct bpf_mprog_fp {
+> +	struct bpf_prog *prog;
+> +};
+> +
+> +struct bpf_mprog_cp {
+> +	struct bpf_link *link;
+> +	u32 flags;
+> +};
+> +
+> +struct bpf_mprog_entry {
+> +	struct bpf_mprog_fp fp_items[BPF_MPROG_MAX] ____cacheline_aligned;
+> +	struct bpf_mprog_cp cp_items[BPF_MPROG_MAX] ____cacheline_aligned;
+> +	struct bpf_mprog_bundle *parent;
+> +};
+> +
+> +struct bpf_mprog_bundle {
+> +	struct bpf_mprog_entry a;
+> +	struct bpf_mprog_entry b;
+> +	struct rcu_head rcu;
+> +	struct bpf_prog *ref;
+> +	atomic_t revision;
+> +};
+> +
+> +struct bpf_tuple {
+> +	struct bpf_prog *prog;
+> +	struct bpf_link *link;
+> +};
+> +
+> +static inline struct bpf_mprog_entry *
+> +bpf_mprog_peer(const struct bpf_mprog_entry *entry)
 > +{
-> +       old_id =3D old_id ? old_id : env->id_gen++;
-> +       cur_id =3D cur_id ? cur_id : env->id_gen++;
-> +       return check_ids(old_id, cur_id, env->idmap_scratch);
+> +	if (entry == &entry->parent->a)
+> +		return &entry->parent->b;
+> +	else
+> +		return &entry->parent->a;
 > +}
 > +
->  static void clean_func_state(struct bpf_verifier_env *env,
->                              struct bpf_func_state *st)
->  {
-> @@ -15325,7 +15332,7 @@ static bool regsafe(struct bpf_verifier_env *env,=
- struct bpf_reg_state *rold,
->                  */
->                 return range_within(rold, rcur) &&
->                        tnum_in(rold->var_off, rcur->var_off) &&
-> -                      check_ids(rold->id, rcur->id, idmap);
-> +                      check_scalar_ids(rold->id, rcur->id, env);
->         case PTR_TO_MAP_KEY:
->         case PTR_TO_MAP_VALUE:
->         case PTR_TO_MEM:
->
-> ------------------------- >8 ---
->
-> For me this patch removes all veristat differences compared to the
-> master. If doing it for real, I'd like to reset env->id_gen at exit
-> from states_equal() to the value it had at entry (to avoid allocating
-> too many ids).
+> +#define bpf_mprog_foreach_tuple(entry, fp, cp, t)			\
+> +	for (fp = &entry->fp_items[0], cp = &entry->cp_items[0];	\
+> +	     ({								\
+> +		t.prog = READ_ONCE(fp->prog);				\
+> +		t.link = cp->link;					\
+> +		t.prog;							\
+> +	      });							\
+> +	     fp++, cp++)
+> +
+> +#define bpf_mprog_foreach_prog(entry, fp, p)				\
+> +	for (fp = &entry->fp_items[0];					\
+> +	     (p = READ_ONCE(fp->prog));					\
+> +	     fp++)
+> +
+> +static inline struct bpf_mprog_entry *bpf_mprog_create(size_t extra_size)
+> +{
+> +	struct bpf_mprog_bundle *bundle;
+> +
+> +	/* Fast-path items are not extensible, must only contain prog pointer! */
+> +	BUILD_BUG_ON(sizeof(bundle->a.fp_items[0]) > sizeof(u64));
+> +	/* Control-path items can be extended w/o affecting fast-path. */
+> +	BUILD_BUG_ON(ARRAY_SIZE(bundle->a.fp_items) != ARRAY_SIZE(bundle->a.cp_items));
+> +
+> +	bundle = kzalloc(sizeof(*bundle) + extra_size, GFP_KERNEL);
+> +	if (bundle) {
+> +		atomic_set(&bundle->revision, 1);
+> +		bundle->a.parent = bundle;
+> +		bundle->b.parent = bundle;
+> +		return &bundle->a;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static inline void bpf_mprog_free(struct bpf_mprog_entry *entry)
+> +{
+> +	kfree_rcu(entry->parent, rcu);
+> +}
+> +
+> +static inline void bpf_mprog_mark_ref(struct bpf_mprog_entry *entry,
+> +				      struct bpf_prog *prog)
+> +{
+> +	WARN_ON_ONCE(entry->parent->ref);
+> +	entry->parent->ref = prog;
+> +}
+> +
+> +static inline u32 bpf_mprog_flags(u32 cur_flags, u32 req_flags, u32 flag)
+> +{
+> +	if (req_flags & flag)
+> +		cur_flags |= flag;
+> +	else
+> +		cur_flags &= ~flag;
+> +	return cur_flags;
+> +}
+> +
+> +static inline u32 bpf_mprog_max(void)
+> +{
+> +	return ARRAY_SIZE(((struct bpf_mprog_entry *)NULL)->fp_items) - 1;
+> +}
+> +
+> +static inline struct bpf_prog *bpf_mprog_first(struct bpf_mprog_entry *entry)
+> +{
+> +	return READ_ONCE(entry->fp_items[0].prog);
+> +}
+> +
+> +static inline struct bpf_prog *bpf_mprog_last(struct bpf_mprog_entry *entry)
+> +{
+> +	struct bpf_prog *tmp, *prog = NULL;
+> +	struct bpf_mprog_fp *fp;
+> +
+> +	bpf_mprog_foreach_prog(entry, fp, tmp)
+> +		prog = tmp;
+> +	return prog;
+> +}
+> +
+> +static inline bool bpf_mprog_exists(struct bpf_mprog_entry *entry,
+> +				    struct bpf_prog *prog)
+> +{
+> +	const struct bpf_mprog_fp *fp;
+> +	const struct bpf_prog *tmp;
+> +
+> +	bpf_mprog_foreach_prog(entry, fp, tmp) {
+> +		if (tmp == prog)
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+> +static inline struct bpf_prog *bpf_mprog_first_reg(struct bpf_mprog_entry *entry)
+> +{
+> +	struct bpf_tuple tuple = {};
+> +	struct bpf_mprog_fp *fp;
+> +	struct bpf_mprog_cp *cp;
+> +
+> +	bpf_mprog_foreach_tuple(entry, fp, cp, tuple) {
+> +		if (cp->flags & BPF_F_FIRST)
+> +			continue;
+> +		return tuple.prog;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static inline struct bpf_prog *bpf_mprog_last_reg(struct bpf_mprog_entry *entry)
+> +{
+> +	struct bpf_tuple tuple = {};
+> +	struct bpf_prog *prog = NULL;
+> +	struct bpf_mprog_fp *fp;
+> +	struct bpf_mprog_cp *cp;
+> +
+> +	bpf_mprog_foreach_tuple(entry, fp, cp, tuple) {
+> +		if (cp->flags & BPF_F_LAST)
+> +			break;
+> +		prog = tuple.prog;
+> +	}
+> +	return prog;
+> +}
+> +
+> +static inline void bpf_mprog_commit(struct bpf_mprog_entry *entry)
+> +{
 
-Hm.. It's clever and pretty minimal, I like it. We are basically
-allocating virtual ID for SCALAR that doesn't have id, just to make
-sure we get a conflict if the SCALAR with ID cannot be mapped into two
-different SCALARs, right?
+[..]
 
-The only question would be if it's safe to do that for case when
-old_reg->id !=3D 0 and cur_reg->id =3D=3D 0? E.g., if in old (verified)
-state we have r6.id =3D r7.id =3D 123, and in new state we have r6.id =3D 0
-and r7.id =3D 0, then your implementation above will say that states are
-equivalent. But are they, given there is a link between r6 and r7 that
-might be required for correctness. Which we don't have in current
-state.
+> +	do {
+> +		atomic_inc(&entry->parent->revision);
+> +	} while (atomic_read(&entry->parent->revision) == 0);
 
-So with this we are getting to my original concerns with your
-!rold->id approach, which tries to ignore the necessity of link
-between registers.
+Can you explain more what's going on here? Maybe with a comment?
 
-What if we do this only for old registers? Then, (in old state) r6.id
-=3D 0, r7.id =3D 0, (in new state) r6.id =3D r7.id =3D 123. This will be
-rejected because first we'll map 123 to newly allocated X for r6.id,
-and then when we try to match r7.id=3D123 to another allocated ID X+1
-we'll get a conflict, right?
+> +	synchronize_rcu();
+> +	if (entry->parent->ref) {
+> +		bpf_prog_put(entry->parent->ref);
+> +		entry->parent->ref = NULL;
+> +	}
 
->
-> >
-> > I suspect that dropping SCALAR IDs as we discussed (after fixing
-> > register fill/spill ID generation) might completely mitigate that.
-> >
-> > Overall, LGTM:
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > >  kernel/bpf/verifier.c                         | 34 ++++++++++++++++-=
---
-> > >  .../bpf/progs/verifier_search_pruning.c       |  3 +-
-> > >  2 files changed, 32 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 2aa60b73f1b5..175ca22b868e 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -12933,12 +12933,14 @@ static int check_alu_op(struct bpf_verifier=
-_env *env, struct bpf_insn *insn)
-> > >                 if (BPF_SRC(insn->code) =3D=3D BPF_X) {
-> > >                         struct bpf_reg_state *src_reg =3D regs + insn=
-->src_reg;
-> > >                         struct bpf_reg_state *dst_reg =3D regs + insn=
-->dst_reg;
-> > > +                       bool need_id =3D (src_reg->type =3D=3D SCALAR=
-_VALUE && !src_reg->id &&
-> > > +                                       !tnum_is_const(src_reg->var_o=
-ff));
-> > >
-> >
-> > nit: unnecessary outer ()
-> >
-> > >                         if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
-> > >                                 /* case: R1 =3D R2
-> > >                                  * copy register state to dest reg
-> > >                                  */
-> > > -                               if (src_reg->type =3D=3D SCALAR_VALUE=
- && !src_reg->id)
-> > > +                               if (need_id)
-> > >                                         /* Assign src and dst registe=
-rs the same ID
-> > >                                          * that will be used by find_=
-equal_scalars()
-> > >                                          * to propagate min/max range=
-.
-> >
-> > [...]
->
+I'm assuming this is to guard the detach path? But isn't bpf_prog_put
+already doing the deferred dealloc? So calling it without synchronize_rcu
+here should be ok?
+
+> +}
+> +
+> +static inline void bpf_mprog_entry_clear(struct bpf_mprog_entry *entry)
+> +{
+> +	memset(entry->fp_items, 0, sizeof(entry->fp_items));
+> +	memset(entry->cp_items, 0, sizeof(entry->cp_items));
+> +}
+> +
+> +static inline u64 bpf_mprog_revision(struct bpf_mprog_entry *entry)
+> +{
+> +	return atomic_read(&entry->parent->revision);
+> +}
+> +
+> +static inline void bpf_mprog_read(struct bpf_mprog_entry *entry, u32 which,
+> +				  struct bpf_mprog_fp **fp_dst,
+> +				  struct bpf_mprog_cp **cp_dst)
+> +{
+> +	*fp_dst = &entry->fp_items[which];
+> +	*cp_dst = &entry->cp_items[which];
+> +}
+> +
+> +static inline void bpf_mprog_write(struct bpf_mprog_fp *fp_dst,
+> +				   struct bpf_mprog_cp *cp_dst,
+> +				   struct bpf_tuple *tuple, u32 flags)
+> +{
+> +	WRITE_ONCE(fp_dst->prog, tuple->prog);
+> +	cp_dst->link  = tuple->link;
+> +	cp_dst->flags = flags;
+> +}
+> +
+> +static inline void bpf_mprog_copy(struct bpf_mprog_fp *fp_dst,
+> +				  struct bpf_mprog_cp *cp_dst,
+> +				  struct bpf_mprog_fp *fp_src,
+> +				  struct bpf_mprog_cp *cp_src)
+> +{
+> +	WRITE_ONCE(fp_dst->prog, READ_ONCE(fp_src->prog));
+> +	memcpy(cp_dst, cp_src, sizeof(*cp_src));
+
+nit: why not simply *cp_dst = *cp_src? memcpy somewhat implies (in my
+mind) that we are copying several entries..
+
+> +}
+> +
+> +static inline void bpf_mprog_copy_range(struct bpf_mprog_entry *peer,
+> +					struct bpf_mprog_entry *entry,
+> +					u32 idx_peer, u32 idx_entry, u32 num)
+> +{
+> +	memcpy(&peer->fp_items[idx_peer], &entry->fp_items[idx_entry],
+> +	       num * sizeof(peer->fp_items[0]));
+> +	memcpy(&peer->cp_items[idx_peer], &entry->cp_items[idx_entry],
+> +	       num * sizeof(peer->cp_items[0]));
+> +}
+> +
+> +static inline u32 bpf_mprog_total(struct bpf_mprog_entry *entry)
+> +{
+> +	const struct bpf_mprog_fp *fp;
+> +	const struct bpf_prog *tmp;
+> +	u32 num = 0;
+> +
+> +	bpf_mprog_foreach_prog(entry, fp, tmp)
+> +		num++;
+> +	return num;
+> +}
+> +
+> +int bpf_mprog_attach(struct bpf_mprog_entry *entry, struct bpf_prog *prog,
+> +		     struct bpf_link *link, u32 flags, u32 object,
+> +		     u32 expected_revision);
+> +int bpf_mprog_detach(struct bpf_mprog_entry *entry, struct bpf_prog *prog,
+> +		     struct bpf_link *link, u32 flags, u32 object,
+> +		     u32 expected_revision);
+> +
+> +int bpf_mprog_query(const union bpf_attr *attr, union bpf_attr __user *uattr,
+> +		    struct bpf_mprog_entry *entry);
+> +
+> +#endif /* __BPF_MPROG_H */
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a7b5e91dd768..207f8a37b327 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1102,7 +1102,14 @@ enum bpf_link_type {
+>   */
+>  #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
+>  #define BPF_F_ALLOW_MULTI	(1U << 1)
+> +/* Generic attachment flags. */
+>  #define BPF_F_REPLACE		(1U << 2)
+> +#define BPF_F_BEFORE		(1U << 3)
+> +#define BPF_F_AFTER		(1U << 4)
+> +#define BPF_F_FIRST		(1U << 5)
+> +#define BPF_F_LAST		(1U << 6)
+> +#define BPF_F_ID		(1U << 7)
+> +#define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+>  
+>  /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+>   * verifier will perform strict alignment checking as if the kernel
+> @@ -1433,14 +1440,19 @@ union bpf_attr {
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
+> -		__u32		target_fd;	/* container object to attach to */
+> -		__u32		attach_bpf_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32	target_fd;	/* target object to attach to or ... */
+> +			__u32	target_ifindex;	/* target ifindex */
+> +		};
+> +		__u32		attach_bpf_fd;
+>  		__u32		attach_type;
+>  		__u32		attach_flags;
+> -		__u32		replace_bpf_fd;	/* previously attached eBPF
+> -						 * program to replace if
+> -						 * BPF_F_REPLACE is used
+> -						 */
+> +		union {
+> +			__u32	relative_fd;
+> +			__u32	relative_id;
+> +			__u32	replace_bpf_fd;
+> +		};
+> +		__u32		expected_revision;
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
+> @@ -1486,16 +1498,25 @@ union bpf_attr {
+>  	} info;
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_QUERY command */
+> -		__u32		target_fd;	/* container object to query */
+> +		union {
+> +			__u32	target_fd;	/* target object to query or ... */
+> +			__u32	target_ifindex;	/* target ifindex */
+> +		};
+>  		__u32		attach_type;
+>  		__u32		query_flags;
+>  		__u32		attach_flags;
+>  		__aligned_u64	prog_ids;
+> -		__u32		prog_cnt;
+> +		union {
+> +			__u32	prog_cnt;
+> +			__u32	count;
+> +		};
+> +		__u32		revision;
+>  		/* output: per-program attach_flags.
+>  		 * not allowed to be set during effective query.
+>  		 */
+>  		__aligned_u64	prog_attach_flags;
+> +		__aligned_u64	link_ids;
+> +		__aligned_u64	link_attach_flags;
+>  	} query;
+>  
+>  	struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 1d3892168d32..1bea2eb912cd 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -12,7 +12,7 @@ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list
+>  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+>  obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
+> -obj-$(CONFIG_BPF_SYSCALL) += disasm.o
+> +obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
+>  obj-$(CONFIG_BPF_JIT) += trampoline.o
+>  obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
+>  obj-$(CONFIG_BPF_JIT) += dispatcher.o
+> diff --git a/kernel/bpf/mprog.c b/kernel/bpf/mprog.c
+> new file mode 100644
+> index 000000000000..efc3b73f8bf5
+> --- /dev/null
+> +++ b/kernel/bpf/mprog.c
+> @@ -0,0 +1,476 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Isovalent */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_mprog.h>
+> +#include <linux/filter.h>
+> +
+> +static int bpf_mprog_tuple_relative(struct bpf_tuple *tuple,
+> +				    u32 object, u32 flags,
+> +				    enum bpf_prog_type type)
+> +{
+> +	struct bpf_prog *prog;
+> +	struct bpf_link *link;
+> +
+> +	memset(tuple, 0, sizeof(*tuple));
+> +	if (!(flags & (BPF_F_REPLACE | BPF_F_BEFORE | BPF_F_AFTER)))
+> +		return object || (flags & (BPF_F_ID | BPF_F_LINK)) ?
+> +		       -EINVAL : 0;
+> +	if (flags & BPF_F_LINK) {
+> +		if (flags & BPF_F_ID)
+> +			link = bpf_link_by_id(object);
+> +		else
+> +			link = bpf_link_get_from_fd(object);
+> +		if (IS_ERR(link))
+> +			return PTR_ERR(link);
+> +		if (type && link->prog->type != type) {
+> +			bpf_link_put(link);
+> +			return -EINVAL;
+> +		}
+> +		tuple->link = link;
+> +		tuple->prog = link->prog;
+> +	} else {
+> +		if (flags & BPF_F_ID)
+> +			prog = bpf_prog_by_id(object);
+> +		else
+> +			prog = bpf_prog_get(object);
+> +		if (IS_ERR(prog)) {
+> +			if (!object &&
+> +			    !(flags & BPF_F_ID))
+> +				return 0;
+> +			return PTR_ERR(prog);
+> +		}
+> +		if (type && prog->type != type) {
+> +			bpf_prog_put(prog);
+> +			return -EINVAL;
+> +		}
+> +		tuple->link = NULL;
+> +		tuple->prog = prog;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void bpf_mprog_tuple_put(struct bpf_tuple *tuple)
+> +{
+> +	if (tuple->link)
+> +		bpf_link_put(tuple->link);
+> +	else if (tuple->prog)
+> +		bpf_prog_put(tuple->prog);
+> +}
+> +
+> +static int bpf_mprog_replace(struct bpf_mprog_entry *entry,
+> +			     struct bpf_tuple *ntuple,
+> +			     struct bpf_tuple *rtuple, u32 rflags)
+> +{
+> +	struct bpf_mprog_fp *fp;
+> +	struct bpf_mprog_cp *cp;
+> +	struct bpf_prog *oprog;
+> +	u32 iflags;
+> +	int i;
+> +
+> +	if (rflags & (BPF_F_BEFORE | BPF_F_AFTER | BPF_F_LINK))
+> +		return -EINVAL;
+> +	if (rtuple->prog != ntuple->prog &&
+> +	    bpf_mprog_exists(entry, ntuple->prog))
+> +		return -EEXIST;
+> +	for (i = 0; i < bpf_mprog_max(); i++) {
+> +		bpf_mprog_read(entry, i, &fp, &cp);
+> +		oprog = READ_ONCE(fp->prog);
+> +		if (!oprog)
+> +			break;
+> +		if (oprog != rtuple->prog)
+> +			continue;
+> +		if (cp->link != ntuple->link)
+> +			return -EBUSY;
+> +		iflags = cp->flags;
+> +		if ((iflags & BPF_F_FIRST) !=
+> +		    (rflags & BPF_F_FIRST)) {
+> +			iflags = bpf_mprog_flags(iflags, rflags,
+> +						 BPF_F_FIRST);
+> +			if ((iflags & BPF_F_FIRST) &&
+> +			    rtuple->prog != bpf_mprog_first(entry))
+> +				return -EACCES;
+> +		}
+> +		if ((iflags & BPF_F_LAST) !=
+> +		    (rflags & BPF_F_LAST)) {
+> +			iflags = bpf_mprog_flags(iflags, rflags,
+> +						 BPF_F_LAST);
+> +			if ((iflags & BPF_F_LAST) &&
+> +			    rtuple->prog != bpf_mprog_last(entry))
+> +				return -EACCES;
+> +		}
+> +		bpf_mprog_write(fp, cp, ntuple, iflags);
+> +		if (!ntuple->link)
+> +			bpf_prog_put(oprog);
+> +		return 0;
+> +	}
+> +	return -ENOENT;
+> +}
+> +
+> +static int bpf_mprog_head_tail(struct bpf_mprog_entry *entry,
+> +			       struct bpf_tuple *ntuple,
+> +			       struct bpf_tuple *rtuple, u32 aflags)
+> +{
+> +	struct bpf_mprog_entry *peer;
+> +	struct bpf_mprog_fp *fp;
+> +	struct bpf_mprog_cp *cp;
+> +	struct bpf_prog *oprog;
+> +	u32 iflags, items;
+> +
+> +	if (bpf_mprog_exists(entry, ntuple->prog))
+> +		return -EEXIST;
+> +	items = bpf_mprog_total(entry);
+> +	peer = bpf_mprog_peer(entry);
+> +	bpf_mprog_entry_clear(peer);
+> +	if (aflags & BPF_F_FIRST) {
+> +		if (aflags & BPF_F_AFTER)
+> +			return -EINVAL;
+> +		bpf_mprog_read(entry, 0, &fp, &cp);
+> +		iflags = cp->flags;
+> +		if (iflags & BPF_F_FIRST)
+> +			return -EBUSY;
+> +		if (aflags & BPF_F_LAST) {
+> +			if (aflags & BPF_F_BEFORE)
+> +				return -EINVAL;
+> +			if (items)
+> +				return -EBUSY;
+> +			bpf_mprog_read(peer, 0, &fp, &cp);
+> +			bpf_mprog_write(fp, cp, ntuple,
+> +					BPF_F_FIRST | BPF_F_LAST);
+> +			return BPF_MPROG_SWAP;
+> +		}
+> +		if (aflags & BPF_F_BEFORE) {
+> +			oprog = READ_ONCE(fp->prog);
+> +			if (oprog != rtuple->prog ||
+> +			    (rtuple->link &&
+> +			     rtuple->link != cp->link))
+> +				return -EBUSY;
+> +		}
+> +		if (items >= bpf_mprog_max())
+> +			return -ENOSPC;
+> +		bpf_mprog_read(peer, 0, &fp, &cp);
+> +		bpf_mprog_write(fp, cp, ntuple, BPF_F_FIRST);
+> +		bpf_mprog_copy_range(peer, entry, 1, 0, items);
+> +		return BPF_MPROG_SWAP;
+> +	}
+> +	if (aflags & BPF_F_LAST) {
+> +		if (aflags & BPF_F_BEFORE)
+> +			return -EINVAL;
+> +		if (items) {
+> +			bpf_mprog_read(entry, items - 1, &fp, &cp);
+> +			iflags = cp->flags;
+> +			if (iflags & BPF_F_LAST)
+> +				return -EBUSY;
+> +			if (aflags & BPF_F_AFTER) {
+> +				oprog = READ_ONCE(fp->prog);
+> +				if (oprog != rtuple->prog ||
+> +				    (rtuple->link &&
+> +				     rtuple->link != cp->link))
+> +					return -EBUSY;
+> +			}
+> +			if (items >= bpf_mprog_max())
+> +				return -ENOSPC;
+> +		} else {
+> +			if (aflags & BPF_F_AFTER)
+> +				return -EBUSY;
+> +		}
+> +		bpf_mprog_read(peer, items, &fp, &cp);
+> +		bpf_mprog_write(fp, cp, ntuple, BPF_F_LAST);
+> +		bpf_mprog_copy_range(peer, entry, 0, 0, items);
+> +		return BPF_MPROG_SWAP;
+> +	}
+> +	return -ENOENT;
+> +}
+> +
+> +static int bpf_mprog_add(struct bpf_mprog_entry *entry,
+> +			 struct bpf_tuple *ntuple,
+> +			 struct bpf_tuple *rtuple, u32 aflags)
+> +{
+> +	struct bpf_mprog_fp *fp_dst, *fp_src;
+> +	struct bpf_mprog_cp *cp_dst, *cp_src;
+> +	struct bpf_mprog_entry *peer;
+> +	struct bpf_prog *oprog;
+> +	bool found = false;
+> +	u32 items;
+> +	int i, j;
+> +
+> +	items = bpf_mprog_total(entry);
+> +	if (items >= bpf_mprog_max())
+> +		return -ENOSPC;
+> +	if ((aflags & (BPF_F_BEFORE | BPF_F_AFTER)) ==
+> +	    (BPF_F_BEFORE | BPF_F_AFTER))
+> +		return -EINVAL;
+> +	if (bpf_mprog_exists(entry, ntuple->prog))
+> +		return -EEXIST;
+> +	if (!rtuple->prog && (aflags & (BPF_F_BEFORE | BPF_F_AFTER))) {
+> +		if (!items)
+> +			aflags &= ~(BPF_F_AFTER | BPF_F_BEFORE);
+> +		if (aflags & BPF_F_BEFORE)
+> +			rtuple->prog = bpf_mprog_first_reg(entry);
+> +		if (aflags & BPF_F_AFTER)
+> +			rtuple->prog = bpf_mprog_last_reg(entry);
+> +		if (!rtuple->prog)
+> +			aflags &= ~(BPF_F_AFTER | BPF_F_BEFORE);
+> +		else
+> +			bpf_prog_inc(rtuple->prog);
+> +	}
+> +	peer = bpf_mprog_peer(entry);
+> +	bpf_mprog_entry_clear(peer);
+> +	for (i = 0, j = 0; i < bpf_mprog_max(); i++, j++) {
+> +		bpf_mprog_read(entry, i, &fp_src, &cp_src);
+> +		bpf_mprog_read(peer,  j, &fp_dst, &cp_dst);
+> +		oprog = READ_ONCE(fp_src->prog);
+> +		if (!oprog) {
+> +			if (i != j)
+> +				break;
+> +			if (i > 0) {
+> +				bpf_mprog_read(entry, i - 1,
+> +					       &fp_src, &cp_src);
+> +				if (cp_src->flags & BPF_F_LAST) {
+> +					if (cp_src->flags & BPF_F_FIRST)
+> +						return -EBUSY;
+> +					bpf_mprog_copy(fp_dst, cp_dst,
+> +						       fp_src, cp_src);
+> +					bpf_mprog_read(peer, --j,
+> +						       &fp_dst, &cp_dst);
+> +				}
+> +			}
+> +			bpf_mprog_write(fp_dst, cp_dst, ntuple, 0);
+> +			break;
+> +		}
+> +		if (aflags & (BPF_F_BEFORE | BPF_F_AFTER)) {
+> +			if (rtuple->prog != oprog ||
+> +			    (rtuple->link &&
+> +			     rtuple->link != cp_src->link))
+> +				goto next;
+> +			found = true;
+> +			if (aflags & BPF_F_BEFORE) {
+> +				if (cp_src->flags & BPF_F_FIRST)
+> +					return -EBUSY;
+> +				bpf_mprog_write(fp_dst, cp_dst, ntuple, 0);
+> +				bpf_mprog_read(peer, ++j, &fp_dst, &cp_dst);
+> +				goto next;
+> +			}
+> +			if (aflags & BPF_F_AFTER) {
+> +				if (cp_src->flags & BPF_F_LAST)
+> +					return -EBUSY;
+> +				bpf_mprog_copy(fp_dst, cp_dst,
+> +					       fp_src, cp_src);
+> +				bpf_mprog_read(peer, ++j, &fp_dst, &cp_dst);
+> +				bpf_mprog_write(fp_dst, cp_dst, ntuple, 0);
+> +				continue;
+> +			}
+> +		}
+> +next:
+> +		bpf_mprog_copy(fp_dst, cp_dst,
+> +			       fp_src, cp_src);
+> +	}
+> +	if (rtuple->prog && !found)
+> +		return -ENOENT;
+> +	return BPF_MPROG_SWAP;
+> +}
+> +
+> +static int bpf_mprog_del(struct bpf_mprog_entry *entry,
+> +			 struct bpf_tuple *dtuple,
+> +			 struct bpf_tuple *rtuple, u32 dflags)
+> +{
+> +	struct bpf_mprog_fp *fp_dst, *fp_src;
+> +	struct bpf_mprog_cp *cp_dst, *cp_src;
+> +	struct bpf_mprog_entry *peer;
+> +	struct bpf_prog *oprog;
+> +	bool found = false;
+> +	int i, j, ret;
+> +
+> +	if (dflags & BPF_F_REPLACE)
+> +		return -EINVAL;
+> +	if (dflags & BPF_F_FIRST) {
+> +		oprog = bpf_mprog_first(entry);
+> +		if (dtuple->prog &&
+> +		    dtuple->prog != oprog)
+> +			return -ENOENT;
+> +		dtuple->prog = oprog;
+> +	}
+> +	if (dflags & BPF_F_LAST) {
+> +		oprog = bpf_mprog_last(entry);
+> +		if (dtuple->prog &&
+> +		    dtuple->prog != oprog)
+> +			return -ENOENT;
+> +		dtuple->prog = oprog;
+> +	}
+> +	if (!rtuple->prog && (dflags & (BPF_F_BEFORE | BPF_F_AFTER))) {
+> +		if (dtuple->prog)
+> +			return -EINVAL;
+> +		if (dflags & BPF_F_BEFORE)
+> +			dtuple->prog = bpf_mprog_first_reg(entry);
+> +		if (dflags & BPF_F_AFTER)
+> +			dtuple->prog = bpf_mprog_last_reg(entry);
+> +		if (dtuple->prog)
+> +			dflags &= ~(BPF_F_AFTER | BPF_F_BEFORE);
+> +	}
+> +	for (i = 0; i < bpf_mprog_max(); i++) {
+> +		bpf_mprog_read(entry, i, &fp_src, &cp_src);
+> +		oprog = READ_ONCE(fp_src->prog);
+> +		if (!oprog)
+> +			break;
+> +		if (dflags & (BPF_F_BEFORE | BPF_F_AFTER)) {
+> +			if (rtuple->prog != oprog ||
+> +			    (rtuple->link &&
+> +			     rtuple->link != cp_src->link))
+> +				continue;
+> +			found = true;
+> +			if (dflags & BPF_F_BEFORE) {
+> +				if (!i)
+> +					return -ENOENT;
+> +				bpf_mprog_read(entry, i - 1,
+> +					       &fp_src, &cp_src);
+> +				oprog = READ_ONCE(fp_src->prog);
+> +				if (dtuple->prog &&
+> +				    dtuple->prog != oprog)
+> +					return -ENOENT;
+> +				dtuple->prog = oprog;
+> +				break;
+> +			}
+> +			if (dflags & BPF_F_AFTER) {
+> +				bpf_mprog_read(entry, i + 1,
+> +					       &fp_src, &cp_src);
+> +				oprog = READ_ONCE(fp_src->prog);
+> +				if (dtuple->prog &&
+> +				    dtuple->prog != oprog)
+> +					return -ENOENT;
+> +				dtuple->prog = oprog;
+> +				break;
+> +			}
+> +		}
+> +	}
+> +	if (!dtuple->prog || (rtuple->prog && !found))
+> +		return -ENOENT;
+> +	peer = bpf_mprog_peer(entry);
+> +	bpf_mprog_entry_clear(peer);
+> +	ret = -ENOENT;
+> +	for (i = 0, j = 0; i < bpf_mprog_max(); i++) {
+> +		bpf_mprog_read(entry, i, &fp_src, &cp_src);
+> +		bpf_mprog_read(peer,  j, &fp_dst, &cp_dst);
+> +		oprog = READ_ONCE(fp_src->prog);
+> +		if (!oprog)
+> +			break;
+> +		if (oprog != dtuple->prog) {
+> +			bpf_mprog_copy(fp_dst, cp_dst,
+> +				       fp_src, cp_src);
+> +			j++;
+> +		} else {
+> +			if (cp_src->link != dtuple->link)
+> +				return -EBUSY;
+> +			if (!cp_src->link)
+> +				bpf_mprog_mark_ref(entry, dtuple->prog);
+> +			ret = BPF_MPROG_SWAP;
+> +		}
+> +	}
+> +	if (!bpf_mprog_total(peer))
+> +		ret = BPF_MPROG_FREE;
+> +	return ret;
+> +}
+> +
+> +int bpf_mprog_attach(struct bpf_mprog_entry *entry, struct bpf_prog *prog,
+> +		     struct bpf_link *link, u32 flags, u32 object,
+> +		     u32 expected_revision)
+> +{
+> +	struct bpf_tuple rtuple, ntuple = {
+> +		.prog = prog,
+> +		.link = link,
+> +	};
+> +	int ret;
+> +
+> +	if (expected_revision &&
+> +	    expected_revision != bpf_mprog_revision(entry))
+> +		return -ESTALE;
+> +	ret = bpf_mprog_tuple_relative(&rtuple, object, flags, prog->type);
+> +	if (ret)
+> +		return ret;
+> +	if (flags & BPF_F_REPLACE)
+> +		ret = bpf_mprog_replace(entry, &ntuple, &rtuple, flags);
+> +	else if (flags & (BPF_F_FIRST | BPF_F_LAST))
+> +		ret = bpf_mprog_head_tail(entry, &ntuple, &rtuple, flags);
+> +	else
+> +		ret = bpf_mprog_add(entry, &ntuple, &rtuple, flags);
+> +	bpf_mprog_tuple_put(&rtuple);
+> +	return ret;
+> +}
+> +
+> +int bpf_mprog_detach(struct bpf_mprog_entry *entry, struct bpf_prog *prog,
+> +		     struct bpf_link *link, u32 flags, u32 object,
+> +		     u32 expected_revision)
+> +{
+> +	struct bpf_tuple rtuple, dtuple = {
+> +		.prog = prog,
+> +		.link = link,
+> +	};
+> +	int ret;
+> +
+> +	if (expected_revision &&
+> +	    expected_revision != bpf_mprog_revision(entry))
+> +		return -ESTALE;
+> +	ret = bpf_mprog_tuple_relative(&rtuple, object, flags,
+> +				       prog ? prog->type :
+> +				       BPF_PROG_TYPE_UNSPEC);
+> +	if (ret)
+> +		return ret;
+> +	ret = bpf_mprog_del(entry, &dtuple, &rtuple, flags);
+> +	bpf_mprog_tuple_put(&rtuple);
+> +	return ret;
+> +}
+> +
+> +int bpf_mprog_query(const union bpf_attr *attr, union bpf_attr __user *uattr,
+> +		    struct bpf_mprog_entry *entry)
+> +{
+> +	u32 i, id, flags = 0, count, revision;
+> +	u32 __user *uprog_id, *uprog_af;
+> +	u32 __user *ulink_id, *ulink_af;
+> +	struct bpf_mprog_fp *fp;
+> +	struct bpf_mprog_cp *cp;
+> +	struct bpf_prog *prog;
+> +	int ret = 0;
+> +
+> +	if (attr->query.query_flags || attr->query.attach_flags)
+> +		return -EINVAL;
+> +	revision = bpf_mprog_revision(entry);
+> +	count = bpf_mprog_total(entry);
+> +	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+> +		return -EFAULT;
+> +	if (copy_to_user(&uattr->query.revision, &revision, sizeof(revision)))
+> +		return -EFAULT;
+> +	if (copy_to_user(&uattr->query.count, &count, sizeof(count)))
+> +		return -EFAULT;
+> +	uprog_id = u64_to_user_ptr(attr->query.prog_ids);
+> +	if (attr->query.count == 0 || !uprog_id || !count)
+> +		return 0;
+> +	if (attr->query.count < count) {
+> +		count = attr->query.count;
+> +		ret = -ENOSPC;
+> +	}
+> +	uprog_af = u64_to_user_ptr(attr->query.prog_attach_flags);
+> +	ulink_id = u64_to_user_ptr(attr->query.link_ids);
+> +	ulink_af = u64_to_user_ptr(attr->query.link_attach_flags);
+> +	for (i = 0; i < ARRAY_SIZE(entry->fp_items); i++) {
+> +		bpf_mprog_read(entry, i, &fp, &cp);
+> +		prog = READ_ONCE(fp->prog);
+> +		if (!prog)
+> +			break;
+> +		id = prog->aux->id;
+> +		if (copy_to_user(uprog_id + i, &id, sizeof(id)))
+> +			return -EFAULT;
+> +		id = cp->link ? cp->link->id : 0;
+> +		if (ulink_id &&
+> +		    copy_to_user(ulink_id + i, &id, sizeof(id)))
+> +			return -EFAULT;
+> +		flags = cp->flags;
+> +		if (uprog_af && !id &&
+> +		    copy_to_user(uprog_af + i, &flags, sizeof(flags)))
+> +			return -EFAULT;
+> +		if (ulink_af && id &&
+> +		    copy_to_user(ulink_af + i, &flags, sizeof(flags)))
+> +			return -EFAULT;
+> +		if (i + 1 == count)
+> +			break;
+> +	}
+> +	return ret;
+> +}
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index a7b5e91dd768..207f8a37b327 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1102,7 +1102,14 @@ enum bpf_link_type {
+>   */
+>  #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
+>  #define BPF_F_ALLOW_MULTI	(1U << 1)
+> +/* Generic attachment flags. */
+>  #define BPF_F_REPLACE		(1U << 2)
+> +#define BPF_F_BEFORE		(1U << 3)
+> +#define BPF_F_AFTER		(1U << 4)
+
+[..]
+
+> +#define BPF_F_FIRST		(1U << 5)
+> +#define BPF_F_LAST		(1U << 6)
+
+I'm still not sure whether the hard semantics of first/last is really
+useful. My worry is that some prog will just use BPF_F_FIRST which
+would prevent the rest of the users.. (starting with only
+F_BEFORE/F_AFTER feels 'safer'; we can iterate later on if we really
+need first/laste).
+
+But if everyone besides myself is on board with first/last, maybe at least
+put a comment here saying that only a single program can be first/last?
+And the users are advised not to use these unless they really really really
+need to be first/last. (IOW, feels like first/last should be reserved
+for observability tools/etc).
+
+> +#define BPF_F_ID		(1U << 7)
+> +#define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+>  
+>  /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+>   * verifier will perform strict alignment checking as if the kernel
+> @@ -1433,14 +1440,19 @@ union bpf_attr {
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
+> -		__u32		target_fd;	/* container object to attach to */
+> -		__u32		attach_bpf_fd;	/* eBPF program to attach */
+> +		union {
+> +			__u32	target_fd;	/* target object to attach to or ... */
+> +			__u32	target_ifindex;	/* target ifindex */
+> +		};
+> +		__u32		attach_bpf_fd;
+>  		__u32		attach_type;
+>  		__u32		attach_flags;
+> -		__u32		replace_bpf_fd;	/* previously attached eBPF
+> -						 * program to replace if
+> -						 * BPF_F_REPLACE is used
+> -						 */
+> +		union {
+> +			__u32	relative_fd;
+> +			__u32	relative_id;
+> +			__u32	replace_bpf_fd;
+> +		};
+> +		__u32		expected_revision;
+>  	};
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
+> @@ -1486,16 +1498,25 @@ union bpf_attr {
+>  	} info;
+>  
+>  	struct { /* anonymous struct used by BPF_PROG_QUERY command */
+> -		__u32		target_fd;	/* container object to query */
+> +		union {
+> +			__u32	target_fd;	/* target object to query or ... */
+> +			__u32	target_ifindex;	/* target ifindex */
+> +		};
+>  		__u32		attach_type;
+>  		__u32		query_flags;
+>  		__u32		attach_flags;
+>  		__aligned_u64	prog_ids;
+> -		__u32		prog_cnt;
+> +		union {
+> +			__u32	prog_cnt;
+> +			__u32	count;
+> +		};
+> +		__u32		revision;
+>  		/* output: per-program attach_flags.
+>  		 * not allowed to be set during effective query.
+>  		 */
+>  		__aligned_u64	prog_attach_flags;
+> +		__aligned_u64	link_ids;
+> +		__aligned_u64	link_attach_flags;
+>  	} query;
+>  
+>  	struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> -- 
+> 2.34.1
+> 
 
