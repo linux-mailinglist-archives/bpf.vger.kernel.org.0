@@ -1,71 +1,70 @@
-Return-Path: <bpf+bounces-2159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 396E9728A4F
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5076A728A62
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EACE0281747
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:37:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 049B22817A6
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0C134D66;
-	Thu,  8 Jun 2023 21:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA78B34D71;
+	Thu,  8 Jun 2023 21:46:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC63F7464;
-	Thu,  8 Jun 2023 21:37:26 +0000 (UTC)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04C82D75;
-	Thu,  8 Jun 2023 14:37:24 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5149e65c244so1590272a12.3;
-        Thu, 08 Jun 2023 14:37:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD90734CC5;
+	Thu,  8 Jun 2023 21:46:05 +0000 (UTC)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B352D6A;
+	Thu,  8 Jun 2023 14:46:02 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-516af4a6d65so2201098a12.0;
+        Thu, 08 Jun 2023 14:46:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686260243; x=1688852243;
+        d=gmail.com; s=20221208; t=1686260761; x=1688852761;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LNgbnOE8JQSxHSY90Rbs24V81VgXzudXeZ7AH3950hI=;
-        b=DWteEuISvZDMGQEnLEbkv4WarsSQ1+4urfKy277GgNke43FCx4JBG78NpEyXvXKV2j
-         kRXsz9MdVnwp/4E13ETHqTs/li7L87set/vJUaKw3O2SUn9TZgFlzN3d6DG542Ivyd1+
-         CcA9cs/9UxcleR0D89zCtUQWMgncw6Ym7URErr+HPg8LdrcUU8zGDYtubWBOe7MUI624
-         296DJ8rsDLenU+wtsRbkVa65wAmUdctnfFWAL2o3sc/N3XhCSQCLuOU+kU6oK4hHpIRd
-         NgVr5QOhZrlK/7ep6Kp5kb49N4kT7MC/hs4pjzuGdKM+6X7h7JApXm5n7MjLMObbH7IB
-         73Aw==
+        bh=x0gBdEd5KK0cMDIEfPtMEnHOk1BAg7LXAVSfnfgoMtw=;
+        b=NdSMKPisWaZE0nPsClLb5viDPO4q1Wsmf0rnWA+5t7+FSnlKBY1Xtra69k6xCPCz/4
+         no8uF38I+w7+R8IHJkoqXAGoha4yExR1aQ3J5SO1A1EVC7bmpqk3qsIAYWeSNNJYLhwU
+         Wm9C1zLrC5zPFQ1JBboJroMWXoZzJjuIBPmHr2hLT3P3Ge21Xz3hqIGguPArWEBaGQ8q
+         LqBBK41LUoOoPBK4fADJVfAH7w1NZ7qcRYcJVmKviCfMSfl6A9mg4RpdRoCnq+UnNoaz
+         BjRvHAHyVU/ln4eJAkOZBaaypQoxhJJgE2KTuHwtju7ej07rEjq2WjS1MoTZETBO0CCZ
+         eyKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686260243; x=1688852243;
+        d=1e100.net; s=20221208; t=1686260761; x=1688852761;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LNgbnOE8JQSxHSY90Rbs24V81VgXzudXeZ7AH3950hI=;
-        b=gK0HIvi6H8KfrptDGUPDaIJ2kcGsSuOwLMgp6ZWJcEF28VrXdpH4iNXhd/XUkeT0Lg
-         AMen39PnhF8aploipf8TcbWnlwS+nzAAS+ON9iBDpP2pIM++NI11nduHOubxRrl7vron
-         YBL23PBwWJwzcbGaWVUOH8K+TUKuGTQxbopP2zNRKlJhCo64SvWQGJ+sEYlooTsw/2kB
-         2Zn0kR3msQGNKuE59J2OsSIlRppWH/rvoC4lo22UlS4iqzlQWp7gvchr7+EhGHMWk0Vv
-         D1yYX17jvOogczbgR4aZr/mVbGguS7hjzRIuCUivCFQMhpeQcigQ9ctUz15KCFjp4cgd
-         EVUw==
-X-Gm-Message-State: AC+VfDzmxEM08lKcdr4nmcz9CJTDL5g4Rta4WjtwiGtOCyyq3MUQzXlX
-	SOlJESU/P1/mdGRrQ6hexswL6cMaeXrTzVAfssU=
-X-Google-Smtp-Source: ACHHUZ4+QQF28c/Ac319K/7GB9wG/ts8+xRb4N48axyTEUvfB3EezW1aHA28EVQP4GzIiq++Ke99mEREMHG2AFbOAKo=
-X-Received: by 2002:a17:907:1c24:b0:974:52e6:93cb with SMTP id
- nc36-20020a1709071c2400b0097452e693cbmr409557ejc.50.1686260242754; Thu, 08
- Jun 2023 14:37:22 -0700 (PDT)
+        bh=x0gBdEd5KK0cMDIEfPtMEnHOk1BAg7LXAVSfnfgoMtw=;
+        b=L2qENSi7AMdRqMq6nasMuYdes4GMpRLNG8tdku180M4uccWT2JGofKamiPo2Ar0LLf
+         y1kkahWVjIJPmOz3QF+6tl5XmUp9nz3Ce97th8vVP4WGuD6Fluh1ra3fF9et/BUHtwxX
+         cqTihciy0wfjnZWv5foZRbE3jdyHcmYcV19LtOpnhphu4IvOjrlG9FHmp70GGEYrNWEm
+         76cE6VnTkPYpoC0VnWQ8PN+wi/d81rSDyd7CvcZ5/cvMyhN/IHGvbocJCpOh1ir6GHu0
+         nGaXV4Ww05/iZayG4eJoZwYwnMN7R2hGjSPNdhvpHQtl42O8NsvOzljOoyChFgGluIR7
+         KLqw==
+X-Gm-Message-State: AC+VfDz/uerNnJt0md/0Jr70KRRbUAxjO7mQ3Qi8Y3g4jyf5a6cJ7dNX
+	5ouFvCSfsK3vPVDLhAD6W4NRERYHvklpeQqgDE8=
+X-Google-Smtp-Source: ACHHUZ4gAi4Kf/fzB7ty7Kk8nwwEFAGJgjegy9+shEAu471QdCl2t0u6TEtNUDf6BYgRMTFZQHl2hZvuWoQZVDcBjRY=
+X-Received: by 2002:a17:907:868c:b0:977:cc28:d974 with SMTP id
+ qa12-20020a170907868c00b00977cc28d974mr316786ejc.14.1686260760473; Thu, 08
+ Jun 2023 14:46:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-4-daniel@iogearbox.net>
-In-Reply-To: <20230607192625.22641-4-daniel@iogearbox.net>
+References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-5-daniel@iogearbox.net>
+In-Reply-To: <20230607192625.22641-5-daniel@iogearbox.net>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Jun 2023 14:37:11 -0700
-Message-ID: <CAEf4BzbMG5rugdOQyWJH2Ac7kAta8LPEhMbYUH2Bu9JOJU0P9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/7] libbpf: Add opts-based
- attach/detach/query API for tcx
+Date: Thu, 8 Jun 2023 14:45:48 -0700
+Message-ID: <CAEf4Bzaey8c86vLh8sMfvU5KepbYOuej0cKXb88ANp8kZnpCQQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/7] libbpf: Add link-based API for tcx
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
 	razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com, 
@@ -83,238 +82,242 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Wed, Jun 7, 2023 at 12:26=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
 et> wrote:
 >
-> Extend libbpf attach opts and add a new detach opts API so this can be us=
-ed
-> to add/remove fd-based tcx BPF programs. The old-style bpf_prog_detach an=
-d
-> bpf_prog_detach2 APIs are refactored to reuse the detach opts internally.
+> Implement tcx BPF link support for libbpf.
 >
-> The bpf_prog_query_opts API got extended to be able to handle the new lin=
-k_ids,
-> link_attach_flags and revision fields.
+> The bpf_program__attach_fd_opts() API has been refactored slightly in ord=
+er to
+> pass bpf_link_create_opts pointer as input.
+>
+> A new bpf_program__attach_tcx_opts() has been added on top of this which =
+allows
+> for passing all relevant data via extensible struct bpf_tcx_opts.
+>
+> The program sections tcx/ingress and tcx/egress correspond to the hook lo=
+cations
+> for tc ingress and egress, respectively.
 >
 > For concrete usage examples, see the extensive selftests that have been
 > developed as part of this series.
 >
 > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 > ---
->  tools/lib/bpf/bpf.c      | 78 ++++++++++++++++++++++------------------
->  tools/lib/bpf/bpf.h      | 54 +++++++++++++++++++++-------
->  tools/lib/bpf/libbpf.c   |  6 ++++
+>  tools/lib/bpf/bpf.c      |  5 +++++
+>  tools/lib/bpf/bpf.h      |  7 +++++++
+>  tools/lib/bpf/libbpf.c   | 44 +++++++++++++++++++++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h   | 17 ++++++++++++++++
 >  tools/lib/bpf/libbpf.map |  1 +
->  4 files changed, 91 insertions(+), 48 deletions(-)
+>  5 files changed, 69 insertions(+), 5 deletions(-)
 >
 > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index ed86b37d8024..a3d1b7ebe224 100644
+> index a3d1b7ebe224..c340d3cbc6bd 100644
 > --- a/tools/lib/bpf/bpf.c
 > +++ b/tools/lib/bpf/bpf.c
-> @@ -629,11 +629,21 @@ int bpf_prog_attach(int prog_fd, int target_fd, enu=
-m bpf_attach_type type,
->         return bpf_prog_attach_opts(prog_fd, target_fd, type, &opts);
->  }
->
-> -int bpf_prog_attach_opts(int prog_fd, int target_fd,
-> -                         enum bpf_attach_type type,
-> -                         const struct bpf_prog_attach_opts *opts)
-> +int bpf_prog_detach(int target_fd, enum bpf_attach_type type)
-> +{
-> +       return bpf_prog_detach_opts(0, target_fd, type, NULL);
-> +}
-> +
-> +int bpf_prog_detach2(int prog_fd, int target_fd, enum bpf_attach_type ty=
-pe)
->  {
-> -       const size_t attr_sz =3D offsetofend(union bpf_attr, replace_bpf_=
-fd);
-> +       return bpf_prog_detach_opts(prog_fd, target_fd, type, NULL);
-> +}
+> @@ -746,6 +746,11 @@ int bpf_link_create(int prog_fd, int target_fd,
+>                 if (!OPTS_ZEROED(opts, tracing))
+>                         return libbpf_err(-EINVAL);
+>                 break;
+> +       case BPF_TCX_INGRESS:
+> +       case BPF_TCX_EGRESS:
+> +               attr.link_create.tcx.relative_fd =3D OPTS_GET(opts, tcx.r=
+elative_fd, 0);
+> +               attr.link_create.tcx.expected_revision =3D OPTS_GET(opts,=
+ tcx.expected_revision, 0);
 
-Please put these wrappers after bpf_prog_detach_ops(), it will make
-the diff cleaner and will keep them closer to full version of
-bpf_prog_detach_opts().
+can you also add an OPTS_ZEROED check like for other types of links?
 
-> +
-> +int bpf_prog_attach_opts(int prog_fd, int target,
-> +                        enum bpf_attach_type type,
-> +                        const struct bpf_prog_attach_opts *opts)
-> +{
-> +       const size_t attr_sz =3D offsetofend(union bpf_attr, expected_rev=
-ision);
->         union bpf_attr attr;
->         int ret;
->
-
-[...]
-
+> +               break;
+>         default:
+>                 if (!OPTS_ZEROED(opts, flags))
+>                         return libbpf_err(-EINVAL);
 > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 9aa0ee473754..480c584a6f7f 100644
+> index 480c584a6f7f..12591516dca0 100644
 > --- a/tools/lib/bpf/bpf.h
 > +++ b/tools/lib/bpf/bpf.h
-> @@ -312,22 +312,43 @@ LIBBPF_API int bpf_obj_get(const char *pathname);
->  LIBBPF_API int bpf_obj_get_opts(const char *pathname,
->                                 const struct bpf_obj_get_opts *opts);
->
-> -struct bpf_prog_attach_opts {
-> -       size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
-> -       unsigned int flags;
-> -       int replace_prog_fd;
-> -};
-> -#define bpf_prog_attach_opts__last_field replace_prog_fd
-> -
->  LIBBPF_API int bpf_prog_attach(int prog_fd, int attachable_fd,
->                                enum bpf_attach_type type, unsigned int fl=
-ags);
-> -LIBBPF_API int bpf_prog_attach_opts(int prog_fd, int attachable_fd,
-> -                                    enum bpf_attach_type type,
-> -                                    const struct bpf_prog_attach_opts *o=
-pts);
->  LIBBPF_API int bpf_prog_detach(int attachable_fd, enum bpf_attach_type t=
-ype);
->  LIBBPF_API int bpf_prog_detach2(int prog_fd, int attachable_fd,
->                                 enum bpf_attach_type type);
->
-> +struct bpf_prog_attach_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
-> +       __u32 flags;
-> +       union {
-> +               int     replace_prog_fd;
-> +               int     replace_fd;
-> +               int     relative_fd;
-> +               __u32   relative_id;
-> +       };
+> @@ -370,6 +370,13 @@ struct bpf_link_create_opts {
+>                 struct {
+>                         __u64 cookie;
+>                 } tracing;
+> +               struct {
+> +                       union {
+> +                               __u32 relative_fd;
+> +                               __u32 relative_id;
+> +                       };
 
-I tried to not use union for such cases in OPTS-based interfaces, see
-bpf_link_create(). Let's keep them all as separate fields and then
-return error if, say, both relative_fd and relative_id is specified at
-the same time.
-
-It's fine to have replace_prog_fd and replace_fd as a union, as they
-are basically just synonyms.
+same comment about union, let's not add it and have two separate fields
 
 
-> +       __u32 expected_revision;
-> +};
-> +#define bpf_prog_attach_opts__last_field expected_revision
-> +
-> +struct bpf_prog_detach_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
-> +       __u32 flags;
-> +       union {
-> +               int     relative_fd;
-> +               __u32   relative_id;
-> +       };
-
-same as above
-
-> +       __u32 expected_revision;
-> +};
-> +#define bpf_prog_detach_opts__last_field expected_revision
-> +
-> +LIBBPF_API int bpf_prog_attach_opts(int prog_fd, int target,
-
-let's add doc comments to both these APIs, where `target` is
-explained. Right now because it doesn't have "_fd" suffix it's not
-very clear what sort of value it is (I know why it's not target_fd
-anymore due to target_ifindex)
-
-> +                                   enum bpf_attach_type type,
-> +                                   const struct bpf_prog_attach_opts *op=
-ts);
-> +LIBBPF_API int bpf_prog_detach_opts(int prog_fd, int target,
-> +                                   enum bpf_attach_type type,
-> +                                   const struct bpf_prog_detach_opts *op=
-ts);
-> +
->  union bpf_iter_link_info; /* defined in up-to-date linux/bpf.h */
->  struct bpf_link_create_opts {
->         size_t sz; /* size of this struct for forward/backward compatibil=
-ity */
-> @@ -489,14 +510,21 @@ struct bpf_prog_query_opts {
->         __u32 query_flags;
->         __u32 attach_flags; /* output argument */
->         __u32 *prog_ids;
-> -       __u32 prog_cnt; /* input+output argument */
-> +       union {
-> +               __u32 prog_cnt; /* input+output argument */
-> +               __u32 count;
-> +       };
->         __u32 *prog_attach_flags;
-> +       __u32 *link_ids;
-> +       __u32 *link_attach_flags;
-> +       __u32 revision;
+> +                       __u32 expected_revision;
+> +               } tcx;
+>         };
+>         size_t :0;
 >  };
-> -#define bpf_prog_query_opts__last_field prog_attach_flags
-> +#define bpf_prog_query_opts__last_field revision
->
-> -LIBBPF_API int bpf_prog_query_opts(int target_fd,
-> +LIBBPF_API int bpf_prog_query_opts(int target,
-
-same here for doc comment
-
->                                    enum bpf_attach_type type,
->                                    struct bpf_prog_query_opts *opts);
-> +
->  LIBBPF_API int bpf_prog_query(int target_fd, enum bpf_attach_type type,
->                               __u32 query_flags, __u32 *attach_flags,
->                               __u32 *prog_ids, __u32 *prog_cnt);
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 47632606b06d..b89127471c6a 100644
+> index b89127471c6a..d7b6ff49f02e 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -117,6 +117,8 @@ static const char * const attach_type_name[] =3D {
->         [BPF_PERF_EVENT]                =3D "perf_event",
->         [BPF_TRACE_KPROBE_MULTI]        =3D "trace_kprobe_multi",
->         [BPF_STRUCT_OPS]                =3D "struct_ops",
-> +       [BPF_TCX_INGRESS]               =3D "tcx_ingress",
-> +       [BPF_TCX_EGRESS]                =3D "tcx_egress",
+> @@ -133,6 +133,7 @@ static const char * const link_type_name[] =3D {
+>         [BPF_LINK_TYPE_KPROBE_MULTI]            =3D "kprobe_multi",
+>         [BPF_LINK_TYPE_STRUCT_OPS]              =3D "struct_ops",
+>         [BPF_LINK_TYPE_NETFILTER]               =3D "netfilter",
+> +       [BPF_LINK_TYPE_TCX]                     =3D "tcx",
 >  };
 >
->  static const char * const link_type_name[] =3D {
-> @@ -8669,6 +8671,10 @@ static const struct bpf_sec_def section_defs[] =3D=
- {
->         SEC_DEF("kretsyscall+",         KPROBE, 0, SEC_NONE, attach_ksysc=
-all),
->         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt)=
-,
->         SEC_DEF("tc",                   SCHED_CLS, 0, SEC_NONE),
-> +       SEC_DEF("tc/ingress",           SCHED_CLS, BPF_TCX_INGRESS, SEC_A=
-TTACHABLE_OPT),
-> +       SEC_DEF("tc/egress",            SCHED_CLS, BPF_TCX_EGRESS, SEC_AT=
-TACHABLE_OPT),
+>  static const char * const map_type_name[] =3D {
+> @@ -11685,11 +11686,10 @@ static int attach_lsm(const struct bpf_program =
+*prog, long cookie, struct bpf_li
+>  }
+>
+>  static struct bpf_link *
+> -bpf_program__attach_fd(const struct bpf_program *prog, int target_fd, in=
+t btf_id,
+> -                      const char *target_name)
+> +bpf_program__attach_fd_opts(const struct bpf_program *prog,
+> +                           const struct bpf_link_create_opts *opts,
+> +                           int target_fd, const char *target_name)
 
-for tc/ingress and tc/egress, is it intentional that libbpf should set
-expected_attach_type to zero if kernel doesn't support BPF_TCX_INGRESS
-or BPF_TCX_EGRESS? Or is it just an alias to tcx/ingress and
-tcx/egress?
+nit: please keep opts as the last argument
 
-If it's an alias, why do we need it?
+>  {
+> -       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+> -                           .target_btf_id =3D btf_id);
+>         enum bpf_attach_type attach_type;
+>         char errmsg[STRERR_BUFSIZE];
+>         struct bpf_link *link;
+> @@ -11707,7 +11707,7 @@ bpf_program__attach_fd(const struct bpf_program *=
+prog, int target_fd, int btf_id
+>         link->detach =3D &bpf_link__detach_fd;
+>
+>         attach_type =3D bpf_program__expected_attach_type(prog);
+> -       link_fd =3D bpf_link_create(prog_fd, target_fd, attach_type, &opt=
+s);
+> +       link_fd =3D bpf_link_create(prog_fd, target_fd, attach_type, opts=
+);
+>         if (link_fd < 0) {
+>                 link_fd =3D -errno;
+>                 free(link);
+> @@ -11720,6 +11720,17 @@ bpf_program__attach_fd(const struct bpf_program =
+*prog, int target_fd, int btf_id
+>         return link;
+>  }
+>
+> +static struct bpf_link *
+> +bpf_program__attach_fd(const struct bpf_program *prog, int target_fd, in=
+t btf_id,
+> +                      const char *target_name)
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, opts,
+> +               .target_btf_id =3D btf_id,
+> +       );
+> +
+> +       return bpf_program__attach_fd_opts(prog, &opts, target_fd, target=
+_name);
 
-If not, let's replace SEC_ATTACHABLE_OPT with just SEC_EXP_ATTACH_OPT ?
+it seems like the only user of btf_id is bpf_program__attach_freplace,
+so I'd just inline this there, and for all other 4 cases let's just
+pass NULL as options?
 
-> +       SEC_DEF("tcx/ingress",          SCHED_CLS, BPF_TCX_INGRESS, SEC_A=
-TTACHABLE_OPT),
-> +       SEC_DEF("tcx/egress",           SCHED_CLS, BPF_TCX_EGRESS, SEC_AT=
-TACHABLE_OPT),
+That means we don't really need bpf_program__attach_fd_opts() and can
+just add opts to bpf_program__attach_fd(). We'll have shorter name.
+BTW, given it's not exposed API, let's drop double underscore and call
+it just bpf_program_attach_fd()?
 
-at least for tcx attach_type is not optional, right? So I'd drop
-SEC_ATTACHABLE_OPT.
+> +}
+> +
+>  struct bpf_link *
+>  bpf_program__attach_cgroup(const struct bpf_program *prog, int cgroup_fd=
+)
+>  {
+> @@ -11738,6 +11749,29 @@ struct bpf_link *bpf_program__attach_xdp(const s=
+truct bpf_program *prog, int ifi
+>         return bpf_program__attach_fd(prog, ifindex, 0, "xdp");
+>  }
+>
+> +struct bpf_link *
+> +bpf_program__attach_tcx_opts(const struct bpf_program *prog,
+> +                            const struct bpf_tcx_opts *opts)
 
->         SEC_DEF("classifier",           SCHED_CLS, 0, SEC_NONE),
->         SEC_DEF("action",               SCHED_ACT, 0, SEC_NONE),
->         SEC_DEF("tracepoint+",          TRACEPOINT, 0, SEC_NONE, attach_t=
-p),
+we don't have non-opts variant, so let's keep the name short (like we
+did with bpf_program__attach_netlink): bpf_program__attach_tcx().
+
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
+> +       int ifindex =3D OPTS_GET(opts, ifindex, 0);
+
+let's not do OPTS_GET before we checked OPTS_VALID
+
+> +
+> +       if (!OPTS_VALID(opts, bpf_tcx_opts))
+> +               return libbpf_err_ptr(-EINVAL);
+> +       if (!ifindex) {
+> +               pr_warn("prog '%s': target netdevice ifindex cannot be ze=
+ro\n",
+> +                       prog->name);
+> +               return libbpf_err_ptr(-EINVAL);
+> +       }
+> +
+> +       link_create_opts.tcx.expected_revision =3D OPTS_GET(opts, expecte=
+d_revision, 0);
+> +       link_create_opts.tcx.relative_fd =3D OPTS_GET(opts, relative_fd, =
+0);
+> +       link_create_opts.flags =3D OPTS_GET(opts, flags, 0);
+> +
+> +       /* target_fd/target_ifindex use the same field in LINK_CREATE */
+> +       return bpf_program__attach_fd_opts(prog, &link_create_opts, ifind=
+ex, "tc");
+> +}
+> +
+>  struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *=
+prog,
+>                                               int target_fd,
+>                                               const char *attach_func_nam=
+e)
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 754da73c643b..8ffba0f67c60 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -718,6 +718,23 @@ LIBBPF_API struct bpf_link *
+>  bpf_program__attach_freplace(const struct bpf_program *prog,
+>                              int target_fd, const char *attach_func_name)=
+;
+>
+> +struct bpf_tcx_opts {
+> +       /* size of this struct, for forward/backward compatibility */
+> +       size_t sz;
+> +       int ifindex;
+> +       __u32 flags;
+> +       union {
+> +               __u32 relative_fd;
+> +               __u32 relative_id;
+> +       };
+
+same thing about not using unions here :)
+
+> +       __u32 expected_revision;
+
+and let's add `size_t :0;` to prevent compiler from leaving garbage
+values in a padding at the end of the struct (once you drop union
+there will be padding)
+
+> +};
+> +#define bpf_tcx_opts__last_field expected_revision
+> +
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_tcx_opts(const struct bpf_program *prog,
+> +                            const struct bpf_tcx_opts *opts);
+> +
+>  struct bpf_map;
+>
+>  LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_=
+map *map);
 > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 7521a2fb7626..a29b90e9713c 100644
+> index a29b90e9713c..f66b714512c2 100644
 > --- a/tools/lib/bpf/libbpf.map
 > +++ b/tools/lib/bpf/libbpf.map
-> @@ -395,4 +395,5 @@ LIBBPF_1.2.0 {
->  LIBBPF_1.3.0 {
+> @@ -396,4 +396,5 @@ LIBBPF_1.3.0 {
 >         global:
 >                 bpf_obj_pin_opts;
-> +               bpf_prog_detach_opts;
+>                 bpf_prog_detach_opts;
+> +               bpf_program__attach_tcx_opts;
 >  } LIBBPF_1.2.0;
 > --
 > 2.34.1
