@@ -1,84 +1,79 @@
-Return-Path: <bpf+bounces-2093-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CA872761E
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 06:31:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160AC727633
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 06:38:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9449528162A
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 04:31:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680001C20F54
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 04:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215A61396;
-	Thu,  8 Jun 2023 04:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AE91FD2;
+	Thu,  8 Jun 2023 04:38:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE54B628
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 04:30:56 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE6E2680;
-	Wed,  7 Jun 2023 21:30:54 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b1b72dc2feso886951fa.3;
-        Wed, 07 Jun 2023 21:30:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D9D81D;
+	Thu,  8 Jun 2023 04:38:37 +0000 (UTC)
+Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B504272B;
+	Wed,  7 Jun 2023 21:38:35 -0700 (PDT)
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-568928af8f5so3489197b3.1;
+        Wed, 07 Jun 2023 21:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686198653; x=1688790653;
+        d=gmail.com; s=20221208; t=1686199114; x=1688791114;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OE9R4OpDBmY/ZEKRpjJ+jXLtRrcCOtHc/gOShUxPD5I=;
-        b=EGMPdTdkFpAQkAsiaPsDmbfsn98yQuQZ7Un0TRx27tvxY2b/xjnl2xXedGmJXq5q2w
-         ksW45wgxTMZshV6S6Rbscg5IiAc0dheh974sXJ0XjpudyuoRX4wJXlO41eVxLfUXGzeS
-         MucM1RsGkGGqKwM8dmyCHWFs/OUbAAe7a2jUrQ3RkiUkzS8D7ag2yV81E59Rcr4gT/+5
-         +zUha3L403+DQbF+P/BAESmqzbIIxP9lxWx90z1mTU8XHmQexlfDJVkbHPTzjRN55Qku
-         rZ9vBG+nI95YERQmm0TiZeRTCflYFT4RNK2+6k7mtm3SVu4QzhOMGIsuqCY6ZQeqYVqr
-         smDw==
+        bh=k2JsskG49VjWJfT73tF3irTp5aLOY9bRkVhiXnj04Ck=;
+        b=fqncFh2vZGdwEr/7SVimGxwbGcBm2werxnOOqG/EuVM5l2UVMbhjfYp6twgUElGhHD
+         IhYM4a6JPfjTnEwwRVDj7nNISnUAAVJOshKMOzBSd9u5iPQxKxTl+gEbEz5vfjzvfY+g
+         T5AUxo2xfC+gb7hSP70hj+y+uDOsADRb2ms18/0jzqAPP4KMrmw6baN4+vB1p+2+TZDd
+         UZAyzvfvFWU/1FtKhgux0wTR1O2EKggx07EXX8rYukx3OOW4WvhtTPZ+3Rnyo2TUSG1D
+         jTktlwXiizBkp1SPDCDnF89arE67vAXbffSxhSlntIVAMz8ByghvEgTdCsHModLKu4Xz
+         c6pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686198653; x=1688790653;
+        d=1e100.net; s=20221208; t=1686199114; x=1688791114;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OE9R4OpDBmY/ZEKRpjJ+jXLtRrcCOtHc/gOShUxPD5I=;
-        b=aM5/Lv7NgkX/dZbNCFKZYr/eQBm33sEZAcvfhlsJjX5GgzOBwmIIW7zKaQw23u/r6p
-         E9l04thT8sKOZU/S5ykLssxJfF3PM3kFI0W7wwNtkyR4MmC2CoDD2K+RjW60quXGlcKB
-         mjjA6EpbJXx93oUO9vlqcHgv3QhPFSDbfgWYCC9D04kFMfolrmMZRRwT6qeOwvB+QH8s
-         RAaM+VvWE9P3ujvladSmeJZGF1FQd34hJ915jC/F8ZYU2HCP+COukePooz1XcmaLHqh+
-         akh6r9hav1atHcRuykCcgxif8o3aZPHFZvxEXBaQpORbXIPjZQYtZzxhHska2PDc+nO4
-         SS5w==
-X-Gm-Message-State: AC+VfDz9NkH3WfODgjmVF/a5MFdT65SNM7DcGiJZmlKF2uVofEn6BdxN
-	s8BUYhfVWSEUu8rRyhE3eLsdjs7Xqml/R/6XdPY=
-X-Google-Smtp-Source: ACHHUZ6BT5X78UjW8S7AV6Tq3B1i47mZi50VLV40yUpPK/wb0YyKYi+PgmpdF97qcD4FLX43QU8WDzcv2cT9ioBCkqs=
-X-Received: by 2002:a2e:b6c8:0:b0:2aa:3cee:c174 with SMTP id
- m8-20020a2eb6c8000000b002aa3ceec174mr3264847ljo.13.1686198652509; Wed, 07 Jun
- 2023 21:30:52 -0700 (PDT)
+        bh=k2JsskG49VjWJfT73tF3irTp5aLOY9bRkVhiXnj04Ck=;
+        b=gszl81os443GCIfhvvLwavDa1NgLFclyak8LzJO6ormN/+AyrI+nOlxNACLhkh4kuk
+         IRXjJ9AFr/obAaI6K4u8dp2RK59hfwD+J9egOFORcTrueqEXVSJht9PJUs2Id7/grVmu
+         +UisLswR6zhXhEC7kyFbgyulJvxlEX67ZckaSSjuhaLmTgzZnYC/oi4lrdk/sDAxGSyo
+         5nnFQbdSndL74LbAhHWBoCJcAby+sucJz3oAMFBH+YnhLLeRRwJHT80ZHLc2/Vyg/zVc
+         1FlclalpWX0VohVLJ1Xn5To2+OQtlNJMcVDs9SSsOl9R/2Amgn8ncjDpQ+oyU5+nlOe/
+         jqRg==
+X-Gm-Message-State: AC+VfDzgVvd6FMZcJbY1IeqsQsvFJerPKY8fYuH1cBXU9I9WFBk2zly9
+	KvSv9mHDGsuF9wsk6VKpkT4ULuozBWF/qgtJeRqATAfl/yA+Pw==
+X-Google-Smtp-Source: ACHHUZ6xuJN3X1TjrO5TM4mHv7s+84gAYt9I6Svi/x4Ce/D9Gh3m7DjeN+msxH3HUJxGNDWuu/c1V5/TRAy1rKe0+e8=
+X-Received: by 2002:a0d:d811:0:b0:568:f050:7c47 with SMTP id
+ a17-20020a0dd811000000b00568f0507c47mr1410905ywe.0.1686199114561; Wed, 07 Jun
+ 2023 21:38:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230606035310.4026145-1-houtao@huaweicloud.com>
- <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com> <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
- <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com> <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
- <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
- <CAADnVQJ1njnHb96HfO4k48XDY9L3YXqQW1iUW=ti5iBNKKcE9A@mail.gmail.com>
- <55f5e64d-9d9e-4c65-8d1b-8fd4684ee9a3@paulmck-laptop> <CAADnVQLps=4CjVbZN6wfFWS9VnPE=1b4Gqmw-uPeH5=hGn_xwQ@mail.gmail.com>
- <3bddb902-de45-47d9-b9a2-495508133522@paulmck-laptop> <CAADnVQLhuBggNQxipbRM+E9fQ4wScYmg7-NWjfqAZyA5asw3JQ@mail.gmail.com>
- <a12008e9-f3f7-5050-e461-344d9d86e48f@huaweicloud.com>
-In-Reply-To: <a12008e9-f3f7-5050-e461-344d9d86e48f@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 7 Jun 2023 21:30:41 -0700
-Message-ID: <CAADnVQ+a4Ng0TEoK7W+KG1JfMvjzhdBNtSOx_2z0Mi=Fz1A0PA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory allocator
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org, 
-	"houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230607125911.145345-1-imagedong@tencent.com>
+ <20230607125911.145345-3-imagedong@tencent.com> <20230607200348.dprmfvpzdvk5ldpp@macbook-pro-8.dhcp.thefacebook.com>
+In-Reply-To: <20230607200348.dprmfvpzdvk5ldpp@macbook-pro-8.dhcp.thefacebook.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Thu, 8 Jun 2023 12:38:23 +0800
+Message-ID: <CADxym3a+5t9tMun6Pid+38UmFgcQkMYC4esWdENGs2E24zornA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/3] bpf, x86: clean garbage value in the
+ stack of trampoline
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, x86@kernel.org, imagedong@tencent.com, benbjiang@tencent.com, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -88,13 +83,107 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 7, 2023 at 8:36=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
+On Thu, Jun 8, 2023 at 4:03=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> below. And Alexei, could you please also try the hack below for your
-> multiple-rcu-cbs version ?
+> On Wed, Jun 07, 2023 at 08:59:10PM +0800, menglong8.dong@gmail.com wrote:
+> > From: Menglong Dong <imagedong@tencent.com>
+> >
+> > There are garbage values in upper bytes when we store the arguments
+> > into stack in save_regs() if the size of the argument less then 8.
+> >
+> > As we already reserve 8 byte for the arguments in regs and stack,
+> > it is ok to store/restore the regs in BPF_DW size. Then, the garbage
+> > values in upper bytes will be cleaned.
+> >
+> > Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 19 ++++++-------------
+> >  1 file changed, 6 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 413b986b5afd..e9bc0b50656b 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -1878,20 +1878,16 @@ static void save_regs(const struct btf_func_mod=
+el *m, u8 **prog, int nr_regs,
+> >
+> >               if (i <=3D 5) {
+> >                       /* copy function arguments from regs into stack *=
+/
+> > -                     emit_stx(prog, bytes_to_bpf_size(arg_size),
+> > -                              BPF_REG_FP,
+> > +                     emit_stx(prog, BPF_DW, BPF_REG_FP,
+> >                                i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> >                                -(stack_size - i * 8));
+>
+> This is ok,
+>
+> >               } else {
+> >                       /* copy function arguments from origin stack fram=
+e
+> >                        * into current stack frame.
+> >                        */
+> > -                     emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> > -                              BPF_REG_0, BPF_REG_FP,
+> > +                     emit_ldx(prog, BPF_DW, BPF_REG_0, BPF_REG_FP,
+> >                                (i - 6) * 8 + 0x18);
+> > -                     emit_stx(prog, bytes_to_bpf_size(arg_size),
+> > -                              BPF_REG_FP,
+> > -                              BPF_REG_0,
+> > +                     emit_stx(prog, BPF_DW, BPF_REG_FP, BPF_REG_0,
+> >                                -(stack_size - i * 8));
+>
+> But this is not.
+> See https://godbolt.org/z/qW17f6cYe
+> mov dword ptr [rsp], 6
+>
+> the compiler will store 32-bit only. The upper 32-bit are still garbage.
 
-Before any further experiments... please fix the bench in patch 2.
-Make sure it exits out of RCU CS after no more than 64 map_update_elem.
-Just send that patch alone.
+Enn......I didn't expect this case, and it seems
+that this only happens on clang. With gcc,
+"push 6" is used.
+
+I haven't found a solution for this case, and it seems
+not worth it to add an extra insn to clean the garbage
+values.
+
+Does anyone have any ideas here?
+
+Thanks!
+Menglong Dong
+
+>
+> >               }
+> >
+> > @@ -1918,7 +1914,7 @@ static void restore_regs(const struct btf_func_mo=
+del *m, u8 **prog, int nr_regs,
+> >                       next_same_struct =3D !next_same_struct;
+> >               }
+> >
+> > -             emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> > +             emit_ldx(prog, BPF_DW,
+> >                        i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> >                        BPF_REG_FP,
+> >                        -(stack_size - i * 8));
+> > @@ -1949,12 +1945,9 @@ static void prepare_origin_stack(const struct bt=
+f_func_model *m, u8 **prog,
+> >               }
+> >
+> >               if (i > 5) {
+> > -                     emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> > -                              BPF_REG_0, BPF_REG_FP,
+> > +                     emit_ldx(prog, BPF_DW, BPF_REG_0, BPF_REG_FP,
+> >                                (i - 6) * 8 + 0x18);
+> > -                     emit_stx(prog, bytes_to_bpf_size(arg_size),
+> > -                              BPF_REG_FP,
+> > -                              BPF_REG_0,
+> > +                     emit_stx(prog, BPF_DW, BPF_REG_FP, BPF_REG_0,
+> >                                -(stack_size - (i - 6) * 8));
+> >               }
+> >
+> > --
+> > 2.40.1
+> >
 
