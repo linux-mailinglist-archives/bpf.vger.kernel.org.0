@@ -1,84 +1,136 @@
-Return-Path: <bpf+bounces-2099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51380727B70
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 11:31:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B516C727C70
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 12:12:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D28A281668
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 09:31:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 197A71C20939
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 10:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9098AD35;
-	Thu,  8 Jun 2023 09:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67809BE54;
+	Thu,  8 Jun 2023 10:12:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25BA947D;
-	Thu,  8 Jun 2023 09:31:40 +0000 (UTC)
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC59A30FC;
-	Thu,  8 Jun 2023 02:31:04 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VkdoGSm_1686216637;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VkdoGSm_1686216637)
-          by smtp.aliyun-inc.com;
-          Thu, 08 Jun 2023 17:30:43 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: davem@davemloft.net
-Cc: edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] tools: ynl: Remove duplicate include
-Date: Thu,  8 Jun 2023 17:30:36 +0800
-Message-Id: <20230608093036.96539-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0B23B3FA;
+	Thu,  8 Jun 2023 10:12:14 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE7A1FFA;
+	Thu,  8 Jun 2023 03:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=mn0c6YfNQgX4beATwOeEFwcFfDb6oK79cq8wtqokvSA=; b=eZRDApbA+aRBY4zHNAaEJm9Oet
+	dnkMd4cB1Gb8hr4ZXc6UMXsr/1S57c3B/xe37jSz7Qoku6pkDWSItrV/XciiQwfPvJcCxB38Z3S57
+	QmhVMnXH8sqnFHrmFaXS9M2wOwE7mTVZ+knfeK8UZOM40mhCDTzxYVql2kG2W8JuK/9hhzfEwBiOp
+	eNIdopV0CHRSe1LwmIGkAtRZP/i2uH2jUQfPAM4awKJXD0/nEtZIWMXRRbCjqpxPTwuwRBJBSenYg
+	YCXn99Vgjy40lE7D5PPblGMrJag/1MrJcHuvpcdIH43bWbvtvQlyls8XChbSWMPwo+qaMGRBTyZCB
+	hTUni7yw==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q7CcZ-000NcV-MT; Thu, 08 Jun 2023 12:12:00 +0200
+Received: from [178.197.248.31] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1q7CcZ-00013f-2l; Thu, 08 Jun 2023 12:11:59 +0200
+Subject: Re: [PATCH bpf-next v2 2/7] bpf: Add fd-based tcx multi-prog infra
+ with link support
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com,
+ kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org,
+ davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20230607192625.22641-1-daniel@iogearbox.net>
+ <20230607192625.22641-3-daniel@iogearbox.net>
+ <CAM0EoMm25tdjxp+7Mq4fowGfCJzFRhbThHhaO7T_46vNJ9y-NQ@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fe2e13a6-1fb6-c160-1d6f-31c09264911b@iogearbox.net>
+Date: Thu, 8 Jun 2023 12:11:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAM0EoMm25tdjxp+7Mq4fowGfCJzFRhbThHhaO7T_46vNJ9y-NQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26933/Thu Jun  8 09:26:06 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-./tools/net/ynl/generated/netdev-user.c: stdlib.h is included more than once.
+Hi Jamal,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5466
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/net/ynl/generated/netdev-user.c | 1 -
- 1 file changed, 1 deletion(-)
+On 6/8/23 3:25 AM, Jamal Hadi Salim wrote:
+[...]
+> A general question (which i think i asked last time as well): who
+> decides what comes after/before what prog in this setup? And would
+> that same entity not have been able to make the same decision using tc
+> priorities?
 
-diff --git a/tools/net/ynl/generated/netdev-user.c b/tools/net/ynl/generated/netdev-user.c
-index aea5c7cc8ead..1883a658180b 100644
---- a/tools/net/ynl/generated/netdev-user.c
-+++ b/tools/net/ynl/generated/netdev-user.c
-@@ -8,7 +8,6 @@
- #include "ynl.h"
- #include <linux/netdev.h>
- 
--#include <stdlib.h>
- #include <stdio.h>
- #include <string.h>
- #include <libmnl/libmnl.h>
--- 
-2.20.1.7.g153144c
+Back in the first version of the series I initially coded up this option
+that the tc_run() would basically be a fake 'bpf_prog' and it would have,
+say, fixed prio 1000. It would get executed via tcx_run() when iterating
+via bpf_mprog_foreach_prog() where bpf_prog_run() is called, and then users
+could pick for native BPF prio before or after that. But then the feedback
+was that sticking to prio is a bad user experience which led to the
+development of what is in patch 1 of this series (see the details there).
 
+> The idea of protecting programs from being unloaded is very welcome
+> but feels would have made sense to be a separate patchset (we have
+> good need for it). Would it be possible to use that feature in tc and
+> xdp?
+BPF links are supported for XDP today, just tc BPF is one of the few
+remainders where it is not the case, hence the work of this series. What
+XDP lacks today however is multi-prog support. With the bpf_mprog concept
+that could be addressed with that common/uniform api (and Andrii expressed
+interest in integrating this also for cgroup progs), so yes, various hook
+points/program types could benefit from it.
+
+>> +struct tcx_entry {
+>> +       struct bpf_mprog_bundle         bundle;
+>> +       struct mini_Qdisc __rcu         *miniq;
+>> +};
+>> +
+> 
+> Can you please move miniq to the front? From where i sit this looks:
+> struct tcx_entry {
+>          struct bpf_mprog_bundle    bundle
+> __attribute__((__aligned__(64))); /*     0  3264 */
+> 
+>          /* XXX last struct has 36 bytes of padding */
+> 
+>          /* --- cacheline 51 boundary (3264 bytes) --- */
+>          struct mini_Qdisc *        miniq;                /*  3264     8 */
+> 
+>          /* size: 3328, cachelines: 52, members: 2 */
+>          /* padding: 56 */
+>          /* paddings: 1, sum paddings: 36 */
+>          /* forced alignments: 1 */
+> } __attribute__((__aligned__(64)));
+> 
+> That is a _lot_ of cachelines - at the expense of the status quo
+> clsact/ingress qdiscs which access miniq.
+
+Ah yes, I'll fix this up.
+
+Thanks,
+Daniel
 
