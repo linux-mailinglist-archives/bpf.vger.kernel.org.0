@@ -1,312 +1,209 @@
-Return-Path: <bpf+bounces-2135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2002672866C
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:35:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE46728672
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:38:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 652811C21037
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 17:35:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43A251C21004
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 17:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AC71DCC5;
-	Thu,  8 Jun 2023 17:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6731DCC7;
+	Thu,  8 Jun 2023 17:38:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4203F18011
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:35:27 +0000 (UTC)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368E02115
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 10:35:24 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b1acd41ad2so8757981fa.3
-        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 10:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686245721; x=1688837721;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7u/A54PjFl1kidIsdZzgf/Ko57trAGd5rvftUG0Jn78=;
-        b=B+559Bzz6wFLlHjdmqzMOqHpsCxkV3q0fmUFDy+O5ecN/D2lLcIT72HtecLBjnhgpB
-         Nht+RFu6KoiumBZ8ZOCZeg+fh19EmAhYzkd7aWUDRpqf8p7rjhLJL/va06F0XK/W3maw
-         H1GYA96KUAqCwJCjspvja0Ulxv7Ml65bjjLdJGOyYZT9R0fyYqhOUOl0nrwMvIvgKNHe
-         EoClm5EWMbUnWeqEhcxNwtpYPNgpivwrMLqLwhvKdt5M11KrWQYuuLhsCiYc2O/QzKo2
-         kktm+ZnbdGHNeQRusBZ7In61+a0IJClxhT3d/+gaW79KaOY+w9oYp2nP1EWeIjZx2Xa9
-         5OfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686245721; x=1688837721;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7u/A54PjFl1kidIsdZzgf/Ko57trAGd5rvftUG0Jn78=;
-        b=P5U7rWzKXogdzHULM9UcnRkEX2AfeIfUF+GnvFN0VRr1KpJEAn/XvyC62KhXo88WtI
-         xZLfbkziecuVWzL3nQfiGrVsBffaeZdQzhJ0E24ENshr0PTYo5g4cWUVS8vL9Cekp+hk
-         bY/Z0nsv9ME9/vaMoC9Q1/M4bGSpe5NQaeIs2grdUxKKeep9UrJODqDZ4S4P5dBEC6cB
-         0QkcohCZIpq29eQbqSxq/bTbUcnLd4jDYz+Fvd9sNaUcmhz1hMK5lbeDmcsPMNSlVgxU
-         666jZPasFve3ybyaptcBwhx2L5OdJI4RwRqqSSMPSGXCcVvQfFOB5D60DzGcdTiYIBuN
-         T8Ag==
-X-Gm-Message-State: AC+VfDxBdHNhQyhxdqjQHBM10+nROHTdpBlqvakyTesAT2nyvUwojWlQ
-	n1ZcR9PRfssvyIVHTvCTPG0=
-X-Google-Smtp-Source: ACHHUZ5ZiGxGXEtrDhnwUx4vFjMzG3EqaBuCATEp4MMpieNqg+6sEZaNduJgjc3hHnYHJ2vPRUnH8g==
-X-Received: by 2002:a05:651c:1025:b0:2b1:daca:676f with SMTP id w5-20020a05651c102500b002b1daca676fmr3598142ljm.36.1686245720881;
-        Thu, 08 Jun 2023 10:35:20 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id n18-20020a2e86d2000000b002ada919a09asm12471ljj.73.2023.06.08.10.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jun 2023 10:35:20 -0700 (PDT)
-Message-ID: <d7ef2af4648947abe8c5d8cec1c0d5235805f889.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] selftests/bpf: check if
- mark_chain_precision() follows scalar ids
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
-Date: Thu, 08 Jun 2023 20:35:19 +0300
-In-Reply-To: <CAEf4BzaZ79t=dv0Kje-i5ngDFuE=LWbA4M=BOJF3bUfWSeVZrQ@mail.gmail.com>
-References: <20230606222411.1820404-1-eddyz87@gmail.com>
-	 <20230606222411.1820404-3-eddyz87@gmail.com>
-	 <CAEf4BzbLSe8H+ER6UTMgORH--bXKkn4popUsU2W0hHadSQuv1A@mail.gmail.com>
-	 <8faef9d6a31616d71b798e0d3f94c6c1946e5cad.camel@gmail.com>
-	 <CAEf4BzaZ79t=dv0Kje-i5ngDFuE=LWbA4M=BOJF3bUfWSeVZrQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE5718011
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:38:40 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88302D41;
+	Thu,  8 Jun 2023 10:38:37 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 358GmP0f017891;
+	Thu, 8 Jun 2023 10:38:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=6ZGLPOZ7B59MnFxmgLZrfSFXluiUg/yVkLu9Rmp5/h8=;
+ b=U56f/y9gV2z5ZqphG9dt0TMqX2Glvg8qEBgNgFOwSL5nhtn7+AdujzBH4ruKpYOfrrFF
+ U9CPCEyic4302p1bKYl6hbF9B/wwLEbbwU12lViQp6fhIJGekvOGfDkNPURDRQmnOVGX
+ a2HkESy4qjwlUhMICBFcbmcM4wKkma2hkOX1nZjPjAIZnj4dD3KUXwNNRLcwW58uWYT0
+ 13GSIIYb1jiVhoAoOn6e+mBxiLQIKROZkUii01qGfx2Q069TdV1zp7asBfGXzp79X5Te
+ bTVIylfcKq2ZX8RYQ++EtlS7YrBOHok8fwKajU6yk2ptmx3//f4DPaC2BdUmzi2RYb1A pg== 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3r35rxnhg1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Jun 2023 10:38:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eK92bMMmmgG09dv/wQTubYpSVg/NKbA4e80aUnFJBeaiOpln6jVqiSISeabnUdJAr3gjLeiywOkQz2rYdcZsvHElO9R7lxx00pgyAAW/k9FHtd8UAnOVKERBHpKzcEbWRTfHoMR2Wp+925XOnJdit18AZ1p+6w8+qyup35qx+EvNGhD6hUoksSdpJSoVdwbHCHLwH4N795io95fcM1gl9K3u4dD6d7belZdGWMOwj1X49p+1xHQZgAxr35ho2PHkJZ3PP8b/3apt90Qfx/nGn9lJDTVw2LB9+GvlKf/F55ihBuFm8JpZ/uLKjNg8G+IfJn+ee6vyvjPm+UUrgviTiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6ZGLPOZ7B59MnFxmgLZrfSFXluiUg/yVkLu9Rmp5/h8=;
+ b=HhHXMJRXYJFH5lvKOMXbreGyRuU5hgTi4E15enz4B2CQGcAvJF423B/af+KQdQOcruTnYU2JLFvI3tl3YDcSs/VL6XqspDErdQ8ldEpZ35L+pq7nojNglHJOXmvwg/Cn3p4WR4Dm6uCWK8ljGDXjegXCEVqwQ7R0hnycl2stCpCq9O5nNV4n17Ea57Gl/DsqQtQKyUhT2FeXIF7J25PYN7lmSlyRNfJuzpBzsX1RSOkQVX97eMYRepzvzV0sgLpmMjD0Qi00mh1I6tfAeKfDppq7gmSNyxGs1Q0lnyiPLGkbMwclbqNk9Cwld/yvPwAKYF/qFXntVpsJBLHQAUX52g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA3PR15MB6076.namprd15.prod.outlook.com (2603:10b6:806:2f8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.38; Thu, 8 Jun
+ 2023 17:38:15 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Thu, 8 Jun 2023
+ 17:38:15 +0000
+Message-ID: <33c52b4c-2a16-7578-f782-51267deff750@meta.com>
+Date: Thu, 8 Jun 2023 10:38:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH bpf v2 2/2] bpf: ensure main program has an extable
+Content-Language: en-US
+To: Krister Johansen <kjlx@templeofstupid.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        stable@vger.kernel.org
+References: <cover.1686166633.git.kjlx@templeofstupid.com>
+ <de425e99876dc6c344e1a4254894a3c81e71a2ec.1686166633.git.kjlx@templeofstupid.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <de425e99876dc6c344e1a4254894a3c81e71a2ec.1686166633.git.kjlx@templeofstupid.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PH0PR07CA0118.namprd07.prod.outlook.com
+ (2603:10b6:510:4::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA3PR15MB6076:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6e56f441-3450-4aa6-92cf-08db6847239f
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	ns4/pGRPHvgZgLZ/NPNRg8n5Hi05am6Rc5uHG7SiwgvqbmxYMMqLNJR3Gaz2sarXLYB+QA+bjx1wJl7LChK/25VvUcqn5wNtijxjYDvljuvrLysaOAhndt2pSGQj17EDzXELBukpLLcDOBtORjGim1U48pvfbCB+lVIXER9bWep8Q4jqNUJ2zb/1kSKpyHeo+x7ugGawaE7s5G3bcbLPRbQ5yYmRZANcdFA8SQ1eKRcEMcC4OGFeZr0KVMMt4ou8VssUWyrrEM8YKjlQzeL0U4BstHSgZA9M8dc0++vO0paFx3JkX7SBMSuLv5IL0hmx1Un4FtSdp2ts1aYm9fqLsJJzxgg2lmtAxubiKaAHz26IlVb/zh/RgJk6zcP/cZy7maA3YBXWjXDLBez2djAnRtjIVDYdZ2Eev9KfW/gYTCd35bXaMYHIamR4MKCt8+KRPvWDD9RrRDLiQxyGvp7gQYFNlmqd+J1jToeERo8wDJuZzF39sTm9HSQxVW0tjIPjB69ztyyuMBtokXASRI+p44S1RVsR3J2z/SKxtVf2kW5yvlEvvhmtVXKuEIMI0fqyIukiMjztpHFobC1BLco4Ib6LeaRq8tBuPeCB7pD5hL6Itj+iTMhMBnr/gWKlr+OOSdaTXcffotfZg/MuMEYGCQ==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(136003)(396003)(346002)(39860400002)(451199021)(6486002)(316002)(41300700001)(86362001)(31696002)(53546011)(6512007)(6506007)(7416002)(186003)(2616005)(2906002)(38100700002)(5660300002)(36756003)(8936002)(8676002)(66476007)(66946007)(66556008)(6666004)(478600001)(31686004)(54906003)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?ZGthQXdlMkJpWDVtckNoa0xsUmsxcjNUbmpCRVJYM0FvQWFoN09FZGxVcEdj?=
+ =?utf-8?B?OHBBWTh1N3RtWEgwOGFpUTBPOHN1SUlTMzV3RUlTT3RjQm5Ud2FQUC9lYndM?=
+ =?utf-8?B?ODJ6bEhqcDgyYitIU0tiME1jd3JOZ3ZFM0NsaVRkOEw1dGNnVDdkMFIrSmhV?=
+ =?utf-8?B?RnZqdE1Dd2R0SVJLU3dORDBYbThZbXhia2owZDR5VGpITkVmR2pWUzVFS2NE?=
+ =?utf-8?B?VXFMZHpNdWxFNWxIMVhld0dRSzVXU0VjZkdrbTFFMXFqSDhLTU9icVhBQWpX?=
+ =?utf-8?B?V1d2Slg4bFc3OXZvblYyVnMvaXlXek9Oc0F4SDk3b2dSQ1ZJcGtndWRMNUl5?=
+ =?utf-8?B?SzRJVVZpWjJncWlIakxVOE1tSWxrNkdWU1VhK1J6SVFiQWxHN0l3VDJwUWt1?=
+ =?utf-8?B?a3ZlOUNjNHhFSC9Bb2I5UjN2Vm16d0NnZnBJd1VmaGtvQVd1Mk9BNGowZmZu?=
+ =?utf-8?B?akxuS3Q3ZDVhUTNxSkpJNG9UUTE1ZUxoaDE2L2hsWHNYMitYTTdMZVFIRHZk?=
+ =?utf-8?B?NHdaZ1ViVFRoZGFrMU1STkw5dUUzMGYzOHVUYTdYQzFlSncyODVJWVJpSTBw?=
+ =?utf-8?B?My9BUU5ZRUI0WjdBMlZtSS9WdzVvZWUvNVFTb3RaVENwUVZVSHJIWTMxU0tX?=
+ =?utf-8?B?aE40SXY0aHZlbFZLZmJUZlhBN25CdWpPSDBxOHZ6YTBrbjJnWnF3ZS9hODNG?=
+ =?utf-8?B?WGhEK2EvcFlrUG0wTC9tODZzR3BYUitZRUdsQjNDMkJ6QURkcFhZM3JZQ3FV?=
+ =?utf-8?B?aFk2SWpOdmRNazBNdDNKdFFQNTNNU3d0VEk3NjYzOUFLNDZvRmg5dTJjOVd6?=
+ =?utf-8?B?VElwU05RTlRTL3BlWEZKT0kyUDRNWXFjbEhOcjYxdC9IUmc5c3QvYndkUjNt?=
+ =?utf-8?B?UThlOUJ3UVVXajJZR29kRTAxeUdoaC8wejBESXJlaTJ0SWV1UW9PNHlVbjg4?=
+ =?utf-8?B?QzBrRDh3NmVBWjVyTXljQWdpckw2UDFSNzNiYUNsaUp4MDJQQnA2SjBKZ2VM?=
+ =?utf-8?B?YitZU0xtQ3A3anp2Y0xTdlJreE82UklBOEk2L1hVZUJuaFg2bjd5aWIwQnhr?=
+ =?utf-8?B?Q0d3RW9lRjR4emlNM2EvU2F3cy90SktGN0Z5QmIzSS83WHBnb0xpamVqMDVu?=
+ =?utf-8?B?UGtFZDR2OVVJY2pRVCs4YVVPOEtoWWZEbmtmQXhiQmY4Sjd1M2FxbThabDdX?=
+ =?utf-8?B?UXFrMzk2QmxIc2k1aDQ3K3kxTnFhM1RvcCs2UCtrMnk3TmY1bi94eGJIaGVM?=
+ =?utf-8?B?RG1NVUNpQm1vdmNWRE1McE1YeWpTb2VJaWNZaDh6R1ZybHJpY0hJcURsVDhj?=
+ =?utf-8?B?QVBrcHg2VUVYaHh3emE2U3hHTEtkMjRmOTlENUhLd3NrbHNxWHNtaklCN3Yw?=
+ =?utf-8?B?bSs4Rm1YNStxRXpUdjkxVWMrMUFIQVBYeEUvZnVueEpCMFB0OFlPdy9GU1Nv?=
+ =?utf-8?B?dkhnenBGWldNWlpCQXRVOEZvYUZhTEpKR2g2aUNBUWlMZmF3endoNWdFbDJR?=
+ =?utf-8?B?S0pzNEhUclVld3NNTzNvSkR3U20wQzJwbzlVS2dOejVaanh3VSt3V1VMQjVT?=
+ =?utf-8?B?aTc5bnpWMmJHYjY0bVJVOS9tazg4bGRWV1JCMGhWOVpMdG0rTjlZbWtZZXdu?=
+ =?utf-8?B?S3VpVXpuS29ndTd1a1FqWmVvTGZOdmpsK1RPL1ZKdm5oSnNBVUxpcHhFbmZy?=
+ =?utf-8?B?VmROTnZ6bFA4WnBDTGdPTk5BMmkrTUw0SUhxa1dHeVlnTHAwbFFPeUtNVVd1?=
+ =?utf-8?B?dlE3T1Q0SG5jaEMyWDd3dUQ5RzQ3cmtiMEhsK2t4VXBDV2Q2ZzdYT2FaTUla?=
+ =?utf-8?B?bTRaNFNuM0dzYVNMTWs3ZUdNWTNkeHpSby9ORjZBZ2pIUlM5dXd0VGROU0Jo?=
+ =?utf-8?B?Yytzd2Nzb1dkamgrYUZsQlpUYTdGNWdzQzAwSzhxVVJMZU5xQ3FEMWJIZzdN?=
+ =?utf-8?B?M1RsUUIvNUZjZlNYOW5wVWNzYStocU9uUW92dVplMFdvMVZRZ1pnUW1oQ2lx?=
+ =?utf-8?B?dDJXK1NLK0ZmVm9QVE5JRWtRMjl4TThTcHNIaXJmbElsVGFiVkVZRFpUMGgz?=
+ =?utf-8?B?UysyQUsvbEx0QmdxbmtoTExrTjBJUVBheU9DQUhYTkFyZjJMYnN0b3RBc0hk?=
+ =?utf-8?B?Q0s2NG5IZzlZRUVJejFlYVErM3JJcEs2UVBHOXpsdmNWVzFzVmNJQUIzNHc0?=
+ =?utf-8?B?WHc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e56f441-3450-4aa6-92cf-08db6847239f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2023 17:38:15.4034
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S8aPY9fHSWXPy/gXtf9f6m+D9m4O+lr5hGsNOkKrtpEAsZB0uqq95BuGegLilI2w
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR15MB6076
+X-Proofpoint-GUID: cPY49ZeJkutA-I4M2OvnlP_sUd4N2d1K
+X-Proofpoint-ORIG-GUID: cPY49ZeJkutA-I4M2OvnlP_sUd4N2d1K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-08_12,2023-06-08_01,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 2023-06-08 at 10:33 -0700, Andrii Nakryiko wrote:
-> On Thu, Jun 8, 2023 at 9:17=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Wed, 2023-06-07 at 14:40 -0700, Andrii Nakryiko wrote:
-> > > On Tue, Jun 6, 2023 at 3:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> > > >=20
-> > > > Check __mark_chain_precision() log to verify that scalars with same
-> > > > IDs are marked as precise. Use several scenarios to test that
-> > > > precision marks are propagated through:
-> > > > - registers of scalar type with the same ID within one state;
-> > > > - registers of scalar type with the same ID cross several states;
-> > > > - registers of scalar type  with the same ID cross several stack fr=
-ames;
-> > > > - stack slot of scalar type with the same ID;
-> > > > - multiple scalar IDs are tracked independently.
-> > > >=20
-> > > > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
-> > > >  .../selftests/bpf/progs/verifier_scalar_ids.c | 324 ++++++++++++++=
-++++
-> > > >  2 files changed, 326 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/verifier_scal=
-ar_ids.c
-> > > >=20
-> > >=20
-> > > Great set of tests! I asked for yet another one, but this could be
-> > > easily a follow up. Looks great.
-> >=20
-> > Thanks.
-> >=20
-> > >=20
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > >=20
-> > > [...]
-> > >=20
-> > > > +
-> > > > +/* Same as precision_same_state_broken_link, but with state /
-> > > > + * parent state boundary.
-> > > > + */
-> > > > +SEC("socket")
-> > > > +__success __log_level(2)
-> > > > +__msg("frame0: regs=3Dr0,r2 stack=3D before 6: (bf) r3 =3D r10")
-> > > > +__msg("frame0: regs=3Dr0,r2 stack=3D before 5: (b7) r1 =3D 0")
-> > > > +__msg("frame0: parent state regs=3Dr0,r2 stack=3D:")
-> > > > +__msg("frame0: regs=3Dr0,r1,r2 stack=3D before 4: (05) goto pc+0")
-> > > > +__msg("frame0: regs=3Dr0,r1,r2 stack=3D before 3: (bf) r2 =3D r0")
-> > > > +__msg("frame0: regs=3Dr0,r1 stack=3D before 2: (bf) r1 =3D r0")
-> > > > +__msg("frame0: regs=3Dr0 stack=3D before 1: (57) r0 &=3D 255")
-> > > > +__msg("frame0: parent state regs=3Dr0 stack=3D:")
-> > > > +__msg("frame0: regs=3Dr0 stack=3D before 0: (85) call bpf_ktime_ge=
-t_ns")
-> > > > +__flag(BPF_F_TEST_STATE_FREQ)
-> > > > +__naked void precision_cross_state_broken_link(void)
-> > > > +{
-> > > > +       asm volatile (
-> > > > +       /* r0 =3D random number up to 0xff */
-> > > > +       "call %[bpf_ktime_get_ns];"
-> > > > +       "r0 &=3D 0xff;"
-> > > > +       /* tie r0.id =3D=3D r1.id =3D=3D r2.id */
-> > > > +       "r1 =3D r0;"
-> > > > +       "r2 =3D r0;"
-> > > > +       /* force checkpoint, although link between r1 and r{0,2} is
-> > > > +        * broken by the next statement current precision tracking
-> > > > +        * algorithm can't react to it and propagates mark for r1 t=
-o
-> > > > +        * the parent state.
-> > > > +        */
-> > > > +       "goto +0;"
-> > > > +       /* break link for r1, this is the only line that differs
-> > > > +        * compared to the previous test
-> > > > +        */
-> > >=20
-> > > not really the only line, goto +0 is that different line ;)
-> >=20
-> > My bad, the comment should be "... this is the only line that differs
-> > compared to precision_cross_state_broken()".
-> >=20
-> > >=20
-> > > > +       "r1 =3D 0;"
-> > > > +       /* force r0 to be precise, this immediately marks r1 and r2=
- as
-> > > > +        * precise as well because of shared IDs
-> > > > +        */
-> > > > +       "r3 =3D r10;"
-> > > > +       "r3 +=3D r0;"
-> > > > +       "r0 =3D 0;"
-> > > > +       "exit;"
-> > > > +       :
-> > > > +       : __imm(bpf_ktime_get_ns)
-> > > > +       : __clobber_all);
-> > > > +}
-> > > > +
-> > > > +/* Check that precision marks propagate through scalar IDs.
-> > > > + * Use the same scalar ID in multiple stack frames, check that
-> > > > + * precision information is propagated up the call stack.
-> > > > + */
-> > > > +SEC("socket")
-> > > > +__success __log_level(2)
-> > > > +/* bar frame */
-> > > > +__msg("frame2: regs=3Dr1 stack=3D before 10: (bf) r2 =3D r10")
-> > > > +__msg("frame2: regs=3Dr1 stack=3D before 8: (85) call pc+1")
-> > > > +/* foo frame */
-> > > > +__msg("frame1: regs=3Dr1,r6,r7 stack=3D before 7: (bf) r7 =3D r1")
-> > > > +__msg("frame1: regs=3Dr1,r6 stack=3D before 6: (bf) r6 =3D r1")
-> > > > +__msg("frame1: regs=3Dr1 stack=3D before 4: (85) call pc+1")
-> > > > +/* main frame */
-> > > > +__msg("frame0: regs=3Dr0,r1,r6 stack=3D before 3: (bf) r6 =3D r0")
-> > > > +__msg("frame0: regs=3Dr0,r1 stack=3D before 2: (bf) r1 =3D r0")
-> > > > +__msg("frame0: regs=3Dr0 stack=3D before 1: (57) r0 &=3D 255")
-> > >=20
-> > > nice test! in this case we discover r6 and r7 during instruction
-> > > backtracking. Let's add another variant of this multi-frame test with
-> > > a forced checkpoint to make sure that all this works correctly betwee=
-n
-> > > child/parent states with multiple active frames?
-> >=20
-> > Because of BPF_F_TEST_STATE_FREQ new state is created at each prune
-> > point. Prune points are marked for each conditional target and
-> > sub-program entry. I skipped a lot of log lines for brevity, here is a
-> > bigger portion of the log:
-> >=20
-> >   8: (85) call pc+1
-> >   caller:
-> >      frame1: R6=3Dscalar(id=3D1,...) R7=3Dscalar(id=3D1,...) R10=3Dfp0
-> >   callee:
-> >      frame2: R1=3Dscalar(id=3D1,...) R10=3Dfp0
-> >   10: (bf) r2 =3D r10                     ; frame2: R2_w=3Dfp0 R10=3Dfp=
-0
-> >   11: (0f) r2 +=3D r1
-> >   frame2: last_idx 11 first_idx 10 subseq_idx -1        <- current stat=
-e
-> >   frame2: regs=3Dr1 stack=3D before 10: (bf) r2 =3D r10
-> >   frame2: parent state regs=3Dr1 stack=3D
-> >   frame1: parent state regs=3Dr6,r7 stack=3D                <- (I)
-> >   frame0: parent state regs=3Dr6 stack=3D
-> >=20
-> >   frame2: last_idx 8 first_idx 8 subseq_idx 10          <- parent state
-> >   frame2: regs=3Dr1 stack=3D before 8: (85) call pc+1
-> >   frame1: parent state regs=3Dr1,r6,r7 stack=3D             <- (II)
-> >   frame0: parent state regs=3Dr6 stack=3D
-> >=20
-> >   frame1: last_idx 7 first_idx 6 subseq_idx 8           <- parent state
-> >   frame1: regs=3Dr1,r6,r7 stack=3D before 7: (bf) r7 =3D r1
-> >   frame1: regs=3Dr1,r6 stack=3D before 6: (bf) r6 =3D r1
-> >   frame1: parent state regs=3Dr1 stack=3D
-> >   frame0: parent state regs=3Dr6 stack=3D
-> >=20
-> >   frame1: last_idx 4 first_idx 4 subseq_idx 6           <- parent state
-> >   frame1: regs=3Dr1 stack=3D before 4: (85) call pc+1
-> >   frame0: parent state regs=3Dr1,r6 stack=3D
-> >=20
-> >   frame0: last_idx 3 first_idx 1 subseq_idx 4           <- parent state
-> >   frame0: regs=3Dr0,r1,r6 stack=3D before 3: (bf) r6 =3D r0
-> >   frame0: regs=3Dr0,r1 stack=3D before 2: (bf) r1 =3D r0
-> >   frame0: regs=3Dr0 stack=3D before 1: (57) r0 &=3D 255
-> >=20
-> > At (I) frame1.r{6,7} are marked because mark_precise_scalar_ids()
-> > looks for all registers with frame2.r1.id in the current state.
-> > At (II) frame1.r1 is marked because of backtracking of call instruction=
-.
-> > It looks like both ba=D1=81ktracking and cross-state propagation are te=
-sted.
-> > Maybe I miss-understand your comment.
-> >=20
->=20
-> From the set of __msg() tests it's not obvious that (I) is happening.
-> So just maybe let's messages like below:
->=20
-> __msg("frame1: parent state regs=3Dr6,r7 stack=3D")
->=20
-> to make it more explicit?
 
-Yes good point,
-I'll add a few __msg lines and a comment to make this thing clear.
 
->=20
-> Either way, it's minor. You are right about checkpoint after each
-> helper call and subprog call.
->=20
->=20
-> > >=20
-> > > > +__flag(BPF_F_TEST_STATE_FREQ)
-> > > > +__naked void precision_many_frames(void)
-> > > > +{
-> > > > +       asm volatile (
-> > > > +       /* r0 =3D random number up to 0xff */
-> > > > +       "call %[bpf_ktime_get_ns];"
-> > > > +       "r0 &=3D 0xff;"
-> > > > +       /* tie r0.id =3D=3D r1.id =3D=3D r6.id */
-> > > > +       "r1 =3D r0;"
-> > > > +       "r6 =3D r0;"
-> > > > +       "call precision_many_frames__foo;"
-> > > > +       "exit;"
-> > > > +       :
-> > > > +       : __imm(bpf_ktime_get_ns)
-> > > > +       : __clobber_all);
-> > > > +}
-> > > > +
-> > > > +static __naked __noinline __attribute__((used))
-> > >=20
-> > > nit: bpf_misc.h has __used macro defined, we can use that everywhere
-> > >=20
-> > > > +void precision_many_frames__foo(void)
-> > > > +{
-> > > > +       asm volatile (
-> > > > +       /* conflate one of the register numbers (r6) with outer fra=
-me,
-> > > > +        * to verify that those are tracked independently
-> > > > +        */
-> > > > +       "r6 =3D r1;"
-> > > > +       "r7 =3D r1;"
-> > > > +       "call precision_many_frames__bar;"
-> > > > +       "exit"
-> > > > +       ::: __clobber_all);
-> > > > +}
-> > > > +
-> > >=20
-> > > [...]
-> >=20
+On 6/7/23 2:04 PM, Krister Johansen wrote:
+> When bpf subprograms are in use, the main program is not jit'd after the
+> subprograms because jit_subprogs sets a value for prog->bpf_func upon
+> success.  Subsequent calls to the JIT are bypassed when this value is
+> non-NULL.  This leads to a situation where the main program and its
+> func[0] counterpart are both in the bpf kallsyms tree, but only func[0]
+> has an extable.  Extables are only created during JIT.  Now there are
+> two nearly identical program ksym entries in the tree, but only one has
+> an extable.  Depending upon how the entries are placed, there's a chance
+> that a fault will call search_extable on the aux with the NULL entry.
+> 
+> Since jit_subprogs already copies state from func[0] to the main
+> program, include the extable pointer in this state duplication.  The
+> alternative is to skip adding the main program to the bpf_kallsyms
+> table, but that would mean adding a check for subprograms into the
+> middle of bpf_prog_load.
 
+I think having two early identical program ksym entries is bad.
+When people 'cat /proc/kallsyms | grep <their program name>',
+they will find two programs with identical kernel address but different
+hash value. This is just very confusing. I think removing the
+duplicate in kallsyms is better from user's perspective.
+
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 1c2a088a6626 ("bpf: x64: add JIT support for multi-function programs")
+> Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+> ---
+>   kernel/bpf/verifier.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5871aa78d01a..d6939db9fbf9 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -17242,6 +17242,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>   	prog->jited = 1;
+>   	prog->bpf_func = func[0]->bpf_func;
+>   	prog->jited_len = func[0]->jited_len;
+> +	prog->aux->extable = func[0]->aux->extable;
+>   	prog->aux->func = func;
+>   	prog->aux->func_cnt = env->subprog_cnt;
+>   	bpf_prog_jit_attempt_done(prog);
 
