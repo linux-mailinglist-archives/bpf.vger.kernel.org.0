@@ -1,175 +1,150 @@
-Return-Path: <bpf+bounces-2144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105217288F7
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:46:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67DE1728906
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660A41C21054
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:46:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A872817BD
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 19:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CE52D245;
-	Thu,  8 Jun 2023 19:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5942D244;
+	Thu,  8 Jun 2023 19:52:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9ED294D4
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 19:46:30 +0000 (UTC)
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A663F30C3
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 12:46:17 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-565bdae581eso8834547b3.2
-        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 12:46:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949F71F187
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 19:52:21 +0000 (UTC)
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2904210D
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 12:52:19 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-78a065548e3so406546241.0
+        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 12:52:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20221208.gappssmtp.com; s=20221208; t=1686253577; x=1688845577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dp7JcGm3NEkfhNcSWqAKhc2vwDiRILzaHvhFpJi9A54=;
-        b=vYmbq0jllbD1LTy7mRPYtKTiEXtarRokxew2CRMVQt85Nwn5omnLuIBQI4NFXg2iFY
-         6fDbGPJuXsYXXcW8UxH7yHSaNrxjqqNitvRrEMS/D1RFnRYjF8XJtc8aqc3v4Rd726p5
-         NCUf73FALxwZkUpRzOSnCRfPw3Mwxvi7f2IGrDtvfc8NqOsvIKJ9cNMBmcPhc067uZ5T
-         ua5Y/AHjkYapHU7VDr89y270UnYCttrwelbNP2EGYUDvXIDcz8x/9Kn6AOAuMh9/b6e3
-         GXKuKXx3S3YfebZZs5VGcrhA+WjDFtedZ/XSFSIGWWGCgTMs6aVHndL5ndPUz3lxHPp7
-         e65w==
+        d=gmail.com; s=20221208; t=1686253938; x=1688845938;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZZSrkXUCvZWA/pSkR306E5n/eGUCjotvwFy9oD8Cc8s=;
+        b=EuQ3Xn9N90s87cuss++kjEaQTuo+AbhtLu3P7SNEFvPkP8cYmrgCmUflylANOohcQz
+         izkUjjfzAxToXKSX8fXY5fiESxAJiL9pPEFUP3csYZ84f3NUDu7fAafCxTO0KJe+Gx1Q
+         c0tNkTkKvuYRtuJjujiBNarBLBRdgS183vjLSjgC1AumNQ/KnF/4xBHgh4Z7HhrILoLO
+         x4LYlh0DMb7VAsnjHiDnVJbWhxwu9yfQRdv/82ZtSqiD7krlFAQfFRq7n0rSROkeClvS
+         Nh8SOI4ftN1bdJ7zj4nXCBGbh4s8o2nHIS/W7RWZ8A6Vv8OTeNXUzy/fVBJ/euJ33lWI
+         /PAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686253577; x=1688845577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dp7JcGm3NEkfhNcSWqAKhc2vwDiRILzaHvhFpJi9A54=;
-        b=kadq5ZWbwwCT0HSIxd3Af0p4JpacTm+GeqebAF+0LtWJ55m+En5GsYcLCSZ3xvMMvp
-         iGMqpVNnFUhYlxtvH+BOahQV8CxWJ/Ox6mc8we05BIXI5KlGqVt34eUva+Iq/zBjsJub
-         rc1WbiMrn1VrRn3cz0ilEcUNiyyyxz6ZO0O1Y5kz/Jw2NZ2v3RUdtUjYxA4OhkMiB4rp
-         8/7Jj8Zpi8s8DE8YblRMTFpa9fQ2szsJH3fco4PnbaDoWYgdOKgo3HF9o11pQgwB+/rH
-         riE0V/4wCwxcQrAF63+Y7YhDsio9ITPJT465l0uIzeiAJ20xnDwp9UlJFSvpIh/PpquY
-         09SA==
-X-Gm-Message-State: AC+VfDxgkdQA10ZVtdV2jdEvQovT/yF/zJQ8qBH1iZZWuyUglWmsCZeo
-	3aNp8ijjBSgHYwHZ1vui3m56JZDSTNskNCNGoyWq1Q==
-X-Google-Smtp-Source: ACHHUZ54MFEdKvMDz1U/Lj0UmPuzsjFKoC9Q4LqTwz1dt6V7gqbnnFRFjhiDmTAUULFPjxjHrktz1QJu4Ny747v5I1E=
-X-Received: by 2002:a81:4f17:0:b0:561:8418:6932 with SMTP id
- d23-20020a814f17000000b0056184186932mr643553ywb.47.1686253576897; Thu, 08 Jun
- 2023 12:46:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686253938; x=1688845938;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZSrkXUCvZWA/pSkR306E5n/eGUCjotvwFy9oD8Cc8s=;
+        b=FWURjHPCe0PQ1SJNNmEBETuixuqyuk/+r2P+FIO+qewCgPk4NjXcKKnIUU/BUoHNXO
+         Ijx6bo0sD9DNv8LJ3ufSo4DIFdwZME9ILrmiFbbQs0xkj4SWOJ6WZDelfhwGjogBhyj8
+         TnzXptzTT8taM3SszaUbtsXzuLKk1TEMp3g5jQF81RBGq4/NnZRapsj1KHdun96fU8m8
+         m9LBlkN/FPkHcnGOnjCdb069fMQxpjZXJHv/t3NtNMJIOPmUqVQI353Xh7Ylwh5oxW8H
+         Yoiyy0mJBECC0V1o6XLCcpApIRjU7gtivHIjpduAceybeZwCyGs1D3yORWprd5AaNwJz
+         DLnA==
+X-Gm-Message-State: AC+VfDwKvPLdWEFBwnOAghD48xy0C2wSUAANlNhYRRE4e1bz5ndQ/Cve
+	8mZtNpJgyGJfp0D+QhljEpn8R3hBGxUZHJQh0D5vycLWq0c=
+X-Google-Smtp-Source: ACHHUZ7hSnTBZ00ZNDVidvUIpRZ5GaMcfS+Dt29AaOCJJ9b89YiriODMTlzAQtuQipnpfQTgBvgpVqq7xpj9qjxeFZ0=
+X-Received: by 2002:a67:cd91:0:b0:43b:3cf8:bead with SMTP id
+ r17-20020a67cd91000000b0043b3cf8beadmr3371872vsl.0.1686253938481; Thu, 08 Jun
+ 2023 12:52:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-3-daniel@iogearbox.net>
- <CAM0EoMm25tdjxp+7Mq4fowGfCJzFRhbThHhaO7T_46vNJ9y-NQ@mail.gmail.com> <fe2e13a6-1fb6-c160-1d6f-31c09264911b@iogearbox.net>
-In-Reply-To: <fe2e13a6-1fb6-c160-1d6f-31c09264911b@iogearbox.net>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Thu, 8 Jun 2023 15:46:05 -0400
-Message-ID: <CAM0EoM=FFsTNNKaMbRtuRxc8ieJgDFsBifBmZZ2_67u5=+-3BQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: Add fd-based tcx multi-prog infra
- with link support
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
-	razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com, 
-	kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org, 
-	davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+From: Zhongqiu Duan <dzq.aishenghu0@gmail.com>
+Date: Fri, 9 Jun 2023 03:52:07 +0800
+Message-ID: <CAFmV8NeH2zLhSY1RMos18OMEnU81ieCMG0aNtN14BGh_Y7Nzwg@mail.gmail.com>
+Subject: [BUG] optimizations for branch cause bpf verification to fail
+To: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Daniel,
+Hello,  everyone.
 
-On Thu, Jun 8, 2023 at 6:12=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
-t> wrote:
->
-> Hi Jamal,
->
-> On 6/8/23 3:25 AM, Jamal Hadi Salim wrote:
-> [...]
-> > A general question (which i think i asked last time as well): who
-> > decides what comes after/before what prog in this setup? And would
-> > that same entity not have been able to make the same decision using tc
-> > priorities?
->
-> Back in the first version of the series I initially coded up this option
-> that the tc_run() would basically be a fake 'bpf_prog' and it would have,
-> say, fixed prio 1000. It would get executed via tcx_run() when iterating
-> via bpf_mprog_foreach_prog() where bpf_prog_run() is called, and then use=
-rs
-> could pick for native BPF prio before or after that. But then the feedbac=
-k
-> was that sticking to prio is a bad user experience which led to the
-> development of what is in patch 1 of this series (see the details there).
->
+Recently, I've been doing some work using eBPF techniques. A situation was
+encountered in which a program was rejected by the verifier.
 
-Thanks. I read the commit message in patch 1 and followed the thread
-back including some of the discussion we had and i am still
-disagreeing that this couldnt be solved with a smart priority based
-scheme - but i think we can move on since this is standalone and
-doesnt affect tc.
+Iterate over different maps under different conditions. It should be a good idea
+to use map-of-maps when there are lots of maps. I use if cond for a quick test.
 
-Daniel - i am still curious in the new scheme of things how would
-cilium vs datadog food fight get resolved without some arbitration
-entity?
+It looks like this:
 
-> > The idea of protecting programs from being unloaded is very welcome
-> > but feels would have made sense to be a separate patchset (we have
-> > good need for it). Would it be possible to use that feature in tc and
-> > xdp?
-> BPF links are supported for XDP today, just tc BPF is one of the few
-> remainders where it is not the case, hence the work of this series. What
-> XDP lacks today however is multi-prog support. With the bpf_mprog concept
-> that could be addressed with that common/uniform api (and Andrii expresse=
-d
-> interest in integrating this also for cgroup progs), so yes, various hook
-> points/program types could benefit from it.
+int foo(struct xdp_md *ctx)
+{
+   void *data_end = (void *)(long)ctx->data_end;
+   void *data = (void *)(long)ctx->data;
+   struct callback_ctx cb_data;
 
-Is there some sample XDP related i could look at?  Let me describe our
-use case: lets say we load an ebpf program foo attached to XDP of a
-netdev  and then something further upstream in the stack is consuming
-the results of that ebpf XDP program. For some reason someone, at some
-point, decides to replace the XDP prog with a different one - and the
-new prog does a very different thing. Could we stop the replacement
-with the link mechanism you describe? i.e the program is still loaded
-but is no longer attached to the netdev.
+   cb_data.output = 0;
 
+   if (data_end - data > 1024) {
+       bpf_for_each_map_elem(&map1, cb, &cb_data, 0);
+   } else {
+       bpf_for_each_map_elem(&map2, cb, &cb_data, 0);
+   }
 
-> >> +struct tcx_entry {
-> >> +       struct bpf_mprog_bundle         bundle;
-> >> +       struct mini_Qdisc __rcu         *miniq;
-> >> +};
-> >> +
-> >
-> > Can you please move miniq to the front? From where i sit this looks:
-> > struct tcx_entry {
-> >          struct bpf_mprog_bundle    bundle
-> > __attribute__((__aligned__(64))); /*     0  3264 */
-> >
-> >          /* XXX last struct has 36 bytes of padding */
-> >
-> >          /* --- cacheline 51 boundary (3264 bytes) --- */
-> >          struct mini_Qdisc *        miniq;                /*  3264     =
-8 */
-> >
-> >          /* size: 3328, cachelines: 52, members: 2 */
-> >          /* padding: 56 */
-> >          /* paddings: 1, sum paddings: 36 */
-> >          /* forced alignments: 1 */
-> > } __attribute__((__aligned__(64)));
-> >
-> > That is a _lot_ of cachelines - at the expense of the status quo
-> > clsact/ingress qdiscs which access miniq.
->
-> Ah yes, I'll fix this up.
+   if (cb_data.output)
+       return XDP_DROP;
 
-Thanks.
+   return XDP_PASS;
+}
 
-cheers,
-jamal
-> Thanks,
-> Daniel
+Compile by clang-15 with optimization level O2:
+
+0000000000000000 <foo>:
+;     void *data = (void *)(long)ctx->data;
+0:       61 12 00 00 00 00 00 00 r2 = *(u32 *)(r1 + 0)
+;     void *data_end = (void *)(long)ctx->data_end;
+1:       61 13 04 00 00 00 00 00 r3 = *(u32 *)(r1 + 4)
+;     if (data_end - data > 1024) {
+2:       1f 23 00 00 00 00 00 00 r3 -= r2
+3:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+5:       65 03 02 00 00 04 00 00 if r3 s> 1024 goto +2 <LBB0_2>
+6:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+0000000000000040 <LBB0_2>:
+8:       b7 02 00 00 00 00 00 00 r2 = 0
+;     cb_data.output = 0;
+9:       63 2a f8 ff 00 00 00 00 *(u32 *)(r10 - 8) = r2
+10:       bf a3 00 00 00 00 00 00 r3 = r10
+11:       07 03 00 00 f8 ff ff ff r3 += -8
+12:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
+14:       b7 04 00 00 00 00 00 00 r4 = 0
+15:       85 00 00 00 a4 00 00 00 call 164
+16:       b7 00 00 00 02 00 00 00 r0 = 2
+;     if (cb_data.output)
+17:       61 a1 f8 ff 00 00 00 00 r1 = *(u32 *)(r10 - 8)
+; }
+18:       15 01 01 00 00 00 00 00 if r1 == 0 goto +1 <LBB0_4>
+19:       b7 00 00 00 01 00 00 00 r0 = 1
+00000000000000a0 <LBB0_4>:
+; }
+20:       95 00 00 00 00 00 00 00 exit
+
+When loading the prog, the verifier complained "tail_call abusing map_ptr".
+The Compiler's optimizations look fine, so I took a quick look at the code of
+the verifier.
+
+The function record_func_map called by check_helper_call will ref the current
+map in bpf_insn_aux_data of current insn. After the current branch ends,
+pop stack and enter another branch, but the relevant state is not cleared.
+This time, record_func_map set BPF_MAP_PTR_POISON as the map state.
+At the start of set_map_elem_callback_state, poisoned state causing EINVAL.
+
+I'm not very familiar with BPF. If it is designed like this, it is
+customary to add
+options on the compiler side to avoid it, then please let me know.
+
+Thanks,
+Zhongqiu
 
