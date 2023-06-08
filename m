@@ -1,317 +1,256 @@
-Return-Path: <bpf+bounces-2080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A6D727447
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 03:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 035CB72749C
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 03:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35EE62815C2
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 01:26:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E1B2815E3
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 01:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64447A51;
-	Thu,  8 Jun 2023 01:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686BCECD;
+	Thu,  8 Jun 2023 01:51:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE2F7F6
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 01:26:12 +0000 (UTC)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8642103
-	for <bpf@vger.kernel.org>; Wed,  7 Jun 2023 18:26:09 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4f629ccb8ebso135331e87.1
-        for <bpf@vger.kernel.org>; Wed, 07 Jun 2023 18:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686187568; x=1688779568;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lKGlpXKDLoSYHfB3uM9TQnMe7P48kEJ/z1bNddPcfVI=;
-        b=ghgjb+a6dHX3F0iES2IidrZOM8lmRRu27HKMeSfVYBd17G6AeD5a9UZjvgpkm17RXI
-         F6b9lJcndJhvP4dw2G0VP6IAWTRzHnzxSvinsCr3yXeTBg7hVarkEOOCjB4sBZ0GAfFi
-         MSx3GfF/z9WsEWA5cjIocHOPIR9/PDzTFgDFkkTXv7e7CATHRVUYfAbw7Onm8TGgjiWO
-         V5ITlFeRf/Gqj8aKAx0Xcf8qkImdfO84GhXDJPIxE5JAX5JVppb75XVlLwOAbSYFuZwd
-         fXf09rrhJuJU3c7U/cW7Oa+sAI3dzKoqLjbfY9OuZlEE1KQYgv9/pzTj3RN2MWKASg4Y
-         cdMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686187568; x=1688779568;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lKGlpXKDLoSYHfB3uM9TQnMe7P48kEJ/z1bNddPcfVI=;
-        b=dKa6R8EpeTWmkJfe3OBx3OnRhZ+XsHAxG15clPM7KSyf8Sen//Gn15oxVxR/iKWpeQ
-         OQdfvAgH5YNZgFC6IKM78CGrTWRzijUQ1BkX5ywsy+cD5DakU8I1sEDGRhxCY0rlbfuw
-         pABNSEVOZsugKq24WiS1BCipxSoqYK5xmDJheJ5pVxntILHzwNohK6Ok/I9rix6ipBYk
-         zqrBP3G2izybxaYqy+UI8B4KryJIvLGhngQavx3YT20gQE638zei2NS0nbp7zj+S/DVT
-         qjs2PutxD6ACMLa8A0KIuys/APJV9AzfGqz7qi+A37RCHjz6LL8ZPCiCPIIzW+c0BxFo
-         pf1A==
-X-Gm-Message-State: AC+VfDy3nMLeux3i7mAcWMxS//WhxDcs+88cHHfdp1BhMr3SNCR9Tfvv
-	u3S212NRRv1PMpE0iP1GAxA=
-X-Google-Smtp-Source: ACHHUZ4gYoDU2qGf43MpoWfOz5RuaiwdUv0w38zrrfcttlolrFrZVOpP3WB8nsUNDdzKiGaeC/hyDw==
-X-Received: by 2002:ac2:5a19:0:b0:4f6:2e4f:5054 with SMTP id q25-20020ac25a19000000b004f62e4f5054mr2642441lfn.40.1686187567725;
-        Wed, 07 Jun 2023 18:26:07 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id r10-20020ac252aa000000b004f3a1033078sm12171lfm.52.2023.06.07.18.26.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 18:26:07 -0700 (PDT)
-Message-ID: <cc31b95783afa7dc8fb806c973f8420d22a49e58.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
-Date: Thu, 08 Jun 2023 04:26:06 +0300
-In-Reply-To: <CAEf4BzbbGV6gTJ1KdBB8EwLWV3aNE-iyNtP2pC-W1=MTDNRq5Q@mail.gmail.com>
-References: <20230606222411.1820404-1-eddyz87@gmail.com>
-	 <20230606222411.1820404-4-eddyz87@gmail.com>
-	 <CAEf4BzbbGV6gTJ1KdBB8EwLWV3aNE-iyNtP2pC-W1=MTDNRq5Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C534EC8
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 01:51:36 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6812132;
+	Wed,  7 Jun 2023 18:51:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qc6dG1ZHbz4f5WKK;
+	Thu,  8 Jun 2023 09:51:30 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgB34iwfNIFkGklDKg--.33937S2;
+	Thu, 08 Jun 2023 09:51:31 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+ <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+ <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+Date: Thu, 8 Jun 2023 09:51:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgB34iwfNIFkGklDKg--.33937S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFykKrW5Ww4kXF4DZw4UCFg_yoW3AFyfpF
+	WfKF90kF1qqrW3Awsavr4kXF4Fv3yFg3yUX34Fqry7Crn5Wr9IqrW0gF4j9F98urs7Cw4a
+	v3WDtr1xCw1UZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 2023-06-07 at 14:40 -0700, Andrii Nakryiko wrote:
-> On Tue, Jun 6, 2023 at 3:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > Make sure that the following unsafe example is rejected by verifier:
-> >=20
-> > 1: r9 =3D ... some pointer with range X ...
-> > 2: r6 =3D ... unbound scalar ID=3Da ...
-> > 3: r7 =3D ... unbound scalar ID=3Db ...
-> > 4: if (r6 > r7) goto +1
-> > 5: r6 =3D r7
-> > 6: if (r6 > X) goto ...
-> > --- checkpoint ---
-> > 7: r9 +=3D r7
-> > 8: *(u64 *)r9 =3D Y
-> >=20
-> > This example is unsafe because not all execution paths verify r7 range.
-> > Because of the jump at (4) the verifier would arrive at (6) in two stat=
-es:
-> > I.  r6{.id=3Db}, r7{.id=3Db} via path 1-6;
-> > II. r6{.id=3Da}, r7{.id=3Db} via path 1-4, 6.
-> >=20
-> > Currently regsafe() does not call check_ids() for scalar registers,
-> > thus from POV of regsafe() states (I) and (II) are identical. If the
-> > path 1-6 is taken by verifier first, and checkpoint is created at (6)
-> > the path [1-4, 6] would be considered safe.
-> >=20
-> > This commit updates regsafe() to call check_ids() for precise scalar
-> > registers.
-> >=20
-> > To minimize the impact on verification performance, avoid generating
-> > bpf_reg_state::id for constant scalar values when processing BPF_MOV
-> > in check_alu_op(). Scalar IDs are utilized by find_equal_scalars() to
-> > propagate information about value ranges for registers that hold the
-> > same value. However, there is no need to propagate range information
-> > for constants.
-> >=20
-> > Still, there is some performance impact because of this change.
-> > Using veristat to compare number of processed states for selftests
-> > object files listed in tools/testing/selftests/bpf/veristat.cfg and
-> > Cilium object files from [1] gives the following statistics:
-> >=20
-> > $ ./veristat -e file,prog,states -f "states_pct>10" \
-> >     -C master-baseline.log current.log
-> > File         Program                         States  (DIFF)
-> > -----------  ------------------------------  --------------
-> > bpf_xdp.o    tail_handle_nat_fwd_ipv6        +155 (+23.92%)
-> > bpf_xdp.o    tail_nodeport_nat_ingress_ipv4  +102 (+27.20%)
-> > bpf_xdp.o    tail_rev_nodeport_lb4            +83 (+20.85%)
-> > loop6.bpf.o  trace_virtqueue_add_sgs          +25 (+11.06%)
-> >=20
-> > Also test case verifier_search_pruning/allocated_stack has to be
-> > updated to avoid conflicts in register ID assignments between cached
-> > and new states.
-> >=20
-> > [1] git@github.com:anakryiko/cilium.git
-> >=20
-> > Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register ass=
-ignments.")
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
->=20
-> So I checked it also on our internal BPF object files, and it looks
-> mostly good. Here are the only regressions:
->=20
-> Program                                   States (A)  States (B)
-> States   (DIFF)
-> ----------------------------------------  ----------  ----------
-> ---------------
-> balancer_ingress                               29219       34531
-> +5312 (+18.18%)
-> syar_bind6_protect6                             3257        3599
-> +342 (+10.50%)
-> syar_bind4_protect4                             2590        2931
-> +341 (+13.17%)
-> on_alloc                                         415         526
-> +111 (+26.75%)
-> on_free                                          406         517
-> +111 (+27.34%)
-> pycallcount                                      395         506
-> +111 (+28.10%)
-> resume_context                                   405         516
-> +111 (+27.41%)
-> on_py_event                                      395         506
-> +111 (+28.10%)
-> on_event                                         284         394
-> +110 (+38.73%)
-> handle_cuda_event                                268         378
-> +110 (+41.04%)
-> handle_cuda_launch                               276         386
-> +110 (+39.86%)
-> handle_cuda_malloc_ret                           272         382
-> +110 (+40.44%)
-> handle_cuda_memcpy                               270         380
-> +110 (+40.74%)
-> handle_cuda_memcpy_async                         270         380
-> +110 (+40.74%)
-> handle_pytorch_allocate_ret                      271         381
-> +110 (+40.59%)
-> handle_pytorch_malloc_ret                        272         382
-> +110 (+40.44%)
-> on_event                                         284         394
-> +110 (+38.73%)
-> on_event                                         284         394
-> +110 (+38.73%)
-> syar_task_enter_execve                           309         329
-> +20 (+6.47%)
-> kprobe__security_inode_link                      968         986
-> +18 (+1.86%)
-> kprobe__security_inode_symlink                   838         854
-> +16 (+1.91%)
-> tw_twfw_egress                                   249         251
-> +2 (+0.80%)
-> tw_twfw_ingress                                  250         252
-> +2 (+0.80%)
-> tw_twfw_tc_eg                                    248         250
-> +2 (+0.81%)
-> tw_twfw_tc_in                                    250         252
-> +2 (+0.80%)
-> raw_tracepoint__sched_process_exec               136         139
-> +3 (+2.21%)
-> kprobe_ret__do_filp_open                         869         871
-> +2 (+0.23%)
-> read_erlang_stack                                572         573
-> +1 (+0.17%)
->=20
->=20
-> They are mostly on small-ish programs. The only mild concern from my
-> side is balancer_ingress, which is one of Katran BPF programs. It add
-> +18% of states (which translates to about 70K more instructions
-> verified, up from 350K). I think we can live with this, but would be
-> nice to check why it's happening.
+Hi,
 
-Thank you for reviewing this series.
-
-I looked at the logs that you've shared, the difference is indeed
-caused by some scalar registers having a unique ID in cached state and
-no ID in current state or vice versa. The !rold->id trick that we
-discussed for V2 helps :)
-
-What do you think about an alternative way to exclude unique scalars
-as in the patch below? (on top of this patch-set):
-
---- 8< -------------------------
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 235d7eded565..ece9722dff3b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -15149,6 +15149,13 @@ static bool check_ids(u32 old_id, u32 cur_id, stru=
-ct bpf_id_pair *idmap)
-        return false;
- }
-=20
-+static bool check_scalar_ids(u32 old_id, u32 cur_id, struct bpf_verifier_e=
-nv *env)
-+{
-+       old_id =3D old_id ? old_id : env->id_gen++;
-+       cur_id =3D cur_id ? cur_id : env->id_gen++;
-+       return check_ids(old_id, cur_id, env->idmap_scratch);
-+}
-+
- static void clean_func_state(struct bpf_verifier_env *env,
-                             struct bpf_func_state *st)
- {
-@@ -15325,7 +15332,7 @@ static bool regsafe(struct bpf_verifier_env *env, s=
-truct bpf_reg_state *rold,
-                 */
-                return range_within(rold, rcur) &&
-                       tnum_in(rold->var_off, rcur->var_off) &&
--                      check_ids(rold->id, rcur->id, idmap);
-+                      check_scalar_ids(rold->id, rcur->id, env);
-        case PTR_TO_MAP_KEY:
-        case PTR_TO_MAP_VALUE:
-        case PTR_TO_MEM:
-
-------------------------- >8 ---
-
-For me this patch removes all veristat differences compared to the
-master. If doing it for real, I'd like to reset env->id_gen at exit
-from states_equal() to the value it had at entry (to avoid allocating
-too many ids).
-
->=20
-> I suspect that dropping SCALAR IDs as we discussed (after fixing
-> register fill/spill ID generation) might completely mitigate that.
->=20
-> Overall, LGTM:
->=20
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->=20
-> >  kernel/bpf/verifier.c                         | 34 ++++++++++++++++---
-> >  .../bpf/progs/verifier_search_pruning.c       |  3 +-
-> >  2 files changed, 32 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 2aa60b73f1b5..175ca22b868e 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -12933,12 +12933,14 @@ static int check_alu_op(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn)
-> >                 if (BPF_SRC(insn->code) =3D=3D BPF_X) {
-> >                         struct bpf_reg_state *src_reg =3D regs + insn->=
-src_reg;
-> >                         struct bpf_reg_state *dst_reg =3D regs + insn->=
-dst_reg;
-> > +                       bool need_id =3D (src_reg->type =3D=3D SCALAR_V=
-ALUE && !src_reg->id &&
-> > +                                       !tnum_is_const(src_reg->var_off=
-));
-> >=20
->=20
-> nit: unnecessary outer ()
->=20
-> >                         if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
-> >                                 /* case: R1 =3D R2
-> >                                  * copy register state to dest reg
-> >                                  */
-> > -                               if (src_reg->type =3D=3D SCALAR_VALUE &=
-& !src_reg->id)
-> > +                               if (need_id)
-> >                                         /* Assign src and dst registers=
- the same ID
-> >                                          * that will be used by find_eq=
-ual_scalars()
-> >                                          * to propagate min/max range.
->=20
-> [...]
+On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
+> On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+>>> As said in the commit message, the command line for test is
+>>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+>>> using default max_entries and the number of CPUs is greater than 15,
+>>> use_percpu_counter will be false.
+>> Right. percpu or not depends on number of cpus.
+>>
+>>> I have double checked my local VM setup (8 CPUs + 16GB) and rerun the
+>>> test.  For both "./map_perf_test 4 8" and "./map_perf_test 4 8 16384"
+>>> there are obvious performance degradation.
+>> ...
+>>> [root@hello bpf]# ./map_perf_test 4 8 16384
+>>> 2:hash_map_perf kmalloc 359201 events per sec
+>> ..
+>>> [root@hello bpf]# ./map_perf_test 4 8 16384
+>>> 4:hash_map_perf kmalloc 203983 events per sec
+>> this is indeed a degration in a VM.
+>>
+>>> I also run map_perf_test on a physical x86-64 host with 72 CPUs. The
+>>> performances for "./map_perf_test 4 8" are similar, but there is obvious
+>>> performance degradation for "./map_perf_test 4 8 16384"
+>> but... a degradation?
+Er, My bad. I miss-labeled "Before" and "After". v4 indeed introduces
+big performance degradation in physical host.
+>>
+>>> Before reuse-after-rcu-gp:
+>>>
+>>> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+>>> 1:hash_map_perf kmalloc 388088 events per sec
+>> ...
+>>> After reuse-after-rcu-gp:
+>>> [houtao@fedora bpf]$ sudo ./map_perf_test 4 8 16384
+>>> 5:hash_map_perf kmalloc 655628 events per sec
+>> This is a big improvement :) Not a degration.
+>> You always have to double check the numbers with perf report.
+>>
+>>> So could you please double check your setup and rerun map_perf_test ? If
+>>> there is no performance degradation, could you please share your setup
+>>> and your kernel configure file ?
+>> I'm testing on normal no-debug kernel. No kasan. No lockdep. HZ=1000
+>> Playing with it a bit more I found something interesting:
+>> map_perf_test 4 8 16348
+>> before/after has too much noise to be conclusive.
+>>
+>> So I did
+>> map_perf_test 4 8 16348 1000000
+>>
+>> and now I see significant degration from patch 3.
+>> It drops from 800k to 200k.
+>> And perf report confirms that heavy contention on sc->reuse_lock is the culprit.
+>> The following hack addresses most of the perf degradtion:
+>>
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index fea1cb0c78bb..eeadc9359097 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -188,7 +188,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
+>>         alloc = 0;
+>>         head = NULL;
+>>         tail = NULL;
+>> -       raw_spin_lock_irqsave(&sc->reuse_lock, flags);
+>> +       if (raw_spin_trylock_irqsave(&sc->reuse_lock, flags)) {
+>>         while (alloc < cnt) {
+>>                 obj = __llist_del_first(&sc->reuse_ready_head);
+>>                 if (obj) {
+>> @@ -206,6 +206,7 @@ static int bpf_ma_get_reusable_obj(struct bpf_mem_cache *c, int cnt)
+>>                 alloc++;
+>>         }
+>>         raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>> +       }
+>>
+>>         if (alloc) {
+>>                 if (IS_ENABLED(CONFIG_PREEMPT_RT))
+>> @@ -334,9 +335,11 @@ static void bpf_ma_add_to_reuse_ready_or_free(struct bpf_mem_cache *c)
+>>                 sc->reuse_ready_tail = NULL;
+>>                 WARN_ON_ONCE(!llist_empty(&sc->wait_for_free));
+>>                 __llist_add_batch(head, tail, &sc->wait_for_free);
+>> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>>                 call_rcu_tasks_trace(&sc->rcu, free_rcu);
+>> +       } else {
+>> +               raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>>         }
+>> -       raw_spin_unlock_irqrestore(&sc->reuse_lock, flags);
+>>  }
+>>
+>> It now drops from 800k to 450k.
+>> And perf report shows that both reuse is happening and slab is working hard to satisfy kmalloc/kfree.
+>> So we may consider per-cpu waiting_for_rcu_gp and per-bpf-ma waiting_for_rcu_task_trace_gp lists.
+> Sorry. per-cpu waiting_for_rcu_gp is what patch 3 does already.
+> I meant per-cpu reuse_ready and per-bpf-ma waiting_for_rcu_task_trace_gp.
+Yes, I known, because I had just proposed it in the email yesterday.
+>
+> Also noticed that the overhead of shared reuse_ready list
+> comes both from the contended lock and from cache misses
+> when one cpu pushes to the list after RCU GP and another
+> cpu removes.
+>
+> Also low/batch/high watermark are all wrong in patch 3.
+> low=32 and high=96 makes no sense when it's not a single list.
+> I'm experimenting with 32 for all three heuristics.
+>
+> Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
+> are redundant.
+> unit_free() can push into free_by_rcu directly
+> then reuse_bulk() can fill it up with free_llist_extra and
+> move them into waiting_for_gp.
+Yes. Indeed missing that.
+>
+> All these _tail optimizations are obscuring the code and make it hard
+> to notice these issues.
+>
+>> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
+>>
+>> Answering your other email:
+>>
+>>> I see your point. I will continue to debug the memory usage difference
+>>> between v3 and v4.
+>> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
+Don't agree with that. I still think the potential memory usage of v4 is
+a problem and the difference memory usage between v3 and v4 reveals that
+there is some peculiarity in RCU subsystem, because the difference comes
+from the duration of RCU grace period. We need to find out why and fix
+or workaround that.
+>>
+>>> I don't think so. Let's considering the per-cpu list first. Assume the
+>>> normal RCU grace period is about 30ms and we are tracing the IO latency
+>>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
+>>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
+>>> For the per-ma list, when the number of CPUs increased, it is easy to
+>>> make the list contain thousands of elements.
+>> That would be true only if there were no scheduling events in all of 176K ops.
+>> Which is not the case.
+>> I'm not sure why you're saying that RCU GP is 30ms.
+Because these freed elements will be freed after one RCU GP and in v4
+there is only one RCU callback per-cpu, so before one RCU GP is expired,
+these freed elements will be accumulated on the list.
+>> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+>> Every sched event is sort-of implicit rcu_read_lock/unlock.
+>> Network and block IO doesn't process 176K packets without resched.
+>> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
+>>
+>> For small size buckets low_watermark=32 and high=96.
+>> We typically move 32 elements at a time from one list to another.
+>> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
+>> is not instant, but once __free_rcu_tasks_trace is called we need to take
+>> elements from waiting_for_gp one at a time and kfree it one at a time.
+>> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
+>>
+>>> Before I post v5, I want to know the reason why per-bpf-ma list is
+>>> introduced. Previously, I though it was used to handle the case in which
+>>> allocation and freeing are done on different CPUs.
+>> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
+>>
+>>> And as we can see
+>>> from the benchmark result above and in v3, the performance and the
+>>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
+>> bench from patch 2 is invalid. Hence no conclusion can be made.
+>>
+>> So far the only bench we can trust and analyze is map_perf_test.
+>> Please make bench in patch 2 yield the cpu after few updates.
+>> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+>> 64 updates is realistic too. A thousand is not.
+Will do that.
 
 
