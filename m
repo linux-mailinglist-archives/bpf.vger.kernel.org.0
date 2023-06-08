@@ -1,200 +1,240 @@
-Return-Path: <bpf+bounces-2156-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2158-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08D5728A38
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9EBF728A3F
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 963552811C4
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65E1B281784
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 21:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB6734CF1;
-	Thu,  8 Jun 2023 21:25:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F3B34CF9;
+	Thu,  8 Jun 2023 21:26:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35ACA2D279;
-	Thu,  8 Jun 2023 21:25:02 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6D82D51;
-	Thu,  8 Jun 2023 14:25:00 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-977c89c47bdso195217266b.2;
-        Thu, 08 Jun 2023 14:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686259499; x=1688851499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M6hC2dHqFlK9hnqWGu/Mm586Qh7RRYwrMorqiQE0m4Y=;
-        b=gVhhBEApIuyqWd5fVVm3w2yNexpC5jMyQj496KgFHBKuCKHTU8M7K+1UYTPSra8wH0
-         d1LCQMO9nguY+coR0zIUbVP3zTq54Wihq0mEpDcJFweTHW80hN+es09ugh0/9sotOlCr
-         39MJlzkZcNgAaizZ7nJAuiryx/V0n7AoPRYL4HPbyBYU1uJztbkgww83UxP3YFXq77Cz
-         282ikGvgbUEMiABBnqzF+Ce9eSkPzOJnDmdhztE4HQEqjZqp7aEQ46q9rrw2iXgg/yro
-         BHWa8KBZ3WeRNlU+28A5D/HXpyc+MisJqV7Qqgqw5YpXfbjQ9zu7/gnokUAAk4sLFk47
-         VS3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686259499; x=1688851499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M6hC2dHqFlK9hnqWGu/Mm586Qh7RRYwrMorqiQE0m4Y=;
-        b=E38XElyAbqDRAa8A05pDmpQbQa6DIl9Khuvog7Qgd2nDPug6Gq01ZiX96qViJLJohD
-         mvEDkw/LH9V03ij592CZwW6IJADXurkoz6ZNrIBXSgSLNQ4tQ3dBho+FaWpz8TDX1D35
-         XLGhUKYH+fAzBRm8dwr18O8KI+cs6OGoWZb8IG6/+OD+E4HrcqVzy0AUxfYiQQN7yHJv
-         qbmjZlITohF0der8hYwyivgyXancJj/mWwrkcbb8zXBVdJpzyHqTSkXvfIlwRyQ9VOV1
-         hNaLIkvrfWMdSej1hbnlf/znUzQYDttA6/F/bIFbk8ShCywJAGvXtFnYtJoAPiRfUcXu
-         8EGQ==
-X-Gm-Message-State: AC+VfDy8IcsBNBza2c83qFociR5JZLQCGIfoGL7d5SuO37aVez7Eig4l
-	fSXlvCrFzE6plOjXG/lCXG8t/PZyIx6WXF/K280=
-X-Google-Smtp-Source: ACHHUZ6cJxZIqXcfqv48eCQDHxhx3sr3GFRrt0cldq5PK75qKB6W0Wjxs9Q8CstXf6Euj76Yis1Y+FglKy/BRts4YRA=
-X-Received: by 2002:a17:907:3f22:b0:974:6390:40a8 with SMTP id
- hq34-20020a1709073f2200b00974639040a8mr305116ejc.71.1686259499079; Thu, 08
- Jun 2023 14:24:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D1B1DCDC
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 21:26:20 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888262D55
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 14:26:19 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 358GmHC4014761;
+	Thu, 8 Jun 2023 14:26:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=vxWNyJQQVYrU8Owz3c72ztlsx0dJWBCdS5+dbXNuOSI=;
+ b=OqjBXZo7gawrrpChGcgrxgxfXGXtWfSegWj+d/wkNAxabRqffhbhEHZwX1/jrPUV4wWs
+ ik3Q8nmrm5WDuSA+I+a1dZOboHkbGHc5VHxUwXB59lI7y+UGTgu/Z9ubzJy+Worddud8
+ HnDIdkw9j/OBI+azmlRVjYn9vmeIOtPrV4oIU4lHveUobv4euLz+jWPvIEHSpeugRAGV
+ m+0SOnGjfsI8Ac8tgHg2Q91muGq11rRc48GTOne6V53LQC6ZB/lbO1egIXoU7fDEZdq1
+ 9zjU3jdB+H/oRcEOf4CJwcn06GROrufz7Kci2NAMlprsUPknkxg7SurxSeXwkVFJWrZA 5w== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r2nbax734-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Jun 2023 14:26:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fxJJv0b9GKM5t7vUPvelNZ+ADi+bCqgxwrli7aETjsiJuO0EKAjm7pVg0GJ3VBKsuR7/in+/M4uMqPld+AU5lQNs3ueFdK+8r3QcowmBcvBaFLt9Kmg7SMr+SESqUen45TSHUGZCpV4ECcQ6PaGy6ff3CZBEHGK2eNmqjZqGeog04jWMQMZmUpJ3DgIA5VnJ+49UKGc/kmAIWzOWc3HYLrJL5La2IUQy4V9QfGkTZIhhtnd9a08TGed+xSwqyQvvYisErgUOzbHgVak6euT/PC29bOJIZGUtcW6kfw8u8HOQmBSPr41bcR6M1/nejDvzAprLnNTi7MQuBe4B3xlFMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vxWNyJQQVYrU8Owz3c72ztlsx0dJWBCdS5+dbXNuOSI=;
+ b=C+QwszCD5lFepTMj7Z5i1Zr99b/vVgQ8Fl+WDY7NkimxFD13ubz1bm8kwwL0teIr7Kps2AyyurOBeioEWWAsOPdaT1D+6wlnQYyxSo9nz+AWH/old0dUAWd7UHfy0QRh/32q72JAVa//WfTRXRpE2LA9OvxIyCmrDwxJL2DmNBTlpAr//lbRb5RgqzrO7mDbUPPmBnUHFpNE2qYiUFQoineCV3mQGgNnj+ljqGT4UsjTZy9TgVbBzp0aa1Zwz8LhhHCipwsSUDwNcm+p92+3qO+XsFhPir3ICcaPhxu2BGCRTyYHUFgGTPZQA2rUsLSkI2vsSxheBvqIJDxRFJB2xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by PH0PR15MB4232.namprd15.prod.outlook.com (2603:10b6:510:29::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Thu, 8 Jun
+ 2023 21:26:16 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Thu, 8 Jun 2023
+ 21:26:15 +0000
+Message-ID: <4146a048-2838-cd2a-59f1-05369add7e05@meta.com>
+Date: Thu, 8 Jun 2023 14:26:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [BUG] optimizations for branch cause bpf verification to fail
+Content-Language: en-US
+To: Zhongqiu Duan <dzq.aishenghu0@gmail.com>, bpf@vger.kernel.org
+References: <CAFmV8NeH2zLhSY1RMos18OMEnU81ieCMG0aNtN14BGh_Y7Nzwg@mail.gmail.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <CAFmV8NeH2zLhSY1RMos18OMEnU81ieCMG0aNtN14BGh_Y7Nzwg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0051.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-3-daniel@iogearbox.net>
- <CAM0EoMm25tdjxp+7Mq4fowGfCJzFRhbThHhaO7T_46vNJ9y-NQ@mail.gmail.com>
- <fe2e13a6-1fb6-c160-1d6f-31c09264911b@iogearbox.net> <CAM0EoM=FFsTNNKaMbRtuRxc8ieJgDFsBifBmZZ2_67u5=+-3BQ@mail.gmail.com>
-In-Reply-To: <CAM0EoM=FFsTNNKaMbRtuRxc8ieJgDFsBifBmZZ2_67u5=+-3BQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 8 Jun 2023 14:24:47 -0700
-Message-ID: <CAEf4BzbuzNw4gRXSSDoHTwGH82moaSWtaX1nvmUAVx4+OgaEyw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: Add fd-based tcx multi-prog infra
- with link support
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org, andrii@kernel.org, 
-	martin.lau@linux.dev, razor@blackwall.org, sdf@google.com, 
-	john.fastabend@gmail.com, kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, 
-	toke@kernel.org, davem@davemloft.net, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH0PR15MB4232:EE_
+X-MS-Office365-Filtering-Correlation-Id: 04236efa-21cd-4f2d-5e81-08db6866fd4c
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	Z1diq+v9zVAzl4op5u5Tatt9SrhumusqpIOL+nYuJhTBFv8p21tCiTOUy7vUA4eLDB3ZJmk00SCIRK9yW+A+Jply+F4Ii0k+LsZBiaudvG84ORDpOuBhKD+BIv89h6QsjcQVL/h3t/lWbgx5SBNtgvWQgDVYm+ANU4RZVdonTLphSSesUh/6ouJeg1f7kFbiP1SE7Tsb0vaEVmHtlz7j3ntFwkjF6sbs5GSxDcXFyTg30tscwXaahdFDOUUqmWYAss4veL5MiVaxbyrWEkl74Uw1fL+EkS4TDBBv07+kWyM/Pq8qoGgG9Q5fpHsASfaCv6CPvcriR2H/5SnsFoOJQpFzZTLKtQWwYm4zakMu6itXHLmiV3m/5UWBryNnOTAR2Xe3ZAz2i/QtP6Vk1L+etYXOeH5X4KMRw9bpYB2dhdTRG2/dzjsLcNBM0m7a4ePgAiZC5pk5MIY5G2SnapIp3OPALHXsEkyTdpqUNe/eDJ3F3R7J6MMm77IkL1hZfn3+uOUtuaoskTRRUcGtLZXHx1YJXNlZxLtlXhbeMvWvERmWhbbOuf1FrjOblKQ7NpquQxYPRnv8JE/ONphM6byXR1qXpbOBluzoGKRnQ5HcuOMKxceeNCuEMzSFVEJkZzsDytHsXdTTf7/AnQr2/nthCKo1ueMmlKnHbL033GMb5tUL4QNpUChetbBxUVjdfTBW
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(396003)(346002)(366004)(451199021)(66556008)(66946007)(8936002)(8676002)(66476007)(316002)(41300700001)(2906002)(478600001)(31686004)(5660300002)(6486002)(31696002)(6512007)(6506007)(53546011)(2616005)(6666004)(186003)(83380400001)(36756003)(86362001)(38100700002)(43740500002)(45980500001)(505234007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MzFlV2FQa001ZzBHVEVpMzZRWDVnaVQvSHdvOFBoUFoxd0Z4N0lXdFNBQVJy?=
+ =?utf-8?B?NHlKdjJodXFZa05sbDlWVG15SW1pRVVIZmoyemRxOEE4enZCdXBFeVdQWHk2?=
+ =?utf-8?B?OVp6ZU0xL1VTVEVZSEZaQjJPMjhqeTlIVy95akpXallmSE1ndEVLRlQ0elpq?=
+ =?utf-8?B?bmQ0blhPVXlQTDg1VVptZjFVK096YmE2dTlwZzR0RXpQUHVkejlXUytwMzd4?=
+ =?utf-8?B?Tm5YcWZhWGZoV2NMaERSQXVBb2hXRFNVTGdaMWc0UWdTN1RocXhMNDZoam1w?=
+ =?utf-8?B?RkIvUU9DUTUxUzRueGJuY01helI5L0lnUTNUR1UxVE5icityMXNrM3dLZzk0?=
+ =?utf-8?B?T0lFQU14RmRHbTFqeG1hd1dRU1QyOGttZ2VMTm1vOTNQRjYyV0MzVHgyYTRH?=
+ =?utf-8?B?Rzc3L003SXJUU2Jlb0VCTmZxd2x3YVJmb3JySHVrQWRyVGNQRjBqMnFYOHRp?=
+ =?utf-8?B?d2FTejJ2SnVBMXp0OCsrUnVhbGNtVlFDd3BMdGpaQ1NhZXFCNkF4NkcvNHFL?=
+ =?utf-8?B?RWF3VGp4ak4wZk93TG1jQjAvVFptSWFVTkF1VEVsMk9JSExSK1ozc0FJKzk1?=
+ =?utf-8?B?bkgrRXExcm82TGQ1ZU42cmxVYWZvZHgwN2dGeFV5bFJmU2dRbzVnSWQzOEhY?=
+ =?utf-8?B?MExDbnNndFVVaU4wSWVPdXlxYml0N0RaYS94a2VONVk4TUs5K1JsVEpLcUlr?=
+ =?utf-8?B?VDRiNmxyYXYrT2RkSTE0eDVFNjlnT29KMCs0SUtNTGFacGVPM0xGdmJwV1pX?=
+ =?utf-8?B?MVVQNmZ5NitBWWd1NkhtM0tkZldFWTNGaWMzUm9sWGs4bnd3YVUwbjZWMzBm?=
+ =?utf-8?B?dy90K1l6SUZWWVMyUk9LZ3MrQ29hTkk4ZGFOWklEcHNxNStFaUNTTUNHSmpF?=
+ =?utf-8?B?YjRvSWpsUXNUYmJXeE1VZW1NbVptNE52V2RNS2VUbXZZd2VhVmpqQTN4KzZD?=
+ =?utf-8?B?enpRUXFLRG9nMFEzR2FUOWlibnRqQlFDMGhENzZRMS9nQjk4TWI3cFM0SGty?=
+ =?utf-8?B?bHd6MjdmcFo5emVwbTgrc3p4Z1hEemlHeklnTWZlcXhXaDhIL1l6R2dOczhj?=
+ =?utf-8?B?ZW1MYmRNUTVXMHhQTDFkWnFIekNpYWpRVUJlN2JGNEhPdGlmZjduek85UnZz?=
+ =?utf-8?B?S2xRRDN3UzVJTGtXM0lRaUJMMm1lM0FGNEgzMHhuNlZncDdEVEhMT0xOZDU0?=
+ =?utf-8?B?TmppM3UxbkVoc0g0OTR5cWpEK252NXp2MW1yckFub2VHRWN0TmF0S2lUY3h2?=
+ =?utf-8?B?aDRJTVZtN21mT1JlbUt6eXBNK0VPZ3RXR0VDUGVTSVlOV1pVT1dPa0RwTTZJ?=
+ =?utf-8?B?RFJST3pEd24rOTRvVEtLSlBhaEtnYlo2R1JXVjN3YW9VODk5dVRiN05uVDVn?=
+ =?utf-8?B?UVFjOFpJSyszZnRGZEF4WHJtYWFhQ0ZJMjBGM2RvOFZIUmNLelpPRmNjQTNq?=
+ =?utf-8?B?cHpCbXEzOE1qVE95bHNNd1NFY2hsaXRDbmRYVGJ6eEYvQjRoL2d4K1oyR04y?=
+ =?utf-8?B?ZmtROXUrVW55R1FLa1lZNnhmcUR6ajlXR2N6Y1dnYTdHSmZTMVRIV21NSnZo?=
+ =?utf-8?B?VkRRR0IxS0xhQmxJTHlGZDY5YzI5d2liOVk3SzFTajVyL1EwdjB5WXEySGJZ?=
+ =?utf-8?B?Y3RTSDVkMWRRZTNJTGRzc0ZaYkxFLzlDOE16VTFhc1hyY3M3WTRlOGdvYisz?=
+ =?utf-8?B?REdDU3pXWjhGbGNEaFYwa1BpOVJsdmt1UWNTN25OeHhJZHlGRjB6RFVvRFJ4?=
+ =?utf-8?B?d0VWQnFTT1JiNnV6K3ZvRjRCMEh3UW5lakVjdi9tcjQ2RlA0QXpIcU4zRkdS?=
+ =?utf-8?B?VVF3eEpTNHhIKzFLNndYSGZXTUdvS29hL3JjaW5rYnkwajBLM1dhKzJwR0FO?=
+ =?utf-8?B?Z0g5NHBodU5PeUpnUHNVSFF4ZzQ2alNCS0N4WWdnSDZBY2FiM2NLQjdQVUNV?=
+ =?utf-8?B?NUlMZmtPOTNjT2VCMFN1bFkrOUtGTTlXSUQ3SkQxUWdsZ3NBZUY3ZVZZWGdX?=
+ =?utf-8?B?bXlEa0huUWJKeXliRm9Hc2huRmtMbGV3clkxZ2RNRXlvZlFaNjdHelFpaWgw?=
+ =?utf-8?B?S01za0dFQ2dONjdzejFoNUI1R280KzNsYllyS2NlYks5Q0lKYUVpOGRqSkpH?=
+ =?utf-8?B?dkp5ODVIMXhDdmM3TG9IaGVWeXg4c3RiUG5SR2FQaXJmRE5TNzRQTjV2Z0lO?=
+ =?utf-8?B?Unc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04236efa-21cd-4f2d-5e81-08db6866fd4c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2023 21:26:15.0402
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O7CaiSydIXhwtClc8VRbbtTgLtKYNqum2C/dd2dVXKkoFpIzGdN/PP5fpMnpOvbw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4232
+X-Proofpoint-GUID: SIcAgcPuUhtkb1rU8DATLpAdZmCqMkeq
+X-Proofpoint-ORIG-GUID: SIcAgcPuUhtkb1rU8DATLpAdZmCqMkeq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-08_16,2023-06-08_01,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 8, 2023 at 12:46=E2=80=AFPM Jamal Hadi Salim <jhs@mojatatu.com>=
- wrote:
->
-> Hi Daniel,
->
-> On Thu, Jun 8, 2023 at 6:12=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
-> >
-> > Hi Jamal,
-> >
-> > On 6/8/23 3:25 AM, Jamal Hadi Salim wrote:
-> > [...]
-> > > A general question (which i think i asked last time as well): who
-> > > decides what comes after/before what prog in this setup? And would
-> > > that same entity not have been able to make the same decision using t=
-c
-> > > priorities?
-> >
-> > Back in the first version of the series I initially coded up this optio=
-n
-> > that the tc_run() would basically be a fake 'bpf_prog' and it would hav=
-e,
-> > say, fixed prio 1000. It would get executed via tcx_run() when iteratin=
-g
-> > via bpf_mprog_foreach_prog() where bpf_prog_run() is called, and then u=
-sers
-> > could pick for native BPF prio before or after that. But then the feedb=
-ack
-> > was that sticking to prio is a bad user experience which led to the
-> > development of what is in patch 1 of this series (see the details there=
-).
-> >
->
-> Thanks. I read the commit message in patch 1 and followed the thread
-> back including some of the discussion we had and i am still
-> disagreeing that this couldnt be solved with a smart priority based
-> scheme - but i think we can move on since this is standalone and
-> doesnt affect tc.
->
-> Daniel - i am still curious in the new scheme of things how would
-> cilium vs datadog food fight get resolved without some arbitration
-> entity?
->
-> > > The idea of protecting programs from being unloaded is very welcome
-> > > but feels would have made sense to be a separate patchset (we have
-> > > good need for it). Would it be possible to use that feature in tc and
-> > > xdp?
-> > BPF links are supported for XDP today, just tc BPF is one of the few
-> > remainders where it is not the case, hence the work of this series. Wha=
-t
-> > XDP lacks today however is multi-prog support. With the bpf_mprog conce=
-pt
-> > that could be addressed with that common/uniform api (and Andrii expres=
-sed
-> > interest in integrating this also for cgroup progs), so yes, various ho=
-ok
-> > points/program types could benefit from it.
->
-> Is there some sample XDP related i could look at?  Let me describe our
-> use case: lets say we load an ebpf program foo attached to XDP of a
-> netdev  and then something further upstream in the stack is consuming
-> the results of that ebpf XDP program. For some reason someone, at some
-> point, decides to replace the XDP prog with a different one - and the
-> new prog does a very different thing. Could we stop the replacement
-> with the link mechanism you describe? i.e the program is still loaded
-> but is no longer attached to the netdev.
 
-If you initially attached an XDP program using BPF link api
-(LINK_CREATE command in bpf() syscall), then subsequent attachment to
-the same interface (of a new link or program with BPF_PROG_ATTACH)
-will fail until the current BPF link is detached through closing its
-last fd.
 
-That is, until we allow multiple attachments of XDP programs to the
-same network interface. But even then, no one will be able to
-accidentally replace attached link, unless they have that link FD and
-replace underlying BPF program.
+On 6/8/23 12:52 PM, Zhongqiu Duan wrote:
+> Hello,  everyone.
+> 
+> Recently, I've been doing some work using eBPF techniques. A situation was
+> encountered in which a program was rejected by the verifier.
+> 
+> Iterate over different maps under different conditions. It should be a good idea
+> to use map-of-maps when there are lots of maps. I use if cond for a quick test.
+> 
+> It looks like this:
+> 
+> int foo(struct xdp_md *ctx)
+> {
+>     void *data_end = (void *)(long)ctx->data_end;
+>     void *data = (void *)(long)ctx->data;
+>     struct callback_ctx cb_data;
+> 
+>     cb_data.output = 0;
+> 
+>     if (data_end - data > 1024) {
+>         bpf_for_each_map_elem(&map1, cb, &cb_data, 0);
+>     } else {
+>         bpf_for_each_map_elem(&map2, cb, &cb_data, 0);
+>     }
+> 
+>     if (cb_data.output)
+>         return XDP_DROP;
+> 
+>     return XDP_PASS;
+> }
+> 
+> Compile by clang-15 with optimization level O2:
+> 
+> 0000000000000000 <foo>:
+> ;     void *data = (void *)(long)ctx->data;
+> 0:       61 12 00 00 00 00 00 00 r2 = *(u32 *)(r1 + 0)
+> ;     void *data_end = (void *)(long)ctx->data_end;
+> 1:       61 13 04 00 00 00 00 00 r3 = *(u32 *)(r1 + 4)
+> ;     if (data_end - data > 1024) {
+> 2:       1f 23 00 00 00 00 00 00 r3 -= r2
+> 3:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> 5:       65 03 02 00 00 04 00 00 if r3 s> 1024 goto +2 <LBB0_2>
+> 6:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> 0000000000000040 <LBB0_2>:
+> 8:       b7 02 00 00 00 00 00 00 r2 = 0
+> ;     cb_data.output = 0;
+> 9:       63 2a f8 ff 00 00 00 00 *(u32 *)(r10 - 8) = r2
+> 10:       bf a3 00 00 00 00 00 00 r3 = r10
+> 11:       07 03 00 00 f8 ff ff ff r3 += -8
+> 12:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
+> 14:       b7 04 00 00 00 00 00 00 r4 = 0
+> 15:       85 00 00 00 a4 00 00 00 call 164
+> 16:       b7 00 00 00 02 00 00 00 r0 = 2
+> ;     if (cb_data.output)
+> 17:       61 a1 f8 ff 00 00 00 00 r1 = *(u32 *)(r10 - 8)
+> ; }
+> 18:       15 01 01 00 00 00 00 00 if r1 == 0 goto +1 <LBB0_4>
+> 19:       b7 00 00 00 01 00 00 00 r0 = 1
+> 00000000000000a0 <LBB0_4>:
+> ; }
+> 20:       95 00 00 00 00 00 00 00 exit
+> 
+> When loading the prog, the verifier complained "tail_call abusing map_ptr".
+> The Compiler's optimizations look fine, so I took a quick look at the code of
+> the verifier.
+> 
+> The function record_func_map called by check_helper_call will ref the current
+> map in bpf_insn_aux_data of current insn. After the current branch ends,
+> pop stack and enter another branch, but the relevant state is not cleared.
+> This time, record_func_map set BPF_MAP_PTR_POISON as the map state.
+> At the start of set_map_elem_callback_state, poisoned state causing EINVAL.
 
->
->
-> > >> +struct tcx_entry {
-> > >> +       struct bpf_mprog_bundle         bundle;
-> > >> +       struct mini_Qdisc __rcu         *miniq;
-> > >> +};
-> > >> +
-> > >
-> > > Can you please move miniq to the front? From where i sit this looks:
-> > > struct tcx_entry {
-> > >          struct bpf_mprog_bundle    bundle
-> > > __attribute__((__aligned__(64))); /*     0  3264 */
-> > >
-> > >          /* XXX last struct has 36 bytes of padding */
-> > >
-> > >          /* --- cacheline 51 boundary (3264 bytes) --- */
-> > >          struct mini_Qdisc *        miniq;                /*  3264   =
-  8 */
-> > >
-> > >          /* size: 3328, cachelines: 52, members: 2 */
-> > >          /* padding: 56 */
-> > >          /* paddings: 1, sum paddings: 36 */
-> > >          /* forced alignments: 1 */
-> > > } __attribute__((__aligned__(64)));
-> > >
-> > > That is a _lot_ of cachelines - at the expense of the status quo
-> > > clsact/ingress qdiscs which access miniq.
-> >
-> > Ah yes, I'll fix this up.
->
-> Thanks.
->
-> cheers,
-> jamal
-> > Thanks,
-> > Daniel
+It will be helpful if you can provide a reproducible test case
+so people can help you to double check whether it is a verifier 
+bug/limitation or not. It is hard to decide where is the problem
+in verifier based on the above description.
+
+> 
+> I'm not very familiar with BPF. If it is designed like this, it is
+> customary to add
+> options on the compiler side to avoid it, then please let me know.
+> 
+> Thanks,
+> Zhongqiu
+> 
 
