@@ -1,94 +1,86 @@
-Return-Path: <bpf+bounces-2113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDE2727EA2
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 13:22:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C86F727EBE
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 13:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA012816E3
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 11:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BCD6281662
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 11:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4899C1118A;
-	Thu,  8 Jun 2023 11:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3441311189;
+	Thu,  8 Jun 2023 11:30:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6DB7C8FD;
-	Thu,  8 Jun 2023 11:22:03 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D893D1FF3;
-	Thu,  8 Jun 2023 04:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=HCCNTmzmcrLed5PCeHmXazM06d4SBCeRlB+khMYifVc=; b=F/UQ+8+1KoKAfFsg7r/qJXxlsn
-	V0hj72RKbeNkOew3exhJuK9bmYoNVek8k/VSUmEwQjpAFePVRwsjFQfnzgvqDRGIJrVBOjXJBwT39
-	LVJa98e12CXAPJoQnHjXw1bsWHRZWl4R+bwo2JxDI5An1nq/c7eWGsvNFz20uB+2YM3mNMGS+DsRq
-	n6f/535zfVkma4gqE/2c1uA89w2djddQ5E045uH71frA7fkNpZ3kJPjExRXbYfiu/G0LeAp42gEWF
-	jfPCqcFE+YNFu0ydP5xvSWbYrk0d0zI7lywVxjhBahVsA/6VmzvoJfqV6zx0vsY8WgLHgJ9LCg/4w
-	pT9THivQ==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q7DiI-0009Yt-Jt; Thu, 08 Jun 2023 13:21:58 +0200
-Received: from [178.197.248.31] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q7DiH-0000aI-T4; Thu, 08 Jun 2023 13:21:57 +0200
-Subject: Re: [PATCH bpf v4 0/2] Fix verifier id tracking of scalars on spill
-To: Maxim Mikityanskiy <maxtram95@gmail.com>, bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- John Fastabend <john.fastabend@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Maxim Mikityanskiy <maxim@isovalent.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>
-References: <20230607123951.558971-1-maxtram95@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <404e95a2-34fb-3cd2-6fc4-817fd6b8c038@iogearbox.net>
-Date: Thu, 8 Jun 2023 13:21:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB0111182
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 11:30:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08F2DC4339B;
+	Thu,  8 Jun 2023 11:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686223821;
+	bh=JLPRF6/J3auy10oGToiq9sWfv2pIhC80a2ICCb5ktuY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=C30MFTiPF56JEsG6UJ1BrfDt84htIuBGHqC/5d9brErt/NLHeKP1M0E9PXNt4ZYnq
+	 4dl2eYZizJYDuNHsyM+iC3L5C4K+8r5ZlSX+Dppoj7UrN2Mqlm4V466schh04jYjA2
+	 TtXnGyFPuJDOv4avIJBNCbWd/xTMBHlCF6IG0jmRhvieUV3KrUJUG4gP0XLLx7MOpd
+	 3jfNVltFpchbBhdvyvYod5ZVm38rle4lsgQRJWwsI6PCeqa9PZlx/2hAMARerPHjvx
+	 66/WqvwC0DXVDHt3qD2Cj9YAXKJSI0Yldf6mgeycHNGybgpJVUM2f7S9wOPqEKMZ9k
+	 PwrxMSyhxC4Gg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DB0F0E4D015;
+	Thu,  8 Jun 2023 11:30:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230607123951.558971-1-maxtram95@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26933/Thu Jun  8 09:26:06 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing prototypes for several
+ test kfuncs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168622382089.11699.11534563556655685113.git-patchwork-notify@kernel.org>
+Date: Thu, 08 Jun 2023 11:30:20 +0000
+References: <20230607224046.236510-1-jolsa@kernel.org>
+In-Reply-To: <20230607224046.236510-1-jolsa@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, lkp@intel.com,
+ bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
+ haoluo@google.com, void@manifault.com
 
-On 6/7/23 2:39 PM, Maxim Mikityanskiy wrote:
-[...]
-> v4 changes:
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed,  7 Jun 2023 15:40:46 -0700 you wrote:
+> Adding missing prototypes for several kfuncs that are used by
+> test_verifier tests. We don't really need kfunc prototypes for
+> these tests, but adding them to silence 'make W=1' build and
+> to have all test kfuncs declarations in bpf_testmod_kfunc.h.
 > 
-> Dropped supposedly redundant tests, kept the ones that result in
-> different verifier verdicts. Dropped the variable that is not yet
-> useful in this patch. Rephrased the commit message with Daniel's
-> suggestions.
+> Also moving __diag_pop for -Wmissing-prototypes to cover also
+> bpf_testmod_test_write and bpf_testmod_test_read and adding
+> bpf_fentry_shadow_test in there as well. All of them need to
+> be exported, but there's no need for declarations.
+> 
+> [...]
 
-Andrii mentioned he did some veristat measurements and they looked good
-to him. Looks like patchbot didn't reply, I've pushed it to bpf, thanks!
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Add missing prototypes for several test kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/67faabbde36b
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
