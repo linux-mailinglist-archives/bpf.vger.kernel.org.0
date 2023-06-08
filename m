@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-2091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8FF47275DF
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 05:44:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C360472761D
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 06:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 936232815D1
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 03:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75AE228162F
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 04:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82B61C35;
-	Thu,  8 Jun 2023 03:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129CD628;
+	Thu,  8 Jun 2023 04:30:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FDDA57
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 03:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0971396
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 04:30:25 +0000 (UTC)
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0D626AA;
-	Wed,  7 Jun 2023 20:44:00 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438B02680;
+	Wed,  7 Jun 2023 21:30:23 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qc96z2Ghkz4f3nx3;
-	Thu,  8 Jun 2023 11:43:55 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4QcB8T6qLWz4f3lwH;
+	Thu,  8 Jun 2023 12:30:17 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgD33gx6ToFk4dJmKQ--.44784S2;
-	Thu, 08 Jun 2023 11:43:57 +0800 (CST)
+	by APP3 (Coremail) with SMTP id _Ch0CgDXxBJXWYFk2TVpKQ--.56114S2;
+	Thu, 08 Jun 2023 12:30:19 +0800 (CST)
 Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
  allocator
-To: paulmck@kernel.org
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+To: "Paul E. McKenney" <paulmck@kernel.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
  Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
  Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
  Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
@@ -44,11 +44,15 @@ References: <20230606035310.4026145-1-houtao@huaweicloud.com>
  <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
  <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
  <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
- <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
- <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+ <CAADnVQJ1njnHb96HfO4k48XDY9L3YXqQW1iUW=ti5iBNKKcE9A@mail.gmail.com>
+ <55f5e64d-9d9e-4c65-8d1b-8fd4684ee9a3@paulmck-laptop>
+ <CAADnVQLps=4CjVbZN6wfFWS9VnPE=1b4Gqmw-uPeH5=hGn_xwQ@mail.gmail.com>
+ <3bddb902-de45-47d9-b9a2-495508133522@paulmck-laptop>
+ <CAADnVQLhuBggNQxipbRM+E9fQ4wScYmg7-NWjfqAZyA5asw3JQ@mail.gmail.com>
+ <a12008e9-f3f7-5050-e461-344d9d86e48f@huaweicloud.com>
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <f4418d9d-857b-eb96-cbec-ab1652291556@huaweicloud.com>
-Date: Thu, 8 Jun 2023 11:43:54 +0800
+Message-ID: <0f49315e-7d66-66aa-36b0-46dbea276433@huaweicloud.com>
+Date: Thu, 8 Jun 2023 12:30:15 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 Precedence: bulk
@@ -57,27 +61,27 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+In-Reply-To: <a12008e9-f3f7-5050-e461-344d9d86e48f@huaweicloud.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-CM-TRANSID:_Ch0CgD33gx6ToFk4dJmKQ--.44784S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFW3ZrWDtr1DtFWxWr1fCrg_yoW7AFy8pF
-	WfK3Z0kr4kt34fAwn2vr1xXFyYyayrG3s8XFy5try7Cr90gr1SqrWSvr4Y9FyUXrs7Cw1a
-	9F4DXry7Zw1jqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:_Ch0CgDXxBJXWYFk2TVpKQ--.56114S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFW5Kr47uFWfAryrXFWUArb_yoWxWrWkpF
+	Wrtr1UAryUJr48Cr1UAr1UXryUJw18tw1UJr18XFyUZr1UJr1jqr1UWr4jgF15Jr4kJw4U
+	Xr4UJw1UZryUJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUOyCJDUUUU
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -86,112 +90,136 @@ X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Paul,
+Hi,
 
-On 6/8/2023 10:55 AM, Paul E. McKenney wrote:
-> On Thu, Jun 08, 2023 at 09:51:27AM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
->>> On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
->>> <alexei.starovoitov@gmail.com> wrote:
->>>> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
->>>>> As said in the commit message, the command line for test is
->>>>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
->>>>> using default max_entries and the number of CPUs is greater than 15,
->>>>> use_percpu_counter will be false.
->>>> Right. percpu or not depends on number of cpus.
+On 6/8/2023 11:35 AM, Hou Tao wrote:
+> Hi,
+>
+> On 6/8/2023 8:34 AM, Alexei Starovoitov wrote:
+>> On Wed, Jun 7, 2023 at 5:13 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>>> On Wed, Jun 07, 2023 at 04:50:35PM -0700, Alexei Starovoitov wrote:
+>>>> On Wed, Jun 7, 2023 at 4:30 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
 SNIP
->>>>  known, because I had just proposed it in the email yesterday.
->>> Also noticed that the overhead of shared reuse_ready list
->>> comes both from the contended lock and from cache misses
->>> when one cpu pushes to the list after RCU GP and another
->>> cpu removes.
->>>
->>> Also low/batch/high watermark are all wrong in patch 3.
->>> low=32 and high=96 makes no sense when it's not a single list.
->>> I'm experimenting with 32 for all three heuristics.
->>>
->>> Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
->>> are redundant.
->>> unit_free() can push into free_by_rcu directly
->>> then reuse_bulk() can fill it up with free_llist_extra and
->>> move them into waiting_for_gp.
->> Yes. Indeed missing that.
->>> All these _tail optimizations are obscuring the code and make it hard
->>> to notice these issues.
->>>
->>>> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
->>>>
->>>> Answering your other email:
->>>>
->>>>> I see your point. I will continue to debug the memory usage difference
->>>>> between v3 and v4.
->>>> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
->> Don't agree with that. I still think the potential memory usage of v4 is
->> a problem and the difference memory usage between v3 and v4 reveals that
->> there is some peculiarity in RCU subsystem, because the difference comes
->> from the duration of RCU grace period. We need to find out why and fix
->> or workaround that.
-> A tight loop in the kernel can extend RCU grace periods, especially
-> for kernels built with CONFIG_PREEPTION=n.  Placing things like
-> cond_resched() in such loops can help.  Of course, if you are in an
-> RCU read-side critical section (or holding a spinlock), you will need
-> to exit, cond_resched(), then re-enter.  Taking care to ensure that the
-> state upon re-entry is valid.  After all, having exited either type of
-> critical section, anything might happen.
-
-As said in the help-wanted email just send out, it was weird that the
-RCU grace period was extended a lot, up to ~150ms or more. But queue a
-dummy kworker periodically which does nothing will help to reduce the
-grace period to ~10ms. I have explained the context of the problem in
-that email. And hope that we could get some help from you and the RCU
-experts in the community.
-
-Regards,
-Tao
 >
-> 							Thanx, Paul
+> By comparing the implementation of v3 and v4, I just find one hack which
+> could reduce the memory usage of v4 (with per-cpu reusabe list)
+> significantly and memory usage will be similar between v3 and v4. If we
+> queue a empty work before calling irq_work_raise() as shown below, the
+> calling latency of reuse_rcu (a normal RCU callback) will decreased from
+> ~150ms to ~10 ms. I think the reason is that the duration of normal RCU
+> grace period is decreased a lot, but I don't know why did it happen.
+> Hope to get some help from Paul. Because Paul doesn't have enough
+> context, so I will try to explain the context of the weird problem
+> below. And Alexei, could you please also try the hack below for your
+> multiple-rcu-cbs version ?
+An update for the queue_work() hack. It works for both CONFIG_PREEMPT=y
+and CONFIG_PREEMPT=n cases. I will try to enable RCU trace to check
+whether or not there is any difference.
 >
->>>>> I don't think so. Let's considering the per-cpu list first. Assume the
->>>>> normal RCU grace period is about 30ms and we are tracing the IO latency
->>>>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
->>>>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
->>>>> For the per-ma list, when the number of CPUs increased, it is easy to
->>>>> make the list contain thousands of elements.
->>>> That would be true only if there were no scheduling events in all of 176K ops.
->>>> Which is not the case.
->>>> I'm not sure why you're saying that RCU GP is 30ms.
->> Because these freed elements will be freed after one RCU GP and in v4
->> there is only one RCU callback per-cpu, so before one RCU GP is expired,
->> these freed elements will be accumulated on the list.
->>>> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
->>>> Every sched event is sort-of implicit rcu_read_lock/unlock.
->>>> Network and block IO doesn't process 176K packets without resched.
->>>> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
->>>>
->>>> For small size buckets low_watermark=32 and high=96.
->>>> We typically move 32 elements at a time from one list to another.
->>>> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
->>>> is not instant, but once __free_rcu_tasks_trace is called we need to take
->>>> elements from waiting_for_gp one at a time and kfree it one at a time.
->>>> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
->>>>
->>>>> Before I post v5, I want to know the reason why per-bpf-ma list is
->>>>> introduced. Previously, I though it was used to handle the case in which
->>>>> allocation and freeing are done on different CPUs.
->>>> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
->>>>
->>>>> And as we can see
->>>>> from the benchmark result above and in v3, the performance and the
->>>>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
->>>> bench from patch 2 is invalid. Hence no conclusion can be made.
->>>>
->>>> So far the only bench we can trust and analyze is map_perf_test.
->>>> Please make bench in patch 2 yield the cpu after few updates.
->>>> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
->>>> 64 updates is realistic too. A thousand is not.
->> Will do that.
->>
+> Hi Paul,
+>
+> I just found out the time between the calling of call_rcu(..,
+> reuse_rcub) and the calling of RCU callback (namely resue_cb()) will
+> decrease a lot (from ~150ms to ~10ms) if I queued a empty kworker
+> periodically as shown in the diff below. Before the diff below applied,
+> the benchmark process will do the following things on a VM with 8 CPUs:
+>
+> 1) create a pthread htab_mem_producer on each CPU and pinned the thread
+> on the specific CPU
+> 2) htab_mem_producer will call syscall(__NR_getpgid) repeatedly in a
+> dead-loop
+> 3) the calling of getpgid() will trigger the invocation of a bpf program
+> attached on getpgid() syscall
+> 4) the bpf program will overwrite 2048 elements in a bpf hash map
+> 5) during the overwrite, it will free the existed element firstly
+> 6) the free will call unit_free(), unit_free() will trigger a irq-work
+> batchly after 96-element were freed
+> 7) in the irq_work, it will allocate a new struct to save the freed
+> elements and the rcu_head and do call_rcu(..., reuse_rcu)
+> 8) in reuse_rcu() it just moves these freed elements into a per-cpu
+> reuse list
+> 9) After the free completes, the overwrite will allocate a new element
+> 10) the allocation may also trigger a irq-work batchly after the
+> preallocated elements were exhausted
+> 11) in the irq-work, it will try to fetch elements from per-cpu reuse
+> list and if it is empty, it will do kmalloc()
+>
+> For the procedure describe above, the calling latency between the call
+> of call_rcu() and the call of reuse_rcu is about ~150ms or larger. I
+> have also checked the calling latency of syscall(__NR_getpgid) and all
+> latency is less than 1ms. But after do queueing a empty kwork in step
+> 6), the calling latency will decreased from ~150ms to ~10ms and I
+> suspect that is because the RCU grace period is decreased a lot, but I
+> don't know how to debug that (e.g., to debug why the RCU grace period is
+> so long), so I hope to get some help.
+>
+> htab-mem-benchmark (reuse-after-RCU-GP + per-cpu reusable list + multiple reuse_rcu() callbacks + queue_empty_work):
+> | name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
+> | --                 | --        | --                  | --               |
+> | overwrite          | 13.85     | 17.89               | 21.49            |
+> | batch_add_batch_del| 10.22     | 16.65               | 19.07            |
+> | add_del_on_diff_cpu| 3.82      | 21.36               | 33.05            |
+>
+>
+> +static void bpf_ma_prepare_reuse_work(struct work_struct *work)
+> +{
+> +       udelay(100);
+> +}
+> +
+>  /* When size != 0 bpf_mem_cache for each cpu.
+>   * This is typical bpf hash map use case when all elements have equal size.
+>   *
+> @@ -547,6 +559,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int
+> size, bool percpu)
+>                         c->cpu = cpu;
+>                         c->objcg = objcg;
+>                         c->percpu_size = percpu_size;
+> +                       INIT_WORK(&c->reuse_work,
+> bpf_ma_prepare_reuse_work);
+>                         raw_spin_lock_init(&c->lock);
+>                         c->reuse.percpu = percpu;
+>                         c->reuse.cpu = cpu;
+> @@ -574,6 +587,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int
+> size, bool percpu)
+>                         c->unit_size = sizes[i];
+>                         c->cpu = cpu
+>                         c->objcg = objcg;
+> +                       INIT_WORK(&c->reuse_work,
+> bpf_ma_prepare_reuse_work);
+>                         raw_spin_lock_init(&c->lock);
+>                         c->reuse.percpu = percpu;
+>                         c->reuse.lock = &c->lock;
+> @@ -793,6 +807,8 @@ static void notrace unit_free(struct bpf_mem_cache
+> *c, void *ptr)
+>                         c->prepare_reuse_tail = llnode;
+>                 __llist_add(llnode, &c->prepare_reuse_head);
+>                 cnt = ++c->prepare_reuse_cnt;
+> +               if (cnt > c->high_watermark &&
+> !work_pending(&c->reuse_work))
+> +                       queue_work(bpf_ma_wq, &c->reuse_work);
+>         } else {
+>                 /* unit_free() cannot fail. Therefore add an object to
+> atomic
+>                  * llist. reuse_bulk() will drain it. Though
+> free_llist_extra is
+> @@ -901,3 +917,11 @@ void notrace *bpf_mem_cache_alloc_flags(struct
+> bpf_mem_alloc *ma, gfp_t flags)
+>
+>         return !ret ? NULL : ret + LLIST_NODE_SZ;
+>  }
+> +
+> +static int __init bpf_ma_init(void)
+> +{
+> +       bpf_ma_wq = alloc_workqueue("bpf_ma", WQ_MEM_RECLAIM, 0);
+> +       BUG_ON(!bpf_ma_wq);
+> +       return 0;
+> +}
+> +late_initcall(bpf_ma_init);
+>
+>
+>
+>> Could you point me to a code in RCU where it's doing callback batching?
+> .
 
 
