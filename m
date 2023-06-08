@@ -1,153 +1,81 @@
-Return-Path: <bpf+bounces-2122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7795D7280B5
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 14:57:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BCA87280C6
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 15:00:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B45D31C20D01
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 12:57:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4EE92816D3
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 13:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5FA12B66;
-	Thu,  8 Jun 2023 12:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCC512B72;
+	Thu,  8 Jun 2023 13:00:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2A1125D2
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 12:57:04 +0000 (UTC)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDC52727;
-	Thu,  8 Jun 2023 05:56:54 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 54C02320090B;
-	Thu,  8 Jun 2023 08:56:52 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 08 Jun 2023 08:56:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1686229011; x=1686315411; bh=87
-	pYxZKtAnGH9oKy6pFHT1xHGz/WCvjygA8bIAeiKlA=; b=ZeX8L7pUZ5UIpOMY9M
-	9g1j8HgG7+kWRpcbfg5uyET+fH7MKKs1mmJd5GiTBtyG3e4Kb2S8oySTp2FMKVD5
-	6cPeO3EdjyqNf0z8ONTk7Y4xvff+IrOd/IEXcnucUJGHtunt79pl/8nMv5FddrAG
-	uQycTyVPowhwXFFmqqICRAUW8Rc8su6sZcA/n9xK4gkWZLq4FLGKG2+b/ofZFCuf
-	AMrvTTYFhxmA+huvu4Cjp75ap2Sf7MJK9JQ3pOVGdml0Q2jBbC5ggWY9QzN5MNkV
-	6Cu7hWpbrBfBHGI32iWeZ+txnWuzY/rdQ0nguYoFIEmTdH+KuW0pvhtt0TNXW/yQ
-	JP2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1686229011; x=1686315411; bh=87pYxZKtAnGH9
-	oKy6pFHT1xHGz/WCvjygA8bIAeiKlA=; b=U6XRVjfP+EHUDQvBv8cPL9pD/KGwo
-	iw0KnKWmDepSUXHsue7XYEEv3jSKmc5VneLRFAnbB7bjvWnjZAFimwr1xI3aZ2r2
-	RdXIfnuvROK2EFMWjCfwC3PBH93ikfGkGtdqsK5mas70L80DoSDFO8TKCaTh4eHz
-	K+ZspG/2pADrn/0PYTVFOIEgwbfucSZzMW91caxx97W+pzHbK9rkgf+0+vkf4oDD
-	jH5hLErq64lWlh17sXL7u3Td79LGnkb4UvXKtQw37hle5MqhD6Sfrp8G6cLyNfqi
-	QTut/2emZSYLnRuBAzk7rDPI0a305yR06UG65WJAnPVfPk2TBPYkBuvMA==
-X-ME-Sender: <xms:EtCBZE-D_kjWYp3ANnherykbAzIjPaixWoyhxXwJLmuQI-kmX5DxFw>
-    <xme:EtCBZMv-IJXp1mQnNzIiUM2AEt48SGWGnXLai4h_XUzypiLIXrG4wXRCGc1U27CR_
-    sWJ2VBCAcRl0hKP7ME>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgedtiedgheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepkeehtefguddvleejvdeileeifffhueevgedvheeiudfhueevgfehkeeitedu
-    keeknecuffhomhgrihhnpehsohhurhgtvgifrghrvgdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:EtCBZKA2ewgTjhAvvYw7qmycGR9cVe-qDicg_oFDY4J69jtsZIvlug>
-    <xmx:EtCBZEdu7a-GJfOfcHAOiHAuoCAzbOXNlKWUPk55Fe3Mbg8D-CEnpQ>
-    <xmx:EtCBZJOC47AwohdFIRwPvxQhiJzPrz-2u8vWBLIbN9yK_NXQPYV6NQ>
-    <xmx:E9CBZGcuZlRzBuBBOm-YYYm5GycL4W2eCqAow4fI1BtYmFRYOd5HOA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 9B111B60086; Thu,  8 Jun 2023 08:56:50 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-447-ge2460e13b3-fm-20230525.001-ge2460e13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410B8E560;
+	Thu,  8 Jun 2023 13:00:32 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674EE26B2;
+	Thu,  8 Jun 2023 06:00:28 -0700 (PDT)
+Received: from kwepemm600001.china.huawei.com (unknown [172.30.72.53])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4QcPR46RqBz25h63;
+	Thu,  8 Jun 2023 20:58:40 +0800 (CST)
+Received: from localhost.localdomain (10.175.124.27) by
+ kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 8 Jun 2023 21:00:23 +0800
+From: zhangmingyi <zhangmingyi5@huawei.com>
+To: <sdf@google.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <edumazet@google.com>,
+	<hsinweih@uci.edu>, <jakub@cloudflare.com>, <john.fastabend@gmail.com>,
+	<kongweibin2@huawei.com>, <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<liuxin350@huawei.com>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+	<syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com>,
+	<syzkaller-bugs@googlegroups.com>, <wuchangye@huawei.com>,
+	<xiesongyang@huawei.com>, <yanan@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: Re: [PATCH] libbpf:fix use empty function pointers in ringbuf_poll
+Date: Thu, 8 Jun 2023 20:58:20 +0800
+Message-ID: <20230608125820.726340-1-zhangmingyi5@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <ZH4a1l1pfG8ewo3v@google.com>
+References: <ZH4a1l1pfG8ewo3v@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <a3a4f48a-07d4-4ed9-bc53-5d383428bdd2@app.fastmail.com>
-In-Reply-To: <76d3be65-91df-7969-5303-38231a7df926@loongson.cn>
-References: <1683615903-10862-1-git-send-email-yangtiezhu@loongson.cn>
- <b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com>
- <76d3be65-91df-7969-5303-38231a7df926@loongson.cn>
-Date: Thu, 08 Jun 2023 14:56:30 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Tiezhu Yang" <yangtiezhu@loongson.cn>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org,
- llvm@lists.linux.dev, linux-ia64@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
- x86@kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, loongarch@lists.linux.dev,
- linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- loongson-kernel@lists.loongnix.cn
-Subject: Re: [RFC PATCH] asm-generic: Unify uapi bitsperlong.h
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 8, 2023, at 09:04, Tiezhu Yang wrote:
-> On 05/09/2023 05:37 PM, Arnd Bergmann wrote:
->> On Tue, May 9, 2023, at 09:05, Tiezhu Yang wrote:
->>
->> I think we are completely safe on the architectures that were
->> added since the linux-3.x days (arm64, riscv, csky, openrisc,
->> loongarch, nios2, and hexagon), but for the older ones there
->> is a regression risk. Especially on targets that are not that
->> actively maintained (sparc, alpha, ia64, sh, ...) there is
->> a good chance that users are stuck on ancient toolchains.
->> It's probably also a safe assumption that anyone with an older
->> libc version won't be using the latest kernel headers, so
->> I think we can still do this across architectures if both
->> glibc and musl already require a compiler that is new enough,
->> or alternatively if we know that the kernel headers require
->> a new compiler for other reasons and nobody has complained.
->>
->> For glibc, it looks the minimum compiler version was raised
->> from gcc-5 to gcc-8 four years ago, so we should be fine.
->>
->> In musl, the documentation states that at least gcc-3.4 or
->> clang-3.2 are required, which probably predate the
->> __SIZEOF_LONG__ macro. On the other hand, musl was only
->> released in 2011, and building musl itself explicitly
->> does not require kernel uapi headers, so this may not
->> be too critical.
->>
->> There is also uClibc, but I could not find any minimum
->> supported compiler version for that. Most commonly, this
->> one is used for cross-build environments, so it's also
->> less likely to have libc/gcc/headers being wildly out of
->> sync. Not sure.
->>
->>       Arnd
->>
->> [1] https://sourceware.org/pipermail/libc-alpha/2019-January/101010.html
->>
->
-> Thanks Arnd for the detailed reply.
-> Any more comments? What should I do in the next step?
+On 06/06,Stanislav Fomichev wrote:
 
-I think the summary is "it's probably fine", but I don't know
-for sure, and it may not be worth the benefit.
+> On 06/05, Xin Liu wrote:
+> > From: zhangmingyi <zhangmingyi5@huawei.com>
+> 
+> > The sample_cb of the ring_buffer__new interface can transfer NULL. However,
+> > the system does not check whether sample_cb is NULL during 
+> > ring_buffer__poll, null pointer is used.
 
-Maybe you can prepare a v2 that only does this for the newer
-architectures I mentioned above, with and an explanation and
-link to my above reply in the file comments?
+> What is the point of calling ring_buffer__new with sample_cb == NULL?
 
-      Arnd
+Yes, as you said, passing sample_cb in ring_buffer__new to NULL doesn't 
+make sense, and few people use it that way, but that doesn't prevent this 
+from being a allowed and supported scenario. And when ring_buffer__poll is 
+called, it leads to a segmentation fault (core dump), which I think needs 
+to be fixed to ensure the security quality of libbpf.
 
