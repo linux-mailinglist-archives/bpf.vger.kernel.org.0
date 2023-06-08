@@ -1,155 +1,341 @@
-Return-Path: <bpf+bounces-2164-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51161728AE0
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 00:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46D13728AFB
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 00:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A67DF1C20B49
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 22:05:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670811C20F7F
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 22:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3E134D7F;
-	Thu,  8 Jun 2023 22:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4626834D86;
+	Thu,  8 Jun 2023 22:13:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC78B7464
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 22:05:50 +0000 (UTC)
-Received: from crane.ash.relay.mailchannels.net (crane.ash.relay.mailchannels.net [23.83.222.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76C52D78
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 15:05:47 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id A56643E0E94
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 22:05:43 +0000 (UTC)
-Received: from pdx1-sub0-mail-a238.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 44CE03E1DF8
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 22:05:43 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686261943; a=rsa-sha256;
-	cv=none;
-	b=R3duyHErAGUzTo2L+kPtRHPAmELCvwmfkbf7JACPCZSoU3Km4R6mN9qIoQIi2FNguWUvOp
-	czParjxJDJSZl2XQ6h/Uz4DerjCPSZO4G0svvwDKXRICag7JXUgzLrvsD084uj7uqPUXGE
-	hoAkTHsNWg03/2DPsLFrt1simwL+49CUVvbozlivFD+a+wwOjaM4BiM3iGZrj3VRaAZwZu
-	CdfF/uH/BQrDey/xPLPlBJI8a95LNZUO78/9RN4T+oIM4icjp0sI0Htbsgbr18DXrUBMqy
-	ErniffNgqQUWj3xObQCyFAFyEAYKyBtPj7dQXQu/aSYnTKcSrVQpSBZ4tElU5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1686261943;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=6VFcr740ClHDgfooQ+FLHb4V9tJxfdRe/N7zQ7funAE=;
-	b=R/eu2UYbnNC4peOZJCqsMZ+CrN6OXtZJ141cA0+30q7cxMER/qq6qpYj0kZTCrv4Cmc6y+
-	aojBP7w7zpaG9O5H2A1FLPwq+rlOUODgxQJRnvT3KOVluB+w640lge1pD+X+QwnQIjTrsB
-	/zXHN9fn5oGbDdhEbqU7bHLW3LabtTOPKZq5a7oSv/mRyD4rVy50Bd0Pybmaf6VOkof2Hq
-	I9ayC1LO8GpqeDu3Qgoh13bkYZLrSP/N5ay/HJF/sAeTEoeNFtNgCphtjaHCkS7nWUrACe
-	DFyQB2hkYlj3JlbA7LtAxD24I+LMrpFwT+hE8xqNF3HH1u1N+lMaam6kYFJ1cA==
-ARC-Authentication-Results: i=1;
-	rspamd-fcb9f4dcf-p8fq4;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Tangy-Shelf: 39032e8645051458_1686261943507_2877274266
-X-MC-Loop-Signature: 1686261943507:914936670
-X-MC-Ingress-Time: 1686261943507
-Received: from pdx1-sub0-mail-a238.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.123.193.172 (trex/6.8.1);
-	Thu, 08 Jun 2023 22:05:43 +0000
-Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a238.dreamhost.com (Postfix) with ESMTPSA id 4QcdZH0TJ2z3K
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 15:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1686261943;
-	bh=6VFcr740ClHDgfooQ+FLHb4V9tJxfdRe/N7zQ7funAE=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=fcWyME1PTxbcYwVPtejuIEGcMXGEkL8T6ddygN281e8u+RFnlTxdv4vSPPJtIhu3G
-	 qx3B8C5XxtwKHUse6/Utr33nINbAXeENOMcXU5ZX2q3A0IQreZZomJupaWTqr5WrN/
-	 LWi0PaiU7QyHVgI2H8zkDd6/3NWY8p2GZTFI67bo=
-Received: from johansen (uid 1000)
-	(envelope-from kjlx@templeofstupid.com)
-	id e0042
-	by kmjvbox (DragonFly Mail Agent v0.12);
-	Thu, 08 Jun 2023 15:05:42 -0700
-Date: Thu, 8 Jun 2023 15:05:42 -0700
-From: Krister Johansen <kjlx@templeofstupid.com>
-To: Yonghong Song <yhs@meta.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH bpf v2 2/2] bpf: ensure main program has an extable
-Message-ID: <20230608220542.GA2057@templeofstupid.com>
-References: <cover.1686166633.git.kjlx@templeofstupid.com>
- <de425e99876dc6c344e1a4254894a3c81e71a2ec.1686166633.git.kjlx@templeofstupid.com>
- <33c52b4c-2a16-7578-f782-51267deff750@meta.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DE37464;
+	Thu,  8 Jun 2023 22:13:27 +0000 (UTC)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96E1E61;
+	Thu,  8 Jun 2023 15:13:24 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9745ba45cd1so175611166b.1;
+        Thu, 08 Jun 2023 15:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686262403; x=1688854403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7sd3s3BJEp56KTFaaUzoT7lxnrFJVfkt96oZ+We3NHE=;
+        b=TbNRK59VwF2Lr0E62g3Ga2RPAlckxlgJH7bvikWaz4U2qtMoSE2X1hk6rlCuJXs1p0
+         IarzdfYiEaAe7Bpew/chHlyjVWyZt8HyTShApkbSP1QsXSWHqyvat3PBItDyWO8wHE8K
+         rO8Z6kLcZ1hKlOIl/Adtgz8DW5RGn+sV8MBtm24Arg5Mrp/x1I4R3eIqzoTPLYOBVtQ/
+         hdZKnbi2Hp0wxJVrTxhoKTewbnapN132FCCWMzapXr7z3sEfv7fBZ2sZYC0B8/tMnEqM
+         gO21n21bCbbDGGDeQSMnIpZ9OeDKuNB4GjVc28gZrmFt71PfvmwVwpUcLO/S7KcILuhm
+         stMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686262403; x=1688854403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7sd3s3BJEp56KTFaaUzoT7lxnrFJVfkt96oZ+We3NHE=;
+        b=YbsmJxYyIDKjzuxDOxas71bQmLz/gxKBzWP+PwX+5RPBXiaP/GHcBeNA+rPE5EjVxD
+         3zbOTtUPIq/dOCUcw39fPErZN5At5SGrVOJ9couYaJwcGj38ylC3QF2NI0OBVf9eALUS
+         iypB34w7j8BH31Ix5G4Gue9LUd9Fbb5rOF//m8Glm7YC052fG4v60WKUvA39h3IoWOXe
+         1Pb+aSLbUZeBgRL6rg408yMDSnzjzs9cX2H7a4Gh1POGRNpyHBraDvRnEUqucFKHQPzt
+         zIyGre846N2VTe10rGAh7qKDYdzjQFroSI+q3wKJIzbXZKnqrDn+gqCue06miYL75gZp
+         y5cw==
+X-Gm-Message-State: AC+VfDzbWS6MaA/7Lcei0HKM+NgmKidq4nfw/kkl0Ii2R2xMCylolEiX
+	BH4MNm5TAidxZI31wxQOYISfNrbHdmtzR5CNotk=
+X-Google-Smtp-Source: ACHHUZ4yT23R37SDX/2nAQ5RXWJFWHdU69fKb3vrqFWML95lB6VPeZTVTLrmNHEVTjYlG1btAmynUODFpPKRZTbTEDE=
+X-Received: by 2002:a17:907:6e23:b0:971:9364:f8cd with SMTP id
+ sd35-20020a1709076e2300b009719364f8cdmr331394ejc.44.1686262403107; Thu, 08
+ Jun 2023 15:13:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33c52b4c-2a16-7578-f782-51267deff750@meta.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-	version=3.4.6
+References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-2-daniel@iogearbox.net>
+ <ZIIOr1zvdRNTFKR7@google.com> <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
+ <ZIJNlxCX4ksBFFwN@google.com>
+In-Reply-To: <ZIJNlxCX4ksBFFwN@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 8 Jun 2023 15:13:10 -0700
+Message-ID: <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API
+ for multi-progs
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org, andrii@kernel.org, 
+	martin.lau@linux.dev, razor@blackwall.org, john.fastabend@gmail.com, 
+	kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org, 
+	davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 08, 2023 at 10:38:12AM -0700, Yonghong Song wrote:
-> 
-> 
-> On 6/7/23 2:04 PM, Krister Johansen wrote:
-> > When bpf subprograms are in use, the main program is not jit'd after the
-> > subprograms because jit_subprogs sets a value for prog->bpf_func upon
-> > success.  Subsequent calls to the JIT are bypassed when this value is
-> > non-NULL.  This leads to a situation where the main program and its
-> > func[0] counterpart are both in the bpf kallsyms tree, but only func[0]
-> > has an extable.  Extables are only created during JIT.  Now there are
-> > two nearly identical program ksym entries in the tree, but only one has
-> > an extable.  Depending upon how the entries are placed, there's a chance
-> > that a fault will call search_extable on the aux with the NULL entry.
-> > 
-> > Since jit_subprogs already copies state from func[0] to the main
-> > program, include the extable pointer in this state duplication.  The
-> > alternative is to skip adding the main program to the bpf_kallsyms
-> > table, but that would mean adding a check for subprograms into the
-> > middle of bpf_prog_load.
-> 
-> I think having two early identical program ksym entries is bad.
-> When people 'cat /proc/kallsyms | grep <their program name>',
-> they will find two programs with identical kernel address but different
-> hash value. This is just very confusing. I think removing the
-> duplicate in kallsyms is better from user's perspective.
+On Thu, Jun 8, 2023 at 2:52=E2=80=AFPM Stanislav Fomichev <sdf@google.com> =
+wrote:
+>
+> On 06/08, Andrii Nakryiko wrote:
+> > On Thu, Jun 8, 2023 at 10:24=E2=80=AFAM Stanislav Fomichev <sdf@google.=
+com> wrote:
+> > >
+> > > On 06/07, Daniel Borkmann wrote:
+> > > > This adds a generic layer called bpf_mprog which can be reused by d=
+ifferent
+> > > > attachment layers to enable multi-program attachment and dependency=
+ resolution.
+> > > > In-kernel users of the bpf_mprog don't need to care about the depen=
+dency
+> > > > resolution internals, they can just consume it with few API calls.
+> > > >
+> > > > The initial idea of having a generic API sparked out of discussion =
+[0] from an
+> > > > earlier revision of this work where tc's priority was reused and ex=
+posed via
+> > > > BPF uapi as a way to coordinate dependencies among tc BPF programs,=
+ similar
+> > > > as-is for classic tc BPF. The feedback was that priority provides a=
+ bad user
+> > > > experience and is hard to use [1], e.g.:
+> > > >
+> > > >   I cannot help but feel that priority logic copy-paste from old tc=
+, netfilter
+> > > >   and friends is done because "that's how things were done in the p=
+ast". [...]
+> > > >   Priority gets exposed everywhere in uapi all the way to bpftool w=
+hen it's
+> > > >   right there for users to understand. And that's the main problem =
+with it.
+> > > >
+> > > >   The user don't want to and don't need to be aware of it, but uapi=
+ forces them
+> > > >   to pick the priority. [...] Your cover letter [0] example proves =
+that in
+> > > >   real life different service pick the same priority. They simply d=
+on't know
+> > > >   any better. Priority is an unnecessary magic that apps _have_ to =
+pick, so
+> > > >   they just copy-paste and everyone ends up using the same.
+> > > >
+> > > > The course of the discussion showed more and more the need for a ge=
+neric,
+> > > > reusable API where the "same look and feel" can be applied for vari=
+ous other
+> > > > program types beyond just tc BPF, for example XDP today does not ha=
+ve multi-
+> > > > program support in kernel, but also there was interest around this =
+API for
+> > > > improving management of cgroup program types. Such common multi-pro=
+gram
+> > > > management concept is useful for BPF management daemons or user spa=
+ce BPF
+> > > > applications coordinating about their attachments.
+> > > >
+> > > > Both from Cilium and Meta side [2], we've collected the following r=
+equirements
+> > > > for a generic attach/detach/query API for multi-progs which has bee=
+n implemented
+> > > > as part of this work:
+> > > >
+> > > >   - Support prog-based attach/detach and link API
+> > > >   - Dependency directives (can also be combined):
+> > > >     - BPF_F_{BEFORE,AFTER} with relative_{fd,id} which can be {prog=
+,link,none}
+> > > >       - BPF_F_ID flag as {fd,id} toggle
+> > > >       - BPF_F_LINK flag as {prog,link} toggle
+> > > >       - If relative_{fd,id} is none, then BPF_F_BEFORE will just pr=
+epend, and
+> > > >         BPF_F_AFTER will just append for the case of attaching
+> > > >       - Enforced only at attach time
+> > > >     - BPF_F_{FIRST,LAST}
+> > > >       - Enforced throughout the bpf_mprog state's lifetime
+> > > >       - Admin override possible (e.g. link detach, prog-based BPF_F=
+_REPLACE)
+> > > >   - Internal revision counter and optionally being able to pass exp=
+ected_revision
+> > > >   - User space daemon can query current state with revision, and pa=
+ss it along
+> > > >     for attachment to assert current state before doing updates
+> > > >   - Query also gets extension for link_ids array and link_attach_fl=
+ags:
+> > > >     - prog_ids are always filled with program IDs
+> > > >     - link_ids are filled with link IDs when link was used, otherwi=
+se 0
+> > > >     - {prog,link}_attach_flags for holding {prog,link}-specific fla=
+gs
+> > > >   - Must be easy to integrate/reuse for in-kernel users
+> > > >
+> > > > The uapi-side changes needed for supporting bpf_mprog are rather mi=
+nimal,
+> > > > consisting of the additions of the attachment flags, revision count=
+er, and
+> > > > expanding existing union with relative_{fd,id} member.
+> > > >
+> > > > The bpf_mprog framework consists of an bpf_mprog_entry object which=
+ holds
+> > > > an array of bpf_mprog_fp (fast-path structure) and bpf_mprog_cp (co=
+ntrol-path
+> > > > structure). Both have been separated, so that fast-path gets effici=
+ent packing
+> > > > of bpf_prog pointers for maximum cache efficieny. Also, array has b=
+een chosen
+> > > > instead of linked list or other structures to remove unnecessary in=
+directions
+> > > > for a fast point-to-entry in tc for BPF. The bpf_mprog_entry comes =
+as a pair
+> > > > via bpf_mprog_bundle so that in case of updates the peer bpf_mprog_=
+entry
+> > > > is populated and then just swapped which avoids additional allocati=
+ons that
+> > > > could otherwise fail, for example, in detach case. bpf_mprog_{fp,cp=
+} arrays are
+> > > > currently static, but they could be converted to dynamic allocation=
+ if necessary
+> > > > at a point in future. Locking is deferred to the in-kernel user of =
+bpf_mprog,
+> > > > for example, in case of tcx which uses this API in the next patch, =
+it piggy-
+> > > > backs on rtnl. The nitty-gritty details are in the bpf_mprog_{repla=
+ce,head_tail,
+> > > > add,del} implementation and an extensive test suite for checking al=
+l aspects
+> > > > of this API for prog-based attach/detach and link API as BPF selfte=
+sts in
+> > > > this series.
+> > > >
+> > > > Kudos also to Andrii Nakryiko for API discussions wrt Meta's BPF ma=
+nagement daemon.
+> > > >
+> > > >   [0] https://lore.kernel.org/bpf/20221004231143.19190-1-daniel@iog=
+earbox.net/
+> > > >   [1] https://lore.kernel.org/bpf/CAADnVQ+gEY3FjCR=3D+DmjDR4gp5bOYZ=
+UFJQXj4agKFHT9CQPZBw@mail.gmail.com
+> > > >   [2] http://vger.kernel.org/bpfconf2023_material/tcx_meta_netdev_b=
+orkmann.pdf
+> > > >
+> > > > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > > ---
+> > > >  MAINTAINERS                    |   1 +
+> > > >  include/linux/bpf_mprog.h      | 245 +++++++++++++++++
+> > > >  include/uapi/linux/bpf.h       |  37 ++-
+> > > >  kernel/bpf/Makefile            |   2 +-
+> > > >  kernel/bpf/mprog.c             | 476 +++++++++++++++++++++++++++++=
+++++
+> > > >  tools/include/uapi/linux/bpf.h |  37 ++-
+> > > >  6 files changed, 781 insertions(+), 17 deletions(-)
+> > > >  create mode 100644 include/linux/bpf_mprog.h
+> > > >  create mode 100644 kernel/bpf/mprog.c
+> > > >
+> >
+> > [...]
+> >
+> > > > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/li=
+nux/bpf.h
+> > > > index a7b5e91dd768..207f8a37b327 100644
+> > > > --- a/tools/include/uapi/linux/bpf.h
+> > > > +++ b/tools/include/uapi/linux/bpf.h
+> > > > @@ -1102,7 +1102,14 @@ enum bpf_link_type {
+> > > >   */
+> > > >  #define BPF_F_ALLOW_OVERRIDE (1U << 0)
+> > > >  #define BPF_F_ALLOW_MULTI    (1U << 1)
+> > > > +/* Generic attachment flags. */
+> > > >  #define BPF_F_REPLACE                (1U << 2)
+> > > > +#define BPF_F_BEFORE         (1U << 3)
+> > > > +#define BPF_F_AFTER          (1U << 4)
+> > >
+> > > [..]
+> > >
+> > > > +#define BPF_F_FIRST          (1U << 5)
+> > > > +#define BPF_F_LAST           (1U << 6)
+> > >
+> > > I'm still not sure whether the hard semantics of first/last is really
+> > > useful. My worry is that some prog will just use BPF_F_FIRST which
+> > > would prevent the rest of the users.. (starting with only
+> > > F_BEFORE/F_AFTER feels 'safer'; we can iterate later on if we really
+> > > need first/laste).
+> >
+> > Without FIRST/LAST some scenarios cannot be guaranteed to be safely
+> > implemented. E.g., if I have some hard audit requirements and I need
+> > to guarantee that my program runs first and observes each event, I'll
+> > enforce BPF_F_FIRST when attaching it. And if that attachment fails,
+> > then server setup is broken and my application cannot function.
+> >
+> > In a setup where we expect multiple applications to co-exist, it
+> > should be a rule that no one is using FIRST/LAST (unless it's
+> > absolutely required). And if someone doesn't comply, then that's a bug
+> > and has to be reported to application owners.
+> >
+> > But it's not up to the kernel to enforce this cooperation by
+> > disallowing FIRST/LAST semantics, because that semantics is critical
+> > for some applications, IMO.
+>
+> Maybe that's something that should be done by some other mechanism?
+> (and as a follow up, if needed) Something akin to what Toke
+> mentioned with another program doing sorting or similar.
 
-Thanks for all the feedback.
+The goal of this API is to avoid needing some extra special program to
+do this sorting
 
-In terms of resolving this confusion my inclination is to use the main
-program. That way users see in kallsyms the same tag that is reported by
-bpftool.  On the other hand, the tag in kallsyms won't match the sha1 of
-that actual chunk of code.  Is anything relying on the hash in the tag
-and the digest of the code agreeing?
+>
+> Otherwise, those first/last are just plain simple old priority bands;
+> only we have two now, not u16.
 
--K
+I think it's different. FIRST/LAST has to be used judiciously, of
+course, but when they are needed, they will have no alternative.
+
+Also, specifying FIRST + LAST is the way to say "I want my program to
+be the only one attached". Should we encourage such use cases? No, of
+course. But I think it's fair  for users to be able to express this.
+
+>
+> I'm mostly coming from the observability point: imagine I have my fancy
+> tc_ingress_tcpdump program that I want to attach as a first program to de=
+bug
+> some issue, but it won't work because there is already a 'first' program
+> installed.. Or the assumption that I'd do F_REPLACE | F_FIRST ?
+
+If your production setup requires that some important program has to
+be FIRST, then yeah, your "let me debug something" program shouldn't
+interfere with it (assuming that FIRST requirement is a real
+requirement and not someone just thinking they need to be first; but
+that's up to user space to decide). Maybe the solution for you in that
+case would be freplace program installed on top of that stubborn FIRST
+program? And if we are talking about local debugging and development,
+then you are a sysadmin and you should be able to force-detach that
+program that is getting in the way.
+
+
+>
+> > > But if everyone besides myself is on board with first/last, maybe at =
+least
+> > > put a comment here saying that only a single program can be first/las=
+t?
+> > > And the users are advised not to use these unless they really really =
+really
+> > > need to be first/last. (IOW, feels like first/last should be reserved
+> > > for observability tools/etc).
+> >
+> > +1, we can definitely make it clear in API that this will prevent
+> > anyone else from being attached as FIRST/LAST, so it's not cooperative
+> > in nature and has to be very consciously evaluated.
+> >
+> > >
+> > > > +#define BPF_F_ID             (1U << 7)
+> > > > +#define BPF_F_LINK           BPF_F_LINK /* 1 << 13 */
+> > > >
+> > > >  /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+> > > >   * verifier will perform strict alignment checking as if the kerne=
+l
+> >
+> > [...]
 
