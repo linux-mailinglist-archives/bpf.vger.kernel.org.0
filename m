@@ -1,227 +1,114 @@
-Return-Path: <bpf+bounces-2177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2178-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7AE728BEB
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 01:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0AB728C0C
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 01:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 086C22817FE
-	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:40:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C916E28182C
+	for <lists+bpf@lfdr.de>; Thu,  8 Jun 2023 23:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508D6370C2;
-	Thu,  8 Jun 2023 23:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069CA38CDB;
+	Thu,  8 Jun 2023 23:55:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDF41953A
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 23:40:49 +0000 (UTC)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323FD194
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 16:40:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f63ab1ac4aso1458899e87.0
-        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 16:40:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFB12A711;
+	Thu,  8 Jun 2023 23:55:05 +0000 (UTC)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1166C2D48;
+	Thu,  8 Jun 2023 16:55:04 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b1b084620dso12334861fa.0;
+        Thu, 08 Jun 2023 16:55:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686267634; x=1688859634;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pekEYx3Kd88VqHH2OQbUa4oacx5THAvNBzgpfcGD8Sk=;
-        b=AmVwH4mMnLJ/ow8YWbAd6rANFUCz27LpEDfwaEuEBuF3maqkKEuQlQGz3kj74w7OsF
-         Kbl5xqWzHk+h1Ed3mAT3W809XfLLCvaUDFJwy+XGtJNlFxuEdbwhSPGgVBNoPaNtqk+U
-         hrF7Xb6EW33VLb9MDA154xMuxn3NocNI9YBCN8j9+HSlh9a3DrF8/lx49piUFIDAZ69U
-         iIVZUombOhBwuomHCY8JZkQChc2XfAPO/9uLAx9B/4KnGqkb2uhPEI/3xlEMX/+uGbc/
-         tdkOZUOFc6hLJ6O5VP+7+kVlcF6yo1spqOgVvZeBF+omxHD9sDJwQMQNrIGmz+KxMQPI
-         SgMQ==
+        d=gmail.com; s=20221208; t=1686268502; x=1688860502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QNHnwv3qBjwav6e7vyBTs2Fp4wl6kVhQuzNliqjos+Q=;
+        b=WJuxBs/23SwuGn6KnBw5Ke/S3yzBATxKyRD84745/ed+ereoFsERgMhQ1FjADpKfFq
+         X+uIptsHn7jTlnPM2o8+znB/zl9Y83TJcu17epdNbksEqWpPZsQIAb80rMxhaWFckOHn
+         TPCbovwTS9ceU+/CRXk+QwywVaHsvq21FLxFaTVLMzkOVUIVVzrc5EpC5VausFnv5TiO
+         rBx9MUp3OFLT9mbFXKO4RGqNCiKZmQZ6PoZzMipzP6aKkY3aMI6fawFG7nWF058iyMnY
+         YW25zSMJJ1exCpf1hm/jkB/6DVsPGNfzzkNtVCPK8huaNm0oj1cSbAq+RCmtnQnd2jhu
+         eJzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686267634; x=1688859634;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pekEYx3Kd88VqHH2OQbUa4oacx5THAvNBzgpfcGD8Sk=;
-        b=eiXz9yzO8+igteuYQRe3TYAgqJr+UuaLPxAmCR/b/PwWeprYNyaWel/WRPaWBD56CX
-         WPQx8uFzjKasTs2J0VxSDuh+4LwQC2UY582ofHEa5qqBkrRROZOJr8ARbz30mt78VwR6
-         KaDQtiQAX69d5xc93u9EqA++cAllS9dpEFOkBa5qREVpIjivRXa29g73Q+ZTcrVPtGR2
-         wNjYYDHned0wWre8QArtIUYtMoreXp+YCfiqhLKEMhQsFgWdsPwldCa0ow9KXlZGbAUz
-         JQJlIpbY3e7TBol9wMuWk49k/ovnTW9E1GwOyfOxqYbh4Ldw5aBtIQwMRoXCzt1d9+Um
-         WB/w==
-X-Gm-Message-State: AC+VfDyvHXzHAaj1YzrnFAGTK9lWae1TpErDYCv9AMeRHU8GlwYhN3x/
-	XrZBxi0T2XWEwDfmUaZ/15E=
-X-Google-Smtp-Source: ACHHUZ5jWszjOO535p5yzPZQnx4z9kG6AUIohQ3ZeaznnqZGrq1URB1JzD9IKGs32IUUCyk99r5xtA==
-X-Received: by 2002:a19:d60a:0:b0:4f6:e50:d41c with SMTP id n10-20020a19d60a000000b004f60e50d41cmr247723lfg.60.1686267634082;
-        Thu, 08 Jun 2023 16:40:34 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id j13-20020ac253ad000000b004f0049433adsm334123lfh.307.2023.06.08.16.40.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jun 2023 16:40:33 -0700 (PDT)
-Message-ID: <eff91336d6b83caffd63386f076a08744fe13f47.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] bpf: verify scalar ids mapping in
- regsafe() using check_ids()
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
-Date: Fri, 09 Jun 2023 02:40:32 +0300
-In-Reply-To: <CAEf4BzZ8u9MWgcx4DqBVWW6tLx4mVCrc9ZW0fgoJvfA-DhxgkA@mail.gmail.com>
-References: <20230606222411.1820404-1-eddyz87@gmail.com>
-	 <20230606222411.1820404-4-eddyz87@gmail.com>
-	 <CAEf4BzbbGV6gTJ1KdBB8EwLWV3aNE-iyNtP2pC-W1=MTDNRq5Q@mail.gmail.com>
-	 <cc31b95783afa7dc8fb806c973f8420d22a49e58.camel@gmail.com>
-	 <CAEf4Bzaj6K4UuLQU-eRPWQt+nnyXwj_-yf9NAyqMkW-fc1m0OA@mail.gmail.com>
-	 <5bb3a6c3daf8c36a88eae6d0a3a8e52d7b24f842.camel@gmail.com>
-	 <342f5aaa30ad5ad1a476ffe997e1669d58a8c8ed.camel@gmail.com>
-	 <CAEf4BzZ8u9MWgcx4DqBVWW6tLx4mVCrc9ZW0fgoJvfA-DhxgkA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        d=1e100.net; s=20221208; t=1686268502; x=1688860502;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QNHnwv3qBjwav6e7vyBTs2Fp4wl6kVhQuzNliqjos+Q=;
+        b=hi4cQd4S1PPbfE3LG+dSiOtfeUNiU+vH6b9rOPkyx/y7rHMkWTrVEkxk37XBV6eX7y
+         zOj04A9UjioBWVo+bcOSi8nZiT9FQqwr0GUdOlX2T6ND+Xkd62LJxrv9cBzmuxm04cw3
+         xFwMw5FLvEdFHLOUk7rdDsrTR3dhGgPvWgIDt5ATDJ4K+PfHxY+5EyubiOYn4Di4q0KF
+         N8ZbFMIsMiiMyEEllTyjPTOSfVV4XTwvzcGBkr1Wz/L4SLudI/y+UrPgxYiHe/Yzihpj
+         2IoooCK/t5f/LwlrutQ39q8GyR6luE8HY2+Qz48pttqfaO9dvwEElGchFQgO/Fgma4w6
+         mzBg==
+X-Gm-Message-State: AC+VfDyyMjreTFZna1vApQhhXtuvL5VYW4oKfz0VFytNm4pe3ENlqbgt
+	z/OiaaHJChlX2otQXVH4qQ3VOs8yjCq4zdjv8Qo=
+X-Google-Smtp-Source: ACHHUZ7kDbUzge+oSL+PVvGVqC72X7BfYq6ahovC/jaoSNCL0EUJwZW7dR9ZhJsar5DMhwjFZnpsJbz61h+qr4EvwXI=
+X-Received: by 2002:a2e:83d5:0:b0:2b1:b301:e63f with SMTP id
+ s21-20020a2e83d5000000b002b1b301e63fmr64776ljh.2.1686268501845; Thu, 08 Jun
+ 2023 16:55:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-2-daniel@iogearbox.net>
+ <ZIIOr1zvdRNTFKR7@google.com> <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
+ <ZIJNlxCX4ksBFFwN@google.com> <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
+ <ZIJe5Ml6ILFa6tKP@google.com>
+In-Reply-To: <ZIJe5Ml6ILFa6tKP@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 8 Jun 2023 16:54:50 -0700
+Message-ID: <CAADnVQLL8bQxXkGfwc4BTTkjoXx2k_dANhwa0u0kbnkVgm730A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API
+ for multi-progs
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Nikolay Aleksandrov <razor@blackwall.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jakub Kicinski <kuba@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
+	Joe Stringer <joe@cilium.io>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 2023-06-08 at 15:37 -0700, Andrii Nakryiko wrote:
-> On Thu, Jun 8, 2023 at 1:58=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Thu, 2023-06-08 at 22:05 +0300, Eduard Zingerman wrote:
-> > [...]
-> > > > Hm.. It's clever and pretty minimal, I like it. We are basically
-> > > > allocating virtual ID for SCALAR that doesn't have id, just to make
-> > > > sure we get a conflict if the SCALAR with ID cannot be mapped into =
-two
-> > > > different SCALARs, right?
-> > > >=20
-> > > > The only question would be if it's safe to do that for case when
-> > > > old_reg->id !=3D 0 and cur_reg->id =3D=3D 0? E.g., if in old (verif=
-ied)
-> > > > state we have r6.id =3D r7.id =3D 123, and in new state we have r6.=
-id =3D 0
-> > > > and r7.id =3D 0, then your implementation above will say that state=
-s are
-> > > > equivalent. But are they, given there is a link between r6 and r7 t=
-hat
-> > > > might be required for correctness. Which we don't have in current
-> > > > state.
-> > >=20
-> > > You mean the other way around, rold.id =3D=3D 0, rcur.id !=3D 0, righ=
-t?
-> > > (below 0/2 means: original value 0, replaced by new id 2).
->=20
-> no, I actually meant what I wrote, but I didn't realize that
-> check_ids() is kind of broken... Because it shouldn't allow the same
-> ID from cur state to be mapped to two different IDs in old state,
-> should it?
+On Thu, Jun 8, 2023 at 4:06=E2=80=AFPM Stanislav Fomichev <sdf@google.com> =
+wrote:
+>
+> I'm not really concerned about our production environment. It's pretty
+> controlled and restricted and I'm pretty certain we can avoid doing
+> something stupid. Probably the same for your env.
+>
+> I'm mostly fantasizing about upstream world where different users don't
+> know about each other and start doing stupid things like F_FIRST where
+> they don't really have to be first. It's that "used judiciously" part
+> that I'm a bit skeptical about :-D
+>
+> Because even with this new ordering scheme, there still should be
+> some entity to do relative ordering (systemd-style, maybe CNI?).
+> And if it does the ordering, I don't really see why we need
+> F_FIRST/F_LAST.
 
-IDs are used for several things, and it looks like the answer might vary.
-
-For example, I looked at mark_ptr_or_null_regs():
-- it is called when conditional of form (ptr =3D=3D NULL) is checked;
-- it marks every register with pointer having same ID as ptr as
-  null/non-null;
-- when register is marked not null ID is removed (not for locks but
-  ignore it for now).
-
-Assume r6 and r7 are both PTR_MAYBE_NULL and ID assignments look as
-follows:
-
-        old cur
-  r6.id 1   3
-  r7.id 2   3
- =20
-'old' is safe, which means the following:
-- either r6 was not accessed or it was guarded by (r6 =3D=3D NULL)
-- either r7 was not accessed or it was guarded by (r7 =3D=3D NULL)
-
-In both cases it should be ok, if r6 and r7 are in fact the same
-pointer. It would be checked to be not NULL two times but that's fine.
-So, I'd say that 'cur' is a special case of 'old' and check_ids() is
-correct for it. But this is the same argument I used for scalars and
-you were not convinced :)
-
-Need to examine each use case carefully.
-
-> > > (1)   old cur
-> > > r6.id 0/2   1
-> > > r7.id 0/3   1 check_ids returns true
->=20
-> I think this should be rejected.
-
-That's what we agreed upon when decided not to do !rold->id, so yes.
-
-> > > (2)   old cur
-> > > r6.id 1   0/2
-> > > r7.id 1   0/3 check_ids returns false
->=20
-> And this should be rejected.
-
-For sure.
-
-> > > Also, (1) is no different from (3):
-> > >=20
-> > > (3)   old cur
-> > > r6.id 1     3
-> > > r7.id 2     3 check_ids returns true
->=20
-> And this definitely should be rejected.
-
-Same as (1).
-=20
-> The only situation that might not be rejected would be:
->=20
->         old    cur
-> r6.id   0/1    3
-> r7.id.  0/2    4
->=20
-> And perhaps this one is ok as well?
->=20
->         old    cur
-> r6.id   3      0/1
-> r7.id.  4      0/2
-
-I think these two should be accepted.
-
-[...]
-> > +static bool check_scalar_ids(struct bpf_verifier_env *env, u32 old_id,=
- u32 cur_id,
-> > +                            struct bpf_id_pair *idmap)
-> > +{
-> > +       unsigned int i;
-> > +
-> > +       old_id =3D old_id ? old_id : env->id_gen++;
-> > +       cur_id =3D cur_id ? cur_id : env->id_gen++;
-> > +
-> > +       for (i =3D 0; i < BPF_ID_MAP_SIZE; i++) {
-> > +               if (!idmap[i].old) {
-> > +                       /* Reached an empty slot; haven't seen this id =
-before */
-> > +                       idmap[i].old =3D old_id;
-> > +                       idmap[i].cur =3D cur_id;
-> > +                       return true;
-> > +               }
-> > +               if (idmap[i].old =3D=3D old_id)
-> > +                       return idmap[i].cur =3D=3D cur_id;
-> > +               if (idmap[i].cur =3D=3D cur_id)
-> > +                       return false;
->=20
-> I think this should just be added to existing check_ids(), I think
-> it's a bug that we don't check this condition today in check_ids().
->=20
-> But I'd say let's land fixes you have right now. And then work on
-> fixing and optimizing scala ID checks separately. We are doing too
-> many things at the same time :(
-
-Ok, will post V4 with these changes and examine other cases later.
-Thanks again for the discussion.
-
-[...]
++1.
+I have the same concerns as expressed during lsfmmbpf.
+This first/last is a foot gun.
+It puts the whole API back into a single user situation.
+Without "first api" the users are forced to talk to each other
+and come up with an arbitration mechanism. A daemon to control
+the order or something like that.
+With "first api" there is no incentive to do so.
 
