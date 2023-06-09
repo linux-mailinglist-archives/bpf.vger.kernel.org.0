@@ -1,101 +1,93 @@
-Return-Path: <bpf+bounces-2211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 443BB729234
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 10:06:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA94A7292F5
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 10:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C50B1C210D8
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 08:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80C0F281627
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 08:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E048A947;
-	Fri,  9 Jun 2023 08:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49303AD58;
+	Fri,  9 Jun 2023 08:25:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D175415C8
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 08:06:08 +0000 (UTC)
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352DB3C00;
-	Fri,  9 Jun 2023 01:06:04 -0700 (PDT)
-Received: from localhost (mdns.lwn.net [45.79.72.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id CA860218;
-	Fri,  9 Jun 2023 08:06:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net CA860218
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1686297963; bh=vCCZoyVJv/dG21uOzB2PPXR7mnqwnSl+JgF4RTz00ho=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=HYWVs0E+uZvrD2KTOWcZc9exCT37zc1JzeOP9bPEBmIRQnULCdL3gTvh9VwPaRUkQ
-	 ywuIjrg2tNNaLKOVs8ykB+Gqx2utABkMLDx4YbDqy3QFg4fSbDCSG7K8oSOnsjc57o
-	 Hq/8cYLZ6M441DCYyEeL+Jf7oCZsnkQFRm9ioqXBoa+8r0qfY6q7f0wsJIdvaqaH2X
-	 Z2Js1dmjmchCAXAb0+wjf+Y8/mf/2IPTLq3QpMHp9vJwyM5ExNBjbBaxXfOit2OgxX
-	 zvyIg9O8WvxcyjcwyLKk66llzhRKwkHQgfnPy58Fb7Beu1XVnfxPirMo1eam4RXQV7
-	 JNf0RCN5qqclw==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Costa Shulyupin <costa.shul@redhat.com>, linux-doc@vger.kernel.org,
- Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Costa Shulyupin <costa.shul@redhat.com>, open list
- <linux-kernel@vger.kernel.org>, "open list:BPF [MISC]"
- <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3] Documentation: subsystem-apis: Categorize remaining
- subsystems
-In-Reply-To: <20230601145556.3927838-1-costa.shul@redhat.com>
-References: <ZHgM0qKWP3OusjUW@debian.me>
- <20230601145556.3927838-1-costa.shul@redhat.com>
-Date: Fri, 09 Jun 2023 02:05:59 -0600
-Message-ID: <87h6rhoyag.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFF6748C
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 08:24:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E3F449E6;
+	Fri,  9 Jun 2023 01:24:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76E2DAB6;
+	Fri,  9 Jun 2023 01:24:59 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.25.215])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6E033F71E;
+	Fri,  9 Jun 2023 01:24:12 -0700 (PDT)
+Date: Fri, 9 Jun 2023 09:24:10 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Jackie Liu <liu.yun@linux.dev>
+Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <ZILhqvrjeFIPHauy@FVFF77S0Q05N>
+References: <20230608212613.424070-1-jolsa@kernel.org>
+ <CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
+ <20230608192748.435a1dbf@gandalf.local.home>
+ <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Costa Shulyupin <costa.shul@redhat.com> writes:
+On Thu, Jun 08, 2023 at 04:55:40PM -0700, Andrii Nakryiko wrote:
+> On Thu, Jun 8, 2023 at 4:27 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > On Thu, 8 Jun 2023 15:43:03 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > On Thu, Jun 8, 2023 at 2:26 PM Jiri Olsa <jolsa@kernel.org> wrote:
+ 
+> There are BPF tools that allow user to specify regex/glob of kernel
+> functions to attach to. This regex/glob is checked against
+> available_filter_functions to check which functions are traceable. All
+> good. But then also it's important to have corresponding memory
+> addresses for selected functions (for many reasons, e.g., to have
+> non-ambiguous and fast attachment by address instead of by name, or
+> for some post-processing based on captured IP addresses, etc). And
+> that means that now we need to also parse /proc/kallsyms and
+> cross-join it with data fetched from available_filter_functions.
+> 
+> All this is unnecessary if avalable_filter_functions would just
+> provide function address in the first place. It's a huge
+> simplification. And saves memory and CPU.
 
-> From: Bagas Sanjaya <bagasdotme@gmail.com>
->
-> Add classes:
-> * Core subsystems
-> * Storage
-> * Networking
-> * Peripherals and devices
-> * Embedded systems
-> * Integrity
-> * Virtualization
-> * Miscellaneous
->
-> There is a FIXME that says to organize subsystems listed in
-> subsystem-apis.rst. Fulfill it by categorize remaining subsytems
-> by purpose/themes, while sorting entries in each category.
->
-> HID devices are already categorized in 3c591cc954d56e ("docs:
-> consolidate human interface subsystems").
->
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+Do you need the address of the function entry-point or the address of the
+patch-site within the function? Those can differ, and the rec->ip address won't
+necessarily equal the address in /proc/kallsyms, so the pointer in
+/proc/kallsyms won't (always) match the address we could print for the ftrace site.
 
-So now that I've found a moment to look at stuff, I'm a bit confused
-here.  Up top, you have a From: line identifying Bagas as the author of
-this patch - but it lacks his signoff so I can't apply it.
-
-If this is *really* such a complex change that it needs a
-co-developed-by tag, please arrange that and the correct signoffs.
-Otherwise, please send a patch that's your work (which can certainly
-reflect suggestions from others) that is properly tagged.
+On arm64, today we can have offsets of +0, +4, and +8, and within a single
+kernel image different functions can have different offsets. I suspect in
+future that we may have more potential offsets (e.g. due to changes for HW/SW
+CFI).
 
 Thanks,
-
-jon
+Mark.
 
