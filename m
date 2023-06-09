@@ -1,506 +1,283 @@
-Return-Path: <bpf+bounces-2252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE98072A2C0
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 21:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 196ED72A2D9
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 21:09:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64F80281A14
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 19:03:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B217281A57
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 19:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D579C8F4;
-	Fri,  9 Jun 2023 19:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E151951A;
+	Fri,  9 Jun 2023 19:08:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9B0F18C0F;
-	Fri,  9 Jun 2023 19:03:39 +0000 (UTC)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCE43592;
-	Fri,  9 Jun 2023 12:03:36 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f629ccb8ebso2679401e87.1;
-        Fri, 09 Jun 2023 12:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686337415; x=1688929415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u9SMD1vjEZu2R3K3jVWlFJX/d0zNkYBwo8ESMyRIdVo=;
-        b=aIp1Ih8/QEY2eygtZ6pGitcJH5I81m821Z6+sQ6ePZc0k+UibwdqgQdsrwfj3Qj/Xw
-         +kfCbRJ2hcx5WRVieTDWhBF/JuyKAW91zHP4pK41J5RFf3flo+F5o98z7+TzA6NLHL0H
-         Ed2NeC0mSJ2fvzKFicxcuFyIT1Mu36Dls5oboMS82XZik+uM6ouOx6MMFd4YSTLd2MP7
-         B4KxxxGV8KzW991SjQq/QUJUBn92/w9RjoLi6UBCpq7y12N+FP1TUxKN1jZOZH2Ix3Yg
-         nyoqy0ma34hoJpLF9PaRnEFeZ2/bRnW11rmTtduE+HZ0OYWMaXdsSJYOwIvwXJ+XoWaE
-         YNkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686337415; x=1688929415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u9SMD1vjEZu2R3K3jVWlFJX/d0zNkYBwo8ESMyRIdVo=;
-        b=gYlIYxkXL2KQSgfmBmzebxmtBoOa8umh62Xpgy3Z7RSWr6QV5MYlOEGJuHE1SuL843
-         r5MQPRx1XUiY34AUOXfwA2tjoInRU8iNxhkVoN6PcJVKyInVm5qALObbRVGZv9u2PiJF
-         s5PE582EXJas2KTQym1xXBUVJydel4PFsdIICSKVfwUldljQKQGkxn0V0Gh5y30qbS8e
-         nvPzVsj2de3m/Zx4T9PMAO3hhXPWnpqn6rEyCjWGWo0NyD7sXWYGIaC2ZXoRyEzAy1KT
-         ZYuQUBC4zT2zlZ/z8xeuWLJOOGi44iTi7tF039pfs+YfYUikI4HsyXh4NNVviscY+wzL
-         0wYg==
-X-Gm-Message-State: AC+VfDzZopSqpM+J1G/39Q+90Qevy6DPJZ3dM9jIpBpi77iyTg8YlCKl
-	Xf95YwrJYyGuWuR2c3bOi2sFRpcvxed1+rBmA38=
-X-Google-Smtp-Source: ACHHUZ7PNlSGADdEDvvz31QdZaYm3STnsk+HwhDvGzeK73nKdssiMcB5i1pUjv2KjLpVV9rMGAgBenUIMjZ9rFePFTs=
-X-Received: by 2002:a2e:86cf:0:b0:2a7:8150:82c1 with SMTP id
- n15-20020a2e86cf000000b002a7815082c1mr1654788ljj.38.1686337414350; Fri, 09
- Jun 2023 12:03:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3F1408C0
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 19:08:50 +0000 (UTC)
+Received: from crane.ash.relay.mailchannels.net (crane.ash.relay.mailchannels.net [23.83.222.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A1C35B3
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 12:08:47 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 546546408B1
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 19:08:44 +0000 (UTC)
+Received: from pdx1-sub0-mail-a237.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id E16E6640D8E
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 19:08:43 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686337723; a=rsa-sha256;
+	cv=none;
+	b=lOjGor3p0Ux5oId81Mu+MDWN9wOGwiDP9BoLqP7pITmy191x8jvsINm7E9Y1Q4j/PdawTD
+	ITx7QcyNGHrVotjwj+uL0UwmPj4t4jQ4YU58h6FbCaPYS74JSCoxMFKlLlCPkEenHnfYTk
+	SbLMbf6eiFJX3NOBCcb/euEzXvj2Xm9zoDyyJPXgSUVxM2WvtinqpYF1iKcvVF941SVUYK
+	w5Xp+vfDQhnOBwNYhpV3dgX4VIwrcrl923ac7od1WBcquxvAp0pDiYxorSc8vNwF6AZg0h
+	/GsZRulIVbHJ3NrXavQMv2ej6dOGQeQUBxt1gABoe7m4KTkF88PjeiN8ytVVog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1686337723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=2nNow2I8rLN3tJXCsR747RgqkV/4isKDgV+FcS8d6j8=;
+	b=zClrJBzRueeyN3FJ3srlYnvszsZAWam4tTq6eVGSwIyphfuBcYcP2Ae9vticliOrXYShFl
+	++bQBvuVHSLfTKsdrlcp2ce3se07LA4PGwtRYQ3rF0GrEBQQv6rxK20Nj1DXjke4rkizKm
+	5xyrL1K8Rs7m6f+eCSVlIilYrrRyU73XVd5Ml0jro/F9KfEGaUTkMkIiyNRyR25QWXU6il
+	qMKdh2aPiubljWgihyZlipFYXwrh3ugh2MWwAVBGzTDq9LMR07lFBehdS0ERryi9MZmQNx
+	j16VzbjkUlvyhHWITj2kIqFjnRyNDo61b5FJLxWx39Q1XHFf6Um/96mTev9q0g==
+ARC-Authentication-Results: i=1;
+	rspamd-6c69b8658d-b7mg5;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Sponge-Decisive: 4b8f122c1c4e391c_1686337724171_1054805836
+X-MC-Loop-Signature: 1686337724171:3133498407
+X-MC-Ingress-Time: 1686337724171
+Received: from pdx1-sub0-mail-a237.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.119.120.28 (trex/6.8.1);
+	Fri, 09 Jun 2023 19:08:44 +0000
+Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kjlx@templeofstupid.com)
+	by pdx1-sub0-mail-a237.dreamhost.com (Postfix) with ESMTPSA id 4Qd9bb1JskzgY
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 12:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+	s=dreamhost; t=1686337723;
+	bh=2nNow2I8rLN3tJXCsR747RgqkV/4isKDgV+FcS8d6j8=;
+	h=Date:From:To:Cc:Subject:Content-Type:Content-Transfer-Encoding;
+	b=KZ8kwd5ujdrmc6Lh0F4xmEJZg729c3yoWrDOSTNwQYh8LnSw3C/1otscsorjI7moO
+	 +nnF3+osvg+el56tgjXW7fkXHR+T5Toxh+EYUZhKXGWa+LKBtGawadToqLYOhgrWj3
+	 wX2FuYhfz7GmmSPw/tEkh9vvRVfFUrzslvNvyIO4=
+Received: from johansen (uid 1000)
+	(envelope-from kjlx@templeofstupid.com)
+	id e00d9
+	by kmjvbox (DragonFly Mail Agent v0.12);
+	Fri, 09 Jun 2023 12:08:42 -0700
+Date: Fri, 9 Jun 2023 12:08:42 -0700
+From: Krister Johansen <kjlx@templeofstupid.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Krister Johansen <kjlx@templeofstupid.com>,
+	Ilya Leoshkevich <iii@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: add a test for subprogram
+ extables
+Message-ID: <20230609190842.GA2012@templeofstupid.com>
+References: <cover.1686268304.git.kjlx@templeofstupid.com>
+ <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
+ <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607192625.22641-1-daniel@iogearbox.net> <20230607192625.22641-2-daniel@iogearbox.net>
- <ZIIOr1zvdRNTFKR7@google.com> <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
- <ZIJNlxCX4ksBFFwN@google.com> <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
- <ZIJe5Ml6ILFa6tKP@google.com> <87a5x91nr8.fsf@toke.dk> <3a315a0d-52dd-7671-f6c1-bb681604c815@iogearbox.net>
- <874jng28xk.fsf@toke.dk> <1a73a1b9-c72a-de81-4fce-7ba4fb6d7900@incline.eu>
- <87sfb0zsok.fsf@toke.dk> <d0cf9a4f-c111-b594-7a12-84914419789e@iogearbox.net> <CAKH8qBuCug8HVxXF5hq00FxNtuyFbjJExJsrA+FCAfEmg36n3g@mail.gmail.com>
-In-Reply-To: <CAKH8qBuCug8HVxXF5hq00FxNtuyFbjJExJsrA+FCAfEmg36n3g@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 9 Jun 2023 12:03:21 -0700
-Message-ID: <CAEf4Bzbs3Aujx_7YwisGs6-+Qdu+QuFUohKH-az24c6NciPhow@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API
- for multi-progs
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	Timo Beckers <timo@incline.eu>, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
-	razor@blackwall.org, john.fastabend@gmail.com, kuba@kernel.org, dxu@dxuuu.xyz, 
-	joe@cilium.io, davem@davemloft.net, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 9, 2023 at 9:41=E2=80=AFAM Stanislav Fomichev <sdf@google.com> =
-wrote:
->
-> On Fri, Jun 9, 2023 at 7:15=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
-> >
-> > On 6/9/23 3:11 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > > Timo Beckers <timo@incline.eu> writes:
-> > >> On 6/9/23 13:04, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > >>> Daniel Borkmann <daniel@iogearbox.net> writes:
-> > [...]
-> > >>>>>>>>>> I'm still not sure whether the hard semantics of first/last =
-is really
-> > >>>>>>>>>> useful. My worry is that some prog will just use BPF_F_FIRST=
- which
-> > >>>>>>>>>> would prevent the rest of the users.. (starting with only
-> > >>>>>>>>>> F_BEFORE/F_AFTER feels 'safer'; we can iterate later on if w=
-e really
-> > >>>>>>>>>> need first/laste).
-> > >>>>>>>>> Without FIRST/LAST some scenarios cannot be guaranteed to be =
-safely
-> > >>>>>>>>> implemented. E.g., if I have some hard audit requirements and=
- I need
-> > >>>>>>>>> to guarantee that my program runs first and observes each eve=
-nt, I'll
-> > >>>>>>>>> enforce BPF_F_FIRST when attaching it. And if that attachment=
- fails,
-> > >>>>>>>>> then server setup is broken and my application cannot functio=
-n.
-> > >>>>>>>>>
-> > >>>>>>>>> In a setup where we expect multiple applications to co-exist,=
- it
-> > >>>>>>>>> should be a rule that no one is using FIRST/LAST (unless it's
-> > >>>>>>>>> absolutely required). And if someone doesn't comply, then tha=
-t's a bug
-> > >>>>>>>>> and has to be reported to application owners.
-> > >>>>>>>>>
-> > >>>>>>>>> But it's not up to the kernel to enforce this cooperation by
-> > >>>>>>>>> disallowing FIRST/LAST semantics, because that semantics is c=
-ritical
-> > >>>>>>>>> for some applications, IMO.
-> > >>>>>>>> Maybe that's something that should be done by some other mecha=
-nism?
-> > >>>>>>>> (and as a follow up, if needed) Something akin to what Toke
-> > >>>>>>>> mentioned with another program doing sorting or similar.
-> > >>>>>>> The goal of this API is to avoid needing some extra special pro=
-gram to
-> > >>>>>>> do this sorting
-> > >>>>>>>
-> > >>>>>>>> Otherwise, those first/last are just plain simple old priority=
- bands;
-> > >>>>>>>> only we have two now, not u16.
-> > >>>>>>> I think it's different. FIRST/LAST has to be used judiciously, =
-of
-> > >>>>>>> course, but when they are needed, they will have no alternative=
-.
-> > >>>>>>>
-> > >>>>>>> Also, specifying FIRST + LAST is the way to say "I want my prog=
-ram to
-> > >>>>>>> be the only one attached". Should we encourage such use cases? =
-No, of
-> > >>>>>>> course. But I think it's fair  for users to be able to express =
-this.
-> > >>>>>>>
-> > >>>>>>>> I'm mostly coming from the observability point: imagine I have=
- my fancy
-> > >>>>>>>> tc_ingress_tcpdump program that I want to attach as a first pr=
-ogram to debug
-> > >>>>>>>> some issue, but it won't work because there is already a 'firs=
-t' program
-> > >>>>>>>> installed.. Or the assumption that I'd do F_REPLACE | F_FIRST =
-?
-> > >>>>>>> If your production setup requires that some important program h=
-as to
-> > >>>>>>> be FIRST, then yeah, your "let me debug something" program shou=
-ldn't
-> > >>>>>>> interfere with it (assuming that FIRST requirement is a real
-> > >>>>>>> requirement and not someone just thinking they need to be first=
-; but
-> > >>>>>>> that's up to user space to decide). Maybe the solution for you =
-in that
-> > >>>>>>> case would be freplace program installed on top of that stubbor=
-n FIRST
-> > >>>>>>> program? And if we are talking about local debugging and develo=
-pment,
-> > >>>>>>> then you are a sysadmin and you should be able to force-detach =
-that
-> > >>>>>>> program that is getting in the way.
-> > >>>>>> I'm not really concerned about our production environment. It's =
-pretty
-> > >>>>>> controlled and restricted and I'm pretty certain we can avoid do=
-ing
-> > >>>>>> something stupid. Probably the same for your env.
-> > >>>>>>
-> > >>>>>> I'm mostly fantasizing about upstream world where different user=
-s don't
-> > >>>>>> know about each other and start doing stupid things like F_FIRST=
- where
-> > >>>>>> they don't really have to be first. It's that "used judiciously"=
- part
-> > >>>>>> that I'm a bit skeptical about :-D
-> > >>>> But in the end how is that different from just attaching themselve=
-s blindly
-> > >>>> into the first position (e.g. with before and relative_fd as 0 or =
-the fd/id
-> > >>>> of the current first program) - same, they don't really have to be=
- first.
-> > >>>> How would that not result in doing something stupid? ;) To add to =
-Andrii's
-> > >>>> earlier DDoS mitigation example ... think of K8s environment: one =
-project
-> > >>>> is implementing DDoS mitigation with BPF, another one wants to mon=
-itor/
-> > >>>> sample traffic to user space with BPF. Both install as first posit=
-ion by
-> > >>>> default (before + 0). In K8s, there is no built-in Pod dependency =
-management
-> > >>>> so you cannot guarantee whether Pod A comes up before Pod B. So yo=
-u'll end
-> > >>>> up in a situation where sometimes the monitor runs before the DDoS=
- mitigation
-> > >>>> and on some other nodes it's vice versa. The other case where this=
- gets
-> > >>>> broken (assuming a node where we get first the DDoS mitigation, th=
-en the
-> > >>>> monitoring) is when you need to upgrade one of the Pods: monitorin=
-g Pod
-> > >>>> gets a new stable update and is being re-rolled out, then it inser=
-ts
-> > >>>> itself before the DDoS mitigation mechanism, potentially causing o=
-utage.
-> > >>>> With the first/last mechanism these two situations cannot happen. =
-The DDoS
-> > >>>> mitigation software uses first and the monitoring uses before + 0,=
- then no
-> > >>>> matter the re-rollouts or the ordering in which Pods come up, it's=
- always
-> > >>>> at the expected/correct location.
-> > >>> I'm not disputing that these kinds of policy issues need to be solv=
-ed
-> > >>> somehow. But adding the first/last pinning as part of the kernel ho=
-oks
-> > >>> doesn't solve the policy problem, it just hard-codes a solution for=
- one
-> > >>> particular instance of the problem.
-> > >>>
-> > >>> Taking your example from above, what happens when someone wants to
-> > >>> deploy those tools in reverse order? Say the monitoring tool counts
-> > >>> packets and someone wants to also count the DDOS traffic; but the D=
-DOS
-> > >>> protection tool has decided for itself (by setting the FIRST) flag =
-that
-> > >>> it can *only* run as the first program, so there is no way to achie=
-ve
-> > >>> this without modifying the application itself.
-> > >>>
-> > >>>>>> Because even with this new ordering scheme, there still should b=
-e
-> > >>>>>> some entity to do relative ordering (systemd-style, maybe CNI?).
-> > >>>>>> And if it does the ordering, I don't really see why we need
-> > >>>>>> F_FIRST/F_LAST.
-> > >>>>> I can see I'm a bit late to the party, but FWIW I agree with this=
-:
-> > >>>>> FIRST/LAST will definitely be abused if we add it. It also seems =
-to me
-> > >> It's in the prisoners' best interest to collaborate (and they do! se=
-e
-> > >> https://www.youtube.com/watch?v=3DYK7GyEJdJGo), except the current
-> > >> prio system is limiting and turns out to be really fragile in practi=
-ce.
-> > >>
-> > >> If your tool wants to attach to tc prio 1 and there's already a prog
-> > >> attached,
-> > >> the most reliable option is basically to blindly replace the attachm=
-ent,
-> > >> unless
-> > >> you have the possibility to inspect the attached prog and try to fig=
-ure
-> > >> out if it
-> > >> belongs to another tool. This is fragile in and of itself, and only
-> > >> possible on
-> > >> more recent kernels iirc.
-> > >>
-> > >> With tcx, Cilium could make an initial attachment using F_FIRST and =
-simply
-> > >> update a link at well-known path on subsequent startups. If there's =
-no
-> > >> existing
-> > >> link, and F_FIRST is taken, bail out with an error. The owner of the
-> > >> existing
-> > >> F_FIRST program can be queried and logged; we know for sure the prog=
-ram
-> > >> doesn't belong to Cilium, and we have no interest in detaching it.
-> > >
-> > > That's conflating the benefit of F_FIRST with that of bpf_link, thoug=
-h;
-> > > you can have the replace thing without the exclusive locking.
-> > >
-> > >>>> See above on the issues w/o the first/last. How would you work aro=
-und them
-> > >>>> in practice so they cannot happen?
-> > >>> By having an ordering configuration that is deterministic. Enforced=
- by
-> > >>> the system-wide management daemon by whichever mechanism suits it. =
-We
-> > >>> could implement a minimal reference policy agent that just reads a
-> > >>> config file in /etc somewhere, and *that* could implement FIRST/LAS=
-T
-> > >>> semantics.
-> > >> I think this particular perspective is what's deadlocking this discu=
-ssion.
-> > >> To me, it looks like distros and hyperscalers are in the same boat w=
-ith
-> > >> regards to the possibility of coordination between tools. Distros ar=
-e only
-> > >> responsible for the tools they package themselves, and hyperscalers
-> > >> run a tight ship with mostly in-house tooling already. When it comes=
- to
-> > >> projects out in the wild, that all goes out the window.
-> > >
-> > > Not really: from the distro PoV we absolutely care about arbitrary
-> > > combinations of programs with different authors. Which is why I'm
-> > > arguing against putting anything into the kernel where the first prog=
-ram
-> > > to come along can just grab a hook and lock everyone out.
-> > >
-> > > My assumption is basically this: A system administrator installs
-> > > packages A and B that both use the TC hook. The developers of A and B
-> > > have never heard about each other. It should be possible for that adm=
-in
-> > > to run A and B in whichever order they like, without making any chang=
-es
-> > > to A and B themselves.
-> >
-> > I would come with the point of view of the K8s cluster operator or plat=
-form
-> > engineer, if you will. Someone deeply familiar with K8s, but not necess=
-arily
-> > knowing about kernel internals. I know my org needs to run container A =
-and
-> > container B, so I'll deploy the daemon-sets for both and they get deplo=
-yed
-> > into my cluster. That platform engineer might have never heard of BPF o=
-r might
-> > not even know that container A or container B ships software with BPF. =
-As
-> > mentioned, K8s itself has no concept of Pod ordering as its paradigm is=
- that
-> > everything is loosely coupled. We are now expecting from that person to=
- make
-> > a concrete decision about some BPF kernel internals on various hooks in=
- which
-> > order they should be executed given if they don't then the system becom=
-es
-> > non-deterministic. I think that is quite a big burden and ask to unders=
-tand.
-> > Eventually that person will say that he/she cannot make this technical =
-decision
-> > and that only one of the two containers can be deployed. I agree with y=
-ou that
-> > there should be an option for a technically versed person to be able to=
- change
-> > ordering to avoid lock out, but I don't think it will fly asking users =
-to come
-> > up on their own with policies of BPF software in the wild ... similar a=
-s you
-> > probably don't want having to deal with writing systemd unit files for =
-software
-> > xyz before you can use your laptop. It's a burden. You expect this to m=
-agically
-> > work by default and only if needed for good reasons to make custom chan=
-ges.
-> > Just the one difference is that the latter ships with the OS (a priori =
-known /
-> > tight-ship analogy).
-> >
-> > >> Regardless of merit or feasability of a system-wide bpf management
-> > >> daemon for k8s, there _is no ordering configuration possible_. K8s i=
-s not
-> > >> a distro where package maintainers (or anyone else, really) can coor=
-dinate
-> > >> on correctly defining priority of each of the tools they ship. This =
-is
-> > >> effectively
-> > >> the prisoner's dilemma. I feel like most of the discussion so far ha=
-s been
-> > >> very hand-wavy in 'user space should solve it'. Well, we are user sp=
-ace, and
-> > >> we're here trying to solve it. :)
-> > >>
-> > >> A hypothetical policy/gatekeeper/ordering daemon doesn't possess
-> > >> implicit knowledge about which program needs to go where in the chai=
-n,
-> > >> nor is there an obvious heuristic about how to order things. Maintai=
-ning
-> > >> such a configuration for all cloud-native tooling out there that pos=
-sibly
-> > >> uses bpf is simply impossible, as even a tool like Cilium can change
-> > >> dramatically from one release to the next. Having to manage this too
-> > >> would put a significant burden on velocity and flexibility for argua=
-bly
-> > >> little benefit to the user.
-> > >>
-> > >> So, daemon/kernel will need to be told how to order things, preferab=
-ly by
-> > >> the tools (Cilium/datadog-agent) themselves, since the user/admin of=
- the
-> > >> system cannot be expected to know where to position the hundreds of =
-progs
-> > >> loaded by Cilium and how they might interfere with other tools. Figu=
-ring
-> > >> this out is the job of the tool, daemon or not.
-> > >>
-> > >> The prisoners _must_ communicate (so, not abuse F_FIRST) for things =
-to
-> > >> work correctly, and it's 100% in their best interest in doing so. Le=
-t's not
-> > >> pretend like we're able to solve game theory on this mailing list. :=
-)
-> > >> We'll have to settle for the next-best thing: give user space a safe=
- and
-> > >> clear
-> > >> API to allow it to coordinate and make the right decisions.
-> > >
-> > > But "always first" is not a meaningful concept. It's just what we hav=
-e
-> > > today (everyone picks priority 1), except now if there are two progra=
-ms
-> > > that want the same hook, it will be the first program that wins the
-> > > contest (by locking the second one out), instead of the second progra=
-m
-> > > winning (by overriding the first one) as is the case with the silent
-> > > override semantics we have with TC today. So we haven't solved the
-> > > problem, we've just shifted the breakage.
-> >
-> > Fwiw, it's deterministic, and I think this 1000x better than silently
-> > having a non-deterministic deployment where the two programs ship with
-> > before + 0. That is much harder to debug.
-> >
-> > >> To circle back to the observability case: in offline discussions wit=
-h
-> > >> Daniel,
-> > >> I've mentioned the need for 'shadow' progs that only collect data an=
-d
-> > >> pump it to user space, attached at specific points in the chain (sti=
-ll
-> > >> within tcx!).
-> > >> Their retcodes would be ignored, and context modifications would be
-> > >> rejected, so attaching multiple to the same hook can always succeed,
-> > >> much like cgroup multi. Consider the following:
-> > >>
-> > >> To attach a shadow prog before F_FIRST, a caller could use F_BEFORE =
-|
-> > >> F_FIRST |
-> > >> F_RDONLY. Attaching between first and the 'relative' section: F_AFTE=
-R |
-> > >> F_FIRST |
-> > >> F_RDONLY, etc. The rdonly flag could even be made redundant if a new=
- prog/
-> > >> attach type is added for progs like these.
-> > >>
-> > >> This is still perfectly possible to implement on top of Daniel's
-> > >> proposal, and
-> > >> to me looks like it could address many of the concerns around orderi=
-ng of
-> > >> progs I've seen in this thread, many mention data exfiltration.
-> > >
-> > > It may well be that semantics like this will turn out to be enough. O=
-r
-> > > it may not (I personally believe we'll need something more expressive
-> > > still, and where the system admin has the option to override things; =
-but
-> > > I may turn out to be wrong). Ultimately, my main point wrt this serie=
-s
-> > > is that this kind of policy decision can be added later, and it's bet=
-ter
-> > > to merge the TCX infrastructure without it, instead of locking oursel=
-ves
-> > > into an API that is way too limited today. TCX (and in-kernel XDP
-> > > multiprog) has value without it, so let's merge that first and iterat=
-e
-> > > on the policy aspects.
-> >
-> > That's okay and I'll do that for v3 to move on.
-> >
-> > I feel we might repeat the same discussion with no good solution for K8=
-s
-> > users once we come back to this point again.
->
-> With your cilium vs ddos example, maybe all we really need is for the
-> program to have some signal about whether it's ok to have somebody
-> modify/drop the packets before it?
-> For example, the verifier, depending on whether it sees that the
-> program writes to the data, uses some helpers, or returns
-> TC_ACT_SHOT/etc can classify the program as readonly or non-readonly.
-> And then, we'll have some extra flag during program load/attach that
-> cilium will pass to express "I'm not ok with having a non-readonly
-> program before me".
+On Fri, Jun 09, 2023 at 11:15:18AM -0700, Alexei Starovoitov wrote:
+> On Thu, Jun 8, 2023 at 5:11 PM Krister Johansen <kjlx@templeofstupid.com> wrote:
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs, int arg, struct file *ret)
+> > +{
+> > +       *(volatile long *)ret;
+> > +       *(volatile int *)&ret->f_mode;
+> > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs2, int arg, struct file *ret)
+> > +{
+> > +       *(volatile long *)ret;
+> > +       *(volatile int *)&ret->f_mode;
+> > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs3, int arg, struct file *ret)
+> > +{
+> > +       *(volatile long *)ret;
+> > +       *(volatile int *)&ret->f_mode;
+> > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > +       return 0;
+> > +}
+> 
+> What is the point of attaching 3 the same progs to the same hook?
+> One would be enough to test it, no?
 
-So this is what Timo is proposing with F_READONLY. And I agree, that
-makes sense and we've discussed the need for something like this
-internally. Specific use case was setsockopt programs. Sometimes they
-should just observe, and we'd like to enforce that.
+I thought so too, initially.  However, when I went to move this from the
+original test case I submitted to the selftest, I found it was fairly
+inconsistent about reproducing the problem with a single program.  I
+believe this is because the kallsyms are stored in a binary tree, and
+the prog and func[0] are identical.  Depending on where the item is
+placed, the func[0] with the extable can sometimes be looked up instead
+of the prog without.
 
-Once we have this F_READONLY flag support and enforce that during BPF
-program validation, then "I'm not ok with having a non-readonly
-program before me" is exactly F_FIRST. We just say that the F_READONLY
-program can be inserted anywhere because it has no effect on the state
-of the system.
+Yonghong requested that I make note of this in the patch commit message.
+I'll make sure that's included in the next version I send out.
 
->
-> Seems doable? If it makes sense, we can try to do this as a follow up.
-> It should solve some simple cases without an external arbiter.
+> In other news...
+> Looks like this test is triggering a bug on s390.
 
-Yes, and we can add that on top of current F_FIRST/F_LAST. Currently
-we have to pessimistically assume that every program is non-readonly
-and F_FIRST/F_LAST applies to just non-readonly programs.
+Not sure if this is worth mentioning, but when I run with
+panic_on_oops=0 to capture the stack, I'm seeing some additional
+warnings that follow the bpf bug.  Is any of this of interest?
+
+   BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+   in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 1132, name: test_progs
+   preempt_count: 0, expected: 0
+   RCU nest depth: 2, expected: 0
+   INFO: lockdep is turned off.
+   CPU: 0 PID: 1132 Comm: test_progs Tainted: G      D    OE      6.4.0-rc3+ #2
+   Call Trace:
+    <TASK>
+    dump_stack_lvl+0x63/0x90
+    dump_stack+0x14/0x20
+    __might_resched+0x21d/0x230
+    __might_sleep+0x45/0x70
+    exit_signals+0x35/0x200
+    do_exit+0xc6/0x920
+    ? rewind_stack_and_make_dead+0x17/0x20
+    ? make_task_dead+0xbe/0x140
+    ? make_task_dead+0xbe/0x140
+    make_task_dead+0x88/0x140
+    rewind_stack_and_make_dead+0x17/0x20
+   RIP: 0033:0x7fb5da00a392
+   Code: ac 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb be 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 ec 28 48 89 54 24
+   RSP: 002b:00007ffc5b3cab68 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+   RAX: ffffffffffffffda RBX: 000055bee7b8b100 RCX: 00007fb5da00a392
+   RDX: 00000000000001c8 RSI: 0000000000000000 RDI: 0000000000000009
+   RBP: 00007ffc5b3caba0 R08: 0000000000000000 R09: 0000000000000037
+   R10: 000055bee7b8c2a7 R11: 0000000000000246 R12: 000055bee78f1f60
+   R13: 00007ffc5b3cae90 R14: 0000000000000000 R15: 0000000000000000
+    </TASK>
+   ------------[ cut here ]------------
+   Voluntary context switch within RCU read-side critical section!
+   WARNING: CPU: 0 PID: 1132 at kernel/rcu/tree_plugin.h:318 rcu_note_context_switch+0x4c0/0x5f0
+   Modules linked in: bpf_testmod(OE) nls_iso8859_1 dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua intel_rapl_msr intel_rapl_common intel_uncore_frequency_common ppdev nfit crct10dif_pclmul crc32_pclmul psmouse ghash_clmulni_intel sha512_ssse3 aesni_intel parport_pc crypto_simd cryptd input_leds parport rapl ena i2c_piix4 mac_hid serio_raw ramoops reed_solomon pstore_blk drm pstore_zone efi_pstore autofs4 [last unloaded: bpf_testmod(OE)]
+   CPU: 0 PID: 1132 Comm: test_progs Tainted: G      D W  OE      6.4.0-rc3+ #2
+   RIP: 0010:rcu_note_context_switch+0x4c0/0x5f0
+   Code: fb ff ff 0f 0b e9 e0 fb ff ff e8 4b dd e3 ff a8 04 75 b5 0f 0b eb b1 c6 05 e4 03 a4 02 01 48 c7 c7 45 4a a1 ab e8 c0 e2 f1 ff <0f> 0b e9 f7 fb ff ff 0f 0b 45 84 f6 0f 84 d6 fb ff ff e9 e7 fb ff
+   RSP: 0018:ffffb30c4291f9a8 EFLAGS: 00010046
+   RAX: 4599311900096300 RBX: ffff92e644bf2a40 RCX: 0000000000000027
+   RDX: 0000000000000000 RSI: ffffb30c4291f830 RDI: ffff92e95ee21948
+   RBP: ffffb30c4291f9f8 R08: 0000000000000000 R09: ffffb30c4291f7d0
+   R10: 00000000fffeffff R11: c0000000fffeffff R12: ffff92e95ee36680
+   R13: ffffb30c4291fc58 R14: 0000000000000000 R15: 0000000000000000
+   FS:  0000000000000000(0000) GS:ffff92e95ee00000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   CR2: 000000000000000c CR3: 000000000d25e001 CR4: 00000000007706f0
+   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   PKRU: 55555554
+   Call Trace:
+    <TASK>
+    ? lock_release+0x46/0x330
+    __schedule+0x173/0x1730
+    ? trace_hardirqs_on+0x56/0xb0
+    ? irqentry_exit+0x72/0xa0
+    ? sysvec_irq_work+0x4a/0x90
+    ? asm_sysvec_irq_work+0x1f/0x30
+    schedule+0x6f/0xc0
+    schedule_timeout+0x35/0x110
+    ? native_write_msr+0xe/0x40
+    ? __pfx_schedule_timeout+0x10/0x10
+    ? trace_hardirqs_on+0x56/0xb0
+    ? __pfx_schedule_timeout+0x10/0x10
+    do_wait_for_common+0xe9/0x170
+    ? __pfx_schedule_timeout+0x10/0x10
+    ? __pfx_call_rcu+0x10/0x10
+    wait_for_completion+0x53/0x70
+    __wait_rcu_gp+0x12f/0x150
+    synchronize_rcu_tasks_rude+0x67/0xc0
+    ? __pfx_wakeme_after_rcu+0x10/0x10
+    ? mutex_unlock+0x16/0x20
+    ? __pfx_call_rcu_tasks_rude+0x10/0x10
+    ftrace_shutdown+0x1ea/0x290
+    ? 0xffffffffc04b8000
+    unregister_ftrace_function+0x30/0x190
+    ? 0xffffffffc04b8000
+    ? 0xffffffffc04b8000
+    unregister_ftrace_direct+0x51/0xf0
+    ? __pfx_bpf_testmod_return_ptr+0x10/0x10 [bpf_testmod]
+    ? 0xffffffffc04b8000
+    bpf_trampoline_update+0x273/0x6d0
+    bpf_trampoline_unlink_prog+0xb4/0x110
+    bpf_tracing_link_release+0x1d/0x50
+    bpf_link_put+0xd0/0x100
+    bpf_link_release+0x19/0x30
+    __fput+0x107/0x250
+    ____fput+0x12/0x20
+    task_work_run+0x89/0xd0
+    do_exit+0x263/0x920
+    ? make_task_dead+0xbe/0x140
+    ? make_task_dead+0xbe/0x140
+    make_task_dead+0x88/0x140
+    rewind_stack_and_make_dead+0x17/0x20
+   RIP: 0033:0x7fb5da00a392
+   Code: Unable to access opcode bytes at 0x7fb5da00a368.
+   RSP: 002b:00007ffc5b3cab68 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+   RAX: ffffffffffffffda RBX: 000055bee7b8b100 RCX: 00007fb5da00a392
+   RDX: 00000000000001c8 RSI: 0000000000000000 RDI: 0000000000000009
+   RBP: 00007ffc5b3caba0 R08: 0000000000000000 R09: 0000000000000037
+   R10: 000055bee7b8c2a7 R11: 0000000000000246 R12: 000055bee78f1f60
+   R13: 00007ffc5b3cae90 R14: 0000000000000000 R15: 0000000000000000
+    </TASK>
+   irq event stamp: 62970
+   hardirqs last  enabled at (62969): [<ffffffffab1e14ba>] syscall_enter_from_user_mode+0x2a/0x1e0
+   hardirqs last disabled at (62970): [<ffffffffab1e0bb1>] exc_page_fault+0x41/0x210
+   softirqs last  enabled at (62912): [<ffffffffaa2e2ae2>] bpf_link_settle+0x32/0x50
+   softirqs last disabled at (62910): [<ffffffffaa2e2acd>] bpf_link_settle+0x1d/0x50
+   ---[ end trace 0000000000000000 ]---
+
+-K
 
