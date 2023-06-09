@@ -1,798 +1,259 @@
-Return-Path: <bpf+bounces-2190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2192-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A494728DDF
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 04:26:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCD41728E3F
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 05:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE131C2106C
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 02:26:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BC101C20C68
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 03:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50CC01391;
-	Fri,  9 Jun 2023 02:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BB6186B;
+	Fri,  9 Jun 2023 03:03:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A161113
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 02:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242D11865
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 03:03:08 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378CD2722;
-	Thu,  8 Jun 2023 19:26:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qcky470kNz4f3xbM;
-	Fri,  9 Jun 2023 10:08:12 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3X7OJiYJkQegTLQ--.30526S4;
-	Fri, 09 Jun 2023 10:08:11 +0800 (CST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8430E6;
+	Thu,  8 Jun 2023 20:03:06 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qcm9L2RDDz4f3pCC;
+	Fri,  9 Jun 2023 11:03:02 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgDXzhxjloJkHIyvKQ--.49153S2;
+	Fri, 09 Jun 2023 11:03:03 +0800 (CST)
+Subject: Re: [RFC PATCH bpf-next v4 0/3] Handle immediate reuse in bpf memory
+ allocator
+To: paulmck@kernel.org
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, rcu@vger.kernel.org,
+ "houtao1@huawei.com" <houtao1@huawei.com>
+References: <20230606035310.4026145-1-houtao@huaweicloud.com>
+ <f0e77d34-7459-8375-d844-4b0c8d79eb8f@huaweicloud.com>
+ <20230606210429.qziyhz4byqacmso3@MacBook-Pro-8.local>
+ <9d17ed7f-1726-d894-9f74-75ec9702ca7e@huaweicloud.com>
+ <20230607175224.oqezpaztsb5hln2s@MacBook-Pro-8.local>
+ <CAADnVQJMM2ueRoDMmmBsxb_chPFr_WCH34tyiYQiwphnDhyuGw@mail.gmail.com>
+ <1441a69a-a015-8e3c-4c14-a6af767849e3@huaweicloud.com>
+ <1154ba5a-49b2-45c4-8b88-60f1abed6cbf@paulmck-laptop>
+ <f4418d9d-857b-eb96-cbec-ab1652291556@huaweicloud.com>
+ <d5c9bedb-29ea-456d-b66a-d556f781e656@paulmck-laptop>
 From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yhs@fb.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	rcu@vger.kernel.org,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next v5] selftests/bpf: Add benchmark for bpf memory allocator
-Date: Fri,  9 Jun 2023 10:40:30 +0800
-Message-Id: <20230609024030.2585058-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+Message-ID: <58572036-cb29-340e-fe62-d9091304bf0c@huaweicloud.com>
+Date: Fri, 9 Jun 2023 11:02:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <d5c9bedb-29ea-456d-b66a-d556f781e656@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3X7OJiYJkQegTLQ--.30526S4
-X-Coremail-Antispam: 1UD129KBjvAXoWfuFy3Wr4DJF4fuFy5ZF47urg_yoW8ur15Wo
-	Z3CF45Jr1rJrnFv395Ca4kJ3WfuF4kKryUXr15Xan8Ja48Ar1FvryUCw4furyxXFWfK34x
-	XFZ2yw1fAFW8XF95n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY87kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
-	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k2
-	0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-	8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
-	IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIx
-	AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13rcDUUUUU==
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgDXzhxjloJkHIyvKQ--.49153S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw48KF17Cw43ZrWxJr4DXFb_yoWfJrW3pF
+	WrG3W5trWkJryrAw1Iyr18Jryjyay5Jwn8Xry5JFyUCrn0qr12qr12qr4j9Fy5Jr4kCr1j
+	vrWDXry7Zw1UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-	MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hou Tao <houtao1@huawei.com>
+Hi Paul,
 
-The benchmark could be used to compare the performance of hash map
-operations and the memory usage between different flavors of bpf memory
-allocator (e.g., no bpf ma vs bpf ma vs reuse-after-gp bpf ma). It also
-could be used to check the performance improvement or the memory saving
-provided by optimization.
+On 6/9/2023 12:18 AM, Paul E. McKenney wrote:
+> On Thu, Jun 08, 2023 at 11:43:54AM +0800, Hou Tao wrote:
+>> Hi Paul,
+>>
+>> On 6/8/2023 10:55 AM, Paul E. McKenney wrote:
+>>> On Thu, Jun 08, 2023 at 09:51:27AM +0800, Hou Tao wrote:
+>>>> Hi,
+>>>>
+>>>> On 6/8/2023 4:50 AM, Alexei Starovoitov wrote:
+>>>>> On Wed, Jun 7, 2023 at 10:52 AM Alexei Starovoitov
+>>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>> On Wed, Jun 07, 2023 at 04:42:11PM +0800, Hou Tao wrote:
+>>>>>>> As said in the commit message, the command line for test is
+>>>>>>> "./map_perf_test 4 8 16384", because the default max_entries is 1000. If
+>>>>>>> using default max_entries and the number of CPUs is greater than 15,
+>>>>>>> use_percpu_counter will be false.
+>>>>>> Right. percpu or not depends on number of cpus.
+>> SNIP
+>>>>>>  known, because I had just proposed it in the email yesterday.
+>>>>> Also noticed that the overhead of shared reuse_ready list
+>>>>> comes both from the contended lock and from cache misses
+>>>>> when one cpu pushes to the list after RCU GP and another
+>>>>> cpu removes.
+>>>>>
+>>>>> Also low/batch/high watermark are all wrong in patch 3.
+>>>>> low=32 and high=96 makes no sense when it's not a single list.
+>>>>> I'm experimenting with 32 for all three heuristics.
+>>>>>
+>>>>> Another thing I noticed that per-cpu prepare_reuse and free_by_rcu
+>>>>> are redundant.
+>>>>> unit_free() can push into free_by_rcu directly
+>>>>> then reuse_bulk() can fill it up with free_llist_extra and
+>>>>> move them into waiting_for_gp.
+>>>> Yes. Indeed missing that.
+>>>>> All these _tail optimizations are obscuring the code and make it hard
+>>>>> to notice these issues.
+>>>>>
+>>>>>> For now I still prefer to see v5 with per-bpf-ma and no _tail optimization.
+>>>>>>
+>>>>>> Answering your other email:
+>>>>>>
+>>>>>>> I see your point. I will continue to debug the memory usage difference
+>>>>>>> between v3 and v4.
+>>>>>> imo it's a waste of time to continue analyzing performance based on bench in patch 2.
+>>>> Don't agree with that. I still think the potential memory usage of v4 is
+>>>> a problem and the difference memory usage between v3 and v4 reveals that
+>>>> there is some peculiarity in RCU subsystem, because the difference comes
+>>>> from the duration of RCU grace period. We need to find out why and fix
+>>>> or workaround that.
+>>> A tight loop in the kernel can extend RCU grace periods, especially
+>>> for kernels built with CONFIG_PREEPTION=n.  Placing things like
+>>> cond_resched() in such loops can help.  Of course, if you are in an
+>>> RCU read-side critical section (or holding a spinlock), you will need
+>>> to exit, cond_resched(), then re-enter.  Taking care to ensure that the
+>>> state upon re-entry is valid.  After all, having exited either type of
+>>> critical section, anything might happen.
+>> As said in the help-wanted email just send out, it was weird that the
+>> RCU grace period was extended a lot, up to ~150ms or more. But queue a
+>> dummy kworker periodically which does nothing will help to reduce the
+>> grace period to ~10ms. I have explained the context of the problem in
+>> that email. And hope that we could get some help from you and the RCU
+>> experts in the community.
+> OK, I will bite...  Why do you think this is weird?
+>
+> RCU depends on context switches, among other things.  If you have a
+> long-running in-kernel task, that will naturally extend the grace period.
+> Scheduling the empty worker provided the context switch that RCU needed
+> to make forward progress.
 
-The benchmark creates a non-preallocated hash map which uses bpf memory
-allocator and shows the operation performance and the memory usage of
-the hash map under different use cases:
-(1) no_op
-Only create the hash map and there is no operations on hash map. It is
-used as the baseline. When each CPU completes the iteration of 64
-elements in hash map, it increases the loop count.
-(2) overwrite
-Each CPU overwrites nonoverlapping part of hash map. When each CPU
-completes overwriting of 64 elements in hash map, it increases the loop
-count.
-(3) batch_add_batch_del
-Each CPU adds then deletes nonoverlapping part of hash map in batch.
-When each CPU adds and deletes 64 elements in hash map, it increases the
-loop count.
-(4) add_del_on_diff_cpu
-Each two-CPUs pair adds and deletes nonoverlapping part of map
-cooperatively. When each pair adds and deletes 64 elements in hash map,
-the two-CPUs pair will increase the loop count.
+Because the empty kwork trick also works for CONFIG_PREEMPT_VOLUNTARY=y.
+And there is neither implicit or explicit calling of schedule() in the
+kernel space of producer thread when CONFIG_PREEMPT_VOLUNTARY=y.
+And also I don't know how to define a long-running in-kernel task,
+because I have checked the latency of getpgid() syscall in producer
+thread when CONFIG_PREEMPT_VOLUNTARY=y . As shown in the text below,
+there are indeed some outliers, but the most latency is less than 1ms,
+so the producer thread will do contex_switch in at most 1ms. But before
+the empty kwork trick, the latency of RCU callback is about 100ms or
+more, and after the empty kwork trick, the latenct for RCU callback is
+reduced to ~8ms.
 
-The following is the benchmark results when comparing between different
-flavors of bpf memory allocator. These tests are conducted on a KVM guest
-with 8 CPUs and 16 GB memory. The command line below is used to do all
-the following benchmarks:
+@hist_us:
+[128, 256)            60
+|                                                    |
+[256, 512)        101364
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[512, 1K)          17580
+|@@@@@@@@@                                           |
+[1K, 2K)              16
+|                                                    |
 
-  ./bench htab-mem --use-case $name --max-entries 16384 ${OPTS} \
-          --full 50 -d 10 --producers=8 --prod-affinity=0-7
+@stat_us: count 119020, average 436, total 51957277
 
-These results show:
-* preallocated case has both better performance and better memory
-  efficiency.
-* normal bpf memory doesn't handle add_del_on_diff_cpu very well. The
-  large memory usage is due to the slow tasks trace RCU grace period.
 
-(1) non-preallocated + no bpf memory allocator (v6.0.19)
-use kmalloc() + call_rcu
-
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 681.40    | 0.87                | 1.00             |
-| overwrite          | 8.56      | 38.86               | 88.42            |
-| batch_add_batch_del| 6.74      | 41.28               | 69.70            |
-| add_del_on_diff_cpu| 4.68      | 3.43                | 5.70             |
-
-(2) preallocated
-OPTS=--preallocated
-
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 673.95    | 1.98                | 1.98             |
-| overwrite          | 114.63    | 1.99                | 1.99             |
-| batch_add_batch_del| 78.34     | 2.04                | 2.06             |
-| add_del_on_diff_cpu| 6.41      | 2.23                | 2.54             |
-
-(3) normal bpf memory allocator
-
-| name               | loop (k/s)| average memory (MiB)| peak memory (MiB)|
-| --                 | --        | --                  | --               |
-| no_op              | 656.20    | 0.99                | 0.99             |
-| overwrite          | 81.21     | 1.10                | 2.49             |
-| batch_add_batch_del| 18.40     | 2.13                | 2.62             |
-| add_del_on_diff_cpu| 5.38      | 10.40               | 18.05            |
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v5:
- * send the benchmark patch alone (suggested by Alexei)
- * limit the max number of touched elements per-bpf-program call to 64 (from Alexei)
- * show per-producer performance (from Alexei)
- * handle the return value of read() (from BPF CI)
- * do cleanup_cgroup_environment() in htab_mem_report_final()
-
-v4: https://lore.kernel.org/bpf/20230606035310.4026145-1-houtao@huaweicloud.com/
-
- tools/testing/selftests/bpf/Makefile          |   3 +
- tools/testing/selftests/bpf/bench.c           |   4 +
- .../selftests/bpf/benchs/bench_htab_mem.c     | 367 ++++++++++++++++++
- .../bpf/benchs/run_bench_htab_mem.sh          |  42 ++
- .../selftests/bpf/progs/htab_mem_bench.c      | 132 +++++++
- 5 files changed, 548 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_htab_mem.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
- create mode 100644 tools/testing/selftests/bpf/progs/htab_mem_bench.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 538df8fb8c42..add018823ebd 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -644,11 +644,13 @@ $(OUTPUT)/bench_local_storage.o: $(OUTPUT)/local_storage_bench.skel.h
- $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o: $(OUTPUT)/local_storage_rcu_tasks_trace_bench.skel.h
- $(OUTPUT)/bench_local_storage_create.o: $(OUTPUT)/bench_local_storage_create.skel.h
- $(OUTPUT)/bench_bpf_hashmap_lookup.o: $(OUTPUT)/bpf_hashmap_lookup.skel.h
-+$(OUTPUT)/bench_htab_mem.o: $(OUTPUT)/htab_mem_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS += -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(TESTING_HELPERS) \
- 		 $(TRACE_HELPERS) \
-+		 $(CGROUP_HELPERS) \
- 		 $(OUTPUT)/bench_count.o \
- 		 $(OUTPUT)/bench_rename.o \
- 		 $(OUTPUT)/bench_trigger.o \
-@@ -661,6 +663,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o \
- 		 $(OUTPUT)/bench_bpf_hashmap_lookup.o \
- 		 $(OUTPUT)/bench_local_storage_create.o \
-+		 $(OUTPUT)/bench_htab_mem.o \
- 		 #
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index d9c080ac1796..d3d9ae321b74 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -279,6 +279,7 @@ extern struct argp bench_local_storage_rcu_tasks_trace_argp;
- extern struct argp bench_strncmp_argp;
- extern struct argp bench_hashmap_lookup_argp;
- extern struct argp bench_local_storage_create_argp;
-+extern struct argp bench_htab_mem_argp;
- 
- static const struct argp_child bench_parsers[] = {
- 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
-@@ -290,6 +291,7 @@ static const struct argp_child bench_parsers[] = {
- 		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
- 	{ &bench_hashmap_lookup_argp, 0, "Hashmap lookup benchmark", 0 },
- 	{ &bench_local_storage_create_argp, 0, "local-storage-create benchmark", 0 },
-+	{ &bench_htab_mem_argp, 0, "hash map memory benchmark", 0 },
- 	{},
- };
- 
-@@ -518,6 +520,7 @@ extern const struct bench bench_local_storage_cache_hashmap_control;
- extern const struct bench bench_local_storage_tasks_trace;
- extern const struct bench bench_bpf_hashmap_lookup;
- extern const struct bench bench_local_storage_create;
-+extern const struct bench bench_htab_mem;
- 
- static const struct bench *benchs[] = {
- 	&bench_count_global,
-@@ -559,6 +562,7 @@ static const struct bench *benchs[] = {
- 	&bench_local_storage_tasks_trace,
- 	&bench_bpf_hashmap_lookup,
- 	&bench_local_storage_create,
-+	&bench_htab_mem,
- };
- 
- static void find_benchmark(void)
-diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-new file mode 100644
-index 000000000000..e658a9f1ce3c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-@@ -0,0 +1,367 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <argp.h>
-+#include <stdbool.h>
-+#include <pthread.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+
-+#include "bench.h"
-+#include "cgroup_helpers.h"
-+#include "htab_mem_bench.skel.h"
-+
-+static struct htab_mem_ctx {
-+	struct htab_mem_bench *skel;
-+	pthread_barrier_t *notify;
-+	int fd;
-+	int op_factor;
-+	bool do_notify_wait;
-+} ctx;
-+
-+static struct htab_mem_args {
-+	u32 max_entries;
-+	u32 value_size;
-+	u32 full;
-+	const char *use_case;
-+	bool preallocated;
-+} args = {
-+	.max_entries = 16384,
-+	.full = 50,
-+	.value_size = 8,
-+	.use_case = "overwrite",
-+	.preallocated = false,
-+};
-+
-+enum {
-+	ARG_MAX_ENTRIES = 10000,
-+	ARG_FULL_PERCENT = 10001,
-+	ARG_VALUE_SIZE = 10002,
-+	ARG_USE_CASE = 10003,
-+	ARG_PREALLOCATED = 10004,
-+};
-+
-+static const struct argp_option opts[] = {
-+	{ "max-entries", ARG_MAX_ENTRIES, "MAX_ENTRIES", 0,
-+	  "Set the max entries of hash map (default 16384)" },
-+	{ "full", ARG_FULL_PERCENT, "FULL", 0,
-+	  "Set the full percent of hash map (default 50)" },
-+	{ "value-size", ARG_VALUE_SIZE, "VALUE_SIZE", 0,
-+	  "Set the value size of hash map (default 8)" },
-+	{ "use-case", ARG_USE_CASE, "USE_CASE", 0,
-+	  "Set the use case of hash map: no_op|overwrite|batch_add_batch_del|add_del_on_diff_cpu" },
-+	{ "preallocated", ARG_PREALLOCATED, NULL, 0, "use preallocated hash map" },
-+	{},
-+};
-+
-+static error_t htab_mem_parse_arg(int key, char *arg, struct argp_state *state)
-+{
-+	switch (key) {
-+	case ARG_MAX_ENTRIES:
-+		args.max_entries = strtoul(arg, NULL, 10);
-+		break;
-+	case ARG_FULL_PERCENT:
-+		args.full = strtoul(arg, NULL, 10);
-+		if (!args.full || args.full > 100) {
-+			fprintf(stderr, "invalid full percent %u\n", args.full);
-+			argp_usage(state);
-+		}
-+		break;
-+	case ARG_VALUE_SIZE:
-+		args.value_size = strtoul(arg, NULL, 10);
-+		if (args.value_size > 4096) {
-+			fprintf(stderr, "too big value size %u\n", args.value_size);
-+			argp_usage(state);
-+		}
-+		break;
-+	case ARG_USE_CASE:
-+		args.use_case = strdup(arg);
-+		break;
-+	case ARG_PREALLOCATED:
-+		args.preallocated = true;
-+		break;
-+	default:
-+		return ARGP_ERR_UNKNOWN;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct argp bench_htab_mem_argp = {
-+	.options = opts,
-+	.parser = htab_mem_parse_arg,
-+};
-+
-+static void htab_mem_validate(void)
-+{
-+	if (env.consumer_cnt != 1) {
-+		fprintf(stderr, "htab mem benchmark doesn't support multi-consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static int setup_and_join_cgroup(const char *path)
-+{
-+	int err, fd;
-+
-+	err = setup_cgroup_environment();
-+	if (err) {
-+		fprintf(stderr, "setup cgroup env failed\n");
-+		return -1;
-+	}
-+
-+	err = create_and_get_cgroup(path);
-+	if (err < 0) {
-+		fprintf(stderr, "create cgroup %s failed\n", path);
-+		goto out;
-+	}
-+	fd = err;
-+
-+	err = join_cgroup(path);
-+	if (err) {
-+		fprintf(stderr, "join cgroup %s failed\n", path);
-+		close(fd);
-+		goto out;
-+	}
-+
-+	return fd;
-+out:
-+	cleanup_cgroup_environment();
-+	return -1;
-+}
-+
-+static int htab_mem_bench_init_barriers(void)
-+{
-+	unsigned int i, nr = (env.producer_cnt + 1) / 2;
-+	pthread_barrier_t *barriers;
-+
-+	barriers = calloc(nr, sizeof(*barriers));
-+	if (!barriers)
-+		return -1;
-+
-+	/* Used for synchronization between two threads */
-+	for (i = 0; i < nr; i++)
-+		pthread_barrier_init(&barriers[i], NULL, 2);
-+
-+	ctx.notify = barriers;
-+	return 0;
-+}
-+
-+static void htab_mem_bench_exit_barriers(void)
-+{
-+	unsigned int i, nr;
-+
-+	if (!ctx.notify)
-+		return;
-+
-+	nr = (env.producer_cnt + 1) / 2;
-+	for (i = 0; i < nr; i++)
-+		pthread_barrier_destroy(&ctx.notify[i]);
-+	free(ctx.notify);
-+}
-+
-+static void htab_mem_setup(void)
-+{
-+	struct bpf_program *prog;
-+	struct bpf_map *map;
-+	int err;
-+
-+	setup_libbpf();
-+
-+	err = setup_and_join_cgroup("/htab_mem");
-+	if (err < 0)
-+		exit(1);
-+	ctx.fd = err;
-+
-+	ctx.skel = htab_mem_bench__open();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		goto cleanup;
-+	}
-+
-+	err = htab_mem_bench_init_barriers();
-+	if (err) {
-+		fprintf(stderr, "failed to init barrier\n");
-+		goto cleanup;
-+	}
-+
-+	map = ctx.skel->maps.htab;
-+	bpf_map__set_max_entries(map, args.max_entries);
-+	bpf_map__set_value_size(map, args.value_size);
-+	if (args.preallocated)
-+		bpf_map__set_map_flags(map, bpf_map__map_flags(map) & ~BPF_F_NO_PREALLOC);
-+
-+	if (!strcmp("add_del_on_diff_cpu", args.use_case)) {
-+		/* Do synchronization between addition thread and deletion thread */
-+		ctx.do_notify_wait = true;
-+		/* Use two CPUs to do addition and deletion cooperatively */
-+		ctx.op_factor = 2;
-+	} else {
-+		ctx.op_factor = 1;
-+	}
-+
-+	prog = bpf_object__find_program_by_name(ctx.skel->obj, args.use_case);
-+	if (!prog) {
-+		fprintf(stderr, "no such use-case: %s\n", args.use_case);
-+		fprintf(stderr, "available use case:");
-+		bpf_object__for_each_program(prog, ctx.skel->obj)
-+			fprintf(stderr, " %s", bpf_program__name(prog));
-+		fprintf(stderr, "\n");
-+		goto cleanup;
-+	}
-+	bpf_program__set_autoload(prog, true);
-+
-+	ctx.skel->bss->nr_thread = env.producer_cnt;
-+	ctx.skel->bss->nr_entries = (uint64_t)args.max_entries * args.full / 100;
-+
-+	err = htab_mem_bench__load(ctx.skel);
-+	if (err) {
-+		fprintf(stderr, "failed to load skeleton\n");
-+		goto cleanup;
-+	}
-+	err = htab_mem_bench__attach(ctx.skel);
-+	if (err) {
-+		fprintf(stderr, "failed to attach skeleton\n");
-+		goto cleanup;
-+	}
-+	return;
-+cleanup:
-+	close(ctx.fd);
-+	cleanup_cgroup_environment();
-+	htab_mem_bench_exit_barriers();
-+	htab_mem_bench__destroy(ctx.skel);
-+	exit(1);
-+}
-+
-+static void htab_mem_notify_wait_producer(pthread_barrier_t *notify)
-+{
-+	while (true) {
-+		(void)syscall(__NR_getpgid);
-+		/* Notify for start */
-+		pthread_barrier_wait(notify);
-+		/* Wait for completion */
-+		pthread_barrier_wait(notify);
-+	}
-+}
-+
-+static void htab_mem_wait_notify_producer(pthread_barrier_t *notify)
-+{
-+	while (true) {
-+		/* Wait for start */
-+		pthread_barrier_wait(notify);
-+		(void)syscall(__NR_getpgid);
-+		/* Notify for completion */
-+		pthread_barrier_wait(notify);
-+	}
-+}
-+
-+static void *htab_mem_producer(void *arg)
-+{
-+	pthread_barrier_t *notify;
-+	int seq;
-+
-+	if (!ctx.do_notify_wait) {
-+		while (true)
-+			(void)syscall(__NR_getpgid);
-+		return NULL;
-+	}
-+
-+	seq = (long)arg;
-+	notify = &ctx.notify[seq / 2];
-+	if (seq & 1)
-+		htab_mem_notify_wait_producer(notify);
-+	else
-+		htab_mem_wait_notify_producer(notify);
-+	return NULL;
-+}
-+
-+static void *htab_mem_consumer(void *arg)
-+{
-+	return NULL;
-+}
-+
-+static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
-+{
-+	char buf[32];
-+	ssize_t got;
-+	int fd;
-+
-+	fd = openat(ctx.fd, name, O_RDONLY);
-+	if (fd < 0) {
-+		/* cgroup v1 ? */
-+		fprintf(stderr, "no %s\n", name);
-+		*value = 0;
-+		return;
-+	}
-+
-+	got = read(fd, buf, sizeof(buf) - 1);
-+	if (got <= 0) {
-+		*value = 0;
-+		return;
-+	}
-+	buf[got] = 0;
-+
-+	*value = strtoull(buf, NULL, 0);
-+
-+	close(fd);
-+}
-+
-+static void htab_mem_measure(struct bench_res *res)
-+{
-+	res->hits = atomic_swap(&ctx.skel->bss->loop_cnt, 0) / env.producer_cnt / ctx.op_factor;
-+	htab_mem_read_mem_cgrp_file("memory.current", &res->gp_ct);
-+}
-+
-+static void htab_mem_report_progress(int iter, struct bench_res *res, long delta_ns)
-+{
-+	double loop, mem;
-+
-+	loop = res->hits / 1000.0 / (delta_ns / 1000000000.0);
-+	mem = res->gp_ct / 1048576.0;
-+	printf("Iter %3d (%7.3lfus): ", iter, (delta_ns - 1000000000) / 1000.0);
-+	printf("per-prod-op %7.2lfk/s, memory usage %7.2lfMiB\n", loop, mem);
-+}
-+
-+static void htab_mem_report_final(struct bench_res res[], int res_cnt)
-+{
-+	double mem_mean = 0.0, mem_stddev = 0.0;
-+	double loop_mean = 0.0, loop_stddev = 0.0;
-+	unsigned long peak_mem;
-+	int i;
-+
-+	cleanup_cgroup_environment();
-+
-+	for (i = 0; i < res_cnt; i++) {
-+		loop_mean += res[i].hits / 1000.0 / (0.0 + res_cnt);
-+		mem_mean += res[i].gp_ct / 1048576.0 / (0.0 + res_cnt);
-+	}
-+	if (res_cnt > 1)  {
-+		for (i = 0; i < res_cnt; i++) {
-+			loop_stddev += (loop_mean - res[i].hits / 1000.0) *
-+				       (loop_mean - res[i].hits / 1000.0) /
-+				       (res_cnt - 1.0);
-+			mem_stddev += (mem_mean - res[i].gp_ct / 1048576.0) *
-+				      (mem_mean - res[i].gp_ct / 1048576.0) /
-+				      (res_cnt - 1.0);
-+		}
-+		loop_stddev = sqrt(loop_stddev);
-+		mem_stddev = sqrt(mem_stddev);
-+	}
-+
-+	htab_mem_read_mem_cgrp_file("memory.peak", &peak_mem);
-+	printf("Summary: per-prod-op %7.2lf \u00B1 %7.2lfk/s, memory usage %7.2lf \u00B1 %7.2lfMiB,"
-+	       " peak memory usage %7.2lfMiB\n",
-+	       loop_mean, loop_stddev, mem_mean, mem_stddev, peak_mem / 1048576.0);
-+}
-+
-+const struct bench bench_htab_mem = {
-+	.name = "htab-mem",
-+	.argp = &bench_htab_mem_argp,
-+	.validate = htab_mem_validate,
-+	.setup = htab_mem_setup,
-+	.producer_thread = htab_mem_producer,
-+	.consumer_thread = htab_mem_consumer,
-+	.measure = htab_mem_measure,
-+	.report_progress = htab_mem_report_progress,
-+	.report_final = htab_mem_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh b/tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
-new file mode 100755
-index 000000000000..630c02f859cf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_htab_mem.sh
-@@ -0,0 +1,42 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source ./benchs/run_common.sh
-+
-+set -eufo pipefail
-+
-+htab_mem()
-+{
-+	echo -n "per-prod-op : "
-+	echo -n "$*" | sed -E "s/.* per-prod-op\s+([0-9]+\.[0-9]+ ± [0-9]+\.[0-9]+k\/s).*/\1/"
-+	echo -n -e ", avg mem: "
-+	echo -n "$*" | sed -E "s/.* memory usage\s+([0-9]+\.[0-9]+ ± [0-9]+\.[0-9]+MiB).*/\1/"
-+	echo -n ", peak mem: "
-+	echo "$*" | sed -E "s/.* peak memory usage\s+([0-9]+\.[0-9]+MiB).*/\1/"
-+}
-+
-+summarize_htab_mem()
-+{
-+	local bench="$1"
-+	local summary=$(echo $2 | tail -n1)
-+
-+	printf "%-20s %s\n" "$bench" "$(htab_mem $summary)"
-+}
-+
-+htab_mem_bench()
-+{
-+	local name
-+
-+	for name in no_op overwrite batch_add_batch_del add_del_on_diff_cpu
-+	do
-+		summarize_htab_mem "$name" "$(sudo ./bench htab-mem --use-case $name \
-+			--max-entries 16384 --full 50 -d 10 \
-+			--producers=8 --prod-affinity=0-7 "$@")"
-+	done
-+}
-+
-+header "preallocated"
-+htab_mem_bench "--preallocated"
-+
-+header "normal bpf ma"
-+htab_mem_bench
-diff --git a/tools/testing/selftests/bpf/progs/htab_mem_bench.c b/tools/testing/selftests/bpf/progs/htab_mem_bench.c
-new file mode 100644
-index 000000000000..a1a5981df865
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/htab_mem_bench.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <stdbool.h>
-+#include <errno.h>
-+#include <linux/types.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct update_ctx {
-+	unsigned int from;
-+	unsigned int step;
-+	unsigned int max;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, 4);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} htab SEC(".maps");
-+
-+char _license[] SEC("license") = "GPL";
-+
-+unsigned char zeroed_value[4096];
-+unsigned int nr_entries = 0;
-+unsigned int nr_thread = 0;
-+long loop_cnt = 0;
-+
-+static int noop_htab(unsigned int i, struct update_ctx *ctx)
-+{
-+	if (ctx->from >= ctx->max)
-+		return 1;
-+
-+	ctx->from += ctx->step;
-+	return 0;
-+}
-+
-+static int write_htab(unsigned int i, struct update_ctx *ctx, unsigned int flags)
-+{
-+	if (ctx->from >= ctx->max)
-+		return 1;
-+
-+	bpf_map_update_elem(&htab, &ctx->from, zeroed_value, flags);
-+	ctx->from += ctx->step;
-+
-+	return 0;
-+}
-+
-+static int overwrite_htab(unsigned int i, struct update_ctx *ctx)
-+{
-+	return write_htab(i, ctx, 0);
-+}
-+
-+static int newwrite_htab(unsigned int i, struct update_ctx *ctx)
-+{
-+	return write_htab(i, ctx, BPF_NOEXIST);
-+}
-+
-+static int del_htab(unsigned int i, struct update_ctx *ctx)
-+{
-+	if (ctx->from >= ctx->max)
-+		return 1;
-+
-+	bpf_map_delete_elem(&htab, &ctx->from);
-+	ctx->from += ctx->step;
-+
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_getpgid")
-+int no_op(void *ctx)
-+{
-+	struct update_ctx update;
-+
-+	update.from = bpf_get_smp_processor_id();
-+	update.step = nr_thread;
-+	update.max = nr_entries;
-+	bpf_loop(64, noop_htab, &update, 0);
-+	__sync_fetch_and_add(&loop_cnt, 1);
-+
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_getpgid")
-+int overwrite(void *ctx)
-+{
-+	struct update_ctx update;
-+
-+	update.from = bpf_get_smp_processor_id();
-+	update.step = nr_thread;
-+	update.max = nr_entries;
-+	bpf_loop(64, overwrite_htab, &update, 0);
-+	__sync_fetch_and_add(&loop_cnt, 1);
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_getpgid")
-+int batch_add_batch_del(void *ctx)
-+{
-+	struct update_ctx update;
-+
-+	update.from = bpf_get_smp_processor_id();
-+	update.step = nr_thread;
-+	update.max = nr_entries;
-+	bpf_loop(64, overwrite_htab, &update, 0);
-+
-+	update.from = bpf_get_smp_processor_id();
-+	bpf_loop(64, del_htab, &update, 0);
-+
-+	__sync_fetch_and_add(&loop_cnt, 1);
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_getpgid")
-+int add_del_on_diff_cpu(void *ctx)
-+{
-+	struct update_ctx update;
-+	unsigned int from;
-+
-+	from = bpf_get_smp_processor_id();
-+	update.from = from / 2;
-+	update.step = nr_thread / 2;
-+	update.max = nr_entries;
-+
-+	if (from & 1)
-+		bpf_loop(64, newwrite_htab, &update, 0);
-+	else
-+		bpf_loop(64, del_htab, &update, 0);
-+
-+	__sync_fetch_and_add(&loop_cnt, 1);
-+	return 0;
-+}
--- 
-2.29.2
+>
+> So 150 milliseconds is an OK RCU grace period.  A bit long, but not
+> excessively so.  In contrast, by default in mainline, RCU starts seriously
+> complaining if its grace period is extended beyond 21 *seconds*.  This is
+> when the RCU CPU stall warning will appear.  (Yes, some Android configs
+> are tuning this down to 20 milliseconds, but that is a special hardware
+> and software configuration.)
+>
+> But if you want shorter RCU grace periods, what can you do?
+>
+> 1.	Follow Alexei's good advice on one of your early patches.
+>
+> 2.	As an alternative to scheduling an empty kworker, invoke something
+> 	like rcu_momentary_dyntick_idle() periodically.  Note well that
+> 	it is illegal to invoke this in an RCU read-side critical section,
+> 	with preemption disabled, from idle, ...
+>
+> 3.	In non-preemptible kernels, cond_resched() is a much lighter
+> 	weight alternative to rcu_momentary_dyntick_idle().  (Preemptible
+> 	kernels get the same effect by preempting.  In your case, this
+> 	is also true, but it takes 150 milliseconds.)
+>
+> That should do for a start.  ;-)
+>
+> 							Thanx, Paul
+>
+>> Regards,
+>> Tao
+>>> 							Thanx, Paul
+>>>
+>>>>>>> I don't think so. Let's considering the per-cpu list first. Assume the
+>>>>>>> normal RCU grace period is about 30ms and we are tracing the IO latency
+>>>>>>> of a normal SSD. The iops is about 176K per seconds, so before one RCU
+>>>>>>> GP is passed, we will need to allocate about 176 * 30 = 5.2K elements.
+>>>>>>> For the per-ma list, when the number of CPUs increased, it is easy to
+>>>>>>> make the list contain thousands of elements.
+>>>>>> That would be true only if there were no scheduling events in all of 176K ops.
+>>>>>> Which is not the case.
+>>>>>> I'm not sure why you're saying that RCU GP is 30ms.
+>>>> Because these freed elements will be freed after one RCU GP and in v4
+>>>> there is only one RCU callback per-cpu, so before one RCU GP is expired,
+>>>> these freed elements will be accumulated on the list.
+>>>>>> In CONFIG_PREEMPT_NONE rcu_read_lock/unlock are true nops.
+>>>>>> Every sched event is sort-of implicit rcu_read_lock/unlock.
+>>>>>> Network and block IO doesn't process 176K packets without resched.
+>>>>>> Don't know how block does it, but in networking NAPI will process 64 packets and will yield softirq.
+>>>>>>
+>>>>>> For small size buckets low_watermark=32 and high=96.
+>>>>>> We typically move 32 elements at a time from one list to another.
+>>>>>> A bunch of elements maybe sitting in free_by_rcu and moving them to waiting_for_gp
+>>>>>> is not instant, but once __free_rcu_tasks_trace is called we need to take
+>>>>>> elements from waiting_for_gp one at a time and kfree it one at a time.
+>>>>>> So optimizing the move from free_by_rcu into waiting_for_gp is not worth the code complexity.
+>>>>>>
+>>>>>>> Before I post v5, I want to know the reason why per-bpf-ma list is
+>>>>>>> introduced. Previously, I though it was used to handle the case in which
+>>>>>>> allocation and freeing are done on different CPUs.
+>>>>>> Correct. per-bpf-ma list is necessary to avoid OOM-ing due to slow rcu_tasks_trace GP.
+>>>>>>
+>>>>>>> And as we can see
+>>>>>>> from the benchmark result above and in v3, the performance and the
+>>>>>>> memory usage of v4 for add_del_on_diff_cpu is better than v3.
+>>>>>> bench from patch 2 is invalid. Hence no conclusion can be made.
+>>>>>>
+>>>>>> So far the only bench we can trust and analyze is map_perf_test.
+>>>>>> Please make bench in patch 2 yield the cpu after few updates.
+>>>>>> Earlier I suggested to stick to 10, but since NAPI can do 64 at a time.
+>>>>>> 64 updates is realistic too. A thousand is not.
+>>>> Will do that.
+>>>>
+> .
 
 
