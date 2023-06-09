@@ -1,141 +1,145 @@
-Return-Path: <bpf+bounces-2238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C7272A074
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 18:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B798072A0B8
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 18:56:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E745928153C
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 16:45:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 715642819FB
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 16:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1097F19E70;
-	Fri,  9 Jun 2023 16:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6ABD1C751;
+	Fri,  9 Jun 2023 16:55:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF49A17750
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 16:44:55 +0000 (UTC)
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FCB3A97;
-	Fri,  9 Jun 2023 09:44:40 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b23f04e333so7588725ad.3;
-        Fri, 09 Jun 2023 09:44:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFC91B917
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 16:55:50 +0000 (UTC)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B68030FF
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 09:55:48 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-543b599054dso815101a12.1
+        for <bpf@vger.kernel.org>; Fri, 09 Jun 2023 09:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686329080; x=1688921080;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=EdaYmroOCsHHIxQ/Q7Hjtm846vg4ZSkKlVHycee4hiQ=;
-        b=fGFbD5PSbYF99UQlwiVez/cMM9upAZnvHfzE4RaHFwWfjw17nkaOCvOZpLpPtoQAij
-         xMoQyyojMpceSiBfMVxxKBtqFuAZ1bteNFeokFwvw4xdRiHFeo7p+uSe3Gvnf1zwTSZO
-         yRqJvkSXFzHblv8HanMN2qCueh7KW0d/pggBUjK2bRaOJvPc7Aj/Los949p1Qf6IXibb
-         4FMsBIqiYod1z7PxL/8aUilmdT8U4Lj57DDuYxgvKa7gZJ+6oISrKphYW46Nzxm5ZxXf
-         5dHPIbUsnTcGkjUh7t6nz0IzqyzC0aC0CfANwexff4iDtKpGIVpuEnnY/Oz92YpvXCaR
-         wLZQ==
+        d=google.com; s=20221208; t=1686329748; x=1688921748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JUDu/7DgpcEGYUfH66KF8LpEOa4YLrtNbTWtCaGIav4=;
+        b=ONSRNQw5ZwRQNGUqQHq+j4pU5Ha8C0gKwcZ3tD5oLOjzGBRHgFACfAQprE0Q+TYg/P
+         lf+3dNuqjPAt+6bwiyXizp0lNbypl7beDWmiXlNGIWMkLLAjabVD1wTly667BXz+g/1/
+         L0qmBswoM4J2Qj7ObeKL7y1aiscGksRuGZGH+y0qRi/2Z2Sd22x2JWyc8VPhIiC75xmV
+         um25gWcuJx/L65W+dXsFYQdrBRAaW8fT9PQY1fIL/dI8i3qz+DerYhTj+/L4zpj2zMjx
+         FEriPApZU9uFQzNGhOvbKQRUGKr0Cqa6V3KXZjEuijTtKk53SdH5gRt/Bbqu82iTjBaU
+         oKGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686329080; x=1688921080;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EdaYmroOCsHHIxQ/Q7Hjtm846vg4ZSkKlVHycee4hiQ=;
-        b=A+0mdWmagCOoRyLCpJILbdCCDtWufsT6f6cCIxuIx4mGihhQPH5ifO+UpGDYc57sk2
-         6n6fuu7+49Ow+NiRPTCBLhJCvEFyGxD6vop4QQwaOQKxTDV1s06s08UJE55v5LKwgnNm
-         IKAQl/HRJQJJjyWQl+Pai6Lk8FGbNhgIiBxn6TxNlfbME2UF4CJxJ1M1zwK0CiEs+9a9
-         4HrgcFM70BpbEPbiFYVjmspnHNpZCezNWPej9958NDmKl6FUERx+tj3cLskvdLYH0iMi
-         VMYQcxFRaglTZ8Q+GI2ET+W3XvhkfpuZqB9v9Y5BM8FpTqPYaalmbYYQEfS+/bJqpF02
-         jEEg==
-X-Gm-Message-State: AC+VfDyWN+qo8iEizZJtU2zM7/q/hamEXTRhfADQdz0vZsjpYoTSS14W
-	t6x31RQbohu7zjSb657Zi10=
-X-Google-Smtp-Source: ACHHUZ6l2kj86foQyBHiwjzuw87gKyWlXzVwE8Z1dgEyeSxEIoWlyLrFxaHRW1b7uUEAzA082BypKQ==
-X-Received: by 2002:a17:902:8b81:b0:1b1:9272:55f3 with SMTP id ay1-20020a1709028b8100b001b1927255f3mr1198845plb.66.1686329079895;
-        Fri, 09 Jun 2023 09:44:39 -0700 (PDT)
-Received: from krava (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
-        by smtp.gmail.com with ESMTPSA id p5-20020a170902bd0500b00186a2274382sm3514760pls.76.2023.06.09.09.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 09:44:39 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 9 Jun 2023 09:44:36 -0700
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Jackie Liu <liu.yun@linux.dev>
-Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
- available_filter_functions_addrs
-Message-ID: <ZINW9FqIoja76DRa@krava>
-References: <20230608212613.424070-1-jolsa@kernel.org>
- <CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
- <20230608192748.435a1dbf@gandalf.local.home>
- <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
- <ZILhqvrjeFIPHauy@FVFF77S0Q05N>
+        d=1e100.net; s=20221208; t=1686329748; x=1688921748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JUDu/7DgpcEGYUfH66KF8LpEOa4YLrtNbTWtCaGIav4=;
+        b=kTPzs2a2+8HzLL2Ps99hswRWnOrlFJTnEwjoj/Fhscajc6QwslGrEzqknl13sLBDlj
+         uo8fQEmXpkuq4wpxQYBz4uL6vOXmx1XmodI4VZpz+AncaIKg+5U2ALcnkLCXp+Zsfvtc
+         RSKo8ebBsFOugwXz+750ARh4JrIOJPdtpcg3IhWjWxlCUPEA9XedIcENsWXeJzA/LS9B
+         FYSCkxxmSsNSf/q2zJlkeNS86rtAs04D97MmQrBU97VB/DOXw9igHUgsaP0sXNQ+kvat
+         UYN4wJ16/QN0PnbIArxtjX53O04ZSJOhlWqgT78Uo2qAqQXz4jx4JFdrXtlXSWOcjqDH
+         dPrg==
+X-Gm-Message-State: AC+VfDy2N1Vb3mD0h/hLWrsSzLJotkm3yYT+ZYcWQUWnadP2mFSlQhXE
+	3mvm9ZvOz5sXqv9pzw1C/2AmRi1j6E754n3aP+qvvQ==
+X-Google-Smtp-Source: ACHHUZ6HxN+lrJGAlL2C5V8qEiwPCFNyTuGmy18Ac5XNglz/yS9yLUF2jkuplc7nJeYWFDXq58+6+ZWVXbHGpZ6st18=
+X-Received: by 2002:a17:90a:ca97:b0:256:3191:640f with SMTP id
+ y23-20020a17090aca9700b002563191640fmr6690924pjt.4.1686329747571; Fri, 09 Jun
+ 2023 09:55:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZILhqvrjeFIPHauy@FVFF77S0Q05N>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <CAEf4Bzb2_THiWkqNRnbN5LsOif6+9=GY7LrtEbQf6o24cihhMQ@mail.gmail.com>
+ <20230609093625.727490-1-zhangmingyi5@huawei.com>
+In-Reply-To: <20230609093625.727490-1-zhangmingyi5@huawei.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Fri, 9 Jun 2023 09:55:36 -0700
+Message-ID: <CAKH8qBu0AiB_0SZgU5N8EOmm4=hp5BRe=Yp5PHbyT1ZbRjdeOw@mail.gmail.com>
+Subject: Re: [PATCH] libbpf:fix use empty function pointers in ringbuf_poll
+To: zhangmingyi <zhangmingyi5@huawei.com>
+Cc: andrii.nakryiko@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	edumazet@google.com, hsinweih@uci.edu, jakub@cloudflare.com, 
+	john.fastabend@gmail.com, kongweibin2@huawei.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, liuxin350@huawei.com, netdev@vger.kernel.org, 
+	pabeni@redhat.com, syzbot+49f6cef45247ff249498@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com, wuchangye@huawei.com, xiesongyang@huawei.com, 
+	yanan@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 09, 2023 at 09:24:10AM +0100, Mark Rutland wrote:
-> On Thu, Jun 08, 2023 at 04:55:40PM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jun 8, 2023 at 4:27 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > On Thu, 8 Jun 2023 15:43:03 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > On Thu, Jun 8, 2023 at 2:26 PM Jiri Olsa <jolsa@kernel.org> wrote:
->  
-> > There are BPF tools that allow user to specify regex/glob of kernel
-> > functions to attach to. This regex/glob is checked against
-> > available_filter_functions to check which functions are traceable. All
-> > good. But then also it's important to have corresponding memory
-> > addresses for selected functions (for many reasons, e.g., to have
-> > non-ambiguous and fast attachment by address instead of by name, or
-> > for some post-processing based on captured IP addresses, etc). And
-> > that means that now we need to also parse /proc/kallsyms and
-> > cross-join it with data fetched from available_filter_functions.
-> > 
-> > All this is unnecessary if avalable_filter_functions would just
-> > provide function address in the first place. It's a huge
-> > simplification. And saves memory and CPU.
-> 
-> Do you need the address of the function entry-point or the address of the
-> patch-site within the function? Those can differ, and the rec->ip address won't
-> necessarily equal the address in /proc/kallsyms, so the pointer in
-> /proc/kallsyms won't (always) match the address we could print for the ftrace site.
-> 
-> On arm64, today we can have offsets of +0, +4, and +8, and within a single
-> kernel image different functions can have different offsets. I suspect in
-> future that we may have more potential offsets (e.g. due to changes for HW/SW
-> CFI).
+On Fri, Jun 9, 2023 at 2:38=E2=80=AFAM zhangmingyi <zhangmingyi5@huawei.com=
+> wrote:
+>
+> On Fri, Jun 9, 2023 at 1:39 AM Andrii Nakryiko <andrii.nakryiko@gmail.com=
+> wrote:
+>
+> > On Thu, Jun 8, 2023 at 9:27=E2=80=AFAM Stanislav Fomichev <sdf@google.c=
+om> wrote:
+> > >
+> > > On Thu, Jun 8, 2023 at 6:00=E2=80=AFAM zhangmingyi <zhangmingyi5@huaw=
+ei.com> wrote:
+> > > >
+> > > > On 06/06,Stanislav Fomichev wrote:
+> > > >
+> > > > > On 06/05, Xin Liu wrote:
+> > > > > > From: zhangmingyi <zhangmingyi5@huawei.com>
+> > > > >
+> > > > > > The sample_cb of the ring_buffer__new interface can transfer NU=
+LL. However,
+> > > > > > the system does not check whether sample_cb is NULL during
+> > > > > > ring_buffer__poll, null pointer is used.
+> > > >
+> > > > > What is the point of calling ring_buffer__new with sample_cb =3D=
+=3D NULL?
+> > > >
+> > > > Yes, as you said, passing sample_cb in ring_buffer__new to NULL doe=
+sn't
+> > > > make sense, and few people use it that way, but that doesn't preven=
+t this
+> > > > from being a allowed and supported scenario. And when ring_buffer__=
+poll is
+> > > > called, it leads to a segmentation fault (core dump), which I think=
+ needs
+> > > > to be fixed to ensure the security quality of libbpf.
+> > >
+> > > I dunno. I'd argue that passing a NULL to ring_buffer__new is an API
+> > > misuse. Maybe ring_buffer__new should return -EINVAL instead when
+> > > passed NULL sample_cb? Although, we don't usually have those checks
+> > > for the majority of the arguments in libbpf...
+> >
+> > Right. I'd say we should add a proper doc comment specifying all
+> > arguments and which ones are optional or not. And make it explicit
+> > that callback is not optional. If we start checking every possible
+> > pointer for NULL, libbpf will be littered with NULL checks, I'm not
+> > sure that's good.
+>
+> I agree, we should add a proper doc comment specifying all
+> arguments and which ones are optional or not.
+> However, why does the external interface API in libbpf not verify input
+> parameters or add verification where risky operations may exist?
+> What's more, i think sample_cb=3DNULL is not strictly a mistake or
+> prohibited use, and is meaningless.
 
-so we need that for kprobe_multi bpf link, which is based on fprobe,
-and that uses ftrace_set_filter_ips to setup the ftrace_ops filter
+It's not really customary in C to do it? So maybe you can follow up
+with the update to the doc?
 
-and ftrace_set_filter_ips works fine with ip address being the address
-of the patched instruction (it's matched in ftrace_location)
-
-but right, I did not realize this.. it might cause confusion if people
-don't know it's patch-side addresses..  not sure if there's easy way to
-get real function address out of rec->ip, but it will also get more
-complicated on x86 when IBT is enabled, will check
-
-or we could just use patch-side addresses and reflect that in the file's
-name like 'available_filter_functions_patch_addrs' .. it's already long
-name ;-)
-
-jirka
+The kindergarten is over, you pass NULL you get SIGSEGV :-D
 
