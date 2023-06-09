@@ -1,62 +1,82 @@
-Return-Path: <bpf+bounces-2261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A7572A4BD
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 22:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B11972A4CA
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 22:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C71281A4D
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 20:28:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B652281A5B
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 20:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0313722E5E;
-	Fri,  9 Jun 2023 20:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90A11548C;
+	Fri,  9 Jun 2023 20:38:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507012099E;
-	Fri,  9 Jun 2023 20:28:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2F15C433EF;
-	Fri,  9 Jun 2023 20:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686342512;
-	bh=Gi3i+PvjIL/qableZxxJCIydbSUTQ88b5xQ7zlM9S5g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=S/SkWA5tYgb41gETFY2vAAdAsCMhMTag5XWmq30Rhzu0NzJn6vmARfEZ2qL9Hcrzw
-	 Rdu+E5g4RBrkMLmypTeU+wUfNz617Lx1EBGBWjFrgzHZuLv3c4WDRfiEmotZWO9ytM
-	 uJpt2UbYr+1LZvHlQ/6gZBickKyqto/39b5sZ7sQbp3CZws4nBPPJOF2xk8Sk8sugD
-	 nLC47N8beBuHVqsOlwzcV4/4Rcd6X8Qwyz7k87gM4anyOa/ASe6jZXg82sF3DmHuES
-	 LPsPAR0JK5+DbHF5bkY6A3vDVXbDCedTrcEV+lXxU5XAt1rHzPkWt1W7TTakQikP8X
-	 25tYjRYeY2v/A==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 76093BBE391; Fri,  9 Jun 2023 22:28:29 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>, Timo Beckers <timo@incline.eu>,
- Stanislav Fomichev <sdf@google.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- razor@blackwall.org, john.fastabend@gmail.com, kuba@kernel.org,
- dxu@dxuuu.xyz, joe@cilium.io, davem@davemloft.net, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query
- API for multi-progs
-In-Reply-To: <d0cf9a4f-c111-b594-7a12-84914419789e@iogearbox.net>
-References: <20230607192625.22641-1-daniel@iogearbox.net>
- <20230607192625.22641-2-daniel@iogearbox.net>
- <ZIIOr1zvdRNTFKR7@google.com>
- <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
- <ZIJNlxCX4ksBFFwN@google.com>
- <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
- <ZIJe5Ml6ILFa6tKP@google.com> <87a5x91nr8.fsf@toke.dk>
- <3a315a0d-52dd-7671-f6c1-bb681604c815@iogearbox.net>
- <874jng28xk.fsf@toke.dk> <1a73a1b9-c72a-de81-4fce-7ba4fb6d7900@incline.eu>
- <87sfb0zsok.fsf@toke.dk>
- <d0cf9a4f-c111-b594-7a12-84914419789e@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 09 Jun 2023 22:28:29 +0200
-Message-ID: <87mt18z8gi.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77C7408C9
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 20:38:05 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7917330C8;
+	Fri,  9 Jun 2023 13:38:03 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-650c89c7e4fso2298172b3a.0;
+        Fri, 09 Jun 2023 13:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686343083; x=1688935083;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4QbmTscgL0W4LNSr/7q9vHr3/nK0DxnmRxkiPOyTnLw=;
+        b=UPhpET1va9qipboE/8cau9bR3DIRjMvfr1w4qvTl2rexd1cpITZ+sdPHjkYag7SmZH
+         Sx4jSVMmVPAvwvR7iG0MMjrC3jfUGGFs8EpwgU5Qljm0idreDw6J6xOLB5TxhaNHXV76
+         G5SSCxF3zK/jG2hyCoqawCMCQKAnS5wqX6A+nXHTIGHt3KtUEI5ANpYYsS5fQSNhWoKN
+         JQwjpNsQQCvHpzG4oPJlRF5OzVo7zRKUzM/2MUJnqHac/n+X+qyPlCAByHgsuGfUXxf8
+         7b9XPCwIVZAZRvExJzEdLx7qgSkfIWdUZFBr7qW4P89bOMxKljMNXVgxk3r+7FGQPswz
+         lyGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686343083; x=1688935083;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4QbmTscgL0W4LNSr/7q9vHr3/nK0DxnmRxkiPOyTnLw=;
+        b=Yz0yRFampe4waQRHmU1dUMk60EXi+0vS8MbXaEr2+qKSNzBFrO2KoQcHPkmrVvH121
+         P6wtiv7HsFQI3pVHbQtcseAez5MeOK74IMvq8HT6IYtLTtgQPA5pYSB5FSwQxAPyBZ1I
+         lzqECdTBl9ZIHYUpIFLwgYqINvbd0PPvksjAGpG4KsofP0tp9a2Jxn7R6WIelQaIJ2iA
+         NJFP1xJsR9Xjl0xGmc5TJSvbAxybBysAbb7xjz4lay5g4uDQx7iPUQ2i90jxBNyZIk41
+         g2u49llqeb5ePNBny3UyzsvwoFV1/vFOVGvwSVMFqupoKw/5STMp2aobSp3RLaP8Ywr8
+         h0RQ==
+X-Gm-Message-State: AC+VfDyrYOslfp2cgtBpv0RRmFhl2/KS7B5K8Qj21uC9bnWCcs3FL5BG
+	ppOlBW80vzQuZ7XuxN2ng4Y3D47nkmg=
+X-Google-Smtp-Source: ACHHUZ7FXyMXhhyVc1ZQ6Dw3Um1qtKihPVk19SWQD+nko2L8uExkP/Clrxvh0ZFZydDCAdMQMQ22kQ==
+X-Received: by 2002:a05:6a00:24c9:b0:64d:4412:9923 with SMTP id d9-20020a056a0024c900b0064d44129923mr2899985pfv.3.1686343082568;
+        Fri, 09 Jun 2023 13:38:02 -0700 (PDT)
+Received: from krava (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
+        by smtp.gmail.com with ESMTPSA id p18-20020aa78612000000b006414b2c9efasm3034301pfn.123.2023.06.09.13.38.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jun 2023 13:38:02 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 9 Jun 2023 13:37:59 -0700
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Jackie Liu <liu.yun@linux.dev>
+Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <ZIONp3IDiBe+WdeB@krava>
+References: <20230608212613.424070-1-jolsa@kernel.org>
+ <CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
+ <20230608192748.435a1dbf@gandalf.local.home>
+ <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
+ <ZILhqvrjeFIPHauy@FVFF77S0Q05N>
+ <ZINW9FqIoja76DRa@krava>
+ <CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,292 +84,111 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On Fri, Jun 09, 2023 at 11:29:59AM -0700, Andrii Nakryiko wrote:
+> On Fri, Jun 9, 2023 at 9:44 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Fri, Jun 09, 2023 at 09:24:10AM +0100, Mark Rutland wrote:
+> > > On Thu, Jun 08, 2023 at 04:55:40PM -0700, Andrii Nakryiko wrote:
+> > > > On Thu, Jun 8, 2023 at 4:27 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > > > On Thu, 8 Jun 2023 15:43:03 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > > > > On Thu, Jun 8, 2023 at 2:26 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > > There are BPF tools that allow user to specify regex/glob of kernel
+> > > > functions to attach to. This regex/glob is checked against
+> > > > available_filter_functions to check which functions are traceable. All
+> > > > good. But then also it's important to have corresponding memory
+> > > > addresses for selected functions (for many reasons, e.g., to have
+> > > > non-ambiguous and fast attachment by address instead of by name, or
+> > > > for some post-processing based on captured IP addresses, etc). And
+> > > > that means that now we need to also parse /proc/kallsyms and
+> > > > cross-join it with data fetched from available_filter_functions.
+> > > >
+> > > > All this is unnecessary if avalable_filter_functions would just
+> > > > provide function address in the first place. It's a huge
+> > > > simplification. And saves memory and CPU.
+> > >
+> > > Do you need the address of the function entry-point or the address of the
+> > > patch-site within the function? Those can differ, and the rec->ip address won't
+> > > necessarily equal the address in /proc/kallsyms, so the pointer in
+> > > /proc/kallsyms won't (always) match the address we could print for the ftrace site.
+> > >
+> > > On arm64, today we can have offsets of +0, +4, and +8, and within a single
+> > > kernel image different functions can have different offsets. I suspect in
+> > > future that we may have more potential offsets (e.g. due to changes for HW/SW
+> > > CFI).
+> >
+> > so we need that for kprobe_multi bpf link, which is based on fprobe,
+> > and that uses ftrace_set_filter_ips to setup the ftrace_ops filter
+> >
+> > and ftrace_set_filter_ips works fine with ip address being the address
+> > of the patched instruction (it's matched in ftrace_location)
+> >
+> > but right, I did not realize this.. it might cause confusion if people
+> > don't know it's patch-side addresses..  not sure if there's easy way to
+> > get real function address out of rec->ip, but it will also get more
+> > complicated on x86 when IBT is enabled, will check
+> 
+> ok, sorry, I'm confused. Two questions:
+> 
+> 1. when attaching kprobe_multi, does bpf() syscall expect function
+> address or (func+offset_of_mcount) address? I hope it's the former,
+> just function's address?
 
-> On 6/9/23 3:11 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Timo Beckers <timo@incline.eu> writes:
->>> On 6/9/23 13:04, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> Daniel Borkmann <daniel@iogearbox.net> writes:
-> [...]
->>>>>>>>>>> I'm still not sure whether the hard semantics of first/last is =
-really
->>>>>>>>>>> useful. My worry is that some prog will just use BPF_F_FIRST wh=
-ich
->>>>>>>>>>> would prevent the rest of the users.. (starting with only
->>>>>>>>>>> F_BEFORE/F_AFTER feels 'safer'; we can iterate later on if we r=
-eally
->>>>>>>>>>> need first/laste).
->>>>>>>>>> Without FIRST/LAST some scenarios cannot be guaranteed to be saf=
-ely
->>>>>>>>>> implemented. E.g., if I have some hard audit requirements and I =
-need
->>>>>>>>>> to guarantee that my program runs first and observes each event,=
- I'll
->>>>>>>>>> enforce BPF_F_FIRST when attaching it. And if that attachment fa=
-ils,
->>>>>>>>>> then server setup is broken and my application cannot function.
->>>>>>>>>>
->>>>>>>>>> In a setup where we expect multiple applications to co-exist, it
->>>>>>>>>> should be a rule that no one is using FIRST/LAST (unless it's
->>>>>>>>>> absolutely required). And if someone doesn't comply, then that's=
- a bug
->>>>>>>>>> and has to be reported to application owners.
->>>>>>>>>>
->>>>>>>>>> But it's not up to the kernel to enforce this cooperation by
->>>>>>>>>> disallowing FIRST/LAST semantics, because that semantics is crit=
-ical
->>>>>>>>>> for some applications, IMO.
->>>>>>>>> Maybe that's something that should be done by some other mechanis=
-m?
->>>>>>>>> (and as a follow up, if needed) Something akin to what Toke
->>>>>>>>> mentioned with another program doing sorting or similar.
->>>>>>>> The goal of this API is to avoid needing some extra special progra=
-m to
->>>>>>>> do this sorting
->>>>>>>>
->>>>>>>>> Otherwise, those first/last are just plain simple old priority ba=
-nds;
->>>>>>>>> only we have two now, not u16.
->>>>>>>> I think it's different. FIRST/LAST has to be used judiciously, of
->>>>>>>> course, but when they are needed, they will have no alternative.
->>>>>>>>
->>>>>>>> Also, specifying FIRST + LAST is the way to say "I want my program=
- to
->>>>>>>> be the only one attached". Should we encourage such use cases? No,=
- of
->>>>>>>> course. But I think it's fair  for users to be able to express thi=
-s.
->>>>>>>>
->>>>>>>>> I'm mostly coming from the observability point: imagine I have my=
- fancy
->>>>>>>>> tc_ingress_tcpdump program that I want to attach as a first progr=
-am to debug
->>>>>>>>> some issue, but it won't work because there is already a 'first' =
-program
->>>>>>>>> installed.. Or the assumption that I'd do F_REPLACE | F_FIRST ?
->>>>>>>> If your production setup requires that some important program has =
-to
->>>>>>>> be FIRST, then yeah, your "let me debug something" program shouldn=
-'t
->>>>>>>> interfere with it (assuming that FIRST requirement is a real
->>>>>>>> requirement and not someone just thinking they need to be first; b=
-ut
->>>>>>>> that's up to user space to decide). Maybe the solution for you in =
-that
->>>>>>>> case would be freplace program installed on top of that stubborn F=
-IRST
->>>>>>>> program? And if we are talking about local debugging and developme=
-nt,
->>>>>>>> then you are a sysadmin and you should be able to force-detach that
->>>>>>>> program that is getting in the way.
->>>>>>> I'm not really concerned about our production environment. It's pre=
-tty
->>>>>>> controlled and restricted and I'm pretty certain we can avoid doing
->>>>>>> something stupid. Probably the same for your env.
->>>>>>>
->>>>>>> I'm mostly fantasizing about upstream world where different users d=
-on't
->>>>>>> know about each other and start doing stupid things like F_FIRST wh=
-ere
->>>>>>> they don't really have to be first. It's that "used judiciously" pa=
-rt
->>>>>>> that I'm a bit skeptical about :-D
->>>>> But in the end how is that different from just attaching themselves b=
-lindly
->>>>> into the first position (e.g. with before and relative_fd as 0 or the=
- fd/id
->>>>> of the current first program) - same, they don't really have to be fi=
-rst.
->>>>> How would that not result in doing something stupid? ;) To add to And=
-rii's
->>>>> earlier DDoS mitigation example ... think of K8s environment: one pro=
-ject
->>>>> is implementing DDoS mitigation with BPF, another one wants to monito=
-r/
->>>>> sample traffic to user space with BPF. Both install as first position=
- by
->>>>> default (before + 0). In K8s, there is no built-in Pod dependency man=
-agement
->>>>> so you cannot guarantee whether Pod A comes up before Pod B. So you'l=
-l end
->>>>> up in a situation where sometimes the monitor runs before the DDoS mi=
-tigation
->>>>> and on some other nodes it's vice versa. The other case where this ge=
-ts
->>>>> broken (assuming a node where we get first the DDoS mitigation, then =
-the
->>>>> monitoring) is when you need to upgrade one of the Pods: monitoring P=
-od
->>>>> gets a new stable update and is being re-rolled out, then it inserts
->>>>> itself before the DDoS mitigation mechanism, potentially causing outa=
-ge.
->>>>> With the first/last mechanism these two situations cannot happen. The=
- DDoS
->>>>> mitigation software uses first and the monitoring uses before + 0, th=
-en no
->>>>> matter the re-rollouts or the ordering in which Pods come up, it's al=
-ways
->>>>> at the expected/correct location.
->>>> I'm not disputing that these kinds of policy issues need to be solved
->>>> somehow. But adding the first/last pinning as part of the kernel hooks
->>>> doesn't solve the policy problem, it just hard-codes a solution for one
->>>> particular instance of the problem.
->>>>
->>>> Taking your example from above, what happens when someone wants to
->>>> deploy those tools in reverse order? Say the monitoring tool counts
->>>> packets and someone wants to also count the DDOS traffic; but the DDOS
->>>> protection tool has decided for itself (by setting the FIRST) flag that
->>>> it can *only* run as the first program, so there is no way to achieve
->>>> this without modifying the application itself.
->>>>
->>>>>>> Because even with this new ordering scheme, there still should be
->>>>>>> some entity to do relative ordering (systemd-style, maybe CNI?).
->>>>>>> And if it does the ordering, I don't really see why we need
->>>>>>> F_FIRST/F_LAST.
->>>>>> I can see I'm a bit late to the party, but FWIW I agree with this:
->>>>>> FIRST/LAST will definitely be abused if we add it. It also seems to =
-me
->>> It's in the prisoners' best interest to collaborate (and they do! see
->>> https://www.youtube.com/watch?v=3DYK7GyEJdJGo), except the current
->>> prio system is limiting and turns out to be really fragile in practice.
->>>
->>> If your tool wants to attach to tc prio 1 and there's already a prog
->>> attached,
->>> the most reliable option is basically to blindly replace the attachment,
->>> unless
->>> you have the possibility to inspect the attached prog and try to figure
->>> out if it
->>> belongs to another tool. This is fragile in and of itself, and only
->>> possible on
->>> more recent kernels iirc.
->>>
->>> With tcx, Cilium could make an initial attachment using F_FIRST and sim=
-ply
->>> update a link at well-known path on subsequent startups. If there's no
->>> existing
->>> link, and F_FIRST is taken, bail out with an error. The owner of the
->>> existing
->>> F_FIRST program can be queried and logged; we know for sure the program
->>> doesn't belong to Cilium, and we have no interest in detaching it.
->>=20
->> That's conflating the benefit of F_FIRST with that of bpf_link, though;
->> you can have the replace thing without the exclusive locking.
->>=20
->>>>> See above on the issues w/o the first/last. How would you work around=
- them
->>>>> in practice so they cannot happen?
->>>> By having an ordering configuration that is deterministic. Enforced by
->>>> the system-wide management daemon by whichever mechanism suits it. We
->>>> could implement a minimal reference policy agent that just reads a
->>>> config file in /etc somewhere, and *that* could implement FIRST/LAST
->>>> semantics.
->>> I think this particular perspective is what's deadlocking this discussi=
-on.
->>> To me, it looks like distros and hyperscalers are in the same boat with
->>> regards to the possibility of coordination between tools. Distros are o=
-nly
->>> responsible for the tools they package themselves, and hyperscalers
->>> run a tight ship with mostly in-house tooling already. When it comes to
->>> projects out in the wild, that all goes out the window.
->>=20
->> Not really: from the distro PoV we absolutely care about arbitrary
->> combinations of programs with different authors. Which is why I'm
->> arguing against putting anything into the kernel where the first program
->> to come along can just grab a hook and lock everyone out.
->>=20
->> My assumption is basically this: A system administrator installs
->> packages A and B that both use the TC hook. The developers of A and B
->> have never heard about each other. It should be possible for that admin
->> to run A and B in whichever order they like, without making any changes
->> to A and B themselves.
->
-> I would come with the point of view of the K8s cluster operator or platfo=
-rm
-> engineer, if you will. Someone deeply familiar with K8s, but not necessar=
-ily
-> knowing about kernel internals. I know my org needs to run container A and
-> container B, so I'll deploy the daemon-sets for both and they get deployed
-> into my cluster. That platform engineer might have never heard of BPF or =
-might
-> not even know that container A or container B ships software with BPF. As
-> mentioned, K8s itself has no concept of Pod ordering as its paradigm is t=
-hat
-> everything is loosely coupled. We are now expecting from that person to m=
-ake
-> a concrete decision about some BPF kernel internals on various hooks in w=
-hich
-> order they should be executed given if they don't then the system becomes
-> non-deterministic. I think that is quite a big burden and ask to understa=
-nd.
-> Eventually that person will say that he/she cannot make this technical de=
-cision
-> and that only one of the two containers can be deployed. I agree with you=
- that
-> there should be an option for a technically versed person to be able to c=
-hange
-> ordering to avoid lock out, but I don't think it will fly asking users to=
- come
-> up on their own with policies of BPF software in the wild ... similar as =
-you
-> probably don't want having to deal with writing systemd unit files for so=
-ftware
-> xyz before you can use your laptop. It's a burden. You expect this to mag=
-ically
-> work by default and only if needed for good reasons to make custom change=
-s.
-> Just the one difference is that the latter ships with the OS (a priori kn=
-own /
-> tight-ship analogy).
+it can be both, the fprobe/ftrace filter setup will take care of looking
+up and translating the provided address to the patch-side address
 
-See my reply to Andrii: I'm not actually against having an API where an
-application can say "please always run me first", I'm against the kernel
-making a hard (UAPI) promise to honour that request.
+> 
+> 2. If rec->ip is not function's address, can we somehow adjust the
+> value to be a function address before printing it?
 
->>> To circle back to the observability case: in offline discussions with
->>> Daniel,
->>> I've mentioned the need for 'shadow' progs that only collect data and
->>> pump it to user space, attached at specific points in the chain (still
->>> within tcx!).
->>> Their retcodes would be ignored, and context modifications would be
->>> rejected, so attaching multiple to the same hook can always succeed,
->>> much like cgroup multi. Consider the following:
->>>
->>> To attach a shadow prog before F_FIRST, a caller could use F_BEFORE |
->>> F_FIRST |
->>> F_RDONLY. Attaching between first and the 'relative' section: F_AFTER |
->>> F_FIRST |
->>> F_RDONLY, etc. The rdonly flag could even be made redundant if a new pr=
-og/
->>> attach type is added for progs like these.
->>>
->>> This is still perfectly possible to implement on top of Daniel's
->>> proposal, and
->>> to me looks like it could address many of the concerns around ordering =
-of
->>> progs I've seen in this thread, many mention data exfiltration.
->>=20
->> It may well be that semantics like this will turn out to be enough. Or
->> it may not (I personally believe we'll need something more expressive
->> still, and where the system admin has the option to override things; but
->> I may turn out to be wrong). Ultimately, my main point wrt this series
->> is that this kind of policy decision can be added later, and it's better
->> to merge the TCX infrastructure without it, instead of locking ourselves
->> into an API that is way too limited today. TCX (and in-kernel XDP
->> multiprog) has value without it, so let's merge that first and iterate
->> on the policy aspects.
->
-> That's okay and I'll do that for v3 to move on.
+that's tricky because on x86 with IBT we would need to read the first
+instruction and check if it's endbr to get the real address, like we
+do in get_entry_ip:
 
-Sounds good.
+	#ifdef CONFIG_X86_KERNEL_IBT
+	static unsigned long get_entry_ip(unsigned long fentry_ip)
+	{
+		u32 instr;
 
-> I feel we might repeat the same discussion with no good solution for K8s
-> users once we come back to this point again.
+		/* Being extra safe in here in case entry ip is on the page-edge. */
+		if (get_kernel_nofault(instr, (u32 *) fentry_ip - 1))
+			return fentry_ip;
+		if (is_endbr(instr))
+			fentry_ip -= ENDBR_INSN_SIZE;
+		return fentry_ip;
+	}
+	#else
+	#define get_entry_ip(fentry_ip) fentry_ip
+	#endif
 
-FWIW I do understand that we need to solve the problem for k8s as well,
-and I'll try to get some people from RH who are working more with the
-k8s side of things to look at this as well...
 
--Toke
+I'm not familiar with arm implementation, so I'm not sure if there's
+a way to do this
+
+but in any case Steven wants to keep the patch-side address:
+  https://lore.kernel.org/bpf/CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com/T/#m19a97bbc8f8236ad869c9f8ad0cc7dbce0722d92
+
+jirka
+
+> 
+> In short, I think it's confusing to have addresses with +0 or +4 or +8
+> offsets. It would be great if we can just keep it +0 at the interface
+> level (when attach and in available_filter_functions_addrs).
+> 
+> >
+> > or we could just use patch-side addresses and reflect that in the file's
+> > name like 'available_filter_functions_patch_addrs' .. it's already long
+> > name ;-)
+> >
+> > jirka
 
