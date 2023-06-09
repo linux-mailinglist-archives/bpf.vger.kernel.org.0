@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-2199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AA5728EF7
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 06:33:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3761728EF8
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 06:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9A841C20E7A
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 04:33:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B0AD1C210D8
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 04:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B903D15B3;
-	Fri,  9 Jun 2023 04:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F1215BA;
+	Fri,  9 Jun 2023 04:32:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DED15AC
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 04:32:50 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E770730F1
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 21:32:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-ba8cf175f5bso5496780276.0
-        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 21:32:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2FB15AC
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 04:32:53 +0000 (UTC)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A51230E5
+	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 21:32:51 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-bb397723627so1725478276.1
+        for <bpf@vger.kernel.org>; Thu, 08 Jun 2023 21:32:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686285168; x=1688877168;
+        d=google.com; s=20221208; t=1686285170; x=1688877170;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K6oRCwXAzzSsLjoJyJ6r/zwtsDdAY1vGn92p8AsarWw=;
-        b=d3Ee3fZGjYLP9WKSxWYiUnxOI87dxEFHLN/O93FklZhWhUuqFJopThs5OZFaLkIT3S
-         1bqM0b3JeAPs9mkYlvvsfcfS0lSoEFKdnMraKt1V1MlcyKjCpTknWMSOJ/JVVKQYx7w1
-         j+AusEe4RTPVjaW9M3g8WiuGVqNFOnDOMefH0Masn3q36p1LqU4GJ137K7JLU0lfvlpL
-         hkdaYSwiYoot+doO26no9dfhijb6eAAVq5/QQ7RTQACaCrVIWhiF05SXiz7RJlA3VRQ9
-         ArULx0sp6irqsg1xvqc4ySH1XJNxvpjY3nfPdcTXLf5wdGVW0kiYwquQiGfAQQniL04Z
-         MPqQ==
+        bh=CDlEfBbym2UKOdEUfGTXbXJzggygNVLpeRONZtrZ238=;
+        b=Pg+v1RbQTeV1POXuMbh477bKylMdkWdHTGsodk4EDgoVrGTXB+9d1pkhl9ukNceJmA
+         FksFheCI47sJraF7JPBk9V8uBY7xCCbVkNAl7rhr5C8D0/lnathSsti96EREsm9cppsb
+         pj6eUxHTL0jvRSwzbzCwkCxeP7RB+lUn1J6iowaRI2p2Llu1JbVSjeuw2N0Uvglz/KOv
+         Nq+5hDen91mprjzq+aDBmSVSgotOvMugb5b3r1itTJiZHp96ujZGFGSluiZXF488Swfk
+         i4p/SITRNaZ3HHhn7cgGGI10j2A6YH7SdU6kd8kTbGqh9FZw4rYcIW+nF7DcYebAMp2E
+         69jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686285168; x=1688877168;
+        d=1e100.net; s=20221208; t=1686285170; x=1688877170;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K6oRCwXAzzSsLjoJyJ6r/zwtsDdAY1vGn92p8AsarWw=;
-        b=bTF97Lak2uF2ZR9tqtlJ3NhBRKmxRxp9973ljQ75zX5qYs+FJCjimZ1Hmm7EOB+SKg
-         QyFGtklAHavBwCGybReSwajQt5P+W84DOA9G/EwXILYf/QaXBFi1zYx+d1bs934bK9so
-         vKlIw+ACI6g1WDMEK0AOTQ2jP7C7qC5rnuGyt/4wAJcIM68llTEIaUdYJHeBqTsC0nGc
-         A1kx6yauvFThCI4gL9A5e72chgBVqFc6864BcmIvA76SjkGP6H6EHUAPrv6giX+DnUPI
-         OMNDUc8kXe0KThtvp44TdFbLmXvYgGxna2jCqUN6SmxXeUhTkHLBgk+mQUJJiSSHWrNr
-         yjXg==
-X-Gm-Message-State: AC+VfDzBy2ySxEdmKCVb5kZUJGRKeQWYMHMivyVUj57dQnl+dK8FBUkV
-	3XeqaWWTbQH8gLR9zA5yqr24PVKLzt76
-X-Google-Smtp-Source: ACHHUZ7NpFHAyW1Yt9it4EMsBQDl+J1uSYI5e37+q8nQ0EnzyyQgQaKSAChKKHuTCQ4Ny3F0KwVBh4s9CI0/
+        bh=CDlEfBbym2UKOdEUfGTXbXJzggygNVLpeRONZtrZ238=;
+        b=MZuNytgzFDPIhVYcX9WNiWjawgNjVQ8c30F2T1wCQmSqlefH33KGoAPa4g9lws4E2Q
+         rai8lMGKNVc/RDyQwqMvzzdR5NFhXx4hdTLyrid9fwbHZxR0OhI3N/iOtHXb/xFtKA+g
+         xe33c5sZkaMwOTuzFcWTu/BV9gapa+6CVvHBH+2SYBL1/wiiCbHMGHEw50NCDWzSUKnQ
+         PBcnUct1ypDoFlKaHD4LA8BixZH79w/yow0tKR1ykuJwJSi8hwhHp8g4qeYkFS9V5mSG
+         bgMNfamxqvVxy6zj8lYeyoWDh06LWJVbtT46T0GinykKrLmd7QBPICLhVgXXGeLYP873
+         NL8w==
+X-Gm-Message-State: AC+VfDwMifPUflZHbWOEIEH1ZaNV90AZXw1Czc/WfargBx9urdQR4gdD
+	5xA5gBS3LE6VAjLmyEQf3QeLz1bJ0ltQ
+X-Google-Smtp-Source: ACHHUZ4uF6M9FeGQA6l0x9G2cxJ5uV2EoAKqpKuH9AtgS+wd2HjYaLsgrqwd5uVhIWH+AKWyfwyfocyOJGkH
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:c3e5:ebc6:61e5:c73f])
- (user=irogers job=sendgmr) by 2002:a25:8c07:0:b0:bad:2b06:da3 with SMTP id
- k7-20020a258c07000000b00bad2b060da3mr860012ybl.3.1686285168206; Thu, 08 Jun
- 2023 21:32:48 -0700 (PDT)
-Date: Thu,  8 Jun 2023 21:32:37 -0700
+ (user=irogers job=sendgmr) by 2002:a25:fc24:0:b0:ba8:6148:4300 with SMTP id
+ v36-20020a25fc24000000b00ba861484300mr65057ybd.6.1686285170622; Thu, 08 Jun
+ 2023 21:32:50 -0700 (PDT)
+Date: Thu,  8 Jun 2023 21:32:38 -0700
 In-Reply-To: <20230609043240.43890-1-irogers@google.com>
-Message-Id: <20230609043240.43890-2-irogers@google.com>
+Message-Id: <20230609043240.43890-3-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230609043240.43890-1-irogers@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Subject: [PATCH v3 1/4] perf build: Add ability to build with a generated vmlinux.h
+Subject: [PATCH v3 2/4] perf bpf: Move the declaration of struct rq
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -82,92 +82,51 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Commit a887466562b4 ("perf bpf skels: Stop using vmlinux.h generated
-from BTF, use subset of used structs + CO-RE") made it so that
-vmlinux.h was uncondtionally included from
-tools/perf/util/vmlinux.h. This change reverts part of that change (so
-that vmlinux.h is once again generated) and makes it so that the
-vmlinux.h used at build time is selected from the VMLINUX_H
-variable. By default the VMLINUX_H variable is set to the vmlinux.h
-added in change a887466562b4, but if GEN_VMLINUX_H=1 is passed on the
-build command line then the previous generation behavior kicks in.
+struct rq is defined in vmlinux.h when the vmlinux.h is generated,
+this causes a redefinition failure if it is declared in
+lock_contention.bpf.c. Move the definition to vmlinux.h for
+consistency with the generated version.
 
-The build with GEN_VMLINUX_H=1 currently fails with:
-```
-util/bpf_skel/lock_contention.bpf.c:419:8: error: redefinition of 'rq'
-struct rq {};
-       ^
-/tmp/perf/util/bpf_skel/.tmp/../vmlinux.h:45630:8: note: previous definition is here
-struct rq {
-       ^
-1 error generated.
-```
-
+Fixes: 760ebc45746b ("perf lock contention: Add empty 'struct rq' to satisfy libbpf 'runqueue' type verification")
 Signed-off-by: Ian Rogers <irogers@google.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/perf/Makefile.config                       |  4 ++++
- tools/perf/Makefile.perf                         | 16 +++++++++++++++-
- tools/perf/util/bpf_skel/.gitignore              |  1 +
- tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h |  0
- 4 files changed, 20 insertions(+), 1 deletion(-)
- rename tools/perf/util/bpf_skel/{ => vmlinux}/vmlinux.h (100%)
+ tools/perf/util/bpf_skel/lock_contention.bpf.c |  2 --
+ tools/perf/util/bpf_skel/vmlinux/vmlinux.h     | 10 ++++++++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index a794d9eca93d..08d4e7eaa721 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -680,6 +680,10 @@ ifdef BUILD_BPF_SKEL
-   CFLAGS += -DHAVE_BPF_SKEL
- endif
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 1d48226ae75d..8d3cfbb3cc65 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -416,8 +416,6 @@ int contention_end(u64 *ctx)
+ 	return 0;
+ }
  
-+ifndef GEN_VMLINUX_H
-+  VMLINUX_H=$(src-perf)/util/bpf_skel/vmlinux/vmlinux.h
-+endif
+-struct rq {};
+-
+ extern struct rq runqueues __ksym;
+ 
+ struct rq___old {
+diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+index c7ed51b0c1ef..ab84a6e1da5e 100644
+--- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
++++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+@@ -171,4 +171,14 @@ struct bpf_perf_event_data_kern {
+ 	struct perf_sample_data *data;
+ 	struct perf_event	*event;
+ } __attribute__((preserve_access_index));
 +
- dwarf-post-unwind := 1
- dwarf-post-unwind-text := BUG
- 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index f48794816d82..f1840af195c0 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1080,7 +1080,21 @@ $(BPFTOOL): | $(SKEL_TMP_OUT)
- 	$(Q)CFLAGS= $(MAKE) -C ../bpf/bpftool \
- 		OUTPUT=$(SKEL_TMP_OUT)/ bootstrap
- 
--$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_TMP_OUT)
-+VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
-+		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
-+		     ../../vmlinux					\
-+		     /sys/kernel/btf/vmlinux				\
-+		     /boot/vmlinux-$(shell uname -r)
-+VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
++/*
++ * If 'struct rq' isn't defined for lock_contention.bpf.c, for the sake of
++ * rq___old and rq___new, then the type for the 'runqueue' variable ends up
++ * being a forward declaration (BTF_KIND_FWD) while the kernel has it defined
++ * (BTF_KIND_STRUCT). The definition appears in vmlinux.h rather than
++ * lock_contention.bpf.c for consistency with a generated vmlinux.h.
++ */
++struct rq {};
 +
-+$(SKEL_OUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL)
-+ifeq ($(VMLINUX_H),)
-+	$(QUIET_GEN)$(BPFTOOL) btf dump file $< format c > $@
-+else
-+	$(Q)cp "$(VMLINUX_H)" $@
-+endif
-+
-+$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) $(SKEL_OUT)/vmlinux.h | $(SKEL_TMP_OUT)
- 	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -Wall -Werror $(BPF_INCLUDE) $(TOOLS_UAPI_INCLUDE) \
- 	  -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@
- 
-diff --git a/tools/perf/util/bpf_skel/.gitignore b/tools/perf/util/bpf_skel/.gitignore
-index 7a1c832825de..cd01455e1b53 100644
---- a/tools/perf/util/bpf_skel/.gitignore
-+++ b/tools/perf/util/bpf_skel/.gitignore
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- .tmp
- *.skel.h
-+vmlinux.h
-diff --git a/tools/perf/util/bpf_skel/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
-similarity index 100%
-rename from tools/perf/util/bpf_skel/vmlinux.h
-rename to tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+ #endif // __VMLINUX_H
 -- 
 2.41.0.162.gfafddb0af9-goog
 
