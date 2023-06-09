@@ -1,167 +1,208 @@
-Return-Path: <bpf+bounces-2223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7441972963C
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 12:04:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331787297B7
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 13:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FAA6281916
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 10:04:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6E31C21129
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 11:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 242461640F;
-	Fri,  9 Jun 2023 10:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD9613AE2;
+	Fri,  9 Jun 2023 11:04:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D071640A
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 10:02:47 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451BE421A
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 03:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1686304964;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q9KEcNHQNL0heWM2/AbZS5PCqRXLyTBij/nK3rNCY6c=;
-	b=hMch9RWldFWYhmQspYlnRWgvP8/LGaLuRF1dl6GY1NDjxyWNu4tWGvew1OtMg2J6vIitMs
-	tLoAXhI3JzqdFsKl50kkPkn0X8LGCiBYM1Yz+wM9iYvZX+fxY3wdIVPKRWwmVIf9P8kENJ
-	mROJ1OSwQmXLzICzbrbqA0/Uwq5TZDI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-274-aAfw7x-ZPUWuB_Kb0AVAug-1; Fri, 09 Jun 2023 06:02:39 -0400
-X-MC-Unique: aAfw7x-ZPUWuB_Kb0AVAug-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AB5E680120A;
-	Fri,  9 Jun 2023 10:02:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.51])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 582EB145B965;
-	Fri,  9 Jun 2023 10:02:35 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	David Ahern <dsahern@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next 4/6] tcp_bpf: Make tcp_bpf_sendpage() go through tcp_bpf_sendmsg(MSG_SPLICE_PAGES)
-Date: Fri,  9 Jun 2023 11:02:19 +0100
-Message-ID: <20230609100221.2620633-5-dhowells@redhat.com>
-In-Reply-To: <20230609100221.2620633-1-dhowells@redhat.com>
-References: <20230609100221.2620633-1-dhowells@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7DF8472;
+	Fri,  9 Jun 2023 11:04:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59FAAC433EF;
+	Fri,  9 Jun 2023 11:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686308682;
+	bh=/ZBBK71Gao1Rfr2HDkukRbqhfbCsu1SOwj+6rfheKQI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=UDIK8aMzRT4Wdb7zPQkr6Vg4Fw8ighrX8fbeCrR+lFGV0Qv5Odmwji/lbwnGNYoG1
+	 q1k5ZlYRi9P4dLA5mGfpn3IuLZgCB1Hg9yx2YhZE5/56e8+Hk3mtBa6+YoV2Bnu0bT
+	 N17RmKu68g7WGmj6cMWg4z9KJuzjbFAick0NvcxUJTnicvbCX1scaB9BROxvXuYX/F
+	 CZKIVJALad38LdoWpZSr8b68MUh1ntfvpJIGMiKeHqEFxRBUK+JhsEtSTkJjQAMGbJ
+	 9BSLVQW4IT4wAiPYWYfjzinwiDvpxb7l2oV5u7e9O8BH5a/LE9XvBFUt6irrBFSt/6
+	 7qd0gSzZboIpQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id EA4F5BBE2E0; Fri,  9 Jun 2023 13:04:39 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev
+ <sdf@google.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ razor@blackwall.org, john.fastabend@gmail.com, kuba@kernel.org,
+ dxu@dxuuu.xyz, joe@cilium.io, davem@davemloft.net, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query
+ API for multi-progs
+In-Reply-To: <3a315a0d-52dd-7671-f6c1-bb681604c815@iogearbox.net>
+References: <20230607192625.22641-1-daniel@iogearbox.net>
+ <20230607192625.22641-2-daniel@iogearbox.net>
+ <ZIIOr1zvdRNTFKR7@google.com>
+ <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
+ <ZIJNlxCX4ksBFFwN@google.com>
+ <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
+ <ZIJe5Ml6ILFa6tKP@google.com> <87a5x91nr8.fsf@toke.dk>
+ <3a315a0d-52dd-7671-f6c1-bb681604c815@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 09 Jun 2023 13:04:39 +0200
+Message-ID: <874jng28xk.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain
 
-Make tcp_bpf_sendpage() a wrapper around tcp_bpf_sendmsg(MSG_SPLICE_PAGES)
-rather than a loop calling tcp_sendpage().  sendpage() will be removed in
-the future.
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: John Fastabend <john.fastabend@gmail.com>
-cc: Jakub Sitnicki <jakub@cloudflare.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: bpf@vger.kernel.org
-cc: netdev@vger.kernel.org
----
- net/ipv4/tcp_bpf.c | 49 +++++++++-------------------------------------
- 1 file changed, 9 insertions(+), 40 deletions(-)
+>>>>>>> I'm still not sure whether the hard semantics of first/last is really
+>>>>>>> useful. My worry is that some prog will just use BPF_F_FIRST which
+>>>>>>> would prevent the rest of the users.. (starting with only
+>>>>>>> F_BEFORE/F_AFTER feels 'safer'; we can iterate later on if we really
+>>>>>>> need first/laste).
+>>>>>>
+>>>>>> Without FIRST/LAST some scenarios cannot be guaranteed to be safely
+>>>>>> implemented. E.g., if I have some hard audit requirements and I need
+>>>>>> to guarantee that my program runs first and observes each event, I'll
+>>>>>> enforce BPF_F_FIRST when attaching it. And if that attachment fails,
+>>>>>> then server setup is broken and my application cannot function.
+>>>>>>
+>>>>>> In a setup where we expect multiple applications to co-exist, it
+>>>>>> should be a rule that no one is using FIRST/LAST (unless it's
+>>>>>> absolutely required). And if someone doesn't comply, then that's a bug
+>>>>>> and has to be reported to application owners.
+>>>>>>
+>>>>>> But it's not up to the kernel to enforce this cooperation by
+>>>>>> disallowing FIRST/LAST semantics, because that semantics is critical
+>>>>>> for some applications, IMO.
+>>>>>
+>>>>> Maybe that's something that should be done by some other mechanism?
+>>>>> (and as a follow up, if needed) Something akin to what Toke
+>>>>> mentioned with another program doing sorting or similar.
+>>>>
+>>>> The goal of this API is to avoid needing some extra special program to
+>>>> do this sorting
+>>>>
+>>>>> Otherwise, those first/last are just plain simple old priority bands;
+>>>>> only we have two now, not u16.
+>>>>
+>>>> I think it's different. FIRST/LAST has to be used judiciously, of
+>>>> course, but when they are needed, they will have no alternative.
+>>>>
+>>>> Also, specifying FIRST + LAST is the way to say "I want my program to
+>>>> be the only one attached". Should we encourage such use cases? No, of
+>>>> course. But I think it's fair  for users to be able to express this.
+>>>>
+>>>>> I'm mostly coming from the observability point: imagine I have my fancy
+>>>>> tc_ingress_tcpdump program that I want to attach as a first program to debug
+>>>>> some issue, but it won't work because there is already a 'first' program
+>>>>> installed.. Or the assumption that I'd do F_REPLACE | F_FIRST ?
+>>>>
+>>>> If your production setup requires that some important program has to
+>>>> be FIRST, then yeah, your "let me debug something" program shouldn't
+>>>> interfere with it (assuming that FIRST requirement is a real
+>>>> requirement and not someone just thinking they need to be first; but
+>>>> that's up to user space to decide). Maybe the solution for you in that
+>>>> case would be freplace program installed on top of that stubborn FIRST
+>>>> program? And if we are talking about local debugging and development,
+>>>> then you are a sysadmin and you should be able to force-detach that
+>>>> program that is getting in the way.
+>>>
+>>> I'm not really concerned about our production environment. It's pretty
+>>> controlled and restricted and I'm pretty certain we can avoid doing
+>>> something stupid. Probably the same for your env.
+>>>
+>>> I'm mostly fantasizing about upstream world where different users don't
+>>> know about each other and start doing stupid things like F_FIRST where
+>>> they don't really have to be first. It's that "used judiciously" part
+>>> that I'm a bit skeptical about :-D
+>
+> But in the end how is that different from just attaching themselves blindly
+> into the first position (e.g. with before and relative_fd as 0 or the fd/id
+> of the current first program) - same, they don't really have to be first.
+> How would that not result in doing something stupid? ;) To add to Andrii's
+> earlier DDoS mitigation example ... think of K8s environment: one project
+> is implementing DDoS mitigation with BPF, another one wants to monitor/
+> sample traffic to user space with BPF. Both install as first position by
+> default (before + 0). In K8s, there is no built-in Pod dependency management
+> so you cannot guarantee whether Pod A comes up before Pod B. So you'll end
+> up in a situation where sometimes the monitor runs before the DDoS mitigation
+> and on some other nodes it's vice versa. The other case where this gets
+> broken (assuming a node where we get first the DDoS mitigation, then the
+> monitoring) is when you need to upgrade one of the Pods: monitoring Pod
+> gets a new stable update and is being re-rolled out, then it inserts
+> itself before the DDoS mitigation mechanism, potentially causing outage.
+> With the first/last mechanism these two situations cannot happen. The DDoS
+> mitigation software uses first and the monitoring uses before + 0, then no
+> matter the re-rollouts or the ordering in which Pods come up, it's always
+> at the expected/correct location.
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index e75023ea052f..5a84053ac62b 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -568,49 +568,18 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- static int tcp_bpf_sendpage(struct sock *sk, struct page *page, int offset,
- 			    size_t size, int flags)
- {
--	struct sk_msg tmp, *msg = NULL;
--	int err = 0, copied = 0;
--	struct sk_psock *psock;
--	bool enospc = false;
--
--	psock = sk_psock_get(sk);
--	if (unlikely(!psock))
--		return tcp_sendpage(sk, page, offset, size, flags);
-+	struct bio_vec bvec;
-+	struct msghdr msg = {
-+		.msg_flags = flags | MSG_SPLICE_PAGES,
-+	};
- 
--	lock_sock(sk);
--	if (psock->cork) {
--		msg = psock->cork;
--	} else {
--		msg = &tmp;
--		sk_msg_init(msg);
--	}
-+	bvec_set_page(&bvec, page, size, offset);
-+	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
- 
--	/* Catch case where ring is full and sendpage is stalled. */
--	if (unlikely(sk_msg_full(msg)))
--		goto out_err;
--
--	sk_msg_page_add(msg, page, size, offset);
--	sk_mem_charge(sk, size);
--	copied = size;
--	if (sk_msg_full(msg))
--		enospc = true;
--	if (psock->cork_bytes) {
--		if (size > psock->cork_bytes)
--			psock->cork_bytes = 0;
--		else
--			psock->cork_bytes -= size;
--		if (psock->cork_bytes && !enospc)
--			goto out_err;
--		/* All cork bytes are accounted, rerun the prog. */
--		psock->eval = __SK_NONE;
--		psock->cork_bytes = 0;
--	}
-+	if (flags & MSG_SENDPAGE_NOTLAST)
-+		msg.msg_flags |= MSG_MORE;
- 
--	err = tcp_bpf_send_verdict(sk, psock, msg, &copied, flags);
--out_err:
--	release_sock(sk);
--	sk_psock_put(sk, psock);
--	return copied ? copied : err;
-+	return tcp_bpf_sendmsg(sk, &msg, size);
- }
- 
- enum {
+I'm not disputing that these kinds of policy issues need to be solved
+somehow. But adding the first/last pinning as part of the kernel hooks
+doesn't solve the policy problem, it just hard-codes a solution for one
+particular instance of the problem.
 
+Taking your example from above, what happens when someone wants to
+deploy those tools in reverse order? Say the monitoring tool counts
+packets and someone wants to also count the DDOS traffic; but the DDOS
+protection tool has decided for itself (by setting the FIRST) flag that
+it can *only* run as the first program, so there is no way to achieve
+this without modifying the application itself.
+
+>>> Because even with this new ordering scheme, there still should be
+>>> some entity to do relative ordering (systemd-style, maybe CNI?).
+>>> And if it does the ordering, I don't really see why we need
+>>> F_FIRST/F_LAST.
+>> 
+>> I can see I'm a bit late to the party, but FWIW I agree with this:
+>> FIRST/LAST will definitely be abused if we add it. It also seems to me
+>
+> See above on the issues w/o the first/last. How would you work around them
+> in practice so they cannot happen?
+
+By having an ordering configuration that is deterministic. Enforced by
+the system-wide management daemon by whichever mechanism suits it. We
+could implement a minimal reference policy agent that just reads a
+config file in /etc somewhere, and *that* could implement FIRST/LAST
+semantics.
+
+>> to be policy in the kernel, which would be much better handled in
+>> userspace like we do for so many other things. So we should rather
+>> expose a hook to allow userspace to set the policy, as we've discussed
+>> before; I definitely think we should add that at some point! Although
+>> obviously it doesn't have to be part of this series...
+>
+> Imo, it would be better if we could avoid that.. it feels like we're
+> trying to shoot sparrows with cannon, e.g. when this API gets reused
+> for other attach hooks, then for each of them you need yet another
+> policy program.
+
+Or a single one that understands multiple program types. Sharing the
+multi-prog implementation is helpful here.
+
+> I don't think that's a good user experience, and I presume this is
+> then single-user program, thus you'll run into the same race in the
+> end - whichever management daemon or application gets to install this
+> policy program first wins. This is potentially just shifting the same
+> issue one level higher, imo.
+
+Sure, we're shifting the problem one level higher, i.e., out of the
+kernel. That's the point: this is better solved in userspace, so
+different environments can solve it according to their needs :)
+
+I'm not against having one policy agent on the system, I just don't
+think the kernel should hard-code one particular solution to the policy
+problem. Much better to merge this without it, and then iterate on
+different options (and happy to help with this!), instead of locking the
+UAPI into a single solution straight away.
+
+-Toke
 
