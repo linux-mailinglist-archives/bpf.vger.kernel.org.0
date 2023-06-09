@@ -1,93 +1,209 @@
-Return-Path: <bpf+bounces-2241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6B372A102
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 19:13:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BCF572A1F1
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 20:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D74A62819C3
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 17:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65C8A1C21151
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 18:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788461C76E;
-	Fri,  9 Jun 2023 17:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFE5209B2;
+	Fri,  9 Jun 2023 18:16:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44A7171B4
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 17:12:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184B2C433EF;
-	Fri,  9 Jun 2023 17:12:54 +0000 (UTC)
-Date: Fri, 9 Jun 2023 13:12:53 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, Andrii Nakryiko
- <andrii.nakryiko@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Jackie Liu
- <liu.yun@linux.dev>
-Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
- available_filter_functions_addrs
-Message-ID: <20230609131253.0d67e746@gandalf.local.home>
-In-Reply-To: <ZINW9FqIoja76DRa@krava>
-References: <20230608212613.424070-1-jolsa@kernel.org>
-	<CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
-	<20230608192748.435a1dbf@gandalf.local.home>
-	<CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
-	<ZILhqvrjeFIPHauy@FVFF77S0Q05N>
-	<ZINW9FqIoja76DRa@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E9F209A8
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 18:16:06 +0000 (UTC)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DA535A9;
+	Fri,  9 Jun 2023 11:15:32 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b1adf27823so23697641fa.2;
+        Fri, 09 Jun 2023 11:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686334530; x=1688926530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cjni4d3UMj1znH7uhH7utbW9YPqd4ueWaeLPtTPh3wY=;
+        b=OB8fokvltk+wBSHhCvaF2w42HaAb0n47rWuoa9s8ArbiQZeVG++WwLE+0o4GUK5270
+         6SvbsFcdkPHkBnuQJ0vDHcAeI8/NXfD7zcERvnM3HlCWyV84R4geQ5zTnaM9GwnIvvb9
+         d/E719YsGqlgTEpaf0lgjRoyYNcpxEh/OHSI2GRWEXBWyzJNun0HL4kl0WARAPpMr+MT
+         jb6i4IlJnOJyVWF8kJso8KS9eJSLOYrC0kGRA05ZZJGEddCn//h+uL1Yc4RshfQWBIlc
+         R6uksC73UK2ge3Cga6yR1qMSIK3kWZ17ibd+6UIgjSGBzPeKVScAEfznl87zx66GDQDf
+         ejtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686334530; x=1688926530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cjni4d3UMj1znH7uhH7utbW9YPqd4ueWaeLPtTPh3wY=;
+        b=OVFBjMP7af00prR1NlFly/vHDBgRikW4UgEl0cWJS2x3d/DvUJWVXGJk+2yCZ37rmp
+         AWYyDeHQDZIcMGNADhwahqIH+DKL1XrtUD//VX+OLIOPoor4ZWIeyNZtC5jNRsBC6gHu
+         A2ZPt8I80b0Tt1BD87ou9xFdmqYLGduRenzhAjODUsnfKsBPVbgwu8PC0kX68ptRvM1D
+         YKnkfVmF4UtWmQ5Gs6qMGFtcM8pLdLC/zoUo3CwlyaLVyRX5pYHFdI6gJDblDcgcH+6w
+         kezWBcjxVFGt/MSScah7wlXUpU5v3bcqgZi2EB2CNmcRBR7fmCxd12j4io8thVejQXhd
+         XgWw==
+X-Gm-Message-State: AC+VfDy6U4HEn9Hx3fp61sBFe+m5EYkMOY6reXNkUDbjLClP0JXLPm1I
+	rYqepgZ0FwJYI4grfNcBQEui417csVcpmvrb+M8=
+X-Google-Smtp-Source: ACHHUZ6RtEPqFERBttErWzMg11zUQtRHZj2x4PNuSQfcx45XA7jymugK/ta25HLDUZ7HmaxAgw4Ypp7oVutQejx8Jqw=
+X-Received: by 2002:a2e:924d:0:b0:2b1:a89a:5f2b with SMTP id
+ v13-20020a2e924d000000b002b1a89a5f2bmr1648988ljg.2.1686334530025; Fri, 09 Jun
+ 2023 11:15:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1686268304.git.kjlx@templeofstupid.com> <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
+In-Reply-To: <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 9 Jun 2023 11:15:18 -0700
+Message-ID: <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: add a test for subprogram extables
+To: Krister Johansen <kjlx@templeofstupid.com>, Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, 9 Jun 2023 09:44:36 -0700
-Jiri Olsa <olsajiri@gmail.com> wrote:
+On Thu, Jun 8, 2023 at 5:11=E2=80=AFPM Krister Johansen <kjlx@templeofstupi=
+d.com> wrote:
+>
+> In certain situations a program with subprograms may have a NULL
+> extable entry.  This should not happen, and when it does, it turns a
+> single trap into multiple.  Add a test case for further debugging and to
+> prevent regressions.  N.b: without any other patches this can panic or
+> oops a kernel.
+>
+> Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+> ---
+>  .../bpf/prog_tests/subprogs_extable.c         | 31 +++++++++++++
+>  .../bpf/progs/test_subprogs_extable.c         | 46 +++++++++++++++++++
+>  2 files changed, 77 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/subprogs_extab=
+le.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subprogs_extab=
+le.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c b/=
+tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> new file mode 100644
+> index 000000000000..2201988274a4
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> @@ -0,0 +1,31 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <test_progs.h>
+> +#include "test_subprogs_extable.skel.h"
+> +
+> +void test_subprogs_extable(void)
+> +{
+> +       const int READ_SZ =3D 456;
+> +       struct test_subprogs_extable *skel;
+> +       int err;
+> +
+> +       skel =3D test_subprogs_extable__open();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +
+> +       err =3D test_subprogs_extable__load(skel);
+> +       if (!ASSERT_OK(err, "skel_load"))
+> +               goto cleanup;
+> +
+> +       err =3D test_subprogs_extable__attach(skel);
+> +       if (!ASSERT_OK(err, "skel_attach"))
+> +               goto cleanup;
+> +
+> +       /* trigger tracepoint */
+> +       ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
+> +
+> +       test_subprogs_extable__detach(skel);
+> +
+> +cleanup:
+> +       test_subprogs_extable__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_subprogs_extable.c b/=
+tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> new file mode 100644
+> index 000000000000..c3ff66bf4cbe
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> @@ -0,0 +1,46 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 8);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +} test_array SEC(".maps");
+> +
+> +static __u64 test_cb(struct bpf_map *map, __u32 *key, __u64 *val, void *=
+data)
+> +{
+> +       return 1;
+> +}
+> +
+> +SEC("fexit/bpf_testmod_return_ptr")
+> +int BPF_PROG(handle_fexit_ret_subprogs, int arg, struct file *ret)
+> +{
+> +       *(volatile long *)ret;
+> +       *(volatile int *)&ret->f_mode;
+> +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> +       return 0;
+> +}
+> +
+> +SEC("fexit/bpf_testmod_return_ptr")
+> +int BPF_PROG(handle_fexit_ret_subprogs2, int arg, struct file *ret)
+> +{
+> +       *(volatile long *)ret;
+> +       *(volatile int *)&ret->f_mode;
+> +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> +       return 0;
+> +}
+> +
+> +SEC("fexit/bpf_testmod_return_ptr")
+> +int BPF_PROG(handle_fexit_ret_subprogs3, int arg, struct file *ret)
+> +{
+> +       *(volatile long *)ret;
+> +       *(volatile int *)&ret->f_mode;
+> +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> +       return 0;
+> +}
 
-> On Fri, Jun 09, 2023 at 09:24:10AM +0100, Mark Rutland wrote:
-> > 
-> > Do you need the address of the function entry-point or the address of the
-> > patch-site within the function? Those can differ, and the rec->ip address won't
-> > necessarily equal the address in /proc/kallsyms, so the pointer in
-> > /proc/kallsyms won't (always) match the address we could print for the ftrace site.
-> > 
-> > On arm64, today we can have offsets of +0, +4, and +8, and within a single
-> > kernel image different functions can have different offsets. I suspect in
-> > future that we may have more potential offsets (e.g. due to changes for HW/SW
-> > CFI).  
-> 
-> so we need that for kprobe_multi bpf link, which is based on fprobe,
-> and that uses ftrace_set_filter_ips to setup the ftrace_ops filter
-> 
-> and ftrace_set_filter_ips works fine with ip address being the address
-> of the patched instruction (it's matched in ftrace_location)
+What is the point of attaching 3 the same progs to the same hook?
+One would be enough to test it, no?
 
-Yes, exactly. And it's off with the old "mcount" way of doing things too.
+In other news...
+Looks like this test is triggering a bug on s390.
 
-> 
-> but right, I did not realize this.. it might cause confusion if people
-> don't know it's patch-side addresses..  not sure if there's easy way to
-> get real function address out of rec->ip, but it will also get more
-> complicated on x86 when IBT is enabled, will check
-> 
-> or we could just use patch-side addresses and reflect that in the file's
-> name like 'available_filter_functions_patch_addrs' .. it's already long
-> name ;-)
+Ilya,
+please take a look:
+https://github.com/kernel-patches/bpf/actions/runs/5216942096/jobs/94164047=
+80
 
-No!  "available_filter_function_addrs" is enough to know that it's not
-kallsyms. It's the filtered function address, which is enough description.
-If people don't RTFM, then too bad ;-)
-
-You can use ftrace_location() that takes an instruction pointer, and will
-return the rec->ip of that function as long as it lands in between the
-function's kallsyms start and end values.
-
--- Steve
+bpf_prog_78c0d4c618ed2df7_handle_fexit_ret_subprogs3
+is crashing the kernel.
+A bug in extable logic on s390?
 
