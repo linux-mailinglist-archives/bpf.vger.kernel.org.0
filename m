@@ -1,194 +1,162 @@
-Return-Path: <bpf+bounces-2262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B11972A4CA
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 22:38:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4F472A50F
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 23:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B652281A5B
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 20:38:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE6AF1C21132
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 21:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90A11548C;
-	Fri,  9 Jun 2023 20:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7181E51A;
+	Fri,  9 Jun 2023 21:01:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77C7408C9
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 20:38:05 +0000 (UTC)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7917330C8;
-	Fri,  9 Jun 2023 13:38:03 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-650c89c7e4fso2298172b3a.0;
-        Fri, 09 Jun 2023 13:38:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAB21DDDC
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 21:01:57 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC17211C
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 14:01:55 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b1b3836392so25023341fa.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jun 2023 14:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686343083; x=1688935083;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4QbmTscgL0W4LNSr/7q9vHr3/nK0DxnmRxkiPOyTnLw=;
-        b=UPhpET1va9qipboE/8cau9bR3DIRjMvfr1w4qvTl2rexd1cpITZ+sdPHjkYag7SmZH
-         Sx4jSVMmVPAvwvR7iG0MMjrC3jfUGGFs8EpwgU5Qljm0idreDw6J6xOLB5TxhaNHXV76
-         G5SSCxF3zK/jG2hyCoqawCMCQKAnS5wqX6A+nXHTIGHt3KtUEI5ANpYYsS5fQSNhWoKN
-         JQwjpNsQQCvHpzG4oPJlRF5OzVo7zRKUzM/2MUJnqHac/n+X+qyPlCAByHgsuGfUXxf8
-         7b9XPCwIVZAZRvExJzEdLx7qgSkfIWdUZFBr7qW4P89bOMxKljMNXVgxk3r+7FGQPswz
-         lyGw==
+        d=gmail.com; s=20221208; t=1686344513; x=1688936513;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+kTWDB11Xhwdtupcfaoj/2xsxK0Pqljws5x5mWL1Pg4=;
+        b=FmQskKdmPfgxH5dXVHFQO37ALxKC89tRTBjKDQo/FOehMyvBG+94HADFSFIdGT8EJB
+         O5h1Colhwaq/e+WaIPdN0UOAx7/PVNxkm2qatVSWhiAxlG/0jnPA4Ei9SDZO3eTnI3sD
+         t22lW3h+IQZ4UKZOHRT1792EmbHa47m2/U589/HIQBALrCehyNa1yaruG9LTjdOj+n6h
+         QyQDQ6eq0u1WrSawNv6PLNaf0ojqxYwxS3rrNIQN6a+PTlmf7BqQr9DugrPBd7G4xuS7
+         HGe2YzF0THkbT4NvH/AgE45bEDGv4p6a7Qp1GlWg99Jw+V5oZkdQ+cCSWtrjULNzyNWc
+         oHBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686343083; x=1688935083;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4QbmTscgL0W4LNSr/7q9vHr3/nK0DxnmRxkiPOyTnLw=;
-        b=Yz0yRFampe4waQRHmU1dUMk60EXi+0vS8MbXaEr2+qKSNzBFrO2KoQcHPkmrVvH121
-         P6wtiv7HsFQI3pVHbQtcseAez5MeOK74IMvq8HT6IYtLTtgQPA5pYSB5FSwQxAPyBZ1I
-         lzqECdTBl9ZIHYUpIFLwgYqINvbd0PPvksjAGpG4KsofP0tp9a2Jxn7R6WIelQaIJ2iA
-         NJFP1xJsR9Xjl0xGmc5TJSvbAxybBysAbb7xjz4lay5g4uDQx7iPUQ2i90jxBNyZIk41
-         g2u49llqeb5ePNBny3UyzsvwoFV1/vFOVGvwSVMFqupoKw/5STMp2aobSp3RLaP8Ywr8
-         h0RQ==
-X-Gm-Message-State: AC+VfDyrYOslfp2cgtBpv0RRmFhl2/KS7B5K8Qj21uC9bnWCcs3FL5BG
-	ppOlBW80vzQuZ7XuxN2ng4Y3D47nkmg=
-X-Google-Smtp-Source: ACHHUZ7FXyMXhhyVc1ZQ6Dw3Um1qtKihPVk19SWQD+nko2L8uExkP/Clrxvh0ZFZydDCAdMQMQ22kQ==
-X-Received: by 2002:a05:6a00:24c9:b0:64d:4412:9923 with SMTP id d9-20020a056a0024c900b0064d44129923mr2899985pfv.3.1686343082568;
-        Fri, 09 Jun 2023 13:38:02 -0700 (PDT)
-Received: from krava (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
-        by smtp.gmail.com with ESMTPSA id p18-20020aa78612000000b006414b2c9efasm3034301pfn.123.2023.06.09.13.38.01
+        d=1e100.net; s=20221208; t=1686344513; x=1688936513;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+kTWDB11Xhwdtupcfaoj/2xsxK0Pqljws5x5mWL1Pg4=;
+        b=J+IuKGE4JTnfAn5oOtTCO4TYMBjNUIKbFjXrmwwEYV/CikjJ0tVUW8ovPz566whoa1
+         YnXUJqCxxTH86U8CZKAwZXVG7m6qlDybwEQNzLRiEf37NxdUp2LPQ4vgPNfdWM/VVt1Y
+         jNnsBHdw6Fxv3YZTt6a4rypRU/SmgYVQDbVYp/5t0F+VKg1SYDGp9UHrL2S4D5oh3WZY
+         7jMfgnjxOjHM88YTdvDnvbE/hd8kBkl5vU/SspRtU7YUJ9nN/t+AA1sh7uTIi2eLZDkT
+         XDWjRpfALT2s9m3uSzUscU1Vg0SeSPQv2RWwn2TqCMd42ugdVJCosK3qAqTfnh6cG5Wg
+         Wf2g==
+X-Gm-Message-State: AC+VfDyw13qOvOwG+nYq40Tu95X+g+yGnNSRxJwsK59isZpVtsEK0lS9
+	j/9SuSLN2jF6IApreWLPf/lHMVYipK4=
+X-Google-Smtp-Source: ACHHUZ5WT2pgIbVe1jIXXR1WMm9ix/ZlzkFccNjmgZGqGJ8OBdNpfPtSddTsVd/WFkhhoqWI/NNHmQ==
+X-Received: by 2002:a2e:b0c3:0:b0:2b1:d34d:4e08 with SMTP id g3-20020a2eb0c3000000b002b1d34d4e08mr1815ljl.6.1686344513356;
+        Fri, 09 Jun 2023 14:01:53 -0700 (PDT)
+Received: from bigfoot.. (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id x1-20020a2e9dc1000000b002a8bc2fb3cesm521732ljj.115.2023.06.09.14.01.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 13:38:02 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 9 Jun 2023 13:37:59 -0700
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Jackie Liu <liu.yun@linux.dev>
-Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
- available_filter_functions_addrs
-Message-ID: <ZIONp3IDiBe+WdeB@krava>
-References: <20230608212613.424070-1-jolsa@kernel.org>
- <CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
- <20230608192748.435a1dbf@gandalf.local.home>
- <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
- <ZILhqvrjeFIPHauy@FVFF77S0Q05N>
- <ZINW9FqIoja76DRa@krava>
- <CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com>
+        Fri, 09 Jun 2023 14:01:52 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yhs@fb.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v4 0/4] verify scalar ids mapping in regsafe()
+Date: Sat, 10 Jun 2023 00:01:39 +0300
+Message-Id: <20230609210143.2625430-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 09, 2023 at 11:29:59AM -0700, Andrii Nakryiko wrote:
-> On Fri, Jun 9, 2023 at 9:44 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Fri, Jun 09, 2023 at 09:24:10AM +0100, Mark Rutland wrote:
-> > > On Thu, Jun 08, 2023 at 04:55:40PM -0700, Andrii Nakryiko wrote:
-> > > > On Thu, Jun 8, 2023 at 4:27 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > > > On Thu, 8 Jun 2023 15:43:03 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > > > On Thu, Jun 8, 2023 at 2:26 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > > There are BPF tools that allow user to specify regex/glob of kernel
-> > > > functions to attach to. This regex/glob is checked against
-> > > > available_filter_functions to check which functions are traceable. All
-> > > > good. But then also it's important to have corresponding memory
-> > > > addresses for selected functions (for many reasons, e.g., to have
-> > > > non-ambiguous and fast attachment by address instead of by name, or
-> > > > for some post-processing based on captured IP addresses, etc). And
-> > > > that means that now we need to also parse /proc/kallsyms and
-> > > > cross-join it with data fetched from available_filter_functions.
-> > > >
-> > > > All this is unnecessary if avalable_filter_functions would just
-> > > > provide function address in the first place. It's a huge
-> > > > simplification. And saves memory and CPU.
-> > >
-> > > Do you need the address of the function entry-point or the address of the
-> > > patch-site within the function? Those can differ, and the rec->ip address won't
-> > > necessarily equal the address in /proc/kallsyms, so the pointer in
-> > > /proc/kallsyms won't (always) match the address we could print for the ftrace site.
-> > >
-> > > On arm64, today we can have offsets of +0, +4, and +8, and within a single
-> > > kernel image different functions can have different offsets. I suspect in
-> > > future that we may have more potential offsets (e.g. due to changes for HW/SW
-> > > CFI).
-> >
-> > so we need that for kprobe_multi bpf link, which is based on fprobe,
-> > and that uses ftrace_set_filter_ips to setup the ftrace_ops filter
-> >
-> > and ftrace_set_filter_ips works fine with ip address being the address
-> > of the patched instruction (it's matched in ftrace_location)
-> >
-> > but right, I did not realize this.. it might cause confusion if people
-> > don't know it's patch-side addresses..  not sure if there's easy way to
-> > get real function address out of rec->ip, but it will also get more
-> > complicated on x86 when IBT is enabled, will check
-> 
-> ok, sorry, I'm confused. Two questions:
-> 
-> 1. when attaching kprobe_multi, does bpf() syscall expect function
-> address or (func+offset_of_mcount) address? I hope it's the former,
-> just function's address?
+Update regsafe() to use check_ids() for scalar values.
+Otherwise the following unsafe pattern is accepted by verifier:
 
-it can be both, the fprobe/ftrace filter setup will take care of looking
-up and translating the provided address to the patch-side address
+  1: r9 = ... some pointer with range X ...
+  2: r6 = ... unbound scalar ID=a ...
+  3: r7 = ... unbound scalar ID=b ...
+  4: if (r6 > r7) goto +1
+  5: r6 = r7
+  6: if (r6 > X) goto ...
+  --- checkpoint ---
+  7: r9 += r7
+  8: *(u64 *)r9 = Y
 
-> 
-> 2. If rec->ip is not function's address, can we somehow adjust the
-> value to be a function address before printing it?
+This example is unsafe because not all execution paths verify r7 range.
+Because of the jump at (4) the verifier would arrive at (6) in two states:
+I.  r6{.id=b}, r7{.id=b} via path 1-6;
+II. r6{.id=a}, r7{.id=b} via path 1-4, 6.
 
-that's tricky because on x86 with IBT we would need to read the first
-instruction and check if it's endbr to get the real address, like we
-do in get_entry_ip:
+Currently regsafe() does not call check_ids() for scalar registers,
+thus from POV of regsafe() states (I) and (II) are identical.
 
-	#ifdef CONFIG_X86_KERNEL_IBT
-	static unsigned long get_entry_ip(unsigned long fentry_ip)
-	{
-		u32 instr;
+The change is split in two parts:
+- patches #1,2: update for mark_chain_precision() to propagate
+  precision marks through scalar IDs.
+- patches #3,4: update for regsafe() to use a special version of
+  check_ids() for precise scalar values.
 
-		/* Being extra safe in here in case entry ip is on the page-edge. */
-		if (get_kernel_nofault(instr, (u32 *) fentry_ip - 1))
-			return fentry_ip;
-		if (is_endbr(instr))
-			fentry_ip -= ENDBR_INSN_SIZE;
-		return fentry_ip;
-	}
-	#else
-	#define get_entry_ip(fentry_ip) fentry_ip
-	#endif
+Changelog:
+- V3 -> V4:
+  - check_ids() in regsafe() is replaced by check_scalar_ids(),
+    as discussed with Andrii in [3],
+    Note: I did not transfer Andrii's ack for patch #3 from V3 because
+          of the changes to the algorithm.
+  - reg_id_scratch is renamed to idset_scratch;
+  - mark_precise_scalar_ids() is modified to propagate error from
+    idset_push();
+  - test cases adjusted according to feedback from Andrii for V3.
+- V2 -> V3:
+  - u32_hashset for IDs used for range transfer is removed;
+  - mark_chain_precision() is updated as discussed with Andrii in [2].
+- V1 -> v2:
+  - 'rold->precise' and 'rold->id' checks are dropped as unsafe
+    (thanks to discussion with Yonghong);
+  - patches #3,4 adding tracking of ids used for range transfer in
+    order to mitigate performance impact.
+- RFC -> V1:
+  - Function verifier.c:mark_equal_scalars_as_read() is dropped,
+    as it was an incorrect fix for problem solved by commit [3].
+  - check_ids() is called only for precise scalar values.
+  - Test case updated to use inline assembly.
 
+[V1]  https://lore.kernel.org/bpf/20230526184126.3104040-1-eddyz87@gmail.com/
+[V2]  https://lore.kernel.org/bpf/20230530172739.447290-1-eddyz87@gmail.com/T/
+[V3]  https://lore.kernel.org/bpf/20230606222411.1820404-1-eddyz87@gmail.com/T/
+[RFC] https://lore.kernel.org/bpf/20221128163442.280187-1-eddyz87@gmail.com/
+[1]   https://gist.github.com/eddyz87/a32ea7e62a27d3c201117c9a39ab4286
+[2]   https://lore.kernel.org/bpf/20230530172739.447290-1-eddyz87@gmail.com/T/#mc21009dcd8574b195c1860a98014bb037f16f450
+[3]   https://lore.kernel.org/bpf/20230606222411.1820404-1-eddyz87@gmail.com/T/#m89da8eeb2fa8c9ca1202c5d0b6660e1f72e45e04
 
-I'm not familiar with arm implementation, so I'm not sure if there's
-a way to do this
+Eduard Zingerman (4):
+  bpf: use scalar ids in mark_chain_precision()
+  selftests/bpf: check if mark_chain_precision() follows scalar ids
+  bpf: verify scalar ids mapping in regsafe() using check_ids()
+  selftests/bpf: verify that check_ids() is used for scalars in
+    regsafe()
 
-but in any case Steven wants to keep the patch-side address:
-  https://lore.kernel.org/bpf/CAEf4BzbgsLOoLKyscq6S95QeehVoAzOnQ=xmsFz8dfEUAnhObw@mail.gmail.com/T/#m19a97bbc8f8236ad869c9f8ad0cc7dbce0722d92
+ include/linux/bpf_verifier.h                  |  11 +-
+ kernel/bpf/verifier.c                         | 192 ++++-
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_scalar_ids.c | 657 ++++++++++++++++++
+ .../testing/selftests/bpf/verifier/precise.c  |   8 +-
+ 5 files changed, 860 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
 
-jirka
+-- 
+2.40.1
 
-> 
-> In short, I think it's confusing to have addresses with +0 or +4 or +8
-> offsets. It would be great if we can just keep it +0 at the interface
-> level (when attach and in available_filter_functions_addrs).
-> 
-> >
-> > or we could just use patch-side addresses and reflect that in the file's
-> > name like 'available_filter_functions_patch_addrs' .. it's already long
-> > name ;-)
-> >
-> > jirka
 
