@@ -1,223 +1,185 @@
-Return-Path: <bpf+bounces-2185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543AC728C4F
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 02:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0F9728C4A
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 02:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89BFE1C21014
-	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 00:17:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F3411C20F0C
+	for <lists+bpf@lfdr.de>; Fri,  9 Jun 2023 00:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28DD7E6;
-	Fri,  9 Jun 2023 00:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91567E5;
+	Fri,  9 Jun 2023 00:14:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE2064A
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 00:17:14 +0000 (UTC)
-Received: from cheetah.elm.relay.mailchannels.net (cheetah.elm.relay.mailchannels.net [23.83.212.34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC292D74
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:17:12 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 1BDE78C15E5
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 00:11:34 +0000 (UTC)
-Received: from pdx1-sub0-mail-a313.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id A0E088C1FC7
-	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 00:11:33 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686269493; a=rsa-sha256;
-	cv=none;
-	b=YsFS06Bk6O6EB34MDIoYaeqJIM26iMwj55XvRBKGB55ajDP88yv5hGuPR9KH0sPJ0/x/xH
-	WW32R226swQDRKU5X6kXCBsM62rv/AHFPhXDNOMljRHUQ8dh2clMAfZq+rUafZlxgRAzJi
-	bHu0D2yqtD77F4dLcwTqdPTGynU+bZ92ds6jk4fK3L5alV3FLtY1as8oa94W9OlsEJKaz2
-	IqCsP0OGDQJdiwgPtRInqaa/5/swbRfnZuptTcdVcscm+fCieGwwz0kf/msm0ZiBgV1ioV
-	KGcCyEu55Zg0LKOnDoMI1TbHigxqGBYqXIH0B6mrGgIaJd6E7iF/2T1nF9pVuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1686269493;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=F8KPdDJs/fafqK8befrWeYqM6/tlnupScz2H0Ba6c8I=;
-	b=pNBIg1SVrp5ApxMJi3cXhWmLWWa1EQRWfsTW/B6A/bLcACJO91o2KoZD34ZQtGLOnVEyda
-	ozetTw8AJbAySBEBgo2hizecLOplJebFXS5q5ywlF2BEVm99TmwiQC3vLnQFImAr7RAZkx
-	gjwBgNAS0QNbeI8PTHNt4suaks45ag3MUl+uRTmG+tsnrXVUkKskb0FzDN0rX5T3f+PAba
-	KwR1QTtTFPXJtXZZd7dNQ/bnglO+SwutT5nZBE79LaJTmWiZ8zulpzDUXg4iJxcGTPTBeA
-	/PM5z1gs3/Sv25k6ldFXeNAxHUUxFceDxses6pdSC5JqhV3NQG8eq8UMaZ4tUg==
-ARC-Authentication-Results: i=1;
-	rspamd-fcb9f4dcf-l5xdb;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Good
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Thread-Continue: 359be25a3b71fe26_1686269493897_446106147
-X-MC-Loop-Signature: 1686269493897:3665111060
-X-MC-Ingress-Time: 1686269493897
-Received: from pdx1-sub0-mail-a313.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.106.146.226 (trex/6.8.1);
-	Fri, 09 Jun 2023 00:11:33 +0000
-Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a313.dreamhost.com (Postfix) with ESMTPSA id 4QchMS6Lbxz1q7
-	for <bpf@vger.kernel.org>; Thu,  8 Jun 2023 17:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1686269492;
-	bh=F8KPdDJs/fafqK8befrWeYqM6/tlnupScz2H0Ba6c8I=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=qVzIX9VesNFlL8xB712fCTbGsLi9rI2jI1DX5TdbS6CrxTdRRv9ANQSv2kARsBEph
-	 4a9nkcq5WkqySs7iXyVDSKtZDMg9VNW63YrkPY/JoCjmhjUz0tPlfCHQXe872HSpzN
-	 G9Kez1ZTlvoiV4boKKxid0qGi6Naxgp2hfuSZ6AE=
-Received: from johansen (uid 1000)
-	(envelope-from kjlx@templeofstupid.com)
-	id e0042
-	by kmjvbox (DragonFly Mail Agent v0.12);
-	Thu, 08 Jun 2023 17:11:31 -0700
-Date: Thu, 8 Jun 2023 17:11:31 -0700
-From: Krister Johansen <kjlx@templeofstupid.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D683163
+	for <bpf@vger.kernel.org>; Fri,  9 Jun 2023 00:14:03 +0000 (UTC)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0362D68;
+	Thu,  8 Jun 2023 17:14:02 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b00ecabdf2so2698305ad.2;
+        Thu, 08 Jun 2023 17:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686269641; x=1688861641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TsTE3qmxIV7pG9azb/NVqbAFzY56xIALD3o7FLY1GW8=;
+        b=XjnlrHuVLqvBaR6lTNTwM/UYSJ4Z0+uyzIaJixshSWSguI3Dx77ZE6c33YZVD7UB//
+         yaXNDXgjPX+uIP8KPtW7Izj/t5NTp78Og9Jzt8TZlT6qjHgoMzxQXYw6U9D53Fr2WZfR
+         w19lMJcknE4ScXne3h44D93yhSXgWfDTjlEiXiiW/qfLqEXxIa3bZ+AmO+mUa7JT/qZ2
+         yoHhYQsNTwgo1TdmJSKwI7vRgl1HpzrwAIFHFyQi518bu9t0L/wfPzfaZGSKCtB2c8P8
+         G8p1y9UQJ+8eBbCkRAiaY5xN5nsm7KuNge+qS186ModIPFBUk+/zfo4ci/2YXmKJBu3w
+         WmIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686269641; x=1688861641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TsTE3qmxIV7pG9azb/NVqbAFzY56xIALD3o7FLY1GW8=;
+        b=LqApAMJrnsuIlg9HqBsLwNNL0ou1SbtjrIZuIj/tBKeAiz4QpozwMSJYSB5DV1pCF3
+         nJwC00fB4m5z+H60MoCF7yf6hkgc+rLB8GeZ1FhYlkXzmm80Wq+KNL3iMUMbCCYqpdT2
+         /C4t9UpR/o7T4UrEEj24m5PfW1GAvSq5uLvSvAFlsWHPZyl02Q1kVOqG4JGaqzFZKDct
+         LLCp9J0XQxMfbOhgrmAk01MxsCOntJVSgXwtLn9HBBSt+VpoeXrxpb9AEn4bWd8L8BDH
+         1c2PXURXIU7yJNBLxnE+DQeVcfnc71vZWU4sO6T9Xk2T9P0Ns/CwbhqkPzL4s8URlZR2
+         pziQ==
+X-Gm-Message-State: AC+VfDw0SbXURzcQWP2lp0pqVJ9PKn1QuCg0C4q1j8S6dGLmrJW4bli2
+	Lk9wPlC2QoSRftlTaxWUi7c=
+X-Google-Smtp-Source: ACHHUZ4Mh9UGZY5QhTCUEZsaIgVIl2TyYkb9IKjwX68B38is0xZbxtvRI2M8Ce+jngvNWl6Xif3EKw==
+X-Received: by 2002:a17:903:44c:b0:1b2:43a5:a5e5 with SMTP id iw12-20020a170903044c00b001b243a5a5e5mr7407916plb.34.1686269641307;
+        Thu, 08 Jun 2023 17:14:01 -0700 (PDT)
+Received: from krava (c-67-160-222-115.hsd1.ca.comcast.net. [67.160.222.115])
+        by smtp.gmail.com with ESMTPSA id p5-20020a170902bd0500b00186a2274382sm1968478pls.76.2023.06.08.17.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jun 2023 17:14:00 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 8 Jun 2023 17:13:57 -0700
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf v3 2/2] selftests/bpf: add a test for subprogram extables
-Message-ID: <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
-References: <cover.1686268304.git.kjlx@templeofstupid.com>
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Jackie Liu <liu.yun@linux.dev>
+Subject: Re: [PATCH RFC] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <ZIJuxc34CBu/zpuN@krava>
+References: <20230608212613.424070-1-jolsa@kernel.org>
+ <CAEf4BzbNakGzcycJJJqLsFwonOmya8=hKLD41TWX2zCJbh=r-Q@mail.gmail.com>
+ <20230608192748.435a1dbf@gandalf.local.home>
+ <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1686268304.git.kjlx@templeofstupid.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYkNHu7hiMYWQWs_gpYOfHL0FVuf-O0787Si2ze=PFX5w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In certain situations a program with subprograms may have a NULL
-extable entry.  This should not happen, and when it does, it turns a
-single trap into multiple.  Add a test case for further debugging and to
-prevent regressions.  N.b: without any other patches this can panic or
-oops a kernel.
+On Thu, Jun 08, 2023 at 04:55:40PM -0700, Andrii Nakryiko wrote:
+> On Thu, Jun 8, 2023 at 4:27 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Thu, 8 Jun 2023 15:43:03 -0700
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > > On Thu, Jun 8, 2023 at 2:26 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > >
+> > > >
+> > > > hi,
+> > > > when ftrace based tracers we need to cross check available_filter_functions
+> > > > with /proc/kallsyms. For example for kprobe_multi bpf link (based on fprobe)
+> > > > we need to make sure that symbol regex resolves to traceable symbols and
+> > > > that we get proper addresses for them.
+> >
+> > I forgot, what was the problem with doing the above?
+> 
+> More code, more memory, more CPU to parse all the text files. Parsing
+> kallsyms is quite expensive, so avoiding this would be great.
 
-Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
----
- .../bpf/prog_tests/subprogs_extable.c         | 31 +++++++++++++
- .../bpf/progs/test_subprogs_extable.c         | 46 +++++++++++++++++++
- 2 files changed, 77 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+yes, reading both kallsyms and available_filter_functions parsing often
+shows up in perf profiles
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
-new file mode 100644
-index 000000000000..2201988274a4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "test_subprogs_extable.skel.h"
-+
-+void test_subprogs_extable(void)
-+{
-+	const int READ_SZ = 456;
-+	struct test_subprogs_extable *skel;
-+	int err;
-+
-+	skel = test_subprogs_extable__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	err = test_subprogs_extable__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	err = test_subprogs_extable__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
-+
-+	test_subprogs_extable__detach(skel);
-+
-+cleanup:
-+	test_subprogs_extable__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_subprogs_extable.c b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
-new file mode 100644
-index 000000000000..c3ff66bf4cbe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 8);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} test_array SEC(".maps");
-+
-+static __u64 test_cb(struct bpf_map *map, __u32 *key, __u64 *val, void *data)
-+{
-+	return 1;
-+}
-+
-+SEC("fexit/bpf_testmod_return_ptr")
-+int BPF_PROG(handle_fexit_ret_subprogs, int arg, struct file *ret)
-+{
-+	*(volatile long *)ret;
-+	*(volatile int *)&ret->f_mode;
-+	bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_testmod_return_ptr")
-+int BPF_PROG(handle_fexit_ret_subprogs2, int arg, struct file *ret)
-+{
-+	*(volatile long *)ret;
-+	*(volatile int *)&ret->f_mode;
-+	bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_testmod_return_ptr")
-+int BPF_PROG(handle_fexit_ret_subprogs3, int arg, struct file *ret)
-+{
-+	*(volatile long *)ret;
-+	*(volatile int *)&ret->f_mode;
-+	bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.25.1
+> 
+> >
+> > > >
+> > > > Looks like on the last last LSF/MM/BPF there was an agreement to add new
+> > > > file that will have available_filter_functions symbols plus addresses.
+> > > >
+> > > > This RFC is to kick off the discussion, I'm not sure Steven wants to do
+> > > > that differently ;-)
+> >
+> > I'm not totally against this, but I'd like to know the full issue its
+> > solving. Perhaps I need to know more about what is being done, and what is
+> > needed too.
+> 
+> There are BPF tools that allow user to specify regex/glob of kernel
+> functions to attach to. This regex/glob is checked against
+> available_filter_functions to check which functions are traceable. All
+> good. But then also it's important to have corresponding memory
+> addresses for selected functions (for many reasons, e.g., to have
+> non-ambiguous and fast attachment by address instead of by name, or
+> for some post-processing based on captured IP addresses, etc). And
+> that means that now we need to also parse /proc/kallsyms and
+> cross-join it with data fetched from available_filter_functions.
+> 
+> All this is unnecessary if avalable_filter_functions would just
+> provide function address in the first place. It's a huge
+> simplification. And saves memory and CPU.
+> 
+> >
+> > > >
+> > > > thanks,
+> > > > jirka
+> > > >
+> > > >
+> > > > ---
+> > > > Adding new available_filter_functions_addrs file that shows all available
+> > > > functions (same as available_filter_functions) together with addresses,
+> > > > like:
+> > > >
+> > > >   # cat available_filter_functions_addrs | head
+> > >
+> > > nit: can we have some more succinct name, like "traceable_funcs" or
+> >
+> >
+> > It's to match avaliable_filter_functions
+> 
+> it's minor, I'm fine with whatever name, I'm searching for it in my
+> history every single time anyways :)
+> 
+> >
+> > Another way is to add a tracing option to make the address show up in the
+> > available_filter_functions file. That would be my preferred choice.
+> >
+> >   echo 1 > options/available_filter_addrs
+> >
+> > Or something like that.
+> 
+> This would modify behavior for entire system, right? I think this is
+> very bad. Just because one application is aware of this option and
+> wants to turn this on, doesn't mean that all other applications that
+> might also use available_filter_functions should immediately break on
+> that machine.
+> 
+> Please, let's have a separate file. There is no downside to that.
 
++1 for file, AFAIU the option would change that globaly so we could race
+with another app and break each other
+
+jirka
 
