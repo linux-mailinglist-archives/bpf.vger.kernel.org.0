@@ -1,124 +1,326 @@
-Return-Path: <bpf+bounces-2341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1D572AF8D
-	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 00:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A4BF72AF91
+	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 00:44:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A6DC1C20A1B
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 22:37:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E39C31C20A2D
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 22:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8492E209A2;
-	Sat, 10 Jun 2023 22:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163792107B;
+	Sat, 10 Jun 2023 22:44:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540BC290B
-	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 22:37:40 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D181E5
-	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 15:37:38 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f735bfcbbbso21600125e9.2
-        for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 15:37:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89E6290B
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 22:44:00 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B018B35A9
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 15:43:58 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-30b023b0068so2205320f8f.0
+        for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 15:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686436657; x=1689028657;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UMzpCs1VaCxZAW04a2qQ/lIleLCRPIln5bNLmxxyT1w=;
-        b=aWARcSO/pVz6xdgfKazzh0pc8MDkJT2KhUTmDj53ALJ629L6hPV01Dp09EyrWouLL3
-         GjGwEir1CbPKo5TzM+pf5gEMiSJZQWzmnE1gprZQ7Xk3hHJ8249dhjIPEewDmXxRtEL+
-         8tLQTsfCJbk/xWxZyBiHeiNK+t73DfDl86933vUgpt0RsX9KaaOaADGIv6ck6apCVqSH
-         YwsKFFXM0V2/csTDIE+cf8lwqLxGJY1PWxa8KdhLiFxJABDp0t/bY2vzrdGl8tBa3O39
-         8gzo+n1anc7mb6Kg+x0zZRaZkPXSdinVehMjomAP1GlFWbfu5LawM/YkxTG62hVTM41Y
-         zGlw==
+        d=gmail.com; s=20221208; t=1686437037; x=1689029037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MtEQ+zmjlo+PxvRvqQ9oWAo06mAjcFCkwDy89f5uVLw=;
+        b=MN8j1OHClgJveOJBJalo315tN57IxkrgmuSfnwrTJoxeMXZybTFRR0daYWDRTMhaYQ
+         Z3ujg5V4Cslq3VeIg14OBQAqn6Kj0//gM6UYH7IpnKJiiK5lcvzJ4m3luYBPANdcpe8k
+         D/6fR9KykWrUdaprqDWWl19UEXZy8qR2ipZwm5V9ZEevf5+svcwfLmvlN0XaRJ6hPi+k
+         vor9XLC2dRzO+wS1tHeEaJa1ZuYu3O4cQV4D+Uv/yt7FaaQnO74ojjpz1/6I9ZeIpByk
+         7gS3p3condoHjmKzXYge3QayezV39VVoQfaQuNUBR33j2r1eJaPRPm1zuoxZntNcKhQK
+         4qFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686436657; x=1689028657;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UMzpCs1VaCxZAW04a2qQ/lIleLCRPIln5bNLmxxyT1w=;
-        b=fyculGGf56U+knzgowZ7YktTKupD67YB8j3nxyxfGa6X0+eYW1VKTx5MmAGlJQBW8N
-         RjzjwNXWj2hL3+O5f8KIpNKYHeaf9wgcWRRUGhPzqhopisDqY4nSA99uuOhWvLBY4K9E
-         xzaL8eEq242+1PqBRFFRUQ/zp7VZfqD9ZUTDMar8JF0/HLDLbUE38G/mooUfhRvBahc4
-         l86279PZPqLPNfH1Pxno52uFD9xsTbDEtZJeCSp7gCCjecQqXuThOhoBfU7Y1bA0sMaO
-         GtvbqN1fRPDcVhLnTeMs2yutjbRBgU5vXg5TDewaOt73v0mmz9mzfdCSDAat1kAJyZ3C
-         4wvQ==
-X-Gm-Message-State: AC+VfDxKsHZ3XdDQKbnv1JzlQe/uRZESpp2qycTl5/KLcng+77uETsqL
-	Cz6dNUTqyIqZG71YAg4YsUU=
-X-Google-Smtp-Source: ACHHUZ4VFkT0idDF0LJyTPY16Rb70yl6GukbIuVlOuoV0beNq1Hlu5yN+2oOG4l2rMmkN067omLIRA==
-X-Received: by 2002:a7b:c84c:0:b0:3f7:2d7d:c673 with SMTP id c12-20020a7bc84c000000b003f72d7dc673mr3517507wml.14.1686436656743;
-        Sat, 10 Jun 2023 15:37:36 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686437037; x=1689029037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MtEQ+zmjlo+PxvRvqQ9oWAo06mAjcFCkwDy89f5uVLw=;
+        b=Atcg/40oDksEX/RIPktdwglytVx/cGR+HQNsRldaxf0eUEX5O/N4Fy2yGjaeCzpFmu
+         BpDsz810SK2LAp7akJ7k5zS4r7X+jpedbOVOExKL9cNCyj3YLApRhW/3kdD8iEuxdLw4
+         iD5oGXzz+wovkbcR8hELcXmdw4JL4gs6wI7IQE7N2sTcXtMZytEsrd8gk7Wf0j+r8hbp
+         DdODvU50KwRc8dh7rTpC1FEnIRxBfsTFWx3RNez0+NUmurAsmr5ayZbo4SB0KUlbBZx7
+         dKNcHrKCw2kKyHtZ8cA6P8j1lSVFOvPhAcvejGrwc5kApnaEmDxMF2LXFuGjcF0yrTzJ
+         jaqw==
+X-Gm-Message-State: AC+VfDzS2v8yep+T5KBzG/mnkWdxbu2tjsTJ+32yK7QvnsZRKOIu+NS7
+	Upfhgy+IKxtbrnOvNQPpskY=
+X-Google-Smtp-Source: ACHHUZ5uns+YRe0Zxb8/9phDKaP7hPJo1rF8+Ya96L5B09Te1MnrlBChIOzoWAn3nGCaHPj1htkNRA==
+X-Received: by 2002:a5d:42cd:0:b0:30f:bd17:4f07 with SMTP id t13-20020a5d42cd000000b0030fbd174f07mr30342wrr.13.1686437036804;
+        Sat, 10 Jun 2023 15:43:56 -0700 (PDT)
 Received: from krava ([213.235.133.42])
-        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b003f17848673fsm6770508wmj.27.2023.06.10.15.37.35
+        by smtp.gmail.com with ESMTPSA id z6-20020a5d4d06000000b0030fb98484f6sm1138284wrt.114.2023.06.10.15.43.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jun 2023 15:37:36 -0700 (PDT)
+        Sat, 10 Jun 2023 15:43:56 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 11 Jun 2023 00:37:32 +0200
-To: Song Liu <song@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, quentin@isovalent.com,
-	bpf@vger.kernel.org,
+Date: Sun, 11 Jun 2023 00:43:53 +0200
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, quentin@isovalent.com, bpf@vger.kernel.org,
 	Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 Subject: Re: [PATCH v2 bpf-next 09/11] libbpf: Add perf event names
-Message-ID: <ZIT7LFg5P1PevfC/@krava>
+Message-ID: <ZIT8qWzkl6P2wXmq@krava>
 References: <20230608103523.102267-1-laoar.shao@gmail.com>
  <20230608103523.102267-10-laoar.shao@gmail.com>
- <CAEf4BzZtc+yfg7NgK5KG_sSLGSmBMW-ZBF2=qh32D_AW++FzOw@mail.gmail.com>
- <CAPhsuW6j=ebCqRhQ7KQ-1qLze1nkFFPOt9JnOB=yXfjPctd+qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6j=ebCqRhQ7KQ-1qLze1nkFFPOt9JnOB=yXfjPctd+qg@mail.gmail.com>
+In-Reply-To: <20230608103523.102267-10-laoar.shao@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 08, 2023 at 09:36:39PM -0700, Song Liu wrote:
-> On Thu, Jun 8, 2023 at 4:14 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Jun 8, 2023 at 3:35 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > Add libbpf API to get generic perf event name.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > ---
-> >
-> > I don't think this belongs in libbpf and shouldn't be exposed as
-> > public API. Please move it into bpftool and make it internal (if
-> > Quentin is fine with this in the first place).
+On Thu, Jun 08, 2023 at 10:35:21AM +0000, Yafang Shao wrote:
+> Add libbpf API to get generic perf event name.
 > 
-> Or maybe it belongs to libperf?
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c   | 107 +++++++++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   |  56 +++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.map |   6 +++
+>  3 files changed, 169 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 47632606..27d396f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -119,6 +119,64 @@
+>  	[BPF_STRUCT_OPS]		= "struct_ops",
+>  };
+>  
+> +static const char * const perf_type_name[] = {
+> +	[PERF_TYPE_HARDWARE]		= "hardware",
+> +	[PERF_TYPE_SOFTWARE]		= "software",
+> +	[PERF_TYPE_TRACEPOINT]		= "tracepoint",
+> +	[PERF_TYPE_HW_CACHE]		= "hw_cache",
+> +	[PERF_TYPE_RAW]			= "raw",
+> +	[PERF_TYPE_BREAKPOINT]		= "breakpoint",
+> +};
+> +
+> +static const char * const perf_hw_name[] = {
+> +	[PERF_COUNT_HW_CPU_CYCLES]		= "cpu_cycles",
 
-we have several lookup arrays like that in perf and we keep
-also 'alias' names.. it'd be good idea to have that only in
-libperf, but that would require perf perf's parse-events
-cleanup as well and bpftool starting to link libperf
+could you use '-' instead of '_' because that's what we do in perf
 
-I'd keep it in bpftool for now and have that cleanup later
+actually would be great if you could use same names like in
+  tool/perf/util/parse-events.c  'event_symbols_*' arrays
+  tool/perf/util/evsel.c         'evsel__hw_cache' array
 
-cc-ing Arnaldo
+so perf and bpftool would use same names and we have a chance
+to use same code for that in future
 
 jirka
 
+> +	[PERF_COUNT_HW_INSTRUCTIONS]		= "instructions",
+> +	[PERF_COUNT_HW_CACHE_REFERENCES]	= "cache_references",
+> +	[PERF_COUNT_HW_CACHE_MISSES]		= "cache_misses",
+> +	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS]	= "branch_instructions",
+> +	[PERF_COUNT_HW_BRANCH_MISSES]		= "branch_misses",
+> +	[PERF_COUNT_HW_BUS_CYCLES]		= "bus_cycles",
+> +	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= "stalled_cycles_frontend",
+> +	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= "stalled_cycles_backend",
+> +	[PERF_COUNT_HW_REF_CPU_CYCLES]		= "ref_cpu_cycles",
+> +};
+> +
+> +static const char * const perf_hw_cache_name[] = {
+> +	[PERF_COUNT_HW_CACHE_L1D]		= "l1d",
+> +	[PERF_COUNT_HW_CACHE_L1I]		= "l1i",
+> +	[PERF_COUNT_HW_CACHE_LL]		= "ll",
+> +	[PERF_COUNT_HW_CACHE_DTLB]		= "dtlb",
+> +	[PERF_COUNT_HW_CACHE_ITLB]		= "itlb",
+> +	[PERF_COUNT_HW_CACHE_BPU]		= "bpu",
+> +	[PERF_COUNT_HW_CACHE_NODE]		= "node",
+> +};
+> +
+> +static const char * const perf_hw_cache_op_name[] = {
+> +	[PERF_COUNT_HW_CACHE_OP_READ]		= "read",
+> +	[PERF_COUNT_HW_CACHE_OP_WRITE]		= "write",
+> +	[PERF_COUNT_HW_CACHE_OP_PREFETCH]	= "prefetch",
+> +};
+> +
+> +static const char * const perf_hw_cache_op_result_name[] = {
+> +	[PERF_COUNT_HW_CACHE_RESULT_ACCESS]	= "access",
+> +	[PERF_COUNT_HW_CACHE_RESULT_MISS]	= "miss",
+> +};
+> +
+> +static const char * const perf_sw_name[] = {
+> +	[PERF_COUNT_SW_CPU_CLOCK]		= "cpu_clock",
+> +	[PERF_COUNT_SW_TASK_CLOCK]		= "task_clock",
+> +	[PERF_COUNT_SW_PAGE_FAULTS]		= "page_faults",
+> +	[PERF_COUNT_SW_CONTEXT_SWITCHES]	= "context_switches",
+> +	[PERF_COUNT_SW_CPU_MIGRATIONS]		= "cpu_migrations",
+> +	[PERF_COUNT_SW_PAGE_FAULTS_MIN]		= "page_faults_min",
+> +	[PERF_COUNT_SW_PAGE_FAULTS_MAJ]		= "page_faults_maj",
+> +	[PERF_COUNT_SW_ALIGNMENT_FAULTS]	= "alignment_faults",
+> +	[PERF_COUNT_SW_EMULATION_FAULTS]	= "emulation_faults",
+> +	[PERF_COUNT_SW_DUMMY]			= "dummy",
+> +	[PERF_COUNT_SW_BPF_OUTPUT]		= "bpf_output",
+> +	[PERF_COUNT_SW_CGROUP_SWITCHES]		= "cgroup_switches",
+> +};
+> +
+>  static const char * const link_type_name[] = {
+>  	[BPF_LINK_TYPE_UNSPEC]			= "unspec",
+>  	[BPF_LINK_TYPE_RAW_TRACEPOINT]		= "raw_tracepoint",
+> @@ -8953,6 +9011,55 @@ const char *libbpf_bpf_attach_type_str(enum bpf_attach_type t)
+>  	return attach_type_name[t];
+>  }
+>  
+> +const char *libbpf_perf_type_str(enum perf_type_id t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_type_name))
+> +		return NULL;
+> +
+> +	return perf_type_name[t];
+> +}
+> +
+> +const char *libbpf_perf_hw_str(enum perf_hw_id t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_hw_name))
+> +		return NULL;
+> +
+> +	return perf_hw_name[t];
+> +}
+> +
+> +const char *libbpf_perf_hw_cache_str(enum perf_hw_cache_id t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_hw_cache_name))
+> +		return NULL;
+> +
+> +	return perf_hw_cache_name[t];
+> +}
+> +
+> +const char *libbpf_perf_hw_cache_op_str(enum perf_hw_cache_op_id t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_hw_cache_op_name))
+> +		return NULL;
+> +
+> +	return perf_hw_cache_op_name[t];
+> +}
+> +
+> +const char *
+> +libbpf_perf_hw_cache_op_result_str(enum perf_hw_cache_op_result_id t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_hw_cache_op_result_name))
+> +		return NULL;
+> +
+> +	return perf_hw_cache_op_result_name[t];
+> +}
+> +
+> +const char *libbpf_perf_sw_str(enum perf_sw_ids t)
+> +{
+> +	if (t < 0 || t >= ARRAY_SIZE(perf_sw_name))
+> +		return NULL;
+> +
+> +	return perf_sw_name[t];
+> +}
+> +
+>  const char *libbpf_bpf_link_type_str(enum bpf_link_type t)
+>  {
+>  	if (t < 0 || t >= ARRAY_SIZE(link_type_name))
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 754da73..4123e4c 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -16,6 +16,7 @@
+>  #include <stdbool.h>
+>  #include <sys/types.h>  // for size_t
+>  #include <linux/bpf.h>
+> +#include <linux/perf_event.h>
+>  
+>  #include "libbpf_common.h"
+>  #include "libbpf_legacy.h"
+> @@ -61,6 +62,61 @@ enum libbpf_errno {
+>  LIBBPF_API const char *libbpf_bpf_attach_type_str(enum bpf_attach_type t);
+>  
+>  /**
+> + * @brief **libbpf_perf_type_str()** converts the provided perf type value
+> + * into a textual representation.
+> + * @param t The perf type.
+> + * @return Pointer to a static string identifying the perf type. NULL is
+> + * returned for unknown **perf_type_id** values.
+> + */
+> +LIBBPF_API const char *libbpf_perf_type_str(enum perf_type_id t);
+> +
+> +/**
+> + * @brief **libbpf_perf_hw_str()** converts the provided perf hw id
+> + * into a textual representation.
+> + * @param t The perf hw id.
+> + * @return Pointer to a static string identifying the perf hw id. NULL is
+> + * returned for unknown **perf_hw_id** values.
+> + */
+> +LIBBPF_API const char *libbpf_perf_hw_str(enum perf_hw_id t);
+> +
+> +/**
+> + * @brief **libbpf_perf_hw_cache_str()** converts the provided perf hw cache
+> + * id into a textual representation.
+> + * @param t The perf hw cache id.
+> + * @return Pointer to a static string identifying the perf hw cache id.
+> + * NULL is returned for unknown **perf_hw_cache_id** values.
+> + */
+> +LIBBPF_API const char *libbpf_perf_hw_cache_str(enum perf_hw_cache_id t);
+> +
+> +/**
+> + * @brief **libbpf_perf_hw_cache_op_str()** converts the provided perf hw
+> + * cache op id into a textual representation.
+> + * @param t The perf hw cache op id.
+> + * @return Pointer to a static string identifying the perf hw cache op id.
+> + * NULL is returned for unknown **perf_hw_cache_op_id** values.
+> + */
+> +LIBBPF_API const char *libbpf_perf_hw_cache_op_str(enum perf_hw_cache_op_id t);
+> +
+> +/**
+> + * @brief **libbpf_perf_hw_cache_op_result_str()** converts the provided
+> + * perf hw cache op result id into a textual representation.
+> + * @param t The perf hw cache op result id.
+> + * @return Pointer to a static string identifying the perf hw cache op result
+> + * id. NULL is returned for unknown **perf_hw_cache_op_result_id** values.
+> + */
+> +LIBBPF_API const char *
+> +libbpf_perf_hw_cache_op_result_str(enum perf_hw_cache_op_result_id t);
+> +
+> +/**
+> + * @brief **libbpf_perf_sw_str()** converts the provided perf sw id
+> + * into a textual representation.
+> + * @param t The perf sw id.
+> + * @return Pointer to a static string identifying the perf sw id. NULL is
+> + * returned for unknown **perf_sw_ids** values.
+> + */
+> +LIBBPF_API const char *libbpf_perf_sw_str(enum perf_sw_ids t);
+> +
+> +/**
+>   * @brief **libbpf_bpf_link_type_str()** converts the provided link type value
+>   * into a textual representation.
+>   * @param t The link type.
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 7521a2f..6ae0a36 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -395,4 +395,10 @@ LIBBPF_1.2.0 {
+>  LIBBPF_1.3.0 {
+>  	global:
+>  		bpf_obj_pin_opts;
+> +		libbpf_perf_hw_cache_op_result_str;
+> +		libbpf_perf_hw_cache_op_str;
+> +		libbpf_perf_hw_cache_str;
+> +		libbpf_perf_hw_str;
+> +		libbpf_perf_sw_str;
+> +		libbpf_perf_type_str;
+>  } LIBBPF_1.2.0;
+> -- 
+> 1.8.3.1
 > 
-> Thanks,
-> Song
 
