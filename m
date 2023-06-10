@@ -1,567 +1,467 @@
-Return-Path: <bpf+bounces-2294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8357072A88C
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 04:53:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B3472A8A2
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 05:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDADA1C210D5
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 02:53:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 367FB1C2121B
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 03:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F2F23CA;
-	Sat, 10 Jun 2023 02:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6B94C98;
+	Sat, 10 Jun 2023 03:06:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26CC61847;
-	Sat, 10 Jun 2023 02:53:13 +0000 (UTC)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409152733;
-	Fri,  9 Jun 2023 19:53:10 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id EB0C33200958;
-	Fri,  9 Jun 2023 22:53:06 -0400 (EDT)
-Received: from imap42 ([10.202.2.92])
-  by compute1.internal (MEProxy); Fri, 09 Jun 2023 22:53:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1686365586; x=1686451986; bh=AkQD7k4UePISznzhe6akvVmrU+fZyYsD1Ch
-	HMlOviMo=; b=K/d9FqObUYosadrQdww/Jm6Ko8r21079rj/Kh/iHswObKm7lB1H
-	fIjUYptyI2Pj+oJX/uurNKTfaTaPPAhMlnkVXZphv3Xl5xv3OUSktFxZo2Q3Z2zM
-	edasb6c8lspT1Y11qYCrW1K7fWmt9SrHHwgwylMd5EFk5j8+9cFH4tA46Tj2QHSG
-	lFQr+tDT8nctlCqKd2WRL9BfN5cZg1gEYQuDlLcVdc2hUqLA9qL18o9K2B5NlGVs
-	MCvkCEQhlPGxWBds9mBOdIm9JlZGv3VJwko8C/R9CwtPZZBJJFyB1aEZDs3GZUqR
-	anzr/f1P1df4CuWcD6vdZRzEKaSUFZ/9n2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1686365586; x=1686451986; bh=AkQD7k4UePISznzhe6akvVmrU+fZyYsD1Ch
-	HMlOviMo=; b=EhJ4f6YHsDuRiTlJI0ucwLaz3CsfA95x2BtifgMM3uBqtP3OrSA
-	xHKKGCJYSV1JaL6vykMBFuJM6WhohSflRtN0WAlAdNhO+xzmym2xHfsN0KxFdxm2
-	iNOoo/+hJO+mDwpsA6NG6XkBKhqdPHmL6bBJoN221OnUo3NU2Jh4fHgGF6b+fTWH
-	E+qHNw950LZJ+u7Nw+gsZhTYrQcoxyxnNKIMMyUUhRrAIGQ2aaKHm4kue++VHHLI
-	A/jgaaKDTCIhsQeFRcXnbzp3Z5LdYWyCaO19FT7cAyCUxV/d5bmL2FuB0HSKpxyo
-	hNFaz0bbzkRr5ejXGizxpKl89ssBHLCXSuA==
-X-ME-Sender: <xms:keWDZKAhnZ7ohX1PVGJJEmuAeip0gQJBJ7fR8wv-g4JqJq9yPtnigw>
-    <xme:keWDZEgtk7zIHcSdxp0uS3wes_DHJrhYPZo1hmyzjRqeeV8dZgueQow4rfzsxWX-L
-    Z1y-WHb0VgbBpczlQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgedtledgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdludejmdenucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqher
-    tderreejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgi
-    ihiieqnecuggftrfgrthhtvghrnhepudehfedvkeeiheeggeevleejledtieekfeduveeg
-    hedvfeeujedtudefkeegveeknecuffhomhgrihhnpeihohhuthhusggvrdgtohhmnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugig
-    uhhuuhdrgiihii
-X-ME-Proxy: <xmx:keWDZNlPGauNhJ9S5Q7tCiGmTHx30jEtWhHRRiQnDEYe_1_7JkNiLQ>
-    <xmx:keWDZIxhc6ZAj4PWNfMdWUkO8LKwOGqMOoKs3s6GoP_4YReYVHmXXg>
-    <xmx:keWDZPQUGBplm6Icfs-jCDNVeIh1tcym_kmh59DBzl8Dmh5CmnYkMQ>
-    <xmx:kuWDZOIV2nVZrQMcpwMJO7r0ihZjk04rHBEiG25XiET8puVS91D9fw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C8052BC0078; Fri,  9 Jun 2023 22:53:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-447-ge2460e13b3-fm-20230525.001-ge2460e13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9681FA9
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 03:06:10 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3DF35B8;
+	Fri,  9 Jun 2023 20:06:07 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35A2Cao5025167;
+	Fri, 9 Jun 2023 20:05:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=QQDiUtItY8WMLpa9vMhQ/0I+o6tvGQEuDAIeTet0wmw=;
+ b=PrFkm2P2+5y8BKdoPCpyNVqQ6LjGLAe6INUuQn20oHBjUNtOtGLkFM5zmwznDispSBBS
+ cIgZP71o+HWlBmmiqdNLZBTGhbDVG+X32/o0gq3r7auhEntg1XiWasma6xooO2r+Zc0l
+ 46VANDjAZe4ZIZUyoc0SYAWMcivMQEIB54/JBz4me2WAMZX1Y3DeyWpPfIPcUQQ1+Gdu
+ +RABcjaKhuIRS634z8YDQmscTE696kokgSbktPQnlu6fwRyj+K7JNutANkNQ8R499st4
+ tVjqxBpIFG3RaEzuA1UBSDR1gNfamSKuXUAezv+dH/WBqtalkkdW8EeEKwUtgaEEfzzc cw== 
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r3r3fhx76-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Jun 2023 20:05:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D8J8+jpC2qZTdcQxQivDi/WPI2t8Wz9VH1t6QmgFL0nB69ifk8UQK5em67OJjEEm0smhv3+nYXdqgQ17SqmfEZU2mBWmpq/aYxeMwQMIdxMzzUBP5c2nHqKx2rjVy1n+cvkuLDjEsQ/8SO2n2LA++o+NSWjqznjwqXPqayx2y7ED22tPePf1Gx1fEFVHYl39V+7jvNsHa7k5+nJ1Wqq7vOovSQ40P1210SS6d+ZIF01ekQi85vf5P0dDx+RozQXGNvLG/4I1vP35BcPMJdkD0ty2bzg0j5tHwn1K9fq2oHFuD4un2WTdqZ1i1Z5/amTXRdsct1LyXgdVjNicq2K01A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QQDiUtItY8WMLpa9vMhQ/0I+o6tvGQEuDAIeTet0wmw=;
+ b=AoHys9bgVUQIqmoVY6cbl+6nuAfWtdSFQmlFbqfryvLycY7d7eNGLUq2/i8PAA+rZraTJbRIpAB6C1BjzYemyljtWRpR8Z4/2MK+XI/ROXEWWLqbC8j0nsUegA9R8zDCjsPcZHqsSoasyGu4yUeUr64HfGyNulPgb/g5bRbdLwlIScgh2uDeJGmeRNNkwwzClEG+VMQDBa9CMHY3DkaOY5NtLzd/kHUVxQIKTVIYw2HDhuocUGLae4QAAqVIJ25onDGCQUap/W1J0+Zlh7/UwgiZrEspDkRjvgLuTSel9r5A+scAaZ3OLfPF3guHJDlG0SFVdODI1kklq0OX70Ef7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by CH3PR15MB5612.namprd15.prod.outlook.com (2603:10b6:610:150::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.44; Sat, 10 Jun
+ 2023 03:05:15 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::bf7d:a453:b8d9:cf0%6]) with mapi id 15.20.6455.030; Sat, 10 Jun 2023
+ 03:05:15 +0000
+Message-ID: <eaafd39e-9c45-98db-9bc7-15712276eec6@meta.com>
+Date: Fri, 9 Jun 2023 20:05:11 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH bpf-next v4 1/3] bpf, x86: allow function arguments up to
+ 12 for TRACING
+Content-Language: en-US
+To: menglong8.dong@gmail.com, andrii.nakryiko@gmail.com,
+        alan.maguire@oracle.com
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+References: <20230609095653.1406173-1-imagedong@tencent.com>
+ <20230609095653.1406173-2-imagedong@tencent.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230609095653.1406173-2-imagedong@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR05CA0059.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <6d76aed1-5bc8-42e1-9d50-277d2d66d57f@app.fastmail.com>
-In-Reply-To: 
- <CAEf4Bzbs3Aujx_7YwisGs6-+Qdu+QuFUohKH-az24c6NciPhow@mail.gmail.com>
-References: <20230607192625.22641-1-daniel@iogearbox.net>
- <20230607192625.22641-2-daniel@iogearbox.net> <ZIIOr1zvdRNTFKR7@google.com>
- <CAEf4BzbEf+U53UY6o+g5OZ6rg+T65_Aou4Nvrdbo-8sAjmdJmA@mail.gmail.com>
- <ZIJNlxCX4ksBFFwN@google.com>
- <CAEf4BzYbr5G8ZGnWEndiZ1-7_XqYfKFTorDvvafwZY0XJUn7cw@mail.gmail.com>
- <ZIJe5Ml6ILFa6tKP@google.com> <87a5x91nr8.fsf@toke.dk>
- <3a315a0d-52dd-7671-f6c1-bb681604c815@iogearbox.net> <874jng28xk.fsf@toke.dk>
- <1a73a1b9-c72a-de81-4fce-7ba4fb6d7900@incline.eu> <87sfb0zsok.fsf@toke.dk>
- <d0cf9a4f-c111-b594-7a12-84914419789e@iogearbox.net>
- <CAKH8qBuCug8HVxXF5hq00FxNtuyFbjJExJsrA+FCAfEmg36n3g@mail.gmail.com>
- <CAEf4Bzbs3Aujx_7YwisGs6-+Qdu+QuFUohKH-az24c6NciPhow@mail.gmail.com>
-Date: Sat, 10 Jun 2023 08:22:39 +0530
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
- "Stanislav Fomichev" <sdf@google.com>
-Cc: "Daniel Borkmann" <daniel@iogearbox.net>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
- "Timo Beckers" <timo@incline.eu>, "Alexei Starovoitov" <ast@kernel.org>,
- "Andrii Nakryiko" <andrii@kernel.org>, martin.lau@linux.dev,
- razor@blackwall.org, john.fastabend@gmail.com,
- "Jakub Kicinski" <kuba@kernel.org>, joe@cilium.io, davem@davemloft.net,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API for
- multi-progs
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CH3PR15MB5612:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c1a2e75-9651-48ee-b00b-08db695f834f
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	WHZsYuAGVZlvMdKy+gvZbYFl2ZA2ZgUIC3exifdKqHr9szFbw1cgA843LEBjRxJSC/nZKPIpyo++5g0nES3HD4DQ9jJ083IzuiLYCw8hZnbZ43JGJCHgTuiGYbcoSXPqjjYXctJWMuaNPlRNg6UqdGitbWPTLrk4DbC4muvkb3DecqzOXtPvv8hhsPIgs9vO4rOVKXACldHkeuenVoLEZXc24Bt0f60cEbvLsWL/6teaxPSz2NeZYsHs/6sHDHB9JZlsEwcNHKqNLGR6U/i1hbjfBv215Ov6w9c2xVjTuNjKC76a5oHHbTvun9WMGEUHpWz5clrKhV+R+fJgWWrihURgSU1uWWE1fjfs2lThn7/Sd9U8qFqUO1wu+cLH9Gwl+h+zp3hrqApvaOspU046wlrdTropGD73NOlhO6YsEmZIIh9SFNckamRDUBT3LIo286uZdnuahJDYFz6NXju50WllD/u67AAP1bTsuaD04E2qMZaHgeC9YPzuqTVJsHZETPoEGCAWjoLl1jpz/ZfY7IHPL+2Nz0C8dWGi1phfHhUEsrkjzJNZcmBvEZe/Naaz07aZA530dC+/Zl4fFA/OPNf60p2xK+BADf5zWf7i4eyiZJzwUZmIU4MzHxtgRK3nNpelL+KuXk70S6yaqv6u2g==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(366004)(396003)(346002)(39860400002)(451199021)(6506007)(83380400001)(36756003)(6512007)(53546011)(2616005)(186003)(6486002)(6666004)(66946007)(66476007)(66556008)(2906002)(30864003)(478600001)(41300700001)(31686004)(316002)(38100700002)(7416002)(8936002)(8676002)(4326008)(5660300002)(31696002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MUwyL1pPcXAvLzlyUUJzNExPQ1pvQ0NPQkJPTGpMYXdORnV5Nm01WjIrVWpK?=
+ =?utf-8?B?dGNkdDBqb1RCbTRlWHRmc0pNcmQ5R2luazVEWDJaMFZKTFlqdEhvVlZWZTZh?=
+ =?utf-8?B?QTlSekpzL2UzcXAzOU1Gb3c3eFFtZDhDbFFuUEljYVA5bFFSekI3U1FxeDFT?=
+ =?utf-8?B?UGY1ekR3N3ZlSis0S1pXalU1Z1JZU0RMRHRUMVVwQ3VvU3JuNUMwSTdkTUtM?=
+ =?utf-8?B?WW1uMmQ5cG9VbEllNGpxa2tjVGo3RUZrUytaenBqYWVaeWVSMWtKc0dwaDky?=
+ =?utf-8?B?RitpcVl3eDJTUXk5NmFEMXRPeXFuckwyVmZtWXFKU3JENFNmaWFCNjdJQjly?=
+ =?utf-8?B?UVhYeEtCTEtFcVNSeGIvcG1pSmtkNEtMenZPcEptRkt6UUJwNjd4WFlBa3hk?=
+ =?utf-8?B?QjFMZzZZS05WSy9ycjVhU2dIRFhXMzhKM3hmVXNDLzZiV2piSm1CNUc4SGZD?=
+ =?utf-8?B?TXBIQnNiL2ROaUU2ajZqTzkvcW83TXhYaU5TY3JoUkpjSjdYbFpTL3YreGx6?=
+ =?utf-8?B?eW1kcnBHcGpCOFBsdWtkSlYrSmtHdW4xRHVqRXphZCtnUnVjcWdtdXlmeWpM?=
+ =?utf-8?B?dUhsd3VoMXNqMWYrc2EvV3RxRjRndm1sWEN1bmYyS2lYQklhZ3ZOV3pzZGJS?=
+ =?utf-8?B?V3dWcWxEZXdheUh2S2l6cjEwUUxSQlllZEdwanl4OEVnb0JWN2E4ZXk3MzRT?=
+ =?utf-8?B?M3hkclNzTDJsUWFIV3hqOVh2dDhSOXhXbHkzVEdJNXpLZFhROGxHK1lodnk5?=
+ =?utf-8?B?UW1jaEsxUVlmK1B6cjNEenp1U2hVWTRBVnYwcHg4VS9Ua2FNTlpxeTQ2ZHNR?=
+ =?utf-8?B?TEw5dzdpZ010cEFSRkNKT25ja3p2dXd2L1luR3ZEa0VZOVhFSmF1WE55cWhJ?=
+ =?utf-8?B?Qk4vZStocTMyMUZ6ZjN4MGZSa0ZpWUxiNDNmOXZyTVZBUGJFRzNvZUc3dW1w?=
+ =?utf-8?B?eUxEZzdiTXZXWlhlSWVSRFhQeUxNS1R0cE5WNUJYWml6YzJieW1LS2gyZGQ5?=
+ =?utf-8?B?UGFIUFlMZnhNWm43ME5sOHM0ZVZOMXJRVkVSOHFYam92WVJvM29oeXFzM3l1?=
+ =?utf-8?B?Wm9GUVh0cnFhc20vWlI3cC84SEtWWTRzc2VqSFJ5WlFGajBjQVJwQmlzaVBV?=
+ =?utf-8?B?QTB6L3Z1b3pBdVhDMTZsRll6SUx4bGpxdXVOeVJ0OEk3RHRKZEY3VGpOOXlG?=
+ =?utf-8?B?ZHdNZ0h5ZzVwZ1pkcWZHN2xaQlFneG8ydHQvc0xGZjJNd1JFcXZpODE0RFg1?=
+ =?utf-8?B?TmpnczU2dW03dzdTRWRwNjdpMzFmcjRvNjI5WGlCL3JxY0JMbTIzelBJTkRp?=
+ =?utf-8?B?S2FLckYrMzI1VXU5aXVRLzdhOVlFa1k4SHUyblRIZ0RpamNoYytFaXdYWm5w?=
+ =?utf-8?B?RTYyMUZQYVFVSG5uQ3dSYzBOeENKUTlRWUt1VndSeXhNNTBaMWEwM0lON3NO?=
+ =?utf-8?B?SFM5MlpGeWRpMXVObGk4c0dCcEs3TUNoa09nUDR5RVFQN0t0Vmlsbk1tdC9U?=
+ =?utf-8?B?MFBzTTRrdEwvelFucGFnMXFMaGpJMlJsRlc1Z0hGSkJERWFtNWRIelozQ3ZB?=
+ =?utf-8?B?VFlXOXZkUVcrK2RJMHAvTmY3NWdDNnVDTmV6MFdWeXgzamdXYlBrMnIwSFdD?=
+ =?utf-8?B?UldhY0xYanJmQWczL2RXUzRnQzFIZElwWkk1ekVOM0phNWFRZHVTeGZoV2Ri?=
+ =?utf-8?B?cHV3RmRQdjl5UlAzSng3V3FlSnJMOVhWeEhEY1J0RVQ0NG1oSmp6cHlUWERk?=
+ =?utf-8?B?Sm4rTG5NcXJWTTM2UmN5ZHpkM2g4ZFRqT2hueHdrTTF5Q0tKcG1aN1QrQWhQ?=
+ =?utf-8?B?VGg0TUV6SWxGdDVBMDNsNXhqYXNsVVJDYmt4SnNXaW0xY2xxL0lYZEEwc3JC?=
+ =?utf-8?B?RTFTUmNkcCs3RjlSRU1qV0c0UWVGZ2tvcDlnTEhCdDhpUUtpTGJsOThIcWdD?=
+ =?utf-8?B?SmlEY2pLVXlOUUtwdXRZV3BvT0xmaDRaNjQvTTU5NzQwazlmSGdzU043QTNQ?=
+ =?utf-8?B?YkNBWU5ZUk1Ua2NVTUxyVmR4U2FtdUovVVFLTXJiaEc5dXI4NkRZeThhZk5o?=
+ =?utf-8?B?ME1xZmtoTkVIR3JPcTNuclJVMlVsNTJsWktRVTVRNUJIUndvL0RRcysySkp4?=
+ =?utf-8?B?eHN1enBTNk5jNHNsWGcyVWhqZkxyVDV4KzgvN0krVnN0TjJpOHU0MUNMMDhy?=
+ =?utf-8?B?aEE9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c1a2e75-9651-48ee-b00b-08db695f834f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2023 03:05:15.1780
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wirzAdTq6RTcJDKkgkcZHI9iLFQoyeHbX3DQ/S46B+B/FhBTr6VnY7uIzZm8WJoy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR15MB5612
+X-Proofpoint-GUID: F9TX7owb8jpGwoV_xkdV7md61ls3lVMi
+X-Proofpoint-ORIG-GUID: F9TX7owb8jpGwoV_xkdV7md61ls3lVMi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-09_18,2023-06-09_01,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi all,
 
-On Sat, Jun 10, 2023, at 12:33 AM, Andrii Nakryiko wrote:
-> On Fri, Jun 9, 2023 at 9:41=E2=80=AFAM Stanislav Fomichev <sdf@google.=
-com> wrote:
->>
->> On Fri, Jun 9, 2023 at 7:15=E2=80=AFAM Daniel Borkmann <daniel@iogear=
-box.net> wrote:
->> >
->> > On 6/9/23 3:11 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> > > Timo Beckers <timo@incline.eu> writes:
->> > >> On 6/9/23 13:04, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> > >>> Daniel Borkmann <daniel@iogearbox.net> writes:
->> > [...]
->> > >>>>>>>>>> I'm still not sure whether the hard semantics of first/l=
-ast is really
->> > >>>>>>>>>> useful. My worry is that some prog will just use BPF_F_F=
-IRST which
->> > >>>>>>>>>> would prevent the rest of the users.. (starting with only
->> > >>>>>>>>>> F_BEFORE/F_AFTER feels 'safer'; we can iterate later on =
-if we really
->> > >>>>>>>>>> need first/laste).
->> > >>>>>>>>> Without FIRST/LAST some scenarios cannot be guaranteed to=
- be safely
->> > >>>>>>>>> implemented. E.g., if I have some hard audit requirements=
- and I need
->> > >>>>>>>>> to guarantee that my program runs first and observes each=
- event, I'll
->> > >>>>>>>>> enforce BPF_F_FIRST when attaching it. And if that attach=
-ment fails,
->> > >>>>>>>>> then server setup is broken and my application cannot fun=
-ction.
->> > >>>>>>>>>
->> > >>>>>>>>> In a setup where we expect multiple applications to co-ex=
-ist, it
->> > >>>>>>>>> should be a rule that no one is using FIRST/LAST (unless =
-it's
->> > >>>>>>>>> absolutely required). And if someone doesn't comply, then=
- that's a bug
->> > >>>>>>>>> and has to be reported to application owners.
->> > >>>>>>>>>
->> > >>>>>>>>> But it's not up to the kernel to enforce this cooperation=
- by
->> > >>>>>>>>> disallowing FIRST/LAST semantics, because that semantics =
-is critical
->> > >>>>>>>>> for some applications, IMO.
->> > >>>>>>>> Maybe that's something that should be done by some other m=
-echanism?
->> > >>>>>>>> (and as a follow up, if needed) Something akin to what Toke
->> > >>>>>>>> mentioned with another program doing sorting or similar.
->> > >>>>>>> The goal of this API is to avoid needing some extra special=
- program to
->> > >>>>>>> do this sorting
->> > >>>>>>>
->> > >>>>>>>> Otherwise, those first/last are just plain simple old prio=
-rity bands;
->> > >>>>>>>> only we have two now, not u16.
->> > >>>>>>> I think it's different. FIRST/LAST has to be used judicious=
-ly, of
->> > >>>>>>> course, but when they are needed, they will have no alterna=
-tive.
->> > >>>>>>>
->> > >>>>>>> Also, specifying FIRST + LAST is the way to say "I want my =
-program to
->> > >>>>>>> be the only one attached". Should we encourage such use cas=
-es? No, of
->> > >>>>>>> course. But I think it's fair  for users to be able to expr=
-ess this.
->> > >>>>>>>
->> > >>>>>>>> I'm mostly coming from the observability point: imagine I =
-have my fancy
->> > >>>>>>>> tc_ingress_tcpdump program that I want to attach as a firs=
-t program to debug
->> > >>>>>>>> some issue, but it won't work because there is already a '=
-first' program
->> > >>>>>>>> installed.. Or the assumption that I'd do F_REPLACE | F_FI=
-RST ?
->> > >>>>>>> If your production setup requires that some important progr=
-am has to
->> > >>>>>>> be FIRST, then yeah, your "let me debug something" program =
-shouldn't
->> > >>>>>>> interfere with it (assuming that FIRST requirement is a real
->> > >>>>>>> requirement and not someone just thinking they need to be f=
-irst; but
->> > >>>>>>> that's up to user space to decide). Maybe the solution for =
-you in that
->> > >>>>>>> case would be freplace program installed on top of that stu=
-bborn FIRST
->> > >>>>>>> program? And if we are talking about local debugging and de=
-velopment,
->> > >>>>>>> then you are a sysadmin and you should be able to force-det=
-ach that
->> > >>>>>>> program that is getting in the way.
->> > >>>>>> I'm not really concerned about our production environment. I=
-t's pretty
->> > >>>>>> controlled and restricted and I'm pretty certain we can avoi=
-d doing
->> > >>>>>> something stupid. Probably the same for your env.
->> > >>>>>>
->> > >>>>>> I'm mostly fantasizing about upstream world where different =
-users don't
->> > >>>>>> know about each other and start doing stupid things like F_F=
-IRST where
->> > >>>>>> they don't really have to be first. It's that "used judiciou=
-sly" part
->> > >>>>>> that I'm a bit skeptical about :-D
->> > >>>> But in the end how is that different from just attaching thems=
-elves blindly
->> > >>>> into the first position (e.g. with before and relative_fd as 0=
- or the fd/id
->> > >>>> of the current first program) - same, they don't really have t=
-o be first.
->> > >>>> How would that not result in doing something stupid? ;) To add=
- to Andrii's
->> > >>>> earlier DDoS mitigation example ... think of K8s environment: =
-one project
->> > >>>> is implementing DDoS mitigation with BPF, another one wants to=
- monitor/
->> > >>>> sample traffic to user space with BPF. Both install as first p=
-osition by
->> > >>>> default (before + 0). In K8s, there is no built-in Pod depende=
-ncy management
->> > >>>> so you cannot guarantee whether Pod A comes up before Pod B. S=
-o you'll end
->> > >>>> up in a situation where sometimes the monitor runs before the =
-DDoS mitigation
->> > >>>> and on some other nodes it's vice versa. The other case where =
-this gets
->> > >>>> broken (assuming a node where we get first the DDoS mitigation=
-, then the
->> > >>>> monitoring) is when you need to upgrade one of the Pods: monit=
-oring Pod
->> > >>>> gets a new stable update and is being re-rolled out, then it i=
-nserts
->> > >>>> itself before the DDoS mitigation mechanism, potentially causi=
-ng outage.
->> > >>>> With the first/last mechanism these two situations cannot happ=
-en. The DDoS
->> > >>>> mitigation software uses first and the monitoring uses before =
-+ 0, then no
->> > >>>> matter the re-rollouts or the ordering in which Pods come up, =
-it's always
->> > >>>> at the expected/correct location.
->> > >>> I'm not disputing that these kinds of policy issues need to be =
-solved
->> > >>> somehow. But adding the first/last pinning as part of the kerne=
-l hooks
->> > >>> doesn't solve the policy problem, it just hard-codes a solution=
- for one
->> > >>> particular instance of the problem.
->> > >>>
->> > >>> Taking your example from above, what happens when someone wants=
- to
->> > >>> deploy those tools in reverse order? Say the monitoring tool co=
-unts
->> > >>> packets and someone wants to also count the DDOS traffic; but t=
-he DDOS
->> > >>> protection tool has decided for itself (by setting the FIRST) f=
-lag that
->> > >>> it can *only* run as the first program, so there is no way to a=
-chieve
->> > >>> this without modifying the application itself.
->> > >>>
->> > >>>>>> Because even with this new ordering scheme, there still shou=
-ld be
->> > >>>>>> some entity to do relative ordering (systemd-style, maybe CN=
-I?).
->> > >>>>>> And if it does the ordering, I don't really see why we need
->> > >>>>>> F_FIRST/F_LAST.
->> > >>>>> I can see I'm a bit late to the party, but FWIW I agree with =
-this:
->> > >>>>> FIRST/LAST will definitely be abused if we add it. It also se=
-ems to me
->> > >> It's in the prisoners' best interest to collaborate (and they do=
-! see
->> > >> https://www.youtube.com/watch?v=3DYK7GyEJdJGo), except the curre=
-nt
->> > >> prio system is limiting and turns out to be really fragile in pr=
-actice.
->> > >>
->> > >> If your tool wants to attach to tc prio 1 and there's already a =
-prog
->> > >> attached,
->> > >> the most reliable option is basically to blindly replace the att=
-achment,
->> > >> unless
->> > >> you have the possibility to inspect the attached prog and try to=
- figure
->> > >> out if it
->> > >> belongs to another tool. This is fragile in and of itself, and o=
-nly
->> > >> possible on
->> > >> more recent kernels iirc.
->> > >>
->> > >> With tcx, Cilium could make an initial attachment using F_FIRST =
-and simply
->> > >> update a link at well-known path on subsequent startups. If ther=
-e's no
->> > >> existing
->> > >> link, and F_FIRST is taken, bail out with an error. The owner of=
- the
->> > >> existing
->> > >> F_FIRST program can be queried and logged; we know for sure the =
-program
->> > >> doesn't belong to Cilium, and we have no interest in detaching i=
-t.
->> > >
->> > > That's conflating the benefit of F_FIRST with that of bpf_link, t=
-hough;
->> > > you can have the replace thing without the exclusive locking.
->> > >
->> > >>>> See above on the issues w/o the first/last. How would you work=
- around them
->> > >>>> in practice so they cannot happen?
->> > >>> By having an ordering configuration that is deterministic. Enfo=
-rced by
->> > >>> the system-wide management daemon by whichever mechanism suits =
-it. We
->> > >>> could implement a minimal reference policy agent that just read=
-s a
->> > >>> config file in /etc somewhere, and *that* could implement FIRST=
-/LAST
->> > >>> semantics.
->> > >> I think this particular perspective is what's deadlocking this d=
-iscussion.
->> > >> To me, it looks like distros and hyperscalers are in the same bo=
-at with
->> > >> regards to the possibility of coordination between tools. Distro=
-s are only
->> > >> responsible for the tools they package themselves, and hyperscal=
-ers
->> > >> run a tight ship with mostly in-house tooling already. When it c=
-omes to
->> > >> projects out in the wild, that all goes out the window.
->> > >
->> > > Not really: from the distro PoV we absolutely care about arbitrary
->> > > combinations of programs with different authors. Which is why I'm
->> > > arguing against putting anything into the kernel where the first =
-program
->> > > to come along can just grab a hook and lock everyone out.
->> > >
->> > > My assumption is basically this: A system administrator installs
->> > > packages A and B that both use the TC hook. The developers of A a=
-nd B
->> > > have never heard about each other. It should be possible for that=
- admin
->> > > to run A and B in whichever order they like, without making any c=
-hanges
->> > > to A and B themselves.
->> >
->> > I would come with the point of view of the K8s cluster operator or =
-platform
->> > engineer, if you will. Someone deeply familiar with K8s, but not ne=
-cessarily
->> > knowing about kernel internals. I know my org needs to run containe=
-r A and
->> > container B, so I'll deploy the daemon-sets for both and they get d=
-eployed
->> > into my cluster. That platform engineer might have never heard of B=
-PF or might
->> > not even know that container A or container B ships software with B=
-PF. As
->> > mentioned, K8s itself has no concept of Pod ordering as its paradig=
-m is that
->> > everything is loosely coupled. We are now expecting from that perso=
-n to make
->> > a concrete decision about some BPF kernel internals on various hook=
-s in which
->> > order they should be executed given if they don't then the system b=
-ecomes
->> > non-deterministic. I think that is quite a big burden and ask to un=
-derstand.
->> > Eventually that person will say that he/she cannot make this techni=
-cal decision
->> > and that only one of the two containers can be deployed. I agree wi=
-th you that
->> > there should be an option for a technically versed person to be abl=
-e to change
->> > ordering to avoid lock out, but I don't think it will fly asking us=
-ers to come
->> > up on their own with policies of BPF software in the wild ... simil=
-ar as you
->> > probably don't want having to deal with writing systemd unit files =
-for software
->> > xyz before you can use your laptop. It's a burden. You expect this =
-to magically
->> > work by default and only if needed for good reasons to make custom =
-changes.
->> > Just the one difference is that the latter ships with the OS (a pri=
-ori known /
->> > tight-ship analogy).
->> >
->> > >> Regardless of merit or feasability of a system-wide bpf manageme=
-nt
->> > >> daemon for k8s, there _is no ordering configuration possible_. K=
-8s is not
->> > >> a distro where package maintainers (or anyone else, really) can =
-coordinate
->> > >> on correctly defining priority of each of the tools they ship. T=
-his is
->> > >> effectively
->> > >> the prisoner's dilemma. I feel like most of the discussion so fa=
-r has been
->> > >> very hand-wavy in 'user space should solve it'. Well, we are use=
-r space, and
->> > >> we're here trying to solve it. :)
->> > >>
->> > >> A hypothetical policy/gatekeeper/ordering daemon doesn't possess
->> > >> implicit knowledge about which program needs to go where in the =
-chain,
->> > >> nor is there an obvious heuristic about how to order things. Mai=
-ntaining
->> > >> such a configuration for all cloud-native tooling out there that=
- possibly
->> > >> uses bpf is simply impossible, as even a tool like Cilium can ch=
-ange
->> > >> dramatically from one release to the next. Having to manage this=
- too
->> > >> would put a significant burden on velocity and flexibility for a=
-rguably
->> > >> little benefit to the user.
->> > >>
->> > >> So, daemon/kernel will need to be told how to order things, pref=
-erably by
->> > >> the tools (Cilium/datadog-agent) themselves, since the user/admi=
-n of the
->> > >> system cannot be expected to know where to position the hundreds=
- of progs
->> > >> loaded by Cilium and how they might interfere with other tools. =
-Figuring
->> > >> this out is the job of the tool, daemon or not.
->> > >>
->> > >> The prisoners _must_ communicate (so, not abuse F_FIRST) for thi=
-ngs to
->> > >> work correctly, and it's 100% in their best interest in doing so=
-. Let's not
->> > >> pretend like we're able to solve game theory on this mailing lis=
-t. :)
->> > >> We'll have to settle for the next-best thing: give user space a =
-safe and
->> > >> clear
->> > >> API to allow it to coordinate and make the right decisions.
->> > >
->> > > But "always first" is not a meaningful concept. It's just what we=
- have
->> > > today (everyone picks priority 1), except now if there are two pr=
-ograms
->> > > that want the same hook, it will be the first program that wins t=
-he
->> > > contest (by locking the second one out), instead of the second pr=
-ogram
->> > > winning (by overriding the first one) as is the case with the sil=
-ent
->> > > override semantics we have with TC today. So we haven't solved the
->> > > problem, we've just shifted the breakage.
->> >
->> > Fwiw, it's deterministic, and I think this 1000x better than silent=
-ly
->> > having a non-deterministic deployment where the two programs ship w=
-ith
->> > before + 0. That is much harder to debug.
->> >
->> > >> To circle back to the observability case: in offline discussions=
- with
->> > >> Daniel,
->> > >> I've mentioned the need for 'shadow' progs that only collect dat=
-a and
->> > >> pump it to user space, attached at specific points in the chain =
-(still
->> > >> within tcx!).
->> > >> Their retcodes would be ignored, and context modifications would=
- be
->> > >> rejected, so attaching multiple to the same hook can always succ=
-eed,
->> > >> much like cgroup multi. Consider the following:
->> > >>
->> > >> To attach a shadow prog before F_FIRST, a caller could use F_BEF=
-ORE |
->> > >> F_FIRST |
->> > >> F_RDONLY. Attaching between first and the 'relative' section: F_=
-AFTER |
->> > >> F_FIRST |
->> > >> F_RDONLY, etc. The rdonly flag could even be made redundant if a=
- new prog/
->> > >> attach type is added for progs like these.
->> > >>
->> > >> This is still perfectly possible to implement on top of Daniel's
->> > >> proposal, and
->> > >> to me looks like it could address many of the concerns around or=
-dering of
->> > >> progs I've seen in this thread, many mention data exfiltration.
->> > >
->> > > It may well be that semantics like this will turn out to be enoug=
-h. Or
->> > > it may not (I personally believe we'll need something more expres=
-sive
->> > > still, and where the system admin has the option to override thin=
-gs; but
->> > > I may turn out to be wrong). Ultimately, my main point wrt this s=
-eries
->> > > is that this kind of policy decision can be added later, and it's=
- better
->> > > to merge the TCX infrastructure without it, instead of locking ou=
-rselves
->> > > into an API that is way too limited today. TCX (and in-kernel XDP
->> > > multiprog) has value without it, so let's merge that first and it=
-erate
->> > > on the policy aspects.
->> >
->> > That's okay and I'll do that for v3 to move on.
->> >
->> > I feel we might repeat the same discussion with no good solution fo=
-r K8s
->> > users once we come back to this point again.
->>
->> With your cilium vs ddos example, maybe all we really need is for the
->> program to have some signal about whether it's ok to have somebody
->> modify/drop the packets before it?
->> For example, the verifier, depending on whether it sees that the
->> program writes to the data, uses some helpers, or returns
->> TC_ACT_SHOT/etc can classify the program as readonly or non-readonly.
->> And then, we'll have some extra flag during program load/attach that
->> cilium will pass to express "I'm not ok with having a non-readonly
->> program before me".
->
-> So this is what Timo is proposing with F_READONLY. And I agree, that
-> makes sense and we've discussed the need for something like this
-> internally. Specific use case was setsockopt programs. Sometimes they
-> should just observe, and we'd like to enforce that.
->
-> Once we have this F_READONLY flag support and enforce that during BPF
-> program validation, then "I'm not ok with having a non-readonly
-> program before me" is exactly F_FIRST. We just say that the F_READONLY
-> program can be inserted anywhere because it has no effect on the state
-> of the system.
 
-I have a different use case for something like F_READONLY. Basically I w=
-ould
-like to be able to accept precompiled BPF progs from semi-trusted sources
-and run / attach the prog in a trusted context. Example could be telling=
- the customer:
-"give me a prog that you'd like to run against every packet that enters =
-your network
-and I will orchestrate / distribute it across your infrastructure". F_RE=
-ADONLY could be
-used as one of the mechanisms to uphold invariants like not being able t=
-o bring
-down the network.
+On 6/9/23 2:56 AM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+> on the kernel functions whose arguments count less than 6. This is not
+> friendly at all, as too many functions have arguments count more than 6.
+> 
+> According to the current kernel version, below is a statistics of the
+> function arguments count:
+> 
+> argument count | function count
+> 7              | 704
+> 8              | 270
+> 9              | 84
+> 10             | 47
+> 11             | 47
+> 12             | 27
+> 13             | 22
+> 14             | 5
+> 15             | 0
+> 16             | 1
+> 
+> Therefore, let's enhance it by increasing the function arguments count
+> allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+> 
+> For the case that we don't need to call origin function, which means
+> without BPF_TRAMP_F_CALL_ORIG, we need only copy the function arguments
+> that stored in the frame of the caller to current frame. The arguments
+> of arg6-argN are stored in "$rbp + 0x18", we need copy them to
+> "$rbp - regs_off + (6 * 8)".
+> 
+> For the case with BPF_TRAMP_F_CALL_ORIG, we need prepare the arguments
+> in stack before call origin function, which means we need alloc extra
+> "8 * (arg_count - 6)" memory in the top of the stack. Note, there should
+> not be any data be pushed to the stack before call the origin function.
+> Then, we have to store rbx with 'mov' instead of 'push'.
+> 
+> We use EMIT3_off32() or EMIT4() for "lea" and "sub". The range of the
+> imm in "lea" and "sub" is [-128, 127] if EMIT4() is used. Therefore,
+> we use EMIT3_off32() instead if the imm out of the range.
+> 
+> It works well for the FENTRY/FEXIT/MODIFY_RETURN, I'm not sure if there
+> are other complicated cases.
 
-Thanks,
-Daniel
+Just remove 'I'm not sure if there are other complicated cases'.
+Since MODIFY_RETURN is mentioned. It would be great if you can add
+a test for MODIFY_RETURN.
+
+> 
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+> v4:
+> - make the stack 16-byte aligned if passing args on-stack is needed
+> - add the function arguments statistics to the commit log
+> v3:
+> - use EMIT3_off32() for "lea" and "sub" only on necessary
+> - make 12 as the maximum arguments count
+> v2:
+> - instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+> - make MAX_BPF_FUNC_ARGS as the maximum argument count
+> ---
+>   arch/x86/net/bpf_jit_comp.c | 125 ++++++++++++++++++++++++++++++++----
+>   1 file changed, 111 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 1056bbf55b17..a767e13c8c85 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1868,7 +1868,7 @@ static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+>   	 * mov QWORD PTR [rbp-0x10],rdi
+>   	 * mov QWORD PTR [rbp-0x8],rsi
+>   	 */
+> -	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
+> +	for (i = 0, j = 0; i < min(nr_regs, MAX_BPF_FUNC_ARGS); i++) {
+>   		/* The arg_size is at most 16 bytes, enforced by the verifier. */
+>   		arg_size = m->arg_size[j];
+>   		if (arg_size > 8) {
+> @@ -1876,10 +1876,31 @@ static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+>   			next_same_struct = !next_same_struct;
+>   		}
+>   
+> -		emit_stx(prog, bytes_to_bpf_size(arg_size),
+> -			 BPF_REG_FP,
+> -			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> -			 -(stack_size - i * 8));
+> +		if (i <= 5) {
+> +			/* copy function arguments from regs into stack */
+> +			emit_stx(prog, bytes_to_bpf_size(arg_size),
+> +				 BPF_REG_FP,
+> +				 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+> +				 -(stack_size - i * 8));
+> +		} else {
+> +			/* copy function arguments from origin stack frame
+> +			 * into current stack frame.
+> +			 *
+> +			 * The starting address of the arguments on-stack
+> +			 * is:
+> +			 *   rbp + 8(push rbp) +
+> +			 *   8(return addr of origin call) +
+> +			 *   8(return addr of the caller)
+> +			 * which means: rbp + 24
+> +			 */
+> +			emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> +				 BPF_REG_0, BPF_REG_FP,
+> +				 (i - 6) * 8 + 0x18);
+> +			emit_stx(prog, bytes_to_bpf_size(arg_size),
+> +				 BPF_REG_FP,
+> +				 BPF_REG_0,
+> +				 -(stack_size - i * 8));
+> +		}
+
+I think we have a corner case which does not work for the above.
+
+$ cat t.c
+struct t {
+   long a, b;
+};
+
+void foo2(int a, int b, int c, int d, int e, struct t);
+void bar(struct t arg) {
+   foo2(1, 2, 3, 4, 5, arg);
+}
+$ cat run.sh
+clang -O2 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -c t.c
+$ ./run.sh
+$ llvm-objdump -d t.o
+
+t.o:    file format elf64-x86-64
+
+Disassembly of section .text:
+
+0000000000000000 <bar>:
+        0: 48 83 ec 18                   subq    $0x18, %rsp
+        4: 48 89 f0                      movq    %rsi, %rax
+        7: 49 89 f9                      movq    %rdi, %r9
+        a: 48 89 7c 24 08                movq    %rdi, 0x8(%rsp)
+        f: 48 89 74 24 10                movq    %rsi, 0x10(%rsp)
+       14: bf 01 00 00 00                movl    $0x1, %edi
+       19: be 02 00 00 00                movl    $0x2, %esi
+       1e: ba 03 00 00 00                movl    $0x3, %edx
+       23: b9 04 00 00 00                movl    $0x4, %ecx
+       28: 41 b8 05 00 00 00             movl    $0x5, %r8d
+       2e: 50                            pushq   %rax
+       2f: 41 51                         pushq   %r9
+       31: e8 00 00 00 00                callq   0x36 <bar+0x36>
+       36: 48 83 c4 28                   addq    $0x28, %rsp
+       3a: c3                            retq
+$
+
+In this particular case, there is a struct argument (16-bytes).
+Only 5 registers are used to pass arguments instead of normal 6.
+The struct parameter is put on the stack. Basically struct
+members should be all in register or all on the stack.
+
+Not sure whether the kernel code contains similar instances
+or not (not fully using 6 registers while some parameters on stack).
+If not, I guess we do not need to support the above pattern.
+
+>   
+>   		j = next_same_struct ? j : j + 1;
+>   	}
+> @@ -1913,6 +1934,41 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+>   	}
+>   }
+>   
+> +static void prepare_origin_stack(const struct btf_func_model *m, u8 **prog,
+> +				 int nr_regs, int stack_size)
+> +{
+> +	int i, j, arg_size;
+> +	bool next_same_struct = false;
+> +
+> +	if (nr_regs <= 6)
+> +		return;
+> +
+> +	/* Prepare the function arguments in stack before call origin
+> +	 * function. These arguments must be stored in the top of the
+> +	 * stack.
+> +	 */
+> +	for (i = 0, j = 0; i < min(nr_regs, MAX_BPF_FUNC_ARGS); i++) {
+> +		/* The arg_size is at most 16 bytes, enforced by the verifier. */
+> +		arg_size = m->arg_size[j];
+> +		if (arg_size > 8) {
+> +			arg_size = 8;
+> +			next_same_struct = !next_same_struct;
+> +		}
+> +
+> +		if (i > 5) {
+> +			emit_ldx(prog, bytes_to_bpf_size(arg_size),
+> +				 BPF_REG_0, BPF_REG_FP,
+> +				 (i - 6) * 8 + 0x18);
+> +			emit_stx(prog, bytes_to_bpf_size(arg_size),
+> +				 BPF_REG_FP,
+> +				 BPF_REG_0,
+> +				 -(stack_size - (i - 6) * 8));
+> +		}
+> +
+> +		j = next_same_struct ? j : j + 1;
+> +	}
+> +}
+> +
+>   static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>   			   struct bpf_tramp_link *l, int stack_size,
+>   			   int run_ctx_off, bool save_ret)
+> @@ -1938,7 +1994,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>   	/* arg1: mov rdi, progs[i] */
+>   	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+>   	/* arg2: lea rsi, [rbp - ctx_cookie_off] */
+> -	EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
+> +	if (!is_imm8(-run_ctx_off))
+> +		EMIT3_off32(0x48, 0x8D, 0xB5, -run_ctx_off);
+> +	else
+> +		EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
+>   
+>   	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
+>   		return -EINVAL;
+> @@ -1954,7 +2013,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>   	emit_nops(&prog, 2);
+>   
+>   	/* arg1: lea rdi, [rbp - stack_size] */
+> -	EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+> +	if (!is_imm8(-stack_size))
+> +		EMIT3_off32(0x48, 0x8D, 0xBD, -stack_size);
+> +	else
+> +		EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+>   	/* arg2: progs[i]->insnsi for interpreter */
+>   	if (!p->jited)
+>   		emit_mov_imm64(&prog, BPF_REG_2,
+> @@ -1984,7 +2046,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>   	/* arg2: mov rsi, rbx <- start time in nsec */
+>   	emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+>   	/* arg3: lea rdx, [rbp - run_ctx_off] */
+> -	EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
+> +	if (!is_imm8(-run_ctx_off))
+> +		EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
+> +	else
+> +		EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
+>   	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
+>   		return -EINVAL;
+>   
+> @@ -2136,7 +2201,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>   				void *func_addr)
+>   {
+>   	int i, ret, nr_regs = m->nr_args, stack_size = 0;
+> -	int regs_off, nregs_off, ip_off, run_ctx_off;
+> +	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
+>   	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+>   	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+>   	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+> @@ -2150,8 +2215,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>   		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+>   			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
+>   
+> -	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
+> -	if (nr_regs > 6)
+> +	/* x86-64 supports up to MAX_BPF_FUNC_ARGS arguments. 1-6
+> +	 * are passed through regs, the remains are through stack.
+> +	 */
+> +	if (nr_regs > MAX_BPF_FUNC_ARGS)
+>   		return -ENOTSUPP;
+>   
+>   	/* Generated trampoline stack layout:
+> @@ -2170,7 +2237,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>   	 *
+>   	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
+>   	 *
+> +	 * RBP - rbx_off   [ rbx value       ]  always
+> +	 *
+>   	 * RBP - run_ctx_off [ bpf_tramp_run_ctx ]
+> +	 *
+> +	 *                     [ stack_argN ]  BPF_TRAMP_F_CALL_ORIG
+> +	 *                     [ ...        ]
+> +	 *                     [ stack_arg2 ]
+> +	 * RBP - arg_stack_off [ stack_arg1 ]
+>   	 */
+>   
+>   	/* room for return value of orig_call or fentry prog */
+> @@ -2190,9 +2264,25 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>   
+>   	ip_off = stack_size;
+>   
+> +	stack_size += 8;
+> +	rbx_off = stack_size;
+> +
+>   	stack_size += (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
+>   	run_ctx_off = stack_size;
+>   
+> +	if (nr_regs > 6 && (flags & BPF_TRAMP_F_CALL_ORIG)) {
+> +		stack_size += (nr_regs - 6) * 8;
+> +		/* make sure the stack pointer is 16-byte aligned if we
+> +		 * need pass arguments on stack, which means
+> +		 *  [stack_size + 8(rbp) + 8(rip) + 8(origin rip)]
+> +		 * should be 16-byte aligned. Following code depend on
+> +		 * that stack_size is already 8-byte aligned.
+> +		 */
+> +		stack_size += (stack_size % 16) ? 0 : 8;
+
+I think this is correct.
+
+> +	}
+> +
+> +	arg_stack_off = stack_size;
+> +
+[...]
 
