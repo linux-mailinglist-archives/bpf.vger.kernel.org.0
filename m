@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-2333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA0972AD27
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 18:18:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F8372AD2A
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 18:18:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C87841C20AE6
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 16:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38CBD1C20A70
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 16:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691D423426;
-	Sat, 10 Jun 2023 16:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2B01E50D;
+	Sat, 10 Jun 2023 16:12:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E241DDD6
-	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 16:12:12 +0000 (UTC)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA24203
-	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 09:12:03 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-30c4775d05bso1909705f8f.2
-        for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 09:12:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F96F1B91D
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 16:12:28 +0000 (UTC)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9C63A8D
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 09:12:17 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f70fc4682aso20218185e9.1
+        for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 09:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1686413521; x=1689005521;
+        d=tessares.net; s=google; t=1686413523; x=1689005523;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LT4CEksVX0ymRiy2sQSk5Caolss+Jhuhlb8MjY6vjCo=;
-        b=f+9y/pES9bX6Db5eTabVKSCGpWSvNa6CK6ofO8bw41JGGQL443hKkNgxbe8rrn2ttA
-         6BEkARwLMXhwCTJZpqTVrhA7AEqbI0JVLx2Y0K491E0f+RM3QXQJ7RIEXTjdEqXYTOo/
-         40t4E3BV7rDvuQtRpphck24gvaG1zgfgizHM/ghLbZVdnnUf+oLyNUrNDqKw3I+VQw8H
-         4BTKSORIWe6CFFzwRr9FjFQeUl/No/BIG20/w73CPBx2XQ6p96EmKWvgWY7G/f6aimN1
-         +uLLpcy5eIY6gli89HyCl+YZdm7haKkJZbPuAPN/v4SDap+EC2cKDD9mEVmrObz5vTNJ
-         6VAw==
+        bh=Od7XJ6McPFlfq5BVWjPNQjjhHIXM4eR5h7tKrhJC2l8=;
+        b=AG1l4DxAFRmzXMX0WAMATVJca9oFAqM/k34dReGnbtJtmbqt+oUm0ZOuAZxJFVIJtt
+         gDMHDt44o7XZXaJqqkfl/8FHus6Ea44FFb45GVLbuq7v6t4TNHEUZwI44gzipSC9R1v+
+         rF8jynoFAeJ6MmWQpSgTnAzO5JWwH6nOy11nURKEYLYtBLBu1Q3SIQOR7aocsnjp6Pzv
+         z5uPjR1tuEpGZx10OS0UxWos+8UE+bTFswqhDMzKaaVzIAPR/pxLJzhn0XxW72qtTO2p
+         BJAD+hzaJiRae9L/89UPeLHMjVfALK+3X6weOjla0PrExW683UpwpCe1yDL0pIHxdwU2
+         OnQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686413521; x=1689005521;
+        d=1e100.net; s=20221208; t=1686413523; x=1689005523;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LT4CEksVX0ymRiy2sQSk5Caolss+Jhuhlb8MjY6vjCo=;
-        b=aLOrG+HLxoO/MRCOPnQSSEe2dc4uCa30bzKiebiGiy4nRRu/yrGt2f5OqaNt/9SiZo
-         bh1C69nFQkOrqfykuBhxqayKWeyjKERHOPqXj99Xev0GCga0z8hVApyDOudxSt/U/+Ye
-         0urh2Rgj/V1tx9MGsRWbiFJk2aW25LZWWcennXb8iOiKMVX8czIZozyC+PZwAylrg5Xe
-         mrNjQm7aAW6L7tW9QZtg2x+OUHxm/tbhJof5r1tYPmZgE3RxDCn7/9SMXS7ihtLkzcGf
-         i6Nhe+ruG6p9AVGNcR7SuimDaypYiLqg5YPaci7U2QT6Yw615+SCq5m37+BXbfYBdHrL
-         47/Q==
-X-Gm-Message-State: AC+VfDyOapluHMIJRri/T+rwdjOyW+0FKI2GSjYdNqGzuwLdRGQfEq23
-	cVdomWqu0yuqA5Im5wPXd1O9cw==
-X-Google-Smtp-Source: ACHHUZ4RkHNVJ4VrnbbHxeG4vTHIjYybF2SB9VZ5bIUNaAizAPNEl/O8/13ZfpWiSFpQKJS64Krqgg==
-X-Received: by 2002:adf:f983:0:b0:307:8c47:a266 with SMTP id f3-20020adff983000000b003078c47a266mr1383202wrr.61.1686413521539;
-        Sat, 10 Jun 2023 09:12:01 -0700 (PDT)
+        bh=Od7XJ6McPFlfq5BVWjPNQjjhHIXM4eR5h7tKrhJC2l8=;
+        b=co8JfGJ9OgeKxoaC7nfRkuj+oCbMK1vQXj/IaDH/9pCPbbzYrFLH+xURwWr4POLjwW
+         gQY2KJ1kw69uiy42lY0R/JnDtWqOzV+kMN7nvZ/YSDtIiXsVAIx+KrDpio+NldtPVQYg
+         DMBJfYDy+mDk6REu7tt+lYDUeQqmuB3u7yr8ntuC6MdmAYQAkykv4g4RF8TUt6qrOfZ1
+         w4Bhl9AOu41AR8mz2DRYZK72r9JA/Xgp07s350DWVgCQwcK8SgDCbwSA+yp87doTeyK3
+         9+kT+JkP3aD6bsUUpYwHE6Z+iuD7Ig/fYSvUF0IssYoIQ9e5zRlwtnoOjj/GJ4qx1yHZ
+         R4xg==
+X-Gm-Message-State: AC+VfDyZLO9RoEqU2O4dFCnQks1aN/JeZgMnEZT8g6n/W9kr6UzRPZ3c
+	huqtaRdW4sCoz6fb3NDqj4dRBamdBI0rNG5/INQ0Odbc
+X-Google-Smtp-Source: ACHHUZ6grhXr9hKvTkfHddjkVEcFAtkr3ZIU2fUb+rdyksEP/vi6ecpJdycjy5Qed7ZMG0JSwXrg0g==
+X-Received: by 2002:a1c:f718:0:b0:3f7:3526:d96f with SMTP id v24-20020a1cf718000000b003f73526d96fmr2828491wmh.27.1686413522892;
+        Sat, 10 Jun 2023 09:12:02 -0700 (PDT)
 Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id u9-20020a5d4349000000b003079c402762sm7431145wrr.19.2023.06.10.09.12.00
+        by smtp.gmail.com with ESMTPSA id u9-20020a5d4349000000b003079c402762sm7431145wrr.19.2023.06.10.09.12.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jun 2023 09:12:01 -0700 (PDT)
+        Sat, 10 Jun 2023 09:12:02 -0700 (PDT)
 From: Matthieu Baerts <matthieu.baerts@tessares.net>
-Date: Sat, 10 Jun 2023 18:11:47 +0200
-Subject: [PATCH net 12/17] selftests: mptcp: join: skip userspace PM tests
- if not supported
+Date: Sat, 10 Jun 2023 18:11:48 +0200
+Subject: [PATCH net 13/17] selftests: mptcp: join: skip fail tests if not
+ supported
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230609-upstream-net-20230610-mptcp-selftests-support-old-kernels-part-3-v1-12-2896fe2ee8a3@tessares.net>
+Message-Id: <20230609-upstream-net-20230610-mptcp-selftests-support-old-kernels-part-3-v1-13-2896fe2ee8a3@tessares.net>
 References: <20230609-upstream-net-20230610-mptcp-selftests-support-old-kernels-part-3-v1-0-2896fe2ee8a3@tessares.net>
 In-Reply-To: <20230609-upstream-net-20230610-mptcp-selftests-support-old-kernels-part-3-v1-0-2896fe2ee8a3@tessares.net>
 To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
@@ -81,21 +81,21 @@ Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
  Matthieu Baerts <matthieu.baerts@tessares.net>, stable@vger.kernel.org
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4465;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1309;
  i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=pRdAKvQ/dI3pvOmEdmSh0TIcHcjun8gR5paBtNjXj6g=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBkhKC+mfHCv2z2GumyoDLhhYl2np1YL27gjsD8r
- G2p4sYOKnWJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZISgvgAKCRD2t4JPQmmg
- c3MAEACzkX1XW63KkwRzIywwdh72ZbgMaUFu6fyrjoup03vy5yZHr8Y4/Cy7UDrDjMV9d8tBC3z
- +z2XJhPwEUqJtetwvWrArwZT2BpXlFrnl9MqnBZQctLEwcWXr/HFNBst3l7jpn0ilWf3EhKTegl
- 8aK1Vtnrq7A7VtjKVvDnOZe5lvvp55C6pIQMh2VreTsh4geRlRGRe4S3Rkhf8j9Oa1aDCda1dOy
- DPCHpvI+A5QwJHivyUj6D7q/C+fHRCdTz3tijBtJmsKjEyMJuUbVrHPMdYqJgytcYMkMmeuMFBV
- 6HDVsP7viQ5+P8TnJ/uz9/fvteJtdz6rkcRh6y4gnCFE6bstgjX667kAi6WVl7CTa5z7xSfKaRL
- Zodw7/S1GhPiGC/gd9SUbnKCyblz+eFCdVqJ66Sni2ED37wRU8lh8osbbKQZUGeP8sRgClgCluK
- 4NODSxB46dwexuF4T9ZjwqG/Pfs5BaGtXzPj4McvP2RtcMvCG86cqkv6pVGNYsGxwYbWD3Ef9ZW
- MWDHyNq2QhcLsb5re93PjxHhY23VAD2E6oPgjxRdWg+vy1ke5woIJOOmx3GpCvNfuunVtHUx8u2
- EQz1baBJXjm2ygYSRlK9iMPMjE3OygFnkZWVptXCqLldwnNfF1eF5yMVWqUrHsf0BzCQrDD8kvt
- HwULest9RIbZgbQ==
+ bh=/IBWHeyor9yWKvvK4XMwcSzwOR/XkUMWWIef4BnwJKM=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBkhKC+1AHuF+8qskPv3iMOrnzCYwCBBR38BpkVc
+ m4Lk/VVR12JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZISgvgAKCRD2t4JPQmmg
+ czubD/9H8/pP3KWsx+e9hBmkboJqLVUAC+tnzLfxQtpt/FLS11K/ImZ0P/Hf3WoFJaKT7qfpwMF
+ vt9Wk6GX7fF6WAfwqBexKj0jKvvWkw5yNYZ1Nmn5HAxO8rTbaH0NQXuSuASQerpEQNgYKyKf+e5
+ 9bAUrh0Z4Tr3FwC7JT8VqPRNH2tA6uUbiQ8whBlBFiB4z8yCVXF9RxfHjsQz+TUxzOOUJpdWqkb
+ ilcr0xeIxPTfK/yuDNwLQsi6QiA0LAU5lgnUw/M9FZ3sjv4aBRpqw7oeOgIVI3cbA+KlOLh6t/I
+ 3DA8CSyWo6PtDZDu5UQicuRUqR7vVtaJio+CJJCxSGMBYLiUI36nDA6yRcYjVdKexNYFv7atFw5
+ 36abp3AGYKqTXSrDWe1FVjrh4+fzfKBDKzryEyDNLwYxyNnDvloVn3kbS1POW8tJGnWcvQPZrda
+ sqNJooY2UjV4///p1GiIrJNFq86y+DiJFTHtN7ALv9l+qhHwMOnx0UCVEjHExiYlBtZ1yiYlliA
+ POZwNt6o2h7IqF2Q1jeijUwOSxD9MPCjtetqXxiwXbXVk5FJe0/PcELXY3lEy6TUMGOXsy/wQdM
+ jbrlyBt7ayZW0pTlBGWyV70gZnpj26oJ7xJA+yW/3giMUEtQkk0ZedfiWU4kleMRRFSUIeOSy1k
+ OKHuKk8sJx6SW4Q==
 X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -108,114 +108,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 Selftests are supposed to run on any kernels, including the old ones not
 supporting all MPTCP features.
 
-One of them is the support of the userspace PM introduced by commit
-4638de5aefe5 ("mptcp: handle local addrs announced by userspace PMs")
-and the following ones.
+One of them is the support of the MP_FAIL / infinite mapping introduced
+by commit 1e39e5a32ad7 ("mptcp: infinite mapping sending") and the
+following ones.
 
-It is possible to look for the MPTCP pm_type's sysctl knob to know in
-advance if the userspace PM is available.
+It is possible to look for one of the infinite mapping counters to know
+in advance if the this feature is available.
 
 Link: https://github.com/multipath-tcp/mptcp_net-next/issues/368
-Fixes: 5ac1d2d63451 ("selftests: mptcp: Add tests for userspace PM type")
+Fixes: b6e074e171bc ("selftests: mptcp: add infinite map testcase")
 Cc: stable@vger.kernel.org
+Fixes: 2ba18161d407 ("selftests: mptcp: add MP_FAIL reset testcase")
 Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 ---
- tools/testing/selftests/net/mptcp/mptcp_join.sh | 26 ++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ tools/testing/selftests/net/mptcp/mptcp_join.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-index f8e58ebcdd54..f9161ed69b86 100755
+index f9161ed69b86..7867bad59253 100755
 --- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
 +++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-@@ -84,7 +84,7 @@ init_partial()
- 		ip netns add $netns || exit $ksft_skip
- 		ip -net $netns link set lo up
- 		ip netns exec $netns sysctl -q net.mptcp.enabled=1
--		ip netns exec $netns sysctl -q net.mptcp.pm_type=0
-+		ip netns exec $netns sysctl -q net.mptcp.pm_type=0 2>/dev/null || true
- 		ip netns exec $netns sysctl -q net.ipv4.conf.all.rp_filter=0
- 		ip netns exec $netns sysctl -q net.ipv4.conf.default.rp_filter=0
- 		if [ $checksum -eq 1 ]; then
-@@ -3191,7 +3191,8 @@ fail_tests()
- userspace_tests()
+@@ -384,7 +384,7 @@ setup_fail_rules()
+ 
+ reset_with_fail()
  {
- 	# userspace pm type prevents add_addr
--	if reset "userspace pm type prevents add_addr"; then
-+	if reset "userspace pm type prevents add_addr" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns1
- 		pm_nl_set_limits $ns1 0 2
- 		pm_nl_set_limits $ns2 0 2
-@@ -3202,7 +3203,8 @@ userspace_tests()
- 	fi
+-	reset "${1}" || return 1
++	reset_check_counter "${1}" "MPTcpExtInfiniteMapTx" || return 1
+ 	shift
  
- 	# userspace pm type does not echo add_addr without daemon
--	if reset "userspace pm no echo w/o daemon"; then
-+	if reset "userspace pm no echo w/o daemon" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns2
- 		pm_nl_set_limits $ns1 0 2
- 		pm_nl_set_limits $ns2 0 2
-@@ -3213,7 +3215,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm type rejects join
--	if reset "userspace pm type rejects join"; then
-+	if reset "userspace pm type rejects join" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns1
- 		pm_nl_set_limits $ns1 1 1
- 		pm_nl_set_limits $ns2 1 1
-@@ -3223,7 +3226,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm type does not send join
--	if reset "userspace pm type does not send join"; then
-+	if reset "userspace pm type does not send join" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns2
- 		pm_nl_set_limits $ns1 1 1
- 		pm_nl_set_limits $ns2 1 1
-@@ -3233,7 +3237,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm type prevents mp_prio
--	if reset "userspace pm type prevents mp_prio"; then
-+	if reset "userspace pm type prevents mp_prio" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns1
- 		pm_nl_set_limits $ns1 1 1
- 		pm_nl_set_limits $ns2 1 1
-@@ -3244,7 +3249,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm type prevents rm_addr
--	if reset "userspace pm type prevents rm_addr"; then
-+	if reset "userspace pm type prevents rm_addr" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns1
- 		set_userspace_pm $ns2
- 		pm_nl_set_limits $ns1 0 1
-@@ -3256,7 +3262,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm add & remove address
--	if reset_with_events "userspace pm add & remove address"; then
-+	if reset_with_events "userspace pm add & remove address" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns1
- 		pm_nl_set_limits $ns2 1 1
- 		run_tests $ns1 $ns2 10.0.1.1 0 userspace_1 0 slow
-@@ -3267,7 +3274,8 @@ userspace_tests()
- 	fi
- 
- 	# userspace pm create destroy subflow
--	if reset_with_events "userspace pm create destroy subflow"; then
-+	if reset_with_events "userspace pm create destroy subflow" &&
-+	   continue_if mptcp_lib_has_file '/proc/sys/net/mptcp/pm_type'; then
- 		set_userspace_pm $ns2
- 		pm_nl_set_limits $ns1 0 1
- 		run_tests $ns1 $ns2 10.0.1.1 0 0 userspace_1 slow
+ 	ip netns exec $ns1 sysctl -q net.mptcp.checksum_enabled=1
 
 -- 
 2.40.1
