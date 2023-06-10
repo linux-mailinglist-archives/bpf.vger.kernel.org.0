@@ -1,137 +1,133 @@
-Return-Path: <bpf+bounces-2298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C0772A8D7
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 05:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA14B72A8E8
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 05:51:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B60281AEC
-	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 03:38:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F3C281ABD
+	for <lists+bpf@lfdr.de>; Sat, 10 Jun 2023 03:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571805398;
-	Sat, 10 Jun 2023 03:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAC95CB8;
+	Sat, 10 Jun 2023 03:51:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244971847;
-	Sat, 10 Jun 2023 03:37:50 +0000 (UTC)
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EADC4;
-	Fri,  9 Jun 2023 20:37:49 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b1b66a8fd5so27040001fa.0;
-        Fri, 09 Jun 2023 20:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686368267; x=1688960267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0x7R8VVA4vLkv9Rby6vo0luiqm3mpTBGzVgZHdxl4ws=;
-        b=jlvs4fz58SeqT+S2VakKT4dKuwnxl4G/Bmyk9BsdAMEb8Ekk4SEvNQXVlHFlC7g6ra
-         TUVD/DF5jkUDlylpqHfF+GRWJj6tdXuy2wZNKt9lVqRCz1JbSP8rREtZJun/4h31o6/g
-         k2Z67F44Uu0rQSvgvrXklwNRl9ZO0qzsTWHwVfsBPD6/LMeVzDsitzlfk/cVeSqETLNT
-         OboPKFTLNG2DHOKBs02tVKQmUOdG5/t24YSi/p3gGs9DfFuHN8nIRVaEKJPrf3wHjFyU
-         4bMFecFui/bp5fWXlRZDbH+N/4HMRrSnlWWCQ4OrcTKG1GkTyIJpNju9sJAR+4jJq54f
-         LhnQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2083538A
+	for <bpf@vger.kernel.org>; Sat, 10 Jun 2023 03:50:59 +0000 (UTC)
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6C7359A;
+	Fri,  9 Jun 2023 20:50:57 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-75d3f2c9d13so234167385a.1;
+        Fri, 09 Jun 2023 20:50:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686368267; x=1688960267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0x7R8VVA4vLkv9Rby6vo0luiqm3mpTBGzVgZHdxl4ws=;
-        b=YUILN8fGxsD/YtEfbUVWe2S/1VAU1NojjG7Etqv5qFS1vgm9Q+B248jt9RnuB7NRPC
-         2pNDDM6dCRlskIPq2T4j8aft+FdrNCg++azUc3XsI/FL2zey0VawyP4YWxx5AJgiv/+P
-         Z1z1tlKcPZVhRktvRwTsvFMbAgFKwl4jFOZbr4gNbWS0emHvNO91Rlk7TQNR4GE48Iih
-         yMywllFnHoS7zSuocZ7OCJvaLyEb1W7cQCokRVPPxZinTK6cNw43RGbPLw5Bcq8TAIwI
-         /QqelysUnDemOmL+MJNVmfOArhOUMJye4jh72YG8mxt3hswX4xn8/UFm7fHbejIDpbCl
-         8zEQ==
-X-Gm-Message-State: AC+VfDzuAm7rjkX7Ts3sCJeNgu4g8GEdTvMUw0iLcw5Syzwhr/f0LVZW
-	Y1Brb6nognmTLgv1zH/HLrfTEo6ugdkAeJvB54LcdfrpS0s=
-X-Google-Smtp-Source: ACHHUZ548OlaFV+egNkLGD/DOYl5NZK1pOjq0Rj+PWBbnT2P50S5bXoW8K/FdNjMB99qwoaeFKTxbuounul4TIX1nyc=
-X-Received: by 2002:a2e:9ad1:0:b0:2a7:974d:a461 with SMTP id
- p17-20020a2e9ad1000000b002a7974da461mr254401ljj.34.1686368267204; Fri, 09 Jun
- 2023 20:37:47 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686369056; x=1688961056;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OjnRZ997c0EJsAweMRpMCDSezCDXyn9PqnhVcCtO5Hk=;
+        b=FPr04JbVwrHpTaO39GfkrOKBcIigZRfyC1eio7izpllyJsuAgMKEwsWKdz+eTFMgXA
+         f9olGDfrXl4H4GQyQJFo+jxjdpOQzhc+6a8mbxNYpx0lYfIzJDFdY+bi0KI/usLZSZj3
+         3KhpCCGay9iGs22JEW3GIlUiBKlzHsvUv4teC6VuXlDH8UyZBvsEOPeccpSVa8MK88F8
+         0SlIYJo7xo01+0/7SoZbDjHv0ZA8fPbEGp+IVMrQr2p2NxWHe2Bmy/F/p8PGe0ZnIhJV
+         WpvUTABR8MfpaXBVfy1UJ7taqkWFpKy9imCPeeghS2qkvWco/b+H313by1vOsVic6cWt
+         wd/Q==
+X-Gm-Message-State: AC+VfDzz41yoDMVCl/4+Ni8FncdE8GcuwHMcBbHxbZDo3FgZgtftnBQM
+	HwggaZTs2f2k+NYXCPeiB8W4YxDDyrEBUTYf
+X-Google-Smtp-Source: ACHHUZ7iApw5Ij1CMbzWxs78e9IRfiI42uBiRIiXx1qqI7WkloIK5QsJ8IYXUSGhVB5bHYFD7S5rYg==
+X-Received: by 2002:ac8:7f50:0:b0:3f9:d590:82ac with SMTP id g16-20020ac87f50000000b003f9d59082acmr3260032qtk.20.1686369056110;
+        Fri, 09 Jun 2023 20:50:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:81d3])
+        by smtp.gmail.com with ESMTPSA id t2-20020ac87382000000b003f6bdc221e6sm1667873qtp.53.2023.06.09.20.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jun 2023 20:50:55 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	tj@kernel.org
+Subject: [PATCH bpf-next 1/5] bpf: Add bpf_cpumask_first_and() kfunc
+Date: Fri,  9 Jun 2023 22:50:49 -0500
+Message-Id: <20230610035053.117605-1-void@manifault.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQKLZ77pU7EAWPWzL=sCbJgUtZ3u-=Ma-Gf3T3kryYnh_w@mail.gmail.com>
- <20230610022721.2950602-1-prankgup@fb.com>
-In-Reply-To: <20230610022721.2950602-1-prankgup@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 9 Jun 2023 20:37:35 -0700
-Message-ID: <CAADnVQJyQKbrZ+djWP-zgotYzzftv0TERFsi9VfuaDnmenyd3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/7] bpf: Add generic attach/detach/query API
- for multi-progs
-To: Prankur gupta <prankgup@fb.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Daniel Xu <dxu@dxuuu.xyz>, 
-	Joe Stringer <joe@cilium.io>, John Fastabend <john.fastabend@gmail.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Network Development <netdev@vger.kernel.org>, Nikolay Aleksandrov <razor@blackwall.org>, 
-	Stanislav Fomichev <sdf@google.com>, Timo Beckers <timo@incline.eu>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	prankur.07@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 9, 2023 at 8:03=E2=80=AFPM Prankur gupta <prankgup@fb.com> wrot=
-e:
->
-> >>
-> >> Me, Daniel, Timo are arguing that there are real situations where you
-> >> have to be first or need to die.
-> >
-> > afaik out of all xdp and tc progs there is not a single prog in the fb =
-fleet
-> > that has to be first.
-> > fb's ddos and firewall don't have to be first.
-> > cilium and datadog progs don't have to be first either.
-> > The race between cilium and datadog was not the race to the first posit=
-ion,
-> > but the conflict due to the same prio.
-> > In all cases, I'm aware, prog owners care a lot about ordering,
-> > but never about strict first.
->
-> One usecase which we actively use in Meta(fb) fleet is avoiding double wr=
-iter for
-> cgroup/sockops bpf programs. For ex: we can have multiple BPF programs se=
-tting
-> skops->reply field resulting in stepping on each other for ex: for ECN ca=
-llback
-> one program can set it 1 and other can set it to 0.
-> We do that by creating a pre-func and post-func before
-> executing sockops BPF program in our custom built chainer.
->
-> We want these functions to be executed first and last respectively which =
-actually
-> makes the above functionality useful for us.
->
-> Hypothetical usecase for cgroup/sockops - Middle BPF programs will not se=
-t skops->reply
-> and the final BPF program based on results from each of the middle
-> BPF program can set the appropriate reply to skops->reply, thus making su=
-re all the middle
-> programs executed and the final reply is correct.
+We currently provide bpf_cpumask_first(), bpf_cpumask_any(), and
+bpf_cpumask_any_and() kfuncs. bpf_cpumask_any() and
+bpf_cpumask_any_and() are confusing misnomers in that they actually just
+call cpumask_first() and cpumask_first_and() respectively.
 
-cgroup progs are more complicated than a simple list of progs in tc/xdp.
-It is not really possible for the kernel to guarantee absolute last and fir=
-st
-in a hierarchy of cgroups. In theory that's possible within a cgroup,
-but not when children and parents are involved and progs can be
-attached anywhere in the hierarchy and we need to keep
-uapi of BPF_F_ALLOW_OVERRIDE, BPF_F_ALLOW_MULTI intact.
-The absolute first/last is not the answer for this skops issue.
-A different solution is necessary.
+We'll replace them with bpf_cpumask_any_distribute() and
+bpf_cpumask_any_distribute_and() kfuncs in a subsequent patch, so let's
+ensure feature parity by adding a bpf_cpumask_first_and() kfunc to
+account for bpf_cpumask_any_and() being removed.
+
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/cpumask.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index 7efdf5d770ca..9416c8ac8a04 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -131,6 +131,21 @@ __bpf_kfunc u32 bpf_cpumask_first_zero(const struct cpumask *cpumask)
+ 	return cpumask_first_zero(cpumask);
+ }
+ 
++/**
++ * bpf_cpumask_first_and() - Return the index of the first nonzero bit from the
++ *			     AND of two cpumasks.
++ * @src1: The first cpumask.
++ * @src2: The second cpumask.
++ *
++ * Find the index of the first nonzero bit of the AND of two cpumasks.
++ * struct bpf_cpumask pointers may be safely passed to @src1 and @src2.
++ */
++__bpf_kfunc u32 bpf_cpumask_first_and(const struct cpumask *src1,
++				      const struct cpumask *src2)
++{
++	return cpumask_first_and(src1, src2);
++}
++
+ /**
+  * bpf_cpumask_set_cpu() - Set a bit for a CPU in a BPF cpumask.
+  * @cpu: The CPU to be set in the cpumask.
+@@ -406,6 +421,7 @@ BTF_ID_FLAGS(func, bpf_cpumask_release, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_cpumask_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_cpumask_first, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_first_zero, KF_RCU)
++BTF_ID_FLAGS(func, bpf_cpumask_first_and, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_set_cpu, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_clear_cpu, KF_RCU)
+ BTF_ID_FLAGS(func, bpf_cpumask_test_cpu, KF_RCU)
+-- 
+2.40.1
+
 
