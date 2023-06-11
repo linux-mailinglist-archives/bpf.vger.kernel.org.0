@@ -1,224 +1,470 @@
-Return-Path: <bpf+bounces-2348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EEFB72B2EE
-	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 18:59:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE4672B3F7
+	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 22:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D662E2810F5
-	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 16:59:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 164121C209BB
+	for <lists+bpf@lfdr.de>; Sun, 11 Jun 2023 20:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DEC1C8EB;
-	Sun, 11 Jun 2023 16:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCD71095A;
+	Sun, 11 Jun 2023 20:43:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36A3BE7C
-	for <bpf@vger.kernel.org>; Sun, 11 Jun 2023 16:59:21 +0000 (UTC)
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66993E63
-	for <bpf@vger.kernel.org>; Sun, 11 Jun 2023 09:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1686502758; bh=7DgmiJ22fK35rNDSjxBWlZUyMsVle3zhBPTayVRxagg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=WlZvjTDlFW8Dge+gd1tlpy2eF6YGB8TV+StzVBR2hJE/BRtRxfyBmqKc3NKdxVPLKPyraFh73Y2lj7lUvActlXW4TCpUvpN/lJW2eQXM+eEn5zDzwFz+8YLBfpIwp07/SKJwsGJW/6j9q5jex6YhnQW7mpiCFFbbqecgV+pX/P0l4KoGUmOtkoMGXnJrNu8B6ktjwGpPu28V7W4PHKkSI98QhYOoyTywvvTLdPr3VqRbRXDKgfXOz1Pp/W9KBPFuF6YHkQWJW5ZCz4eDXGOZsaX01WbtQg0ZbW+eyD0wPaDDk0z+ou3xQgU5Kkmb+PTe2RrGIaxDejdEGhK3BWqifQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1686502758; bh=Bw/LP1AfuaenQ0zxwdibPZAH47OgxOVjpM6yDDmmHlq=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=kTuxdssiPuuJVLxUsysBhWHXN741iK7E6F/z6tAU0gbyw1PSQNP9NzU8vfUcpMalhyOKJnYxmoS5UEE2nLOsxVphsIWCfF7UsAJdGEgV/kV6Z47mw95tihV88imwQTPWXddRid3c0cUK6E6ZXf23i/XOKTVtxLdQmtxylRKiZXQaZWdZ0AYlIcS7yCuE5SplkvtJ9OLJPM/P6agxIDt6e+iKg+PtBPOou27TqCR1mZFXnCcP5Y344flZPXqylvQMH6KbtnLydXFU1gMAmwT7kniHHCfxmSHxniTdw5eVxnhw6Z9penxfUzAf3qZbKnY51avh7pHBF1mqFG4vfrieHQ==
-X-YMail-OSG: L.q6DH0VM1msMV_aMf1IXTl60njTH76ZX6CVdR2rTZWI.fi02qwrRdqY7t4QlR1
- ybQ2_iK3wO4D7UWTz.N5phjZ1HItKaFA6hQxTQd5vdxSBpNG5FROpV3WHLRlTKqtfMabF_39zYTP
- QgINTZG2KsTjYcimAEHM7sdYT1LkXPIFH9uYOINBTz6h1mp8GwCcpr6Yz3Ou8MlTyrTH10f.AJ1y
- uy.BcA4UMZyePvzlu09foH1.XFr5Cd0Anm7nSYRbUMNQtq7LZa143YVnAuO6CEPOYJZtvj4jNifk
- xjHEDj2xA.2EJEguY5A2uvdewg9VGWVuthJkASGb.491SebqIZeXQSESaC8Ntw0JX1gITJLAyRZI
- J9edhZFO6mKVqtuMA3Tu1zv9KW.3Q4dQbi1R3bZx2KzsqciOF0h5ewwjN93CaNMtMpGSSx3tqM8V
- g9P6_pcxbayv8AmKpfzi_X_ls9YxsNCJ7GiO5mrWFCWRJVHxLbZ.Qz35YWnOMP6gX85sd1KfEDxz
- CmWDsffx.OuoVX_LWN1A2.5ZVqqu0soMrcRYg8nwyX8Gweg2_qIfnf6K8p8B3kemuyRLEZg6wjO3
- 8lQEaNe.VFNFz0MfgKzGy_fw7Ty.p64yGxFLaozv_EoJZiUbqjqHY3zwOB6uGe5jh.p.BQ2ai1n.
- 8eATLaZUNlhZVg95JMSe.rq.ZxLw0lcjt.SZI0HlPhHP198M6i4t4a_x6HJUjYPlWk.LpykgtQ52
- 3Cg0QiipDh3ECZizT7EeRiIxO9IJGFDrYIuVLXm.fyU2JKH8oJEB.QTFSsR3bufCa8OanuJEyua4
- ozEvxi6lUR0q1OnSeqFxIXU8zDbzBxm5grFrX3K4W7skzTeQHiOAy0eA0Wyoz7GfC7tddedtjuPi
- shJNBR_fZRNnk0bhVAKC7Puk7GCfOUl0sv8TyRAXYNf0MVR2mFmVlKE9p95tKtWNC4TqHbq66X27
- gXeuZuHRxPjRFrdmV0ceaVLtKFBzHkDRBOxmKCfMaQ_XBMByq2SWnoBYdK2uwuBCklqdi9A8e0Nb
- NUBsD7nrTZNlWaSvioq2uhfSndGvjKa4pa1.SfHjhxSXgKRlg2mqvZmQj2mvhGdPjZ2Kp2zg24Oq
- igHS8ZmstUvCvHWhjSta3Vc5kuGCs0mMD8ZAl0EWFYtaf02L819JZVPA02Bt33yUhlhgM7jTl2vK
- 0X_GVLKGxgYygpzEMDu.fHnN8fCxXFjQwr.2g61uKWE6EPXXmWANWI0NUXJmw8f0599yLmjgiCXJ
- .pvZFSrbyVPtwkMvEehaQnel2YHSguKIBn0kLbw0u7VXNjREKPva.vNxm1DBwZqFnm8ubTZSDO0n
- 53W2H8jQLOf8iqJlizrVE9HYomUx4AiPFEfHdXEHgkW23adrFoa0OcjX5JF_49FFm.np4Y3G9EW8
- OVfafyn0Yt45XcAo.uP7VpykJ.vo98IAd29SQzhlu0AzL79UApfkBA8tU1nMRX9WCrV8tMfAB.V.
- N29FFQoICyOLudadxWbaWZMvTOZqkfWDBGemHZ8mKo0d3Op7hql_kO8NxoacA80zeS9mANQap5id
- Husp6EjloTOB0krz8oUaoFL55AcQ_T4A58LTqx4nWMjXRKFD4iIvFX70RWLL8Agv4KXo7DSDMYt6
- D3rRJo_W3vCgt__nWkDPl9lvVNQh4B3VxB3hDa4tZadUilbaAfC6n5tNw0Y3GVig8uv8fQ7OQ3aB
- 561Jd90WctFNC1xjCzj34Q6Qvq9enQlmIOEnQC.ITxD68OkWImZ7ii_dysHEbaD.KM3wyJRKhJri
- 3sRhW6Zig0jRJ9y9azhr5CuT8KDN8ntRAJ8RXc3x0nlzvzFUNQN6NQG4ANRfzxLeQsNJ66HGgIqu
- fKRcfA8J0mFm4bPecTytSWc1mbQszd11iGx5gGqPgpSllh9drLBoJVxSDnSAe65_azhz3vePzl6L
- tU0eR6CqMv.mxjfV_PSO_nfXdHH6BcXa9rKv4K1AhBftf0wF9_CSEJT5eMXu6XoqE6hj1abYgc0o
- Rrw9SMzMF6l4g7IcTZprTG_ZweRiQWXBlLXcDIO9QxlKEJSK4P8RpYt3jZufHF_U5vJkYf5fRB3u
- arKsV2E3TQ8LPAmzQ9MAe75VlJBmMCoHXGlsMIK_vUAEZ5zaF8C6OhYBQGtyIRG4UErIn1iTYAgv
- _NXhUUjpdRSWdp9OIYNXiUuk4mhkvhcl2JsCibzONAT7lbHYl5cgIYsZl90BV8TcDLOocgDaagMJ
- yuJIUc_DfXEcLGKqL.BleUPUT3gSzMEdR4j6pPoqjl0GuSTtkQ3uLTSRdVvklNK3yFbNf_L9l9BU
- O2zuT.3LXlq2.sw--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 3d22b0d8-f4f9-4c6a-a046-6dd8537797e8
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Sun, 11 Jun 2023 16:59:18 +0000
-Received: by hermes--production-ne1-574d4b7954-xz2cn (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 73c567dd6e3213e09855c459a66d5812;
-          Sun, 11 Jun 2023 16:59:16 +0000 (UTC)
-Message-ID: <c8dcb3b7-33ab-5ecc-ef11-0c42cd792934@schaufler-ca.com>
-Date: Sun, 11 Jun 2023 09:59:14 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0F32C9D;
+	Sun, 11 Jun 2023 20:43:23 +0000 (UTC)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3144E4E;
+	Sun, 11 Jun 2023 13:43:20 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b1b3836392so41645791fa.0;
+        Sun, 11 Jun 2023 13:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686516199; x=1689108199;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LDvPKEEw8JpFVZ6XsO+05o6a890refZ0b8CPIMe0v1Y=;
+        b=dIg3ePutDnUCTLvArNqRB5SFB4wL6Rb8TU3raRnDb0WejyjakQ2T3o2J3wSm+5M/yQ
+         OiMggPFklD0WwV+XZ1t286eOtmpmofRglwahFqrIDdnUAwdzvafbEmBezMgzEdcWkYlj
+         VAcP50oVkapqXdbKZtzzqtwnt4tdywm6Rrmi2VZB3jZiJPiCLECyrVGDDEGVfv/0eXIK
+         4fYbxem18H/zywQRHojQVNPzM4eiUV28sY2oKjnhISEzrRKlP8fe+dtEZA4Vd0D/zGNw
+         rw9B8YyBOcoQB2eyxZvCHsJzj75kojI1bUWZYJ+mHbBjJy0jO21mJRrxw2jbGAnqK+p/
+         0alg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686516199; x=1689108199;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LDvPKEEw8JpFVZ6XsO+05o6a890refZ0b8CPIMe0v1Y=;
+        b=ROcAb1X+dMefKE5NytCwTCB9YaM1AzvjSQ6LhmkXbvP1LiFvLqkGPtSKgCBsRmX7XP
+         Ub0+Hz2gfRgTlgC+pl+btRtq2HE+spLYiduht/GKfpN6I9wTxTAjA1iUmRa84+yZC/O6
+         QeuauMLQnYALn1jtvqttPg7NBGqT9ZP/VHiFcJfnPevqN817a/kOSfeulVnjFpjnyrDu
+         mo1BSIR0sBKlX5iIomuxWjnrJW2PArk2B3nXg6uKc6botFKXNBB08zk9WNdmW8D8JiY6
+         foHdDJws07gnjIA4EVGoN/lI1q9LaG1qbeas00cnidqkZiWFq2ixp1Y2SNOi7aep4KEz
+         E9EQ==
+X-Gm-Message-State: AC+VfDw1iO7082N9kwxfWUe7arZOmy1ZFaTZCuHq+aK/m4hPvHmRMc1r
+	UKLlj8a75SCW+PA98fiL/oA=
+X-Google-Smtp-Source: ACHHUZ7rV0noTu2E+w1DLxfUXFc4AxG5KUoAARsAB8bEwsRGJIbd1zP8Bd/kxfAakh7KtU3vVEBD4w==
+X-Received: by 2002:a19:4347:0:b0:4f3:b2a7:68ef with SMTP id m7-20020a194347000000b004f3b2a768efmr2704260lfj.10.1686516198358;
+        Sun, 11 Jun 2023 13:43:18 -0700 (PDT)
+Received: from ?IPV6:2a00:1e88:c487:9300:dcc4:573f:aaf5:21af? ([2a00:1e88:c487:9300:dcc4:573f:aaf5:21af])
+        by smtp.gmail.com with ESMTPSA id n18-20020a2e86d2000000b002ada919a09asm1429082ljj.73.2023.06.11.13.43.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jun 2023 13:43:17 -0700 (PDT)
+Message-ID: <3eb6216b-a3d2-e1ef-270c-8a0032a4a8a5@gmail.com>
+Date: Sun, 11 Jun 2023 23:43:15 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v12 2/4] smack: Set the SMACK64TRANSMUTE xattr in
- smack_inode_init_security()
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH RFC net-next v4 1/8] vsock/dgram: generalize recvmsg and
+ drop transport->dgram_dequeue
 Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, zohar@linux.ibm.com,
- dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com, stephen.smalley.work@gmail.com, eparis@parisplace.org
-Cc: linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
- bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
- nicolas.bouchinet@clip-os.org, Roberto Sassu <roberto.sassu@huawei.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20230610075738.3273764-1-roberto.sassu@huaweicloud.com>
- <20230610075738.3273764-3-roberto.sassu@huaweicloud.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20230610075738.3273764-3-roberto.sassu@huaweicloud.com>
+To: Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, "Michael S. Tsirkin"
+ <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Bryan Tan <bryantan@vmware.com>,
+ Vishnu Dasa <vdasa@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+ Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-1-0cebbb2ae899@bytedance.com>
+From: Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <20230413-b4-vsock-dgram-v4-1-0cebbb2ae899@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21516 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/10/2023 12:57 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> With the newly added ability of LSMs to supply multiple xattrs, set
-> SMACK64TRASMUTE in smack_inode_init_security(), instead of d_instantiate().
-> Do it by incrementing SMACK_INODE_INIT_XATTRS to 2 and by calling
-> lsm_get_xattr_slot() a second time, if the transmuting conditions are met.
->
-> The LSM infrastructure passes all xattrs provided by LSMs to the
-> filesystems through the initxattrs() callback, so that filesystems can
-> store xattrs in the disk.
->
-> After the change, the SMK_INODE_TRANSMUTE inode flag is always set by
-> d_instantiate() after fetching SMACK64TRANSMUTE from the disk. Before it
-> was done by smack_inode_post_setxattr() as result of the __vfs_setxattr()
-> call.
->
-> Removing __vfs_setxattr() also prevents invalidating the EVM HMAC, by
-> adding a new xattr without checking and updating the existing HMAC.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Hello Bobby! Thanks for this patchset! Small comment below:
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-
+On 10.06.2023 03:58, Bobby Eshleman wrote:
+> This commit drops the transport->dgram_dequeue callback and makes
+> vsock_dgram_recvmsg() generic. It also adds additional transport
+> callbacks for use by the generic vsock_dgram_recvmsg(), such as for
+> parsing skbs for CID/port which vary in format per transport.
+> 
+> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
 > ---
->  security/smack/smack.h     |  2 +-
->  security/smack/smack_lsm.c | 45 ++++++++++++++++++++++++--------------
->  2 files changed, 29 insertions(+), 18 deletions(-)
->
-> diff --git a/security/smack/smack.h b/security/smack/smack.h
-> index aa15ff56ed6..041688e5a77 100644
-> --- a/security/smack/smack.h
-> +++ b/security/smack/smack.h
-> @@ -128,7 +128,7 @@ struct task_smack {
+>  drivers/vhost/vsock.c                   |  4 +-
+>  include/linux/virtio_vsock.h            |  3 ++
+>  include/net/af_vsock.h                  | 13 ++++++-
+>  net/vmw_vsock/af_vsock.c                | 51 ++++++++++++++++++++++++-
+>  net/vmw_vsock/hyperv_transport.c        | 17 +++++++--
+>  net/vmw_vsock/virtio_transport.c        |  4 +-
+>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++
+>  net/vmw_vsock/vmci_transport.c          | 68 +++++++++++++--------------------
+>  net/vmw_vsock/vsock_loopback.c          |  4 +-
+>  9 files changed, 132 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index 6578db78f0ae..c8201c070b4b 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -410,9 +410,11 @@ static struct virtio_transport vhost_transport = {
+>  		.cancel_pkt               = vhost_transport_cancel_pkt,
 >  
->  #define	SMK_INODE_INSTANT	0x01	/* inode is instantiated */
->  #define	SMK_INODE_TRANSMUTE	0x02	/* directory is transmuting */
-> -#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted */
-> +#define	SMK_INODE_CHANGED	0x04	/* smack was transmuted (unused) */
->  #define	SMK_INODE_IMPURE	0x08	/* involved in an impure transaction */
+>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>  		.dgram_bind               = virtio_transport_dgram_bind,
+>  		.dgram_allow              = virtio_transport_dgram_allow,
+> +		.dgram_get_cid		  = virtio_transport_dgram_get_cid,
+> +		.dgram_get_port		  = virtio_transport_dgram_get_port,
+> +		.dgram_get_length	  = virtio_transport_dgram_get_length,
 >  
->  /*
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index 25ade3819af..679156601a1 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -52,7 +52,14 @@
->  #define SMK_RECEIVING	1
->  #define SMK_SENDING	2
+>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> index c58453699ee9..23521a318cf0 100644
+> --- a/include/linux/virtio_vsock.h
+> +++ b/include/linux/virtio_vsock.h
+> @@ -219,6 +219,9 @@ bool virtio_transport_stream_allow(u32 cid, u32 port);
+>  int virtio_transport_dgram_bind(struct vsock_sock *vsk,
+>  				struct sockaddr_vm *addr);
+>  bool virtio_transport_dgram_allow(u32 cid, u32 port);
+> +int virtio_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid);
+> +int virtio_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port);
+> +int virtio_transport_dgram_get_length(struct sk_buff *skb, size_t *len);
 >  
-> -#define SMACK_INODE_INIT_XATTRS 1
-> +/*
-> + * Smack uses multiple xattrs.
-> + * SMACK64 - for access control,
-> + * SMACK64TRANSMUTE - label initialization,
-> + * Not saved on files - SMACK64IPIN and SMACK64IPOUT,
-> + * Must be set explicitly - SMACK64EXEC and SMACK64MMAP
-> + */
-> +#define SMACK_INODE_INIT_XATTRS 2
+>  int virtio_transport_connect(struct vsock_sock *vsk);
 >  
->  #ifdef SMACK_IPV6_PORT_LABELING
->  static DEFINE_MUTEX(smack_ipv6_lock);
-> @@ -935,7 +942,6 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->  				     struct xattr *xattrs, int *xattr_count)
+> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+> index 0e7504a42925..7bedb9ee7e3e 100644
+> --- a/include/net/af_vsock.h
+> +++ b/include/net/af_vsock.h
+> @@ -120,11 +120,20 @@ struct vsock_transport {
+>  
+>  	/* DGRAM. */
+>  	int (*dgram_bind)(struct vsock_sock *, struct sockaddr_vm *);
+> -	int (*dgram_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+> -			     size_t len, int flags);
+>  	int (*dgram_enqueue)(struct vsock_sock *, struct sockaddr_vm *,
+>  			     struct msghdr *, size_t len);
+>  	bool (*dgram_allow)(u32 cid, u32 port);
+> +	int (*dgram_get_cid)(struct sk_buff *skb, unsigned int *cid);
+> +	int (*dgram_get_port)(struct sk_buff *skb, unsigned int *port);
+> +	int (*dgram_get_length)(struct sk_buff *skb, size_t *length);
+> +
+> +	/* The number of bytes into the buffer at which the payload starts, as
+> +	 * first seen by the receiving socket layer. For example, if the
+> +	 * transport presets the skb pointers using skb_pull(sizeof(header))
+> +	 * than this would be zero, otherwise it would be the size of the
+> +	 * header.
+> +	 */
+> +	const size_t dgram_payload_offset;
+>  
+>  	/* STREAM. */
+>  	/* TODO: stream_bind() */
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index efb8a0937a13..ffb4dd8b6ea7 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -1271,11 +1271,15 @@ static int vsock_dgram_connect(struct socket *sock,
+>  int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  			size_t len, int flags)
 >  {
->  	struct task_smack *tsp = smack_cred(current_cred());
-> -	struct inode_smack *issp = smack_inode(inode);
->  	struct smack_known *skp = smk_of_task(tsp);
->  	struct smack_known *isp = smk_of_inode(inode);
->  	struct smack_known *dsp = smk_of_inode(dir);
-> @@ -963,6 +969,8 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->  		if ((tsp->smk_task == tsp->smk_transmuted) ||
->  		    (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
->  		     smk_inode_transmutable(dir))) {
-> +			struct xattr *xattr_transmute;
-> +
->  			/*
->  			 * The caller of smack_dentry_create_files_as()
->  			 * should have overridden the current cred, so the
-> @@ -971,7 +979,18 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
->  			 */
->  			if (tsp->smk_task != tsp->smk_transmuted)
->  				isp = dsp;
-> -			issp->smk_flags |= SMK_INODE_CHANGED;
-> +			xattr_transmute = lsm_get_xattr_slot(xattrs,
-> +							     xattr_count);
-> +			if (xattr_transmute) {
-> +				xattr_transmute->value = kmemdup(TRANS_TRUE,
-> +								 TRANS_TRUE_SIZE,
-> +								 GFP_NOFS);
-> +				if (!xattr_transmute->value)
-> +					return -ENOMEM;
-> +
-> +				xattr_transmute->value_len = TRANS_TRUE_SIZE;
-> +				xattr_transmute->name = XATTR_SMACK_TRANSMUTE;
-> +			}
->  		}
+> +	const struct vsock_transport *transport;
+>  #ifdef CONFIG_BPF_SYSCALL
+>  	const struct proto *prot;
+>  #endif
+>  	struct vsock_sock *vsk;
+> +	struct sk_buff *skb;
+> +	size_t payload_len;
+>  	struct sock *sk;
+> +	int err;
 >  
->  		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
-> @@ -3518,20 +3537,12 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
->  			 * If there is a transmute attribute on the
->  			 * directory mark the inode.
->  			 */
-> -			if (isp->smk_flags & SMK_INODE_CHANGED) {
-> -				isp->smk_flags &= ~SMK_INODE_CHANGED;
-> -				rc = __vfs_setxattr(&nop_mnt_idmap, dp, inode,
-> -					XATTR_NAME_SMACKTRANSMUTE,
-> -					TRANS_TRUE, TRANS_TRUE_SIZE,
-> -					0);
-> -			} else {
-> -				rc = __vfs_getxattr(dp, inode,
-> -					XATTR_NAME_SMACKTRANSMUTE, trattr,
-> -					TRANS_TRUE_SIZE);
-> -				if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
-> -						       TRANS_TRUE_SIZE) != 0)
-> -					rc = -EINVAL;
-> -			}
-> +			rc = __vfs_getxattr(dp, inode,
-> +					    XATTR_NAME_SMACKTRANSMUTE, trattr,
-> +					    TRANS_TRUE_SIZE);
-> +			if (rc >= 0 && strncmp(trattr, TRANS_TRUE,
-> +					       TRANS_TRUE_SIZE) != 0)
-> +				rc = -EINVAL;
->  			if (rc >= 0)
->  				transflag = SMK_INODE_TRANSMUTE;
->  		}
+>  	sk = sock->sk;
+>  	vsk = vsock_sk(sk);
+> @@ -1286,7 +1290,52 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  		return prot->recvmsg(sk, msg, len, flags, NULL);
+>  #endif
+>  
+> -	return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+> +	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+> +		return -EOPNOTSUPP;
+> +
+> +	transport = vsk->transport;
+> +
+> +	/* Retrieve the head sk_buff from the socket's receive queue. */
+> +	err = 0;
+> +	skb = skb_recv_datagram(sk_vsock(vsk), flags, &err);
+> +	if (!skb)
+> +		return err;
+> +
+> +	err = transport->dgram_get_length(skb, &payload_len);
+> +	if (err)
+> +		goto out;
+> +
+> +	if (payload_len > len) {
+> +		payload_len = len;
+> +		msg->msg_flags |= MSG_TRUNC;
+> +	}
+> +
+> +	/* Place the datagram payload in the user's iovec. */
+> +	err = skb_copy_datagram_msg(skb, transport->dgram_payload_offset, msg, payload_len);
+> +	if (err)
+> +		goto out;
+> +
+> +	if (msg->msg_name) {
+> +		/* Provide the address of the sender. */
+> +		DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+> +		unsigned int cid, port;
+> +
+> +		err = transport->dgram_get_cid(skb, &cid);
+> +		if (err)
+> +			goto out;
+> +
+> +		err = transport->dgram_get_port(skb, &port);
+> +		if (err)
+> +			goto out;
+
+Maybe we can merge 'dgram_get_cid' and 'dgram_get_port' to a single callback? Because I see that this is
+the only place where both are used (correct me if i'm wrong) and logically both operates with addresses:
+CID and port. E.g. something like that: dgram_get_cid_n_port().
+
+Moreover, I'm not sure, but is it good "tradeoff" here: remove transport specific callback for dgram receive
+where we already have 'msghdr' with both data buffer and buffer for 'sockaddr_vm' and instead of it add new
+several fields (callbacks) to transports like dgram_get_cid(), dgram_get_port()? I agree, that in each transport
+specific callback we will have same copying logic by calling 'skb_copy_datagram_msg()' and filling address
+by using 'vsock_addr_init()', but in this case we don't need to update transports too much. For example HyperV
+still unchanged as it does not support SOCK_DGRAM. For VMCI You just need to add 'vsock_addr_init()' logic
+to it's dgram dequeue callback.
+
+What do You think?
+
+Thanks, Arseniy
+
+> +
+> +		vsock_addr_init(vm_addr, cid, port);
+> +		msg->msg_namelen = sizeof(*vm_addr);
+> +	}
+> +	err = payload_len;
+> +
+> +out:
+> +	skb_free_datagram(&vsk->sk, skb);
+> +	return err;
+>  }
+>  EXPORT_SYMBOL_GPL(vsock_dgram_recvmsg);
+>  
+> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+> index 7cb1a9d2cdb4..ff6e87e25fa0 100644
+> --- a/net/vmw_vsock/hyperv_transport.c
+> +++ b/net/vmw_vsock/hyperv_transport.c
+> @@ -556,8 +556,17 @@ static int hvs_dgram_bind(struct vsock_sock *vsk, struct sockaddr_vm *addr)
+>  	return -EOPNOTSUPP;
+>  }
+>  
+> -static int hvs_dgram_dequeue(struct vsock_sock *vsk, struct msghdr *msg,
+> -			     size_t len, int flags)
+> +static int hvs_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int hvs_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int hvs_dgram_get_length(struct sk_buff *skb, size_t *len)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> @@ -833,7 +842,9 @@ static struct vsock_transport hvs_transport = {
+>  	.shutdown                 = hvs_shutdown,
+>  
+>  	.dgram_bind               = hvs_dgram_bind,
+> -	.dgram_dequeue            = hvs_dgram_dequeue,
+> +	.dgram_get_cid		  = hvs_dgram_get_cid,
+> +	.dgram_get_port		  = hvs_dgram_get_port,
+> +	.dgram_get_length	  = hvs_dgram_get_length,
+>  	.dgram_enqueue            = hvs_dgram_enqueue,
+>  	.dgram_allow              = hvs_dgram_allow,
+>  
+> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> index e95df847176b..5763cdf13804 100644
+> --- a/net/vmw_vsock/virtio_transport.c
+> +++ b/net/vmw_vsock/virtio_transport.c
+> @@ -429,9 +429,11 @@ static struct virtio_transport virtio_transport = {
+>  		.cancel_pkt               = virtio_transport_cancel_pkt,
+>  
+>  		.dgram_bind               = virtio_transport_dgram_bind,
+> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>  		.dgram_allow              = virtio_transport_dgram_allow,
+> +		.dgram_get_cid		  = virtio_transport_dgram_get_cid,
+> +		.dgram_get_port		  = virtio_transport_dgram_get_port,
+> +		.dgram_get_length	  = virtio_transport_dgram_get_length,
+>  
+>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index b769fc258931..e6903c719964 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -797,6 +797,24 @@ int virtio_transport_dgram_bind(struct vsock_sock *vsk,
+>  }
+>  EXPORT_SYMBOL_GPL(virtio_transport_dgram_bind);
+>  
+> +int virtio_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_cid);
+> +
+> +int virtio_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_port);
+> +
+> +int virtio_transport_dgram_get_length(struct sk_buff *skb, size_t *len)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_length);
+> +
+>  bool virtio_transport_dgram_allow(u32 cid, u32 port)
+>  {
+>  	return false;
+> diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transport.c
+> index b370070194fa..bbc63826bf48 100644
+> --- a/net/vmw_vsock/vmci_transport.c
+> +++ b/net/vmw_vsock/vmci_transport.c
+> @@ -1731,57 +1731,40 @@ static int vmci_transport_dgram_enqueue(
+>  	return err - sizeof(*dg);
+>  }
+>  
+> -static int vmci_transport_dgram_dequeue(struct vsock_sock *vsk,
+> -					struct msghdr *msg, size_t len,
+> -					int flags)
+> +static int vmci_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+>  {
+> -	int err;
+>  	struct vmci_datagram *dg;
+> -	size_t payload_len;
+> -	struct sk_buff *skb;
+>  
+> -	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+> -		return -EOPNOTSUPP;
+> +	dg = (struct vmci_datagram *)skb->data;
+> +	if (!dg)
+> +		return -EINVAL;
+>  
+> -	/* Retrieve the head sk_buff from the socket's receive queue. */
+> -	err = 0;
+> -	skb = skb_recv_datagram(&vsk->sk, flags, &err);
+> -	if (!skb)
+> -		return err;
+> +	*cid = dg->src.context;
+> +	return 0;
+> +}
+> +
+> +static int vmci_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+> +{
+> +	struct vmci_datagram *dg;
+>  
+>  	dg = (struct vmci_datagram *)skb->data;
+>  	if (!dg)
+> -		/* err is 0, meaning we read zero bytes. */
+> -		goto out;
+> -
+> -	payload_len = dg->payload_size;
+> -	/* Ensure the sk_buff matches the payload size claimed in the packet. */
+> -	if (payload_len != skb->len - sizeof(*dg)) {
+> -		err = -EINVAL;
+> -		goto out;
+> -	}
+> +		return -EINVAL;
+>  
+> -	if (payload_len > len) {
+> -		payload_len = len;
+> -		msg->msg_flags |= MSG_TRUNC;
+> -	}
+> +	*port = dg->src.resource;
+> +	return 0;
+> +}
+>  
+> -	/* Place the datagram payload in the user's iovec. */
+> -	err = skb_copy_datagram_msg(skb, sizeof(*dg), msg, payload_len);
+> -	if (err)
+> -		goto out;
+> +static int vmci_transport_dgram_get_length(struct sk_buff *skb, size_t *len)
+> +{
+> +	struct vmci_datagram *dg;
+>  
+> -	if (msg->msg_name) {
+> -		/* Provide the address of the sender. */
+> -		DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+> -		vsock_addr_init(vm_addr, dg->src.context, dg->src.resource);
+> -		msg->msg_namelen = sizeof(*vm_addr);
+> -	}
+> -	err = payload_len;
+> +	dg = (struct vmci_datagram *)skb->data;
+> +	if (!dg)
+> +		return -EINVAL;
+>  
+> -out:
+> -	skb_free_datagram(&vsk->sk, skb);
+> -	return err;
+> +	*len = dg->payload_size;
+> +	return 0;
+>  }
+>  
+>  static bool vmci_transport_dgram_allow(u32 cid, u32 port)
+> @@ -2040,9 +2023,12 @@ static struct vsock_transport vmci_transport = {
+>  	.release = vmci_transport_release,
+>  	.connect = vmci_transport_connect,
+>  	.dgram_bind = vmci_transport_dgram_bind,
+> -	.dgram_dequeue = vmci_transport_dgram_dequeue,
+>  	.dgram_enqueue = vmci_transport_dgram_enqueue,
+>  	.dgram_allow = vmci_transport_dgram_allow,
+> +	.dgram_get_cid = vmci_transport_dgram_get_cid,
+> +	.dgram_get_port = vmci_transport_dgram_get_port,
+> +	.dgram_get_length = vmci_transport_dgram_get_length,
+> +	.dgram_payload_offset = sizeof(struct vmci_datagram),
+>  	.stream_dequeue = vmci_transport_stream_dequeue,
+>  	.stream_enqueue = vmci_transport_stream_enqueue,
+>  	.stream_has_data = vmci_transport_stream_has_data,
+> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+> index 5c6360df1f31..2f3cabc79ee5 100644
+> --- a/net/vmw_vsock/vsock_loopback.c
+> +++ b/net/vmw_vsock/vsock_loopback.c
+> @@ -62,9 +62,11 @@ static struct virtio_transport loopback_transport = {
+>  		.cancel_pkt               = vsock_loopback_cancel_pkt,
+>  
+>  		.dgram_bind               = virtio_transport_dgram_bind,
+> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>  		.dgram_allow              = virtio_transport_dgram_allow,
+> +		.dgram_get_cid		  = virtio_transport_dgram_get_cid,
+> +		.dgram_get_port		  = virtio_transport_dgram_get_port,
+> +		.dgram_get_length	  = virtio_transport_dgram_get_length,
+>  
+>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+> 
 
