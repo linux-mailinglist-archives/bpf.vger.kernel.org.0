@@ -1,143 +1,168 @@
-Return-Path: <bpf+bounces-2404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0B372C97C
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:14:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278BF72C992
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 600421C20A61
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 15:14:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3B14281039
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 15:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DF01C77C;
-	Mon, 12 Jun 2023 15:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638F11D2A1;
+	Mon, 12 Jun 2023 15:16:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49E019511
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 15:14:00 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B318F
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 08:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=FdmdFmO8c/jAv79q4Hel9ETQKm0x696dp8emycEt6bg=; b=Ix4VVrymbiDEMlPlEK40KTNFlo
-	q/T4qHuQbFjFszFhOkVqqibloTDGtWXwA3oOdVVp98qO1fa2hHXj8rvxL8fL1nnaitkl4jdIx3fVu
-	dTwpG1JqBEc4S6lxEWnnOgbFJXTsXQIW6UrgZl3Lw3OwUWqR0ySidFx6MG4ykwTXzf2NGAGRHraRP
-	qeyG3CQCRwvi6GSOcx2erX4HaDkUR0gAkx0b4Q1bjnZ7KL1mU1nBgzSs1THQpri1YCpUcFYw3aA9s
-	KdWgiadPEg/X1sGepH830J3fpJIRV5BLEntLRg5ttpgd7MhGmoA1kNqpBSU6zY4s/piYoD3ulRgW+
-	RFUX/Hbw==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q8jEy-000FV4-E7; Mon, 12 Jun 2023 17:13:56 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1q8jEy-000TSZ-3N; Mon, 12 Jun 2023 17:13:56 +0200
-Subject: Re: [PATCH bpf-next v1] selftests/bpf: fix invalid pointer check in
- get_xlated_program()
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com,
- dan.carpenter@linaro.org
-References: <20230609221637.2631800-1-eddyz87@gmail.com>
- <4f9f4242-6943-5305-20d5-0270aaf506ed@iogearbox.net>
- <b1936c02fbda2ddc0b266d28b5de5c4aacbba191.camel@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c690cfad-544b-1d96-3675-9f6b32c99ec5@iogearbox.net>
-Date: Mon, 12 Jun 2023 17:13:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3D51C744
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 15:16:18 +0000 (UTC)
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C781E5F;
+	Mon, 12 Jun 2023 08:16:17 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-465db156268so1210545e0c.3;
+        Mon, 12 Jun 2023 08:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686582976; x=1689174976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q1zV05vX5FrXpt+4ScqDlwqn2wRbh7AS+yzbx0x5IFE=;
+        b=rmR/cDpWkmFR7Rj8kGucBQmlZ+26ZkX8wN4O6Iy2hCRBgJL9FOo4yzIQcutakdxfvJ
+         tWdOb3b+JWEBmMKM6kIOqu4xLTyZhC8cjyo+DBH5/4n1CY0OWPT1g9y7iI3QXbJxh4+K
+         q5m0ZbkYk5p0KrkbyEsf9O7NZEGiF+v0YR+qeGw/ZpGmVyWZFZLAtawlpYw4peFaE/l6
+         clJ3GWi041l5C0HXRotHMYJBMTXRdSdLxdRmk/FGUOHt4Nf7WUXXegMrFb22oXUjbcH5
+         4nrM5Tdpj+5Conty06BlMVyNZUbR06xzJux1+rjvJPZmels6UyxE2rmfr7vbItIOuv2E
+         lUsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686582976; x=1689174976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q1zV05vX5FrXpt+4ScqDlwqn2wRbh7AS+yzbx0x5IFE=;
+        b=IBOJFj0qdzEGhlwAUQbYx/cAnf6KkvGoD4OOZhHVsEL84xwiwPqz3Ur8wrSFyp2bhD
+         MGkn2YlO64dIw91udQPO7HruiRUUM4G+5sUloQWW9tJ5GZJlLYB1TXEZUX+a4Xu7I0Hp
+         FYj15Uj2Kt7TlpK8rSiVZ5HXx9X3QxNPpZSZja4imI4mFWKRhHHdTrwGR+dKW3rrdPzK
+         4EbIVRdhVKqYMe4BJYVUdnOofYUWDQZX8YpJIVfNrEUUgE6k/Wb+wnshslmlafWyQDY/
+         dwXKNNsEtoicUJz+0dZPB0FMo0ucQrrpbh2P6aMVT47Z0j/M6wu1YR/+Nq0R1DWj0dVF
+         szJg==
+X-Gm-Message-State: AC+VfDzd1zyEYCrBTC734ZRfe1gW8DdhAYuI9RiASdGwZ+NejtNFtspt
+	Odzcz5QFlgTyOdG/AsRHkr8=
+X-Google-Smtp-Source: ACHHUZ7/f6cuG9bVLe2BRduLqopKNspoei8KhdWswr84bS8R/1QO3Pu4i/XnjlydATWbxWEcpkHNEg==
+X-Received: by 2002:a1f:4c81:0:b0:45d:edef:788c with SMTP id z123-20020a1f4c81000000b0045dedef788cmr3844385vka.1.1686582976257;
+        Mon, 12 Jun 2023 08:16:16 -0700 (PDT)
+Received: from vultr.guest ([108.61.23.146])
+        by smtp.gmail.com with ESMTPSA id o17-20020a0cf4d1000000b0062de0dde008sm1533953qvm.64.2023.06.12.08.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 08:16:15 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	quentin@isovalent.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v3 bpf-next 00/10] bpf: Support ->fill_link_info for kprobe_multi and perf_event links
+Date: Mon, 12 Jun 2023 15:15:58 +0000
+Message-Id: <20230612151608.99661-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b1936c02fbda2ddc0b266d28b5de5c4aacbba191.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26937/Mon Jun 12 09:24:05 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/12/23 5:05 PM, Eduard Zingerman wrote:
-> On Mon, 2023-06-12 at 17:00 +0200, Daniel Borkmann wrote:
->> On 6/10/23 12:16 AM, Eduard Zingerman wrote:
->>> Dan Carpenter reported invalid check for calloc() result in
->>> test_verifier.c:get_xlated_program():
->>>
->>>     ./tools/testing/selftests/bpf/test_verifier.c:1365 get_xlated_program()
->>>     warn: variable dereferenced before check 'buf' (see line 1364)
->>>
->>>     ./tools/testing/selftests/bpf/test_verifier.c
->>>       1363		*cnt = xlated_prog_len / buf_element_size;
->>>       1364		*buf = calloc(*cnt, buf_element_size);
->>>       1365		if (!buf) {
->>>
->>>     This should be if (!*buf) {
->>>
->>>       1366			perror("can't allocate xlated program buffer");
->>>       1367			return -ENOMEM;
->>>
->>> This commit refactors the get_xlated_program() to avoid using double
->>> pointer type.
->>
->> Isn't the small reported fix above sufficient? (Either is fine with me though.)
-> 
-> I think it is less prone to mechanical mistakes without double pointers
-> (in case if this function would be modified sometimes in the future).
+This patchset enhances the usability of kprobe_multi programs by introducing
+support for ->fill_link_info. This allows users to easily determine the
+probed functions associated with a kprobe_multi program. While
+`bpftool perf show` already provides information about functions probed by
+perf_event programs, supporting ->fill_link_info ensures consistent access to
+this information across all bpf links.
 
-Ok.
+In addition, this patch extends support to generic perf events, which are
+currently not covered by `bpftool perf show`. While userspace is exposed to
+only the perf type and config, other attributes such as sample_period and
+sample_freq are disregarded.
 
-> But I can rollback to a small fix if you insist.
-> 
->>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->>> Closes: https://lore.kernel.org/bpf/ZH7u0hEGVB4MjGZq@moroto/
->>> Fixes: 933ff53191eb ("selftests/bpf: specify expected instructions in test_verifier tests")
->>> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
->>> ---
->>>    tools/testing/selftests/bpf/test_verifier.c | 26 ++++++++++++---------
->>>    1 file changed, 15 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
->>> index 71704a38cac3..c6bc9e26d333 100644
->>> --- a/tools/testing/selftests/bpf/test_verifier.c
->>> +++ b/tools/testing/selftests/bpf/test_verifier.c
->>> @@ -1341,45 +1341,48 @@ static bool cmp_str_seq(const char *log, const char *exp)
->>>    	return true;
->>>    }
->>>    
->>> -static int get_xlated_program(int fd_prog, struct bpf_insn **buf, int *cnt)
->>> +static struct bpf_insn *get_xlated_program(int fd_prog, int *cnt)
->>>    {
->>>    	struct bpf_prog_info info = {};
->>>    	__u32 info_len = sizeof(info);
->>> +	__u32 buf_element_size;
->>>    	__u32 xlated_prog_len;
->>> -	__u32 buf_element_size = sizeof(struct bpf_insn);
->>> +	struct bpf_insn *buf;
->>> +
->>> +	buf_element_size = sizeof(struct bpf_insn);
->>
->> Just small nit: the `__u32 buf_element_size = sizeof(struct bpf_insn);` could have
->> stayed as is.
-> 
-> Moved it to have "inverse Christmas tree" for declarations,
-> can send V2 undoing this.
+To ensure accurate identification of probed functions, it is preferable to
+expose the address directly rather than relying solely on the symbol name.
+However, this implementation respects the kptr_restrict setting and avoids
+exposing the address if it is not permitted.
 
-Nah, it's fine. Fixed up while applying. Thanks!
+v2->v3:
+- Expose flags instead of retporbe (Andrii)
+- Simplify the check on kmulti_link->cnt (Andrii)
+- Use kallsyms_show_value() instead (Andrii)
+- Show also the module name for kprobe_multi (Andrii)
+- Add new enum bpf_perf_link_type (Andrii)
+- Move perf event names into bpftool (Andrii, Quentin, Jiri)
+- Keep perf event names in sync with perf tools (Jiri) 
+
+v1->v2:
+- Fix sparse warning (Stanislav, lkp@intel.com)
+- Fix BPF CI build error
+- Reuse kernel_syms_load() (Alexei)
+- Print 'name' instead of 'func' (Alexei)
+- Show whether the probe is retprobe or not (Andrii)
+- Add comment for the meaning of perf_event name (Andrii)
+- Add support for generic perf event
+- Adhere to the kptr_restrict setting
+
+RFC->v1:
+- Use a single copy_to_user() instead (Jiri)
+- Show also the symbol name in bpftool (Quentin, Alexei)
+- Use calloc() instead of malloc() in bpftool (Quentin)
+- Avoid having conditional entries in the JSON output (Quentin)
+- Drop ->show_fdinfo (Alexei)
+- Use __u64 instead of __aligned_u64 for the field addr (Alexei)
+- Avoid the contradiction in perf_event name length (Alexei)
+- Address a build warning reported by kernel test robot <lkp@intel.com>
+
+Yafang Shao (10):
+  bpf: Support ->fill_link_info for kprobe_multi
+  bpftool: Dump the kernel symbol's module name
+  bpftool: Show probed function in kprobe_multi link info
+  bpf: Protect probed address based on kptr_restrict setting
+  bpf: Clear the probe_addr for uprobe
+  bpf: Expose symbol's respective address
+  bpf: Add a common helper bpf_copy_to_user()
+  bpf: Support ->fill_link_info for perf_event
+  bpftool: Add perf event names
+  bpftool: Show probed function in perf_event link info
+
+ include/uapi/linux/bpf.h          |  37 +++++
+ kernel/bpf/syscall.c              | 158 +++++++++++++++++--
+ kernel/trace/bpf_trace.c          |  32 +++-
+ kernel/trace/trace_kprobe.c       |   7 +-
+ tools/bpf/bpftool/link.c          | 322 +++++++++++++++++++++++++++++++++++++-
+ tools/bpf/bpftool/perf.c          | 107 +++++++++++++
+ tools/bpf/bpftool/perf.h          |  11 ++
+ tools/bpf/bpftool/xlated_dumper.c |   6 +-
+ tools/bpf/bpftool/xlated_dumper.h |   2 +
+ tools/include/uapi/linux/bpf.h    |  37 +++++
+ 10 files changed, 700 insertions(+), 19 deletions(-)
+ create mode 100644 tools/bpf/bpftool/perf.h
+
+-- 
+1.8.3.1
+
 
