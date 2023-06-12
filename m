@@ -1,87 +1,157 @@
-Return-Path: <bpf+bounces-2370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6C672BAFA
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 10:42:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C05A072BB16
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 10:45:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC469281126
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 08:42:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95E3E281094
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 08:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90087168DF;
-	Mon, 12 Jun 2023 08:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B0D11C99;
+	Mon, 12 Jun 2023 08:45:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA7F11CB4;
-	Mon, 12 Jun 2023 08:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B9344C433AF;
-	Mon, 12 Jun 2023 08:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686559222;
-	bh=XIyenNciiiJDChhRpT8N9ii7Sgal6DCbgkC2n7EXesM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=So3aY0ySSEkL2cF8EngCzh937wqi3oDmCxAuZXKPamR5jZLSRwqZnjDjbWiNbQzRn
-	 Jzra92kJXJKpHIQqBjYV3Yw1UYE/JR87jHGT7ztJ78qKnVbSM9RD20IfDaReyPtVFd
-	 8j0gxUliYbxvvMThiuand+cAzCFGXJPCqVODgjSlptvB6S0JoswKPdVsNGd+xyKpml
-	 jAkv7yAC1vzJBURRMO5YwszfV/yS+fKsyu7Qzb8EnGZWrcT1XiaU+KrJDVuYMmW634
-	 4a22hzp1XhNRnCH9GRfQrlg/ZL6yPg3RwUfLy1Sp8J0VcTLM16dplCEKgJwcahfwX2
-	 LsRwk3ekPplsg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F233E4F128;
-	Mon, 12 Jun 2023 08:40:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB2E1FB7
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 08:45:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1F39BB;
+	Mon, 12 Jun 2023 01:45:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9FB41FB;
+	Mon, 12 Jun 2023 01:46:25 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E37E53F663;
+	Mon, 12 Jun 2023 01:45:37 -0700 (PDT)
+Message-ID: <751cb217-4be0-ddfc-780b-87517a8e337a@arm.com>
+Date: Mon, 12 Jun 2023 09:45:38 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next,V2] net: mana: Add support for vlan tagging
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168655922258.2912.1350478112565336594.git-patchwork-notify@kernel.org>
-Date: Mon, 12 Jun 2023 08:40:22 +0000
-References: <1686314837-14042-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1686314837-14042-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- kys@microsoft.com, paulros@microsoft.com, olaf@aepfle.de,
- vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
- hawk@kernel.org, tglx@linutronix.de, shradhagupta@linux.microsoft.com,
- linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 2/2] perf/ring_buffer: Fix high-order allocations for AUX
+ space with correct MAX_ORDER limit
+Content-Language: en-US
+To: Shuai Xue <xueshuai@linux.alibaba.com>,
+ alexander.shishkin@linux.intel.com, peterz@infradead.org,
+ kirill@shutemov.name
+Cc: mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+ jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+ adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
+ <20230612052452.53425-3-xueshuai@linux.alibaba.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20230612052452.53425-3-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
 
-On Fri,  9 Jun 2023 05:47:17 -0700 you wrote:
-> To support vlan, use MANA_LONG_PKT_FMT if vlan tag is present in TX
-> skb. Then extract the vlan tag from the skb struct, and save it to
-> tx_oob for the NIC to transmit. For vlan tags on the payload, they
-> are accepted by the NIC too.
+On 12/06/2023 06:24, Shuai Xue wrote:
+> When perf-record with a large AUX area, e.g 2GB:
 > 
-> For RX, extract the vlan tag from CQE and put it into skb.
+>     #perf record -C 0 -m ,2G -e arm_spe_0// -- sleep 1
 > 
-> [...]
+> it reveals a WARNING with __alloc_pages:
+> 
+> [   48.888553] ------------[ cut here ]------------
+> [   48.888559] WARNING: CPU: 39 PID: 17438 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
+> [   48.888569] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) vfat(E) fat(E) aes_ce_blk(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
+> [   48.888610] CPU: 39 PID: 17438 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #56
+> [   48.888613] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
+> [   48.888614] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+> [   48.888616] pc : __alloc_pages+0x1ec/0x248
+> [   48.888619] lr : rb_alloc_aux_page+0x78/0xe0
+> [   48.888622] sp : ffff800037c5b9e0
+> [   48.888623] pmr_save: 000000e0
+> [   48.888624] x29: ffff800037c5b9e0 x28: ffff00082743b800 x27: 0000000000000000
+> [   48.888627] x26: 0000000000080000 x25: ffff000000000000 x24: ffff000860b21380
+> [   48.888629] x23: ffff8000093fd3c0 x22: ffff00081a4a2080 x21: 000000000000000b
+> [   48.888631] x20: 0000000000000000 x19: 000000000000000b x18: 0000000000000020
+> [   48.888634] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff00081a4a2610
+> [   48.888636] x14: 0000000000000000 x13: 323173656761705f x12: ffff00477fffeb90
+> [   48.888638] x11: 0000000000000000 x10: 0000000000000000 x9 : ffff8000083608a0
+> [   48.888641] x8 : 0000000000000000 x7 : 0000000000000000 x6 : 0000000000000040
+> [   48.888643] x5 : 000000000007f400 x4 : 0000000000000000 x3 : 0000000000000000
+> [   48.888645] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000012dc0
+> [   48.888648] Call trace:
+> [   48.888650]  __alloc_pages+0x1ec/0x248
+> [   48.888653]  rb_alloc_aux_page+0x78/0xe0
+> [   48.888654]  rb_alloc_aux+0x13c/0x298
+> [   48.888656]  perf_mmap+0x468/0x688
+> [   48.888659]  mmap_region+0x308/0x8a8
+> [   48.888662]  do_mmap+0x3c0/0x528
+> [   48.888664]  vm_mmap_pgoff+0xf4/0x1b8
+> [   48.888666]  ksys_mmap_pgoff+0x18c/0x218
+> [   48.888668]  __arm64_sys_mmap+0x38/0x58
+> [   48.888671]  invoke_syscall+0x50/0x128
+> [   48.888673]  el0_svc_common.constprop.0+0x58/0x188
+> [   48.888674]  do_el0_svc+0x34/0x50
+> [   48.888676]  el0_svc+0x34/0x108
+> [   48.888679]  el0t_64_sync_handler+0xb8/0xc0
+> [   48.888681]  el0t_64_sync+0x1a4/0x1a8
+> [   48.888686] ---[ end trace 0000000000000000 ]---
+> 
+> The problem is that the high-order pages for AUX area is allocated with
+> an order of MAX_ORDER. Obviously, this is a bogus.
+> 
+> Fix it with an order of MAX_ORDER - 1 at maximum.
+> 
+> Fixes: 0a4e38e64f5e ("perf: Support high-order allocations for AUX space")
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> ---
+>  kernel/events/ring_buffer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+> index 273a0fe..d6bbdb7 100644
+> --- a/kernel/events/ring_buffer.c
+> +++ b/kernel/events/ring_buffer.c
+> @@ -609,8 +609,8 @@ static struct page *rb_alloc_aux_page(int node, int order)
+>  {
+>  	struct page *page;
+>  
+> -	if (order > MAX_ORDER)
+> -		order = MAX_ORDER;
+> +	if (order >= MAX_ORDER)
+> +		order = MAX_ORDER - 1;
+>  
+>  	do {
+>  		page = alloc_pages_node(node, PERF_AUX_GFP, order);
 
-Here is the summary with links:
-  - [net-next,V2] net: mana: Add support for vlan tagging
-    https://git.kernel.org/netdev/net-next/c/b803d1fded40
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+It seems like this was only just recently changed with this as the
+commit message (23baf83):
 
+   mm, treewide: redefine MAX_ORDER sanely
+
+  MAX_ORDER currently defined as number of orders page allocator
+  supports: user can ask buddy allocator for page order between 0 and
+  MAX_ORDER-1.
+
+  This definition is counter-intuitive and lead to number of bugs all
+  over the kernel.
+
+  Change the definition of MAX_ORDER to be inclusive: the range of
+  orders user can ask from buddy allocator is 0..MAX_ORDER now.
+
+It might be worth referring to this in the commit message or adding a
+fixes: reference. Or maybe this new change isn't quite right?
+
+James
 
 
