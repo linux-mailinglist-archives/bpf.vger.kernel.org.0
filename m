@@ -1,208 +1,130 @@
-Return-Path: <bpf+bounces-2372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325FE72BB22
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 10:47:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30BD372BBC4
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 11:09:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C47B1C20968
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 08:47:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706A91C209EE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 09:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2106111CA9;
-	Mon, 12 Jun 2023 08:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D14168B6;
+	Mon, 12 Jun 2023 09:09:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE00B1FB7
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 08:47:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DC3C109;
-	Mon, 12 Jun 2023 01:47:28 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 496371FB;
-	Mon, 12 Jun 2023 01:48:13 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8493F3F663;
-	Mon, 12 Jun 2023 01:47:25 -0700 (PDT)
-Message-ID: <a05467d0-a433-21e1-c48c-779fdf010e24@arm.com>
-Date: Mon, 12 Jun 2023 09:47:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FAC1FB7
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 09:09:45 +0000 (UTC)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691F41B8
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 02:09:44 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6532671ccc7so4480160b3a.2
+        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 02:09:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686560984; x=1689152984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZjqIWMhnCM3c0UyuNcTdFYBODL+SoHqU5xJE8dit+pY=;
+        b=bFVjPv9Lkj282qORYOGzfQZbnNNLwfFdEqpe4QoputK+XT8zfDEv6W+usaF8I/2V81
+         ADri1mdY+Pg/cjn6K3g+Nrg/cOv1lH00gjP6UCOsA9Ht42aM2vGCfw3LM0hBB5uQF4n6
+         Gt53m6jL5Vwx20KlTke0XCZWCPyiAZRfEUA43IfwgvsaMj9sijg/uL1aKGRGAgrp9uOJ
+         nhnUxKDljdxdp36OEiy77IbFTtJZ5UGfvv3Jru55w+nexwORIGw2Rlvy/ysdTqA5cKUA
+         MeBezwRj7dK0Aap1iy6g1KfndD/wVQuRoZSBJBnC5M3tqdePo/jntLt3WOxsVLu9QiyZ
+         QCUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686560984; x=1689152984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZjqIWMhnCM3c0UyuNcTdFYBODL+SoHqU5xJE8dit+pY=;
+        b=ESWy39GMsoOjOg0XIUuMJoYTXd/rKVj0YphXCBDn4UNyEAVVA50aW7WhPkEYHRMQWH
+         d39eJ4hcxg9djhh5Fxq4Kw7fx13boe5hxsX/U+cpGnEEO7ucO9Q0fgtd1MYa571K7b9j
+         kR57ZMVWCHl/F3I8lGNWTbFv9MU04JlnoT6YKxaty/18r939INrosXoAL6DUHLb/1BDu
+         v0rQbWsPyDJlltxtwd83VjEmumh+Z1wuTQp6HDwK5qh07LJrVrgdcyDxGXUaeBqNqiQM
+         4JpHXVgUQmRpztbhf8zf4ugOxmFf9BpTQuHudLO4vtICjAC3PRNX/RL62+CKK5QJ4n3U
+         /3sQ==
+X-Gm-Message-State: AC+VfDwD7dRamqqFx0s8bK6z+aiOT2iDmyu7BLpW8J88GEaJ+znno780
+	bllid44LbOwpwr7WTimJ05U6cw==
+X-Google-Smtp-Source: ACHHUZ7cYtPQh6sqro9YUMknnTBHC/C13NKV9pumrUpp099tZsLKZgHVq5VRS3cCi7yNgDVvDFYJfw==
+X-Received: by 2002:a05:6a00:1804:b0:662:5146:c761 with SMTP id y4-20020a056a00180400b006625146c761mr13170762pfa.17.1686560983831;
+        Mon, 12 Jun 2023 02:09:43 -0700 (PDT)
+Received: from leoy-huanghe.lan (211-75-219-201.hinet-ip.hinet.net. [211.75.219.201])
+        by smtp.gmail.com with ESMTPSA id j24-20020a62b618000000b00643889e30c2sm6480550pff.180.2023.06.12.02.09.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 02:09:43 -0700 (PDT)
+Date: Mon, 12 Jun 2023 17:09:37 +0800
+From: Leo Yan <leo.yan@linaro.org>
+To: James Clark <james.clark@arm.com>
+Cc: Shuai Xue <xueshuai@linux.alibaba.com>,
+	alexander.shishkin@linux.intel.com, peterz@infradead.org,
+	kirill@shutemov.name, mingo@redhat.com, acme@kernel.org,
+	mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
+	irogers@google.com, adrian.hunter@intel.com,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf/ring_buffer: Fix high-order allocations for AUX
+ space with correct MAX_ORDER limit
+Message-ID: <20230612090937.GD217089@leoy-huanghe.lan>
+References: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
+ <20230612052452.53425-3-xueshuai@linux.alibaba.com>
+ <751cb217-4be0-ddfc-780b-87517a8e337a@arm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 1/2] perf/core: Bail out early if the request AUX area is
- out of bound
-Content-Language: en-US
-To: Leo Yan <leo.yan@linaro.org>, Shuai Xue <xueshuai@linux.alibaba.com>
-Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org,
- mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com, jolsa@kernel.org,
- namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
- <20230612052452.53425-2-xueshuai@linux.alibaba.com>
- <20230612073821.GB217089@leoy-huanghe.lan>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <20230612073821.GB217089@leoy-huanghe.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <751cb217-4be0-ddfc-780b-87517a8e337a@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Mon, Jun 12, 2023 at 09:45:38AM +0100, James Clark wrote:
 
+[...]
 
-On 12/06/2023 08:38, Leo Yan wrote:
-> Hi Shuai,
+> > @@ -609,8 +609,8 @@ static struct page *rb_alloc_aux_page(int node, int order)
+> >  {
+> >  	struct page *page;
+> >  
+> > -	if (order > MAX_ORDER)
+> > -		order = MAX_ORDER;
+> > +	if (order >= MAX_ORDER)
+> > +		order = MAX_ORDER - 1;
+> >  
+> >  	do {
+> >  		page = alloc_pages_node(node, PERF_AUX_GFP, order);
 > 
-> On Mon, Jun 12, 2023 at 01:24:51PM +0800, Shuai Xue wrote:
->> When perf-record with a large AUX area, e.g 4GB, it fails with:
->>
->>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>     failed to mmap with 12 (Cannot allocate memory)
->>
->> and it reveals a WARNING with __alloc_pages:
->>
->> [   66.595604] ------------[ cut here ]------------
->> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
->> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
->> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
->> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
->> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
->> [   66.681597] pc : __alloc_pages+0x1ec/0x248
->> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
->> [   66.690285] sp : ffff800020523980
->> [   66.693585] pmr_save: 000000e0
->> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
->> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
->> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
->> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
->> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
->> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
->> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
->> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
->> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
->> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
->> [   66.767834] Call trace:
->> [   66.770267]  __alloc_pages+0x1ec/0x248
->> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
->> [   66.778259]  __kmalloc_node+0x134/0x1e8
->> [   66.782081]  rb_alloc_aux+0xe0/0x298
->> [   66.785643]  perf_mmap+0x440/0x660
->> [   66.789031]  mmap_region+0x308/0x8a8
->> [   66.792593]  do_mmap+0x3c0/0x528
->> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
->> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
->> [   66.803365]  __arm64_sys_mmap+0x38/0x58
->> [   66.807187]  invoke_syscall+0x50/0x128
->> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
->> [   66.815698]  do_el0_svc+0x34/0x50
->> [   66.818999]  el0_svc+0x34/0x108
->> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
->> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
->> [   66.829946] ---[ end trace 0000000000000000 ]---
->>
->> The pages for AUX area are organized as rb->aux_pages[] which alloced by
->> kcalloc_node() later. The kcalloc() family guarantees the pages are
->> physically contiguous (and virtually contiguous) with an order of
->> MAX_ORDER - 1 at maximum.
 > 
-> This description is incorrect.  We need to distinguish two things:
+> It seems like this was only just recently changed with this as the
+> commit message (23baf83):
 > 
-> AUX trace pages and 'rb->aux_pages' is pointer array which is used to
-> maintains these page.  Here, the kernel oops reports the error is not
-> for AUX trace pages but for failing to allocate the pointer array from
-> slab (or slub) area.
+>    mm, treewide: redefine MAX_ORDER sanely
 > 
-> Furthermore, I believe the AUX trace pages are only mapped for VMA
-> (continuous virtual address), the kernel will defer to map to physical
-> pages (which means it's not necessarily continuous physical pages)
-> when handling data abort caused by accessing the pages.
+>   MAX_ORDER currently defined as number of orders page allocator
+>   supports: user can ask buddy allocator for page order between 0 and
+>   MAX_ORDER-1.
 > 
-> When you specify the AUX buffer size to 4GiB, the kernel will convert it
-> to page numbers (page size is 4KiB, page number is = 4GiB / 4KiB = 1MiB).
-> Since aarch64's pointer type's length is 8 bytes, thus we need to
-> allocate the 8MiB buffer from slab/slub, unfortunately, 8MiB crosses the
-> limitation set by MAX_ORDER (4KiB ^ (MAX_ORDER - 1) = 4MiB), this is
-> why we receive the oops from __alloc_pages().
+>   This definition is counter-intuitive and lead to number of bugs all
+>   over the kernel.
 > 
->> So bail out early with -EINVAL if the request AUX area is out of bound,
->> e.g.:
->>
->>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>     failed to mmap with 22 (Invalid argument)
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> ---
->>  kernel/events/core.c                     | 10 ++++++++++
->>  tools/perf/Documentation/perf-record.txt |  3 ++-
->>  2 files changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 435815d..83d4e29 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -6404,6 +6404,16 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
->>  			return -EINVAL;
->>  
->>  		nr_pages = vma_size / PAGE_SIZE;
->> +		/*
->> +		 * The pages for AUX area are organized as rb->aux_pages[]
->> +		 * which alloced by kcalloc_node() later. The kcalloc() family
->> +		 * guarantees the pages are physically contiguous (and
->> +		 * virtually contiguous) with an order of MAX_ORDER - 1 at
->> +		 * maximum MAX_ORDER. So bail out early if the request AUX area
->> +		 * is out of bound.
->> +		 */
->> +		if (get_order(nr_pages * sizeof(void *)) >= MAX_ORDER)
->> +			return -EINVAL;
+>   Change the definition of MAX_ORDER to be inclusive: the range of
+>   orders user can ask from buddy allocator is 0..MAX_ORDER now.
 > 
-> From my view, now kernel has handled this case (I agree it might be
-> not directive for outputting error or warning info rather than oops).
-> 
-> If we really want this checking, I'd like to add it in rb_alloc_aux(),
-> since rb_alloc_aux() is the place for allocation the memory, thus it's
-> right place for the checking memory limitation.  And you might need to
-> consider the update the comments to avoid confusion.
-> 
-> I am not the best person for the decision, I'd like to leave it to perf
-> maintainers and wait for their thoughts.
-> 
-> Thanks,
-> Leo
+> It might be worth referring to this in the commit message or adding a
+> fixes: reference. Or maybe this new change isn't quite right?
 
-If we were to keep it in the end, it should technically have a
-multiplication overflow check on it as well.
+Good point.  If so, we don't need this patch anymore.
 
-James
+Thanks for reminding, James.
 
-> 
->>  		mutex_lock(&event->mmap_mutex);
->>  		ret = -EINVAL;
->> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
->> index ff815c2..a50a426 100644
->> --- a/tools/perf/Documentation/perf-record.txt
->> +++ b/tools/perf/Documentation/perf-record.txt
->> @@ -236,7 +236,8 @@ OPTIONS
->>  	specification with appended unit character - B/K/M/G. The
->>  	size is rounded up to have nearest pages power of two value.
->>  	Also, by adding a comma, the number of mmap pages for AUX
->> -	area tracing can be specified.
->> +	area tracing can be specified. With MAX_ORDER set as 11, the
->> +	maximum AUX area is limit to 2GB.
->>  
->>  -g::
->>  	Enables call-graph (stack chain/backtrace) recording for both
->> -- 
->> 1.8.3.1
->>
+Leo
 
