@@ -1,168 +1,299 @@
-Return-Path: <bpf+bounces-2393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAAD172C57A
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 15:06:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2291A72C64C
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 15:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9B871C2084D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 13:06:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 512241C20ACC
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 13:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE94E1B8E7;
-	Mon, 12 Jun 2023 13:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9EF19E41;
+	Mon, 12 Jun 2023 13:46:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1A919536;
-	Mon, 12 Jun 2023 13:05:26 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F2810D8;
-	Mon, 12 Jun 2023 06:05:24 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QfsHJ1yNwz18MB1;
-	Mon, 12 Jun 2023 21:00:28 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 12 Jun 2023 21:05:22 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Alexander
- Duyck <alexander.duyck@gmail.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Eric Dumazet
-	<edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, <linux-doc@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-Subject: [PATCH net-next v4 5/5] page_pool: update document about frag API
-Date: Mon, 12 Jun 2023 21:02:56 +0800
-Message-ID: <20230612130256.4572-6-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230612130256.4572-1-linyunsheng@huawei.com>
-References: <20230612130256.4572-1-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D2E18AF3
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 13:46:44 +0000 (UTC)
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB61612C;
+	Mon, 12 Jun 2023 06:46:41 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35CDeVcI001168;
+	Mon, 12 Jun 2023 13:46:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=x8SqpugqvWhELVcIPbpCYTMm5Xh5tqMI1QEXk4MkfrE=;
+ b=MUjdFPhRt/kp4SB3uEBeXte0JUdX3wmEvX4w21JXNiS1EN5e8LsBBZREB0B7H4VbRZct
+ SW8Rxz38U/cHjCEDmdVfknG4Nwfaob3F2Ca8tBi1JkmqUX8QBOOuUhTk89Z/yYmJyYMA
+ 1S4QcV8n2N0JC4X8cAB28egnLQk6T9Q5L/BZgf8JCPaqXGbXt4axzh1yzdTJNCusQgBO
+ loyFYGZVkYdYxuzCO75i3XpDeYv9l3y71ryaW25wmlodIy4BYuTFWgEzDae3mIvg6KlW
+ CT2V8/Xm+YqOl0oQ2qTQrga0vdSDRsYCsyal2tvV+SyCANdQ+9uR7JmaBNeEwzbDHDy1 Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3r643u0paf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 13:46:15 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 35CDjGRZ016604;
+	Mon, 12 Jun 2023 13:46:14 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3r643u0p94-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 13:46:14 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+	by ppma04ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 35C5KiQI031654;
+	Mon, 12 Jun 2023 13:46:12 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma04ams.nl.ibm.com (PPS) with ESMTPS id 3r4gt51h27-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 13:46:12 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 35CDkARP6029924
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 12 Jun 2023 13:46:10 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 34AC420043;
+	Mon, 12 Jun 2023 13:46:10 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B897320040;
+	Mon, 12 Jun 2023 13:46:09 +0000 (GMT)
+Received: from [9.155.209.184] (unknown [9.155.209.184])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 12 Jun 2023 13:46:09 +0000 (GMT)
+Message-ID: <ef33f004f1f20c7a4cc7c963eea628df7bec0c53.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: add a test for subprogram
+ extables
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Krister Johansen
+	 <kjlx@templeofstupid.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel
+ Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+        KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko
+ <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        LKML
+ <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>
+Date: Mon, 12 Jun 2023 15:46:09 +0200
+In-Reply-To: <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
+References: <cover.1686268304.git.kjlx@templeofstupid.com>
+	 <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
+	 <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tPpUquuLNk1qCKHVYy8_bCYMKHFHwaEk
+X-Proofpoint-GUID: II0r5JYD2ZkE8AvQBJFKpuoR2P_quAD5
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-12_06,2023-06-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 clxscore=1011 mlxscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306120116
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-As more drivers begin to use the frag API, update the
-document about how to decide which API to for the driver
-author.
+On Fri, 2023-06-09 at 11:15 -0700, Alexei Starovoitov wrote:
+> On Thu, Jun 8, 2023 at 5:11=E2=80=AFPM Krister Johansen
+> <kjlx@templeofstupid.com> wrote:
+> >=20
+> > In certain situations a program with subprograms may have a NULL
+> > extable entry.=C2=A0 This should not happen, and when it does, it turns
+> > a
+> > single trap into multiple.=C2=A0 Add a test case for further debugging
+> > and to
+> > prevent regressions.=C2=A0 N.b: without any other patches this can panic
+> > or
+> > oops a kernel.
+> >=20
+> > Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+> > ---
+> > =C2=A0.../bpf/prog_tests/subprogs_extable.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 31 +++++++++++++
+> > =C2=A0.../bpf/progs/test_subprogs_extable.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 46
+> > +++++++++++++++++++
+> > =C2=A02 files changed, 77 insertions(+)
+> > =C2=A0create mode 100644
+> > tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > =C2=A0create mode 100644
+> > tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> >=20
+> > diff --git
+> > a/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > new file mode 100644
+> > index 000000000000..2201988274a4
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > @@ -0,0 +1,31 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <test_progs.h>
+> > +#include "test_subprogs_extable.skel.h"
+> > +
+> > +void test_subprogs_extable(void)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const int READ_SZ =3D 456;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct test_subprogs_extable *ske=
+l;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skel =3D test_subprogs_extable__o=
+pen();
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ASSERT_OK_PTR(skel, "skel_op=
+en"))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D test_subprogs_extable__lo=
+ad(skel);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ASSERT_OK(err, "skel_load"))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 goto cleanup;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D test_subprogs_extable__at=
+tach(skel);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ASSERT_OK(err, "skel_attach"=
+))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 goto cleanup;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* trigger tracepoint */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ASSERT_OK(trigger_module_test_rea=
+d(READ_SZ),
+> > "trigger_read");
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_subprogs_extable__detach(ske=
+l);
+> > +
+> > +cleanup:
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_subprogs_extable__destroy(sk=
+el);
+> > +}
+> > diff --git
+> > a/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > new file mode 100644
+> > index 000000000000..c3ff66bf4cbe
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > @@ -0,0 +1,46 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +struct {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __uint(type, BPF_MAP_TYPE_ARRAY);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __uint(max_entries, 8);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __type(key, __u32);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __type(value, __u64);
+> > +} test_array SEC(".maps");
+> > +
+> > +static __u64 test_cb(struct bpf_map *map, __u32 *key, __u64 *val,
+> > void *data)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
+> > +}
+> > +
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs, int arg, struct file *ret)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile long *)ret;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile int *)&ret->f_mode;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_for_each_map_elem(&test_array=
+, test_cb, NULL, 0);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > +}
+> > +
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs2, int arg, struct file
+> > *ret)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile long *)ret;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile int *)&ret->f_mode;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_for_each_map_elem(&test_array=
+, test_cb, NULL, 0);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > +}
+> > +
+> > +SEC("fexit/bpf_testmod_return_ptr")
+> > +int BPF_PROG(handle_fexit_ret_subprogs3, int arg, struct file
+> > *ret)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile long *)ret;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *(volatile int *)&ret->f_mode;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_for_each_map_elem(&test_array=
+, test_cb, NULL, 0);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+> > +}
+>=20
+> What is the point of attaching 3 the same progs to the same hook?
+> One would be enough to test it, no?
+>=20
+> In other news...
+> Looks like this test is triggering a bug on s390.
+>=20
+> Ilya,
+> please take a look:
+> https://github.com/kernel-patches/bpf/actions/runs/5216942096/jobs/941640=
+4780
+>=20
+> bpf_prog_78c0d4c618ed2df7_handle_fexit_ret_subprogs3
+> is crashing the kernel.
+> A bug in extable logic on s390?
 
-Also it seems there is a similar document in page_pool.h,
-so remove it to avoid the duplication.
+I think we also need this:
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Lorenzo Bianconi <lorenzo@kernel.org>
-CC: Alexander Duyck <alexander.duyck@gmail.com>
----
- Documentation/networking/page_pool.rst | 34 +++++++++++++++++++++-----
- include/net/page_pool.h                | 22 -----------------
- 2 files changed, 28 insertions(+), 28 deletions(-)
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -17664,6 +17664,7 @@ static int jit_subprogs(struct bpf_verifier_env
+*env)
+        prog->bpf_func =3D func[0]->bpf_func;
+        prog->jited_len =3D func[0]->jited_len;
+        prog->aux->extable =3D func[0]->aux->extable;
++       prog->aux->num_exentries =3D func[0]->aux->num_exentries;
+        prog->aux->func =3D func;
+        prog->aux->func_cnt =3D env->subprog_cnt;
+        bpf_prog_jit_attempt_done(prog);
 
-diff --git a/Documentation/networking/page_pool.rst b/Documentation/networking/page_pool.rst
-index 873efd97f822..df3e28728008 100644
---- a/Documentation/networking/page_pool.rst
-+++ b/Documentation/networking/page_pool.rst
-@@ -4,12 +4,28 @@
- Page Pool API
- =============
- 
--The page_pool allocator is optimized for the XDP mode that uses one frame
--per-page, but it can fallback on the regular page allocator APIs.
--
--Basic use involves replacing alloc_pages() calls with the
--page_pool_alloc_pages() call.  Drivers should use page_pool_dev_alloc_pages()
--replacing dev_alloc_pages().
-+The page_pool allocator is optimized for recycling page or page frag used by skb
-+packet and xdp frame.
-+
-+Basic use involves replacing alloc_pages() calls with different page pool
-+allocator API based on different use case:
-+1. page_pool_alloc_pages(): allocate memory without page splitting when driver
-+   knows that the memory it need is always bigger than half of the page
-+   allocated from page pool. There is no cache line dirtying for 'struct page'
-+   when a page is recycled back to the page pool.
-+
-+2. page_pool_alloc_frag(): allocate memory with page splitting when driver knows
-+   that the memory it need is always smaller than or equal to half of the page
-+   allocated from page pool. Page splitting enables memory saving and thus avoid
-+   TLB/cache miss for data access, but there also is some cost to implement page
-+   splitting, mainly some cache line dirtying/bouncing for 'struct page' and
-+   atomic operation for page->pp_frag_count.
-+
-+3. page_pool_alloc(): allocate memory with or without page splitting depending
-+   on the requested memory size when driver doesn't know the size of memory it
-+   need beforehand. It is a mix of the above two case, so it is a wrapper of the
-+   above API to simplify driver's interface for memory allocation with least
-+   memory utilization and performance penalty.
- 
- API keeps track of in-flight pages, in order to let API user know
- when it is safe to free a page_pool object.  Thus, API users
-@@ -93,6 +109,12 @@ a page will cause no race conditions is enough.
- * page_pool_dev_alloc_pages(): Get a page from the page allocator or page_pool
-   caches.
- 
-+* page_pool_dev_alloc_frag(): Get a page frag from the page allocator or
-+  page_pool caches.
-+
-+* page_pool_dev_alloc(): Get a page or page frag from the page allocator or
-+  page_pool caches.
-+
- * page_pool_get_dma_addr(): Retrieve the stored DMA address.
- 
- * page_pool_get_dma_dir(): Retrieve the stored DMA direction.
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index f4fc339ff020..5fea37fd7767 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -5,28 +5,6 @@
-  *	Copyright (C) 2016 Red Hat, Inc.
-  */
- 
--/**
-- * DOC: page_pool allocator
-- *
-- * This page_pool allocator is optimized for the XDP mode that
-- * uses one-frame-per-page, but have fallbacks that act like the
-- * regular page allocator APIs.
-- *
-- * Basic use involve replacing alloc_pages() calls with the
-- * page_pool_alloc_pages() call.  Drivers should likely use
-- * page_pool_dev_alloc_pages() replacing dev_alloc_pages().
-- *
-- * API keeps track of in-flight pages, in-order to let API user know
-- * when it is safe to dealloactor page_pool object.  Thus, API users
-- * must make sure to call page_pool_release_page() when a page is
-- * "leaving" the page_pool.  Or call page_pool_put_page() where
-- * appropiate.  For maintaining correct accounting.
-- *
-- * API user must only call page_pool_put_page() once on a page, as it
-- * will either recycle the page, or in case of elevated refcnt, it
-- * will release the DMA mapping and in-flight state accounting.  We
-- * hope to lift this requirement in the future.
-- */
- #ifndef _NET_PAGE_POOL_H
- #define _NET_PAGE_POOL_H
- 
--- 
-2.33.0
+The reason is that s390 JIT doubles the number of extable entries due
+to how the hardware works (some exceptions point to the failing insn,
+some point to the next one).
 
+With that:
+
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+
+for the v4 series.
 
