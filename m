@@ -1,242 +1,448 @@
-Return-Path: <bpf+bounces-2437-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2438-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C3B072CD03
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:37:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BF2572CD0E
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF371C20B84
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:37:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50ACE281078
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEACF2109F;
-	Mon, 12 Jun 2023 17:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3318321CD8;
+	Mon, 12 Jun 2023 17:40:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8152D1F189
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 17:37:39 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C35173C;
-	Mon, 12 Jun 2023 10:37:11 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35CGgbxr026482;
-	Mon, 12 Jun 2023 10:36:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=8O4aYyddlkUTHaIhM0P9kCHiFDGGxtLV3BNlV3cVkWs=;
- b=mQRsKlVDqfuDvA3OLTy/RrM7SghpNze3BNPzCl4SMiwOpJZTsv3U3f4e/DiLqzGIReIx
- dwFfCh2Lhi3K34ueYe+KoA9IgIHvU8+ghV0kHTcExymiiySCICYZL4+Ry8P8+/UHuL4D
- sXPqnDH4FQYT+91kvapAqEC1CDqEbQAeLgHJ12VA6kU4jkaSyhsTueoS1+R/+qNeyiDz
- hp3jCaDOeYcBuplMRPTa4kkV/n4x9bVY0JEI9EPSrvqzqfkx3c8XleORMXYq4BrOpocr
- HiVb/ZI/fT3rT1JaMNYZjiorogLbKOk2yGmJdKswGFuWzQTqNFlskziHNBrE2z81c69l ww== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r5xc4kw0t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jun 2023 10:36:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U6ttZWU9CREoKXk+NOZbS4jF+LhCc1cKSC5NVTUyW/e6cMHgNVAzNm5dkaCUQHAPyVQwh/Ktx1R2oIPJCgTLYFxI83k06gzUtibFb9XQlc7P9HwviZhe8BqGKqp2CDVYpckDxzoEbg3iRU+xDdFCrSRdxoWJhE5fsVbscqGuswd21aJjsIfiOBDQuyBJtkdlGWWR2j8J44fK215wz1uj4XQyWEvJ55kOQK9JUM9X+Uf/8Ea83H7SbZOs3S3fjpjV59xNRdzer+hsFUJjsjcnrikp7tlPTcUz+DJIqZa7OKjdLcvfaCKijN5pOvtmJB+51gYggObs18/TEQVPoXafUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8O4aYyddlkUTHaIhM0P9kCHiFDGGxtLV3BNlV3cVkWs=;
- b=YYzlSQp0mW9woVxXcZxHa7vH4ZcJ5QPKy7AwnxlpvpTEOFh1K4lNfcSOGryhkT9h5Mt+4dRFExbmEePtE7f7zkA6G9ESPGf2a0DIuuj9UiqmqKaywUekXHjxELKUbNgHPIbsDR+o4MkNif4i8EoL+WdUSgpKW0VNQnEGypmEiS+jtUn4WncPW6fSeaB4YYiQa8EA3vFH5O4SZAmfN+P2d4OVPWHPqJQb1zaP9Pe/0a7Kym6Qc8SpICvrVmFQcYX1eHQemOm5wc2gYW+fjbGVbnE4D0Y4T2CPc8gwHBN3uAitWmh91VAT6JqvNH7pIPGf9VZ5Ro/zpWnTFtvRz60YPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DS7PR15MB5931.namprd15.prod.outlook.com (2603:10b6:8:e1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.36; Mon, 12 Jun
- 2023 17:36:49 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6455.043; Mon, 12 Jun 2023
- 17:36:49 +0000
-Message-ID: <09da5bbd-1ef1-edd3-d83c-bba04b4f53da@meta.com>
-Date: Mon, 12 Jun 2023 10:36:44 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 bpf-next 08/10] bpf: Support ->fill_link_info for
- perf_event
-Content-Language: en-US
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com,
-        rostedt@goodmis.org, mhiramat@kernel.org
-Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <20230612151608.99661-1-laoar.shao@gmail.com>
- <20230612151608.99661-9-laoar.shao@gmail.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230612151608.99661-9-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0069.namprd05.prod.outlook.com
- (2603:10b6:a03:74::46) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABD91F189
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 17:40:16 +0000 (UTC)
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC29118
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:40:14 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-977d6aa3758so839208966b.0
+        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686591613; x=1689183613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UTDx4jf602cbOKdXqkoDk4cQOeQcYfGazQMP/vfhTeE=;
+        b=YGocuszVbmhqFyb2D09Qb6DLNW2FemHVtAoXQ48a9W45f1P3Uid8RkJEl9EyWd7dyh
+         Q3B7KbHlYZRcAMlWrYylmthcTtj+a2PZedDovbnK5JFnEulbkoIyQ+rDXsywvvWu8ghL
+         Q0RVl2b2yoIRtlpW+EdAmd8mH7UwbCouDya/FAe3CvhcAosezAGYkrGRNrR7cmEl/RzT
+         LPE+li1xQe2wv+9DeQ9IeB1o6fUzeEQZd7B4leHZnNYNzt+lS5YhPRMQhIlaaDIkWFfS
+         URB0TMhgQhquAQ5XZeIZdm8APM3tNdcWGEcbelyBv111GNE4HHV8qfCWBbhscGtYSvsf
+         TaPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686591613; x=1689183613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UTDx4jf602cbOKdXqkoDk4cQOeQcYfGazQMP/vfhTeE=;
+        b=WvzKEmqgwyi2Qrg/HQZWVm5dPm1iBNR3EQSwuzegdpLQT3x0aHnu1l/QTA5j/6H6FD
+         ZcNMmNkZ8IelEAbLzoZZaTekMiqUpWnXBHbfoebhnnqMvnvhi3Q31hF2mXyK9KPjjgXf
+         Sszl7R3g9MOxbQRe2DAXdkv7C8lM3nNrRmq2eGxWaAccRKPuV9HCuvqhL4vUBKB8hH5x
+         KRkEefhwoJ2gKPnty05k02MHxCicfZh7IO2DNTB56Kyb5BhYrgqBjxB9blfFFcznpWiz
+         cdURXnZUJXH+hTz4gqIrXnM6Sjdp2is8damaiQkxmlZlXvha3JWR7rV2cP0G8WNrbKFD
+         KHiw==
+X-Gm-Message-State: AC+VfDyE0IvzV5yaAlLP3ATBppTh/9zmsgL6hV4FgVzNzT/QnzVAhyok
+	v90pO5Uvp51YUZ2Ms351c8U=
+X-Google-Smtp-Source: ACHHUZ63u3fPOOs1CbjQloqP4YB/6WNXZTTZ13aGk8lsDjkHhMz/f4GIz9X1+hbad0Bv0a3ZUZOpkQ==
+X-Received: by 2002:a17:906:730b:b0:973:bcf6:1d4 with SMTP id di11-20020a170906730b00b00973bcf601d4mr12071877ejc.76.1686591612803;
+        Mon, 12 Jun 2023 10:40:12 -0700 (PDT)
+Received: from localhost ([179.43.159.200])
+        by smtp.gmail.com with ESMTPSA id lo11-20020a170906fa0b00b009784915c660sm5533062ejb.136.2023.06.12.10.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 10:40:12 -0700 (PDT)
+Date: Mon, 12 Jun 2023 20:40:10 +0300
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+	yhs@fb.com
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: verify that check_ids()
+ is used for scalars in regsafe()
+Message-ID: <ZIdYepniUlHlmtvO@mail.gmail.com>
+References: <20230612160801.2804666-1-eddyz87@gmail.com>
+ <20230612160801.2804666-5-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS7PR15MB5931:EE_
-X-MS-Office365-Filtering-Correlation-Id: c76d0959-9340-40f1-9e8c-08db6b6b99e7
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	ECtLQf90hTkiDwH0BFssnP596GBYcsFbUWQaEWQ3AjObn5ulvshI4IuCTHIDU268Rd7A+8CyXBgbQuuAOJK5cdv+NcpmW7936CkJg3p9D0A6kkqX2vx3oHaNmC/IMRdZkbb79e0nQ9zBzeZRELTN1IUkrcDQBi+hYUQRWF5MlCJ7FEXgOqSqsQABuLsAiUpFaMk9yPRZUbPW2ydPHHypcY4L+9T/s6ZChqI1BgJqR1Breb3wmvG1qwrOxIqFMGSw3o00EKoCENmi3/58I/jSC7ErS36C3ipmjziVSMjXcYRUGe2xYFxjydw1HEV6I4boZi4GtJN6C1zCIe8aPXo2sjQgtEJsxIodIOsyZ6udAdrqS64DZb7dDwVxQqcgha2SnG1o2wb+4tYKI7pzzLH2EJqEXGVGCdmCAp75+uQoI83a2/Sl5s6dubjFcTPSRyVbBjTLXmQ1oRUdVgdlI3BHXG9tIffG1AtrQ/h1nUiGtj9+cSV47tYw9ZjGy2+257FuW9Sxx2QUGqbLIENANetWswKVecZZXSyolCVh47FNBYzUL2I6uvYqKSwnhptvIYCYNbCLegjSh9g6ovELr5ndQauylnxy7jtOCcbBgnQkbVB/PMhaR/u0CSjTv3A2HrPViyxlSbVJGpSTPgbRwLw5d5gXKbh3LUI5DVzXSTtPhU8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(396003)(366004)(376002)(136003)(451199021)(316002)(41300700001)(6486002)(83380400001)(31696002)(86362001)(186003)(6512007)(7416002)(6506007)(2906002)(53546011)(2616005)(921005)(38100700002)(8936002)(5660300002)(8676002)(36756003)(31686004)(66946007)(66556008)(66476007)(478600001)(6666004)(66899021)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?MlJBQ1R1UXdrVXVVTHRpV0pVTFo4dWI1OTEvSE0wU0ZFS0pmWUJ3TVlSamVw?=
- =?utf-8?B?L2lFbE5rUVlCUXd1STBpR1dlZ2pyWFJnVHM0UkZwcUNMUHQ4SUZKYkkyVEM1?=
- =?utf-8?B?N0U4Ykhua0xXRHhtaG5kMjJaYXl3NWNSRUdRTThyR2NzQTdleUtJQngzSnJ1?=
- =?utf-8?B?bEhZVlFrVnpCaXNDQ0NaN3VmZHFTSnhkUmNQaU9HZi90WFVYMGR6THpRNi8v?=
- =?utf-8?B?Wjl4NHE3VllrUWtJdENCMVhsMHpCeDM5VkpZdnZsUGs4dmdvNEdDc1JGektj?=
- =?utf-8?B?K2Q4cXo0UW5WcDNyQk00ZGY1T1czSHE3c0VjU2dJQ1g4NVBzeUlSMTNwekV1?=
- =?utf-8?B?YWx5NkhNZmFXSHIzSHR5R3RoMXJjZCtnTjNReXNUdlVDS3ZpUGFPQklGdHN2?=
- =?utf-8?B?WEdmNUp4WUh3RUxla2NxRkdCWHNuT0tEUGlZK1dJM1RFbUVOdXhmZU96TDE2?=
- =?utf-8?B?RmU1OTdSZTgvMGhVcjYrQk1BQ2hDcUZ1cFZ1SDI4VjQ4UkM2M3dyTGVnSXNo?=
- =?utf-8?B?TForMUR0aXFGZWxoOGJCOTB3WHhBSTR1RFg1Y21ZU2hNMlpOK2RZajllbmIw?=
- =?utf-8?B?eUFXUnlMS3daSjRleWd1Z3lpaU9rbVFQcXJJdjZxWk9pV3NlRDhETTlpMCtD?=
- =?utf-8?B?MDVXUDZtTEtGTXR2YVhPOWdCZ2poMk1IMWIxYTd6WUdpNy9lNVg3bEo3OTh2?=
- =?utf-8?B?bFAySVIxWEVFS1BWdzNkUERqOGh4akMzSHFYd0tsVkdrR0JBbzVmTVY1OVBj?=
- =?utf-8?B?Z1M1OWp0UlNrZ2ZkVkpSR21yYWF2c0oyZlZQbEFRL0Y2cHJtVCtDRWF0bDJw?=
- =?utf-8?B?OTQ2UkRUSWpyQU5mM0c5N2hMd2hWYXhLbFpLZjZBWEpjLzZXMW9KTGh0eVNj?=
- =?utf-8?B?a0duRCs0d3RqVjJQSVM2cldUZDBPaGlhcDJjWXNzMnNOWXVpVU9FUk91a09E?=
- =?utf-8?B?WjJjUDBtSE1pa01MZTVnTGd3czJqbFRtMEtFOEVveHZ5RkE3MnFJcE9zcFZk?=
- =?utf-8?B?NVMwTkpOWTFJWmlYK0JZN3VvaW9kZkVsWUJqU0pjK3g5aVVkQU04V0lsNDB5?=
- =?utf-8?B?UzNpRlM5am5OMkxvSzYxcjhmbEE5a01vTmdueGIrZjFnaWNoU3VMR1hlSVpY?=
- =?utf-8?B?MXpmSmpmclA3WmxMQ016SnlCMGRmZ1VVTFlQSi9JNHFXTytFRytINW5UQ2RE?=
- =?utf-8?B?bHJPd0hMbFVocEpOSGNDWkN6K1E5aHpnOUtyRXpia0p3Q1Y1YnZCRHorWFlz?=
- =?utf-8?B?Y24yOWRHdnp6eFhPWVdLR3VNdU5XTjBDWXZjeENQRVhtb1hjTUduSFJZS2g1?=
- =?utf-8?B?UVIxbVNrMHZTTStlaCsxbnZsc0tWaDVuRTVXa0ZzSExZMGQ2QmNkL1dpS21O?=
- =?utf-8?B?clAvcUZMcU9aOFBUcGRhbWpVaUxlT3F6dmZrSG5XbVU2di9WSWtsNmdUeHU4?=
- =?utf-8?B?NUZXUWFkQnF1VmF6RFYyWmRuUWVEZVpIOXpnRzMycm84Ukw0Qk0wQS9ZVWtp?=
- =?utf-8?B?S3JzVjFBZTlFTktIU1B0VGNaYnZtWUUvdUoxWk50bFNsTXlJQUxKYlNwS0Yv?=
- =?utf-8?B?d3IwWE1WeWFnd2o1akNRNmp0eGFPMnB1b3VFdEMwc3BWcGxIU2RNM2NZUGxy?=
- =?utf-8?B?ckFFeFR1S3p3S2Z5QVQwY1A3M05EK0plZjRrOU43blg3NHp3ek5aOTBESlY2?=
- =?utf-8?B?eDd4UFlRTEQ5cENYSjVlUmZTQWF5Ym05Z0dEMWZ5S204dGJ1NWtCZU9SQm5h?=
- =?utf-8?B?UGZMRUxQVlFCbERJL3RIZFZ3d1dNWVI0cTN3QXFjbXN5dHBEM0tnbklITmt3?=
- =?utf-8?B?UUZCVmt0Qkptc2FtcCtUMTd2dHZnazF4YkRNUnNlelFwRU1rTU1mT1FUYytV?=
- =?utf-8?B?OGhBWlJFb3lPbUpLSHRxb3FNVEdZdDVlVFpNUW96R3F3VEc4TGtMdHpYSXVl?=
- =?utf-8?B?QWRsRHhsZzduNjNrT2FGRVJyaldFTFFxY0xMMDJUdWY2ek5Ta29peWgxREVH?=
- =?utf-8?B?Z0c2ZWIwT3lyTWRCZDg2d3dFaFpXaXJSTWVsTEtldVNnY3UrSzd2VHk5Uk1h?=
- =?utf-8?B?c1JUNE85ajI0ZjJqeEJTSDRFeGZOOS8yanhwYjNwMWx6OGFjczN5UDFPdDMv?=
- =?utf-8?B?NjJkZ013bG5DN3o1WFhEamljNlYrVlFBOHBKaEtHcGpITDFKY2NsWXVYdEZk?=
- =?utf-8?B?bGc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c76d0959-9340-40f1-9e8c-08db6b6b99e7
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 17:36:49.2573
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ilqRUP63kKirj4G/LdFWLA33pZ4LjwMU2RwLd3XINV6ylGbZrewoCRkgdHQ2M0uH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR15MB5931
-X-Proofpoint-GUID: 1hBcAWceYze78YMV9w3NfVPtAqOVh7wj
-X-Proofpoint-ORIG-GUID: 1hBcAWceYze78YMV9w3NfVPtAqOVh7wj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-12_12,2023-06-12_02,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612160801.2804666-5-eddyz87@gmail.com>
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+	version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 6/12/23 8:16 AM, Yafang Shao wrote:
-> By introducing support for ->fill_link_info to the perf_event link, users
-> gain the ability to inspect it using `bpftool link show`. While the current
-> approach involves accessing this information via `bpftool perf show`,
-> consolidating link information for all link types in one place offers
-> greater convenience. Additionally, this patch extends support to the
-> generic perf event, which is not currently accommodated by
-> `bpftool perf show`. While only the perf type and config are exposed to
-> userspace, other attributes such as sample_period and sample_freq are
-> ignored. It's important to note that if kptr_restrict is not permitted, the
-> probed address will not be exposed, maintaining security measures.
+On Mon, 12 Jun 2023 at 19:08:01 +0300, Eduard Zingerman wrote:
+> Verify that the following example is rejected by verifier:
 > 
-> A new enum bpf_link_perf_event_type is introduced to help the user
-> understand which struct is relevant.
+>   r9 = ... some pointer with range X ...
+>   r6 = ... unbound scalar ID=a ...
+>   r7 = ... unbound scalar ID=b ...
+>   if (r6 > r7) goto +1
+>   r7 = r6
+>   if (r7 > X) goto exit
+>   r9 += r6
+>   *(u64 *)r9 = Y
 > 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Also add test cases to:
+> - check that check_alu_op() for BPF_MOV instruction does not allocate
+>   scalar ID if source register is a constant;
+> - check that unique scalar IDs are ignored when new verifier state is
+>   compared to cached verifier state;
+> - check that two different scalar IDs in a verified state can't be
+>   mapped to the same scalar ID in current state.
+> 
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->   include/uapi/linux/bpf.h       |  32 +++++++++++
->   kernel/bpf/syscall.c           | 124 +++++++++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/bpf.h |  32 +++++++++++
->   3 files changed, 188 insertions(+)
+>  .../selftests/bpf/progs/verifier_scalar_ids.c | 313 ++++++++++++++++++
+>  1 file changed, 313 insertions(+)
 > 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 23691ea..8d4556e 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1056,6 +1056,16 @@ enum bpf_link_type {
->   	MAX_BPF_LINK_TYPE,
->   };
->   
-> +enum bpf_perf_link_type {
-> +	BPF_PERF_LINK_UNSPEC = 0,
-> +	BPF_PERF_LINK_UPROBE = 1,
-> +	BPF_PERF_LINK_KPROBE = 2,
-> +	BPF_PERF_LINK_TRACEPOINT = 3,
-> +	BPF_PERF_LINK_PERF_EVENT = 4,
-> +
-> +	MAX_BPF_LINK_PERF_EVENT_TYPE,
-> +};
-> +
->   /* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
->    *
->    * NONE(default): No further bpf programs allowed in the subtree.
-> @@ -6443,7 +6453,29 @@ struct bpf_link_info {
->   			__u32 count;
->   			__u32 flags;
->   		} kprobe_multi;
-> +		struct {
-> +			__u64 config;
-> +			__u32 type;
-> +		} perf_event; /* BPF_LINK_PERF_EVENT_PERF_EVENT */
-> +		struct {
-> +			__aligned_u64 file_name; /* in/out: buff ptr */
-> +			__u32 name_len;
-> +			__u32 offset;            /* offset from name */
-> +			__u32 flags;
-> +		} uprobe; /* BPF_LINK_PERF_EVENT_UPROBE */
-> +		struct {
-> +			__aligned_u64 func_name; /* in/out: buff ptr */
-> +			__u32 name_len;
-> +			__u32 offset;            /* offset from name */
-> +			__u64 addr;
-> +			__u32 flags;
-> +		} kprobe; /* BPF_LINK_PERF_EVENT_KPROBE */
-> +		struct {
-> +			__aligned_u64 tp_name;   /* in/out: buff ptr */
-> +			__u32 name_len;
-> +		} tracepoint; /* BPF_LINK_PERF_EVENT_TRACEPOINT */
->   	};
-> +	__u32 perf_link_type; /* enum bpf_perf_link_type */
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> index 8a5203fb14ca..5d56e764fe43 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> @@ -341,4 +341,317 @@ __naked void precision_two_ids(void)
+>  	: __clobber_all);
+>  }
+>  
+> +/* Verify that check_ids() is used by regsafe() for scalars.
+> + *
+> + * r9 = ... some pointer with range X ...
+> + * r6 = ... unbound scalar ID=a ...
+> + * r7 = ... unbound scalar ID=b ...
+> + * if (r6 > r7) goto +1
+> + * r6 = r7
+> + * if (r6 > X) goto exit
+> + * r9 += r7
+> + * *(u8 *)r9 = Y
+> + *
+> + * The memory access is safe only if r7 is bounded,
+> + * which is true for one branch and not true for another.
+> + */
+> +SEC("socket")
+> +__failure __msg("register with unbounded min value")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void check_ids_in_regsafe(void)
+> +{
+> +	asm volatile (
+> +	/* Bump allocated stack */
+> +	"r1 = 0;"
+> +	"*(u64*)(r10 - 8) = r1;"
+> +	/* r9 = pointer to stack */
+> +	"r9 = r10;"
+> +	"r9 += -8;"
+> +	/* r7 = ktime_get_ns() */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r7 = r0;"
+> +	/* r6 = ktime_get_ns() */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r6 = r0;"
+> +	/* if r6 > r7 is an unpredictable jump */
+> +	"if r6 > r7 goto l1_%=;"
+> +	"r7 = r6;"
+> +"l1_%=:"
+> +	/* if r6 > 4 exit(0) */
+> +	"if r7 > 4 goto l2_%=;"
+> +	/* Access memory at r9[r7] */
+> +	"r9 += r6;"
 
-I think put perf_link_type into each indivual struct is better.
-It won't increase the bpf_link_info struct size. It will allow
-extensions for all structs in the big union (raw_tracepoint,
-tracing, cgroup, iter, ..., kprobe_multi, ...) etc.
+Sorry if I'm missing some context, but there seem to be discrepancies
+between the code of this test, the comments right here, the comment
+above the test and the commit message. r6 vs r7 don't match in a few
+places.
 
->   } __attribute__((aligned(8)));
->   
->   /* User bpf_sock_addr struct to access socket fields and sockaddr struct passed
-[...]
+The code matches the commit message and looks correct (unsafe). The code
+sample in the comments, however, is different and looks safe to me
+(r7 <= r6 <= X, accessing r9[r7]).
+
+> +	"r0 = *(u8*)(r9 + 0);"
+> +"l2_%=:"
+> +	"r0 = 0;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Similar to check_ids_in_regsafe.
+> + * The l0 could be reached in two states:
+> + *
+> + *   (1) r6{.id=A}, r7{.id=A}, r8{.id=B}
+> + *   (2) r6{.id=B}, r7{.id=A}, r8{.id=B}
+> + *
+> + * Where (2) is not safe, as "r7 > 4" check won't propagate range for it.
+> + * This example would be considered safe without changes to
+> + * mark_chain_precision() to track scalar values with equal IDs.
+> + */
+> +SEC("socket")
+> +__failure __msg("register with unbounded min value")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void check_ids_in_regsafe_2(void)
+> +{
+> +	asm volatile (
+> +	/* Bump allocated stack */
+> +	"r1 = 0;"
+> +	"*(u64*)(r10 - 8) = r1;"
+> +	/* r9 = pointer to stack */
+> +	"r9 = r10;"
+> +	"r9 += -8;"
+> +	/* r8 = ktime_get_ns() */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r8 = r0;"
+> +	/* r7 = ktime_get_ns() */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r7 = r0;"
+> +	/* r6 = ktime_get_ns() */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r6 = r0;"
+> +	/* scratch .id from r0 */
+> +	"r0 = 0;"
+> +	/* if r6 > r7 is an unpredictable jump */
+> +	"if r6 > r7 goto l1_%=;"
+> +	/* tie r6 and r7 .id */
+> +	"r6 = r7;"
+> +"l0_%=:"
+> +	/* if r7 > 4 exit(0) */
+> +	"if r7 > 4 goto l2_%=;"
+> +	/* Access memory at r9[r7] */
+> +	"r9 += r6;"
+> +	"r0 = *(u8*)(r9 + 0);"
+> +"l2_%=:"
+> +	"r0 = 0;"
+> +	"exit;"
+> +"l1_%=:"
+> +	/* tie r6 and r8 .id */
+> +	"r6 = r8;"
+> +	"goto l0_%=;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Check that scalar IDs *are not* generated on register to register
+> + * assignments if source register is a constant.
+> + *
+> + * If such IDs *are* generated the 'l1' below would be reached in
+> + * two states:
+> + *
+> + *   (1) r1{.id=A}, r2{.id=A}
+> + *   (2) r1{.id=C}, r2{.id=C}
+> + *
+> + * Thus forcing 'if r1 == r2' verification twice.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("11: (1d) if r3 == r4 goto pc+0")
+> +__msg("frame 0: propagating r3,r4")
+> +__msg("11: safe")
+> +__msg("processed 15 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void no_scalar_id_for_const(void)
+> +{
+> +	asm volatile (
+> +	"call %[bpf_ktime_get_ns];"
+> +	/* unpredictable jump */
+> +	"if r0 > 7 goto l0_%=;"
+> +	/* possibly generate same scalar ids for r3 and r4 */
+> +	"r1 = 0;"
+> +	"r1 = r1;"
+> +	"r3 = r1;"
+> +	"r4 = r1;"
+> +	"goto l1_%=;"
+> +"l0_%=:"
+> +	/* possibly generate different scalar ids for r3 and r4 */
+> +	"r1 = 0;"
+> +	"r2 = 0;"
+> +	"r3 = r1;"
+> +	"r4 = r2;"
+> +"l1_%=:"
+> +	/* predictable jump, marks r3 and r4 precise */
+> +	"if r3 == r4 goto +0;"
+> +	"r0 = 0;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Same as no_scalar_id_for_const() but for 32-bit values */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("11: (1e) if w3 == w4 goto pc+0")
+> +__msg("frame 0: propagating r3,r4")
+> +__msg("11: safe")
+> +__msg("processed 15 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void no_scalar_id_for_const32(void)
+> +{
+> +	asm volatile (
+> +	"call %[bpf_ktime_get_ns];"
+> +	/* unpredictable jump */
+> +	"if r0 > 7 goto l0_%=;"
+> +	/* possibly generate same scalar ids for r3 and r4 */
+> +	"w1 = 0;"
+> +	"w1 = w1;"
+> +	"w3 = w1;"
+> +	"w4 = w1;"
+> +	"goto l1_%=;"
+> +"l0_%=:"
+> +	/* possibly generate different scalar ids for r3 and r4 */
+> +	"w1 = 0;"
+> +	"w2 = 0;"
+> +	"w3 = w1;"
+> +	"w4 = w2;"
+> +"l1_%=:"
+> +	/* predictable jump, marks r1 and r2 precise */
+> +	"if w3 == w4 goto +0;"
+> +	"r0 = 0;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Check that unique scalar IDs are ignored when new verifier state is
+> + * compared to cached verifier state. For this test:
+> + * - cached state has no id on r1
+> + * - new state has a unique id on r1
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("6: (25) if r6 > 0x7 goto pc+1")
+> +__msg("7: (57) r1 &= 255")
+> +__msg("8: (bf) r2 = r10")
+> +__msg("from 6 to 8: safe")
+> +__msg("processed 12 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void ignore_unique_scalar_ids_cur(void)
+> +{
+> +	asm volatile (
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r6 = r0;"
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r0 &= 0xff;"
+> +	/* r1.id == r0.id */
+> +	"r1 = r0;"
+> +	/* make r1.id unique */
+> +	"r0 = 0;"
+> +	"if r6 > 7 goto l0_%=;"
+> +	/* clear r1 id, but keep the range compatible */
+> +	"r1 &= 0xff;"
+> +"l0_%=:"
+> +	/* get here in two states:
+> +	 * - first: r1 has no id (cached state)
+> +	 * - second: r1 has a unique id (should be considered equivalent)
+> +	 */
+> +	"r2 = r10;"
+> +	"r2 += r1;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Check that unique scalar IDs are ignored when new verifier state is
+> + * compared to cached verifier state. For this test:
+> + * - cached state has a unique id on r1
+> + * - new state has no id on r1
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("6: (25) if r6 > 0x7 goto pc+1")
+> +__msg("7: (05) goto pc+1")
+> +__msg("9: (bf) r2 = r10")
+> +__msg("9: safe")
+> +__msg("processed 13 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void ignore_unique_scalar_ids_old(void)
+> +{
+> +	asm volatile (
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r6 = r0;"
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r0 &= 0xff;"
+> +	/* r1.id == r0.id */
+> +	"r1 = r0;"
+> +	/* make r1.id unique */
+> +	"r0 = 0;"
+> +	"if r6 > 7 goto l1_%=;"
+> +	"goto l0_%=;"
+> +"l1_%=:"
+> +	/* clear r1 id, but keep the range compatible */
+> +	"r1 &= 0xff;"
+> +"l0_%=:"
+> +	/* get here in two states:
+> +	 * - first: r1 has a unique id (cached state)
+> +	 * - second: r1 has no id (should be considered equivalent)
+> +	 */
+> +	"r2 = r10;"
+> +	"r2 += r1;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+> +/* Check that two different scalar IDs in a verified state can't be
+> + * mapped to the same scalar ID in current state.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +/* The exit instruction should be reachable from two states,
+> + * use two matches and "processed .. insns" to ensure this.
+> + */
+> +__msg("13: (95) exit")
+> +__msg("13: (95) exit")
+> +__msg("processed 18 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void two_old_ids_one_cur_id(void)
+> +{
+> +	asm volatile (
+> +	/* Give unique scalar IDs to r{6,7} */
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r0 &= 0xff;"
+> +	"r6 = r0;"
+> +	"call %[bpf_ktime_get_ns];"
+> +	"r0 &= 0xff;"
+> +	"r7 = r0;"
+> +	"r0 = 0;"
+> +	/* Maybe make r{6,7} IDs identical */
+> +	"if r6 > r7 goto l0_%=;"
+> +	"goto l1_%=;"
+> +"l0_%=:"
+> +	"r6 = r7;"
+> +"l1_%=:"
+> +	/* Mark r{6,7} precise.
+> +	 * Get here in two states:
+> +	 * - first:  r6{.id=A}, r7{.id=B} (cached state)
+> +	 * - second: r6{.id=A}, r7{.id=A}
+> +	 * Currently we don't want to consider such states equivalent.
+> +	 * Thus, marker instruction "r0 = r0;" would be verified twice.
+> +	 */
+> +	"r2 = r10;"
+> +	"r2 += r6;"
+> +	"r2 += r7;"
+> +	"exit;"
+> +	:
+> +	: __imm(bpf_ktime_get_ns)
+> +	: __clobber_all);
+> +}
+> +
+>  char _license[] SEC("license") = "GPL";
+> -- 
+> 2.40.1
+> 
+> 
 
