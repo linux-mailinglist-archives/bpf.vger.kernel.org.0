@@ -1,237 +1,138 @@
-Return-Path: <bpf+bounces-2450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57EE72D367
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 23:35:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A7572D37F
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 23:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B2392811DC
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 21:35:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24CDC1C20BC1
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 21:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F26023410;
-	Mon, 12 Jun 2023 21:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B352D23412;
+	Mon, 12 Jun 2023 21:49:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B05C8C1;
-	Mon, 12 Jun 2023 21:34:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D36BC433EF;
-	Mon, 12 Jun 2023 21:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686605690;
-	bh=h0CRiC60VVAZqmO+EH1iTk5RAONQQFwe4r5bnxWeBYM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WWGX6EsmQ2I3j/HZk09nSijqLsLqKh2zR9pZKyLx/B0jIXGPm7WOm6aHPsipPOPiY
-	 jbuqr2L5NdxGQ25vQ0efNR0RvVTA/m99hLadgsoxeMr2Yr4F8lHDdx8RspQzi7W43/
-	 mLC5DXypQ1i3u7doi7r5ZuwkTyjLzEfegN8R501cyMOXLvlLRW9VI2Ncve7nqZpdCc
-	 NEaiFAjaKVxiKSOlPYg1cGzREgYQilsaa62hJ0h6RiWVYxtKmWXyFXZ0lBGx5e1JWW
-	 26oQT3m1G5nZ691Qq/SnJu3UQtk8Wk6rKOBVtLl9V+SVu1rHNR6YSCJNrSY+wvrhZ3
-	 1QMTS9aeu3yow==
-Date: Tue, 13 Jun 2023 00:34:11 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/13] mm: jit/text allocator
-Message-ID: <20230612213411.GP52412@kernel.org>
-References: <20230601101257.530867-1-rppt@kernel.org>
- <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
- <ZHjgIH3aX9dCvVZc@moria.home.lan>
- <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
- <20230605092040.GB3460@kernel.org>
- <ZH20XkD74prrdN4u@FVFF77S0Q05N>
- <CAPhsuW7ntn_HpVWdGK_hYVd3zsPEFToBNfmtt0m6K8SwfxJ66Q@mail.gmail.com>
- <20230608184116.GJ52412@kernel.org>
- <CAPhsuW5YYa6nQhO2=zor75XkdKpFysZD42DgDRkKZvQT6aMqcA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8286722D60
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 21:49:50 +0000 (UTC)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85F818E
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 14:49:48 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-653436fcc1bso4092800b3a.2
+        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 14:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686606588; x=1689198588;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1MNyUHZeQiodtcOHjn41Myp6pyPmhoOHv6B3DZjPEB0=;
+        b=azvcHGwUWd71qwP+0Td87QH0DzhAwLSD/YAwnl11RJaHfM2ZyhRr6dNQQvh1Z/L7lf
+         jsGiJqu45K9yOakXZo9t76S4GeA1SNxGlghWInEw6BQ3lMjbryMMn9k+t9QwPaIMpUsb
+         96O6LEOXaPlUwGVRfiINeF2NDdpscG+rcV/IyYED35EXWRn1AVgwwmV6JhMi4QMhOfKF
+         cpFjV850yqtvE7heYAgU+FSvWRMtWPdlaAhMyLVIqDE++rWXvxa0NLOdgc3z/6WfPl6o
+         UHi6VqPtRUpNTGAWWJWKyQpey1t+5dHcF31u2a8vEmconDdZPCok1N7vPg4uM9WO4HKt
+         6BLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686606588; x=1689198588;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1MNyUHZeQiodtcOHjn41Myp6pyPmhoOHv6B3DZjPEB0=;
+        b=huWqNbvJUYYV/8y2SwFSWRzF9uRyjo3Y+0i2yX33UmVJb2yjDzfT66qsnPLweomkPX
+         crBjRD86JXHJzlhVU7UBcQc8Zi7LBnu+AU+iBzgi5cNxKab6xPxknTZSodffhxS0AwOg
+         kQ/SCvDiCoZqT22yeyE3rVlCmPaxtjJRyYHF0nfgY7emL5fv/fBVFHlecChplw139OxO
+         i1pt5f/bbdnuuYRp0cfe2ohiBAK9vUJy7Sb7KU/MMTEa2I3L+FRsHNQfImMaP7Wpu0wq
+         1PslMbEQWLV2oxkOjAiAUaHNbkxS6a/K0g7ZyvL3GO3B28XvFBQH4J0IYH6zN4LMz4EB
+         letA==
+X-Gm-Message-State: AC+VfDxt8sW4/TiiGQvV+yQRnV4eB7fvPS3GF/XAylisFnXnPz2nhApB
+	KzykxPSS0l6gFof7Mg//j1ZjiC49WVQ=
+X-Google-Smtp-Source: ACHHUZ6VvfNcMKtIQg/qJ/O9My//Ylnx3d5OkH8jBMBilPGrsFOED+M82Rk/xLkvg3WYTb3Afk3Y3A==
+X-Received: by 2002:a05:6a21:170e:b0:10b:78d6:a2c8 with SMTP id nv14-20020a056a21170e00b0010b78d6a2c8mr9082736pzb.15.1686606588153;
+        Mon, 12 Jun 2023 14:49:48 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c085:21e8::12b4? ([2620:10d:c090:400::5:8131])
+        by smtp.gmail.com with ESMTPSA id u1-20020aa78381000000b0064f7c56d8b7sm7242899pfm.219.2023.06.12.14.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jun 2023 14:49:47 -0700 (PDT)
+Message-ID: <e15949d2-3ec7-5e15-de11-0d7d9f6a30fa@gmail.com>
+Date: Mon, 12 Jun 2023 14:49:45 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH bpf-next 1/2] net: bpf: Always call BPF cgroup filters for
+ egress.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Kui-Feng Lee <kuifeng@meta.com>
+References: <20230612191641.441774-1-kuifeng@meta.com>
+ <20230612191641.441774-2-kuifeng@meta.com>
+ <CAADnVQKi0c=Mf3b=z43=b6n2xBVhwPw4QoV_au5+pFE29iLkaQ@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CAADnVQKi0c=Mf3b=z43=b6n2xBVhwPw4QoV_au5+pFE29iLkaQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW5YYa6nQhO2=zor75XkdKpFysZD42DgDRkKZvQT6aMqcA@mail.gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Jun 09, 2023 at 10:02:16AM -0700, Song Liu wrote:
-> On Thu, Jun 8, 2023 at 11:41 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > On Tue, Jun 06, 2023 at 11:21:59AM -0700, Song Liu wrote:
-> > > On Mon, Jun 5, 2023 at 3:09 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> > >
-> > > [...]
-> > >
-> > > > > > > Can you give more detail on what parameters you need? If the only extra
-> > > > > > > parameter is just "does this allocation need to live close to kernel
-> > > > > > > text", that's not that big of a deal.
-> > > > > >
-> > > > > > My thinking was that we at least need the start + end for each caller. That
-> > > > > > might be it, tbh.
-> > > > >
-> > > > > Do you mean that modules will have something like
-> > > > >
-> > > > >       jit_text_alloc(size, MODULES_START, MODULES_END);
-> > > > >
-> > > > > and kprobes will have
-> > > > >
-> > > > >       jit_text_alloc(size, KPROBES_START, KPROBES_END);
-> > > > > ?
-> > > >
-> > > > Yes.
-> > >
-> > > How about we start with two APIs:
-> > >      jit_text_alloc(size);
-> > >      jit_text_alloc_range(size, start, end);
-> > >
-> > > AFAICT, arm64 is the only arch that requires the latter API. And TBH, I am
-> > > not quite convinced it is needed.
-> >
-> > Right now arm64 and riscv override bpf and kprobes allocations to use the
-> > entire vmalloc address space, but having the ability to allocate generated
-> > code outside of modules area may be useful for other architectures.
-> >
-> > Still the start + end for the callers feels backwards to me because the
-> > callers do not define the ranges, but rather the architectures, so we still
-> > need a way for architectures to define how they want allocate memory for
-> > the generated code.
+
+
+On 6/12/23 13:17, Alexei Starovoitov wrote:
+> On Mon, Jun 12, 2023 at 12:16 PM Kui-Feng Lee <thinker.li@gmail.com> wrote:
+>>
+>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
+>> checking skb->sk against sk.
+>>
+>> The filters were called only if sk_buff is owned by the sock that the
+>> sk_buff is sent out through.  In another words, sk_buff::sk should point to
 > 
-> Yeah, this makes sense.
+> What is "sk_buff::sk" ? Did you mean skb->sk ?
+
+Yes!
 > 
-> >
-> > > > > It sill can be achieved with a single jit_alloc_arch_params(), just by
-> > > > > adding enum jit_type parameter to jit_text_alloc().
-> > > >
-> > > > That feels backwards to me; it centralizes a bunch of information about
-> > > > distinct users to be able to shove that into a static array, when the callsites
-> > > > can pass that information.
-> > >
-> > > I think we only two type of users: module and everything else (ftrace, kprobe,
-> > > bpf stuff). The key differences are:
-> > >
-> > >   1. module uses text and data; while everything else only uses text.
-> > >   2. module code is generated by the compiler, and thus has stronger
-> > >   requirements in address ranges; everything else are generated via some
-> > >   JIT or manual written assembly, so they are more flexible with address
-> > >   ranges (in JIT, we can avoid using instructions that requires a specific
-> > >   address range).
-> > >
-> > > The next question is, can we have the two types of users share the same
-> > > address ranges? If not, we can reserve the preferred range for modules,
-> > > and let everything else use the other range. I don't see reasons to further
-> > > separate users in the "everything else" group.
-> >
-> > I agree that we can define only two types: modules and everything else and
-> > let the architectures define if they need different ranges for these two
-> > types, or want the same range for everything.
-> >
-> > With only two types we can have two API calls for alloc, and a single
-> > structure that defines the ranges etc from the architecture side rather
-> > than spread all over.
-> >
-> > Like something along these lines:
-> >
-> >         struct execmem_range {
-> >                 unsigned long   start;
-> >                 unsigned long   end;
-> >                 unsigned long   fallback_start;
-> >                 unsigned long   fallback_end;
-> >                 pgprot_t        pgprot;
-> >                 unsigned int    alignment;
-> >         };
-> >
-> >         struct execmem_modules_range {
-> >                 enum execmem_module_flags flags;
-> >                 struct execmem_range text;
-> >                 struct execmem_range data;
-> >         };
-> >
-> >         struct execmem_jit_range {
-> >                 struct execmem_range text;
-> >         };
-> >
-> >         struct execmem_params {
-> >                 struct execmem_modules_range    modules;
-> >                 struct execmem_jit_range        jit;
-> >         };
-> >
-> >         struct execmem_params *execmem_arch_params(void);
-> >
-> >         void *execmem_text_alloc(size_t size);
-> >         void *execmem_data_alloc(size_t size);
-> >         void execmem_free(void *ptr);
+>> the sock that it is sending through its egress.  However, the filters would
+>> miss SYNACK sk_buffs that they are owned by a request_sock but sent through
+>> the listening sock, that is the socket listening incoming connections.
+>> This is an unnecessary restrict.
+>>
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   include/linux/bpf-cgroup.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+>> index 57e9e109257e..e656da531f9f 100644
+>> --- a/include/linux/bpf-cgroup.h
+>> +++ b/include/linux/bpf-cgroup.h
+>> @@ -199,7 +199,7 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>>   #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk, skb)                              \
+>>   ({                                                                            \
+>>          int __ret = 0;                                                         \
+>> -       if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk && sk == skb->sk) { \
+>> +       if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {
 > 
-> With the jit variation, maybe we can just call these
-> module_[text|data]_alloc()?
-
-I was thinking about "execmem_*_alloc()" for allocations that must be close to kernel
-image, like modules, ftrace on x86 and s390 and maybe something else in the
-future.
-
-And jit_text_alloc() for allocations that can reside anywhere.
-
-I tried to find a different name for 'struct execmem_modules_range' but
-couldn't think of anything better than 'struct execmem_close_to_kernel', so
-I've left modules in the name.
- 
-> btw: Depending on the implementation of the allocator, we may also
-> need separate free()s for text and data.
 > 
-> >
-> >         void *jit_text_alloc(size_t size);
-> >         void jit_free(void *ptr);
-> >
-
-Let's just add jit_free() for completeness even if it will be the same as
-execmem_free() for now.
- 
-> [...]
+> I did a bit of git-archeology.
+> That check was there since the beginning of cgroup-bpf and
+> came as a suggestion to use 'sk' instead of 'skb->sk':
+> https://lore.kernel.org/all/58193E9D.7040201@iogearbox.net/
 > 
-> How should we move ahead from here?
+> Using sk is certainly correct. It looks to me that the check
+> was added just for a "piece of mind".
 > 
-> AFAICT, all these changes can be easily extended and refactored
-> in the future, so we don't have to make it perfect the first time.
-> OTOH, having the interface committed (either this set or my
-> module_alloc_type version) can unblock works in the binpack
-> allocator and the users side. Therefore, I think we can move
-> relatively fast here?
-
-Once the interface and architecture abstraction is ready we can work on the
-allocator and the users. We also need to update text_poking/alternatives on
-architectures that would allocate executable memory as ROX. I did some
-quick tests and with these patches 'modprobe xfs' takes tens time more than
-before.
- 
-> Thanks,
-> Song
-
--- 
-Sincerely yours,
-Mike.
+Good to know that.  Thank you for the confirmation.
 
