@@ -1,244 +1,170 @@
-Return-Path: <bpf+bounces-2375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DD872BCDF
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 11:41:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EE972BD0C
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 11:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7FE21C208E0
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 09:41:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27A791C20936
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 09:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDA918AEF;
-	Mon, 12 Jun 2023 09:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FF418C00;
+	Mon, 12 Jun 2023 09:50:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49FD182C6
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 09:40:55 +0000 (UTC)
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D850171F
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 02:40:52 -0700 (PDT)
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-77accdaa0e0so403603939f.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 02:40:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686562852; x=1689154852;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IOukDDFEXDsyItnpEwvA9BwJDJzeRl05goPLa1Dm+zM=;
-        b=kn+nij/Fgiu8lNg1fiKRWABIJlrO7V7W+mPAdM6+6d78iDTIiYfzGK2zIAcBH8Z0w8
-         ZCUU5lvc6qkENGnFwVPYQ//jcYNEGDFhB1hd4UQsvp1/lF1ivpSPbZ0lfYs4C0NTakZ5
-         AvotIcv0E+S5DmpcI7EC3xBmctA620yByKw5KcL+Lf/VsZEa2SIkUbNKuYYx3c1mPQ9m
-         7D2YP3JBMo7vAnUNBVLjR2VuzKiAv7tWz5ppB6+bDvwNfnugVQIXAqkgnAGfYN9dLZsS
-         xhXRksvN+TzDTzQvifSw8V/dTlzcKEBccjjknNKINpW6BnPUV8yknayBkRu6ZTChZ8D6
-         kNiA==
-X-Gm-Message-State: AC+VfDzNvVJYo97o+3zlbOvQfuyCN67aGusUuHqG8C1zqO1OgEilTwYS
-	e0IS+gAfJcAT/Ji3wGL6jJaQ70j1ppcfbVOD8cWs/V3AWifKJrV5JA==
-X-Google-Smtp-Source: ACHHUZ4ECrxuF4UDeSKHcbGsiFfyVVTkicETdGb44oTEnQfjQNnHpsdA3UoB6Ft3j0zF9A3R1ovlqKuiJGAk4LuEVYoFeS7a/IOk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB9418AFF;
+	Mon, 12 Jun 2023 09:50:15 +0000 (UTC)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2125.outbound.protection.outlook.com [40.107.220.125])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED5759C5;
+	Mon, 12 Jun 2023 02:50:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YXDoG7HgKZjECxQV+XD5foQD3O0b03gm0ijT+1jibS/VnqoC4mJrSZzhMKTtM4u8XjaXGTCCWioPdFH9MG5qkG8mQXjaOj6duoEa1HzWVAS9ylgdiRNTcQmgd8Did/lZzhXDiue486lks9O4Z3aHWGlYTVyYm1jhrC5ajV61H9PGhaNOdC57RSihBUXeKmraozuAl6QdJUjY01eVaqpOzTtiwT9x58k6zQJoaj3Ohc5b8ve2RqcLeyDH5n2s4q28aH+iD2hC4gBPgqcWzPMxhYLZoI1BFt4iIUa1LOGuaCmVy92w4Ld5faDULe8+iK9JT/vEWZNczk+nj5WnYOvZKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y+qsI0/KbDSkBlqrT41X2UQPZ+jE42Injv9dBFiMUG8=;
+ b=StBMPN4S9qn8G2/ezdk0/n0ma2Pj2onPOyZtAxi9ZRsysUHUdvPH6E26Y66+Vkgv5n6/U/SgBp7dMdcn0I39z3eg4ANYmnLLqWN2WB66vE3bndLYyzI9S519YGWKS87ssyKD3rGgBgSiDPVS+xSQH0mZxImjvrPBb1HdK3gQchgGxpdHboiQ/c9Os5DmwsOmrSJ5h6BWFSf9r7hdrcNu5v++bT0srMuUHEbmfMzLJIfSV0JGWXsbGWayVR009GKuVAz9CkC8QVgG3uiGbJHdHV1q8Q2XGoYqd6xmZWtYZvwASimgCfVaOr4MUR9m+9cfCJGZlOYmbw+3f7AbScatWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y+qsI0/KbDSkBlqrT41X2UQPZ+jE42Injv9dBFiMUG8=;
+ b=tAEw5UUk6YX7vvhnwCzXrX4UjQ+5s8gUkjh13yW4zCiFhEdS6UZezpP30mSSZ3+09GMTOgQ7Wdjre/j+kA8cMbU4RGWUmh0ZsBt/R9RDgTcboNeMvAI6TrZmqZdM4t4Ao82hJfA+GVDEtMmRsm9SKy1oeHIGjrCSQzbsaOLSwl4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SJ0PR13MB5845.namprd13.prod.outlook.com (2603:10b6:a03:431::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Mon, 12 Jun
+ 2023 09:50:06 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%4]) with mapi id 15.20.6477.028; Mon, 12 Jun 2023
+ 09:50:06 +0000
+Date: Mon, 12 Jun 2023 11:49:57 +0200
+From: Simon Horman <simon.horman@corigine.com>
+To: Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc: Stefan Hajnoczi <stefanha@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v4 4/8] vsock: make vsock bind reusable
+Message-ID: <ZIbqRXYMbYsdq874@corigine.com>
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-4-0cebbb2ae899@bytedance.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230413-b4-vsock-dgram-v4-4-0cebbb2ae899@bytedance.com>
+X-ClientProxiedBy: AS4P192CA0037.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:658::28) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:228a:0:b0:416:5d0f:f494 with SMTP id
- o132-20020a02228a000000b004165d0ff494mr3390771jao.5.1686562851931; Mon, 12
- Jun 2023 02:40:51 -0700 (PDT)
-Date: Mon, 12 Jun 2023 02:40:51 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae4cbf05fdeb8349@google.com>
-Subject: [syzbot] [net?] KASAN: stack-out-of-bounds Read in skb_splice_from_iter
-From: syzbot <syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, dhowells@redhat.com, 
-	dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-	autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SJ0PR13MB5845:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67ec92b3-8f45-44c1-052a-08db6b2a66c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nllal47Yx1/rCcD3jHKJEby+jGgsgJwAUOB2kAMH4XhRx41a9KlvxeBKJbfCBXYr7SI+C6r8qCh/FVmJ328LvS3G6TjFLdSP/wmVF2S1f2jXcq6Ch9XAZ+FAZuRjmi5pBIzG258kak+UsvPA6ziUs1XZYtN9SutGIW5tkXL+94sgqx0EyNo4U7kCAJxC7lYM/eM+iue/IZVCh24zsu2HEMsplqbzU82FhSunaWj/n6lFkF68c5ax6EzS1ufRvIk9TtUWtyMJmNOORus1RL1Ro/gdJyCD33ENQzOwFUm58lmAg71vmS8jLkVrJQTce61L0lEPNFh6y2aKdRQpxBnYM3Hs3+EZD0auOxeae04egsf+1ZT8bqnAWESqIw73zTUo3eFvHSRB+mQfw1wYXwksHhm8Qa+4xlPfbD8XBvkbRH7kGH44pt77Bq4vT8MomqckqftOJ1b22MiFlK1U6MVkOctE36G95W4Yq7cJqmj8RQBSFx2FSKTRYKui9CNeOikkoS0YGUvU2c1JWugl+6hb8ZJS1EE/YmiNc0GgdyBkfEzBPupX8R2QDmhsXHRzueaePr94Co4FClbTRHraqT8gutui0xdcOk5b2rGrFVtd9WE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39830400003)(366004)(346002)(376002)(451199021)(86362001)(186003)(83380400001)(6512007)(6506007)(2616005)(6486002)(7416002)(6666004)(8676002)(8936002)(5660300002)(478600001)(36756003)(54906003)(2906002)(38100700002)(44832011)(4744005)(316002)(41300700001)(66556008)(66476007)(6916009)(66946007)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2lwW5HCcQLNa/S+M3zGbCXFxvCAKc2WDtM4e7Oc3qbySL/DEMqxFeg5EsTfM?=
+ =?us-ascii?Q?dZaXTX57PRvNW7ftYHqZICb7hWUA5kC2VaCY/EPqrjL491QxUtaL1e/x82n3?=
+ =?us-ascii?Q?9QB00BPIPW44D8BvFhFGoFAbctUkm+JOPCoGrLR6ZnZZeGeHR79mEs7wTg1J?=
+ =?us-ascii?Q?ysxCriSpxUe5sbF/aRE+ZzmKxWJzMfJqOHEszo0Vhl/9nZvJ6RbP/TirQyMo?=
+ =?us-ascii?Q?T7svj7gg0GcQcsasZKBkC37GzBTp3hPkLx/B66ohktROCmojwCHA2HYUBcpK?=
+ =?us-ascii?Q?dAKCgAAvc/dqlfAEHQ1FIw8ERMDpFRMf+ycduwRhQWKrpEqPb2lKIWgjsZlM?=
+ =?us-ascii?Q?qbEjs03XpTWyiT78w4RolGkNfPGEDdTCEpZQVxjMQ55bzzKOIB8v3glfi9BL?=
+ =?us-ascii?Q?cG8FEAcQVxYwi66/TmVdoBd79mi1HzGIpfUJzA1mF6dTdwQQRacD+9zc+0Nh?=
+ =?us-ascii?Q?GoZc93FXyiJ+BItyYSSgONLnoqw9WZqByRjf0LZTVUdM+MdSm0Hr3uDHdHoL?=
+ =?us-ascii?Q?c6hCG6KzrrJ6WcqKH3/hpI4X8qxETTwFTUDIMpo+0mU8p55ZD/iJT4irhBsl?=
+ =?us-ascii?Q?DwxDcrrfQ22QQUeh7dTzDE/QoVcmPmrGt364F0xvlyD1dj9GUE9Ndcw22n0l?=
+ =?us-ascii?Q?M0ardOrKKR868pir3UyKvYVbZyKaMgFUiv7f3DRWqbAJpqf1IKie8LkbRZRG?=
+ =?us-ascii?Q?sSmI8ZIsrSvN5mjPUAyXMrOmcBLVxkwBDpPyYypJ7ZmmwGAfmsN4YgnhGSOs?=
+ =?us-ascii?Q?z9wKfiQDrT5GZsvEtX4WIbtSyf3j9AcmKik0MzWNFQY2/2aUkuyLqJL5F/Ds?=
+ =?us-ascii?Q?NXH6FwN1EK1CpKt25GW/WRA05MssvvFBC1Ms3OU6RU5ilfeRsmMkWQjynnSq?=
+ =?us-ascii?Q?DWLaUSo0OANiQ2xKeiLEhQFSMF9axie5FABGELQ4yIGgD9mhqFvPvyzC00mI?=
+ =?us-ascii?Q?L6S8PxlHIi94tLJJwehQ8JWzTwnxiZwrGlmTlmT597HolXnQbFxMvrh6tNUq?=
+ =?us-ascii?Q?Z6lS2REAHvo8HVaelASaSLY52ogtcYlfdYxySgrVJHyQWXm0+CyaRpPh5ixS?=
+ =?us-ascii?Q?KkV+MtDge3uKK23N3gN5J4TBwGf4268/D56ngfPAqh2gOgdUmhGsbQX5jfEb?=
+ =?us-ascii?Q?84Od8dkeWAGqLBSqomhYaVvjvTYiGA0K6ewbyGpiSXM+YYpYx4A0cH03VYPD?=
+ =?us-ascii?Q?FCeQJVN3QDNey3TOtW6F02C0sraQ6686Lwy0tviF1Nm88KY7rcxZJ1V6QuxQ?=
+ =?us-ascii?Q?Fkd9cBgaN2/Ndu1a+QAeDShdlRNsqwHpQzZmn0kRflXr4nSQc1gwjVhrApVX?=
+ =?us-ascii?Q?zvnpZOsPkyo6MB/tklapgzmOXoLYb8o4oKVNo6d2ZXZr38PGNkD0jvR3donr?=
+ =?us-ascii?Q?WHA15kvbxcRaR0S00Gqsj/nVBcfDhSZiLCMnSpK118NBy06leLoPJ3eH+HRs?=
+ =?us-ascii?Q?STwo/EfrmX4S1N/CrJcyXbUVhVXdC33Dzi8PknfY8LhzsaYXZwSrSS6bU2S5?=
+ =?us-ascii?Q?J4TC2112IjdD/cvQF2H4i+D68VUD5hnNh1UN5cNXZDQOEXzp58R4o85u/a2C?=
+ =?us-ascii?Q?zEYiSwRWVSGLPmKTA5e6PeYsQun2s1WXg7yK9UgKuI7Yxdj4fkyKGPe2BXTz?=
+ =?us-ascii?Q?vrmxC2Q3WGXd8i7qeRDas5vsjfTC1HF7hbBguPIGh8I+cUhbUXPe8O11iXRi?=
+ =?us-ascii?Q?xVthdQ=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67ec92b3-8f45-44c1-052a-08db6b2a66c6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 09:50:06.3106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kCrVqd4eD7bpj6h6/LLn9SaROZmV06Cl5tDV8z3MZZCeAxg2evJ9uSB86bpYlfnHmF74o1GIP5CkBTZ6dp8kN0S7RHY3FoO/Y0uKtECJSTs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR13MB5845
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+On Sat, Jun 10, 2023 at 12:58:31AM +0000, Bobby Eshleman wrote:
+> This commit makes the bind table management functions in vsock usable
+> for different bind tables. For use by datagrams in a future patch.
+> 
+> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> ---
+>  net/vmw_vsock/af_vsock.c | 33 ++++++++++++++++++++++++++-------
+>  1 file changed, 26 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index ef86765f3765..7a3ca4270446 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -230,11 +230,12 @@ static void __vsock_remove_connected(struct vsock_sock *vsk)
+>  	sock_put(&vsk->sk);
+>  }
+>  
+> -static struct sock *__vsock_find_bound_socket(struct sockaddr_vm *addr)
+> +struct sock *vsock_find_bound_socket_common(struct sockaddr_vm *addr,
+> +					    struct list_head *bind_table)
 
-syzbot found the following issue on:
+Hi Bobby,
 
-HEAD commit:    e7c5433c5aaa tools: ynl: Remove duplicated include in hand..
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=109d3d1d280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
-dashboard link: https://syzkaller.appspot.com/bug?extid=d8486855ef44506fd675
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f22943280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e1363b280000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/13c08af1fd21/disk-e7c5433c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/35820511752b/vmlinux-e7c5433c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6a8cbec0d40f/bzImage-e7c5433c.xz
-
-The issue was bisected to:
-
-commit 2dc334f1a63a8839b88483a3e73c0f27c9c1791c
-Author: David Howells <dhowells@redhat.com>
-Date:   Wed Jun 7 18:19:09 2023 +0000
-
-    splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149e0c8b280000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=169e0c8b280000
-console output: https://syzkaller.appspot.com/x/log.txt?x=129e0c8b280000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com
-Fixes: 2dc334f1a63a ("splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()")
-
-==================================================================
-BUG: KASAN: stack-out-of-bounds in skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
-Read of size 8 at addr ffffc900039bf8f8 by task syz-executor193/5001
-
-CPU: 1 PID: 5001 Comm: syz-executor193 Not tainted 6.4.0-rc5-syzkaller-00915-ge7c5433c5aaa #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
- print_report mm/kasan/report.c:462 [inline]
- kasan_report+0x11c/0x130 mm/kasan/report.c:572
- skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
- __ip_append_data+0x1439/0x3c20 net/ipv4/ip_output.c:1210
- ip_append_data net/ipv4/ip_output.c:1350 [inline]
- ip_append_data+0x115/0x1a0 net/ipv4/ip_output.c:1329
- raw_sendmsg+0xb50/0x30a0 net/ipv4/raw.c:641
- inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:829
- sock_sendmsg_nosec net/socket.c:724 [inline]
- sock_sendmsg+0xde/0x190 net/socket.c:747
- splice_to_socket+0x954/0xe30 fs/splice.c:917
- do_splice_from fs/splice.c:969 [inline]
- do_splice+0xb8c/0x1e50 fs/splice.c:1309
- __do_splice+0x14e/0x270 fs/splice.c:1387
- __do_sys_splice fs/splice.c:1598 [inline]
- __se_sys_splice fs/splice.c:1580 [inline]
- __x64_sys_splice+0x19c/0x250 fs/splice.c:1580
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fba0bf36d29
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe0d4bac38 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fba0bf36d29
-RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00007fba0befaed0 R08: 000000000004ffdd R09: 000000000000000d
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fba0befaf60
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-The buggy address belongs to stack of task syz-executor193/5001
- and is located at offset 408 in frame:
- raw_sendmsg+0x0/0x30a0 include/net/sock.h:2733
-
-This frame has 8 objects:
- [48, 52) 'hdrincl'
- [64, 68) 'err'
- [80, 88) 'rt'
- [112, 152) 'ipc'
- [192, 240) 'state'
- [272, 336) 'fl4'
- [368, 392) 'rfv'
- [432, 504) 'opt_copy'
-
-The buggy address belongs to the virtual mapping at
- [ffffc900039b8000, ffffc900039c1000) created by:
- kernel_clone+0xeb/0x890 kernel/fork.c:2915
-
-The buggy address belongs to the physical page:
-page:ffffea0001d6c880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x75b22
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 4968, tgid 4968 (dhcpcd-run-hook), ts 47435778840, free_ts 47434086594
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2db/0x350 mm/page_alloc.c:1731
- prep_new_page mm/page_alloc.c:1738 [inline]
- get_page_from_freelist+0xf41/0x2c00 mm/page_alloc.c:3502
- __alloc_pages+0x1cb/0x4a0 mm/page_alloc.c:4768
- alloc_pages+0x1aa/0x270 mm/mempolicy.c:2279
- vm_area_alloc_pages mm/vmalloc.c:3009 [inline]
- __vmalloc_area_node mm/vmalloc.c:3085 [inline]
- __vmalloc_node_range+0xb1c/0x14a0 mm/vmalloc.c:3257
- alloc_thread_stack_node kernel/fork.c:313 [inline]
- dup_task_struct kernel/fork.c:1116 [inline]
- copy_process+0x13bb/0x75c0 kernel/fork.c:2333
- kernel_clone+0xeb/0x890 kernel/fork.c:2915
- __do_sys_clone+0xba/0x100 kernel/fork.c:3058
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1302 [inline]
- free_unref_page_prepare+0x62e/0xcb0 mm/page_alloc.c:2564
- free_unref_page_list+0xe3/0xa70 mm/page_alloc.c:2705
- release_pages+0xcd8/0x1380 mm/swap.c:1042
- tlb_batch_pages_flush+0xa8/0x1a0 mm/mmu_gather.c:97
- tlb_flush_mmu_free mm/mmu_gather.c:292 [inline]
- tlb_flush_mmu mm/mmu_gather.c:299 [inline]
- tlb_finish_mmu+0x14b/0x7e0 mm/mmu_gather.c:391
- exit_mmap+0x2b2/0x930 mm/mmap.c:3123
- __mmput+0x128/0x4c0 kernel/fork.c:1351
- mmput+0x60/0x70 kernel/fork.c:1373
- exit_mm kernel/exit.c:567 [inline]
- do_exit+0x9b0/0x29b0 kernel/exit.c:861
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
- __do_sys_exit_group kernel/exit.c:1035 [inline]
- __se_sys_exit_group kernel/exit.c:1033 [inline]
- __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1033
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffffc900039bf780: f1 f1 04 f2 00 00 00 f2 f2 f2 00 00 00 00 00 f2
- ffffc900039bf800: f2 f2 f2 f2 00 00 00 00 00 00 f2 f2 f2 f2 00 00
->ffffc900039bf880: 00 00 00 00 00 00 f2 f2 f2 f2 00 00 00 f2 f2 f2
-                                                                ^
- ffffc900039bf900: f2 f2 00 00 00 00 00 00 00 00 00 f3 f3 f3 f3 f3
- ffffc900039bf980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+This function seems to only be used in this file.
+Should it be static?
 
