@@ -1,134 +1,238 @@
-Return-Path: <bpf+bounces-2364-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25D7272B748
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 07:25:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50E9A72BAD4
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 10:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1E8B281075
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 05:25:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A4A01C209BE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 08:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522F7257F;
-	Mon, 12 Jun 2023 05:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A003D6105;
+	Mon, 12 Jun 2023 08:36:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3399F2575
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 05:25:06 +0000 (UTC)
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417AAE1;
-	Sun, 11 Jun 2023 22:25:04 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VkrnYHA_1686547498;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VkrnYHA_1686547498)
-          by smtp.aliyun-inc.com;
-          Mon, 12 Jun 2023 13:25:00 +0800
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-To: alexander.shishkin@linux.intel.com,
-	peterz@infradead.org
-Cc: mingo@redhat.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH 2/2] perf/ring_buffer: Fix high-order allocations for AUX space with correct MAX_ORDER limit
-Date: Mon, 12 Jun 2023 13:24:52 +0800
-Message-Id: <20230612052452.53425-3-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
-References: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC371FD8
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 08:36:31 +0000 (UTC)
+X-Greylist: delayed 2068 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 12 Jun 2023 01:36:24 PDT
+Received: from mail-m11877.qiye.163.com (mail-m11877.qiye.163.com [115.236.118.77])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A83419A;
+	Mon, 12 Jun 2023 01:36:23 -0700 (PDT)
+Received: from [172.23.197.27] (unknown [121.32.254.147])
+	by mail-m11877.qiye.163.com (Hmail) with ESMTPA id 92F0A40040C;
+	Mon, 12 Jun 2023 15:29:20 +0800 (CST)
+Message-ID: <cb07ac16-cc0f-7e8d-6271-cde2e02e739d@sangfor.com.cn>
+Date: Mon, 12 Jun 2023 15:29:00 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v13 09/12] tracing/probes: Add BTF retval type support
+Content-Language: en-US
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Florent Revest <revest@chromium.org>, Mark Rutland <mark.rutland@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+ Bagas Sanjaya <bagasdotme@gmail.com>, linux-trace-kernel@vger.kernel.org,
+ Ding Hui <dinghui@sangfor.com.cn>, huangcun@sangfor.com.cn
+References: <168507466597.913472.10572827237387849017.stgit@mhiramat.roam.corp.google.com>
+ <168507476195.913472.16290308831790216609.stgit@mhiramat.roam.corp.google.com>
+From: Donglin Peng <pengdonglin@sangfor.com.cn>
+In-Reply-To: <168507476195.913472.16290308831790216609.stgit@mhiramat.roam.corp.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDT0wYVkxKSx9DGUlDQkhCGlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVSktLVUtZBg++
+X-HM-Tid: 0a88ae8264f62eb3kusn92f0a40040c
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PAg6Dxw5PT1IKho*MTQ#QglO
+	LyhPCUJVSlVKTUNNTk5PQk1KTE9OVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+	WRILWUFZSklKVUhJVUlOT1VKT0xZV1kIAVlBTEJCTzcG
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When perf-record with a large AUX area, e.g 2GB:
+On 2023/5/26 12:19, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Check the target function has non-void retval type and set the correct
+> fetch type if user doesn't specify it.
+> If the function returns void, $retval is rejected as below;
+> 
+>   # echo 'f unregister_kprobes%return $retval' >> dynamic_events
+> sh: write error: No such file or directory
+>   # cat error_log
+> [   37.488397] trace_fprobe: error: This function returns 'void' type
+>    Command: f unregister_kprobes%return $retval
+>                                         ^
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+> Changes in v8:
+>   - Fix wrong indentation.
+> Changes in v7:
+>   - Introduce this as a new patch.
+> ---
+>   kernel/trace/trace_probe.c |   69 ++++++++++++++++++++++++++++++++++++++++----
+>   kernel/trace/trace_probe.h |    1 +
+>   2 files changed, 63 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index 7318642aceb3..dfe3e1823eec 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -371,15 +371,13 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+>   	return NULL;
+>   }
+>   
+> -static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+> -						   bool tracepoint)
+> +static const struct btf_type *find_btf_func_proto(const char *funcname)
+>   {
+>   	struct btf *btf = traceprobe_get_btf();
+> -	const struct btf_param *param;
+>   	const struct btf_type *t;
+>   	s32 id;
+>   
+> -	if (!btf || !funcname || !nr)
+> +	if (!btf || !funcname)
+>   		return ERR_PTR(-EINVAL);
+>   
+>   	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> @@ -396,6 +394,22 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
+>   	if (!btf_type_is_func_proto(t))
+>   		return ERR_PTR(-ENOENT);
+>   
+> +	return t;
+> +}
+> +
+> +static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+> +						   bool tracepoint)
+> +{
+> +	const struct btf_param *param;
+> +	const struct btf_type *t;
+> +
+> +	if (!funcname || !nr)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	t = find_btf_func_proto(funcname);
+> +	if (IS_ERR(t))
+> +		return (const struct btf_param *)t;
+> +
+>   	*nr = btf_type_vlen(t);
+>   	param = (const struct btf_param *)(t + 1);
+>   
+> @@ -462,6 +476,32 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
+>   	return find_fetch_type(typestr, ctx->flags);
+>   }
+>   
+> +static const struct fetch_type *parse_btf_retval_type(
+> +					struct traceprobe_parse_context *ctx)
+> +{
 
-    #perf record -C 0 -m ,2G -e arm_spe_0// -- sleep 1
+Can we make this a common interface so that the funcgraph-retval can
+  also use it to get the return type?
 
-it reveals a WARNING with __alloc_pages:
+-- Donglin Peng
 
-[   48.888553] ------------[ cut here ]------------
-[   48.888559] WARNING: CPU: 39 PID: 17438 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
-[   48.888569] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) vfat(E) fat(E) aes_ce_blk(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
-[   48.888610] CPU: 39 PID: 17438 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #56
-[   48.888613] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
-[   48.888614] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-[   48.888616] pc : __alloc_pages+0x1ec/0x248
-[   48.888619] lr : rb_alloc_aux_page+0x78/0xe0
-[   48.888622] sp : ffff800037c5b9e0
-[   48.888623] pmr_save: 000000e0
-[   48.888624] x29: ffff800037c5b9e0 x28: ffff00082743b800 x27: 0000000000000000
-[   48.888627] x26: 0000000000080000 x25: ffff000000000000 x24: ffff000860b21380
-[   48.888629] x23: ffff8000093fd3c0 x22: ffff00081a4a2080 x21: 000000000000000b
-[   48.888631] x20: 0000000000000000 x19: 000000000000000b x18: 0000000000000020
-[   48.888634] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff00081a4a2610
-[   48.888636] x14: 0000000000000000 x13: 323173656761705f x12: ffff00477fffeb90
-[   48.888638] x11: 0000000000000000 x10: 0000000000000000 x9 : ffff8000083608a0
-[   48.888641] x8 : 0000000000000000 x7 : 0000000000000000 x6 : 0000000000000040
-[   48.888643] x5 : 000000000007f400 x4 : 0000000000000000 x3 : 0000000000000000
-[   48.888645] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000012dc0
-[   48.888648] Call trace:
-[   48.888650]  __alloc_pages+0x1ec/0x248
-[   48.888653]  rb_alloc_aux_page+0x78/0xe0
-[   48.888654]  rb_alloc_aux+0x13c/0x298
-[   48.888656]  perf_mmap+0x468/0x688
-[   48.888659]  mmap_region+0x308/0x8a8
-[   48.888662]  do_mmap+0x3c0/0x528
-[   48.888664]  vm_mmap_pgoff+0xf4/0x1b8
-[   48.888666]  ksys_mmap_pgoff+0x18c/0x218
-[   48.888668]  __arm64_sys_mmap+0x38/0x58
-[   48.888671]  invoke_syscall+0x50/0x128
-[   48.888673]  el0_svc_common.constprop.0+0x58/0x188
-[   48.888674]  do_el0_svc+0x34/0x50
-[   48.888676]  el0_svc+0x34/0x108
-[   48.888679]  el0t_64_sync_handler+0xb8/0xc0
-[   48.888681]  el0t_64_sync+0x1a4/0x1a8
-[   48.888686] ---[ end trace 0000000000000000 ]---
-
-The problem is that the high-order pages for AUX area is allocated with
-an order of MAX_ORDER. Obviously, this is a bogus.
-
-Fix it with an order of MAX_ORDER - 1 at maximum.
-
-Fixes: 0a4e38e64f5e ("perf: Support high-order allocations for AUX space")
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
- kernel/events/ring_buffer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index 273a0fe..d6bbdb7 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -609,8 +609,8 @@ static struct page *rb_alloc_aux_page(int node, int order)
- {
- 	struct page *page;
- 
--	if (order > MAX_ORDER)
--		order = MAX_ORDER;
-+	if (order >= MAX_ORDER)
-+		order = MAX_ORDER - 1;
- 
- 	do {
- 		page = alloc_pages_node(node, PERF_AUX_GFP, order);
--- 
-1.8.3.1
+> +	struct btf *btf = traceprobe_get_btf();
+> +	const char *typestr = NULL;
+> +	const struct btf_type *t;
+> +
+> +	if (btf && ctx->funcname) {
+> +		t = find_btf_func_proto(ctx->funcname);
+> +		if (!IS_ERR(t))
+> +			typestr = type_from_btf_id(btf, t->type);
+> +	}
+> +
+> +	return find_fetch_type(typestr, ctx->flags);
+> +}
+> +
+> +static bool is_btf_retval_void(const char *funcname)
+> +{
+> +	const struct btf_type *t;
+> +
+> +	t = find_btf_func_proto(funcname);
+> +	if (IS_ERR(t))
+> +		return false;
+> +
+> +	return t->type == 0;
+> +}
+>   #else
+>   static struct btf *traceprobe_get_btf(void)
+>   {
+> @@ -480,8 +520,15 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
+>   	trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
+>   	return -EOPNOTSUPP;
+>   }
+> +
+>   #define parse_btf_arg_type(idx, ctx)		\
+>   	find_fetch_type(NULL, ctx->flags)
+> +
+> +#define parse_btf_retval_type(ctx)		\
+> +	find_fetch_type(NULL, ctx->flags)
+> +
+> +#define is_btf_retval_void(funcname)	(false)
+> +
+>   #endif
+>   
+>   #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
+> @@ -512,6 +559,11 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+>   
+>   	if (strcmp(arg, "retval") == 0) {
+>   		if (ctx->flags & TPARG_FL_RETURN) {
+> +			if ((ctx->flags & TPARG_FL_KERNEL) &&
+> +			    is_btf_retval_void(ctx->funcname)) {
+> +				err = TP_ERR_NO_RETVAL;
+> +				goto inval;
+> +			}
+>   			code->op = FETCH_OP_RETVAL;
+>   			return 0;
+>   		}
+> @@ -912,9 +964,12 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+>   		goto fail;
+>   
+>   	/* Update storing type if BTF is available */
+> -	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
+> -	    !t && code->op == FETCH_OP_ARG)
+> -		parg->type = parse_btf_arg_type(code->param, ctx);
+> +	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
+> +		if (code->op == FETCH_OP_ARG)
+> +			parg->type = parse_btf_arg_type(code->param, ctx);
+> +		else if (code->op == FETCH_OP_RETVAL)
+> +			parg->type = parse_btf_retval_type(ctx);
+> +	}
+>   
+>   	ret = -EINVAL;
+>   	/* Store operation */
+> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> index c864e6dea10f..eb43bea5c168 100644
+> --- a/kernel/trace/trace_probe.h
+> +++ b/kernel/trace/trace_probe.h
+> @@ -449,6 +449,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+>   	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
+>   	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
+>   	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
+> +	C(NO_RETVAL,		"This function returns 'void' type"),	\
+>   	C(BAD_STACK_NUM,	"Invalid stack number"),		\
+>   	C(BAD_ARG_NUM,		"Invalid argument number"),		\
+>   	C(BAD_VAR,		"Invalid $-valiable specified"),	\
+> 
+> 
+> 
 
 
