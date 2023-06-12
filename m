@@ -1,908 +1,456 @@
-Return-Path: <bpf+bounces-2441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EE2972CF39
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 21:17:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5DC72CFC5
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 21:42:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 857B91C20BB8
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:17:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0AA828110C
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F0F8F53;
-	Mon, 12 Jun 2023 19:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CAC8F53;
+	Mon, 12 Jun 2023 19:42:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B671A8F50
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 19:16:57 +0000 (UTC)
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208D6171F
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:16:54 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b2d356530eso1812318a34.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:16:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CB0881E
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 19:42:33 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ED7E71
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:42:31 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b1c5a6129eso56078471fa.2
+        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686597412; x=1689189412;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oc8DsBUETCvIPXIc9Auy78NswSPshB6nTU0jpX+nuxA=;
-        b=Yu9odbmPAdSl2y2BDwmoo4ii6y0rxhHedePOMJxNCvcnxSrVreAeKs3yg3Yj8nbGPm
-         wZaFoUOgEHDGYIiIv1tlDxDCVwXignKg9m0xcCXwLvWHOmHQ88f0oXA1CXZlj/UD43Oo
-         GrK1ZjX2iSm+20m0vAITVXd+CwomqNL7vl2Nt3k8K6UBW8BrToEQeh8QDZC10wZjnBag
-         nBwSBD8HdEkoGVOWyOfS7JhUG/GcubCysBKaUep7AHV3LABwfR1/DoY2y0RKXT0C8WcB
-         +KbxfUHb3Yd+RU3mRBHTVJUbBSsuDlzYP4poxOf840CP0FGbKLu1izgAKAIypP6CnNX7
-         FkVg==
+        d=gmail.com; s=20221208; t=1686598949; x=1689190949;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GXw51h8vVp2WK0sQxFXIjxzS3/AzyssmHBJf+6K5QD4=;
+        b=R/oqqYwNJvuIigioz6sy97y1QmMftNWM0Mp1s+k1Ua78wBYkVUe7ztL1YpZQuayz3j
+         Oq9iFCf00oRR2oYygcBZFhZ1kEP8PBu0LJ7+AG1xYv3Q2kINQVSJR0b8t7auWCMUYX/A
+         3nBV8PsUpKmTzwrXOPRYQHkfO5CF/+km4tvPkvl/vcYCgFXB2JY8uT9gJnclBrmFK6lt
+         z37nXunUY0cchDtnq9tJ7HYmKQ1z2nwHlC1k+Wzp1Fbh6r4E7DhYWpuJ11icaXCejLlm
+         k5JIan4egp8vres2/uXR2xoNK/+ccu0igoiLOfD81I6FcO2Gno3dyz4n8OfkpKGU9xFC
+         VoFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686597412; x=1689189412;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oc8DsBUETCvIPXIc9Auy78NswSPshB6nTU0jpX+nuxA=;
-        b=bY5Kerxt6Xfcxww8uAkFUfkggLzIbt8wdz6LYSSW2a2cDy4v0UN0yuINrW3FTXcRhA
-         AS72PtaT9HesqJhUouvgJQ2rINC36XK6b4zm3N2UypykTF5lgAauPK/rg3VlFAew/mTL
-         9b8lX7PJwBOk/w5QHAgA2Lhc7NhSuwhTwA6b/E0Y80AY2eZIzZkrEkbCum5z6PTUO2/d
-         5HDQCRaURUp8jq0vh/+YB8nKZwudgDN2jVIv5xzy1/TQmzU1hehO9Smkqf1ChscRJMFX
-         rvnKoQaS35EKDQEdu1KdeshkhrXyXTxkj9JeIO/A5zKlZnoQtRGEGGezbofZhFY98kCZ
-         FZPQ==
-X-Gm-Message-State: AC+VfDx/RvIULYmyj8Tz1SWIhlUKCZL9GWNkwtK0jhKitNar2uv2I2In
-	vyV/x51L5yZ1R4vk8ANBqngwFig4tno=
-X-Google-Smtp-Source: ACHHUZ7xAHnWwT/4vOTJZ6Y2ZnrYZYHVFd77xS9EFwksxWBD6A5lYQsOzelCjTwv/FGEhXT6uhnPNw==
-X-Received: by 2002:a05:6830:61c:b0:6b0:c7fa:2c1c with SMTP id w28-20020a056830061c00b006b0c7fa2c1cmr6510562oti.5.1686597412127;
-        Mon, 12 Jun 2023 12:16:52 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:df5d:2d08:1aa:9ce3])
-        by smtp.gmail.com with ESMTPSA id y14-20020a25ad0e000000b00bc6a712c523sm1292607ybi.64.2023.06.12.12.16.50
+        d=1e100.net; s=20221208; t=1686598949; x=1689190949;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GXw51h8vVp2WK0sQxFXIjxzS3/AzyssmHBJf+6K5QD4=;
+        b=RJpcr5REAa/pfKDl1UuQ/DSpvdoLo/vVCkG5Tkai+uxhEudRuW6FYiMFAqaWEDi1nh
+         l2fOqqJzPjsbFZJTqS57TfPQDCuaRMagUa2lDDIDDg3RkHP7M4oRkORIa2QH6t3OqrFI
+         poVwjzTi+6wenpFdfPxyDMNeho3pxPtTJ/u2nQM+3uAZUW/LrZD9PJmW14oYvUzhnjK5
+         jkOQ5rlqNJAthYpMa+/9CWgt9m/suYNAfGwXbnFNr1BUXeZxpdGVI1+D74DC5nalmppX
+         c/W6nVQw89rvLpQ9ivxMRLzI+4KIw1p0hqu4XPjNCrtrB3VMKYymnK94jz/St5q2JnPk
+         rOCQ==
+X-Gm-Message-State: AC+VfDwMqmsRN8yR0zfv52aHPV+8in0eyuta27f8RcqWA1K2xmABWI7o
+	hon7mBTWvBmymufLJLS9qxY=
+X-Google-Smtp-Source: ACHHUZ5iDdEbHK5jJpbrlicXdSAT4uQaTwGMDA3CVOd0R4LW5mA0+1d5M3C9u0Kbmt7QNpAsFAVxpw==
+X-Received: by 2002:a2e:8606:0:b0:2b1:e74b:2452 with SMTP id a6-20020a2e8606000000b002b1e74b2452mr3237460lji.49.1686598949127;
+        Mon, 12 Jun 2023 12:42:29 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id l18-20020a2e8692000000b002b04fc12365sm1895064lji.76.2023.06.12.12.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 12:16:51 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-X-Google-Original-From: Kui-Feng Lee <kuifeng@meta.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net
-Cc: Kui-Feng Lee <kuifeng@meta.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Verify that the cgroup_skb filters receive expected packets.
-Date: Mon, 12 Jun 2023 12:16:41 -0700
-Message-Id: <20230612191641.441774-3-kuifeng@meta.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230612191641.441774-1-kuifeng@meta.com>
-References: <20230612191641.441774-1-kuifeng@meta.com>
+        Mon, 12 Jun 2023 12:42:28 -0700 (PDT)
+Message-ID: <c8db6b0d05b6eb017e4d90b376c945c121735e19.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: verify that check_ids()
+ is used for scalars in regsafe()
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
+Date: Mon, 12 Jun 2023 22:42:24 +0300
+In-Reply-To: <ZIdYepniUlHlmtvO@mail.gmail.com>
+References: <20230612160801.2804666-1-eddyz87@gmail.com>
+	 <20230612160801.2804666-5-eddyz87@gmail.com>
+	 <ZIdYepniUlHlmtvO@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This test case includes four scenarios:
-1. Connect to the server from outside the cgroup and close the connection
-   from outside the cgroup.
-2. Connect to the server from outside the cgroup and close the connection
-   from inside the cgroup.
-3. Connect to the server from inside the cgroup and close the connection
-   from outside the cgroup.
-4. Connect to the server from inside the cgroup and close the connection
-   from inside the cgroup.
+On Mon, 2023-06-12 at 20:40 +0300, Maxim Mikityanskiy wrote:
+> On Mon, 12 Jun 2023 at 19:08:01 +0300, Eduard Zingerman wrote:
+> > Verify that the following example is rejected by verifier:
+> >=20
+> >   r9 =3D ... some pointer with range X ...
+> >   r6 =3D ... unbound scalar ID=3Da ...
+> >   r7 =3D ... unbound scalar ID=3Db ...
+> >   if (r6 > r7) goto +1
+> >   r7 =3D r6
+> >   if (r7 > X) goto exit
+> >   r9 +=3D r6
+> >   *(u64 *)r9 =3D Y
+> >=20
+> > Also add test cases to:
+> > - check that check_alu_op() for BPF_MOV instruction does not allocate
+> >   scalar ID if source register is a constant;
+> > - check that unique scalar IDs are ignored when new verifier state is
+> >   compared to cached verifier state;
+> > - check that two different scalar IDs in a verified state can't be
+> >   mapped to the same scalar ID in current state.
+> >=20
+> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> > ---
+> >  .../selftests/bpf/progs/verifier_scalar_ids.c | 313 ++++++++++++++++++
+> >  1 file changed, 313 insertions(+)
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/=
+tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> > index 8a5203fb14ca..5d56e764fe43 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+> > @@ -341,4 +341,317 @@ __naked void precision_two_ids(void)
+> >  	: __clobber_all);
+> >  }
+> > =20
+> > +/* Verify that check_ids() is used by regsafe() for scalars.
+> > + *
+> > + * r9 =3D ... some pointer with range X ...
+> > + * r6 =3D ... unbound scalar ID=3Da ...
+> > + * r7 =3D ... unbound scalar ID=3Db ...
+> > + * if (r6 > r7) goto +1
+> > + * r6 =3D r7
+> > + * if (r6 > X) goto exit
+> > + * r9 +=3D r7
+> > + * *(u8 *)r9 =3D Y
+> > + *
+> > + * The memory access is safe only if r7 is bounded,
+> > + * which is true for one branch and not true for another.
+> > + */
+> > +SEC("socket")
+> > +__failure __msg("register with unbounded min value")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void check_ids_in_regsafe(void)
+> > +{
+> > +	asm volatile (
+> > +	/* Bump allocated stack */
+> > +	"r1 =3D 0;"
+> > +	"*(u64*)(r10 - 8) =3D r1;"
+> > +	/* r9 =3D pointer to stack */
+> > +	"r9 =3D r10;"
+> > +	"r9 +=3D -8;"
+> > +	/* r7 =3D ktime_get_ns() */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r7 =3D r0;"
+> > +	/* r6 =3D ktime_get_ns() */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r6 =3D r0;"
+> > +	/* if r6 > r7 is an unpredictable jump */
+> > +	"if r6 > r7 goto l1_%=3D;"
+> > +	"r7 =3D r6;"
+> > +"l1_%=3D:"
+> > +	/* if r6 > 4 exit(0) */
+> > +	"if r7 > 4 goto l2_%=3D;"
+> > +	/* Access memory at r9[r7] */
+> > +	"r9 +=3D r6;"
+>=20
+> Sorry if I'm missing some context, but there seem to be discrepancies
+> between the code of this test, the comments right here, the comment
+> above the test and the commit message. r6 vs r7 don't match in a few
+> places.
+>=20
+> The code matches the commit message and looks correct (unsafe). The code
+> sample in the comments, however, is different and looks safe to me
+> (r7 <=3D r6 <=3D X, accessing r9[r7]).
 
-The test case is to verify that cgroup_skb/{egress, ingress} filters
-receive expected packets including SYN, SYN/ACK, ACK, FIN, and FIN/ACK.
+Yep, thank you for catching this. I need top update comments.
+Will wait a couple of hours for other comments and re-send v6 with a fix.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
----
- tools/testing/selftests/bpf/cgroup_helpers.c  |  12 +
- tools/testing/selftests/bpf/cgroup_helpers.h  |   1 +
- tools/testing/selftests/bpf/cgroup_tcp_skb.h  |  35 ++
- .../selftests/bpf/prog_tests/cgroup_tcp_skb.c | 363 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_tcp_skb.c      | 340 ++++++++++++++++
- 5 files changed, 751 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/cgroup_tcp_skb.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c
-
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index 9e95b37a7dff..2caee8423ee0 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -277,6 +277,18 @@ int join_cgroup(const char *relative_path)
- 	return join_cgroup_from_top(cgroup_path);
- }
- 
-+/**
-+ * join_root_cgroup() - Join the root cgroup
-+ *
-+ * This function joins the root cgroup.
-+ *
-+ * On success, it returns 0, otherwise on failure it returns 1.
-+ */
-+int join_root_cgroup(void)
-+{
-+	return join_cgroup_from_top(CGROUP_MOUNT_PATH);
-+}
-+
- /**
-  * join_parent_cgroup() - Join a cgroup in the parent process workdir
-  * @relative_path: The cgroup path, relative to parent process workdir, to join
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.h b/tools/testing/selftests/bpf/cgroup_helpers.h
-index f099a166c94d..5c2cb9c8b546 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.h
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.h
-@@ -22,6 +22,7 @@ void remove_cgroup(const char *relative_path);
- unsigned long long get_cgroup_id(const char *relative_path);
- 
- int join_cgroup(const char *relative_path);
-+int join_root_cgroup(void);
- int join_parent_cgroup(const char *relative_path);
- 
- int setup_cgroup_environment(void);
-diff --git a/tools/testing/selftests/bpf/cgroup_tcp_skb.h b/tools/testing/selftests/bpf/cgroup_tcp_skb.h
-new file mode 100644
-index 000000000000..1054b3633983
---- /dev/null
-+++ b/tools/testing/selftests/bpf/cgroup_tcp_skb.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2023 Facebook */
-+
-+/* Define states of a socket to tracking messages sending to and from the
-+ * socket.
-+ *
-+ * These states are based on rfc9293 with some modifications to support
-+ * tracking of messages sent out from a socket. For example, when a SYN is
-+ * received, a new socket is transiting to the SYN_RECV state defined in
-+ * rfc9293. But, we put it in SYN_RECV_SENDING_SYN_ACK state and when
-+ * SYN-ACK is sent out, it moves to SYN_RECV state. With this modification,
-+ * we can track the message sent out from a socket.
-+ */
-+
-+#ifndef __CGROUP_TCP_SKB_H__
-+#define __CGROUP_TCP_SKB_H__
-+
-+enum {
-+	INIT,
-+	CLOSED,
-+	SYN_SENT,
-+	SYN_RECV_SENDING_SYN_ACK,
-+	SYN_RECV,
-+	ESTABLISHED,
-+	FIN_WAIT1,
-+	FIN_WAIT2,
-+	CLOSE_WAIT_SENDING_ACK,
-+	CLOSE_WAIT,
-+	CLOSING,
-+	LAST_ACK,
-+	TIME_WAIT_SENDING_ACK,
-+	TIME_WAIT,
-+};
-+
-+#endif /* __CGROUP_TCP_SKB_H__ */
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
-new file mode 100644
-index 000000000000..399e8f8199e0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
-@@ -0,0 +1,363 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Facebook */
-+#include <test_progs.h>
-+#include <linux/in6.h>
-+#include <sys/socket.h>
-+#include <sched.h>
-+#include <unistd.h>
-+#include "cgroup_helpers.h"
-+#include "testing_helpers.h"
-+#include "cgroup_tcp_skb.skel.h"
-+#include "cgroup_tcp_skb.h"
-+
-+#define CGROUP_TCP_SKB_PATH "/test_cgroup_tcp_skb"
-+static __u32 duration;
-+
-+static int install_filters(int cgroup_fd,
-+			   struct bpf_link **egress_link,
-+			   struct bpf_link **ingress_link,
-+			   struct bpf_program *egress_prog,
-+			   struct bpf_program *ingress_prog,
-+			   struct cgroup_tcp_skb *skel)
-+{
-+	/* Prepare filters */
-+	skel->bss->g_sock_state = 0;
-+	skel->bss->g_unexpected = 0;
-+	*egress_link =
-+		bpf_program__attach_cgroup(egress_prog,
-+					   cgroup_fd);
-+	if (!ASSERT_NEQ(*egress_link, NULL, "egress_link"))
-+		return -1;
-+	*ingress_link =
-+		bpf_program__attach_cgroup(ingress_prog,
-+					   cgroup_fd);
-+	if (!ASSERT_NEQ(*ingress_link, NULL, "ingress_link"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void uninstall_filters(struct bpf_link **egress_link,
-+			      struct bpf_link **ingress_link)
-+{
-+	bpf_link__destroy(*egress_link);
-+	*egress_link = NULL;
-+	bpf_link__destroy(*ingress_link);
-+	*ingress_link = NULL;
-+}
-+
-+static int create_client_sock_v6(void)
-+{
-+	int fd;
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (fd < 0) {
-+		perror("socket");
-+		return -1;
-+	}
-+
-+	return fd;
-+}
-+
-+static int create_server_sock_v6(void)
-+{
-+	struct sockaddr_in6 addr = {
-+		.sin6_family = AF_INET6,
-+		.sin6_port = htons(0),
-+		.sin6_addr = IN6ADDR_LOOPBACK_INIT,
-+	};
-+	int fd, err;
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (fd < 0) {
-+		perror("socket");
-+		return -1;
-+	}
-+
-+	err = bind(fd, (struct sockaddr *)&addr, sizeof(addr));
-+	if (err < 0) {
-+		perror("bind");
-+		return -1;
-+	}
-+
-+	err = listen(fd, 1);
-+	if (err < 0) {
-+		perror("listen");
-+		return -1;
-+	}
-+
-+	return fd;
-+}
-+
-+static int get_sock_port_v6(int fd)
-+{
-+	struct sockaddr_in6 addr;
-+	socklen_t len;
-+	int err;
-+
-+	len = sizeof(addr);
-+	err = getsockname(fd, (struct sockaddr *)&addr, &len);
-+	if (err < 0) {
-+		perror("getsockname");
-+		return -1;
-+	}
-+
-+	return ntohs(addr.sin6_port);
-+}
-+
-+static int connect_client_server_v6(int client_fd, int listen_fd)
-+{
-+	struct sockaddr_in6 addr = {
-+		.sin6_family = AF_INET6,
-+		.sin6_addr = IN6ADDR_LOOPBACK_INIT,
-+	};
-+	int err;
-+
-+	addr.sin6_port = htons(get_sock_port_v6(listen_fd));
-+	if (addr.sin6_port < 0)
-+		return -1;
-+
-+	err = connect(client_fd, (struct sockaddr *)&addr, sizeof(addr));
-+	if (err < 0) {
-+		perror("connect");
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Connect to the server in a cgroup from the outside of the cgroup. */
-+static int talk_to_cgroup(int *client_fd, int *listen_fd, int *service_fd,
-+			  struct cgroup_tcp_skb *skel)
-+{
-+	int err, cp;
-+	char buf[5];
-+
-+	/* Create client & server socket */
-+	err = join_root_cgroup();
-+	if (CHECK(err, "join_root_cgroup", "failed: %d\n", err))
-+		return -1;
-+	*client_fd = create_client_sock_v6();
-+	if (!ASSERT_GE(*client_fd, 0, "client_fd"))
-+		return -1;
-+	err = join_cgroup(CGROUP_TCP_SKB_PATH);
-+	if (CHECK(err, "join_cgroup", "failed: %d\n", err))
-+		return -1;
-+	*listen_fd = create_server_sock_v6();
-+	if (!ASSERT_GE(*listen_fd, 0, "listen_fd"))
-+		return -1;
-+	skel->bss->g_sock_port = get_sock_port_v6(*listen_fd);
-+
-+	/* Connect client to server */
-+	err = connect_client_server_v6(*client_fd, *listen_fd);
-+	if (CHECK(err, "connect_client_server_v6", "failed: %d\n", err))
-+		return -1;
-+	*service_fd = accept(*listen_fd, NULL, NULL);
-+	if (!ASSERT_GE(*service_fd, 0, "service_fd"))
-+		return -1;
-+	err = join_root_cgroup();
-+	if (CHECK(err, "join_root_cgroup", "failed: %d\n", err))
-+		return -1;
-+	cp = write(*client_fd, "hello", 5);
-+	if (!ASSERT_EQ(cp, 5, "write"))
-+		return -1;
-+	cp = read(*service_fd, buf, 5);
-+	if (!ASSERT_EQ(cp, 5, "read"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/* Connect to the server out of a cgroup from inside the cgroup. */
-+static int talk_to_outside(int *client_fd, int *listen_fd, int *service_fd,
-+			   struct cgroup_tcp_skb *skel)
-+
-+{
-+	int err, cp;
-+	char buf[5];
-+
-+	/* Create client & server socket */
-+	err = join_root_cgroup();
-+	if (CHECK(err, "join_root_cgroup", "failed: %d\n", err))
-+		return -1;
-+	*listen_fd = create_server_sock_v6();
-+	if (!ASSERT_GE(*listen_fd, 0, "listen_fd"))
-+		return -1;
-+	err = join_cgroup(CGROUP_TCP_SKB_PATH);
-+	if (CHECK(err, "join_cgroup", "failed: %d\n", err))
-+		return -1;
-+	*client_fd = create_client_sock_v6();
-+	if (!ASSERT_GE(*client_fd, 0, "client_fd"))
-+		return -1;
-+	err = join_root_cgroup();
-+	if (CHECK(err, "join_root_cgroup", "failed: %d\n", err))
-+		return -1;
-+	skel->bss->g_sock_port = get_sock_port_v6(*listen_fd);
-+
-+	/* Connect client to server */
-+	err = connect_client_server_v6(*client_fd, *listen_fd);
-+	if (CHECK(err, "connect_client_server_v6", "failed: %d\n", err))
-+		return -1;
-+	*service_fd = accept(*listen_fd, NULL, NULL);
-+	if (!ASSERT_GE(*service_fd, 0, "service_fd"))
-+		return -1;
-+	cp = write(*client_fd, "hello", 5);
-+	if (!ASSERT_EQ(cp, 5, "write"))
-+		return -1;
-+	cp = read(*service_fd, buf, 5);
-+	if (!ASSERT_EQ(cp, 5, "read"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int close_connection(int *closing_fd, int *peer_fd, int *listen_fd)
-+{
-+	int err;
-+
-+	/* Half shutdown to make sure the closing socket having a chance to
-+	 * receive a FIN from the client.
-+	 */
-+	err = shutdown(*closing_fd, SHUT_WR);
-+	if (CHECK(err, "shutdown closing_fd", "failed: %d\n", err))
-+		return -1;
-+	usleep(100000);
-+	err = close(*peer_fd);
-+	if (CHECK(err, "close peer_fd", "failed: %d\n", err))
-+		return -1;
-+	*peer_fd = -1;
-+	usleep(100000);
-+	err = close(*closing_fd);
-+	if (CHECK(err, "close closing_fd", "failed: %d\n", err))
-+		return -1;
-+	*closing_fd = -1;
-+
-+	close(*listen_fd);
-+	*listen_fd = -1;
-+
-+	return 0;
-+}
-+
-+/* This test case includes four scenarios:
-+ * 1. Connect to the server from outside the cgroup and close the connection
-+ *    from outside the cgroup.
-+ * 2. Connect to the server from outside the cgroup and close the connection
-+ *    from inside the cgroup.
-+ * 3. Connect to the server from inside the cgroup and close the connection
-+ *    from outside the cgroup.
-+ * 4. Connect to the server from inside the cgroup and close the connection
-+ *    from inside the cgroup.
-+ *
-+ * The test case is to verify that cgroup_skb/{egress,ingress} filters
-+ * receive expected packets including SYN, SYN/ACK, ACK, FIN, and FIN/ACK.
-+ */
-+void test_cgroup_tcp_skb(void)
-+{
-+	struct bpf_link *ingress_link = NULL;
-+	struct bpf_link *egress_link = NULL;
-+	int client_fd = -1, listen_fd = -1;
-+	struct cgroup_tcp_skb *skel;
-+	int service_fd = -1;
-+	int cgroup_fd = -1;
-+	int err;
-+
-+	err = setup_cgroup_environment();
-+	if (CHECK(err, "setup_cgroup_environment", "failed: %d\n", err))
-+		return;
-+
-+	cgroup_fd = create_and_get_cgroup(CGROUP_TCP_SKB_PATH);
-+	if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
-+		goto cleanup;
-+
-+	skel = cgroup_tcp_skb__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to open/load skeleton\n"))
-+		return;
-+
-+	/* Scenario 1 */
-+	err = install_filters(cgroup_fd, &egress_link, &ingress_link,
-+			      skel->progs.server_egress,
-+			      skel->progs.server_ingress,
-+			      skel);
-+	if (CHECK(err, "install_filters", "failed\n"))
-+		goto cleanup;
-+
-+	err = talk_to_cgroup(&client_fd, &listen_fd, &service_fd, skel);
-+	if (CHECK(err, "talk_to_cgroup", "failed\n"))
-+		goto cleanup;
-+
-+	err = close_connection(&client_fd, &service_fd, &listen_fd);
-+	if (CHECK(err, "close_connection", "failed\n"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->g_unexpected, 0, "g_unexpected");
-+	ASSERT_EQ(skel->bss->g_sock_state, CLOSED, "g_sock_state");
-+
-+	uninstall_filters(&egress_link, &ingress_link);
-+
-+	/* Scenario 2 */
-+	err = install_filters(cgroup_fd, &egress_link, &ingress_link,
-+			      skel->progs.server_egress_srv,
-+			      skel->progs.server_ingress_srv,
-+			      skel);
-+
-+	err = talk_to_cgroup(&client_fd, &listen_fd, &service_fd, skel);
-+	if (CHECK(err, "talk_to_cgroup", "failed\n"))
-+		goto cleanup;
-+
-+	err = close_connection(&service_fd, &client_fd, &listen_fd);
-+	if (CHECK(err, "close_connection", "failed\n"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->g_unexpected, 0, "g_unexpected");
-+	ASSERT_EQ(skel->bss->g_sock_state, TIME_WAIT, "g_sock_state");
-+
-+	uninstall_filters(&egress_link, &ingress_link);
-+
-+	/* Scenario 3 */
-+	err = install_filters(cgroup_fd, &egress_link, &ingress_link,
-+			      skel->progs.client_egress_srv,
-+			      skel->progs.client_ingress_srv,
-+			      skel);
-+
-+	err = talk_to_outside(&client_fd, &listen_fd, &service_fd, skel);
-+	if (CHECK(err, "talk_to_outside", "failed\n"))
-+		goto cleanup;
-+
-+	err = close_connection(&service_fd, &client_fd, &listen_fd);
-+	if (CHECK(err, "close_connection", "failed\n"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->g_unexpected, 0, "g_unexpected");
-+	ASSERT_EQ(skel->bss->g_sock_state, CLOSED, "g_sock_state");
-+
-+	uninstall_filters(&egress_link, &ingress_link);
-+
-+	/* Scenario 4 */
-+	err = install_filters(cgroup_fd, &egress_link, &ingress_link,
-+			      skel->progs.client_egress,
-+			      skel->progs.client_ingress,
-+			      skel);
-+
-+	err = talk_to_outside(&client_fd, &listen_fd, &service_fd, skel);
-+	if (CHECK(err, "talk_to_outside", "failed\n"))
-+		goto cleanup;
-+
-+	err = close_connection(&client_fd, &service_fd, &listen_fd);
-+	if (CHECK(err, "close_connection", "failed\n"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->g_unexpected, 0, "g_unexpected");
-+	ASSERT_EQ(skel->bss->g_sock_state, TIME_WAIT, "g_sock_state");
-+
-+	uninstall_filters(&egress_link, &ingress_link);
-+
-+cleanup:
-+	close(client_fd);
-+	close(listen_fd);
-+	close(service_fd);
-+	close(cgroup_fd);
-+	bpf_link__destroy(egress_link);
-+	bpf_link__destroy(ingress_link);
-+	cgroup_tcp_skb__destroy(skel);
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c b/tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c
-new file mode 100644
-index 000000000000..78bc6d6efbd1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c
-@@ -0,0 +1,340 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Facebook */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+#include "cgroup_tcp_skb.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u16 g_sock_port = 0;
-+__u32 g_sock_state = 0;
-+int g_unexpected = 0;
-+
-+int needed_tcp_pkt(struct __sk_buff *skb, struct tcphdr *tcph)
-+{
-+	struct ipv6hdr ip6h;
-+
-+	if (skb->protocol != bpf_htons(ETH_P_IPV6))
-+		return 0;
-+	if (bpf_skb_load_bytes(skb, 0, &ip6h, sizeof(ip6h)))
-+		return 0;
-+
-+	if (ip6h.nexthdr != IPPROTO_TCP)
-+		return 0;
-+
-+	if (bpf_skb_load_bytes(skb, sizeof(ip6h), tcph, sizeof(*tcph)))
-+		return 0;
-+
-+	if (tcph->source != bpf_htons(g_sock_port) &&
-+	    tcph->dest != bpf_htons(g_sock_port))
-+		return 0;
-+
-+	return 1;
-+}
-+
-+/* Run accept() on a socket in the cgroup to receive a new connection. */
-+#define EGRESS_ACCEPT							\
-+	case SYN_RECV_SENDING_SYN_ACK:					\
-+		if (tcph.fin || !tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = SYN_RECV;			\
-+		break
-+
-+#define INGRESS_ACCEPT							\
-+	case INIT:							\
-+		if (!tcph.syn || tcph.fin || tcph.rst || tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = SYN_RECV_SENDING_SYN_ACK;	\
-+		break;							\
-+	case SYN_RECV:							\
-+		if (tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = ESTABLISHED;			\
-+		break
-+
-+/* Run connect() on a socket in the cgroup to start a new connection. */
-+#define EGRESS_CONNECT							\
-+	case INIT:							\
-+		if (!tcph.syn || tcph.fin || tcph.rst || tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = SYN_SENT;			\
-+		break
-+
-+#define INGRESS_CONNECT							\
-+	case SYN_SENT:							\
-+		if (tcph.fin || !tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = ESTABLISHED;			\
-+		break
-+
-+/* The connection is closed by the peer outside the cgroup. */
-+#define EGRESS_CLOSE_REMOTE						\
-+	case ESTABLISHED:						\
-+		break;							\
-+	case CLOSE_WAIT_SENDING_ACK:					\
-+		if (tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = CLOSE_WAIT;			\
-+		break;							\
-+	case CLOSE_WAIT:						\
-+		if (!tcph.fin)						\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = LAST_ACK;			\
-+		break
-+
-+#define INGRESS_CLOSE_REMOTE						\
-+	case ESTABLISHED:						\
-+		if (tcph.fin)						\
-+			g_sock_state = CLOSE_WAIT_SENDING_ACK;		\
-+		break;							\
-+	case LAST_ACK:							\
-+		if (tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = CLOSED;				\
-+		break
-+
-+/* The connection is closed by the endpoint inside the cgroup. */
-+#define EGRESS_CLOSE_LOCAL						\
-+	case ESTABLISHED:						\
-+		if (tcph.fin)						\
-+			g_sock_state = FIN_WAIT1;			\
-+		break;							\
-+	case TIME_WAIT_SENDING_ACK:					\
-+		if (tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = TIME_WAIT;			\
-+		break
-+
-+#define INGRESS_CLOSE_LOCAL						\
-+	case ESTABLISHED:						\
-+		break;							\
-+	case FIN_WAIT1:							\
-+		if (tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = FIN_WAIT2;			\
-+		break;							\
-+	case FIN_WAIT2:							\
-+		if (!tcph.fin || tcph.syn || tcph.rst || !tcph.ack)	\
-+			g_unexpected++;					\
-+		else							\
-+			g_sock_state = TIME_WAIT_SENDING_ACK;		\
-+		break
-+
-+/* Check the types of outgoing packets of a server socket to make sure they
-+ * are consistent with the state of the server socket.
-+ *
-+ * The connection is closed by the client side.
-+ */
-+SEC("cgroup_skb/egress")
-+int server_egress(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Egress of the server socket. */
-+	switch (g_sock_state) {
-+	EGRESS_ACCEPT;
-+	EGRESS_CLOSE_REMOTE;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+/* Check the types of incoming packets of a server socket to make sure they
-+ * are consistent with the state of the server socket.
-+ *
-+ * The connection is closed by the client side.
-+ */
-+SEC("cgroup_skb/ingress")
-+int server_ingress(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Ingress of the server socket. */
-+	switch (g_sock_state) {
-+	INGRESS_ACCEPT;
-+	INGRESS_CLOSE_REMOTE;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+
-+/* Check the types of outgoing packets of a server socket to make sure they
-+ * are consistent with the state of the server socket.
-+ *
-+ * The connection is closed by the server side.
-+ */
-+SEC("cgroup_skb/egress")
-+int server_egress_srv(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Egress of the server socket. */
-+	switch (g_sock_state) {
-+	EGRESS_ACCEPT;
-+	EGRESS_CLOSE_LOCAL;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+/* Check the types of incoming packets of a server socket to make sure they
-+ * are consistent with the state of the server socket.
-+ *
-+ * The connection is closed by the server side.
-+ */
-+SEC("cgroup_skb/ingress")
-+int server_ingress_srv(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Ingress of the server socket. */
-+	switch (g_sock_state) {
-+	INGRESS_ACCEPT;
-+	INGRESS_CLOSE_LOCAL;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+
-+/* Check the types of outgoing packets of a client socket to make sure they
-+ * are consistent with the state of the client socket.
-+ *
-+ * The connection is closed by the server side.
-+ */
-+SEC("cgroup_skb/egress")
-+int client_egress_srv(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Egress of the server socket. */
-+	switch (g_sock_state) {
-+	EGRESS_CONNECT;
-+	EGRESS_CLOSE_REMOTE;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+/* Check the types of incoming packets of a client socket to make sure they
-+ * are consistent with the state of the client socket.
-+ *
-+ * The connection is closed by the server side.
-+ */
-+SEC("cgroup_skb/ingress")
-+int client_ingress_srv(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Ingress of the server socket. */
-+	switch (g_sock_state) {
-+	INGRESS_CONNECT;
-+	INGRESS_CLOSE_REMOTE;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+
-+/* Check the types of outgoing packets of a client socket to make sure they
-+ * are consistent with the state of the client socket.
-+ *
-+ * The connection is closed by the client side.
-+ */
-+SEC("cgroup_skb/egress")
-+int client_egress(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Egress of the server socket. */
-+	switch (g_sock_state) {
-+	EGRESS_CONNECT;
-+	EGRESS_CLOSE_LOCAL;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+/* Check the types of incoming packets of a client socket to make sure they
-+ * are consistent with the state of the client socket.
-+ *
-+ * The connection is closed by the client side.
-+ */
-+SEC("cgroup_skb/ingress")
-+int client_ingress(struct __sk_buff *skb)
-+{
-+	struct tcphdr tcph;
-+
-+	if (!needed_tcp_pkt(skb, &tcph))
-+		return 1;
-+
-+	/* Ingress of the server socket. */
-+	switch (g_sock_state) {
-+	INGRESS_CONNECT;
-+	INGRESS_CLOSE_LOCAL;
-+	default:
-+		g_unexpected++;
-+		break;
-+	}
-+	return 1;
-+}
-+
-+
-+
--- 
-2.34.1
+>=20
+> > +	"r0 =3D *(u8*)(r9 + 0);"
+> > +"l2_%=3D:"
+> > +	"r0 =3D 0;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Similar to check_ids_in_regsafe.
+> > + * The l0 could be reached in two states:
+> > + *
+> > + *   (1) r6{.id=3DA}, r7{.id=3DA}, r8{.id=3DB}
+> > + *   (2) r6{.id=3DB}, r7{.id=3DA}, r8{.id=3DB}
+> > + *
+> > + * Where (2) is not safe, as "r7 > 4" check won't propagate range for =
+it.
+> > + * This example would be considered safe without changes to
+> > + * mark_chain_precision() to track scalar values with equal IDs.
+> > + */
+> > +SEC("socket")
+> > +__failure __msg("register with unbounded min value")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void check_ids_in_regsafe_2(void)
+> > +{
+> > +	asm volatile (
+> > +	/* Bump allocated stack */
+> > +	"r1 =3D 0;"
+> > +	"*(u64*)(r10 - 8) =3D r1;"
+> > +	/* r9 =3D pointer to stack */
+> > +	"r9 =3D r10;"
+> > +	"r9 +=3D -8;"
+> > +	/* r8 =3D ktime_get_ns() */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r8 =3D r0;"
+> > +	/* r7 =3D ktime_get_ns() */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r7 =3D r0;"
+> > +	/* r6 =3D ktime_get_ns() */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r6 =3D r0;"
+> > +	/* scratch .id from r0 */
+> > +	"r0 =3D 0;"
+> > +	/* if r6 > r7 is an unpredictable jump */
+> > +	"if r6 > r7 goto l1_%=3D;"
+> > +	/* tie r6 and r7 .id */
+> > +	"r6 =3D r7;"
+> > +"l0_%=3D:"
+> > +	/* if r7 > 4 exit(0) */
+> > +	"if r7 > 4 goto l2_%=3D;"
+> > +	/* Access memory at r9[r7] */
+> > +	"r9 +=3D r6;"
+> > +	"r0 =3D *(u8*)(r9 + 0);"
+> > +"l2_%=3D:"
+> > +	"r0 =3D 0;"
+> > +	"exit;"
+> > +"l1_%=3D:"
+> > +	/* tie r6 and r8 .id */
+> > +	"r6 =3D r8;"
+> > +	"goto l0_%=3D;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Check that scalar IDs *are not* generated on register to register
+> > + * assignments if source register is a constant.
+> > + *
+> > + * If such IDs *are* generated the 'l1' below would be reached in
+> > + * two states:
+> > + *
+> > + *   (1) r1{.id=3DA}, r2{.id=3DA}
+> > + *   (2) r1{.id=3DC}, r2{.id=3DC}
+> > + *
+> > + * Thus forcing 'if r1 =3D=3D r2' verification twice.
+> > + */
+> > +SEC("socket")
+> > +__success __log_level(2)
+> > +__msg("11: (1d) if r3 =3D=3D r4 goto pc+0")
+> > +__msg("frame 0: propagating r3,r4")
+> > +__msg("11: safe")
+> > +__msg("processed 15 insns")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void no_scalar_id_for_const(void)
+> > +{
+> > +	asm volatile (
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	/* unpredictable jump */
+> > +	"if r0 > 7 goto l0_%=3D;"
+> > +	/* possibly generate same scalar ids for r3 and r4 */
+> > +	"r1 =3D 0;"
+> > +	"r1 =3D r1;"
+> > +	"r3 =3D r1;"
+> > +	"r4 =3D r1;"
+> > +	"goto l1_%=3D;"
+> > +"l0_%=3D:"
+> > +	/* possibly generate different scalar ids for r3 and r4 */
+> > +	"r1 =3D 0;"
+> > +	"r2 =3D 0;"
+> > +	"r3 =3D r1;"
+> > +	"r4 =3D r2;"
+> > +"l1_%=3D:"
+> > +	/* predictable jump, marks r3 and r4 precise */
+> > +	"if r3 =3D=3D r4 goto +0;"
+> > +	"r0 =3D 0;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Same as no_scalar_id_for_const() but for 32-bit values */
+> > +SEC("socket")
+> > +__success __log_level(2)
+> > +__msg("11: (1e) if w3 =3D=3D w4 goto pc+0")
+> > +__msg("frame 0: propagating r3,r4")
+> > +__msg("11: safe")
+> > +__msg("processed 15 insns")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void no_scalar_id_for_const32(void)
+> > +{
+> > +	asm volatile (
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	/* unpredictable jump */
+> > +	"if r0 > 7 goto l0_%=3D;"
+> > +	/* possibly generate same scalar ids for r3 and r4 */
+> > +	"w1 =3D 0;"
+> > +	"w1 =3D w1;"
+> > +	"w3 =3D w1;"
+> > +	"w4 =3D w1;"
+> > +	"goto l1_%=3D;"
+> > +"l0_%=3D:"
+> > +	/* possibly generate different scalar ids for r3 and r4 */
+> > +	"w1 =3D 0;"
+> > +	"w2 =3D 0;"
+> > +	"w3 =3D w1;"
+> > +	"w4 =3D w2;"
+> > +"l1_%=3D:"
+> > +	/* predictable jump, marks r1 and r2 precise */
+> > +	"if w3 =3D=3D w4 goto +0;"
+> > +	"r0 =3D 0;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Check that unique scalar IDs are ignored when new verifier state is
+> > + * compared to cached verifier state. For this test:
+> > + * - cached state has no id on r1
+> > + * - new state has a unique id on r1
+> > + */
+> > +SEC("socket")
+> > +__success __log_level(2)
+> > +__msg("6: (25) if r6 > 0x7 goto pc+1")
+> > +__msg("7: (57) r1 &=3D 255")
+> > +__msg("8: (bf) r2 =3D r10")
+> > +__msg("from 6 to 8: safe")
+> > +__msg("processed 12 insns")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void ignore_unique_scalar_ids_cur(void)
+> > +{
+> > +	asm volatile (
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r6 =3D r0;"
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r0 &=3D 0xff;"
+> > +	/* r1.id =3D=3D r0.id */
+> > +	"r1 =3D r0;"
+> > +	/* make r1.id unique */
+> > +	"r0 =3D 0;"
+> > +	"if r6 > 7 goto l0_%=3D;"
+> > +	/* clear r1 id, but keep the range compatible */
+> > +	"r1 &=3D 0xff;"
+> > +"l0_%=3D:"
+> > +	/* get here in two states:
+> > +	 * - first: r1 has no id (cached state)
+> > +	 * - second: r1 has a unique id (should be considered equivalent)
+> > +	 */
+> > +	"r2 =3D r10;"
+> > +	"r2 +=3D r1;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Check that unique scalar IDs are ignored when new verifier state is
+> > + * compared to cached verifier state. For this test:
+> > + * - cached state has a unique id on r1
+> > + * - new state has no id on r1
+> > + */
+> > +SEC("socket")
+> > +__success __log_level(2)
+> > +__msg("6: (25) if r6 > 0x7 goto pc+1")
+> > +__msg("7: (05) goto pc+1")
+> > +__msg("9: (bf) r2 =3D r10")
+> > +__msg("9: safe")
+> > +__msg("processed 13 insns")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void ignore_unique_scalar_ids_old(void)
+> > +{
+> > +	asm volatile (
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r6 =3D r0;"
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r0 &=3D 0xff;"
+> > +	/* r1.id =3D=3D r0.id */
+> > +	"r1 =3D r0;"
+> > +	/* make r1.id unique */
+> > +	"r0 =3D 0;"
+> > +	"if r6 > 7 goto l1_%=3D;"
+> > +	"goto l0_%=3D;"
+> > +"l1_%=3D:"
+> > +	/* clear r1 id, but keep the range compatible */
+> > +	"r1 &=3D 0xff;"
+> > +"l0_%=3D:"
+> > +	/* get here in two states:
+> > +	 * - first: r1 has a unique id (cached state)
+> > +	 * - second: r1 has no id (should be considered equivalent)
+> > +	 */
+> > +	"r2 =3D r10;"
+> > +	"r2 +=3D r1;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> > +/* Check that two different scalar IDs in a verified state can't be
+> > + * mapped to the same scalar ID in current state.
+> > + */
+> > +SEC("socket")
+> > +__success __log_level(2)
+> > +/* The exit instruction should be reachable from two states,
+> > + * use two matches and "processed .. insns" to ensure this.
+> > + */
+> > +__msg("13: (95) exit")
+> > +__msg("13: (95) exit")
+> > +__msg("processed 18 insns")
+> > +__flag(BPF_F_TEST_STATE_FREQ)
+> > +__naked void two_old_ids_one_cur_id(void)
+> > +{
+> > +	asm volatile (
+> > +	/* Give unique scalar IDs to r{6,7} */
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r0 &=3D 0xff;"
+> > +	"r6 =3D r0;"
+> > +	"call %[bpf_ktime_get_ns];"
+> > +	"r0 &=3D 0xff;"
+> > +	"r7 =3D r0;"
+> > +	"r0 =3D 0;"
+> > +	/* Maybe make r{6,7} IDs identical */
+> > +	"if r6 > r7 goto l0_%=3D;"
+> > +	"goto l1_%=3D;"
+> > +"l0_%=3D:"
+> > +	"r6 =3D r7;"
+> > +"l1_%=3D:"
+> > +	/* Mark r{6,7} precise.
+> > +	 * Get here in two states:
+> > +	 * - first:  r6{.id=3DA}, r7{.id=3DB} (cached state)
+> > +	 * - second: r6{.id=3DA}, r7{.id=3DA}
+> > +	 * Currently we don't want to consider such states equivalent.
+> > +	 * Thus, marker instruction "r0 =3D r0;" would be verified twice.
+> > +	 */
+> > +	"r2 =3D r10;"
+> > +	"r2 +=3D r6;"
+> > +	"r2 +=3D r7;"
+> > +	"exit;"
+> > +	:
+> > +	: __imm(bpf_ktime_get_ns)
+> > +	: __clobber_all);
+> > +}
+> > +
+> >  char _license[] SEC("license") =3D "GPL";
+> > --=20
+> > 2.40.1
+> >=20
+> >=20
 
 
