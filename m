@@ -1,409 +1,300 @@
-Return-Path: <bpf+bounces-2454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53E7F72D428
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 00:08:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE9072D453
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 00:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821D61C20AA6
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 22:08:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9945A2810EC
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 22:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345A923437;
-	Mon, 12 Jun 2023 22:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351082343E;
+	Mon, 12 Jun 2023 22:21:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC46918AE0
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 22:08:26 +0000 (UTC)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09651EC;
-	Mon, 12 Jun 2023 15:08:23 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-977c72b116fso733117566b.3;
-        Mon, 12 Jun 2023 15:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686607701; x=1689199701;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pKlFpCsgGRBSEpcvA8goXTCdE7SxfBhfKUPSSPN+Oik=;
-        b=KervkGOD8sKHnhI3vis2lD8d4MrSt1ieqJvhTppaEqLOHp81zwpvaP9Zhyz0ir3HAg
-         Tku8/M31Wu6zFu8jQD9RB6fXNcUn6Fmiyn27ZZQvq07ayP00u5RdOciMvsIoe81S/E2g
-         zqqZIv0y1pJbGSEYGqv+yd/onfsuXE/JU1zH9ODWpWqdB+edMYdSZxnev5GDsuARVHnf
-         wou29nLpecnIq0sw1tI3y7Yb6YD4uALnjiSKZlhulC/lCTunvMND1utd1Iqdj++6b1la
-         Os83Jl1R02KuO61q/1j+ePwXQKex50cak6RPzY8IrqCK9lsXzgC8p24nhwwwPVsfGuw/
-         a1Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686607701; x=1689199701;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pKlFpCsgGRBSEpcvA8goXTCdE7SxfBhfKUPSSPN+Oik=;
-        b=l/CWBOyyGll4z7y2vyKTfAvD6MQ90w+pUUi8JkUC3OfRe8NFsprLkgTQVPHCGMoweN
-         wYWXfWCfOHrJ+pKFGJ+gTkJ3neEbgtAtAKr9DdC/fAKhIDEJVUrHHOrB4bw0KjwiItIQ
-         1FfNIuVHSXF354ESbUk9ULV9vgUQwn5H18F+4ehGcsC544xJXYwOtRroNiQdN5qoQgrN
-         ZJc+1a168cOoS2bs4Pp2REmootd2/NT+H9yBp6Azrq5qV7FR+nUYZ9qyTPzK7h7wRSTc
-         Z9PtCmh2Y7qCbjutbgGSzH6wbQ+YgZQ25qEtMheyI4nKZ3YP8wnIrHp5yiaPast26tRr
-         okhg==
-X-Gm-Message-State: AC+VfDyLqqELz0hZPeC1oJtH7msnfK6xXJl3/8XHvh+IaYMTd/eVW4kg
-	iVxa52/qzqFLghhU5MngMdxGOD05m0E9C1SAF3I=
-X-Google-Smtp-Source: ACHHUZ6U+TrlErpCwXzkkeyLYsRzS49lBX/LhfBNuOPBAI3CrcAjOZxw1K+SI1KrIDm5G+996Y7jESoUU/yUiX+NMpA=
-X-Received: by 2002:a17:907:a40f:b0:978:ae78:a77f with SMTP id
- sg15-20020a170907a40f00b00978ae78a77fmr9636784ejc.21.1686607701151; Mon, 12
- Jun 2023 15:08:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B73718AE0
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 22:21:57 +0000 (UTC)
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE1210B
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 15:21:56 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 5143F5C1171
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 22:12:29 +0000 (UTC)
+Received: from pdx1-sub0-mail-a251.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id DBD455C1367
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 22:12:28 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1686607948; a=rsa-sha256;
+	cv=none;
+	b=Gaaif+AXW6idkeXNA/h61a95chpCi8gjo2v8w+RZt0/KHVynJTkXlEGkAfa1PS/NkcPOdU
+	tnHUChEM+Xb24q2QOVv+J7vAAQL26sTHTPks+g8k5Qs9JxEgZJtm0fgaqegQPDI/Q7mvx5
+	M/qb+tVme0fx12f7dpSFK44fnxXc1t3wWKw32+wC9Syy/KKZEG8gqYsEZ9NgIbgqHsl0Ib
+	nwRMlNhEVBa+Ty4C/PzTEI2hmwxgHzIjSFFcs8zDFPpHIUQ0NtFkAzLTlnODcKVNPjlxbr
+	RhMJ5o60W56qwEgG7AsQeHKcwQuUhPdSx8XDH+DE5thj6eaXct6QCjtTItBX/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1686607948;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=Uw+jdfJkDSDc1rZ9hM9IyUE6VppD4X6NU4hjQZ4wAUI=;
+	b=dBdR3wFT5ZzgZhO6iRerED2jQ8u7QPgfy1KbhsBGRZWxYD4qUucIR3jeRDfg7ngObEzwPA
+	uoyBuLy1syEeoTbI4mXTG14lMM+YFU9FHaAGT5rGCQLaqf1hCuEw0mwyerdyQd8DXXyHTH
+	K2Pr7rsOVRGGphJfnHnpL5b4VdqL+5++BG4EwRkp6hSbEa3ZMPbYnRQ6DAIYqoNaTQIHE2
+	k1jnHF3XqHsmnq5qU7RFLYzdk0NGMeYQZhaIs8Rf1eC9uxInyLHPRyw8ZzY3E1emknLhah
+	nhXXBFiO7Gbml4U30NJFQ200ntlCIW/bLWwF7ogw56zBqVwdB/E08n6A68A7uQ==
+ARC-Authentication-Results: i=1;
+	rspamd-6c69b8658d-8c2tp;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Tank-Share: 77ee227b2b6cb446_1686607949138_2688594381
+X-MC-Loop-Signature: 1686607949138:3683618130
+X-MC-Ingress-Time: 1686607949138
+Received: from pdx1-sub0-mail-a251.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.119.120.28 (trex/6.8.1);
+	Mon, 12 Jun 2023 22:12:29 +0000
+Received: from kmjvbox (c-73-93-64-36.hsd1.ca.comcast.net [73.93.64.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kjlx@templeofstupid.com)
+	by pdx1-sub0-mail-a251.dreamhost.com (Postfix) with ESMTPSA id 4Qg5XD0Hg7zYv
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 15:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+	s=dreamhost; t=1686607948;
+	bh=Uw+jdfJkDSDc1rZ9hM9IyUE6VppD4X6NU4hjQZ4wAUI=;
+	h=Date:From:To:Cc:Subject:Content-Type:Content-Transfer-Encoding;
+	b=oP6zL20uUwr9+8TuQ77C4zC4lKxRJDffnxSj+NkVnjk0dYhMtPpNRlrYcwPVlhJNW
+	 RrZ5ycHfytz5x1E08xVYbxl2ZgM9yRVUDWUy6qeydXghr7YLl+HX5O4rc1zX377e7T
+	 gNUet93sZ7QJHlTUznClPFJ7KSIqyQiLkvfvP8oc=
+Received: from johansen (uid 1000)
+	(envelope-from kjlx@templeofstupid.com)
+	id e0085
+	by kmjvbox (DragonFly Mail Agent v0.12);
+	Mon, 12 Jun 2023 15:12:26 -0700
+Date: Mon, 12 Jun 2023 15:12:26 -0700
+From: Krister Johansen <kjlx@templeofstupid.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>,
+	Krister Johansen <kjlx@templeofstupid.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: add a test for subprogram
+ extables
+Message-ID: <20230612221226.GA2077@templeofstupid.com>
+References: <cover.1686268304.git.kjlx@templeofstupid.com>
+ <9e3041e182a75f558f1132f915ddf2ee7e859c6e.1686268304.git.kjlx@templeofstupid.com>
+ <CAADnVQKAmbb2mTNem+3wvCSS44mvmydDCjWj-4V9VZd93vgksQ@mail.gmail.com>
+ <ef33f004f1f20c7a4cc7c963eea628df7bec0c53.camel@linux.ibm.com>
+ <CAADnVQLWNt0KsXoYVGFD0i089YMivYJ+ZeWmutUiefcdK=eOrw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607235352.1723243-1-andrii@kernel.org> <871qik28bs.fsf@toke.dk>
- <CAEf4BzYin==+WF27QBXoj23tHcr5BeezbPj2u9RW6qz4sLJsKw@mail.gmail.com>
- <87h6rgz60u.fsf@toke.dk> <CAEf4Bzasz_1qRXh4b7B8V1mOfyD++mVNYnhm6v__-cc7cU_33w@mail.gmail.com>
- <87bkhlymyk.fsf@toke.dk>
-In-Reply-To: <87bkhlymyk.fsf@toke.dk>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 12 Jun 2023 15:08:08 -0700
-Message-ID: <CAEf4BzZRKgMjOQhxdC_fvn1SPwPh-GXhy_1TJVB6eVpZ8k04vw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	brauner@kernel.org, lennart@poettering.net, cyphar@cyphar.com, 
-	luto@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLWNt0KsXoYVGFD0i089YMivYJ+ZeWmutUiefcdK=eOrw@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 12, 2023 at 3:49=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@kernel.org> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Fri, Jun 9, 2023 at 2:21=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen=
- <toke@kernel.org> wrote:
-> >>
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> >>
-> >> > On Fri, Jun 9, 2023 at 4:17=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgen=
-sen <toke@kernel.org> wrote:
-> >> >>
-> >> >> Andrii Nakryiko <andrii@kernel.org> writes:
-> >> >>
-> >> >> > This patch set introduces new BPF object, BPF token, which allows=
- to delegate
-> >> >> > a subset of BPF functionality from privileged system-wide daemon =
-(e.g.,
-> >> >> > systemd or any other container manager) to a *trusted* unprivileg=
-ed
-> >> >> > application. Trust is the key here. This functionality is not abo=
-ut allowing
-> >> >> > unconditional unprivileged BPF usage. Establishing trust, though,=
- is
-> >> >> > completely up to the discretion of respective privileged applicat=
-ion that
-> >> >> > would create a BPF token.
-> >> >>
-> >> >> I am not convinced that this token-based approach is a good way to =
-solve
-> >> >> this: having the delegation mechanism be one where you can basicall=
-y
-> >> >> only grant a perpetual delegation with no way to retract it, no way=
- to
-> >> >> check what exactly it's being used for, and that is transitive (can=
- be
-> >> >> passed on to others with no restrictions) seems like a recipe for
-> >> >> disaster. I believe this was basically the point Casey was making a=
-s
-> >> >> well in response to v1.
-> >> >
-> >> > Most of this can be added, if we really need to. Ability to revoke B=
-PF
-> >> > token is easy to implement (though of course it will apply only for
-> >> > subsequent operations). We can allocate ID for BPF token just like w=
-e
-> >> > do for BPF prog/map/link and let tools iterate and fetch information
-> >> > about it. As for controlling who's passing what and where, I don't
-> >> > think the situation is different for any other FD-based mechanism. Y=
-ou
-> >> > might as well create a BPF map/prog/link, pass it through SCM_RIGHTS
-> >> > or BPF FS, and that application can keep doing the same to other
-> >> > processes.
-> >>
-> >> No, but every other fd-based mechanism is limited in scope. E.g., if y=
-ou
-> >> pass a map fd that's one specific map that can be passed around, with =
-a
-> >> token it's all operations (of a specific type) which is way broader.
+On Mon, Jun 12, 2023 at 03:07:22PM -0700, Alexei Starovoitov wrote:
+> On Mon, Jun 12, 2023 at 6:46 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 > >
-> > It's not black and white. Once you have a BPF program FD, you can
-> > attach it many times, for example, and cause regressions. Sure, here
-> > we are talking about creating multiple BPF maps or loading multiple
-> > BPF programs, so it's wider in scope, but still, it's not that
-> > fundamentally different.
->
-> Right, but the difference is that a single BPF program is a known
-> entity, so even if the application you pass the fd to can attach it
-> multiple times, it can't make it do new things (e.g., bpf_probe_read()
-> stuff it is not supposed to). Whereas with bpf_token you have no such
-> guarantee.
-
-Sure, I'm not claiming BPF token is just like passing BPF program FD
-around. My point is that anything in the kernel that is representable
-by FD can be passed around to an unintended process through
-SCM_RIGHTS. And if you want to have tighter control over who's passing
-what, you'd probably need LSM. But it's not a requirement.
-
-With BPF token it is important to trust the application you are
-passing BPF token to. This is not a mechanism to just freely pass
-around the ability to do BPF. You do it only to applications you
-control.
-
-You can initiate BPF token from under CAP_SYS_ADMIN only. If you give
-CAP_SYS_ADMIN to some application that might pass BPF token to some
-random application, you should probably revisit the whole approach.
-You can do a lot of harm with that CAP_SYS_ADMIN beyond the BPF
-subsystem.
-
-On the other hand, the more correct comparison would be whether to
-give some unprivileged application a BPF token versus giving it
-CAP_BPF+CAP_PERFMON+CAP_NET_ADMIN+CAP_SYSADMIN (or the necessary
-subset of it). With BPF token you can narrow down to what exact types
-of programs and maps it can use, if at all. BPF token applies to BPF
-subsystem only. With caps, you are giving that application way more
-power than you'd like, but that's ok in practice, because a) you need
-that application to do something useful with BPF, so you take that
-risk, and b) you normally would control that application, so you are
-mitigating this risk even without any LSM or something like that on
-top.
-
-We do the latter all the time because we have to. BPF token gives us
-more well-scoped alternatively.
-
-With user namespaces, if we could grant CAP_BPF and co to use BPF,
-we'd do that. But we can't. BPF token at least gives us this
-opportunity.
-
-So while I understand your concerns in principle, I think they are a
-bit overblown in practice.
-
->
-> >>
-> >> > Ultimately, currently we have root permissions for applications that
-> >> > need BPF. That's already very dangerous. But just because something
-> >> > might be misused or abused doesn't prevent us from making a good
-> >> > practical use of it, right?
-> >>
-> >> That's not a given. It's always a trade-off, and if the mechanism is
-> >> likely to open up the system to additional risk that's not a good
-> >> trade-off even if it helps in some case. I basically worry that this i=
-s
-> >> the case here.
-> >>
-> >> > Also, there is LSM on top of all of this to override and control how
-> >> > the BPF subsystem is used, regardless of BPF token. It can override
-> >> > any of the privileges mechanism, capabilities, BPF token, whatnot.
-> >>
-> >> If this mechanism needs an LSM to be used safely, that's not incredibl=
-y
-> >> confidence-inspiring. Security mechanisms should fail safe, which this
-> >> one does not.
+> > On Fri, 2023-06-09 at 11:15 -0700, Alexei Starovoitov wrote:
+> > > On Thu, Jun 8, 2023 at 5:11 PM Krister Johansen
+> > > <kjlx@templeofstupid.com> wrote:
+> > > >
+> > > > In certain situations a program with subprograms may have a NULL
+> > > > extable entry.  This should not happen, and when it does, it turns
+> > > > a
+> > > > single trap into multiple.  Add a test case for further debugging
+> > > > and to
+> > > > prevent regressions.  N.b: without any other patches this can panic
+> > > > or
+> > > > oops a kernel.
+> > > >
+> > > > Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+> > > > ---
+> > > >  .../bpf/prog_tests/subprogs_extable.c         | 31 +++++++++++++
+> > > >  .../bpf/progs/test_subprogs_extable.c         | 46
+> > > > +++++++++++++++++++
+> > > >  2 files changed, 77 insertions(+)
+> > > >  create mode 100644
+> > > > tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > > >  create mode 100644
+> > > > tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > > >
+> > > > diff --git
+> > > > a/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > > > b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > > > new file mode 100644
+> > > > index 000000000000..2201988274a4
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/subprogs_extable.c
+> > > > @@ -0,0 +1,31 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +
+> > > > +#include <test_progs.h>
+> > > > +#include "test_subprogs_extable.skel.h"
+> > > > +
+> > > > +void test_subprogs_extable(void)
+> > > > +{
+> > > > +       const int READ_SZ = 456;
+> > > > +       struct test_subprogs_extable *skel;
+> > > > +       int err;
+> > > > +
+> > > > +       skel = test_subprogs_extable__open();
+> > > > +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> > > > +               return;
+> > > > +
+> > > > +       err = test_subprogs_extable__load(skel);
+> > > > +       if (!ASSERT_OK(err, "skel_load"))
+> > > > +               goto cleanup;
+> > > > +
+> > > > +       err = test_subprogs_extable__attach(skel);
+> > > > +       if (!ASSERT_OK(err, "skel_attach"))
+> > > > +               goto cleanup;
+> > > > +
+> > > > +       /* trigger tracepoint */
+> > > > +       ASSERT_OK(trigger_module_test_read(READ_SZ),
+> > > > "trigger_read");
+> > > > +
+> > > > +       test_subprogs_extable__detach(skel);
+> > > > +
+> > > > +cleanup:
+> > > > +       test_subprogs_extable__destroy(skel);
+> > > > +}
+> > > > diff --git
+> > > > a/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > > > b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > > > new file mode 100644
+> > > > index 000000000000..c3ff66bf4cbe
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_subprogs_extable.c
+> > > > @@ -0,0 +1,46 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +
+> > > > +#include "vmlinux.h"
+> > > > +#include <bpf/bpf_helpers.h>
+> > > > +#include <bpf/bpf_tracing.h>
+> > > > +
+> > > > +struct {
+> > > > +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > > +       __uint(max_entries, 8);
+> > > > +       __type(key, __u32);
+> > > > +       __type(value, __u64);
+> > > > +} test_array SEC(".maps");
+> > > > +
+> > > > +static __u64 test_cb(struct bpf_map *map, __u32 *key, __u64 *val,
+> > > > void *data)
+> > > > +{
+> > > > +       return 1;
+> > > > +}
+> > > > +
+> > > > +SEC("fexit/bpf_testmod_return_ptr")
+> > > > +int BPF_PROG(handle_fexit_ret_subprogs, int arg, struct file *ret)
+> > > > +{
+> > > > +       *(volatile long *)ret;
+> > > > +       *(volatile int *)&ret->f_mode;
+> > > > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > > +SEC("fexit/bpf_testmod_return_ptr")
+> > > > +int BPF_PROG(handle_fexit_ret_subprogs2, int arg, struct file
+> > > > *ret)
+> > > > +{
+> > > > +       *(volatile long *)ret;
+> > > > +       *(volatile int *)&ret->f_mode;
+> > > > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > > +SEC("fexit/bpf_testmod_return_ptr")
+> > > > +int BPF_PROG(handle_fexit_ret_subprogs3, int arg, struct file
+> > > > *ret)
+> > > > +{
+> > > > +       *(volatile long *)ret;
+> > > > +       *(volatile int *)&ret->f_mode;
+> > > > +       bpf_for_each_map_elem(&test_array, test_cb, NULL, 0);
+> > > > +       return 0;
+> > > > +}
+> > >
+> > > What is the point of attaching 3 the same progs to the same hook?
+> > > One would be enough to test it, no?
+> > >
+> > > In other news...
+> > > Looks like this test is triggering a bug on s390.
+> > >
+> > > Ilya,
+> > > please take a look:
+> > > https://github.com/kernel-patches/bpf/actions/runs/5216942096/jobs/9416404780
+> > >
+> > > bpf_prog_78c0d4c618ed2df7_handle_fexit_ret_subprogs3
+> > > is crashing the kernel.
+> > > A bug in extable logic on s390?
 > >
-> > I proposed to add authoritative LSM hooks that would selectively allow
-> > some of BPF operations on a case-by-case basis. This was rejected,
-> > claiming that the best approach is to give process privilege to do
-> > whatever it needs to do and then restrict it with LSM.
+> > I think we also need this:
 > >
-> > Ok, if not for user namespaces, that would mean giving application
-> > CAP_BPF+CAP_PERFMON+CAP_NET_ADMIN+CAP_SYS_ADMIN, and then restrict it
-> > with LSM. Except with user namespace that doesn't work. So that's
-> > where BPF token comes in, but allows it to do it more safely by
-> > allowing to coarsely tune what subset of BPF operations is granted.
-> > And then LSM should be used to further restrict it.
->
-> Right, I do understand the use case, my worry is that we're creating a
-> privilege escalation model that is really broad if it is *not* coupled
-> with an LSM to restrict it. Which will be the default outside of
-> controlled environments that really know what they are doing.
-
-Look, you are worried that you gave some process root permissions and
-that process delegated a small portion of that (BPF token) to an
-unprivileged process, which abuses it somehow. Beyond the question of
-"why did you grant root permissions to something you can't trust to do
-the right thing", isn't there a more dangerous stuff (I don't know,
-setuid, chmod/chown, etc) that root process can perform to grant
-unprivileged process unintended and uncontrolled privileges?
-
-Why BPF token is the one singled out that would have to require
-mandatory LSM to be installed?
-
->
-> So I dunno, maybe some way to restrict the token so it only grants
-> privilege if there is *also* an explicit LSM verdict on it? I guess
-> that's still too close to an authoritative LSM hook that it'll pass? I
-> do think the "explicit grant" model of an authoritative LSM is a better
-> fit for this kind of thing...
->
-
-I proposed an authoritative LSM, it was pretty plainly rejected and
-the model of "grant a lot + restrict with LSM" was suggested.
-
-> >> I'm also worried that an LSM policy is the only way to disable the
-> >> ability to create a token; with this in the kernel, I suddenly have to
-> >> trust not only that all applications with BPF privileges will not load
-> >> malicious code, but also that they won't (accidentally or maliciously)
-> >> conveys extra privileges on someone else. Seems a bit broad to have th=
-is
-> >> ability (to issue tokens) available to everyone with access to the bpf=
-()
-> >> syscall, when (IIUC) it's only a single daemon in the system that woul=
-d
-> >> legitimately do this in the deployment you're envisioning.
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -17664,6 +17664,7 @@ static int jit_subprogs(struct bpf_verifier_env
+> > *env)
+> >         prog->bpf_func = func[0]->bpf_func;
+> >         prog->jited_len = func[0]->jited_len;
+> >         prog->aux->extable = func[0]->aux->extable;
+> > +       prog->aux->num_exentries = func[0]->aux->num_exentries;
+> >         prog->aux->func = func;
+> >         prog->aux->func_cnt = env->subprog_cnt;
+> >         bpf_prog_jit_attempt_done(prog);
 > >
-> > Note, any process with real CAP_SYS_ADMIN. Let's not forget that.
+> > The reason is that s390 JIT doubles the number of extable entries due
+> > to how the hardware works (some exceptions point to the failing insn,
+> > some point to the next one).
 > >
-> > But would you feel better if BPF_TOKEN_CREATE was guarded behind
-> > sysctl or Kconfig?
->
-> Hmm, yeah, some way to make sure it's off by default would be
-> preferable, IMO.
->
-> > Ultimately, worrying is fine, but there are real problems that need to
-> > be solved. And not doing anything isn't a great option.
->
-> Right, it would be good if some of the security folks could chime in
-> with their view of how this is best achieved without running into any of
-> the "bad ideas" they are opposed to.
-
-agreed
-
->
-> >> >> If the goal is to enable a privileged application (such as a contai=
-ner
-> >> >> manager) to grant another unprivileged application the permission t=
-o
-> >> >> perform certain bpf() operations, why not just proxy the operations
-> >> >> themselves over some RPC mechanism? That way the granting applicati=
-on
-> >> >
-> >> > It's explicitly what we *do not* want to do, as it is a major proble=
-m
-> >> > and logistical complication. Every single application will have to b=
-e
-> >> > rewritten to use such a special daemon/service and its API, which is
-> >> > completely different from bpf() syscall API. It invalidates the use =
-of
-> >> > all the libbpf (and other bpf libraries') APIs, BPF skeleton is
-> >> > incompatible with this. It's a nightmare. I've got feedback from
-> >> > people in another company that do have BPF service with just a tiny
-> >> > subset of BPF functionality delegated to such service, and it's a pa=
-in
-> >> > and definitely not a preferred way to do things.
-> >>
-> >> But weren't you proposing that libbpf should be able to transparently
-> >> look for tokens and load them without any application changes? Why can=
-'t
-> >> libbpf be taught to use an RPC socket in a similar fashion? It basical=
-ly
-> >> boils down to something like:
-> >>
-> >> static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
-> >>                           unsigned int size)
-> >> {
-> >>         if (!stat("/run/bpf.sock")) {
-> >>                 sock =3D open_socket("/run/bpf.sock");
-> >>                 write_to(sock, cmd, attr, size);
-> >>                 return read_response(sock);
-> >>         } else {
-> >>                 return syscall(__NR_bpf, cmd, attr, size);
-> >>         }
-> >> }
-> >>
+> > With that:
 > >
-> > Well, for one, Meta we'll use its own Thrift-based RPC protocol.
-> > Google might use something internal for them using GRPC, someone else
-> > would want to utilize systemd, yet others will use yet another
-> > implementation. RPC introduces more failure modes. While with syscall
-> > we know that operation either succeeded or failed, with RPC we'll have
-> > to deal with "maybe", if it was some communication error.
+> > Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > >
-> > Let's not trivialize adding, using, and supporting the RPC version of
-> > bpf() syscall.
->
-> I am not trying to trivialise it, I am well aware that it is more
-> complicated in practice than just adding a wrapper like the above. I am
-> just arguing with your point that "all applications need to change, so
-> we can't do RPC". Any mechanism we add along there lines will require
-> application changes, including the BPF token. And if the way we're going
+> > for the v4 series.
+> 
+> Great.
+> 
+> Krister,
+> could you please resubmit v5 adding the above change and Ilya's tags to patch 1?
+> 
+> I'd like to see green BPF CI on all platforms before landing.
 
-Well, it depends on what kinds of changes we are talking about. E.g.,
-in most explicit case, it would be something like:
+Thanks Alexei and Ilya, and yes, absolutely.  I'm hoping to have a v5 out
+a little later this afternoon.
 
-int token_fd =3D bpf_token_get("/sys/fs/bpf/my_granted_token");
-if (token_fd < 0)
-   /* we can bail out or just assume no token */
-LIBBPF_OPTS(bpf_object_open_opts, .token_fd =3D token_fd);
-
-struct my_skel *skel =3D my_skel__open_opts(&opts);
-
-
-That's literally it. And if we have some convention that libbpf will
-try to open, say, /sys/fs/bpf/.token automatically, there will be zero
-code changes. And I'm not simplifying this.
-
-
-> to avoid that is by baking the support into libbpf, then that can be
-> done regardless of the mechanism we choose.
->
-> Or to put it another way: as you say it may be more *complicated* to add
-> an RPC-based path to libbpf, but it's not fundamentally impossible, it's
-> just another technical problem to be solved. And if that added
-> complexity buys us better security properties, maybe that is a good
-> trade-off. At least we shouldn't dismiss it out of hand.
-
-You are oversimplifying this. There is a huge difference between
-syscall and RPC and interfaces.
-
-The former (syscall approach) will error out only on invalid inputs
-(and highly improbable if kernel runs out of memory, which means your
-app is dead anyways). You don't code against syscall interface with
-expectation that it can fail at any point and you should be able to
-recover it.
-
-With RPC you have to bake in into your application that any RPC can
-fail transiently, for many reasons. Service could be down, restarted,
-slow, etc, etc. This changes *everything* in how you develop
-application, how you write code, how you handle errors, how you
-monitor stuff. Everything.
-
-It's impossible to just swap out syscall with RPC transparently
-without introducing horrible consequences. This is not some technical
-difficulty, it's a fundamental impedance mismatch. One of the early
-distributed systems mistakes was to pretend that remote procedure
-calls could be reliable and assume errors are rare and could be
-pretended to behave like syscalls or local in-process APIs. It has
-been recognized many times over how bad such approaches were. It's
-outside of the scope of this discussion to go into more details.
-Suffice it to say that libbpf is not going to pretend that syscall and
-some RPC are equivalent and can be interchangeable in a transparent
-way.
-
-And then, even if we were crazy enough to do the above, there is no
-way everyone will settle on one single implementation and/or RPC
-protocol and API such that libbpf could implement it in its upstream
-version. Big companies most probably will go with their own internal
-ones that would give them better integration with internal
-infrastructure, better overvability, etc. And even in open-source
-there probably won't be one single implementation everyone will be
-happy with.
-
->
-> -Toke
+-K
 
