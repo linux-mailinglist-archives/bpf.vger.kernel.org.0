@@ -1,425 +1,242 @@
-Return-Path: <bpf+bounces-2436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B14D72CC7D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:27:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3B072CD03
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B382D2811D7
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:27:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF371C20B84
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C2817AB7;
-	Mon, 12 Jun 2023 17:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEACF2109F;
+	Mon, 12 Jun 2023 17:37:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5D623413
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 17:23:23 +0000 (UTC)
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511A410B
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:23:21 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b3c9fee2edso7572015ad.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686590601; x=1689182601;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QinrNp91VGgxDgv0vB00Zn5PtTuK217dsIffIBOl1/c=;
-        b=tpsyRc4fZCPwXpocku5hFsl607m29uAQqHOzrqTQpofoq4OFbXUK7wpwapr8jYm1+f
-         YWB0lEgfThR08hYmVpL6bZWrKED0Ej09CV05tLxbm5xO5JFuDFlqVq5rO+MimNvBcS2p
-         lUX6tAfxpWwQrYeWyEUuF9+8pInMsU+sTYSkUWnu1rV7uThxlxSBlMF9zmmsyfn2Xwkl
-         U0nM5CRlXO1qod166MqqU9YIRbLZ8l0DfZgTPNIi4o1M0nP7OoTDC1HXeERAn/Q+npkx
-         pvWv9Ilg7rVPy4fwPuhyRXH1y//T+JAng3kvL+9Iel0vYbwwoHbqqojA5/Q2QBXuItgF
-         bbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686590601; x=1689182601;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QinrNp91VGgxDgv0vB00Zn5PtTuK217dsIffIBOl1/c=;
-        b=A1Zi6FvEUbrSd5dBTAZH5TmiNWaCtLEE3mM4EVECgStDHwReiwEEb7d9RT1mcwZhCE
-         E9w/9xkciVWZRihhwM+HdvAcVTExJEogxt5iCuWX96QmLbawMuYwedg06GJyIKaoqybi
-         4OJvs/aHL5vv1IknMnCXmmDlkjDlT24AsNMQr2+Jv8fdP82piKUgUMB1/H5ueUA8mQdK
-         O5ynUy1ID7E/Xm/toX6Lp4EmHQmnjZIMStMx8NeuYq5dNtXi70K4iezkkSxs8c8Db2NA
-         Uk2QvLELCyzd7W/OfwntMsiL9gQfjDV1QDSm0un0PumXi/0Nd8kRh7c2mBUiSkgJvOdF
-         WgEQ==
-X-Gm-Message-State: AC+VfDw/AGiT3dTxVi6FVlupG0Kv/+RszdezJi+lnWBkuehs4V6u6yIK
-	M4Cjukmf/tWgdrpf34WCUddzZQ2lSr7il7lQP3918hAEHhf7FOD9IwHJeDS+ME486Gls4UnCTu+
-	SKhbCBoZ0LeDSEXsGN1lGLtfmBnoI91WhljB+7yG5pwCenbonuQ==
-X-Google-Smtp-Source: ACHHUZ5aFSuCUC2xqESgbeK7GtiyMCRrjswwYNuL4ck19JhSF0kT5V2oYWDEHlWPGpmW2ImWcu17V1g=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:b18a:b0:1ae:50cc:457 with SMTP id
- s10-20020a170902b18a00b001ae50cc0457mr1314399plr.10.1686590600591; Mon, 12
- Jun 2023 10:23:20 -0700 (PDT)
-Date: Mon, 12 Jun 2023 10:23:07 -0700
-In-Reply-To: <20230612172307.3923165-1-sdf@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8152D1F189
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 17:37:39 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C35173C;
+	Mon, 12 Jun 2023 10:37:11 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35CGgbxr026482;
+	Mon, 12 Jun 2023 10:36:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=8O4aYyddlkUTHaIhM0P9kCHiFDGGxtLV3BNlV3cVkWs=;
+ b=mQRsKlVDqfuDvA3OLTy/RrM7SghpNze3BNPzCl4SMiwOpJZTsv3U3f4e/DiLqzGIReIx
+ dwFfCh2Lhi3K34ueYe+KoA9IgIHvU8+ghV0kHTcExymiiySCICYZL4+Ry8P8+/UHuL4D
+ sXPqnDH4FQYT+91kvapAqEC1CDqEbQAeLgHJ12VA6kU4jkaSyhsTueoS1+R/+qNeyiDz
+ hp3jCaDOeYcBuplMRPTa4kkV/n4x9bVY0JEI9EPSrvqzqfkx3c8XleORMXYq4BrOpocr
+ HiVb/ZI/fT3rT1JaMNYZjiorogLbKOk2yGmJdKswGFuWzQTqNFlskziHNBrE2z81c69l ww== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r5xc4kw0t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 10:36:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U6ttZWU9CREoKXk+NOZbS4jF+LhCc1cKSC5NVTUyW/e6cMHgNVAzNm5dkaCUQHAPyVQwh/Ktx1R2oIPJCgTLYFxI83k06gzUtibFb9XQlc7P9HwviZhe8BqGKqp2CDVYpckDxzoEbg3iRU+xDdFCrSRdxoWJhE5fsVbscqGuswd21aJjsIfiOBDQuyBJtkdlGWWR2j8J44fK215wz1uj4XQyWEvJ55kOQK9JUM9X+Uf/8Ea83H7SbZOs3S3fjpjV59xNRdzer+hsFUJjsjcnrikp7tlPTcUz+DJIqZa7OKjdLcvfaCKijN5pOvtmJB+51gYggObs18/TEQVPoXafUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8O4aYyddlkUTHaIhM0P9kCHiFDGGxtLV3BNlV3cVkWs=;
+ b=YYzlSQp0mW9woVxXcZxHa7vH4ZcJ5QPKy7AwnxlpvpTEOFh1K4lNfcSOGryhkT9h5Mt+4dRFExbmEePtE7f7zkA6G9ESPGf2a0DIuuj9UiqmqKaywUekXHjxELKUbNgHPIbsDR+o4MkNif4i8EoL+WdUSgpKW0VNQnEGypmEiS+jtUn4WncPW6fSeaB4YYiQa8EA3vFH5O4SZAmfN+P2d4OVPWHPqJQb1zaP9Pe/0a7Kym6Qc8SpICvrVmFQcYX1eHQemOm5wc2gYW+fjbGVbnE4D0Y4T2CPc8gwHBN3uAitWmh91VAT6JqvNH7pIPGf9VZ5Ro/zpWnTFtvRz60YPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DS7PR15MB5931.namprd15.prod.outlook.com (2603:10b6:8:e1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.36; Mon, 12 Jun
+ 2023 17:36:49 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6455.043; Mon, 12 Jun 2023
+ 17:36:49 +0000
+Message-ID: <09da5bbd-1ef1-edd3-d83c-bba04b4f53da@meta.com>
+Date: Mon, 12 Jun 2023 10:36:44 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 bpf-next 08/10] bpf: Support ->fill_link_info for
+ perf_event
+Content-Language: en-US
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com,
+        rostedt@goodmis.org, mhiramat@kernel.org
+Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230612151608.99661-1-laoar.shao@gmail.com>
+ <20230612151608.99661-9-laoar.shao@gmail.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230612151608.99661-9-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0069.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::46) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230612172307.3923165-1-sdf@google.com>
-X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Message-ID: <20230612172307.3923165-8-sdf@google.com>
-Subject: [RFC bpf-next 7/7] selftests/bpf: extend xdp_hw_metadata with devtx kfuncs
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS7PR15MB5931:EE_
+X-MS-Office365-Filtering-Correlation-Id: c76d0959-9340-40f1-9e8c-08db6b6b99e7
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	ECtLQf90hTkiDwH0BFssnP596GBYcsFbUWQaEWQ3AjObn5ulvshI4IuCTHIDU268Rd7A+8CyXBgbQuuAOJK5cdv+NcpmW7936CkJg3p9D0A6kkqX2vx3oHaNmC/IMRdZkbb79e0nQ9zBzeZRELTN1IUkrcDQBi+hYUQRWF5MlCJ7FEXgOqSqsQABuLsAiUpFaMk9yPRZUbPW2ydPHHypcY4L+9T/s6ZChqI1BgJqR1Breb3wmvG1qwrOxIqFMGSw3o00EKoCENmi3/58I/jSC7ErS36C3ipmjziVSMjXcYRUGe2xYFxjydw1HEV6I4boZi4GtJN6C1zCIe8aPXo2sjQgtEJsxIodIOsyZ6udAdrqS64DZb7dDwVxQqcgha2SnG1o2wb+4tYKI7pzzLH2EJqEXGVGCdmCAp75+uQoI83a2/Sl5s6dubjFcTPSRyVbBjTLXmQ1oRUdVgdlI3BHXG9tIffG1AtrQ/h1nUiGtj9+cSV47tYw9ZjGy2+257FuW9Sxx2QUGqbLIENANetWswKVecZZXSyolCVh47FNBYzUL2I6uvYqKSwnhptvIYCYNbCLegjSh9g6ovELr5ndQauylnxy7jtOCcbBgnQkbVB/PMhaR/u0CSjTv3A2HrPViyxlSbVJGpSTPgbRwLw5d5gXKbh3LUI5DVzXSTtPhU8=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(396003)(366004)(376002)(136003)(451199021)(316002)(41300700001)(6486002)(83380400001)(31696002)(86362001)(186003)(6512007)(7416002)(6506007)(2906002)(53546011)(2616005)(921005)(38100700002)(8936002)(5660300002)(8676002)(36756003)(31686004)(66946007)(66556008)(66476007)(478600001)(6666004)(66899021)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?MlJBQ1R1UXdrVXVVTHRpV0pVTFo4dWI1OTEvSE0wU0ZFS0pmWUJ3TVlSamVw?=
+ =?utf-8?B?L2lFbE5rUVlCUXd1STBpR1dlZ2pyWFJnVHM0UkZwcUNMUHQ4SUZKYkkyVEM1?=
+ =?utf-8?B?N0U4Ykhua0xXRHhtaG5kMjJaYXl3NWNSRUdRTThyR2NzQTdleUtJQngzSnJ1?=
+ =?utf-8?B?bEhZVlFrVnpCaXNDQ0NaN3VmZHFTSnhkUmNQaU9HZi90WFVYMGR6THpRNi8v?=
+ =?utf-8?B?Wjl4NHE3VllrUWtJdENCMVhsMHpCeDM5VkpZdnZsUGs4dmdvNEdDc1JGektj?=
+ =?utf-8?B?K2Q4cXo0UW5WcDNyQk00ZGY1T1czSHE3c0VjU2dJQ1g4NVBzeUlSMTNwekV1?=
+ =?utf-8?B?YWx5NkhNZmFXSHIzSHR5R3RoMXJjZCtnTjNReXNUdlVDS3ZpUGFPQklGdHN2?=
+ =?utf-8?B?WEdmNUp4WUh3RUxla2NxRkdCWHNuT0tEUGlZK1dJM1RFbUVOdXhmZU96TDE2?=
+ =?utf-8?B?RmU1OTdSZTgvMGhVcjYrQk1BQ2hDcUZ1cFZ1SDI4VjQ4UkM2M3dyTGVnSXNo?=
+ =?utf-8?B?TForMUR0aXFGZWxoOGJCOTB3WHhBSTR1RFg1Y21ZU2hNMlpOK2RZajllbmIw?=
+ =?utf-8?B?eUFXUnlMS3daSjRleWd1Z3lpaU9rbVFQcXJJdjZxWk9pV3NlRDhETTlpMCtD?=
+ =?utf-8?B?MDVXUDZtTEtGTXR2YVhPOWdCZ2poMk1IMWIxYTd6WUdpNy9lNVg3bEo3OTh2?=
+ =?utf-8?B?bFAySVIxWEVFS1BWdzNkUERqOGh4akMzSHFYd0tsVkdrR0JBbzVmTVY1OVBj?=
+ =?utf-8?B?Z1M1OWp0UlNrZ2ZkVkpSR21yYWF2c0oyZlZQbEFRL0Y2cHJtVCtDRWF0bDJw?=
+ =?utf-8?B?OTQ2UkRUSWpyQU5mM0c5N2hMd2hWYXhLbFpLZjZBWEpjLzZXMW9KTGh0eVNj?=
+ =?utf-8?B?a0duRCs0d3RqVjJQSVM2cldUZDBPaGlhcDJjWXNzMnNOWXVpVU9FUk91a09E?=
+ =?utf-8?B?WjJjUDBtSE1pa01MZTVnTGd3czJqbFRtMEtFOEVveHZ5RkE3MnFJcE9zcFZk?=
+ =?utf-8?B?NVMwTkpOWTFJWmlYK0JZN3VvaW9kZkVsWUJqU0pjK3g5aVVkQU04V0lsNDB5?=
+ =?utf-8?B?UzNpRlM5am5OMkxvSzYxcjhmbEE5a01vTmdueGIrZjFnaWNoU3VMR1hlSVpY?=
+ =?utf-8?B?MXpmSmpmclA3WmxMQ016SnlCMGRmZ1VVTFlQSi9JNHFXTytFRytINW5UQ2RE?=
+ =?utf-8?B?bHJPd0hMbFVocEpOSGNDWkN6K1E5aHpnOUtyRXpia0p3Q1Y1YnZCRHorWFlz?=
+ =?utf-8?B?Y24yOWRHdnp6eFhPWVdLR3VNdU5XTjBDWXZjeENQRVhtb1hjTUduSFJZS2g1?=
+ =?utf-8?B?UVIxbVNrMHZTTStlaCsxbnZsc0tWaDVuRTVXa0ZzSExZMGQ2QmNkL1dpS21O?=
+ =?utf-8?B?clAvcUZMcU9aOFBUcGRhbWpVaUxlT3F6dmZrSG5XbVU2di9WSWtsNmdUeHU4?=
+ =?utf-8?B?NUZXUWFkQnF1VmF6RFYyWmRuUWVEZVpIOXpnRzMycm84Ukw0Qk0wQS9ZVWtp?=
+ =?utf-8?B?S3JzVjFBZTlFTktIU1B0VGNaYnZtWUUvdUoxWk50bFNsTXlJQUxKYlNwS0Yv?=
+ =?utf-8?B?d3IwWE1WeWFnd2o1akNRNmp0eGFPMnB1b3VFdEMwc3BWcGxIU2RNM2NZUGxy?=
+ =?utf-8?B?ckFFeFR1S3p3S2Z5QVQwY1A3M05EK0plZjRrOU43blg3NHp3ek5aOTBESlY2?=
+ =?utf-8?B?eDd4UFlRTEQ5cENYSjVlUmZTQWF5Ym05Z0dEMWZ5S204dGJ1NWtCZU9SQm5h?=
+ =?utf-8?B?UGZMRUxQVlFCbERJL3RIZFZ3d1dNWVI0cTN3QXFjbXN5dHBEM0tnbklITmt3?=
+ =?utf-8?B?UUZCVmt0Qkptc2FtcCtUMTd2dHZnazF4YkRNUnNlelFwRU1rTU1mT1FUYytV?=
+ =?utf-8?B?OGhBWlJFb3lPbUpLSHRxb3FNVEdZdDVlVFpNUW96R3F3VEc4TGtMdHpYSXVl?=
+ =?utf-8?B?QWRsRHhsZzduNjNrT2FGRVJyaldFTFFxY0xMMDJUdWY2ek5Ta29peWgxREVH?=
+ =?utf-8?B?Z0c2ZWIwT3lyTWRCZDg2d3dFaFpXaXJSTWVsTEtldVNnY3UrSzd2VHk5Uk1h?=
+ =?utf-8?B?c1JUNE85ajI0ZjJqeEJTSDRFeGZOOS8yanhwYjNwMWx6OGFjczN5UDFPdDMv?=
+ =?utf-8?B?NjJkZ013bG5DN3o1WFhEamljNlYrVlFBOHBKaEtHcGpITDFKY2NsWXVYdEZk?=
+ =?utf-8?B?bGc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c76d0959-9340-40f1-9e8c-08db6b6b99e7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 17:36:49.2573
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ilqRUP63kKirj4G/LdFWLA33pZ4LjwMU2RwLd3XINV6ylGbZrewoCRkgdHQ2M0uH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR15MB5931
+X-Proofpoint-GUID: 1hBcAWceYze78YMV9w3NfVPtAqOVh7wj
+X-Proofpoint-ORIG-GUID: 1hBcAWceYze78YMV9w3NfVPtAqOVh7wj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-12_12,2023-06-12_02,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When we get packets on port 9091, we swap src/dst and send it out.
-At this point, we also request the timestamp and plumb it back
-to the userspace. The userspace simply prints the timestamp.
 
-Haven't really tested, still working on mlx5 patches...
 
-Cc: netdev@vger.kernel.org
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/progs/xdp_hw_metadata.c     |  59 +++++++
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 160 +++++++++++++++++-
- 2 files changed, 214 insertions(+), 5 deletions(-)
+On 6/12/23 8:16 AM, Yafang Shao wrote:
+> By introducing support for ->fill_link_info to the perf_event link, users
+> gain the ability to inspect it using `bpftool link show`. While the current
+> approach involves accessing this information via `bpftool perf show`,
+> consolidating link information for all link types in one place offers
+> greater convenience. Additionally, this patch extends support to the
+> generic perf event, which is not currently accommodated by
+> `bpftool perf show`. While only the perf type and config are exposed to
+> userspace, other attributes such as sample_period and sample_freq are
+> ignored. It's important to note that if kptr_restrict is not permitted, the
+> probed address will not be exposed, maintaining security measures.
+> 
+> A new enum bpf_link_perf_event_type is introduced to help the user
+> understand which struct is relevant.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>   include/uapi/linux/bpf.h       |  32 +++++++++++
+>   kernel/bpf/syscall.c           | 124 +++++++++++++++++++++++++++++++++++++++++
+>   tools/include/uapi/linux/bpf.h |  32 +++++++++++
+>   3 files changed, 188 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 23691ea..8d4556e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1056,6 +1056,16 @@ enum bpf_link_type {
+>   	MAX_BPF_LINK_TYPE,
+>   };
+>   
+> +enum bpf_perf_link_type {
+> +	BPF_PERF_LINK_UNSPEC = 0,
+> +	BPF_PERF_LINK_UPROBE = 1,
+> +	BPF_PERF_LINK_KPROBE = 2,
+> +	BPF_PERF_LINK_TRACEPOINT = 3,
+> +	BPF_PERF_LINK_PERF_EVENT = 4,
+> +
+> +	MAX_BPF_LINK_PERF_EVENT_TYPE,
+> +};
+> +
+>   /* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
+>    *
+>    * NONE(default): No further bpf programs allowed in the subtree.
+> @@ -6443,7 +6453,29 @@ struct bpf_link_info {
+>   			__u32 count;
+>   			__u32 flags;
+>   		} kprobe_multi;
+> +		struct {
+> +			__u64 config;
+> +			__u32 type;
+> +		} perf_event; /* BPF_LINK_PERF_EVENT_PERF_EVENT */
+> +		struct {
+> +			__aligned_u64 file_name; /* in/out: buff ptr */
+> +			__u32 name_len;
+> +			__u32 offset;            /* offset from name */
+> +			__u32 flags;
+> +		} uprobe; /* BPF_LINK_PERF_EVENT_UPROBE */
+> +		struct {
+> +			__aligned_u64 func_name; /* in/out: buff ptr */
+> +			__u32 name_len;
+> +			__u32 offset;            /* offset from name */
+> +			__u64 addr;
+> +			__u32 flags;
+> +		} kprobe; /* BPF_LINK_PERF_EVENT_KPROBE */
+> +		struct {
+> +			__aligned_u64 tp_name;   /* in/out: buff ptr */
+> +			__u32 name_len;
+> +		} tracepoint; /* BPF_LINK_PERF_EVENT_TRACEPOINT */
+>   	};
+> +	__u32 perf_link_type; /* enum bpf_perf_link_type */
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index b2dfd7066c6e..e27823b755ef 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -4,6 +4,7 @@
- #include "xdp_metadata.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_XSKMAP);
-@@ -12,14 +13,26 @@ struct {
- 	__type(value, __u32);
- } xsk SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 10);
-+} tx_compl_buf SEC(".maps");
-+
- __u64 pkts_skip = 0;
- __u64 pkts_fail = 0;
- __u64 pkts_redir = 0;
-+__u64 pkts_fail_tx = 0;
-+__u64 pkts_ringbuf_full = 0;
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_devtx_sb_request_timestamp(const struct devtx_frame *ctx) __ksym;
-+extern int bpf_devtx_cp_timestamp(const struct devtx_frame *ctx, __u64 *timestamp) __ksym;
-+
-+extern int bpf_devtx_sb_attach(int ifindex, int prog_fd) __ksym;
-+extern int bpf_devtx_cp_attach(int ifindex, int prog_fd) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -90,4 +103,50 @@ int rx(struct xdp_md *ctx)
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
- 
-+SEC("fentry/devtx_sb")
-+int BPF_PROG(devtx_sb, const struct devtx_frame *frame)
-+{
-+	int ret;
-+
-+	ret = bpf_devtx_sb_request_timestamp(frame);
-+	if (ret < 0)
-+		__sync_add_and_fetch(&pkts_fail_tx, 1);
-+
-+	return 0;
-+}
-+
-+SEC("fentry/devtx_cp")
-+int BPF_PROG(devtx_cp, const struct devtx_frame *frame)
-+{
-+	struct devtx_sample *sample;
-+
-+	sample = bpf_ringbuf_reserve(&tx_compl_buf, sizeof(*sample), 0);
-+	if (!sample) {
-+		__sync_add_and_fetch(&pkts_ringbuf_full, 1);
-+		return 0;
-+	}
-+
-+	sample->timestamp_retval = bpf_devtx_cp_timestamp(frame, &sample->timestamp);
-+
-+	bpf_ringbuf_submit(sample, 0);
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int attach_prog(struct devtx_attach_args *ctx)
-+{
-+	ctx->devtx_sb_retval = bpf_devtx_sb_attach(ctx->ifindex, ctx->devtx_sb_prog_fd);
-+	ctx->devtx_cp_retval = bpf_devtx_cp_attach(ctx->ifindex, ctx->devtx_cp_prog_fd);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int detach_prog(struct devtx_attach_args *ctx)
-+{
-+	ctx->devtx_sb_retval = bpf_devtx_sb_attach(ctx->ifindex, -1);
-+	ctx->devtx_cp_retval = bpf_devtx_cp_attach(ctx->ifindex, -1);
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 613321eb84c1..6cc364c2af8a 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -10,7 +10,8 @@
-  *   - rx_hash
-  *
-  * TX:
-- * - TBD
-+ * - UDP 9091 packets trigger TX reply
-+ * - TX HW timestamp is requested and reported back upon completion
-  */
- 
- #include <test_progs.h>
-@@ -228,7 +229,83 @@ static void verify_skb_metadata(int fd)
- 	printf("skb hwtstamp is not found!\n");
- }
- 
--static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id)
-+static void complete_tx(struct xsk *xsk, struct ring_buffer *ringbuf)
-+{
-+	__u32 idx;
-+	__u64 addr;
-+
-+	ring_buffer__poll(ringbuf, 1000);
-+
-+	if (xsk_ring_cons__peek(&xsk->comp, 1, &idx)) {
-+		addr = *xsk_ring_cons__comp_addr(&xsk->comp, idx);
-+
-+		printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
-+		xsk_ring_cons__release(&xsk->comp, 1);
-+	}
-+}
-+
-+#define swap(a, b, len) do { \
-+	for (int i = 0; i < len; i++) { \
-+		__u8 tmp = ((__u8 *)a)[i]; \
-+		((__u8 *)a)[i] = ((__u8 *)b)[i]; \
-+		((__u8 *)b)[i] = tmp; \
-+	} \
-+} while (0)
-+
-+static void ping_pong(struct xsk *xsk, void *rx_packet)
-+{
-+	struct ipv6hdr *ip6h = NULL;
-+	struct iphdr *iph = NULL;
-+	struct xdp_desc *tx_desc;
-+	struct udphdr *udph;
-+	struct ethhdr *eth;
-+	void *data;
-+	__u32 idx;
-+	int ret;
-+	int len;
-+
-+	ret = xsk_ring_prod__reserve(&xsk->tx, 1, &idx);
-+	if (ret != 1) {
-+		printf("%p: failed to reserve tx slot\n", xsk);
-+		return;
-+	}
-+
-+	tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx);
-+	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE;
-+	data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
-+
-+	eth = data;
-+
-+	if (eth->h_proto == htons(ETH_P_IP)) {
-+		iph = (void *)(eth + 1);
-+		udph = (void *)(iph + 1);
-+	} else if (eth->h_proto == htons(ETH_P_IPV6)) {
-+		ip6h = (void *)(eth + 1);
-+		udph = (void *)(ip6h + 1);
-+	} else {
-+		xsk_ring_prod__cancel(&xsk->tx, 1);
-+		return;
-+	}
-+
-+	len = ETH_HLEN;
-+	if (ip6h)
-+		len += ntohs(ip6h->payload_len);
-+	if (iph)
-+		len += ntohs(iph->tot_len);
-+
-+	memcpy(data, rx_packet, len);
-+	swap(eth->h_dest, eth->h_source, ETH_ALEN);
-+	if (iph)
-+		swap(&iph->saddr, &iph->daddr, 4);
-+	else
-+		swap(&ip6h->saddr, &ip6h->daddr, 16);
-+	swap(&udph->source, &udph->dest, 2);
-+
-+	xsk_ring_prod__submit(&xsk->tx, 1);
-+}
-+
-+static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id,
-+			   struct ring_buffer *ringbuf)
- {
- 	const struct xdp_desc *rx_desc;
- 	struct pollfd fds[rxq + 1];
-@@ -280,6 +357,11 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
- 			       xsk, idx, rx_desc->addr, addr, comp_addr);
- 			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
- 					    clock_id);
-+
-+			/* mirror packet back */
-+			ping_pong(xsk, xsk_umem__get_data(xsk->umem_area, addr));
-+			complete_tx(xsk, ringbuf);
-+
- 			xsk_ring_cons__release(&xsk->rx, 1);
- 			refill_rx(xsk, comp_addr);
- 		}
-@@ -370,6 +452,7 @@ static void hwtstamp_enable(const char *ifname)
- static void cleanup(void)
- {
- 	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-+	int syscall_fd;
- 	int ret;
- 	int i;
- 
-@@ -379,8 +462,26 @@ static void cleanup(void)
- 			printf("detaching bpf program....\n");
- 			ret = bpf_xdp_detach(ifindex, XDP_FLAGS, &opts);
- 			if (ret)
--				printf("failed to detach XDP program: %d\n", ret);
-+				printf("failed to detach RX XDP program: %d\n", ret);
- 		}
-+
-+		struct devtx_attach_args args = {
-+			.ifindex = ifindex,
-+			.devtx_sb_prog_fd = bpf_program__fd(bpf_obj->progs.devtx_sb),
-+			.devtx_cp_prog_fd = bpf_program__fd(bpf_obj->progs.devtx_cp),
-+			.devtx_sb_retval = -1,
-+			.devtx_cp_retval = -1,
-+		};
-+		DECLARE_LIBBPF_OPTS(bpf_test_run_opts, tattr,
-+			.ctx_in = &args,
-+			.ctx_size_in = sizeof(args),
-+		);
-+
-+		syscall_fd = bpf_program__fd(bpf_obj->progs.detach_prog);
-+		ret = bpf_prog_test_run_opts(syscall_fd, &tattr);
-+		if (ret < 0 || args.devtx_sb_retval < 0 || args.devtx_cp_retval < 0)
-+			printf("failed to detach TX XDP programs: %d %d %d\n",
-+			       ret, args.devtx_sb_retval, args.devtx_cp_retval);
- 	}
- 
- 	for (i = 0; i < rxq; i++)
-@@ -404,10 +505,22 @@ static void timestamping_enable(int fd, int val)
- 		error(1, errno, "setsockopt(SO_TIMESTAMPING)");
- }
- 
-+static int process_sample(void *ctx, void *data, size_t len)
-+{
-+	struct devtx_sample *sample = data;
-+
-+	printf("got tx timestamp sample %u %llu\n",
-+	       sample->timestamp_retval, sample->timestamp);
-+
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
-+	struct ring_buffer *tx_compl_ringbuf = NULL;
- 	clockid_t clock_id = CLOCK_TAI;
- 	int server_fd = -1;
-+	int syscall_fd;
- 	int ret;
- 	int i;
- 
-@@ -448,11 +561,26 @@ int main(int argc, char *argv[])
- 	bpf_program__set_ifindex(prog, ifindex);
- 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
- 
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "devtx_sb");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+	bpf_program__set_autoattach(prog, false);
-+
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "devtx_cp");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+	bpf_program__set_autoattach(prog, false);
-+
- 	printf("load bpf program...\n");
- 	ret = xdp_hw_metadata__load(bpf_obj);
- 	if (ret)
- 		error(1, -ret, "xdp_hw_metadata__load");
- 
-+	tx_compl_ringbuf = ring_buffer__new(bpf_map__fd(bpf_obj->maps.tx_compl_buf),
-+					    process_sample, NULL, NULL);
-+	if (libbpf_get_error(tx_compl_ringbuf))
-+		error(1, -libbpf_get_error(tx_compl_ringbuf), "ring_buffer__new");
-+
- 	printf("prepare skb endpoint...\n");
- 	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
- 	if (server_fd < 0)
-@@ -472,15 +600,37 @@ int main(int argc, char *argv[])
- 			error(1, -ret, "bpf_map_update_elem");
- 	}
- 
--	printf("attach bpf program...\n");
-+	printf("attach rx bpf program...\n");
- 	ret = bpf_xdp_attach(ifindex,
- 			     bpf_program__fd(bpf_obj->progs.rx),
- 			     XDP_FLAGS, NULL);
- 	if (ret)
- 		error(1, -ret, "bpf_xdp_attach");
- 
-+	printf("attach tx bpf programs...\n");
-+	struct devtx_attach_args args = {
-+		.ifindex = ifindex,
-+		.devtx_sb_prog_fd = bpf_program__fd(bpf_obj->progs.devtx_sb),
-+		.devtx_cp_prog_fd = bpf_program__fd(bpf_obj->progs.devtx_cp),
-+		.devtx_sb_retval = -1,
-+		.devtx_cp_retval = -1,
-+	};
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, tattr,
-+		.ctx_in = &args,
-+		.ctx_size_in = sizeof(args),
-+	);
-+
-+	syscall_fd = bpf_program__fd(bpf_obj->progs.attach_prog);
-+	ret = bpf_prog_test_run_opts(syscall_fd, &tattr);
-+	if (ret)
-+		error(1, -ret, "bpf_prog_test_run_opts");
-+	if (args.devtx_sb_retval < 0)
-+		error(1, args.devtx_sb_retval, "devtx_sb_retval");
-+	if (args.devtx_cp_retval < 0)
-+		error(1, args.devtx_cp_retval, "devtx_cp_retval");
-+
- 	signal(SIGINT, handle_signal);
--	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id);
-+	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id, tx_compl_ringbuf);
- 	close(server_fd);
- 	cleanup();
- 	if (ret)
--- 
-2.41.0.162.gfafddb0af9-goog
+I think put perf_link_type into each indivual struct is better.
+It won't increase the bpf_link_info struct size. It will allow
+extensions for all structs in the big union (raw_tracepoint,
+tracing, cgroup, iter, ..., kprobe_multi, ...) etc.
 
+>   } __attribute__((aligned(8)));
+>   
+>   /* User bpf_sock_addr struct to access socket fields and sockaddr struct passed
+[...]
 
