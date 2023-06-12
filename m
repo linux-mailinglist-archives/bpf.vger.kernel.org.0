@@ -1,448 +1,151 @@
-Return-Path: <bpf+bounces-2438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BF2572CD0E
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:40:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B935172CF31
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 21:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50ACE281078
-	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 17:40:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA1528107D
+	for <lists+bpf@lfdr.de>; Mon, 12 Jun 2023 19:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3318321CD8;
-	Mon, 12 Jun 2023 17:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E178BE8;
+	Mon, 12 Jun 2023 19:16:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABD91F189
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 17:40:16 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC29118
-	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:40:14 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-977d6aa3758so839208966b.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 10:40:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78992882A
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 19:16:52 +0000 (UTC)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A9E171F
+	for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:16:50 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-39c84b14d6aso1779903b6e.2
+        for <bpf@vger.kernel.org>; Mon, 12 Jun 2023 12:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686591613; x=1689183613;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UTDx4jf602cbOKdXqkoDk4cQOeQcYfGazQMP/vfhTeE=;
-        b=YGocuszVbmhqFyb2D09Qb6DLNW2FemHVtAoXQ48a9W45f1P3Uid8RkJEl9EyWd7dyh
-         Q3B7KbHlYZRcAMlWrYylmthcTtj+a2PZedDovbnK5JFnEulbkoIyQ+rDXsywvvWu8ghL
-         Q0RVl2b2yoIRtlpW+EdAmd8mH7UwbCouDya/FAe3CvhcAosezAGYkrGRNrR7cmEl/RzT
-         LPE+li1xQe2wv+9DeQ9IeB1o6fUzeEQZd7B4leHZnNYNzt+lS5YhPRMQhIlaaDIkWFfS
-         URB0TMhgQhquAQ5XZeIZdm8APM3tNdcWGEcbelyBv111GNE4HHV8qfCWBbhscGtYSvsf
-         TaPg==
+        d=gmail.com; s=20221208; t=1686597409; x=1689189409;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L4qPLustSvNtRsxMvmGqkNJ510ELslvqQ9JxXRLcQ7Q=;
+        b=EZeo3UxPrQlftsBlQcgKOy8EamxlCxA84HSEneKgr7oRXz+axpXvXqQN2dddqzE7sN
+         qFLwsOqbjJDb6/ujEkxis7GeITyLQ0LBuj74Hn4TBv31T8gcjgjWaGWOVvV6Jjwhk6nW
+         GDD2Xzt6a9PAY1rmClw4CyS0She/zX5Ig+sc3q47w+3KXJDCvuOPffieNHPE7RR+5GVN
+         ew06Yyw0eKoWLHDVJOTbyynp5k4JKdFOYHfmbZ/3RHfUSoJ2sI6cUFHdtvYrDFuNjOsb
+         /iWtkKKQ/LyroqzdWB9h3UrXF0zaN0+E0LkmSYXK7HgyRRO7qZX1+/NfnNdQzI45lSRk
+         uE2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686591613; x=1689183613;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UTDx4jf602cbOKdXqkoDk4cQOeQcYfGazQMP/vfhTeE=;
-        b=WvzKEmqgwyi2Qrg/HQZWVm5dPm1iBNR3EQSwuzegdpLQT3x0aHnu1l/QTA5j/6H6FD
-         ZcNMmNkZ8IelEAbLzoZZaTekMiqUpWnXBHbfoebhnnqMvnvhi3Q31hF2mXyK9KPjjgXf
-         Sszl7R3g9MOxbQRe2DAXdkv7C8lM3nNrRmq2eGxWaAccRKPuV9HCuvqhL4vUBKB8hH5x
-         KRkEefhwoJ2gKPnty05k02MHxCicfZh7IO2DNTB56Kyb5BhYrgqBjxB9blfFFcznpWiz
-         cdURXnZUJXH+hTz4gqIrXnM6Sjdp2is8damaiQkxmlZlXvha3JWR7rV2cP0G8WNrbKFD
-         KHiw==
-X-Gm-Message-State: AC+VfDyE0IvzV5yaAlLP3ATBppTh/9zmsgL6hV4FgVzNzT/QnzVAhyok
-	v90pO5Uvp51YUZ2Ms351c8U=
-X-Google-Smtp-Source: ACHHUZ63u3fPOOs1CbjQloqP4YB/6WNXZTTZ13aGk8lsDjkHhMz/f4GIz9X1+hbad0Bv0a3ZUZOpkQ==
-X-Received: by 2002:a17:906:730b:b0:973:bcf6:1d4 with SMTP id di11-20020a170906730b00b00973bcf601d4mr12071877ejc.76.1686591612803;
-        Mon, 12 Jun 2023 10:40:12 -0700 (PDT)
-Received: from localhost ([179.43.159.200])
-        by smtp.gmail.com with ESMTPSA id lo11-20020a170906fa0b00b009784915c660sm5533062ejb.136.2023.06.12.10.40.11
+        d=1e100.net; s=20221208; t=1686597409; x=1689189409;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L4qPLustSvNtRsxMvmGqkNJ510ELslvqQ9JxXRLcQ7Q=;
+        b=XI7NTpJP1kY4JJCZxycoD7IHZV12KRG+ycPOFdwIA3mP9i7t7BGlq7mWmsgXIqM0Br
+         lNKDHBOtwcuRtpUUCYV7K7a+rCUFG7pCxc1UmfDFOwy+6br883TuDDBDJZPZK1CCfk7x
+         HH2zFF4iBrr6m/7wmT2ZvlpEQHDS4xTrjCMJ6dPfytfQwW2j1x6rWyyaOBIjsoJTAXYu
+         +SNInK5zFgBr7zGuQOflwON3N8WdjLhbGS+/nl+MlTX95FZKSG5nJDsvb0vM1D5QMWfm
+         ki/sUsvs0oghY4Kh8dV12p9OzIqnsaWRiWo+cjFfuaYquNrjizPltMm1SgGdzvZzKqEz
+         YIiw==
+X-Gm-Message-State: AC+VfDyDkuy1r//QzRgcxNxGk27muTRgyNEr8Fm8M5t3l4IoMmGR1sXX
+	VouYHa72hduRK12z0ZMgb5ydmmxCicc=
+X-Google-Smtp-Source: ACHHUZ5X4lBhqWwH2amayVM2/Ik5lw7c3y74N/Fs6JwTckR2IX4i3fz0V3qpzsQOv6yvZf6kcjvfdw==
+X-Received: by 2002:a05:6359:a24:b0:129:cbaf:e22e with SMTP id el36-20020a0563590a2400b00129cbafe22emr2972898rwb.6.1686597409372;
+        Mon, 12 Jun 2023 12:16:49 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:df5d:2d08:1aa:9ce3])
+        by smtp.gmail.com with ESMTPSA id y14-20020a25ad0e000000b00bc6a712c523sm1292607ybi.64.2023.06.12.12.16.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 10:40:12 -0700 (PDT)
-Date: Mon, 12 Jun 2023 20:40:10 +0300
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
-	yhs@fb.com
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: verify that check_ids()
- is used for scalars in regsafe()
-Message-ID: <ZIdYepniUlHlmtvO@mail.gmail.com>
-References: <20230612160801.2804666-1-eddyz87@gmail.com>
- <20230612160801.2804666-5-eddyz87@gmail.com>
+        Mon, 12 Jun 2023 12:16:48 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+X-Google-Original-From: Kui-Feng Lee <kuifeng@meta.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net
+Cc: Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next 0/2] Fix missing synack in BPF cgroup_skb filters
+Date: Mon, 12 Jun 2023 12:16:39 -0700
+Message-Id: <20230612191641.441774-1-kuifeng@meta.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230612160801.2804666-5-eddyz87@gmail.com>
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-	version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 12 Jun 2023 at 19:08:01 +0300, Eduard Zingerman wrote:
-> Verify that the following example is rejected by verifier:
-> 
->   r9 = ... some pointer with range X ...
->   r6 = ... unbound scalar ID=a ...
->   r7 = ... unbound scalar ID=b ...
->   if (r6 > r7) goto +1
->   r7 = r6
->   if (r7 > X) goto exit
->   r9 += r6
->   *(u64 *)r9 = Y
-> 
-> Also add test cases to:
-> - check that check_alu_op() for BPF_MOV instruction does not allocate
->   scalar ID if source register is a constant;
-> - check that unique scalar IDs are ignored when new verifier state is
->   compared to cached verifier state;
-> - check that two different scalar IDs in a verified state can't be
->   mapped to the same scalar ID in current state.
-> 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  .../selftests/bpf/progs/verifier_scalar_ids.c | 313 ++++++++++++++++++
->  1 file changed, 313 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-> index 8a5203fb14ca..5d56e764fe43 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
-> @@ -341,4 +341,317 @@ __naked void precision_two_ids(void)
->  	: __clobber_all);
->  }
->  
-> +/* Verify that check_ids() is used by regsafe() for scalars.
-> + *
-> + * r9 = ... some pointer with range X ...
-> + * r6 = ... unbound scalar ID=a ...
-> + * r7 = ... unbound scalar ID=b ...
-> + * if (r6 > r7) goto +1
-> + * r6 = r7
-> + * if (r6 > X) goto exit
-> + * r9 += r7
-> + * *(u8 *)r9 = Y
-> + *
-> + * The memory access is safe only if r7 is bounded,
-> + * which is true for one branch and not true for another.
-> + */
-> +SEC("socket")
-> +__failure __msg("register with unbounded min value")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void check_ids_in_regsafe(void)
-> +{
-> +	asm volatile (
-> +	/* Bump allocated stack */
-> +	"r1 = 0;"
-> +	"*(u64*)(r10 - 8) = r1;"
-> +	/* r9 = pointer to stack */
-> +	"r9 = r10;"
-> +	"r9 += -8;"
-> +	/* r7 = ktime_get_ns() */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r7 = r0;"
-> +	/* r6 = ktime_get_ns() */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r6 = r0;"
-> +	/* if r6 > r7 is an unpredictable jump */
-> +	"if r6 > r7 goto l1_%=;"
-> +	"r7 = r6;"
-> +"l1_%=:"
-> +	/* if r6 > 4 exit(0) */
-> +	"if r7 > 4 goto l2_%=;"
-> +	/* Access memory at r9[r7] */
-> +	"r9 += r6;"
+TCP SYN/ACK packets of connections from processes/sockets outside a
+cgroup on the same host are not received by the cgroup's installed
+cgroup_skb filters.
 
-Sorry if I'm missing some context, but there seem to be discrepancies
-between the code of this test, the comments right here, the comment
-above the test and the commit message. r6 vs r7 don't match in a few
-places.
+There were two BPF cgroup_skb programs attached to a cgroup named
+"my_cgroup".
 
-The code matches the commit message and looks correct (unsafe). The code
-sample in the comments, however, is different and looks safe to me
-(r7 <= r6 <= X, accessing r9[r7]).
+    SEC("cgroup_skb/ingress")
+    int ingress(struct __sk_buff *skb)
+    {
+        /* .... process skb ... */
+        return 1;
+    }
 
-> +	"r0 = *(u8*)(r9 + 0);"
-> +"l2_%=:"
-> +	"r0 = 0;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Similar to check_ids_in_regsafe.
-> + * The l0 could be reached in two states:
-> + *
-> + *   (1) r6{.id=A}, r7{.id=A}, r8{.id=B}
-> + *   (2) r6{.id=B}, r7{.id=A}, r8{.id=B}
-> + *
-> + * Where (2) is not safe, as "r7 > 4" check won't propagate range for it.
-> + * This example would be considered safe without changes to
-> + * mark_chain_precision() to track scalar values with equal IDs.
-> + */
-> +SEC("socket")
-> +__failure __msg("register with unbounded min value")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void check_ids_in_regsafe_2(void)
-> +{
-> +	asm volatile (
-> +	/* Bump allocated stack */
-> +	"r1 = 0;"
-> +	"*(u64*)(r10 - 8) = r1;"
-> +	/* r9 = pointer to stack */
-> +	"r9 = r10;"
-> +	"r9 += -8;"
-> +	/* r8 = ktime_get_ns() */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r8 = r0;"
-> +	/* r7 = ktime_get_ns() */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r7 = r0;"
-> +	/* r6 = ktime_get_ns() */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r6 = r0;"
-> +	/* scratch .id from r0 */
-> +	"r0 = 0;"
-> +	/* if r6 > r7 is an unpredictable jump */
-> +	"if r6 > r7 goto l1_%=;"
-> +	/* tie r6 and r7 .id */
-> +	"r6 = r7;"
-> +"l0_%=:"
-> +	/* if r7 > 4 exit(0) */
-> +	"if r7 > 4 goto l2_%=;"
-> +	/* Access memory at r9[r7] */
-> +	"r9 += r6;"
-> +	"r0 = *(u8*)(r9 + 0);"
-> +"l2_%=:"
-> +	"r0 = 0;"
-> +	"exit;"
-> +"l1_%=:"
-> +	/* tie r6 and r8 .id */
-> +	"r6 = r8;"
-> +	"goto l0_%=;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Check that scalar IDs *are not* generated on register to register
-> + * assignments if source register is a constant.
-> + *
-> + * If such IDs *are* generated the 'l1' below would be reached in
-> + * two states:
-> + *
-> + *   (1) r1{.id=A}, r2{.id=A}
-> + *   (2) r1{.id=C}, r2{.id=C}
-> + *
-> + * Thus forcing 'if r1 == r2' verification twice.
-> + */
-> +SEC("socket")
-> +__success __log_level(2)
-> +__msg("11: (1d) if r3 == r4 goto pc+0")
-> +__msg("frame 0: propagating r3,r4")
-> +__msg("11: safe")
-> +__msg("processed 15 insns")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void no_scalar_id_for_const(void)
-> +{
-> +	asm volatile (
-> +	"call %[bpf_ktime_get_ns];"
-> +	/* unpredictable jump */
-> +	"if r0 > 7 goto l0_%=;"
-> +	/* possibly generate same scalar ids for r3 and r4 */
-> +	"r1 = 0;"
-> +	"r1 = r1;"
-> +	"r3 = r1;"
-> +	"r4 = r1;"
-> +	"goto l1_%=;"
-> +"l0_%=:"
-> +	/* possibly generate different scalar ids for r3 and r4 */
-> +	"r1 = 0;"
-> +	"r2 = 0;"
-> +	"r3 = r1;"
-> +	"r4 = r2;"
-> +"l1_%=:"
-> +	/* predictable jump, marks r3 and r4 precise */
-> +	"if r3 == r4 goto +0;"
-> +	"r0 = 0;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Same as no_scalar_id_for_const() but for 32-bit values */
-> +SEC("socket")
-> +__success __log_level(2)
-> +__msg("11: (1e) if w3 == w4 goto pc+0")
-> +__msg("frame 0: propagating r3,r4")
-> +__msg("11: safe")
-> +__msg("processed 15 insns")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void no_scalar_id_for_const32(void)
-> +{
-> +	asm volatile (
-> +	"call %[bpf_ktime_get_ns];"
-> +	/* unpredictable jump */
-> +	"if r0 > 7 goto l0_%=;"
-> +	/* possibly generate same scalar ids for r3 and r4 */
-> +	"w1 = 0;"
-> +	"w1 = w1;"
-> +	"w3 = w1;"
-> +	"w4 = w1;"
-> +	"goto l1_%=;"
-> +"l0_%=:"
-> +	/* possibly generate different scalar ids for r3 and r4 */
-> +	"w1 = 0;"
-> +	"w2 = 0;"
-> +	"w3 = w1;"
-> +	"w4 = w2;"
-> +"l1_%=:"
-> +	/* predictable jump, marks r1 and r2 precise */
-> +	"if w3 == w4 goto +0;"
-> +	"r0 = 0;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Check that unique scalar IDs are ignored when new verifier state is
-> + * compared to cached verifier state. For this test:
-> + * - cached state has no id on r1
-> + * - new state has a unique id on r1
-> + */
-> +SEC("socket")
-> +__success __log_level(2)
-> +__msg("6: (25) if r6 > 0x7 goto pc+1")
-> +__msg("7: (57) r1 &= 255")
-> +__msg("8: (bf) r2 = r10")
-> +__msg("from 6 to 8: safe")
-> +__msg("processed 12 insns")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void ignore_unique_scalar_ids_cur(void)
-> +{
-> +	asm volatile (
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r6 = r0;"
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r0 &= 0xff;"
-> +	/* r1.id == r0.id */
-> +	"r1 = r0;"
-> +	/* make r1.id unique */
-> +	"r0 = 0;"
-> +	"if r6 > 7 goto l0_%=;"
-> +	/* clear r1 id, but keep the range compatible */
-> +	"r1 &= 0xff;"
-> +"l0_%=:"
-> +	/* get here in two states:
-> +	 * - first: r1 has no id (cached state)
-> +	 * - second: r1 has a unique id (should be considered equivalent)
-> +	 */
-> +	"r2 = r10;"
-> +	"r2 += r1;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Check that unique scalar IDs are ignored when new verifier state is
-> + * compared to cached verifier state. For this test:
-> + * - cached state has a unique id on r1
-> + * - new state has no id on r1
-> + */
-> +SEC("socket")
-> +__success __log_level(2)
-> +__msg("6: (25) if r6 > 0x7 goto pc+1")
-> +__msg("7: (05) goto pc+1")
-> +__msg("9: (bf) r2 = r10")
-> +__msg("9: safe")
-> +__msg("processed 13 insns")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void ignore_unique_scalar_ids_old(void)
-> +{
-> +	asm volatile (
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r6 = r0;"
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r0 &= 0xff;"
-> +	/* r1.id == r0.id */
-> +	"r1 = r0;"
-> +	/* make r1.id unique */
-> +	"r0 = 0;"
-> +	"if r6 > 7 goto l1_%=;"
-> +	"goto l0_%=;"
-> +"l1_%=:"
-> +	/* clear r1 id, but keep the range compatible */
-> +	"r1 &= 0xff;"
-> +"l0_%=:"
-> +	/* get here in two states:
-> +	 * - first: r1 has a unique id (cached state)
-> +	 * - second: r1 has no id (should be considered equivalent)
-> +	 */
-> +	"r2 = r10;"
-> +	"r2 += r1;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
-> +/* Check that two different scalar IDs in a verified state can't be
-> + * mapped to the same scalar ID in current state.
-> + */
-> +SEC("socket")
-> +__success __log_level(2)
-> +/* The exit instruction should be reachable from two states,
-> + * use two matches and "processed .. insns" to ensure this.
-> + */
-> +__msg("13: (95) exit")
-> +__msg("13: (95) exit")
-> +__msg("processed 18 insns")
-> +__flag(BPF_F_TEST_STATE_FREQ)
-> +__naked void two_old_ids_one_cur_id(void)
-> +{
-> +	asm volatile (
-> +	/* Give unique scalar IDs to r{6,7} */
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r0 &= 0xff;"
-> +	"r6 = r0;"
-> +	"call %[bpf_ktime_get_ns];"
-> +	"r0 &= 0xff;"
-> +	"r7 = r0;"
-> +	"r0 = 0;"
-> +	/* Maybe make r{6,7} IDs identical */
-> +	"if r6 > r7 goto l0_%=;"
-> +	"goto l1_%=;"
-> +"l0_%=:"
-> +	"r6 = r7;"
-> +"l1_%=:"
-> +	/* Mark r{6,7} precise.
-> +	 * Get here in two states:
-> +	 * - first:  r6{.id=A}, r7{.id=B} (cached state)
-> +	 * - second: r6{.id=A}, r7{.id=A}
-> +	 * Currently we don't want to consider such states equivalent.
-> +	 * Thus, marker instruction "r0 = r0;" would be verified twice.
-> +	 */
-> +	"r2 = r10;"
-> +	"r2 += r6;"
-> +	"r2 += r7;"
-> +	"exit;"
-> +	:
-> +	: __imm(bpf_ktime_get_ns)
-> +	: __clobber_all);
-> +}
-> +
->  char _license[] SEC("license") = "GPL";
-> -- 
-> 2.40.1
-> 
-> 
+    SEC("cgroup_skb/egress")
+    int egress(struct __sk_buff *skb)
+    {
+        /* .... process skb ... */
+        return 1;
+    
+    }
+
+We discovered that when running the command "nc -6 -l 8000" in
+"my_group" and connecting to it from outside of "my_cgroup" with the
+command "nc -6 localhost 8000", the egress filter did not detect the
+SYN/ACK packet. However, we did observe the SYN/ACK packet at the
+ingress when connecting from a socket in "my_cgroup" to a socket
+outside of it.
+
+We came across BPF_CGROUP_RUN_PROG_INET_EGRESS(). This macro is
+responsible for calling BPF programs that are attached to the egress
+hook of a cgroup and it skips programs if the sending socket is not the
+owner of the sk_buff. Specifically, in our situation, the SYN/ACK
+sk_buff is owned by a struct request_sock instance, but the sending
+socket is the listener socket we use to receive incoming
+connections. The request_sock is created to manage an incoming
+connection.
+
+It has been determined that checking the owner of a sk_buff against
+the sending socket is not required. Removing this check will allow the
+filters to receive SYN/ACK packets.
+
+To ensure that cgroup_skb filters can receive all signaling packets,
+including SYN, SYN/ACK, ACK, FIN, and FIN/ACK. A new self-test has
+been added as well.
+
+Kui-Feng Lee (2):
+  net: bpf: Always call BPF cgroup filters for egress.
+  selftests/bpf: Verify that the cgroup_skb filters receive expected
+    packets.
+
+ include/linux/bpf-cgroup.h                    |   2 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  12 +
+ tools/testing/selftests/bpf/cgroup_helpers.h  |   1 +
+ tools/testing/selftests/bpf/cgroup_tcp_skb.h  |  35 ++
+ .../selftests/bpf/prog_tests/cgroup_tcp_skb.c | 363 ++++++++++++++++++
+ .../selftests/bpf/progs/cgroup_tcp_skb.c      | 340 ++++++++++++++++
+ 6 files changed, 752 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/cgroup_tcp_skb.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c
+
+-- 
+2.34.1
+
 
