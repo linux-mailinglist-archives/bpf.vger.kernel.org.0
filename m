@@ -1,249 +1,142 @@
-Return-Path: <bpf+bounces-2502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FE3972E43C
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:36:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7879A72E45F
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C31C281226
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 13:36:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 331F7281252
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 13:42:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49ABE34CC2;
-	Tue, 13 Jun 2023 13:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D9034CCF;
+	Tue, 13 Jun 2023 13:41:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788D3522B
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 13:36:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 276A3C433F0;
-	Tue, 13 Jun 2023 13:36:08 +0000 (UTC)
-Date: Tue, 13 Jun 2023 09:36:06 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Yonghong Song <yhs@meta.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Andrii Nakryiko <andrii@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jackie
- Liu <liu.yun@linux.dev>
-Subject: Re: [PATCHv2] ftrace: Show all functions with addresses in
- available_filter_functions_addrs
-Message-ID: <20230613093606.069a70da@gandalf.local.home>
-In-Reply-To: <4c87727b-0b3f-ffc1-d55b-90e75dcae52b@meta.com>
-References: <20230611130029.1202298-1-jolsa@kernel.org>
-	<53a11f31-256d-e7bc-eca5-597571076dc5@meta.com>
-	<20230611225407.3e9b8ad2@gandalf.local.home>
-	<20230611225754.01350a50@gandalf.local.home>
-	<d5ffd64c-65b7-e28c-b8ee-0d2ff9dcd78b@meta.com>
-	<20230612110222.50c254f3@gandalf.local.home>
-	<ZId/UL/iujOdgel+@krava>
-	<4c87727b-0b3f-ffc1-d55b-90e75dcae52b@meta.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E29522B
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 13:41:56 +0000 (UTC)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D089710F9
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 06:41:53 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-30fb4b3e62fso1999517f8f.2
+        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 06:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1686663712; x=1689255712;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cShwZbLvyK2iKaNF3sdSh4w/Hz3w1Wjs3fmrVAMGg+g=;
+        b=Fh0NkM2YnbiA2wJJ2qZMJeQzu4qnHB65w3qRNbnm/A+v2Hd463sC0YHcCxCB0N76Ie
+         48PcEAo3qrzhkYmolvpiHtaVvCCd+W2fGobcOwE1IkRUGeJBx59grpJYigksx/iEGs2/
+         44v2BlY5SOpRXA13VMRQbrv5bDcRck+HTkYJFLHgH9EbYdwrWL9wwrk07UhVI+FQyU+O
+         Ts9QLH19IcXG3w5AKyNf9o3y0w3gtHnko/4cINiuDK4iGGajgdz1y9sKEfuV36TKtnJ9
+         dEqRhLUpzPeLZFQVQWTfuy0lnrV9XuWeU8v/3aXq2BISZOcMn6gwgNRjYVLGdK+TspXs
+         zyZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686663712; x=1689255712;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cShwZbLvyK2iKaNF3sdSh4w/Hz3w1Wjs3fmrVAMGg+g=;
+        b=DV8BqpZAEUHd/AuR1LvEh2QmRnwXYQ3njUMkHG76tF547FTaf9OvHRC5+XP1RhFDp3
+         UFjHcYJ73e67SUSDiE8LDnuIjyemH7b3QEWF9bs/NzFPW6N9zgvr0imW61W5Q4I+YApp
+         CjeAXrW4wFDv0R4F/evHrrxqtEdap0JffINiH7jeUO9m9/thoK9mbpovz72ONWPlAfsS
+         CK/o+4ydNToh6AbJxWYE440x7YQPUqzLxQDJhbr/LUSSe2KI6s7Bt2cZd8op3ErqnDay
+         cs9doi2t+6S1/wUIUiqrBJS8vcvRxb2h70mytVTtlKnKYJ6/6QUWur534MgHgj52Rjbk
+         bIIA==
+X-Gm-Message-State: AC+VfDyYqjhIrEiPSo/uQ+YMazQOnRgvG0T40oS1Z5AjZL7KEjBF8wQw
+	Qbcg8ZgAUVkt15QIbSxZzGfI2g==
+X-Google-Smtp-Source: ACHHUZ4x1w7x/B7Q1i49H36K6M7BvG0XTB6AbY6m7ONe5v7v0/C86ixWjAh7o62cVRMjpLJS1E1kbg==
+X-Received: by 2002:a5d:5258:0:b0:30d:44a1:99a with SMTP id k24-20020a5d5258000000b0030d44a1099amr6812564wrc.54.1686663712249;
+        Tue, 13 Jun 2023 06:41:52 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:a03e:3034:b6bf:fd8e? ([2a02:8011:e80c:0:a03e:3034:b6bf:fd8e])
+        by smtp.gmail.com with ESMTPSA id q18-20020a05600000d200b0030e5da3e295sm15382207wrx.65.2023.06.13.06.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jun 2023 06:41:51 -0700 (PDT)
+Message-ID: <ffe856f4-9c25-2b6c-a508-bf474df39b7d@isovalent.com>
+Date: Tue, 13 Jun 2023 14:41:51 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 bpf-next 02/10] bpftool: Dump the kernel symbol's
+ module name
+Content-Language: en-GB
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org
+Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230612151608.99661-1-laoar.shao@gmail.com>
+ <20230612151608.99661-3-laoar.shao@gmail.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230612151608.99661-3-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, 12 Jun 2023 22:04:28 -0700
-Yonghong Song <yhs@meta.com> wrote:
+2023-06-12 15:16 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
+> If the kernel symbol is in a module, we will dump the module name as
+> well.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  tools/bpf/bpftool/xlated_dumper.c | 6 +++++-
+>  tools/bpf/bpftool/xlated_dumper.h | 2 ++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+> index da608e1..dd917f3 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.c
+> +++ b/tools/bpf/bpftool/xlated_dumper.c
+> @@ -46,7 +46,11 @@ void kernel_syms_load(struct dump_data *dd)
+>  		}
+>  		dd->sym_mapping = tmp;
+>  		sym = &dd->sym_mapping[dd->sym_count];
+> -		if (sscanf(buff, "%p %*c %s", &address, sym->name) != 2)
+> +
+> +		/* module is optional */
+> +		sym->module[0] = '\0';
+> +		if (sscanf(buff, "%p %*c %s %s", &address, sym->name,
+> +		    sym->module) < 2)
+>  			continue;
+>  		sym->address = (unsigned long)address;
+>  		if (!strcmp(sym->name, "__bpf_call_base")) {
+> diff --git a/tools/bpf/bpftool/xlated_dumper.h b/tools/bpf/bpftool/xlated_dumper.h
+> index 9a94637..5df8025 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.h
+> +++ b/tools/bpf/bpftool/xlated_dumper.h
+> @@ -5,12 +5,14 @@
+>  #define __BPF_TOOL_XLATED_DUMPER_H
+>  
+>  #define SYM_MAX_NAME	256
+> +#define MODULE_NAME_LEN	64
+>  
+>  struct bpf_prog_linfo;
+>  
+>  struct kernel_sym {
+>  	unsigned long address;
+>  	char name[SYM_MAX_NAME];
+> +	char module[MODULE_NAME_LEN];
 
-> Thanks for explanation! It would be great if we can put more details in
-> this email into the commit message!
+Nit: MODULE_MAX_NAME would be more consistent and would make more sense
+to me? And it would avoid confusion with MODULE_NAME_LEN from kernel,
+which doesn't have the same value.
 
-I agree.
-
-This is the patch I just pulled into my queue:
-
-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 11 Jun 2023 15:00:29 +0200
-Subject: [PATCH] ftrace: Show all functions with addresses in
- available_filter_functions_addrs
-
-Adding new available_filter_functions_addrs file that shows all available
-functions (same as available_filter_functions) together with addresses,
-like:
-
-  # cat available_filter_functions_addrs | head
-  ffffffff81000770 __traceiter_initcall_level
-  ffffffff810007c0 __traceiter_initcall_start
-  ffffffff81000810 __traceiter_initcall_finish
-  ffffffff81000860 trace_initcall_finish_cb
-  ...
-
-Note displayed address is the patch-site address and can differ from
-/proc/kallsyms address.
-
-It's useful to have address avilable for traceable symbols, so we don't
-need to allways cross check kallsyms with available_filter_functions
-(or the other way around) and have all the data in single file.
-
-For backwards compatibility reasons we can't change the existing
-available_filter_functions file output, but we need to add new file.
-
-The problem is that we need to do 2 passes:
-
- - through available_filter_functions and find out if the function is traceable
- - through /proc/kallsyms to get the address for traceable function
-
-Having available_filter_functions symbols together with addresses allow
-us to skip the kallsyms step and we are ok with the address in
-available_filter_functions_addr not being the function entry, because
-kprobe_multi uses fprobe and that handles both entry and patch-site
-address properly.
-
-We have 2 interfaces how to create kprobe_multi link:
-
-  a) passing symbols to kernel
-
-     1) user gathers symbols and need to ensure that they are
-        trace-able -> pass through available_filter_functions file
-
-     2) kernel takes those symbols and translates them to addresses
-        through kallsyms api
-
-     3) addresses are passed to fprobe/ftrace through:
-
-         register_fprobe_ips
-         -> ftrace_set_filter_ips
-
-  b) passing addresses to kernel
-
-     1) user gathers symbols and needs to ensure that they are
-        trace-able -> pass through available_filter_functions file
-
-     2) user takes those symbols and translates them to addresses
-       through /proc/kallsyms
-
-     3) addresses are passed to the kernel and kernel calls:
-
-         register_fprobe_ips
-         -> ftrace_set_filter_ips
-
-The new available_filter_functions_addrs file helps us with option b),
-because we can make 'b 1' and 'b 2' in one step - while filtering traceable
-functions, we get the address directly.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20230611130029.1202298-1-jolsa@kernel.org
-
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jackie Liu <liu.yun@linux.dev>
-Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/trace/ftrace.rst |  6 ++++++
- include/linux/ftrace.h         |  1 +
- kernel/trace/ftrace.c          | 37 ++++++++++++++++++++++++++++++++++
- 3 files changed, 44 insertions(+)
-
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index df2d3e57a83f..b7308ab10c0e 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -324,6 +324,12 @@ of ftrace. Here is a list of some of the key files:
- 	"set_graph_function", or "set_graph_notrace".
- 	(See the section "dynamic ftrace" below for more details.)
- 
-+  available_filter_functions_addrs:
-+
-+	Similar to available_filter_functions, but with address displayed
-+	for each function. The displayed address is the patch-site address
-+	and can differ from /proc/kallsyms address.
-+
-   dyn_ftrace_total_info:
- 
- 	This file is for debugging purposes. The number of functions that
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 49f279f4c3a1..8e59bd954153 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -633,6 +633,7 @@ enum {
- 	FTRACE_ITER_MOD		= (1 << 5),
- 	FTRACE_ITER_ENABLED	= (1 << 6),
- 	FTRACE_ITER_TOUCHED	= (1 << 7),
-+	FTRACE_ITER_ADDRS	= (1 << 8),
- };
- 
- void arch_ftrace_update_code(int command);
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 764668467155..b24c573934af 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3861,6 +3861,9 @@ static int t_show(struct seq_file *m, void *v)
- 	if (!rec)
- 		return 0;
- 
-+	if (iter->flags & FTRACE_ITER_ADDRS)
-+		seq_printf(m, "%lx ", rec->ip);
-+
- 	if (print_rec(m, rec->ip)) {
- 		/* This should only happen when a rec is disabled */
- 		WARN_ON_ONCE(!(rec->flags & FTRACE_FL_DISABLED));
-@@ -3996,6 +3999,30 @@ ftrace_touched_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static int
-+ftrace_avail_addrs_open(struct inode *inode, struct file *file)
-+{
-+	struct ftrace_iterator *iter;
-+	int ret;
-+
-+	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	if (ret)
-+		return ret;
-+
-+	if (unlikely(ftrace_disabled))
-+		return -ENODEV;
-+
-+	iter = __seq_open_private(file, &show_ftrace_seq_ops, sizeof(*iter));
-+	if (!iter)
-+		return -ENOMEM;
-+
-+	iter->pg = ftrace_pages_start;
-+	iter->flags = FTRACE_ITER_ADDRS;
-+	iter->ops = &global_ops;
-+
-+	return 0;
-+}
-+
- /**
-  * ftrace_regex_open - initialize function tracer filter files
-  * @ops: The ftrace_ops that hold the hash filters
-@@ -5916,6 +5943,13 @@ static const struct file_operations ftrace_touched_fops = {
- 	.release = seq_release_private,
- };
- 
-+static const struct file_operations ftrace_avail_addrs_fops = {
-+	.open = ftrace_avail_addrs_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = seq_release_private,
-+};
-+
- static const struct file_operations ftrace_filter_fops = {
- 	.open = ftrace_filter_open,
- 	.read = seq_read,
-@@ -6377,6 +6411,9 @@ static __init int ftrace_init_dyn_tracefs(struct dentry *d_tracer)
- 	trace_create_file("available_filter_functions", TRACE_MODE_READ,
- 			d_tracer, NULL, &ftrace_avail_fops);
- 
-+	trace_create_file("available_filter_functions_addrs", TRACE_MODE_READ,
-+			d_tracer, NULL, &ftrace_avail_addrs_fops);
-+
- 	trace_create_file("enabled_functions", TRACE_MODE_READ,
- 			d_tracer, NULL, &ftrace_enabled_fops);
- 
--- 
-2.39.2
+>  };
+>  
+>  struct dump_data {
 
 
