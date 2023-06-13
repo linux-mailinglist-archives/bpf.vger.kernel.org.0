@@ -1,75 +1,78 @@
-Return-Path: <bpf+bounces-2511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FFA172E658
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 16:55:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A9272E65F
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 16:57:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1900A281072
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 14:55:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CF94280FE2
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 14:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9998038CDA;
-	Tue, 13 Jun 2023 14:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF0038CD3;
+	Tue, 13 Jun 2023 14:56:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C3A15ADA;
-	Tue, 13 Jun 2023 14:55:02 +0000 (UTC)
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC9D1734;
-	Tue, 13 Jun 2023 07:55:00 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7872d7b79e1so447468241.0;
-        Tue, 13 Jun 2023 07:55:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B443F23DB
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 14:56:54 +0000 (UTC)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1EE1713;
+	Tue, 13 Jun 2023 07:56:53 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-62de30780dfso9336446d6.3;
+        Tue, 13 Jun 2023 07:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686668100; x=1689260100;
+        d=gmail.com; s=20221208; t=1686668212; x=1689260212;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9n0iumPK6wdW/4Epbrf2rYsjBUwO3iDgGxkE9NXI6/M=;
-        b=j2Ec4ltifisl3imdvY7J0POcnewURPf1JJrURzN0cW/3XDV+geDRhiTCMFFXtlsvEr
-         STceutcjRBf7H9+pJAuW9UaIV1jR1ZE0EsLzBHbuFwifl1NRPuvXtx1zc3e7fpZdCpFj
-         izG2EBGkRjNqV9QuoGJfFZtVy1FsraAWcQXpYhfsaPxFRIIfOqb9RcA0Z5vkUfB/J9wl
-         0y5YpG8I2UXcnklbbTtKA+nnku3lFNtbr7CCI27Fjbpw445qJGBvKT9aATB84bqjDkpH
-         mSi710Ys11Hqg2f1jHtHYz6YOG/cdzYJ82n6JPlbBuZvIUbwli0EAQQG09KmI9x+3PPp
-         yktQ==
+        bh=fhVGroCgc0u9hI1EagkjV3Nxh511ZVxUSQa0Z6i5YNM=;
+        b=ocSDBQwvWW+KxB516ki+A7dQcj1twPn6BDgJ+Sx8I//9zXDEXWBnlJrtx/MsUMRI3G
+         eAboW9n1PDRyMae0C41nNRB64kd3QHrDZ5uPqnNSpRmn3Rch86bJfpbY6LP+KnwlmPA2
+         byWOFQYj59/XmHXQ92twcfizd+pjiBDruM7QE7UeDP42XwkgfpPk4GOtCrohzd1W9NFO
+         m/1Bp0Bi2cMhMSln5ep5Rmw/iGD+It0a0fCpqXpsF9pDjWUscS6375uj1w69viAwmdVF
+         HQ0d6mHRmYNAfU6xmeHpFIry8slj5+rgaTFExbwrGHpXrntVc4tpNEDWjmhbB9KIu5Ro
+         gKAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686668100; x=1689260100;
+        d=1e100.net; s=20221208; t=1686668212; x=1689260212;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9n0iumPK6wdW/4Epbrf2rYsjBUwO3iDgGxkE9NXI6/M=;
-        b=WeszC+f+SbXGpQE6ykqyrm9edMGZFZmnksj0Ce8uxyi8UDnsgXrfa7xgFRHjZOl6KU
-         fhP5cH5IPFC9OokxfdnnkF36n8BI+VshBKI2TnvXo1vBGLT4ticVweQH0CLtT8esRXM1
-         TfKHXE2x+hqZ/D8SPQzBmbX0diDd1x6PyF8Da0/XukghGivqa078e9A6rQE18YUj2Aiq
-         GRnrCdjd+Kfpt8zcH3a4T05zB+kPv7rHYGNNQuaOY9qO8V8QN/s+yjBlsmLSajUm4BJX
-         Zjnel0q3zw76g+7t2OmSlwlFqAQM1I5mXbVQmOqAWE43LgTpVGfQMW7UUQWMrptAYrQH
-         NAxg==
-X-Gm-Message-State: AC+VfDy4RD4Rx5hJAcRQyl+PlqidjPR74rdNt5xe2RGaM6w28VDpbLK3
-	OiUUdsrQ2ULLxVDri8OjaEkEMsUlysbNqicC4n4=
-X-Google-Smtp-Source: ACHHUZ7hjYUecq79kWaVUCHjHKGnnnW0Q135bcJaEi8G4Lu46naK/mAk0TdZU+jmqfEWuJWUhPlg94F1EoYMY6N6s7k=
-X-Received: by 2002:a67:f803:0:b0:43b:16cf:1dda with SMTP id
- l3-20020a67f803000000b0043b16cf1ddamr5568260vso.27.1686668099721; Tue, 13 Jun
- 2023 07:54:59 -0700 (PDT)
+        bh=fhVGroCgc0u9hI1EagkjV3Nxh511ZVxUSQa0Z6i5YNM=;
+        b=CV5pbuDqKVeMr2V7gpiWdqezo3LzCsHIHie0yoMklsJVr+olIQ1jkulLJC/TYkWfXN
+         KyCmRO7QL0UfR4296oRI4AYOxwpBq7kzS3GQdhc7yCEGd5oYpbh44mJPRirvpXxyT6yy
+         lIkM5auPlrp+90koayMzkS1PVp/xIbC4q12rHpgfCf65SVIoBg7ZTip5ykhp1iHK6ux9
+         04smyNTRqKm+q5ku3AhAPoeHKcRCBxv2H9l+FeoO2usxYOXMpgMQMfAAbYrnmyzJs17o
+         8x277mufwK5M6oH7s0SEUbyndlClIIPDk3PqyLa7ib+fpFSosMgw3R9zNgzqU8PtiCCk
+         o1Og==
+X-Gm-Message-State: AC+VfDyoOydUs8flQc+Wread4KbM3KqGSxRl+/4g9zDz0yyWnrCK9WMw
+	j66SB5tKdvo9h/m3KbaB78twMJsu6WB1LuJED/4=
+X-Google-Smtp-Source: ACHHUZ7sS1ZQulLlbmOyT7GGzWZQmhUJxKz1Y/7ZT4BPtNqwuaNgVkja0p/2mtakaBpFQM1U36TI6KxnASfEgDYHmFI=
+X-Received: by 2002:a05:6214:248e:b0:62d:f3f2:a53 with SMTP id
+ gi14-20020a056214248e00b0062df3f20a53mr3773472qvb.35.1686668212169; Tue, 13
+ Jun 2023 07:56:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612172307.3923165-1-sdf@google.com> <20230612172307.3923165-4-sdf@google.com>
-In-Reply-To: <20230612172307.3923165-4-sdf@google.com>
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Tue, 13 Jun 2023 16:54:23 +0200
-Message-ID: <CAF=yD-LtxC8BeCyTWpqwziKto5DVjeg7maMjCkOZcWoihFHKzw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/7] bpf: implement devtx hook points
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-3-laoar.shao@gmail.com>
+ <ffe856f4-9c25-2b6c-a508-bf474df39b7d@isovalent.com>
+In-Reply-To: <ffe856f4-9c25-2b6c-a508-bf474df39b7d@isovalent.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 13 Jun 2023 22:56:13 +0800
+Message-ID: <CALOAHbBOE36Bg64oo-DrNG2k6uZSyUnj3t60aQBUk4kw8ntbPg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 02/10] bpftool: Dump the kernel symbol's
+ module name
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, netdev@vger.kernel.org
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,137 +82,63 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 12, 2023 at 7:24=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
- wrote:
+On Tue, Jun 13, 2023 at 9:41=E2=80=AFPM Quentin Monnet <quentin@isovalent.c=
+om> wrote:
 >
-> devtx is a lightweight set of hooks before and after packet transmission.
-> The hook is supposed to work for both skb and xdp paths by exposing
-> a light-weight packet wrapper via devtx_frame (header portion + frags).
+> 2023-06-12 15:16 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
+> > If the kernel symbol is in a module, we will dump the module name as
+> > well.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  tools/bpf/bpftool/xlated_dumper.c | 6 +++++-
+> >  tools/bpf/bpftool/xlated_dumper.h | 2 ++
+> >  2 files changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlat=
+ed_dumper.c
+> > index da608e1..dd917f3 100644
+> > --- a/tools/bpf/bpftool/xlated_dumper.c
+> > +++ b/tools/bpf/bpftool/xlated_dumper.c
+> > @@ -46,7 +46,11 @@ void kernel_syms_load(struct dump_data *dd)
+> >               }
+> >               dd->sym_mapping =3D tmp;
+> >               sym =3D &dd->sym_mapping[dd->sym_count];
+> > -             if (sscanf(buff, "%p %*c %s", &address, sym->name) !=3D 2=
+)
+> > +
+> > +             /* module is optional */
+> > +             sym->module[0] =3D '\0';
+> > +             if (sscanf(buff, "%p %*c %s %s", &address, sym->name,
+> > +                 sym->module) < 2)
+> >                       continue;
+> >               sym->address =3D (unsigned long)address;
+> >               if (!strcmp(sym->name, "__bpf_call_base")) {
+> > diff --git a/tools/bpf/bpftool/xlated_dumper.h b/tools/bpf/bpftool/xlat=
+ed_dumper.h
+> > index 9a94637..5df8025 100644
+> > --- a/tools/bpf/bpftool/xlated_dumper.h
+> > +++ b/tools/bpf/bpftool/xlated_dumper.h
+> > @@ -5,12 +5,14 @@
+> >  #define __BPF_TOOL_XLATED_DUMPER_H
+> >
+> >  #define SYM_MAX_NAME 256
+> > +#define MODULE_NAME_LEN      64
+> >
+> >  struct bpf_prog_linfo;
+> >
+> >  struct kernel_sym {
+> >       unsigned long address;
+> >       char name[SYM_MAX_NAME];
+> > +     char module[MODULE_NAME_LEN];
 >
-> devtx is implemented as a tracing program which has access to the
-> XDP-metadata-like kfuncs. The initial set of kfuncs is implemented
-> in the next patch, but the idea is similar to XDP metadata:
-> the kfuncs have netdev-specific implementation, but common
-> interface. Upon loading, the kfuncs are resolved to direct
-> calls against per-netdev implementation. This can be achieved
-> by marking devtx-tracing programs as dev-bound (largely
-> reusing xdp-dev-bound program infrastructure).
->
-> Attachment and detachment is implemented via syscall BPF program
-> by calling bpf_devtx_sb_attach (attach to tx-submission)
-> or bpf_devtx_cp_attach (attach to tx completion). Right now,
-> the attachment does not return a link and doesn't support
-> multiple programs. I plan to switch to Daniel's bpf_mprog infra
-> once it's available.
->
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Nit: MODULE_MAX_NAME would be more consistent and would make more sense
+> to me? And it would avoid confusion with MODULE_NAME_LEN from kernel,
+> which doesn't have the same value.
 
+Will use MODULE_MAX_NAME instead.
 
-> @@ -2238,6 +2238,8 @@ struct net_device {
->         unsigned int            real_num_rx_queues;
->
->         struct bpf_prog __rcu   *xdp_prog;
-> +       struct bpf_prog __rcu   *devtx_sb;
-> +       struct bpf_prog __rcu   *devtx_cp;
-
-nit/subjective: non-obvious two letter acronyms are nr. How about tx
-and txc (or txcomp)
-
-> +static int __bpf_devtx_attach(struct net_device *netdev, int prog_fd,
-> +                             const char *attach_func_name, struct bpf_pr=
-og **pprog)
-> +{
-> +       struct bpf_prog *prog;
-> +       int ret =3D 0;
-> +
-> +       if (prog_fd < 0)
-> +               return __bpf_devtx_detach(netdev, pprog);
-> +
-> +       if (*pprog)
-> +               return -EBUSY;
-> +
-> +       prog =3D bpf_prog_get(prog_fd);
-> +       if (IS_ERR(prog))
-> +               return PTR_ERR(prog);
-> +
-> +       if (prog->type !=3D BPF_PROG_TYPE_TRACING ||
-> +           prog->expected_attach_type !=3D BPF_TRACE_FENTRY ||
-> +           !bpf_prog_is_dev_bound(prog->aux) ||
-> +           !bpf_offload_dev_match(prog, netdev) ||
-> +           strcmp(prog->aux->attach_func_name, attach_func_name)) {
-> +               bpf_prog_put(prog);
-> +               return -EINVAL;
-> +       }
-> +
-> +       *pprog =3D prog;
-> +       static_branch_inc(&devtx_enabled);
-> +
-> +       return ret;
-
-nit: just return 0, no variable needed
-
-> +}
-> +
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +                 "Global functions as their definitions will be in vmlin=
-ux BTF");
-> +
-> +/**
-> + * bpf_devtx_sb_attach - Attach devtx 'packet submit' program
-> + * @ifindex: netdev interface index.
-> + * @prog_fd: BPF program file descriptor.
-> + *
-> + * Return:
-> + * * Returns 0 on success or ``-errno`` on error.
-> + */
-> +__bpf_kfunc int bpf_devtx_sb_attach(int ifindex, int prog_fd)
-> +{
-> +       struct net_device *netdev;
-> +       int ret;
-> +
-> +       netdev =3D dev_get_by_index(current->nsproxy->net_ns, ifindex);
-> +       if (!netdev)
-> +               return -EINVAL;
-> +
-> +       mutex_lock(&devtx_attach_lock);
-> +       ret =3D __bpf_devtx_attach(netdev, prog_fd, "devtx_sb", &netdev->=
-devtx_sb);
-> +       mutex_unlock(&devtx_attach_lock);
-> +
-> +       dev_put(netdev);
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * bpf_devtx_cp_attach - Attach devtx 'packet complete' program
-> + * @ifindex: netdev interface index.
-> + * @prog_fd: BPF program file descriptor.
-> + *
-> + * Return:
-> + * * Returns 0 on success or ``-errno`` on error.
-> + */
-> +__bpf_kfunc int bpf_devtx_cp_attach(int ifindex, int prog_fd)
-> +{
-> +       struct net_device *netdev;
-> +       int ret;
-> +
-> +       netdev =3D dev_get_by_index(current->nsproxy->net_ns, ifindex);
-> +       if (!netdev)
-> +               return -EINVAL;
-> +
-> +       mutex_lock(&devtx_attach_lock);
-> +       ret =3D __bpf_devtx_attach(netdev, prog_fd, "devtx_cp", &netdev->=
-devtx_cp);
-> +       mutex_unlock(&devtx_attach_lock);
-> +
-> +       dev_put(netdev);
-> +
-> +       return ret;
-> +}
-
-These two functions are near duplicates, aside from the arguments to
-their inner call to __bpf_devtx_attach. Can be dedup-ed further?
+--=20
+Regards
+Yafang
 
