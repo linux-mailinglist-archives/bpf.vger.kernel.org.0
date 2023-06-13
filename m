@@ -1,470 +1,467 @@
-Return-Path: <bpf+bounces-2536-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2537-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB8972EB54
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:57:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C93C72EB63
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 21:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4FA1C208C1
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:57:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05290281283
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 19:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA7E22E38;
-	Tue, 13 Jun 2023 18:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508A92A9D1;
+	Tue, 13 Jun 2023 19:00:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3DC20F8;
-	Tue, 13 Jun 2023 18:57:16 +0000 (UTC)
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF86B5;
-	Tue, 13 Jun 2023 11:57:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B73517FE6
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 19:00:40 +0000 (UTC)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75D0196
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 12:00:38 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-543b599054dso3560624a12.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 12:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1686682634; x=1718218634;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rmFqequertUZdgeLdi6uxOH/VPKFko1mkleAU4INkB4=;
-  b=ImZfKrpapebcSKwgTncgz8cb9H9lhRNpVAD7sudrzptKGGg+TbJ2YrTB
-   /kn8/+GWZU7ynFex21WQgFV3pdqips6LQZj1A8uvGJJ15+MDRdauUYijM
-   k4bWRlSf+lEXtlQwO2AbiVZ6A7YpHeYeCa1CtpfXY7ZGoH4apdW+1Z6Lv
-   M=;
-X-IronPort-AV: E=Sophos;i="6.00,240,1681171200"; 
-   d="scan'208";a="653979675"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2023 18:57:07 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-	by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 90D09A3E3D;
-	Tue, 13 Jun 2023 18:57:04 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 13 Jun 2023 18:57:01 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.95.246.146) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 13 Jun 2023 18:56:56 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 3/6] net: remove duplicate reuseport_lookup functions
-Date: Tue, 13 Jun 2023 11:56:47 -0700
-Message-ID: <20230613185647.64531-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v2-3-b7c69a342613@isovalent.com>
-References: <20230613-so-reuseport-v2-3-b7c69a342613@isovalent.com>
+        d=google.com; s=20221208; t=1686682838; x=1689274838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vs14/fKtr4DPyqSYwzzBe6mXTrCQCHaz4qYHBzynhw0=;
+        b=4pKJ7sYEEKq0iMijFJSsPXYV0lyrqI3ifAu2E0A0pQv7jWuR80thyVh5WP3RF6WAAM
+         5Ed24mdQwvP8DGEBHv9mU8XeHMMVdlODbYXxgmYtStxVF8dJU5v89d9BgCjbMfxIpsys
+         ZhYrsflgT+BmBh3jxZ6SJ2vYITDW6RAHd1IbIPk8lK7dc/9BPFy+NqLIdTxgwt6MaMx3
+         FwErFP3lqB3o59x9Vfle8U7dovHHdXzFYTV546L9rRWrBw7b9rgwYMv9RJLvcChO6Syi
+         c4luWUt/uUnQMkIa77p36QPHLHFPhdf+4eWHoDTO3wt8P29RU7f/8ZoD6wMDuqqxDgTe
+         jX/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686682838; x=1689274838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vs14/fKtr4DPyqSYwzzBe6mXTrCQCHaz4qYHBzynhw0=;
+        b=SqtttS9WHkHrgFNYBU9Qn2ggMv3jSGybrRpN8mEnT2Qipz85fJC6ZC4QnwTc2D3nfK
+         Wngi9TviDEJPaHuvHKXIm0L4vAE8ij1/mPIWY5O5FGVvVZ3Nmau6oVN4HUXG2PnEp51n
+         mJZSj7NE5RtU+JQK8n5cNp/MEeSqFT0hd0sviek5QpRe8YL9fpwYNksyHlFJ0wdaCiZV
+         IFJTd/RQTMHLoGwXR6waUYELYr5FYJEw/84TimYFjQU5Yu/+DH4tFI2KpCqzX3a6gUqr
+         afOzpDXRyks4oEZJ4VGKV3uU8wz+e5Migk7vnn4nAFfATgrfISyvxEaFLJA/edt++Wbx
+         7O8A==
+X-Gm-Message-State: AC+VfDyISgg/rPEOg7wYcCmk/s2mMBYwfjCY29ScP0nOZgx/GKrRjqEK
+	AheOAiJZj5tmkaKkhJ6khFfJy0JZ//r7deF7DirhlQ==
+X-Google-Smtp-Source: ACHHUZ4WqSCGfeQBzyN44zymTgFyUKqOvffFvm0wBFQhenvhw82/9+jv/Gv+Av6Q4x8SS2xQ2S18TlhGe7VMJe3p8kE=
+X-Received: by 2002:a17:90a:1a15:b0:25b:a15e:58b8 with SMTP id
+ 21-20020a17090a1a1500b0025ba15e58b8mr15268500pjk.10.1686682837510; Tue, 13
+ Jun 2023 12:00:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.95.246.146]
-X-ClientProxiedBy: EX19D044UWA003.ant.amazon.com (10.13.139.43) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR
-	autolearn=no autolearn_force=no version=3.4.6
+References: <20230612172307.3923165-1-sdf@google.com> <20230612172307.3923165-4-sdf@google.com>
+ <ZIiGVrHLKQRzMzGg@corigine.com>
+In-Reply-To: <ZIiGVrHLKQRzMzGg@corigine.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Tue, 13 Jun 2023 12:00:25 -0700
+Message-ID: <CAKH8qBvfp7Do1tSD4YiiNVojG2gB9+mrNNLiVFz+ts4gU+pJrA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/7] bpf: implement devtx hook points
+To: Simon Horman <simon.horman@corigine.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Tue, 13 Jun 2023 11:14:58 +0100
-> There are currently four copies of reuseport_lookup: one each for
-> (TCP, UDP)x(IPv4, IPv6). This forces us to duplicate all callers of
-> those functions as well. This is already the case for sk_lookup
-> helpers (inet,inet6,udp4,udp6)_lookup_run_bpf.
-> 
-> The only difference between the reuseport_lookup helpers is calling
-> a different hash function. Cut down the number of reuseport_lookup
-> functions to one per IP version by using the INDIRECT_CALL
-> infrastructure.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> ---
->  include/net/inet6_hashtables.h | 11 ++++++++++-
->  include/net/inet_hashtables.h  | 15 +++++++++-----
->  net/ipv4/inet_hashtables.c     | 22 ++++++++++++++-------
->  net/ipv4/udp.c                 | 37 +++++++++++-----------------------
->  net/ipv6/inet6_hashtables.c    | 16 +++++++++++----
->  net/ipv6/udp.c                 | 45 +++++++++++++++---------------------------
->  6 files changed, 75 insertions(+), 71 deletions(-)
-> 
-> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> index 032ddab48f8f..49d586454287 100644
-> --- a/include/net/inet6_hashtables.h
-> +++ b/include/net/inet6_hashtables.h
-> @@ -48,12 +48,21 @@ struct sock *__inet6_lookup_established(struct net *net,
->  					const u16 hnum, const int dif,
->  					const int sdif);
->  
-> +typedef u32 (*inet6_ehashfn_t)(const struct net *net,
-> +			       const struct in6_addr *laddr, const u16 lport,
-> +			       const struct in6_addr *faddr, const __be16 fport);
-> +
-> +u32 inet6_ehashfn(const struct net *net,
-> +		  const struct in6_addr *laddr, const u16 lport,
-> +		  const struct in6_addr *faddr, const __be16 fport);
-> +
->  struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
->  				    struct sk_buff *skb, int doff,
->  				    const struct in6_addr *saddr,
->  				    __be16 sport,
->  				    const struct in6_addr *daddr,
-> -				    unsigned short hnum);
-> +				    unsigned short hnum,
-> +				    inet6_ehashfn_t ehashfn);
->  
->  struct sock *inet6_lookup_listener(struct net *net,
->  				   struct inet_hashinfo *hashinfo,
-> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-> index 8734f3488f5d..51ab6a1a3601 100644
-> --- a/include/net/inet_hashtables.h
-> +++ b/include/net/inet_hashtables.h
-> @@ -379,10 +379,19 @@ struct sock *__inet_lookup_established(struct net *net,
->  				       const __be32 daddr, const u16 hnum,
->  				       const int dif, const int sdif);
->  
-> +typedef u32 (*inet_ehashfn_t)(const struct net *net,
-> +			      const __be32 laddr, const __u16 lport,
-> +			      const __be32 faddr, const __be16 fport);
-> +
-> +u32 inet_ehashfn(const struct net *net,
-> +		 const __be32 laddr, const __u16 lport,
-> +		 const __be32 faddr, const __be16 fport);
-> +
->  struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   struct sk_buff *skb, int doff,
->  				   __be32 saddr, __be16 sport,
-> -				   __be32 daddr, unsigned short hnum);
-> +				   __be32 daddr, unsigned short hnum,
-> +				   inet_ehashfn_t ehashfn);
->  
->  static inline struct sock *
->  	inet_lookup_established(struct net *net, struct inet_hashinfo *hashinfo,
-> @@ -453,10 +462,6 @@ static inline struct sock *__inet_lookup_skb(struct inet_hashinfo *hashinfo,
->  			     refcounted);
->  }
->  
-> -u32 inet6_ehashfn(const struct net *net,
-> -		  const struct in6_addr *laddr, const u16 lport,
-> -		  const struct in6_addr *faddr, const __be16 fport);
-> -
->  static inline void sk_daddr_set(struct sock *sk, __be32 addr)
->  {
->  	sk->sk_daddr = addr; /* alias of inet_daddr */
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index 91f9210d4e83..1ec895fd9905 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -28,9 +28,9 @@
->  #include <net/tcp.h>
->  #include <net/sock_reuseport.h>
->  
-> -static u32 inet_ehashfn(const struct net *net, const __be32 laddr,
-> -			const __u16 lport, const __be32 faddr,
-> -			const __be16 fport)
-> +u32 inet_ehashfn(const struct net *net, const __be32 laddr,
-> +		 const __u16 lport, const __be32 faddr,
-> +		 const __be16 fport)
->  {
->  	static u32 inet_ehash_secret __read_mostly;
->  
-> @@ -332,6 +332,10 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +INDIRECT_CALLABLE_DECLARE(u32 udp_ehashfn(const struct net *,
-> +					  const __be32, const __u16,
-> +					  const __be32, const __be16));
-> +
->  /**
->   * inet_lookup_reuseport() - execute reuseport logic on AF_INET socket if necessary.
->   * @net: network namespace.
-> @@ -342,6 +346,7 @@ static inline int compute_score(struct sock *sk, struct net *net,
->   * @sport: source port.
->   * @daddr: destination address.
->   * @hnum: destination port in host byte order.
-> + * @ehashfn: hash function used to generate the fallback hash.
->   *
->   * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
->   *         the selected sock or an error.
-> @@ -349,13 +354,15 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   struct sk_buff *skb, int doff,
->  				   __be32 saddr, __be16 sport,
-> -				   __be32 daddr, unsigned short hnum)
-> +				   __be32 daddr, unsigned short hnum,
-> +				   inet_ehashfn_t ehashfn)
->  {
->  	struct sock *reuse_sk = NULL;
->  	u32 phash;
->  
->  	if (sk->sk_reuseport) {
-> -		phash = inet_ehashfn(net, daddr, hnum, saddr, sport);
-> +		phash = INDIRECT_CALL_2(ehashfn, inet_ehashfn, udp_ehashfn,
-> +					net, daddr, hnum, saddr, sport);
->  		reuse_sk = reuseport_select_sock(sk, phash, skb, doff);
->  	}
->  	return reuse_sk;
-> @@ -385,7 +392,7 @@ static struct sock *inet_lhash2_lookup(struct net *net,
->  		score = compute_score(sk, net, hnum, daddr, dif, sdif);
->  		if (score > hiscore) {
->  			result = inet_lookup_reuseport(net, sk, skb, doff,
-> -						       saddr, sport, daddr, hnum);
-> +						       saddr, sport, daddr, hnum, inet_ehashfn);
->  			if (result)
->  				return result;
->  
-> @@ -414,7 +421,8 @@ static inline struct sock *inet_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum,
-> +					 inet_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index fd3dae081f3a..10468fe144d0 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -405,9 +405,9 @@ static int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> -static u32 udp_ehashfn(const struct net *net, const __be32 laddr,
-> -		       const __u16 lport, const __be32 faddr,
-> -		       const __be16 fport)
-> +INDIRECT_CALLABLE_SCOPE
-> +u32 udp_ehashfn(const struct net *net, const __be32 laddr, const __u16 lport,
-> +		const __be32 faddr, const __be16 fport)
->  {
->  	static u32 udp_ehash_secret __read_mostly;
->  
-> @@ -417,22 +417,6 @@ static u32 udp_ehashfn(const struct net *net, const __be32 laddr,
->  			      udp_ehash_secret + net_hash_mix(net));
->  }
->  
-> -static struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-> -				     struct sk_buff *skb,
-> -				     __be32 saddr, __be16 sport,
-> -				     __be32 daddr, unsigned short hnum)
-> -{
-> -	struct sock *reuse_sk = NULL;
-> -	u32 hash;
-> -
-> -	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
-> -		hash = udp_ehashfn(net, daddr, hnum, saddr, sport);
-> -		reuse_sk = reuseport_select_sock(sk, hash, skb,
-> -						 sizeof(struct udphdr));
-> -	}
-> -	return reuse_sk;
-> -}
-> -
->  /* called with rcu_read_lock() */
->  static struct sock *udp4_lib_lookup2(struct net *net,
->  				     __be32 saddr, __be16 sport,
-> @@ -450,11 +434,13 @@ static struct sock *udp4_lib_lookup2(struct net *net,
->  		score = compute_score(sk, net, saddr, sport,
->  				      daddr, hnum, dif, sdif);
->  		if (score > badness) {
-> -			result = lookup_reuseport(net, sk, skb,
-> -						  saddr, sport, daddr, hnum);
-> -			/* Fall back to scoring if group has connections */
-> -			if (result && !reuseport_has_conns(sk))
-> -				return result;
-> +			if (sk->sk_state != TCP_ESTABLISHED) {
-> +				result = inet_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +							       saddr, sport, daddr, hnum, udp_ehashfn);
-> +				/* Fall back to scoring if group has connections */
-> +				if (result && !reuseport_has_conns(sk))
-> +					return result;
+On Tue, Jun 13, 2023 at 8:08=E2=80=AFAM Simon Horman <simon.horman@corigine=
+.com> wrote:
+>
+> On Mon, Jun 12, 2023 at 10:23:03AM -0700, Stanislav Fomichev wrote:
+> > devtx is a lightweight set of hooks before and after packet transmissio=
+n.
+> > The hook is supposed to work for both skb and xdp paths by exposing
+> > a light-weight packet wrapper via devtx_frame (header portion + frags).
+> >
+> > devtx is implemented as a tracing program which has access to the
+> > XDP-metadata-like kfuncs. The initial set of kfuncs is implemented
+> > in the next patch, but the idea is similar to XDP metadata:
+> > the kfuncs have netdev-specific implementation, but common
+> > interface. Upon loading, the kfuncs are resolved to direct
+> > calls against per-netdev implementation. This can be achieved
+> > by marking devtx-tracing programs as dev-bound (largely
+> > reusing xdp-dev-bound program infrastructure).
+> >
+> > Attachment and detachment is implemented via syscall BPF program
+> > by calling bpf_devtx_sb_attach (attach to tx-submission)
+> > or bpf_devtx_cp_attach (attach to tx completion). Right now,
+> > the attachment does not return a link and doesn't support
+> > multiple programs. I plan to switch to Daniel's bpf_mprog infra
+> > once it's available.
+> >
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>
+> ...
+>
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -22976,11 +22976,13 @@ L:  bpf@vger.kernel.org
+> >  S:   Supported
+> >  F:   drivers/net/ethernet/*/*/*/*/*xdp*
+> >  F:   drivers/net/ethernet/*/*/*xdp*
+> > +F:   include/net/devtx.h
+> >  F:   include/net/xdp.h
+> >  F:   include/net/xdp_priv.h
+> >  F:   include/trace/events/xdp.h
+> >  F:   kernel/bpf/cpumap.c
+> >  F:   kernel/bpf/devmap.c
+> > +F:   net/core/devtx.c
+> >  F:   net/core/xdp.c
+> >  F:   samples/bpf/xdp*
+> >  F:   tools/testing/selftests/bpf/*/*xdp*
+>
+> Hi Stan,
+>
+> some feedback from my side.
+>
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 08fbd4622ccf..e08e3fd39dfc 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -2238,6 +2238,8 @@ struct net_device {
+> >       unsigned int            real_num_rx_queues;
+> >
+> >       struct bpf_prog __rcu   *xdp_prog;
+> > +     struct bpf_prog __rcu   *devtx_sb;
+> > +     struct bpf_prog __rcu   *devtx_cp;
+>
+> It would be good to add these new fields to the kernel doc
+> for struct net_device.
 
-				result = result ? : sk;
-> +			}
+Sure, will do!
 
-			else {
-				result = sk;
-			}
+> >       unsigned long           gro_flush_timeout;
+> >       int                     napi_defer_hard_irqs;
+> >  #define GRO_LEGACY_MAX_SIZE  65536u
+> > diff --git a/include/net/devtx.h b/include/net/devtx.h
+> > new file mode 100644
+> > index 000000000000..7eab66d0ce80
+> > --- /dev/null
+> > +++ b/include/net/devtx.h
+> > @@ -0,0 +1,76 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +#ifndef __LINUX_NET_DEVTX_H__
+> > +#define __LINUX_NET_DEVTX_H__
+> > +
+> > +#include <linux/jump_label.h>
+> > +#include <linux/skbuff.h>
+> > +#include <linux/netdevice.h>
+> > +#include <net/xdp.h>
+> > +
+> > +struct devtx_frame {
+> > +     void *data;
+> > +     u16 len;
+> > +     struct skb_shared_info *sinfo; /* for frags */
+> > +};
+> > +
+> > +#ifdef CONFIG_NET
+> > +void devtx_submit(struct net_device *netdev, struct devtx_frame *ctx);
+> > +void devtx_complete(struct net_device *netdev, struct devtx_frame *ctx=
+);
+> > +bool is_devtx_kfunc(u32 kfunc_id);
+> > +void devtx_shutdown(struct net_device *netdev);
+> > +
+> > +static inline void devtx_frame_from_skb(struct devtx_frame *ctx, struc=
+t sk_buff *skb)
+> > +{
+> > +     ctx->data =3D skb->data;
+> > +     ctx->len =3D skb_headlen(skb);
+> > +     ctx->sinfo =3D skb_shinfo(skb);
+> > +}
+> > +
+> > +static inline void devtx_frame_from_xdp(struct devtx_frame *ctx, struc=
+t xdp_frame *xdpf)
+> > +{
+> > +     ctx->data =3D xdpf->data;
+> > +     ctx->len =3D xdpf->len;
+> > +     ctx->sinfo =3D xdp_frame_has_frags(xdpf) ? xdp_get_shared_info_fr=
+om_frame(xdpf) : NULL;
+> > +}
+> > +
+> > +DECLARE_STATIC_KEY_FALSE(devtx_enabled);
+> > +
+> > +static inline bool devtx_submit_enabled(struct net_device *netdev)
+> > +{
+> > +     return static_branch_unlikely(&devtx_enabled) &&
+> > +            rcu_access_pointer(netdev->devtx_sb);
+> > +}
+> > +
+> > +static inline bool devtx_complete_enabled(struct net_device *netdev)
+> > +{
+> > +     return static_branch_unlikely(&devtx_enabled) &&
+> > +            rcu_access_pointer(netdev->devtx_cp);
+> > +}
+> > +#else
+> > +static inline void devtx_submit(struct net_device *netdev, struct devt=
+x_frame *ctx)
+> > +{
+> > +}
+> > +
+> > +static inline void devtx_complete(struct net_device *netdev, struct de=
+vtx_frame *ctx)
+> > +{
+> > +}
+> > +
+> > +static inline bool is_devtx_kfunc(u32 kfunc_id)
+> > +{
+> > +     return false;
+> > +}
+> > +
+> > +static inline void devtx_shutdown(struct net_device *netdev)
+> > +{
+> > +}
+> > +
+> > +static inline void devtx_frame_from_skb(struct devtx_frame *ctx, struc=
+t sk_buff *skb)
+> > +{
+> > +}
+> > +
+> > +static inline void devtx_frame_from_xdp(struct devtx_frame *ctx, struc=
+t xdp_frame *xdpf)
+> > +{
+> > +}
+> > +#endif
+> > +
+> > +#endif /* __LINUX_NET_DEVTX_H__ */
+> > diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> > index 235d81f7e0ed..9cfe96422c80 100644
+> > --- a/kernel/bpf/offload.c
+> > +++ b/kernel/bpf/offload.c
+> > @@ -25,6 +25,7 @@
+> >  #include <linux/rhashtable.h>
+> >  #include <linux/rtnetlink.h>
+> >  #include <linux/rwsem.h>
+> > +#include <net/devtx.h>
+> >
+> >  /* Protects offdevs, members of bpf_offload_netdev and offload members
+> >   * of all progs.
+> > @@ -228,6 +229,7 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, =
+union bpf_attr *attr)
+> >       int err;
+> >
+> >       if (attr->prog_type !=3D BPF_PROG_TYPE_SCHED_CLS &&
+> > +         attr->prog_type !=3D BPF_PROG_TYPE_TRACING &&
+> >           attr->prog_type !=3D BPF_PROG_TYPE_XDP)
+> >               return -EINVAL;
+> >
+> > @@ -238,6 +240,10 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog,=
+ union bpf_attr *attr)
+> >           attr->prog_flags & BPF_F_XDP_DEV_BOUND_ONLY)
+> >               return -EINVAL;
+> >
+> > +     if (attr->prog_type =3D=3D BPF_PROG_TYPE_TRACING &&
+> > +         !is_devtx_kfunc(prog->aux->attach_btf_id))
+> > +             return -EINVAL;
+> > +
+> >       netdev =3D dev_get_by_index(current->nsproxy->net_ns, attr->prog_=
+ifindex);
+> >       if (!netdev)
+> >               return -EINVAL;
+> > diff --git a/net/core/Makefile b/net/core/Makefile
+> > index 8f367813bc68..c1db05ccfac7 100644
+> > --- a/net/core/Makefile
+> > +++ b/net/core/Makefile
+> > @@ -39,4 +39,5 @@ obj-$(CONFIG_FAILOVER) +=3D failover.o
+> >  obj-$(CONFIG_NET_SOCK_MSG) +=3D skmsg.o
+> >  obj-$(CONFIG_BPF_SYSCALL) +=3D sock_map.o
+> >  obj-$(CONFIG_BPF_SYSCALL) +=3D bpf_sk_storage.o
+> > +obj-$(CONFIG_BPF_SYSCALL) +=3D devtx.o
+> >  obj-$(CONFIG_OF)     +=3D of_net.o
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 3393c2f3dbe8..ef0e65e68024 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -150,6 +150,7 @@
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/prandom.h>
+> >  #include <linux/once_lite.h>
+> > +#include <net/devtx.h>
+> >
+> >  #include "dev.h"
+> >  #include "net-sysfs.h"
+> > @@ -10875,6 +10876,7 @@ void unregister_netdevice_many_notify(struct li=
+st_head *head,
+> >               dev_shutdown(dev);
+> >
+> >               dev_xdp_uninstall(dev);
+> > +             devtx_shutdown(dev);
+> >               bpf_dev_bound_netdev_unregister(dev);
+> >
+> >               netdev_offload_xstats_disable_all(dev);
+> > diff --git a/net/core/devtx.c b/net/core/devtx.c
+> > new file mode 100644
+> > index 000000000000..b7cbc26d1c01
+> > --- /dev/null
+> > +++ b/net/core/devtx.c
+> > @@ -0,0 +1,208 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +#include <net/devtx.h>
+> > +#include <linux/filter.h>
+> > +
+> > +DEFINE_STATIC_KEY_FALSE(devtx_enabled);
+> > +EXPORT_SYMBOL_GPL(devtx_enabled);
+> > +
+> > +static void devtx_run(struct net_device *netdev, struct devtx_frame *c=
+tx, struct bpf_prog **pprog)
+>
+> Is an __rcu annotation appropriate for prog here?
+> Also elsewhere in this patch.
 
-The assignment to result below is buggy.  Let's say SO_REUSEPROT group
-have TCP_CLOSE and TCP_ESTABLISHED sockets.
+Good point. Maybe I should rcu_dereference it them somewhere on top.
+Let me try to find the best place..
 
-  1. Find TCP_CLOSE sk and do SO_REUSEPORT lookup
-  2. result is not NULL, but the group has TCP_ESTABLISHED sk
-  3. result = result
-  4. Find TCP_ESTABLISHED sk, which has a higher score
-  5. result = result (TCP_CLOSE) <-- should be sk.
+> > +{
+> > +     struct bpf_prog *prog;
+> > +     void *real_ctx[1] =3D {ctx};
+> > +
+> > +     prog =3D rcu_dereference(*pprog);
+> > +     if (likely(prog))
+> > +             bpf_prog_run(prog, real_ctx);
+> > +}
+> > +
+> > +void devtx_submit(struct net_device *netdev, struct devtx_frame *ctx)
+> > +{
+> > +     rcu_read_lock();
+> > +     devtx_run(netdev, ctx, &netdev->devtx_sb);
+> > +     rcu_read_unlock();
+> > +}
+> > +EXPORT_SYMBOL_GPL(devtx_submit);
+> > +
+> > +void devtx_complete(struct net_device *netdev, struct devtx_frame *ctx=
+)
+> > +{
+> > +     rcu_read_lock();
+> > +     devtx_run(netdev, ctx, &netdev->devtx_cp);
+> > +     rcu_read_unlock();
+> > +}
+> > +EXPORT_SYMBOL_GPL(devtx_complete);
+> > +
+> > +/**
+> > + * devtx_sb - Called for every egress netdev packet
+>
+> As this is a kernel doc, it would be good to document the ctx parameter h=
+ere.
 
-Same for v6 function.
+I didn't really find a convincing way to add a comment, I've had the
+following which I've removed prio to submission:
+@ctx devtx_frame context
 
->  
->  			result = result ? : sk;
->  			badness = score;
-> @@ -480,7 +466,8 @@ static struct sock *udp4_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +					 saddr, sport, daddr, hnum, udp_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
-> index 208998694ae3..a350ee40141c 100644
-> --- a/net/ipv6/inet6_hashtables.c
-> +++ b/net/ipv6/inet6_hashtables.c
-> @@ -111,6 +111,10 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +INDIRECT_CALLABLE_DECLARE(u32 udp6_ehashfn(const struct net *,
-> +					   const struct in6_addr *, const u16,
-> +					   const struct in6_addr *, const __be16));
-> +
->  /**
->   * inet6_lookup_reuseport() - execute reuseport logic on AF_INET6 socket if necessary.
->   * @net: network namespace.
-> @@ -121,6 +125,7 @@ static inline int compute_score(struct sock *sk, struct net *net,
->   * @sport: source port.
->   * @daddr: destination address.
->   * @hnum: destination port in host byte order.
-> + * @ehashfn: hash function used to generate the fallback hash.
->   *
->   * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
->   *         the selected sock or an error.
-> @@ -130,13 +135,15 @@ struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
->  				    const struct in6_addr *saddr,
->  				    __be16 sport,
->  				    const struct in6_addr *daddr,
-> -				    unsigned short hnum)
-> +				    unsigned short hnum,
-> +				    inet6_ehashfn_t ehashfn)
->  {
->  	struct sock *reuse_sk = NULL;
->  	u32 phash;
->  
->  	if (sk->sk_reuseport) {
-> -		phash = inet6_ehashfn(net, daddr, hnum, saddr, sport);
-> +		phash = INDIRECT_CALL_2(ehashfn, inet6_ehashfn, udp6_ehashfn,
-> +					net, daddr, hnum, saddr, sport);
->  		reuse_sk = reuseport_select_sock(sk, phash, skb, doff);
->  	}
->  	return reuse_sk;
-> @@ -159,7 +166,7 @@ static struct sock *inet6_lhash2_lookup(struct net *net,
->  		score = compute_score(sk, net, hnum, daddr, dif, sdif);
->  		if (score > hiscore) {
->  			result = inet6_lookup_reuseport(net, sk, skb, doff,
-> -							saddr, sport, daddr, hnum);
-> +							saddr, sport, daddr, hnum, inet6_ehashfn);
->  			if (result)
->  				return result;
->  
-> @@ -190,7 +197,8 @@ static inline struct sock *inet6_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> +					  saddr, sport, daddr, hnum, inet6_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> index e5a337e6b970..2af3a595f38a 100644
-> --- a/net/ipv6/udp.c
-> +++ b/net/ipv6/udp.c
-> @@ -70,11 +70,12 @@ int udpv6_init_sock(struct sock *sk)
->  	return 0;
->  }
->  
-> -static u32 udp6_ehashfn(const struct net *net,
-> -			const struct in6_addr *laddr,
-> -			const u16 lport,
-> -			const struct in6_addr *faddr,
-> -			const __be16 fport)
-> +INDIRECT_CALLABLE_SCOPE
-> +u32 udp6_ehashfn(const struct net *net,
-> +		 const struct in6_addr *laddr,
-> +		 const u16 lport,
-> +		 const struct in6_addr *faddr,
-> +		 const __be16 fport)
->  {
->  	static u32 udp6_ehash_secret __read_mostly;
->  	static u32 udp_ipv6_hash_secret __read_mostly;
-> @@ -159,24 +160,6 @@ static int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> -static struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-> -				     struct sk_buff *skb,
-> -				     const struct in6_addr *saddr,
-> -				     __be16 sport,
-> -				     const struct in6_addr *daddr,
-> -				     unsigned int hnum)
-> -{
-> -	struct sock *reuse_sk = NULL;
-> -	u32 hash;
-> -
-> -	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
-> -		hash = udp6_ehashfn(net, daddr, hnum, saddr, sport);
-> -		reuse_sk = reuseport_select_sock(sk, hash, skb,
-> -						 sizeof(struct udphdr));
-> -	}
-> -	return reuse_sk;
-> -}
-> -
->  /* called with rcu_read_lock() */
->  static struct sock *udp6_lib_lookup2(struct net *net,
->  		const struct in6_addr *saddr, __be16 sport,
-> @@ -193,11 +176,14 @@ static struct sock *udp6_lib_lookup2(struct net *net,
->  		score = compute_score(sk, net, saddr, sport,
->  				      daddr, hnum, dif, sdif);
->  		if (score > badness) {
-> -			result = lookup_reuseport(net, sk, skb,
-> -						  saddr, sport, daddr, hnum);
-> -			/* Fall back to scoring if group has connections */
-> -			if (result && !reuseport_has_conns(sk))
-> -				return result;
-> +			if (sk->sk_state != TCP_ESTABLISHED) {
-> +				result = inet6_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +								saddr, sport, daddr, hnum,
-> +								udp6_ehashfn);
-> +				/* Fall back to scoring if group has connections */
-> +				if (result && !reuseport_has_conns(sk))
-> +					return result;
-> +			}
->  
->  			result = result ? : sk;
->  			badness = score;
-> @@ -225,7 +211,8 @@ static inline struct sock *udp6_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +					  saddr, sport, daddr, hnum, udp6_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> 
-> -- 
-> 2.40.1
+But it doesn't seem like it brings anything useful? Or ok to keep it that w=
+ay?
+
+> > + *
+> > + * Note: this function is never actually called by the kernel and decl=
+ared
+> > + * only to allow loading an attaching appropriate tracepoints.
+> > + */
+> > +__weak noinline void devtx_sb(struct devtx_frame *ctx)
+>
+> I guess this is intentional.
+> But gcc complains that this is neither static nor is a forward
+> declaration provided. Likewise for devtx_cp()
+
+Copy-pasted from hid-bpf; let me see if they have a forward decl somewhere.=
+.
+
+> > +{
+> > +}
+> > +
+> > +/**
+> > + * devtx_cp - Called upon egress netdev packet completion
+>
+> Likewise, here too.
+>
+> > + *
+> > + * Note: this function is never actually called by the kernel and decl=
+ared
+> > + * only to allow loading an attaching appropriate tracepoints.
+> > + */
+> > +__weak noinline void devtx_cp(struct devtx_frame *ctx)
+> > +{
+> > +}
+> > +
+> > +BTF_SET8_START(bpf_devtx_hook_ids)
+> > +BTF_ID_FLAGS(func, devtx_sb)
+> > +BTF_ID_FLAGS(func, devtx_cp)
+> > +BTF_SET8_END(bpf_devtx_hook_ids)
+> > +
+> > +static const struct btf_kfunc_id_set bpf_devtx_hook_set =3D {
+> > +     .owner =3D THIS_MODULE,
+> > +     .set   =3D &bpf_devtx_hook_ids,
+> > +};
+> > +
+> > +static DEFINE_MUTEX(devtx_attach_lock);
+> > +
+> > +static int __bpf_devtx_detach(struct net_device *netdev, struct bpf_pr=
+og **pprog)
+> > +{
+>
+> As per my prior comment about *prog and __rcu annotations.
+> I'm genuinely unsure how the usage of **pprog in this function sits with =
+RCU.
+
+Yeah, I'm a bit sloppy, let me figure out a proper way to annotate it.
+
+
+> > +     if (!*pprog)
+> > +             return -EINVAL;
+> > +     bpf_prog_put(*pprog);
+> > +     *pprog =3D NULL;
+> > +
+> > +     static_branch_dec(&devtx_enabled);
+> > +     return 0;
+> > +}
+> > +
+> > +static int __bpf_devtx_attach(struct net_device *netdev, int prog_fd,
+> > +                           const char *attach_func_name, struct bpf_pr=
+og **pprog)
+> > +{
+> > +     struct bpf_prog *prog;
+> > +     int ret =3D 0;
+> > +
+> > +     if (prog_fd < 0)
+> > +             return __bpf_devtx_detach(netdev, pprog);
+> > +
+> > +     if (*pprog)
+> > +             return -EBUSY;
+> > +
+> > +     prog =3D bpf_prog_get(prog_fd);
+> > +     if (IS_ERR(prog))
+> > +             return PTR_ERR(prog);
+> > +
+> > +     if (prog->type !=3D BPF_PROG_TYPE_TRACING ||
+> > +         prog->expected_attach_type !=3D BPF_TRACE_FENTRY ||
+> > +         !bpf_prog_is_dev_bound(prog->aux) ||
+> > +         !bpf_offload_dev_match(prog, netdev) ||
+> > +         strcmp(prog->aux->attach_func_name, attach_func_name)) {
+> > +             bpf_prog_put(prog);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     *pprog =3D prog;
+> > +     static_branch_inc(&devtx_enabled);
+> > +
+> > +     return ret;
+> > +}
+>
+> ...
 
