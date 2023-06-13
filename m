@@ -1,213 +1,300 @@
-Return-Path: <bpf+bounces-2507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B34B572E46C
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE0E72E47D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:45:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E144281261
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 13:43:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4049280C70
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 13:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0082134CE2;
-	Tue, 13 Jun 2023 13:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2420234CEE;
+	Tue, 13 Jun 2023 13:45:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAACB522B
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 13:43:18 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4158CA0;
-	Tue, 13 Jun 2023 06:43:17 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35CMkEMK005413;
-	Tue, 13 Jun 2023 06:42:48 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=3v90fWiaRXsvHkqN3i92wN1g/5sJM3WgQ+0tys61Wa0=;
- b=KVkPqOtpVfiVZie2mYWwfeAv6y+kOZAZKhNTv540tXlb/pbZ7EB0yNQE092nBwIcfxw8
- Z0/Xh/sqDj/+GINXI8nhuj5fOzIerseCnY7qVZFOVY/lToqklRCy52kgImkNS/+7ZACZ
- m3a3jcElsnSSZxJ/lFM60eNM+XhFXo6LC/kgTJgBqZvvFs7lmlLsdppFrx7scCh6pJmS
- ygSZMbbHx8TxVJryinjmMy0m5d+sqc+dNkaelEUw7KOYORNDqNCJJLlzaml4bn2jmIvA
- i8GI2qHb/oifpOD0v7cp4OCPVqK0OXTJZNvmzIki9IkFHT2t25KAmdplW56K4vUgv4mz Jg== 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r6caymkyq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Jun 2023 06:42:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OP7J4qRyEGH9n6eanVRPJH4cZalja3Z5JSYzd6qxydy1IvzwjKvrdI2RsIi0djdBvFcttKdC+JX7Ul1NXFula6Zo8eGOgsimpwzX5JXBSD0z3LoiHN06a/D6mE/Udaj0eD+y7g31AgEbNtCDmEbrdog3gqtkK/5AdWFfRiyj0Ts/T4ZFBE55jGOvjpunl+vj9nQ5AkAv0U7NgsM9cAD0BXf0qrwFWBqhi7wTNAf13roqrlM3LXccgCYKnKAUuWT1BzNLblmMTa/mkaJyLgKKg6DHEJyaTIwfqPjbWTpQzG7wrvC4+AwlxPKNmwN4pa2QCgAxE++t4xqfg7ho7dBCrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3v90fWiaRXsvHkqN3i92wN1g/5sJM3WgQ+0tys61Wa0=;
- b=a1l/p+MSOLkxWRY8qzdhWJr9c3dK17T6CmTgQKmB8tbkqdcKPX5Pf02xJA6i/vl0QdaYDO9NS0ksi6VlL3KBxC80P87Q7EVU7TC3O1E1OeZjTjV1YkX+tmzqfGPwxsdosmQoMfJAjuD4cA61RL2ewhw+6dGXH7+uojXt0A24hJ5zXWG0HuJeJIrZNQEZH+d2ZngwkWuSQ7150CG+QOxPthiBczdyAm0nnkU5cj+7s07SvfIJ5X9toQLz4ib36qf4iRwYCiGamieHHsvfPI8ZRX9XrCIY7BT34U8guguo2jEUFt35dn2a1ZRfObsZoKJjG9EQFViWdwWvW5v+fxqTZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DS7PR15MB5376.namprd15.prod.outlook.com (2603:10b6:8:77::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Tue, 13 Jun
- 2023 13:42:44 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6455.043; Tue, 13 Jun 2023
- 13:42:44 +0000
-Message-ID: <53510828-ee5b-1d91-0f85-b79da4422741@meta.com>
-Date: Tue, 13 Jun 2023 06:42:40 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH] selftests/bpf: Remove unneeded variable "ret"
-Content-Language: en-US
-To: baomingtong001@208suo.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
-        jakub@cloudflare.com, Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230613084315.62021-1-luojianhong@cdjrlc.com>
- <6228af14241b831be4bae6ebcd63799e@208suo.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <6228af14241b831be4bae6ebcd63799e@208suo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR07CA0024.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::37) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97F4522B
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 13:45:08 +0000 (UTC)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3166510DA;
+	Tue, 13 Jun 2023 06:44:53 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98220bb31c6so320206666b.3;
+        Tue, 13 Jun 2023 06:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686663891; x=1689255891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qIPTkEm+x3SAmqMtuyLsXbQowkmoWE26dGFQXuJ4pnc=;
+        b=ruD/BSoCNOUlocmTtUMmfF4n/YygzrQiQTT0qyLgY6CT5h5XRwufrZFJsXuOxxQMCq
+         oEM/ML+s3MWQGkN8E3kx3+YABngBd6Ud0WtTLs4nw/YdC8p/Xd+v6tfoxWdYKD1kxsgB
+         dKl7JpPkI+Xs8JwmBrhezlJ5qCdHfdwZs1af8xLexH592botbnfFrqhj3YL0FB6yKu2E
+         +kHnUm3+eSkvoEsQEwgnFFUi1JpI0mfOm5SaRlCV/UCCwnKWNpMNZPc8hRIep9UJxTi4
+         7zjAf6Lujf44MQAZ3frovCQ598gHa5KyKRcTZ3Sbh6GWi/NHG/m90UO+Xih2ALqRsXoz
+         ofwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686663891; x=1689255891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qIPTkEm+x3SAmqMtuyLsXbQowkmoWE26dGFQXuJ4pnc=;
+        b=IZ/mrq/Pdt/G6ErBGYu+usI/h9AlbFDc890QbGspE/NlrNIb72yWRJ1XKzEWiFSh7X
+         U9sB4N6uC4nNktVUxpMMkDuE1FFlKt7XlBN5jr6Q5P/Z3jeE2v5jF4+VNLJUVMMPAgoR
+         7ZAep145HJF1y9LeiTL+g0IkUmiwqtlXbFXh4APO/BQAWe8eOttV3ofwzIn2OTV3Eiwm
+         j5tZ9YPCeSi91TaQSbWODj6rPsrut2T8d9QhY3QshtaubfmyHwgJcziLII0KXRuwWsAy
+         /DXjQkwkQ1b6z4Eq9wzpjWEqtHyV06LlXProLLJE45+GZw+BI9I3EdQ75xkYD42/AkMK
+         JxXg==
+X-Gm-Message-State: AC+VfDyl21tGEeSQPnEBKBVlUEPWGoJqdctglM/ww4rbSHyAnypHcZRa
+	uQpJNWgoQVkxC3HPW9pq7aI=
+X-Google-Smtp-Source: ACHHUZ7d5iDJs1skj28GuyTneKjdn63hb1OG2DPCbvt7f9LzvHwU1I0m7wnmnKRBCCI98JY30fLANQ==
+X-Received: by 2002:a17:907:3e9f:b0:971:2ead:e161 with SMTP id hs31-20020a1709073e9f00b009712eade161mr16992395ejc.6.1686663891308;
+        Tue, 13 Jun 2023 06:44:51 -0700 (PDT)
+Received: from krava ([83.240.63.222])
+        by smtp.gmail.com with ESMTPSA id r26-20020a1709067fda00b0096a1ba4e0d1sm6697546ejs.32.2023.06.13.06.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jun 2023 06:44:50 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 13 Jun 2023 15:44:48 +0200
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Yonghong Song <yhs@meta.com>, Jiri Olsa <olsajiri@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jackie Liu <liu.yun@linux.dev>
+Subject: Re: [PATCHv2] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <ZIhy0BXEW65TV8sS@krava>
+References: <20230611130029.1202298-1-jolsa@kernel.org>
+ <53a11f31-256d-e7bc-eca5-597571076dc5@meta.com>
+ <20230611225407.3e9b8ad2@gandalf.local.home>
+ <20230611225754.01350a50@gandalf.local.home>
+ <d5ffd64c-65b7-e28c-b8ee-0d2ff9dcd78b@meta.com>
+ <20230612110222.50c254f3@gandalf.local.home>
+ <ZId/UL/iujOdgel+@krava>
+ <4c87727b-0b3f-ffc1-d55b-90e75dcae52b@meta.com>
+ <20230613093606.069a70da@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS7PR15MB5376:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d264678-d35b-4be3-f442-08db6c141104
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	LOweqKx2Cn1ujkHxh0kIOKLbQ1++2AWHXWhgCFhWGAOjO+7PJnM8awzGUrFtd/DnyPSsflInltY3jJMqlh2/bcJds1VNQB9eL+H/dK5Q92s2ey+NuGlu4b/PUzkBhh2CMCxTv61SXRZ2D8qpXPvdwk+9A9fLj3C7X7sbjfgA3o4OEnburHupoDzrjexAydJAqCjBbuO/62uta1uZYxsr8z2Y5P3d0KowXmtuiQvBL/76is/pZlwobWp6YYR2tObDM9N4hLPlhuBq+a0tRCrnhMkbjAZeLHSe+sEYVrhMCN3oVV++x/5RT4mFto9dH6AqZdJzh7xY07NKF7YcDhPSKBhPxIOvwItYg1zlauLuNbdSJg8HsBN/lDvK2wOp1zQYiJZWKEFjHJAMClVM1sYsBkIrLB+IJQKwicIDqas4b/JNFP0cM1ZDp6hLnGgXgt4zO719wwNMRyp291aXtzA5r5BStP+qhDlleWdKIjDM2ISSbY1KPWjCdl2Unl8Qat/D9aH3Dslj52TYhjxFtSMrzYSRFqy++c/CnoTJSHHhe1s8/8s3pPRg9Q2+sw2PeRr0+a7iIJaWGP/XAMSMQvWYnHJ4FsxarQo32KcAhmAvsQdjVN+tcBmUOjqa0dnvtGPVtH9xm/3NLpW+xy12p7ndEti74cI3OX2cMUTq9DJo+fg=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(451199021)(7416002)(31686004)(2906002)(41300700001)(5660300002)(316002)(66556008)(6916009)(66946007)(4326008)(8936002)(8676002)(66476007)(478600001)(6666004)(36756003)(6486002)(6506007)(83380400001)(53546011)(86362001)(31696002)(2616005)(186003)(6512007)(38100700002)(921005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SFZYRWhlQjdPdlo2NmRWUDZNVURDeE4xUkt5SFVMWnFmME9QUVVtK3pCSzhr?=
- =?utf-8?B?QjU2VXU1M081TGV0dFlXYW5zVm4xTG1RaFlGVEFpdm1CYnozbHZ6NHpvdHdw?=
- =?utf-8?B?Yzkra2NrN0VSRmI2TzdlNDB6ZHBDSDZTVndhd0ZaUit6THVlUVhnU2FBSnJM?=
- =?utf-8?B?QjlJTlVtZGh1NVhjbUZWYzdod25OSEpIa3k0TW4vb2xqd1JOOE92OS9aUTE1?=
- =?utf-8?B?V2Z3bnZEcE50bnkvTnJneFhadTRHb1BXZHAxSDluTFNQRXU4VFk4Q2xsS0cz?=
- =?utf-8?B?WUFPcmFQWnBDZ0M0ZzNUVmZQYVVyM3RLYlBreXFiNkgyQVUwOG5rTUc5M1E4?=
- =?utf-8?B?NFE1a0c3Z3hubmRkMENERDF2VHBHUGhGVVRnTTEyWHVjd2ZjWGhXOXJxSCs1?=
- =?utf-8?B?WDZaVFI5YldDcCs4bS9VV1NVWnI1Q0FyaHlIUW1yb2N0cEYzcURWRGthT3Vw?=
- =?utf-8?B?WCtHLy9meEhqQnZhamUwb01ZbDNBZE9yR3JHcTNKTEpNc3V0UDBwZlduVjZN?=
- =?utf-8?B?dCtkTW9OVTJLVDlvV1AxZkNJeGJ2UFlWVnFyUVlIV0ZTa2dzT1c4OE1JN0hl?=
- =?utf-8?B?MkM1bXBqN0huNjdxVXJZQnpod2hkcWMzSFIvVWwrbEwyNWV5cFY4ajVCVzNa?=
- =?utf-8?B?SHkvbFBhbHVHaDFKeGRWQW5xd3pILzl6YUs0eG1JL2tPM3NsOVNGQWMraXpP?=
- =?utf-8?B?dFZmYnl6VERiOURqbytOTmpVcmhrMXB3N1Q0R3JFZVUvcjIwR3M3WmNBZUE1?=
- =?utf-8?B?cjN4SmJTa3BIaHM2dXNpZGMvQWxONVY2Y1o0b1V0MXNUNk9UbVJVUzY0eUFp?=
- =?utf-8?B?c3hUc0l5OFczVy9XY2ZLN0hnR0pKOFNjRTNGNk1SS3hTbU5wU1BTNWVoa3hs?=
- =?utf-8?B?bVRlQWMvYzZsdUVYQ25yNjRIZjJFOTcvQW0zWEFYR1BIdFlNY0Y4dkxrTDRE?=
- =?utf-8?B?THV3Qm5aNUZRVnlnT0dwYzRNZERKa0k2L3Q1R2ozWkkzYmJmOTZ5TkN6Q1Ev?=
- =?utf-8?B?cnFpMGJ3YytsbXhCZnpnalhvdVJmWU5UMWJXNGFwSFBSbWUxNEJCQWF6MktD?=
- =?utf-8?B?bzhpSmd2SjRmcS9NbHNHaStNcWw3WGc3MWVlc1Y1YzFFYW5BY2xGN2NDcUNi?=
- =?utf-8?B?WTArT2RuaU5NTGNleEo3dm1kc2xnYUorZ093ZUxET1ZGUTg1MUtrbEFad3RI?=
- =?utf-8?B?R2h4Z1NwZEdoMkVzMHhwa1RRczBka3NadUQydk9IWWRXYlk5aHRPeEFjaDZl?=
- =?utf-8?B?S1R3Wi9udndYdWM3akVQRzJnVlR3ZnNDNFBrd2JSVXlaRWcvN3BQSjYxZHls?=
- =?utf-8?B?UXcxVnFWVnFSa1ExYkFXRmlwM3ZObCtydHhvMlNySmpXSWVyMWIvMkpHM1Jj?=
- =?utf-8?B?b0I2VzJRdVR2KzJjRHZIOVF0Y2Z0MnoxcXM0UE1GNy9vT2t2ME5CWHROWXlx?=
- =?utf-8?B?QkIxYk5FaS9sRFdNMUZIbVkybnJjYWw5WXUyVXNJeTVpa045L1VTb3c3L3NR?=
- =?utf-8?B?bHVQeGRQaTBwN0JqN1gzUFdZbjgySXh4eFBOWjluMzZSdXUvS1hqZ1F4c0ww?=
- =?utf-8?B?R2c5azBtc0JKeS9YMm5NdFM4aEZLTnh6aVZYamxDVjlvcnhjNlJKMU5seHp4?=
- =?utf-8?B?Wm5lY3hRdldKazVIdWQ5aEgwUktNR3E2NVhSaVpndWZiYm5wMjNRb2VmNGla?=
- =?utf-8?B?aFhXRFZLZlJ0alJ4Vmtac3ZjTGh5bEZYTDFEa09iSjg1SEVXUFFhbXpBVStp?=
- =?utf-8?B?TXFZcmVoRXlwa1BoMHFIcDZUS0h5TEtDdEdFWWdyR1ZEU0hxYnFKL1czeDNO?=
- =?utf-8?B?WTBRREt4SWx3blVXM2VmR21YT2RUc2ljaDI5TFhudlBWYkdOUHJjQnpQTWVn?=
- =?utf-8?B?Y09UYWsvSklITzVQeTc1UUhyWVE2V3dSRDdqejJwYUdlUko2SldCclEvc05K?=
- =?utf-8?B?dEJFeHVyUm5HOFU1bzNKbnhtNitLSkNTMzB1YXFkMzdjY3pMa2FkN05EU2JT?=
- =?utf-8?B?ZyszcXRjNFZvcFBoS3JudFp2VC9Vb0dJSHJlVm9yL01ITjR5REJra0Zkc2ZE?=
- =?utf-8?B?ZlUweVZRV1dYaTlOOTE4SkpaNGt3dGdVSHRDTmN2UmNkVG5uZ2hqUXh6N0Rp?=
- =?utf-8?B?NTZ3UkkwV3gwYlE1WU15bW5KaUkvbDNwU294K2Y3VUFIUVZTNkdPQld5NzBF?=
- =?utf-8?B?Smc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d264678-d35b-4be3-f442-08db6c141104
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2023 13:42:44.5469
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vlB4ua3G/1kC4yKy3fs2gA/7/gSbw3z2nkYUtYjIPB/p3NfufV81MHqvdYJ7N2Rp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR15MB5376
-X-Proofpoint-ORIG-GUID: Vi-1QOw2i1I9377wftmZI0mpvtj90gUP
-X-Proofpoint-GUID: Vi-1QOw2i1I9377wftmZI0mpvtj90gUP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-13_04,2023-06-12_02,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230613093606.069a70da@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Tue, Jun 13, 2023 at 09:36:06AM -0400, Steven Rostedt wrote:
+> On Mon, 12 Jun 2023 22:04:28 -0700
+> Yonghong Song <yhs@meta.com> wrote:
+> 
+> > Thanks for explanation! It would be great if we can put more details in
+> > this email into the commit message!
+> 
+> I agree.
+> 
+> This is the patch I just pulled into my queue:
 
+great, thanks
 
-On 6/13/23 1:50 AM, baomingtong001@208suo.com wrote:
-> Fix the following coccicheck warning:
+jirka
+
 > 
-> tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c:28:14-17: Unneeded 
-> variable: "ret".
+> From: Jiri Olsa <jolsa@kernel.org>
+> Date: Sun, 11 Jun 2023 15:00:29 +0200
+> Subject: [PATCH] ftrace: Show all functions with addresses in
+>  available_filter_functions_addrs
 > 
-> Return "1".
+> Adding new available_filter_functions_addrs file that shows all available
+> functions (same as available_filter_functions) together with addresses,
+> like:
 > 
-> Signed-off-by: Mingtong Bao <baomingtong001@208suo.com>
+>   # cat available_filter_functions_addrs | head
+>   ffffffff81000770 __traceiter_initcall_level
+>   ffffffff810007c0 __traceiter_initcall_start
+>   ffffffff81000810 __traceiter_initcall_finish
+>   ffffffff81000860 trace_initcall_finish_cb
+>   ...
+> 
+> Note displayed address is the patch-site address and can differ from
+> /proc/kallsyms address.
+> 
+> It's useful to have address avilable for traceable symbols, so we don't
+> need to allways cross check kallsyms with available_filter_functions
+> (or the other way around) and have all the data in single file.
+> 
+> For backwards compatibility reasons we can't change the existing
+> available_filter_functions file output, but we need to add new file.
+> 
+> The problem is that we need to do 2 passes:
+> 
+>  - through available_filter_functions and find out if the function is traceable
+>  - through /proc/kallsyms to get the address for traceable function
+> 
+> Having available_filter_functions symbols together with addresses allow
+> us to skip the kallsyms step and we are ok with the address in
+> available_filter_functions_addr not being the function entry, because
+> kprobe_multi uses fprobe and that handles both entry and patch-site
+> address properly.
+> 
+> We have 2 interfaces how to create kprobe_multi link:
+> 
+>   a) passing symbols to kernel
+> 
+>      1) user gathers symbols and need to ensure that they are
+>         trace-able -> pass through available_filter_functions file
+> 
+>      2) kernel takes those symbols and translates them to addresses
+>         through kallsyms api
+> 
+>      3) addresses are passed to fprobe/ftrace through:
+> 
+>          register_fprobe_ips
+>          -> ftrace_set_filter_ips
+> 
+>   b) passing addresses to kernel
+> 
+>      1) user gathers symbols and needs to ensure that they are
+>         trace-able -> pass through available_filter_functions file
+> 
+>      2) user takes those symbols and translates them to addresses
+>        through /proc/kallsyms
+> 
+>      3) addresses are passed to the kernel and kernel calls:
+> 
+>          register_fprobe_ips
+>          -> ftrace_set_filter_ips
+> 
+> The new available_filter_functions_addrs file helps us with option b),
+> because we can make 'b 1' and 'b 2' in one step - while filtering traceable
+> functions, we get the address directly.
+> 
+> Link: https://lore.kernel.org/linux-trace-kernel/20230611130029.1202298-1-jolsa@kernel.org
+> 
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Jackie Liu <liu.yun@linux.dev>
+> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
->   tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>  Documentation/trace/ftrace.rst |  6 ++++++
+>  include/linux/ftrace.h         |  1 +
+>  kernel/trace/ftrace.c          | 37 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 44 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c 
-> b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
-> index 4a9f63bea66c..7f0146682577 100644
-> --- a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
-> +++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
-> @@ -25,10 +25,9 @@ static __noinline
->   int subprog_tail(struct __sk_buff *skb)
->   {
->       /* Don't propagate the constant to the caller */
-> -    volatile int ret = 1;
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index df2d3e57a83f..b7308ab10c0e 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -324,6 +324,12 @@ of ftrace. Here is a list of some of the key files:
+>  	"set_graph_function", or "set_graph_notrace".
+>  	(See the section "dynamic ftrace" below for more details.)
+>  
+> +  available_filter_functions_addrs:
+> +
+> +	Similar to available_filter_functions, but with address displayed
+> +	for each function. The displayed address is the patch-site address
+> +	and can differ from /proc/kallsyms address.
+> +
+>    dyn_ftrace_total_info:
+>  
+>  	This file is for debugging purposes. The number of functions that
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 49f279f4c3a1..8e59bd954153 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -633,6 +633,7 @@ enum {
+>  	FTRACE_ITER_MOD		= (1 << 5),
+>  	FTRACE_ITER_ENABLED	= (1 << 6),
+>  	FTRACE_ITER_TOUCHED	= (1 << 7),
+> +	FTRACE_ITER_ADDRS	= (1 << 8),
+>  };
+>  
+>  void arch_ftrace_update_code(int command);
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 764668467155..b24c573934af 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -3861,6 +3861,9 @@ static int t_show(struct seq_file *m, void *v)
+>  	if (!rec)
+>  		return 0;
+>  
+> +	if (iter->flags & FTRACE_ITER_ADDRS)
+> +		seq_printf(m, "%lx ", rec->ip);
+> +
+>  	if (print_rec(m, rec->ip)) {
+>  		/* This should only happen when a rec is disabled */
+>  		WARN_ON_ONCE(!(rec->flags & FTRACE_FL_DISABLED));
+> @@ -3996,6 +3999,30 @@ ftrace_touched_open(struct inode *inode, struct file *file)
+>  	return 0;
+>  }
+>  
+> +static int
+> +ftrace_avail_addrs_open(struct inode *inode, struct file *file)
+> +{
+> +	struct ftrace_iterator *iter;
+> +	int ret;
+> +
+> +	ret = security_locked_down(LOCKDOWN_TRACEFS);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (unlikely(ftrace_disabled))
+> +		return -ENODEV;
+> +
+> +	iter = __seq_open_private(file, &show_ftrace_seq_ops, sizeof(*iter));
+> +	if (!iter)
+> +		return -ENOMEM;
+> +
+> +	iter->pg = ftrace_pages_start;
+> +	iter->flags = FTRACE_ITER_ADDRS;
+> +	iter->ops = &global_ops;
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * ftrace_regex_open - initialize function tracer filter files
+>   * @ops: The ftrace_ops that hold the hash filters
+> @@ -5916,6 +5943,13 @@ static const struct file_operations ftrace_touched_fops = {
+>  	.release = seq_release_private,
+>  };
+>  
+> +static const struct file_operations ftrace_avail_addrs_fops = {
+> +	.open = ftrace_avail_addrs_open,
+> +	.read = seq_read,
+> +	.llseek = seq_lseek,
+> +	.release = seq_release_private,
+> +};
+> +
+>  static const struct file_operations ftrace_filter_fops = {
+>  	.open = ftrace_filter_open,
+>  	.read = seq_read,
+> @@ -6377,6 +6411,9 @@ static __init int ftrace_init_dyn_tracefs(struct dentry *d_tracer)
+>  	trace_create_file("available_filter_functions", TRACE_MODE_READ,
+>  			d_tracer, NULL, &ftrace_avail_fops);
+>  
+> +	trace_create_file("available_filter_functions_addrs", TRACE_MODE_READ,
+> +			d_tracer, NULL, &ftrace_avail_addrs_fops);
+> +
+>  	trace_create_file("enabled_functions", TRACE_MODE_READ,
+>  			d_tracer, NULL, &ftrace_enabled_fops);
+>  
+> -- 
+> 2.39.2
 > 
->       bpf_tail_call_static(skb, &jmp_table, 0);
-> -    return ret;
-> +    return 1;
-
-Please pay attention to the comment:
-    /* Don't propagate the constant to the caller */
-which clearly says 'constant' is not preferred.
-
-The patch introduced this change is:
-     5e0b0a4c52d30   selftests/bpf: Test tail call counting with bpf2bpf 
-and data on stack
-
-The test intentionally want to:
-   'Specifically when the size 
-
-     of data allocated on BPF stack is not a multiple on 8.'
-
-Note that with volatile and without volatile, the generated
-code will be different and it will result in different
-verification path.
-
-cc Jakub for further clarification.
-
->   }
-> 
->   SEC("tc")
 
