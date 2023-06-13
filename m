@@ -1,89 +1,155 @@
-Return-Path: <bpf+bounces-2554-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2046272EF19
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:20:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29B372EF7A
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6641280C25
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:20:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07E521C20AD1
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F163EDA5;
-	Tue, 13 Jun 2023 22:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A13E22E46;
+	Tue, 13 Jun 2023 22:33:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88973ED8C
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 22:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 38736C433C9;
-	Tue, 13 Jun 2023 22:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686694822;
-	bh=GYLW+FxpDeaLqVBk/pJx5EFySwxnXi9w8k7oShG5MlQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BGuAHoe9dTh9lAkPO33XbT9Jbd9m5K+/ci+1KiGPVhG0Xz4B08kWqLGNkEzw7pQ/1
-	 E6UcYwB6CRJI+jUkVhP2yNzYx7ugC9DB6Br9FIiXc4BR5kSmgvQ9eGHX7weXsg0X+k
-	 /GJ0d0MCZD0QqgCDXIWo8ygyz0jHNhZh1hh0gbMVxeQxOLKF3S2nX3VuBpnan3NVu8
-	 qbxUKEoRmJAco73N50kBr6V216PPSPRc0A1LxfgRRGnBJRBxD4p7oFeBao2UdrUp6l
-	 tC1JkHYRnEYD1BdX/O/wb0yUZqdZiRFn0prtOXMOxou3gU6mOZWk6vxJRFIHysCo0h
-	 88AA30Rl7pL+Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 15504C3274B;
-	Tue, 13 Jun 2023 22:20:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0AA1361;
+	Tue, 13 Jun 2023 22:32:59 +0000 (UTC)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5722119B1;
+	Tue, 13 Jun 2023 15:32:57 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b3451b3ea9so423961fa.1;
+        Tue, 13 Jun 2023 15:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686695575; x=1689287575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LTvP+VJDU2WSwdurVBK2FZWZY7/TsrOMSB/9rSkASww=;
+        b=lAVD+4IOANW7YZpjdeZ35JcQQUcjAUcijpUzbymPZGwuTi3GUKFactcddjsUk2ibb8
+         HkbWaiyvhqNliseRGMYZM2MfC7e1ij3q2Rv7ipuZGEntSV5SR9njmdtN9Xh7lUheqyOJ
+         UoJ4vpKKusBVLq3g/n7dpINBR8+8KciSK03aqX778bmXViIbp+kVb0JljY8YZs6kTrxu
+         Sf2MwjJyG718sAFwh4q/+ln+BRL8t5ybgvU+sckdqzIUGYjXjYulWUJcu7+1KTT894Oz
+         ZGCc3rNoWcvykqP6qo8EkVdijOhsKsNR0r5SJPcJCXoLMSt+rBgOq973QJEjDLrh9iVw
+         SWHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686695575; x=1689287575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LTvP+VJDU2WSwdurVBK2FZWZY7/TsrOMSB/9rSkASww=;
+        b=PvwIYy0wnpsUbk/Fi/QfW/6mHCMYyyKc9u+AQLbMUit0P50hPB1eeCshf7g30gSWPr
+         ubFR84d1oUCjOvE4sWEN5xx7MXbRvQSj9DZfSTBuV92oer/yiqaeUoLDXoONm0RSnQr9
+         dvOJlgC5x3zPI9CK++0aOqocUBa3k/B5FfPIuYWdTD97Jkg4WZWyw9RPBdw9ZJGr7dOC
+         Cfj4RaJLgLDXQ0dA4hurk3oDxURa8QMazLHlqEi6CWbBbiD3HgQwFTCKup/0i4qK9tLP
+         tGKEbGm4EKPaOM7di8CtypKzs/X0sJsFg2oGWGtW6gR8oyWZdTI71dvtICXuQbhKTFv3
+         Fknw==
+X-Gm-Message-State: AC+VfDzrC0uvC0G7WoBK3RrS1zzJcicWg3bF00fzVjnKfkNRGqnXVSq9
+	8qGQUUc2bme4pRmiVnjnw4Ke+lyUgNaM/8VFf6c=
+X-Google-Smtp-Source: ACHHUZ47Y1Id9o7bTblsU/TUo8rtP6HbZl4qVpVHh+4XaGAXhg/Hx9WM7/72AWABM8slEWuv5DgKmZIO16bxmFTESIU=
+X-Received: by 2002:a2e:9ccf:0:b0:2b1:bacc:b3de with SMTP id
+ g15-20020a2e9ccf000000b002b1baccb3demr5579002ljj.4.1686695575147; Tue, 13 Jun
+ 2023 15:32:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 0/4] verify scalar ids mapping in regsafe()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168669482208.27908.11963237417084366484.git-patchwork-notify@kernel.org>
-Date: Tue, 13 Jun 2023 22:20:22 +0000
-References: <20230613153824.3324830-1-eddyz87@gmail.com>
-In-Reply-To: <20230613153824.3324830-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com
+References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
+ <ZIiaHXr9M0LGQ0Ht@google.com> <877cs7xovi.fsf@toke.dk> <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
+ <87v8frw546.fsf@toke.dk> <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
+In-Reply-To: <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 13 Jun 2023 15:32:43 -0700
+Message-ID: <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
+To: Stanislav Fomichev <sdf@google.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Tue, Jun 13, 2023 at 2:17=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
+ wrote:
+>
+> > >> >> > --- UAPI ---
+> > >> >> >
+> > >> >> > The hooks are implemented in a HID-BPF style. Meaning they don'=
+t
+> > >> >> > expose any UAPI and are implemented as tracing programs that ca=
+ll
+> > >> >> > a bunch of kfuncs. The attach/detach operation happen via BPF s=
+yscall
+> > >> >> > programs. The series expands device-bound infrastructure to tra=
+cing
+> > >> >> > programs.
+> > >> >>
+> > >> >> Not a fan of the "attach from BPF syscall program" thing. These a=
+re part
+> > >> >> of the XDP data path API, and I think we should expose them as pr=
+oper
+> > >> >> bpf_link attachments from userspace with introspection etc. But I=
+ guess
+> > >> >> the bpf_mprog thing will give us that?
+> > >> >
+> > >> > bpf_mprog will just make those attach kfuncs return the link fd. T=
+he
+> > >> > syscall program will still stay :-(
+> > >>
+> > >> Why does the attachment have to be done this way, exactly? Couldn't =
+we
+> > >> just use the regular bpf_link attachment from userspace? AFAICT it's=
+ not
+> > >> really piggy-backing on the function override thing anyway when the
+> > >> attachment is per-dev? Or am I misunderstanding how all this works?
+> > >
+> > > It's UAPI vs non-UAPI. I'm assuming kfunc makes it non-UAPI and gives
+> > > us an opportunity to fix things.
+> > > We can do it via a regular syscall path if there is a consensus.
+> >
+> > Yeah, the API exposed to the BPF program is kfunc-based in any case. If
+> > we were to at some point conclude that this whole thing was not useful
+> > at all and deprecate it, it doesn't seem to me that it makes much
+> > difference whether that means "you can no longer create a link
+> > attachment of this type via BPF_LINK_CREATE" or "you can no longer
+> > create a link attachment of this type via BPF_PROG_RUN of a syscall typ=
+e
+> > program" doesn't really seem like a significant detail to me...
+>
+> In this case, why do you prefer it to go via regular syscall? Seems
+> like we can avoid a bunch of boileplate syscall work with a kfunc that
+> does the attachment?
+> We might as well abstract it at, say, libbpf layer which would
+> generate/load this small bpf program to call a kfunc.
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I'm not sure we're on the same page here.
+imo using syscall bpf prog that calls kfunc to do a per-device attach
+is an overkill here.
+It's an experimental feature, but you're already worried about
+multiple netdevs?
 
-On Tue, 13 Jun 2023 18:38:20 +0300 you wrote:
-> Update regsafe() to use check_ids() for scalar values.
-> Otherwise the following unsafe pattern is accepted by verifier:
-> 
->   1: r9 = ... some pointer with range X ...
->   2: r6 = ... unbound scalar ID=a ...
->   3: r7 = ... unbound scalar ID=b ...
->   4: if (r6 > r7) goto +1
->   5: r6 = r7
->   6: if (r6 > X) goto ...
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v6,1/4] bpf: use scalar ids in mark_chain_precision()
-    https://git.kernel.org/bpf/bpf-next/c/904e6ddf4133
-  - [bpf-next,v6,2/4] selftests/bpf: check if mark_chain_precision() follows scalar ids
-    https://git.kernel.org/bpf/bpf-next/c/dec020280373
-  - [bpf-next,v6,3/4] bpf: verify scalar ids mapping in regsafe() using check_ids()
-    https://git.kernel.org/bpf/bpf-next/c/1ffc85d9298e
-  - [bpf-next,v6,4/4] selftests/bpf: verify that check_ids() is used for scalars in regsafe()
-    https://git.kernel.org/bpf/bpf-next/c/18b89265572b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Can you add an empty nop function and attach to it tracing style
+with fentry ?
+It won't be per-netdev, but do you have to do per-device demux
+by the kernel? Can your tracing bpf prog do that instead?
+It's just an ifindex compare.
+This way than non-uapi bits will be even smaller and no need
+to change struct netdevice.
 
