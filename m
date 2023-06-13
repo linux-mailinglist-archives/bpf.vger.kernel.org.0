@@ -1,524 +1,155 @@
-Return-Path: <bpf+bounces-2517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BB572E6C6
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 17:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9DE72E6D0
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 17:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E65C1C20C89
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:12:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 580BE1C20D52
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C283AE76;
-	Tue, 13 Jun 2023 15:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 763063B8B8;
+	Tue, 13 Jun 2023 15:14:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B235E23DB
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:12:17 +0000 (UTC)
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A63C101;
-	Tue, 13 Jun 2023 08:12:13 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-75d461874f4so105011685a.0;
-        Tue, 13 Jun 2023 08:12:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EBB23DB;
+	Tue, 13 Jun 2023 15:14:41 +0000 (UTC)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2105.outbound.protection.outlook.com [40.107.220.105])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9503CA;
+	Tue, 13 Jun 2023 08:14:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CKfRRpIQYukwahTcoducdtb4xSa1oJmBP6svMagdctiFiMPD9PUa38RgfT5I8uh5mftYO5m4iYKpUZFJwLQOkHYg64q4dNC4d0aftjlc/3+sk242O1h6BCjo6gkv628FZPoXmdSjWZZ0OXYuNqLHgi7Eml3UCIB4OvipG00dIO1hB3PIqit6bnA2FJ3U6Xsoma4o3WcIIln8NuZOcy+aNIndVhPYICcRI91yzHypELlNTp55WX7e1C0q/I+qGIbuDq3eG6d8rbpQt4JosJDkYFhaR97Rkzqu5D50WSV8gBrohSbhX3uqmH9NgjjIkk5sCtb3zcPxrIA49DQfjbSXcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FbO0Fx2hG1vdOFk4OfcHmdmL1oA16bqnuUnSgZ8+8rA=;
+ b=jU3eWJPf7dfLJ4lqmdylOgtThMLGxqgdbCgq6UJSnbNxAlimZpMjZGbksh+8ZI5fEW/C9HbsTKUJiajoRzYyU1JkuHSq7JwdkXuGjugHb0uOPB8bU9T04Kbr2qA5u2If/gTvcrcP+nFVEU1ZkAmFZIHIGcDKOHad54BwgAs95VMG/Kqx1UjZ8eXzmJyGUXoaugsxzoORzauAv1oslWPsYZKwwONFRN+410sGNg88BShbRMhJ3vNAVtHoU/7uLzWbcXn8W1BSyAEDciSCOd09vRRLe35Hxi4Ye9U3YybZqHT9kk1MDO9XO3ba/5ZUmFrd8HjD1XQV6j01Wcx7MwLTWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686669132; x=1689261132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hMmcV/sMZgGZK8fGDZdNFZHyX+z1VL9htd4ZpnT2X6I=;
-        b=lwpP9fugtHIPeE2qAsFLusRqbmMiGpREe9OQj4y8JD3dq+178bClzrEEUmwTqU0yYD
-         EKjxdQ7kpUkhdyII+tULpRyxC9b+g8jQ1EwMOtaJBE/FB3ddyoGKylEZtSwCpzuj9JMu
-         +XRpq49LNKxNac2t/RXSl4pnsx1z0TRzJYt9wrcJBRhhhxupUHuygqrD47BqLp28HFve
-         StkYJJUmD3GuK+9xwsej7uO5kiclyAqK956k9cVadE9Ox1Ls7uv7CbKx4aUnd6mf+0po
-         N01WkzKEI3AyCNhl81g5IenaXkQa81FP3k7QjjEEamWZtlDTDrjBgwPWAwzTQtMl0Flz
-         ICmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686669132; x=1689261132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hMmcV/sMZgGZK8fGDZdNFZHyX+z1VL9htd4ZpnT2X6I=;
-        b=gko6OFD8wAwlC0+mbGTe3F1/lkwjX4oTvFtYTp9szLLmCqQ+9EZ7imHFTRbkA36pDS
-         1iSjxR1YtR4ojDYB6JGLAJTdNnjXcTxjZRMxkcL+Lv5ZzcnTn0LDB4uud+ab9jGlmEVO
-         8U1L6j/tQcMpINugh3CQPqpcpU4onwPqFx2gA170RbBniDuUQytyoaMpRiYTsG8+jatv
-         9aOQ3Ff84ZR2DlX8zTzGg+b0Hz3dso8drtxGii1dUsefC5tSG+n1FseZxLv8HHWSk2SE
-         wCnfjCORgcr+yEssB21RR1VHgIViuI8/fRk605lgZ6YB8bMldYYmaKIcfOc++lfS5cK9
-         E6+w==
-X-Gm-Message-State: AC+VfDxdNW+y+JMIgDPZ9AoPGBVWRziCb5/WQpbNve66SffQQ1fXmYo7
-	FkeQxR1Ctp/VxxK2vrdM4QSE6yUDFjE8mtYvNlA=
-X-Google-Smtp-Source: ACHHUZ4WdE1tMGT1YcAPDK7+KsJpmygEl3hyWyMwtwMWhcTT0XE+7cqVwO8yJLSp5ZHObgVGt0uD6t9x3KQ/v4QAGaQ=
-X-Received: by 2002:a05:6214:b6a:b0:62b:53b0:70b0 with SMTP id
- ey10-20020a0562140b6a00b0062b53b070b0mr8908092qvb.31.1686669132088; Tue, 13
- Jun 2023 08:12:12 -0700 (PDT)
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbO0Fx2hG1vdOFk4OfcHmdmL1oA16bqnuUnSgZ8+8rA=;
+ b=Qu7Pybo6I95VX2YcdppnBV3b+rwdP3RIpq+3xVftpo5EcCiJj+Q66hRAMhL94gBrRxwWD8l+BEXOpc4fx1ebLxiMv/qRRBq4dwaxEdwjhyo1gtVCbuRL4FMMrUKDkEHbXt11TT42N8o3KH2IL11Tprri30zIDfM8G3op6NU9Kek=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH0PR13MB4955.namprd13.prod.outlook.com (2603:10b6:510:76::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.29; Tue, 13 Jun
+ 2023 15:14:37 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%4]) with mapi id 15.20.6477.028; Tue, 13 Jun 2023
+ 15:14:37 +0000
+Date: Tue, 13 Jun 2023 17:14:30 +0200
+From: Simon Horman <simon.horman@corigine.com>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+	haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org
+Subject: Re: [RFC bpf-next 4/7] bpf: implement devtx timestamp kfunc
+Message-ID: <ZIiH1n1QeFFmHuux@corigine.com>
+References: <20230612172307.3923165-1-sdf@google.com>
+ <20230612172307.3923165-5-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612172307.3923165-5-sdf@google.com>
+X-ClientProxiedBy: AS4P251CA0023.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d3::20) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-11-laoar.shao@gmail.com>
- <98bd7ece-2058-d4bf-dab9-fc566eb655b3@isovalent.com>
-In-Reply-To: <98bd7ece-2058-d4bf-dab9-fc566eb655b3@isovalent.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 13 Jun 2023 23:11:23 +0800
-Message-ID: <CALOAHbApU8HwhsU77mMEx0vx0kHSwCmZaiJ7kQ_UMsG48--wwQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 10/10] bpftool: Show probed function in
- perf_event link info
-To: Quentin Monnet <quentin@isovalent.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB4955:EE_
+X-MS-Office365-Filtering-Correlation-Id: 51dd93cb-d9ef-450e-fcbf-08db6c20e6f3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	p28FWF805ju32BMzSCKs58x/avYIPZZUXA0au/jZdTEpL79OE6Iuxsj2Rx5bw/xnQQBE3OYWgLTvBW4/28+PLva7qDs6fxTg/CpZMFu9k93daxVqbHLkuTE3qxcvocCM7JIDoVFgkcZLEa8uKGvA3AgcvbcTx6QPSnJvylcN+A2TjmZ8atRsppWdDy6+0ma/ZXGNA+zsYdPErG2B/s7czs6v++ngGyl4l9PwVkw5/k9/ZIlUt9tG34+Nw3o2aIyqz9AIfMnnJue93v4QVnhFt6QV2TZlvnqzdp2Exw9tEITeYXu2oigrrLeoeeeoXKOjX6yEcNUIFvhha1+Fr/Dnqvo0CECuLolPl+yp07831Gx2I38f+HGwH/UB11jrVGB5Pwq2+jHpRgSOxsVWT4aOP/jZwLfkr/HIEsYlSSjJHQR9EdQvmEyhUJqsRfm03rjNFV2k6v2GWFzx1pCuQPfpnaSN/DCOE5XYdujq8pFd159Aw4hHvVT/BJynEK1jQKXK6H+EG16qB0u8zPZLNqPUxwcoPPBASH5xb5KP1B0qNkbh4QNUaQqOXPgjaE/7s/gd
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39840400004)(396003)(136003)(346002)(376002)(451199021)(6916009)(66946007)(4326008)(66556008)(36756003)(186003)(478600001)(2616005)(2906002)(4744005)(66476007)(8676002)(316002)(41300700001)(86362001)(6486002)(7416002)(6666004)(6506007)(8936002)(44832011)(5660300002)(38100700002)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WYfrBDAki9RkLRDeBNizLA/N2H4b1bIbBVG5ULZnz/pYMbtjs6nWWGOdwSGr?=
+ =?us-ascii?Q?DrJOvjwCAUW+6MjqvsC3zVyFfpMgTLbj0+5qyIt4praStwSObcwfPBfTtyD+?=
+ =?us-ascii?Q?69pAYaO/dwXlV+hylhLZMkgbLYeuy9m5sYezvDvPi+4mMVbCl7SakswJ+ngm?=
+ =?us-ascii?Q?90Eaaz5rIhAd/ZNSAV6RuiFDN646JhxHLwIqH4ioxYR/UP8trMSTuGEVAZKi?=
+ =?us-ascii?Q?v9hDVIIh8hLoZgViblo00AtcO6PyUdrXrrX0PhpgIPGbUDs7HHRkRpBCiGsz?=
+ =?us-ascii?Q?3HqIayVzEAtuTA8a6zmoIX6zc2h2n5eyfBBrEinHRJZPMfuvooYGHBkVbU+d?=
+ =?us-ascii?Q?MrImHD1U4MXCdjlWk4IpD8uTuQC94vSfYbWRiRBpILXq44FmVLgHpYgAWyYd?=
+ =?us-ascii?Q?4fhHAuIVy/EicIktUTED1l+Mo1COiZYtG0baZXUBVEtZt9YLQYIolaKQoL2L?=
+ =?us-ascii?Q?5wTGUVvo4hDAPi9IGBHj6K4RiuOPGOcrE5dNXVSMHWnQuTM5l1uzp0N2EnqQ?=
+ =?us-ascii?Q?16Xzqx9iCFKSU+rQ1AOSdQn7w7YmhV9282h88xkQTZ4cmvoDe5M0iFF1DFL7?=
+ =?us-ascii?Q?mR+Nps/YFB1tzuGmiCMLzR4VBHFgJEQN0KdvPpLM0cPxrj6t80RQuqlL2Noa?=
+ =?us-ascii?Q?HPgJXBu8YqBaqOIxCMtl4xW1wsN+tWvGGG7ProxzGXSNA4yAbKWLQRwECodK?=
+ =?us-ascii?Q?CPMXBkHRVI9j9IWrRG2a7oHySrDVJl+CazBdH1D3mv5MgLHyMN+X72Ogxrhv?=
+ =?us-ascii?Q?TbsdLZGOIOUEtq/3QTm+dmm3mTH8BqVYn4bweOLyKZrXwHM3n7fRVxmD7Jps?=
+ =?us-ascii?Q?NBsipt10yrL54wd/RDLNqAVDcfBqRr3RUs9QNQBtWCSxdElClR2HDh6AF7AA?=
+ =?us-ascii?Q?iIVfH0jAY2QhNDpe9uJEK/0vZJIaBKr5INxL6DSImlMAnKTQWLEcTi7w36yO?=
+ =?us-ascii?Q?8pS8DTfFEA85Z3TguM+zdVR4h44iQzT2hTxPDVM88ITI1vKujZnL7fFuRN7B?=
+ =?us-ascii?Q?7+QNz9DU1GmIt6OWWeAu8ebXGmTfi8L/VLhq9c4MFsQZOlt8qN5RQ1ZNEfEr?=
+ =?us-ascii?Q?rp0BBdkeyexexceK/MUU5vKL4Cb362Q0GNp4vS5T+vA7Buv8zA1DPwIs41Gh?=
+ =?us-ascii?Q?InKrhdEqu4xKkXUREtpqtoQIHe5MNHg4+NlE/DPOghP7SeauZtXu/QmevPd1?=
+ =?us-ascii?Q?THOO71WwR57A7dExWmqnCAEmbUKLn4ow3kSQth5vHyjnvQiCDMD55V40rbbv?=
+ =?us-ascii?Q?TriNZV8naQVNZpeESNtrVeKKBSvy6aUeW/rpYY86/Ve6zLnj0qYTO2YLzAoX?=
+ =?us-ascii?Q?ToX4ZMxQKznc1Quf5/xaKIzQMQ/kYUZ1htlyTOMJjm04bpUEgQIQDWeP9/mI?=
+ =?us-ascii?Q?SpMxY+DyNp27fIz3oPXeeQqdg6WBRka+6HjK2JYkAw6tiNQBgyBv/fMEc3Hm?=
+ =?us-ascii?Q?cTD4qi09iMb6pIaI19mLtbhcT2/KDZ3q8Df67mLZhfwYCWmeuKjEP7c87fBr?=
+ =?us-ascii?Q?nRjA/ritPEHdu8TBzfb6o9o3k7cfnvZ9gFGg40O1gNfqZgjTBq6fphgaeE0U?=
+ =?us-ascii?Q?+QK4v0EAGmof35CLwL9vNDE+U0LADLv9GcIXn3O/F1yLHTIuAkd/+H1loaC6?=
+ =?us-ascii?Q?HWmh1IQmXnSWZLEFwjO8cJIf+ExtfOa1a0BfJIXRMiyGH8ePJIiFXGOzvfrk?=
+ =?us-ascii?Q?Py03SQ=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51dd93cb-d9ef-450e-fcbf-08db6c20e6f3
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2023 15:14:37.7179
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zt77HambXEwCK/b1i3vH6jmLXTusvyAuovBWjtYiK6nPnye9i0pM7/yebthL9L5NHJ8Ne1q3DUhiRgrA2ThdAAM56rcaJ0rls4ajSSXucw8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB4955
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 13, 2023 at 9:42=E2=80=AFPM Quentin Monnet <quentin@isovalent.c=
-om> wrote:
->
-> 2023-06-12 15:16 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
-> > Enhance bpftool to display comprehensive information about exposed
-> > perf_event links, covering uprobe, kprobe, tracepoint, and generic perf
-> > event. The resulting output will include the following details:
-> >
-> > $ tools/bpf/bpftool/bpftool link show
-> > 3: perf_event  prog 14
-> >         event_type software  event_config cpu-clock
-> >         bpf_cookie 0
-> >         pids perf_event(1379330)
-> > 4: perf_event  prog 14
-> >         event_type hw-cache  event_config LLC-load-misses
-> >         bpf_cookie 0
-> >         pids perf_event(1379330)
-> > 5: perf_event  prog 14
-> >         event_type hardware  event_config cpu-cycles
-> >         bpf_cookie 0
-> >         pids perf_event(1379330)
-> > 6: perf_event  prog 20
-> >         retprobe 0  file_name /home/yafang/bpf/uprobe/a.out  offset 0x1=
-338
-> >         bpf_cookie 0
-> >         pids uprobe(1379706)
-> > 7: perf_event  prog 21
-> >         retprobe 1  file_name /home/yafang/bpf/uprobe/a.out  offset 0x1=
-338
-> >         bpf_cookie 0
-> >         pids uprobe(1379706)
-> > 8: perf_event  prog 27
-> >         tp_name sched_switch
-> >         bpf_cookie 0
-> >         pids tracepoint(1381734)
-> > 10: perf_event  prog 43
-> >         retprobe 0  func_name kernel_clone  addr ffffffffad0a9660
->
-> Could we swap the name and the address, for consistency with the
-> kprobe_multi case?
+On Mon, Jun 12, 2023 at 10:23:04AM -0700, Stanislav Fomichev wrote:
 
-Agree. Will change it.
+...
 
->
-> Also do we really need the "_name" suffix in "func_name" and "file_name"
-> for plain output? I don't mind in JSON, but I think the result is a bit
-> long for plain output.
+> +/**
+> + * bpf_devtx_cp_timestamp - Read TX timestamp of the packet. Callable
+> + * only from the devtx-complete hook.
+> + * @ctx: devtx context pointer.
 
-They are really a bit long. Will remove the "_name" suffix.
+Hi Stan,
 
->
-> >         bpf_cookie 0
-> >         pids kprobe(1384186)
-> > 11: perf_event  prog 41
-> >         retprobe 1  func_name kernel_clone  addr ffffffffad0a9660
-> >         bpf_cookie 0
-> >         pids kprobe(1384186)
-> >
-> > $ tools/bpf/bpftool/bpftool link show -j
-> > [{"id":3,"type":"perf_event","prog_id":14,"event_type":"software","even=
-t_config":"cpu-clock","bpf_cookie":0,"pids":[{"pid":1379330,"comm":"perf_ev=
-ent"}]},{"id":4,"type":"perf_event","prog_id":14,"event_type":"hw-cache","e=
-vent_config":"LLC-load-misses","bpf_cookie":0,"pids":[{"pid":1379330,"comm"=
-:"perf_event"}]},{"id":5,"type":"perf_event","prog_id":14,"event_type":"har=
-dware","event_config":"cpu-cycles","bpf_cookie":0,"pids":[{"pid":1379330,"c=
-omm":"perf_event"}]},{"id":6,"type":"perf_event","prog_id":20,"retprobe":0,=
-"file_name":"/home/yafang/bpf/uprobe/a.out","offset":4920,"bpf_cookie":0,"p=
-ids":[{"pid":1379706,"comm":"uprobe"}]},{"id":7,"type":"perf_event","prog_i=
-d":21,"retprobe":1,"file_name":"/home/yafang/bpf/uprobe/a.out","offset":492=
-0,"bpf_cookie":0,"pids":[{"pid":1379706,"comm":"uprobe"}]},{"id":8,"type":"=
-perf_event","prog_id":27,"tp_name":"sched_switch","bpf_cookie":0,"pids":[{"=
-pid":1381734,"comm":"tracepoint"}]},{"id":10,"type":"perf_event","prog_id":=
-43,"retprobe":0,"func_name":"kernel_clone","offset":0,"addr":18446744072317=
-736544,"bpf_cookie":0,"pids":[{"pid":1384186,"comm":"kprobe"}]},{"id":11,"t=
-ype":"perf_event","prog_id":41,"retprobe":1,"func_name":"kernel_clone","off=
-set":0,"addr":18446744072317736544,"bpf_cookie":0,"pids":[{"pid":1384186,"c=
-omm":"kprobe"}]}]
-> >
-> > For generic perf events, the displayed information in bpftool is limite=
-d to
-> > the type and configuration, while other attributes such as sample_perio=
-d,
-> > sample_freq, etc., are not included.
-> >
-> > The kernel function address won't be exposed if it is not permitted by
-> > kptr_restrict. The result as follows when kptr_restrict is 2.
-> >
-> > $ tools/bpf/bpftool/bpftool link show
-> > 3: perf_event  prog 14
-> >         event_type software  event_config cpu-clock
-> > 4: perf_event  prog 14
-> >         event_type hw-cache  event_config LLC-load-misses
-> > 5: perf_event  prog 14
-> >         event_type hardware  event_config cpu-cycles
-> > 6: perf_event  prog 20
-> >         retprobe 0  file_name /home/yafang/bpf/uprobe/a.out  offset 0x1=
-338
-> > 7: perf_event  prog 21
-> >         retprobe 1  file_name /home/yafang/bpf/uprobe/a.out  offset 0x1=
-338
-> > 8: perf_event  prog 27
-> >         tp_name sched_switch
-> > 10: perf_event  prog 43
-> >         retprobe 0  func_name kernel_clone
-> > 11: perf_event  prog 41
-> >         retprobe 1  func_name kernel_clone
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  tools/bpf/bpftool/link.c | 213 +++++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  1 file changed, 213 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > index 0015582..c16f71d 100644
-> > --- a/tools/bpf/bpftool/link.c
-> > +++ b/tools/bpf/bpftool/link.c
-> > @@ -15,6 +15,7 @@
-> >  #include "json_writer.h"
-> >  #include "main.h"
-> >  #include "xlated_dumper.h"
-> > +#include "perf.h"
-> >
-> >  static struct hashmap *link_table;
-> >  static struct dump_data dd =3D {};
-> > @@ -207,6 +208,109 @@ static int cmp_u64(const void *A, const void *B)
-> >       jsonw_end_array(json_wtr);
-> >  }
-> >
-> > +static void
-> > +show_perf_event_kprobe_json(struct bpf_link_info *info, json_writer_t =
-*wtr)
-> > +{
-> > +     jsonw_uint_field(wtr, "retprobe", info->kprobe.flags & 0x1);
->
-> "retprobe" should likely be a boolean here too (and below), I don't see
-> them taking any other values than 0 or 1?
+one minor nit: documentation of the timestamp parameter should go here.
 
-Right. Should use boolean instead.
+> + *
+> + * Returns 0 on success or ``-errno`` on error.
+> + */
+> +__bpf_kfunc int bpf_devtx_cp_timestamp(const struct devtx_frame *ctx, __u64 *timestamp)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>  __diag_pop();
 
->
-> > +     jsonw_string_field(wtr, "func_name",
-> > +                        u64_to_ptr(info->kprobe.func_name));
-> > +     jsonw_uint_field(wtr, "offset", info->kprobe.offset);
-> > +     jsonw_uint_field(wtr, "addr", info->kprobe.addr);
-> > +}
-> > +
-> > +static void
-> > +show_perf_event_uprobe_json(struct bpf_link_info *info, json_writer_t =
-*wtr)
-> > +{
-> > +     jsonw_uint_field(wtr, "retprobe", info->uprobe.flags & 0x1);
-> > +     jsonw_string_field(wtr, "file_name",
-> > +                        u64_to_ptr(info->uprobe.file_name));
-> > +     jsonw_uint_field(wtr, "offset", info->uprobe.offset);
-> > +}
-> > +
-> > +static void
-> > +show_perf_event_tp_json(struct bpf_link_info *info, json_writer_t *wtr=
-)
-> > +{
-> > +     jsonw_string_field(wtr, "tp_name",
-> > +                        u64_to_ptr(info->tracepoint.tp_name));
-> > +}
-> > +
-> > +static const char *perf_config_hw_cache_str(__u64 config)
->
-> The returned "str" is not a "const char *"? Why not simply a "char *"
-> and avoiding the cast when we free() it?
-
-Good point. Will change it.
-
->
-> > +{
-> > +#define PERF_HW_CACHE_LEN 128
->
-> Let's move the #define to the top of the file, please.
-
-Agree.
-
->
-> > +     const char *hw_cache, *result, *op;
-> > +     char *str =3D malloc(PERF_HW_CACHE_LEN);
-> > +
-> > +     if (!str) {
-> > +             p_err("mem alloc failed");
-> > +             return NULL;
-> > +     }
-> > +     hw_cache =3D perf_hw_cache_str(config & 0xff);
-> > +     if (hw_cache)
-> > +             snprintf(str, PERF_HW_CACHE_LEN, "%s-", hw_cache);
-> > +     else
-> > +             snprintf(str, PERF_HW_CACHE_LEN, "%lld-", config & 0xff);
-> > +     op =3D perf_hw_cache_op_str((config >> 8) & 0xff);
-> > +     if (op)
-> > +             snprintf(str + strlen(str), PERF_HW_CACHE_LEN - strlen(st=
-r),
-> > +                      "%s-", op);
-> > +     else
-> > +             snprintf(str + strlen(str), PERF_HW_CACHE_LEN - strlen(st=
-r),
-> > +                      "%lld-", (config >> 8) & 0xff);
-> > +     result =3D perf_hw_cache_op_result_str(config >> 16);
-> > +     if (result)
-> > +             snprintf(str + strlen(str), PERF_HW_CACHE_LEN - strlen(st=
-r),
-> > +                      "%s", result);
-> > +     else
-> > +             snprintf(str + strlen(str), PERF_HW_CACHE_LEN - strlen(st=
-r),
-> > +                      "%lld", config >> 16);
-> > +
-> > +     return str;
-> > +}
-> > +
-> > +static const char *perf_config_str(__u32 type, __u64 config)
-> > +{
-> > +     const char *perf_config;
-> > +
-> > +     switch (type) {
-> > +     case PERF_TYPE_HARDWARE:
-> > +             perf_config =3D perf_hw_str(config);
-> > +             break;
-> > +     case PERF_TYPE_SOFTWARE:
-> > +             perf_config =3D perf_sw_str(config);
-> > +             break;
-> > +     case PERF_TYPE_HW_CACHE:
-> > +             perf_config =3D perf_config_hw_cache_str(config);
-> > +             break;
-> > +     default:
-> > +             perf_config =3D NULL;
-> > +             break;
-> > +     }
-> > +     return perf_config;
-> > +}
-> > +
-> > +static void
-> > +show_perf_event_event_json(struct bpf_link_info *info, json_writer_t *=
-wtr)
-> > +{
-> > +     __u64 config =3D info->perf_event.config;
-> > +     __u32 type =3D info->perf_event.type;
-> > +     const char *perf_type, *perf_config;
-> > +
-> > +     perf_type =3D perf_type_str(type);
-> > +     if (perf_type)
-> > +             jsonw_string_field(wtr, "event_type", perf_type);
-> > +     else
-> > +             jsonw_uint_field(wtr, "event_type", type);
-> > +
-> > +     perf_config =3D perf_config_str(type, config);
-> > +     if (perf_config)
-> > +             jsonw_string_field(wtr, "event_config", perf_config);
-> > +     else
-> > +             jsonw_uint_field(wtr, "event_config", config);
-> > +
-> > +     if (type =3D=3D PERF_TYPE_HW_CACHE && perf_config)
-> > +             free((void *)perf_config);
-> > +}
-> > +
-> >  static int show_link_close_json(int fd, struct bpf_link_info *info)
-> >  {
-> >       struct bpf_prog_info prog_info;
-> > @@ -262,6 +366,16 @@ static int show_link_close_json(int fd, struct bpf=
-_link_info *info)
-> >       case BPF_LINK_TYPE_KPROBE_MULTI:
-> >               show_kprobe_multi_json(info, json_wtr);
-> >               break;
-> > +     case BPF_LINK_TYPE_PERF_EVENT:
-> > +             if (info->perf_link_type =3D=3D BPF_PERF_LINK_PERF_EVENT)
-> > +                     show_perf_event_event_json(info, json_wtr);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_TRACEP=
-OINT)
-> > +                     show_perf_event_tp_json(info, json_wtr);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_KPROBE=
-)
-> > +                     show_perf_event_kprobe_json(info, json_wtr);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_UPROBE=
-)
-> > +                     show_perf_event_uprobe_json(info, json_wtr);
->
-> It would be clearer to me with another switch/case I think (same for
-> plain output), but I don't mind much.
-
-Agree. Will use switch-case instead.
-
->
-> > +             break;
-> >       default:
-> >               break;
-> >       }
-> > @@ -433,6 +547,71 @@ static void show_kprobe_multi_plain(struct bpf_lin=
-k_info *info)
-> >       }
-> >  }
-> >
-> > +static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
-> > +{
-> > +     const char *buf;
-> > +     __u32 retprobe;
-> > +
-> > +     buf =3D (const char *)u64_to_ptr(info->kprobe.func_name);
-> > +     if (buf[0] =3D=3D '\0' && !info->kprobe.addr)
-> > +             return;
-> > +
-> > +     retprobe =3D info->kprobe.flags & 0x1;
-> > +     printf("\n\tretprobe %u  func_name %s  ", retprobe, buf);
-> > +     if (info->kprobe.offset)
-> > +             printf("offset %#x  ", info->kprobe.offset);
-> > +     if (info->kprobe.addr)
-> > +             printf("addr %llx  ", info->kprobe.addr);
-> > +}
-> > +
-> > +static void show_perf_event_uprobe_plain(struct bpf_link_info *info)
-> > +{
-> > +     const char *buf;
-> > +     __u32 retprobe;
-> > +
-> > +     buf =3D (const char *)u64_to_ptr(info->uprobe.file_name);
-> > +     if (buf[0] =3D=3D '\0')
-> > +             return;
-> > +
-> > +     retprobe =3D info->uprobe.flags & 0x1;
-> > +     printf("\n\tretprobe %u  file_name %s  ", retprobe, buf);
-> > +     if (info->uprobe.offset)
-> > +             printf("offset %#x  ", info->kprobe.offset);
-> > +}
-> > +
-> > +static void show_perf_event_tp_plain(struct bpf_link_info *info)
-> > +{
-> > +     const char *buf;
-> > +
-> > +     buf =3D (const char *)u64_to_ptr(info->tracepoint.tp_name);
-> > +     if (buf[0] =3D=3D '\0')
-> > +             return;
-> > +
-> > +     printf("\n\ttp_name %s  ", buf);
-> > +}
-> > +
-> > +static void show_perf_event_event_plain(struct bpf_link_info *info)
-> > +{
-> > +     __u64 config =3D info->perf_event.config;
-> > +     __u32 type =3D info->perf_event.type;
-> > +     const char *perf_type, *perf_config;
-> > +
-> > +     perf_type =3D perf_type_str(type);
-> > +     if (perf_type)
-> > +             printf("\n\tevent_type %s  ", perf_type);
-> > +     else
-> > +             printf("\n\tevent_type %u  ", type);
-> > +
-> > +     perf_config =3D perf_config_str(type, config);
-> > +     if (perf_config)
-> > +             printf("event_config %s  ", perf_config);
-> > +     else
-> > +             printf("event_config %llu  ", config);
-> > +
-> > +     if (type =3D=3D PERF_TYPE_HW_CACHE && perf_config)
-> > +             free((void *)perf_config);
-> > +}
-> > +
-> >  static int show_link_close_plain(int fd, struct bpf_link_info *info)
-> >  {
-> >       struct bpf_prog_info prog_info;
-> > @@ -481,6 +660,16 @@ static int show_link_close_plain(int fd, struct bp=
-f_link_info *info)
-> >       case BPF_LINK_TYPE_KPROBE_MULTI:
-> >               show_kprobe_multi_plain(info);
-> >               break;
-> > +     case BPF_LINK_TYPE_PERF_EVENT:
-> > +             if (info->perf_link_type =3D=3D BPF_PERF_LINK_PERF_EVENT)
-> > +                     show_perf_event_event_plain(info);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_TRACEP=
-OINT)
-> > +                     show_perf_event_tp_plain(info);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_KPROBE=
-)
-> > +                     show_perf_event_kprobe_plain(info);
-> > +             else if (info->perf_link_type =3D=3D BPF_PERF_LINK_UPROBE=
-)
-> > +                     show_perf_event_uprobe_plain(info);
-> > +             break;
-> >       default:
-> >               break;
-> >       }
-> > @@ -508,6 +697,7 @@ static int do_show_link(int fd)
-> >       int err;
-> >
-> >       memset(&info, 0, sizeof(info));
-> > +     buf[0] =3D '\0';
-> >  again:
-> >       err =3D bpf_link_get_info_by_fd(fd, &info, &len);
-> >       if (err) {
-> > @@ -542,7 +732,30 @@ static int do_show_link(int fd)
-> >                       goto again;
-> >               }
-> >       }
-> > +     if (info.type =3D=3D BPF_LINK_TYPE_PERF_EVENT) {
-> > +             if (info.perf_link_type =3D=3D BPF_PERF_LINK_PERF_EVENT)
-> > +                     goto out;
-> > +             if (info.perf_link_type =3D=3D BPF_PERF_LINK_TRACEPOINT &=
-&
-> > +                 !info.tracepoint.tp_name) {
-> > +                     info.tracepoint.tp_name =3D (unsigned long)&buf;
-> > +                     info.tracepoint.name_len =3D sizeof(buf);
-> > +                     goto again;
-> > +             }
-> > +             if (info.perf_link_type =3D=3D BPF_PERF_LINK_KPROBE &&
-> > +                 !info.kprobe.func_name) {
-> > +                     info.kprobe.func_name =3D (unsigned long)&buf;
-> > +                     info.kprobe.name_len =3D sizeof(buf);
-> > +                     goto again;
-> > +             }
-> > +             if (info.perf_link_type =3D=3D BPF_PERF_LINK_UPROBE &&
-> > +                 !info.uprobe.file_name) {
-> > +                     info.uprobe.file_name =3D (unsigned long)&buf;
-> > +                     info.uprobe.name_len =3D sizeof(buf);
->
-> Maybe increase the size of buf to accommodate for long paths?
-
-Agree. Should increase it to PATH_MAX.
-
->
-> > +                     goto again;
-> > +             }
-> > +     }
-> >
-> > +out:
-> >       if (json_output)
-> >               show_link_close_json(fd, &info);
-> >       else
->
-> Thanks for this work!
-
-Many thanks for your review.
-
---=20
-Regards
-Yafang
+...
 
