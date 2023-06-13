@@ -1,78 +1,77 @@
-Return-Path: <bpf+bounces-2513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C0B972E678
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 17:00:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAB4172E683
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 17:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0410C28107E
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:00:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBE0E1C20CAC
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B744839229;
-	Tue, 13 Jun 2023 14:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B63F39240;
+	Tue, 13 Jun 2023 15:01:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8299823DB
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 14:59:54 +0000 (UTC)
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03376E5;
-	Tue, 13 Jun 2023 07:59:53 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-62df62fb2a5so5458196d6.2;
-        Tue, 13 Jun 2023 07:59:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D5323DB
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:01:58 +0000 (UTC)
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD2EE56;
+	Tue, 13 Jun 2023 08:01:57 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-62df5fbb186so5968796d6.1;
+        Tue, 13 Jun 2023 08:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686668392; x=1689260392;
+        d=gmail.com; s=20221208; t=1686668516; x=1689260516;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QqegA108YqivNhRcKa64yCMqzJoXsb5CST/ebpmvJq4=;
-        b=Ap6klYksIuoVV/aCaXrAlQimcSBPS4BukyfzN+X+b+QvB/77NrNOAMOVK/eBMzL+2Q
-         VFEah59UjjQi+NXlFQg8oSg+nlrMtUqw5eltZtuoV4mq/yyMq9o3TUR6bLJ7XG6b11c+
-         BJsRIQFLFutbqNlR6RoHgikWhv9QjvxG/uXXAxexLVIhKO0r5TxKhNWRSiw/xj7K0DpE
-         s3lN57rkzGPG1jPUhxlkWOwFWyHWdMc4PyIbzda9AXu3z10x4e6YxgDjGIBTqSAQao/C
-         rOhpg6/WPtOohz9VrxllpRu4Bc82eatVosGSq6HpYxb3JvCUNLbTTbVWARKAAlQbsm27
-         PCkQ==
+        bh=QwvbZEDaH9pOLGuaz61biqmcghw88BrYNNMc8V4F+10=;
+        b=EkPhiuOnM29E61X/mDt7mvpqFyjv8OTAQCD49imcS8x0L4wd9aAZy7ZmuwVaWx9qXN
+         LV7HYn/ybH9FseKHqUjii4w8bxEGblZSGYXFBhTlVm6EQRL+qgblFzxNmN4hAYuOwSjy
+         j959qFvQ8uPmAtbZ4Sq6DfA83nZ+MboI7cKs5oge0YD0Q+n+G4oviNy+7bSFwn14GBWt
+         JnBdMp+NO0W2yZeJu+JAVRKKKx+qghp392g3JEAGPH1g4YnTuMcN3PTEkTdGMIqcimGc
+         Vsz5sWn6JwlDKGemYhHK3bos/5HSBRPh0hy5YGHSAii2vvlWbdaVCtv9L5zp6Ikhyd98
+         /nAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686668392; x=1689260392;
+        d=1e100.net; s=20221208; t=1686668516; x=1689260516;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QqegA108YqivNhRcKa64yCMqzJoXsb5CST/ebpmvJq4=;
-        b=AzmZMCP0ZjrUHP4BFndreNHgGd2VTaAkoG0eAaqM2Ib+HFI7Dz3kSr42ahZiz61VxH
-         RUnT8zJ2Up2CQ1fPT98zMsjsQHPYjJq9FTrwmMNbXT0vavdOrD4aQ0OQ5utT+I7Yc+f4
-         T3MMI68xoPIwmVaINX43jY5m6NUq8O+0PUulZsbNd9qr4MPBOgoh48qbK1TxKy2aOael
-         L80s1vDHSKMFlHUUTBiwQH4wfpWr23sTZwCt/yooBUgH6/U/gkr29ShjJd4/LnMRse+t
-         C/5MQyCdRgA5CqMRZH/3JdTOBZmhcvyO597oqfBcD246Y20XGf4IQ4AUbpPCrSq2VMmV
-         vQyg==
-X-Gm-Message-State: AC+VfDzw1ed/37YVda17Rt5SIiH7KsWu3pG/1GhjzV88r4OiQ75DjlGG
-	EyaWxJ837jhBmfemAStlks4sK8PaluDrObofjEk=
-X-Google-Smtp-Source: ACHHUZ6DFfoqOvZ9ueLIHlSdayoMa/zj6Whu/qSD0XvfWrcCcuNBihugxlKurNqfpTkjnMfXCA3WnCiaLAJlKSbReLQ=
-X-Received: by 2002:ad4:5ba6:0:b0:625:88f5:7c3d with SMTP id
- 6-20020ad45ba6000000b0062588f57c3dmr14628344qvq.1.1686668392078; Tue, 13 Jun
- 2023 07:59:52 -0700 (PDT)
+        bh=QwvbZEDaH9pOLGuaz61biqmcghw88BrYNNMc8V4F+10=;
+        b=H2SOoAsH4T+EJQtT1jUrxk5nHGFQxIzq5+7LtOmwVBp8AKvNCK8r3NMIto7kYRjit1
+         TFfUq4mwGTDf1jFsDG1wse1fyukYKzR5cbWgnaN5hcAWGNyWul4rsdJT6drBo5nNoWsb
+         AMnBRZiOue7lzTSJDdEpkHgmFAiDyAiqFxlkTpNoiXzebidP76PdYJbvLOsdTKzU0aBn
+         ruRhhm1hPvmiHd7BvV2EC6AW33/e5p1PPAFk92KrYKq/EkGpw363vhRmazj15EokJtOm
+         OpqlbosqFFg/RxBoyV75dQzhowX1qYZkJzbBNKGhljBWWvqPfe1mJoCV0xG81jThjdVs
+         tr3Q==
+X-Gm-Message-State: AC+VfDxbY5NgtzZgZqQ5XZ4bmD+eqx6BsvY+oRRzbgMlLN+HY30HH7Oj
+	ZEMioAgPynDdxlm70LV7J9hESuaNLYs/EC43qhQ8MPXWF9nsCQ==
+X-Google-Smtp-Source: ACHHUZ6ZaR+92bdmYTSeZifmUkLg1g3EhxRAyO2OPNqDu3vQiagPB/fFTX2QLPtTH8qqUm51TazkHoA0SvUVxVvtclc=
+X-Received: by 2002:a05:6214:623:b0:5ef:59d1:8d14 with SMTP id
+ a3-20020a056214062300b005ef59d18d14mr15098488qvx.2.1686668516457; Tue, 13 Jun
+ 2023 08:01:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-4-laoar.shao@gmail.com>
- <0e64ecd5-cba4-0963-ec74-47ceb9e867ab@isovalent.com>
-In-Reply-To: <0e64ecd5-cba4-0963-ec74-47ceb9e867ab@isovalent.com>
+References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-10-laoar.shao@gmail.com>
+ <1cd688c3-f633-8ae7-97bb-8e899545118e@isovalent.com>
+In-Reply-To: <1cd688c3-f633-8ae7-97bb-8e899545118e@isovalent.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 13 Jun 2023 22:59:13 +0800
-Message-ID: <CALOAHbCzr_ShGH+jOU14FXxc29578pKdm29+zR+LTy2VK3eXGw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 03/10] bpftool: Show probed function in
- kprobe_multi link info
+Date: Tue, 13 Jun 2023 23:01:17 +0800
+Message-ID: <CALOAHbAnXi5gRnxHH4-G+T6fVhRm=gsYR6_u0d5GRY8zFftwSg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 09/10] bpftool: Add perf event names
 To: Quentin Monnet <quentin@isovalent.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
 	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
 	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
+	linux-trace-kernel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,131 +81,181 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 13, 2023 at 9:41=E2=80=AFPM Quentin Monnet <quentin@isovalent.c=
+On Tue, Jun 13, 2023 at 9:42=E2=80=AFPM Quentin Monnet <quentin@isovalent.c=
 om> wrote:
 >
 > 2023-06-12 15:16 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
-> > Show the already expose kprobe_multi link info in bpftool. The result a=
-s
-> > follows,
+> > Add new functions and macros to get perf event names. These names are
+> > copied from tool/perf/util/{parse-events,evsel}.c, so that in the futur=
+e we
+> > will have a good chance to use the same code.
 > >
-> > 52: kprobe_multi  prog 381
-> >         retprobe 0  func_cnt 7
-> >         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
-> >               ffffffff9ec44f60        schedule_timeout_killable
-> >               ffffffff9ec44fa0        schedule_timeout_uninterruptible
-> >               ffffffff9ec44fe0        schedule_timeout_idle
-> >               ffffffffc09468d0        xfs_trans_get_efd [xfs]
-> >               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
-> >               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
-> >         pids kprobe_multi(559862)
-> > 53: kprobe_multi  prog 381
-> >         retprobe 1  func_cnt 7
-> >         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
-> >               ffffffff9ec44f60        schedule_timeout_killable
-> >               ffffffff9ec44fa0        schedule_timeout_uninterruptible
-> >               ffffffff9ec44fe0        schedule_timeout_idle
-> >               ffffffffc09468d0        xfs_trans_get_efd [xfs]
-> >               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
-> >               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
-> >         pids kprobe_multi(559862)
-> >
-> > $ tools/bpf/bpftool/bpftool link show -j
-> > [{"id":52,"type":"kprobe_multi","prog_id":381,"retprobe":0,"func_cnt":7=
-,"funcs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptib=
-le","module":""},{"addr":18446744072078249824,"func":"schedule_timeout_kill=
-able","module":""},{"addr":18446744072078249888,"func":"schedule_timeout_un=
-interruptible","module":""},{"addr":18446744072078249952,"func":"schedule_t=
-imeout_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_ge=
-t_efd","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get=
-_buf_map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_=
-get_dqtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]=
-},{"id":53,"type":"kprobe_multi","prog_id":381,"retprobe":1,"func_cnt":7,"f=
-uncs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptible"=
-,"module":""},{"addr":18446744072078249824,"func":"schedule_timeout_killabl=
-e","module":""},{"addr":18446744072078249888,"func":"schedule_timeout_unint=
-erruptible","module":""},{"addr":18446744072078249952,"func":"schedule_time=
-out_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_get_e=
-fd","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get_bu=
-f_map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_get=
-_dqtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]}]
-> >
+> > Suggested-by: Jiri Olsa <olsajiri@gmail.com>
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > > ---
-> >  tools/bpf/bpftool/link.c | 109 +++++++++++++++++++++++++++++++++++++++=
-+++++++-
-> >  1 file changed, 108 insertions(+), 1 deletion(-)
+> >  tools/bpf/bpftool/perf.c | 107 +++++++++++++++++++++++++++++++++++++++=
+++++++++
+> >  tools/bpf/bpftool/perf.h |  11 +++++
+>
+> Although the names are deceiving, I think these should all be moved to
+> link.c and link.h, where we'll actually use them, or to some other file
+> with a new name. File perf.c is for implementing "bpftool perf ...".
+
+Got it. Will move them into link.c.
+
+>
+> >  2 files changed, 118 insertions(+)
+> >  create mode 100644 tools/bpf/bpftool/perf.h
 > >
-> > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > index 2d78607..0015582 100644
-> > --- a/tools/bpf/bpftool/link.c
-> > +++ b/tools/bpf/bpftool/link.c
-> > @@ -14,8 +14,10 @@
+> > diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
+> > index 9174344..fbdf88c 100644
+> > --- a/tools/bpf/bpftool/perf.c
+> > +++ b/tools/bpf/bpftool/perf.c
+> > @@ -18,6 +18,113 @@
+> >  #include <bpf/bpf.h>
 > >
-> >  #include "json_writer.h"
 > >  #include "main.h"
-> > +#include "xlated_dumper.h"
-> >
-> >  static struct hashmap *link_table;
-> > +static struct dump_data dd =3D {};
-> >
-> >  static int link_parse_fd(int *argc, char ***argv)
-> >  {
-> > @@ -166,6 +168,45 @@ static int get_prog_info(int prog_id, struct bpf_p=
-rog_info *info)
-> >       return err;
-> >  }
-> >
-> > +static int cmp_u64(const void *A, const void *B)
-> > +{
-> > +     const __u64 *a =3D A, *b =3D B;
+> > +#include "perf.h"
 > > +
-> > +     return *a - *b;
+> > +static const char *perf_type_name[PERF_TYPE_MAX] =3D {
+> > +     [PERF_TYPE_HARDWARE]                    =3D "hardware",
+> > +     [PERF_TYPE_SOFTWARE]                    =3D "software",
+> > +     [PERF_TYPE_TRACEPOINT]                  =3D "tracepoint",
+> > +     [PERF_TYPE_HW_CACHE]                    =3D "hw-cache",
+> > +     [PERF_TYPE_RAW]                         =3D "raw",
+> > +     [PERF_TYPE_BREAKPOINT]                  =3D "breakpoint",
+> > +};
+> > +
+> > +const char *event_symbols_hw[PERF_COUNT_HW_MAX] =3D {
+> > +     [PERF_COUNT_HW_CPU_CYCLES]              =3D "cpu-cycles",
+> > +     [PERF_COUNT_HW_INSTRUCTIONS]            =3D "instructions",
+> > +     [PERF_COUNT_HW_CACHE_REFERENCES]        =3D "cache-references",
+> > +     [PERF_COUNT_HW_CACHE_MISSES]            =3D "cache-misses",
+> > +     [PERF_COUNT_HW_BRANCH_INSTRUCTIONS]     =3D "branch-instructions"=
+,
+> > +     [PERF_COUNT_HW_BRANCH_MISSES]           =3D "branch-misses",
+> > +     [PERF_COUNT_HW_BUS_CYCLES]              =3D "bus-cycles",
+> > +     [PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] =3D "stalled-cycles-front=
+end",
+> > +     [PERF_COUNT_HW_STALLED_CYCLES_BACKEND]  =3D "stalled-cycles-backe=
+nd",
+> > +     [PERF_COUNT_HW_REF_CPU_CYCLES]          =3D "ref-cycles",
+> > +};
+> > +
+> > +const char *event_symbols_sw[PERF_COUNT_SW_MAX] =3D {
+> > +     [PERF_COUNT_SW_CPU_CLOCK]               =3D "cpu-clock",
+> > +     [PERF_COUNT_SW_TASK_CLOCK]              =3D "task-clock",
+> > +     [PERF_COUNT_SW_PAGE_FAULTS]             =3D "page-faults",
+> > +     [PERF_COUNT_SW_CONTEXT_SWITCHES]        =3D "context-switches",
+> > +     [PERF_COUNT_SW_CPU_MIGRATIONS]          =3D "cpu-migrations",
+> > +     [PERF_COUNT_SW_PAGE_FAULTS_MIN]         =3D "minor-faults",
+> > +     [PERF_COUNT_SW_PAGE_FAULTS_MAJ]         =3D "major-faults",
+> > +     [PERF_COUNT_SW_ALIGNMENT_FAULTS]        =3D "alignment-faults",
+> > +     [PERF_COUNT_SW_EMULATION_FAULTS]        =3D "emulation-faults",
+> > +     [PERF_COUNT_SW_DUMMY]                   =3D "dummy",
+> > +     [PERF_COUNT_SW_BPF_OUTPUT]              =3D "bpf-output",
+> > +     [PERF_COUNT_SW_CGROUP_SWITCHES]         =3D "cgroup-switches",
+> > +};
+> > +
+> > +const char *evsel__hw_cache[PERF_COUNT_HW_CACHE_MAX] =3D {
+> > +     [PERF_COUNT_HW_CACHE_L1D]               =3D "L1-dcache",
+> > +     [PERF_COUNT_HW_CACHE_L1I]               =3D "L1-icache",
+> > +     [PERF_COUNT_HW_CACHE_LL]                =3D "LLC",
+> > +     [PERF_COUNT_HW_CACHE_DTLB]              =3D "dTLB",
+> > +     [PERF_COUNT_HW_CACHE_ITLB]              =3D "iTLB",
+> > +     [PERF_COUNT_HW_CACHE_BPU]               =3D "branch",
+> > +     [PERF_COUNT_HW_CACHE_NODE]              =3D "node",
+> > +};
+> > +
+> > +const char *evsel__hw_cache_op[PERF_COUNT_HW_CACHE_OP_MAX] =3D {
+> > +     [PERF_COUNT_HW_CACHE_OP_READ]           =3D "load",
+> > +     [PERF_COUNT_HW_CACHE_OP_WRITE]          =3D "store",
+> > +     [PERF_COUNT_HW_CACHE_OP_PREFETCH]       =3D "prefetch",
+> > +};
+> > +
+> > +const char *evsel__hw_cache_result[PERF_COUNT_HW_CACHE_RESULT_MAX] =3D=
+ {
+> > +     [PERF_COUNT_HW_CACHE_RESULT_ACCESS]     =3D "refs",
+> > +     [PERF_COUNT_HW_CACHE_RESULT_MISS]       =3D "misses",
+> > +};
+> > +
+> > +const char *perf_type_str(enum perf_type_id t)
+> > +{
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(perf_type_name))
+> > +             return NULL;
+> > +
+> > +     return perf_type_name[t];
 > > +}
 > > +
-> > +static void
-> > +show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
+> > +const char *perf_hw_str(enum perf_hw_id t)
 > > +{
-> > +     __u32 i, j =3D 0;
-> > +     __u64 *addrs;
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(event_symbols_hw))
+> > +             return NULL;
 > > +
-> > +     jsonw_uint_field(json_wtr, "retprobe",
-> > +                      info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RE=
-TURN);
->
-> The "retprobe" field could maybe be a boolean rather than an int.
-
-Will change it.
-
->
-> > +     jsonw_uint_field(json_wtr, "func_cnt", info->kprobe_multi.count);
-> > +     jsonw_name(json_wtr, "funcs");
-> > +     jsonw_start_array(json_wtr);
-> > +     addrs =3D (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
-> > +     qsort((void *)addrs, info->kprobe_multi.count, sizeof(__u64), cmp=
-_u64);
+> > +     return event_symbols_hw[t];
+> > +}
 > > +
-> > +     /* Load it once for all. */
-> > +     if (!dd.sym_count)
-> > +             kernel_syms_load(&dd);
-> > +     for (i =3D 0; i < dd.sym_count; i++) {
-> > +             if (dd.sym_mapping[i].address !=3D addrs[j])
-> > +                     continue;
-> > +             jsonw_start_object(json_wtr);
-> > +             jsonw_uint_field(json_wtr, "addr", dd.sym_mapping[i].addr=
-ess);
-> > +             jsonw_string_field(json_wtr, "func", dd.sym_mapping[i].na=
-me);
-> > +             /* Print none if it is vmlinux */
-> > +             jsonw_string_field(json_wtr, "module", dd.sym_mapping[i].=
-module);
+> > +const char *perf_hw_cache_str(enum perf_hw_cache_id t)
+> > +{
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(evsel__hw_cache))
+> > +             return NULL;
+> > +
+> > +     return evsel__hw_cache[t];
+> > +}
+> > +
+> > +const char *perf_hw_cache_op_str(enum perf_hw_cache_op_id t)
+> > +{
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(evsel__hw_cache_op))
+> > +             return NULL;
+> > +
+> > +     return evsel__hw_cache_op[t];
+> > +}
+> > +
+> > +const char *perf_hw_cache_op_result_str(enum perf_hw_cache_op_result_i=
+d t)
+> > +{
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(evsel__hw_cache_result))
+> > +             return NULL;
+> > +
+> > +     return evsel__hw_cache_result[t];
+> > +}
+> > +
+> > +const char *perf_sw_str(enum perf_sw_ids t)
+> > +{
+> > +     if (t < 0 || t >=3D ARRAY_SIZE(event_symbols_sw))
+> > +             return NULL;
+> > +
+> > +     return event_symbols_sw[t];
+> > +}
+> >
+> >  /* 0: undecided, 1: supported, 2: not supported */
+> >  static int perf_query_supported;
+> > diff --git a/tools/bpf/bpftool/perf.h b/tools/bpf/bpftool/perf.h
+> > new file mode 100644
+> > index 0000000..3fd7e42
+> > --- /dev/null
+> > +++ b/tools/bpf/bpftool/perf.h
+> > @@ -0,0 +1,11 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> > +/* Copyright (C) 2023 Yafang Shao <laoar.shao@gmail.com> */
+> > +
+> > +#include <linux/perf_event.h>
+> > +
+> > +const char *perf_type_str(enum perf_type_id t);
+> > +const char *perf_hw_str(enum perf_hw_id t);
+> > +const char *perf_hw_cache_str(enum perf_hw_cache_id t);
+> > +const char *perf_hw_cache_op_str(enum perf_hw_cache_op_id t);
+> > +const char *perf_hw_cache_op_result_str(enum perf_hw_cache_op_result_i=
+d t);
+> > +const char *perf_sw_str(enum perf_sw_ids t);
 >
-> Can we trim the square brackets around module names for the JSON output,
-> please? They make entries look like arrays; but mostly, if we keep them,
-> we're forcing every consumer to trim them on their side before being
-> able to reuse the value.
+> I'm not sure we need all these API functions if we keep the arrays in
+> bpftool. I'd probably have just a generic one and pass it the name of
+> the relevant array in argument. Although I've got no objection with the
+> current form if it helps unifying the code with perf in the future.
+>
 
-Agree, will trim it.
+Sure, I will use a generic one instead.
 
 --=20
 Regards
